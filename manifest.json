@@ -2,11 +2,12 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "Load your current search engines into a context menu for easily searching selected text",
-	"version": "0.90",
+	"version": "0.91",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	
 	"applications": {
 		"gecko": {
+			"id": "{5dd73bb9-e728-4d1e-990b-c77d8e03670f}",
 			"strict_min_version": "57.0"
 		}
 	},

@@ -7,13 +7,15 @@
 
   <body>
 	<div style='border:1px solid grey;padding:20px;background-color:#f4f4f4;'>
-		<div style='font-size:12pt;margin-bottom:20px;'>Due to the changes for Firefox 57+, there is no way for Add-ons to access your stored search engines directly. You need to browse to your current search settings file.  On Windows this can usually be found at %APPDATA%/Mozilla/Firefox/Profiles/ {YOUR PROFILE} / search.json.mozlz4</div>
+		<div style='font-size:12pt;margin-bottom:20px;'>Due to the changes for Firefox 57+, there is no way for Add-ons to access your stored search engines directly. You need to browse to your current search settings file.  On Windows this can usually be found at %APPDATA%/Mozilla/Firefox/Profiles/ {YOUR PROFILE} / search.json.mozlz4
+		
+		</div>
 		<div>You will need to reload this file each time you change your search engine list.</div>
 		<hr />
 		<input name="selectMozlz4FileButton" type="file" accept=".json.mozlz4">
 	</div>
-	<div style='font-size:12pt;margin-top:25px;font-weight:bold' id='status'></div>
-	<div><img src='icons/screenshot.png' style='width:auto;height:auto' /></div>
+	<div style='font-size:12pt;margin:25px;font-weight:bold' id='status'>&nbsp;</div>
+	<div style='text-align:center;background-image:url("icons/Background.png");background-repeat:repeat;'><img src='icons/howto.gif' style='width:80%;border:2px solid grey;'/></div>
 	<script src="mozlz4.js"></script>
     <script src="options.js"></script>
   </body>
