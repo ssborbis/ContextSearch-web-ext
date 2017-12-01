@@ -1,0 +1,66 @@
+let button = document.getElementsByName("selectMozlz4FileButton")[0];
+button.onchange = function(ev) {
+    let file = ev.target.files[0];
+    readMozlz4File(file, function(text) { // on success
+		
+		// array for storage.local
+		var saveTo = [];
+		
+		// parse the mozlz4 JSON into an object
+		var engines = JSON.parse(text).engines;			
+
+		// iterate over search engines in search.json.mozlz4
+		for (var i in engines) {
+			var search_url = "", params = "";
+			var engine = engines[i];
+			
+			// skip hidden search engines
+			if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) continue;
+			
+			// iterate over urls array
+			for (var u=0;u<engine._urls.length;u++) {
+				var url = engine._urls[u];
+				
+				// skip urls with a declared type other than text/html
+				if (url.type && url.type != "text/html") continue;
+				
+				// get the main part of the search url
+				search_url = url.template;
+				
+				// get url params
+				for (var p in url.params) 
+					params+="&" + url.params[p].name + "=" + url.params[p].value;
+			}
+			
+			// replace the first & with ? in params string
+			params=params.replace(/^&/,"?");
+			
+			// append params to search url
+			search_url+=params;
+			
+			// push object to array for storage.local
+			saveTo.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order});
+		}
+		
+		// sort search engine array by order key
+		saveTo = saveTo.sort(function(a, b){
+			if(a.order < b.order) return -1;
+			if(a.order > b.order) return 1;
+			return 0;
+		});
+		
+		// save array to storage.local
+		browser.storage.local.set({"searchEngines":saveTo});
+		
+		// send message to background.js to update context menu
+		browser.runtime.sendMessage({});
+
+		// print status message to Options page
+		document.getElementById('status').innerText = "Success.  Loaded " + saveTo.length + " search engines";
+
+    }, function() { // on fail
+
+		// print status message to Options page
+		document.getElementById('status').innerText = "Failed to load search engines";
+	});
+};

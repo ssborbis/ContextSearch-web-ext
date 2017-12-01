@@ -1,0 +1,30 @@
+{
+    "manifest_version": 2,
+    "name": "Context Search Fix",
+    "description": "Add a context menu with search engine options",
+    "version": "1.36",
+
+	"applications": {
+		"gecko": {
+			"id": "{39a7dd1d-a275-4bac-8cf7-a2983c45c8d4}",
+			"strict_min_version": "42.0"
+		}
+	},
+	
+    "background": {
+        "scripts": [
+            "background.js"
+        ]
+    },
+	
+	"options_ui": {
+		"page": "options.html"
+	},
+
+	"permissions": [
+		"activeTab",
+		"contextMenus",
+		"storage",
+		"notifications"
+	]
+}
