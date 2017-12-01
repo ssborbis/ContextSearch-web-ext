@@ -1,9 +1,9 @@
 # ContextSearch web-ext
 
-Temporary addon for context searching in FF 57+ until an API is added
+Temporary addon for context-menu search engine list in FF 57+ until an API is added
 ## What it does
 
-Displays a context menu for selected text to search using a chosen engine
+Load your current search engines into a context menu for easily searching selected text
 ## What it shows
 
-* search engines
+* search engine choices in context menu

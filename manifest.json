@@ -1,8 +1,8 @@
 {
     "manifest_version": 2,
-    "name": "Context Search Fix",
-    "description": "Add a context menu with search engine options",
-    "version": "1.36",
+    "name": "ContextSearch web-ext",
+    "description": "Load your current search engines into a context menu for easily searching selected text",
+    "version": "1.38",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	
 	"applications": {
