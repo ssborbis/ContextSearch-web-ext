@@ -3,11 +3,12 @@
     "name": "Context Search Fix",
     "description": "Add a context menu with search engine options",
     "version": "1.36",
-
+	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
+	
 	"applications": {
 		"gecko": {
 			"id": "{39a7dd1d-a275-4bac-8cf7-a2983c45c8d4}",
-			"strict_min_version": "42.0"
+			"strict_min_version": "57.0"
 		}
 	},
 	
@@ -26,5 +27,10 @@
 		"contextMenus",
 		"storage",
 		"notifications"
-	]
+	],
+	
+	"icons": {
+		"48": "icons/icon48.png",
+		"96": "icons/icon96.png"
+	}
 }
