@@ -1,22 +1,21 @@
 {
-    "manifest_version": 2,
-    "name": "ContextSearch web-ext",
-    "description": "Load your current search engines into a context menu for easily searching selected text",
-    "version": "1.38",
+	"manifest_version": 2,
+	"name": "ContextSearch web-ext",
+	"description": "Load your current search engines into a context menu for easily searching selected text",
+	"version": "0.90",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	
 	"applications": {
 		"gecko": {
-			"id": "{39a7dd1d-a275-4bac-8cf7-a2983c45c8d4}",
 			"strict_min_version": "57.0"
 		}
 	},
 	
-    "background": {
-        "scripts": [
-            "background.js"
-        ]
-    },
+	"background": {
+		"scripts": [
+			"background.js"
+		]
+	},
 	
 	"options_ui": {
 		"page": "options.html"
