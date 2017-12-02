@@ -1,13 +1,13 @@
 let button = document.getElementsByName("selectMozlz4FileButton")[0];
 button.onchange = function(ev) {
-    let file = ev.target.files[0];
-    readMozlz4File(file, function(text) { // on success
+	let file = ev.target.files[0];
+	readMozlz4File(file, function(text) { // on success
 		
 		// array for storage.local
 		var saveTo = [];
 		
 		// parse the mozlz4 JSON into an object
-		var engines = JSON.parse(text).engines;			
+		var engines = JSON.parse(text).engines;
 
 		// iterate over search engines in search.json.mozlz4
 		for (var i in engines) {
@@ -58,7 +58,7 @@ button.onchange = function(ev) {
 		// print status message to Options page
 		document.getElementById('status').innerText = "Success.  Loaded " + saveTo.length + " search engines";
 
-    }, function() { // on fail
+	}, function() { // on fail
 
 		// print status message to Options page
 		document.getElementById('status').innerText = "Failed to load search engines";

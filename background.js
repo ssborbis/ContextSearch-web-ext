@@ -1,5 +1,5 @@
 function notify(message) {
-  loadEngines();
+	loadEngines();
 }
 
 function loadEngines() {
@@ -7,14 +7,15 @@ function loadEngines() {
 	var getting = browser.storage.local.get("searchEngines");
 	
 	getting.then(function(item) { // onGot
-		buildContextMenu(item.searchEngines || []);
+		searchEngines = item.searchEngines || [];
+		buildContextMenu();
 	}, function(error) { // onError
 		console.log(`Error: ${error}`);
-		buildContextMenu([]);
+		buildContextMenu();
 	});
 }
 
-function buildContextMenu(searchEngines) {
+function buildContextMenu() {
 
 	browser.contextMenus.removeAll();	
 
@@ -36,19 +37,25 @@ function buildContextMenu(searchEngines) {
 			}
 		});
 	}
-
-	browser.contextMenus.onClicked.addListener((info, tab) => {
-		if (searchEngines.length === 0) {
-			var opening = browser.runtime.openOptionsPage();
-			opening.then();
-		} else {
-			var creating = browser.tabs.create({
-				url:encodeURI(searchEngines[info.menuItemId].query_string.replace("{searchTerms}",info.selectionText))
-			});
-			creating.then();
-		}
-	});
+	
+	if (!browser.contextMenus.onClicked.hasListener(openSearchTab))
+		browser.contextMenus.onClicked.addListener(openSearchTab);
+	
 }
 
+function openSearchTab(info, tab) {
+	
+	if (searchEngines.length === 0) {
+		var opening = browser.runtime.openOptionsPage();
+		opening.then();
+	} else {
+		var creating = browser.tabs.create({
+			url:encodeURI(searchEngines[info.menuItemId].query_string.replace("{searchTerms}",info.selectionText))
+		});
+		creating.then();
+	}
+}
+
+var searchEngines = [];
 browser.runtime.onMessage.addListener(notify);
 loadEngines();
