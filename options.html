@@ -3,19 +3,70 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<style>
+			BODY {
+				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+				background-color:#E9ECEF;
+				padding:40px;
+				color:#343a40;
+			}
+			P.code {
+				font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
+				font-weight: normal;
+				padding:0px 40px;
+				-moz-user-select: text;
+				color:blue;
+			}
+			HR {
+				display: block;
+				height: 1px;
+				border: 0;
+				border-top: 3px solid #E9ECEF;
+				margin: 1em 0;
+				padding: 0; 
+			}			
+			.blobContainer {
+				border-radius:20px;
+				padding:20px;
+				background-color:white;
+				margin-bottom:40px;
+			}
+			.blobContainerHeader {
+				font-size:16pt;
+				font-weight:bolder;
+				padding:4px 20px 24px 20px;
+				text-align:left;
+				border-bottom:3px solid #E9ECEF;
+			}
+		</style>
 	</head>
 	<body>
-		<div style='border:1px solid grey;padding:20px;background-color:#f4f4f4;'>
-			<div style='font-size:12pt;margin-bottom:20px;'>Due to the changes for Firefox 57+, there is no way for Add-ons to access your stored search engines directly. You need to browse to your current search settings file.  On Windows this can usually be found at %APPDATA%/Mozilla/Firefox/Profiles/ {YOUR PROFILE} / search.json.mozlz4
-			
+		<div class='blobContainer'>
+			<div class='blobContainerHeader'>Options</div>
+			<div style='padding:20px;font-size:12pt;font-weight:bold'>
+				<input type='checkbox' id='cb_backgroundTabs' /><label> Open Tabs in Background</label> - <i>(or Shift+click)</i><br />
+				<input type='checkbox' id='cb_adjacentTabs' /><label> Open Tabs in Adjacent Tab</label> - <i>(or Ctrl+click)</i>
 			</div>
-			<div>You will need to reload this file each time you change your search engine list.</div>
-			<hr />
-			<input name="selectMozlz4FileButton" type="file" accept=".json.mozlz4">
 		</div>
-		<div style='font-size:12pt;margin:25px;font-weight:bold' id='status'>&nbsp;</div>
-		<div style='text-align:center;background-image:url("icons/Background.png");background-repeat:repeat;'>
-			<img src='icons/howto.gif' style='width:80%;border:2px solid grey;'/>
+		<div class='blobContainer'>
+			<div class='blobContainerHeader'><img src='icons/load.png' style='height:30px;vertical-align:middle;margin-right:20px' /> Load Search Engines</div>
+			<div style='padding:20px;'>
+				<div style='font-size:12pt;margin-bottom:20px;font-weight:bold'>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. <p>On Windows this file can usually be found at</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/ {YOUR PROFILE} /search.json.mozlz4</p> See the How-To video below for more details.
+				
+				</div>
+				<hr />
+				<div style='font-size:12pt;font-weight:bold' id='status'>&nbsp;</div>
+				<p><input name="selectMozlz4FileButton" type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
+				<i>You will need to reload this file each time you change your search engine list</i>				
+			</div>
+		</div>
+		<div class='blobContainer'>
+			<div class='blobContainerHeader'>HowTo</div>
+			<div style='text-align:center;padding:20px;'>
+				<img src='icons/howto.gif' style='width:100%;border:1px solid grey;'/>
+				<a href='icons/howto.gif' target='_blank' style='text-decoration: none;'>&rdca; howto.gif</a>
+			</div>
+			
 		</div>
 		<script src="mozlz4.js"></script>
 		<script src="options.js"></script>

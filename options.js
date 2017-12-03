@@ -8,6 +8,8 @@ button.onchange = function(ev) {
 		
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;
+		
+//		console.log(engines);
 
 		// iterate over search engines in search.json.mozlz4
 		for (var i in engines) {
@@ -53,7 +55,7 @@ button.onchange = function(ev) {
 		browser.storage.local.set({"searchEngines":saveTo});
 		
 		// send message to background.js to update context menu
-		browser.runtime.sendMessage({});
+		browser.runtime.sendMessage({action: "load"});
 
 		// print status message to Options page
 		document.getElementById('status').innerText = "Success.  Loaded " + saveTo.length + " search engines";
@@ -64,3 +66,35 @@ button.onchange = function(ev) {
 		document.getElementById('status').innerText = "Failed to load search engines";
 	});
 };
+
+function restoreOptions() {
+
+	function setOptions(result) {
+		document.getElementById('cb_backgroundTabs').checked = result.userOptions.backgroundTabs || false;
+		document.getElementById('cb_adjacentTabs').checked = result.userOptions.adjacentTabs || false;
+	}
+  
+	function onError(error) {
+		console.log(`Error: ${error}`);
+	}
+
+	var getting = browser.storage.local.get("userOptions");
+	getting.then(setOptions, onError);
+}
+
+function saveOptions(e) {
+	e.preventDefault();
+
+	browser.storage.local.set({
+		userOptions: {
+			backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
+			adjacentTabs: document.getElementById('cb_adjacentTabs').checked
+		}
+	});
+	
+	browser.runtime.sendMessage({action: "loadUserOptions"});
+}
+
+document.addEventListener("DOMContentLoaded", restoreOptions);
+document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
+document.getElementById('cb_adjacentTabs').addEventListener('change', saveOptions);
