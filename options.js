@@ -70,8 +70,9 @@ button.onchange = function(ev) {
 function restoreOptions() {
 
 	function setOptions(result) {
-		document.getElementById('cb_backgroundTabs').checked = result.userOptions.backgroundTabs || false;
-		document.getElementById('cb_adjacentTabs').checked = result.userOptions.adjacentTabs || false;
+		var userOptions = result.userOptions || {};
+		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
+		document.getElementById('cb_adjacentTabs').checked = userOptions.adjacentTabs || false;
 	}
   
 	function onError(error) {

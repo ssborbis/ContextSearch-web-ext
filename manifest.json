@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "Load your current search engines into a context menu for easily searching selected text",
-	"version": "0.94b2",
+	"version": "0.94b3",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	
 	"applications": {
