@@ -67,7 +67,7 @@ function buildContextMenu() {
 function openSearchTab(info, tab) {
 	
 	// check for click modifiers
-	var active = false, move = false;
+	var active = true, move = false;
 	for (var m=0;m<info.modifiers.length;m++) {
 		if (info.modifiers[m] === "Shift") {
 			active = false;
