@@ -72,7 +72,6 @@ function restoreOptions() {
 	function onGot(result) {
 		var userOptions = result.userOptions || {};
 		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
-		document.getElementById('cb_adjacentTabs').checked = userOptions.adjacentTabs || false;
 	}
   
 	function onError(error) {
@@ -88,8 +87,7 @@ function saveOptions(e) {
 
 	browser.storage.local.set({
 		userOptions: {
-			backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
-			adjacentTabs: document.getElementById('cb_adjacentTabs').checked
+			backgroundTabs: document.getElementById('cb_backgroundTabs').checked
 		}
 	});
 	
@@ -98,4 +96,3 @@ function saveOptions(e) {
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
-document.getElementById('cb_adjacentTabs').addEventListener('change', saveOptions);

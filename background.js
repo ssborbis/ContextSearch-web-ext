@@ -102,16 +102,16 @@ function openSearchTab(info, tab) {
 		// get array of open search tabs async. and find right-most tab
 		getOpenSearchTabs(tab.id, (openSearchTabs) => {
 			
-			// right-most tab index = tab.index if openSearchTabs is empty or right-most search tab has been moved to the left of the parent tab
+			// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
 			var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
 
 			var creating = browser.tabs.create({
 				url: encodeURI(q),
 				active: (!active || userOptions.backgroundTabs) ? false : true,
-				index: (move || userOptions.adjacentTabs) ? rightMostSearchTabIndex + 1 : 65536,
+				index: rightMostSearchTabIndex + 1,
 				openerTabId: tab.id
 			});
-			creating.then(() => {console.log(tab.index)});
+			creating.then();
 		});
 	}
 }
@@ -134,8 +134,7 @@ function getOpenSearchTabs(id, callback) {
 }
 
 var userOptions = {
-	backgroundTabs: false,
-	adjacentTabs: false
+	backgroundTabs: false
 };
 var searchEngines = [];
 
