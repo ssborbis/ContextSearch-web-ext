@@ -1,7 +1,7 @@
 function notify(message) {
 	switch(message.action) {
-		case "load":
-			loadEngines();
+		case "loadSearchEngines":
+			loadSearchEngines();
 			break;
 		case "loadUserOptions":
 			loadUserOptions();
@@ -9,16 +9,20 @@ function notify(message) {
 	}
 }
 
-function loadEngines() {
-	var getting = browser.storage.local.get("searchEngines");
+function loadSearchEngines() {
 	
-	getting.then(function(item) { // onGot
+	function onGot(item) {
 		searchEngines = item.searchEngines || [];
 		buildContextMenu();
-	}, function(error) { // onError
+	}
+	
+	function onError(error) {
 		console.log(`Error: ${error}`);
 		buildContextMenu();
-	});
+	}
+	
+	var getting = browser.storage.local.get("searchEngines");	
+	getting.then(onGot, onError);
 }
 
 function loadUserOptions() {
@@ -69,15 +73,18 @@ function openSearchTab(info, tab) {
 	// check for click modifiers
 	var active = true, move = false;
 	for (var m=0;m<info.modifiers.length;m++) {
-		if (info.modifiers[m] === "Shift") {
+		if (info.modifiers[m] === "Shift")
 			active = false;
-		} else if (info.modifiers[m] === "Ctrl")
+		else if (info.modifiers[m] === "Ctrl")
 			move = true;
 	}
 	
 	if (searchEngines.length === 0) {
+		
+		// if searchEngines is empty, open Options
 		var opening = browser.runtime.openOptionsPage();
 		opening.then();
+		
 	} else {
 		
 		// replace OpenSearch params
@@ -99,14 +106,12 @@ function openSearchTab(info, tab) {
 			index: (move || userOptions.adjacentTabs) ? tab.index + 1 : null		
 		});
 		
-		creating.then(function() {
-
-		});
+		creating.then();
 	}
 }
 
 var userOptions = {};
 var searchEngines = [];
 browser.runtime.onMessage.addListener(notify);
-loadEngines();
+loadSearchEngines();
 loadUserOptions();

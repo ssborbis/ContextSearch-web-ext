@@ -38,21 +38,25 @@
 				text-align:left;
 				border-bottom:3px solid #E9ECEF;
 			}
+			.blobContainerHeader IMG {
+				height:30px;
+				vertical-align:middle;
+				margin-right:20px;
+			}
 		</style>
 	</head>
 	<body>
 		<div class='blobContainer'>
-			<div class='blobContainerHeader'>Options</div>
+			<div class='blobContainerHeader'><img src='icons/settings.png' />Options</div>
 			<div style='padding:20px;font-size:12pt;font-weight:bold'>
-				<input type='checkbox' id='cb_backgroundTabs' /><label> Open Tabs in Background</label> - <i>(or Shift+click)</i><br />
-				<input type='checkbox' id='cb_adjacentTabs' /><label> Open Tabs in Adjacent Tab</label> - <i>(or Ctrl+click)</i>
+				<input type='checkbox' id='cb_backgroundTabs' /><label> Open Tabs in Background</label><i style='float:right'>Shift + click</i><br />
+				<input type='checkbox' id='cb_adjacentTabs' /><label> Open Tabs in Adjacent Tab</label><i style='float:right'>Ctrl + click</i>
 			</div>
 		</div>
 		<div class='blobContainer'>
-			<div class='blobContainerHeader'><img src='icons/load.png' style='height:30px;vertical-align:middle;margin-right:20px' /> Load Search Engines</div>
+			<div class='blobContainerHeader'><img src='icons/load.png' />Load Search Engines</div>
 			<div style='padding:20px;'>
 				<div style='font-size:12pt;margin-bottom:20px;font-weight:bold'>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. <p>On Windows this file can usually be found at</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/ {YOUR PROFILE} /search.json.mozlz4</p> See the How-To video below for more details.
-				
 				</div>
 				<hr />
 				<div style='font-size:12pt;font-weight:bold' id='status'>&nbsp;</div>
@@ -61,7 +65,7 @@
 			</div>
 		</div>
 		<div class='blobContainer'>
-			<div class='blobContainerHeader'>HowTo</div>
+			<div class='blobContainerHeader'><img src='icons/help.png' />HowTo</div>
 			<div style='text-align:center;padding:20px;'>
 				<img src='icons/howto.gif' style='width:100%;border:1px solid grey;'/>
 				<a href='icons/howto.gif' target='_blank' style='text-decoration: none;'>&rdca; howto.gif</a>

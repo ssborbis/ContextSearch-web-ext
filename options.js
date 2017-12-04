@@ -55,7 +55,7 @@ button.onchange = function(ev) {
 		browser.storage.local.set({"searchEngines":saveTo});
 		
 		// send message to background.js to update context menu
-		browser.runtime.sendMessage({action: "load"});
+		browser.runtime.sendMessage({action: "loadSearchEngines"});
 
 		// print status message to Options page
 		document.getElementById('status').innerText = "Success.  Loaded " + saveTo.length + " search engines";
@@ -69,7 +69,7 @@ button.onchange = function(ev) {
 
 function restoreOptions() {
 
-	function setOptions(result) {
+	function onGot(result) {
 		var userOptions = result.userOptions || {};
 		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
 		document.getElementById('cb_adjacentTabs').checked = userOptions.adjacentTabs || false;
@@ -80,7 +80,7 @@ function restoreOptions() {
 	}
 
 	var getting = browser.storage.local.get("userOptions");
-	getting.then(setOptions, onError);
+	getting.then(onGot, onError);
 }
 
 function saveOptions(e) {
