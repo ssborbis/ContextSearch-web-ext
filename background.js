@@ -28,7 +28,7 @@ function loadSearchEngines() {
 function loadUserOptions() {
 	
 	function onGot(result) {
-		userOptions = result.userOptions || {};
+		userOptions = result.userOptions || userOptions;
 	}
   
 	function onError(error) {
@@ -67,7 +67,6 @@ function buildContextMenu() {
 	
 }
 
-
 function openSearchTab(info, tab) {
 	
 	// check for click modifiers
@@ -99,19 +98,47 @@ function openSearchTab(info, tab) {
 			.replace(/{.+?\?}/g,"") // optionals
 			.replace(/{moz:.+?}/g, "") // moz specific
 			.replace(/{.+?}/g, ""); // all others
-		
-		var creating = browser.tabs.create({
-			url: encodeURI(q),
-			active: (!active || userOptions.backgroundTabs) ? false : true,
-			index: (move || userOptions.adjacentTabs) ? tab.index + 1 : null		
+
+		// get array of open search tabs async. and find right-most tab
+		getOpenSearchTabs(tab.id, (openSearchTabs) => {
+			
+			// right-most tab index = tab.index if openSearchTabs is empty or right-most search tab has been moved to the left of the parent tab
+			var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
+
+			var creating = browser.tabs.create({
+				url: encodeURI(q),
+				active: (!active || userOptions.backgroundTabs) ? false : true,
+				index: (move || userOptions.adjacentTabs) ? rightMostSearchTabIndex + 1 : 65536,
+				openerTabId: tab.id
+			});
+			creating.then(() => {console.log(tab.index)});
 		});
-		
-		creating.then();
 	}
 }
 
-var userOptions = {};
+function getOpenSearchTabs(id, callback) {
+
+	function onGot(tabs) {		
+		var openSearchTabs = tabs.sort(function(a, b) {
+			return (a.index < b.index) ? -1 : 1;
+		});
+		callback(openSearchTabs);
+	}
+
+	function onError(error) {
+		console.log(`Error: ${error}`);
+	}
+
+	var querying = browser.tabs.query({currentWindow: true, openerTabId: id});
+	querying.then(onGot, onError);
+}
+
+var userOptions = {
+	backgroundTabs: false,
+	adjacentTabs: false
+};
 var searchEngines = [];
+
 browser.runtime.onMessage.addListener(notify);
 loadSearchEngines();
 loadUserOptions();
