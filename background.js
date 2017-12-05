@@ -1,8 +1,11 @@
 function notify(message) {
+	
 	switch(message.action) {
+		
 		case "loadSearchEngines":
 			loadSearchEngines();
 			break;
+			
 		case "loadUserOptions":
 			loadUserOptions();
 			break;
@@ -12,7 +15,7 @@ function notify(message) {
 function loadSearchEngines() {
 	
 	function onGot(item) {
-		searchEngines = item.searchEngines || [];
+		searchEngines = item.searchEngines || searchEngines;
 		buildContextMenu();
 	}
 	
@@ -70,13 +73,17 @@ function buildContextMenu() {
 function openSearchTab(info, tab) {
 	
 	// check for click modifiers
-	var active = true, move = false;
+	var shift = false, ctrl = false;
 	for (var m=0;m<info.modifiers.length;m++) {
 		if (info.modifiers[m] === "Shift")
-			active = false;
+			shift = true;
 		else if (info.modifiers[m] === "Ctrl")
-			move = true;
+			ctrl = true;
 	}
+	
+	// swap modifier keys if set
+	if (userOptions.swapKeys)
+		shift = [ctrl, ctrl=shift][0];
 	
 	if (searchEngines.length === 0) {
 		
@@ -104,14 +111,26 @@ function openSearchTab(info, tab) {
 			
 			// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
 			var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
-
-			var creating = browser.tabs.create({
-				url: encodeURI(q),
-				active: (!active || userOptions.backgroundTabs) ? false : true,
-				index: rightMostSearchTabIndex + 1,
-				openerTabId: tab.id
-			});
-			creating.then();
+			
+			if (shift) {	// open in new window
+			
+				var creating = browser.windows.create({
+					url: encodeURI(q)
+				//	focused: (ctrl) ? false : true
+				});
+				creating.then();
+				
+			} else {	// open in new tab
+			
+				var creating = browser.tabs.create({
+					url: encodeURI(q),
+					active: (ctrl || userOptions.backgroundTabs) ? false : true,
+					index: rightMostSearchTabIndex + 1,
+					openerTabId: tab.id
+				});
+				creating.then();
+				
+			}
 		});
 	}
 }
@@ -134,7 +153,8 @@ function getOpenSearchTabs(id, callback) {
 }
 
 var userOptions = {
-	backgroundTabs: false
+	backgroundTabs: false,
+	swapKeys: false
 };
 var searchEngines = [];
 

@@ -48,13 +48,33 @@
 			.blobContainerHeader + DIV {
 				padding:20px;
 			}
+			.keyboardButton {
+				border-radius:5px;
+				border: 2px outset black;
+				background-color:#DDDDDD;
+				font-size:12pt;
+				padding:4px 8px;
+				color:black;
+				font-weight:normal;
+				width:70px;
+				display:inline-block;
+				text-align:center;
+			}
+			.mouseIcon {
+				vertical-align:middle;
+				height:30px;
+			}
 		</style>
 	</head>
 	<body>
 		<div class='blobContainer'>
 			<div class='blobContainerHeader'><img src='icons/settings.png' />Options</div>
 			<div>
-				<input type='checkbox' id='cb_backgroundTabs' /><label> Open Tabs in Background</label><i style='float:right'>Shift + click</i><br />
+				<input type='checkbox' id='cb_backgroundTabs' /><label> Always Open Tabs In Background</label><br />
+				<input type='checkbox' id='cb_swapKeys' /><label> Swap Ctrl And Shift Keys</label><br />
+				<hr />
+				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='mouseIcon' /><span style='float:right'>Open In New Window</span></p>
+				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='mouseIcon' /><span style='float:right'>Open In Background Tab</span></p>
 			</div>
 		</div>
 		<div class='blobContainer'>

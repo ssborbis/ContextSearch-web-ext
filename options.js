@@ -52,7 +52,7 @@ button.onchange = function(ev) {
 		});
 		
 		// save array to storage.local
-		browser.storage.local.set({"searchEngines":saveTo});
+		browser.storage.local.set({"searchEngines": saveTo});
 		
 		// send message to background.js to update context menu
 		browser.runtime.sendMessage({action: "loadSearchEngines"});
@@ -72,6 +72,7 @@ function restoreOptions() {
 	function onGot(result) {
 		var userOptions = result.userOptions || {};
 		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
+		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys || false;
 	}
   
 	function onError(error) {
@@ -87,12 +88,20 @@ function saveOptions(e) {
 
 	browser.storage.local.set({
 		userOptions: {
-			backgroundTabs: document.getElementById('cb_backgroundTabs').checked
+			backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
+			swapKeys: document.getElementById('cb_swapKeys').checked
 		}
 	});
 	
 	browser.runtime.sendMessage({action: "loadUserOptions"});
 }
 
+function swapKeys(e) {
+	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
+	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
+}
+
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
+document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
+document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
