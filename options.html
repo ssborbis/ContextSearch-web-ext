@@ -16,6 +16,8 @@
 				padding:0px 40px;
 				-moz-user-select: text;
 				color:blue;
+				background-color:#FBFACE;
+				padding:5px;
 			}
 			HR {
 				display: block;
@@ -80,7 +82,14 @@
 		<div class='blobContainer'>
 			<div class='blobContainerHeader'><img src='icons/load.png' />Load Search Engines</div>
 			<div>
-				<div>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. <p>On Windows this file can usually be found at</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/ {YOUR PROFILE} /search.json.mozlz4</p> See the How-To video below for more details.
+				<div>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. 
+				<p>Typical locations:</p>
+				<p><img class='mouseIcon' src='icons/windows.png'>&nbsp;&nbsp;Windows</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+				<p><img class='mouseIcon' src='icons/mac.png'>&nbsp;&nbsp;Mac OS X</p>
+				<p class='code'>Users/&lt;username&gt;/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+				<p><img class='mouseIcon' src='icons/linux.png'>&nbsp;&nbsp;Linux</p>
+				<p class='code'>~/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>				
+				See the How-To video below for more details.
 				</div>
 				<br />
 				<hr />

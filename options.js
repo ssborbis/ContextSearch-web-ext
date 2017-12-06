@@ -26,7 +26,7 @@ button.onchange = function(ev) {
 				// skip urls with a declared type other than text/html
 				if (url.type && url.type != "text/html") continue;
 				
-				// get the main part of the search url
+				// get the main search url
 				search_url = url.template;
 				
 				// get url params

@@ -1,3 +1,5 @@
+// Code and annotations by CanisLupus @ https://stackoverflow.com/questions/46130021/reading-an-lz4-compressed-text-file-mozlz4-in-webextensions-javascript-firef
+
 // This method's code was taken from node-lz4 by Pierre Curto. MIT license.
 // CHANGES: Added ; to all lines. Reformated one-liners. Removed n = eIdx. Fixed eIdx skipping end bytes if sIdx != 0.
 function decodeLz4Block(input, output, sIdx, eIdx)

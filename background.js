@@ -72,16 +72,11 @@ function buildContextMenu() {
 
 function openSearchTab(info, tab) {
 	
-	// check for click modifiers
-	var shift = false, ctrl = false;
-	for (var m=0;m<info.modifiers.length;m++) {
-		if (info.modifiers[m] === "Shift")
-			shift = true;
-		else if (info.modifiers[m] === "Ctrl")
-			ctrl = true;
-	}
+	// get modifier keys
+	var shift = info.modifiers.includes("Shift");
+	var ctrl = info.modifiers.includes("Ctrl");
 	
-	// swap modifier keys if set
+	// swap modifier keys if option set
 	if (userOptions.swapKeys)
 		shift = [ctrl, ctrl=shift][0];
 	
@@ -116,7 +111,7 @@ function openSearchTab(info, tab) {
 			
 				var creating = browser.windows.create({
 					url: encodeURI(q)
-				//	focused: (ctrl) ? false : true
+				//	focused: (ctrl) ? false : true // not available in FF
 				});
 				creating.then();
 				
