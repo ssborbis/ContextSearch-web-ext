@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "Load your current search engines into a context menu for easily searching selected text. FF57+ compatible",
-	"version": "0.95.1",
+	"version": "0.95.2",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	
 	"applications": {
@@ -19,7 +19,8 @@
 	},
 	
 	"options_ui": {
-		"page": "options.html"
+		"page": "options.html",
+		"browser_style": true
 	},
 
 	"permissions": [

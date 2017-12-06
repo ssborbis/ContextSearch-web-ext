@@ -58,12 +58,17 @@ button.onchange = function(ev) {
 		browser.runtime.sendMessage({action: "loadSearchEngines"});
 
 		// print status message to Options page
-		document.getElementById('status').innerText = "Success.  Loaded " + saveTo.length + " search engines";
+		document.getElementById('status_img').src = "icons/yes.png";
+		document.getElementById('status_img').style.visibility = 'visible';
+		document.getElementById('status').innerText = "Success!  Loaded " + saveTo.length + " search engines";
+		
 
 	}, function() { // on fail
 
 		// print status message to Options page
-		document.getElementById('status').innerText = "Failed to load search engines";
+		document.getElementById('status_img').src = "icons/no.png";
+		document.getElementById('status_img').style.visibility = 'visible';
+		document.getElementById('status').innerText = "Failed to load search engines :(";
 	});
 };
 
@@ -101,7 +106,25 @@ function swapKeys(e) {
 	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
 }
 
+function loadHowToImg() {
+	var howToImg = new Image();
+	howToImg.src = "https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif";
+	howToImg.style.width = "100%"
+	howToImg.style.border = "1px solid grey";
+	howToImg.onload = function() { 
+		var el = document.getElementById('howToImgDiv');
+		while (el.firstChild) {
+			el.removeChild(el.firstChild);
+		}
+		
+		el.appendChild(howToImg);
+	}
+}
+
 document.addEventListener("DOMContentLoaded", restoreOptions);
+document.addEventListener("DOMContentLoaded", loadHowToImg);
+
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
 document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
 document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
+
