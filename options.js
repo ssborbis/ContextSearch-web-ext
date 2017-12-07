@@ -51,23 +51,27 @@ button.onchange = function(ev) {
 			return 0;
 		});
 		
+		function onSet() {			
+			// print status message to Options page
+			document.getElementById('status_img').src = "icons/yes.png";
+			document.getElementById('status').innerText = "Success!  Loaded " + saveTo.length + " search engines";
+			
+			// send message to background.js to update context menu
+			browser.runtime.sendMessage({action: "loadSearchEngines"});	
+		}
+		
+		function onError() {
+			console.log(`Error: ${error}`);
+		}
+		
 		// save array to storage.local
-		browser.storage.local.set({"searchEngines": saveTo});
-		
-		// send message to background.js to update context menu
-		browser.runtime.sendMessage({action: "loadSearchEngines"});
-
-		// print status message to Options page
-		document.getElementById('status_img').src = "icons/yes.png";
-		document.getElementById('status_img').style.visibility = 'visible';
-		document.getElementById('status').innerText = "Success!  Loaded " + saveTo.length + " search engines";
-		
+		var setting = browser.storage.local.set({"searchEngines": saveTo});
+		setting.then(onSet, onError);
 
 	}, function() { // on fail
 
 		// print status message to Options page
 		document.getElementById('status_img').src = "icons/no.png";
-		document.getElementById('status_img').style.visibility = 'visible';
 		document.getElementById('status').innerText = "Failed to load search engines :(";
 	});
 };
@@ -90,15 +94,23 @@ function restoreOptions() {
 
 function saveOptions(e) {
 	e.preventDefault();
+	
+	function onSet() {
+		browser.runtime.sendMessage({action: "loadUserOptions"});
+	}
+	
+	function onError(error) {
+		console.log(`Error: ${error}`);
+	}
 
-	browser.storage.local.set({
+	var setting = browser.storage.local.set({
 		userOptions: {
 			backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
 			swapKeys: document.getElementById('cb_swapKeys').checked
 		}
 	});
-	
-	browser.runtime.sendMessage({action: "loadUserOptions"});
+	setting.then(onSet, onError);
+
 }
 
 function swapKeys(e) {
@@ -107,17 +119,20 @@ function swapKeys(e) {
 }
 
 function loadHowToImg() {
+	
 	var howToImg = new Image();
 	howToImg.src = "https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif";
-	howToImg.style.width = "100%"
+	howToImg.style.width = "calc(100% - 2px)";
 	howToImg.style.border = "1px solid grey";
-	howToImg.onload = function() { 
+	howToImg.onload = function() {
+		
 		var el = document.getElementById('howToImgDiv');
 		while (el.firstChild) {
 			el.removeChild(el.firstChild);
-		}
+		}	
 		
 		el.appendChild(howToImg);
+		
 	}
 }
 

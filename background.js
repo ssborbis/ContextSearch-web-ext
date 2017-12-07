@@ -104,9 +104,6 @@ function openSearchTab(info, tab) {
 		// get array of open search tabs async. and find right-most tab
 		getOpenSearchTabs(tab.id, (openSearchTabs) => {
 			
-			// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
-			var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
-			
 			if (shift) {	// open in new window
 			
 				var creating = browser.windows.create({
@@ -117,6 +114,9 @@ function openSearchTab(info, tab) {
 				
 			} else {	// open in new tab
 			
+				// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
+				var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
+				
 				var creating = browser.tabs.create({
 					url: encodeURI(q),
 					active: (ctrl || userOptions.backgroundTabs) ? false : true,
