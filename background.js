@@ -1,14 +1,34 @@
-function notify(message) {
+function notify(message, sender, response) {
+	
+	function updateAllTabs() {
+		getAllOpenTabs((tabs) => {
+			for (var i=0;i<tabs.length;i++) {
+				browser.tabs.sendMessage(tabs[i].id, {"userOptions": userOptions, "searchEngines": searchEngines});	
+			}
+		});
+	}
 	
 	switch(message.action) {
 		
 		case "loadSearchEngines":
 			loadSearchEngines();
+			updateAllTabs();
 			break;
 			
 		case "loadUserOptions":
 			loadUserOptions();
+			updateAllTabs();
 			break;
+			
+		case "openOptions":
+			var opening = browser.runtime.openOptionsPage();
+			opening.then();
+			break;
+			
+		case "openTab":
+			openSearchTab(message.info, sender.tab)
+			break;
+
 	}
 }
 
@@ -90,13 +110,13 @@ function openSearchTab(info, tab) {
 		
 		// replace OpenSearch params
 		var q = searchEngines[info.menuItemId].query_string
-			.replace(/{searchTerms}/g, info.selectionText)
-			.replace(/{count}/g, "50")
-			.replace(/{startIndex}/g, "1")
-			.replace(/{startPage}/g, "1")
-			.replace(/{language}/g, navigator.language || navigator.userLanguage)
-			.replace(/{inputEncoding}/g, document.characterSet)
-			.replace(/{outputEncoding}/g, document.characterSet)
+			.replace(/{searchTerms}/g, encodeURI(info.selectionText))
+			.replace(/{count[\?]?}/g, "50")
+			.replace(/{startIndex[\?]?}/g, "1")
+			.replace(/{startPage[\?]?}/g, "1")
+			.replace(/{language[\?]?}/g, navigator.language || navigator.userLanguage)
+			.replace(/{inputEncoding[\?]?}/g, document.characterSet)
+			.replace(/{outputEncoding[\?]?}/g, document.characterSet)
 			.replace(/{.+?\?}/g,"") // optionals
 			.replace(/{moz:.+?}/g, "") // moz specific
 			.replace(/{.+?}/g, ""); // all others
@@ -104,13 +124,21 @@ function openSearchTab(info, tab) {
 		// get array of open search tabs async. and find right-most tab
 		getOpenSearchTabs(tab.id, (openSearchTabs) => {
 			
+			function onCreate(tab) {
+				console.log('tab was created');
+			}
+			
+			function onError() {
+				console.log(`Error: ${error}`);
+			}
+			
 			if (shift) {	// open in new window
 			
 				var creating = browser.windows.create({
-					url: encodeURI(q)
+					url: q
 				//	focused: (ctrl) ? false : true // not available in FF
 				});
-				creating.then();
+				creating.then(onCreate, onError);
 				
 			} else {	// open in new tab
 			
@@ -118,12 +146,12 @@ function openSearchTab(info, tab) {
 				var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
 				
 				var creating = browser.tabs.create({
-					url: encodeURI(q),
+					url: q,
 					active: (ctrl || userOptions.backgroundTabs) ? false : true,
 					index: rightMostSearchTabIndex + 1,
 					openerTabId: tab.id
 				});
-				creating.then();
+				creating.then(onCreate, onError);
 				
 			}
 		});
@@ -147,10 +175,31 @@ function getOpenSearchTabs(id, callback) {
 	querying.then(onGot, onError);
 }
 
+function getAllOpenTabs(callback) {
+	
+	function onGot(tabs) {
+		callback(tabs);
+	}
+
+	function onError(error) {
+		console.log(`Error: ${error}`);
+	}
+
+	var querying = browser.tabs.query({currentWindow: true});
+	querying.then(onGot, onError);
+}
+
 var userOptions = {
 	backgroundTabs: false,
-	swapKeys: false
+	swapKeys: false,
+	quickMenu: false,
+	quickMenuColumns: 4,
+	quickMenuItems: 100,
+	quickMenuKey: 0,
+	quickMenuOnKey: false,
+	quickMenuOnMouse: false
 };
+
 var searchEngines = [];
 
 browser.runtime.onMessage.addListener(notify);

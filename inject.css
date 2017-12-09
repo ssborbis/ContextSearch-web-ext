@@ -1,0 +1,14 @@
+.searchIcon {
+	width: 16px;
+	height: 16px;
+	padding: 8px;
+	vertical-align:middle;
+}
+
+.searchIcon:hover {
+    background-color: #e0e0e0;
+}
+#hover_div, #hover_div_bubble, #hover_div_bubble A,  #hover_div_bubble IMG {
+	box-sizing: content-box;
+	display:inline-block;
+}

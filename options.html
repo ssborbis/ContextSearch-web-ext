@@ -58,7 +58,7 @@
 				padding:4px 8px;
 				color:black;
 				font-weight:normal;
-				width:70px;
+				min-width:70px;
 				display:inline-block;
 				text-align:center;
 			}
@@ -74,9 +74,22 @@
 			<div>
 				<input type='checkbox' id='cb_backgroundTabs' /><label> Always Open Tabs In Background</label><br />
 				<input type='checkbox' id='cb_swapKeys' /><label> Swap Ctrl And Shift Keys</label><br />
-				<hr />
+
 				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
 				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
+				<hr />
+				<div style='font-size:16pt; padding:4px 20px 24px 4px;'>Quick Menu</div>
+				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu (experimental)</label><br />
+				<p>
+					<p><span style='margin-right:50px'></span>Select Text And <input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' /><label> Hold &nbsp;&nbsp;&nbsp;</label><img src='icons/leftmouse.png' class='smallIcon' style='transform: scaleX(-1)'>
+					&nbsp;&nbsp;&nbsp;<span style='width:1px;height:100%;border:0px; border-left:1px solid grey'></span>
+					<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' /> Press Key &nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+					</p>
+
+				<p>
+				<input type="number" id="n_quickMenuColumns" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Columns</label><br />
+				<input type="number" id="n_quickMenuItems" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Items (show only the first <i>n</i> in list)</label>
+				</p>
 			</div>
 		</div>
 		<div class='blobContainer'>
@@ -174,7 +187,14 @@
 				<a href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif"' target='_blank' style='text-decoration: none;'>&rdca; howto.gif</a>
 			</div>	
 		</div>
+		<div style='display:none' class='blobContainer'>
+			<div class='blobContainerHeader'>Dev Testing</div>
+			<div>
+				<button id='test_openSearchEngineList'>Open Search Engine List</button>
+			</div>
+		</div>
 		<script src="mozlz4.js"></script>
 		<script src="options.js"></script>
+		<script src="keyTable.js"></script>
 	</body>
 </html>
