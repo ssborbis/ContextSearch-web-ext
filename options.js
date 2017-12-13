@@ -70,7 +70,7 @@ button.onchange = function(ev) {
 			
 			function onSet() {			
 				browser.runtime.sendMessage({action: "loadSearchEngines"});	
-
+			/*
 				document.getElementById('searchEngineWarningDivContainer').style.display = "none";
 				var el = document.getElementById('searchEngineWarningDiv');
 				el.innerText = "";
@@ -84,7 +84,7 @@ button.onchange = function(ev) {
 						el.appendChild(p);
 					}
 				}
-				
+			*/
 				clearInterval(remoteIconsTimeout);
 			}
 		
@@ -142,7 +142,6 @@ button.onchange = function(ev) {
 						msg: "Success!  Loaded " + saveTo.length + " search engines"
 					});
 
-				
 				setBase64();
 				var setting = browser.storage.local.set({"searchEngines": saveTo});
 				setting.then(onSet, onError);
@@ -182,6 +181,13 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey || false;
 		document.getElementById('r_quickMenuOnMouse').checked = (userOptions.quickMenuOnMouse !== undefined) ? userOptions.quickMenuOnMouse : true;
 		
+		document.getElementById('h_mouseButton').value = (userOptions.quickMenuMouseButton !== undefined) ? userOptions.quickMenuMouseButton : 3;
+		
+		if (document.getElementById('h_mouseButton').value == 3)
+			document.getElementById('img_rightMouseButton').style.opacity = 1;
+		else if (document.getElementById('h_mouseButton').value == 1)
+			document.getElementById('img_leftMouseButton').style.opacity = 1;
+		
 		document.getElementById('cb_contextMenu').checked = (userOptions.contextMenu !== undefined) ? userOptions.contextMenu : true;
 		
 		disableOptions();
@@ -217,6 +223,7 @@ function saveOptions(e) {
 			quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
 			quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
 			quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
+			quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
 			contextMenu: document.getElementById('cb_contextMenu').checked
 		}
 
@@ -258,7 +265,6 @@ function loadRemoteIcons(searchEngines) {
 			var a = document.createElement('a');
 			a.href = searchEngines[i].query_string;
 			img.src = "https://plus.google.com/_/favicon?domain=" + a.hostname;
-//			img.src = "http://localhost";
 		} else 
 			img.src = searchEngines[i].icon_url;
 
@@ -269,9 +275,7 @@ function loadRemoteIcons(searchEngines) {
 			ctx.canvas.width = this.width;
 			ctx.canvas.height = this.height;
 			ctx.drawImage(this, 0, 0);
-			var base64String = c.toDataURL();
-			this.base64String = base64String;
-			searchEngines[this.index].icon_url = base64String;
+			this.base64String = c.toDataURL();
 		};
 		
 		img.onerror = function() {			
@@ -286,10 +290,9 @@ function loadRemoteIcons(searchEngines) {
 			ctx.rect(0,0,ctx.canvas.width, ctx.canvas.height);
 			ctx.strokeStyle='black';
 			ctx.stroke();
-			var base64String = c.toDataURL();
-			this.base64String = base64String;
-			console.log("failed to load image at " + this.src + ". Using color " + ctx.fillStyle);
+			this.base64String = c.toDataURL();
 			this.failed = true;
+			console.log("failed to load image at " + this.src + ". Using color " + ctx.fillStyle);
 		};
 	}
 	
@@ -302,6 +305,18 @@ function disableOptions() {
 	document.getElementById('b_quickMenuKey').disabled = !document.getElementById('cb_quickMenu').checked;
 	document.getElementById('r_quickMenuOnKey').disabled = !document.getElementById('cb_quickMenu').checked;
 	document.getElementById('r_quickMenuOnMouse').disabled = !document.getElementById('cb_quickMenu').checked;
+	document.getElementById('img_rightMouseButton').disabled = !document.getElementById('cb_quickMenu').checked;
+	document.getElementById('img_leftMouseButton').disabled = !document.getElementById('cb_quickMenu').checked;
+}
+
+function changeButtons(e, button) {
+	if (!document.getElementById('cb_quickMenu').checked) return false;
+	var el = e.target;
+	document.getElementById('img_rightMouseButton').style.opacity = .4;
+	document.getElementById('img_leftMouseButton').style.opacity = .4;
+	el.style.opacity = 1;	
+	document.getElementById('h_mouseButton').value = button;
+	saveOptions(e);
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
@@ -328,6 +343,10 @@ document.getElementById('n_quickMenuItems').addEventListener('change',  (e) => {
 });
 
 document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOptions);
+
+document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
+document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});
+
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {

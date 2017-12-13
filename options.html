@@ -84,14 +84,25 @@
 				<div class='blobContainerHeader' style='padding-left:0px;border:0px'><img src='icons/quick_menu.png' />Quick Menu</div>
 				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label><br />
 				<p>
-					<p>Select Text And <input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' /><label> Hold &nbsp;&nbsp;&nbsp;</label><img src='icons/leftmouse.png' class='smallIcon' style='transform: scaleX(-1)'>
-					&nbsp;&nbsp;&nbsp;<span style='width:1px;height:100%;border:0px; border-left:1px solid grey'></span>
-					<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' /> Press Key &nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+					<p>Select Text And </p>
+					<p>
+						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' />
+						<span style='width:25px;display:inline-block'></span><label>Hold &nbsp;&nbsp;&nbsp;</label>
+						<img id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' style='opacity:.4;transform: scaleX(-1);'>
+						<span style='width:25px;display:inline-block'></span>
+						<img id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' style='opacity:.4'>
+						<input id='h_mouseButton' type='hidden' value='3' />
 					</p>
+					<p>
+						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
+						<span style='width:25px;display:inline-block'></span><label>Press Key &nbsp;&nbsp;&nbsp;</label><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+					</p>
+				</p>
 				<p>
 				<input type="number" id="n_quickMenuColumns" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Columns</label><br />
 				<input type="number" id="n_quickMenuItems" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Items (show only the first <i>n</i> in list)</label>
 				</p>
+				<p><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Context Menu will be enabled if Quick Menu fails to open</i></p>
 			</div>
 		</div>
 		<div class='blobContainer'>

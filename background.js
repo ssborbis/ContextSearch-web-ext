@@ -147,12 +147,19 @@ function openSearchTab(info, tab) {
 				// if new window
 				if (shift) _tab = _tab.tabs[0];
 				
+				var listened = 0;
+				
 				browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
 					
 					function removeListener() {
 						browser.tabs.onUpdated.removeListener(listener);
 					}
+/*
+					if (tabInfo.status === 'listening')
+						listened++;
 
+					if (shift && listened < 2) return;
+*/										
 					// new windows open to about:blank and throw extra complete event
 					if (tabInfo.url === 'about:blank') return;
 					removeListener();
@@ -173,8 +180,7 @@ function openSearchTab(info, tab) {
 			}
 			
 			if (shift) {	// open in new window
-			
-				console.log(q);
+
 				var creating = browser.windows.create({
 					url: q
 				});
@@ -238,6 +244,7 @@ var userOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnMouse: true,
+	quickMenuMouseButton: 3,
 	contextMenu: true
 };
 
@@ -254,5 +261,3 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 		creating.then();
 	}
 });
-
-

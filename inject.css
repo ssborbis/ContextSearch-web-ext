@@ -7,10 +7,20 @@
 .searchIcon:hover {
     background-color: #e0e0e0;
 }
-#hover_div, #hover_div_bubble, #hover_div_bubble A,  #hover_div_bubble IMG {
+#hover_div, #hover_div IMG {
 	box-sizing: content-box;
 	display:inline-block;
 }
-#hover_div_bubble {
+#hover_div {
+	position:absolute;
+	z-index: 2147483647; /* max 32-bit integer */
+	cursor: pointer;
+	opacity: 1;
+	padding: 0;
+	background-color:#EFF0F1;
+	border:2px outset grey;
+	font-weight:bold;
+	text-align:left;
 	box-shadow: 2px 2px 4px rgba(0,0,0,.7);
 }
+
