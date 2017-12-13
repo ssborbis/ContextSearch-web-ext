@@ -15,6 +15,7 @@ document.addEventListener('keydown', (ev) => {
 	
 	if (ev.repeat) return false;
 	if (!userOptions.quickMenu) return false; 
+	if (!userOptions.quickMenuOnKey) return false;
 	if (ev.which !== userOptions.quickMenuKey) return false;
 	if (getSelectedText(ev.target) === "") return false;
 
@@ -27,6 +28,7 @@ document.addEventListener('keyup', function(ev) {
 	
 	if (ev.repeat) return false;
 	if (!userOptions.quickMenu) return false; 
+	if (!userOptions.quickMenuOnKey) return false;
 	if (ev.which !== userOptions.quickMenuKey) return false;
 	
 	if (Date.now() - quickMenuObject.keyDownTimer < 250) {
@@ -40,13 +42,15 @@ document.addEventListener('keyup', function(ev) {
 });
 
 // Listen for a long right-click and enable script
-document.addEventListener('mousedown', function(ev) {	
-	
+document.addEventListener('mousedown', function(ev) {
+	console.log(ev);
+
 	if (!userOptions.quickMenu) return false;
 	if (!userOptions.quickMenuOnMouse) return false; 
 	if (ev.which !== 3) return false;
 	if (getSelectedText(ev.target) === "") return false;
 	
+	ev.preventDefault();
 	// timer for right mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(function() {
 		
@@ -72,7 +76,7 @@ document.addEventListener('mouseup', function(ev) {
 	if (!userOptions.quickMenu) return false;
 	if (!userOptions.quickMenuOnMouse) return false; 
 	if (ev.which !== 3) return false;
-		
+			
 	// clear the mousedown timer
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	
@@ -132,22 +136,10 @@ function main(ev) {
 
 	// append new popup
 	document.body.appendChild(hover_div);
-
+		
 	for (var i=0;i<searchEngines.length && i < userOptions.quickMenuItems;i++) {
-		
-		// replace OpenSearch params
-		var q = searchEngines[i].query_string
-			.replace(/{searchTerms}/g, encodeURI(selectedText))
-			.replace(/{count[\?]?}/g, "50")
-			.replace(/{startIndex[\?]?}/g, "1")
-			.replace(/{startPage[\?]?}/g, "1")
-			.replace(/{language[\?]?}/g, navigator.language || navigator.userLanguage)
-			.replace(/{inputEncoding[\?]?}/g, document.characterSet)
-			.replace(/{outputEncoding[\?]?}/g, document.characterSet)
-			.replace(/{.+?\?}/g,"") // optionals
-			.replace(/{moz:.+?}/g, "") // moz specific
-			.replace(/{.+?}/g, ""); // all others
-		
+
+		var q = replaceOpenSearchParams(searchEngines[i].query_string, selectedText);
 //		console.log(q);
 		var img = document.createElement('img');
 		img.src = searchEngines[i].icon_base64String || searchEngines[i].icon_url;
@@ -156,11 +148,10 @@ function main(ev) {
 		img.className = "searchIcon";
 		
 		var a = document.createElement('a');
-		a.href = q;
+	//	a.href = q;
 		a.index = i;
-		a.addEventListener('click', function(e) {
-			
-			if (e.which !== 1) return;
+		
+		function openLink(e) {
 			e.preventDefault();			
 
 			browser.runtime.sendMessage({
@@ -174,8 +165,9 @@ function main(ev) {
 					selectionText: selectedText
 				}
 			});
+		}
 
-		});
+		a.addEventListener('click', openLink);
 		
 		a.appendChild(img);	
 		hover_div_bubble.appendChild(a);
@@ -186,7 +178,7 @@ function main(ev) {
 		div.style='font-size:8pt;padding:10px 2px;text-align:center';
 		div.innerText = 'Where are my icons?';
 		div.onclick = function() {
-			alert('If your images are broken, try reloading your search settings from Options\r\nIf remote icons cannot be loaded, they will assigned a random color');
+			alert('If you are seeing this message, reload your search settings file\r\nIf an icon cannot be loaded, it will given a color');
 			
 			browser.runtime.sendMessage({action: "openOptions"});	
 		}
@@ -194,7 +186,22 @@ function main(ev) {
 		hover_div_bubble.appendChild(div);
 	}
 	
-//	console.log(window.getComputedStyle(hover_div_bubble, null).getPropertyValue("box-sizing"));
+	var els = document.getElementById('hover_div').getElementsByTagName('*');
+	for (var i in els) {
+		if (els[i].nodeType === undefined || els[i].nodeType !== 1) continue;
+		if (window.getComputedStyle(els[i], null).getPropertyValue("display") === 'none' || window.getComputedStyle(document.getElementById('hover_div'), null).getPropertyValue("display") === 'none') {
+			console.log('quick menu hidden by external script (adblocker?).  Enabling context menu');
+			browser.runtime.sendMessage({action: 'enableContextMenu'}).then(() => {
+				let mev = new MouseEvent('contextmenu', {
+					view: window,
+					bubbles: true,
+					cancelable: true
+				});
+				document.elementFromPoint(x, y).dispatchEvent(mev);
+			});
+			break;
+		}
+	}
 
 	return false;
 }
@@ -221,7 +228,6 @@ document.addEventListener("click", (e) => {
 	var hover_div = document.getElementById('hover_div');
 	if (hover_div !== null)
 		hover_div.parentNode.removeChild(hover_div);
-
 });
 
 document.addEventListener("mousemove", function(ev) {
@@ -233,4 +239,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	searchEngines = message.searchEngines || [];
 });
 
-browser.runtime.sendMessage({action: "loadSearchEngines"});
+browser.runtime.sendMessage({action: "getSearchEngines"}).then((message) => {
+	searchEngines = message.searchEngines || [];
+});
+
+browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+	userOptions = message.userOptions || {};
+});

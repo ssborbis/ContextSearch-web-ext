@@ -1,4 +1,4 @@
-function notify(message, sender, response) {
+function notify(message, sender, sendResponse) {
 	
 	function updateAllTabs() {
 		getAllOpenTabs((tabs) => {
@@ -26,7 +26,22 @@ function notify(message, sender, response) {
 			break;
 			
 		case "openTab":
-			openSearchTab(message.info, sender.tab)
+			openSearchTab(message.info, sender.tab);
+			break;
+			
+		case "enableContextMenu":
+			userOptions.contextMenu = true;
+			buildContextMenu();
+			break;
+			
+		case "getUserOptions":
+			loadUserOptions();
+			sendResponse({"userOptions": userOptions});
+			break;
+			
+		case "getSearchEngines":
+			loadSearchEngines();
+			sendResponse({"searchEngines": searchEngines});
 			break;
 
 	}
@@ -52,10 +67,12 @@ function loadUserOptions() {
 	
 	function onGot(result) {
 		userOptions = result.userOptions || userOptions;
+		buildContextMenu();
 	}
   
 	function onError(error) {
 		console.log(`Error: ${error}`);
+		buildContextMenu();
 	}
 	
 	var getting = browser.storage.local.get("userOptions");
@@ -63,8 +80,13 @@ function loadUserOptions() {
 }
 
 function buildContextMenu() {
+	
+	browser.contextMenus.removeAll();
 
-	browser.contextMenus.removeAll();	
+	if (!userOptions.contextMenu) {
+		console.log('Context menu is disabled');
+		return false;
+	}	
 
 	browser.contextMenus.create({
 		id: "search_engine_menu",
@@ -107,25 +129,43 @@ function openSearchTab(info, tab) {
 		opening.then();
 		
 	} else {
-		
-		// replace OpenSearch params
-		var q = searchEngines[info.menuItemId].query_string
-			.replace(/{searchTerms}/g, encodeURI(info.selectionText))
-			.replace(/{count[\?]?}/g, "50")
-			.replace(/{startIndex[\?]?}/g, "1")
-			.replace(/{startPage[\?]?}/g, "1")
-			.replace(/{language[\?]?}/g, navigator.language || navigator.userLanguage)
-			.replace(/{inputEncoding[\?]?}/g, document.characterSet)
-			.replace(/{outputEncoding[\?]?}/g, document.characterSet)
-			.replace(/{.+?\?}/g,"") // optionals
-			.replace(/{moz:.+?}/g, "") // moz specific
-			.replace(/{.+?}/g, ""); // all others
 
+		var q = replaceOpenSearchParams(searchEngines[info.menuItemId].query_string, encodeURIComponent(info.selectionText));
+		
+//		console.log(q);
 		// get array of open search tabs async. and find right-most tab
 		getOpenSearchTabs(tab.id, (openSearchTabs) => {
 			
-			function onCreate(tab) {
-				console.log('tab was created');
+			if (typeof searchEngines[info.menuItemId].method !== 'undefined' && searchEngines[info.menuItemId].method === "POST")
+				q = searchEngines[info.menuItemId].template;
+			
+			function onCreate(_tab) {
+				
+				// code for POST engines
+				if (typeof searchEngines[info.menuItemId].method === 'undefined' || searchEngines[info.menuItemId].method !== "POST") return;
+				
+				// if new window
+				if (shift) _tab = _tab.tabs[0];
+				
+				browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
+					
+					function removeListener() {
+						browser.tabs.onUpdated.removeListener(listener);
+					}
+
+					// new windows open to about:blank and throw extra complete event
+					if (tabInfo.url === 'about:blank') return;
+					removeListener();
+
+					browser.tabs.executeScript(_tab.id, {
+						code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + encodeURIComponent(info.selectionText.trim()) + '";'
+					}).then(() => {
+						browser.tabs.executeScript(_tab.id, {
+							file: '/execute.js'
+						});
+					});
+					
+				});
 			}
 			
 			function onError() {
@@ -134,9 +174,9 @@ function openSearchTab(info, tab) {
 			
 			if (shift) {	// open in new window
 			
+				console.log(q);
 				var creating = browser.windows.create({
 					url: q
-				//	focused: (ctrl) ? false : true // not available in FF
 				});
 				creating.then(onCreate, onError);
 				
@@ -197,7 +237,8 @@ var userOptions = {
 	quickMenuItems: 100,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
-	quickMenuOnMouse: false
+	quickMenuOnMouse: true,
+	contextMenu: true
 };
 
 var searchEngines = [];
@@ -205,3 +246,13 @@ var searchEngines = [];
 browser.runtime.onMessage.addListener(notify);
 loadSearchEngines();
 loadUserOptions();
+browser.runtime.onInstalled.addListener(function updatePage() {
+	if (searchEngines.length !== 0 && typeof searchEngines[0].method === 'undefined') {	
+		var creating = browser.tabs.create({
+			url: "/update.html"
+		});
+		creating.then();
+	}
+});
+
+

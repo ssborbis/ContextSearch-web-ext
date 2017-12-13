@@ -10,11 +10,11 @@ button.onchange = function(ev) {
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;
 		
-//		console.log(engines);
+		console.log(engines);
 
 		// iterate over search engines in search.json.mozlz4
 		for (var i in engines) {
-			var search_url = "", params = "";
+			var search_url = "", params_str = "", method = "", params, template = "";
 			var engine = engines[i];
 			
 			// skip hidden search engines
@@ -27,22 +27,25 @@ button.onchange = function(ev) {
 				// skip urls with a declared type other than text/html
 				if (url.type && url.type != "text/html") continue;
 				
+				// get request method
+				method = url.method || "GET";
 				// get the main search url
 				search_url = url.template;
 				
+				template = url.template;
+				
 				// get url params
-				for (var p in url.params) 
-					params+="&" + url.params[p].name + "=" + url.params[p].value;
+				for (var p in url.params)
+					params_str+="&" + url.params[p].name + "=" + url.params[p].value;
+			
+				params = url.params;
 			}
 			
-			// replace the first & with ? in params string
-			params=params.replace(/^&/,"?");
-			
-			// append params to search url
-			search_url+=params;
+			if (search_url.match(/[=&\?]$/)) search_url+=params_str.replace(/^&/,"");
+			else search_url+=params_str.replace(/^&/,"?");
 			
 			// push object to array for storage.local
-			saveTo.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": ""});
+			saveTo.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template});
 		}
 		
 //		console.log(saveTo);
@@ -59,7 +62,7 @@ button.onchange = function(ev) {
 		var timeout = 15000;
 		
 		statusMessage({
-			img: "icons/spinner.gif",
+			img: "icons/spinner.svg",
 			msg: "Loading remote content"
 		});
 		
@@ -67,6 +70,21 @@ button.onchange = function(ev) {
 			
 			function onSet() {			
 				browser.runtime.sendMessage({action: "loadSearchEngines"});	
+
+				document.getElementById('searchEngineWarningDivContainer').style.display = "none";
+				var el = document.getElementById('searchEngineWarningDiv');
+				el.innerText = "";
+				
+				for (let i=0;i<saveTo.length;i++) {
+					if (saveTo[i].method !== "GET") {
+						document.getElementById('searchEngineWarningDivContainer').style.display = "inline-block";
+						var p = document.createElement('p');
+						p.style.marginLeft = "20px";
+						p.innerText = "\u2022 " + saveTo[i].title;
+						el.appendChild(p);
+					}
+				}
+				
 				clearInterval(remoteIconsTimeout);
 			}
 		
@@ -151,6 +169,7 @@ function restoreOptions() {
 	function onGot(result) {
 		
 		var userOptions = result.userOptions || {};
+		
 		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
 		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys || false;
 		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu || false;
@@ -161,7 +180,9 @@ function restoreOptions() {
 		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey || 0;
 		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey || false;
-		document.getElementById('r_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse || false;
+		document.getElementById('r_quickMenuOnMouse').checked = (userOptions.quickMenuOnMouse !== undefined) ? userOptions.quickMenuOnMouse : true;
+		
+		document.getElementById('cb_contextMenu').checked = (userOptions.contextMenu !== undefined) ? userOptions.contextMenu : true;
 		
 		disableOptions();
 	}
@@ -195,7 +216,8 @@ function saveOptions(e) {
 			quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
 			quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
 			quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
-			quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked
+			quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
+			contextMenu: document.getElementById('cb_contextMenu').checked
 		}
 
 	});
@@ -274,12 +296,6 @@ function loadRemoteIcons(searchEngines) {
 	return icons;
 }
 
-function openSearchEngineList() {
-	var str = JSON.stringify(saveTo);
-	var newWindow = window.open();
-	newWindow.document.write(str);
-}
-
 function disableOptions() {
 	document.getElementById('n_quickMenuColumns').disabled = !document.getElementById('cb_quickMenu').checked;
 	document.getElementById('n_quickMenuItems').disabled = !document.getElementById('cb_quickMenu').checked;
@@ -288,11 +304,10 @@ function disableOptions() {
 	document.getElementById('r_quickMenuOnMouse').disabled = !document.getElementById('cb_quickMenu').checked;
 }
 
-document.getElementById('test_openSearchEngineList').addEventListener('click', openSearchEngineList);
-
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.addEventListener("DOMContentLoaded", loadHowToImg);
 
+document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
 document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
 document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
@@ -318,7 +333,7 @@ document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptio
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';
 	var img = document.createElement('img');
-	img.src = 'icons/spinner.gif';
+	img.src = 'icons/spinner.svg';
 	img.style.height = "16px";
 	e.target.appendChild(img);
 	e.target.addEventListener('keydown', function(evv) {

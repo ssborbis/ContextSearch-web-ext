@@ -78,14 +78,16 @@
 				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
 				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
 				<hr />
-				<div style='font-size:16pt; padding:4px 20px 24px 4px;'>Quick Menu</div>
-				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu (experimental)</label><br />
+				<div class='blobContainerHeader' style='padding-left:0px;border:0px'><img src='icons/context_menu.png' />Context Menu</div>
+				<input type='checkbox' id='cb_contextMenu' /><label> Enable Context Menu</label><br />
+				<hr />
+				<div class='blobContainerHeader' style='padding-left:0px;border:0px'><img src='icons/quick_menu.png' />Quick Menu</div>
+				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label><br />
 				<p>
-					<p><span style='margin-right:50px'></span>Select Text And <input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' /><label> Hold &nbsp;&nbsp;&nbsp;</label><img src='icons/leftmouse.png' class='smallIcon' style='transform: scaleX(-1)'>
+					<p>Select Text And <input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' /><label> Hold &nbsp;&nbsp;&nbsp;</label><img src='icons/leftmouse.png' class='smallIcon' style='transform: scaleX(-1)'>
 					&nbsp;&nbsp;&nbsp;<span style='width:1px;height:100%;border:0px; border-left:1px solid grey'></span>
 					<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' /> Press Key &nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 					</p>
-
 				<p>
 				<input type="number" id="n_quickMenuColumns" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Columns</label><br />
 				<input type="number" id="n_quickMenuItems" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Items (show only the first <i>n</i> in list)</label>
@@ -110,7 +112,11 @@
 				<div>
 					<img id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
 					<span id='status'>&nbsp;</span>
-				</div>	
+				</div>
+				<p id='searchEngineWarningDivContainer' style='display:none'>
+					<img src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly
+					<div id='searchEngineWarningDiv'></div>
+				</p>
 				<p><input name="selectMozlz4FileButton" type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
 				<i>You will need to reload this file each time you change your search engine list</i>				
 			</div>
@@ -120,78 +126,11 @@
 			<div style='text-align:center;'>
 			
 				<div id='howToImgDiv' style='text-align:center'>
-					<svg class="lds-spinner" width="25%" height="25%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-						<g transform="rotate(0 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.9166666666666666s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(30 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.8333333333333334s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(60 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.75s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(90 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.6666666666666666s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(120 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.5833333333333334s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(150 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.5s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(180 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.4166666666666667s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(210 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.3333333333333333s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(240 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.25s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(270 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.16666666666666666s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(300 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="-0.08333333333333333s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-						<g transform="rotate(330 50 50)">
-							<rect x="47" y="24" rx="9.4" ry="4.8" width="6" height="12" fill="#000000">
-							<animate attributeName="opacity" values="1;0" times="0;1" dur="1s" begin="0s" repeatCount="indefinite"></animate>
-							</rect>
-						</g>
-					</svg>
+					<img src='icons/spinner.svg' style='width:25%;height:25%' />
 				</div>
 
 				<a href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif"' target='_blank' style='text-decoration: none;'>&rdca; howto.gif</a>
 			</div>	
-		</div>
-		<div style='display:none' class='blobContainer'>
-			<div class='blobContainerHeader'>Dev Testing</div>
-			<div>
-				<button id='test_openSearchEngineList'>Open Search Engine List</button>
-			</div>
 		</div>
 		<script src="mozlz4.js"></script>
 		<script src="options.js"></script>
