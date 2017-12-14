@@ -7,7 +7,8 @@ var quickMenuObject = {
 	mouseDownTimer: 0,
 	mouseCoords: {x: 0, y:0},
 	mouseCoordsInit: {x:0,y:0},
-	mouseLastClick: 0
+	mouseLastClick: 0,
+	mouseDragDeadzone: 4
 }; 
 
 var searchEngines = [];
@@ -26,7 +27,7 @@ document.addEventListener('keydown', (ev) => {
 	return false;
 });
 
-document.addEventListener('keyup', function(ev) {
+document.addEventListener('keyup', (ev) => {
 	
 	if (ev.repeat) return false;
 	if (!userOptions.quickMenu) return false; 
@@ -57,7 +58,7 @@ document.addEventListener('mousedown', function(ev) {
 	// timer for right mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(function() {
 		
-		if (quickMenuObject.mouseCoords.x !== quickMenuObject.mouseCoordsInit.x || quickMenuObject.mouseCoords.y !== quickMenuObject.mouseCoordsInit.y ) return false;
+		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
 
 		// Reached the required mousedown time so enable the global trigger
 		quickMenuObject.triggered_mouse = true;	
@@ -125,14 +126,14 @@ function main(ev) {
 
 	// popup div parent
 	var hover_div = document.createElement('div');
-	hover_div.style.top = y + yOffset + "px";
-	hover_div.style.left = x + xOffset + "px";
+	hover_div.style.top = y + yOffset - 2  + "px";
+	hover_div.style.left = x + xOffset - 2 + "px";
 	hover_div.id = 'hover_div';
 	hover_div.onclick = function() {
 		hover_div.parentNode.removeChild(hover_div);
 	};
 
-	hover_div.style.maxWidth = userOptions.quickMenuColumns * (16 + 16) + "px"; // set width icon width + icon padding * cols
+	hover_div.style.maxWidth = userOptions.quickMenuColumns * (16 + 16 + 2) + "px"; // set width icon width + icon padding * cols
 	
 	// remove old popup
 	var old_hover_div = document.getElementById(hover_div.id);
@@ -167,9 +168,28 @@ function main(ev) {
 		img.addEventListener('click', openLink);		
 		hover_div.appendChild(img);
 	}
-	
+
 	document.body.appendChild(hover_div);
-	
+/*	iframe handler
+
+	if (window.frameElement === null) 
+		document.body.appendChild(hover_div);
+	else {
+//		let documentWidth = parent.window.innerWidth;
+//		let documentHeight = parent.window.innerHeight;
+//		let iframeWidth = window.innerWidth;
+//		let iframeHeight = window.innerHeight;
+		// Get Left Position
+		let iframeX = window.frameElement.offsetLeft;
+		// Get Top Position
+		let iframeY = window.frameElement.offsetTop;
+		console.log(iframeX + "," + iframeY);
+		console.log(x + "," + y);
+		hover_div.style.left = x + iframeX + "px";
+		hover_div.style.top = y + iframeY + "px";
+		parent.document.body.appendChild(hover_div);
+	}
+*/	
 	if (searchEngines.length === 0 || typeof searchEngines[0].icon_base64String === 'undefined') {
 		var div = document.createElement('div');
 		div.style='font-size:8pt;padding:10px 2px;text-align:center';

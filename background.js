@@ -147,19 +147,19 @@ function openSearchTab(info, tab) {
 				// if new window
 				if (shift) _tab = _tab.tabs[0];
 				
-				var listened = 0;
+				var loading = 0;
 				
 				browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
 					
 					function removeListener() {
 						browser.tabs.onUpdated.removeListener(listener);
 					}
-/*
-					if (tabInfo.status === 'listening')
-						listened++;
 
-					if (shift && listened < 2) return;
-*/										
+					if (tabInfo.status === 'loading')
+						loading++;
+
+//					if (shift && loading < 2) return;
+									
 					// new windows open to about:blank and throw extra complete event
 					if (tabInfo.url === 'about:blank') return;
 					removeListener();
@@ -178,6 +178,10 @@ function openSearchTab(info, tab) {
 			function onError() {
 				console.log(`Error: ${error}`);
 			}
+//			if (searchEngines[info.menuItemId].method === "POST") {
+//				refererSpoof(q);
+//				q = "";
+//			}
 			
 			if (shift) {	// open in new window
 
@@ -198,7 +202,7 @@ function openSearchTab(info, tab) {
 					openerTabId: tab.id
 				});
 				creating.then(onCreate, onError);
-				
+	
 			}
 		});
 	}
@@ -261,3 +265,37 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 		creating.then();
 	}
 });
+
+
+/*
+function refererSpoof(url) {
+	function rewriteReferer(e) {
+		if (e.method !== "POST") {
+			console.log('not POST');
+			return {};
+		}
+		console.log('attempting to spoof referer');
+		console.log(e);
+		var found = false;
+	  for (var header of e.requestHeaders) {
+		if (header.name.toLowerCase() === "referer") {
+			console.log("referer was: " + header.value);
+			found = true;
+		  header.value = url;
+		}
+	  }
+	  
+	  if (!found)
+		  e.requestHeaders.push({name: "Referer", value: url});
+	  
+	  console.log(e);
+	  return {requestHeaders: e.requestHeaders, method: "POST"};
+	}
+
+	browser.webRequest.onBeforeSendHeaders.addListener(
+	  rewriteReferer,
+	  {urls: [url]},
+	  ["blocking", "requestHeaders"]
+	);
+}
+*/

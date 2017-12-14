@@ -3,6 +3,7 @@
 	height: 16px;
 	padding: 8px;
 	vertical-align:middle;
+	border:1px solid #e0e0e0;
 }
 .searchIcon:hover {
     background-color: #e0e0e0;

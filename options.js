@@ -177,7 +177,7 @@ function restoreOptions() {
 		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems || 100;
 		
 		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey || 0;
-		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
+		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey || 0] || "Set";
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey || false;
 		document.getElementById('r_quickMenuOnMouse').checked = (userOptions.quickMenuOnMouse !== undefined) ? userOptions.quickMenuOnMouse : true;
 		
