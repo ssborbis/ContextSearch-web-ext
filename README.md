@@ -1,9 +1,8 @@
 # ContextSearch web-ext
 
-Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search
-## What it does
+Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search. This Add-on takes your already-installed search engines and adds them to the context menu for fast and easy web searches.
 
-This Add-on was written as a FF 57+ web-extensions compatible replacement for Ben Basson's popular Context Search Add-on. Like Ben's, this Add-on takes your already-installed search engines and adds them to the context menu for fast and easy web searches.
-## What it shows
+It also includes a Quick Menu feature
 
-* search engine choices in context menu
+![Image of Options](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/screenshot_options.png)
+
