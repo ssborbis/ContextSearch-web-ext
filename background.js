@@ -43,6 +43,14 @@ function notify(message, sender, sendResponse) {
 			loadSearchEngines();
 			sendResponse({"searchEngines": searchEngines});
 			break;
+			
+		case "closeQuickMenuRequest":
+			browser.tabs.sendMessage(sender.tab.id, {action: "closeQuickMenu"});
+			break;
+			
+		case "closeWindowRequest":
+			browser.windows.remove(sender.tab.windowId);
+			break;
 
 	}
 }
@@ -129,16 +137,24 @@ function openSearchTab(info, tab) {
 		opening.then();
 		
 	} else {
-
-		var q = replaceOpenSearchParams(searchEngines[info.menuItemId].query_string, encodeURIComponent(info.selectionText));
 		
-//		console.log(q);
+		var searchTerms = info.selectionText.trim();
+		searchEngines[info.menuItemId].queryCharset = searchEngines[info.menuItemId].queryCharset || "UTF-8";
+		
+		if (searchEngines[info.menuItemId].queryCharset === 'EUC-JP' || searchEngines[info.menuItemId].queryCharset === 'SHIFT_JS' || searchEngines[info.menuItemId].queryCharset === 'JIS') 
+			searchTerms = Encoding.urlEncode(Encoding.convert(searchTerms, searchEngines[info.menuItemId].queryCharset));
+		else
+			searchTerms = encodeURIComponent(searchTerms);
+		
+		var q = replaceOpenSearchParams(searchEngines[info.menuItemId].query_string, searchTerms);
+		
+		console.log(q);
 		// get array of open search tabs async. and find right-most tab
 		getOpenSearchTabs(tab.id, (openSearchTabs) => {
 			
 			if (typeof searchEngines[info.menuItemId].method !== 'undefined' && searchEngines[info.menuItemId].method === "POST")
 				q = searchEngines[info.menuItemId].template;
-			
+
 			function onCreate(_tab) {
 				
 				// code for POST engines
@@ -147,42 +163,38 @@ function openSearchTab(info, tab) {
 				// if new window
 				if (shift) _tab = _tab.tabs[0];
 				
-				var loading = 0;
+//				var loading = 0;
 				
 				browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
 					
-					function removeListener() {
-						browser.tabs.onUpdated.removeListener(listener);
-					}
-
-					if (tabInfo.status === 'loading')
-						loading++;
-
+//					if (tabInfo.status === 'loading')
+//						loading++;
 //					if (shift && loading < 2) return;
 									
 					// new windows open to about:blank and throw extra complete event
-					if (tabInfo.url === 'about:blank') return;
-					removeListener();
+					if (tabInfo.url !== q) return;
+					browser.tabs.onUpdated.removeListener(listener);
 
 					browser.tabs.executeScript(_tab.id, {
-						code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + encodeURIComponent(info.selectionText.trim()) + '";'
+						code: 'window.stop();',
+						runAt: 'document_start'
 					}).then(() => {
-						browser.tabs.executeScript(_tab.id, {
-							file: '/execute.js'
-						});
-					});
-					
+					browser.tabs.executeScript(_tab.id, {
+						code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + searchTerms + '"',
+						runAt: 'document_idle'
+					}).then(() => {
+					browser.tabs.executeScript(_tab.id, {
+						file: '/execute.js',
+						runAt: 'document_idle'
+					});});});
+				
 				});
 			}
 			
 			function onError() {
 				console.log(`Error: ${error}`);
 			}
-//			if (searchEngines[info.menuItemId].method === "POST") {
-//				refererSpoof(q);
-//				q = "";
-//			}
-			
+
 			if (shift) {	// open in new window
 
 				var creating = browser.windows.create({
@@ -235,7 +247,7 @@ function getAllOpenTabs(callback) {
 		console.log(`Error: ${error}`);
 	}
 
-	var querying = browser.tabs.query({currentWindow: true});
+	var querying = browser.tabs.query({});
 	querying.then(onGot, onError);
 }
 
@@ -266,35 +278,58 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 	}
 });
 
+browser.browserAction.onClicked.addListener(() => {
+	var creating = browser.windows.create({
+		url: "/options.html#quickload",
+		allowScriptsToClose: true,
+		type: "popup",
+		height: 100,
+		width: 400
+	});
+	creating.then();
+//	browser.browserAction.setPopup({popup: "/options.html#quickload"});
+//	browser.browserAction.openPopup();
+});
 
+
+//browser.webNavigation.onCommitted.addListener((details) => {
+//	console.log(details.url);
+//});
 /*
 function refererSpoof(url) {
 	function rewriteReferer(e) {
-		if (e.method !== "POST") {
-			console.log('not POST');
-			return {};
-		}
-		console.log('attempting to spoof referer');
+	//	if (e.method !== "POST") {
+	//		console.log('not POST');
+	//		return {};
+	//	}
+//		console.log('attempting to spoof charset');
 		console.log(e);
-		var found = false;
+		var found = false, found_origin = false;
 	  for (var header of e.requestHeaders) {
 		if (header.name.toLowerCase() === "referer") {
 			console.log("referer was: " + header.value);
 			found = true;
-		  header.value = url;
+			header.value = url;
+		}
+		if (header.name.toLowerCase() === "origin") {
+			console.log("origin was: " + header.value);
+			found_origin = true;
+			header.value = url;
 		}
 	  }
 	  
 	  if (!found)
 		  e.requestHeaders.push({name: "Referer", value: url});
+	  if (!found)
+		  e.requestHeaders.push({name: "Origin", value: url});
 	  
 	  console.log(e);
-	  return {requestHeaders: e.requestHeaders, method: "POST"};
+	  return {requestHeaders: e.requestHeaders};
 	}
 
 	browser.webRequest.onBeforeSendHeaders.addListener(
 	  rewriteReferer,
-	  {urls: [url]},
+	  {urls: ["<all_urls>"]},
 	  ["blocking", "requestHeaders"]
 	);
 }

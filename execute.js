@@ -19,6 +19,9 @@ function post(path, params, method) {
 	form.submit();
 }
 
+if (document.body === null)
+	document.body = document.createElement('body');
+
 browser.runtime.sendMessage({action: "getSearchEngines"}).then((message) => {
 	var searchEngines = message.searchEngines;
 	post(searchEngines[_INDEX].template, searchEngines[_INDEX].params);

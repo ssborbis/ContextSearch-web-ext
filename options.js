@@ -1,11 +1,11 @@
 // array for storage.local
 var saveTo = [];
 
-let button = document.getElementsByName("selectMozlz4FileButton")[0];
-button.onchange = function(ev) {
+let button = document.getElementById("selectMozlz4FileButton");
+button.onchange = (ev) => {
 	saveTo = [];
 	let file = ev.target.files[0];
-	readMozlz4File(file, function(text) { // on success
+	readMozlz4File(file, (text) => { // on success
 
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;
@@ -45,10 +45,10 @@ button.onchange = function(ev) {
 			else search_url+=params_str.replace(/^&/,"?");
 			
 			// push object to array for storage.local
-			saveTo.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template});
+			saveTo.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template, "queryCharset": engine.queryCharset || "UTF-8"});
 		}
 		
-//		console.log(saveTo);
+		console.log(saveTo);
 		
 		// sort search engine array by order key
 		saveTo = saveTo.sort(function(a, b){
@@ -69,22 +69,26 @@ button.onchange = function(ev) {
 		var remoteIconsTimeout = setInterval(function() {
 			
 			function onSet() {			
-				browser.runtime.sendMessage({action: "loadSearchEngines"});	
-			/*
+				browser.runtime.sendMessage({action: "loadSearchEngines"});
+				if (window.location.href.match(/#quickload$/) !== null) {
+					browser.runtime.sendMessage({action: "closeWindowRequest"});
+				}
+				
+			
 				document.getElementById('searchEngineWarningDivContainer').style.display = "none";
 				var el = document.getElementById('searchEngineWarningDiv');
 				el.innerText = "";
 				
 				for (let i=0;i<saveTo.length;i++) {
-					if (saveTo[i].method !== "GET") {
+					if (saveTo[i].queryCharset.toLowerCase() !== "utf-8") {
 						document.getElementById('searchEngineWarningDivContainer').style.display = "inline-block";
 						var p = document.createElement('p');
 						p.style.marginLeft = "20px";
-						p.innerText = "\u2022 " + saveTo[i].title;
+						p.innerText = "\u2022 " + saveTo[i].title + " (" + saveTo[i].queryCharset + ")";
 						el.appendChild(p);
 					}
 				}
-			*/
+			
 				clearInterval(remoteIconsTimeout);
 			}
 		
@@ -159,8 +163,8 @@ button.onchange = function(ev) {
 };
 
 function statusMessage(status) {				
-	document.getElementById('status_img').src = status.img;
-	document.getElementById('status').innerText = status.msg
+	document.getElementById('status_img').src = status.img || "";
+	document.getElementById('status').innerText = status.msg || "";
 }
 
 function restoreOptions() {
@@ -232,11 +236,6 @@ function saveOptions(e) {
 
 }
 
-function swapKeys(e) {
-	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
-	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
-}
-
 function loadHowToImg() {
 	
 	var howToImg = new Image();
@@ -259,54 +258,73 @@ function loadRemoteIcons(searchEngines) {
 	var icons = [];
 	for (var i=0;i<searchEngines.length;i++) {		
 		var img = new Image();
-		icons.push(img);
-
+		img.favicon_urls = [];
+		img.index = i;
+		
 		if (searchEngines[i].icon_url.match(/^resource/) !== null) {
 			var a = document.createElement('a');
 			a.href = searchEngines[i].query_string;
-			img.src = "https://plus.google.com/_/favicon?domain=" + a.hostname;
+			img.src = "http://" + a.hostname + "/favicon.ico";
+			img.favicon_urls = [
+				"https://icons.better-idea.org/icon?url=" + a.hostname + "&size=16",
+				"https://plus.google.com/_/favicon?domain=" + a.hostname
+			];
+
 		} else 
 			img.src = searchEngines[i].icon_url;
 
-		img.index = i;
 		img.onload = function() {
-			var c = document.createElement('canvas');
-			var ctx = c.getContext('2d');
-			ctx.canvas.width = this.width;
-			ctx.canvas.height = this.height;
+			let c = document.createElement('canvas');
+			let ctx = c.getContext('2d');
+			ctx.canvas.width = this.naturalWidth;
+			ctx.canvas.height = this.naturalHeight;
 			ctx.drawImage(this, 0, 0);
 			this.base64String = c.toDataURL();
 		};
 		
 		img.onerror = function() {			
-			var c = document.createElement('canvas');
-			var ctx = c.getContext('2d');
-			ctx.canvas.width = 16;
-			ctx.canvas.height = 16;
-			ctx.fillStyle = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-			ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-			ctx.beginPath();
-			ctx.lineWidth="4";
-			ctx.rect(0,0,ctx.canvas.width, ctx.canvas.height);
-			ctx.strokeStyle='black';
-			ctx.stroke();
-			this.base64String = c.toDataURL();
-			this.failed = true;
-			console.log("failed to load image at " + this.src + ". Using color " + ctx.fillStyle);
+			if (this.favicon_urls.length !== 0) {
+				console.log("Failed getting favicon at " + this.src);
+				this.src = this.favicon_urls.pop();
+				console.log("Trying favicon at " + this.src);
+			}
+			else {
+				var c = document.createElement('canvas');
+				var ctx = c.getContext('2d');
+				ctx.canvas.width = 16;
+				ctx.canvas.height = 16;
+				ctx.fillStyle = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+				ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				ctx.beginPath();
+				ctx.lineWidth="4";
+				ctx.rect(0,0,ctx.canvas.width, ctx.canvas.height);
+				ctx.strokeStyle='black';
+				ctx.stroke();
+				this.base64String = c.toDataURL();
+				console.log("Failed to load favicon. Using color " + ctx.fillStyle);
+				this.failed = true;
+			}
 		};
+		icons.push(img);
 	}
 	
 	return icons;
 }
 
+function swapKeys(e) {
+	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
+	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
+}
+
 function disableOptions() {
-	document.getElementById('n_quickMenuColumns').disabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('n_quickMenuItems').disabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('b_quickMenuKey').disabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('r_quickMenuOnKey').disabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('r_quickMenuOnMouse').disabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('img_rightMouseButton').disabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('img_leftMouseButton').disabled = !document.getElementById('cb_quickMenu').checked;
+	var isDisabled = !document.getElementById('cb_quickMenu').checked;
+	document.getElementById('n_quickMenuColumns').disabled = isDisabled;
+	document.getElementById('n_quickMenuItems').disabled = isDisabled;
+	document.getElementById('b_quickMenuKey').disabled = isDisabled;
+	document.getElementById('r_quickMenuOnKey').disabled = isDisabled;
+	document.getElementById('r_quickMenuOnMouse').disabled = isDisabled;
+	document.getElementById('img_rightMouseButton').disabled = isDisabled;
+	document.getElementById('img_leftMouseButton').disabled = isDisabled;
 }
 
 function changeButtons(e, button) {
@@ -343,11 +361,11 @@ document.getElementById('n_quickMenuItems').addEventListener('change',  (e) => {
 });
 
 document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOptions);
+document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 
 document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
 document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});
 
-document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';
@@ -370,4 +388,22 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (!el.value.isInteger) el.value = Math.floor(el.value);
 	if (el.value > _max) el.value = _max;
 	if (el.value < _min) el.value = _min;
+}
+
+if (window.location.href.match(/#quickload$/) !== null) {
+	var blobs = document.getElementsByClassName('blobContainer');
+	for (var i=0;i<blobs.length;i++) 
+		blobs[i].style.display='none';
+	
+	var loadButton = document.getElementById('selectMozlz4FileButton');
+	document.body.style.padding = "10px";
+	document.body.appendChild(loadButton);
+	
+	loadButton.addEventListener('change', (e) => {
+		var img = document.createElement('img');
+		img.src = 'icons/spinner.svg';
+		img.style.height = '20px';
+		img.style.width = '20px';
+		document.body.appendChild(img);
+	});
 }
