@@ -74,7 +74,6 @@ button.onchange = (ev) => {
 					browser.runtime.sendMessage({action: "closeWindowRequest"});
 				}
 				
-			
 				document.getElementById('searchEngineWarningDivContainer').style.display = "none";
 				var el = document.getElementById('searchEngineWarningDiv');
 				el.innerText = "";
@@ -398,6 +397,7 @@ if (window.location.href.match(/#quickload$/) !== null) {
 	var loadButton = document.getElementById('selectMozlz4FileButton');
 	document.body.style.padding = "10px";
 	document.body.appendChild(loadButton);
+	document.title = "Reload Search Engines";
 	
 	loadButton.addEventListener('change', (e) => {
 		var img = document.createElement('img');

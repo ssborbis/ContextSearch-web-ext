@@ -162,15 +162,9 @@ function openSearchTab(info, tab) {
 				
 				// if new window
 				if (shift) _tab = _tab.tabs[0];
-				
-//				var loading = 0;
-				
+	
 				browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
-					
-//					if (tabInfo.status === 'loading')
-//						loading++;
-//					if (shift && loading < 2) return;
-									
+			
 					// new windows open to about:blank and throw extra complete event
 					if (tabInfo.url !== q) return;
 					browser.tabs.onUpdated.removeListener(listener);
@@ -279,58 +273,15 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 });
 
 browser.browserAction.onClicked.addListener(() => {
+
 	var creating = browser.windows.create({
-		url: "/options.html#quickload",
-		allowScriptsToClose: true,
+		url: browser.runtime.getURL("/options.html#quickload"),
 		type: "popup",
 		height: 100,
 		width: 400
 	});
-	creating.then();
-//	browser.browserAction.setPopup({popup: "/options.html#quickload"});
-//	browser.browserAction.openPopup();
+	creating.then((windowInfo) => {
+	});
+
 });
 
-
-//browser.webNavigation.onCommitted.addListener((details) => {
-//	console.log(details.url);
-//});
-/*
-function refererSpoof(url) {
-	function rewriteReferer(e) {
-	//	if (e.method !== "POST") {
-	//		console.log('not POST');
-	//		return {};
-	//	}
-//		console.log('attempting to spoof charset');
-		console.log(e);
-		var found = false, found_origin = false;
-	  for (var header of e.requestHeaders) {
-		if (header.name.toLowerCase() === "referer") {
-			console.log("referer was: " + header.value);
-			found = true;
-			header.value = url;
-		}
-		if (header.name.toLowerCase() === "origin") {
-			console.log("origin was: " + header.value);
-			found_origin = true;
-			header.value = url;
-		}
-	  }
-	  
-	  if (!found)
-		  e.requestHeaders.push({name: "Referer", value: url});
-	  if (!found)
-		  e.requestHeaders.push({name: "Origin", value: url});
-	  
-	  console.log(e);
-	  return {requestHeaders: e.requestHeaders};
-	}
-
-	browser.webRequest.onBeforeSendHeaders.addListener(
-	  rewriteReferer,
-	  {urls: ["<all_urls>"]},
-	  ["blocking", "requestHeaders"]
-	);
-}
-*/

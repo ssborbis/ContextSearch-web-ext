@@ -275,6 +275,10 @@ document.addEventListener("mousemove", (ev) => {
 	quickMenuObject.mouseCoords = {x: ev.clientX, y: ev.clientY};
 });
 
+document.addEventListener("drag", (ev) => {
+	clearTimeout(quickMenuObject.mouseDownTimer);
+});
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.userOptions !== 'undefined')
