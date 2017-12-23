@@ -203,7 +203,8 @@ function main(ev) {
 	
 	if (searchEngines.length === 0 || typeof searchEngines[0].icon_base64String === 'undefined') {
 		var div = document.createElement('div');
-		div.style='font-size:8pt;padding:10px 2px;text-align:center';
+		div.style='clear:both;font-size:8pt;text-align:center;line-height:1;padding:10px 0px;height:auto';
+			div.style.minWidth = hover_div.style.minWidth;
 		div.innerText = 'Where are my icons?';
 		div.onclick = function() {
 			alert('If you are seeing this message, reload your search settings file\r\nIf an icon cannot be loaded, it will given a color');

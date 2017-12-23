@@ -99,11 +99,6 @@ button.onchange = (ev) => {
 				console.log(`Error: ${error}`);
 			}
 			
-			function setBase64() {
-				for (var i=0;i<icons.length;i++)
-					saveTo[i].icon_base64String = icons[i].base64String;
-			}
-			
 			function getFailedCount() {
 				var c = 0;
 				for (var i=0;i<icons.length;i++) {
@@ -114,8 +109,10 @@ button.onchange = (ev) => {
 			
 			var counter = 0;
 			for (var i=0;i<icons.length;i++) {
-				if (icons[i].complete)
+				if (typeof icons[i].base64String !== 'undefined') {
+					saveTo[i].icon_base64String = icons[i].base64String;
 					counter++;
+				}
 			}
 			
 			if (Date.now() - timeout_start > timeout ) {
@@ -125,7 +122,6 @@ button.onchange = (ev) => {
 					msg: "Loaded " + icons.length + " search engines and " + (icons.length - getFailedCount()) + " of " + icons.length + " icons"
 				});
 				
-				setBase64();
 				var setting = browser.storage.local.set({"searchEngines": saveTo});
 				setting.then(onSet, onError);
 			}
@@ -145,11 +141,10 @@ button.onchange = (ev) => {
 						msg: "Success!  Loaded " + saveTo.length + " search engines"
 					});
 
-				setBase64();
 				var setting = browser.storage.local.set({"searchEngines": saveTo});
 				setting.then(onSet, onError);
 			}
-		}, 100);
+		}, 250);
 		
 	}, function() { // on fail
 
