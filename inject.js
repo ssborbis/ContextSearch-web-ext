@@ -1,23 +1,23 @@
 // unique object to reference globally
 var quickMenuObject = { 
-	triggered_mouse: false, 
-	triggered_key: false,
 	delay: 250, // how long to hold right-click before translating in ms
 	keyDownTimer: 0,
 	mouseDownTimer: 0,
 	mouseCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
 	mouseLastClickTime: 0,
-	mouseDragDeadzone: 4
+	mouseDragDeadzone: 4,
+	lastSelectTime: 0
 }; 
 
-var searchEngines = [];
 var userOptions = {};
 
 document.addEventListener('keydown', (ev) => {
 	
 	if (ev.repeat) return false;
-	if (!userOptions.quickMenu) return false; 
+	if (!userOptions.quickMenu) return false;
+	if (window.top.document.getElementById('hover_div') !== null && ev.which === 27)
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 	if (!userOptions.quickMenuOnKey) return false;
 	if (ev.which !== userOptions.quickMenuKey) return false;
 	if (getSelectedText(ev.target) === "") return false;
@@ -35,7 +35,6 @@ document.addEventListener('keyup', (ev) => {
 	if (ev.which !== userOptions.quickMenuKey) return false;
 	
 	if (Date.now() - quickMenuObject.keyDownTimer < 250) {
-		quickMenuObject.triggered_key = true;	
 		main(ev);
 	}
 	
@@ -51,20 +50,15 @@ document.addEventListener('mousedown', (ev) => {
 	if (!userOptions.quickMenuOnMouse) return false; 
 	if (ev.which !== userOptions.quickMenuMouseButton) return false;
 	if (getSelectedText(ev.target) === "") return false;
-	
-	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
-//	ev.preventDefault();
 
+	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
+	
 	// timer for right mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
-		
+
 		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
 
-		// Reached the required mousedown time so enable the global trigger
-		quickMenuObject.triggered_mouse = true;	
-		
 		if (ev.which === 1) {
-			
 			// prevent losing text selection		
 			document.addEventListener('mouseup', (evv) => {
 				if (evv.which !== 1) return;
@@ -88,15 +82,23 @@ document.addEventListener('mousedown', (ev) => {
 });
 
 document.addEventListener('mouseup', (ev) => {
-	
+
 	// if disabled, do nothing
 	if (!userOptions.quickMenu) return false;
+	if (userOptions.quickMenuAuto && getSelectedText(ev.target) !== "" && ev.which === 1 && ev.target.id !== 'hover_div' && ev.target.parentNode.id !== 'hover_div' ) {
+		if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' ) return false;
+		quickMenuObject.mouseLastClickTime = Date.now();
+		clearTimeout(quickMenuObject.mouseDownTimer);
+		main(ev);
+		return false;
+	}
+
 	if (!userOptions.quickMenuOnMouse) return false; 
 	if (ev.which !== userOptions.quickMenuMouseButton) return false;
-			
+	
 	// clear the mousedown timer
 	clearTimeout(quickMenuObject.mouseDownTimer);
-	
+
 	return false;
 });
 
@@ -105,17 +107,9 @@ function main(ev) {
 
 	// if disabled or not triggered, do nothing
 	if (!userOptions.quickMenu) return false;
-	if (!quickMenuObject.triggered_mouse && !quickMenuObject.triggered_key) return false;	
-	
-	// clear the triggers
-	quickMenuObject.triggered_mouse = false; 
-	quickMenuObject.triggered_key = false;
-	
+
 	ev = ev || window.event;
 	var target = ev.target || ev.srcElement;	// clicked element
-	
-	// create the element object to hold the word we clicked
-	var selectedText = getSelectedText(ev.target);
 
 	// get actual element offsets with scrolling
 	var xOffset=Math.max(document.documentElement.scrollLeft,document.body.scrollLeft);	
@@ -128,7 +122,7 @@ function main(ev) {
 	var hover_div = document.createElement('quickmenu');
 	hover_div.style.top = y + yOffset - 2  + "px";
 	hover_div.style.left = x + xOffset - 2 + "px";
-	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,searchEngines.length) * (16 + 16 + 2) + "px"; //icon width + padding + border
+	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 2) + "px"; //icon width + padding + border
 
 	hover_div.id = 'hover_div';
 	hover_div.onclick = () => {
@@ -136,19 +130,17 @@ function main(ev) {
 	};
 	
 	// remove old popup
-	var old_hover_div = document.getElementById(hover_div.id);
+	var old_hover_div = window.top.document.getElementById(hover_div.id);
 	if (old_hover_div !== null && old_hover_div.parentNode) old_hover_div.parentNode.removeChild(old_hover_div);
 
-	for (var i=0;i<searchEngines.length && i < userOptions.quickMenuItems;i++) {
+	for (var i=0;i<userOptions.searchEngines.length && i < userOptions.quickMenuItems;i++) {
 
 		var span = document.createElement('DIV');
 		
-		span.style.backgroundImage = 'url(' + searchEngines[i].icon_base64String + ')';
-
-		span.style.clear = (i % userOptions.quickMenuColumns === 0) ? "left" : "none";
-		
+		span.style.backgroundImage = 'url(' + userOptions.searchEngines[i].icon_base64String + ')';
+		span.style.clear = (i % userOptions.quickMenuColumns === 0) ? "left" : "none";	
 		span.index = i;
-		span.title = searchEngines[i].title;
+		span.title = userOptions.searchEngines[i].title;
 
 		function openLink(e) {
 			e.preventDefault();			
@@ -161,7 +153,7 @@ function main(ev) {
 						(e.ctrlKey) ? "Ctrl": null
 					],
 					menuItemId: this.index,
-					selectionText: selectedText
+					selectionText: getSelectedText(ev.target)
 				}
 			});
 		}
@@ -201,7 +193,7 @@ function main(ev) {
 
 	}
 	
-	if (searchEngines.length === 0 || typeof searchEngines[0].icon_base64String === 'undefined') {
+	if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined') {
 		var div = document.createElement('div');
 		div.style='clear:both;font-size:8pt;text-align:center;line-height:1;padding:10px 0px;height:auto';
 			div.style.minWidth = hover_div.style.minWidth;
@@ -243,6 +235,7 @@ function main(ev) {
 	if (rect.y + rect.height > window.top.innerHeight)
 		hover_div.style.top = parseInt(hover_div.style.top) - ((rect.y + rect.height) - window.top.innerHeight) - scrollbarHeight + "px";
 
+	hover_div.style.opacity=1;
 	return false;
 }
 
@@ -263,9 +256,20 @@ function getSelectedText(el) {
 	return text;
 }
 
+function closeQuickMenu() {
+	var hover_div = window.top.document.getElementById('hover_div');
+	if (hover_div !== null) {
+		hover_div.style.opacity=0;
+		setTimeout(()=> {
+			if (hover_div !== null && hover_div.parentNode !== null)
+				hover_div.parentNode.removeChild(hover_div);
+		},100);
+	}
+}
+
 document.addEventListener("click", (ev) => {
 
-	if (ev.which === 3) return false; // ignore right-click
+//	if (ev.which === 3) return false; // ignore right-click
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
 	
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
@@ -280,24 +284,21 @@ document.addEventListener("drag", (ev) => {
 	clearTimeout(quickMenuObject.mouseDownTimer);
 });
 
+document.addEventListener("selectionchange", (ev) => {
+	quickMenuObject.lastSelectTime = Date.now();
+});
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.userOptions !== 'undefined')
 		userOptions = message.userOptions || {};
-	if (typeof message.searchEngines !== 'undefined')
-		searchEngines = message.searchEngines || [];
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
 			case "closeQuickMenu":
-				var hover_div = document.getElementById('hover_div');
-				if (hover_div !== null) hover_div.parentNode.removeChild(hover_div);
+				closeQuickMenu();
 				break;
 		}
 	}
-});
-
-browser.runtime.sendMessage({action: "getSearchEngines"}).then((message) => {
-	searchEngines = message.searchEngines || [];
 });
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {

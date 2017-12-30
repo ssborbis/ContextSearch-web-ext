@@ -3,7 +3,7 @@ function replaceOpenSearchParams(in_str, searchterms) {
 	searchterms = searchterms || "";
 	
 	return in_str
-		.replace(/{searchTerms}/g, searchterms.trim())
+		.replace(/{searchTerms}/g, searchterms)
 		.replace(/{count[\?]?}/g, "50")
 		.replace(/{startIndex[\?]?}/g, "1")
 		.replace(/{startPage[\?]?}/g, "1")

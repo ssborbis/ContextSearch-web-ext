@@ -1,4 +1,5 @@
 function post(path, params, method) {
+	
 	method = method || "post"; 
 	
 	var form = document.createElement("form");
@@ -10,7 +11,7 @@ function post(path, params, method) {
 		
 		hiddenField.setAttribute("type", "hidden");
 		hiddenField.setAttribute("name", params[i].name);
-		hiddenField.setAttribute("value", replaceOpenSearchParams(params[i].value, decodeURIComponent(_SEARCHTERMS)));
+		hiddenField.setAttribute("value", replaceOpenSearchParams(params[i].value, _SEARCHTERMS));
 
 		form.appendChild(hiddenField);
 	}
@@ -22,7 +23,7 @@ function post(path, params, method) {
 if (document.body === null)
 	document.body = document.createElement('body');
 
-browser.runtime.sendMessage({action: "getSearchEngines"}).then((message) => {
-	var searchEngines = message.searchEngines;
+browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+	var searchEngines = message.userOptions.searchEngines;
 	post(searchEngines[_INDEX].template, searchEngines[_INDEX].params);
 });

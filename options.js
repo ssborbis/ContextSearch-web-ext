@@ -1,5 +1,6 @@
 // array for storage.local
 var saveTo = [];
+var userOptions = {};
 
 let button = document.getElementById("selectMozlz4FileButton");
 button.onchange = (ev) => {
@@ -68,8 +69,9 @@ button.onchange = (ev) => {
 		
 		var remoteIconsTimeout = setInterval(function() {
 			
-			function onSet() {			
-				browser.runtime.sendMessage({action: "loadSearchEngines"});
+			function onSet() {
+				saveOptions();
+				
 				if (window.location.href.match(/#quickload$/) !== null) {
 					browser.runtime.sendMessage({action: "closeWindowRequest"});
 				}
@@ -87,18 +89,18 @@ button.onchange = (ev) => {
 						el.appendChild(p);
 					}
 				}
-			
+				
 				clearInterval(remoteIconsTimeout);
 			}
 		
-			function onError() {
+		/*	function onError() {
 				statusMessage({
 					img: "icons/no.png",
 					msg: "Failed to load search engines :("
 				});
 				console.log(`Error: ${error}`);
 			}
-			
+		*/	
 			function getFailedCount() {
 				var c = 0;
 				for (var i=0;i<icons.length;i++) {
@@ -122,8 +124,7 @@ button.onchange = (ev) => {
 					msg: "Loaded " + icons.length + " search engines and " + (icons.length - getFailedCount()) + " of " + icons.length + " icons"
 				});
 				
-				var setting = browser.storage.local.set({"searchEngines": saveTo});
-				setting.then(onSet, onError);
+				onSet();
 			}
 			
 			if (counter === icons.length) {
@@ -141,8 +142,7 @@ button.onchange = (ev) => {
 						msg: "Success!  Loaded " + saveTo.length + " search engines"
 					});
 
-				var setting = browser.storage.local.set({"searchEngines": saveTo});
-				setting.then(onSet, onError);
+				onSet();
 			}
 		}, 250);
 		
@@ -165,7 +165,7 @@ function restoreOptions() {
 
 	function onGot(result) {
 		
-		var userOptions = result.userOptions || {};
+		userOptions = result.userOptions || {};
 		
 		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
 		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys || false;
@@ -178,6 +178,8 @@ function restoreOptions() {
 		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey || 0] || "Set";
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey || false;
 		document.getElementById('r_quickMenuOnMouse').checked = (userOptions.quickMenuOnMouse !== undefined) ? userOptions.quickMenuOnMouse : true;
+		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto || false;
+		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick || false;
 		
 		document.getElementById('h_mouseButton').value = (userOptions.quickMenuMouseButton !== undefined) ? userOptions.quickMenuMouseButton : 3;
 		
@@ -201,10 +203,10 @@ function restoreOptions() {
 
 function saveOptions(e) {
 	
-	e.preventDefault();
+	if (typeof e !== 'undefined') e.preventDefault();
 	
 	function onSet() {
-		browser.runtime.sendMessage({action: "loadUserOptions"});
+		browser.runtime.sendMessage({action: "updateUserOptions"});
 	}
 	
 	function onError(error) {
@@ -213,6 +215,7 @@ function saveOptions(e) {
 
 	var setting = browser.storage.local.set({
 		userOptions: {
+			searchEngines: (saveTo.length > 0) ? saveTo : userOptions.searchEngines,
 			backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
 			swapKeys: document.getElementById('cb_swapKeys').checked,
 			quickMenu: document.getElementById('cb_quickMenu').checked,
@@ -222,6 +225,8 @@ function saveOptions(e) {
 			quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
 			quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
 			quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
+			quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
+			quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 			contextMenu: document.getElementById('cb_contextMenu').checked
 		}
 
@@ -317,6 +322,8 @@ function disableOptions() {
 	document.getElementById('b_quickMenuKey').disabled = isDisabled;
 	document.getElementById('r_quickMenuOnKey').disabled = isDisabled;
 	document.getElementById('r_quickMenuOnMouse').disabled = isDisabled;
+	document.getElementById('r_quickMenuOnClick').disabled = isDisabled;
+	document.getElementById('r_quickMenuAuto').disabled = isDisabled;
 	document.getElementById('img_rightMouseButton').disabled = isDisabled;
 	document.getElementById('img_leftMouseButton').disabled = isDisabled;
 }
@@ -356,6 +363,8 @@ document.getElementById('n_quickMenuItems').addEventListener('change',  (e) => {
 
 document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
+document.getElementById('r_quickMenuAuto').addEventListener('change', saveOptions);
+document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
 
 document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
 document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});

@@ -83,15 +83,27 @@
 				<input type='checkbox' id='cb_contextMenu' /><label> Enable Context Menu</label><br />
 				<hr />
 				<div class='blobContainerHeader' style='padding-left:0px;border:0px'><img src='icons/quick_menu.png' />Quick Menu</div>
-				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label><br />
+				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label> <br />
+				<p style='margin-left:30px;font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;'>
+					<i>Quick Menu disabled on addons.mozilla.org</i><br />
+					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
+				</p>
 				<p>
 					<p>Select Text And</p>
 					<p>
+						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
+						<span style='width:25px;display:inline-block'></span><label>Open Menu Automatically</label><img class='smallIcon'  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+					</p>
+					<p style='display:none'>
+						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
+						<span style='width:25px;display:inline-block'></span><label>Click &nbsp;&nbsp;&nbsp;</label><img src='icons/leftmouse.png' class='smallIcon' title='Left Button'>
+					</p>
+					<p>
 						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' />
 						<span style='width:25px;display:inline-block'></span><label>Hold &nbsp;&nbsp;&nbsp;</label>
-						<img id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
-						<span style='width:25px;display:inline-block'></span>
 						<img id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
+						<span style='width:25px;display:inline-block'></span>
+						<img id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
 						<input id='h_mouseButton' type='hidden' value='3' />
 					</p>
 					<p>
@@ -100,10 +112,9 @@
 					</p>
 				</p>
 				<p>
-					<input type="number" id="n_quickMenuColumns" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Columns</label><br />
-					<input type="number" id="n_quickMenuItems" size="2" style='width:80px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Items (show only the first <i>n</i> in list)</label>
+					<input type="number" id="n_quickMenuColumns" size="2" style='width:60px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Columns</label><br />
+					<input type="number" id="n_quickMenuItems" size="2" style='width:60px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Items (show only the first <i>n</i> in list)</label>
 				</p>
-				<p><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;* Context Menu will be enabled if Quick Menu fails to open</i></p>
 			</div>
 		</div>
 		<div class='blobContainer'>
@@ -126,7 +137,7 @@
 					<span id='status'>&nbsp;</span>
 				</div>
 				<p id='searchEngineWarningDivContainer' style='display:none'>
-					<img src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly due to non UTF-8 character encoding
+					<img src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly due to non UTF-8 character encoding. If you experience problems with these search engines, help the developers by reporting issues <a href='https://github.com/ssborbis/ContextSearch-web-ext/issues'>here</a>
 					<div id='searchEngineWarningDiv'></div>
 				</p>
 				<p><input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
