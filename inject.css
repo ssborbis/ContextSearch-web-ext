@@ -1,17 +1,21 @@
 #hover_div DIV:hover {
     background-color: #e0e0e0;
+	background-color: #ccdbe8;
+	border-color: #ccdbe8;;
+/*	background-size: 20px 20px; */
 }
 #hover_div DIV {
 	width:32px;
 	height:32px;
 	border:1px solid #e0e0e0;
-	padding:0px;
-	margin:0px;
+	padding:0;
+	margin:0;
 	display:inline-block;
 	background-size: 16px 16px;
 	background-position: center center;
 	background-repeat: no-repeat;
 	float: left;
+	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
 }
 #hover_div, #hover_div DIV {
 	box-sizing: content-box;
@@ -28,14 +32,13 @@
 	z-index: 2147483647; /* max 32-bit integer */
 	cursor: pointer;
 	opacity: 0;
-	padding: 0px;
-	margin: 0px;
+	padding: 0;
+	margin: 0;
 	background-color:#EFF0F1;
-	border:2px outset grey;
+	border:1px solid #9abad2;/*#C2C3C5;*/
 	font-weight:bold;
 	text-align:left;
-	box-shadow: 2px 2px 4px rgba(0,0,0,.7);
+	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
 	width:auto;
 	transition: opacity .1s;
 }
-

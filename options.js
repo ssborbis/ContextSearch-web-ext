@@ -180,6 +180,8 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnMouse').checked = (userOptions.quickMenuOnMouse !== undefined) ? userOptions.quickMenuOnMouse : true;
 		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto || false;
 		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick || false;
+		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale || 1;
+		document.getElementById('i_quickMenuScale').value = (userOptions.quickMenuScale !== undefined) ? (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%" : "100%";
 		
 		document.getElementById('h_mouseButton').value = (userOptions.quickMenuMouseButton !== undefined) ? userOptions.quickMenuMouseButton : 3;
 		
@@ -202,7 +204,7 @@ function restoreOptions() {
 }
 
 function saveOptions(e) {
-	
+
 	if (typeof e !== 'undefined') e.preventDefault();
 	
 	function onSet() {
@@ -227,6 +229,7 @@ function saveOptions(e) {
 			quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
 			quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
 			quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
+			quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 			contextMenu: document.getElementById('cb_contextMenu').checked
 		}
 
@@ -324,6 +327,8 @@ function disableOptions() {
 	document.getElementById('r_quickMenuOnMouse').disabled = isDisabled;
 	document.getElementById('r_quickMenuOnClick').disabled = isDisabled;
 	document.getElementById('r_quickMenuAuto').disabled = isDisabled;
+	document.getElementById('range_quickMenuScale').disabled = isDisabled;
+	document.getElementById('i_quickMenuScale').disabled = isDisabled;
 	document.getElementById('img_rightMouseButton').disabled = isDisabled;
 	document.getElementById('img_leftMouseButton').disabled = isDisabled;
 }
@@ -369,6 +374,11 @@ document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOpt
 document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
 document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});
 
+document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
+	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+});
+
+document.getElementById('range_quickMenuScale').addEventListener('change', saveOptions);
 
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';

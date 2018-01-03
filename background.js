@@ -32,6 +32,10 @@ function notify(message, sender, sendResponse) {
 			loadUserOptions();
 			sendResponse({"userOptions": userOptions});
 			break;
+		
+		case "openQuickMenuRequest":
+			browser.tabs.sendMessage(sender.tab.id, {action: "openQuickMenu", searchTerms: message.searchTerms, screenCoords: message.screenCoords}, {frameId: 0});
+			break;
 			
 		case "closeQuickMenuRequest":
 			browser.tabs.sendMessage(sender.tab.id, {action: "closeQuickMenu"});
@@ -237,6 +241,8 @@ var userOptions = {
 	quickMenuOnMouse: true,
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
+	quickMenuScale: 1,
+	quickMenuScaleOnZoom: true,
 	contextMenu: true
 };
 

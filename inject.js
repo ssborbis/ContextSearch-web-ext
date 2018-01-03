@@ -4,11 +4,12 @@ var quickMenuObject = {
 	keyDownTimer: 0,
 	mouseDownTimer: 0,
 	mouseCoords: {x:0, y:0},
+	screenCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
 	mouseLastClickTime: 0,
 	mouseDragDeadzone: 4,
 	lastSelectTime: 0
-}; 
+};
 
 var userOptions = {};
 
@@ -16,8 +17,10 @@ document.addEventListener('keydown', (ev) => {
 	
 	if (ev.repeat) return false;
 	if (!userOptions.quickMenu) return false;
-	if (window.top.document.getElementById('hover_div') !== null && ev.which === 27)
+	if (ev.which === 27) {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
+		return false;
+	}
 	if (!userOptions.quickMenuOnKey) return false;
 	if (ev.which !== userOptions.quickMenuKey) return false;
 	if (getSelectedText(ev.target) === "") return false;
@@ -35,7 +38,7 @@ document.addEventListener('keyup', (ev) => {
 	if (ev.which !== userOptions.quickMenuKey) return false;
 	
 	if (Date.now() - quickMenuObject.keyDownTimer < 250) {
-		main(ev);
+		openQuickMenu(ev);
 	}
 	
 	quickMenuObject.keyDownTimer = 0;
@@ -43,7 +46,6 @@ document.addEventListener('keyup', (ev) => {
 	return false;
 });
 
-// Listen for a long right-click and enable script
 document.addEventListener('mousedown', (ev) => {
 
 	if (!userOptions.quickMenu) return false;
@@ -73,8 +75,7 @@ document.addEventListener('mousedown', (ev) => {
 			}, {once: true}); // parameter to run once, then delete
 		}
 		
-		// run main script body
-		main(ev);
+		openQuickMenu(ev);
 		
 	}, quickMenuObject.delay);
 
@@ -83,46 +84,36 @@ document.addEventListener('mousedown', (ev) => {
 
 document.addEventListener('mouseup', (ev) => {
 
-	// if disabled, do nothing
 	if (!userOptions.quickMenu) return false;
 	if (userOptions.quickMenuAuto && getSelectedText(ev.target) !== "" && ev.which === 1 && ev.target.id !== 'hover_div' && ev.target.parentNode.id !== 'hover_div' ) {
 		if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' ) return false;
 		quickMenuObject.mouseLastClickTime = Date.now();
 		clearTimeout(quickMenuObject.mouseDownTimer);
-		main(ev);
+		openQuickMenu(ev);
 		return false;
 	}
 
 	if (!userOptions.quickMenuOnMouse) return false; 
 	if (ev.which !== userOptions.quickMenuMouseButton) return false;
 	
-	// clear the mousedown timer
 	clearTimeout(quickMenuObject.mouseDownTimer);
 
 	return false;
 });
 
-// main single word capture, selection capture, translate and display method
-function main(ev) {
+function openQuickMenu(ev) {
+	browser.runtime.sendMessage({action: "openQuickMenuRequest", screenCoords: {x: ev.screenX, y: ev.screenY}, searchTerms: getSelectedText(ev.target)});
+}
 
-	// if disabled or not triggered, do nothing
-	if (!userOptions.quickMenu) return false;
+function main(coords, searchTerms) {
 
-	ev = ev || window.event;
-	var target = ev.target || ev.srcElement;	// clicked element
-
-	// get actual element offsets with scrolling
 	var xOffset=Math.max(document.documentElement.scrollLeft,document.body.scrollLeft);	
 	var yOffset=Math.max(document.documentElement.scrollTop,document.body.scrollTop);
 	
-	var x = ev.clientX || quickMenuObject.mouseCoords.x;
-	var y = ev.clientY || quickMenuObject.mouseCoords.y;
-
-	// popup div parent
 	var hover_div = document.createElement('quickmenu');
-	hover_div.style.top = y + yOffset - 2  + "px";
-	hover_div.style.left = x + xOffset - 2 + "px";
-	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 2) + "px"; //icon width + padding + border
+	hover_div.style.top = coords.y + yOffset - 2  + "px";
+	hover_div.style.left = coords.x + xOffset - 2 + "px";
+	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 1) + "px"; //icon width + padding + border
 
 	hover_div.id = 'hover_div';
 	hover_div.onclick = () => {
@@ -130,7 +121,7 @@ function main(ev) {
 	};
 	
 	// remove old popup
-	var old_hover_div = window.top.document.getElementById(hover_div.id);
+	var old_hover_div = document.getElementById(hover_div.id);
 	if (old_hover_div !== null && old_hover_div.parentNode) old_hover_div.parentNode.removeChild(old_hover_div);
 
 	for (var i=0;i<userOptions.searchEngines.length && i < userOptions.quickMenuItems;i++) {
@@ -153,7 +144,7 @@ function main(ev) {
 						(e.ctrlKey) ? "Ctrl": null
 					],
 					menuItemId: this.index,
-					selectionText: getSelectedText(ev.target)
+					selectionText: searchTerms
 				}
 			});
 		}
@@ -161,36 +152,6 @@ function main(ev) {
 		span.addEventListener('click', openLink);	
 
 		hover_div.appendChild(span);
-	}
-	
-
-/*	iframe handler
-*/
-	if (window.frameElement === null) 
-		document.body.appendChild(hover_div);
-	else {				
-		var offsetLeft = 0;
-		var offsetTop = 0;
-		var frameDepth = 0;
-		
-		var frameWindow = window.self;
-		while (frameWindow !== window.top && frameDepth++ < 10) {
-			let iframeX = frameWindow.frameElement.offsetLeft;
-			let iframeY = frameWindow.frameElement.offsetTop;
-			
-			offsetLeft+=iframeX;
-			offsetTop+=iframeY;
-			
-			frameWindow = frameWindow.frameElement.ownerDocument.defaultView;
-		}
-		
-//		console.log(offsetLeft + "," + offsetTop);
-//		console.log(x + "," + y);
-		hover_div.style.left = x + offsetLeft + "px";
-		hover_div.style.top = y + offsetTop + "px";
-
-		window.top.document.body.appendChild(hover_div);
-
 	}
 	
 	if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined') {
@@ -224,22 +185,37 @@ function main(ev) {
 			break;
 		}
 	}
+	
+	document.body.appendChild(hover_div);
+	
+	scaleQuickMenu(hover_div);
 
 	// move if offscreen
-	var scrollbarWidth = window.top.innerWidth - document.documentElement.clientWidth;
-	var scrollbarHeight = window.top.innerHeight - document.documentElement.clientHeight;
+	var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+	var scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
 
 	var rect = hover_div.getBoundingClientRect();
-	if (rect.x + rect.width > window.top.innerWidth)
-		hover_div.style.left = parseInt(hover_div.style.left) - ((rect.x + rect.width) - window.top.innerWidth) - scrollbarWidth + "px";
-	if (rect.y + rect.height > window.top.innerHeight)
-		hover_div.style.top = parseInt(hover_div.style.top) - ((rect.y + rect.height) - window.top.innerHeight) - scrollbarHeight + "px";
+	if (rect.x + rect.width > window.innerWidth)
+		hover_div.style.left = parseInt(hover_div.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+	if (rect.y + rect.height > window.innerHeight)
+		hover_div.style.top = parseInt(hover_div.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
 
 	hover_div.style.opacity=1;
 	return false;
 }
 
+function scaleQuickMenu(hover_div) {
+	userOptions.quickMenuScaleOnZoom = userOptions.quickMenuScaleOnZoom || true;
+	
+	let scale = window.devicePixelRatio;
+	let new_scale = (userOptions.quickMenuScaleOnZoom) ? (userOptions.quickMenuScale / scale) : userOptions.quickMenuScale;
+	
+	hover_div.style.transformOrigin = "top left";
+	hover_div.style.transform = "scale(" + new_scale + ")";
+}
+
 function getSelectedText(el) {
+	
 	var text = "";
 	if (typeof window.getSelection != "undefined") {
 		text = window.getSelection().toString();
@@ -257,7 +233,7 @@ function getSelectedText(el) {
 }
 
 function closeQuickMenu() {
-	var hover_div = window.top.document.getElementById('hover_div');
+	var hover_div = document.getElementById('hover_div');
 	if (hover_div !== null) {
 		hover_div.style.opacity=0;
 		setTimeout(()=> {
@@ -269,7 +245,6 @@ function closeQuickMenu() {
 
 document.addEventListener("click", (ev) => {
 
-//	if (ev.which === 3) return false; // ignore right-click
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
 	
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
@@ -278,6 +253,7 @@ document.addEventListener("click", (ev) => {
 
 document.addEventListener("mousemove", (ev) => {
 	quickMenuObject.mouseCoords = {x: ev.clientX, y: ev.clientY};
+	quickMenuObject.screenCoords = {x: ev.screenX, y: ev.screenY};
 });
 
 document.addEventListener("drag", (ev) => {
@@ -294,8 +270,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		userOptions = message.userOptions || {};
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
+			
 			case "closeQuickMenu":
 				closeQuickMenu();
+				break;
+				
+			case "openQuickMenu":
+				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
+				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
+
+				main({'x': x,'y': y}, message.searchTerms);
 				break;
 		}
 	}

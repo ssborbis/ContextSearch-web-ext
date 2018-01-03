@@ -67,6 +67,43 @@
 				vertical-align:middle;
 				height:30px;
 			}
+			.slider {
+				-webkit-appearance: none;
+				height: 15px;
+				border-radius: 5px;  
+				background: #E9ECEF;
+				outline: none;
+				opacity: 0.7;
+				-webkit-transition: .2s;
+				transition: opacity .2s;
+				max-width: 200px;
+			}
+			.slider::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				appearance: none;
+				width: 25px;
+				height: 25px;
+				border-radius: 50%; 
+				background: #6ec179;
+				cursor: pointer;
+			}
+			.slider::-moz-range-thumb {
+				width: 25px;
+				height: 25px;
+				border-radius: 50%;
+				background: #6ec179;
+				cursor: pointer;
+			}
+			.slider:hover {
+				opacity: 1; /* Fully shown on mouse-over */
+			}
+			.inputNice {
+				width:60px;
+				font-size:12pt;
+				border-radius:4px;
+				border:1px solid grey;
+				padding:2px;
+			}
 		</style>
 	</head>
 	<body>
@@ -112,9 +149,16 @@
 					</p>
 				</p>
 				<p>
-					<input type="number" id="n_quickMenuColumns" size="2" style='width:60px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Columns</label><br />
-					<input type="number" id="n_quickMenuItems" size="2" style='width:60px;font-size:12pt'><label>&nbsp;&nbsp;&nbsp;Quick Menu Items (show only the first <i>n</i> in list)</label>
+					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Columns</label>
 				</p>
+				<p>
+					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items <i style='font-size:10pt'>(show only the first <span style='font-style:normal'>n</span> in list)</i></label>
+				</p>
+				<p>
+					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly /><label>&nbsp;&nbsp;&nbsp;Size</label>
+					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
+				</p>
+				
 			</div>
 		</div>
 		<div class='blobContainer'>
