@@ -67,7 +67,7 @@ button.onchange = (ev) => {
 			msg: "Loading remote content"
 		});
 		
-		var remoteIconsTimeout = setInterval(function() {
+		var remoteIconsInterval = setInterval(function() {
 			
 			function onSet() {
 				saveOptions();
@@ -90,7 +90,7 @@ button.onchange = (ev) => {
 					}
 				}
 				
-				clearInterval(remoteIconsTimeout);
+				clearInterval(remoteIconsInterval);
 			}
 		
 		/*	function onError() {
@@ -319,6 +319,13 @@ function swapKeys(e) {
 }
 
 function disableOptions() {
+	let children = document.getElementById('quickMenuOptions').querySelectorAll('*');
+
+	for (let c of children) {
+		if (c !== document.getElementById('cb_quickMenu'))
+			c.disabled = !document.getElementById('cb_quickMenu').checked;
+	}
+/*	
 	var isDisabled = !document.getElementById('cb_quickMenu').checked;
 	document.getElementById('n_quickMenuColumns').disabled = isDisabled;
 	document.getElementById('n_quickMenuItems').disabled = isDisabled;
@@ -331,6 +338,7 @@ function disableOptions() {
 	document.getElementById('i_quickMenuScale').disabled = isDisabled;
 	document.getElementById('img_rightMouseButton').disabled = isDisabled;
 	document.getElementById('img_leftMouseButton').disabled = isDisabled;
+*/
 }
 
 function changeButtons(e, button) {
@@ -348,8 +356,8 @@ document.addEventListener("DOMContentLoaded", loadHowToImg);
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
-document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
 document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
+document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
 
 document.getElementById('cb_quickMenu').addEventListener('change', (e) => {
 	disableOptions();

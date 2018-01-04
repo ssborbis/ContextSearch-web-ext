@@ -1,18 +1,13 @@
 function notify(message, sender, sendResponse) {
 	
-	function updateAllTabs() {
-		getAllOpenTabs((tabs) => {
-			for (var i=0;i<tabs.length;i++) {
-				browser.tabs.sendMessage(tabs[i].id, {"userOptions": userOptions});	
-			}
-		});
-	}
-	
 	switch(message.action) {
 		
 		case "updateUserOptions":
 			loadUserOptions();
-			updateAllTabs();
+			getAllOpenTabs((tabs) => {
+				for (let tab of tabs)
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+			});
 			break;
 			
 		case "openOptions":
@@ -110,6 +105,12 @@ function buildContextMenu() {
 
 function openSearchTab(info, tab) {
 	
+	if (userOptions.searchEngines.length === 0) {	
+		// if searchEngines is empty, open Options
+		browser.runtime.openOptionsPage();
+		return false;	
+	}
+	
 	// get modifier keys
 	var shift = info.modifiers.includes("Shift");
 	var ctrl = info.modifiers.includes("Ctrl");
@@ -118,84 +119,75 @@ function openSearchTab(info, tab) {
 	if (userOptions.swapKeys)
 		shift = [ctrl, ctrl=shift][0];
 	
-	if (userOptions.searchEngines.length === 0) {
-		
-		// if searchEngines is empty, open Options
-		var opening = browser.runtime.openOptionsPage();
-		opening.then();
-		
-	} else {
-	
-		var searchTerms = info.selectionText.trim();
-		userOptions.searchEngines[info.menuItemId].queryCharset = userOptions.searchEngines[info.menuItemId].queryCharset || "UTF-8";
+	var searchTerms = info.selectionText.trim();
+	userOptions.searchEngines[info.menuItemId].queryCharset = userOptions.searchEngines[info.menuItemId].queryCharset || "UTF-8";
 
-		var encodedSearchTermsObject = encodeCharset(searchTerms, userOptions.searchEngines[info.menuItemId].queryCharset);
-		var q = replaceOpenSearchParams(userOptions.searchEngines[info.menuItemId].query_string, encodedSearchTermsObject.uri);
-		
+	var encodedSearchTermsObject = encodeCharset(searchTerms, userOptions.searchEngines[info.menuItemId].queryCharset);
+	var q = replaceOpenSearchParams(userOptions.searchEngines[info.menuItemId].query_string, encodedSearchTermsObject.uri);
+	
 //		console.log(q);
-		// get array of open search tabs async. and find right-most tab
-		getOpenSearchTabs(tab.id, (openSearchTabs) => {
-			
-			if (typeof userOptions.searchEngines[info.menuItemId].method !== 'undefined' && userOptions.searchEngines[info.menuItemId].method === "POST")
-				q = userOptions.searchEngines[info.menuItemId].template;
+	// get array of open search tabs async. and find right-most tab
+	getOpenSearchTabs(tab.id, (openSearchTabs) => {
+		
+		if (typeof userOptions.searchEngines[info.menuItemId].method !== 'undefined' && userOptions.searchEngines[info.menuItemId].method === "POST")
+			q = userOptions.searchEngines[info.menuItemId].template;
 
-			function onCreate(_tab) {
-				
-				// code for POST engines
-				if (typeof userOptions.searchEngines[info.menuItemId].method === 'undefined' || userOptions.searchEngines[info.menuItemId].method !== "POST") return;
-				
-				// if new window
-				if (shift) _tab = _tab.tabs[0];
-	
-				browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
+		function onCreate(_tab) {
 			
-					// new windows open to about:blank and throw extra complete event
-					if (tabInfo.url !== q) return;
-					browser.tabs.onUpdated.removeListener(listener);
-
-					browser.tabs.executeScript(_tab.id, {
-						code: 'window.stop();',
-						runAt: 'document_start'
-					}).then(() => {
-					browser.tabs.executeScript(_tab.id, {
-						code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii*/ searchTerms + '"', 
-						runAt: 'document_idle'
-					}).then(() => {
-					browser.tabs.executeScript(_tab.id, {
-						file: '/execute.js',
-						runAt: 'document_idle'
-					});});});
-				
-				});
-			}
+			// code for POST engines
+			if (typeof userOptions.searchEngines[info.menuItemId].method === 'undefined' || userOptions.searchEngines[info.menuItemId].method !== "POST") return;
 			
-			function onError() {
-				console.log(`Error: ${error}`);
-			}
+			// if new window
+			if (shift) _tab = _tab.tabs[0];
 
-			if (shift) {	// open in new window
+			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
+		
+				// new windows open to about:blank and throw extra complete event
+				if (tabInfo.url !== q) return;
+				browser.tabs.onUpdated.removeListener(listener);
 
-				var creating = browser.windows.create({
-					url: q
-				});
-				creating.then(onCreate, onError);
-				
-			} else {	// open in new tab
+				browser.tabs.executeScript(_tab.id, {
+					code: 'window.stop();',
+					runAt: 'document_start'
+				}).then(() => {
+				browser.tabs.executeScript(_tab.id, {
+					code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii*/ searchTerms + '"', 
+					runAt: 'document_idle'
+				}).then(() => {
+				browser.tabs.executeScript(_tab.id, {
+					file: '/execute.js',
+					runAt: 'document_idle'
+				});});});
 			
-				// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
-				var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
-				
-				var creating = browser.tabs.create({
-					url: q,
-					active: (ctrl || userOptions.backgroundTabs) ? false : true,
-					index: rightMostSearchTabIndex + 1,
-					openerTabId: tab.id
-				});
-				creating.then(onCreate, onError);
-	
-			}
-		});
-	}
+			});
+		}
+		
+		function onError() {
+			console.log(`Error: ${error}`);
+		}
+
+		if (shift) {	// open in new window
+
+			var creating = browser.windows.create({
+				url: q
+			});
+			creating.then(onCreate, onError);
+			
+		} else {	// open in new tab
+		
+			// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
+			var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
+			
+			var creating = browser.tabs.create({
+				url: q,
+				active: (ctrl || userOptions.backgroundTabs) ? false : true,
+				index: rightMostSearchTabIndex + 1,
+				openerTabId: tab.id
+			});
+			creating.then(onCreate, onError);
+
+		}
+	});
 }
 
 function getOpenSearchTabs(id, callback) {
@@ -294,6 +286,103 @@ function encodeCharset(string, encoding) {
 		return {ascii: string, uri: string};
 	}
 }
+/*
+function nativeTest() {
+	function decodeLz4Block(input, output, sIdx, eIdx)
+	{
+		sIdx = sIdx || 0;
+		eIdx = eIdx || input.length;
+
+		// Process each sequence in the incoming data
+		for (var i = sIdx, j = 0; i < eIdx;)
+		{
+			var token = input[i++];
+
+			// Literals
+			var literals_length = (token >> 4);
+			if (literals_length > 0) {
+				// length of literals
+				var l = literals_length + 240;
+				while (l === 255) {
+					l = input[i++];
+					literals_length += l;
+				}
+
+				// Copy the literals
+				var end = i + literals_length;
+				while (i < end) {
+					output[j++] = input[i++];
+				}
+
+				// End of buffer?
+				if (i === eIdx) {
+					return j;
+				}
+			}
+
+			// Match copy
+			// 2 bytes offset (little endian)
+			var offset = input[i++] | (input[i++] << 8);
+
+			// 0 is an invalid offset value
+			if (offset === 0 || offset > j) {
+				return -(i-2);
+			}
+
+			// length of match copy
+			var match_length = (token & 0xf);
+			var l = match_length + 240;
+			while (l === 255) {
+				l = input[i++];
+				match_length += l;
+			}
+
+			// Copy the match
+			var pos = j - offset; // position of the match copy in the current output
+			var end = j + match_length + 4; // minmatch = 4
+			while (j < end) {
+				output[j++] = output[pos++];
+			}
+		}
+
+		return j;
+	}
+	
+	function readMozlz4Base64String(str)
+	{
+		let input = Uint8Array.from(atob(str), c => c.charCodeAt(0));
+		let output;
+		let uncompressedSize = input.length*3;  // size estimate for uncompressed data!
+
+		// Decode whole file.
+		do {
+			output = new Uint8Array(uncompressedSize);
+			uncompressedSize = decodeLz4Block(input, output, 8+4);  // skip 8 byte magic number + 4 byte data size field
+			// if there's more data than our output estimate, create a bigger output array and retry (at most one retry)
+		} while (uncompressedSize > output.length);
+
+		output = output.slice(0, uncompressedSize); // remove excess bytes
+
+		let decodedText = new TextDecoder().decode(output);
+		console.log(JSON.parse(decodedText));
+	};
+	
+	function onResponse(response) {
+//		console.log("Received " + response);
+//		let binary_str = atob(response.pong);
+//		console.log(binary_str);
+		readMozlz4Base64String(response.pong);
+
+	}
+
+	function onError(error) {
+		console.log(`Error: ${error}`);
+	}
+	var sending = browser.runtime.sendNativeMessage("search_engines_server",{action:'blah'});
+	sending.then(onResponse, onError);
+}
+
+nativeTest();
 
 /*
 console.log(encodeCharset("blahbla blah blah & blah", 'utf-8'));

@@ -102,7 +102,12 @@ document.addEventListener('mouseup', (ev) => {
 });
 
 function openQuickMenu(ev) {
-	browser.runtime.sendMessage({action: "openQuickMenuRequest", screenCoords: {x: ev.screenX, y: ev.screenY}, searchTerms: getSelectedText(ev.target)});
+//	console.log(window.getSelection());
+//	console.log(window.getSelection().getRangeAt(0));
+//	console.log(window.getSelection().getRangeAt(0).getBoundingClientRect());
+	
+	
+	browser.runtime.sendMessage({action: "openQuickMenuRequest", screenCoords: {x: quickMenuObject.screenCoords.x, y: quickMenuObject.screenCoords.y}, searchTerms: getSelectedText(ev.target)});
 }
 
 function main(coords, searchTerms) {
