@@ -167,6 +167,8 @@ function restoreOptions() {
 		
 		userOptions = result.userOptions || {};
 		
+		console.log(userOptions.quickMenuOffset);
+		
 		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
 		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys || false;
 		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu || false;
@@ -182,6 +184,8 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick || false;
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale || 1;
 		document.getElementById('i_quickMenuScale').value = (userOptions.quickMenuScale !== undefined) ? (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%" : "100%";
+		document.getElementById('n_quickMenuOffsetX').value = (userOptions.quickMenuOffset !== undefined) ? parseInt(userOptions.quickMenuOffset.x) : 0;
+		document.getElementById('n_quickMenuOffsetY').value = (userOptions.quickMenuOffset !== undefined) ? parseInt(userOptions.quickMenuOffset.y) : 0;
 		
 		document.getElementById('h_mouseButton').value = (userOptions.quickMenuMouseButton !== undefined) ? userOptions.quickMenuMouseButton : 3;
 		
@@ -230,6 +234,7 @@ function saveOptions(e) {
 			quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
 			quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 			quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
+			quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
 			contextMenu: document.getElementById('cb_contextMenu').checked
 		}
 
@@ -371,6 +376,16 @@ document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) =>
 
 document.getElementById('n_quickMenuItems').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 100, 1, 999);
+	saveOptions(e);
+});
+
+document.getElementById('n_quickMenuOffsetX').addEventListener('change', (e) => {
+	fixNumberInput(e.target, 0, -999, 999);
+	saveOptions(e);
+});
+
+document.getElementById('n_quickMenuOffsetY').addEventListener('change', (e) => {
+	fixNumberInput(e.target, 0, -999, 999);
 	saveOptions(e);
 });
 

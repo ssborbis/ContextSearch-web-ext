@@ -46,7 +46,9 @@ function notify(message, sender, sendResponse) {
 function loadUserOptions() {
 	
 	function onGot(result) {
+		
 		userOptions = result.userOptions || userOptions;
+		
 		browser.storage.local.get("searchEngines").then((r2) => {
 			if (typeof r2.searchEngines !== 'undefined') {
 				console.log('found separate searchEngines array in local storage.  Copying to userOptions and removing');
@@ -235,6 +237,7 @@ var userOptions = {
 	quickMenuAuto: false,
 	quickMenuScale: 1,
 	quickMenuScaleOnZoom: true,
+	quickMenuOffset: {x:0, y:0},
 	contextMenu: true
 };
 
@@ -376,10 +379,11 @@ function nativeTest() {
 	}
 
 	function onError(error) {
-		console.log(`Error: ${error}`);
+		console.log(`Error: ${error}`)
 	}
-	var sending = browser.runtime.sendNativeMessage("search_engines_server",{action:'blah'});
+	var sending = browser.runtime.sendNativeMessage("search_engines_server","{\"path\": \"C:\\Users\\Mike\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\iy8k3epd.default-1478560510169\\search.json.mozlz4\"}");
 	sending.then(onResponse, onError);
+	//C:\\Users\\Mike\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\iy8k3epd.default-1478560510169\\search.json.mozlz4
 }
 
 nativeTest();

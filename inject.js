@@ -111,14 +111,22 @@ function openQuickMenu(ev) {
 }
 
 function main(coords, searchTerms) {
+	
+	console.log(userOptions.quickMenuOffset);
+	userOptions.quickMenuOffset = userOptions.quickMenuOffset || {x:0, y:0};
+	userOptions.quickMenuOffset.x = userOptions.quickMenuOffset.x || 0;
+	userOptions.quickMenuOffset.y = userOptions.quickMenuOffset.y || 0;
+	
+	if (isNaN(userOptions.quickMenuOffset.x)) userOptions.quickMenuOffset.x = 0;
+	if (isNaN(userOptions.quickMenuOffset.y)) userOptions.quickMenuOffset.y = 0;
 
 	var xOffset=Math.max(document.documentElement.scrollLeft,document.body.scrollLeft);	
 	var yOffset=Math.max(document.documentElement.scrollTop,document.body.scrollTop);
 	
 	var hover_div = document.createElement('quickmenu');
-	hover_div.style.top = coords.y + yOffset - 2  + "px";
-	hover_div.style.left = coords.x + xOffset - 2 + "px";
-	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 1) + "px"; //icon width + padding + border
+	hover_div.style.top = coords.y + yOffset - 2 + userOptions.quickMenuOffset.y + "px";
+	hover_div.style.left = coords.x + xOffset - 2 + userOptions.quickMenuOffset.x + "px";
+	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 2) + "px"; //icon width + padding + border
 
 	hover_div.id = 'hover_div';
 	hover_div.onclick = () => {
@@ -211,6 +219,9 @@ function main(coords, searchTerms) {
 
 function scaleQuickMenu(hover_div) {
 	userOptions.quickMenuScaleOnZoom = userOptions.quickMenuScaleOnZoom || true;
+	userOptions.quickMenuScale = userOptions.quickMenuScale || 1;
+	
+	if (isNaN(userOptions.quickMenuScale)) userOptions.quickMenuScale = 1;
 	
 	let scale = window.devicePixelRatio;
 	let new_scale = (userOptions.quickMenuScaleOnZoom) ? (userOptions.quickMenuScale / scale) : userOptions.quickMenuScale;
