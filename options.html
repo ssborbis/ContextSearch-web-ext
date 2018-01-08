@@ -171,7 +171,8 @@
 		<div class='blobContainer'>
 			<div class='blobContainerHeader'><img src='icons/load.png' />Load Search Engines</div>
 			<div>
-				<div>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. 
+				<p><div id='b_showHelp'>Show Help</div></p>
+				<div id='help' style='display:none'>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. 
 				<p>Typical locations:</p>
 				<p><img class='smallIcon' src='icons/windows.png'>&nbsp;&nbsp;Windows</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 				<p><img class='smallIcon' src='icons/mac.png'>&nbsp;&nbsp;Mac OS X</p>
@@ -180,9 +181,10 @@
 				<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>				
 				<br />
 				See the How-To video below for more details.
-				</div>
+				
 				<br />
 				<hr />
+				</div>
 				<div>
 					<img id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
 					<span id='status'>&nbsp;</span>
@@ -192,7 +194,19 @@
 					<div id='searchEngineWarningDiv'></div>
 				</p>
 				<p><input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
-				<i>You will need to reload this file each time you change your search engine list</i>				
+				<i>You will need to reload this file each time you change your search engine list</i>
+
+				<div class='native_app'>
+					<hr />
+					<p> -OR- </p>
+					<p>
+						If you want your search engines file to reload automatically when you add or remove search engines you can install <a href='#'>this</a> native application
+					</p>
+					<p>
+						Enter the full path to <b>search.json.mozlz4</b> here. You can view your profile path by opening <i>about:profiles</i> in the address bar</a>
+					</p>
+					<input type='text' class='inputNice' id='i_searchJsonPath' style='width:90%'>
+				</div>
 			</div>
 		</div>
 		<div class='blobContainer'>
@@ -207,7 +221,8 @@
 			</div>	
 		</div>
 		<script src="mozlz4.js"></script>
-		<script src="options.js"></script>
+		<script src="searchEngineUtils.js"></script>
 		<script src="keyTable.js"></script>
+		<script src="options.js"></script>
 	</body>
 </html>

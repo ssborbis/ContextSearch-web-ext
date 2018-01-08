@@ -9,55 +9,9 @@ button.onchange = (ev) => {
 	readMozlz4File(file, (text) => { // on success
 
 		// parse the mozlz4 JSON into an object
-		var engines = JSON.parse(text).engines;
+		var engines = JSON.parse(text).engines;	
+		saveTo = searchEngineObjectToArray(engines);
 		
-		console.log(engines);
-
-		// iterate over search engines in search.json.mozlz4
-		for (var i in engines) {
-			var search_url = "", params_str = "", method = "", params, template = "";
-			var engine = engines[i];
-			
-			// skip hidden search engines
-			if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) continue;
-			
-			// iterate over urls array
-			for (var u=0;u<engine._urls.length;u++) {
-				var url = engine._urls[u];
-				
-				// skip urls with a declared type other than text/html
-				if (url.type && url.type != "text/html") continue;
-				
-				// get request method
-				method = url.method || "GET";
-				// get the main search url
-				search_url = url.template;
-				
-				template = url.template;
-				
-				// get url params
-				for (var p in url.params)
-					params_str+="&" + url.params[p].name + "=" + url.params[p].value;
-			
-				params = url.params;
-			}
-			
-			if (search_url.match(/[=&\?]$/)) search_url+=params_str.replace(/^&/,"");
-			else search_url+=params_str.replace(/^&/,"?");
-			
-			// push object to array for storage.local
-			saveTo.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template, "queryCharset": engine.queryCharset || "UTF-8"});
-		}
-		
-		console.log(saveTo);
-		
-		// sort search engine array by order key
-		saveTo = saveTo.sort(function(a, b){
-			if(a.order < b.order) return -1;
-			if(a.order > b.order) return 1;
-			return 0;
-		});
-
 		var icons = loadRemoteIcons(saveTo);
 		var timeout_start = Date.now();
 		var timeout = 15000;
@@ -166,45 +120,45 @@ function restoreOptions() {
 	function onGot(result) {
 		
 		userOptions = result.userOptions || {};
-		
-		console.log(userOptions.quickMenuOffset);
-		
-		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs || false;
-		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys || false;
-		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu || false;
-		
-		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns || 4;
-		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems || 100;
-		
-		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey || 0;
-		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey || 0] || "Set";
-		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey || false;
-		document.getElementById('r_quickMenuOnMouse').checked = (userOptions.quickMenuOnMouse !== undefined) ? userOptions.quickMenuOnMouse : true;
-		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto || false;
-		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick || false;
-		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale || 1;
-		document.getElementById('i_quickMenuScale').value = (userOptions.quickMenuScale !== undefined) ? (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%" : "100%";
-		document.getElementById('n_quickMenuOffsetX').value = (userOptions.quickMenuOffset !== undefined) ? parseInt(userOptions.quickMenuOffset.x) : 0;
-		document.getElementById('n_quickMenuOffsetY').value = (userOptions.quickMenuOffset !== undefined) ? parseInt(userOptions.quickMenuOffset.y) : 0;
-		
-		document.getElementById('h_mouseButton').value = (userOptions.quickMenuMouseButton !== undefined) ? userOptions.quickMenuMouseButton : 3;
+
+		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs;
+		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys;
+		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu;	
+		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns;
+		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems;	
+		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey;
+		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
+		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
+		document.getElementById('r_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
+		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
+		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
+		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
+		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
+		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
+		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;	
+		document.getElementById('h_mouseButton').value = userOptions.quickMenuMouseButton;
 		
 		if (document.getElementById('h_mouseButton').value == 3)
 			document.getElementById('img_rightMouseButton').style.opacity = 1;
 		else if (document.getElementById('h_mouseButton').value == 1)
 			document.getElementById('img_leftMouseButton').style.opacity = 1;
 		
-		document.getElementById('cb_contextMenu').checked = (userOptions.contextMenu !== undefined) ? userOptions.contextMenu : true;
+		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
+		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath;
 		
 		disableOptions();
+		
+		if (userOptions.searchEngines.length === 0)
+			document.getElementById('b_showHelp').dispatchEvent(new Event('click'));
 	}
   
 	function onError(error) {
 		console.log(`Error: ${error}`);
 	}
 
-	var getting = browser.storage.local.get("userOptions");
+	var getting = browser.runtime.sendMessage({action: "getUserOptions"});
 	getting.then(onGot, onError);
+	
 }
 
 function saveOptions(e) {
@@ -235,7 +189,8 @@ function saveOptions(e) {
 			quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 			quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 			quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
-			contextMenu: document.getElementById('cb_contextMenu').checked
+			contextMenu: document.getElementById('cb_contextMenu').checked,
+			searchJsonPath: document.getElementById('i_searchJsonPath').value
 		}
 
 	});
@@ -261,63 +216,6 @@ function loadHowToImg() {
 	}
 }
 
-function loadRemoteIcons(searchEngines) {
-	var icons = [];
-	for (var i=0;i<searchEngines.length;i++) {		
-		var img = new Image();
-		img.favicon_urls = [];
-		img.index = i;
-		
-		if (searchEngines[i].icon_url.match(/^resource/) !== null) {
-			var a = document.createElement('a');
-			a.href = searchEngines[i].query_string;
-			img.src = "http://" + a.hostname + "/favicon.ico";
-			img.favicon_urls = [
-				"https://icons.better-idea.org/icon?url=" + a.hostname + "&size=16",
-				"https://plus.google.com/_/favicon?domain=" + a.hostname
-			];
-
-		} else 
-			img.src = searchEngines[i].icon_url;
-
-		img.onload = function() {
-			let c = document.createElement('canvas');
-			let ctx = c.getContext('2d');
-			ctx.canvas.width = this.naturalWidth;
-			ctx.canvas.height = this.naturalHeight;
-			ctx.drawImage(this, 0, 0);
-			this.base64String = c.toDataURL();
-		};
-		
-		img.onerror = function() {			
-			if (this.favicon_urls.length !== 0) {
-				console.log("Failed getting favicon at " + this.src);
-				this.src = this.favicon_urls.pop();
-				console.log("Trying favicon at " + this.src);
-			}
-			else {
-				var c = document.createElement('canvas');
-				var ctx = c.getContext('2d');
-				ctx.canvas.width = 16;
-				ctx.canvas.height = 16;
-				ctx.fillStyle = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-				ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-				ctx.beginPath();
-				ctx.lineWidth="4";
-				ctx.rect(0,0,ctx.canvas.width, ctx.canvas.height);
-				ctx.strokeStyle='black';
-				ctx.stroke();
-				this.base64String = c.toDataURL();
-				console.log("Failed to load favicon. Using color " + ctx.fillStyle);
-				this.failed = true;
-			}
-		};
-		icons.push(img);
-	}
-	
-	return icons;
-}
-
 function swapKeys(e) {
 	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
 	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
@@ -330,20 +228,6 @@ function disableOptions() {
 		if (c !== document.getElementById('cb_quickMenu'))
 			c.disabled = !document.getElementById('cb_quickMenu').checked;
 	}
-/*	
-	var isDisabled = !document.getElementById('cb_quickMenu').checked;
-	document.getElementById('n_quickMenuColumns').disabled = isDisabled;
-	document.getElementById('n_quickMenuItems').disabled = isDisabled;
-	document.getElementById('b_quickMenuKey').disabled = isDisabled;
-	document.getElementById('r_quickMenuOnKey').disabled = isDisabled;
-	document.getElementById('r_quickMenuOnMouse').disabled = isDisabled;
-	document.getElementById('r_quickMenuOnClick').disabled = isDisabled;
-	document.getElementById('r_quickMenuAuto').disabled = isDisabled;
-	document.getElementById('range_quickMenuScale').disabled = isDisabled;
-	document.getElementById('i_quickMenuScale').disabled = isDisabled;
-	document.getElementById('img_rightMouseButton').disabled = isDisabled;
-	document.getElementById('img_leftMouseButton').disabled = isDisabled;
-*/
 }
 
 function changeButtons(e, button) {
@@ -358,6 +242,20 @@ function changeButtons(e, button) {
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.addEventListener("DOMContentLoaded", loadHowToImg);
+
+document.addEventListener("DOMContentLoaded", (e) => {
+	if (typeof browser.runtime.sendNativeMessage !== 'function') {
+		let els = document.getElementsByClassName('native_app');
+		for (el of els) {
+			el.style.display = "none";
+		}
+	}
+});
+
+document.getElementById('b_showHelp').addEventListener('click', (e) => {
+	document.getElementById('help').style.display = "";
+	e.target.parentNode.removeChild(e.target);
+});
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
@@ -402,6 +300,7 @@ document.getElementById('range_quickMenuScale').addEventListener('input', (ev) =
 });
 
 document.getElementById('range_quickMenuScale').addEventListener('change', saveOptions);
+document.getElementById('i_searchJsonPath').addEventListener('change', saveOptions);
 
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';
