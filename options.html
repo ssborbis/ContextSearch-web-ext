@@ -10,9 +10,9 @@
 				background-color:#E9ECEF;
 				padding:40px;
 				color:#343a40;
-				overflow-y:hidden;
+				overflow-y:hidden; 
 			}
-			P.code {
+			.code {
 				font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
 				font-weight: normal;
 				-moz-user-select: text;
@@ -56,10 +56,10 @@
 				border: 2px outset black;
 				background-color:#DDDDDD;
 				font-size:12pt;
-				padding:4px 8px;
+				padding:4px 4px;
 				color:black;
-				font-weight:normal;
-				min-width:70px;
+				font-weight:bold;
+				min-width:60px;
 				display:inline-block;
 				text-align:center;
 			}
@@ -69,7 +69,7 @@
 			}
 			.slider {
 				-webkit-appearance: none;
-				height: 15px;
+				height: 12px;
 				border-radius: 5px;  
 				background: #E9ECEF;
 				outline: none;
@@ -81,15 +81,15 @@
 			.slider::-webkit-slider-thumb {
 				-webkit-appearance: none;
 				appearance: none;
-				width: 25px;
-				height: 25px;
+				width: 16px;
+				height: 16px;
 				border-radius: 50%; 
 				background: #6ec179;
 				cursor: pointer;
 			}
 			.slider::-moz-range-thumb {
-				width: 25px;
-				height: 25px;
+				width: 16px;
+				height: 16px;
 				border-radius: 50%;
 				background: #6ec179;
 				cursor: pointer;
@@ -104,50 +104,223 @@
 				border:1px solid grey;
 				padding:2px;
 			}
+
+			 /* The switch - the box around the slider */
+			.switch {
+			  position: relative;
+			  display: inline-block;
+			  width: 36px;
+			  height: 20px;
+			}
+
+			/* Hide default HTML checkbox */
+			.switch input {display:none;}
+
+			/* The slider */
+			.toggleSlider {
+			  position: absolute;
+			  cursor: pointer;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  height:8px;
+			  background-color: #ddd;
+			  transition: .2s;
+			}
+
+			.toggleSlider:before {
+			  position: absolute;
+			  content: "";
+			  height: 16px;
+			  width: 16px;
+			  left: -3px;
+			  bottom: -5px;
+			  background-color: #eee;
+			  transition: .2s;
+			}
+
+			input:checked + .toggleSlider {
+			  background-color: #c0e2c5;
+			}
+
+			input:focus + .toggleSlider {
+			  box-shadow: 0 0 1px #c0e2c5;
+			}
+
+			input:checked + .toggleSlider:before {
+			  transform: translateX(20px);
+			  background-color:#6ec179;
+			}
+
+			/* Rounded sliders */
+			.toggleSlider.round {
+			  border-radius: 24px;
+			  border:1px solid #aaa;
+			}
+
+			.toggleSlider.round:before {
+			  border-radius: 50%;
+			  border:1px solid #aaa;
+			}
+			
+			.optionDiv {
+				display:table;
+				padding:4px;
+			}
+			.optionDiv .label {
+				padding-left:20px;
+				position:relative;
+				top:-9px;
+			}
+			.fancyRadio {
+				color:blue;
+				background-color:blue;
+			}
+			
+			.container {
+				display: block;
+				position: relative;
+				padding-left: 35px;
+				margin-bottom: 12px;
+				cursor: pointer;
+				font-size: 12pt;
+				user-select: none;
+			}
+
+			/* Hide the browser's default radio button */
+			.container input {
+				position: absolute;
+				opacity: 0;
+				cursor: pointer;
+			}
+
+			/* Create a custom radio button */
+			.checkmark {
+				position: absolute;
+				top: 5px;
+				left: 0;
+				height: 16px;
+				width: 16px;
+				background-color: #eee;
+				border-radius: 50%;
+				border:1px solid grey;
+			}
+
+			/* On mouse-over, add a grey background color */
+			.container:hover input ~ .checkmark {
+				background-color: #ccc;
+			}
+
+			/* When the radio button is checked, add a blue background */
+			.container input:checked ~ .checkmark {
+				background-color: #6ec179;
+			}
+
+			/* Create the indicator (the dot/circle - hidden when not checked) */
+			.checkmark:after {
+				content: "";
+				position: absolute;
+				display: none;
+			}
+
+			/* Show the indicator (dot/circle) when checked */
+			.container input:checked ~ .checkmark:after {
+				display: block;
+			}
+
+			/* Style the indicator (dot/circle) */
+			.container .checkmark:after {
+			/*	top: 9px;
+				left: 9px;
+				width: 8px;
+				height: 8px;
+				border-radius: 50%;
+				background: white;*/
+			}
 		</style>
 	</head>
 	<body>
 		<div class='blobContainer'>
 			<div class='blobContainerHeader'><img src='icons/settings.png' />Options</div>
 			<div>
-				<input type='checkbox' id='cb_backgroundTabs' /><label> Always Open Tabs In Background</label><br />
-				<input type='checkbox' id='cb_swapKeys' /><label> Swap Ctrl And Shift Keys</label><br />
+				<div class='optionDiv'>
+					<label class="switch">
+						<input type="checkbox" id='cb_backgroundTabs'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>Always Open Tabs In Background</label>
+				</div>
+				
+				<div class='optionDiv'>
+					<label class="switch">
+						<input type="checkbox" id='cb_swapKeys'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>Swap Ctrl And Shift Keys</label>
+				</div>
+				
+				<!--<input type='checkbox' id='cb_backgroundTabs' /><label> Always Open Tabs In Background</label><br />-->
+				<!-- <input type='checkbox' id='cb_swapKeys' /><label> Swap Ctrl And Shift Keys</label><br />-->
 
 				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
 				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
 				<hr />
-				<div class='blobContainerHeader' style='padding-left:0px;border:0px'><img src='icons/context_menu.png' />Context Menu</div>
-				<input type='checkbox' id='cb_contextMenu' /><label> Enable Context Menu</label><br />
+				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img src='icons/context_menu.png' />Context Menu</div>
+				<div style='display:none'></div>
+				<div class='optionDiv'>
+					<label class="switch">
+						<input type="checkbox" id='cb_contextMenu'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>Enable Context Menu</label>
+				</div>
+				
+				<!--<input type='checkbox' id='cb_contextMenu' /><label> Enable Context Menu</label><br />-->
 				<hr />
 				<div id='quickMenuOptions'>
-				<div class='blobContainerHeader' style='padding-left:0px;border:0px'><img src='icons/quick_menu.png' />Quick Menu</div>
-				<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label> <br />
-				<p style='margin-left:30px;font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;'>
+				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img src='icons/quick_menu.png' />Quick Menu</div>
+				<div style='display:none'></div>
+				<div class='optionDiv'>
+					<label class="switch">
+						<input type="checkbox" id='cb_quickMenu'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>Enable Quick Menu</label>
+				</div>
+				<!--<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label> <br />-->
+				<div style='margin-left:30px;font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;'>
 					<i>Quick Menu disabled on addons.mozilla.org</i><br />
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
-				</p>
+				</div>
 				<p>
-					<p>Select Text And</p>
-					<p>
-						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
-						<span style='width:25px;display:inline-block'></span><label>Open Menu Automatically</label><img class='smallIcon'  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-					</p>
+					<p>Select Text And</p>				
+					<label class="container">
+						<input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
+						<span class="checkmark"></span>Open Menu Automatically<img class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+					</label>
+	
 					<p style='display:none'>
-						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
-						<span style='width:25px;display:inline-block'></span><label>Click &nbsp;&nbsp;&nbsp;</label><img src='icons/leftmouse.png' class='smallIcon' title='Left Button'>
+						<label class="container">Click &nbsp;&nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' title='Left Button'>
+							<input type='radio' id='r_quickMenuOnClick' class='fancyRadio' name='quickMenuMethod' />
+							<span class="checkmark"></span>
+						</label>
 					</p>
-					<p>
-						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnMouse'  name='quickMenuMethod' />
-						<span style='width:25px;display:inline-block'></span><label>Hold &nbsp;&nbsp;&nbsp;</label>
-						<img id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
-						<span style='width:25px;display:inline-block'></span>
-						<img id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
-						<input id='h_mouseButton' type='hidden' value='3' />
-					</p>
-					<p>
-						<span style='width:25px;display:inline-block'></span><input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
-						<span style='width:25px;display:inline-block'></span><label>Press Key &nbsp;&nbsp;&nbsp;</label><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
-					</p>
+				
+					<label class="container">
+						<input type='radio' id='r_quickMenuOnMouse' class='fancyRadio' name='quickMenuMethod' />
+						<span class="checkmark"></span>Hold &nbsp;&nbsp;&nbsp;
+					<img id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
+					<span style='width:25px;display:inline-block'></span>
+					<img id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
+					</label>
+					<input id='h_mouseButton' type='hidden' value='3' />
+				
+					<label class="container">Press Key &nbsp;&nbsp;&nbsp;
+						<input type='radio' id='r_quickMenuOnKey' class='fancyRadio' name='quickMenuMethod' />
+						<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+					</label>
+					
 				</p>
 				<p>
 					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Columns</label>
@@ -171,8 +344,43 @@
 		<div class='blobContainer'>
 			<div class='blobContainerHeader'><img src='icons/load.png' />Load Search Engines</div>
 			<div>
-				<p><div id='b_showHelp'>Show Help</div></p>
-				<div id='help' style='display:none'>Firefox 57+ Add-ons cannot access your stored search engines automatically.  Use the button below to load your search settings file. 
+				<p>Firefox 57+ Add-ons cannot access your stored search engines automatically without a helper application</p>
+				<p>ContextSearch provides the following options for loading your installed search engines:</p>
+				<ul>
+					<li><b>Automatic</b><br />Install a small helper app to keep your list updated automatically</li><br />
+					<li><b>Manual</b><br />Use the <i>Browse</i> button below to load your search engines. You will need to do this whenever you modify your search engine list.</li>
+				</ul>		
+				<hr />
+				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Automatic (beta)</div>
+				<div style='padding:0;margin:0;padding-left:20px'>
+				Requires Helper App:<br />
+				<p>
+					<img src='icons/windows.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest' />Windows installer</a><br />
+					<img src='icons/linux.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App'>source code</a><br />
+					<img src='icons/mac.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App'>source code</a><br />
+				</p>
+				<div id='div_searchJsonPathResponse'>&nbsp;</div>Enter the full path to <b>search.json.mozlz4</b>. You can find your profile path by opening <b>about:profiles</b> in the address bar<br />
+				<input type='text' class='inputNice code' id='i_searchJsonPath' style='width:90%;padding:4px;' /><br />
+				<span style='font-size:10pt'>
+					&nbsp;&nbsp;&nbsp;e.g. <i>C:/Users/&lt;username&gt;/Mozilla/Firefox/Profiles/1a34asfs.default/search.json.mozlz4</i>
+				</span>
+				</div>
+				<hr />
+				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Manual</div>
+				<div style='padding:0;margin:0;padding-left:20px'>
+				<p>
+				<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
+				<span style='font-size:10pt'>Browse to your profile folder and select your <b>search.json.mozlz4</b> file. You can find your profile path by opening <b>about:profiles</b> in the address bar</span>
+				
+				<div id='status_div' style='display:none;margin-top:20px;border-left:2px solid #E9ECEF;margin-left:40px;padding-left:10px'>
+					<img id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+					<span id='status'>&nbsp;</span>
+					
+					<p id='searchEngineWarningDivContainer' style='display:none'>
+						<img src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly due to non UTF-8 character encoding. If you experience problems with these search engines, help the developers by reporting issues <a href='https://github.com/ssborbis/ContextSearch-web-ext/issues'>here</a>
+						<div id='searchEngineWarningDiv'></div>
+					</p>
+				</div>
 				<p>Typical locations:</p>
 				<p><img class='smallIcon' src='icons/windows.png'>&nbsp;&nbsp;Windows</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 				<p><img class='smallIcon' src='icons/mac.png'>&nbsp;&nbsp;Mac OS X</p>
@@ -181,31 +389,6 @@
 				<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>				
 				<br />
 				See the How-To video below for more details.
-				
-				<br />
-				<hr />
-				</div>
-				<div>
-					<img id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-					<span id='status'>&nbsp;</span>
-				</div>
-				<p id='searchEngineWarningDivContainer' style='display:none'>
-					<img src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly due to non UTF-8 character encoding. If you experience problems with these search engines, help the developers by reporting issues <a href='https://github.com/ssborbis/ContextSearch-web-ext/issues'>here</a>
-					<div id='searchEngineWarningDiv'></div>
-				</p>
-				<p><input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
-				<i>You will need to reload this file each time you change your search engine list</i>
-
-				<div class='native_app'>
-					<hr />
-					<p> -OR- </p>
-					<p>
-						If you want your search engines file to reload automatically when you add or remove search engines you can install <a href='#'>this</a> native application
-					</p>
-					<p>
-						Enter the full path to <b>search.json.mozlz4</b> here. You can view your profile path by opening <i>about:profiles</i> in the address bar</a>
-					</p>
-					<input type='text' class='inputNice' id='i_searchJsonPath' style='width:90%'>
 				</div>
 			</div>
 		</div>

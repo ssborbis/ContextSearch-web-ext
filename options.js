@@ -11,21 +11,31 @@ button.onchange = (ev) => {
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;	
 		saveTo = searchEngineObjectToArray(engines);
-		
-		var icons = loadRemoteIcons(saveTo);
-		var timeout_start = Date.now();
-		var timeout = 15000;
-		
+
+		document.getElementById('status_div').style.display='';
 		statusMessage({
 			img: "icons/spinner.svg",
 			msg: "Loading remote content"
 		});
 		
-		var remoteIconsInterval = setInterval(function() {
-			
-			function onSet() {
+		loadRemoteIcons({
+			searchEngines: saveTo,
+			callback: (details) => {
+				searchEngines = details.searchEngines;
 				saveOptions();
 				
+				if (details.hasFailedCount) {
+					statusMessage({
+						img: "icons/alert.png",
+						msg: "Loaded " + icons.length + " search engines and " + (icons.length - failed_count) + " of " + icons.length + " icons"
+					});
+				} else {
+					statusMessage({
+						img: "icons/yes.png",
+						msg: "Success!  Loaded " + saveTo.length + " search engines"
+					});
+				}
+					
 				if (window.location.href.match(/#quickload$/) !== null) {
 					browser.runtime.sendMessage({action: "closeWindowRequest"});
 				}
@@ -43,63 +53,9 @@ button.onchange = (ev) => {
 						el.appendChild(p);
 					}
 				}
-				
-				clearInterval(remoteIconsInterval);
 			}
-		
-		/*	function onError() {
-				statusMessage({
-					img: "icons/no.png",
-					msg: "Failed to load search engines :("
-				});
-				console.log(`Error: ${error}`);
-			}
-		*/	
-			function getFailedCount() {
-				var c = 0;
-				for (var i=0;i<icons.length;i++) {
-					if (typeof icons[i].failed !== 'undefined') c++;
-				}
-				return c;
-			}
-			
-			var counter = 0;
-			for (var i=0;i<icons.length;i++) {
-				if (typeof icons[i].base64String !== 'undefined') {
-					saveTo[i].icon_base64String = icons[i].base64String;
-					counter++;
-				}
-			}
-			
-			if (Date.now() - timeout_start > timeout ) {
-				
-				statusMessage({
-					img: "icons/alert.png",
-					msg: "Loaded " + icons.length + " search engines and " + (icons.length - getFailedCount()) + " of " + icons.length + " icons"
-				});
-				
-				onSet();
-			}
-			
-			if (counter === icons.length) {
+		});
 
-				var failed_count = getFailedCount();
-				
-				if (failed_count > 0)
-					statusMessage({
-						img: "icons/alert.png",
-						msg: "Loaded " + icons.length + " search engines and " + (icons.length - failed_count) + " of " + icons.length + " icons"
-					});
-				else
-					statusMessage({
-						img: "icons/yes.png",
-						msg: "Success!  Loaded " + saveTo.length + " search engines"
-					});
-
-				onSet();
-			}
-		}, 250);
-		
 	}, function() { // on fail
 
 		// print status message to Options page
@@ -148,8 +104,6 @@ function restoreOptions() {
 		
 		disableOptions();
 		
-		if (userOptions.searchEngines.length === 0)
-			document.getElementById('b_showHelp').dispatchEvent(new Event('click'));
 	}
   
 	function onError(error) {
@@ -163,36 +117,37 @@ function restoreOptions() {
 
 function saveOptions(e) {
 
-	if (typeof e !== 'undefined') e.preventDefault();
+//	if (typeof e !== 'undefined') e.preventDefault();
 	
 	function onSet() {
-		browser.runtime.sendMessage({action: "updateUserOptions"});
+		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions});
 	}
 	
 	function onError(error) {
 		console.log(`Error: ${error}`);
 	}
+	
+	userOptions = {
+		searchEngines: (saveTo.length > 0) ? saveTo : userOptions.searchEngines,
+		backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
+		swapKeys: document.getElementById('cb_swapKeys').checked,
+		quickMenu: document.getElementById('cb_quickMenu').checked,
+		quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
+		quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
+		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
+		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
+		quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
+		quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
+		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
+		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
+		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
+		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
+		contextMenu: document.getElementById('cb_contextMenu').checked,
+		searchJsonPath: document.getElementById('i_searchJsonPath').value
+	}
 
 	var setting = browser.storage.local.set({
-		userOptions: {
-			searchEngines: (saveTo.length > 0) ? saveTo : userOptions.searchEngines,
-			backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
-			swapKeys: document.getElementById('cb_swapKeys').checked,
-			quickMenu: document.getElementById('cb_quickMenu').checked,
-			quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
-			quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
-			quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
-			quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
-			quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
-			quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
-			quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
-			quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
-			quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
-			quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
-			contextMenu: document.getElementById('cb_contextMenu').checked,
-			searchJsonPath: document.getElementById('i_searchJsonPath').value
-		}
-
+		"userOptions": userOptions
 	});
 	setting.then(onSet, onError);
 
@@ -222,6 +177,7 @@ function swapKeys(e) {
 }
 
 function disableOptions() {
+	if (1) return false;
 	let children = document.getElementById('quickMenuOptions').querySelectorAll('*');
 
 	for (let c of children) {
@@ -242,20 +198,6 @@ function changeButtons(e, button) {
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
 document.addEventListener("DOMContentLoaded", loadHowToImg);
-
-document.addEventListener("DOMContentLoaded", (e) => {
-	if (typeof browser.runtime.sendNativeMessage !== 'function') {
-		let els = document.getElementsByClassName('native_app');
-		for (el of els) {
-			el.style.display = "none";
-		}
-	}
-});
-
-document.getElementById('b_showHelp').addEventListener('click', (e) => {
-	document.getElementById('help').style.display = "";
-	e.target.parentNode.removeChild(e.target);
-});
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
@@ -300,8 +242,48 @@ document.getElementById('range_quickMenuScale').addEventListener('input', (ev) =
 });
 
 document.getElementById('range_quickMenuScale').addEventListener('change', saveOptions);
-document.getElementById('i_searchJsonPath').addEventListener('change', saveOptions);
-
+document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
+	
+	let el = document.getElementById('div_searchJsonPathResponse');
+	
+	el.innerText = "Validating ...";
+	
+	ev.target.value = ev.target.value.replace(/\\/g, "/").trim();
+	if (ev.target.value == "") {
+		el.innerText = "";
+		return false;
+	}
+	
+	if (ev.target.value.match(/\/search.json.mozlz4$/) === null) { 
+		el.innerText = "Path must contain 'search.json.mozlz4'";
+		el.style.color = 'red';
+		return false;
+	}
+	
+	function onResponse(response) {
+		
+		if (response.error) {
+			el.innerText = response.error;
+			el.style.color = 'red';
+			return false;
+		}
+		
+		el.innerText = "Success";
+		el.style.color = 'blue';
+		saveOptions(ev);
+//		nativeApp();
+	}
+	
+	function onError(error) {
+		console.log(error);
+		el.innerText = "Failed to load file (" + error.message + ") Is native app installed?";
+		el.style.color = 'red';
+	}
+	
+	var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + ev.target.value + '"}');
+	sending.then(onResponse, onError);
+	
+});
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';
 	var img = document.createElement('img');
@@ -335,7 +317,7 @@ if (window.location.href.match(/#quickload$/) !== null) {
 	document.body.appendChild(loadButton);
 	document.title = "Reload Search Engines";
 	
-	loadButton.addEventListener('change', (e) => {
+	loadButton.addEventListener('change', (ev) => {
 		var img = document.createElement('img');
 		img.src = 'icons/spinner.svg';
 		img.style.height = '20px';

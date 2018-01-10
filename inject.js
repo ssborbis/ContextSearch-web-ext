@@ -277,9 +277,10 @@ document.addEventListener("selectionchange", (ev) => {
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-
-	if (typeof message.userOptions !== 'undefined')
+	
+	if (typeof message.userOptions !== 'undefined') {
 		userOptions = message.userOptions || {};
+	}
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
 			

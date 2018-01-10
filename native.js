@@ -15,80 +15,92 @@ function nativeApp() {
 
 		output = output.slice(0, uncompressedSize); // remove excess bytes
 
-		let decodedText = new TextDecoder().decode(output);	
+		let decodedText = new TextDecoder().decode(output);
+		
 		return JSON.parse(decodedText);
 	}
 	
 	function onResponse(response) {
+		
+		if (response.error) {
+			console.error(response.error);
+			return false;
+		}
 		
 		browser.storage.local.get("searchObject_last_mod").then((result) => {
 			if (result.searchObject_last_mod === undefined) {
 				result.searchObject_last_mod = Date.now();
 				console.log("No searchObject_last_mod in localStorage. Creating...");
 			}
-			if (result.searchObject_last_mod === response.last_mod) {
-				console.log("Same modification time. Doing nothing...");
-				return false;
-			} 
-			if (response.base64 === undefined || response.last_mod === undefined) {
-				console.err("Bad native message");
-			}
+			
+			if (result.searchObject_last_mod === response.last_mod) return false;
 
-			console.log('Parsing native message');
-			
-			let searchObject = readMozlz4Base64String(response.base64);
-			
-			console.log(searchObject);
-			
-			browser.storage.local.set({'searchObject': searchObject});
-			browser.storage.local.set({'searchObject_last_mod': response.last_mod});
-			
-			let saveTo = searchEngineObjectToArray(searchObject.engines);
-			
-			var icons = loadRemoteIcons(saveTo);
-			var timeout_start = Date.now();
-			var timeout = 15000;
-
-			var remoteIconsInterval = setInterval(function() {
+			browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath + '"}').then((response) => {
 				
-				function onSet() {				
-					userOptions.searchEngines = saveTo;
-					browser.storage.local.set({'userOptions': userOptions});
-					getAllOpenTabs((tabs) => {
-						for (let tab of tabs)
-							browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
-					});
-					clearInterval(remoteIconsInterval);
+				if (response.error) {
+					console.error(response.error);
+					return false;
 				}
 				
-				var counter = 0;
-				for (var i=0;i<icons.length;i++) {
-					if (typeof icons[i].base64String !== 'undefined') {
-						saveTo[i].icon_base64String = icons[i].base64String;
-						counter++;
+				if (!response.base64) {
+					console.error("Bad message. No base64 data");
+					return false;
+				}
+
+				console.log('Parsing native message');
+				let searchObject = readMozlz4Base64String(response.base64);
+				
+				console.log(searchObject);
+				
+				browser.storage.local.set({'searchObject_last_mod': response.last_mod});
+				
+				let se = searchEngineObjectToArray(searchObject.engines);
+				loadRemoteIcons({
+					searchEngines: se,
+					callback: (details) => {
+						userOptions.searchEngines = details.searchEngines;
+						browser.storage.local.set({'userOptions': userOptions});
+						getAllOpenTabs((tabs) => {
+							for (let tab of tabs)
+								browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+						});
 					}
-				}
-				
-				if (Date.now() - timeout_start > timeout ) {
-					console.log('timeout loading remote icons');
-					onSet();
-				}
-				
-				if (counter === icons.length) {
-					onSet();
-				}
-			
-			}, 250);
+				});
+			});
 			
 		});
+		
+		throttle();
 	}
 
 	function onError(error) {
-		console.log(`Error: ${error}`)
+		console.log(`Error: ${error}`);
+		throttle();
 	}
-
-	var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath.replace(/\\/g, "/") + '"}');
-	sending.then(onResponse, onError);
+	
+	function throttle() {
+		setTimeout(()=> {
+			var gettingPage = browser.runtime.getBackgroundPage();
+			gettingPage.then((page) => {
+				page.nativeAppActive = false;
+			});
+		},2500);
+	}
+	
+	var gettingPage = browser.runtime.getBackgroundPage();
+	gettingPage.then((page) => {
+		if (page.nativeAppActive) console.log('throttled');
+		if (page.nativeAppActive) return false;
+			
+		page.nativeAppActive = true;
+		
+		var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + userOptions.searchJsonPath + '"}');
+		sending.then(onResponse, onError);
+	});
+	
+//	browser.runtime.sendNativeMessage("ContextSearch",'{"request": "%version%"}').then((response) => {
+//	console.log(response);
+//});
 
 }
 

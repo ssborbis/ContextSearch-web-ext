@@ -3,10 +3,11 @@ function notify(message, sender, sendResponse) {
 	switch(message.action) {
 		
 		case "updateUserOptions":
-			loadUserOptions();
-			getAllOpenTabs((tabs) => {
-				for (let tab of tabs)
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+			loadUserOptions(() => {
+				getAllOpenTabs((tabs) => {
+					for (let tab of tabs)
+						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+				});
 			});
 			break;
 			
@@ -43,13 +44,14 @@ function notify(message, sender, sendResponse) {
 	}
 }
 
-function loadUserOptions() {
+function loadUserOptions(callback) {
 	
+	callback = callback || function() {};
 	function onGot(result) {
 		
 		// Update default values instead of replacing with object of potentially undefined values
 		for (let key in result.userOptions)
-			userOptions[key] = result.userOptions[key] || userOptions[key];
+			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
 
 		browser.storage.local.get("searchEngines").then((r2) => {
 			if (typeof r2.searchEngines !== 'undefined') {
@@ -59,9 +61,11 @@ function loadUserOptions() {
 				browser.storage.local.set({"userOptions": userOptions});
 			}
 			buildContextMenu();
+			callback();
 		}, () => {
 			console.log('error getting searchEngines from localStorage');
 			buildContextMenu();
+			callback();
 		});
 	}
   

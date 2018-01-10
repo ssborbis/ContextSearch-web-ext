@@ -47,68 +47,18 @@ function searchEngineObjectToArray(engines) {
 	return searchEnginesArray;
 }
 
-function loadRemoteIcons(searchEngines) {
-	var icons = [];
-	for (var i=0;i<searchEngines.length;i++) {		
-		var img = new Image();
-		img.favicon_urls = [];
-		img.index = i;
-		
-		if (searchEngines[i].icon_url.match(/^resource/) !== null || searchEngines[i].icon_url == "") {
-			var url = new URL(searchEngines[i].query_string);
-			img.src = "http://" + url.hostname + "/favicon.ico";
-			img.favicon_urls = [
-				"https://icons.better-idea.org/icon?url=" + url.hostname + "&size=16",
-				"https://plus.google.com/_/favicon?domain=" + url.hostname
-			];
-
-		} else 
-			img.src = searchEngines[i].icon_url;
-
-		img.onload = function() {
-			let c = document.createElement('canvas');
-			let ctx = c.getContext('2d');
-			ctx.canvas.width = this.naturalWidth;
-			ctx.canvas.height = this.naturalHeight;
-			ctx.drawImage(this, 0, 0);
-			this.base64String = c.toDataURL();
-		};
-		
-		img.onerror = function() {			
-			if (this.favicon_urls.length !== 0) {
-				console.log("Failed getting favicon at " + this.src);
-				this.src = this.favicon_urls.pop();
-				console.log("Trying favicon at " + this.src);
-			}
-			else {
-				var c = document.createElement('canvas');
-				var ctx = c.getContext('2d');
-				ctx.canvas.width = 16;
-				ctx.canvas.height = 16;
-				ctx.fillStyle = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-				ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-				ctx.beginPath();
-				ctx.lineWidth="4";
-				ctx.rect(0,0,ctx.canvas.width, ctx.canvas.height);
-				ctx.strokeStyle='black';
-				ctx.stroke();
-				this.base64String = c.toDataURL();
-				console.log("Failed to load favicon. Using color " + ctx.fillStyle);
-				this.failed = true;
-			}
-		};
-		icons.push(img);
-	}
-	
-	return icons;
-}
-
-function loadRemoteIconsNew(options) {
+function loadRemoteIcons(options) {
 	
 	var timeout_start = Date.now();
 	var timeout = options.timeout || 15000;
 	var callback = options.callback || function(){};
-	var searchEngines = searchEngines || [];
+	var searchEngines = options.searchEngines || [];
+	
+	let details = {
+		searchEngines: [],
+		hasTimeedOut: false,
+		hasFailedCount: 0,	
+	}
 	
 	var icons = [];
 	for (var i=0;i<searchEngines.length;i++) {		
@@ -166,7 +116,9 @@ function loadRemoteIconsNew(options) {
 			
 		function onSet() {
 			clearInterval(remoteIconsInterval);
-			callback;
+			details.hasFailedCount = getFailedCount();
+			details.searchEngines = searchEngines;
+			callback(details);
 		}
 
 		function getFailedCount() {
@@ -180,12 +132,13 @@ function loadRemoteIconsNew(options) {
 		var counter = 0;
 		for (var i=0;i<icons.length;i++) {
 			if (typeof icons[i].base64String !== 'undefined') {
-				saveTo[i].icon_base64String = icons[i].base64String;
+				searchEngines[i].icon_base64String = icons[i].base64String;
 				counter++;
 			}
 		}
 		
 		if (Date.now() - timeout_start > timeout ) {
+			details.hasTimedOut = true;
 			onSet();
 		}
 		
