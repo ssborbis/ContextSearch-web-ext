@@ -1,6 +1,7 @@
 function searchEngineObjectToArray(engines) {
 			
 	let searchEnginesArray = [];
+
 	// iterate over search engines in search.json.mozlz4
 	for (var i in engines) {
 		var search_url = "", params_str = "", method = "", params, template = "";
@@ -114,7 +115,7 @@ function loadRemoteIcons(options) {
 	
 	var remoteIconsInterval = setInterval(function() {
 			
-		function onSet() {
+		function onComplete() {
 			clearInterval(remoteIconsInterval);
 			details.hasFailedCount = getFailedCount();
 			details.searchEngines = searchEngines;
@@ -122,15 +123,15 @@ function loadRemoteIcons(options) {
 		}
 
 		function getFailedCount() {
-			var c = 0;
-			for (var i=0;i<icons.length;i++) {
+			let c = 0;
+			for (let i=0;i<icons.length;i++) {
 				if (typeof icons[i].failed !== 'undefined') c++;
 			}
 			return c;
 		}
 		
 		var counter = 0;
-		for (var i=0;i<icons.length;i++) {
+		for (let i=0;i<icons.length;i++) {
 			if (typeof icons[i].base64String !== 'undefined') {
 				searchEngines[i].icon_base64String = icons[i].base64String;
 				counter++;
@@ -139,11 +140,11 @@ function loadRemoteIcons(options) {
 		
 		if (Date.now() - timeout_start > timeout ) {
 			details.hasTimedOut = true;
-			onSet();
+			onComplete();
 		}
 		
 		if (counter === icons.length) {
-			onSet();
+			onComplete();
 		}
 		
 	}, 250);

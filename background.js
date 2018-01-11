@@ -9,6 +9,11 @@ function notify(message, sender, sendResponse) {
 						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 				});
 			});
+			
+			break;
+			
+		case "nativeAppRequest":
+			nativeApp();
 			break;
 			
 		case "openOptions":
@@ -48,7 +53,6 @@ function loadUserOptions(callback) {
 	
 	callback = callback || function() {};
 	function onGot(result) {
-		
 		// Update default values instead of replacing with object of potentially undefined values
 		for (let key in result.userOptions)
 			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
@@ -79,7 +83,7 @@ function loadUserOptions(callback) {
 }
 
 function buildContextMenu() {
-	
+
 	browser.contextMenus.removeAll();
 
 	if (!userOptions.contextMenu) {
@@ -261,19 +265,8 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 	}
 });
 
-browser.browserAction.onClicked.addListener(() => {
-	
-//	browser.browserAction.setPopup({popup: "/options.html#quickload"});
-
-	var creating = browser.windows.create({
-		url: browser.runtime.getURL("/options.html#quickload"),
-		type: "popup",
-		height: 100,
-		width: 400
-	});
-	creating.then((windowInfo) => {
-	});
-
+browser.browserAction.onClicked.addListener(() => {	
+	browser.browserAction.setPopup({popup: "options.html#browser_action"});
 });
 
 function encodeCharset(string, encoding) {

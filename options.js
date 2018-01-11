@@ -1,16 +1,16 @@
 // array for storage.local
-var saveTo = [];
+var searchEngines = [];
 var userOptions = {};
 
 let button = document.getElementById("selectMozlz4FileButton");
 button.onchange = (ev) => {
-	saveTo = [];
+	searchEngines = [];
 	let file = ev.target.files[0];
 	readMozlz4File(file, (text) => { // on success
 
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;	
-		saveTo = searchEngineObjectToArray(engines);
+		searchEngines = searchEngineObjectToArray(engines);
 
 		document.getElementById('status_div').style.display='';
 		statusMessage({
@@ -19,7 +19,7 @@ button.onchange = (ev) => {
 		});
 		
 		loadRemoteIcons({
-			searchEngines: saveTo,
+			searchEngines: searchEngines,
 			callback: (details) => {
 				searchEngines = details.searchEngines;
 				saveOptions();
@@ -32,7 +32,7 @@ button.onchange = (ev) => {
 				} else {
 					statusMessage({
 						img: "icons/yes.png",
-						msg: "Success!  Loaded " + saveTo.length + " search engines"
+						msg: "Success!  Loaded " + searchEngines.length + " search engines"
 					});
 				}
 					
@@ -44,12 +44,12 @@ button.onchange = (ev) => {
 				var el = document.getElementById('searchEngineWarningDiv');
 				el.innerText = "";
 				
-				for (let i=0;i<saveTo.length;i++) {
-					if (saveTo[i].queryCharset.toLowerCase() !== "utf-8") {
+				for (let i=0;i<searchEngines.length;i++) {
+					if (searchEngines[i].queryCharset.toLowerCase() !== "utf-8") {
 						document.getElementById('searchEngineWarningDivContainer').style.display = "inline-block";
 						var p = document.createElement('p');
 						p.style.marginLeft = "20px";
-						p.innerText = "\u2022 " + saveTo[i].title + " (" + saveTo[i].queryCharset + ")";
+						p.innerText = "\u2022 " + searchEngines[i].title + " (" + searchEngines[i].queryCharset + ")";
 						el.appendChild(p);
 					}
 				}
@@ -101,9 +101,7 @@ function restoreOptions() {
 		
 		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
 		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath;
-		
-		disableOptions();
-		
+
 	}
   
 	function onError(error) {
@@ -117,10 +115,14 @@ function restoreOptions() {
 
 function saveOptions(e) {
 
-//	if (typeof e !== 'undefined') e.preventDefault();
-	
 	function onSet() {
-		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions});
+		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions}).then(() => {
+			if (e.target.id === "i_searchJsonPath") {
+				var gettingPage = browser.runtime.getBackgroundPage().then((w) => {
+					w.nativeApp();
+				});
+			}
+		});
 	}
 	
 	function onError(error) {
@@ -128,7 +130,7 @@ function saveOptions(e) {
 	}
 	
 	userOptions = {
-		searchEngines: (saveTo.length > 0) ? saveTo : userOptions.searchEngines,
+		searchEngines: (searchEngines.length > 0) ? searchEngines : userOptions.searchEngines,
 		backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
 		swapKeys: document.getElementById('cb_swapKeys').checked,
 		quickMenu: document.getElementById('cb_quickMenu').checked,
@@ -153,41 +155,30 @@ function saveOptions(e) {
 
 }
 
-function loadHowToImg() {
-	
+document.getElementById('a_howTo').addEventListener('click', (e) => {
+	e.preventDefault();
 	var howToImg = new Image();
 	howToImg.src = "https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif";
-	howToImg.style.width = "calc(100% - 2px)";
 	howToImg.style.border = "1px solid grey";
 	howToImg.onload = function() {
 		
 		var el = document.getElementById('howToImgDiv');
+		el.parentNode.style.display='';
 		while (el.firstChild) {
 			el.removeChild(el.firstChild);
 		}	
 		
 		el.appendChild(howToImg);
-		
+		howToImg.style.width = "calc(100% - 8px)";
 	}
-}
+});
 
 function swapKeys(e) {
 	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
 	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
 }
 
-function disableOptions() {
-	if (1) return false;
-	let children = document.getElementById('quickMenuOptions').querySelectorAll('*');
-
-	for (let c of children) {
-		if (c !== document.getElementById('cb_quickMenu'))
-			c.disabled = !document.getElementById('cb_quickMenu').checked;
-	}
-}
-
 function changeButtons(e, button) {
-	if (!document.getElementById('cb_quickMenu').checked) return false;
 	var el = e.target;
 	document.getElementById('img_rightMouseButton').style.opacity = .4;
 	document.getElementById('img_leftMouseButton').style.opacity = .4;
@@ -197,7 +188,7 @@ function changeButtons(e, button) {
 }
 
 document.addEventListener("DOMContentLoaded", restoreOptions);
-document.addEventListener("DOMContentLoaded", loadHowToImg);
+document.addEventListener("DOMContentLoaded", makeTabs());
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
@@ -205,7 +196,6 @@ document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
 document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
 
 document.getElementById('cb_quickMenu').addEventListener('change', (e) => {
-	disableOptions();
 	saveOptions(e);
 });
 
@@ -255,7 +245,7 @@ document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
 	}
 	
 	if (ev.target.value.match(/\/search.json.mozlz4$/) === null) { 
-		el.innerText = "Path must contain 'search.json.mozlz4'";
+		el.innerText = "Path must include 'search.json.mozlz4'";
 		el.style.color = 'red';
 		return false;
 	}
@@ -270,8 +260,7 @@ document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
 		
 		el.innerText = "Success";
 		el.style.color = 'blue';
-		saveOptions(ev);
-//		nativeApp();
+		saveOptions(ev);		
 	}
 	
 	function onError(error) {
@@ -307,10 +296,11 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (el.value < _min) el.value = _min;
 }
 
+// Modify Options for quickload popup
 if (window.location.href.match(/#quickload$/) !== null) {
-	var blobs = document.getElementsByClassName('blobContainer');
-	for (var i=0;i<blobs.length;i++) 
-		blobs[i].style.display='none';
+
+	for (let kid of document.body.children) 
+		kid.style.display = 'none';
 	
 	var loadButton = document.getElementById('selectMozlz4FileButton');
 	document.body.style.padding = "10px";
@@ -324,4 +314,74 @@ if (window.location.href.match(/#quickload$/) !== null) {
 		img.style.width = '20px';
 		document.body.appendChild(img);
 	});
+}
+
+// Modify Options for BrowserAction
+if (window.location.href.match(/#browser_action$/) !== null) {
+
+	document.addEventListener("DOMContentLoaded", () => {
+		document.body.style.padding="20px";
+		document.body.style.overflowX='hidden';
+		document.body.style.overflowY='auto';
+		document.body.style.width=window.getComputedStyle(document.body).getPropertyValue('width');
+		
+		let el = document.getElementById('enginesTab');
+		for (let kid of el.children)
+			kid.style.display = 'none';
+		
+		let text = document.createElement('span');
+		text.innerText = "Load search.json.mozlz4";
+		text.style.marginRight='30px';
+		el.appendChild(text);
+		
+		let loadButton = document.createElement('button');
+		loadButton.innerText = "Browse";
+		loadButton.style.fontSize='12pt';
+		loadButton.onclick = () => {
+			window.open('/options.html#quickload', 'Reload Search Engines', 'width=400,height=50,dependent=no,location=no,menubar=no,scrollbars=no,titlebar=no,status=no,toolbar=no');
+		}
+		el.appendChild(loadButton);
+		
+		let a = document.createElement('a');
+		a.href="javascript:void(0)";
+		a.style='display:block;padding:20px;text-align:center';
+		a.onclick = () => {
+			browser.runtime.openOptionsPage();
+		};
+		a.innerText = "Full Options";
+		el.appendChild(a);
+
+	});	
+}
+
+function makeTabs() {
+	
+	let tabs = document.getElementsByClassName("tablinks");
+	for (let tab of tabs) {
+		tab.addEventListener('click', (e) => {
+			// Get all elements with class="tabcontent" and hide them
+			let tabcontent = document.getElementsByClassName("tabcontent");
+			for (i = 0; i < tabcontent.length; i++) {
+				tabcontent[i].style.display = "none";
+			}
+			
+			for (let tab2 of tabs) {
+				tab2.getElementsByTagName('img')[0].style.display='none';
+			}
+			
+			e.target.getElementsByTagName('img')[0].className = 'fade-in';
+			e.target.getElementsByTagName('img')[0].style.display='inline-block';
+				
+			// Get all elements with class="tablinks" and remove the class "active"
+			let tablinks = document.getElementsByClassName("tablinks");
+			for (i = 0; i < tablinks.length; i++) {
+				tablinks[i].className = tablinks[i].className.replace(" active", "");
+			}
+
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			document.getElementById(e.target.dataset.tabid).style.display = "block";
+			e.currentTarget.className += " active";
+		});
+	}
+	tabs[0].click();
 }

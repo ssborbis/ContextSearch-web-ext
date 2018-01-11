@@ -6,11 +6,13 @@
 		<title>Options</title>
 		<style>
 			BODY {
-				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+			/*	font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; */
+				font-family: "Source Sans Pro", sans-serif;
 				background-color:#E9ECEF;
-				padding:40px;
+				padding:20px;
 				color:#343a40;
-				overflow-y:hidden; 
+				margin:0;
+				overflow-y:hidden;  
 			}
 			.code {
 				font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
@@ -28,14 +30,6 @@
 				margin: 1em 0;
 				padding: 0; 
 			}			
-			.blobContainer {
-				border-radius:20px;
-				padding:20px;
-				background-color:white;
-				margin-bottom:40px;
-				font-weight:bold;
-				font-size:12pt;
-			}
 			.blobContainerHeader {
 				font-size:16pt;
 				font-weight:bold;
@@ -56,9 +50,9 @@
 				border: 2px outset black;
 				background-color:#DDDDDD;
 				font-size:12pt;
-				padding:4px 4px;
+				padding:3px 4px;
 				color:black;
-				font-weight:bold;
+				font-weight:normal;
 				min-width:60px;
 				display:inline-block;
 				text-align:center;
@@ -156,12 +150,12 @@
 			/* Rounded sliders */
 			.toggleSlider.round {
 			  border-radius: 24px;
-			  border:1px solid #aaa;
+			  border:1px solid grey;
 			}
 
 			.toggleSlider.round:before {
 			  border-radius: 50%;
-			  border:1px solid #aaa;
+			  border:1px solid grey;
 			}
 			
 			.optionDiv {
@@ -173,11 +167,6 @@
 				position:relative;
 				top:-9px;
 			}
-			.fancyRadio {
-				color:blue;
-				background-color:blue;
-			}
-			
 			.container {
 				display: block;
 				position: relative;
@@ -238,11 +227,86 @@
 				border-radius: 50%;
 				background: white;*/
 			}
+			 /* Style the tab */
+			.tab {
+				overflow: hidden;
+			/*	border: 1px solid #ccc; */
+
+			/*	background-color: #f1f1f1; */
+				display:inline-block;
+				margin:0;
+				padding:0;
+			}
+
+			/* Style the buttons that are used to open the tab content */
+			.tab button {
+				border: 1px solid #ccc; 
+				border-bottom: 0;
+				background-color: inherit;
+				float: left;
+				outline: none;
+				cursor: pointer;
+				padding: 14px 16px;
+				font-size:16pt;
+				text-align:right;
+				margin:0;
+				color:#888;
+			}
+
+			/* Change background color of buttons on hover */
+			.tab button:hover {
+				background-color: #ddd;
+			}
+
+			/* Create an active/current tablink class */
+			.tab button.active {
+				background-color: white;
+				color:#343a40;
+				font-weight:bold;
+			}
+
+			/* Style the tab content */
+			.tabcontent {
+				display: none;
+				padding: 20px;
+				border: 1px solid #ccc;
+				border-top: none;
+				font-size:12pt;
+				font-weight:bold;
+				animation: fadeEffect .25s;
+				background-color:white;
+				margin:0;
+			} 
+
+			/* Go from zero to full opacity */
+			@keyframes fadeEffect {
+				from {opacity: 0;}
+				to {opacity: 1;}
+			}
+			.tablinks IMG {
+				display:none;
+				height:30px;
+				vertical-align:middle;
+				margin-right:20px;
+				overflow: hidden;
+			}
+			
+			.fade-in {
+				opacity: 1;
+				animation-name: fadeEffect;
+				animation-iteration-count: 1;
+				animation-timing-function: ease-in;
+				animation-duration: .25s;
+			}
+			
 		</style>
 	</head>
 	<body>
-		<div class='blobContainer'>
-			<div class='blobContainerHeader'><img src='icons/settings.png' />Options</div>
+		<div class='tab'>
+			<button class='tablinks' data-tabid='optionsTab'><img src='icons/load.png' />Menus</button>
+			<button class='tablinks' data-tabid='enginesTab'><img src='icons/settings.png' />Search Engines</button>
+		</div>
+		<div class='tabcontent' id='optionsTab'>
 			<div>
 				<div class='optionDiv'>
 					<label class="switch">
@@ -259,10 +323,6 @@
 					</label>
 					<label class='label'>Swap Ctrl And Shift Keys</label>
 				</div>
-				
-				<!--<input type='checkbox' id='cb_backgroundTabs' /><label> Always Open Tabs In Background</label><br />-->
-				<!-- <input type='checkbox' id='cb_swapKeys' /><label> Swap Ctrl And Shift Keys</label><br />-->
-
 				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
 				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
 				<hr />
@@ -275,8 +335,6 @@
 					</label>
 					<label class='label'>Enable Context Menu</label>
 				</div>
-				
-				<!--<input type='checkbox' id='cb_contextMenu' /><label> Enable Context Menu</label><br />-->
 				<hr />
 				<div id='quickMenuOptions'>
 				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img src='icons/quick_menu.png' />Quick Menu</div>
@@ -288,7 +346,6 @@
 					</label>
 					<label class='label'>Enable Quick Menu</label>
 				</div>
-				<!--<input type='checkbox' id='cb_quickMenu' /><label> Enable Quick Menu</label> <br />-->
 				<div style='margin-left:30px;font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;'>
 					<i>Quick Menu disabled on addons.mozilla.org</i><br />
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
@@ -302,13 +359,13 @@
 	
 					<p style='display:none'>
 						<label class="container">Click &nbsp;&nbsp;&nbsp;<img src='icons/leftmouse.png' class='smallIcon' title='Left Button'>
-							<input type='radio' id='r_quickMenuOnClick' class='fancyRadio' name='quickMenuMethod' />
+							<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
 							<span class="checkmark"></span>
 						</label>
 					</p>
 				
 					<label class="container">
-						<input type='radio' id='r_quickMenuOnMouse' class='fancyRadio' name='quickMenuMethod' />
+						<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
 						<span class="checkmark"></span>Hold &nbsp;&nbsp;&nbsp;
 					<img id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
 					<span style='width:25px;display:inline-block'></span>
@@ -317,7 +374,7 @@
 					<input id='h_mouseButton' type='hidden' value='3' />
 				
 					<label class="container">Press Key &nbsp;&nbsp;&nbsp;
-						<input type='radio' id='r_quickMenuOnKey' class='fancyRadio' name='quickMenuMethod' />
+						<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
 						<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 					</label>
 					
@@ -341,38 +398,40 @@
 			</div>
 			</div>
 		</div>
-		<div class='blobContainer'>
-			<div class='blobContainerHeader'><img src='icons/load.png' />Load Search Engines</div>
-			<div>
-				<p>Firefox 57+ Add-ons cannot access your stored search engines automatically without a helper application</p>
-				<p>ContextSearch provides the following options for loading your installed search engines:</p>
+		<div class='tabcontent' id='enginesTab'>
+			<div style='font-weight:normal; font-family:"Source Sans Pro", sans-serif;'>
+				<div>
+					<b>(!) Firefox 57+ Add-ons cannot access your stored search engines automatically without a helper application</b>
+					<p><b>ContextSearch provides the following options for loading your installed search engines:</b></p>
+				</div>
 				<ul>
-					<li><b>Automatic</b><br />Install a small helper app to keep your list updated automatically</li><br />
-					<li><b>Manual</b><br />Use the <i>Browse</i> button below to load your search engines. You will need to do this whenever you modify your search engine list.</li>
+					<li><b>Automatic</b><br />Install a tiny helper app to keep your list updated automatically</li><br />
+					<li><b>Manual</b><br />Use the <i><b>Browse</b></i> button below to load your search engines. You will need to do this whenever you modify your search engine list.</li>
 				</ul>		
 				<hr />
-				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Automatic (beta)</div>
+				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Automatic (<i>beta</i>)</div>
 				<div style='padding:0;margin:0;padding-left:20px'>
-				Requires Helper App:<br />
-				<p>
-					<img src='icons/windows.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest' />Windows installer</a><br />
-					<img src='icons/linux.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App'>source code</a><br />
-					<img src='icons/mac.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App'>source code</a><br />
+				<b>Requires Helper App:</b><br />
+				<p style='margin-left:40px'>
+					<img src='icons/windows.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest' />Windows installer</a> &nbsp;[github]<br />
+					<img src='icons/mac.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a> &nbsp;[github]<br />
+					<img src='icons/linux.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a> &nbsp;[github]<br />
 				</p>
-				<div id='div_searchJsonPathResponse'>&nbsp;</div>Enter the full path to <b>search.json.mozlz4</b>. You can find your profile path by opening <b>about:profiles</b> in the address bar<br />
-				<input type='text' class='inputNice code' id='i_searchJsonPath' style='width:90%;padding:4px;' /><br />
-				<span style='font-size:10pt'>
-					&nbsp;&nbsp;&nbsp;e.g. <i>C:/Users/&lt;username&gt;/Mozilla/Firefox/Profiles/1a34asfs.default/search.json.mozlz4</i>
+				<div id='div_searchJsonPathResponse'></div>Enter the full path to <b>search.json.mozlz4</b>. You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar<br />
+				<input type='text' class='inputNice code' id='i_searchJsonPath' style='width:90%;padding:4px;margin:4px 0px' /><br />
+				<span style='font-size:12pt'>
+					e.g. <i>C:/Users/&lt;username&gt;/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default/search.json.mozlz4</i>
 				</span>
 				</div>
 				<hr />
 				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Manual</div>
 				<div style='padding:0;margin:0;padding-left:20px'>
+				Browse to your profile folder and select your <b>search.json.mozlz4</b> file. You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar
 				<p>
 				<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
-				<span style='font-size:10pt'>Browse to your profile folder and select your <b>search.json.mozlz4</b> file. You can find your profile path by opening <b>about:profiles</b> in the address bar</span>
+				<span style='font-size:10pt'></span>
 				
-				<div id='status_div' style='display:none;margin-top:20px;border-left:2px solid #E9ECEF;margin-left:40px;padding-left:10px'>
+				<div id='status_div' style='display:none;margin-top:20px;border-left:20px solid #E9ECEF;margin-left:20px;padding-left:10px'>
 					<img id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
 					<span id='status'>&nbsp;</span>
 					
@@ -381,27 +440,24 @@
 						<div id='searchEngineWarningDiv'></div>
 					</p>
 				</div>
-				<p>Typical locations:</p>
-				<p><img class='smallIcon' src='icons/windows.png'>&nbsp;&nbsp;Windows</p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
-				<p><img class='smallIcon' src='icons/mac.png'>&nbsp;&nbsp;Mac OS X</p>
-				<p class='code'>Users/<i>&lt;username&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
-				<p><img class='smallIcon' src='icons/linux.png'>&nbsp;&nbsp;Linux</p>
-				<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>				
-				<br />
-				See the How-To video below for more details.
+				<p><b>Typical locations:</b></p>
+				<div style='margin-left:20px'>
+					<p><img class='smallIcon' src='icons/windows.png'><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+					<p><img class='smallIcon' src='icons/mac.png'><b>&nbsp;&nbsp;Mac OS X</b></p>
+					<p class='code'>Users/<i>&lt;username&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+					<p><img class='smallIcon' src='icons/linux.png'><b>&nbsp;&nbsp;Linux</b></p>
+					<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+				</div>				
+
+				<a href='' id='a_howTo'>See the <b>How-To</b> video for more details.</a>
+				<div style='text-align:center;display:none;width:100%;'>
+					<div id='howToImgDiv' style='text-align:center;'>
+						<img src='icons/spinner.svg' style='width:25%;height:25%' />
+					</div>
+					<a href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif"' target='_blank' style='text-decoration: none;'>&rdca; howto.gif</a>
+				</div>	
 				</div>
 			</div>
-		</div>
-		<div class='blobContainer'>
-			<div class='blobContainerHeader'><img src='icons/help.png' />How-To</div>
-			<div style='text-align:center;'>
-			
-				<div id='howToImgDiv' style='text-align:center'>
-					<img src='icons/spinner.svg' style='width:25%;height:25%' />
-				</div>
-
-				<a href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif"' target='_blank' style='text-decoration: none;'>&rdca; howto.gif</a>
-			</div>	
 		</div>
 		<script src="mozlz4.js"></script>
 		<script src="searchEngineUtils.js"></script>

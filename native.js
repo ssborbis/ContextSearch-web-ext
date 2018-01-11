@@ -22,20 +22,27 @@ function nativeApp() {
 	
 	function onResponse(response) {
 		
+		console.log('native app: Received file mod time');
+		
 		if (response.error) {
 			console.error(response.error);
+			throttle();
 			return false;
 		}
 		
 		browser.storage.local.get("searchObject_last_mod").then((result) => {
 			if (result.searchObject_last_mod === undefined) {
 				result.searchObject_last_mod = Date.now();
-				console.log("No searchObject_last_mod in localStorage. Creating...");
+				console.log("native app: No searchObject_last_mod in localStorage. Creating...");
 			}
 			
 			if (result.searchObject_last_mod === response.last_mod) return false;
 
+			browser.browserAction.setIcon({path: "icons/spinner.svg"});
+			
 			browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath + '"}').then((response) => {
+				
+				console.log('native app: Request file');
 				
 				if (response.error) {
 					console.error(response.error);
@@ -43,11 +50,11 @@ function nativeApp() {
 				}
 				
 				if (!response.base64) {
-					console.error("Bad message. No base64 data");
+					console.error("native app: Bad message. No base64 data");
 					return false;
 				}
 
-				console.log('Parsing native message');
+				console.log('native app: Received file');
 				let searchObject = readMozlz4Base64String(response.base64);
 				
 				console.log(searchObject);
@@ -59,10 +66,8 @@ function nativeApp() {
 					searchEngines: se,
 					callback: (details) => {
 						userOptions.searchEngines = details.searchEngines;
-						browser.storage.local.set({'userOptions': userOptions});
-						getAllOpenTabs((tabs) => {
-							for (let tab of tabs)
-								browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+						browser.storage.local.set({'userOptions': userOptions}).then(() => {
+							notify({action: "updateUserOptions", "userOptions": userOptions});
 						});
 					}
 				});
@@ -80,24 +85,38 @@ function nativeApp() {
 	
 	function throttle() {
 		setTimeout(()=> {
-			var gettingPage = browser.runtime.getBackgroundPage();
-			gettingPage.then((page) => {
-				page.nativeAppActive = false;
-			});
-		},2500);
+			browser.browserAction.setIcon({path: browser.runtime.getManifest().browser_action.default_icon});
+			window.nativeAppActive = false;
+			if (window.nativeAppQueue) {
+				console.log('native app: executing queued request');
+				nativeApp();
+			}
+		},1000);
+	}
+
+	if (!userOptions.searchJsonPath) {
+		console.log('native app: userOptions.searchJsonPath empty');
+		return false;
 	}
 	
-	var gettingPage = browser.runtime.getBackgroundPage();
-	gettingPage.then((page) => {
-		if (page.nativeAppActive) console.log('throttled');
-		if (page.nativeAppActive) return false;
-			
-		page.nativeAppActive = true;
+	if (window.nativeAppActive) {
 		
-		var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + userOptions.searchJsonPath + '"}');
-		sending.then(onResponse, onError);
-	});
+		//throttled but execute at least once more after
+		window.nativeAppQueue = true;
+		console.log('native app: throttled');
+		return false;
+	}
+
+	// set active for throttling
+	window.nativeAppActive = true;
 	
+	// clear the queue
+	window.nativeAppQueue = false;
+	
+	console.log('native app: Request file mod time');
+	var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + userOptions.searchJsonPath + '"}');
+	sending.then(onResponse, onError);
+
 //	browser.runtime.sendNativeMessage("ContextSearch",'{"request": "%version%"}').then((response) => {
 //	console.log(response);
 //});

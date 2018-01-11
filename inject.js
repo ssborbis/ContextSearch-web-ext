@@ -60,21 +60,28 @@ document.addEventListener('mousedown', (ev) => {
 
 		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
 
+		// prevent losing text selection
+		ev.target.addEventListener('mouseup', (evv) => {
+			if (evv.which !== ev.which) return;
+			evv.preventDefault();
+			quickMenuObject.mouseLastClickTime = Date.now();
+		}, {once: true}); // parameter to run once, then delete
+		
 		if (ev.which === 1) {
-			// prevent losing text selection		
-			document.addEventListener('mouseup', (evv) => {
+			// Disable click to prevent links from opening
+			ev.target.addEventListener('click', (evv) => {
 				if (evv.which !== 1) return;
 				evv.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true}); // parameter to run once, then delete
-		
+			
 		} else if (ev.which === 3) {
 			// Disable the default context menu once
 			document.addEventListener('contextmenu', (evv) => {
 				evv.preventDefault();
+				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true}); // parameter to run once, then delete
-		}
-		
+		}	
 		openQuickMenu(ev);
 		
 	}, quickMenuObject.delay);
@@ -274,6 +281,12 @@ document.addEventListener("drag", (ev) => {
 
 document.addEventListener("selectionchange", (ev) => {
 	quickMenuObject.lastSelectTime = Date.now();
+});
+
+window.addEventListener('focus', (ev) => {
+	setTimeout(() => {
+		browser.runtime.sendMessage({action: "nativeAppRequest"});
+	}, 500);
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
