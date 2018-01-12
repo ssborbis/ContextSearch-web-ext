@@ -2,6 +2,8 @@
 
 Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search.
 
+Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
+
 # Context Menu
 ![Image of Quick Menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/screenshot.png)
 
