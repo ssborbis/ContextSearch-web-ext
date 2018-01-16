@@ -297,7 +297,6 @@ document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';
 	var img = document.createElement('img');
 	img.src = 'icons/spinner.svg';
-	img.style.height = "16px";
 	e.target.appendChild(img);
 	e.target.addEventListener('keydown', function(evv) {
 		evv.preventDefault();

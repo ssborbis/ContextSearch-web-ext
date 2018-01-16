@@ -15,13 +15,13 @@ function post(path, params, method) {
 
 		form.appendChild(hiddenField);
 	}
+	
+	if (document.body === null || document.body === undefined)
+		document.body = document.createElement('body');
 
 	document.body.appendChild(form);
 	form.submit();
 }
-
-if (document.body === null)
-	document.body = document.createElement('body');
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	var searchEngines = message.userOptions.searchEngines;

@@ -55,10 +55,7 @@ function loadUserOptions(callback) {
 		if (!result.userOptions) return false;
 		// Update default values instead of replacing with object of potentially undefined values
 		for (let key in result.userOptions) {
-	//		console.log(key);
-	//		console.log(result.userOptions[key]);
 			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
-	//		console.log(userOptions[key]);
 		}
 
 		browser.storage.local.get("searchEngines").then((r2) => {
@@ -174,20 +171,20 @@ function openSearchTab(info, tab) {
 				if (tabInfo.url === "about:blank") return;
 
 				browser.tabs.onUpdated.removeListener(listener);
-
+				
 				browser.tabs.executeScript(_tab.id, {
-					code: 'window.stop();',
+					code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ searchTerms + '"', 
 					runAt: 'document_start'
 				}).then(() => {
 				browser.tabs.executeScript(_tab.id, {
-					code: 'var _INDEX=' + info.menuItemId + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii*/ searchTerms + '"', 
-					runAt: 'document_idle'
+					file: '/opensearch.js',
+					runAt: 'document_start'
 				}).then(() => {
 				browser.tabs.executeScript(_tab.id, {
 					file: '/execute.js',
-					runAt: 'document_idle'
+					runAt: 'document_start'
 				});});});
-			
+	
 			});
 		}
 		
