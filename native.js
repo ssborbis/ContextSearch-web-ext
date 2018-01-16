@@ -1,5 +1,7 @@
 function nativeApp() {
 	
+	if (typeof browser.runtime.sendNativeMessage !== 'function') return false;
+	
 	function readMozlz4Base64String(str)
 	{
 		let input = Uint8Array.from(atob(str), c => c.charCodeAt(0));
@@ -123,8 +125,6 @@ function nativeApp() {
 
 }
 
-if (typeof browser.runtime.sendNativeMessage === 'function') {
-	browser.tabs.onActivated.addListener((tab) => {
-		nativeApp();
-	});
-}
+browser.tabs.onActivated.addListener((tab) => {
+	nativeApp();
+});

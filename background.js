@@ -9,7 +9,6 @@ function notify(message, sender, sendResponse) {
 						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 				});
 			});
-			
 			break;
 			
 		case "nativeAppRequest":
@@ -34,8 +33,8 @@ function notify(message, sender, sendResponse) {
 			sendResponse({"userOptions": userOptions});
 			break;
 		
-		case "openQuickMenuRequest":
-			browser.tabs.sendMessage(sender.tab.id, {action: "openQuickMenu", searchTerms: message.searchTerms, screenCoords: message.screenCoords}, {frameId: 0});
+		case "openQuickMenu":
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
 		case "closeQuickMenuRequest":
@@ -53,9 +52,14 @@ function loadUserOptions(callback) {
 	
 	callback = callback || function() {};
 	function onGot(result) {
+		if (!result.userOptions) return false;
 		// Update default values instead of replacing with object of potentially undefined values
-		for (let key in result.userOptions)
+		for (let key in result.userOptions) {
+	//		console.log(key);
+	//		console.log(result.userOptions[key]);
 			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
+	//		console.log(userOptions[key]);
+		}
 
 		browser.storage.local.get("searchEngines").then((r2) => {
 			if (typeof r2.searchEngines !== 'undefined') {
@@ -94,7 +98,7 @@ function buildContextMenu() {
 	browser.contextMenus.create({
 		id: "search_engine_menu",
 		title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
-		contexts: ["selection"]
+		contexts: ["selection", "link"]
 	});
 
 	for (var i=0;i<userOptions.searchEngines.length;i++) {
@@ -102,7 +106,7 @@ function buildContextMenu() {
 			parentId: "search_engine_menu",
 			id: i.toString(),
 			title: userOptions.searchEngines[i].title,
-			contexts: ["selection"],
+			contexts: ["selection", "link"],
 			icons: {
 				"16": userOptions.searchEngines[i].icon_url || userOptions.searchEngines[i].icon_base64String || "",
 				"32": userOptions.searchEngines[i].icon_url || userOptions.searchEngines[i].icon_base64String || ""
@@ -131,7 +135,8 @@ function openSearchTab(info, tab) {
 	if (userOptions.swapKeys)
 		shift = [ctrl, ctrl=shift][0];
 	
-	var searchTerms = info.selectionText.trim();
+	// search for right-clicked url or selected text
+	var searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
 	// legacy fix
 	userOptions.searchEngines[info.menuItemId].queryCharset = userOptions.searchEngines[info.menuItemId].queryCharset || "UTF-8";
@@ -139,13 +144,22 @@ function openSearchTab(info, tab) {
 	var encodedSearchTermsObject = encodeCharset(searchTerms, userOptions.searchEngines[info.menuItemId].queryCharset);
 	var q = replaceOpenSearchParams(userOptions.searchEngines[info.menuItemId].query_string, encodedSearchTermsObject.uri);
 	
-//		console.log(q);
 	// get array of open search tabs async. and find right-most tab
 	getOpenSearchTabs(tab.id, (openSearchTabs) => {
 		
-		if (typeof userOptions.searchEngines[info.menuItemId].method !== 'undefined' && userOptions.searchEngines[info.menuItemId].method === "POST")
-			q = userOptions.searchEngines[info.menuItemId].template;
-
+		if (typeof userOptions.searchEngines[info.menuItemId].method !== 'undefined' && userOptions.searchEngines[info.menuItemId].method === "POST") {
+			let url = new URL(userOptions.searchEngines[info.menuItemId].template);
+			q = url.origin + url.pathname;
+			
+			console.log(q);
+		}
+			
+		// if using Open As Link from quick menu
+		if (info.openUrl) {
+			if (searchTerms.match(/^.*:\/\//) === null)
+				q = "http://" + searchTerms;
+		}
+		
 		function onCreate(_tab) {
 			
 			// code for POST engines
@@ -157,7 +171,8 @@ function openSearchTab(info, tab) {
 			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
 		
 				// new windows open to about:blank and throw extra complete event
-				if (tabInfo.url !== q) return;
+				if (tabInfo.url === "about:blank") return;
+
 				browser.tabs.onUpdated.removeListener(listener);
 
 				browser.tabs.executeScript(_tab.id, {
@@ -249,12 +264,22 @@ var userOptions = {
 	quickMenuAuto: false,
 	quickMenuScale: 1,
 	quickMenuScaleOnZoom: true,
+	quickMenuPosition: "bottom right",
 	quickMenuOffset: {x:0, y:0},
 	contextMenu: true,
-	searchJsonPath: ""
+	searchJsonPath: "",
+	quickMenuTools: [
+		{name: 'disable', 	disabled: false},
+		{name: 'close', 	disabled: false},
+		{name: 'copy', 		disabled: false},
+		{name: 'link', 		disabled: false}
+	],
+	reloadMethod: ""
 };
 
 loadUserOptions();
+buildContextMenu();
+
 browser.runtime.onMessage.addListener(notify);
 browser.runtime.onInstalled.addListener(function updatePage() {
 	if (userOptions.searchEngines.length !== 0 && typeof userOptions.searchEngines[0].method === 'undefined') {	
@@ -265,8 +290,9 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 	}
 });
 
+browser.browserAction.setPopup({popup: "/options.html#browser_action"});
 browser.browserAction.onClicked.addListener(() => {	
-	browser.browserAction.setPopup({popup: "options.html#browser_action"});
+	browser.browserAction.openPopup();
 });
 
 function encodeCharset(string, encoding) {

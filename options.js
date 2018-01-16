@@ -100,8 +100,24 @@ function restoreOptions() {
 			document.getElementById('img_leftMouseButton').style.opacity = 1;
 		
 		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
-		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath;
+		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
+		document.getElementById('h_position').value = userOptions.quickMenuPosition;
 
+		for (let p of document.getElementsByClassName('position')) {
+			p.className = p.className.replace(' active', '');
+			if (p.dataset.position === userOptions.quickMenuPosition)
+				p.className+=' active';
+		}
+		
+		buildToolIcons();
+		
+		// reload method radio buttons
+		for (let el of document.getElementsByName('reloadMethod')) {
+			if (el.value === userOptions.reloadMethod) {
+				el.dispatchEvent(new MouseEvent('click'));
+				break;
+			}
+		}
 	}
   
 	function onError(error) {
@@ -117,9 +133,11 @@ function saveOptions(e) {
 
 	function onSet() {
 		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions}).then(() => {
-			if (e.target.id === "i_searchJsonPath") {
-				var gettingPage = browser.runtime.getBackgroundPage().then((w) => {
-					w.nativeApp();
+			if (e && e.target.id === "i_searchJsonPath") {
+				browser.storage.local.set({'searchObject_last_mod': ''}).then(()=> {
+					let gettingPage = browser.runtime.getBackgroundPage().then((w) => {
+						w.nativeApp();
+					});
 				});
 			}
 		});
@@ -144,34 +162,32 @@ function saveOptions(e) {
 		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
+		quickMenuPosition: document.getElementById('h_position').value,
 		contextMenu: document.getElementById('cb_contextMenu').checked,
-		searchJsonPath: document.getElementById('i_searchJsonPath').value
+		searchJsonPath: function () {
+			let path = document.getElementById('i_searchJsonPath').value;
+			if (path.match(/\/search.json.mozlz4$/) === null && path != "")
+				path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
+			return path;
+		}(),
+		quickMenuTools: function() {
+			let tools = [];
+			for (let toolIcon of document.getElementsByClassName('toolIcon'))
+				tools.push({"name": toolIcon.name, "disabled": toolIcon.disabled})			
+			return tools;
+		}(),
+		reloadMethod: function() {
+			for (let el of document.getElementsByName('reloadMethod')) {
+				if (el.checked) return el.value;
+			}
+			return null;
+		}()
 	}
 
-	var setting = browser.storage.local.set({
-		"userOptions": userOptions
-	});
+	var setting = browser.storage.local.set({"userOptions": userOptions});
 	setting.then(onSet, onError);
 
 }
-
-document.getElementById('a_howTo').addEventListener('click', (e) => {
-	e.preventDefault();
-	var howToImg = new Image();
-	howToImg.src = "https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif";
-	howToImg.style.border = "1px solid grey";
-	howToImg.onload = function() {
-		
-		var el = document.getElementById('howToImgDiv');
-		el.parentNode.style.display='';
-		while (el.firstChild) {
-			el.removeChild(el.firstChild);
-		}	
-		
-		el.appendChild(howToImg);
-		howToImg.style.width = "calc(100% - 8px)";
-	}
-});
 
 function swapKeys(e) {
 	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
@@ -187,8 +203,8 @@ function changeButtons(e, button) {
 	saveOptions(e);
 }
 
-document.addEventListener("DOMContentLoaded", restoreOptions);
 document.addEventListener("DOMContentLoaded", makeTabs());
+document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
@@ -244,11 +260,13 @@ document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
 		return false;
 	}
 	
-	if (ev.target.value.match(/\/search.json.mozlz4$/) === null) { 
-		el.innerText = "Path must include 'search.json.mozlz4'";
-		el.style.color = 'red';
-		return false;
+	let path = ev.target.value;
+	
+	if (path.match(/\/search.json.mozlz4$/) === null) {
+		path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
 	}
+	
+	console.log(path);
 	
 	function onResponse(response) {
 		
@@ -265,12 +283,14 @@ document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
 	
 	function onError(error) {
 		console.log(error);
-		el.innerText = "Failed to load file (" + error.message + ") Is native app installed?";
+		el.innerText = "Failed to load file (" + error.message + ") Is helper app installed?";
 		el.style.color = 'red';
 	}
 	
-	var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + ev.target.value + '"}');
-	sending.then(onResponse, onError);
+	if (typeof browser.runtime.sendNativeMessage === 'function') {
+		var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + path + '"}');
+		sending.then(onResponse, onError);
+	}
 	
 });
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
@@ -320,38 +340,13 @@ if (window.location.href.match(/#quickload$/) !== null) {
 if (window.location.href.match(/#browser_action$/) !== null) {
 
 	document.addEventListener("DOMContentLoaded", () => {
-		document.body.style.padding="20px";
-		document.body.style.overflowX='hidden';
-		document.body.style.overflowY='auto';
-		document.body.style.width=window.getComputedStyle(document.body).getPropertyValue('width');
-		
-		let el = document.getElementById('enginesTab');
-		for (let kid of el.children)
-			kid.style.display = 'none';
-		
-		let text = document.createElement('span');
-		text.innerText = "Load search.json.mozlz4";
-		text.style.marginRight='30px';
-		el.appendChild(text);
-		
-		let loadButton = document.createElement('button');
-		loadButton.innerText = "Browse";
-		loadButton.style.fontSize='12pt';
-		loadButton.onclick = () => {
+		let loadButton = document.getElementById("selectMozlz4FileButton");
+		loadButton.onclick = (e) => {
+			e.preventDefault();
 			window.open('/options.html#quickload', 'Reload Search Engines', 'width=400,height=50,dependent=no,location=no,menubar=no,scrollbars=no,titlebar=no,status=no,toolbar=no');
 		}
-		el.appendChild(loadButton);
-		
-		let a = document.createElement('a');
-		a.href="javascript:void(0)";
-		a.style='display:block;padding:20px;text-align:center';
-		a.onclick = () => {
-			browser.runtime.openOptionsPage();
-		};
-		a.innerText = "Full Options";
-		el.appendChild(a);
-
 	});	
+	
 }
 
 function makeTabs() {
@@ -359,24 +354,19 @@ function makeTabs() {
 	let tabs = document.getElementsByClassName("tablinks");
 	for (let tab of tabs) {
 		tab.addEventListener('click', (e) => {
-			// Get all elements with class="tabcontent" and hide them
-			let tabcontent = document.getElementsByClassName("tabcontent");
-			for (i = 0; i < tabcontent.length; i++) {
-				tabcontent[i].style.display = "none";
-			}
+
+			for (let tabcontent of document.getElementsByClassName("tabcontent"))
+				tabcontent.style.display = "none";
 			
-			for (let tab2 of tabs) {
-				tab2.getElementsByTagName('img')[0].style.display='none';
-			}
+			for (let _tab of tabs)
+				_tab.getElementsByTagName('img')[0].style.display='none';
 			
 			e.target.getElementsByTagName('img')[0].className = 'fade-in';
 			e.target.getElementsByTagName('img')[0].style.display='inline-block';
 				
 			// Get all elements with class="tablinks" and remove the class "active"
-			let tablinks = document.getElementsByClassName("tablinks");
-			for (i = 0; i < tablinks.length; i++) {
-				tablinks[i].className = tablinks[i].className.replace(" active", "");
-			}
+			for (let tablink of document.getElementsByClassName("tablinks")) 
+				tablink.className = tablink.className.replace(" active", "");
 
 			// Show the current tab, and add an "active" class to the button that opened the tab
 			document.getElementById(e.target.dataset.tabid).style.display = "block";
@@ -385,3 +375,151 @@ function makeTabs() {
 	}
 	tabs[0].click();
 }
+
+function buildToolIcons() {
+	function getToolIconIndex(element) {
+		 let index = 0;
+		 let toolIcons = document.getElementsByClassName('toolIcon');
+		 for (let i=0;i<toolIcons.length;i++) {
+			 if (toolIcons[i] === element) {
+				index = i;
+				break;
+			}
+		 }
+		 
+		 return index;
+	}
+	function dragstart_handler(ev) {
+		ev.currentTarget.style.border = "dashed transparent";
+		ev.dataTransfer.setData("text", getToolIconIndex(ev.target));
+		ev.effectAllowed = "copyMove";
+	}
+	function dragover_handler(ev) {
+		for (let icon of document.getElementsByClassName('toolIcon'))
+			icon.style.backgroundColor='';
+		
+		ev.target.style.backgroundColor='#ddd';
+		ev.preventDefault();
+	}
+	function drop_handler(ev) {
+		ev.preventDefault();
+		
+		ev.target.style.border = '';
+		ev.target.style.backgroundColor = '';
+		let old_index = ev.dataTransfer.getData("text");
+		let new_index = getToolIconIndex(ev.target);
+
+		if (new_index > old_index) 
+			ev.target.parentNode.insertBefore(document.getElementsByClassName('toolIcon')[old_index],ev.target.nextSibling);
+		else
+			ev.target.parentNode.insertBefore(document.getElementsByClassName('toolIcon')[old_index],ev.target);
+	}
+	function dragend_handler(ev) {
+		ev.target.style.border = '';
+		saveOptions();
+		ev.dataTransfer.clearData();
+	}
+	
+	let toolIcons = [
+		{name: 'close', src: "icons/close.png", title: "Close menu", index: Number.MAX_VALUE, disabled: false},
+		{name: 'copy', src: "icons/clipboard.png", title: "Copy to clipboard", index: Number.MAX_VALUE, disabled: false},
+		{name: 'link', src: "icons/link.png", title: "Open as link", index: Number.MAX_VALUE, disabled: false},
+		{name: 'disable', src: "icons/power.png", title: "Disable menu", index: Number.MAX_VALUE, disabled: false}
+	];
+	
+	for (let t=0;t<toolIcons.length;t++) {
+		for (let i=0;i<userOptions.quickMenuTools.length;i++) {
+			if (toolIcons[t].name === userOptions.quickMenuTools[i].name) {
+				toolIcons[t].index = i;
+				toolIcons[t].disabled = userOptions.quickMenuTools[i].disabled;
+				break;
+			}
+		}
+	}
+	
+	toolIcons = toolIcons.sort(function(a, b) {
+		return (a.index < b.index) ? -1 : 1;
+	});
+
+	for (let icon of toolIcons) {
+		let img = document.createElement('img');
+		img.disabled = icon.disabled;
+		img.style.opacity = (img.disabled) ? .4 : 1;
+		img.className = 'toolIcon';
+		img.setAttribute('draggable', true);
+		img.src = icon.src;
+		img.setAttribute('data-title',icon.title);
+		img.name = icon.name;
+
+		img.addEventListener('dragstart',dragstart_handler);
+		img.addEventListener('dragend',dragend_handler);
+		img.addEventListener('drop',drop_handler);
+		img.addEventListener('dragover',dragover_handler);
+
+		img.addEventListener('click',(e) => {
+			e.target.disabled = e.target.disabled || false;
+			e.target.style.opacity = e.target.disabled ? 1 : .4;
+			e.target.disabled = !e.target.disabled;	
+			saveOptions();
+		});
+		
+		let orig_text = document.getElementById('toolIcons_description').innerText;
+		img.addEventListener('mouseover', (e) => {
+			document.getElementById('toolIcons_description').innerText = e.target.dataset.title;
+		});
+		
+		img.addEventListener('mouseout', (e) => {
+			document.getElementById('toolIcons_description').innerText = orig_text;
+		});
+
+		document.getElementById('toolIcons').appendChild(img);
+	}
+}
+
+document.addEventListener("DOMContentLoaded", (e) => {
+	for (let el of document.getElementsByName('reloadMethod')) {
+		el.addEventListener('click', (e) => {
+			document.getElementById('manual').style.display='none';
+			document.getElementById('automatic').style.display='none';
+			document.getElementById(el.value).style.display='';
+		});
+		el.addEventListener('change', (e) => {
+			saveOptions(e);
+		});
+	}
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+	for (let el of document.getElementsByClassName('position')) {
+		el.addEventListener('click', (e) => {
+			for (let _el of document.getElementsByClassName('position'))
+				_el.className = _el.className.replace(' active', '');
+			el.className+=' active';
+			document.getElementById('h_position').value = el.dataset.position;
+			saveOptions();
+		});
+		
+		let orig_text = document.getElementById('position_description').innerText;
+		el.addEventListener('mouseover', (e) => {
+			document.getElementById('position_description').innerText = e.target.dataset.position;
+		});
+		
+		el.addEventListener('mouseout', (e) => {
+			document.getElementById('position_description').innerText = orig_text;
+		});
+		
+	}
+	
+});
+
+// lite
+document.addEventListener("DOMContentLoaded", (e) => {
+	if (typeof browser.runtime.sendNativeMessage === 'function') return false;
+	for (let el of document.getElementsByTagName('native')) {
+		el.style.display = 'none';
+	}
+	
+	setTimeout(() => {
+		document.getElementById('manual').style.display='inline-block';
+	}, 250);
+});

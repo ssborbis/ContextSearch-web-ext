@@ -1,7 +1,7 @@
 #hover_div DIV:hover {
-    background-color: #e0e0e0;
+/*  background-color: #e0e0e0; */
 	background-color: #ccdbe8;
-	border-color: #ccdbe8;;
+	border-color: #ccdbe8;
 /*	background-size: 20px 20px; */
 }
 #hover_div DIV {
