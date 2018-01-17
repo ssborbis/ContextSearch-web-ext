@@ -27,7 +27,7 @@ button.onchange = (ev) => {
 				if (details.hasFailedCount) {
 					statusMessage({
 						img: "icons/alert.png",
-						msg: "Loaded " + icons.length + " search engines and " + (icons.length - failed_count) + " of " + icons.length + " icons"
+						msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
 					});
 				} else {
 					statusMessage({

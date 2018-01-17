@@ -66,14 +66,22 @@ function loadRemoteIcons(options) {
 		var img = new Image();
 		img.favicon_urls = [];
 		img.index = i;
+	//	img.favicon_monogram = searchEngines[i].title.charAt(0);
 		
 		if (searchEngines[i].icon_url.match(/^resource/) !== null || searchEngines[i].icon_url == "") {
 			var url = new URL(searchEngines[i].query_string);
-			img.src = "http://" + url.hostname + "/favicon.ico";
+			img.src = url.origin + "/favicon.ico";
 			img.favicon_urls = [
 				"https://icons.better-idea.org/icon?url=" + url.hostname + "&size=16",
-				"https://plus.google.com/_/favicon?domain=" + url.hostname
+				"https://plus.google.com/_/favicon?domain=" + url.hostname,				
 			];
+			
+			let domain_parts = url.host.split('.');
+			if (domain_parts.length > 1) {
+				let domain = url.protocol + "//" + domain_parts[domain_parts.length-2] + "." + domain_parts[domain_parts.length-1];
+				if (domain !== url.host)
+					img.favicon_urls.push(domain);
+			}
 
 		} else 
 			img.src = searchEngines[i].icon_url;
@@ -105,6 +113,11 @@ function loadRemoteIcons(options) {
 				ctx.rect(0,0,ctx.canvas.width, ctx.canvas.height);
 				ctx.strokeStyle='black';
 				ctx.stroke();
+			//	ctx.fillStyle = "#FFFFFF";
+			//	ctx.font=ctx.canvas.height + "px Georgia";
+			//	ctx.fillText(this.favicon_monogram,4,12);
+			//	console.log(this.favicon_monogram);
+				
 				this.base64String = c.toDataURL();
 				console.log("Failed to load favicon. Using color " + ctx.fillStyle);
 				this.failed = true;
