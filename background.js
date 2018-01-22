@@ -38,11 +38,15 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "closeQuickMenuRequest":
-			browser.tabs.sendMessage(sender.tab.id, {action: "closeQuickMenu"});
+			browser.tabs.sendMessage(sender.tab.id, message);
 			break;
 			
 		case "closeWindowRequest":
 			browser.windows.remove(sender.tab.windowId);
+			break;
+		
+		case "updateSearchTerms":
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 
 	}
@@ -139,6 +143,7 @@ function openSearchTab(info, tab) {
 	userOptions.searchEngines[info.menuItemId].queryCharset = userOptions.searchEngines[info.menuItemId].queryCharset || "UTF-8";
 
 	var encodedSearchTermsObject = encodeCharset(searchTerms, userOptions.searchEngines[info.menuItemId].queryCharset);
+	
 	var q = replaceOpenSearchParams(userOptions.searchEngines[info.menuItemId].query_string, encodedSearchTermsObject.uri);
 	
 	// get array of open search tabs async. and find right-most tab
@@ -257,20 +262,24 @@ var userOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnMouse: true,
+	quickMenuOnClick: false,
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
 	quickMenuScale: 1,
 	quickMenuScaleOnZoom: true,
 	quickMenuPosition: "bottom right",
 	quickMenuOffset: {x:0, y:0},
+	quickMenuCloseOnScroll: false,
+	quickMenuCloseOnClick: true,
 	contextMenu: true,
-	searchJsonPath: "",
 	quickMenuTools: [
 		{name: 'disable', 	disabled: false},
 		{name: 'close', 	disabled: false},
 		{name: 'copy', 		disabled: false},
-		{name: 'link', 		disabled: false}
+		{name: 'link', 		disabled: false},
+		{name: 'lock',		disabled: false}
 	],
+	searchJsonPath: "",
 	reloadMethod: ""
 };
 

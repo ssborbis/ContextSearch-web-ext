@@ -10,9 +10,7 @@
 			/*	font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; */
 				font-family: "Source Sans Pro", sans-serif;
 				background-color:#F3F3F3;
-
 				padding:20px;
-				/*color:#343a40;*/
 				color: #4A4A4A;
 				margin:0;
 			/*	overflow-y:hidden;  */
@@ -107,15 +105,6 @@
 				transition: opacity .2s;
 				max-width: 200px;
 			}
-			.slider::-webkit-slider-thumb {
-				-webkit-appearance: none;
-				appearance: none;
-				width: 16px;
-				height: 16px;
-				border-radius: 50%; 
-				background: #6ec179;
-				cursor: pointer;
-			}
 			.slider::-moz-range-thumb {
 				width: 16px;
 				height: 16px;
@@ -133,10 +122,10 @@
 
 			 /* The switch - the box around the slider */
 			.switch {
-			  position: relative;
-			  display: inline-block;
-			  width: 36px;
-			  height: 20px;
+				position: relative;
+				display: inline-block;
+				width: 36px;
+				height: 20px;
 			}
 
 			/* Hide default HTML checkbox */
@@ -264,7 +253,6 @@
 			.tab {
 				overflow: hidden;
 			/*	border: 1px solid #ccc; */
-
 			/*	background-color: #f1f1f1; */
 				display:inline-block;
 				margin:0;
@@ -278,7 +266,6 @@
 				border: 1px solid #ccc; 
 				border-bottom: 0;
 				background-color: #eee;
-
 				outline: none;
 				cursor: pointer;
 				padding: 14px 16px;
@@ -360,7 +347,18 @@
 				background-color:#6ec179;
 				opacity:.4;
 			}
-
+			.header1 {
+			/*	background: linear-gradient(to right, #F3F3F3 0%,rgba(0,0,0,0) 100%);*/
+				background: #F3F3F3;
+				border-radius:12px;
+				padding: 2px 14px 2px 14px;
+				text-align:left;
+				font-size:9pt;
+				font-variant: small-caps;
+				font-weight:bold;
+				margin-top:30px;
+				margin-left:-8px;
+			}
 		</style>
 	</head>
 	<body>
@@ -368,7 +366,7 @@
 		<div id='main'>
 		<div id='left_div'>
 			<img alt='' src='icons/icon48.png' /><br />
-			<p><span  style='border-bottom:1px solid grey'><span style='font-weight:normal;font-variant:small-caps'>Context</span><span style='font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt'>Search</span></span>
+			<p><span style='border-bottom:1px solid grey'><span style='font-weight:normal;font-variant:small-caps'>Context</span><span style='font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt'>Search</span></span>
 			<br />
 			<span style='font-weight:normal;font-size:24pt;'>Settings</span>
 			</p>
@@ -383,6 +381,13 @@
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
+				<p class='header1' style='margin-top:0'>
+					&mdash; Search Actions &mdash;
+				</p>
+				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
+				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
+				<p><span class='keyboardButton'>Alt</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Keep Quick Menu Open</span></p>
+				<br />
 				<div class='optionDiv'>
 					<label class="switch">
 						<input type="checkbox" id='cb_backgroundTabs'>
@@ -398,8 +403,6 @@
 					</label>
 					<label class='label'>Swap Ctrl And Shift Keys</label>
 				</div>
-				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
-				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
 				<hr />
 				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img alt='' src='icons/context_menu.png' />Context Menu</div>
 				<div style='display:none'></div>
@@ -425,49 +428,71 @@
 					<i>Quick Menu disabled on addons.mozilla.org</i><br />
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
+				
+				<p class='header1'>
+					&mdash; Look &amp; Layout &mdash;
+				</p>
+
 				<p>
 					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Columns</label>
 				</p>
 				<p>
-					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items <i style='font-size:10pt'>(show only the first <span style='font-style:normal'>n</span> in list)</i></label>
+					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items <span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>show only the first <span style='font-style:normal'>n</span> in list</span></label>
 				</p>
 				<p>
 					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly /><label>&nbsp;&nbsp;&nbsp;Size</label>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
 				</p>
-				<hr />
-				<p>
-					<p>Select Text And</p>				
-					<label class="container">
-						<input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
-						<span class="checkmark"></span>Open Menu Automatically<img alt='' class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-					</label>
-	
-					<p style='display:none'>
-						<label class="container">Click &nbsp;&nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Left Button'>
-							<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
-							<span class="checkmark"></span>
-						</label>
-					</p>
+
 				
-					<label class="container">
-						<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
-						<span class="checkmark"></span>Hold &nbsp;&nbsp;&nbsp;
-						<img alt='' id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
-						<span style='width:25px;display:inline-block'></span>
-						<img alt='' id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
-					</label>
-					<input id='h_mouseButton' type='hidden' value='3' />
-				
-					<label class="container">Press Key &nbsp;&nbsp;&nbsp;
-						<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
-						<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
-					</label>
-					
+				<p class='header1'>
+					&mdash; Opening &mdash;
 				</p>
-				<hr />
-				<p>
-					Position
+				<label class="container">
+					<input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
+					<span class="checkmark"></span>Auto<img alt='' class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+				</label>
+				
+				<label class="container">
+					<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
+					<span class="checkmark"></span>Hold &nbsp;&nbsp;&nbsp;
+					<img alt='' id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
+					<span style='width:25px;display:inline-block'></span>
+					<img alt='' id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
+				</label>
+				<input id='h_mouseButton' type='hidden' value='3' />
+				
+				<label class="container">Click &nbsp;&nbsp;&nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='transform: scaleX(-1);'><span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>long click for default</span>
+					<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
+					<span class="checkmark"></span>
+				</label>
+			
+				<label class="container">Press Key &nbsp;&nbsp;&nbsp;
+					<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
+					<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+				</label>
+	
+				<p class='header1'>
+					&mdash; Closing &mdash;
+				</p>
+				
+				<div class='optionDiv'>
+					<label class="switch">
+						<input type="checkbox" id='cb_quickMenuCloseOnClick'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>On Search</label>
+				</div>
+				<div class='optionDiv'>
+					<label class="switch">
+						<input type="checkbox" id='cb_quickMenuCloseOnScroll'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>On Scroll</label>
+				</div>
+
+				<p class='header1'>
+					&mdash; Position &mdash;
 				</p>
 				<div>
 					<div style='font-size:0;line-height:0;display:inline-block;'>
@@ -475,28 +500,25 @@
 						<div class='position' data-position='bottom left'></div><div class='position' data-position='bottom center'></div><div class='position' data-position='bottom right'></div>
 					</div>
 					<div style='display:inline-block;margin-left:30px;vertical-align:top;'>
-						<input type="number" id="n_quickMenuOffsetX" size='2' class='inputNice' style='margin-bottom:2px'><label>&nbsp;&nbsp;&nbsp;Horizontal Offset</label><br />
-						<input type="number" id="n_quickMenuOffsetY" size='2' class='inputNice'><label>&nbsp;&nbsp;&nbsp;Vertical Offset</label>
+						<input type="number" id="n_quickMenuOffsetX" size='2' class='inputNice' style='margin-bottom:2px'>&nbsp;&nbsp;&nbsp;Horizontal Offset<br />
+						<input type="number" id="n_quickMenuOffsetY" size='2' class='inputNice'>&nbsp;&nbsp;&nbsp;Vertical Offset
 					</div>
 				</div>
 				<input id='h_position' type='hidden' />
-				<div id='position_description' style='height:10pt;font-size:10pt;margin-left:2px'>choose where menu appears</div>
-				<hr />
-				<p>
-					Tools
+				<div id='t_position' style='height:10pt;font-size:10pt;margin-left:2px'>choose where menu appears</div>
+				
+							
+				<p class='header1'>
+					&mdash; Tools &mdash;
 				</p>
 				<div id='toolIcons'></div>
-				<div id='toolIcons_description' style='height:10pt;font-size:10pt;margin-left:10px'>click to disable | drag to re-order</div>		
+				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px'>click to disable | drag to re-order</div>		
 			</div>
 			</div>
 		</div>
 		<div class='tabcontent' id='enginesTab'>
 			<div style='font-weight:normal; font-family:"Source Sans Pro", sans-serif;'>
-<native>	<!--	<div>
-					<b>(!) Firefox 57+ Add-ons cannot access your stored search engines automatically without a helper application</b>
-					<p><b>ContextSearch provides the following options for loading your installed search engines:</b></p>
-				</div>
-			-->			
+<native>		
 				<p>
 					<label class="container">
 					<input type='radio' name='reloadMethod' value='automatic' />
@@ -536,7 +558,7 @@
 				</div>
 </native>		
 				<div id='manual' style='display:none'>
-					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Manual <a style='font-size:10pt' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/icons/howto.gif' id='a_howTo'>How-To</a></div>
+					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Manual <a style='font-size:10pt' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto.gif' id='a_howTo'>How-To</a></div>
 					<div style='padding:0;margin:0;padding-left:20px'>
 						Browse to your profile folder and select your <b>search.json.mozlz4</b> file<br />
 						You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar

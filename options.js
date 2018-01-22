@@ -88,6 +88,8 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
 		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
 		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
+		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
+		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
 		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
@@ -162,6 +164,8 @@ function saveOptions(e) {
 		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
+		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
+		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
 		quickMenuPosition: document.getElementById('h_position').value,
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
@@ -186,7 +190,6 @@ function saveOptions(e) {
 
 	var setting = browser.storage.local.set({"userOptions": userOptions});
 	setting.then(onSet, onError);
-
 }
 
 function swapKeys(e) {
@@ -211,9 +214,7 @@ document.getElementById('cb_backgroundTabs').addEventListener('change', saveOpti
 document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
 document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
 
-document.getElementById('cb_quickMenu').addEventListener('change', (e) => {
-	saveOptions(e);
-});
+document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
 
 document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
@@ -239,6 +240,9 @@ document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOpt
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuAuto').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
+
+document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
 
 document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
 document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});
@@ -420,10 +424,11 @@ function buildToolIcons() {
 	}
 	
 	let toolIcons = [
-		{name: 'close', src: "icons/close.png", title: "Close menu", index: Number.MAX_VALUE, disabled: false},
-		{name: 'copy', src: "icons/clipboard.png", title: "Copy to clipboard", index: Number.MAX_VALUE, disabled: false},
-		{name: 'link', src: "icons/link.png", title: "Open as link", index: Number.MAX_VALUE, disabled: false},
-		{name: 'disable', src: "icons/power.png", title: "Disable menu", index: Number.MAX_VALUE, disabled: false}
+		{name: 'close', src: "icons/close.png", title: "Close menu", index: Number.MAX_VALUE, disabled: true},
+		{name: 'copy', src: "icons/clipboard.png", title: "Copy to clipboard", index: Number.MAX_VALUE, disabled: true},
+		{name: 'link', src: "icons/link.png", title: "Open as link", index: Number.MAX_VALUE, disabled: true},
+		{name: 'disable', src: "icons/power.png", title: "Disable menu", index: Number.MAX_VALUE, disabled: true},
+		{name: 'lock', src: "icons/lock.png", title: "Lock menu open (multi-search)", index: Number.MAX_VALUE, disabled: true}
 	];
 	
 	for (let t=0;t<toolIcons.length;t++) {
@@ -462,13 +467,13 @@ function buildToolIcons() {
 			saveOptions();
 		});
 		
-		let orig_text = document.getElementById('toolIcons_description').innerText;
+		let orig_text = document.getElementById('t_toolIcons').innerText;
 		img.addEventListener('mouseover', (e) => {
-			document.getElementById('toolIcons_description').innerText = e.target.dataset.title;
+			document.getElementById('t_toolIcons').innerText = e.target.dataset.title;
 		});
 		
 		img.addEventListener('mouseout', (e) => {
-			document.getElementById('toolIcons_description').innerText = orig_text;
+			document.getElementById('t_toolIcons').innerText = orig_text;
 		});
 
 		document.getElementById('toolIcons').appendChild(img);
@@ -482,9 +487,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 			document.getElementById('automatic').style.display='none';
 			document.getElementById(el.value).style.display='';
 		});
-		el.addEventListener('change', (e) => {
-			saveOptions(e);
-		});
+		el.addEventListener('change', saveOptions);
 	}
 });
 
@@ -498,13 +501,13 @@ document.addEventListener("DOMContentLoaded", () => {
 			saveOptions();
 		});
 		
-		let orig_text = document.getElementById('position_description').innerText;
+		let orig_text = document.getElementById('t_position').innerText;
 		el.addEventListener('mouseover', (e) => {
-			document.getElementById('position_description').innerText = e.target.dataset.position;
+			document.getElementById('t_position').innerText = e.target.dataset.position + " of cursor";
 		});
 		
 		el.addEventListener('mouseout', (e) => {
-			document.getElementById('position_description').innerText = orig_text;
+			document.getElementById('t_position').innerText = orig_text;
 		});
 		
 	}
@@ -513,10 +516,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // lite
 document.addEventListener("DOMContentLoaded", (e) => {
+	
 	if (typeof browser.runtime.sendNativeMessage === 'function') return false;
-	for (let el of document.getElementsByTagName('native')) {
+	
+	for (let el of document.getElementsByTagName('native'))
 		el.style.display = 'none';
-	}
 	
 	setTimeout(() => {
 		document.getElementById('manual').style.display='inline-block';
