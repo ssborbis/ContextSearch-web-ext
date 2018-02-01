@@ -10,7 +10,8 @@ var quickMenuObject = {
 	mouseDragDeadzone: 4,
 	lastSelectTime: 0,
 	locked: false,
-	searchTerms: ""
+	searchTerms: "",
+	lastMouseDownTile: null
 };
 
 var userOptions = {};
@@ -105,6 +106,7 @@ document.addEventListener('mousedown', (ev) => {
 	}, quickMenuObject.delay);
 
 });
+
 // Listen for HOLD quickMenuMouseButton
 document.addEventListener('mouseup', (ev) => {
 
@@ -183,10 +185,20 @@ document.addEventListener('mouseup', (ev) => {
 });
 
 function openQuickMenu(ev) {
-	browser.runtime.sendMessage({action: "openQuickMenu", screenCoords: {x: quickMenuObject.screenCoords.x, y: quickMenuObject.screenCoords.y}, searchTerms: getSelectedText(ev.target)});
+	
+	browser.runtime.sendMessage({
+		action: "openQuickMenu", 
+		screenCoords: {
+			x: quickMenuObject.screenCoords.x, 
+			y: quickMenuObject.screenCoords.y}, 
+		searchTerms: getSelectedText(ev.target)
+	});
 }
 
 function main(coords) {
+	
+	// unlock the menu in case it was opened while another quickmenu was open and locked
+	quickMenuObject.locked = false;
 
 	var hover_div = document.createElement('quickmenu');
 	hover_div.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
@@ -194,11 +206,15 @@ function main(coords) {
 	hover_div.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 2) + "px"; //icon width + padding + border
 
 	hover_div.id = 'hover_div';
-	hover_div.onclick = function(e) {
-		e.stopPropagation();
-		if (quickMenuObject.locked) return false;
-		closeQuickMenu();
-	};
+	
+	// prevent click events from propagating
+	for (let eventType of ['mousedown', 'mouseup', 'click', 'contextmenu']) {
+		hover_div.addEventListener(eventType, (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
+		});
+	}
 	
 	// remove old popup
 	var old_hover_div = document.getElementById(hover_div.id);
@@ -213,28 +229,89 @@ function main(coords) {
 		return div;
 	}
 	
+	// get open method based on user preferences
+	function getOpenMethod(e) {
+		let openMethod = "";
+		if (e.which === 3)
+			openMethod = userOptions.quickMenuRightClick;
+		else if (e.which === 2)
+			openMethod = userOptions.quickMenuMiddleClick;
+		else if (e.which === 1) {
+			openMethod = userOptions.quickMenuLeftClick;
+			
+			// ignore methods that aren't opening methods
+			if (e.shiftKey && userOptions.quickMenuShift !== 'keepMenuOpen')
+				openMethod = userOptions.quickMenuShift;
+			if (e.ctrlKey && userOptions.quickMenuCtrl !== 'keepMenuOpen')
+				openMethod = userOptions.quickMenuCtrl;
+			if (e.altKey && userOptions.quickMenuAlt !== 'keepMenuOpen')
+				openMethod = userOptions.quickMenuAlt;
+		
+		}
+
+		console.log("openMethod => " + openMethod);
+		return openMethod
+	}
+	
+	// method for assigning tile click handler
+	function addTileEventHandlers(_tile, handler) {
+		
+		// all click events are attached to mouseup
+		_tile.addEventListener('mouseup', (e) => {
+
+			// check if this tile was target of the latest mousedown event
+			if (!_tile.isSameNode(quickMenuObject.lastMouseDownTile)) return;
+			
+			// prevents unwanted propagation from triggering a window.click event call to closequickmenu
+			quickMenuObject.mouseLastClickTime = Date.now();
+			
+			// custom tile methods
+			handler(e);
+			
+			// check for locked / Keep Menu Open 
+			if (
+				!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
+				!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
+				!(e.altKey && userOptions.quickMenuAlt === "keepMenuOpen") &&
+				userOptions.quickMenuCloseOnClick &&
+				!quickMenuObject.locked
+			) {
+				closeQuickMenu('click_quickmenutile');	
+			}
+
+		});
+		
+		// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
+		_tile.addEventListener('mousedown', (e) => {
+			quickMenuObject.lastMouseDownTile = _tile;
+		});
+		
+		// stop all other mouse events for this tile from propagating
+		for (let eventType of ['mousedown','mouseup','click','contextmenu']) {
+			_tile.addEventListener(eventType, (e) => {
+				e.preventDefault();
+				e.stopPropagation();
+				return false;
+			});
+		}
+		
+	}
+
 	// array for all tiles
 	let tileArray = [];
 	
-	function disableTile(t) {
-		t.style.filter="grayscale(100%)";
-		t.style.backgroundColor="#ddd";
-		t.onclick = function(e) {
-			e.stopPropagation();
-		};
-	}
-	
+	// iterate over tools
 	for (let tool of userOptions.quickMenuTools) {
 		
+		// skip disabled tools
 		if (tool.disabled) continue;
+		
 		switch (tool.name) {
 			
-			case "copy":
-				// clipboard
+			case "copy": // clipboard
 				var tile = buildSearchIcon(browser.runtime.getURL("icons/clipboard.png"), "Copy to clipboard");
-				tile.onclick = function(e) {
-					
-					// clipboard workaround for text boxes
+				
+				addTileEventHandlers(tile, (e) => {
 					let input = document.createElement('input');
 					input.type = "text";
 					input.value = quickMenuObject.searchTerms;
@@ -243,75 +320,79 @@ function main(coords) {
 					input.select();
 					document.execCommand("copy");
 					document.body.removeChild(input);
-				};
-
+				});
+				
 				tileArray.push(tile);
 				break;
 			
-			case "link":
-				// open as link
+			case "link": // open as link
 				var tile = buildSearchIcon(browser.runtime.getURL("icons/link.png"), "Open as link");
-				tile.onclick = function(e) {
 
+				// enable/disable link button on very basic 'is it a link' rules
+				function setDisabled() {
+					if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
+						tile.style.filter="grayscale(100%)";
+						tile.style.backgroundColor="#ddd";
+						tile.disabled = true;
+					} else {
+						tile.style.filter="";
+						tile.style.backgroundColor="";
+						tile.disabled = false;
+					}
+				}
+				
+				// set initial disabled state
+				setDisabled();
+				
+				// when new search terms are set while locked, enable/disable link
+				document.addEventListener('updatesearchterms', (e) => {
+					setDisabled();
+				});
+					
+				addTileEventHandlers(tile, (e) => {
+					if (tile.disabled) return;
+					
 					browser.runtime.sendMessage({
-						action: "openTab", 
+						action: "quickMenuSearch", 
 						info: {
-							modifiers: [
-								(e.shiftKey) ? "Shift" : null,
-								(e.ctrlKey) ? "Ctrl": null
-							],
 							menuItemId: 0,
 							selectionText: quickMenuObject.searchTerms,
+							openMethod: getOpenMethod(e),
 							openUrl: true
 						}
 					});
-				};
+				});
 				
-				tile.onmousedown = function(e) {
-					e.stopPropagation();
-					return false;
-				}
-				
-				// disable if clearly not an url
-				if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
-					disableTile(tile);
-				}
 				tileArray.push(tile);
 				break;
 				
-			case "close":
+			case "close": // simply close the quick menu
 				var tile = buildSearchIcon(browser.runtime.getURL("icons/close.png"), "Close menu");
-				tile.onmousedown = function(e) {
-					e.stopPropagation();
-					return false;
-				}
+
 				tile.onclick = function(e) {
 					closeQuickMenu();
 				}
+				
 				tileArray.push(tile);
 				break;
 			
-			case "disable":
+			case "disable": // close the quick menu and disable for this page / session
 				var tile = buildSearchIcon(browser.runtime.getURL("icons/power.png"), "Disable menu");
 				tile.onclick = function(e) {
 					userOptions.quickMenu = false;
 					closeQuickMenu();
 				}
-				tile.onmousedown = function(e) {
-					e.stopPropagation();
-					return false;
-				}
 
 				tileArray.push(tile);
 				break;
 				
-			case "lock":
+			case "lock": // keep quick menu open after clicking search / scrolling / window click
 				var tile = buildSearchIcon(browser.runtime.getURL("icons/lock.png"), "Lock menu open (multi-search)");
+				
+				tile.locked = false;
 				tile.onclick = function(e) {
-					e.stopPropagation();
-					
+
 					switch (this.locked) {
-						case undefined:
 						case false:
 							this.style.backgroundColor = '#dee7f0';
 							this.style.boxShadow = 'inset 2px 2px 2px #193047';
@@ -335,10 +416,7 @@ function main(coords) {
 							break;
 					}
 				}
-				tile.onmousedown = function(e) {
-					e.stopPropagation();
-					return false;
-				}
+
 				tileArray.push(tile);
 				break;
 		}
@@ -346,28 +424,23 @@ function main(coords) {
 	
 	for (var i=0;i<userOptions.searchEngines.length && i < userOptions.quickMenuItems;i++) {
 		let tile = buildSearchIcon(userOptions.searchEngines[i].icon_base64String, userOptions.searchEngines[i].title);
-		tile.index = i;	
-		tile.onclick = function(e) {
-			e.preventDefault();			
-
+		tile.index = i;
+		
+		addTileEventHandlers(tile, (e) => {
 			browser.runtime.sendMessage({
-				action: "openTab", 
+				action: "quickMenuSearch", 
 				info: {
-					modifiers: [
-						(e.shiftKey) ? "Shift" : null,
-						(e.ctrlKey) ? "Ctrl": null
-					],
-					menuItemId: this.index,
-					selectionText: quickMenuObject.searchTerms
+					menuItemId: tile.index,
+					selectionText: quickMenuObject.searchTerms,
+					openMethod: getOpenMethod(e)
 				}
 			});
-			
-			if (e.altKey || !userOptions.quickMenuCloseOnClick)
-				e.stopPropagation();
-		}	
+		});
+
 		tileArray.push(tile);
 	}
 	
+	// make rows / columns
 	for (let i=0;i<tileArray.length;i++) {
 		let tile = tileArray[i];
 		tile.style.clear = (i % userOptions.quickMenuColumns === 0) ? "left" : "none";
@@ -378,10 +451,10 @@ function main(coords) {
 	if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined' ) {
 		var div = document.createElement('div');
 		div.style='display:inline-block;width:auto;clear:both;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-			div.style.minWidth = hover_div.style.minWidth;
+		div.style.minWidth = hover_div.style.minWidth;
 		div.innerText = 'Where are my search engines?';
 		div.onclick = function() {
-			alert('If you are seeing this message, reload your search settings file');
+			alert('If you are seeing this message, reload your search settings file from Options');
 			browser.runtime.sendMessage({action: "openOptions"});	
 		}	
 		hover_div.appendChild(div);
@@ -395,14 +468,7 @@ function main(coords) {
 		if (els[i].nodeType === undefined || els[i].nodeType !== 1) continue;
 		if (hover_div.ownerDocument.defaultView.getComputedStyle(els[i], null).getPropertyValue("display") === 'none' || hover_div.ownerDocument.defaultView.getComputedStyle(hover_div, null).getPropertyValue("display") === 'none') {
 			console.log('quick menu hidden by external script (adblocker?).  Enabling context menu');
-			browser.runtime.sendMessage({action: 'enableContextMenu'}).then(() => {
-				let mev = new MouseEvent('contextmenu', {
-					view: window,
-					bubbles: true,
-					cancelable: true
-				});
-				document.elementFromPoint(x, y).dispatchEvent(mev);
-			});
+			browser.runtime.sendMessage({action: 'enableContextMenu'});
 			break;
 		}
 	}
@@ -479,9 +545,16 @@ function getSelectedText(el) {
 
 function closeQuickMenu(eventType) {
 	eventType = eventType || null;
+		
+	if (
+		(eventType === 'wheel' || eventType === 'scroll') && 
+		(!userOptions.quickMenuCloseOnScroll || quickMenuObject.locked)
+	) return false;
 	
-	if ((eventType === 'wheel' || eventType === 'scroll') && (!userOptions.quickMenuCloseOnScroll || quickMenuObject.locked)) return false;
-	if (eventType === 'click_window' && quickMenuObject.locked) return false;
+	if (
+		eventType === 'click_window' && 
+		quickMenuObject.locked
+	) return false;
 	
 	var hover_div = document.getElementById('hover_div');
 	if (hover_div !== null) {
@@ -504,7 +577,7 @@ document.addEventListener('closequickmenu', () => {
 document.addEventListener("click", (ev) => {
 
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
-	
+
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
 
 });
@@ -529,23 +602,33 @@ document.addEventListener("selectionchange", (ev) => {
 
 // selectionchagne handler for input nodes
 for (let el of document.querySelectorAll("input[type='text'], input[type='search'], textarea")) {
-	el.addEventListener('blur', (e) => {
+	el.addEventListener('mouseup', (e) => {
 		let text = getSelectedText(e.target)
 		if (text !== '')
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: text});
 	});
 }
 
-/*
-document.addEventListener('contextmenu', (e) => {
+// Relabel context menu root on mousedown to fire before oncontextmenu
+window.addEventListener('mousedown', (e) => {
+
 	if (
+		e.which !== 3 ||
 		!userOptions.contextMenu ||
-		getSelectedText() === ''
+		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a') ||
+		userOptions.searchEngines.length === 0
 	) return false;
+
+	let searchTerms = "";
 	
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: (e.targetgetSelectedText()})
-}
-*/
+	if (e.target.nodeName.toLowerCase() === 'a' && getSelectedText(e.target) === '')
+		searchTerms = e.target.href;
+	else
+		searchTerms = getSelectedText(e.target);
+	
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+});
+
 window.addEventListener('focus', (ev) => {
 	setTimeout(() => {
 		browser.runtime.sendMessage({action: "nativeAppRequest"});
@@ -588,7 +671,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				// only update if quickmenu is opened and locked to avoid unwanted behavior
 				if (quickMenuObject.locked) {
 					quickMenuObject.searchTerms = message.searchTerms;
-					console.log("Received new search terms -> " + quickMenuObject.searchTerms);
+//					console.log("Received new search terms -> " + quickMenuObject.searchTerms);
+					document.dispatchEvent(new CustomEvent('updatesearchterms'));
+					
 				}
 				break;
 		}

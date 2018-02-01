@@ -112,14 +112,28 @@ function restoreOptions() {
 		}
 		
 		buildToolIcons();
-		
+
 		// reload method radio buttons
 		for (let el of document.getElementsByName('reloadMethod')) {
 			if (el.value === userOptions.reloadMethod) {
-				el.dispatchEvent(new MouseEvent('click'));
+				document.getElementById('manual').style.display='none';
+				document.getElementById('automatic').style.display='none';
+				document.getElementById(el.value).style.display='';
+				el.checked = true;
 				break;
 			}
 		}
+
+		document.getElementById('s_contextMenuClick').value = userOptions.contextMenuClick;
+		document.getElementById('s_contextMenuShift').value = userOptions.contextMenuShift;
+		document.getElementById('s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
+		
+		document.getElementById('s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
+		document.getElementById('s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
+		document.getElementById('s_quickMenuMiddleClick').value = userOptions.quickMenuMiddleClick;
+		document.getElementById('s_quickMenuShift').value = userOptions.quickMenuShift;
+		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
+		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
 	}
   
 	function onError(error) {
@@ -167,6 +181,18 @@ function saveOptions(e) {
 		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
 		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
 		quickMenuPosition: document.getElementById('h_position').value,
+		
+		contextMenuClick: document.getElementById('s_contextMenuClick').value,
+		contextMenuShift: document.getElementById('s_contextMenuShift').value,
+		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
+		
+		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
+		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
+		quickMenuMiddleClick: document.getElementById('s_quickMenuMiddleClick').value,
+		quickMenuShift: document.getElementById('s_quickMenuShift').value,
+		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
+		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
+		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
 			let path = document.getElementById('i_searchJsonPath').value;
@@ -240,6 +266,9 @@ document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOpt
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuAuto').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
+
+for (let el of document.getElementsByTagName('select'))
+	el.addEventListener('change', saveOptions);
 
 document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
@@ -341,8 +370,10 @@ if (window.location.href.match(/#quickload$/) !== null) {
 
 // Modify Options for BrowserAction
 if (window.location.href.match(/#browser_action$/) !== null) {
-
+	
 	document.addEventListener("DOMContentLoaded", () => {
+		document.getElementById('left_div').style.display = 'none';
+		document.getElementById('right_div').style.width = "auto";
 		let loadButton = document.getElementById("selectMozlz4FileButton");
 		loadButton.onclick = (e) => {
 			e.preventDefault();
@@ -512,6 +543,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		
 	}
 	
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+	document.getElementById('version').innerText = "" + browser.runtime.getManifest().version;
 });
 
 // lite

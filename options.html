@@ -4,32 +4,35 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Options</title>
-<!--		<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet"> -->
 		<style>
 			BODY {
-			/*	font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; */
-				font-family: "Source Sans Pro", sans-serif;
+				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; 
 				background-color:#F3F3F3;
-				padding:20px;
+				padding:10px;
 				color: #4A4A4A;
 				margin:0;
-			/*	overflow-y:hidden;  */
 				text-align:center;
+				font-size:11pt;
 			}
 			#main {
-				text-align:left;
-				max-width:700px;
-				margin:0 auto;
+				text-align:center;
+				margin:0 auto;	
 			}
 			#left_div {
-				float:left;
 				width:200px;
-				position:relative;
-				margin-left:-220px;
 				font-size:16pt;
 				font-weight:bold;
 				text-align:right;
-				margin-top:20px;
+				margin-top:0px;
+				margin-right:10px;
+				vertical-align:top;
+				display:inline-block;
+			}
+			#right_div {
+				display:inline-block;
+				width:calc(100% - 230px);
+				max-width:700px;
+				text-align:left;
 			}
 			#left_div #info {
 				font-size:12pt;
@@ -55,7 +58,7 @@
 				display: block;
 				height: 1px;
 				border: 0;
-				border-top: 3px solid #E9ECEF;
+				border-top: 3px solid #F3F3F3; /*#E9ECEF;*/
 				margin: 1em 0;
 				padding: 0; 
 			}			
@@ -80,16 +83,25 @@
 				border-radius:5px;
 				background-color:#DDD;
 				border:1px outset #ccc;
-				font-size:11pt;
+				font-size:10pt;
 				color:#666;
 				padding:3px 4px;
-				min-width:60px;
+				min-width:50px;
 				display:inline-block;
 				text-align:center;
 				box-shadow:1px 1px 4px #444, inset -2px -2px 4px #fff, inset 2px 2px 4px #aaa;
 			}
 			.keyboardButton IMG {
 				height: 1rem;
+			}
+			.keyboardButton SELECT {
+				width:auto;
+				border:none;
+				font:inherit;
+				height:auto;
+				padding:0;
+				background-color:transparent;
+				color:inherit;
 			}
 			.smallIcon {
 				vertical-align:middle;
@@ -114,9 +126,9 @@
 			}
 			.inputNice {
 				width:55px;
-				font-size:12pt;
+				font-size:inherit;
 				border-radius:4px;
-				border:1px solid grey;
+				border:1px solid #858585;
 				padding:2px;
 			}
 
@@ -193,9 +205,8 @@
 				display: block;
 				position: relative;
 				padding-left: 35px;
-				margin-bottom: 12px;
+				margin-bottom: 8px;
 				cursor: pointer;
-				font-size: 12pt;
 				user-select: none;
 			}
 
@@ -252,13 +263,11 @@
 			 /* Style the tab */
 			.tab {
 				overflow: hidden;
-			/*	border: 1px solid #ccc; */
-			/*	background-color: #f1f1f1; */
 				display:inline-block;
 				margin:0;
 				padding:0;
 				position:relative;
-				top:6px;
+				margin-bottom:-6px;
 			}
 
 			/* Style the buttons that are used to open the tab content */
@@ -273,6 +282,7 @@
 				text-align:right;
 				margin:0;
 				color:#888;
+				border-radius:10px 10px 0 0;
 			}
 
 			/* Change background color of buttons on hover */
@@ -292,7 +302,6 @@
 				display: none;
 				padding: 20px;
 				border: 1px solid #ccc;
-				font-size:12pt;
 				font-weight:bold;
 				animation: fadeEffect .25s;
 				background-color:white;
@@ -348,8 +357,8 @@
 				opacity:.4;
 			}
 			.header1 {
-			/*	background: linear-gradient(to right, #F3F3F3 0%,rgba(0,0,0,0) 100%);*/
-				background: #F3F3F3;
+			/*	background: linear-gradient(to bottom, #F3F3F3 0%, #DDD 100%);*/
+				background: #F3F3F3; 
 				border-radius:12px;
 				padding: 2px 14px 2px 14px;
 				text-align:left;
@@ -358,6 +367,38 @@
 				font-weight:bold;
 				margin-top:30px;
 				margin-left:-8px;
+				margin-right:-8px;
+			}
+			P.short {
+				margin:0;
+				padding:2px 0;
+				border-style:dashed;
+				border-color: #DDD;
+				border-width:0px 0px 1px 0px;
+			}
+
+			P.short SELECT {
+				font-size:10pt;
+				border:1px solid transparent;
+				padding-right:10px;
+			}
+			
+			P.short SELECT:focus {
+				border:1px solid #858585;
+			}
+			
+			P {
+				margin-top:12px;
+				margin-bottom:6px;
+			}
+			
+			SPAN.buttonLabel {
+				display:inline-block;
+				width:83px;
+				font-variant:small-caps;
+				text-align:right;
+				padding-right:10px;
+				font-size:8pt;
 			}
 		</style>
 	</head>
@@ -370,40 +411,33 @@
 			<br />
 			<span style='font-weight:normal;font-size:24pt;'>Settings</span>
 			</p>
+			<div id='version' style='font-size:11pt'>&nbsp;</div>
 			<div id='info'>
 				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target='_blank'>Support<img alt='' src='icons/link.png'></a><br />
 				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target='_blank'>Source<img alt='' src='icons/link.png'></a><br />
 			</div>
 		</div>
+		<div id='right_div'>
 		<div class='tab'>
 			<button class='tablinks' data-tabid='optionsTab'><img alt='' src='icons/load.png' />Menus</button>
 			<button class='tablinks' data-tabid='enginesTab'><img alt='' src='icons/settings.png' />Search Engines</button>
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
-				<p class='header1' style='margin-top:0'>
-					&mdash; Search Actions &mdash;
-				</p>
-				<p><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In New Window</span></p>
-				<p><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Open In Background Tab</span></p>
-				<p><span class='keyboardButton'>Alt</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' /><span style='margin-left:32px;'>Keep Quick Menu Open</span></p>
-				<br />
-				<div class='optionDiv'>
+				<div class='optionDiv' style='display:none'>
+					<label class="switch">
+						<input type="checkbox" id='cb_newTabs'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>Always Open In New Tab</label>
+				</div>
+				<div class='optionDiv' style='display:none'>
 					<label class="switch">
 						<input type="checkbox" id='cb_backgroundTabs'>
 						<span class="toggleSlider round"></span>
 					</label>
 					<label class='label'>Always Open Tabs In Background</label>
 				</div>
-				
-				<div class='optionDiv'>
-					<label class="switch">
-						<input type="checkbox" id='cb_swapKeys'>
-						<span class="toggleSlider round"></span>
-					</label>
-					<label class='label'>Swap Ctrl And Shift Keys</label>
-				</div>
-				<hr />
 				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img alt='' src='icons/context_menu.png' />Context Menu</div>
 				<div style='display:none'></div>
 				<div class='optionDiv'>
@@ -412,6 +446,45 @@
 						<span class="toggleSlider round"></span>
 					</label>
 					<label class='label'>Enable Context Menu</label>
+				</div>
+				
+				<br />
+				
+				<p class='header1' style='margin-top:0'>
+					&mdash; Search Actions &mdash;
+				</p>
+				<p class='short' style='border-width: 1px 0'>
+					<span class='buttonLabel'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto' class='inputNice' id='s_contextMenuClick'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+					</select>
+				</p>
+				<p class='short'><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto' class='inputNice' id='s_contextMenuShift'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+					</select>
+				</p>
+				<p class='short'><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_contextMenuCtrl'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+					</select>
+				</p>
+				<br />
+				<div class='optionDiv' style='display:none'>
+					<label class="switch">
+						<input type="checkbox" id='cb_swapKeys'>
+						<span class="toggleSlider round"></span>
+					</label>
+					<label class='label'>Swap Ctrl And Shift Keys</label>
 				</div>
 				<hr />
 				<div id='quickMenuOptions'>
@@ -428,6 +501,82 @@
 					<i>Quick Menu disabled on addons.mozilla.org</i><br />
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
+				<br />
+				<p class='header1' style='margin-top:0'>
+					&mdash; Search Actions &mdash;
+				</p>
+				
+				<p class='short' style='border-width: 1px 0'>
+					<span class='buttonLabel'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuLeftClick'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+						<option value='noAction'>No Action</option>
+					</select>
+				</p>
+				<p class='short'>
+					<span class='buttonLabel'>Middle Button</span><img alt='Middle Button' title='Middle Button' src='icons/middlemouse.png' class='smallIcon' style='transform:scaleX(-1);' />
+					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuMiddleClick'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+						<option value='noAction'>No Action</option>
+					</select>
+				</p>
+				<p class='short'>
+					<span class='buttonLabel'>Right Button</span><img alt='Right Button' title='Right Button' src='icons/leftmouse.png' class='smallIcon' style='transform:scaleX(-1);' />
+					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuRightClick'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+						<option value='noAction'>No Action</option>
+					</select>
+				</p>
+				<p class='short'>
+					<span class='keyboardButton'>
+						Shift
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuShift'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+						<option value='keepMenuOpen'>Keep Menu Open</option>
+						<option value='noAction'>No Action</option>
+					</select>
+				</p>
+				<p class='short'>
+					<span class='keyboardButton'>
+						Ctrl
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuCtrl'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+						<option value='keepMenuOpen'>Keep Menu Open</option>
+						<option value='noAction'>No Action</option>
+					</select>
+				</p>
+					
+				<p class='short'>
+					<span class='keyboardButton'>
+						Alt
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuAlt'>
+						<option value='openCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow'>Open In New Window</option>
+						<option value='keepMenuOpen'>Keep Menu Open</option>
+						<option value='noAction'>No Action</option>
+					</select>
+	
+				</p>
 				
 				<p class='header1'>
 					&mdash; Look &amp; Layout &mdash;
@@ -440,7 +589,7 @@
 					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items <span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>show only the first <span style='font-style:normal'>n</span> in list</span></label>
 				</p>
 				<p>
-					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly /><label>&nbsp;&nbsp;&nbsp;Size</label>
+					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Size</label>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
 				</p>
 
@@ -457,12 +606,12 @@
 					<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
 					<span class="checkmark"></span>Hold &nbsp;&nbsp;&nbsp;
 					<img alt='' id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
-					<span style='width:25px;display:inline-block'></span>
+					<span style='width:10px;display:inline-block'></span>
 					<img alt='' id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
 				</label>
 				<input id='h_mouseButton' type='hidden' value='3' />
 				
-				<label class="container">Click &nbsp;&nbsp;&nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='transform: scaleX(-1);'><span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>long click for default</span>
+				<label class="container">Click &nbsp;&nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='transform: scaleX(-1);'><span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>long click for default</span>
 					<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
 					<span class="checkmark"></span>
 				</label>
@@ -475,7 +624,6 @@
 				<p class='header1'>
 					&mdash; Closing &mdash;
 				</p>
-				
 				<div class='optionDiv'>
 					<label class="switch">
 						<input type="checkbox" id='cb_quickMenuCloseOnClick'>
@@ -488,9 +636,8 @@
 						<input type="checkbox" id='cb_quickMenuCloseOnScroll'>
 						<span class="toggleSlider round"></span>
 					</label>
-					<label class='label'>On Scroll</label>
+					<label class='label'>On Scroll / Mouse Wheel</label>
 				</div>
-
 				<p class='header1'>
 					&mdash; Position &mdash;
 				</p>
@@ -522,7 +669,7 @@
 				<p>
 					<label class="container">
 					<input type='radio' name='reloadMethod' value='automatic' />
-						<span class="checkmark"></span><b>Automatic</b>
+						<span class="checkmark"></span><span style='font-size:12pt;font-weight:bold'>Automatic</span>
 					</label>
 					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
 					Install a tiny open-source app to keep your search engine list updated automatically
@@ -531,7 +678,7 @@
 				<p>
 					<label class="container">
 						<input type='radio' name='reloadMethod' value='manual' />
-						<span class="checkmark"></span><b>Manual</b>
+						<span class="checkmark"></span><span style='font-size:12pt;font-weight:bold'>Manual</span>
 					</label>
 					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
 					Keep your search engine list up to date by browsing to your Firefox search engines file when you add or remove search engines.
@@ -550,8 +697,8 @@
 					</div>
 					<hr />
 					<div id='div_searchJsonPathResponse'></div><b>Enter the full path to your profile</b><br />You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar<br />
-					<div style='white-space:nowrap;width:100%'><textarea class='inputNice code' id='i_searchJsonPath' style='width:100%;padding:4px;margin:4px 0px'></textarea></div>
-					<span style='font-size:12pt'>
+					<div style='white-space:nowrap;width:100%'><textarea class='inputNice code' id='i_searchJsonPath' style='width:calc(100% - 16px);padding:4px;margin:4px 0px'></textarea></div>
+					<span style=''>
 						e.g. <i>C:/Users/&lt;username&gt;/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default</i>
 					</span>
 					</div>
@@ -588,6 +735,7 @@
 					</div>
 				</div>
 			</div>
+		</div>
 		</div>
 		</div>
 
