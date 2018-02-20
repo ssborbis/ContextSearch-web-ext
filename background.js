@@ -16,7 +16,11 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "openOptions":
-			browser.runtime.openOptionsPage();
+		//	browser.runtime.openOptionsPage();
+			var creating = browser.tabs.create({
+				url: browser.runtime.getURL("/options.html" + message.hashurl || "") 
+			});
+			
 			break;
 			
 		case "quickMenuSearch":
@@ -160,6 +164,8 @@ function openSearch(details) {
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;
 	
+	console.log('openUrl = ' + openUrl);
+	
 	// if searchEngines is empty, open Options
 	if (userOptions.searchEngines.length === 0) {	
 		browser.runtime.openOptionsPage();
@@ -182,9 +188,12 @@ function openSearch(details) {
 	
 	// if using Open As Link from quick menu
 	if (openUrl) {
+		q = searchTerms;
 		if (searchTerms.match(/^.*:\/\//) === null)
 			q = "http://" + searchTerms;
 	}
+	
+	console.log(q);
 
 	// get array of open search tabs async. and find right-most tab
 	getOpenSearchTabs(tab.id, (openSearchTabs) => {
@@ -324,6 +333,7 @@ var userOptions = {
 	quickMenuOnClick: false,
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
+	quickMenuAutoOnInputs: true,
 	quickMenuScale: 1,
 	quickMenuScaleOnZoom: true,
 	quickMenuPosition: "bottom right",

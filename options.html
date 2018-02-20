@@ -215,6 +215,9 @@
 				position: absolute;
 				opacity: 0;
 				cursor: pointer;
+				width:0;
+				height:0;
+				z-index:-1;
 			}
 
 			/* Create a custom radio button */
@@ -228,7 +231,7 @@
 				border-radius: 50%;
 				border:1px solid grey;
 			}
-
+			
 			/* On mouse-over, add a grey background color */
 			.container:hover input ~ .checkmark {
 				background-color: #ccc;
@@ -260,6 +263,49 @@
 				border-radius: 50%;
 				background: white;*/
 			}
+			
+			.container .checkmark2 {
+				border-radius:4px;
+				margin-top:-4px;
+			}
+
+			/* Style the checkmark/indicator */
+			.container .checkmark2:after {
+				left: 5px;
+				top: 1px;
+				width: 4px;
+				height: 8px;
+				border: solid white;
+				border-width: 0 3px 3px 0;
+				transform: rotate(45deg);
+			}
+			
+			.info {
+				font-size:7pt;
+				border-radius:2px;
+				padding: 2px;
+				background-color:#EFEFEF;
+				vertical-align:top;
+				cursor:default;
+			}
+			
+			#info_msg {
+				display:none;
+				position:absolute;
+				top:0;
+				left:0;
+				z-index:2;
+				padding:5px;
+				border-radius:5px;
+				max-width:200px;
+				width:auto;
+				font-size:10pt;
+				background-color:#FEFEFE;
+				border:1px solid #9abad2;
+				box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
+				text-align:left;
+			}
+			
 			 /* Style the tab */
 			.tab {
 				overflow: hidden;
@@ -424,20 +470,6 @@
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
-				<div class='optionDiv' style='display:none'>
-					<label class="switch">
-						<input type="checkbox" id='cb_newTabs'>
-						<span class="toggleSlider round"></span>
-					</label>
-					<label class='label'>Always Open In New Tab</label>
-				</div>
-				<div class='optionDiv' style='display:none'>
-					<label class="switch">
-						<input type="checkbox" id='cb_backgroundTabs'>
-						<span class="toggleSlider round"></span>
-					</label>
-					<label class='label'>Always Open Tabs In Background</label>
-				</div>
 				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img alt='' src='icons/context_menu.png' />Context Menu</div>
 				<div style='display:none'></div>
 				<div class='optionDiv'>
@@ -478,14 +510,6 @@
 						<option value='openNewWindow'>Open In New Window</option>
 					</select>
 				</p>
-				<br />
-				<div class='optionDiv' style='display:none'>
-					<label class="switch">
-						<input type="checkbox" id='cb_swapKeys'>
-						<span class="toggleSlider round"></span>
-					</label>
-					<label class='label'>Swap Ctrl And Shift Keys</label>
-				</div>
 				<hr />
 				<div id='quickMenuOptions'>
 				<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'><img alt='' src='icons/quick_menu.png' />Quick Menu</div>
@@ -584,60 +608,66 @@
 
 				<p>
 					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Columns</label>
+					<span class='info' data-msg='Maximum number of search engine icons per row'>?</span>
 				</p>
 				<p>
-					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items <span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>show only the first <span style='font-style:normal'>n</span> in list</span></label>
+					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items</label>
+					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.'>?</span>
 				</p>
 				<p>
 					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Size</label>
+					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge icons (good for high-resolution displays)'>?</span>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
 				</p>
 
-				
 				<p class='header1'>
-					&mdash; Opening &mdash;
+					&mdash; Opening &amp; Closing &mdash;
 				</p>
-				<label class="container">
+				<label class="container" style='display:inline-block'>
 					<input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
-					<span class="checkmark"></span>Auto<img alt='' class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+					<span class="checkmark"></span>Auto&nbsp;<span class='info' data-msg='Popup menu will open automatically after selecting text'>?</span><img alt='' class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
 				</label>
 				
+				<label class="container" style='display:inline-block'>Enable On Text Boxes
+					<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Enable popup menu on <textarea> and <input> elements. Disable to prevent some unwanted popups. Only affects Auto'>?</span>
+							
 				<label class="container">
 					<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
-					<span class="checkmark"></span>Hold &nbsp;&nbsp;&nbsp;
+					<span class="checkmark"></span>Hold&nbsp;<span class='info' data-msg='Popup menu will open after holding the selected mouse button for ~0.25 seconds'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<img alt='' id='img_leftMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Left Button' style='opacity:.4'>
 					<span style='width:10px;display:inline-block'></span>
 					<img alt='' id='img_rightMouseButton' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='opacity:.4;transform: scaleX(-1);'>
 				</label>
 				<input id='h_mouseButton' type='hidden' value='3' />
 				
-				<label class="container">Click &nbsp;&nbsp;&nbsp;<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='transform: scaleX(-1);'><span style='font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;margin-left:10px;font-style:italic'>long click for default</span>
+				<label class="container">Click&nbsp;<span class='info' data-msg='Popup menu will open on right-click.  Hold button for default context menu'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='transform: scaleX(-1);'>
 					<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
 					<span class="checkmark"></span>
 				</label>
 			
-				<label class="container">Press Key &nbsp;&nbsp;&nbsp;
+				<label class="container">Press Key&nbsp;<span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
 					<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 				</label>
+				
+				<hr />
 	
-				<p class='header1'>
-					&mdash; Closing &mdash;
-				</p>
-				<div class='optionDiv'>
-					<label class="switch">
-						<input type="checkbox" id='cb_quickMenuCloseOnClick'>
-						<span class="toggleSlider round"></span>
-					</label>
-					<label class='label'>On Search</label>
-				</div>
-				<div class='optionDiv'>
-					<label class="switch">
-						<input type="checkbox" id='cb_quickMenuCloseOnScroll'>
-						<span class="toggleSlider round"></span>
-					</label>
-					<label class='label'>On Scroll / Mouse Wheel</label>
-				</div>
+				<label class="container" style='display:inline-block'>Close After Search
+					<input type='checkbox' id='cb_quickMenuCloseOnClick' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by "Keep Menu Open" under Search Actions'>?</span>
+				<br />
+				<label class="container" style='display:inline-block'>Close On Scroll / Mouse Wheel
+					<input type='checkbox' id='cb_quickMenuCloseOnScroll' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel'>?</span>
+				
 				<p class='header1'>
 					&mdash; Position &mdash;
 				</p>
@@ -647,8 +677,11 @@
 						<div class='position' data-position='bottom left'></div><div class='position' data-position='bottom center'></div><div class='position' data-position='bottom right'></div>
 					</div>
 					<div style='display:inline-block;margin-left:30px;vertical-align:top;'>
-						<input type="number" id="n_quickMenuOffsetX" size='2' class='inputNice' style='margin-bottom:2px'>&nbsp;&nbsp;&nbsp;Horizontal Offset<br />
+						<input type="number" id="n_quickMenuOffsetX" size='2' class='inputNice' style='margin-bottom:2px'>&nbsp;&nbsp;&nbsp;Horizontal Offset
+						<span class='info' data-msg='Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left'>?</span>
+						<br />
 						<input type="number" id="n_quickMenuOffsetY" size='2' class='inputNice'>&nbsp;&nbsp;&nbsp;Vertical Offset
+						<span class='info' data-msg='Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up'>?</span>
 					</div>
 				</div>
 				<input id='h_position' type='hidden' />
@@ -672,7 +705,7 @@
 						<span class="checkmark"></span><span style='font-size:12pt;font-weight:bold'>Automatic</span>
 					</label>
 					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
-					Install a tiny open-source app to keep your search engine list updated automatically
+					Install a tiny open-source app to keep your search engine list updated automatically using Firefox's <a href='https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging'>Native Messaging API</a>. This app only runs when called by ContextSearch.
 					</div>
 				</p>
 				<p>
@@ -687,9 +720,9 @@
 				<hr />
 		
 				<div id='automatic' style='display:none'>
-					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Automatic (<i>beta</i>) <a id='a_howToAutomatic' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto_automatic.gif' style='font-size:10pt'>How-To</a></div>
+					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Automatic <a id='a_howToAutomatic' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto_automatic.gif' style='font-size:10pt'>How-To</a></div>
 					<div style='padding:0;margin:0;padding-left:20px'>
-					<b>Requires Helper App</b><br />
+					<b>Required App</b><br />
 					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
 						<img alt='' src='icons/windows.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest'>Windows installer</a> &nbsp;<a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/blob/master/README.md' style='font-size:10pt'>[more info]</a><br />
 						<img alt='' src='icons/mac.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
@@ -738,6 +771,8 @@
 		</div>
 		</div>
 		</div>
+		
+		<div id='info_msg'></div>
 
 		<script src="mozlz4.js"></script>
 		<script src="searchEngineUtils.js"></script>

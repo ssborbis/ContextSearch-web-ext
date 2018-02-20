@@ -129,7 +129,8 @@ document.addEventListener('mouseup', (ev) => {
 		ev.which !== 1 ||
 		ev.target.id === 'hover_div' ||
 		ev.target.parentNode.id === 'hover_div' ||
-		getSelectedText(ev.target) === ""
+		getSelectedText(ev.target) === "" ||
+		((ev.target.type === 'text' || ev.target.type === 'textarea') && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 	
 	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' ) return false;
@@ -455,7 +456,7 @@ function main(coords) {
 		div.innerText = 'Where are my search engines?';
 		div.onclick = function() {
 			alert('If you are seeing this message, reload your search settings file from Options');
-			browser.runtime.sendMessage({action: "openOptions"});	
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "#searchengines"});
 		}	
 		hover_div.appendChild(div);
 	}
@@ -488,15 +489,15 @@ function main(coords) {
 	for (let position of userOptions.quickMenuPosition.split(" ")) {
 		switch (position) {
 			case "left":
-				hover_div.style.left = ((parseFloat(hover_div.style.left) ) - quickMenuWidth * userOptions.quickMenuScale / window.devicePixelRatio) + "px";
+				hover_div.style.left = parseFloat(hover_div.style.left) - quickMenuWidth * userOptions.quickMenuScale / window.devicePixelRatio + "px";
 				break;
 			case "right":
 				break;
 			case "center":
-				hover_div.style.left = (parseFloat(hover_div.style.left) ) - quickMenuWidth / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio + "px";
+				hover_div.style.left = parseFloat(hover_div.style.left) - quickMenuWidth / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio + "px";
 				break;
 			case "top":
-				hover_div.style.top = ((parseFloat(hover_div.style.top) ) - quickMenuHeight * userOptions.quickMenuScale / window.devicePixelRatio) + "px";
+				hover_div.style.top = parseFloat(hover_div.style.top) - quickMenuHeight * userOptions.quickMenuScale / window.devicePixelRatio + "px";
 				break;
 			case "bottom":
 				break;

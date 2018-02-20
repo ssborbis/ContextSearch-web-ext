@@ -77,8 +77,6 @@ function restoreOptions() {
 		
 		userOptions = result.userOptions || {};
 
-		document.getElementById('cb_backgroundTabs').checked = userOptions.backgroundTabs;
-		document.getElementById('cb_swapKeys').checked = userOptions.swapKeys;
 		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu;	
 		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns;
 		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems;	
@@ -87,6 +85,7 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
 		document.getElementById('r_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
 		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
+		document.getElementById('cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
 		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
@@ -165,8 +164,6 @@ function saveOptions(e) {
 	
 	userOptions = {
 		searchEngines: (searchEngines.length > 0) ? searchEngines : userOptions.searchEngines,
-		backgroundTabs: document.getElementById('cb_backgroundTabs').checked,
-		swapKeys: document.getElementById('cb_swapKeys').checked,
 		quickMenu: document.getElementById('cb_quickMenu').checked,
 		quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
 		quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
@@ -175,6 +172,7 @@ function saveOptions(e) {
 		quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
 		quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
 		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
+		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
 		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
@@ -218,11 +216,6 @@ function saveOptions(e) {
 	setting.then(onSet, onError);
 }
 
-function swapKeys(e) {
-	document.getElementById('default_shift').innerText = (document.getElementById('cb_swapKeys').checked) ? "Ctrl" : "Shift";
-	document.getElementById('default_ctrl').innerText = (document.getElementById('cb_swapKeys').checked) ? "Shift" : "Ctrl";
-}
-
 function changeButtons(e, button) {
 	var el = e.target;
 	document.getElementById('img_rightMouseButton').style.opacity = .4;
@@ -236,10 +229,6 @@ document.addEventListener("DOMContentLoaded", makeTabs());
 document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
-document.getElementById('cb_backgroundTabs').addEventListener('change', saveOptions);
-document.getElementById('cb_swapKeys').addEventListener('change', swapKeys);
-document.getElementById('cb_swapKeys').addEventListener('change', saveOptions);
-
 document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
 
 document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {
@@ -266,6 +255,7 @@ document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOpt
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuAuto').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 
 for (let el of document.getElementsByTagName('select'))
 	el.addEventListener('change', saveOptions);
@@ -560,4 +550,32 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	setTimeout(() => {
 		document.getElementById('manual').style.display='inline-block';
 	}, 250);
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+	if (window.location.href.match(/#searchengines$/) === null) return;
+
+	for (let el of document.getElementsByClassName('tablinks')) {
+		if (el.dataset.tabid && el.dataset.tabid === 'enginesTab') {
+			el.dispatchEvent(new MouseEvent('click'));
+			return;
+		}
+	}
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+
+	for (let el of document.getElementsByClassName('info')) {
+		el.addEventListener('mouseover', (e) => {
+			let div = document.getElementById('info_msg');
+			div.innerText = el.dataset.msg;
+			div.style.top = el.getBoundingClientRect().top + window.scrollY + 'px';
+			div.style.left = el.getBoundingClientRect().left + window.scrollX + 20 + 'px';
+			div.style.display = 'block';
+		});
+		
+		el.addEventListener('mouseout', (e) => {
+			document.getElementById('info_msg').style.display = 'none';
+		});
+	}
 });
