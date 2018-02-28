@@ -19,6 +19,8 @@ If you do not see the Search toolbar you can add it by going to Options->Customi
 
 Click the magnifying glass and select Add "<i>website name</i>" from the menu. The website's icon should now appear in the menu. If you choose the <b>Automatic</b> method of reloading your search engine list, the new engine should appear in the context menu and quick menu after refreshing the page. If using the <b>Manual</b> method, reload your search engine list from ContextSearch Options->Search Engines->Manual->Browse
 
+Your search engine list can be viewed and modified @ Firefox Options->Search->One-Click Search Engines
+
 ___
 
 
