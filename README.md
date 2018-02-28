@@ -11,7 +11,7 @@ Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompr
 ___
 
 ### Usage 
-ContextSearch web-ext uses Firefox's built-in method of adding and removing search engines using the OpenSearch standard. Websites that offer custom search engine plugins will display a special icon in the search toolbar indicating an OpenSearch plugin is available.
+ContextSearch web-ext uses Firefox's built-in method of adding and removing search engines using the OpenSearch standard. Websites that offer custom search engine plugins will display a special icon in the search toolbar indicating an OpenSearch plugin is available. You can also find tons of custom OpenSearch engines @ http://mycroftproject.com/
 
 ![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/searchbar.png)
 
