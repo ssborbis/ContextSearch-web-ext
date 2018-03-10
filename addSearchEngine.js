@@ -179,7 +179,7 @@ function addSearchEnginePopup(data) {
 		}
 
 		// Form submit
-		document.getElementById('b_addCustomOpenSearchEngine').onclick = function() {
+		document.getElementById('b_addCustomOpenSearchEngine').onclick = function(ev) {
 			
 			// Check bad form values
 			if (form.shortname.value.trim() == "") {
@@ -202,11 +202,25 @@ function addSearchEnginePopup(data) {
 				alert('Template must be an URL (http://example.com/...)');
 				return;
 			}
+			
+			// disable button and show loading icon (prevents button spamming)
+			ev.target.disabled = true;
+			let spinner = document.createElement('img');
+			spinner.src = browser.runtime.getURL("/icons/spinner.svg");
+			spinner.style.height = "1em";
+			ev.target.innerText = "";
+			ev.target.appendChild(spinner);
+			
+			window.addEventListener('blur', (e) => {
+				ev.target.removeChild(spinner);
+				ev.target.innerText = "Add";
+				ev.target.disabled = false;
+			}, {once: true});
 
 			var url = "http://opensearch-api.appspot.com" 
 				+ "?SHORTNAME=" + encodeURIComponent(form.shortname.value) 
 				+ "&DESCRIPTION=" + encodeURIComponent(form.description.value) 
-				+ "&TEMPLATE=" + encodeURIComponent(form.template.value) 
+				+ "&TEMPLATE=" + encodeURIComponent(encodeURI(form.template.value)) 
 				+ "&POST_PARAMS=" + encodeURIComponent(form.post_params.value) 
 				+ "&METHOD=" + form._method.value 
 				+ "&ENCODING=" + form._encoding.value 
