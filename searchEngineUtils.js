@@ -4,11 +4,14 @@ function searchEngineObjectToArray(engines) {
 
 	// iterate over search engines in search.json.mozlz4
 	for (var i in engines) {
-		var search_url = "", params_str = "", method = "", params, template = "";
+		var search_url = "", params_str = "", method = "", params, template = "", searchForm = "";
 		var engine = engines[i];
-		
+
 		// skip hidden search engines
 		if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) continue;
+		
+		// set landing page for POST
+		searchForm = engine.__searchForm || null;
 		
 		// iterate over urls array
 		for (var u=0;u<engine._urls.length;u++) {
@@ -35,7 +38,7 @@ function searchEngineObjectToArray(engines) {
 		else search_url+=params_str.replace(/^&/,"?");
 		
 		// push object to array for storage.local
-		searchEnginesArray.push({"query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template, "queryCharset": engine.queryCharset || "UTF-8"});
+		searchEnginesArray.push({"searchForm": searchForm, "query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template, "queryCharset": engine.queryCharset || "UTF-8"});
 	}
 	
 	// sort search engine array by order key

@@ -1,3 +1,4 @@
+
 // unique object to reference globally
 var quickMenuObject = { 
 	delay: 250, // how long to hold right-click before translating in ms
@@ -310,7 +311,7 @@ function main(coords) {
 		switch (tool.name) {
 			
 			case "copy": // clipboard
-				var tile = buildSearchIcon(browser.runtime.getURL("icons/clipboard.png"), "Copy to clipboard");
+				var tile = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), "Copy to clipboard");
 				
 				addTileEventHandlers(tile, (e) => {
 					let input = document.createElement('input');
@@ -327,7 +328,7 @@ function main(coords) {
 				break;
 			
 			case "link": // open as link
-				var tile = buildSearchIcon(browser.runtime.getURL("icons/link.png"), "Open as link");
+				var tile = buildSearchIcon(browser.runtime.getURL("/icons/link.png"), "Open as link");
 
 				// enable/disable link button on very basic 'is it a link' rules
 				function setDisabled() {
@@ -368,7 +369,7 @@ function main(coords) {
 				break;
 				
 			case "close": // simply close the quick menu
-				var tile = buildSearchIcon(browser.runtime.getURL("icons/close.png"), "Close menu");
+				var tile = buildSearchIcon(browser.runtime.getURL("/icons/close.png"), "Close menu");
 
 				tile.onclick = function(e) {
 					closeQuickMenu();
@@ -378,7 +379,7 @@ function main(coords) {
 				break;
 			
 			case "disable": // close the quick menu and disable for this page / session
-				var tile = buildSearchIcon(browser.runtime.getURL("icons/power.png"), "Disable menu");
+				var tile = buildSearchIcon(browser.runtime.getURL("/icons/power.png"), "Disable menu");
 				tile.onclick = function(e) {
 					userOptions.quickMenu = false;
 					closeQuickMenu();
@@ -388,7 +389,7 @@ function main(coords) {
 				break;
 				
 			case "lock": // keep quick menu open after clicking search / scrolling / window click
-				var tile = buildSearchIcon(browser.runtime.getURL("icons/lock.png"), "Lock menu open (multi-search)");
+				var tile = buildSearchIcon(browser.runtime.getURL("/icons/lock.png"), "Lock menu open (multi-search)");
 				
 				tile.locked = false;
 				tile.onclick = function(e) {
@@ -630,6 +631,7 @@ window.addEventListener('mousedown', (e) => {
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
+// Good for checking new engines after window.external.AddSearchProvider()
 window.addEventListener('focus', (ev) => {
 	setTimeout(() => {
 		browser.runtime.sendMessage({action: "nativeAppRequest"});
@@ -673,9 +675,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (quickMenuObject.locked) {
 					quickMenuObject.searchTerms = message.searchTerms;
 //					console.log("Received new search terms -> " + quickMenuObject.searchTerms);
-					document.dispatchEvent(new CustomEvent('updatesearchterms'));
-					
+					document.dispatchEvent(new CustomEvent('updatesearchterms'));	
 				}
+				break;
+				
+			case "openSearchPopup":
+				addSearchEnginePopup(message.data);
 				break;
 		}
 	}

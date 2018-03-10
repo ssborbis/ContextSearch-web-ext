@@ -1,5 +1,7 @@
 function nativeApp() {
 	
+	if (userOptions.reloadMethod !== 'automatic') return false;
+	
 	if (typeof browser.runtime.sendNativeMessage !== 'function') return false;
 	
 	function readMozlz4Base64String(str)
@@ -125,6 +127,8 @@ function nativeApp() {
 
 }
 
+
 browser.tabs.onActivated.addListener((tab) => {
 	nativeApp();
 });
+

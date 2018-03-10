@@ -61,6 +61,11 @@ function notify(message, sender, sendResponse) {
 				searchTerms = searchTerms.substring(0,15) + "...";
 			browser.contextMenus.update("search_engine_menu", {title: "Search for \"" + searchTerms + "\""});
 			break;
+			
+		case "addSearchEngine":
+			let url = message.url;
+			window.external.AddSearchProvider(url);
+			break;
 
 	}
 }
@@ -97,6 +102,12 @@ function buildContextMenu() {
 		console.log('Context menu is disabled');
 		return false;
 	}	
+	
+	browser.contextMenus.create({
+		id: "add_engine",
+		title: "Add Custom Search",
+		contexts: ["editable"]
+	});
 
 	browser.contextMenus.create({
 		id: "search_engine_menu",
@@ -123,6 +134,46 @@ function buildContextMenu() {
 }
 
 function contextMenuSearch(info, tab) {
+	
+	if (info.menuItemId === 'add_engine') {
+		
+		var openSearchUrl = "";
+		var dataJson;
+		
+		browser.tabs.executeScript(tab.id, { 
+			code: 'document.querySelector(\'link[type="application/opensearchdescription+xml"]\').href;'
+		}).then( (result) => {
+			openSearchUrl = result;
+		});
+		
+		// inject script to retrieve search form features ...
+		browser.tabs.executeScript(tab.id, { 
+			file: '/getform.js'
+		}).then( (data) => {
+			
+			console.log(data);
+			
+			// unpack json data ... 
+			data = data.shift();
+
+			// add favicon ...
+			data.icon = tab.favIconUrl;
+
+			// no description ? use tab title ...
+			if ( !data.description ) data.description = tab.title;
+			
+			dataJson = data;
+
+		}).then(() => {
+			browser.tabs.sendMessage(tab.id, {action: "openSearchPopup", data: dataJson}, {frameId: 0});
+		}).catch( error =>{
+			console.error(error);
+		});
+		
+		
+		return false;
+	}
+	
 	var searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
 	// get modifier keys
@@ -199,8 +250,13 @@ function openSearch(details) {
 	getOpenSearchTabs(tab.id, (openSearchTabs) => {
 		
 		if (typeof searchEngine.method !== 'undefined' && searchEngine.method === "POST") {
-			let url = new URL(searchEngine.template);
-			q = url.origin + url.pathname;
+			
+			if ( searchEngine.searchForm )
+				q = searchEngine.searchForm;
+			else {
+				let url = new URL(searchEngine.template);
+				q = url.origin + url.pathname;
+			}
 			
 			console.log(q);
 		}
@@ -279,7 +335,7 @@ function openSearch(details) {
 			var creating = browser.tabs.create({
 				url: q,
 				active: !inBackground,
-				index: rightMostSearchTabIndex + 1,
+			/*	index: rightMostSearchTabIndex + 1,*/
 				openerTabId: tab.id
 			});
 			creating.then(onCreate, onError);
@@ -365,7 +421,7 @@ loadUserOptions();
 buildContextMenu();
 
 browser.runtime.onMessage.addListener(notify);
-browser.runtime.onInstalled.addListener(function updatePage() {
+browser.runtime.onInstalled.addListener(function updatePage(details) {
 	
 	// v1.1.0 to v 1.2.0
 	browser.storage.local.get("searchEngines").then((result) => {
@@ -399,13 +455,20 @@ browser.runtime.onInstalled.addListener(function updatePage() {
 		browser.storage.local.set({"userOptions": userOptions});
 
 	}
-	
-	if (userOptions.searchEngines.length !== 0 && typeof userOptions.searchEngines[0].method === 'undefined') {	
-		var creating = browser.tabs.create({
-			url: "/update.html"
+
+	// Show new features page
+	if (
+		(
+			details.reason === 'update' 
+			&& details.previousVersion < "1.2.8"
+		)
+//		|| details.temporary
+	) {
+		browser.tabs.create({
+			url: "/update/update.html"
 		});
-		creating.then();
 	}
+	
 });
 
 browser.browserAction.setPopup({popup: "/options.html#browser_action"});
@@ -426,7 +489,7 @@ function encodeCharset(string, encoding) {
 		for (let uint8 of uint8array) {
 			let c = String.fromCharCode(uint8);
 			ascii_string += c;
-			uri_string += (c.match(/[a-zA-Z0-9\-_.!~*'()]/) !== null) ? c : "%" + uint8.toString(16);
+			uri_string += (c.match(/[a-zA-Z0-9\-_.!~*'()]/) !== null) ? c : "%" + uint8.toString(16).toUpperCase();
 		}
 
 		return {ascii: ascii_string, uri: uri_string};
@@ -435,7 +498,6 @@ function encodeCharset(string, encoding) {
 		return {ascii: string, uri: string};
 	}
 }
-
 
 /*
 console.log(encodeCharset("blahbla blah blah & blah", 'utf-8'));

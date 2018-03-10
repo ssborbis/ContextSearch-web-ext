@@ -271,19 +271,29 @@ document.getElementById('range_quickMenuScale').addEventListener('input', (ev) =
 });
 
 document.getElementById('range_quickMenuScale').addEventListener('change', saveOptions);
-document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
+document.getElementById('b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
+document.getElementById('i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
+document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => {
+	if (
+		ev.repeat ||
+		ev.which !== 13
+	) return false;
 	
+	ev.target.blur();
+});
+function checkSearchJsonPath() {
 	let el = document.getElementById('div_searchJsonPathResponse');
+	let ev_target = document.getElementById('i_searchJsonPath');
 	
 	el.innerText = "Validating ...";
 	
-	ev.target.value = ev.target.value.replace(/\\/g, "/").trim();
-	if (ev.target.value == "") {
+	ev_target.value = ev_target.value.replace(/\\/g, "/").trim();
+	if (ev_target.value == "") {
 		el.innerText = "";
 		return false;
 	}
 	
-	let path = ev.target.value;
+	let path = ev_target.value;
 	
 	if (path.match(/\/search.json.mozlz4$/) === null) {
 		path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
@@ -301,7 +311,7 @@ document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
 		
 		el.innerText = "Success";
 		el.style.color = 'blue';
-		saveOptions(ev);		
+		saveOptions();		
 	}
 	
 	function onError(error) {
@@ -315,7 +325,8 @@ document.getElementById('i_searchJsonPath').addEventListener('change', (ev) => {
 		sending.then(onResponse, onError);
 	}
 	
-});
+}
+
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
 	e.target.innerText = '';
 	var img = document.createElement('img');
@@ -579,3 +590,10 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 });
+
+function buildSearchEngineList() {
+	let html = "";
+	for (let engine of userOptions.searchEngines) {
+		html+=`<div class='searchEngineRow'><div `
+	}
+}

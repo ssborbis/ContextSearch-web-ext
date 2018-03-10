@@ -1,0 +1,48 @@
+<span id='span_close' style='float:right;cursor:pointer'>&#10006;</span>
+<div class='H2' style="font-size:13pt;text-align:center">New Search Engine</div>
+<div id='d_options' style='text-align:center'>
+
+	<div id='d_optionDescription'></div>
+	
+	<div class="_hover" style='display:none' id="d_officialSearchEngine" data-description="Install the official OpenSearch engine for this website" >Add</div>
+	<div class="_hover" id="mycroftSearchEngineDiv" data-description="Find 3rd-party search engines @ MycroftProject. Click to open a new tab to search results">Find</div>
+	<div class="_hover" id="d_custom" data-description="Create a custom search engine based on this form">Create</div>
+
+</div>
+<form>
+<div class='H2'>Name <span class='info' data-msg='Unique name for this search engine'>?</span></div>
+<input name="shortname" type="text" />
+<div class='H2'>Description <span class='info' data-msg='Short description of the search engine. 1024 characters max'>?</span></div>
+<textarea name="description"></textarea>
+<div class='H2'>Template <span class='info' data-msg='The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (i.e. http://example.com/?q={searchTerms})'>?</span></div>
+<textarea name="template"></textarea>
+<div class='H2'>Form Path <span class='info' data-msg='Typically the website homepage or the URL the form appears on'>?</span></div>
+<input name="searchform" type="text" />
+<div class='H2'>POST params <span class='info' data-msg='List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method'>?</span></div>
+<textarea name="post_params"></textarea>
+<div class='H2'>Icon <span class='info' data-msg='URL of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb'>?</span></div>
+<input name="iconURL" type="text" style="width:calc(100% - 60px)" /><img name="icon" style="width:24px;height:24px;border:1px dashed grey;vertical-align:middle;display:inline" />
+<div class='H2' style="display:inline-block">Method <span class='info' data-msg='Form method'>?</span></div>
+<select name="_method" style='width:auto'>
+<option value="GET">GET</option>
+<option value="POST">POST</option>
+</select>
+<div class='H2' style="display:inline-block">Encoding <span class='info' data-msg='Character encoding required by the search form. Typically UTF-8'>?</span></div> 
+<select name="_encoding" style='width:auto'>
+<option value="UTF-8">utf-8</option>
+<option value="WINDOWS-1252">windows-1252</option>
+<option value="SHIFT_JIS">shift_jis</option>
+<option value="ISO-2022-JP">iso-2022-jp</option>
+<option value="EUC-JP">euc-jp</option>
+<option value="WINDOWS-1250">windows-1250</option>
+<option value="WINDOWS-1251">windows-1251</option>
+<option value="WINDOWS-850">windows-850</option>
+<option value="MACINTOSH">macintosh</option>
+<option value="ISO-8859-5">iso-8859-5</option>
+<option value="ISO-8859-2">iso-8859-2</option>
+</select><br />
+<div style="text-align:right">
+	<button type="button" class="_hover _hover_small" id="b_addCustomOpenSearchEngine">Add</button>
+	<button type="button" class="_hover _hover_small" id="b_cancelCustomOpenSearchEngine">Cancel</button>
+</div>
+</form>

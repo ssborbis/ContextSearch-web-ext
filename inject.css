@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:100,300,400,700');
+
 #hover_div DIV:hover {
 /*  background-color: #e0e0e0; */
 	background-color: #ccdbe8;
@@ -41,4 +43,129 @@
 	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
 	width:auto;
 	transition: opacity .1s;
+}
+#openSearchDialog {
+	all: revert;
+	box-sizing: content-box;
+	font-family: 'Roboto', sans-serif;
+	font-weight:300;
+	color: #4A4A4A;
+	font-size:11pt;
+	position:absolute;
+	top:50px;
+	position:fixed;
+	margin:auto;
+	padding:10px;
+	background-color:#EFF0F1;
+	border:1px solid #9abad2;/*#C2C3C5;*/
+	text-align:left;
+	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
+	left:0;
+	right:0;
+	width:400px;
+	z-index: 9998;
+	transition: opacity .25s ease-in-out;
+	opacity:0;
+}
+#openSearchDialog INPUT, #openSearchDialog TEXTAREA, #openSearchDialog SELECT {
+	font-size:11pt;
+	font-weight:normal;
+	border-radius:4px;
+	border:1px solid #858585;
+	padding:2px;
+	margin:4px;
+	font-family:inherit;
+	background-color:#FFF;
+	width:calc(100% - 20px);
+	color:#4A4A4A;
+}
+#openSearchDialog .H2 {
+	all: revert;
+	font-weight:bold;
+	font-variant:small-caps;
+	margin:4px 0 0 6px;
+	font-size:11pt;
+	color: #336699;
+	
+	
+}
+#openSearchDialog ._hover {
+	box-sizing: content-box;
+	transition: background .25s ease-in-out;
+	vertical-align:middle;
+	text-align:center;
+	padding:8px;
+	color:#787878;
+	display:inline-block;
+	height:25px;
+	line-height:25px;
+	width:75px;
+	margin:12px;
+	border:1px solid #ccdbe8;
+	cursor:pointer;
+	font-weight:700;
+	margin-top:20px;
+	background-color:#fafafa;
+}
+#openSearchDialog ._hover_small {
+	width:auto;
+	height:auto;
+	margin:auto;
+	padding:auto;
+}
+#openSearchDialog ._hover:hover {
+	background:white;
+}
+#openSearchDialog IMG {
+	height:24px;
+	width:24px;
+	vertical-align:middle;
+	margin-right:10px;
+}
+#d_optionDescription {
+	transition: all .25s ease-in;
+	text-align:left;
+	min-height:60px;
+	width:auto;
+	max-width:300px;
+	margin:auto;
+	margin-top:20px;
+	font-weight:400;
+}
+#openSearchDialog FORM {
+	transition: all .5s ease-out;
+	max-height:0;
+	overflow:hidden;
+}
+#d_options {
+	transition: all .5s ease-out;
+	max-height:200px;
+	overflow:hidden;
+}
+
+/* tooltips (copied from options.html) */
+.info {
+	font-size:7pt;
+	border-radius:2px;
+	padding: 2px;
+	background-color:#EFEFEF;
+	vertical-align:top;
+	cursor:default;
+}
+
+#info_msg {
+	display:none;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 9999;
+	padding:5px;
+	border-radius:5px;
+	max-width:200px;
+	width:auto;
+	font-size:10pt;
+	background-color:#FEFEFE;
+	border:1px solid #9abad2;
+	box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
+	text-align:left;
 }
