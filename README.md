@@ -11,6 +11,16 @@ Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompr
 ___
 
 ### Usage 
+
+#### New in 1.2.8+
+Right-click a web form to add a custom search engine
+
+![Image of Right-click menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/update/addcustomsearch.png)
+
+![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/update/addcustomsearch_create.png)
+
+---
+
 ContextSearch web-ext uses Firefox's built-in method of adding and removing search engines using the OpenSearch standard. Websites that offer custom search engine plugins will display a special icon in the search toolbar indicating an OpenSearch plugin is available. You can also find tons of custom OpenSearch engines @ http://mycroftproject.com/
 
 ![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/searchbar.png)
