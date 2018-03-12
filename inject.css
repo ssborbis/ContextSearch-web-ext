@@ -45,7 +45,7 @@
 	transition: opacity .1s;
 }
 #openSearchDialog {
-	all: revert;
+	all: unset;
 	box-sizing: content-box;
 	font-family: 'Roboto', sans-serif;
 	font-weight:300;
@@ -63,11 +63,13 @@
 	left:0;
 	right:0;
 	width:400px;
-	z-index: 9998;
+	z-index: 2147483646;
 	transition: opacity .25s ease-in-out;
 	opacity:0;
 }
 #openSearchDialog INPUT, #openSearchDialog TEXTAREA, #openSearchDialog SELECT {
+	all: unset;
+	resize: both;
 	font-size:11pt;
 	font-weight:normal;
 	border-radius:4px;
@@ -80,16 +82,14 @@
 	color:#4A4A4A;
 }
 #openSearchDialog .H2 {
-	all: revert;
 	font-weight:bold;
 	font-variant:small-caps;
 	margin:4px 0 0 6px;
 	font-size:11pt;
 	color: #336699;
-	
-	
 }
 #openSearchDialog ._hover {
+	all: unset;
 	box-sizing: content-box;
 	transition: background .25s ease-in-out;
 	vertical-align:middle;
@@ -105,7 +105,7 @@
 	cursor:pointer;
 	font-weight:700;
 	margin-top:20px;
-	background-color:#fafafa;
+	background:#fafafa;
 }
 #openSearchDialog ._hover_small {
 	width:auto;
@@ -117,12 +117,14 @@
 	background:white;
 }
 #openSearchDialog IMG {
+	all: unset;
 	height:24px;
 	width:24px;
 	vertical-align:middle;
 	margin-right:10px;
 }
-#d_optionDescription {
+#openSearchDialog_d_optionDescription {
+	
 	transition: all .25s ease-in;
 	text-align:left;
 	min-height:60px;
@@ -133,18 +135,21 @@
 	font-weight:400;
 }
 #openSearchDialog FORM {
+	
 	transition: all .5s ease-out;
 	max-height:0;
 	overflow:hidden;
 }
-#d_options {
+#openSearchDialog_d_options {
+	
 	transition: all .5s ease-out;
 	max-height:200px;
 	overflow:hidden;
 }
 
 /* tooltips (copied from options.html) */
-.info {
+#openSearchDialog .openSearchDialog_info {
+	
 	font-size:7pt;
 	border-radius:2px;
 	padding: 2px;
@@ -153,12 +158,13 @@
 	cursor:default;
 }
 
-#info_msg {
+#openSearchDialog_info_msg {
+
 	display:none;
 	position:absolute;
 	top:0;
 	left:0;
-	z-index: 9999;
+	z-index: 2147483647;
 	padding:5px;
 	border-radius:5px;
 	max-width:200px;

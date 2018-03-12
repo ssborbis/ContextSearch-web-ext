@@ -15,6 +15,7 @@ function addSearchEnginePopup(data) {
 	let el_popup = document.getElementById(el.id);
 	if ( el_popup !== null ) document.body.removeChild(el_popup);
 	
+	// append popup
 	document.body.appendChild(el);
 	
 	// Load html template for popup
@@ -28,26 +29,25 @@ function addSearchEnginePopup(data) {
 		
 		// Build tooltips
 		let info_msg = document.createElement('div');
-		info_msg.id = "info_msg";
+		info_msg.id = "openSearchDialog_info_msg";
 		document.body.appendChild(info_msg);
 		
-		for (let info of document.getElementsByClassName('info')) {
+		for (let info of document.getElementsByClassName('openSearchDialog_info')) {
 			info.addEventListener('mouseover', (e) => {
-				let div = document.getElementById('info_msg');
-				div.innerText = info.dataset.msg;
-				div.style.top = info.getBoundingClientRect().top + window.scrollY + 'px';
-				div.style.left = info.getBoundingClientRect().left + window.scrollX + 20 + 'px';
-				div.style.display = 'block';
+				info_msg.innerText = info.dataset.msg;
+				info_msg.style.top = info.getBoundingClientRect().top + window.scrollY + 'px';
+				info_msg.style.left = info.getBoundingClientRect().left + window.scrollX + 20 + 'px';
+				info_msg.style.display = 'block';
 			});
 			
 			info.addEventListener('mouseout', (e) => {
-				document.getElementById('info_msg').style.display = 'none';
+				info_msg.style.display = 'none';
 			});
 		}
 
 		
 		// Close button listener
-		document.getElementById('span_close').onclick = function() {
+		document.getElementById('openSearchDialog_s_close').onclick = function() {
 			el.style.opacity = 0;
 			
 			// remove after transition effect completes
@@ -82,6 +82,7 @@ function addSearchEnginePopup(data) {
 			}
 		}
 		
+		// set form fields based on injected code (getform.js)
 		form.description.innerText = data.description;
 		form.shortname.value = data.name;
 		form.searchform.value = window.location.origin;
@@ -94,14 +95,21 @@ function addSearchEnginePopup(data) {
 		}
 		
 		if (form._method.value === "GET") {
+			
+			// If the form.action already contains url parameters, use & not ?
 			form.template.innerText = template + ((template.indexOf('?') === -1) ? "?":"&") + param_str;
+			
+			// display help message if <input> is not part of a proper <form>
 			if (!data.action) form.template.innerText = "Unable to find a template for this search form. You can try doing a search and copying the resulting URL here, replacing your search terms with {searchTerms}";
+			
 		} else {
+			
+			// POST form.template = form.action
 			form.template.innerText = template;
 			form.post_params.value = param_str;
+			
 		}
 		
-
 		// Look for favicons
 		let favicon_link = document.querySelector('link[rel="icon"]') 
 			|| document.querySelector('link[rel="shortcut icon"]') 
@@ -114,12 +122,12 @@ function addSearchEnginePopup(data) {
 		form.iconURL.addEventListener('change', (ev) => {
 			form.icon.src = form.iconURL.value;
 			
-			document.getElementById('b_addCustomOpenSearchEngine').disabled = true;
+			document.getElementById('openSearchDialog_b_addCustomOpenSearchEngine').disabled = true;
 			var loadingIconInterval = setInterval(() => {
 				if (!form.icon.complete) return;
 				
 				clearInterval(loadingIconInterval);
-				document.getElementById('b_addCustomOpenSearchEngine').disabled = false;
+				document.getElementById('openSearchDialog_b_addCustomOpenSearchEngine').disabled = false;
 
 			},100);
 		});
@@ -128,7 +136,7 @@ function addSearchEnginePopup(data) {
 		form.icon.src = favicon_url;
 		form.iconURL.value = favicon_url;
 
-		// Set encoding
+		// Set encoding field based on document.characterSet
 		for (let i=0;i<form._encoding.options.length;i++) {
 
 			if (document.characterSet.toUpperCase() === form._encoding.options[i].value) {
@@ -138,13 +146,14 @@ function addSearchEnginePopup(data) {
 		}
 
 		// Get option buttons and add description widget
-		let buttons = document.getElementsByClassName('_hover');
+		let buttons = el.getElementsByClassName('_hover');
 		for (let button of buttons) {
 			
 			if (!button.dataset.description) continue;
 
+			// display button description
 			button.addEventListener('mouseover', (ev) => {
-				let desc = document.getElementById('d_optionDescription');
+				let desc = document.getElementById('openSearchDialog_d_optionDescription');
 				desc.style.transition='none';
 				desc.style.opacity=window.getComputedStyle(desc).opacity;
 				desc.style.opacity=0;
@@ -152,34 +161,48 @@ function addSearchEnginePopup(data) {
 				desc.style.transition=null;
 				desc.style.opacity=1;
 			});
+			
+			// hide button description
 			button.addEventListener('mouseout', (ev) => {
-				document.getElementById('d_optionDescription').style.opacity=0;
+				document.getElementById('openSearchDialog_d_optionDescription').style.opacity=0;
 			});
 		}
 
 		// Set up official add-on if exists
 		if (openSearchHref) {
-			let div = document.getElementById('d_officialSearchEngine');
+			let div = document.getElementById('openSearchDialog_d_officialSearchEngine');
+			
+			// Add button
 			div.onclick = function() {
-				window.external.AddSearchProvider(openSearchHref);
+				
+				// some sites require the background page calling window.external.AddSearchProvider
+				browser.runtime.sendMessage({action: "addSearchEngine", url:openSearchHref});
+
 			}
-			div.style.display='';
+			
+			// Show button
+			div.style.display=null;
 		
 		} 
 		
 		// Find Plugin listener
-		document.getElementById('mycroftSearchEngineDiv').onclick = function() {
+		document.getElementById('openSearchDialog_d_mycroftSearchEngine').onclick = function() {
 			window.open("http://mycroftproject.com/search-engines.html?name=" + window.location.hostname, "_blank");
 		}
 		
+		// Form test
+		document.getElementById('openSearchDialog_b_testCustomOpenSearchEngine').onclick = function() {
+			testOpenSearch(form);
+		}
+		
 		// Form cancel
-		document.getElementById('b_cancelCustomOpenSearchEngine').onclick = function() {
+		document.getElementById('openSearchDialog_b_cancelCustomOpenSearchEngine').onclick = function() {
 			form.style.maxHeight=null;
-			document.getElementById('d_options').style.maxHeight=null;
+			document.getElementById('openSearchDialog_d_options').style.maxHeight=null;
 		}
 
 		// Form submit
-		document.getElementById('b_addCustomOpenSearchEngine').onclick = function(ev) {
+		document.getElementById('openSearchDialog_b_addCustomOpenSearchEngine').onclick = function(ev) {
 			
 			// Check bad form values
 			if (form.shortname.value.trim() == "") {
@@ -191,7 +214,7 @@ function addSearchEnginePopup(data) {
 				return;
 			}
 			if (form.description.value.length > 1024 ) {
-				alert('Description must 1024 or fewer characters');
+				alert('Description must be 1024 or fewer characters');
 				return;
 			}
 			if (form.post_params.value.indexOf('{searchTerms}') === -1 && form.template.value.indexOf('{searchTerms}') === -1) {
@@ -199,7 +222,15 @@ function addSearchEnginePopup(data) {
 				return;
 			}
 			if (form.template.value.match(/^http/i) === null) {
-				alert('Template must be an URL (http://example.com/...)');
+				alert('Template must be an URL (' + window.location.origin + '...)');
+				return;
+			}
+			if (form.searchform.value.match(/^http/i) === null) {
+				alert('Form path must be an URL (' + window.location.origin + ')');
+				return;
+			}
+			if (form.iconURL.value.match(/^http/i) === null || form.iconURL.value == "") {
+				alert('Icon must be an URL (' + window.location.origin + '/favicon.ico)');
 				return;
 			}
 			
@@ -211,12 +242,14 @@ function addSearchEnginePopup(data) {
 			ev.target.innerText = "";
 			ev.target.appendChild(spinner);
 			
-			window.addEventListener('blur', (e) => {
+			// enable the button on window blur - typically this is from the AddSearchProvider() dialog
+			window.addEventListener('blur', () => {
 				ev.target.removeChild(spinner);
 				ev.target.innerText = "Add";
 				ev.target.disabled = false;
 			}, {once: true});
 
+			// build the URL for the API
 			var url = "http://opensearch-api.appspot.com" 
 				+ "?SHORTNAME=" + encodeURIComponent(form.shortname.value) 
 				+ "&DESCRIPTION=" + encodeURIComponent(form.description.value) 
@@ -224,10 +257,10 @@ function addSearchEnginePopup(data) {
 				+ "&POST_PARAMS=" + encodeURIComponent(form.post_params.value) 
 				+ "&METHOD=" + form._method.value 
 				+ "&ENCODING=" + form._encoding.value 
-				+ "&ICON=" + encodeURIComponent(form.iconURL.value) 
+				+ "&ICON=" + encodeURIComponent(encodeURI(form.iconURL.value)) 
 				+ "&ICON_WIDTH=" + (form.icon.naturalWidth || 16) 
 				+ "&ICON_HEIGHT=" + (form.icon.naturalHeight || 16) 
-				+ "&SEARCHFORM=" + encodeURIComponent(form.searchform.value);
+				+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(form.searchform.value));
 			
 			console.log(url);
 
@@ -237,10 +270,10 @@ function addSearchEnginePopup(data) {
 		}
 		
 		// Custom button listener
-		document.getElementById('d_custom').onclick = function() {
+		document.getElementById('openSearchDialog_d_custom').onclick = function() {
 			
 			// hide options
-			document.getElementById('d_options').style.maxHeight="0px";
+			document.getElementById('openSearchDialog_d_options').style.maxHeight="0px";
 			
 			// show form
 			form.style.maxHeight = '1000px';
@@ -268,4 +301,41 @@ function loadHTML(myDivId, url) {
 
 	xmlhttp.open("GET", url, true);
 	xmlhttp.send();
+}
+
+function testOpenSearch(form) {
+
+//	if (typeof params !== "Array")
+//		params = [params];
+	let params = [];
+	if (form._method.value === "POST") {
+		let pairs = form.post_params.value.split("&");
+		for (let pair of pairs) {
+			let p = pair.split("=");
+			params.push({"name": p[0], "value": p[1] || ""});
+		}
+	}
+
+	console.log(params);
+
+	let tempSearchEngine = {
+		"searchForm": form.searchform.value, 
+		"query_string":form.template.value,
+		"icon_url": form.iconURL.value,
+		"title": form.shortname.value,
+		"order":"", 
+		"icon_base64String": "", 
+		"method": form._method.value, 
+		"params": params, 
+		"template": form.template.value, 
+		"queryCharset": form._encoding.value
+	};
+	
+	console.log(tempSearchEngine);
+	console.log(userOptions.searchEngines[userOptions.searchEngines.length - 1]);
+	
+	let searchTerms = window.prompt("Enter search terms","firefox");
+	
+	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+	
 }

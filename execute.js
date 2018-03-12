@@ -23,7 +23,7 @@ function post(path, params, method) {
 	form.submit();
 }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+browser.runtime.sendMessage({action: "getUserOptions", noLoad: true}).then((message) => {
 	var searchEngines = message.userOptions.searchEngines;
 	post(searchEngines[_INDEX].template, searchEngines[_INDEX].params);
 });

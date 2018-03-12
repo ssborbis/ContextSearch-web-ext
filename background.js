@@ -33,7 +33,11 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getUserOptions":
-			loadUserOptions();
+		
+			// ignore the load to keep tempSearchEngines for POST test
+			if (!message.noLoad)
+				loadUserOptions();
+			
 			sendResponse({"userOptions": userOptions});
 			break;
 		
@@ -65,6 +69,20 @@ function notify(message, sender, sendResponse) {
 		case "addSearchEngine":
 			let url = message.url;
 			window.external.AddSearchProvider(url);
+			break;
+			
+		case "testSearchEngine":
+			let tempSearchEngine = message.tempSearchEngine;
+			userOptions.searchEngines.push(tempSearchEngine);
+			
+			openSearch({
+				searchEngineIndex: userOptions.searchEngines.length - 1,
+				searchTerms: message.searchTerms,
+				tab: sender.tab,
+				temporarySearchEngine: true
+			});
+			
+		//	userOptions.searchEngines.pop();                                   
 			break;
 
 	}
@@ -214,7 +232,8 @@ function openSearch(details) {
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;
-	
+	var temporarySearchEngine = details.temporarySearchEngine || null;
+
 	console.log('openUrl = ' + openUrl);
 	
 	// if searchEngines is empty, open Options
