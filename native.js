@@ -77,6 +77,7 @@ function nativeApp() {
 				});
 			});
 			
+	
 		});
 		
 		throttle();
@@ -117,7 +118,7 @@ function nativeApp() {
 	// clear the queue
 	window.nativeAppQueue = false;
 	
-	console.log('native app: Request file mod time');
+//	console.log('native app: Request file mod time');
 	var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + userOptions.searchJsonPath + '"}');
 	sending.then(onResponse, onError);
 
@@ -125,6 +126,49 @@ function nativeApp() {
 //	console.log(response);
 //});
 
+}
+
+function readPrefsJS() {
+	browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath.replace("search.json.mozlz4", "prefs.js") + '"}').then((response) => {
+				
+		console.log('native app: Request file prefs.js');
+		
+		if (response.error) {
+			console.error(response.error);
+			return false;
+		}
+		
+		if (!response.base64) {
+			console.error("native app: Bad message. No base64 data");
+			return false;
+		}
+
+		console.log('native app: Received file prefs.js');
+		let prefs = atob(response.base64);
+		let lines = prefs.split('\n');
+		for (let line of lines) {
+			if (line.indexOf('browser.search.hiddenOneOffs') > -1) {
+				let regstr =/user_pref\("browser.search.hiddenOneOffs",\s*"(.*?)"\);/g;
+				var match = regstr.exec(line);
+				if (!match) continue;
+				
+				let names = match[1].split(",");
+				for (let i=0;i<userOptions.searchEngines.length;i++) {
+					if (names.includes(userOptions.searchEngines[i].title)) {
+						console.log("Found " + userOptions.searchEngines[i].title);
+						userOptions.searchEngines = userOptions.searchEngines.slice(i--);
+					}
+				}
+				
+				console.log(userOptions.searchEngines);
+			//	for (let name of names) {
+			//		console.log(name);
+			//	}
+			}
+		}
+
+		
+	});
 }
 
 

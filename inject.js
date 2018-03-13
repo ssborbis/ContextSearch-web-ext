@@ -649,6 +649,30 @@ function scrollEventListener(ev) {
 window.addEventListener('wheel', scrollEventListener);
 window.addEventListener('scroll', scrollEventListener);
 
+// listen for right-mousedown and enable Add Custom Search menu item if no text is selected
+function inputAddCustomSearchHandler(input) {
+	input.addEventListener('mousedown', (ev) => {
+		if (
+			ev.which !== 3
+			|| getSelectedText(input)
+		) return;
+
+		browser.runtime.sendMessage({action: "enableAddCustomSearch"});
+	});
+}
+
+// Add Custom Search listener
+for (let input of document.getElementsByTagName('input')) {
+	inputAddCustomSearchHandler(input);
+}
+
+// Add listener for dynamically added inputs
+document.addEventListener('DOMNodeInserted', (ev) => {
+	if (ev.target.tagName === "INPUT") {
+		inputAddCustomSearchHandler(ev.target);
+	}
+});
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 	if (typeof message.userOptions !== 'undefined') {

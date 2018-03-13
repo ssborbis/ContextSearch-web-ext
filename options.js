@@ -127,6 +127,8 @@ function restoreOptions() {
 		document.getElementById('s_contextMenuShift').value = userOptions.contextMenuShift;
 		document.getElementById('s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
+		document.getElementById('cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
+		
 		document.getElementById('s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		document.getElementById('s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
 		document.getElementById('s_quickMenuMiddleClick').value = userOptions.quickMenuMiddleClick;
@@ -184,6 +186,8 @@ function saveOptions(e) {
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
 		
+		contextMenuShowAddCustomSearch: document.getElementById('cb_contextMenuShowAddCustomSearch').checked,
+		
 		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
 		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
 		quickMenuMiddleClick: document.getElementById('s_quickMenuMiddleClick').value,
@@ -229,6 +233,7 @@ document.addEventListener("DOMContentLoaded", makeTabs());
 document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
+document.getElementById('cb_contextMenuShowAddCustomSearch').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
 
 document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {

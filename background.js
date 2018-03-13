@@ -84,6 +84,24 @@ function notify(message, sender, sendResponse) {
 			
 		//	userOptions.searchEngines.pop();                                   
 			break;
+			
+		case "enableAddCustomSearch":
+			console.log('enabling custom search menu item');
+
+			if (!userOptions.contextMenuShowAddCustomSearch) return;
+				
+			browser.contextMenus.create({
+				id: "add_engine",
+				title: "Add Custom Search",
+				contexts: ["editable"]
+			});
+			
+			// Delaying the removal should keep the menu item visible long enough to open the context menu
+			setTimeout(() => {
+				browser.contextMenus.remove("add_engine");
+			}, 1000);
+
+			break;
 
 	}
 }
@@ -112,7 +130,7 @@ function loadUserOptions(callback) {
 	getting.then(onGot, onError);
 }
 
-function buildContextMenu() {
+function buildContextMenu(disableAddCustomSearch) {
 
 	browser.contextMenus.removeAll();
 
@@ -120,13 +138,15 @@ function buildContextMenu() {
 		console.log('Context menu is disabled');
 		return false;
 	}	
-	
-	browser.contextMenus.create({
-		id: "add_engine",
-		title: "Add Custom Search",
-		contexts: ["editable"]
-	});
-
+/*	
+	if (!disableAddCustomSearch && userOptions.contextMenuShowAddCustomSearch) {
+		browser.contextMenus.create({
+			id: "add_engine",
+			title: "Add Custom Search",
+			contexts: ["editable"]
+		});
+	}
+*/
 	browser.contextMenus.create({
 		id: "search_engine_menu",
 		title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
@@ -416,6 +436,7 @@ var userOptions = {
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
 	contextMenu: true,
+	contextMenuShowAddCustomSearch: true,
 	quickMenuTools: [
 		{name: 'disable', 	disabled: false},
 		{name: 'close', 	disabled: false},
@@ -517,6 +538,20 @@ function encodeCharset(string, encoding) {
 		return {ascii: string, uri: string};
 	}
 }
+
+/*
+
+Maybe in FF 60+
+browser.contexMenus.onShown.addListener(async function(info, tab) {
+	console.log('onShown');
+	if (!info.selectionText) return;
+	console.log('has selected text');
+	browser.menus.remove("add_engine");
+	// Note: Not waiting for returned promise.
+	browser.menus.refresh();
+  
+  
+});
 
 /*
 console.log(encodeCharset("blahbla blah blah & blah", 'utf-8'));
