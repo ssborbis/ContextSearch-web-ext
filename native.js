@@ -69,9 +69,13 @@ function nativeApp() {
 				loadRemoteIcons({
 					searchEngines: se,
 					callback: (details) => {
-						userOptions.searchEngines = details.searchEngines;
-						browser.storage.local.set({'userOptions': userOptions}).then(() => {
-							notify({action: "updateUserOptions", "userOptions": userOptions});
+						hideSearchEngines(details.searchEngines).then((result) => {
+							console.log(result);
+							userOptions.searchEngines = result || userOptions.searchEngines;
+							browser.storage.local.set({'userOptions': userOptions}).then(() => {
+								notify({action: "updateUserOptions", "userOptions": userOptions});
+							});
+
 						});
 					}
 				});
@@ -128,8 +132,8 @@ function nativeApp() {
 
 }
 
-function readPrefsJS() {
-	browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath.replace("search.json.mozlz4", "prefs.js") + '"}').then((response) => {
+function readHiddenEngines() {
+		return browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath.replace("search.json.mozlz4", "prefs.js") + '"}').then((response) => {
 				
 		console.log('native app: Request file prefs.js');
 		
@@ -144,33 +148,44 @@ function readPrefsJS() {
 		}
 
 		console.log('native app: Received file prefs.js');
-		let prefs = atob(response.base64);
-		let lines = prefs.split('\n');
-		for (let line of lines) {
-			if (line.indexOf('browser.search.hiddenOneOffs') > -1) {
+		
+		function u_atob(ascii) {
+			return Uint8Array.from(atob(ascii), c => c.charCodeAt(0));
+		}
+
+		let prefs = new TextDecoder().decode(u_atob(response.base64));
+		
+		for (let line of prefs.split('\n')) {
+			if (line.match(/^user_pref\("browser.search.hiddenOneOffs/)) {
+	
 				let regstr =/user_pref\("browser.search.hiddenOneOffs",\s*"(.*?)"\);/g;
 				var match = regstr.exec(line);
 				if (!match) continue;
 				
-				let names = match[1].split(",");
-				for (let i=0;i<userOptions.searchEngines.length;i++) {
-					if (names.includes(userOptions.searchEngines[i].title)) {
-						console.log("Found " + userOptions.searchEngines[i].title);
-						userOptions.searchEngines = userOptions.searchEngines.slice(i--);
-					}
-				}
-				
-				console.log(userOptions.searchEngines);
-			//	for (let name of names) {
-			//		console.log(name);
-			//	}
+				return match[1];
 			}
 		}
-
 		
+		return false;
+
 	});
 }
 
+function hideSearchEngines(searchEngines) {
+
+	return readHiddenEngines().then((result) => {
+		let names = result.split(",");
+
+		for (let i=searchEngines.length -1;i>-1;i--) {
+			
+			if (names.includes(searchEngines[i].title)) {
+				searchEngines.splice(i, 1);
+			}
+		}
+		
+		return searchEngines;
+	});
+}
 
 browser.tabs.onActivated.addListener((tab) => {
 	nativeApp();

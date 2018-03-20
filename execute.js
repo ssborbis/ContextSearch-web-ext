@@ -1,10 +1,11 @@
-function post(path, params, method) {
+function post(path, params) {
 	
-	method = method || "POST";
+	let url = new URL(path);
+	url.protocol = window.location.protocol;
 		
 	var form = document.createElement("form");
-	form.setAttribute("method", method);
-	form.setAttribute("action", replaceOpenSearchParams(path, _SEARCHTERMS));
+	form.setAttribute("method", "POST");
+	form.setAttribute("action", replaceOpenSearchParams(url.href, _SEARCHTERMS));
 
 	for (var i=0;i<params.length;i++) {
 		var hiddenField = document.createElement("input");

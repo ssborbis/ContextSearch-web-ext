@@ -7,9 +7,9 @@ function replaceOpenSearchParams(in_str, searchterms) {
 		.replace(/{count[\?]?}/g, "50")
 		.replace(/{startIndex[\?]?}/g, "1")
 		.replace(/{startPage[\?]?}/g, "1")
-		.replace(/{language[\?]?}/g, navigator.language || navigator.userLanguage)
-		.replace(/{inputEncoding[\?]?}/g, document.characterSet)
-		.replace(/{outputEncoding[\?]?}/g, document.characterSet)
+		.replace(/{language[\?]?}/g, (navigator) ? navigator.language || navigator.userLanguage : "")
+		.replace(/{inputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
+		.replace(/{outputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
 		.replace(/{.+?}/g, ""); // all others

@@ -64,6 +64,24 @@ function loadRemoteIcons(options) {
 		hasFailedCount: 0
 	}
 	
+	function imgToBase64(img) {
+		var c = document.createElement('canvas');
+		var ctx = c.getContext('2d');
+		ctx.canvas.width = 16;
+		ctx.canvas.height = 16;
+		ctx.fillStyle = '#6ec179';
+		ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+		ctx.font="16px Georgia";
+		ctx.textAlign = 'center';
+		ctx.textBaseline="middle"; 
+		ctx.fillStyle = "#FFFFFF";
+		ctx.fillText(img.favicon_monogram,8,8);
+		console.log(img.favicon_monogram);
+		
+		return c.toDataURL();
+	}
+	
 	var icons = [];
 	for (var i=0;i<searchEngines.length;i++) {		
 		var img = new Image();
@@ -100,26 +118,7 @@ function loadRemoteIcons(options) {
 				console.log("Trying favicon at " + this.src);
 			}
 			else {
-				var c = document.createElement('canvas');
-				var ctx = c.getContext('2d');
-				ctx.canvas.width = 16;
-				ctx.canvas.height = 16;
-			//	ctx.fillStyle = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-				ctx.fillStyle = '#6ec179';
-				ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-				ctx.font="16px Georgia";
-				ctx.textAlign = 'center';
-				ctx.textBaseline="middle"; 
-//				ctx.strokeStyle='black';
-//				ctx.stroke();
-//				ctx.strokeText(this.favicon_monogram, 8,8 );
-				ctx.fillStyle = "#FFFFFF";
-				ctx.fillText(this.favicon_monogram,8,8);
-				console.log(this.favicon_monogram);
-				
-				this.base64String = c.toDataURL();
-				console.log("Failed to load favicon. Using color " + ctx.fillStyle);
+				this.base64String = imgToBase64(this);
 				this.failed = true;
 			}
 		};
@@ -153,6 +152,11 @@ function loadRemoteIcons(options) {
 		
 		if (Date.now() - timeout_start > timeout ) {
 			details.hasTimedOut = true;
+			
+			for (let i=0;i<icons.length;i++) {
+				if (typeof icons[i].base64String === 'undefined')
+					searchEngines[i].icon_base64String = imgToBase64(icons[i]);
+			}
 			onComplete();
 		}
 		

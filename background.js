@@ -3,8 +3,8 @@ function notify(message, sender, sendResponse) {
 	switch(message.action) {
 		
 		case "updateUserOptions":
-			loadUserOptions(() => {
-				getAllOpenTabs((tabs) => {
+			loadUserOptions().then(() => {
+				getAllOpenTabs().then((tabs) => {
 					for (let tab of tabs)
 						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 				});
@@ -16,9 +16,8 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "openOptions":
-		//	browser.runtime.openOptionsPage();
 			var creating = browser.tabs.create({
-				url: browser.runtime.getURL("/options.html" + message.hashurl || "") 
+				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
 			
 			break;
@@ -81,14 +80,14 @@ function notify(message, sender, sendResponse) {
 				tab: sender.tab,
 				temporarySearchEngine: true
 			});
-			
-		//	userOptions.searchEngines.pop();                                   
+
 			break;
 			
 		case "enableAddCustomSearch":
-			console.log('enabling custom search menu item');
 
 			if (!userOptions.contextMenuShowAddCustomSearch) return;
+			
+			console.log('enabling custom search menu item');
 				
 			browser.contextMenus.create({
 				id: "add_engine",
@@ -106,28 +105,23 @@ function notify(message, sender, sendResponse) {
 	}
 }
 
-function loadUserOptions(callback) {
+function loadUserOptions() {
 	
-	callback = callback || function() {};
 	function onGot(result) {
 		if (!result.userOptions) return false;
 		// Update default values instead of replacing with object of potentially undefined values
 		for (let key in result.userOptions) {
 			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
 		}
-		
-		buildContextMenu();
-		callback();
+
 	}
   
 	function onError(error) {
 		console.log(`Error: ${error}`);
-		buildContextMenu();
-		callback();
 	}
 	
 	var getting = browser.storage.local.get("userOptions");
-	getting.then(onGot, onError);
+	return getting.then(onGot, onError).then(buildContextMenu);
 }
 
 function buildContextMenu(disableAddCustomSearch) {
@@ -138,15 +132,7 @@ function buildContextMenu(disableAddCustomSearch) {
 		console.log('Context menu is disabled');
 		return false;
 	}	
-/*	
-	if (!disableAddCustomSearch && userOptions.contextMenuShowAddCustomSearch) {
-		browser.contextMenus.create({
-			id: "add_engine",
-			title: "Add Custom Search",
-			contexts: ["editable"]
-		});
-	}
-*/
+
 	browser.contextMenus.create({
 		id: "search_engine_menu",
 		title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
@@ -164,26 +150,16 @@ function buildContextMenu(disableAddCustomSearch) {
 				"32": userOptions.searchEngines[i].icon_url || userOptions.searchEngines[i].icon_base64String || ""
 			}
 		});
-	}
-	
-	if (!browser.contextMenus.onClicked.hasListener(contextMenuSearch))
-		browser.contextMenus.onClicked.addListener(contextMenuSearch);
-	
+	}	
 }
+
+browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function contextMenuSearch(info, tab) {
 	
+	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
-		
-		var openSearchUrl = "";
-		var dataJson;
-		
-		browser.tabs.executeScript(tab.id, { 
-			code: 'document.querySelector(\'link[type="application/opensearchdescription+xml"]\').href;'
-		}).then( (result) => {
-			openSearchUrl = result;
-		});
-		
+			
 		// inject script to retrieve search form features ...
 		browser.tabs.executeScript(tab.id, { 
 			file: '/getform.js'
@@ -200,27 +176,26 @@ function contextMenuSearch(info, tab) {
 			// no description ? use tab title ...
 			if ( !data.description ) data.description = tab.title;
 			
-			dataJson = data;
-
-		}).then(() => {
-			browser.tabs.sendMessage(tab.id, {action: "openSearchPopup", data: dataJson}, {frameId: 0});
+			browser.tabs.sendMessage(tab.id, {action: "openSearchPopup", data: data}, {frameId: 0});
 		}).catch( error =>{
 			console.error(error);
 		});
 		
-		
 		return false;
+	}
+	
+	// if searchEngines is empty, open Options
+	if (userOptions.searchEngines.length === 0) {	
+		browser.runtime.openOptionsPage();
+		return false;	
 	}
 	
 	var searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
 	// get modifier keys
-	var shift = info.modifiers.includes("Shift");
-	var ctrl = info.modifiers.includes("Ctrl");
-	
-	if (shift)
+	if ( info.modifiers.includes("Shift") )
 		openMethod = userOptions.contextMenuShift;
-	else if (ctrl)
+	else if ( info.modifiers.includes("Ctrl") )
 		openMethod = userOptions.contextMenuCtrl;
 	else
 		openMethod = userOptions.contextMenuClick;
@@ -252,16 +227,8 @@ function openSearch(details) {
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;
-	var temporarySearchEngine = details.temporarySearchEngine || null;
-
-	console.log('openUrl = ' + openUrl);
+	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
 	
-	// if searchEngines is empty, open Options
-	if (userOptions.searchEngines.length === 0) {	
-		browser.runtime.openOptionsPage();
-		return false;	
-	}
-
 	if (
 		searchEngineIndex === null ||
 		!searchTerms ||
@@ -283,130 +250,118 @@ function openSearch(details) {
 			q = "http://" + searchTerms;
 	}
 	
-	console.log(q);
-
-	// get array of open search tabs async. and find right-most tab
-	getOpenSearchTabs(tab.id, (openSearchTabs) => {
-		
-		if (typeof searchEngine.method !== 'undefined' && searchEngine.method === "POST") {
-			
-			if ( searchEngine.searchForm )
-				q = searchEngine.searchForm;
-			else {
-				let url = new URL(searchEngine.template);
-				q = url.origin + url.pathname;
-			}
-			
-			console.log(q);
-		}
-		
-		switch (openMethod) {
-			case "openCurrentTab":
-				openCurrentTab();
-				break;
-			case "openNewTab":
-				openNewTab();
-				break;
-			case "openNewWindow":
-				openNewWindow();
-				break;
-			case "openBackgroundTab":
-				openBackgroundTab();
-				break;
-			
-		}
-		
-		function onCreate(_tab) {
-			
-			// code for POST engines
-			if (typeof searchEngine.method === 'undefined' || searchEngine.method !== "POST") return;
-			
-			// if new window
-			if (_tab.tabs) _tab = _tab.tabs[0];
-
-			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
-		
-				// new windows open to about:blank and throw extra complete event
-				if (tabInfo.url === "about:blank") return;
-
-				browser.tabs.onUpdated.removeListener(listener);
-				
-				browser.tabs.executeScript(_tab.id, {
-					code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ searchTerms + '"', 
-					runAt: 'document_start'
-				}).then(() => {
-				browser.tabs.executeScript(_tab.id, {
-					file: '/opensearch.js',
-					runAt: 'document_start'
-				}).then(() => {
-				browser.tabs.executeScript(_tab.id, {
-					file: '/execute.js',
-					runAt: 'document_start'
-				});});});
 	
-			});
+	if (typeof searchEngine.method !== 'undefined' && searchEngine.method === "POST") {
+		
+		if ( searchEngine.searchForm )
+			q = searchEngine.searchForm;
+		else {
+			let url = new URL(searchEngine.template);
+			q = url.origin + url.pathname;
 		}
 		
-		function onError() {
-			console.log(`Error: ${error}`);
+	}
+	
+	console.log(q);
+	
+	switch (openMethod) {
+		case "openCurrentTab":
+			openCurrentTab();
+			break;
+		case "openNewTab":
+			openNewTab();
+			break;
+		case "openNewWindow":
+			openNewWindow();
+			break;
+		case "openBackgroundTab":
+			openBackgroundTab();
+			break;
+		
+	}
+	
+	function onCreate(_tab) {
+		
+		// code for POST engines
+		if (typeof searchEngine.method === 'undefined' || searchEngine.method !== "POST") return;
+		
+		function escapeDoubleQuotes(str) {
+			return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 		}
 				
-		function openCurrentTab() {
-			browser.tabs.update({
-				url: q,
-				openerTabId: tab.id
-			});
-			creating.then(onCreate, onError);
-		} 
-		function openNewWindow() {	// open in new window
+		// if new window
+		if (_tab.tabs) _tab = _tab.tabs[0];
 
-			var creating = browser.windows.create({
-				url: q
-			});
-			creating.then(onCreate, onError);
-		} 
-		function openNewTab(inBackground) {	// open in new tab
+		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
+	
+			// new windows open to about:blank and throw extra complete event
+		//	if (tabInfo.url === "about:blank") return;
+		//	if (tabInfo.url !== q) return;	
 		
-			inBackground = inBackground || false;
-			// rightMostSearchTabIndex = tab.index if openSearchTabs is empty or right-most search tab is left of tab
-			var rightMostSearchTabIndex = (openSearchTabs.length > 0 && openSearchTabs[openSearchTabs.length -1].index > tab.index) ? openSearchTabs[openSearchTabs.length -1].index : tab.index;
+			// new method for working from current tab
+			let landing_url = new URL(q);
+			let current_url = new URL(tabInfo.url);
 			
-			var creating = browser.tabs.create({
-				url: q,
-				active: !inBackground,
-			/*	index: rightMostSearchTabIndex + 1,*/
-				openerTabId: tab.id
-			});
-			creating.then(onCreate, onError);
+			if (current_url.hostname !== landing_url.hostname) return;
 
-		}	
-		function openBackgroundTab() {
-			openNewTab(true)
-		}
-	});
-}
+			browser.tabs.onUpdated.removeListener(listener);
+			
+			browser.tabs.executeScript(_tab.id, {
+				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"', 
+				runAt: 'document_start'
+			}).then(() => {
+			browser.tabs.executeScript(_tab.id, {
+				file: '/opensearch.js',
+				runAt: 'document_start'
+			}).then(() => {
+			browser.tabs.executeScript(_tab.id, {
+				file: '/execute.js',
+				runAt: 'document_start'
+			});});});
 
-function getOpenSearchTabs(id, callback) {
-
-	function onGot(tabs) {		
-		var openSearchTabs = tabs.sort(function(a, b) {
-			return (a.index < b.index) ? -1 : 1;
 		});
-		callback(openSearchTabs);
 	}
-
-	function onError(error) {
+	
+	function onError() {
 		console.log(`Error: ${error}`);
 	}
+			
+	function openCurrentTab() {
+		
+		var creating = browser.tabs.update({
+			url: q,
+			openerTabId: tab.id
+		});
+		creating.then(onCreate, onError);
+	} 
+	function openNewWindow() {	// open in new window
 
-	var querying = browser.tabs.query({currentWindow: true, openerTabId: id});
-	querying.then(onGot, onError);
+		var creating = browser.windows.create({
+			url: q
+		});
+		creating.then(onCreate, onError);
+	} 
+	function openNewTab(inBackground) {	// open in new tab
+	
+		inBackground = inBackground || false;
+		
+		var creating = browser.tabs.create({
+			url: q,
+			active: !inBackground,
+			openerTabId: tab.id
+		});
+		creating.then(onCreate, onError);
+
+	}	
+	function openBackgroundTab() {
+		openNewTab(true)
+	}
 }
 
-function getAllOpenTabs(callback) {
+function getAllOpenTabs() {
 	
 	function onGot(tabs) {
-		callback(tabs);
+		return tabs;
 	}
 
 	function onError(error) {
@@ -414,11 +369,12 @@ function getAllOpenTabs(callback) {
 	}
 
 	var querying = browser.tabs.query({});
-	querying.then(onGot, onError);
+	return querying.then(onGot, onError);
 }
 
 var userOptions = {
 	searchEngines: [],
+	hiddenEngines: "",
 	quickMenu: false,
 	quickMenuColumns: 4,
 	quickMenuItems: 100,
@@ -458,7 +414,7 @@ var userOptions = {
 };
 
 loadUserOptions();
-buildContextMenu();
+//buildContextMenu();
 
 browser.runtime.onMessage.addListener(notify);
 browser.runtime.onInstalled.addListener(function updatePage(details) {
@@ -509,6 +465,16 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 		});
 	}
 	
+	// Show install page
+	if ( 
+		details.reason === 'install' 
+	//	|| details.temporary
+	) {
+		browser.tabs.create({
+			url: "/options.html#searchengines"
+		});
+	}
+	
 });
 
 browser.browserAction.setPopup({popup: "/options.html#browser_action"});
@@ -539,6 +505,26 @@ function encodeCharset(string, encoding) {
 	}
 }
 
+/*
+function handleRemoved(tabId, removeInfo) {
+	
+ browser.tabs.get(tabId).then((tab) => {
+	 console.log(tab);
+ });
+  console.log("Tab: " + tabId + " is closing");
+  console.log("Window ID: " + removeInfo.windowId);
+  console.log("Window is closing: " + removeInfo.isWindowClosing);  
+  console.log(removeInfo);
+}
+
+browser.tabs.onRemoved.addListener(handleRemoved);
+
+function handleCreated(tab) {
+  console.log(tab);
+}
+
+browser.tabs.onCreated.addListener(handleCreated);
+*/
 /*
 
 Maybe in FF 60+

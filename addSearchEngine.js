@@ -209,6 +209,12 @@ function addSearchEnginePopup(data) {
 				alert('Must have a name');
 				return;
 			}
+			for (let se of userOptions.searchEngines) {
+				if (se.title == form.shortname.value) {
+					alert('Name must be unique. Search engine "' + form.shortname.value + '" already exists');
+					return;
+				}
+			}
 			if (form.description.value.trim() == "") {
 				alert('Must have a description');
 				return;
@@ -264,7 +270,7 @@ function addSearchEnginePopup(data) {
 			
 			console.log(url);
 
-			// some sites require the background page calling window.external.AddSearchProvider
+			// some sites require the background page to call window.external.AddSearchProvider
 			browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 
 		}
@@ -305,12 +311,9 @@ function loadHTML(myDivId, url) {
 
 function testOpenSearch(form) {
 
-//	if (typeof params !== "Array")
-//		params = [params];
 	let params = [];
 	if (form._method.value === "POST") {
-		let pairs = form.post_params.value.split("&");
-		for (let pair of pairs) {
+		for (let pair of form.post_params.value.split("&")) {
 			let p = pair.split("=");
 			params.push({"name": p[0], "value": p[1] || ""});
 		}
@@ -331,8 +334,8 @@ function testOpenSearch(form) {
 		"queryCharset": form._encoding.value
 	};
 	
-	console.log(tempSearchEngine);
-	console.log(userOptions.searchEngines[userOptions.searchEngines.length - 1]);
+//	console.log(tempSearchEngine);
+//	console.log(userOptions.searchEngines[userOptions.searchEngines.length - 1]);
 	
 	let searchTerms = window.prompt("Enter search terms","firefox");
 	

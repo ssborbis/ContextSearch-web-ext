@@ -29,6 +29,11 @@ button.onchange = (ev) => {
 						img: "icons/alert.png",
 						msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
 					});
+				} else if (details.hasTimedOut) {
+					statusMessage({
+						img: "icons/alert.png",
+						msg: "Fetching icons timed out. Some icons were not loaded."
+					});
 				} else {
 					statusMessage({
 						img: "icons/yes.png",
@@ -39,7 +44,7 @@ button.onchange = (ev) => {
 				if (window.location.href.match(/#quickload$/) !== null) {
 					browser.runtime.sendMessage({action: "closeWindowRequest"});
 				}
-				
+			/*	
 				document.getElementById('searchEngineWarningDivContainer').style.display = "none";
 				var el = document.getElementById('searchEngineWarningDiv');
 				el.innerText = "";
@@ -53,6 +58,7 @@ button.onchange = (ev) => {
 						el.appendChild(p);
 					}
 				}
+			*/
 			}
 		});
 
