@@ -156,13 +156,13 @@ function saveOptions(e) {
 
 	function onSet() {
 		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions}).then(() => {
-			if (e && e.target.id === "i_searchJsonPath") {
+		/*	if (e && e.target.id === "i_searchJsonPath") {
 				browser.storage.local.set({'searchObject_last_mod': ''}).then(()=> {
 					let gettingPage = browser.runtime.getBackgroundPage().then((w) => {
-						w.nativeApp();
+						w.nativeApp(true);
 					});
 				});
-			}
+			}*/
 		});
 	}
 	
@@ -322,7 +322,7 @@ function checkSearchJsonPath() {
 		
 		el.innerText = "Success";
 		el.style.color = 'blue';
-		saveOptions();		
+		saveOptions();
 	}
 	
 	function onError(error) {

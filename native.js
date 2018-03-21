@@ -1,4 +1,6 @@
-function nativeApp() {
+function nativeApp(force) {
+	
+	force = force || false;
 	
 	if (userOptions.reloadMethod !== 'automatic') return false;
 	
@@ -40,7 +42,10 @@ function nativeApp() {
 				console.log("native app: No searchObject_last_mod in localStorage. Creating...");
 			}
 			
-			if (result.searchObject_last_mod === response.last_mod) return false;
+			if (
+				result.searchObject_last_mod === response.last_mod 
+				&& force === false
+			) return false;
 
 			browser.browserAction.setIcon({path: "icons/spinner.svg"});
 			
@@ -69,9 +74,9 @@ function nativeApp() {
 				loadRemoteIcons({
 					searchEngines: se,
 					callback: (details) => {
-						hideSearchEngines(details.searchEngines).then((result) => {
-							console.log(result);
-							userOptions.searchEngines = result || userOptions.searchEngines;
+						hideSearchEngines(details.searchEngines).then((_result) => {
+							console.log(_result);
+							userOptions.searchEngines = _result || userOptions.searchEngines;
 							browser.storage.local.set({'userOptions': userOptions}).then(() => {
 								notify({action: "updateUserOptions", "userOptions": userOptions});
 							});
@@ -139,12 +144,12 @@ function readHiddenEngines() {
 		
 		if (response.error) {
 			console.error(response.error);
-			return false;
+			return "";
 		}
 		
 		if (!response.base64) {
 			console.error("native app: Bad message. No base64 data");
-			return false;
+			return "";
 		}
 
 		console.log('native app: Received file prefs.js');
@@ -166,7 +171,7 @@ function readHiddenEngines() {
 			}
 		}
 		
-		return false;
+		return "";
 
 	});
 }
@@ -174,6 +179,7 @@ function readHiddenEngines() {
 function hideSearchEngines(searchEngines) {
 
 	return readHiddenEngines().then((result) => {
+		if (!result || typeof result !== 'string') return searchEngines;
 		let names = result.split(",");
 
 		for (let i=searchEngines.length -1;i>-1;i--) {
