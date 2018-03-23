@@ -424,9 +424,13 @@ function main(coords) {
 		}
 	}
 	
+	let visibleCount = 0; // separate index for ignoring hidden engines v1.3.2+
 	for (var i=0;i<userOptions.searchEngines.length && i < userOptions.quickMenuItems;i++) {
+		
+		if ( userOptions.searchEngines[i].hidden !== undefined && userOptions.searchEngines[i].hidden) continue;
+		
 		let tile = buildSearchIcon(userOptions.searchEngines[i].icon_base64String, userOptions.searchEngines[i].title);
-		tile.index = i;
+		tile.index = visibleCount++;
 		
 		addTileEventHandlers(tile, (e) => {
 			browser.runtime.sendMessage({
