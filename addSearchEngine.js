@@ -270,8 +270,29 @@ function addSearchEnginePopup(data) {
 			
 			console.log(url);
 
+			if (userOptions.reloadMethod === 'manual') {
+				userOptions.searchEngines.push({
+					"searchForm": form.searchform.value, 
+					"query_string":form.template.value,
+					"icon_url":form.iconURL.value,
+					"title":form.shortname.value,
+					"order":userOptions.searchEngines.length, 
+					"icon_base64String": imageToBase64(form.icon), 
+					"method": form._method.value, 
+					"params": paramStringToNameValueArray(form.post_params.value), 
+					"template": form.template.value, 
+					"queryCharset": form._encoding.value, 
+					"hidden": false
+				});
+				
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions})
+				.then(() => {
+					browser.runtime.sendMessage({action: "updateUserOptions"})
+				});
+			}
 			// some sites require the background page to call window.external.AddSearchProvider
-			browser.runtime.sendMessage({action: "addSearchEngine", url:url});
+			if (userOptions.reloadMethod === 'automatic' || confirm(form.shortName.value + " added to Manual list. Also try adding plugin to Firefox One-Click Search Engines?"))
+				browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 
 		}
 		
@@ -312,14 +333,18 @@ function loadHTML(myDivId, url) {
 function testOpenSearch(form) {
 
 	let params = [];
-	if (form._method.value === "POST") {
+/*	if (form._method.value === "POST") {
 		for (let pair of form.post_params.value.split("&")) {
 			let p = pair.split("=");
 			params.push({"name": p[0], "value": p[1] || ""});
 		}
 	}
-
+*/
 	console.log(params);
+	
+	params = paramStringToNameValueArray(form.post_params.value);
+	
+	console.log('here');
 
 	let tempSearchEngine = {
 		"searchForm": form.searchform.value, 

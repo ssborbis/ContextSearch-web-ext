@@ -21,15 +21,12 @@ button.onchange = (ev) => {
 		
 		// start 1.3.2+
 		let old_names = [];
-
 		for (let se of userOptions.searchEngines) {
 			old_names.push(se.title);
 		}
 		
 		let newEngines = [];
-						
-		for (let i=0;i<searchEngines.length;i++) {
-			let se = searchEngines[i];
+		for (let se of searchEngines) {
 			if (!old_names.includes(se.title)) {
 				console.log(se.title + " not included in userOptions.searchEngines");
 				newEngines.push(se);
@@ -39,12 +36,9 @@ button.onchange = (ev) => {
 		
 		loadRemoteIcons({
 			searchEngines: newEngines, // 1.3.2+
-//			searchEngines: searchEngines,
 			callback: (details) => {
 
 				searchEngines = userOptions.searchEngines.concat(details.searchEngines);
-				
-//				searchEngines = details.searchEngines;
 				saveOptions();
 				
 				if (details.hasFailedCount) {
@@ -55,12 +49,12 @@ button.onchange = (ev) => {
 				} else if (details.hasTimedOut) {
 					statusMessage({
 						img: "icons/alert.png",
-						msg: "Fetching icons timed out. Some icons were not loaded."
+						msg: "Fetching remote icons timed out. Some icons were not loaded."
 					});
 				} else {
 					statusMessage({
 						img: "icons/yes.png",
-						msg: "Success!  Imported " + details.searchEngines.length + " new search engine(s)"
+						msg: "Imported " + searchEngines.length + " engine(s) (" + details.searchEngines.length + " new)"
 					});
 				}
 					
@@ -69,23 +63,6 @@ button.onchange = (ev) => {
 				}
 				
 				buildSearchEngineContainer(searchEngines);
-				
-				
-			/*	
-				document.getElementById('searchEngineWarningDivContainer').style.display = "none";
-				var el = document.getElementById('searchEngineWarningDiv');
-				el.innerText = "";
-				
-				for (let i=0;i<searchEngines.length;i++) {
-					if (searchEngines[i].queryCharset.toLowerCase() !== "utf-8") {
-						document.getElementById('searchEngineWarningDivContainer').style.display = "inline-block";
-						var p = document.createElement('p');
-						p.style.marginLeft = "20px";
-						p.innerText = "\u2022 " + searchEngines[i].title + " (" + searchEngines[i].queryCharset + ")";
-						el.appendChild(p);
-					}
-				}
-			*/
 			}
 		});
 
@@ -105,53 +82,60 @@ function statusMessage(status) {
 }
 
 function buildSearchEngineContainer(searchEngines) {
+	
+	// clear the table
 	document.getElementById('searchEnginesContainer').innerHTML = null;
 	
+	// display Delete All button
+	let deleteAllButton = document.getElementById('b_deleteAllSearchEngines');
+	if (searchEngines.length > 0) deleteAllButton.style.display = null;
+	deleteAllButton.onclick = function() {
+		if (confirm("Remove all search engines?")) {
+			searchOptions = [];
+			
+			// necessary to bypass check in saveOptions
+			userOptions.searchEngines = [];
+			saveOptions();
+			buildSearchEngineContainer([]);
+		}
+	}
+	
 	function getToolIconIndex(element) {
-		 let index = 0;
 		 let toolIcons = document.getElementsByClassName('searchEngineRow');
 		 for (let i=0;i<toolIcons.length;i++) {
 			 if (toolIcons[i] === element) {
-				index = i;
-				break;
+				return i;
 			}
 		 }
 		 
-		 return index;
+		 return -1;
 	}
-	function trFromTarget(target) {
-		// get TR
-		let tr = target;
-		while ( tr && tr.nodeName !== 'TR' ) {
-			tr = tr.parentNode;
+	function nearestParent( tagName, target ) {
+		while ( target && target.nodeName.toUpperCase() !== tagName.toUpperCase() ) {
+			target = target.parentNode;
 		}
 		
-		return tr;
+		return target;
 	}
 	function dragstart_handler(ev) {
-	//	trFromTarget(ev.currentTarget).style.border = "dashed red";
-		ev.dataTransfer.setData("text", getToolIconIndex(trFromTarget(ev.target)));
+		ev.dataTransfer.setData("text", getToolIconIndex(nearestParent("TR",ev.target)));
 		ev.effectAllowed = "copyMove";
 	}
 	function dragover_handler(ev) {
 		for (let icon of document.getElementsByClassName('searchEngineRow')) {
 			icon.style=null;
 		}
-		
-	//	trFromTarget(ev.target).style.backgroundColor='#ddd';
-		trFromTarget(ev.target).style.outline = '2px solid #6ec179';
-		trFromTarget(ev.target).style.opacity = .5;
+
+		nearestParent("TR",ev.target).style.outline = '2px solid #6ec179';
+		nearestParent("TR",ev.target).style.opacity = .5;
 		ev.preventDefault();
 	}
 	function drop_handler(ev) {
 		ev.preventDefault();
-		let tr = trFromTarget(ev.target);
+		let tr = nearestParent("TR",ev.target);
 		tr.style = null;
 		let old_index = ev.dataTransfer.getData("text");
 		let new_index = getToolIconIndex(tr);
-		
-//		console.log(old_index);
-//		console.log(new_index);
 
 		if (new_index > old_index)
 			document.getElementById('searchEnginesContainer').insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr.nextSibling);			
@@ -160,100 +144,218 @@ function buildSearchEngineContainer(searchEngines) {
 		
 		let se = searchEngines.splice(old_index,1)[0];
 
-		searchEngines.splice( new_index, 0, se );
-		
-		console.log(searchEngines);
-		
+		searchEngines.splice( new_index, 0, se );	
 	}
 	function dragend_handler(ev) {
 		saveOptions();
 		ev.dataTransfer.clearData();
 	}
-	
-//	console.log(searchEngines);
-				
+
+	// build table
 	for (let i=0;i<searchEngines.length;i++) {
 		let se = searchEngines[i];
-		
+
 		if (se.hidden === undefined) se.hidden = false;
-		
-		let move = document.createElement('div');
-		move.style.display='inline-block';
-		move.style.width='16px';
-		move.style.height='16px';
-		move.style.cursor='move';
-		move.innerHTML = "<b>&varr;</b>";
-		move.style.textAlign = 'center';
-		
+	
 		let icon = document.createElement('img');
-		icon.style.width = "16px";
-		icon.style.padding = '2px';
-		icon.style.verticalAlign = 'middle';
+		icon.className = 'icon';
 		icon.src = se.icon_base64String;
 		
+		// searchEngine name
+		let title = document.createElement('div');
+		title.title = 'click to edit';
+		title.className = 'title';
+		title.innerText = se.title;
+		
+/*		// edit icon
 		let edit = document.createElement('img');
+		edit.className = 'edit';
 		edit.title = 'edit';
-		edit.src = 'icons/edit.png';
-		edit.style.height = '20px';
-		edit.style.opacity = .5;
-		edit.onclick = function() {
-			return;
-		//	alert('edit function under construction');
+		edit.src = '/icons/edit.png';
+*/
+		title.onclick = function() {
+			let edit_form = document.getElementById('editSearchEngineContainer');
+			
+			// close if open
+			if (nearestParent("TR",edit_form) === nearestParent("TR",title) && edit_form.style.maxHeight) {
+				edit_form.style.maxHeight = null;
+				return;
+			}
+			
+			function clearError( element ) {
+				if ( 
+					element 
+					&& element.classList 
+					&& element.classList.contains('error') 
+				)
+					element.classList.remove('error');
+			}
+			
+			// clear error formatting
+			for (let label of edit_form.getElementsByTagName('label')) {
+				if (label.dataset.label) label.innerText = label.dataset.label;
+				label.style.color = null;
+				clearError(label.nextSibling)
+			}
+
+			edit_form.template.value = se.query_string;
+			edit_form.iconURL.value = se.icon_url || se.icon_base64String;
+			edit_form._method.value = se.method;
+			edit_form._encoding.value = se.queryCharset;
+			edit_form.searchform.value = se.searchForm || new URL(se.query_string).origin || "";	
+			edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
+
+			edit_form.addEventListener('mouseover', () => {
+				nearestParent("TR",edit_form).setAttribute('draggable', 'false');
+			});
+			
+			edit_form.addEventListener('mouseout', () => {
+				nearestParent("TR",edit_form).setAttribute('draggable', 'true');
+			});
+			
+			edit_form.cancel.onclick = function() {
+				edit_form.style.maxHeight = null;
+			}
+			
+			edit_form.save.onclick = function() {
+				let currentIndex = getToolIconIndex(nearestParent("TR",this));
+				// Check bad form values
+			/*	if (form.shortname.value.trim() == "") {
+					alert('Must have a name');
+					return;
+				}
+				
+				for (let se of userOptions.searchEngines) {
+					if (se.title == form.shortname.value) {
+						alert('Name must be unique. Search engine "' + form.shortname.value + '" already exists');
+						return;
+					}
+				}
+			*/
+				function showError(el, msg) {
+					el.previousSibling.innerText = msg;
+					el.previousSibling.style.color = "red";
+					el.classList.add("error");
+				}
+				
+				if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
+					showError(edit_form.template,'Template must include {searchTerms}');
+					return;
+				}
+				if (edit_form.template.value.match(/^http/i) === null) {
+					showError(edit_form.template,'Template must be an URL');
+					return;
+				}
+				if (edit_form.searchform.value.match(/^http/i) === null) {
+					showError(edit_form.searchform,'Form path must be an URL');
+					return;
+				}
+				if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
+					showError(edit_form.post_params, 'POST params must include {searchTerms}');
+					return;
+				}
+				if (edit_form.iconURL.value.match(/^resource:/) === null) {
+					icon.src = browser.runtime.getURL("/icons/spinner.svg");
+					let newIcon = new Image();
+					newIcon.onload = function() {
+						icon.src =  imageToBase64(this, 32);
+						searchEngines[currentIndex].icon_base64String = icon.src;
+						saveOptions();
+						edit_form.style.maxHeight = null;
+					}
+					newIcon.onerror = function() {
+						icon.src = searchEngines[i].icon_base64String;
+						showError(edit_form.iconURL,'Icon failed to load');
+					}
+					newIcon.src = edit_form.iconURL.value;
+				}
+				
+				searchEngines[currentIndex].query_string = edit_form.template.value;
+				searchEngines[currentIndex].searchForm = edit_form.searchform.value;
+				searchEngines[currentIndex].icon_url = edit_form.iconURL.value;
+				searchEngines[currentIndex].method = edit_form._method.value;
+				searchEngines[currentIndex].queryCharset = edit_form._encoding.value;
+				searchEngines[currentIndex].params = paramStringToNameValueArray(edit_form.post_params.value);
+
+			}
+			
+			// clear error formatting on focus
+			for (let element of edit_form.getElementsByTagName('input')) {
+				element.addEventListener('focus', () => {
+					clearError( element );
+				});
+			}
+
+			// attach form to title cell
+			title.parentNode.appendChild(edit_form);
+			
+			// needs delay to animate properly
+			setTimeout(()=> {
+				edit_form.style.maxHeight = '400px';
+			},50);
 		}
 		
 		let _delete = document.createElement('img');
 		_delete.title = 'delete';
+		_delete.className = 'delete';
 		_delete.src = '/icons/delete.png';
-		_delete.style.height = '20px';
-		_delete.style.margin = '0 4px';
-		_delete.style.opacity = .5;
-		_delete.onclick = function() {
+		_delete.onclick = function(e) {
+			e.stopPropagation();
 			_delete.style.display = 'none';
 			
-			let msg = document.createElement('span');
-			msg.innerText = 'Delete?';
-			
 			let yes = document.createElement('button');
+			yes.style.fontSize = '8pt';
+			yes.style.float = 'right';
 			yes.innerText = 'yes';
-			yes.onclick = function() {
+			
+			yes.onclick = function(ev) {
+				ev.stopPropagation();
+								
+				let r = nearestParent("TR",this);
 				
-				let r = trFromTarget(this);
+				// move the edit form if attached to prevent deletion
+				let edit_form = document.getElementById('editSearchEngineContainer');
+				if (r === nearestParent("TR", edit_form)) {
+					edit_form.style.maxHeight = null;
+					document.body.appendChild(edit_form);
+				}
+				
 				let index = getToolIconIndex(r);
 				console.log('deleting index ' + index);
 				searchEngines.splice(index,1);
-				r.parentNode.removeChild(r);
-				
+				r.parentNode.removeChild(r);	
+				saveOptions();
 			}
 			
 			let no = document.createElement('button');
+			no.style.fontSize = '8pt';
+			no.style.float = 'right';
 			no.innerText = 'no';
-			no.onclick = function() {
-		//		no.parentNode.removeChild(msg);
+			
+			no.onclick = function(ev) {
+				ev.stopPropagation();
 				no.parentNode.removeChild(yes);
 				no.parentNode.removeChild(no);
 				_delete.style.display = null;
 			}
 			
-		//	_delete.parentNode.appendChild(msg);
 			_delete.parentNode.appendChild(no);
 			_delete.parentNode.appendChild(yes);
 			
 		}
 		
+		_delete.style.float = 'right';
+		title.appendChild(_delete);
+		
 		let hide = document.createElement('label');
 		hide.title = 'show/hide';
-		hide.className = 'container';
-		hide.style.display = 'inline';
-		hide.style.textAlign = 'center';
-		hide.style.paddingRight = '20px';
-		hide.style.paddingLeft = '0';
+		hide.className = 'container hide';
 		
 		let cb = document.createElement('input');
 		cb.type = 'checkbox';
 		cb.checked = !se.hidden;
 		cb.addEventListener('change', () => {
-			searchEngines[getToolIconIndex(trFromTarget(cb))].hidden = !cb.checked;
-			console.log(getToolIconIndex(trFromTarget(cb)) + ' hidden is ' + !cb.checked);
+			searchEngines[getToolIconIndex(nearestParent("TR",cb))].hidden = !cb.checked;
 			saveOptions();
 		});
 		
@@ -264,58 +366,6 @@ function buildSearchEngineContainer(searchEngines) {
 		hide.appendChild(cb);
 		hide.appendChild(sp);
 
-		let template = document.createElement('input');
-		template.style.width = "auto";
-		template.value = se.query_string;
-		
-		let title = document.createElement('div');
-		title.style.display = 'inline-block';
-		title.style.width = "450px";
-		title.style.border = 'none';
-		title.style.overflowX = 'hidden';
-		title.innerText = se.title;
-		title.style.userSelect = "none";
-		title.style.cursor = 'default';
-		
-		let params = document.createElement('input');
-		params.style.width = 'auto';
-		params.value = function() {
-			if (se.method === "GET") return "";
-			let str = '';
-			for (let p of se.params) {
-				str+= '&' + p.name + "=" + p.value;
-			}
-			
-			return str.slice(1);
-		}();
-		
-		let method = document.createElement('select');
-		method.innerHTML = "<option value='GET'>GET</option><option value='POST'>POST</option>";
-		method.selectedIndex = (se.method === "GET") ? 0 : 1;
-		
-		let encoding = document.createElement('select');
-		encoding.innerHTML = '<option value="UTF-8">utf-8</option>\
-			<option value="WINDOWS-1252">windows-1252</option>\
-			<option value="SHIFT_JIS">shift_jis</option>\
-			<option value="ISO-2022-JP">iso-2022-jp</option>\
-			<option value="EUC-JP">euc-jp</option>\
-			<option value="WINDOWS-1250">windows-1250</option>\
-			<option value="WINDOWS-1251">windows-1251</option>\
-			<option value="WINDOWS-850">windows-850</option>\
-			<option value="MACINTOSH">macintosh</option>\
-			<option value="ISO-8859-5">iso-8859-5</option>\
-			<option value="ISO-8859-2">iso-8859-2</option>';//\
-//			<option value="GB2312">gb2312</option>';
-
-		encoding.value = se.queryCharset;
-		if (!encoding.value) {
-			let o = document.createElement('option');
-			o.value = se.queryCharset.toUpperCase();
-			o.innerText = se.queryCharset.toLowerCase();
-			encoding.appendChild(o);
-			encoding.value = o.value;
-		}
-		
 		let row = document.createElement('tr');
 		row.style.width = "auto";
 		row.style.outline = '1px solid #F3F3F3';
@@ -329,10 +379,11 @@ function buildSearchEngineContainer(searchEngines) {
 		row.addEventListener('drop',drop_handler);
 		row.addEventListener('dragover',dragover_handler);
 		
-		[hide, icon, title, _delete/*, template, method, encoding, params */].forEach(function(element) {
-		//	element.style.border = '1px solid #F3F3F3';
+		[hide, icon, title/*,  _delete*/].forEach(function(element) {
+
 			element.style.verticalAlign = 'middle';
 			let td = document.createElement('td');
+			td.style.verticalAlign = 'top';
 			td.appendChild(element);
 			row.appendChild(td);
 			
@@ -794,10 +845,23 @@ function buildToolIcons() {
 document.addEventListener("DOMContentLoaded", (e) => {
 	for (let el of document.getElementsByName('reloadMethod')) {
 		el.addEventListener('click', (e) => {
+			
+			// confirm change to replace manual list
+			if (
+				userOptions.reloadMethod === 'manual' 
+				&& e.target.value === 'automatic' 
+				&& userOptions.searchEngines.length !== 0
+				&& !confirm("Automatic importing will replace your manual list and any changes you have made. Are you sure?")
+			) {
+				e.preventDefault();
+				return false;
+			}
+			
 			document.getElementById('manual').style.display='none';
 			document.getElementById('automatic').style.display='none';
 			document.getElementById(el.value).style.display='';
 		});
+		
 		el.addEventListener('change', saveOptions);
 	}
 });
@@ -869,10 +933,3 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 	}
 });
-
-function buildSearchEngineList() {
-	let html = "";
-	for (let engine of userOptions.searchEngines) {
-		html+=`<div class='searchEngineRow'><div `
-	}
-}

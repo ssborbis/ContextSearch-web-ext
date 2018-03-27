@@ -430,7 +430,8 @@ function main(coords) {
 		if ( userOptions.searchEngines[i].hidden !== undefined && userOptions.searchEngines[i].hidden) continue;
 		
 		let tile = buildSearchIcon(userOptions.searchEngines[i].icon_base64String, userOptions.searchEngines[i].title);
-		tile.index = visibleCount++;
+	//	tile.index = visibleCount++;
+		tile.index = i;
 		
 		addTileEventHandlers(tile, (e) => {
 			browser.runtime.sendMessage({
@@ -460,7 +461,7 @@ function main(coords) {
 		div.style.minWidth = hover_div.style.minWidth;
 		div.innerText = 'Where are my search engines?';
 		div.onclick = function() {
-			alert('If you are seeing this message, reload your search settings file from Options');
+		//	alert('If you are seeing this message, reload your search settings file from Options');
 			browser.runtime.sendMessage({action: "openOptions", hashurl: "#searchengines"});
 		}	
 		hover_div.appendChild(div);
@@ -633,11 +634,29 @@ for (let input of document.getElementsByTagName('input')) {
 }
 
 // Add listener for dynamically added inputs
+var CS_observer = new MutationObserver((mutationsList) => {
+	for(var mutation of mutationsList) {
+        if (mutation.type == 'childList') {
+			for (let node of mutation.addedNodes) {
+				if (node.nodeName === "INPUT") {
+					console.log("INPUT added dynamically to the DOM. Adding listener");
+					inputAddCustomSearchHandler(node);
+				}
+			}
+//			console.log(mutation);
+//          console.log('A child node has been added or removed.');
+        }
+    }
+});
+
+CS_observer.observe(document.body, {childList: true, subtree: true});
+/*
 document.addEventListener('DOMNodeInserted', (ev) => {
 	if (ev.target.tagName === "INPUT") {
 		inputAddCustomSearchHandler(ev.target);
 	}
 });
+*/
 
 // Relabel context menu root on mousedown to fire before oncontextmenu
 window.addEventListener('mousedown', (e) => {

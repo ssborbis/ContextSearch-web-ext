@@ -446,6 +446,73 @@
 				padding-right:10px;
 				font-size:8pt;
 			}
+			#searchEnginesContainer .icon {
+				width:16px;
+				padding:2px;
+				vertical-align:middle;
+			}
+			#searchEnginesContainer .title {
+				display:inline-block;
+				width:490px;
+				border:none;
+				overflow-x:hidden;
+				user-select:none;
+				cursor:default;	
+			}
+			#searchEnginesContainer TR:hover {
+				background-color:/*#f1f8ff*/#F6F6F6;
+			}
+			#searchEnginesContainer .edit,
+			#searchEnginesContainer .delete	{
+				height:20px;
+				margin:0 2px;
+			}
+			#searchEnginesContainer .hide {
+				display:inline;
+				text-align:center;
+				padding:auto 10px auto 0;
+				padding-left:20px;
+				
+			}
+			#editSearchEngineContainer {
+				transition: max-height .5s ease-in-out;
+				max-height:0;
+				overflow:hidden;
+			}
+						
+			#editSearchEngineContainer INPUT, #editSearchEngineContainer SELECT {
+				display:block;
+				width:480px;
+				border:1px solid #E0E0E0;
+				margin:1px;
+				margin-top:-8px;
+				padding:4px;
+				padding-top:8px;
+			}
+			#editSearchEngineContainer SELECT {
+				width:120px;
+			}
+			#editSearchEngineContainer INPUT:focus {
+				border:1px solid #008afc;
+				box-shadow:0px 0px 3px 1px #008afc;
+				background-color:white;
+			}
+			#editSearchEngineContainer .error {
+				border:1px solid pink;
+				box-shadow:0px 0px 3px 1px pink;
+			}
+			#editSearchEngineContainer LABEL {
+				font-size:10pt;
+				font-variant:small-caps;
+				display:inline-block;
+				background-color:white;
+				position:relative;
+				z-index:9999;
+				left:20px;
+				padding:0px 4px;
+				color:#646464;	
+			}
+			
 		</style>
 	</head>
 	<body>
@@ -751,13 +818,61 @@
 					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Manual <a style='font-size:10pt' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto.gif' id='a_howTo'><img src='/icons/movie.png' style='height:30px;margin-left:10px'/></a></div>
 					<div style='padding:0;margin:0;padding-left:20px'>
 						<div>
-							<b><i>BETA</i></b> drag &amp; drop to re-order, checkbox to show/hide. Re-importing your search.json.mozlz4 file should keep your settings and only add new engines. Leave feedback @ <a href="https://github.com/ssborbis/ContextSearch-web-ext/issues">github</a>
+							<b><i>BETA</i></b> drag &amp; drop to re-order, checkbox to show/hide, click to edit. Re-importing your search.json.mozlz4 file should keep your settings and only add new engines. Leave feedback @ <a href="https://github.com/ssborbis/ContextSearch-web-ext/issues">github</a>
 						</div>
 						<br />
-						<div style='max-height:300px;overflow-y:auto;width:auto'>
+						<div style='max-height:400px;overflow-y:auto;width:auto'>
 							<table id='searchEnginesContainer' ></table>
 						</div>
+						<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both'>Remove All</button>
+						<br />
 						
+
+						<form id='editSearchEngineContainer' action="">
+
+						<!--	Name<input name="shortname" type="text" />
+							
+							Description<input name="description" type="text" />
+						-->
+							
+							<label data-label="Template"></label><input name="template" type="text" class='inputNice' />
+							
+							<label data-label="Icon URL"></label><input name="iconURL" type="text" class='inputNice' />
+							
+							<label data-label="Form Path"></label><input name="searchform" type="text" class='inputNice' />
+							
+							<label data-label="POST Params"></label><input name="post_params" type="text" class='inputNice' />
+
+							<div style='display:inline-block'>
+							<label>Method</label>
+							<select name="_method" class='inputNice'>
+							<option value="GET">GET</option>
+							<option value="POST">POST</option>
+							</select>
+							</div>
+							
+							<div style='display:inline-block'>
+							<label>Encoding</label>
+							<select name="_encoding" class='inputNice'>
+							<option value="UTF-8">utf-8</option>
+							<option value="WINDOWS-1252">windows-1252</option>
+							<option value="SHIFT_JIS">shift_jis</option>
+							<option value="ISO-2022-JP">iso-2022-jp</option>
+							<option value="EUC-JP">euc-jp</option>
+							<option value="WINDOWS-1250">windows-1250</option>
+							<option value="WINDOWS-1251">windows-1251</option>
+							<option value="WINDOWS-850">windows-850</option>
+							<option value="MACINTOSH">macintosh</option>
+							<option value="ISO-8859-5">iso-8859-5</option>
+							<option value="ISO-8859-2">iso-8859-2</option>
+							</select>
+							</div>
+							
+							<button type="button" name="cancel" class='inputNice' style="float:right;margin:10px 5px">cancel</button>
+							<button type="button" name="save" class='inputNice' style="float:right;margin:10px 5px">save</button>
+							
+						</form>
+
 						<hr />
 						Browse to your profile folder using the button below and select your <b>search.json.mozlz4</b> file<br />
 						You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar
@@ -798,6 +913,7 @@
 		<script src="mozlz4.js"></script>
 		<script src="searchEngineUtils.js"></script>
 		<script src="keyTable.js"></script>
+		<script src="opensearch.js"></script>
 		<script src="options.js"></script>
 	</body>
 </html>

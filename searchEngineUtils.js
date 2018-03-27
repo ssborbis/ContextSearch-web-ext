@@ -4,14 +4,14 @@ function searchEngineObjectToArray(engines) {
 
 	// iterate over search engines in search.json.mozlz4
 	for (var i in engines) {
-		var search_url = "", params_str = "", method = "", params, template = "", searchForm = "";
+		var search_url = "", params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
 		var engine = engines[i];
 
-		// skip hidden search engines
-		if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) continue;
+		// hidden search engines
+		if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) hidden = true;
 		
 		// set landing page for POST
-		searchForm = engine.__searchForm || null;
+		searchForm = engine.__searchForm || "";
 		
 		// iterate over urls array
 		for (var u=0;u<engine._urls.length;u++) {
@@ -22,14 +22,14 @@ function searchEngineObjectToArray(engines) {
 			
 			// get request method
 			method = url.method || "GET";
+			
 			// get the main search url
 			search_url = url.template;
 			
 			template = url.template;
 			
 			// get url params
-			for (var p in url.params)
-				params_str+="&" + url.params[p].name + "=" + url.params[p].value;
+			params_str = "&" + nameValueArrayToParamString(url.params);
 		
 			params = url.params;
 		}
@@ -38,7 +38,19 @@ function searchEngineObjectToArray(engines) {
 		else search_url+=params_str.replace(/^&/,"?");
 		
 		// push object to array for storage.local
-		searchEnginesArray.push({"searchForm": searchForm, "query_string":search_url,"icon_url":engine._iconURL,"title":engine._name,"order":engine._metaData.order, "icon_base64String": "", "method": method, "params": params, "template": template, "queryCharset": engine.queryCharset || "UTF-8"});
+		searchEnginesArray.push({
+			"searchForm": searchForm, 
+			"query_string":search_url,
+			"icon_url":engine._iconURL,
+			"title":engine._name,
+			"order":engine._metaData.order, 
+			"icon_base64String": "", 
+			"method": method, 
+			"params": params, 
+			"template": template, 
+			"queryCharset": engine.queryCharset || "UTF-8", 
+			"hidden": hidden
+		});
 	}
 	
 	// sort search engine array by order key
@@ -103,12 +115,7 @@ function loadRemoteIcons(options) {
 			img.src = searchEngines[i].icon_url;
 
 		img.onload = function() {
-			let c = document.createElement('canvas');
-			let ctx = c.getContext('2d');
-			ctx.canvas.width = this.naturalWidth;
-			ctx.canvas.height = this.naturalHeight;
-			ctx.drawImage(this, 0, 0);
-			this.base64String = c.toDataURL();
+			this.base64String = imageToBase64(this, 32);;
 		};
 		
 		img.onerror = function() {			

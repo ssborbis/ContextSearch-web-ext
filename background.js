@@ -1,7 +1,10 @@
 function notify(message, sender, sendResponse) {
 	
 	switch(message.action) {
-		
+		case "saveUserOptions":
+			browser.storage.local.set({"userOptions": message.userOptions});
+			break;
+			
 		case "updateUserOptions":
 			loadUserOptions().then(() => {
 				getAllOpenTabs().then((tabs) => {
@@ -140,6 +143,7 @@ function buildContextMenu(disableAddCustomSearch) {
 	});
 
 	for (var i=0;i<userOptions.searchEngines.length;i++) {
+		if (userOptions.searchEngines[i].hidden) continue;
 		browser.contextMenus.create({
 			parentId: "search_engine_menu",
 			id: i.toString(),
