@@ -2,8 +2,8 @@
 var searchEngines = [];
 var userOptions = {};
 
-let button = document.getElementById("selectMozlz4FileButton");
-button.onchange = (ev) => {
+// Browse button for manual import
+document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev) => {
 	
 	searchEngines = [];
 	let file = ev.target.files[0];
@@ -11,7 +11,7 @@ button.onchange = (ev) => {
 
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;	
-		searchEngines = searchEngineObjectToArray(engines);
+		searchEngines = searchJsonObjectToArray(engines);
 
 		document.getElementById('status_div').style.display='';
 		statusMessage({
@@ -74,30 +74,99 @@ button.onchange = (ev) => {
 			msg: "Failed to load search engines :("
 		});
 	});
-};
-
-function statusMessage(status) {				
-	document.getElementById('status_img').src = status.img || "";
-	document.getElementById('status').innerText = status.msg || "";
-}
+	
+	function statusMessage(status) {				
+		document.getElementById('status_img').src = status.img || "";
+		document.getElementById('status').innerText = status.msg || "";
+	}
+});
 
 function buildSearchEngineContainer(searchEngines) {
 	
+	// show default engine msg if !reloadMethod and not lite version
+	if (!userOptions.reloadMethod && typeof browser.runtime.sendNativeMessage === 'function')
+		document.getElementById('d_defaultEnginesMsg').style.display=null;
+	
+	// hide and detach the edit_form
+	let edit_form = document.getElementById('editSearchEngineContainer');
+	edit_form.style.maxHeight = null;
+	document.body.appendChild(edit_form);
+		
 	// clear the table
-	document.getElementById('searchEnginesContainer').innerHTML = null;
+	let se_container = document.getElementById('searchEnginesContainer');
+	se_container.innerHTML = null;
 	
 	// display Delete All button
 	let deleteAllButton = document.getElementById('b_deleteAllSearchEngines');
 	if (searchEngines.length > 0) deleteAllButton.style.display = null;
 	deleteAllButton.onclick = function() {
 		if (confirm("Remove all search engines?")) {
-			searchOptions = [];
 			
 			// necessary to bypass check in saveOptions
+			searchEngines = [];
 			userOptions.searchEngines = [];
 			saveOptions();
 			buildSearchEngineContainer([]);
 		}
+	}
+	
+	let b_addSearchEngine = document.getElementById('b_addSearchEngine');
+	b_addSearchEngine.onclick = function() {
+		
+		let msg = "Enter a unique name for this search engine";;
+		let shortName = "";
+
+		while(true) {
+			if (! (shortName = window.prompt(msg)) || !shortName.trim() ) return;
+
+			let found = false;
+			
+			for (let engine of searchEngines) {
+				if (engine.title == shortName) {
+					console.log(engine.title + "\t" + shortName);
+					msg = engine.title + " exists. Enter a unique name for this search engine";
+					found = true;
+					break;
+				}
+			}
+			
+			if ( !found ) break;
+		}
+
+		searchEngines.push({
+			"searchForm": "", 
+			"query_string":"",
+			"icon_url":"",
+			"title":shortName,
+			"order":searchEngines.length, 
+			"icon_base64String": "", 
+			"method": "GET", 
+			"params": "", 
+			"template": "", 
+			"queryCharset": "UTF-8", 
+			"hidden": false
+		});
+		
+		saveOptions();
+		
+		buildSearchEngineContainer(searchEngines);
+		let titles = document.getElementsByClassName('title');
+		let title = titles[titles.length - 1];
+
+		se_container.parentNode.scroll({
+			top: se_container.parentNode.scrollHeight,
+			behavior:'smooth'
+		});
+
+		title.dispatchEvent(new Event('click'));
+		
+		// wait for animation to end
+		setTimeout(() => {
+			se_container.parentNode.scroll({
+				top: se_container.parentNode.scrollHeight,
+				behavior:'smooth'
+			});
+		},500);
 	}
 	
 	function getToolIconIndex(element) {
@@ -122,13 +191,13 @@ function buildSearchEngineContainer(searchEngines) {
 		ev.effectAllowed = "copyMove";
 	}
 	function dragover_handler(ev) {
-		for (let icon of document.getElementsByClassName('searchEngineRow')) {
-			icon.style=null;
-		}
-
-		nearestParent("TR",ev.target).style.outline = '2px solid #6ec179';
-		nearestParent("TR",ev.target).style.opacity = .5;
+		let row = nearestParent("TR",ev.target);
+		row.style.outline = '2px solid #6ec179';
+		row.style.opacity = .5;
 		ev.preventDefault();
+	}
+	function dragleave_handler(ev) {
+		nearestParent("TR",ev.target).style=null;
 	}
 	function drop_handler(ev) {
 		ev.preventDefault();
@@ -138,9 +207,9 @@ function buildSearchEngineContainer(searchEngines) {
 		let new_index = getToolIconIndex(tr);
 
 		if (new_index > old_index)
-			document.getElementById('searchEnginesContainer').insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr.nextSibling);			
+			se_container.insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr.nextSibling);			
 		else
-			document.getElementById('searchEnginesContainer').insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr);
+			se_container.insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr);
 		
 		let se = searchEngines.splice(old_index,1)[0];
 
@@ -154,7 +223,7 @@ function buildSearchEngineContainer(searchEngines) {
 	// build table
 	for (let i=0;i<searchEngines.length;i++) {
 		let se = searchEngines[i];
-
+		
 		if (se.hidden === undefined) se.hidden = false;
 	
 		let icon = document.createElement('img');
@@ -167,16 +236,9 @@ function buildSearchEngineContainer(searchEngines) {
 		title.className = 'title';
 		title.innerText = se.title;
 		
-/*		// edit icon
-		let edit = document.createElement('img');
-		edit.className = 'edit';
-		edit.title = 'edit';
-		edit.src = '/icons/edit.png';
-*/
 		title.onclick = function() {
-			let edit_form = document.getElementById('editSearchEngineContainer');
 			
-			// close if open
+			// close if open on same TR
 			if (nearestParent("TR",edit_form) === nearestParent("TR",title) && edit_form.style.maxHeight) {
 				edit_form.style.maxHeight = null;
 				return;
@@ -198,13 +260,20 @@ function buildSearchEngineContainer(searchEngines) {
 				clearError(label.nextSibling)
 			}
 
+//			edit_form.shortName.value = se.title;
 			edit_form.template.value = se.query_string;
 			edit_form.iconURL.value = se.icon_url || se.icon_base64String;
-			edit_form._method.value = se.method;
-			edit_form._encoding.value = se.queryCharset;
-			edit_form.searchform.value = se.searchForm || new URL(se.query_string).origin || "";	
+			edit_form._method.value = se.method || "GET";
 			edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
-
+			edit_form._encoding.value = se.queryCharset || "UTF-8";
+			edit_form.searchform.value = se.searchForm || function() {
+				try {
+					return new URL(se.query_string).origin;
+				} catch (err) {
+					return "";
+				}
+			}();
+			
 			edit_form.addEventListener('mouseover', () => {
 				nearestParent("TR",edit_form).setAttribute('draggable', 'false');
 			});
@@ -218,26 +287,39 @@ function buildSearchEngineContainer(searchEngines) {
 			}
 			
 			edit_form.save.onclick = function() {
-				let currentIndex = getToolIconIndex(nearestParent("TR",this));
-				// Check bad form values
-			/*	if (form.shortname.value.trim() == "") {
-					alert('Must have a name');
-					return;
-				}
-				
-				for (let se of userOptions.searchEngines) {
-					if (se.title == form.shortname.value) {
-						alert('Name must be unique. Search engine "' + form.shortname.value + '" already exists');
-						return;
-					}
-				}
-			*/
+
 				function showError(el, msg) {
 					el.previousSibling.innerText = msg;
 					el.previousSibling.style.color = "red";
 					el.classList.add("error");
 				}
 				
+				function saveForm() {
+					// loading icon is last step. Set values after everything else
+					se.icon_base64String = icon.src;
+					se.query_string = edit_form.template.value;
+					se.searchForm = edit_form.searchform.value;
+					se.icon_url = edit_form.iconURL.value;
+					se.method = edit_form._method.value;
+					se.queryCharset = edit_form._encoding.value;
+					se.params = paramStringToNameValueArray(edit_form.post_params.value);
+					
+					saveOptions();
+					edit_form.style.maxHeight = null;
+				}
+
+				// Check bad form values
+	/*			if ( !edit_form.shortName.value.trim() ) {
+					showError(edit_form.shortName,'Engine name');
+					return;
+				}
+				for (let engine of userOptions.searchEngines) {
+					if (engine.title == edit_form.shortName.value) {
+						showError(edit_form.shortName,"Engine name " + edit_form.shortName.value + '" already exists');
+						return;
+					}
+				}
+	*/
 				if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
 					showError(edit_form.template,'Template must include {searchTerms}');
 					return;
@@ -259,24 +341,14 @@ function buildSearchEngineContainer(searchEngines) {
 					let newIcon = new Image();
 					newIcon.onload = function() {
 						icon.src =  imageToBase64(this, 32);
-						searchEngines[currentIndex].icon_base64String = icon.src;
-						saveOptions();
-						edit_form.style.maxHeight = null;
+						saveForm();
 					}
 					newIcon.onerror = function() {
-						icon.src = searchEngines[i].icon_base64String;
+						icon.src = se.icon_base64String;
 						showError(edit_form.iconURL,'Icon failed to load');
 					}
 					newIcon.src = edit_form.iconURL.value;
 				}
-				
-				searchEngines[currentIndex].query_string = edit_form.template.value;
-				searchEngines[currentIndex].searchForm = edit_form.searchform.value;
-				searchEngines[currentIndex].icon_url = edit_form.iconURL.value;
-				searchEngines[currentIndex].method = edit_form._method.value;
-				searchEngines[currentIndex].queryCharset = edit_form._encoding.value;
-				searchEngines[currentIndex].params = paramStringToNameValueArray(edit_form.post_params.value);
-
 			}
 			
 			// clear error formatting on focus
@@ -291,7 +363,7 @@ function buildSearchEngineContainer(searchEngines) {
 			
 			// needs delay to animate properly
 			setTimeout(()=> {
-				edit_form.style.maxHeight = '400px';
+				edit_form.style.maxHeight = '300px';
 			},50);
 		}
 		
@@ -304,17 +376,16 @@ function buildSearchEngineContainer(searchEngines) {
 			_delete.style.display = 'none';
 			
 			let yes = document.createElement('button');
-			yes.style.fontSize = '8pt';
-			yes.style.float = 'right';
-			yes.innerText = 'yes';
+			let no = document.createElement('button');
+
+			yes.innerText = 'yes'; no.innerText = 'no';
 			
 			yes.onclick = function(ev) {
-				ev.stopPropagation();
-								
+				ev.stopPropagation(); // prevents closing edit_form
+
 				let r = nearestParent("TR",this);
 				
 				// move the edit form if attached to prevent deletion
-				let edit_form = document.getElementById('editSearchEngineContainer');
 				if (r === nearestParent("TR", edit_form)) {
 					edit_form.style.maxHeight = null;
 					document.body.appendChild(edit_form);
@@ -326,14 +397,9 @@ function buildSearchEngineContainer(searchEngines) {
 				r.parentNode.removeChild(r);	
 				saveOptions();
 			}
-			
-			let no = document.createElement('button');
-			no.style.fontSize = '8pt';
-			no.style.float = 'right';
-			no.innerText = 'no';
-			
+
 			no.onclick = function(ev) {
-				ev.stopPropagation();
+				ev.stopPropagation(); // prevents closing edit_form
 				no.parentNode.removeChild(yes);
 				no.parentNode.removeChild(no);
 				_delete.style.display = null;
@@ -344,7 +410,6 @@ function buildSearchEngineContainer(searchEngines) {
 			
 		}
 		
-		_delete.style.float = 'right';
 		title.appendChild(_delete);
 		
 		let hide = document.createElement('label');
@@ -355,7 +420,7 @@ function buildSearchEngineContainer(searchEngines) {
 		cb.type = 'checkbox';
 		cb.checked = !se.hidden;
 		cb.addEventListener('change', () => {
-			searchEngines[getToolIconIndex(nearestParent("TR",cb))].hidden = !cb.checked;
+			se.hidden = !cb.checked;
 			saveOptions();
 		});
 		
@@ -367,8 +432,6 @@ function buildSearchEngineContainer(searchEngines) {
 		hide.appendChild(sp);
 
 		let row = document.createElement('tr');
-		row.style.width = "auto";
-		row.style.outline = '1px solid #F3F3F3';
 		
 		row.className = 'searchEngineRow';
 		row.setAttribute('draggable', true);
@@ -378,18 +441,17 @@ function buildSearchEngineContainer(searchEngines) {
 		row.addEventListener('dragend',dragend_handler);
 		row.addEventListener('drop',drop_handler);
 		row.addEventListener('dragover',dragover_handler);
+		row.addEventListener('dragleave',dragleave_handler);
 		
-		[hide, icon, title/*,  _delete*/].forEach(function(element) {
+		[hide, icon, title].forEach( (element) => {
 
-			element.style.verticalAlign = 'middle';
 			let td = document.createElement('td');
-			td.style.verticalAlign = 'top';
 			td.appendChild(element);
 			row.appendChild(td);
 			
 		});
 		
-		document.getElementById('searchEnginesContainer').appendChild(row);
+		se_container.appendChild(row);
 		
 	}
 }
@@ -412,6 +474,7 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
+		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
 		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
@@ -445,6 +508,8 @@ function restoreOptions() {
 				break;
 			}
 		}
+		
+//		document.getElementById('cb_customManager').checked = userOptions.customManager;
 
 		document.getElementById('s_contextMenuClick').value = userOptions.contextMenuClick;
 		document.getElementById('s_contextMenuShift').value = userOptions.contextMenuShift;
@@ -474,15 +539,7 @@ function restoreOptions() {
 function saveOptions(e) {
 
 	function onSet() {
-		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions}).then(() => {
-		/*	if (e && e.target.id === "i_searchJsonPath") {
-				browser.storage.local.set({'searchObject_last_mod': ''}).then(()=> {
-					let gettingPage = browser.runtime.getBackgroundPage().then((w) => {
-						w.nativeApp(true);
-					});
-				});
-			}*/
-		});
+		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions});
 	}
 	
 	function onError(error) {
@@ -506,7 +563,7 @@ function saveOptions(e) {
 		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
 		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
 		quickMenuPosition: document.getElementById('h_position').value,
-		
+		quickMenuTrackingProtection: document.getElementById('cb_quickMenuTrackingProtection').checked,
 		contextMenuClick: document.getElementById('s_contextMenuClick').value,
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
@@ -539,6 +596,7 @@ function saveOptions(e) {
 			}
 			return null;
 		}()
+//		customManager: document.getElementsByName('cb_customManager').checked
 	}
 
 	var setting = browser.storage.local.set({"userOptions": userOptions});
@@ -593,6 +651,8 @@ for (let el of document.getElementsByTagName('select'))
 document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
 
+document.getElementById('cb_quickMenuTrackingProtection').addEventListener('change', saveOptions);
+
 document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
 document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});
 
@@ -634,14 +694,30 @@ function checkSearchJsonPath() {
 	function onResponse(response) {
 		
 		if (response.error) {
-			el.innerText = response.error;
-			el.style.color = 'red';
+			el.innerHTML = "<img src='/icons/no.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
+			let span = document.createElement('span');
+			span.innerText = response.error;
+			el.appendChild(span);
 			return false;
 		}
+
+		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;Import successful";
 		
-		el.innerText = "Success";
-		el.style.color = 'blue';
 		saveOptions();
+		
+		// prevent double execution from blur + import button click
+		if (window.nativeAppActive) return;
+		
+		browser.runtime.getBackgroundPage().then((w) => { 
+			w.nativeApp(true);
+			setTimeout(() => {
+				console.log('building search engine container');
+				browser.runtime.sendMessage({action: "getUserOptions"}).then((result) => {
+					buildSearchEngineContainer(result.userOptions.searchEngines);
+				});
+				 
+			}, 2000);
+		});
 	}
 	
 	function onError(error) {
@@ -845,27 +921,41 @@ function buildToolIcons() {
 document.addEventListener("DOMContentLoaded", (e) => {
 	for (let el of document.getElementsByName('reloadMethod')) {
 		el.addEventListener('click', (e) => {
-			
-			// confirm change to replace manual list
-			if (
-				userOptions.reloadMethod === 'manual' 
-				&& e.target.value === 'automatic' 
-				&& userOptions.searchEngines.length !== 0
-				&& !confirm("Automatic importing will replace your manual list and any changes you have made. Are you sure?")
-			) {
-				e.preventDefault();
-				return false;
-			}
-			
 			document.getElementById('manual').style.display='none';
 			document.getElementById('automatic').style.display='none';
 			document.getElementById(el.value).style.display='';
 		});
 		
-		el.addEventListener('change', saveOptions);
+		el.addEventListener('change', () => {
+		//	document.getElementById('searchEnginesParentContainer').style.display = ( userOptions.customManager || (el.value === 'manual' && el.checked) ) ? null : "none";
+			saveOptions();
+		});
 	}
 });
+/*
+document.addEventListener("DOMContentLoaded", (e) => {
+	let el = document.getElementById('cb_customManager');
+	
+	el.addEventListener('click', (e) => {
+		
+		// confirm change to replace manual list
+		if (
+			userOptions.customManager
+			&& !confirm("Disabling custom manager will disable your manual list and any changes you have made will be lost. Are you sure?")
+		) {
+			e.preventDefault();
+			return false;
+		}
 
+	});
+	
+	el.addEventListener('change', (e) => {
+		document.getElementById('searchEnginesParentContainer').style.display = (el.checked) ? null : "none";
+		saveOptions();
+	});
+
+});
+*/
 document.addEventListener("DOMContentLoaded", () => {
 	for (let el of document.getElementsByClassName('position')) {
 		el.addEventListener('click', (e) => {
@@ -917,12 +1007,21 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 });
 
+// set up info bubbles
 document.addEventListener("DOMContentLoaded", () => {
 
 	for (let el of document.getElementsByClassName('info')) {
 		el.addEventListener('mouseover', (e) => {
 			let div = document.getElementById('info_msg');
-			div.innerText = el.dataset.msg;
+			
+			let parsed = new DOMParser().parseFromString(el.dataset.msg, `text/html`);
+			let tag = parsed.getElementsByTagName('body')[0];
+						
+			div.innerHTML = null;
+			div.appendChild(tag.firstChild);
+
+			
+		//	div.innerHTML = el.dataset.msg;
 			div.style.top = el.getBoundingClientRect().top + window.scrollY + 'px';
 			div.style.left = el.getBoundingClientRect().left + window.scrollX + 20 + 'px';
 			div.style.display = 'block';

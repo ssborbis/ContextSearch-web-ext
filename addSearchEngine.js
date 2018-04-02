@@ -271,7 +271,7 @@ function addSearchEnginePopup(data) {
 			console.log(url);
 
 			if (userOptions.reloadMethod === 'manual') {
-				userOptions.searchEngines.push({
+				let se = {
 					"searchForm": form.searchform.value, 
 					"query_string":form.template.value,
 					"icon_url":form.iconURL.value,
@@ -283,15 +283,16 @@ function addSearchEnginePopup(data) {
 					"template": form.template.value, 
 					"queryCharset": form._encoding.value, 
 					"hidden": false
-				});
+				};
 				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions})
-				.then(() => {
-					browser.runtime.sendMessage({action: "updateUserOptions"})
-				});
+			//	browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se});
+			//	browser.runtime.sendMessage({action: "saveUserOptions", userOptions})
+			//	.then(() => {
+				//	browser.runtime.sendMessage({action: "updateUserOptions"})
+			//	});
 			}
 			// some sites require the background page to call window.external.AddSearchProvider
-			if (userOptions.reloadMethod === 'automatic' || confirm(form.shortName.value + " added to Manual list. Also try adding plugin to Firefox One-Click Search Engines?"))
+		//	if (userOptions.reloadMethod === 'automatic' || confirm(form.shortName.value + " added to Manual list. Also try adding plugin to Firefox One-Click Search Engines?"))
 				browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 
 		}
@@ -318,8 +319,13 @@ function loadHTML(myDivId, url) {
 
 	xmlhttp.onreadystatechange = function()	{
 		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-		   if(xmlhttp.status == 200) {
-			   document.getElementById(myDivId).innerHTML = xmlhttp.responseText;
+			if(xmlhttp.status == 200) {
+				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'text/html');
+				let tag = parsed.getElementsByTagName('body')[0];
+				
+				document.getElementById(myDivId).innerHTML = null;
+				document.getElementById(myDivId).appendChild(tag.firstChild);
+		//	   document.getElementById(myDivId).innerHTML = xmlhttp.responseText;
 		   } else {
 			   console.log('Error fetching ' + url);
 		   }

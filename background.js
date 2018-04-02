@@ -1,5 +1,22 @@
 function notify(message, sender, sendResponse) {
 	
+	function getSafeUserOptions() {
+
+		let safeUserOptions = JSON.parse(JSON.stringify(userOptions));
+		safeUserOptions.searchJsonPath = "";
+		
+		for (let i=0;i<userOptions.searchEngines.length;i++) {
+			
+			safeUserOptions.searchEngines[i] = {
+				icon_base64String: userOptions.searchEngines[i].icon_base64String,
+				title: (userOptions.quickMenuTrackingProtection) ? "" : userOptions.searchEngines[i].title,
+				hidden: userOptions.searchEngines[i].hidden
+			};
+		}
+			
+		return safeUserOptions;
+	}
+	
 	switch(message.action) {
 		case "saveUserOptions":
 			browser.storage.local.set({"userOptions": message.userOptions});
@@ -9,17 +26,18 @@ function notify(message, sender, sendResponse) {
 			loadUserOptions().then(() => {
 				getAllOpenTabs().then((tabs) => {
 					for (let tab of tabs)
-						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+						browser.tabs.sendMessage(tab.id, {"userOptions": getSafeUserOptions()});	
+//						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 				});
 			});
 			break;
 			
 		case "nativeAppRequest":
-			nativeApp();
+			nativeApp( message.force || false );
 			break;
 			
 		case "openOptions":
-			var creating = browser.tabs.create({
+			browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
 			
@@ -37,12 +55,27 @@ function notify(message, sender, sendResponse) {
 		case "getUserOptions":
 		
 			// ignore the load to keep tempSearchEngines for POST test
-			if (!message.noLoad)
-				loadUserOptions();
+			if ( !message.noLoad ) loadUserOptions();
 			
 			sendResponse({"userOptions": userOptions});
 			break;
 		
+		case "getSafeUserOptions":
+		
+			// ignore the load to keep tempSearchEngines for POST test
+			if ( !message.noLoad ) loadUserOptions();
+			
+			sendResponse({"safeUserOptions": getSafeUserOptions()});
+			break;
+			
+		case "getSearchEngineByIndex":
+		
+			if ( !message.index ) return;
+			if ( !message.noLoad ) loadUserOptions();
+			
+			sendResponse({"searchEngine": userOptions.searchEngines[message.index]});
+			break;
+
 		case "openQuickMenu":
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
@@ -71,6 +104,16 @@ function notify(message, sender, sendResponse) {
 		case "addSearchEngine":
 			let url = message.url;
 			window.external.AddSearchProvider(url);
+			break;
+		
+		case "addCustomSearchEngine":
+			let se = message.searchEngine;
+			userOptions.searchEngines.push(se);
+
+			browser.storage.local.set({"userOptions": userOptions}).then(() => {
+				notify({action: "updateUserOptions"});
+			});
+			
 			break;
 			
 		case "testSearchEngine":
@@ -111,7 +154,7 @@ function notify(message, sender, sendResponse) {
 function loadUserOptions() {
 	
 	function onGot(result) {
-		if (!result.userOptions) return false;
+		if ( !result.userOptions ) return false;
 		// Update default values instead of replacing with object of potentially undefined values
 		for (let key in result.userOptions) {
 			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
@@ -143,15 +186,17 @@ function buildContextMenu(disableAddCustomSearch) {
 	});
 
 	for (var i=0;i<userOptions.searchEngines.length;i++) {
-		if (userOptions.searchEngines[i].hidden) continue;
+		
+		let se = userOptions.searchEngines[i];
+		if (se.hidden) continue;
 		browser.contextMenus.create({
 			parentId: "search_engine_menu",
 			id: i.toString(),
-			title: userOptions.searchEngines[i].title,
+			title: se.title,
 			contexts: ["selection", "link"],
 			icons: {
-				"16": userOptions.searchEngines[i].icon_url || userOptions.searchEngines[i].icon_base64String || "",
-				"32": userOptions.searchEngines[i].icon_url || userOptions.searchEngines[i].icon_base64String || ""
+				"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+				"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 			}
 		});
 	}	
@@ -239,13 +284,15 @@ function openSearch(details) {
 		tab === null
 	) return false;
 	
-	var searchEngine = userOptions.searchEngines[searchEngineIndex];
+	var se = userOptions.searchEngines[searchEngineIndex];
+	
+	if (!se.query_string) return false;
 	
 	// legacy fix
-	searchEngine.queryCharset = searchEngine.queryCharset || "UTF-8";
+	se.queryCharset = se.queryCharset || "UTF-8";
 	
-	var encodedSearchTermsObject = encodeCharset(searchTerms, searchEngine.queryCharset);
-	var q = replaceOpenSearchParams(searchEngine.query_string, encodedSearchTermsObject.uri);
+	var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
+	var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri);
 	
 	// if using Open As Link from quick menu
 	if (openUrl) {
@@ -255,12 +302,12 @@ function openSearch(details) {
 	}
 	
 	
-	if (typeof searchEngine.method !== 'undefined' && searchEngine.method === "POST") {
+	if (typeof se.method !== 'undefined' && se.method === "POST") {
 		
-		if ( searchEngine.searchForm )
-			q = searchEngine.searchForm;
+		if ( se.searchForm )
+			q = se.searchForm;
 		else {
-			let url = new URL(searchEngine.template);
+			let url = new URL(se.template);
 			q = url.origin + url.pathname;
 		}
 		
@@ -287,7 +334,7 @@ function openSearch(details) {
 	function onCreate(_tab) {
 		
 		// code for POST engines
-		if (typeof searchEngine.method === 'undefined' || searchEngine.method !== "POST") return;
+		if (typeof se.method === 'undefined' || se.method !== "POST") return;
 		
 		function escapeDoubleQuotes(str) {
 			return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
@@ -377,7 +424,7 @@ function getAllOpenTabs() {
 }
 
 var userOptions = {
-	searchEngines: [],
+	searchEngines: defaultEngines || [],
 	hiddenEngines: "",
 	quickMenu: false,
 	quickMenuColumns: 4,
@@ -395,6 +442,7 @@ var userOptions = {
 	quickMenuOffset: {x:0, y:0},
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
+	quickMenuTrackingProtection: false,
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	quickMenuTools: [
@@ -418,7 +466,6 @@ var userOptions = {
 };
 
 loadUserOptions();
-//buildContextMenu();
 
 browser.runtime.onMessage.addListener(notify);
 browser.runtime.onInstalled.addListener(function updatePage(details) {
@@ -508,7 +555,15 @@ function encodeCharset(string, encoding) {
 		return {ascii: string, uri: string};
 	}
 }
+/*
+(function handleCreated(tabId) {
 
+	browser.tabs.onCreated.addListener().then((tab) => {
+		browser.tabs.executeScript(tab.id, {
+			file: 'inject.js',
+		});
+	});
+)();
 /*
 function handleRemoved(tabId, removeInfo) {
 	

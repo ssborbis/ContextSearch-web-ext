@@ -16,17 +16,19 @@ var quickMenuObject = {
 };
 
 var userOptions = {};
+var safeUserOptions = {};
+
 
 // Listen for ESC and close Quick Menu
 document.addEventListener('keydown', (ev) => {
 	
 	if (
+		ev.which !== 27 ||
 		ev.repeat ||
-		!userOptions.quickMenu
+		!userOptions.quickMenu		
 	) return false;
 	
-	if (ev.which === 27)
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "esc"});
+	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "esc"});
 		
 });
 
@@ -34,10 +36,10 @@ document.addEventListener('keydown', (ev) => {
 document.addEventListener('keydown', (ev) => {
 	
 	if (
-		ev.repeat ||
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnKey ||
 		ev.which !== userOptions.quickMenuKey ||
+		ev.repeat ||
+		!userOptions.quickMenuOnKey ||
+		!userOptions.quickMenu ||
 		getSelectedText(ev.target) === ""
 	) return false;
 
@@ -193,7 +195,7 @@ function openQuickMenu(ev) {
 		screenCoords: {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
-		searchTerms: getSelectedText(ev.target)
+		searchTerms: getSelectedText(ev.target).trim()
 	});
 }
 
@@ -225,7 +227,7 @@ function main(coords) {
 	// generic search engine tile
 	function buildSearchIcon(icon_url, title) {
 		var div = document.createElement('DIV');
-		div.style.backgroundImage = 'url(' + icon_url + ')';
+		div.style.backgroundImage = 'url(' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + ')';
 		div.style.clear = "none";	
 		div.title = title;
 		return div;
@@ -732,7 +734,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		}
 	}
 });
-
+/*
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
+});
+*/
+browser.runtime.sendMessage({action: "getSafeUserOptions"}).then((message) => {
+	safeUserOptions = message.safeUserOptions || {};
+	userOptions = safeUserOptions;
 });

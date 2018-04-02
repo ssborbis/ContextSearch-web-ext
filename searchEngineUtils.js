@@ -1,17 +1,14 @@
-function searchEngineObjectToArray(engines) {
+function searchJsonObjectToArray(engines) {
 			
-	let searchEnginesArray = [];
+	let searchEngines = [];
 
 	// iterate over search engines in search.json.mozlz4
-	for (var i in engines) {
+	for (var engine of engines) {
+		
 		var search_url = "", params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
-		var engine = engines[i];
 
 		// hidden search engines
 		if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) hidden = true;
-		
-		// set landing page for POST
-		searchForm = engine.__searchForm || "";
 		
 		// iterate over urls array
 		for (var u=0;u<engine._urls.length;u++) {
@@ -29,23 +26,25 @@ function searchEngineObjectToArray(engines) {
 			template = url.template;
 			
 			// get url params
-			params_str = "&" + nameValueArrayToParamString(url.params);
+			params_str = nameValueArrayToParamString(url.params);
 		
 			params = url.params;
 		}
 		
-		if (search_url.match(/[=&\?]$/)) search_url+=params_str.replace(/^&/,"");
-		else search_url+=params_str.replace(/^&/,"?");
+		if (params_str && method.toUpperCase() === "GET")
+			search_url += ( (search_url.match(/[=&\?]$/)) ? "" : "?" ) + params_str
+		
+//		console.log(search_url);
 		
 		// push object to array for storage.local
-		searchEnginesArray.push({
-			"searchForm": searchForm, 
-			"query_string":search_url,
-			"icon_url":engine._iconURL,
-			"title":engine._name,
-			"order":engine._metaData.order, 
+		searchEngines.push({
+			"searchForm": engine.__searchForm || "", 
+			"query_string": search_url,
+			"icon_url": engine._iconURL,
+			"title": engine._name,
+			"order": engine._metaData.order, 
 			"icon_base64String": "", 
-			"method": method, 
+			"method": method || "GET", 
 			"params": params, 
 			"template": template, 
 			"queryCharset": engine.queryCharset || "UTF-8", 
@@ -54,13 +53,13 @@ function searchEngineObjectToArray(engines) {
 	}
 	
 	// sort search engine array by order key
-	searchEnginesArray = searchEnginesArray.sort(function(a, b){
+	searchEngines = searchEngines.sort(function(a, b){
 		if(a.order < b.order) return -1;
 		if(a.order > b.order) return 1;
 		return 0;
 	});
 	
-	return searchEnginesArray;
+	return searchEngines;
 }
 
 function loadRemoteIcons(options) {
@@ -76,7 +75,7 @@ function loadRemoteIcons(options) {
 		hasFailedCount: 0
 	}
 	
-	function imgToBase64(img) {
+	function tempImgToBase64(img) {
 		var c = document.createElement('canvas');
 		var ctx = c.getContext('2d');
 		ctx.canvas.width = 16;
@@ -95,15 +94,13 @@ function loadRemoteIcons(options) {
 	}
 	
 	var icons = [];
-	for (var i=0;i<searchEngines.length;i++) {		
+	for (let se of searchEngines) {		
 		var img = new Image();
-		img.favicon_urls = [];
-		img.index = i;
+		img.favicon_urls = [];		
+		img.favicon_monogram = se.title.charAt(0).toUpperCase();
 		
-		img.favicon_monogram = searchEngines[i].title.charAt(0).toUpperCase();
-		
-		if (searchEngines[i].icon_url.match(/^resource/) !== null || searchEngines[i].icon_url == "") {
-			var url = new URL(searchEngines[i].query_string);
+		if (se.icon_url.match(/^resource/) !== null || se.icon_url == "") {
+			var url = new URL(se.query_string);
 			img.src = url.origin + "/favicon.ico";
 
 			img.favicon_urls = [
@@ -112,7 +109,7 @@ function loadRemoteIcons(options) {
 			];
 
 		} else 
-			img.src = searchEngines[i].icon_url;
+			img.src = se.icon_url;
 
 		img.onload = function() {
 			this.base64String = imageToBase64(this, 32);;
@@ -125,7 +122,7 @@ function loadRemoteIcons(options) {
 				console.log("Trying favicon at " + this.src);
 			}
 			else {
-				this.base64String = imgToBase64(this);
+				this.base64String = tempImgToBase64(this);
 				this.failed = true;
 			}
 		};
@@ -143,8 +140,8 @@ function loadRemoteIcons(options) {
 
 		function getFailedCount() {
 			let c = 0;
-			for (let i=0;i<icons.length;i++) {
-				if (typeof icons[i].failed !== 'undefined') c++;
+			for (let icon of icons) {
+				if (typeof icon.failed !== 'undefined') c++;
 			}
 			return c;
 		}
@@ -162,7 +159,7 @@ function loadRemoteIcons(options) {
 			
 			for (let i=0;i<icons.length;i++) {
 				if (typeof icons[i].base64String === 'undefined')
-					searchEngines[i].icon_base64String = imgToBase64(icons[i]);
+					searchEngines[i].icon_base64String = tempImgToBase64(icons[i]);
 			}
 			onComplete();
 		}

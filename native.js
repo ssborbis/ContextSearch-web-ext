@@ -70,13 +70,31 @@ function nativeApp(force) {
 				
 				browser.storage.local.set({'searchObject_last_mod': response.last_mod});
 				
-				let se = searchEngineObjectToArray(searchObject.engines);
+				let searchEngines = searchJsonObjectToArray(searchObject.engines);
+				
+				// start 1.3.2+
+				let old_names = [];
+				for (let se of userOptions.searchEngines) {
+					old_names.push(se.title);
+				}
+				
+				let newEngines = [];
+				for (let se of searchEngines) {
+					if (!old_names.includes(se.title)) {
+						newEngines.push(se);
+					}
+				}
+				// end 1.3.2+
+				
 				loadRemoteIcons({
-					searchEngines: se,
+					searchEngines: newEngines, // 1.3.2+
 					callback: (details) => {
 						hideSearchEngines(details.searchEngines).then((_result) => {
+							
+							if (_result) searchEngines = userOptions.searchEngines.concat(_result);
+							
 							console.log(_result);
-							userOptions.searchEngines = _result || userOptions.searchEngines;
+							userOptions.searchEngines = searchEngines;
 							browser.storage.local.set({'userOptions': userOptions}).then(() => {
 								notify({action: "updateUserOptions", "userOptions": userOptions});
 							});
@@ -185,7 +203,7 @@ function hideSearchEngines(searchEngines) {
 		for (let i=searchEngines.length -1;i>-1;i--) {
 			
 			if (names.includes(searchEngines[i].title)) {
-				searchEngines.splice(i, 1);
+				searchEngines[i].hidden = true;
 			}
 		}
 		

@@ -230,6 +230,7 @@
 				background-color: #eee;
 				border-radius: 50%;
 				border:1px solid grey;
+
 			}
 			
 			/* On mouse-over, add a grey background color */
@@ -446,33 +447,57 @@
 				padding-right:10px;
 				font-size:8pt;
 			}
+			#searchEnginesContainer {
+				width:100%;
+			}
+			#searchEnginesContainer TD {
+				width:1%;
+				vertical-align:top;
+			}
+			#searchEnginesContainer TD:last-child {
+				width:100%;
+			}
+			#searchEnginesContainer .hide {
+				text-align:center;
+				vertical-align:middle;
+			}
 			#searchEnginesContainer .icon {
 				width:16px;
 				padding:2px;
 				vertical-align:middle;
+				text-align:center;
+				vertical-align:middle;
 			}
 			#searchEnginesContainer .title {
 				display:inline-block;
-				width:490px;
+				width:100%;
 				border:none;
 				overflow-x:hidden;
 				user-select:none;
 				cursor:default;	
+				vertical-align:middle;
+			}
+			#searchEnginesContainer TR {
+				width: auto;
+				outline: 1px solid #F3F3F3;
 			}
 			#searchEnginesContainer TR:hover {
-				background-color:/*#f1f8ff*/#F6F6F6;
+				background-color:#f6f8fa;
 			}
-			#searchEnginesContainer .edit,
 			#searchEnginesContainer .delete	{
 				height:20px;
-				margin:0 2px;
+				margin:0 10px;
+				float:right;
+			}
+			#searchEnginesContainer .title BUTTON {
+				font-size:8pt;
+				float:right;
 			}
 			#searchEnginesContainer .hide {
 				display:inline;
 				text-align:center;
 				padding:auto 10px auto 0;
 				padding-left:20px;
-				
 			}
 			#editSearchEngineContainer {
 				transition: max-height .5s ease-in-out;
@@ -482,7 +507,7 @@
 						
 			#editSearchEngineContainer INPUT, #editSearchEngineContainer SELECT {
 				display:block;
-				width:480px;
+				width:calc(100% - 20px);
 				border:1px solid #E0E0E0;
 				margin:1px;
 				margin-top:-8px;
@@ -507,16 +532,36 @@
 				display:inline-block;
 				background-color:white;
 				position:relative;
-				z-index:9999;
+				z-index:2;
 				left:20px;
 				padding:0px 4px;
 				color:#646464;	
 			}
-			
+			.fileUpload input[type="file"] {
+				display: none;
+			}
+
+			.fileUpload {
+				display:inline-block;
+				font-size:14pt;
+				width:100%;
+				cursor:pointer;
+				text-align:center;
+				border:1px dashed black;
+				padding:20px 0;
+				background-color:#F8F8F8;
+				margin-top:10px;
+			}
+			DIV.blurb {
+				 font-size:10pt;
+				 border-left:10px solid #E9ECEF;
+				 padding-left:10px;
+				 margin-top:16px;
+				 margin-left:5px;
+			}
 		</style>
 	</head>
 	<body>
-	
 		<div id='main'>
 		<div id='left_div'>
 			<img alt='' src='icons/icon48.png' /><br />
@@ -549,9 +594,7 @@
 				
 				<br />
 				
-				<p class='header1' style='margin-top:0'>
-					&mdash; Search Actions &mdash;
-				</p>
+				<p class='header1' style='margin-top:0'>&mdash; Search Actions &mdash;</p>
 				<p class='short' style='border-width: 1px 0'>
 					<span class='buttonLabel'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_contextMenuClick'>
@@ -593,14 +636,19 @@
 					</label>
 					<label class='label'>Enable Quick Menu</label>
 				</div>
-				<div style='margin-left:30px;font-size:10pt;border-left:3px solid #E9ECEF;padding-left:10px;'>
+				<div class='blurb'>
 					<i>Quick Menu disabled on addons.mozilla.org</i><br />
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
-				<br />
-				<p class='header1' style='margin-top:0'>
-					&mdash; Search Actions &mdash;
-				</p>
+				<hr />
+				<label class="container" style='display:inline-block'>Hide Engine Names <span class='info' data-msg='Enabling this option gives an additional level of security by hiding search engine names from websites and disabling search engine titles in the QuickMenu'>?</span>
+					<input type='checkbox' id='cb_quickMenuTrackingProtection' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
+				<hr />
+				
+				<p class='header1' style='margin-top:0'>&mdash; Search Actions &mdash;</p>
 				
 				<p class='short' style='border-width: 1px 0'>
 					<span class='buttonLabel'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
@@ -674,9 +722,7 @@
 	
 				</p>
 				
-				<p class='header1'>
-					&mdash; Look &amp; Layout &mdash;
-				</p>
+				<p class='header1'>&mdash; Look &amp; Layout &mdash;</p>
 
 				<p>
 					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Columns</label>
@@ -692,9 +738,7 @@
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
 				</p>
 
-				<p class='header1'>
-					&mdash; Opening &amp; Closing &mdash;
-				</p>
+				<p class='header1'>&mdash; Opening &amp; Closing &mdash;</p>
 				<label class="container" style='display:inline-block'>
 					<input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
 					<span class="checkmark"></span>Auto&nbsp;<span class='info' data-msg='Popup menu will open automatically after selecting text'>?</span><img alt='' class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
@@ -704,7 +748,7 @@
 					<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
 					<span class="checkmark checkmark2"></span>
 				</label>
-				<span class='info' data-msg='Enable popup menu on <textarea> and <input> elements. Disable to prevent some unwanted popups. Only affects Auto'>?</span>
+				<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups. Only affects Auto'>?</span>
 							
 				<label class="container">
 					<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
@@ -740,9 +784,7 @@
 				</label>
 				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel'>?</span>
 				
-				<p class='header1'>
-					&mdash; Position &mdash;
-				</p>
+				<p class='header1'>&mdash; Position &mdash;</p>
 				<div>
 					<div style='font-size:0;line-height:0;display:inline-block;'>
 						<div class='position' data-position='top left'></div><div class='position' data-position='top center'></div><div class='position' data-position='top right'></div><br />
@@ -760,9 +802,7 @@
 				<div id='t_position' style='height:10pt;font-size:10pt;margin-left:2px'>choose where menu appears</div>
 				
 							
-				<p class='header1'>
-					&mdash; Tools &mdash;
-				</p>
+				<p class='header1'>&mdash; Tools &mdash;</p>
 				<div id='toolIcons'></div>
 				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px'>click to disable | drag to re-order</div>		
 			</div>
@@ -770,137 +810,156 @@
 		</div>
 		<div class='tabcontent' id='enginesTab'>
 			<div style='font-weight:normal; font-family:"Source Sans Pro", sans-serif;'>
-			<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Import Search Engines</div>
-<native>		
-				<p>
-					<label class="container">
-					<input type='radio' name='reloadMethod' value='automatic' />
-						<span class="checkmark"></span><span style='font-size:12pt;font-weight:bold'>Automatic </span>
-						<!--<span class='info' data-msg="Install a tiny open-source app to keep your search engine list updated automatically using Firefox's Native Messaging API. This app only runs when called by ContextSearch">?</span>-->
+				<!--
+					<label class="container" style='display:inline-block;margin-left:20px;'><span style='font-size:12pt;font-weight:bold'>Custom Manager</span>
+						<input type='checkbox' id='cb_customManager' />
+						<span class="checkmark checkmark2"></span>
 					</label>
 					
-					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
-					Install a tiny open-source app to import your search engine list and update automatically using Firefox's <a href='https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging'>Native Messaging API</a>. This app only runs when called by ContextSearch. Your list can be modified at <b>Firefox Settings &rarr; Search &rarr; One-Click Search Engines</b>
+					<span class='info' data-msg='Disable to use the default manager at <b><i>Firefox Options &rarr; Search &rarr; One-Click Search Engines</i></b>. Custom list will be disabled and any custom settings will be lost'>?</span>
+					
+					<hr />
+				-->
+					
+
+				<div id='searchEnginesParentContainer'>
+					<div id='d_defaultEnginesMsg' style='display:none' class='blurb'>
+						<u><span style='font-weight:normal;font-variant:small-caps'>Context</span><span style='font-weight:bold;font-variant:small-caps;font-style:italic;font-size:11pt'>Search</span></u> includes the following default search engines. Choose an import method below to load your One-Click Search Engines
+						<br />
+					</div>
+					<div style='max-height:400px;overflow-y:auto;width:auto'>
+						<table id='searchEnginesContainer' ></table>
+					</div>
+					<button id='b_addSearchEngine'>Add</button>
+					<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both'>Remove All</button>
+
+					<div class='blurb'>
+						Drag &amp; drop to re-order, checkbox to show/hide, click to edit. Leave feedback @ <a href="https://github.com/ssborbis/ContextSearch-web-ext/issues">github</a>
+					</div>
+				</div>
+
+				<form id='editSearchEngineContainer' action="">
+
+			<!--		<label data-label="Engine Name"></label><input name="shortName" type="text" class='inputNice' />
+			-->		
+					<label data-label="Template"></label><input name="template" type="text" class='inputNice' />
+					<label data-label="Icon URI"></label><input name="iconURL" type="text" class='inputNice' />
+					<label data-label="Form Path"></label><input name="searchform" type="text" class='inputNice' />
+					<label data-label="POST Params"></label><input name="post_params" type="text" class='inputNice' />
+
+					<div style='display:inline-block'>
+					<label>Method</label>
+					<select name="_method" class='inputNice'>
+						<option value="GET">GET</option>
+						<option value="POST">POST</option>
+					</select>
+					</div>
+					
+					<div style='display:inline-block'>
+					<label>Encoding</label>
+					<select name="_encoding" class='inputNice'>
+						<option value="UTF-8">utf-8</option>
+						<option value="WINDOWS-1252">windows-1252</option>
+						<option value="SHIFT_JIS">shift_jis</option>
+						<option value="ISO-2022-JP">iso-2022-jp</option>
+						<option value="EUC-JP">euc-jp</option>
+						<option value="WINDOWS-1250">windows-1250</option>
+						<option value="WINDOWS-1251">windows-1251</option>
+						<option value="WINDOWS-850">windows-850</option>
+						<option value="MACINTOSH">macintosh</option>
+						<option value="ISO-8859-5">iso-8859-5</option>
+						<option value="ISO-8859-2">iso-8859-2</option>
+					</select>
+					</div>
+					
+					<button type="button" name="cancel" class='inputNice' style="float:right;margin:10px 5px">cancel</button>
+					<button type="button" name="save" class='inputNice' style="float:right;margin:10px 5px">save</button>
+					
+				</form>
+				<br />
+	
+<native>		
+				<p class='header1' style='margin-top:0'>
+					&mdash; Import Method &mdash;
+				</p>
+				<p>
+					<label class="container" style='display:inline-block'>
+					<input type='radio' name='reloadMethod' value='automatic' />
+						<span class="checkmark" style='top:0px'></span><span style='font-size:12pt;font-weight:bold'>Automatic</span>
+						<!--<span class='info' data-msg="Install a tiny open-source app to keep your search engine list updated automatically using Firefox's Native Messaging API. This app only runs when called by ContextSearch">?</span>-->
+					</label>
+
+					<div class='blurb'>
+					Install a tiny open-source app to import your search engine list and update automatically using Firefox's <a href='https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging'>Native Messaging API</a> when OpenSearch engines are added or removed. This app only runs when called by ContextSearch.</b>
 					</div>
 				
 				</p>
 				<p>
 					<label class="container">
 						<input type='radio' name='reloadMethod' value='manual' />
-						<span class="checkmark"></span><span style='font-size:12pt;font-weight:bold'>Manual </span>
+						<span class="checkmark" style='top:0px'></span><span style='font-size:12pt;font-weight:bold;'>Manual </span>
 						<!--<span class='info' data-msg="Keep your search engine list up to date by browsing to your Firefox search engines file when you add or remove search engines">?</span>-->
 					</label>
-					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
-					Import your search engine list by browsing to your Firefox search engines data file. You will need to re-import your list when you add search engines. You can manage your list from here.
+					<div class='blurb'>
+					Import your installed search engines by browsing to your Firefox search engines data file. You typically need to re-import your list when you add OpenSearch engines.
 					</div>
 				
 				</p>
 				<hr />
 		
 				<div id='automatic' style='display:none'>
-					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Automatic <a id='a_howToAutomatic' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto_automatic.gif' style='font-size:10pt'><img src='/icons/movie.png' style='height:30px;margin-left:10px'/></a></a></div>
-					<div style='padding:0;margin:0;padding-left:20px'>
-					<b>Step 1: Install app</b><br />
-					<div style='margin-top:20px;border-left:10px solid #E9ECEF;margin-left:30px;padding-left:10px'>
-						<img alt='' src='icons/windows.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest'>Windows installer</a> &nbsp;<a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/blob/master/README.md' style='font-size:10pt'>[more info]</a><br />
-						<img alt='' src='icons/mac.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
-						<img alt='' src='icons/linux.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
-					</div>
-					<hr />
-					<div id='div_searchJsonPathResponse'></div><b>Step 2: Enter the full path to your profile</b><br />You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar<br />
-					<div style='white-space:nowrap;width:100%'><textarea class='inputNice code' id='i_searchJsonPath' style='width:calc(100% - 16px);padding:4px;margin:4px 0px' placeholder="example: C:/Users/<username>/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default"></textarea></div>
-					<button id='b_checkSearchJsonPath' style='float:right;'>Check</button>
-					<br />
+					<div style='padding:0;margin:0;'>
+						<b>Step 1: Install app</b>
+						<div class='blurb'>
+							<img alt='' src='icons/windows.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest'>Windows installer</a> &nbsp;<a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/blob/master/README.md' style='font-size:10pt'>[more info]</a><br />
+							<img alt='' src='icons/mac.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
+							<img alt='' src='icons/linux.png' style='width:24px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
+						</div>
+						<hr />
+						
+						<b>Step 2: Enter the full path to your profile </b><a id='a_howToAutomatic' target='_blank' title='How-To' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto_automatic.gif' style='font-size:10pt'><img src='/icons/movie.png' style='height:20px;vertical-align:middle'/></a><br />You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar<br />
+						<br />
+						<div style='white-space:nowrap;width:100%'><textarea class='inputNice code' id='i_searchJsonPath' style='width:calc(100% - 16px);padding:4px;margin:4px 0px' placeholder="example: C:/Users/<username>/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default"></textarea></div>
+						<div id='div_searchJsonPathResponse' style='display:inline-block'></div><button id='b_checkSearchJsonPath' style='float:right;'>Import</button>
+						<br />
 					</div>
 				</div>
-</native>		
+</native>
 				<div id='manual' style='display:none'>
-					<div class='blobContainerHeader' style='padding:0 0 20px 0;border:0px'>Manual <a style='font-size:10pt' target='_blank' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto.gif' id='a_howTo'><img src='/icons/movie.png' style='height:30px;margin-left:10px'/></a></div>
-					<div style='padding:0;margin:0;padding-left:20px'>
-						<div>
-							<b><i>BETA</i></b> drag &amp; drop to re-order, checkbox to show/hide, click to edit. Re-importing your search.json.mozlz4 file should keep your settings and only add new engines. Leave feedback @ <a href="https://github.com/ssborbis/ContextSearch-web-ext/issues">github</a>
-						</div>
-						<br />
-						<div style='max-height:400px;overflow-y:auto;width:auto'>
-							<table id='searchEnginesContainer' ></table>
-						</div>
-						<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both'>Remove All</button>
-						<br />
+					<p class='header1' style='margin-top:0'>
+						&mdash; Import Search Engines &mdash;
+					</p>
+					
+					<label for="selectMozlz4FileButton" class="fileUpload">
+						<img src='/icons/import.png' style='height:32px;vertical-align:middle;' />
+						&nbsp; Select file...
+						<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" />
+					</label>
+					
+					<div id='status_div' style='display:none;margin-top:20px;'>
+						<img alt='' id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+						<span id='status'>&nbsp;</span>
 						
+				<!--	
+						<p id='searchEngineWarningDivContainer' style='display:none'>
+							<img alt='' src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly due to non UTF-8 character encoding. If you experience problems with these search engines, help the developers by reporting issues <a href='https://github.com/ssborbis/ContextSearch-web-ext/issues'>here</a>
+							<div id='searchEngineWarningDiv'></div>
+						</p>
+				-->
+					</div>
+					<br />
+					
+					<div class='blurb'>
+						Browse to your profile folder using the button above and select your <b>search.json.mozlz4</b> file to import your One-Click Search Engines. Re-importing your <b>search.json.mozlz4</b> file will keep your current settings and only add new engines. To completely replace your list on import, use the <b>Remove All</b> button. <a style='font-size:10pt' target='_blank' title='How-To' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto.gif' id='a_howTo'><img src='/icons/movie.png' style='height:20px;vertical-align:middle;'/></a><br /><br />
+						You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar. Typical locations:
 
-						<form id='editSearchEngineContainer' action="">
-
-						<!--	Name<input name="shortname" type="text" />
-							
-							Description<input name="description" type="text" />
-						-->
-							
-							<label data-label="Template"></label><input name="template" type="text" class='inputNice' />
-							
-							<label data-label="Icon URL"></label><input name="iconURL" type="text" class='inputNice' />
-							
-							<label data-label="Form Path"></label><input name="searchform" type="text" class='inputNice' />
-							
-							<label data-label="POST Params"></label><input name="post_params" type="text" class='inputNice' />
-
-							<div style='display:inline-block'>
-							<label>Method</label>
-							<select name="_method" class='inputNice'>
-							<option value="GET">GET</option>
-							<option value="POST">POST</option>
-							</select>
-							</div>
-							
-							<div style='display:inline-block'>
-							<label>Encoding</label>
-							<select name="_encoding" class='inputNice'>
-							<option value="UTF-8">utf-8</option>
-							<option value="WINDOWS-1252">windows-1252</option>
-							<option value="SHIFT_JIS">shift_jis</option>
-							<option value="ISO-2022-JP">iso-2022-jp</option>
-							<option value="EUC-JP">euc-jp</option>
-							<option value="WINDOWS-1250">windows-1250</option>
-							<option value="WINDOWS-1251">windows-1251</option>
-							<option value="WINDOWS-850">windows-850</option>
-							<option value="MACINTOSH">macintosh</option>
-							<option value="ISO-8859-5">iso-8859-5</option>
-							<option value="ISO-8859-2">iso-8859-2</option>
-							</select>
-							</div>
-							
-							<button type="button" name="cancel" class='inputNice' style="float:right;margin:10px 5px">cancel</button>
-							<button type="button" name="save" class='inputNice' style="float:right;margin:10px 5px">save</button>
-							
-						</form>
-
-						<hr />
-						Browse to your profile folder using the button below and select your <b>search.json.mozlz4</b> file<br />
-						You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar
-						<p>
-						<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" style='font-size:14pt'/></p>
-						<span style='font-size:10pt'></span>
-
-						<div id='status_div' style='display:none;margin-top:20px;border-left:20px solid #E9ECEF;margin-left:20px;padding-left:10px'>
-							<img alt='' id='status_img' class='smallIcon' style='margin-right:8px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-							<span id='status'>&nbsp;</span>
-							
-					<!--	
-							<p id='searchEngineWarningDivContainer' style='display:none'>
-								<img alt='' src='icons/alert.png' class='smallIcon' style='margin-right:8px' /> The following search engines may not work correctly due to non UTF-8 character encoding. If you experience problems with these search engines, help the developers by reporting issues <a href='https://github.com/ssborbis/ContextSearch-web-ext/issues'>here</a>
-								<div id='searchEngineWarningDiv'></div>
-							</p>
-					-->
-						</div>
-						<hr />
-						<p><b>Typical locations:</b></p>
-						<div style='margin-left:20px'>
+						<div style='margin-left:0px'>
 							<p><img alt='' class='smallIcon' src='icons/windows.png'><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 							<p><img alt='' class='smallIcon' src='icons/mac.png'><b>&nbsp;&nbsp;Mac OS X</b></p>
 							<p class='code'>Users/<i>&lt;username&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 							<p><img alt='' class='smallIcon' src='icons/linux.png'><b>&nbsp;&nbsp;Linux</b></p>
 							<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
-						</div>				
-
+						</div>	
 					</div>
 				</div>
 			</div>
