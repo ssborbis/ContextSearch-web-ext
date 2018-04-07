@@ -602,6 +602,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 					</select>
 				</p>
 				<p class='short'><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
@@ -610,6 +611,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 					</select>
 				</p>
 				<p class='short'><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
@@ -618,6 +620,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 					</select>
 				</p>
 				<hr />
@@ -641,7 +644,7 @@
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
 				<hr />
-				<label class="container" style='display:inline-block'>Hide Engine Names <span class='info' data-msg='Enabling this option gives an additional level of security by hiding search engine names from websites and disabling search engine titles in the QuickMenu'>?</span>
+				<label class="container" style='display:inline-block'>Privacy Protection <span class='info' data-msg='Enabling this option protects against websites seeing your search engine list by placing the QuickMenu in an IFRAME. (Note: Ad-blockers may disable iframes on some websites preventing the menu from opening)'>?</span>
 					<input type='checkbox' id='cb_quickMenuTrackingProtection' />
 					<span class="checkmark checkmark2"></span>
 				</label>
@@ -657,6 +660,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 						<option value='noAction'>No Action</option>
 					</select>
 				</p>
@@ -667,6 +671,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 						<option value='noAction'>No Action</option>
 					</select>
 				</p>
@@ -677,6 +682,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 						<option value='noAction'>No Action</option>
 					</select>
 				</p>
@@ -689,6 +695,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 						<option value='keepMenuOpen'>Keep Menu Open</option>
 						<option value='noAction'>No Action</option>
 					</select>
@@ -702,6 +709,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 						<option value='keepMenuOpen'>Keep Menu Open</option>
 						<option value='noAction'>No Action</option>
 					</select>
@@ -716,6 +724,7 @@
 						<option value='openNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
 						<option value='keepMenuOpen'>Keep Menu Open</option>
 						<option value='noAction'>No Action</option>
 					</select>
@@ -883,12 +892,11 @@
 					&mdash; Import Method &mdash;
 				</p>
 				<p>
-					<label class="container" style='display:inline-block'>
+					<label class="container">
 					<input type='radio' name='reloadMethod' value='automatic' />
 						<span class="checkmark" style='top:0px'></span><span style='font-size:12pt;font-weight:bold'>Automatic</span>
 						<!--<span class='info' data-msg="Install a tiny open-source app to keep your search engine list updated automatically using Firefox's Native Messaging API. This app only runs when called by ContextSearch">?</span>-->
 					</label>
-
 					<div class='blurb'>
 					Install a tiny open-source app to import your search engine list and update automatically using Firefox's <a href='https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging'>Native Messaging API</a> when OpenSearch engines are added or removed. This app only runs when called by ContextSearch.</b>
 					</div>

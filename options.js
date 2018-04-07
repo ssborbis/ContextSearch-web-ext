@@ -531,7 +531,7 @@ function restoreOptions() {
 		console.log(`Error: ${error}`);
 	}
 
-	var getting = browser.runtime.sendMessage({action: "getUserOptions"});
+	var getting = browser.runtime.getBackgroundPage();
 	getting.then(onGot, onError);
 	
 }
@@ -618,6 +618,13 @@ document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_contextMenuShowAddCustomSearch').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
+// document.getElementById('cb_quickMenu').addEventListener('change', (e) => {
+	// showInfoMsg(e.target.parentNode, "Reload tabs for changes to take effect");
+	// setTimeout(() => {
+		// document.getElementById('info_msg').style.display = 'none';
+	// }, 5000);
+	
+// });
 
 document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
@@ -712,10 +719,7 @@ function checkSearchJsonPath() {
 			w.nativeApp(true);
 			setTimeout(() => {
 				console.log('building search engine container');
-				browser.runtime.sendMessage({action: "getUserOptions"}).then((result) => {
-					buildSearchEngineContainer(result.userOptions.searchEngines);
-				});
-				 
+				buildSearchEngineContainer(w.userOptions.searchEngines);
 			}, 2000);
 		});
 	}
@@ -1007,24 +1011,26 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 });
 
+function showInfoMsg(el, msg) {
+	let div = document.getElementById('info_msg');
+		
+	let parsed = new DOMParser().parseFromString(msg, `text/html`);
+	let tag = parsed.getElementsByTagName('body')[0];
+				
+	div.innerHTML = null;
+	div.appendChild(tag.firstChild);
+
+	div.style.top = el.getBoundingClientRect().top + window.scrollY + 'px';
+	div.style.left = el.getBoundingClientRect().left + window.scrollX + 20 + 'px';
+	div.style.display = 'block';
+}
+
 // set up info bubbles
 document.addEventListener("DOMContentLoaded", () => {
-
+	
 	for (let el of document.getElementsByClassName('info')) {
 		el.addEventListener('mouseover', (e) => {
-			let div = document.getElementById('info_msg');
-			
-			let parsed = new DOMParser().parseFromString(el.dataset.msg, `text/html`);
-			let tag = parsed.getElementsByTagName('body')[0];
-						
-			div.innerHTML = null;
-			div.appendChild(tag.firstChild);
-
-			
-		//	div.innerHTML = el.dataset.msg;
-			div.style.top = el.getBoundingClientRect().top + window.scrollY + 'px';
-			div.style.left = el.getBoundingClientRect().left + window.scrollX + 20 + 'px';
-			div.style.display = 'block';
+			showInfoMsg(el, el.dataset.msg);
 		});
 		
 		el.addEventListener('mouseout', (e) => {

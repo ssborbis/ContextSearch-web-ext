@@ -1,3 +1,39 @@
+
+// listen for right-mousedown and enable Add Custom Search menu item if no text is selected
+function inputAddCustomSearchHandler(input) {
+	input.addEventListener('mousedown', (ev) => {
+		if (
+			ev.which !== 3
+			|| getSelectedText(input)
+		) return;
+
+		browser.runtime.sendMessage({action: "enableAddCustomSearch"});
+	});
+}
+
+// Add Custom Search listener
+for (let input of document.getElementsByTagName('input')) {
+	inputAddCustomSearchHandler(input);
+}
+
+// Add listener for dynamically added inputs
+var CS_observer = new MutationObserver((mutationsList) => {
+	for(var mutation of mutationsList) {
+        if (mutation.type == 'childList') {
+			for (let node of mutation.addedNodes) {
+				if (node.nodeName === "INPUT") {
+					console.log("INPUT added dynamically to the DOM. Adding listener");
+					inputAddCustomSearchHandler(node);
+				}
+			}
+//			console.log(mutation);
+//          console.log('A child node has been added or removed.');
+        }
+    }
+});
+
+CS_observer.observe(document.body, {childList: true, subtree: true});
+
 function addSearchEnginePopup(data) {
 
 	// Check for OpenSearch plugin
@@ -15,8 +51,23 @@ function addSearchEnginePopup(data) {
 	let el_popup = document.getElementById(el.id);
 	if ( el_popup !== null ) document.body.removeChild(el_popup);
 	
+	var container = document.createElement('div');
+	container.style='position:fixed;z-index:2147483646;top:0;left:0;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,.5);transition: opacity .25s ease-in-out;opacity:0';
+	
+	// if 
+	document.addEventListener('click', (e) => {
+		
+		 if (
+			!container.contains(e.target) 
+			|| el.contains(e.target)
+		) return false;
+
+		 document.getElementById('openSearchDialog_s_close').click();
+	});
+	
+	container.appendChild(el);
 	// append popup
-	document.body.appendChild(el);
+	document.body.appendChild(container);
 	
 	// Load html template for popup
 	loadHTML(el.id, browser.runtime.getURL("/openSearchDialog.html"));
@@ -48,11 +99,11 @@ function addSearchEnginePopup(data) {
 		
 		// Close button listener
 		document.getElementById('openSearchDialog_s_close').onclick = function() {
-			el.style.opacity = 0;
+			container.style.opacity = 0;
 			
 			// remove after transition effect completes
 			setTimeout(() => {
-				document.body.removeChild(el);
+				document.body.removeChild(container);
 			},250);
 			
 			// run native app to check for updated search.json.mozlz4 with enough delay to process file
@@ -256,7 +307,7 @@ function addSearchEnginePopup(data) {
 			}, {once: true});
 
 			// build the URL for the API
-			var url = "http://opensearch-api.appspot.com" 
+			var url = "https://opensearch-api.appspot.com" 
 				+ "?SHORTNAME=" + encodeURIComponent(form.shortname.value) 
 				+ "&DESCRIPTION=" + encodeURIComponent(form.description.value) 
 				+ "&TEMPLATE=" + encodeURIComponent(encodeURI(form.template.value)) 
@@ -266,11 +317,28 @@ function addSearchEnginePopup(data) {
 				+ "&ICON=" + encodeURIComponent(encodeURI(form.iconURL.value)) 
 				+ "&ICON_WIDTH=" + (form.icon.naturalWidth || 16) 
 				+ "&ICON_HEIGHT=" + (form.icon.naturalHeight || 16) 
-				+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(form.searchform.value));
+				+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(form.searchform.value))
+				+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 			
 			console.log(url);
 
-			if (userOptions.reloadMethod === 'manual') {
+		//	
+			/*
+			let hasBlurred = false;
+			window.addEventListener('blur', () => {
+				console.log('blurred');
+				hasBlurred = true;
+			}, {once: true});
+			
+			window.addEventListener('focus', () => {
+				console.log('focused');
+
+				if ( !hasBlurred ) return;
+				
+				if (userOptions.reloadMethod !== 'manual') return;
+				
+				if (!confirm("Add " + form.shortName.value + " to Custom list immediately?")) return;
+
 				let se = {
 					"searchForm": form.searchform.value, 
 					"query_string":form.template.value,
@@ -285,15 +353,20 @@ function addSearchEnginePopup(data) {
 					"hidden": false
 				};
 				
-			//	browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se});
-			//	browser.runtime.sendMessage({action: "saveUserOptions", userOptions})
-			//	.then(() => {
-				//	browser.runtime.sendMessage({action: "updateUserOptions"})
-			//	});
-			}
+				browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se}).then((response) => {
+					console.log(response);
+					if (response && response.errorMessage) {
+						alert(response.errorMessage);
+						return;
+					}
+				});
+
+			
+			}, {once: true});
+			*/
+			
 			// some sites require the background page to call window.external.AddSearchProvider
-		//	if (userOptions.reloadMethod === 'automatic' || confirm(form.shortName.value + " added to Manual list. Also try adding plugin to Firefox One-Click Search Engines?"))
-				browser.runtime.sendMessage({action: "addSearchEngine", url:url});
+			browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 
 		}
 		
@@ -308,7 +381,7 @@ function addSearchEnginePopup(data) {
 		}
 		
 		// Show popup
-		el.style.opacity=1;
+		container.style.opacity = el.style.opacity = 1;
 		
 	},100);
 }
@@ -373,3 +446,15 @@ function testOpenSearch(form) {
 	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 	
 }
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+	if (typeof message.action !== 'undefined') {
+		switch (message.action) {
+							
+			case "openSearchPopup":
+				addSearchEnginePopup(message.data);
+				break;
+		}
+	}
+});

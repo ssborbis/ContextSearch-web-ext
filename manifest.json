@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search",
-	"version": "1.3.7.1",
+	"version": "1.3.8",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	
 	"applications": {
@@ -34,7 +34,7 @@
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["inject.js","opensearch.js","addSearchEngine.js"],
+			"js": ["inject.js","quickmenu.js","opensearch.js","addSearchEngine.js"],
 			"css": ["inject.css"],
 			"all_frames": true,
 			"match_about_blank": true

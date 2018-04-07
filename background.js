@@ -1,22 +1,5 @@
 function notify(message, sender, sendResponse) {
-	
-	function getSafeUserOptions() {
-
-		let safeUserOptions = JSON.parse(JSON.stringify(userOptions));
-		safeUserOptions.searchJsonPath = "";
 		
-		for (let i=0;i<userOptions.searchEngines.length;i++) {
-			
-			safeUserOptions.searchEngines[i] = {
-				icon_base64String: userOptions.searchEngines[i].icon_base64String,
-				title: (userOptions.quickMenuTrackingProtection) ? "" : userOptions.searchEngines[i].title,
-				hidden: userOptions.searchEngines[i].hidden
-			};
-		}
-			
-		return safeUserOptions;
-	}
-	
 	switch(message.action) {
 		case "saveUserOptions":
 			browser.storage.local.set({"userOptions": message.userOptions});
@@ -26,8 +9,8 @@ function notify(message, sender, sendResponse) {
 			loadUserOptions().then(() => {
 				getAllOpenTabs().then((tabs) => {
 					for (let tab of tabs)
-						browser.tabs.sendMessage(tab.id, {"userOptions": getSafeUserOptions()});	
-//						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+						// 1.3.7+ only send sanitized userOptions to tabs
+						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 				});
 			});
 			break;
@@ -59,14 +42,6 @@ function notify(message, sender, sendResponse) {
 			
 			sendResponse({"userOptions": userOptions});
 			break;
-		
-		case "getSafeUserOptions":
-		
-			// ignore the load to keep tempSearchEngines for POST test
-			if ( !message.noLoad ) loadUserOptions();
-			
-			sendResponse({"safeUserOptions": getSafeUserOptions()});
-			break;
 			
 		case "getSearchEngineByIndex":
 		
@@ -82,6 +57,16 @@ function notify(message, sender, sendResponse) {
 			
 		case "closeQuickMenuRequest":
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+		
+		case "quickMenuIframeLoaded":
+			
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+		
+		case "updateQuickMenuObject":
+			// send to all frames for bi-directional updates to/from quickmenu IFRAME v1.3.8+
+			browser.tabs.sendMessage(sender.tab.id, message); 
 			break;
 			
 		case "closeWindowRequest":
@@ -108,6 +93,13 @@ function notify(message, sender, sendResponse) {
 		
 		case "addCustomSearchEngine":
 			let se = message.searchEngine;
+			
+			for (let se2 of userOptions.searchEngines) {
+				if (se2.title == se.title) {
+					sendResponse({errorMessage: 'Name must be unique. Search engine "' + se2.title + '" already exists'});
+					break;
+				}
+			}
 			userOptions.searchEngines.push(se);
 
 			browser.storage.local.set({"userOptions": userOptions}).then(() => {
@@ -148,6 +140,7 @@ function notify(message, sender, sendResponse) {
 
 			break;
 
+		
 	}
 }
 
@@ -325,6 +318,9 @@ function openSearch(details) {
 		case "openNewWindow":
 			openNewWindow();
 			break;
+		case "openNewIncognitoWindow":
+			openNewWindow(true);
+			break;
 		case "openBackgroundTab":
 			openBackgroundTab();
 			break;
@@ -385,10 +381,11 @@ function openSearch(details) {
 		});
 		creating.then(onCreate, onError);
 	} 
-	function openNewWindow() {	// open in new window
+	function openNewWindow(incognito) {	// open in new window
 
 		var creating = browser.windows.create({
-			url: q
+			url: q,
+			incognito: incognito || false
 		});
 		creating.then(onCreate, onError);
 	} 
@@ -492,7 +489,6 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 		
 		if (userOptions.swapKeys) {
 			userOptions.contextShift = [userOptions.contextCtrl, userOptions.contextCtrl = userOptions.contextShift][0];
-			
 			userOptions.quickMenuShift = [userOptions.quickMenuCtrl, userOptions.quickMenuCtrl = userOptions.quickMenuShift][0];
 		}
 		
@@ -555,15 +551,37 @@ function encodeCharset(string, encoding) {
 		return {ascii: string, uri: string};
 	}
 }
-/*
-(function handleCreated(tabId) {
 
-	browser.tabs.onCreated.addListener().then((tab) => {
-		browser.tabs.executeScript(tab.id, {
-			file: 'inject.js',
+/*
+// inject at tab creation
+(() => {
+
+	function handle(tabId, changeInfo) {
+		if (
+			! userOptions.quickMenu
+			|| changeInfo.status !== 'complete'
+		) return;
+		
+		browser.tabs.executeScript(tabId, {
+			code: '(typeof userOptions === "undefined");'
+		}).then( (result) => {
+			result = result.shift();
+			if (!result) {
+				console.log('quickmenu.js already added');
+				return;
+			}
+
+			browser.tabs.executeScript(tabId, {	
+				allFrames: true,
+				file: 'quickmenu.js'
+			}).then(() => {
+				console.log('Adding quickmenu.js');
+			});
 		});
-	});
-)();
+	}
+	
+	browser.tabs.onUpdated.addListener(handle);
+})();
 /*
 function handleRemoved(tabId, removeInfo) {
 	

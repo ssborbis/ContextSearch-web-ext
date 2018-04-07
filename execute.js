@@ -23,12 +23,7 @@ function post(path, params) {
 	document.body.appendChild(form);
 	form.submit();
 }
-/*
-browser.runtime.sendMessage({action: "getUserOptions", noLoad: true}).then((message) => {
-	var searchEngines = message.userOptions.searchEngines;
-	post(searchEngines[_INDEX].template, searchEngines[_INDEX].params);
-});
-*/
+
 browser.runtime.sendMessage({action: "getSearchEngineByIndex", noLoad: true, index: _INDEX}).then((message) => {
 	var se = message.searchEngine;
 	post(se.template, se.params);
