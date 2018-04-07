@@ -551,7 +551,7 @@ function makeQuickMenu() {
 				userOptions.quickMenuCloseOnClick &&
 				!quickMenuObject.locked
 			) {
-				closeQuickMenu('click_quickmenutile');	
+				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
 			}
 
 		});
