@@ -97,7 +97,7 @@ function notify(message, sender, sendResponse) {
 			for (let se2 of userOptions.searchEngines) {
 				if (se2.title == se.title) {
 					sendResponse({errorMessage: 'Name must be unique. Search engine "' + se2.title + '" already exists'});
-					break;
+					return;
 				}
 			}
 			userOptions.searchEngines.push(se);
@@ -140,7 +140,9 @@ function notify(message, sender, sendResponse) {
 
 			break;
 
-		
+		case "log":
+			console.log(message.msg);
+			break;
 	}
 }
 
@@ -423,7 +425,7 @@ function getAllOpenTabs() {
 var userOptions = {
 	searchEngines: defaultEngines || [],
 	hiddenEngines: "",
-	quickMenu: false,
+	quickMenu: true,
 	quickMenuColumns: 4,
 	quickMenuItems: 100,
 	quickMenuKey: 0,
@@ -434,12 +436,13 @@ var userOptions = {
 	quickMenuAuto: false,
 	quickMenuAutoOnInputs: true,
 	quickMenuScale: 1,
+	quickMenuIconScale: 1,
 	quickMenuScaleOnZoom: true,
-	quickMenuPosition: "bottom right",
-	quickMenuOffset: {x:0, y:0},
+	quickMenuPosition: "bottom center",
+	quickMenuOffset: {x:0, y:20},
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
-	quickMenuTrackingProtection: false,
+	quickMenuTrackingProtection: true,
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	quickMenuTools: [

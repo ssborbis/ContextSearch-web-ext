@@ -476,7 +476,9 @@ function restoreOptions() {
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
 		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
+		document.getElementById('range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
+		document.getElementById('i_quickMenuIconScale').value = (parseFloat(userOptions.quickMenuIconScale) * 100).toFixed(0) + "%";
 		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
 		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;	
 		document.getElementById('h_mouseButton').value = userOptions.quickMenuMouseButton;
@@ -559,6 +561,7 @@ function saveOptions(e) {
 		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
 		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
+		quickMenuIconScale: parseFloat(document.getElementById('range_quickMenuIconScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
 		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
 		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
@@ -666,8 +669,12 @@ document.getElementById('img_leftMouseButton').addEventListener('click', (ev) =>
 document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
 	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
-
 document.getElementById('range_quickMenuScale').addEventListener('change', saveOptions);
+
+document.getElementById('range_quickMenuIconScale').addEventListener('input', (ev) => {
+	document.getElementById('i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+});
+document.getElementById('range_quickMenuIconScale').addEventListener('change', saveOptions);
 document.getElementById('b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
 document.getElementById('i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
 document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => {
@@ -1020,8 +1027,12 @@ function showInfoMsg(el, msg) {
 	div.innerHTML = null;
 	div.appendChild(tag.firstChild);
 
-	div.style.top = el.getBoundingClientRect().top + window.scrollY + 'px';
+	div.style.top = el.getBoundingClientRect().top + window.scrollY + 10 + 'px';
 	div.style.left = el.getBoundingClientRect().left + window.scrollX + 20 + 'px';
+	
+	if (el.getBoundingClientRect().left > ( window.innerWidth - 220) )
+		div.style.left = parseFloat(div.style.left) - 230 + "px";
+	
 	div.style.display = 'block';
 }
 

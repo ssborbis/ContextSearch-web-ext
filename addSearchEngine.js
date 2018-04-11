@@ -45,32 +45,32 @@ function addSearchEnginePopup(data) {
 
 	// Create popup
 	var el = document.createElement('div');
-	el.id = 'openSearchDialog';
+	el.id = 'CS_customSearchDialog';
 	
 	// Remove old popups
 	let el_popup = document.getElementById(el.id);
 	if ( el_popup !== null ) document.body.removeChild(el_popup);
 	
 	var container = document.createElement('div');
-	container.style='position:fixed;z-index:2147483646;top:0;left:0;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,.5);transition: opacity .25s ease-in-out;opacity:0';
+	container.id = "CS_customSearchEngineContainerDiv";
+	container.style='position:fixed;z-index:2147483646;top:0;left:0;width:100%;height:100%;text-align:center;background-color:rgba(0,0,0,.85);transition: opacity .25s ease-in-out;opacity:0';
 	
 	// if 
 	document.addEventListener('click', (e) => {
-		
-		 if (
+		if (
 			!container.contains(e.target) 
 			|| el.contains(e.target)
 		) return false;
-
-		 document.getElementById('openSearchDialog_s_close').click();
+		
+		closePopup();
 	});
 	
 	container.appendChild(el);
 	// append popup
 	document.body.appendChild(container);
-	
+		
 	// Load html template for popup
-	loadHTML(el.id, browser.runtime.getURL("/openSearchDialog.html"));
+	loadHTML(el.id, browser.runtime.getURL("/CS_customSearchDialog.html"));
 	
 	var loadHTMLInterval = window.setInterval(() => {
 		
@@ -80,10 +80,15 @@ function addSearchEnginePopup(data) {
 		
 		// Build tooltips
 		let info_msg = document.createElement('div');
-		info_msg.id = "openSearchDialog_info_msg";
+		info_msg.id = "CS_customSearchDialog_info_msg";
 		document.body.appendChild(info_msg);
 		
-		for (let info of document.getElementsByClassName('openSearchDialog_info')) {
+		for (let img of document.getElementsByClassName('web_accessable_resource_image')) {
+			console.log(img);
+			img.src = browser.runtime.getURL(img.dataset.src);
+		}
+		
+		for (let info of document.getElementsByClassName('CS_customSearchDialog_info')) {
 			info.addEventListener('mouseover', (e) => {
 				info_msg.innerText = info.dataset.msg;
 				info_msg.style.top = info.getBoundingClientRect().top + window.scrollY + 'px';
@@ -96,22 +101,6 @@ function addSearchEnginePopup(data) {
 			});
 		}
 
-		
-		// Close button listener
-		document.getElementById('openSearchDialog_s_close').onclick = function() {
-			container.style.opacity = 0;
-			
-			// remove after transition effect completes
-			setTimeout(() => {
-				document.body.removeChild(container);
-			},250);
-			
-			// run native app to check for updated search.json.mozlz4 with enough delay to process file
-			setTimeout(() => {
-				browser.runtime.sendMessage({action: "nativeAppRequest"});
-			}, 1000);
-		}
-		
 		// probably a bad form
 		if (!data.query) {
 			// placeholder
@@ -173,12 +162,12 @@ function addSearchEnginePopup(data) {
 		form.iconURL.addEventListener('change', (ev) => {
 			form.icon.src = form.iconURL.value;
 			
-			document.getElementById('openSearchDialog_b_addCustomOpenSearchEngine').disabled = true;
+			document.getElementById('CS_customSearchDialog_b_addCustomOpenSearchEngine').disabled = true;
 			var loadingIconInterval = setInterval(() => {
 				if (!form.icon.complete) return;
 				
 				clearInterval(loadingIconInterval);
-				document.getElementById('openSearchDialog_b_addCustomOpenSearchEngine').disabled = false;
+				document.getElementById('CS_customSearchDialog_b_addCustomOpenSearchEngine').disabled = false;
 
 			},100);
 		});
@@ -197,14 +186,14 @@ function addSearchEnginePopup(data) {
 		}
 
 		// Get option buttons and add description widget
-		let buttons = el.getElementsByClassName('_hover');
+		let buttons = el.getElementsByClassName('CS_addSearchEngineOption');
 		for (let button of buttons) {
 			
 			if (!button.dataset.description) continue;
 
 			// display button description
 			button.addEventListener('mouseover', (ev) => {
-				let desc = document.getElementById('openSearchDialog_d_optionDescription');
+				let desc = document.getElementById('CS_customSearchDialog_d_optionDescription');
 				desc.style.transition='none';
 				desc.style.opacity=window.getComputedStyle(desc).opacity;
 				desc.style.opacity=0;
@@ -215,16 +204,18 @@ function addSearchEnginePopup(data) {
 			
 			// hide button description
 			button.addEventListener('mouseout', (ev) => {
-				document.getElementById('openSearchDialog_d_optionDescription').style.opacity=0;
+				document.getElementById('CS_customSearchDialog_d_optionDescription').style.opacity=0;
 			});
 		}
 
 		// Set up official add-on if exists
 		if (openSearchHref) {
-			let div = document.getElementById('openSearchDialog_d_officialSearchEngine');
+			let div = document.getElementById('CS_customSearchDialog_d_officialSearchEngine');
 			
 			// Add button
 			div.onclick = function() {
+				
+				listenForFocusAndPromptToImport();
 				
 				// some sites require the background page calling window.external.AddSearchProvider
 				browser.runtime.sendMessage({action: "addSearchEngine", url:openSearchHref});
@@ -237,23 +228,24 @@ function addSearchEnginePopup(data) {
 		} 
 		
 		// Find Plugin listener
-		document.getElementById('openSearchDialog_d_mycroftSearchEngine').onclick = function() {
+		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
+			listenForFocusAndPromptToImport();
 			window.open("http://mycroftproject.com/search-engines.html?name=" + window.location.hostname, "_blank");
 		}
 		
 		// Form test
-		document.getElementById('openSearchDialog_b_testCustomOpenSearchEngine').onclick = function() {
+		document.getElementById('CS_customSearchDialog_b_testCustomOpenSearchEngine').onclick = function() {
 			testOpenSearch(form);
 		}
 		
 		// Form cancel
-		document.getElementById('openSearchDialog_b_cancelCustomOpenSearchEngine').onclick = function() {
+		document.getElementById('CS_customSearchDialog_b_cancelCustomOpenSearchEngine').onclick = function() {
 			form.style.maxHeight=null;
-			document.getElementById('openSearchDialog_d_options').style.maxHeight=null;
+			document.getElementById('CS_customSearchDialogOptions').style.maxHeight=null;
 		}
 
 		// Form submit
-		document.getElementById('openSearchDialog_b_addCustomOpenSearchEngine').onclick = function(ev) {
+		document.getElementById('CS_customSearchDialog_b_addCustomOpenSearchEngine').onclick = function(ev) {
 			
 			// Check bad form values
 			if (form.shortname.value.trim() == "") {
@@ -322,48 +314,57 @@ function addSearchEnginePopup(data) {
 			
 			console.log(url);
 
-		//	
-			/*
 			let hasBlurred = false;
 			window.addEventListener('blur', () => {
-				console.log('blurred');
+//				console.log('blurred');
 				hasBlurred = true;
 			}, {once: true});
 			
 			window.addEventListener('focus', () => {
-				console.log('focused');
+//				console.log('focused');
+
 
 				if ( !hasBlurred ) return;
-				
 				if (userOptions.reloadMethod !== 'manual') return;
 				
-				if (!confirm("Add " + form.shortName.value + " to Custom list immediately?")) return;
-
-				let se = {
-					"searchForm": form.searchform.value, 
-					"query_string":form.template.value,
-					"icon_url":form.iconURL.value,
-					"title":form.shortname.value,
-					"order":userOptions.searchEngines.length, 
-					"icon_base64String": imageToBase64(form.icon), 
-					"method": form._method.value, 
-					"params": paramStringToNameValueArray(form.post_params.value), 
-					"template": form.template.value, 
-					"queryCharset": form._encoding.value, 
-					"hidden": false
-				};
+				let ok = document.getElementById('CS_customSearchDialog_b_confirmSearchEngineInstall');		
+				let cancel = document.getElementById('CS_customSearchDialog_b_cancelSearchEngineInstall');
 				
-				browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se}).then((response) => {
-					console.log(response);
-					if (response && response.errorMessage) {
-						alert(response.errorMessage);
-						return;
-					}
-				});
+				form.style.maxHeight = null;
+				let dialog = document.getElementById('CS_confirmSearchEngineInstall');
+				dialog.style.maxHeight = '300px';
 
-			
+				ok.onclick = function() {
+					let se = {
+						"searchForm": form.searchform.value, 
+						"query_string":form.template.value,
+						"icon_url":form.iconURL.value,
+						"title":form.shortname.value,
+						"order":userOptions.searchEngines.length, 
+						"icon_base64String": imageToBase64(form.icon), 
+						"method": form._method.value, 
+						"params": paramStringToNameValueArray(form.post_params.value), 
+						"template": form.template.value, 
+						"queryCharset": form._encoding.value, 
+						"hidden": false
+					};
+					
+					browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se}).then((response) => {
+						console.log(response);
+					});
+					
+				//	dialog.style.maxHeight = null;
+				//	document.getElementById('CS_customSearchDialogOptions').style.maxHeight=null;
+					closePopup();
+				}
+				
+				cancel.onclick = function() {
+					dialog.style.maxHeight = null;
+					form.style.maxHeight = "1000px";
+				}
+
 			}, {once: true});
-			*/
+			
 			
 			// some sites require the background page to call window.external.AddSearchProvider
 			browser.runtime.sendMessage({action: "addSearchEngine", url:url});
@@ -371,15 +372,15 @@ function addSearchEnginePopup(data) {
 		}
 		
 		// Custom button listener
-		document.getElementById('openSearchDialog_d_custom').onclick = function() {
+		document.getElementById('CS_customSearchDialog_d_custom').onclick = function() {
 			
 			// hide options
-			document.getElementById('openSearchDialog_d_options').style.maxHeight="0px";
+			document.getElementById('CS_customSearchDialogOptions').style.maxHeight="0px";
 			
 			// show form
 			form.style.maxHeight = '1000px';
 		}
-		
+
 		// Show popup
 		container.style.opacity = el.style.opacity = 1;
 		
@@ -399,6 +400,27 @@ function loadHTML(myDivId, url) {
 				document.getElementById(myDivId).innerHTML = null;
 				document.getElementById(myDivId).appendChild(tag.firstChild);
 		//	   document.getElementById(myDivId).innerHTML = xmlhttp.responseText;
+		   } else {
+			   console.log('Error fetching ' + url);
+		   }
+		}
+	}
+
+	xmlhttp.open("GET", url, true);
+	xmlhttp.send();
+}
+
+function readOpenSearchUrl(url, callback) {
+	callback = callback || function() {};
+    var xmlhttp;
+
+    xmlhttp = new XMLHttpRequest();
+
+	xmlhttp.onreadystatechange = function()	{
+		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+			if(xmlhttp.status == 200) {
+				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
+				callback(parsed);
 		   } else {
 			   console.log('Error fetching ' + url);
 		   }
@@ -437,14 +459,48 @@ function testOpenSearch(form) {
 		"template": form.template.value, 
 		"queryCharset": form._encoding.value
 	};
-	
-//	console.log(tempSearchEngine);
-//	console.log(userOptions.searchEngines[userOptions.searchEngines.length - 1]);
-	
+
 	let searchTerms = window.prompt("Enter search terms","firefox");
 	
 	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 	
+}
+
+// Close button listener
+function closePopup() {
+	let container = document.getElementById("CS_customSearchEngineContainerDiv");
+	container.style.opacity = 0;
+	
+	// remove after transition effect completes
+	setTimeout(() => {
+		document.body.removeChild(container);
+	},250);
+	
+	// run native app to check for updated search.json.mozlz4 with enough delay to process file
+	setTimeout(() => {
+		browser.runtime.sendMessage({action: "nativeAppRequest"});
+	}, 1000);
+}
+
+function listenForFocusAndPromptToImport() {
+	if (userOptions.reloadMethod === 'manual') {
+		
+		document.getElementById('CS_customSearchDialog_b_openOptions').onclick = function() {
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "#searchengines"});
+			closePopup();	
+		}
+		
+		window.addEventListener('focus', () => {
+			document.getElementById('CS_customSearchDialogOptions').style.maxHeight="0px";
+			let dialog = document.getElementById('CS_postSearchEngineInstall');
+			dialog.style.maxHeight = '300px';
+			let cancel = document.getElementById('CS_customSearchDialog_b_cancelSearchEngineInstall_two');
+			cancel.onclick = function() {
+				document.getElementById('CS_customSearchDialogOptions').style.maxHeight = null;
+				dialog.style.maxHeight = null;
+			}
+		}, {once: true});
+	}
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

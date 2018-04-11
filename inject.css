@@ -16,7 +16,6 @@
 	background-size: 16px 16px;
 	background-position: center center;
 	background-repeat: no-repeat;
-	float: left;
 	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
 }
 #quickMenuElement, #quickMenuElement DIV {
@@ -28,7 +27,9 @@
 	user-select: none; 
 	-moz-user-select: none;
 	overflow:hidden;
+	white-space: nowrap;
 }
+
 #quickMenuContainerElement { /*#quickMenuElement {*/
 	position:absolute;
 	z-index: 2147483647; /* max 32-bit integer */
@@ -38,26 +39,26 @@
 	margin: 0;
 	background-color:#EFF0F1;
 	border:1px solid #9abad2;/*#C2C3C5;*/
+	border-radius:10px; 
 	font-weight:bold;
 	text-align:left;
 	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
 	width:auto;
 	overflow:hidden;
-	transition: opacity .2s;
-	
+	transition: opacity .1s;
+	display:block;
 }
-#openSearchDialog {
+#CS_customSearchDialog {
 	all: unset;
 	box-sizing: content-box;
 	font-family: 'Roboto', sans-serif;
 	font-weight:300;
-	color: #4A4A4A;
+	color: white;
 	font-size:11pt;
 	padding:10px;
-	background-color:#EFF0F1;
-	border:1px solid #9abad2;/*#C2C3C5;*/
+
 	text-align:left;
-	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
+	
 	width:400px;
 	z-index: 2147483646;
 	transition: opacity .25s ease-in-out;
@@ -68,28 +69,37 @@
 	left: 50%;
 	transform: translate(-50%, -50%);
 }
-#openSearchDialog INPUT, #openSearchDialog TEXTAREA, #openSearchDialog SELECT {
+#CS_customSearchDialog INPUT, #CS_customSearchDialog TEXTAREA, #CS_customSearchDialog SELECT {
 	all: unset;
 	resize: both;
 	font-size:11pt;
 	font-weight:normal;
 	border-radius:4px;
-	border:1px solid #858585;
+	border:1px solid #ececec;
 	padding:2px;
 	margin:4px;
 	font-family:inherit;
 	background-color:#FFF;
 	width:calc(100% - 20px);
 	color:#4A4A4A;
+	margin-top:-8px;
+	padding:4px;
+	padding-top:8px;
 }
-#openSearchDialog .H2 {
-	font-weight:bold;
+#CS_customSearchDialog SELECT {
+	width:90px;
+}
+#CS_customSearchDialog .H2 {
+	font-size:9pt;
 	font-variant:small-caps;
-	margin:4px 0 0 6px;
-	font-size:11pt;
-	color: #336699;
+	display:inline-block;
+	background-color:white;
+	position:relative;
+	left:20px;
+	padding:0px 4px;
+	color:#646464;
 }
-#openSearchDialog ._hover {
+#CS_customSearchDialog ._hover {
 	all: unset;
 	box-sizing: content-box;
 	transition: background .25s ease-in-out;
@@ -108,49 +118,43 @@
 	margin-top:20px;
 	background:#fafafa;
 }
-#openSearchDialog ._hover_small {
+#CS_customSearchDialog ._hover_small {
 	width:auto;
 	height:auto;
 	margin:auto;
 	padding:auto;
 }
-#openSearchDialog ._hover:hover {
+#CS_customSearchDialog ._hover:hover {
 	background:white;
 }
-#openSearchDialog IMG {
-	all: unset;
-	height:24px;
-	width:24px;
-	vertical-align:middle;
-	margin-right:10px;
-}
-#openSearchDialog_d_optionDescription {
-	
+#CS_customSearchDialog_d_optionDescription {
 	transition: all .25s ease-in;
 	text-align:left;
 	min-height:60px;
 	width:auto;
-	max-width:300px;
+	max-width:250px;
 	margin:auto;
 	margin-top:20px;
 	font-weight:400;
+	text-align:center;
 }
-#openSearchDialog FORM {
-	
+#CS_customSearchDialog FORM {
 	transition: all .5s ease-out;
 	max-height:0;
 	overflow:hidden;
+	background-color:#FFF;
 }
-#openSearchDialog_d_options {
-	
+#CS_customSearchDialogOptions,#CS_confirmSearchEngineInstall, #CS_postSearchEngineInstall {
 	transition: all .5s ease-out;
 	max-height:200px;
 	overflow:hidden;
+	text-align:center;
 }
-
+#CS_confirmSearchEngineInstall, #CS_postSearchEngineInstall {
+	max-height:0;
+}
 /* tooltips (copied from options.html) */
-#openSearchDialog .openSearchDialog_info {
-	
+#CS_customSearchDialog .CS_customSearchDialog_info {
 	font-size:7pt;
 	border-radius:2px;
 	padding: 2px;
@@ -159,8 +163,7 @@
 	cursor:default;
 }
 
-#openSearchDialog_info_msg {
-
+#CS_customSearchDialog_info_msg {
 	display:none;
 	position:absolute;
 	top:0;
@@ -175,4 +178,22 @@
 	border:1px solid #9abad2;
 	box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
 	text-align:left;
+}
+
+#CS_confirmSearchEngineInstall {
+	background-color:transparent;
+}
+.CS_addSearchEngineOption {
+	display:inline-block;
+	width:100px;
+	height:100px;
+	margin:4px;
+}
+.web_accessable_resource_image {
+	height:75px;
+	width:75px;
+	text-align:center;
+	margin:auto;
+	display:block;
+	filter: brightness(0) invert(1);
 }

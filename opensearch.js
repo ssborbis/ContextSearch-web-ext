@@ -39,18 +39,23 @@ function paramStringToNameValueArray(str) {
 
 function imageToBase64(image, maxSize) {
 //	maxSize = maxSize || 32;
+
 	let c = document.createElement('canvas');
 	let ctx = c.getContext('2d');
-	ctx.canvas.width = image.naturalWidth;
-	ctx.canvas.height = image.naturalHeight;
-	ctx.drawImage(image, 0, 0);
-/*	
-	if (image.naturalWidth > maxSize || image.naturalHeight > maxSize) {
-		let whichIsLarger = (image.naturalWidth > image.naturalHeight) ? image.naturalWidth : image.naturalHeight;
-		let scalePercent = maxSize / whichIsLarger;
-		
-		ctx.scale(scalePercent, scalePercent);
+	ctx.canvas.width = image.naturalWidth || 16;
+	ctx.canvas.height = image.naturalHeight || 16;
+	try {
+		ctx.drawImage(image, 0, 0);
+	/*	
+		if (image.naturalWidth > maxSize || image.naturalHeight > maxSize) {
+			let whichIsLarger = (image.naturalWidth > image.naturalHeight) ? image.naturalWidth : image.naturalHeight;
+			let scalePercent = maxSize / whichIsLarger;
+			
+			ctx.scale(scalePercent, scalePercent);
+		}
+	*/	
+		return c.toDataURL();
+	} catch (error) {
+		return "";
 	}
-*/	
-	return c.toDataURL();
 }

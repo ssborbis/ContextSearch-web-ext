@@ -537,6 +537,9 @@
 				padding:0px 4px;
 				color:#646464;	
 			}
+			#editSearchEngineContainer ._hover:hover {
+				background-color:#e5f1fb;
+			}
 			.fileUpload input[type="file"] {
 				display: none;
 			}
@@ -579,6 +582,7 @@
 		<div class='tab'>
 			<button class='tablinks' data-tabid='optionsTab'><img alt='' src='icons/load.png' />Menus</button>
 			<button class='tablinks' data-tabid='enginesTab'><img alt='' src='icons/settings.png' />Search Engines</button>
+		<!--	<button class='tablinks' data-tabid='helpTab'><img alt='' src='icons/help.png' />?</button> -->
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
@@ -742,9 +746,18 @@
 					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.'>?</span>
 				</p>
 				<p>
-					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Size</label>
-					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge icons (good for high-resolution displays)'>?</span>
+					<div style='display:inline-block;width:175px'>
+					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Menu Size</label>
+					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)'>?</span>
+					</div>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
+				</p>
+				<p>
+					<div style='display:inline-block;width:175px'>
+					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Icon Size</label>
+					<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely'>?</span>
+					</div>
+					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
 
 				<p class='header1'>&mdash; Opening &amp; Closing &mdash;</p>
@@ -881,8 +894,8 @@
 					</select>
 					</div>
 					
-					<button type="button" name="cancel" class='inputNice' style="float:right;margin:10px 5px">cancel</button>
-					<button type="button" name="save" class='inputNice' style="float:right;margin:10px 5px">save</button>
+					<button type="button" name="cancel" class='inputNice _hover' style="float:right;margin:10px 5px">cancel</button>
+					<button type="button" name="save" class='inputNice _hover' style="float:right;margin:10px 5px">save</button>
 					
 				</form>
 				<br />
@@ -969,6 +982,29 @@
 							<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 						</div>	
 					</div>
+				</div>
+			</div>
+		</div>
+		<div class='tabcontent' id='helpTab'>
+			<div style='font-weight:normal'>
+				<p class='header1' style='margin-top:0'>
+					&mdash; Getting Started &mdash;
+				</p>
+				
+				<h3>Using the Context Menu</h3>
+				Highlight a word and right-click to open the context menu. Expand the ContextSearch 
+				
+				<h3>Using the Quick Menu</h3>
+				Highlight a word and hold right-click until the Quick Menu appears.
+				
+				<h3>Importing Firefox Search Engines</h3>
+				
+				
+				<h3>Adding Search Engines</h3>
+				There are several 
+				
+				<div>
+					ContextSearch comes preloaded with 10 of the most popular search engines to get you started.
 				</div>
 			</div>
 		</div>

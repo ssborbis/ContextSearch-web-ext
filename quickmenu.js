@@ -225,7 +225,6 @@ window.addEventListener('scroll', scrollEventListener);
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (document.title === "QuickMenu") {
-//		console.log('ignoring onMessage');
 		return;
 	}
 	
@@ -306,6 +305,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 });
 
 function openQuickMenu(ev) {
+	
+	ev = ev || new Event('click');
 
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
@@ -395,25 +396,30 @@ function scaleAndPositionQuickMenu(size) {
 		}
 	}
 	
-	// move if offscreen
-	var scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-	var scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
+	repositionOffscreenElement( qmc );
+	qmc.style.opacity = 1;
+}
 
-	var rect = qmc.getBoundingClientRect();
+function repositionOffscreenElement( element ) {
+	
+	// move if offscreen
+	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
+	
+	let rect = element.getBoundingClientRect();
 
 	if (rect.y < 0) 
-		qmc.style.top = (parseFloat(qmc.style.top) - rect.y) + "px";
+		element.style.top = (parseFloat(element.style.top) - rect.y) + "px";
 	
 	if (rect.y + rect.height > window.innerHeight) 
-		qmc.style.top = parseFloat(qmc.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
+		element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
 	
 	if (rect.x < 0) 
-		qmc.style.left = (parseFloat(qmc.style.left) - rect.x) + "px";
+		element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
 	
 	if (rect.x + rect.width > window.innerWidth) 
-		qmc.style.left = parseFloat(qmc.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+		element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
 
-	qmc.style.opacity = 1;
 }
 
 function calculateQuickMenuSize() {
@@ -445,7 +451,7 @@ function makeQuickMenuContainer(coords) {
 	else 
 		qmc = document.createElement('quickmenucontainer');
 
-	qmc.id = "quickMenuContainerElement";	
+	qmc.id = "quickMenuContainerElement";
 	qmc.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
 	qmc.style.left = coords.x + getOffsets().x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + "px";
 	
@@ -457,9 +463,16 @@ function makeQuickMenuContainer(coords) {
 		qmc.appendChild(makeQuickMenu(coords));
 		scaleAndPositionQuickMenu();
 	}
-		
+			
 	// Check if quickmenu fails to display
-	var els = qmc.getElementsByTagName('*');
+	setTimeout(() => {
+		if (!qmc || qmc.ownerDocument.defaultView.getComputedStyle(els[i], null).getPropertyValue("display") === 'none') {
+			console.log('iframe quick menu hidden by external script (adblocker?).  Enabling context menu');
+			browser.runtime.sendMessage({action: 'enableContextMenu'});
+		}
+	},1000);
+
+/*	var els = qmc.getElementsByTagName('*');
 	for (var i in els) {
 		if (els[i].nodeType === undefined || els[i].nodeType !== 1) continue;
 		if (qmc.ownerDocument.defaultView.getComputedStyle(els[i], null).getPropertyValue("display") === 'none' || qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("display") === 'none') {
@@ -468,6 +481,7 @@ function makeQuickMenuContainer(coords) {
 			break;
 		}
 	}
+*/
 }
 
 function makeQuickMenu() {
@@ -475,7 +489,7 @@ function makeQuickMenu() {
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
 
-	var quickMenuElement = document.createElement('quickmenu');
+	var quickMenuElement = document.createElement('div');
 
 	quickMenuElement.id = 'quickMenuElement';
 	
@@ -492,7 +506,7 @@ function makeQuickMenu() {
 	function buildSearchIcon(icon_url, title) {
 		var div = document.createElement('DIV');
 		div.style.backgroundImage = 'url(' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + ')';
-		div.style.clear = "none";	
+		div.style.backgroundSize = 16 * userOptions.quickMenuIconScale + "px";
 		div.title = title;
 		return div;
 	}
@@ -609,12 +623,10 @@ function makeQuickMenu() {
 						tile_link.style.filter="grayscale(100%)";
 						tile_link.style.backgroundColor="#ddd";
 						tile_link.disabled = true;
-						console.log(true);
 					} else {
 						tile_link.style.filter=null;
 						tile_link.style.backgroundColor=null;
 						tile_link.disabled = false;
-						console.log(false);
 					}
 				}
 				
@@ -623,7 +635,6 @@ function makeQuickMenu() {
 				
 				// when new search terms are set while locked, enable/disable link
 				document.addEventListener('updatesearchterms', (e) => {
-					console.log('got updatesearchterms');
 					setDisabled();
 				});
 					
@@ -715,7 +726,7 @@ function makeQuickMenu() {
 	let visibleCount = 0; // separate index for ignoring hidden engines v1.3.2+
 	for (var i=0;i<userOptions.searchEngines.length && i < userOptions.quickMenuItems;i++) {
 		
-		let se = Object.assign({}, userOptions.searchEngines[i]);
+		let se = userOptions.searchEngines[i];
 		
 		if ( se.hidden !== undefined && se.hidden) continue;
 
@@ -740,24 +751,26 @@ function makeQuickMenu() {
 	// make rows / columns
 	for (let i=0;i<tileArray.length;i++) {
 		let tile = tileArray[i];
-		tile.style.clear = (i % userOptions.quickMenuColumns === 0) ? "left" : "none";
+
 		quickMenuElement.appendChild(tile);
+		
+		if ( (i + 1) % userOptions.quickMenuColumns === 0) {
+			let br = document.createElement('br');
+			tile.parentNode.insertBefore(br, tile.nextSibling);
+		}
 	}
 	
 	// check if any search engines exist and link to Options if none
 	if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined' ) {
 		var div = document.createElement('div');
-		div.style='display:inline-block;width:auto;clear:both;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-		div.style.minWidth = quickMenuElement.style.minWidth;
+		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 		div.innerText = 'Where are my search engines?';
 		div.onclick = function() {
-		//	alert('If you are seeing this message, reload your search settings file from Options');
 			browser.runtime.sendMessage({action: "openOptions", hashurl: "#searchengines"});
 		}	
 		quickMenuElement.appendChild(div);
 	}
 
-	quickMenuElement.style.minWidth = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 2) + "px"; 
 	return quickMenuElement;
 }
 
@@ -767,9 +780,12 @@ if (document.title === "QuickMenu") {
 	
 		browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			userOptions = message.userOptions || {};
+			
+			if ( userOptions === {} ) return;
+			
 			let quickMenuElement = makeQuickMenu();
 			document.body.appendChild(quickMenuElement);
-			quickMenuElement.style.opacity=1;
+
 			browser.runtime.sendMessage({
 				action: "quickMenuIframeLoaded", 
 				size: {
@@ -794,3 +810,4 @@ if (document.title === "QuickMenu") {
 		}
 	});
 }
+
