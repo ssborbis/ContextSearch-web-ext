@@ -361,10 +361,9 @@ function buildSearchEngineContainer(searchEngines) {
 			// attach form to title cell
 			title.parentNode.appendChild(edit_form);
 			
-			// needs delay to animate properly
-			setTimeout(()=> {
-				edit_form.style.maxHeight = '300px';
-			},50);
+			// reflow trick
+			edit_form.getBoundingClientRect();
+			edit_form.style.maxHeight = '300px';
 		}
 		
 		let _delete = document.createElement('img');
@@ -718,16 +717,16 @@ function checkSearchJsonPath() {
 		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;Import successful";
 		
 		saveOptions();
-		
-		// prevent double execution from blur + import button click
-		if (window.nativeAppActive) return;
-		
+
 		browser.runtime.getBackgroundPage().then((w) => { 
-			w.nativeApp(true);
-			setTimeout(() => {
+		
+			// prevent double execution from blur + import button click
+			if (w.nativeAppActive) return;
+		
+			w.nativeApp({force: true}).then(() => {
 				console.log('building search engine container');
 				buildSearchEngineContainer(w.userOptions.searchEngines);
-			}, 2000);
+			});
 		});
 	}
 	

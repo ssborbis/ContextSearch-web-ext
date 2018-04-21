@@ -9,14 +9,16 @@ function notify(message, sender, sendResponse) {
 			loadUserOptions().then(() => {
 				getAllOpenTabs().then((tabs) => {
 					for (let tab of tabs)
-						// 1.3.7+ only send sanitized userOptions to tabs
 						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 				});
 			});
 			break;
 			
 		case "nativeAppRequest":
-			nativeApp( message.force || false );
+			nativeApp( {force: message.force || false} ).then((result) => {
+				sendResponse({response: result});
+			});
+			return true;
 			break;
 			
 		case "openOptions":
@@ -60,7 +62,6 @@ function notify(message, sender, sendResponse) {
 			break;
 		
 		case "quickMenuIframeLoaded":
-			
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 		
@@ -73,6 +74,15 @@ function notify(message, sender, sendResponse) {
 			browser.windows.remove(sender.tab.windowId);
 			break;
 		
+		case "closeCustomSearch":
+			browser.tabs.sendMessage(sender.tab.id, message);
+			break;
+
+		case "getFormData":
+			sendResponse({data: window.formdata});
+			delete window.formdata;
+			break;
+			
 		case "updateSearchTerms":
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
@@ -208,11 +218,12 @@ function contextMenuSearch(info, tab) {
 		browser.tabs.executeScript(tab.id, { 
 			file: '/getform.js'
 		}).then( (data) => {
-			
-			console.log(data);
-			
+
 			// unpack json data ... 
 			data = data.shift();
+			
+			console.log("form data ->")
+			console.log(data);
 
 			// add favicon ...
 			data.icon = tab.favIconUrl;
@@ -220,7 +231,12 @@ function contextMenuSearch(info, tab) {
 			// no description ? use tab title ...
 			if ( !data.description ) data.description = tab.title;
 			
-			browser.tabs.sendMessage(tab.id, {action: "openSearchPopup", data: data}, {frameId: 0});
+			// set a global variable to be accessed by the iframe from a runtime.message
+			window.formdata = data;
+			
+			// send the parent frame a request to open the customSearch iframe
+			browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});
+			
 		}).catch( error =>{
 			console.error(error);
 		});
@@ -426,7 +442,7 @@ var userOptions = {
 	searchEngines: defaultEngines || [],
 	hiddenEngines: "",
 	quickMenu: true,
-	quickMenuColumns: 4,
+	quickMenuColumns: 5,
 	quickMenuItems: 100,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,

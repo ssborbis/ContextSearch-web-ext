@@ -1,11 +1,15 @@
-function nativeApp(force) {
+function nativeApp(options) {
 	
-	force = force || false;
+	options = options || {
+		force: false
+	}
+		
+	force = options.force || false;
 	
 	if (userOptions.reloadMethod !== 'automatic') return false;
 	
 	if (typeof browser.runtime.sendNativeMessage !== 'function') return false;
-	
+		
 	function readMozlz4Base64String(str)
 	{
 		let input = Uint8Array.from(atob(str), c => c.charCodeAt(0));
@@ -36,7 +40,9 @@ function nativeApp(force) {
 			return false;
 		}
 		
-		browser.storage.local.get("searchObject_last_mod").then((result) => {
+		throttle();
+		
+		return browser.storage.local.get("searchObject_last_mod").then((result) => {
 			if (result.searchObject_last_mod === undefined) {
 				result.searchObject_last_mod = Date.now();
 				console.log("native app: No searchObject_last_mod in localStorage. Creating...");
@@ -49,7 +55,7 @@ function nativeApp(force) {
 
 			browser.browserAction.setIcon({path: "icons/spinner.svg"});
 			
-			browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath + '"}').then((response) => {
+			return browser.runtime.sendNativeMessage("ContextSearch",'{"path": "' + userOptions.searchJsonPath + '"}').then((response) => {
 				
 				console.log('native app: Request file');
 				
@@ -86,28 +92,32 @@ function nativeApp(force) {
 				}
 				// end 1.3.2+
 				
-				loadRemoteIcons({
-					searchEngines: newEngines, // 1.3.2+
-					callback: (details) => {
-						hideSearchEngines(details.searchEngines).then((_result) => {
-							
-							if (_result) searchEngines = userOptions.searchEngines.concat(_result);
-							
-							console.log(_result);
-							userOptions.searchEngines = searchEngines;
-							browser.storage.local.set({'userOptions': userOptions}).then(() => {
-								notify({action: "updateUserOptions", "userOptions": userOptions});
-							});
+				if ( newEngines.length === 0 ) return false;
+				
+				return new Promise(function(resolve, reject) {
+					loadRemoteIcons({
+						searchEngines: newEngines, // 1.3.2+
+						callback: (details) => {
+							hideSearchEngines(details.searchEngines).then((_result) => {
+								
+								if (_result) searchEngines = userOptions.searchEngines.concat(_result);
+								console.log("New Search Engines ->");
+								console.log(_result);
+								userOptions.searchEngines = searchEngines;
+								browser.storage.local.set({'userOptions': userOptions}).then(() => {
+									notify({action: "updateUserOptions", "userOptions": userOptions});
+									resolve(true);
+								});
 
-						});
-					}
+							});
+						}
+					});
 				});
+
 			});
-			
-	
+
 		});
-		
-		throttle();
+
 	}
 
 	function onError(error) {
@@ -147,7 +157,7 @@ function nativeApp(force) {
 	
 //	console.log('native app: Request file mod time');
 	var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + userOptions.searchJsonPath + '"}');
-	sending.then(onResponse, onError);
+	return sending.then(onResponse, onError);
 
 //	browser.runtime.sendNativeMessage("ContextSearch",'{"request": "%version%"}').then((response) => {
 //	console.log(response);

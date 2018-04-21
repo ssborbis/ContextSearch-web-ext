@@ -88,7 +88,7 @@ function loadRemoteIcons(options) {
 		ctx.textBaseline="middle"; 
 		ctx.fillStyle = "#FFFFFF";
 		ctx.fillText(img.favicon_monogram,8,8);
-		console.log(img.favicon_monogram);
+//		console.log(img.favicon_monogram);
 		
 		return c.toDataURL();
 	}
@@ -169,7 +169,6 @@ function loadRemoteIcons(options) {
 		}
 		
 	}, 250);
-	
-	return icons;
+
 }
 		

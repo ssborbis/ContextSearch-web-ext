@@ -47,6 +47,7 @@ window.addEventListener('mousedown', (e) => {
 
 // Good for checking new engines after window.external.AddSearchProvider()
 window.addEventListener('focus', (ev) => {
+	
 	setTimeout(() => {
 		browser.runtime.sendMessage({action: "nativeAppRequest"});
 	}, 500);

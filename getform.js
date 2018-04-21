@@ -2,6 +2,22 @@
 // https://addons.mozilla.org/en-US/firefox/addon/burning-moth-add-search/
 
 var S = {};
+
+// Check for OpenSearch plugin
+S.openSearchHref = "";
+osLink = document.querySelector('link[type="application/opensearchdescription+xml"]')
+if (osLink !== null) S.openSearchHref = osLink.href || "";
+
+// Look for favicons
+favicon_link = document.querySelector('link[rel="icon"]') 
+	|| document.querySelector('link[rel="shortcut icon"]') 
+	|| document.querySelector('link[rel="apple-touch-icon"]');
+	
+S.favicon_href = "";	
+if (favicon_link !== null) S.favicon_href = favicon_link.href || "";
+
+S.href = window.location.href;
+
 var E = window.document.querySelector("input:focus");
 
 // query parameter has name ? ...

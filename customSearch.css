@@ -1,0 +1,156 @@
+BODY {
+	overflow:hidden;
+	padding:0;
+	margin:0;
+	background-color:rgba(0,0,0,.85);
+}
+#CS_customSearchDialog {
+	box-sizing: content-box;
+	font-family: 'Roboto', sans-serif;
+	font-weight:300;
+	color: white;
+	font-size:11pt;
+	padding:10px;
+	text-align:left;
+	max-width:400px;
+	transition: opacity .25s ease-in-out;
+	display:inline-block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+INPUT, TEXTAREA, SELECT {
+	resize: both;
+	font-size:11pt;
+	font-weight:normal;
+	border-radius:4px;
+	border:2px solid #ececec;
+	padding:2px;
+	margin:4px;
+	font-family:inherit;
+	background-color:#FFF;
+	width:calc(100% - 20px);
+	color:#4A4A4A;
+	margin-top:-8px;
+	padding:4px;
+	padding-top:8px;
+}
+SELECT {
+	width:90px;
+}
+.H2 {
+	font-size:9pt;
+	font-variant:small-caps;
+	display:inline-block;
+	background-color:white;
+	position:relative;
+	left:20px;
+	padding:0px 4px;
+	color:#646464;
+}
+._hover {
+	box-sizing:content-box;
+	transition:background .25s ease-in-out;
+	vertical-align:middle;
+	text-align:center;
+	padding:8px;
+	color:#787878;
+	display:inline-block;
+	height:25px;
+	line-height:25px;
+	width:75px;
+	margin:12px;
+	border:1px solid #ccdbe8;
+	cursor:pointer;
+	font-weight:700;
+	margin-top:20px;
+	background:#fafafa;
+}
+._hover_small {
+	width:auto;
+	height:auto;
+	margin:auto;
+	padding:auto;
+}
+._hover:hover {
+	background:white;
+}
+#CS_optionDescription {
+	transition: all .25s ease-in;
+	text-align:left;
+	min-height:60px;
+	width:auto;
+	max-width:250px;
+	margin:auto;
+	margin-top:20px;
+	font-weight:400;
+	text-align:center;
+}
+FORM {
+	transition: all .5s ease-out;
+	max-height:0;
+	overflow:hidden;
+	background-color:#FFF;
+}
+.CS_menuItem {
+	transition: all .5s ease-out;
+	max-height:200px;
+	overflow:hidden;
+	text-align:center;
+	max-height:0;
+	text-align:center;
+	margin:auto
+}
+#CS_customSearchDialogOptions {
+	max-height:300px;
+}
+.CS_menuItem > DIV {
+	display:inline-block;
+	width:100px;
+	height:100px;
+	margin:4px;
+}
+.CS_menuItem > DIV IMG {
+	height:75px;
+	width:75px;
+	text-align:center;
+	margin:auto;
+	display:block;
+	filter: brightness(0) invert(1);
+}
+.CS_info {
+	font-size:7pt;
+	border-radius:2px;
+	padding: 2px;
+	background-color:#EFEFEF;
+	vertical-align:top;
+	cursor:default;
+}
+/* tooltips (copied from options.html) */
+#CS_info_msg {
+	display:none;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 2;
+	padding:5px;
+	border-radius:5px;
+	max-width:200px;
+	width:auto;
+	font-size:10pt;
+	background-color:#FEFEFE;
+	border:1px solid #9abad2;
+	box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
+	text-align:left;
+}
+#CS_customSearchDialogClose {
+	position:absolute;
+	right:30px;
+	top:30px;
+	width:30px;
+	height:30px;
+	opacity:.75;
+	filter: brightness(0) invert(1);
+	cursor:pointer;
+}
