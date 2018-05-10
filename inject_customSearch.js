@@ -7,6 +7,7 @@ function inputAddCustomSearchHandler(input) {
 		) return;
 
 		browser.runtime.sendMessage({action: "enableAddCustomSearch"});
+			
 	});
 }
 

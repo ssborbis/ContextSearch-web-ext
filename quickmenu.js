@@ -1,6 +1,6 @@
 // unique object to reference globally
 var quickMenuObject = { 
-	delay: 250, // how long to hold right-click before translating in ms
+	delay: 225, // how long to hold right-click before quick menu events in ms
 	keyDownTimer: 0,
 	mouseDownTimer: 0,
 	mouseCoords: {x:0, y:0},
@@ -69,11 +69,18 @@ document.addEventListener('mousedown', (ev) => {
 		ev.which !== userOptions.quickMenuMouseButton ||
 		getSelectedText(ev.target) === ""
 	) return false;
-
+	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
-	// timer for right mouse down
+	// timer for mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
+		
+		// prevent drag events when using search on mouseup
+	//	if (userOptions.quickMenuSearchOnMouseUp) {
+			window.addEventListener('dragstart', (e) => {
+				e.preventDefault();
+			}, {once: true});
+	//	}
 
 		// ignore select / drag events
 		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
@@ -105,7 +112,13 @@ document.addEventListener('mousedown', (ev) => {
 		
 	}, quickMenuObject.delay);
 
+//	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+
 });
+
+function preventContextMenuHandler(evv) {
+	evv.preventDefault();
+}
 
 // Listen for HOLD quickMenuMouseButton
 document.addEventListener('mouseup', (ev) => {
@@ -115,9 +128,9 @@ document.addEventListener('mouseup', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		ev.which !== userOptions.quickMenuMouseButton
 	) return false;
-	
+		
 	clearTimeout(quickMenuObject.mouseDownTimer);
-
+//	document.removeEventListener('contextmenu', preventContextMenuHandler);
 });
 
 // Listen for quickMenuAuto
@@ -155,8 +168,15 @@ document.addEventListener('mousedown', (ev) => {
 
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
+	function preventContextMenuHandler(evv) {
+		evv.preventDefault();
+	}
+	
+	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+	
 	// timer for right mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
+		document.removeEventListener('contextmenu', preventContextMenuHandler);
 		quickMenuObject.mouseDownTimer = null;
 	},quickMenuObject.delay);
 
@@ -173,13 +193,14 @@ document.addEventListener('mouseup', (ev) => {
 		getSelectedText(ev.target) === ""
 	) return false;
 			
+	console.log(quickMenuObject.mouseDownTimer);
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	ev.stopPropagation();
 	
-	document.addEventListener('contextmenu', (evv) => {
-		evv.preventDefault();
-	}, {once: true}); // parameter to run once, then delete
+	// document.addEventListener('contextmenu', (evv) => {
+		// evv.preventDefault();
+	// }, {once: true}); // parameter to run once, then delete
 	
 	openQuickMenu(ev);
 	
@@ -542,7 +563,7 @@ function makeQuickMenu() {
 		_tile.addEventListener('mouseup', (e) => {
 
 			// check if this tile was target of the latest mousedown event
-			if (!_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
+			if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
 			
 			// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
 			quickMenuObject.mouseLastClickTime = Date.now();

@@ -3,24 +3,37 @@ BODY {
 	padding:0;
 	margin:0;
 	background-color:rgba(0,0,0,.85);
+	background-color:rgba(20, 90, 140, .85);
+
 }
 #CS_customSearchDialog {
 	box-sizing: content-box;
 	font-family: 'Roboto', sans-serif;
 	font-weight:300;
-	color: white;
+
 	font-size:11pt;
 	padding:10px;
 	text-align:left;
 	max-width:400px;
-	transition: opacity .25s ease-in-out;
+	transition: opacity .25s ease-in-out, background-color .5s ease-in-out;
 	display:inline-block;
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	
+	color:#4A4A4A;
+	background-color:white;
+	padding:0 0px;
+	text-align:left;
+	border-radius:4px;
 }
-INPUT, TEXTAREA, SELECT {
+
+.dark {
+/*	background-color:#222 !important;
+	color:white !important; */
+}
+INPUT[type='text'], TEXTAREA, SELECT {
 	resize: both;
 	font-size:11pt;
 	font-weight:normal;
@@ -76,7 +89,7 @@ SELECT {
 ._hover:hover {
 	background:white;
 }
-#CS_optionDescription {
+.CS_optionDescription {
 	transition: all .25s ease-in;
 	text-align:left;
 	min-height:60px;
@@ -84,8 +97,9 @@ SELECT {
 	max-width:250px;
 	margin:auto;
 	margin-top:20px;
-	font-weight:400;
+	font-weight:300;
 	text-align:center;
+	
 }
 FORM {
 	transition: all .5s ease-out;
@@ -100,24 +114,45 @@ FORM {
 	text-align:center;
 	max-height:0;
 	text-align:center;
-	margin:auto
+	margin:auto;
+}
+.CS_menuItem .header {
+	font-size:12pt;
+	margin-bottom:8px;
+	padding:10px;
+	background-color:#5bb2fc;
+	border-radius:4px 4px 0 0;
+	color:white;
+	font-weight:700;
 }
 #CS_customSearchDialogOptions {
-	max-height:300px;
+	max-height:0;
 }
-.CS_menuItem > DIV {
+.iconButton {
+	text-align:left;
 	display:inline-block;
-	width:100px;
-	height:100px;
-	margin:4px;
+	width:92px;
+	height:24px;
+	margin:2px;
+	color:white;
+	font-weight:bold;
+	font-size:12pt;
+	margin-top:10px;
+	border:2px solid #e2e2e2;
+	border-radius:2px;
+	padding:4px;
+	cursor:pointer;
+	vertical-align:middle;
+	line-height:24px;
 }
-.CS_menuItem > DIV IMG {
-	height:75px;
-	width:75px;
-	text-align:center;
+.iconButton IMG {
+	height:24px;
+	width:24px;
+	text-align:left;
 	margin:auto;
-	display:block;
 	filter: brightness(0) invert(1);
+	vertical-align:middle;
+	margin-right:10px;
 }
 .CS_info {
 	font-size:7pt;
@@ -130,6 +165,8 @@ FORM {
 /* tooltips (copied from options.html) */
 #CS_info_msg {
 	display:none;
+	opacity:0;
+	transition: all .25s ease-in-out;
 	position:absolute;
 	top:0;
 	left:0;
@@ -143,14 +180,5 @@ FORM {
 	border:1px solid #9abad2;
 	box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
 	text-align:left;
-}
-#CS_customSearchDialogClose {
-	position:absolute;
-	right:30px;
-	top:30px;
-	width:30px;
-	height:30px;
-	opacity:.75;
-	filter: brightness(0) invert(1);
-	cursor:pointer;
+	font-family: Arial;
 }

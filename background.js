@@ -15,10 +15,13 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "nativeAppRequest":
-			nativeApp( {force: message.force || false} ).then((result) => {
-				sendResponse({response: result});
-			});
-			return true;
+			let nativeApping = nativeApp( {force: message.force || false} );
+			if (nativeApping) {
+				nativeApping.then((result) => {
+					sendResponse({response: result});
+				});
+				return true;
+			}
 			break;
 			
 		case "openOptions":
@@ -102,14 +105,16 @@ function notify(message, sender, sendResponse) {
 			break;
 		
 		case "addCustomSearchEngine":
+		
 			let se = message.searchEngine;
 			
 			for (let se2 of userOptions.searchEngines) {
 				if (se2.title == se.title) {
-					sendResponse({errorMessage: 'Name must be unique. Search engine "' + se2.title + '" already exists'});
+					sendResponse({errorMessage: 'Name must be unique. Search engine already exists'});
 					return;
 				}
 			}
+
 			userOptions.searchEngines.push(se);
 
 			browser.storage.local.set({"userOptions": userOptions}).then(() => {
@@ -180,7 +185,7 @@ function buildContextMenu(disableAddCustomSearch) {
 	browser.contextMenus.removeAll();
 
 	if (!userOptions.contextMenu) {
-		console.log('Context menu is disabled');
+	//	console.log('Context menu is disabled');
 		return false;
 	}	
 
@@ -312,7 +317,7 @@ function openSearch(details) {
 			q = "http://" + searchTerms;
 	}
 	
-	
+	// set landing page for POST engines
 	if (typeof se.method !== 'undefined' && se.method === "POST") {
 		
 		if ( se.searchForm )
@@ -447,6 +452,7 @@ var userOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnMouse: true,
+	quickMenuSearchOnMouseUp: false,
 	quickMenuOnClick: false,
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
