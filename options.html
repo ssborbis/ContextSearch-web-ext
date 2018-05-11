@@ -301,6 +301,30 @@
 				border-width: 0 3px 3px 0;
 				transform: rotate(45deg);
 			}
+			.checkboxImage {
+				height:0;
+				display:block;
+			}
+			.checkboxImage input[type=checkbox] {
+				display:none;
+			}
+			.checkboxImage input[type=checkbox] + label
+			{
+			   height: 24px;
+			   display:inline-block;
+			   padding: 0 0 0 0px;
+			}
+
+			.checkboxImage input[type=checkbox] + label > IMG
+			{
+				height:100%;
+				opacity:.3;
+			}
+			
+			.checkboxImage input[type=checkbox]:checked + label > IMG
+			{
+				opacity:1;
+			}
 			
 			.info {
 				font-size:7pt;
@@ -654,8 +678,13 @@
 					</select>
 				</p>
 				<hr />
-				<label class="container" style='display:inline-block'>Add Custom Search Menu <span class='info' data-msg='Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases.'>?</span>
+				<label class="container">Add Custom Search Menu <span class='info' data-msg='Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases.'>?</span>
 					<input type='checkbox' id='cb_contextMenuShowAddCustomSearch' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
+				<label class="container"><b style='font-size:9pt;font-variant:small-caps'>Beta</b> - Use Bookmarks Menu <span class='info' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines'>?</span>
+					<input type='checkbox' id='cb_contextMenuBookmarks' />
 					<span class="checkmark checkmark2"></span>
 				</label>
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179;' />
@@ -780,25 +809,6 @@
 				</p>
 
 				<p class='header1'>&mdash; Opening &amp; Closing &mdash;</p>
-				
-				<div style='display:none'>
-				<br />
-				
-				<div style='display:inline-block;'>
-					<div class='openingMethodTab'>Automatic</div>
-					<div class='openingMethodTab'>Mouse</div>
-					<div class='openingMethodTab'>Keyboard</div>
-				</div>
-				<div style=''>
-					
-				</div>
-				
-
-				
-				<br />
-				</div>
-				
-				<div style=''>
 
 				<div style='border:1px dashed #ccc;border-width:1px 0 0 0;padding-top:8px'>
 					<label class="container" style='display:inline-block'>
@@ -816,6 +826,7 @@
 
 					
 				</div>
+				
 				<div style='border:1px dashed #ccc;border-width:1px 0 0 0;padding-top:8px'>
 					<label class="container" style='white-space: nowrap;'>
 						<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
@@ -839,13 +850,14 @@
 						<span class="checkmark"></span>
 					</label>
 				</div>
-				<div style='border:1px dashed #ccc;border-width:1px 0 0 0;padding-top:8px'>
+				<div style='border:1px dashed #ccc;border-width:1px 0 1px 0;padding-top:8px'>
 					<label class="container">Keyboard Button&nbsp;<span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
 						<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 					</label>
 				</div>
-
+				<div class='blurb'>
+					Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly
 				</div>
 				<hr />
 				<label class="container" style='display:inline-block'>Privacy Protection 
@@ -1091,6 +1103,7 @@
 		<script src="searchEngineUtils.js"></script>
 		<script src="keyTable.js"></script>
 		<script src="opensearch.js"></script>
+		<script src="bookmarks.js"></script>
 		<script src="options.js"></script>
 	</body>
 </html>

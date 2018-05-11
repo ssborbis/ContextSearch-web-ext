@@ -118,7 +118,9 @@ function notify(message, sender, sendResponse) {
 			userOptions.searchEngines.push(se);
 
 			browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				notify({action: "updateUserOptions"});
+				CSBookmarks.add(se.title).then(() => {
+					notify({action: "updateUserOptions"});
+				});
 			});
 			
 			break;
@@ -187,13 +189,75 @@ function buildContextMenu(disableAddCustomSearch) {
 	if (!userOptions.contextMenu) {
 	//	console.log('Context menu is disabled');
 		return false;
-	}	
+	}
 
 	browser.contextMenus.create({
 		id: "search_engine_menu",
 		title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
 		contexts: ["selection", "link"]
 	});
+	
+	if (userOptions.contextMenuBookmarks) {
+
+		CSBookmarks.get().then((bookmark) => {
+
+			function traverse(_node) {
+				
+				browser.bookmarks.getChildren(_node.id).then( (children) => {
+					for (let node of children) {
+						
+						if (node.type === 'bookmark') {
+					
+							let index = userOptions.searchEngines.findIndex( (se) => {
+								return se.title === node.title;
+							});
+							
+							// skip renamed / orphaned bookmarks
+							if (index === -1) continue;
+							
+							let se = userOptions.searchEngines[index];
+							
+							browser.contextMenus.create({
+								parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+								title: se.title,
+								id: index.toString(),
+								contexts: ["selection", "link"],
+								icons: {
+									"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+									"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
+								}
+							});
+						}
+						
+						if (node.type === 'separator') {
+							browser.contextMenus.create({
+								parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+								type: "separator"
+							});
+						}
+						
+						if (node.type === 'folder') {
+							browser.contextMenus.create({
+								parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+								id: node.id,
+								title: node.title,
+								icons: {
+									"16": "/icons/folder.png",
+									"32": "/icons/folder.png"
+								}
+							});
+							
+							traverse(node);
+						}
+					}
+				});
+				
+			}
+			
+			traverse(bookmark);
+		});
+		return;
+	}
 
 	for (var i=0;i<userOptions.searchEngines.length;i++) {
 		
@@ -467,6 +531,7 @@ var userOptions = {
 	quickMenuTrackingProtection: true,
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
+	contextMenuBookmarks: false,
 	quickMenuTools: [
 		{name: 'disable', 	disabled: false},
 		{name: 'close', 	disabled: false},
@@ -576,6 +641,11 @@ function encodeCharset(string, encoding) {
 		return {ascii: string, uri: string};
 	}
 }
+
+
+
+
+
 
 /*
 // inject at tab creation

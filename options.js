@@ -81,374 +81,6 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 	}
 });
 
-function buildSearchEngineContainerXML() {
-	
-	
-	function getToolIconIndex(element) {
-		 let toolIcons = document.getElementsByClassName('searchEngineRow');
-		 for (let i=0;i<toolIcons.length;i++) {
-			 if (toolIcons[i] === element) {
-				return i;
-			}
-		 }
-		 
-		 return -1;
-	}
-	function nearestParent( tagName, target ) {
-		while ( target && target.nodeName.toUpperCase() !== tagName.toUpperCase() ) {
-			target = target.parentNode;
-		}
-		
-		return target;
-	}
-	function dragstart_handler(ev) {
-		ev.dataTransfer.setData("text", getToolIconIndex(nearestParent("TR",ev.target)));
-		ev.effectAllowed = "copyMove";
-	}
-	function dragover_handler(ev) {
-		let row = nearestParent("TR",ev.target);
-		row.style.outline = '2px solid #6ec179';
-		row.style.opacity = .5;
-		ev.preventDefault();
-	}
-	function dragleave_handler(ev) {
-		nearestParent("TR",ev.target).style=null;
-	}
-	function drop_handler(ev) {
-		ev.preventDefault();
-		let tr = nearestParent("TR",ev.target);
-		tr.style = null;
-		let old_index = ev.dataTransfer.getData("text");
-		let new_index = getToolIconIndex(tr);
-
-		if (new_index > old_index)
-			se_container.insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr.nextSibling);			
-		else
-			se_container.insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr);
-		
-		let se = searchEngines.splice(old_index,1)[0];
-
-		searchEngines.splice( new_index, 0, se );	
-	}
-	function dragend_handler(ev) {
-		saveOptions();
-		ev.dataTransfer.clearData();
-	}
-	
-	var xml = '<root><engine index="0" />\
-	<separator />\
-	<folder name="firstfolder">\
-		<engine index="1" />\
-		<separator />\
-		<engine index="2" />\
-	</folder>\
-	<engine index="3" />\
-	<separator />\
-	<engine index="4" /></root>';
-
-	parser = new DOMParser();
-	xmlDoc = parser.parseFromString(xml,"text/xml");
-	
-		// show default engine msg if !reloadMethod and not lite version
-	if (!userOptions.reloadMethod && typeof browser.runtime.sendNativeMessage === 'function')
-		document.getElementById('d_defaultEnginesMsg').style.display=null;
-	
-	// hide and detach the edit_form
-	let edit_form = document.getElementById('editSearchEngineContainer');
-	edit_form.style.maxHeight = null;
-	document.body.appendChild(edit_form);
-		
-	// clear the table
-	let se_container = document.getElementById('searchEnginesContainer');
-	se_container.innerHTML = null;
-	
-	// build table
-	function traverse(node) {
-		let depth = 0;
-		
-		let p = node;
-		while( ( p = p.parentNode) ) depth++;
-		
-		let spacer = document.createElement('span');
-		spacer.style='display:inline-block;';
-		//spacer.style.width = 20 * (depth-1) + "px";
-		
-		console.log(spacer.style.width);
-		
-		if (node.nodeName === 'engine') {
-			let i = parseInt(node.getAttribute('index'));
-			let se = userOptions.searchEngines[i];
-			
-			if (se.hidden === undefined) se.hidden = false;
-	
-			let icon = document.createElement('img');
-			icon.className = 'icon';
-			icon.src = se.icon_base64String;
-			
-			// searchEngine name
-			let title = document.createElement('div');
-			title.title = 'click to edit';
-			title.className = 'title';
-			title.innerText = se.title;
-			title.style.display = 'inline';
-			
-			title.onclick = function() {
-				
-				// close if open on same TR
-				if (nearestParent("TR",edit_form) === nearestParent("TR",title) && edit_form.style.maxHeight) {
-					edit_form.style.maxHeight = null;
-					return;
-				}
-				
-				function clearError( element ) {
-					if ( 
-						element 
-						&& element.classList 
-						&& element.classList.contains('error') 
-					)
-						element.classList.remove('error');
-				}
-				
-				// clear error formatting
-				for (let label of edit_form.getElementsByTagName('label')) {
-					if (label.dataset.label) label.innerText = label.dataset.label;
-					label.style.color = null;
-					clearError(label.nextSibling)
-				}
-
-	//			edit_form.shortName.value = se.title;
-				edit_form.template.value = se.query_string;
-				edit_form.iconURL.value = se.icon_url || se.icon_base64String;
-				edit_form._method.value = se.method || "GET";
-				edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
-				edit_form._encoding.value = se.queryCharset || "UTF-8";
-				edit_form.searchform.value = se.searchForm || function() {
-					try {
-						return new URL(se.query_string).origin;
-					} catch (err) {
-						return "";
-					}
-				}();
-				
-				edit_form.addEventListener('mouseover', () => {
-					nearestParent("TR",edit_form).setAttribute('draggable', 'false');
-				});
-				
-				edit_form.addEventListener('mouseout', () => {
-					nearestParent("TR",edit_form).setAttribute('draggable', 'true');
-				});
-				
-				edit_form.cancel.onclick = function() {
-					edit_form.style.maxHeight = null;
-				}
-				
-				edit_form.save.onclick = function() {
-
-					function showError(el, msg) {
-						el.previousSibling.innerText = msg;
-						el.previousSibling.style.color = "red";
-						el.classList.add("error");
-					}
-					
-					function saveForm() {
-						// loading icon is last step. Set values after everything else
-						se.icon_base64String = icon.src;
-						se.query_string = edit_form.template.value;
-						se.searchForm = edit_form.searchform.value;
-						se.icon_url = edit_form.iconURL.value;
-						se.method = edit_form._method.value;
-						se.queryCharset = edit_form._encoding.value;
-						se.params = paramStringToNameValueArray(edit_form.post_params.value);
-						
-						saveOptions();
-						edit_form.style.maxHeight = null;
-					}
-
-					// Check bad form values
-		/*			if ( !edit_form.shortName.value.trim() ) {
-						showError(edit_form.shortName,'Engine name');
-						return;
-					}
-					for (let engine of userOptions.searchEngines) {
-						if (engine.title == edit_form.shortName.value) {
-							showError(edit_form.shortName,"Engine name " + edit_form.shortName.value + '" already exists');
-							return;
-						}
-					}
-		*/
-					if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
-						showError(edit_form.template,'Template must include {searchTerms}');
-						return;
-					}
-					if (edit_form.template.value.match(/^http/i) === null) {
-						showError(edit_form.template,'Template must be an URL');
-						return;
-					}
-					if (edit_form.searchform.value.match(/^http/i) === null) {
-						showError(edit_form.searchform,'Form path must be an URL');
-						return;
-					}
-					if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
-						showError(edit_form.post_params, 'POST params must include {searchTerms}');
-						return;
-					}
-					if (edit_form.iconURL.value.match(/^resource:/) === null) {
-						icon.src = browser.runtime.getURL("/icons/spinner.svg");
-						let newIcon = new Image();
-						newIcon.onload = function() {
-							icon.src =  imageToBase64(this, 32);
-							saveForm();
-						}
-						newIcon.onerror = function() {
-							icon.src = se.icon_base64String;
-							showError(edit_form.iconURL,'Icon failed to load');
-						}
-						newIcon.src = edit_form.iconURL.value;
-					}
-				}
-				
-				// clear error formatting on focus
-				for (let element of edit_form.getElementsByTagName('input')) {
-					element.addEventListener('focus', () => {
-						clearError( element );
-					});
-				}
-
-				// attach form to title cell
-				title.parentNode.appendChild(edit_form);
-				
-				// reflow trick
-				edit_form.getBoundingClientRect();
-				edit_form.style.maxHeight = '300px';
-			}
-			
-			let _delete = document.createElement('img');
-			_delete.title = 'delete';
-			_delete.className = 'delete';
-			_delete.src = '/icons/delete.png';
-			_delete.onclick = function(e) {
-				e.stopPropagation();
-				_delete.style.display = 'none';
-				
-				let yes = document.createElement('button');
-				let no = document.createElement('button');
-
-				yes.innerText = 'yes'; no.innerText = 'no';
-				
-				yes.onclick = function(ev) {
-					ev.stopPropagation(); // prevents closing edit_form
-
-					let r = nearestParent("TR",this);
-					
-					// move the edit form if attached to prevent deletion
-					if (r === nearestParent("TR", edit_form)) {
-						edit_form.style.maxHeight = null;
-						document.body.appendChild(edit_form);
-					}
-					
-					let index = getToolIconIndex(r);
-					console.log('deleting index ' + index);
-					searchEngines.splice(index,1);
-					r.parentNode.removeChild(r);	
-					saveOptions();
-				}
-
-				no.onclick = function(ev) {
-					ev.stopPropagation(); // prevents closing edit_form
-					no.parentNode.removeChild(yes);
-					no.parentNode.removeChild(no);
-					_delete.style.display = null;
-				}
-				
-				_delete.parentNode.appendChild(no);
-				_delete.parentNode.appendChild(yes);
-				
-			}
-			
-			title.appendChild(_delete);
-			
-			let hide = document.createElement('label');
-			hide.title = 'show/hide';
-			hide.className = 'container hide';
-			
-			let cb = document.createElement('input');
-			cb.type = 'checkbox';
-			cb.checked = !se.hidden;
-			cb.addEventListener('change', () => {
-				se.hidden = !cb.checked;
-				saveOptions();
-			});
-			
-			let sp = document.createElement('span');
-			sp.className = 'checkmark checkmark2';
-			sp.style.textAlign = 'center';
-			
-			hide.appendChild(cb);
-			hide.appendChild(sp);
-
-			let row = document.createElement('ul');
-			
-			row.className = 'searchEngineRow';
-			row.setAttribute('draggable', true);
-			row.setAttribute('text', i); 
-			
-			row.addEventListener('dragstart',dragstart_handler);
-			row.addEventListener('dragend',dragend_handler);
-			row.addEventListener('drop',drop_handler);
-			row.addEventListener('dragover',dragover_handler);
-			row.addEventListener('dragleave',dragleave_handler);
-
-			let td = document.createElement('li');
-			[spacer, hide, icon, title].forEach( (element) => {
-				 td.appendChild(element);
-			});
-			row.appendChild(td);
-			se_container.appendChild(row);
-
-		}
-		
-		if (node.nodeName === 'separator') {
-			let div = document.createElement('ul');
-			div.style = 'background-color:#ccc;width:100%;height:4px;';
-			
-			div.innerHTML = "---------------";
-			se_container.appendChild(div);
-			
-			console.log('separator');
-		}
-		
-		if (node.nodeName === 'folder' || node.nodeName === 'root') {
-			let div = document.createElement('ul');
-			div.style = 'width:100%;height:4px;';
-
-			let td = document.createElement('li');
-			td.appendChild(spacer);
-			
-			let folder_img = document.createElement('img');
-			folder_img.src = "/icons/folder.png";
-			folder_img.style.height='16px';
-			folder_img.style.marginLeft='24px';
-			
-			let folder_name = document.createElement('span');
-			folder_name.innerText = node.getAttribute('name');
-
-			td.appendChild(folder_img);
-			td.appendChild(folder_name);
-			
-			div.appendChild(td);
-			
-			if (node.nodeName === 'root') div.style.display='none';
-			
-			se_container.appendChild(div);
-			for (let child of node.childNodes)
-				traverse(child);
-		}
-	}
-
-	traverse(xmlDoc.childNodes[0]);
-	
-}
-
 function buildSearchEngineContainer(searchEngines) {
 	
 	// show default engine msg if !reloadMethod and not lite version
@@ -475,6 +107,8 @@ function buildSearchEngineContainer(searchEngines) {
 			userOptions.searchEngines = [];
 			saveOptions();
 			buildSearchEngineContainer([]);
+			
+			CSBookmarks.removeAll();
 		}
 	}
 	
@@ -587,7 +221,13 @@ function buildSearchEngineContainer(searchEngines) {
 		saveOptions();
 		ev.dataTransfer.clearData();
 	}
-
+	
+	// get Bookmark
+	let bookmarkNames = [];
+	let bookmarkNamesPromise = CSBookmarks.getNames().then( (names) => {
+		bookmarkNames = names;
+	});
+	
 	// build table
 	for (let i=0;i<searchEngines.length;i++) {
 		let se = searchEngines[i];
@@ -760,6 +400,7 @@ function buildSearchEngineContainer(searchEngines) {
 				
 				let index = getToolIconIndex(r);
 				console.log('deleting index ' + index);
+				CSBookmarks.remove(searchEngines[i].title);
 				searchEngines.splice(index,1);
 				r.parentNode.removeChild(r);	
 				saveOptions();
@@ -797,6 +438,34 @@ function buildSearchEngineContainer(searchEngines) {
 		
 		hide.appendChild(cb);
 		hide.appendChild(sp);
+		
+		let bookmark = document.createElement('span');
+		bookmark.title = 'bookmark';
+		bookmark.className = 'checkboxImage';
+		
+		let bm_cb = document.createElement('input');
+		bm_cb.type = 'checkbox';
+		bm_cb.id = 'bm_cb' + i;
+		
+		bookmarkNamesPromise.then(()=>{
+			bm_cb.checked = bookmarkNames.includes(se.title);
+		});
+
+		bm_cb.addEventListener('change', () => {
+
+			if (bm_cb.checked)
+				CSBookmarks.add(se);
+			if (!bm_cb.checked)
+				CSBookmarks.remove(se.title);
+
+		});
+		
+		let bm_label = document.createElement('label');
+		bm_label.setAttribute('for',bm_cb.id);
+		bm_label.innerHTML = '<img src="/icons/bookmark.png" />';
+		
+		bookmark.appendChild(bm_cb);
+		bookmark.appendChild(bm_label);
 
 		let row = document.createElement('tr');
 		
@@ -810,7 +479,7 @@ function buildSearchEngineContainer(searchEngines) {
 		row.addEventListener('dragover',dragover_handler);
 		row.addEventListener('dragleave',dragleave_handler);
 		
-		[hide, icon, title].forEach( (element) => {
+		[hide, bookmark, icon, title].forEach( (element) => {
 
 			let td = document.createElement('td');
 			td.appendChild(element);
@@ -886,6 +555,7 @@ function restoreOptions() {
 		document.getElementById('s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
 		document.getElementById('cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
+		document.getElementById('cb_contextMenuBookmarks').checked = userOptions.contextMenuBookmarks;
 		
 		document.getElementById('s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		document.getElementById('s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -895,7 +565,7 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
 		
 		buildSearchEngineContainer(userOptions.searchEngines);
-//		buildSearchEngineContainerXML();
+
 	}
   
 	function onError(error) {
@@ -942,6 +612,7 @@ function saveOptions(e) {
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
 		
 		contextMenuShowAddCustomSearch: document.getElementById('cb_contextMenuShowAddCustomSearch').checked,
+		contextMenuBookmarks: document.getElementById('cb_contextMenuBookmarks').checked,
 		
 		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
 		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
@@ -990,6 +661,29 @@ document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_contextMenuShowAddCustomSearch').addEventListener('change', saveOptions);
+document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e) => {
+	
+	if (e.target.checked && browser.bookmarks === undefined) {
+		
+		// permission popups do not work from the browser action panel
+		if (window.location.href.match(/#browser_action$/) !== null) {
+			browser.runtime.sendMessage({action:'openOptions'});
+			window.close();
+			return;
+		}
+		
+		alert('Beta feature\n\nAfter closing this prompt you will receive a prompt to accept a new permission for "bookmarks".\n\nAccepting will add a new folder "ContextSearch Menu" containing your current search engines in bookmarks under the "Other Bookmarks" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks. \n\nThanks for beta testing' )
+		CSBookmarks.requestPermissions().then( (result) => {
+			if (result)
+				saveOptions();
+			else
+				e.target.checked = false;
+		});
+	} else
+		saveOptions();
+	
+});
+
 document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
 // document.getElementById('cb_quickMenu').addEventListener('change', (e) => {
 	// showInfoMsg(e.target.parentNode, "Reload tabs for changes to take effect");
@@ -1413,16 +1107,16 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
 	
 	function download(filename, text) {
-	  var element = document.createElement('a');
-	  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-	  element.setAttribute('download', filename);
+		var element = document.createElement('a');
+		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		element.setAttribute('download', filename);
 
-	  element.style.display = 'none';
-	  document.body.appendChild(element);
+		element.style.display = 'none';
+		document.body.appendChild(element);
 
-	  element.click();
+		element.click();
 
-	  document.body.removeChild(element);
+		document.body.removeChild(element);
 	}
 	
 	let b_export = document.getElementById('b_exportSettings');
