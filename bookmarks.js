@@ -138,10 +138,10 @@ class CSBookmarks {
 		
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
-		this.find(se.title).then( (result) => {
+		return this.find(se.title).then( (result) => {
 			if (result !== -1) return false;
 			
-			this.get().then( (bm) => {
+			return this.get().then( (bm) => {
 
 				browser.bookmarks.create({
 					parentId: bm.id,

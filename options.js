@@ -643,7 +643,8 @@ function saveOptions(e) {
 //		customManager: document.getElementsByName('cb_customManager').checked
 	}
 
-	var setting = browser.storage.local.set({"userOptions": userOptions});
+//	var setting = browser.storage.local.set({"userOptions": userOptions});
+	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	setting.then(onSet, onError);
 }
 
@@ -672,11 +673,13 @@ document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e
 			return;
 		}
 		
-		alert('Beta feature\n\nAfter closing this prompt you will receive a prompt to accept a new permission for "bookmarks".\n\nAccepting will add a new folder "ContextSearch Menu" containing your current search engines in bookmarks under the "Other Bookmarks" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks. \n\nThanks for beta testing' )
+		alert('Beta feature\n\nAfter closing this prompt you will receive a prompt to accept a new permission for "bookmarks".\n\nAccepting will add a new folder "ContextSearch Menu" containing your current search engines in bookmarks under the "Other Bookmarks" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks. \n\nThanks for beta testing' );
+		
 		CSBookmarks.requestPermissions().then( (result) => {
-			if (result)
+			if (result) {
 				saveOptions();
-			else
+				location.reload();
+			} else
 				e.target.checked = false;
 		});
 	} else
@@ -1153,7 +1156,8 @@ document.addEventListener("DOMContentLoaded", () => {
 					return;
 				}
 				
-				browser.storage.local.set({"userOptions": newUserOptions}).then(() => {
+				//browser.storage.local.set({"userOptions": newUserOptions}).then(() => {
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions}).then(() => {
 					browser.runtime.sendMessage({action: "updateUserOptions"}).then(() => {
 						location.reload();
 					});

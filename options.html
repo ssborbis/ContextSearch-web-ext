@@ -398,6 +398,7 @@
 				animation: fadeEffect .25s;
 				background-color:white;
 				margin:0;
+				
 			} 
 
 			/* Go from zero to full opacity */
@@ -601,19 +602,19 @@
 				margin-top:10px;
 			}
 			DIV.blurb {
-				 font-size:10pt;
-				 border-left:10px solid #E9ECEF;
-				 padding-left:10px;
-				 margin-top:16px;
-				 margin-left:5px;
+				font-size:10pt;
+				border-left:10px solid #E9ECEF;
+				padding-left:10px;
+				margin-top:16px;
+				margin-left:5px;
+
 			}
 			.openingMethodTab {
 				border:1px solid #d4d4d4;
 				padding:4px 10px;
 				background-color:#fefefe;
 				border-radius:4px;
-				display:inline-block;
-				
+				display:inline-block;	
 			}
 		</style>
 	</head>
@@ -696,7 +697,7 @@
 						<span class="toggleSlider round"></span>
 					</label>
 				</div>
-				<div class='blurb'>
+				<div class='blurb' style='max-width:400px'>
 					<i>Quick Menu disabled on addons.mozilla.org</i><br />
 					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
@@ -856,7 +857,7 @@
 						<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 					</label>
 				</div>
-				<div class='blurb'>
+				<div class='blurb' style='max-width:400px'>
 					Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly
 				</div>
 				<hr />

@@ -2,16 +2,18 @@ function notify(message, sender, sendResponse) {
 		
 	switch(message.action) {
 		case "saveUserOptions":
+			userOptions = message.userOptions;
 			browser.storage.local.set({"userOptions": message.userOptions});
 			break;
 			
 		case "updateUserOptions":
-			loadUserOptions().then(() => {
-				getAllOpenTabs().then((tabs) => {
-					for (let tab of tabs)
-						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
-				});
+			getAllOpenTabs().then((tabs) => {
+				for (let tab of tabs)
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
 			});
+			
+			buildContextMenu();
+
 			break;
 			
 		case "nativeAppRequest":
@@ -43,7 +45,8 @@ function notify(message, sender, sendResponse) {
 		case "getUserOptions":
 		
 			// ignore the load to keep tempSearchEngines for POST test
-			if ( !message.noLoad ) loadUserOptions();
+		//	if ( !message.noLoad && sender.tab.frameId === 0 ) loadUserOptions();
+			
 			
 			sendResponse({"userOptions": userOptions});
 			break;
@@ -51,7 +54,7 @@ function notify(message, sender, sendResponse) {
 		case "getSearchEngineByIndex":
 		
 			if ( !message.index ) return;
-			if ( !message.noLoad ) loadUserOptions();
+		//	if ( !message.noLoad ) loadUserOptions();
 			
 			sendResponse({"searchEngine": userOptions.searchEngines[message.index]});
 			break;
@@ -118,7 +121,7 @@ function notify(message, sender, sendResponse) {
 			userOptions.searchEngines.push(se);
 
 			browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				CSBookmarks.add(se.title).then(() => {
+				CSBookmarks.add(se).then(() => {
 					notify({action: "updateUserOptions"});
 				});
 			});
@@ -126,14 +129,12 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "testSearchEngine":
-			let tempSearchEngine = message.tempSearchEngine;
-			userOptions.searchEngines.push(tempSearchEngine);
 			
 			openSearch({
 				searchEngineIndex: userOptions.searchEngines.length - 1,
 				searchTerms: message.searchTerms,
 				tab: sender.tab,
-				temporarySearchEngine: true
+				temporarySearchEngine: message.tempSearchEngine
 			});
 
 			break;
@@ -184,96 +185,98 @@ function loadUserOptions() {
 
 function buildContextMenu(disableAddCustomSearch) {
 
-	browser.contextMenus.removeAll();
+	browser.contextMenus.removeAll().then( () => {
 
-	if (!userOptions.contextMenu) {
-	//	console.log('Context menu is disabled');
-		return false;
-	}
+		if (!userOptions.contextMenu) {
+		//	console.log('Context menu is disabled');
+			return false;
+		}
 
-	browser.contextMenus.create({
-		id: "search_engine_menu",
-		title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
-		contexts: ["selection", "link"]
-	});
-	
-	if (userOptions.contextMenuBookmarks) {
+		browser.contextMenus.create({
+			id: "search_engine_menu",
+			title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
+			contexts: ["selection", "link"]
+		});
+		
+		if (userOptions.contextMenuBookmarks) {
 
-		CSBookmarks.get().then((bookmark) => {
+			CSBookmarks.getAll().then((bookmark) => {
 
-			function traverse(_node) {
+				bookmark = bookmark.shift();
 				
-				browser.bookmarks.getChildren(_node.id).then( (children) => {
-					for (let node of children) {
+				function traverse(node) {
+
+					if (node.type === 'bookmark') {
+				
+						let index = userOptions.searchEngines.findIndex( (se) => {
+							return se.title === node.title;
+						});
 						
-						if (node.type === 'bookmark') {
+						// skip renamed / orphaned bookmarks
+						if (index === -1) return;
+						
+						let se = userOptions.searchEngines[index];
+						
+					//	console.log('adding index ' + index);
+						
+						browser.contextMenus.create({
+							parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+							title: se.title,
+							id: index.toString(),
+							contexts: ["selection", "link"],
+							icons: {
+								"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+								"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
+							}
+						});
+					}
 					
-							let index = userOptions.searchEngines.findIndex( (se) => {
-								return se.title === node.title;
-							});
-							
-							// skip renamed / orphaned bookmarks
-							if (index === -1) continue;
-							
-							let se = userOptions.searchEngines[index];
-							
-							browser.contextMenus.create({
-								parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
-								title: se.title,
-								id: index.toString(),
-								contexts: ["selection", "link"],
-								icons: {
-									"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
-									"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
-								}
-							});
-						}
+					if (node.type === 'separator') {
+						browser.contextMenus.create({
+							parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+							type: "separator"
+						});
+					}
+					
+					if (node.type === 'folder') {
+						browser.contextMenus.create({
+							parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+							id: node.id,
+							title: node.title,
+							icons: {
+								"16": "/icons/folder.png",
+								"32": "/icons/folder.png"
+							}
+						});
 						
-						if (node.type === 'separator') {
-							browser.contextMenus.create({
-								parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
-								type: "separator"
-							});
-						}
-						
-						if (node.type === 'folder') {
-							browser.contextMenus.create({
-								parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
-								id: node.id,
-								title: node.title,
-								icons: {
-									"16": "/icons/folder.png",
-									"32": "/icons/folder.png"
-								}
-							});
-							
-							traverse(node);
-						}
+						for (let child of node.children) traverse(child);
+					}
+					
+				}
+				
+				for (let child of bookmark.children) 
+					traverse(child);
+			});
+			return;
+		} else {
+
+			for (var i=0;i<userOptions.searchEngines.length;i++) {
+				
+				let se = userOptions.searchEngines[i];
+				if (se.hidden) continue;
+				browser.contextMenus.create({
+					parentId: "search_engine_menu",
+					id: i.toString(),
+					title: se.title,
+					contexts: ["selection", "link"],
+					icons: {
+						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 					}
 				});
-				
 			}
-			
-			traverse(bookmark);
-		});
-		return;
-	}
-
-	for (var i=0;i<userOptions.searchEngines.length;i++) {
-		
-		let se = userOptions.searchEngines[i];
-		if (se.hidden) continue;
-		browser.contextMenus.create({
-			parentId: "search_engine_menu",
-			id: i.toString(),
-			title: se.title,
-			contexts: ["selection", "link"],
-			icons: {
-				"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
-				"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
-			}
-		});
-	}	
+		}
+	});		
 }
 
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
@@ -364,7 +367,7 @@ function openSearch(details) {
 		tab === null
 	) return false;
 	
-	var se = userOptions.searchEngines[searchEngineIndex];
+	var se = temporarySearchEngine || userOptions.searchEngines[searchEngineIndex];
 	
 	if (!se.query_string) return false;
 	
