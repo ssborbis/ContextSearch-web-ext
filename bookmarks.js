@@ -171,7 +171,7 @@ class CSBookmarks {
 		function onResponse(response) {
 			if (response) {
 				console.log("Permission was granted");
-				this.create();
+				CSBookmarks.create();
 				return true;
 			} else {
 				console.log("Permission was refused");
