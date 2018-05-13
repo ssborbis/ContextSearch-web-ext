@@ -13,7 +13,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 		var engines = JSON.parse(text).engines;	
 		searchEngines = searchJsonObjectToArray(engines);
 
-		document.getElementById('status_div').style.display='';
+		document.getElementById('status_div').style.display='inline-block';
 		statusMessage({
 			img: "icons/spinner.svg",
 			msg: "Loading remote content"
@@ -82,10 +82,6 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 });
 
 function buildSearchEngineContainer(searchEngines) {
-	
-	// show default engine msg if !reloadMethod and not lite version
-	if (!userOptions.reloadMethod && typeof browser.runtime.sendNativeMessage === 'function')
-		document.getElementById('d_defaultEnginesMsg').style.display=null;
 	
 	// hide and detach the edit_form
 	let edit_form = document.getElementById('editSearchEngineContainer');
@@ -400,7 +396,7 @@ function buildSearchEngineContainer(searchEngines) {
 				
 				let index = getToolIconIndex(r);
 				console.log('deleting index ' + index);
-				CSBookmarks.remove(searchEngines[i].title);
+				CSBookmarks.remove(searchEngines[index].title);
 				searchEngines.splice(index,1);
 				r.parentNode.removeChild(r);	
 				saveOptions();
@@ -443,6 +439,10 @@ function buildSearchEngineContainer(searchEngines) {
 		bookmark.title = 'bookmark';
 		bookmark.className = 'checkboxImage';
 		
+		// Hide if disabled
+		if (!userOptions.contextMenuBookmarks)
+			bookmark.style.display='none';
+		
 		let bm_cb = document.createElement('input');
 		bm_cb.type = 'checkbox';
 		bm_cb.id = 'bm_cb' + i;
@@ -457,6 +457,8 @@ function buildSearchEngineContainer(searchEngines) {
 				CSBookmarks.add(se);
 			if (!bm_cb.checked)
 				CSBookmarks.remove(se.title);
+			
+			saveOptions();
 
 		});
 		
@@ -517,14 +519,10 @@ function restoreOptions() {
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
 		document.getElementById('i_quickMenuIconScale').value = (parseFloat(userOptions.quickMenuIconScale) * 100).toFixed(0) + "%";
 		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
-		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;	
-		document.getElementById('h_mouseButton').value = userOptions.quickMenuMouseButton;
+		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
-		if (document.getElementById('h_mouseButton').value == 3)
-			document.getElementById('img_rightMouseButton').style.opacity = 1;
-		else if (document.getElementById('h_mouseButton').value == 1)
-			document.getElementById('img_leftMouseButton').style.opacity = 1;
-		
+		document.querySelector('input[name="r_quickMenuMouseButton"][value="' + userOptions.quickMenuMouseButton + '"]' ).checked = true;
+
 		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
 		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
 		document.getElementById('h_position').value = userOptions.quickMenuPosition;
@@ -537,18 +535,7 @@ function restoreOptions() {
 		
 		buildToolIcons();
 
-		// reload method radio buttons
-		for (let el of document.getElementsByName('reloadMethod')) {
-			if (el.value === userOptions.reloadMethod) {
-				document.getElementById('manual').style.display='none';
-				document.getElementById('automatic').style.display='none';
-				document.getElementById(el.value).style.display='';
-				el.checked = true;
-				break;
-			}
-		}
-		
-//		document.getElementById('cb_customManager').checked = userOptions.customManager;
+		document.getElementById('cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
 
 		document.getElementById('s_contextMenuClick').value = userOptions.contextMenuClick;
 		document.getElementById('s_contextMenuShift').value = userOptions.contextMenuShift;
@@ -596,7 +583,7 @@ function saveOptions(e) {
 		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
 		quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
 		quickMenuSearchOnMouseUp: document.getElementById('cb_quickMenuSearchOnMouseUp').checked,
-		quickMenuMouseButton: parseInt(document.getElementById('h_mouseButton').value),
+		quickMenuMouseButton: parseInt(document.querySelector('input[name="r_quickMenuMouseButton"]:checked').value),
 		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
 		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
 		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
@@ -634,27 +621,13 @@ function saveOptions(e) {
 				tools.push({"name": toolIcon.name, "disabled": toolIcon.disabled})			
 			return tools;
 		}(),
-		reloadMethod: function() {
-			for (let el of document.getElementsByName('reloadMethod')) {
-				if (el.checked) return el.value;
-			}
-			return null;
-		}()
-//		customManager: document.getElementsByName('cb_customManager').checked
+		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual'
+
 	}
 
 //	var setting = browser.storage.local.set({"userOptions": userOptions});
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	setting.then(onSet, onError);
-}
-
-function changeButtons(e, button) {
-	var el = e.target;
-	document.getElementById('img_rightMouseButton').style.opacity = .4;
-	document.getElementById('img_leftMouseButton').style.opacity = .4;
-	el.style.opacity = 1;	
-	document.getElementById('h_mouseButton').value = button;
-	saveOptions(e);
 }
 
 document.addEventListener("DOMContentLoaded", makeTabs());
@@ -664,7 +637,7 @@ document.getElementById('cb_contextMenu').addEventListener('change', saveOptions
 document.getElementById('cb_contextMenuShowAddCustomSearch').addEventListener('change', saveOptions);
 document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e) => {
 	
-	if (e.target.checked && browser.bookmarks === undefined) {
+	if (e.target.checked) {
 		
 		// permission popups do not work from the browser action panel
 		if (window.location.href.match(/#browser_action$/) !== null) {
@@ -672,18 +645,20 @@ document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e
 			window.close();
 			return;
 		}
-		
-		alert('Beta feature\n\nAfter closing this prompt you will receive a prompt to accept a new permission for "bookmarks".\n\nAccepting will add a new folder "ContextSearch Menu" containing your current search engines in bookmarks under the "Other Bookmarks" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks. \n\nThanks for beta testing' );
+		if (browser.bookmarks === undefined)
+			alert('After closing this prompt you will receive a prompt to accept a new permission for "Bookmarks".\n\nAccepting will add a new folder "ContextSearch Menu" containing your current search engines in bookmarks under the "Other Bookmarks" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks.' );
 		
 		CSBookmarks.requestPermissions().then( (result) => {
 			if (result) {
 				saveOptions();
-				location.reload();
+				buildSearchEngineContainer(userOptions.searchEngines);
 			} else
 				e.target.checked = false;
 		});
-	} else
+	} else {
 		saveOptions();
+		buildSearchEngineContainer(userOptions.searchEngines);
+	}
 	
 });
 
@@ -722,17 +697,18 @@ document.getElementById('r_quickMenuAuto').addEventListener('change', saveOption
 document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
+document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
 
 for (let el of document.getElementsByTagName('select'))
+	el.addEventListener('change', saveOptions);
+
+for (let el of document.getElementsByName('r_quickMenuMouseButton'))
 	el.addEventListener('change', saveOptions);
 
 document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
 
 document.getElementById('cb_quickMenuTrackingProtection').addEventListener('change', saveOptions);
-
-document.getElementById('img_rightMouseButton').addEventListener('click', (ev) => {changeButtons(ev,3)});
-document.getElementById('img_leftMouseButton').addEventListener('click', (ev) => {changeButtons(ev,1)});
 
 document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
 	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
@@ -783,7 +759,7 @@ function checkSearchJsonPath() {
 			return false;
 		}
 
-		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;Import successful";
+		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;Import successful";
 		
 		saveOptions();
 
@@ -801,7 +777,8 @@ function checkSearchJsonPath() {
 	
 	function onError(error) {
 		console.log(error);
-		el.innerText = "Failed to load file (" + error.message + ") Is helper app installed?";
+		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
+		el.textContent = "Failed to load file (" + error.message + ") Is app installed?";
 		el.style.color = 'red';
 	}
 	
@@ -835,17 +812,25 @@ function fixNumberInput(el, _default, _min, _max) {
 }
 
 // Modify Options for quickload popup
-if (window.location.href.match(/#quickload$/) !== null) {
-	history.pushState("", document.title, window.location.pathname);
-	var loadButton = document.getElementById('selectMozlz4FileButton');
-	document.querySelector('button[data-tabid="enginesTab"]').click();
-	loadButton.click();
-}
+document.addEventListener('DOMContentLoaded', () => {
+	if (window.location.href.match(/#quickload$/) !== null) {
+		history.pushState("", document.title, window.location.pathname);
+		var loadButton = document.getElementById('selectMozlz4FileButton');
+		document.querySelector('button[data-tabid="enginesTab"]').click();
+		loadButton.click();
+	}
+});
+
+// Modify Options for quickload popup
+document.addEventListener('DOMContentLoaded', () => {
+	if (window.location.href.match(/#help$/) !== null) {
+		document.querySelector('button[data-tabid="helpTab"]').click();
+	}
+});
 
 // Modify Options for BrowserAction
-if (window.location.href.match(/#browser_action$/) !== null) {
-	
-	document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
+	if (window.location.href.match(/#browser_action$/) !== null) {
 		document.getElementById('left_div').style.display = 'none';
 		document.getElementById('right_div').style.width = "auto";
 		let loadButton = document.getElementById("selectMozlz4FileButton");
@@ -853,9 +838,8 @@ if (window.location.href.match(/#browser_action$/) !== null) {
 			browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
 			e.preventDefault();
 		}
-	});	
-	
-}
+	}
+});	
 
 function makeTabs() {
 	
@@ -985,44 +969,6 @@ function buildToolIcons() {
 	}
 }
 
-document.addEventListener("DOMContentLoaded", (e) => {
-	for (let el of document.getElementsByName('reloadMethod')) {
-		el.addEventListener('click', (e) => {
-			document.getElementById('manual').style.display='none';
-			document.getElementById('automatic').style.display='none';
-			document.getElementById(el.value).style.display='';
-		});
-		
-		el.addEventListener('change', () => {
-		//	document.getElementById('searchEnginesParentContainer').style.display = ( userOptions.customManager || (el.value === 'manual' && el.checked) ) ? null : "none";
-			saveOptions();
-		});
-	}
-});
-/*
-document.addEventListener("DOMContentLoaded", (e) => {
-	let el = document.getElementById('cb_customManager');
-	
-	el.addEventListener('click', (e) => {
-		
-		// confirm change to replace manual list
-		if (
-			userOptions.customManager
-			&& !confirm("Disabling custom manager will disable your manual list and any changes you have made will be lost. Are you sure?")
-		) {
-			e.preventDefault();
-			return false;
-		}
-
-	});
-	
-	el.addEventListener('change', (e) => {
-		document.getElementById('searchEnginesParentContainer').style.display = (el.checked) ? null : "none";
-		saveOptions();
-	});
-
-});
-*/
 document.addEventListener("DOMContentLoaded", () => {
 	for (let el of document.getElementsByClassName('position')) {
 		el.addEventListener('click', (e) => {

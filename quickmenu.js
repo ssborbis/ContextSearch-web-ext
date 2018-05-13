@@ -1,6 +1,6 @@
 // unique object to reference globally
 var quickMenuObject = { 
-	delay: 225, // how long to hold right-click before quick menu events in ms
+	delay: 250, // how long to hold right-click before quick menu events in ms
 	keyDownTimer: 0,
 	mouseDownTimer: 0,
 	mouseCoords: {x:0, y:0},

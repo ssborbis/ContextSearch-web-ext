@@ -48,6 +48,8 @@ class CSBookmarks {
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
 		return browser.bookmarks.search({title: "ContextSearch Menu"}).then((bookmarks) => {
+
+			if (bookmarks.length === 0) return false;
 			return bookmarks[0];
 		});
 	}
@@ -57,15 +59,20 @@ class CSBookmarks {
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
 		return this.get().then( (bookmark) => {
-			return browser.bookmarks.getSubTree(bookmark.id);
+
+			if (!bookmark) return false;
+			
+			return browser.bookmarks.getSubTree(bookmark.id);				
 		});
 	}
 	
 	static getNames() {
+		
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
 		return this.getAll().then((tree) => {
 			
+			if (!tree) return [];
 			let names = [];
 			tree = tree.shift();
 			function traverse(node) {
@@ -88,6 +95,7 @@ class CSBookmarks {
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
 		return this.getAll().then((tree) => {
+			if (!tree) return -1;
 			tree = tree.shift();
 			function traverse(node) {
 				
@@ -142,14 +150,17 @@ class CSBookmarks {
 			if (result !== -1) return false;
 			
 			return this.get().then( (bm) => {
-
-				browser.bookmarks.create({
+				
+				if (!bm) return false;
+				
+				console.log('adding bookmark');
+				
+				return browser.bookmarks.create({
 					parentId: bm.id,
 					title: se.title,
 					url: se.template
 				});
-				
-				console.log('adding bookmark');
+	
 			});
 		});
 	}
@@ -160,7 +171,7 @@ class CSBookmarks {
 		function onResponse(response) {
 			if (response) {
 				console.log("Permission was granted");
-				CSBookmarks.create();
+				this.create();
 				return true;
 			} else {
 				console.log("Permission was refused");
@@ -169,5 +180,68 @@ class CSBookmarks {
 		}
 		  
 		return browser.permissions.request({permissions: ["bookmarks"]}).then(onResponse);
+	}
+	
+	static buildContextMenu() {
+		
+		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		
+		this.getAll().then((bookmark) => {
+				
+			if (!bookmark) return false;
+
+			bookmark = bookmark.shift();
+			
+			function traverse(node) {
+
+				if (node.type === 'bookmark') {
+			
+					let index = userOptions.searchEngines.findIndex( (se) => {
+						return se.title === node.title;
+					});
+					
+					// skip renamed / orphaned bookmarks
+					if (index === -1) return;
+					
+					let se = userOptions.searchEngines[index];
+					
+					browser.contextMenus.create({
+						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+						title: se.title,
+						id: index.toString(),
+						contexts: ["selection", "link"],
+						icons: {
+							"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+							"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
+						}
+					});
+				}
+				
+				if (node.type === 'separator') {
+					browser.contextMenus.create({
+						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+						type: "separator"
+					});
+				}
+				
+				if (node.type === 'folder') {
+					browser.contextMenus.create({
+						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
+						id: node.id,
+						title: node.title,
+						icons: {
+							"16": "/icons/folder.png",
+							"32": "/icons/folder.png"
+						}
+					});
+					
+					for (let child of node.children) traverse(child);
+				}
+				
+			}
+			
+			for (let child of bookmark.children) 
+				traverse(child);
+		});
 	}
 }

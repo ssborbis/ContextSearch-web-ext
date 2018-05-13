@@ -111,11 +111,13 @@ function notify(message, sender, sendResponse) {
 		
 			let se = message.searchEngine;
 			
-			for (let se2 of userOptions.searchEngines) {
-				if (se2.title == se.title) {
-					sendResponse({errorMessage: 'Name must be unique. Search engine already exists'});
-					return;
-				}
+			let index = userOptions.searchEngines.findIndex( (se2) => {
+				return se.title === se2.title;
+			});
+			
+			if (index !== -1) {
+				sendResponse({errorMessage: 'Name must be unique. Search engine already exists'});
+				return;
 			}
 
 			userOptions.searchEngines.push(se);
@@ -131,7 +133,6 @@ function notify(message, sender, sendResponse) {
 		case "testSearchEngine":
 			
 			openSearch({
-				searchEngineIndex: userOptions.searchEngines.length - 1,
 				searchTerms: message.searchTerms,
 				tab: sender.tab,
 				temporarySearchEngine: message.tempSearchEngine
@@ -187,10 +188,7 @@ function buildContextMenu(disableAddCustomSearch) {
 
 	browser.contextMenus.removeAll().then( () => {
 
-		if (!userOptions.contextMenu) {
-		//	console.log('Context menu is disabled');
-			return false;
-		}
+		if (!userOptions.contextMenu) return false;
 
 		browser.contextMenus.create({
 			id: "search_engine_menu",
@@ -200,64 +198,9 @@ function buildContextMenu(disableAddCustomSearch) {
 		
 		if (userOptions.contextMenuBookmarks) {
 
-			CSBookmarks.getAll().then((bookmark) => {
-
-				bookmark = bookmark.shift();
-				
-				function traverse(node) {
-
-					if (node.type === 'bookmark') {
-				
-						let index = userOptions.searchEngines.findIndex( (se) => {
-							return se.title === node.title;
-						});
-						
-						// skip renamed / orphaned bookmarks
-						if (index === -1) return;
-						
-						let se = userOptions.searchEngines[index];
-						
-					//	console.log('adding index ' + index);
-						
-						browser.contextMenus.create({
-							parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
-							title: se.title,
-							id: index.toString(),
-							contexts: ["selection", "link"],
-							icons: {
-								"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
-								"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
-							}
-						});
-					}
-					
-					if (node.type === 'separator') {
-						browser.contextMenus.create({
-							parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
-							type: "separator"
-						});
-					}
-					
-					if (node.type === 'folder') {
-						browser.contextMenus.create({
-							parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
-							id: node.id,
-							title: node.title,
-							icons: {
-								"16": "/icons/folder.png",
-								"32": "/icons/folder.png"
-							}
-						});
-						
-						for (let child of node.children) traverse(child);
-					}
-					
-				}
-				
-				for (let child of bookmark.children) 
-					traverse(child);
-			});
+			CSBookmarks.buildContextMenu();
 			return;
+			
 		} else {
 
 			for (var i=0;i<userOptions.searchEngines.length;i++) {
@@ -354,7 +297,7 @@ function openSearch(details) {
 	
 	console.log(details);
 	
-	var searchEngineIndex = details.searchEngineIndex;
+	var searchEngineIndex = details.searchEngineIndex || 0;
 	var searchTerms = details.searchTerms;
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
@@ -447,11 +390,11 @@ function openSearch(details) {
 				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"', 
 				runAt: 'document_start'
 			}).then(() => {
-			browser.tabs.executeScript(_tab.id, {
+			return browser.tabs.executeScript(_tab.id, {
 				file: '/opensearch.js',
 				runAt: 'document_start'
 			}).then(() => {
-			browser.tabs.executeScript(_tab.id, {
+			return browser.tabs.executeScript(_tab.id, {
 				file: '/execute.js',
 				runAt: 'document_start'
 			});});});
@@ -592,26 +535,26 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 
 	}
 
-	// Show new features page
-	if (
-		(
-			details.reason === 'update' 
-			&& details.previousVersion < "1.2.8"
-		)
-//		|| details.temporary
-	) {
-		browser.tabs.create({
-			url: "/update/update.html"
-		});
-	}
+	// // Show new features page
+	// if (
+		// (
+			// details.reason === 'update' 
+			// && details.previousVersion < "1.2.8"
+		// )
+// //		|| details.temporary
+	// ) {
+		// browser.tabs.create({
+			// url: "/update/update.html"
+		// });
+	// }
 	
 	// Show install page
 	if ( 
 		details.reason === 'install' 
-	//	|| details.temporary
+		|| details.temporary
 	) {
 		browser.tabs.create({
-			url: "/options.html#searchengines"
+			url: "/options.html#help"
 		});
 	}
 	
