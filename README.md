@@ -1,14 +1,14 @@
-# ContextSearch web-ext
-
-Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search.
-
-Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
-
 [![Firefox logo](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/firefox.png)](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/)
 
 ### [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/)
 
 ___
+
+# ContextSearch web-ext
+
+Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search.
+
+Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
 
 ### Usage 
 
