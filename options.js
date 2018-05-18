@@ -58,7 +58,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 					});
 				}
 					
-				if (window.location.href.match(/#quickload$/) !== null) {
+				if (window.location.hash === '#quickload') {
 					browser.runtime.sendMessage({action: "closeWindowRequest"});
 				}
 				
@@ -301,7 +301,7 @@ function buildSearchEngineContainer(searchEngines) {
 				function saveForm() {
 					// loading icon is last step. Set values after everything else
 					se.icon_base64String = icon.src;
-					se.query_string = edit_form.template.value;
+					se.query_string = se.template = edit_form.template.value;
 					se.searchForm = edit_form.searchform.value;
 					se.icon_url = edit_form.iconURL.value;
 					se.method = edit_form._method.value;
@@ -409,12 +409,45 @@ function buildSearchEngineContainer(searchEngines) {
 				_delete.style.display = null;
 			}
 			
-			_delete.parentNode.appendChild(no);
-			_delete.parentNode.appendChild(yes);
-			
+			let span = document.createElement('span');
+			span.className = 'delete';
+			span.appendChild(no);
+			span.appendChild(yes);
+
+			_delete.parentNode.appendChild(span);
+	
 		}
 		
 		title.appendChild(_delete);
+		
+		// let add_search = document.createElement('img');
+		// add_search.src = '/icons/add_search.png';
+		// add_search.className = 'add_search';
+		// add_search.title = 'add to firefox search toolbar';
+		
+		// add_search.onclick = function(e) {
+			// e.stopPropagation();
+			
+			// let r = nearestParent("TR",this);
+			// let index = getToolIconIndex(r);
+
+			// let url = "https://opensearch-api.appspot.com" 
+				// + "?SHORTNAME=" + encodeURIComponent(se.title)
+				// + "&DESCRIPTION=" + encodeURIComponent(se.title) 
+				// + "&TEMPLATE=" + encodeURIComponent(encodeURI(se.template))
+				// + "&POST_PARAMS=" + encodeURIComponent(se.params) 
+				// + "&METHOD=" + encodeURIComponent(se.method)
+				// + "&ENCODING=" + encodeURIComponent(se.queryCharset)
+				// + "&ICON=" + encodeURIComponent(encodeURI(new URL(se.template).origin + "/favicon.ico"))
+				// + "&ICON_WIDTH=" + 16 
+				// + "&ICON_HEIGHT=" + 16
+				// + "&SEARCHFORM=" + encodeURIComponent(encodeURI(se.searchForm))
+				// + "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
+				
+			// browser.runtime.sendMessage({action: "addSearchEngine", url:url});
+		// }
+		
+		// title.appendChild(add_search);
 		
 		let hide = document.createElement('label');
 		hide.title = 'show/hide';
@@ -468,7 +501,7 @@ function buildSearchEngineContainer(searchEngines) {
 		
 		bookmark.appendChild(bm_cb);
 		bookmark.appendChild(bm_label);
-
+		
 		let row = document.createElement('tr');
 		
 		row.className = 'searchEngineRow';
@@ -513,7 +546,7 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
-		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
+//		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
 		document.getElementById('range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
@@ -550,6 +583,20 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuShift').value = userOptions.quickMenuShift;
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
+		
+		// set opening choice menu
+		if (userOptions.quickMenuAuto) {
+			document.getElementById('r_quickMenuAuto').click();
+			document.querySelector('div[data-details="r_quickMenuAuto"]').style.maxHeight='150px';
+		}
+		if (userOptions.quickMenuOnKey) {
+			document.getElementById('r_quickMenuOnKey').click();
+			document.querySelector('div[data-details="r_quickMenuOnKey"]').style.maxHeight='150px';
+		}
+		if (userOptions.quickMenuOnMouse || userOptions.quickMenuOnClick) {
+			document.getElementById('r_openOnMouse').click();
+			document.querySelector('div[data-details="r_openOnMouse"]').style.maxHeight='150px';
+		}
 		
 		buildSearchEngineContainer(userOptions.searchEngines);
 
@@ -593,7 +640,7 @@ function saveOptions(e) {
 		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
 		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
 		quickMenuPosition: document.getElementById('h_position').value,
-		quickMenuTrackingProtection: document.getElementById('cb_quickMenuTrackingProtection').checked,
+//		quickMenuTrackingProtection: document.getElementById('cb_quickMenuTrackingProtection').checked,
 		contextMenuClick: document.getElementById('s_contextMenuClick').value,
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
@@ -640,7 +687,7 @@ document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e
 	if (e.target.checked) {
 		
 		// permission popups do not work from the browser action panel
-		if (window.location.href.match(/#browser_action$/) !== null) {
+		if (window.location.hash === '#browser_action') {
 			browser.runtime.sendMessage({action:'openOptions'});
 			window.close();
 			return;
@@ -708,7 +755,7 @@ for (let el of document.getElementsByName('r_quickMenuMouseButton'))
 document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
 
-document.getElementById('cb_quickMenuTrackingProtection').addEventListener('change', saveOptions);
+//document.getElementById('cb_quickMenuTrackingProtection').addEventListener('change', saveOptions);
 
 document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
 	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
@@ -813,24 +860,31 @@ function fixNumberInput(el, _default, _min, _max) {
 
 // Modify Options for quickload popup
 document.addEventListener('DOMContentLoaded', () => {
-	if (window.location.href.match(/#quickload$/) !== null) {
+
+	if (window.location.hash === '#quickload') {
 		history.pushState("", document.title, window.location.pathname);
-		var loadButton = document.getElementById('selectMozlz4FileButton');
+		
 		document.querySelector('button[data-tabid="enginesTab"]').click();
-		loadButton.click();
+		document.getElementById('selectMozlz4FileButton').click();
 	}
 });
 
-// Modify Options for quickload popup
+// switch to tab based on params
 document.addEventListener('DOMContentLoaded', () => {
-	if (window.location.href.match(/#help$/) !== null) {
+	
+	let params = new URLSearchParams(location.search);
+
+	if (params.get('tab') === 'help')
 		document.querySelector('button[data-tabid="helpTab"]').click();
-	}
+	
+	if (params.get('tab') === 'searchengines')
+		document.querySelector('button[data-tabid="enginesTab"]').click();
+
 });
 
 // Modify Options for BrowserAction
 document.addEventListener("DOMContentLoaded", () => {
-	if (window.location.href.match(/#browser_action$/) !== null) {
+	if (window.location.hash === '#browser_action') {
 		document.getElementById('left_div').style.display = 'none';
 		document.getElementById('right_div').style.width = "auto";
 		let loadButton = document.getElementById("selectMozlz4FileButton");
@@ -1009,17 +1063,6 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	}, 250);
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-	if (window.location.href.match(/#searchengines$/) === null) return;
-
-	for (let el of document.getElementsByClassName('tablinks')) {
-		if (el.dataset.tabid && el.dataset.tabid === 'enginesTab') {
-			el.dispatchEvent(new MouseEvent('click'));
-			return;
-		}
-	}
-});
-
 function showInfoMsg(el, msg) {
 	let div = document.getElementById('info_msg');
 		
@@ -1037,6 +1080,44 @@ function showInfoMsg(el, msg) {
 	
 	div.style.display = 'block';
 }
+
+// set up opening choice menu
+document.addEventListener("DOMContentLoaded", () => {
+	
+	for (let el of document.getElementsByClassName('checkboxOpeningChoice')) {
+		el.onclick = function() {
+			
+			let input = el.querySelector('input');
+			
+			for (let sibling of document.getElementsByClassName('openOnDetails'))
+				sibling.style.maxHeight = '0px';
+			
+			// uncheck all settings
+			for (let id of ['r_quickMenuAuto','r_quickMenuOnClick','r_quickMenuOnMouse','r_quickMenuOnKey']) {
+				
+				if (input.id !== id)
+					document.getElementById(id).checked = false;
+			}
+
+			let details = document.querySelector('div[data-details="' + input.id + '"]');
+			details.style.maxHeight = '150px';
+
+		}
+	}
+	
+	let msgDiv = document.getElementById('d_openOnDescription');
+	msgDiv.dataset.originalText = msgDiv.innerText;
+	
+	for (let el of document.getElementsByClassName('checkboxOpeningChoice')) {
+		el.addEventListener('mouseenter', (e) => {
+			msgDiv.innerText = el.dataset.msg;
+		});
+		
+		el.addEventListener('mouseleave', (e) => {
+			msgDiv.innerText = msgDiv.dataset.originalText;
+		});
+	}
+});
 
 // set up info bubbles
 document.addEventListener("DOMContentLoaded", () => {
@@ -1076,8 +1157,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	let b_import = document.getElementById('b_importSettings');
 	b_import.onclick = function() {
-		if (window.location.href.match(/#browser_action$/) !== null) {
-			browser.runtime.sendMessage({action: "openOptions", hashurl:"#click_importSettings"});
+		if (window.location.hash === '#browser_action') {
+			browser.runtime.sendMessage({action: "openOptions", hashurl:"?click=importSettings"});
 			return;
 		}
 		document.getElementById('importSettings').click();
@@ -1121,17 +1202,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // click element listed in the hash for upload buttons
-if (window.location.href.match(/#click_.*$/) !== null) {
-//	let el_name = window.location.href.
-	let matches = /#click_(.*)$/g.exec(window.location.href);
+document.addEventListener('DOMContentLoaded', () => {
+	let params = new URLSearchParams(window.location.search);
 	
-	if (matches.length === 2) {
-		document.addEventListener('DOMContentLoaded', () => {
-			document.getElementById(matches[1]).click();
-			history.pushState("", document.title, window.location.pathname);
-		});
+	if (params.has('click')) {
+		document.getElementById(params.get('click')).click();
+		history.pushState("", document.title, window.location.pathname);
 	}
-		
-}
-
-
+});	

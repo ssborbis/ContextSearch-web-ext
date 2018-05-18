@@ -24,7 +24,7 @@ function post(path, params) {
 	form.submit();
 }
 
-browser.runtime.sendMessage({action: "getSearchEngineByIndex", noLoad: true, index: _INDEX}).then((message) => {
+browser.runtime.sendMessage({action: "getSearchEngineByIndex", index: _INDEX}).then((message) => {
 	var se = message.searchEngine;
 	post(se.template, se.params);
 });

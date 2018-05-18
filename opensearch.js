@@ -16,6 +16,8 @@ function replaceOpenSearchParams(in_str, searchterms) {
 }
 
 function nameValueArrayToParamString(arr) {
+	
+	if (typeof arr === 'string') return arr;
 	let str = "";
 	for (let p of arr) {
 		str+= '&' + (p.name || "") + "=" + (p.value || "");
@@ -38,24 +40,36 @@ function paramStringToNameValueArray(str) {
 }
 
 function imageToBase64(image, maxSize) {
-//	maxSize = maxSize || 32;
 
 	let c = document.createElement('canvas');
 	let ctx = c.getContext('2d');
+	
 	ctx.canvas.width = image.naturalWidth || 16;
 	ctx.canvas.height = image.naturalHeight || 16;
+	
 	try {
-		ctx.drawImage(image, 0, 0);
-	/*	
-		if (image.naturalWidth > maxSize || image.naturalHeight > maxSize) {
+
+		if ( maxSize && ( image.naturalWidth > maxSize || image.naturalHeight > maxSize ) ) {
+			
 			let whichIsLarger = (image.naturalWidth > image.naturalHeight) ? image.naturalWidth : image.naturalHeight;
 			let scalePercent = maxSize / whichIsLarger;
 			
+			ctx.canvas.width = image.naturalWidth * scalePercent;
+			ctx.canvas.height = image.naturalHeight * scalePercent;
 			ctx.scale(scalePercent, scalePercent);
 		}
-	*/	
+		
+		ctx.drawImage(image, 0, 0);
+		
 		return c.toDataURL();
-	} catch (error) {
-		return "";
-	}
+		
+	} catch (e) {
+		
+		console.log(e);
+		
+		ctx.drawImage(image, 0, 0);
+		
+		return c.toDataURL();
+	} 
+	
 }

@@ -9,7 +9,39 @@ function readOpenSearchUrl(url, callback) {
 	xmlhttp.onreadystatechange = function()	{
 		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
 			if(xmlhttp.status == 200) {
+
 				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
+				
+				if (parsed.documentElement.nodeName=="parsererror") {
+					console.log('xml parse error');
+					
+					console.log(parsed);
+					
+					// // try to repair bad template urls
+					// let regexStr = /<Url .* template="(.*)"/g;
+					// let matches = regexStr.exec(xmlhttp.responseText);
+					
+					// if ( matches.length === 2 ) {
+						// let template = matches[1];
+						
+						// template = template.replace(/&amp;/g, "&");
+						// template = template.replace(/&/g, "&amp;");
+						
+						// console.log(template);
+						
+						// let newXML = xmlhttp.responseText.replace(matches[1], template);
+						
+						// console.log(newXML);
+						
+						
+						
+						// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
+						
+						// if (parsed.documentElement.nodeName=="parsererror")
+							parsed = false;
+				//	}
+
+				}
 				callback(parsed);
 		   } else {
 			   console.log('Error fetching ' + url);
@@ -18,6 +50,7 @@ function readOpenSearchUrl(url, callback) {
 	}
 	
 	xmlhttp.ontimeout = function (e) {
+		console.log('Timeout fetching ' + url);
 		callback(false);
 	};
 
@@ -27,49 +60,51 @@ function readOpenSearchUrl(url, callback) {
 }
 
 function openSearchXMLToSearchEngine(xml) {
-	
-	let se = {};
-	
-	let shortname = xml.documentElement.querySelector("ShortName");
-	if (shortname) se.title = shortname.textContent;
-	else return false;
-	
-	let description = xml.documentElement.querySelector("Description");
-	if (description) se.description = description.textContent;
-	else return false;
-	
-	let inputencoding = xml.documentElement.querySelector("InputEncoding");
-	if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
 		
-	let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
-	if (searchform) se.searchForm = searchform.textContent;
+	return new Promise( (resolve, reject) => {	
 	
-	let url = xml.documentElement.querySelector("Url[template]");
-	if (url);
-	else return false;
-	
-	let template = url.getAttribute('template');
-	if (template) se.template = se.query_string = template;
-	
-	let image = xml.documentElement.querySelector("Image");
-	if (image) se.icon_url = image.textContent;
-	else se.icon_url = new URL(template).origin + '/favicon.ico';
-	
-	let method = url.getAttribute('method');
-	if (method) se.method = method.toUpperCase();
+		let se = {};
+		
+		let shortname = xml.documentElement.querySelector("ShortName");
+		if (shortname) se.title = shortname.textContent;
+		else reject();
+		
+		let description = xml.documentElement.querySelector("Description");
+		if (description) se.description = description.textContent;
+		else reject();
+		
+		let inputencoding = xml.documentElement.querySelector("InputEncoding");
+		if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
+			
+		let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
+		if (searchform) se.searchForm = searchform.textContent;
+		
+		let url = xml.documentElement.querySelector("Url[template]");
+		if (url);
+		else reject();
+		
+		let template = url.getAttribute('template');
+		if (template) se.template = se.query_string = template;
+		
+		let image = xml.documentElement.querySelector("Image");
+		if (image) se.icon_url = image.textContent;
+		else se.icon_url = new URL(template).origin + '/favicon.ico';
+		
+		let method = url.getAttribute('method');
+		if (method) se.method = method.toUpperCase();
 
-	let params = [];
-	for (let param of url.getElementsByTagName('Param')) {
-		params.push({name: param.getAttribute('name'), value: param.getAttribute.value})
-	}
-	se.params = params;
-	
-	return new Promise( (resolve, reject) => {
+		let params = [];
+		for (let param of url.getElementsByTagName('Param')) {
+			params.push({name: param.getAttribute('name'), value: param.getAttribute.value})
+		}
+		se.params = params;
+		
 		loadRemoteIcons({
 			searchEngines: [se],
 			timeout:5000, 
 			callback: resolve
 		});
+		
 	});
 
 }
@@ -83,7 +118,7 @@ function formToSearchEngine() {
 		"icon_url":form.iconURL.value,
 		"title":form.shortname.value,
 		"order":userOptions.searchEngines.length, 
-		"icon_base64String": imageToBase64(form.icon), 
+		"icon_base64String": imageToBase64(form.icon, 32), 
 		"method": form._method.value, 
 		"params": paramStringToNameValueArray(form.post_params.value), 
 		"template": form.template.value, 
@@ -151,14 +186,12 @@ function hasDuplicateName(name) {
 	return false;
 }
 
-function showMenu(el) {
-
+function expandElement(el) {
+	
+	// get by node or id
 	el = (el.nodeType) ? el : document.getElementById(el);
 	
 	if (!el) return;
-	
-	for (let child of el.parentNode.children)
-		child.style.maxHeight = '0px';
 	
 	el.style.zIndex = -1;
 	el.style.visibility = 'hidden';
@@ -174,6 +207,17 @@ function showMenu(el) {
 	el.style.zIndex = null;
 	el.style.transition = null;
 	el.style.maxHeight = height;
+}
+
+function showMenu(el) {
+	
+	el = (el.nodeType) ? el : document.getElementById(el);
+
+	for (let child of el.parentNode.children)
+		child.style.maxHeight = '0px';
+	
+	expandElement(el);
+	
 }
 
 function buildOpenSearchAPIUrl() {
@@ -204,9 +248,14 @@ function addSearchEnginePopup(data) {
 		
 		readOpenSearchUrl( data.openSearchHref, (xml) => {
 			
-			if (!xml) return;
-			
+			if (!xml) return false;
+
 			openSearchXMLToSearchEngine(xml).then((details) => {
+				
+				if (!details) {
+					console.log('Cannot build search engine from xml. Missing values');
+					return false;
+				}
 			
 				let se = details.searchEngines[0];
 				
@@ -256,15 +305,13 @@ function addSearchEnginePopup(data) {
 		dataToSearchEngine(data).then( (details) => {
 			let se = details.searchEngines[0];
 			se.title = shortname;
-			
-//			alert('adding custom search engine and closing iframe');
 
-			browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: details.searchEngines[0]});
+			browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: details.searchEngines[0]});
 
 			// reassign the yes button to add official OpenSearch xml
 			document.getElementById('b_simple_import_yes').onclick = function() {
 				let url = buildOpenSearchAPIUrl();
-				simpleImportHandler(url);
+				simpleImportHandler(url, true);
 			}
 			showMenu('simple_import');
 
@@ -272,11 +319,7 @@ function addSearchEnginePopup(data) {
 
 	}
 	
-	document.getElementById('b_CS_postSearchEngineInstall_moreInfo').onclick = function(e) {
-//		e.target.innerHTML = 'ContextSearch cannot directly access installed OpenSearch (One-Click) search engines. To import these engines, you must browser to the file containing your search engines (search.json.mozlz4). Details on how to import can be found at the bottom of the Search Engines tab in ContextSearch options';
-	}
-	
-	function simpleImportHandler(url) {
+	function simpleImportHandler(url, _confirm) {
 		
 		if (!url) return;
 		
@@ -285,16 +328,38 @@ function addSearchEnginePopup(data) {
 		browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 
 		el.style.pointerEvents = 'none';
-		document.getElementById('b_simple_import_yes').querySelector('img').src = '/icons/spinner.svg';
+		el.querySelector('[name="yes"]').querySelector('img').src = '/icons/spinner.svg';
 		
 		window.addEventListener('focus', () => {
 			el.style.pointerEvents = null;
-			document.getElementById('b_simple_import_yes').querySelector('img').src = '/icons/checkmark.png';
+			el.querySelector('[name="yes"]').querySelector('img').src = '/icons/checkmark.png';
+			
+			if (_confirm) {
+
+				let simple_confirm = document.getElementById('simple_confirm');
+				simple_confirm.querySelector('[name="yes"]').onclick = function() {
+					closeCustomSearchIframe();
+				}
+				
+				simple_confirm.querySelector('[name="no"]').onclick = function() {
+					
+					// remove the new engine
+					browser.runtime.sendMessage({action: "removeContextSearchEngine", index: userOptions.searchEngines.length - 1});
+					
+					showMenu('simple_remove');
+					setTimeout(() => {
+						showMenu('customForm');
+					}, 1000);
+				}
+				
+				showMenu(simple_confirm);
+				return;
+			}
 			
 			closeCustomSearchIframe();
 		}, {once: true});
 	}
-	
+
 	document.getElementById('b_simple_import_yes').onclick = function(e) {	
 		console.log('default onclick - assign at showMenu');
 	}
@@ -403,12 +468,12 @@ function addSearchEnginePopup(data) {
 	form.iconURL.addEventListener('change', (ev) => {
 		form.icon.src = form.iconURL.value;
 		
-		document.getElementById('CS_customSearchDialog_b_addCustomOpenSearchEngine').disabled = true;
+		form.add.disabled = true;
 		var loadingIconInterval = setInterval(() => {
 			if (!form.icon.complete) return;
 			
 			clearInterval(loadingIconInterval);
-			document.getElementById('CS_customSearchDialog_b_addCustomOpenSearchEngine').disabled = false;
+			form.add.disabled = false;
 
 		},100);
 	});
@@ -457,9 +522,9 @@ function addSearchEnginePopup(data) {
 		div.onclick = function() {
 			
 			readOpenSearchUrl( data.openSearchHref, (xml) => {
-			
+
 				if (!xml) {
-					alert('Error fetching ' + data.openSearchHref);
+					alert('Error parsing ' + data.openSearchHref);
 					return;
 				}
 				
@@ -478,7 +543,7 @@ function addSearchEnginePopup(data) {
 					}
 					
 				//	alert('adding search engine built from officla xml');
-					 browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se}).then((response) => {
+					 browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se}).then((response) => {
 						// // console.log(response);
 					});
 					
@@ -559,14 +624,14 @@ function addSearchEnginePopup(data) {
 		
 	//	alert('Adding search engine from custom form');
 	
-		browser.runtime.sendMessage({action: "addCustomSearchEngine", searchEngine: se}).then((response) => {
+		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se}).then((response) => {
 	//		console.log(response);
 		});
 		
 		// reassign the yes button to add form OpenSearch xml
 		document.getElementById('b_simple_import_yes').onclick = function() {
 			let url = buildOpenSearchAPIUrl();
-			simpleImportHandler(url);
+			simpleImportHandler(url, true);
 		}
 		
 		showMenu('simple_import');

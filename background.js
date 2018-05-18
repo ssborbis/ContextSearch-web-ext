@@ -43,18 +43,12 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getUserOptions":
-		
-			// ignore the load to keep tempSearchEngines for POST test
-		//	if ( !message.noLoad && sender.tab.frameId === 0 ) loadUserOptions();
-			
-			
 			sendResponse({"userOptions": userOptions});
 			break;
 			
 		case "getSearchEngineByIndex":
 		
 			if ( !message.index ) return;
-		//	if ( !message.noLoad ) loadUserOptions();
 			
 			sendResponse({"searchEngine": userOptions.searchEngines[message.index]});
 			break;
@@ -81,7 +75,7 @@ function notify(message, sender, sendResponse) {
 			break;
 		
 		case "closeCustomSearch":
-			browser.tabs.sendMessage(sender.tab.id, message);
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 
 		case "getFormData":
@@ -107,7 +101,7 @@ function notify(message, sender, sendResponse) {
 			window.external.AddSearchProvider(url);
 			break;
 		
-		case "addCustomSearchEngine":
+		case "addContextSearchEngine":
 		
 			let se = message.searchEngine;
 			
@@ -130,6 +124,22 @@ function notify(message, sender, sendResponse) {
 			
 			break;
 			
+		case "removeContextSearchEngine":
+
+			if ( message.index === undefined || message.index < 0 || message.index > userOptions.searchEngines.length - 1 ) return;
+
+			CSBookmarks.remove(userOptions.searchEngines[message.index].title);
+			
+			console.log('removing engine ' + message.index);
+	
+			userOptions.searchEngines.splice(message.index, 1);
+			
+			browser.storage.local.set({"userOptions": userOptions}).then(() => {
+				notify({action: "updateUserOptions"});
+			});
+			
+			break;
+			
 		case "testSearchEngine":
 			
 			openSearch({
@@ -140,7 +150,7 @@ function notify(message, sender, sendResponse) {
 
 			break;
 			
-		case "enableAddCustomSearch":
+		case "enableAddCustomSearchMenu":
 
 			if (!userOptions.contextMenuShowAddCustomSearch) return;
 			
@@ -310,6 +320,7 @@ function openSearch(details) {
 		tab === null
 	) return false;
 	
+	// if temp engine exists, use that
 	var se = temporarySearchEngine || userOptions.searchEngines[searchEngineIndex];
 	
 	if (!se.query_string) return false;
@@ -554,7 +565,7 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 		|| details.temporary
 	) {
 		browser.tabs.create({
-			url: "/options.html#help"
+			url: "/options.html?tab=help"
 		});
 	}
 	

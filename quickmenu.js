@@ -467,23 +467,24 @@ function makeQuickMenuContainer(coords) {
 		
 	if (qmc) qmc.parentNode.removeChild(qmc);
 	
-	if (userOptions.quickMenuTrackingProtection)
+//	if (userOptions.quickMenuTrackingProtection)
 		qmc = document.createElement('iframe');
-	else 
-		qmc = document.createElement('quickmenucontainer');
-
+//	else 
+//		qmc = document.createElement('quickmenucontainer');
+	
 	qmc.id = "quickMenuContainerElement";
+
 	qmc.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
 	qmc.style.left = coords.x + getOffsets().x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + "px";
 	
 	document.body.appendChild(qmc);
 	
-	if (userOptions.quickMenuTrackingProtection) {
+//	if (userOptions.quickMenuTrackingProtection) {
 		qmc.src = browser.runtime.getURL('quickmenu.html');
-	} else {
-		qmc.appendChild(makeQuickMenu(coords));
-		scaleAndPositionQuickMenu();
-	}
+//	} else {
+//		qmc.appendChild(makeQuickMenu(coords));
+//		scaleAndPositionQuickMenu();
+//	}
 			
 	// Check if quickmenu fails to display
 	setTimeout(() => {
@@ -787,7 +788,7 @@ function makeQuickMenu() {
 		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 		div.innerText = 'Where are my search engines?';
 		div.onclick = function() {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "#searchengines"});
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "tab=searchengines"});
 		}	
 		quickMenuElement.appendChild(div);
 	}

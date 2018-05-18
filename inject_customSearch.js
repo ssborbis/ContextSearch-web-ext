@@ -6,7 +6,7 @@ function inputAddCustomSearchHandler(input) {
 			|| getSelectedText(input)
 		) return;
 
-		browser.runtime.sendMessage({action: "enableAddCustomSearch"});
+		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
 			
 	});
 }

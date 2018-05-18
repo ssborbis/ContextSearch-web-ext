@@ -92,7 +92,7 @@
 				box-shadow:1px 1px 4px #444, inset -2px -2px 4px #fff, inset 2px 2px 4px #aaa;
 			}
 			.keyboardButton IMG {
-				height: 1rem;
+				height: 1em;
 			}
 			.keyboardButton SELECT {
 				width:auto;
@@ -333,7 +333,41 @@
 			.container input:checked ~ .more {
 				max-height:800px;
 			}
-			
+			.checkboxOpeningChoice {
+				display:inline-block;
+			}
+			.checkboxOpeningChoice input {
+				display:none;
+			}
+			.checkboxOpeningChoice LABEL {
+				-moz-user-select: none;
+			}
+			.checkboxOpeningChoice input + label {
+			   	border: 1px solid #888;
+				color: #888;
+				border-radius:10px;
+				padding:5px 10px;
+				margin:5px 10px 5px 0;
+				display:inline-block;
+				text-align:center;
+			}
+			.checkboxOpeningChoice input + label:hover {
+				background-color:#f3f3f3;
+			}
+			.checkboxOpeningChoice input + label > IMG {
+				height:20px;
+				margin-right:10px;
+				vertical-align:bottom;
+				opacity:.5;
+			}
+			.checkboxOpeningChoice input:checked + label {
+				color:white;
+				background-color: #6ec179;
+			}
+			.checkboxOpeningChoice input:checked + label > IMG {
+				opacity:1;
+				filter: brightness(0) invert(1);
+			}
 			.info {
 				font-size:7pt;
 				border-radius:2px;
@@ -526,10 +560,12 @@
 				display:inline-block;
 				width:100%;
 				border:none;
-				overflow-x:hidden;
+				overflow:hidden;
 				user-select:none;
 				cursor:default;	
 				vertical-align:middle;
+				position:relative;
+				white-space: nowrap;
 			}
 			#searchEnginesContainer TR {
 				width: auto;
@@ -540,8 +576,16 @@
 			}
 			#searchEnginesContainer .delete	{
 				height:20px;
-				margin:0 10px;
-				float:right;
+				padding:0 10px;
+				position:absolute;
+				right:0;
+			}
+			#searchEnginesContainer .add_search	{
+				height:16px;
+				padding:0 10px;
+				position:absolute;
+				right:31px;
+				vertical-align:middle;
 			}
 			#searchEnginesContainer .title BUTTON {
 				font-size:8pt;
@@ -628,10 +672,37 @@
 				border-radius:4px;
 				display:inline-block;	
 			}
-			H2 {
-				border:2px solid #E8E8E8;
-				border-width: 0 0 2px 0;
-				padding:5px;
+			.section H2 {
+				border:4px solid #ddd;
+				border-width:0 0 2px 0;
+				margin:10px 0;
+				font-size:14pt;
+				margin:25px 0 10px 0;
+				padding-bottom:5px;
+
+			}
+			.section H2::before {
+				content:"";
+				color:white;
+				display:inline-block;
+				width:.9em;
+				height:.9em;
+				background-color:#6ec179;
+				margin-right:10px;
+				border-radius:50%;
+			}
+			.section {
+				margin:10px 0;
+			}
+			.section CODE {
+				font-weight:bold;
+				background-color:#f0f0f0;
+				padding:0 4px;
+			}
+			.openOnDetails {
+				max-height:0px;
+				overflow:hidden;
+				transition: max-height .5s ease-in-out;
 			}
 		</style>
 	</head>
@@ -684,6 +755,7 @@
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction'>No Action</option>
 					</select>
 				</p>
 				<p class='short'><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
@@ -693,6 +765,7 @@
 						<option value='openBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction'>No Action</option>
 					</select>
 				</p>
 				<hr />
@@ -816,7 +889,7 @@
 					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Menu Size</label>
 					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)'>?</span>
 					</div>
-					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".1" value="1" />
+					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".05" value="1" />
 				</p>
 				<p>
 					<div style='display:inline-block;width:175px'>
@@ -827,65 +900,60 @@
 				</p>
 
 				<p class='header1'>&mdash; Opening &amp; Closing &mdash;</p>
-
-				<div style='border:1px dashed #ccc;border-width:1px 0 0 0;padding-top:8px'>
-					<label class="container" style='display:inline-block'>
-						<input type='radio' id='r_quickMenuAuto' name='quickMenuMethod' />
-						<span class="checkmark"></span>Open Automatically&nbsp;<span class='info' data-msg='Popup menu will open automatically after selecting text'>?</span><img alt='' class='smallIcon' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-						
-					</label>
-					
-					<br />
-					<label class="container" style='display:inline-block;margin-left:30px'>Enable On Text Boxes
+				
+				<div id='d_openOnDescription' style='font-size:10pt'>Choose how to open Quick Menu after selecting text</div>
+				
+				<div class='checkboxOpeningChoice' data-msg='Open automatically'><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto'><img src='/icons/auto.png' />Auto</label></div>
+				<div class='checkboxOpeningChoice' data-msg='Open using a mouse button'><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse'><img src='/icons/mouse.png' />Mouse</label></div>
+				<div class='checkboxOpeningChoice' data-msg='Open using a keyboard key'><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey'><img src='/icons/keyboard.png' />Keyboard</label></div>
+				
+				<br /><br />
+				
+				<div class='openOnDetails' data-details='r_quickMenuAuto'>
+					<label class="container" style='display:inline-block;'>Enable On Text Boxes
 						<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups. Only affects Auto'>?</span>
-
-					
+					<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups'>?</span>
 				</div>
 				
-				<div style='border:1px dashed #ccc;border-width:1px 0 0 0;padding-top:8px'>
-					<label class="container" style='white-space: nowrap;'>
+				<div class='openOnDetails' data-details='r_openOnMouse'>
+					<div style='font-size:10pt;margin-bottom:8px;'>Select your preferred method and button</div>
+					<label class="container" style='white-space: nowrap;border:1px dashed #ddd;border-width:0 0 1px 0;padding-bottom:8px'>
 						<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
-						<span class="checkmark"></span>Mouse Button Hold&nbsp;<span class='info' data-msg='Popup menu will open after holding the selected mouse button for ~0.25 seconds'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<span class="checkmark"></span>Hold&nbsp;<span class='info' data-msg='Popup menu will open after holding the selected mouse button for ~0.25 seconds'>?</span>&nbsp;
 						
 						<span class='checkboxImage' style='display:inline-block'><input type='radio' name='r_quickMenuMouseButton' id='r_quickMenuOnMouseLeft' value='1' /><label for='r_quickMenuOnMouseLeft'><img src='icons/leftmouse.png' style='height:30px;vertical-align:middle' /></label></span>
 				
 						<span class='checkboxImage' style='display:inline-block'><input type='radio' name='r_quickMenuMouseButton' id='r_quickMenuOnMouseRight' value='3' /><label for='r_quickMenuOnMouseRight'><img src='icons/leftmouse.png' style='height:30px;vertical-align:middle;transform: scaleX(-1);' /></label></span>
+						
+						<label class="container" style='display:inline-block;margin-left:30px'>Search On Mouseup 
+							<input type='checkbox' id='cb_quickMenuSearchOnMouseUp' />
+							<span class="checkmark checkmark2"></span>
+							<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search'>?</span>
+						</label>
 					</label>
 
-					<label class="container" style='display:inline-block;margin-left:30px'>Search On Mouseup 
-						<input type='checkbox' id='cb_quickMenuSearchOnMouseUp' />
-						<span class="checkmark checkmark2"></span>
-						<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search'>?</span>
-					</label>
-				</div>
-
-				<div style='border:1px dashed #ccc;border-width:1px 0 0 0;padding-top:8px'>
-					<label class="container">Mouse Button Click&nbsp;<span class='info' data-msg='Popup menu will open on right-click.  Hold button for default context menu'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<img alt='' src='icons/leftmouse.png' class='smallIcon' title='Right Button' style='transform: scaleX(-1);'>
+					<label class="container">Click&nbsp;<span class='info' data-msg='Popup menu will open on right-click.  Hold button for default context menu'>?</span>
 						<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
 						<span class="checkmark"></span>
+						<img src='icons/leftmouse.png' style='height:30px;vertical-align:middle;transform: scaleX(-1);' />
 					</label>
+
 				</div>
-				<div style='border:1px dashed #ccc;border-width:1px 0 1px 0;padding-top:8px'>
-					<label class="container">Keyboard Button&nbsp;<span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						<input type='radio' id='r_quickMenuOnKey' name='quickMenuMethod' />
-						<span class="checkmark"></span><button id='b_quickMenuKey' class='keyboardButton'>Set</button>
-					</label>
+				<div class='openOnDetails' data-details='r_quickMenuOnKey'>
+					Choose key <span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 				</div>
-				<div class='blurb' style='max-width:400px'>
-					Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly
-				</div>
-				<hr />
+
+				
+		<!--		<hr />
 				<label class="container" style='display:inline-block'>Privacy Protection 
 					<input type='checkbox' id='cb_quickMenuTrackingProtection' />
 					<span class="checkmark checkmark2"></span>
 				</label>
 				<span class='info' data-msg='Enabling this option protects against websites seeing your search engine list by placing the QuickMenu in an IFRAME. (Note: Ad-blockers may disable iframes on some websites preventing the menu from opening)'>?</span>
-				
-				<br />
+		-->		
+				<hr />
 				
 				<label class="container" style='display:inline-block'>Close After Search
 					<input type='checkbox' id='cb_quickMenuCloseOnClick' />
@@ -900,6 +968,10 @@
 					<span class="checkmark checkmark2"></span>
 				</label>
 				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel'>?</span>
+				
+				<div class='blurb' style='max-width:400px'>
+					Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly
+				</div>
 				
 				<p class='header1'>&mdash; Position &mdash;</p>
 				
@@ -945,8 +1017,18 @@
 					<button id='b_addSearchEngine'>Add</button>
 					<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both'>Remove All</button>
 
+					<div style='padding:4px'></div>
+					<div>
+						<img src='/icons/checkmark-icon.png' style='height:16px;vertical-align:middle' /> Show / Hide
+					</div>
+					<div>
+						<img src='/icons/bookmark.png' style='height:16px;vertical-align:middle' /> Bookmark
+					</div>
+					<div>
+						<img src='/icons/delete.png' style='height:16px;vertical-align:middle' /> Delete
+					</div>
 					<div class='blurb'>
-						Drag &amp; drop to re-order, checkbox to show/hide, click to edit
+						Drag &amp; drop to re-order, click to edit
 					</div>
 				</div>
 
@@ -1062,21 +1144,25 @@
 				<a href='#help_auto_importing'>Automatic Importing</a><br />
 				<a href='#help_adding_engines'>Adding Search Engines</a><br />
 				<a href='#help_modify_engines'>Using the Search Engines Manager</a><br />
-
+				
+				<div class='section'>
 				<h2 id='help_preferences'>Settings</h3>
-				Most settings can be customized under the <code>Menus</code> tab. Hover your mouse over <span class='info'>?</span> icons to see details about each setting.
-
+				Most settings can be customized under the <code>Menus</code> tab. Hover your mouse over <span class='info' data-msg='hello'>?</span> icons to see details about each setting.
+				</div>
+				<div class='section'>
 				<h2 id='help_contextmenu'>Using the Context Menu</h3>
 				Highlight a word and right-click to open the context menu. Expand the ContextSearch menu labeled <code>Search for "..."</code> and choose which search engine to perform the search with.
 				<br /><br />
 				Enabling <code>Use Bookmarks Menu</code> creates the folder <code>ContextSearch Menu</code> under <code>Other Bookmarks</code> where you can reorder search engines, create subfolders and separators. Renaming search engine bookmarks will cause them to no longer work. Deleted bookmarks can be restored from the search engines manager under the <code>Search Engines</code> tab. 
-
+				</div>
+				<div class='section'>
 				<h2 id='help_quickmenu'>Using the Quick Menu</h3>
 				Default: Highlight a word and hold down the right mouse button until the Quick Menu appears. You can choose from several options how the quick menu opens in the <code>Menus</code> tab under <code>Opening &amp; Closing</code>
 				
 				<br /><br />
 				The Quick Menu can be customize from the <code>Menus</code> tab. Search engines can be rearranged in the search list manager from the <code>Search Engines</code> tab.
-
+				</div>
+				<div class='section'>
 				<h2 id='help_importing'>Importing Firefox Search Engines</h3>
 				If you have added search engines to the Firefox search toolbar you would like to use with ContextSearch, you can import them by clicking the button under 'Import One-Click Search Engines' in the Search Engines tab. Browse to your profile folder and select the <code>search.json.mozlz4</code> file.
 				
@@ -1089,7 +1175,8 @@
 					<p><img alt='' class='smallIcon' style='height:16px;' src='icons/linux.png'><b>&nbsp;&nbsp;Linux</b></p>
 					<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 				</div>	
-
+				</div>
+				<div class='section'>
 				<h2 id='help_auto_importing'>Automatic Importing <!--<a id='a_howToAutomatic' target='_blank' title='How-To' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto_automatic.gif' style='font-size:10pt'><img src='/icons/movie.png' style='height:20px;vertical-align:middle'/></a>--></h3>
 				
 				Optionally you can install a tiny open-source app to import your search engine list automatically using Firefox's <a href='https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging'>Native Messaging API</a> when OpenSearch engines are added or removed. This app only runs when called by ContextSearch. Useful when adding OpenSearch engines from sources other than ContextSearch 
@@ -1104,28 +1191,28 @@
 				</div>
 
 				<br />
-				<b>Step 2: Enable automatic importing and enter the full path to your profile</b><br />You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar. If installing on windows, your profile path will be copied to the clipboard after installing the native app.<br />
-
+				<b>Step 2: Enable automatic importing and enter the full path to your profile</b><br />You can find your profile path by opening <code>about:profiles</code> in the address bar. If installing on windows, your profile path will be copied to the clipboard after installing the native app.<br />
+				</div>
+				<div class='section'>
 				<h2 id='help_adding_engines'>Adding Search Engines</h3>
 
-					<h4>Using the Add Custom Search option in the context menu</h4>
+					<h4>Using the Add Custom Search menu</h4>
 					
 					If a website provides a search form, simply right-click the form where you would enter your search terms and select the menu item <code>'Add Custom Search'</code> from the context menu. A popup will appear asking you give the new search engine a name. The name must be unique. Click 'Add' and your new search engine will be added to ContextSearch. Next you will be asked if you want to add your new search engine to the Firefox search toolbar. Clicking yes will send a request for a new OpenSearch engine. Confirm the install and your new engine will also appear in the Firefox search toolbar. These engines will remain installed and usable even if you uninstall ContextSearch.
 					
-					<h5>Advanced</h5>
-					<ul>
-						<li>
-							<b>Add</b> - Install a new search engine based on the official search engine being offered by the website
-						</li>
-						<li>
-							<b>Find</b> - Search Mycroftproject for search engines related to the current website made by users around the world. You will need to reimport your One-Click Search Engines to use engines installed with this method in ContextSearch
-						</li>
-						<li>
-							<b>Create</b> - Full control over creating a new search engine
-						</li>
-					</ul>
+					<br /><br />
+					
+					Add Custom Search also provides advanced settings with more options for adding a new search engine
+					
+					<h5><b>Add</b></h5> Install a new search engine based on the official search engine offered by the website
+
+					<h5><b>Find</b></h5> Search Mycroftproject for search engines related to the current website made by users around the world. You will need to reimport your One-Click Search Engines to use engines installed with this method in ContextSearch
+
+					<h5><b>Create</b></h5> Full control over creating a new search engine
+
 				</li>
-				
+				</div>
+				<div class='section'>
 				<h2 id='help_modify_engines'>Using the Search Engines Manager</h3>
 				Installed search engines can be modified from the manager in the Search Engines tab.
 
@@ -1136,15 +1223,13 @@
 				Drag &amp; drop search engines to re-order your list. If <code>Use Bookmarks Menu</code> is enabled, reordering will only effect the Quick Menu.
 				
 				<h4>Deleting</h4>
-				Click the <img src='/icons/delete.png' style='height:16px' /> icon to be prompted to delete a search engine. OpenSearch engines appearing in the Firefox search toolbar will not be affected and must be removes separately from Firefox options. If Automatic Import is enabled, deleted engines that exist as One-Click Search Engines will be restored. You may wish to simply hide these engines if they reappear.
+				Click the <img src='/icons/delete.png' style='height:16px' /> icon to be prompted to delete a search engine. OpenSearch engines appearing in the Firefox search toolbar will not be affected and must be removed separately from Firefox options->Search->One-Click Search Engines. If Automatic Import is enabled, deleted engines that exist as One-Click Search Engines will be restored. You may wish to simply hide these engines if they reappear.
 				
 				<h4>Editing</h4>
 				Clicking the name of a search engine will open a form where you can edit search engine parameters such as the query template, encoding, icon, etc. 
 				
 				<h4>Bookmarks</h4>
 				If <code>Use Bookmarks Menu</code> is enabled, the <img src='/icons/bookmark.png' style='height:16px' /> will appear for each search engine. With this you can toggle search engines appearing in the bookmarks folder for use with the Context Menu. Enabled search engines will be appended to the end of the bookmarks list in the main folder. You can reorder search engines from the <code>ContextSearch Menu</code> folder in Bookmarks.
-				
-			
 
 			</div>
 		</div>

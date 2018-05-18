@@ -73,8 +73,11 @@ class CSBookmarks {
 		return this.getAll().then((tree) => {
 			
 			if (!tree) return [];
+			
 			let names = [];
+			
 			tree = tree.shift();
+			
 			function traverse(node) {
 				
 				if (node.type === 'bookmark') names.push(node.title);
@@ -86,6 +89,7 @@ class CSBookmarks {
 			}
 			
 			traverse(tree);
+			
 			return names;
 		});
 	}
@@ -95,8 +99,11 @@ class CSBookmarks {
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
 		return this.getAll().then((tree) => {
+			
 			if (!tree) return -1;
+			
 			tree = tree.shift();
+			
 			function traverse(node) {
 				
 				if (node.type === 'bookmark' && node.title === str) return node.id;

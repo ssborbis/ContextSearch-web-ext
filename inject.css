@@ -31,6 +31,7 @@
 }
 
 #quickMenuContainerElement { /*#quickMenuElement {*/
+	all:unset;
 	position:absolute;
 	z-index: 2147483647; /* max 32-bit integer */
 	cursor: pointer;
@@ -49,8 +50,9 @@
 	display:block;
 }
 #CS_customSearchIframe {
+	all:unset;
 	position:fixed;
-	z-index:2147483646;
+	z-index:2147483647;
 	top:0;
 	left:0;
 	padding:0;

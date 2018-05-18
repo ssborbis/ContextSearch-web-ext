@@ -25,11 +25,11 @@
 				<div style='padding:20px;text-align:center'>
 					New search engine added to ContextSearch<br /><br />Also add to One-Click Search Engines? <span class='CS_info' data-msg='Install this search engine to the Firefox search toolbar using a custom OpenSearch API'>?</span><br /><br />
 					
-					<div id='b_simple_import_yes' class='iconButton' style='background-color:#6ec179'>
+					<div id='b_simple_import_yes' name='yes' class='iconButton' style='background-color:#6ec179'>
 						<img src='/icons/checkmark.png'  /> Yes
 					</div>
 					
-					<div id='b_simple_import_no' class='iconButton' style='background-color:grey'>
+					<div id='b_simple_import_no' name='no' class='iconButton' style='background-color:grey'>
 						<img src='/icons/crossmark.png'  /> No
 					</div>
 
@@ -47,6 +47,27 @@
 						<img src='/icons/crossmark.png' /> No
 					</div>
 					<br />
+				</div>
+			</div>
+			<div id='simple_confirm' class='CS_menuItem'>
+				<div style='padding:20px;text-align:center'>
+					<div name='question'>Did the engine install correctly?</div>
+					 <br /><br />
+					
+					<div name='yes' class='iconButton' style='background-color:#6ec179'>
+						<img src='/icons/checkmark.png'  /> Yes
+					</div>
+					
+					<div name='no' class='iconButton' style='background-color:grey'>
+						<img src='/icons/crossmark.png'  /> No
+					</div>
+
+					<br />
+				</div>
+			</div>
+			<div id='simple_remove' class='CS_menuItem'>
+				<div style='padding:20px;text-align:center'>
+					<div name='question'>Removing search engine</div>
 				</div>
 			</div>
 			<div id='CS_customSearchDialogOptions' class='CS_menuItem'>
@@ -106,21 +127,14 @@
 				</div>
 				<div style='background-color:#5bb2fc;width:100%;padding:10px;margin-top:10px'></div>
 			</form>
-			<div id='CS_confirmSearchEngineInstall' class='CS_menuItem'>
 			
-				<br />Did the OpenSearch engine install correctly?
-				
-				<div class='iconButton' style='background-color:#6ec179;' id="CS_customSearchDialog_b_confirmSearchEngineInstall" data-description="Import custom engine into ContextSearch"><img src="/icons/checkmark.png" />Yes</div>
-				<div class='iconButton' style='background-color:#e94c3b;background-color:grey;' id="CS_customSearchDialog_b_cancelSearchEngineInstall" data-description="Return to Create Custom Search"><img src="/icons/crossmark.png" />No</div>
-				<p style='display:none' class='CS_optionDescription'></p><br /><br />
-			</div>
 			<div id='CS_postSearchEngineInstall' class='CS_menuItem' style='padding-top:0'>
 				<!--<div class='header'>Import New Engine</div>-->
 				<div class='header' style='font-size:11pt;font-weight:normal;text-align:center;background-color:#112738;color:white'>
 					<!--<img src='/icons/import.png' style='height:64px;filter: brightness(0) invert(1);' /><br />-->
 					<div style='text-align:left;padding:20px'>
 						<div style='display:inline-block;width:80px;vertical-align:top'><img src='/icons/alert_bw.png' style='height:64px;filter: brightness(0) invert(1);' /></div>
-						<div style='display:inline-block;width:250px;font-size:10pt'>If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser. <br /><br /><div id='b_CS_postSearchEngineInstall_moreInfo' style='display:none;text-align:right'>+ more info</div></div>
+						<div style='display:inline-block;width:250px;font-size:10pt'>If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser. <br /><br /></div>
 					</div>
 				</div>
 				<div class='iconButton' style='background-color:#2198dd' id="CS_customSearchDialog_b_openOptions" data-description="Open Options to import search.json.mozlz4 file"><img src="/icons/checkmark.png" />Import</div>

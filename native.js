@@ -104,12 +104,10 @@ function nativeApp(options) {
 								console.log("New Search Engines ->");
 								console.log(_result);
 								userOptions.searchEngines = searchEngines;
-							//	browser.storage.local.set({'userOptions': userOptions}).then(() => {
-								notify({action: "saveUserOptions", userOptions: userOptions}).then(() => {
-									notify({action: "updateUserOptions"});
-									resolve(true);
-								});
-
+								
+								notify({action: "saveUserOptions", userOptions: userOptions});
+								notify({action: "updateUserOptions"});
+								resolve(true);
 							});
 						}
 					});
