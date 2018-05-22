@@ -144,6 +144,7 @@ FORM {
 	cursor:pointer;
 	vertical-align:middle;
 	line-height:24px;
+	white-space: nowrap;
 }
 .iconButton IMG {
 	height:24px;

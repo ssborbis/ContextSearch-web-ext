@@ -504,6 +504,12 @@
 				margin-left:-8px;
 				margin-right:-8px;
 			}
+			.header1:before {
+				content: "— ";
+			}
+			.header1:after {
+				content:  "—";
+			}
 			P.short {
 				margin:0;
 				padding:2px 0;
@@ -566,6 +572,9 @@
 				vertical-align:middle;
 				position:relative;
 				white-space: nowrap;
+			}
+			#searchEnginesContainer .title INPUT:disabled {
+				all:inherit;
 			}
 			#searchEnginesContainer TR {
 				width: auto;
@@ -672,6 +681,11 @@
 				border-radius:4px;
 				display:inline-block;	
 			}
+			.openOnDetails {
+				max-height:0px;
+				overflow:hidden;
+				transition: max-height .5s ease-in-out;
+			}
 			.section H2 {
 				border:4px solid #ddd;
 				border-width:0 0 2px 0;
@@ -699,11 +713,6 @@
 				background-color:#f0f0f0;
 				padding:0 4px;
 			}
-			.openOnDetails {
-				max-height:0px;
-				overflow:hidden;
-				transition: max-height .5s ease-in-out;
-			}
 		</style>
 	</head>
 	<body>
@@ -712,24 +721,24 @@
 			<img alt='' src='icons/icon48.png' /><br />
 			<p><span style='border-bottom:1px solid grey'><span style='font-weight:normal;font-variant:small-caps'>Context</span><span style='font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt'>Search</span></span>
 			<br />
-			<span style='font-weight:normal;font-size:24pt;'>Settings</span>
+			<span style='font-weight:normal;font-size:24pt;' data-i18n='Settings'>Settings</span>
 			</p>
 			<div id='version' style='font-size:11pt'>&nbsp;</div>
 			<div id='info'>
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target='_blank'>Support<img alt='' src='icons/link.png'></a><br />
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target='_blank'>Source<img alt='' src='icons/link.png'></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target='_blank' data-i18n='Support'>Support<img alt='' src='icons/link.png'></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target='_blank' data-i18n='Source'>Source<img alt='' src='icons/link.png'></a><br />
 			</div>
 		</div>
 		<div id='right_div'>
 		<div class='tab'>
-			<button class='tablinks' data-tabid='optionsTab'><img alt='' src='icons/load.png' />Menus</button>
-			<button class='tablinks' data-tabid='enginesTab'><img alt='' src='icons/settings.png' />Search Engines</button>
-			<button class='tablinks' data-tabid='helpTab'><img alt='' src='icons/help.png' style='display:none'/>Help</button>
+			<button class='tablinks' data-tabid='optionsTab' data-i18n='Menus'><img alt='' src='icons/load.png' />Menus</button>
+			<button class='tablinks' data-tabid='enginesTab' data-i18n='SearchEngines'><img alt='' src='icons/settings.png' />Search Engines</button>
+			<button class='tablinks' data-tabid='helpTab' data-i18n='Help'><img alt='' src='icons/help.png' style='display:none' />Help</button>
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
 			<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
-				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px'><img alt='' src='icons/context_menu.png' />Context Menu</div>
+				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='ContextMenu'><img alt='' src='icons/context_menu.png' />Context Menu</div>
 				<div class='optionDiv' style='display:inline-block'>
 					<label class="switch">
 						<input type="checkbox" id='cb_contextMenu'>
@@ -737,50 +746,50 @@
 					</label>
 				</div>
 
-				<p class='header1' style='margin-top:0'>&mdash; Search Actions &mdash;</p>
+				<p class='header1' style='margin-top:0' data-i18n='SearchActionsHeader'>Search Actions</p>
 				<p class='short' style='border-width: 1px 0'>
-					<span class='buttonLabel'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<span class='buttonLabel' data-i18n='LeftButton'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_contextMenuClick'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
 					</select>
 				</p>
 				<p class='short'><span class='keyboardButton' id='default_shift'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_contextMenuShift'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 				<p class='short'><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_contextMenuCtrl'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 				<hr />
-				<label class="container">Add Custom Search Menu <span class='info' data-msg='Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases.'>?</span>
+				<label class="container" data-i18n='AddCustomSearchMenu'>Add Custom Search Menu <span class='info' data-msg='Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases.' data-i18n_tooltip='AddCustomSearchMenu'>?</span>
 					<input type='checkbox' id='cb_contextMenuShowAddCustomSearch' />
 					<span class="checkmark checkmark2"></span>
 				</label>
 				
-				<label class="container">Use Bookmarks Menu <span class='info' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines'>?</span>
+				<label class="container" data-i18n='UseBookmarksMenu'>Use Bookmarks Menu <span class='info' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines' data-i18n_tooltip='UseBookmarksMenu'>?</span>
 					<input type='checkbox' id='cb_contextMenuBookmarks' />
 					<span class="checkmark checkmark2"></span>
 				</label>
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179;' />
 				<div id='quickMenuOptions'>
-				<div class='blobContainerHeader' style='display:inline-block;padding:0;border:0;width:250px'><img alt='' src='icons/quick_menu.png' />Quick Menu</div>
+				<div class='blobContainerHeader' style='display:inline-block;padding:0;border:0;width:250px' data-i18n='QuickMenu'><img alt='' src='icons/quick_menu.png' />Quick Menu</div>
 				<div class='optionDiv' style='display:inline-block'>
 					<label class="switch">
 						<input type="checkbox" id='cb_quickMenu'>
@@ -788,45 +797,45 @@
 					</label>
 				</div>
 				<div class='blurb' style='max-width:400px'>
-					<i>Quick Menu disabled on addons.mozilla.org</i><br />
-					<i>Context Menu will be enabled if Quick Menu fails to open</i>	
+					<i data-i18n='QuickMenuNote'>Quick Menu disabled on addons.mozilla.org. 
+					Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
 				
 				<hr />
 				
-				<p class='header1' style='margin-top:0'>&mdash; Search Actions &mdash;</p>
+				<p class='header1' style='margin-top:0' data-i18n='SearchActionsHeader'>Search Actions</p>
 				
 				<p class='short' style='border-width: 1px 0'>
-					<span class='buttonLabel'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+					<span class='buttonLabel' data-i18n='LeftButton'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuLeftClick'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 				<p class='short'>
-					<span class='buttonLabel'>Middle Button</span><img alt='Middle Button' title='Middle Button' src='icons/middlemouse.png' class='smallIcon' style='transform:scaleX(-1);' />
+					<span class='buttonLabel' data-i18n='MiddleButton'>Middle Button</span><img alt='Middle Button' title='Middle Button' src='icons/middlemouse.png' class='smallIcon' style='transform:scaleX(-1);' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuMiddleClick'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 				<p class='short'>
-					<span class='buttonLabel'>Right Button</span><img alt='Right Button' title='Right Button' src='icons/leftmouse.png' class='smallIcon' style='transform:scaleX(-1);' />
+					<span class='buttonLabel' data-i18n='RightButton'>Right Button</span><img alt='Right Button' title='Right Button' src='icons/leftmouse.png' class='smallIcon' style='transform:scaleX(-1);' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuRightClick'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 				<p class='short'>
@@ -834,13 +843,12 @@
 						Shift
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuShift'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='keepMenuOpen'>Keep Menu Open</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 				<p class='short'>
@@ -848,13 +856,12 @@
 						Ctrl
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuCtrl'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='keepMenuOpen'>Keep Menu Open</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
 					
@@ -863,86 +870,85 @@
 						Alt
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuAlt'>
-						<option value='openCurrentTab'>Open In Current Tab</option>
-						<option value='openNewTab'>Open In New Tab</option>
-						<option value='openBackgroundTab'>Open In Background Tab</option>
-						<option value='openNewWindow'>Open In New Window</option>
-						<option value='openNewIncognitoWindow'>Open In Incognito Window</option>
-						<option value='keepMenuOpen'>Keep Menu Open</option>
-						<option value='noAction'>No Action</option>
+						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
+						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 	
 				</p>
 				
-				<p class='header1'>&mdash; Look &amp; Layout &mdash;</p>
+				<p class='header1' data-i18n='Look&LayoutHeader'>Look &amp; Layout</p>
 
 				<p>
-					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Columns</label>
-					<span class='info' data-msg='Maximum number of search engine icons per row'>?</span>
+					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Columns'>Columns</label>
+					<span class='info' data-msg='Maximum number of search engine icons per row' data-i18n_tooltip='Columns'>?</span>
 				</p>
 				<p>
-					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label>&nbsp;&nbsp;&nbsp;Items</label>
-					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.'>?</span>
+					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Items'>Items</label>
+					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.' data-i18n_tooltip='Items'>?</span>
 				</p>
 				<p>
 					<div style='display:inline-block;width:175px'>
-					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Menu Size</label>
-					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)'>?</span>
+					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
+					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)' data-i18n_tooltip='MenuSize'>?</span>
 					</div>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".05" value="1" />
 				</p>
 				<p>
 					<div style='display:inline-block;width:175px'>
-					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label>&nbsp;&nbsp;&nbsp;Icon Size</label>
-					<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely'>?</span>
+					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='IconSize'>Icon Size</label>
+					<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely' data-i18n_tooltip='IconSize'>?</span>
 					</div>
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
 
-				<p class='header1'>&mdash; Opening &amp; Closing &mdash;</p>
+				<p class='header1' data-i18n='Opening&ClosingHeader'>Opening &amp; Closing</p>
 				
-				<div id='d_openOnDescription' style='font-size:10pt'>Choose how to open Quick Menu after selecting text</div>
+				<div id='d_openOnDescription' style='font-size:10pt' data-i18n="Opening&ClosingDescription">Choose how to open Quick Menu after selecting text</div>
 				
-				<div class='checkboxOpeningChoice' data-msg='Open automatically'><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto'><img src='/icons/auto.png' />Auto</label></div>
-				<div class='checkboxOpeningChoice' data-msg='Open using a mouse button'><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse'><img src='/icons/mouse.png' />Mouse</label></div>
-				<div class='checkboxOpeningChoice' data-msg='Open using a keyboard key'><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey'><img src='/icons/keyboard.png' />Keyboard</label></div>
+				<div class='checkboxOpeningChoice' data-msg='Open automatically' data-i18n_tooltip="Auto"><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto' data-i18n='Auto'><img src='/icons/auto.png' />Auto</label></div>
+				<div class='checkboxOpeningChoice' data-msg='Open using a mouse button' data-i18n_tooltip="Mouse"><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse' data-i18n='Mouse' data-i18n_tooltip="Mouse"><img src='/icons/mouse.png' />Mouse</label></div>
+				<div class='checkboxOpeningChoice' data-msg='Open using a keyboard key' data-i18n_tooltip="Keyboard"><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey' data-i18n='Keyboard'><img src='/icons/keyboard.png' />Keyboard</label></div>
 				
 				<br /><br />
 				
 				<div class='openOnDetails' data-details='r_quickMenuAuto'>
-					<label class="container" style='display:inline-block;'>Enable On Text Boxes
+					<label class="container" style='display:inline-block;' data-i18n='EnableOnTextBoxes'>Enable On Text Boxes
 						<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups'>?</span>
+					<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups' data-i18n_tooltip='EnableOnTextBoxes'>?</span>
 				</div>
 				
 				<div class='openOnDetails' data-details='r_openOnMouse'>
-					<div style='font-size:10pt;margin-bottom:8px;'>Select your preferred method and button</div>
-					<label class="container" style='white-space: nowrap;border:1px dashed #ddd;border-width:0 0 1px 0;padding-bottom:8px'>
+					<div style='font-size:10pt;margin-bottom:8px;' data-i18n='MouseDescription'>Select your preferred method and button</div>
+					<label class="container" style='white-space: nowrap;border:1px dashed #ddd;border-width:0 0 1px 0;padding-bottom:8px' data-i18n='Hold'>
 						<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
-						<span class="checkmark"></span>Hold&nbsp;<span class='info' data-msg='Popup menu will open after holding the selected mouse button for ~0.25 seconds'>?</span>&nbsp;
+						<span class="checkmark"></span>Hold&nbsp;<span class='info' data-msg='Popup menu will open after holding the selected mouse button for ~0.25 seconds' data-i18n_tooltip='Hold'>?</span>&nbsp;
 						
 						<span class='checkboxImage' style='display:inline-block'><input type='radio' name='r_quickMenuMouseButton' id='r_quickMenuOnMouseLeft' value='1' /><label for='r_quickMenuOnMouseLeft'><img src='icons/leftmouse.png' style='height:30px;vertical-align:middle' /></label></span>
 				
 						<span class='checkboxImage' style='display:inline-block'><input type='radio' name='r_quickMenuMouseButton' id='r_quickMenuOnMouseRight' value='3' /><label for='r_quickMenuOnMouseRight'><img src='icons/leftmouse.png' style='height:30px;vertical-align:middle;transform: scaleX(-1);' /></label></span>
 						
-						<label class="container" style='display:inline-block;margin-left:30px'>Search On Mouseup 
+						<label class="container" style='display:inline-block;margin-left:30px' data-i18n='SearchOnMouseup'>Search On Mouseup 
 							<input type='checkbox' id='cb_quickMenuSearchOnMouseUp' />
 							<span class="checkmark checkmark2"></span>
-							<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search'>?</span>
+							<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search' data-i18n_tooltip='SearchOnMouseup'>?</span>
 						</label>
 					</label>
 
-					<label class="container">Click&nbsp;<span class='info' data-msg='Popup menu will open on right-click.  Hold button for default context menu'>?</span>
+					<label class="container" data-i18n='Click'>Click&nbsp;<span class='info' data-msg='Popup menu will open on right-click.  Hold button for default context menu' data-i18n_tooltip='Click'>?</span>
 						<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
 						<span class="checkmark"></span>
 						<img src='icons/leftmouse.png' style='height:30px;vertical-align:middle;transform: scaleX(-1);' />
 					</label>
 
 				</div>
-				<div class='openOnDetails' data-details='r_quickMenuOnKey'>
-					Choose key <span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+				<div class='openOnDetails' data-details='r_quickMenuOnKey' data-i18n='ChooseKey'>
+					Choose key <span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key' data-i18n_tooltip='ChooseKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
 				</div>
 
 				
@@ -955,25 +961,26 @@
 		-->		
 				<hr />
 				
-				<label class="container" style='display:inline-block'>Close After Search
+				<label class="container" style='display:inline-block' data-i18n='CloseAfterSearch'>Close After Search
 					<input type='checkbox' id='cb_quickMenuCloseOnClick' />
 					<span class="checkmark checkmark2"></span>
 				</label>
-				<span class='info' data-msg='Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by "Keep Menu Open" under Search Actions'>?</span>
+				<span class='info' data-msg='Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by "Keep Menu Open" under Search Actions' data-i18n_tooltip='CloseAfterSearch'>?</span>
 				
 				<br />
 				
-				<label class="container" style='display:inline-block'>Close On Scroll / Mouse Wheel
+				<label class="container" style='display:inline-block' data-i18n='CloseOnScroll'>Close On Scroll / Mouse Wheel
 					<input type='checkbox' id='cb_quickMenuCloseOnScroll' />
 					<span class="checkmark checkmark2"></span>
 				</label>
-				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel'>?</span>
+				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel' data-i18n_tooltip='CloseOnScroll'>?</span>
 				
-				<div class='blurb' style='max-width:400px'>
-					Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly
+				<div class='blurb' style='max-width:400px' data-i18n='MouseHelp'>
+					Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly
+			<!--		Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly-->
 				</div>
 				
-				<p class='header1'>&mdash; Position &mdash;</p>
+				<p class='header1' data-i18n='Position'>Position</p>
 				
 				<div>
 					<div style='font-size:0;line-height:0;display:inline-block;'>
@@ -981,28 +988,28 @@
 						<div class='position' data-position='bottom left'></div><div class='position' data-position='bottom center'></div><div class='position' data-position='bottom right'></div>
 					</div>
 					<div style='display:inline-block;margin-left:30px;vertical-align:top;'>
-						<input type="number" id="n_quickMenuOffsetX" size='2' class='inputNice' style='margin-bottom:2px'>&nbsp;&nbsp;&nbsp;Horizontal Offset
-						<span class='info' data-msg='Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left'>?</span>
+						<input type="number" id="n_quickMenuOffsetX" size='2' class='inputNice' style='margin-bottom:2px;margin-right:10px'><span data-i18n='HorizontalOffset'>Horizontal Offset</span>
+						<span class='info' data-msg='Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left' data-i18n_tooltip='HorizontalOffset'>?</span>
 						<br />
-						<input type="number" id="n_quickMenuOffsetY" size='2' class='inputNice'>&nbsp;&nbsp;&nbsp;Vertical Offset
-						<span class='info' data-msg='Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up'>?</span>
+						<input type="number" id="n_quickMenuOffsetY" size='2' class='inputNice' style='margin-right:10px'/><span data-i18n='VerticalOffset'>Vertical Offset</span>
+						<span class='info' data-msg='Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up' data-i18n_tooltip='VerticalOffset'>?</span>
 					</div>
 				</div>
 				<input id='h_position' type='hidden' />
-				<div id='t_position' style='height:10pt;font-size:10pt;margin-left:2px'>choose where menu appears</div>
+				<div id='t_position' style='height:10pt;font-size:10pt;margin-left:2px' data-i18n='PositionDescription'>choose where menu appears</div>
 				
 							
-				<p class='header1'>&mdash; Tools &mdash;</p>
+				<p class='header1' data-i18n='Tools'>Tools</p>
 				<div id='toolIcons'></div>
-				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px'>click to disable | drag to re-order</div>	
+				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px' data-i18n='ToolsHelp'>click to disable | drag to re-order</div>	
 
-				<p class='header1'>&mdash; Import / Export Settings &mdash;</p>
+				<p class='header1' data-i18n='ImportExportSettings'>Import / Export Settings</p>
 				
 				<label for="importSettings">
-					<button id='b_importSettings'>Import</button>
+					<button id='b_importSettings' data-i18n='Import'>Import</button>
 					<input style='display:none' name="importSettings" id='importSettings' type="file" accept="*" />
 				</label>
-				<button id='b_exportSettings'>Export</button>
+				<button id='b_exportSettings' data-i18n='Export'>Export</button>
 				
 			</div>
 			</div>
@@ -1014,20 +1021,20 @@
 					<div style='max-height:400px;overflow-y:auto;width:auto'>
 						<table id='searchEnginesContainer' ></table>
 					</div>
-					<button id='b_addSearchEngine'>Add</button>
-					<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both'>Remove All</button>
+					<button id='b_addSearchEngine' data-i18n='Add'>Add</button>
+					<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both' data-i18n='RemoveAll'>Remove All</button>
 
 					<div style='padding:4px'></div>
-					<div>
+					<div  data-i18n='ShowHide'>
 						<img src='/icons/checkmark-icon.png' style='height:16px;vertical-align:middle' /> Show / Hide
 					</div>
-					<div>
+					<div data-i18n='Bookmark'>
 						<img src='/icons/bookmark.png' style='height:16px;vertical-align:middle' /> Bookmark
 					</div>
-					<div>
+					<div data-i18n='Delete'>
 						<img src='/icons/delete.png' style='height:16px;vertical-align:middle' /> Delete
 					</div>
-					<div class='blurb'>
+					<div class='blurb' data-i18n='SearchEnginesManagerHelp'>
 						Drag &amp; drop to re-order, click to edit
 					</div>
 				</div>
@@ -1036,13 +1043,13 @@
 
 			<!--		<label data-label="Engine Name"></label><input name="shortName" type="text" class='inputNice' />
 			-->		
-					<label data-label="Template"></label><input name="template" type="text" class='inputNice' />
-					<label data-label="Icon URI"></label><input name="iconURL" type="text" class='inputNice' />
-					<label data-label="Form Path"></label><input name="searchform" type="text" class='inputNice' />
-					<label data-label="POST Params"></label><input name="post_params" type="text" class='inputNice' />
+					<label data-i18n='Template'>Template</label><input name="template" type="text" class='inputNice' />
+					<label data-i18n='Icon'>Icon URI</label><input name="iconURL" type="text" class='inputNice' />
+					<label data-i18n='FormPath'>Form Path</label><input name="searchform" type="text" class='inputNice' />
+					<label data-i18n='POSTparams'>POST Params</label><input name="post_params" type="text" class='inputNice' />
 
 					<div style='display:inline-block'>
-					<label>Method</label>
+					<label data-i18n='Method'>Method</label>
 					<select name="_method" class='inputNice'>
 						<option value="GET">GET</option>
 						<option value="POST">POST</option>
@@ -1050,7 +1057,7 @@
 					</div>
 					
 					<div style='display:inline-block'>
-					<label>Encoding</label>
+					<label data-i18n='Encoding'>Encoding</label>
 					<select name="_encoding" class='inputNice'>
 						<option value="UTF-8">utf-8</option>
 						<option value="WINDOWS-1252">windows-1252</option>
@@ -1066,24 +1073,25 @@
 					</select>
 					</div>
 					
-					<button type="button" name="cancel" class='inputNice _hover' style="float:right;margin:10px 5px">cancel</button>
-					<button type="button" name="save" class='inputNice _hover' style="float:right;margin:10px 5px">save</button>
+					<button type="button" name="cancel" class='inputNice _hover' style="float:right;margin:10px 5px" data-i18n='Cancel'>cancel</button>
+					<button type="button" name="save" class='inputNice _hover' style="float:right;margin:10px 5px" data-i18n='Save'>save</button>
 					
 				</form>
 				<br />
 	
 	
-				<p class='header1' style='margin-top:0'>
-					&mdash; Import One-Click Search Engines&mdash;
+				<p class='header1' style='margin-top:0' data-i18n='ImportHeader'>
+					Import One-Click Search Engines
 				</p>
-				
-				Browse to your profile folder and select your <b>search.json.mozlz4</b> file
+				<span data-i18n='ImportDescription'>
+					Browse to your profile folder and select your search.json.mozlz4 file
+				</span>
 				
 				<br /><br />
 				
-				<label for="selectMozlz4FileButton" class="fileUpload" >
-					<img src='/icons/import.png' />
-					&nbsp; Select file...
+				<label for="selectMozlz4FileButton" class="fileUpload"  data-i18n='ImportSelectFile'>
+					<img src='/icons/import.png' style='margi-right:10px' />
+					Select file...
 					<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" />
 				</label>
 				
@@ -1105,20 +1113,20 @@
 				</label>
 				-->
 <native>				
-				<p class='header1' style='margin-top:0'>
-					&mdash; Automatic Importing &mdash;
+				<p class='header1' style='margin-top:0'  data-i18n='AutoImportHeader'>
+					Automatic Importing
 				</p>
 
-				<label class="container" style='display:inline-block'>Enable Automatic Import (requires app)
+				<label class="container" style='display:inline-block' data-i18n='EnableAutoImport'>Enable Automatic Import (requires app)
 					<input type='checkbox' id='cb_automaticImport' />
 					<span class="checkmark checkmark2"></span>
 				</label>
-				<span class='info' data-msg='Import OpenSearch engines to ContextSearch automatically. Requires a separate app. See "Help" for more details'>?</span>
+				<span class='info' data-msg='Import OpenSearch engines to ContextSearch automatically. Requires a separate app. See "Help" for more details' data-i18n_tooltip='EnableAutoImport'>?</span>
 				
-				<div style='white-space:nowrap;width:100%'>
+				<div style='white-space:nowrap;width:100%'  data-i18n='ProfilePath'>
 				Profile path<br />
 				<textarea class='inputNice code' id='i_searchJsonPath' style='width:calc(100% - 16px);padding:4px;margin:4px 0px' placeholder="example: C:/Users/<username>/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default"></textarea></div>
-				<div id='div_searchJsonPathResponse' style='display:inline-block'></div><button id='b_checkSearchJsonPath' style='float:right;'>Verify and Import</button>
+				<div id='div_searchJsonPathResponse' style='display:inline-block'></div><button id='b_checkSearchJsonPath' style='float:right;'  data-i18n='Verify'>Verify and Import</button>
 				
 				<!--
 				<label class="container" style='display:inline-block;margin-top:20px;padding:0'>
@@ -1132,106 +1140,7 @@
 			</div>
 		</div>
 		<div class='tabcontent' id='helpTab'>
-			<div style='font-weight:normal'>
-				<p class='header1' style='margin-top:0'>
-					&mdash; Getting Started &mdash;
-				</p>
-				
-				<a href='#help_preferences'>Settings</a><br />
-				<a href='#help_contextmenu'>Context Menu</a><br />
-				<a href='#help_quickmenu'>Quick Menu</a><br />
-				<a href='#help_importing'>Importing Firefox Search Engines</a><br />
-				<a href='#help_auto_importing'>Automatic Importing</a><br />
-				<a href='#help_adding_engines'>Adding Search Engines</a><br />
-				<a href='#help_modify_engines'>Using the Search Engines Manager</a><br />
-				
-				<div class='section'>
-				<h2 id='help_preferences'>Settings</h3>
-				Most settings can be customized under the <code>Menus</code> tab. Hover your mouse over <span class='info' data-msg='hello'>?</span> icons to see details about each setting.
-				</div>
-				<div class='section'>
-				<h2 id='help_contextmenu'>Using the Context Menu</h3>
-				Highlight a word and right-click to open the context menu. Expand the ContextSearch menu labeled <code>Search for "..."</code> and choose which search engine to perform the search with.
-				<br /><br />
-				Enabling <code>Use Bookmarks Menu</code> creates the folder <code>ContextSearch Menu</code> under <code>Other Bookmarks</code> where you can reorder search engines, create subfolders and separators. Renaming search engine bookmarks will cause them to no longer work. Deleted bookmarks can be restored from the search engines manager under the <code>Search Engines</code> tab. 
-				</div>
-				<div class='section'>
-				<h2 id='help_quickmenu'>Using the Quick Menu</h3>
-				Default: Highlight a word and hold down the right mouse button until the Quick Menu appears. You can choose from several options how the quick menu opens in the <code>Menus</code> tab under <code>Opening &amp; Closing</code>
-				
-				<br /><br />
-				The Quick Menu can be customize from the <code>Menus</code> tab. Search engines can be rearranged in the search list manager from the <code>Search Engines</code> tab.
-				</div>
-				<div class='section'>
-				<h2 id='help_importing'>Importing Firefox Search Engines</h3>
-				If you have added search engines to the Firefox search toolbar you would like to use with ContextSearch, you can import them by clicking the button under 'Import One-Click Search Engines' in the Search Engines tab. Browse to your profile folder and select the <code>search.json.mozlz4</code> file.
-				
-				You can find your profile path by opening <b style='-moz-user-select:text'>about:profiles</b> in the address bar. Typical locations:
-
-				<div style='margin-left:0px'>
-					<p><img alt='' class='smallIcon' style='height:16px;' src='icons/windows.png'><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
-					<p><img alt='' class='smallIcon' style='height:16px;' src='icons/mac.png'><b>&nbsp;&nbsp;Mac OS X</b></p>
-					<p class='code'>Users/<i>&lt;username&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
-					<p><img alt='' class='smallIcon' style='height:16px;' src='icons/linux.png'><b>&nbsp;&nbsp;Linux</b></p>
-					<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
-				</div>	
-				</div>
-				<div class='section'>
-				<h2 id='help_auto_importing'>Automatic Importing <!--<a id='a_howToAutomatic' target='_blank' title='How-To' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto_automatic.gif' style='font-size:10pt'><img src='/icons/movie.png' style='height:20px;vertical-align:middle'/></a>--></h3>
-				
-				Optionally you can install a tiny open-source app to import your search engine list automatically using Firefox's <a href='https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Native_messaging'>Native Messaging API</a> when OpenSearch engines are added or removed. This app only runs when called by ContextSearch. Useful when adding OpenSearch engines from sources other than ContextSearch 
-				where importing would normally be required.
-				<br /><br />
-				
-				<b>Step 1: Install app</b>
-				<div class='blurb'>
-					<img alt='' src='icons/windows.png' style='width:16px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest'>Windows installer</a> &nbsp;<a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App/blob/master/README.md' style='font-size:10pt'>[more info]</a><br />
-					<img alt='' src='icons/mac.png' style='width:16px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
-					<img alt='' src='icons/linux.png' style='width:16px;vertical-align:middle;margin-right:16px;padding:2px'/><a target='_blank' href='https://github.com/ssborbis/ContextSearch-Native-App'>source</a><br />
-				</div>
-
-				<br />
-				<b>Step 2: Enable automatic importing and enter the full path to your profile</b><br />You can find your profile path by opening <code>about:profiles</code> in the address bar. If installing on windows, your profile path will be copied to the clipboard after installing the native app.<br />
-				</div>
-				<div class='section'>
-				<h2 id='help_adding_engines'>Adding Search Engines</h3>
-
-					<h4>Using the Add Custom Search menu</h4>
-					
-					If a website provides a search form, simply right-click the form where you would enter your search terms and select the menu item <code>'Add Custom Search'</code> from the context menu. A popup will appear asking you give the new search engine a name. The name must be unique. Click 'Add' and your new search engine will be added to ContextSearch. Next you will be asked if you want to add your new search engine to the Firefox search toolbar. Clicking yes will send a request for a new OpenSearch engine. Confirm the install and your new engine will also appear in the Firefox search toolbar. These engines will remain installed and usable even if you uninstall ContextSearch.
-					
-					<br /><br />
-					
-					Add Custom Search also provides advanced settings with more options for adding a new search engine
-					
-					<h5><b>Add</b></h5> Install a new search engine based on the official search engine offered by the website
-
-					<h5><b>Find</b></h5> Search Mycroftproject for search engines related to the current website made by users around the world. You will need to reimport your One-Click Search Engines to use engines installed with this method in ContextSearch
-
-					<h5><b>Create</b></h5> Full control over creating a new search engine
-
-				</li>
-				</div>
-				<div class='section'>
-				<h2 id='help_modify_engines'>Using the Search Engines Manager</h3>
-				Installed search engines can be modified from the manager in the Search Engines tab.
-
-				<h4>Hiding</h4>
-				Click the checkbox to hide or show search engines in your Context Menu or Quick Menu list. If <code>Use Bookmarks Menu</code> is enabled, hiding will only effect the Quick Menu.
-				
-				<h4>Re-ordering</h4>
-				Drag &amp; drop search engines to re-order your list. If <code>Use Bookmarks Menu</code> is enabled, reordering will only effect the Quick Menu.
-				
-				<h4>Deleting</h4>
-				Click the <img src='/icons/delete.png' style='height:16px' /> icon to be prompted to delete a search engine. OpenSearch engines appearing in the Firefox search toolbar will not be affected and must be removed separately from Firefox options->Search->One-Click Search Engines. If Automatic Import is enabled, deleted engines that exist as One-Click Search Engines will be restored. You may wish to simply hide these engines if they reappear.
-				
-				<h4>Editing</h4>
-				Clicking the name of a search engine will open a form where you can edit search engine parameters such as the query template, encoding, icon, etc. 
-				
-				<h4>Bookmarks</h4>
-				If <code>Use Bookmarks Menu</code> is enabled, the <img src='/icons/bookmark.png' style='height:16px' /> will appear for each search engine. With this you can toggle search engines appearing in the bookmarks folder for use with the Context Menu. Enabled search engines will be appended to the end of the bookmarks list in the main folder. You can reorder search engines from the <code>ContextSearch Menu</code> folder in Bookmarks.
-
-			</div>
+			
 		</div>
 		</div>
 		</div>

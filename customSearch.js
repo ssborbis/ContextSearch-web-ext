@@ -451,7 +451,7 @@ function addSearchEnginePopup(data) {
 		form.template.innerText = template + ((template.indexOf('?') === -1) ? "?":"&") + param_str;
 		
 		// display help message if <input> is not part of a proper <form>
-		if (!data.action) form.template.innerText = "Unable to find a template for this search form. You can try doing a search and copying the resulting URL here, replacing your search terms with {searchTerms}";
+		if (!data.action) form.template.innerText = browser.i18n.getMessage("TemplateMissingeMessage");
 		
 	} else {
 		
@@ -495,7 +495,7 @@ function addSearchEnginePopup(data) {
 	let buttons = document.querySelectorAll(".CS_menuItem > div");
 	for (let button of buttons) {
 		
-		if (!button.dataset.description) continue;
+		if (!button.dataset.msg) continue;
 
 		// display button description
 		button.addEventListener('mouseenter', (ev) => {
@@ -503,7 +503,7 @@ function addSearchEnginePopup(data) {
 			desc.style.transition='none';
 			desc.style.opacity=window.getComputedStyle(desc).opacity;
 			desc.style.opacity=0;
-			desc.innerText = button.dataset.description;
+			desc.innerText = button.dataset.msg;
 			desc.style.transition=null;
 			desc.style.opacity=1;
 		});
@@ -524,7 +524,7 @@ function addSearchEnginePopup(data) {
 			readOpenSearchUrl( data.openSearchHref, (xml) => {
 
 				if (!xml) {
-					alert('Error parsing ' + data.openSearchHref);
+					alert(browser.i18n.getMessage("ErrorParsing").replace("$1", data.openSearchHref));
 					return;
 				}
 				
@@ -533,12 +533,12 @@ function addSearchEnginePopup(data) {
 					let se = details.searchEngines[0];
 				
 					if (!se) {
-						alert('Error parsing ' + data.openSearchHref);
+						alert(browser.i18n.getMessage("ErrorParsing").replace("$1", data.openSearchHref));
 						return;
 					}
 					
 					if (hasDuplicateName(se.title)) {
-						alert('Search engine ' + se.title + ' already exists');
+						alert(browser.i18n.getMessage("EngineExists").replace("$1", se.title));
 						return;
 					}
 					
@@ -591,32 +591,32 @@ function addSearchEnginePopup(data) {
 		}
 		for (let se of userOptions.searchEngines) {
 			if (se.title == form.shortname.value) {
-				alert('Name must be unique. Search engine "' + form.shortname.value + '" already exists');
+				alert(browser.i18n.getMessage("EngineExists").replace("$1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName"));
 				return;
 			}
 		}
 		if (form.description.value.trim() == "") {
-			alert('Must have a description');
+			alert(browser.i18n.getMessage("DescriptionEmptyError"));
 			return;
 		}
 		if (form.description.value.length > 1024 ) {
-			alert('Description must be 1024 or fewer characters');
+			alert(browser.i18n.getMessage("DescriptionSizeError"));
 			return;
 		}
 		if (form.post_params.value.indexOf('{searchTerms}') === -1 && form.template.value.indexOf('{searchTerms}') === -1) {
-			alert('Template or params must include {searchTerms}');
+			alert(browser.i18n.getMessage("TemplateIncludeError"));
 			return;
 		}
 		if (form.template.value.match(/^http/i) === null) {
-			alert('Template must be an URL (' + _location.origin + '...)');
+			alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
 			return;
 		}
 		if (form.searchform.value.match(/^http/i) === null) {
-			alert('Form path must be an URL (' + _location.origin + ')');
+			alert(browser.i18n.getMessage("FormPathURLError") + ' (' + _location.origin + ')');
 			return;
 		}
 		if (form.iconURL.value.match(/^http/i) === null || form.iconURL.value == "") {
-			alert('Icon must be an URL (' + _location.origin + '/favicon.ico)');
+			alert(browser.i18n.getMessage("IconURLError") + ' (' + _location.origin + '/favicon.ico)');
 			return;
 		}
 
@@ -669,7 +669,7 @@ function testOpenSearch(form) {
 		"queryCharset": form._encoding.value
 	};
 
-	let searchTerms = window.prompt("Enter search terms","firefox");
+	let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"firefox");
 	
 	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 	
@@ -736,23 +736,60 @@ function listenForFocusAndPromptToImport() {
 		return;
 	}
 	
-	document.getElementById('CS_customSearchDialog_b_openOptions').onclick = function() {
+	let dialog = document.getElementById('CS_postSearchEngineInstall');
+	
+	dialog.querySelector('[name="import"]').onclick = function() {
 		browser.runtime.sendMessage({action: "openOptions", hashurl:"#quickload"});
 		closeCustomSearchIframe();	
 	}
 	
 	window.addEventListener('focus', () => {
-		let dialog = document.getElementById('CS_postSearchEngineInstall');
+		
+		dialog.querySelector('[name="moreInfo"]').onclick = function() {
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=help#help_importing"});
+		}
+		
 		showMenu(dialog);
-		let cancel = document.getElementById('CS_customSearchDialog_b_cancelSearchEngineInstall_two');
-		cancel.onclick = function() {
+		
+		dialog.querySelector('[name="cancel"]').onclick = function() {
 			showMenu('CS_customSearchDialogOptions');
 		}
+		
 	}, {once: true});
 	
 }
 
+document.addEventListener('DOMContentLoaded', () => {
 
+	function traverse(node) {
+		
+		if (node.nodeType === 3 && node.nodeValue.trim())
+			return node;
+
+		for (let child of node.childNodes) {
+			let c = traverse(child);
+			if (c) return c;
+		}
+		
+		return false;
+	}
+	
+	let i18n = document.querySelectorAll('[data-i18n]');
+	
+	for (let el of i18n) {
+
+		let textNode = traverse(el);
+		
+		textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+	}
+	
+	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
+	
+	for (let el of i18n_tooltips) {
+		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
+	}
+	
+});
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};

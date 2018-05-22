@@ -16,7 +16,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 		document.getElementById('status_div').style.display='inline-block';
 		statusMessage({
 			img: "icons/spinner.svg",
-			msg: "Loading remote content"
+			msg: browser.i18n.getMessage("LoadingRemoteContent")
 		});
 		
 		// start 1.3.2+
@@ -44,12 +44,13 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				if (details.hasFailedCount) {
 					statusMessage({
 						img: "icons/alert.png",
-						msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
+						msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("$1", details.hasFailedCount)
+					//	msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
 					});
 				} else if (details.hasTimedOut) {
 					statusMessage({
 						img: "icons/alert.png",
-						msg: "Fetching remote icons timed out. Some icons were not loaded."
+						msg: browser.i18n.getMessage("LoadingRemoteContentTimeout")
 					});
 				} else {
 					statusMessage({
@@ -96,7 +97,7 @@ function buildSearchEngineContainer(searchEngines) {
 	let deleteAllButton = document.getElementById('b_deleteAllSearchEngines');
 	if (searchEngines.length > 0) deleteAllButton.style.display = null;
 	deleteAllButton.onclick = function() {
-		if (confirm("Remove all search engines?")) {
+		if (confirm(browser.i18n.getMessage("RemoveAllEnginesPrompt"))) {
 			
 			// necessary to bypass check in saveOptions
 			searchEngines = [];
@@ -111,7 +112,7 @@ function buildSearchEngineContainer(searchEngines) {
 	let b_addSearchEngine = document.getElementById('b_addSearchEngine');
 	b_addSearchEngine.onclick = function() {
 		
-		let msg = "Enter a unique name for this search engine";;
+		let msg = browser.i18n.getMessage("EnterUniqueName");
 		let shortName = "";
 
 		while(true) {
@@ -122,7 +123,7 @@ function buildSearchEngineContainer(searchEngines) {
 			for (let engine of searchEngines) {
 				if (engine.title == shortName) {
 					console.log(engine.title + "\t" + shortName);
-					msg = engine.title + " exists. Enter a unique name for this search engine";
+					msg = browser.i18n.getMessage("EngineExists").replace("$1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName");
 					found = true;
 					break;
 				}
@@ -238,6 +239,21 @@ function buildSearchEngineContainer(searchEngines) {
 		let title = document.createElement('div');
 		title.title = 'click to edit';
 		title.className = 'title';
+		
+		// let input = document.createElement('input');
+		// input.style = 'border:none;width:100%;cursor:default';
+		// input.onfocus = function(e) {
+			// console.log('yep');
+			// e.preventDefault();
+			// e.target.blur();
+			// return false;
+		// }
+		// input.onclick = function(e) {
+			
+		// }
+		// input.value = se.title;
+		// title.appendChild(input);
+		
 		title.innerText = se.title;
 		
 		title.onclick = function() {
@@ -259,7 +275,7 @@ function buildSearchEngineContainer(searchEngines) {
 			
 			// clear error formatting
 			for (let label of edit_form.getElementsByTagName('label')) {
-				if (label.dataset.label) label.innerText = label.dataset.label;
+				if (label.dataset.i18n) label.innerText = browser.i18n.getMessage(label.dataset.i18n);
 				label.style.color = null;
 				clearError(label.nextSibling)
 			}
@@ -325,19 +341,19 @@ function buildSearchEngineContainer(searchEngines) {
 				}
 	*/
 				if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
-					showError(edit_form.template,'Template must include {searchTerms}');
+					showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
 					return;
 				}
 				if (edit_form.template.value.match(/^http/i) === null) {
-					showError(edit_form.template,'Template must be an URL');
+					showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
 					return;
 				}
 				if (edit_form.searchform.value.match(/^http/i) === null) {
-					showError(edit_form.searchform,'Form path must be an URL');
+					showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
 					return;
 				}
 				if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
-					showError(edit_form.post_params, 'POST params must include {searchTerms}');
+					showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
 					return;
 				}
 				if (edit_form.iconURL.value.match(/^resource:/) === null) {
@@ -349,7 +365,7 @@ function buildSearchEngineContainer(searchEngines) {
 					}
 					newIcon.onerror = function() {
 						icon.src = se.icon_base64String;
-						showError(edit_form.iconURL,'Icon failed to load');
+						showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
 					}
 					newIcon.src = edit_form.iconURL.value;
 				}
@@ -371,7 +387,7 @@ function buildSearchEngineContainer(searchEngines) {
 		}
 		
 		let _delete = document.createElement('img');
-		_delete.title = 'delete';
+		_delete.title = browser.i18n.getMessage('options_Delete').toLowerCase();
 		_delete.className = 'delete';
 		_delete.src = '/icons/delete.png';
 		_delete.onclick = function(e) {
@@ -693,7 +709,7 @@ document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e
 			return;
 		}
 		if (browser.bookmarks === undefined)
-			alert('After closing this prompt you will receive a prompt to accept a new permission for "Bookmarks".\n\nAccepting will add a new folder "ContextSearch Menu" containing your current search engines in bookmarks under the "Other Bookmarks" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks.' );
+			alert(browser.i18n.getMessage("BookmarksPermissionMessage"));
 		
 		CSBookmarks.requestPermissions().then( (result) => {
 			if (result) {
@@ -806,7 +822,9 @@ function checkSearchJsonPath() {
 			return false;
 		}
 
-		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;Import successful";
+		let tn = document.createTextNode("&nbsp;&nbsp;&nbsp;" + browser.i18n.getMessage("ImportSuccessful"));
+		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />";
+		el.appendChild(tn);
 		
 		saveOptions();
 
@@ -825,7 +843,7 @@ function checkSearchJsonPath() {
 	function onError(error) {
 		console.log(error);
 		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-		el.textContent = "Failed to load file (" + error.message + ") Is app installed?";
+		el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("$1", error.message);
 		el.style.color = 'red';
 	}
 	
@@ -967,11 +985,11 @@ function buildToolIcons() {
 	}
 	
 	let toolIcons = [
-		{name: 'close', src: "icons/close.png", title: "Close menu", index: Number.MAX_VALUE, disabled: true},
-		{name: 'copy', src: "icons/clipboard.png", title: "Copy to clipboard", index: Number.MAX_VALUE, disabled: true},
-		{name: 'link', src: "icons/link.png", title: "Open as link", index: Number.MAX_VALUE, disabled: true},
-		{name: 'disable', src: "icons/power.png", title: "Disable menu", index: Number.MAX_VALUE, disabled: true},
-		{name: 'lock', src: "icons/lock.png", title: "Lock menu open (multi-search)", index: Number.MAX_VALUE, disabled: true}
+		{name: 'close', src: "icons/close.png", title: browser.i18n.getMessage('tools_Close'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'copy', src: "icons/clipboard.png", title: browser.i18n.getMessage('tools_Copy'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'link', src: "icons/link.png", title: browser.i18n.getMessage('tools_OpenAsLink'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'disable', src: "icons/power.png", title: browser.i18n.getMessage('tools_Disable'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'lock', src: "icons/lock.png", title: browser.i18n.getMessage('tools_Lock'), index: Number.MAX_VALUE, disabled: true}
 	];
 	
 	for (let t=0;t<toolIcons.length;t++) {
@@ -1122,6 +1140,12 @@ document.addEventListener("DOMContentLoaded", () => {
 // set up info bubbles
 document.addEventListener("DOMContentLoaded", () => {
 	
+	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
+	
+	for (let el of i18n_tooltips) {
+		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
+	}
+	
 	for (let el of document.getElementsByClassName('info')) {
 		el.addEventListener('mouseover', (e) => {
 			showInfoMsg(el, el.dataset.msg);
@@ -1179,7 +1203,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					|| !newUserOptions.searchEngines
 					
 				) {
-					alert('ContextSearch settings not found!');
+					alert(browser.i18n.getMessage("ImportSettingsNotFoundAlert"));
 					return;
 				}
 				
@@ -1192,7 +1216,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				
 				
 			} catch(err) {
-				alert('file is not valid JSON');
+				alert(browser.i18n.getMessage("InvalidJSONAlert"));
 			}
 		}
 
@@ -1210,3 +1234,66 @@ document.addEventListener('DOMContentLoaded', () => {
 		history.pushState("", document.title, window.location.pathname);
 	}
 });	
+
+document.addEventListener('DOMContentLoaded', () => {
+
+	function traverse(node) {
+		
+		if (node.nodeType === 3 && node.nodeValue.trim())
+			return node;
+
+		for (let child of node.childNodes) {
+			let c = traverse(child);
+			if (c) return c;
+		}
+		
+		return false;
+	}
+	
+	let i18n = document.querySelectorAll('[data-i18n]');
+	
+	for (let el of i18n) {
+
+		let textNode = traverse(el);
+		
+		textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+	}
+	
+	// set up localized help pages
+	let help = document.getElementById('helpTab');
+	
+	let loaded = false;
+	let iframe = document.createElement('iframe');
+	
+	iframe.style = 'display:none';
+	iframe.onerror = function() {
+		console.log('error');
+	}
+	
+	iframe.onload = function() {
+		console.log('loaded @ ' + iframe.src);
+		var iframeDocument = iframe.contentDocument;
+		var iframeBody = iframeDocument.body;
+		
+		const parser = new DOMParser();
+		const parsed = parser.parseFromString(iframeBody.innerHTML, `text/html`);
+		
+		for (let child of parsed.getElementsByTagName('body')[0].childNodes) {
+			help.appendChild(child);
+		}
+
+		help.removeChild(iframe);
+	}
+	
+	setTimeout( () => {
+		if (!loaded) {
+			iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
+		}
+	}, 250);
+	
+	iframe.src = '/_locales/' + browser.i18n.getUILanguage() + '/help.html';
+	
+	help.appendChild(iframe);
+
+});
+	

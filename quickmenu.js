@@ -786,7 +786,7 @@ function makeQuickMenu() {
 	if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined' ) {
 		var div = document.createElement('div');
 		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-		div.innerText = 'Where are my search engines?';
+		div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
 		div.onclick = function() {
 			browser.runtime.sendMessage({action: "openOptions", hashurl: "tab=searchengines"});
 		}	

@@ -1,0 +1,742 @@
+{
+    
+  "Settings": {
+    "message": "Settings",
+    "description": ""
+  },
+  
+  "Support": {
+    "message": "Support",
+    "description": ""
+  },
+  
+   "Source": {
+    "message": "Source",
+    "description": ""
+  },
+  
+   "Menus": {
+    "message": "Menus",
+    "description": "menus tab label"
+  },
+  
+   "SearchEngines": {
+    "message": "Search Engines",
+    "description": "search engines tab label"
+  },
+  
+   "Help": {
+    "message": "Help",
+    "description": "help tab label"
+  },
+  
+   "ContextMenu": {
+    "message": "Context Menu",
+    "description": ""
+  },
+  
+   "AddCustomSearchMenu": {
+    "message": "Add Custom Search Menu",
+    "description": ""
+  },
+  
+  "AddCustomSearchMenuTooltip": {
+    "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases.",
+    "description": ""
+  },
+  
+   "UseBookmarksMenu": {
+    "message": "Use Bookmarks Menu",
+    "description": ""
+  },
+    
+   "UseBookmarksMenuTooltip": {
+    "message": "Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines",
+    "description": ""
+  },
+   "QuickMenu": {
+    "message": "Quick Menu",
+    "description": ""
+  },
+  
+   "QuickMenuNote": {
+    "message": "Quick Menu disabled on addons.mozilla.org. Context Menu will be enabled if Quick Menu fails to open",
+    "description": ""
+  },
+  
+   "SearchActionsHeader": {
+    "message": "Search Actions",
+    "description": ""
+  },
+  
+   "SearchActionsCurrentTab": {
+    "message": "Open In Current Tab",
+    "description": ""
+  },
+  
+   "SearchActionsNewTab": {
+    "message": "Open In New Tab",
+    "description": ""
+  },
+  
+   "SearchActionsBackgroundTab": {
+    "message": "Open In Background Tab",
+    "description": ""
+  },
+  
+   "SearchActionsNewWindow": {
+    "message": "Open In New Window",
+    "description": ""
+  },
+  
+   "SearchActionsIncognitoWindow": {
+    "message": "Open In Incognito Window",
+    "description": ""
+  },
+  
+   "SearchActionsNoAction": {
+    "message": "No Action",
+    "description": ""
+  },
+  
+   "LeftButton": {
+    "message": "Left Button",
+    "description": ""
+  },
+  
+   "MiddleButton": {
+    "message": "Middle Button",
+    "description": ""
+  },
+  
+   "RightButton": {
+    "message": "Right Button",
+    "description": ""
+  },
+  
+   "Look&LayoutHeader": {
+    "message": "Look & Layout",
+    "description": ""
+  },
+  
+   "Columns": {
+    "message": "Columns",
+    "description": ""
+  },
+  
+  "ColumnsTooltip": {
+    "message": "Maximum number of search engine icons per row",
+    "description": ""
+  },
+  
+  "Items": {
+    "message": "Items",
+    "description": ""
+  },
+  
+  "ItemsTooltip": {
+    "message": "Maximum total number of search engine icons to be displayed.",
+    "description": ""
+  },
+
+  "MenuSize": {
+    "message": "Menu Size",
+    "description": ""
+  },
+  
+   "MenuSizeTooltip": {
+    "message": "Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)",
+    "description": ""
+  },
+  
+  "IconSize": {
+    "message": "Item Size",
+    "description": ""
+  },
+  
+  "IconSizeTooltip": {
+    "message": "Scaled size of search engine icons. At 200%, icons fill their container entirely",
+    "description": ""
+  },
+  
+  "Opening&ClosingHeader": {
+    "message": "Opening & Closing",
+    "description": ""
+  },
+  
+  "Opening&ClosingDescription": {
+    "message": "Choose how to open Quick Menu after selecting text",
+    "description": ""
+  },
+  
+   "Auto": {
+    "message": "Auto",
+    "description": ""
+  },
+  
+  "AutoTooltip": {
+    "message": "Open automatically",
+    "description": ""
+  },
+  
+   "EnableOnTextBoxes": {
+    "message": "Enable on Text Boxes",
+    "description": ""
+  },
+  
+  "EnableOnTextBoxesTooltip": {
+    "message": "Enable on Text Boxes",
+    "description": ""
+  },
+  
+   "Mouse": {
+    "message": "Mouse",
+    "description": ""
+  },
+  
+     "MouseTooltip": {
+    "message": "Open using a mouse button",
+    "description": ""
+  },
+  
+  "MouseDescription": {
+    "message": "Select your preferred method and button",
+    "description": ""
+  },
+  
+   "Hold": {
+    "message": "Hold",
+    "description": ""
+  },
+  
+    "HoldTooltip": {
+    "message": "Popup menu will open after holding the selected mouse button for ~0.25 seconds",
+    "description": ""
+  },
+  
+   "SearchOnMouseup": {
+    "message": "Search On Mouseup",
+    "description": ""
+  },
+  
+   "SearchOnMouseupTooltip": {
+    "message": "Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search",
+    "description": ""
+  },
+  
+   "Click": {
+    "message": "Click",
+    "description": ""
+  },
+  
+  "ClickTooltip": {
+    "message": "Popup menu will open on right-click.  Hold button for default context menu",
+    "description": ""
+  },
+  
+   "Keyboard": {
+    "message": "Keyboard",
+    "description": ""
+  },
+  
+  "KeyboardTooltip": {
+    "message": "Open using a keyboard key",
+    "description": ""
+  },
+  
+   "ChooseKey": {
+    "message": "Choose Key",
+    "description": ""
+  },
+  
+  "ChooseKeyTooltip": {
+    "message": "Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key",
+    "description": ""
+  },
+  
+   "CloseAfterSearch": {
+    "message": "Close After Search",
+    "description": ""
+  },
+  
+  "CloseAfterSearchTooltip": {
+    "message": "Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions",
+    "description": ""
+  },
+  
+   "CloseOnScroll": {
+    "message": "Close On Scroll / Mouse Wheel",
+    "description": ""
+  },
+  
+   "CloseOnScrollTooltip": {
+    "message": "Popup menu will close when scrolling using scrollbars or the mouse wheel",
+    "description": ""
+  },
+  
+  "MouseHelp": {
+    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly",
+    "description": ""
+  },
+
+  "Position": {
+    "message": "Position",
+    "description": ""
+  },
+  
+  "PositionDescription": {
+    "message": "choose where menu appears",
+    "description": ""
+  },
+  
+   "HorizontalOffset": {
+    "message": "Horizontal Offset",
+    "description": ""
+  },
+  
+  "HorizontalOffsetTooltip": {
+    "message": "Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left",
+    "description": ""
+  },
+
+  "VerticalOffset": {
+    "message": "Vertical Offset",
+    "description": ""
+  },
+  
+  "VerticalOffsetTooltip": {
+    "message": "Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up",
+    "description": ""
+  },
+
+  "Tools": {
+    "message": "Tools",
+    "description": ""
+  },
+  
+  "ToolsHelp": {
+    "message": "click to disable | drag to re-order",
+    "description": ""
+  },
+  
+  "tools_Close": {
+    "message": "Close menu",
+    "description": ""
+  },
+  
+  "tools_Disable": {
+    "message": "Disable Menu",
+    "description": ""
+  },
+  
+  "tools_Copy": {
+    "message": "Copy to clipboard",
+    "description": ""
+  },
+  
+  "tools_OpenAsLink": {
+    "message": "Open as link",
+    "description": ""
+  },
+  
+  "tools_Lock": {
+    "message": "Lock menu open (multi-search)",
+    "description": ""
+  },
+  
+  "ImportExportSettings": {
+    "message": "Import / Export Settings",
+    "description": ""
+  },
+  
+   "Import": {
+    "message": "Import",
+    "description": ""
+  },
+  
+   "Export": {
+    "message": "Export",
+    "description": ""
+  },
+  
+  "Add": {
+    "message": "Add",
+    "description": ""
+  },
+  
+  "RemoveAll": {
+    "message": "Remove All",
+    "description": ""
+  },
+  
+  "ShowHide": {
+    "message": "Show / Hide",
+    "description": ""
+  },
+  
+  "Bookmark": {
+    "message": "Bookmark",
+    "description": ""
+  },
+  
+  "Delete": {
+    "message": "Delete",
+    "description": ""
+  },
+  
+  "SearchEnginesManagerHelp": {
+    "message": "Drag & drop to re-order, click to edit",
+    "description": ""
+  },
+  
+  "ImportHeader": {
+    "message": "Import One-Click Search Engines",
+    "description": ""
+  },
+  
+  "ImportDescription": {
+    "message": "Browse to your profile folder and select your search.json.mozlz4 file",
+    "description": ""
+  },
+  
+  "ImportSelectFile": {
+    "message": "Select file ...",
+    "description": ""
+  },
+  
+  "AutoImportHeader": {
+    "message": "Automatic Importing",
+    "description": ""
+  },
+  
+  "EnableAutoImport": {
+    "message": "Enable Automatic Import (requires app)",
+    "description": ""
+  },
+  
+  "EnableAutoImportTooltip": {
+    "message": "Import One-Click Search Engines",
+    "description": ""
+  },
+  
+  "ProfilePath": {
+    "message": "Profile path",
+    "description": ""
+  },
+  
+  "Verify": {
+    "message": "Verify and Import",
+    "description": ""
+  },
+  
+  "Find": {
+    "message": "Find",
+    "description": ""
+  },
+  
+  "Create": {
+    "message": "Create",
+    "description": ""
+  },
+  
+  "Simple": {
+    "message": "Simple",
+    "description": ""
+  },
+  
+  "Advanced": {
+    "message": "Advanced",
+    "description": ""
+  },
+  
+  "Yes": {
+    "message": "Yes",
+    "description": ""
+  },
+  
+  "No": {
+    "message": "No",
+    "description": ""
+  },
+  
+  "Cancel": {
+    "message": "Cancel",
+    "description": ""
+  },
+  
+  "Save": {
+    "message": "Save",
+    "description": ""
+  },
+
+  "Name": {
+    "message": "Name",
+    "description": ""
+  },
+  
+  "NameTooltip": {
+    "message": "Unique name for this search engine",
+    "description": ""
+  },
+  
+  "Description": {
+    "message": "Description",
+    "description": ""
+  },
+  
+  "DescriptionTooltip": {
+    "message": "Short description of the search engine. 1024 characters max",
+    "description": ""
+  },
+  
+  "Template": {
+    "message": "Template",
+    "description": ""
+  },
+  
+  "TemplateTooltip": {
+    "message": "The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (i.e. http://example.com/?q={searchTerms})",
+    "description": ""
+  },
+  
+  "FormPath": {
+    "message": "Form Path",
+    "description": ""
+  },
+  
+  "FormPathTooltip": {
+    "message": "Typically the website homepage or the URL the form appears on",
+    "description": ""
+  },
+  
+  "POSTparams": {
+    "message": "POST params",
+    "description": ""
+  },
+  
+  "POSTparamsTooltip": {
+    "message": "List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method",
+    "description": ""
+  },
+  
+  "Icon": {
+    "message": "Icon URI",
+    "description": ""
+  },
+  
+  "IconTooltip": {
+    "message": "URI of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb",
+    "description": ""
+  },
+  
+  "Method": {
+    "message": "Method",
+    "description": ""
+  },
+  
+  "MethodTooltip": {
+    "message": "Form method",
+    "description": ""
+  },
+  
+  "Encoding": {
+    "message": "Encoding",
+    "description": ""
+  },
+  
+  "EncodingTooltip": {
+    "message": "Character encoding required by the search form. Typically UTF-8",
+    "description": ""
+  },
+  
+  "Test": {
+    "message": "Test",
+    "description": ""
+  },
+  
+  "NewEngineAdded": {
+    "message": "New search engine added to ContextSearch",
+    "description": ""
+  },
+  
+  "AlsoAdd": {
+    "message": "Also add to One-Click Search Engines?",
+    "description": ""
+  },
+  
+  "CannotCreate": {
+    "message": "Cannot create a search engine from this input",
+    "description": ""
+  },
+  
+  "OpenAdvanced": {
+    "message": "Open Advanced options?",
+    "description": ""
+  },
+  
+  "DidEngineInstall": {
+    "message": "Did the engine install correctly?",
+    "description": ""
+  },
+  
+  "RemovingEngine": {
+    "message": "Removing search engine",
+    "description": ""
+  },
+  
+  "CreateCustomSearch": {
+    "message": "Create Custom Search",
+    "description": ""
+  },
+  
+  "MustImport": {
+    "message": "If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser.",
+    "description": ""
+  },
+  
+  "MoreInfo": {
+    "message": "more info",
+    "description": ""
+  },
+  
+  "NewEngineImported": {
+    "message": "A new search engine was automatically imported to ContextSearch",
+    "description": ""
+  },
+  
+  "InstallOfficialTooltip": {
+    "message": "Install the official OpenSearch engine for the current website",
+    "description": ""
+  },
+  
+  "FindMycroftTooltip": {
+    "message": "Find OpenSearch engines at MycroftProject",
+    "description": ""
+  },
+  
+  "CreateCustomTooltip": {
+    "message": "Create a custom OpenSearch engine",
+    "description": ""
+  },
+  
+  "LoadingRemoteContent": {
+    "message": "Loading remote content",
+    "description": ""
+  },
+  
+  "LoadingRemoteContentFail": {
+    "message": "Failed to load $1 icon(s). This can occur when Tracking Protection is enabled",
+    "description": ""
+  },
+  
+  "LoadingRemoteContentTimeout": {
+    "message": "Fetching remote icons timed out. Some icons were not loaded.",
+    "description": ""
+  },
+  
+  "RemoveAllEnginesPrompt": {
+    "message": "Remove all search engines?",
+    "description": ""
+  },
+  
+  "EnterUniqueName": {
+    "message": "Enter a unique name for this search engine",
+    "description": ""
+  },
+  
+  "EngineExists": {
+    "message": "$1 exists.",
+    "description": ""
+  },
+  
+  "TemplateMissingeMessage": {
+    "message": "Unable to find a template for this search form. You can try doing a search and copying the resulting URL here, replacing your search terms with {searchTerms}",
+    "description": ""
+  },
+  
+  "TemplateIncludeError": {
+    "message": "Template must include {searchTerms}",
+    "description": ""
+  },
+
+  "TemplateURLError": {
+    "message": "Template must be an URL",
+    "description": ""
+  },
+
+  "DescriptionEmptyError": {
+    "message": "Must have a description",
+    "description": ""
+  },
+
+  "DescriptionSizeError": {
+    "message": "Description must be 1024 or fewer characters",
+    "description": ""
+  },
+  
+  "FormPathURLError": {
+    "message": "Form path must be an URL",
+    "description": ""
+  },
+  
+  "POSTIncludeError": {
+    "message": "POST params must include {searchTerms}",
+    "description": ""
+  },
+  
+  "IconURLError": {
+    "message": "Icon must be an URL",
+    "description": ""
+  },
+  
+  "IconLoadError": {
+    "message": "Icon failed to load",
+    "description": ""
+  },
+  
+  "EnterSearchTerms": {
+    "message": "Enter search terms",
+    "description": ""
+  },
+  
+  "BookmarksPermissionMessage": {
+    "message": "After closing this prompt you will receive a prompt to accept a new permission for \"Bookmarks\".\n\nAccepting will add a new folder \"ContextSearch Menu\" containing your current search engines in bookmarks under the \"Other Bookmarks\" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks.",
+    "description": ""
+  },
+  
+  "NativeAppImportError": {
+    "message": "Failed to load file ($1) Is app installed?",
+    "description": ""
+  },
+  
+  "ImportSettingsNotFoundAlert": {
+    "message": "ContextSearch settings not found!",
+    "description": ""
+  },
+  
+  "InvalidJSONAlert": {
+    "message": "file is not valid JSON",
+    "description": ""
+  },
+  
+  "ImportSuccessful": {
+    "message": "Import successful",
+    "description": ""
+  },
+  
+  "WhereAreMyEngines": {
+    "message": "Where are my search engines?",
+    "description": ""
+  },
+  
+  "ErrorParsing": {
+    "message": "Error parsing $1",
+    "description": ""
+  },
+  
+  "_________": {
+    "message": "",
+    "description": ""
+  }
+  
+}
