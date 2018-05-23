@@ -192,8 +192,7 @@ document.addEventListener('mouseup', (ev) => {
 		!quickMenuObject.mouseDownTimer ||
 		getSelectedText(ev.target) === ""
 	) return false;
-			
-	console.log(quickMenuObject.mouseDownTimer);
+
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	ev.stopPropagation();

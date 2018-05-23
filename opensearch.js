@@ -1,7 +1,9 @@
-function replaceOpenSearchParams(in_str, searchterms) {
+function replaceOpenSearchParams(in_str, searchterms, url) {
 	// replace OpenSearch params
 	searchterms = searchterms || "";
 	
+	let domains = getDomains(url);
+		
 	return in_str
 		.replace(/{searchTerms}/g, searchterms)
 		.replace(/{count[\?]?}/g, "50")
@@ -10,6 +12,8 @@ function replaceOpenSearchParams(in_str, searchterms) {
 		.replace(/{language[\?]?}/g, (navigator) ? navigator.language || navigator.userLanguage : "")
 		.replace(/{inputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
 		.replace(/{outputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
+		.replace(/{subdomain}/g, domains.subdomain || "")
+		.replace(/{domain}/g, domains.domain || "")
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
 		.replace(/{.+?}/g, ""); // all others
@@ -71,5 +75,35 @@ function imageToBase64(image, maxSize) {
 		
 		return c.toDataURL();
 	} 
+	
+}
+
+function getDomains(url) {
+	
+	var countryCodes = ["af","ax","al","dz","as","ad","ao","ai","aq","ag","ar","am","aw","ac","au","at","az","bs","bh","bd","bb","eus","by","be","bz","bj","bm","bt","bo","bq","ba","bw","bv","br","io","vg","bn","bg","bf","mm","bi","kh","cm","ca","cv","cat","ky","cf","td","cl","cn","cx","cc","co","km","cd","cg","ck","cr","ci","hr","cu","cw","cy","cz","dk","dj","dm","do","tl","ec","eg","sv","gq","er","ee","et","eu","fk","fo","fm","fj","fi","fr","gf","pf","tf","ga","gal","gm","ps","ge","de","gh","gi","gr","gl","gd","gp","gu","gt","gg","gn","gw","gy","ht","hm","hn","hk","hu","is","in","id","ir","iq","ie","im","il","it","jm","jp","je","jo","kz","ke","ki","not","kw","kg","la","lv","lb","ls","lr","ly","li","lt","lu","mo","mk","mg","mw","my","mv","ml","mt","mh","mq","mr","mu","yt","mx","md","mc","mn","me","ms","ma","mz","mm","na","nr","np","nl","nc","nz","ni","ne","ng","nu","nf","nctr","kp","mp","no","om","pk","pw","ps","pa","pg","py","pe","ph","pn","pl","pt","pr","qa","ro","ru","rw","re","bq","bl","sh","kn","lc","mf","pm","vc","ws","sm","st","sa","sn","rs","sc","sl","sg","bq","sx","sk","si","sb","so","so","za","gs","kr","ss","es","lk","sd","sr","sj","sz","se","ch","sy","tw","tj","tz","th","tg","tk","to","tt","tn","tr","tm","tc","tv","ug","ua","ae","uk","us","vi","uy","uz","vu","va","ve","vn","wf","eh","ye","zm","zw"];
+	
+	var _URL = function() {
+		try {
+			return new URL(url);
+		} catch (e) {
+			return null;
+		}
+	}();
+	
+	var subdomain = _URL.hostname || "";
+	var domain = function() {
+		if (!subdomain) return "";
+		
+		var parts = subdomain.split('.');
+		
+		let code = parts[parts.length-1];
+			
+		if (countryCodes.includes(code) && parts.length > 2)
+			return parts[parts.length-3] + '.' + parts[parts.length-2] + '.' + parts[parts.length-1];
+		else
+			return parts[parts.length-2] + '.' + parts[parts.length-1];			
+	}();
+	
+	return {domain: domain, subdomain:subdomain};
 	
 }

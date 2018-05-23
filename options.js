@@ -387,7 +387,7 @@ function buildSearchEngineContainer(searchEngines) {
 		}
 		
 		let _delete = document.createElement('img');
-		_delete.title = browser.i18n.getMessage('options_Delete').toLowerCase();
+		_delete.title = browser.i18n.getMessage('Delete').toLowerCase();
 		_delete.className = 'delete';
 		_delete.src = '/icons/delete.png';
 		_delete.onclick = function(e) {
@@ -1258,6 +1258,13 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 		textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
 	}
+	
+	// add locale-specific styling
+	var link = document.createElement( "link" );
+	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.getElementsByTagName( "head" )[0].appendChild( link );
 	
 	// set up localized help pages
 	let help = document.getElementById('helpTab');

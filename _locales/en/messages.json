@@ -185,7 +185,7 @@
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "Enable on Text Boxes",
+    "message": "Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups.",
     "description": ""
   },
   
@@ -731,6 +731,16 @@
   
   "ErrorParsing": {
     "message": "Error parsing $1",
+    "description": ""
+  },
+  
+  "AddCustomSearch": {
+    "message": "Add Custom Search",
+    "description": ""
+  },
+  
+  "SearchFor": {
+    "message": "Search for",
     "description": ""
   },
   

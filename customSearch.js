@@ -759,6 +759,7 @@ function listenForFocusAndPromptToImport() {
 	
 }
 
+// i18n string replacement and styles
 document.addEventListener('DOMContentLoaded', () => {
 
 	function traverse(node) {
@@ -788,6 +789,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	for (let el of i18n_tooltips) {
 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
 	}
+	
+	var link = document.createElement( "link" );
+	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
+	link.type = "text/css";
+	link.rel = "stylesheet";
+	document.getElementsByTagName( "head" )[0].appendChild( link );
 	
 });
 

@@ -93,7 +93,7 @@ function notify(message, sender, sendResponse) {
 			if (searchTerms === '') break;
 			if (searchTerms.length > 18) 
 				searchTerms = searchTerms.substring(0,15) + "...";
-			browser.contextMenus.update("search_engine_menu", {title: "Search for \"" + searchTerms + "\""});
+			browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor") + "\"" + searchTerms + "\""});
 			break;
 			
 		case "addSearchEngine":
@@ -158,7 +158,7 @@ function notify(message, sender, sendResponse) {
 				
 			browser.contextMenus.create({
 				id: "add_engine",
-				title: "Add Custom Search",
+				title: browser.i18n.getMessage("AddCustomSearch"),
 				contexts: ["editable"]
 			});
 			
@@ -327,9 +327,9 @@ function openSearch(details) {
 	
 	// legacy fix
 	se.queryCharset = se.queryCharset || "UTF-8";
-	
+		
 	var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
-	var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri);
+	var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri, tab.url);
 	
 	// if using Open As Link from quick menu
 	if (openUrl) {

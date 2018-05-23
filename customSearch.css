@@ -131,7 +131,7 @@ FORM {
 .iconButton {
 	text-align:left;
 	display:inline-block;
-	width:92px;
+	min-width:92px;
 	height:24px;
 	margin:2px;
 	color:white;
