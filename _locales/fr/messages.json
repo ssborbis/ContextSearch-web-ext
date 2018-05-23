@@ -1,0 +1,752 @@
+{
+    
+  "Settings": {
+    "message": "Configuration",
+    "description": ""
+  },
+  
+  "Support": {
+    "message": "Assistance",
+    "description": ""
+  },
+  
+   "Source": {
+    "message": "Source",
+    "description": ""
+  },
+  
+   "Menus": {
+    "message": "Menus",
+    "description": "menus tab label"
+  },
+  
+   "SearchEngines": {
+    "message": "Moteurs de recherche",
+    "description": "search engines tab label"
+  },
+  
+   "Help": {
+    "message": "Aide",
+    "description": "help tab label"
+  },
+  
+   "ContextMenu": {
+    "message": "Menu contextuel",
+    "description": ""
+  },
+  
+   "AddCustomSearchMenu": {
+    "message": "Ajouter l’entrée « Ajouter ce moteur de recherche »",
+    "description": ""
+  },
+  
+  "AddCustomSearchMenuTooltip": {
+    "message": "Activer l’entrée de menu contextuel « Ajouter ce moteur de recherche » sur les éléments INPUT. Décocher pour éviter un menu à plusieurs niveaux dans certains cas.",
+    "description": ""
+  },
+  
+   "UseBookmarksMenu": {
+    "message": "Utiliser le menu des marque-pages",
+    "description": ""
+  },
+    
+   "UseBookmarksMenuTooltip": {
+    "message": "Contrôler les moteurs de recherche affichés dans le menu contextuel en utilisant un dossier de marque-pages. Cette option autorise les séparateurs et les sous-dossiers. Remarque : un marque-page renommé ne fonctionnera plus ; un marque-page supprimé peut être rétabli dans les options à l’onglet « Moteurs de recherche ».",
+    "description": ""
+  },
+   "QuickMenu": {
+    "message": "Menu rapide",
+    "description": ""
+  },
+  
+   "QuickMenuNote": {
+    "message": "Le menu rapide est désactivé sur « addons.mozilla.org ». Le menu contextuel est activé si l’ouverture du menu rapide échoue.",
+    "description": ""
+  },
+  
+   "SearchActionsHeader": {
+    "message": "Actions",
+    "description": ""
+  },
+  
+   "SearchActionsCurrentTab": {
+    "message": "Ouvrir dans l’onglet courant",
+    "description": ""
+  },
+  
+   "SearchActionsNewTab": {
+    "message": "Ouvrir dans un nouvel onglet",
+    "description": ""
+  },
+  
+   "SearchActionsBackgroundTab": {
+    "message": "Ouvrir dans un onglet en arrière-plan",
+    "description": ""
+  },
+  
+   "SearchActionsNewWindow": {
+    "message": "Ouvrir dans une nouvelle fenêtre",
+    "description": ""
+  },
+  
+   "SearchActionsIncognitoWindow": {
+    "message": "Ouvrir dans une fenêtre de navigation privée",
+    "description": ""
+  },
+  
+   "SearchActionsNoAction": {
+    "message": "Aucune action",
+    "description": ""
+  },
+  
+   "LeftButton": {
+    "message": "Clic gauche",
+    "description": ""
+  },
+  
+   "MiddleButton": {
+    "message": "Clic central",
+    "description": ""
+  },
+  
+   "RightButton": {
+    "message": "Clic droit",
+    "description": ""
+  },
+  
+   "Look&LayoutHeader": {
+    "message": "Apparence et disposition",
+    "description": ""
+  },
+  
+   "Columns": {
+    "message": "Nombre de colonnes",
+    "description": ""
+  },
+  
+  "ColumnsTooltip": {
+    "message": "Nombre maximum d’icônes de moteur de recherche sur une ligne",
+    "description": ""
+  },
+  
+  "Items": {
+    "message": "Nombre d’éléments",
+    "description": ""
+  },
+  
+  "ItemsTooltip": {
+    "message": "Nombre maximum d’icônes de moteur de recherche affichées en tout",
+    "description": ""
+  },
+
+  "MenuSize": {
+    "message": "Taille du menu",
+    "description": ""
+  },
+  
+   "MenuSizeTooltip": {
+    "message": "Ajustement de la taille du menu entier. Une valeur supérieure à 100 % permet de le grossir (bien en haute résolution).",
+    "description": ""
+  },
+  
+  "IconSize": {
+    "message": "Taille des icônes",
+    "description": ""
+  },
+  
+  "IconSizeTooltip": {
+    "message": "Ajustement de la taille des icônes des moteurs de recherche. À 200 %, les icônes remplissent leur case.",
+    "description": ""
+  },
+  
+  "Opening&ClosingHeader": {
+    "message": "Ouverture et fermeture",
+    "description": ""
+  },
+  
+  "Opening&ClosingDescription": {
+    "message": "Choisir le mode d’ouverture du menu rapide à la sélection d’un texte",
+    "description": ""
+  },
+  
+   "Auto": {
+    "message": "Automatique",
+    "description": ""
+  },
+  
+  "AutoTooltip": {
+    "message": "Ouverture automatique",
+    "description": ""
+  },
+  
+   "EnableOnTextBoxes": {
+    "message": "Activer sur les zones de texte",
+    "description": ""
+  },
+  
+  "EnableOnTextBoxesTooltip": {
+    "message": "Activer le menu sur les éléments TEXTAREA et INPUT. Décocher pour empêcher l’intrusion de fenêtres indésirables.",
+    "description": ""
+  },
+  
+   "Mouse": {
+    "message": "Souris",
+    "description": ""
+  },
+  
+     "MouseTooltip": {
+    "message": "Ouverture à la souris",
+    "description": ""
+  },
+  
+  "MouseDescription": {
+    "message": "Choisir la méthode et le bouton",
+    "description": ""
+  },
+  
+   "Hold": {
+    "message": "Clic long sur ",
+    "description": ""
+  },
+  
+    "HoldTooltip": {
+    "message": "Le menu s’ouvre en maintenant appuyé le bouton de la souris sélectionné pendant environ un quart de seconde.",
+    "description": ""
+  },
+  
+   "SearchOnMouseup": {
+    "message": "Rechercher au relâchement du bouton",
+    "description": ""
+  },
+  
+   "SearchOnMouseupTooltip": {
+    "message": "La recherche s’effectue quand le bouton de la souris est relâché : vous maintenez le bouton enfoncé pour ouvrir le menu et vous le relâchez au-dessus du moteur de recherche choisi.",
+    "description": ""
+  },
+  
+   "Click": {
+    "message": "Clic sur ",
+    "description": ""
+  },
+  
+  "ClickTooltip": {
+    "message": "Le menu s’ouvre sur clic droit. Maintenir le bouton appuyé pour ouvrir le menu contextuel normal.",
+    "description": ""
+  },
+  
+   "Keyboard": {
+    "message": "Clavier",
+    "description": ""
+  },
+  
+  "KeyboardTooltip": {
+    "message": "Ouverture au clavier",
+    "description": ""
+  },
+  
+   "ChooseKey": {
+    "message": "Appui sur la touche ",
+    "description": ""
+  },
+  
+  "ChooseKeyTooltip": {
+    "message": "Sélectionner le texte et appuyer sur la touche choisie pour ouvrir le menu (utiliser le bouton ci-contre pour la définir).",
+    "description": ""
+  },
+  
+   "CloseAfterSearch": {
+    "message": "Fermer au lancement de la recherche",
+    "description": ""
+  },
+  
+  "CloseAfterSearchTooltip": {
+    "message": "Le menu se ferme après avoir cliqué sur une icône. Décocher en cas de recherche fréquente avec plusieurs moteurs de recherche ou par choix d’une fermeture manuelle. Cette option peut être remplacée par « Garder le menu ouvert » à la rubrique « Actions ».",
+    "description": ""
+  },
+  
+   "CloseOnScroll": {
+    "message": "Fermer avec la molette de la souris ou par défilement",
+    "description": ""
+  },
+  
+   "CloseOnScrollTooltip": {
+    "message": "Le menu se ferme lors de l’utilisation de barres de défilement ou de la molette de la souris.",
+    "description": ""
+  },
+  
+  "MouseHelp": {
+    "message": "Il se peut que les utilisateurs de Linux et de MacOS X aient à régler l’option « ui.context_menus.after_mouseup » sur « true » dans « about:config » pour que les actions à la souris fonctionnent correctement.",
+    "description": ""
+  },
+
+  "Position": {
+    "message": "Position",
+    "description": ""
+  },
+  
+  "PositionDescription": {
+    "message": "Choisir la position du menu",
+    "description": ""
+  },
+  
+   "HorizontalOffset": {
+    "message": "Décalage horizontal",
+    "description": ""
+  },
+  
+  "HorizontalOffsetTooltip": {
+    "message": "Décalage horizontal du menu en pixels. Une valeur positive décale le menu vers la droite, une valeur négative vers la gauche.",
+    "description": ""
+  },
+
+  "VerticalOffset": {
+    "message": "Décalage vertical",
+    "description": ""
+  },
+  
+  "VerticalOffsetTooltip": {
+    "message": "Décalage vertical du menu en pixels. Une valeur positive décale le menu vers le bas, une valeur négative vers le haut.",
+    "description": ""
+  },
+
+  "Tools": {
+    "message": "Outils",
+    "description": ""
+  },
+  
+  "ToolsHelp": {
+    "message": "Cliquer pour désactiver | Glisser pour réorganiser",
+    "description": ""
+  },
+  
+  "tools_Close": {
+    "message": "Fermer le menu",
+    "description": ""
+  },
+  
+  "tools_Disable": {
+    "message": "Désactiver le menu",
+    "description": ""
+  },
+  
+  "tools_Copy": {
+    "message": "Copier dans le presse-papiers",
+    "description": ""
+  },
+  
+  "tools_OpenAsLink": {
+    "message": "Ouvrir en tant que lien",
+    "description": ""
+  },
+  
+  "tools_Lock": {
+    "message": "Garder le menu ouvert (recherche multiple)",
+    "description": ""
+  },
+  
+  "ImportExportSettings": {
+    "message": "Import et export de la configuration",
+    "description": ""
+  },
+  
+   "Import": {
+    "message": "Importer",
+    "description": ""
+  },
+  
+   "Export": {
+    "message": "Exporter",
+    "description": ""
+  },
+  
+  "Add": {
+    "message": "Ajouter",
+    "description": ""
+  },
+  
+  "RemoveAll": {
+    "message": "Retirer tout",
+    "description": ""
+  },
+  
+  "ShowHide": {
+    "message": "Afficher ou masquer",
+    "description": ""
+  },
+  
+  "Bookmark": {
+    "message": "Marquer",
+    "description": ""
+  },
+  
+  "Delete": {
+    "message": "Supprimer",
+    "description": ""
+  },
+  
+  "SearchEnginesManagerHelp": {
+    "message": "Glisser-déposer pour réordonner, cliquer pour éditer",
+    "description": ""
+  },
+  
+  "ImportHeader": {
+    "message": "Importation des moteurs de recherche accessibles en un clic",
+    "description": ""
+  },
+  
+  "ImportDescription": {
+    "message": "Sélectionner le fichier « search.json.mozlz4 » dans le dossier du profil Firefox :",
+    "description": ""
+  },
+  
+  "ImportSelectFile": {
+    "message": "Parcourir…",
+    "description": ""
+  },
+  
+  "AutoImportHeader": {
+    "message": "Importation automatique",
+    "description": ""
+  },
+  
+  "EnableAutoImport": {
+    "message": "Activer l’importation automatique (application requise)",
+    "description": ""
+  },
+  
+  "EnableAutoImportTooltip": {
+    "message": "Importer automatiquement les moteurs OpenSearch. Nécessite l’installation d’une application. Consulter l’aide pour plus de détails.",
+    "description": ""
+  },
+  
+  "ProfilePath": {
+    "message": "Chemin du profil :",
+    "description": ""
+  },
+  
+  "Verify": {
+    "message": "Vérifier et importer",
+    "description": ""
+  },
+  
+  "Find": {
+    "message": "Trouver",
+    "description": ""
+  },
+  
+  "Create": {
+    "message": "Créer",
+    "description": ""
+  },
+  
+  "Simple": {
+    "message": "Mode simple",
+    "description": ""
+  },
+  
+  "Advanced": {
+    "message": "Mode avancé",
+    "description": ""
+  },
+  
+  "Yes": {
+    "message": "Oui",
+    "description": ""
+  },
+  
+  "No": {
+    "message": "Non",
+    "description": ""
+  },
+  
+  "Cancel": {
+    "message": "Annuler",
+    "description": ""
+  },
+  
+  "Save": {
+    "message": "Valider",
+    "description": ""
+  },
+
+  "Name": {
+    "message": "Nom",
+    "description": ""
+  },
+  
+  "NameTooltip": {
+    "message": "Nom unique de ce moteur de recherche",
+    "description": ""
+  },
+  
+  "Description": {
+    "message": "Description",
+    "description": ""
+  },
+  
+  "DescriptionTooltip": {
+    "message": "Brève description de ce moteur de recherche (1 024 caractères maximum)",
+    "description": ""
+  },
+  
+  "Template": {
+    "message": "Modèle",
+    "description": ""
+  },
+  
+  "TemplateTooltip": {
+    "message": "URL de la fonction de soumission du formulaire (comportant {searchTerms} pour un moteur GET, par exemple « http://exemple.com/?q={searchTerms} »)",
+    "description": ""
+  },
+  
+  "FormPath": {
+    "message": "Adresse du formulaire",
+    "description": ""
+  },
+  
+  "FormPathTooltip": {
+    "message": "Généralement la page d’accueil du site web ou l’URL de la page du formulaire",
+    "description": ""
+  },
+  
+  "POSTparams": {
+    "message": "Paramètres POST",
+    "description": ""
+  },
+  
+  "POSTparamsTooltip": {
+    "message": "Liste des paramètres et valeurs POST séparés par des esperluettes (par exemple « q={searchTerms}&lang=fr&maxresults=100 ») et applicables uniquement si la méthode POST est utilisée'>",
+    "description": ""
+  },
+  
+  "Icon": {
+    "message": "Icône",
+    "description": ""
+  },
+  
+  "IconTooltip": {
+    "message": "URI de l’icône à utiliser (image de taille inférieure à 64x64 pixels et 10 ko)",
+    "description": ""
+  },
+  
+  "Method": {
+    "message": "Méthode",
+    "description": ""
+  },
+  
+  "MethodTooltip": {
+    "message": "Méthode du formulaire",
+    "description": ""
+  },
+  
+  "Encoding": {
+    "message": "Encodage",
+    "description": ""
+  },
+  
+  "EncodingTooltip": {
+    "message": "Encodage des caractères requis par le formulaire de recherche (UTF-8 généralement)",
+    "description": ""
+  },
+  
+  "Test": {
+    "message": "Tester",
+    "description": ""
+  },
+  
+  "NewEngineAdded": {
+    "message": "Moteur de recherche ajouté.",
+    "description": ""
+  },
+  
+  "AlsoAdd": {
+    "message": "L’ajouter également aux moteurs de recherche accessibles en un clic ?",
+    "description": ""
+  },
+  
+  "CannotCreate": {
+    "message": "Impossible de créer un moteur de recherche avec ces informations.",
+    "description": ""
+  },
+  
+  "OpenAdvanced": {
+    "message": "Ouvrir le mode avancé ?",
+    "description": ""
+  },
+  
+  "DidEngineInstall": {
+    "message": "Le moteur s’est-il correctement installé ?",
+    "description": ""
+  },
+  
+  "RemovingEngine": {
+    "message": "Suppression du moteur de recherche",
+    "description": ""
+  },
+  
+  "CreateCustomSearch": {
+    "message": "Création du moteur de recherche",
+    "description": ""
+  },
+  
+  "MustImport": {
+    "message": "Si un moteur OpenSearch a été installé, il est nécessaire de l’importer pour pouvoir l’utiliser dans ContextSearch.",
+    "description": ""
+  },
+  
+  "MoreInfo": {
+    "message": "en savoir plus",
+    "description": ""
+  },
+  
+  "NewEngineImported": {
+    "message": ">Un nouveau moteur de recherche a été automatiquement importé.",
+    "description": ""
+  },
+  
+  "InstallOfficialTooltip": {
+    "message": "Installer le moteur OpenSearch officiel de ce site web",
+    "description": ""
+  },
+  
+  "FindMycroftTooltip": {
+    "message": "Rechercher le moteur de recherche chez MycroftProject",
+    "description": ""
+  },
+  
+  "CreateCustomTooltip": {
+    "message": "Créer le moteur de recherche",
+    "description": ""
+  },
+  
+  "LoadingRemoteContent": {
+    "message": "Chargement du contenu distant",
+    "description": ""
+  },
+  
+  "LoadingRemoteContentFail": {
+    "message": "Le chargement de $1 icônes a échoué. Cela peut arriver quand la protection contre le pistage est activée.",
+    "description": ""
+  },
+  
+  "LoadingRemoteContentTimeout": {
+    "message": "La récupération des icônes distantes a été interrompue. Certaines icônes n’ont pas été chargées.",
+    "description": ""
+  },
+  
+  "RemoveAllEnginesPrompt": {
+    "message": "Retirer tous les moteurs de recherche ?",
+    "description": ""
+  },
+  
+  "EnterUniqueName": {
+    "message": "Donner un nom unique à ce moteur de recherche.",
+    "description": ""
+  },
+  
+  "EngineExists": {
+    "message": "Le moteur de recherche $1 existe déjà.",
+    "description": ""
+  },
+  
+  "TemplateMissingeMessage": {
+    "message": "Impossible de trouver un modèle pour ce formulaire de recherche. Essayez d’effectuer une recherche et de copier l’URL obtenue ici en remplaçant les termes de votre recherche par {searchTerms}.",
+    "description": ""
+  },
+  
+  "TemplateIncludeError": {
+    "message": "{searchTerms} doit être inclus dans le modèle.",
+    "description": ""
+  },
+
+  "TemplateURLError": {
+    "message": "Le modèle doit être une URL.",
+    "description": ""
+  },
+
+  "DescriptionEmptyError": {
+    "message": "Une description doit être donnée.",
+    "description": ""
+  },
+
+  "DescriptionSizeError": {
+    "message": "La description doit comporter au maximum 1 024 caractères.",
+    "description": ""
+  },
+  
+  "FormPathURLError": {
+    "message": "Le chemin du formulaire doit être une URL.",
+    "description": ""
+  },
+  
+  "POSTIncludeError": {
+    "message": "{searchTerms} doit être inclus dans les paramètres POST.",
+    "description": ""
+  },
+  
+  "IconURLError": {
+    "message": "L’icône doit être une URL.",
+    "description": ""
+  },
+  
+  "IconLoadError": {
+    "message": "Le chargement de l’icône a échoué.",
+    "description": ""
+  },
+  
+  "EnterSearchTerms": {
+    "message": "Saisir les termes de la recherche :",
+    "description": ""
+  },
+  
+  "BookmarksPermissionMessage": {
+    "message": "À la fermeture de cette fenêtre, il vous sera demandé l’autorisation d’accéder aux marque-pages.\n\nSi vous acceptez, un sous-dossier nommé « Recherche contextuelle » contenant vos moteurs de recherche actuels sera ajouté au dossier « Autres marque-pages ». Vous pourrez y regrouper vos moteurs dans des sous-dossiers et ajouter des séparateurs.\n\nNe renommez pas les marque-pages, sinon les moteurs de recherche cesseront de fonctionner. Vous pourrez réinsérer des moteurs supprimés dans les options de ContextSearch, à l’onglet « Moteurs de recherche ». Vous pouvez ajouter ou supprimer des marque-pages en faisant un clic droit sur leur icône dans la liste.",
+    "description": ""
+  },
+  
+  "NativeAppImportError": {
+    "message": "Le chargement du fichier a échoué ($1). L’application est-elle installée ?",
+    "description": ""
+  },
+  
+  "ImportSettingsNotFoundAlert": {
+    "message": "Configuration de ContextSearch introuvable !",
+    "description": ""
+  },
+  
+  "InvalidJSONAlert": {
+    "message": "Pas un fichier JSON valide",
+    "description": ""
+  },
+  
+  "ImportSuccessful": {
+    "message": "Importation réussie",
+    "description": ""
+  },
+  
+  "WhereAreMyEngines": {
+    "message": "Où sont mes moteurs de recherche ?",
+    "description": ""
+  },
+  
+  "ErrorParsing": {
+    "message": "Erreur d’analyse de $1",
+    "description": ""
+  },
+  
+  "SearchFor": {
+    "message": "Rechercher",
+    "description": ""
+  },
+  
+  "AddCustomSearch": {
+    "message": "Ajouter ce moteur de recherche",
+    "description": ""
+  },
+  
+  "_________": {
+    "message": "",
+    "description": ""
+  }
+  
+}
