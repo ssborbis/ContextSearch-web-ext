@@ -790,6 +790,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
 	}
 	
+	console.log(browser.i18n.getUILanguage());
+	
 	var link = document.createElement( "link" );
 	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
 	link.type = "text/css";

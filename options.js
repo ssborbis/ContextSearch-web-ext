@@ -1260,6 +1260,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
 	}
 	
+	
 	// add locale-specific styling
 	var link = document.createElement( "link" );
 	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');

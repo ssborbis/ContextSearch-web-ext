@@ -107,6 +107,10 @@
 				vertical-align:middle;
 				height:30px;
 			}
+			.slider_label {
+				display:inline-block;
+				width:175px;
+			}
 			.slider {
 				-webkit-appearance: none;
 				height: 12px;
@@ -891,14 +895,14 @@
 					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.' data-i18n_tooltip='Items'>?</span>
 				</p>
 				<p>
-					<div style='display:inline-block;width:175px'>
+					<div class='slider_label'>
 					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
 					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)' data-i18n_tooltip='MenuSize'>?</span>
 					</div>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".05" value="1" />
 				</p>
 				<p>
-					<div style='display:inline-block;width:175px'>
+					<div class='slider_label'>
 					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='IconSize'>Icon Size</label>
 					<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely' data-i18n_tooltip='IconSize'>?</span>
 					</div>
