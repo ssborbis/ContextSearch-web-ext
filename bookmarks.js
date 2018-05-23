@@ -8,7 +8,7 @@ class CSBookmarks {
 			
 			if (bookmarks.length === 0) {
 				browser.bookmarks.create({
-					title: 'ContextSearch Menu',
+					title: browser.i18n.getMessage("ContextSearchMenu"),
 					type: 'folder'
 				}).then( (bm) => {
 					return bm;
@@ -39,7 +39,7 @@ class CSBookmarks {
 			console.log(`An error: ${error}`);	
 		}
 
-		var gettingBookmarks = browser.bookmarks.search({title: "ContextSearch Menu"});
+		var gettingBookmarks = browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")});
 		gettingBookmarks.then(onFulfilled, onRejected);
 	}
 	
@@ -47,7 +47,7 @@ class CSBookmarks {
 		
 		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
 		
-		return browser.bookmarks.search({title: "ContextSearch Menu"}).then((bookmarks) => {
+		return browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")}).then((bookmarks) => {
 
 			if (bookmarks.length === 0) return false;
 			return bookmarks[0];

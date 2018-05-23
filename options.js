@@ -44,7 +44,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				if (details.hasFailedCount) {
 					statusMessage({
 						img: "icons/alert.png",
-						msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("$1", details.hasFailedCount)
+						msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount)
 					//	msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
 					});
 				} else if (details.hasTimedOut) {
@@ -123,7 +123,7 @@ function buildSearchEngineContainer(searchEngines) {
 			for (let engine of searchEngines) {
 				if (engine.title == shortName) {
 					console.log(engine.title + "\t" + shortName);
-					msg = browser.i18n.getMessage("EngineExists").replace("$1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName");
+					msg = browser.i18n.getMessage("EngineExists").replace("%1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName");
 					found = true;
 					break;
 				}
@@ -843,7 +843,7 @@ function checkSearchJsonPath() {
 	function onError(error) {
 		console.log(error);
 		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-		el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("$1", error.message);
+		el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("%1", error.message);
 		el.style.color = 'red';
 	}
 	
@@ -1028,13 +1028,13 @@ function buildToolIcons() {
 			saveOptions();
 		});
 		
-		let orig_text = document.getElementById('t_toolIcons').innerText;
+		let t_toolIcons = document.getElementById('t_toolIcons');
 		img.addEventListener('mouseover', (e) => {
-			document.getElementById('t_toolIcons').innerText = e.target.dataset.title;
+			t_toolIcons.innerText = e.target.dataset.title;
 		});
 		
 		img.addEventListener('mouseout', (e) => {
-			document.getElementById('t_toolIcons').innerText = orig_text;
+			t_toolIcons.innerText = browser.i18n.getMessage(t_toolIcons.dataset.i18n);
 		});
 
 		document.getElementById('toolIcons').appendChild(img);
@@ -1051,13 +1051,14 @@ document.addEventListener("DOMContentLoaded", () => {
 			saveOptions();
 		});
 		
-		let orig_text = document.getElementById('t_position').innerText;
+		let t_position = document.getElementById('t_position');
 		el.addEventListener('mouseover', (e) => {
-			document.getElementById('t_position').innerText = e.target.dataset.position + " of cursor";
+			let parts = e.target.dataset.position.split(" ");
+			t_position.innerText = browser.i18n.getMessage("PositionRelativeToCursor").replace("%1", browser.i18n.getMessage(parts[0])).replace("%2",browser.i18n.getMessage(parts[1]));
 		});
 		
 		el.addEventListener('mouseout', (e) => {
-			document.getElementById('t_position').innerText = orig_text;
+			t_position.innerText = browser.i18n.getMessage(t_position.dataset.i18n);
 		});
 		
 	}
@@ -1124,7 +1125,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	
 	let msgDiv = document.getElementById('d_openOnDescription');
-	msgDiv.dataset.originalText = msgDiv.innerText;
+//	msgDiv.dataset.originalText = msgDiv.dataset.i18n;
 	
 	for (let el of document.getElementsByClassName('checkboxOpeningChoice')) {
 		el.addEventListener('mouseenter', (e) => {
@@ -1132,7 +1133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 		
 		el.addEventListener('mouseleave', (e) => {
-			msgDiv.innerText = msgDiv.dataset.originalText;
+			msgDiv.innerText = browser.i18n.getMessage(msgDiv.dataset.i18n);
 		});
 	}
 });

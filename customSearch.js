@@ -287,14 +287,14 @@ function addSearchEnginePopup(data) {
 		
 		// check if name exists and alert
 		if (hasDuplicateName(shortname)) {
-			el.querySelector('label').firstChild.textContent = 'Name exists';
+			el.querySelector('label').firstChild.textContent = browser.i18n.getMessage("NameExists");
 			el.querySelector('label').style.color = 'red';
 			input.style.borderColor = 'pink';
 			return;
 		}
 		
 		if (!shortname.trim()) {
-			el.querySelector('label').firstChild.textContent = 'Invalid name';
+			el.querySelector('label').firstChild.textContent = browser.i18n.getMessage("NameInvalid");
 			el.querySelector('label').style.color = 'red';
 			input.style.borderColor = 'pink';
 			return;
@@ -524,7 +524,7 @@ function addSearchEnginePopup(data) {
 			readOpenSearchUrl( data.openSearchHref, (xml) => {
 
 				if (!xml) {
-					alert(browser.i18n.getMessage("ErrorParsing").replace("$1", data.openSearchHref));
+					alert(browser.i18n.getMessage("ErrorParsing").replace("%1", data.openSearchHref));
 					return;
 				}
 				
@@ -533,12 +533,12 @@ function addSearchEnginePopup(data) {
 					let se = details.searchEngines[0];
 				
 					if (!se) {
-						alert(browser.i18n.getMessage("ErrorParsing").replace("$1", data.openSearchHref));
+						alert(browser.i18n.getMessage("ErrorParsing").replace("%1", data.openSearchHref));
 						return;
 					}
 					
 					if (hasDuplicateName(se.title)) {
-						alert(browser.i18n.getMessage("EngineExists").replace("$1", se.title));
+						alert(browser.i18n.getMessage("EngineExists").replace("%1", se.title));
 						return;
 					}
 					
@@ -586,12 +586,12 @@ function addSearchEnginePopup(data) {
 		
 		// Check bad form values
 		if (form.shortname.value.trim() == "") {
-			alert('Must have a name');
+			alert(browser.i18n.getMessage("NameInvalid"));
 			return;
 		}
 		for (let se of userOptions.searchEngines) {
 			if (se.title == form.shortname.value) {
-				alert(browser.i18n.getMessage("EngineExists").replace("$1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName"));
+				alert(browser.i18n.getMessage("EngineExists").replace("%1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName"));
 				return;
 			}
 		}

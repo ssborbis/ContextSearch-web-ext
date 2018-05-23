@@ -619,7 +619,7 @@ function makeQuickMenu() {
 		switch (tool.name) {
 			
 			case "copy": // clipboard
-				let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), "Copy to clipboard");
+				let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), browser.i18n.getMessage("tools_Copy"));
 				
 				addTileEventHandlers(tile_copy, (e) => {
 					let input = document.createElement('input');
@@ -636,7 +636,7 @@ function makeQuickMenu() {
 				break;
 			
 			case "link": // open as link
-				let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.png"), "Open as link");
+				let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.png"), browser.i18n.getMessage("tools_OpenAsLink"));
 
 				// enable/disable link button on very basic 'is it a link' rules
 				function setDisabled() {
@@ -677,7 +677,7 @@ function makeQuickMenu() {
 				break;
 				
 			case "close": // simply close the quick menu
-				let tile_close = buildSearchIcon(browser.runtime.getURL("/icons/close.png"), "Close menu");
+				let tile_close = buildSearchIcon(browser.runtime.getURL("/icons/close.png"), browser.i18n.getMessage("tools_Close"));
 
 				tile_close.onclick = function(e) {
 					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
@@ -687,7 +687,7 @@ function makeQuickMenu() {
 				break;
 			
 			case "disable": // close the quick menu and disable for this page / session
-				let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.png"), "Disable menu");
+				let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.png"), browser.i18n.getMessage("tools_Disable"));
 				tile_disable.onclick = function(e) {
 					
 					userOptions.quickMenu = false;
@@ -707,7 +707,7 @@ function makeQuickMenu() {
 				break;
 				
 			case "lock": // keep quick menu open after clicking search / scrolling / window click
-				let tile_lock = buildSearchIcon(browser.runtime.getURL("/icons/lock.png"), "Lock menu open (multi-search)");
+				let tile_lock = buildSearchIcon(browser.runtime.getURL("/icons/lock.png"), browser.i18n.getMessage("tools_Lock"));
 				
 				tile_lock.locked = false;
 				tile_lock.onclick = function(e) {

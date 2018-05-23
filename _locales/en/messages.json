@@ -318,7 +318,7 @@
     "message": "click to disable | drag to re-order",
     "description": ""
   },
-  
+
   "tools_Close": {
     "message": "Close menu",
     "description": ""
@@ -328,7 +328,7 @@
     "message": "Disable Menu",
     "description": ""
   },
-  
+
   "tools_Copy": {
     "message": "Copy to clipboard",
     "description": ""
@@ -338,7 +338,7 @@
     "message": "Open as link",
     "description": ""
   },
-  
+
   "tools_Lock": {
     "message": "Lock menu open (multi-search)",
     "description": ""
@@ -625,7 +625,7 @@
   },
   
   "LoadingRemoteContentFail": {
-    "message": "Failed to load $1 icon(s). This can occur when Tracking Protection is enabled",
+    "message": "Failed to load %1 icon(s). This can occur when Tracking Protection is enabled",
     "description": ""
   },
   
@@ -645,7 +645,7 @@
   },
   
   "EngineExists": {
-    "message": "$1 exists.",
+    "message": "%1 exists.",
     "description": ""
   },
   
@@ -705,7 +705,7 @@
   },
   
   "NativeAppImportError": {
-    "message": "Failed to load file ($1) Is app installed?",
+    "message": "Failed to load file (%1) Is app installed?",
     "description": ""
   },
   
@@ -730,7 +730,7 @@
   },
   
   "ErrorParsing": {
-    "message": "Error parsing $1",
+    "message": "Error parsing %1",
     "description": ""
   },
   
@@ -742,6 +742,61 @@
   "SearchFor": {
     "message": "Search for",
     "description": ""
+  },
+  
+  "SearchWith": {
+    "message": "Search with",
+    "description": "title in context menu when searching"
+  },
+  
+  "AddSearchEngines": {
+    "message": "+ Add search engines",
+    "description": "title in context menu when no search engines installed"
+  },
+  
+  "ContextSearchMenu": {
+    "message": "ContextSearch Menu",
+    "description": "root folder name for bookmarks"
+  },
+  
+  "PositionRelativeToCursor": {
+    "message": "%1 %2 of cursor",
+    "description": "quick menu opening position relative to the mouse cursor. %1 is top|bottom, %2 is left|center|right"
+  },
+  
+  "top": {
+    "message": "top",
+    "description": ""
+  },
+  
+  "bottom": {
+    "message": "bottom",
+    "description": ""
+  },
+  
+  "left": {
+    "message": "left",
+    "description": ""
+  },
+  
+  "center": {
+    "message": "center",
+    "description": ""
+  },
+  
+  "right": {
+    "message": "right",
+    "description": ""
+  },
+  
+  "NameExists": {
+    "message": "Name exists",
+    "description": "short message for duplicate engine names"
+  },
+  
+  "NameInvalid": {
+    "message": "Name invalid",
+    "description": "short error for bad engine name"
   },
   
   "_________": {

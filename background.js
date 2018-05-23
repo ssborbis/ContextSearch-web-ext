@@ -202,7 +202,7 @@ function buildContextMenu(disableAddCustomSearch) {
 
 		browser.contextMenus.create({
 			id: "search_engine_menu",
-			title: (userOptions.searchEngines.length === 0) ? "+ Add search engines" : "Search with",
+			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : browser.i18n.getMessage("SearchWith"),
 			contexts: ["selection", "link"]
 		});
 		
