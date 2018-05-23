@@ -745,57 +745,57 @@
   },
     
    "SearchWith": {
-    "message": "Search with",
+    "message": "Rechercher avec",
     "description": "title in context menu when searching"
   },
   
   "AddSearchEngines": {
-    "message": "+ Add search engines",
+    "message": "+ Ajouter des moteurs de recherche",
     "description": "title in context menu when no search engines installed"
   },
   
   "ContextSearchMenu": {
-    "message": "ContextSearch Menu",
+    "message": "Recherche contextuelle",
     "description": "root folder name for bookmarks"
   },
   
   "PositionRelativeToCursor": {
-    "message": "%1 %2 of cursor",
+    "message": "%1 %2 du curseur",
     "description": "quick menu opening position relative to the mouse cursor. %1 is top|bottom, %2 is left|center|right"
   },
   
   "top": {
-    "message": "top",
+    "message": "en haut",
     "description": ""
   },
   
   "bottom": {
-    "message": "bottom",
+    "message": "en bas",
     "description": ""
   },
   
   "left": {
-    "message": "left",
+    "message": "à gauche",
     "description": ""
   },
   
   "center": {
-    "message": "center",
+    "message": "au niveau",
     "description": ""
   },
   
   "right": {
-    "message": "right",
+    "message": "à droite",
     "description": ""
   },
   
   "NameExists": {
-    "message": "Name exists",
+    "message": "Nom existant",
     "description": "short message for duplicate engine names"
   },
   
   "NameInvalid": {
-    "message": "Name invalid",
+    "message": "Nom incorrect",
     "description": "short error for bad engine name"
   },
   
