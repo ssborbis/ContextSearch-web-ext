@@ -625,7 +625,7 @@
   },
   
   "LoadingRemoteContentFail": {
-    "message": "Le chargement de $1 icônes a échoué. Cela peut arriver quand la protection contre le pistage est activée.",
+    "message": "Le chargement de %1 icônes a échoué. Cela peut arriver quand la protection contre le pistage est activée.",
     "description": ""
   },
   
@@ -645,7 +645,7 @@
   },
   
   "EngineExists": {
-    "message": "Le moteur de recherche $1 existe déjà.",
+    "message": "Le moteur de recherche %1 existe déjà.",
     "description": ""
   },
   
@@ -705,7 +705,7 @@
   },
   
   "NativeAppImportError": {
-    "message": "Le chargement du fichier a échoué ($1). L’application est-elle installée ?",
+    "message": "Le chargement du fichier a échoué (%1). L’application est-elle installée ?",
     "description": ""
   },
   
@@ -730,7 +730,7 @@
   },
   
   "ErrorParsing": {
-    "message": "Erreur d’analyse de $1",
+    "message": "Erreur d’analyse de %1",
     "description": ""
   },
   
