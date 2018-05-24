@@ -93,7 +93,8 @@ function notify(message, sender, sendResponse) {
 			if (searchTerms === '') break;
 			if (searchTerms.length > 18) 
 				searchTerms = searchTerms.substring(0,15) + "...";
-			browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor") + "\"" + searchTerms + "\""});
+			browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
+			//browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor") + "\"" + searchTerms + "\""});
 			break;
 			
 		case "addSearchEngine":
@@ -489,6 +490,7 @@ var userOptions = {
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
+//	contextMenuBookmarksFolderId: -1,
 	quickMenuTools: [
 		{name: 'disable', 	disabled: false},
 		{name: 'close', 	disabled: false},
@@ -545,6 +547,26 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 		browser.storage.local.set({"userOptions": userOptions});
 
 	}
+	
+	(function() {
+		
+		if (browser.bookmarks === undefined) return false;
+		
+		// if (userOptions.contextMenuBookmarksFolderId === -1) {
+			
+		// }	
+		
+		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return false;
+		
+		browser.bookmarks.search("ContextSearch Menu").then((bookmarks) => {
+
+			if (bookmarks.length === 0) return false;
+
+			console.log('New locale string for bookmark name. Attempting to rename');
+			browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(buildContextMenu);
+
+		});
+	})();
 
 	// // Show new features page
 	// if (

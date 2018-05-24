@@ -1,5 +1,9 @@
 {
     
+  "extensionDescription": {
+    "message": "ContextSearch charge vos moteurs de recherche actuels dans un menu contextuel pour faciliter la recherche du texte sélectionné. Compatible avec FF 57+, il a été conçu pour remplacer « Context Search » de Ben Basson."
+  },
+    
   "Settings": {
     "message": "Configuration",
     "description": ""
@@ -735,7 +739,7 @@
   },
   
   "SearchFor": {
-    "message": "Rechercher",
+    "message": "Rechercher « %1 » avec…",
     "description": ""
   },
   
@@ -797,6 +801,16 @@
   "NameInvalid": {
     "message": "Nom incorrect",
     "description": "short error for bad engine name"
+  },
+  
+  "ImportedEngines": {
+    "message": "%1 moteurs de recherche importés (%2 nouveaux)",
+    "description": ""
+  },
+  
+  "ClickToEdit": {
+    "message": "Cliquer pour éditer",
+    "description": ""
   },
   
   "_________": {

@@ -55,7 +55,8 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				} else {
 					statusMessage({
 						img: "icons/yes.png",
-						msg: "Imported " + searchEngines.length + " engine(s) (" + details.searchEngines.length + " new)"
+						msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length)
+						//msg: "Imported " + searchEngines.length + " engine(s) (" + details.searchEngines.length + " new)"
 					});
 				}
 					
@@ -237,7 +238,8 @@ function buildSearchEngineContainer(searchEngines) {
 		
 		// searchEngine name
 		let title = document.createElement('div');
-		title.title = 'click to edit';
+		title.title = browser.i18n.getMessage('ClickToEdit').toLowerCase();
+		//title.title = 'click to edit';
 		title.className = 'title';
 		
 		// let input = document.createElement('input');
@@ -397,7 +399,8 @@ function buildSearchEngineContainer(searchEngines) {
 			let yes = document.createElement('button');
 			let no = document.createElement('button');
 
-			yes.innerText = 'yes'; no.innerText = 'no';
+			yes.innerText = browser.i18n.getMessage('Yes').toLowerCase(); no.innerText = browser.i18n.getMessage('No').toLowerCase();
+			//yes.innerText = 'yes'; no.innerText = 'no';
 			
 			yes.onclick = function(ev) {
 				ev.stopPropagation(); // prevents closing edit_form
@@ -466,7 +469,8 @@ function buildSearchEngineContainer(searchEngines) {
 		// title.appendChild(add_search);
 		
 		let hide = document.createElement('label');
-		hide.title = 'show/hide';
+		hide.title = browser.i18n.getMessage('ShowHide').toLowerCase();
+		//hide.title = 'show/hide';
 		hide.className = 'container hide';
 		
 		let cb = document.createElement('input');
@@ -485,7 +489,8 @@ function buildSearchEngineContainer(searchEngines) {
 		hide.appendChild(sp);
 		
 		let bookmark = document.createElement('span');
-		bookmark.title = 'bookmark';
+		bookmark.title = browser.i18n.getMessage('Bookmark').toLowerCase();
+		//bookmark.title = 'bookmark';
 		bookmark.className = 'checkboxImage';
 		
 		// Hide if disabled
@@ -822,7 +827,7 @@ function checkSearchJsonPath() {
 			return false;
 		}
 
-		let tn = document.createTextNode("&nbsp;&nbsp;&nbsp;" + browser.i18n.getMessage("ImportSuccessful"));
+		let tn = document.createTextNode("   " + browser.i18n.getMessage("ImportSuccessful"));
 		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />";
 		el.appendChild(tn);
 		

@@ -1,5 +1,9 @@
 {
     
+  "extensionDescription": {
+    "message": "Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search"
+  },
+    
   "Settings": {
     "message": "Settings",
     "description": ""
@@ -740,7 +744,7 @@
   },
   
   "SearchFor": {
-    "message": "Search for",
+    "message": "Search for \"%1\"",
     "description": ""
   },
   
@@ -797,6 +801,16 @@
   "NameInvalid": {
     "message": "Name invalid",
     "description": "short error for bad engine name"
+  },
+  
+  "ImportedEngines": {
+    "message": "Imported %1 engine(s) (%2 new)",
+    "description": ""
+  },
+  
+  "ClickToEdit": {
+    "message": "Click to edit",
+    "description": ""
   },
   
   "_________": {
