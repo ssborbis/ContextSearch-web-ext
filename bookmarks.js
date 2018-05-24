@@ -7,7 +7,7 @@ class CSBookmarks {
 		function onFulfilled(bookmarks) {
 			
 			if (bookmarks.length === 0) {
-				browser.bookmarks.create({
+				return browser.bookmarks.create({
 					title: browser.i18n.getMessage("ContextSearchMenu"),
 					type: 'folder'
 				}).then( (bm) => {
@@ -23,14 +23,19 @@ class CSBookmarks {
 						});
 					}
 					
-					console.log("ContextSearch Menu bookmark created");
-					return;
+					// userOptions.contextMenuBookmarksFolderId = bm.id;
+					// notify({action: "saveUserOptions", userOptions:userOptions});
+					
+					console.log("ContextSearch Menu bookmark created with id=" + bm.id);
+					return bm;
 				});
 			} else {
 				console.log("ContextSearch Menu bookmark exists");
 				browser.bookmarks.getChildren(bookmarks[0].id).then((children) => {
 					console.log(children);
 				});
+				
+				return false;
 			}
 
 		}
@@ -40,7 +45,7 @@ class CSBookmarks {
 		}
 
 		var gettingBookmarks = browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")});
-		gettingBookmarks.then(onFulfilled, onRejected);
+		return gettingBookmarks.then(onFulfilled, onRejected);
 	}
 	
 	static get() {
@@ -178,8 +183,8 @@ class CSBookmarks {
 		function onResponse(response) {
 			if (response) {
 				console.log("Permission was granted");
-				CSBookmarks.create();
-				return true;
+				return CSBookmarks.create();
+				
 			} else {
 				console.log("Permission was refused");
 				return false;

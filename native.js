@@ -3,6 +3,8 @@ function nativeApp(options) {
 	options = options || {
 		force: false
 	}
+	
+	options.force = options.force || false;
 		
 	force = options.force || false;
 	
