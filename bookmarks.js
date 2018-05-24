@@ -34,8 +34,6 @@ class CSBookmarks {
 				browser.bookmarks.getChildren(bookmarks[0].id).then((children) => {
 					console.log(children);
 				});
-				
-				return false;
 			}
 
 		}
@@ -183,7 +181,8 @@ class CSBookmarks {
 		function onResponse(response) {
 			if (response) {
 				console.log("Permission was granted");
-				return CSBookmarks.create();
+				CSBookmarks.create();
+				return true;
 				
 			} else {
 				console.log("Permission was refused");
