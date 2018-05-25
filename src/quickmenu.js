@@ -11,7 +11,8 @@ var quickMenuObject = {
 	lastSelectTime: 0,
 	locked: false,
 	searchTerms: "",
-	disabled: false
+	disabled: false,
+	mouseDownTargetIsTextBox: false
 };
 
 var userOptions = {};
@@ -38,7 +39,7 @@ document.addEventListener('keydown', (ev) => {
 		!userOptions.quickMenuOnKey ||
 		!userOptions.quickMenu ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
+		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
 	quickMenuObject.keyDownTimer = Date.now();
@@ -69,7 +70,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
+		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
 	) return false;
 	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
@@ -136,8 +137,22 @@ document.addEventListener('mouseup', (ev) => {
 });
 
 // Listen for quickMenuAuto
-document.addEventListener('mouseup', (ev) => {
+document.addEventListener('mousedown', (ev) => {
 	
+	if (
+		!userOptions.quickMenu ||
+		!userOptions.quickMenuAuto || 
+		ev.which !== 1 ||
+		ev.target.id === 'quickMenuElement' ||
+		ev.target.parentNode.id === 'quickMenuElement'
+	) return false;
+	
+	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(ev.target);
+	
+});
+
+document.addEventListener('mouseup', (ev) => {
+
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuAuto || 
@@ -145,10 +160,11 @@ document.addEventListener('mouseup', (ev) => {
 		ev.target.id === 'quickMenuElement' ||
 		ev.target.parentNode.id === 'quickMenuElement' ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
+		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
+		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
 	) return false;
-	
-	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' && !ev.target.isContentEditable ) return false;
+
+	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
@@ -790,12 +806,20 @@ function makeQuickMenu() {
 		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 		div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
 		div.onclick = function() {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "tab=searchengines"});
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=searchengines"});
 		}	
 		quickMenuElement.appendChild(div);
 	}
 
 	return quickMenuElement;
+}
+
+function isTextBox(element) {
+	
+	if ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable )
+		return true;
+	else
+		return false;
 }
 
 // Special setup for IFRAME popup
