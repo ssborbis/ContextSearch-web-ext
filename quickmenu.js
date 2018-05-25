@@ -37,7 +37,8 @@ document.addEventListener('keydown', (ev) => {
 		ev.repeat ||
 		!userOptions.quickMenuOnKey ||
 		!userOptions.quickMenu ||
-		getSelectedText(ev.target) === ""
+		getSelectedText(ev.target) === "" ||
+		((ev.target.type === 'text' || ev.target.type === 'textarea') && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
 	quickMenuObject.keyDownTimer = Date.now();
@@ -67,7 +68,8 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		getSelectedText(ev.target) === ""
+		getSelectedText(ev.target) === "" ||
+		((ev.target.type === 'text' || ev.target.type === 'textarea') && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
@@ -163,7 +165,8 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnClick ||
 		ev.which !== 3 ||
-		getSelectedText(ev.target) === ""
+		getSelectedText(ev.target) === "" ||
+		((ev.target.type === 'text' || ev.target.type === 'textarea') && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};

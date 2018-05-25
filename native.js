@@ -4,9 +4,7 @@ function nativeApp(options) {
 		force: false
 	}
 	
-	options.force = options.force || false;
-		
-	force = options.force || false;
+	if (options.force === undefined) options.force = false;
 	
 	if (userOptions.reloadMethod !== 'automatic') return false;
 	
@@ -52,7 +50,7 @@ function nativeApp(options) {
 			
 			if (
 				result.searchObject_last_mod === response.last_mod 
-				&& force === false
+				&& options.force === false
 			) return false;
 
 			browser.browserAction.setIcon({path: "icons/spinner.svg"});

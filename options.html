@@ -520,12 +520,15 @@
 				border-style:dashed;
 				border-color: #DDD;
 				border-width:0px 0px 1px 0px;
+				position:relative;
 			}
 
 			P.short SELECT {
 				font-size:10pt;
 				border:1px solid transparent;
 				padding-right:10px;
+				position:absolute;
+				left:150px;
 			}
 			
 			P.short SELECT:focus {
@@ -920,11 +923,7 @@
 				<br /><br />
 				
 				<div class='openOnDetails' data-details='r_quickMenuAuto'>
-					<label class="container" style='display:inline-block;' data-i18n='EnableOnTextBoxes'>Enable On Text Boxes
-						<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups' data-i18n_tooltip='EnableOnTextBoxes'>?</span>
+
 				</div>
 				
 				<div class='openOnDetails' data-details='r_openOnMouse'>
@@ -964,6 +963,14 @@
 				<span class='info' data-msg='Enabling this option protects against websites seeing your search engine list by placing the QuickMenu in an IFRAME. (Note: Ad-blockers may disable iframes on some websites preventing the menu from opening)'>?</span>
 		-->		
 				<hr />
+				
+				<label class="container" style='display:inline-block;' data-i18n='EnableOnTextBoxes'>Enable On Text Boxes
+					<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups' data-i18n_tooltip='EnableOnTextBoxes'>?</span>
+					
+				<br />
 				
 				<label class="container" style='display:inline-block' data-i18n='CloseAfterSearch'>Close After Search
 					<input type='checkbox' id='cb_quickMenuCloseOnClick' />
