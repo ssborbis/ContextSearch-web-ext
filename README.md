@@ -15,17 +15,17 @@ Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompr
 #### New in 1.2.8+
 Right-click a web form to add a custom search engine
 
-![Image of Right-click menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/update/addcustomsearch.png)
+![Image of Right-click menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/update/addcustomsearch.png)
 
-![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/update/addcustomsearch_create.png)
+![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/update/addcustomsearch_create.png)
 
 ___
 
 # Context Menu
-![Image of Quick Menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/screenshot.png)
+![Image of Quick Menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/screenshot.png)
 
 # Quick Menu
-![Image of Quick Menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/screenshot_quickmenu.png)
+![Image of Quick Menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/screenshot_quickmenu.png)
 
 # Options
-![Image of Options](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/screenshot_options.png)
+![Image of Options](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/screenshot_options.png)
