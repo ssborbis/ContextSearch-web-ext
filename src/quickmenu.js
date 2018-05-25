@@ -11,7 +11,8 @@ var quickMenuObject = {
 	lastSelectTime: 0,
 	locked: false,
 	searchTerms: "",
-	disabled: false
+	disabled: false,
+	mouseDownTarget: null
 };
 
 var userOptions = {};
@@ -136,7 +137,9 @@ document.addEventListener('mouseup', (ev) => {
 });
 
 // Listen for quickMenuAuto
-document.addEventListener('mouseup', (ev) => {
+document.addEventListener('mousedown', (ev) => {
+	
+	quickMenuObject.mouseDownTarget = null;
 	
 	if (
 		!userOptions.quickMenu ||
@@ -146,6 +149,22 @@ document.addEventListener('mouseup', (ev) => {
 		ev.target.parentNode.id === 'quickMenuElement' ||
 		getSelectedText(ev.target) === "" ||
 		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
+	) return false;
+	
+	quickMenuObject.mouseDownTarget = ev.target;
+});
+
+document.addEventListener('mouseup', (ev) => {
+	
+	if (
+		!userOptions.quickMenu ||
+		!userOptions.quickMenuAuto || 
+		ev.which !== 1 ||
+		ev.target.id === 'quickMenuElement' ||
+		ev.target.parentNode.id === 'quickMenuElement' ||
+		getSelectedText(ev.target) === "" ||
+		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs) ||
+		((quickMenuObject.mouseDownTarget.type === 'text' || quickMenuObject.mouseDownTarget.type === 'textarea' || quickMenuObject.mouseDownTarget.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 	
 	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' && !ev.target.isContentEditable ) return false;
