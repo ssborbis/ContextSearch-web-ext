@@ -558,7 +558,7 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 		
 		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return false;
 		
-		browser.bookmarks.search("ContextSearch Menu").then((bookmarks) => {
+		browser.bookmarks.search({title: "ContextSearch Menu"}).then((bookmarks) => {
 
 			if (bookmarks.length === 0) return false;
 
