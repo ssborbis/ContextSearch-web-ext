@@ -38,7 +38,7 @@ document.addEventListener('keydown', (ev) => {
 		!userOptions.quickMenuOnKey ||
 		!userOptions.quickMenu ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.contentEditable === "true") && !userOptions.quickMenuAutoOnInputs)
+		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
 	quickMenuObject.keyDownTimer = Date.now();
@@ -69,7 +69,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.contentEditable === "true") && !userOptions.quickMenuAutoOnInputs)
+		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
@@ -145,10 +145,10 @@ document.addEventListener('mouseup', (ev) => {
 		ev.target.id === 'quickMenuElement' ||
 		ev.target.parentNode.id === 'quickMenuElement' ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.contentEditable === "true") && !userOptions.quickMenuAutoOnInputs)
+		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 	
-	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' && ev.target.contentEditable !== "true") return false;
+	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && ev.target.type !== 'text' && ev.target.type !== 'textarea' && !ev.target.isContentEditable ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
@@ -166,7 +166,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnClick ||
 		ev.which !== 3 ||
 		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.contentEditable === "true") && !userOptions.quickMenuAutoOnInputs)
+		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
