@@ -15,9 +15,9 @@ Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompr
 #### New in 1.2.8+
 Right-click a web form to add a custom search engine
 
-![Image of Right-click menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/update/addcustomsearch.png)
+![Image of Right-click menu](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/addcustomsearch.png)
 
-![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/update/addcustomsearch_create.png)
+![Image of Search Bar](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/addcustomsearch_create.png)
 
 ___
 
