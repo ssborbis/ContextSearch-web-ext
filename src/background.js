@@ -564,7 +564,10 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 
 			console.log('New locale string for bookmark name. Attempting to rename');
 			browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(() => {
+				console.log(bookmarks[0]);
 				buildContextMenu();
+			}, (error) => {
+				console.log(`An error: ${error}`);
 			});
 
 		});
