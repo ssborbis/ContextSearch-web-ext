@@ -5,18 +5,15 @@
   },
     
   "Settings": {
-    "message": "Settings",
-    "description": ""
+    "message": "Settings"
   },
   
   "Support": {
-    "message": "Support",
-    "description": ""
+    "message": "Support"
   },
   
    "Source": {
-    "message": "Source",
-    "description": ""
+    "message": "Source"
   },
   
    "Menus": {
@@ -35,717 +32,579 @@
   },
   
    "ContextMenu": {
-    "message": "Context Menu",
-    "description": ""
+    "message": "Context Menu"
   },
   
    "AddCustomSearchMenu": {
-    "message": "Add Custom Search Menu",
-    "description": ""
+    "message": "Add Custom Search Menu"
   },
   
   "AddCustomSearchMenuTooltip": {
-    "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases.",
-    "description": ""
+    "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases."
   },
   
    "UseBookmarksMenu": {
-    "message": "Use Bookmarks Menu",
-    "description": ""
+    "message": "Use Bookmarks Menu"
   },
     
    "UseBookmarksMenuTooltip": {
-    "message": "Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines",
-    "description": ""
+    "message": "Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines"
   },
+  
    "QuickMenu": {
-    "message": "Quick Menu",
-    "description": ""
+    "message": "Quick Menu"
   },
   
    "QuickMenuNote": {
-    "message": "Quick Menu disabled on addons.mozilla.org. Context Menu will be enabled if Quick Menu fails to open",
-    "description": ""
+    "message": "Quick Menu disabled on addons.mozilla.org. Context Menu will be enabled if Quick Menu fails to open"
   },
   
    "SearchActionsHeader": {
-    "message": "Search Actions",
-    "description": ""
+    "message": "Search Actions"
   },
   
    "SearchActionsCurrentTab": {
-    "message": "Open In Current Tab",
-    "description": ""
+    "message": "Open In Current Tab"
   },
   
    "SearchActionsNewTab": {
-    "message": "Open In New Tab",
-    "description": ""
+    "message": "Open In New Tab"
   },
   
    "SearchActionsBackgroundTab": {
-    "message": "Open In Background Tab",
-    "description": ""
+    "message": "Open In Background Tab"
   },
   
    "SearchActionsNewWindow": {
-    "message": "Open In New Window",
-    "description": ""
+    "message": "Open In New Window"
   },
   
    "SearchActionsIncognitoWindow": {
-    "message": "Open In Incognito Window",
-    "description": ""
+    "message": "Open In Incognito Window"
   },
   
    "SearchActionsNoAction": {
-    "message": "No Action",
-    "description": ""
+    "message": "No Action"
   },
   
    "LeftButton": {
-    "message": "Left Button",
-    "description": ""
+    "message": "Left Button"
   },
   
    "MiddleButton": {
-    "message": "Middle Button",
-    "description": ""
+    "message": "Middle Button"
   },
   
    "RightButton": {
-    "message": "Right Button",
-    "description": ""
+    "message": "Right Button"
   },
   
    "Look&LayoutHeader": {
-    "message": "Look & Layout",
-    "description": ""
+    "message": "Look & Layout"
   },
   
    "Columns": {
-    "message": "Columns",
-    "description": ""
+    "message": "Columns"
   },
   
   "ColumnsTooltip": {
-    "message": "Maximum number of search engine icons per row",
-    "description": ""
+    "message": "Maximum number of search engine icons per row"
   },
   
   "Items": {
-    "message": "Items",
-    "description": ""
+    "message": "Items"
   },
   
   "ItemsTooltip": {
-    "message": "Maximum total number of search engine icons to be displayed.",
-    "description": ""
+    "message": "Maximum total number of search engine icons to be displayed."
   },
 
   "MenuSize": {
-    "message": "Menu Size",
-    "description": ""
+    "message": "Menu Size"
   },
   
    "MenuSizeTooltip": {
-    "message": "Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)",
-    "description": ""
+    "message": "Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)"
   },
   
   "IconSize": {
-    "message": "Item Size",
-    "description": ""
+    "message": "Item Size"
   },
   
   "IconSizeTooltip": {
-    "message": "Scaled size of search engine icons. At 200%, icons fill their container entirely",
-    "description": ""
+    "message": "Scaled size of search engine icons. At 200%, icons fill their container entirely"
   },
   
   "Opening&ClosingHeader": {
-    "message": "Opening & Closing",
-    "description": ""
+    "message": "Opening & Closing"
   },
   
   "Opening&ClosingDescription": {
-    "message": "Choose how to open Quick Menu after selecting text",
-    "description": ""
+    "message": "Choose how to open Quick Menu after selecting text"
   },
   
    "Auto": {
-    "message": "Auto",
-    "description": ""
+    "message": "Auto"
   },
   
   "AutoTooltip": {
-    "message": "Open automatically",
-    "description": ""
+    "message": "Open automatically"
   },
   
    "EnableOnTextBoxes": {
-    "message": "Enable on Text Boxes",
-    "description": ""
+    "message": "Enable on Text Boxes"
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups.",
-    "description": ""
+    "message": "Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups."
   },
   
    "Mouse": {
-    "message": "Mouse",
-    "description": ""
+    "message": "Mouse"
   },
   
      "MouseTooltip": {
-    "message": "Open using a mouse button",
-    "description": ""
+    "message": "Open using a mouse button"
   },
   
   "MouseDescription": {
-    "message": "Select your preferred method and button",
-    "description": ""
+    "message": "Select your preferred method and button"
   },
   
    "Hold": {
-    "message": "Hold",
-    "description": ""
+    "message": "Hold"
   },
   
     "HoldTooltip": {
-    "message": "Popup menu will open after holding the selected mouse button for ~0.25 seconds",
-    "description": ""
+    "message": "Popup menu will open after holding the selected mouse button for ~0.25 seconds"
   },
   
    "SearchOnMouseup": {
-    "message": "Search On Mouseup",
-    "description": ""
+    "message": "Search On Mouseup"
   },
   
    "SearchOnMouseupTooltip": {
-    "message": "Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search",
-    "description": ""
+    "message": "Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search"
   },
   
    "Click": {
-    "message": "Click",
-    "description": ""
+    "message": "Click"
   },
   
   "ClickTooltip": {
-    "message": "Popup menu will open on right-click.  Hold button for default context menu",
-    "description": ""
+    "message": "Popup menu will open on right-click.  Hold button for default context menu"
   },
   
    "Keyboard": {
-    "message": "Keyboard",
-    "description": ""
+    "message": "Keyboard"
   },
   
   "KeyboardTooltip": {
-    "message": "Open using a keyboard key",
-    "description": ""
+    "message": "Open using a keyboard key"
   },
   
    "ChooseKey": {
-    "message": "Choose Key",
-    "description": ""
+    "message": "Choose Key"
   },
   
   "ChooseKeyTooltip": {
-    "message": "Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key",
-    "description": ""
+    "message": "Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key"
   },
   
    "CloseAfterSearch": {
-    "message": "Close After Search",
-    "description": ""
+    "message": "Close After Search"
   },
   
   "CloseAfterSearchTooltip": {
-    "message": "Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions",
-    "description": ""
+    "message": "Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions"
   },
   
    "CloseOnScroll": {
-    "message": "Close On Scroll / Mouse Wheel",
-    "description": ""
+    "message": "Close On Scroll / Mouse Wheel"
   },
   
    "CloseOnScrollTooltip": {
-    "message": "Popup menu will close when scrolling using scrollbars or the mouse wheel",
-    "description": ""
+    "message": "Popup menu will close when scrolling using scrollbars or the mouse wheel"
   },
   
   "MouseHelp": {
-    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly",
-    "description": ""
+    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly"
   },
 
   "Position": {
-    "message": "Position",
-    "description": ""
+    "message": "Position"
   },
   
   "PositionDescription": {
-    "message": "choose where menu appears",
-    "description": ""
+    "message": "choose where menu appears"
   },
   
    "HorizontalOffset": {
-    "message": "Horizontal Offset",
-    "description": ""
+    "message": "Horizontal Offset"
   },
   
   "HorizontalOffsetTooltip": {
-    "message": "Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left",
-    "description": ""
+    "message": "Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left"
   },
 
   "VerticalOffset": {
-    "message": "Vertical Offset",
-    "description": ""
+    "message": "Vertical Offset"
   },
   
   "VerticalOffsetTooltip": {
-    "message": "Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up",
-    "description": ""
+    "message": "Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up"
   },
 
   "Tools": {
-    "message": "Tools",
-    "description": ""
+    "message": "Tools"
   },
   
   "ToolsHelp": {
-    "message": "click to disable | drag to re-order",
-    "description": ""
+    "message": "click to disable | drag to re-order"
   },
 
   "tools_Close": {
-    "message": "Close menu",
-    "description": ""
+    "message": "Close menu"
   },
   
   "tools_Disable": {
-    "message": "Disable Menu",
-    "description": ""
+    "message": "Disable Menu"
   },
 
   "tools_Copy": {
-    "message": "Copy to clipboard",
-    "description": ""
+    "message": "Copy to clipboard"
   },
   
   "tools_OpenAsLink": {
-    "message": "Open as link",
-    "description": ""
+    "message": "Open as link"
   },
 
   "tools_Lock": {
-    "message": "Lock menu open (multi-search)",
-    "description": ""
+    "message": "Lock menu open (multi-search)"
   },
   
   "ImportExportSettings": {
-    "message": "Import / Export Settings",
-    "description": ""
+    "message": "Import / Export Settings"
   },
   
    "Import": {
-    "message": "Import",
-    "description": ""
+    "message": "Import"
   },
   
    "Export": {
-    "message": "Export",
-    "description": ""
+    "message": "Export"
   },
   
   "Add": {
-    "message": "Add",
-    "description": ""
+    "message": "Add"
   },
   
   "RemoveAll": {
-    "message": "Remove All",
-    "description": ""
+    "message": "Remove All"
   },
   
   "ShowHide": {
-    "message": "Show / Hide",
-    "description": ""
+    "message": "Show / Hide"
   },
   
   "Bookmark": {
-    "message": "Bookmark",
-    "description": ""
+    "message": "Bookmark"
   },
   
   "Delete": {
-    "message": "Delete",
-    "description": ""
+    "message": "Delete"
   },
   
   "SearchEnginesManagerHelp": {
-    "message": "Drag & drop to re-order, click to edit",
-    "description": ""
+    "message": "Drag & drop to re-order, click to edit"
   },
   
   "ImportHeader": {
-    "message": "Import One-Click Search Engines",
-    "description": ""
+    "message": "Import One-Click Search Engines"
   },
   
   "ImportDescription": {
-    "message": "Browse to your profile folder and select your search.json.mozlz4 file",
-    "description": ""
+    "message": "Browse to your profile folder and select your search.json.mozlz4 file"
   },
   
   "ImportSelectFile": {
-    "message": "Select file ...",
-    "description": ""
+    "message": "Select file ..."
   },
   
   "AutoImportHeader": {
-    "message": "Automatic Importing",
-    "description": ""
+    "message": "Automatic Importing"
   },
   
   "EnableAutoImport": {
-    "message": "Enable Automatic Import (requires app)",
-    "description": ""
+    "message": "Enable Automatic Import (requires app)"
   },
   
   "EnableAutoImportTooltip": {
-    "message": "Import One-Click Search Engines",
-    "description": ""
+    "message": "Import One-Click Search Engines"
   },
   
   "ProfilePath": {
-    "message": "Profile path",
-    "description": ""
+    "message": "Profile path"
   },
   
   "Verify": {
-    "message": "Verify and Import",
-    "description": ""
+    "message": "Verify and Import"
   },
   
   "Find": {
-    "message": "Find",
-    "description": ""
+    "message": "Find"
   },
   
   "Create": {
-    "message": "Create",
-    "description": ""
+    "message": "Create"
   },
   
   "Simple": {
-    "message": "Simple",
-    "description": ""
+    "message": "Simple"
   },
   
   "Advanced": {
-    "message": "Advanced",
-    "description": ""
+    "message": "Advanced"
   },
   
   "Yes": {
-    "message": "Yes",
-    "description": ""
+    "message": "Yes"
   },
   
   "No": {
-    "message": "No",
-    "description": ""
+    "message": "No"
   },
   
   "Cancel": {
-    "message": "Cancel",
-    "description": ""
+    "message": "Cancel"
   },
   
   "Save": {
-    "message": "Save",
-    "description": ""
+    "message": "Save"
   },
 
   "Name": {
-    "message": "Name",
-    "description": ""
+    "message": "Name"
   },
   
   "NameTooltip": {
-    "message": "Unique name for this search engine",
-    "description": ""
+    "message": "Unique name for this search engine"
   },
   
   "Description": {
-    "message": "Description",
-    "description": ""
+    "message": "Description"
   },
   
   "DescriptionTooltip": {
-    "message": "Short description of the search engine. 1024 characters max",
-    "description": ""
+    "message": "Short description of the search engine. 1024 characters max"
   },
   
   "Template": {
-    "message": "Template",
-    "description": ""
+    "message": "Template"
   },
   
   "TemplateTooltip": {
-    "message": "The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (i.e. http://example.com/?q={searchTerms})",
-    "description": ""
+    "message": "The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (i.e. http://example.com/?q={searchTerms})"
   },
   
   "FormPath": {
-    "message": "Form Path",
-    "description": ""
+    "message": "Form Path"
   },
   
   "FormPathTooltip": {
-    "message": "Typically the website homepage or the URL the form appears on",
-    "description": ""
+    "message": "Typically the website homepage or the URL the form appears on"
   },
   
   "POSTparams": {
-    "message": "POST params",
-    "description": ""
+    "message": "POST params"
   },
   
   "POSTparamsTooltip": {
-    "message": "List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method",
-    "description": ""
+    "message": "List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method"
   },
   
   "Icon": {
-    "message": "Icon URI",
-    "description": ""
+    "message": "Icon URI"
   },
   
   "IconTooltip": {
-    "message": "URI of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb",
-    "description": ""
+    "message": "URI of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb"
   },
   
   "Method": {
-    "message": "Method",
-    "description": ""
+    "message": "Method"
   },
   
   "MethodTooltip": {
-    "message": "Form method",
-    "description": ""
+    "message": "Form method"
   },
   
   "Encoding": {
-    "message": "Encoding",
-    "description": ""
+    "message": "Encoding"
   },
   
   "EncodingTooltip": {
-    "message": "Character encoding required by the search form. Typically UTF-8",
-    "description": ""
+    "message": "Character encoding required by the search form. Typically UTF-8"
   },
   
   "Test": {
-    "message": "Test",
-    "description": ""
+    "message": "Test"
   },
   
   "NewEngineAdded": {
-    "message": "New search engine added to ContextSearch",
-    "description": ""
+    "message": "New search engine added to ContextSearch"
+  },
+  
+  "NewEngineAddedTooltip": {
+    "message": "Install this search engine to the Firefox search toolbar using a custom OpenSearch API"
   },
   
   "AlsoAdd": {
-    "message": "Also add to One-Click Search Engines?",
-    "description": ""
+    "message": "Also add to One-Click Search Engines?"
   },
   
   "CannotCreate": {
-    "message": "Cannot create a search engine from this input",
-    "description": ""
+    "message": "Cannot create a search engine from this input"
   },
   
   "OpenAdvanced": {
-    "message": "Open Advanced options?",
-    "description": ""
+    "message": "Open Advanced options?"
   },
   
   "DidEngineInstall": {
-    "message": "Did the engine install correctly?",
-    "description": ""
+    "message": "Did the engine install correctly?"
   },
   
   "RemovingEngine": {
-    "message": "Removing search engine",
-    "description": ""
+    "message": "Removing search engine"
   },
   
   "CreateCustomSearch": {
-    "message": "Create Custom Search",
-    "description": ""
+    "message": "Create Custom Search"
   },
   
   "MustImport": {
-    "message": "If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser.",
-    "description": ""
+    "message": "If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser."
   },
   
   "MoreInfo": {
-    "message": "more info",
-    "description": ""
+    "message": "more info"
   },
   
   "NewEngineImported": {
-    "message": "A new search engine was automatically imported to ContextSearch",
-    "description": ""
+    "message": "A new search engine was automatically imported to ContextSearch"
   },
   
   "InstallOfficialTooltip": {
-    "message": "Install the official OpenSearch engine for the current website",
-    "description": ""
+    "message": "Install the official OpenSearch engine for the current website"
   },
   
   "FindMycroftTooltip": {
-    "message": "Find OpenSearch engines at MycroftProject",
-    "description": ""
+    "message": "Find OpenSearch engines at MycroftProject"
   },
   
   "CreateCustomTooltip": {
-    "message": "Create a custom OpenSearch engine",
-    "description": ""
+    "message": "Create a custom OpenSearch engine"
   },
   
   "LoadingRemoteContent": {
-    "message": "Loading remote content",
-    "description": ""
+    "message": "Loading remote content"
   },
   
   "LoadingRemoteContentFail": {
-    "message": "Failed to load %1 icon(s). This can occur when Tracking Protection is enabled",
-    "description": ""
+    "message": "Failed to load %1 icon(s). This can occur when Tracking Protection is enabled"
   },
   
   "LoadingRemoteContentTimeout": {
-    "message": "Fetching remote icons timed out. Some icons were not loaded.",
-    "description": ""
+    "message": "Fetching remote icons timed out. Some icons were not loaded."
   },
   
   "RemoveAllEnginesPrompt": {
-    "message": "Remove all search engines?",
-    "description": ""
+    "message": "Remove all search engines?"
   },
   
   "EnterUniqueName": {
-    "message": "Enter a unique name for this search engine",
-    "description": ""
+    "message": "Enter a unique name for this search engine"
   },
   
   "EngineExists": {
-    "message": "%1 exists.",
-    "description": ""
+    "message": "%1 exists."
   },
   
   "TemplateMissingeMessage": {
-    "message": "Unable to find a template for this search form. You can try doing a search and copying the resulting URL here, replacing your search terms with {searchTerms}",
-    "description": ""
+    "message": "Unable to find a template for this search form. You can try doing a search and copying the resulting URL here, replacing your search terms with {searchTerms}"
   },
   
   "TemplateIncludeError": {
-    "message": "Template must include {searchTerms}",
-    "description": ""
+    "message": "Template must include {searchTerms}"
   },
 
   "TemplateURLError": {
-    "message": "Template must be an URL",
-    "description": ""
+    "message": "Template must be an URL"
   },
 
   "DescriptionEmptyError": {
-    "message": "Must have a description",
-    "description": ""
+    "message": "Must have a description"
   },
 
   "DescriptionSizeError": {
-    "message": "Description must be 1024 or fewer characters",
-    "description": ""
+    "message": "Description must be 1024 or fewer characters"
   },
   
   "FormPathURLError": {
-    "message": "Form path must be an URL",
-    "description": ""
+    "message": "Form path must be an URL"
   },
   
   "POSTIncludeError": {
-    "message": "POST params must include {searchTerms}",
-    "description": ""
+    "message": "POST params must include {searchTerms}"
   },
   
   "IconURLError": {
-    "message": "Icon must be an URL",
-    "description": ""
+    "message": "Icon must be an URL"
   },
   
   "IconLoadError": {
-    "message": "Icon failed to load",
-    "description": ""
+    "message": "Icon failed to load"
   },
   
   "EnterSearchTerms": {
-    "message": "Enter search terms",
-    "description": ""
+    "message": "Enter search terms"
   },
   
   "BookmarksPermissionMessage": {
-    "message": "After closing this prompt you will receive a prompt to accept a new permission for \"Bookmarks\".\n\nAccepting will add a new folder \"ContextSearch Menu\" containing your current search engines in bookmarks under the \"Other Bookmarks\" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks.",
-    "description": ""
+    "message": "After closing this prompt you will receive a prompt to accept a new permission for \"Bookmarks\".\n\nAccepting will add a new folder \"ContextSearch Menu\" containing your current search engines in bookmarks under the \"Other Bookmarks\" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks."
   },
   
   "NativeAppImportError": {
-    "message": "Failed to load file (%1) Is app installed?",
-    "description": ""
+    "message": "Failed to load file (%1) Is app installed?"
   },
   
   "ImportSettingsNotFoundAlert": {
-    "message": "ContextSearch settings not found!",
-    "description": ""
+    "message": "ContextSearch settings not found!"
   },
   
   "InvalidJSONAlert": {
-    "message": "file is not valid JSON",
-    "description": ""
+    "message": "file is not valid JSON"
   },
   
   "ImportSuccessful": {
-    "message": "Import successful",
-    "description": ""
+    "message": "Import successful"
   },
   
   "WhereAreMyEngines": {
-    "message": "Where are my search engines?",
-    "description": ""
+    "message": "Where are my search engines?"
   },
   
   "ErrorParsing": {
-    "message": "Error parsing %1",
-    "description": ""
+    "message": "Error parsing %1"
   },
   
   "AddCustomSearch": {
-    "message": "Add Custom Search",
-    "description": ""
+    "message": "Add Custom Search"
   },
   
   "SearchFor": {
-    "message": "Search for \"%1\"",
-    "description": ""
+    "message": "Search for \"%1\""
   },
   
   "SearchWith": {
@@ -769,28 +628,23 @@
   },
   
   "top": {
-    "message": "top",
-    "description": ""
+    "message": "top"
   },
   
   "bottom": {
-    "message": "bottom",
-    "description": ""
+    "message": "bottom"
   },
   
   "left": {
-    "message": "left",
-    "description": ""
+    "message": "left"
   },
   
   "center": {
-    "message": "center",
-    "description": ""
+    "message": "center"
   },
   
   "right": {
-    "message": "right",
-    "description": ""
+    "message": "right"
   },
   
   "NameExists": {
@@ -804,13 +658,103 @@
   },
   
   "ImportedEngines": {
-    "message": "Imported %1 engine(s) (%2 new)",
-    "description": ""
+    "message": "Imported %1 engine(s) (%2 new)"
   },
   
   "ClickToEdit": {
-    "message": "Click to edit",
-    "description": ""
+    "message": "Click to edit"
+  },
+  
+  "BackspaceKey": {
+    "message": "Backspace"
+  },
+  
+  "EnterKey": {
+    "message": "Enter"
+  },
+  
+  "ShiftKey": {
+    "message": "Shift"
+  },
+  
+  "PauseBreakKey": {
+    "message": "Pause/Break"
+  },
+  
+  "CapsLockKey": {
+    "message": "Caps Lock"
+  },
+  
+  "EscKey": {
+    "message": "Esc"
+  },
+  
+  "SpaceKey": {
+    "message": "space"
+  },
+  
+  "PgUpKey": {
+    "message": "PgUp"
+  },
+  
+  "PgDnKey": {
+    "message": "PgDn"
+  },
+  
+  "EndKey": {
+    "message": "End"
+  },
+  
+  "HomeKey": {
+    "message": "Home"
+  },
+  
+  "LeftArrowKey": {
+    "message": "left arrow"
+  },
+  
+  "UpArrowKey": {
+    "message": "up arrow"
+  },
+  
+  "RightArrowKey": {
+    "message": "right arrow"
+  },
+  
+  "DownArrowKey": {
+    "message": "down arrow"
+  },
+  
+  "InsertKey": {
+    "message": "Insert"
+  },
+  
+  "DelKey": {
+    "message": "Del"
+  },
+  
+  "LeftWindowKey": {
+    "message": "left window key"
+  },
+  
+  "RightWindowKey": {
+    "message": "right window key"
+  },
+  
+  "SelectKey": {
+    "message": "Select Key"
+  },
+  
+  "NumLockKey": {
+    "message": "Num Lock"
+  },
+  
+  "ScrollLockKey": {
+    "message": "Scroll Lock"
+  },
+  
+  "Validating": {
+    "message": "Validating ..."
   },
   
   "_________": {

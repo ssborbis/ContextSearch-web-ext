@@ -801,7 +801,7 @@ function checkSearchJsonPath() {
 	let el = document.getElementById('div_searchJsonPathResponse');
 	let ev_target = document.getElementById('i_searchJsonPath');
 	
-	el.innerText = "Validating ...";
+	el.innerText = browser.i18n.getMessage("Validating");
 	
 	ev_target.value = ev_target.value.replace(/\\/g, "/").trim();
 	if (ev_target.value == "") {
