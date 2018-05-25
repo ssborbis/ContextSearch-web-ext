@@ -1,0 +1,185 @@
+BODY {
+	overflow:hidden;
+	padding:0;
+	margin:0;
+	background-color:rgba(0,0,0,.85);
+	background-color:rgba(20, 90, 140, .85);
+
+}
+#CS_customSearchDialog {
+	box-sizing: content-box;
+	font-family: 'Roboto', sans-serif;
+	font-weight:300;
+
+	font-size:11pt;
+	padding:10px;
+	text-align:left;
+	max-width:400px;
+	transition: opacity .25s ease-in-out, background-color .5s ease-in-out;
+	display:inline-block;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	
+	color:#4A4A4A;
+	background-color:white;
+	padding:0 0px;
+	text-align:left;
+	border-radius:4px;
+}
+
+.dark {
+/*	background-color:#222 !important;
+	color:white !important; */
+}
+INPUT[type='text'], TEXTAREA, SELECT {
+	resize: both;
+	font-size:11pt;
+	font-weight:normal;
+	border-radius:4px;
+	border:2px solid #ececec;
+	padding:2px;
+	margin:4px;
+	font-family:inherit;
+	background-color:#FFF;
+	width:calc(100% - 20px);
+	color:#4A4A4A;
+	margin-top:-8px;
+	padding:4px;
+	padding-top:8px;
+}
+SELECT {
+	width:90px;
+}
+.H2 {
+	font-size:9pt;
+	font-variant:small-caps;
+	display:inline-block;
+	background-color:white;
+	position:relative;
+	left:20px;
+	padding:0px 4px;
+	color:#646464;
+}
+._hover {
+	box-sizing:content-box;
+	transition:background .25s ease-in-out;
+	vertical-align:middle;
+	text-align:center;
+	padding:8px;
+	color:#787878;
+	display:inline-block;
+	height:25px;
+	line-height:25px;
+	width:75px;
+	margin:12px;
+	border:1px solid #ccdbe8;
+	cursor:pointer;
+	font-weight:700;
+	margin-top:20px;
+	background:#fafafa;
+}
+._hover_small {
+	width:auto;
+	height:auto;
+	margin:auto;
+	padding:auto;
+}
+._hover:hover {
+	background:white;
+}
+.CS_optionDescription {
+	transition: all .25s ease-in;
+	text-align:left;
+	min-height:60px;
+	width:auto;
+	max-width:250px;
+	margin:auto;
+	margin-top:20px;
+	font-weight:300;
+	text-align:center;
+	
+}
+FORM {
+	transition: all .5s ease-out;
+	max-height:0;
+	overflow:hidden;
+	background-color:#FFF;
+}
+.CS_menuItem {
+	transition: all .5s ease-out;
+	max-height:200px;
+	overflow:hidden;
+	text-align:center;
+	max-height:0;
+	text-align:center;
+	margin:auto;
+}
+.CS_menuItem .header {
+	font-size:12pt;
+	margin-bottom:8px;
+	padding:10px;
+	background-color:#5bb2fc;
+	border-radius:4px 4px 0 0;
+	color:white;
+	font-weight:700;
+}
+#CS_customSearchDialogOptions {
+	max-height:0;
+}
+.iconButton {
+	text-align:left;
+	display:inline-block;
+	min-width:92px;
+	height:24px;
+	margin:2px;
+	color:white;
+	font-weight:bold;
+	font-size:12pt;
+	margin-top:10px;
+	border:2px solid #e2e2e2;
+	border-radius:2px;
+	padding:4px;
+	cursor:pointer;
+	vertical-align:middle;
+	line-height:24px;
+	white-space: nowrap;
+}
+.iconButton IMG {
+	height:24px;
+	width:24px;
+	text-align:left;
+	margin:auto;
+	filter: brightness(0) invert(1);
+	vertical-align:middle;
+	margin-right:10px;
+}
+.CS_info {
+	font-size:7pt;
+	border-radius:2px;
+	padding: 2px;
+	background-color:#EFEFEF;
+	vertical-align:top;
+	cursor:default;
+}
+/* tooltips (copied from options.html) */
+#CS_info_msg {
+	display:none;
+	opacity:0;
+	transition: all .25s ease-in-out;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 2;
+	padding:5px;
+	border-radius:5px;
+	max-width:200px;
+	width:auto;
+	font-size:10pt;
+	background-color:#FEFEFE;
+	border:1px solid #9abad2;
+	box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
+	text-align:left;
+	font-family: Arial;
+}
