@@ -1,0 +1,765 @@
+{
+    
+  "extensionDescription": {
+    "message": "Laden Sie Ihre aktuellen Suchmaschinen in ein Kontextmenü, um einfach nach dem markierten Text zu suchen. Kompatibel zu FF 57+. Entwickelt als einfacher Ersatz für Ben Basson's Context Search"
+  },
+    
+  "Settings": {
+    "message": "Einstellungen"
+  },
+  
+  "Support": {
+    "message": "Support"
+  },
+  
+   "Source": {
+    "message": "Source"
+  },
+  
+   "Menus": {
+    "message": "Menüs",
+    "description": "Reiterbeschriftung Menüs"
+  },
+  
+   "SearchEngines": {
+    "message": "Suchmaschinen",
+    "description": "Reiterbeschriftung Suchmaschinen"
+  },
+  
+   "Help": {
+    "message": "Hilfe",
+    "description": "Reiterbeschriftung Hilfe"
+  },
+  
+   "ContextMenu": {
+    "message": "Kontextmenü"
+  },
+  
+   "AddCustomSearchMenu": {
+    "message": "Benutzerdefinierte Suche hinzufügen aktivieren"
+  },
+  
+  "AddCustomSearchMenuTooltip": {
+    "message": "Aktiviert den Kontextmenüpunkt \"Benutzerdefinierte Suche hinzufügen\" auf INPUT-Elementen. Für den seltenen Fall eines versetztes Menü kann der Eintrag deaktiviert werden."
+  },
+  
+   "UseBookmarksMenu": {
+    "message": "Lesezeichenmenü verwenden"
+  },
+    
+   "UseBookmarksMenuTooltip": {
+    "message": "Verwaltet die im Kontextmenü angezeigten Suchmaschinen über einen Lesezeichenordner. Diese Option ermöglicht die Verwendung von Trennlinien und Unterordnern. Hinweis: Das Umbenennen von Lesezeichen führt dazu, dass sie nicht mehr funktionieren. Wird ein Lesezeichen gelöscht, kann es über ContextSearch-Einstellungen unter Suchmaschinen wiederhergestellt werden."
+  },
+  
+   "QuickMenu": {
+    "message": "Schnellmenü"
+  },
+  
+   "QuickMenuNote": {
+    "message": "Das Schnellmenü ist auf addons.mozilla.org deaktiviert. Stattdessen wird das Kontextmenü aktiviert, wenn das Schnellmenü nicht geöffnet werden kann."
+  },
+  
+   "SearchActionsHeader": {
+    "message": "Suchaktionen"
+  },
+  
+   "SearchActionsCurrentTab": {
+    "message": "In aktuellem Tab öffnen"
+  },
+  
+   "SearchActionsNewTab": {
+    "message": "In neuem Tab öffnen"
+  },
+  
+   "SearchActionsBackgroundTab": {
+    "message": "In neuem Tab öffnen (Hintergrund)"
+  },
+  
+   "SearchActionsNewWindow": {
+    "message": "In neuem Fenster öffnen"
+  },
+  
+   "SearchActionsIncognitoWindow": {
+    "message": "In privatem Fenster öffnen"
+  },
+  
+   "SearchActionsNoAction": {
+    "message": "Keine Aktion"
+  },
+  
+   "LeftButton": {
+    "message": "Linksklick"
+  },
+  
+   "MiddleButton": {
+    "message": "Mittelklick"
+  },
+  
+   "RightButton": {
+    "message": "Rechtsklick"
+  },
+  
+   "Look&LayoutHeader": {
+    "message": "Aussehen & Darstellung"
+  },
+  
+   "Columns": {
+    "message": "Spalten"
+  },
+  
+  "ColumnsTooltip": {
+    "message": "Maximale Anzahl von Suchmaschinensymbolen pro Zeile"
+  },
+  
+  "Items": {
+    "message": "Einträge"
+  },
+  
+  "ItemsTooltip": {
+    "message": "Maximale Gesamtzahl der anzuzeigenden Suchmaschinensymbole."
+  },
+
+  "MenuSize": {
+    "message": "Menügröße"
+  },
+  
+   "MenuSizeTooltip": {
+    "message": "Skalierte Größe des Schnellmenüs. Werte größer als 100% vergrößern das gesamte Menü (gut für hochauflösende Displays)"
+  },
+  
+  "IconSize": {
+    "message": "Symbolgröße"
+  },
+  
+  "IconSizeTooltip": {
+    "message": "Skalierte Größe der Suchmaschinensymbole. Bei 200% füllen die Symbole ihren Container vollständig."
+  },
+  
+  "Opening&ClosingHeader": {
+    "message": "Öffnen & Schließen"
+  },
+  
+  "Opening&ClosingDescription": {
+    "message": "Methode zum Öffnen des Schnellmenüs bei Textmarkierung."
+  },
+  
+   "Auto": {
+    "message": "Auto"
+  },
+  
+  "AutoTooltip": {
+    "message": "Automatisch öffnen"
+  },
+  
+   "EnableOnTextBoxes": {
+    "message": "Für Eingabefelder aktivieren"
+  },
+  
+  "EnableOnTextBoxesTooltip": {
+    "message": "Schnellmenü auf TEXTAREA- und INPUT-Elementen aktivieren. Deaktivieren, um unerwünschte Einblendungen zu verhindern."
+  },
+  
+   "Mouse": {
+    "message": "Maus"
+  },
+  
+  "MouseTooltip": {
+    "message": "Mittels Mausklick öffnen"
+  },
+  
+  "MouseDescription": {
+    "message": "Bevorzugte Methode und Mausbutton festlegen"
+  },
+  
+   "Hold": {
+    "message": "Halten"
+  },
+  
+    "HoldTooltip": {
+    "message": "Das Schnellmenü wird geöffnet, wenn die ausgewählte Maustaste für ca. 0,25 Sekunden gedrückt wurde."
+  },
+  
+   "SearchOnMouseup": {
+    "message": "Suche nach Loslassen"
+  },
+  
+   "SearchOnMouseupTooltip": {
+    "message": "Führt eine Suche aus dem Schnellmenü durch Loslassen statt eines Klicks mit der Maus durch. Beispiel: Mausbutton zum Öffnen des Menüs geklickt halten und über Suchmaschine los lassen zum Suchen."
+  },
+  
+   "Click": {
+    "message": "Klick"
+  },
+  
+  "ClickTooltip": {
+    "message": "Das Schnellmenü öffnet sich sofort bei einem Rechtsklick. Für das Kontextmenü muss die Rechte Maustaste dann lange gedrückt werden."
+  },
+  
+   "Keyboard": {
+    "message": "Tastatur"
+  },
+  
+  "KeyboardTooltip": {
+    "message": "Mittels einer Funktionstaste öffnen"
+  },
+  
+   "ChooseKey": {
+    "message": "Taste wählen"
+  },
+  
+  "ChooseKeyTooltip": {
+    "message": "Text markieren und erst nach Drücken einer Taste das Schnellmenü öffnen. Klicken Sie auf die nebenstehende Schaltfläche und wählen Sie die gewünschte Taste."
+  },
+  
+   "CloseAfterSearch": {
+    "message": "Nach Suche schließen"
+  },
+  
+  "CloseAfterSearchTooltip": {
+    "message": "Das Schnellmenü wird nach einem Klick auf ein Suchsymbol geschlossen. Deaktivieren Sie diese Option, wenn Sie häufig mit mehreren Suchmaschinen suchen oder das Menü manuell schließen möchten. Kann durch 'Menü offen halten' unter Suchaktionen aufgehoben werden."
+  },
+  
+   "CloseOnScroll": {
+    "message": "Mittels Scrollen / Mausrad schließen"
+  },
+  
+   "CloseOnScrollTooltip": {
+    "message": "Das Schnellmenü wird beim Scrollen mit den Scrollbalken oder dem Mausrad geschlossen."
+  },
+  
+  "MouseHelp": {
+    "message": "Linux- und MacOS X-Anwender müssen möglicherweise ui.context_menus.after_mouseup = true in about:config setzen, damit Mausaktionen korrekt funktionieren."
+  },
+
+  "Position": {
+    "message": "Position"
+  },
+  
+  "PositionDescription": {
+    "message": "Festlegen wo das Schnellmenü erscheint"
+  },
+  
+   "HorizontalOffset": {
+    "message": "Horizontaler Versatz"
+  },
+  
+  "HorizontalOffsetTooltip": {
+    "message": "Anzahl der Pixel, um das Schnellmenü horizontal zu verschieben. Zahlen größer als Null bewegen es nach rechts, kleiner als Null nach links."
+  },
+
+  "VerticalOffset": {
+    "message": "Vertikaler Versatz"
+  },
+  
+  "VerticalOffsetTooltip": {
+    "message": "Anzahl der Pixel, um das Schnellmenü vertikal zu verschieben. Zahlen größer als Null bewegen es nach unten, kleiner als Null nach oben."
+  },
+
+  "Tools": {
+    "message": "Werkzeuge"
+  },
+  
+  "ToolsHelp": {
+    "message": "Klicken zum Deaktivieren | Ziehen zum Anordnen"
+  },
+
+  "tools_Close": {
+    "message": "Schnellmenü schließen"
+  },
+  
+  "tools_Disable": {
+    "message": "Schnellmenü deaktivieren"
+  },
+
+  "tools_Copy": {
+    "message": "In Zwischenablage kopieren"
+  },
+  
+  "tools_OpenAsLink": {
+    "message": "Als Link öffnen"
+  },
+
+  "tools_Lock": {
+    "message": "Schnellmenü offen halten (Mehrfachsuche)"
+  },
+  
+  "ImportExportSettings": {
+    "message": "Einstellungen importieren / exportieren"
+  },
+  
+   "Import": {
+    "message": "Importieren"
+  },
+  
+   "Export": {
+    "message": "Exportieren"
+  },
+  
+  "Add": {
+    "message": "Hinzufügen"
+  },
+  
+  "RemoveAll": {
+    "message": "Alle entfernen"
+  },
+  
+  "ShowHide": {
+    "message": "Anzeigen / Verbergen"
+  },
+  
+  "Bookmark": {
+    "message": "Lesezeichen"
+  },
+  
+  "Delete": {
+    "message": "Löschen"
+  },
+  
+  "SearchEnginesManagerHelp": {
+    "message": "Ziehen & Loslassen zum Neuordnen, Klicken zum Bearbeiten"
+  },
+  
+  "ImportHeader": {
+    "message": "Ein-Klick Suchmaschinen importieren"
+  },
+  
+  "ImportDescription": {
+    "message": "Die search.json.mozlz4-Datei aus Ihrem Profilordner wählen."
+  },
+  
+  "ImportSelectFile": {
+    "message": "Datei auswählen ..."
+  },
+  
+  "AutoImportHeader": {
+    "message": "Automatischer Import"
+  },
+  
+  "EnableAutoImport": {
+    "message": "Automatischen Import aktivieren (erfordert App)"
+  },
+  
+  "EnableAutoImportTooltip": {
+    "message": "Ein-Klick Suchmaschinen importieren"
+  },
+  
+  "ProfilePath": {
+    "message": "Profilpfad"
+  },
+  
+  "Verify": {
+    "message": "Prüfen und Importieren"
+  },
+  
+  "Find": {
+    "message": "Finden"
+  },
+  
+  "Create": {
+    "message": "Erstellen"
+  },
+  
+  "Simple": {
+    "message": "Einfach"
+  },
+  
+  "Advanced": {
+    "message": "Erweitert"
+  },
+  
+  "Yes": {
+    "message": "Ja"
+  },
+  
+  "No": {
+    "message": "Nein"
+  },
+  
+  "Cancel": {
+    "message": "Abbrechen"
+  },
+  
+  "Save": {
+    "message": "Speichern"
+  },
+
+  "Name": {
+    "message": "Name"
+  },
+  
+  "NameTooltip": {
+    "message": "Eindeutiger Name für diese Suchmaschine"
+  },
+  
+  "Description": {
+    "message": "Beschreibung"
+  },
+  
+  "DescriptionTooltip": {
+    "message": "Kurze Beschreibung der Suchmaschine. Maximal 1024 Zeichen"
+  },
+  
+  "Template": {
+    "message": "Vorlage"
+  },
+  
+  "TemplateTooltip": {
+    "message": "Der URL der Absendefunktion des Formulars. Falls die Suchmaschine mit GET arbeitet, dann den Platzhalter {searchTerms} verwenden. Beispiel: http://example.com/?q={searchTerms}"
+  },
+  
+  "FormPath": {
+    "message": "Formularziel"
+  },
+  
+  "FormPathTooltip": {
+    "message": "Typischerweise die Website oder der URL, auf der das Formular erscheint."
+  },
+  
+  "POSTparams": {
+    "message": "POST parameter"
+  },
+  
+  "POSTparamsTooltip": {
+    "message": "Liste der POST-Parameter und Werte getrennt durch & (Ampersands); nur anwendbar bei Verwendung der POST-Methode. Beispiel: q={searchTerms}&lang=de&maxresults=100."
+  },
+  
+  "Icon": {
+    "message": "Symbol-URI"
+  },
+  
+  "IconTooltip": {
+    "message": "URI des zu verwendenden Symbols. Bilder sollten weniger als 64x64 Pixel und weniger als 10kb groß sein."
+  },
+  
+  "Method": {
+    "message": "Methode"
+  },
+  
+  "MethodTooltip": {
+    "message": "Formular-Methode"
+  },
+  
+  "Encoding": {
+    "message": "Zeichenkodierung"
+  },
+  
+  "EncodingTooltip": {
+    "message": "Zeichenkodierung, die für das Suchformular erforderlich ist. Üblicherweise UTF-8."
+  },
+  
+  "Test": {
+    "message": "Test"
+  },
+  
+  "NewEngineAdded": {
+    "message": "Neue Suchmaschine zu ContextSearch hinzugefügt"
+  },
+  
+  "NewEngineAddedTooltip": {
+    "message": "Installieren Sie diese Suchmaschine über eine benutzerdefinierte OpenSearch-API in der Firefox-Suchleiste."
+  },
+  
+  "AlsoAdd": {
+    "message": "Auch als Ein-Klick Suchmaschine hinzufügen?"
+  },
+  
+  "CannotCreate": {
+    "message": "Es kann keine Suchmaschine aus diesen Angaben erstellt werden."
+  },
+  
+  "OpenAdvanced": {
+    "message": "Erweiterte Einstellungen öffnen?"
+  },
+  
+  "DidEngineInstall": {
+    "message": "Wurde die Suchmaschine korrekt installiert?"
+  },
+  
+  "RemovingEngine": {
+    "message": "Entferne Suchmaschine"
+  },
+  
+  "CreateCustomSearch": {
+    "message": "Benutzerdefinierte Suche erstellen"
+  },
+  
+  "MustImport": {
+    "message": "Wurde eine OpenSearch-Engine installiert, muss diese über den Dateibrowser-Import in ContextSearch importieren werden."
+  },
+  
+  "MoreInfo": {
+    "message": "mehr Informationen"
+  },
+  
+  "NewEngineImported": {
+    "message": "Eine neue Suchmaschine wurde automatisch in ContextSearch importiert."
+  },
+  
+  "InstallOfficialTooltip": {
+    "message": "Installieren Sie die offizielle OpenSearch-Engine für die aktuelle Website."
+  },
+  
+  "FindMycroftTooltip": {
+    "message": "OpenSearch-Suchmaschinen auf MycroftProject finden"
+  },
+  
+  "CreateCustomTooltip": {
+    "message": "Erstellen einer benutzerdefinierten OpenSearch-Engine"
+  },
+  
+  "LoadingRemoteContent": {
+    "message": "Laden von Remote-Inhalten"
+  },
+  
+  "LoadingRemoteContentFail": {
+    "message": "Fehler beim Laden von %1 Symbol(en). Dies kann passieren, wenn der Schutz vor Aktivitätenverfolgung aktiviert ist."
+  },
+  
+  "LoadingRemoteContentTimeout": {
+    "message": "Abrufen von Remote-Symbolen mit Timeout. Einige Symbole wurden nicht geladen."
+  },
+  
+  "RemoveAllEnginesPrompt": {
+    "message": "Alle Suchmaschinen entfernen?"
+  },
+  
+  "EnterUniqueName": {
+    "message": "Geben Sie einen eindeutigen Namen für diese Suchmaschine ein."
+  },
+  
+  "EngineExists": {
+    "message": "%1 vorhanden."
+  },
+  
+  "TemplateMissingeMessage": {
+    "message": "Eine Vorlage für dieses Suchformular konnte nicht gefunden werden. Sie können versuchen, eine Suche durchzuführen und den resultierenden URL hierhin zu kopieren, wobei Sie Ihre Suchbegriffe durch {searchTerms} ersetzen."
+  },
+  
+  "TemplateIncludeError": {
+    "message": "Vorlage muss {searchTerms} enthalten"
+  },
+
+  "TemplateURLError": {
+    "message": "Vorlage muss ein gültiger URL sein."
+  },
+
+  "DescriptionEmptyError": {
+    "message": "Eine Beschreibung ist erforderlich"
+  },
+
+  "DescriptionSizeError": {
+    "message": "Die Beschreibung muss 1024 oder weniger Zeichen lang sein."
+  },
+  
+  "FormPathURLError": {
+    "message": "Formularpfad muss ein URL sein"
+  },
+  
+  "POSTIncludeError": {
+    "message": "POST-Parameter muss {searchTerms} enthalten"
+  },
+  
+  "IconURLError": {
+    "message": "Symbol muss ein gültiger URL sein."
+  },
+  
+  "IconLoadError": {
+    "message": "Symbol konnte nicht geladen werden"
+  },
+  
+  "EnterSearchTerms": {
+    "message": "Suchbegriffe eingeben"
+  },
+  
+  "BookmarksPermissionMessage": {
+    "message": "Nach dem Schließen dieser Aufforderung erhalten Sie eine Aufforderung, eine neue Erlaubnis für \"Lesezeichen\" zu akzeptieren.\n\nDurch das Akzeptieren wird unter dem \"Andere Lesezeichen\" Ordner ein neuer Ordner \"ContextSearch Menu\" hinzugefügt, der Ihre aktuellen Suchmaschinen als Lesezeichen enthält. Dort können Sie Trennzeichen und Unterordner zur Gruppierung der Lesezeichen einfügen.\n\nBenennen Sie die Suchmaschinen-Lesezeichen nicht um, da sie ansonsten nicht mehr funktionieren. Gelöschte Lesezeichen können über die ContextSearch-Optionen unter Suchmaschinen wieder hinzugefügt werden. Durch Anklicken der Lesezeichensymbole in der Suchmaschinenliste können Sie Lesezeichen hinzufügen oder entfernen."
+  },
+  
+  "NativeAppImportError": {
+    "message": "Datei (%1) konnte nicht geladen werden. Ist die Anwendung installiert?"
+  },
+  
+  "ImportSettingsNotFoundAlert": {
+    "message": "ContextSearch-Einstellungen nicht gefunden!"
+  },
+  
+  "InvalidJSONAlert": {
+    "message": "Keine gültige JSON-Datei."
+  },
+  
+  "ImportSuccessful": {
+    "message": "Import erfolgreich"
+  },
+  
+  "WhereAreMyEngines": {
+    "message": "Wo sind meine Suchmaschinen?"
+  },
+  
+  "ErrorParsing": {
+    "message": "Verarbeitungsfehler für %1"
+  },
+  
+  "AddCustomSearch": {
+    "message": "Benutzerdefinierte Suche hinzufügen"
+  },
+  
+  "SearchFor": {
+    "message": "Nach \"%1\" suchen"
+  },
+  
+  "SearchWith": {
+    "message": "Suche mit",
+    "description": "title in context menu when searching"
+  },
+  
+  "AddSearchEngines": {
+    "message": "+ Suchmaschinen hinzufügen",
+    "description": "title in context menu when no search engines installed"
+  },
+  
+  "ContextSearchMenu": {
+    "message": "ContextSearch Menu",
+    "description": "root folder name for bookmarks"
+  },
+  
+  "PositionRelativeToCursor": {
+    "message": "%1 %2 vom Mauszeiger",
+    "description": "Die Position des Schnellmenüs relativ zum Mauszeiger. %1 ist oben|unten, %2 is links|mitte|rechts"
+  },
+  
+  "top": {
+    "message": "Oben"
+  },
+  
+  "bottom": {
+    "message": "Unten"
+  },
+  
+  "left": {
+    "message": "links"
+  },
+  
+  "center": {
+    "message": "mitte"
+  },
+  
+  "right": {
+    "message": "rechts"
+  },
+  
+  "NameExists": {
+    "message": "Name bereits vorhanden",
+    "description": "short message for duplicate engine names"
+  },
+  
+  "NameInvalid": {
+    "message": "Name ungültig",
+    "description": "short error for bad engine name"
+  },
+  
+  "ImportedEngines": {
+    "message": "Import von %1 Suchmaschine(n) (%2 neu)"
+  },
+  
+  "ClickToEdit": {
+    "message": "Klicken zum Bearbeiten"
+  },
+  
+  "BackspaceKey": {
+    "message": "Rück"
+  },
+  
+  "EnterKey": {
+    "message": "Eingabe"
+  },
+  
+  "ShiftKey": {
+    "message": "Shift"
+  },
+  
+  "PauseBreakKey": {
+    "message": "Pause/Untbr"
+  },
+  
+  "CapsLockKey": {
+    "message": "Feststell"
+  },
+  
+  "EscKey": {
+    "message": "Esc"
+  },
+  
+  "SpaceKey": {
+    "message": "Leertaste"
+  },
+  
+  "PgUpKey": {
+    "message": "Bild hoch"
+  },
+  
+  "PgDnKey": {
+    "message": "Bild runter"
+  },
+  
+  "EndKey": {
+    "message": "Ende"
+  },
+  
+  "HomeKey": {
+    "message": "Pos1"
+  },
+  
+  "LeftArrowKey": {
+    "message": "Pfeil links"
+  },
+  
+  "UpArrowKey": {
+    "message": "Pfeil hoch"
+  },
+  
+  "RightArrowKey": {
+    "message": "Pfeil rechts"
+  },
+  
+  "DownArrowKey": {
+    "message": "Pfeil runter"
+  },
+  
+  "InsertKey": {
+    "message": "Einfg"
+  },
+  
+  "DelKey": {
+    "message": "Entf"
+  },
+  
+  "LeftWindowKey": {
+    "message": "Linke Windows-Taste"
+  },
+  
+  "RightWindowKey": {
+    "message": "Rechte Windows-Taste"
+  },
+  
+  "SelectKey": {
+    "message": "Taste wählen"
+  },
+  
+  "NumLockKey": {
+    "message": "Num"
+  },
+  
+  "ScrollLockKey": {
+    "message": "Rollen"
+  },
+  
+  "Validating": {
+    "message": "Überprüfe ..."
+  },
+  
+  "_________": {
+    "message": "",
+    "description": ""
+  }
+  
+}
