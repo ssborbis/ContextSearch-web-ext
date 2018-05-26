@@ -136,7 +136,7 @@ document.addEventListener('mouseup', (ev) => {
 //	document.removeEventListener('contextmenu', preventContextMenuHandler);
 });
 
-// Listen for quickMenuAuto
+// Listen for quickMenuAuto 
 document.addEventListener('mousedown', (ev) => {
 	
 	if (
