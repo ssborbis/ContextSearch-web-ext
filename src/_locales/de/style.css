@@ -5,7 +5,7 @@
 	width:200px;
 }
 #right_div {
-	min-width:520px;
+	min-width:480px;
 }
 ._hover {
 	width:auto;
@@ -18,4 +18,8 @@
 .iconButton {
 	min-width:100px;
 	font-size:10pt;
+}
+BODY {
+	min-width:520px;
+	overflow-x:hidden;
 }
