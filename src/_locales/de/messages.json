@@ -756,7 +756,15 @@
   "Validating": {
     "message": "Überprüfe ..."
   },
+
+  "SearchBar": {
+    "message": "Suchleiste aktivieren"
+  },
   
+  "SearchBarTooltip": {
+    "message": "Fügt dem Schnellmenü eine Suchleiste hinzu"
+  },
+   
   "_________": {
     "message": "",
     "description": ""
