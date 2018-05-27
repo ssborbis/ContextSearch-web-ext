@@ -757,6 +757,14 @@
     "message": "Validating ..."
   },
   
+  "SearchBar": {
+    "message": "Enable Search Bar"
+  },
+  
+  "SearchBarTooltip": {
+    "message": "Add a search bar to the quick menu"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

@@ -568,6 +568,7 @@ function restoreOptions() {
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
 //		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
+		document.getElementById('cb_quickMenuSearchBar').checked = userOptions.quickMenuSearchBar,
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
 		document.getElementById('range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
@@ -675,7 +676,7 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
-		quickMenuSearchBar: true,
+		quickMenuSearchBar: document.getElementById('cb_quickMenuSearchBar').checked,
 		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
@@ -767,6 +768,7 @@ document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOpt
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
 document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuSearchBar').addEventListener('change', saveOptions);
 
 for (let el of document.getElementsByTagName('select'))
 	el.addEventListener('change', saveOptions);
@@ -1141,6 +1143,25 @@ document.addEventListener("DOMContentLoaded", () => {
 		el.addEventListener('mouseleave', (e) => {
 			msgDiv.innerText = browser.i18n.getMessage(msgDiv.dataset.i18n);
 		});
+	}
+});
+
+// setup menus that open with a checkbox
+document.addEventListener("DOMContentLoaded", () => {
+	
+	for (let el of document.getElementsByClassName('checkboxMenu')) {
+		el.onclick = function() {
+			
+			let input = el.querySelector('input');
+			let details = document.querySelector('div[data-details="' + input.id + '"]');
+			
+			if (input.checked) {
+				details.style.maxHeight = '150px';
+			} else {
+				details.style.maxHeight = '0px';
+			}
+
+		}
 	}
 });
 

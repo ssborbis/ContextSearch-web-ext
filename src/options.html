@@ -911,11 +911,24 @@
 					</div>
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
-
+				<br />
+				<div>
+					<label class="container checkboxMenu" style='display:inline-block;' data-i18n='SearchBar'>Enable Search Bar
+						<input type='checkbox' id='cb_quickMenuSearchBar' />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<span class='info' data-msg='' data-i18n_tooltip='SearchBar'>?</span>
+					
+					<div class='openOnDetails' data-details='cb_quickMenuSearchBar'>
+					
+					</div>
+				</div>
+				
 				<p class='header1' data-i18n='Opening&ClosingHeader'>Opening &amp; Closing</p>
 				
 				<div id='d_openOnDescription' style='font-size:10pt' data-i18n="Opening&ClosingDescription">Choose how to open Quick Menu after selecting text</div>
 				
+				<div>
 				<div class='checkboxOpeningChoice' data-msg='Open automatically' data-i18n_tooltip="Auto"><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto' data-i18n='Auto'><img src='/icons/auto.png' />Auto</label></div>
 				<div class='checkboxOpeningChoice' data-msg='Open using a mouse button' data-i18n_tooltip="Mouse"><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse' data-i18n='Mouse' data-i18n_tooltip="Mouse"><img src='/icons/mouse.png' />Mouse</label></div>
 				<div class='checkboxOpeningChoice' data-msg='Open using a keyboard key' data-i18n_tooltip="Keyboard"><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey' data-i18n='Keyboard'><img src='/icons/keyboard.png' />Keyboard</label></div>
@@ -952,6 +965,7 @@
 				</div>
 				<div class='openOnDetails' data-details='r_quickMenuOnKey' data-i18n='ChooseKey'>
 					Choose key <span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key' data-i18n_tooltip='ChooseKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+				</div>
 				</div>
 
 				

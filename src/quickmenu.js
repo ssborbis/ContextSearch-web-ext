@@ -863,6 +863,12 @@ if (document.title === "QuickMenu") {
 			
 			let quickMenuElement = makeQuickMenu();
 			document.body.appendChild(quickMenuElement);
+			
+			
+			
+			// if (true) {
+				// document.body.appendChild(document.getElementById('quickmenusearchbar'));
+			// }
 
 			browser.runtime.sendMessage({
 				action: "quickMenuIframeLoaded", 
