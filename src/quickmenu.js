@@ -567,8 +567,8 @@ function makeQuickMenu() {
 	});
 	
 	if (userOptions.quickMenuSearchBar === 'hidden') {
-		sb.style.display = 'none';
-		sb.style.height = '0';
+		sb.parentNode.style.display = 'none';
+		sb.parentNode.style.height = '0';
 	}
 	
 	// prevent click events from propagating
@@ -874,7 +874,7 @@ if (document.title === "QuickMenu") {
 			document.body.appendChild(quickMenuElement);
 
 			if (userOptions.quickMenuSearchBar === 'bottom') {
-				document.body.appendChild(document.getElementById('quickmenusearchbar'));
+				document.body.appendChild(document.getElementById('quickmenusearchbar').parentNode);
 			//	document.getElementById('quickmenusearchbar').getBoundingClientRect();
 				setTimeout(() => {
 					document.getElementById('quickmenusearchbar').focus();
@@ -885,7 +885,7 @@ if (document.title === "QuickMenu") {
 				action: "quickMenuIframeLoaded", 
 				size: {
 					width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
-					height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(document.getElementById('quickmenusearchbar').ownerDocument.defaultView.getComputedStyle(document.getElementById('quickmenusearchbar'), null).height) + 'px'
+					height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(document.getElementById('quickMenuSearchBarContainer').ownerDocument.defaultView.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
 				}
 			});
 		});
