@@ -533,6 +533,36 @@ function makeQuickMenu() {
 
 	quickMenuElement.id = 'quickMenuElement';
 	
+	let sb = document.getElementById('quickmenusearchbar');
+	sb.onclick = function(e) {
+		e.stopPropagation();
+	}
+	sb.onmouseup = function(e) {
+		e.stopPropagation();
+	}
+	sb.onkeydown = function(e) {
+		if (e.keyCode === 13) {
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: 0,
+					selectionText: sb.value,//quickMenuObject.searchTerms,
+					openMethod: getOpenMethod(e)
+				}
+			});
+
+		}
+	}
+	
+	document.addEventListener('updatesearchterms', (e) => {
+		sb.value = quickMenuObject.searchTerms;
+	});
+	
+	if (!userOptions.quickMenuSearchBar) {
+		sb.style.display = 'none';
+		sb.style.height = '0';
+	}
+	
 	// prevent click events from propagating
 	for (let eventType of ['mousedown', 'mouseup', 'click', 'contextmenu']) {
 		quickMenuElement.addEventListener(eventType, (e) => {
@@ -643,7 +673,7 @@ function makeQuickMenu() {
 				addTileEventHandlers(tile_copy, (e) => {
 					let input = document.createElement('input');
 					input.type = "text";
-					input.value = quickMenuObject.searchTerms;
+					input.value = sb.value;//quickMenuObject.searchTerms;
 					input.style = 'width:0;height:0;border:0;padding:0;margin:0;position:absolute;left:-1px;';
 					document.body.appendChild(input);
 					input.select();
@@ -779,7 +809,7 @@ function makeQuickMenu() {
 				action: "quickMenuSearch", 
 				info: {
 					menuItemId: tile.index,
-					selectionText: quickMenuObject.searchTerms,
+					selectionText: sb.value,//quickMenuObject.searchTerms,
 					openMethod: getOpenMethod(e)
 				}
 			});
@@ -838,7 +868,7 @@ if (document.title === "QuickMenu") {
 				action: "quickMenuIframeLoaded", 
 				size: {
 					width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
-					height:quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")
+					height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(document.getElementById('quickmenusearchbar').ownerDocument.defaultView.getComputedStyle(document.getElementById('quickmenusearchbar'), null).height) + 'px'
 				}
 			});
 		});

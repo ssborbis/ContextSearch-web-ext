@@ -675,6 +675,7 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
+		quickMenuSearchBar: true,
 		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
