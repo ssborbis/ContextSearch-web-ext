@@ -781,7 +781,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		let textNode = traverse(el);
 		
-		textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+		if (browser.i18n.getMessage(el.dataset.i18n))
+			textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
 	}
 	
 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
