@@ -758,11 +758,15 @@
   },
   
   "SearchBar": {
-    "message": "Enable Search Bar"
+    "message": "Search Bar"
   },
   
   "SearchBarTooltip": {
-    "message": "Add a search bar to the quick menu"
+    "message": "Choose how to display the search bar"
+  },
+  
+  "hidden": {
+    "message": "hidden"
   },
   
   "_________": {

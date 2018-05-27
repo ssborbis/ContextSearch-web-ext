@@ -566,7 +566,7 @@ function makeQuickMenu() {
 		sb.value = quickMenuObject.searchTerms;
 	});
 	
-	if (!userOptions.quickMenuSearchBar) {
+	if (userOptions.quickMenuSearchBar === 'hidden') {
 		sb.style.display = 'none';
 		sb.style.height = '0';
 	}
@@ -870,13 +870,16 @@ if (document.title === "QuickMenu") {
 			if ( userOptions === {} ) return;
 			
 			let quickMenuElement = makeQuickMenu();
+		
 			document.body.appendChild(quickMenuElement);
-			
-			
-			
-			// if (true) {
-				// document.body.appendChild(document.getElementById('quickmenusearchbar'));
-			// }
+
+			if (userOptions.quickMenuSearchBar === 'bottom') {
+				document.body.appendChild(document.getElementById('quickmenusearchbar'));
+			//	document.getElementById('quickmenusearchbar').getBoundingClientRect();
+				setTimeout(() => {
+					document.getElementById('quickmenusearchbar').focus();
+				}, 100);
+			}
 
 			browser.runtime.sendMessage({
 				action: "quickMenuIframeLoaded", 

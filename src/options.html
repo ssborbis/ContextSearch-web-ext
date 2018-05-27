@@ -911,16 +911,19 @@
 					</div>
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
-				<br />
+				<hr />
 				<div>
-					<label class="container checkboxMenu" style='display:inline-block;' data-i18n='SearchBar'>Enable Search Bar
-						<input type='checkbox' id='cb_quickMenuSearchBar' />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<span class='info' data-msg='' data-i18n_tooltip='SearchBar'>?</span>
+					<div data-i18n='SearchBar'>Search Bar<span class='info' data-msg='' data-i18n_tooltip='SearchBar'>?</span>
 					
-					<div class='openOnDetails' data-details='cb_quickMenuSearchBar'>
-					
+					<span class="checkboxOpeningChoice">
+					<input type='radio' id='r_quickMenuSearchBarTop' name='r_quickMenuSearchBar' value='top' /><label class="container" style='display:inline-block;' for='r_quickMenuSearchBarTop' data-i18n='top'>top</label>
+					</span>
+					<span class="checkboxOpeningChoice">
+					<input type='radio' id='r_quickMenuSearchBarBottom' name='r_quickMenuSearchBar' value='bottom' /><label class="container" style='display:inline-block;' for='r_quickMenuSearchBarBottom' data-i18n='bottom'>bottom</label>
+					</span>
+					<span class="checkboxOpeningChoice">
+					<input type='radio' id='r_quickMenuSearchBarHide' name='r_quickMenuSearchBar' value='hidden' /><label class="container" style='display:inline-block;' for='r_quickMenuSearchBarHide' data-i18n='hidden'>hidden</label>
+					</span>
 					</div>
 				</div>
 				
@@ -929,9 +932,9 @@
 				<div id='d_openOnDescription' style='font-size:10pt' data-i18n="Opening&ClosingDescription">Choose how to open Quick Menu after selecting text</div>
 				
 				<div>
-				<div class='checkboxOpeningChoice' data-msg='Open automatically' data-i18n_tooltip="Auto"><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto' data-i18n='Auto'><img src='/icons/auto.png' />Auto</label></div>
-				<div class='checkboxOpeningChoice' data-msg='Open using a mouse button' data-i18n_tooltip="Mouse"><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse' data-i18n='Mouse' data-i18n_tooltip="Mouse"><img src='/icons/mouse.png' />Mouse</label></div>
-				<div class='checkboxOpeningChoice' data-msg='Open using a keyboard key' data-i18n_tooltip="Keyboard"><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey' data-i18n='Keyboard'><img src='/icons/keyboard.png' />Keyboard</label></div>
+				<div class='checkboxOpeningChoice openingChoice' data-msg='Open automatically' data-i18n_tooltip="Auto"><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto' data-i18n='Auto'><img src='/icons/auto.png' />Auto</label></div>
+				<div class='checkboxOpeningChoice openingChoice' data-msg='Open using a mouse button' data-i18n_tooltip="Mouse"><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse' data-i18n='Mouse' data-i18n_tooltip="Mouse"><img src='/icons/mouse.png' />Mouse</label></div>
+				<div class='checkboxOpeningChoice openingChoice' data-msg='Open using a keyboard key' data-i18n_tooltip="Keyboard"><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey' data-i18n='Keyboard'><img src='/icons/keyboard.png' />Keyboard</label></div>
 				
 				<br /><br />
 				
@@ -1027,22 +1030,6 @@
 				<p class='header1' data-i18n='Tools'>Tools</p>
 				<div id='toolIcons'></div>
 				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px' data-i18n='ToolsHelp'>click to disable | drag to re-order</div>
-				
-				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
-				
-				<div class='blobContainerHeader' style='margin-left:-20px' data-i18n='ToolbarButton'><img alt='' src='icons/quick_menu.png' />Toolbar Button</div>
-				
-				<label class="container" style='display:inline-block;' xdata-i18n=''>Options
-					<input type='radio' name='ToolbarButton' id='' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				<br />
-				<label class="container" style='display:inline-block;' xdata-i18n=''>Quick Menu
-					<input type='radio' name='ToolbarButton' id='' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				<span class='info' data-msg='' xdata-i18n_tooltip=''>?</span>
-				
 				
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
 				

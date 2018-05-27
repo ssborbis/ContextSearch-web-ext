@@ -568,7 +568,7 @@ function restoreOptions() {
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
 //		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
-		document.getElementById('cb_quickMenuSearchBar').checked = userOptions.quickMenuSearchBar,
+		document.querySelector('input[name="r_quickMenuSearchBar"][value="' + userOptions.quickMenuSearchBar || 'top' + '"]' ).checked = true;
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
 		document.getElementById('range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
@@ -676,7 +676,7 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
-		quickMenuSearchBar: document.getElementById('cb_quickMenuSearchBar').checked,
+		quickMenuSearchBar: document.querySelector('input[name="r_quickMenuSearchBar"]:checked').value,
 		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
@@ -768,7 +768,9 @@ document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOpt
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
 document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
-document.getElementById('cb_quickMenuSearchBar').addEventListener('change', saveOptions);
+
+for (let el of document.getElementsByName('r_quickMenuSearchBar'))
+	el.addEventListener('change', saveOptions);
 
 for (let el of document.getElementsByTagName('select'))
 	el.addEventListener('change', saveOptions);
@@ -1111,7 +1113,7 @@ function showInfoMsg(el, msg) {
 // set up opening choice menu
 document.addEventListener("DOMContentLoaded", () => {
 	
-	for (let el of document.getElementsByClassName('checkboxOpeningChoice')) {
+	for (let el of document.getElementsByClassName('openingChoice')) {
 		el.onclick = function() {
 			
 			let input = el.querySelector('input');
@@ -1135,7 +1137,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let msgDiv = document.getElementById('d_openOnDescription');
 //	msgDiv.dataset.originalText = msgDiv.dataset.i18n;
 	
-	for (let el of document.getElementsByClassName('checkboxOpeningChoice')) {
+	for (let el of document.getElementsByClassName('openingChoice')) {
 		el.addEventListener('mouseenter', (e) => {
 			msgDiv.innerText = el.dataset.msg;
 		});

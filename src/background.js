@@ -487,7 +487,7 @@ var userOptions = {
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
 	quickMenuTrackingProtection: true,
-	quickMenuSearchBar: true,
+	quickMenuSearchBar: "top",
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
