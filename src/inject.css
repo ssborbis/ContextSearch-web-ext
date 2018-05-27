@@ -68,13 +68,13 @@
 	padding:0 10px;
 	height:20px;
 	margin:0;
-	text-align:center;
+	text-align:left;
 	border:none;
 	background-color:#9abad2;
 	color:white;
 }
 #quickmenusearchbar:focus {
-	color:#4a4a4a;
+/*	color:#4a4a4a;
 	background-color:white;
-	text-align:left;
+*/	text-align:left;
 }

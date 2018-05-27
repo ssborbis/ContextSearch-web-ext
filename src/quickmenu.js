@@ -553,6 +553,14 @@ function makeQuickMenu() {
 
 		}
 	}
+	sb.focus();
+	
+	sb.addEventListener('keydown', (e) => {
+		if (e.keyCode === 9) {
+			e.preventDefault();
+			sb.select();
+		}
+	});
 	
 	document.addEventListener('updatesearchterms', (e) => {
 		sb.value = quickMenuObject.searchTerms;

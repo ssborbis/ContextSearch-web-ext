@@ -600,6 +600,7 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 });
 
 browser.browserAction.setPopup({popup: "/options.html#browser_action"});
+//browser.browserAction.setPopup({popup: "/quickmenu.html"});
 browser.browserAction.onClicked.addListener(() => {	
 	browser.browserAction.openPopup();
 });
