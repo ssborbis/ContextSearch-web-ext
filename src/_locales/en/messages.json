@@ -762,11 +762,15 @@
   },
   
   "SearchBarTooltip": {
-    "message": "Choose how to display the search bar in the Quick Search menu"
+    "message": "Choose where to display the search bar in the Quick Search menu"
   },
   
   "hidden": {
     "message": "hidden"
+  },
+  
+  "KeepMenuOpen": {
+    "message": "Keep Menu Open"
   },
   
   "_________": {

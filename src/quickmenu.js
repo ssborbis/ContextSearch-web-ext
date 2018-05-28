@@ -308,7 +308,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (quickMenuObject.disabled)
 					userOptions.quickMenu = false;
 				
-				let qm = document.getElementById('quickMenuContainerElement')
+				let qm = document.getElementById('quickMenuIframe')
 				
 				if( qm && message.toggleLock ) {
 				
@@ -370,7 +370,7 @@ function closeQuickMenu(eventType) {
 		quickMenuObject.locked
 	) return false;
 	
-	var quickMenuElement = document.getElementById('quickMenuContainerElement');
+	var quickMenuElement = document.getElementById('quickMenuIframe');
 	if (quickMenuElement !== null) {
 		quickMenuElement.style.opacity=0;
 		setTimeout(()=> {
@@ -398,7 +398,7 @@ function getOffsets() {
 }
 
 function scaleAndPositionQuickMenu(size) {
-	let qmc = document.getElementById('quickMenuContainerElement');
+	let qmc = document.getElementById('quickMenuIframe');
 	if (!qmc) return;
 	
 	size = size || {
@@ -481,29 +481,21 @@ function calculateQuickMenuSize() {
 // tag type depends on userOptions.trackingProtection
 function makeQuickMenuContainer(coords) {
 	
-	let qmc = document.getElementById('quickMenuContainerElement');
+	let qmc = document.getElementById('quickMenuIframe');
 		
 	if (qmc) qmc.parentNode.removeChild(qmc);
 	
-//	if (userOptions.quickMenuTrackingProtection)
-		qmc = document.createElement('iframe');
-//	else 
-//		qmc = document.createElement('quickmenucontainer');
-	
-	qmc.id = "quickMenuContainerElement";
+	qmc = document.createElement('iframe');
+
+	qmc.id = "quickMenuIframe";
 
 	qmc.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
 	qmc.style.left = coords.x + getOffsets().x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + "px";
 	
 	document.body.appendChild(qmc);
 	
-//	if (userOptions.quickMenuTrackingProtection) {
-		qmc.src = browser.runtime.getURL('quickmenu.html');
-//	} else {
-//		qmc.appendChild(makeQuickMenu(coords));
-//		scaleAndPositionQuickMenu();
-//	}
-			
+	qmc.src = browser.runtime.getURL('quickmenu.html');
+	
 	// Check if quickmenu fails to display
 	setTimeout(() => {
 		if (!qmc || qmc.ownerDocument.defaultView.getComputedStyle(els[i], null).getPropertyValue("display") === 'none') {
@@ -512,16 +504,6 @@ function makeQuickMenuContainer(coords) {
 		}
 	},1000);
 
-/*	var els = qmc.getElementsByTagName('*');
-	for (var i in els) {
-		if (els[i].nodeType === undefined || els[i].nodeType !== 1) continue;
-		if (qmc.ownerDocument.defaultView.getComputedStyle(els[i], null).getPropertyValue("display") === 'none' || qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("display") === 'none') {
-			console.log('quick menu hidden by external script (adblocker?).  Enabling context menu');
-			browser.runtime.sendMessage({action: 'enableContextMenu'});
-			break;
-		}
-	}
-*/
 }
 
 function makeQuickMenu() {
@@ -769,7 +751,7 @@ function makeQuickMenu() {
 				tile_lock.locked = false;
 				tile_lock.onclick = function(e) {
 					
-					let qm = document.getElementById('quickMenuContainerElement');
+					let qm = document.getElementById('quickMenuIframe');
 
 					switch (this.locked) {
 						case false:

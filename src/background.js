@@ -309,17 +309,24 @@ function openSearch(details) {
 	console.log(details);
 	
 	var searchEngineIndex = details.searchEngineIndex || 0;
-	var searchTerms = details.searchTerms;
+	var searchTerms = details.searchTerms.trim();
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;
 	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
 	
 	if (
-		searchEngineIndex === null ||
-		!searchTerms ||
-		tab === null
+		searchEngineIndex === null //||
+//		!searchTerms ||
+//		tab === null
 	) return false;
+	
+	if (!tab) {
+		tab = {
+			url:"",
+			id:0
+		}
+	}
 	
 	// if temp engine exists, use that
 	var se = temporarySearchEngine || userOptions.searchEngines[searchEngineIndex];
@@ -340,7 +347,10 @@ function openSearch(details) {
 	}
 	
 	// set landing page for POST engines
-	if (typeof se.method !== 'undefined' && se.method === "POST") {
+	if ( 
+		!searchTerms || // empty searches should go to the landing page also
+		(typeof se.method !== 'undefined' && se.method === "POST") // post searches should go to the lander page
+	) {
 		
 		if ( se.searchForm )
 			q = se.searchForm;
@@ -376,6 +386,9 @@ function openSearch(details) {
 		
 		// code for POST engines
 		if (typeof se.method === 'undefined' || se.method !== "POST") return;
+		
+		// searches without terms should stay here
+		if (!searchTerms) return
 		
 		function escapeDoubleQuotes(str) {
 			return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
@@ -441,7 +454,7 @@ function openSearch(details) {
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: tab.id
+			openerTabId: tab.id || null
 		});
 		creating.then(onCreate, onError);
 
@@ -599,8 +612,9 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 	
 });
 
-browser.browserAction.setPopup({popup: "/options.html#browser_action"});
+//browser.browserAction.setPopup({popup: "/options.html#browser_action"});
 //browser.browserAction.setPopup({popup: "/quickmenu.html"});
+browser.browserAction.setPopup({popup: "/searchbar.html"});
 browser.browserAction.onClicked.addListener(() => {	
 	browser.browserAction.openPopup();
 });
