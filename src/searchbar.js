@@ -60,6 +60,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		location.href = browser.runtime.getURL('/options.html#browser_action');
 	}
 	
+	document.getElementById('searchEngineTitle').style.width = parseFloat(window.getComputedStyle(qm).width) - 10 + "px";
+	
 	div.appendChild(img);
 
 	document.body.appendChild(div);
