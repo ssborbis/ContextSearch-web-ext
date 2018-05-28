@@ -923,19 +923,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-	if (window.location.hash === '#search_bar') {
-		document.getElementById('left_div').style.display = 'none';
-		document.getElementById('right_div').style.width = "auto";
-		
-		for (let el of document.body.children)
-			el.style.display='none';
-		
-		let input = document.createElement('input');
-		document.body.appendChild(input);
-	}
-});
-
 function makeTabs() {
 	
 	let tabs = document.getElementsByClassName("tablinks");

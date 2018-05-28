@@ -6,6 +6,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	if ( userOptions === {} ) return;
 		
 	let input = document.getElementById('quickmenusearchbar');
+	input.placeholder = browser.i18n.getMessage('Search');
 
 	let qm = document.createElement('div');
 	qm.id = 'quickMenuElement';
@@ -16,6 +17,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		
 		let div = document.createElement('div');
 		div.style.backgroundImage = "url(" + se.icon_base64String || se.icon_url + ")";
+//		div.style.backgroundSize = 16 * userOptions.quickMenuIconScale + "px";
 		div.index = i;
 		div.title = se.title;
 		
@@ -29,6 +31,13 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 				}
 			});
 		};
+		
+		div.onmouseenter = function() {
+			document.getElementById('searchEngineTitle').innerText = se.title;
+		}
+		div.onmouseleave = function() {
+			document.getElementById('searchEngineTitle').innerText = ' ';
+		}
 		qm.appendChild(div);
 		
 		if ( (i + 1) % userOptions.quickMenuColumns === 0) {
@@ -40,7 +49,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	document.body.appendChild(qm);
 	
 	let div = document.createElement('div');
-	div.style = 'text-align:center;';
+	div.style = 'text-align:center;border-top:1px solid #e0e0e0';
 	div.className = 'hover';
 	let img = document.createElement('img');
 	img.src = "/icons/settings.png";

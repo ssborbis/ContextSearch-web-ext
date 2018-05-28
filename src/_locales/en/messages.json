@@ -773,6 +773,11 @@
     "message": "Keep Menu Open"
   },
   
+  "Search": {
+    "message": "Search",
+    "description": "placeholder in search bar input"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

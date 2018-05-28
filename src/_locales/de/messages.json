@@ -764,6 +764,11 @@
   "SearchBarTooltip": {
     "message": "Fügt dem Schnellmenü eine Suchleiste hinzu"
   },
+  
+  "Search": {
+    "message": "Suchen",
+    "description": "placeholder in search bar input"
+  },
    
   "_________": {
     "message": "",
