@@ -65,5 +65,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	div.appendChild(img);
 
 	document.body.appendChild(div);
+	input.focus();
 
 });
