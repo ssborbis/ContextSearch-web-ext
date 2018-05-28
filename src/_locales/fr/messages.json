@@ -766,9 +766,13 @@
   },
   
   "hidden": {
-    "message": "invisible"
+    "message": "sans"
   },
   
+  "KeepMenuOpen": {
+    "message": "Garder le menu ouvert"
+  },
+    
   "_________": {
     "message": "",
     "description": ""
