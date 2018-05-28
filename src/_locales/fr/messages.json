@@ -757,6 +757,18 @@
     "message": "Validation…"
   },
   
+  "SearchBar": {
+    "message": "Barre de recherche"
+  },
+  
+  "SearchBarTooltip": {
+    "message": "Choisir le mode d’intégration de la barre de recherche au menu rapide"
+  },
+  
+  "hidden": {
+    "message": "invisible"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
