@@ -52,3 +52,15 @@ window.addEventListener('focus', (ev) => {
 		browser.runtime.sendMessage({action: "nativeAppRequest"});
 	}, 500);
 });
+
+document.addEventListener('keydown', (e) => {
+	if (
+		e.keyCode !== 9 ||
+		!document.getElementById('quickMenuIframe') 
+	) return;
+
+	e.preventDefault();
+	console.log('heard tab');
+	browser.runtime.sendMessage({action: "focusSearchBar"});
+	
+});

@@ -5,11 +5,48 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	if ( userOptions === {} ) return;
 		
-	let input = document.getElementById('quickmenusearchbar');
-	input.placeholder = browser.i18n.getMessage('Search');
-
+	let sb = document.getElementById('quickmenusearchbar');
+	sb.placeholder = browser.i18n.getMessage('Search');
+	
 	let qm = document.createElement('div');
 	qm.id = 'quickMenuElement';
+	
+	sb.onkeydown = function(e) {
+		if (e.keyCode === 13) {
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: sb.selectedIndex || 0,
+					selectionText: sb.value,//quickMenuObject.searchTerms,
+					openMethod: "openNewTab"
+				}
+			});
+
+		}
+	}
+	
+	sb.addEventListener('keydown', (e) => {
+		if (e.keyCode === 9) {
+			e.preventDefault();
+			
+			let divs = qm.querySelectorAll('div[data-index]');
+			console.log(divs);
+			
+			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
+			
+			if (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) {
+				
+				let div = divs[0];
+				div.classList.add('Xhover');
+				sb.selectedIndex = 0;
+				return;
+			}
+			
+			divs[++sb.selectedIndex].classList.add('Xhover');
+				
+		//	sb.select();
+		}
+	});
 	
 	let sb_width = 300;
 	let columns = 6;
@@ -26,6 +63,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		div.style.backgroundImage = "url(" + se.icon_base64String || se.icon_url + ")";
 //		div.style.backgroundSize = 16 * userOptions.quickMenuIconScale + "px";
 		div.index = i;
+		div.dataset.index = i;
 		div.title = se.title;
 		
 		div.onclick = function() {
@@ -33,7 +71,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 				action: "quickMenuSearch", 
 				info: {
 					menuItemId: div.index,
-					selectionText: input.value,//quickMenuObject.searchTerms,
+					selectionText: sb.value,//quickMenuObject.searchTerms,
 					openMethod: "openNewTab"
 				}
 			});
@@ -72,6 +110,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	div.appendChild(img);
 
 	document.body.appendChild(div);
-	input.focus();
+	sb.focus();
 
 });

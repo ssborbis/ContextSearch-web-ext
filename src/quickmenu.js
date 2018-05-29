@@ -535,15 +535,13 @@ function makeQuickMenu() {
 
 		}
 	}
-	sb.focus();
-	
+
 	sb.addEventListener('keydown', (e) => {
 		if (e.keyCode === 9) {
 			e.preventDefault();
 			
 			let divs = quickMenuElement.querySelectorAll('div[data-index]');
-			console.log(divs);
-			
+
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
 			if (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) {
@@ -899,6 +897,12 @@ if (document.title === "QuickMenu") {
 					
 					// send event to OpenAsLink tile to enable/disable
 					document.dispatchEvent(new CustomEvent('updatesearchterms'));
+					break;
+					
+				case "focusSearchBar":
+					let sb = document.getElementById('quickmenusearchbar');
+					if (sb) sb.focus();
+					
 					break;
 			}
 		}

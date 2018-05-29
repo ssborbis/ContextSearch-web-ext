@@ -173,6 +173,10 @@ function notify(message, sender, sendResponse) {
 		case "log":
 			console.log(message.msg);
 			break;
+			
+		case "focusSearchBar":
+			browser.tabs.sendMessage(sender.tab.id, message);
+			break;
 	}
 }
 
