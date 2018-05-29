@@ -5,7 +5,11 @@
 	border-color: #ccdbe8;
 /*	background-size: 20px 20px; */
 }
-#quickMenuElement DIV {
+.Xhover {
+	background-color: #ccdbe8 !important;
+	border-color: #ccdbe8 !important;
+}
+#quickMenuElement DIV, #quickMenuElement INPUT {
 	width:32px;
 	height:32px;
 	border:1px solid #e0e0e0;

@@ -590,11 +590,14 @@
 			#searchEnginesContainer TR:hover {
 				background-color:#f6f8fa;
 			}
-			#searchEnginesContainer .delete	{
+			#searchEnginesContainer .delete, .copy {
 				height:20px;
 				padding:0 10px;
 				position:absolute;
 				right:0;
+			}
+			#searchEnginesContainer .copy {
+				right:30px;
 			}
 			#searchEnginesContainer .add_search	{
 				height:16px;
@@ -1109,6 +1112,7 @@
 					<div style='inline'>
 					<button type="button" name="cancel" class='inputNice _hover' style="float:right;margin:10px 5px" data-i18n='Cancel'>cancel</button>
 					<button type="button" name="save" class='inputNice _hover' style="float:right;margin:10px 5px" data-i18n='Save'>save</button>
+					<button type="button" name="copy" class='inputNice _hover' style="float:left;margin:10px 5px" data-i18n='Copy'>Copy</button>
 					</div>
 				</form>
 				<br />

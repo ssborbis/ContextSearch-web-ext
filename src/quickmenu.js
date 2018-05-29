@@ -527,7 +527,7 @@ function makeQuickMenu() {
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
 				info: {
-					menuItemId: 0,
+					menuItemId: sb.selectedIndex || 0,
 					selectionText: sb.value,//quickMenuObject.searchTerms,
 					openMethod: getOpenMethod(e)
 				}
@@ -540,7 +540,23 @@ function makeQuickMenu() {
 	sb.addEventListener('keydown', (e) => {
 		if (e.keyCode === 9) {
 			e.preventDefault();
-			sb.select();
+			
+			let divs = quickMenuElement.querySelectorAll('div[data-index]');
+			console.log(divs);
+			
+			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
+			
+			if (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) {
+				
+				let div = divs[0];
+				div.classList.add('Xhover');
+				sb.selectedIndex = 0;
+				return;
+			}
+			
+			divs[++sb.selectedIndex].classList.add('Xhover');
+				
+		//	sb.select();
 		}
 	});
 	
@@ -793,6 +809,7 @@ function makeQuickMenu() {
 		let tile = buildSearchIcon(se.icon_base64String, se.title);
 
 		tile.index = i;
+		tile.dataset.index = i;
 		
 		addTileEventHandlers(tile, (e) => {
 			browser.runtime.sendMessage({

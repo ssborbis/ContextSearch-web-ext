@@ -10,12 +10,19 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 	let qm = document.createElement('div');
 	qm.id = 'quickMenuElement';
+	
+	let sb_width = 300;
+	let columns = 6;
+	div_width = sb_width / columns;
 
 	for (let i=0;i<userOptions.searchEngines.length;i++) {
 		
 		let se = userOptions.searchEngines[i];
 		
 		let div = document.createElement('div');
+		
+		div.style.width = div_width + "px";
+	
 		div.style.backgroundImage = "url(" + se.icon_base64String || se.icon_url + ")";
 //		div.style.backgroundSize = 16 * userOptions.quickMenuIconScale + "px";
 		div.index = i;
@@ -40,7 +47,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		}
 		qm.appendChild(div);
 		
-		if ( (i + 1) % userOptions.quickMenuColumns === 0) {
+		if ( (i + 1) % columns === 0) {
 			let br = document.createElement('br');
 			qm.appendChild(br);
 		}

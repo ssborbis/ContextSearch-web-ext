@@ -110,14 +110,16 @@ function buildSearchEngineContainer(searchEngines) {
 		}
 	}
 	
-	let b_addSearchEngine = document.getElementById('b_addSearchEngine');
-	b_addSearchEngine.onclick = function() {
+	function addNewEngine(i) {
+		
+		let se = (i !== undefined) ? Object.assign({},searchEngines[i]) : false;
+		let default_value = (se) ? se.title + " copy" : "";
 		
 		let msg = browser.i18n.getMessage("EnterUniqueName");
 		let shortName = "";
 
 		while(true) {
-			if (! (shortName = window.prompt(msg)) || !shortName.trim() ) return;
+			if (! (shortName = window.prompt(msg, default_value)) || !shortName.trim() ) return;
 
 			let found = false;
 			
@@ -132,42 +134,54 @@ function buildSearchEngineContainer(searchEngines) {
 			
 			if ( !found ) break;
 		}
+		
+		if (se) {
+			
+			se.title = shortName;
+			searchEngines.splice(i+1,0,se);
+			
+		} else {
 
-		searchEngines.push({
-			"searchForm": "", 
-			"query_string":"",
-			"icon_url":"",
-			"title":shortName,
-			"order":searchEngines.length, 
-			"icon_base64String": "", 
-			"method": "GET", 
-			"params": "", 
-			"template": "", 
-			"queryCharset": "UTF-8", 
-			"hidden": false
-		});
+			searchEngines.push({
+				"searchForm": "", 
+				"query_string":"",
+				"icon_url":"",
+				"title":shortName,
+				"order":searchEngines.length, 
+				"icon_base64String": "", 
+				"method": "GET", 
+				"params": "", 
+				"template": "", 
+				"queryCharset": "UTF-8", 
+				"hidden": false
+			});
+		}
 		
 		saveOptions();
 		
+		function scrollToEnd() {
+			se_container.parentNode.scroll({
+				top: se_container.parentNode.scrollHeight,
+				behavior:'smooth'
+			});
+		}
+		
 		buildSearchEngineContainer(searchEngines);
 		let titles = document.getElementsByClassName('title');
-		let title = titles[titles.length - 1];
+		let title = (se) ? titles[i+1] : titles[titles.length - 1];
 
-		se_container.parentNode.scroll({
-			top: se_container.parentNode.scrollHeight,
-			behavior:'smooth'
-		});
+		if (!se) scrollToEnd();
 
 		title.dispatchEvent(new Event('click'));
 		
 		// wait for animation to end
 		setTimeout(() => {
-			se_container.parentNode.scroll({
-				top: se_container.parentNode.scrollHeight,
-				behavior:'smooth'
-			});
+			if (!se) scrollToEnd();
 		},500);
 	}
+	
+	let b_addSearchEngine = document.getElementById('b_addSearchEngine');
+	b_addSearchEngine.onclick = function() {addNewEngine();}
 	
 	function getToolIconIndex(element) {
 		 let toolIcons = document.getElementsByClassName('searchEngineRow');
@@ -306,6 +320,13 @@ function buildSearchEngineContainer(searchEngines) {
 			
 			edit_form.cancel.onclick = function() {
 				edit_form.style.maxHeight = null;
+			}
+			
+			edit_form.copy.onclick = function() {
+				let r = nearestParent("TR",this);
+				let index = getToolIconIndex(r);
+				
+				addNewEngine(index);
 			}
 			
 			edit_form.save.onclick = function() {
