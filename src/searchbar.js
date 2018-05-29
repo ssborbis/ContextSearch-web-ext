@@ -30,7 +30,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			e.preventDefault();
 			
 			let divs = qm.querySelectorAll('div[data-index]');
-			console.log(divs);
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
