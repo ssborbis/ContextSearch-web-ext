@@ -873,10 +873,6 @@ if (document.title === "QuickMenu") {
 
 			if (userOptions.quickMenuSearchBar === 'bottom') {
 				document.body.appendChild(document.getElementById('quickmenusearchbar').parentNode);
-			//	document.getElementById('quickmenusearchbar').getBoundingClientRect();
-				setTimeout(() => {
-					document.getElementById('quickmenusearchbar').focus();
-				}, 100);
 			}
 
 			browser.runtime.sendMessage({
@@ -902,7 +898,11 @@ if (document.title === "QuickMenu") {
 					
 				case "focusSearchBar":
 					let sb = document.getElementById('quickmenusearchbar');
-					if (sb) sb.focus();
+					
+					if (!sb) return;
+					
+					sb.focus();
+					sb.select();
 					
 					break;
 			}
