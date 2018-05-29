@@ -1,10 +1,20 @@
-
-
-._hover_small { /* Test Add Create buttons in the Custom Search Engine menu */
-	font-size:9pt;
+.slider_label {
+	width:200px;
 }
-
-
-.slider_label { /* inline-block div containing the labels for menu size and icon size sliders */
-	width:220px;
+#right_div {
+	min-width:480px;
+}
+._hover {
+	width:auto;
+}
+._hover_small {
+	font-size:10pt;
+}
+.iconButton {
+	min-width:100px;
+	font-size:10pt;
+}
+BODY {
+	min-width:520px;
+	overflow-x:hidden;
 }
