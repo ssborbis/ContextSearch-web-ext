@@ -777,7 +777,12 @@
     "message": "Rechercher",
     "description": "placeholder in search bar input"
   },
-    
+      
+  "Copy": {
+    "message": "Copie",
+    "description": "button to duplicate a search engine from the manager"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

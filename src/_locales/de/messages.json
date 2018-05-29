@@ -770,6 +770,11 @@
     "description": "placeholder in search bar input"
   },
    
+  "Copy": {
+    "message": "Kopieren",
+    "description": "button to duplicate a search engine from the manager"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

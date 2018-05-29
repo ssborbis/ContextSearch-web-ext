@@ -60,7 +60,6 @@ document.addEventListener('keydown', (e) => {
 	) return;
 
 	e.preventDefault();
-	console.log('heard tab');
 	browser.runtime.sendMessage({action: "focusSearchBar"});
 	
 });

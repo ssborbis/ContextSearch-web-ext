@@ -541,20 +541,12 @@ function makeQuickMenu() {
 			e.preventDefault();
 			
 			let divs = quickMenuElement.querySelectorAll('div[data-index]');
-
+			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
-			
-			if (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) {
-				
-				let div = divs[0];
-				div.classList.add('Xhover');
-				sb.selectedIndex = 0;
-				return;
-			}
-			
-			divs[++sb.selectedIndex].classList.add('Xhover');
-				
-		//	sb.select();
+			sb.selectedIndex = (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) ? 0 : sb.selectedIndex + 1;
+
+			divs[sb.selectedIndex].classList.add('Xhover');
+
 		}
 	});
 	
