@@ -380,7 +380,7 @@
   },
   
   "Save": {
-    "message": "Valider"
+    "message": "Enregistrer"
   },
 
   "Name": {
@@ -779,7 +779,7 @@
   },
       
   "Copy": {
-    "message": "Copie",
+    "message": "Dupliquer",
     "description": "button to duplicate a search engine from the manager"
   },
   
