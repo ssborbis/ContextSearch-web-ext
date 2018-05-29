@@ -540,10 +540,19 @@ function makeQuickMenu() {
 		if (e.keyCode === 9) {
 			e.preventDefault();
 			
+			let direction = (e.shiftKey) ? -1 : 1;
 			let divs = quickMenuElement.querySelectorAll('div[data-index]');
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
-			sb.selectedIndex = (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) ? 0 : sb.selectedIndex + 1;
+			
+			if (sb.selectedIndex === undefined)
+				sb.selectedIndex = 0;
+			else if (sb.selectedIndex + direction === divs.length)
+				sb.selectedIndex = 0;
+			else if (sb.selectedIndex + direction < 0)
+				sb.selectedIndex = divs.length -1;
+			else
+				sb.selectedIndex+=direction;
 
 			divs[sb.selectedIndex].classList.add('Xhover');
 

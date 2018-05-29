@@ -29,21 +29,22 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		if (e.keyCode === 9) {
 			e.preventDefault();
 			
-			let divs = qm.querySelectorAll('div[data-index]');
+			let direction = (e.shiftKey) ? -1 : 1;
+			let divs = quickMenuElement.querySelectorAll('div[data-index]');
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
-			if (sb.selectedIndex === undefined || sb.selectedIndex + 1 === divs.length) {
-				
-				let div = divs[0];
-				div.classList.add('Xhover');
+			if (sb.selectedIndex === undefined)
 				sb.selectedIndex = 0;
-				return;
-			}
-			
-			divs[++sb.selectedIndex].classList.add('Xhover');
-				
-		//	sb.select();
+			else if (sb.selectedIndex + direction === divs.length)
+				sb.selectedIndex = 0;
+			else if (sb.selectedIndex + direction < 0)
+				sb.selectedIndex = divs.length -1;
+			else
+				sb.selectedIndex+=direction;
+
+			divs[sb.selectedIndex].classList.add('Xhover');
+
 		}
 	});
 	
