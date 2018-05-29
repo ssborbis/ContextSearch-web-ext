@@ -527,7 +527,7 @@ function makeQuickMenu() {
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
 				info: {
-					menuItemId: sb.selectedIndex || 0,
+					menuItemId: (sb.selectedIndex !== undefined) ? quickMenuElement.querySelectorAll('div[data-index]')[sb.selectedIndex].index : 0,
 					selectionText: sb.value,//quickMenuObject.searchTerms,
 					openMethod: getOpenMethod(e)
 				}
