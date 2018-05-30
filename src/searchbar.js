@@ -101,7 +101,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	img.style.height = '16px';
 	img.style.padding = '8px';
 
-	div.onclick = function() {	
+	div.onclick = function() {
+		document.body.style.visibility = 'hidden';
 		location.href = browser.runtime.getURL('/options.html#browser_action');
 	}
 	
