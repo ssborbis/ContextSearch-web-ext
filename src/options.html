@@ -233,6 +233,7 @@
 				margin-bottom: 8px;
 				cursor: pointer;
 				user-select: none;
+				white-space:nowrap;
 			}
 
 			/* Hide the browser's default radio button */
@@ -868,7 +869,11 @@
 				</div>
 				
 				<p class='header1' data-i18n='Opening&ClosingHeader'>Opening &amp; Closing</p>
-
+			<!--
+				<div data-i18n='Opening&ClosingDescription' style='font-size:9pt'>Choose how to open Quick Menu</div>
+				
+				<hr />
+			-->
 				<table class='openingTable'>
 				<tr>
 					<td>
@@ -911,15 +916,17 @@
 						<span style='font-size:9pt' data-i18n='MouseTooltip'>Select text and open using a mouse button</span>
 					</td>
 					<td>
-						<select class='inputNice' style='width:auto;margin-right:10px' id='s_quickMenuOnMouseMethod'>
-							<option data-i18n='Click' value='click'>Click</option>
-							<option data-i18n='Hold' value='hold'>Hold</option>
-						</select>
-						
-						<select class='inputNice' style='width:auto' id='s_quickMenuMouseButton'>
-							<option data-i18n='LeftButton' value='1'>Left Button</option>
-							<option data-i18n='RightButton' value='3'>Right Button</option>
-						</select>
+						<div style='display:inline-block;white-space:nowrap;'>
+							<select class='inputNice' style='width:auto;margin-right:10px;font-size:10pt;padding-right:10px' id='s_quickMenuOnMouseMethod'>
+								<option data-i18n='Click' value='click'>Click</option>
+								<option data-i18n='Hold' value='hold'>Hold</option>
+							</select>
+							
+							<select class='inputNice' style='width:auto;font-size:10pt;padding-right:10px' id='s_quickMenuMouseButton'>
+								<option data-i18n='LeftButton' value='1'>Left Button</option>
+								<option data-i18n='RightButton' value='3'>Right Button</option>
+							</select>
+						</div>
 						
 						<br />
 						<label class="container" style='display:inline-block;margin-top:10px' data-i18n='SearchOnMouseup'>Search On Mouseup 
