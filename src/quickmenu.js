@@ -895,9 +895,11 @@ if (document.title === "QuickMenu") {
 					}, 100);
 			
 				if (userOptions.quickMenuSearchBarSelect)
-					setTimeout(() => {
-						sb.select();
-					}, 100);
+					sb.addEventListener('focus', ()=> {
+						setTimeout(() => {
+							sb.select();
+						}, 100);
+					},{once:true});
 			});
 		});
 	});
@@ -916,11 +918,14 @@ if (document.title === "QuickMenu") {
 				case "focusSearchBar":
 					let sb = document.getElementById('quickmenusearchbar');
 					
-					if (userOptions.quickMenuSearchBarFocus)
-						sb.focus();
+					sb.focus();
 
 					if (userOptions.quickMenuSearchBarSelect)
-						sb.select();
+						sb.addEventListener('focus', ()=> {
+							setTimeout(() => {
+								sb.select();
+							}, 100);
+						},{once:true});
 					
 					break;
 			}
