@@ -889,19 +889,17 @@ if (document.title === "QuickMenu") {
 				let sb = document.getElementById('quickmenusearchbar');
 				
 				// setTimeout needed to trigger after updatesearchterms
-				
-				if (userOptions.quickMenuSearchBarSelect)
-					sb.addEventListener('focus', ()=> {
-						setTimeout(() => {
+				setTimeout(() => {
+					if (userOptions.quickMenuSearchBarSelect) {
+						sb.addEventListener('focus', ()=> {
 							sb.select();
-						}, 100);
-					},{once:true});
-					
-				if (userOptions.quickMenuSearchBarFocus)
-					setTimeout(() => {
-						sb.focus();
-					}, 100);
+						},{once:true});
+					}
 
+					if (userOptions.quickMenuSearchBarFocus) {
+						document.getElementById('quickmenusearchbar').focus();
+					}
+				}, 100);
 			});
 		});
 	});
@@ -920,15 +918,17 @@ if (document.title === "QuickMenu") {
 				case "focusSearchBar":
 					let sb = document.getElementById('quickmenusearchbar');
 
-					if (userOptions.quickMenuSearchBarSelect)
+					if (userOptions.quickMenuSearchBarSelect) {
 						sb.addEventListener('focus', ()=> {
 							setTimeout(() => {
 								sb.select();
 							}, 100);
 						},{once:true});
-						
+					}
+
 					sb.focus();
 					
+			//		console.log(document.activeElement);
 					break;
 			}
 		}
