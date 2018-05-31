@@ -889,17 +889,19 @@ if (document.title === "QuickMenu") {
 				let sb = document.getElementById('quickmenusearchbar');
 				
 				// setTimeout needed to trigger after updatesearchterms
-				if (userOptions.quickMenuSearchBarFocus)
-					setTimeout(() => {
-						sb.focus();
-					}, 100);
-			
+				
 				if (userOptions.quickMenuSearchBarSelect)
 					sb.addEventListener('focus', ()=> {
 						setTimeout(() => {
 							sb.select();
 						}, 100);
 					},{once:true});
+					
+				if (userOptions.quickMenuSearchBarFocus)
+					setTimeout(() => {
+						sb.focus();
+					}, 100);
+
 			});
 		});
 	});
@@ -917,8 +919,6 @@ if (document.title === "QuickMenu") {
 					
 				case "focusSearchBar":
 					let sb = document.getElementById('quickmenusearchbar');
-					
-					sb.focus();
 
 					if (userOptions.quickMenuSearchBarSelect)
 						sb.addEventListener('focus', ()=> {
@@ -926,6 +926,8 @@ if (document.title === "QuickMenu") {
 								sb.select();
 							}, 100);
 						},{once:true});
+						
+					sb.focus();
 					
 					break;
 			}

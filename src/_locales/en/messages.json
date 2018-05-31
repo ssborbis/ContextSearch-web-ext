@@ -782,27 +782,7 @@
     "message": "Copy",
     "description": "button to duplicate a search engine from the manager"
   },
-  
-  "AutoFocus": {
-    "message": "Auto Focus",
-    "description": "label for setting search bar focus automatically"
-  },
-  
-  "AutoFocusTooltip": {
-    "message": "Search bar will open with focus for immediate editing",
-    "description": "description for setting search bar focus automatically"
-  },
-  
-  "SelectText": {
-    "message": "Select Text",
-    "description": "label for selecting text in the search bar"
-  },
-  
-  "SelectTextTooltip": {
-    "message": "Select text in the search bar after receiving focus",
-    "description": "description for selecting text in the search bar"
-  },
-  
+
   "Hotkey": {
     "message": "Hotkey",
     "description": "label for Hotkey option"
