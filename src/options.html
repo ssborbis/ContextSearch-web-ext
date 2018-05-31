@@ -339,6 +339,7 @@
 			}
 			.checkboxOpeningChoice {
 				display:inline-block;
+				width:100%;
 			}
 			.checkboxOpeningChoice input {
 				display:none;
@@ -347,13 +348,11 @@
 				-moz-user-select: none;
 			}
 			.checkboxOpeningChoice input + label {
-			   	border: 1px solid #888;
 				color: #888;
-				border-radius:10px;
 				padding:5px 10px;
-				margin:5px 10px 5px 0;
 				display:inline-block;
-				text-align:center;
+				text-align:left;
+				width:calc(100% - 20px);
 			}
 			.checkboxOpeningChoice input + label:hover {
 				background-color:#f3f3f3;
@@ -369,6 +368,41 @@
 				background-color: #6ec179;
 			}
 			.checkboxOpeningChoice input:checked + label > IMG {
+				opacity:1;
+				filter: brightness(0) invert(1);
+			}
+			.checkbox3 {
+				display:inline-block;
+			}
+			.checkbox3 input {
+				display:none;
+			}
+			.checkbox3 LABEL {
+				-moz-user-select: none;
+				text-align:center;
+				padding:0 10px;
+				border:2px solid #ccc;
+				font-size:10pt;
+			}
+			.checkbox3 input + label {
+				display:inline-block;
+				color: #888;
+			}
+			.checkbox3 input + label:hover {
+				background-color:#f3f3f3;
+			}
+			.checkbox3 input + label > IMG {
+				height:20px;
+				margin-right:10px;
+				vertical-align:bottom;
+				opacity:.5;
+			}
+			.checkbox3 input:checked + label {
+				background-color:#6ec179;
+				color:white;
+				border:2px inset #ccc;
+			}
+			.checkbox3 input:checked + label > IMG {
 				opacity:1;
 				filter: brightness(0) invert(1);
 			}
@@ -723,6 +757,22 @@
 				background-color:#f0f0f0;
 				padding:0 4px;
 			}
+			.openingTable TD {
+				border-bottom:1px solid #ccc;
+				padding:10px 0px;
+			}
+			.openingTable TD:first-child {
+				border-right:1px solid #ccc;
+				vertical-align:top;
+				max-width:200px;
+				padding-right:10px;
+			}
+			.openingTable TD:nth-child(2) {
+				padding:0px 30px;
+			}
+			.openingTable TR:last-child TD {
+				border-bottom: none;
+			}
 		</style>
 	</head>
 	<body>
@@ -742,7 +792,7 @@
 		<div id='right_div'>
 		<div class='tab'>
 			<button class='tablinks' data-tabid='optionsTab' data-i18n='Menus'><img alt='' src='icons/load.png' />Menus</button>
-			<button class='tablinks' data-tabid='enginesTab' data-i18n='SearchEngines'><img alt='' src='icons/settings.png' />Search Engines</button>
+			<button class='tablinks' data-tabid='enginesTab' data-i18n='SearchEngines'><img alt='' src='icons/search.png' />Search Engines</button>
 			<button class='tablinks' data-tabid='helpTab' data-i18n='Help'><img alt='' src='icons/help.png' style='display:none' />Help</button>
 		</div>
 		<div class='tabcontent' id='optionsTab'>
@@ -813,9 +863,112 @@
 					Context Menu will be enabled if Quick Menu fails to open</i>	
 				</div>
 				
+				<div class='blurb' style='max-width:400px' data-i18n='MouseHelp'>
+					Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly
+				</div>
+				
+				<p class='header1' data-i18n='Opening&ClosingHeader'>Opening &amp; Closing</p>
+
+				<table class='openingTable'>
+				<tr>
+					<td>
+						<label class="container" style='display:inline-block;margin-left:0' data-i18n='Auto'> 
+							<img src='/icons/auto.png' style='height:30px;vertical-align:middle;margin-right:10px' />Auto
+							<input type='checkbox' id='r_quickMenuAuto' />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						
+						<br />
+						<span style='font-size:9pt' data-i18n='AutoTooltip'>Select text and open the Quick Menu automatically</span>
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>
+						<label class="container" style='display:inline-block;margin-left:0' data-i18n='Keyboard'> 
+							<img src='/icons/keyboard.png' style='height:30px;vertical-align:middle;margin-right:10px' />Keyboard
+							<input type='checkbox' id='r_quickMenuOnKey' />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<br />
+						<span style='font-size:9pt' data-i18n='KeyboardTooltip'>Select text and open using the keyboard</span>
+					</td>
+					<td>
+						<span data-details='r_quickMenuOnKey' data-i18n='ChooseKey'>
+							Choose key <span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key' data-i18n_tooltip='ChooseKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
+						</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					
+						<label class="container" style='display:inline-block;margin-left:0' data-i18n='Mouse'> 
+							<img src='/icons/mouse.png' style='height:30px;vertical-align:middle;margin-right:10px' />Mouse
+							<input type='checkbox' id='cb_quickMenuOnMouse' />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<br />
+						<span style='font-size:9pt' data-i18n='MouseTooltip'>Select text and open using a mouse button</span>
+					</td>
+					<td>
+						<select class='inputNice' style='width:auto;margin-right:10px' id='s_quickMenuOnMouseMethod'>
+							<option data-i18n='Click' value='click'>Click</option>
+							<option data-i18n='Hold' value='hold'>Hold</option>
+						</select>
+						
+						<select class='inputNice' style='width:auto' id='s_quickMenuMouseButton'>
+							<option data-i18n='LeftButton' value='1'>Left Button</option>
+							<option data-i18n='RightButton' value='3'>Right Button</option>
+						</select>
+						
+						<br />
+						<label class="container" style='display:inline-block;margin-top:10px' data-i18n='SearchOnMouseup'>Search On Mouseup 
+							<input type='checkbox' id='cb_quickMenuSearchOnMouseUp' />
+							<span class="checkmark checkmark2"></span>
+							<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search' data-i18n_tooltip='SearchOnMouseup'>?</span>
+						</label>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					
+						<label class="container" style='display:inline-block;margin-left:0' data-i18n='Hotkey'> 
+							<img src='/icons/keyboard.png' style='height:30px;vertical-align:middle;margin-right:10px' />Hotkey
+							<input type='checkbox' id='cb_quickMenuOnHotkey' />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<br />
+						<span style='font-size:9pt' data-i18n='HotkeyTooltip'>Open the Quick Menu any time using a hotkey</span>
+					</td>
+					<td><span class='keyboardButton'>Ctrl-Q</span></td>
+				</tr>
+				</table>
+				
 				<hr />
 				
-				<p class='header1' style='margin-top:0' data-i18n='SearchActionsHeader'>Search Actions</p>
+				<label class="container" style='display:inline-block;' data-i18n='EnableOnTextBoxes'>Enable On Text Boxes
+					<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups' data-i18n_tooltip='EnableOnTextBoxes'>?</span>
+					
+				<br />
+				
+				<label class="container" style='display:inline-block' data-i18n='CloseAfterSearch'>Close After Search
+					<input type='checkbox' id='cb_quickMenuCloseOnClick' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by "Keep Menu Open" under Search Actions' data-i18n_tooltip='CloseAfterSearch'>?</span>
+				
+				<br />
+				
+				<label class="container" style='display:inline-block' data-i18n='CloseOnScroll'>Close On Scroll / Mouse Wheel
+					<input type='checkbox' id='cb_quickMenuCloseOnScroll' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel' data-i18n_tooltip='CloseOnScroll'>?</span>
+
+				<p class='header1' data-i18n='SearchActionsHeader'>Search Actions</p>
 				
 				<p class='short' style='border-width: 1px 0'>
 					<span class='buttonLabel' data-i18n='LeftButton'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
@@ -919,101 +1072,6 @@
 					</div>
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
-				<hr />
-				<div>
-					<div data-i18n='SearchBarTooltip' style='font-size:10pt' >Search Bar</div>
-					<span class="checkboxOpeningChoice">
-					<input type='radio' id='r_quickMenuSearchBarTop' name='r_quickMenuSearchBar' value='top' /><label class="container" style='display:inline-block;' for='r_quickMenuSearchBarTop' data-i18n='top'>top</label>
-					</span>
-					<span class="checkboxOpeningChoice">
-					<input type='radio' id='r_quickMenuSearchBarBottom' name='r_quickMenuSearchBar' value='bottom' /><label class="container" style='display:inline-block;' for='r_quickMenuSearchBarBottom' data-i18n='bottom'>bottom</label>
-					</span>
-					<span class="checkboxOpeningChoice">
-					<input type='radio' id='r_quickMenuSearchBarHide' name='r_quickMenuSearchBar' value='hidden' /><label class="container" style='display:inline-block;' for='r_quickMenuSearchBarHide' data-i18n='hidden'>hidden</label>
-					</span>
-					
-				</div>
-				
-				<p class='header1' data-i18n='Opening&ClosingHeader'>Opening &amp; Closing</p>
-				
-				<div id='d_openOnDescription' style='font-size:10pt' data-i18n="Opening&ClosingDescription">Choose how to open Quick Menu after selecting text</div>
-				
-				<div>
-				<div class='checkboxOpeningChoice openingChoice' data-msg='Open automatically' data-i18n_tooltip="Auto"><input type='radio' name='r_openingChoice' id='r_quickMenuAuto' /><label for='r_quickMenuAuto' data-i18n='Auto'><img src='/icons/auto.png' />Auto</label></div>
-				<div class='checkboxOpeningChoice openingChoice' data-msg='Open using a mouse button' data-i18n_tooltip="Mouse"><input type='radio' name='r_openingChoice' id='r_openOnMouse' /><label for='r_openOnMouse' data-i18n='Mouse' data-i18n_tooltip="Mouse"><img src='/icons/mouse.png' />Mouse</label></div>
-				<div class='checkboxOpeningChoice openingChoice' data-msg='Open using a keyboard key' data-i18n_tooltip="Keyboard"><input type='radio' name='r_openingChoice' id='r_quickMenuOnKey' /><label for='r_quickMenuOnKey' data-i18n='Keyboard'><img src='/icons/keyboard.png' />Keyboard</label></div>
-				
-				<br /><br />
-				
-				<div class='openOnDetails' data-details='r_quickMenuAuto'>
-
-				</div>
-				
-				<div class='openOnDetails' data-details='r_openOnMouse'>
-					<div style='font-size:10pt;margin-bottom:8px;' data-i18n='MouseDescription'>Select your preferred method and button</div>
-					<label class="container" style='white-space: nowrap;border:1px dashed #ddd;border-width:0 0 1px 0;padding-bottom:8px' data-i18n='Hold'>
-						<input type='radio' id='r_quickMenuOnMouse' name='quickMenuMethod' />
-						<span class="checkmark"></span>Hold&nbsp;<span class='info' data-msg='Popup menu will open after holding the selected mouse button for ~0.25 seconds' data-i18n_tooltip='Hold'>?</span>&nbsp;
-						
-						<span class='checkboxImage' style='display:inline-block'><input type='radio' name='r_quickMenuMouseButton' id='r_quickMenuOnMouseLeft' value='1' /><label for='r_quickMenuOnMouseLeft'><img src='icons/leftmouse.png' style='height:30px;vertical-align:middle' /></label></span>
-				
-						<span class='checkboxImage' style='display:inline-block'><input type='radio' name='r_quickMenuMouseButton' id='r_quickMenuOnMouseRight' value='3' /><label for='r_quickMenuOnMouseRight'><img src='icons/leftmouse.png' style='height:30px;vertical-align:middle;transform: scaleX(-1);' /></label></span>
-						
-						<label class="container" style='display:inline-block;margin-left:30px' data-i18n='SearchOnMouseup'>Search On Mouseup 
-							<input type='checkbox' id='cb_quickMenuSearchOnMouseUp' />
-							<span class="checkmark checkmark2"></span>
-							<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search' data-i18n_tooltip='SearchOnMouseup'>?</span>
-						</label>
-					</label>
-
-					<label class="container" data-i18n='Click'>Click&nbsp;<span class='info' data-msg='Popup menu will open on right-click.  Hold button for default context menu' data-i18n_tooltip='Click'>?</span>
-						<input type='radio' id='r_quickMenuOnClick' name='quickMenuMethod' />
-						<span class="checkmark"></span>
-						<img src='icons/leftmouse.png' style='height:30px;vertical-align:middle;transform: scaleX(-1);' />
-					</label>
-
-				</div>
-				<div class='openOnDetails' data-details='r_quickMenuOnKey' data-i18n='ChooseKey'>
-					Choose key <span class='info' data-msg='Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key' data-i18n_tooltip='ChooseKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_quickMenuKey' class='keyboardButton'>Set</button>
-				</div>
-				</div>
-
-				
-		<!--		<hr />
-				<label class="container" style='display:inline-block'>Privacy Protection 
-					<input type='checkbox' id='cb_quickMenuTrackingProtection' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				<span class='info' data-msg='Enabling this option protects against websites seeing your search engine list by placing the QuickMenu in an IFRAME. (Note: Ad-blockers may disable iframes on some websites preventing the menu from opening)'>?</span>
-		-->		
-				<hr />
-				
-				<label class="container" style='display:inline-block;' data-i18n='EnableOnTextBoxes'>Enable On Text Boxes
-					<input type='checkbox' id='cb_quickMenuAutoOnInputs' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				<span class='info' data-msg='Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups' data-i18n_tooltip='EnableOnTextBoxes'>?</span>
-					
-				<br />
-				
-				<label class="container" style='display:inline-block' data-i18n='CloseAfterSearch'>Close After Search
-					<input type='checkbox' id='cb_quickMenuCloseOnClick' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				<span class='info' data-msg='Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by "Keep Menu Open" under Search Actions' data-i18n_tooltip='CloseAfterSearch'>?</span>
-				
-				<br />
-				
-				<label class="container" style='display:inline-block' data-i18n='CloseOnScroll'>Close On Scroll / Mouse Wheel
-					<input type='checkbox' id='cb_quickMenuCloseOnScroll' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel' data-i18n_tooltip='CloseOnScroll'>?</span>
-				
-				<div class='blurb' style='max-width:400px' data-i18n='MouseHelp'>
-					Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly
-			<!--		Linux and MacOS X users may need to set the option <code>ui.context_menus.after_mouseup</code> to <code><span style='color: blue'>true</span></code> in <code>about:config</code> for mouse actions to work properly-->
-				</div>
 				
 				<p class='header1' data-i18n='Position'>Position</p>
 				
@@ -1037,6 +1095,32 @@
 				<p class='header1' data-i18n='Tools'>Tools</p>
 				<div id='toolIcons'></div>
 				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px' data-i18n='ToolsHelp'>click to disable | drag to re-order</div>
+				
+				<p class='header1' data-i18n='SearchBar'>Search Bar</p>
+				
+				<div>	
+					<span data-i18n='Position'>Position</span><span class='info' data-msg='Choose where to display the search bar in the Quick Menu' data-i18n_tooltip='SearchBar'>?</span>
+					
+					<select class='inputNice' style='width:auto;margin-left:30px' id='s_quickMenuSearchBar'>
+						<option data-i18n='top' value='top'>Top</option>
+						<option data-i18n='bottom' value='bottom'>Bottom</option>
+						<option data-i18n='hidden' value='hidden'>Hidden</option>
+					</select>
+				</div>
+				
+				<br />
+				
+				<label class="container" data-i18n='Focus'>Focus On Open
+					<span class='info' data-msg='Search bar will open with focus for immediate editing' data-i18n_tooltip='Focus'>?</span>
+					<input type='checkbox' id='cb_quickMenuSearchBarFocus' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
+				<label class="container" data-i18n='SelectText'>Select Text On Focus
+				<span class='info' data-msg='Text in the search bar will be selected after receiving focus' data-i18n_tooltip='SelectText'>?</span>
+					<input type='checkbox' id='cb_quickMenuSearchBarSelect' />
+					<span class="checkmark checkmark2"></span>
+				</label>
 				
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
 				

@@ -581,15 +581,20 @@ function restoreOptions() {
 		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey;
 		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
-		document.getElementById('r_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
+		document.getElementById('cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
+		
+		document.getElementById('cb_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
+		document.getElementById('s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
 		document.getElementById('cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
 		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
 		document.getElementById('cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
-		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
+//		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
 //		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
-		document.querySelector('input[name="r_quickMenuSearchBar"][value="' + userOptions.quickMenuSearchBar || 'top' + '"]' ).checked = true;
+		document.getElementById('s_quickMenuSearchBar').value =  userOptions.quickMenuSearchBar,
+		document.getElementById('cb_quickMenuSearchBarFocus').checked = userOptions.quickMenuSearchBarFocus,
+		document.getElementById('cb_quickMenuSearchBarSelect').checked = userOptions.quickMenuSearchBarSelect,
 		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
 		document.getElementById('range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
 		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
@@ -597,7 +602,8 @@ function restoreOptions() {
 		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
 		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
-		document.querySelector('input[name="r_quickMenuMouseButton"][value="' + userOptions.quickMenuMouseButton + '"]' ).checked = true;
+		document.getElementById('s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
+	//	document.querySelector('input[name="r_quickMenuMouseButton"][value="' + userOptions.quickMenuMouseButton + '"]' ).checked = true;
 
 		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
 		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
@@ -626,20 +632,6 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuShift').value = userOptions.quickMenuShift;
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
-		
-		// set opening choice menu
-		if (userOptions.quickMenuAuto) {
-			document.getElementById('r_quickMenuAuto').click();
-			document.querySelector('div[data-details="r_quickMenuAuto"]').style.maxHeight='150px';
-		}
-		if (userOptions.quickMenuOnKey) {
-			document.getElementById('r_quickMenuOnKey').click();
-			document.querySelector('div[data-details="r_quickMenuOnKey"]').style.maxHeight='150px';
-		}
-		if (userOptions.quickMenuOnMouse || userOptions.quickMenuOnClick) {
-			document.getElementById('r_openOnMouse').click();
-			document.querySelector('div[data-details="r_openOnMouse"]').style.maxHeight='150px';
-		}
 		
 		buildSearchEngineContainer(userOptions.searchEngines);
 
@@ -671,12 +663,15 @@ function saveOptions(e) {
 		quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
 		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
 		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
-		quickMenuOnMouse: document.getElementById('r_quickMenuOnMouse').checked,
+		quickMenuOnHotkey: document.getElementById('cb_quickMenuOnHotkey').checked,
+		quickMenuOnMouse: document.getElementById('cb_quickMenuOnMouse').checked,
+		quickMenuOnMouseMethod: document.getElementById('s_quickMenuOnMouseMethod').value,
 		quickMenuSearchOnMouseUp: document.getElementById('cb_quickMenuSearchOnMouseUp').checked,
-		quickMenuMouseButton: parseInt(document.querySelector('input[name="r_quickMenuMouseButton"]:checked').value),
+		//quickMenuMouseButton: parseInt(document.querySelector('input[name="r_quickMenuMouseButton"]:checked').value),
+		quickMenuMouseButton: parseInt(document.getElementById("s_quickMenuMouseButton").value),
 		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
 		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
-		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
+//		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 		quickMenuIconScale: parseFloat(document.getElementById('range_quickMenuIconScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
@@ -697,8 +692,9 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
-		quickMenuSearchBar: document.querySelector('input[name="r_quickMenuSearchBar"]:checked').value,
-		
+		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
+		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
+		quickMenuSearchBarSelect: document.getElementById('cb_quickMenuSearchBarSelect').checked,
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
 			let path = document.getElementById('i_searchJsonPath').value;
@@ -782,22 +778,24 @@ document.getElementById('n_quickMenuOffsetY').addEventListener('change', (e) => 
 	saveOptions(e);
 });
 
-document.getElementById('r_quickMenuOnMouse').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuOnMouse').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuOnHotkey').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuAuto').addEventListener('change', saveOptions);
-document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
+//document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
 document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
 
-for (let el of document.getElementsByName('r_quickMenuSearchBar'))
-	el.addEventListener('change', saveOptions);
+//document.getElementById('s_quickMenuSearchBar').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuSearchBarFocus').addEventListener('change', saveOptions);
+document.getElementById('cb_quickMenuSearchBarSelect').addEventListener('change', saveOptions);
 
 for (let el of document.getElementsByTagName('select'))
 	el.addEventListener('change', saveOptions);
 
-for (let el of document.getElementsByName('r_quickMenuMouseButton'))
-	el.addEventListener('change', saveOptions);
+//document.getElementById('s_quickMenuMouseButton').addEventListener('change', saveOptions);
+//document.getElementById('s_quickMenuOnMouseMethod').addEventListener('change', saveOptions);
 
 document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
@@ -1130,44 +1128,6 @@ function showInfoMsg(el, msg) {
 	
 	div.style.display = 'block';
 }
-
-// set up opening choice menu
-document.addEventListener("DOMContentLoaded", () => {
-	
-	for (let el of document.getElementsByClassName('openingChoice')) {
-		el.onclick = function() {
-			
-			let input = el.querySelector('input');
-			
-			for (let sibling of document.getElementsByClassName('openOnDetails'))
-				sibling.style.maxHeight = '0px';
-			
-			// uncheck all settings
-			for (let id of ['r_quickMenuAuto','r_quickMenuOnClick','r_quickMenuOnMouse','r_quickMenuOnKey']) {
-				
-				if (input.id !== id)
-					document.getElementById(id).checked = false;
-			}
-
-			let details = document.querySelector('div[data-details="' + input.id + '"]');
-			details.style.maxHeight = '150px';
-
-		}
-	}
-	
-	let msgDiv = document.getElementById('d_openOnDescription');
-//	msgDiv.dataset.originalText = msgDiv.dataset.i18n;
-	
-	for (let el of document.getElementsByClassName('openingChoice')) {
-		el.addEventListener('mouseenter', (e) => {
-			msgDiv.innerText = el.dataset.msg;
-		});
-		
-		el.addEventListener('mouseleave', (e) => {
-			msgDiv.innerText = browser.i18n.getMessage(msgDiv.dataset.i18n);
-		});
-	}
-});
 
 // setup menus that open with a checkbox
 document.addEventListener("DOMContentLoaded", () => {

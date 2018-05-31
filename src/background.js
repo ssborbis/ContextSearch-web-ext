@@ -388,6 +388,30 @@ function openSearch(details) {
 	
 	function onCreate(_tab) {
 		
+		// browser.tabs.executeScript(_tab.id, {
+			// code: "\
+			// window.addEventListener('keydown', (e) => {\
+				// console.log(e);\
+				// if (\
+					// e.keyCode !== 9 ||\
+					// !document.getElementById('quickMenuIframe') \
+				// ) return;\
+				// e.preventDefault();\
+				// browser.runtime.sendMessage({action: 'focusSearchBar'});\
+			// });\
+			// window.addEventListener('keydown', (e) => {\
+				// if (\
+					// e.keyCode !== 81 || !e.ctrlKey\
+				// ) return;\
+				// console.log('heard keypress');\
+				// e.preventDefault();\
+				// openQuickMenu(e);\
+			// });",
+			// runAt: 'document_start',
+			// allFrames: true
+			// });
+
+		
 		// code for POST engines
 		if (typeof se.method === 'undefined' || se.method !== "POST") return;
 		
@@ -490,9 +514,10 @@ var userOptions = {
 	quickMenuItems: 100,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
+	quickMenuOnHotkey: false,
 	quickMenuOnMouse: true,
 	quickMenuSearchOnMouseUp: false,
-	quickMenuOnClick: false,
+	quickMenuOnMouseMethod: "hold",
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
 	quickMenuAutoOnInputs: true,
@@ -505,6 +530,8 @@ var userOptions = {
 	quickMenuCloseOnClick: true,
 	quickMenuTrackingProtection: true,
 	quickMenuSearchBar: "top",
+	quickMenuSearchBarFocus: false,
+	quickMenuSearchBarSelect: true,
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
@@ -566,6 +593,23 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 
 	}
 	
+	//v1.5.8
+	if (userOptions.quickMenuOnClick !== undefined) {
+		
+		if (userOptions.quickMenuOnClick)
+			userOptions.quickMenuOnMouseMethod = 'click';
+		
+		if (userOptions.quickMenuOnMouse)
+			userOptions.quickMenuOnMouseMethod = 'hold';
+		
+		if (userOptions.quickMenuOnClick || userOptions.quickMenuOnMouse)
+			userOptions.quickMenuOnMouse = true;
+		
+		delete userOptions.quickMenuOnClick;
+		browser.storage.local.set({"userOptions": userOptions});
+	}
+	
+	
 	(function() {
 		
 		if (browser.bookmarks === undefined) return false;
@@ -607,10 +651,17 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 	// Show install page
 	if ( 
 		details.reason === 'install' 
-		|| details.temporary
 	) {
 		browser.tabs.create({
 			url: "/options.html?tab=help"
+		});
+	}
+	
+	if ( 
+		details.temporary 
+	) {
+		browser.tabs.create({
+			url: "/options.html"
 		});
 	}
 	

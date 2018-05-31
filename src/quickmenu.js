@@ -68,6 +68,7 @@ document.addEventListener('mousedown', (ev) => {
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
+		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		getSelectedText(ev.target) === "" ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
@@ -129,6 +130,7 @@ document.addEventListener('mouseup', (ev) => {
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
+		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		ev.which !== userOptions.quickMenuMouseButton
 	) return false;
 		
@@ -179,12 +181,13 @@ document.addEventListener('mousedown', (ev) => {
 
 	if (
 		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnClick ||
-		ev.which !== 3 ||
+		!userOptions.quickMenuOnMouse ||
+		userOptions.quickMenuOnMouseMethod !== 'click' ||
+		ev.which !== userOptions.quickMenuMouseButton ||
 		getSelectedText(ev.target) === "" ||
 		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
-
+	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
 	function preventContextMenuHandler(evv) {
@@ -206,12 +209,13 @@ document.addEventListener('mouseup', (ev) => {
 
 	if (
 		!userOptions.quickMenu || 
-		!userOptions.quickMenuOnClick ||
-		ev.which !== 3 ||
+		!userOptions.quickMenuOnMouse ||
+		userOptions.quickMenuOnMouseMethod !== 'click' ||
+		ev.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
 		getSelectedText(ev.target) === ""
 	) return false;
-
+	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	ev.stopPropagation();
@@ -881,6 +885,19 @@ if (document.title === "QuickMenu") {
 					width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
 					height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(document.getElementById('quickMenuSearchBarContainer').ownerDocument.defaultView.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
 				}
+			}).then(() => {
+				let sb = document.getElementById('quickmenusearchbar');
+				
+				// setTimeout needed to trigger after updatesearchterms
+				if (userOptions.quickMenuSearchBarFocus)
+					setTimeout(() => {
+						sb.focus();
+					}, 100);
+			
+				if (userOptions.quickMenuSearchBarSelect)
+					setTimeout(() => {
+						sb.select();
+					}, 100);
 			});
 		});
 	});
@@ -899,14 +916,38 @@ if (document.title === "QuickMenu") {
 				case "focusSearchBar":
 					let sb = document.getElementById('quickmenusearchbar');
 					
-					if (!sb) return;
-					
-					sb.focus();
-					sb.select();
+					if (userOptions.quickMenuSearchBarFocus)
+						sb.focus();
+
+					if (userOptions.quickMenuSearchBarSelect)
+						sb.select();
 					
 					break;
 			}
 		}
 	});
 }
+
+window.addEventListener('keydown', (e) => {
+	if (
+		e.keyCode !== 9 ||
+		!document.getElementById('quickMenuIframe') 
+	) return;
+
+	e.preventDefault();
+	browser.runtime.sendMessage({action: "focusSearchBar"});
+	
+});
+
+window.addEventListener('keydown', (e) => {
+	if (
+		e.keyCode !== 81 || 
+		!e.ctrlKey ||
+		!userOptions.quickMenuOnHotkey
+	) return;
+
+	e.preventDefault();
+	openQuickMenu(e);
+	
+});
 

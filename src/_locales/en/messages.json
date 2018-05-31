@@ -148,7 +148,7 @@
   },
   
   "AutoTooltip": {
-    "message": "Open automatically"
+    "message": "Select text and open automatically"
   },
   
    "EnableOnTextBoxes": {
@@ -164,7 +164,7 @@
   },
   
      "MouseTooltip": {
-    "message": "Open using a mouse button"
+    "message": "Select text and open using a mouse button"
   },
   
   "MouseDescription": {
@@ -200,7 +200,7 @@
   },
   
   "KeyboardTooltip": {
-    "message": "Open using a keyboard key"
+    "message": "Select text and open using the keyboard"
   },
   
    "ChooseKey": {
@@ -762,7 +762,7 @@
   },
   
   "SearchBarTooltip": {
-    "message": "Choose where to display the search bar in the Quick Search menu"
+    "message": "Choose where to display the search bar in the Quick Menu"
   },
   
   "hidden": {
@@ -781,6 +781,55 @@
   "Copy": {
     "message": "Copy",
     "description": "button to duplicate a search engine from the manager"
+  },
+  
+  "AutoFocus": {
+    "message": "Auto Focus",
+    "description": "label for setting search bar focus automatically"
+  },
+  
+  "AutoFocusTooltip": {
+    "message": "Search bar will open with focus for immediate editing",
+    "description": "description for setting search bar focus automatically"
+  },
+  
+  "SelectText": {
+    "message": "Select Text",
+    "description": "label for selecting text in the search bar"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Select text in the search bar after receiving focus",
+    "description": "description for selecting text in the search bar"
+  },
+  
+  "Hotkey": {
+    "message": "Hotkey",
+    "description": "label for Hotkey option"
+  },
+  
+  "HotkeyTooltip": {
+    "message": "Open the Quick Menu any time using a hotkey",
+    "description": "description for Hotkey option"
+  },
+  
+  "Focus": {
+    "message": "Focus On Open",
+    "description": "label for auto focus on search bar"
+  },
+  
+  "FocusTooltip": {
+    "message": "Set focus to search bar when the Quick Menu is opened",
+    "description": "description for focus"
+  },
+  
+  "SelectText": {
+    "message": "Select Text On Focus"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Select all text in the search bar when it receives focus",
+    "description": "description for select text in search bar"
   },
   
   "_________": {
