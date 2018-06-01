@@ -148,7 +148,7 @@
   },
   
   "AutoTooltip": {
-    "message": "Ouverture automatique"
+    "message": "Ouverture automatique à la sélection du texte"
   },
   
    "EnableOnTextBoxes": {
@@ -164,7 +164,7 @@
   },
   
      "MouseTooltip": {
-    "message": "Ouverture à la souris"
+    "message": "Sélection du texte et ouverture avec un bouton de la souris"
   },
   
   "MouseDescription": {
@@ -172,7 +172,7 @@
   },
   
    "Hold": {
-    "message": "Clic long sur "
+    "message": "Clic long"
   },
   
     "HoldTooltip": {
@@ -184,11 +184,11 @@
   },
   
    "SearchOnMouseupTooltip": {
-    "message": "La recherche s’effectue quand le bouton de la souris est relâché : vous maintenez le bouton enfoncé pour ouvrir le menu et vous le relâchez au-dessus du moteur de recherche choisi."
+    "message": "En cas de clic long, la recherche s’effectue quand le bouton de la souris est relâché : on maintient le bouton de la souris enfoncé pour ouvrir le menu puis on le relâche au-dessus du moteur de recherche choisi."
   },
   
    "Click": {
-    "message": "Clic sur "
+    "message": "Clic court"
   },
   
   "ClickTooltip": {
@@ -200,15 +200,15 @@
   },
   
   "KeyboardTooltip": {
-    "message": "Ouverture au clavier"
+    "message": "Sélection du texte et ouverture avec une touche du clavier"
   },
   
    "ChooseKey": {
-    "message": "Appui sur la touche "
+    "message": "Touche"
   },
   
   "ChooseKeyTooltip": {
-    "message": "Sélectionner le texte et appuyer sur la touche choisie pour ouvrir le menu (utiliser le bouton ci-contre pour la définir)."
+    "message": "Cliquer sur le bouton ci-contre puis presser la touche choisie."
   },
   
    "CloseAfterSearch": {
@@ -584,7 +584,7 @@
   },
   
   "InvalidJSONAlert": {
-    "message": "Pas un fichier JSON valide"
+    "message": "Fichier JSON non valide"
   },
   
   "ImportSuccessful": {
@@ -628,11 +628,11 @@
   },
   
   "top": {
-    "message": "en haut"
+    "message": "En haut"
   },
   
   "bottom": {
-    "message": "en bas"
+    "message": "En bas"
   },
   
   "left": {
@@ -762,11 +762,11 @@
   },
   
   "SearchBarTooltip": {
-    "message": "Choisir le mode d’intégration de la barre de recherche au menu rapide"
+    "message": "Position de la barre de recherche dans le menu rapide"
   },
   
   "hidden": {
-    "message": "sans"
+    "message": "Sans"
   },
   
   "KeepMenuOpen": {
@@ -781,6 +781,35 @@
   "Copy": {
     "message": "Dupliquer",
     "description": "button to duplicate a search engine from the manager"
+  },
+  
+  "Hotkey": {
+    "message": "Raccourci clavier",
+    "description": "label for Hotkey option"
+  },
+  
+  "HotkeyTooltip": {
+    "message": "Ouverture à tout moment par le raccourci clavier",
+    "description": "description for Hotkey option"
+  },
+  
+  "Focus": {
+    "message": "Cibler à l’ouverture",
+    "description": "label for auto focus on search bar"
+  },
+  
+  "FocusTooltip": {
+    "message": "La barre de recherche est ciblée à l’ouverture du menu rapide.",
+    "description": "description for focus"
+  },
+  
+  "SelectText": {
+    "message": "Sélectionner le texte"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Lorsque la barre de recherche est ciblée, le texte qu’elle contient est sélectionné.",
+    "description": "description for select text in search bar"
   },
   
   "_________": {
