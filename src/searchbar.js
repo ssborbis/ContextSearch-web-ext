@@ -26,25 +26,47 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	}
 	
 	sb.addEventListener('keydown', (e) => {
-		if (e.keyCode === 9) {
-			e.preventDefault();
+		if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 ||e.keyCode === 40 || e.keyCode === 9) {
 			
-			let direction = (e.shiftKey) ? -1 : 1;
+			e.preventDefault();
+
+			let direction = 0;
+			if (e.keyCode === 9 && !e.shiftKey)
+				direction = 1;
+			else if (e.keyCode === 9 && e.shiftKey)
+				direction = -1;
+			else if (e.keyCode === 40)
+				direction = 6;
+			else if (e.keyCode === 38)
+				direction = -6;
+			else if (e.keyCode === 39)
+				direction = 1; 
+			else if (e.keyCode === 37)
+				direction = -1;
+
 			let divs = quickMenuElement.querySelectorAll('div[data-index]');
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
 			if (sb.selectedIndex === undefined)
 				sb.selectedIndex = 0;
-			else if (sb.selectedIndex + direction === divs.length)
+			else if (sb.selectedIndex + direction === divs.length && e.keyCode === 9)
 				sb.selectedIndex = 0;
-			else if (sb.selectedIndex + direction < 0)
+			else if (sb.selectedIndex + direction < 0 && e.keyCode === 9)
 				sb.selectedIndex = divs.length -1;
+			else if (sb.selectedIndex + direction >= divs.length)
+				;
+				//sb.selectedIndex = userOptions.quickMenuColumns - (divs.length - sb.selectedIndex);
+			else if (sb.selectedIndex + direction < 0)
+				;
+				//sb.selectedIndex = divs.length - userOptions.quickMenuColumns - sb.selectedIndex;
 			else
 				sb.selectedIndex+=direction;
+			
+			let se = userOptions.searchEngines[sb.selectedIndex];
+			document.getElementById('searchEngineTitle').innerText = se.title;
 
 			divs[sb.selectedIndex].classList.add('Xhover');
-
 		}
 	});
 	

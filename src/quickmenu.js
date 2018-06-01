@@ -85,14 +85,6 @@ function closeQuickMenu(eventType) {
 	}
 }
 
-function inIframe () {
-    try {
-        return window.self !== window.top;
-    } catch (e) {
-        return true;
-    }
-}
-
 function getOffsets() {
 	let xOffset=Math.max(document.documentElement.scrollLeft,document.body.scrollLeft);	
 	let yOffset=Math.max(document.documentElement.scrollTop,document.body.scrollTop);

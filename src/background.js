@@ -529,7 +529,7 @@ var userOptions = {
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
 	quickMenuTrackingProtection: true,
-	quickMenuSearchBar: "top",
+	quickMenuSearchBar: "bottom",
 	quickMenuSearchBarFocus: false,
 	quickMenuSearchBarSelect: true,
 	contextMenu: true,
