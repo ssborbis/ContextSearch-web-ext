@@ -17,242 +17,9 @@ var quickMenuObject = {
 
 var userOptions = {};
 
-// Listen for ESC and close Quick Menu
-document.addEventListener('keydown', (ev) => {
-	
-	if (
-		ev.which !== 27 ||
-		ev.repeat ||
-		!userOptions.quickMenu		
-	) return false;
-	
-	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "esc"});
-		
-});
-
-// Listen for quickMenuKey
-document.addEventListener('keydown', (ev) => {
-	
-	if (
-		ev.which !== userOptions.quickMenuKey ||
-		ev.repeat ||
-		!userOptions.quickMenuOnKey ||
-		!userOptions.quickMenu ||
-		getSelectedText(ev.target) === "" ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
-	) return false;
-
-	quickMenuObject.keyDownTimer = Date.now();
-	
-});
-
-// Listen for quickMenuKey
-document.addEventListener('keyup', (ev) => {
-	
-	if (
-		ev.repeat ||
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnKey ||
-		ev.which !== userOptions.quickMenuKey
-	) return false;
-	
-	if (Date.now() - quickMenuObject.keyDownTimer < 250)
-		openQuickMenu(ev);
-	
-	quickMenuObject.keyDownTimer = 0;
-	
-});
-// Listen for HOLD quickMenuMouseButton
-document.addEventListener('mousedown', (ev) => {
-
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnMouse ||
-		userOptions.quickMenuOnMouseMethod !== 'hold' ||
-		ev.which !== userOptions.quickMenuMouseButton ||
-		getSelectedText(ev.target) === "" ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
-	) return false;
-	
-	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
-	
-	// timer for mouse down
-	quickMenuObject.mouseDownTimer = setTimeout(() => {
-		
-		// prevent drag events when using search on mouseup
-	//	if (userOptions.quickMenuSearchOnMouseUp) {
-			window.addEventListener('dragstart', (e) => {
-				e.preventDefault();
-			}, {once: true});
-	//	}
-
-		// ignore select / drag events
-		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
-
-		// prevent losing text selection
-		ev.target.addEventListener('mouseup', (evv) => {
-			if (evv.which !== ev.which) return;
-			evv.preventDefault();
-			quickMenuObject.mouseLastClickTime = Date.now();
-		}, {once: true}); // parameter to run once, then delete
-		
-		if (ev.which === 1) {
-			// Disable click to prevent links from opening
-			ev.target.addEventListener('click', (evv) => {
-				if (evv.which !== 1) return;
-				evv.preventDefault();
-				quickMenuObject.mouseLastClickTime = Date.now();
-			}, {once: true}); // parameter to run once, then delete
-			
-		} else if (ev.which === 3) {
-			// Disable the default context menu once
-			document.addEventListener('contextmenu', (evv) => {
-				evv.preventDefault();
-				quickMenuObject.mouseLastClickTime = Date.now();
-			}, {once: true}); // parameter to run once, then delete
-
-		}	
-		openQuickMenu(ev);
-		
-	}, quickMenuObject.delay);
-
-//	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
-
-});
-
 function preventContextMenuHandler(evv) {
 	evv.preventDefault();
 }
-
-// Listen for HOLD quickMenuMouseButton
-document.addEventListener('mouseup', (ev) => {
-
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnMouse ||
-		userOptions.quickMenuOnMouseMethod !== 'hold' ||
-		ev.which !== userOptions.quickMenuMouseButton
-	) return false;
-		
-	clearTimeout(quickMenuObject.mouseDownTimer);
-//	document.removeEventListener('contextmenu', preventContextMenuHandler);
-});
-
-// Listen for quickMenuAuto 
-document.addEventListener('mousedown', (ev) => {
-	
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuAuto || 
-		ev.which !== 1 ||
-		ev.target.id === 'quickMenuElement' ||
-		ev.target.parentNode.id === 'quickMenuElement'
-	) return false;
-	
-	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(ev.target);
-	
-});
-
-document.addEventListener('mouseup', (ev) => {
-
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuAuto || 
-		ev.which !== 1 ||
-		ev.target.id === 'quickMenuElement' ||
-		ev.target.parentNode.id === 'quickMenuElement' ||
-		getSelectedText(ev.target) === "" ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
-		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
-	) return false;
-
-	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;
-	
-	quickMenuObject.mouseLastClickTime = Date.now();
-	
-	clearTimeout(quickMenuObject.mouseDownTimer);
-	
-	openQuickMenu(ev);
-
-});
-
-// Listen for quickMenuOnClick
-document.addEventListener('mousedown', (ev) => {	
-
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnMouse ||
-		userOptions.quickMenuOnMouseMethod !== 'click' ||
-		ev.which !== userOptions.quickMenuMouseButton ||
-		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
-	) return false;
-	
-	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
-	
-	function preventContextMenuHandler(evv) {
-		evv.preventDefault();
-	}
-	
-	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
-	
-	// timer for right mouse down
-	quickMenuObject.mouseDownTimer = setTimeout(() => {
-		document.removeEventListener('contextmenu', preventContextMenuHandler);
-		quickMenuObject.mouseDownTimer = null;
-	},quickMenuObject.delay);
-
-});
-		
-// Listen for quickMenuOnClick	
-document.addEventListener('mouseup', (ev) => {	
-
-	if (
-		!userOptions.quickMenu || 
-		!userOptions.quickMenuOnMouse ||
-		userOptions.quickMenuOnMouseMethod !== 'click' ||
-		ev.which !== userOptions.quickMenuMouseButton ||
-		!quickMenuObject.mouseDownTimer ||
-		getSelectedText(ev.target) === ""
-	) return false;
-	
-	quickMenuObject.mouseLastClickTime = Date.now();
-	
-	ev.stopPropagation();
-	
-	// document.addEventListener('contextmenu', (evv) => {
-		// evv.preventDefault();
-	// }, {once: true}); // parameter to run once, then delete
-	
-	openQuickMenu(ev);
-	
-});
-
-// unlock if quickmenu is closed
-document.addEventListener('closequickmenu', () => {
-	quickMenuObject.locked = false;
-});
-
-// close quickmenu when clicking anywhere on page
-document.addEventListener("click", (ev) => {
-
-	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
-
-	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
-
-});
-
-// track mouse position
-document.addEventListener("mousemove", (ev) => {
-	quickMenuObject.mouseCoords = {x: ev.clientX, y: ev.clientY};
-	quickMenuObject.screenCoords = {x: ev.screenX, y: ev.screenY};
-});
-
-// prevent quickmenu during drag events
-document.addEventListener("drag", (ev) => {
-	clearTimeout(quickMenuObject.mouseDownTimer);
-});
-
 
 function scrollEventListener(ev) {
 	if (window.scrollThrottler) return false;
@@ -262,86 +29,6 @@ function scrollEventListener(ev) {
 		window.scrollThrottler = false;
 	},250);
 }
-window.addEventListener('wheel', scrollEventListener);
-window.addEventListener('scroll', scrollEventListener);
-
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-
-	if (document.title === "QuickMenu") {
-		return;
-	}
-	
-	if (typeof message.userOptions !== 'undefined') {
-		userOptions = message.userOptions || {};
-	}
-	if (typeof message.action !== 'undefined') {
-		switch (message.action) {
-			
-			case "closeQuickMenuRequest":
-				closeQuickMenu(message.eventType || null);
-				break;
-				
-			case "openQuickMenu":
-				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
-				
-				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
-
-				quickMenuObject.searchTerms = message.searchTerms;
-				makeQuickMenuContainer({'x': x,'y': y});
-				break;
-			
-			case "updateSearchTerms":
-				// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
-				if (quickMenuObject.locked || document.title === "QuickMenu") {
-					quickMenuObject.searchTerms = message.searchTerms;
-					
-					// send event to OpenAsLink tile to enable/disable
-					document.dispatchEvent(new CustomEvent('updatesearchterms'));
-
-					browser.runtime.sendMessage({
-						action: "updateQuickMenuObject", 
-						quickMenuObject: quickMenuObject
-					});
-				}
-				break;
-			
-			case "updateQuickMenuObject":
-				quickMenuObject = message.quickMenuObject;
-				
-				// iframe needs to disable here
-				if (quickMenuObject.disabled)
-					userOptions.quickMenu = false;
-				
-				let qm = document.getElementById('quickMenuIframe')
-				
-				if( qm && message.toggleLock ) {
-				
-					if (quickMenuObject.locked) {
-						qm.style.left = parseFloat(qm.style.left) - getOffsets().x + "px";
-						qm.style.top = parseFloat(qm.style.top) - getOffsets().y + "px";
-						qm.style.position='fixed';
-					} else {
-						qm.style.left = parseFloat(qm.style.left) + getOffsets().x + "px";
-						qm.style.top = parseFloat(qm.style.top) + getOffsets().y + "px";
-						qm.style.position=null;
-					}
-				}
-		
-				break;
-				
-			case "quickMenuIframeLoaded":
-			
-				browser.runtime.sendMessage({
-					action: "updateQuickMenuObject", 
-					quickMenuObject: quickMenuObject
-				});
-				
-				scaleAndPositionQuickMenu(message.size);
-				
-				break;
-		}
-	}
-});
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
@@ -350,7 +37,19 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 function openQuickMenu(ev) {
 	
 	ev = ev || new Event('click');
-
+		
+	// links need to be blurred before focus can be applied to search bar (why?)
+	if (userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
+		
+		// restore selection to text boxes
+		if (ev.target.selectionStart) { // is a text box
+			document.addEventListener('closequickmenu', (e) => {
+				ev.target.focus();
+			}, {once: true});
+		}
+		
+		ev.target.blur();
+	}
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: {
@@ -540,29 +239,51 @@ function makeQuickMenu() {
 		}
 	}
 
+	// tab and arrow keys move selected search engine
 	sb.addEventListener('keydown', (e) => {
-		if (e.keyCode === 9) {
+
+		if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 ||e.keyCode === 40 || e.keyCode === 9) {
+			
 			e.preventDefault();
 			
-			let direction = (e.shiftKey) ? -1 : 1;
+			let direction = 0;
+			if (e.keyCode === 9 && !e.shiftKey)
+				direction = 1;
+			else if (e.keyCode === 9 && e.shiftKey)
+				direction = -1;
+			else if (e.keyCode === 40)
+				direction = userOptions.quickMenuColumns;
+			else if (e.keyCode === 38)
+				direction = -userOptions.quickMenuColumns;
+			else if (e.keyCode === 39)
+				direction = 1; 
+			else if (e.keyCode === 37)
+				direction = -1;
+
 			let divs = quickMenuElement.querySelectorAll('div[data-index]');
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
 			if (sb.selectedIndex === undefined)
 				sb.selectedIndex = 0;
-			else if (sb.selectedIndex + direction === divs.length)
+			else if (sb.selectedIndex + direction === divs.length && e.keyCode === 9)
 				sb.selectedIndex = 0;
-			else if (sb.selectedIndex + direction < 0)
+			else if (sb.selectedIndex + direction < 0 && e.keyCode === 9)
 				sb.selectedIndex = divs.length -1;
+			else if (sb.selectedIndex + direction >= divs.length)
+				;
+				//sb.selectedIndex = userOptions.quickMenuColumns - (divs.length - sb.selectedIndex);
+			else if (sb.selectedIndex + direction < 0)
+				;
+				//sb.selectedIndex = divs.length - userOptions.quickMenuColumns - sb.selectedIndex;
 			else
 				sb.selectedIndex+=direction;
 
 			divs[sb.selectedIndex].classList.add('Xhover');
-
 		}
+		
 	});
-	
+
 	document.addEventListener('updatesearchterms', (e) => {
 		sb.value = quickMenuObject.searchTerms;
 	});
@@ -896,9 +617,8 @@ if (document.title === "QuickMenu") {
 						},{once:true});
 					}
 
-					if (userOptions.quickMenuSearchBarFocus) {
-						document.getElementById('quickmenusearchbar').focus();
-					}
+					if (userOptions.quickMenuSearchBarFocus)
+						sb.focus();
 				}, 100);
 			});
 		});
@@ -927,34 +647,351 @@ if (document.title === "QuickMenu") {
 					}
 
 					sb.focus();
-					
-			//		console.log(document.activeElement);
+
 					break;
 			}
 		}
 	});
 }
 
-window.addEventListener('keydown', (e) => {
-	if (
-		e.keyCode !== 9 ||
-		!document.getElementById('quickMenuIframe') 
-	) return;
-
-	e.preventDefault();
-	browser.runtime.sendMessage({action: "focusSearchBar"});
+// Listen for ESC and close Quick Menu
+document.addEventListener('keydown', (ev) => {
 	
+	if (
+		ev.which !== 27 ||
+		ev.repeat ||
+		!userOptions.quickMenu		
+	) return false;
+	
+	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "esc"});
+		
 });
 
-window.addEventListener('keydown', (e) => {
-	if (
-		e.keyCode !== 81 || 
-		!e.ctrlKey ||
-		!userOptions.quickMenuOnHotkey
-	) return;
+window.addEventListener('wheel', scrollEventListener);
+window.addEventListener('scroll', scrollEventListener);
 
-	e.preventDefault();
-	openQuickMenu(e);
+// set up listeners for parent windows only
+if (document.title !== "QuickMenu") {
 	
-});
+	// Listen for quickMenuKey
+	document.addEventListener('keydown', (ev) => {
+		
+		if (
+			ev.which !== userOptions.quickMenuKey ||
+			ev.repeat ||
+			!userOptions.quickMenuOnKey ||
+			!userOptions.quickMenu ||
+			getSelectedText(ev.target) === "" ||
+			( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
+		) return false;
+
+		quickMenuObject.keyDownTimer = Date.now();
+		
+	});
+
+	// Listen for quickMenuKey
+	document.addEventListener('keyup', (ev) => {
+		
+		if (
+			ev.which !== userOptions.quickMenuKey ||
+			ev.repeat ||
+			!userOptions.quickMenu ||
+			!userOptions.quickMenuOnKey
+		) return false;
+		
+		if (Date.now() - quickMenuObject.keyDownTimer < 250)
+			openQuickMenu(ev);
+		
+		quickMenuObject.keyDownTimer = 0;
+		
+	});
+	// Listen for HOLD quickMenuMouseButton
+	document.addEventListener('mousedown', (ev) => {
+
+		if (
+			!userOptions.quickMenu ||
+			!userOptions.quickMenuOnMouse ||
+			userOptions.quickMenuOnMouseMethod !== 'hold' ||
+			ev.which !== userOptions.quickMenuMouseButton ||
+			getSelectedText(ev.target) === "" ||
+			( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
+		) return false;
+		
+		quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
+		
+		// timer for mouse down
+		quickMenuObject.mouseDownTimer = setTimeout(() => {
+			
+			// prevent drag events when using search on mouseup
+		//	if (userOptions.quickMenuSearchOnMouseUp) {
+				window.addEventListener('dragstart', (e) => {
+					e.preventDefault();
+				}, {once: true});
+		//	}
+
+			// ignore select / drag events
+			if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
+
+			// prevent losing text selection
+			ev.target.addEventListener('mouseup', (evv) => {
+				if (evv.which !== ev.which) return;
+				evv.preventDefault();
+				quickMenuObject.mouseLastClickTime = Date.now();
+			}, {once: true}); // parameter to run once, then delete
+			
+			if (ev.which === 1) {
+				// Disable click to prevent links from opening
+				ev.target.addEventListener('click', (evv) => {
+					if (evv.which !== 1) return;
+					evv.preventDefault();
+					quickMenuObject.mouseLastClickTime = Date.now();
+				}, {once: true}); // parameter to run once, then delete
+				
+			} else if (ev.which === 3) {
+				// Disable the default context menu once
+				document.addEventListener('contextmenu', (evv) => {
+					evv.preventDefault();
+					quickMenuObject.mouseLastClickTime = Date.now();
+				}, {once: true}); // parameter to run once, then delete
+
+			}	
+			openQuickMenu(ev);
+			
+		}, quickMenuObject.delay);
+
+	//	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+
+	});
+
+	// Listen for HOLD quickMenuMouseButton
+	document.addEventListener('mouseup', (ev) => {
+
+		if (
+			!userOptions.quickMenu ||
+			!userOptions.quickMenuOnMouse ||
+			userOptions.quickMenuOnMouseMethod !== 'hold' ||
+			ev.which !== userOptions.quickMenuMouseButton
+		) return false;
+			
+		clearTimeout(quickMenuObject.mouseDownTimer);
+	//	document.removeEventListener('contextmenu', preventContextMenuHandler);
+	});
+
+	// Listen for quickMenuAuto 
+	document.addEventListener('mousedown', (ev) => {
+		
+		if (
+			!userOptions.quickMenu ||
+			!userOptions.quickMenuAuto || 
+			ev.which !== 1 ||
+			ev.target.id === 'quickMenuElement' ||
+			ev.target.parentNode.id === 'quickMenuElement'
+		) return false;
+		
+		quickMenuObject.mouseDownTargetIsTextBox = isTextBox(ev.target);
+		
+	});
+
+	document.addEventListener('mouseup', (ev) => {
+
+		if (
+			!userOptions.quickMenu ||
+			!userOptions.quickMenuAuto || 
+			ev.which !== 1 ||
+			ev.target.id === 'quickMenuElement' ||
+			ev.target.parentNode.id === 'quickMenuElement' ||
+			getSelectedText(ev.target) === "" ||
+			( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
+			( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
+		) return false;
+
+		if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;
+		
+		quickMenuObject.mouseLastClickTime = Date.now();
+		
+		clearTimeout(quickMenuObject.mouseDownTimer);
+		
+		openQuickMenu(ev);
+
+	});
+
+	// Listen for quickMenuOnClick
+	document.addEventListener('mousedown', (ev) => {	
+
+		if (
+			!userOptions.quickMenu ||
+			!userOptions.quickMenuOnMouse ||
+			userOptions.quickMenuOnMouseMethod !== 'click' ||
+			ev.which !== userOptions.quickMenuMouseButton ||
+			getSelectedText(ev.target) === "" ||
+			((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
+		) return false;
+		
+		quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
+		
+		function preventContextMenuHandler(evv) {
+			evv.preventDefault();
+		}
+		
+		document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+		
+		// timer for right mouse down
+		quickMenuObject.mouseDownTimer = setTimeout(() => {
+			document.removeEventListener('contextmenu', preventContextMenuHandler);
+			quickMenuObject.mouseDownTimer = null;
+		},quickMenuObject.delay);
+
+	});
+			
+	// Listen for quickMenuOnClick	
+	document.addEventListener('mouseup', (ev) => {	
+
+		if (
+			!userOptions.quickMenu || 
+			!userOptions.quickMenuOnMouse ||
+			userOptions.quickMenuOnMouseMethod !== 'click' ||
+			ev.which !== userOptions.quickMenuMouseButton ||
+			!quickMenuObject.mouseDownTimer ||
+			getSelectedText(ev.target) === ""
+		) return false;
+		
+		quickMenuObject.mouseLastClickTime = Date.now();
+		
+		ev.stopPropagation();
+		
+		// document.addEventListener('contextmenu', (evv) => {
+			// evv.preventDefault();
+		// }, {once: true}); // parameter to run once, then delete
+		
+		openQuickMenu(ev);
+		
+	});
+
+	// unlock if quickmenu is closed
+	document.addEventListener('closequickmenu', () => {
+		quickMenuObject.locked = false;
+	});
+
+	// close quickmenu when clicking anywhere on page
+	document.addEventListener("click", (ev) => {
+
+		if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
+
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
+
+	});
+
+	// track mouse position
+	document.addEventListener("mousemove", (ev) => {
+		quickMenuObject.mouseCoords = {x: ev.clientX, y: ev.clientY};
+		quickMenuObject.screenCoords = {x: ev.screenX, y: ev.screenY};
+	});
+
+	// prevent quickmenu during drag events
+	document.addEventListener("drag", (ev) => {
+		clearTimeout(quickMenuObject.mouseDownTimer);
+	});
+
+	window.addEventListener('keydown', (e) => {
+		if (
+			e.keyCode !== 9 ||
+			!document.getElementById('quickMenuIframe') 
+		) return;
+		
+		e.preventDefault();
+		
+		// links and text boxes need to be blurred before focus can be applied to search bar (why?)
+		e.target.blur();
+		
+		browser.runtime.sendMessage({action: "focusSearchBar"});
+		
+	});
+
+	window.addEventListener('keydown', (e) => {
+		if (
+			e.keyCode !== 81 || 
+			!e.ctrlKey ||
+			!userOptions.quickMenuOnHotkey
+		) return;
+
+		e.preventDefault();
+		
+		openQuickMenu(e);
+		
+	});
+
+	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+		if (typeof message.userOptions !== 'undefined') {
+			userOptions = message.userOptions || {};
+		}
+		if (typeof message.action !== 'undefined') {
+			switch (message.action) {
+				
+				case "closeQuickMenuRequest":
+					closeQuickMenu(message.eventType || null);
+					break;
+					
+				case "openQuickMenu":
+					let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
+					
+					let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
+
+					quickMenuObject.searchTerms = message.searchTerms;
+					makeQuickMenuContainer({'x': x,'y': y});
+					break;
+				
+				case "updateSearchTerms":
+					// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
+					if (quickMenuObject.locked || document.title === "QuickMenu") {
+						quickMenuObject.searchTerms = message.searchTerms;
+						
+						// send event to OpenAsLink tile to enable/disable
+						document.dispatchEvent(new CustomEvent('updatesearchterms'));
+
+						browser.runtime.sendMessage({
+							action: "updateQuickMenuObject", 
+							quickMenuObject: quickMenuObject
+						});
+					}
+					break;
+				
+				case "updateQuickMenuObject":
+					quickMenuObject = message.quickMenuObject;
+					
+					// iframe needs to disable here
+					if (quickMenuObject.disabled)
+						userOptions.quickMenu = false;
+					
+					let qm = document.getElementById('quickMenuIframe')
+					
+					if( qm && message.toggleLock ) {
+					
+						if (quickMenuObject.locked) {
+							qm.style.left = parseFloat(qm.style.left) - getOffsets().x + "px";
+							qm.style.top = parseFloat(qm.style.top) - getOffsets().y + "px";
+							qm.style.position='fixed';
+						} else {
+							qm.style.left = parseFloat(qm.style.left) + getOffsets().x + "px";
+							qm.style.top = parseFloat(qm.style.top) + getOffsets().y + "px";
+							qm.style.position=null;
+						}
+					}
+			
+					break;
+					
+				case "quickMenuIframeLoaded":
+				
+					browser.runtime.sendMessage({
+						action: "updateQuickMenuObject", 
+						quickMenuObject: quickMenuObject
+					});
+					
+					scaleAndPositionQuickMenu(message.size);
+					
+					break;
+			}
+		}
+	});
+}
 

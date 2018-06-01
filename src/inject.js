@@ -17,7 +17,7 @@ document.addEventListener("selectionchange", (ev) => {
 });
 
 // selectionchange handler for input nodes
-for (let el of document.querySelectorAll("input[type='text'], input[type='search'], textarea")) {
+for (let el of document.querySelectorAll("input[type='text'], input[type='search'], textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', (e) => {
 		let text = getSelectedText(e.target)
 		if (text)
