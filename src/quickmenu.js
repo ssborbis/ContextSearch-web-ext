@@ -217,7 +217,7 @@ function makeQuickMenu() {
 	sb.onmouseup = function(e) {
 		e.stopPropagation();
 	}
-	sb.onkeydown = function(e) {
+	document.onkeydown = function(e) {
 		if (e.keyCode === 13) {
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
@@ -234,8 +234,6 @@ function makeQuickMenu() {
 	// tab and arrow keys move selected search engine
 	
 	document.addEventListener('keydown', (e) => {
-		
-		console.log('heard code ' + e.keyCode);
 		
 		if (document.activeElement === sb) {
 			
