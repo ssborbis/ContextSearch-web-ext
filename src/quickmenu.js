@@ -271,9 +271,12 @@ function makeQuickMenu() {
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
-			if (e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined)
-				sb.selectedIndex = divs.length;
-			if (sb.selectedIndex === undefined)
+			if (
+				(e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined) ||
+				(e.keyCode === 38 && sb.selectedIndex === undefined)
+			)
+				sb.selectedIndex = divs.length -1;
+			else if (sb.selectedIndex === undefined)
 				sb.selectedIndex = 0;
 		//	else if (sb.selectedIndex + direction === divs.length && e.keyCode === 9)
 		//		sb.selectedIndex = 0;
