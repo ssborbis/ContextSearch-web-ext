@@ -7,7 +7,8 @@
 }
 .Xhover {
 	background-color: #ccdbe8 !important;
-	border-color: #ccdbe8 !important;
+	border-color: #3399ff !important;
+	
 }
 #quickMenuElement DIV, #quickMenuElement INPUT {
 	width:32px;
