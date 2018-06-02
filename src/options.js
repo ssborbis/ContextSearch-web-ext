@@ -296,7 +296,7 @@ function buildSearchEngineContainer(searchEngines) {
 				clearError(label.nextSibling)
 			}
 
-//			edit_form.shortName.value = se.title;
+			edit_form.shortName.value = se.title;
 			edit_form.template.value = se.query_string;
 			edit_form.iconURL.value = se.icon_url || se.icon_base64String;
 			edit_form._method.value = se.method || "GET";
@@ -339,6 +339,16 @@ function buildSearchEngineContainer(searchEngines) {
 				
 				function saveForm() {
 					// loading icon is last step. Set values after everything else
+						
+					// alert of problems with changing name
+					if (se.title !== edit_form.shortName.value) {
+						let yesno = confirm(browser.i18n.getMessage('NameChangeWarning'));
+						
+						if (yesno) {
+							CSBookmarks.rename(se.title, edit_form.shortName.value);
+							se.title = edit_form.shortName.value;
+						}
+					}
 					se.icon_base64String = icon.src;
 					se.query_string = se.template = edit_form.template.value;
 					se.searchForm = edit_form.searchform.value;
@@ -352,17 +362,16 @@ function buildSearchEngineContainer(searchEngines) {
 				}
 
 				// Check bad form values
-	/*			if ( !edit_form.shortName.value.trim() ) {
-					showError(edit_form.shortName,'Engine name');
+				if ( !edit_form.shortName.value.trim() ) {
+					showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
 					return;
 				}
 				for (let engine of userOptions.searchEngines) {
 					if (engine.title == edit_form.shortName.value) {
-						showError(edit_form.shortName,"Engine name " + edit_form.shortName.value + '" already exists');
+						showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
 						return;
 					}
 				}
-	*/
 				if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
 					showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
 					return;

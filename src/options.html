@@ -585,6 +585,7 @@
 			}
 			#searchEnginesContainer {
 				width:100%;
+				background-color:white;
 			}
 			#searchEnginesContainer TD {
 				width:1%;
@@ -947,7 +948,7 @@
 						<br />
 						<span style='font-size:9pt' data-i18n='HotkeyTooltip'>Open the Quick Menu any time using a hotkey</span>
 					</td>
-					<td><span class='keyboardButton'>Ctrl-Q</span></td>
+					<td><span class='keyboardButton'>Ctrl-Alt-Q</span></td>
 				</tr>
 				</table>
 				
@@ -1169,8 +1170,8 @@
 
 				<form id='editSearchEngineContainer' action="">
 
-			<!--		<label data-label="Engine Name"></label><input name="shortName" type="text" class='inputNice' />
-			-->		
+					<label data-i18n="Name">Name</label><input name="shortName" type="text" class='inputNice' />
+					
 					<label data-i18n='Template'>Template</label><input name="template" type="text" class='inputNice' />
 					<label data-i18n='Icon'>Icon URI</label><input name="iconURL" type="text" class='inputNice' />
 					<label data-i18n='FormPath'>Form Path</label><input name="searchform" type="text" class='inputNice' />

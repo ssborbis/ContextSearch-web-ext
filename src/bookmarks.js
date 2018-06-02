@@ -175,6 +175,24 @@ class CSBookmarks {
 		});
 	}
 	
+	static rename(oldName, newName) {
+		
+		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		
+		return this.find(oldName).then( (result) => {
+			if (result !== -1) return false;
+			
+			console.log('renaming bookmark');
+			
+			console.log(newName);
+			console.log(result);
+			
+			return browser.bookmarks.update(result, {
+				title: newName
+			});
+		});
+	}
+	
 	static requestPermissions() {
 		console.log('requesting permissions');
 		

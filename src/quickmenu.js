@@ -193,7 +193,7 @@ function makeQuickMenuContainer(coords) {
 	
 	// Check if quickmenu fails to display
 	setTimeout(() => {
-		if (!qmc || qmc.ownerDocument.defaultView.getComputedStyle(els[i], null).getPropertyValue("display") === 'none') {
+		if (!qmc || qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("display") === 'none') {
 			console.log('iframe quick menu hidden by external script (adblocker?).  Enabling context menu');
 			browser.runtime.sendMessage({action: 'enableContextMenu'});
 		}
@@ -232,12 +232,27 @@ function makeQuickMenu() {
 	}
 
 	// tab and arrow keys move selected search engine
-	sb.addEventListener('keydown', (e) => {
+	
+	document.addEventListener('keydown', (e) => {
+		
+		console.log('heard code ' + e.keyCode);
+		
+		if (document.activeElement === sb) {
+			
+			// let left/right works as normal
+			if (e.keyCode === 37 || e.keyCode === 39) return;
+			
+			if (e.keyCode === 9 || e.keyCode === 40 || e.keyCode === 38) {
+				sb.blur();
+				sb.selectionEnd = sb.selectionStart;
+			}
+			
+		}
 
 		if (e.keyCode === 37 || e.keyCode === 38 || e.keyCode === 39 ||e.keyCode === 40 || e.keyCode === 9) {
 			
 			e.preventDefault();
-			
+
 			let direction = 0;
 			if (e.keyCode === 9 && !e.shiftKey)
 				direction = 1;
@@ -256,22 +271,34 @@ function makeQuickMenu() {
 			
 			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
 			
+			if (e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined)
+				sb.selectedIndex = divs.length;
 			if (sb.selectedIndex === undefined)
 				sb.selectedIndex = 0;
-			else if (sb.selectedIndex + direction === divs.length && e.keyCode === 9)
-				sb.selectedIndex = 0;
-			else if (sb.selectedIndex + direction < 0 && e.keyCode === 9)
-				sb.selectedIndex = divs.length -1;
-			else if (sb.selectedIndex + direction >= divs.length)
-				;
+		//	else if (sb.selectedIndex + direction === divs.length && e.keyCode === 9)
+		//		sb.selectedIndex = 0;
+		//	else if (sb.selectedIndex + direction < 0 && e.keyCode === 9)
+		//		sb.selectedIndex = divs.length -1;
+			else if (sb.selectedIndex + direction >= divs.length) {
+				sb.focus();
+				sb.select();
+				divs[sb.selectedIndex].classList.remove('Xhover');
+				delete sb.selectedIndex;
+			}
 				//sb.selectedIndex = userOptions.quickMenuColumns - (divs.length - sb.selectedIndex);
-			else if (sb.selectedIndex + direction < 0)
-				;
+			else if (sb.selectedIndex + direction < 0) {
+				sb.focus();
+				sb.select();
+				divs[sb.selectedIndex].classList.remove('Xhover');
+				delete sb.selectedIndex;
+			}
 				//sb.selectedIndex = divs.length - userOptions.quickMenuColumns - sb.selectedIndex;
 			else
 				sb.selectedIndex+=direction;
 
-			divs[sb.selectedIndex].classList.add('Xhover');
+			if (sb.selectedIndex !== undefined)
+				divs[sb.selectedIndex].classList.add('Xhover');
+
 		}
 		
 	});
@@ -903,6 +930,7 @@ if (document.title !== "QuickMenu") {
 		if (
 			e.keyCode !== 81 || 
 			!e.ctrlKey ||
+			!e.altKey ||
 			!userOptions.quickMenuOnHotkey
 		) return;
 

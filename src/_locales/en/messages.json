@@ -340,7 +340,7 @@
   },
   
   "EnableAutoImportTooltip": {
-    "message": "Import One-Click Search Engines"
+    "message": "Import new OpenSearch engines to ContextSearch automatically. Only useful when importing OpenSearch engines installed through Firefox's One-Click Search Engine API. Requires a separate app. See 'Help' for more details"
   },
   
   "ProfilePath": {
@@ -811,6 +811,12 @@
     "message": "Select all text in the search bar when it receives focus",
     "description": "description for select text in search bar"
   },
+  
+  "NameChangeWarning": {
+    "message": "Renaming search engines can cause duplicate entries when importing One-Click search engines from Firefox using manual or automatic import. This can be fixed by removing engines with the old name from Firefox Options->Search->One-Click Search Engines or simply hide the unwanted engine. Are you sure you want to rename?",
+    "description": "warn user about potential problems when changing search engine names"
+  },
+  
   
   "_________": {
     "message": "",
