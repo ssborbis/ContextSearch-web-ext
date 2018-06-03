@@ -8,6 +8,7 @@
 .Xhover {
 	background-color: #ccdbe8 !important;
 	border-color: #3399ff !important;
+	box-shadow: inset 0 0 8px #3399ff !important;
 	
 }
 #quickMenuElement DIV, #quickMenuElement INPUT {

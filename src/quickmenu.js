@@ -232,6 +232,15 @@ function makeQuickMenu() {
 	}
 
 	// tab and arrow keys move selected search engine
+	sb.addEventListener('focus', () => {
+	//	let divs = quickMenuElement.querySelectorAll('div[data-index]');
+	//	divs[0].style.border = '1px solid #3399ff';
+	});
+	
+	sb.addEventListener('blur', () => {
+	//	let divs = quickMenuElement.querySelectorAll('div[data-index]');
+	//	divs[0].style.border = null;
+	});
 	
 	document.addEventListener('keydown', (e) => {
 		

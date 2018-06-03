@@ -342,13 +342,15 @@ function buildSearchEngineContainer(searchEngines) {
 						
 					// alert of problems with changing name
 					if (se.title !== edit_form.shortName.value) {
-						let yesno = confirm(browser.i18n.getMessage('NameChangeWarning'));
-						
-						if (yesno) {
+
+						if ( confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
 							CSBookmarks.rename(se.title, edit_form.shortName.value);
 							se.title = edit_form.shortName.value;
+							
+							edit_form.previousSibling.innerText = se.title;
 						}
 					}
+					
 					se.icon_base64String = icon.src;
 					se.query_string = se.template = edit_form.template.value;
 					se.searchForm = edit_form.searchform.value;
@@ -415,7 +417,7 @@ function buildSearchEngineContainer(searchEngines) {
 			
 			// reflow trick
 			edit_form.getBoundingClientRect();
-			edit_form.style.maxHeight = '300px';
+			edit_form.style.maxHeight = '400px';
 		}
 		
 		let _delete = document.createElement('img');
