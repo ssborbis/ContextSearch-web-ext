@@ -140,7 +140,7 @@
   },
   
   "Opening&ClosingDescription": {
-    "message": "Methode zum Öffnen des Schnellmenüs bei Textmarkierung."
+    "message": "Methode zum Öffnen des Schnellmenüs"
   },
   
    "Auto": {
@@ -148,7 +148,7 @@
   },
   
   "AutoTooltip": {
-    "message": "Automatisch öffnen"
+    "message": "Bei Textmarkierung automatisch öffnen"
   },
   
    "EnableOnTextBoxes": {
@@ -164,7 +164,7 @@
   },
   
   "MouseTooltip": {
-    "message": "Mittels Mausklick öffnen"
+    "message": "Text markieren und dann Menü per Mausklick öffnen"
   },
   
   "MouseDescription": {
@@ -184,7 +184,7 @@
   },
   
    "SearchOnMouseupTooltip": {
-    "message": "Führt eine Suche aus dem Schnellmenü durch Loslassen statt eines Klicks mit der Maus durch. Beispiel: Mausbutton zum Öffnen des Menüs geklickt halten und über Suchmaschine los lassen zum Suchen."
+    "message": "Führt eine Suche aus dem Schnellmenü durch Loslassen statt eines Klicks mit der Maus durch. Beispiel: Mausbutton zum Öffnen des Menüs geklickt halten und über Suchmaschine loslassen zum Suchen."
   },
   
    "Click": {
@@ -200,7 +200,7 @@
   },
   
   "KeyboardTooltip": {
-    "message": "Mittels einer Funktionstaste öffnen"
+    "message": "Text markieren und dann Menü per Funktionstaste öffnen"
   },
   
    "ChooseKey": {
@@ -340,7 +340,7 @@
   },
   
   "EnableAutoImportTooltip": {
-    "message": "Ein-Klick Suchmaschinen importieren"
+    "message": "Neue OpenSearch-Engines automatisch in ContextSearch importieren. Nur möglich beim Import von OpenSearch-Engines, die über die Ein-Klick-Suchmaschinen-API von Firefox installiert wurden. Benötigt eine separate App. Siehe 'Hilfe' für weitere Details"
   },
   
   "ProfilePath": {
@@ -758,12 +758,20 @@
   },
 
   "SearchBar": {
-    "message": "Suchleiste aktivieren"
+    "message": "Suchleiste"
   },
   
   "SearchBarTooltip": {
-    "message": "Fügt dem Schnellmenü eine Suchleiste hinzu"
+    "message": "Festlegen, wo die Suchleiste im Schnellmenü angezeigt werden soll."
   },
+  
+  "hidden": {
+    "message": "Ausgeblendet"
+  },
+  
+  "KeepMenuOpen": {
+    "message": "Schnellmenü offen halten"
+  },  
   
   "Search": {
     "message": "Suchen",
@@ -774,6 +782,40 @@
     "message": "Kopieren",
     "description": "button to duplicate a search engine from the manager"
   },
+  
+  "Hotkey": {
+    "message": "Hotkey",
+    "description": "label for Hotkey option"
+  },
+  
+  "HotkeyTooltip": {
+    "message": "Öffnet das Schnellmenü jederzeit per Tastenkombination.",
+    "description": "description for Hotkey option"
+  },
+  
+  "Focus": {
+    "message": "Fokus in Suchleiste setzen",
+    "description": "label for auto focus on search bar"
+  },
+  
+  "FocusTooltip": {
+    "message": "Fokus auf Suchleiste setzen, wenn das Schnellmenü geöffnet wird (kopieren via STRG+C ist dann nur möglich, wenn \"Text in Suchleiste markieren\" auch aktiviert wird).",
+    "description": "description for focus"
+  },
+  
+  "SelectText": {
+    "message": "Text in Suchleiste markieren"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Markiert den gesamten Text in der Suchleiste, wenn diese den Fokus erhält.",
+    "description": "description for select text in search bar"
+  },
+  
+  "NameChangeWarning": {
+    "message": "Das Umbenennen von Suchmaschinen kann beim manuellem oder automatischem Import von Ein-Klick Suchmaschinen aus Firefox zu doppelten Einträgen führen. Dies kann korrigiert werden, indem die Suchmaschine mit dem alten Namen aus den Firefox-Einstellungen->Suche->Ein-Klick-Suchmaschinen entfernt oder einfach die unerwünschte Suchmaschine ausblendet wird. Sind Sie sicher, dass Sie den Namen ändern wollen?",
+    "description": "warn user about potential problems when changing search engine names"
+  },  
   
   "_________": {
     "message": "",

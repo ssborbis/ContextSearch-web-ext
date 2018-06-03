@@ -2,6 +2,10 @@
 Changes in reverse order (newest at top)
 
 # History
+## 2018-06-03 based on [Version 1.5.9](https://github.com/ssborbis/ContextSearch-web-ext/commit/fc7bc2274111db8b744877fc1f03f9becb0ad0eb)
+Translation for new strings.
+
+
 ## 2018-05-26 based on [Version 1.5.5](https://github.com/ssborbis/ContextSearch-web-ext/commit/2bf43ef21620fc9cc4722acc23f409c8ec1056b2)
 Initial commit for german locales
 
