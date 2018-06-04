@@ -812,6 +812,11 @@
     "description": "description for select text in search bar"
   },
   
+  "NameChangeWarning": {
+    "message": "Renommer un moteur de recherche peut le faire apparaître en double lors de l’importation manuelle ou automatique des moteurs accessibles en un clic. Dans ce cas, deux possibilités : masquer le moteur renommé ou le supprimer (Options de Firefox -> Recherche -> Moteurs de recherche accessibles en un clic). Voulez-vous vraiment renommer ce moteur ?",
+    "description": "warn user about potential problems when changing search engine names"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
