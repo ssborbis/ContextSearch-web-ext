@@ -818,7 +818,7 @@
   },
   
   "PressKey": {
-    "message": "Presser une touche.",
+    "message": "Taper une combinaison de touches",
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
 
