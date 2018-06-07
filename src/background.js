@@ -527,7 +527,7 @@ var userOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnHotkey: false,
-	quickMenuHotkey: [17, 81],
+	quickMenuHotkey: [17, 18, 81],
 	quickMenuOnMouse: true,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
