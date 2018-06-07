@@ -217,29 +217,54 @@ function makeQuickMenu() {
 	sb.onmouseup = function(e) {
 		e.stopPropagation();
 	}
+	
+	function getFirstSearchEngineTileIndex(divs) {
+		divs = divs || quickMenuElement.querySelectorAll('div');
+		let default_engine_index = 0;
+		for (let i=0;i<divs.length;i++) {
+			if (divs[i].dataset.index === undefined)
+				default_engine_index++;
+			else
+				break;
+		}
+		
+		return default_engine_index;
+	}
 	document.onkeydown = function(e) {
 		if (e.keyCode === 13) {
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: (sb.selectedIndex !== undefined) ? quickMenuElement.querySelectorAll('div[data-index]')[sb.selectedIndex].index : 0,
-					selectionText: sb.value,//quickMenuObject.searchTerms,
-					openMethod: getOpenMethod(e)
-				}
-			});
+			
+			let divs = quickMenuElement.querySelectorAll('div');
+			
+			if (sb.selectedIndex === undefined)
+				sb.selectedIndex = getFirstSearchEngineTileIndex(divs);
+			
+			let div = divs[sb.selectedIndex];
+			
+			if (divs[sb.selectedIndex].dataset.index !== undefined) {
+				div.dispatchEvent(new Event('mouseup'));
+			}
+			else
+				div.click();
 
 		}
 	}
 
 	// tab and arrow keys move selected search engine
 	sb.addEventListener('focus', () => {
-	//	let divs = quickMenuElement.querySelectorAll('div[data-index]');
-	//	divs[0].style.border = '1px solid #3399ff';
+		
+		let div = quickMenuElement.querySelector('.selectedFocus');
+		if (div) div.classList.remove('selectedFocus');
+		
+		delete sb.selectedIndex;
+		
+		let divs = quickMenuElement.querySelectorAll('div[data-index]');
+		divs[0].classList.add('selectedNoFocus');
+
 	});
 	
 	sb.addEventListener('blur', () => {
-	//	let divs = quickMenuElement.querySelectorAll('div[data-index]');
-	//	divs[0].style.border = null;
+		let divs = quickMenuElement.querySelectorAll('div[data-index]');
+		divs[0].classList.remove('selectedNoFocus');
 	});
 	
 	document.addEventListener('keydown', (e) => {
@@ -274,9 +299,9 @@ function makeQuickMenu() {
 			else if (e.keyCode === 37)
 				direction = -1;
 
-			let divs = quickMenuElement.querySelectorAll('div[data-index]');
+			let divs = quickMenuElement.querySelectorAll('div');
 			
-			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
+			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('selectedFocus');
 			
 			if (
 				(e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined) ||
@@ -284,30 +309,21 @@ function makeQuickMenu() {
 			)
 				sb.selectedIndex = divs.length -1;
 			else if (sb.selectedIndex === undefined)
-				sb.selectedIndex = 0;
-		//	else if (sb.selectedIndex + direction === divs.length && e.keyCode === 9)
-		//		sb.selectedIndex = 0;
-		//	else if (sb.selectedIndex + direction < 0 && e.keyCode === 9)
-		//		sb.selectedIndex = divs.length -1;
+				sb.selectedIndex = getFirstSearchEngineTileIndex(divs);
 			else if (sb.selectedIndex + direction >= divs.length) {
 				sb.focus();
 				sb.select();
-				divs[sb.selectedIndex].classList.remove('Xhover');
-				delete sb.selectedIndex;
+				return;
 			}
-				//sb.selectedIndex = userOptions.quickMenuColumns - (divs.length - sb.selectedIndex);
 			else if (sb.selectedIndex + direction < 0) {
 				sb.focus();
 				sb.select();
-				divs[sb.selectedIndex].classList.remove('Xhover');
-				delete sb.selectedIndex;
+				return;
 			}
-				//sb.selectedIndex = divs.length - userOptions.quickMenuColumns - sb.selectedIndex;
 			else
 				sb.selectedIndex+=direction;
 
-			if (sb.selectedIndex !== undefined)
-				divs[sb.selectedIndex].classList.add('Xhover');
+			divs[sb.selectedIndex].classList.add('selectedFocus');
 
 		}
 		
@@ -938,11 +954,17 @@ if (document.title !== "QuickMenu") {
 
 	window.addEventListener('keydown', (e) => {
 		if (
-			e.keyCode !== 81 || 
-			!e.ctrlKey ||
-			!e.altKey ||
 			!userOptions.quickMenuOnHotkey
+			|| e.repeat
 		) return;
+		
+		for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
+			let key = userOptions.quickMenuHotkey[i];
+			if (key === 16 && !e.shiftKey) return;
+			if (key === 17 && !e.ctrlKey) return;
+			if (key === 18 && !e.altKey) return;
+			if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+		}
 
 		e.preventDefault();
 		

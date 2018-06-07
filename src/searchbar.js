@@ -46,7 +46,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 			let divs = quickMenuElement.querySelectorAll('div[data-index]');
 			
-			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('Xhover');
+			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('selectedFocus');
 			
 			if (sb.selectedIndex === undefined)
 				sb.selectedIndex = 0;
@@ -66,7 +66,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			let se = userOptions.searchEngines[sb.selectedIndex];
 			document.getElementById('searchEngineTitle').innerText = se.title;
 
-			divs[sb.selectedIndex].classList.add('Xhover');
+			divs[sb.selectedIndex].classList.add('selectedFocus');
 		}
 	});
 	

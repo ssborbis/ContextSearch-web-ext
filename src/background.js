@@ -34,7 +34,19 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
-			quickMenuSearch(message.info, sender.tab);
+			if (!sender.tab) {
+				function onFound(tabs) {
+					let tab = tabs[0];
+					console.log(tab.url);
+					quickMenuSearch(message.info, tab);
+				}
+
+				function onError(err){
+					console.error(err);
+				}
+				browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+			} else
+				quickMenuSearch(message.info, sender.tab);
 			break;
 			
 		case "enableContextMenu":
@@ -515,6 +527,7 @@ var userOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnHotkey: false,
+	quickMenuHotkey: [17, 81],
 	quickMenuOnMouse: true,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",

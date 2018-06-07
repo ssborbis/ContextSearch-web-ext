@@ -817,7 +817,11 @@
     "description": "warn user about potential problems when changing search engine names"
   },
   
-  
+  "PressKey": {
+    "message": "Press a key",
+    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
+  },
+
   "_________": {
     "message": "",
     "description": ""

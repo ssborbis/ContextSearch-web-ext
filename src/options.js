@@ -594,15 +594,15 @@ function restoreOptions() {
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
 		document.getElementById('cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
 		
+		document.getElementById('d_hotkey').appendChild(keyArrayToButtons(userOptions.quickMenuHotkey));
+		
 		document.getElementById('cb_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
 		document.getElementById('s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
 		document.getElementById('cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
 		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
 		document.getElementById('cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
-//		document.getElementById('r_quickMenuOnClick').checked = userOptions.quickMenuOnClick;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
-//		document.getElementById('cb_quickMenuTrackingProtection').checked = userOptions.quickMenuTrackingProtection,
 		document.getElementById('s_quickMenuSearchBar').value =  userOptions.quickMenuSearchBar,
 		document.getElementById('cb_quickMenuSearchBarFocus').checked = userOptions.quickMenuSearchBarFocus,
 		document.getElementById('cb_quickMenuSearchBarSelect').checked = userOptions.quickMenuSearchBarSelect,
@@ -614,8 +614,6 @@ function restoreOptions() {
 		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
 		document.getElementById('s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
-	//	document.querySelector('input[name="r_quickMenuMouseButton"][value="' + userOptions.quickMenuMouseButton + '"]' ).checked = true;
-
 		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
 		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
 		document.getElementById('h_position').value = userOptions.quickMenuPosition;
@@ -675,28 +673,31 @@ function saveOptions(e) {
 		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
 		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
 		quickMenuOnHotkey: document.getElementById('cb_quickMenuOnHotkey').checked,
+		quickMenuHotkey: function() {
+			let buttons = document.getElementById('d_hotkey').querySelectorAll('[data-keycode]');
+			if (!buttons) return [];
+			let arr = [];
+			for (let button of buttons)
+				arr.push(parseInt(button.dataset.keycode));
+			return arr;
+		}(),
 		quickMenuOnMouse: document.getElementById('cb_quickMenuOnMouse').checked,
 		quickMenuOnMouseMethod: document.getElementById('s_quickMenuOnMouseMethod').value,
 		quickMenuSearchOnMouseUp: document.getElementById('cb_quickMenuSearchOnMouseUp').checked,
-		//quickMenuMouseButton: parseInt(document.querySelector('input[name="r_quickMenuMouseButton"]:checked').value),
 		quickMenuMouseButton: parseInt(document.getElementById("s_quickMenuMouseButton").value),
 		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
 		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
-//		quickMenuOnClick: document.getElementById('r_quickMenuOnClick').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 		quickMenuIconScale: parseFloat(document.getElementById('range_quickMenuIconScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
 		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
 		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
 		quickMenuPosition: document.getElementById('h_position').value,
-//		quickMenuTrackingProtection: document.getElementById('cb_quickMenuTrackingProtection').checked,
 		contextMenuClick: document.getElementById('s_contextMenuClick').value,
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
-		
 		contextMenuShowAddCustomSearch: document.getElementById('cb_contextMenuShowAddCustomSearch').checked,
 		contextMenuBookmarks: document.getElementById('cb_contextMenuBookmarks').checked,
-		
 		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
 		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
 		quickMenuMiddleClick: document.getElementById('s_quickMenuMiddleClick').value,
@@ -793,7 +794,6 @@ document.getElementById('cb_quickMenuOnMouse').addEventListener('change', saveOp
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuOnHotkey').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuAuto').addEventListener('change', saveOptions);
-//document.getElementById('r_quickMenuOnClick').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
 document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
@@ -810,8 +810,6 @@ for (let el of document.getElementsByTagName('select'))
 
 document.getElementById('cb_quickMenuCloseOnScroll').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuCloseOnClick').addEventListener('change', saveOptions);
-
-//document.getElementById('cb_quickMenuTrackingProtection').addEventListener('change', saveOptions);
 
 document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
 	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
@@ -914,6 +912,37 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (!el.value.isInteger) el.value = Math.floor(el.value);
 	if (el.value > _max) el.value = _max;
 	if (el.value < _min) el.value = _min;
+}
+
+function keyArrayToButtons(arr) {
+	
+	let div = document.createElement('div');
+	
+	if (arr.length === 0) {
+		div.innerText = 'Click To Set';
+	}
+	
+	for (let i=0;i<arr.length;i++) {
+
+		let hk = arr[i]
+		let span = document.createElement('span');
+		let key = keyTable[hk];
+		if (key.length === 1) key = key.toUpperCase();
+		
+		span.innerText = key;
+		span.dataset.keycode = hk;
+		span.className = 'keyboardButton';
+		span.style = 'min-width:auto;padding:3px 10px;';
+		div.appendChild(span);
+		
+		if ( i + 1 < arr.length) {
+			let p = document.createElement('span');
+			p.innerHTML = '&nbsp;&nbsp;+&nbsp;&nbsp;';
+			div.appendChild(p);
+		}
+	}
+	
+	return div;
 }
 
 // Modify Options for quickload popup
@@ -1140,25 +1169,6 @@ function showInfoMsg(el, msg) {
 	div.style.display = 'block';
 }
 
-// setup menus that open with a checkbox
-document.addEventListener("DOMContentLoaded", () => {
-	
-	for (let el of document.getElementsByClassName('checkboxMenu')) {
-		el.onclick = function() {
-			
-			let input = el.querySelector('input');
-			let details = document.querySelector('div[data-details="' + input.id + '"]');
-			
-			if (input.checked) {
-				details.style.maxHeight = '150px';
-			} else {
-				details.style.maxHeight = '0px';
-			}
-
-		}
-	}
-});
-
 // set up info bubbles
 document.addEventListener("DOMContentLoaded", () => {
 	
@@ -1326,5 +1336,34 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	help.appendChild(iframe);
 
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+	
+	let hk = document.getElementById('d_hotkey');
+	hk.onclick = function() {
+		
+		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ' + browser.i18n.getMessage('PressKey');
+				
+		document.addEventListener('keyup', (e) => {
+			
+			e.preventDefault();
+			
+			let keyArray = [];
+			
+			if (e.ctrlKey) keyArray.push(17);
+			if (e.altKey) keyArray.push(18);
+			if (e.shiftKey) keyArray.push(16);
+			
+			keyArray.push(e.keyCode);
+			
+			hk.innerHTML = null;
+			hk.appendChild(keyArrayToButtons(keyArray));
+			
+			saveOptions();
+			
+		}, {once: true});
+		
+	}
 });
 	

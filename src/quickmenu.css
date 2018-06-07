@@ -1,16 +1,10 @@
+.selectedFocus {
+	background-color: #0078d7 !important;	
+}
+.selectedNoFocus {
+	background-color: #b0b0b0 !important;
+}
 
-#quickMenuElement DIV:hover, .hover:hover {
-/*  background-color: #e0e0e0; */
-	background-color: #ccdbe8;
-	border-color: #ccdbe8;
-/*	background-size: 20px 20px; */
-}
-.Xhover {
-	background-color: #ccdbe8 !important;
-	border-color: #3399ff !important;
-	box-shadow: inset 0 0 8px #3399ff !important;
-	
-}
 #quickMenuElement DIV, #quickMenuElement INPUT {
 	width:32px;
 	height:32px;
@@ -23,6 +17,10 @@
 	background-position: center center;
 	background-repeat: no-repeat;
 	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
+}
+#quickMenuElement DIV:hover, .hover:hover {
+	background-color: #ccdbe8;
+	border-color: #ccdbe8;
 }
 #quickMenuElement, #quickMenuElement DIV {
 	box-sizing: content-box;
