@@ -817,6 +817,11 @@
     "description": "warn user about potential problems when changing search engine names"
   },
   
+  "PressKey": {
+    "message": "Taper une combinaison de touches",
+    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
+  },
+
   "_________": {
     "message": "",
     "description": ""
