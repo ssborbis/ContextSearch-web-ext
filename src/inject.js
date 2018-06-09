@@ -12,7 +12,7 @@ function getSelectedText(el) {
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", (ev) => {
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
-	if (window.getSelection().toString() !== '')
+//	if (window.getSelection().toString() !== '')
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: window.getSelection().toString()});
 });
 
@@ -32,13 +32,18 @@ window.addEventListener('mousedown', (e) => {
 		e.which !== 3 ||
 //		( userOptions !== undefined && !userOptions.contextMenu ) ||
 //		( userOptions !== undefined && userOptions.searchEngines !== undefined && userOptions.searchEngines.length === 0 ) ||
-		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a')
+		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a' && e.target.nodeName.toLowerCase() !== 'img') 
 	) return false;
 
 	let searchTerms = "";
 	
 	if (e.target.nodeName.toLowerCase() === 'a' && getSelectedText(e.target) === '')
 		searchTerms = e.target.href;
+	else if (e.target.nodeName.toLowerCase() === 'img') {
+		console.log('right-clicked on image');
+		searchTerms = e.target.src;
+		console.log(searchTerms);
+	}
 	else
 		searchTerms = getSelectedText(e.target);
 	

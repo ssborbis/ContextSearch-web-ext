@@ -301,7 +301,9 @@ function makeQuickMenu() {
 
 			let divs = quickMenuElement.querySelectorAll('div');
 			
-			if (sb.selectedIndex !== undefined) divs[sb.selectedIndex].classList.remove('selectedFocus');
+			if (sb.selectedIndex !== undefined) {
+				divs[sb.selectedIndex].classList.remove('selectedFocus');
+			}
 			
 			if (
 				(e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined) ||
@@ -324,6 +326,16 @@ function makeQuickMenu() {
 				sb.selectedIndex+=direction;
 
 			divs[sb.selectedIndex].classList.add('selectedFocus');
+			
+			// if (divs[sb.selectedIndex].index === undefined) {
+				// divs[sb.selectedIndex].style.filter = 'brightness(0) invert(1)';
+				// let img = document.createElement('img');
+				// let url = divs[sb.selectedIndex].style.backgroundImage;
+				// console.log(url);
+				// img.src = url.slice(4, -1).replace(/['"]/g, "");
+				// console.log(img.src);
+				// divs[sb.selectedIndex].appendChild(img);
+			// }
 
 		}
 		

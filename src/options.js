@@ -1343,7 +1343,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	let hk = document.getElementById('d_hotkey');
 	hk.onclick = function() {
 		
-		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ' + browser.i18n.getMessage('PressKey');
+		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
+		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
 				
 		document.addEventListener('keyup', (e) => {
 			

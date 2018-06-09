@@ -1,5 +1,10 @@
 .selectedFocus {
-	background-color: #0078d7 !important;	
+	background-color: #0078d7 !important;
+	position:relative;
+	color:white;
+}
+.selectedFocus IMG {
+	/*filter: brightness(0) invert(1);*/
 }
 .selectedNoFocus {
 	background-color: #b0b0b0 !important;
@@ -45,4 +50,28 @@
 }
 #quickmenusearchbar:focus {
 
+}
+#suggestions {
+	height:100px;
+	width:312px;
+	background-color:white;
+	white-space: nowrap;
+	overflow-x:hidden;
+	overflow-y:auto;
+	border:1px solid #ccc;
+	border-width: 1px 0;
+	transition:max-height .25s ease-in-out;
+	max-height:0;
+}
+#suggestions DIV {
+	background-color:white;
+	padding-left: 30px;
+	font-weight:200;
+	font-family: Arial;
+	font-size:11pt;
+	cursor:default;
+	-moz-user-select: none;
+}
+#suggestions DIV:hover {
+	background-color: #ccdbe8;
 }

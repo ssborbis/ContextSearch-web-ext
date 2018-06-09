@@ -1,4 +1,5 @@
 var userOptions;
+var typeTimer = null;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
@@ -11,13 +12,49 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	let qm = document.createElement('div');
 	qm.id = 'quickMenuElement';
 	
+	let suggest = document.getElementById('suggestions');
+	
+	sb.onkeypress = function(e) {
+		clearTimeout(typeTimer);
+		typeTimer = setTimeout(() => {
+			if (!sb.value.trim()) {
+				suggest.style.maxHeight = null;
+				return;
+			}
+			suggest.style.maxHeight = '100px';
+			console.log('fetching suggestions');
+			suggest.innerHTML = null;
+			getSuggestions(sb.value, (xml) => {
+				for (s of xml.getElementsByTagName('suggestion')) {
+					let div = document.createElement('div');
+					div.onclick = function() {
+						let selected = suggest.querySelector('.selectedFocus');
+						if (selected) selected.classList.remove('selectedFocus');
+						this.classList.add('selectedFocus');
+						sb.value = this.innerText;
+					}
+					
+					div.ondblclick = function() {
+						var e = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, keyCode: 13});
+						sb.dispatchEvent(e);
+					}
+					div.innerText = s.getAttribute('data');
+					
+//					div.innerHTML = div.innerText.replace(sb.value, "<b>" + sb.value + "</b>");
+					suggest.appendChild(div);
+				}
+			})
+		}, 250);
+	}
+	
 	sb.onkeydown = function(e) {
 		if (e.keyCode === 13) {
+			
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
 				info: {
 					menuItemId: sb.selectedIndex || 0,
-					selectionText: sb.value,//quickMenuObject.searchTerms,
+					selectionText: sb.value,
 					openMethod: "openNewTab"
 				}
 			});
@@ -89,11 +126,12 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		div.title = se.title;
 		
 		div.onclick = function() {
+
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
 				info: {
 					menuItemId: div.index,
-					selectionText: sb.value,//quickMenuObject.searchTerms,
+					selectionText: sb.value,
 					openMethod: "openNewTab"
 				}
 			});
@@ -134,5 +172,42 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 	document.body.appendChild(div);
 	sb.focus();
+	
+	function getSuggestions(terms, callback) {
+		
+		let url = 'http://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);
+		callback = callback || function() {};
+		var xmlhttp;
+
+		xmlhttp = new XMLHttpRequest();
+
+		xmlhttp.onreadystatechange = function()	{
+			if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+				if(xmlhttp.status == 200) {
+
+					let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
+					
+					if (parsed.documentElement.nodeName=="parsererror") {
+						console.log('xml parse error');
+						
+						console.log(parsed);
+						parsed = false;
+					}
+					callback(parsed);
+			   } else {
+				   console.log('Error fetching ' + url);
+			   }
+			}
+		}
+		
+		xmlhttp.ontimeout = function (e) {
+			console.log('Timeout fetching ' + url);
+			callback(false);
+		};
+
+		xmlhttp.open("GET", url, true);
+		xmlhttp.timeout = 500;
+		xmlhttp.send();
+	}
 
 });

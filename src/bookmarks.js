@@ -236,7 +236,7 @@ class CSBookmarks {
 						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
 						title: se.title,
 						id: index.toString(),
-						contexts: ["selection", "link"],
+						contexts: ["selection", "link", "image"],
 						icons: {
 							"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 							"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"

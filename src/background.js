@@ -220,7 +220,7 @@ function buildContextMenu(disableAddCustomSearch) {
 		browser.contextMenus.create({
 			id: "search_engine_menu",
 			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : browser.i18n.getMessage("SearchWith"),
-			contexts: ["selection", "link"]
+			contexts: ["selection", "link", "image"]
 		});
 		
 		if (userOptions.contextMenuBookmarks) {
@@ -238,7 +238,7 @@ function buildContextMenu(disableAddCustomSearch) {
 					parentId: "search_engine_menu",
 					id: i.toString(),
 					title: se.title,
-					contexts: ["selection", "link"],
+					contexts: ["selection", "link", "image"],
 					icons: {
 						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
@@ -291,8 +291,12 @@ function contextMenuSearch(info, tab) {
 		browser.runtime.openOptionsPage();
 		return false;	
 	}
-	
-	var searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
+
+	var searchTerms;
+	if (!info.selectionText && info.srcUrl)
+		searchTerms = info.srcUrl
+	else
+		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
 	// get modifier keys
 	if ( info.modifiers.includes("Shift") )
