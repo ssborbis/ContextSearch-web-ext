@@ -39,11 +39,8 @@ window.addEventListener('mousedown', (e) => {
 	
 	if (e.target.nodeName.toLowerCase() === 'a' && getSelectedText(e.target) === '')
 		searchTerms = e.target.href;
-	else if (e.target.nodeName.toLowerCase() === 'img') {
-		console.log('right-clicked on image');
+	else if (e.target.nodeName.toLowerCase() === 'img')
 		searchTerms = e.target.src;
-		console.log(searchTerms);
-	}
 	else
 		searchTerms = getSelectedText(e.target);
 	
