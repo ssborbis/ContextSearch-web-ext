@@ -1239,14 +1239,37 @@ document.addEventListener("DOMContentLoaded", () => {
 					return;
 				}
 				
-				//browser.storage.local.set({"userOptions": newUserOptions}).then(() => {
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions}).then(() => {
-					browser.runtime.sendMessage({action: "updateUserOptions"}).then(() => {
-						location.reload();
+				//v1.5.8
+				if (newUserOptions.quickMenuOnClick !== undefined) {
+					
+					if (newUserOptions.quickMenuOnClick)
+						newUserOptions.quickMenuOnMouseMethod = 'click';
+					
+					if (newUserOptions.quickMenuOnMouse)
+						newUserOptions.quickMenuOnMouseMethod = 'hold';
+					
+					if (newUserOptions.quickMenuOnClick || newUserOptions.quickMenuOnMouse)
+						newUserOptions.quickMenuOnMouse = true;
+					
+					delete newUserOptions.quickMenuOnClick;
+				}
+
+				browser.runtime.sendMessage({action: "getDefaultUserOptions"}).then((message) => {
+					
+					let defaultUserOptions = message.defaultUserOptions;
+
+					for (let key in defaultUserOptions) {
+						newUserOptions[key] = (newUserOptions[key] !== undefined) ? newUserOptions[key] : defaultUserOptions[key];
+					}
+
+					//browser.storage.local.set({"userOptions": newUserOptions}).then(() => {
+					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions}).then(() => {
+						browser.runtime.sendMessage({action: "updateUserOptions"}).then(() => {
+							location.reload();
+						});
 					});
 				});
-				
-				
+
 			} catch(err) {
 				alert(browser.i18n.getMessage("InvalidJSONAlert"));
 			}

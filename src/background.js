@@ -1,6 +1,7 @@
 function notify(message, sender, sendResponse) {
 		
 	switch(message.action) {
+
 		case "saveUserOptions":
 			userOptions = message.userOptions;
 			browser.storage.local.set({"userOptions": message.userOptions});
@@ -56,6 +57,10 @@ function notify(message, sender, sendResponse) {
 			
 		case "getUserOptions":
 			sendResponse({"userOptions": userOptions});
+			break;
+		
+		case "getDefaultUserOptions":
+			sendResponse({"defaultUserOptions": defaultUserOptions});
 			break;
 			
 		case "getSearchEngineByIndex":
@@ -195,11 +200,19 @@ function notify(message, sender, sendResponse) {
 function loadUserOptions() {
 	
 	function onGot(result) {
-		if ( !result.userOptions ) return false;
-		// Update default values instead of replacing with object of potentially undefined values
-		for (let key in result.userOptions) {
-			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : userOptions[key];
+		
+		// no results found, use defaults
+		if ( !result.userOptions ) {
+			userOptions = Object.assign({}, defaultUserOptions);
+			return false;
 		}
+		
+		// Update default values instead of replacing with object of potentially undefined values
+		for (let key in defaultUserOptions) {
+			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : defaultUserOptions[key];
+		}
+		
+		return true;
 
 	}
   
@@ -522,63 +535,32 @@ function getAllOpenTabs() {
 	return querying.then(onGot, onError);
 }
 
-var userOptions = {
-	searchEngines: defaultEngines || [],
-	hiddenEngines: "",
-	quickMenu: true,
-	quickMenuColumns: 5,
-	quickMenuItems: 100,
-	quickMenuKey: 0,
-	quickMenuOnKey: false,
-	quickMenuOnHotkey: false,
-	quickMenuHotkey: [17, 18, 81],
-	quickMenuOnMouse: true,
-	quickMenuSearchOnMouseUp: false,
-	quickMenuOnMouseMethod: "hold",
-	quickMenuMouseButton: 3,
-	quickMenuAuto: false,
-	quickMenuAutoOnInputs: true,
-	quickMenuScale: 1,
-	quickMenuIconScale: 1,
-	quickMenuScaleOnZoom: true,
-	quickMenuPosition: "bottom center",
-	quickMenuOffset: {x:0, y:20},
-	quickMenuCloseOnScroll: false,
-	quickMenuCloseOnClick: true,
-	quickMenuTrackingProtection: true,
-	quickMenuSearchBar: "bottom",
-	quickMenuSearchBarFocus: false,
-	quickMenuSearchBarSelect: true,
-	contextMenu: true,
-	contextMenuShowAddCustomSearch: true,
-	contextMenuBookmarks: false,
-//	contextMenuBookmarksFolderId: -1,
-	quickMenuTools: [
-		{name: 'disable', 	disabled: false},
-		{name: 'close', 	disabled: false},
-		{name: 'copy', 		disabled: false},
-		{name: 'link', 		disabled: false},
-		{name: 'lock',		disabled: false}
-	],
-	searchJsonPath: "",
-	reloadMethod: "",
-	contextMenuClick: "openNewTab",
-	contextMenuShift: "openNewWindow",
-	contextMenuCtrl: "openBackgroundTab",
-	quickMenuLeftClick: "openNewTab",
-	quickMenuRightClick: "openCurrentTab",
-	quickMenuMiddleClick: "openBackgroundTab",
-	quickMenuShift: "openNewWindow",
-	quickMenuCtrl: "openBackgroundTab",
-	quickMenuAlt: "keepMenuOpen"
-};
+function encodeCharset(string, encoding) {
 
-loadUserOptions();
+	try {
+		
+		if (encoding.toLowerCase() === 'utf-8') 
+			return {ascii: string, uri: encodeURIComponent(string)};
+		
+		let uint8array = new TextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true }).encode(string);
+		let uri_string = "", ascii_string = "";
+		
+		for (let uint8 of uint8array) {
+			let c = String.fromCharCode(uint8);
+			ascii_string += c;
+			uri_string += (c.match(/[a-zA-Z0-9\-_.!~*'()]/) !== null) ? c : "%" + uint8.toString(16).toUpperCase();
+		}
 
-browser.runtime.onMessage.addListener(notify);
-browser.runtime.onInstalled.addListener(function updatePage(details) {
+		return {ascii: ascii_string, uri: uri_string};
+	} catch (error) {
+		console.log(error.message);
+		return {ascii: string, uri: string};
+	}
+}
+
+function updateUserOptionsVersion() {
 	
-	// v1.1.0 to v 1.2.0
+		// v1.1.0 to v 1.2.0
 	browser.storage.local.get("searchEngines").then((result) => {
 		if (typeof result.searchEngines !== 'undefined') {
 			console.log('found separate searchEngines array in local storage.  Copying to userOptions and removing');
@@ -652,6 +634,68 @@ browser.runtime.onInstalled.addListener(function updatePage(details) {
 		});
 	})();
 
+}
+
+var defaultUserOptions = {
+	searchEngines: defaultEngines || [],
+	hiddenEngines: "",
+	quickMenu: true,
+	quickMenuColumns: 5,
+	quickMenuItems: 100,
+	quickMenuKey: 0,
+	quickMenuOnKey: false,
+	quickMenuOnHotkey: false,
+	quickMenuHotkey: [17, 18, 81],
+	quickMenuOnMouse: true,
+	quickMenuSearchOnMouseUp: false,
+	quickMenuOnMouseMethod: "hold",
+	quickMenuMouseButton: 3,
+	quickMenuAuto: false,
+	quickMenuAutoOnInputs: true,
+	quickMenuScale: 1,
+	quickMenuIconScale: 1,
+	quickMenuScaleOnZoom: true,
+	quickMenuPosition: "bottom center",
+	quickMenuOffset: {x:0, y:20},
+	quickMenuCloseOnScroll: false,
+	quickMenuCloseOnClick: true,
+	quickMenuTrackingProtection: true,
+	quickMenuSearchBar: "bottom",
+	quickMenuSearchBarFocus: false,
+	quickMenuSearchBarSelect: true,
+	contextMenu: true,
+	contextMenuShowAddCustomSearch: true,
+	contextMenuBookmarks: false,
+//	contextMenuBookmarksFolderId: -1,
+	quickMenuTools: [
+		{name: 'disable', 	disabled: false},
+		{name: 'close', 	disabled: false},
+		{name: 'copy', 		disabled: false},
+		{name: 'link', 		disabled: false},
+		{name: 'lock',		disabled: false}
+	],
+	searchJsonPath: "",
+	reloadMethod: "",
+	contextMenuClick: "openNewTab",
+	contextMenuShift: "openNewWindow",
+	contextMenuCtrl: "openBackgroundTab",
+	quickMenuLeftClick: "openNewTab",
+	quickMenuRightClick: "openCurrentTab",
+	quickMenuMiddleClick: "openBackgroundTab",
+	quickMenuShift: "openNewWindow",
+	quickMenuCtrl: "openBackgroundTab",
+	quickMenuAlt: "keepMenuOpen"
+};
+
+var userOptions = {};
+
+loadUserOptions();
+
+browser.runtime.onMessage.addListener(notify);
+browser.runtime.onInstalled.addListener((details) => {
+	
+	updateUserOptionsVersion();
+	
 	// // Show new features page
 	// if (
 		// (
@@ -690,28 +734,7 @@ browser.browserAction.onClicked.addListener(() => {
 	browser.browserAction.openPopup();
 });
 
-function encodeCharset(string, encoding) {
 
-	try {
-		
-		if (encoding.toLowerCase() === 'utf-8') 
-			return {ascii: string, uri: encodeURIComponent(string)};
-		
-		let uint8array = new TextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true }).encode(string);
-		let uri_string = "", ascii_string = "";
-		
-		for (let uint8 of uint8array) {
-			let c = String.fromCharCode(uint8);
-			ascii_string += c;
-			uri_string += (c.match(/[a-zA-Z0-9\-_.!~*'()]/) !== null) ? c : "%" + uint8.toString(16).toUpperCase();
-		}
-
-		return {ascii: ascii_string, uri: uri_string};
-	} catch (error) {
-		console.log(error.message);
-		return {ascii: string, uri: string};
-	}
-}
 
 
 
