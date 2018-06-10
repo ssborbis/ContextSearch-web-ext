@@ -1231,7 +1231,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				// run a few test to check if it's valid
 				if ( 
 					typeof newUserOptions !== 'object'
-					|| !newUserOptions.quickMenu
+					|| newUserOptions.quickMenu === undefined
 					|| !newUserOptions.searchEngines
 					
 				) {
