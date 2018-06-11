@@ -636,7 +636,7 @@ function updateUserOptionsVersion() {
 
 }
 
-var defaultUserOptions = {
+const defaultUserOptions = {
 	searchEngines: defaultEngines || [],
 	hiddenEngines: "",
 	quickMenu: true,
