@@ -108,10 +108,11 @@ function notify(message, sender, sendResponse) {
 			let searchTerms = message.searchTerms;
 			
 			if (searchTerms === '') break;
+			
 			if (searchTerms.length > 18) 
 				searchTerms = searchTerms.substring(0,15) + "...";
+
 			browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
-			//browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor") + "\"" + searchTerms + "\""});
 			break;
 			
 		case "addSearchEngine":

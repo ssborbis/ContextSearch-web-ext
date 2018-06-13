@@ -368,10 +368,12 @@ function buildSearchEngineContainer(searchEngines) {
 					showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
 					return;
 				}
-				for (let engine of userOptions.searchEngines) {
-					if (engine.title == edit_form.shortName.value) {
-						showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
-						return;
+				if (edit_form.shortName.value != edit_form.previousSibling.innerText) {
+					for (let engine of userOptions.searchEngines) {
+						if (engine.title == edit_form.shortName.value) {
+							showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
+							return;
+						}
 					}
 				}
 				if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {

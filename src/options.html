@@ -799,7 +799,7 @@
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
-			<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
+				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
 				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='ContextMenu'><img alt='' src='icons/context_menu.png' />Context Menu</div>
 				<div class='optionDiv' style='display:inline-block'>
 					<label class="switch">
@@ -807,6 +807,23 @@
 						<span class="toggleSlider round"></span>
 					</label>
 				</div>
+
+				<br />
+				<label class="container" style='display:inline-block;margin-left:0' data-i18n='UseBookmarksMenu'> 
+					<img src='/icons/bookmark_orig.png' style='height:30px;vertical-align:middle;margin-right:10px' />Manage With Bookmarks
+					<input type='checkbox' id='cb_contextMenuBookmarks' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				<span class='info' style='max-width:400px' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines'>?</span>
+				
+				<br />
+				
+				<label class="container" data-i18n='AddCustomSearchMenu'>Add Custom Search Menu <span class='info' data-msg='Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases.' data-i18n_tooltip='AddCustomSearchMenu'>?</span>
+					<input type='checkbox' id='cb_contextMenuShowAddCustomSearch' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
+				<br />
 
 				<p class='header1' style='margin-top:0' data-i18n='SearchActionsHeader'>Search Actions</p>
 				<p class='short' style='border-width: 1px 0'>
@@ -841,17 +858,9 @@
 						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
-				<hr />
-				<label class="container" data-i18n='AddCustomSearchMenu'>Add Custom Search Menu <span class='info' data-msg='Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases.' data-i18n_tooltip='AddCustomSearchMenu'>?</span>
-					<input type='checkbox' id='cb_contextMenuShowAddCustomSearch' />
-					<span class="checkmark checkmark2"></span>
-				</label>
-				
-				<label class="container" data-i18n='UseBookmarksMenu'>Use Bookmarks Menu <span class='info' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines' data-i18n_tooltip='UseBookmarksMenu'>?</span>
-					<input type='checkbox' id='cb_contextMenuBookmarks' />
-					<span class="checkmark checkmark2"></span>
-				</label>
+
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179;' />
+				
 				<div id='quickMenuOptions'>
 				<div class='blobContainerHeader' style='display:inline-block;padding:0;border:0;width:250px' data-i18n='QuickMenu'><img alt='' src='icons/quick_menu.png' />Quick Menu</div>
 				<div class='optionDiv' style='display:inline-block'>
@@ -860,9 +869,9 @@
 						<span class="toggleSlider round"></span>
 					</label>
 				</div>
-				<div class='blurb' style='max-width:400px'>
-					<i data-i18n='QuickMenuNote'>Quick Menu disabled on addons.mozilla.org. 
-					Context Menu will be enabled if Quick Menu fails to open</i>	
+				<div class='blurb' style='max-width:400px' data-i18n='QuickMenuNote'>
+					Quick Menu disabled on addons.mozilla.org. 
+					Context Menu will be enabled if Quick Menu fails to open	
 				</div>
 				
 				<div class='blurb' style='max-width:400px' data-i18n='MouseHelp'>
