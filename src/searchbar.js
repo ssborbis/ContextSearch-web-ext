@@ -1,31 +1,130 @@
 var userOptions;
 var typeTimer = null;
+const historyLength = 256;
+
+window.addEventListener('contextmenu', (e) => {
+	
+	browser.contextMenus.create({
+		id: "showSuggestions",
+		title: browser.i18n.getMessage("ShowSuggestions"),
+		type: "checkbox",
+		checked: userOptions.searchBarSuggestions
+	});
+	browser.contextMenus.create({
+		id: "clearHistory",
+		title: browser.i18n.getMessage("ClearSearchHistory")
+	});
+
+	setTimeout(() => {
+		browser.contextMenus.remove("showSuggestions");
+		browser.contextMenus.remove("clearHistory");
+	}, 100);
+});
+
+setInterval(() => {
+	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+		userOptions = message.userOptions || {};
+	});
+}, 1000);
+
+// browser.theme.onUpdated.addListener(async ({ theme, windowId }) => {
+  // const sidebarWindow = await browser.windows.getCurrent();
+  // /*
+    // Only update theme if it applies to the window the sidebar is in.
+    // If a windowId is passed during an update, it means that the theme is applied to that specific window.
+    // Otherwise, the theme is applied globally to all windows.
+  // */
+
+  // console.log('theme updated');
+    // console.log(theme);
+
+// });
+
+// browser.tabs.query({currentWindow: true, active: true}).then((tab) => {
+// //	console.log(tab);
+// //	console.log(tab[0].windowId);
+	// browser.theme.getCurrent(tab[0].windowId).then((theme) => {
+	
+		// let sb = document.getElementById('quickmenusearchbar');
+
+		// console.log(theme);
+
+		// if (!theme.colors) return;
+		
+		// sb.style.backgroundColor = theme.colors.toolbar_field || null;
+		// sb.parentNode.style.backgroundColor = theme.colors.toolbar_field || null;
+		
+		// sb.style.color = theme.colors.toolbar_field_text || null;
+			
+	// });
+// });
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 	
 	if ( userOptions === {} ) return;
+	
+	function addToHistory(terms) {
+		
+		terms = terms.trim();
+		
+		// send last search to backgroundPage for session storage
+		browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
+		
+		if (userOptions.searchBarHistory.includes(terms)) return;
+		
+		if (userOptions.searchBarHistory.length === historyLength)
+			userOptions.searchBarHistory.shift();
+		
+		userOptions.searchBarHistory.push(terms);
+		
+		browser.runtime.sendMessage({action: "log", msg: userOptions.searchBarHistory});
+		
+		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
+	}
 		
 	let sb = document.getElementById('quickmenusearchbar');
 	sb.placeholder = browser.i18n.getMessage('Search');
+	
+	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
+		sb.value = message.lastSearch;
+	});
 	
 	let qm = document.createElement('div');
 	qm.id = 'quickMenuElement';
 	
 	let suggest = document.getElementById('suggestions');
-	
+		
 	sb.onkeypress = function(e) {
+		
 		clearTimeout(typeTimer);
+		
 		typeTimer = setTimeout(() => {
+			
 			if (!sb.value.trim()) {
 				suggest.style.maxHeight = null;
 				return;
 			}
-			suggest.style.maxHeight = '100px';
+			
 			console.log('fetching suggestions');
 			suggest.innerHTML = null;
-			getSuggestions(sb.value, (xml) => {
-				for (s of xml.getElementsByTagName('suggestion')) {
+		//	if (userOptions.searchBarSuggestions) {
+			
+			let history = [];
+			for (let h of userOptions.searchBarHistory) {
+				if (h.indexOf(sb.value) === 0)
+					history.push({searchTerms: h, type: 0});
+				
+				if (history.length === 10) break;
+			}
+			
+			function displaySuggestions(suggestions) {
+				
+				suggestions = suggestions.sort(function(a,b) {
+					return a.searchTerms - b.searchTerms;
+				});
+				
+				for (let s of suggestions) {
 					let div = document.createElement('div');
 					div.onclick = function() {
 						let selected = suggest.querySelector('.selectedFocus');
@@ -38,12 +137,45 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 						var e = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, keyCode: 13});
 						sb.dispatchEvent(e);
 					}
-					div.innerText = s.getAttribute('data');
+					
+					let img = document.createElement("img");
+					img.src = "/icons/history.png";
+					img.style.height = "1em";
+					img.style.marginRight = "5px";
+					img.style.opacity = .75;
+					img.style.verticalAlign = "middle";
+					
+					if (s.type === 1) img.style.visibility = 'hidden';
+					div.appendChild(img);
+					
+					let text = document.createTextNode(s.searchTerms);
+					div.appendChild(text);
 					
 //					div.innerHTML = div.innerText.replace(sb.value, "<b>" + sb.value + "</b>");
 					suggest.appendChild(div);
 				}
-			})
+				
+				suggest.style.maxHeight = Math.min(100, suggestions.length * 20) + "px";
+			}
+			
+			if (userOptions.searchBarSuggestions) {
+				getSuggestions(sb.value, (xml) => {
+					
+					let suggestions = [];
+					for (let s of xml.getElementsByTagName('suggestion')) {
+						let searchTerms = s.getAttribute('data');
+						if (!history.includes(searchTerms))
+							suggestions.push({searchTerms: searchTerms, type: 1});
+					}
+
+					suggestions = history.concat(suggestions);
+					
+					displaySuggestions(suggestions);
+					
+				});
+			} else
+				displaySuggestions(history);
+			
 		}, 250);
 	}
 	
@@ -58,6 +190,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					openMethod: "openNewTab"
 				}
 			});
+			
+			addToHistory(sb.value);
 
 		}
 	}
@@ -125,16 +259,27 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		div.dataset.index = i;
 		div.title = se.title;
 		
-		div.onclick = function() {
+		div.onmouseup = function(e) {
+			
+			// stop all other mouse events for this tile from propagating
+			for (let eventType of ['mousedown','mouseup','click','contextmenu']) {
+				div.addEventListener(eventType, (ee) => {
+					ee.preventDefault();
+					ee.stopPropagation();
+					return false;
+				});
+			}
 
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
 				info: {
 					menuItemId: div.index,
 					selectionText: sb.value,
-					openMethod: "openNewTab"
+					openMethod: getOpenMethod(e)
 				}
 			});
+			
+			addToHistory(sb.value);
 		};
 		
 		div.onmouseenter = function() {
@@ -208,6 +353,30 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		xmlhttp.open("GET", url, true);
 		xmlhttp.timeout = 500;
 		xmlhttp.send();
+	}
+	
+		// get open method based on user preferences
+	function getOpenMethod(e) {
+		let openMethod = "";
+		if (e.which === 3)
+			openMethod = userOptions.quickMenuRightClick;
+		else if (e.which === 2)
+			openMethod = userOptions.quickMenuMiddleClick;
+		else if (e.which === 1) {
+			openMethod = userOptions.quickMenuLeftClick;
+			
+			// ignore methods that aren't opening methods
+			if (e.shiftKey && userOptions.quickMenuShift !== 'keepMenuOpen')
+				openMethod = userOptions.quickMenuShift;
+			if (e.ctrlKey && userOptions.quickMenuCtrl !== 'keepMenuOpen')
+				openMethod = userOptions.quickMenuCtrl;
+			if (e.altKey && userOptions.quickMenuAlt !== 'keepMenuOpen')
+				openMethod = userOptions.quickMenuAlt;
+		
+		}
+
+//		console.log("openMethod => " + openMethod);
+		return openMethod
 	}
 
 });

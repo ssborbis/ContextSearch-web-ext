@@ -195,6 +195,14 @@ function notify(message, sender, sendResponse) {
 		case "focusSearchBar":
 			browser.tabs.sendMessage(sender.tab.id, message);
 			break;
+			
+		case "setLastSearch":
+			sessionStorage.setItem("lastSearch", message.lastSearch);
+			break;
+			
+		case "getLastSearch":
+			sendResponse({lastSearch: sessionStorage.getItem("lastSearch")});
+			break;
 	}
 }
 
@@ -266,6 +274,22 @@ function buildContextMenu(disableAddCustomSearch) {
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function contextMenuSearch(info, tab) {
+	
+	if (info.menuItemId === 'showSuggestions') {
+		userOptions.searchBarSuggestions = info.checked;
+		browser.storage.local.set({"userOptions": userOptions});
+		notify({action: "updateUserOptions"});
+				
+		return;
+	}
+	
+	if (info.menuItemId === 'clearHistory') {
+		userOptions.searchBarHistory = [];
+		browser.storage.local.set({"userOptions": userOptions});
+		notify({action: "updateUserOptions"});
+		
+		return;
+	}
 	
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
@@ -685,7 +709,9 @@ const defaultUserOptions = {
 	quickMenuMiddleClick: "openBackgroundTab",
 	quickMenuShift: "openNewWindow",
 	quickMenuCtrl: "openBackgroundTab",
-	quickMenuAlt: "keepMenuOpen"
+	quickMenuAlt: "keepMenuOpen",
+	searchBarSuggestions: true,
+	searchBarHistory: []
 };
 
 var userOptions = {};
@@ -732,6 +758,7 @@ browser.runtime.onInstalled.addListener((details) => {
 //browser.browserAction.setPopup({popup: "/options.html#browser_action"});
 browser.browserAction.setPopup({popup: "/searchbar.html"});
 browser.browserAction.onClicked.addListener(() => {	
+
 	browser.browserAction.openPopup();
 });
 

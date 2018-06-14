@@ -722,7 +722,11 @@ function saveOptions(e) {
 				tools.push({"name": toolIcon.name, "disabled": toolIcon.disabled})			
 			return tools;
 		}(),
-		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual'
+		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
+		
+		 // take directly from loaded userOptions
+		searchBarSuggestions: userOptions.searchBarSuggestions,
+		searchBarHistory: userOptions.searchBarHistory
 
 	}
 
