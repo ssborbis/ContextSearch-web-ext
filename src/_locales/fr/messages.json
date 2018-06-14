@@ -822,6 +822,16 @@
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
 
+  "ClearSearchHistory": {
+    "message": "Effacer l’historique de recherche",
+    "description": "context menu entry for clearing search history"
+  },
+
+  "ShowSuggestions": {
+    "message": "Afficher les suggestions de recherche",
+    "description": "context menu entry for toggling suggestions for the toolbar"
+  },
+
   "_________": {
     "message": "",
     "description": ""
