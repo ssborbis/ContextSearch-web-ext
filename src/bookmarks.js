@@ -228,14 +228,16 @@ class CSBookmarks {
 					});
 					
 					// skip renamed / orphaned bookmarks
-					if (index === -1) return;
+					// if (index === -1) return;
 					
-					let se = userOptions.searchEngines[index];
+					if (index === -1 && node.url.match(/^javascript/) === null) return;
+
+					let se = userOptions.searchEngines[index] || {title: node.title};
 					
 					browser.contextMenus.create({
 						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
 						title: se.title,
-						id: index.toString(),
+						id: (index !== -1) ? index.toString() : node.id,
 						contexts: ["selection", "link", "image"],
 						icons: {
 							"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",

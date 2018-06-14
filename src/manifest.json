@@ -45,7 +45,6 @@
 	
 	"permissions": [
 		"<all_urls>",
-		"theme",
 		"activeTab",
 		"contextMenus",
 		"storage",

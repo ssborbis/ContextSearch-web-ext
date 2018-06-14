@@ -329,6 +329,23 @@ function contextMenuSearch(info, tab) {
 		browser.runtime.openOptionsPage();
 		return false;	
 	}
+	
+	// run as bookmarklet
+	if (isNaN(info.menuItemId) && browser.bookmarks !== undefined) {
+		browser.bookmarks.get(info.menuItemId).then((bookmark) => {
+			bookmark = bookmark.shift();
+			
+			browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
+				let code = decodeURI(bookmark.url);
+				console.log("Executing bookmarklet code -> " + code);
+				browser.tabs.executeScript(tabs[0].id, {
+					code: code
+				});
+			});
+
+		});
+		return false;
+	}
 
 	var searchTerms;
 	if (!info.selectionText && info.srcUrl)
@@ -363,9 +380,9 @@ function quickMenuSearch(info, tab) {
 }
 
 function openSearch(details) {
-	
+
 	console.log(details);
-	
+		
 	var searchEngineIndex = details.searchEngineIndex || 0;
 	var searchTerms = details.searchTerms.trim();
 	var openMethod = details.openMethod || "openNewTab";
