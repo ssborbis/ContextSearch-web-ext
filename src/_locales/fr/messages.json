@@ -827,11 +827,21 @@
     "description": "context menu entry for clearing search history"
   },
 
+  "ClearSearchHistoryTooltip": {
+    "message": "Vider l’historique des recherches de la barre.",
+    "description": "description for clearing search history"
+  },
+  
   "ShowSuggestions": {
-    "message": "Afficher les suggestions de recherche",
-    "description": "context menu entry for toggling suggestions for the toolbar"
+    "message": "Afficher les suggestions",
+    "description": "Options label / context menu entry for toggling suggestions for the toolbar"
   },
 
+  "ShowSuggestionsTooltip": {
+    "message": "Récupérer les suggestions de recherche de Google et les afficher avec l’historique dans la barre de recherche.",
+    "description": "description for Show Suggestions"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
