@@ -815,6 +815,7 @@ function bookmarksModificationHandler(id, moveInfo) {
 browser.bookmarks.onMoved.addListener(bookmarksModificationHandler);
 browser.bookmarks.onChanged.addListener(bookmarksModificationHandler);
 browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
+browser.bookmarks.onCreated.addListener(bookmarksModificationHandler);
 
 /*
 // inject at tab creation
