@@ -87,6 +87,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
 		sb.value = message.lastSearch;
+		sb.select();
 	});
 	
 	let qm = document.createElement('div');
