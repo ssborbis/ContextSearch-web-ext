@@ -775,6 +775,10 @@
 			.openingTable TR:last-child TD {
 				border-bottom: none;
 			}
+			#d_clearSearchHistory {
+				cursor: pointer;
+				-moz-user-select: none;
+			}
 		</style>
 	</head>
 	<body>
@@ -1148,6 +1152,18 @@
 					<span class="checkmark checkmark2"></span>
 				</label>
 				
+				<hr>
+				
+				<label class="container" data-i18n='ShowSuggestions'>Show Suggestions
+				<span class='info' data-msg='Fetch search suggestions from Google and display with search history in the search toolbar' data-i18n_tooltip='ShowSuggestions'>?</span>
+					<input type='checkbox' id='cb_searchBarSuggestions' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
+				<div id='d_clearSearchHistory'><img src='/icons/delete.png' style='height:20px;margin-right:16px;vertical-align:middle' /><span data-i18n='ClearSearchHistory'>Clear Search History</span>
+				<span class='info' data-msg='Clear search history from the search toolbar' data-i18n_tooltip='ClearSearchHistory'>?</span>
+				</div>
+				
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
 				
 				<p class='header1' data-i18n='ImportExportSettings'>Import / Export Settings</p>
@@ -1157,6 +1173,8 @@
 					<input style='display:none' name="importSettings" id='importSettings' type="file" accept="*" />
 				</label>
 				<button id='b_exportSettings' data-i18n='Export'>Export</button>
+				
+				
 				
 			</div>
 			</div>

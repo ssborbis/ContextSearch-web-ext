@@ -230,14 +230,15 @@ class CSBookmarks {
 					// skip renamed / orphaned bookmarks
 					// if (index === -1) return;
 					
+					// bookmarklets
 					if (index === -1 && node.url.match(/^javascript/) === null) return;
 
-					let se = userOptions.searchEngines[index] || {title: node.title};
+					let se = userOptions.searchEngines[index] || {title: node.title}; // bookmarklets
 					
 					browser.contextMenus.create({
 						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
 						title: se.title,
-						id: (index !== -1) ? index.toString() : node.id,
+						id: (index !== -1) ? index.toString() : node.id, // bookmarklets
 						contexts: ["selection", "link", "image"],
 						icons: {
 							"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
@@ -271,6 +272,30 @@ class CSBookmarks {
 			
 			for (let child of bookmark.children) 
 				traverse(child);
+		});
+	}
+	
+	static isDescendent(id) {
+		
+		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+
+		return this.getAll().then((tree) => {
+			
+			tree = tree.shift();
+			
+			function traverse(node) {
+
+				if (node.type === 'folder') {
+					for (let child of node.children) {
+						let found = traverse(child);
+						if (found) return true;
+					}
+				}
+				
+				if (node.id === id) return true;
+			}
+			
+			return traverse(tree);	
 		});
 	}
 }

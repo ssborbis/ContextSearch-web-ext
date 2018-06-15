@@ -1,6 +1,7 @@
 var userOptions;
 var typeTimer = null;
-const historyLength = 256;
+const historyLength = 1024; // number of searches to save in userOptions
+const displayCount = 10; // number of total suggestions to display (browser_action height is limited!)
 
 window.addEventListener('contextmenu', (e) => {
 	
@@ -78,8 +79,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		
 		userOptions.searchBarHistory.push(terms);
 		
-		browser.runtime.sendMessage({action: "log", msg: userOptions.searchBarHistory});
-		
 		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
 	}
 		
@@ -111,11 +110,12 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		//	if (userOptions.searchBarSuggestions) {
 			
 			let history = [];
+			let lc_searchTerms = sb.value.toLowerCase();
 			for (let h of userOptions.searchBarHistory) {
-				if (h.indexOf(sb.value) === 0)
+				if (h.toLowerCase().indexOf(lc_searchTerms) === 0)
 					history.push({searchTerms: h, type: 0});
 				
-				if (history.length === 10) break;
+				if (history.length === displayCount) break;
 			}
 			
 			function displaySuggestions(suggestions) {
@@ -126,6 +126,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 				
 				for (let s of suggestions) {
 					let div = document.createElement('div');
+					div.style.height = "20px";
 					div.onclick = function() {
 						let selected = suggest.querySelector('.selectedFocus');
 						if (selected) selected.classList.remove('selectedFocus');
@@ -164,7 +165,15 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					let suggestions = [];
 					for (let s of xml.getElementsByTagName('suggestion')) {
 						let searchTerms = s.getAttribute('data');
-						if (!history.includes(searchTerms))
+						
+						let found = false;
+						for (let h of history) {
+							if (h.searchTerms.toLowerCase() === searchTerms.toLowerCase()) {
+								found = true;
+								break;
+							}
+						}
+						if (!found)
 							suggestions.push({searchTerms: searchTerms, type: 1});
 					}
 

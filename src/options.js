@@ -644,6 +644,8 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
 		
+		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
+		
 		buildSearchEngineContainer(userOptions.searchEngines);
 
 	}
@@ -725,7 +727,7 @@ function saveOptions(e) {
 		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
 		 // take directly from loaded userOptions
-		searchBarSuggestions: userOptions.searchBarSuggestions,
+		searchBarSuggestions: document.getElementById('cb_searchBarSuggestions').checked,
 		searchBarHistory: userOptions.searchBarHistory
 
 	}
@@ -1397,3 +1399,31 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 	
+document.addEventListener('DOMContentLoaded', () => {
+	let div = document.getElementById('d_clearSearchHistory');
+	div.animating = false;
+	div.onclick = function() {
+		if (div.animating) return false;
+		div.animating = true;
+		
+		userOptions.searchBarHistory = [];
+		saveOptions();
+		
+		let img = document.createElement('img');
+		img.src = "/icons/yes.png";
+		img.style.height = '20px';
+		img.style.marginLeft = '20px';
+		img.style.opacity = 1;
+		img.style.transition = 'opacity 2s ease-out';
+		img.style.verticalAlign = 'middle';
+		div.appendChild(img);
+		
+		setTimeout(() => {
+			img.style.opacity = 0;
+			setTimeout(() => {
+				div.removeChild(img);
+				div.animating = false;
+			}, 2000);
+		}, 1000);
+	}
+});

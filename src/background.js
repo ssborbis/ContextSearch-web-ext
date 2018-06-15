@@ -436,7 +436,7 @@ function openSearch(details) {
 		
 	}
 	
-	console.log(q);
+	console.log("openSearch url -> " + q);
 	
 	switch (openMethod) {
 		case "openCurrentTab":
@@ -779,12 +779,42 @@ browser.browserAction.onClicked.addListener(() => {
 	browser.browserAction.openPopup();
 });
 
+// monitor context menu bookmarks folder for changes
+function bookmarksModificationHandler(id, moveInfo) {
+	
+	if (
+		!userOptions.contextMenuBookmarks ||
+		browser.bookmarks === undefined
+	) return false;
+	
+	// let throttler = sessionStorage.getItem('bookmarksListenerThrottler');
 
+	// if (throttler) return;
 
+	// sessionStorage.setItem('bookmarksListenerThrottler', "true");
 
+	CSBookmarks.isDescendent(moveInfo.parentId).then((result) => {
+		if (result) {
+			console.log('modified parentId is descendent of ContextSearch Menu. Rebuilding context menu');
+			buildContextMenu();
+		} else {
+			CSBookmarks.isDescendent(moveInfo.parentId).then((result) => {
+				if (result) {
+					console.log('modified oldParentId is descendent of ContextSearch Menu. Rebuilding context menu');
+					buildContextMenu();
+				}
+			});
+		}
+	});
+	
+	// setTimeout(() => {
+		// sessionStorage.removeItem('bookmarksListenerThrottler');
+	// }, 2500);
+}
 
-
-
+browser.bookmarks.onMoved.addListener(bookmarksModificationHandler);
+browser.bookmarks.onChanged.addListener(bookmarksModificationHandler);
+browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
 
 /*
 // inject at tab creation

@@ -824,14 +824,24 @@
 
   "ClearSearchHistory": {
     "message": "Clear Search History",
-    "description": "context menu entry for clearing search history"
+    "description": "Options label / context menu entry for clearing search history"
+  },
+  
+  "ClearSearchHistoryTooltip": {
+    "message": "Clear search history from the search toolbar",
+    "description": "description for clearing search history"
   },
 
   "ShowSuggestions": {
     "message": "Show Suggestions",
-    "description": "context menu entry for toggling suggestions for the toolbar"
+    "description": "Options label / context menu entry for toggling suggestions for the toolbar"
   },
-
+  
+  "ShowSuggestionsTooltip": {
+    "message": "Fetch search suggestions from Google and display with search history in the search toolbar",
+    "description": "description for Show Suggestions"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
