@@ -842,9 +842,20 @@
     "description": "description for Show Suggestions"
   },
   
+  "SearchBarUseOldStyle": {
+    "message": "Use Old Firefox Style",
+    "description": "Options label for using the old Firefox style of search bar"
+  },
+  
+  "SearchBarUseOldStyleTooltip": {
+    "message": "Display search engines with labels in a single column like the old Firefox search bar"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
   }
   
+  
+ 
 }

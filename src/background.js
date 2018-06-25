@@ -203,6 +203,12 @@ function notify(message, sender, sendResponse) {
 		case "getLastSearch":
 			sendResponse({lastSearch: sessionStorage.getItem("lastSearch")});
 			break;
+			
+		case "getCurrentTheme":
+			browser.theme.getCurrent().then((theme) => {
+				console.log(theme);
+			});
+			break;
 	}
 }
 
@@ -728,7 +734,8 @@ const defaultUserOptions = {
 	quickMenuCtrl: "openBackgroundTab",
 	quickMenuAlt: "keepMenuOpen",
 	searchBarSuggestions: true,
-	searchBarHistory: []
+	searchBarHistory: [],
+	searchBarUseOldStyle: false
 };
 
 var userOptions = {};
@@ -775,7 +782,6 @@ browser.runtime.onInstalled.addListener((details) => {
 //browser.browserAction.setPopup({popup: "/options.html#browser_action"});
 browser.browserAction.setPopup({popup: "/searchbar.html"});
 browser.browserAction.onClicked.addListener(() => {	
-
 	browser.browserAction.openPopup();
 });
 
@@ -812,10 +818,12 @@ function bookmarksModificationHandler(id, moveInfo) {
 	// }, 2500);
 }
 
-browser.bookmarks.onMoved.addListener(bookmarksModificationHandler);
-browser.bookmarks.onChanged.addListener(bookmarksModificationHandler);
-browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
-browser.bookmarks.onCreated.addListener(bookmarksModificationHandler);
+if (browser.bookmarks !== undefined) {
+	browser.bookmarks.onMoved.addListener(bookmarksModificationHandler);
+	browser.bookmarks.onChanged.addListener(bookmarksModificationHandler);
+	browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
+	browser.bookmarks.onCreated.addListener(bookmarksModificationHandler);
+}
 
 /*
 // inject at tab creation

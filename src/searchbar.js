@@ -150,6 +150,25 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					if (s.type === 1) img.style.visibility = 'hidden';
 					div.appendChild(img);
 					
+					// let matches = new RegExp("^(.*)(" + sb.value + ")(.*)").exec(s.searchTerms);
+					// //browser.runtime.sendMessage({action: "log", msg: matches});
+
+					// for (let i=1;i<matches.length;i++) {
+						// let part = matches[i];
+						// let el = null;
+						// if (!part) continue;
+						// else if (part === sb.value) {
+							// el = document.createElement('b');
+							// el.innerText = sb.value;
+							// el.style.fontWeight = '600';
+						// } else  {
+							// el = document.createTextNode(part);
+						// }
+
+						// div.appendChild(el);
+					// }
+
+					
 					let text = document.createTextNode(s.searchTerms);
 					div.appendChild(text);
 					
@@ -253,8 +272,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	let sb_width = 300;
 	let columns = 6;
-	div_width = sb_width / columns;
-
+	let div_width = sb_width / columns;
+	
 	for (let i=0;i<userOptions.searchEngines.length;i++) {
 		
 		let se = userOptions.searchEngines[i];
@@ -298,16 +317,30 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		div.onmouseleave = function() {
 			document.getElementById('searchEngineTitle').innerText = ' ';
 		}
+		
 		qm.appendChild(div);
 		
-		if ( (i + 1) % columns === 0) {
+		if (userOptions.searchBarUseOldStyle) {
+			div.innerText = se.title;
+			div.style.width = '300px';
+			div.style.height = '20px';
+			div.style.fontSize = '11pt';
+			div.style.border = 'none';
+			div.style.fontFamily = 'Arial';
+			div.style.lineHeight = '20px';
+			div.style.verticalAlign = 'middle';
+			div.style.backgroundPosition = '4px 2px';
+			div.style.paddingLeft = '24px';
+		}
+
+		if ( (i + 1) % columns === 0 || userOptions.searchBarUseOldStyle) {
 			let br = document.createElement('br');
 			qm.appendChild(br);
 		}
 	}
 	
 	document.body.appendChild(qm);
-	
+
 	let div = document.createElement('div');
 	div.style = 'text-align:center;border-top:1px solid #e0e0e0';
 	div.className = 'hover';
@@ -328,6 +361,16 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	document.body.appendChild(div);
 	sb.focus();
 	
+	// listen for resize events, specifically the browser action resizing
+	// and add scrollbars when necessary
+	window.addEventListener('resize', () => {
+		if (window.innerHeight < parseInt(window.getComputedStyle(qm).height) ) {
+			qm.style.height = window.innerHeight - 100 + "px";
+			qm.style.overflowY = 'scroll';
+		}
+	});
+	
+
 	function getSuggestions(terms, callback) {
 		
 		let url = 'http://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);

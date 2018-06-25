@@ -645,6 +645,7 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
 		
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
+		document.getElementById('cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
 		
 		buildSearchEngineContainer(userOptions.searchEngines);
 
@@ -726,9 +727,13 @@ function saveOptions(e) {
 		}(),
 		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
+		searchBarUseOldStyle: document.getElementById('cb_searchBarUseOldStyle').checked,
+		
 		 // take directly from loaded userOptions
 		searchBarSuggestions: document.getElementById('cb_searchBarSuggestions').checked,
 		searchBarHistory: userOptions.searchBarHistory
+		
+		
 
 	}
 
@@ -838,6 +843,10 @@ document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => 
 	
 	ev.target.blur();
 });
+
+document.getElementById('cb_searchBarSuggestions').addEventListener('change', saveOptions);
+document.getElementById('cb_searchBarUseOldStyle').addEventListener('change', saveOptions);
+
 function checkSearchJsonPath() {
 	let el = document.getElementById('div_searchJsonPathResponse');
 	let ev_target = document.getElementById('i_searchJsonPath');
@@ -1183,7 +1192,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
 	for (let el of i18n_tooltips) {
-		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
+		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg;
 	}
 	
 	for (let el of document.getElementsByClassName('info')) {

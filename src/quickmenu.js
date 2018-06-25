@@ -979,7 +979,6 @@ if (document.title !== "QuickMenu") {
 		}
 
 		e.preventDefault();
-		
 		openQuickMenu(e);
 		
 	});
@@ -1058,4 +1057,3 @@ if (document.title !== "QuickMenu") {
 		}
 	});
 }
-
