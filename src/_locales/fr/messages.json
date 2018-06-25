@@ -842,6 +842,15 @@
     "description": "description for Show Suggestions"
   },
   
+  "SearchBarUseOldStyle": {
+    "message": "Utiliser l’ancien style de Firefox",
+    "description": "Options label for using the old Firefox style of search bar"
+  },
+  
+  "SearchBarUseOldStyleTooltip": {
+    "message": "Afficher la liste des moteurs de recherche en une seule colonne comme dans l’ancienne barre de recherche de Firefox."
+  },
+  
   "_________": {
     "message": "",
     "description": ""
