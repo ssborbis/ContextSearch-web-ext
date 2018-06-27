@@ -321,7 +321,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		qm.appendChild(div);
 		
 		if (userOptions.searchBarUseOldStyle) {
-			div.innerText = se.title;
+
 			div.style.width = '300px';
 			div.style.height = '20px';
 			div.style.fontSize = '11pt';
@@ -330,7 +330,12 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			div.style.lineHeight = '20px';
 			div.style.verticalAlign = 'middle';
 			div.style.backgroundPosition = '4px 2px';
-			div.style.paddingLeft = '24px';
+			
+			let span = document.createElement('span');
+			span.innerText = se.title;
+			span.style.marginLeft = '24px';
+			
+			div.appendChild(span);
 		}
 
 		if ( (i + 1) % columns === 0) {
