@@ -93,6 +93,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	let qm = document.createElement('div');
 	qm.id = 'quickMenuElement';
 	
+	let sb_width = 300;
+	let columns = (userOptions.searchBarUseOldStyle) ? 1 : 6;
+	let div_width = sb_width / columns;
+	
 	let suggest = document.getElementById('suggestions');
 		
 	sb.onkeypress = function(e) {
@@ -236,9 +240,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			else if (e.keyCode === 9 && e.shiftKey)
 				direction = -1;
 			else if (e.keyCode === 40)
-				direction = 6;
+				direction = columns;
 			else if (e.keyCode === 38)
-				direction = -6;
+				direction = -columns;
 			else if (e.keyCode === 39)
 				direction = 1; 
 			else if (e.keyCode === 37)
@@ -269,11 +273,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			divs[sb.selectedIndex].classList.add('selectedFocus');
 		}
 	});
-	
-	let sb_width = 300;
-	let columns = 6;
-	let div_width = sb_width / columns;
-	
+		
 	for (let i=0;i<userOptions.searchEngines.length;i++) {
 		
 		let se = userOptions.searchEngines[i];
@@ -333,7 +333,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			div.style.paddingLeft = '24px';
 		}
 
-		if ( (i + 1) % columns === 0 || userOptions.searchBarUseOldStyle) {
+		if ( (i + 1) % columns === 0) {
 			let br = document.createElement('br');
 			qm.appendChild(br);
 		}
@@ -365,8 +365,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	// and add scrollbars when necessary
 	window.addEventListener('resize', () => {
 		if (window.innerHeight < parseInt(window.getComputedStyle(qm).height) ) {
-			qm.style.height = window.innerHeight - 100 + "px";
+			qm.style.height = window.innerHeight - 100 /* height of search bar + options button + title bar */ + "px";
 			qm.style.overflowY = 'scroll';
+			
+			suggest.style.width = "100%";
 		}
 	});
 	
