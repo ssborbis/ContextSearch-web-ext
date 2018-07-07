@@ -856,6 +856,10 @@
 	"description": "Section label for the browser action search bar"
   },
   
+  "SearchBarCloseAterSearchTooltip": {
+    "message": "Close the Toolbar Search menu after performing a search"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
