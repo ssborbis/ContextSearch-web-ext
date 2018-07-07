@@ -1,114 +1,5 @@
 var userOptions = {};
 
-function readOpenSearchUrl(url, callback) {
-	callback = callback || function() {};
-    var xmlhttp;
-
-    xmlhttp = new XMLHttpRequest();
-
-	xmlhttp.onreadystatechange = function()	{
-		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-			if(xmlhttp.status == 200) {
-
-				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
-				
-				if (parsed.documentElement.nodeName=="parsererror") {
-					console.log('xml parse error');
-					
-					console.log(parsed);
-					
-					// // try to repair bad template urls
-					// let regexStr = /<Url .* template="(.*)"/g;
-					// let matches = regexStr.exec(xmlhttp.responseText);
-					
-					// if ( matches.length === 2 ) {
-						// let template = matches[1];
-						
-						// template = template.replace(/&amp;/g, "&");
-						// template = template.replace(/&/g, "&amp;");
-						
-						// console.log(template);
-						
-						// let newXML = xmlhttp.responseText.replace(matches[1], template);
-						
-						// console.log(newXML);
-						
-						
-						
-						// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
-						
-						// if (parsed.documentElement.nodeName=="parsererror")
-							parsed = false;
-				//	}
-
-				}
-				callback(parsed);
-		   } else {
-			   console.log('Error fetching ' + url);
-		   }
-		}
-	}
-	
-	xmlhttp.ontimeout = function (e) {
-		console.log('Timeout fetching ' + url);
-		callback(false);
-	};
-
-	xmlhttp.open("GET", url, true);
-	xmlhttp.timeout = 2000;
-	xmlhttp.send();
-}
-
-function openSearchXMLToSearchEngine(xml) {
-		
-	return new Promise( (resolve, reject) => {	
-	
-		let se = {};
-		
-		let shortname = xml.documentElement.querySelector("ShortName");
-		if (shortname) se.title = shortname.textContent;
-		else reject();
-		
-		let description = xml.documentElement.querySelector("Description");
-		if (description) se.description = description.textContent;
-		else reject();
-		
-		let inputencoding = xml.documentElement.querySelector("InputEncoding");
-		if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
-			
-		let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
-		if (searchform) se.searchForm = searchform.textContent;
-		
-		let url = xml.documentElement.querySelector("Url[template]");
-		if (url);
-		else reject();
-		
-		let template = url.getAttribute('template');
-		if (template) se.template = se.query_string = template;
-		
-		let image = xml.documentElement.querySelector("Image");
-		if (image) se.icon_url = image.textContent;
-		else se.icon_url = new URL(template).origin + '/favicon.ico';
-		
-		let method = url.getAttribute('method');
-		if (method) se.method = method.toUpperCase();
-
-		let params = [];
-		for (let param of url.getElementsByTagName('Param')) {
-			params.push({name: param.getAttribute('name'), value: param.getAttribute.value})
-		}
-		se.params = params;
-		
-		loadRemoteIcons({
-			searchEngines: [se],
-			timeout:5000, 
-			callback: resolve
-		});
-		
-	});
-
-}
-
 function formToSearchEngine() {
 	
 	let form = document.getElementById('customForm');
@@ -125,57 +16,6 @@ function formToSearchEngine() {
 		"queryCharset": form._encoding.value, 
 		"hidden": false
 	};
-}
-
-function dataToSearchEngine(data) {
-		
-	let openSearchHref = data.openSearchHref;
-	let favicon_href = data.favicon_href;
-	let _location = new URL(data.href);
-
-	// check data object
-	data.name = data.name || "";
-	data.action = data.action || "";//_location.href;
-	data.params = data.params || {};
-	data.method = data.method.toUpperCase() || "GET";
-	
-	let template = "";
-	let param_str = data.query + "={searchTerms}";
-
-	for (let i in data.params) {
-		param_str+="&" + i + "=" + data.params[i];
-	}
-	
-	if (data.method === "GET") {
-		// If the form.action already contains url parameters, use & not ?
-		template = data.action + ((data.action.indexOf('?') === -1) ? "?":"&") + param_str;	
-	} else {
-		// POST form.template = form.action
-		template = data.action;
-	}
-	
-	// build search engine from form data
-	let se = {
-		"searchForm": _location.origin, 
-		"query_string":template,
-		"icon_url": _location.origin + "/favicon.ico",
-		"title": document.title,
-		"order":userOptions.searchEngines.length, 
-		"icon_base64String": "", 
-		"method": data.method, 
-		"params": param_str, 
-		"template": template, 
-		"queryCharset": document.characterSet.toUpperCase()
-	};
-	
-	return new Promise( (resolve, reject) => {
-		loadRemoteIcons({
-			searchEngines: [se],
-			timeout:5000, 
-			callback: resolve
-		});
-	});
-
 }
 
 function hasDuplicateName(name) {
@@ -241,34 +81,51 @@ function buildOpenSearchAPIUrl() {
 		+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 }
 
-function addSearchEnginePopup(data) {
-
+function addSearchEnginePopup(se, options) {
+	
+	options = options || {};
+	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
-	if (data.openSearchHref) {
+	let ose = null;
+	
+	// no need to request another copy of the opensearch.xml if already using an os engine
+	if (options.isOpenSearchEngine) {
 		
-		readOpenSearchUrl( data.openSearchHref, (xml) => {
+		ose = se;
+		
+		if (se.title) 
+			document.getElementById('simple').querySelector('input').value = se.title;
+		
+	} else {
+		browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (response) => {
 			
-			if (!xml) return false;
+			if (response.href) {
+			
+				readOpenSearchUrl( response.href, (xml) => {
+					
+					if (!xml) return false;
 
-			openSearchXMLToSearchEngine(xml).then((details) => {
-				
-				if (!details) {
-					console.log('Cannot build search engine from xml. Missing values');
-					return false;
-				}
-			
-				let se = details.searchEngines[0];
-				
-				if (se.title) 
-					document.getElementById('simple').querySelector('input').value = se.title;
-				
-			});
-			
+					openSearchXMLToSearchEngine(xml).then((details) => {
+						
+						if (!details) {
+							console.log('Cannot build search engine from xml. Missing values');
+							return false;
+						}
+					
+						let se = details.searchEngines[0];
+						ose = se;
+						
+						if (se.title) 
+							document.getElementById('simple').querySelector('input').value = se.title;
+						
+					});
+					
+				});
+			}
 		});
+	}
 		
-	} else if (data.name) {
-		document.getElementById('simple').querySelector('input').value = data.name;
-	} 
+	document.getElementById('simple').querySelector('input').value = se.title;
 
 	//setup buttons
 	document.getElementById('a_simple_moreOptions').onclick = function() {
@@ -280,7 +137,7 @@ function addSearchEnginePopup(data) {
 	}
 	
 	document.getElementById('b_simple_add').onclick = function() {
-		
+
 		let el = document.getElementById('simple');
 		let input = el.querySelector('input')
 		let shortname = input.value;
@@ -302,20 +159,14 @@ function addSearchEnginePopup(data) {
 		
 		document.getElementById('customForm').shortname.value = shortname;
 
-		dataToSearchEngine(data).then( (details) => {
-			let se = details.searchEngines[0];
-			se.title = shortname;
+		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se});
 
-			browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: details.searchEngines[0]});
-
-			// reassign the yes button to add official OpenSearch xml
-			document.getElementById('b_simple_import_yes').onclick = function() {
-				let url = buildOpenSearchAPIUrl();
-				simpleImportHandler(url, true);
-			}
-			showMenu('simple_import');
-
-		});
+		// reassign the yes button to add official OpenSearch xml
+		document.getElementById('b_simple_import_yes').onclick = function() {
+			let url = buildOpenSearchAPIUrl();
+			simpleImportHandler(url, true);
+		}
+		showMenu('simple_import');
 
 	}
 	
@@ -378,16 +229,6 @@ function addSearchEnginePopup(data) {
 	document.getElementById('b_simple_error_no').onclick = function() {
 		closeCustomSearchIframe();
 	}
-	
-	let openSearchHref = data.openSearchHref;
-	let favicon_href = data.favicon_href;
-	let _location = new URL(data.href);
-	
-	// close iframe when clicking anywhere in the window
-	document.addEventListener('click', (e) => {
-		if ( document.body.contains(e.target) ) return false;	
-		closeCustomSearchIframe();
-	});
 
 	// Build tooltips
 	let info_msg = document.createElement('div');
@@ -411,47 +252,33 @@ function addSearchEnginePopup(data) {
 			},250);
 		});
 	}
-
-	// probably a bad form
-	if (!data.query) {
-		// placeholder
-	}
-		
-	// check data object
-	data.name = data.name || "";
-	data.action = data.action || "";//_location.href;
-	data.params = data.params || {};
-//		data.query = data.query || "q";
 	
 	let form = document.getElementById('customForm');
 	
 	// Set method (FORM.method is a default property, using _method)
 	for (let i=0;i<form._method.options.length;i++) {
-		if (data.method !== undefined && data.method.toUpperCase() === form._method.options[i].value) {
+		if (se.method !== undefined && se.method.toUpperCase() === form._method.options[i].value) {
 			form._method.selectedIndex = i;
 			break;
 		}
 	}
 
 	// set form fields based on injected code (getform.js)
-	form.description.innerText = data.description;
-	form.shortname.value = data.name;
-	form.searchform.value = _location.origin;
+	form.description.innerText = se.description;
+	form.shortname.value = se.title;
+	form.searchform.value = se.searchForm;
 	
-	let template = data.action;
-	let param_str = data.query + "={searchTerms}";
+	let template = se.template;
+	let param_str = "";
 
-	for (let i in data.params) {
-		param_str+="&" + i + "=" + data.params[i];
+	for (let i in se.params) {
+		param_str+="&" + i + "=" + se.params[i];
 	}
 	
 	if (form._method.value === "GET") {
-		
-		// If the form.action already contains url parameters, use & not ?
-		form.template.innerText = template + ((template.indexOf('?') === -1) ? "?":"&") + param_str;
-		
-		// display help message if <input> is not part of a proper <form>
-		if (!data.action) form.template.innerText = browser.i18n.getMessage("TemplateMissingeMessage");
+		form.template.innerText = se.query_string;
+
+		if (!template) form.template.innerText = browser.i18n.getMessage("TemplateMissingeMessage");
 		
 	} else {
 		
@@ -462,7 +289,7 @@ function addSearchEnginePopup(data) {
 	}
 
 	// data-type images are invalid, replace with generic favicon.ico
-	let favicon_url = (favicon_href && favicon_href.match(/^data/) === null) ? favicon_href : _location.origin + "/favicon.ico";
+	let favicon_url = (se.icon_url && se.icon_url.match(/^data/) === null) ? se.icon_url : new URL(se.template).origin + "/favicon.ico";
 
 	// Listen for updates to iconURL, replace img.src and disable sending OpenSearch.xml request until loaded
 	form.iconURL.addEventListener('change', (ev) => {
@@ -477,7 +304,7 @@ function addSearchEnginePopup(data) {
 
 		},100);
 	});
-	
+
 	// get the favicon
 	form.icon.src = favicon_url;
 	form.iconURL.value = favicon_url;
@@ -514,56 +341,44 @@ function addSearchEnginePopup(data) {
 		});
 	}
 
-	// Set up official add-on if exists
-	if (openSearchHref) {
-		let div = document.getElementById('CS_optionInstallOfficialEngine');
+	// Set up official add-on if exists	
+	browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (response) => {
 		
-		// Add button
-		div.onclick = function() {
+		if (response.href) {
+			let div = document.getElementById('CS_optionInstallOfficialEngine');
 			
-			readOpenSearchUrl( data.openSearchHref, (xml) => {
-
-				if (!xml) {
-					alert(browser.i18n.getMessage("ErrorParsing").replace("%1", data.openSearchHref));
+			// Add button
+			div.onclick = function() {
+				
+				if (!ose) {
+					alert(browser.i18n.getMessage("ErrorParsing").replace("%1", response.href));
 					return;
 				}
 				
-				openSearchXMLToSearchEngine(xml).then((details) => {
-					
-					let se = details.searchEngines[0];
-				
-					if (!se) {
-						alert(browser.i18n.getMessage("ErrorParsing").replace("%1", data.openSearchHref));
-						return;
-					}
-					
-					if (hasDuplicateName(se.title)) {
-						alert(browser.i18n.getMessage("EngineExists").replace("%1", se.title));
-						return;
-					}
-					
-				//	alert('adding search engine built from officla xml');
-					 browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se}).then((response) => {
-						// // console.log(response);
-					});
-					
-					// reassign the yes button to add official OpenSearch xml
-					document.getElementById('b_simple_import_yes').onclick = function() {
-						simpleImportHandler(data.openSearchHref);
-					}
-					
-					showMenu('simple_import');
-					
-				});
+				if (hasDuplicateName(ose.title)) {
+					alert(browser.i18n.getMessage("EngineExists").replace("%1", ose.title));
+					return;
+				}
 
-			});
+				browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: ose}).then((response) => {
+					console.log(response);
+				});
+				
+				// reassign the yes button to add official OpenSearch xml
+				document.getElementById('b_simple_import_yes').onclick = function() {
+					simpleImportHandler(response.href);
+				}
+				
+				showMenu('simple_import');
+				
+			}
 			
-		}
+			// Show button
+			div.style.display=null;
 		
-		// Show button
-		div.style.display=null;
+		} 
 	
-	} 
+	});
 	
 	// Find Plugin listener
 	document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
@@ -642,7 +457,7 @@ function addSearchEnginePopup(data) {
 		showMenu(form);
 	}
 
-	if (data.name)
+	if (se.template)
 		showMenu('simple');
 	else
 		showMenu('simple_error');
@@ -759,6 +574,12 @@ function listenForFocusAndPromptToImport() {
 	
 }
 
+// close iframe when clicking anywhere in the window
+document.addEventListener('click', (e) => {
+	if ( document.body.contains(e.target) ) return false;	
+	closeCustomSearchIframe();
+});
+
 // i18n string replacement and styles
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -791,7 +612,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
 	}
 	
-	console.log(browser.i18n.getUILanguage());
+//	console.log(browser.i18n.getUILanguage());
 	
 	var link = document.createElement( "link" );
 	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
@@ -806,7 +627,42 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 });
 
 browser.runtime.sendMessage({action: "getFormData"}).then((message) => {
-	addSearchEnginePopup(message.data);
+	
+	if (message.searchEngine) {
+		console.log('got search engine');
+		console.log(message.searchEngine);
+		addSearchEnginePopup(message.searchEngine);
+	}
+	
+	// if no message.data, assume page_action click
+	else {
+		
+		console.log('got message, no data');
+		
+		browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
+
+			console.log(result.href);
+		
+			readOpenSearchUrl( result.href, (xml) => {
+					
+				if (!xml) return false;
+
+				openSearchXMLToSearchEngine(xml).then((details) => {
+					
+					if (!details) {
+						console.log('Cannot build search engine from xml. Missing values');
+						return false;
+					}
+				
+					let se = details.searchEngines[0];
+
+					addSearchEnginePopup(se, {isOpenSearchEngine: true});
+					
+				});
+				
+			});
+		});
+	}
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

@@ -207,6 +207,8 @@ function makeQuickMenu() {
 	quickMenuObject.locked = false;
 
 	var quickMenuElement = document.createElement('div');
+	
+	var columns = (userOptions.quickMenuUseOldStyle) ? 1 : userOptions.quickMenuColumns;
 
 	quickMenuElement.id = 'quickMenuElement';
 	
@@ -291,9 +293,9 @@ function makeQuickMenu() {
 			else if (e.keyCode === 9 && e.shiftKey)
 				direction = -1;
 			else if (e.keyCode === 40)
-				direction = userOptions.quickMenuColumns;
+				direction = columns;
 			else if (e.keyCode === 38)
-				direction = -userOptions.quickMenuColumns;
+				direction = -columns;
 			else if (e.keyCode === 39)
 				direction = 1; 
 			else if (e.keyCode === 37)
@@ -477,7 +479,7 @@ function makeQuickMenu() {
 				// enable/disable link button on very basic 'is it a link' rules
 				function setDisabled() {
 					if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
-						tile_link.style.filter="grayscale(100%)";
+					//	tile_link.style.filter="grayscale(100%)";
 						tile_link.style.backgroundColor="#ddd";
 						tile_link.disabled = true;
 					} else {
@@ -612,7 +614,26 @@ function makeQuickMenu() {
 
 		quickMenuElement.appendChild(tile);
 		
-		if ( (i + 1) % userOptions.quickMenuColumns === 0) {
+		if (userOptions.quickMenuUseOldStyle) {
+
+			tile.style.width = '200px';
+			tile.style.height = '20px';
+			tile.style.fontSize = '11pt';
+			tile.style.border = 'none';
+			tile.style.fontFamily = 'Arial';
+			tile.style.lineHeight = '20px';
+			tile.style.verticalAlign = 'middle';
+			tile.style.backgroundPosition = '4px 2px';
+			tile.style.backgroundSize = '16px';
+			
+			let span = document.createElement('span');
+			span.innerText = tile.title;
+			span.style.marginLeft = '24px';
+			
+			tile.appendChild(span);
+		}
+		
+		if ( (i + 1) % columns === 0) {
 			let br = document.createElement('br');
 			tile.parentNode.insertBefore(br, tile.nextSibling);
 		}

@@ -38,7 +38,7 @@ function notify(message, sender, sendResponse) {
 			if (!sender.tab) {
 				function onFound(tabs) {
 					let tab = tabs[0];
-					console.log(tab.url);
+			//		console.log(tab.url);
 					quickMenuSearch(message.info, tab);
 				}
 
@@ -96,8 +96,34 @@ function notify(message, sender, sendResponse) {
 			break;
 
 		case "getFormData":
-			sendResponse({data: window.formdata});
+				
+			// dataToSearchEngine(window.formdata).then( (result) => {
+				// sendResponse({searchEngine: result.searchEngines[0]});
+			// });
+			
+			console.log('sending form data to custom search iframe');
+			
+			sendResponse({searchEngine: dataToSearchEngine(window.formdata)});
+
 			delete window.formdata;
+			
+			return true;
+			
+			break;
+			
+		case "getOpenSearchHref":
+			browser.tabs.executeScript( sender.tab.id, {
+				code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
+			}).then( (result) => {
+
+				result = result.shift();
+
+				if (result)
+					sendResponse({href: result});
+			});
+			
+			return true;
+			
 			break;
 			
 		case "updateSearchTerms":
@@ -314,12 +340,9 @@ function contextMenuSearch(info, tab) {
 			// add favicon ...
 			data.icon = tab.favIconUrl;
 
-			// no description ? use tab title ...
-			if ( !data.description ) data.description = tab.title;
-			
 			// set a global variable to be accessed by the iframe from a runtime.message
 			window.formdata = data;
-			
+
 			// send the parent frame a request to open the customSearch iframe
 			browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});
 			
@@ -387,7 +410,7 @@ function quickMenuSearch(info, tab) {
 
 function openSearch(details) {
 
-	console.log(details);
+//	console.log(details);
 		
 	var searchEngineIndex = details.searchEngineIndex || 0;
 	var searchTerms = details.searchTerms.trim();
@@ -711,6 +734,7 @@ const defaultUserOptions = {
 	quickMenuSearchBar: "bottom",
 	quickMenuSearchBarFocus: false,
 	quickMenuSearchBarSelect: true,
+	quickMenuUseOldStyle: false,
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
@@ -735,7 +759,8 @@ const defaultUserOptions = {
 	quickMenuAlt: "keepMenuOpen",
 	searchBarSuggestions: true,
 	searchBarHistory: [],
-	searchBarUseOldStyle: false
+	searchBarUseOldStyle: false,
+	searchBarCloseAfterSearch: false
 };
 
 var userOptions = {};
@@ -775,6 +800,20 @@ browser.runtime.onInstalled.addListener((details) => {
 		browser.tabs.create({
 			url: "/options.html"
 		});
+		
+	
+		// if (userOptions.searchEngines == defaultEngines) {
+			
+			// console.log('building search engine icons');
+			
+			// for (let i=0;i<userOptions.searchEngines.length;i++) {
+				// let img = new Image();
+				// img.index = i;
+				// img.onload = function() {
+					// userOptions.searchEngines[this.index].icon_base64String = imageToBase64(this, 32);
+				// }
+			// }
+		// }
 	}
 	
 });
@@ -824,6 +863,69 @@ if (browser.bookmarks !== undefined) {
 	browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
 	browser.bookmarks.onCreated.addListener(bookmarksModificationHandler);
 }
+
+
+/*
+Initialize the page action: set icon and title, then show.
+Only operates on tabs whose URL's protocol is applicable.
+*/
+function initializePageAction(tab) {
+	
+	var anchor = document.createElement('a');
+	anchor.href = tab.url;
+	
+	if ( ! ['http:', 'https:'].includes(anchor.protocol)) return false;
+
+	browser.tabs.executeScript( tab.id, {
+		code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href;",
+		runAt: "document_end"
+	}).then( (result) => {
+
+		result = result.shift();
+		console.log("OpenSearch engine available -> " + result);
+		if (result) {
+			browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
+			browser.pageAction.setTitle({tabId: tab.id, title: "Add ContextSearch Engine"});
+			browser.pageAction.show(tab.id);
+		}
+	});
+
+}
+
+/*
+When first loaded, initialize the page action for all tabs.
+*/
+var gettingAllTabs = browser.tabs.query({});
+gettingAllTabs.then((tabs) => {
+	for (let tab of tabs) {
+		initializePageAction(tab);
+	}
+});
+
+/*
+Each time a tab is updated, reset the page action for that tab.
+*/
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+	if (changeInfo.status !== 'complete') return;
+	initializePageAction(tab);
+});
+
+browser.pageAction.onClicked.addListener((tab) => {
+	
+	browser.tabs.sendMessage(tab.id, {
+		action: "openCustomSearch"
+	}, {frameId: 0});
+
+
+	console.log('clicked');
+});
+
+
+// browser.pageAction.onClicked.addListener((tab) => {
+
+ // browser.browserAction.setPopup({popup: "/searchbar.html"});
+
+// });
 
 /*
 // inject at tab creation
@@ -896,3 +998,5 @@ console.log(encodeCharset("try this", 'windows-1251'));
 console.log(encodeCharset('一般来说，URL只能使用英文字母、阿拉伯数字和某些标点符号，不能使用其他文字和符号。比如，世界上有英文字母的网址"http://www.abc.com"，但是没有希腊字母的网址"http://www.aβγ.com"（读作阿尔法-贝塔-伽玛.com）。这是因为网络标准RFC 1738做了硬性规定', 'GB2312'));
 //'euc-jp' ядрами и графическое
 */
+
+

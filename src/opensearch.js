@@ -109,3 +109,164 @@ function getDomains(url) {
 	return {domain: domain, subdomain:subdomain};
 	
 }
+
+function readOpenSearchUrl(url, callback) {
+	callback = callback || function() {};
+    var xmlhttp;
+
+    xmlhttp = new XMLHttpRequest();
+
+	xmlhttp.onreadystatechange = function()	{
+		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+			if(xmlhttp.status == 200) {
+
+				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
+				
+				if (parsed.documentElement.nodeName=="parsererror") {
+					console.log('xml parse error');
+					
+					console.log(parsed);
+					
+					// // try to repair bad template urls
+					// let regexStr = /<Url .* template="(.*)"/g;
+					// let matches = regexStr.exec(xmlhttp.responseText);
+					
+					// if ( matches.length === 2 ) {
+						// let template = matches[1];
+						
+						// template = template.replace(/&amp;/g, "&");
+						// template = template.replace(/&/g, "&amp;");
+						
+						// console.log(template);
+						
+						// let newXML = xmlhttp.responseText.replace(matches[1], template);
+						
+						// console.log(newXML);
+						
+						
+						
+						// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
+						
+						// if (parsed.documentElement.nodeName=="parsererror")
+							parsed = false;
+				//	}
+
+				}
+				callback(parsed);
+		   } else {
+			   console.log('Error fetching ' + url);
+		   }
+		}
+	}
+	
+	xmlhttp.ontimeout = function (e) {
+		console.log('Timeout fetching ' + url);
+		callback(false);
+	};
+
+	xmlhttp.open("GET", url, true);
+	xmlhttp.timeout = 2000;
+	xmlhttp.send();
+}
+
+
+function openSearchXMLToSearchEngine(xml) {
+		
+	return new Promise( (resolve, reject) => {	
+	
+		let se = {};
+		
+		let shortname = xml.documentElement.querySelector("ShortName");
+		if (shortname) se.title = shortname.textContent;
+		else reject();
+		
+		let description = xml.documentElement.querySelector("Description");
+		if (description) se.description = description.textContent;
+		else reject();
+		
+		let inputencoding = xml.documentElement.querySelector("InputEncoding");
+		if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
+		
+		let url = xml.documentElement.querySelector("Url[template]");
+		if (url);
+		else reject();
+		
+		let template = url.getAttribute('template');
+		if (template) se.template = se.query_string = template;
+		
+		let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
+		if (searchform) se.searchForm = searchform.textContent;
+		else if (template) se.searchForm = new URL(template).origin;
+		
+		let image = xml.documentElement.querySelector("Image");
+		if (image) se.icon_url = image.textContent;
+		else se.icon_url = new URL(template).origin + '/favicon.ico';
+		
+		let method = url.getAttribute('method');
+		if (method) se.method = method.toUpperCase();
+
+		let params = [];
+		for (let param of url.getElementsByTagName('Param')) {
+			params.push({name: param.getAttribute('name'), value: param.getAttribute.value})
+		}
+		se.params = params;
+		
+		loadRemoteIcons({
+			searchEngines: [se],
+			timeout:5000, 
+			callback: resolve
+		});
+		
+	});
+
+}
+
+// note: returns a promise to loadRemoteIcons
+function dataToSearchEngine(data) {
+	
+	// useful when using page_action to trigger custom search iframe
+	if (!data) return null;
+
+	let favicon_href = data.favicon_href || "";
+
+	let query_string = "";
+	let param_str = data.query + "={searchTerms}";
+
+	for (let i in data.params) {
+		param_str+="&" + i + "=" + data.params[i];
+	}
+	
+	if (data.method === "GET") {
+		// If the form.action already contains url parameters, use & not ?
+		query_string = data.action + ((data.action.indexOf('?') === -1) ? "?":"&") + param_str;	
+	} else {
+		// POST form.template = form.action
+		query_string = data.action;
+	}
+	
+	// build search engine from form data
+	let se = {
+		"searchForm": data.origin, 
+		"query_string":query_string,
+		"icon_url": data.origin + "/favicon.ico",
+		"title": data.title,
+		"order":userOptions.searchEngines.length, 
+		"icon_base64String": "", 
+		"method": data.method, 
+		"params": data.params, 
+		"template": data.action, 
+		"queryCharset": data.characterSet.toUpperCase(),
+		"description": data.description
+	};
+	
+	return se;
+	
+	// return new Promise( (resolve, reject) => {
+		// loadRemoteIcons({
+			// searchEngines: [se],
+			// timeout:5000, 
+			// callback: resolve
+		// });
+	// });
+
+}

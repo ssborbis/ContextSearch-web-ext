@@ -1103,6 +1103,14 @@
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
 				
+				<br />
+				
+				<label class="container" data-i18n='SearchBarUseOldStyle'>Use Original Firefox Style
+				<span class='info' data-msg='Display search engines with labels in a single column like the old Firefox searchbar' data-i18n_tooltip='SearchBarUseOldStyle'>?</span>
+					<input type='checkbox' id='cb_quickMenuUseOldStyle' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
 				<p class='header1' data-i18n='Position'>Position</p>
 				
 				<div>
@@ -1152,11 +1160,21 @@
 					<span class="checkmark checkmark2"></span>
 				</label>
 				
-				<hr />
+								
+				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
+				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='ToolbarSearch'><img alt='' src='icons/icon48.png' style='filter:grayscale(100%);'/>Toolbar Search</div>
+	
+				<br />
 				
 				<label class="container" data-i18n='SearchBarUseOldStyle'>Use Original Firefox Style
 				<span class='info' data-msg='Display search engines with labels in a single column like the old Firefox searchbar' data-i18n_tooltip='SearchBarUseOldStyle'>?</span>
 					<input type='checkbox' id='cb_searchBarUseOldStyle' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
+				<label class="container" data-i18n='CloseAfterSearch'>Close After Search
+				<span class='info' data-msg='Fetch search suggestions from Google and display with search history in the search toolbar' data-i18n_tooltip='CloseAfterSearch'>?</span>
+					<input type='checkbox' id='cb_searchBarCloseAfterSearch' />
 					<span class="checkmark checkmark2"></span>
 				</label>
 				
@@ -1170,7 +1188,13 @@
 				<span class='info' data-msg='Clear search history from the search toolbar' data-i18n_tooltip='ClearSearchHistory'>?</span>
 				</div>
 				
-				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
+
+				
+				<!-- <label class="container" data-i18n='ShowSuggestions'> -->
+				<!-- <span class='info' data-msg='Fetch search suggestions from Google and display with search history in the search toolbar' data-i18n_tooltip='ShowSuggestions'>?</span> -->
+					<!-- <input type='checkbox' id='cb_searchBarSuggestions' /> -->
+					<!-- <span class="checkmark checkmark2"></span> -->
+				<!-- </label> -->
 				
 				<p class='header1' data-i18n='ImportExportSettings'>Import / Export Settings</p>
 				

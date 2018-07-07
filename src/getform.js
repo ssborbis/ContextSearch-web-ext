@@ -1,7 +1,16 @@
 // From BurningMoth AddSearch by Spencer T Obremski
 // https://addons.mozilla.org/en-US/firefox/addon/burning-moth-add-search/
 
-var S = {};
+var S = {
+	name: "",
+	action: "",
+	params: {},
+	method: "GET",
+	origin: window.location.origin,
+	description: "",
+	characterSet: document.characterSet,
+	title: document.title
+};
 
 // Check for OpenSearch plugin
 S.openSearchHref = "";
@@ -24,7 +33,7 @@ var E = window.document.querySelector("input:focus");
 if ( E && E.name ) {
 
 	// search form data ...
-	S.method = E.form.method;
+	S.method = E.form.method.toUpperCase();
 	S.action = E.form.action;
 
 	// query parameter ...
@@ -57,8 +66,7 @@ if ( E && E.name ) {
 
 	// get description ...
 	M = window.document.querySelector('meta[property="og:description"], meta[name="description"]');
-	S.description = M ? M.content : '';
-
+	S.description = M ? M.content : document.title; // use title if no description
 }
 
 S;

@@ -22,6 +22,7 @@ window.addEventListener('contextmenu', (e) => {
 	}, 100);
 });
 
+// what was this for?
 setInterval(() => {
 	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		userOptions = message.userOptions || {};
@@ -86,8 +87,28 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	sb.placeholder = browser.i18n.getMessage('Search');
 	
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
+		
+		// skip empty 
+		if (!message.lastSearch) return;
+		
 		sb.value = message.lastSearch;
 		sb.select();
+		
+		function getSelectedText(el) {
+			let start = el.selectionStart;
+			let finish = el.selectionEnd;
+			return el.value.substring(start, finish);
+		}
+		
+		// workaround for linux 
+		var selectInterval = setInterval( () => {
+
+			if (getSelectedText(sb) == sb.value)
+				clearInterval(selectInterval);
+			else
+				sb.select();
+		}, 50);
+
 	});
 	
 	let qm = document.createElement('div');
@@ -112,7 +133,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			
 			console.log('fetching suggestions');
 			suggest.innerHTML = null;
-		//	if (userOptions.searchBarSuggestions) {
 			
 			let history = [];
 			let lc_searchTerms = sb.value.toLowerCase();
@@ -225,6 +245,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			});
 			
 			addToHistory(sb.value);
+			
+			if (userOptions.searchBarCloseAfterSearch)
+				window.close();	
 
 		}
 	}
@@ -309,6 +332,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			});
 			
 			addToHistory(sb.value);
+			
+			if (userOptions.searchBarCloseAfterSearch)
+				window.close();	
 		};
 		
 		div.onmouseenter = function() {
@@ -375,8 +401,16 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			
 			suggest.style.width = "100%";
 		}
-	});
+
+	});	
 	
+	// window.onfocus = function() {
+		// console.log('focused');
+		// setTimeout(() => {
+			// sb.focus();
+			// sb.select();
+		// }, 10);
+	// }
 
 	function getSuggestions(terms, callback) {
 		

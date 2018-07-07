@@ -646,6 +646,9 @@ function restoreOptions() {
 		
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		document.getElementById('cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
+		document.getElementById('cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
+		
+		document.getElementById('cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
 		
 		buildSearchEngineContainer(userOptions.searchEngines);
 
@@ -728,6 +731,9 @@ function saveOptions(e) {
 		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
 		searchBarUseOldStyle: document.getElementById('cb_searchBarUseOldStyle').checked,
+		searchBarCloseAfterSearch: document.getElementById('cb_searchBarCloseAfterSearch').checked,
+		
+		quickMenuUseOldStyle: document.getElementById('cb_quickMenuUseOldStyle').checked,
 		
 		 // take directly from loaded userOptions
 		searchBarSuggestions: document.getElementById('cb_searchBarSuggestions').checked,
@@ -846,6 +852,9 @@ document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => 
 
 document.getElementById('cb_searchBarSuggestions').addEventListener('change', saveOptions);
 document.getElementById('cb_searchBarUseOldStyle').addEventListener('change', saveOptions);
+document.getElementById('cb_searchBarCloseAfterSearch').addEventListener('change', saveOptions);
+
+document.getElementById('cb_quickMenuUseOldStyle').addEventListener('change', saveOptions);
 
 function checkSearchJsonPath() {
 	let el = document.getElementById('div_searchJsonPathResponse');

@@ -851,6 +851,11 @@
     "message": "Display search engines with labels in a single column like the old Firefox search bar"
   },
   
+  "ToolbarSearch": {
+    "message": "Toolbar Search",
+	"description": "Section label for the browser action search bar"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
