@@ -851,6 +851,15 @@
     "message": "Afficher la liste des moteurs de recherche en une seule colonne comme dans l’ancienne barre de recherche de Firefox."
   },
   
+  "ToolbarSearch": {
+    "message": "Bouton principal",
+	"description": "Section label for the browser action search bar"
+  },
+  
+  "SearchBarCloseAterSearchTooltip": {
+    "message": "Le menu du bouton de la barre d’outils se ferme dès que la recherche est lancée."
+  },
+  
   "_________": {
     "message": "",
     "description": ""
