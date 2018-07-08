@@ -94,22 +94,6 @@ function notify(message, sender, sendResponse) {
 		case "closeCustomSearch":
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
-
-		case "getFormData":
-				
-			// dataToSearchEngine(window.formdata).then( (result) => {
-				// sendResponse({searchEngine: result.searchEngines[0]});
-			// });
-			
-			console.log('sending form data to custom search iframe');
-			
-			sendResponse({searchEngine: dataToSearchEngine(window.formdata)});
-
-			delete window.formdata;
-			
-			return true;
-			
-			break;
 			
 		case "getOpenSearchHref":
 			browser.tabs.executeScript( sender.tab.id, {
@@ -340,11 +324,10 @@ function contextMenuSearch(info, tab) {
 			// add favicon ...
 			data.icon = tab.favIconUrl;
 
-			// set a global variable to be accessed by the iframe from a runtime.message
-			window.formdata = data;
-
 			// send the parent frame a request to open the customSearch iframe
-			browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});
+			browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0}).then( (response) => {	
+				browser.tabs.sendMessage(tab.id, {action: "getFormDataEngine", searchEngine: dataToSearchEngine(data)});
+			});
 			
 		}).catch( error =>{
 			console.error(error);
@@ -871,6 +854,8 @@ Only operates on tabs whose URL's protocol is applicable.
 */
 function initializePageAction(tab) {
 	
+	browser.pageAction.hide(tab.id);
+	
 	var anchor = document.createElement('a');
 	anchor.href = tab.url;
 	
@@ -887,7 +872,8 @@ function initializePageAction(tab) {
 			browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
 			browser.pageAction.setTitle({tabId: tab.id, title: "Add ContextSearch Engine"});
 			browser.pageAction.show(tab.id);
-		}
+		} 
+			
 	});
 
 }
@@ -914,18 +900,11 @@ browser.pageAction.onClicked.addListener((tab) => {
 	
 	browser.tabs.sendMessage(tab.id, {
 		action: "openCustomSearch"
-	}, {frameId: 0});
+	}, {frameId: 0}).then( (response) => {
+		browser.tabs.sendMessage(tab.id, {action: "getFormDataEngine"});
+	});
 
-
-	console.log('clicked');
 });
-
-
-// browser.pageAction.onClicked.addListener((tab) => {
-
- // browser.browserAction.setPopup({popup: "/searchbar.html"});
-
-// });
 
 /*
 // inject at tab creation

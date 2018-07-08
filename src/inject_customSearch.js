@@ -46,6 +46,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				// reflow trick
 				iframe.getBoundingClientRect();
 				iframe.style.opacity=1;
+				
+				window.addEventListener("message", (e) => {
+					sendResponse({loaded: true});
+				}, {once: true});
+				
+			//	
+				return true;
 
 				break;
 			

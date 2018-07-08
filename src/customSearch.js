@@ -626,45 +626,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 });
 
-browser.runtime.sendMessage({action: "getFormData"}).then((message) => {
-	
-	if (message.searchEngine) {
-		console.log('got search engine');
-		console.log(message.searchEngine);
-		addSearchEnginePopup(message.searchEngine);
-	}
-	
-	// if no message.data, assume page_action click
-	else {
-		
-		console.log('got message, no data');
-		
-		browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
-
-			console.log(result.href);
-		
-			readOpenSearchUrl( result.href, (xml) => {
-					
-				if (!xml) return false;
-
-				openSearchXMLToSearchEngine(xml).then((details) => {
-					
-					if (!details) {
-						console.log('Cannot build search engine from xml. Missing values');
-						return false;
-					}
-				
-					let se = details.searchEngines[0];
-
-					addSearchEnginePopup(se, {isOpenSearchEngine: true});
-					
-				});
-				
-			});
-		});
-	}
-});
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (message.userOptions !== undefined) {
@@ -678,4 +639,51 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		
 		userOptions = message.userOptions || {};
 	}
+	
+	switch (message.action) {
+		case undefined:
+			return;
+			break;
+		
+		case "getFormDataEngine":
+
+			if (message.searchEngine) {
+				browser.runtime.sendMessage({action: 'log', msg: 'got search engine'});
+				browser.runtime.sendMessage({action: 'log', msg: message.searchEngine});
+				addSearchEnginePopup(message.searchEngine);
+			}
+			
+			// if no message.data, assume page_action click
+			else {
+				
+				browser.runtime.sendMessage({action: 'log', msg: 'got message, no data'});
+				
+				browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
+
+					browser.runtime.sendMessage({action: 'log', msg: result.href});
+				
+					readOpenSearchUrl( result.href, (xml) => {
+							
+						if (!xml) return false;
+
+						openSearchXMLToSearchEngine(xml).then((details) => {
+							
+							if (!details) {
+								console.log('Cannot build search engine from xml. Missing values');
+								return false;
+							}
+						
+							let se = details.searchEngines[0];
+
+							addSearchEnginePopup(se, {isOpenSearchEngine: true});
+							
+						});
+						
+					});
+				});
+			}
+			break;
+	}
 });
+
+window.parent.postMessage("hello", "*");

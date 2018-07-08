@@ -203,13 +203,17 @@ function openSearchXMLToSearchEngine(xml) {
 		else se.icon_url = new URL(template).origin + '/favicon.ico';
 		
 		let method = url.getAttribute('method');
-		if (method) se.method = method.toUpperCase();
+		if (method) se.method = method.toUpperCase() || "GET";
 
 		let params = [];
 		for (let param of url.getElementsByTagName('Param')) {
-			params.push({name: param.getAttribute('name'), value: param.getAttribute.value})
+			params.push({name: param.getAttribute('name'), value: param.getAttribute('value')})
 		}
 		se.params = params;
+		
+		if (se.method === "GET") {
+			se.query_string = se.template + "?" + nameValueArrayToParamString(se.params);
+		}
 		
 		loadRemoteIcons({
 			searchEngines: [se],
