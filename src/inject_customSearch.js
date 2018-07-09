@@ -74,7 +74,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 								}
 							
 								let se = details.searchEngines[0];
-								iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href}, browser.runtime.getURL('/customSearch.html'));
+								iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, useOpenSearch: true}, browser.runtime.getURL('/customSearch.html'));
 								
 							});
 							

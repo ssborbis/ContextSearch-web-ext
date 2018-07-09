@@ -87,8 +87,6 @@ function addSearchEnginePopup(data) {
 	let openSearchUrl = data.openSearchUrl || null;
 	let useOpenSearch = data.useOpenSearch || null;
 	
-	console.log(data);
-	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
 	let ose = null;
 	
@@ -164,7 +162,14 @@ function addSearchEnginePopup(data) {
 
 		// reassign the yes button to add official OpenSearch xml
 		document.getElementById('b_simple_import_yes').onclick = function() {
+
+			// build the GET url for opensearch-api.appspot.com
 			let url = buildOpenSearchAPIUrl();
+
+			// if using OpenSearch engine and name has not changed, use url to OpenSearch.xml
+			if (useOpenSearch && shortname === ose.title)
+				url = openSearchUrl;
+			
 			simpleImportHandler(url, true);
 		}
 		showMenu('simple_import');
@@ -270,11 +275,6 @@ function addSearchEnginePopup(data) {
 	form.searchform.value = se.searchForm;
 	
 	let template = se.template;
-	let param_str = "";
-
-	for (let i in se.params) {
-		param_str+="&" + i + "=" + se.params[i];
-	}
 	
 	if (form._method.value === "GET") {
 		form.template.innerText = se.query_string;
@@ -282,10 +282,9 @@ function addSearchEnginePopup(data) {
 		if (!template) form.template.innerText = browser.i18n.getMessage("TemplateMissingeMessage");
 		
 	} else {
-		
 		// POST form.template = form.action
 		form.template.innerText = template;
-		form.post_params.value = param_str;
+		form.post_params.value = nameValueArrayToParamString(se.params);
 		
 	}
 
@@ -343,43 +342,41 @@ function addSearchEnginePopup(data) {
 	}
 
 	// Set up official add-on if exists	
-	browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (response) => {
-		
-		if (response.href) {
-			let div = document.getElementById('CS_optionInstallOfficialEngine');
-			
-			// Add button
-			div.onclick = function() {
-				
-				if (!ose) {
-					alert(browser.i18n.getMessage("ErrorParsing").replace("%1", response.href));
-					return;
-				}
-				
-				if (hasDuplicateName(ose.title)) {
-					alert(browser.i18n.getMessage("EngineExists").replace("%1", ose.title));
-					return;
-				}
 
-				browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: ose}).then((response) => {
-					console.log(response);
-				});
-				
-				// reassign the yes button to add official OpenSearch xml
-				document.getElementById('b_simple_import_yes').onclick = function() {
-					simpleImportHandler(response.href);
-				}
-				
-				showMenu('simple_import');
-				
+	if (openSearchUrl) {
+		let div = document.getElementById('CS_optionInstallOfficialEngine');
+		
+		// Add button
+		div.onclick = function() {
+			
+			if (!ose) {
+				alert(browser.i18n.getMessage("ErrorParsing").replace("%1", openSearchUrl));
+				return;
 			}
 			
-			// Show button
-			div.style.display=null;
+			if (hasDuplicateName(ose.title)) {
+				alert(browser.i18n.getMessage("EngineExists").replace("%1", ose.title));
+				return;
+			}
+
+			browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: ose}).then((response) => {
+				console.log(response);
+			});
+			
+			// reassign the yes button to add official OpenSearch xml
+			document.getElementById('b_simple_import_yes').onclick = function() {
+				simpleImportHandler(openSearchUrl);
+			}
+			
+			showMenu('simple_import');
+			
+		}
 		
-		} 
+		// Show button
+		div.style.display=null;
 	
-	});
+	} 
+
 	
 	// Find Plugin listener
 	document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
@@ -645,9 +642,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // listen for the custom engine to prompt to add
 window.addEventListener("message", (e) => {
-	
-	browser.runtime.sendMessage({action: 'log', msg: 'got search engine'});
-	browser.runtime.sendMessage({action: 'log', msg: e.data});
 	addSearchEnginePopup(e.data);
 }, {once: true});
 

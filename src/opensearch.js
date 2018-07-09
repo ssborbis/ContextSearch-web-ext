@@ -234,18 +234,28 @@ function dataToSearchEngine(data) {
 	let favicon_href = data.favicon_href || "";
 
 	let query_string = "";
-	let param_str = data.query + "={searchTerms}";
-
-	for (let i in data.params) {
-		param_str+="&" + i + "=" + data.params[i];
-	}
+	let params = [];
 	
+	// convert single object to array
+	for (let k in data.params)
+		params.push({name: k, value: data.params[k]});
+
 	if (data.method === "GET") {
+		
+		let param_str = data.query + "={searchTerms}";
+
+		for (let i in data.params) {
+			param_str+="&" + i + "=" + data.params[i];
+		}
 		// If the form.action already contains url parameters, use & not ?
 		query_string = data.action + ((data.action.indexOf('?') === -1) ? "?":"&") + param_str;	
+		
 	} else {
 		// POST form.template = form.action
 		query_string = data.action;
+		
+		params.unshift({name: data.query, value: "{searchTerms}"});
+
 	}
 	
 	// build search engine from form data
@@ -257,7 +267,7 @@ function dataToSearchEngine(data) {
 		"order":userOptions.searchEngines.length, 
 		"icon_base64String": "", 
 		"method": data.method, 
-		"params": data.params, 
+		"params": params, 
 		"template": data.action, 
 		"queryCharset": data.characterSet.toUpperCase(),
 		"description": data.description
