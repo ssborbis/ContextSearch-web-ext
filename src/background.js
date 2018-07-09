@@ -310,29 +310,7 @@ function contextMenuSearch(info, tab) {
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
 			
-		// inject script to retrieve search form features ...
-		browser.tabs.executeScript(tab.id, { 
-			file: '/getform.js'
-		}).then( (data) => {
-
-			// unpack json data ... 
-			data = data.shift();
-			
-			console.log("form data ->")
-			console.log(data);
-
-			// add favicon ...
-			data.icon = tab.favIconUrl;
-
-			// send the parent frame a request to open the customSearch iframe
-			browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0}).then( (response) => {	
-				browser.tabs.sendMessage(tab.id, {action: "getFormDataEngine", searchEngine: dataToSearchEngine(data)});
-			});
-			
-		}).catch( error =>{
-			console.error(error);
-		});
-		
+		browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
 		return false;
 	}
 	
@@ -867,10 +845,10 @@ function initializePageAction(tab) {
 	}).then( (result) => {
 
 		result = result.shift();
-		console.log("OpenSearch engine available -> " + result);
+
 		if (result) {
 			browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
-			browser.pageAction.setTitle({tabId: tab.id, title: "Add ContextSearch Engine"});
+			browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("AddCustomSearch")});
 			browser.pageAction.show(tab.id);
 		} 
 			
@@ -899,10 +877,9 @@ browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
 browser.pageAction.onClicked.addListener((tab) => {
 	
 	browser.tabs.sendMessage(tab.id, {
-		action: "openCustomSearch"
-	}, {frameId: 0}).then( (response) => {
-		browser.tabs.sendMessage(tab.id, {action: "getFormDataEngine"});
-	});
+		action: "openCustomSearch",
+		useOpenSearch: true
+	}, {frameId: 0});
 
 });
 

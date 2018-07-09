@@ -81,15 +81,19 @@ function buildOpenSearchAPIUrl() {
 		+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 }
 
-function addSearchEnginePopup(se, options) {
+function addSearchEnginePopup(data) {
+
+	let se = data.searchEngine || null;
+	let openSearchUrl = data.openSearchUrl || null;
+	let useOpenSearch = data.useOpenSearch || null;
 	
-	options = options || {};
+	console.log(data);
 	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
 	let ose = null;
 	
 	// no need to request another copy of the opensearch.xml if already using an os engine
-	if (options.isOpenSearchEngine) {
+	if (useOpenSearch) {
 		
 		ose = se;
 		
@@ -97,32 +101,29 @@ function addSearchEnginePopup(se, options) {
 			document.getElementById('simple').querySelector('input').value = se.title;
 		
 	} else {
-		browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (response) => {
+		if (openSearchUrl) {
 			
-			if (response.href) {
-			
-				readOpenSearchUrl( response.href, (xml) => {
-					
-					if (!xml) return false;
+			readOpenSearchUrl( openSearchUrl, (xml) => {
+				
+				if (!xml) return false;
 
-					openSearchXMLToSearchEngine(xml).then((details) => {
-						
-						if (!details) {
-							console.log('Cannot build search engine from xml. Missing values');
-							return false;
-						}
+				openSearchXMLToSearchEngine(xml).then((details) => {
 					
-						let se = details.searchEngines[0];
-						ose = se;
-						
-						if (se.title) 
-							document.getElementById('simple').querySelector('input').value = se.title;
-						
-					});
+					if (!details) {
+						console.log('Cannot build search engine from xml. Missing values');
+						return false;
+					}
+				
+					let se = details.searchEngines[0];
+					ose = se;
+					
+					if (se.title) 
+						document.getElementById('simple').querySelector('input').value = se.title;
 					
 				});
-			}
-		});
+				
+			});
+		}
 	}
 		
 	document.getElementById('simple').querySelector('input').value = se.title;
@@ -263,7 +264,7 @@ function addSearchEnginePopup(se, options) {
 		}
 	}
 
-	// set form fields based on injected code (getform.js)
+	// set form fields
 	form.description.innerText = se.description;
 	form.shortname.value = se.title;
 	form.searchform.value = se.searchForm;
@@ -640,50 +641,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		userOptions = message.userOptions || {};
 	}
 	
-	switch (message.action) {
-		case undefined:
-			return;
-			break;
-		
-		case "getFormDataEngine":
-
-			if (message.searchEngine) {
-				browser.runtime.sendMessage({action: 'log', msg: 'got search engine'});
-				browser.runtime.sendMessage({action: 'log', msg: message.searchEngine});
-				addSearchEnginePopup(message.searchEngine);
-			}
-			
-			// if no message.data, assume page_action click
-			else {
-				
-				browser.runtime.sendMessage({action: 'log', msg: 'got message, no data'});
-				
-				browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
-
-					browser.runtime.sendMessage({action: 'log', msg: result.href});
-				
-					readOpenSearchUrl( result.href, (xml) => {
-							
-						if (!xml) return false;
-
-						openSearchXMLToSearchEngine(xml).then((details) => {
-							
-							if (!details) {
-								console.log('Cannot build search engine from xml. Missing values');
-								return false;
-							}
-						
-							let se = details.searchEngines[0];
-
-							addSearchEnginePopup(se, {isOpenSearchEngine: true});
-							
-						});
-						
-					});
-				});
-			}
-			break;
-	}
 });
 
-window.parent.postMessage("hello", "*");
+// listen for the custom engine to prompt to add
+window.addEventListener("message", (e) => {
+	
+	browser.runtime.sendMessage({action: 'log', msg: 'got search engine'});
+	browser.runtime.sendMessage({action: 'log', msg: e.data});
+	addSearchEnginePopup(e.data);
+}, {once: true});
+
+// let the parent window know the iframe is loaded
+window.parent.postMessage({status: "complete"}, "*");
+

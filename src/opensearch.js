@@ -175,7 +175,7 @@ function openSearchXMLToSearchEngine(xml) {
 	return new Promise( (resolve, reject) => {	
 	
 		let se = {};
-		
+
 		let shortname = xml.documentElement.querySelector("ShortName");
 		if (shortname) se.title = shortname.textContent;
 		else reject();
@@ -211,8 +211,8 @@ function openSearchXMLToSearchEngine(xml) {
 		}
 		se.params = params;
 		
-		if (se.method === "GET") {
-			se.query_string = se.template + "?" + nameValueArrayToParamString(se.params);
+		if (se.params.length > 0 && se.method === "GET") {
+			se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
 		}
 		
 		loadRemoteIcons({
@@ -220,7 +220,7 @@ function openSearchXMLToSearchEngine(xml) {
 			timeout:5000, 
 			callback: resolve
 		});
-		
+
 	});
 
 }
@@ -262,15 +262,13 @@ function dataToSearchEngine(data) {
 		"queryCharset": data.characterSet.toUpperCase(),
 		"description": data.description
 	};
-	
-	return se;
-	
-	// return new Promise( (resolve, reject) => {
-		// loadRemoteIcons({
-			// searchEngines: [se],
-			// timeout:5000, 
-			// callback: resolve
-		// });
-	// });
+
+	return new Promise( (resolve, reject) => {
+		loadRemoteIcons({
+			searchEngines: [se],
+			timeout:5000, 
+			callback: resolve
+		});
+	});
 
 }

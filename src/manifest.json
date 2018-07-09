@@ -36,7 +36,7 @@
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["inject.js","quickmenu.js","opensearch.js","inject_customSearch.js"],
+			"js": ["inject.js","quickmenu.js","opensearch.js","searchEngineUtils.js","inject_customSearch.js"],
 			"css": ["inject.css"],
 			"all_frames": true,
 			"match_about_blank": true

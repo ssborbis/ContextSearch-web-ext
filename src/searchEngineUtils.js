@@ -5,7 +5,7 @@ function searchJsonObjectToArray(engines) {
 	// iterate over search engines in search.json.mozlz4
 	for (var engine of engines) {
 		
-		var search_url = "", params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
+		var query_string = "", params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
 
 		// hidden search engines
 		if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) hidden = true;
@@ -21,25 +21,20 @@ function searchJsonObjectToArray(engines) {
 			method = url.method || "GET";
 			
 			// get the main search url
-			search_url = url.template;
+			query_string = url.template;
 			
 			template = url.template;
-			
-			// get url params
-			params_str = nameValueArrayToParamString(url.params);
-		
+
 			params = url.params;
 		}
 		
-		if (params_str && method.toUpperCase() === "GET")
-			search_url += ( (search_url.match(/[=&\?]$/)) ? "" : "?" ) + params_str
-		
-//		console.log(search_url);
-		
+		if (params.length > 0 && method.toUpperCase() === "GET")
+			query_string += ( (query_string.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(url.params);
+
 		// push object to array for storage.local
 		searchEngines.push({
 			"searchForm": engine.__searchForm || "", 
-			"query_string": search_url,
+			"query_string": query_string,
 			"icon_url": engine._iconURL,
 			"title": engine._name,
 			"order": engine._metaData.order, 
