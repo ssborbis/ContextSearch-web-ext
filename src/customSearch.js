@@ -94,6 +94,7 @@ function addSearchEnginePopup(data) {
 	let se = data.searchEngine || null;
 	let openSearchUrl = data.openSearchUrl || null;
 	let useOpenSearch = data.useOpenSearch || null;
+	let _location = new URL(data.location) || null;
 	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
 	let ose = null;
