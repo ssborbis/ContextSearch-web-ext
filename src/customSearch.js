@@ -66,12 +66,20 @@ function buildOpenSearchAPIUrl() {
 	
 	if (!form) return false;
 	
+	// encode param values before encoding whole string
+	let params = paramStringToNameValueArray(form.post_params.value);	
+	for (let i=0;i<params.length;i++) {
+		params[i].value = encodeURIComponent(params[i].value);
+	}	
+	let param_str = nameValueArrayToParamString(params);
+	
 	// build the URL for the API
 	return "https://opensearch-api.appspot.com" 
 		+ "?SHORTNAME=" + encodeURIComponent(form.shortname.value) 
 		+ "&DESCRIPTION=" + encodeURIComponent(form.description.value) 
 		+ "&TEMPLATE=" + encodeURIComponent(encodeURI(form.template.value)) 
-		+ "&POST_PARAMS=" + encodeURIComponent(form.post_params.value) 
+//		+ "&POST_PARAMS=" + encodeURIComponent(form.post_params.value) 
+		+ "&POST_PARAMS=" + encodeURIComponent(param_str) 
 		+ "&METHOD=" + form._method.value 
 		+ "&ENCODING=" + form._encoding.value 
 		+ "&ICON=" + encodeURIComponent(encodeURI(form.iconURL.value)) 
