@@ -262,7 +262,7 @@ function dataToSearchEngine(data) {
 	let se = {
 		"searchForm": data.origin, 
 		"query_string":query_string,
-		"icon_url": data.origin + "/favicon.ico",
+		"icon_url": data.favicon_href || data.origin + "/favicon.ico",
 		"title": data.title,
 		"order":userOptions.searchEngines.length, 
 		"icon_base64String": "", 

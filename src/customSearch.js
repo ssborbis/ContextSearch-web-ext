@@ -167,7 +167,7 @@ function addSearchEnginePopup(data) {
 		
 		document.getElementById('customForm').shortname.value = shortname;
 
-		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se});
+		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine()});
 
 		// reassign the yes button to add official OpenSearch xml
 		document.getElementById('b_simple_import_yes').onclick = function() {
@@ -413,7 +413,7 @@ function addSearchEnginePopup(data) {
 		}
 		for (let se of userOptions.searchEngines) {
 			if (se.title == form.shortname.value) {
-				alert(browser.i18n.getMessage("EngineExists").replace("%1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName"));
+				alert(browser.i18n.getMessage("EngineExists").replace("%1",se.title) + " " + browser.i18n.getMessage("EnterUniqueName"));
 				return;
 			}
 		}
@@ -439,6 +439,10 @@ function addSearchEnginePopup(data) {
 		}
 		if (form.iconURL.value.match(/^http/i) === null || form.iconURL.value == "") {
 			alert(browser.i18n.getMessage("IconURLError") + ' (' + _location.origin + '/favicon.ico)');
+			return;
+		}
+		if (typeof form.icon.naturalWidth != "undefined" && form.icon.naturalWidth == 0) {
+			alert(browser.i18n.getMessage("IconLoadError") + ' (' + form.iconURL.value + ')');
 			return;
 		}
 
@@ -651,7 +655,20 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // listen for the custom engine to prompt to add
 window.addEventListener("message", (e) => {
-	addSearchEnginePopup(e.data);
+	
+	browser.runtime.sendMessage({action: "log", msg: e.data});
+	
+	if (e.data.action && e.data.action === "promptToSearch") {
+		let ok = document.getElementById('b_simple_search_ok');
+		
+		console.log(ok);
+		ok.onclick = function() {
+			browser.runtime.sendMessage({action: "closeCustomSearch"});
+		}
+		showMenu('simple_search');
+		return;
+	 } else
+		addSearchEnginePopup(e.data);
 }, {once: true});
 
 // let the parent window know the iframe is loaded

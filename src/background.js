@@ -115,7 +115,7 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateContextMenu":
-			let searchTerms = message.searchTerms;
+			var searchTerms = message.searchTerms;
 			
 			if (searchTerms === '') break;
 			
@@ -133,6 +133,8 @@ function notify(message, sender, sendResponse) {
 		case "addContextSearchEngine":
 		
 			let se = message.searchEngine;
+			
+			console.log(se);
 			
 			let index = userOptions.searchEngines.findIndex( (se2) => {
 				return se.title === se2.title;
@@ -218,6 +220,50 @@ function notify(message, sender, sendResponse) {
 			browser.theme.getCurrent().then((theme) => {
 				console.log(theme);
 			});
+			break;
+			
+		case "executeTestSearch":
+		
+			var searchTerms = message.searchTerms;
+			var oldUrl = message.url;
+			var timeout;
+			
+			console.log(message);
+			
+			function listener(tabId, changeInfo, tabInfo) {
+				
+				if (tabId !== sender.tab.id) return;
+				
+				if (tabInfo.status !== "complete") return;
+				
+				if (tabInfo.url === oldUrl) return;
+
+				if (tabInfo.url.indexOf(searchTerms) !== -1) {
+					
+					let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}")
+					console.log(newUrl);
+					
+					let se = message.badSearchEngine;
+					
+					se.template = se.query_string = newUrl;
+
+					browser.tabs.sendMessage(tabId, {action: "openCustomSearch", searchEngine: se}, {frameId: 0});
+					browser.tabs.onUpdated.removeListener(listener);
+					clearTimeout(timeout);
+					
+				}
+
+			}
+			
+			timeout = setTimeout( () => {
+				browser.tabs.onUpdated.removeListener(listener);
+				console.log('timed out');
+			}, 10000);
+
+			browser.tabs.onUpdated.addListener(listener);
+			
+			return true;
+			
 			break;
 	}
 }

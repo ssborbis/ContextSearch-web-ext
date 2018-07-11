@@ -80,12 +80,29 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							
 						});
 					} else { // openCustomSearch called by context menu on FORM
-						
+	
 						let formdata = getFormData();
 
 						dataToSearchEngine(formdata).then( (result) => {
-							let se = result.searchEngines[0];
-							iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href}, browser.runtime.getURL('/customSearch.html'));
+							
+							// use supplied search engine or get from focused form
+							let se = message.searchEngine || result.searchEngines[0];
+							
+							if (!se.template) {
+								
+								let input = window.document.querySelector("input:focus");
+
+								// input change likely means search performed
+								input.addEventListener('change', () => {
+									browser.runtime.sendMessage({action: "log", msg: input.value});
+									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, url: window.location.href, badSearchEngine: se});
+								});
+
+								iframe.contentWindow.postMessage({action: "promptToSearch"}, browser.runtime.getURL('/customSearch.html'));
+								
+							} else {
+								iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href}, browser.runtime.getURL('/customSearch.html'));
+							}
 						});
 					}
 					
@@ -109,6 +126,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}, 1000);
 				
 				break;
+				
 		}
 	}
 });
@@ -133,6 +151,14 @@ function getFormData() {
 	osLink = document.querySelector('link[type="application/opensearchdescription+xml"]')
 	if (osLink !== null) S.openSearchHref = osLink.href || "";
 
+	
+		// Look for favicons
+	// S.favicon_href = ( document.querySelector('link[rel="icon"]') ) ? document.querySelector('link[rel="icon"]').href : null
+		// || ( document.querySelector('link[rel="shortcut icon"]') ) ? document.querySelector('link[rel="shortcut icon"]').href : null
+		// || ( document.querySelector('link[rel="apple-touch-icon"]') ) ? document.querySelector('link[rel="apple-touch-icon"]').href : null
+		// || ( document.querySelector('meta[property="og:image"]') ) ? document.querySelector('meta[property="og:image"]').content : null;
+
+	
 	// Look for favicons
 	favicon_link = document.querySelector('link[rel="icon"]') 
 		|| document.querySelector('link[rel="shortcut icon"]') 
@@ -176,14 +202,15 @@ function getFormData() {
 
 		});
 
-		// get/set name ...
-		var M = window.document.querySelector('meta[property="og:site_name"]');
-		S.name = M ? M.content : window.location.hostname;
-
-		// get description ...
-		M = window.document.querySelector('meta[property="og:description"], meta[name="description"]');
-		S.description = M ? M.content : document.title; // use title if no description
 	}
+	
+	// get/set name ...
+	var M = window.document.querySelector('meta[property="og:site_name"]');
+	S.name = M ? M.content : window.location.hostname;
+
+	// get description ...
+	M = window.document.querySelector('meta[property="og:description"], meta[name="description"]');
+	S.description = M ? M.content : document.title; // use title if no description
 
 	return S;
 }
