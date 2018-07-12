@@ -860,6 +860,20 @@
     "message": "Close the Toolbar Search menu after performing a search"
   },
   
+  "PerformASearchHeader": {
+    "message": "Template Missing",
+    "description": "header message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearch": {
+    "message": "Click OK and perform a new search using the form you are attempting to add",
+    "description": "message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearchTooltip": {
+    "message": "The form does not contain the information necessary to build a search engine. Perform a simple search to have ContextSearch look for a valid search template. It is best to use words that would not normally appear in a search url. Do not use \"search\", \"http\", other common url words or the website name"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

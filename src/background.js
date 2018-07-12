@@ -251,7 +251,7 @@ function notify(message, sender, sendResponse) {
 					// No recognizable GET url. Prompt for advanced options
 					if (Date.now() - timeout > 5000) {
 
-						console.log('timed out');
+						console.log('urlCheckInterval timed out');
 						clearInterval(urlCheckInterval);
 					
 						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", timeout: true}, {frameId: 0});
