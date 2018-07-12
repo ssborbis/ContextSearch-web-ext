@@ -88,14 +88,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							// use supplied search engine or get from focused form
 							let se = message.searchEngine || result.searchEngines[0];
 							
-							if (!se.template) {
+							if (!se.template && !message.timeout) {
 								
 								let input = window.document.querySelector("input:focus");
 
 								// input change likely means search performed
 								input.addEventListener('change', () => {
+									if (!input.value) return;
 									browser.runtime.sendMessage({action: "log", msg: input.value});
-									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, url: window.location.href, badSearchEngine: se});
+									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								});
 
 								iframe.contentWindow.postMessage({action: "promptToSearch"}, browser.runtime.getURL('/customSearch.html'));
@@ -148,7 +149,7 @@ function getFormData() {
 
 	// Check for OpenSearch plugin
 	S.openSearchHref = "";
-	osLink = document.querySelector('link[type="application/opensearchdescription+xml"]')
+	let osLink = document.querySelector('link[type="application/opensearchdescription+xml"]')
 	if (osLink !== null) S.openSearchHref = osLink.href || "";
 
 	
@@ -160,7 +161,7 @@ function getFormData() {
 
 	
 	// Look for favicons
-	favicon_link = document.querySelector('link[rel="icon"]') 
+	let favicon_link = document.querySelector('link[rel="icon"]') 
 		|| document.querySelector('link[rel="shortcut icon"]') 
 		|| document.querySelector('link[rel="apple-touch-icon"]');
 		

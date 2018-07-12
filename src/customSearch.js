@@ -656,12 +656,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // listen for the custom engine to prompt to add
 window.addEventListener("message", (e) => {
 	
-	browser.runtime.sendMessage({action: "log", msg: e.data});
+//	browser.runtime.sendMessage({action: "log", msg: e.data});
 	
 	if (e.data.action && e.data.action === "promptToSearch") {
 		let ok = document.getElementById('b_simple_search_ok');
-		
-		console.log(ok);
+
 		ok.onclick = function() {
 			browser.runtime.sendMessage({action: "closeCustomSearch"});
 		}

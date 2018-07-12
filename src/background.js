@@ -224,43 +224,41 @@ function notify(message, sender, sendResponse) {
 			
 		case "executeTestSearch":
 		
-			var searchTerms = message.searchTerms;
-			var oldUrl = message.url;
-			var timeout;
+			var searchTerms = encodeURIComponent(message.searchTerms);
+			var timeout = Date.now();
 			
-			console.log(message);
+//			console.log(message);
 			
-			function listener(tabId, changeInfo, tabInfo) {
-				
-				if (tabId !== sender.tab.id) return;
-				
-				if (tabInfo.status !== "complete") return;
-				
-				if (tabInfo.url === oldUrl) return;
-
-				if (tabInfo.url.indexOf(searchTerms) !== -1) {
+			let urlCheckInterval = setInterval( () => {
+				browser.tabs.get(sender.tab.id).then( (tabInfo) => {
 					
-					let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}")
-					console.log(newUrl);
-					
-					let se = message.badSearchEngine;
-					
-					se.template = se.query_string = newUrl;
+					if (tabInfo.status !== 'complete') return;
 
-					browser.tabs.sendMessage(tabId, {action: "openCustomSearch", searchEngine: se}, {frameId: 0});
-					browser.tabs.onUpdated.removeListener(listener);
-					clearTimeout(timeout);
+					if (tabInfo.url.indexOf(searchTerms) !== -1) {
+						
+						let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}");
+						
+						let se = message.badSearchEngine;
+						
+						se.template = se.query_string = newUrl;
+
+						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", searchEngine: se}, {frameId: 0});
+						
+						clearInterval(urlCheckInterval);
+						
+					}
 					
-				}
+					// No recognizable GET url. Prompt for advanced options
+					if (Date.now() - timeout > 5000) {
 
-			}
-			
-			timeout = setTimeout( () => {
-				browser.tabs.onUpdated.removeListener(listener);
-				console.log('timed out');
-			}, 10000);
+						console.log('timed out');
+						clearInterval(urlCheckInterval);
+					
+						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", timeout: true}, {frameId: 0});
+					}
 
-			browser.tabs.onUpdated.addListener(listener);
+				});
+			}, 1000);
 			
 			return true;
 			
