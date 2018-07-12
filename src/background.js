@@ -252,9 +252,8 @@ function notify(message, sender, sendResponse) {
 					if (Date.now() - timeout > 5000) {
 
 						console.log('urlCheckInterval timed out');
-						clearInterval(urlCheckInterval);
-					
 						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", timeout: true}, {frameId: 0});
+						clearInterval(urlCheckInterval);
 					}
 
 				});

@@ -874,6 +874,11 @@
     "message": "The form does not contain the information necessary to build a search engine. Perform a simple search to have ContextSearch look for a valid search template. It is best to use words that would not normally appear in a search url. Do not use \"search\", \"http\", other common url words or the website name"
   },
   
+  "OK": {
+    "message": "OK",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""
