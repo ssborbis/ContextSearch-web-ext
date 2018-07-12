@@ -244,29 +244,6 @@ function addSearchEnginePopup(data) {
 	document.getElementById('b_simple_error_no').onclick = function() {
 		closeCustomSearchIframe();
 	}
-
-	// Build tooltips
-	let info_msg = document.createElement('div');
-	info_msg.id = "CS_info_msg";
-	document.body.appendChild(info_msg);
-	
-	for (let info of document.getElementsByClassName('CS_info')) {
-		info.addEventListener('mouseenter', (e) => {
-			info_msg.innerText = info.dataset.msg;
-			info_msg.style.top = info.getBoundingClientRect().top + window.scrollY + 'px';
-			info_msg.style.left = info.getBoundingClientRect().left + window.scrollX + 20 + 'px';
-			info_msg.style.display = 'block';
-			info.getBoundingClientRect();
-			info_msg.style.opacity = 1;
-		});
-		
-		info.addEventListener('mouseleave', (e) => {
-			info_msg.style.opacity = 0;
-			setTimeout(() => {
-				info_msg.style.display = 'none';
-			},250);
-		});
-	}
 	
 	let form = document.getElementById('customForm');
 	
@@ -594,6 +571,29 @@ document.addEventListener('click', (e) => {
 // i18n string replacement and styles
 document.addEventListener('DOMContentLoaded', () => {
 
+		// Build tooltips
+	let info_msg = document.createElement('div');
+	info_msg.id = "CS_info_msg";
+	document.body.appendChild(info_msg);
+	
+	for (let info of document.getElementsByClassName('CS_info')) {
+		info.addEventListener('mouseenter', (e) => {
+			info_msg.innerText = info.dataset.msg;
+			info_msg.style.top = info.getBoundingClientRect().top + window.scrollY + 20 + 'px';
+			info_msg.style.left = info.getBoundingClientRect().left + window.scrollX + 20 + 'px';
+			info_msg.style.display = 'block';
+			info.getBoundingClientRect();
+			info_msg.style.opacity = 1;
+		});
+		
+		info.addEventListener('mouseleave', (e) => {
+			info_msg.style.opacity = 0;
+			setTimeout(() => {
+				info_msg.style.display = 'none';
+			},250);
+		});
+	}
+
 	function traverse(node) {
 		
 		if (node.nodeType === 3 && node.nodeValue.trim())
@@ -621,6 +621,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	for (let el of i18n_tooltips) {
 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
+		console.log(el.dataset.msg);
 	}
 	
 //	console.log(browser.i18n.getUILanguage());
@@ -665,11 +666,12 @@ window.addEventListener("message", (e) => {
 			browser.runtime.sendMessage({action: "closeCustomSearch"});
 		}
 		showMenu('simple_search');
-		return;
 	 } else
 		addSearchEnginePopup(e.data);
 }, {once: true});
 
 // let the parent window know the iframe is loaded
-window.parent.postMessage({status: "complete"}, "*");
+document.addEventListener('DOMContentLoaded', () => {
+	window.parent.postMessage({status: "complete"}, "*");
+});
 

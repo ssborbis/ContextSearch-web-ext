@@ -188,8 +188,7 @@ function openSearchXMLToSearchEngine(xml) {
 		if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
 		
 		let url = xml.documentElement.querySelector("Url[template]");
-		if (url);
-		else reject();
+		if (!url) reject();
 		
 		let template = url.getAttribute('template');
 		if (template) se.template = se.query_string = template;
@@ -240,7 +239,7 @@ function dataToSearchEngine(data) {
 	for (let k in data.params)
 		params.push({name: k, value: data.params[k]});
 
-	if (data.method === "GET") {
+	if (data.method === "GET" && data.query) {
 		
 		let param_str = data.query + "={searchTerms}";
 
@@ -254,7 +253,8 @@ function dataToSearchEngine(data) {
 		// POST form.template = form.action
 		query_string = data.action;
 		
-		params.unshift({name: data.query, value: "{searchTerms}"});
+		if (data.query)
+			params.unshift({name: data.query, value: "{searchTerms}"});
 
 	}
 	

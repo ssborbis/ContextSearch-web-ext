@@ -75,7 +75,8 @@
 		"icons/search.png",
 		"icons/edit.png",
 		"icons/crossmark.png",
-		"icons/checkmark.png"
+		"icons/checkmark.png",
+		"icons/alert_bw.png"
 	],
 	
 	"browser_action": {
