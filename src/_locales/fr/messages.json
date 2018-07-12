@@ -860,6 +860,25 @@
     "message": "Le menu du bouton de la barre d’outils se ferme dès que la recherche est lancée."
   },
   
+  "PerformASearchHeader": {
+    "message": "Modèle manquant",
+    "description": "header message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearch": {
+    "message": "Cliquez sur OK et effectuez une nouvelle recherche à l’aide du formulaire que vous comptez ajouter.",
+    "description": "message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearchTooltip": {
+    "message": "Le formulaire ne contient pas les informations nécessaires à la création d’un moteur de recherche. Effectuez une recherche simple pour qu’un modèle valable puisse être établi. Il est préférable d’utiliser des mots qui ne figurent normalement pas dans une adresse de recherche. N’utilisez pas « search », « http » ou autres mots courants dans une adresse, le nom du site web."
+  },
+  
+  "OK": {
+    "message": "OK",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""
