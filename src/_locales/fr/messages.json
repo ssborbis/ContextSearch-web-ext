@@ -99,7 +99,7 @@
     "message": "Clic droit"
   },
   
-   "Look&LayoutHeader": {
+   "LookLayoutHeader": {
     "message": "Apparence et disposition"
   },
   
@@ -135,11 +135,11 @@
     "message": "Ajustement de la taille des icônes des moteurs de recherche. À 200 %, les icônes remplissent leur case."
   },
   
-  "Opening&ClosingHeader": {
+  "OpeningClosingHeader": {
     "message": "Ouverture et fermeture"
   },
   
-  "Opening&ClosingDescription": {
+  "OpeningClosingDescription": {
     "message": "Choisir le mode d’ouverture du menu rapide à la sélection d’un texte"
   },
   

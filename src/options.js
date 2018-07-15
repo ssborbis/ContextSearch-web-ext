@@ -1,3 +1,9 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 // array for storage.local
 var searchEngines = [];
 var userOptions = {};
@@ -34,38 +40,37 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 		}
 		// end 1.3.2+
 		
-		loadRemoteIcons({
+		loadRemoteIconsNew({
 			searchEngines: newEngines, // 1.3.2+
-			callback: (details) => {
+		}).then( (details) => {
 
-				searchEngines = userOptions.searchEngines.concat(details.searchEngines);
-				saveOptions();
-				
-				if (details.hasFailedCount) {
-					statusMessage({
-						img: "icons/alert.png",
-						msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount)
-					//	msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
-					});
-				} else if (details.hasTimedOut) {
-					statusMessage({
-						img: "icons/alert.png",
-						msg: browser.i18n.getMessage("LoadingRemoteContentTimeout")
-					});
-				} else {
-					statusMessage({
-						img: "icons/yes.png",
-						msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length)
-						//msg: "Imported " + searchEngines.length + " engine(s) (" + details.searchEngines.length + " new)"
-					});
-				}
-					
-				if (window.location.hash === '#quickload') {
-					browser.runtime.sendMessage({action: "closeWindowRequest"});
-				}
-				
-				buildSearchEngineContainer(searchEngines);
+			searchEngines = userOptions.searchEngines.concat(details.searchEngines);
+			saveOptions();
+			
+			if (details.hasFailedCount) {
+				statusMessage({
+					img: "icons/alert.png",
+					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount)
+				//	msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
+				});
+			} else if (details.hasTimedOut) {
+				statusMessage({
+					img: "icons/alert.png",
+					msg: browser.i18n.getMessage("LoadingRemoteContentTimeout")
+				});
+			} else {
+				statusMessage({
+					img: "icons/yes.png",
+					msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length)
+					//msg: "Imported " + searchEngines.length + " engine(s) (" + details.searchEngines.length + " new)"
+				});
 			}
+				
+			if (window.location.hash === '#quickload') {
+				browser.runtime.sendMessage({action: "closeWindowRequest"});
+			}
+			
+			buildSearchEngineContainer(searchEngines);
 		});
 
 	}, function() { // on fail
@@ -670,6 +675,7 @@ function saveOptions(e) {
 	}
 	
 	function onError(error) {
+		console.log(error);
 		console.log(`Error: ${error}`);
 	}
 	
@@ -1167,7 +1173,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // lite
 document.addEventListener("DOMContentLoaded", (e) => {
 	
-	if (typeof browser.runtime.sendNativeMessage === 'function') return false;
+	if (browser.runtime.getBrowserInfo && /* firefox */ typeof browser.runtime.sendNativeMessage === 'function') return false;
 	
 	for (let el of document.getElementsByTagName('native'))
 		el.style.display = 'none';
@@ -1175,6 +1181,14 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	setTimeout(() => {
 		document.getElementById('manual').style.display='inline-block';
 	}, 250);
+});
+
+// browser-specific modifications
+document.addEventListener("DOMContentLoaded", (e) => {
+	if (!browser.runtime.getBrowserInfo) {
+		for (let el of document.querySelectorAll('[data-browser="firefox"]'))
+			el.style.display = 'none';
+	}
 });
 
 function showInfoMsg(el, msg) {

@@ -94,22 +94,19 @@ function nativeApp(options) {
 				
 				if ( newEngines.length === 0 ) return false;
 				
-				return new Promise(function(resolve, reject) {
-					loadRemoteIcons({
-						searchEngines: newEngines, // 1.3.2+
-						callback: (details) => {
-							hideSearchEngines(details.searchEngines).then((_result) => {
-								
-								if (_result) searchEngines = userOptions.searchEngines.concat(_result);
-								console.log("New Search Engines ->");
-								console.log(_result);
-								userOptions.searchEngines = searchEngines;
-								
-								notify({action: "saveUserOptions", userOptions: userOptions});
-								notify({action: "updateUserOptions"});
-								resolve(true);
-							});
-						}
+				return loadRemoteIconsNew({
+					searchEngines: newEngines, // 1.3.2+
+				}).then( (details) => {
+					return hideSearchEngines(details.searchEngines).then((_result) => {
+						
+						if (_result) searchEngines = userOptions.searchEngines.concat(_result);
+						console.log("New Search Engines ->");
+						console.log(_result);
+						userOptions.searchEngines = searchEngines;
+						
+						notify({action: "saveUserOptions", userOptions: userOptions});
+						notify({action: "updateUserOptions"});
+						return true;
 					});
 				});
 

@@ -1,3 +1,9 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 // unique object to reference globally
 var quickMenuObject = { 
 	delay: 250, // how long to hold right-click before quick menu events in ms
@@ -61,6 +67,7 @@ function openQuickMenu(ev) {
 }
 
 function closeQuickMenu(eventType) {
+	
 	eventType = eventType || null;
 		
 	if (
@@ -460,14 +467,16 @@ function makeQuickMenu() {
 				let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), browser.i18n.getMessage("tools_Copy"));
 				
 				addTileEventHandlers(tile_copy, (e) => {
-					let input = document.createElement('input');
-					input.type = "text";
-					input.value = sb.value;//quickMenuObject.searchTerms;
-					input.style = 'width:0;height:0;border:0;padding:0;margin:0;position:absolute;left:-1px;';
-					document.body.appendChild(input);
-					input.select();
+					sb.select();
 					document.execCommand("copy");
-					document.body.removeChild(input);
+					// let input = document.createElement('input');
+					// input.type = "text";
+					// input.value = sb.value;//quickMenuObject.searchTerms;
+					// input.style = 'width:0;height:0;border:0;padding:0;margin:0;position:absolute;left:-1px;';
+					// document.body.appendChild(input);
+					// input.select();
+					// document.execCommand("copy");
+					// document.body.removeChild(input);
 				});
 				
 				tileArray.push(tile_copy);
@@ -1026,6 +1035,7 @@ if (document.title !== "QuickMenu") {
 					break;
 				
 				case "updateSearchTerms":
+
 					// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
 					if (quickMenuObject.locked || document.title === "QuickMenu") {
 						quickMenuObject.searchTerms = message.searchTerms;

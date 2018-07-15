@@ -99,7 +99,7 @@
     "message": "Right Button"
   },
   
-   "Look&LayoutHeader": {
+   "LookLayoutHeader": {
     "message": "Look & Layout"
   },
   
@@ -135,11 +135,11 @@
     "message": "Scaled size of search engine icons. At 200%, icons fill their container entirely"
   },
   
-  "Opening&ClosingHeader": {
+  "OpeningClosingHeader": {
     "message": "Opening & Closing"
   },
   
-  "Opening&ClosingDescription": {
+  "OpeningClosingDescription": {
     "message": "Choose how to open Quick Menu"
   },
   
@@ -268,7 +268,7 @@
   },
   
   "tools_Disable": {
-    "message": "Disable Menu"
+    "message": "Disable menu"
   },
 
   "tools_Copy": {
@@ -280,7 +280,7 @@
   },
 
   "tools_Lock": {
-    "message": "Lock menu open (multi-search)"
+    "message": "Lock menu open"
   },
   
   "ImportExportSettings": {

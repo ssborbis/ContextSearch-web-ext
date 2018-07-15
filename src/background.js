@@ -1,3 +1,9 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 function notify(message, sender, sendResponse) {
 		
 	switch(message.action) {
@@ -5,6 +11,7 @@ function notify(message, sender, sendResponse) {
 		case "saveUserOptions":
 			userOptions = message.userOptions;
 			browser.storage.local.set({"userOptions": message.userOptions});
+			return Promise.resolve({});
 			break;
 			
 		case "updateUserOptions":
@@ -14,7 +21,7 @@ function notify(message, sender, sendResponse) {
 			});
 			
 			buildContextMenu();
-
+			return Promise.resolve({});
 			break;
 			
 		case "nativeAppRequest":
@@ -35,10 +42,9 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
-			if (!sender.tab) {
+			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
-			//		console.log(tab.url);
 					quickMenuSearch(message.info, tab);
 				}
 
@@ -56,35 +62,48 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getUserOptions":
-			sendResponse({"userOptions": userOptions});
+			return Promise.resolve({"userOptions": userOptions});
+			// sendResponse({"userOptions": userOptions});
+			// return true;
 			break;
 		
 		case "getDefaultUserOptions":
-			sendResponse({"defaultUserOptions": defaultUserOptions});
+			return Promise.resolve({"defaultUserOptions": defaultUserOptions});
+			// sendResponse({"defaultUserOptions": defaultUserOptions});
+			// return true;
 			break;
 			
 		case "getSearchEngineByIndex":
 		
 			if ( !message.index ) return;
-			
-			sendResponse({"searchEngine": userOptions.searchEngines[message.index]});
+			return Promise.resolve({"searchEngine": userOptions.searchEngines[message.index]});
+			// sendResponse({"searchEngine": userOptions.searchEngines[message.index]});
+			// return true;
 			break;
 
 		case "openQuickMenu":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
+				return Promise.resolve({});
+			}).catch((reason)=>{console.log(reason)});;
 			break;
 			
 		case "closeQuickMenuRequest":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
+				return Promise.resolve({});
+			}).catch((reason)=>{console.log(reason)});;
 			break;
 		
 		case "quickMenuIframeLoaded":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
+				return Promise.resolve({});
+			}).catch((reason)=>{console.log(reason)});;
 			break;
 		
 		case "updateQuickMenuObject":
 			// send to all frames for bi-directional updates to/from quickmenu IFRAME v1.3.8+
-			browser.tabs.sendMessage(sender.tab.id, message); 
+			browser.tabs.sendMessage(sender.tab.id, message).then( () => {
+				return Promise.resolve({});
+			}).catch((reason)=>{console.log(reason)});;
 			break;
 			
 		case "closeWindowRequest":
@@ -95,23 +114,28 @@ function notify(message, sender, sendResponse) {
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
-		case "getOpenSearchHref":
-			browser.tabs.executeScript( sender.tab.id, {
-				code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
-			}).then( (result) => {
+		// case "getOpenSearchHref":
+			// browser.tabs.executeScript( sender.tab.id, {
+				// code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
+			// }).then( (result) => {
 
-				result = result.shift();
+				// result = result.shift();
 
-				if (result)
-					sendResponse({href: result});
-			});
+				// if (result)
+					// sendResponse({href: result});
+			// });
 			
-			return true;
+			// return true;
 			
-			break;
+			// break;
 			
 		case "updateSearchTerms":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
+				return Promise.resolve({});
+			}).catch((reason)=>{console.log(reason)});
+	
+		//	return Promise.resolve({});
 			break;
 			
 		case "updateContextMenu":
@@ -184,22 +208,19 @@ function notify(message, sender, sendResponse) {
 		case "enableAddCustomSearchMenu":
 
 			if (!userOptions.contextMenuShowAddCustomSearch) return;
-			
-			console.log('enabling custom search menu item');
-				
+
 			browser.contextMenus.create({
 				id: "add_engine",
 				title: browser.i18n.getMessage("AddCustomSearch"),
 				contexts: ["editable"]
 			});
-			
-			// Delaying the removal should keep the menu item visible long enough to open the context menu
-			setTimeout(() => {
-				browser.contextMenus.remove("add_engine");
-			}, 1000);
 
 			break;
-
+			
+		case "enableAddCustomSearchMenu":
+			browser.contextMenus.remove("add_engine");
+			break;
+			
 		case "log":
 			console.log(message.msg);
 			break;
@@ -213,7 +234,8 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getLastSearch":
-			sendResponse({lastSearch: sessionStorage.getItem("lastSearch")});
+			return Promise.resolve({lastSearch: sessionStorage.getItem("lastSearch")});
+			// sendResponse({lastSearch: sessionStorage.getItem("lastSearch")});
 			break;
 			
 		case "getCurrentTheme":
@@ -315,16 +337,22 @@ function buildContextMenu(disableAddCustomSearch) {
 				
 				let se = userOptions.searchEngines[i];
 				if (se.hidden) continue;
-				browser.contextMenus.create({
+				
+				let menuOptions = {
 					parentId: "search_engine_menu",
 					id: i.toString(),
 					title: se.title,
-					contexts: ["selection", "link", "image"],
-					icons: {
+					contexts: ["selection", "link", "image"]
+				}
+				
+				if ( browser.runtime.getBrowserInfo /* firefox */ ) {
+					menuOptions.icons = {
 						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 					}
-				});
+				}
+
+				browser.contextMenus.create( menuOptions );
 			}
 		}
 	});		
@@ -352,7 +380,6 @@ function contextMenuSearch(info, tab) {
 	
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
-			
 		browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
 		return false;
 	}
@@ -387,9 +414,9 @@ function contextMenuSearch(info, tab) {
 		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
 	// get modifier keys
-	if ( info.modifiers.includes("Shift") )
+	if ( info.modifiers && info.modifiers.includes("Shift") )
 		openMethod = userOptions.contextMenuShift;
-	else if ( info.modifiers.includes("Ctrl") )
+	else if ( info.modifiers && info.modifiers.includes("Ctrl") )
 		openMethod = userOptions.contextMenuCtrl;
 	else
 		openMethod = userOptions.contextMenuClick;
@@ -469,7 +496,7 @@ function openSearch(details) {
 		
 	}
 	
-	console.log("openSearch url -> " + q);
+//	console.log("openSearch url -> " + q);
 	
 	switch (openMethod) {
 		case "openCurrentTab":
@@ -491,31 +518,7 @@ function openSearch(details) {
 	}
 	
 	function onCreate(_tab) {
-		
-		// browser.tabs.executeScript(_tab.id, {
-			// code: "\
-			// window.addEventListener('keydown', (e) => {\
-				// console.log(e);\
-				// if (\
-					// e.keyCode !== 9 ||\
-					// !document.getElementById('quickMenuIframe') \
-				// ) return;\
-				// e.preventDefault();\
-				// browser.runtime.sendMessage({action: 'focusSearchBar'});\
-			// });\
-			// window.addEventListener('keydown', (e) => {\
-				// if (\
-					// e.keyCode !== 81 || !e.ctrlKey\
-				// ) return;\
-				// console.log('heard keypress');\
-				// e.preventDefault();\
-				// openQuickMenu(e);\
-			// });",
-			// runAt: 'document_start',
-			// allFrames: true
-			// });
-
-		
+	
 		// code for POST engines
 		if (typeof se.method === 'undefined' || se.method !== "POST") return;
 		
@@ -801,9 +804,9 @@ browser.runtime.onInstalled.addListener((details) => {
 	if ( 
 		details.temporary 
 	) {
-		browser.tabs.create({
-			url: "/options.html"
-		});
+		// browser.tabs.create({
+			// url: "/options.html"
+		// });
 		
 	
 		// if (userOptions.searchEngines == defaultEngines) {
@@ -836,21 +839,23 @@ function bookmarksModificationHandler(id, moveInfo) {
 		browser.bookmarks === undefined
 	) return false;
 	
-	// let throttler = sessionStorage.getItem('bookmarksListenerThrottler');
+	let throttler = sessionStorage.getItem('bookmarksListenerThrottler');
 
-	// if (throttler) return;
+	if (throttler) return;
 
-	// sessionStorage.setItem('bookmarksListenerThrottler', "true");
+	sessionStorage.setItem('bookmarksListenerThrottler', "true");
 
 	CSBookmarks.isDescendent(moveInfo.parentId).then((result) => {
 		if (result) {
 			console.log('modified parentId is descendent of ContextSearch Menu. Rebuilding context menu');
 			buildContextMenu();
+			sessionStorage.removeItem('bookmarksListenerThrottler');
 		} else {
 			CSBookmarks.isDescendent(moveInfo.parentId).then((result) => {
 				if (result) {
 					console.log('modified oldParentId is descendent of ContextSearch Menu. Rebuilding context menu');
 					buildContextMenu();
+					sessionStorage.removeItem('bookmarksListenerThrottler');
 				}
 			});
 		}
@@ -869,62 +874,65 @@ if (browser.bookmarks !== undefined) {
 }
 
 
-/*
-Initialize the page action: set icon and title, then show.
-Only operates on tabs whose URL's protocol is applicable.
-*/
-function initializePageAction(tab) {
-	
-	browser.pageAction.hide(tab.id);
-	
-	var anchor = document.createElement('a');
-	anchor.href = tab.url;
-	
-	if ( ! ['http:', 'https:'].includes(anchor.protocol)) return false;
 
-	browser.tabs.executeScript( tab.id, {
-		code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href;",
-		runAt: "document_end"
-	}).then( (result) => {
+if (browser.pageAction) {
+	/*
+	Initialize the page action: set icon and title, then show.
+	Only operates on tabs whose URL's protocol is applicable.
+	*/
+	function initializePageAction(tab) {
+		
+		browser.pageAction.hide(tab.id);
+		
+		var anchor = document.createElement('a');
+		anchor.href = tab.url;
+		
+		if ( ! ['http:', 'https:'].includes(anchor.protocol)) return false;
 
-		result = result.shift();
+		browser.tabs.executeScript( tab.id, {
+			code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href;",
+			runAt: "document_end"
+		}).then( (result) => {
 
-		if (result) {
-			browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
-			browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("AddCustomSearch")});
-			browser.pageAction.show(tab.id);
-		} 
-			
+			result = result.shift();
+
+			if (result) {
+				browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
+				browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("AddCustomSearch")});
+				browser.pageAction.show(tab.id);
+			} 
+				
+		});
+
+	}
+
+	/*
+	When first loaded, initialize the page action for all tabs.
+	*/
+	var gettingAllTabs = browser.tabs.query({});
+	gettingAllTabs.then((tabs) => {
+		for (let tab of tabs) {
+			initializePageAction(tab);
+		}
 	});
 
-}
-
-/*
-When first loaded, initialize the page action for all tabs.
-*/
-var gettingAllTabs = browser.tabs.query({});
-gettingAllTabs.then((tabs) => {
-	for (let tab of tabs) {
+	/*
+	Each time a tab is updated, reset the page action for that tab.
+	*/
+	browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+		if (changeInfo.status !== 'complete') return;
 		initializePageAction(tab);
-	}
-});
+	});
 
-/*
-Each time a tab is updated, reset the page action for that tab.
-*/
-browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-	if (changeInfo.status !== 'complete') return;
-	initializePageAction(tab);
-});
+	browser.pageAction.onClicked.addListener((tab) => {
+		
+		browser.tabs.sendMessage(tab.id, {
+			action: "openCustomSearch",
+			useOpenSearch: true
+		}, {frameId: 0});
 
-browser.pageAction.onClicked.addListener((tab) => {
-	
-	browser.tabs.sendMessage(tab.id, {
-		action: "openCustomSearch",
-		useOpenSearch: true
-	}, {frameId: 0});
-
-});
+	});
+}
 
 /*
 // inject at tab creation

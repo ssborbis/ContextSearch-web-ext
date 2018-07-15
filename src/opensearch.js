@@ -44,7 +44,7 @@ function paramStringToNameValueArray(str) {
 }
 
 function imageToBase64(image, maxSize) {
-
+	
 	let c = document.createElement('canvas');
 	let ctx = c.getContext('2d');
 	
@@ -71,9 +71,11 @@ function imageToBase64(image, maxSize) {
 		
 		console.log(e);
 		
-		ctx.drawImage(image, 0, 0);
+		// ctx.drawImage(image, 0, 0);
 		
-		return c.toDataURL();
+		// return c.toDataURL();
+		
+		return "";
 	} 
 	
 }
@@ -110,116 +112,114 @@ function getDomains(url) {
 	
 }
 
-function readOpenSearchUrl(url, callback) {
-	callback = callback || function() {};
-    var xmlhttp;
-
-    xmlhttp = new XMLHttpRequest();
-
-	xmlhttp.onreadystatechange = function()	{
-		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-			if(xmlhttp.status == 200) {
-
-				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
-				
-				if (parsed.documentElement.nodeName=="parsererror") {
-					console.log('xml parse error');
-					
-					console.log(parsed);
-					
-					// // try to repair bad template urls
-					// let regexStr = /<Url .* template="(.*)"/g;
-					// let matches = regexStr.exec(xmlhttp.responseText);
-					
-					// if ( matches.length === 2 ) {
-						// let template = matches[1];
-						
-						// template = template.replace(/&amp;/g, "&");
-						// template = template.replace(/&/g, "&amp;");
-						
-						// console.log(template);
-						
-						// let newXML = xmlhttp.responseText.replace(matches[1], template);
-						
-						// console.log(newXML);
-						
-						
-						
-						// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
-						
-						// if (parsed.documentElement.nodeName=="parsererror")
-							parsed = false;
-				//	}
-
-				}
-				callback(parsed);
-		   } else {
-			   console.log('Error fetching ' + url);
-		   }
-		}
-	}
+function readOpenSearchUrl(url) {
 	
-	xmlhttp.ontimeout = function (e) {
-		console.log('Timeout fetching ' + url);
-		callback(false);
-	};
+	return new Promise( (resolve, reject) => {
+		var xmlhttp;
 
-	xmlhttp.open("GET", url, true);
-	xmlhttp.timeout = 2000;
-	xmlhttp.send();
+		xmlhttp = new XMLHttpRequest();
+
+		xmlhttp.onreadystatechange = function()	{
+			if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+				if(xmlhttp.status == 200) {
+
+					let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
+					
+					if (parsed.documentElement.nodeName=="parsererror") {
+						console.log('xml parse error');
+						
+						console.log(parsed);
+						
+						// // try to repair bad template urls
+						// let regexStr = /<Url .* template="(.*)"/g;
+						// let matches = regexStr.exec(xmlhttp.responseText);
+						
+						// if ( matches.length === 2 ) {
+							// let template = matches[1];
+							
+							// template = template.replace(/&amp;/g, "&");
+							// template = template.replace(/&/g, "&amp;");
+							
+							// console.log(template);
+							
+							// let newXML = xmlhttp.responseText.replace(matches[1], template);
+							
+							// console.log(newXML);
+							
+							
+							
+							// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
+							
+							// if (parsed.documentElement.nodeName=="parsererror")
+								parsed = false;
+					//	}
+
+					}
+					resolve(parsed);
+			   } else {
+				   console.log('Error fetching ' + url);
+				   reject(false);
+			   }
+			}
+		}
+		
+		xmlhttp.ontimeout = function (e) {
+			console.log('Timeout fetching ' + url);
+			reject(false);
+		};
+
+		xmlhttp.open("GET", url, true);
+		xmlhttp.timeout = 2000;
+		xmlhttp.send();
+	});
 }
 
 
 function openSearchXMLToSearchEngine(xml) {
 		
-	return new Promise( (resolve, reject) => {	
+	let se = {};
+
+	let shortname = xml.documentElement.querySelector("ShortName");
+	if (shortname) se.title = shortname.textContent;
+	else reject();
 	
-		let se = {};
+	let description = xml.documentElement.querySelector("Description");
+	if (description) se.description = description.textContent;
+	else reject();
+	
+	let inputencoding = xml.documentElement.querySelector("InputEncoding");
+	if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
+	
+	let url = xml.documentElement.querySelector("Url[template]");
+	if (!url) reject();
+	
+	let template = url.getAttribute('template');
+	if (template) se.template = se.query_string = template;
+	
+	let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
+	if (searchform) se.searchForm = searchform.textContent;
+	else if (template) se.searchForm = new URL(template).origin;
+	
+	let image = xml.documentElement.querySelector("Image");
+	if (image) se.icon_url = image.textContent;
+	else se.icon_url = new URL(template).origin + '/favicon.ico';
+	
+	let method = url.getAttribute('method');
+	if (method) se.method = method.toUpperCase() || "GET";
 
-		let shortname = xml.documentElement.querySelector("ShortName");
-		if (shortname) se.title = shortname.textContent;
-		else reject();
-		
-		let description = xml.documentElement.querySelector("Description");
-		if (description) se.description = description.textContent;
-		else reject();
-		
-		let inputencoding = xml.documentElement.querySelector("InputEncoding");
-		if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
-		
-		let url = xml.documentElement.querySelector("Url[template]");
-		if (!url) reject();
-		
-		let template = url.getAttribute('template');
-		if (template) se.template = se.query_string = template;
-		
-		let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
-		if (searchform) se.searchForm = searchform.textContent;
-		else if (template) se.searchForm = new URL(template).origin;
-		
-		let image = xml.documentElement.querySelector("Image");
-		if (image) se.icon_url = image.textContent;
-		else se.icon_url = new URL(template).origin + '/favicon.ico';
-		
-		let method = url.getAttribute('method');
-		if (method) se.method = method.toUpperCase() || "GET";
+	let params = [];
+	for (let param of url.getElementsByTagName('Param')) {
+		params.push({name: param.getAttribute('name'), value: param.getAttribute('value')})
+	}
+	se.params = params;
+	
+	if (se.params.length > 0 && se.method === "GET") {
+		se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
+	}
 
-		let params = [];
-		for (let param of url.getElementsByTagName('Param')) {
-			params.push({name: param.getAttribute('name'), value: param.getAttribute('value')})
-		}
-		se.params = params;
-		
-		if (se.params.length > 0 && se.method === "GET") {
-			se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
-		}
-		
-		loadRemoteIcons({
-			searchEngines: [se],
-			timeout:5000, 
-			callback: resolve
-		});
-
+	return loadRemoteIconsNew({
+		searchEngines: [se],
+		timeout:5000
 	});
 
 }
@@ -273,12 +273,9 @@ function dataToSearchEngine(data) {
 		"description": data.description
 	};
 
-	return new Promise( (resolve, reject) => {
-		loadRemoteIcons({
-			searchEngines: [se],
-			timeout:5000, 
-			callback: resolve
-		});
+	return loadRemoteIconsNew({
+		searchEngines: [se],
+		timeout:5000
 	});
 
 }

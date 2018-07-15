@@ -7,6 +7,12 @@ function inputAddCustomSearchHandler(input) {
 		) return;
 
 		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
+		
+		setTimeout(() => {
+			window.addEventListener('mousemove', ()=> {
+				browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
+			}, {once: true});
+		}, 1000);
 			
 	});
 }
@@ -62,12 +68,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					
 					if (message.useOpenSearch) { // openCustomSearch called by page_action
 
-						readOpenSearchUrl( os_href, (xml) => {
+						readOpenSearchUrl( os_href ).then( (xml) => {
 								
 							if (!xml) return false;
 
 							openSearchXMLToSearchEngine(xml).then((details) => {
-								
+
 								if (!details) {
 									console.log('Cannot build search engine from xml. Missing values');
 									return false;
@@ -95,7 +101,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 								// input change likely means search performed
 								input.addEventListener('change', () => {
 									if (!input.value) return;
-									browser.runtime.sendMessage({action: "log", msg: input.value});
+								//	browser.runtime.sendMessage({action: "log", msg: input.value});
 									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								});
 
@@ -144,7 +150,7 @@ function getFormData() {
 		origin: window.location.origin,
 		description: "",
 		characterSet: document.characterSet,
-		title: document.title
+		title: document.title || window.location.hostname
 	};
 
 	// Check for OpenSearch plugin
@@ -152,14 +158,6 @@ function getFormData() {
 	let osLink = document.querySelector('link[type="application/opensearchdescription+xml"]')
 	if (osLink !== null) S.openSearchHref = osLink.href || "";
 
-	
-		// Look for favicons
-	// S.favicon_href = ( document.querySelector('link[rel="icon"]') ) ? document.querySelector('link[rel="icon"]').href : null
-		// || ( document.querySelector('link[rel="shortcut icon"]') ) ? document.querySelector('link[rel="shortcut icon"]').href : null
-		// || ( document.querySelector('link[rel="apple-touch-icon"]') ) ? document.querySelector('link[rel="apple-touch-icon"]').href : null
-		// || ( document.querySelector('meta[property="og:image"]') ) ? document.querySelector('meta[property="og:image"]').content : null;
-
-	
 	// Look for favicons
 	let favicon_link = document.querySelector('link[rel="icon"]') 
 		|| document.querySelector('link[rel="shortcut icon"]') 
@@ -207,11 +205,11 @@ function getFormData() {
 	
 	// get/set name ...
 	var M = window.document.querySelector('meta[property="og:site_name"]');
-	S.name = M ? M.content : window.location.hostname;
+	S.name = M ? M.content || window.location.hostname : window.location.hostname;
 
 	// get description ...
 	M = window.document.querySelector('meta[property="og:description"], meta[name="description"]');
-	S.description = M ? M.content : document.title; // use title if no description
+	S.description = M ? M.content : document.title || window.location.hostname; // use title if no description
 
 	return S;
 }

@@ -99,7 +99,7 @@
     "message": "Rechtsklick"
   },
   
-   "Look&LayoutHeader": {
+   "LookLayoutHeader": {
     "message": "Aussehen & Darstellung"
   },
   
@@ -135,11 +135,11 @@
     "message": "Skalierte Größe der Suchmaschinensymbole. Bei 200% füllen die Symbole ihren Container vollständig."
   },
   
-  "Opening&ClosingHeader": {
+  "OpeningClosingHeader": {
     "message": "Öffnen & Schließen"
   },
   
-  "Opening&ClosingDescription": {
+  "OpeningClosingDescription": {
     "message": "Methode zum Öffnen des Schnellmenüs"
   },
   

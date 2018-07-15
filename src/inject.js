@@ -1,3 +1,9 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 function getSelectedText(el) {
 	
 	if (el && typeof el.selectionStart !== 'undefined') {

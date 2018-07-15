@@ -166,4 +166,123 @@ function loadRemoteIcons(options) {
 	}, 250);
 
 }
+
+function loadRemoteIconsNew(options) {
+	
+	return new Promise( (resolve,reject) => {
+	
+		var timeout_start = Date.now();
+		var timeout = options.timeout || 15000;
+		var searchEngines = options.searchEngines || [];
+		
+		let details = {
+			searchEngines: [],
+			hasTimedOut: false,
+			hasFailedCount: 0
+		}
+		
+		// when favicons fail, construct a simple image using canvas
+		function tempImgToBase64(img) {
+			var c = document.createElement('canvas');
+			var ctx = c.getContext('2d');
+			ctx.canvas.width = 16;
+			ctx.canvas.height = 16;
+			ctx.fillStyle = '#6ec179';
+			ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+			ctx.font="16px Georgia";
+			ctx.textAlign = 'center';
+			ctx.textBaseline="middle"; 
+			ctx.fillStyle = "#FFFFFF";
+			ctx.fillText(img.favicon_monogram,8,8);
+	//		console.log(img.favicon_monogram);
+			
+			return c.toDataURL();
+		}
+		
+		var icons = [];
+		for (let se of searchEngines) {		
+			var img = new Image();
+			img.favicon_urls = [];		
+			img.favicon_monogram = se.title.charAt(0).toUpperCase();
+
+			var url = new URL(se.query_string || se.template || se.searchForm || window.location.href);
+			
+			// security policy may mean only the favicon may be converted by canvas
+			img.favicon_urls = [
+				url.origin + "/favicon.ico",
+				"https://icons.better-idea.org/icon?url=" + url.hostname + "&size=16",
+				"https://plus.google.com/_/favicon?domain=" + url.hostname,				
+			];
+
+			if (se.icon_url.match(/^resource/) !== null || se.icon_url == "") 
+				img.src = img.favicon_urls.shift();
+			else 
+				img.src = se.icon_url;
+
+			img.onload = function() {
+				this.base64String = imageToBase64(this, 32);
+				
+				// image was loaded but canvas was tainted
+				if (!this.base64String)
+					this.onerror();
+			};
+			
+			img.onerror = function() {			
+				if (this.favicon_urls.length !== 0) {
+					console.log("Failed getting favicon at " + this.src);
+					this.src = this.favicon_urls.shift();
+					console.log("Trying favicon at " + this.src);
+				}
+				else {
+					this.base64String = tempImgToBase64(this);
+					this.failed = true;
+				}
+			};
+			icons.push(img);
+		}
+		
+		var remoteIconsInterval = setInterval(function() {
+				
+			function onComplete() {
+				clearInterval(remoteIconsInterval);
+				details.hasFailedCount = getFailedCount();
+				details.searchEngines = searchEngines;
+				resolve(details);
+			}
+
+			function getFailedCount() {
+				let c = 0;
+				for (let icon of icons) {
+					if (typeof icon.failed !== 'undefined') c++;
+				}
+				return c;
+			}
+			
+			var counter = 0;
+			for (let i=0;i<icons.length;i++) {
+				if (typeof icons[i].base64String !== 'undefined') {
+					searchEngines[i].icon_base64String = icons[i].base64String;
+					counter++;
+				}
+			}
+			
+			if (Date.now() - timeout_start > timeout ) {
+				details.hasTimedOut = true;
+				
+				for (let i=0;i<icons.length;i++) {
+					if (typeof icons[i].base64String === 'undefined')
+						searchEngines[i].icon_base64String = tempImgToBase64(icons[i]);
+				}
+				onComplete();
+			}
+			
+			if (counter === icons.length) {
+				onComplete();
+			}
+			
+		}, 250);
+	});
+
+}
 		

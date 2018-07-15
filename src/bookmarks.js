@@ -1,4 +1,23 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 class CSBookmarks {
+	
+	static getType(node) {
+		if ( node.type === 'bookmark' || ( !node.type && node.url ) )
+			return 'bookmark';
+		
+		if ( node.type === 'folder' || node.children )
+			return 'folder';
+		
+		if ( node.type === 'separator' )
+			return 'separator';
+		
+		return "";
+	}
 	
 	static create() {
 		
@@ -7,10 +26,15 @@ class CSBookmarks {
 		function onFulfilled(bookmarks) {
 			
 			if (bookmarks.length === 0) {
-				return browser.bookmarks.create({
-					title: browser.i18n.getMessage("ContextSearchMenu"),
-					type: 'folder'
-				}).then( (bm) => {
+				
+				let createOptions = {
+					title: browser.i18n.getMessage("ContextSearchMenu")
+				}
+				
+				if (browser.bookmarks.BookmarkTreeNodeType)
+					createOptions.type = 'folder';
+				
+				return browser.bookmarks.create( createOptions ).then( (bm) => {
 					return bm;
 				}).then((bm) => {
 					
@@ -83,9 +107,9 @@ class CSBookmarks {
 			
 			function traverse(node) {
 				
-				if (node.type === 'bookmark') names.push(node.title);
+				if ( CSBookmarks.getType(node) === 'bookmark' ) names.push(node.title);
 				
-				if (node.type === 'folder') {
+				if ( CSBookmarks.getType(node) === 'folder' ) {
 					for (let child of node.children)
 						traverse(child);
 				}
@@ -109,9 +133,9 @@ class CSBookmarks {
 			
 			function traverse(node) {
 				
-				if (node.type === 'bookmark' && node.title === str) return node.id;
+				if ( CSBookmarks.getType(node) === 'bookmark' && node.title === str) return node.id;
 				
-				if (node.type === 'folder') {
+				if ( CSBookmarks.getType(node) === 'folder' ) {
 					for (let child of node.children) {
 							
 						let id = traverse(child);
@@ -205,14 +229,16 @@ class CSBookmarks {
 				return false;
 			} 
 		}
-		  
+		
 		return browser.permissions.request({permissions: ["bookmarks"]}).then(onResponse);
 	}
 	
 	static buildContextMenu() {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		console.log('buildBookmarks');
 		
+		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+
 		this.getAll().then((bookmark) => {
 				
 			if (!bookmark) return false;
@@ -221,7 +247,7 @@ class CSBookmarks {
 			
 			function traverse(node) {
 
-				if (node.type === 'bookmark') {
+				if ( CSBookmarks.getType(node) === 'bookmark' ) {
 			
 					let index = userOptions.searchEngines.findIndex( (se) => {
 						return se.title === node.title;
@@ -235,35 +261,47 @@ class CSBookmarks {
 
 					let se = userOptions.searchEngines[index] || {title: node.title}; // bookmarklets
 					
-					browser.contextMenus.create({
+					let createOptions = {
 						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
 						title: se.title,
 						id: (index !== -1) ? index.toString() : node.id, // bookmarklets
-						contexts: ["selection", "link", "image"],
-						icons: {
+						contexts: ["selection", "link", "image"]	
+					}
+					
+					if (browser.bookmarks.BookmarkTreeNodeType) {
+						createOptions.icons = {
 							"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 							"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 						}
-					});
+					}
+
+					browser.contextMenus.create( createOptions );
 				}
 				
-				if (node.type === 'separator') {
+				if (node.type === 'separator' /* firefox */) {
 					browser.contextMenus.create({
 						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
 						type: "separator"
 					});
 				}
 				
-				if (node.type === 'folder') {
-					browser.contextMenus.create({
+				if ( CSBookmarks.getType(node) === 'folder' ) {
+					
+					let createOptions = {
 						parentId: (node.parentId === bookmark.id) ? "search_engine_menu" : node.parentId,
 						id: node.id,
 						title: node.title,
-						icons: {
+						contexts: ["selection", "link", "image"]
+					}
+					
+					if (browser.bookmarks.BookmarkTreeNodeType) {
+						createOptions.icons = {
 							"16": "/icons/folder.png",
 							"32": "/icons/folder.png"
 						}
-					});
+					}
+
+					browser.contextMenus.create( createOptions );
 					
 					for (let child of node.children) traverse(child);
 				}
@@ -285,7 +323,7 @@ class CSBookmarks {
 			
 			function traverse(node) {
 
-				if (node.type === 'folder') {
+				if ( CSBookmarks.getType(node) === 'folder' ) {
 					for (let child of node.children) {
 						let found = traverse(child);
 						if (found) return true;

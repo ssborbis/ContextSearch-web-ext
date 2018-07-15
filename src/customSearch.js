@@ -1,3 +1,9 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 var userOptions = {};
 
 function formToSearchEngine() {
@@ -96,6 +102,8 @@ function addSearchEnginePopup(data) {
 	let useOpenSearch = data.useOpenSearch || null;
 	let _location = new URL(data.location) || null;
 	
+//	console.log(se);
+	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
 	let ose = null;
 	
@@ -110,11 +118,11 @@ function addSearchEnginePopup(data) {
 	} else {
 		if (openSearchUrl) {
 			
-			readOpenSearchUrl( openSearchUrl, (xml) => {
-				
+			readOpenSearchUrl( openSearchUrl ).then ((xml) => {
+
 				if (!xml) return false;
 
-				openSearchXMLToSearchEngine(xml).then((details) => {
+				return openSearchXMLToSearchEngine(xml).then((details) => {
 					
 					if (!details) {
 						console.log('Cannot build search engine from xml. Missing values');
@@ -129,15 +137,26 @@ function addSearchEnginePopup(data) {
 					
 				});
 				
+			}, () => {
+				console.log('error');
+				document.getElementById('simple').querySelector('input').value = se.title;
 			});
-		}
+
+			
+		} else 
+			document.getElementById('simple').querySelector('input').value = se.title;
 	}
 		
-	document.getElementById('simple').querySelector('input').value = se.title;
+	
 
 	//setup buttons
 	document.getElementById('a_simple_moreOptions').onclick = function() {
-		showMenu('CS_customSearchDialogOptions');
+		
+		if (browser.runtime.getBrowserInfo /* firefox */ )
+			showMenu('CS_customSearchDialogOptions');
+		else
+			showMenu('customForm');
+
 	}
 	
 	document.getElementById('a_simple_fewerOptions').onclick = function() {
@@ -169,19 +188,23 @@ function addSearchEnginePopup(data) {
 
 		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine()});
 
-		// reassign the yes button to add official OpenSearch xml
-		document.getElementById('b_simple_import_yes').onclick = function() {
+		if ( browser.runtime.getBrowserInfo /* firefox */) {
+			// reassign the yes button to add official OpenSearch xml
+			document.getElementById('b_simple_import_yes').onclick = function() {
 
-			// build the GET url for opensearch-api.appspot.com
-			let url = buildOpenSearchAPIUrl();
+				// build the GET url for opensearch-api.appspot.com
+				let url = buildOpenSearchAPIUrl();
 
-			// if using OpenSearch engine and name has not changed, use url to OpenSearch.xml
-			if (useOpenSearch && shortname === ose.title)
-				url = openSearchUrl;
-			
-			simpleImportHandler(url, true);
+				// if using OpenSearch engine and name has not changed, use url to OpenSearch.xml
+				if (useOpenSearch && shortname === ose.title)
+					url = openSearchUrl;
+				
+				simpleImportHandler(url, true);
+			}
+			showMenu('simple_import');
+		} else {
+			closeCustomSearchIframe();
 		}
-		showMenu('simple_import');
 
 	}
 	
@@ -329,7 +352,7 @@ function addSearchEnginePopup(data) {
 
 	// Set up official add-on if exists	
 
-	if (openSearchUrl) {
+	if (openSearchUrl && browser.runtime.getBrowserInfo /* firefox */) {
 		let div = document.getElementById('CS_optionInstallOfficialEngine');
 		
 		// Add button
@@ -349,12 +372,16 @@ function addSearchEnginePopup(data) {
 				console.log(response);
 			});
 			
-			// reassign the yes button to add official OpenSearch xml
-			document.getElementById('b_simple_import_yes').onclick = function() {
-				simpleImportHandler(openSearchUrl);
+			if ( browser.runtime.getBrowserInfo /* firefox */ ) {
+				// reassign the yes button to add official OpenSearch xml
+				document.getElementById('b_simple_import_yes').onclick = function() {
+					simpleImportHandler(openSearchUrl);
+				}
+				
+				showMenu('simple_import');
+			} else {
+				closeCustomSearchIframe();
 			}
-			
-			showMenu('simple_import');
 			
 		}
 		
@@ -362,12 +389,15 @@ function addSearchEnginePopup(data) {
 		div.style.display=null;
 	
 	} 
-
 	
-	// Find Plugin listener
-	document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
-		listenForFocusAndPromptToImport();
-		window.open("http://mycroftproject.com/search-engines.html?name=" + _location.hostname, "_blank");
+	if (browser.runtime.getBrowserInfo) {
+		// Find Plugin listener
+		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
+			listenForFocusAndPromptToImport();
+			window.open("http://mycroftproject.com/search-engines.html?name=" + _location.hostname, "_blank");
+		}
+		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').style.display = 'inline-block';
+		
 	}
 	
 	// Form test
@@ -377,7 +407,11 @@ function addSearchEnginePopup(data) {
 	
 	// Form cancel
 	form.cancel.onclick = function() {
-		showMenu('CS_customSearchDialogOptions');
+		
+		if ( browser.runtime.getBrowserInfo /* firefox */ )
+			showMenu('CS_customSearchDialogOptions');
+		else
+			showMenu('simple');
 	}
 
 	// Form submit
@@ -431,13 +465,17 @@ function addSearchEnginePopup(data) {
 	//		console.log(response);
 		});
 		
-		// reassign the yes button to add form OpenSearch xml
-		document.getElementById('b_simple_import_yes').onclick = function() {
-			let url = buildOpenSearchAPIUrl();
-			simpleImportHandler(url, true);
+		if ( browser.runtime.getBrowserInfo /* firefox */ ) {
+			// reassign the yes button to add form OpenSearch xml
+			document.getElementById('b_simple_import_yes').onclick = function() {
+				let url = buildOpenSearchAPIUrl();
+				simpleImportHandler(url, true);
+			}
+			
+			showMenu('simple_import');
+		} else {
+			closeCustomSearchIframe();
 		}
-		
-		showMenu('simple_import');
 	}
 	
 	// Custom button listener
@@ -455,7 +493,7 @@ function testOpenSearch(form) {
 
 	let params = [];
 
-	console.log(params);
+//	console.log(params);
 	
 	params = paramStringToNameValueArray(form.post_params.value);
 
@@ -621,7 +659,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 	for (let el of i18n_tooltips) {
 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
-		console.log(el.dataset.msg);
 	}
 	
 //	console.log(browser.i18n.getUILanguage());

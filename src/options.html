@@ -841,7 +841,7 @@
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
 					</select>
 				</p>
-				<p class='short'><span class='keyboardButton' id='default_shift' data-i18n='ShiftKey'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+				<p class='short' data-browser='firefox'><span class='keyboardButton' id='default_shift' data-i18n='ShiftKey'>Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto' class='inputNice' id='s_contextMenuShift'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
@@ -852,7 +852,7 @@
 						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
-				<p class='short'><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
+				<p class='short' data-browser='firefox'><span class='keyboardButton' id='default_ctrl'>Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_contextMenuCtrl'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
@@ -883,7 +883,7 @@
 					Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly
 				</div>
 				
-				<p class='header1' data-i18n='Opening&ClosingHeader'>Opening &amp; Closing</p>
+				<p class='header1' data-i18n='OpeningClosingHeader'>Opening &amp; Closing</p>
 			<!--
 				<div data-i18n='Opening&ClosingDescription' style='font-size:9pt'>Choose how to open Quick Menu</div>
 				
@@ -1079,7 +1079,7 @@
 	
 				</p>
 				
-				<p class='header1' data-i18n='Look&LayoutHeader'>Look &amp; Layout</p>
+				<p class='header1' data-i18n='LookLayoutHeader'>Look &amp; Layout</p>
 
 				<p>
 					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Columns'>Columns</label>
@@ -1276,28 +1276,29 @@
 				</form>
 				<br />
 	
-	
-				<p class='header1' style='margin-top:0' data-i18n='ImportHeader'>
-					Import One-Click Search Engines
-				</p>
-				<span data-i18n='ImportDescription'>
-					Browse to your profile folder and select your search.json.mozlz4 file
-				</span>
-				
-				<br /><br />
-				
-				<label for="selectMozlz4FileButton" class="fileUpload"  data-i18n='ImportSelectFile'>
-					<img src='/icons/import.png' style='margi-right:10px' />
-					Select file...
-					<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" />
-				</label>
-				
-				<div id='status_div' style='display:none;'>
-					<img alt='' id='status_img' class='smallIcon' style='margin: 0 20px;height:30px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
-					<span id='status'>&nbsp;</span>
+				<div data-browser='firefox'>
+					<p class='header1' style='margin-top:0' data-i18n='ImportHeader'>
+						Import One-Click Search Engines
+					</p>
+					<span data-i18n='ImportDescription'>
+						Browse to your profile folder and select your search.json.mozlz4 file
+					</span>
+					
+					<br /><br />
+					
+					<label for="selectMozlz4FileButton" class="fileUpload"  data-i18n='ImportSelectFile'>
+						<img src='/icons/import.png' style='margi-right:10px' />
+						Select file...
+						<input name="selectMozlz4FileButton" id='selectMozlz4FileButton' type="file" accept=".json.mozlz4" />
+					</label>
+					
+					<div id='status_div' style='display:none;'>
+						<img alt='' id='status_img' class='smallIcon' style='margin: 0 20px;height:30px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+						<span id='status'>&nbsp;</span>
+					</div>
+					<br />
+					<br />
 				</div>
-				<br />
-				<br />
 				
 				<!--
 				<label class="container" style='display:inline-block;margin-top:20px;padding:0'>
@@ -1343,7 +1344,7 @@
 		</div>
 		
 		<div id='info_msg'></div>
-
+		<script src="lib/browser-polyfill.min.js"></script>
 		<script src="mozlz4.js"></script>
 		<script src="searchEngineUtils.js"></script>
 		<script src="keyTable.js"></script>

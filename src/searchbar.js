@@ -173,7 +173,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					
 					if (s.type === 1) img.style.visibility = 'hidden';
 					div.appendChild(img);
-					
+										
+					// put search terms in bold
 					// let matches = new RegExp("^(.*)(" + sb.value + ")(.*)").exec(s.searchTerms);
 					// //browser.runtime.sendMessage({action: "log", msg: matches});
 

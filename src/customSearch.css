@@ -157,6 +157,9 @@ FORM {
 	vertical-align:middle;
 	margin-right:10px;
 }
+.iconButton:hover {
+	opacity:.8;
+}
 .CS_info {
 	font-size:7pt;
 	border-radius:2px;
