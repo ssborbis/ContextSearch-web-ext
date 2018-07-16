@@ -17,9 +17,11 @@ window.addEventListener('contextmenu', (e) => {
 	});
 
 	setTimeout(() => {
-		browser.contextMenus.remove("showSuggestions");
-		browser.contextMenus.remove("clearHistory");
-	}, 100);
+		window.addEventListener('mousemove', ()=> {
+			browser.contextMenus.remove("showSuggestions");
+			browser.contextMenus.remove("clearHistory");
+		}, {once: true});
+	}, 1000);
 });
 
 // what was this for?
@@ -383,7 +385,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 	div.onclick = function() {
 		document.body.style.visibility = 'hidden';
-		location.href = browser.runtime.getURL('/options.html#browser_action');
+		//location.href = browser.runtime.getURL('/options.html#browser_action');
+		browser.runtime.sendMessage({action: "openOptions"});
+		window.close();
 	}
 	
 	document.getElementById('searchEngineTitle').style.width = parseFloat(window.getComputedStyle(qm).width) - 10 + "px";

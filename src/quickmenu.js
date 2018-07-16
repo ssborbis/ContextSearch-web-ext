@@ -163,24 +163,7 @@ function repositionOffscreenElement( element ) {
 
 }
 
-function calculateQuickMenuSize() {
-	let tileCount = 0;
-	for (let tool of userOptions.tools) {
-		if (!tool.disabled) tileCount++;
-	}
-	for (let se of userOptions.searchEngines) {
-		if (!se.hidden) tileCount++;
-	}
-	
-	let rows = Math.ceil(tileCount / userOptions.quickMenuColumns);
-	let height = rows * (16 + 16 + 2);
-	let width = Math.min(userOptions.quickMenuColumns,userOptions.quickMenuItems,userOptions.searchEngines.length) * (16 + 16 + 2);
-	
-	return {height: height, width: width};
-}
-
 // build the floating container for the quickmenu
-// tag type depends on userOptions.trackingProtection
 function makeQuickMenuContainer(coords) {
 	
 	let qmc = document.getElementById('quickMenuIframe');
@@ -682,20 +665,29 @@ if (document.title === "QuickMenu") {
 			let quickMenuElement = makeQuickMenu();
 		
 			document.body.appendChild(quickMenuElement);
-
-			if (userOptions.quickMenuSearchBar === 'bottom') {
-				document.body.appendChild(document.getElementById('quickmenusearchbar').parentNode);
+			
+			let sb = document.getElementById('quickmenusearchbar');
+			let sbc = document.getElementById('quickMenuSearchBarContainer');
+			
+			if (userOptions.quickMenuSearchBar === 'bottom') {	
+				sbc.style.borderRadius = "0 0 10px 10px";
+				document.body.appendChild(sbc);
+			} else {
+				sbc.style.borderRadius = "10px 10px 0 0";
 			}
 
 			browser.runtime.sendMessage({
 				action: "quickMenuIframeLoaded", 
 				size: {
-					width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
-					height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(document.getElementById('quickMenuSearchBarContainer').ownerDocument.defaultView.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+					width: window.getComputedStyle(quickMenuElement,null).width,
+					height: parseInt(window.getComputedStyle(quickMenuElement,null).height) + parseInt(window.getComputedStyle(sbc, null).height) + 'px'
 				}
+				// size: {
+					// width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
+					// height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(sbc.ownerDocument.defaultView.getComputedStyle(sbc, null).height) + 'px'
+				// }
 			}).then(() => {
-				let sb = document.getElementById('quickmenusearchbar');
-				
+
 				// setTimeout needed to trigger after updatesearchterms
 				setTimeout(() => {
 					if (userOptions.quickMenuSearchBarSelect) {

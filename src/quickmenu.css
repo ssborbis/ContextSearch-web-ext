@@ -10,6 +10,12 @@
 	background-color: #b0b0b0 !important;
 }
 
+#quickMenuElement {
+	z-index:1;
+	border-radius:10px;
+	overflow:hidden;
+}
+
 #quickMenuElement DIV, #quickMenuElement INPUT {
 	width:32px;
 	height:32px;
@@ -27,6 +33,7 @@
 	background-color: #ccdbe8;
 	border-color: #ccdbe8;
 }
+
 #quickMenuElement, #quickMenuElement DIV {
 	box-sizing: content-box;
 	display:inline-block;

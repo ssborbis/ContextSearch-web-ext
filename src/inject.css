@@ -1,7 +1,6 @@
 #quickMenuIframe { /*#quickMenuElement {*/
 	all:unset;
 	position:absolute;
-	z-index: 2147483647; /* max 32-bit integer */
 	cursor: pointer;
 	opacity: 0;
 	padding: 0;
@@ -16,6 +15,7 @@
 	overflow:hidden;
 	transition: opacity .1s;
 	display:block;
+	z-index: 2147483647; /* max 32-bit integer */
 }
 #CS_customSearchIframe {
 	all:unset;
