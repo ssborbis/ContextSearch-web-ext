@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.6.3.2",
+	"version": "1.6.6",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	
@@ -12,9 +12,10 @@
 			"strict_min_version": "57.0"
 		}
 	},
-	
+
 	"background": {
 		"scripts": [
+			"lib/browser-polyfill.min.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
 			"lib/encoding.js",
@@ -29,14 +30,13 @@
 
 	"options_ui": {
 		"page": "options.html",
-		"browser_style": true,
 		"open_in_tab": true
 	},
 	
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["inject.js","quickmenu.js","opensearch.js","searchEngineUtils.js","inject_customSearch.js"],
+			"js": ["lib/browser-polyfill.min.js","inject.js","quickmenu.js","opensearch.js","searchEngineUtils.js","inject_customSearch.js"],
 			"css": ["inject.css"],
 			"all_frames": true,
 			"match_about_blank": true
@@ -57,27 +57,14 @@
 	],
 	
 	"icons": {
-		"48": "icons/icon48.png",
-		"96": "icons/icon96.png"
+		"48": "icons/icon48.png"
 	},
 	
 	"web_accessible_resources": [
-		"icons/icon48.png",
-		"icons/spinner.svg",
-		"icons/clipboard.png",
-		"icons/link.png",
-		"icons/close.png",
-		"icons/power.png",
-		"icons/lock.png",
-		"icons/yes.png",
-		"icons/no.png",
-		"icons/add.png",
-		"icons/search.png",
-		"icons/edit.png",
-		"icons/crossmark.png",
-		"icons/checkmark.png"
+		"quickmenu.html",
+		"customSearch.html"
 	],
-	
+
 	"browser_action": {
 		"default_title": "ContextSearch",
 		"default_icon": "icons/icon48.png"
@@ -88,3 +75,4 @@
 		"browser_style": true
 	}
 }
+

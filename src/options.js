@@ -1177,10 +1177,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	
 	for (let el of document.getElementsByTagName('native'))
 		el.style.display = 'none';
-	
-	setTimeout(() => {
-		document.getElementById('manual').style.display='inline-block';
-	}, 250);
+
 });
 
 // browser-specific modifications
@@ -1377,6 +1374,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	iframe.onload = function() {
 		console.log('loaded @ ' + iframe.src);
 		var iframeDocument = iframe.contentDocument;
+		
+		if (!iframeDocument) return;
+		
 		var iframeBody = iframeDocument.body;
 		
 		const parser = new DOMParser();

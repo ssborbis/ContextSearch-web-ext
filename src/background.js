@@ -11,17 +11,18 @@ function notify(message, sender, sendResponse) {
 		case "saveUserOptions":
 			userOptions = message.userOptions;
 			browser.storage.local.set({"userOptions": message.userOptions});
-			return Promise.resolve({});
 			break;
 			
 		case "updateUserOptions":
 			getAllOpenTabs().then((tabs) => {
 				for (let tab of tabs)
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions});	
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch(function(error) {
+					  error.url = tab.url;
+					  console.log(error);
+					});	
 			});
 			
 			buildContextMenu();
-			return Promise.resolve({});
 			break;
 			
 		case "nativeAppRequest":
@@ -63,47 +64,33 @@ function notify(message, sender, sendResponse) {
 			
 		case "getUserOptions":
 			return Promise.resolve({"userOptions": userOptions});
-			// sendResponse({"userOptions": userOptions});
-			// return true;
 			break;
 		
 		case "getDefaultUserOptions":
 			return Promise.resolve({"defaultUserOptions": defaultUserOptions});
-			// sendResponse({"defaultUserOptions": defaultUserOptions});
-			// return true;
 			break;
 			
 		case "getSearchEngineByIndex":
 		
 			if ( !message.index ) return;
 			return Promise.resolve({"searchEngine": userOptions.searchEngines[message.index]});
-			// sendResponse({"searchEngine": userOptions.searchEngines[message.index]});
-			// return true;
 			break;
 
 		case "openQuickMenu":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
-				return Promise.resolve({});
-			}).catch((reason)=>{console.log(reason)});;
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
 		case "closeQuickMenuRequest":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
-				return Promise.resolve({});
-			}).catch((reason)=>{console.log(reason)});;
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 		
 		case "quickMenuIframeLoaded":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
-				return Promise.resolve({});
-			}).catch((reason)=>{console.log(reason)});;
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 		
 		case "updateQuickMenuObject":
 			// send to all frames for bi-directional updates to/from quickmenu IFRAME v1.3.8+
-			browser.tabs.sendMessage(sender.tab.id, message).then( () => {
-				return Promise.resolve({});
-			}).catch((reason)=>{console.log(reason)});;
+			browser.tabs.sendMessage(sender.tab.id, message);
 			break;
 			
 		case "closeWindowRequest":
@@ -130,12 +117,7 @@ function notify(message, sender, sendResponse) {
 			// break;
 			
 		case "updateSearchTerms":
-
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0}).then( () => {
-				return Promise.resolve({});
-			}).catch((reason)=>{console.log(reason)});
-	
-		//	return Promise.resolve({});
+			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
 		case "updateContextMenu":
@@ -235,7 +217,6 @@ function notify(message, sender, sendResponse) {
 			
 		case "getLastSearch":
 			return Promise.resolve({lastSearch: sessionStorage.getItem("lastSearch")});
-			// sendResponse({lastSearch: sessionStorage.getItem("lastSearch")});
 			break;
 			
 		case "getCurrentTheme":
@@ -767,7 +748,7 @@ const defaultUserOptions = {
 	searchBarSuggestions: true,
 	searchBarHistory: [],
 	searchBarUseOldStyle: false,
-	searchBarCloseAfterSearch: false
+	searchBarCloseAfterSearch: true
 };
 
 var userOptions = {};
