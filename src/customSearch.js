@@ -4,6 +4,8 @@ window.browser = (function () {
     window.chrome;
 })();
 
+let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
+
 var userOptions = {};
 
 function formToSearchEngine() {
@@ -151,8 +153,8 @@ function addSearchEnginePopup(data) {
 
 	//setup buttons
 	document.getElementById('a_simple_moreOptions').onclick = function() {
-		
-		if (browser.runtime.getBrowserInfo /* firefox */ )
+
+		if (isFirefox /* firefox */ )
 			showMenu('CS_customSearchDialogOptions');
 		else
 			showMenu('customForm');
@@ -188,7 +190,7 @@ function addSearchEnginePopup(data) {
 
 		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine()});
 
-		if ( browser.runtime.getBrowserInfo /* firefox */) {
+		if ( isFirefox /* firefox */) {
 			// reassign the yes button to add official OpenSearch xml
 			document.getElementById('b_simple_import_yes').onclick = function() {
 
@@ -352,7 +354,7 @@ function addSearchEnginePopup(data) {
 
 	// Set up official add-on if exists	
 
-	if (openSearchUrl && browser.runtime.getBrowserInfo /* firefox */) {
+	if (openSearchUrl && isFirefox /* firefox */) {
 		let div = document.getElementById('CS_optionInstallOfficialEngine');
 		
 		// Add button
@@ -372,7 +374,7 @@ function addSearchEnginePopup(data) {
 				console.log(response);
 			});
 			
-			if ( browser.runtime.getBrowserInfo /* firefox */ ) {
+			if ( isFirefox /* firefox */ ) {
 				// reassign the yes button to add official OpenSearch xml
 				document.getElementById('b_simple_import_yes').onclick = function() {
 					simpleImportHandler(openSearchUrl);
@@ -390,7 +392,7 @@ function addSearchEnginePopup(data) {
 	
 	} 
 	
-	if (browser.runtime.getBrowserInfo) {
+	if (isFirefox) {
 		// Find Plugin listener
 		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
 			listenForFocusAndPromptToImport();
@@ -408,7 +410,7 @@ function addSearchEnginePopup(data) {
 	// Form cancel
 	form.cancel.onclick = function() {
 		
-		if ( browser.runtime.getBrowserInfo /* firefox */ )
+		if ( isFirefox /* firefox */ )
 			showMenu('CS_customSearchDialogOptions');
 		else
 			showMenu('simple');
@@ -465,7 +467,7 @@ function addSearchEnginePopup(data) {
 	//		console.log(response);
 		});
 		
-		if ( browser.runtime.getBrowserInfo /* firefox */ ) {
+		if ( isFirefox /* firefox */ ) {
 			// reassign the yes button to add form OpenSearch xml
 			document.getElementById('b_simple_import_yes').onclick = function() {
 				let url = buildOpenSearchAPIUrl();

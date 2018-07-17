@@ -734,6 +734,7 @@ const defaultUserOptions = {
 		{name: 'link', 		disabled: false},
 		{name: 'lock',		disabled: false}
 	],
+	quickMenuToolsPosition: 'top',
 	searchJsonPath: "",
 	reloadMethod: "",
 	contextMenuClick: "openNewTab",

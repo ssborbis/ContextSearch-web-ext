@@ -437,6 +437,8 @@ function makeQuickMenu() {
 
 	// array for all tiles
 	let tileArray = [];
+	
+	let toolsArray = [];
 
 	// iterate over tools
 	for (let tool of userOptions.quickMenuTools) {
@@ -462,7 +464,7 @@ function makeQuickMenu() {
 					// document.body.removeChild(input);
 				});
 				
-				tileArray.push(tile_copy);
+				toolsArray.push(tile_copy);
 				break;
 			
 			case "link": // open as link
@@ -503,7 +505,7 @@ function makeQuickMenu() {
 					});
 				});
 				
-				tileArray.push(tile_link);
+				toolsArray.push(tile_link);
 				break;
 				
 			case "close": // simply close the quick menu
@@ -513,7 +515,7 @@ function makeQuickMenu() {
 					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 				}
 				
-				tileArray.push(tile_close);
+				toolsArray.push(tile_close);
 				break;
 			
 			case "disable": // close the quick menu and disable for this page / session
@@ -533,7 +535,7 @@ function makeQuickMenu() {
 					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
 				}
 
-				tileArray.push(tile_disable);
+				toolsArray.push(tile_disable);
 				break;
 				
 			case "lock": // keep quick menu open after clicking search / scrolling / window click
@@ -569,7 +571,7 @@ function makeQuickMenu() {
 					});
 				}
 
-				tileArray.push(tile_lock);
+				toolsArray.push(tile_lock);
 				break;
 		}
 	}
@@ -599,6 +601,11 @@ function makeQuickMenu() {
 
 		tileArray.push(tile);
 	}
+	
+	if (userOptions.quickMenuToolsPosition === 'top')
+		tileArray = toolsArray.concat(tileArray);
+	else if (userOptions.quickMenuToolsPosition === 'bottom')
+		tileArray = tileArray.concat(toolsArray);
 
 	// make rows / columns
 	for (let i=0;i<tileArray.length;i++) {

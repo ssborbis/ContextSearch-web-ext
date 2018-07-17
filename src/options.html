@@ -1132,6 +1132,19 @@
 				
 							
 				<p class='header1' data-i18n='Tools'>Tools</p>
+				
+				<div>	
+					<span data-i18n='Position'>Position</span><span class='info' data-msg='Choose where to display the tools in the Quick Menu' data-i18n_tooltip='ToolsPosition'>?</span>
+					
+					<select class='inputNice' style='width:auto;margin-left:30px;font-size:10pt;padding-right:10px' id='s_quickMenuToolsPosition'>
+						<option data-i18n='top' value='top'>Top</option>
+						<option data-i18n='bottom' value='bottom'>Bottom</option>
+						<option data-i18n='hidden' value='hidden'>Hidden</option>
+					</select>
+				</div>
+				
+				<br />
+				
 				<div id='toolIcons'></div>
 				<div id='t_toolIcons' style='height:10pt;font-size:10pt;margin-left:10px' data-i18n='ToolsHelp'>click to disable | drag to re-order</div>
 				
@@ -1188,15 +1201,7 @@
 				<div id='d_clearSearchHistory'><img src='/icons/delete.png' style='height:20px;margin-right:16px;vertical-align:middle' /><span data-i18n='ClearSearchHistory'>Clear Search History</span>
 				<span class='info' data-msg='Clear search history from the search toolbar' data-i18n_tooltip='ClearSearchHistory'>?</span>
 				</div>
-				
 
-				
-				<!-- <label class="container" data-i18n='ShowSuggestions'> -->
-				<!-- <span class='info' data-msg='Fetch search suggestions from Google and display with search history in the search toolbar' data-i18n_tooltip='ShowSuggestions'>?</span> -->
-					<!-- <input type='checkbox' id='cb_searchBarSuggestions' /> -->
-					<!-- <span class="checkmark checkmark2"></span> -->
-				<!-- </label> -->
-				
 				<p class='header1' data-i18n='ImportExportSettings'>Import / Export Settings</p>
 				
 				<label for="importSettings">
@@ -1204,9 +1209,7 @@
 					<input style='display:none' name="importSettings" id='importSettings' type="file" accept="*" />
 				</label>
 				<button id='b_exportSettings' data-i18n='Export'>Export</button>
-				
-				
-				
+
 			</div>
 			</div>
 		</div>

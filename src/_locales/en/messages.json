@@ -259,6 +259,10 @@
     "message": "Tools"
   },
   
+  "ToolsPosition": {
+    "message": "Choose where to display the tools in the Quick Menu"
+  }
+  
   "ToolsHelp": {
     "message": "click to disable | drag to re-order"
   },

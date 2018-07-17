@@ -610,6 +610,7 @@ function restoreOptions() {
 		document.getElementById('cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
+		document.getElementById('s_quickMenuToolsPosition').value =  userOptions.quickMenuToolsPosition,
 		document.getElementById('s_quickMenuSearchBar').value =  userOptions.quickMenuSearchBar,
 		document.getElementById('cb_quickMenuSearchBarFocus').checked = userOptions.quickMenuSearchBarFocus,
 		document.getElementById('cb_quickMenuSearchBarSelect').checked = userOptions.quickMenuSearchBarSelect,
@@ -734,6 +735,8 @@ function saveOptions(e) {
 				tools.push({"name": toolIcon.name, "disabled": toolIcon.disabled})			
 			return tools;
 		}(),
+		
+		quickMenuToolsPosition: document.getElementById('s_quickMenuToolsPosition').value,
 		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
 		searchBarUseOldStyle: document.getElementById('cb_searchBarUseOldStyle').checked,
