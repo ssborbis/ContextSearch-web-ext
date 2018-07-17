@@ -746,6 +746,7 @@ const defaultUserOptions = {
 	quickMenuShift: "openNewWindow",
 	quickMenuCtrl: "openBackgroundTab",
 	quickMenuAlt: "keepMenuOpen",
+	quickMenuSearchHotkeys: "noAction",
 	searchBarSuggestions: true,
 	searchBarHistory: [],
 	searchBarUseOldStyle: false,

@@ -261,6 +261,34 @@ function makeQuickMenu() {
 	
 	document.addEventListener('keydown', (e) => {
 		
+		if (!userOptions.quickMenuSearchHotkeys || userOptions.quickMenuSearchHotkeys === 'noAction') return;
+
+		if (document.activeElement === sb) return;
+		
+		for (let i=0;i<userOptions.searchEngines.length;i++) {
+			let se = userOptions.searchEngines[i];
+			if (se.hotkey && se.hotkey === e.which) {
+				browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: i,
+						selectionText: sb.value,//quickMenuObject.searchTerms,
+						openMethod: userOptions.quickMenuSearchHotkeys
+					}
+				});
+				
+				if (userOptions.quickMenuCloseOnClick && !quickMenuObject.locked) {
+					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+				}
+				
+				break;
+			}
+		}
+		
+	});
+	
+	document.addEventListener('keydown', (e) => {
+		
 		if (document.activeElement === sb) {
 			
 			// let left/right works as normal
@@ -705,6 +733,11 @@ if (document.title === "QuickMenu") {
 
 					if (userOptions.quickMenuSearchBarFocus)
 						sb.focus();
+					
+					if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
+						sb.blur();
+						window.focus();
+					}
 				}, 100);
 			});
 		});

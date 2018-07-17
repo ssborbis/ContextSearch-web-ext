@@ -427,6 +427,55 @@ function buildSearchEngineContainer(searchEngines) {
 			edit_form.style.maxHeight = '400px';
 		}
 		
+		let hotkey = document.createElement('span');
+		hotkey.title = browser.i18n.getMessage('Hotkey').toLowerCase();
+		hotkey.className = 'hotkey';
+		hotkey.innerText = keyTable[se.hotkey] || "";
+		hotkey.onclick = function(e) {
+			e.stopPropagation();			
+			e.target.innerText = '';
+			let img = document.createElement('img');
+			img.src = 'icons/spinner.svg';
+			img.style.height = '1em';
+			img.style.verticalAlign = 'middle';
+			e.target.appendChild(img);
+			window.addEventListener('keydown', function keyPressListener(evv) {
+				evv.preventDefault();
+				
+				if ( [9,37,38,39,40].includes(evv.which) ) return;
+
+				let r = nearestParent("TR",e.target);
+				let index = getToolIconIndex(r);
+
+				if (evv.which === 27) {
+					searchEngines[index].hotkey = null;
+					e.target.innerText = "";
+					window.removeEventListener('keydown', keyPressListener);
+					return;
+				}
+
+				// check for same key
+				for (let i=0;i<searchEngines.length;i++) {
+					if (searchEngines[i].hotkey && searchEngines[i].hotkey === evv.which && i !== index) {
+						hotkey.style.backgroundColor = 'pink';
+						setTimeout( () => {
+							hotkey.style.backgroundColor = null;
+						},250);
+						return;
+					}
+				}
+				
+				e.target.innerText = keyTable[evv.which];
+				searchEngines[index].hotkey = evv.which;
+				
+				window.removeEventListener('keydown', keyPressListener);
+				
+			}); 
+			
+		}
+		
+		title.appendChild(hotkey);
+		
 		let _delete = document.createElement('img');
 		_delete.title = browser.i18n.getMessage('Delete').toLowerCase();
 		_delete.className = 'delete';
@@ -649,6 +698,7 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuShift').value = userOptions.quickMenuShift;
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
+		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
 		
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		document.getElementById('cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
@@ -719,6 +769,7 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
+		quickMenuSearchHotkeys: document.getElementById('s_quickMenuSearchHotkeys').value,
 		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
 		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
 		quickMenuSearchBarSelect: document.getElementById('cb_quickMenuSearchBarSelect').checked,
