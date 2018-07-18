@@ -1,7 +1,7 @@
 {
     
   "extensionDescription": {
-    "message": "ContextSearch charge vos moteurs de recherche actuels dans un menu contextuel pour faciliter la recherche du texte sélectionné. Compatible avec FF 57+, il a été conçu pour remplacer « Context Search » de Ben Basson."
+    "message": "Permet d’ajouter facilement des moteurs de recherche et d’effectuer des recherches depuis le menu contextuel ou un panneau pratique."
   },
     
   "Settings": {
@@ -280,7 +280,7 @@
   },
   
   "tools_Lock": {
-    "message": "Garder le menu ouvert (recherche multiple)"
+    "message": "Garder le menu ouvert"
   },
   
   "ImportExportSettings": {
