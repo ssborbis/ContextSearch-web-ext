@@ -1,9 +1,10 @@
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/firefox.png" width="200px">
+[![Firefox logo](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/firefox.png)](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/)
+
 ### [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/)
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/Available-in-the-Chrome-Webstore-614x173.png" width="200px">
-### [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+[![Chrome logo](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/Available-in-the-Chrome-Webstore-614x173.png)](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
+### [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
 
 ___
