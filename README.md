@@ -2,7 +2,7 @@
 
 ### [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/)
 
-[![Chrome logo](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/Available-in-the-Chrome-Webstore-614x173.png)](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+[![Chrome logo](https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/chrome.png)](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
 ### [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
