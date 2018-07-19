@@ -348,7 +348,7 @@ function buildSearchEngineContainer(searchEngines) {
 					// alert of problems with changing name
 					if (se.title !== edit_form.shortName.value) {
 
-						if ( confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
+						if ( !browser.runtime.getBrowserInfo || confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
 							CSBookmarks.rename(se.title, edit_form.shortName.value);
 							se.title = edit_form.shortName.value;
 							

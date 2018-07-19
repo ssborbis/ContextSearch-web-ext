@@ -3,6 +3,18 @@ var typeTimer = null;
 const historyLength = 1024; // number of searches to save in userOptions
 const displayCount = 10; // number of total suggestions to display (browser_action height is limited!)
 
+browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
+	if (result.href) {
+		let sb = document.getElementById('quickmenusearchbar');
+		let img = document.createElement('img');
+		img.src = '/icons/add_search.png';
+		img.style = 'height:16px;position:absolute;right:4px;top:4px;z-index:2';
+		img.title = browser.i18n.getMessage('AddOfficial') || "add official search engine for this site";
+		document.body.appendChild(img);
+	}
+	
+});
+
 window.addEventListener('contextmenu', (e) => {
 	
 	browser.contextMenus.create({

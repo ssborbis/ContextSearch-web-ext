@@ -259,10 +259,12 @@ function makeQuickMenu() {
 		divs[0].classList.remove('selectedNoFocus');
 	});
 	
+	// hotkey listener
 	document.addEventListener('keydown', (e) => {
 		
 		if (!userOptions.quickMenuSearchHotkeys || userOptions.quickMenuSearchHotkeys === 'noAction') return;
 
+		// ignore hotkeys when the search bar is being edited
 		if (document.activeElement === sb) return;
 		
 		for (let i=0;i<userOptions.searchEngines.length;i++) {
@@ -277,8 +279,14 @@ function makeQuickMenu() {
 					}
 				});
 				
-				if (userOptions.quickMenuCloseOnClick && !quickMenuObject.locked) {
-					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+				if (
+					!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
+					!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
+					!(e.altKey && userOptions.quickMenuAlt === "keepMenuOpen") &&
+					userOptions.quickMenuCloseOnClick &&
+					!quickMenuObject.locked
+				) {
+					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 				}
 				
 				break;
@@ -604,8 +612,7 @@ function makeQuickMenu() {
 		}
 	}
 
-	let visibleCount = 0; // separate index for ignoring hidden engines v1.3.2+
-	for (var i=0;i<userOptions.searchEngines.length && i < userOptions.quickMenuItems;i++) {
+	for (var i=0;i<userOptions.searchEngines.length && tileArray.length < userOptions.quickMenuItems;i++) {
 		
 		let se = userOptions.searchEngines[i];
 		

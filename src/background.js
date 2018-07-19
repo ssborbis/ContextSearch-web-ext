@@ -101,20 +101,23 @@ function notify(message, sender, sendResponse) {
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
-		// case "getOpenSearchHref":
-			// browser.tabs.executeScript( sender.tab.id, {
-				// code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
-			// }).then( (result) => {
+		case "getOpenSearchHref":
+		
+			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( (tab) => {
+				return browser.tabs.executeScript( tab.id, {
+					code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
+				}).then( (result) => {
 
-				// result = result.shift();
+					result = result.shift();
 
-				// if (result)
-					// sendResponse({href: result});
-			// });
-			
-			// return true;
-			
-			// break;
+					if (result)
+						return {href: result};
+					else
+						return {};
+				});
+			}));
+
+			break;
 			
 		case "updateSearchTerms":
 			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
@@ -734,7 +737,7 @@ const defaultUserOptions = {
 		{name: 'link', 		disabled: false},
 		{name: 'lock',		disabled: false}
 	],
-	quickMenuToolsPosition: 'top',
+	quickMenuToolsPosition: "top",
 	searchJsonPath: "",
 	reloadMethod: "",
 	contextMenuClick: "openNewTab",
