@@ -259,7 +259,11 @@
     "message": "Outils"
   },
   
-  "ToolsHelp": {
+  "ToolsPositionTooltip": {
+    "message": "Position des outils dans le menu rapide"
+  },
+  
+"ToolsHelp": {
     "message": "Cliquer pour désactiver | Glisser pour réorganiser"
   },
   
