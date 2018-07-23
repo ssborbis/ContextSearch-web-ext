@@ -3,18 +3,19 @@ var typeTimer = null;
 const historyLength = 1024; // number of searches to save in userOptions
 const displayCount = 10; // number of total suggestions to display (browser_action height is limited!)
 
-browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
-	if (result.href) {
-		let sb = document.getElementById('quickmenusearchbar');
-		let img = document.createElement('img');
-		img.src = '/icons/add_search.png';
-		img.style = 'height:16px;position:absolute;right:4px;top:4px;z-index:2';
-		img.title = browser.i18n.getMessage('AddOfficial') || "add official search engine for this site";
-		document.body.appendChild(img);
-	}
-	
-});
+// show the add search engine icon in the searchbar
+// browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
+	// if (result.href) {
+		// let sb = document.getElementById('quickmenusearchbar');
+		// let img = document.createElement('img');
+		// img.src = '/icons/add_search.png';
+		// img.style = 'height:16px;position:absolute;right:4px;top:4px;z-index:2';
+		// img.title = browser.i18n.getMessage('AddOfficial') || "add official search engine for this site";
+		// document.body.appendChild(img);
+	// }
+// });
 
+// context menu options
 window.addEventListener('contextmenu', (e) => {
 	
 	browser.contextMenus.create({
@@ -184,6 +185,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					img.style.marginRight = "5px";
 					img.style.opacity = .75;
 					img.style.verticalAlign = "middle";
+					img.title = browser.i18n.getMessage('History') || "history";
 					
 					if (s.type === 1) img.style.visibility = 'hidden';
 					div.appendChild(img);
@@ -420,14 +422,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		}
 
 	});	
-	
-	// window.onfocus = function() {
-		// console.log('focused');
-		// setTimeout(() => {
-			// sb.focus();
-			// sb.select();
-		// }, 10);
-	// }
 
 	function getSuggestions(terms, callback) {
 		
@@ -486,8 +480,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		
 		}
 
-//		console.log("openMethod => " + openMethod);
-		return openMethod
+		return openMethod;
 	}
 
 });

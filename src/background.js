@@ -15,11 +15,14 @@ function notify(message, sender, sendResponse) {
 			
 		case "updateUserOptions":
 			getAllOpenTabs().then((tabs) => {
-				for (let tab of tabs)
+				for (let tab of tabs) {
 					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch(function(error) {
 					  error.url = tab.url;
 					  console.log(error);
 					});	
+					
+					console.log(tab.url);
+				}
 			});
 			
 			buildContextMenu();
@@ -77,15 +80,15 @@ function notify(message, sender, sendResponse) {
 			break;
 
 		case "openQuickMenu":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
 		case "closeQuickMenuRequest":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 		
 		case "quickMenuIframeLoaded":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 		
 		case "updateQuickMenuObject":
@@ -94,11 +97,11 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "closeWindowRequest":
-			browser.windows.remove(sender.tab.windowId);
+			return browser.windows.remove(sender.tab.windowId);
 			break;
 		
 		case "closeCustomSearch":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
 		case "getOpenSearchHref":
@@ -120,7 +123,7 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateSearchTerms":
-			browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
 		case "updateContextMenu":
@@ -267,6 +270,17 @@ function notify(message, sender, sendResponse) {
 			
 			return true;
 			
+			break;
+			
+		case "copy":
+			let input = document.createElement('input');
+			input.type = "text";
+			input.value = message.msg;
+			document.body.appendChild(input);
+
+			input.select();
+
+			document.execCommand("copy");
 			break;
 	}
 }

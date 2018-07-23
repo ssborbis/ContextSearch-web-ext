@@ -488,16 +488,23 @@ function makeQuickMenu() {
 				let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), browser.i18n.getMessage("tools_Copy"));
 				
 				addTileEventHandlers(tile_copy, (e) => {
-					sb.select();
+
+					let input = document.createElement('input');
+					input.type = "text";
+					input.value = sb.value;
+					document.body.appendChild(input);
+
+					input.select();
+					
+					if ( !document.queryCommandSupported('copy') ) {
+						console.log('copy not supported');
+						return;
+					}
+
 					document.execCommand("copy");
-					// let input = document.createElement('input');
-					// input.type = "text";
-					// input.value = sb.value;//quickMenuObject.searchTerms;
-					// input.style = 'width:0;height:0;border:0;padding:0;margin:0;position:absolute;left:-1px;';
-					// document.body.appendChild(input);
-					// input.select();
-					// document.execCommand("copy");
-					// document.body.removeChild(input);
+					
+					// chrome requires execCommand be run from background
+					browser.runtime.sendMessage({action: 'copy', msg: sb.value});
 				});
 				
 				toolsArray.push(tile_copy);

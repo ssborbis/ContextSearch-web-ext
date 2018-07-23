@@ -442,7 +442,7 @@ function buildSearchEngineContainer(searchEngines) {
 			window.addEventListener('keydown', function keyPressListener(evv) {
 				evv.preventDefault();
 				
-				if ( [9,37,38,39,40].includes(evv.which) ) return;
+				if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
 
 				let r = nearestParent("TR",e.target);
 				let index = getToolIconIndex(r);
@@ -451,6 +451,7 @@ function buildSearchEngineContainer(searchEngines) {
 					searchEngines[index].hotkey = null;
 					e.target.innerText = "";
 					window.removeEventListener('keydown', keyPressListener);
+					saveOptions();
 					return;
 				}
 
@@ -467,9 +468,9 @@ function buildSearchEngineContainer(searchEngines) {
 				
 				e.target.innerText = keyTable[evv.which];
 				searchEngines[index].hotkey = evv.which;
-				
+
 				window.removeEventListener('keydown', keyPressListener);
-				
+				saveOptions();
 			}); 
 			
 		}
