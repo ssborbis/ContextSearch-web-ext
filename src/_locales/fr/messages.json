@@ -259,7 +259,7 @@
     "message": "Outils"
   },
   
-  "ToolsPosition": {
+  "ToolsPositionTooltip": {
     "message": "Position des outils dans le menu rapide"
   },
   
