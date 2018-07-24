@@ -259,7 +259,7 @@
     "message": "Tools"
   },
   
-  "ToolsPosition": {
+  "ToolsPositionTooltip": {
     "message": "Choose where to display the tools in the Quick Menu"
   },
   
