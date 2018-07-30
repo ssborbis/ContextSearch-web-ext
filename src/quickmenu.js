@@ -720,8 +720,7 @@ function makeQuickMenu() {
 			for (let node of nodes) {
 				
 				if (node.type === "searchEngine") {
-					
-					console.log(node);
+
 					let se = userOptions.searchEngines[node.id];
 					let tile = buildSearchIcon(se.icon_base64String, se.title);
 
