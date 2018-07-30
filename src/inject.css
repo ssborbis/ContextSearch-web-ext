@@ -16,6 +16,7 @@
 	transition: opacity .1s;
 	display:block;
 	z-index: 2147483647; /* max 32-bit integer */
+	transition: width .15s ease-in-out, height .15s ease-in-out;
 }
 #CS_customSearchIframe {
 	all:unset;

@@ -44,11 +44,11 @@
   },
   
    "UseBookmarksMenu": {
-    "message": "Use Bookmarks Folder"
+    "message": "Manage With Bookmarks"
   },
     
    "UseBookmarksMenuTooltip": {
-    "message": "Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines"
+    "message": "Control the engines displayed in the menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines"
   },
   
    "QuickMenu": {
@@ -883,11 +883,15 @@
     "description": ""
   },
   
+  "Back": {
+    "message": "back",
+    "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
   }
-  
-  
+
  
 }

@@ -700,6 +700,8 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
 		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
+		document.getElementById('cb_quickMenuBookmarks').checked = userOptions.quickMenuBookmarks;
+		
 		
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		document.getElementById('cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
@@ -770,6 +772,7 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
+		quickMenuBookmarks: document.getElementById('cb_quickMenuBookmarks').checked,
 		quickMenuSearchHotkeys: document.getElementById('s_quickMenuSearchHotkeys').value,
 		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
 		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
@@ -814,7 +817,8 @@ document.addEventListener("DOMContentLoaded", restoreOptions);
 
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_contextMenuShowAddCustomSearch').addEventListener('change', saveOptions);
-document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e) => {
+
+function bookmarksPermissionHandler(e) {
 	
 	if (e.target.checked) {
 		
@@ -839,7 +843,10 @@ document.getElementById('cb_contextMenuBookmarks').addEventListener('change', (e
 		buildSearchEngineContainer(userOptions.searchEngines);
 	}
 	
-});
+}
+
+document.getElementById('cb_contextMenuBookmarks').addEventListener('change', bookmarksPermissionHandler);
+document.getElementById('cb_quickMenuBookmarks').addEventListener('change', bookmarksPermissionHandler);
 
 document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
 // document.getElementById('cb_quickMenu').addEventListener('change', (e) => {

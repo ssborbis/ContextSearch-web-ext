@@ -99,15 +99,17 @@ function getOffsets() {
 	return {x: xOffset, y: yOffset};
 }
 
-function scaleAndPositionQuickMenu(size) {
+function scaleAndPositionQuickMenu(size, resizeOnly) {
 	let qmc = document.getElementById('quickMenuIframe');
 	if (!qmc) return;
+	
+	resizeOnly = resizeOnly || false;
 	
 	size = size || {
 		width: qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("width"), 
 		height: qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("height")
 	};
-	
+
 	// scale quickmenu
 	userOptions.quickMenuScaleOnZoom = userOptions.quickMenuScaleOnZoom || true;
 
@@ -119,24 +121,25 @@ function scaleAndPositionQuickMenu(size) {
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
 	
-	for (let position of userOptions.quickMenuPosition.split(" ")) {
-		switch (position) {
-			case "left":
-				qmc.style.left = parseFloat(qmc.style.left) - parseFloat(qmc.style.width) * userOptions.quickMenuScale / window.devicePixelRatio + "px";
-				break;
-			case "right":
-				break;
-			case "center":
-				qmc.style.left = parseFloat(qmc.style.left) - parseFloat(qmc.style.width) / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio + "px";
-				break;
-			case "top":
-				qmc.style.top = parseFloat(qmc.style.top) - parseFloat(qmc.style.height) * userOptions.quickMenuScale / window.devicePixelRatio + "px";
-				break;
-			case "bottom":
-				break;
+	if (! resizeOnly) { // skip positioning if this is a resize only
+		for (let position of userOptions.quickMenuPosition.split(" ")) {
+			switch (position) {
+				case "left":
+					qmc.style.left = parseFloat(qmc.style.left) - parseFloat(qmc.style.width) * userOptions.quickMenuScale / window.devicePixelRatio + "px";
+					break;
+				case "right":
+					break;
+				case "center":
+					qmc.style.left = parseFloat(qmc.style.left) - parseFloat(qmc.style.width) / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio + "px";
+					break;
+				case "top":
+					qmc.style.top = parseFloat(qmc.style.top) - parseFloat(qmc.style.height) * userOptions.quickMenuScale / window.devicePixelRatio + "px";
+					break;
+				case "bottom":
+					break;
+			}
 		}
 	}
-	
 	repositionOffscreenElement( qmc );
 	qmc.style.opacity = 1;
 }
@@ -474,224 +477,364 @@ function makeQuickMenu() {
 	// array for all tiles
 	let tileArray = [];
 	
-	let toolsArray = [];
+	function createToolsArray() {
+	
+		let toolsArray = [];
 
-	// iterate over tools
-	for (let tool of userOptions.quickMenuTools) {
+		// iterate over tools
+		for (let tool of userOptions.quickMenuTools) {
 
-		// skip disabled tools
-		if (tool.disabled) continue;
-		
-		switch (tool.name) {
+			// skip disabled tools
+			if (tool.disabled) continue;
 			
-			case "copy": // clipboard
-				let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), browser.i18n.getMessage("tools_Copy"));
+			switch (tool.name) {
 				
-				addTileEventHandlers(tile_copy, (e) => {
-
-					let input = document.createElement('input');
-					input.type = "text";
-					input.value = sb.value;
-					document.body.appendChild(input);
-
-					input.select();
+				case "copy": // clipboard
+					let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), browser.i18n.getMessage("tools_Copy"));
 					
-					if ( !document.queryCommandSupported('copy') ) {
-						console.log('copy not supported');
-						return;
-					}
+					addTileEventHandlers(tile_copy, (e) => {
 
-					document.execCommand("copy");
-					
-					// chrome requires execCommand be run from background
-					browser.runtime.sendMessage({action: 'copy', msg: sb.value});
-				});
-				
-				toolsArray.push(tile_copy);
-				break;
-			
-			case "link": // open as link
-				let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.png"), browser.i18n.getMessage("tools_OpenAsLink"));
+						let input = document.createElement('input');
+						input.type = "text";
+						input.value = sb.value;
+						document.body.appendChild(input);
 
-				// enable/disable link button on very basic 'is it a link' rules
-				function setDisabled() {
-					if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
-					//	tile_link.style.filter="grayscale(100%)";
-						tile_link.style.backgroundColor="#ddd";
-						tile_link.disabled = true;
-					} else {
-						tile_link.style.filter=null;
-						tile_link.style.backgroundColor=null;
-						tile_link.disabled = false;
-					}
-				}
-				
-				// set initial disabled state
-				setDisabled();
-				
-				// when new search terms are set while locked, enable/disable link
-				document.addEventListener('updatesearchterms', (e) => {
-					setDisabled();
-				});
-					
-				addTileEventHandlers(tile_link, (e) => {
-					if (tile_link.disabled) return;
-					
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: 0,
-							selectionText: quickMenuObject.searchTerms,
-							openMethod: getOpenMethod(e),
-							openUrl: true
+						input.select();
+						
+						if ( !document.queryCommandSupported('copy') ) {
+							console.log('copy not supported');
+							return;
 						}
-					});
-				});
-				
-				toolsArray.push(tile_link);
-				break;
-				
-			case "close": // simply close the quick menu
-				let tile_close = buildSearchIcon(browser.runtime.getURL("/icons/close.png"), browser.i18n.getMessage("tools_Close"));
 
-				tile_close.onclick = function(e) {
-					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
-				}
+						document.execCommand("copy");
+						
+						// chrome requires execCommand be run from background
+						browser.runtime.sendMessage({action: 'copy', msg: sb.value});
+					});
+					
+					toolsArray.push(tile_copy);
+					break;
 				
-				toolsArray.push(tile_close);
-				break;
-			
-			case "disable": // close the quick menu and disable for this page / session
-				let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.png"), browser.i18n.getMessage("tools_Disable"));
-				tile_disable.onclick = function(e) {
+				case "link": // open as link
+					let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.png"), browser.i18n.getMessage("tools_OpenAsLink"));
+
+					// enable/disable link button on very basic 'is it a link' rules
+					function setDisabled() {
+						if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
+						//	tile_link.style.filter="grayscale(100%)";
+							tile_link.style.backgroundColor="#ddd";
+							tile_link.disabled = true;
+						} else {
+							tile_link.style.filter=null;
+							tile_link.style.backgroundColor=null;
+							tile_link.disabled = false;
+						}
+					}
 					
-					userOptions.quickMenu = false;
-					quickMenuObject.disabled = true;
+					// set initial disabled state
+					setDisabled();
 					
-					if (document.title === "QuickMenu") {
+					// when new search terms are set while locked, enable/disable link
+					document.addEventListener('updatesearchterms', (e) => {
+						setDisabled();
+					});
+						
+					addTileEventHandlers(tile_link, (e) => {
+						if (tile_link.disabled) return;
+						
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: 0,
+								selectionText: quickMenuObject.searchTerms,
+								openMethod: getOpenMethod(e),
+								openUrl: true
+							}
+						});
+					});
+					
+					toolsArray.push(tile_link);
+					break;
+					
+				case "close": // simply close the quick menu
+					let tile_close = buildSearchIcon(browser.runtime.getURL("/icons/close.png"), browser.i18n.getMessage("tools_Close"));
+
+					tile_close.onclick = function(e) {
+						browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
+					}
+					
+					toolsArray.push(tile_close);
+					break;
+				
+				case "disable": // close the quick menu and disable for this page / session
+					let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.png"), browser.i18n.getMessage("tools_Disable"));
+					tile_disable.onclick = function(e) {
+						
+						userOptions.quickMenu = false;
+						quickMenuObject.disabled = true;
+						
+						if (document.title === "QuickMenu") {
+							browser.runtime.sendMessage({
+								action: "updateQuickMenuObject", 
+								quickMenuObject: quickMenuObject
+							});
+						}
+						
+						browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
+					}
+
+					toolsArray.push(tile_disable);
+					break;
+					
+				case "lock": // keep quick menu open after clicking search / scrolling / window click
+					let tile_lock = buildSearchIcon(browser.runtime.getURL("/icons/lock.png"), browser.i18n.getMessage("tools_Lock"));
+					
+					tile_lock.locked = false;
+					tile_lock.onclick = function(e) {
+						
+						let qm = document.getElementById('quickMenuIframe');
+
+						switch (this.locked) {
+							case false:
+								this.style.backgroundColor = '#dee7f0';
+								this.style.boxShadow = 'inset 2px 2px 2px #193047';
+
+								this.locked = quickMenuObject.locked = true;
+								break;
+								
+							case true:
+								this.style.backgroundColor = null;
+								this.style.boxShadow = null;
+
+								this.locked = quickMenuObject.locked = false;
+								break;
+						}
+						
+						// update qmo for both iframe and quickmenucontainer methods
+						// lock styles methods moved to onMessage listener
 						browser.runtime.sendMessage({
 							action: "updateQuickMenuObject", 
-							quickMenuObject: quickMenuObject
+							quickMenuObject: quickMenuObject,
+							toggleLock: true
+						});
+					}
+
+					toolsArray.push(tile_lock);
+					break;
+			}
+		}
+		
+		return toolsArray;
+	}
+	
+	function buildQuickMenuElement(options) {
+		
+		let tileArray = options.tileArray;
+		let toolsArray = options.toolsArray;
+		let quickMenuElement = options.quickMenuElement;
+		
+		while (quickMenuElement.firstChild) {
+			quickMenuElement.removeChild(quickMenuElement.firstChild);
+		}
+		quickMenuElement.getBoundingClientRect();
+
+		if (userOptions.quickMenuToolsPosition === 'top')
+			tileArray = toolsArray.concat(tileArray);
+		else if (userOptions.quickMenuToolsPosition === 'bottom')
+			tileArray = tileArray.concat(toolsArray);
+
+		// make rows / columns
+		for (let i=0;i<tileArray.length;i++) {
+			let tile = tileArray[i];
+
+			quickMenuElement.appendChild(tile);
+			
+			if (userOptions.quickMenuUseOldStyle) {
+
+				tile.style.width = '200px';
+				tile.style.height = '20px';
+				tile.style.fontSize = '11pt';
+				tile.style.border = 'none';
+				tile.style.fontFamily = 'Arial';
+				tile.style.lineHeight = '20px';
+				tile.style.verticalAlign = 'middle';
+				tile.style.backgroundPosition = '4px 2px';
+				tile.style.backgroundSize = '16px';
+				
+				tile.innerHTML = null; // added to clear monograms from folder icons
+				
+				let span = document.createElement('span');
+				span.innerText = tile.title;
+				span.style.marginLeft = '24px';
+				
+				tile.appendChild(span);
+			}
+			
+			if ( (i + 1) % columns === 0) {
+				let br = document.createElement('br');
+				tile.parentNode.insertBefore(br, tile.nextSibling);
+			}
+		}
+		
+		// check if any search engines exist and link to Options if none
+		if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined' ) {
+			var div = document.createElement('div');
+			div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
+			div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
+			div.onclick = function() {
+				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=searchengines"});
+			}	
+			quickMenuElement.appendChild(div);
+		}
+
+		return quickMenuElement;
+	}
+	
+	function quickMenuElementFromBookmarksFolder( id ) {
+		return browser.runtime.sendMessage({action: "getQuickMenuBookmarks", id: id || null}).then( (result) => {
+
+			let nodes = result.tileNodes;
+			let tileArray = [];
+			
+			if (result.parentId) { // if parentId was sent, assume subfolder and add 'back' button
+				let tile = buildSearchIcon(browser.runtime.getURL('/icons/back.png'), browser.i18n.getMessage('back') || 'back');
+				tile.onclick = function() {
+
+					quickMenuElementFromBookmarksFolder(result.parentId).then( (qme) => {
+						let message = {
+							action: "quickMenuIframeLoaded", 
+							size: {
+								width: window.getComputedStyle(qme,null).width,
+								height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+							},
+							resizeOnly: true
+						}
+
+						browser.runtime.sendMessage(message);
+					});
+				}
+								
+				tileArray.push(tile);
+			}
+
+			for (let node of nodes) {
+				
+				if (node.type === "searchEngine") {
+					
+					console.log(node);
+					let se = userOptions.searchEngines[node.id];
+					let tile = buildSearchIcon(se.icon_base64String, se.title);
+
+					tile.index = node.id;
+					tile.dataset.index = node.id;
+					
+					addTileEventHandlers(tile, (e) => {
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: tile.index,
+								selectionText: sb.value,//quickMenuObject.searchTerms,
+								openMethod: getOpenMethod(e)
+							}
+						});
+					});
+
+					tileArray.push(tile);
+					
+					continue;
+				}
+				
+				if (node.type === 'folder') {
+					let tile = buildSearchIcon(browser.runtime.getURL('/icons/folder-icon.png'), node.title);
+					
+					//tile.style.position = 'relative';
+					let span = document.createElement('span');
+					span.style='font-size:7pt;line-height:1em;padding:2px;font-family:Arial;font-weight:bold; color: white;text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;overflow:hidden;position:relative;top:20px';
+
+					span.innerText = node.title;
+					
+					tile.appendChild(span);
+					
+					tile.onclick = function() {
+						quickMenuElementFromBookmarksFolder(node.id).then( (qme) => {
+							
+							let message = {
+								action: "quickMenuIframeLoaded", 
+								size: {
+									width: window.getComputedStyle(qme,null).width,
+									height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+								},
+								resizeOnly: true
+							}
+
+							browser.runtime.sendMessage(message);
 						});
 					}
 					
-					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
-				}
-
-				toolsArray.push(tile_disable);
-				break;
-				
-			case "lock": // keep quick menu open after clicking search / scrolling / window click
-				let tile_lock = buildSearchIcon(browser.runtime.getURL("/icons/lock.png"), browser.i18n.getMessage("tools_Lock"));
-				
-				tile_lock.locked = false;
-				tile_lock.onclick = function(e) {
-					
-					let qm = document.getElementById('quickMenuIframe');
-
-					switch (this.locked) {
-						case false:
-							this.style.backgroundColor = '#dee7f0';
-							this.style.boxShadow = 'inset 2px 2px 2px #193047';
-
-							this.locked = quickMenuObject.locked = true;
-							break;
-							
-						case true:
-							this.style.backgroundColor = null;
-							this.style.boxShadow = null;
-
-							this.locked = quickMenuObject.locked = false;
-							break;
-					}
-					
-					// update qmo for both iframe and quickmenucontainer methods
-					// lock styles methods moved to onMessage listener
-					browser.runtime.sendMessage({
-						action: "updateQuickMenuObject", 
-						quickMenuObject: quickMenuObject,
-						toggleLock: true
+					tile.addEventListener('mousedown', (e) => {
+						
+						// for middle-button
+						if (e.which !== 2) return;
+						
+						browser.runtime.sendMessage({action: "getQuickMenuBookmarks", id: node.id}).then( (_result) => {
+							for (let _node of _result.tileNodes) {
+								if (_node.type === 'searchEngine') {
+									browser.runtime.sendMessage({
+										action: "quickMenuSearch", 
+										info: {
+											menuItemId: _node.id,
+											selectionText: sb.value,//quickMenuObject.searchTerms,
+											openMethod: "openBackgroundTab"
+										}
+									});
+								}
+							}
+						});
 					});
+					
+					tileArray.push(tile);
+					
+					continue;
 				}
-
-				toolsArray.push(tile_lock);
-				break;
-		}
-	}
-
-	for (var i=0;i<userOptions.searchEngines.length && tileArray.length < userOptions.quickMenuItems;i++) {
-		
-		let se = userOptions.searchEngines[i];
-		
-		if ( se.hidden !== undefined && se.hidden) continue;
-
-		let tile = buildSearchIcon(se.icon_base64String, se.title);
-
-		tile.index = i;
-		tile.dataset.index = i;
-		
-		addTileEventHandlers(tile, (e) => {
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: tile.index,
-					selectionText: sb.value,//quickMenuObject.searchTerms,
-					openMethod: getOpenMethod(e)
-				}
-			});
+			}
+			
+			return buildQuickMenuElement({tileArray:tileArray, toolsArray:createToolsArray(), quickMenuElement: quickMenuElement});
 		});
-
-		tileArray.push(tile);
 	}
 	
-	if (userOptions.quickMenuToolsPosition === 'top')
-		tileArray = toolsArray.concat(tileArray);
-	else if (userOptions.quickMenuToolsPosition === 'bottom')
-		tileArray = tileArray.concat(toolsArray);
+	if (userOptions.quickMenuBookmarks) {	
+		return Promise.resolve(quickMenuElementFromBookmarksFolder());
+	} else {
 
-	// make rows / columns
-	for (let i=0;i<tileArray.length;i++) {
-		let tile = tileArray[i];
-
-		quickMenuElement.appendChild(tile);
-		
-		if (userOptions.quickMenuUseOldStyle) {
-
-			tile.style.width = '200px';
-			tile.style.height = '20px';
-			tile.style.fontSize = '11pt';
-			tile.style.border = 'none';
-			tile.style.fontFamily = 'Arial';
-			tile.style.lineHeight = '20px';
-			tile.style.verticalAlign = 'middle';
-			tile.style.backgroundPosition = '4px 2px';
-			tile.style.backgroundSize = '16px';
+		for (var i=0;i<userOptions.searchEngines.length && tileArray.length < userOptions.quickMenuItems;i++) {
 			
-			let span = document.createElement('span');
-			span.innerText = tile.title;
-			span.style.marginLeft = '24px';
+			let se = userOptions.searchEngines[i];
 			
-			tile.appendChild(span);
+			if ( se.hidden !== undefined && se.hidden) continue;
+
+			let tile = buildSearchIcon(se.icon_base64String, se.title);
+
+			tile.index = i;
+			tile.dataset.index = i;
+			
+			addTileEventHandlers(tile, (e) => {
+				browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.index,
+						selectionText: sb.value,//quickMenuObject.searchTerms,
+						openMethod: getOpenMethod(e)
+					}
+				});
+			});
+
+			tileArray.push(tile);
 		}
 		
-		if ( (i + 1) % columns === 0) {
-			let br = document.createElement('br');
-			tile.parentNode.insertBefore(br, tile.nextSibling);
-		}
-	}
-	
-	// check if any search engines exist and link to Options if none
-	if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined' ) {
-		var div = document.createElement('div');
-		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-		div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
-		div.onclick = function() {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=searchengines"});
-		}	
-		quickMenuElement.appendChild(div);
+		return Promise.resolve(buildQuickMenuElement({tileArray:tileArray, toolsArray:createToolsArray(), quickMenuElement: quickMenuElement}));
+
 	}
 
-	return quickMenuElement;
 }
 
 function isTextBox(element) {
@@ -711,48 +854,53 @@ if (document.title === "QuickMenu") {
 			
 			if ( userOptions === {} ) return;
 			
-			let quickMenuElement = makeQuickMenu();
+		//	let quickMenuElement = makeQuickMenu();
 		
-			document.body.appendChild(quickMenuElement);
-			
-			let sb = document.getElementById('quickmenusearchbar');
-			let sbc = document.getElementById('quickMenuSearchBarContainer');
-			
-			if (userOptions.quickMenuSearchBar === 'bottom') {	
-				sbc.style.borderRadius = "0 0 10px 10px";
-				document.body.appendChild(sbc);
-			} else {
-				sbc.style.borderRadius = "10px 10px 0 0";
-			}
-
-			browser.runtime.sendMessage({
-				action: "quickMenuIframeLoaded", 
-				size: {
-					width: window.getComputedStyle(quickMenuElement,null).width,
-					height: parseInt(window.getComputedStyle(quickMenuElement,null).height) + parseInt(window.getComputedStyle(sbc, null).height) + 'px'
+			makeQuickMenu().then( (qme) => {
+				
+				let quickMenuElement = qme;
+		
+				document.body.appendChild(quickMenuElement);
+				
+				let sb = document.getElementById('quickmenusearchbar');
+				let sbc = document.getElementById('quickMenuSearchBarContainer');
+				
+				if (userOptions.quickMenuSearchBar === 'bottom') {	
+					sbc.style.borderRadius = "0 0 10px 10px";
+					document.body.appendChild(sbc);
+				} else {
+					sbc.style.borderRadius = "10px 10px 0 0";
 				}
-				// size: {
-					// width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
-					// height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(sbc.ownerDocument.defaultView.getComputedStyle(sbc, null).height) + 'px'
-				// }
-			}).then(() => {
 
-				// setTimeout needed to trigger after updatesearchterms
-				setTimeout(() => {
-					if (userOptions.quickMenuSearchBarSelect) {
-						sb.addEventListener('focus', ()=> {
-							sb.select();
-						},{once:true});
+				browser.runtime.sendMessage({
+					action: "quickMenuIframeLoaded", 
+					size: {
+						width: window.getComputedStyle(quickMenuElement,null).width,
+						height: parseInt(window.getComputedStyle(quickMenuElement,null).height) + parseInt(window.getComputedStyle(sbc, null).height) + 'px'
 					}
+					// size: {
+						// width: quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("width"), 
+						// height:parseInt(quickMenuElement.ownerDocument.defaultView.getComputedStyle(quickMenuElement, null).getPropertyValue("height")) + parseInt(sbc.ownerDocument.defaultView.getComputedStyle(sbc, null).height) + 'px'
+					// }
+				}).then(() => {
 
-					if (userOptions.quickMenuSearchBarFocus)
-						sb.focus();
-					
-					if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
-						sb.blur();
-						window.focus();
-					}
-				}, 100);
+					// setTimeout needed to trigger after updatesearchterms
+					setTimeout(() => {
+						if (userOptions.quickMenuSearchBarSelect) {
+							sb.addEventListener('focus', ()=> {
+								sb.select();
+							},{once:true});
+						}
+
+						if (userOptions.quickMenuSearchBarFocus)
+							sb.focus();
+						
+						if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
+							sb.blur();
+							window.focus();
+						}
+					}, 100);
+				});
 			});
 		});
 	});
@@ -1127,7 +1275,7 @@ if (document.title !== "QuickMenu") {
 						quickMenuObject: quickMenuObject
 					});
 					
-					scaleAndPositionQuickMenu(message.size);
+					scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 					
 					break;
 			}

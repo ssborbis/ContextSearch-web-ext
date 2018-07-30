@@ -282,6 +282,70 @@ function notify(message, sender, sendResponse) {
 
 			document.execCommand("copy");
 			break;
+		
+		case "getQuickMenuBookmarks":
+		
+			if (message.id)
+				return browser.bookmarks.getSubTree(message.id).then(onGot);
+			else
+				return CSBookmarks.getAll().then(onGot);
+			
+			function onGot(tree) {
+				
+				tree = tree.shift();
+				
+				let tileNodes = [];
+				
+				for (let node of tree.children) {
+
+					if ( CSBookmarks.getType(node) === 'bookmark' ) {
+						let index = userOptions.searchEngines.findIndex( (se) => {
+							return se.title === node.title;
+						});
+						
+						// skip renamed / orphaned bookmarks
+						if (index === -1) {
+							console.log(node.title + ' cannot be found in search engines');
+							continue;
+						}
+						
+						// bookmarklets
+						// if (index === -1 && node.url.match(/^javascript/) === null) {
+							// tileNodes.push({type: "bookmarklet", url: node.url});
+							
+							// continue;
+						// }
+
+						// let se = userOptions.searchEngines[index] || {title: node.title}; // bookmarklets
+						
+						tileNodes.push({type: "searchEngine", id: index});
+						
+						continue;
+					}
+					
+					if ( CSBookmarks.getType(node) === 'folder' ) {
+						tileNodes.push({type: "folder", id: node.id, title: node.title});
+						
+						continue;
+					}
+					
+				}
+				
+				return CSBookmarks.get().then( (root) => {
+					
+					let id = message.id || null;
+
+					if (root.id === tree.id)
+						return {tileNodes: tileNodes, parentId: null};
+					else 
+						return {tileNodes: tileNodes, parentId: tree.parentId};
+				});
+				
+				
+			}
+			
+			break;
+
 	}
 }
 
@@ -359,6 +423,8 @@ function buildContextMenu(disableAddCustomSearch) {
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function contextMenuSearch(info, tab) {
+	
+	console.log(info);
 	
 	if (info.menuItemId === 'showSuggestions') {
 		userOptions.searchBarSuggestions = info.checked;
@@ -743,6 +809,7 @@ const defaultUserOptions = {
 	contextMenu: true,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
+	quickMenuBookmarks: false,
 //	contextMenuBookmarksFolderId: -1,
 	quickMenuTools: [
 		{name: 'disable', 	disabled: false},
