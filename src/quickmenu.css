@@ -45,6 +45,17 @@
 	overflow:hidden;
 	white-space: nowrap;
 }
+#quickMenuElement DIV .folderLabel {
+	font-size:7pt;
+	line-height:1em;
+	padding:2px;
+	font-family:Arial;
+	font-weight:bold;
+	color: white;
+	text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+	overflow:hidden;
+	position:relative;top:20px;
+}
 #quickMenuSearchBarContainer {
 	background-color:white;
 	white-space: nowrap;

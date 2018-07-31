@@ -423,9 +423,7 @@ function buildContextMenu(disableAddCustomSearch) {
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function contextMenuSearch(info, tab) {
-	
-	console.log(info);
-	
+
 	if (info.menuItemId === 'showSuggestions') {
 		userOptions.searchBarSuggestions = info.checked;
 		browser.storage.local.set({"userOptions": userOptions});
