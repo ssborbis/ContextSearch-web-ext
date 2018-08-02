@@ -767,7 +767,27 @@ function makeQuickMenu() {
 					continue;
 				}
 				
-				if (node.type === 'folder') {
+				if ( node.type === "bookmarklet" ) {
+					
+					let tile = buildSearchIcon(browser.runtime.getURL('/icons/tools.png'), node.title);
+
+					addTileEventHandlers(tile, (e) => {
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: node.title,
+								selectionText: sb.value,//quickMenuObject.searchTerms,
+								openMethod: getOpenMethod(e)
+							}
+						});
+					});
+
+					tileArray.push(tile);
+					
+					continue;
+				}
+				
+				if (node.type === "folder") {
 					let tile = buildSearchIcon(browser.runtime.getURL('/icons/folder-icon.png'), node.title);
 
 					let span = document.createElement('span');

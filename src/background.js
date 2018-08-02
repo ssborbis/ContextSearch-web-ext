@@ -308,24 +308,19 @@ function notify(message, sender, sendResponse) {
 							console.log(node.title + ' cannot be found in search engines');
 							continue;
 						}
-						
-						// bookmarklets
-						// if (index === -1 && node.url.match(/^javascript/) === null) {
-							// tileNodes.push({type: "bookmarklet", url: node.url});
-							
-							// continue;
-						// }
 
-						// let se = userOptions.searchEngines[index] || {title: node.title}; // bookmarklets
+						// bookmarklets
+						if ( node.url.match(/^javascript/) !== null ) {
+							tileNodes.push({type: "bookmarklet", url: node.url, title: node.title});
+							continue;
+						}
 						
-						tileNodes.push({type: "searchEngine", id: index});
-						
+						tileNodes.push({type: "searchEngine", id: index});	
 						continue;
 					}
 					
 					if ( CSBookmarks.getType(node) === 'folder' ) {
 						tileNodes.push({type: "folder", id: node.id, title: node.title});
-						
 						continue;
 					}
 					
@@ -503,7 +498,7 @@ function quickMenuSearch(info, tab) {
 
 function openSearch(details) {
 
-//	console.log(details);
+	console.log(details);
 		
 	var searchEngineIndex = details.searchEngineIndex || 0;
 	var searchTerms = details.searchTerms.trim();
@@ -609,7 +604,7 @@ function openSearch(details) {
 			browser.tabs.onUpdated.removeListener(listener);
 			
 			browser.tabs.executeScript(_tab.id, {
-				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"', 
+				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', _TEMP=' + JSON.stringify(temporarySearchEngine) : ""), 
 				runAt: 'document_start'
 			}).then(() => {
 			return browser.tabs.executeScript(_tab.id, {

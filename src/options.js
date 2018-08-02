@@ -583,7 +583,7 @@ function buildSearchEngineContainer(searchEngines) {
 		bookmark.className = 'checkboxImage';
 		
 		// Hide if disabled
-		if (!userOptions.contextMenuBookmarks)
+		if (!userOptions.contextMenuBookmarks && !userOptions.quickMenuBookmarks)
 			bookmark.style.display='none';
 		
 		let bm_cb = document.createElement('input');

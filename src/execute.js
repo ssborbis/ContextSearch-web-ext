@@ -30,7 +30,11 @@ function post(path, params) {
 	form.submit();
 }
 
-browser.runtime.sendMessage({action: "getSearchEngineByIndex", index: _INDEX}).then((message) => {
-	var se = message.searchEngine;
-	post(se.template, se.params);
-});
+if (_INDEX === -1) // using a temp engine
+	post(_TEMP.template, _TEMP.params);
+else {
+	browser.runtime.sendMessage({action: "getSearchEngineByIndex", index: _INDEX}).then((message) => {
+		var se = message.searchEngine;
+		post(se.template, se.params);
+	});
+}
