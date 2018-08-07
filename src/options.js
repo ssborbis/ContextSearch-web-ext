@@ -729,7 +729,7 @@ function saveOptions(e) {
 	}
 	
 	function onError(error) {
-		console.log(error);
+	//	console.log(error);
 		console.log(`Error: ${error}`);
 	}
 	
@@ -1494,6 +1494,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 	
 document.addEventListener('DOMContentLoaded', () => {
+	var root;
 	let div = document.getElementById('d_clearSearchHistory');
 	div.animating = false;
 	div.onclick = function() {
@@ -1521,3 +1522,403 @@ document.addEventListener('DOMContentLoaded', () => {
 		}, 1000);
 	}
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+	CSBookmarks.getPath().then( (path) => {
+		let divs = document.querySelectorAll('[data-bookmarkpath]');
+		for (let div of divs) {
+			div.style = 'font-size:9pt;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;';
+				
+			div.innerHTML = "<span style='margin-left:40px'></span>" + path;
+		}
+
+	});
+});
+
+// function buildSearchEngineContainerNew() {
+	
+	// function getToolIconIndex(element) {
+		
+		// let rows = document.getElementById('newTable').getElementsByTagName('tr');
+		// for ( let i=0;i<rows.length;i++ ) {
+			// if (rows[i] === element)
+				// return i;
+		// }
+		
+		// return -1;
+	// }
+	// function nearestParent( tagName, target ) {
+		// while ( target && target.nodeName.toUpperCase() !== tagName.toUpperCase() ) {
+			// target = target.parentNode;
+		// }
+		
+		// return target;
+	// }
+	// function dragstart_handler(ev) {
+		// ev.dataTransfer.setData("text", "");
+		// window.dragRow = nearestParent("TR",ev.target);
+		// ev.effectAllowed = "copyMove";
+	// }
+	// function dragover_handler(ev) {
+		// let row = nearestParent("TR",ev.target);
+		
+		// if (contains(row.node, window.dragRow.node) ) {
+		// //	row.style.outline = '2px solid red';
+			// row.style.backgroundColor = "pink";
+			// row.style.opacity = .5;
+			// return;
+		// }			
+	// //	row.style.outline = '2px solid #6ec179';
+		// row.style.backgroundColor = "#6ec179";
+		// row.style.opacity = .5;
+		// //row.style.height = '40px';
+		// ev.preventDefault();
+	// }
+	// function dragleave_handler(ev) {
+		// nearestParent("TR",ev.target).style=null;
+	// }
+	// function drop_handler(ev) {
+		// ev.preventDefault();
+		
+		// function getDepth(node) {
+			// let depth = 0;
+			// while (node.parent) {
+				// node = node.parent;
+				// depth++;
+			// }
+			
+			// return depth;
+		// }
+		
+		// let tr = nearestParent("TR",ev.target);
+		// let old_tr = window.dragRow;
+		// tr.style = null;
+		// let oldNode = window.dragRow.node;
+		// let newNode = tr.node;
+		
+		// let newFolder = newNode.type === 'folder' ? newNode : newNode.parent;
+		
+		// let dropRows = [old_tr];
+		
+		// if (oldNode.type === 'folder') {
+			// let depth = getDepth(old_tr.node);
+			// while( old_tr.nextSibling && getDepth(old_tr.nextSibling.node) > depth) {
+				// dropRows.push(old_tr.nextSibling);
+				// table.removeChild(old_tr.nextSibling);
+			// }
+		// }
+
+		// if (newNode.type === 'folder') {
+			// newNode.children.splice(0,0,oldNode);
+			// oldNode.parent = newNode;
+		// } else {
+			// oldNode.parent = newNode.parent;
+			// let index = -1;
+			// for (let i=0;i<newNode.parent.children.length;i++) {
+				// if (newNode.parent.children[i] === newNode) {
+					// index = i;
+					// break;
+				// }
+			// }
+			
+			// newNode.parent.children.splice(index, 0, oldNode);
+		// }
+
+	// //	for (let i=dropRows.length -1; i>=0;i--) {
+		// for (let i=0;i<dropRows.length;i++) {
+
+			// let depth = getDepth(oldNode) - 1;
+			// dropRows[i].querySelector('.spacer').style.marginRight = depth * 20 + "px";
+
+			// if (newNode.type === 'folder')
+				// table.insertBefore(dropRows[i], tr.nextSibling);
+			// else
+				// table.insertBefore(dropRows[i], tr);
+		// }
+
+	// }
+	// function dragend_handler(ev) {
+	// //	saveOptions();
+	// //	ev.dataTransfer.clearData();
+	// }
+	
+	// searchEngines = userOptions.searchEngines;
+	// let table = document.createElement('table');
+	// table.id = 'newTable';
+	// table.style.textAlign = 'left';
+	// table.style.width = '700px';
+		
+	// let depth = 1;
+
+	// function traverse(node, parent) {
+		
+		// let tr = document.createElement('tr');
+		
+		// tr.setAttribute('draggable', true);
+		
+		// tr.addEventListener('dragstart',dragstart_handler);
+		// tr.addEventListener('dragend',dragend_handler);
+		// tr.addEventListener('drop',drop_handler);
+		// tr.addEventListener('dragover',dragover_handler);
+		// tr.addEventListener('dragleave',dragleave_handler);
+
+		// tr.dataset.collapsed = "false";
+		// tr.dataset.depth = depth.toString();
+		// tr.node = node;
+		
+		// tr.addEventListener('contextmenu', function(e) {
+			// e.preventDefault();
+
+			// let menu = document.createElement('div');
+			// menu.id = "contextMenu";
+			
+			// let oldMenu = document.getElementById(menu.id);
+			// if (oldMenu) oldMenu.parentNode.removeChild(oldMenu);
+
+			// let _delete = document.createElement('div');
+			// _delete.innerText = 'Delete';
+			
+			// _delete.onclick = function() {
+				
+				// if (tr.node.type === 'folder') {
+					// while(tr.nextSibling && parseInt(tr.nextSibling.dataset.depth) > parseInt(tr.dataset.depth)) {
+						// table.removeChild(tr.nextSibling);
+					// }
+				// }
+				// tr.parentNode.removeChild(tr);
+			// }
+			
+			// let edit = document.createElement('div');
+			// edit.innerText = 'Edit';
+			
+			// [_delete, edit].forEach((el) => {
+				// menu.appendChild(el);
+			// });
+
+			// menu.style.left = e.pageX + "px";
+			// menu.style.top = e.pageY + "px";
+
+			// document.body.appendChild(menu);
+			
+			
+			// // menu close listener
+			// document.addEventListener('click', function contextMenuClose(e) {
+				
+				// if (!menu || menu.contains(e.target)) return false;
+				
+				// menu.parentNode.removeChild(menu);
+				// document.removeEventListener('click', contextMenuClose);
+			// });
+			
+		// });
+		
+		// let hide = document.createElement('label');
+		// hide.title = browser.i18n.getMessage('ShowHide').toLowerCase();
+		// hide.className = 'container hide';
+		
+		// let cb = document.createElement('input');
+		// cb.type = 'checkbox';
+		// // cb.checked = !se.hidden;
+		// // cb.addEventListener('change', () => {
+			// // se.hidden = !cb.checked;
+			// // saveOptions();
+		// // });
+		
+		// let sp = document.createElement('span');
+		// sp.className = 'checkmark checkmark2';
+		// sp.style.textAlign = 'center';
+		// sp.style.top = "0";
+		
+		// hide.appendChild(cb);
+		// hide.appendChild(sp);
+
+		// let td = document.createElement('td');
+		// td.style.display = 'inline-block';
+		
+		// td.appendChild(hide);
+		// tr.appendChild(td);
+		// table.appendChild(tr);
+
+		// if (node.type === 'searchEngine') {
+			
+			// let se = userOptions.searchEngines[node.index];
+
+			// let td_title = document.createElement('td');
+			
+			// let spacer = document.createElement('span');
+			// spacer.className = "spacer";
+			// spacer.style.marginLeft = depth * 20 + "px";
+			// td_title.appendChild(spacer);
+
+			// let img = document.createElement('img');
+			// img.src = userOptions.searchEngines[node.index].icon_base64String || userOptions.searchEngines[node.index].icon_url;
+			// img.style.height = '16px';
+			// img.style.marginRight = '10px';
+			// img.style.verticalAlign = 'middle';
+			// td_title.appendChild(img);
+			
+			// let text = document.createElement('span');
+			// text.innerText = node.title;
+			// td_title.appendChild(text);
+			
+			// tr.appendChild(td_title);
+			
+			
+			// let hotkey = document.createElement('span');
+			// hotkey.title = browser.i18n.getMessage('Hotkey').toLowerCase();
+			// hotkey.className = 'hotkey';
+			// //hotkey.innerText = "";
+			// td_title.style.position = 'relative';
+			
+			// td_title.appendChild(hotkey);
+			// hotkey.innerText = keyTable[se.hotkey] || "";
+			// // hotkey.onclick = function(e) {
+				// // e.stopPropagation();			
+				// // e.target.innerText = '';
+				// // let img = document.createElement('img');
+				// // img.src = 'icons/spinner.svg';
+				// // img.style.height = '1em';
+				// // img.style.verticalAlign = 'middle';
+				// // e.target.appendChild(img);
+				// // window.addEventListener('keydown', function keyPressListener(evv) {
+					// // evv.preventDefault();
+					
+					// // if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
+
+					// // let r = nearestParent("TR",e.target);
+					// // let index = getToolIconIndex(r);
+
+					// // if (evv.which === 27) {
+						// // searchEngines[index].hotkey = null;
+						// // e.target.innerText = "";
+						// // window.removeEventListener('keydown', keyPressListener);
+						// // saveOptions();
+						// // return;
+					// // }
+
+					// // // check for same key
+					// // for (let i=0;i<searchEngines.length;i++) {
+						// // if (searchEngines[i].hotkey && searchEngines[i].hotkey === evv.which && i !== index) {
+							// // hotkey.style.backgroundColor = 'pink';
+							// // setTimeout( () => {
+								// // hotkey.style.backgroundColor = null;
+							// // },250);
+							// // return;
+						// // }
+					// // }
+					
+					// // e.target.innerText = keyTable[evv.which];
+					// // searchEngines[index].hotkey = evv.which;
+
+					// // window.removeEventListener('keydown', keyPressListener);
+					// // saveOptions();
+				// // }); 
+				
+			// // }
+		// }
+		
+		// if (node.type === 'separator') {}
+		
+		// if ( node.type === 'folder' ) {
+
+			// let td = document.createElement('td');	
+			
+			// let spacer = document.createElement('span');
+			// spacer.className = "spacer";
+			// spacer.style.marginLeft = depth * 20 + "px";
+			// td.appendChild(spacer);
+			
+			// let expand = document.createElement('div');
+			// expand.style = 'display:inline-block;z-index:2;position:relative;margin-left:-20px;margin-right:6px;width:12px;height:12px;border:1px solid black;background-color:white;font-size:8px;text-align:center;vertical-align:middle;';
+			// expand.innerHTML = '-';
+			// td.appendChild(expand);
+
+			// expand.onclick = function() {
+				
+				// let parentRow = nearestParent('TR', this);	
+				// let collapse = parentRow.dataset.collapsed === "false" ? true : false;
+				// parentRow.dataset.collapsed = collapse.toString();
+				
+				// expand.innerHTML = collapse ? "&#10133;" : "-";
+
+				// let rows = document.getElementById('newTable').childNodes;
+				// for (let i=0;i<rows.length;i++) {
+					// if ( rows[i] === parentRow ) {
+						// while(rows[++i] !== undefined && parseInt(rows[i].dataset.depth) > parseInt(parentRow.dataset.depth)) {
+							// if (collapse) {
+								// rows[i].style.display = 'none';
+								// rows[i].dataset.collapsed = 'true';
+							// } else {
+								// rows[i].style.display = null;
+								// rows[i].dataset.collapsed = 'false';
+							// }
+						// }
+					// }
+				// }
+			// }
+
+			// let img = document.createElement('img');
+			// img.src = browser.runtime.getURL('/icons/folder-icon.png');
+			// img.style.height = '16px';
+			// img.style.marginRight = '10px';
+			// img.style.verticalAlign = 'middle';
+			// td.appendChild(img);
+			
+			// let text = document.createElement('span');
+			// text.innerText = node.title;
+			// td.appendChild(text);
+			
+			// tr.appendChild(td);
+			
+			// depth++;
+			
+			// for (let _node of node.children) 
+				// traverse(_node, tr);
+			
+			// depth--;
+		// }
+	// }
+	
+	// function contains(needle, haystack) {
+		
+		// function _traverse(_haystack) {
+			// if (_haystack === needle) return true;
+			
+			// if (!_haystack.children) return false;
+			
+			// for (let straw of _haystack.children) {
+				// if (_traverse(straw) ) return true;
+			// }
+			
+			// return false;
+		// }
+		
+		// return _traverse(haystack);
+	// }
+	
+	// CSBookmarks.treeToFolders().then( (root) => {
+		
+		// var setParent = function(o){
+			// if(o.children != undefined){
+				// for(n in o.children) {
+				  // o.children[n].parent = o;
+				  // setParent(o.children[n]);
+				// }
+			// }
+		// }
+
+		// setParent(root);
+		
+		// table.root = root;
+		
+		// for (let child of root.children)
+			// traverse(child, table);
+		
+		// document.body.appendChild(table);
+	// });
+	
+// }
+
+// document.addEventListener('DOMContentLoaded', () => {
+	// buildSearchEngineContainerNew();
+// });

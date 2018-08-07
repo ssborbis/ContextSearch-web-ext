@@ -21,7 +21,7 @@ class CSBookmarks {
 	
 	static create() {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 	
 		function onFulfilled(bookmarks) {
 			
@@ -72,7 +72,7 @@ class CSBookmarks {
 	
 	static get() {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		return browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")}).then((bookmarks) => {
 
@@ -83,7 +83,7 @@ class CSBookmarks {
 	
 	static getAll() {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		return this.get().then( (bookmark) => {
 
@@ -95,7 +95,7 @@ class CSBookmarks {
 	
 	static getNames() {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		return this.getAll().then((tree) => {
 			
@@ -123,7 +123,7 @@ class CSBookmarks {
 
 	static find(str) {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		return this.getAll().then((tree) => {
 			
@@ -153,7 +153,7 @@ class CSBookmarks {
 	
 	static remove(str) {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		this.find(str).then( (result) => {
 			if (result === -1) return false;
@@ -165,7 +165,7 @@ class CSBookmarks {
 	
 	static removeAll() {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		this.getAll().then( (tree) => {
 			tree = tree.shift();
@@ -178,14 +178,24 @@ class CSBookmarks {
 	
 	static add(se) {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		return this.find(se.title).then( (result) => {
 			if (result !== -1) return false;
 			
 			return this.get().then( (bm) => {
 				
-				if (!bm) return false;
+				if (!bm) { // main bookmark folder doesn't exist
+					let createOptions = {
+						title: browser.i18n.getMessage("ContextSearchMenu")
+					}
+					
+					if (browser.bookmarks.BookmarkTreeNodeType)
+						createOptions.type = 'folder';
+					
+					console.log('missing root bookmark, creating');
+					return browser.bookmarks.create( createOptions ).then(this.add(se));
+				}
 				
 				console.log('adding bookmark');
 				
@@ -201,7 +211,7 @@ class CSBookmarks {
 	
 	static rename(oldName, newName) {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
 		return this.find(oldName).then( (result) => {
 						
@@ -237,7 +247,7 @@ class CSBookmarks {
 		
 		console.log('buildBookmarks');
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 
 		this.getAll().then((bookmark) => {
 				
@@ -315,7 +325,7 @@ class CSBookmarks {
 	
 	static isDescendent(id) {
 		
-		if (browser.bookmarks === undefined) return new Promise(()=>{return false;},()=>{return false});
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
 
 		return this.getAll().then((tree) => {
 			
@@ -336,4 +346,104 @@ class CSBookmarks {
 			return traverse(tree);	
 		});
 	}
+	
+	static treeToFolders(id) {
+		
+		if (browser.bookmarks === undefined) return Promise.resolve(false);
+		
+		let root = {};
+		
+		return this.getAll().then((tree) => {
+			
+			if (!tree) return [];
+
+			tree = tree.shift();
+			
+			root.title = tree.title;
+			root.id = tree.id;
+			root.children = [];
+			root.type = "folder";
+			root.title = "/";
+			
+			function traverse(node, target) {
+
+				if ( CSBookmarks.getType(node) === 'bookmark' ) {
+					
+					let index = userOptions.searchEngines.findIndex( (se) => {
+						return se.title === node.title;
+					});
+					
+					if ( index === -1 ) return;
+					
+					// if ( node.url.match(/^javascript/) !== null) {
+						// target.push({
+							// type: "bookmarklet",
+							// title: node.title,
+							// id: node.id,
+							// parentId: node.parentId,
+							// url: node.url
+						// });
+					// }
+
+					target.children.push({
+						type: "searchEngine",
+						title: node.title,
+						index: index
+					});
+				}
+				
+				if ( CSBookmarks.getType(node) === 'folder' ) {
+					
+					let folder = {
+						type: "folder",
+						title: node.title,
+						children: []
+					}
+
+					target.children.push(folder);
+					
+					for (let child of node.children)
+						traverse(child, folder);
+				}
+				
+				// if (node.type === 'separator' /* firefox */) {
+					// target.push({
+						// type: "separator"
+					// });
+				// }
+			}
+			
+			for (let child of tree.children)
+				traverse(child, root);
+			
+			return root;
+		});
+	}
+	
+	static getPath() {
+		
+		if (browser.bookmarks === undefined) return Promise.resolve("");
+		
+		return this.getAll().then( (b) => {
+			
+			let paths = [];
+
+			function p(bm) {
+				paths.unshift(bm.title);
+
+				if (bm.parentId) {
+					return browser.bookmarks.get(bm.parentId).then((bm)=> {
+						return p(bm.shift());
+					});
+				} else {
+					return Promise.resolve(paths.join(' / '));
+				}
+			}
+			
+			b = b.shift();
+			return p(b);
+
+		});
+	}
+		
 }

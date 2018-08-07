@@ -20,8 +20,6 @@ function notify(message, sender, sendResponse) {
 					  error.url = tab.url;
 					  console.log(error);
 					});	
-					
-					console.log(tab.url);
 				}
 			});
 			
@@ -932,8 +930,6 @@ if (browser.bookmarks !== undefined) {
 	browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
 	browser.bookmarks.onCreated.addListener(bookmarksModificationHandler);
 }
-
-
 
 if (browser.pageAction) {
 	/*
