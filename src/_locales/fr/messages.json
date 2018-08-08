@@ -44,11 +44,11 @@
   },
   
    "UseBookmarksMenu": {
-    "message": "Utiliser le dossier des marque-pages"
+    "message": "Organiser avec les marque-pages"
   },
     
    "UseBookmarksMenuTooltip": {
-    "message": "Contrôler les moteurs de recherche affichés dans le menu contextuel en utilisant un dossier de marque-pages. Cette option autorise les séparateurs et les sous-dossiers. Remarque : un marque-page renommé ne fonctionnera plus ; un marque-page supprimé peut être rétabli dans les options à l’onglet « Moteurs de recherche »."
+    "message": "Contrôler les moteurs de recherche affichés dans le menu en utilisant un dossier de marque-pages. Cette option autorise les séparateurs et les sous-dossiers. Remarque : un marque-page renommé ne fonctionnera plus ; un marque-page supprimé peut être rétabli dans les options à l’onglet « Moteurs de recherche »."
   },
    
    "QuickMenu": {
@@ -881,6 +881,11 @@
   "OK": {
     "message": "OK",
     "description": ""
+  },
+  
+  "Back": {
+    "message": "Retour",
+    "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
   
   "_________": {
