@@ -888,6 +888,10 @@
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
   
+  "Folders": {
+    "message": "Folders"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

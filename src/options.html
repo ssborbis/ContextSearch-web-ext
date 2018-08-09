@@ -555,17 +555,22 @@
 				font-size:10pt;
 				border:1px solid transparent;
 				padding-right:10px;
+				width:auto;
+
 			}
 			TABLE.searchActions SELECT:focus {
 				border:1px solid #858585;
 			}
 			TABLE.searchActions TD {
 				margin:0;
-				padding:2px 0;
+				padding:2px 16px;
 				border-style:dashed;
 				border-color: #DDD;
 				border-width:0px 0px 1px 0px;
 				position:relative;
+			}
+			TABLE.searchActions TD:nth-of-type(3n) {
+				border-left: 1px dashed #ddd;
 			}
 			P.short {
 				margin:0;
@@ -1187,8 +1192,8 @@
 				<table class='searchActions'>
 				<tr>
 					<td></td>
-					<td style='text-align:center'><span class='header1'>Search Engine</span></td>
-					<td style='text-align:center;font-size:10pt'><span class='header1'>Folder</span></td>
+					<td style='text-align:center'><span class='header1' data-i18n='SearchEngines'>Search Engines</span></td>
+					<td style='text-align:center;font-size:10pt'><span class='header1' data-i18n='Folder'>Folders</span></td>
 				</tr>
 				<tr>
 					<td>
@@ -1201,7 +1206,7 @@
 					</span>
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuSearchHotkeys'>
+					<select class='inputNice' id='s_quickMenuSearchHotkeys'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1217,7 +1222,7 @@
 					<span class='buttonLabel' data-i18n='LeftButton'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuLeftClick'>
+					<select class='inputNice' id='s_quickMenuLeftClick'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1233,7 +1238,7 @@
 					<span class='buttonLabel' data-i18n='MiddleButton'>Middle Button</span><img alt='Middle Button' title='Middle Button' src='icons/middlemouse.png' class='smallIcon' style='transform:scaleX(-1);' />
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuMiddleClick'>
+					<select class='inputNice' id='s_quickMenuMiddleClick'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1243,7 +1248,7 @@
 					</select>
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuFolderMiddleClick'>
+					<select class='inputNice' id='s_quickMenuFolderMiddleClick'>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1256,7 +1261,7 @@
 					<span class='buttonLabel' data-i18n='RightButton'>Right Button</span><img alt='Right Button' title='Right Button' src='icons/leftmouse.png' class='smallIcon' style='transform:scaleX(-1);' />
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuRightClick'>
+					<select class='inputNice' id='s_quickMenuRightClick'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1266,7 +1271,7 @@
 					</select>
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuFolderRightClick'>
+					<select class='inputNice' id='s_quickMenuFolderRightClick'>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1281,7 +1286,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuShift'>
+					<select class='inputNice' id='s_quickMenuShift'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1292,7 +1297,7 @@
 					</select>
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuFolderShift'>
+					<select class='inputNice' id='s_quickMenuFolderShift'>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1307,7 +1312,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuCtrl'>
+					<select class='inputNice' id='s_quickMenuCtrl'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1318,7 +1323,7 @@
 					</select>
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuFolderCtrl'>
+					<select class='inputNice' id='s_quickMenuFolderCtrl'>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1333,7 +1338,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' />
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuAlt'>
+					<select class='inputNice' id='s_quickMenuAlt'>
 						<option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option>
 						<option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
@@ -1344,7 +1349,7 @@
 					</select>
 					</td>
 					<td>
-					<select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuFolderAlt'>
+					<select class='inputNice' id='s_quickMenuFolderAlt'>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
