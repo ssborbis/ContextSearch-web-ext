@@ -40,7 +40,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 		}
 		// end 1.3.2+
 		
-		loadRemoteIconsNew({
+		loadRemoteIcon({
 			searchEngines: newEngines, // 1.3.2+
 		}).then( (details) => {
 
@@ -342,7 +342,9 @@ function buildSearchEngineContainer(searchEngines) {
 					el.classList.add("error");
 				}
 				
-				function saveForm() {
+				function saveForm(closeForm) {
+					
+					closeForm = ( closeForm === undefined ) ? true : false;
 					// loading icon is last step. Set values after everything else
 						
 					// alert of problems with changing name
@@ -355,7 +357,7 @@ function buildSearchEngineContainer(searchEngines) {
 							edit_form.previousSibling.innerText = se.title;
 						}
 					}
-					
+
 					se.icon_base64String = icon.src;
 					se.query_string = se.template = edit_form.template.value;
 					se.searchForm = edit_form.searchform.value;
@@ -365,7 +367,9 @@ function buildSearchEngineContainer(searchEngines) {
 					se.params = paramStringToNameValueArray(edit_form.post_params.value);
 					
 					saveOptions();
-					edit_form.style.maxHeight = null;
+					
+					if (closeForm)
+						edit_form.style.maxHeight = null;
 				}
 
 				// Check bad form values
@@ -390,25 +394,41 @@ function buildSearchEngineContainer(searchEngines) {
 					return;
 				}
 				if (edit_form.searchform.value.match(/^http/i) === null) {
-					showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
-					return;
+					let url = new URL(edit_form.template.value);
+					edit_form.searchform.value = url.origin;
+					//showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
+				//	return;
 				}
 				if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
 					showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
 					return;
 				}
 				if (edit_form.iconURL.value.match(/^resource:/) === null) {
+					
+					if ( !edit_form.iconURL.value ) {
+						let url = new URL(edit_form.template.value);
+						edit_form.iconURL.value = url.origin + "/favicon.ico";
+					}
+					
 					icon.src = browser.runtime.getURL("/icons/spinner.svg");
 					let newIcon = new Image();
 					newIcon.onload = function() {
-						icon.src =  imageToBase64(this, 32);
+						icon.src = imageToBase64(this, 32);
 						saveForm();
 					}
-					newIcon.onerror = function() {
-						icon.src = se.icon_base64String;
+					newIcon.onerror = function() {	
 						showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
+						icon.src = se.icon_base64String || tempImgToBase64(se.title.charAt(0).toUpperCase());
+						saveForm(false);
 					}
+					
 					newIcon.src = edit_form.iconURL.value;
+					
+					setTimeout(() => {
+						if (!newIcon.complete) {
+							newIcon.onerror();
+						}
+					}, 5000);
 				}
 			}
 			
@@ -699,6 +719,12 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuShift').value = userOptions.quickMenuShift;
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
+		
+		document.getElementById('s_quickMenuFolderRightClick').value = userOptions.quickMenuFolderRightClick;
+		document.getElementById('s_quickMenuFolderMiddleClick').value = userOptions.quickMenuFolderMiddleClick;
+		document.getElementById('s_quickMenuFolderShift').value = userOptions.quickMenuFolderShift;
+		document.getElementById('s_quickMenuFolderCtrl').value = userOptions.quickMenuFolderCtrl;
+		document.getElementById('s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
 		document.getElementById('cb_quickMenuBookmarks').checked = userOptions.quickMenuBookmarks;
 		
@@ -772,6 +798,13 @@ function saveOptions(e) {
 		quickMenuShift: document.getElementById('s_quickMenuShift').value,
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
+		
+		quickMenuFolderRightClick: document.getElementById('s_quickMenuFolderRightClick').value,
+		quickMenuFolderMiddleClick: document.getElementById('s_quickMenuFolderMiddleClick').value,
+		quickMenuFolderShift: document.getElementById('s_quickMenuFolderShift').value,
+		quickMenuFolderCtrl: document.getElementById('s_quickMenuFolderCtrl').value,
+		quickMenuFolderAlt: document.getElementById('s_quickMenuFolderAlt').value,
+		
 		quickMenuBookmarks: document.getElementById('cb_quickMenuBookmarks').checked,
 		quickMenuSearchHotkeys: document.getElementById('s_quickMenuSearchHotkeys').value,
 		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
@@ -835,12 +868,14 @@ function bookmarksPermissionHandler(e) {
 			if (result) {
 				saveOptions();
 				buildSearchEngineContainer(userOptions.searchEngines);
+				showBookmarkPath();
 			} else
 				e.target.checked = false;
 		});
 	} else {
 		saveOptions();
 		buildSearchEngineContainer(userOptions.searchEngines);
+		showBookmarkPath();
 	}
 	
 }
@@ -941,9 +976,7 @@ function checkSearchJsonPath() {
 	if (path.match(/\/search.json.mozlz4$/) === null) {
 		path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
 	}
-	
-	console.log(path);
-	
+
 	function onResponse(response) {
 		
 		if (response.error) {
@@ -1523,7 +1556,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
-document.addEventListener('DOMContentLoaded', () => {
+function showBookmarkPath() {
 	CSBookmarks.getPath().then( (path) => {
 		let divs = document.querySelectorAll('[data-bookmarkpath]');
 		for (let div of divs) {
@@ -1533,7 +1566,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 	});
-});
+}
+
+document.addEventListener('DOMContentLoaded', showBookmarkPath);
 
 // function buildSearchEngineContainerNew() {
 	

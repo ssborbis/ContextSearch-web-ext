@@ -231,8 +231,9 @@ class CSBookmarks {
 		function onResponse(response) {
 			if (response) {
 				console.log("Permission was granted");
-				CSBookmarks.create();
-				return true;
+				return CSBookmarks.create().then(() => {
+					return true;
+				});
 				
 			} else {
 				console.log("Permission was refused");

@@ -47,15 +47,15 @@ function notify(message, sender, sendResponse) {
 			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
-					quickMenuSearch(message.info, tab);
+					return quickMenuSearch(message.info, tab);
 				}
 
 				function onError(err){
 					console.error(err);
 				}
-				browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+				return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
 			} else
-				quickMenuSearch(message.info, sender.tab);
+				return quickMenuSearch(message.info, sender.tab);
 			break;
 			
 		case "enableContextMenu":
@@ -485,7 +485,7 @@ function contextMenuSearch(info, tab) {
 }
 
 function quickMenuSearch(info, tab) {
-	openSearch({
+	return openSearch({
 		searchEngineIndex: info.menuItemId, 
 		searchTerms: info.selectionText,
 		openMethod: info.openMethod, 
@@ -555,19 +555,19 @@ function openSearch(details) {
 	
 	switch (openMethod) {
 		case "openCurrentTab":
-			openCurrentTab();
+			return openCurrentTab();
 			break;
 		case "openNewTab":
-			openNewTab();
+			return openNewTab();
 			break;
 		case "openNewWindow":
-			openNewWindow();
+			return openNewWindow();
 			break;
 		case "openNewIncognitoWindow":
-			openNewWindow(true);
+			return openNewWindow(true);
 			break;
 		case "openBackgroundTab":
-			openBackgroundTab();
+			return openBackgroundTab();
 			break;
 		
 	}
@@ -575,10 +575,10 @@ function openSearch(details) {
 	function onCreate(_tab) {
 	
 		// code for POST engines
-		if (typeof se.method === 'undefined' || se.method !== "POST") return;
+		if (typeof se.method === 'undefined' || se.method !== "POST") return _tab;
 		
 		// searches without terms should stay here
-		if (!searchTerms) return
+		if (!searchTerms) return _tab;
 		
 		function escapeDoubleQuotes(str) {
 			return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
@@ -615,6 +615,8 @@ function openSearch(details) {
 			});});});
 
 		});
+
+		return _tab;
 	}
 	
 	function onError() {
@@ -627,7 +629,7 @@ function openSearch(details) {
 			url: q,
 			openerTabId: tab.id
 		});
-		creating.then(onCreate, onError);
+		return creating.then(onCreate, onError);
 	} 
 	function openNewWindow(incognito) {	// open in new window
 
@@ -635,7 +637,7 @@ function openSearch(details) {
 			url: q,
 			incognito: incognito || false
 		});
-		creating.then(onCreate, onError);
+		return creating.then(onCreate, onError);
 	} 
 	function openNewTab(inBackground) {	// open in new tab
 	
@@ -643,14 +645,14 @@ function openSearch(details) {
 		
 		var creating = browser.tabs.create({
 			url: q,
-			active: !inBackground,
-			openerTabId: tab.id || null
+			active: !inBackground//,
+			//openerTabId: tab.id || null
 		});
-		creating.then(onCreate, onError);
+		return creating.then(onCreate, onError);
 
 	}	
 	function openBackgroundTab() {
-		openNewTab(true)
+		return openNewTab(true)
 	}
 }
 
@@ -821,6 +823,11 @@ const defaultUserOptions = {
 	quickMenuShift: "openNewWindow",
 	quickMenuCtrl: "openBackgroundTab",
 	quickMenuAlt: "keepMenuOpen",
+	quickMenuFolderRightClick: "noAction",
+	quickMenuFolderMiddleClick: "openBackgroundTab",
+	quickMenuFolderShift: "openNewWindow",
+	quickMenuFolderCtrl: "noAction",
+	quickMenuFolderAlt: "noAction",
 	quickMenuSearchHotkeys: "noAction",
 	searchBarSuggestions: true,
 	searchBarHistory: [],

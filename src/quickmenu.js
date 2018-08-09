@@ -228,7 +228,8 @@ function makeQuickMenu() {
 				break;
 		}
 		
-		return default_engine_index;
+		// if in empty subfolder without search engines, reset default_engine_index
+		return (default_engine_index > divs.length - 1) ? 0 : default_engine_index;
 	}
 	document.onkeydown = function(e) {
 		if (e.keyCode === 13) {
@@ -405,22 +406,33 @@ function makeQuickMenu() {
 	}
 	
 	// get open method based on user preferences
-	function getOpenMethod(e) {
+	function getOpenMethod(e, isFolder) {
+		
+		isFolder = isFolder || false;
+
+		let left = isFolder ? "" : userOptions.quickMenuLeftClick;
+		let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
+		let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
+		let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
+		let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
+		let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
+		
+		
 		let openMethod = "";
 		if (e.which === 3)
-			openMethod = userOptions.quickMenuRightClick;
+			openMethod = right;
 		else if (e.which === 2)
-			openMethod = userOptions.quickMenuMiddleClick;
+			openMethod = middle;
 		else if (e.which === 1) {
-			openMethod = userOptions.quickMenuLeftClick;
+			openMethod = left;
 			
 			// ignore methods that aren't opening methods
-			if (e.shiftKey && userOptions.quickMenuShift !== 'keepMenuOpen')
-				openMethod = userOptions.quickMenuShift;
-			if (e.ctrlKey && userOptions.quickMenuCtrl !== 'keepMenuOpen')
-				openMethod = userOptions.quickMenuCtrl;
-			if (e.altKey && userOptions.quickMenuAlt !== 'keepMenuOpen')
-				openMethod = userOptions.quickMenuAlt;
+			if (e.shiftKey && shift !== 'keepMenuOpen')
+				openMethod = shift;
+			if (e.ctrlKey && ctrl !== 'keepMenuOpen')
+				openMethod = ctrl;
+			if (e.altKey && alt !== 'keepMenuOpen')
+				openMethod = alt;
 		
 		}
 
@@ -732,7 +744,8 @@ function makeQuickMenu() {
 						});
 					});
 				}
-								
+				
+				delete sb.selectedIndex;
 				tileArray.push(tile);
 			}
 
@@ -746,7 +759,7 @@ function makeQuickMenu() {
 					
 				//	if ( se.hidden !== undefined && se.hidden) continue;
 					
-					let tile = buildSearchIcon(se.icon_base64String, se.title);
+					let tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
 
 					tile.index = node.id;
 					tile.dataset.index = node.id;
@@ -792,41 +805,59 @@ function makeQuickMenu() {
 
 					let span = document.createElement('span');
 					span.className = "folderLabel";
-					span.innerText = node.title;					
+					span.innerText = node.title;
 					tile.appendChild(span);
 					
-					tile.onclick = function() {
-						quickMenuElementFromBookmarksFolder(node.id).then( (qme) => {
-							
-							browser.runtime.sendMessage({
-								action: "quickMenuIframeLoaded", 
-								size: {
-									width: window.getComputedStyle(qme,null).width,
-									height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
-								},
-								resizeOnly: true
-							});
-						});
-					}
 					
 					tile.addEventListener('mousedown', (e) => {
 						
-						// for middle-button
-						if (e.which !== 2) return;
+						let method = getOpenMethod(e, true);
 						
+						if (method === 'noAction') return;
+
+						if (!method) { // empty string likely means left click
+							quickMenuElementFromBookmarksFolder(node.id).then( (qme) => {
+							
+								browser.runtime.sendMessage({
+									action: "quickMenuIframeLoaded", 
+									size: {
+										width: window.getComputedStyle(qme,null).width,
+										height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+									},
+									resizeOnly: true
+								});
+							});
+							
+							return;
+						}
+
 						browser.runtime.sendMessage({action: "getQuickMenuBookmarks", id: node.id}).then( (_result) => {
+
+							let messages = [];
+							
 							for (let _node of _result.tileNodes) {
+
 								if (_node.type === 'searchEngine') {
-									browser.runtime.sendMessage({
+									messages.push({
 										action: "quickMenuSearch", 
 										info: {
 											menuItemId: _node.id,
 											selectionText: sb.value,//quickMenuObject.searchTerms,
-											openMethod: "openBackgroundTab"
+											// when opening method is a new window, only do so on first engine, then open in background
+											openMethod: (messages.length === 0 ) ? method : "openBackgroundTab"
 										}
 									});
-								}
+								}	
 							}
+
+							function loop(message) {
+								browser.runtime.sendMessage(message).then( (result) => {
+									loop(messages.shift());
+								});
+							}
+							
+							loop(messages.shift());
+
 						});
 					});
 					
@@ -855,7 +886,7 @@ function makeQuickMenu() {
 			
 			if ( se.hidden !== undefined && se.hidden) continue;
 
-			let tile = buildSearchIcon(se.icon_base64String, se.title);
+			let tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
 
 			tile.index = i;
 			tile.dataset.index = i;

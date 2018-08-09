@@ -94,7 +94,7 @@ function nativeApp(options) {
 				
 				if ( newEngines.length === 0 ) return false;
 				
-				return loadRemoteIconsNew({
+				return loadRemoteIcon({
 					searchEngines: newEngines, // 1.3.2+
 				}).then( (details) => {
 					return hideSearchEngines(details.searchEngines).then((_result) => {

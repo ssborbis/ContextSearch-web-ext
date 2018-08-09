@@ -217,7 +217,7 @@ function openSearchXMLToSearchEngine(xml) {
 		se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
 	}
 
-	return loadRemoteIconsNew({
+	return loadRemoteIcon({
 		searchEngines: [se],
 		timeout:5000
 	});
@@ -273,7 +273,7 @@ function dataToSearchEngine(data) {
 		"description": data.description
 	};
 
-	return loadRemoteIconsNew({
+	return loadRemoteIcon({
 		searchEngines: [se],
 		timeout:5000
 	});

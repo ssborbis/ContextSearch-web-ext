@@ -48,13 +48,21 @@
 #quickMenuElement DIV .folderLabel {
 	font-size:7pt;
 	line-height:1em;
-	padding:2px;
+	padding:1px;
 	font-family:Arial;
 	font-weight:bold;
 	color: white;
 	text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
 	overflow:hidden;
-	position:relative;top:20px;
+	position:relative;
+	top:20px;
+	/*
+	display:inline-block;
+	text-align:center;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width:30px;
+	*/
 }
 #quickMenuSearchBarContainer {
 	background-color:white;
