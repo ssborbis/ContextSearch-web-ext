@@ -825,6 +825,11 @@
     "message": "Press a key",
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
+  
+  "History": {
+	"message": "History",
+	"description": "label for History icon"
+  },
 
   "ClearSearchHistory": {
     "message": "Clear Search History",
@@ -847,12 +852,12 @@
   },
   
   "SearchBarUseOldStyle": {
-    "message": "Use Old Firefox Style",
+    "message": "Single Column With Labels",
     "description": "Options label for using the old Firefox style of search bar"
   },
   
   "SearchBarUseOldStyleTooltip": {
-    "message": "Display search engines with labels in a single column like the old Firefox search bar"
+    "message": "Display search engines with labels in a single column with labels like the old Firefox search bar"
   },
   
   "ToolbarSearch": {
@@ -890,6 +895,11 @@
   
   "Folders": {
     "message": "Folders"
+  },
+  
+  "SearchActionsOpenFolder": {
+    "message": "Open Folder",
+	"description": "SELECT option label for opening quick menu folder"
   },
   
   "_________": {

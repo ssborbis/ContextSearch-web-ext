@@ -410,13 +410,12 @@ function makeQuickMenu() {
 		
 		isFolder = isFolder || false;
 
-		let left = isFolder ? "" : userOptions.quickMenuLeftClick;
+		let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
 		let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
 		let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
 		let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
 		let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
 		let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
-		
 		
 		let openMethod = "";
 		if (e.which === 3)
@@ -781,14 +780,14 @@ function makeQuickMenu() {
 				}
 				
 				if ( node.type === "bookmarklet" ) {
-					
-					let tile = buildSearchIcon(browser.runtime.getURL('/icons/tools.png'), node.title);
+
+					let tile = buildSearchIcon(browser.runtime.getURL('/icons/bookmark.png'), node.title);
 
 					addTileEventHandlers(tile, (e) => {
 						browser.runtime.sendMessage({
 							action: "quickMenuSearch", 
 							info: {
-								menuItemId: node.title,
+								menuItemId: node.id,
 								selectionText: sb.value,//quickMenuObject.searchTerms,
 								openMethod: getOpenMethod(e)
 							}
@@ -815,7 +814,7 @@ function makeQuickMenu() {
 						
 						if (method === 'noAction') return;
 
-						if (!method) { // empty string likely means left click
+						if (method === 'openFolder') { 
 							quickMenuElementFromBookmarksFolder(node.id).then( (qme) => {
 							
 								browser.runtime.sendMessage({

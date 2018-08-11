@@ -302,6 +302,7 @@ function buildSearchEngineContainer(searchEngines) {
 			}
 
 			edit_form.shortName.value = se.title;
+			edit_form.description.value = se.description || "";
 			edit_form.template.value = se.query_string;
 			edit_form.iconURL.value = se.icon_url || se.icon_base64String;
 			edit_form._method.value = se.method || "GET";
@@ -359,6 +360,7 @@ function buildSearchEngineContainer(searchEngines) {
 					}
 
 					se.icon_base64String = icon.src;
+					se.description = edit_form.description.value;
 					se.query_string = se.template = edit_form.template.value;
 					se.searchForm = edit_form.searchform.value;
 					se.icon_url = edit_form.iconURL.value;
@@ -621,7 +623,7 @@ function buildSearchEngineContainer(searchEngines) {
 			if (!bm_cb.checked)
 				CSBookmarks.remove(se.title);
 			
-			saveOptions();
+			//saveOptions();
 
 		});
 		
@@ -720,6 +722,7 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
 		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
 		
+		document.getElementById('s_quickMenuFolderLeftClick').value = userOptions.quickMenuFolderLeftClick;
 		document.getElementById('s_quickMenuFolderRightClick').value = userOptions.quickMenuFolderRightClick;
 		document.getElementById('s_quickMenuFolderMiddleClick').value = userOptions.quickMenuFolderMiddleClick;
 		document.getElementById('s_quickMenuFolderShift').value = userOptions.quickMenuFolderShift;
@@ -799,6 +802,7 @@ function saveOptions(e) {
 		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
 		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,
 		
+		quickMenuFolderLeftClick: document.getElementById('s_quickMenuFolderLeftClick').value,
 		quickMenuFolderRightClick: document.getElementById('s_quickMenuFolderRightClick').value,
 		quickMenuFolderMiddleClick: document.getElementById('s_quickMenuFolderMiddleClick').value,
 		quickMenuFolderShift: document.getElementById('s_quickMenuFolderShift').value,
@@ -1527,7 +1531,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 	
 document.addEventListener('DOMContentLoaded', () => {
-	var root;
 	let div = document.getElementById('d_clearSearchHistory');
 	div.animating = false;
 	div.onclick = function() {
@@ -1560,9 +1563,13 @@ function showBookmarkPath() {
 	CSBookmarks.getPath().then( (path) => {
 		let divs = document.querySelectorAll('[data-bookmarkpath]');
 		for (let div of divs) {
+			div.innerHTML = null;
 			div.style = 'font-size:9pt;font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;';
-				
-			div.innerHTML = "<span style='margin-left:40px'></span>" + path;
+			
+			let span = document.createElement('span');
+			span.style = 'margin-left:40px';
+			span.innerText = path;
+			div.appendChild(span);
 		}
 
 	});

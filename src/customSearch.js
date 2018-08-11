@@ -13,6 +13,7 @@ function formToSearchEngine() {
 	let form = document.getElementById('customForm');
 	return {
 		"searchForm": form.searchform.value, 
+		"description": form.description.value,
 		"query_string":form.template.value,
 		"icon_url":form.iconURL.value,
 		"title":form.shortname.value,

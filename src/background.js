@@ -47,6 +47,7 @@ function notify(message, sender, sendResponse) {
 			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
+					console.log(message.info);
 					return quickMenuSearch(message.info, tab);
 				}
 
@@ -233,9 +234,7 @@ function notify(message, sender, sendResponse) {
 		
 			var searchTerms = encodeURIComponent(message.searchTerms);
 			var timeout = Date.now();
-			
-//			console.log(message);
-			
+
 			let urlCheckInterval = setInterval( () => {
 				browser.tabs.get(sender.tab.id).then( (tabInfo) => {
 					
@@ -302,14 +301,14 @@ function notify(message, sender, sendResponse) {
 						});
 						
 						// skip renamed / orphaned bookmarks
-						if (index === -1) {
+						if (index === -1 && node.url.match(/^javascript/) === null) {
 							console.log(node.title + ' cannot be found in search engines');
 							continue;
 						}
 
 						// bookmarklets
 						if ( node.url.match(/^javascript/) !== null ) {
-							tileNodes.push({type: "bookmarklet", url: node.url, title: node.title});
+							tileNodes.push({type: "bookmarklet", url: node.url, title: node.title, id:node.id});
 							continue;
 						}
 						
@@ -369,7 +368,7 @@ function loadUserOptions() {
 	return getting.then(onGot, onError).then(buildContextMenu);
 }
 
-function buildContextMenu(disableAddCustomSearch) {
+function buildContextMenu() {
 
 	browser.contextMenus.removeAll().then( () => {
 
@@ -415,6 +414,26 @@ function buildContextMenu(disableAddCustomSearch) {
 
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
+function executeBookmarklet(info) {
+	// run as bookmarklet
+	console.log(info);
+	browser.bookmarks.get(info.menuItemId).then((bookmark) => {
+		bookmark = bookmark.shift();
+		
+		console.log('here');
+		
+		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
+			console.log('here2');
+			let code = decodeURI(bookmark.url);
+			console.log("Executing bookmarklet code -> " + code);
+			browser.tabs.executeScript(tabs[0].id, {
+				code: code
+			});
+		});
+
+	});
+}
+
 function contextMenuSearch(info, tab) {
 
 	if (info.menuItemId === 'showSuggestions') {
@@ -447,18 +466,7 @@ function contextMenuSearch(info, tab) {
 	
 	// run as bookmarklet
 	if (isNaN(info.menuItemId) && browser.bookmarks !== undefined) {
-		browser.bookmarks.get(info.menuItemId).then((bookmark) => {
-			bookmark = bookmark.shift();
-			
-			browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
-				let code = decodeURI(bookmark.url);
-				console.log("Executing bookmarklet code -> " + code);
-				browser.tabs.executeScript(tabs[0].id, {
-					code: code
-				});
-			});
-
-		});
+		executeBookmarklet(info);
 		return false;
 	}
 
@@ -485,6 +493,13 @@ function contextMenuSearch(info, tab) {
 }
 
 function quickMenuSearch(info, tab) {
+	
+		// run as bookmarklet
+	if (isNaN(info.menuItemId) && browser.bookmarks !== undefined) {
+		executeBookmarklet(info);
+		return Promise.resolve(false);
+	}
+	
 	return openSearch({
 		searchEngineIndex: info.menuItemId, 
 		searchTerms: info.selectionText,
@@ -496,8 +511,8 @@ function quickMenuSearch(info, tab) {
 
 function openSearch(details) {
 
-	console.log(details);
-		
+//	console.log(details);
+			
 	var searchEngineIndex = details.searchEngineIndex || 0;
 	var searchTerms = details.searchTerms.trim();
 	var openMethod = details.openMethod || "openNewTab";
@@ -602,7 +617,7 @@ function openSearch(details) {
 			browser.tabs.onUpdated.removeListener(listener);
 			
 			browser.tabs.executeScript(_tab.id, {
-				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', _TEMP=' + JSON.stringify(temporarySearchEngine) : ""), 
+				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
 				runAt: 'document_start'
 			}).then(() => {
 			return browser.tabs.executeScript(_tab.id, {
@@ -823,6 +838,7 @@ const defaultUserOptions = {
 	quickMenuShift: "openNewWindow",
 	quickMenuCtrl: "openBackgroundTab",
 	quickMenuAlt: "keepMenuOpen",
+	quickMenuFolderLeftClick: "openFolder",
 	quickMenuFolderRightClick: "noAction",
 	quickMenuFolderMiddleClick: "openBackgroundTab",
 	quickMenuFolderShift: "openNewWindow",

@@ -697,7 +697,7 @@
 				overflow:hidden;
 			}
 						
-			#editSearchEngineContainer INPUT, #editSearchEngineContainer SELECT {
+			#editSearchEngineContainer INPUT, #editSearchEngineContainer SELECT, #editSearchEngineContainer TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
 				border:1px solid #E0E0E0;
@@ -709,7 +709,7 @@
 			#editSearchEngineContainer SELECT {
 				width:120px;
 			}
-			#editSearchEngineContainer INPUT:focus {
+			#editSearchEngineContainer INPUT:focus,  #editSearchEngineContainer TEXTAREA:focus{
 				border:1px solid #008afc;
 				box-shadow:0px 0px 3px 1px #008afc;
 				background-color:white;
@@ -1095,105 +1095,12 @@
 				<span class='info' data-msg='Popup menu will close when scrolling using scrollbars or the mouse wheel' data-i18n_tooltip='CloseOnScroll'>?</span>
 
 				<p class='header1' data-i18n='SearchActionsHeader'>Search Actions</p>
-				<!-- <p class='short'> -->
-					<!-- <span class='buttonLabel' data-i18n='Hotkey'> -->
-						<!-- Hotkey -->
-					<!-- </span> -->
-					<!-- <span class='keyboardButton' style='min-width:16px'> -->
-						<!-- &nbsp; -->
-					<!-- </span> -->
-					<!-- <select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuSearchHotkeys'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-	
-				<!-- </p> -->
-				<!-- <p class='short' style='border-width: 1px 0'> -->
-					<!-- <span class='buttonLabel' data-i18n='LeftButton'>Left Button</span><img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' /> -->
-					<!-- <select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuLeftClick'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-				<!-- </p> -->
-				<!-- <p class='short'> -->
-					<!-- <span class='buttonLabel' data-i18n='MiddleButton'>Middle Button</span><img alt='Middle Button' title='Middle Button' src='icons/middlemouse.png' class='smallIcon' style='transform:scaleX(-1);' /> -->
-					<!-- <select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuMiddleClick'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-				<!-- </p> -->
-				<!-- <p class='short'> -->
-					<!-- <span class='buttonLabel' data-i18n='RightButton'>Right Button</span><img alt='Right Button' title='Right Button' src='icons/leftmouse.png' class='smallIcon' style='transform:scaleX(-1);' /> -->
-					<!-- <select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuRightClick'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-				<!-- </p> -->
-				<!-- <p class='short'> -->
-					<!-- <span class='keyboardButton' data-i18n='ShiftKey'> -->
-						<!-- Shift -->
-					<!-- </span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' /> -->
-					<!-- <select style='margin-left:32px;width:auto' class='inputNice' id='s_quickMenuShift'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='keepMenuOpen' data-i18n='KeepMenuOpen'>Keep Menu Open</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-				<!-- </p> -->
-				<!-- <p class='short'> -->
-					<!-- <span class='keyboardButton'> -->
-						<!-- Ctrl -->
-					<!-- </span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' /> -->
-					<!-- <select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuCtrl'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='keepMenuOpen' data-i18n='KeepMenuOpen'>Keep Menu Open</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-				<!-- </p> -->
-					
-				<!-- <p class='short'> -->
-					<!-- <span class='keyboardButton'> -->
-						<!-- Alt -->
-					<!-- </span>&nbsp;&nbsp; + &nbsp;&nbsp;<img alt='Left Button' title='Left Button' src='icons/leftmouse.png' class='smallIcon' /> -->
-					<!-- <select style='margin-left:32px;width:auto;' class='inputNice' id='s_quickMenuAlt'> -->
-						<!-- <option value='openCurrentTab' data-i18n='SearchActionsCurrentTab'>Open In Current Tab</option> -->
-						<!-- <option value='openNewTab' data-i18n='SearchActionsNewTab'>Open In New Tab</option> -->
-						<!-- <option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option> -->
-						<!-- <option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option> -->
-						<!-- <option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option> -->
-						<!-- <option value='keepMenuOpen' data-i18n='KeepMenuOpen'>Keep Menu Open</option> -->
-						<!-- <option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option> -->
-					<!-- </select> -->
-	
-				<!-- </p> -->
+				
 				<table class='searchActions'>
 				<tr>
 					<td></td>
 					<td style='text-align:center'><span class='header1' data-i18n='SearchEngines'>Search Engines</span></td>
-					<td style='text-align:center;font-size:10pt'><span class='header1' data-i18n='Folder'>Folders</span></td>
+					<td style='text-align:center;font-size:10pt'><span class='header1' data-i18n='Folders'>Folders</span></td>
 				</tr>
 				<tr>
 					<td>
@@ -1231,7 +1138,15 @@
 						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 					</td>
-					<td></td>
+					<td>
+					<select class='inputNice' id='s_quickMenuFolderLeftClick'>
+						<option value='openFolder' data-i18n='SearchActionsOpenFolder'>Open Folder</option>
+						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
+						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
+						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
+						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
+					</select>
+					</td>
 				</tr>
 				<tr>
 					<td>
@@ -1249,6 +1164,7 @@
 					</td>
 					<td>
 					<select class='inputNice' id='s_quickMenuFolderMiddleClick'>
+						<option value='openFolder' data-i18n='SearchActionsOpenFolder'>Open Folder</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1272,6 +1188,7 @@
 					</td>
 					<td>
 					<select class='inputNice' id='s_quickMenuFolderRightClick'>
+						<option value='openFolder' data-i18n='SearchActionsOpenFolder'>Open Folder</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1298,6 +1215,7 @@
 					</td>
 					<td>
 					<select class='inputNice' id='s_quickMenuFolderShift'>
+						<option value='openFolder' data-i18n='SearchActionsOpenFolder'>Open Folder</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1324,6 +1242,7 @@
 					</td>
 					<td>
 					<select class='inputNice' id='s_quickMenuFolderCtrl'>
+						<option value='openFolder' data-i18n='SearchActionsOpenFolder'>Open Folder</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1350,6 +1269,7 @@
 					</td>
 					<td>
 					<select class='inputNice' id='s_quickMenuFolderAlt'>
+						<option value='openFolder' data-i18n='SearchActionsOpenFolder'>Open Folder</option>
 						<option value='openBackgroundTab' data-i18n='SearchActionsBackgroundTab'>Open In Background Tab</option>
 						<option value='openNewWindow' data-i18n='SearchActionsNewWindow'>Open In New Window</option>
 						<option value='openNewIncognitoWindow' data-i18n='SearchActionsIncognitoWindow'>Open In Incognito Window</option>
@@ -1364,7 +1284,18 @@
 				<p>
 					<input type="number" id="n_quickMenuColumns" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Columns'>Columns</label>
 					<span class='info' data-msg='Maximum number of search engine icons per row' data-i18n_tooltip='Columns'>?</span>
+					
+					<!-- <span class='header1' style='margin:0 16px;background-color:transparent;'>or</span> -->
+					
+					<label class="container" data-i18n='SearchBarUseOldStyle' style='display:inline-block;margin-left:32px'>Single Column With Labels
+					<span class='info' data-msg='Display search engines with labels in a single column like the old Firefox searchbar' data-i18n_tooltip='SearchBarUseOldStyle'>?</span>
+						<input type='checkbox' id='cb_quickMenuUseOldStyle' />
+						<span class="checkmark checkmark2"></span>
+					</label>
 				</p>
+				
+				<hr />
+				
 				<p>
 					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Items'>Items</label>
 					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.' data-i18n_tooltip='Items'>?</span>
@@ -1384,13 +1315,9 @@
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
 				</p>
 				
-				<br />
+				<hr />
 				
-				<label class="container" data-i18n='SearchBarUseOldStyle'>Use Original Firefox Style
-				<span class='info' data-msg='Display search engines with labels in a single column like the old Firefox searchbar' data-i18n_tooltip='SearchBarUseOldStyle'>?</span>
-					<input type='checkbox' id='cb_quickMenuUseOldStyle' />
-					<span class="checkmark checkmark2"></span>
-				</label>
+				
 				
 				<p class='header1' data-i18n='Position'>Position</p>
 				
@@ -1525,7 +1452,7 @@
 				<form id='editSearchEngineContainer' action="">
 
 					<label data-i18n="Name">Name</label><input name="shortName" type="text" class='inputNice' />
-					
+					<label data-i18n="Description">Description</label><textarea name="description" type="text" class='inputNice' style='height:18px;font-family:inherit;resize:vertical'></textarea>
 					<label data-i18n='Template'>Template</label><input name="template" type="text" class='inputNice' />
 					<label data-i18n='Icon'>Icon URI</label><input name="iconURL" type="text" class='inputNice' />
 					<label data-i18n='FormPath'>Form Path</label><input name="searchform" type="text" class='inputNice' />
@@ -1586,17 +1513,7 @@
 					<br />
 					<br />
 				</div>
-				
-				<!--
-				<label class="container" style='display:inline-block;margin-top:20px;padding:0'>
-					<input type='checkbox'  />
-					+ more info
-					<div class='blurb more' style=''>
-					 Re-importing your <b>search.json.mozlz4</b> file will keep your current settings and only add new engines. To completely replace your list on import, use the <b>Remove All</b> button. <a style='font-size:10pt' target='_blank' title='How-To' href='https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/icons/howto.gif' id='a_howTo'><img src='/icons/movie.png' style='height:20px;vertical-align:middle;'/></a><br /><br />
-					
-				</div>
-				</label>
-				-->
+
 <native>				
 				<p class='header1' style='margin-top:0'  data-i18n='AutoImportHeader'>
 					Automatic Importing
@@ -1612,15 +1529,7 @@
 				Profile path<br />
 				<textarea class='inputNice code' id='i_searchJsonPath' style='width:calc(100% - 16px);padding:4px;margin:4px 0px' placeholder="example: C:/Users/<username>/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default"></textarea></div>
 				<div id='div_searchJsonPathResponse' style='display:inline-block'></div><button id='b_checkSearchJsonPath' style='float:right;'  data-i18n='Verify'>Verify and Import</button>
-				
-				<!--
-				<label class="container" style='display:inline-block;margin-top:20px;padding:0'>
-					<input type='checkbox'  />
-					+ more info
-					<div class='more' style=''>
-					</div>
-				</label>
-			-->
+
 </native>
 			</div>
 		</div>

@@ -6,7 +6,7 @@ window.browser = (function () {
 
 class CSBookmarks {
 	
-	static getType(node) {
+	static getType(node) { // for cross-browser compatibility
 		if ( node.type === 'bookmark' || ( !node.type && node.url ) )
 			return 'bookmark';
 		
@@ -31,7 +31,7 @@ class CSBookmarks {
 					title: browser.i18n.getMessage("ContextSearchMenu")
 				}
 				
-				if (browser.bookmarks.BookmarkTreeNodeType)
+				if (browser.bookmarks.BookmarkTreeNodeType) // for firefox
 					createOptions.type = 'folder';
 				
 				return browser.bookmarks.create( createOptions ).then( (bm) => {
@@ -245,9 +245,7 @@ class CSBookmarks {
 	}
 	
 	static buildContextMenu() {
-		
-		console.log('buildBookmarks');
-		
+
 		if (browser.bookmarks === undefined) return Promise.resolve(false);
 
 		this.getAll().then((bookmark) => {
@@ -257,6 +255,12 @@ class CSBookmarks {
 			bookmark = bookmark.shift();
 			
 			function traverse(node) {
+				
+				function onCreated() {
+					if (browser.runtime.lastError) {
+						console.log(browser.runtime.lastError);
+					}
+				}
 
 				if ( CSBookmarks.getType(node) === 'bookmark' ) {
 			
@@ -286,7 +290,7 @@ class CSBookmarks {
 						}
 					}
 
-					browser.contextMenus.create( createOptions );
+					browser.contextMenus.create( createOptions, onCreated);
 				}
 				
 				if (node.type === 'separator' /* firefox */) {
@@ -312,7 +316,7 @@ class CSBookmarks {
 						}
 					}
 
-					browser.contextMenus.create( createOptions );
+					browser.contextMenus.create( createOptions, onCreated );
 					
 					for (let child of node.children) traverse(child);
 				}
@@ -374,17 +378,18 @@ class CSBookmarks {
 						return se.title === node.title;
 					});
 					
-					if ( index === -1 ) return;
+					if ( index === -1 && node.url.match(/^javascript/) === null) return;
 					
-					// if ( node.url.match(/^javascript/) !== null) {
-						// target.push({
-							// type: "bookmarklet",
-							// title: node.title,
-							// id: node.id,
-							// parentId: node.parentId,
-							// url: node.url
-						// });
-					// }
+					if ( node.url.match(/^javascript/) !== null) {
+						target.children.push({
+							type: "bookmarklet",
+							title: node.title,
+							id: node.id,
+							url: node.url
+						});
+						
+						return;
+					}
 
 					target.children.push({
 						type: "searchEngine",
