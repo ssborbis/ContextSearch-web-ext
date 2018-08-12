@@ -170,8 +170,8 @@ function getFormData() {
 
 	var E = window.document.querySelector("input:focus");
 
-	// query parameter has name ? ...
-	if ( E && E.name ) {
+	// query parameter has name & form? ...
+	if ( E && E.name && E.form ) {
 
 		// search form data ...
 		S.method = E.form.method.toUpperCase();

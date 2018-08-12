@@ -128,7 +128,7 @@
   },
   
   "IconSize": {
-    "message": "Item Size"
+    "message": "Icon Size"
   },
   
   "IconSizeTooltip": {
@@ -900,6 +900,11 @@
   "SearchActionsOpenFolder": {
     "message": "Open Folder",
 	"description": "SELECT option label for opening quick menu folder"
+  },
+  
+  "DisabledByHotkeys": {
+    "message": "disabled when hotkeys enabled",
+    "description": "message for search bar focus option when hotkeys are enabled"
   },
   
   "_________": {

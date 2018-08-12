@@ -1577,6 +1577,51 @@ function showBookmarkPath() {
 
 document.addEventListener('DOMContentLoaded', showBookmarkPath);
 
+// setup disabled options
+document.addEventListener('DOMContentLoaded', () => {
+	
+	(() => { // disable focus quick menu search bar when hotkeys enabled
+		let select = document.getElementById('s_quickMenuSearchHotkeys');
+		
+		function toggle() {
+			let cb1 = document.getElementById('cb_quickMenuSearchBarFocus');
+
+			if (select.value === 'noAction') {
+				cb1.disabled = false;
+				cb1.parentNode.style.opacity = null;
+				cb1.parentNode.querySelector('[data-disabled-msg]').style.display = 'none';
+			} else {
+				cb1.disabled = true;
+				cb1.parentNode.style.opacity = .5;
+				cb1.parentNode.querySelector('[data-disabled-msg]').style.display = null;
+			}		
+		}
+		select.addEventListener('change', toggle);
+		toggle();
+	})();
+	
+	(() => {
+		let cb = document.getElementById('cb_quickMenuUseOldStyle');
+		let input = document.getElementById('n_quickMenuColumns');
+		
+		function toggle() {
+
+			if (!cb.checked) {
+				input.disabled = false;
+				input.style.opacity = null;
+				input.querySelector('[data-disabled-msg]').style.display = 'none';
+			} else {
+				input.disabled = true;
+				input.style.opacity = .5;
+				input.querySelector('[data-disabled-msg]').style.display = null;
+			}		
+		}
+		cb.addEventListener('change', toggle);
+		toggle();
+	})();
+});
+
+
 // function buildSearchEngineContainerNew() {
 	
 	// function getToolIconIndex(element) {
