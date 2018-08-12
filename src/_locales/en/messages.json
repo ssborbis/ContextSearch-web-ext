@@ -907,6 +907,11 @@
     "description": "message for search bar focus option when hotkeys are enabled"
   },
   
+  "AddOpenSearchEngine": {
+    "message": "Install to Firefox One-Click Search Engines",
+    "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

@@ -335,6 +335,26 @@ function buildSearchEngineContainer(searchEngines) {
 				addNewEngine(index);
 			}
 			
+			edit_form.addOpenSearchEngine.onclick = function() {
+				
+				
+
+				let url = "https://opensearch-api.appspot.com" 
+					+ "?SHORTNAME=" + encodeURIComponent(edit_form.shortName.value)
+					+ "&DESCRIPTION=" + encodeURIComponent(edit_form.description.value) 
+					+ "&TEMPLATE=" + encodeURIComponent(encodeURI(edit_form.template.value))
+					+ "&POST_PARAMS=" + encodeURIComponent(edit_form.post_params.value) 
+					+ "&METHOD=" + encodeURIComponent(edit_form._method.value)
+					+ "&ENCODING=" + encodeURIComponent(edit_form._encoding.value)
+					+ "&ICON=" + encodeURIComponent(encodeURI(edit_form.iconURL.value))
+					+ "&ICON_WIDTH=" + ( icon.naturalWidth || 16 )
+					+ "&ICON_HEIGHT=" + ( icon.naturalHeight || 16 )
+					+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
+					+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
+
+				browser.runtime.sendMessage({action: "addSearchEngine", url:url});
+			}
+			
 			edit_form.save.onclick = function() {
 
 				function showError(el, msg) {
@@ -1447,8 +1467,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 		let textNode = traverse(el);
 		
-		if (browser.i18n.getMessage(el.dataset.i18n))
+		if (browser.i18n.getMessage(el.dataset.i18n)) {
 			textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+			
+			if (el.title === "i18n_text")
+				el.title = browser.i18n.getMessage(el.dataset.i18n);
+		}
+
 	}
 	
 	
@@ -1609,11 +1634,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (!cb.checked) {
 				input.disabled = false;
 				input.style.opacity = null;
-				input.querySelector('[data-disabled-msg]').style.display = 'none';
+			//	input.querySelector('[data-disabled-msg]').style.display = 'none';
 			} else {
 				input.disabled = true;
 				input.style.opacity = .5;
-				input.querySelector('[data-disabled-msg]').style.display = null;
+			//	input.querySelector('[data-disabled-msg]').style.display = null;
 			}		
 		}
 		cb.addEventListener('change', toggle);
