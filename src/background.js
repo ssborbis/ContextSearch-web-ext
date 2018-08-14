@@ -419,11 +419,8 @@ function executeBookmarklet(info) {
 	console.log(info);
 	browser.bookmarks.get(info.menuItemId).then((bookmark) => {
 		bookmark = bookmark.shift();
-		
-		console.log('here');
-		
+
 		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
-			console.log('here2');
 			let code = decodeURI(bookmark.url);
 			console.log("Executing bookmarklet code -> " + code);
 			browser.tabs.executeScript(tabs[0].id, {

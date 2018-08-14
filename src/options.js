@@ -259,22 +259,7 @@ function buildSearchEngineContainer(searchEngines) {
 		let title = document.createElement('div');
 		title.title = browser.i18n.getMessage('ClickToEdit').toLowerCase();
 		//title.title = 'click to edit';
-		title.className = 'title';
-		
-		// let input = document.createElement('input');
-		// input.style = 'border:none;width:100%;cursor:default';
-		// input.onfocus = function(e) {
-			// console.log('yep');
-			// e.preventDefault();
-			// e.target.blur();
-			// return false;
-		// }
-		// input.onclick = function(e) {
-			
-		// }
-		// input.value = se.title;
-		// title.appendChild(input);
-		
+		title.className = 'title';		
 		title.innerText = se.title;
 		
 		title.onclick = function() {
@@ -336,8 +321,6 @@ function buildSearchEngineContainer(searchEngines) {
 			}
 			
 			edit_form.addOpenSearchEngine.onclick = function() {
-				
-				
 
 				let url = "https://opensearch-api.appspot.com" 
 					+ "?SHORTNAME=" + encodeURIComponent(edit_form.shortName.value)
@@ -351,7 +334,7 @@ function buildSearchEngineContainer(searchEngines) {
 					+ "&ICON_HEIGHT=" + ( icon.naturalHeight || 16 )
 					+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
 					+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
-
+				
 				browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 			}
 			
@@ -569,36 +552,7 @@ function buildSearchEngineContainer(searchEngines) {
 		}
 		
 		title.appendChild(_delete);
-		
-		// let add_search = document.createElement('img');
-		// add_search.src = '/icons/add_search.png';
-		// add_search.className = 'add_search';
-		// add_search.title = 'add to firefox search toolbar';
-		
-		// add_search.onclick = function(e) {
-			// e.stopPropagation();
-			
-			// let r = nearestParent("TR",this);
-			// let index = getToolIconIndex(r);
 
-			// let url = "https://opensearch-api.appspot.com" 
-				// + "?SHORTNAME=" + encodeURIComponent(se.title)
-				// + "&DESCRIPTION=" + encodeURIComponent(se.title) 
-				// + "&TEMPLATE=" + encodeURIComponent(encodeURI(se.template))
-				// + "&POST_PARAMS=" + encodeURIComponent(se.params) 
-				// + "&METHOD=" + encodeURIComponent(se.method)
-				// + "&ENCODING=" + encodeURIComponent(se.queryCharset)
-				// + "&ICON=" + encodeURIComponent(encodeURI(new URL(se.template).origin + "/favicon.ico"))
-				// + "&ICON_WIDTH=" + 16 
-				// + "&ICON_HEIGHT=" + 16
-				// + "&SEARCHFORM=" + encodeURIComponent(encodeURI(se.searchForm))
-				// + "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
-				
-			// browser.runtime.sendMessage({action: "addSearchEngine", url:url});
-		// }
-		
-		// title.appendChild(add_search);
-		
 		let hide = document.createElement('label');
 		hide.title = browser.i18n.getMessage('ShowHide').toLowerCase();
 		//hide.title = 'show/hide';
