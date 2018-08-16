@@ -30,7 +30,7 @@ function post(path, params) {
 	form.submit();
 }
 
-if (typeof CONTEXTSEARCH_TEMP_ENGINE !== undefined) // using a temp engine
+if (typeof CONTEXTSEARCH_TEMP_ENGINE !== "undefined") // using a temp engine
 	post(CONTEXTSEARCH_TEMP_ENGINE.template, CONTEXTSEARCH_TEMP_ENGINE.params);
 else {
 	browser.runtime.sendMessage({action: "getSearchEngineByIndex", index: _INDEX}).then((message) => {

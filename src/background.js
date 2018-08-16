@@ -586,8 +586,11 @@ function openSearch(details) {
 	
 	function onCreate(_tab) {
 	
+	
 		// code for POST engines
 		if (typeof se.method === 'undefined' || se.method !== "POST") return _tab;
+		
+		console.log('post1');
 		
 		// searches without terms should stay here
 		if (!searchTerms) return _tab;
@@ -598,6 +601,8 @@ function openSearch(details) {
 				
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
+		
+		console.log('post2');
 
 		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
 	
