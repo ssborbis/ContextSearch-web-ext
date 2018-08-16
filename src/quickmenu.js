@@ -843,7 +843,8 @@ function makeQuickMenu() {
 											menuItemId: _node.id,
 											selectionText: sb.value,//quickMenuObject.searchTerms,
 											// when opening method is a new window, only do so on first engine, then open in background
-											openMethod: (messages.length === 0 ) ? method : "openBackgroundTab"
+											openMethod: (messages.length === 0 ) ? method : "openBackgroundTab",
+											folder: true
 										}
 									});
 								}	

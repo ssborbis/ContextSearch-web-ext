@@ -502,7 +502,8 @@ function quickMenuSearch(info, tab) {
 		searchTerms: info.selectionText,
 		openMethod: info.openMethod, 
 		tab: tab,
-		openUrl: info.openUrl || null
+		openUrl: info.openUrl || null,
+		folder: info.folder
 	});
 }
 
@@ -564,7 +565,7 @@ function openSearch(details) {
 	}
 	
 //	console.log("openSearch url -> " + q);
-	
+
 	switch (openMethod) {
 		case "openCurrentTab":
 			return openCurrentTab();
@@ -585,13 +586,10 @@ function openSearch(details) {
 	}
 	
 	function onCreate(_tab) {
-	
-	
+
 		// code for POST engines
 		if (typeof se.method === 'undefined' || se.method !== "POST") return _tab;
-		
-		console.log('post1');
-		
+
 		// searches without terms should stay here
 		if (!searchTerms) return _tab;
 		
@@ -601,8 +599,6 @@ function openSearch(details) {
 				
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
-		
-		console.log('post2');
 
 		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
 	
@@ -662,8 +658,8 @@ function openSearch(details) {
 		
 		var creating = browser.tabs.create({
 			url: q,
-			active: !inBackground//,
-			//openerTabId: tab.id || null
+			active: !inBackground,
+			openerTabId: details.folder ? null : (tab.id || null)
 		});
 		return creating.then(onCreate, onError);
 
