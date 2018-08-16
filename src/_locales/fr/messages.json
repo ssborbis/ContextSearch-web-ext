@@ -826,6 +826,11 @@
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
 
+  "History": {
+    "message": "Historique",
+    "description": "label for History icon"
+  },
+
   "ClearSearchHistory": {
     "message": "Effacer l’historique de recherche",
     "description": "context menu entry for clearing search history"
@@ -847,12 +852,12 @@
   },
   
   "SearchBarUseOldStyle": {
-    "message": "Utiliser l’ancien style de Firefox",
+    "message": "Afficher en colonne",
     "description": "Options label for using the old Firefox style of search bar"
   },
   
   "SearchBarUseOldStyleTooltip": {
-    "message": "Afficher la liste des moteurs de recherche en une seule colonne comme dans l’ancienne barre de recherche de Firefox."
+    "message": "Afficher la liste des moteurs de recherche en colonne comme dans l’ancienne barre de recherche de Firefox."
   },
   
   "ToolbarSearch": {
@@ -888,9 +893,28 @@
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
   
+  "Folders": {
+    "message": "Dossiers"
+  },
+  
+  "SearchActionsOpenFolder": {
+    "message": "Ouvrir le dossier",
+	"description": "SELECT option label for opening quick menu folder"
+  },
+  
+  "DisabledByHotkeys": {
+    "message": "désactivé si raccourcis clavier activés",
+    "description": "message for search bar focus option when hotkeys are enabled"
+  },
+  
+  "AddOpenSearchEngine": {
+    "message": "Installer dans les moteurs de recherche accessibles en un clic de Firefox",
+    "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
   }
-  
+ 
 }
