@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.7.0.2",
+	"version": "1.8.0",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	
@@ -23,8 +23,7 @@
 			"bookmarks.js",
 			"background.js",
 			"searchEngineUtils.js",
-			"mozlz4.js",
-			"native.js"
+			"mozlz4.js"
 		]
 	},
 
@@ -36,7 +35,7 @@
 	"content_scripts": [
 		{
 			"matches": ["<all_urls>"],
-			"js": ["lib/browser-polyfill.min.js","inject.js","quickmenu.js","opensearch.js","searchEngineUtils.js","inject_customSearch.js"],
+			"js": ["lib/browser-polyfill.min.js","inject.js","inject_quickmenu.js","opensearch.js","searchEngineUtils.js","inject_customSearch.js"],
 			"css": ["inject.css"],
 			"all_frames": true,
 			"match_about_blank": true
@@ -48,8 +47,7 @@
 		"activeTab",
 		"contextMenus",
 		"storage",
-		"tabs",
-		"nativeMessaging"
+		"tabs"
 	],
 	
 	"optional_permissions": [

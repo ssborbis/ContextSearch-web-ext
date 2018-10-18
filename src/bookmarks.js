@@ -264,9 +264,7 @@ class CSBookmarks {
 
 				if ( CSBookmarks.getType(node) === 'bookmark' ) {
 			
-					let index = userOptions.searchEngines.findIndex( (se) => {
-						return se.title === node.title;
-					});
+					let index = userOptions.searchEngines.findIndex( se => se.title === node.title );
 					
 					// skip renamed / orphaned bookmarks
 					// if (index === -1) return;
@@ -374,9 +372,7 @@ class CSBookmarks {
 
 				if ( CSBookmarks.getType(node) === 'bookmark' ) {
 					
-					let index = userOptions.searchEngines.findIndex( (se) => {
-						return se.title === node.title;
-					});
+					let index = userOptions.searchEngines.findIndex( se => se.title === node.title);
 					
 					if ( index === -1 && node.url.match(/^javascript/) === null) return;
 					
@@ -394,7 +390,7 @@ class CSBookmarks {
 					target.children.push({
 						type: "searchEngine",
 						title: node.title,
-						index: index
+						id: userOptions.searchEngines[index].id
 					});
 				}
 				
@@ -412,11 +408,11 @@ class CSBookmarks {
 						traverse(child, folder);
 				}
 				
-				// if (node.type === 'separator' /* firefox */) {
-					// target.push({
-						// type: "separator"
-					// });
-				// }
+				if (node.type === 'separator' /* firefox */) {
+					target.children.push({
+						type: "separator"
+					});
+				}
 			}
 			
 			for (let child of tree.children)
@@ -449,6 +445,34 @@ class CSBookmarks {
 			b = b.shift();
 			return p(b);
 
+		});
+	}
+	
+	static getAllBookmarklets() {
+		if (browser.bookmarks === undefined) return Promise.resolve("");
+		
+		return browser.bookmarks.getTree().then((tree) => {
+			
+			tree = tree.shift();
+			
+			let results = [];
+			
+			function traverse(node) {
+
+				if ( CSBookmarks.getType(node) === 'folder' ) {
+					for (let child of node.children) {
+						traverse(child);
+					}
+				}
+				
+				if (CSBookmarks.getType(node) === 'bookmark' && node.url.match(/^javascript/) !== null) {
+					results.push(node);
+				}
+			}
+			
+			traverse(tree);
+			
+			return results;
 		});
 	}
 		

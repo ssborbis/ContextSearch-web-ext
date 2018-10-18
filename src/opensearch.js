@@ -216,6 +216,8 @@ function openSearchXMLToSearchEngine(xml) {
 	if (se.params.length > 0 && se.method === "GET") {
 		se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
 	}
+	
+	se.id = gen();
 
 	return loadRemoteIcon({
 		searchEngines: [se],
@@ -270,7 +272,8 @@ function dataToSearchEngine(data) {
 		"params": params, 
 		"template": data.action, 
 		"queryCharset": data.characterSet.toUpperCase(),
-		"description": data.description
+		"description": data.description,
+		"id": gen()
 	};
 
 	return loadRemoteIcon({

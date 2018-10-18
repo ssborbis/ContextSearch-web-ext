@@ -23,7 +23,9 @@ function formToSearchEngine() {
 		"params": paramStringToNameValueArray(form.post_params.value), 
 		"template": form.template.value, 
 		"queryCharset": form._encoding.value, 
-		"hidden": false
+		"hidden": false,
+		"id": gen()
+		
 	};
 }
 
@@ -236,7 +238,7 @@ function addSearchEnginePopup(data) {
 				simple_confirm.querySelector('[name="no"]').onclick = function() {
 					
 					// remove the new engine
-					browser.runtime.sendMessage({action: "removeContextSearchEngine", index: userOptions.searchEngines.length - 1});
+					browser.runtime.sendMessage({action: "removeContextSearchEngine", id: userOptions.searchEngines[userOptions.searchEngines.length - 1].id});
 					
 					showMenu('simple_remove');
 					setTimeout(() => {

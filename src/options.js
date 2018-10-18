@@ -5,13 +5,12 @@ window.browser = (function () {
 })();
 
 // array for storage.local
-var searchEngines = [];
 var userOptions = {};
 
 // Browse button for manual import
 document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev) => {
 	
-	searchEngines = [];
+	let searchEngines = [];
 	let file = ev.target.files[0];
 	readMozlz4File(file, (text) => { // on success
 
@@ -24,27 +23,36 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 			img: "icons/spinner.svg",
 			msg: browser.i18n.getMessage("LoadingRemoteContent")
 		});
-		
-		// start 1.3.2+
-		let old_names = [];
-		for (let se of userOptions.searchEngines) {
-			old_names.push(se.title);
-		}
-		
+
 		let newEngines = [];
+		
 		for (let se of searchEngines) {
-			if (!old_names.includes(se.title)) {
+			
+			if (!userOptions.searchEngines.find( _se => _se.title === se.title)) {
 				console.log(se.title + " not included in userOptions.searchEngines");
+				
+				// add to searchEngines
 				newEngines.push(se);
+
+				// add to nodeTree
+				userOptions.nodeTree.children.push({
+					type: "searchEngine",
+					title: se.title,
+					id: se.id,
+					hidden: false
+				});
+				
 			}
 		}
 		// end 1.3.2+
 		
+		// get remote icons for new engines
 		loadRemoteIcon({
 			searchEngines: newEngines, // 1.3.2+
 		}).then( (details) => {
-
-			searchEngines = userOptions.searchEngines.concat(details.searchEngines);
+			
+			// append the new engines
+			userOptions.searchEngines = userOptions.searchEngines.concat(details.searchEngines);
 			saveOptions();
 			
 			if (details.hasFailedCount) {
@@ -70,7 +78,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				browser.runtime.sendMessage({action: "closeWindowRequest"});
 			}
 			
-			buildSearchEngineContainer(searchEngines);
+			buildSearchEngineContainer();
 		});
 
 	}, function() { // on fail
@@ -88,551 +96,6 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 	}
 });
 
-function buildSearchEngineContainer(searchEngines) {
-	
-	// hide and detach the edit_form
-	let edit_form = document.getElementById('editSearchEngineContainer');
-	edit_form.style.maxHeight = null;
-	document.body.appendChild(edit_form);
-		
-	// clear the table
-	let se_container = document.getElementById('searchEnginesContainer');
-	se_container.innerHTML = null;
-	
-	// display Delete All button
-	let deleteAllButton = document.getElementById('b_deleteAllSearchEngines');
-	if (searchEngines.length > 0) deleteAllButton.style.display = null;
-	deleteAllButton.onclick = function() {
-		if (confirm(browser.i18n.getMessage("RemoveAllEnginesPrompt"))) {
-			
-			// necessary to bypass check in saveOptions
-			searchEngines = [];
-			userOptions.searchEngines = [];
-			saveOptions();
-			buildSearchEngineContainer([]);
-			
-			CSBookmarks.removeAll();
-		}
-	}
-	
-	function addNewEngine(i) {
-		
-		let se = (i !== undefined) ? Object.assign({},searchEngines[i]) : false;
-		let default_value = (se) ? se.title + " copy" : "";
-		
-		let msg = browser.i18n.getMessage("EnterUniqueName");
-		let shortName = "";
-
-		while(true) {
-			if (! (shortName = window.prompt(msg, default_value)) || !shortName.trim() ) return;
-
-			let found = false;
-			
-			for (let engine of searchEngines) {
-				if (engine.title == shortName) {
-					console.log(engine.title + "\t" + shortName);
-					msg = browser.i18n.getMessage("EngineExists").replace("%1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName");
-					found = true;
-					break;
-				}
-			}
-			
-			if ( !found ) break;
-		}
-		
-		if (se) {
-			
-			se.title = shortName;
-			searchEngines.splice(i+1,0,se);
-			
-		} else {
-
-			searchEngines.push({
-				"searchForm": "", 
-				"query_string":"",
-				"icon_url":"",
-				"title":shortName,
-				"order":searchEngines.length, 
-				"icon_base64String": "", 
-				"method": "GET", 
-				"params": "", 
-				"template": "", 
-				"queryCharset": "UTF-8", 
-				"hidden": false
-			});
-		}
-		
-		saveOptions();
-		
-		function scrollToEnd() {
-			se_container.parentNode.scroll({
-				top: se_container.parentNode.scrollHeight,
-				behavior:'smooth'
-			});
-		}
-		
-		buildSearchEngineContainer(searchEngines);
-		let titles = document.getElementsByClassName('title');
-		let title = (se) ? titles[i+1] : titles[titles.length - 1];
-
-		if (!se) scrollToEnd();
-
-		title.dispatchEvent(new Event('click'));
-		
-		// wait for animation to end
-		setTimeout(() => {
-			if (!se) scrollToEnd();
-		},500);
-	}
-	
-	let b_addSearchEngine = document.getElementById('b_addSearchEngine');
-	b_addSearchEngine.onclick = function() {addNewEngine();}
-	
-	function getToolIconIndex(element) {
-		 let toolIcons = document.getElementsByClassName('searchEngineRow');
-		 for (let i=0;i<toolIcons.length;i++) {
-			 if (toolIcons[i] === element) {
-				return i;
-			}
-		 }
-		 
-		 return -1;
-	}
-	function nearestParent( tagName, target ) {
-		while ( target && target.nodeName.toUpperCase() !== tagName.toUpperCase() ) {
-			target = target.parentNode;
-		}
-		
-		return target;
-	}
-	function dragstart_handler(ev) {
-		ev.dataTransfer.setData("text", getToolIconIndex(nearestParent("TR",ev.target)));
-		ev.effectAllowed = "copyMove";
-	}
-	function dragover_handler(ev) {
-		let row = nearestParent("TR",ev.target);
-		row.style.outline = '2px solid #6ec179';
-		row.style.opacity = .5;
-		ev.preventDefault();
-	}
-	function dragleave_handler(ev) {
-		nearestParent("TR",ev.target).style=null;
-	}
-	function drop_handler(ev) {
-		ev.preventDefault();
-		let tr = nearestParent("TR",ev.target);
-		tr.style = null;
-		let old_index = ev.dataTransfer.getData("text");
-		let new_index = getToolIconIndex(tr);
-
-		if (new_index > old_index)
-			se_container.insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr.nextSibling);			
-		else
-			se_container.insertBefore(document.getElementsByClassName('searchEngineRow')[old_index],tr);
-		
-		let se = searchEngines.splice(old_index,1)[0];
-
-		searchEngines.splice( new_index, 0, se );	
-	}
-	function dragend_handler(ev) {
-		saveOptions();
-		ev.dataTransfer.clearData();
-	}
-	
-	// get Bookmark
-	let bookmarkNames = [];
-	let bookmarkNamesPromise = CSBookmarks.getNames().then( (names) => {
-		bookmarkNames = names;
-	});
-	
-	// build table
-	for (let i=0;i<searchEngines.length;i++) {
-		let se = searchEngines[i];
-		
-		if (se.hidden === undefined) se.hidden = false;
-	
-		let icon = document.createElement('img');
-		icon.className = 'icon';
-		icon.src = se.icon_base64String;
-		
-		// searchEngine name
-		let title = document.createElement('div');
-		title.title = browser.i18n.getMessage('ClickToEdit').toLowerCase();
-		//title.title = 'click to edit';
-		title.className = 'title';		
-		title.innerText = se.title;
-		
-		title.onclick = function() {
-			
-			// close if open on same TR
-			if (nearestParent("TR",edit_form) === nearestParent("TR",title) && edit_form.style.maxHeight) {
-				edit_form.style.maxHeight = null;
-				return;
-			}
-			
-			function clearError( element ) {
-				if ( 
-					element 
-					&& element.classList 
-					&& element.classList.contains('error') 
-				)
-					element.classList.remove('error');
-			}
-			
-			// clear error formatting
-			for (let label of edit_form.getElementsByTagName('label')) {
-				if (label.dataset.i18n) label.innerText = browser.i18n.getMessage(label.dataset.i18n);
-				label.style.color = null;
-				clearError(label.nextSibling)
-			}
-
-			edit_form.shortName.value = se.title;
-			edit_form.description.value = se.description || "";
-			edit_form.template.value = se.query_string;
-			edit_form.iconURL.value = se.icon_url || se.icon_base64String;
-			edit_form._method.value = se.method || "GET";
-			edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
-			edit_form._encoding.value = se.queryCharset || "UTF-8";
-			edit_form.searchform.value = se.searchForm || function() {
-				try {
-					return new URL(se.query_string).origin;
-				} catch (err) {
-					return "";
-				}
-			}();
-			
-			edit_form.addEventListener('mouseover', () => {
-				nearestParent("TR",edit_form).setAttribute('draggable', 'false');
-			});
-			
-			edit_form.addEventListener('mouseout', () => {
-				nearestParent("TR",edit_form).setAttribute('draggable', 'true');
-			});
-			
-			edit_form.cancel.onclick = function() {
-				edit_form.style.maxHeight = null;
-			}
-			
-			edit_form.copy.onclick = function() {
-				let r = nearestParent("TR",this);
-				let index = getToolIconIndex(r);
-				
-				addNewEngine(index);
-			}
-			
-			edit_form.addOpenSearchEngine.onclick = function() {
-
-				let url = "https://opensearch-api.appspot.com" 
-					+ "?SHORTNAME=" + encodeURIComponent(edit_form.shortName.value)
-					+ "&DESCRIPTION=" + encodeURIComponent(edit_form.description.value) 
-					+ "&TEMPLATE=" + encodeURIComponent(encodeURI(edit_form.template.value))
-					+ "&POST_PARAMS=" + encodeURIComponent(edit_form.post_params.value) 
-					+ "&METHOD=" + encodeURIComponent(edit_form._method.value)
-					+ "&ENCODING=" + encodeURIComponent(edit_form._encoding.value)
-					+ "&ICON=" + encodeURIComponent(encodeURI(edit_form.iconURL.value))
-					+ "&ICON_WIDTH=" + ( icon.naturalWidth || 16 )
-					+ "&ICON_HEIGHT=" + ( icon.naturalHeight || 16 )
-					+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
-					+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
-				
-				browser.runtime.sendMessage({action: "addSearchEngine", url:url});
-			}
-			
-			edit_form.save.onclick = function() {
-
-				function showError(el, msg) {
-					el.previousSibling.innerText = msg;
-					el.previousSibling.style.color = "red";
-					el.classList.add("error");
-				}
-				
-				function saveForm(closeForm) {
-					
-					closeForm = ( closeForm === undefined ) ? true : false;
-					// loading icon is last step. Set values after everything else
-						
-					// alert of problems with changing name
-					if (se.title !== edit_form.shortName.value) {
-
-						if ( !browser.runtime.getBrowserInfo || confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
-							CSBookmarks.rename(se.title, edit_form.shortName.value);
-							se.title = edit_form.shortName.value;
-							
-							edit_form.previousSibling.innerText = se.title;
-						}
-					}
-
-					se.icon_base64String = icon.src;
-					se.description = edit_form.description.value;
-					se.query_string = se.template = edit_form.template.value;
-					se.searchForm = edit_form.searchform.value;
-					se.icon_url = edit_form.iconURL.value;
-					se.method = edit_form._method.value;
-					se.queryCharset = edit_form._encoding.value;
-					se.params = paramStringToNameValueArray(edit_form.post_params.value);
-					
-					saveOptions();
-					
-					if (closeForm)
-						edit_form.style.maxHeight = null;
-				}
-
-				// Check bad form values
-				if ( !edit_form.shortName.value.trim() ) {
-					showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
-					return;
-				}
-				if (edit_form.shortName.value != edit_form.previousSibling.innerText) {
-					for (let engine of userOptions.searchEngines) {
-						if (engine.title == edit_form.shortName.value) {
-							showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
-							return;
-						}
-					}
-				}
-				if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
-					showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
-					return;
-				}
-				if (edit_form.template.value.match(/^http/i) === null) {
-					showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
-					return;
-				}
-				if (edit_form.searchform.value.match(/^http/i) === null) {
-					let url = new URL(edit_form.template.value);
-					edit_form.searchform.value = url.origin;
-					//showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
-				//	return;
-				}
-				if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
-					showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
-					return;
-				}
-				if (edit_form.iconURL.value.match(/^resource:/) === null) {
-					
-					if ( !edit_form.iconURL.value ) {
-						let url = new URL(edit_form.template.value);
-						edit_form.iconURL.value = url.origin + "/favicon.ico";
-					}
-					
-					icon.src = browser.runtime.getURL("/icons/spinner.svg");
-					let newIcon = new Image();
-					newIcon.onload = function() {
-						icon.src = imageToBase64(this, 32);
-						saveForm();
-					}
-					newIcon.onerror = function() {	
-						showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
-						icon.src = se.icon_base64String || tempImgToBase64(se.title.charAt(0).toUpperCase());
-						saveForm(false);
-					}
-					
-					newIcon.src = edit_form.iconURL.value;
-					
-					setTimeout(() => {
-						if (!newIcon.complete) {
-							newIcon.onerror();
-						}
-					}, 5000);
-				}
-			}
-			
-			// clear error formatting on focus
-			for (let element of edit_form.getElementsByTagName('input')) {
-				element.addEventListener('focus', () => {
-					clearError( element );
-				});
-			}
-
-			// attach form to title cell
-			title.parentNode.appendChild(edit_form);
-			
-			// reflow trick
-			edit_form.getBoundingClientRect();
-			edit_form.style.maxHeight = '400px';
-		}
-		
-		let hotkey = document.createElement('span');
-		hotkey.title = browser.i18n.getMessage('Hotkey').toLowerCase();
-		hotkey.className = 'hotkey';
-		hotkey.innerText = keyTable[se.hotkey] || "";
-		hotkey.onclick = function(e) {
-			e.stopPropagation();			
-			e.target.innerText = '';
-			let img = document.createElement('img');
-			img.src = 'icons/spinner.svg';
-			img.style.height = '1em';
-			img.style.verticalAlign = 'middle';
-			e.target.appendChild(img);
-			window.addEventListener('keydown', function keyPressListener(evv) {
-				evv.preventDefault();
-				
-				if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
-
-				let r = nearestParent("TR",e.target);
-				let index = getToolIconIndex(r);
-
-				if (evv.which === 27) {
-					searchEngines[index].hotkey = null;
-					e.target.innerText = "";
-					window.removeEventListener('keydown', keyPressListener);
-					saveOptions();
-					return;
-				}
-
-				// check for same key
-				for (let i=0;i<searchEngines.length;i++) {
-					if (searchEngines[i].hotkey && searchEngines[i].hotkey === evv.which && i !== index) {
-						hotkey.style.backgroundColor = 'pink';
-						setTimeout( () => {
-							hotkey.style.backgroundColor = null;
-						},250);
-						return;
-					}
-				}
-				
-				e.target.innerText = keyTable[evv.which];
-				searchEngines[index].hotkey = evv.which;
-
-				window.removeEventListener('keydown', keyPressListener);
-				saveOptions();
-			}); 
-			
-		}
-		
-		title.appendChild(hotkey);
-		
-		let _delete = document.createElement('img');
-		_delete.title = browser.i18n.getMessage('Delete').toLowerCase();
-		_delete.className = 'delete';
-		_delete.src = '/icons/delete.png';
-		_delete.onclick = function(e) {
-			e.stopPropagation();
-			_delete.style.display = 'none';
-			
-			let yes = document.createElement('button');
-			let no = document.createElement('button');
-
-			yes.innerText = browser.i18n.getMessage('Yes').toLowerCase(); no.innerText = browser.i18n.getMessage('No').toLowerCase();
-			//yes.innerText = 'yes'; no.innerText = 'no';
-			
-			yes.onclick = function(ev) {
-				ev.stopPropagation(); // prevents closing edit_form
-
-				let r = nearestParent("TR",this);
-				
-				// move the edit form if attached to prevent deletion
-				if (r === nearestParent("TR", edit_form)) {
-					edit_form.style.maxHeight = null;
-					document.body.appendChild(edit_form);
-				}
-				
-				let index = getToolIconIndex(r);
-				console.log('deleting index ' + index);
-				CSBookmarks.remove(searchEngines[index].title);
-				searchEngines.splice(index,1);
-				r.parentNode.removeChild(r);	
-				saveOptions();
-			}
-
-			no.onclick = function(ev) {
-				ev.stopPropagation(); // prevents closing edit_form
-				no.parentNode.removeChild(yes);
-				no.parentNode.removeChild(no);
-				_delete.style.display = null;
-			}
-			
-			let span = document.createElement('span');
-			span.className = 'delete';
-			span.appendChild(no);
-			span.appendChild(yes);
-
-			_delete.parentNode.appendChild(span);
-	
-		}
-		
-		title.appendChild(_delete);
-
-		let hide = document.createElement('label');
-		hide.title = browser.i18n.getMessage('ShowHide').toLowerCase();
-		//hide.title = 'show/hide';
-		hide.className = 'container hide';
-		
-		let cb = document.createElement('input');
-		cb.type = 'checkbox';
-		cb.checked = !se.hidden;
-		cb.addEventListener('change', () => {
-			se.hidden = !cb.checked;
-			saveOptions();
-		});
-		
-		let sp = document.createElement('span');
-		sp.className = 'checkmark checkmark2';
-		sp.style.textAlign = 'center';
-		
-		hide.appendChild(cb);
-		hide.appendChild(sp);
-		
-		let bookmark = document.createElement('span');
-		bookmark.title = browser.i18n.getMessage('Bookmark').toLowerCase();
-		//bookmark.title = 'bookmark';
-		bookmark.className = 'checkboxImage';
-		
-		// Hide if disabled
-		if (!userOptions.contextMenuBookmarks && !userOptions.quickMenuBookmarks)
-			bookmark.style.display='none';
-		
-		let bm_cb = document.createElement('input');
-		bm_cb.type = 'checkbox';
-		bm_cb.id = 'bm_cb' + i;
-		
-		bookmarkNamesPromise.then(()=>{
-			bm_cb.checked = bookmarkNames.includes(se.title);
-		});
-
-		bm_cb.addEventListener('change', () => {
-
-			if (bm_cb.checked)
-				CSBookmarks.add(se);
-			if (!bm_cb.checked)
-				CSBookmarks.remove(se.title);
-			
-			//saveOptions();
-
-		});
-		
-		let bm_label = document.createElement('label');
-		bm_label.setAttribute('for',bm_cb.id);
-		bm_label.innerHTML = '<img src="/icons/bookmark.png" />';
-		
-		bookmark.appendChild(bm_cb);
-		bookmark.appendChild(bm_label);
-		
-		let row = document.createElement('tr');
-		
-		row.className = 'searchEngineRow';
-		row.setAttribute('draggable', true);
-		row.setAttribute('text', i); 
-		
-		row.addEventListener('dragstart',dragstart_handler);
-		row.addEventListener('dragend',dragend_handler);
-		row.addEventListener('drop',drop_handler);
-		row.addEventListener('dragover',dragover_handler);
-		row.addEventListener('dragleave',dragleave_handler);
-		
-		[hide, bookmark, icon, title].forEach( (element) => {
-
-			let td = document.createElement('td');
-			td.appendChild(element);
-			row.appendChild(td);
-			
-		});
-		
-		se_container.appendChild(row);
-		
-	}
-}
-
 function restoreOptions() {
 
 	function onGot(result) {
@@ -641,6 +104,7 @@ function restoreOptions() {
 
 		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu;	
 		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns;
+		document.getElementById('n_quickMenuRows').value = userOptions.quickMenuRows;
 		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems;	
 		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey;
 		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
@@ -711,8 +175,9 @@ function restoreOptions() {
 		document.getElementById('cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
 		
 		document.getElementById('cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
+		document.getElementById('n_searchBarColumns').value = userOptions.searchBarColumns;
 		
-		buildSearchEngineContainer(userOptions.searchEngines);
+		buildSearchEngineContainer();
 
 	}
   
@@ -737,9 +202,12 @@ function saveOptions(e) {
 	}
 	
 	userOptions = {
-		searchEngines: (searchEngines.length > 0) ? searchEngines : userOptions.searchEngines,
+		//searchEngines: (searchEngines.length > 0) ? searchEngines : userOptions.searchEngines,
+		searchEngines: userOptions.searchEngines,
+		nodeTree: JSON.parse(JSON.stringify(userOptions.nodeTree)),
 		quickMenu: document.getElementById('cb_quickMenu').checked,
 		quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
+		quickMenuRows: parseInt(document.getElementById('n_quickMenuRows').value),
 		quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
 		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
 		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
@@ -806,6 +274,7 @@ function saveOptions(e) {
 		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
 		searchBarUseOldStyle: document.getElementById('cb_searchBarUseOldStyle').checked,
+		searchBarColumns: parseInt(document.getElementById('n_searchBarColumns').value),
 		searchBarCloseAfterSearch: document.getElementById('cb_searchBarCloseAfterSearch').checked,
 		
 		quickMenuUseOldStyle: document.getElementById('cb_quickMenuUseOldStyle').checked,
@@ -813,8 +282,6 @@ function saveOptions(e) {
 		 // take directly from loaded userOptions
 		searchBarSuggestions: document.getElementById('cb_searchBarSuggestions').checked,
 		searchBarHistory: userOptions.searchBarHistory
-		
-		
 
 	}
 
@@ -829,48 +296,14 @@ document.addEventListener("DOMContentLoaded", restoreOptions);
 document.getElementById('cb_contextMenu').addEventListener('change', saveOptions);
 document.getElementById('cb_contextMenuShowAddCustomSearch').addEventListener('change', saveOptions);
 
-function bookmarksPermissionHandler(e) {
-	
-	if (e.target.checked) {
-		
-		// permission popups do not work from the browser action panel
-		if (window.location.hash === '#browser_action') {
-			browser.runtime.sendMessage({action:'openOptions'});
-			window.close();
-			return;
-		}
-		if (browser.bookmarks === undefined)
-			alert(browser.i18n.getMessage("BookmarksPermissionMessage"));
-		
-		CSBookmarks.requestPermissions().then( (result) => {
-			if (result) {
-				saveOptions();
-				buildSearchEngineContainer(userOptions.searchEngines);
-				showBookmarkPath();
-			} else
-				e.target.checked = false;
-		});
-	} else {
-		saveOptions();
-		buildSearchEngineContainer(userOptions.searchEngines);
-		showBookmarkPath();
-	}
-	
-}
-
-document.getElementById('cb_contextMenuBookmarks').addEventListener('change', bookmarksPermissionHandler);
-document.getElementById('cb_quickMenuBookmarks').addEventListener('change', bookmarksPermissionHandler);
-
 document.getElementById('cb_quickMenu').addEventListener('change', saveOptions);
-// document.getElementById('cb_quickMenu').addEventListener('change', (e) => {
-	// showInfoMsg(e.target.parentNode, "Reload tabs for changes to take effect");
-	// setTimeout(() => {
-		// document.getElementById('info_msg').style.display = 'none';
-	// }, 5000);
-	
-// });
 
 document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {
+	fixNumberInput(e.target, 4, 1, 100);
+	saveOptions(e);
+});
+
+document.getElementById('n_quickMenuRows').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
 	saveOptions(e);
 });
@@ -890,6 +323,11 @@ document.getElementById('n_quickMenuOffsetY').addEventListener('change', (e) => 
 	saveOptions(e);
 });
 
+document.getElementById('n_searchBarColumns').addEventListener('change',  (e) => {
+	fixNumberInput(e.target, 4, 1, 100);
+	saveOptions(e);
+});
+
 document.getElementById('cb_quickMenuOnMouse').addEventListener('change', saveOptions);
 document.getElementById('r_quickMenuOnKey').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuOnHotkey').addEventListener('change', saveOptions);
@@ -897,6 +335,9 @@ document.getElementById('r_quickMenuAuto').addEventListener('change', saveOption
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
 document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
+
+document.getElementById('cb_quickMenuBookmarks').addEventListener('change', saveOptions);
+document.getElementById('cb_contextMenuBookmarks').addEventListener('change', saveOptions);
 
 //document.getElementById('s_quickMenuSearchBar').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchBarFocus').addEventListener('change', saveOptions);
@@ -938,6 +379,7 @@ document.getElementById('cb_searchBarCloseAfterSearch').addEventListener('change
 document.getElementById('cb_quickMenuUseOldStyle').addEventListener('change', saveOptions);
 
 function checkSearchJsonPath() {
+
 	let el = document.getElementById('div_searchJsonPathResponse');
 	let ev_target = document.getElementById('i_searchJsonPath');
 	
@@ -954,11 +396,13 @@ function checkSearchJsonPath() {
 	if (path.match(/\/search.json.mozlz4$/) === null) {
 		path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
 	}
+	
+	saveOptions();
 
 	function onResponse(response) {
-		
+
 		if (response.error) {
-			el.innerHTML = "<img src='/icons/no.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
+			el.innerHTML = "<img src='/icons/no.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
 			let span = document.createElement('span');
 			span.innerText = response.error;
 			el.appendChild(span);
@@ -968,33 +412,23 @@ function checkSearchJsonPath() {
 		let tn = document.createTextNode("   " + browser.i18n.getMessage("ImportSuccessful"));
 		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />";
 		el.appendChild(tn);
-		
-		saveOptions();
 
-		browser.runtime.getBackgroundPage().then((w) => { 
-		
-			// prevent double execution from blur + import button click
-			if (w.nativeAppActive) return;
-		
-			w.nativeApp({force: true}).then(() => {
-				console.log('building search engine container');
-				buildSearchEngineContainer(w.userOptions.searchEngines);
-			});
-		});
+		// if response is a userOptions object
+		if (response && response.searchEngines) {	
+			console.log('building search engine container');
+			buildSearchEngineContainer(response.searchEngines);
+		}
 	}
 	
 	function onError(error) {
 		console.log(error);
-		el.innerHTML = "<img src='/icons/yes.png' style='height:30px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-		el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("%1", error.message);
+		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
+		el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("%1", error.message || "no error message");
 		el.style.color = 'red';
 	}
-	
-	if (typeof browser.runtime.sendNativeMessage === 'function') {
-		var sending = browser.runtime.sendNativeMessage("ContextSearch",'{"!@!@": "' + path + '"}');
-		sending.then(onResponse, onError);
-	}
-	
+
+	var sending = browser.runtime.sendMessage({action: "nativeAppRequest", force: true});
+	sending.then(onResponse, onError);	
 }
 
 document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
@@ -1243,13 +677,24 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById('version').innerText = "" + browser.runtime.getManifest().version;
 });
 
-// lite
+// show/hide content based on native app compatibility
 document.addEventListener("DOMContentLoaded", (e) => {
 	
-	if (browser.runtime.getBrowserInfo && /* firefox */ typeof browser.runtime.sendNativeMessage === 'function') return false;
+	function onChecks() {
+		console.log('Native Messenger addon installed');
+	}
 	
-	for (let el of document.getElementsByTagName('native'))
-		el.style.display = 'none';
+	function onError() {
+		console.log('Native Messenger addon not installed. Removing native content');
+		
+		for (let el of document.getElementsByTagName('native'))
+			el.style.display = 'none';
+		
+	}
+	
+	let nativeChecking = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", {action: "check"});
+	
+	nativeChecking.then(onChecks, onError);
 
 });
 
@@ -1349,33 +794,25 @@ document.addEventListener("DOMContentLoaded", () => {
 					return;
 				}
 				
-				//v1.5.8
-				if (newUserOptions.quickMenuOnClick !== undefined) {
-					
-					if (newUserOptions.quickMenuOnClick)
-						newUserOptions.quickMenuOnMouseMethod = 'click';
-					
-					if (newUserOptions.quickMenuOnMouse)
-						newUserOptions.quickMenuOnMouseMethod = 'hold';
-					
-					if (newUserOptions.quickMenuOnClick || newUserOptions.quickMenuOnMouse)
-						newUserOptions.quickMenuOnMouse = true;
-					
-					delete newUserOptions.quickMenuOnClick;
-				}
+				// update imported options
+				browser.runtime.getBackgroundPage().then((w) => {
+					w.updateUserOptionsVersion(newUserOptions).then((_uo) => {
 
-				browser.runtime.sendMessage({action: "getDefaultUserOptions"}).then((message) => {
-					
-					let defaultUserOptions = message.defaultUserOptions;
+						browser.runtime.sendMessage({action: "getDefaultUserOptions"}).then((message) => {
+							
+							let defaultUserOptions = message.defaultUserOptions;
 
-					for (let key in defaultUserOptions) {
-						newUserOptions[key] = (newUserOptions[key] !== undefined) ? newUserOptions[key] : defaultUserOptions[key];
-					}
+							for (let key in defaultUserOptions) {
+								_uo[key] = (_uo[key] !== undefined) ? _uo[key] : defaultUserOptions[key];
+							}
 
-					//browser.storage.local.set({"userOptions": newUserOptions}).then(() => {
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions}).then(() => {
-						browser.runtime.sendMessage({action: "updateUserOptions"}).then(() => {
-							location.reload();
+							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo}).then(() => {
+								browser.runtime.sendMessage({action: "updateUserOptions"}).then(() => {
+									console.log('reloading page');
+									w.buildContextMenu();
+									location.reload();
+								});
+							});
 						});
 					});
 				});
@@ -1598,393 +1035,24 @@ document.addEventListener('DOMContentLoaded', () => {
 		cb.addEventListener('change', toggle);
 		toggle();
 	})();
+	
+	(() => {
+		let cb = document.getElementById('cb_searchBarUseOldStyle');
+		let input = document.getElementById('n_searchBarColumns');
+		
+		function toggle() {
+
+			if (!cb.checked) {
+				input.disabled = false;
+				input.style.opacity = null;
+			//	input.querySelector('[data-disabled-msg]').style.display = 'none';
+			} else {
+				input.disabled = true;
+				input.style.opacity = .5;
+			//	input.querySelector('[data-disabled-msg]').style.display = null;
+			}		
+		}
+		cb.addEventListener('change', toggle);
+		toggle();
+	})();
 });
-
-
-// function buildSearchEngineContainerNew() {
-	
-	// function getToolIconIndex(element) {
-		
-		// let rows = document.getElementById('newTable').getElementsByTagName('tr');
-		// for ( let i=0;i<rows.length;i++ ) {
-			// if (rows[i] === element)
-				// return i;
-		// }
-		
-		// return -1;
-	// }
-	// function nearestParent( tagName, target ) {
-		// while ( target && target.nodeName.toUpperCase() !== tagName.toUpperCase() ) {
-			// target = target.parentNode;
-		// }
-		
-		// return target;
-	// }
-	// function dragstart_handler(ev) {
-		// ev.dataTransfer.setData("text", "");
-		// window.dragRow = nearestParent("TR",ev.target);
-		// ev.effectAllowed = "copyMove";
-	// }
-	// function dragover_handler(ev) {
-		// let row = nearestParent("TR",ev.target);
-		
-		// if (contains(row.node, window.dragRow.node) ) {
-		// //	row.style.outline = '2px solid red';
-			// row.style.backgroundColor = "pink";
-			// row.style.opacity = .5;
-			// return;
-		// }			
-	// //	row.style.outline = '2px solid #6ec179';
-		// row.style.backgroundColor = "#6ec179";
-		// row.style.opacity = .5;
-		// //row.style.height = '40px';
-		// ev.preventDefault();
-	// }
-	// function dragleave_handler(ev) {
-		// nearestParent("TR",ev.target).style=null;
-	// }
-	// function drop_handler(ev) {
-		// ev.preventDefault();
-		
-		// function getDepth(node) {
-			// let depth = 0;
-			// while (node.parent) {
-				// node = node.parent;
-				// depth++;
-			// }
-			
-			// return depth;
-		// }
-		
-		// let tr = nearestParent("TR",ev.target);
-		// let old_tr = window.dragRow;
-		// tr.style = null;
-		// let oldNode = window.dragRow.node;
-		// let newNode = tr.node;
-		
-		// let newFolder = newNode.type === 'folder' ? newNode : newNode.parent;
-		
-		// let dropRows = [old_tr];
-		
-		// if (oldNode.type === 'folder') {
-			// let depth = getDepth(old_tr.node);
-			// while( old_tr.nextSibling && getDepth(old_tr.nextSibling.node) > depth) {
-				// dropRows.push(old_tr.nextSibling);
-				// table.removeChild(old_tr.nextSibling);
-			// }
-		// }
-
-		// if (newNode.type === 'folder') {
-			// newNode.children.splice(0,0,oldNode);
-			// oldNode.parent = newNode;
-		// } else {
-			// oldNode.parent = newNode.parent;
-			// let index = -1;
-			// for (let i=0;i<newNode.parent.children.length;i++) {
-				// if (newNode.parent.children[i] === newNode) {
-					// index = i;
-					// break;
-				// }
-			// }
-			
-			// newNode.parent.children.splice(index, 0, oldNode);
-		// }
-
-	// //	for (let i=dropRows.length -1; i>=0;i--) {
-		// for (let i=0;i<dropRows.length;i++) {
-
-			// let depth = getDepth(oldNode) - 1;
-			// dropRows[i].querySelector('.spacer').style.marginRight = depth * 20 + "px";
-
-			// if (newNode.type === 'folder')
-				// table.insertBefore(dropRows[i], tr.nextSibling);
-			// else
-				// table.insertBefore(dropRows[i], tr);
-		// }
-
-	// }
-	// function dragend_handler(ev) {
-	// //	saveOptions();
-	// //	ev.dataTransfer.clearData();
-	// }
-	
-	// searchEngines = userOptions.searchEngines;
-	// let table = document.createElement('table');
-	// table.id = 'newTable';
-	// table.style.textAlign = 'left';
-	// table.style.width = '700px';
-		
-	// let depth = 1;
-
-	// function traverse(node, parent) {
-		
-		// let tr = document.createElement('tr');
-		
-		// tr.setAttribute('draggable', true);
-		
-		// tr.addEventListener('dragstart',dragstart_handler);
-		// tr.addEventListener('dragend',dragend_handler);
-		// tr.addEventListener('drop',drop_handler);
-		// tr.addEventListener('dragover',dragover_handler);
-		// tr.addEventListener('dragleave',dragleave_handler);
-
-		// tr.dataset.collapsed = "false";
-		// tr.dataset.depth = depth.toString();
-		// tr.node = node;
-		
-		// tr.addEventListener('contextmenu', function(e) {
-			// e.preventDefault();
-
-			// let menu = document.createElement('div');
-			// menu.id = "contextMenu";
-			
-			// let oldMenu = document.getElementById(menu.id);
-			// if (oldMenu) oldMenu.parentNode.removeChild(oldMenu);
-
-			// let _delete = document.createElement('div');
-			// _delete.innerText = 'Delete';
-			
-			// _delete.onclick = function() {
-				
-				// if (tr.node.type === 'folder') {
-					// while(tr.nextSibling && parseInt(tr.nextSibling.dataset.depth) > parseInt(tr.dataset.depth)) {
-						// table.removeChild(tr.nextSibling);
-					// }
-				// }
-				// tr.parentNode.removeChild(tr);
-			// }
-			
-			// let edit = document.createElement('div');
-			// edit.innerText = 'Edit';
-			
-			// [_delete, edit].forEach((el) => {
-				// menu.appendChild(el);
-			// });
-
-			// menu.style.left = e.pageX + "px";
-			// menu.style.top = e.pageY + "px";
-
-			// document.body.appendChild(menu);
-			
-			
-			// // menu close listener
-			// document.addEventListener('click', function contextMenuClose(e) {
-				
-				// if (!menu || menu.contains(e.target)) return false;
-				
-				// menu.parentNode.removeChild(menu);
-				// document.removeEventListener('click', contextMenuClose);
-			// });
-			
-		// });
-		
-		// let hide = document.createElement('label');
-		// hide.title = browser.i18n.getMessage('ShowHide').toLowerCase();
-		// hide.className = 'container hide';
-		
-		// let cb = document.createElement('input');
-		// cb.type = 'checkbox';
-		// // cb.checked = !se.hidden;
-		// // cb.addEventListener('change', () => {
-			// // se.hidden = !cb.checked;
-			// // saveOptions();
-		// // });
-		
-		// let sp = document.createElement('span');
-		// sp.className = 'checkmark checkmark2';
-		// sp.style.textAlign = 'center';
-		// sp.style.top = "0";
-		
-		// hide.appendChild(cb);
-		// hide.appendChild(sp);
-
-		// let td = document.createElement('td');
-		// td.style.display = 'inline-block';
-		
-		// td.appendChild(hide);
-		// tr.appendChild(td);
-		// table.appendChild(tr);
-
-		// if (node.type === 'searchEngine') {
-			
-			// let se = userOptions.searchEngines[node.index];
-
-			// let td_title = document.createElement('td');
-			
-			// let spacer = document.createElement('span');
-			// spacer.className = "spacer";
-			// spacer.style.marginLeft = depth * 20 + "px";
-			// td_title.appendChild(spacer);
-
-			// let img = document.createElement('img');
-			// img.src = userOptions.searchEngines[node.index].icon_base64String || userOptions.searchEngines[node.index].icon_url;
-			// img.style.height = '16px';
-			// img.style.marginRight = '10px';
-			// img.style.verticalAlign = 'middle';
-			// td_title.appendChild(img);
-			
-			// let text = document.createElement('span');
-			// text.innerText = node.title;
-			// td_title.appendChild(text);
-			
-			// tr.appendChild(td_title);
-			
-			
-			// let hotkey = document.createElement('span');
-			// hotkey.title = browser.i18n.getMessage('Hotkey').toLowerCase();
-			// hotkey.className = 'hotkey';
-			// //hotkey.innerText = "";
-			// td_title.style.position = 'relative';
-			
-			// td_title.appendChild(hotkey);
-			// hotkey.innerText = keyTable[se.hotkey] || "";
-			// // hotkey.onclick = function(e) {
-				// // e.stopPropagation();			
-				// // e.target.innerText = '';
-				// // let img = document.createElement('img');
-				// // img.src = 'icons/spinner.svg';
-				// // img.style.height = '1em';
-				// // img.style.verticalAlign = 'middle';
-				// // e.target.appendChild(img);
-				// // window.addEventListener('keydown', function keyPressListener(evv) {
-					// // evv.preventDefault();
-					
-					// // if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
-
-					// // let r = nearestParent("TR",e.target);
-					// // let index = getToolIconIndex(r);
-
-					// // if (evv.which === 27) {
-						// // searchEngines[index].hotkey = null;
-						// // e.target.innerText = "";
-						// // window.removeEventListener('keydown', keyPressListener);
-						// // saveOptions();
-						// // return;
-					// // }
-
-					// // // check for same key
-					// // for (let i=0;i<searchEngines.length;i++) {
-						// // if (searchEngines[i].hotkey && searchEngines[i].hotkey === evv.which && i !== index) {
-							// // hotkey.style.backgroundColor = 'pink';
-							// // setTimeout( () => {
-								// // hotkey.style.backgroundColor = null;
-							// // },250);
-							// // return;
-						// // }
-					// // }
-					
-					// // e.target.innerText = keyTable[evv.which];
-					// // searchEngines[index].hotkey = evv.which;
-
-					// // window.removeEventListener('keydown', keyPressListener);
-					// // saveOptions();
-				// // }); 
-				
-			// // }
-		// }
-		
-		// if (node.type === 'separator') {}
-		
-		// if ( node.type === 'folder' ) {
-
-			// let td = document.createElement('td');	
-			
-			// let spacer = document.createElement('span');
-			// spacer.className = "spacer";
-			// spacer.style.marginLeft = depth * 20 + "px";
-			// td.appendChild(spacer);
-			
-			// let expand = document.createElement('div');
-			// expand.style = 'display:inline-block;z-index:2;position:relative;margin-left:-20px;margin-right:6px;width:12px;height:12px;border:1px solid black;background-color:white;font-size:8px;text-align:center;vertical-align:middle;';
-			// expand.innerHTML = '-';
-			// td.appendChild(expand);
-
-			// expand.onclick = function() {
-				
-				// let parentRow = nearestParent('TR', this);	
-				// let collapse = parentRow.dataset.collapsed === "false" ? true : false;
-				// parentRow.dataset.collapsed = collapse.toString();
-				
-				// expand.innerHTML = collapse ? "&#10133;" : "-";
-
-				// let rows = document.getElementById('newTable').childNodes;
-				// for (let i=0;i<rows.length;i++) {
-					// if ( rows[i] === parentRow ) {
-						// while(rows[++i] !== undefined && parseInt(rows[i].dataset.depth) > parseInt(parentRow.dataset.depth)) {
-							// if (collapse) {
-								// rows[i].style.display = 'none';
-								// rows[i].dataset.collapsed = 'true';
-							// } else {
-								// rows[i].style.display = null;
-								// rows[i].dataset.collapsed = 'false';
-							// }
-						// }
-					// }
-				// }
-			// }
-
-			// let img = document.createElement('img');
-			// img.src = browser.runtime.getURL('/icons/folder-icon.png');
-			// img.style.height = '16px';
-			// img.style.marginRight = '10px';
-			// img.style.verticalAlign = 'middle';
-			// td.appendChild(img);
-			
-			// let text = document.createElement('span');
-			// text.innerText = node.title;
-			// td.appendChild(text);
-			
-			// tr.appendChild(td);
-			
-			// depth++;
-			
-			// for (let _node of node.children) 
-				// traverse(_node, tr);
-			
-			// depth--;
-		// }
-	// }
-	
-	// function contains(needle, haystack) {
-		
-		// function _traverse(_haystack) {
-			// if (_haystack === needle) return true;
-			
-			// if (!_haystack.children) return false;
-			
-			// for (let straw of _haystack.children) {
-				// if (_traverse(straw) ) return true;
-			// }
-			
-			// return false;
-		// }
-		
-		// return _traverse(haystack);
-	// }
-	
-	// CSBookmarks.treeToFolders().then( (root) => {
-		
-		// var setParent = function(o){
-			// if(o.children != undefined){
-				// for(n in o.children) {
-				  // o.children[n].parent = o;
-				  // setParent(o.children[n]);
-				// }
-			// }
-		// }
-
-		// setParent(root);
-		
-		// table.root = root;
-		
-		// for (let child of root.children)
-			// traverse(child, table);
-		
-		// document.body.appendChild(table);
-	// });
-	
-// }
-
-// document.addEventListener('DOMContentLoaded', () => {
-	// buildSearchEngineContainerNew();
-// });

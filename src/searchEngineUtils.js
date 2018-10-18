@@ -43,7 +43,8 @@ function searchJsonObjectToArray(engines) {
 			"params": params, 
 			"template": template, 
 			"queryCharset": engine.queryCharset || "UTF-8", 
-			"hidden": hidden
+			"hidden": hidden,
+			"id": gen()
 		});
 	}
 	
@@ -175,5 +176,9 @@ function loadRemoteIcon(options) {
 		}, 250);
 	});
 
+}
+
+function gen() {
+	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 }
 		

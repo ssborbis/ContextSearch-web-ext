@@ -912,6 +912,11 @@
     "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
   },
   
+  "Regex": {
+    "message": "Search Regex",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""

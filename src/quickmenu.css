@@ -1,18 +1,19 @@
 .selectedFocus {
 	background-color: #0078d7 !important;
 	position:relative;
-	color:white;
+	color:white !important;
 }
-.selectedFocus IMG {
-	/*filter: brightness(0) invert(1);*/
-}
+/* .selectedFocus[data-type="tool"] IMG { */
+	/* filter: brightness(0) invert(1); */
+/* } */
 .selectedNoFocus {
 	background-color: #b0b0b0 !important;
 }
 
 #quickMenuElement {
 	z-index:1;
-	border-radius:10px;
+/*	border-radius:10px;*/
+	background-color: #eff0f1;
 	overflow:hidden;
 }
 
@@ -23,7 +24,7 @@
 	padding:0;
 	margin:0;
 	display:inline-block;
-	background-color:#eff0f1;
+/*	background-color:#eff0f1; */
 	background-size: 16px 16px;
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -51,8 +52,8 @@
 	padding:1px;
 	font-family:Arial;
 	font-weight:bold;
-	color: white;
-	text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;
+/*	color: white;*/
+/*	text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;*/
 	text-align:center;
 	display:table-cell;
 	vertical-align:middle;
@@ -61,6 +62,29 @@
 	white-space:normal;
 	text-align:center;
 	width:30px;
+}
+#quickMenuElement DIV[data-type="folder"] {
+	font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
+	font-weight: normal;
+	color:#444;
+	background-color:#FBFACE;
+	position:relative;
+}
+#quickMenuElement DIV[data-type="folder"]:hover {
+	background-color: #ccdbe8;
+	border-color: #ccdbe8;
+}
+.folderTileCorner {
+	position:absolute;
+	right:0;
+	top:0;
+	width:0 !important;
+	height:0 !important;
+	border-style: solid !important;
+	border-width: 0 12px 12px 0 !important;
+	border-color: transparent #6ec179 transparent transparent !important;
+	background-color:transparent !important;
+	overflow:hidden;
 }
 #quickMenuSearchBarContainer {
 	background-color:white;
@@ -113,4 +137,16 @@
 	color:#4a4a4a;
 	font-family:Arial;
 	font-size:10pt;
+}
+
+.singleColumn {
+	width:300px !important;
+	height:20px !important;
+	font-size:11pt !important;
+	border:none !important;
+	font-family:Arial !important;
+	line-height:20px !important;
+	vertical-align:middle !important;
+	background-position:4px 2px !important;
+	background-size:16px !important;
 }

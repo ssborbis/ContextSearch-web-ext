@@ -27,13 +27,29 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "nativeAppRequest":
-			let nativeApping = nativeApp( {force: message.force || false} );
-			if (nativeApping) {
-				nativeApping.then((result) => {
-					sendResponse({response: result});
-				});
-				return true;
-			}
+		
+			message.userOptions = userOptions;
+
+			let nativeApping = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", message);
+			
+			return nativeApping.then((result) => {	
+
+				// quick check for valid userOptions
+				if (result && result.searchEngines) {
+
+					console.log("native app: adding " + (result.searchEngines.length - userOptions.searchEngines.length) + " search engines");
+
+					userOptions = result;
+					
+					notify({action: "saveOptions"});
+					notify({action: "updateUserOptions"});
+					
+				}
+				
+				return result;
+
+			});
+			
 			break;
 			
 		case "openOptions":
@@ -44,6 +60,7 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
+
 			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
@@ -72,10 +89,11 @@ function notify(message, sender, sendResponse) {
 			return Promise.resolve({"defaultUserOptions": defaultUserOptions});
 			break;
 			
-		case "getSearchEngineByIndex":
+		case "getSearchEngineById":
 		
-			if ( !message.index ) return;
-			return Promise.resolve({"searchEngine": userOptions.searchEngines[message.index]});
+			if ( !message.id) return;
+			
+			return Promise.resolve({"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)});
 			break;
 
 		case "openQuickMenu":
@@ -147,35 +165,42 @@ function notify(message, sender, sendResponse) {
 			
 			console.log(se);
 			
-			let index = userOptions.searchEngines.findIndex( (se2) => {
-				return se.title === se2.title;
-			});
+			let index = userOptions.searchEngines.findIndex( se2 => se.title === se2.title );
 			
 			if (index !== -1) {
 				sendResponse({errorMessage: 'Name must be unique. Search engine already exists'});
 				return;
 			}
+			
+			se.id = gen();
 
 			userOptions.searchEngines.push(se);
+			userOptions.nodeTree.children.push({
+				type: "searchEngine",
+				title: se.title,
+				id: se.id,
+				hidden: false
+			});
 
 			browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				CSBookmarks.add(se).then(() => {
-					notify({action: "updateUserOptions"});
-				});
+				notify({action: "updateUserOptions"});
 			});
 			
 			break;
 			
 		case "removeContextSearchEngine":
 
-			if ( message.index === undefined || message.index < 0 || message.index > userOptions.searchEngines.length - 1 ) return;
+			if ( !message.id ) return;
 
-			CSBookmarks.remove(userOptions.searchEngines[message.index].title);
+			index = userOptions.searchEngines.findIndex( se => se.id === message.id );
 			
-			console.log('removing engine ' + message.index);
+			if (index === -1) {
+				console.log('index not found');
+				return;
+			}
+			
+			userOptions.searchEngines.splice(index, 1);
 	
-			userOptions.searchEngines.splice(message.index, 1);
-			
 			browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions"});
 			});
@@ -279,64 +304,10 @@ function notify(message, sender, sendResponse) {
 
 			document.execCommand("copy");
 			break;
-		
-		case "getQuickMenuBookmarks":
-		
-			if (message.id)
-				return browser.bookmarks.getSubTree(message.id).then(onGot);
-			else
-				return CSBookmarks.getAll().then(onGot);
-			
-			function onGot(tree) {
-				
-				tree = tree.shift();
-				
-				let tileNodes = [];
-				
-				for (let node of tree.children) {
 
-					if ( CSBookmarks.getType(node) === 'bookmark' ) {
-						let index = userOptions.searchEngines.findIndex( (se) => {
-							return se.title === node.title;
-						});
-						
-						// skip renamed / orphaned bookmarks
-						if (index === -1 && node.url.match(/^javascript/) === null) {
-							console.log(node.title + ' cannot be found in search engines');
-							continue;
-						}
-
-						// bookmarklets
-						if ( node.url.match(/^javascript/) !== null ) {
-							tileNodes.push({type: "bookmarklet", url: node.url, title: node.title, id:node.id});
-							continue;
-						}
-						
-						tileNodes.push({type: "searchEngine", id: index});	
-						continue;
-					}
-					
-					if ( CSBookmarks.getType(node) === 'folder' ) {
-						tileNodes.push({type: "folder", id: node.id, title: node.title});
-						continue;
-					}
-					
-				}
-				
-				return CSBookmarks.get().then( (root) => {
-					
-					let id = message.id || null;
-
-					if (root.id === tree.id)
-						return {tileNodes: tileNodes, parentId: null};
-					else 
-						return {tileNodes: tileNodes, parentId: tree.parentId};
-				});
-				
-				
-			}
-			
-			break;
+		// case "openSidebar":
+			// browser.sidebarAction.open();
+			// break;			
 
 	}
 }
@@ -369,7 +340,6 @@ function loadUserOptions() {
 }
 
 function buildContextMenu() {
-
 	browser.contextMenus.removeAll().then( () => {
 
 		if (!userOptions.contextMenu) return false;
@@ -379,55 +349,134 @@ function buildContextMenu() {
 			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : browser.i18n.getMessage("SearchWith"),
 			contexts: ["selection", "link", "image"]
 		});
+
+		let root = userOptions.nodeTree;
+
+		if (!root.children) return;
+	
+		let id = 0;
+		delete root.id;
 		
-		if (userOptions.contextMenuBookmarks) {
-
-			CSBookmarks.buildContextMenu();
-			return;
+		function onCreated() {
+			if (browser.runtime.lastError) {
+				console.log(browser.runtime.lastError);
+			}
+		}
+		
+		function traverse(node, parentId) {
 			
-		} else {
+			if (node.hidden) return;
 
-			for (var i=0;i<userOptions.searchEngines.length;i++) {
+			if ( node.type === 'searchEngine' ) {
+
+				let se = userOptions.searchEngines.find(se => se.id === node.id);
 				
-				let se = userOptions.searchEngines[i];
-				if (se.hidden) continue;
-				
-				let menuOptions = {
-					parentId: "search_engine_menu",
-					id: i.toString(),
+				if (!se) {
+					console.log('no search engine found for ' + node.id);
+					return;
+				}
+
+				let createOptions = {
+					parentId: parentId,
 					title: se.title,
-					contexts: ["selection", "link", "image"]
+					id: se.id,
+					contexts: ["selection", "link", "image"]	
 				}
 				
-				if ( browser.runtime.getBrowserInfo /* firefox */ ) {
-					menuOptions.icons = {
+				if (browser.bookmarks.BookmarkTreeNodeType) {
+					createOptions.icons = {
 						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 					}
 				}
 
-				browser.contextMenus.create( menuOptions );
+				browser.contextMenus.create( createOptions, onCreated);
 			}
+			
+			if (node.type === 'bookmarklet') {
+				let createOptions = {
+					parentId: parentId,
+					title: node.title,
+					id: node.id,
+					contexts: ["selection", "link", "image"]	
+				}
+				
+				if (browser.bookmarks.BookmarkTreeNodeType) {
+					createOptions.icons = {
+						"16": browser.runtime.getURL("/icons/code.png"),
+						"32": browser.runtime.getURL("/icons/code.png")
+					}
+				}
+
+				browser.contextMenus.create( createOptions, onCreated);
+			}
+			
+			if (node.type === 'separator' /* firefox */) {
+				browser.contextMenus.create({
+					parentId: parentId,
+					type: "separator"
+				});
+			}
+			
+			if ( node.type === 'folder' ) {
+				
+				let createOptions = {
+					parentId: parentId,
+					id: "folder" + ++id,
+					title: node.title,
+					contexts: ["selection", "link", "image"]
+				}
+				
+				if (browser.runtime.getBrowserInfo /* firefox */ ) {
+					createOptions.icons = {
+						"16": "/icons/folder.png",
+						"32": "/icons/folder.png"
+					}
+				}
+
+				browser.contextMenus.create( createOptions, onCreated );
+				
+				for (let child of node.children) {
+					traverse(child, createOptions.id);
+				}
+			}
+			
 		}
-	});		
+		
+		for (let child of root.children) {
+			traverse(child, "search_engine_menu");
+		}
+
+	});
 }
 
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function executeBookmarklet(info) {
+	
+	if (!browser.bookmarks) {
+		console.error('No bookmarks permission');
+		return;
+	}
 	// run as bookmarklet
-	console.log(info);
 	browser.bookmarks.get(info.menuItemId).then((bookmark) => {
 		bookmark = bookmark.shift();
+		
+		if (bookmark.url.match(/^javascript/) === null) {
+			console.error('bookmark not a bookmarklet');
+			return false;
+		}
 
 		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
 			let code = decodeURI(bookmark.url);
-			console.log("Executing bookmarklet code -> " + code);
+//			console.log("Executing bookmarklet code -> " + code);
 			browser.tabs.executeScript(tabs[0].id, {
 				code: code
 			});
 		});
 
+	}, (error) => {
+		console.error(error);
 	});
 }
 
@@ -462,7 +511,7 @@ function contextMenuSearch(info, tab) {
 	}
 	
 	// run as bookmarklet
-	if (isNaN(info.menuItemId) && browser.bookmarks !== undefined) {
+	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
 		executeBookmarklet(info);
 		return false;
 	}
@@ -482,7 +531,7 @@ function contextMenuSearch(info, tab) {
 		openMethod = userOptions.contextMenuClick;
 	
 	openSearch({
-		searchEngineIndex: info.menuItemId, 
+		searchEngineId: info.menuItemId, 
 		searchTerms: searchTerms,
 		openMethod: openMethod, 
 		tab: tab
@@ -492,13 +541,13 @@ function contextMenuSearch(info, tab) {
 function quickMenuSearch(info, tab) {
 	
 		// run as bookmarklet
-	if (isNaN(info.menuItemId) && browser.bookmarks !== undefined) {
+	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
 		executeBookmarklet(info);
 		return Promise.resolve(false);
 	}
 	
 	return openSearch({
-		searchEngineIndex: info.menuItemId, 
+		searchEngineId: info.menuItemId, 
 		searchTerms: info.selectionText,
 		openMethod: info.openMethod, 
 		tab: tab,
@@ -511,7 +560,7 @@ function openSearch(details) {
 
 //	console.log(details);
 			
-	var searchEngineIndex = details.searchEngineIndex || 0;
+	var searchEngineId = details.searchEngineId || null;
 	var searchTerms = details.searchTerms.trim();
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
@@ -519,7 +568,7 @@ function openSearch(details) {
 	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
 	
 	if (
-		searchEngineIndex === null //||
+		searchEngineId === null //||
 //		!searchTerms ||
 //		tab === null
 	) return false;
@@ -532,12 +581,27 @@ function openSearch(details) {
 	}
 	
 	// if temp engine exists, use that
-	var se = temporarySearchEngine || userOptions.searchEngines[searchEngineIndex];
+	var se = temporarySearchEngine || userOptions.searchEngines.find(se => se.id === searchEngineId);
 	
+	// must be invalid
 	if (!se.query_string) return false;
 	
 	// legacy fix
 	se.queryCharset = se.queryCharset || "UTF-8";
+	
+	if (se.searchRegex) {
+		try {
+			let parts = JSON.parse('[' + se.searchRegex + ']');
+			let _find = new RegExp(parts[0], 'g');
+			let _replace = parts[1];
+			let newSearchTerms = searchTerms.replace(_find, _replace);
+			
+			console.log(searchTerms + " -> " + newSearchTerms);
+			searchTerms = newSearchTerms;
+		} catch (error) {
+			console.error("regex replace failed");
+		}
+	}
 		
 	var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
 	var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri, tab.url);
@@ -582,6 +646,18 @@ function openSearch(details) {
 		case "openBackgroundTab":
 			return openBackgroundTab();
 			break;
+		// case "openSidebar":
+			// console.log('sidebar');
+			// console.log(q);
+			
+			// browser.sidebarAction.setPanel( {
+				// panel: ""
+			// }).then(() => {
+				// browser.sidebarAction.setPanel( {
+					// panel: q
+				// }).then(onCreate(tab));
+			// });
+			// break;
 		
 	}
 	
@@ -613,9 +689,9 @@ function openSearch(details) {
 			if (current_url.hostname !== landing_url.hostname) return;
 
 			browser.tabs.onUpdated.removeListener(listener);
-			
+
 			browser.tabs.executeScript(_tab.id, {
-				code: 'var _INDEX=' + searchEngineIndex + ', _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
+				code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
 				runAt: 'document_start'
 			}).then(() => {
 			return browser.tabs.executeScript(_tab.id, {
@@ -706,89 +782,196 @@ function encodeCharset(string, encoding) {
 	}
 }
 
-function updateUserOptionsVersion() {
-	
-		// v1.1.0 to v 1.2.0
-	browser.storage.local.get("searchEngines").then((result) => {
-		if (typeof result.searchEngines !== 'undefined') {
-			console.log('found separate searchEngines array in local storage.  Copying to userOptions and removing');
-			userOptions.searchEngines = result.searchEngines || userOptions.searchEngines;
-			browser.storage.local.remove("searchEngines");
-			browser.storage.local.set({"userOptions": userOptions});
-		}
-	});
-	
-	// v1.2.4 to v1.2.5
-	if (userOptions.backgroundTabs !== undefined && userOptions.swapKeys !== undefined) {
-		
-		console.log("updating objects to 1.2.5");
-		
-		if (userOptions.backgroundTabs) {
-			userOptions.contextMenuClick = "openBackgroundTab";
-			userOptions.quickMenuLeftClick = "openBackgroundTab";
-		}
-		
-		if (userOptions.swapKeys) {
-			userOptions.contextShift = [userOptions.contextCtrl, userOptions.contextCtrl = userOptions.contextShift][0];
-			userOptions.quickMenuShift = [userOptions.quickMenuCtrl, userOptions.quickMenuCtrl = userOptions.quickMenuShift][0];
-		}
-		
-		delete userOptions.backgroundTabs;
-		delete userOptions.swapKeys;
-		
-		browser.storage.local.set({"userOptions": userOptions});
+function updateUserOptionsVersion(uo) {
 
-	}
+	// v1.1.0 to v 1.2.0
+	return browser.storage.local.get("searchEngines").then((result) => {
+		if (typeof result.searchEngines !== 'undefined') {
+			console.log("-> 1.2.0");
+			uo.searchEngines = result.searchEngines || uo.searchEngines;
+			browser.storage.local.remove("searchEngines");
+		}
+		
+		return uo;
+	}).then((_uo) => {
 	
-	//v1.5.8
-	if (userOptions.quickMenuOnClick !== undefined) {
+		// v1.2.4 to v1.2.5
+		if (_uo.backgroundTabs !== undefined && _uo.swapKeys !== undefined) {
+			
+			console.log("-> 1.2.5");
+			
+			if (_uo.backgroundTabs) {
+				_uo.contextMenuClick = "openBackgroundTab";
+				_uo.quickMenuLeftClick = "openBackgroundTab";
+			}
+			
+			if (_uo.swapKeys) {
+				_uo.contextShift = [_uo.contextCtrl, _uo.contextCtrl = _uo.contextShift][0];
+				_uo.quickMenuShift = [_uo.quickMenuCtrl, _uo.quickMenuCtrl = _uo.quickMenuShift][0];
+			}
+			
+			delete _uo.backgroundTabs;
+			delete _uo.swapKeys;
+			
+		}
 		
-		if (userOptions.quickMenuOnClick)
-			userOptions.quickMenuOnMouseMethod = 'click';
+		return _uo;
 		
-		if (userOptions.quickMenuOnMouse)
-			userOptions.quickMenuOnMouseMethod = 'hold';
-		
-		if (userOptions.quickMenuOnClick || userOptions.quickMenuOnMouse)
-			userOptions.quickMenuOnMouse = true;
-		
-		delete userOptions.quickMenuOnClick;
-		browser.storage.local.set({"userOptions": userOptions});
-	}
+	}).then((_uo) => {
 	
-	
-	(function() {
+		//v1.5.8
+		if (_uo.quickMenuOnClick !== undefined) {
+			
+			console.log("-> 1.5.8");
+			
+			if (_uo.quickMenuOnClick)
+				_uo.quickMenuOnMouseMethod = 'click';
+			
+			if (_uo.quickMenuOnMouse)
+				_uo.quickMenuOnMouseMethod = 'hold';
+			
+			if (_uo.quickMenuOnClick || _uo.quickMenuOnMouse)
+				_uo.quickMenuOnMouse = true;
+			
+			delete _uo.quickMenuOnClick;
+		}
 		
-		if (browser.bookmarks === undefined) return false;
+		return _uo;
+
+	}).then((_uo) => {
+		
+		if (browser.bookmarks === undefined) return _uo;
 		
 		// if (userOptions.contextMenuBookmarksFolderId === -1) {
 			
 		// }	
 		
-		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return false;
+		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return _uo;
+		
+		console.log("-> 1.6.0");
 		
 		browser.bookmarks.search({title: "ContextSearch Menu"}).then((bookmarks) => {
 
-			if (bookmarks.length === 0) return false;
+			if (bookmarks.length === 0) return _uo;
 
 			console.log('New locale string for bookmark name. Attempting to rename');
-			browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(() => {
+			return browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(() => {
 				console.log(bookmarks[0]);
-				buildContextMenu();
 			}, (error) => {
 				console.log(`An error: ${error}`);
 			});
 
 		});
-	})();
+		
+		return _uo;
+	}).then((_uo) => {
 
+	// 1.8.0
+	// build search engine node tree
+	
+		function buildTreeFromSearchEngines() {
+			let root = {
+				title: "/",
+				type: "folder",
+				children: [],
+				hidden: false
+			}
+
+			for (let se of _uo.searchEngines) {
+				root.children.push({
+					type: "searchEngine",
+					title: se.title,
+					hidden: se.hidden || false,
+					id: se.id
+				});
+			}
+			
+			return root;
+		}
+		
+		// version met
+		if (_uo.nodeTree.children) return _uo;
+	
+		console.log("-> 1.8.0");
+	
+		// convert items to rows
+		let toolCount = _uo.quickMenuTools.filter( tool => !tool.disabled ).length;
+		
+		// any position but top is safe to ignore
+		if (_uo.quickMenuToolsPosition === 'hidden')
+			toolCount = 0;
+		
+		let totalTiles = toolCount + _uo.quickMenuItems;
+		
+		let rows = Math.ceil(totalTiles / _uo.quickMenuColumns);
+		
+		if ( _uo.quickMenuUseOldStyle )
+			rows = totalTiles;
+		
+		console.log('Tool count is ' + toolCount);
+		console.log('Items is ' + _uo.quickMenuItems);
+		console.log('Columns is ' + _uo.quickMenuColumns);
+		console.log('Search Engines is ' + _uo.searchEngines.filter( se => !se.hidden).length);
+		console.log('Total tile count is ' + totalTiles);
+		console.log('Geometry should be ' + rows + 'rows x ' + _uo.quickMenuColumns + 'cols');
+		
+		_uo.quickMenuRows = rows;
+
+		// generate unique id for each search engine
+		for (let se of _uo.searchEngines)
+			se.id = gen();
+
+		// neither menu uses bookmarks, build from search engine list
+		if (!_uo.quickMenuBookmarks && !_uo.contextMenuBookmarks) {
+			let root = buildTreeFromSearchEngines();
+			_uo.nodeTree = root;
+			return _uo;
+		}  	
+		
+		// both menus use bookmarks, build from bookmarks
+		else if (_uo.quickMenuBookmarks && _uo.contextMenuBookmarks) {
+			return CSBookmarks.treeToFolders().then( root => {
+				_uo.nodeTree = root;
+				return _uo;
+			});
+		}
+
+		else {
+
+			return CSBookmarks.treeToFolders().then( (bmTree) => {
+				let seTree = buildTreeFromSearchEngines();
+
+				if (_uo.quickMenuBookmarks) {
+					console.log("BM tree + SE tree");
+					bmTree.children = bmTree.children.concat({type:"separator"}, seTree.children);
+
+					_uo.nodeTree = bmTree;
+					
+				} else {
+					console.log("SE tree + BM tree");
+					seTree.children = seTree.children.concat({type:"separator"}, bmTree.children);
+
+					_uo.nodeTree = seTree;
+				}
+				
+				return _uo;
+
+			});
+				
+		}
+
+	}).then((_uo) => {		
+		return _uo;
+	});
 }
 
 const defaultUserOptions = {
 	searchEngines: defaultEngines || [],
+	nodeTree: {},
 	hiddenEngines: "",
 	quickMenu: true,
 	quickMenuColumns: 5,
+	quickMenuRows: 5,
 	quickMenuItems: 100,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
@@ -846,6 +1029,7 @@ const defaultUserOptions = {
 	searchBarSuggestions: true,
 	searchBarHistory: [],
 	searchBarUseOldStyle: false,
+	searchBarColumns: 5,
 	searchBarCloseAfterSearch: true
 };
 
@@ -854,10 +1038,16 @@ var userOptions = {};
 loadUserOptions();
 
 browser.runtime.onMessage.addListener(notify);
+
+// establish native listener
+browser.tabs.onActivated.addListener((tab) => {
+	if (userOptions.reloadMethod !== 'automatic') return false;
+	
+	notify({action:"nativeAppRequest"});
+});
+
 browser.runtime.onInstalled.addListener((details) => {
-	
-	updateUserOptionsVersion();
-	
+
 	// // Show new features page
 	// if (
 		// (
@@ -871,36 +1061,35 @@ browser.runtime.onInstalled.addListener((details) => {
 		// });
 	// }
 	
-	// Show install page
-	if ( 
-		details.reason === 'install' 
-	) {
-		browser.tabs.create({
-			url: "/options.html?tab=help"
-		});
-	}
 	
-	if ( 
-		details.temporary 
-	) {
-		// browser.tabs.create({
-			// url: "/options.html"
-		// });
+	
+	let loadUserOptionsInterval = setInterval(() => {
+		if (userOptions === {}) return;
 		
-	
-		// if (userOptions.searchEngines == defaultEngines) {
+		console.log("userOptions loaded. Updating objects");
+		
+		updateUserOptionsVersion(userOptions).then((_uo) => {
+			userOptions = _uo;
+			browser.storage.local.set({"userOptions": userOptions});
+			buildContextMenu();
+		});
+		clearInterval(loadUserOptionsInterval);
+		
+		// Show install page
+		if ( 
+			details.reason === 'install' 
+		) {
+			browser.tabs.create({
+				url: "/options.html?tab=help"
+			});
+		}
+		
+		if ( 
+			details.temporary 
+		) {
 			
-			// console.log('building search engine icons');
-			
-			// for (let i=0;i<userOptions.searchEngines.length;i++) {
-				// let img = new Image();
-				// img.index = i;
-				// img.onload = function() {
-					// userOptions.searchEngines[this.index].icon_base64String = imageToBase64(this, 32);
-				// }
-			// }
-		// }
-	}
+		}
+	}, 250);
 	
 });
 
@@ -909,48 +1098,6 @@ browser.browserAction.setPopup({popup: "/searchbar.html"});
 browser.browserAction.onClicked.addListener(() => {	
 	browser.browserAction.openPopup();
 });
-
-// monitor context menu bookmarks folder for changes
-function bookmarksModificationHandler(id, moveInfo) {
-	
-	if (
-		!userOptions.contextMenuBookmarks ||
-		browser.bookmarks === undefined
-	) return false;
-	
-	let throttler = sessionStorage.getItem('bookmarksListenerThrottler');
-
-	if (throttler) return;
-
-	sessionStorage.setItem('bookmarksListenerThrottler', "true");
-
-	CSBookmarks.isDescendent(moveInfo.parentId).then((result) => {
-		if (result) {
-			console.log('modified parentId is descendent of ContextSearch Menu. Rebuilding context menu');
-			buildContextMenu();
-			sessionStorage.removeItem('bookmarksListenerThrottler');
-		} else {
-			CSBookmarks.isDescendent(moveInfo.parentId).then((result) => {
-				if (result) {
-					console.log('modified oldParentId is descendent of ContextSearch Menu. Rebuilding context menu');
-					buildContextMenu();
-					sessionStorage.removeItem('bookmarksListenerThrottler');
-				}
-			});
-		}
-	});
-	
-	// setTimeout(() => {
-		// sessionStorage.removeItem('bookmarksListenerThrottler');
-	// }, 2500);
-}
-
-if (browser.bookmarks !== undefined) {
-	browser.bookmarks.onMoved.addListener(bookmarksModificationHandler);
-	browser.bookmarks.onChanged.addListener(bookmarksModificationHandler);
-	browser.bookmarks.onRemoved.addListener(bookmarksModificationHandler);
-	browser.bookmarks.onCreated.addListener(bookmarksModificationHandler);
-}
 
 if (browser.pageAction) {
 	/*
@@ -1084,3 +1231,4 @@ console.log(encodeCharset('一般来说，URL只能使用英文字母、阿拉�
 */
 
 
+//browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", {"message": "hello"});

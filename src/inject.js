@@ -57,6 +57,8 @@ window.addEventListener('mousedown', (e) => {
 window.addEventListener('focus', (ev) => {
 	
 	setTimeout(() => {
+		if (userOptions.reloadMethod !== 'automatic') return false;
+		
 		browser.runtime.sendMessage({action: "nativeAppRequest"});
 	}, 500);
 });

@@ -6,7 +6,7 @@
 		<title>ContextSearch Updated</title>
 		<style>
 			BODY {
-				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+				font-family: "Courier New", Courier, monospace; /*Helvetica, "Trebuchet MS", Verdana, sans-serif;*/
 				background-color:#E9ECEF;
 				padding:40px;
 				color:#343a40;
@@ -77,41 +77,28 @@
 	</head>
 	<body>
 		<div class='blobContainer'>
-			<div class='blobContainerHeader'><img src='/icons/icon48.png'>ContextSearch <span id='version'></span></div>
 			<div style='text-align:left;'>
 			
-				<h2>New Feature in 1.2.8</h2>
-				<h3>Add Custom Search</h3>
-				Right-click a search form &lt;input&gt; to see the new option "Add Custom Search" <br />
-				<img src='/update/addcustomsearch.png' /> <br />
+				<h2>Changes for 1.8.0</h2>
+				<h4>Search Engine Manager</h4>
 				
-				<img src='/update/addcustomsearch_options.png' /> <br />
-				<h3>Add</h3>
-				If the website has an OpenSearch plugin available to download, the Add button will appear. Click to install.<br />
-				<hr />
-				<h3>Find</h3>
-				Search MycroftProject.com for plugins for the current website.<br />
-				<hr />
-				<h3>Create</h3>
-				Make a custom search engine for the current input field. If the input is part of a &lt;form&gt;, values will be set automatically. Some forms will require custom settings. <br />
+				<p>Search Engine Manager handles subfolders, separators and bookmarklets eliminating the need for Bookmarks</p>
+				<p>All menus (context, quick, toolbar) use the same search engine list. If you are using a mix of Manage Using Bookmarks and the Search Engine Manager for separate Context and QuickMenu layouts, you may need to edit your list.</p>
+				<p>
+				Native App support has been moved to a separate addon to simplify cross-browser support. Automatic Import users should download the ContextSearch web-ext Native Messenger addon package from the repository.</p>
 				
-				<img src='/update/addcustomsearch_create.png' /> <br />
-				* Custom engines will be served by opensearch-api.appspot.com. Your engine request may be denied if this server reaches its bandwidth limit.<br /><br />
-				* If you are using ContextSearch-lite or using the <b>Manual</b> method of updating your search engine list, you will need to reload your search.json.mozlz4 file for the changes take effect. If using the <b>Automatic</b> setting with the ContextSearch native app, your search engine list will update automatically.
+				<p>
+				ContextSearch Lite has been depreciated and will be removed from Addons. ContextSearch Lite users should export their settings and switch to ContextSearch
+				</p>
+				<p>
+				QuickMenu setting Items has been superseded by Rows. Columns and Rows determine the initial size of the Quick Menu
+				QuickMenu includes More button to expand from the initial size to display ALL items.
+				</p>
+				<p>
+				If QuickMenu Columns and Toolbar Columns are equal, Toolbar layout will match QuickMenu layout, accounting for Tools.
+				</p>
 				
-				<div style='display:none'>
-					Please refresh your search engines in <a href='#' id='options_a'>Options</a> to enable features
-				</div>
-				
-				<h2>Changes</h2>
-				<li>New search tabs will open according to Firefox preferences</li><br />
-				<code>about:config -> browser.tabs.insertRelatedAfterCurrent</code><br /><br />
-				true (default) - New tabs will group together next to the parent tab<br />
-				false - New tabs will be added to the end of the tab list
-				<br />
-				<br />
-				<li>Character encoding has been changed slightly. If you experience incorrect symbol processing when using non-UTF-8 encoding, leave feedback @ github.</li>
-				
+
 				
 			</div>	
 			
