@@ -11,6 +11,9 @@ function buildSearchEngineContainer() {
 	let selectedRows = [];
 	
 	function traverse(node, parent) {	
+	
+		if ( !node ) return;
+		
 		let li = document.createElement('li');
 		parent.appendChild(li);
 		li.node = node;
