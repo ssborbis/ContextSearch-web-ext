@@ -9,10 +9,13 @@ function buildSearchEngineContainer() {
 	table.style.overflowY = 'scroll';
 	
 	let selectedRows = [];
-	
+
 	function traverse(node, parent) {	
 	
-		if ( !node ) return;
+		if ( !node ) {
+			console.log(node);
+			return;
+		}
 		
 		let li = document.createElement('li');
 		parent.appendChild(li);
@@ -501,8 +504,13 @@ function buildSearchEngineContainer() {
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 	
 	var setParent = function(o){
+		
+		if ( !o ) return;
+
 		if(o.children != undefined){
 			for(n in o.children) {
+
+				if ( !o.children[n] ) continue;
 				
 				// build the JSON.stringify funciton, omitting parent
 				o.children[n].toJSON = function() {
@@ -534,7 +542,7 @@ function buildSearchEngineContainer() {
 			});
 		}
 	}
-	
+
 	setParent(root);
 
 	rootElement.node = root;
@@ -1226,6 +1234,9 @@ function findNodes(tree, callback) {
 	let results = [];
 	
 	function _traverse(node) {
+		
+		if ( ! node ) return;
+		
 		if ( callback(node) ) results.push(node);
 		
 		if (node.children) {
