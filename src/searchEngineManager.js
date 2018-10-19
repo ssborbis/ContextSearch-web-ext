@@ -1070,13 +1070,17 @@ function buildSearchEngineContainer() {
 			
 			let newNode = addNewEngine(li.node, false);
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newNode);
+			if (newNode) {
 			
-			let newLi = traverse(newNode, li.parentNode);
+				li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newNode);
+				
+				let newLi = traverse(newNode, li.parentNode);
 
-			li.parentNode.insertBefore(newLi, li);
+				li.parentNode.insertBefore(newLi, li);
+				
+				updateNodeList();
+			}
 			
-			updateNodeList();
 			closeContextMenus();
 		});
 		
