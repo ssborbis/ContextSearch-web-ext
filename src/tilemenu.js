@@ -626,7 +626,7 @@ function makeQuickMenu(options) {
 		// set the number of tiles to show
 		let visibleTileCountMax = singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 
-		// set tools postion
+		// set tools position
 		if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
 			tileArray = toolsArray.concat(tileArray);
 		else if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu')
@@ -646,6 +646,7 @@ function makeQuickMenu(options) {
 		if ( type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns && userOptions.quickMenuToolsPosition === "top" && !singleColumn && !options.parentId ) {
 
 			userOptions.quickMenuTools.forEach( tool => {
+				if ( tool.disabled ) return;
 				let _tile = document.createElement('div');
 				_tile.dataset.hidden = "true";
 				tileArray.unshift(_tile);
