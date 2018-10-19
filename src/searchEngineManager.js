@@ -931,6 +931,10 @@ function buildSearchEngineContainer() {
 
 				if (results.length === 0) {
 					item1.innerHTML = "<i>none found</i>";
+					item1.addEventListener('click', () => {
+						closeContextMenus();
+					});
+					return;
 				}
 				
 				bmContainer.removeChild(item1);
