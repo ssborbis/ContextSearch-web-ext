@@ -723,8 +723,7 @@ function buildSearchEngineContainer() {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
-			
-			let id = li.node.id;
+
 			let engines = findNodes(li.node, node => node.type === "searchEngine");
 			let engineCount = engines.length;
 			
@@ -792,33 +791,56 @@ function buildSearchEngineContainer() {
 				document.body.appendChild(_menu);
 				openMenu(_menu);
 				
+
+			} else if ( li.node.type === 'searchEngine' ) {
 				
-			} else {
+				let duplicateNodes = findNodes( root, _node => _node.id === li.node.id );
+				
+				// only one engine, delete
+				if ( duplicateNodes.length === 1 ) {
+					
+					let _menu = document.createElement('div');
 
-			
-			// if ( li.node.type === 'folder' || li.node.type === 'searchEngine' ) {
-				// let engines = getNodesByType(li.node, "searchEngine");
-				// if (confirm("Permenently delete " + engines.length + " engine(s)?")) {
-				// //	li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
-					// li.parentNode.removeChild(li);
+					_menu.className = 'contextMenu subMenu';
+					
+					// position to the right of opening div
+					let rect = _delete.getBoundingClientRect();
+					_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+					_menu.style.top = rect.y + window.scrollY + "px";
 
-					// for (let engine of engines) {
-						// let index = userOptions.searchEngines.findIndex( se => se.id === engine.id);					
-						// if (index !== -1) userOptions.searchEngines.splice(index, 1);
+					// add menu items
+					let item1 = document.createElement('div');
+					item1.className = 'menuItem';
+					item1.innerText = "Confirm";
+					
+					item1.addEventListener('click', (_e) => {
 						
-						// removeNodesById(rootElement.node, engine.id);
-						// for (let _li of rootElement.querySelectorAll('li[data-nodeid="' + engine.id + '"]'))
-							// _li.parentNode.removeChild(_li);
+						let index = userOptions.searchEngines.findIndex( se => se.id === li.node.id);					
+						if (index !== -1) userOptions.searchEngines.splice(index, 1);
+						
+						li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+						li.parentNode.removeChild(li);
+
+						updateNodeList();
+						closeContextMenus();
+					});
 					
-					// }
+					[item1].forEach( el => { _menu.appendChild(el) });
+	
+					document.body.appendChild(_menu);
+					openMenu(_menu);
 					
-					// updateNodeList();
-					// saveOptions();
-				// }
+				} else {
 				
-				// return;
-			// }
-			
+					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+					li.parentNode.removeChild(li);
+					
+					updateNodeList();
+					closeContextMenus();
+				}
+
+
+			} else {
 				li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
 				li.parentNode.removeChild(li);
 				
