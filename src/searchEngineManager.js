@@ -64,8 +64,10 @@ function buildSearchEngineContainer() {
 			}
 			
 			li.addEventListener('dblclick', (e) => {
-				
+
 				e.stopPropagation();
+				
+				if (document.getElementById('editSearchEngineContainer').contains(e.target) ) return false;
 
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
 				
@@ -744,6 +746,8 @@ function buildSearchEngineContainer() {
 	}
 	
 	function contextMenuHandler(e) {
+		
+		if (document.getElementById('editSearchEngineContainer').contains(e.target) ) return false;
 		e.preventDefault();
 		
 		let li = nearestParent('LI', e.target);
