@@ -13,7 +13,7 @@ function buildSearchEngineContainer() {
 	function traverse(node, parent) {	
 	
 		if ( !node ) {
-			console.log(node);
+			console.log('null node found');
 			return;
 		}
 		
@@ -46,7 +46,7 @@ function buildSearchEngineContainer() {
 			}
 
 			let icon = document.createElement('img');
-			icon.src = se.icon_base64String || se.icon_url;
+			icon.src = se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.png');
 			li.appendChild(icon);
 			
 			let text = document.createElement('span');
@@ -502,17 +502,24 @@ function buildSearchEngineContainer() {
 	rootElement.style.position = 'relative';
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
-	
+
+	// clear any null nodes
+	findNodes(root, ( node, parent ) => {
+
+		if ( !node ) {
+			console.log('found null node, removing');
+			parent.children.splice(parent.children.indexOf(node), 1);
+			return false;
+		}
+	});
+
 	var setParent = function(o){
-		
-		if ( !o ) return;
 
 		if(o.children != undefined){
+			
 			for(n in o.children) {
 
-				if ( !o.children[n] ) continue;
-				
-				// build the JSON.stringify funciton, omitting parent
+				// build the JSON.stringify function, omitting parent
 				o.children[n].toJSON = function() {
 					let rObj = {};
 					
@@ -531,9 +538,17 @@ function buildSearchEngineContainer() {
 		}
 	}
 
+	// append orphans
 	for (let se of userOptions.searchEngines) {
-/*//#1*/if (!se.id || findNodes(root, node => node.id === se.id).length === 0) {
-			console.log(se.id + " is not in node tree");
+
+		if (!se.id || findNodes(root, node => node.id === se.id).length === 0) {
+			
+			if (!se.id) {
+				console.log(se.title + ' has no id. Generating...');
+				se.id = gen();
+			}
+			
+			console.log(se.id + " is not in node tree. Appending ...");
 			root.children.push({
 				id: se.id,
 				type: "searchEngine",
@@ -572,51 +587,51 @@ function buildSearchEngineContainer() {
 		_traverse(tree);
 	}
 	
+	function dragover_position(el, ev) {
+		let rect = el.getBoundingClientRect();
+
+		let rowHeight = 19;
+		let position = 'bottom';
+
+		if ( ev.pageY - rect.y < rowHeight / 2 ) position = 'top';
+
+		if ( el.node.type === 'folder' && ( ev.pageY - rect.y > rowHeight / 3 ) && ( ev.pageY - rect.y < rowHeight / ( 3 / 2 ) ) )
+			position = 'middle';
+		
+		return position;
+	}
+	
 	function dragstart_handler(ev) {
 		ev.dataTransfer.setData("text", "");
 		window.dragRow = nearestParent('LI', ev.target);
-		ev.effectAllowed = "copyMove";
-		//window.dragRow.style.backgroundColor = '#6ec179';
-	//	window.dragRow.querySelector('.label').style.backgroundColor = '#6ec179';
-		
+		ev.effectAllowed = "copyMove";		
 	}
 	
 	function dragover_handler(ev) {
 		let overNode = nearestParent('LI', ev.target);
 		
 		if (window.dragRow.contains(overNode) ) {
-		//	row.style.outline = '2px solid red';
 			window.dragRow.style.backgroundColor = "pink";
 			window.dragRow.style.opacity = .5;
 			return;
 		}
-
-		// let rect = overNode.getBoundingClientRect();
-
-		// if ( ev.pageY - rect.y < rect.height / 2 ) {
-			
-			// let siblings = overNode.parentNode.getElementsByTagName("LI");
-			// let previousNodeIndex = Array.prototype.indexOf.call(siblings, overNode) - 1;
-			
-			// console.log(previousNodeIndex);
-			// previousNodeIndex = ( previousNodeIndex === -1 ) ? 0 : previousNodeIndex;
-			
-			
-			
-			// siblings[previousNodeIndex].style.paddingBottom = '16px';
-		// } else 
-			
-			if ( overNode.node.type === 'folder' && overNode.node.children.length > 0 )
-				overNode.querySelector("ul").firstChild.style.paddingTop = '16px';
-			else
-				overNode.style.paddingBottom = '16px';
-
 		
+		let position = dragover_position(overNode, ev);
 		
-	//	row.style.outline = '2px solid #6ec179';
-		//row.style.backgroundColor = "#6ec179";
-	//	row.style.opacity = .5;
-		//row.style.height = '40px';
+		if ( overNode.node.type === 'folder' && overNode.node.children.length && position === 'bottom' )
+			position = 'middle';
+		
+		overNode.style = null;
+		overNode.querySelector('.label').style = null;
+
+		if ( position === 'top' ) {
+			overNode.style.borderTop = '2px solid #008afc';
+		} else if ( position === 'bottom' ) {
+			overNode.style.borderBottom = '2px solid #008afc';
+		} else {
+			overNode.querySelector('img').style.filter = 'hue-rotate(180deg)';
+		}
+
 		ev.preventDefault();
 	}
 	function dragleave_handler(ev) {
@@ -626,7 +641,8 @@ function buildSearchEngineContainer() {
 		
 		// clear folder styling
 		try {
-			overNode.querySelector("ul").firstChild.style = null;
+		//	overNode.querySelector("ul").firstChild.style = null;
+			overNode.querySelector('img').style.filter = null;
 		} catch (error) {}
 	}
 	function drop_handler(ev) {
@@ -644,7 +660,8 @@ function buildSearchEngineContainer() {
 		
 		// clear folder styling
 		try {
-			targetElement.querySelector("ul").firstChild.style = null;
+		//	targetElement.querySelector("ul").firstChild.style = null;
+			targetElement.querySelector('img').style.filter = null;
 		} catch (error) {}
 		
 //		console.log(dragNode.parent.children.indexOf(dragNode));
@@ -652,38 +669,62 @@ function buildSearchEngineContainer() {
 		// cut the node from the children array
 		let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
 
-		if (targetNode.type === 'folder') {
-			dragNode.parent = targetNode;
-			
-			// add to the end of children
-			//targetNode.children.splice(targetNode.children.length,0,slicedNode);
-			
-			// append element to children (ul)
-			// let ul = targetElement.querySelector('ul');
-			// ul.appendChild(window.dragRow);
-			
-			// add to front of children
-			targetNode.children.unshift(slicedNode);
-			
-			// append element to children (ul)
-			let ul = targetElement.querySelector('ul');
-			ul.insertBefore(window.dragRow, ul.firstChild);
+		let position = dragover_position(targetElement, ev);
+		
+		// if target is bottom of populated folder, proceed as if drop on folder
+		if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
+			position = 'middle';
 
-		} else {
+		if ( position === 'top' ) {
+			
+			// set new parent
+			slicedNode.parent = targetNode.parent;
+
+			// add to children above target
+			targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
+
+			// insert into DOM
+			targetElement.parentNode.insertBefore(window.dragRow, targetElement);
+			
+		} else if ( position === 'bottom' ) {
 
 			// set new parent
 			slicedNode.parent = targetNode.parent;
 
-			// add to children 
-			targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode) + 1,0,slicedNode);
+			// add to children above target
+			targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode) + 1, 0, slicedNode);
 
 			// insert into DOM
 			targetElement.parentNode.insertBefore(window.dragRow, targetElement.nextSibling);
+				
+		} else if ( position === 'middle' ) { // drop into folder
+				
+			// set new parent
+			slicedNode.parent = targetNode;
+
+			// add to children above target
+			targetNode.children.unshift(slicedNode);
+
+			// append element to children (ul)
+			let ul = targetElement.querySelector('ul');
+			
+			// let currentHeight = window.dragRow.getBoundingClientRect().height + 'px';
+
+			// window.dragRow.style.maxHeight = currentHeight;
+			// window.dragRow.style.overflow = 'hidden';
+			// window.dragRow.style.transition = 'all .25s';
+			// void(window.dragRow.offsetHeight);
+			// window.dragRow.style.maxHeight = '0px';
+			
+			// setTimeout( () => {
+				ul.insertBefore(window.dragRow, ul.firstChild);
+				// void(window.dragRow.offsetHeight);
+				// window.dragRow.style.maxHeight = currentHeight;
+			// }, 250);
+
 		}
-
-		updateNodeList();
-
 	}
+	
 	function dragend_handler(ev) {
 		updateNodeList();
 	//	ev.dataTransfer.clearData();
@@ -1090,6 +1131,8 @@ function buildSearchEngineContainer() {
 				li.parentNode.insertBefore(newLi, li);
 				
 				updateNodeList();
+				
+				newLi.dispatchEvent(new MouseEvent('dblclick'));
 			}
 			
 			closeContextMenus();
@@ -1227,28 +1270,39 @@ function buildSearchEngineContainer() {
 		}
 		
 	}
+	
+	document.getElementById('b_addSearchEngine').addEventListener('click', (e) => {
+		let newNode = addNewEngine(rootElement.node.children.slice(-1)[0]);
+		if (newNode) {
+			
+			rootElement.node.children.push(newNode);
+			
+			let newLi = traverse(newNode, rootElement);
+
+			updateNodeList();
+			
+			newLi.scrollIntoView();
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
+		}
+	});
 }
 
 function findNodes(tree, callback) {
 		
 	let results = [];
 	
-	function _traverse(node) {
+	function _traverse(node, parent) {
 		
-		if ( ! node ) return;
+		if ( callback(node, parent) ) results.push(node);
 		
-		if ( callback(node) ) results.push(node);
-		
-		if (node.children) {
+		if (node && node.children) {
 			for (let child of node.children) {
-				_traverse(child);
+				_traverse(child, node);
 			}
 		}
 	}
 	
-	_traverse(tree);
+	_traverse(tree, null);
 	 
 	return results;
 }
-
-
