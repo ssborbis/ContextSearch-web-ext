@@ -94,28 +94,28 @@ setInterval(() => {
 	// });
 // });
 
+function addToHistory(terms) {
+		
+	terms = terms.trim();
+	
+	// send last search to backgroundPage for session storage
+	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
+	
+	if (userOptions.searchBarHistory.includes(terms)) return;
+	
+	if (userOptions.searchBarHistory.length === historyLength)
+		userOptions.searchBarHistory.shift();
+	
+	userOptions.searchBarHistory.push(terms);
+	
+	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
+}
+
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 	
 	if ( userOptions === {} ) return;
-
-	function addToHistory(terms) {
-		
-		terms = terms.trim();
-		
-		// send last search to backgroundPage for session storage
-		browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
-		
-		if (userOptions.searchBarHistory.includes(terms)) return;
-		
-		if (userOptions.searchBarHistory.length === historyLength)
-			userOptions.searchBarHistory.shift();
-		
-		userOptions.searchBarHistory.push(terms);
-		
-		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
-	}
-		
+	
 	let sb = document.getElementById('quickmenusearchbar');
 	sb.placeholder = browser.i18n.getMessage('Search');
 

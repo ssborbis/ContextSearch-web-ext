@@ -87,6 +87,8 @@ function makeQuickMenu(options) {
 			}
 		});
 		
+		if (addToHistory) addToHistory(sb.value);
+		
 		if (
 			!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
 			!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
@@ -774,6 +776,8 @@ function makeQuickMenu(options) {
 							openMethod: getOpenMethod(e)
 						}
 					});
+					
+					if (addToHistory) addToHistory(sb.value);
 				});
 				
 				tile.dataset.id = node.id;
