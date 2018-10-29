@@ -106,8 +106,13 @@ function restoreOptions() {
 		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns;
 		document.getElementById('n_quickMenuRows').value = userOptions.quickMenuRows;
 		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems;	
+		
 		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey;
 		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
+		
+		document.getElementById('b_contextMenuKey').value = userOptions.contextMenuKey;	
+		document.getElementById('b_contextMenuKey').innerHTML = keyTable[userOptions.contextMenuKey] || "&nbsp;";
+		
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
 		document.getElementById('cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
 		
@@ -209,7 +214,10 @@ function saveOptions(e) {
 		quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
 		quickMenuRows: parseInt(document.getElementById('n_quickMenuRows').value),
 		quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
+		
 		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
+		contextMenuKey: parseInt(document.getElementById('b_contextMenuKey').value),
+		
 		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
 		quickMenuOnHotkey: document.getElementById('cb_quickMenuOnHotkey').checked,
 		quickMenuHotkey: function() {
@@ -431,19 +439,30 @@ function checkSearchJsonPath() {
 	sending.then(onResponse, onError);	
 }
 
-document.getElementById('b_quickMenuKey').addEventListener('click', (e) => {
+document.getElementById('b_quickMenuKey').addEventListener('click', keyButtonListener);
+document.getElementById('b_contextMenuKey').addEventListener('click', keyButtonListener);
+
+function keyButtonListener(e) {
 	e.target.innerText = '';
 	var img = document.createElement('img');
 	img.src = 'icons/spinner.svg';
 	e.target.appendChild(img);
 	e.target.addEventListener('keydown', function(evv) {
 		evv.preventDefault();
-		e.target.innerText = keyTable[evv.which];
-		e.target.value = evv.which;
+		
+		if ( evv.which === 27 ) {
+			e.target.innerHTML = '&nbsp;';
+			e.target.value = 0;
+		} else {
+			e.target.innerText = keyTable[evv.which];
+			e.target.value = evv.which;
+		}
+		
 		saveOptions(e);
+		
 		}, {once: true} // parameter to run once, then delete
 	); 
-});
+}
 
 function fixNumberInput(el, _default, _min, _max) {
 

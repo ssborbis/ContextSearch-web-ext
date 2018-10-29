@@ -597,8 +597,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						function elementDrag(_e) {
 							endCoords = {x: _e.clientX, y: _e.clientY};
 
-							let colsMod = Math.floor (( endCoords.x - startCoords.x) / step);
-							let rowsMod =  Math.floor (( endCoords.y - startCoords.y ) / step);
+							let colsMod = Math.floor (( endCoords.x - startCoords.x ) / step);
+							let rowsMod = Math.floor (( endCoords.y - startCoords.y ) / step);
 							
 							// no change, do nothing
 							if (!colsMod && !rowsMod) return;

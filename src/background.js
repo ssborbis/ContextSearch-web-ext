@@ -155,8 +155,11 @@ function notify(message, sender, sendResponse) {
 			
 			if (searchTerms.length > 18) 
 				searchTerms = searchTerms.substring(0,15) + "...";
+			
+			let hotkey = ''; 
+			if (userOptions.contextMenuKey) hotkey = '&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ' ';
 
-			browser.contextMenus.update("search_engine_menu", {title: '&X ' + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
+			browser.contextMenus.update("search_engine_menu", {title: hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
 			break;
 			
 		case "addSearchEngine":
@@ -348,10 +351,13 @@ function buildContextMenu() {
 	browser.contextMenus.removeAll().then( () => {
 
 		if (!userOptions.contextMenu) return false;
+		
+		let hotkey = ''; 
+		if (userOptions.contextMenuKey) hotkey = '&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ' ';
 
 		browser.contextMenus.create({
 			id: "search_engine_menu",
-			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : browser.i18n.getMessage("SearchWith"),
+			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith"),
 			contexts: ["selection", "link", "image"]
 		});
 
@@ -1001,6 +1007,7 @@ const defaultUserOptions = {
 	quickMenuSearchBarSelect: true,
 	quickMenuUseOldStyle: false,
 	contextMenu: true,
+	contextMenuKey: 0,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
 	quickMenuBookmarks: false,

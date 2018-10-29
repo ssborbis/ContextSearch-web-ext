@@ -23,7 +23,8 @@
 			"bookmarks.js",
 			"background.js",
 			"searchEngineUtils.js",
-			"mozlz4.js"
+			"mozlz4.js",
+			"keyTable.js"
 		]
 	},
 
