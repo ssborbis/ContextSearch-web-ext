@@ -594,24 +594,23 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 						document.addEventListener('mousemove', elementDrag);
 
+						let mostRecentModSize = {columns:0,rows:0};
+						
 						function elementDrag(_e) {
 							endCoords = {x: _e.clientX, y: _e.clientY};
 
 							let colsMod = Math.floor (( endCoords.x - startCoords.x ) / step);
 							let rowsMod = Math.floor (( endCoords.y - startCoords.y ) / step);
 							
-							// no change, do nothing
-							if (!colsMod && !rowsMod) return;
-							
 							// size less than 1 do nothing
 							if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
 
-							// no change
-							if ( 
-								userOptions.quickMenuColumns === startSize.columns + colsMod &&
-								userOptions.quickMenuRows === startSize.rows + rowsMod
-							) return;
+							// ignore repeat drag events
+							if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
+								return;
 							
+							mostRecentModSize = {columns: colsMod, rows: rowsMod}
+
 							userOptions.quickMenuColumns = startSize.columns + colsMod;
 							userOptions.quickMenuRows = startSize.rows + rowsMod;
 
