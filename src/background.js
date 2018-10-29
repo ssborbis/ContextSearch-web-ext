@@ -157,7 +157,7 @@ function notify(message, sender, sendResponse) {
 				searchTerms = searchTerms.substring(0,15) + "...";
 			
 			let hotkey = ''; 
-			if (userOptions.contextMenuKey) hotkey = '&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ' ';
+			if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 
 			browser.contextMenus.update("search_engine_menu", {title: hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
 			break;
@@ -353,7 +353,7 @@ function buildContextMenu() {
 		if (!userOptions.contextMenu) return false;
 		
 		let hotkey = ''; 
-		if (userOptions.contextMenuKey) hotkey = '&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ' ';
+		if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 
 		browser.contextMenus.create({
 			id: "search_engine_menu",
