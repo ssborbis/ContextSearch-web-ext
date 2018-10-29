@@ -32,3 +32,21 @@
 	transition: opacity .5s ease-in-out;
 	border:none;
 }
+#resizeWidget {
+	cursor:nwse-resize;
+	display:inline-block;
+	width:20px;
+	height:20px;
+	position:absolute;
+	user-select:none;
+	-moz-user-select:none;
+	font-weight:bold;
+	color: #9abad2;
+	opacity:.3;
+	font-size:11pt;
+	font-family: Arial;
+	z-index:2147483647
+}
+#resizeWidget:hover {
+	opacity:1;
+}

@@ -2,13 +2,12 @@
 function makeQuickMenu(options) {
 	
 	let type = options.type;
+	let mode = options.mode;
 	
-	let singleColumn = function() {
-		if (type === 'searchbar' && userOptions.searchBarUseOldStyle) return true;
-		if (type === 'quickmenu' && userOptions.quickMenuUseOldStyle) return true;
-		
-		return false;
-	}();
+	let singleColumn = ( 
+		(type === 'searchbar' && userOptions.searchBarUseOldStyle) ||
+		(type === 'quickmenu' && userOptions.quickMenuUseOldStyle) 
+	) ? true : false;
 
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
@@ -87,7 +86,7 @@ function makeQuickMenu(options) {
 			}
 		});
 		
-		if (addToHistory) addToHistory(sb.value);
+		addToHistory(sb.value);
 		
 		if (
 			!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
@@ -120,17 +119,10 @@ function makeQuickMenu(options) {
 	}
 
 	sb.addEventListener('keydown', (e) => {
-		
-//		console.log('keydown sb');
-		
+
 		if ( [ 38, 40, 9 ].indexOf(e.keyCode) === -1 ) return;
 		
-		let direction = 0;
-		
-		if (e.keyCode === 40 || ( e.keyCode === 9 && !e.shiftKey) )
-			direction = 1;
-		else
-			direction = -1;
+		let direction = ( e.keyCode === 40 || ( e.keyCode === 9 && !e.shiftKey) ) ? 1 : -1;
 
 		sb.selectionEnd = sb.selectionStart;
 		
@@ -602,7 +594,9 @@ function makeQuickMenu(options) {
 						width: window.getComputedStyle(qme,null).width,
 						height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
 					},
-					resizeOnly: true
+					resizeOnly: true,
+					tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
+					tileCount: qme.querySelectorAll('div:not([data-hidden])').length
 				});
 
 			});
@@ -655,8 +649,18 @@ function makeQuickMenu(options) {
 			});
 		}
 
+		// add empty cells for resizing ( needs work )
+		if ( mode === "resize" ) {
+
+			let resizeMaxTiles = ( singleColumn ) ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+			for ( let i=tileArray.length; i<resizeMaxTiles;i++) {
+				tileArray.push(document.createElement('div'));
+			}
+		}
+
 		// make rows / columns
 		for (let i=0;i<tileArray.length;i++) {
+			
 			let tile = tileArray[i];
 
 			quickMenuElement.appendChild(tile);
@@ -735,7 +739,9 @@ function makeQuickMenu(options) {
 						width: window.getComputedStyle(qme,null).width,
 						height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
 					},
-					resizeOnly: true
+					resizeOnly: true,
+					tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
+					tileCount: qme.querySelectorAll('div:not([data-hidden])').length
 				});
 				
 				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
@@ -844,7 +850,9 @@ function makeQuickMenu(options) {
 								width: window.getComputedStyle(qme,null).width,
 								height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
 							},
-							resizeOnly: true
+							resizeOnly: true,
+							tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
+							tileCount: qme.querySelectorAll('div:not([data-hidden])').length
 						});
 
 						document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));

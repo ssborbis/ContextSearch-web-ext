@@ -113,6 +113,11 @@ function notify(message, sender, sendResponse) {
 			browser.tabs.sendMessage(sender.tab.id, message);
 			break;
 			
+		case "rebuildQuickMenu":
+			console.log('rebuildQuickMenu bg.js');
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+			
 		case "closeWindowRequest":
 			return browser.windows.remove(sender.tab.windowId);
 			break;
@@ -151,7 +156,7 @@ function notify(message, sender, sendResponse) {
 			if (searchTerms.length > 18) 
 				searchTerms = searchTerms.substring(0,15) + "...";
 
-			browser.contextMenus.update("search_engine_menu", {title: browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
+			browser.contextMenus.update("search_engine_menu", {title: '&X ' + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
 			break;
 			
 		case "addSearchEngine":

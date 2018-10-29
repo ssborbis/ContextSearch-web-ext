@@ -101,13 +101,17 @@ function addToHistory(terms) {
 	// send last search to backgroundPage for session storage
 	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
 	
+	// ignore duplicates
 	if (userOptions.searchBarHistory.includes(terms)) return;
 	
+	// remove first entry if over limit
 	if (userOptions.searchBarHistory.length === historyLength)
 		userOptions.searchBarHistory.shift();
 	
+	// add new term
 	userOptions.searchBarHistory.push(terms);
 	
+	// update prefs
 	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
 }
 

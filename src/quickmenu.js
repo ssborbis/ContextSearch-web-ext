@@ -23,53 +23,72 @@ var quickMenuObject = {
 
 var userOptions = {};
 
+function makeFrameContents(options) {
+	
+	options 			= options || {};	
+	options.mode 		= options.mode || "normal";
+	options.resizeOnly 	= options.resizeOnly || false;
+
+	makeQuickMenu({type: "quickmenu", mode: options.mode}).then( (qme) => {
+
+		let old_qme = document.getElementById('quickMenuElement');
+		
+		if (old_qme) document.body.removeChild(old_qme);
+	
+		document.body.appendChild(qme);
+		
+		let sb = document.getElementById('quickmenusearchbar');
+		let sbc = document.getElementById('quickMenuSearchBarContainer');
+		
+		if (userOptions.quickMenuSearchBar === 'bottom') {	
+			sbc.style.borderRadius = "0 0 10px 10px";
+			document.body.appendChild(sbc);
+		} else {
+			sbc.style.borderRadius = "10px 10px 0 0";
+		}
+
+		browser.runtime.sendMessage({
+			action: "quickMenuIframeLoaded", 
+			size: {
+				width: window.getComputedStyle(qme,null).width,
+				height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(sbc, null).height) + 'px'
+			},
+			resizeOnly: options.resizeOnly,
+			tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
+			tileCount: qme.querySelectorAll('div:not([data-hidden])').length
+		}).then(() => {
+			
+			// setTimeout needed to trigger after updatesearchterms
+			setTimeout(() => {
+				if (userOptions.quickMenuSearchBarSelect) {
+					sb.addEventListener('focus', ()=> {
+						sb.select();
+					},{once:true});
+				}
+
+				if (userOptions.quickMenuSearchBarFocus)
+					sb.focus();
+				
+				if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
+					sb.blur();
+					window.focus();
+				}
+			}, 100);
+		});
+	});
+	
+}
+	
+
 document.addEventListener("DOMContentLoaded", () => {
 
 	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		userOptions = message.userOptions || {};
 		
 		if ( userOptions === {} ) return;
-
-		makeQuickMenu({type: "quickmenu"}).then( (qme) => {
-
-			document.body.appendChild(qme);
-			
-			let sb = document.getElementById('quickmenusearchbar');
-			let sbc = document.getElementById('quickMenuSearchBarContainer');
-			
-			if (userOptions.quickMenuSearchBar === 'bottom') {	
-				sbc.style.borderRadius = "0 0 10px 10px";
-				document.body.appendChild(sbc);
-			} else {
-				sbc.style.borderRadius = "10px 10px 0 0";
-			}
-
-			browser.runtime.sendMessage({
-				action: "quickMenuIframeLoaded", 
-				size: {
-					width: window.getComputedStyle(qme,null).width,
-					height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(sbc, null).height) + 'px'
-				}
-			}).then(() => {
-				
-				// setTimeout needed to trigger after updatesearchterms
-				setTimeout(() => {
-					if (userOptions.quickMenuSearchBarSelect) {
-						sb.addEventListener('focus', ()=> {
-							sb.select();
-						},{once:true});
-					}
-
-					if (userOptions.quickMenuSearchBarFocus)
-						sb.focus();
-					
-					if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
-						sb.blur();
-						window.focus();
-					}
-				}, 100);
-			});
-		});
+		
+		makeFrameContents();
+		
 	});
 });
 
@@ -98,6 +117,18 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				sb.focus();
 
 				break;
+
 		}
+	}
+});
+
+// listen for messages from parent window
+window.addEventListener('message', (e) => {
+
+	switch (e.data.action) {
+		case "rebuildQuickMenu":
+			userOptions = e.data.userOptions;
+			makeFrameContents(e.data.makeQuickMenuOptions);
+			break;
 	}
 });

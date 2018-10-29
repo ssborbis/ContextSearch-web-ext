@@ -487,6 +487,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 			case "closeQuickMenuRequest":
 				closeQuickMenu(message.eventType || null);
+				
+				let resizeWidget = document.getElementById('resizeWidget');
+				if (resizeWidget) resizeWidget.parentNode.removeChild(resizeWidget);
 				break;
 				
 			case "openQuickMenu":
@@ -539,13 +542,122 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 				
 			case "quickMenuIframeLoaded":
-			
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject
 				});
 				
 				scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
+
+				/* dnd resize start */	
+				
+				_message = message;
+				
+				let iframe = document.getElementById('quickMenuIframe');
+				let resize = document.getElementById('resizeWidget');
+				
+				// overlay a div to capture mouse events over iframes
+				let overDiv = document.createElement('div');
+				overDiv.style = 'display:inline-block;position:absolute;left:0;top:0;width:100%;height:100%;z-index:2147483647;cursor:nwse-resize;';
+				
+				// build resize widget once per quick menu open
+				if ( !resize ) {
+					
+					let startCoords, endCoords, endSize;
+					
+					resize = document.createElement('div');
+					resize.id = 'resizeWidget';
+					document.body.appendChild(resize);
+
+					resize.innerHTML = '&#8690;';
+					resize.addEventListener('mousedown', function elementResize(e) {
+						
+						let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(_message.tileCount, userOptions.quickMenuColumns);
+						let rows = Math.ceil(_message.tileCount / columns );
+												
+						let startSize = {columns: columns, rows: rows};
+
+						document.body.appendChild(overDiv);
+
+						iframe.style.transition = 'none';
+						iframe.style.borderWidth = '2px';
+						iframe.style.borderStyle = 'dashed';
+						
+						// lower the quick menu in case zIndex = MAX
+						iframe.style.zIndex = window.getComputedStyle(iframe).zIndex - 1;
+
+						// match grid to tile size after scaling
+						let step = iframe.getBoundingClientRect().width / iframe.offsetWidth * message.tileSize.height;
+						
+						// initialize the coords with some offset for a deadzone
+						startCoords = {x: e.clientX - 10, y: e.clientY - 10};
+
+						document.addEventListener('mousemove', elementDrag);
+
+						function elementDrag(_e) {
+							endCoords = {x: _e.clientX, y: _e.clientY};
+
+							let colsMod = Math.floor (( endCoords.x - startCoords.x) / step);
+							let rowsMod =  Math.floor (( endCoords.y - startCoords.y ) / step);
+							
+							// no change, do nothing
+							if (!colsMod && !rowsMod) return;
+							
+							// size less than 1 do nothing
+							if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
+
+							// no change
+							if ( 
+								userOptions.quickMenuColumns === startSize.columns + colsMod &&
+								userOptions.quickMenuRows === startSize.rows + rowsMod
+							) return;
+							
+							userOptions.quickMenuColumns = startSize.columns + colsMod;
+							userOptions.quickMenuRows = startSize.rows + rowsMod;
+
+							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
+
+						}
+						
+						document.addEventListener('mouseup', (_e) => {
+							
+							_e.stopImmediatePropagation();
+
+							// clear overlay
+							overDiv.parentNode.removeChild(overDiv);
+							
+							// clear resize styling
+							iframe.style.transition = null;
+							iframe.style.borderWidth = null;
+							iframe.style.borderStyle = null;
+							iframe.style.zIndex = null;
+							
+							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
+
+							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions})
+							.then( ()=> {
+								browser.runtime.sendMessage({action: "updateUserOptions"});
+							});
+
+							document.removeEventListener('mousemove', elementDrag);
+						}, {once: true});
+						
+					});
+				}
+				
+				// queue reposition for transitions
+				iframe.addEventListener('transitionend', positionResizeWidget, {once: true});
+				
+				positionResizeWidget();
+				
+				function positionResizeWidget() {
+					let iframeRect = iframe.getBoundingClientRect();
+					resize.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
+					resize.style.top = parseInt(iframe.style.top) + iframeRect.height - 10 + "px";
+					resize.style.transform = iframe.style.transform; 
+				}
+
+				/* dnd resize end */	
 				
 				break;
 		}
