@@ -594,6 +594,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 						document.addEventListener('mousemove', elementDrag);
 
+						// track mod size to ignore repeat drag events
 						let mostRecentModSize = {columns:0,rows:0};
 						
 						function elementDrag(_e) {
@@ -611,9 +612,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							
 							mostRecentModSize = {columns: colsMod, rows: rowsMod}
 
+							// set prefs
 							userOptions.quickMenuColumns = startSize.columns + colsMod;
 							userOptions.quickMenuRows = startSize.rows + rowsMod;
 
+							// rebuild menu with new dimensions
 							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
 
 						}
@@ -631,8 +634,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							iframe.style.borderStyle = null;
 							iframe.style.zIndex = null;
 							
+							// rebuild the menu again to shrink empty rows
 							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
 
+							// save prefs
 							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions})
 							.then( ()=> {
 								browser.runtime.sendMessage({action: "updateUserOptions"});

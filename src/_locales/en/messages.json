@@ -320,7 +320,7 @@
   },
   
   "SearchEnginesManagerHelp": {
-    "message": "Drag & drop to re-order, click to edit"
+    "message": "Drag & drop to re-order, right-click menu to add/delete/modify"
   },
   
   "ImportHeader": {
@@ -915,6 +915,56 @@
   "Regex": {
     "message": "Search Regex",
     "description": ""
+  },
+  
+  "Edit": {
+    "message": "Edit",
+    "description": "Manager menu item"
+  },
+  
+  "Hide": {
+    "message": "Hide",
+    "description": "Manager menu item"
+  },
+  
+  "Show": {
+    "message": "Show",
+    "description": "Manager menu item"
+  },
+  
+  "NewFolder": {
+    "message": "New Folder",
+    "description": "Manager menu item"
+  },
+  
+  "NewEngine": {
+    "message": "New Engine",
+    "description": "Manager menu item"
+  },
+  
+  "NewSeparator": {
+    "message": "New Separator",
+    "description": "Manager menu item"
+  },
+  
+  "AddBookmarklet": {
+    "message": "Add Bookmarklet",
+    "description": "Manager menu item"
+  },
+  
+  "RemoveNode": {
+    "message": "Remove Node",
+    "description": "Manager menu item"
+  },
+  
+  "DeleteEngines": {
+    "message": "Delete $1 engine(s)",
+    "description": "Manager menu item"
+  },
+  
+  "Confirm": {
+    "message": "Confirm",
+    "description": "Manager menu item"
   },
   
   "_________": {

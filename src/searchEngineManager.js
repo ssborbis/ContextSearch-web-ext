@@ -774,7 +774,7 @@ function buildSearchEngineContainer() {
 			return menuItem;
 		}
 
-		let _delete = createMenuItem('Delete', browser.runtime.getURL('icons/crossmark.png'));
+		let _delete = createMenuItem(browser.i18n.getMessage('Delete'), browser.runtime.getURL('icons/crossmark.png'));
 		_delete.onclick = function(e) {
 			closeSubMenus();
 			e.stopImmediatePropagation();
@@ -796,7 +796,7 @@ function buildSearchEngineContainer() {
 				// add menu items
 				let item1 = document.createElement('div');
 				item1.className = 'menuItem';
-				item1.innerText = "Remove Node";
+				item1.innerText = browser.i18n.getMessage('RemoveNode');
 				
 				item1.addEventListener('click', (_e) => {
 					
@@ -820,7 +820,7 @@ function buildSearchEngineContainer() {
 				
 				let item2 = document.createElement('div');
 				item2.className = 'menuItem';
-				item2.innerText = "Delete " + engineCount + " engines";
+				item2.innerText = browser.i18n.getMessage('DeleteEngines', engineCount);//"Delete " + engineCount + " engines";
 				
 				item2.addEventListener('click', (_e) => {
 					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
@@ -906,7 +906,7 @@ function buildSearchEngineContainer() {
 
 		}
 
-		let edit = createMenuItem('Edit', browser.runtime.getURL('icons/edit.png'));
+		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
 		edit.addEventListener('click', (e) => {
 			e.stopPropagation();
 
@@ -920,7 +920,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let hide = createMenuItem(li.node.hidden ? 'Unhide' : 'Hide', browser.runtime.getURL('icons/hide.png'));
+		let hide = createMenuItem(li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.png'));
 		hide.addEventListener('click', () => {
 			li.node.hidden = !li.node.hidden;
 			
@@ -931,7 +931,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newFolder = createMenuItem('New Folder', browser.runtime.getURL('icons/folder4.png'));		
+		let newFolder = createMenuItem(browser.i18n.getMessage('NewFolder'), browser.runtime.getURL('icons/folder4.png'));		
 		newFolder.addEventListener('click', () => {
 			let newFolder = {
 				type: "folder",
@@ -952,7 +952,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newBookmarklet = createMenuItem('Add Bookmarklet', browser.runtime.getURL('icons/code.png'));		
+		let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.png'));		
 		newBookmarklet.addEventListener('click', (e) => {
 			closeSubMenus();
 			e.stopImmediatePropagation();
@@ -1048,7 +1048,7 @@ function buildSearchEngineContainer() {
 			
 		});
 		
-		let copy = createMenuItem('Copy', browser.runtime.getURL('icons/copy.png'));	
+		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/copy.png'));	
 		copy.addEventListener('click', (e) => {
 			
 			let newNode;
@@ -1121,7 +1121,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newEngine = createMenuItem('New Engine', browser.runtime.getURL('icons/new.png'));	
+		let newEngine = createMenuItem(browser.i18n.getMessage('NewEngine'), browser.runtime.getURL('icons/new.png'));	
 		newEngine.addEventListener('click', () => {
 			
 			let newNode = addNewEngine(li.node, false);
@@ -1142,7 +1142,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newSeparator = createMenuItem('New Separator', browser.runtime.getURL('icons/separator.png'));	
+		let newSeparator = createMenuItem(browser.i18n.getMessage('NewSeparator'), browser.runtime.getURL('icons/separator.png'));	
 		newSeparator.addEventListener('click', () => {
 			let newNode = {
 				type: "separator",
