@@ -917,6 +917,16 @@
     "description": ""
   },
   
+  "ShortcutKey": {
+    "message": "Shortcut Key",
+    "description": "Label for context menu hotkey"
+  },
+  
+  "ShortcutKey_tooltip": {
+    "message": "Shortcut key to expand the \"Search With...\" entry in the context menu",
+    "description": "context menu hotkey tooltip"
+  },
+  
   "Edit": {
     "message": "Edit",
     "description": "Manager menu item"

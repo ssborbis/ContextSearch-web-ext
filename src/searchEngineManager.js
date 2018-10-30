@@ -780,6 +780,7 @@ function buildSearchEngineContainer() {
 			e.stopImmediatePropagation();
 			e.preventDefault();
 			
+			// move the edit form if open on node
 			let editForm = document.getElementById('editSearchEngineContainer');
 			if ( li.contains(editForm) ) {
 				editForm.style.maxHeight = '0px';
