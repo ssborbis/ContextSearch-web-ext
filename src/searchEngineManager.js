@@ -779,6 +779,12 @@ function buildSearchEngineContainer() {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
+			
+			let editForm = document.getElementById('editSearchEngineContainer');
+			if ( li.contains(editForm) ) {
+				editForm.style.maxHeight = '0px';
+				document.body.appendChild(editForm);	
+			}
 
 			let engines = findNodes(li.node, node => node.type === "searchEngine");
 			let engineCount = engines.length;
@@ -812,8 +818,9 @@ function buildSearchEngineContainer() {
 					});
 
 					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
-					li.parentNode.removeChild(li);
 
+					li.parentNode.removeChild(li);
+					
 					updateNodeList();
 					closeContextMenus();
 				});
