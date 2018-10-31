@@ -71,7 +71,7 @@ function makeFrameContents(options) {
 				
 				if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
 					sb.blur();
-					window.focus();
+					qme.focus();
 				}
 			}, 100);
 		});

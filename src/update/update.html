@@ -77,26 +77,58 @@
 	</head>
 	<body>
 		<div class='blobContainer'>
-			<div style='text-align:left;'>
+			<div style='text-align:left;'> 
 			
+				<h2>* Attention ContextSearch web-ext <b>LITE</b> Users *</h2>
+				ContextSearch web-ext Lite has been depreciated, no longer receiving updates and will be removed from the add-on store. ContextSearch web-ext Lite users should export their settings and switch to ContextSearch web-ext 1.8.0+ to continue receiving updates for ContextSearch web-ext. 
+				<p>
+				Native Messaging permissions have been moved from the standard version to a separate add-on, so there are no permissions differences between the standard v1.8.0 and the previous lite versions.
+				</p>
+
 				<h2>Changes for 1.8.0</h2>
+				
+				* a lot of changes were made for this update, so if you have any issues report them <a href="https://github.com/ssborbis/ContextSearch-web-ext/issues">here</a> and I'll get a fix up ASAP
+				
+				<ul>
 				<h4>Search Engine Manager</h4>
-				
-				<p>Search Engine Manager handles subfolders, separators and bookmarklets eliminating the need for Bookmarks</p>
-				<p>All menus (context, quick, toolbar) use the same search engine list. If you are using a mix of Manage Using Bookmarks and the Search Engine Manager for separate Context and QuickMenu layouts, you may need to edit your list.</p>
-				<p>
-				Native App support has been moved to a separate addon to simplify cross-browser support. Automatic Import users should download the ContextSearch web-ext Native Messenger addon package from the repository.</p>
-				
-				<p>
-				ContextSearch Lite has been depreciated and will be removed from Addons. ContextSearch Lite users should export their settings and switch to ContextSearch
-				</p>
-				<p>
-				QuickMenu setting Items has been superseded by Rows. Columns and Rows determine the initial size of the Quick Menu
+				<li>All menus (context, quick, toolbar) use the same search engine list. If you are using a mix of Manage Using Bookmarks and the Search Engine Manager for separate Context and QuickMenu layouts, you may need to edit your list.</li>
+				<li>Search Engine Manager handles subfolders, separators and bookmarklets eliminating the need for Bookmarks</li>
+				<li>
+				Search Engine Manager actions are handled by a custom context menu (right-click)
+				</li>
+				<li>
+				Bookmarklets can be added from the manager via context menu. This menu will be populated by bookmarklets found anywhere in Bookmarks
+				</li>
+				<li>
+				Search Regex option added to Edit Search Engine form in manager. Current format is "regex to match", "string to replace". For example, " ", "+" will replace spaces with + in the search terms.
+				</li>
+
+				<h4>Menus</h4>
+				<li>
+				Added option to use a custom shotcut key to open the search engines subfolder from the context menu (highlight word, right click, press shortcut key)
+				</li>
+				<li>
+				QuickMenu setting Items has been superseded by Rows. Columns and Rows set the initial dimensions of the Quick Menu
+				</li>
+				<li>
 				QuickMenu includes More button to expand from the initial size to display ALL items.
-				</p>
-				<p>
+				</li>
+				<li>
 				If QuickMenu Columns and Toolbar Columns are equal, Toolbar layout will match QuickMenu layout, accounting for Tools.
-				</p>
+				</li>
+				<li>
+				QuickMenu can be resized while open by dragging lower-right corner
+				</li>
+
+				<h4>Firefox Users and Auto Import</h4>
+				<li>
+				Native App support has been moved to a separate addon to simplify cross-browser support. Automatic Import users should download the <a href='https://github.com/ssborbis/ContextSearch-Auto-Importer/releases/latest'>ContextSearch Auto Importer</a> addon from mozilla and the updated <a href='https://github.com/ssborbis/ContextSearch-Native-App/releases/latest'>native app</a> from github.</li>
+				
+				<h4>Fixes</h4>
+				<li>
+				Fixed {ENTER} not performing search
+				</li>
+				</ul>
 				
 
 				

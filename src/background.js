@@ -1060,21 +1060,19 @@ browser.tabs.onActivated.addListener((tab) => {
 
 browser.runtime.onInstalled.addListener((details) => {
 
-	// // Show new features page
-	// if (
-		// (
-			// details.reason === 'update' 
-			// && details.previousVersion < "1.2.8"
-		// )
-// //		|| details.temporary
-	// ) {
-		// browser.tabs.create({
-			// url: "/update/update.html"
-		// });
-	// }
-	
-	
-	
+	// Show new features page
+	if (
+		(
+			details.reason === 'update' 
+			&& details.previousVersion < "1.8.0"
+		)
+//		|| details.temporary
+	) {
+		browser.tabs.create({
+			url: "/update/update.html"
+		});
+	}
+
 	let loadUserOptionsInterval = setInterval(() => {
 		if (userOptions === {}) return;
 		

@@ -458,6 +458,7 @@ window.addEventListener('keydown', (e) => {
 	
 });
 
+// listen for quickMenuHotkey
 window.addEventListener('keydown', (e) => {
 	if (
 		!userOptions.quickMenuOnHotkey
