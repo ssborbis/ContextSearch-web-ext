@@ -67,7 +67,7 @@ function makeQuickMenu(options) {
 	
 	// hotkey listener
 	document.addEventListener('keydown', (e) => {
-		
+
 		if (!userOptions.quickMenuSearchHotkeys || userOptions.quickMenuSearchHotkeys === 'noAction') return;
 
 		// ignore hotkeys when the search bar is being edited
@@ -236,14 +236,14 @@ function makeQuickMenu(options) {
 		// clear current selection
 		if (sb.selectedIndex !== undefined)
 			divs[sb.selectedIndex].classList.remove('selectedFocus');
-		
+
 		if (
 			(e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined) ||
 			(e.keyCode === 38 && sb.selectedIndex === undefined)
 		)
 			sb.selectedIndex = divs.length -1;
 		else if (sb.selectedIndex === undefined)
-			sb.selectedIndex = Array.prototype.indexOf( divs, quickMenuElement.querySelector('div[data-id]') );
+			sb.selectedIndex = Array.prototype.indexOf.call( divs, quickMenuElement.querySelector('div[data-id]') );
 		else if (sb.selectedIndex + direction >= divs.length) {
 			sb.focus();
 			sb.select();
