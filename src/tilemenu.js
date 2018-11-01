@@ -343,10 +343,10 @@ function makeQuickMenu(options) {
 	
 	// method for assigning tile click handler
 	function addTileEventHandlers(_tile, handler) {
-		
+
 		// all click events are attached to mouseup
 		_tile.addEventListener('mouseup', (e) => {
-			
+
 			// check if this tile was target of the latest mousedown event
 			if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
 
@@ -455,13 +455,14 @@ function makeQuickMenu(options) {
 					});
 					
 					addTileEventHandlers(tile_link, (e) => {
+
 						if (tile_link.disabled) return;
-						
+
 						browser.runtime.sendMessage({
 							action: "quickMenuSearch", 
 							info: {
-								menuItemId: 0,
-								selectionText: quickMenuObject.searchTerms,
+								menuItemId: "openAsLink",
+								selectionText: sb.value,
 								openMethod: getOpenMethod(e),
 								openUrl: true
 							}
@@ -783,7 +784,7 @@ function makeQuickMenu(options) {
 						}
 					});
 					
-					if (addToHistory) addToHistory(sb.value);
+					if (typeof addToHistory !== "undefined") addToHistory(sb.value);
 				});
 				
 				tile.dataset.id = node.id;

@@ -4,6 +4,8 @@ window.browser = (function () {
     window.chrome;
 })();
 
+let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
+
 function notify(message, sender, sendResponse) {
 		
 	switch(message.action) {
@@ -369,6 +371,7 @@ function buildContextMenu() {
 		delete root.id;
 		
 		function onCreated() {
+
 			if (browser.runtime.lastError) {
 				console.log(browser.runtime.lastError);
 			}
@@ -393,8 +396,8 @@ function buildContextMenu() {
 					id: se.id,
 					contexts: ["selection", "link", "image"]	
 				}
-				
-				if (browser.bookmarks.BookmarkTreeNodeType) {
+
+				if (isFirefox) {
 					createOptions.icons = {
 						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
@@ -412,7 +415,7 @@ function buildContextMenu() {
 					contexts: ["selection", "link", "image"]	
 				}
 				
-				if (browser.bookmarks.BookmarkTreeNodeType) {
+				if (isFirefox) {
 					createOptions.icons = {
 						"16": browser.runtime.getURL("/icons/code.png"),
 						"32": browser.runtime.getURL("/icons/code.png")
@@ -438,7 +441,7 @@ function buildContextMenu() {
 					contexts: ["selection", "link", "image"]
 				}
 				
-				if (browser.runtime.getBrowserInfo /* firefox */ ) {
+				if (isFirefox ) {
 					createOptions.icons = {
 						"16": "/icons/folder.png",
 						"32": "/icons/folder.png"
@@ -551,8 +554,8 @@ function contextMenuSearch(info, tab) {
 
 function quickMenuSearch(info, tab) {
 	
-		// run as bookmarklet
-	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
+	// run as bookmarklet
+	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
 		executeBookmarklet(info);
 		return Promise.resolve(false);
 	}
@@ -569,21 +572,19 @@ function quickMenuSearch(info, tab) {
 
 function openSearch(details) {
 
-//	console.log(details);
-			
 	var searchEngineId = details.searchEngineId || null;
 	var searchTerms = details.searchTerms.trim();
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;
 	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
-	
+
 	if (
 		searchEngineId === null //||
 //		!searchTerms ||
 //		tab === null
 	) return false;
-	
+
 	if (!tab) {
 		tab = {
 			url:"",
@@ -591,31 +592,52 @@ function openSearch(details) {
 		}
 	}
 	
-	// if temp engine exists, use that
-	var se = temporarySearchEngine || userOptions.searchEngines.find(se => se.id === searchEngineId);
+	var se;
 	
-	// must be invalid
-	if (!se.query_string) return false;
-	
-	// legacy fix
-	se.queryCharset = se.queryCharset || "UTF-8";
-	
-	if (se.searchRegex) {
-		try {
-			let parts = JSON.parse('[' + se.searchRegex + ']');
-			let _find = new RegExp(parts[0], 'g');
-			let _replace = parts[1];
-			let newSearchTerms = searchTerms.replace(_find, _replace);
+	if (!openUrl) {
+
+		// if temp engine exists, use that
+		se = temporarySearchEngine || userOptions.searchEngines.find(se => se.id === searchEngineId);
+
+		// must be invalid
+		if (!se.query_string) return false;
+		
+		// legacy fix
+		se.queryCharset = se.queryCharset || "UTF-8";
+		
+		if (se.searchRegex && !openUrl) {
+			try {
+				let parts = JSON.parse('[' + se.searchRegex + ']');
+				let _find = new RegExp(parts[0], 'g');
+				let _replace = parts[1];
+				let newSearchTerms = searchTerms.replace(_find, _replace);
+				
+				console.log(searchTerms + " -> " + newSearchTerms);
+				searchTerms = newSearchTerms;
+			} catch (error) {
+				console.error("regex replace failed");
+			}
+		}
+		
+		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
+		var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri, tab.url);
+		
+		// set landing page for POST engines
+		if ( 
+			!searchTerms || // empty searches should go to the landing page also
+			(typeof se.method !== 'undefined' && se.method === "POST") // post searches should go to the lander page
+		) {
 			
-			console.log(searchTerms + " -> " + newSearchTerms);
-			searchTerms = newSearchTerms;
-		} catch (error) {
-			console.error("regex replace failed");
+			if ( se.searchForm )
+				q = se.searchForm;
+			else {
+				let url = new URL(se.template);
+				q = url.origin + url.pathname;
+			}
+			
 		}
 	}
-		
-	var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
-	var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri, tab.url);
+	
 	
 	// if using Open As Link from quick menu
 	if (openUrl) {
@@ -623,22 +645,7 @@ function openSearch(details) {
 		if (searchTerms.match(/^.*:\/\//) === null)
 			q = "http://" + searchTerms;
 	}
-	
-	// set landing page for POST engines
-	if ( 
-		!searchTerms || // empty searches should go to the landing page also
-		(typeof se.method !== 'undefined' && se.method === "POST") // post searches should go to the lander page
-	) {
-		
-		if ( se.searchForm )
-			q = se.searchForm;
-		else {
-			let url = new URL(se.template);
-			q = url.origin + url.pathname;
-		}
-		
-	}
-	
+
 //	console.log("openSearch url -> " + q);
 
 	switch (openMethod) {
@@ -1064,7 +1071,7 @@ browser.runtime.onInstalled.addListener((details) => {
 	if (
 		(
 			details.reason === 'update' 
-			&& details.previousVersion < "1.8.0"
+			&& details.previousVersion < "1.8.1"
 		)
 //		|| details.temporary
 	) {
