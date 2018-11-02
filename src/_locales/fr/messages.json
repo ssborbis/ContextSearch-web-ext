@@ -108,15 +108,15 @@
   },
   
   "ColumnsTooltip": {
-    "message": "Nombre maximum d’icônes de moteur de recherche sur une ligne"
+    "message": "Nombre maximum d’icônes par ligne"
   },
   
-  "Items": {
-    "message": "Nombre d’éléments"
+  "Rows": {
+    "message": "Nombre de lignes"
   },
   
-  "ItemsTooltip": {
-    "message": "Nombre maximum d’icônes de moteur de recherche affichées en tout"
+  "RowsTooltip": {
+    "message": "Nombre maximum de lignes"
   },
 
   "MenuSize": {
@@ -320,7 +320,7 @@
   },
   
   "SearchEnginesManagerHelp": {
-    "message": "Glisser-déposer pour réordonner, cliquer pour éditer"
+    "message": "Réorganisation par glisser-déposer | Ajout, suppression, modification par le menu (clic droit)"
   },
   
   "ImportHeader": {
@@ -910,6 +910,85 @@
   "AddOpenSearchEngine": {
     "message": "Installer dans les moteurs de recherche accessibles en un clic de Firefox",
     "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
+  },
+  
+  "more": {
+    "message": "Plus…"
+  },
+  
+  "Regex": {
+    "message": "Expression rationnelle de recherche",
+    "description": ""
+  },
+  
+  "ContextMenuHotKey": {
+    "message": "Touche de raccourci",
+    "description": "Label for context menu hotkey"
+  },
+  
+  "ContextMenuHotKeyTooltip": {
+    "message": "Touche de raccourci pour développer l’entrée « Rechercher avec » dans le menu contextuel",
+    "description": "context menu hotkey tooltip"
+  },
+  
+  "Edit": {
+    "message": "Modifier",
+    "description": "Manager menu item"
+  },
+  
+  "Hide": {
+    "message": "Masquer",
+    "description": "Manager menu item"
+  },
+  
+  "Show": {
+    "message": "Afficher",
+    "description": "Manager menu item"
+  },
+  
+  "NewFolder": {
+    "message": "Nouveau dossier",
+    "description": "Manager menu item"
+  },
+  
+  "NewEngine": {
+    "message": "Nouveau moteur",
+    "description": "Manager menu item"
+  },
+  
+  "NewSeparator": {
+    "message": "Nouveau séparateur",
+    "description": "Manager menu item"
+  },
+  
+  "AddBookmarklet": {
+    "message": "Ajouter un marque-page scripté",
+    "description": "Manager menu item"
+  },
+  
+  "RemoveNode": {
+    "message": "Retirer le nœud",
+    "description": "Manager menu item"
+  },
+  
+  "DeleteEngines": {
+    "message": "Supprimer $1 moteurs",
+    "description": "Manager menu item"
+  },
+  
+  "Confirm": {
+    "message": "Confirmer",
+    "description": "Manager menu item"
+  },
+  
+  "AsShortcut": {
+    "message": "en tant que raccourci",
+    "description": "Manager menu item"
+    
+  },
+  "AsNewEngine": {
+    "message": "en tant que nouveau moteur",
+    "description": "Manager menu item"
   },
   
   "_________": {
