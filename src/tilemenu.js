@@ -291,7 +291,7 @@ function makeQuickMenu(options) {
 	}
 	
 	// prevent click events from propagating
-	for (let eventType of ['mousedown', 'mouseup', 'click', 'contextmenu']) {
+	for (let eventType of [/*'mousedown', */'mouseup', 'click', 'contextmenu']) {
 		quickMenuElement.addEventListener(eventType, (e) => {
 			e.preventDefault();
 			e.stopPropagation();
@@ -382,7 +382,7 @@ function makeQuickMenu(options) {
 		});
 		
 		// stop all other mouse events for this tile from propagating
-		['mousedown','mouseup','click','contextmenu'].forEach( eventType => {
+		[/*'mousedown',*/'mouseup','click','contextmenu'].forEach( eventType => {
 			_tile.addEventListener(eventType, (e) => {
 				e.preventDefault();
 				e.stopPropagation();
@@ -697,7 +697,7 @@ function makeQuickMenu(options) {
 		}
 
 		// check if any search engines exist and link to Options if none
-		if (userOptions.searchEngines.length === 0 || typeof userOptions.searchEngines[0].icon_base64String === 'undefined' ) {
+		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
 			var div = document.createElement('div');
 			div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 			div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
@@ -713,6 +713,67 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.transition = "left .15s ease-in-out";
 		quickMenuElement.style.visibility = null;
 		quickMenuElement.style.left = '0px';
+		
+		/* dnd */
+		let tileDivs = quickMenuElement.querySelectorAll('div');
+		tileDivs.forEach( div => {
+			div.setAttribute('draggable', true);
+
+			div.addEventListener('dragstart', (e) => {
+				console.log('dragstart');
+				e.dataTransfer.setData("text", "");
+				div.id = 'dragDiv';
+				//div.style.maxWidth = '0px';
+			});
+			
+			div.addEventListener('dragover', (e) => {
+				e.preventDefault();
+				// let blankDiv = document.createElement(
+				// div.parentNode
+			});
+			div.addEventListener('dragend', (e) => {
+				console.log('dragend');
+				
+				quickMenuElement.querySelectorAll('br').forEach( br => {
+					br.parentNode.removeChild(br);
+				});
+
+				let els = quickMenuElement.querySelectorAll('div');
+				for ( let i=0;i<els.length;i++ ) {
+					if ( (i + 1) % columns === 0 ) {
+						let br = document.createElement('br');
+						quickMenuElement.insertBefore(br, els[i].nextSibling);
+					}
+				}
+			});
+			div.addEventListener('drop', (e) => {
+				
+				let dragDiv = document.getElementById('dragDiv');
+				console.log('dropping');
+				
+				let targetDiv = (() => {
+					let newTarget = e.target;
+					while ( newTarget.parentNode ) {
+						if ( newTarget.node ) return newTarget;
+						newTarget = newTarget.parentNode;
+					}
+				})();
+				
+				if (!targetDiv) return;
+				if (!dragDiv.node) return;
+
+				dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
+				
+				dragDiv.id = null;
+				
+				console.log(dragDiv.node);
+				console.log(targetDiv.node);
+
+			});
+			
+		});
+		
+		/* end dnd */
 
 		return quickMenuElement;
 	}
@@ -789,7 +850,8 @@ function makeQuickMenu(options) {
 				
 				tile.dataset.id = node.id;
 				tile.dataset.type = 'searchEngine';
-
+				
+				tile.node = node;
 				tileArray.push(tile);
 
 			}
@@ -810,6 +872,28 @@ function makeQuickMenu(options) {
 					});
 				});
 
+				tile.node = node;
+				tileArray.push(tile);
+
+			}
+			
+			if ( node.type === "oneClickSearchEngine" ) {
+
+				tile = buildSearchIcon(node.icon, node.title);
+				tile.dataset.type = 'oneClickSearchEngine';
+
+				addTileEventHandlers(tile, (e) => {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: "__oneClickSearchEngine__" + node.id, // needs work
+							selectionText: sb.value,
+							openMethod: getOpenMethod(e)
+						}
+					});
+				});
+
+				tile.node = node;
 				tileArray.push(tile);
 
 			}
@@ -817,12 +901,14 @@ function makeQuickMenu(options) {
 			if ( node.type === "separator" ) {
 				tile = document.createElement('hr');
 				tile.dataset.type = 'separator';
+				tile.node = node;
 				tileArray.push(tile);
 			}
 			
 			if (node.type === "folder") {
 				tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": "/icons/transparent.gif", node.title);
 				
+				tile.node = node;
 				// if ( singleColumn )
 					// tile.style.backgroundColor = '';
 

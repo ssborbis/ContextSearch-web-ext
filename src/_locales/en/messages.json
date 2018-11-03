@@ -977,10 +977,39 @@
     "description": "Manager menu item"
   },
   
+  "AsShortcut": {
+    "message": "As Shortcut",
+    "description": "Manager menu item"
+    
+  },
+  
+  "AsNewEngine": {
+    "message": "As New Engine",
+    "description": "Manager menu item"
+  },
+  
+  "Rows": {
+    "message": "Rows",
+    "description": "Quick menu rows label"
+  },
+  
+  "RowsTooltip": {
+    "message": "",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "ContextMenuHotKey": {
+    "message": "Shortcut Key",
+    "description": "Label for Context Menu shortcut key"
+  },
+  
+  "ContextMenuHotKeyTooltip": {
+    "message": "Shortcut key to expand the \"Search With...\" entry in the context menu",
+    "description": "Description for Context Menu shortcut key"
+  },
+  
   "_________": {
     "message": "",
     "description": ""
   }
-
- 
 }

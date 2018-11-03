@@ -425,6 +425,24 @@ function buildContextMenu() {
 				browser.contextMenus.create( createOptions, onCreated);
 			}
 			
+			if (node.type === 'oneClickSearchEngine') {
+				let createOptions = {
+					parentId: parentId,
+					title: node.title,
+					id: "__oneClickSearchEngine__" + node.id,
+					contexts: ["selection", "link", "image"]	
+				}
+				
+				if (isFirefox) {
+					createOptions.icons = {
+						"16": node.icon,
+						"32": node.icon
+					}
+				}
+
+				browser.contextMenus.create( createOptions, onCreated);
+			}
+			
 			if (node.type === 'separator' /* firefox */) {
 				browser.contextMenus.create({
 					parentId: parentId,
@@ -494,6 +512,78 @@ function executeBookmarklet(info) {
 	});
 }
 
+function executeOneClickSearch(info) {
+	console.log('one click search');
+	
+	let searchTerms = info.selectionText;
+	let openMethod = info.openMethod;
+		
+	let engineId = info.menuItemId.replace("__oneClickSearchEngine__", "");
+	let engineName = findNodes( userOptions.nodeTree, node => node.id === engineId )[0].title;
+	
+	switch (openMethod) {
+		case "openCurrentTab":
+			browser.search.search({
+				query: searchTerms,
+				engine: engineName
+			});	
+			break;
+		case "openNewTab":
+			browser.tabs.create({
+				active: true
+			}).then( (tab) => {
+				browser.search.search({
+					query: searchTerms,
+					engine: engineName,
+					tabId: tab.id
+				});	
+			});
+			break;
+		case "openNewWindow":
+			browser.windows.create({
+				incognito: false
+			}).then( (tab) => {
+				
+				// if new window
+				if (tab.tabs) tab = tab.tabs[0];
+				
+				browser.search.search({
+					query: searchTerms,
+					engine: engineName,
+					tabId: tab.id
+				});	
+			});
+			break;
+		case "openNewIncognitoWindow":
+			browser.windows.create({
+				incognito: true
+			}).then( (tab) => {
+				
+				// if new window
+				if (tab.tabs) tab = tab.tabs[0];
+				
+				browser.search.search({
+					query: searchTerms,
+					engine: engineName,
+					tabId: tab.id
+				});	
+			});
+			break;
+		case "openBackgroundTab":
+			browser.tabs.create({
+				active: false
+			}).then( (tab) => {
+				browser.search.search({
+					query: searchTerms,
+					engine: engineName,
+					tabId: tab.id
+				});	
+			});
+			break;
+	}
+
+}
+
 function contextMenuSearch(info, tab) {
 
 	if (info.menuItemId === 'showSuggestions') {
@@ -524,19 +614,8 @@ function contextMenuSearch(info, tab) {
 		return false;	
 	}
 	
-	// run as bookmarklet
-	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
-		executeBookmarklet(info);
-		return false;
-	}
-
-	var searchTerms;
-	if (!info.selectionText && info.srcUrl)
-		searchTerms = info.srcUrl
-	else
-		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
-	
 	// get modifier keys
+	let openMethod;
 	if ( info.modifiers && info.modifiers.includes("Shift") )
 		openMethod = userOptions.contextMenuShift;
 	else if ( info.modifiers && info.modifiers.includes("Ctrl") )
@@ -544,6 +623,25 @@ function contextMenuSearch(info, tab) {
 	else
 		openMethod = userOptions.contextMenuClick;
 	
+	var searchTerms;
+	if (!info.selectionText && info.srcUrl)
+		searchTerms = info.srcUrl
+	else
+		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
+	
+	if (typeof info.menuItemId === 'string' && info.menuItemId.match(/^__oneClickSearchEngine__/) ) {
+		info.selectionText = searchTerms;
+		info.openMethod = openMethod;
+		executeOneClickSearch(info);
+		return false;
+	}
+	
+	// run as bookmarklet
+	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
+		executeBookmarklet(info);
+		return false;
+	}
+
 	openSearch({
 		searchEngineId: info.menuItemId, 
 		searchTerms: searchTerms,
@@ -553,6 +651,12 @@ function contextMenuSearch(info, tab) {
 }
 
 function quickMenuSearch(info, tab) {
+	
+	// run as one-click search
+	if (typeof info.menuItemId === 'string' && info.menuItemId.match(/^__oneClickSearchEngine__/) ) {
+		executeOneClickSearch(info);
+		return false;
+	}
 	
 	// run as bookmarklet
 	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
@@ -1054,7 +1158,40 @@ const defaultUserOptions = {
 
 var userOptions = {};
 
-loadUserOptions();
+loadUserOptions().then( checkForOneClickEngines );
+
+function checkForOneClickEngines() {
+	
+	return false;
+
+	if ( !browser.search ) return;
+	
+	if ( userOptions.nodeTree === {} ) {
+		
+		console.log('empty nodeTree - aborting one-click check');
+		return;
+	}
+
+	browser.search.get().then( engines => {
+
+		engines.forEach( engine => {
+			if ( findNodes(userOptions.nodeTree, node => node.title === engine.name && ( node.type === "searchEngine" || node.type === "oneClickSearchEngine") ).length === 0 ) {
+
+				let node = {
+					type: "oneClickSearchEngine",
+					title: engine.name,
+					icon: engine.favIconUrl,
+					hidden: false,
+					id: gen()
+				}
+
+				console.log('adding One-Click engine ' + engine.name);
+				userOptions.nodeTree.children.push(node);
+				
+			}
+		});
+	});
+}
 
 browser.runtime.onMessage.addListener(notify);
 
@@ -1173,6 +1310,26 @@ if (browser.pageAction) {
 		}, {frameId: 0});
 
 	});
+}
+
+function findNodes(tree, callback) {
+	
+	let results = [];
+	
+	function _traverse(node, parent) {
+		
+		if ( callback(node, parent) ) results.push(node);
+		
+		if (node && node.children) {
+			for (let child of node.children) {
+				_traverse(child, node);
+			}
+		}
+	}
+	
+	_traverse(tree, null);
+	 
+	return results;
 }
 
 /*

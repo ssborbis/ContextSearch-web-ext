@@ -78,13 +78,15 @@ function closeQuickMenu(eventType) {
 	if (
 		eventType === 'click_window' && 
 		quickMenuObject.locked
-	) return false;
+	) {
+		return false;
+	}
 	
 	var quickMenuElement = document.getElementById('quickMenuIframe');
-	if (quickMenuElement !== null) {
+	if (quickMenuElement) {
 		quickMenuElement.style.opacity=0;
 		setTimeout(()=> {
-			if (quickMenuElement !== null && quickMenuElement.parentNode !== null) {
+			if (quickMenuElement && quickMenuElement.parentNode) {
 				quickMenuElement.parentNode.removeChild(quickMenuElement);
 				document.dispatchEvent(new CustomEvent('closequickmenu'));
 			}
@@ -488,9 +490,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 			case "closeQuickMenuRequest":
 				closeQuickMenu(message.eventType || null);
-				
-				let resizeWidget = document.getElementById('resizeWidget');
-				if (resizeWidget) resizeWidget.parentNode.removeChild(resizeWidget);
 				break;
 				
 			case "openQuickMenu":
@@ -550,28 +549,75 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 
+				/* edit widget start */
+				(() => {
+					let iframe = document.getElementById('quickMenuIframe');
+					let editWidget = document.getElementById('editWidget');
+					
+					if ( !editWidget ) {
+
+						editWidget = document.createElement('img');
+						editWidget.id = 'editWidget';
+						editWidget.src = browser.runtime.getURL('icons/settings.png');
+
+						editWidget.addEventListener('click', (e) => {
+							quickMenuObject.locked = true;
+							
+							let menu = document.createElement('div');
+
+						});
+						
+						// remove when menu is closed
+						document.addEventListener('closequickmenu', () => {
+							editWidget.parentNode.removeChild(editWidget);
+						}, {once: true});
+
+						document.body.appendChild(editWidget);
+					}
+					// queue reposition for transitions
+					editWidget.addEventListener('transitionend', positionEditWidget, {once: true});
+						
+					positionEditWidget();
+					
+					function positionEditWidget() {
+						let iframeRect = iframe.getBoundingClientRect();
+						editWidget.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
+						editWidget.style.top = parseInt(iframe.style.top) - 10 + "px";
+						editWidget.style.transform = iframe.style.transform; 
+					}
+
+				})();
+				
+				
+				/* edit widget end */
+				
 				/* dnd resize start */	
 				
 				_message = message;
 				
 				let iframe = document.getElementById('quickMenuIframe');
-				let resize = document.getElementById('resizeWidget');
+				let resizeWidget = document.getElementById('resizeWidget');
 				
 				// overlay a div to capture mouse events over iframes
 				let overDiv = document.createElement('div');
 				overDiv.style = 'display:inline-block;position:absolute;left:0;top:0;width:100%;height:100%;z-index:2147483647;cursor:nwse-resize;';
 				
 				// build resize widget once per quick menu open
-				if ( !resize ) {
+				if ( !resizeWidget ) {
 					
 					let startCoords, endCoords, endSize;
 					
-					resize = document.createElement('div');
-					resize.id = 'resizeWidget';
-					document.body.appendChild(resize);
+					resizeWidget = document.createElement('div');
+					resizeWidget.id = 'resizeWidget';
+					
+					document.addEventListener('closequickmenu', () => {
+						resizeWidget.parentNode.removeChild(resizeWidget);
+					}, {once: true});
+					
+					document.body.appendChild(resizeWidget);
 
-					resize.innerHTML = '&#8690;';
-					resize.addEventListener('mousedown', function elementResize(e) {
+					resizeWidget.innerHTML = '&#8690;';
+					resizeWidget.addEventListener('mousedown', function elementResize(e) {
 						
 						let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(_message.tileCount, userOptions.quickMenuColumns);
 						let rows = Math.ceil(_message.tileCount / columns );
@@ -657,9 +703,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				function positionResizeWidget() {
 					let iframeRect = iframe.getBoundingClientRect();
-					resize.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
-					resize.style.top = parseInt(iframe.style.top) + iframeRect.height - 10 + "px";
-					resize.style.transform = iframe.style.transform; 
+					resizeWidget.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
+					resizeWidget.style.top = parseInt(iframe.style.top) + iframeRect.height - 10 + "px";
+					resizeWidget.style.transform = iframe.style.transform; 
 				}
 
 				/* dnd resize end */	

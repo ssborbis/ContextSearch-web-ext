@@ -48,7 +48,8 @@
 		"activeTab",
 		"contextMenus",
 		"storage",
-		"tabs"
+		"tabs",
+		"search"
 	],
 	
 	"optional_permissions": [

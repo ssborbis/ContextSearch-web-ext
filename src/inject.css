@@ -32,7 +32,7 @@
 	transition: opacity .5s ease-in-out;
 	border:none;
 }
-#resizeWidget {
+#resizeWidget, #editWidget {
 	cursor:nwse-resize;
 	display:inline-block;
 	width:20px;
@@ -47,6 +47,9 @@
 	font-family: Arial;
 	z-index:2147483647
 }
-#resizeWidget:hover {
+#resizeWidget:hover, #editWidget:hover {
 	opacity:1;
+}
+#editWidget {
+	cursor: default;
 }

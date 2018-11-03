@@ -364,6 +364,18 @@ function buildSearchEngineContainer() {
 			li.appendChild(text);
 		}
 		
+		if (node.type === 'oneClickSearchEngine') {
+
+			let img = document.createElement('img');
+			img.src = node.icon;
+			li.appendChild(img);
+			
+			let text = document.createElement('span');
+			text.innerText = node.title;
+			text.className = "label";
+			li.appendChild(text);
+		}
+		
 		if (node.type === 'folder') {
 			let img = document.createElement('img');
 			img.src = browser.runtime.getURL('/icons/folder-icon.png');
@@ -875,7 +887,7 @@ function buildSearchEngineContainer() {
 					// add menu items
 					let item1 = document.createElement('div');
 					item1.className = 'menuItem';
-					item1.innerText = "Confirm";
+					item1.innerText = browser.i18n.getMessage('Confirm');
 					
 					item1.addEventListener('click', (_e) => {
 						
@@ -945,7 +957,7 @@ function buildSearchEngineContainer() {
 				type: "folder",
 				parent: li.node.parent,
 				children: [],
-				title: "New Folder",
+				title: browser.i18n.getMessage('NewFolder'),
 				toJSON: li.node.toJSON
 			}
 			
@@ -1077,7 +1089,7 @@ function buildSearchEngineContainer() {
 				// add menu items
 				let item1 = document.createElement('div');
 				item1.className = 'menuItem';
-				item1.innerText = "As Shortcut";
+				item1.innerText = browser.i18n.getMessage('AsShortcut');
 				
 				item1.addEventListener('click', (_e) => {
 					let _newNode = Object.assign({}, li.node);
@@ -1091,7 +1103,7 @@ function buildSearchEngineContainer() {
 				
 				let item2 = document.createElement('div');
 				item2.className = 'menuItem';
-				item2.innerText = "As New Engine";
+				item2.innerText = browser.i18n.getMessage('AsNewEngine');
 				
 				item2.addEventListener('click', (_e) => {
 					let _newNode = addNewEngine(li.node, true);
