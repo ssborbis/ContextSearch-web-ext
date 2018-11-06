@@ -3,16 +3,11 @@
 	position:relative;
 	color:white !important;
 }
-/* .selectedFocus[data-type="tool"] IMG { */
-	/* filter: brightness(0) invert(1); */
-/* } */
 .selectedNoFocus {
 	background-color: #b0b0b0 !important;
 }
-
 #quickMenuElement {
 	z-index:1;
-/*	border-radius:10px;*/
 	background-color: #eff0f1;
 	overflow:hidden;
 }
@@ -24,7 +19,6 @@
 	padding:0;
 	margin:0;
 	display:inline-block;
-/*	background-color:#eff0f1; */
 	background-size: 16px 16px;
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -34,7 +28,6 @@
 	background-color: #ccdbe8;
 	border-color: #ccdbe8;
 }
-
 #quickMenuElement, #quickMenuElement DIV {
 	box-sizing: content-box;
 	display:inline-block;
@@ -52,8 +45,6 @@
 	padding:1px;
 	font-family:Arial;
 	font-weight:bold;
-/*	color: white;*/
-/*	text-shadow:-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000,1px 1px 0 #000;*/
 	text-align:center;
 	display:table-cell;
 	vertical-align:middle;
@@ -100,9 +91,6 @@
 	color:#4a4a4a;
 	background-color:white;
 }
-#quickmenusearchbar:focus {
-
-}
 #suggestions {
 	height:100px;
 	width:312px;
@@ -127,7 +115,6 @@
 #suggestions DIV:hover {
 	background-color: #ccdbe8;
 }
-
 #searchEngineTitle {
 	height:24px;
 	padding-left:10px;
@@ -138,7 +125,6 @@
 	font-family:Arial;
 	font-size:10pt;
 }
-
 .singleColumn {
 	width:300px !important;
 	height:20px !important;

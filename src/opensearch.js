@@ -43,6 +43,14 @@ function paramStringToNameValueArray(str) {
 	return params;
 }
 
+function isCanvasBlank(canvas) {
+    var blank = document.createElement('canvas');
+    blank.width = canvas.width;
+    blank.height = canvas.height;
+
+    return canvas.toDataURL() == blank.toDataURL();
+}
+
 function imageToBase64(image, maxSize) {
 	
 	let c = document.createElement('canvas');
@@ -50,7 +58,7 @@ function imageToBase64(image, maxSize) {
 	
 	ctx.canvas.width = image.naturalWidth || 16;
 	ctx.canvas.height = image.naturalHeight || 16;
-	
+
 	try {
 
 		if ( maxSize && ( image.naturalWidth > maxSize || image.naturalHeight > maxSize ) ) {
@@ -64,6 +72,12 @@ function imageToBase64(image, maxSize) {
 		}
 		
 		ctx.drawImage(image, 0, 0);
+		
+		if (isCanvasBlank(c)) {
+			console.log('canvas is empty');
+			console.log(image.naturalWidth + "x" + image.naturalHeight);
+			return "";
+		}
 		
 		return c.toDataURL();
 		

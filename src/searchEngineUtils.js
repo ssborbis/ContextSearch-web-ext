@@ -116,8 +116,10 @@ function loadRemoteIcon(options) {
 				this.base64String = imageToBase64(this, 32);
 				
 				// image was loaded but canvas was tainted
-				if (!this.base64String)
+				if (!this.base64String) {
+					img.src = browser.runtime.getURL("icons/search.png");
 					this.onerror();
+				}
 			};
 			
 			img.onerror = function() {			

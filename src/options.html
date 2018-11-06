@@ -372,41 +372,7 @@
 				opacity:1;
 				filter: brightness(0) invert(1);
 			}
-			.checkbox3 {
-				display:inline-block;
-			}
-			.checkbox3 input {
-				display:none;
-			}
-			.checkbox3 LABEL {
-				-moz-user-select: none;
-				text-align:center;
-				padding:0 10px;
-				border:2px solid #ccc;
-				font-size:10pt;
-			}
-			.checkbox3 input + label {
-				display:inline-block;
-				color: #888;
-			}
-			.checkbox3 input + label:hover {
-				background-color:#f3f3f3;
-			}
-			.checkbox3 input + label > IMG {
-				height:20px;
-				margin-right:10px;
-				vertical-align:bottom;
-				opacity:.5;
-			}
-			.checkbox3 input:checked + label {
-				background-color:#6ec179;
-				color:white;
-				border:2px inset #ccc;
-			}
-			.checkbox3 input:checked + label > IMG {
-				opacity:1;
-				filter: brightness(0) invert(1);
-			}
+			
 			.info {
 				font-size:7pt;
 				border-radius:2px;
@@ -822,32 +788,6 @@
 				cursor: pointer;
 				-moz-user-select: none;
 			}
-			
-			
-			#newTable {
-				background-color:white;
-			}
-			#newTable TR {
-				width: auto;
-				outline: 1px solid #F3F3F3;
-			}
-			#newTable TR:hover {
-				background-color:#f6f8fa;
-			}
-			#newTable TR {
-				border:1px solid #EEE;
-				border-width: 1px 0;
-				user-select:none;
-				-moz-user-select: none;
-				background-color:white;
-			}
-			#newTable TD {
-				width:1%;
-				vertical-align:top;
-			}
-			#newTable TD:last-child {
-				width:100%;
-			}
 			.contextMenu {
 				background-color:#f3f3f3;
 				border:1px solid #aaa;
@@ -857,10 +797,8 @@
 				overflow:hidden;
 				opacity:0;
 				cursor:default;
-				
 				border:1px solid #9abad2;/*#C2C3C5;*/
 				box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
-				
 			}
 			.contextMenu > .menuItem {
 				display: block;
@@ -915,6 +853,7 @@
 			}
 			#managerContainer > DIV {
 				position:relative;
+				max-height:inherit;
 			}
 			#managerContainer > DIV LI {
 				margin-left:-16px;
@@ -964,16 +903,7 @@
 				</div>
 
 				<br />
-				<div style='display:none'>
-					<label class="container" style='display:inline-block;margin-left:0' data-i18n='UseBookmarksMenu'> 
-						<img src='/icons/bookmark_orig.png' style='height:30px;vertical-align:middle;margin-right:10px' />Manage With Bookmarks
-						<input type='checkbox' id='cb_contextMenuBookmarks' />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<span class='info' style='max-width:400px' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines' data-i18n_tooltip='UseBookmarksMenu'>?</span>
-
-					<div data-bookmarkpath></div>
-				</div>
+				
 				
 				<div style='display:none'>
 				<br />
@@ -1044,23 +974,9 @@
 				</div>
 				
 				<br />
-				<div style='display:none'>
-					<label class="container" style='display:inline-block;margin-left:0' data-i18n='UseBookmarksMenu'> 
-						<img src='/icons/bookmark_orig.png' style='height:30px;vertical-align:middle;margin-right:10px' />Manage With Bookmarks
-						<input type='checkbox' id='cb_quickMenuBookmarks' />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<span class='info' style='max-width:400px' data-msg='Control the engines displayed in the context menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines' data-i18n_tooltip='UseBookmarksMenu'>?</span>
-					
-					<div data-bookmarkpath></div>
-				</div>
-				
+
 				<p class='header1' data-i18n='OpeningClosingHeader'>Opening &amp; Closing</p>
-			<!--
-				<div data-i18n='Opening&ClosingDescription' style='font-size:9pt'>Choose how to open Quick Menu</div>
-				
-				<hr />
-			-->
+
 				<table class='openingTable'>
 				<tr>
 					<td>
@@ -1364,9 +1280,7 @@
 					
 					<input type="number" id="n_quickMenuRows" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Rows'>Rows</label>
 					<span class='info' data-msg='Maximum number of rows' data-i18n_tooltip='Rows'>?</span>
-					
-					<!-- <span class='header1' style='margin:0 16px;background-color:transparent;'>or</span> -->
-					
+
 					<label class="container" data-i18n='SearchBarUseOldStyle' style='display:inline-block;margin-left:32px'>Single Column With Labels
 					<span class='info' data-msg='Display search engines with labels in a single column like the old Firefox searchbar' data-i18n_tooltip='SearchBarUseOldStyle'>?</span>
 						<input type='checkbox' id='cb_quickMenuUseOldStyle' />
@@ -1375,11 +1289,7 @@
 				</p>
 				
 				<hr />
-				
-				<p style="display:none">
-					<input type="number" id="n_quickMenuItems" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Items'>Items</label>
-					<span class='info' data-msg='Maximum total number of search engine icons to be displayed.' data-i18n_tooltip='Items'>?</span>
-				</p>
+
 				<p>
 					<div class='slider_label'>
 					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
@@ -1459,8 +1369,7 @@
 					<input type='checkbox' id='cb_quickMenuSearchBarSelect' />
 					<span class="checkmark checkmark2"></span>
 				</label>
-				
-								
+
 				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
 				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='ToolbarSearch'><img alt='' src='icons/icon48.png' style='filter:grayscale(100%);'/>Toolbar Search</div>
 	
@@ -1469,9 +1378,7 @@
 				<p>
 					<input type="number" id="n_searchBarColumns" size="2" class='inputNice'><label style='margin-left:10px' data-i18n='Columns'>Columns</label>
 					<span class='info' data-msg='Maximum number of search engine icons per row' data-i18n_tooltip='Columns'>?</span>
-					
-					<!-- <span class='header1' style='margin:0 16px;background-color:transparent;'>or</span> -->
-					
+
 					<label class="container" data-i18n='SearchBarUseOldStyle' style='display:inline-block;margin-left:32px'>Single Column With Labels
 					<span class='info' data-msg='Display search engines with labels in a single column like the old Firefox searchbar' data-i18n_tooltip='SearchBarUseOldStyle'>?</span>
 						<input type='checkbox' id='cb_searchBarUseOldStyle' />
@@ -1493,6 +1400,12 @@
 					<span class="checkmark checkmark2"></span>
 				</label>
 				
+				<label class="container" data-i18n='EnableHistory'>Remember Search History
+				<span class='info' data-msg='Remember search terms and display them with search suggestions' data-i18n_tooltip='EnableHistory'>?</span>
+					<input type='checkbox' id='cb_searchBarEnableHistory' />
+					<span class="checkmark checkmark2"></span>
+				</label>
+				
 				<div id='d_clearSearchHistory'><img src='/icons/delete.png' style='height:20px;margin-right:16px;vertical-align:middle' /><span data-i18n='ClearSearchHistory'>Clear Search History</span>
 				<span class='info' data-msg='Clear search history from the search toolbar' data-i18n_tooltip='ClearSearchHistory'>?</span>
 				</div>
@@ -1504,29 +1417,13 @@
 			<div style='font-weight:normal; font-family:"Source Sans Pro", sans-serif;'>
 		
 				<div id='searchEnginesParentContainer'>
-					<div id='managerContainer' style='font-weight:normal;width:100%;height:500px;display:inline-block;overflow:hidden;font-size:11pt;text-align:left;background-color:white;'>
+					<div id='managerContainer' style='font-weight:normal;width:100%;max-height:500px;display:inline-block;overflow:hidden;font-size:11pt;text-align:left;background-color:white;'>
 					</div>
-					<div id='blah'></div>
+					<div></div>
 					
 					<button id='b_addSearchEngine' data-i18n='Add'>Add</button>
 					<button id='b_deleteAllSearchEngines' style='display:none;float:right;clear:both' data-i18n='RemoveAll'>Remove All</button>
 
-					<!--
-					<div style='padding:4px'></div>
-					<div  data-i18n='ShowHide'>
-						<img src='/icons/checkmark-icon.png' style='height:16px;vertical-align:middle;margin-right:10px' />Show / Hide
-					</div>
-					<div data-i18n='Bookmark'>
-						<img src='/icons/bookmark.png' style='height:16px;vertical-align:middle;margin-right:10px' />Bookmark
-					</div>
-					-->
-					<!-- <div data-i18n='Hotkey'> -->
-						<!-- <span class='hotkey' style='min-width:14px;padding:0;margin-right:10px;margin-left:0;height:14px;right:inherit;position:relative'></span>Hotkey -->
-					<!-- </div> -->
-					<!-- <div data-i18n='Delete'> -->
-						<!-- <img src='/icons/delete.png' style='height:16px;vertical-align:middle;margin-right:10px' />Delete -->
-					<!-- </div> -->
-					
 					<div class='blurb' data-i18n='SearchEnginesManagerHelp'>
 						Drag &amp; drop to re-order, click to edit
 					</div>
@@ -1597,7 +1494,7 @@
 					</label>
 					
 					<div id='status_div' style='display:none;'>
-						<img alt='' id='status_img' class='smallIcon' style='margin: 0 20px;height:30px' src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" />
+						<img alt='' id='status_img' class='smallIcon' style='margin: 0 20px;height:30px' src="/icons/transparent.gif" />
 						<span id='status'>&nbsp;</span>
 					</div>
 					<br />
@@ -1636,6 +1533,7 @@
 		<script src="opensearch.js"></script>
 		<script src="bookmarks.js"></script>
 		<script src="options.js"></script>
+		<script src="nodes.js"></script>
 		<script src="searchEngineManager.js"></script>
 	</body>
 </html>

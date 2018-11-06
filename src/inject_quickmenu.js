@@ -550,43 +550,43 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 
 				/* edit widget start */
-				(() => {
-					let iframe = document.getElementById('quickMenuIframe');
-					let editWidget = document.getElementById('editWidget');
+				// (() => {
+					// let iframe = document.getElementById('quickMenuIframe');
+					// let editWidget = document.getElementById('editWidget');
 					
-					if ( !editWidget ) {
+					// if ( !editWidget ) {
 
-						editWidget = document.createElement('img');
-						editWidget.id = 'editWidget';
-						editWidget.src = browser.runtime.getURL('icons/settings.png');
+						// editWidget = document.createElement('img');
+						// editWidget.id = 'editWidget';
+						// editWidget.src = browser.runtime.getURL('icons/settings.png');
 
-						editWidget.addEventListener('click', (e) => {
-							quickMenuObject.locked = true;
+						// editWidget.addEventListener('click', (e) => {
+							// quickMenuObject.locked = true;
 							
-							let menu = document.createElement('div');
+							// let menu = document.createElement('div');
 
-						});
+						// });
 						
-						// remove when menu is closed
-						document.addEventListener('closequickmenu', () => {
-							editWidget.parentNode.removeChild(editWidget);
-						}, {once: true});
+						// // remove when menu is closed
+						// document.addEventListener('closequickmenu', () => {
+							// editWidget.parentNode.removeChild(editWidget);
+						// }, {once: true});
 
-						document.body.appendChild(editWidget);
-					}
-					// queue reposition for transitions
-					editWidget.addEventListener('transitionend', positionEditWidget, {once: true});
+						// document.body.appendChild(editWidget);
+					// }
+					// // queue reposition for transitions
+					// editWidget.addEventListener('transitionend', positionEditWidget, {once: true});
 						
-					positionEditWidget();
+					// positionEditWidget();
 					
-					function positionEditWidget() {
-						let iframeRect = iframe.getBoundingClientRect();
-						editWidget.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
-						editWidget.style.top = parseInt(iframe.style.top) - 10 + "px";
-						editWidget.style.transform = iframe.style.transform; 
-					}
+					// function positionEditWidget() {
+						// let iframeRect = iframe.getBoundingClientRect();
+						// editWidget.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
+						// editWidget.style.top = parseInt(iframe.style.top) - 10 + "px";
+						// editWidget.style.transform = iframe.style.transform; 
+					// }
 
-				})();
+				// })();
 				
 				
 				/* edit widget end */

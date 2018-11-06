@@ -100,22 +100,10 @@ function makeQuickMenu(options) {
 
 	});
 	
-	// sb.addEventListener('focus', (e) => {
-		// console.log('focused on sb');
-	// });
-	// if (suggestions) {
-		// suggestions.addEventListener('focus', (e) => {
-			// console.log('focused on suggestions');
-		// });
-	// }
-	// quickMenuElement.addEventListener('focus', (e) => {
-		// console.log('focused on qme');
-	// });
-	
 	quickMenuElement.selectFirstTile = function() {
 		let firstTile = quickMenuElement.querySelector('div:not([data-hidden])');
 		firstTile.classList.add('selectedFocus');
-		sb.selectedIndex = Array.prototype.indexOf.call(quickMenuElement.querySelectorAll("div"), firstTile);
+		sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll("div"), firstTile);
 	}
 
 	sb.addEventListener('keydown', (e) => {
@@ -154,7 +142,7 @@ function makeQuickMenu(options) {
 			let selectedDiv = ( direction === 1 ) ? divs[0] : divs[divs.length - 1];
 
 			selectedDiv.className = 'selectedFocus';
-			sb.selectedIndex = Array.prototype.indexOf.call(quickMenuElement.querySelectorAll('div'), selectedDiv);
+			sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll('div'), selectedDiv);
 		}
 	});
 	
@@ -243,7 +231,7 @@ function makeQuickMenu(options) {
 		)
 			sb.selectedIndex = divs.length -1;
 		else if (sb.selectedIndex === undefined)
-			sb.selectedIndex = Array.prototype.indexOf.call( divs, quickMenuElement.querySelector('div[data-id]') );
+			sb.selectedIndex = [].indexOf.call( divs, quickMenuElement.querySelector('div[data-id]') );
 		else if (sb.selectedIndex + direction >= divs.length) {
 			sb.focus();
 			sb.select();
@@ -715,12 +703,12 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.left = '0px';
 		
 		/* dnd */
-		let tileDivs = quickMenuElement.querySelectorAll('div');
+		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 			div.setAttribute('draggable', true);
 
 			div.addEventListener('dragstart', (e) => {
-				console.log('dragstart');
+			//	console.log('dragstart');
 				e.dataTransfer.setData("text", "");
 				div.id = 'dragDiv';
 				//div.style.maxWidth = '0px';
@@ -732,7 +720,7 @@ function makeQuickMenu(options) {
 				// div.parentNode
 			});
 			div.addEventListener('dragend', (e) => {
-				console.log('dragend');
+			//	console.log('dragend');
 				
 				quickMenuElement.querySelectorAll('br').forEach( br => {
 					br.parentNode.removeChild(br);
@@ -747,10 +735,9 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('drop', (e) => {
-				
+			//	console.log('dropping');
 				let dragDiv = document.getElementById('dragDiv');
-				console.log('dropping');
-				
+
 				let targetDiv = (() => {
 					let newTarget = e.target;
 					while ( newTarget.parentNode ) {
@@ -758,17 +745,36 @@ function makeQuickMenu(options) {
 						newTarget = newTarget.parentNode;
 					}
 				})();
-				
+
 				if (!targetDiv) return;
 				if (!dragDiv.node) return;
 
 				dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
-				
+
 				dragDiv.id = null;
 				
-				console.log(dragDiv.node);
-				console.log(targetDiv.node);
+				// console.log(dragDiv.node);
+				// console.log(targetDiv.node);
+				
+				let dragNode = dragDiv.node;
+				let targetNode = targetDiv.node;
 
+				// cut the node from the children array
+				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
+
+				// set new parent
+				slicedNode.parent = targetNode.parent;
+
+				// add to children above target
+				targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
+				
+				// save the tree
+				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+				
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions}).then( () => {
+					browser.runtime.sendMessage({action: "updateUserOptions"});
+				});
+				
 			});
 			
 		});
@@ -881,6 +887,7 @@ function makeQuickMenu(options) {
 
 				tile = buildSearchIcon(node.icon, node.title);
 				tile.dataset.type = 'oneClickSearchEngine';
+				tile.dataset.id = node.id;
 
 				addTileEventHandlers(tile, (e) => {
 					browser.runtime.sendMessage({
@@ -990,21 +997,7 @@ function makeQuickMenu(options) {
 	}
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
-	
-	var setParent = function(o){
-		if(o.children != undefined){
-			for(n in o.children) {
-				
-				// build the JSON.stringify funciton, omitting parent
-			  o.children[n].toJSON = function() {
-				  return {type: this.type, title: this.title, index: this.index, id: this.id, children: this.children, url: this.url}
-			  }
-			  o.children[n].parent = o;
-			  setParent(o.children[n]);
-			}
-		}
-	}
-	
+
 	setParent(root);
 
 	return Promise.resolve(quickMenuElementFromNodeTree(root));
