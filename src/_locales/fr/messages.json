@@ -43,14 +43,6 @@
     "message": "Activer l’entrée de menu contextuel « Ajouter ce moteur de recherche » sur les éléments INPUT. Décocher pour éviter un menu à plusieurs niveaux dans certains cas."
   },
   
-   "UseBookmarksMenu": {
-    "message": "Organiser avec les marque-pages"
-  },
-    
-   "UseBookmarksMenuTooltip": {
-    "message": "Contrôler les moteurs de recherche affichés dans le menu en utilisant un dossier de marque-pages. Cette option autorise les séparateurs et les sous-dossiers. Remarque : un marque-page renommé ne fonctionnera plus ; un marque-page supprimé peut être rétabli dans les options à l’onglet « Moteurs de recherche »."
-  },
-   
    "QuickMenu": {
     "message": "Menu rapide"
   },
@@ -991,6 +983,14 @@
     "description": "Manager menu item"
   },
   
+  "EnableHistory": {
+    "message": "Mémoriser l’historique de recherche"
+  },
+	
+  "EnableHistoryTooltip": {
+    "message": "Mémoriser les termes de recherche et les afficher avec les suggestions."
+  },
+	
   "_________": {
     "message": "",
     "description": ""
