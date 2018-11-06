@@ -33,14 +33,29 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				
 				// add to searchEngines
 				newEngines.push(se);
-
-				// add to nodeTree
-				userOptions.nodeTree.children.push({
+				
+				let node = {
 					type: "searchEngine",
 					title: se.title,
 					id: se.id,
 					hidden: false
+				}
+
+				// replace one-click nodes with same name
+				let ocn = findNodes(userOptions.nodeTree, (_node, parent) => {
+					if ( _node.type === 'oneClickSearchEngine' && _node.title === se.title ) {
+						parent.children.splice(parent.children.indexOf(_node), 1, node);
+						return true;
+					}
+					return false;
 				});
+				
+				if ( ocn.length ) {
+					console.log(se.title + " one-click engine found. Replacing node");
+				} else {
+					// add to nodeTree
+					userOptions.nodeTree.children.push(node);
+				}
 				
 			}
 		}
@@ -105,7 +120,6 @@ function restoreOptions() {
 		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu;	
 		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns;
 		document.getElementById('n_quickMenuRows').value = userOptions.quickMenuRows;
-		document.getElementById('n_quickMenuItems').value = userOptions.quickMenuItems;	
 		
 		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey;
 		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
@@ -156,7 +170,6 @@ function restoreOptions() {
 		document.getElementById('s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
 		document.getElementById('cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
-		document.getElementById('cb_contextMenuBookmarks').checked = userOptions.contextMenuBookmarks;
 		
 		document.getElementById('s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		document.getElementById('s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -172,10 +185,9 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuFolderCtrl').value = userOptions.quickMenuFolderCtrl;
 		document.getElementById('s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
-		document.getElementById('cb_quickMenuBookmarks').checked = userOptions.quickMenuBookmarks;
-		
-		
+				
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
+		document.getElementById('cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
 		document.getElementById('cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
 		document.getElementById('cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
 		
@@ -213,7 +225,6 @@ function saveOptions(e) {
 		quickMenu: document.getElementById('cb_quickMenu').checked,
 		quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
 		quickMenuRows: parseInt(document.getElementById('n_quickMenuRows').value),
-		quickMenuItems: parseInt(document.getElementById('n_quickMenuItems').value),
 		
 		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
 		contextMenuKey: parseInt(document.getElementById('b_contextMenuKey').value),
@@ -244,7 +255,6 @@ function saveOptions(e) {
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
 		contextMenuShowAddCustomSearch: document.getElementById('cb_contextMenuShowAddCustomSearch').checked,
-		contextMenuBookmarks: document.getElementById('cb_contextMenuBookmarks').checked,
 		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
 		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
 		quickMenuMiddleClick: document.getElementById('s_quickMenuMiddleClick').value,
@@ -258,8 +268,6 @@ function saveOptions(e) {
 		quickMenuFolderShift: document.getElementById('s_quickMenuFolderShift').value,
 		quickMenuFolderCtrl: document.getElementById('s_quickMenuFolderCtrl').value,
 		quickMenuFolderAlt: document.getElementById('s_quickMenuFolderAlt').value,
-		
-		quickMenuBookmarks: document.getElementById('cb_quickMenuBookmarks').checked,
 		quickMenuSearchHotkeys: document.getElementById('s_quickMenuSearchHotkeys').value,
 		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
 		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
@@ -289,6 +297,7 @@ function saveOptions(e) {
 		
 		 // take directly from loaded userOptions
 		searchBarSuggestions: document.getElementById('cb_searchBarSuggestions').checked,
+		searchBarEnableHistory: document.getElementById('cb_searchBarEnableHistory').checked,
 		searchBarHistory: userOptions.searchBarHistory
 
 	}
@@ -316,11 +325,6 @@ document.getElementById('n_quickMenuRows').addEventListener('change',  (e) => {
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuItems').addEventListener('change',  (e) => {
-	fixNumberInput(e.target, 100, 1, 999);
-	saveOptions(e);
-});
-
 document.getElementById('n_quickMenuOffsetX').addEventListener('change', (e) => {
 	fixNumberInput(e.target, 0, -999, 999);
 	saveOptions(e);
@@ -343,9 +347,6 @@ document.getElementById('r_quickMenuAuto').addEventListener('change', saveOption
 document.getElementById('cb_quickMenuAutoOnInputs').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchOnMouseUp').addEventListener('change', saveOptions);
 document.getElementById('cb_automaticImport').addEventListener('change', saveOptions);
-
-document.getElementById('cb_quickMenuBookmarks').addEventListener('change', saveOptions);
-document.getElementById('cb_contextMenuBookmarks').addEventListener('change', saveOptions);
 
 //document.getElementById('s_quickMenuSearchBar').addEventListener('change', saveOptions);
 document.getElementById('cb_quickMenuSearchBarFocus').addEventListener('change', saveOptions);

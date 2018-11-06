@@ -95,11 +95,14 @@ setInterval(() => {
 // });
 
 function addToHistory(terms) {
-		
+	
 	terms = terms.trim();
 	
 	// send last search to backgroundPage for session storage
 	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
+	
+	// return if history is disabled
+	if ( ! userOptions.searchBarEnableHistory ) return;
 	
 	// ignore duplicates
 	if (userOptions.searchBarHistory.includes(terms)) return;

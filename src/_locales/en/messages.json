@@ -42,15 +42,7 @@
   "AddCustomSearchMenuTooltip": {
     "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases."
   },
-  
-   "UseBookmarksMenu": {
-    "message": "Manage With Bookmarks"
-  },
-    
-   "UseBookmarksMenuTooltip": {
-    "message": "Control the engines displayed in the menu using a bookmarks folder. This option allows for separators and subfolders. Note: Renaming bookmarks will cause them to no longer work. If you delete a bookmark it can be restored from ContextSearch Options -> Search Engines"
-  },
-  
+
    "QuickMenu": {
     "message": "Quick Menu"
   },

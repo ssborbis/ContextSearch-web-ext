@@ -162,8 +162,7 @@ function buildSearchEngineContainer() {
 						if (se.title !== edit_form.shortName.value) {
 
 							if ( !browser.runtime.getBrowserInfo || confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
-							//	CSBookmarks.rename(se.title, edit_form.shortName.value);
-								
+
 								se.title = li.node.title = node.title = edit_form.shortName.value;
 								
 								// change name on all labels
@@ -278,65 +277,7 @@ function buildSearchEngineContainer() {
 				edit_form.getBoundingClientRect();
 				edit_form.style.maxHeight = '400px';
 			});
-			
-			let hotkey = document.createElement('span');
-			hotkey.title = browser.i18n.getMessage('Hotkey');
-			hotkey.className = 'hotkey';
-			hotkey.style.right = "0px";
-			//hotkey.innerText = "";
-			
-			li.appendChild(hotkey);
-			hotkey.innerText = keyTable[se.hotkey] || "";
-			
-			hotkey.onclick = function(e) {
-				e.stopPropagation();			
-				e.target.innerText = '';
-				let img = document.createElement('img');
-				img.src = 'icons/spinner.svg';
-				img.style.height = '1em';
-				img.style.verticalAlign = 'middle';
-				e.target.appendChild(img);
-				window.addEventListener('keydown', function keyPressListener(evv) {
-					evv.preventDefault();
-					
-					if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
 
-					if (evv.which === 27) {
-						se.hotkey = null;
-						
-						// set hotkey for all copies
-						for (let _hk of rootElement.querySelectorAll('li')) {
-							if (_hk.node.id === se.id)
-								_hk.querySelector('.hotkey').innerText = "";
-						}
-	
-						window.removeEventListener('keydown', keyPressListener);
-						updateNodeList();
-						return;
-					}
-					
-					if (userOptions.searchEngines.find( _se => _se.hotkey === evv.which && _se !== se ) !== undefined) {
-						hotkey.style.backgroundColor = 'pink';
-						setTimeout( () => {
-							hotkey.style.backgroundColor = null;
-						},250);
-						return;
-					}
-
-					// set hotkey for all copies
-					for (let _hk of rootElement.querySelectorAll('li')) {
-						if (_hk.node.id === se.id)
-							_hk.querySelector('.hotkey').innerText = keyTable[evv.which];
-					}
-					
-					se.hotkey = evv.which;
-
-					window.removeEventListener('keydown', keyPressListener);
-					updateNodeList();
-				}); 
-				
-			}
-	
 		}
 		
 		if (node.type === 'bookmarklet') {
@@ -369,11 +310,20 @@ function buildSearchEngineContainer() {
 			let img = document.createElement('img');
 			img.src = node.icon;
 			li.appendChild(img);
-			
+
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
 			li.appendChild(text);
+			
+			// indicate as a firefox one-click
+			let ff = document.createElement('span');
+			ff.innerText = "FF";
+			ff.style = 'background-color:rgb(234, 172, 92);color:white;border-radius:4px;font-size:7pt;font-weight:bold;margin-left:5px;padding:1px 5px;vertical-align:middle';
+			ff.title = 'Firefox One-Click Search Engine';
+
+			li.appendChild(ff);
+
 		}
 		
 		if (node.type === 'folder') {
@@ -445,6 +395,72 @@ function buildSearchEngineContainer() {
 				}
 
 			});
+		}
+		
+		// add hotkeys for some nodes
+		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet'].includes(node.type) ) {
+			
+			let hotkey = document.createElement('span');
+			hotkey.title = browser.i18n.getMessage('Hotkey');
+			hotkey.className = 'hotkey';
+			hotkey.style.right = "0px";
+
+			li.appendChild(hotkey);
+			hotkey.innerText = keyTable[node.hotkey] || "";
+			
+			hotkey.onclick = function(e) {
+				e.stopPropagation();			
+				e.target.innerText = '';
+				let img = document.createElement('img');
+				img.src = 'icons/spinner.svg';
+				img.style.height = '1em';
+				img.style.verticalAlign = 'middle';
+				e.target.appendChild(img);
+				window.addEventListener('keydown', function keyPressListener(evv) {
+					evv.preventDefault();
+					
+					if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
+
+					if (evv.which === 27) {
+						node.hotkey = null;
+						
+						// set hotkey for all copies
+						for (let _hk of rootElement.querySelectorAll('li')) {
+							if (_hk.node.id === node.id)
+								_hk.querySelector('.hotkey').innerText = "";
+						}
+	
+						window.removeEventListener('keydown', keyPressListener);
+						updateNodeList();
+						return;
+					}
+					
+					node.hotkey = evv.which;
+
+					if ( findNodes(rootElement.node, _node => _node.hotkey === evv.which && _node.id !== node.id).length ) {						
+						hotkey.style.backgroundColor = 'pink';
+						setTimeout( () => {
+							hotkey.style.backgroundColor = null;
+						},250);
+						return;
+					}
+
+					// set hotkey for all copies
+					for (let _hk of rootElement.querySelectorAll('li')) {
+						if (_hk.node.id === node.id)
+							_hk.querySelector('.hotkey').innerText = keyTable[evv.which];
+					}
+					
+					findNodes(rootElement.node, _node => {
+						if ( _node.type === node.type && _node.id === node.id )
+							_node.hotkey = node.hotkey;
+					});
+
+					window.removeEventListener('keydown', keyPressListener);
+					updateNodeList();
+				}); 
+				
+			}
 		}
 		
 		document.addEventListener('click', (e) => {
@@ -527,31 +543,6 @@ function buildSearchEngineContainer() {
 		}
 	});
 
-	var setParent = function(o){
-
-		if(o.children != undefined){
-			
-			for(n in o.children) {
-
-				// build the JSON.stringify function, omitting parent
-				o.children[n].toJSON = function() {
-					let rObj = {};
-					
-					// skip parent property
-					Object.keys(this).forEach(function(key,index) {
-						if (key === "parent") return;
-						
-						rObj[key] = this[key];
-					}, this);
-
-					return rObj;
-			  }
-			  o.children[n].parent = o;
-			  setParent(o.children[n]);
-			}
-		}
-	}
-
 	// append orphans
 	for (let se of userOptions.searchEngines) {
 
@@ -585,22 +576,7 @@ function buildSearchEngineContainer() {
 	
 	document.getElementById('managerContainer').innerHTML = null;
 	document.getElementById('managerContainer').appendChild(table);
-	
-	function removeNodesById(tree, id) {
-		
-		function _traverse(node) {
-			if (node.id == id) node.parent.children.splice(node.parent.children.indexOf(node), 1);
-			
-			if (node.children) {
-				for (let child of node.children) {
-					_traverse(child);
-				}
-			}
-		}
-		
-		_traverse(tree);
-	}
-	
+
 	function dragover_position(el, ev) {
 		let rect = el.getBoundingClientRect();
 
@@ -932,9 +908,25 @@ function buildSearchEngineContainer() {
 
 			if ( li.node.type === 'searchEngine')
 				li.dispatchEvent(new MouseEvent('dblclick'));
-			if (li.node.type === 'folder') {
-				console.log('dispatching event');
+			if (li.node.type === 'folder')
 				li.dispatchEvent(new MouseEvent('dblclick'));
+			if (li.node.type === 'oneClickSearchEngine') {
+				// closeContextMenus();
+				
+				// e.preventDefault();
+				// e.stopImmediatePropagation();
+				
+				// let menu = document.createElement('div');
+				// menu.className = "contextMenu";
+				// menu.style.left = e.pageX + "px";
+				// menu.style.top = e.pageY + "px";	
+				// menu.style.padding = '10px';
+				// menu.innerText = browser.i18n.getMessage('CannotEditOneClickEngines') || "Firefox One-Click engines must be imported before making changes";
+				// document.body.appendChild(menu);
+
+				// openMenu(menu);
+				
+				// return false;
 			}
 			
 			closeContextMenus();
@@ -1220,6 +1212,7 @@ function buildSearchEngineContainer() {
 	}
 	
 	function closeContextMenus() {
+		console.log('closing context menus');
 		for (let m of document.querySelectorAll('.contextMenu')) {
 			if (m && m.parentNode) m.parentNode.removeChild(m);
 		}
@@ -1309,24 +1302,4 @@ function buildSearchEngineContainer() {
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
 		}
 	});
-}
-
-function findNodes(tree, callback) {
-		
-	let results = [];
-	
-	function _traverse(node, parent) {
-		
-		if ( callback(node, parent) ) results.push(node);
-		
-		if (node && node.children) {
-			for (let child of node.children) {
-				_traverse(child, node);
-			}
-		}
-	}
-	
-	_traverse(tree, null);
-	 
-	return results;
 }

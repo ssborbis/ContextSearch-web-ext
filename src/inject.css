@@ -1,4 +1,4 @@
-#quickMenuIframe { /*#quickMenuElement {*/
+#quickMenuIframe {
 	all:unset;
 	position:absolute;
 	cursor: pointer;
@@ -6,7 +6,7 @@
 	padding: 0;
 	margin: 0;
 	background-color:#EFF0F1;
-	border:1px solid #9abad2;/*#C2C3C5;*/
+	border:1px solid #9abad2;
 	border-radius:10px; 
 	font-weight:bold;
 	text-align:left;

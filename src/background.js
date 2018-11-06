@@ -963,11 +963,7 @@ function updateUserOptionsVersion(uo) {
 	}).then((_uo) => {
 		
 		if (browser.bookmarks === undefined) return _uo;
-		
-		// if (userOptions.contextMenuBookmarksFolderId === -1) {
-			
-		// }	
-		
+
 		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return _uo;
 		
 		console.log("-> 1.6.0");
@@ -988,8 +984,10 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 	}).then((_uo) => {
 
-	// 1.8.0
-	// build search engine node tree
+		// version met
+		if (_uo.nodeTree.children) return _uo;
+	
+		console.log("-> 1.8.0");
 	
 		function buildTreeFromSearchEngines() {
 			let root = {
@@ -1010,12 +1008,7 @@ function updateUserOptionsVersion(uo) {
 			
 			return root;
 		}
-		
-		// version met
-		if (_uo.nodeTree.children) return _uo;
-	
-		console.log("-> 1.8.0");
-	
+
 		// convert items to rows
 		let toolCount = _uo.quickMenuTools.filter( tool => !tool.disabled ).length;
 		
@@ -1029,14 +1022,7 @@ function updateUserOptionsVersion(uo) {
 		
 		if ( _uo.quickMenuUseOldStyle )
 			rows = totalTiles;
-		
-		console.log('Tool count is ' + toolCount);
-		console.log('Items is ' + _uo.quickMenuItems);
-		console.log('Columns is ' + _uo.quickMenuColumns);
-		console.log('Search Engines is ' + _uo.searchEngines.filter( se => !se.hidden).length);
-		console.log('Total tile count is ' + totalTiles);
-		console.log('Geometry should be ' + rows + 'rows x ' + _uo.quickMenuColumns + 'cols');
-		
+
 		_uo.quickMenuRows = rows;
 
 		// generate unique id for each search engine
@@ -1082,7 +1068,27 @@ function updateUserOptionsVersion(uo) {
 				
 		}
 
-	}).then((_uo) => {		
+	}).then((_uo) => {
+		
+		if (!_uo.searchEngines.find(se => se.hotkey) ) return _uo;
+		
+		console.log("-> 1.8.2");
+		
+		_uo.searchEngines.forEach( se => {
+			if (se.hotkey) {
+				let nodes = findNodes(_uo.nodeTree, node => node.id === se.id);
+				nodes.forEach(node => {
+					node.hotkey = se.hotkey;
+				});
+				
+				delete se.hotkey;
+			}
+		});
+		
+		return _uo;
+		
+	}).then((_uo) => {	
+		console.log('done');
 		return _uo;
 	});
 }
@@ -1150,6 +1156,7 @@ const defaultUserOptions = {
 	quickMenuFolderAlt: "noAction",
 	quickMenuSearchHotkeys: "noAction",
 	searchBarSuggestions: true,
+	searchBarEnableHistory: true,
 	searchBarHistory: [],
 	searchBarUseOldStyle: false,
 	searchBarColumns: 5,
@@ -1161,13 +1168,12 @@ var userOptions = {};
 loadUserOptions().then( checkForOneClickEngines );
 
 function checkForOneClickEngines() {
-	
-	return false;
 
+	// not FF 63+
 	if ( !browser.search ) return;
 	
+	// don't add before nodeTree is populated
 	if ( userOptions.nodeTree === {} ) {
-		
 		console.log('empty nodeTree - aborting one-click check');
 		return;
 	}
@@ -1180,7 +1186,7 @@ function checkForOneClickEngines() {
 				let node = {
 					type: "oneClickSearchEngine",
 					title: engine.name,
-					icon: engine.favIconUrl,
+					icon: engine.favIconUrl || browser.runtime.getURL('icons/search.png'),
 					hidden: false,
 					id: gen()
 				}
@@ -1311,98 +1317,3 @@ if (browser.pageAction) {
 
 	});
 }
-
-function findNodes(tree, callback) {
-	
-	let results = [];
-	
-	function _traverse(node, parent) {
-		
-		if ( callback(node, parent) ) results.push(node);
-		
-		if (node && node.children) {
-			for (let child of node.children) {
-				_traverse(child, node);
-			}
-		}
-	}
-	
-	_traverse(tree, null);
-	 
-	return results;
-}
-
-/*
-// inject at tab creation
-(() => {
-
-	function handle(tabId, changeInfo) {
-		if (
-			! userOptions.quickMenu
-			|| changeInfo.status !== 'complete'
-		) return;
-		
-		browser.tabs.executeScript(tabId, {
-			code: '(typeof userOptions === "undefined");'
-		}).then( (result) => {
-			result = result.shift();
-			if (!result) {
-				console.log('quickmenu.js already added');
-				return;
-			}
-
-			browser.tabs.executeScript(tabId, {	
-				allFrames: true,
-				file: 'quickmenu.js'
-			}).then(() => {
-				console.log('Adding quickmenu.js');
-			});
-		});
-	}
-	
-	browser.tabs.onUpdated.addListener(handle);
-})();
-/*
-function handleRemoved(tabId, removeInfo) {
-	
- browser.tabs.get(tabId).then((tab) => {
-	 console.log(tab);
- });
-  console.log("Tab: " + tabId + " is closing");
-  console.log("Window ID: " + removeInfo.windowId);
-  console.log("Window is closing: " + removeInfo.isWindowClosing);  
-  console.log(removeInfo);
-}
-
-browser.tabs.onRemoved.addListener(handleRemoved);
-
-function handleCreated(tab) {
-  console.log(tab);
-}
-
-browser.tabs.onCreated.addListener(handleCreated);
-*/
-/*
-
-Maybe in FF 60+
-browser.contexMenus.onShown.addListener(async function(info, tab) {
-	console.log('onShown');
-	if (!info.selectionText) return;
-	console.log('has selected text');
-	browser.menus.remove("add_engine");
-	// Note: Not waiting for returned promise.
-	browser.menus.refresh();
-  
-  
-});
-
-/*
-console.log(encodeCharset("blahbla blah blah & blah", 'utf-8'));
-console.log(encodeCharset("ツ 日本語用コンテ blah blah", 'euc-jp'));
-console.log(encodeCharset("try this", 'windows-1251'));
-console.log(encodeCharset('一般来说，URL只能使用英文字母、阿拉伯数字和某些标点符号，不能使用其他文字和符号。比如，世界上有英文字母的网址"http://www.abc.com"，但是没有希腊字母的网址"http://www.aβγ.com"（读作阿尔法-贝塔-伽玛.com）。这是因为网络标准RFC 1738做了硬性规定', 'GB2312'));
-//'euc-jp' ядрами и графическое
-*/
-
-
-//browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", {"message": "hello"});
