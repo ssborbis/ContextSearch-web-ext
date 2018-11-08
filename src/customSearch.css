@@ -6,7 +6,6 @@ BODY {
 	margin:0;
 	background-color:rgba(0,0,0,.85);
 	background-color:rgba(20, 90, 140, .85);
-
 }
 #CS_customSearchDialog {
 	box-sizing: content-box;
@@ -36,7 +35,7 @@ INPUT[type='text'], TEXTAREA, SELECT {
 	resize: both;
 	font-size:11pt;
 	font-weight:normal;
-	border-radius:4px;
+	border-radius:6px;
 	border:2px solid #ececec;
 	padding:2px;
 	margin:4px;
@@ -98,7 +97,6 @@ SELECT {
 	margin-top:20px;
 	font-weight:300;
 	text-align:center;
-	
 }
 FORM {
 	transition: all .5s ease-out;
@@ -134,11 +132,10 @@ FORM {
 	height:24px;
 	margin:2px;
 	color:white;
-	font-weight:bold;
 	font-size:12pt;
+	font-weight:400;
 	margin-top:10px;
-	border:2px solid #e2e2e2;
-	border-radius:2px;
+	border-radius:6px;
 	padding:4px;
 	cursor:pointer;
 	vertical-align:middle;

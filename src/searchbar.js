@@ -352,12 +352,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		
 		div.style.width = 300 / columns + "px";
 
-	// addToHistory(sb.value);
-	
-	// if (userOptions.searchBarCloseAfterSearch)
-		// window.close();	
-
-	
 		div.onmouseenter = function() {
 			document.getElementById('searchEngineTitle').innerText = div.title;
 		}

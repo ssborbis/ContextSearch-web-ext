@@ -488,7 +488,7 @@
   },
   
   "NewEngineImported": {
-    "message": "A new search engine was automatically imported to ContextSearch"
+    "message": "Added $1 engine(s) to ContextSearch"
   },
   
   "InstallOfficialTooltip": {

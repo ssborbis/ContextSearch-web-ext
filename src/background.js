@@ -12,20 +12,20 @@ function notify(message, sender, sendResponse) {
 
 		case "saveUserOptions":
 			userOptions = message.userOptions;
-			browser.storage.local.set({"userOptions": message.userOptions});
+			return browser.storage.local.set({"userOptions": message.userOptions});
 			break;
 			
 		case "updateUserOptions":
-			getAllOpenTabs().then((tabs) => {
+			return getAllOpenTabs().then((tabs) => {
 				for (let tab of tabs) {
 					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch(function(error) {
 					  error.url = tab.url;
 					  console.log(error);
 					});	
 				}
+			}).then(() => {
+				buildContextMenu();
 			});
-			
-			buildContextMenu();
 			break;
 			
 		case "nativeAppRequest":
@@ -50,6 +50,8 @@ function notify(message, sender, sendResponse) {
 				
 				return result;
 
+			}, (e) => {
+				console.log(e);
 			});
 			
 			break;
@@ -62,7 +64,6 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
-
 			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
@@ -313,6 +314,14 @@ function notify(message, sender, sendResponse) {
 			input.select();
 
 			document.execCommand("copy");
+			break;
+			
+		case "hasBrowserSearch":
+			return Promise.resolve(typeof browser.search !== undefined);
+			break;
+			
+		case "checkForOneClickEngines":	
+			return checkForOneClickEngines();
 			break;
 
 		// case "openSidebar":
@@ -1169,16 +1178,17 @@ loadUserOptions().then( checkForOneClickEngines );
 function checkForOneClickEngines() {
 
 	// not FF 63+
-	if ( !browser.search ) return;
+	if ( !browser.search ) return Promise.resolve(-1);
 	
 	// don't add before nodeTree is populated
 	if ( userOptions.nodeTree === {} ) {
 		console.log('empty nodeTree - aborting one-click check');
-		return;
+		return Promise.resolve(-1);
 	}
 
-	browser.search.get().then( engines => {
+	return browser.search.get().then( engines => {
 
+		let newEngineCount = 0;
 		engines.forEach( engine => {
 			if ( findNodes(userOptions.nodeTree, node => node.title === engine.name && ( node.type === "searchEngine" || node.type === "oneClickSearchEngine") ).length === 0 ) {
 
@@ -1193,8 +1203,11 @@ function checkForOneClickEngines() {
 				console.log('adding One-Click engine ' + engine.name);
 				userOptions.nodeTree.children.push(node);
 				
+				newEngineCount++;
 			}
 		});
+		
+		return newEngineCount;
 	});
 }
 

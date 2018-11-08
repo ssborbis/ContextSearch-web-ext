@@ -242,7 +242,7 @@ function buildSearchEngineContainer() {
 						icon.src = browser.runtime.getURL("/icons/spinner.svg");
 						let newIcon = new Image();
 						newIcon.onload = function() {
-							icon.src = imageToBase64(this, 32) || browser.runtime.getURL("icons/search.png");
+							icon.src = imageToBase64(this, 32) || tempImgToBase64(se.title.charAt(0).toUpperCase());
 							saveForm();
 						}
 						newIcon.onerror = function() {	
@@ -529,49 +529,24 @@ function buildSearchEngineContainer() {
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
-	// clear any null nodes
-	findNodes(root, ( node, parent ) => {
+	setParents(root);
 
-		if ( !node ) {
-			console.log('found null node, removing');
-			parent.children.splice(parent.children.indexOf(node), 1);
-			return false;
-		}
+	// clear any dead nodes
+	repairNodeTree(root).then(() => {
+
+		rootElement.node = root;
+		
+		for (let child of root.children)
+			traverse(child, rootElement);
+		
+		table.appendChild(rootElement);
+		
+		console.log(root);
+		updateNodeList();
+		
+		document.getElementById('managerContainer').innerHTML = null;
+		document.getElementById('managerContainer').appendChild(table);
 	});
-
-	// append orphans
-	for (let se of userOptions.searchEngines) {
-
-		if (!se.id || findNodes(root, node => node.id === se.id).length === 0) {
-			
-			if (!se.id) {
-				console.log(se.title + ' has no id. Generating...');
-				se.id = gen();
-			}
-			
-			console.log(se.id + " is not in node tree. Appending ...");
-			root.children.push({
-				id: se.id,
-				type: "searchEngine",
-				hidden: true,
-				title: se.title
-			});
-		}
-	}
-
-	setParent(root);
-
-	rootElement.node = root;
-	
-	for (let child of root.children)
-		traverse(child, rootElement);
-	
-	table.appendChild(rootElement);
-	
-	console.log(root);
-	
-	document.getElementById('managerContainer').innerHTML = null;
-	document.getElementById('managerContainer').appendChild(table);
 
 	function dragover_position(el, ev) {
 		let rect = el.getBoundingClientRect();
@@ -692,22 +667,8 @@ function buildSearchEngineContainer() {
 			targetNode.children.unshift(slicedNode);
 
 			// append element to children (ul)
-			let ul = targetElement.querySelector('ul');
-			
-			// let currentHeight = window.dragRow.getBoundingClientRect().height + 'px';
-
-			// window.dragRow.style.maxHeight = currentHeight;
-			// window.dragRow.style.overflow = 'hidden';
-			// window.dragRow.style.transition = 'all .25s';
-			// void(window.dragRow.offsetHeight);
-			// window.dragRow.style.maxHeight = '0px';
-			
-			// setTimeout( () => {
-				ul.insertBefore(window.dragRow, ul.firstChild);
-				// void(window.dragRow.offsetHeight);
-				// window.dragRow.style.maxHeight = currentHeight;
-			// }, 250);
-
+			let ul = targetElement.querySelector('ul');			
+			ul.insertBefore(window.dragRow, ul.firstChild);
 		}
 	}
 	
@@ -802,7 +763,7 @@ function buildSearchEngineContainer() {
 						}
 					});
 
-					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+					removeNode(li.node, li.node.parent);
 
 					li.parentNode.removeChild(li);
 					
@@ -815,7 +776,7 @@ function buildSearchEngineContainer() {
 				item2.innerText = browser.i18n.getMessage('DeleteEngines', engineCount);//"Delete " + engineCount + " engines";
 				
 				item2.addEventListener('click', (_e) => {
-					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+					removeNode(li.node, li.node.parent);
 					li.parentNode.removeChild(li);
 					
 					engines.forEach( engine => {
@@ -866,7 +827,7 @@ function buildSearchEngineContainer() {
 						let index = userOptions.searchEngines.findIndex( se => se.id === li.node.id);					
 						if (index !== -1) userOptions.searchEngines.splice(index, 1);
 						
-						li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+						removeNode(li.node, li.node.parent);
 						li.parentNode.removeChild(li);
 
 						updateNodeList();
@@ -880,7 +841,7 @@ function buildSearchEngineContainer() {
 					
 				} else {
 				
-					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+					removeNode(li.node, li.node.parent);
 					li.parentNode.removeChild(li);
 					
 					updateNodeList();
@@ -889,7 +850,7 @@ function buildSearchEngineContainer() {
 
 
 			} else {
-				li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 1);
+				removeNode(li.node, li.node.parent);
 				li.parentNode.removeChild(li);
 				
 				updateNodeList();
@@ -1041,7 +1002,7 @@ function buildSearchEngineContainer() {
 
 		});
 		
-		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/copy.png'));	
+		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/clipboard.png'));	
 		copy.addEventListener('click', (e) => {
 			
 			let newNode;
@@ -1193,7 +1154,6 @@ function buildSearchEngineContainer() {
 	}
 	
 	function closeContextMenus() {
-		console.log('closing context menus');
 		for (let m of document.querySelectorAll('.contextMenu')) {
 			if (m && m.parentNode) m.parentNode.removeChild(m);
 		}

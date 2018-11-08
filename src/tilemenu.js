@@ -73,15 +73,15 @@ function makeQuickMenu(options) {
 		// ignore hotkeys when the search bar is being edited
 		if (document.activeElement === sb) return;
 
-		let se = userOptions.searchEngines.find(se => se.hotkey && se.hotkey === e.which);
-		
-		if (!se) return;
+		let hotkeyNodes = findNodes(userOptions.nodeTree, node => node.hotkey === e.which);
+
+		if (!hotkeyNodes.length) return;
 		
 		browser.runtime.sendMessage({
 			action: "quickMenuSearch", 
 			info: {
-				menuItemId: se.id,
-				selectionText: sb.value,//quickMenuObject.searchTerms,
+				menuItemId: (hotkeyNodes[0].type === 'oneClickSearchEngine') ? "__oneClickSearchEngine__" + hotkeyNodes[0].id : hotkeyNodes[0].id,
+				selectionText: sb.value,
 				openMethod: userOptions.quickMenuSearchHotkeys
 			}
 		});
@@ -97,6 +97,9 @@ function makeQuickMenu(options) {
 		) {
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 		}
+
+		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) 
+			window.close();
 
 	});
 	
@@ -166,14 +169,7 @@ function makeQuickMenu(options) {
 			
 			let divs = suggestions.getElementsByTagName('div');
 
-			let currentIndex = function() {
-
-				for ( let i=0;i<divs.length;i++ ) {
-					if ( divs[i].classList.contains( "selectedFocus" ) ) return i;
-				}
-				
-				return -1;
-			}();
+			let currentIndex = [].findIndex.call(divs, div => div.classList.contains( "selectedFocus" ));
 
 			if ( currentIndex !== -1 ) {
 				divs[currentIndex].classList.remove("selectedFocus");
@@ -279,13 +275,13 @@ function makeQuickMenu(options) {
 	}
 	
 	// prevent click events from propagating
-	for (let eventType of [/*'mousedown', */'mouseup', 'click', 'contextmenu']) {
+	[/*'mousedown', */'mouseup', 'click', 'contextmenu'].forEach( eventType => {
 		quickMenuElement.addEventListener(eventType, (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
 		});
-	}
+	});
 	
 	// generic search engine tile
 	function buildSearchIcon(icon_url, title) {
@@ -361,6 +357,9 @@ function makeQuickMenu(options) {
 			) {
 				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
 			}
+			
+			if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) 
+				window.close();
 
 		});
 		
@@ -557,8 +556,7 @@ function makeQuickMenu(options) {
 				moreTile.parentNode.removeChild(moreTile);
 				
 				let qme = document.getElementById('quickMenuElement');
-				
-				//for (let div of qme.querySelectorAll('[data-hidden="true"]')) {
+
 				qme.querySelectorAll('[data-hidden="true"]').forEach( div => {
 					div.style.display = null;
 					delete div.dataset.hidden;
@@ -628,7 +626,7 @@ function makeQuickMenu(options) {
 		}
 		
 		// shift tiles to match quickmenu and searchbar
-		if ( type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns && userOptions.quickMenuToolsPosition === "top" && !singleColumn && !options.parentId ) {
+		if ( type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns && userOptions.quickMenuToolsPosition === "top" && !singleColumn && !options.parentId && toolsArray.length !== columns ) {
 
 			userOptions.quickMenuTools.forEach( tool => {
 				if ( tool.disabled ) return;
@@ -819,16 +817,12 @@ function makeQuickMenu(options) {
 			delete sb.selectedIndex;
 			tileArray.push(tile);
 		}
-		
-		let overLimit = false;
-		
-		for (let i=0;i<nodes.length;i++) {
+
+		nodes.forEach( node => {
 			
 			let tile;
 
-			let node = nodes[i];
-			
-			if (node.hidden) continue;
+			if (node.hidden) return;
 
 			if (node.type === "searchEngine") {
 
@@ -836,7 +830,7 @@ function makeQuickMenu(options) {
 				
 				if (!se) {
 					console.log('no search engine found for ' + node.id);
-					continue;
+					return;
 				}
 
 				tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
@@ -846,7 +840,7 @@ function makeQuickMenu(options) {
 						action: "quickMenuSearch", 
 						info: {
 							menuItemId: node.id,
-							selectionText: sb.value,//quickMenuObject.searchTerms,
+							selectionText: sb.value,
 							openMethod: getOpenMethod(e)
 						}
 					});
@@ -985,10 +979,8 @@ function makeQuickMenu(options) {
 				tileArray.push(tile);
 
 			}
-			
-			if (overLimit) tile.style.display = 'none';
 
-		}
+		});
 		
 		// do not display tools if in a subfolder
 		let toolsArray = rootNode.parent ? [] : createToolsArray();
@@ -998,7 +990,7 @@ function makeQuickMenu(options) {
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
-	setParent(root);
+	setParents(root);
 
 	return Promise.resolve(quickMenuElementFromNodeTree(root));
 	

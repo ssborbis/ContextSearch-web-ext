@@ -575,34 +575,73 @@ function listenForNewSearchEngines() {
 	}, {once: true});
 }
 
+// setTimeout( () => {
+	// showMenu('CS_notifyAutomaticUpdated');
+// }, 1000);
+
 function listenForFocusAndPromptToImport() {
 
-	if (userOptions.reloadMethod === 'automatic') {
-		listenForNewSearchEngines();
-		return;
-	}
+	// if (userOptions.reloadMethod === 'automatic') {
+		// listenForNewSearchEngines();
+		// return;
+	// }
 	
-	let dialog = document.getElementById('CS_postSearchEngineInstall');
-	
-	dialog.querySelector('[name="import"]').onclick = function() {
-		browser.runtime.sendMessage({action: "openOptions", hashurl:"#quickload"});
-		closeCustomSearchIframe();	
-	}
-	
-	window.addEventListener('focus', () => {
+	browser.runtime.sendMessage({action: "hasBrowserSearch"}).then( result => {
 		
-		dialog.querySelector('[name="moreInfo"]').onclick = function() {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=help#help_importing"});
+		console.log(result);
+
+		if (result) {
+
+			window.addEventListener('focus', () => {
+				
+				console.log('focused');
+				
+				// look for new one-click engines
+				browser.runtime.sendMessage({action: "checkForOneClickEngines"}).then( newEngineCount => {
+					
+					console.log('found ' + newEngineCount + ' new engines');
+					
+					// do nothing if no engines added
+					if ( !newEngineCount ) return;
+					
+					// show auto notification
+					showMenu('CS_notifyAutomaticUpdated');
+
+					let text = document.querySelector('[data-i18n="NewEngineImported"]');
+					
+					text.innerText = browser.i18n.getMessage("NewEngineImported", newEngineCount);
+						
+					// close iframe after x milliseconds
+					setTimeout(closeCustomSearchIframe, 2000);
+				});
+
+			}, {once: true});
+			
+			return;
+		} else {
+			let dialog = document.getElementById('CS_postSearchEngineInstall');
+	
+			dialog.querySelector('[name="import"]').onclick = function() {
+				browser.runtime.sendMessage({action: "openOptions", hashurl:"#quickload"});
+				closeCustomSearchIframe();	
+			}
+			
+			window.addEventListener('focus', () => {
+				
+				dialog.querySelector('[name="moreInfo"]').onclick = function() {
+					browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=help#help_importing"});
+				}
+				
+				showMenu(dialog);
+				
+				dialog.querySelector('[name="cancel"]').onclick = function() {
+					showMenu('CS_customSearchDialogOptions');
+				}
+				
+			}, {once: true});
 		}
-		
-		showMenu(dialog);
-		
-		dialog.querySelector('[name="cancel"]').onclick = function() {
-			showMenu('CS_customSearchDialogOptions');
-		}
-		
-	}, {once: true});
-	
+	});
+
 }
 
 // close iframe when clicking anywhere in the window

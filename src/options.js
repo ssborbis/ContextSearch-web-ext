@@ -214,7 +214,6 @@ function saveOptions(e) {
 	}
 	
 	function onError(error) {
-	//	console.log(error);
 		console.log(`Error: ${error}`);
 	}
 	
@@ -609,7 +608,7 @@ function buildToolIcons() {
 	function dragend_handler(ev) {
 		ev.target.style.border = '';
 		saveOptions();
-		ev.dataTransfer.clearData();
+	//	ev.dataTransfer.clearData();
 	}
 	
 	let toolIcons = [
@@ -620,16 +619,11 @@ function buildToolIcons() {
 		{name: 'lock', src: "icons/lock.png", title: browser.i18n.getMessage('tools_Lock'), index: Number.MAX_VALUE, disabled: true}
 	];
 	
-	for (let t=0;t<toolIcons.length;t++) {
-		for (let i=0;i<userOptions.quickMenuTools.length;i++) {
-			if (toolIcons[t].name === userOptions.quickMenuTools[i].name) {
-				toolIcons[t].index = i;
-				toolIcons[t].disabled = userOptions.quickMenuTools[i].disabled;
-				break;
-			}
-		}
-	}
-	
+	toolIcons.forEach( toolIcon => {
+		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );
+		toolIcon.disabled = userOptions.quickMenuTools[toolIcon.index].disabled;
+	});
+
 	toolIcons = toolIcons.sort(function(a, b) {
 		return (a.index < b.index) ? -1 : 1;
 	});

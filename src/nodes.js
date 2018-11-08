@@ -18,33 +18,92 @@ function findNodes(tree, callback) {
 	return results;
 }
 
-var setParent = function(o){
+function setParents(tree) {
 	
-	if(o.children != undefined){
-		
-		for(n in o.children) {
+	findNodes( tree, (node, parent) => {
+	
+		node.toJSON = function() {
+			let o = {};
+			
+			// skip parent property
+			Object.keys(this).forEach( key => {
+				if (key !== "parent") o[key] = this[key];
+			}, this);
 
-			// build the JSON.stringify function, omitting parent
-			o.children[n].toJSON = function() {
-				let rObj = {};
-				
-				// skip parent property
-				Object.keys(this).forEach(function(key,index) {
-					if (key !== "parent") rObj[key] = this[key];
-				}, this);
-
-				return rObj;
-		  }
-		  o.children[n].parent = o;
-		  setParent(o.children[n]);
+			return o;
 		}
-	}
+		node.parent = parent;
+	  
+	});
 }
 
 function removeNodesById(tree, id) {
 	
 	findNodes( tree, (node, parent) => {
-		if (node.id == id) parent.children.splice(parent.children.indexOf(node), 1);
+		if (node.id == id) removeNode(node, parent);
 	});
+}
 
+function removeNode(node, parent) {
+	parent.children.splice(parent.children.indexOf(node), 1);
+}
+
+function repairNodeTree(tree) {
+	
+	// append orphans
+	for (let se of userOptions.searchEngines) {
+
+		if (!se.id || findNodes(tree, node => node.id === se.id).length === 0) {
+			
+			if (!se.id) {
+				console.log(se.title + ' has no id. Generating...');
+				se.id = gen();
+			}
+			
+			console.log(se.id + " is not in node tree. Appending ...");
+			tree.children.push({
+				id: se.id,
+				type: "searchEngine",
+				hidden: true,
+				title: se.title
+			});
+		}
+	}
+
+	let nodesToRemove = findNodes(tree, (node, parent) => {
+		
+		if ( !node ) {
+			node.parent = parent;
+			console.log('removing null node');
+			return true;
+		}
+
+		if ( node.type === 'searchEngine' && !userOptions.searchEngines.find( se => se.id === node.id ) ) {
+			node.parent = parent;
+			console.log('removing dead search engine node ' + node.title);
+			return true;	
+		}
+	});
+	
+	nodesToRemove.forEach( node => removeNode(node, node.parent) );
+	
+	if ( browser.search) {
+		
+		return browser.search.get().then( ocses => {
+			
+			let nodesToRemove = findNodes(tree, (node, parent) => {
+				
+				if ( node.type === 'oneClickSearchEngine' && !ocses.find( ocse => ocse.name === node.title ) ) {
+					node.parent = parent;
+					console.log('removing dead one-click search engine node ' + node.title);
+					return true;
+				}
+			});
+			
+			nodesToRemove.forEach( node => removeNode(node, node.parent) );
+			
+		});
+	} else {
+		return Promise.resolve();
+	}
 }

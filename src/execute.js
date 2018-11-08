@@ -13,12 +13,12 @@ function post(path, params) {
 	form.setAttribute("method", "POST");
 	form.setAttribute("action", replaceOpenSearchParams(url.href, _SEARCHTERMS));
 
-	for (var i=0;i<params.length;i++) {
+	for (let param of params) {
 		var hiddenField = document.createElement("input");
 		
 		hiddenField.setAttribute("type", "hidden");
-		hiddenField.setAttribute("name", params[i].name);
-		hiddenField.setAttribute("value", replaceOpenSearchParams(params[i].value, _SEARCHTERMS));
+		hiddenField.setAttribute("name", param.name);
+		hiddenField.setAttribute("value", replaceOpenSearchParams(param.value, _SEARCHTERMS));
 
 		form.appendChild(hiddenField);
 	}
