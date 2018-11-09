@@ -400,6 +400,10 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 			suggest.style.width = "100%";
 		}
 
-	});	
-
+	});
+	
+	let rect = qm.getBoundingClientRect();
+	
+	// send size to parent window for sidebar widget
+	window.parent.postMessage({size: {width: rect.width, height: rect.height + 100}}, "*");
 });

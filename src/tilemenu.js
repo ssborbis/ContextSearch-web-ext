@@ -706,20 +706,15 @@ function makeQuickMenu(options) {
 			div.setAttribute('draggable', true);
 
 			div.addEventListener('dragstart', (e) => {
-			//	console.log('dragstart');
 				e.dataTransfer.setData("text", "");
 				div.id = 'dragDiv';
-				//div.style.maxWidth = '0px';
 			});
 			
 			div.addEventListener('dragover', (e) => {
 				e.preventDefault();
-				// let blankDiv = document.createElement(
-				// div.parentNode
 			});
 			div.addEventListener('dragend', (e) => {
-			//	console.log('dragend');
-				
+
 				quickMenuElement.querySelectorAll('br').forEach( br => {
 					br.parentNode.removeChild(br);
 				});
@@ -733,7 +728,6 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('drop', (e) => {
-			//	console.log('dropping');
 				let dragDiv = document.getElementById('dragDiv');
 
 				let targetDiv = (() => {
@@ -746,14 +740,18 @@ function makeQuickMenu(options) {
 
 				if (!targetDiv) return;
 				if (!dragDiv.node) return;
+				
+				let rect = targetDiv.getBoundingClientRect();
+				
+				let side = ( e.x - rect.x < .5 * rect.width ) ? "left" : "right";
 
-				dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
+				if ( side === "left" )
+					dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
+				else 
+					dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
 
 				dragDiv.id = null;
-				
-				// console.log(dragDiv.node);
-				// console.log(targetDiv.node);
-				
+
 				let dragNode = dragDiv.node;
 				let targetNode = targetDiv.node;
 
@@ -763,8 +761,13 @@ function makeQuickMenu(options) {
 				// set new parent
 				slicedNode.parent = targetNode.parent;
 
-				// add to children above target
-				targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
+				if ( side === "left" ) {
+					// add to children before target
+					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
+				} else {
+					// add to children after target
+					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
+				}
 				
 				// save the tree
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
