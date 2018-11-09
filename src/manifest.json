@@ -71,7 +71,8 @@
 	
 	"web_accessible_resources": [
 		"quickmenu.html",
-		"customSearch.html"
+		"customSearch.html",
+		"searchbar.html"
 	],
 
 	"browser_action": {

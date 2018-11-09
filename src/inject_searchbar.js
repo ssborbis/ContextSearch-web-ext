@@ -9,16 +9,17 @@ if ( window != top ) {
 	let sbTab = document.createElement('div');
 	sbTab.id = 'CS_sbTab';
 	
-	// let img = document.createElement('img');
-	// img.src = browser.runtime.getURL('icons/icon48.png');
-	// img.style = 'height:16px;vertical-align:middle';
-	// sbTab.appendChild(img);
+	let img = document.createElement('img');
+	img.src = browser.runtime.getURL('icons/crossmark.png');
+
+	sbTab.appendChild(img);
 
 	sbTab.addEventListener('click', (e) => {
 		
 		if ( document.getElementById('CS_searchBarIframe') ) {
 			sbContainer.removeChild(document.getElementById('CS_searchBarIframe'));
 			sbTab.style.opacity = null;
+			img.style.display = null;
 			return;
 		}
 		
@@ -29,6 +30,7 @@ if ( window != top ) {
 
 		sbContainer.appendChild(iframe);
 		sbTab.style.opacity = 1;
+		img.style.display = 'inline-block';
 
 	});
 

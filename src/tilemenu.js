@@ -703,6 +703,33 @@ function makeQuickMenu(options) {
 		/* dnd */
 		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"])');
 		tileDivs.forEach( div => {
+			
+			function getSide(t, e) {
+				let rect = t.getBoundingClientRect();
+				
+				if ( t.node.type === 'folder' ) {
+					if ( singleColumn ) {
+						if ( e.y - rect.y < .33 * rect.height ) return "before";
+						else if ( e.y - rect.y > .66 * rect.height ) return "after";
+						else return "middle";
+					} else {
+						if ( e.x - rect.x < .33 * rect.width ) return "before";
+						else if ( e.x - rect.x > .66 * rect.width ) return "after";
+						else return "middle";
+					}
+				} else {
+					return ( e.x - rect.x < .5 * rect.width ) ? "before" : "after";
+				}
+			}
+			
+			function getTargetElement(el) {
+				while ( el.parentNode ) {
+					if ( el.node ) return el;
+					el = el.parentNode;
+				}
+				return null;
+			}
+			
 			div.setAttribute('draggable', true);
 
 			div.addEventListener('dragstart', (e) => {
@@ -712,6 +739,20 @@ function makeQuickMenu(options) {
 			
 			div.addEventListener('dragover', (e) => {
 				e.preventDefault();
+				let targetDiv = getTargetElement(e.target);
+				let side = getSide(targetDiv, e);
+
+				targetDiv.style.backgroundColor = null;
+				
+				if ( side === 'middle')
+					targetDiv.style.backgroundColor = 'lightblue';					
+			});
+			div.addEventListener('dragleave', (e) => {
+				e.preventDefault();
+				let targetDiv = getTargetElement(e.target);
+				let side = getSide(targetDiv, e);
+
+				targetDiv.style.backgroundColor = null;
 			});
 			div.addEventListener('dragend', (e) => {
 
@@ -730,25 +771,18 @@ function makeQuickMenu(options) {
 			div.addEventListener('drop', (e) => {
 				let dragDiv = document.getElementById('dragDiv');
 
-				let targetDiv = (() => {
-					let newTarget = e.target;
-					while ( newTarget.parentNode ) {
-						if ( newTarget.node ) return newTarget;
-						newTarget = newTarget.parentNode;
-					}
-				})();
+				let targetDiv = getTargetElement(e.target);
 
 				if (!targetDiv) return;
 				if (!dragDiv.node) return;
 				
-				let rect = targetDiv.getBoundingClientRect();
-				
-				let side = ( e.x - rect.x < .5 * rect.width ) ? "left" : "right";
+				let side = getSide(targetDiv, e);
 
-				if ( side === "left" )
+				if ( side === "before" )
 					dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
-				else 
+				else if ( side === "after" )
 					dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
+				else dragDiv.parentNode.removeChild(dragDiv);
 
 				dragDiv.id = null;
 
@@ -761,12 +795,16 @@ function makeQuickMenu(options) {
 				// set new parent
 				slicedNode.parent = targetNode.parent;
 
-				if ( side === "left" ) {
+				if ( side === "before" ) {
 					// add to children before target
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
-				} else {
+				} else if ( side === "after" ) {
 					// add to children after target
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
+				} else {
+					slicedNode.parent = targetNode;
+					// add to target children
+					targetNode.children.push(slicedNode);
 				}
 				
 				// save the tree
