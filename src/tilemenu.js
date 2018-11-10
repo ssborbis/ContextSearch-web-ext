@@ -28,12 +28,23 @@ function makeQuickMenu(options) {
 	sb.onclick = function(e) {
 		e.stopPropagation();
 	}
+	sb.addEventListener('dragenter', (e) => {
+		sb.select();
+		sb.hoverTimer = setTimeout(() => {
+			sb.selectionStart = sb.selectionEnd = 0;
+			sb.hoverTimer = null;
+		},500);
+	});
+	sb.addEventListener('drop', (e) => {
+		if (sb.hoverTimer) {
+			sb.value = "";	
+			clearTimeout(sb.hoverTimer);
+		}
+	});
 	sb.onmouseup = function(e) {
 		e.stopPropagation();
 	}
-	
-//	sb.tabIndex = 0;
-	
+
 	// enter key invokes search
 	document.addEventListener('keydown', (e) => {
 		if (e.keyCode === 13) {
@@ -769,12 +780,22 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('drop', (e) => {
+				
+				// look for text dnd
+				if ( e.dataTransfer.getData("text") ) {
+					e.preventDefault();
+					sb.value = e.dataTransfer.getData("text");
+					div.parentNode.lastMouseDownTile = div;
+					div.dispatchEvent(new MouseEvent('mouseup'));
+					return;
+				}
+
 				let dragDiv = document.getElementById('dragDiv');
 
 				let targetDiv = getTargetElement(e.target);
 
 				if (!targetDiv) return;
-				if (!dragDiv.node) return;
+				if (!dragDiv || !dragDiv.node) return;
 				
 				let side = getSide(targetDiv, e);
 
