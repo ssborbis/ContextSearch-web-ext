@@ -33,7 +33,7 @@ function makeQuickMenu(options) {
 		sb.hoverTimer = setTimeout(() => {
 			sb.selectionStart = sb.selectionEnd = 0;
 			sb.hoverTimer = null;
-		},500);
+		},1000);
 	});
 	sb.addEventListener('drop', (e) => {
 		if (sb.hoverTimer) {
@@ -155,7 +155,7 @@ function makeQuickMenu(options) {
 			
 			let selectedDiv = ( direction === 1 ) ? divs[0] : divs[divs.length - 1];
 
-			selectedDiv.className = 'selectedFocus';
+			selectedDiv.classList.add('selectedFocus');
 			sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll('div'), selectedDiv);
 		}
 	});

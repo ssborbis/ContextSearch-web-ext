@@ -1,6 +1,9 @@
 if ( window != top ) {
 	console.log('not parent window');
 } else {
+	
+	// let openingTab = document.createElement('div');
+	// openingTab.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
 
 	let sbContainer = document.createElement('div');
 	sbContainer.id = 'CS_sbContainer';
@@ -15,16 +18,19 @@ if ( window != top ) {
 	sbTab.appendChild(img);
 
 	sbTab.addEventListener('click', (e) => {
-		
-		if ( document.getElementById('CS_searchBarIframe') ) {
-			sbContainer.removeChild(document.getElementById('CS_searchBarIframe'));
+		let iframe = document.getElementById('CS_searchBarIframe');
+		if ( iframe ) {
+			iframe.addEventListener('transitionend', (e) => {
+				iframe.parentNode.removeChild(iframe);
+			});
+			iframe.style.maxWidth = '0px';
 			sbTab.style.opacity = null;
 			img.style.display = null;
 			return;
 		}
 		
-		let iframe = document.createElement('iframe');
-		iframe.style = 'display:inline-block;border:1px solid black;border-right:none';
+		iframe = document.createElement('iframe');
+		iframe.style = 'display:inline-block;border:1px solid black;border-right:none;max-width:0px;overflow:hidden;transition:max-width .1s';
 		iframe.id = 'CS_searchBarIframe';
 		iframe.src = browser.runtime.getURL('searchbar.html');
 
@@ -34,10 +40,24 @@ if ( window != top ) {
 
 	});
 
+	// open sidebar if dragging text over
 	sbTab.addEventListener('dragover', (e) => {
 		if ( document.getElementById('CS_searchBarIframe') ) return;
 		sbTab.dispatchEvent(new MouseEvent('click'));
 	});
+	
+	sbTab.addEventListener('mousedown', (e) => {	
+		sbTab.startingY = e.y;
+	//	document.addEventListener('mousemove', tabMoveListener);
+	});
+	
+	document.addEventListener('mouseup', (e) => {
+		document.removeEventListener('mousemove', tabMoveListener);
+	});
+	
+	function tabMoveListener(e) {
+		sbTab.style.top = e.y - sbTab.startingY + "px";
+	}
 
 	sbContainer.appendChild(sbTab);
 	document.body.appendChild(sbContainer);
@@ -54,8 +74,29 @@ if ( window != top ) {
 
 		if ( !iframe ) return;
 		
-		iframe.style.height = e.data.size.height + "px";
+		iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
 		iframe.style.width = e.data.size.width + "px";
+		iframe.style.maxWidth = iframe.style.width;
 
+	});
+	
+	// listen for quickMenuHotkey
+	window.addEventListener('keydown', (e) => {
+		if (
+			!userOptions.quickMenuOnHotkey
+			|| e.repeat
+		) return;
+		
+		for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
+			let key = userOptions.quickMenuHotkey[i];
+			if (key === 16 && !e.shiftKey) return;
+			if (key === 17 && !e.ctrlKey) return;
+			if (key === 18 && !e.altKey) return;
+			if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+		}
+
+		e.preventDefault();
+		sbTab.click();
+		
 	});
 }

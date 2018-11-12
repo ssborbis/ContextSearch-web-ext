@@ -1,4 +1,6 @@
-
+#CS_sbContainer * {
+	box-sizing:content-box !important;
+}
 #CS_sbContainer {
 	position:fixed;
 	right:0;
@@ -6,7 +8,7 @@
 	z-index:2147483647;
 	overflow:hidden;
 	transform-origin:top right;
-	box-sizing:initial;
+	white-space: nowrap;
 }
 #CS_sbTab {
 	min-width:16px;
@@ -21,7 +23,6 @@
 	position:relative;
 	right:-1px;
 	opacity:.3;
-	box-sizing:initial;
 }
 #CS_sbTab:hover {
 	opacity:1;
@@ -33,7 +34,6 @@
 	display:none;
 	padding:14px;
 	opacity:.4
-	box-sizing:initial;
 }
 #CS_sbTab IMG:hover {
 	opacity:1;

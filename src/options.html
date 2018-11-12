@@ -61,7 +61,12 @@
 				border-top: 3px solid #F3F3F3; /*#E9ECEF;*/
 				margin: 1em 0;
 				padding: 0; 
-			}			
+			}	
+			.header_hr {
+				width:calc(100% + 40px);
+				margin-left:-20px;
+				border-top:4px solid #6ec179;
+			}
 			.blobContainerHeader {
 				font-size:16pt;
 				font-weight:bold;
@@ -893,7 +898,7 @@
 		</div>
 		<div class='tabcontent' id='optionsTab'>
 			<div>
-				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
+				<hr class="header_hr" />
 				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='ContextMenu'><img alt='' src='icons/context_menu.png' />Context Menu</div>
 				<div class='optionDiv' style='display:inline-block'>
 					<label class="switch">
@@ -903,8 +908,7 @@
 				</div>
 
 				<br />
-				
-				
+
 				<div style='display:none'>
 				<br />
 				
@@ -954,7 +958,7 @@
 					Shortcut Key <span class='info' data-msg='Shortcut key to expand the "Search With..." entry in the context menu' data-i18n_tooltip='ContextMenuHotKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_contextMenuKey' class='keyboardButton' style="min-width: auto; padding: 3px 10px;">&nbsp;</button>
 				</span>
 				</p>
-				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179;' />
+				<hr class="header_hr" />
 				
 				<div id='quickMenuOptions'>
 				<div class='blobContainerHeader' style='display:inline-block;padding:0;border:0;width:250px' data-i18n='QuickMenu'><img alt='' src='icons/quick_menu.png' />Quick Menu</div>
@@ -1037,28 +1041,6 @@
 							<span class="checkmark checkmark2"></span>
 							<span class='info' data-msg='Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search' data-i18n_tooltip='SearchOnMouseup'>?</span>
 						</label>
-					</td>
-				</tr>
-				<tr>
-					<td>
-					
-						<label class="container" style='display:inline-block;margin-left:0' data-i18n='Hotkey'> 
-							<img src='/icons/keyboard.png' style='height:30px;vertical-align:middle;margin-right:10px' />Hotkey
-							<input type='checkbox' id='cb_quickMenuOnHotkey' />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<br />
-						<span style='font-size:9pt' data-i18n='HotkeyTooltip'>Open the Quick Menu any time using a hotkey</span>
-					</td>
-					<td>
-						<div id='d_hotkey'></div>
-					<!--	<br />
-						<label class="container" data-i18n='OpenToolbarSearch'>Open Toolbar
-							<span class='info' data-msg='Hotkey opens the toolbar search instead of the Quick Menu' data-i18n_tooltip='OpenToolbarSearch'>?</span>
-							<input type='checkbox' id='cb_quickMenuHotkeyOpenInToolbar' />
-							<span class="checkmark checkmark2"></span>
-						</label>
-					-->
 					</td>
 				</tr>
 				</table>
@@ -1370,7 +1352,7 @@
 					<span class="checkmark checkmark2"></span>
 				</label>
 
-				<hr style='width:calc(100% + 40px);margin-left:-20px;border-top:4px solid #6ec179' />
+				<hr class="header_hr" />
 				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='ToolbarSearch'><img alt='' src='icons/icon48.png' style='filter:grayscale(100%);'/>Toolbar Search</div>
 	
 				<br />
@@ -1410,6 +1392,25 @@
 				<span class='info' data-msg='Clear search history from the search toolbar' data-i18n_tooltip='ClearSearchHistory'>?</span>
 				</div>
 
+				<hr class="header_hr" />
+				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='SidebarSearch'><img alt='' src='icons/icon48.png' style='filter:grayscale(100%);'/>Sidebar Search</div>
+				
+				<table class="openingTable">
+				<tr>
+					<td>
+						<label class="container" style='display:inline-block;margin-left:0' data-i18n='Hotkey'> 
+							<img src='/icons/keyboard.png' style='height:30px;vertical-align:middle;margin-right:10px' />Hotkey
+							<input type='checkbox' id='cb_quickMenuOnHotkey' />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<br />
+						<span style='font-size:9pt' data-i18n='HotkeyTooltip'>Open the Quick Menu any time using a hotkey</span>
+					</td>
+					<td>
+						<div id='d_hotkey'></div>
+					</td>
+				</tr>
+				</table>
 			</div>
 			</div>
 		</div>

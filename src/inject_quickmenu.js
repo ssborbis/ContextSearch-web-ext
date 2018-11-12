@@ -460,25 +460,25 @@ window.addEventListener('keydown', (e) => {
 	
 });
 
-// listen for quickMenuHotkey
-window.addEventListener('keydown', (e) => {
-	if (
-		!userOptions.quickMenuOnHotkey
-		|| e.repeat
-	) return;
+// // listen for quickMenuHotkey
+// window.addEventListener('keydown', (e) => {
+	// if (
+		// !userOptions.quickMenuOnHotkey
+		// || e.repeat
+	// ) return;
 	
-	for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
-		let key = userOptions.quickMenuHotkey[i];
-		if (key === 16 && !e.shiftKey) return;
-		if (key === 17 && !e.ctrlKey) return;
-		if (key === 18 && !e.altKey) return;
-		if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
-	}
+	// for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
+		// let key = userOptions.quickMenuHotkey[i];
+		// if (key === 16 && !e.shiftKey) return;
+		// if (key === 17 && !e.ctrlKey) return;
+		// if (key === 18 && !e.altKey) return;
+		// if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+	// }
 
-	e.preventDefault();
-	openQuickMenu(e);
+	// e.preventDefault();
+	// openQuickMenu(e);
 	
-});
+// });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 

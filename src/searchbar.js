@@ -15,6 +15,8 @@ const displayCount = 10; // number of total suggestions to display (browser_acti
 	// }
 // });
 
+let sb_width = 700;
+
 var quickMenuObject = { 
 	delay: 250, // how long to hold right-click before quick menu events in ms
 	keyDownTimer: 0,
@@ -150,8 +152,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		}, 50);
 
 	});
-	
-	let sb_width = 300;
+
 	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
 	let div_width = sb_width / columns;
 	
@@ -167,8 +168,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 				suggest.style.maxHeight = null;
 				return;
 			}
-			
-			console.log('fetching suggestions');
+
 			suggest.innerHTML = null;
 			
 			let history = [];
@@ -239,7 +239,12 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					suggest.appendChild(div);
 				}
 				
+				suggest.style.width = sb.parentNode.getBoundingClientRect().width + "px";
+
+				suggest.addEventListener('transitionend', postQuickMenuSize);
+				
 				suggest.style.maxHeight = Math.min(100, suggestions.length * 20) + "px";
+
 			}
 			
 			if (userOptions.searchBarSuggestions) {
@@ -350,7 +355,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		if ( (i+1) % columns === 0 )
 			qm.insertBefore(document.createElement('br'), div.nextSibling);
 		
-		div.style.width = 300 / columns + "px";
+	//	div.style.width = sb_width / columns + "px";
 
 		div.onmouseenter = function() {
 			document.getElementById('searchEngineTitle').innerText = div.title;
@@ -397,13 +402,18 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 			qm.style.height = window.innerHeight - 100 /* height of search bar + options button + title bar */ + "px";
 			qm.style.overflowY = 'scroll';
 			
-			suggest.style.width = "100%";
+			postQuickMenuSize();
 		}
-
 	});
-	
-	let rect = qm.getBoundingClientRect();
-	
-	// send size to parent window for sidebar widget
-	window.parent.postMessage({size: {width: rect.width, height: rect.height + 100}}, "*");
+
+	postQuickMenuSize();
+
 });
+
+function postQuickMenuSize() {
+	let rect = document.body.getBoundingClientRect();
+	let rect_qm = document.getElementById('quickMenuElement').getBoundingClientRect();
+
+	// send size to parent window for sidebar widget
+	window.parent.postMessage({size: {width: rect_qm.width, height: rect.height}}, "*");
+}
