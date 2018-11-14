@@ -955,7 +955,7 @@
 				<hr />
 				<p>
 				<span data-i18n='ContextMenuHotKey'>
-					Shortcut Key <span class='info' data-msg='Shortcut key to expand the "Search With..." entry in the context menu' data-i18n_tooltip='ContextMenuHotKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_contextMenuKey' class='keyboardButton' style="min-width: auto; padding: 3px 10px;">&nbsp;</button>
+					Shortcut Key <span class='info' data-msg='Shortcut key to expand the "Search With..." entry in the context menu' data-i18n_tooltip='ContextMenuHotKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_contextMenuKey' class='keyboardButton' style="min-width:auto;min-height:1em;padding: 3px 10px;">&nbsp;</button>
 				</span>
 				</p>
 				<hr class="header_hr" />
@@ -1393,8 +1393,25 @@
 				</div>
 
 				<hr class="header_hr" />
-				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='SidebarSearch'><img alt='' src='icons/icon48.png' style='filter:grayscale(100%);'/>Sidebar Search</div>
+				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='Sidebar'><img alt='' src='icons/icon48.png' style='filter:grayscale(100%);'/>Sidebar</div>
+				<div style="display:none"></div>
 				
+				<div>	
+					<span data-i18n='Position'>Position</span><span class='info' data-msg='Choose where to display the side bar' data-i18n_tooltip='SideBarPosition'>?</span>
+					
+					<select class='inputNice' style='width:auto;margin-left:30px;font-size:10pt;padding-right:10px' id='s_sideBarWidgetPosition'>
+						<option data-i18n='left' value='left'>Left</option>
+						<option data-i18n='right' value='right'>Right</option>
+					</select>
+					
+					<label class="container" style="display:inline-block;margin-left:32px" data-i18n='SidebarWidgetEnable'>Show Widget
+						<span class='info' data-msg='Overlay an icon for opening the sidebar' data-i18n_tooltip='SidebarWidgetEnable'>?</span>
+							<input type='checkbox' id='cb_sideBarWidgetEnable' />
+							<span class="checkmark checkmark2"></span>
+					</label>
+				</div>
+
+				<hr />
 				<table class="openingTable">
 				<tr>
 					<td>
@@ -1404,7 +1421,7 @@
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<br />
-						<span style='font-size:9pt' data-i18n='HotkeyTooltip'>Open the Quick Menu any time using a hotkey</span>
+						<span style='font-size:9pt' data-i18n='SideBarHotkeyTooltip'>Open the Sidebar any time using a hotkey</span>
 					</td>
 					<td>
 						<div id='d_hotkey'></div>
@@ -1516,7 +1533,7 @@
 				<div style='white-space:nowrap;width:100%'  data-i18n='ProfilePath'>
 				Profile path<br />
 				<textarea class='inputNice code' id='i_searchJsonPath' style='width:calc(100% - 16px);padding:4px;margin:4px 0px' placeholder="example: C:/Users/<username>/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default"></textarea></div>
-				<div id='div_searchJsonPathResponse' style='display:inline-block'></div><button id='b_checkSearchJsonPath' style='float:right;'  data-i18n='Verify'>Verify and Import</button>
+				<div id='div_searchJsonPathResponse' style='display:inline-block'></div><button id='b_checkSearchJsonPath' style='float:right;' data-i18n='Verify'>Verify and Import</button>
 
 </native>
 			</div>

@@ -1168,7 +1168,16 @@ const defaultUserOptions = {
 	searchBarHistory: [],
 	searchBarUseOldStyle: false,
 	searchBarColumns: 5,
-	searchBarCloseAfterSearch: true
+	searchBarCloseAfterSearch: true,
+	sideBar: {
+		enabled: true,
+		hotkey: [],
+		widget: {
+			enabled: false,
+			position: "right",
+			offset: 100
+		}	
+	}
 };
 
 var userOptions = {};
@@ -1248,13 +1257,13 @@ browser.runtime.onInstalled.addListener((details) => {
 		clearInterval(loadUserOptionsInterval);
 		
 		// Show install page
-		if ( 
-			details.reason === 'install' 
-		) {
-			browser.tabs.create({
-				url: "/options.html?tab=help"
-			});
-		}
+		// if ( 
+			// details.reason === 'install' 
+		// ) {
+			// browser.tabs.create({
+				// url: "/options.html?tab=help"
+			// });
+		// }
 		
 		if ( 
 			details.temporary 

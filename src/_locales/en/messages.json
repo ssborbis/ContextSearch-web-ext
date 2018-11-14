@@ -1006,8 +1006,29 @@
   },
   
   "EnableHistoryTooltip": {
-    "message": "Remember search terms and display them with search suggestions",
-    "description": ""
+    "message": "Remember search terms and display them with search suggestions"
+  },
+  
+  "SideBar": {
+	"message": "Sidebar"
+  },
+  
+  "SideBarPositionTooltip": {
+	"message": "Choose where to display the side bar"
+  },
+
+  "SideBarWidgetEnable": {
+    "message": "Show Widget",
+    "description": "label for displaying the sidebar icon"
+  },
+  
+  "SideBarWidgetEnableTooltip": {
+    "message": "Overlay an icon for opening the sidebar",
+    "description": "description for displaying the sidebar icon"
+  },
+
+  "SideBarHotkeyTooltip": {
+    "message": "Open the Sidebar any time using a hotkey"
   },
   
   "_________": {

@@ -856,6 +856,8 @@ function makeQuickMenu(options) {
 			let tile = buildSearchIcon(browser.runtime.getURL('/icons/back.png'), browser.i18n.getMessage('back') || 'back');
 			
 			tile.dataset.type = "tool";
+			tile.node = rootNode.parent;
+			
 			tile.addEventListener('mouseup', (e) => {
 
 				// back button rebuilds the menu using the parent folder
@@ -874,6 +876,39 @@ function makeQuickMenu(options) {
 				
 				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
+			});
+			
+			tile.addEventListener('dragover', (e) => {e.preventDefault();});
+			tile.addEventListener('dragleave', (e) => {e.preventDefault();});
+			tile.addEventListener('dragend', (e) => {e.preventDefault();});
+			tile.addEventListener('drop', (e) => {
+				e.preventDefault();
+				
+				let dragDiv = document.getElementById('dragDiv');
+				
+				if ( !dragDiv || !dragDiv.node ) return;
+				
+				dragDiv.parentNode.removeChild(dragDiv);
+				
+				dragDiv.id = null;
+
+				let dragNode = dragDiv.node;
+				let targetNode = tile.node;
+				
+				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
+				
+				slicedNode.parent = targetNode;
+					
+				// add to target children
+				targetNode.children.push(slicedNode);
+				
+				// save the tree
+				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+				
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions}).then( () => {
+					browser.runtime.sendMessage({action: "updateUserOptions"});
+				});
+				
 			});
 			
 			delete sb.selectedIndex;

@@ -44,9 +44,9 @@
 				"opensearch.js",
 				"searchEngineUtils.js",
 				"inject_customSearch.js",
-				"inject_searchbar.js"
+				"inject_sidebar.js"
 			],
-			"css": ["inject.css","inject_searchbar.css"],
+			"css": ["inject.css","inject_sidebar.css"],
 			"all_frames": true,
 			"match_about_blank": true
 		}

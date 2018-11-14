@@ -15,8 +15,6 @@ const displayCount = 10; // number of total suggestions to display (browser_acti
 	// }
 // });
 
-let sb_width = 700;
-
 var quickMenuObject = { 
 	delay: 250, // how long to hold right-click before quick menu events in ms
 	keyDownTimer: 0,
@@ -34,6 +32,7 @@ var quickMenuObject = {
 };
 
 let columns;
+let sb_width;
 
 // context menu options
 window.addEventListener('contextmenu', (e) => {
@@ -354,8 +353,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		let div = divs[i];
 		if ( (i+1) % columns === 0 )
 			qm.insertBefore(document.createElement('br'), div.nextSibling);
-		
-	//	div.style.width = sb_width / columns + "px";
 
 		div.onmouseenter = function() {
 			document.getElementById('searchEngineTitle').innerText = div.title;
@@ -389,7 +386,8 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		
 		div.appendChild(img);
 
-		document.body.appendChild(div);
+		// show on browser_action / not sidebar
+		if ( window == top ) document.body.appendChild(div);
 	}
 	
 	// focus the searchbar on open
