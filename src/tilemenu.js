@@ -109,8 +109,7 @@ function makeQuickMenu(options) {
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 		}
 
-		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) 
-			window.close();
+		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
 
 	});
 	
@@ -341,6 +340,8 @@ function makeQuickMenu(options) {
 
 		// all click events are attached to mouseup
 		_tile.addEventListener('mouseup', (e) => {
+			
+			console.log('mouseup');
 
 			// check if this tile was target of the latest mousedown event
 			if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
@@ -369,8 +370,7 @@ function makeQuickMenu(options) {
 				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
 			}
 			
-			if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) 
-				window.close();
+			if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
 
 		});
 		
@@ -712,7 +712,7 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.left = '0px';
 		
 		/* dnd */
-		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"])');
+		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"]):not([data-hidden])');
 		tileDivs.forEach( div => {
 			
 			function getSide(t, e) {
@@ -780,7 +780,7 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('drop', (e) => {
-				
+
 				// look for text dnd
 				if ( e.dataTransfer.getData("text") ) {
 					e.preventDefault();

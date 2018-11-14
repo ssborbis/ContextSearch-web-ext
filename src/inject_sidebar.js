@@ -8,22 +8,16 @@ if ( window != top ) {
 		main();
 	});
 	
-	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	// browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-		if (typeof message.userOptions !== 'undefined') {
-			userOptions = message.userOptions;
-
-			[document.getElementById('CS_sbOpeningTab'), document.getElementById('CS_sbContainer')].forEach( el => {
-				if (el) el.parentNode.removeChild(el);
-			});
-
-			main();
-		}
-	});
+		// if (typeof message.userOptions !== 'undefined') {
+			// userOptions = message.userOptions;
+		// }
+	// });
 		
 	function main() {
 
-		let openingTab = document.createElement('div');
+		let openingTab = document.getElementById('CS_sbOpeningTab') || document.createElement('div');
 		let sbCloseTab;
 		
 		openingTab.id = 'CS_sbOpeningTab';
@@ -39,7 +33,7 @@ if ( window != top ) {
 		
 		openingTab.appendChild(icon);
 		
-		let sbContainer = document.createElement('div');
+		let sbContainer = document.getElementById('CS_sbContainer') || document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
 		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
 		sbContainer.className = userOptions.sideBar.widget.position;
@@ -148,11 +142,11 @@ if ( window != top ) {
 			openingTab.Y = e.clientY;
 		}
 
-		if ( userOptions.sideBar.widget.enabled )
+		if ( userOptions.sideBar.widget.enabled )	
 			document.body.appendChild(openingTab);
 		
 		document.body.appendChild(sbContainer);
-		
+			
 		window.addEventListener('message', (e) => {
 
 			let url = new URL(browser.runtime.getURL(''));

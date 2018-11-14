@@ -280,9 +280,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			
 			addToHistory(sb.value);
 			
-			if (userOptions.searchBarCloseAfterSearch)
-				window.close();	
-
+			if (userOptions.searchBarCloseAfterSearch) window.close();	
 		}
 	}
 
