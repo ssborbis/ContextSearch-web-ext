@@ -18,8 +18,8 @@ function getSelectedText(el) {
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", (ev) => {
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
-//	if (window.getSelection().toString() !== '')
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: window.getSelection().toString()});
+	
+	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: window.getSelection().toString()});
 });
 
 // selectionchange handler for input nodes
@@ -36,8 +36,6 @@ window.addEventListener('mousedown', (e) => {
 
 	if (
 		e.which !== 3 ||
-//		( userOptions !== undefined && !userOptions.contextMenu ) ||
-//		( userOptions !== undefined && userOptions.searchEngines !== undefined && userOptions.searchEngines.length === 0 ) ||
 		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a' && e.target.nodeName.toLowerCase() !== 'img') 
 	) return false;
 

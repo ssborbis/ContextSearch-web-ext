@@ -7,6 +7,8 @@
 	z-index:2147483647;
 	overflow:hidden;
 	white-space: nowrap;
+	transition: all .15s;
+	opacity:0;
 }
 #CS_sbContainer.left {
 	left:0;
@@ -54,13 +56,13 @@
 	transform-origin: top right;
 }
 #CS_sbOpeningTab IMG, #CS_sbCloseTab IMG {
-	height:20px;
-	padding:6px;
+	height:20px !important;
+	padding:6px !important;
 }
 #CS_sbCloseTab {
 	background-color:#eff0f1;
 	vertical-align:top;
-	display:inline-block;
+	display:none;
 	border:1px solid black;
 	color:black;
 	position:relative;
@@ -88,5 +90,5 @@
 	border:1px solid black;
 	max-width:0px;
 	overflow:hidden;
-	transition:max-width .1s;
+	transition:all .15s;
 }

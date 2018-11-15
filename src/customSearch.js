@@ -107,6 +107,8 @@ function addSearchEnginePopup(data) {
 	let useOpenSearch = data.useOpenSearch || null;
 	let _location = new URL(data.location) || null;
 	
+	let simple = document.getElementById('simple');
+	
 //	console.log(se);
 	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
@@ -118,7 +120,7 @@ function addSearchEnginePopup(data) {
 		ose = se;
 		
 		if (se.title) 
-			document.getElementById('simple').querySelector('input').value = se.title;
+			simple.querySelector('input').value = se.title;
 		
 	} else {
 		if (openSearchUrl) {
@@ -138,18 +140,18 @@ function addSearchEnginePopup(data) {
 					ose = se;
 					
 					if (se.title) 
-						document.getElementById('simple').querySelector('input').value = se.title;
+						simple.querySelector('input').value = se.title;
 					
 				});
 				
 			}, () => {
 				console.log('error');
-				document.getElementById('simple').querySelector('input').value = se.title;
+				simple.querySelector('input').value = se.title;
 			});
 
 			
 		} else 
-			document.getElementById('simple').querySelector('input').value = se.title;
+			simple.querySelector('input').value = se.title;
 	}
 		
 	
@@ -303,7 +305,7 @@ function addSearchEnginePopup(data) {
 	}
 
 	// data-type images are invalid, replace with generic favicon.ico
-	let favicon_url = (se.icon_url && se.icon_url.match(/^data/) === null) ? se.icon_url : new URL(se.template).origin + "/favicon.ico";
+	let favicon_url = (se.icon_url && !se.icon_url.startsWith("data")) ? se.icon_url : new URL(se.template).origin + "/favicon.ico";
 
 	// Listen for updates to iconURL, replace img.src and disable sending OpenSearch.xml request until loaded
 	form.iconURL.addEventListener('change', (ev) => {
@@ -575,17 +577,8 @@ function listenForNewSearchEngines() {
 	}, {once: true});
 }
 
-// setTimeout( () => {
-	// showMenu('CS_notifyAutomaticUpdated');
-// }, 1000);
-
 function listenForFocusAndPromptToImport() {
 
-	// if (userOptions.reloadMethod === 'automatic') {
-		// listenForNewSearchEngines();
-		// return;
-	// }
-	
 	browser.runtime.sendMessage({action: "hasBrowserSearch"}).then( result => {
 		
 		console.log(result);
@@ -737,9 +730,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // listen for the custom engine to prompt to add
 window.addEventListener("message", (e) => {
-	
-//	browser.runtime.sendMessage({action: "log", msg: e.data});
-	
+
 	if (e.data.action && e.data.action === "promptToSearch") {
 		let ok = document.getElementById('b_simple_search_ok');
 

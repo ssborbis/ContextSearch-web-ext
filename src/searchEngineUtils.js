@@ -103,11 +103,10 @@ function loadRemoteIcon(options) {
 			// security policy may mean only the favicon may be converted by canvas
 			img.favicon_urls = [
 				url.origin + "/favicon.ico",
-				"https://icons.better-idea.org/icon?url=" + url.hostname + "&size=16",
 				"https://plus.google.com/_/favicon?domain=" + url.hostname,				
 			];
 
-			if (se.icon_url.match(/^resource/) !== null || se.icon_url == "") 
+			if (se.icon_url.startsWith("resource") || se.icon_url == "") 
 				img.src = img.favicon_urls.shift();
 			else 
 				img.src = se.icon_url;

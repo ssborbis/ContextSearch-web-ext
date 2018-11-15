@@ -317,7 +317,7 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "hasBrowserSearch":
-			return Promise.resolve(typeof browser.search !== undefined);
+			return Promise.resolve(typeof browser.search !== 'undefined');
 			break;
 			
 		case "checkForOneClickEngines":	
@@ -386,6 +386,9 @@ function buildContextMenu() {
 			}
 		}
 		
+		// add incremental menu ids to avoid duplicates
+		let count = 0;
+		
 		function traverse(node, parentId) {
 			
 			if (node.hidden) return;
@@ -402,7 +405,7 @@ function buildContextMenu() {
 				let createOptions = {
 					parentId: parentId,
 					title: se.title,
-					id: se.id,
+					id: se.id + '_' + count++,
 					contexts: ["selection", "link", "image"]	
 				}
 
@@ -420,7 +423,7 @@ function buildContextMenu() {
 				let createOptions = {
 					parentId: parentId,
 					title: node.title,
-					id: node.id,
+					id: node.id + '_' + count++,
 					contexts: ["selection", "link", "image"]	
 				}
 				
@@ -438,7 +441,7 @@ function buildContextMenu() {
 				let createOptions = {
 					parentId: parentId,
 					title: node.title,
-					id: "__oneClickSearchEngine__" + node.id,
+					id: "__oneClickSearchEngine__" + node.id + '_' + count++,
 					contexts: ["selection", "link", "image"]	
 				}
 				
@@ -503,7 +506,7 @@ function executeBookmarklet(info) {
 	browser.bookmarks.get(info.menuItemId).then((bookmark) => {
 		bookmark = bookmark.shift();
 		
-		if (bookmark.url.match(/^javascript/) === null) {
+		if (!bookmark.url.startsWith("javascript")) {
 			console.error('bookmark not a bookmarklet');
 			return false;
 		}
@@ -594,7 +597,10 @@ function executeOneClickSearch(info) {
 }
 
 function contextMenuSearch(info, tab) {
-
+	
+	// remove incremental menu ids
+	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
+	
 	if (info.menuItemId === 'showSuggestions') {
 		userOptions.searchBarSuggestions = info.checked;
 		browser.storage.local.set({"userOptions": userOptions});
@@ -638,7 +644,7 @@ function contextMenuSearch(info, tab) {
 	else
 		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
-	if (typeof info.menuItemId === 'string' && info.menuItemId.match(/^__oneClickSearchEngine__/) ) {
+	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__oneClickSearchEngine__") ) {
 		info.selectionText = searchTerms;
 		info.openMethod = openMethod;
 		executeOneClickSearch(info);
@@ -662,7 +668,7 @@ function contextMenuSearch(info, tab) {
 function quickMenuSearch(info, tab) {
 	
 	// run as one-click search
-	if (typeof info.menuItemId === 'string' && info.menuItemId.match(/^__oneClickSearchEngine__/) ) {
+	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__oneClickSearchEngine__") ) {
 		executeOneClickSearch(info);
 		return false;
 	}

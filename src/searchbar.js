@@ -63,38 +63,6 @@ setInterval(() => {
 	});
 }, 1000);
 
-// browser.theme.onUpdated.addListener(async ({ theme, windowId }) => {
-  // const sidebarWindow = await browser.windows.getCurrent();
-  // /*
-    // Only update theme if it applies to the window the sidebar is in.
-    // If a windowId is passed during an update, it means that the theme is applied to that specific window.
-    // Otherwise, the theme is applied globally to all windows.
-  // */
-
-  // console.log('theme updated');
-    // console.log(theme);
-
-// });
-
-// browser.tabs.query({currentWindow: true, active: true}).then((tab) => {
-// //	console.log(tab);
-// //	console.log(tab[0].windowId);
-	// browser.theme.getCurrent(tab[0].windowId).then((theme) => {
-	
-		// let sb = document.getElementById('quickmenusearchbar');
-
-		// console.log(theme);
-
-		// if (!theme.colors) return;
-		
-		// sb.style.backgroundColor = theme.colors.toolbar_field || null;
-		// sb.parentNode.style.backgroundColor = theme.colors.toolbar_field || null;
-		
-		// sb.style.color = theme.colors.toolbar_field_text || null;
-			
-	// });
-// });
-
 function addToHistory(terms) {
 	
 	terms = terms.trim();
@@ -325,15 +293,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		document.body.appendChild(qme);
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
-	
-		// set div width based on columns 
-	let width = window.getComputedStyle(document.body).width / userOptions.quickMenuColumns + "px";
-
-	var style = document.createElement('style');
-	style.type = 'text/css';
-	style.innerText = '#quickMenuElement DIV { width: ' + width + '; }';
-	document.getElementsByTagName('head')[0].appendChild(style);
-	
+		
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {
@@ -394,11 +354,13 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// listen for resize events, specifically the browser action resizing
 	// and add scrollbars when necessary
 	window.addEventListener('resize', () => {
+		
+		// ignore for sidebar ( transitions caused postQuickMenuSize dimensions issues )
+		if ( window != top ) return;
+		
 		if (window.innerHeight < parseInt(window.getComputedStyle(qm).height) ) {
 			qm.style.height = window.innerHeight - 100 /* height of search bar + options button + title bar */ + "px";
 			qm.style.overflowY = 'scroll';
-			
-			postQuickMenuSize();
 		}
 	});
 

@@ -1,23 +1,38 @@
 if ( window != top ) {
 	console.log('not parent window');
 } else {
+	
 	var userOptions;
 	
 	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		userOptions = message.userOptions || {};
 		main();
 	});
-	
-	// browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-		// if (typeof message.userOptions !== 'undefined') {
-			// userOptions = message.userOptions;
-		// }
-	// });
+	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+		if (typeof message.userOptions !== 'undefined') {
+			userOptions = message.userOptions;
+			
+			let openingTab = document.getElementById('CS_sbOpeningTab');
+			let sbContainer = document.getElementById('CS_sbContainer');			
+			let sbCloseTab = document.getElementById('CS_sbCloseTab');
+			
+			openingTab.className = userOptions.sideBar.widget.position;
+			sbContainer.className = userOptions.sideBar.widget.position;
+			
+			if (sbCloseTab) { // menu is open
+				sbCloseTab.className = userOptions.sideBar.widget.position;
+				sbContainer.insertBefore(sbCloseTab, userOptions.sideBar.widget.position === "right" ? sbContainer.firstChild : sbContainer.lastChild.nextSibling);
+			}
+
+			openingTab.style.display = userOptions.sideBar.widget.enabled ? null : "none";
+		}
+	});
 		
 	function main() {
 
-		let openingTab = document.getElementById('CS_sbOpeningTab') || document.createElement('div');
+		let openingTab = document.createElement('div');
 		let sbCloseTab;
 		
 		openingTab.id = 'CS_sbOpeningTab';
@@ -33,21 +48,18 @@ if ( window != top ) {
 		
 		openingTab.appendChild(icon);
 		
-		let sbContainer = document.getElementById('CS_sbContainer') || document.createElement('div');
+		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
 		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
 		sbContainer.className = userOptions.sideBar.widget.position;
 
 		openingTab.addEventListener('click', () => {
 			
-			if ( openingTab.moving ) {
-				console.log('moving');
-				return false;
-			}
-
+			if ( openingTab.moving ) return false;
+			
 			let iframe = document.createElement('iframe');
 			iframe.id = 'CS_searchBarIframe';
-			iframe.src = browser.runtime.getURL('searchbar.html');
+			iframe.src = browser.runtime.getURL('/searchbar.html');
 			
 			sbContainer.appendChild(iframe);
 
@@ -56,26 +68,26 @@ if ( window != top ) {
 			sbCloseTab.className = userOptions.sideBar.widget.position;
 			
 			let img = document.createElement('img');
-			img.src = browser.runtime.getURL('icons/crossmark.png');
+			img.src = browser.runtime.getURL('/icons/crossmark.png');
 			img.style.display = 'inline-block';
 			
 			sbCloseTab.appendChild(img);
 			
 			sbCloseTab.addEventListener('click', (e) => {
-			let iframe = document.getElementById('CS_searchBarIframe');
 				if ( iframe ) {
 					iframe.addEventListener('transitionend', (e) => {
 						iframe.parentNode.removeChild(iframe);
 						sbCloseTab.parentNode.removeChild(sbCloseTab);
 					});
-					iframe.style.maxWidth = '0px';
-					openingTab.style.display = null;
+					iframe.style.maxWidth = null;
+					openingTab.style.display = userOptions.sideBar.widget.enabled ? null : "none";
+					sbContainer.style.opacity = null;
 					return;
 				}
 			});
 
 			sbContainer.insertBefore(sbCloseTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
-						
+			sbContainer.style.opacity = 1;
 			openingTab.style.display = 'none';
 		});
 
@@ -124,27 +136,30 @@ if ( window != top ) {
 				openingTab.classList.add('moving');
 			}
 			
-			if ( e.clientX < 100 ) {
+			if ( e.clientX < window.innerWidth / 4 ) {
 				openingTab.classList.remove("right");
 				openingTab.classList.add("left");
 			}
 			
-			if ( window.innerWidth - e.clientX < 100 ) {
+			if ( window.innerWidth - e.clientX < window.innerWidth / 4 ) {
 				openingTab.classList.remove("left");
 				openingTab.classList.add("right");
 			}
 			
 			let _top = openingTab.offsetTop - ( openingTab.Y - e.clientY );
 			if ( _top < 0 ) return;
+			if (_top + 38 * 1 / window.devicePixelRatio > window.innerHeight) return;
+			
 			openingTab.style.top = _top + "px";
 
 			openingTab.X = e.clientX;
 			openingTab.Y = e.clientY;
 		}
 
-		if ( userOptions.sideBar.widget.enabled )	
-			document.body.appendChild(openingTab);
+		if ( !userOptions.sideBar.widget.enabled )	
+			openingTab.style.display = 'none';
 		
+		document.body.appendChild(openingTab);
 		document.body.appendChild(sbContainer);
 			
 		window.addEventListener('message', (e) => {
@@ -156,13 +171,16 @@ if ( window != top ) {
 			if ( !e.data.size ) return;
 
 			let iframe = document.getElementById('CS_searchBarIframe');
+			let sbContainer = document.getElementById('CS_sbContainer');
 
 			if ( !iframe ) return;
 			
 			iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
+			iframe.style.maxHeight = iframe.style.height;
 			iframe.style.width = e.data.size.width + "px";
 			iframe.style.maxWidth = iframe.style.width;
 			
+			sbContainer.style.opacity = 1;	
 			sbCloseTab.style.display = 'inline-block';
 
 		});

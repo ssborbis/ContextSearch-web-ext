@@ -83,9 +83,9 @@ class CSBookmarks {
 					
 					let index = userOptions.searchEngines.findIndex( se => se.title === node.title);
 					
-					if ( index === -1 && node.url.match(/^javascript/) === null) return;
+					if ( index === -1 && !node.url.startsWith("javascript") ) return;
 					
-					if ( node.url.match(/^javascript/) !== null) {
+					if ( node.url.startsWith("javascript") ) {
 						target.children.push({
 							type: "bookmarklet",
 							title: node.title,
@@ -174,7 +174,7 @@ class CSBookmarks {
 					}
 				}
 				
-				if (CSBookmarks.getType(node) === 'bookmark' && node.url.match(/^javascript/) !== null) {
+				if ( CSBookmarks.getType(node) === 'bookmark' && node.url.startsWith("javascript") ) {
 					results.push(node);
 				}
 			}

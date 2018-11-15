@@ -232,7 +232,7 @@ function buildSearchEngineContainer() {
 							return;
 						}
 					}
-					if (edit_form.iconURL.value.match(/^resource:/) === null) {
+					if ( !edit_form.iconURL.value.startsWith("resource:") ) {
 						
 						if ( !edit_form.iconURL.value ) {
 							let url = new URL(edit_form.template.value);

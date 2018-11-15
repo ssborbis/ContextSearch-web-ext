@@ -97,7 +97,7 @@ function makeQuickMenu(options) {
 			}
 		});
 		
-		addToHistory(sb.value);
+		if ( typeof addToHistory !== 'undefined' ) addToHistory(sb.value);
 		
 		if (
 			!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
@@ -161,9 +161,7 @@ function makeQuickMenu(options) {
 	
 	if (suggestions) {
 		suggestions.addEventListener('keydown', (e) => {
-					
-			console.log('keydown suggestions');
-			
+
 			if ( [ 38, 40, 9 ].indexOf(e.keyCode) === -1 ) return;
 			
 			// prevent default action (scroll)
@@ -206,7 +204,7 @@ function makeQuickMenu(options) {
 	
 	quickMenuElement.addEventListener('keydown', (e) => {
 
-		if ( [ 37, 38, 39, 40, 9 ].indexOf(e.keyCode) === -1 ) return;
+		if ( ! [ 37, 38, 39, 40, 9 ].includes(e.keyCode) ) return;
 		
 		e.preventDefault();
 
@@ -340,8 +338,6 @@ function makeQuickMenu(options) {
 
 		// all click events are attached to mouseup
 		_tile.addEventListener('mouseup', (e) => {
-			
-			console.log('mouseup');
 
 			// check if this tile was target of the latest mousedown event
 			if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
@@ -920,162 +916,152 @@ function makeQuickMenu(options) {
 			let tile;
 
 			if (node.hidden) return;
+			
+			switch ( node.type ) {
 
-			if (node.type === "searchEngine") {
+				case "searchEngine":
 
-				let se = userOptions.searchEngines.find(se => se.id === node.id);
-				
-				if (!se) {
-					console.log('no search engine found for ' + node.id);
-					return;
-				}
-
-				tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
-				
-				addTileEventHandlers(tile, (e) => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
+					let se = userOptions.searchEngines.find(se => se.id === node.id);
 					
-					if (typeof addToHistory !== "undefined") addToHistory(sb.value);
-				});
-				
-				tile.dataset.id = node.id;
-				tile.dataset.type = 'searchEngine';
-				
-				tile.node = node;
-				tileArray.push(tile);
-
-			}
-			
-			if ( node.type === "bookmarklet" ) {
-
-				tile = buildSearchIcon(browser.runtime.getURL('/icons/code.png'), node.title);
-				tile.dataset.type = 'bookmarklet';
-
-				addTileEventHandlers(tile, (e) => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id, // needs work
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-
-				tile.node = node;
-				tileArray.push(tile);
-
-			}
-			
-			if ( node.type === "oneClickSearchEngine" ) {
-
-				tile = buildSearchIcon(node.icon, node.title);
-				tile.dataset.type = 'oneClickSearchEngine';
-				tile.dataset.id = node.id;
-
-				addTileEventHandlers(tile, (e) => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: "__oneClickSearchEngine__" + node.id, // needs work
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-
-				tile.node = node;
-				tileArray.push(tile);
-
-			}
-			
-			if ( node.type === "separator" ) {
-				tile = document.createElement('hr');
-				tile.dataset.type = 'separator';
-				tile.node = node;
-				tileArray.push(tile);
-			}
-			
-			if (node.type === "folder") {
-				tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": "/icons/transparent.gif", node.title);
-				
-				tile.node = node;
-				// if ( singleColumn )
-					// tile.style.backgroundColor = '';
-
-				let span = document.createElement('span');
-				span.className = "folderLabel";
-				span.innerText = node.title;
-
-				tile.dataset.type = 'folder';
-				tile.appendChild(span);
-				
-				let corner = document.createElement('span');
-				corner.className = 'folderTileCorner';
-				tile.appendChild(corner);
-				
-				tile.addEventListener('mouseup', (e) => {
-					let method = getOpenMethod(e, true);
-
-					if (method === 'noAction') return;
-
-					if (method === 'openFolder') { 
-						let qme = quickMenuElementFromNodeTree(node);
-						
-						browser.runtime.sendMessage({
-							action: "quickMenuIframeLoaded", 
-							size: {
-								width: window.getComputedStyle(qme,null).width,
-								height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
-							},
-							resizeOnly: true,
-							tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
-							tileCount: qme.querySelectorAll('div:not([data-hidden])').length
-						});
-
-						document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-
+					if (!se) {
+						console.log('no search engine found for ' + node.id);
 						return;
 					}
 
-					let messages = [];
-
-					for (let _node of node.children) {
-
-						if (_node.type === 'searchEngine') {
-							messages.push({
-								action: "quickMenuSearch", 
-								info: {
-									menuItemId: _node.id,
-									selectionText: sb.value,//quickMenuObject.searchTerms,
-								//	when opening method is a new window, only do so on first engine, then open in background
-									openMethod: (messages.length === 0 ) ? method : "openBackgroundTab",
-									folder: true
-								}
-							});
-						}	
-					}
-
-					function loop(message) {
-						browser.runtime.sendMessage(message).then( (result) => {
-							loop(messages.shift());
-						});
-					}
+					tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
 					
-					loop(messages.shift());
+					addTileEventHandlers(tile, (e) => {
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: node.id,
+								selectionText: sb.value,
+								openMethod: getOpenMethod(e)
+							}
+						});
+						
+						if (typeof addToHistory !== "undefined") addToHistory(sb.value);
+					});
+					
+					tile.dataset.id = node.id;
+					tile.dataset.type = 'searchEngine';
+					
+					break;
+			
+				case "bookmarklet":
 
-				});
-				
-				tileArray.push(tile);
+					tile = buildSearchIcon(browser.runtime.getURL('/icons/code.png'), node.title);
+					tile.dataset.type = 'bookmarklet';
 
+					addTileEventHandlers(tile, (e) => {
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: node.id, // needs work
+								selectionText: sb.value,
+								openMethod: getOpenMethod(e)
+							}
+						});
+					});
+
+					break;
+
+				case "oneClickSearchEngine":
+
+					tile = buildSearchIcon(node.icon, node.title);
+					tile.dataset.type = 'oneClickSearchEngine';
+					tile.dataset.id = node.id;
+
+					addTileEventHandlers(tile, (e) => {
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: "__oneClickSearchEngine__" + node.id, // needs work
+								selectionText: sb.value,
+								openMethod: getOpenMethod(e)
+							}
+						});
+					});
+
+					break;
+
+				case "separator":
+					tile = document.createElement('hr');
+					tile.dataset.type = 'separator';
+
+					break;
+			
+				case "folder":
+					tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": "/icons/transparent.gif", node.title);
+
+					let span = document.createElement('span');
+					span.className = "folderLabel";
+					span.innerText = node.title;
+
+					tile.dataset.type = 'folder';
+					tile.appendChild(span);
+					
+					let corner = document.createElement('span');
+					corner.className = 'folderTileCorner';
+					tile.appendChild(corner);
+					
+					tile.addEventListener('mouseup', (e) => {
+						let method = getOpenMethod(e, true);
+
+						if (method === 'noAction') return;
+
+						if (method === 'openFolder') { 
+							let qme = quickMenuElementFromNodeTree(node);
+							
+							browser.runtime.sendMessage({
+								action: "quickMenuIframeLoaded", 
+								size: {
+									width: window.getComputedStyle(qme,null).width,
+									height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+								},
+								resizeOnly: true,
+								tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
+								tileCount: qme.querySelectorAll('div:not([data-hidden])').length
+							});
+
+							document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+
+							return;
+						}
+
+						let messages = [];
+
+						for (let _node of node.children) {
+
+							if (_node.type === 'searchEngine') {
+								messages.push({
+									action: "quickMenuSearch", 
+									info: {
+										menuItemId: _node.id,
+										selectionText: sb.value,
+									//	when opening method is a new window, only do so on first engine, then open in background
+										openMethod: (messages.length === 0 ) ? method : "openBackgroundTab",
+										folder: true
+									}
+								});
+							}	
+						}
+
+						function loop(message) {
+							browser.runtime.sendMessage(message).then( (result) => {
+								loop(messages.shift());
+							});
+						}
+						
+						loop(messages.shift());
+
+					});
+					
+					break;
 			}
+			
+			tile.node = node;
+			tileArray.push(tile);
 
 		});
 		
