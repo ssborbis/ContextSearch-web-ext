@@ -354,8 +354,10 @@ document.addEventListener('mouseup', (ev) => {
 		ev.target.id === 'quickMenuElement' ||
 		ev.target.parentNode.id === 'quickMenuElement' ||
 		getSelectedText(ev.target) === "" ||
+		( userOptions.quickMenuAutoMaxChars && getSelectedText(ev.target).length > userOptions.quickMenuAutoMaxChars ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
 		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
+		
 	) return false;
 
 	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;

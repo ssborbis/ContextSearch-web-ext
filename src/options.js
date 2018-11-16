@@ -185,6 +185,7 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuFolderCtrl').value = userOptions.quickMenuFolderCtrl;
 		document.getElementById('s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
+		document.getElementById('n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
 				
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		document.getElementById('cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
@@ -268,6 +269,7 @@ function saveOptions(e) {
 		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
 		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
 		quickMenuSearchBarSelect: document.getElementById('cb_quickMenuSearchBarSelect').checked,
+		quickMenuAutoMaxChars: parseInt(document.getElementById('n_quickMenuAutoMaxChars').value) || 0,
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
 			let path = document.getElementById('i_searchJsonPath').value;
@@ -326,12 +328,12 @@ document.querySelectorAll('select').forEach( el => {
 });
 
 document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {
-	fixNumberInput(e.target, 4, 1, 100);
+	fixNumberInput(e.target, 5, 1, 100);
 	saveOptions(e);
 });
 
 document.getElementById('n_quickMenuRows').addEventListener('change',  (e) => {
-	fixNumberInput(e.target, 4, 1, 100);
+	fixNumberInput(e.target, 5, 1, 100);
 	saveOptions(e);
 });
 
@@ -347,6 +349,11 @@ document.getElementById('n_quickMenuOffsetY').addEventListener('change', (e) => 
 
 document.getElementById('n_searchBarColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
+	saveOptions(e);
+});
+
+document.getElementById('n_quickMenuAutoMaxChars').addEventListener('change',  (e) => {
+	fixNumberInput(e.target, 0, 0, 999);
 	saveOptions(e);
 });
 

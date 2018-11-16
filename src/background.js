@@ -1169,6 +1169,7 @@ const defaultUserOptions = {
 	quickMenuFolderCtrl: "noAction",
 	quickMenuFolderAlt: "noAction",
 	quickMenuSearchHotkeys: "noAction",
+	quickMenuAutoMaxChars: 0,
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
