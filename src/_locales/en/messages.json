@@ -1031,6 +1031,24 @@
     "message": "Open the Sidebar any time using a hotkey"
   },
   
+  "InitialOpacity": {
+    "message": "Initial Opacity",
+    "description": "label for setting Quick menu opening opacity"
+  },
+  
+  "InitialOpacityTooltip": {
+    "message": "Quick menu opens with a lower opacity and becomes opaque on mouseover"
+  },
+  
+  "AutoMaxChars": {
+    "message": "Character Limit",
+    "description": "label for setting maximum selected characters for auto open"
+  },
+  
+  "AutoMaxCharsTooltip": {
+    "message": "Do not open Quick menu if selection is over (n) characters in length. 0 = no limit"
+  },
+  
   "_________": {
     "message": "",
     "description": ""

@@ -186,6 +186,7 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
 		document.getElementById('n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
+		document.getElementById('n_quickMenuOpeningOpacity').value = parseFloat(userOptions.quickMenuOpeningOpacity);
 				
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		document.getElementById('cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
@@ -270,6 +271,8 @@ function saveOptions(e) {
 		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
 		quickMenuSearchBarSelect: document.getElementById('cb_quickMenuSearchBarSelect').checked,
 		quickMenuAutoMaxChars: parseInt(document.getElementById('n_quickMenuAutoMaxChars').value) || 0,
+		quickMenuOpeningOpacity: parseFloat(document.getElementById('n_quickMenuOpeningOpacity').value) || .3,
+		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
 			let path = document.getElementById('i_searchJsonPath').value;
@@ -356,6 +359,8 @@ document.getElementById('n_quickMenuAutoMaxChars').addEventListener('change',  (
 	fixNumberInput(e.target, 0, 0, 999);
 	saveOptions(e);
 });
+
+document.getElementById('n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
 
 document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
 	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";

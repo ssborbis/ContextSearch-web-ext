@@ -148,7 +148,8 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 		}
 	}
 	repositionOffscreenElement( qmc );
-	qmc.style.opacity = 1;
+	
+	return qmc;
 }
 
 function repositionOffscreenElement( element ) {
@@ -353,7 +354,7 @@ document.addEventListener('mouseup', (ev) => {
 		ev.which !== 1 ||
 		ev.target.id === 'quickMenuElement' ||
 		ev.target.parentNode.id === 'quickMenuElement' ||
-		getSelectedText(ev.target) === "" ||
+		getSelectedText(ev.target).trim() === "" ||
 		( userOptions.quickMenuAutoMaxChars && getSelectedText(ev.target).length > userOptions.quickMenuAutoMaxChars ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
 		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
@@ -365,11 +366,11 @@ document.addEventListener('mouseup', (ev) => {
 	quickMenuObject.mouseLastClickTime = Date.now();
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	
-	// skip erroneous short selections
+	// // skip erroneous short selections
 	let searchTerms = getSelectedText(ev.target);
 	setTimeout( () => {
 		if ( searchTerms === getSelectedText(ev.target) )	
-			openQuickMenu(ev);
+			 openQuickMenu(ev);
 	}, 50);
 
 });
@@ -553,8 +554,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					quickMenuObject: quickMenuObject
 				});
 				
-				scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
-
+				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
+				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
+				qmc.dataset.openingopacity = true;
+				
 				/* edit widget start */
 				// (() => {
 					// let iframe = document.getElementById('quickMenuIframe');
@@ -717,6 +720,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				/* dnd resize end */	
 				
 				break;
+
 		}
 	}
 });

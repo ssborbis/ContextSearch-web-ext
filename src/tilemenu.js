@@ -277,7 +277,7 @@ function makeQuickMenu(options) {
 		sb.value = quickMenuObject.searchTerms;
 	});
 	
-	if (userOptions.quickMenuSearchBar === 'hidden') {
+	if ( type === 'quickmenu' && userOptions.quickMenuSearchBar === 'hidden') {
 		sb.parentNode.style.display = 'none';
 		sb.parentNode.style.height = '0';
 	}

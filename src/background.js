@@ -113,7 +113,7 @@ function notify(message, sender, sendResponse) {
 		
 		case "updateQuickMenuObject":
 			// send to all frames for bi-directional updates to/from quickmenu IFRAME v1.3.8+
-			browser.tabs.sendMessage(sender.tab.id, message);
+			return browser.tabs.sendMessage(sender.tab.id, message);
 			break;
 			
 		case "rebuildQuickMenu":
@@ -1170,6 +1170,7 @@ const defaultUserOptions = {
 	quickMenuFolderAlt: "noAction",
 	quickMenuSearchHotkeys: "noAction",
 	quickMenuAutoMaxChars: 0,
+	quickMenuOpeningOpacity: 1,
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
