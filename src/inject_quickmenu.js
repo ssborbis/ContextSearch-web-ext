@@ -363,10 +363,14 @@ document.addEventListener('mouseup', (ev) => {
 	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
-	
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	
-	openQuickMenu(ev);
+	// skip erroneous short selections
+	let searchTerms = getSelectedText(ev.target);
+	setTimeout( () => {
+		if ( searchTerms === getSelectedText(ev.target) )	
+			openQuickMenu(ev);
+	}, 50);
 
 });
 
