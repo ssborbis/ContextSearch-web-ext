@@ -73,6 +73,10 @@ if ( window != top ) {
 			img.src = browser.runtime.getURL('/icons/crossmark.png');
 			img.style.display = 'inline-block';
 			
+			// img.addEventListener('mousedown', (e) => {
+				// openingTab.dispatchEvent(new MouseEvent('mousedown'));
+			// });
+			
 			sbCloseTab.appendChild(img);
 			
 			sbCloseTab.addEventListener('click', (e) => {
@@ -101,6 +105,7 @@ if ( window != top ) {
 		});
 
 		openingTab.addEventListener('mousedown', (e) => {
+
 			openingTab.X = e.clientX;
 			openingTab.Y = e.clientY;
 			openingTab.moving = false;
@@ -131,7 +136,7 @@ if ( window != top ) {
 
 		function tabMoveListener(e) {
 			e.preventDefault();
-			
+
 			if ( !openingTab.moving && Math.abs( openingTab.X - e.clientX ) < 10 && Math.abs( openingTab.Y - e.clientY ) < 10 ) return;
 			
 			else if ( !openingTab.moving ) {
@@ -187,11 +192,12 @@ if ( window != top ) {
 			
 			sbContainer.style.opacity = 1;	
 			sbCloseTab.style.display = 'inline-block';
-			
+
+			// test for bottom overflow
 			let rect = sbContainer.getBoundingClientRect();
 
-			if ( e.data.size.height > window.innerHeight - parseInt(rect.top) )
-				sbContainer.style.top = window.innerHeight - e.data.size.height + "px";
+			if ( e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
+				sbContainer.style.top = window.innerHeight - e.data.size.height * 1/window.devicePixelRatio + "px";
 
 		});
 		
