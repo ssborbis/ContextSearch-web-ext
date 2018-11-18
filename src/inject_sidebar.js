@@ -20,6 +20,7 @@ if ( window != top ) {
 			
 			openingTab.className = userOptions.sideBar.widget.position;
 			sbContainer.className = userOptions.sideBar.widget.position;
+			sbContainer.style.top = openingTab.style.top;
 			
 			if (sbCloseTab) { // menu is open
 				sbCloseTab.className = userOptions.sideBar.widget.position;
@@ -52,6 +53,7 @@ if ( window != top ) {
 		sbContainer.id = 'CS_sbContainer';
 		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
 		sbContainer.className = userOptions.sideBar.widget.position;
+		sbContainer.style.top = openingTab.style.top;
 
 		openingTab.addEventListener('click', () => {
 			
@@ -60,7 +62,7 @@ if ( window != top ) {
 			let iframe = document.createElement('iframe');
 			iframe.id = 'CS_searchBarIframe';
 			iframe.src = browser.runtime.getURL('/searchbar.html');
-			
+
 			sbContainer.appendChild(iframe);
 
 			sbCloseTab = document.createElement('div');
@@ -87,6 +89,7 @@ if ( window != top ) {
 			});
 
 			sbContainer.insertBefore(sbCloseTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
+			
 			sbContainer.style.opacity = 1;
 			openingTab.style.display = 'none';
 		});
@@ -154,6 +157,8 @@ if ( window != top ) {
 
 			openingTab.X = e.clientX;
 			openingTab.Y = e.clientY;
+			
+			sbContainer.style.top = openingTab.style.top;
 		}
 
 		if ( !userOptions.sideBar.widget.enabled )	
@@ -182,6 +187,11 @@ if ( window != top ) {
 			
 			sbContainer.style.opacity = 1;	
 			sbCloseTab.style.display = 'inline-block';
+			
+			let rect = sbContainer.getBoundingClientRect();
+
+			if ( e.data.size.height > window.innerHeight - parseInt(rect.top) )
+				sbContainer.style.top = window.innerHeight - e.data.size.height + "px";
 
 		});
 		
