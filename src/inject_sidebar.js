@@ -42,7 +42,7 @@ if ( window != top ) {
 		openingTab.className = userOptions.sideBar.widget.position;
 
 		openingTab.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
-		
+
 		let icon = new Image();
 		icon.src = browser.runtime.getURL('icons/search.png');
 		icon.draggable = false;
@@ -71,10 +71,18 @@ if ( window != top ) {
 			
 			let img = document.createElement('img');
 			img.src = browser.runtime.getURL('/icons/crossmark.png');
+			img.style = '-moz-user-select:none;user-select:none';
 			img.style.display = 'inline-block';
 			
+			// img.draggable = false;
+			
+			// img.addEventListener('dragstart',(e) => {
+				// e.preventDefault();
+				// e.stopPropagation();
+			// });
+			
 			// img.addEventListener('mousedown', (e) => {
-				// openingTab.dispatchEvent(new MouseEvent('mousedown'));
+				// openingTab.dispatchEvent(new MouseEvent(e.type, e));
 			// });
 			
 			sbCloseTab.appendChild(img);
@@ -137,7 +145,7 @@ if ( window != top ) {
 		function tabMoveListener(e) {
 			e.preventDefault();
 
-			if ( !openingTab.moving && Math.abs( openingTab.X - e.clientX ) < 10 && Math.abs( openingTab.Y - e.clientY ) < 10 ) return;
+			if ( !openingTab.moving && Math.abs( openingTab.X - e.clientX ) < 10 && Math.abs( openingTab.Y - e.clientY ) < 10 )	return;
 			
 			else if ( !openingTab.moving ) {
 				openingTab.moving = true;
@@ -163,7 +171,9 @@ if ( window != top ) {
 			openingTab.X = e.clientX;
 			openingTab.Y = e.clientY;
 			
-			sbContainer.style.top = openingTab.style.top;
+			// sbContainer.style.top = openingTab.style.top;
+			
+			// console.log(sbContainer.style.top);
 		}
 
 		if ( !userOptions.sideBar.widget.enabled )	
@@ -171,6 +181,11 @@ if ( window != top ) {
 		
 		document.body.appendChild(openingTab);
 		document.body.appendChild(sbContainer);
+		
+		// move openingTab if offscreen
+		let openingTabRect = openingTab.getBoundingClientRect();
+		if ( openingTabRect.bottom > window.innerHeight )
+			openingTab.style.top = (window.innerHeight - openingTabRect.height) + "px";
 			
 		window.addEventListener('message', (e) => {
 
@@ -185,10 +200,15 @@ if ( window != top ) {
 
 			if ( !iframe ) return;
 			
-			iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
-			iframe.style.maxHeight = iframe.style.height;
-			iframe.style.width = e.data.size.width + "px";
-			iframe.style.maxWidth = iframe.style.width;
+			if ( e.data.size.height ) {
+				iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";	
+				iframe.style.maxHeight = iframe.style.height;
+			}
+			
+			if ( e.data.size.width ) {
+				iframe.style.width = e.data.size.width + "px";
+				iframe.style.maxWidth = iframe.style.width;
+			}
 			
 			sbContainer.style.opacity = 1;	
 			sbCloseTab.style.display = 'inline-block';
@@ -197,8 +217,7 @@ if ( window != top ) {
 			let rect = sbContainer.getBoundingClientRect();
 
 			if ( e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
-				sbContainer.style.top = window.innerHeight - e.data.size.height * 1/window.devicePixelRatio + "px";
-
+				sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
 		});
 		
 		// listen for quickMenuHotkey
