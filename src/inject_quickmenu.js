@@ -62,7 +62,8 @@ function openQuickMenu(ev) {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
 		searchTerms: getSelectedText(ev.target).trim(),
-		quickMenuObject: quickMenuObject
+		quickMenuObject: quickMenuObject,
+		openingMethod: ev.openingMethod || null
 	});
 }
 
@@ -360,6 +361,8 @@ document.addEventListener('mouseup', (ev) => {
 		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
 		
 	) return false;
+	
+	ev.openingMethod = "auto";
 
 	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;
 	
@@ -506,6 +509,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				quickMenuObject.searchTerms = message.searchTerms;
 				makeQuickMenuContainer({'x': x,'y': y});
+				
+				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
 				break;
 			
 			case "updateSearchTerms":
@@ -555,8 +560,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				
 				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
-				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-				qmc.dataset.openingopacity = true;
+				
+				if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
+					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
+					qmc.dataset.openingopacity = true;
+				} else {
+					qmc.style.opacity = 1;
+				}
 				
 				/* edit widget start */
 				// (() => {
@@ -712,8 +722,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				function positionResizeWidget() {
 					let iframeRect = iframe.getBoundingClientRect();
-					resizeWidget.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
-					resizeWidget.style.top = parseInt(iframe.style.top) + iframeRect.height - 10 + "px";
+					resizeWidget.style.left = iframeRect.right - 10 + "px";
+					resizeWidget.style.top = iframeRect.bottom - 10 + "px";
 					resizeWidget.style.transform = iframe.style.transform; 
 				}
 

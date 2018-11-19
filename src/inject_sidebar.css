@@ -35,6 +35,7 @@
 }
 #CS_sbOpeningTab.moving {
 	border: 2px dashed #9abad2;
+	display:inline-block !important;
 }
 #CS_sbOpeningTab:hover, #CS_sbOpeningTab.moving {
 	opacity:1;

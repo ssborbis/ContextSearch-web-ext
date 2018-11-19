@@ -782,20 +782,7 @@ function openSearch(details) {
 			break;
 		case "openBackgroundTab":
 			return openBackgroundTab();
-			break;
-		// case "openSidebar":
-			// console.log('sidebar');
-			// console.log(q);
-			
-			// browser.sidebarAction.setPanel( {
-				// panel: ""
-			// }).then(() => {
-				// browser.sidebarAction.setPanel( {
-					// panel: q
-				// }).then(onCreate(tab));
-			// });
-			// break;
-		
+			break;		
 	}
 	
 	function onCreate(_tab) {
@@ -1024,22 +1011,6 @@ function updateUserOptionsVersion(uo) {
 			return root;
 		}
 
-		// convert items to rows
-		let toolCount = _uo.quickMenuTools.filter( tool => !tool.disabled ).length;
-		
-		// any position but top is safe to ignore
-		if (_uo.quickMenuToolsPosition === 'hidden')
-			toolCount = 0;
-		
-		let totalTiles = toolCount + _uo.quickMenuItems;
-		
-		let rows = Math.ceil(totalTiles / _uo.quickMenuColumns);
-		
-		if ( _uo.quickMenuUseOldStyle )
-			rows = totalTiles;
-
-		_uo.quickMenuRows = rows;
-
 		// generate unique id for each search engine
 		for (let se of _uo.searchEngines)
 			se.id = gen();
@@ -1085,6 +1056,33 @@ function updateUserOptionsVersion(uo) {
 
 	}).then((_uo) => {
 		
+		if ( _uo.quickMenuItems == undefined ) return _uo;
+		
+		// fix for 1.8.1 users
+		if ( _uo.quickMenuItems != undefined && _uo.quickMenuRows != undefined) {
+			console.log('deleting quickMenuItems for 1.8.1 user');
+			delete _uo.quickMenuItems;
+			return _uo;
+		}
+		// convert items to rows
+		let toolCount = _uo.quickMenuTools.filter( tool => !tool.disabled ).length;
+		
+		// any position but top is safe to ignore
+		if (_uo.quickMenuToolsPosition === 'hidden')
+			toolCount = 0;
+		
+		let totalTiles = toolCount + _uo.quickMenuItems;
+		
+		let rows = Math.ceil(totalTiles / _uo.quickMenuColumns);
+		
+		if ( _uo.quickMenuUseOldStyle )
+			rows = totalTiles;
+
+		_uo.quickMenuRows = rows;
+		
+		return _uo;
+	}).then((_uo) => {
+		
 		if (!_uo.searchEngines.find(se => se.hotkey) ) return _uo;
 		
 		console.log("-> 1.8.2");
@@ -1115,7 +1113,6 @@ const defaultUserOptions = {
 	quickMenu: true,
 	quickMenuColumns: 5,
 	quickMenuRows: 1,
-	quickMenuItems: 100,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnHotkey: false,
@@ -1125,12 +1122,12 @@ const defaultUserOptions = {
 	quickMenuOnMouseMethod: "hold",
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
-	quickMenuAutoOnInputs: true,
+	quickMenuAutoOnInputs: false,
 	quickMenuScale: 1,
 	quickMenuIconScale: 1,
 	quickMenuScaleOnZoom: true,
 	quickMenuPosition: "top center",
-	quickMenuOffset: {x:0, y:20},
+	quickMenuOffset: {x:0, y:-20},
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
 	quickMenuTrackingProtection: true,
