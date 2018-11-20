@@ -70,6 +70,12 @@ if ( window != top ) {
 			sbContainer.style.opacity = 1;
 
 		});
+		
+		// open sidebar if dragging text over
+		openingTab.addEventListener('dragover', (e) => {
+			if ( document.getElementById('CS_searchBarIframe') ) return;
+				openingTab.dispatchEvent(new MouseEvent('click'));
+		});
 
 		openingTab.addEventListener('mousedown', (e) => {
 
