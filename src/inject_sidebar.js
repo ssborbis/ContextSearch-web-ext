@@ -15,17 +15,15 @@ if ( window != top ) {
 			userOptions = message.userOptions;
 			
 			let openingTab = document.getElementById('CS_sbOpeningTab');
-			let sbContainer = document.getElementById('CS_sbContainer');			
-			let sbCloseTab = document.getElementById('CS_sbCloseTab');
+			let sbContainer = document.getElementById('CS_sbContainer');
+
+			sbContainer.classList.remove('left', 'right');
+			openingTab.classList.remove('left', 'right');
 			
-			openingTab.className = userOptions.sideBar.widget.position;
-			sbContainer.className = userOptions.sideBar.widget.position;
-			sbContainer.style.top = openingTab.style.top;
-			
-			if (sbCloseTab) { // menu is open
-				sbCloseTab.className = userOptions.sideBar.widget.position;
-				sbContainer.insertBefore(sbCloseTab, userOptions.sideBar.widget.position === "right" ? sbContainer.firstChild : sbContainer.lastChild.nextSibling);
-			}
+			sbContainer.classList.add(userOptions.sideBar.widget.position);
+			openingTab.classList.add(userOptions.sideBar.widget.position);
+
+			sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 
 			openingTab.style.display = userOptions.sideBar.widget.enabled ? null : "none";
 		}
@@ -34,172 +32,131 @@ if ( window != top ) {
 	function main() {
 
 		let openingTab = document.createElement('div');
-		let sbCloseTab;
-		
+
 		openingTab.id = 'CS_sbOpeningTab';
-		openingTab.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
 
-		openingTab.className = userOptions.sideBar.widget.position;
-
-		openingTab.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
-
-		let icon = new Image();
-		icon.src = browser.runtime.getURL('icons/search.png');
-		icon.draggable = false;
-		
-		openingTab.appendChild(icon);
-		
 		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
 		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
-		sbContainer.className = userOptions.sideBar.widget.position;
-		sbContainer.style.top = openingTab.style.top;
+		openingTab.className = sbContainer.className = userOptions.sideBar.widget.position;
+		sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 
 		openingTab.addEventListener('click', () => {
 			
-			if ( openingTab.moving ) return false;
+			if ( sbContainer.moving ) return false;
 			
-			let iframe = document.createElement('iframe');
+			let iframe = document.getElementById('CS_searchBarIframe');
+			if ( iframe ) {
+				iframe.addEventListener('transitionend', (e) => {
+					iframe.parentNode.removeChild(iframe);
+				});
+				iframe.style.maxWidth = null;
+				sbContainer.style.opacity = null;
+				sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
+				openingTab.classList.remove('close');
+				return;
+			}
+			
+			iframe = document.createElement('iframe');
 			iframe.id = 'CS_searchBarIframe';
 			iframe.src = browser.runtime.getURL('/searchbar.html');
+			
+			openingTab.classList.add('close');
 
 			sbContainer.appendChild(iframe);
 
-			sbCloseTab = document.createElement('div');
-			sbCloseTab.id = 'CS_sbCloseTab';
-			sbCloseTab.className = userOptions.sideBar.widget.position;
-			
-			let img = document.createElement('img');
-			img.src = browser.runtime.getURL('/icons/crossmark.png');
-			img.style = '-moz-user-select:none;user-select:none';
-			img.style.display = 'inline-block';
-			
-			img.draggable = false;
-			
-			img.addEventListener('dragstart',(e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				img.dragging = true;
-			});
-			
-			img.addEventListener('mousedown', (e) => {
-				
-				sbContainer.style.transition = 'none';
-				openingTab.dispatchEvent(new MouseEvent(e.type, e));
-				
-				document.addEventListener('mouseup', (e) => {
-					sbContainer.style.transition = null;
-				}, {once:true});
-			});
-			
-			sbCloseTab.appendChild(img);
-			
-			sbCloseTab.addEventListener('click', (e) => {
-
-				// prevent closing menu on mouseup during reposition
-				if ( img.dragging ) {
-					delete img.dragging;
-					return false;
-				}
-				
-				if ( iframe ) {
-					iframe.addEventListener('transitionend', (e) => {
-						iframe.parentNode.removeChild(iframe);
-						sbCloseTab.parentNode.removeChild(sbCloseTab);
-					});
-					iframe.style.maxWidth = null;
-					openingTab.style.display = userOptions.sideBar.widget.enabled ? null : "none";
-					sbContainer.style.opacity = null;
-					return;
-				}
-			});
-
-			sbContainer.insertBefore(sbCloseTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
+			sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
 			
 			sbContainer.style.opacity = 1;
-			openingTab.style.display = 'none';
-		});
 
-		// open sidebar if dragging text over
-		openingTab.addEventListener('dragover', (e) => {
-			if ( document.getElementById('CS_searchBarIframe') ) return;
-			openingTab.dispatchEvent(new MouseEvent('click'));
 		});
 
 		openingTab.addEventListener('mousedown', (e) => {
 
-			openingTab.X = e.clientX;
-			openingTab.Y = e.clientY;
-			openingTab.moving = false;
+			sbContainer.X = e.clientX;
+			sbContainer.Y = e.clientY;
+			sbContainer.moving = false;
 			e.preventDefault();
+			
+			sbContainer.style.transition = "none";
 			
 			document.addEventListener('mousemove', tabMoveListener);
 
 			document.addEventListener('mouseup', (_e) => {
+
+				sbContainer.style.transition = null;
 				
 				document.removeEventListener('mousemove', tabMoveListener);
 				
-				if ( !openingTab.moving ) return;
+				if ( !sbContainer.moving ) return;
 				
 				openingTab.classList.remove('moving');
 				
-				userOptions.sideBar.widget.offset = parseInt(openingTab.style.top) * window.devicePixelRatio;
-				userOptions.sideBar.widget.position = openingTab.classList.contains("right") ? "right" : "left";
-				sbContainer.className = userOptions.sideBar.widget.position;
+				userOptions.sideBar.widget.offset = parseInt(sbContainer.style.top) * window.devicePixelRatio;
+				userOptions.sideBar.widget.position = sbContainer.classList.contains("right") ? "right" : "left";
+				sbContainer.classList.remove('left', 'right');
+				sbContainer.classList.add(userOptions.sideBar.widget.position);
+				
+				let iframe = document.getElementById('CS_searchBarIframe');
+				if ( iframe ) {
+					sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
+				}
 
 				// save prefs
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions})
 				.then( ()=> {
 					browser.runtime.sendMessage({action: "updateUserOptions"});
 				});
-				setTimeout(() => {openingTab.moving = false}, 50);
+				setTimeout(() => {sbContainer.moving = false}, 50);
 			}, {once: true});
 		});
 
 		function tabMoveListener(e) {
 			e.preventDefault();
 
-			if ( !openingTab.moving && Math.abs( openingTab.X - e.clientX ) < 10 && Math.abs( openingTab.Y - e.clientY ) < 10 )	return;
+			if ( !sbContainer.moving && Math.abs( sbContainer.X - e.clientX ) < 10 && Math.abs( sbContainer.Y - e.clientY ) < 10 )	return;
 			
-			else if ( !openingTab.moving ) {
-				openingTab.moving = true;
+			else if ( !sbContainer.moving ) {
+				sbContainer.moving = true;
 				openingTab.classList.add('moving');
 			}
 			
 			if ( e.clientX < window.innerWidth / 4 ) {
 				openingTab.classList.remove("right");
 				openingTab.classList.add("left");
+				
+				sbContainer.classList.remove("right");
+				sbContainer.classList.add("left");
 			}
 			
 			if ( window.innerWidth - e.clientX < window.innerWidth / 4 ) {
 				openingTab.classList.remove("left");
 				openingTab.classList.add("right");
+				
+				sbContainer.classList.remove("left");
+				sbContainer.classList.add("right");
 			}
 			
-			let _top = openingTab.offsetTop - ( openingTab.Y - e.clientY );
+			let _top = sbContainer.offsetTop - ( sbContainer.Y - e.clientY );
 			if ( _top < 0 ) return;
 			if (_top + 38 * 1 / window.devicePixelRatio > window.innerHeight) return;
-			
-			openingTab.style.top = _top + "px";
 
-			openingTab.X = e.clientX;
-			openingTab.Y = e.clientY;
-			
-			sbContainer.style.top = openingTab.style.top;
-			
-			// console.log(sbContainer.style.top);
+			sbContainer.X = e.clientX;
+			sbContainer.Y = e.clientY;
+
+			sbContainer.style.top = _top + "px";
 		}
 
 		if ( !userOptions.sideBar.widget.enabled )	
 			openingTab.style.display = 'none';
 		
-		document.body.appendChild(openingTab);
+		sbContainer.appendChild(openingTab);
 		document.body.appendChild(sbContainer);
 		
 		// move openingTab if offscreen
-		let openingTabRect = openingTab.getBoundingClientRect();
-		if ( openingTabRect.bottom > window.innerHeight )
-			openingTab.style.top = (window.innerHeight - openingTabRect.height) + "px";
+		let rect = sbContainer.getBoundingClientRect();
+		if ( rect.bottom > window.innerHeight )
+			sbContainer.style.top = (window.innerHeight - rect.height) + "px";
 			
 		window.addEventListener('message', (e) => {
 
@@ -224,8 +181,7 @@ if ( window != top ) {
 				iframe.style.maxWidth = iframe.style.width;
 			}
 			
-			sbContainer.style.opacity = 1;	
-			sbCloseTab.style.display = 'inline-block';
+			sbContainer.style.opacity = 1;
 
 			// test for bottom overflow
 			let rect = sbContainer.getBoundingClientRect();
@@ -250,12 +206,19 @@ if ( window != top ) {
 			}
 
 			e.preventDefault();
+
+			openingTab.click();
 			
-			if ( document.getElementById('CS_searchBarIframe') )
-				sbCloseTab.click();
-			else
-				openingTab.click();
-			
+		});
+		
+		sbContainer.addEventListener('mouseenter', (e) => {
+			if ( openingTab.classList.contains('close') ) {
+				openingTab.classList.add('hover');
+			}
+		});
+		
+		sbContainer.addEventListener('mouseleave', (e) => {
+			openingTab.classList.remove('hover');
 		});
 	}
 }
