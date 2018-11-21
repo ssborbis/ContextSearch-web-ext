@@ -4,6 +4,16 @@ function makeQuickMenu(options) {
 	let type = options.type;
 	let mode = options.mode;
 	
+	styleEl = document.createElement('style');
+
+	// Append <style> element to <head>
+	document.head.appendChild(styleEl);
+
+	styleSheet = styleEl.sheet;
+
+	// styleSheet.insertRule("#quickMenuElement DIV { width: 64px; background-size: 64px 32px;background-color:#333;border-color:#444}", 0);
+	// styleSheet.insertRule('BODY { background-color:#333;color:#ddd; }', 0);
+	
 	let singleColumn = ( 
 		(type === 'searchbar' && userOptions.searchBarUseOldStyle) ||
 		(type === 'quickmenu' && userOptions.quickMenuUseOldStyle) 
@@ -24,7 +34,7 @@ function makeQuickMenu(options) {
 
 	quickMenuElement.id = 'quickMenuElement';
 	
-	let sb = document.getElementById('quickmenusearchbar');
+	let sb = document.getElementById('quickMenuSearchBar');
 	sb.onclick = function(e) {
 		e.stopPropagation();
 	}
@@ -751,8 +761,10 @@ function makeQuickMenu(options) {
 
 				targetDiv.style.backgroundColor = null;
 				
+				targetDiv.classList.add('hover');
+				
 				if ( side === 'middle')
-					targetDiv.style.backgroundColor = 'lightblue';					
+					targetDiv.style.backgroundColor = 'lightblue';	
 			});
 			div.addEventListener('dragleave', (e) => {
 				e.preventDefault();

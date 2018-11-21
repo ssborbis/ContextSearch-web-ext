@@ -37,7 +37,7 @@ function makeFrameContents(options) {
 	
 		document.body.appendChild(qme);
 		
-		let sb = document.getElementById('quickmenusearchbar');
+		let sb = document.getElementById('quickMenuSearchBar');
 		let sbc = document.getElementById('quickMenuSearchBarContainer');
 		
 		if (userOptions.quickMenuSearchBar === 'bottom') {	
@@ -104,7 +104,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 				
 			case "focusSearchBar":
-				let sb = document.getElementById('quickmenusearchbar');
+				let sb = document.getElementById('quickMenuSearchBar');
 
 				if (userOptions.quickMenuSearchBarSelect) {
 					sb.addEventListener('focus', ()=> {

@@ -6,7 +6,7 @@ const displayCount = 10; // number of total suggestions to display (browser_acti
 // show the add search engine icon in the searchbar
 // browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
 	// if (result.href) {
-		// let sb = document.getElementById('quickmenusearchbar');
+		// let sb = document.getElementById('quickMenuSearchBar');
 		// let img = document.createElement('img');
 		// img.src = '/icons/add_search.png';
 		// img.style = 'height:16px;position:absolute;right:4px;top:4px;z-index:2';
@@ -92,7 +92,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	if ( userOptions === {} ) return;
 	
-	let sb = document.getElementById('quickmenusearchbar');
+	let sb = document.getElementById('quickMenuSearchBar');
 	sb.placeholder = browser.i18n.getMessage('Search');
 
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
@@ -307,7 +307,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('quickmenusearchbar');
+	let sb = document.getElementById('quickMenuSearchBar');
 	let suggest = document.getElementById('suggestions');
 	
 	qm.style.overflowY = 'auto';
@@ -368,7 +368,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		if ( window != top ) return;
 
 		let qm = document.getElementById('quickMenuElement');
-		let sb = document.getElementById('quickmenusearchbar');
+		let sb = document.getElementById('quickMenuSearchBar');
 		let tb = document.getElementById('searchEngineTitle');
 		let suggest = document.getElementById('suggestions');
 		let options = document.getElementById('optionsButton');
@@ -396,7 +396,7 @@ function sideBarResize() {
 	if ( window == top ) return;
 	
 	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('quickmenusearchbar');
+	let sb = document.getElementById('quickMenuSearchBar');
 	let tb = document.getElementById('searchEngineTitle');
 	let suggest = document.getElementById('suggestions');
 	

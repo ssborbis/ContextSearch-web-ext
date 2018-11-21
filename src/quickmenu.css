@@ -1,3 +1,9 @@
+BODY {
+	overflow:hidden;
+	padding:0;
+	margin:0;
+	background-color:#eff0f1;
+}
 .selectedFocus {
 	background-color: #0078d7 !important;
 	position:relative;
@@ -8,7 +14,6 @@
 }
 #quickMenuElement {
 	z-index:1;
-	background-color: #eff0f1;
 	overflow:hidden;
 }
 #quickMenuElement DIV, #quickMenuElement INPUT {
@@ -76,13 +81,16 @@
 	background-color:transparent !important;
 	overflow:hidden;
 }
-#quickMenuSearchBarContainer {
-	background-color:white;
-	white-space: nowrap;
+#quickMenuSearchBarContainer IMG {
+	height:18px;
+	vertical-align:middle;
+	padding:4px;
+	opacity:.5;
+	position:absolute;
 }
-#quickmenusearchbar {
-	width:calc(100% - 40px);
-	padding:0 10px 0 0;
+#quickMenuSearchBar {
+	width:calc(100% - 48px);
+	padding:0 24px;
 	height:28px;
 	margin:0;
 	text-align:left;
@@ -122,6 +130,7 @@
 	color:#4a4a4a;
 	font-family:Arial;
 	font-size:10pt;
+	background-color:inherit;
 }
 .singleColumn {
 	width:300px !important;
