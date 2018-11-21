@@ -21,7 +21,7 @@
 }
 #CS_sbContainer.CS_right #CS_sbOpeningTab {
 	border-right:none;
-	border-radius: 5px 0 0 5px;	
+	border-radius: 5px 0 0 5px;
 }
 #CS_sbContainer.CS_moving #CS_sbOpeningTab, #CS_sbContainer.CS_moving #CS_sbIframe {
 	border: 2px dashed #9abad2;
@@ -44,17 +44,33 @@
 	background-color:#eff0f1;
 	filter:none;
 }
+/* #CS_sbOpeningTab.CS_close { */
+	/* width:0; */
+	/* opacity:0; */
+	/* filter:none; */
+	/* background-image: none; */
+/* } */
+/* #CS_sbOpeningTab.CS_close.CS_hover { */
+	/* width:32px; */
+	/* background-color:#eff0f1; */
+	/* opacity:1; */
+	/* background-image: url(icons/crossmark.png); */
+	/* position:absolute; */
+	/* top:0;right:0; */
+/* } */
 #CS_sbOpeningTab.CS_close {
-	width:0;
-	opacity:0;
-	filter:none;
-	background-image: none;
-}
-#CS_sbOpeningTab.CS_close.CS_hover {
-	width:32px;
+	width:28px;
+	height:28px;
 	background-color:#eff0f1;
 	opacity:1;
 	background-image: url(icons/crossmark.png);
+	position:absolute;
+	top:1px;
+	right:0;
+	border:none;
+	filter:none;
+	background-color:transparent;
+	opacity:1;
 }
 #CS_sbIframe {
 	display:inline-block;
