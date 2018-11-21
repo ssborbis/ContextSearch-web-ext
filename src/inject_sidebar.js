@@ -1,12 +1,19 @@
 if ( window != top ) {
-	console.log('not parent window');
+	// console.log('not parent window');
 } else {
 	
 	var userOptions;
 	
+	function getIframe() { return document.getElementById('CS_sbIframe') }
+	function getOpeningTab() { return document.getElementById('CS_sbOpeningTab') }
+	function getContainer() { return document.getElementById('CS_sbContainer') }
+	
 	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		userOptions = message.userOptions || {};
 		main();
+		
+		if ( userOptions.sideBar.startOpen )
+			getOpeningTab().click();
 	});
 
 	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -14,14 +21,11 @@ if ( window != top ) {
 		if (typeof message.userOptions !== 'undefined') {
 			userOptions = message.userOptions;
 			
-			let openingTab = document.getElementById('CS_sbOpeningTab');
-			let sbContainer = document.getElementById('CS_sbContainer');
+			let openingTab = getOpeningTab();
+			let sbContainer = getContainer();
 
-			sbContainer.classList.remove('left', 'right');
-			openingTab.classList.remove('left', 'right');
-			
-			sbContainer.classList.add(userOptions.sideBar.widget.position);
-			openingTab.classList.add(userOptions.sideBar.widget.position);
+			sbContainer.classList.remove('CS_left', 'CS_right');			
+			sbContainer.classList.add('CS_' + userOptions.sideBar.widget.position);
 
 			sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 
@@ -38,14 +42,14 @@ if ( window != top ) {
 		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
 		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
-		openingTab.className = sbContainer.className = userOptions.sideBar.widget.position;
+		openingTab.className = sbContainer.className = 'CS_' + userOptions.sideBar.widget.position;
 		sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 
 		openingTab.addEventListener('click', () => {
 			
 			if ( sbContainer.moving ) return false;
 			
-			let iframe = document.getElementById('CS_searchBarIframe');
+			let iframe = getIframe();
 			if ( iframe ) {
 				iframe.addEventListener('transitionend', (e) => {
 					iframe.parentNode.removeChild(iframe);
@@ -53,15 +57,15 @@ if ( window != top ) {
 				iframe.style.maxWidth = null;
 				sbContainer.style.opacity = null;
 				sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
-				openingTab.classList.remove('close');
+				openingTab.classList.remove('CS_close');
 				return;
 			}
 			
 			iframe = document.createElement('iframe');
-			iframe.id = 'CS_searchBarIframe';
+			iframe.id = 'CS_sbIframe';
 			iframe.src = browser.runtime.getURL('/searchbar.html');
 			
-			openingTab.classList.add('close');
+			openingTab.classList.add('CS_close');
 
 			sbContainer.appendChild(iframe);
 
@@ -73,7 +77,7 @@ if ( window != top ) {
 		
 		// open sidebar if dragging text over
 		openingTab.addEventListener('dragover', (e) => {
-			if ( document.getElementById('CS_searchBarIframe') ) return;
+			if ( getIframe() ) return;
 				openingTab.dispatchEvent(new MouseEvent('click'));
 		});
 
@@ -96,14 +100,15 @@ if ( window != top ) {
 				
 				if ( !sbContainer.moving ) return;
 				
-				openingTab.classList.remove('moving');
+				let iframe = getIframe();
 				
+				sbContainer.classList.remove('CS_moving');
+
 				userOptions.sideBar.widget.offset = parseInt(sbContainer.style.top) * window.devicePixelRatio;
-				userOptions.sideBar.widget.position = sbContainer.classList.contains("right") ? "right" : "left";
-				sbContainer.classList.remove('left', 'right');
-				sbContainer.classList.add(userOptions.sideBar.widget.position);
-				
-				let iframe = document.getElementById('CS_searchBarIframe');
+				userOptions.sideBar.widget.position = sbContainer.classList.contains("CS_right") ? "right" : "left";
+				sbContainer.classList.remove('CS_left', 'CS_right');
+				sbContainer.classList.add('CS_' + userOptions.sideBar.widget.position);
+
 				if ( iframe ) {
 					sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
 				}
@@ -124,23 +129,17 @@ if ( window != top ) {
 			
 			else if ( !sbContainer.moving ) {
 				sbContainer.moving = true;
-				openingTab.classList.add('moving');
+				sbContainer.classList.add('CS_moving');				
 			}
 			
-			if ( e.clientX < window.innerWidth / 4 ) {
-				openingTab.classList.remove("right");
-				openingTab.classList.add("left");
-				
-				sbContainer.classList.remove("right");
-				sbContainer.classList.add("left");
+			if ( e.clientX < window.innerWidth / 4 ) {	
+				sbContainer.classList.remove("CS_right");
+				sbContainer.classList.add("CS_left");
 			}
 			
 			if ( window.innerWidth - e.clientX < window.innerWidth / 4 ) {
-				openingTab.classList.remove("left");
-				openingTab.classList.add("right");
-				
-				sbContainer.classList.remove("left");
-				sbContainer.classList.add("right");
+				sbContainer.classList.remove("CS_left");
+				sbContainer.classList.add("CS_right");
 			}
 			
 			let _top = sbContainer.offsetTop - ( sbContainer.Y - e.clientY );
@@ -172,8 +171,8 @@ if ( window != top ) {
 			
 			if ( !e.data.size ) return;
 
-			let iframe = document.getElementById('CS_searchBarIframe');
-			let sbContainer = document.getElementById('CS_sbContainer');
+			let iframe = getIframe();
+			let sbContainer = getContainer();
 
 			if ( !iframe ) return;
 			
@@ -218,13 +217,13 @@ if ( window != top ) {
 		});
 		
 		sbContainer.addEventListener('mouseenter', (e) => {
-			if ( openingTab.classList.contains('close') ) {
-				openingTab.classList.add('hover');
+			if ( openingTab.classList.contains('CS_close') ) {
+				openingTab.classList.add('CS_hover');
 			}
 		});
 		
 		sbContainer.addEventListener('mouseleave', (e) => {
-			openingTab.classList.remove('hover');
+			openingTab.classList.remove('CS_hover');
 		});
 	}
 }
