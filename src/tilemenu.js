@@ -761,7 +761,7 @@ function makeQuickMenu(options) {
 
 				targetDiv.style.backgroundColor = null;
 				
-				targetDiv.classList.add('hover');
+			//	targetDiv.classList.add('hover');
 				
 				if ( side === 'middle')
 					targetDiv.style.backgroundColor = 'lightblue';	

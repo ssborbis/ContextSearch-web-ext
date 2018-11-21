@@ -78,7 +78,7 @@ if ( window != top ) {
 		// open sidebar if dragging text over
 		openingTab.addEventListener('dragover', (e) => {
 			if ( getIframe() ) return;
-				openingTab.dispatchEvent(new MouseEvent('click'));
+			openingTab.dispatchEvent(new MouseEvent('click'));
 		});
 
 		openingTab.addEventListener('mousedown', (e) => {
@@ -216,14 +216,14 @@ if ( window != top ) {
 			
 		});
 		
-		sbContainer.addEventListener('mouseenter', (e) => {
-			if ( openingTab.classList.contains('CS_close') ) {
-				openingTab.classList.add('CS_hover');
-			}
-		});
+		// sbContainer.addEventListener('mouseenter', (e) => {
+			// if ( openingTab.classList.contains('CS_close') ) {
+				// openingTab.classList.add('CS_hover');
+			// }
+		// });
 		
-		sbContainer.addEventListener('mouseleave', (e) => {
-			openingTab.classList.remove('CS_hover');
-		});
+		// sbContainer.addEventListener('mouseleave', (e) => {
+			// openingTab.classList.remove('CS_hover');
+		// });
 	}
 }
