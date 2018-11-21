@@ -76,9 +76,10 @@ if ( window != top ) {
 		});
 		
 		// open sidebar if dragging text over
-		openingTab.addEventListener('dragover', (e) => {
+		openingTab.addEventListener('dragenter', (e) => {
 			if ( getIframe() ) return;
 			openingTab.dispatchEvent(new MouseEvent('click'));
+			getIframe().focus();
 		});
 
 		openingTab.addEventListener('mousedown', (e) => {
