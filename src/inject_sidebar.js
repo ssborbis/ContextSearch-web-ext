@@ -12,8 +12,8 @@ if ( window != top ) {
 		userOptions = message.userOptions || {};
 		main();
 		
-		// if ( userOptions.sideBar.startOpen )
-			// getOpeningTab().click();
+		if ( userOptions.sideBar.startOpen )
+			getOpeningTab().click();
 	});
 
 	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

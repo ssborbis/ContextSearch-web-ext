@@ -5,7 +5,7 @@
 	position:fixed;
 	z-index:2147483647;
 	white-space: nowrap;
-	transition: all .15s;
+	transition: all 0.01s;
 }
 #CS_sbContainer.CS_left {
 	left:0;
@@ -36,7 +36,7 @@
 	display:inline-block;
 	border:1px solid black;
 	opacity:.3;
-	transition: all .15s;
+	transition: inherit;
 	filter:invert(1);
 }
 #CS_sbOpeningTab:hover, #CS_sbContainer.CS_moving #CS_sbOpeningTab {
@@ -61,5 +61,5 @@
 	border:1px solid black;
 	max-width:0px;
 	overflow:hidden;
-	transition:all .15s;
+	transition:inherit;
 }

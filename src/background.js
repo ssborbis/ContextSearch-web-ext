@@ -1176,6 +1176,7 @@ const defaultUserOptions = {
 	searchBarCloseAfterSearch: true,
 	sideBar: {
 		enabled: true,
+		startOpen: false,
 		hotkey: [],
 		widget: {
 			enabled: false,
