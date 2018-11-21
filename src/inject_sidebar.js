@@ -12,8 +12,8 @@ if ( window != top ) {
 		userOptions = message.userOptions || {};
 		main();
 		
-		if ( userOptions.sideBar.startOpen )
-			getOpeningTab().click();
+		// if ( userOptions.sideBar.startOpen )
+			// getOpeningTab().click();
 	});
 
 	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -216,14 +216,14 @@ if ( window != top ) {
 			
 		});
 		
-		// sbContainer.addEventListener('mouseenter', (e) => {
-			// if ( openingTab.classList.contains('CS_close') ) {
-				// openingTab.classList.add('CS_hover');
-			// }
-		// });
+		sbContainer.addEventListener('mouseenter', (e) => {
+			if ( openingTab.classList.contains('CS_close') ) {
+				openingTab.classList.add('CS_hover');
+			}
+		});
 		
-		// sbContainer.addEventListener('mouseleave', (e) => {
-			// openingTab.classList.remove('CS_hover');
-		// });
+		sbContainer.addEventListener('mouseleave', (e) => {
+			openingTab.classList.remove('CS_hover');
+		});
 	}
 }

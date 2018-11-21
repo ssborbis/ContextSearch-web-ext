@@ -57,11 +57,13 @@ window.addEventListener('contextmenu', (e) => {
 });
 
 // what was this for?
-setInterval(() => {
-	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
-		userOptions = message.userOptions || {};
-	});
-}, 1000);
+if ( browser.runtime ) {
+	setInterval(() => {
+		browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+			userOptions = message.userOptions || {};
+		});
+	}, 1000);
+}
 
 function addToHistory(terms) {
 	
