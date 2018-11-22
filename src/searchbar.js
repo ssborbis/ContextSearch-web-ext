@@ -34,6 +34,15 @@ var quickMenuObject = {
 let columns;
 let sb_width;
 
+// function getQuickMenuElement() => return document.getElementById('quickMenuElement');
+// function getSearchBar() => return document.getElementById('quickMenuSearchBar');
+
+// let qm = document.getElementById('quickMenuElement');
+// let sb = document.getElementById('quickMenuSearchBar');
+// let tb = document.getElementById('searchEngineTitle');
+// let suggest = document.getElementById('suggestions');
+// let options = document.getElementById('optionsButton');
+
 // context menu options
 window.addEventListener('contextmenu', (e) => {
 	
@@ -311,50 +320,25 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	let qm = document.getElementById('quickMenuElement');
 	let sb = document.getElementById('quickMenuSearchBar');
 	let suggest = document.getElementById('suggestions');
-	
-	qm.style.overflowY = 'auto';
-	
-	for (let br of qm.querySelectorAll('br') )
-		qm.removeChild(br);
-	
-	let divs = qm.getElementsByTagName('div');
-	for (let i=0;i<divs.length;i++ ) {
-		
-		let div = divs[i];
-		if ( (i+1) % columns === 0 )
-			qm.insertBefore(document.createElement('br'), div.nextSibling);
 
-		div.onmouseenter = function() {
-			document.getElementById('searchEngineTitle').innerText = div.title;
-		}
-		div.onmouseleave = function() {
-			document.getElementById('searchEngineTitle').innerText = ' ';
-		}
-
-	}
+	qm.querySelectorAll('div').forEach( div => {
+		div.onmouseenter = () => document.getElementById('searchEngineTitle').innerText = div.title;
+		div.onmouseleave = () => document.getElementById('searchEngineTitle').innerText = ' ';
+	});
 
 	// create Options button
 	let div = document.getElementById('optionsButton');
 	if (!div) {
 		div = document.createElement('div');
 		div.id = 'optionsButton';
-		div.style = 'text-align:center;border-top:1px solid #e0e0e0';
-		div.className = 'hover';
-		let img = document.createElement('img');
-		img.src = "/icons/settings.png";
-		img.style.height = '16px';
-		img.style.padding = '8px';
 
 		div.onclick = function() {
 			document.body.style.visibility = 'hidden';
-			//location.href = browser.runtime.getURL('/options.html#browser_action');
 			browser.runtime.sendMessage({action: "openOptions"});
 			window.close();
 		}
 		
 		document.getElementById('searchEngineTitle').style.width = parseFloat(window.getComputedStyle(qm).width) - 10 + "px";
-		
-		div.appendChild(img);
 
 		// show on browser_action / not sidebar
 		if ( window == top ) document.body.appendChild(div);

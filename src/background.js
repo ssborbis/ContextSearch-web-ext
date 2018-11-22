@@ -1183,7 +1183,8 @@ const defaultUserOptions = {
 			position: "right",
 			offset: 100
 		}	
-	}
+	},
+	userStyles: ""
 };
 
 var userOptions = {};

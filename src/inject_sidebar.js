@@ -51,9 +51,13 @@ if ( window != top ) {
 			
 			let iframe = getIframe();
 			if ( iframe ) {
-				iframe.addEventListener('transitionend', (e) => {
+				if ( window.getComputedStyle(sbContainer).transitionDuration === "0s" )
 					iframe.parentNode.removeChild(iframe);
-				});
+				else {
+					sbContainer.addEventListener('transitionend', (e) => {
+						iframe.parentNode.removeChild(iframe);
+					}, {once: true});
+				}
 				iframe.style.maxWidth = null;
 				sbContainer.style.opacity = null;
 				sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";

@@ -196,6 +196,8 @@ function restoreOptions() {
 		document.getElementById('n_searchBarColumns').value = userOptions.searchBarColumns;
 		document.getElementById('s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		document.getElementById('cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
+		
+		document.getElementById('t_userStyles').value = userOptions.userStyles;
 			
 		buildSearchEngineContainer();
 	}
@@ -309,7 +311,9 @@ function saveOptions(e) {
 				position: document.getElementById('s_sideBarWidgetPosition').value,
 				offset: userOptions.sideBar.widget.offset
 			}
-		}
+		},
+		
+		userStyles: document.getElementById('t_userStyles').value
 	}
 	
 //	var setting = browser.storage.local.set({"userOptions": userOptions});
@@ -381,6 +385,8 @@ document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => 
 	
 	ev.target.blur();
 });
+
+document.getElementById('t_userStyles').addEventListener('change', saveOptions);
 
 function checkSearchJsonPath() {
 

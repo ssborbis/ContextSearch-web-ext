@@ -44,20 +44,6 @@
 	background-color:#eff0f1;
 	filter:none;
 }
-/* #CS_sbOpeningTab.CS_close { */
-	/* width:0; */
-	/* opacity:0; */
-	/* filter:none; */
-	/* background-image: none; */
-/* } */
-/* #CS_sbOpeningTab.CS_close.CS_hover { */
-	/* width:32px; */
-	/* background-color:#eff0f1; */
-	/* opacity:1; */
-	/* background-image: url(icons/crossmark.png); */
-	/* position:absolute; */
-	/* top:0;right:0; */
-/* } */
 #CS_sbOpeningTab.CS_close {
 	width:28px;
 	height:28px;

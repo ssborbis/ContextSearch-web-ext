@@ -12,27 +12,43 @@ BODY {
 .selectedNoFocus {
 	background-color: #b0b0b0 !important;
 }
-#quickMenuElement {
-	z-index:1;
-	overflow:hidden;
-}
-#quickMenuElement DIV, #quickMenuElement INPUT {
+#quickMenuElement > DIV, #quickMenuElement INPUT {
 	width:32px;
 	height:32px;
 	border:1px solid #e0e0e0;
 	padding:0;
 	margin:0;
 	display:inline-block;
-	background-size: 16px 16px;
-	background-position: center center;
+	background-size: 16px;
+	background-position: center;
 	background-repeat: no-repeat;
 	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
+	position:relative;
 }
-#quickMenuElement DIV:hover, .hover:hover {
-	background-color: #ccdbe8;
+#quickMenuElement > DIV:hover, #optionsButton:hover, .hover {
+	background-color: #ccdbe8 !important;
 	border-color: #ccdbe8;
 }
-#quickMenuElement, #quickMenuElement DIV {
+.hover.folderDrop::before {
+	content: "";
+	position: absolute;
+	top: 0; left: 0;
+	width: 100%;
+	height: 100%; 
+	background: url(/icons/add.png) no-repeat center;
+	background-size: 24px;
+}
+.hover.folderDrop .folderTileCorner{
+	display:none;
+}
+#optionsButton {
+	background: url(/icons/settings.png) no-repeat center;
+	background-size:16px;
+	height:32px;
+	width:100%;
+	border-top:1px solid #e0e0e0;
+}
+#quickMenuElement, #quickMenuElement > DIV {
 	box-sizing: content-box;
 	display:inline-block;
 	font-size:0;
@@ -43,7 +59,11 @@ BODY {
 	overflow:hidden;
 	white-space: nowrap;
 }
-#quickMenuElement DIV .folderLabel {
+#quickMenuElement {
+	z-index:1;
+	overflow-y:auto;
+}
+#quickMenuElement > DIV .folderLabel {
 	font-size:7pt;
 	line-height:1em;
 	padding:1px;
@@ -58,14 +78,14 @@ BODY {
 	text-align:center;
 	width:30px;
 }
-#quickMenuElement DIV[data-type="folder"] {
+#quickMenuElement > DIV[data-type="folder"] {
 	font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
 	font-weight: normal;
 	color:#444;
 	background-color:#FBFACE;
 	position:relative;
 }
-#quickMenuElement DIV[data-type="folder"]:hover {
+#quickMenuElement > DIV[data-type="folder"]:hover {
 	background-color: #ccdbe8;
 	border-color: #ccdbe8;
 }
@@ -73,12 +93,12 @@ BODY {
 	position:absolute;
 	right:0;
 	top:0;
-	width:0 !important;
-	height:0 !important;
-	border-style: solid !important;
-	border-width: 0 12px 12px 0 !important;
-	border-color: transparent #6ec179 transparent transparent !important;
-	background-color:transparent !important;
+	width:0;
+	height:0;
+	border-style: solid;
+	border-width: 0 12px 12px 0;
+	border-color: transparent #6ec179 transparent transparent;
+	background-color:transparent;
 	overflow:hidden;
 }
 #quickMenuSearchBarContainer IMG {
@@ -132,14 +152,14 @@ BODY {
 	font-size:10pt;
 	background-color:inherit;
 }
-.singleColumn {
-	width:300px !important;
-	height:20px !important;
-	font-size:11pt !important;
-	border:none !important;
-	font-family:Arial !important;
-	line-height:20px !important;
-	vertical-align:middle !important;
-	background-position:4px 2px !important;
+#quickMenuElement > DIV.singleColumn {
+	width:300px;
+	height:20px;
+	font-size:11pt;
+	border:none;
+	font-family:Arial;
+	line-height:20px;
+	vertical-align:middle;
+	background-position:4px 2px;
 	background-size:16px !important;
 }

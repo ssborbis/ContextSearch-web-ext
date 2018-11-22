@@ -1,24 +1,20 @@
+var styleEl = document.createElement('style');
+
+// Append <style> element to <head>
+document.head.appendChild(styleEl);
 
 function makeQuickMenu(options) {
 	
+	styleEl.innerText = userOptions.userStyles;
+
 	let type = options.type;
 	let mode = options.mode;
-	
-	styleEl = document.createElement('style');
 
-	// Append <style> element to <head>
-	document.head.appendChild(styleEl);
-
-	styleSheet = styleEl.sheet;
-
-	// styleSheet.insertRule("#quickMenuElement DIV { width: 64px; background-size: 64px 32px;background-color:#333;border-color:#444}", 0);
-	// styleSheet.insertRule('BODY { background-color:#333;color:#ddd; }', 0);
-	
 	let singleColumn = ( 
 		(type === 'searchbar' && userOptions.searchBarUseOldStyle) ||
 		(type === 'quickmenu' && userOptions.quickMenuUseOldStyle) 
 	) ? true : false;
-
+	
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
 
@@ -586,11 +582,9 @@ function makeQuickMenu(options) {
 				
 				// rebuild breaks
 				qme.querySelectorAll('br').forEach( br => { qme.removeChild(br) } );
-				let divs = qme.querySelectorAll('div');
-				for (i=0;i<divs.length;i++) {
-					if ( (i+1) % columns === 0 )
-						qme.insertBefore(document.createElement('br'), divs[i].nextSibling);
-				}
+				qme.querySelectorAll('DIV:nth-of-type(' + columns + 'n)').forEach( tile => {
+					tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+				});
 
 				browser.runtime.sendMessage({
 					action: "quickMenuIframeLoaded", 
@@ -692,12 +686,13 @@ function makeQuickMenu(options) {
 			quickMenuElement.appendChild(tile);
 
 			// break row
-			if ( (i + 1) % columns === 0) {
-				let br = document.createElement('br');
-				tile.parentNode.insertBefore(br, tile.nextSibling);
-			}
 
 		}
+		
+		quickMenuElement.querySelectorAll('DIV:nth-of-type(' + columns + 'n)').forEach( tile => {
+			let br = document.createElement('br');
+			tile.parentNode.insertBefore(br, tile.nextSibling);
+		});
 
 		// check if any search engines exist and link to Options if none
 		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
@@ -718,7 +713,7 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.left = '0px';
 		
 		/* dnd */
-		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"]):not([data-hidden])');
+		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 			
 			function getSide(t, e) {
@@ -726,12 +721,12 @@ function makeQuickMenu(options) {
 				
 				if ( t.node.type === 'folder' ) {
 					if ( singleColumn ) {
-						if ( e.y - rect.y < .33 * rect.height ) return "before";
-						else if ( e.y - rect.y > .66 * rect.height ) return "after";
+						if ( e.y - rect.y < .3 * rect.height ) return "before";
+						else if ( e.y - rect.y > .7 * rect.height ) return "after";
 						else return "middle";
 					} else {
-						if ( e.x - rect.x < .33 * rect.width ) return "before";
-						else if ( e.x - rect.x > .66 * rect.width ) return "after";
+						if ( e.x - rect.x < .3 * rect.width ) return "before";
+						else if ( e.x - rect.x > .7 * rect.width ) return "after";
 						else return "middle";
 					}
 				} else {
@@ -752,40 +747,46 @@ function makeQuickMenu(options) {
 			div.addEventListener('dragstart', (e) => {
 				e.dataTransfer.setData("text", "");
 				div.id = 'dragDiv';
+				div.style.opacity = .5;
 			});
-			
 			div.addEventListener('dragover', (e) => {
 				e.preventDefault();
 				let targetDiv = getTargetElement(e.target);
+
 				let side = getSide(targetDiv, e);
 
-				targetDiv.style.backgroundColor = null;
+				targetDiv.classList.add('hover');
 				
-			//	targetDiv.classList.add('hover');
+				if ( side === 'middle' && document.getElementById('dragDiv') )
+					targetDiv.classList.add('folderDrop');
+				else
+					targetDiv.classList.remove('folderDrop');
 				
-				if ( side === 'middle')
-					targetDiv.style.backgroundColor = 'lightblue';	
+			});
+			div.addEventListener('dragenter', (e) => {
+				e.preventDefault();
+				let targetDiv = getTargetElement(e.target);
+				targetDiv.style.transition = 'none';
 			});
 			div.addEventListener('dragleave', (e) => {
 				e.preventDefault();
 				let targetDiv = getTargetElement(e.target);
-				let side = getSide(targetDiv, e);
 
-				targetDiv.style.backgroundColor = null;
+				targetDiv.classList.remove('hover', 'folderDrop');
+				targetDiv.style.transition = null;
 			});
 			div.addEventListener('dragend', (e) => {
+				
+				let dragDiv = document.getElementById('dragDiv');
+				dragDiv.style.opacity = null;
+				dragDiv.id = null;
 
-				quickMenuElement.querySelectorAll('br').forEach( br => {
-					br.parentNode.removeChild(br);
+				// rebuild breaks
+				quickMenuElement.querySelectorAll('br').forEach( br => { quickMenuElement.removeChild(br) } );
+				quickMenuElement.querySelectorAll('DIV:nth-of-type(' + columns + 'n)').forEach( tile => {
+					tile.insertAdjacentElement('afterend', document.createElement('br'));
 				});
-
-				let els = quickMenuElement.querySelectorAll('div');
-				for ( let i=0;i<els.length;i++ ) {
-					if ( (i + 1) % columns === 0 ) {
-						let br = document.createElement('br');
-						quickMenuElement.insertBefore(br, els[i].nextSibling);
-					}
-				}
+				
 			});
 			div.addEventListener('drop', (e) => {
 
@@ -804,6 +805,7 @@ function makeQuickMenu(options) {
 
 				if (!targetDiv) return;
 				if (!dragDiv || !dragDiv.node) return;
+				if (targetDiv === dragDiv) return;
 				
 				let side = getSide(targetDiv, e);
 
@@ -812,8 +814,6 @@ function makeQuickMenu(options) {
 				else if ( side === "after" )
 					dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
 				else dragDiv.parentNode.removeChild(dragDiv);
-
-				dragDiv.id = null;
 
 				let dragNode = dragDiv.node;
 				let targetNode = targetDiv.node;
