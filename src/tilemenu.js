@@ -120,9 +120,9 @@ function makeQuickMenu(options) {
 	});
 	
 	quickMenuElement.selectFirstTile = function() {
-		let firstTile = quickMenuElement.querySelector('div:not([data-hidden])');
+		let firstTile = quickMenuElement.querySelector('.tile:not([data-hidden])');
 		firstTile.classList.add('selectedFocus');
-		sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll("div"), firstTile);
+		sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll(".tile"), firstTile);
 	}
 
 	sb.addEventListener('keydown', (e) => {
@@ -156,12 +156,12 @@ function makeQuickMenu(options) {
 			e.preventDefault();
 			quickMenuElement.focus();
 			
-			let divs = quickMenuElement.querySelectorAll('div:not([data-type="tool"]):not([data-hidden])');
+			let divs = quickMenuElement.querySelectorAll('.tile:not([data-type="tool"]):not([data-hidden])');
 			
 			let selectedDiv = ( direction === 1 ) ? divs[0] : divs[divs.length - 1];
 
 			selectedDiv.classList.add('selectedFocus');
-			sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll('div'), selectedDiv);
+			sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll('.tile'), selectedDiv);
 		}
 	});
 	
@@ -229,7 +229,7 @@ function makeQuickMenu(options) {
 			direction = -1;
 
 		// get all tiles
-		let divs = quickMenuElement.querySelectorAll('div');
+		let divs = quickMenuElement.querySelectorAll('.tile');
 
 		// clear current selection
 		if (sb.selectedIndex !== undefined)
@@ -549,19 +549,8 @@ function makeQuickMenu(options) {
 
 		function buildMoreTile() {
 			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.png'), browser.i18n.getMessage('more') || 'more');
-					
-			if (singleColumn) {
-				moreTile.className = "singleColumn";
-				moreTile.innerHTML = null; // added to clear monograms from folder icons
-				moreTile.style.textAlign='center';
-			
-				let span = document.createElement('span');
-				span.innerText = moreTile.title;
-				span.style.marginLeft = '24px';
-			
-				moreTile.appendChild(span); 
-			}
 
+			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "tool";
 
 			moreTile.addEventListener('mouseup', (e) => {
@@ -582,7 +571,7 @@ function makeQuickMenu(options) {
 				
 				// rebuild breaks
 				qme.querySelectorAll('br').forEach( br => { qme.removeChild(br) } );
-				qme.querySelectorAll('DIV:nth-of-type(' + columns + 'n)').forEach( tile => {
+				qme.querySelectorAll('.tile:nth-of-type(' + columns + 'n)').forEach( tile => {
 					tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
 				});
 
@@ -594,7 +583,7 @@ function makeQuickMenu(options) {
 					},
 					resizeOnly: true,
 					tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
-					tileCount: qme.querySelectorAll('div:not([data-hidden])').length
+					tileCount: qme.querySelectorAll('.tile:not([data-hidden])').length
 				});
 
 			});
@@ -657,39 +646,17 @@ function makeQuickMenu(options) {
 		}
 
 		// make rows / columns
-		for (let i=0;i<tileArray.length;i++) {
+		tileArray.forEach( tile => {
 			
-			let tile = tileArray[i];
+			tile.className = 'tile';
+			tile.dataset.title = tile.title;
 
-			quickMenuElement.appendChild(tile);
-
-			if (singleColumn) {
-				tile.className = "singleColumn";
-				tile.innerHTML = null; // added to clear monograms from folder icons
-				
-				let span = document.createElement('span');
-				span.innerText = tile.title;
-				span.style.marginLeft = '24px';
-				
-				if (tile.dataset.type === 'separator') {
-					tile.style.height = "2px";
-					tile.style.maxHeight = "2px";
-					tile.style.margin = "4px 0";
-					tile.style.overflow = "hidden";
-					tile.style.backgroundColor = "#ddd";
-					tile.style.border = "none";
-				}
-				
-				tile.appendChild(span); 
-			}
+			if (singleColumn) tile.classList.add("singleColumn");
 			
 			quickMenuElement.appendChild(tile);
-
-			// break row
-
-		}
+		});
 		
-		quickMenuElement.querySelectorAll('DIV:nth-of-type(' + columns + 'n)').forEach( tile => {
+		quickMenuElement.querySelectorAll('.tile:nth-of-type(' + columns + 'n)').forEach( tile => {
 			let br = document.createElement('br');
 			tile.parentNode.insertBefore(br, tile.nextSibling);
 		});
@@ -713,7 +680,7 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.left = '0px';
 		
 		/* dnd */
-		let tileDivs = quickMenuElement.querySelectorAll('div:not([data-type="tool"])');
+		let tileDivs = quickMenuElement.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 			
 			function getSide(t, e) {
@@ -730,7 +697,10 @@ function makeQuickMenu(options) {
 						else return "middle";
 					}
 				} else {
-					return ( e.x - rect.x < .5 * rect.width ) ? "before" : "after";
+					if ( singleColumn ) 
+						return ( e.y - rect.y < .5 * rect.height ) ? "before" : "after";
+					else
+						return ( e.x - rect.x < .5 * rect.width ) ? "before" : "after";
 				}
 			}
 			
@@ -746,46 +716,104 @@ function makeQuickMenu(options) {
 
 			div.addEventListener('dragstart', (e) => {
 				e.dataTransfer.setData("text", "");
+				
+				// console.log(div.style.backgroundImage);
+				
+				// let img_div = document.createElement('div');
+				
+				// var url = div.style.backgroundImage.match(/\((.*?)\)/)[1].replace(/('|")/g,'');
+				// let img = new Image();
+				// img.src = div.node.type === 'folder' ? browser.runtime.getURL('icons/folder3.png') : url || browser.runtime.getURL('icons/search.png');
+				
+				// img.width = '20';
+				
+				// img_div.appendChild(img);
+				// document.body.appendChild(img_div);
+				// e.dataTransfer.setDragImage(img_div, 0, 0);
+				let img = new Image();
+				img.src = browser.runtime.getURL('icons/transparent.gif');
+				e.dataTransfer.setDragImage(img, 0, 0);
 				div.id = 'dragDiv';
 				div.style.opacity = .5;
 			});
 			div.addEventListener('dragover', (e) => {
 				e.preventDefault();
 				let targetDiv = getTargetElement(e.target);
+				let dragDiv = document.getElementById('dragDiv');
 
-				let side = getSide(targetDiv, e);
+				if ( targetDiv === dragDiv ) return;
+				
+				targetDiv.classList.add('dragHover');
 
-				targetDiv.classList.add('hover');
-				
-				if ( side === 'middle' && document.getElementById('dragDiv') )
-					targetDiv.classList.add('folderDrop');
-				else
-					targetDiv.classList.remove('folderDrop');
-				
+				// if moving tiles, show arrow
+				if ( dragDiv ) {
+					
+					let side = getSide(targetDiv, e);
+					targetDiv.dataset.side = side;
+					
+					let arrow = document.getElementById('arrow');
+					arrow.style.left = arrow.style.right = null;
+					arrow.style.display = null;
+
+					if ( singleColumn) {
+						if ( side === 'before' )
+							arrow.style.top = targetDiv.getBoundingClientRect().top - 6 + "px";
+						else if ( side === 'after' )
+							arrow.style.top = targetDiv.getBoundingClientRect().top + targetDiv.getBoundingClientRect().height - 6 + "px";
+						else
+							arrow.style.display = 'none';
+					} else {
+						if ( side === 'before' )
+							arrow.style.left = targetDiv.getBoundingClientRect().left - 12 + "px";
+						else if ( side === 'after' )
+							arrow.style.left = targetDiv.getBoundingClientRect().left + targetDiv.getBoundingClientRect().width - 12 + "px";
+						else
+							arrow.style.display = 'none';
+					}
+				}
 			});
 			div.addEventListener('dragenter', (e) => {
-				e.preventDefault();
+			//	e.preventDefault();
+				e.target.dispatchEvent(new MouseEvent('mouseenter'));
 				let targetDiv = getTargetElement(e.target);
 				targetDiv.style.transition = 'none';
+				
+				// if moving tiles, show indicator
+				if ( document.getElementById('dragDiv') ) {
+					let arrow = document.getElementById('arrow');
+						
+					if ( !arrow ) {
+						arrow = document.createElement('div');
+						document.body.appendChild(arrow);
+					}
+					if ( singleColumn ) arrow.className = 'singleColumn';
+					arrow.id = 'arrow';
+					arrow.style.top = targetDiv.getBoundingClientRect().top + "px";
+					arrow.style.display = null;
+				}
 			});
 			div.addEventListener('dragleave', (e) => {
-				e.preventDefault();
+			//	e.preventDefault();
+				e.target.dispatchEvent(new MouseEvent('mouseleave'));
 				let targetDiv = getTargetElement(e.target);
 
-				targetDiv.classList.remove('hover', 'folderDrop');
+				targetDiv.classList.remove('dragHover');
 				targetDiv.style.transition = null;
+				
+				let arrow = document.getElementById('arrow');
+				if ( arrow ) arrow.style.display = 'none';
 			});
 			div.addEventListener('dragend', (e) => {
 				
 				let dragDiv = document.getElementById('dragDiv');
 				dragDiv.style.opacity = null;
-				dragDiv.id = null;
+				dragDiv.id = "";
+				
+				let targetDiv = getTargetElement(e.target);
+				targetDiv.classList.remove('dragHover');
 
-				// rebuild breaks
-				quickMenuElement.querySelectorAll('br').forEach( br => { quickMenuElement.removeChild(br) } );
-				quickMenuElement.querySelectorAll('DIV:nth-of-type(' + columns + 'n)').forEach( tile => {
-					tile.insertAdjacentElement('afterend', document.createElement('br'));
-				});
+				let arrow = document.getElementById('arrow');
+				if ( arrow ) arrow.style.display = 'none';
 				
 			});
 			div.addEventListener('drop', (e) => {
@@ -802,6 +830,7 @@ function makeQuickMenu(options) {
 				let dragDiv = document.getElementById('dragDiv');
 
 				let targetDiv = getTargetElement(e.target);
+				targetDiv.classList.remove('dragHover');
 
 				if (!targetDiv) return;
 				if (!dragDiv || !dragDiv.node) return;
@@ -843,6 +872,12 @@ function makeQuickMenu(options) {
 					browser.runtime.sendMessage({action: "updateUserOptions"});
 				});
 				
+				// rebuild breaks
+				quickMenuElement.querySelectorAll('br').forEach( br => { quickMenuElement.removeChild(br) } );
+				quickMenuElement.querySelectorAll('.tile:nth-of-type(' + columns + 'n)').forEach( tile => {
+					tile.insertAdjacentElement('afterend', document.createElement('br'));
+				});
+				
 			});
 			
 		});
@@ -879,7 +914,7 @@ function makeQuickMenu(options) {
 					},
 					resizeOnly: true,
 					tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
-					tileCount: qme.querySelectorAll('div:not([data-hidden])').length
+					tileCount: qme.querySelectorAll('.tile:not([data-hidden])').length
 				});
 				
 				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
@@ -1006,17 +1041,13 @@ function makeQuickMenu(options) {
 				case "folder":
 					tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": "/icons/transparent.gif", node.title);
 
-					let span = document.createElement('span');
-					span.className = "folderLabel";
-					span.innerText = node.title;
-
+					// let span = document.createElement('span');
+					// span.className = "folderLabel";
+					// span.innerText = node.title;
+			
 					tile.dataset.type = 'folder';
-					tile.appendChild(span);
-					
-					let corner = document.createElement('span');
-					corner.className = 'folderTileCorner';
-					tile.appendChild(corner);
-					
+					// tile.appendChild(span);
+
 					tile.addEventListener('mouseup', (e) => {
 						let method = getOpenMethod(e, true);
 
@@ -1033,7 +1064,7 @@ function makeQuickMenu(options) {
 								},
 								resizeOnly: true,
 								tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
-								tileCount: qme.querySelectorAll('div:not([data-hidden])').length
+								tileCount: qme.querySelectorAll('.tile:not([data-hidden])').length
 							});
 
 							document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));

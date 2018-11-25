@@ -49,6 +49,7 @@
 			.code {
 				font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
 				font-weight: normal;
+				user-select: text;
 				-moz-user-select: text;
 				color:blue;
 				background-color:#FBFACE;
@@ -351,6 +352,7 @@
 				display:none;
 			}
 			.checkboxOpeningChoice LABEL {
+				user-select:none;
 				-moz-user-select: none;
 			}
 			.checkboxOpeningChoice input + label {
@@ -791,6 +793,7 @@
 			}
 			#d_clearSearchHistory {
 				cursor: pointer;
+				user-select:none;
 				-moz-user-select: none;
 			}
 			.contextMenu {
@@ -1280,14 +1283,14 @@
 
 				<p>
 					<div class='slider_label'>
-					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
+					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='user-select:none;-moz-user-select:none' /><label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
 					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)' data-i18n_tooltip='MenuSize'>?</span>
 					</div>
 					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".05" value="1" />
 				</p>
 				<p>
 					<div class='slider_label'>
-					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='-moz-user-select:none' /><label style='margin-left:10px' data-i18n='IconSize'>Icon Size</label>
+					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='user-select:none;-moz-user-select:none' /><label style='margin-left:10px' data-i18n='IconSize'>Icon Size</label>
 					<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely' data-i18n_tooltip='IconSize'>?</span>
 					</div>
 					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />

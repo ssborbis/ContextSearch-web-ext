@@ -66,7 +66,7 @@ window.addEventListener('contextmenu', (e) => {
 });
 
 // what was this for?
-if ( browser.runtime ) {
+if ( browser.runtime !== undefined ) {
 	setInterval(() => {
 		browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			userOptions = message.userOptions || {};
@@ -321,7 +321,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	let sb = document.getElementById('quickMenuSearchBar');
 	let suggest = document.getElementById('suggestions');
 
-	qm.querySelectorAll('div').forEach( div => {
+	qm.querySelectorAll('.tile').forEach( div => {
 		div.onmouseenter = () => document.getElementById('searchEngineTitle').innerText = div.title;
 		div.onmouseleave = () => document.getElementById('searchEngineTitle').innerText = ' ';
 	});
@@ -362,14 +362,15 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		if ( window.innerHeight < document.body.scrollHeight ) {
 			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + suggest.getBoundingClientRect().height + tb.getBoundingClientRect().height + options.getBoundingClientRect().height ) + "px";
 		} 
+
+		// account for scroll bars
+		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
+		suggest.style.width = qm.getBoundingClientRect().width + "px";
 		
-		if (qm.getBoundingClientRect().width < window.innerWidth ) {
-			qm.querySelectorAll('div').forEach( div => {
+		if (qm.getBoundingClientRect().width < 100 /* browser_action has a minimum window size */) {
+			qm.querySelectorAll('.tile').forEach( div => {
 				div.style.width = window.innerWidth / columns + "px";
 			});
-			
-			// account for scroll bars
-			qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 		}
 	});
 	
@@ -393,7 +394,7 @@ function sideBarResize() {
 
 	setTimeout( () => {
 		qm.style.height = Math.min(window.innerHeight, window.innerHeight - allOtherElsHeight) + "px";
-		
+
 		// account for scrollbars
 		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 		window.parent.postMessage({size: {width: qm.getBoundingClientRect().width}}, "*");

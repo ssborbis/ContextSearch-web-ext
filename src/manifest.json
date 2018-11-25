@@ -69,7 +69,13 @@
 		"48": "icons/icon48.png"
 	},
 	
-	"web_accessible_resources": [],
+	"web_accessible_resources": [
+		"/quickmenu.html",
+		"/customSearch.html",
+		"/searchbar.html",
+		"/icons/search.png",
+		"/icons/crossmark.png"
+	],
 
 	"browser_action": {
 		"default_title": "ContextSearch",

@@ -12,7 +12,7 @@ BODY {
 .selectedNoFocus {
 	background-color: #b0b0b0 !important;
 }
-#quickMenuElement > DIV, #quickMenuElement INPUT {
+.tile {
 	width:32px;
 	height:32px;
 	border:1px solid #e0e0e0;
@@ -25,22 +25,6 @@ BODY {
 	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
 	position:relative;
 }
-#quickMenuElement > DIV:hover, #optionsButton:hover, .hover {
-	background-color: #ccdbe8 !important;
-	border-color: #ccdbe8;
-}
-.hover.folderDrop::before {
-	content: "";
-	position: absolute;
-	top: 0; left: 0;
-	width: 100%;
-	height: 100%; 
-	background: url(/icons/add.png) no-repeat center;
-	background-size: 24px;
-}
-.hover.folderDrop .folderTileCorner{
-	display:none;
-}
 #optionsButton {
 	background: url(/icons/settings.png) no-repeat center;
 	background-size:16px;
@@ -48,8 +32,8 @@ BODY {
 	width:100%;
 	border-top:1px solid #e0e0e0;
 }
-#quickMenuElement, #quickMenuElement > DIV {
-	box-sizing: content-box;
+#quickMenuElement, .tile {
+	/* box-sizing: content-box; */
 	display:inline-block;
 	font-size:0;
 	line-height:0;
@@ -63,7 +47,8 @@ BODY {
 	z-index:1;
 	overflow-y:auto;
 }
-#quickMenuElement > DIV .folderLabel {
+.tile[data-type="folder"]:not(.singleColumn)::before {
+	content:attr(data-title);
 	font-size:7pt;
 	line-height:1em;
 	padding:1px;
@@ -72,34 +57,57 @@ BODY {
 	text-align:center;
 	display:table-cell;
 	vertical-align:middle;
-	height:30px;
+	height:100%;
 	overflow:hidden;
 	white-space:normal;
 	text-align:center;
-	width:30px;
+	width:100%;
+	position:absolute;
+	top: calc(50% - 6px);
 }
-#quickMenuElement > DIV[data-type="folder"] {
+.tile[data-type="folder"] {
 	font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
 	font-weight: normal;
 	color:#444;
 	background-color:#FBFACE;
 	position:relative;
 }
-#quickMenuElement > DIV[data-type="folder"]:hover {
+.tile:hover, #optionsButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: #ccdbe8;
 	border-color: #ccdbe8;
 }
-.folderTileCorner {
+.dragHover:not([data-side]) {
+	background-color:#0078d7;
+	color:white;
+}
+.dragHover * {
+	pointer-events:none;
+}
+.dragHover.singleColumn[data-side="before"] {
+	border-top:1px solid #0078d7;
+}
+.dragHover.singleColumn[data-side="after"] {
+	border-bottom:1px solid #0078d7;
+}
+#arrow {
+	pointer-events:none;
 	position:absolute;
-	right:0;
 	top:0;
-	width:0;
-	height:0;
-	border-style: solid;
-	border-width: 0 12px 12px 0;
-	border-color: transparent #6ec179 transparent transparent;
-	background-color:transparent;
-	overflow:hidden;
+	width: 0; 
+	height: 0; 
+	border-left: 12px solid transparent;
+	border-right: 12px solid transparent; 
+	border-top: 12px solid #6ec179;
+	z-index:2;
+}
+#arrow.singleColumn {
+	transform: rotate(-90deg);
+	left:-6px;
+	border-top-color:#0078d7;
+}
+.tile[data-type="folder"][data-side="middle"].dragHover {
+	background-color:#0078d7;
+	color:white;
 }
 #quickMenuSearchBarContainer IMG {
 	height:18px;
@@ -129,16 +137,17 @@ BODY {
 	transition:max-height .25s ease-in-out;
 	max-height:0;
 }
-#suggestions DIV {
+#suggestions > DIV {
 	background-color:white;
 	padding-left: 5px;
 	font-weight:200;
 	font-family: Arial;
 	font-size:11pt;
 	cursor:default;
+	user-select:none;
 	-moz-user-select: none;
 }
-#suggestions DIV:hover {
+#suggestions > DIV:hover {
 	background-color: #ccdbe8;
 }
 #searchEngineTitle {
@@ -152,7 +161,7 @@ BODY {
 	font-size:10pt;
 	background-color:inherit;
 }
-#quickMenuElement > DIV.singleColumn {
+.tile.singleColumn {
 	width:300px;
 	height:20px;
 	font-size:11pt;
@@ -162,4 +171,17 @@ BODY {
 	vertical-align:middle;
 	background-position:4px 2px;
 	background-size:16px !important;
+}
+.tile.singleColumn::before {
+	content: attr(data-title);
+	margin-left:24px;
+}
+.tile.singleColumn[data-type="separator"] {
+	height:2px;
+	maxHeight:2px;
+	margin:4px 0;
+	overflow:hidden;
+	background-color:#ddd;
+	border:none;
+	display:block;
 }
