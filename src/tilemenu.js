@@ -752,24 +752,14 @@ function makeQuickMenu(options) {
 					targetDiv.dataset.side = side;
 					
 					let arrow = document.getElementById('arrow');
-					arrow.style.left = arrow.style.right = null;
 					arrow.style.display = null;
-
-					if ( singleColumn) {
-						if ( side === 'before' )
-							arrow.style.top = targetDiv.getBoundingClientRect().top - 6 + "px";
-						else if ( side === 'after' )
-							arrow.style.top = targetDiv.getBoundingClientRect().top + targetDiv.getBoundingClientRect().height - 6 + "px";
-						else
-							arrow.style.display = 'none';
-					} else {
-						if ( side === 'before' )
-							arrow.style.left = targetDiv.getBoundingClientRect().left - 12 + "px";
-						else if ( side === 'after' )
-							arrow.style.left = targetDiv.getBoundingClientRect().left + targetDiv.getBoundingClientRect().width - 12 + "px";
-						else
-							arrow.style.display = 'none';
-					}
+					
+					let rect = targetDiv.getBoundingClientRect();
+					arrow.style.setProperty('--target-left', rect.left + "px");
+					arrow.style.setProperty('--target-top', rect.top + "px");
+					arrow.style.setProperty('--target-width', rect.width + "px");
+					arrow.style.setProperty('--target-height', rect.height + "px");
+					arrow.dataset.side = side;
 				}
 			});
 			div.addEventListener('dragenter', (e) => {
