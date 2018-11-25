@@ -199,6 +199,8 @@ function restoreOptions() {
 		
 		document.getElementById('t_userStyles').value = userOptions.userStyles;
 		document.getElementById('cb_enableAnimations').checked = userOptions.enableAnimations;
+		document.getElementById('s_quickMenuTheme').value = userOptions.quickMenuTheme;
+		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
 			
 		buildSearchEngineContainer();
 	}
@@ -315,7 +317,9 @@ function saveOptions(e) {
 		},
 		
 		userStyles: document.getElementById('t_userStyles').value,
-		enableAnimations: document.getElementById('cb_enableAnimations').checked
+		enableAnimations: document.getElementById('cb_enableAnimations').checked,
+		quickMenuTheme: document.getElementById('s_quickMenuTheme').value,
+		searchBarTheme: document.getElementById('s_searchBarTheme').value
 	}
 	
 //	var setting = browser.storage.local.set({"userOptions": userOptions});

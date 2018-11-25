@@ -1,0 +1,37 @@
+:root {
+    --hover: #666667;
+}
+BODY { 
+    background-color:#323234;
+    color:#f9f9fa; 
+}
+.tile {
+    border-color:#444;
+}
+#suggestions, #searchBar { 
+    background-color:#454547;
+    color:#f9f9fa;
+}
+#suggestions {
+    border-color:#535355;
+}
+#suggestions IMG {
+    filter:invert(1);
+}
+#searchBarContainer > IMG {
+    filter:invert(1);
+}
+.tile[data-type="tool"] {
+    filter:invert(1) brightness(50%);
+}
+.tile[data-type="folder"] {
+    background-color:#3293d4;
+    color:#dedede;
+}
+.tile[data-type="folder"]:not(.singleColumn)::before {
+    background-color:#287cb3;
+    border-color:#777;
+}
+.tile[data-type="folder"]:not(.singleColumn) {
+    color:#dedede;
+}

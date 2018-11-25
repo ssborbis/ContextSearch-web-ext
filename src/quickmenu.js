@@ -85,6 +85,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		
 		if ( userOptions === {} ) return;
 		
+		if ( userOptions.quickMenuTheme === 'dark' )
+			document.querySelector('#dark').rel="stylesheet";
+		
 		makeFrameContents();
 		
 	});

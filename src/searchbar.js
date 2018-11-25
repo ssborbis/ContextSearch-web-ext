@@ -103,6 +103,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	if ( userOptions === {} ) return;
 	
+	if ( userOptions.searchBarTheme === 'dark' )
+		document.querySelector('#dark').rel="stylesheet";
+
 	let sb = document.getElementById('searchBar');
 	sb.placeholder = browser.i18n.getMessage('Search');
 
