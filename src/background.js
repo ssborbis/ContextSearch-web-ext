@@ -1184,7 +1184,8 @@ const defaultUserOptions = {
 			offset: 100
 		}	
 	},
-	userStyles: ""
+	userStyles: "",
+	enableAnimations: true
 };
 
 var userOptions = {};

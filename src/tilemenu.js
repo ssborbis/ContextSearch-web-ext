@@ -599,7 +599,7 @@ function makeQuickMenu(options) {
 		// initialize slide-in animation
 		quickMenuElement.style.position = 'relative';
 		quickMenuElement.style.visibility = 'hidden';
-		quickMenuElement.style.transition = null;
+		quickMenuElement.style.transition = 'none';
 	
 		// remove separators if using grid
 		if (!singleColumn) {
@@ -673,9 +673,10 @@ function makeQuickMenu(options) {
 		}
 
 		// slide-in animation
+		if ( !userOptions.enableAnimations ) quickMenuElement.style.setProperty('--enable-animations', 'none');
 		quickMenuElement.style.left = quickMenuElement.getBoundingClientRect().width * ( (options.reverse) ? -1 : 1 ) + "px";
 		void( quickMenuElement.offsetHeight );
-		quickMenuElement.style.transition = "left .15s ease-in-out";
+		quickMenuElement.style.transition = null;
 		quickMenuElement.style.visibility = null;
 		quickMenuElement.style.left = '0px';
 		

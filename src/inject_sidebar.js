@@ -51,17 +51,13 @@ if ( window != top ) {
 			
 			let iframe = getIframe();
 			if ( iframe ) {
-				if ( window.getComputedStyle(sbContainer).transitionDuration === "0s" )
-					iframe.parentNode.removeChild(iframe);
-				else {
-					sbContainer.addEventListener('transitionend', (e) => {
-						iframe.parentNode.removeChild(iframe);
-					}, {once: true});
-				}
 				iframe.style.maxWidth = null;
 				sbContainer.style.opacity = null;
 				sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 				openingTab.classList.remove('CS_close');
+
+				runAtTransitionEnd(sbContainer, "height", () => { iframe.parentNode.removeChild(iframe) });
+
 				return;
 			}
 			
@@ -76,7 +72,9 @@ if ( window != top ) {
 			sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
 			
 			sbContainer.style.opacity = 1;
-
+			
+			if ( !userOptions.enableAnimations ) 
+				sbContainer.style.setProperty('--enable-animations', 'none');
 		});
 		
 		// open sidebar if dragging text over

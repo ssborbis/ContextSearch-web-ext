@@ -219,7 +219,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 				
 				suggest.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 
-			//	suggest.addEventListener('transitionend', postQuickMenuSize);
 				suggest.addEventListener('transitionend', (e) => {
 					
 					// for browser_action

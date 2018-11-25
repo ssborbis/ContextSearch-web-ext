@@ -121,14 +121,19 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	qmc.style.transformOrigin = "top left";
 	qmc.style.transform = "scale(" + new_scale + ")";
 	
-	qmc.addEventListener("transitionend", (e) => {
+/*	qmc.addEventListener("transitionend", (e) => {
 		if (e.propertyName !== "height") return;
 		repositionOffscreenElement( qmc );
 	}, {once: true});
+*/
 	
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
 	
+	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--enable-animations', 'none');
+	
+	runAtTransitionEnd( qmc, "height", () => { repositionOffscreenElement( qmc ) });
+		
 	if (! resizeOnly) { // skip positioning if this is a resize only
 		for (let position of userOptions.quickMenuPosition.split(" ")) {
 			switch (position) {

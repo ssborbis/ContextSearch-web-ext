@@ -5,7 +5,7 @@
 	position:fixed;
 	z-index:2147483647;
 	white-space: nowrap;
-	transition: all 0.01s;
+	transition: var(--enable-animations, all 0.15s);
 }
 #CS_sbContainer.CS_left {
 	left:0;

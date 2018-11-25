@@ -46,6 +46,7 @@ BODY {
 #quickMenuElement {
 	z-index:1;
 	overflow-y:auto;
+	transition:var(--enable-animations, left .15s ease-in-out);
 }
 .tile[data-type="folder"]:not(.singleColumn)::before {
 	content:attr(data-title);

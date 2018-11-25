@@ -60,3 +60,16 @@ window.addEventListener('focus', (ev) => {
 		browser.runtime.sendMessage({action: "nativeAppRequest"});
 	}, 500);
 });
+
+function runAtTransitionEnd(el, prop, callback) {
+	let oldProp = null;
+	let checkPropInterval = setInterval(() => {
+		let newProp = window.getComputedStyle(el).getPropertyValue(prop);
+		if ( newProp !== oldProp ) {
+			oldProp = newProp;
+			return;
+		}
+		callback();
+		clearInterval(checkPropInterval);
+	},25);
+}

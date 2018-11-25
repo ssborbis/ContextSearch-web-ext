@@ -198,6 +198,7 @@ function restoreOptions() {
 		document.getElementById('cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		
 		document.getElementById('t_userStyles').value = userOptions.userStyles;
+		document.getElementById('cb_enableAnimations').checked = userOptions.enableAnimations;
 			
 		buildSearchEngineContainer();
 	}
@@ -313,7 +314,8 @@ function saveOptions(e) {
 			}
 		},
 		
-		userStyles: document.getElementById('t_userStyles').value
+		userStyles: document.getElementById('t_userStyles').value,
+		enableAnimations: document.getElementById('cb_enableAnimations').checked
 	}
 	
 //	var setting = browser.storage.local.set({"userOptions": userOptions});

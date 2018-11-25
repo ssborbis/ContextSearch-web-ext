@@ -15,7 +15,7 @@
 	overflow:hidden;
 	display:block;
 	z-index: 2147483647; /* max 32-bit integer */
-	transition: width .15s ease-in-out, height .15s ease-in-out, opacity .1s;
+	transition: var(--enable-animations, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
 }
 #quickMenuIframe[data-openingopacity] {
 	opacity:var(--opening-opacity);
