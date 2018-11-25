@@ -6,7 +6,7 @@ const displayCount = 10; // number of total suggestions to display (browser_acti
 // show the add search engine icon in the searchbar
 // browser.runtime.sendMessage({action: "getOpenSearchHref"}).then( (result) => {
 	// if (result.href) {
-		// let sb = document.getElementById('quickMenuSearchBar');
+		// let sb = document.getElementById('searchBar');
 		// let img = document.createElement('img');
 		// img.src = '/icons/add_search.png';
 		// img.style = 'height:16px;position:absolute;right:4px;top:4px;z-index:2';
@@ -35,10 +35,10 @@ let columns;
 let sb_width;
 
 // function getQuickMenuElement() => return document.getElementById('quickMenuElement');
-// function getSearchBar() => return document.getElementById('quickMenuSearchBar');
+// function getSearchBar() => return document.getElementById('searchBar');
 
 // let qm = document.getElementById('quickMenuElement');
-// let sb = document.getElementById('quickMenuSearchBar');
+// let sb = document.getElementById('searchBar');
 // let tb = document.getElementById('searchEngineTitle');
 // let suggest = document.getElementById('suggestions');
 // let options = document.getElementById('optionsButton');
@@ -103,7 +103,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	if ( userOptions === {} ) return;
 	
-	let sb = document.getElementById('quickMenuSearchBar');
+	let sb = document.getElementById('searchBar');
 	sb.placeholder = browser.i18n.getMessage('Search');
 
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
@@ -317,7 +317,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('quickMenuSearchBar');
+	let sb = document.getElementById('searchBar');
 	let suggest = document.getElementById('suggestions');
 
 	qm.querySelectorAll('.tile').forEach( div => {
@@ -353,7 +353,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		if ( window != top ) return;
 
 		let qm = document.getElementById('quickMenuElement');
-		let sb = document.getElementById('quickMenuSearchBar');
+		let sb = document.getElementById('searchBar');
 		let tb = document.getElementById('searchEngineTitle');
 		let suggest = document.getElementById('suggestions');
 		let options = document.getElementById('optionsButton');
@@ -382,7 +382,7 @@ function sideBarResize() {
 	if ( window == top ) return;
 	
 	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('quickMenuSearchBar');
+	let sb = document.getElementById('searchBar');
 	let tb = document.getElementById('searchEngineTitle');
 	let suggest = document.getElementById('suggestions');
 	

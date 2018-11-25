@@ -1,8 +1,16 @@
+:root {
+	--hover: #ccdbe8;
+}
+
 BODY {
 	overflow:hidden;
 	padding:0;
 	margin:0;
 	background-color:#eff0f1;
+	/* position:absolute; */
+	/* border-radius:10px; */
+	/* -webkit-mask-image: radial-gradient(circle, white 100%, black 100%); */
+	/* z-index:1; */
 }
 .selectedFocus {
 	background-color: #0078d7 !important;
@@ -48,6 +56,18 @@ BODY {
 	transition:var(--user-transition, left .15s ease-in-out);
 }
 .tile[data-type="folder"]:not(.singleColumn)::before {
+	content:"";
+	top:0;
+	float:right;
+	width:40%;
+	height:4px;
+	background-color:#f7df96;
+	border:solid #ddd;
+	border-width: 0 0 1px 1px;
+	border-radius: 0 0 0 4px;
+	display:inline-block;
+}
+.tile[data-type="folder"]:not(.singleColumn)::after {
 	content:attr(data-title);
 	font-size:7pt;
 	line-height:1em;
@@ -73,14 +93,14 @@ BODY {
 	background-color:#FBFACE;
 	position:relative;
 }
-.tile[data-type="folder"][data-side]:not(.singleColumn) {
+.tile[data-type="folder"]:not(.singleColumn) {
 	color:blue;
 }
 .tile:hover, #optionsButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
-	background-color: #ccdbe8;
-	border-color: #ccdbe8;
+	background-color: var(--hover);
+	border-color: var(--hover);
 }
-.dragHover:not([data-side]) {
+.tile[data-type="folder"].dragHover:not([data-side]) {
 	background-color:#0078d7;
 	color:white;
 }
@@ -128,26 +148,36 @@ BODY {
 	background-color:#0078d7;
 	color:white;
 }
-#quickMenuSearchBarContainer IMG {
+#searchBarContainer IMG {
 	height:18px;
 	vertical-align:middle;
 	padding:4px;
 	opacity:.5;
 	position:absolute;
 }
-#quickMenuSearchBar {
-	width:calc(100% - 48px);
+#searchBar {
+	width:calc(100% - 50px); /* padding + border */
 	padding:0 24px;
 	height:28px;
 	margin:0;
 	text-align:left;
-	border:none;
+	border:1px solid transparent;
 	color:#4a4a4a;
-	background-color:white;
+	background-color:white;	
+}
+#searchBar[data-position="bottom"] {
+	border-radius:0 0 10px 10px;
+}
+#searchBar[data-position="top"] {
+	border-radius:10px 10px 0 0;
+}
+#searchBar:focus {
+	border:1px solid #0a84ff;
 }
 #suggestions {
-	height:100px;
 	background-color:white;
+	color:#4a4a4a;
+	height:100px;
 	white-space: nowrap;
 	overflow-x:hidden;
 	overflow-y:auto;
@@ -157,7 +187,6 @@ BODY {
 	max-height:0;
 }
 #suggestions > DIV {
-	background-color:white;
 	padding-left: 5px;
 	font-weight:200;
 	font-family: Arial;
@@ -167,7 +196,7 @@ BODY {
 	-moz-user-select: none;
 }
 #suggestions > DIV:hover {
-	background-color: #ccdbe8;
+	background-color: var(--hover);
 }
 #searchEngineTitle {
 	height:24px;
@@ -175,7 +204,7 @@ BODY {
 	overflow:hidden;
 	vertical-align:middle;
 	line-height:24px;
-	color:#4a4a4a;
+	color:inherit;
 	font-family:Arial;
 	font-size:10pt;
 	background-color:inherit;

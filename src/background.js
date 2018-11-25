@@ -1184,7 +1184,7 @@ const defaultUserOptions = {
 			offset: 100
 		}	
 	},
-	userStyles: "",
+	userStyles: "/*\n.tile { width:64px; background-color:#555;}\n*/",
 	enableAnimations: true
 };
 

@@ -37,15 +37,13 @@ function makeFrameContents(options) {
 	
 		document.body.appendChild(qme);
 		
-		let sb = document.getElementById('quickMenuSearchBar');
-		let sbc = document.getElementById('quickMenuSearchBarContainer');
+		let sb = document.getElementById('searchBar');
+		let sbc = document.getElementById('searchBarContainer');
 		
-		if (userOptions.quickMenuSearchBar === 'bottom') {	
-			sbc.style.borderRadius = "0 0 10px 10px";
+		sb.dataset.position = userOptions.quickMenuSearchBar;
+		
+		if (userOptions.quickMenuSearchBar === 'bottom') 
 			document.body.appendChild(sbc);
-		} else {
-			sbc.style.borderRadius = "10px 10px 0 0";
-		}
 
 		browser.runtime.sendMessage({
 			action: "quickMenuIframeLoaded", 
@@ -104,7 +102,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 				
 			case "focusSearchBar":
-				let sb = document.getElementById('quickMenuSearchBar');
+				let sb = document.getElementById('searchBar');
 
 				if (userOptions.quickMenuSearchBarSelect) {
 					sb.addEventListener('focus', ()=> {

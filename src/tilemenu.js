@@ -30,7 +30,7 @@ function makeQuickMenu(options) {
 
 	quickMenuElement.id = 'quickMenuElement';
 	
-	let sb = document.getElementById('quickMenuSearchBar');
+	let sb = document.getElementById('searchBar');
 	sb.onclick = function(e) {
 		e.stopPropagation();
 	}
@@ -579,7 +579,7 @@ function makeQuickMenu(options) {
 					action: "quickMenuIframeLoaded", 
 					size: {
 						width: window.getComputedStyle(qme,null).width,
-						height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+						height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('searchBarContainer'), null).height) + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
@@ -641,7 +641,9 @@ function makeQuickMenu(options) {
 
 			let resizeMaxTiles = ( singleColumn ) ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 			for ( let i=tileArray.length; i<resizeMaxTiles;i++) {
-				tileArray.push(document.createElement('div'));
+				let tile = document.createElement('div');
+				tile.dataset.type = 'empty';
+				tileArray.push(tile);
 			}
 		}
 
@@ -681,7 +683,7 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.left = '0px';
 		
 		/* dnd */
-		let tileDivs = quickMenuElement.querySelectorAll('.tile:not([data-type="tool"])');
+		let tileDivs = quickMenuElement.querySelectorAll('.tile:not([data-type="tool"]):not([data-type="empty"])');
 		tileDivs.forEach( div => {
 			
 			function getSide(t, e) {
@@ -726,10 +728,11 @@ function makeQuickMenu(options) {
 			div.addEventListener('dragover', (e) => {
 				e.preventDefault();
 				let targetDiv = getTargetElement(e.target);
+				if ( !targetDiv ) return;
 				let dragDiv = document.getElementById('dragDiv');
 
 				if ( targetDiv === dragDiv ) return;
-				
+
 				targetDiv.classList.add('dragHover');
 
 				// if moving tiles, show arrow
@@ -753,6 +756,8 @@ function makeQuickMenu(options) {
 			//	e.preventDefault();
 				e.target.dispatchEvent(new MouseEvent('mouseenter'));
 				let targetDiv = getTargetElement(e.target);
+				if ( !targetDiv ) return;
+				
 				targetDiv.style.transition = 'none';
 				
 				let dragDiv = document.getElementById('dragDiv');
@@ -782,6 +787,7 @@ function makeQuickMenu(options) {
 			//	e.preventDefault();
 				e.target.dispatchEvent(new MouseEvent('mouseleave'));
 				let targetDiv = getTargetElement(e.target);
+				if ( !targetDiv ) return;
 
 				targetDiv.classList.remove('dragHover');
 				targetDiv.style.transition = null;
@@ -801,6 +807,7 @@ function makeQuickMenu(options) {
 				dragDiv.id = "";
 				
 				let targetDiv = getTargetElement(e.target);
+				if ( !targetDiv ) return;
 				targetDiv.classList.remove('dragHover');
 
 				let arrow = document.getElementById('arrow');
@@ -901,7 +908,7 @@ function makeQuickMenu(options) {
 					action: "quickMenuIframeLoaded", 
 					size: {
 						width: window.getComputedStyle(qme,null).width,
-						height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+						height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('searchBarContainer'), null).height) + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
@@ -1063,7 +1070,7 @@ function makeQuickMenu(options) {
 								action: "quickMenuIframeLoaded", 
 								size: {
 									width: window.getComputedStyle(qme,null).width,
-									height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('quickMenuSearchBarContainer'), null).height) + 'px'
+									height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(document.getElementById('searchBarContainer'), null).height) + 'px'
 								},
 								resizeOnly: true,
 								tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
