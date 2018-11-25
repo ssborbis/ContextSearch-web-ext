@@ -19,11 +19,10 @@ BODY {
 	padding:0;
 	margin:0;
 	display:inline-block;
-	background-size: 16px;
+	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
 	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
-	position:relative;
 }
 #optionsButton {
 	background: url(/icons/settings.png) no-repeat center;
@@ -46,7 +45,7 @@ BODY {
 #quickMenuElement {
 	z-index:1;
 	overflow-y:auto;
-	transition:var(--enable-animations, left .15s ease-in-out);
+	transition:var(--user-transition, left .15s ease-in-out);
 }
 .tile[data-type="folder"]:not(.singleColumn)::before {
 	content:attr(data-title);
@@ -55,6 +54,7 @@ BODY {
 	padding:1px;
 	font-family:Arial;
 	font-weight:bold;
+	color:inherit;
 	text-align:center;
 	display:table-cell;
 	vertical-align:middle;
@@ -72,6 +72,9 @@ BODY {
 	color:#444;
 	background-color:#FBFACE;
 	position:relative;
+}
+.tile[data-type="folder"][data-side]:not(.singleColumn) {
+	color:blue;
 }
 .tile:hover, #optionsButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: #ccdbe8;
@@ -186,7 +189,7 @@ BODY {
 	line-height:20px;
 	vertical-align:middle;
 	background-position:4px 2px;
-	background-size:16px !important;
+	background-size:16px;
 }
 .tile.singleColumn::before {
 	content: attr(data-title);

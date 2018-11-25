@@ -72,9 +72,7 @@ if ( window != top ) {
 			sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
 			
 			sbContainer.style.opacity = 1;
-			
-			if ( !userOptions.enableAnimations ) 
-				sbContainer.style.setProperty('--enable-animations', 'none');
+
 		});
 		
 		// open sidebar if dragging text over
@@ -176,6 +174,9 @@ if ( window != top ) {
 
 			let iframe = getIframe();
 			let sbContainer = getContainer();
+			
+			if ( !userOptions.enableAnimations ) 
+				sbContainer.style.setProperty('--user-transition', 'none');
 
 			if ( !iframe ) return;
 			

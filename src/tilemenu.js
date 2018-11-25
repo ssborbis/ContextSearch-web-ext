@@ -301,7 +301,7 @@ function makeQuickMenu(options) {
 	function buildSearchIcon(icon_url, title) {
 		var div = document.createElement('DIV');
 		div.style.backgroundImage = 'url(' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + ')';
-		div.style.backgroundSize = 16 * userOptions.quickMenuIconScale + "px";
+		div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
 		div.title = title;
 		return div;
 	}
@@ -673,7 +673,7 @@ function makeQuickMenu(options) {
 		}
 
 		// slide-in animation
-		if ( !userOptions.enableAnimations ) quickMenuElement.style.setProperty('--enable-animations', 'none');
+		if ( !userOptions.enableAnimations ) quickMenuElement.style.setProperty('--user-transition', 'none');
 		quickMenuElement.style.left = quickMenuElement.getBoundingClientRect().width * ( (options.reverse) ? -1 : 1 ) + "px";
 		void( quickMenuElement.offsetHeight );
 		quickMenuElement.style.transition = null;
@@ -717,20 +717,6 @@ function makeQuickMenu(options) {
 
 			div.addEventListener('dragstart', (e) => {
 				e.dataTransfer.setData("text", "");
-				
-				// console.log(div.style.backgroundImage);
-				
-				// let img_div = document.createElement('div');
-				
-				// var url = div.style.backgroundImage.match(/\((.*?)\)/)[1].replace(/('|")/g,'');
-				// let img = new Image();
-				// img.src = div.node.type === 'folder' ? browser.runtime.getURL('icons/folder3.png') : url || browser.runtime.getURL('icons/search.png');
-				
-				// img.width = '20';
-				
-				// img_div.appendChild(img);
-				// document.body.appendChild(img_div);
-				// e.dataTransfer.setDragImage(img_div, 0, 0);
 				let img = new Image();
 				img.src = browser.runtime.getURL('icons/transparent.gif');
 				e.dataTransfer.setDragImage(img, 0, 0);
@@ -769,8 +755,17 @@ function makeQuickMenu(options) {
 				let targetDiv = getTargetElement(e.target);
 				targetDiv.style.transition = 'none';
 				
+				let dragDiv = document.getElementById('dragDiv');
+				
+				if ( !dragDiv && targetDiv.node.type === 'folder' ) {
+					targetDiv.textDragOverFolderTimer = setTimeout(() => {
+						targetDiv.dispatchEvent(new MouseEvent('mouseup'));
+					}, 500);
+					return;
+				}
+				
 				// if moving tiles, show indicator
-				if ( document.getElementById('dragDiv') ) {
+				if ( dragDiv ) {
 					let arrow = document.getElementById('arrow');
 						
 					if ( !arrow ) {
@@ -792,6 +787,9 @@ function makeQuickMenu(options) {
 				targetDiv.style.transition = null;
 				
 				delete targetDiv.dataset.side;
+				
+				if ( targetDiv.textDragOverFolderTimer )
+					clearTimeout(targetDiv.textDragOverFolderTimer);
 				
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
@@ -914,8 +912,20 @@ function makeQuickMenu(options) {
 
 			});
 			
+			tile.addEventListener('dragenter', (e) => {
+				// ignore tile dnd
+				if ( document.getElementById('dragDiv') ) return;
+				
+				// start hover timer
+				tile.textDragOverFolderTimer = setTimeout(() => {
+					tile.dispatchEvent(new MouseEvent('mouseup'));
+				}, 500);
+			});
+			tile.addEventListener('dragleave', (e) => {
+				// clear hover timer
+				clearTimeout(tile.textDragOverFolderTimer);
+			});
 			tile.addEventListener('dragover', (e) => {e.preventDefault();});
-			tile.addEventListener('dragleave', (e) => {e.preventDefault();});
 			tile.addEventListener('dragend', (e) => {e.preventDefault();});
 			tile.addEventListener('drop', (e) => {
 				e.preventDefault();

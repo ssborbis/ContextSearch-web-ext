@@ -15,7 +15,7 @@
 	overflow:hidden;
 	display:block;
 	z-index: 2147483647; /* max 32-bit integer */
-	transition: var(--enable-animations, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
+	transition: var(--user-transition, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
 }
 #quickMenuIframe[data-openingopacity] {
 	opacity:var(--opening-opacity);
@@ -37,7 +37,7 @@
 	transition: opacity .5s ease-in-out;
 	border:none;
 }
-#resizeWidget, #editWidget {
+#CS_resizeWidget, #CS_editWidget {
 	cursor:nwse-resize;
 	display:inline-block;
 	width:20px;
@@ -52,9 +52,9 @@
 	font-family: Arial;
 	z-index:2147483647
 }
-#resizeWidget:hover, #editWidget:hover {
+#CS_resizeWidget:hover, #CS_editWidget:hover {
 	opacity:1;
 }
-#editWidget {
+#CS_editWidget {
 	cursor: default;
 }

@@ -130,7 +130,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
 	
-	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--enable-animations', 'none');
+	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 	
 	runAtTransitionEnd( qmc, "height", () => { repositionOffscreenElement( qmc ) });
 		
@@ -620,7 +620,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				_message = message;
 				
 				let iframe = document.getElementById('quickMenuIframe');
-				let resizeWidget = document.getElementById('resizeWidget');
+				let resizeWidget = document.getElementById('CS_resizeWidget');
 				
 				// overlay a div to capture mouse events over iframes
 				let overDiv = document.createElement('div');
@@ -632,7 +632,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					let startCoords, endCoords, endSize;
 					
 					resizeWidget = document.createElement('div');
-					resizeWidget.id = 'resizeWidget';
+					resizeWidget.id = 'CS_resizeWidget';
 					
 					document.addEventListener('closequickmenu', () => {
 						resizeWidget.parentNode.removeChild(resizeWidget);
