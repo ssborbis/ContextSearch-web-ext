@@ -800,6 +800,8 @@ function makeQuickMenu(options) {
 				targetDiv.classList.remove('dragHover');
 				targetDiv.style.transition = null;
 				
+				delete targetDiv.dataset.side;
+				
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
 			});
