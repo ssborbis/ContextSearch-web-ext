@@ -75,6 +75,9 @@ if ( window != top ) {
 			
 			sbContainer.style.opacity = 1;
 			sbContainer.dataset.opened = true;
+			
+			if ( userOptions.searchBarTheme === 'dark' )
+				openingTab.classList.add('CS_dark');
 
 		});
 		

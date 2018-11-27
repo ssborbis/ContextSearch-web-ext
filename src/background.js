@@ -1249,7 +1249,7 @@ browser.runtime.onInstalled.addListener((details) => {
 	if (
 		(
 			details.reason === 'update' 
-			&& details.previousVersion < "1.8.1"
+			&& details.previousVersion < "1.9.0"
 		)
 //		|| details.temporary
 	) {

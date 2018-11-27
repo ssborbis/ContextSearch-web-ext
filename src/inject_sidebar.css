@@ -62,6 +62,9 @@
 	background-color:transparent;
 	opacity:1;
 }
+#CS_sbContainer[data-opened="true"] #CS_sbOpeningTab.CS_close.CS_dark {
+	filter:invert(1) brightness(50%);
+}
 #CS_sbIframe {
 	display:inline-block;
 	max-width:0px;

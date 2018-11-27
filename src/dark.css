@@ -23,6 +23,7 @@ BODY {
 }
 .tile[data-type="tool"] {
     filter:invert(1) brightness(50%);
+	color:black;
 }
 .tile[data-type="folder"] {
     background-color:#3293d4;
@@ -33,9 +34,11 @@ BODY {
 	border-color:#777;
 }
 .tile[data-type="folder"]:not(.singleColumn) {
-	background:none;
-	background-color:#3293d4;
+	/* background-color:#3293d4; */
     color:#dedede;
+}
+.tile:hover {
+	background-color:var(--hover);
 }
 #optionsButton {
 	filter:invert(1) brightness(50%);
