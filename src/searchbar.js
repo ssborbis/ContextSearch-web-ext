@@ -184,10 +184,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					
 					let img = document.createElement("img");
 					img.src = "/icons/history.png";
-					img.style.height = "1em";
-					img.style.marginRight = "5px";
-					img.style.opacity = .75;
-					img.style.verticalAlign = "middle";
 					img.title = browser.i18n.getMessage('History') || "history";
 					
 					if (s.type === 1) img.style.visibility = 'hidden';
@@ -231,7 +227,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					sideBarResize();
 				});
 				
-				suggest.style.maxHeight = Math.min(100, suggestions.length * 20) + "px";
+				let suggestionHeight = suggestions.length ? suggest.firstChild.getBoundingClientRect().height : 0;
+				
+				suggest.style.maxHeight = Math.min(100, suggestions.length * suggestionHeight) + "px";
 
 			}
 			

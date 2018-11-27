@@ -5,7 +5,7 @@ document.head.appendChild(styleEl);
 
 function makeQuickMenu(options) {
 	
-	styleEl.innerText = userOptions.userStyles;
+	if ( userOptions.userStylesEnabled ) styleEl.innerText = userOptions.userStyles;
 
 	let type = options.type;
 	let mode = options.mode;
@@ -300,7 +300,8 @@ function makeQuickMenu(options) {
 	// generic search engine tile
 	function buildSearchIcon(icon_url, title) {
 		var div = document.createElement('DIV');
-		div.style.backgroundImage = 'url(' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + ')';
+		
+		if ( icon_url )	div.style.backgroundImage = 'url(' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + ')';
 		div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
 		div.title = title;
 		return div;
@@ -1049,7 +1050,7 @@ function makeQuickMenu(options) {
 					break;
 			
 				case "folder":
-					tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": "/icons/transparent.gif", node.title);
+					tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": null, node.title);
 
 					// let span = document.createElement('span');
 					// span.className = "folderLabel";

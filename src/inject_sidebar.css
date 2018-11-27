@@ -1,4 +1,4 @@
-#CS_sbContainer *, #CS_sbOpeningTab * {
+#CS_sbContainer * {
 	box-sizing:content-box !important;
 }
 #CS_sbContainer {
@@ -6,6 +6,11 @@
 	z-index:2147483647;
 	white-space: nowrap;
 	transition: var(--user-transition, all 0.15s);
+	line-height:0;
+}
+#CS_sbContainer[data-opened="true"] {
+	border:1px solid #9abad2;
+	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
 }
 #CS_sbContainer.CS_left {
 	left:0;
@@ -29,7 +34,8 @@
 #CS_sbOpeningTab {
 	width:32px;
 	height:32px;	
-	background: url(icons/search.png) no-repeat center center;
+	background: no-repeat center center;
+	background-image: url(chrome-extension://__MSG_@@extension_id__/icons/search.png), url(//__MSG_@@extension_id__/icons/search.png);
 	background-size: 20px;
 	vertical-align:top;
 	background-color:white;
@@ -47,9 +53,7 @@
 #CS_sbOpeningTab.CS_close {
 	width:28px;
 	height:28px;
-	background-color:#eff0f1;
-	opacity:1;
-	background-image: url(icons/crossmark.png);
+	background-image: url(chrome-extension://__MSG_@@extension_id__/icons/crossmark.png), url(//__MSG_@@extension_id__/icons/crossmark.png);
 	position:absolute;
 	top:1px;
 	right:0;
@@ -60,8 +64,8 @@
 }
 #CS_sbIframe {
 	display:inline-block;
-	border:1px solid black;
 	max-width:0px;
 	overflow:hidden;
 	transition:inherit;
+	border:none;
 }

@@ -1,5 +1,6 @@
 :root {
 	--hover: #ccdbe8;
+	--select: #0078d7;
 }
 
 BODY {
@@ -13,7 +14,7 @@ BODY {
 	/* z-index:1; */
 }
 .selectedFocus {
-	background-color: #0078d7 !important;
+	background-color: var(--select) !important;
 	position:relative;
 	color:white !important;
 }
@@ -62,7 +63,7 @@ BODY {
 	width:40%;
 	height:4px;
 	background-color:#f7df96;
-	border:solid #ddd;
+	border:solid #c2c2c2;
 	border-width: 0 0 1px 1px;
 	border-radius: 0 0 0 4px;
 	display:inline-block;
@@ -94,24 +95,25 @@ BODY {
 	position:relative;
 }
 .tile[data-type="folder"]:not(.singleColumn) {
+	/* background: linear-gradient(135deg, #fefcea 0%,#f1da36 100%); */
 	color:blue;
 }
 .tile:hover, #optionsButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: var(--hover);
 	border-color: var(--hover);
 }
-.tile[data-type="folder"].dragHover:not([data-side]) {
-	background-color:#0078d7;
+.tile.dragHover:not([data-side]) {
+	background-color:var(--select);
 	color:white;
 }
 .dragHover * {
 	pointer-events:none;
 }
 .dragHover.singleColumn[data-side="before"] {
-	border-top:1px solid #0078d7;
+	border-top:1px solid var(--select);
 }
 .dragHover.singleColumn[data-side="after"] {
-	border-bottom:1px solid #0078d7;
+	border-bottom:1px solid var(--select);
 }
 #arrow {
 	pointer-events:none;
@@ -142,10 +144,10 @@ BODY {
 #arrow.singleColumn {
 	transform: rotate(-90deg);
 	left:-6px;
-	border-top-color:#0078d7;
+	border-top-color:var(--select);
 }
 .tile[data-type="folder"][data-side="middle"].dragHover {
-	background-color:#0078d7;
+	background-color:var(--select);
 	color:white;
 }
 #searchBarContainer IMG {
@@ -197,6 +199,12 @@ BODY {
 }
 #suggestions > DIV:hover {
 	background-color: var(--hover);
+}
+#suggestions > DIV IMG {
+	height:1em;
+	margin-right:5px;
+	opacity:.75;
+	vertical-align:middle;
 }
 #searchEngineTitle {
 	height:24px;

@@ -1297,7 +1297,7 @@
 				
 				<hr />
 				
-				<label class="container" data-i18n='EnableAnimations'>Menu Animations
+				<label class="container" data-i18n='EnableAnimations'>Animate Menus
 				<span class='info' data-msg='Turn on resize, slide-in, opacity animations for all menus' data-i18n_tooltip='EnableAnimations'>?</span>
 					<input type='checkbox' id='cb_enableAnimations' />
 					<span class="checkmark checkmark2"></span>
@@ -1449,6 +1449,14 @@
 							<span class="checkmark checkmark2"></span>
 					</label>
 				</div>
+				
+				<hr />
+				
+				<label class="container" data-i18n='SideBarStartOpen'>Open On Load
+				<span class='info' data-msg='' data-i18n_tooltip='SideBarStartOpen'>?</span>
+					<input type='checkbox' id='cb_sideBarStartOpen' />
+					<span class="checkmark checkmark2"></span>
+				</label>
 
 				<hr />
 				<table class="openingTable">
@@ -1469,9 +1477,17 @@
 				</table>
 				<hr class="header_hr" />
 				<div class='blobContainerHeader' style='display:inline-block;padding:0 0 20px 0;border:0px;width:250px' data-i18n='UserStyles'><img alt='' src='icons/load.png' style='filter:grayscale(100%);'/>User Styles</div>
+				<div class='optionDiv' style='display:inline-block'>
+					<label class="switch">
+						<input type="checkbox" id='cb_userStylesEnabled'>
+						<span class="toggleSlider round"></span>
+					</label>
+				</div>
+				
 				<div style="display:none"></div>
 				
-				<textarea id='t_userStyles' style='width:calc(100% - 20px);height:400px;resize:vertical;padding:10px'></textarea>
+				
+				<textarea id='t_userStyles' style='width:calc(100% - 20px);height:250px;resize:vertical;padding:10px'></textarea>
 			</div>
 			</div>
 		</div>

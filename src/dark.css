@@ -29,9 +29,14 @@ BODY {
     color:#dedede;
 }
 .tile[data-type="folder"]:not(.singleColumn)::before {
-    background-color:#287cb3;
-    border-color:#777;
+	background-color:#287cb3;
+	border-color:#777;
 }
 .tile[data-type="folder"]:not(.singleColumn) {
+	background:none;
+	background-color:#3293d4;
     color:#dedede;
+}
+#optionsButton {
+	filter:invert(1) brightness(50%);
 }

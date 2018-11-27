@@ -1049,6 +1049,51 @@
     "message": "Do not open Quick menu if selection is over (n) characters in length. 0 = no limit"
   },
   
+  "EnableAnimations": {
+    "message": "Animate Menus",
+    "description": ""
+  },
+  
+  "EnableAnimationsTooltip": {
+    "message": "Enable resize, slide-in, opacity animations for all menus. Disable for faster interface with no eye candy",
+    "description": ""
+  },
+  
+  "Theme": {
+    "message": "Theme",
+    "description": ""
+  },
+  
+  "ThemeTooltip": {
+    "message": "Theme to use with the menu",
+    "description": ""
+  },
+    
+  "Lite": {
+    "message": "lite",
+    "description": "label for lite theme"
+  },
+  
+  "Dark": {
+    "message": "dark",
+    "description": "label for dark theme"
+  },
+  
+  "UserStyles": {
+    "message": "User Styles",
+    "description": "label for custom user styles"
+  },
+  
+  "SideBarStartOpen": {
+    "message": "Open On Load",
+    "description": "label for opening the sidebar when the page loads"
+  },
+  
+  "SideBarStartOpenTooltip": {
+    "message": "Open the sidebar automatically when the page loads",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""

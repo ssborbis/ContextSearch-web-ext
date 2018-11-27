@@ -915,7 +915,10 @@ function buildSearchEngineContainer() {
 			let newLi = traverse(newFolder, li.parentNode);
 			li.parentNode.insertBefore(newLi, li);
 			
-			newLi.dispatchEvent(new MouseEvent('dblclick'));
+			// required delay to work
+			setTimeout(() => {
+				newLi.dispatchEvent(new MouseEvent('dblclick'));
+			}, 100);
 			
 			updateNodeList();
 			closeContextMenus();

@@ -27,7 +27,8 @@ if ( window != top ) {
 			sbContainer.classList.remove('CS_left', 'CS_right');			
 			sbContainer.classList.add('CS_' + userOptions.sideBar.widget.position);
 
-			sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
+			// causing container to move on tile dnd
+		//	sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 
 			openingTab.style.display = userOptions.sideBar.widget.enabled ? null : "none";
 		}
@@ -58,6 +59,7 @@ if ( window != top ) {
 
 				runAtTransitionEnd(sbContainer, "height", () => { iframe.parentNode.removeChild(iframe) });
 
+				sbContainer.dataset.opened = false;
 				return;
 			}
 			
@@ -72,6 +74,7 @@ if ( window != top ) {
 			sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
 			
 			sbContainer.style.opacity = 1;
+			sbContainer.dataset.opened = true;
 
 		});
 		
@@ -218,16 +221,6 @@ if ( window != top ) {
 
 			openingTab.click();
 			
-		});
-		
-		sbContainer.addEventListener('mouseenter', (e) => {
-			if ( openingTab.classList.contains('CS_close') ) {
-				openingTab.classList.add('CS_hover');
-			}
-		});
-		
-		sbContainer.addEventListener('mouseleave', (e) => {
-			openingTab.classList.remove('CS_hover');
 		});
 	}
 }

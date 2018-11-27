@@ -1141,11 +1141,11 @@ const defaultUserOptions = {
 	contextMenuBookmarks: false,
 	quickMenuBookmarks: false,
 	quickMenuTools: [
-		{name: 'disable', 	disabled: true},
-		{name: 'close', 	disabled: true},
-		{name: 'copy', 		disabled: true},
-		{name: 'link', 		disabled: true},
-		{name: 'lock',		disabled: true}
+		{name: 'disable', 	disabled: false},
+		{name: 'close', 	disabled: false},
+		{name: 'copy', 		disabled: false},
+		{name: 'link', 		disabled: false},
+		{name: 'lock',		disabled: false}
 	],
 	quickMenuToolsPosition: "hidden",
 	searchJsonPath: "",
@@ -1186,7 +1186,11 @@ const defaultUserOptions = {
 			offset: 100
 		}	
 	},
-	userStyles: "/*\n.tile { width:64px; background-color:#555;}\n*/",
+	userStyles: 
+`/* add custom styles to menus here */
+/* .tile { width:64px; } */
+`,
+	userStylesEnabled: false,
 	enableAnimations: true
 };
 
@@ -1266,14 +1270,15 @@ browser.runtime.onInstalled.addListener((details) => {
 		});
 		clearInterval(loadUserOptionsInterval);
 		
-		// Show install page
-		// if ( 
-			// details.reason === 'install' 
-		// ) {
-			// browser.tabs.create({
-				// url: "/options.html?tab=help"
-			// });
-		// }
+	//	Show install page
+		if ( 
+			details.reason === 'install' 
+	//		|| details.temporary
+		) {
+			browser.tabs.create({
+				url: browser.runtime.getURL("/options.html")
+			});
+		}
 		
 		if ( 
 			details.temporary 

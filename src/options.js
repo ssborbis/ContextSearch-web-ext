@@ -196,8 +196,11 @@ function restoreOptions() {
 		document.getElementById('n_searchBarColumns').value = userOptions.searchBarColumns;
 		document.getElementById('s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		document.getElementById('cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
+		document.getElementById('cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
 		
 		document.getElementById('t_userStyles').value = userOptions.userStyles;
+		document.getElementById('cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
+		document.getElementById('t_userStyles').disabled = !userOptions.userStylesEnabled;
 		document.getElementById('cb_enableAnimations').checked = userOptions.enableAnimations;
 		document.getElementById('s_quickMenuTheme').value = userOptions.quickMenuTheme;
 		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
@@ -309,6 +312,7 @@ function saveOptions(e) {
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,
 			hotkey: [],
+			startOpen: document.getElementById('cb_sideBarStartOpen').checked,
 			widget: {
 				enabled: document.getElementById('cb_sideBarWidgetEnable').checked,
 				position: document.getElementById('s_sideBarWidgetPosition').value,
@@ -317,6 +321,7 @@ function saveOptions(e) {
 		},
 		
 		userStyles: document.getElementById('t_userStyles').value,
+		userStylesEnabled: document.getElementById('cb_userStylesEnabled').checked,
 		enableAnimations: document.getElementById('cb_enableAnimations').checked,
 		quickMenuTheme: document.getElementById('s_quickMenuTheme').value,
 		searchBarTheme: document.getElementById('s_searchBarTheme').value
@@ -393,6 +398,10 @@ document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => 
 });
 
 document.getElementById('t_userStyles').addEventListener('change', saveOptions);
+document.getElementById('cb_userStylesEnabled').addEventListener('change', (e) => {
+	document.getElementById('t_userStyles').disabled = ! e.target.checked;
+	saveOptions(e);
+});
 
 function checkSearchJsonPath() {
 
