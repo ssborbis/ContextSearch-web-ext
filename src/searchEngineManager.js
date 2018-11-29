@@ -720,11 +720,13 @@ function buildSearchEngineContainer() {
 		}
 
 		let _delete = createMenuItem(browser.i18n.getMessage('Delete'), browser.runtime.getURL('icons/crossmark.png'));
+
 		_delete.onclick = function(e) {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
 			
+
 			// move the edit form if open on node
 			let editForm = document.getElementById('editSearchEngineContainer');
 			if ( li.contains(editForm) ) {
@@ -857,6 +859,14 @@ function buildSearchEngineContainer() {
 				closeContextMenus();
 			}
 
+		}
+		
+		if ( li.node.type === 'oneClickSearchEngine') {
+			let copies = findNodes(rootElement.node, node => node.type === 'oneClickSearchEngine' && node.id === li.node.id && node !== li.node );
+
+			if ( copies.length === 0 ) {
+				_delete.style.display = 'none';
+			}
 		}
 
 		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));

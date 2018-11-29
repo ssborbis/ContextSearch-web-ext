@@ -33,6 +33,13 @@ BODY {
 	background-repeat: no-repeat;
 	transition: background-size .25s ease-in-out, background-color .25s ease-out, border-color .25s ease-out;
 }
+.tile[data-disabled="true"] {
+	opacity:.1;
+}
+.tile[data-locked="true"] {
+	background-color:#dee7f0;
+	box-shadow:inset 2px 2px 2px #193047;
+}
 #optionsButton {
 	background: url(/icons/settings.png) no-repeat center;
 	background-size:16px;
@@ -40,8 +47,7 @@ BODY {
 	width:100%;
 	border-top:1px solid #e0e0e0;
 }
-#quickMenuElement, .tile {
-	/* box-sizing: content-box; */
+#quickMenuElement, .tile, #optionsButton {
 	display:inline-block;
 	font-size:0;
 	line-height:0;
@@ -206,7 +212,7 @@ BODY {
 	opacity:.75;
 	vertical-align:middle;
 }
-#searchEngineTitle {
+#titleBar {
 	height:24px;
 	padding-left:10px;
 	overflow:hidden;

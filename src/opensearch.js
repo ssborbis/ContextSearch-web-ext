@@ -1,3 +1,9 @@
+window.browser = (function () {
+  return window.msBrowser ||
+    window.browser ||
+    window.chrome;
+})();
+
 function replaceOpenSearchParams(in_str, searchterms, url) {
 	// replace OpenSearch params
 	searchterms = searchterms || "";

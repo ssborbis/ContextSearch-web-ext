@@ -1098,6 +1098,11 @@
     "message": "more",
     "description": ""
   },
+
+  "OCSEDeleteWarning": {
+    "message": "Firefox One-Click Search Engines cannot be deleted. Hide to disable",
+    "description": "alert message when attempting to delete a ocse from the manager"
+  },
   
   "_________": {
     "message": "",

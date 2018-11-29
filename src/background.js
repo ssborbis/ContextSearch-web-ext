@@ -95,7 +95,7 @@ function notify(message, sender, sendResponse) {
 		case "getSearchEngineById":
 		
 			if ( !message.id) return;
-			
+
 			return Promise.resolve({"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)});
 			break;
 
@@ -807,6 +807,7 @@ function openSearch(details) {
 		//	if (tabInfo.url !== q) return;	
 		
 			// new method for working from current tab
+			
 			let landing_url = new URL(q);
 			let current_url = new URL(tabInfo.url);
 			
@@ -819,14 +820,17 @@ function openSearch(details) {
 				runAt: 'document_start'
 			}).then(() => {
 			return browser.tabs.executeScript(_tab.id, {
+				file: '/lib/browser-polyfill.min.js',
+				runAt: 'document_start'
+			}).then(() => {
+			return browser.tabs.executeScript(_tab.id, {
 				file: '/opensearch.js',
 				runAt: 'document_start'
 			}).then(() => {
 			return browser.tabs.executeScript(_tab.id, {
 				file: '/execute.js',
 				runAt: 'document_start'
-			});});});
-
+			});});});});
 		});
 
 		return _tab;

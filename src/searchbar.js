@@ -34,15 +34,6 @@ var quickMenuObject = {
 let columns;
 let sb_width;
 
-// function getQuickMenuElement() => return document.getElementById('quickMenuElement');
-// function getSearchBar() => return document.getElementById('searchBar');
-
-// let qm = document.getElementById('quickMenuElement');
-// let sb = document.getElementById('searchBar');
-// let tb = document.getElementById('searchEngineTitle');
-// let suggest = document.getElementById('suggestions');
-// let options = document.getElementById('optionsButton');
-
 // context menu options
 window.addEventListener('contextmenu', (e) => {
 	
@@ -308,7 +299,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		xmlhttp.send();
 	}
 	
-	makeQuickMenu({type: "searchbar"}).then( (qme) => {
+	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
 		document.body.appendChild(qme);
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
@@ -319,29 +310,30 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	let qm = document.getElementById('quickMenuElement');
 	let sb = document.getElementById('searchBar');
-	let suggest = document.getElementById('suggestions');
+	let tb = document.getElementById('titleBar');
+	let sg = document.getElementById('suggestions');
+	let ob = document.getElementById('optionsButton');
 
 	qm.querySelectorAll('.tile').forEach( div => {
-		div.onmouseenter = () => document.getElementById('searchEngineTitle').innerText = div.title;
-		div.onmouseleave = () => document.getElementById('searchEngineTitle').innerText = ' ';
+		div.onmouseenter = () => tb.innerText = div.title;
+		div.onmouseleave = () => tb.innerText = ' ';
 	});
 
 	// create Options button
-	let div = document.getElementById('optionsButton');
-	if (!div) {
-		div = document.createElement('div');
-		div.id = 'optionsButton';
+	if (!ob) {
+		ob = document.createElement('div');
+		ob.id = 'optionsButton';
 
-		div.onclick = function() {
+		ob.onclick = function() {
 			document.body.style.visibility = 'hidden';
 			browser.runtime.sendMessage({action: "openOptions"});
 			window.close();
 		}
 		
-		document.getElementById('searchEngineTitle').style.width = parseFloat(window.getComputedStyle(qm).width) - 10 + "px";
+		tb.style.width = parseFloat(window.getComputedStyle(qm).width) - 10 + "px";
 
 		// show on browser_action / not sidebar
-		if ( window == top ) document.body.appendChild(div);
+		if ( window == top ) document.body.appendChild(ob);
 	}
 	
 	// focus the searchbar on open
@@ -353,21 +345,15 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		
 		if ( window != top ) return;
 
-		let qm = document.getElementById('quickMenuElement');
-		let sb = document.getElementById('searchBar');
-		let tb = document.getElementById('searchEngineTitle');
-		let suggest = document.getElementById('suggestions');
-		let options = document.getElementById('optionsButton');
-
 		if ( window.innerHeight < document.body.scrollHeight ) {
-			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + suggest.getBoundingClientRect().height + tb.getBoundingClientRect().height + options.getBoundingClientRect().height ) + "px";
+			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
 		} 
 
 		// account for scroll bars
 		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-		suggest.style.width = qm.getBoundingClientRect().width + "px";
+		sg.style.width = qm.getBoundingClientRect().width + "px";
 		
-		if (qm.getBoundingClientRect().width < 100 /* browser_action has a minimum window size */) {
+		if (qm.getBoundingClientRect().width < window.innerWidth - 10 /* browser_action has a minimum window size */) {
 			qm.querySelectorAll('.tile').forEach( div => {
 				div.style.width = window.innerWidth / columns + "px";
 			});
@@ -384,10 +370,10 @@ function sideBarResize() {
 	
 	let qm = document.getElementById('quickMenuElement');
 	let sb = document.getElementById('searchBar');
-	let tb = document.getElementById('searchEngineTitle');
-	let suggest = document.getElementById('suggestions');
+	let tb = document.getElementById('titleBar');
+	let sg = document.getElementById('suggestions');
 	
-	let allOtherElsHeight = sb.getBoundingClientRect().height + suggest.getBoundingClientRect().height + tb.getBoundingClientRect().height;
+	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height;
 		
 	let qm_height = 'calc(100% - ' + allOtherElsHeight + "px)";
 	qm.style.height = qm_height;
@@ -405,5 +391,4 @@ function sideBarResize() {
 
 	// send size to parent window for sidebar widget
 	window.parent.postMessage({size: {width: rect_qm.width, height: rect.height}}, "*");
-
 }
