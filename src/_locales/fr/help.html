@@ -1,91 +1,50 @@
 <!DOCTYPE html>
-
 <html lang="fr">
 	<head>
 		<meta charset="utf-8">
 		<title></title>
 	</head>
 	<body style='padding:0;margin:0'>	
-	
 	<div style='font-weight:normal'>
-		
 		<a href='#help_preferences'>Configuration</a><br />
 		<a href='#help_contextmenu'>Menu contextuel</a><br />
 		<a href='#help_quickmenu'>Menu rapide</a><br />
 		<a href='#help_importing'>Importation des moteurs de recherche de Firefox</a><br />
-		<a href='#help_auto_importing'>Importation automatique</a><br />
 		<a href='#help_adding_engines'>Ajout d’un moteur de recherche</a><br />
-		<a href='#help_modify_engines'>Gestion des moteurs de recherche</a><br />
-		
 		<div class='section'>
 		<h2 id='help_preferences'>Configuration</h3>
 		La plupart des réglages sont configurables à l’onglet <code>Menus</code>. Passez votre souris au-dessus des icônes <span class='info' data-msg='coucou'>?</span> pour avoir des informations concernant chaque réglage.
 		</div>
 		<div class='section'>
 		<h2 id='help_contextmenu'>Utilisation du menu contextuel</h3>
-		Sélectionnez un mot et faites un clic droit pour ouvrir le menu contextuel. Développez le sous-menu <code>Rechercher «&nbsp;mot&nbsp;» avec… </code> et choisissez le moteur de recherche avec lequel vous souhaitez effectuer la recherche.
-		<br /><br />
-		L’activation de l’option <code>Organiser avec les marque-pages</code> crée le dossier <code>Recherche contextuelle</code> dans <code>Autres marque-pages</code>. Dans ce dossier, vous pouvez réorganiser les moteurs de recherche, créer des sous-dossiers et ajouter des séparateurs. Si vous les renommez, ils ne fonctionneront plus. Si vous les supprimez, ils pourront être rétablis avec le gestionnaire des moteurs de recherche à l’onglet <code>Moteurs de recherche</code>. 
+		Sélectionnez un mot et faites un clic droit pour ouvrir le menu contextuel. Développez le sous-menu <code>Rechercher «&nbsp;mot&nbsp;» avec</code> et choisissez le moteur de recherche avec lequel vous souhaitez effectuer la recherche.
 		</div>
 		<div class='section'>
 		<h2 id='help_quickmenu'>Utilisation du menu rapide</h3>
 		Sélectionnez un mot et maintenez le bouton droit de la souris enfoncé jusqu’à ce que le menu apparaisse. Ce mode d’ouverture par défaut peut être modifié dans <code>Ouverture et fermeture</code> à l’onglet <code>Menus</code>.
-		
-		<br /><br />
-		Le menu rapide est configurable à l’onglet <code>Menus</code>. Les moteurs de recherche peuvent être réorganisés dans la liste de l’onglet <code>Moteurs de recherche</code>.
 		</div>
 		<div class='section'>
 		<h2 id='help_importing'>Importation des moteurs de recherche de Firefox</h3>
-		Si vous avez ajouté des moteurs de recherche dans la barre de recherche de Firefox et que vous souhaitez les utiliser avec ContextSearch, il vous suffit de les importer en sélectionnant le fichier <code>search.json.mozlz4</code> dans votre profil Firefox. Pour cela, cliquez sur le bouton <code>Parcourir…</code> sous <code>Importation des moteurs de recherche accessibles en un clic</code> à l’onglet <code>Moteurs de recherche</code>.
-		
+		Si vous avez ajouté des moteurs de recherche dans la barre de recherche de Firefox et que vous souhaitez les utiliser en recherche contextuelle, il vous suffit de les importer en sélectionnant le fichier <code>search.json.mozlz4</code> dans votre profil Firefox. Pour cela, cliquez sur le bouton <code>Parcourir…</code> sous <code>Importation des moteurs de recherche accessibles en un clic</code> à l’onglet <code>Moteurs de recherche</code>.
 		Vous trouverez le chemin de votre profil en ouvrant <code>about:profiles</code> dans la barre d’adresse. Emplacements habituels&nbsp;:
-
 		<div style='margin-left:0px'>
-			<p><img alt='' class='smallIcon' style='height:16px;' src='/icons/windows.png'><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profil&gt;</i>/search.json.mozlz4</p>
-			<p><img alt='' class='smallIcon' style='height:16px;' src='/icons/mac.png'><b>&nbsp;&nbsp;Mac OS X</b></p>
+			<p><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profil&gt;</i>/search.json.mozlz4</p>
+			<p><b>&nbsp;&nbsp;Mac OS X</b></p>
 			<p class='code'>Users/<i>&lt;utilisateur&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profil&gt;</i>/search.json.mozlz4</p>
-			<p><img alt='' class='smallIcon' style='height:16px;' src='/icons/linux.png'><b>&nbsp;&nbsp;Linux</b></p>
+			<p><b>&nbsp;&nbsp;Linux</b></p>
 			<p class='code'>/home/<i>&lt;utilisateur&gt;</i>/.mozilla/firefox/<i>&lt;profil&gt;</i>/search.json.mozlz4</p>
 		</div>	
 		</div>
 		<div class='section'>
 		<h2 id='help_adding_engines'>Ajout d’un moteur de recherche</h3>
-
 			<h4>Utilisation du dialogue d’ajout</h4>
-			
-			Si un site web dispose d’un formulaire de recherche, faites un clic droit là où vous devez normalement saisir les termes de la recherche et sélectionnez l’élément de menu contextuel <code>Ajouter ce moteur de recherche</code>. Apparaît alors une fenêtre vous demandant de donner un nom à ce nouveau moteur. Ce nom doit être unique. Cliquez sur <code>Ajouter</code> pour ajouter le moteur à ContextSearch. Il vous est ensuite demandé si vous souhaitez l’ajouter à la barre de recherche de Firefox. Cliquez sur <code>Oui</code> pour envoyer la requête d’ajout, confirmez l’installation pour le voir apparaître dans la barre de recherche. Ce moteur restera installé et fonctionnel, même si vous désinstallez ContextSearch.
-			
+			Si un site web dispose d’un formulaire de recherche, faites un clic droit là où vous devez normalement saisir les termes de la recherche et sélectionnez l’élément de menu contextuel <code>Ajouter ce moteur de recherche</code>. Apparaît alors une fenêtre vous demandant de donner un nom à ce nouveau moteur. Ce nom doit être unique. Cliquez sur <code>Ajouter</code> pour ajouter le moteur à la recherche contextuelle. Il vous est ensuite demandé si vous souhaitez l’ajouter à la barre de recherche de Firefox. Cliquez sur <code>Oui</code> pour envoyer la requête d’ajout, confirmez l’installation pour le voir apparaître dans la barre de recherche. Ce moteur restera installé et fonctionnel, même si vous désinstallez l’extension.
 			<br /><br />
-			
 			Le dialogue d’ajout d’un moteur de recherche dispose également d’un mode avancé proposant davantage d’options :
-			
 			<h5><b>Ajouter</b></h5> Installe le moteur de recherche officiel fourni par le site web.
-
-			<h5><b>Trouver</b></h5> Recherche un moteur de recherche compatible avec le site chez Mycroftproject. Vous aurez à réimporter vos moteurs de recherche accessibles en un clic pour pouvoir utiliser dans ContextSearch un moteur installé de cette façon.
-
+			<h5><b>Trouver</b></h5> Recherche un moteur de recherche compatible avec le site chez Mycroftproject. Vous aurez à réimporter vos moteurs de recherche accessibles en un clic pour pouvoir utiliser en recherche contextuelle un moteur installé de cette façon.
 			<h5><b>Créer</b></h5> Vous contrôlez intégralement la création du moteur de recherche.
-
 		</li>
 		</div>
-		<div class='section'>
-		<h2 id='help_modify_engines'>Gestion des moteurs de recherche</h3>
-		Les moteurs de recherche installés peuvent être modifiés dans la liste à l’onglet <code>Moteurs de recherche</code>.
-
-		<h4>Masquage</h4>
-		Cliquez sur la case à cocher pour faire apparaître ou non un moteur de recherche dans le menu contextuel ou dans le menu rapide. Si l’option <code>Organiser avec les marque-pages</code> est cochée, seul le menu rapide est concerné.
-		
-		<h4>Réorganisation</h4>
-		Procédez par glisser-déposer pour réorganiser votre liste. Si l’option <code>Organiser avec les marque-pages</code> est cochée, seul le menu rapide est affecté par cette réorganisation.
-		
-		<h4>Suppression</h4>
-		Cliquez sur l’icône <img src='/icons/delete.png' style='height:16px' /> pour supprimer un moteur de recherche. Les moteurs OpenSearch figurant dans la barre de recherche de Firefox ne peuvent pas être supprimés de cette façon, il faut passer par les options de Firefox (Recherche -> Moteurs de recherche accessibles en un clic). Avec l’importation automatique activée, les moteurs de recherche accessibles en un clic existants réapparaissent, il suffit alors de les masquer.
-		
-		<h4>Édition</h4>
-		Cliquez sur le nom d’un moteur de recherche pour ouvrir un formulaire qui vous permettra de modifier ses paramètres comme le modèle de requête, l’encodage, l’icône, etc. 
-		
-		<h4>Marquage</h4>
-		En cochant l’option <code>Organiser avec les marque-pages</code>, chaque moteur de recherche se voit doté d’une nouvelle icône <img src='/icons/bookmark.png' style='height:16px' /> permettant de le faire apparaître ou non dans le menu contextuel. Un moteur marqué est ajouté en fin de liste du dossier <code>Recherche contextuelle</code> situé dans les marque-pages. Dans ce dossier, vous avez la possibilté d’organiser les moteurs de recherche comme bon vous semble.
-
-	</div>
 </body>
 </html>
