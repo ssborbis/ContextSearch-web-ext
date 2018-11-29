@@ -488,7 +488,7 @@
   },
   
   "NewEngineImported": {
-    "message": ">Un nouveau moteur de recherche a été automatiquement importé."
+    "message": "$1 moteurs de recherche ajoutés"
   },
   
   "InstallOfficialTooltip": {
@@ -784,11 +784,6 @@
     "description": "label for Hotkey option"
   },
   
-  "HotkeyTooltip": {
-    "message": "Ouverture à tout moment par le raccourci clavier",
-    "description": "description for Hotkey option"
-  },
-  
   "Focus": {
     "message": "Cibler à l’ouverture",
     "description": "label for auto focus on search bar"
@@ -991,6 +986,91 @@
     "message": "Mémoriser les termes de recherche et les afficher avec les suggestions."
   },
 	
+  "SideBar": {
+	"message": "Panneau latéral"
+  },
+  
+  "SideBarPositionTooltip": {
+	"message": "Position du panneau latéral à l’écran"
+  },
+
+  "SidebarWidgetEnable": {
+    "message": "Afficher une vignette interactive",
+    "description": "label for displaying the sidebar icon"
+  },
+  
+  "SidebarWidgetEnableTooltip": {
+    "message": "Incruster une icône permettant l’ouverture du panneau latéral.",
+    "description": "description for displaying the sidebar icon"
+  },
+
+  "SideBarHotkeyTooltip": {
+    "message": "Ouverture à tout moment par le raccourci clavier"
+  },
+  
+  "InitialOpacity": {
+    "message": "Opacité initiale",
+    "description": "label for setting Quick menu opening opacity"
+  },
+  
+  "InitialOpacityTooltip": {
+    "message": "Le menu rapide présente un certain degré de transparence à son ouverture et devient opaque au survol de la souris."
+  },
+  
+  "AutoMaxChars": {
+    "message": "Nombre maximum de caractères",
+    "description": "label for setting maximum selected characters for auto open"
+  },
+  
+  "AutoMaxCharsTooltip": {
+    "message": "Ne pas ouvrir le menu rapide si la longueur de la sélection dépasse ce nombre de caractères (0 = aucune limite)."
+  },
+  
+  "EnableAnimations": {
+    "message": "Animer les menus",
+    "description": ""
+  },
+  
+  "EnableAnimationsTooltip": {
+    "message": "Activer des effets de transparence, redimensionnement, glissement pour tous les menus. Ne pas cocher pour disposer d’une interface sans fioriture et plus rapide.",
+    "description": ""
+  },
+  
+  "Theme": {
+    "message": "Thème",
+    "description": ""
+  },
+  
+  "ThemeTooltip": {
+    "message": "Thème à utiliser avec le menu",
+    "description": ""
+  },
+    
+  "lite": {
+    "message": "Clair",
+    "description": "label for lite theme"
+  },
+  
+  "dark": {
+    "message": "Sombre",
+    "description": "label for dark theme"
+  },
+  
+  "UserStyles": {
+    "message": "Styles utilisateur",
+    "description": "label for custom user styles"
+  },
+  
+  "SideBarStartOpen": {
+    "message": "Ouvrir au chargement",
+    "description": "label for opening the sidebar when the page loads"
+  },
+  
+  "SideBarStartOpenTooltip": {
+    "message": "Ouvrir automatiquement le panneau latéral quand la page se charge.",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""
