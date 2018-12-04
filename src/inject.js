@@ -31,16 +31,18 @@ for (let el of document.querySelectorAll("input[type='text'], input[type='search
 window.addEventListener('mousedown', (e) => {
 
 	if (
-		e.which !== 3 ||
-		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a' && e.target.nodeName.toLowerCase() !== 'img') 
+		e.which !== 3 //||
+//		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a' && e.target.nodeName.toLowerCase() !== 'img') 
 	) return false;
 
 	let searchTerms = "";
 	
-	if (e.target.nodeName.toLowerCase() === 'a' && getSelectedText(e.target) === '')
-		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? e.target.href : e.target.innerText;
-	else if (e.target.nodeName.toLowerCase() === 'img')
+	let parentAnchor = e.target.closest('a');
+	
+	if (e.target.nodeName.toLowerCase() === 'img')
 		searchTerms = e.target.src;
+	else if ( parentAnchor && getSelectedText(e.target) === '')
+		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? parentAnchor.href : e.target.innerText;
 	else
 		searchTerms = getSelectedText(e.target);
 	
