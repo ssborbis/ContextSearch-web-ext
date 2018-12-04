@@ -1035,6 +1035,13 @@ function makeQuickMenu(options) {
 					tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": null, node.title);
 
 					tile.dataset.type = 'folder';
+					
+					tile.addEventListener('mousedown', (e) => {
+						
+						if ( e.which === 1 ) return;
+						e.preventDefault();
+						e.stopPropagation();
+					});
 
 					tile.addEventListener('mouseup', (e) => {
 						let method = getOpenMethod(e, true);
