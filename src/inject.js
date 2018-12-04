@@ -1,8 +1,4 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
+
 
 function getSelectedText(el) {
 	
@@ -42,7 +38,7 @@ window.addEventListener('mousedown', (e) => {
 	let searchTerms = "";
 	
 	if (e.target.nodeName.toLowerCase() === 'a' && getSelectedText(e.target) === '')
-		searchTerms = e.target.href;
+		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? e.target.href : e.target.innerText;
 	else if (e.target.nodeName.toLowerCase() === 'img')
 		searchTerms = e.target.src;
 	else

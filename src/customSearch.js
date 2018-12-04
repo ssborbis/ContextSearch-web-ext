@@ -1,8 +1,4 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
+
 
 let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
 

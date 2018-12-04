@@ -1,8 +1,4 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
+
 
 // unique object to reference globally
 var quickMenuObject = { 
@@ -709,11 +705,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
 
 							// save prefs
-							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions})
-							.then( ()=> {
-								browser.runtime.sendMessage({action: "updateUserOptions"});
-							});
-
+							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 							document.removeEventListener('mousemove', elementDrag);
 						}, {once: true});
 						

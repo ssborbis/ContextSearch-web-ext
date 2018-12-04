@@ -956,6 +956,14 @@
 					</select>
 				</p>
 				<hr />
+				<div>	
+					<span data-i18n='SearchLinksAs'>Search Links As</span><span class='info' data-msg='Choose whether links should should search for their urls or displayed text' data-i18n_tooltip='SearchLinksAs'>?</span>
+					
+					<select class='inputNice' style='width:auto;margin-left:30px;font-size:10pt;padding-right:10px' id='s_contextMenuSearchLinksAs'>
+						<option data-i18n='text' value='text'>text</option>
+						<option data-i18n='url' value='url'>url</option>
+					</select>
+				</div>
 				<p>
 				<span data-i18n='ContextMenuHotKey'>
 					Shortcut Key <span class='info' data-msg='Shortcut key to expand the "Search With..." entry in the context menu' data-i18n_tooltip='ContextMenuHotKey'>?</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id='b_contextMenuKey' class='keyboardButton' style="min-width:auto;min-height:1em;padding: 3px 10px;">&nbsp;</button>
@@ -1452,6 +1460,15 @@ z						<option data-i18n='dark' value='dark'>dark</option>
 				
 				<hr />
 				
+				<span data-i18n='SideBarType'>Menu Style</span><span class='info' data-msg='Choose how to display the side bar' data-i18n_tooltip='SideBarType'>?</span>
+				
+				<select class='inputNice' style='width:auto;margin-left:30px;font-size:10pt;padding-right:10px' id='s_sideBarType'>
+					<option data-i18n='overlay' value='overlay'>Overlay</option>
+					<option data-i18n='panel' value='panel'>Panel</option>
+				</select>
+				
+				<hr />
+
 				<label class="container" data-i18n='SideBarStartOpen'>Open On Load
 				<span class='info' data-msg='' data-i18n_tooltip='SideBarStartOpen'>?</span>
 					<input type='checkbox' id='cb_sideBarStartOpen' />

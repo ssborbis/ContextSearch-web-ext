@@ -854,9 +854,7 @@ function makeQuickMenu(options) {
 				// save the tree
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions}).then( () => {
-					browser.runtime.sendMessage({action: "updateUserOptions"});
-				});
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
 				// rebuild breaks
 				insertBreaks();
@@ -945,9 +943,7 @@ function makeQuickMenu(options) {
 				// save the tree
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions}).then( () => {
-					browser.runtime.sendMessage({action: "updateUserOptions"});
-				});
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
 			});
 			

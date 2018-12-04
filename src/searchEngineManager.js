@@ -674,7 +674,6 @@ function buildSearchEngineContainer() {
 	
 	function dragend_handler(ev) {
 		updateNodeList();
-	//	ev.dataTransfer.clearData();
 	}
 	
 	function nearestParent( tagName, target ) {

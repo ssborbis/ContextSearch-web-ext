@@ -1,8 +1,4 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
+
 
 var keyTable = {
 8:browser.i18n.getMessage("BackspaceKey"),

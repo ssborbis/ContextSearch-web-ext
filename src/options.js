@@ -126,6 +126,7 @@ function restoreOptions() {
 		
 		document.getElementById('b_contextMenuKey').value = userOptions.contextMenuKey;	
 		document.getElementById('b_contextMenuKey').innerText = keyTable[userOptions.contextMenuKey] || "Set";
+		document.getElementById('s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
 		
 		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
 		document.getElementById('cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
@@ -197,6 +198,7 @@ function restoreOptions() {
 		document.getElementById('s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		document.getElementById('cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		document.getElementById('cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
+		document.getElementById('s_sideBarType').value = userOptions.sideBar.type;
 		
 		document.getElementById('t_userStyles').value = userOptions.userStyles;
 		document.getElementById('cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
@@ -220,7 +222,7 @@ function restoreOptions() {
 function saveOptions(e) {
 
 	function onSet() {
-		browser.runtime.sendMessage({action: "updateUserOptions", "userOptions": userOptions});
+		return Promise.resolve(true);
 	}
 	
 	function onError(error) {
@@ -261,6 +263,7 @@ function saveOptions(e) {
 		contextMenuClick: document.getElementById('s_contextMenuClick').value,
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
+		contextMenuSearchLinksAs: document.getElementById('s_contextMenuSearchLinksAs').value,
 		contextMenuShowAddCustomSearch: document.getElementById('cb_contextMenuShowAddCustomSearch').checked,
 		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
 		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
@@ -313,6 +316,7 @@ function saveOptions(e) {
 			enabled: userOptions.sideBar.enabled,
 			hotkey: [],
 			startOpen: document.getElementById('cb_sideBarStartOpen').checked,
+			type: document.getElementById('s_sideBarType').value,
 			widget: {
 				enabled: document.getElementById('cb_sideBarWidgetEnable').checked,
 				position: document.getElementById('s_sideBarWidgetPosition').value,
@@ -326,8 +330,7 @@ function saveOptions(e) {
 		quickMenuTheme: document.getElementById('s_quickMenuTheme').value,
 		searchBarTheme: document.getElementById('s_searchBarTheme').value
 	}
-	
-//	var setting = browser.storage.local.set({"userOptions": userOptions});
+
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	setting.then(onSet, onError);
 }
@@ -825,10 +828,8 @@ document.addEventListener("DOMContentLoaded", () => {
 							}
 
 							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo}).then(() => {
-								browser.runtime.sendMessage({action: "updateUserOptions"}).then(() => {
-									userOptions = _uo;
-									location.reload();
-								});
+								userOptions = _uo;
+								location.reload();
 							});
 						});
 					});

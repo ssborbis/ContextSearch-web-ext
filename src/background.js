@@ -1,18 +1,14 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
-
 let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
 
 function notify(message, sender, sendResponse) {
 		
 	switch(message.action) {
-
+		
 		case "saveUserOptions":
 			userOptions = message.userOptions;
-			return browser.storage.local.set({"userOptions": message.userOptions});
+			return browser.storage.local.set({"userOptions": message.userOptions}).then(() => {
+				notify({action: "updateUserOptions"});
+			});
 			break;
 			
 		case "updateUserOptions":
@@ -43,9 +39,7 @@ function notify(message, sender, sendResponse) {
 
 					userOptions = result;
 					
-					notify({action: "saveOptions"});
-					notify({action: "updateUserOptions"});
-					
+					notify({action: "saveOptions", userOptions:userOptions});					
 				}
 				
 				return result;
@@ -117,7 +111,6 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "rebuildQuickMenu":
-			console.log('rebuildQuickMenu bg.js');
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
@@ -138,10 +131,7 @@ function notify(message, sender, sendResponse) {
 
 					result = result.shift();
 
-					if (result)
-						return {href: result};
-					else
-						return {};
+					return result ? {href: result} : {};
 				});
 			}));
 
@@ -193,9 +183,7 @@ function notify(message, sender, sendResponse) {
 				hidden: false
 			});
 
-			browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				notify({action: "updateUserOptions"});
-			});
+			notify({action: "saveOptions", userOptions:userOptions});
 			
 			break;
 			
@@ -212,9 +200,7 @@ function notify(message, sender, sendResponse) {
 			
 			userOptions.searchEngines.splice(index, 1);
 	
-			browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				notify({action: "updateUserOptions"});
-			});
+			notify({action: "saveOptions", userOptions:userOptions});
 			
 			break;
 			
@@ -239,11 +225,7 @@ function notify(message, sender, sendResponse) {
 			});
 
 			break;
-			
-		case "enableAddCustomSearchMenu":
-			browser.contextMenus.remove("add_engine");
-			break;
-			
+
 		case "log":
 			console.log(message.msg);
 			break;
@@ -323,11 +305,6 @@ function notify(message, sender, sendResponse) {
 		case "checkForOneClickEngines":	
 			return checkForOneClickEngines();
 			break;
-
-		// case "openSidebar":
-			// browser.sidebarAction.open();
-			// break;			
-
 	}
 }
 
@@ -353,7 +330,7 @@ function loadUserOptions() {
 	function onError(error) {
 		console.log(`Error: ${error}`);
 	}
-	
+
 	var getting = browser.storage.local.get("userOptions");
 	return getting.then(onGot, onError).then(buildContextMenu);
 }
@@ -513,7 +490,6 @@ function executeBookmarklet(info) {
 
 		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
 			let code = decodeURI(bookmark.url);
-//			console.log("Executing bookmarklet code -> " + code);
 			browser.tabs.executeScript(tabs[0].id, {
 				code: code
 			});
@@ -603,16 +579,14 @@ function contextMenuSearch(info, tab) {
 	
 	if (info.menuItemId === 'showSuggestions') {
 		userOptions.searchBarSuggestions = info.checked;
-		browser.storage.local.set({"userOptions": userOptions});
-		notify({action: "updateUserOptions"});
+		notify({action: "saveOptions", userOptions:userOptions});
 
 		return;
 	}
 	
 	if (info.menuItemId === 'clearHistory') {
 		userOptions.searchBarHistory = [];
-		browser.storage.local.set({"userOptions": userOptions});
-		notify({action: "updateUserOptions"});
+		notify({action: "saveOptions", userOptions:userOptions});
 		
 		return;
 	}
@@ -640,7 +614,7 @@ function contextMenuSearch(info, tab) {
 	
 	var searchTerms;
 	if (!info.selectionText && info.srcUrl)
-		searchTerms = info.srcUrl
+		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.srcUrl : info.linkText;
 	else
 		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
 	
@@ -698,18 +672,9 @@ function openSearch(details) {
 	var openUrl = details.openUrl || false;
 	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
 
-	if (
-		searchEngineId === null //||
-//		!searchTerms ||
-//		tab === null
-	) return false;
+	if ( searchEngineId === null ) return false;
 
-	if (!tab) {
-		tab = {
-			url:"",
-			id:0
-		}
-	}
+	if (!tab) tab = {url:"", id:0}
 	
 	var se;
 	
@@ -757,15 +722,12 @@ function openSearch(details) {
 		}
 	}
 	
-	
 	// if using Open As Link from quick menu
 	if (openUrl) {
 		q = searchTerms;
 		if (searchTerms.match(/^.*:\/\//) === null)
 			q = "http://" + searchTerms;
 	}
-
-//	console.log("openSearch url -> " + q);
 
 	switch (openMethod) {
 		case "openCurrentTab":
@@ -1157,6 +1119,7 @@ const defaultUserOptions = {
 	contextMenuClick: "openNewTab",
 	contextMenuShift: "openNewWindow",
 	contextMenuCtrl: "openBackgroundTab",
+	contextMenuSearchLinksAs: "text",
 	quickMenuLeftClick: "openNewTab",
 	quickMenuRightClick: "openCurrentTab",
 	quickMenuMiddleClick: "openBackgroundTab",
@@ -1183,6 +1146,7 @@ const defaultUserOptions = {
 	sideBar: {
 		enabled: true,
 		startOpen: false,
+		type: 'overlay',
 		hotkey: [],
 		widget: {
 			enabled: false,
