@@ -1036,8 +1036,10 @@ function makeQuickMenu(options) {
 
 					tile.dataset.type = 'folder';
 					
+					// prevent scroll icon
 					tile.addEventListener('mousedown', (e) => {
 						
+						// skip for dnd events
 						if ( e.which === 1 ) return;
 						e.preventDefault();
 						e.stopPropagation();

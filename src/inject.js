@@ -30,10 +30,7 @@ for (let el of document.querySelectorAll("input[type='text'], input[type='search
 // Relabel context menu root on mousedown to fire before oncontextmenu
 window.addEventListener('mousedown', (e) => {
 
-	if (
-		e.which !== 3 //||
-//		(getSelectedText(e.target) === '' && e.target.nodeName.toLowerCase() !== 'a' && e.target.nodeName.toLowerCase() !== 'img') 
-	) return false;
+	if ( e.which !== 3 ) return false;
 
 	let searchTerms = "";
 	

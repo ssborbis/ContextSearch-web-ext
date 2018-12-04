@@ -612,11 +612,15 @@ function contextMenuSearch(info, tab) {
 	else
 		openMethod = userOptions.contextMenuClick;
 	
+	console.log(info);
+	
 	var searchTerms;
 	if (!info.selectionText && info.srcUrl)
-		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.srcUrl : info.linkText;
-	else
-		searchTerms = (info.linkUrl && !info.selectionText) ? info.linkUrl : info.selectionText.trim();
+		searchTerms = info.srcUrl;
+	else if (info.linkUrl && !info.selectionText)
+		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText;
+	else 
+		searchTerms = info.selectionText.trim();
 	
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__oneClickSearchEngine__") ) {
 		info.selectionText = searchTerms;
