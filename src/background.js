@@ -144,6 +144,8 @@ function notify(message, sender, sendResponse) {
 		case "updateContextMenu":
 			var searchTerms = message.searchTerms;
 			
+			window.searchTerms = searchTerms;
+			
 			if (searchTerms === '') break;
 			
 			if (searchTerms.length > 18) 
@@ -617,8 +619,10 @@ function contextMenuSearch(info, tab) {
 	var searchTerms;
 	if (!info.selectionText && info.srcUrl)
 		searchTerms = info.srcUrl;
-	else if (info.linkUrl && !info.selectionText)
+	else if (isFirefox && info.linkUrl && !info.selectionText)
 		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText;
+	else if ( !isFirefox && info.linkUrl && !info.selectionText ) 
+		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : window.searchTerms;
 	else 
 		searchTerms = info.selectionText.trim();
 	
