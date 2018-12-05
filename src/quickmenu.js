@@ -44,8 +44,8 @@ function makeFrameContents(options) {
 		browser.runtime.sendMessage({
 			action: "quickMenuIframeLoaded", 
 			size: {
-				width: window.getComputedStyle(qme,null).width,
-				height: parseInt(window.getComputedStyle(qme,null).height) + parseInt(window.getComputedStyle(sbc, null).height) + 'px'
+				width: qme.getBoundingClientRect().width,
+				height: qme.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
 			},
 			resizeOnly: options.resizeOnly,
 			tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},

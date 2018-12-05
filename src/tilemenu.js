@@ -28,6 +28,7 @@ function makeQuickMenu(options) {
 	quickMenuElement.tabIndex = -1;
 	
 	quickMenuElement.dataset.menu = type;
+	document.body.dataset.menu = type;
 	
 	var columns = (singleColumn) ? 1 : ( (['searchbar','sidebar'].includes(type)) ? userOptions.searchBarColumns : userOptions.quickMenuColumns );
 
@@ -564,8 +565,8 @@ function makeQuickMenu(options) {
 				browser.runtime.sendMessage({
 					action: "quickMenuIframeLoaded", 
 					size: {
-						width: window.getComputedStyle(quickMenuElement,null).width,
-						height: parseInt(window.getComputedStyle(quickMenuElement,null).height) + parseInt(window.getComputedStyle(document.getElementById('searchBarContainer'), null).height) + 'px'
+						width: quickMenuElement.getBoundingClientRect().width,
+						height: quickMenuElement.getBoundingClientRect().height + document.getElementById('searchBarContainer').getBoundingClientRect().height + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -890,8 +891,8 @@ function makeQuickMenu(options) {
 				browser.runtime.sendMessage({
 					action: "quickMenuIframeLoaded", 
 					size: {
-						width: window.getComputedStyle(quickMenuElement,null).width,
-						height: parseInt(window.getComputedStyle(quickMenuElement,null).height) + parseInt(window.getComputedStyle(document.getElementById('searchBarContainer'), null).height) + 'px'
+						width: quickMenuElement.getBoundingClientRect().width,
+						height: quickMenuElement.getBoundingClientRect().height + document.getElementById('searchBarContainer').getBoundingClientRect().height + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -1056,8 +1057,8 @@ function makeQuickMenu(options) {
 							browser.runtime.sendMessage({
 								action: "quickMenuIframeLoaded", 
 								size: {
-									width: window.getComputedStyle(quickMenuElement,null).width,
-									height: parseInt(window.getComputedStyle(quickMenuElement,null).height) + parseInt(window.getComputedStyle(document.getElementById('searchBarContainer'), null).height) + 'px'
+									width: quickMenuElement.getBoundingClientRect().width,
+									height: quickMenuElement.getBoundingClientRect().height + document.getElementById('searchBarContainer').getBoundingClientRect().height + 'px'
 								},
 								resizeOnly: true,
 								tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},

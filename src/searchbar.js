@@ -42,11 +42,11 @@ window.addEventListener('contextmenu', (e) => {
 		title: browser.i18n.getMessage("ShowSuggestions"),
 		type: "checkbox",
 		checked: userOptions.searchBarSuggestions
-	});
+	}, () => {});
 	browser.contextMenus.create({
 		id: "clearHistory",
 		title: browser.i18n.getMessage("ClearSearchHistory")
-	});
+	}, () => {});
 
 	setTimeout(() => {
 		window.addEventListener('mousemove', ()=> {

@@ -613,9 +613,7 @@ function contextMenuSearch(info, tab) {
 		openMethod = userOptions.contextMenuCtrl;
 	else
 		openMethod = userOptions.contextMenuClick;
-	
-	console.log(info);
-	
+
 	var searchTerms;
 	if (!info.selectionText && info.srcUrl)
 		searchTerms = info.srcUrl;
@@ -1154,7 +1152,7 @@ const defaultUserOptions = {
 	sideBar: {
 		enabled: true,
 		startOpen: false,
-		type: 'overlay',
+		type: "overlay",
 		hotkey: [],
 		widget: {
 			enabled: false,
