@@ -206,6 +206,11 @@ function restoreOptions() {
 		document.getElementById('cb_enableAnimations').checked = userOptions.enableAnimations;
 		document.getElementById('s_quickMenuTheme').value = userOptions.quickMenuTheme;
 		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
+		
+		document.getElementById('cb_highLightEnabled').checked = userOptions.highLight.enabled;
+		document.getElementById('c_highLightColor').value = userOptions.highLight.color;
+		document.getElementById('c_highLightBackground').value = userOptions.highLight.background;
+		
 			
 		buildSearchEngineContainer();
 	}
@@ -324,6 +329,12 @@ function saveOptions(e) {
 			}
 		},
 		
+		highLight: {
+			enabled: document.getElementById('cb_highLightEnabled').checked,
+			color: document.getElementById('c_highLightColor').value,
+			background: document.getElementById('c_highLightBackground').value
+		},
+		
 		userStyles: document.getElementById('t_userStyles').value,
 		userStylesEnabled: document.getElementById('cb_userStylesEnabled').checked,
 		enableAnimations: document.getElementById('cb_enableAnimations').checked,
@@ -339,7 +350,7 @@ document.addEventListener("DOMContentLoaded", makeTabs());
 document.addEventListener("DOMContentLoaded", restoreOptions);
 
 // listen to all checkboxes for change
-document.querySelectorAll("input[type='checkbox']").forEach( el => {
+document.querySelectorAll("input[type='checkbox'], input[type='color']").forEach( el => {
 	el.addEventListener('change', saveOptions);
 });
 

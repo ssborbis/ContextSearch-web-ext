@@ -529,13 +529,13 @@ function executeOneClickSearch(info) {
 	
 	switch (openMethod) {
 		case "openCurrentTab":
-			browser.search.search({
+			return browser.search.search({
 				query: searchTerms,
 				engine: engineName
 			});	
 			break;
 		case "openNewTab":
-			browser.tabs.create({
+			return browser.tabs.create({
 				active: true
 			}).then( (tab) => {
 				browser.search.search({
@@ -546,7 +546,7 @@ function executeOneClickSearch(info) {
 			});
 			break;
 		case "openNewWindow":
-			browser.windows.create({
+			return browser.windows.create({
 				incognito: false
 			}).then( (tab) => {
 				
@@ -561,7 +561,7 @@ function executeOneClickSearch(info) {
 			});
 			break;
 		case "openNewIncognitoWindow":
-			browser.windows.create({
+			return browser.windows.create({
 				incognito: true
 			}).then( (tab) => {
 				
@@ -576,7 +576,7 @@ function executeOneClickSearch(info) {
 			});
 			break;
 		case "openBackgroundTab":
-			browser.tabs.create({
+			return browser.tabs.create({
 				active: false
 			}).then( (tab) => {
 				browser.search.search({
@@ -658,6 +658,8 @@ function contextMenuSearch(info, tab) {
 		searchTerms: searchTerms,
 		openMethod: openMethod, 
 		tab: tab
+	}).then( _tab => {
+		highlightSearchTermsInTab(_tab, info.selectionText);
 	});
 }
 
@@ -683,6 +685,8 @@ function quickMenuSearch(info, tab) {
 		openUrl: info.openUrl || null,
 		folder: info.folder,
 		domain: info.domain
+	}).then( _tab => {
+		highlightSearchTermsInTab(_tab, info.selectionText);
 	});
 }
 
@@ -786,41 +790,53 @@ function openSearch(details) {
 				
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
-
-		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
-	
-			// new windows open to about:blank and throw extra complete event
-		//	if (tabInfo.url === "about:blank") return;
-		//	if (tabInfo.url !== q) return;	
 		
-			// new method for working from current tab
-			
-			let landing_url = new URL(q);
-			let current_url = new URL(tabInfo.url);
-			
-			if (current_url.hostname !== landing_url.hostname) return;
+		return new Promise( (resolve, reject ) => {
 
-			browser.tabs.onUpdated.removeListener(listener);
+			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
+		
+				// new windows open to about:blank and throw extra complete event
+			//	if (tabInfo.url === "about:blank") return;
+			//	if (tabInfo.url !== q) return;	
+			
+				// new method for working from current tab
+				
+				let landing_url = new URL(q);
+				let current_url = new URL(tabInfo.url);
+				
+				if (current_url.hostname !== landing_url.hostname) return;
 
-			browser.tabs.executeScript(_tab.id, {
-				code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
-				runAt: 'document_start'
-			}).then(() => {
-			return browser.tabs.executeScript(_tab.id, {
-				file: '/lib/browser-polyfill.min.js',
-				runAt: 'document_start'
-			}).then(() => {
-			return browser.tabs.executeScript(_tab.id, {
-				file: '/opensearch.js',
-				runAt: 'document_start'
-			}).then(() => {
-			return browser.tabs.executeScript(_tab.id, {
-				file: '/execute.js',
-				runAt: 'document_start'
-			});});});});
+				browser.tabs.onUpdated.removeListener(listener);
+
+				browser.tabs.executeScript(_tab.id, {
+					code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
+					runAt: 'document_start'
+				}).then(() => {
+				return browser.tabs.executeScript(_tab.id, {
+					file: '/lib/browser-polyfill.min.js',
+					runAt: 'document_start'
+				}).then(() => {
+				return browser.tabs.executeScript(_tab.id, {
+					file: '/opensearch.js',
+					runAt: 'document_start'
+				}).then(() => {
+				return browser.tabs.executeScript(_tab.id, {
+					file: '/execute.js',
+					runAt: 'document_start'
+				}).then(() => {
+					
+					// listen for the results to complete
+					browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
+						
+						if ( _tabInfo.status !== 'complete' ) return;
+						browser.tabs.onUpdated.removeListener(_listener);
+						
+						// send new tab based on results tabId
+						resolve(browser.tabs.get(_tabId));
+					});
+				});});});});
+			});
 		});
-
-		return _tab;
 	}
 	
 	function onError() {
@@ -852,12 +868,26 @@ function openSearch(details) {
 			active: !inBackground,
 			openerTabId: details.folder ? null : (tab.id || null)
 		});
-		return creating.then(onCreate, onError);
+		return creating.then(onCreate, onError)
 
 	}	
 	function openBackgroundTab() {
-		return openNewTab(true)
+		return openNewTab(true);
 	}
+}
+
+function highlightSearchTermsInTab(_tab, _search) {
+	
+	if ( !userOptions.highLight.enabled ) return;
+
+	return browser.tabs.executeScript(_tab.id, {
+		runAt: 'document_idle',
+		file: "lib/mark.es6.min.js"
+	}).then( () => {
+		browser.tabs.executeScript(_tab.id, {
+			code: 'var instance = new Mark(document.body);instance.mark("' + _search + '", {className:"CS_mark"});'
+		})
+	});
 }
 
 function getAllOpenTabs() {
@@ -1178,6 +1208,11 @@ const defaultUserOptions = {
 			position: "right",
 			offset: 100
 		}	
+	},
+	highLight: {
+		enabled: true,
+		color: '#000',
+		background: '#ffff00'
 	},
 	userStyles: 
 `/* add custom styles to menus here */
