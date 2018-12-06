@@ -621,12 +621,6 @@ function makeQuickMenu(options) {
 				tool.dataset.hidden = true;
 				tileArray.unshift(tool);
 			});
-			// userOptions.quickMenuTools.forEach( tool => {
-				// if ( tool.disabled ) return;
-				// let _tile = document.createElement('div');
-				// _tile.dataset.hidden = "true";
-				// tileArray.unshift(_tile);
-			// });
 		}
 
 		// add empty cells for resizing ( needs work )
@@ -663,6 +657,9 @@ function makeQuickMenu(options) {
 			quickMenuElement.appendChild(div);
 		}
 
+		// set min-width to prevent menu shrinking with smaller folders
+		quickMenuElement.style.minWidth = columns * quickMenuElement.querySelector('.tile').getBoundingClientRect().width + "px";
+		
 		// slide-in animation
 		if ( !userOptions.enableAnimations ) quickMenuElement.style.setProperty('--user-transition', 'none');
 		quickMenuElement.style.left = quickMenuElement.getBoundingClientRect().width * ( (options.reverse) ? -1 : 1 ) + "px";
@@ -670,7 +667,7 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.transition = null;
 		quickMenuElement.style.visibility = null;
 		quickMenuElement.style.left = '0px';
-		
+
 		/* dnd */
 		let tileDivs = quickMenuElement.querySelectorAll('.tile:not([data-type="tool"]):not([data-type="empty"])');
 		tileDivs.forEach( div => {

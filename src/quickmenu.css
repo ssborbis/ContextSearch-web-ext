@@ -233,6 +233,7 @@ BODY {
 	vertical-align:middle;
 	background-position:4px 2px;
 	background-size:16px;
+	display:block;
 }
 .tile.singleColumn::before {
 	content: attr(data-title);
