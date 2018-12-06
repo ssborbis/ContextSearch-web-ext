@@ -40,6 +40,8 @@ function makeQuickMenu(options) {
 		e.stopPropagation();
 	}
 	
+	let sbc = document.getElementById('searchBarContainer');
+	
 	// replace / append dragged text based on timer
 	sb.addEventListener('dragenter', (e) => {
 		sb.select();
@@ -566,7 +568,7 @@ function makeQuickMenu(options) {
 					action: "quickMenuIframeLoaded", 
 					size: {
 						width: quickMenuElement.getBoundingClientRect().width,
-						height: quickMenuElement.getBoundingClientRect().height + document.getElementById('searchBarContainer').getBoundingClientRect().height + 'px'
+						height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -892,7 +894,7 @@ function makeQuickMenu(options) {
 					action: "quickMenuIframeLoaded", 
 					size: {
 						width: quickMenuElement.getBoundingClientRect().width,
-						height: quickMenuElement.getBoundingClientRect().height + document.getElementById('searchBarContainer').getBoundingClientRect().height + 'px'
+						height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -970,6 +972,63 @@ function makeQuickMenu(options) {
 					}
 
 					tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
+					
+					// site search picker
+					if ( se.template.indexOf('{selectdomain}') !== -1 ) {
+						tile.dataset.id = node.id;
+						tile.dataset.type = 'specialFolder';
+						
+						tile.onclick = function() {
+
+							browser.runtime.sendMessage({action: 'getCurrentTabInfo'}).then( tab => {
+
+								let siteSearchNode = {
+									type:"folder",
+									parent:node.parent,
+									children:[],
+									id:node.id
+								}
+								
+								let url = new URL(tab.url);								
+								let path = url.pathname.substring(0, url.pathname.lastIndexOf('/'));
+								let pathParts = path.split('/');
+	
+								for ( let i=0;i<pathParts.length;i++ ) {
+									siteSearchNode.children.push({
+										type: "siteSearch",
+										title: url.hostname + pathParts.slice(0,i+1).join('/'),
+										parent:node,
+										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.png')
+									});
+									
+								}
+
+								quickMenuElement = quickMenuElementFromNodeTree(siteSearchNode);
+								
+								quickMenuElement.querySelectorAll('br').forEach( br => br.parentNode.removeChild(br));
+								quickMenuElement.querySelectorAll('.tile').forEach( _tile => {
+									_tile.classList.add('singleColumn');
+									_tile.style.width = 'auto';
+									_tile.style.paddingRight = '16px';
+									quickMenuElement.insertBefore(document.createElement('br'), _tile.nextSibling);
+								});
+		
+								browser.runtime.sendMessage({
+									action: "quickMenuIframeLoaded", 
+									size: {
+										width: quickMenuElement.getBoundingClientRect().width,
+										height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+									},
+									resizeOnly: true,
+									tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
+									tileCount: siteSearchNode.children.length
+								});
+								
+								document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+							});
+						}
+						break;
+					}
 					
 					addTileEventHandlers(tile, (e) => {
 						browser.runtime.sendMessage({
@@ -1058,7 +1117,7 @@ function makeQuickMenu(options) {
 								action: "quickMenuIframeLoaded", 
 								size: {
 									width: quickMenuElement.getBoundingClientRect().width,
-									height: quickMenuElement.getBoundingClientRect().height + document.getElementById('searchBarContainer').getBoundingClientRect().height + 'px'
+									height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
 								},
 								resizeOnly: true,
 								tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -1098,6 +1157,27 @@ function makeQuickMenu(options) {
 
 					});
 					
+					break;
+					
+				case "siteSearch":
+
+					tile = buildSearchIcon(node.icon, node.title);
+					tile.dataset.type = 'siteSearch';
+					tile.dataset.id = node.id || "";	
+					tile.dataset.title = node.title;
+
+					addTileEventHandlers(tile, (e) => {
+						browser.runtime.sendMessage({
+							action: "quickMenuSearch", 
+							info: {
+								menuItemId: node.parent.id,
+								selectionText: sb.value,
+								openMethod: getOpenMethod(e),
+								domain: tile.dataset.title
+							}
+						});
+					});
+
 					break;
 			}
 			

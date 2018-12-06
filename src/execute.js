@@ -7,14 +7,14 @@ function post(path, params) {
 		
 	var form = document.createElement("form");
 	form.setAttribute("method", "POST");
-	form.setAttribute("action", replaceOpenSearchParams(url.href, _SEARCHTERMS));
+	form.setAttribute("action", replaceOpenSearchParams({template: url.href, searchterms: _SEARCHTERMS}));
 
 	for (let param of params) {
 		var hiddenField = document.createElement("input");
 		
 		hiddenField.setAttribute("type", "hidden");
 		hiddenField.setAttribute("name", param.name);
-		hiddenField.setAttribute("value", replaceOpenSearchParams(param.value, _SEARCHTERMS));
+		hiddenField.setAttribute("value", replaceOpenSearchParams({template: param.value, searchterms: _SEARCHTERMS}));
 
 		form.appendChild(hiddenField);
 	}

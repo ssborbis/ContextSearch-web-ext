@@ -28,17 +28,17 @@ if ( window != top ) {
 			
 			// document.documentElement.classList.remove('CS_panel');
 			
-			if ( getContainer().dataset.opened ) {
+			// if ( getContainer().dataset.opened ) {
 				
-				console.log('sending clicks');
-				getOpeningTab().click();
-				setTimeout( () => {
+				// console.log('sending clicks');
+				// getOpeningTab().click();
+				// setTimeout( () => {
 					
-					console.log(getContainer().dataset.opened);
-					getOpeningTab().click();
-				}, 2000);
+					// console.log(getContainer().dataset.opened);
+					// getOpeningTab().click();
+				// }, 2000);
 					
-			}
+			// }
 
 			// causing container to move on tile dnd
 		//	sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";

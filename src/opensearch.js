@@ -1,10 +1,17 @@
-function replaceOpenSearchParams(in_str, searchterms, url) {
+function replaceOpenSearchParams(options) {
+	
+//	in_str, searchterms, url
 	// replace OpenSearch params
-	searchterms = searchterms || "";
+	template 	= options.template || "";
+	searchterms = options.searchterms || "";
+	url 		= options.url || "";
+	userdomain 	= options.domain || ""
 	
 	let domains = getDomains(url);
+	
+//	console.log(domain);
 		
-	return in_str
+	return template
 		.replace(/{searchTerms}/g, searchterms)
 		.replace(/{count[\?]?}/g, "50")
 		.replace(/{startIndex[\?]?}/g, "1")
@@ -14,6 +21,7 @@ function replaceOpenSearchParams(in_str, searchterms, url) {
 		.replace(/{outputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
 		.replace(/{subdomain}/g, domains.subdomain || "")
 		.replace(/{domain}/g, domains.domain || "")
+		.replace(/{selectdomain}/g, userdomain || "")
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
 		.replace(/{.+?}/g, ""); // all others

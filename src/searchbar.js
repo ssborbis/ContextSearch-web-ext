@@ -57,13 +57,12 @@ window.addEventListener('contextmenu', (e) => {
 });
 
 // what was this for?
-if ( browser.runtime !== undefined ) {
-	setInterval(() => {
-		browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
-			userOptions = message.userOptions || {};
-		});
-	}, 1000);
-}
+setInterval(() => {
+	if ( browser.runtime === undefined ) return;
+	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+		userOptions = message.userOptions || {};
+	});
+}, 1000);
 
 function addToHistory(terms) {
 	
@@ -210,17 +209,18 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 				suggest.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 
 				suggest.addEventListener('transitionend', (e) => {
-					
+
 					// for browser_action
-					window.dispatchEvent(new Event('resize'));
-					
+					// reset the menu height for window resizing
+					document.getElementById('quickMenuElement').style.height = null;
+
 					// for sidebar
 					sideBarResize();
 				});
 				
 				let suggestionHeight = suggestions.length ? suggest.firstChild.getBoundingClientRect().height : 0;
 				
-				suggest.style.maxHeight = Math.min(100, suggestions.length * suggestionHeight) + "px";
+				suggest.style.maxHeight = Math.min(suggestionHeight * 5, suggestions.length * suggestionHeight) + "px";
 
 			}
 			
@@ -307,12 +307,18 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {
-	
+		
 	let qm = document.getElementById('quickMenuElement');
 	let sb = document.getElementById('searchBar');
 	let tb = document.getElementById('titleBar');
 	let sg = document.getElementById('suggestions');
 	let ob = document.getElementById('optionsButton');
+	
+	// reset fixed element sizes for window resizing
+	qm.style.height = null;
+	qm.style.width = null;
+	sg.style.width = null;
+	tb.style.width = null;
 
 	qm.querySelectorAll('.tile').forEach( div => {
 		div.onmouseenter = () => tb.innerText = div.title;
@@ -342,7 +348,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// listen for resize events, specifically the browser action resizing
 	// and add scrollbars when necessary
 	window.addEventListener('resize', () => {
-		
+
 		if ( window != top ) return;
 
 		if ( window.innerHeight < document.body.scrollHeight ) {
@@ -352,9 +358,10 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		// account for scroll bars
 		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 		sg.style.width = qm.getBoundingClientRect().width + "px";
+		tb.style.width = sg.style.width;
 		
 		if (qm.getBoundingClientRect().width < window.innerWidth - 10 /* browser_action has a minimum window size */) {
-			qm.querySelectorAll('.tile').forEach( div => {
+			qm.querySelectorAll('.tile:not("singleColumn")').forEach( div => {
 				div.style.width = window.innerWidth / columns + "px";
 			});
 		}

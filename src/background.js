@@ -58,6 +58,7 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
+		
 			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
@@ -306,6 +307,21 @@ function notify(message, sender, sendResponse) {
 			
 		case "checkForOneClickEngines":	
 			return checkForOneClickEngines();
+			break;
+			
+		case "getCurrentTabInfo": 
+			if (!sender.tab) { // browser_action popup has no tab, use current tab
+				function onFound(tabs) {
+					let tab = tabs[0];
+					return Promise.resolve(tab);
+				}
+
+				function onError(err){
+					console.error(err);
+				}
+				return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+			} else
+				return Promise.resolve(sender.tab);
 			break;
 	}
 }
@@ -665,25 +681,28 @@ function quickMenuSearch(info, tab) {
 		openMethod: info.openMethod, 
 		tab: tab,
 		openUrl: info.openUrl || null,
-		folder: info.folder
+		folder: info.folder,
+		domain: info.domain
 	});
 }
 
 function openSearch(details) {
-
+	
+	console.log(details);
 	var searchEngineId = details.searchEngineId || null;
 	var searchTerms = details.searchTerms.trim();
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;
 	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
+	var domain = details.domain || null;
 
 	if ( searchEngineId === null ) return false;
 
 	if (!tab) tab = {url:"", id:0}
 	
 	var se;
-	
+
 	if (!openUrl) {
 
 		// if temp engine exists, use that
@@ -691,7 +710,7 @@ function openSearch(details) {
 
 		// must be invalid
 		if (!se.query_string) return false;
-		
+
 		// legacy fix
 		se.queryCharset = se.queryCharset || "UTF-8";
 		
@@ -710,7 +729,7 @@ function openSearch(details) {
 		}
 		
 		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
-		var q = replaceOpenSearchParams(se.query_string, encodedSearchTermsObject.uri, tab.url);
+		var q = replaceOpenSearchParams({template: se.query_string, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
 		
 		// set landing page for POST engines
 		if ( 
