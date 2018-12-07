@@ -29,7 +29,7 @@ BODY {
     background-color:#3293d4;
     color:#dedede;
 }
-.tile[data-type="folder"]:not(.singleColumn)::before {
+.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])::before {
 	background-color:#287cb3;
 	border-color:#777;
 }

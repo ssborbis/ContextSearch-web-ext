@@ -62,7 +62,7 @@ BODY {
 	overflow-y:auto;
 	transition:var(--user-transition, left .15s ease-in-out);
 }
-.tile[data-type="folder"]:not(.singleColumn)::before {
+.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])yy::before {
 	content:"";
 	top:0;
 	float:right;
@@ -74,7 +74,7 @@ BODY {
 	border-radius: 0 0 0 4px;
 	display:inline-block;
 }
-.tile[data-type="folder"]:not(.singleColumn)::after {
+.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])::after {
 	content:attr(data-title);
 	font-size:7pt;
 	line-height:1em;

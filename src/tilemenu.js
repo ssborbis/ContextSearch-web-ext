@@ -739,16 +739,18 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('dragenter', (e) => {
+				
 			//	e.preventDefault();
 				e.target.dispatchEvent(new MouseEvent('mouseenter'));
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
-				
+
 				targetDiv.style.transition = 'none';
 				
 				let dragDiv = document.getElementById('dragDiv');
 				
-				if ( !dragDiv && targetDiv.node.type === 'folder' ) {
+				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
+
 					targetDiv.textDragOverFolderTimer = setTimeout(() => {
 						let _e = new MouseEvent('mouseup');
 						_e.openFolder = true;
@@ -973,9 +975,9 @@ function makeQuickMenu(options) {
 					// site search picker
 					if ( se.template.indexOf('{selectdomain}') !== -1 ) {
 						tile.dataset.id = node.id;
-						tile.dataset.type = 'specialFolder';
+						tile.dataset.type = 'folder';
 						
-						tile.onclick = function() {
+						tile.addEventListener('mouseup', () => {
 
 							browser.runtime.sendMessage({action: 'getCurrentTabInfo'}).then( tab => {
 
@@ -1024,7 +1026,8 @@ function makeQuickMenu(options) {
 								
 								document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 							});
-						}
+						});
+						
 						break;
 					}
 					
