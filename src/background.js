@@ -783,11 +783,7 @@ function openSearch(details) {
 
 		// searches without terms should stay here
 		if (!searchTerms) return _tab;
-		
-		function escapeDoubleQuotes(str) {
-			return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
-		}
-				
+			
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
 		
@@ -876,6 +872,10 @@ function openSearch(details) {
 	}
 }
 
+function escapeDoubleQuotes(str) {
+	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
+}
+
 function highlightSearchTermsInTab(_tab, _search) {
 	
 	if ( !userOptions.highLight.enabled ) return;
@@ -884,9 +884,10 @@ function highlightSearchTermsInTab(_tab, _search) {
 		runAt: 'document_idle',
 		file: "lib/mark.es6.min.js"
 	}).then( () => {
-		browser.tabs.executeScript(_tab.id, {
-			code: 'var CS_MARK_instance = new Mark(document.body);CS_MARK_instance.mark("' + _search + '", {className:"CS_mark"});'
-		})
+		return browser.tabs.executeScript(_tab.id, {
+			code: `var CS_MARK_instance = new Mark(document.body);
+			CS_MARK_instance.mark("` + escapeDoubleQuotes(_search) + `", {className:"CS_mark", done: () => {document.dispatchEvent(new CustomEvent("CS_mark_done"))} });`
+		});
 	});
 }
 

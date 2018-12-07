@@ -62,7 +62,7 @@ BODY {
 	overflow-y:auto;
 	transition:var(--user-transition, left .15s ease-in-out);
 }
-.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])yy::before {
+.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])::before {
 	content:"";
 	top:0;
 	float:right;

@@ -976,6 +976,7 @@ function makeQuickMenu(options) {
 					if ( se.template.indexOf('{selectdomain}') !== -1 ) {
 						tile.dataset.id = node.id;
 						tile.dataset.type = 'folder';
+						tile.dataset.subtype = 'sitesearch';
 						
 						tile.addEventListener('mouseup', () => {
 

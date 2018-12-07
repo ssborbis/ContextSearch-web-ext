@@ -1,51 +1,66 @@
-var userOptions;
+var userOptions = {};
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	
 	userOptions = result.userOptions;
 
-	if ( userOptions.highLight.enabled ) {
-		let styleEl = document.createElement('style');
-		document.head.appendChild(styleEl);
-		
-		styleEl.innerText = '.CS_mark { background: ' + userOptions.highLight.background + ';color:' + userOptions.highLight.color + ';}';
-		
-		setTimeout(() => {
-			createMap();
-		}, 500);
-	}
+	let styleEl = document.createElement('style');
+	document.head.appendChild(styleEl);
+	
+	styleEl.innerText = '.CS_mark { background: ' + userOptions.highLight.background + ';color:' + userOptions.highLight.color + ';}';
 });
 
-function createMap() {
-	
+document.addEventListener('CS_mark_done', () => {
+
+	// Chrome markings happened before loading userOptions
+	let optionsCheck = setInterval( () => {
+		if ( userOptions === {} ) return;
+		
+		clearInterval(optionsCheck);
+		createNavBar();
+	}, 100);
+});
+		
+
+function createNavBar() {
+
 	let hls = document.querySelectorAll('.CS_mark');
 	
 	if ( ! hls.length ) return;
 
-	let div = document.createElement('div');
+	let div = document.getElementById('CS_highLightNavBar');
+
+	if ( div ) div.parentNode.removeChild(div);
+	
+	div = document.createElement('div');
 	div.id = 'CS_highLightNavBar';
 	
-	div.style.transform = 'scale(' + 1/window.devicePixelRatio + ')';
-	div.style.height = document.documentElement.clientHeight * window.devicePixelRatio + "px";
+	div.style.transform = 'scaleX(' + 1/window.devicePixelRatio + ')';
+//	div.style.height = document.documentElement.clientHeight * window.devicePixelRatio + "px";
 	div.style.setProperty('--highlight-background', userOptions.highLight.background);
 	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/crossmark.png');
 	
-	img.onclick = function(e) {
+	img.addEventListener('mousedown', (e) => {
 		e.preventDefault();
 		e.stopPropagation();
+		e.stopImmediatePropagation();
+	})
+	img.addEventListener('mouseup', (e) => {	
 		CS_MARK_instance.unmark();
 		div.parentNode.removeChild(div);
-	}
+	});
 	
 	div.appendChild(img);
 	
 	let ratio = document.documentElement.clientHeight / document.documentElement.offsetHeight;
 	
-	div.onclick = function(e) {
+	function navScrollToHandler(e) {
 		document.documentElement.scrollTop = e.clientY / ratio - .5 * document.documentElement.clientHeight;
 	}
+	
+	div.onclick = navScrollToHandler;
 	
 	div.addEventListener('mousedown', (e) => {
 		
@@ -53,7 +68,7 @@ function createMap() {
 		
 		function mouseMoveHandler(_e) {
 			_e.preventDefault();
-			document.documentElement.scrollTop = _e.clientY / ratio - .5 * document.documentElement.clientHeight;
+			navScrollToHandler(_e);
 		}
 		
 		document.addEventListener('mousemove', mouseMoveHandler);
@@ -68,9 +83,9 @@ function createMap() {
 		
 		let marker = document.createElement('div');
 
-		
-		marker.style.top = rect.top * ratio * window.devicePixelRatio + "px";
-		marker.style.height = rect.height * ratio * window.devicePixelRatio + "px";
+		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
+
+		marker.style.height = rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
 
 		marker.onclick = function(e) {
 			
@@ -80,7 +95,7 @@ function createMap() {
 			div.querySelectorAll('*').forEach( _div => _div.style.filter = null );
 			
 			let _top = parseFloat(marker.style.top) / ratio;
-			document.documentElement.scrollTop = e.clientY / ratio - .5 * document.documentElement.clientHeight;
+			navScrollToHandler(e);
 			
 			hl.style.filter = 'invert(1)';
 			marker.style.filter = 'invert(1)';
@@ -89,7 +104,6 @@ function createMap() {
 		div.appendChild(marker);
 		
 	});
-	
 	
 	document.body.appendChild(div);
 }
