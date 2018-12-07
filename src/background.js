@@ -885,7 +885,7 @@ function highlightSearchTermsInTab(_tab, _search) {
 		file: "lib/mark.es6.min.js"
 	}).then( () => {
 		browser.tabs.executeScript(_tab.id, {
-			code: 'var instance = new Mark(document.body);instance.mark("' + _search + '", {className:"CS_mark"});'
+			code: 'var CS_MARK_instance = new Mark(document.body);CS_MARK_instance.mark("' + _search + '", {className:"CS_mark"});'
 		})
 	});
 }
@@ -1212,7 +1212,10 @@ const defaultUserOptions = {
 	highLight: {
 		enabled: true,
 		color: '#000',
-		background: '#ffff00'
+		background: '#ffff00'//,
+	//	navBar: {
+	//		enabled: true
+	//	}
 	},
 	userStyles: 
 `/* add custom styles to menus here */

@@ -1173,6 +1173,9 @@ function makeQuickMenu(options) {
 								domain: tile.dataset.title
 							}
 						});
+						
+						// click the back button
+						tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
 					});
 
 					break;

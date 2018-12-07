@@ -58,3 +58,27 @@
 #CS_editWidget {
 	cursor: default;
 }
+#CS_highLightNavBar {
+	top:0;
+	right:0;
+	position:fixed;
+	width:20px;
+	z-index:2147483647;
+	border:1px solid #ccc;
+	background-color:#eee;
+	opacity:.7;
+	transform-origin:top right;
+}
+#CS_highLightNavBar:hover {
+	opacity:.7;
+}
+#CS_highLightNavBar > IMG {
+	height:20px;
+}
+#CS_highLightNavBar > DIV {
+	position:absolute;
+	display:inline-block;
+	background-color:var(--highlight-background);
+	left:0;
+	width:100%;
+}
