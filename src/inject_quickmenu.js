@@ -57,7 +57,7 @@ function openQuickMenu(ev) {
 		screenCoords: {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
-		searchTerms: getSelectedText(ev.target).trim() || getLink(ev.target) || getImage(ev.target),
+		searchTerms: getSelectedText(ev.target).trim() || getImage(ev.target) || getLink(ev.target),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
