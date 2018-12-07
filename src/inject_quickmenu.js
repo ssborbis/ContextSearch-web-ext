@@ -57,7 +57,7 @@ function openQuickMenu(ev) {
 		screenCoords: {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
-		searchTerms: getSelectedText(ev.target).trim(),
+		searchTerms: getSelectedText(ev.target).trim() || getLink(ev.target) || getImage(ev.target),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
@@ -268,7 +268,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		getSelectedText(ev.target) === "" ||
+		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
 	) return false;
 	
@@ -387,8 +387,8 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		getSelectedText(ev.target) === "" ||
-		((ev.target.type === 'text' || ev.target.type === 'textarea' || ev.target.isContentEditable ) && !userOptions.quickMenuAutoOnInputs)
+		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) ) ||
+		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
@@ -416,7 +416,7 @@ document.addEventListener('mouseup', (ev) => {
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		getSelectedText(ev.target) === ""
+		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) )
 	) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
@@ -490,6 +490,22 @@ window.addEventListener('keydown', (e) => {
 	// openQuickMenu(e);
 	
 // });
+
+function getLink(el) {
+	let a = el.closest('a');
+	
+	if ( !a ) return "";
+		
+	return userOptions.contextMenuSearchLinksAs === 'url' ? a.href : a.innerText;
+}
+
+function getImage(el) {
+	
+	if ( el.tagName === 'IMG' ) return el.src;
+	
+	let style = window.getComputedStyle(el, false);
+	return style.backgroundImage.slice(4, -1).replace(/"/g, "");
+}
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 

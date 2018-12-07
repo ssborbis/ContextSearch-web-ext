@@ -1211,8 +1211,8 @@ const defaultUserOptions = {
 	},
 	highLight: {
 		enabled: true,
-		color: '#000',
-		background: '#ffff00'//,
+		color: '#fff',
+		background: '#ff00ff'//,
 	//	navBar: {
 	//		enabled: true
 	//	}
