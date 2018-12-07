@@ -27,6 +27,7 @@ function createMap() {
 	
 	div.style.transform = 'scale(' + 1/window.devicePixelRatio + ')';
 	div.style.height = document.documentElement.clientHeight * window.devicePixelRatio + "px";
+	div.style.setProperty('--highlight-background', userOptions.highLight.background);
 	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/crossmark.png');
@@ -43,7 +44,7 @@ function createMap() {
 	let ratio = document.documentElement.clientHeight / document.documentElement.offsetHeight;
 	
 	div.onclick = function(e) {
-		document.documentElement.scrollTop = e.clientY / ratio;
+		document.documentElement.scrollTop = e.clientY / ratio - .5 * document.documentElement.clientHeight;
 	}
 	
 	div.addEventListener('mousedown', (e) => {
@@ -52,7 +53,7 @@ function createMap() {
 		
 		function mouseMoveHandler(_e) {
 			_e.preventDefault();
-			document.documentElement.scrollTop = _e.clientY / ratio;
+			document.documentElement.scrollTop = _e.clientY / ratio - .5 * document.documentElement.clientHeight;
 		}
 		
 		document.addEventListener('mousemove', mouseMoveHandler);
@@ -67,10 +68,10 @@ function createMap() {
 		
 		let marker = document.createElement('div');
 
+		
 		marker.style.top = rect.top * ratio * window.devicePixelRatio + "px";
 		marker.style.height = rect.height * ratio * window.devicePixelRatio + "px";
-		marker.style.setProperty('--highlight-background', userOptions.highLight.background);
-		
+
 		marker.onclick = function(e) {
 			
 			e.stopImmediatePropagation();
@@ -79,7 +80,7 @@ function createMap() {
 			div.querySelectorAll('*').forEach( _div => _div.style.filter = null );
 			
 			let _top = parseFloat(marker.style.top) / ratio;
-			document.documentElement.scrollTop = (_top - 20) / window.devicePixelRatio;
+			document.documentElement.scrollTop = e.clientY / ratio - .5 * document.documentElement.clientHeight;
 			
 			hl.style.filter = 'invert(1)';
 			marker.style.filter = 'invert(1)';

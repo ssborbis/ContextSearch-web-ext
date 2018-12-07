@@ -987,8 +987,9 @@ function makeQuickMenu(options) {
 								}
 								
 								let url = new URL(tab.url);								
-								let path = url.pathname.substring(0, url.pathname.lastIndexOf('/'));
-								let pathParts = path.split('/');
+								let pathParts = url.pathname.split('/');
+								
+								if (pathParts[pathParts.length - 1].indexOf('.')) pathParts.pop();
 	
 								for ( let i=0;i<pathParts.length;i++ ) {
 									siteSearchNode.children.push({
