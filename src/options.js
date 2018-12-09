@@ -204,14 +204,15 @@ function restoreOptions() {
 		document.getElementById('cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
 		document.getElementById('t_userStyles').disabled = !userOptions.userStylesEnabled;
 		document.getElementById('cb_enableAnimations').checked = userOptions.enableAnimations;
-		document.getElementById('s_quickMenuTheme').value = userOptions.quickMenuTheme;
+	//	document.getElementById('s_quickMenuTheme').value = userOptions.quickMenuTheme;
 		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
 		
 		document.getElementById('cb_highLightEnabled').checked = userOptions.highLight.enabled;
 		document.getElementById('c_highLightColor').value = userOptions.highLight.color;
 		document.getElementById('c_highLightBackground').value = userOptions.highLight.background;
-		
-			
+		document.getElementById('cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
+		document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
+
 		buildSearchEngineContainer();
 	}
   
@@ -332,13 +333,19 @@ function saveOptions(e) {
 		highLight: {
 			enabled: document.getElementById('cb_highLightEnabled').checked,
 			color: document.getElementById('c_highLightColor').value,
-			background: document.getElementById('c_highLightBackground').value
+			background: document.getElementById('c_highLightBackground').value,
+			navBar: {
+				enabled: document.getElementById('cb_highLightNavBarEnabled').checked
+			},
+			markOptions: {
+				separateWordSearch: document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked
+			}
 		},
 		
 		userStyles: document.getElementById('t_userStyles').value,
 		userStylesEnabled: document.getElementById('cb_userStylesEnabled').checked,
 		enableAnimations: document.getElementById('cb_enableAnimations').checked,
-		quickMenuTheme: document.getElementById('s_quickMenuTheme').value,
+		quickMenuTheme: document.getElementById('s_searchBarTheme').value,
 		searchBarTheme: document.getElementById('s_searchBarTheme').value
 	}
 
@@ -579,12 +586,8 @@ function makeTabs() {
 
 			for (let tabcontent of document.getElementsByClassName("tabcontent"))
 				tabcontent.style.display = "none";
-			
-			for (let _tab of tabs)
-				_tab.getElementsByTagName('img')[0].style.display='none';
-			
+
 			e.target.getElementsByTagName('img')[0].className = 'fade-in';
-			e.target.getElementsByTagName('img')[0].style.display='inline-block';
 				
 			// Get all elements with class="tablinks" and remove the class "active"
 			for (let tablink of document.getElementsByClassName("tablinks")) 
@@ -1016,11 +1019,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			if (select.value === 'noAction') {
 				cb1.disabled = false;
 				cb1.parentNode.style.opacity = null;
-				cb1.parentNode.querySelector('[data-disabled-msg]').style.display = 'none';
+			//	cb1.parentNode.querySelector('[data-disabled-msg]').style.display = 'none';
 			} else {
 				cb1.disabled = true;
 				cb1.parentNode.style.opacity = .5;
-				cb1.parentNode.querySelector('[data-disabled-msg]').style.display = null;
+			//	cb1.parentNode.querySelector('[data-disabled-msg]').style.display = null;
 			}		
 		}
 		select.addEventListener('change', toggle);

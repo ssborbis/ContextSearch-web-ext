@@ -48,7 +48,7 @@
   },
   
    "QuickMenuNote": {
-    "message": "Quick Menu disabled on addons.mozilla.org. Context Menu will be enabled if Quick Menu fails to open"
+    "message": "Disabled on addons.mozilla.org"
   },
   
    "SearchActionsHeader": {
@@ -106,10 +106,6 @@
   "Items": {
     "message": "Items"
   },
-  
-  "ItemsTooltip": {
-    "message": "Maximum total number of search engine icons to be displayed."
-  },
 
   "MenuSize": {
     "message": "Menu Size"
@@ -148,7 +144,7 @@
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups."
+    "message": "Enable menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups."
   },
   
    "Mouse": {
@@ -168,7 +164,7 @@
   },
   
     "HoldTooltip": {
-    "message": "Popup menu will open after holding the selected mouse button for ~0.25 seconds"
+    "message": "Menu will open after holding the selected mouse button for ~0.25 seconds"
   },
   
    "SearchOnMouseup": {
@@ -208,7 +204,7 @@
   },
   
   "CloseAfterSearchTooltip": {
-    "message": "Popup menu will close after clicking a search icon.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions"
+    "message": "Close menu after performing a search.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions"
   },
   
    "CloseOnScroll": {
@@ -216,11 +212,11 @@
   },
   
    "CloseOnScrollTooltip": {
-    "message": "Popup menu will close when scrolling using scrollbars or the mouse wheel"
+    "message": "Close menu by scrolling or using the mouse wheel"
   },
   
   "MouseHelp": {
-    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly"
+    "message": "Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly and prevent unwanted menus"
   },
 
   "Position": {
@@ -849,7 +845,7 @@
   },
   
   "SearchBarUseOldStyleTooltip": {
-    "message": "Display search engines with labels in a single column with labels like the old Firefox search bar"
+    "message": "Display search engines in a single column with labels. Overrides columns setting"
   },
   
   "ToolbarSearch": {

@@ -75,6 +75,7 @@
 }
 #CS_highLightNavBar > IMG {
 	height:20px;
+	transform-origin:top right;
 }
 #CS_highLightNavBar > DIV {
 	position:absolute;

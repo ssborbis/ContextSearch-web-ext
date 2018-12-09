@@ -501,6 +501,8 @@ function getLink(el) {
 
 function getImage(el) {
 	
+	if ( el.innerText ) return false;
+	
 	if ( el.tagName === 'IMG' ) return el.src;
 	
 	let style = window.getComputedStyle(el, false);

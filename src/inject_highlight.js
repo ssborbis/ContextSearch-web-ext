@@ -11,16 +11,26 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 });
 
 document.addEventListener('CS_mark_done', () => {
-
 	// Chrome markings happened before loading userOptions
 	let optionsCheck = setInterval( () => {
 		if ( userOptions === {} ) return;
 		
 		clearInterval(optionsCheck);
-		createNavBar();
+		
+		if ( userOptions.highLight.navBar && userOptions.highLight.navBar.enabled )
+			createNavBar();
 	}, 100);
 });
+
+document.addEventListener('keydown', (e) => {
+	if ( e.which === 27 ) {
+		CS_MARK_instance.unmark();
 		
+		let nav = document.getElementById('CS_highLightNavBar');
+		
+		if ( nav ) nav.parentNode.removeChild(nav);
+	}
+}, {once: true});
 
 function createNavBar() {
 
@@ -28,19 +38,15 @@ function createNavBar() {
 	
 	if ( ! hls.length ) return;
 
-	let div = document.getElementById('CS_highLightNavBar');
-
-	if ( div ) div.parentNode.removeChild(div);
-	
-	div = document.createElement('div');
+	let div = document.createElement('div');
 	div.id = 'CS_highLightNavBar';
 	
 	div.style.transform = 'scaleX(' + 1/window.devicePixelRatio + ')';
-//	div.style.height = document.documentElement.clientHeight * window.devicePixelRatio + "px";
 	div.style.setProperty('--highlight-background', userOptions.highLight.background);
 	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/crossmark.png');
+	img.style.transform = 'scaleY(' + 1/window.devicePixelRatio + ')';
 	
 	img.addEventListener('mousedown', (e) => {
 		e.preventDefault();
@@ -84,7 +90,6 @@ function createNavBar() {
 		let marker = document.createElement('div');
 
 		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
-
 		marker.style.height = rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
 
 		marker.onclick = function(e) {

@@ -43,7 +43,7 @@ if ( window != top ) {
 			// causing container to move on tile dnd
 		//	sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 
-			openingTab.style.display = userOptions.sideBar.widget.enabled ? null : "none";
+			getOpeningTab().style.display = userOptions.sideBar.widget.enabled ? null : "none";
 		}
 	});
 		

@@ -15,8 +15,7 @@ function notify(message, sender, sendResponse) {
 			return getAllOpenTabs().then((tabs) => {
 				for (let tab of tabs) {
 					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch(function(error) {
-					  error.url = tab.url;
-					  console.log(error);
+						//console.log(error);
 					});	
 				}
 			}).then(() => {
@@ -45,7 +44,7 @@ function notify(message, sender, sendResponse) {
 				return result;
 
 			}, (e) => {
-				console.log(e);
+				//console.log(e);
 			});
 			
 			break;
@@ -336,11 +335,26 @@ function loadUserOptions() {
 			return false;
 		}
 		
-		// Update default values instead of replacing with object of potentially undefined values
-		for (let key in defaultUserOptions) {
-			userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : defaultUserOptions[key];
+		// // Update default values instead of replacing with object of potentially undefined values
+		// for (let key in defaultUserOptions) {
+			// userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : defaultUserOptions[key];
+		// }
+
+		function traverse(defaultobj, userobj) {
+			for (let key in defaultobj) {
+				userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];
+				
+				if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' ) {
+					console.log(key);
+					traverse(defaultobj[key], userobj[key]);
+				}
+			}
 		}
-		
+
+		traverse(defaultUserOptions, result.userOptions);
+
+		userOptions = result.userOptions;
+
 		return true;
 
 	}
@@ -633,10 +647,8 @@ function contextMenuSearch(info, tab) {
 	var searchTerms;
 	if (!info.selectionText && info.srcUrl)
 		searchTerms = info.srcUrl;
-	else if (isFirefox && info.linkUrl && !info.selectionText)
-		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText;
-	else if ( !isFirefox && info.linkUrl && !info.selectionText ) 
-		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : window.searchTerms;
+	else if (info.linkUrl && !info.selectionText)
+		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;
 	else 
 		searchTerms = info.selectionText.trim();
 	
@@ -886,7 +898,11 @@ function highlightSearchTermsInTab(_tab, _search) {
 	}).then( () => {
 		return browser.tabs.executeScript(_tab.id, {
 			code: `var CS_MARK_instance = new Mark(document.body);
-			CS_MARK_instance.mark("` + escapeDoubleQuotes(_search) + `", {className:"CS_mark", done: () => {document.dispatchEvent(new CustomEvent("CS_mark_done"))} });`
+			CS_MARK_instance.mark("` + escapeDoubleQuotes(_search) + `", {
+				className:"CS_mark", 
+				separateWordSearch: ` + userOptions.highLight.markOptions.separateWordSearch + `,
+				done: () => {document.dispatchEvent(new CustomEvent("CS_mark_done"))} 
+			});`
 		});
 	});
 }
@@ -1123,6 +1139,8 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 		
 	}).then((_uo) => {	
+		return _uo;
+	}).then((_uo) => {	
 		console.log('done');
 		return _uo;
 	});
@@ -1213,10 +1231,13 @@ const defaultUserOptions = {
 	highLight: {
 		enabled: true,
 		color: '#fff',
-		background: '#ff00ff'//,
-	//	navBar: {
-	//		enabled: true
-	//	}
+		background: '#ff00ff',
+		navBar: {
+			enabled: true
+		},
+		markOptions: {
+			separateWordSearch: false
+		}
 	},
 	userStyles: 
 `/* add custom styles to menus here */
