@@ -1065,7 +1065,7 @@
   },
   
   "ThemeTooltip": {
-    "message": "Theme to use with the menu",
+    "message": "Theme to use with Quick, Toolbar, and Sidebar menus",
     "description": ""
   },
     
