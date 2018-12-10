@@ -40,7 +40,7 @@
   },
   
   "AddCustomSearchMenuTooltip": {
-    "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases."
+    "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases"
   },
 
    "QuickMenu": {
@@ -992,7 +992,7 @@
   },
   
   "ContextMenuHotKeyTooltip": {
-    "message": "Shortcut key to expand the \"Search With...\" entry in the context menu",
+    "message": "Keyboard shortcut to expand the \"Search With...\" entry in the context menu",
     "description": "Description for Context Menu shortcut key"
   },
   
@@ -1007,6 +1007,10 @@
   
   "SideBar": {
 	"message": "Sidebar"
+  },
+  
+  "SideBarTooltip": {
+	"message": "Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar"
   },
   
   "SideBarPositionTooltip": {
@@ -1100,7 +1104,157 @@
     "description": "alert message when attempting to delete a ocse from the manager"
   },
   
-  "_________": {
+  "Highlight": {
+    "message": "Highlight",
+    "description": ""
+  },
+  
+  "Appearance": {
+    "message": "Appearance",
+    "description": ""
+  },
+  
+  "General": {
+    "message": "General",
+    "description": ""
+  },
+  
+  "Links": {
+    "message": "Links",
+    "description": "Links can be searched as the text displayed or the url they refer to"
+  },
+  
+  "LinksTooltip": {
+    "message": "",
+    "description": ""
+  },
+  
+  "Text": {
+    "message": "text",
+    "description": ""
+  },
+  
+  "Url": {
+    "message": "url",
+    "description": ""
+  },
+  
+  "ContextMenuTooltip": {
+    "message": "Enable searching via the context menu",
+    "description": ""
+  },
+  
+  "QuickMenuTooltip": {
+    "message": "Enable searching via popup menu",
+    "description": ""
+  },
+  
+  "Opening": {
+    "message": "Opening",
+    "description": ""
+  },
+  
+  "Closing": {
+    "message": "Closing",
+    "description": ""
+  },
+  
+  "Location": {
+    "message": "Location",
+    "description": ""
+  },
+  
+  "Window": {
+    "message": "Window",
+    "description": ""
+  },
+  
+  "SidebarTypeTooltip": {
+    "message": "Choose how to display the side bar. Overlay creates a floating window over page content. Panel creates a sidebar the height of the window and pads the document to avoid covering page content",
+    "description": ""
+  },
+  
+  "HighlightTooltip": {
+    "message": "Highlight search terms in search results page",
+    "description": ""
+  },
+  
+  "HighlightSeparateWordsTooltip": {
+    "message": "Highlight each word in multi-word search separately. Disable to treat phrases as a single search term",
+    "description": ""
+  },
+  
+  "HighlightNavTooltip": {
+    "message": "Show navigation bar when highlighting",
+    "description": ""
+  },
+  
+  "Style": {
+    "message": "Style",
+    "description": ""
+  },
+  
+  "TextColor": {
+    "message": "Text Color",
+    "description": ""
+  },
+  
+  "BackgroundColor": {
+    "message": "Background Color",
+    "description": ""
+  },
+  
+  "Animations": {
+    "message": "Animations",
+    "description": ""
+  },
+  
+  "AnimationsTooltip": {
+    "message": "",
+    "description": ""
+  },
+  
+  "MenuTheme": {
+    "message": "Menu Theme",
+    "description": ""
+  },
+  
+  "UserStylesTooltip": {
+    "message": "Apply custom CSS styling to menus",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
     "message": "",
     "description": ""
   }

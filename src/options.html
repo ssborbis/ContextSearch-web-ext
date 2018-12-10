@@ -503,6 +503,7 @@
 				border:1px solid transparent;
 				padding-right:10px;
 				width:auto;
+				max-width:250px;
 
 			}
 			TABLE.searchActions SELECT:focus {
@@ -518,6 +519,9 @@
 			}
 			TABLE.searchActions TD:nth-of-type(3n) {
 				border-left: 1px dashed #ddd;
+			}
+			TABLE.searchActions TD:first-of-type {
+				white-space:nowrap;
 			}
 			P.short {
 				margin:0;
@@ -873,14 +877,14 @@
 			<br />
 			
 			<div class='tab'>
-				<button class='tablinks' data-tabid='generalTab' data-i18n='General'><img alt='' src='icons/settings.png' />General</button>
 				<button class='tablinks' data-tabid='contextMenuTab' data-i18n='ContextMenu'><img alt='' src='icons/context_menu.png' />Context Menu</button>
 				<button class='tablinks' data-tabid='quickMenuTab' data-i18n='QuickMenu'><img alt='' src='icons/quick_menu.png' />Quick Menu</button>
 				<button class='tablinks' data-tabid='toolBarTab' data-i18n='Toolbar'><img alt='' src='icons/icon48.png' />Toolbar</button>
 				<button class='tablinks' data-tabid='sideBarTab' data-i18n='Sidebar'><img alt='' src='icons/load.png' />Sidebar</button>
 				<button class='tablinks' data-tabid='highLightTab' data-i18n='Highlight'><img alt='' src='icons/search.png' />Highlight</button>
-				<button class='tablinks' data-tabid='themesTab' data-i18n='Themes'><img alt='' src='icons/edit.png' />Themes</button>
+				<button class='tablinks' data-tabid='appearanceTab' data-i18n='Appearance'><img alt='' src='icons/edit.png' />Appearance</button>
 				<button class='tablinks' data-tabid='enginesTab' data-i18n='SearchEngines'><img alt='' src='icons/search.png' />Search Engines</button>
+				<button class='tablinks' data-tabid='generalTab' data-i18n='General'><img alt='' src='icons/settings.png' />General</button>
 				<button class='tablinks' data-tabid='helpTab' data-i18n='Help'><img alt='' src='icons/help.png' />Help</button>
 			</div>
 			<div style='font-size:10pt;cursor:default'>
@@ -901,11 +905,13 @@
 		
 			<div class='tabcontent' id='generalTab'>
 			
-				<p class='header1' data-i18n=''>Links</p>
+				<div class='blobContainerHeader' data-i18n='General'>General</div>
+			
+				<p class='header1' data-i18n='Links'>Links</p>
 				<p>	
 					<select class='inputNice' style='width:auto;font-size:10pt;padding-right:10px' id='s_contextMenuSearchLinksAs'>
-						<option data-i18n='text' value='text'>text</option>
-						<option data-i18n='url' value='url'>url</option>
+						<option data-i18n='Text' value='text'>text</option>
+						<option data-i18n='Url' value='url'>url</option>
 					</select>
 					
 					<span class='description'>Links can be searched as the text displayed or the url they refer to</span>
@@ -918,7 +924,7 @@
 						<!-- <span class="checkmark checkmark2"></span> -->
 					<!-- </label> -->
 					
-					<!-- <div class="description">Something about images</div> -->
+					<!-- <div class="description" data-i18n="">Something about images</div> -->
 				<!-- </div> -->
 			</div>
 		
@@ -931,7 +937,7 @@
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
-					<div class="description">Enable searching via the context menu</div>
+					<div class="description" data-i18n="">Enable searching via the context menu</div>
 				</div>
 				
 				<div class="option">
@@ -940,7 +946,7 @@
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
-					<div class="description" data-i18n="AddCustomSearchMenuTooltip">_</div>
+					<div class="description" data-i18n="AddCustomSearchMenuTooltip">Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases</div>
 				</div>
 
 				<p class='header1' data-i18n='SearchActionsHeader'>Search Actions</p>
@@ -976,29 +982,29 @@
 						<option value='noAction' data-i18n='SearchActionsNoAction'>No Action</option>
 					</select>
 				</p>
-				<p class='header1' style='margin-top:0' data-i18n=''>Shortcut</p>
+				<p class='header1' data-i18n='Shortcut'>Shortcut</p>
 				
 				<p>
 					<button id='b_contextMenuKey' class='keyboardButton' style="min-width:auto;min-height:1em;padding: 3px 10px;">&nbsp;</button>
-					<span class='description' data-i18n='ContextMenuHotKeyTooltip'>_</span>
+					<span class='description' data-i18n='ContextMenuHotKeyTooltip'>Keyboard shortcut to expand the "Search With..." entry in the context menu</span>
 				</p>
 			</div>
 			
 			<div class='tabcontent' id='quickMenuTab'>
-				<div class='blobContainerHeader' data-i18n='QuickMenu'>_</div>
+				<div class='blobContainerHeader' data-i18n='QuickMenu'>Quick Menu</div>
 				<div class="option">
 					<label class="container" data-i18n=''>
 						<input type='checkbox' id='cb_quickMenu' />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
-					<div class="description">Enable searching via popup menu</div><br />
+					<div class="description" data-i18n="QuickMenuTooltip">Enable searching via popup menu</div><br />
 					
 					<div data-browser='firefox' style="border-radius:10px;background-color:#efefef;padding:10px;margin-top:10px;display:inline-block">
 						<img src='icons/alert_bw.png' style='height:2em;vertical-align:top;display:inline-block'/>
 						<div style='display:inline-block'>
-							<div class="description" data-i18n='QuickMenuNote'>_</div><br /><br />
-							<div class='description' data-i18n='MouseHelp'>_</div>
+							<div class="description" data-i18n='QuickMenuNote'>Disabled on addons.mozilla.org</div><br /><br />
+							<div class='description' data-i18n='MouseHelp'>Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly and prevent unwanted menus</div>
 						</div>
 					</div>
 				</div>
@@ -1068,7 +1074,7 @@
 								<input type='checkbox' id='cb_quickMenuSearchOnMouseUp' />
 								<span class="checkmark checkmark2"></span>
 							</label>
-							<span class='description' data-i18n='SearchOnMouseupTooltip'>_</span>
+							<span class='description' data-i18n='SearchOnMouseupTooltip'>Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search</span>
 						</div>
 					</td>
 				</tr>
@@ -1082,13 +1088,13 @@
 					<div class="description" data-i18n='EnableOnTextBoxesTooltip'>Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups</div>
 				</div>
 				
-				<p class="header1">Closing</p>
+				<p "description" data-i18n="Closing">Closing</p>
 				<div class="option">
 					<label class="container">
 						<input type='checkbox' id='cb_quickMenuCloseOnClick' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='CloseAfterSearchTooltip'>_</div>
+					<div class="description" data-i18n='CloseAfterSearchTooltip'>Close menu after performing a search.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions</div>
 				</div>
 				
 				<div class="option">
@@ -1096,7 +1102,7 @@
 						<input type='checkbox' id='cb_quickMenuCloseOnScroll' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='CloseOnScrollTooltip'>_</div>
+					<div class="description" data-i18n='CloseOnScrollTooltip'>Close menu by scrolling or using the mouse wheel</div>
 				</div>
 
 				<p class='header1' data-i18n='SearchActionsHeader'>Search Actions</p>
@@ -1301,21 +1307,33 @@
 				</p>
 				
 				<hr />
-
-				<p>
-					<div class='slider_label'>
-					<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='user-select:none;-moz-user-select:none' /><label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
-					<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)' data-i18n_tooltip='MenuSize'>?</span>
-					</div>
-					<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".05" value="1" />
-				</p>
-				<p>
-					<div class='slider_label'>
-					<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='user-select:none;-moz-user-select:none' /><label style='margin-left:10px' data-i18n='IconSize'>Icon Size</label>
-					<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely' data-i18n_tooltip='IconSize'>?</span>
-					</div>
-					<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
-				</p>
+				
+				<table>
+					<tr>
+						<td>
+							<input id='i_quickMenuScale' class='inputNice' value="100%" readonly style='user-select:none;-moz-user-select:none' />
+						</td>
+						<td>
+							<label style='margin-left:10px' data-i18n='MenuSize'>Menu Size</label>
+							<span class='info' data-msg='Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)' data-i18n_tooltip='MenuSize'>?</span>
+						</td>
+						<td>
+							<input type='range' id='range_quickMenuScale' class='slider' min=".5" max="2.5" step=".05" value="1" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id='i_quickMenuIconScale' class='inputNice' value="100%" readonly style='user-select:none;-moz-user-select:none' />
+						</td>
+						<td>
+							<label style='margin-left:10px' data-i18n='IconSize'>Icon Size</label>
+							<span class='info' data-msg='Scaled size of search engine icons. At 200%, icons fill their container entirely' data-i18n_tooltip='IconSize'>?</span>
+						</td>
+						<td>
+							<input type='range' id='range_quickMenuIconScale' class='slider' min="1" max="2" step=".05" value="1" />
+						</td>
+					</tr>
+				</table>
 
 				<p class='header1' data-i18n='Position'>Position</p>
 				
@@ -1371,7 +1389,7 @@
 						<input type='checkbox' id='cb_quickMenuSearchBarFocus' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='FocusTooltip'>_</div>
+					<div class="description" data-i18n='FocusTooltip'>Set focus to search bar when the Quick Menu is opened</div>
 				</div>
 				
 				<div class="option">
@@ -1379,19 +1397,19 @@
 						<input type='checkbox' id='cb_quickMenuSearchBarSelect' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='SelectTextTooltip'>_</div>
+					<div class="description" data-i18n='SelectTextTooltip'>Select all text in the search bar when it receives focus</div>
 				</div>	
 
 				</div>
 				<div class='tabcontent' id='toolBarTab'>
 				<div class='blobContainerHeader' data-i18n='Toolbar'>Toolbar</div>
 				
-				<p class="description">Uses Quick Menu search actions</p>
+				<p class="description" data-i18n="">Uses Quick Menu search actions</p>
 					
-				<p class="header1">Columns</p>
+				<p "description" data-i18n="">Columns</p>
 				<div class="option">
 					<input type="number" id="n_searchBarColumns" size="2" class='inputNice'>
-					<span class='description' data-i18n='ColumnsTooltip'>_</span>
+					<span class='description' data-i18n='ColumnsTooltip'>Maximum number of search engine icons per row</span>
 				</div>
 
 				<div class="option">
@@ -1399,34 +1417,34 @@
 						<input type='checkbox' id='cb_searchBarUseOldStyle' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='SearchBarUseOldStyleTooltip'>_</div>
+					<div class="description" data-i18n='SearchBarUseOldStyleTooltip'>Display search engines in a single column with labels. Overrides columns setting</div>
 				</div>
 				
-				<p class="header1">Closing</p>
+				<p "description" data-i18n="Closing">Closing</p>
 				<div class="option">
 					<label class="container" data-i18n='CloseAfterSearch'>
 						<input type='checkbox' id='cb_searchBarCloseAfterSearch' />
 						<span class="checkmark checkmark2"></span>
-						<div class="description" data-i18n='SearchBarCloseAterSearchTooltip'>_</div>
+						<div class="description" data-i18n='SearchBarCloseAterSearchTooltip'>Close the Toolbar Search menu after performing a search</div>
 					</label>
 				</div>
 				
-				<p class="header1">Suggestions</p>
+				<p "description" data-i18n="Suggestions">Suggestions</p>
 				<div class="option">
 					<label class="container" data-i18n='ShowSuggestions'>
 						<input type='checkbox' id='cb_searchBarSuggestions' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='ShowSuggestionsTooltip'>_</div>
+					<div class="description" data-i18n='ShowSuggestionsTooltip'>Fetch search suggestions from Google and display with search history in the search toolbar</div>
 				</div>
 				
-				<p class="header1">History</p>
+				<p "description" data-i18n="History">History</p>
 				<div class="option">
 					<label class="container" data-i18n='EnableHistory'>
 						<input type='checkbox' id='cb_searchBarEnableHistory' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='EnableHistoryTooltip'>_</div>
+					<div class="description" data-i18n='EnableHistoryTooltip'>Remember search terms and display them with search suggestions</div>
 				</div>
 				
 				<div class="option">
@@ -1437,17 +1455,17 @@
 				<div class='tabcontent' id='sideBarTab'>
 					<div class='blobContainerHeader' data-i18n='SideBar'>Sidebar</div>
 
-					<div class="description" data-i18n=''>Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
-					<p class="header1">Location</p>
+					<div class="description" data-i18n='SidebarTooltip'>Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
+					<p "description" data-i18n="Location">Location</p>
 					<div class="option">
 						<select class='inputNice' style='width:auto;font-size:10pt;padding-right:10px' id='s_sideBarWidgetPosition'>
 							<option data-i18n='left' value='left'>Left</option>
 							<option data-i18n='right' value='right'>Right</option>
 						</select>
-						<div class="description" data-i18n='SideBarPositionTooltip'>_</div>
+						<div class="description" data-i18n='SideBarPositionTooltip'>Choose where to display the side bar</div>
 					</div>
 
-					<p class="header1">Window</p>
+					<p "description" data-i18n="Window">Window</p>
 					<div class="option">
 						<select class='inputNice' style='width:auto;font-size:10pt;padding-right:10px' id='s_sideBarType'>
 							<option data-i18n='overlay' value='overlay'>overlay</option>
@@ -1458,27 +1476,27 @@
 						Panel creates a sidebar the height of the window and pads the document to avoid covering page content</div>
 					</div>
 
-					<p class="header1">Opening</p>
+					<p "description" data-i18n="Opening">Opening</p>
 					<div class="option">
 						<label class="container" data-i18n='SidebarWidgetEnable'>
 							<input type='checkbox' id='cb_sideBarWidgetEnable' />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<div class="description" data-i18n='SidebarWidgetEnableTooltip'>_</div>
+						<div class="description" data-i18n='SidebarWidgetEnableTooltip'>Overlay an icon for opening the sidebar</div>
 					</div>
 					<div class="option">
 						<label class="container" data-i18n='SideBarStartOpen'>
 							<input type='checkbox' id='cb_sideBarStartOpen' />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<span class='description' data-i18n='SideBarStartOpenTooltip'>_</span>
+						<span class='description' data-i18n='SideBarStartOpenTooltip'>Open the sidebar automatically when the page loads</span>
 					</div>
 					<div class="option">
 						<label class="container" data-i18n='Hotkey'> 
 							<input type='checkbox' id='cb_quickMenuOnHotkey' />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<span class="description" data-i18n='SideBarHotkeyTooltip'>_</span>
+						<span class="description" data-i18n='SideBarHotkeyTooltip'>Open the Sidebar any time using a hotkey</span>
 					</div>
 					<div id='d_hotkey' style="margin-left:30px"></div>
 
@@ -1491,59 +1509,59 @@
 							<input type='checkbox' id='cb_highLightEnabled' />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<div class="description">Highlight search terms in search results page</div>
+						<div class="description" data-i18n="HighlightTooltip">Highlight search terms in search results page</div>
 					</div>
 					<div class="option">
 						<label class="container" data-i18n=''>
 							<input type='checkbox' id='cb_highLightMarkOptionsSeparateWordSearch' />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<div class="description">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
+						<div class="description" data-i18n="HighlightSeparateWordsTooltip">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
 					</div>
 					<div class="option">
 						<label class="container" data-i18n=''>
 							<input type='checkbox' id='cb_highLightNavBarEnabled' />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<div class="description">Show navigation bar when highlighting</div>
+						<div class="description" data-i18n="HighlightNavTooltip">Show navigation bar when highlighting</div>
 					</div>
-					<p class="header1">Style</p>
+					<p "description" data-i18n="Style">Style</p>
 					<input type="color" id="c_highLightColor" />
-					<div class="description">Text color</div>
+					<div class="description" data-i18n="TextColor">Text Color</div>
 					<br />
 					<input type="color" id="c_highLightBackground" />
-					<div class="description">Background color</div>
+					<div class="description" data-i18n="BackgroundColor">Background Color</div>
 				
 				</div>
-				<div class='tabcontent' id='themesTab'>
-				<div class='blobContainerHeader' data-i18n='Themes'>Themes</div>
+				<div class='tabcontent' id='appearanceTab'>
+				<div class='blobContainerHeader' data-i18n='Appearance'>Appearance</div>
 
-				<p class="header1">Animations</p>
+				<p "description" data-i18n="EnableAnimations">EnableAnimations</p>
 				<div class="option">			
 					<label class="container" data-i18n='EnableAnimations'>
 						<input type='checkbox' id='cb_enableAnimations' />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					<div class="description" data-i18n='EnableAnimationsTooltip'>_</div>
+					<div class="description" data-i18n='EnableAnimationsTooltip'>EnableAnimationsTooltip</div>
 				</div>
 				
-				<p class="header1">Menu Theme</p>
+				<p "description" data-i18n="MenuTheme">Menu Theme</p>
 				<div class="option">
 					<select class='inputNice' style='width:auto;font-size:10pt;padding-right:10px' id='s_searchBarTheme'>
 z						<option data-i18n='dark' value='dark'>dark</option>
 						<option data-i18n='lite' value='lite'>lite</option>
 					</select>
-					<div class="description" data-i18n='ThemeTooltip'>_</div>
+					<div class="description" data-i18n='ThemeTooltip'>Theme to use with the menu</div>
 				</div>
 
-				<p class="header1">User Styles</p>
+				<p "description" data-i18n="UserStyles">User Styles</p>
 				<div class="option">
 					<label class="container" data-i18n=''>
 						<input type='checkbox' id='cb_userStylesEnabled' />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
-					<div class="description">Apply custom CSS styling to menus</div>
+					<div class="description" data-i18n="UserStylesTooltip">Apply custom CSS styling to menus</div>
 				</div>
 
 				<textarea id='t_userStyles' style='width:calc(100% - 20px);height:400px;resize:vertical;padding:10px'></textarea>
@@ -1552,7 +1570,7 @@ z						<option data-i18n='dark' value='dark'>dark</option>
 		<div class='tabcontent' id='enginesTab'>
 			<div style='font-weight:normal; font-family:"Source Sans Pro", sans-serif;'>
 			
-				<div class='blobContainerHeader' data-i18n='SearchEngines'>_</div>
+				<div class='blobContainerHeader' data-i18n='SearchEngines'>Search Engines</div>
 		
 				<div id='searchEnginesParentContainer'>
 					<div id='managerContainer' style='font-weight:normal;width:100%;max-height:500px;display:inline-block;overflow:hidden;font-size:11pt;text-align:left;background-color:white;'>
