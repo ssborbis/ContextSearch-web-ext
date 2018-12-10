@@ -32,17 +32,8 @@ window.addEventListener('mousedown', (e) => {
 
 	if ( e.which !== 3 ) return false;
 
-	let searchTerms = "";
-	
-	let parentAnchor = e.target.closest('a');
-	
-	if (e.target.nodeName.toLowerCase() === 'img')
-		searchTerms = e.target.src;
-	else if ( parentAnchor && getSelectedText(e.target) === '')
-		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? parentAnchor.href : e.target.innerText;
-	else
-		searchTerms = getSelectedText(e.target);
-	
+	let searchTerms = getSelectedText(e.target) || getImage(e.target) || getLink(e.target);
+
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
@@ -67,4 +58,23 @@ function runAtTransitionEnd(el, prop, callback) {
 		callback();
 		clearInterval(checkPropInterval);
 	},25);
+}
+
+function getLink(el) {
+
+	let a = el.closest('a');
+	
+	if ( !a ) return "";
+		
+	return userOptions.contextMenuSearchLinksAs === 'url' ? a.href || a.innerText : a.innerText || a.href;
+}
+
+function getImage(el) {
+	
+	if ( el.innerText ) return false;
+	
+	if ( el.tagName === 'IMG' ) return el.src;
+	
+	let style = window.getComputedStyle(el, false);
+	return style.backgroundImage.slice(4, -1).replace(/"/g, "");
 }

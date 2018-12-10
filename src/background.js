@@ -146,7 +146,10 @@ function notify(message, sender, sendResponse) {
 			
 			window.searchTerms = searchTerms;
 			
-			if (searchTerms === '') break;
+			if (searchTerms === '') {
+				browser.contextMenus.update("search_engine_menu", {visible:false});
+				break;
+			}
 			
 			if (searchTerms.length > 18) 
 				searchTerms = searchTerms.substring(0,15) + "...";
@@ -154,7 +157,7 @@ function notify(message, sender, sendResponse) {
 			let hotkey = ''; 
 			if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 
-			browser.contextMenus.update("search_engine_menu", {title: hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
+			browser.contextMenus.update("search_engine_menu", {visible: true, title: hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
 			break;
 			
 		case "addSearchEngine":

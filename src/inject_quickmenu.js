@@ -390,7 +390,7 @@ document.addEventListener('mousedown', (ev) => {
 		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
-	
+
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
 	function preventContextMenuHandler(evv) {
@@ -490,24 +490,6 @@ window.addEventListener('keydown', (e) => {
 	// openQuickMenu(e);
 	
 // });
-
-function getLink(el) {
-	let a = el.closest('a');
-	
-	if ( !a ) return "";
-		
-	return userOptions.contextMenuSearchLinksAs === 'url' ? a.href : a.innerText;
-}
-
-function getImage(el) {
-	
-	if ( el.innerText ) return false;
-	
-	if ( el.tagName === 'IMG' ) return el.src;
-	
-	let style = window.getComputedStyle(el, false);
-	return style.backgroundImage.slice(4, -1).replace(/"/g, "");
-}
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 

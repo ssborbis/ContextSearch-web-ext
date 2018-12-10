@@ -1224,33 +1224,33 @@
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "Toolbar": {
+    "message": "Toolbar",
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "Shortcut": {
+    "message": "Shortcut",
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "Suggestions": {
+    "message": "Suggestions",
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "Overlay": {
+    "message": "overly",
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "Panel": {
+    "message": "panel",
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "ToolbarTooltip": {
+    "message": "Open a search menu from the toolbar action button. Shares search actions with the Quick Menu",
     "description": ""
   },
   
