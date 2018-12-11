@@ -350,21 +350,24 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	window.addEventListener('resize', () => {
 
 		if ( window != top ) return;
+		
+		if ( window.preventResize ) return;
 
 		if ( window.innerHeight < document.body.scrollHeight ) {
 			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
 		} 
-
+		
 		// account for scroll bars
 		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 		sg.style.width = qm.getBoundingClientRect().width + "px";
 		tb.style.width = sg.style.width;
-		
-		if (qm.getBoundingClientRect().width < window.innerWidth - 10 /* browser_action has a minimum window size */) {
-			qm.querySelectorAll('.tile:not("singleColumn")').forEach( div => {
-				div.style.width = window.innerWidth / columns + "px";
-			});
-		}
+
+		// if (qm.getBoundingClientRect().width < window.innerWidth - 10 /* browser_action has a minimum window size */) {
+			// qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
+				// div.style.width = window.innerWidth / columns + "px";
+			// });
+		// }
+
 	});
 	
 	// trigger resize for sidebar. Resize triggers on load in the browser_action

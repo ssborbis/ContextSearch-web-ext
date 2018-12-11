@@ -914,7 +914,7 @@
 						<option data-i18n="Url" value="url">url</option>
 					</select>
 					
-					<span class="description">Links can be searched as the text displayed or the url they refer to</span>
+					<span class="description" data-i18n="LinksTooltip">Links can be searched as the text displayed or the url they refer to</span>
 				</p>
 				
 				<!-- <p class="header1" data-i18n="">Images</p> -->
@@ -1110,8 +1110,8 @@
 				<table class="searchActions">
 				<tr>
 					<td></td>
-					<td style="text-align:center"><span class="header1" data-i18n="SearchEngines">Search Engines</span></td>
-					<td style="text-align:center;font-size:10pt"><span class="header1" data-i18n="Folders">Folders</span></td>
+					<td style="text-align:center"><span class="header1" style="font-size:10pt" data-i18n="SearchEngines">Search Engines</span></td>
+					<td style="text-align:center"><span class="header1" style="font-size:10pt" data-i18n="Folders">Folders</span></td>
 				</tr>
 				<tr>
 					<td>
@@ -1289,22 +1289,23 @@
 					</td>
 				</tr>
 			</table>
+				<p class="header1" data-i18n="Columns">Columns</p>
+				<div class="option">
+					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice">
+					<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
+				</div>
 
-				<p class="header1" data-i18n="LookLayoutHeader">Look &amp; Layout</p>
-
-				<p>
-					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice"><label style="margin-left:10px" data-i18n="Columns">Columns</label>
-					<span class="info" data-msg="Maximum number of search engine icons per row" data-i18n_tooltip="Columns">?</span>
-					
-					<input type="number" id="n_quickMenuRows" size="2" class="inputNice"><label style="margin-left:10px" data-i18n="Rows">Rows</label>
-					<span class="info" data-msg="Maximum number of rows" data-i18n_tooltip="Rows">?</span>
-
-					<label class="container" data-i18n="SearchBarUseOldStyle" style="display:inline-block;margin-left:32px">Single Column With Labels
-					<span class="info" data-msg="Display search engines with labels in a single column like the old Firefox searchbar" data-i18n_tooltip="SearchBarUseOldStyle">?</span>
+				<div class="option">
+					<label class="container">
 						<input type="checkbox" id="cb_quickMenuUseOldStyle" />
 						<span class="checkmark checkmark2"></span>
 					</label>
-				</p>
+					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
+				</div>
+
+				<p class="header1" data-i18n="Rows">Rows</p>
+				<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
+				<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening</span>
 				
 				<hr />
 				
@@ -1456,6 +1457,21 @@
 					<div class="blobContainerHeader" data-i18n="SideBar">Sidebar</div>
 
 					<div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
+					
+					<p class="header1" data-i18n="Columns">Columns</p>
+					<div class="option">
+						<input type="number" id="n_sideBarColumns" size="2" class="inputNice">
+						<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
+					</div>
+
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_sideBarUseOldStyle" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
+					</div>
+				
 					<p class="header1" data-i18n="Location">Location</p>
 					<div class="option">
 						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_sideBarWidgetPosition">
@@ -1526,12 +1542,37 @@
 						<div class="description" data-i18n="HighlightNavTooltip">Show navigation bar when highlighting</div>
 					</div>
 					<p class="header1" data-i18n="Style">Style</p>
-					<input type="color" id="c_highLightColor" />
-					<div class="description" data-i18n="TextColor">Text Color</div>
-					<br />
-					<input type="color" id="c_highLightBackground" />
-					<div class="description" data-i18n="BackgroundColor">Background Color</div>
-				
+					
+					<table style="text-align:center">
+						<tr>
+							<td></td>
+							<td><div class="description" data-i18n="BackgroundColor">Background Color</div></td>
+							<td><div class="description" data-i18n="TextColor">Text Color</div></td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td><input type="color" id="c_highLightBackground0" /></td>
+							<td><input type="color" id="c_highLightColor0" /></td>
+							
+						</tr>
+						<tr>
+							<td>2</td>
+							<td><input type="color" id="c_highLightBackground1" /></td>
+							<td><input type="color" id="c_highLightColor1" /></td>
+							
+						</tr>
+						<tr>
+							<td>3</td>
+							<td><input type="color" id="c_highLightBackground2" /></td>
+							<td><input type="color" id="c_highLightColor2" /></td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td><input type="color" id="c_highLightBackground3" /></td>
+							<td><input type="color" id="c_highLightColor3" /></td>
+						</tr>
+					</table>
+
 				</div>
 				<div class="tabcontent" id="appearanceTab">
 				<div class="blobContainerHeader" data-i18n="Appearance">Appearance</div>

@@ -195,6 +195,9 @@ function restoreOptions() {
 		document.getElementById('cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
 		document.getElementById('cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
 		document.getElementById('n_searchBarColumns').value = userOptions.searchBarColumns;
+		
+		document.getElementById('n_sideBarColumns').value = userOptions.sideBar.columns;
+		document.getElementById('cb_sideBarUseOldStyle').checked = userOptions.sideBar.singleColumn;
 		document.getElementById('s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		document.getElementById('cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		document.getElementById('cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
@@ -208,8 +211,16 @@ function restoreOptions() {
 		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
 		
 		document.getElementById('cb_highLightEnabled').checked = userOptions.highLight.enabled;
-		document.getElementById('c_highLightColor').value = userOptions.highLight.color;
-		document.getElementById('c_highLightBackground').value = userOptions.highLight.background;
+		
+		document.getElementById('c_highLightColor0').value = userOptions.highLight.styles[0].color;
+		document.getElementById('c_highLightBackground0').value = userOptions.highLight.styles[0].background;
+		document.getElementById('c_highLightColor1').value = userOptions.highLight.styles[1].color;
+		document.getElementById('c_highLightBackground1').value = userOptions.highLight.styles[1].background;
+		document.getElementById('c_highLightColor2').value = userOptions.highLight.styles[2].color;
+		document.getElementById('c_highLightBackground2').value = userOptions.highLight.styles[2].background;
+		document.getElementById('c_highLightColor3').value = userOptions.highLight.styles[3].color;
+		document.getElementById('c_highLightBackground3').value = userOptions.highLight.styles[3].background;
+		
 		document.getElementById('cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
 		document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
 
@@ -320,6 +331,8 @@ function saveOptions(e) {
 		
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,
+			columns:parseInt(document.getElementById('n_sideBarColumns').value),
+			singleColumn:document.getElementById('cb_sideBarUseOldStyle').checked,
 			hotkey: [],
 			startOpen: document.getElementById('cb_sideBarStartOpen').checked,
 			type: document.getElementById('s_sideBarType').value,
@@ -332,8 +345,25 @@ function saveOptions(e) {
 		
 		highLight: {
 			enabled: document.getElementById('cb_highLightEnabled').checked,
-			color: document.getElementById('c_highLightColor').value,
-			background: document.getElementById('c_highLightBackground').value,
+			
+			styles: [
+				{	
+					color: document.getElementById('c_highLightColor0').value,
+					background: document.getElementById('c_highLightBackground0').value
+				},
+				{	
+					color: document.getElementById('c_highLightColor1').value,
+					background: document.getElementById('c_highLightBackground1').value
+				},
+				{	
+					color: document.getElementById('c_highLightColor2').value,
+					background: document.getElementById('c_highLightBackground2').value
+				},
+				{	
+					color: document.getElementById('c_highLightColor3').value,
+					background: document.getElementById('c_highLightBackground3').value
+				}
+			],
 			navBar: {
 				enabled: document.getElementById('cb_highLightNavBarEnabled').checked
 			},
@@ -1053,6 +1083,26 @@ document.addEventListener('DOMContentLoaded', () => {
 	(() => {
 		let cb = document.getElementById('cb_searchBarUseOldStyle');
 		let input = document.getElementById('n_searchBarColumns');
+		
+		function toggle() {
+
+			if (!cb.checked) {
+				input.disabled = false;
+				input.style.opacity = null;
+			//	input.querySelector('[data-disabled-msg]').style.display = 'none';
+			} else {
+				input.disabled = true;
+				input.style.opacity = .5;
+			//	input.querySelector('[data-disabled-msg]').style.display = null;
+			}		
+		}
+		cb.addEventListener('change', toggle);
+		toggle();
+	})();
+	
+	(() => {
+		let cb = document.getElementById('cb_sideBarUseOldStyle');
+		let input = document.getElementById('n_sideBarColumns');
 		
 		function toggle() {
 

@@ -3,7 +3,7 @@
 	--select: #0078d7;
 }
 
-BODY {
+HTML, BODY {
 	overflow:hidden;
 	padding:0;
 	margin:0;
@@ -164,6 +164,7 @@ BODY {
 	position:absolute;
 }
 #searchBar {
+	font-size:11pt;
 	width:calc(100% - 50px); /* padding + border */
 	padding:0 24px;
 	height:28px;
@@ -220,7 +221,7 @@ BODY {
 	line-height:24px;
 	color:inherit;
 	font-family:Arial;
-	font-size:10pt;
+	font-size:11pt;
 	background-color:inherit;
 }
 .tile.singleColumn {

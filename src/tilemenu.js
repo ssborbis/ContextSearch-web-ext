@@ -11,8 +11,9 @@ function makeQuickMenu(options) {
 	let mode = options.mode;
 
 	let singleColumn = ( 
-		(['searchbar','sidebar'].includes(type) && userOptions.searchBarUseOldStyle) ||
-		(type === 'quickmenu' && userOptions.quickMenuUseOldStyle) 
+		(type === 'searchbar' && userOptions.searchBarUseOldStyle) ||
+		(type === 'quickmenu' && userOptions.quickMenuUseOldStyle) ||
+		(type === 'sidebar' && userOptions.sideBar.singleColumn)
 	) ? true : false;
 	
 	// unlock the menu in case it was opened while another quickmenu was open and locked
@@ -30,7 +31,12 @@ function makeQuickMenu(options) {
 	quickMenuElement.dataset.menu = type;
 	document.body.dataset.menu = type;
 	
-	var columns = (singleColumn) ? 1 : ( (['searchbar','sidebar'].includes(type)) ? userOptions.searchBarColumns : userOptions.quickMenuColumns );
+	var columns = (() => {
+		if (singleColumn) return 1;
+		if (type === 'searchbar') return userOptions.searchBarColumns;
+		if (type === 'sidebar') return userOptions.sideBar.columns;
+		if (type === 'quickmenu') return userOptions.quickMenuColumns;
+	})();
 
 	let sb = document.getElementById('searchBar');
 	sb.onclick = function(e) {

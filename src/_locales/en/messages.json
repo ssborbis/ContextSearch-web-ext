@@ -982,7 +982,7 @@
   },
   
   "RowsTooltip": {
-    "message": "",
+    "message": "Maximum number of rows to display on opening",
     "description": "Quick menu rows tooltip"
   },
   
@@ -1240,7 +1240,7 @@
   },
   
   "Overlay": {
-    "message": "overly",
+    "message": "overlay",
     "description": ""
   },
   

@@ -900,12 +900,8 @@ function highlightSearchTermsInTab(_tab, _search) {
 		file: "lib/mark.es6.min.js"
 	}).then( () => {
 		return browser.tabs.executeScript(_tab.id, {
-			code: `var CS_MARK_instance = new Mark(document.body);
-			CS_MARK_instance.mark("` + escapeDoubleQuotes(_search) + `", {
-				className:"CS_mark", 
-				separateWordSearch: ` + userOptions.highLight.markOptions.separateWordSearch + `,
-				done: () => {document.dispatchEvent(new CustomEvent("CS_mark_done"))} 
-			});`
+			code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(_search) + `"}));`,
+			runAt: 'document_idle'
 		});
 	});
 }
@@ -1222,6 +1218,8 @@ const defaultUserOptions = {
 	searchBarTheme: "lite",
 	sideBar: {
 		enabled: true,
+		columns: 5,
+		singleColumn: false,
 		startOpen: false,
 		type: "overlay",
 		hotkey: [],
@@ -1233,8 +1231,12 @@ const defaultUserOptions = {
 	},
 	highLight: {
 		enabled: true,
-		color: '#fff',
-		background: '#ff00ff',
+		styles: [
+			{color: '#ffffff',background: '#ff00ff'},
+			{color: '#000000',background: '#FFA500'},
+			{color: '#ffffff',background: '#428bca'},
+			{color: '#000000',background: '#FFFF00'}		
+		],
 		navBar: {
 			enabled: true
 		},
