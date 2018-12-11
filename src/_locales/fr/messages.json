@@ -12,70 +12,70 @@
     "message": "Assistance"
   },
   
-   "Source": {
+  "Source": {
     "message": "Source"
   },
   
-   "Menus": {
+  "Menus": {
     "message": "Menus",
     "description": "menus tab label"
   },
   
-   "SearchEngines": {
+  "SearchEngines": {
     "message": "Moteurs de recherche",
     "description": "search engines tab label"
   },
   
-   "Help": {
+  "Help": {
     "message": "Aide",
     "description": "help tab label"
   },
   
-   "ContextMenu": {
+  "ContextMenu": {
     "message": "Menu contextuel"
   },
   
-   "AddCustomSearchMenu": {
+  "AddCustomSearchMenu": {
     "message": "Ajouter l’entrée « Ajouter ce moteur de recherche »"
   },
   
   "AddCustomSearchMenuTooltip": {
-    "message": "Activer l’entrée de menu contextuel « Ajouter ce moteur de recherche » sur les éléments INPUT. Décocher pour éviter un menu à plusieurs niveaux dans certains cas."
+    "message": "Activer l’entrée de menu contextuel « Ajouter ce moteur de recherche » sur les éléments INPUT (décocher pour éviter un menu à plusieurs niveaux dans certains cas)"
   },
   
-   "QuickMenu": {
-    "message": "Menu rapide"
+  "QuickMenu": {
+    "message": "Menu instantané"
   },
   
-   "QuickMenuNote": {
-    "message": "Le menu rapide est désactivé sur « addons.mozilla.org ». Le menu contextuel est activé si l’ouverture du menu rapide échoue."
+  "QuickMenuNote": {
+    "message": "Le menu instantané est désactivé sur « addons.mozilla.org ». Le menu contextuel est activé si l’ouverture du menu instantané échoue."
   },
   
-   "SearchActionsHeader": {
+  "SearchActionsHeader": {
     "message": "Actions"
   },
   
-   "SearchActionsCurrentTab": {
+  "SearchActionsCurrentTab": {
     "message": "Ouvrir dans l’onglet courant"
   },
   
-   "SearchActionsNewTab": {
+  "SearchActionsNewTab": {
     "message": "Ouvrir dans un nouvel onglet"
   },
   
-   "SearchActionsBackgroundTab": {
+  "SearchActionsBackgroundTab": {
     "message": "Ouvrir dans un onglet en arrière-plan"
   },
   
-   "SearchActionsNewWindow": {
+  "SearchActionsNewWindow": {
     "message": "Ouvrir dans une nouvelle fenêtre"
   },
   
-   "SearchActionsIncognitoWindow": {
+  "SearchActionsIncognitoWindow": {
     "message": "Ouvrir dans une fenêtre de navigation privée"
   },
   
-   "SearchActionsNoAction": {
+  "SearchActionsNoAction": {
     "message": "Aucune action"
   },
   
@@ -83,20 +83,20 @@
     "message": "Clic gauche"
   },
   
-   "MiddleButton": {
+  "MiddleButton": {
     "message": "Clic central"
   },
   
-   "RightButton": {
+  "RightButton": {
     "message": "Clic droit"
   },
   
-   "LookLayoutHeader": {
+  "LookLayoutHeader": {
     "message": "Apparence et disposition"
   },
   
-   "Columns": {
-    "message": "Nombre de colonnes"
+  "Columns": {
+    "message": "colonnes"
   },
   
   "ColumnsTooltip": {
@@ -104,7 +104,7 @@
   },
   
   "Rows": {
-    "message": "Nombre de lignes"
+    "message": "lignes"
   },
   
   "RowsTooltip": {
@@ -115,7 +115,7 @@
     "message": "Taille du menu"
   },
   
-   "MenuSizeTooltip": {
+  "MenuSizeTooltip": {
     "message": "Ajustement de la taille du menu entier. Une valeur supérieure à 100 % permet de le grossir (bien en haute résolution)."
   },
   
@@ -132,10 +132,10 @@
   },
   
   "OpeningClosingDescription": {
-    "message": "Choisir le mode d’ouverture du menu rapide à la sélection d’un texte"
+    "message": "Choisir le mode d’ouverture du menu instantané à la sélection d’un texte"
   },
   
-   "Auto": {
+  "Auto": {
     "message": "Automatique"
   },
   
@@ -143,19 +143,19 @@
     "message": "Ouverture automatique à la sélection du texte"
   },
   
-   "EnableOnTextBoxes": {
+  "EnableOnTextBoxes": {
     "message": "Activer sur les zones de texte"
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "Activer le menu sur les éléments TEXTAREA et INPUT. Décocher pour empêcher l’intrusion de fenêtres indésirables."
+    "message": "Activer le menu sur les éléments TEXTAREA et INPUT (décocher pour empêcher l’intrusion de fenêtres indésirables)"
   },
   
-   "Mouse": {
+  "Mouse": {
     "message": "Souris"
   },
   
-     "MouseTooltip": {
+  "MouseTooltip": {
     "message": "Sélection du texte et ouverture avec un bouton de la souris"
   },
   
@@ -163,23 +163,23 @@
     "message": "Choisir la méthode et le bouton"
   },
   
-   "Hold": {
+  "Hold": {
     "message": "Clic long"
   },
   
-    "HoldTooltip": {
+  "HoldTooltip": {
     "message": "Le menu s’ouvre en maintenant appuyé le bouton de la souris sélectionné pendant environ un quart de seconde."
   },
   
-   "SearchOnMouseup": {
+  "SearchOnMouseup": {
     "message": "Rechercher au relâchement du bouton"
   },
   
-   "SearchOnMouseupTooltip": {
-    "message": "En cas de clic long, la recherche s’effectue quand le bouton de la souris est relâché : on maintient le bouton de la souris enfoncé pour ouvrir le menu puis on le relâche au-dessus du moteur de recherche choisi."
+  "SearchOnMouseupTooltip": {
+    "message": "Effectuer la recherche au relâchement du bouton de la souris dans le cas du clic long (maintenir le bouton de la souris enfoncé pour ouvrir le menu puis le relâcher au-dessus du moteur de recherche choisi)"
   },
   
-   "Click": {
+  "Click": {
     "message": "Clic court"
   },
   
@@ -187,7 +187,7 @@
     "message": "Le menu s’ouvre sur clic droit. Maintenir le bouton appuyé pour ouvrir le menu contextuel normal."
   },
   
-   "Keyboard": {
+  "Keyboard": {
     "message": "Clavier"
   },
   
@@ -195,7 +195,7 @@
     "message": "Sélection du texte et ouverture avec une touche du clavier"
   },
   
-   "ChooseKey": {
+  "ChooseKey": {
     "message": "Touche"
   },
   
@@ -203,20 +203,20 @@
     "message": "Cliquer sur le bouton ci-contre puis presser la touche choisie."
   },
   
-   "CloseAfterSearch": {
+  "CloseAfterSearch": {
     "message": "Fermer au lancement de la recherche"
   },
   
   "CloseAfterSearchTooltip": {
-    "message": "Le menu se ferme après avoir cliqué sur une icône. Décocher en cas de recherche fréquente avec plusieurs moteurs de recherche ou par choix d’une fermeture manuelle. Cette option peut être remplacée par « Garder le menu ouvert » à la rubrique « Actions »."
+    "message": "Fermer le menu après avoir cliqué sur une icône (décocher en cas de recherche fréquente avec plusieurs moteurs de recherche ou par choix d’une fermeture manuelle, option pouvant être remplacée par « Garder le menu ouvert » à la rubrique « Actions »)"
   },
   
-   "CloseOnScroll": {
+  "CloseOnScroll": {
     "message": "Fermer avec la molette de la souris ou par défilement"
   },
   
-   "CloseOnScrollTooltip": {
-    "message": "Le menu se ferme lors de l’utilisation de barres de défilement ou de la molette de la souris."
+  "CloseOnScrollTooltip": {
+    "message": "Fermer le menu lors de l’utilisation de barres de défilement ou de la molette de la souris"
   },
   
   "MouseHelp": {
@@ -231,7 +231,7 @@
     "message": "Choisir la position du menu"
   },
   
-   "HorizontalOffset": {
+  "HorizontalOffset": {
     "message": "Décalage horizontal"
   },
   
@@ -252,10 +252,10 @@
   },
   
   "ToolsPositionTooltip": {
-    "message": "Position des outils dans le menu rapide"
+    "message": "Position des outils dans le menu instantané"
   },
   
-"ToolsHelp": {
+  "ToolsHelp": {
     "message": "Cliquer pour désactiver | Glisser pour réorganiser"
   },
   
@@ -283,11 +283,11 @@
     "message": "Import et export de la configuration"
   },
   
-   "Import": {
+  "Import": {
     "message": "Importer"
   },
   
-   "Export": {
+  "Export": {
     "message": "Exporter"
   },
   
@@ -602,8 +602,8 @@
   "AddCustomSearch": {
     "message": "Ajouter ce moteur de recherche"
   },
-    
-   "SearchWith": {
+  
+  "SearchWith": {
     "message": "Rechercher avec",
     "description": "title in context menu when searching"
   },
@@ -624,11 +624,11 @@
   },
   
   "top": {
-    "message": "En haut"
+    "message": "en haut"
   },
   
   "bottom": {
-    "message": "En bas"
+    "message": "en bas"
   },
   
   "left": {
@@ -758,11 +758,11 @@
   },
   
   "SearchBarTooltip": {
-    "message": "Position de la barre de recherche dans le menu rapide"
+    "message": "Position de la barre de recherche dans le menu instantané"
   },
   
   "hidden": {
-    "message": "Sans"
+    "message": "sans"
   },
   
   "KeepMenuOpen": {
@@ -790,7 +790,7 @@
   },
   
   "FocusTooltip": {
-    "message": "La barre de recherche est ciblée à l’ouverture du menu rapide.",
+    "message": "Cibler la barre de recherche à l’ouverture du menu instantané",
     "description": "description for focus"
   },
   
@@ -799,7 +799,7 @@
   },
   
   "SelectTextTooltip": {
-    "message": "Lorsque la barre de recherche est ciblée, le texte qu’elle contient est sélectionné.",
+    "message": "Sélectionner le texte lorsque la barre de recherche est ciblée",
     "description": "description for select text in search bar"
   },
   
@@ -834,7 +834,7 @@
   },
 
   "ShowSuggestionsTooltip": {
-    "message": "Récupérer les suggestions de recherche de Google et les afficher avec l’historique dans la barre de recherche.",
+    "message": "Récupérer les suggestions de recherche de Google et les afficher avec l’historique dans la barre de recherche",
     "description": "description for Show Suggestions"
   },
   
@@ -844,7 +844,7 @@
   },
   
   "SearchBarUseOldStyleTooltip": {
-    "message": "Afficher la liste des moteurs de recherche en colonne comme dans l’ancienne barre de recherche de Firefox."
+    "message": "Afficher la liste des moteurs de recherche en colonne comme dans l’ancienne barre de recherche de Firefox"
   },
   
   "ToolbarSearch": {
@@ -853,7 +853,7 @@
   },
   
   "SearchBarCloseAterSearchTooltip": {
-    "message": "Le menu du bouton de la barre d’outils se ferme dès que la recherche est lancée."
+    "message": "Fermer le menu du bouton au lancement de la recherche"
   },
   
   "PerformASearchHeader": {
@@ -914,7 +914,7 @@
   },
   
   "ContextMenuHotKeyTooltip": {
-    "message": "Touche de raccourci pour développer l’entrée « Rechercher avec » dans le menu contextuel",
+    "message": "Touche pour développer l’entrée « Rechercher avec » dans le menu contextuel",
     "description": "context menu hotkey tooltip"
   },
   
@@ -973,6 +973,7 @@
     "description": "Manager menu item"
     
   },
+  
   "AsNewEngine": {
     "message": "en tant que nouveau moteur",
     "description": "Manager menu item"
@@ -983,15 +984,19 @@
   },
 	
   "EnableHistoryTooltip": {
-    "message": "Mémoriser les termes de recherche et les afficher avec les suggestions."
+    "message": "Mémoriser les termes de recherche et les afficher avec les suggestions"
   },
 	
   "SideBar": {
-	"message": "Panneau latéral"
+	"message": "Barre latérale"
+  },
+  
+  "SideBarTooltip": {
+	"message": "La barre latérale est une extension du bouton principal avec lequel elle partage la plupart des réglages."
   },
   
   "SideBarPositionTooltip": {
-	"message": "Position du panneau latéral à l’écran"
+	"message": "Position de la barre latérale à l’écran"
   },
 
   "SidebarWidgetEnable": {
@@ -1000,12 +1005,12 @@
   },
   
   "SidebarWidgetEnableTooltip": {
-    "message": "Incruster une icône permettant l’ouverture du panneau latéral.",
+    "message": "Incruster une icône permettant l’ouverture de la barre latérale",
     "description": "description for displaying the sidebar icon"
   },
 
   "SideBarHotkeyTooltip": {
-    "message": "Ouverture à tout moment par le raccourci clavier"
+    "message": "Ouvrir la barre latérale à tout moment en utilisant le raccourci clavier :"
   },
   
   "InitialOpacity": {
@@ -1014,7 +1019,7 @@
   },
   
   "InitialOpacityTooltip": {
-    "message": "Le menu rapide présente un certain degré de transparence à son ouverture et devient opaque au survol de la souris."
+    "message": "Le menu instantané présente un certain degré de transparence à son ouverture et devient opaque au survol de la souris."
   },
   
   "AutoMaxChars": {
@@ -1023,16 +1028,16 @@
   },
   
   "AutoMaxCharsTooltip": {
-    "message": "Ne pas ouvrir le menu rapide si la longueur de la sélection dépasse ce nombre de caractères (0 = aucune limite)."
+    "message": "Ne pas ouvrir le menu instantané si la longueur de la sélection dépasse ce nombre de caractères (0 = aucune limite)."
   },
   
   "EnableAnimations": {
-    "message": "Animer les menus",
+    "message": "Animation",
     "description": ""
   },
   
   "EnableAnimationsTooltip": {
-    "message": "Activer des effets de transparence, redimensionnement, glissement pour tous les menus. Ne pas cocher pour disposer d’une interface sans fioriture et plus rapide.",
+    "message": "Ajouter des effets de transparence, redimensionnement, glissement à tous les menus (ne pas cocher pour disposer d’une interface sans fioriture et plus rapide)",
     "description": ""
   },
   
@@ -1042,17 +1047,17 @@
   },
   
   "ThemeTooltip": {
-    "message": "Thème à utiliser avec le menu",
+    "message": "Thème à utiliser dans les menus",
     "description": ""
   },
     
   "lite": {
-    "message": "Clair",
+    "message": "clair",
     "description": "label for lite theme"
   },
   
   "dark": {
-    "message": "Sombre",
+    "message": "sombre",
     "description": "label for dark theme"
   },
   
@@ -1067,7 +1072,157 @@
   },
   
   "SideBarStartOpenTooltip": {
-    "message": "Ouvrir automatiquement le panneau latéral quand la page se charge.",
+    "message": "Ouvrir automatiquement la barre latérale au chargement de la page",
+    "description": ""
+  },
+  
+  "Highlight": {
+    "message": "Surlignage",
+    "description": ""
+  },
+  
+  "Appearance": {
+    "message": "Apparence",
+    "description": ""
+  },
+  
+  "General": {
+    "message": "Général",
+    "description": ""
+  },
+  
+  "Links": {
+    "message": "Liens",
+    "description": ""
+  },
+  
+  "LinksTooltip": {
+    "message": "Mode de recherche des liens (selon le texte affiché ou selon l’URL de référence)",
+    "description": ""
+  },
+  
+  "Text": {
+    "message": "texte",
+    "description": ""
+  },
+  
+  "Url": {
+    "message": "url",
+    "description": ""
+  },
+  
+  "ContextMenuTooltip": {
+    "message": "Utiliser le menu contextuel pour effectuer une recherche",
+    "description": ""
+  },
+  
+  "QuickMenuTooltip": {
+    "message": "Utiliser le menu instantané pour effectuer une recherche",
+    "description": ""
+  },
+  
+  "Opening": {
+    "message": "Ouverture",
+    "description": ""
+  },
+  
+  "Closing": {
+    "message": "Fermeture",
+    "description": ""
+  },
+  
+  "Location": {
+    "message": "Emplacement",
+    "description": ""
+  },
+  
+  "Window": {
+    "message": "Mode",
+    "description": ""
+  },
+  
+  "SidebarTypeTooltip": {
+    "message": "Mode d’affichage de la barre latérale (fenêtre flottante au-dessus du contenu de la page ou panneau incrusté de la hauteur de la page avec décalage du contenu pour ne pas le recouvrir)",
+    "description": ""
+  },
+  
+  "HighlightTooltip": {
+    "message": "Surligner les termes de la recherche sur la page des résultats",
+    "description": ""
+  },
+  
+  "HighlightSeparateWordsTooltip": {
+    "message": "Surligner séparément les mots d’une phrase (décocher pour traiter la phrase comme un seul terme de recherche)",
+    "description": ""
+  },
+  
+  "HighlightNavTooltip": {
+    "message": "Afficher une barre pour naviguer parmi les surlignages",
+    "description": ""
+  },
+  
+  "Style": {
+    "message": "Style",
+    "description": ""
+  },
+  
+  "TextColor": {
+    "message": "Couleur du texte",
+    "description": ""
+  },
+  
+  "BackgroundColor": {
+    "message": "Couleur de l’arrière-plan",
+    "description": ""
+  },
+  
+  "Animations": {
+    "message": "Animations",
+    "description": ""
+  },
+  
+  "AnimationsTooltip": {
+    "message": "",
+    "description": ""
+  },
+  
+  "MenuTheme": {
+    "message": "Thème",
+    "description": ""
+  },
+  
+  "UserStylesTooltip": {
+    "message": "Appliquer des feuilles de style personnalisées aux menus",
+    "description": ""
+  },
+  
+  "Toolbar": {
+    "message": "Bouton principal",
+    "description": ""
+  },
+  
+  "Shortcut": {
+    "message": "Raccourci",
+    "description": ""
+  },
+  
+  "Suggestions": {
+    "message": "Suggestions",
+    "description": ""
+  },
+  
+  "Overlay": {
+    "message": "fenêtre flottante",
+    "description": ""
+  },
+  
+  "Panel": {
+    "message": "panneau incrusté",
+    "description": ""
+  },
+  
+  "ToolbarTooltip": {
+    "message": "Ce bouton de la barre d’outils ouvre un menu de recherche semblable à celui du menu instantané.",
     "description": ""
   },
   
@@ -1075,5 +1230,5 @@
     "message": "",
     "description": ""
   }
- 
+  
 }
