@@ -1009,6 +1009,52 @@
 					</div>
 				</div>
 
+				<p class="header1" data-i18n="Columns">Columns</p>
+				<div class="option">
+					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice">
+					<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
+				</div>
+
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuUseOldStyle" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
+				</div>
+
+				<p class="header1" data-i18n="Rows">Rows</p>
+				<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
+				<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening</span>
+
+				<p class="header1" data-i18n="Size">Size</p>
+				<table>
+					<tr>
+						<td>
+							<input id="i_quickMenuScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+						</td>
+						<td>
+							<label style="margin-left:10px" data-i18n="MenuSize">Menu Size</label>
+							<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">?</span>
+						</td>
+						<td>
+							<input type="range" id="range_quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="i_quickMenuIconScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+						</td>
+						<td>
+							<label style="margin-left:10px" data-i18n="IconSize">Icon Size</label>
+							<span class="info" data-msg="Scaled size of search engine icons. At 200%, icons fill their container entirely" data-i18n_tooltip="IconSize">?</span>
+						</td>
+						<td>
+							<input type="range" id="range_quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
+						</td>
+					</tr>
+				</table>
+				
 				<p class="header1" data-i18n="Opening">Opening</p>
 
 				<table class="openingTable">
@@ -1289,52 +1335,6 @@
 					</td>
 				</tr>
 			</table>
-				<p class="header1" data-i18n="Columns">Columns</p>
-				<div class="option">
-					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice">
-					<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
-				</div>
-
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuUseOldStyle" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
-				</div>
-
-				<p class="header1" data-i18n="Rows">Rows</p>
-				<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
-				<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening</span>
-				
-				<hr />
-				
-				<table>
-					<tr>
-						<td>
-							<input id="i_quickMenuScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
-						</td>
-						<td>
-							<label style="margin-left:10px" data-i18n="MenuSize">Menu Size</label>
-							<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">?</span>
-						</td>
-						<td>
-							<input type="range" id="range_quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input id="i_quickMenuIconScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
-						</td>
-						<td>
-							<label style="margin-left:10px" data-i18n="IconSize">Icon Size</label>
-							<span class="info" data-msg="Scaled size of search engine icons. At 200%, icons fill their container entirely" data-i18n_tooltip="IconSize">?</span>
-						</td>
-						<td>
-							<input type="range" id="range_quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
-						</td>
-					</tr>
-				</table>
 
 				<p class="header1" data-i18n="Position">Position</p>
 				

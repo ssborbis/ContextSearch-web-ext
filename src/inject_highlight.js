@@ -39,15 +39,20 @@ document.addEventListener('CS_mark', (e) => {
 		
 		clearInterval(optionsCheck);
 		
-			let words = e.detail.split(/\s/);
-
+			let words = e.detail.trim().split(/\s/);
+		
 			CS_MARK_instance.mark(e.detail, {
 				className:"CS_mark",
 				separateWordSearch: userOptions.highLight.markOptions.separateWordSearch,
+				
 				each: (el) => {
-					let index = words.indexOf(el.innerText);
-					el.dataset.style = index > 3 ? 0 : index;	
+					let index = words.findIndex( word => {
+						return word.toLowerCase() === el.innerText.toLowerCase();
+					});
+					
+					if ( index !== -1 )	el.dataset.style = index > 3 ? 0 : index;		
 				},
+				
 				done: () => {
 					if ( userOptions.highLight.navBar.enabled )
 						createNavBar();
@@ -78,7 +83,6 @@ function createNavBar() {
 	div.id = 'CS_highLightNavBar';
 	
 	div.style.transform = 'scaleX(' + 1/window.devicePixelRatio + ')';
-//	div.style.setProperty('--highlight-background', userOptions.highLight.background);
 	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/crossmark.png');
@@ -127,7 +131,8 @@ function createNavBar() {
 
 		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.height = rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
-		marker.style.backgroundColor = window.getComputedStyle(hl).getPropertyValue("background-color");
+
+		marker.style.backgroundColor = userOptions.highLight.styles[hl.dataset.style].background;
 		
 		marker.onclick = function(e) {
 			
@@ -144,6 +149,10 @@ function createNavBar() {
 		}
 		
 		div.appendChild(marker);
+		
+		if ( marker.previousSibling.style.top === marker.style.top ) {
+			marker.style.top = 'calc(' + marker.style.top + ' + 2px)';
+		}
 		
 	});
 	

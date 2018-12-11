@@ -80,7 +80,6 @@
 #CS_highLightNavBar > DIV {
 	position:absolute;
 	display:inline-block;
-	background-color:var(--highlight-background);
 	left:0;
 	width:100%;
 }
