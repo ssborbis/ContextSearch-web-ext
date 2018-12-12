@@ -47,7 +47,7 @@ document.addEventListener('CS_mark', (e) => {
 				
 				each: (el) => {
 					let index = words.findIndex( word => {
-						return word.toLowerCase() === el.innerText.toLowerCase();
+						return word.toLowerCase() === el.textContent.toLowerCase();
 					});
 					
 					if ( index !== -1 )	el.dataset.style = index > 3 ? 0 : index;		
@@ -125,6 +125,7 @@ function createNavBar() {
 	});
 	
 	hls.forEach( hl => {
+
 		let rect = hl.getBoundingClientRect();
 		
 		let marker = document.createElement('div');
@@ -132,7 +133,7 @@ function createNavBar() {
 		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.height = rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
 
-		marker.style.backgroundColor = userOptions.highLight.styles[hl.dataset.style].background;
+		marker.style.backgroundColor = userOptions.highLight.styles[hl.dataset.style || 0].background;
 		
 		marker.onclick = function(e) {
 			
@@ -150,7 +151,7 @@ function createNavBar() {
 		
 		div.appendChild(marker);
 		
-		if ( marker.previousSibling.style.top === marker.style.top ) {
+		if ( marker.previousSibling && marker.previousSibling.style.top === marker.style.top ) {
 			marker.style.top = 'calc(' + marker.style.top + ' + 2px)';
 		}
 		

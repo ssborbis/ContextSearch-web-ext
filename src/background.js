@@ -1241,7 +1241,7 @@ const defaultUserOptions = {
 			enabled: true
 		},
 		markOptions: {
-			separateWordSearch: false
+			separateWordSearch: true
 		}
 	},
 	userStyles: 
