@@ -204,8 +204,7 @@ if ( window != top ) {
 				if ( userOptions.sideBar.type === 'panel' ) {
 					sbContainer.style.height = 100 * window.devicePixelRatio + '%';
 					iframe.style.height = '100%';
-					iframe.style.maxHeight = iframe.style.height;
-					
+					iframe.style.maxHeight = '100%';
 					sbContainer.style.top = '0';
 				}
 			}
@@ -243,7 +242,7 @@ if ( window != top ) {
 			// test for bottom overflow
 			let rect = sbContainer.getBoundingClientRect();
 
-			if ( e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
+			if ( !userOptions.sideBar.type && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
 				sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
 		});
 		

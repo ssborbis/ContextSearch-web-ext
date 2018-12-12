@@ -144,7 +144,7 @@
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "Enable menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups."
+    "message": "Enable on textarea and input elements"
   },
   
    "Mouse": {
@@ -1050,7 +1050,7 @@
   },
   
   "EnableAnimations": {
-    "message": "Animate Menus",
+    "message": "Animations",
     "description": ""
   },
   
@@ -1265,7 +1265,7 @@
   },
   
   "ResetDefaults": {
-    "message": "Reset Defaults",
+    "message": "Restore Defaults",
     "description": ""
   },
   
@@ -1276,6 +1276,31 @@
   
   "AddingSearchEnginesLinkText": {
     "message": "Adding search engines",
+    "description": ""
+  },
+  
+  "EnableOnLinks": {
+    "message": "Enable on links",
+    "description": ""
+  },
+  
+  "EnableOnImages": {
+    "message": "Enable on images",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
     "description": ""
   },
   

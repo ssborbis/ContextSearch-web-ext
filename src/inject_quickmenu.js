@@ -52,12 +52,13 @@ function openQuickMenu(ev) {
 		
 		ev.target.blur();
 	}
+
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
-		searchTerms: getSelectedText(ev.target).trim() || getImage(ev.target) || getLink(ev.target),
+		searchTerms: getSelectedText(ev.target).trim() || linkOrImage(ev.target),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
@@ -268,7 +269,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) ) ||
+		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target) ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
 	) return false;
 	
@@ -379,15 +380,27 @@ document.addEventListener('mouseup', (ev) => {
 
 });
 
+function linkOrImage(el) {
+	
+	let link = getLink(el);
+	let img = getImage(el);
+
+	if ( img && userOptions.quickMenuOnImages ) return img;
+	
+	if ( link && userOptions.quickMenuOnLinks ) return link;
+	
+	return false;	
+}
+
 // Listen for quickMenuOnClick
-document.addEventListener('mousedown', (ev) => {	
+document.addEventListener('mousedown', (ev) => {
 
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) ) ||
+		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target) ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
@@ -416,7 +429,7 @@ document.addEventListener('mouseup', (ev) => {
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		( getSelectedText(ev.target) === "" && !getLink(ev.target) && !getImage(ev.target) )
+		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target) )
 	) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();

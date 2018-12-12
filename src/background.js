@@ -1162,6 +1162,8 @@ const defaultUserOptions = {
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
 	quickMenuAutoOnInputs: false,
+	quickMenuOnLinks: true,
+	quickMenuOnImages: true,
 	quickMenuScale: 1,
 	quickMenuIconScale: 1,
 	quickMenuScaleOnZoom: true,

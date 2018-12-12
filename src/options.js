@@ -138,6 +138,8 @@ function restoreOptions() {
 		document.getElementById('cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
 		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
 		document.getElementById('cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
+		document.getElementById('cb_quickMenuOnLinks').checked = userOptions.quickMenuOnLinks;
+		document.getElementById('cb_quickMenuOnImages').checked = userOptions.quickMenuOnImages;
 		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
 		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
 		document.getElementById('s_quickMenuToolsPosition').value =  userOptions.quickMenuToolsPosition,
@@ -271,6 +273,8 @@ function saveOptions(e) {
 		quickMenuMouseButton: parseInt(document.getElementById("s_quickMenuMouseButton").value),
 		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
 		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
+		quickMenuOnLinks: document.getElementById('cb_quickMenuOnLinks').checked,
+		quickMenuOnImages: document.getElementById('cb_quickMenuOnImages').checked,
 		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
 		quickMenuIconScale: parseFloat(document.getElementById('range_quickMenuIconScale').value),
 		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
@@ -417,6 +421,11 @@ document.getElementById('n_quickMenuOffsetY').addEventListener('change', (e) => 
 });
 
 document.getElementById('n_searchBarColumns').addEventListener('change',  (e) => {
+	fixNumberInput(e.target, 4, 1, 100);
+	saveOptions(e);
+});
+
+document.getElementById('n_sideBarColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
 	saveOptions(e);
 });

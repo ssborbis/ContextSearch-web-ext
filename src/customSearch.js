@@ -577,8 +577,6 @@ function listenForFocusAndPromptToImport() {
 
 	browser.runtime.sendMessage({action: "hasBrowserSearch"}).then( result => {
 		
-		console.log(result);
-
 		if (result) {
 
 			window.addEventListener('focus', () => {

@@ -882,7 +882,7 @@
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</button>
 				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/folder4.png" style="width:6px;transform:scaleX(-1)" />Sidebar</button>
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.png" />Highlight</button>
-				<button class="tablinks" data-tabid="appearanceTab" data-i18n="Appearance"><img alt="" src="icons/hide.png" />Appearance</button>
+				<!-- <button class="tablinks" data-tabid="appearanceTab" data-i18n="Appearance"><img alt="" src="icons/hide.png" />Appearance</button> -->
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img alt="" src="icons/search.png" />Search Engines</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img alt="" src="icons/settings.png" />General</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img alt="" src="icons/help.png" />Help</button>
@@ -916,6 +916,36 @@
 					
 					<span class="description" data-i18n="LinksTooltip">Links can be searched as the text displayed or the url they refer to</span>
 				</p>
+				
+				<p class="header1" data-i18n="EnableAnimations">Animations</p>
+				<div class="option">			
+					<label class="container" data-i18n="EnableAnimations">
+						<input type="checkbox" id="cb_enableAnimations" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableAnimationsTooltip">Enable resize, slide-in, opacity animations for all menus. Disable for faster interface with no eye candy</div>
+				</div>
+				
+				<p class="header1" data-i18n="MenuTheme">Menu Theme</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_searchBarTheme">
+z						<option data-i18n="dark" value="dark">dark</option>
+						<option data-i18n="lite" value="lite">lite</option>
+					</select>
+					<div class="description" data-i18n="ThemeTooltip">Theme to use with the menu</div>
+				</div>
+
+				<p class="header1" data-i18n="UserStyles">User Styles</p>
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_userStylesEnabled" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					
+					<div class="description" data-i18n="UserStylesTooltip">Apply custom CSS styling to menus</div>
+				</div>
+
+				<textarea id="t_userStyles" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px"></textarea>
 				
 				<!-- <p class="header1" data-i18n="">Images</p> -->
 				<!-- <div class="option"> -->
@@ -1056,6 +1086,31 @@
 				</table>
 				
 				<p class="header1" data-i18n="Opening">Opening</p>
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuAutoOnInputs" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableOnTextBoxesTooltip">Enable on textarea and input elements</div>
+				</div>
+				
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuOnLinks" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableOnLinks">Enable on links</div>
+				</div>
+				
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuOnImages" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableOnImages">Enable on images</div>
+				</div>
+				
+				<hr />
 
 				<table class="openingTable">
 				<tr>
@@ -1126,13 +1181,7 @@
 				</tr>
 				</table>
 				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuAutoOnInputs" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnTextBoxesTooltip">Enable popup menu on TEXTAREA and INPUT elements. Disable to prevent some unwanted popups</div>
-				</div>
+				<hr />
 				
 				<p class="header1" data-i18n="Closing">Closing</p>
 				<div class="option">
@@ -1574,40 +1623,9 @@
 					</table>
 
 				</div>
-				<div class="tabcontent" id="appearanceTab">
-				<div class="blobContainerHeader" data-i18n="Appearance">Appearance</div>
-
-				<p class="header1" data-i18n="EnableAnimations">EnableAnimations</p>
-				<div class="option">			
-					<label class="container" data-i18n="EnableAnimations">
-						<input type="checkbox" id="cb_enableAnimations" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableAnimationsTooltip">EnableAnimationsTooltip</div>
-				</div>
-				
-				<p class="header1" data-i18n="MenuTheme">Menu Theme</p>
-				<div class="option">
-					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_searchBarTheme">
-z						<option data-i18n="dark" value="dark">dark</option>
-						<option data-i18n="lite" value="lite">lite</option>
-					</select>
-					<div class="description" data-i18n="ThemeTooltip">Theme to use with the menu</div>
-				</div>
-
-				<p class="header1" data-i18n="UserStyles">User Styles</p>
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_userStylesEnabled" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
-					<div class="description" data-i18n="UserStylesTooltip">Apply custom CSS styling to menus</div>
-				</div>
-
-				<textarea id="t_userStyles" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px"></textarea>
-	
-			</div>
+				<!-- <div class="tabcontent" id="appearanceTab"> -->
+					<!-- <div class="blobContainerHeader" data-i18n="Appearance">Appearance</div> -->
+				<!-- </div> -->
 		<div class="tabcontent" id="enginesTab">
 			<div style="font-weight:normal; font-family:'Source Sans Pro', sans-serif;">
 			
@@ -1628,7 +1646,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div></div>
 
 					<button id="b_addSearchEngine" data-i18n="Add">Add</button>
-					<button id="b_resetAllSearchEngines" style="float:right;clear:both" data-i18n="ResetDefaults">Reset Defaults</button>
+					<button id="b_resetAllSearchEngines" style="float:right;clear:both" data-i18n="ResetDefaults">Restore Defaults</button>
 
 					<div class="blurb" data-i18n="SearchEnginesManagerHelp">
 						Drag &amp; drop to re-order, click to edit

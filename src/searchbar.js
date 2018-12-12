@@ -261,7 +261,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 			if (userOptions.searchBarCloseAfterSearch) window.close();	
 		}
 	}
-
+	
 	function getSuggestions(terms, callback) {
 		
 		let url = 'http://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);
