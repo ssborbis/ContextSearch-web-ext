@@ -1226,6 +1226,31 @@
     "description": ""
   },
   
+  "Size": {
+    "message": "Dimensions",
+    "description": ""
+  },
+  
+  "ConfirmResetAllSearchEngines": {
+    "message": "Votre personnalisation (moteurs de recherche, dossiers, marque-pages scriptés,\r\nséparateurs) va être supprimée et la liste des moteurs par défaut restaurée.\r\n\r\nÊtes-vous certain de vouloir faire cela ?",
+    "description": ""
+  },
+  
+  "ResetDefaults": {
+    "message": "Réinitialiser",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesInfoMessage": {
+    "message": "Un moteur de recherche peut être ajouté manuellement ou automatiquement par l’intermédiaire du menu contextuel. Aide visuelle :",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesLinkText": {
+    "message": "Ajout d’un moteur de recherche",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""
