@@ -380,7 +380,7 @@ function saveOptions(e) {
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-	setting.then(onSet, onError);
+	return setting.then(onSet, onError);
 }
 
 document.addEventListener("DOMContentLoaded", makeTabs());
@@ -586,12 +586,9 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
 	
 	let params = new URLSearchParams(location.search);
-
-	if (params.get('tab') === 'help')
-		document.querySelector('button[data-tabid="helpTab"]').click();
 	
-	if (params.get('tab') === 'searchengines')
-		document.querySelector('button[data-tabid="enginesTab"]').click();
+	if ( params.get('tab') )
+		document.querySelector('button[data-tabid="' + params.get('tab') + '"]').click();
 
 });
 

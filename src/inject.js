@@ -76,5 +76,12 @@ function getImage(el) {
 	if ( el.tagName === 'IMG' ) return el.src;
 	
 	let style = window.getComputedStyle(el, false);
-	return style.backgroundImage.slice(4, -1).replace(/"/g, "");
+	
+	let backgroundImage = style.backgroundImage;
+	
+	browser.runtime.sendMessage({action:"log", msg: backgroundImage});
+
+	if ( ! /^url\(/.test(backgroundImage) ) return false;
+
+	return backgroundImage.slice(4, -1).replace(/"/g, "")
 }

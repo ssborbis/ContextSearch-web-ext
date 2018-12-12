@@ -362,11 +362,11 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		sg.style.width = qm.getBoundingClientRect().width + "px";
 		tb.style.width = sg.style.width;
 
-		// if (qm.getBoundingClientRect().width < window.innerWidth - 10 /* browser_action has a minimum window size */) {
-			// qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
-				// div.style.width = window.innerWidth / columns + "px";
-			// });
-		// }
+		if (qm.getBoundingClientRect().width < window.innerWidth - 20 /* browser_action has a minimum window size */) {
+			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
+				div.style.width = window.innerWidth / columns - 2 + "px";
+			});
+		}
 
 	});
 	

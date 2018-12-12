@@ -880,9 +880,9 @@
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><img alt="" src="icons/context_menu.png" />Context Menu</button>
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img alt="" src="icons/quick_menu.png" />Quick Menu</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</button>
-				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/load.png" />Sidebar</button>
-				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/search.png" />Highlight</button>
-				<button class="tablinks" data-tabid="appearanceTab" data-i18n="Appearance"><img alt="" src="icons/edit.png" />Appearance</button>
+				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/folder4.png" style="width:6px;transform:scaleX(-1)" />Sidebar</button>
+				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.png" />Highlight</button>
+				<button class="tablinks" data-tabid="appearanceTab" data-i18n="Appearance"><img alt="" src="icons/hide.png" />Appearance</button>
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img alt="" src="icons/search.png" />Search Engines</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img alt="" src="icons/settings.png" />General</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img alt="" src="icons/help.png" />Help</button>
@@ -1405,7 +1405,7 @@
 				<div class="tabcontent" id="toolBarTab">
 				<div class="blobContainerHeader" data-i18n="Toolbar">Toolbar</div>
 				
-				<p class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</p>
+				<div class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</div>
 					
 				<p class="header1" data-i18n="Columns">Columns</p>
 				<div class="option">
@@ -1609,17 +1609,26 @@ z						<option data-i18n="dark" value="dark">dark</option>
 	
 			</div>
 		<div class="tabcontent" id="enginesTab">
-			<div style="font-weight:normal; font-family:"Source Sans Pro", sans-serif;">
+			<div style="font-weight:normal; font-family:'Source Sans Pro', sans-serif;">
 			
 				<div class="blobContainerHeader" data-i18n="SearchEngines">Search Engines</div>
+				
+				<div class="description">
+					<span data-i18n="AddingSearchEnginesInfoMessage">
+						Search engines can be added manually here or automatically via the Context Menu. See the following link for more info - 
+					</span>
+					<a href="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_search.gif" target="_blank" data-i18n="AddingSearchEnginesLinkText">Adding search engines</a>
+				</div>
+				
+				<br /><br />
 		
 				<div id="searchEnginesParentContainer">
 					<div id="managerContainer" style="font-weight:normal;width:100%;max-height:500px;display:inline-block;overflow:hidden;font-size:11pt;text-align:left;background-color:white;">
 					</div>
 					<div></div>
-					
+
 					<button id="b_addSearchEngine" data-i18n="Add">Add</button>
-					<button id="b_deleteAllSearchEngines" style="display:none;float:right;clear:both" data-i18n="RemoveAll">Remove All</button>
+					<button id="b_resetAllSearchEngines" style="float:right;clear:both" data-i18n="ResetDefaults">Reset Defaults</button>
 
 					<div class="blurb" data-i18n="SearchEnginesManagerHelp">
 						Drag &amp; drop to re-order, click to edit

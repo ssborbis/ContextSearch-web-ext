@@ -658,7 +658,7 @@ function makeQuickMenu(options) {
 			div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 			div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
 			div.onclick = function() {
-				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=searchengines"});
+				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=enginesTab"});
 			}	
 			quickMenuElement.appendChild(div);
 		}

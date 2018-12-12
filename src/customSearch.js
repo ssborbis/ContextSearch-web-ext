@@ -618,7 +618,7 @@ function listenForFocusAndPromptToImport() {
 			window.addEventListener('focus', () => {
 				
 				dialog.querySelector('[name="moreInfo"]').onclick = function() {
-					browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=help#help_importing"});
+					browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=helpTab#help_importing"});
 				}
 				
 				showMenu(dialog);

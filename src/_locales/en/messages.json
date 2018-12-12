@@ -911,7 +911,7 @@
   },
   
   "ShortcutKey_tooltip": {
-    "message": "Shortcut key to expand the \"Search With...\" entry in the context menu",
+    "message": "Shortcut key to expand the \"Search With...\" menu in the context menu",
     "description": "context menu hotkey tooltip"
   },
   
@@ -1259,8 +1259,29 @@
     "description": ""
   },
   
+  "ConfirmResetAllSearchEngines": {
+    "message": "This will remove all custom search engines, folders, bookmarklets, separators and restore the default engine list.\r\n\r\nAre you sure?",
+    "description": ""
+  },
+  
+  "ResetDefaults": {
+    "message": "Reset Defaults",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesInfoMessage": {
+    "message": "Search engines can be added manually here or automatically via the Context Menu. See the following link for more info - ",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesLinkText": {
+    "message": "Adding search engines",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""
   }
+
 }

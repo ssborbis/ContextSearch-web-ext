@@ -46,7 +46,8 @@
 				"opensearch.js",
 				"searchEngineUtils.js",
 				"inject_customSearch.js",
-				"inject_sidebar.js"
+				"inject_sidebar.js",
+				"inject_highlight.js"
 			],
 			"css": ["inject.css","inject_sidebar.css"],
 			"all_frames": true,

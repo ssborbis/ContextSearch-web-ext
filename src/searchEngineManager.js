@@ -1254,4 +1254,38 @@ function buildSearchEngineContainer() {
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
 		}
 	});
+	
+	document.getElementById('b_resetAllSearchEngines').addEventListener('click', (e) => {
+		
+		if ( !confirm(browser.i18n.getMessage("ConfirmResetAllSearchEngines")) ) return;
+		
+		browser.runtime.getBackgroundPage().then( w => {
+			userOptions.nodeTree.children = [];	
+			
+			// reset searchEngines to defaults
+			userOptions.searchEngines = w.defaultEngines;
+			
+			// build nodes with default engines
+			repairNodeTree(userOptions.nodeTree);
+			
+			// unhide all default engines
+			findNodes( userOptions.nodeTree, node => node.hidden = false );
+
+			// updated the background page UO
+			w.userOptions = userOptions;
+			
+			// add OCSE to the nodeTree
+			w.checkForOneClickEngines().then( () => {
+				
+				// updated the local UO
+				userOptions = w.userOptions;
+				saveOptions().then( () => {
+					location.href = "options.html?tab=enginesTab";
+				});
+			});
+		});
+		
+		
+		
+	});
 }
