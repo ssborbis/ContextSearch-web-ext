@@ -216,7 +216,7 @@
   },
   
   "MouseHelp": {
-    "message": "Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly and prevent unwanted menus"
+    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus"
   },
 
   "Position": {
@@ -1010,7 +1010,7 @@
   },
   
   "SideBarTooltip": {
-	"message": "Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar"
+	"message": "Sidebar is an extension of the Toolbar with added functions displayed inside the browser window. Both the menu and the opening widget respond to text drag & drop ( except Chrome ). Most settings are shared with the Toolbar"
   },
   
   "SideBarPositionTooltip": {

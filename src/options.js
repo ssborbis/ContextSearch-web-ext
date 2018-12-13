@@ -969,6 +969,31 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 
 		help.removeChild(iframe);
+		
+		help.querySelectorAll("[data-gif]").forEach( el => {
+			el.addEventListener('click', (_e) => {
+				let div = document.createElement('div');
+				div.style = 'position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.8);z-index:2;text-align:center';
+				
+				div.onclick = function() {
+					div.parentNode.removeChild(div);
+				}
+				
+				let img = document.createElement('img');
+				img.src = el.dataset.gif;
+				img.style.maxHeight = '75vh';
+				img.style.marginTop = '12.5vh';
+				img.style.maxWidth = '75vw';
+					
+				img.onload = function() {
+					div.appendChild(img);
+					el.style.backgroundImage = 'url("' + img.src + '")';
+					el.style.backgroundSize = '100% 100%';
+				}
+				
+				help.appendChild(div);
+			});
+		});
 	}
 	
 	setTimeout( () => {

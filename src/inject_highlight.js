@@ -124,6 +124,9 @@ function createNavBar() {
 		}, {once:true});
 	});
 	
+	// keep track of markers with the same top offset
+	let layers = 0;
+
 	hls.forEach( hl => {
 
 		let rect = hl.getBoundingClientRect();
@@ -151,9 +154,11 @@ function createNavBar() {
 		
 		div.appendChild(marker);
 		
-		if ( marker.previousSibling && marker.previousSibling.style.top === marker.style.top ) {
-			marker.style.top = 'calc(' + marker.style.top + ' + 2px)';
-		}
+		// if stacking elements, offset margins
+		if ( marker.previousSibling && marker.previousSibling.style.top === marker.style.top )
+			marker.style.marginTop = ++layers * 4 + 'px';
+		else
+			layers = 0;
 		
 	});
 	

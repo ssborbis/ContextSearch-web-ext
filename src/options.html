@@ -853,6 +853,8 @@
 				display:inline-block;
 				white-space:normal;
 				max-width:500px;
+				vertical-align:top;
+				margin-top:1px;
 			}
 			.option {
 				white-space:nowrap;
@@ -861,6 +863,26 @@
 			}
 			.option > * {
 				vertical-align:top;
+			}
+			DIV[data-gif] {
+				height:50px;
+				width:70px;
+				display:inline-block;
+				border:1px solid #ccc;
+				border-radius:6px;
+				background:url("icons/play-button.svg") no-repeat center center;
+				background-size:30px;
+				background-color: #ececec;
+				<!-- filter:invert(1); -->
+			}
+			.header1.help {
+				font-size:11pt;
+				font-weight:bold;
+				text-variant:default;
+				margin:0;
+				padding:0 2px 4px 0;
+				color: #444;
+				<!-- text-decoration: underline; -->
 			}
 		</style>
 	</head>
@@ -1022,22 +1044,50 @@ z						<option data-i18n="dark" value="dark">dark</option>
 			
 			<div class="tabcontent" id="quickMenuTab">
 				<div class="blobContainerHeader" data-i18n="QuickMenu">Quick Menu</div>
+				
+				<div data-browser="firefox" style="border-radius:10px;background-color:#efefef;padding:10px;margin:10px 0;display:inline-block">
+					<div style='display:table-cell;vertical-align:middle;border-right:1px solid #ccc;padding-right:10px;text-align:center'>
+						<img src="icons/alert_bw.png" style="height:2em;vertical-align:middle"/>
+					</div>
+					<div style="display:table-cell">
+						<div class="description" data-i18n="QuickMenuNote">Disabled on addons.mozilla.org</div><br /><br />
+						<div class="description" data-i18n="MouseHelp">Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus</div>
+					</div>
+				</div>
+				
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="cb_quickMenu" />
 						<span class="checkmark checkmark2"></span>
 					</label>
-					
-					<div class="description" data-i18n="QuickMenuTooltip">Enable searching via popup menu</div><br />
-					
-					<div data-browser="firefox" style="border-radius:10px;background-color:#efefef;padding:10px;margin-top:10px;display:inline-block">
-						<img src="icons/alert_bw.png" style="height:2em;vertical-align:top;display:inline-block"/>
-						<div style="display:inline-block">
-							<div class="description" data-i18n="QuickMenuNote">Disabled on addons.mozilla.org</div><br /><br />
-							<div class="description" data-i18n="MouseHelp">Linux and MacOS X users may need to set the option ui.context_menus.after_mouseup to true in about:config for mouse actions to work properly and prevent unwanted menus</div>
-						</div>
-					</div>
+					<div class="description" data-i18n="QuickMenuTooltip">Enable searching via popup menu</div>
 				</div>
+
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuAutoOnInputs" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableOnTextBoxesTooltip">Enable on textarea and input elements</div>
+				</div>
+				
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuOnLinks" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableOnLinks">Enable on links</div>
+				</div>
+				
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuOnImages" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableOnImages">Enable on images</div>
+				</div>
+				
+				<hr />
 
 				<p class="header1" data-i18n="Columns">Columns</p>
 				<div class="option">
@@ -1086,32 +1136,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</table>
 				
 				<p class="header1" data-i18n="Opening">Opening</p>
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuAutoOnInputs" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnTextBoxesTooltip">Enable on textarea and input elements</div>
-				</div>
-				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuOnLinks" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnLinks">Enable on links</div>
-				</div>
-				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuOnImages" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnImages">Enable on images</div>
-				</div>
-				
-				<hr />
-
+	
 				<table class="openingTable">
 				<tr>
 					<td>

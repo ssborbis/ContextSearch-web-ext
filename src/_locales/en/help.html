@@ -8,35 +8,77 @@
 	<body style='padding:0;margin:0'>	
 	
 	<div style='font-weight:normal'>
+	
+		<div class="blobContainerHeader">Help</div>
 		
-		<a href='#help_preferences'>Settings</a><br />
-		<a href='#help_contextmenu'>Context Menu</a><br />
-		<a href='#help_quickmenu'>Quick Menu</a><br />
-		<a href='#help_importing'>Importing Firefox Search Engines</a><br />
-		<a href='#help_auto_importing'>Automatic Importing</a><br />
-		<a href='#help_adding_engines'>Adding Search Engines</a><br />
-		<a href='#help_modify_engines'>Using the Search Engines Manager</a><br />
-		
-		<div class='section'>
-		<h2 id='help_preferences'>Settings</h3>
-		Most settings can be customized under the <code>Menus</code> tab. Hover your mouse over <span class='info' data-msg='hello'>?</span> icons to see details about each setting.
+		<div class="header1" >Adding Search Engines</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_search.gif"></div>
+		<div class="description">
+			Right-click the search bar on any webpage and select <code>Add Custom Search</code>. New engines can also be added by hand in the Search Engines manager
 		</div>
-		<div class='section'>
-		<h2 id='help_contextmenu'>Using the Context Menu</h3>
-		Highlight a word and right-click to open the context menu. Expand the ContextSearch menu labeled <code>Search for "..."</code> and choose which search engine to perform the search with.
 		<br /><br />
-		Enabling <code>Use Bookmarks Menu</code> creates the folder <code>ContextSearch Menu</code> under <code>Other Bookmarks</code> where you can reorder search engines, create subfolders and separators. Renaming search engine bookmarks will cause them to no longer work. Deleted bookmarks can be restored from the search engines manager under the <code>Search Engines</code> tab. 
+		
+		<div class="header1" id='help_contextmenu'>Context Menu</div>
+		
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/cm.gif"></div>
+		<div class="description">
+			<div class="header1 help">Opening</div>
+			Highlight a word and right-click to open the context menu. Expand the ContextSearch menu labeled <code>	Search for "..."</code> and choose which search engine to perform the search with.
 		</div>
-		<div class='section'>
-		<h2 id='help_quickmenu'>Using the Quick Menu</h3>
-		Default: Highlight a word and hold down the right mouse button until the Quick Menu appears. You can choose from several options how the quick menu opens in the <code>Menus</code> tab under <code>Opening &amp; Closing</code>
+		<br /><br />
+		<div class="header1" id='help_quickmenu'>Quick Menu</div>
+
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/qm.gif"></div>
+		<div class="description">
+			<div class="header1 help">Opening</div>
+			Highlight a word and hold down the right mouse button until the Quick Menu appears. You can choose from several options for how the quick menu opens
+		</div>
+		<br /><br />
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/resize.gif"></div>
+		<div class="description">
+			<div class="header1 help">Resizing and Reordering</div>
+			The Quick Menu can be resized by changing the <code>Columns</code> and <code>Rows</code> setting or by dragging the resize icon in the lower-right corner of the menu.
+		
+			You can rearrange search engines using drag &amp; drop
+		</div>
 		
 		<br /><br />
-		The Quick Menu can be customize from the <code>Menus</code> tab. Search engines can be rearranged in the search list manager from the <code>Search Engines</code> tab.
+		
+		<div class="header1" id='help_quickmenu'>Toolbar</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/toolbar.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Opening</div>
+			Access engines any time using the Toolbar button
 		</div>
-		<div class='section'>
-		<h2 id='help_importing'>Importing Firefox Search Engines</h3>
-		If you have added search engines to the Firefox search toolbar you would like to use with ContextSearch, you can import them by clicking the button under 'Import One-Click Search Engines' in the Search Engines tab. Browse to your profile folder and select the <code>search.json.mozlz4</code> file.
+		<br /><br />
+		
+		<div class="header1" id='help_quickmenu'>Search Engines Manager</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_folder.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Adding Folders</div>
+			Search engines can be organized in folders and subfolders. 
+			<br />
+			<br />1. Use the right-click menu and choose <code>New Folder</code>
+			<br />2. Give the folder a unique name
+			<br />3. Drag &amp; drop search engines into the folder
+		</div>
+		<br /><br />
+		
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/edit_icon.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Editing Icons</div>
+			You can use custom icons for search engines
+			<br />
+			<br />1. Double-click a search engine or right-click and choose <code>Edit</code> 
+			<br />2. Edit the <code>Icon URI</code> field with the url of the new icon and click <code>Save</code>
+		</div>
+		<br /><br />
+
+		<div class="header1" id='help_importing'>Importing Firefox Search Engines</div>
+		<div class="description">
+		As of Firefox 63, One-Click Search Engines are imported into ContextSearch automatically. However they cannot be modified unless they are imported through the file browser.
+		<br /><br />
+		If you would like modify One-Click Search Engines, you can import them by clicking the button under 'Import One-Click Search Engines' in the Search Engines tab. Browse to your profile folder and select the <code>search.json.mozlz4</code> file.
 		
 		You can find your profile path by opening <code style='-moz-user-select:text'>about:profiles</code> in the address bar. Typical locations:
 
@@ -47,26 +89,6 @@
 			<p><img alt='' class='smallIcon' style='height:16px;' src='/icons/linux.png'><b>&nbsp;&nbsp;Linux</b></p>
 			<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
 		</div>	
-		</div>
-		
-		<div class='section'>
-		<h2 id='help_adding_engines'>Adding Search Engines</h3>
-
-			<h4>Using the Add Custom Search menu</h4>
-			
-			If a website provides a search form, simply right-click the form where you would enter your search terms and select the menu item <code>Add Custom Search</code> from the context menu. A popup will appear asking you give the new search engine a name. The name must be unique. Click 'Add' and your new search engine will be added to ContextSearch. Next you will be asked if you want to add your new search engine to the Firefox search toolbar. Clicking yes will send a request for a new OpenSearch engine. Confirm the install and your new engine will also appear in the Firefox search toolbar. These engines will remain installed and usable even if you uninstall ContextSearch.
-			
-			<br /><br />
-			
-			Add Custom Search also provides advanced settings with more options for adding a new search engine
-			
-			<h5><b>Add</b></h5> Install a new search engine based on the official search engine offered by the website
-
-			<h5><b>Find</b></h5> Search Mycroftproject for search engines related to the current website made by users around the world. You will need to reimport your One-Click Search Engines to use engines installed with this method in ContextSearch
-
-			<h5><b>Create</b></h5> Full control over creating a new search engine
-
-		</li>
 		</div>
 </body>
 </html>
