@@ -300,7 +300,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	}
 	
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
-		document.body.appendChild(qme);
+		document.body.insertBefore(qme, document.getElementById('optionsButton'));
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
 		
@@ -325,23 +325,12 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		div.onmouseleave = () => tb.innerText = ' ';
 	});
 
-	// create Options button
-	if (!ob) {
-		ob = document.createElement('div');
-		ob.id = 'optionsButton';
-
-		ob.onclick = function() {
-			document.body.style.visibility = 'hidden';
-			browser.runtime.sendMessage({action: "openOptions"});
-			window.close();
-		}
-		
-		tb.style.width = parseFloat(window.getComputedStyle(qm).width) - 10 + "px";
-
-		// show on browser_action / not sidebar
-		if ( window == top ) document.body.appendChild(ob);
+	ob.onclick = function() {
+		document.body.style.visibility = 'hidden';
+		browser.runtime.sendMessage({action: "openOptions"});
+		window.close();
 	}
-	
+
 	// focus the searchbar on open
 	sb.focus();
 	
@@ -382,8 +371,9 @@ function sideBarResize() {
 	let sb = document.getElementById('searchBar');
 	let tb = document.getElementById('titleBar');
 	let sg = document.getElementById('suggestions');
+	let ob = document.getElementById('optionsButton');
 	
-	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height;
+	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height;
 		
 	let qm_height = 'calc(100% - ' + allOtherElsHeight + "px)";
 	qm.style.height = qm_height;

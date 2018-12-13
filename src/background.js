@@ -1150,12 +1150,12 @@ const defaultUserOptions = {
 	nodeTree: {},
 	hiddenEngines: "",
 	quickMenu: true,
-	quickMenuColumns: 5,
+	quickMenuColumns: 6,
 	quickMenuRows: 1,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnHotkey: false,
-	quickMenuHotkey: [17, 18, 81],
+	quickMenuHotkey: [17, 192],
 	quickMenuOnMouse: true,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
@@ -1215,12 +1215,12 @@ const defaultUserOptions = {
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
 	searchBarUseOldStyle: false,
-	searchBarColumns: 5,
+	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
 	searchBarTheme: "lite",
 	sideBar: {
 		enabled: true,
-		columns: 5,
+		columns: 6,
 		singleColumn: false,
 		startOpen: false,
 		type: "overlay",
@@ -1305,46 +1305,51 @@ browser.tabs.onActivated.addListener((tab) => {
 
 browser.runtime.onInstalled.addListener((details) => {
 
+	 
+		// details.reason = 'install';
 	// Show new features page
-	if (
-		(
-			details.reason === 'update' 
-			&& details.previousVersion < "1.9.0"
-		)
-//		|| details.temporary
-	) {
-		browser.tabs.create({
-			url: "/update/update.html"
-		});
-	}
+	
 
 	let loadUserOptionsInterval = setInterval(() => {
 		if (userOptions === {}) return;
 		
+		clearInterval(loadUserOptionsInterval);
+
 		console.log("userOptions loaded. Updating objects");
 		
 		updateUserOptionsVersion(userOptions).then((_uo) => {
 			userOptions = _uo;
 			browser.storage.local.set({"userOptions": userOptions});
 			buildContextMenu();
-		});
-		clearInterval(loadUserOptionsInterval);
-		
-	//	Show install page
-		if ( 
-			details.reason === 'install' 
-	//		|| details.temporary
-		) {
-			browser.tabs.create({
-				url: browser.runtime.getURL("/options.html")
-			});
-		}
-		
-		if ( 
-			details.temporary 
-		) {
+		}).then(() => {
+
+			if (
+				details.reason === 'update' 
+			// && details.previousVersion < "1.9.3"
+			) {
+				browser.tabs.create({
+					url: browser.runtime.getURL("/options.html?tab=highLightTab")
+				}).then(_tab => {
+					browser.tabs.executeScript(_tab.id, {
+						file: browser.runtime.getURL("/update/update.js")
+					});
+				});
+			}
 			
-		}
+		//	Show install page
+			if ( 
+				details.reason === 'install'
+			) {
+				browser.tabs.create({
+					url: "/options.html?tab=helpTab"
+				}).then(_tab => {
+					// browser.tabs.executeScript(_tab.id, {
+						// file: browser.runtime.getURL("/install/install.js")
+					// });
+				});
+			}
+		});
+
 	}, 250);
 	
 });

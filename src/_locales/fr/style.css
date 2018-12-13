@@ -2,6 +2,6 @@
 	width:auto;
 }
 #editSearchEngineContainer INPUT, #editSearchEngineContainer SELECT, #editSearchEngineContainer TEXTAREA {
-				margin-bottom:-8px;
-				padding-bottom:8px;
-			}
+	margin-bottom:-8px;
+	padding-bottom:8px;
+}
