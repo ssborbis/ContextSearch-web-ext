@@ -148,7 +148,7 @@
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "Activer le menu sur les éléments TEXTAREA et INPUT (décocher pour empêcher l’intrusion de fenêtres indésirables)"
+    "message": "Activer sur les éléments « textarea » et « input »"
   },
   
   "Mouse": {
@@ -1032,7 +1032,7 @@
   },
   
   "EnableAnimations": {
-    "message": "Animation",
+    "message": "Animations",
     "description": ""
   },
   
@@ -1248,6 +1248,16 @@
   
   "AddingSearchEnginesLinkText": {
     "message": "Ajout d’un moteur de recherche",
+    "description": ""
+  },
+  
+  "EnableOnLinks": {
+    "message": "Activer sur les liens",
+    "description": ""
+  },
+  
+  "EnableOnImages": {
+    "message": "Activer sur les images",
     "description": ""
   },
   
