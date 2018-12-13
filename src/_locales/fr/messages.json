@@ -992,7 +992,7 @@
   },
   
   "SideBarTooltip": {
-	"message": "La barre latérale est une extension du bouton principal avec lequel elle partage la plupart des réglages."
+	"message": "La barre latérale est une extension du bouton principal avec lequel elle partage la plupart des réglages. Elle s’affiche à l’intérieur de la fenêtre du navigateur et accepte le glisser-déposer (dans le menu comme sur l’icône)."
   },
   
   "SideBarPositionTooltip": {
@@ -1242,12 +1242,12 @@
   },
   
   "AddingSearchEnginesInfoMessage": {
-    "message": "Un moteur de recherche peut être ajouté manuellement ou automatiquement par l’intermédiaire du menu contextuel. Aide visuelle :",
+    "message": "Un moteur de recherche peut être ajouté manuellement ou automatiquement par l’intermédiaire du menu contextuel.",
     "description": ""
   },
   
   "AddingSearchEnginesLinkText": {
-    "message": "Ajout d’un moteur de recherche",
+    "message": "(cliquer ici pour une aide visuelle)",
     "description": ""
   },
   
