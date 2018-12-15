@@ -67,7 +67,7 @@ function makeQuickMenu(options) {
 	document.addEventListener('keydown', (e) => {
 		if (e.keyCode === 13) {
 
-			let div = quickMenuElement.querySelector('div.selectedFocus') || quickMenuElement.querySelector('div[data-id]');
+			let div = quickMenuElement.querySelector('div.selectedFocus') || quickMenuElement.querySelector('div.selectedNoFocus') || quickMenuElement.querySelector('div[data-id]');
 			
 			if (!div) return;
 			
@@ -84,8 +84,11 @@ function makeQuickMenu(options) {
 		
 		delete sb.selectedIndex;
 		
-		div = quickMenuElement.querySelector('div[data-id]');
-		if (div) div.classList.add('selectedNoFocus');
+		div = quickMenuElement.querySelector('div[data-selectfirst]') || quickMenuElement.querySelector('div[data-id]');
+		if (div) {
+			sb.selectedIndex = [].indexOf.call(quickMenuElement.querySelectorAll('div[data-id]'), div);
+			div.classList.add('selectedNoFocus');
+		}
 
 	});
 	
@@ -994,7 +997,7 @@ function makeQuickMenu(options) {
 						tile.dataset.id = node.id;
 						tile.dataset.type = 'folder';
 						tile.dataset.subtype = 'sitesearch';
-						
+
 						tile.addEventListener('mouseup', openFolder);
 						tile.addEventListener('openFolder', openFolder);
 						
@@ -1042,8 +1045,14 @@ function makeQuickMenu(options) {
 									_tile.classList.add('singleColumn');
 									_tile.style.width = 'auto';
 									_tile.style.paddingRight = '16px';
+									
+									if ( _tile.node.title === url.hostname )
+										_tile.dataset.selectfirst = "true";
+									
 									quickMenuElement.insertBefore(document.createElement('br'), _tile.nextSibling);
 								});
+								
+								sb.focus();
 		
 								browser.runtime.sendMessage({
 									action: "quickMenuIframeLoaded", 
