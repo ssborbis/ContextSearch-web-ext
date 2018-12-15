@@ -995,18 +995,20 @@ function makeQuickMenu(options) {
 									id:node.id
 								}
 								
+								
 								let domains = getDomains(tab.url);
 								domain = domains.domain;
-								
-								siteSearchNode.children.push({
-									type: "siteSearch",
-									title: domain,
-									parent:node,
-									icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.png')
-								});
-								
+
 								let url = new URL(tab.url);								
 								let pathParts = url.pathname.split('/');
+								
+								if ( url.hostname !== domain )
+									siteSearchNode.children.push({
+										type: "siteSearch",
+										title: domain,
+										parent:node,
+										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.png')
+									});
 
 								if (pathParts[pathParts.length - 1].indexOf('.') !== -1 ) pathParts.pop();
 
