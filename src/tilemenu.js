@@ -553,7 +553,12 @@ function makeQuickMenu(options) {
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "tool";
 
-			moreTile.addEventListener('mouseup', (e) => {
+			moreTile.addEventListener('mouseup', _more);
+			moreTile.addEventListener('openFolder', _more);
+			
+			function _more(e) {
+				
+				console.log(e);
 				
 				moreTile.parentNode.removeChild(moreTile);
 
@@ -581,7 +586,7 @@ function makeQuickMenu(options) {
 					tileCount: quickMenuElement.querySelectorAll('.tile:not([data-hidden])').length
 				});
 
-			});
+			}
 			
 			return moreTile;
 		}
@@ -757,8 +762,9 @@ function makeQuickMenu(options) {
 				
 				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
 
-					targetDiv.textDragOverFolderTimer = setTimeout(() => {
-						let _e = new MouseEvent('mouseup');
+					targetDiv.textDragOverFolderTimer = setTimeout(() => {					
+						let _e = new CustomEvent('openFolder');
+						// let _e = new MouseEvent('mouseup');
 						_e.openFolder = true;
 						targetDiv.dispatchEvent(_e);
 					}, 500);
@@ -890,7 +896,10 @@ function makeQuickMenu(options) {
 			tile.dataset.type = "tool";
 			tile.node = rootNode.parent;
 			
-			tile.addEventListener('mouseup', (e) => {
+			tile.addEventListener('mouseup', _back);
+			tile.addEventListener('openFolder', _back);
+			
+			function _back(e) {
 
 				// back button rebuilds the menu using the parent folder
 				let quickMenuElement = quickMenuElementFromNodeTree(rootNode.parent, true);
@@ -908,7 +917,7 @@ function makeQuickMenu(options) {
 				
 				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
-			});
+			}
 			
 			tile.addEventListener('dragenter', (e) => {
 				// ignore tile dnd
@@ -916,7 +925,9 @@ function makeQuickMenu(options) {
 				
 				// start hover timer
 				tile.textDragOverFolderTimer = setTimeout(() => {
-					let _e = new MouseEvent('mouseup');
+
+					let _e = new CustomEvent("openFolder");
+					// let _e = new MouseEvent('mouseup');
 					_e.openFolder = true;
 					tile.dispatchEvent(_e);
 				}, 500);
@@ -984,7 +995,10 @@ function makeQuickMenu(options) {
 						tile.dataset.type = 'folder';
 						tile.dataset.subtype = 'sitesearch';
 						
-						tile.addEventListener('mouseup', () => {
+						tile.addEventListener('mouseup', openFolder);
+						tile.addEventListener('openFolder', openFolder);
+						
+						function openFolder(e) {
 
 							browser.runtime.sendMessage({action: 'getCurrentTabInfo'}).then( tab => {
 
@@ -994,21 +1008,9 @@ function makeQuickMenu(options) {
 									children:[],
 									id:node.id
 								}
-								
-								
-								let domains = getDomains(tab.url);
-								domain = domains.domain;
 
 								let url = new URL(tab.url);								
 								let pathParts = url.pathname.split('/');
-								
-								if ( url.hostname !== domain )
-									siteSearchNode.children.push({
-										type: "siteSearch",
-										title: domain,
-										parent:node,
-										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.png')
-									});
 
 								if (pathParts[pathParts.length - 1].indexOf('.') !== -1 ) pathParts.pop();
 
@@ -1019,6 +1021,18 @@ function makeQuickMenu(options) {
 										parent:node,
 										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.png')
 									});	
+								}
+								
+								// add domain if subdomain
+								let domains = getDomains(tab.url);
+								domain = domains.domain;
+
+								if ( domain && url.hostname !== domain ) {
+
+									let dNode = Object.assign({}, siteSearchNode.children[0]);
+									dNode.title = domain;
+									
+									siteSearchNode.children.unshift(dNode);
 								}
 
 								quickMenuElement = quickMenuElementFromNodeTree(siteSearchNode);
@@ -1044,7 +1058,7 @@ function makeQuickMenu(options) {
 								
 								document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 							});
-						});
+						}
 						
 						break;
 					}
@@ -1124,7 +1138,10 @@ function makeQuickMenu(options) {
 						e.stopPropagation();
 					});
 
-					tile.addEventListener('mouseup', (e) => {
+					tile.addEventListener('mouseup', openFolder);
+					tile.addEventListener('openFolder', openFolder);
+						
+					function openFolder(e) {
 						let method = getOpenMethod(e, true);
 
 						if (method === 'noAction') return;
@@ -1174,7 +1191,7 @@ function makeQuickMenu(options) {
 						
 						loop(messages.shift());
 
-					});
+					}
 					
 					break;
 					
