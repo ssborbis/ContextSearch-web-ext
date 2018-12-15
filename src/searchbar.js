@@ -328,7 +328,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	ob.onclick = function() {
 		document.body.style.visibility = 'hidden';
 		browser.runtime.sendMessage({action: "openOptions"});
-		window.close();
+		if ( window == top ) window.close();
 	}
 
 	// focus the searchbar on open

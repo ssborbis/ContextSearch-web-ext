@@ -894,16 +894,33 @@ function escapeDoubleQuotes(str) {
 function highlightSearchTermsInTab(_tab, _search) {
 	
 	if ( !userOptions.highLight.enabled ) return;
+	
+//	browser.tabs.sendMessage({action: "getHighlightStatus"}).then( result => {
 
-	return browser.tabs.executeScript(_tab.id, {
-		runAt: 'document_idle',
-		file: "lib/mark.es6.min.js"
-	}).then( () => {
 		return browser.tabs.executeScript(_tab.id, {
-			code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(_search) + `"}));`,
-			runAt: 'document_idle'
+			runAt: 'document_idle',
+			file: "lib/mark.es6.min.js"
+		}).then( () => {
+			return browser.tabs.executeScript(_tab.id, {
+				code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(_search) + `"}));`,
+				runAt: 'document_idle'
+			});
+		}).then( () => {
+			// if ( true ) {
+				
+				// function highlightListener(tabId, changeInfo, tab) {
+					
+					// if ( tabId !== _tab.id ) return;
+					// if ( changeInfo.status !== 'complete' ) return;
+					
+					// console.log('highlighting ' + tab.url);
+					// highlightSearchTermsInTab(_tab, _search);
+				// }
+				
+				// if ( !browser.tabs.onUpdated.hasListener(highlightListener) )
+					// browser.tabs.onUpdated.addListener(highlightListener);
+			// }
 		});
-	});
 }
 
 function getAllOpenTabs() {
@@ -1244,6 +1261,9 @@ const defaultUserOptions = {
 		},
 		markOptions: {
 			separateWordSearch: true
+		},
+		findBar: {
+			enabled: false
 		}
 	},
 	userStyles: 
@@ -1325,10 +1345,12 @@ browser.runtime.onInstalled.addListener((details) => {
 
 			if (
 				details.reason === 'update' 
-			// && details.previousVersion < "1.9.3"
+				&& details.previousVersion < "1.9.4"
 			) {
 				browser.tabs.create({
-					url: browser.runtime.getURL("/options.html?tab=highLightTab")
+					url: browser.runtime.getURL("/options.html?tab=highLightTab"),
+					active: false
+					
 				}).then(_tab => {
 					browser.tabs.executeScript(_tab.id, {
 						file: browser.runtime.getURL("/update/update.js")
