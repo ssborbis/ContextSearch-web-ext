@@ -1046,8 +1046,10 @@ function makeQuickMenu(options) {
 									_tile.style.width = 'auto';
 									_tile.style.paddingRight = '16px';
 									
-									if ( _tile.node.title === url.hostname )
+									if ( _tile.node.title === url.hostname ) {
+										_tile.classList.add('selectedFocus');
 										_tile.dataset.selectfirst = "true";
+									}
 									
 									quickMenuElement.insertBefore(document.createElement('br'), _tile.nextSibling);
 								});
