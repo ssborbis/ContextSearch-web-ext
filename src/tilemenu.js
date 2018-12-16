@@ -1053,9 +1053,7 @@ function makeQuickMenu(options) {
 									
 									quickMenuElement.insertBefore(document.createElement('br'), _tile.nextSibling);
 								});
-								
-								sb.focus();
-		
+
 								browser.runtime.sendMessage({
 									action: "quickMenuIframeLoaded", 
 									size: {

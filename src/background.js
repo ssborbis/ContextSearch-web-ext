@@ -644,6 +644,11 @@ function contextMenuSearch(info, tab) {
 		openMethod = userOptions.contextMenuShift;
 	else if ( info.modifiers && info.modifiers.includes("Ctrl") )
 		openMethod = userOptions.contextMenuCtrl;
+	else if ( info.button ) {
+		if ( info.button === 0 ) openMethod = userOptions.contextMenuClick;
+		if ( info.button === 1 ) openMethod = userOptions.contextMenuMiddleClick;
+		if ( info.button === 2 ) openMethod = userOptions.contextMenuRightClick;
+	}
 	else
 		openMethod = userOptions.contextMenuClick;
 
@@ -1178,6 +1183,7 @@ const defaultUserOptions = {
 	quickMenuOnMouseMethod: "hold",
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
+	quickMenuAutoTimeout: 1000,
 	quickMenuAutoOnInputs: false,
 	quickMenuOnLinks: true,
 	quickMenuOnImages: true,
@@ -1209,6 +1215,8 @@ const defaultUserOptions = {
 	searchJsonPath: "",
 	reloadMethod: "",
 	contextMenuClick: "openNewTab",
+	contextMenuMiddleClick: "openBackgroundTab",
+	contextMenuRightClick: "openCurrentTab",
 	contextMenuShift: "openNewWindow",
 	contextMenuCtrl: "openBackgroundTab",
 	contextMenuSearchLinksAs: "text",

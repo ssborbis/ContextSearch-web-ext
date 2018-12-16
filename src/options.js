@@ -169,6 +169,8 @@ function restoreOptions() {
 		document.getElementById('cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
 
 		document.getElementById('s_contextMenuClick').value = userOptions.contextMenuClick;
+		document.getElementById('s_contextMenuMiddleClick').value = userOptions.contextMenuMiddleClick;
+		document.getElementById('s_contextMenuRightClick').value = userOptions.contextMenuRightClick;
 		document.getElementById('s_contextMenuShift').value = userOptions.contextMenuShift;
 		document.getElementById('s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
@@ -189,7 +191,8 @@ function restoreOptions() {
 		document.getElementById('s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
 		document.getElementById('n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
-		document.getElementById('n_quickMenuOpeningOpacity').value = parseFloat(userOptions.quickMenuOpeningOpacity);
+		document.getElementById('n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
+		document.getElementById('n_quickMenuAutoTimeout').value = userOptions.quickMenuAutoTimeout;
 				
 		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		document.getElementById('cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
@@ -282,6 +285,8 @@ function saveOptions(e) {
 		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
 		quickMenuPosition: document.getElementById('h_position').value,
 		contextMenuClick: document.getElementById('s_contextMenuClick').value,
+		contextMenuMiddleClick: document.getElementById('s_contextMenuMiddleClick').value,
+		contextMenuRightClick: document.getElementById('s_contextMenuRightClick').value,
 		contextMenuShift: document.getElementById('s_contextMenuShift').value,
 		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
 		contextMenuSearchLinksAs: document.getElementById('s_contextMenuSearchLinksAs').value,
@@ -304,6 +309,7 @@ function saveOptions(e) {
 		quickMenuSearchBarSelect: document.getElementById('cb_quickMenuSearchBarSelect').checked,
 		quickMenuAutoMaxChars: parseInt(document.getElementById('n_quickMenuAutoMaxChars').value) || 0,
 		quickMenuOpeningOpacity: parseFloat(document.getElementById('n_quickMenuOpeningOpacity').value) || .3,
+		quickMenuAutoTimeout: parseInt(document.getElementById('n_quickMenuAutoTimeout').value),
 		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
 		searchJsonPath: function () {
@@ -432,6 +438,11 @@ document.getElementById('n_sideBarColumns').addEventListener('change',  (e) => {
 
 document.getElementById('n_quickMenuAutoMaxChars').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 0, 0, 999);
+	saveOptions(e);
+});
+
+document.getElementById('n_quickMenuAutoTimeout').addEventListener('change',  (e) => {
+	fixNumberInput(e.target, 1000, 0, 9999);
 	saveOptions(e);
 });
 
@@ -774,7 +785,17 @@ document.addEventListener("DOMContentLoaded", (e) => {
 	if (!browser.runtime.getBrowserInfo) {
 		for (let el of document.querySelectorAll('[data-browser="firefox"]'))
 			el.style.display = 'none';
+	} else {
+		browser.runtime.getBrowserInfo().then( info => {
+			let version = info.version;
+			document.querySelectorAll('[data-browser="firefox"][data-minversion]').forEach( el => {
+				if ( el.dataset.minversion > info.version )
+					el.style.display = 'none';
+			});	
+		});
 	}
+	
+	
 });
 
 function showInfoMsg(el, msg) {

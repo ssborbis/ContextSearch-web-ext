@@ -366,7 +366,7 @@ document.addEventListener('mouseup', (ev) => {
 	
 	ev.openingMethod = "auto";
 
-	if (Date.now() - quickMenuObject.lastSelectTime > 1000 && !isTextBox(ev.target) ) return false;
+	if (Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	clearTimeout(quickMenuObject.mouseDownTimer);
