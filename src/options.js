@@ -155,7 +155,7 @@ function restoreOptions() {
 		
 		document.getElementById('s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
 		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
-		document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
+		// document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
 		document.getElementById('h_position').value = userOptions.quickMenuPosition;
 
 		for (let p of document.getElementsByClassName('position')) {
@@ -166,7 +166,7 @@ function restoreOptions() {
 		
 		buildToolIcons();
 
-		document.getElementById('cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
+		// document.getElementById('cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
 
 		document.getElementById('s_contextMenuClick').value = userOptions.contextMenuClick;
 		document.getElementById('s_contextMenuMiddleClick').value = userOptions.contextMenuMiddleClick;
@@ -312,12 +312,12 @@ function saveOptions(e) {
 		quickMenuAutoTimeout: parseInt(document.getElementById('n_quickMenuAutoTimeout').value),
 		
 		contextMenu: document.getElementById('cb_contextMenu').checked,
-		searchJsonPath: function () {
-			let path = document.getElementById('i_searchJsonPath').value;
-			if (path.match(/\/search.json.mozlz4$/) === null && path != "")
-				path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
-			return path;
-		}(),
+		// searchJsonPath: function () {
+			// let path = document.getElementById('i_searchJsonPath').value;
+			// if (path.match(/\/search.json.mozlz4$/) === null && path != "")
+				// path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
+			// return path;
+		// }(),
 		quickMenuTools: function() {
 			let tools = [];
 			for (let toolIcon of document.getElementsByClassName('toolIcon'))
@@ -326,7 +326,7 @@ function saveOptions(e) {
 		}(),
 		
 		quickMenuToolsPosition: document.getElementById('s_quickMenuToolsPosition').value,
-		reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
+		// reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
 		searchBarUseOldStyle: document.getElementById('cb_searchBarUseOldStyle').checked,
 		searchBarColumns: parseInt(document.getElementById('n_searchBarColumns').value),
@@ -457,16 +457,16 @@ document.getElementById('range_quickMenuIconScale').addEventListener('input', (e
 	document.getElementById('i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
 document.getElementById('range_quickMenuIconScale').addEventListener('change', saveOptions);
-document.getElementById('b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
-document.getElementById('i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
-document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => {
-	if (
-		ev.repeat ||
-		ev.which !== 13
-	) return false;
+// document.getElementById('b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
+// document.getElementById('i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
+// document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => {
+	// if (
+		// ev.repeat ||
+		// ev.which !== 13
+	// ) return false;
 	
-	ev.target.blur();
-});
+	// ev.target.blur();
+// });
 
 document.getElementById('t_userStyles').addEventListener('change', saveOptions);
 document.getElementById('cb_userStylesEnabled').addEventListener('change', (e) => {
@@ -474,58 +474,58 @@ document.getElementById('cb_userStylesEnabled').addEventListener('change', (e) =
 	saveOptions(e);
 });
 
-function checkSearchJsonPath() {
+// function checkSearchJsonPath() {
 
-	let el = document.getElementById('div_searchJsonPathResponse');
-	let ev_target = document.getElementById('i_searchJsonPath');
+	// let el = document.getElementById('div_searchJsonPathResponse');
+	// let ev_target = document.getElementById('i_searchJsonPath');
 	
-	el.innerText = browser.i18n.getMessage("Validating");
+	// el.innerText = browser.i18n.getMessage("Validating");
 	
-	ev_target.value = ev_target.value.replace(/\\/g, "/").trim();
-	if (ev_target.value == "") {
-		el.innerText = "";
-		return false;
-	}
+	// ev_target.value = ev_target.value.replace(/\\/g, "/").trim();
+	// if (ev_target.value == "") {
+		// el.innerText = "";
+		// return false;
+	// }
 	
-	let path = ev_target.value;
+	// let path = ev_target.value;
 	
-	if (path.match(/\/search.json.mozlz4$/) === null) {
-		path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
-	}
+	// if (path.match(/\/search.json.mozlz4$/) === null) {
+		// path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
+	// }
 	
-	saveOptions();
+	// saveOptions();
 
-	function onResponse(response) {
+	// function onResponse(response) {
 
-		if (response.error) {
-			el.innerHTML = "<img src='/icons/no.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-			let span = document.createElement('span');
-			span.innerText = response.error;
-			el.appendChild(span);
-			return false;
-		}
+		// if (response.error) {
+			// el.innerHTML = "<img src='/icons/no.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
+			// let span = document.createElement('span');
+			// span.innerText = response.error;
+			// el.appendChild(span);
+			// return false;
+		// }
 
-		let tn = document.createTextNode("   " + browser.i18n.getMessage("ImportSuccessful"));
-		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />";
-		el.appendChild(tn);
+		// let tn = document.createTextNode("   " + browser.i18n.getMessage("ImportSuccessful"));
+		// el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />";
+		// el.appendChild(tn);
 
-		// if response is a userOptions object
-		if (response && response.searchEngines) {	
-			console.log('building search engine container');
-			buildSearchEngineContainer(response.searchEngines);
-		}
-	}
+		// // if response is a userOptions object
+		// if (response && response.searchEngines) {	
+			// console.log('building search engine container');
+			// buildSearchEngineContainer(response.searchEngines);
+		// }
+	// }
 	
-	function onError(error) {
-		console.log(error);
-		el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-		el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("%1", error.message || "no error message");
-		el.style.color = 'red';
-	}
+	// function onError(error) {
+		// console.log(error);
+		// el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
+		// el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("%1", error.message || "no error message");
+		// el.style.color = 'red';
+	// }
 
-	var sending = browser.runtime.sendMessage({action: "nativeAppRequest", force: true});
-	sending.then(onResponse, onError);	
-}
+	// var sending = browser.runtime.sendMessage({action: "nativeAppRequest", force: true});
+	// sending.then(onResponse, onError);	
+// }
 
 document.getElementById('b_quickMenuKey').addEventListener('click', keyButtonListener);
 document.getElementById('b_contextMenuKey').addEventListener('click', keyButtonListener);
@@ -760,25 +760,25 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // show/hide content based on native app compatibility
-document.addEventListener("DOMContentLoaded", (e) => {
+// document.addEventListener("DOMContentLoaded", (e) => {
 	
-	function onChecks() {
-		console.log('Native Messenger addon installed');
-	}
+	// function onChecks() {
+		// console.log('Native Messenger addon installed');
+	// }
 	
-	function onError() {
-		console.log('Native Messenger addon not installed. Removing native content');
+	// function onError() {
+		// console.log('Native Messenger addon not installed. Removing native content');
 		
-		for (let el of document.getElementsByTagName('native'))
-			el.style.display = 'none';
+		// for (let el of document.getElementsByTagName('native'))
+			// el.style.display = 'none';
 		
-	}
+	// }
 	
-	let nativeChecking = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", {action: "check"});
+	// let nativeChecking = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", {action: "check"});
 	
-	nativeChecking.then(onChecks, onError);
+	// nativeChecking.then(onChecks, onError);
 
-});
+// });
 
 // browser-specific modifications
 document.addEventListener("DOMContentLoaded", (e) => {

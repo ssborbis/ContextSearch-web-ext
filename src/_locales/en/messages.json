@@ -1121,7 +1121,7 @@
   
   "Links": {
     "message": "Links",
-    "description": "Links can be searched as the text displayed or the url they refer to"
+    "description": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting"
   },
   
   "LinksTooltip": {

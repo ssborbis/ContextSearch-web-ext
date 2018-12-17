@@ -1,5 +1,3 @@
-
-
 function getSelectedText(el) {
 	
 	if (el && typeof el.selectionStart !== 'undefined') {
@@ -32,20 +30,20 @@ window.addEventListener('mousedown', (e) => {
 
 	if ( e.which !== 3 ) return false;
 
-	let searchTerms = getSelectedText(e.target) || getImage(e.target) || getLink(e.target);
+	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e);
 
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
 // Good for checking new engines after window.external.AddSearchProvider()
-window.addEventListener('focus', (ev) => {
+// window.addEventListener('focus', (ev) => {
 	
-	setTimeout(() => {
-		if (userOptions.reloadMethod !== 'automatic') return false;
+	// setTimeout(() => {
+		// if (userOptions.reloadMethod !== 'automatic') return false;
 		
-		browser.runtime.sendMessage({action: "nativeAppRequest"});
-	}, 500);
-});
+		// browser.runtime.sendMessage({action: "nativeAppRequest"});
+	// }, 500);
+// });
 
 function runAtTransitionEnd(el, prop, callback) {
 	let oldProp = null;
@@ -60,16 +58,20 @@ function runAtTransitionEnd(el, prop, callback) {
 	},25);
 }
 
-function getLink(el) {
+function getLink(el, e) {
 
 	let a = el.closest('a');
 	
 	if ( !a ) return "";
-		
-	return userOptions.contextMenuSearchLinksAs === 'url' ? a.href || a.innerText : a.innerText || a.href;
+	
+	let method = userOptions.contextMenuSearchLinksAs;
+	
+	if ( e && e.ctrlKey ) method = method === 'url' ? 'text' : 'url';
+
+	return method === 'url' ? a.href || a.innerText : a.innerText || a.href;
 }
 
-function getImage(el) {
+function getImage(el, e) {
 	
 	if ( el.innerText ) return false;
 	
@@ -79,7 +81,7 @@ function getImage(el) {
 	
 	let backgroundImage = style.backgroundImage;
 	
-	browser.runtime.sendMessage({action:"log", msg: backgroundImage});
+//	browser.runtime.sendMessage({action:"log", msg: backgroundImage});
 
 	if ( ! /^url\(/.test(backgroundImage) ) return false;
 

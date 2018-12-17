@@ -340,22 +340,32 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 		if ( window != top ) return;
 		
-		if ( window.preventResize ) return;
+		// toolbar issue with FF64+
+		let innerHeight = 0;
+		let resizeInterval = setInterval( () => {
+			
+			if ( innerHeight !== window.innerHeight ) {
+				innerHeight = window.innerHeight;
+				return;
+			}
+			
+			clearInterval(resizeInterval);
 
-		if ( window.innerHeight < document.body.scrollHeight ) {
-			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
-		} 
-		
-		// account for scroll bars
-		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-		sg.style.width = qm.getBoundingClientRect().width + "px";
-		tb.style.width = sg.style.width;
+			if ( window.innerHeight < document.body.scrollHeight ) {
+				qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
+			} 
+			
+			// account for scroll bars
+			qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
+			sg.style.width = qm.getBoundingClientRect().width + "px";
+			tb.style.width = sg.style.width;
 
-		if (qm.getBoundingClientRect().width < window.innerWidth - 20 /* browser_action has a minimum window size */) {
-			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
-				div.style.width = window.innerWidth / columns - 2 + "px";
-			});
-		}
+			if (qm.getBoundingClientRect().width < window.innerWidth - 20 /* browser_action has a minimum window size */) {
+				qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
+					div.style.width = window.innerWidth / columns - 2 + "px";
+				});
+			}
+		}, 10);
 
 	});
 	

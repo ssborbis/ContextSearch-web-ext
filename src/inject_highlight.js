@@ -43,6 +43,8 @@ document.addEventListener('CS_mark', (e) => {
 		
 		clearInterval(optionsCheck);
 		
+		unmark();
+		
 		mark(e.detail.trim());
 	
 	}, 100);
@@ -51,13 +53,17 @@ document.addEventListener('CS_mark', (e) => {
 
 document.addEventListener('keydown', (e) => {
 	if ( e.which === 27 ) {
-		CS_MARK_instance.unmark();
-		
-		let nav = document.getElementById('CS_highLightNavBar');
-		
-		if ( nav ) nav.parentNode.removeChild(nav);
+		unmark();
 	}
 }, {once: true});
+
+function unmark() {
+	CS_MARK_instance.unmark();
+		
+	let nav = document.getElementById('CS_highLightNavBar');
+	
+	if ( nav ) nav.parentNode.removeChild(nav);
+}
 
 function mark(searchTerms) {
 
@@ -81,9 +87,15 @@ function mark(searchTerms) {
 			className:"CS_mark",
 			separateWordSearch: false,
 			
+			each: (el) => {
+				if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
+					el.classList.remove('CS_mark');
+			},
+			
 			done: () => {
+				
 				if ( i !== words.length - 1 ) return;
-
+				
 				document.querySelectorAll(".CS_mark").forEach( el => {
 					let index = words.findIndex( word => {
 						return word.toLowerCase() === el.textContent.toLowerCase();
@@ -94,8 +106,8 @@ function mark(searchTerms) {
 				
 				if ( userOptions.highLight.navBar.enabled )
 					createNavBar();
-				
-				if ( userOptions.highLite.findBar.enabled ) 
+
+				if ( userOptions.highLight.findBar.enabled ) 
 					createFindBar(searchTerms, document.querySelectorAll(".CS_mark").length);
 			}
 		});
@@ -192,8 +204,9 @@ function createNavBar() {
 
 function createFindBar(searchTerms, total) {
 	let fb = document.createElement('iframe');
-	fb.style = 'position:fixed;left:0;right:0;top:0;display:block;height:40px;z-index:2;width:100vw;border:none;border-bottom:1px solid #ccc;';
 	fb.id = 'CS_findBarIframe';
+	fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
+	fb.style.width = 'calc(100% * ' + window.devicePixelRatio + ')';
 	
 	document.body.appendChild(fb);
 	fb.onload = function() {
@@ -201,6 +214,8 @@ function createFindBar(searchTerms, total) {
 	}
 	
 	fb.src = browser.runtime.getURL("/findbar.html");
+	
+	console.log('findbar');
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -263,8 +278,11 @@ function jumpTo(index) {
 		if ( navdivs[index] ) navdivs[index].classList.add('CS_mark_selected');
 	}
 	
-	document.documentElement.scrollTop = mark.offsetTop - .5 * document.documentElement.clientHeight;
-	
+	console.log(mark);
+	console.log( window.getComputedStyle(mark, null) );
+	if ( window.getComputedStyle(mark, null).display !== 'none' )
+		document.documentElement.scrollTop = mark.getBoundingClientRect().top + document.documentElement.scrollTop - .5 * document.documentElement.clientHeight;
+
 	let fb = document.getElementById('CS_findBarIframe');
 	fb.contentWindow.postMessage({index: index, total: marks.length}, browser.runtime.getURL('/findbar.html'));
 }

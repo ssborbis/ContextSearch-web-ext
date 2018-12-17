@@ -23,31 +23,31 @@ function notify(message, sender, sendResponse) {
 			});
 			break;
 			
-		case "nativeAppRequest":
+		// case "nativeAppRequest":
 		
-			message.userOptions = userOptions;
+			// message.userOptions = userOptions;
 
-			let nativeApping = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", message);
+			// let nativeApping = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", message);
 			
-			return nativeApping.then((result) => {	
+			// return nativeApping.then((result) => {	
 
-				// quick check for valid userOptions
-				if (result && result.searchEngines) {
+				// // quick check for valid userOptions
+				// if (result && result.searchEngines) {
 
-					console.log("native app: adding " + (result.searchEngines.length - userOptions.searchEngines.length) + " search engines");
+					// console.log("native app: adding " + (result.searchEngines.length - userOptions.searchEngines.length) + " search engines");
 
-					userOptions = result;
+					// userOptions = result;
 					
-					notify({action: "saveOptions", userOptions:userOptions});					
-				}
+					// notify({action: "saveOptions", userOptions:userOptions});					
+				// }
 				
-				return result;
+				// return result;
 
-			}, (e) => {
-				//console.log(e);
-			});
+			// }, (e) => {
+				// //console.log(e);
+			// });
 			
-			break;
+			// break;
 			
 		case "openOptions":
 			browser.tabs.create({
@@ -142,10 +142,11 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateContextMenu":
+		
 			var searchTerms = message.searchTerms;
 			
 			window.searchTerms = searchTerms;
-			
+
 			if (searchTerms === '') {
 				browser.contextMenus.update("search_engine_menu", {visible:false});
 				break;
@@ -156,8 +157,11 @@ function notify(message, sender, sendResponse) {
 			
 			let hotkey = ''; 
 			if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
+			
+			let title = hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms);
 
-			browser.contextMenus.update("search_engine_menu", {visible: true, title: hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms)});
+			browser.contextMenus.update("search_engine_menu", {visible: true, title: title});
+
 			break;
 			
 		case "addSearchEngine":
@@ -896,37 +900,44 @@ function escapeDoubleQuotes(str) {
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 }
 
+var highlightTabs = [];
+
 function highlightSearchTermsInTab(_tab, _search) {
 	
 	if ( !userOptions.highLight.enabled ) return;
-	
-//	browser.tabs.sendMessage({action: "getHighlightStatus"}).then( result => {
 
+	return browser.tabs.executeScript(_tab.id, {
+		runAt: 'document_idle',
+		file: "lib/mark.es6.min.js"
+	}).then( () => {
 		return browser.tabs.executeScript(_tab.id, {
-			runAt: 'document_idle',
-			file: "lib/mark.es6.min.js"
-		}).then( () => {
-			return browser.tabs.executeScript(_tab.id, {
-				code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(_search) + `"}));`,
-				runAt: 'document_idle'
-			});
-		}).then( () => {
-			// if ( true ) {
-				
-				// function highlightListener(tabId, changeInfo, tab) {
-					
-					// if ( tabId !== _tab.id ) return;
-					// if ( changeInfo.status !== 'complete' ) return;
-					
-					// console.log('highlighting ' + tab.url);
-					// highlightSearchTermsInTab(_tab, _search);
-				// }
-				
-				// if ( !browser.tabs.onUpdated.hasListener(highlightListener) )
-					// browser.tabs.onUpdated.addListener(highlightListener);
-			// }
+			code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(_search) + `"}));`,
+			runAt: 'document_idle'
 		});
+	}).then( () => {
+		if ( userOptions.highLight.followLinks ) {
+			
+			let obj = {tabId: _tab.id, searchTerms: _search};
+			
+			if ( ! highlightTabs.find( ht => ht == obj ) )
+				highlightTabs.push(obj);
+		}
+	});
 }
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+	
+	if ( !userOptions.highLight.followLinks ) return;
+
+	if ( changeInfo.status !== 'complete' ) return;
+
+	let highlightInfo = highlightTabs.find( ht => ht.tabId === tabId || ht.tabId === tab.openerTabId );
+	
+	if ( highlightInfo ) {
+		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
+		highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
+	}
+});
 
 function getAllOpenTabs() {
 	
@@ -1194,6 +1205,7 @@ const defaultUserOptions = {
 	quickMenuOffset: {x:0, y:-20},
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
+	quickMenuCloseOnEdit: false,
 	quickMenuTrackingProtection: true,
 	quickMenuSearchBar: "hidden",
 	quickMenuSearchBarFocus: false,
@@ -1213,7 +1225,7 @@ const defaultUserOptions = {
 	],
 	quickMenuToolsPosition: "hidden",
 	searchJsonPath: "",
-	reloadMethod: "",
+	// reloadMethod: "",
 	contextMenuClick: "openNewTab",
 	contextMenuMiddleClick: "openBackgroundTab",
 	contextMenuRightClick: "openCurrentTab",
@@ -1324,12 +1336,12 @@ function checkForOneClickEngines() {
 
 browser.runtime.onMessage.addListener(notify);
 
-// establish native listener
-browser.tabs.onActivated.addListener((tab) => {
-	if (userOptions.reloadMethod !== 'automatic') return false;
+// // establish native listener
+// browser.tabs.onActivated.addListener((tab) => {
+	// if (userOptions.reloadMethod !== 'automatic') return false;
 	
-	notify({action:"nativeAppRequest"});
-});
+	// notify({action:"nativeAppRequest"});
+// });
 
 browser.runtime.onInstalled.addListener((details) => {
 

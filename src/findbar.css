@@ -1,8 +1,13 @@
+HTML, BODY {
+	padding:0;
+	margin:0;
+	overflow:hidden;
+}
 BODY {
 	background-color:#eff0f1;
 }
 #findbar {
-	padding:8px 30px;
+	padding:4px 30px;
 }
 #findbar * {
 	display:inline-block;

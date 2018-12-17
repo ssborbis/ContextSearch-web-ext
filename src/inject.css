@@ -83,3 +83,15 @@
 	left:0;
 	width:100%;
 }
+#CS_findBarIframe {
+	position:fixed;
+	left:0;
+	right:0;
+	top:0;
+	display:inline-block;
+	height:40px;
+	z-index:2147483646;
+	border:none;
+	border-bottom:2px outset #ccc;
+	transform-origin:top left;
+}

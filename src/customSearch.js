@@ -529,49 +529,49 @@ function closeCustomSearchIframe() {
 	},250);
 }
 
-function listenForNewSearchEngines() {
+// function listenForNewSearchEngines() {
 	
-	var nativeAppInterval = null;
+	// var nativeAppInterval = null;
 	
-	function handler(e) {
-		if (e.detail) { // if search engines length has changed
+	// function handler(e) {
+		// if (e.detail) { // if search engines length has changed
 		
-			// remove the listener
-			document.removeEventListener('getUserOptionsEvent', handler);
+			// // remove the listener
+			// document.removeEventListener('getUserOptionsEvent', handler);
 			
-			// clear the interval
-			clearInterval(nativeAppInterval);
+			// // clear the interval
+			// clearInterval(nativeAppInterval);
 			
-			// show auto notification
-			showMenu('CS_notifyAutomaticUpdated');
+			// // show auto notification
+			// showMenu('CS_notifyAutomaticUpdated');
 			
-			// close iframe after x milliseconds
-			setTimeout(closeCustomSearchIframe, 2000);
-		}	
-	}
+			// // close iframe after x milliseconds
+			// setTimeout(closeCustomSearchIframe, 2000);
+		// }	
+	// }
 	
-	// attach listener on blur
-	window.addEventListener('blur', () => {
-		document.addEventListener('getUserOptionsEvent', handler);
-	}, {once: true});
+	// // attach listener on blur
+	// window.addEventListener('blur', () => {
+		// document.addEventListener('getUserOptionsEvent', handler);
+	// }, {once: true});
 	
-	// attach actions and timeout on focus
-	window.addEventListener('focus', () => {
+	// // attach actions and timeout on focus
+	// window.addEventListener('focus', () => {
 
-		// run a native app check on a 1s interval.
-		nativeAppInterval = setInterval(() => {
-			browser.runtime.sendMessage({action: "nativeAppRequest"});
-		}, 1000);
+		// // run a native app check on a 1s interval.
+		// nativeAppInterval = setInterval(() => {
+			// browser.runtime.sendMessage({action: "nativeAppRequest"});
+		// }, 1000);
 		
-		// timeout after x seconds and clear the listener and interval
-		setTimeout(() => {
-//			console.log('getUserOptionsEvent listener timeout');
-			clearInterval(nativeAppInterval);
-			document.removeEventListener('getUserOptionsEvent', handler);
-		},5000);
+		// // timeout after x seconds and clear the listener and interval
+		// setTimeout(() => {
+// //			console.log('getUserOptionsEvent listener timeout');
+			// clearInterval(nativeAppInterval);
+			// document.removeEventListener('getUserOptionsEvent', handler);
+		// },5000);
 		
-	}, {once: true});
-}
+	// }, {once: true});
+// }
 
 function listenForFocusAndPromptToImport() {
 

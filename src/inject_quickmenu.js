@@ -58,7 +58,7 @@ function openQuickMenu(ev) {
 		screenCoords: {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
-		searchTerms: getSelectedText(ev.target).trim() || linkOrImage(ev.target),
+		searchTerms: getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
@@ -269,7 +269,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target) ) ||
+		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
 	) return false;
 	
@@ -374,16 +374,23 @@ document.addEventListener('mouseup', (ev) => {
 	// // skip erroneous short selections
 	let searchTerms = getSelectedText(ev.target);
 	setTimeout( () => {
-		if ( searchTerms === getSelectedText(ev.target) )	
+		if ( searchTerms === getSelectedText(ev.target) ) {
 			 openQuickMenu(ev);
+			 
+			if ( userOptions.quickMenuCloseOnEdit && isTextBox(ev.target) ) {
+				ev.target.addEventListener('input', (e) => {
+					browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"});
+				}, {once: true});
+			}
+		}
 	}, 50);
 
 });
 
-function linkOrImage(el) {
+function linkOrImage(el, e) {
 	
-	let link = getLink(el);
-	let img = getImage(el);
+	let link = getLink(el, e);
+	let img = getImage(el, e);
 
 	if ( img && userOptions.quickMenuOnImages ) return img;
 	
@@ -400,7 +407,7 @@ document.addEventListener('mousedown', (ev) => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
-		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target) ) ||
+		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) ) ||
 		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
@@ -429,7 +436,7 @@ document.addEventListener('mouseup', (ev) => {
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target) )
+		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) )
 	) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
