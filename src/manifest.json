@@ -41,6 +41,7 @@
 			"js": [
 				"lib/browser-polyfill.min.js",
 				"lib/crossbrowser.js",
+				"lib/mark.es6.min.js",
 				"inject.js",
 				"inject_quickmenu.js",
 				"opensearch.js",

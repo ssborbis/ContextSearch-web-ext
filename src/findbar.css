@@ -7,10 +7,17 @@ BODY {
 	background-color:#eff0f1;
 }
 #findbar {
-	padding:4px 30px;
+	padding:4px 0;
+	vertical-align:middle;
 }
 #findbar * {
 	display:inline-block;
+}
+#close {
+	background:url("icons/crossmark.png") no-repeat center;
+	width:20px;
+	height:20px;
+	background-size:20px;
 }
 
 INPUT, BUTTON {
@@ -19,5 +26,5 @@ INPUT, BUTTON {
 }
 
 BUTTON {
-	width:30px;
+	width:40px;
 }

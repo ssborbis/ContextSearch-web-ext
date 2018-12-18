@@ -216,6 +216,8 @@ function restoreOptions() {
 		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
 		
 		document.getElementById('cb_highLightEnabled').checked = userOptions.highLight.enabled;
+		document.getElementById('cb_highLightFollowDomain').checked = userOptions.highLight.followDomain;
+		document.getElementById('cb_highLightFollowExternalLinks').checked = userOptions.highLight.followExternalLinks;
 		
 		document.getElementById('c_highLightColor0').value = userOptions.highLight.styles[0].color;
 		document.getElementById('c_highLightBackground0').value = userOptions.highLight.styles[0].background;
@@ -225,6 +227,8 @@ function restoreOptions() {
 		document.getElementById('c_highLightBackground2').value = userOptions.highLight.styles[2].background;
 		document.getElementById('c_highLightColor3').value = userOptions.highLight.styles[3].color;
 		document.getElementById('c_highLightBackground3').value = userOptions.highLight.styles[3].background;
+		document.getElementById('c_highLightColorActive').value = userOptions.highLight.activeStyle.color;
+		document.getElementById('c_highLightBackgroundActive').value = userOptions.highLight.activeStyle.background;
 		
 		document.getElementById('cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
 		document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
@@ -355,6 +359,8 @@ function saveOptions(e) {
 		
 		highLight: {
 			enabled: document.getElementById('cb_highLightEnabled').checked,
+			followDomain: document.getElementById('cb_highLightFollowDomain').checked,
+			followExternalLinks: document.getElementById('cb_highLightFollowExternalLinks').checked,
 			
 			styles: [
 				{	
@@ -374,6 +380,10 @@ function saveOptions(e) {
 					background: document.getElementById('c_highLightBackground3').value
 				}
 			],
+			activeStyle: {
+				color: document.getElementById('c_highLightColorActive').value,
+				background: document.getElementById('c_highLightBackgroundActive').value
+			},
 			navBar: {
 				enabled: document.getElementById('cb_highLightNavBarEnabled').checked
 			},

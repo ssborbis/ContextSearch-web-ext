@@ -329,6 +329,18 @@ function notify(message, sender, sendResponse) {
 			} else
 				return Promise.resolve(sender.tab);
 			break;
+		
+		case "removeTabHighlighting":
+		
+			let tabId = message.tabId || sender.tab.id;
+			highlightTabs.findIndex( (hl, i) => {
+				if (hl.tabId === tabId) {
+					highlightTabs.splice(i, 1);
+					console.log('removing ' + tabId + ' from array');
+				}
+			});
+
+			break;
 	}
 }
 
@@ -802,32 +814,30 @@ function openSearch(details) {
 	
 	function onCreate(_tab) {
 
-		// code for POST engines
-		if (typeof se.method === 'undefined' || se.method !== "POST") return _tab;
-
-		// searches without terms should stay here
-		if (!searchTerms) return _tab;
-			
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
 		
 		return new Promise( (resolve, reject ) => {
 
-			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
+			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
 		
-				// new windows open to about:blank and throw extra complete event
-			//	if (tabInfo.url === "about:blank") return;
-			//	if (tabInfo.url !== q) return;	
-			
-				// new method for working from current tab
-				
 				let landing_url = new URL(q);
-				let current_url = new URL(tabInfo.url);
+				let current_url = new URL(__tab.url);
 				
 				if (current_url.hostname !== landing_url.hostname) return;
 
+				// non-POST should wait to complete
+				if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
+					
+					if ( changeInfo.status !== 'complete' ) return;
+					
+					resolve(__tab);
+					browser.tabs.onUpdated.removeListener(listener);
+					return;
+				}
+				
 				browser.tabs.onUpdated.removeListener(listener);
-
+				
 				browser.tabs.executeScript(_tab.id, {
 					code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
 					runAt: 'document_start'
@@ -852,7 +862,8 @@ function openSearch(details) {
 						browser.tabs.onUpdated.removeListener(_listener);
 						
 						// send new tab based on results tabId
-						resolve(browser.tabs.get(_tabId));
+						resolve(_tabInfo);
+						//resolve(browser.tabs.get(_tabId));
 					});
 				});});});});
 			});
@@ -902,24 +913,21 @@ function escapeDoubleQuotes(str) {
 
 var highlightTabs = [];
 
-function highlightSearchTermsInTab(_tab, _search) {
-	
+function highlightSearchTermsInTab(tab, searchTerms) {
+
 	if ( !userOptions.highLight.enabled ) return;
 
-	return browser.tabs.executeScript(_tab.id, {
-		runAt: 'document_idle',
-		file: "lib/mark.es6.min.js"
+	return browser.tabs.executeScript(tab.id, {
+		code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(searchTerms) + `"}));`,
+		runAt: 'document_idle'
 	}).then( () => {
-		return browser.tabs.executeScript(_tab.id, {
-			code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(_search) + `"}));`,
-			runAt: 'document_idle'
-		});
-	}).then( () => {
-		if ( userOptions.highLight.followLinks ) {
+		if ( userOptions.highLight.followDomain ) {
 			
-			let obj = {tabId: _tab.id, searchTerms: _search};
+			let url = new URL(tab.url);
+
+			let obj = {tabId: tab.id, searchTerms: searchTerms, domain: url.hostname};
 			
-			if ( ! highlightTabs.find( ht => ht == obj ) )
+			if ( ! highlightTabs.find( ht => JSON.stringify(obj) === JSON.stringify(ht) ) )
 				highlightTabs.push(obj);
 		}
 	});
@@ -927,16 +935,24 @@ function highlightSearchTermsInTab(_tab, _search) {
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	
-	if ( !userOptions.highLight.followLinks ) return;
+	if ( !userOptions.highLight.followDomain ) return;
 
-	if ( changeInfo.status !== 'complete' ) return;
+	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
+	
+	console.log(highlightTabs);
+	
+	let url = new URL(tab.url);
 
-	let highlightInfo = highlightTabs.find( ht => ht.tabId === tabId || ht.tabId === tab.openerTabId );
+	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( userOptions.highLight.followExternalLinks || ht.domain === url.hostname ) );
 	
 	if ( highlightInfo ) {
 		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
 		highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
 	}
+});
+
+browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
+	notify({action: "removeTabHighlighting", tabId: tabId});
 });
 
 function getAllOpenTabs() {
@@ -1270,20 +1286,24 @@ const defaultUserOptions = {
 	},
 	highLight: {
 		enabled: true,
-		styles: [
-			{color: '#ffffff',background: '#ff00ff'},
-			{color: '#000000',background: '#FFA500'},
-			{color: '#ffffff',background: '#428bca'},
-			{color: '#000000',background: '#FFFF00'}		
-		],
-		navBar: {
-			enabled: true
-		},
+		followExternalLinks: false,
+		followDomain: true,
 		markOptions: {
 			separateWordSearch: true
 		},
+		styles: [
+			{color: '#ffffff',background:'#ff00ff'},
+			{color: '#000000',background:'#FFA500'},
+			{color: '#ffffff',background:'#428bca'},
+			{color: '#000000',background:'#FFFF00'}		
+		],
+		activeStyle: {color:'#ffffff', background:'#65FF00'},
+		navBar: {
+			enabled: true
+		},
 		findBar: {
-			enabled: false
+			enabled: false,
+			hotKey: [17, 70]
 		}
 	},
 	userStyles: 
@@ -1362,7 +1382,7 @@ browser.runtime.onInstalled.addListener((details) => {
 			browser.storage.local.set({"userOptions": userOptions});
 			buildContextMenu();
 		}).then(() => {
-
+/*
 			if (
 				details.reason === 'update' 
 				&& details.previousVersion < "1.9.4"
@@ -1390,7 +1410,7 @@ browser.runtime.onInstalled.addListener((details) => {
 					// });
 				});
 			}
-		});
+*/		});
 
 	}, 250);
 	

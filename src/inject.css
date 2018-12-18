@@ -65,8 +65,8 @@
 	position:fixed;
 	width:20px;
 	z-index:2147483647;
-	border:1px solid #ccc;
-	background-color:#eee;
+	/* border:1px solid #ccc; */
+	/* background-color:#eee; */
 	opacity:.7;
 	transform-origin:top right;
 }

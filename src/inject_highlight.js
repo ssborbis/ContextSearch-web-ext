@@ -1,6 +1,6 @@
 var userOptions = {};
 
-var CS_MARK_instance;
+var CS_MARK_instance = null;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	
@@ -27,14 +27,14 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 			color:${userOptions.highLight.styles[3].color};
 		}
 		.CS_mark_selected {
-			background: #65FF00 !important;
-			color: white !important;
+			background: ${userOptions.highLight.activeStyle.background} !important;
+			color: ${userOptions.highLight.activeStyle.color} !important;
 		}
 		`;
 });
 
 document.addEventListener('CS_mark', (e) => {
-	
+
 	CS_MARK_instance = new Mark(document.body);
 	
 	// Chrome markings happened before loading userOptions
@@ -43,7 +43,8 @@ document.addEventListener('CS_mark', (e) => {
 		
 		clearInterval(optionsCheck);
 		
-		unmark();
+		CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
+		CS_MARK_instance.unmark();
 		
 		mark(e.detail.trim());
 	
@@ -58,14 +59,28 @@ document.addEventListener('keydown', (e) => {
 }, {once: true});
 
 function unmark() {
+	
+	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
 	CS_MARK_instance.unmark();
-		
+	
+	closeNavBar();
+	closeFindBar();
+	
+	browser.runtime.sendMessage({action: "removeTabHighlighting"});
+	
+}
+
+function closeNavBar() {
 	let nav = document.getElementById('CS_highLightNavBar');
 	
 	if ( nav ) nav.parentNode.removeChild(nav);
 }
 
 function mark(searchTerms) {
+	
+	searchTerms = searchTerms.trim();
+
+	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
 
 	let phrases = searchTerms.match(/".*?"/g) || [];
 
@@ -74,15 +89,16 @@ function mark(searchTerms) {
 		phrases[i] = phrase.replace(/^"(.*)"$/g, "$1");
 	});
 
-	let words = searchTerms.trim().split(/\s+/).concat(phrases);
+	let words = searchTerms.split(/\s+/).concat(phrases);
 
 	if ( !userOptions.highLight.markOptions.separateWordSearch )
-		words = [e.detail.trim()];
-
+		words = [searchTerms];
+	
 	// sort largest to smallest to avoid small matches breaking larger matches
 	words.sort( (a, b) => {return ( a.length > b.length ) ? -1 : 1} );
 
 	words.forEach( (word, i) => {
+
 		CS_MARK_instance.mark(word, {
 			className:"CS_mark",
 			separateWordSearch: false,
@@ -90,10 +106,11 @@ function mark(searchTerms) {
 			each: (el) => {
 				if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
 					el.classList.remove('CS_mark');
+				
 			},
 			
 			done: () => {
-				
+
 				if ( i !== words.length - 1 ) return;
 				
 				document.querySelectorAll(".CS_mark").forEach( el => {
@@ -105,15 +122,15 @@ function mark(searchTerms) {
 				});
 				
 				if ( userOptions.highLight.navBar.enabled )
-					createNavBar();
+					openNavBar();
 
 				if ( userOptions.highLight.findBar.enabled ) 
-					createFindBar(searchTerms, document.querySelectorAll(".CS_mark").length);
+					openFindBar(searchTerms, document.querySelectorAll(".CS_mark").length);
 			}
 		});
 	});
 }
-function createNavBar() {
+function openNavBar() {
 
 	let hls = document.querySelectorAll('.CS_mark');
 	
@@ -202,7 +219,7 @@ function createNavBar() {
 
 }
 
-function createFindBar(searchTerms, total) {
+function openFindBar(searchTerms, total) {
 	let fb = document.createElement('iframe');
 	fb.id = 'CS_findBarIframe';
 	fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
@@ -215,7 +232,7 @@ function createFindBar(searchTerms, total) {
 	
 	fb.src = browser.runtime.getURL("/findbar.html");
 	
-	console.log('findbar');
+	// console.log('findbar');
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -255,7 +272,7 @@ window.addEventListener("message", (e) => {
 			break;
 			
 		case "mark":
-			CS_MARK_instance.unmark();
+			unmark();
 			mark(e.data.searchTerms);
 			break;
 			
@@ -278,14 +295,48 @@ function jumpTo(index) {
 		if ( navdivs[index] ) navdivs[index].classList.add('CS_mark_selected');
 	}
 	
-	console.log(mark);
-	console.log( window.getComputedStyle(mark, null) );
+	// console.log(mark);
+	// console.log( window.getComputedStyle(mark, null) );
 	if ( window.getComputedStyle(mark, null).display !== 'none' )
 		document.documentElement.scrollTop = mark.getBoundingClientRect().top + document.documentElement.scrollTop - .5 * document.documentElement.clientHeight;
 
 	let fb = document.getElementById('CS_findBarIframe');
 	fb.contentWindow.postMessage({index: index, total: marks.length}, browser.runtime.getURL('/findbar.html'));
 }
+
+window.addEventListener('keydown', (e) => {
+	
+	if (
+		!userOptions.highLight.findBar.hotKey.length
+		|| e.repeat
+		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
+	) return;
+		
+	
+	for (let i=0;i<userOptions.highLight.findBar.hotKey.length;i++) {
+		let key = userOptions.highLight.findBar.hotKey[i];
+		if (key === 16 && !e.shiftKey) return;
+		if (key === 17 && !e.ctrlKey) return;
+		if (key === 18 && !e.altKey) return;
+		if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+	}
+
+	e.preventDefault();
+
+	if ( document.getElementById('CS_findBarIframe') )
+		closeFindBar();
+	else
+		openFindBar("", 0);
+			
+});
+
+function closeFindBar() {
+	let fb = document.getElementById('CS_findBarIframe');
+	
+	if ( fb ) fb.parentNode.removeChild(fb);
+}
+
+
 
 
 

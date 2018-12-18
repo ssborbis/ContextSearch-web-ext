@@ -904,7 +904,6 @@
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</button>
 				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/folder4.png" style="width:6px;transform:scaleX(-1)" />Sidebar</button>
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.png" />Highlight</button>
-				<!-- <button class="tablinks" data-tabid="appearanceTab" data-i18n="Appearance"><img alt="" src="icons/hide.png" />Appearance</button> -->
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img alt="" src="icons/search.png" />Search Engines</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img alt="" src="icons/settings.png" />General</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img alt="" src="icons/help.png" />Help</button>
@@ -979,6 +978,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<!-- <div class="description" data-i18n="">Something about images</div> -->
 				<!-- </div> -->
 			</div>
+
 		
 			<div class="tabcontent" id="contextMenuTab">
 
@@ -1631,6 +1631,20 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 					<div class="option">
 						<label class="container">
+							<input type="checkbox" id="cb_highLightFollowDomain" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightFollowDomainTooltip">Continue highlighting pages on the search results website</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightFollowExternalLinks" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">Continue highlighting on external websites linked from the search results page</div>
+					</div>
+					<div class="option">
+						<label class="container">
 							<input type="checkbox" id="cb_highLightMarkOptionsSeparateWordSearch" />
 							<span class="checkmark checkmark2"></span>
 						</label>
@@ -1673,12 +1687,40 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							<td><input type="color" id="c_highLightBackground3" /></td>
 							<td><input type="color" id="c_highLightColor3" /></td>
 						</tr>
+						<tr>
+							<td colspan="3"><hr /></td>
+						</tr>
+						<tr>
+							<td>Active</td>
+							<td><input type="color" id="c_highLightBackgroundActive" /></td>
+							<td><input type="color" id="c_highLightColorActive" /></td>
+						</tr>
 					</table>
+					
+					<br /><br />
+					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
+					<i>Experimental / Under Construction</i>
+					<hr />
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<span class="description" data-i18n="">Show the Find bar when highlighting</span>
+					</div>
+				
+					<p class="header1" data-i18n="Position">Position</p>
+					<p>	
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarPosition">
+							<option data-i18n="Top" value="top">top</option>
+							<option data-i18n="Bottom" value="bottom">bottom</option>
+						</select>
+						
+						<span class="description" data-i18n="FindBarPositionTooltip"></span>
+					</p>
 
 				</div>
-				<!-- <div class="tabcontent" id="appearanceTab"> -->
-					<!-- <div class="blobContainerHeader" data-i18n="Appearance">Appearance</div> -->
-				<!-- </div> -->
+
 		<div class="tabcontent" id="enginesTab">
 			<div style="font-weight:normal; font-family:'Source Sans Pro', sans-serif;">
 			
@@ -1797,7 +1839,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 <!-- </native> -->
 			</div>
 		</div>
-		<div class="tabcontent" id="helpTab"></div>
+			<div class="tabcontent" id="helpTab"></div>
 		</div>
 		</div>
 		
