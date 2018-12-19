@@ -598,7 +598,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 						// editWidget = document.createElement('img');
 						// editWidget.id = 'editWidget';
-						// editWidget.src = browser.runtime.getURL('icons/settings.png');
+						// editWidget.src = browser.runtime.getURL('icons/settings.svg');
 
 						// editWidget.addEventListener('click', (e) => {
 							// quickMenuObject.locked = true;

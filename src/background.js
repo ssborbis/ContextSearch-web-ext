@@ -337,6 +337,7 @@ function notify(message, sender, sendResponse) {
 				if (hl.tabId === tabId) {
 					highlightTabs.splice(i, 1);
 					console.log('removing ' + tabId + ' from array');
+					return true;
 				}
 			});
 
@@ -457,8 +458,8 @@ function buildContextMenu() {
 				
 				if (isFirefox) {
 					createOptions.icons = {
-						"16": browser.runtime.getURL("/icons/code.png"),
-						"32": browser.runtime.getURL("/icons/code.png")
+						"16": browser.runtime.getURL("/icons/code.svg"),
+						"32": browser.runtime.getURL("/icons/code.svg")
 					}
 				}
 
@@ -1303,7 +1304,8 @@ const defaultUserOptions = {
 		},
 		findBar: {
 			enabled: false,
-			hotKey: [17, 70]
+			hotKey: [17, 70],
+			position: 'top'
 		}
 	},
 	userStyles: 
@@ -1338,7 +1340,7 @@ function checkForOneClickEngines() {
 				let node = {
 					type: "oneClickSearchEngine",
 					title: engine.name,
-					icon: engine.favIconUrl || browser.runtime.getURL('icons/search.png'),
+					icon: engine.favIconUrl || browser.runtime.getURL('icons/search.svg'),
 					hidden: false,
 					id: gen()
 				}
@@ -1444,7 +1446,7 @@ if (browser.pageAction) {
 			result = result.shift();
 
 			if (result) {
-				browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
+				browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.svg"});
 				browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("AddCustomSearch")});
 				browser.pageAction.show(tab.id);
 			} 

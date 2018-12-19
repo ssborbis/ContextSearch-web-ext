@@ -232,6 +232,9 @@ function restoreOptions() {
 		
 		document.getElementById('cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
 		document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
+		
+		document.getElementById('cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
+		document.getElementById('s_findBarPosition').value = userOptions.highLight.findBar.position;
 
 		buildSearchEngineContainer();
 	}
@@ -386,6 +389,11 @@ function saveOptions(e) {
 			},
 			navBar: {
 				enabled: document.getElementById('cb_highLightNavBarEnabled').checked
+			},
+			findBar: {
+				enabled: document.getElementById('cb_findBarEnabled').checked,
+				hotKey: userOptions.highLight.findBar.hotKey,
+				position: document.getElementById('s_findBarPosition').value
 			},
 			markOptions: {
 				separateWordSearch: document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked

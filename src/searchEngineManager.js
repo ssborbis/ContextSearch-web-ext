@@ -46,7 +46,7 @@ function buildSearchEngineContainer() {
 			}
 
 			let icon = document.createElement('img');
-			icon.src = se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.png');
+			icon.src = se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
 			li.appendChild(icon);
 			
 			let text = document.createElement('span');
@@ -282,7 +282,7 @@ function buildSearchEngineContainer() {
 		if (node.type === 'bookmarklet') {
 			
 			let img = document.createElement('img');
-			img.src = browser.runtime.getURL('icons/code.png');
+			img.src = browser.runtime.getURL('icons/code.svg');
 			li.appendChild(img);
 			
 			let text = document.createElement('span');
@@ -718,7 +718,7 @@ function buildSearchEngineContainer() {
 			return menuItem;
 		}
 
-		let _delete = createMenuItem(browser.i18n.getMessage('Delete'), browser.runtime.getURL('icons/crossmark.png'));
+		let _delete = createMenuItem(browser.i18n.getMessage('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
 
 		_delete.onclick = function(e) {
 			closeSubMenus();
@@ -933,7 +933,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.png'));		
+		let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
 		newBookmarklet.addEventListener('click', (e) => {
 			closeSubMenus();
 			e.stopImmediatePropagation();

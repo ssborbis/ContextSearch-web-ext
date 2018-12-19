@@ -87,11 +87,9 @@
 	position:fixed;
 	left:0;
 	right:0;
-	top:0;
 	display:inline-block;
-	height:40px;
-	z-index:2147483646;
-	border:none;
-	border-bottom:2px outset #ccc;
+	height:30px;
+	z-index:2147483647;
+	border:1px solid #888;
 	transform-origin:top left;
 }

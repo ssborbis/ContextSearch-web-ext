@@ -551,7 +551,7 @@ function makeQuickMenu(options) {
 	function buildQuickMenuElement(options) {
 
 		function buildMoreTile() {
-			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.png'), browser.i18n.getMessage('more') || 'more');
+			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more') || 'more');
 
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "tool";
@@ -990,7 +990,7 @@ function makeQuickMenu(options) {
 						return;
 					}
 
-					tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.png'), se.title);
+					tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.svg'), se.title);
 					
 					// site search picker
 					if ( se.template.indexOf('{selectdomain}') !== -1 ) {
@@ -1022,7 +1022,7 @@ function makeQuickMenu(options) {
 										type: "siteSearch",
 										title: url.hostname + pathParts.slice(0,i+1).join('/'),
 										parent:node,
-										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.png')
+										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
 									});	
 								}
 								
@@ -1092,7 +1092,7 @@ function makeQuickMenu(options) {
 			
 				case "bookmarklet":
 
-					tile = buildSearchIcon(browser.runtime.getURL('/icons/code.png'), node.title);
+					tile = buildSearchIcon(browser.runtime.getURL('/icons/code.svg'), node.title);
 					tile.dataset.type = 'bookmarklet';
 
 					addTileEventHandlers(tile, (e) => {

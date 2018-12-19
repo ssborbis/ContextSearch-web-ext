@@ -77,8 +77,9 @@
 		"/quickmenu.html",
 		"/customSearch.html",
 		"/searchbar.html",
-		"icons/search.png",
-		"icons/crossmark.png"
+		"/findbar.html",
+		"icons/search.svg",
+		"icons/crossmark.svg"
 	],
 
 	"browser_action": {

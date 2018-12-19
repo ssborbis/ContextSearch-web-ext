@@ -2,6 +2,9 @@ var userOptions = {};
 
 var CS_MARK_instance = null;
 
+var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
+var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
+
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	
 	userOptions = result.userOptions;
@@ -55,8 +58,9 @@ document.addEventListener('CS_mark', (e) => {
 document.addEventListener('keydown', (e) => {
 	if ( e.which === 27 ) {
 		unmark();
+		closeFindBar();
 	}
-}, {once: true});
+});
 
 function unmark() {
 	
@@ -64,15 +68,14 @@ function unmark() {
 	CS_MARK_instance.unmark();
 	
 	closeNavBar();
-	closeFindBar();
+//	closeFindBar();
 	
 	browser.runtime.sendMessage({action: "removeTabHighlighting"});
 	
 }
 
 function closeNavBar() {
-	let nav = document.getElementById('CS_highLightNavBar');
-	
+	let nav = getNavBar();	
 	if ( nav ) nav.parentNode.removeChild(nav);
 }
 
@@ -142,7 +145,7 @@ function openNavBar() {
 	div.style.transform = 'scaleX(' + 1/window.devicePixelRatio + ')';
 	
 	let img = new Image();
-	img.src = browser.runtime.getURL('icons/crossmark.png');
+	img.src = browser.runtime.getURL('icons/crossmark.svg');
 	img.style.transform = 'scaleY(' + 1/window.devicePixelRatio + ')';
 	
 	img.addEventListener('mousedown', (e) => {
@@ -219,20 +222,32 @@ function openNavBar() {
 
 }
 
-function openFindBar(searchTerms, total) {
-	let fb = document.createElement('iframe');
+function openFindBar(searchTerms, total, callback) {
+
+	let fb = getFindBar();
+	
+	if ( fb ) {
+		updateFindBar({searchTerms:searchTerms, total:total});
+		callback();
+		return;
+	}
+	
+	fb = document.createElement('iframe');
 	fb.id = 'CS_findBarIframe';
+	fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 	fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
 	fb.style.width = 'calc(100% * ' + window.devicePixelRatio + ')';
 	
+	fb.style[userOptions.highLight.findBar.position] = '0';
+
 	document.body.appendChild(fb);
 	fb.onload = function() {
-		fb.contentWindow.postMessage({searchTerms:searchTerms, index: -1, total:total}, browser.runtime.getURL('/findbar.html'));
+		updateFindBar({searchTerms:searchTerms, index: -1, total:total});
+		fb.focus();
+		callback();
 	}
 	
 	fb.src = browser.runtime.getURL("/findbar.html");
-	
-	// console.log('findbar');
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -274,6 +289,13 @@ window.addEventListener("message", (e) => {
 		case "mark":
 			unmark();
 			mark(e.data.searchTerms);
+			let marks = document.querySelectorAll('.CS_mark');
+			updateFindBar({total: marks.length});
+			break;
+		
+		case "close":
+			unmark();
+			closeFindBar();
 			break;
 			
 	}
@@ -289,29 +311,26 @@ function jumpTo(index) {
 
 	mark.classList.add('CS_mark_selected');
 	
-	let nav = document.getElementById('CS_highLightNavBar');
+	let nav = getNavBar();
 	if ( nav ) {
 		let navdivs = nav.querySelectorAll('div');
 		if ( navdivs[index] ) navdivs[index].classList.add('CS_mark_selected');
 	}
-	
-	// console.log(mark);
-	// console.log( window.getComputedStyle(mark, null) );
+
 	if ( window.getComputedStyle(mark, null).display !== 'none' )
 		document.documentElement.scrollTop = mark.getBoundingClientRect().top + document.documentElement.scrollTop - .5 * document.documentElement.clientHeight;
 
-	let fb = document.getElementById('CS_findBarIframe');
-	fb.contentWindow.postMessage({index: index, total: marks.length}, browser.runtime.getURL('/findbar.html'));
+	updateFindBar({index: index, total: marks.length});
 }
 
 window.addEventListener('keydown', (e) => {
 	
 	if (
-		!userOptions.highLight.findBar.hotKey.length
+		!userOptions.highLight.findBar.enabled
+		|| !userOptions.highLight.findBar.hotKey.length
 		|| e.repeat
 		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
 	) return;
-		
 	
 	for (let i=0;i<userOptions.highLight.findBar.hotKey.length;i++) {
 		let key = userOptions.highLight.findBar.hotKey[i];
@@ -323,16 +342,19 @@ window.addEventListener('keydown', (e) => {
 
 	e.preventDefault();
 
-	if ( document.getElementById('CS_findBarIframe') )
-		closeFindBar();
-	else
-		openFindBar("", 0);
-			
+	let searchTerms = getSelectedText(e.target);
+	unmark();
+	mark(searchTerms);
+	
 });
 
+function updateFindBar(options) {
+	let fb = getFindBar();
+	if (fb) fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || ""}, browser.runtime.getURL('/findbar.html'));
+}
+
 function closeFindBar() {
-	let fb = document.getElementById('CS_findBarIframe');
-	
+	let fb = getFindBar();
 	if ( fb ) fb.parentNode.removeChild(fb);
 }
 

@@ -54,8 +54,8 @@ if ( window != top ) {
 		let openingTab = document.createElement('div');
 
 		openingTab.id = 'CS_sbOpeningTab';
-		openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.png") + ')');
-		openingTab.style.setProperty("--closing-icon", 'url(' + browser.runtime.getURL("/icons/crossmark.png") + ')');
+		openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
+		openingTab.style.setProperty("--closing-icon", 'url(' + browser.runtime.getURL("/icons/crossmark.svg") + ')');
 
 		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';

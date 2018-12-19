@@ -1289,6 +1289,51 @@
     "description": ""
   },
   
+  "SelectTimeout": {
+    "message": "Selection Timeout",
+    "description": ""
+  },
+  
+  "SelectTimeoutTooltip": {
+    "message": "How much time (in milliseconds) to allow after the last selection to cancel the popup",
+    "description": ""
+  },
+  
+  "highlightfollowdomaintooltip": {
+    "message": "Continue highlighting pages on the search results website",
+    "description": ""
+  },
+  
+  "highlightfollowexternallinkstooltip": {
+    "message": "Continue highlighting on external websites linked from the search results page",
+    "description": ""
+  },
+  
+  "findbar": {
+    "message": "Find Bar",
+    "description": ""
+  },
+  
+  "findbarpositiontooltip": {
+    "message": "Choose where to display the Find bar",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
+  "___________": {
+    "message": "",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

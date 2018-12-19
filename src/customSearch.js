@@ -224,7 +224,7 @@ function addSearchEnginePopup(data) {
 		
 		window.addEventListener('focus', () => {
 			el.style.pointerEvents = null;
-			el.querySelector('[name="yes"]').querySelector('img').src = '/icons/checkmark.png';
+			el.querySelector('[name="yes"]').querySelector('img').src = '/icons/checkmark.svg';
 			
 			if (_confirm) {
 
