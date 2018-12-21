@@ -127,7 +127,7 @@ function mark(searchTerms) {
 				if ( userOptions.highLight.navBar.enabled )
 					openNavBar();
 
-				if ( userOptions.highLight.findBar.enabled ) 
+				if ( getFindBar() || userOptions.highLight.showFindBar ) 
 					openFindBar(searchTerms, document.querySelectorAll(".CS_mark").length);
 			}
 		});
@@ -225,6 +225,8 @@ function openNavBar() {
 function openFindBar(searchTerms, total, callback) {
 
 	let fb = getFindBar();
+	
+	callback = callback || function() {};
 	
 	if ( fb ) {
 		updateFindBar({searchTerms:searchTerms, total:total});
@@ -345,6 +347,8 @@ window.addEventListener('keydown', (e) => {
 	let searchTerms = getSelectedText(e.target);
 	unmark();
 	mark(searchTerms);
+
+	window.getSelection().removeAllRanges();
 	
 });
 

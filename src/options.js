@@ -4,11 +4,16 @@ window.browser = (function () {
     window.chrome;
 })();
 
+// not jQuery 
+var $ = (s) => {
+	return document.querySelector(s);
+}
+
 // array for storage.local
 var userOptions = {};
 
 // Browse button for manual import
-document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev) => {
+$("#selectMozlz4FileButton").addEventListener('change', (ev) => {
 	
 	let searchEngines = [];
 	let file = ev.target.files[0];
@@ -18,7 +23,7 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 		var engines = JSON.parse(text).engines;	
 		searchEngines = searchJsonObjectToArray(engines);
 
-		document.getElementById('status_div').style.display='inline-block';
+		$('#status_div').style.display='inline-block';
 		statusMessage({
 			img: browser.runtime.getURL("icons/spinner.svg"),
 			msg: browser.i18n.getMessage("LoadingRemoteContent")
@@ -74,7 +79,6 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				statusMessage({
 					img: "icons/alert.png",
 					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount)
-				//	msg: "Failed to load " + details.hasFailedCount + " icon(s). This can occur when Tracking Protection is enabled"
 				});
 			} else if (details.hasTimedOut) {
 				statusMessage({
@@ -85,7 +89,6 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 				statusMessage({
 					img: "icons/yes.png",
 					msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length)
-					//msg: "Imported " + searchEngines.length + " engine(s) (" + details.searchEngines.length + " new)"
 				});
 			}
 				
@@ -106,8 +109,8 @@ document.getElementById("selectMozlz4FileButton").addEventListener('change', (ev
 	});
 	
 	function statusMessage(status) {				
-		document.getElementById('status_img').src = status.img || "";
-		document.getElementById('status').innerText = status.msg || "";
+		$('#status_img').src = status.img || "";
+		$('#status').innerText = status.msg || "";
 	}
 });
 
@@ -117,46 +120,46 @@ function restoreOptions() {
 		
 		userOptions = result.userOptions || {};
 
-		document.getElementById('cb_quickMenu').checked = userOptions.quickMenu;	
-		document.getElementById('n_quickMenuColumns').value = userOptions.quickMenuColumns;
-		document.getElementById('n_quickMenuRows').value = userOptions.quickMenuRows;
+		$('#cb_quickMenu').checked = userOptions.quickMenu;	
+		$('#n_quickMenuColumns').value = userOptions.quickMenuColumns;
+		$('#n_quickMenuRows').value = userOptions.quickMenuRows;
 		
-		document.getElementById('b_quickMenuKey').value = userOptions.quickMenuKey;
-		document.getElementById('b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
+		$('#b_quickMenuKey').value = userOptions.quickMenuKey;
+		$('#b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
 		
-		document.getElementById('b_contextMenuKey').value = userOptions.contextMenuKey;	
-		document.getElementById('b_contextMenuKey').innerText = keyTable[userOptions.contextMenuKey] || "Set";
-		document.getElementById('s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
+		$('#b_contextMenuKey').value = userOptions.contextMenuKey;	
+		$('#b_contextMenuKey').innerText = keyTable[userOptions.contextMenuKey] || "Set";
+		$('#s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
 		
-		document.getElementById('r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
-		document.getElementById('cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
+		$('#r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
+		$('#cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
 		
-		document.getElementById('d_hotkey').appendChild(keyArrayToButtons(userOptions.quickMenuHotkey));
+		$('#d_hotkey').appendChild(keyArrayToButtons(userOptions.quickMenuHotkey));
 		
-		document.getElementById('cb_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
-		document.getElementById('s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
-		document.getElementById('cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
-		document.getElementById('r_quickMenuAuto').checked = userOptions.quickMenuAuto;
-		document.getElementById('cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
-		document.getElementById('cb_quickMenuOnLinks').checked = userOptions.quickMenuOnLinks;
-		document.getElementById('cb_quickMenuOnImages').checked = userOptions.quickMenuOnImages;
-		document.getElementById('cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
-		document.getElementById('cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
-		document.getElementById('s_quickMenuToolsPosition').value =  userOptions.quickMenuToolsPosition,
-		document.getElementById('s_quickMenuSearchBar').value =  userOptions.quickMenuSearchBar,
-		document.getElementById('cb_quickMenuSearchBarFocus').checked = userOptions.quickMenuSearchBarFocus,
-		document.getElementById('cb_quickMenuSearchBarSelect').checked = userOptions.quickMenuSearchBarSelect,
-		document.getElementById('range_quickMenuScale').value = userOptions.quickMenuScale;
-		document.getElementById('range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
-		document.getElementById('i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
-		document.getElementById('i_quickMenuIconScale').value = (parseFloat(userOptions.quickMenuIconScale) * 100).toFixed(0) + "%";
-		document.getElementById('n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
-		document.getElementById('n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
+		$('#cb_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
+		$('#s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
+		$('#cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
+		$('#r_quickMenuAuto').checked = userOptions.quickMenuAuto;
+		$('#cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
+		$('#cb_quickMenuOnLinks').checked = userOptions.quickMenuOnLinks;
+		$('#cb_quickMenuOnImages').checked = userOptions.quickMenuOnImages;
+		$('#cb_quickMenuCloseOnScroll').checked = userOptions.quickMenuCloseOnScroll,
+		$('#cb_quickMenuCloseOnClick').checked = userOptions.quickMenuCloseOnClick,
+		$('#s_quickMenuToolsPosition').value =  userOptions.quickMenuToolsPosition,
+		$('#s_quickMenuSearchBar').value =  userOptions.quickMenuSearchBar,
+		$('#cb_quickMenuSearchBarFocus').checked = userOptions.quickMenuSearchBarFocus,
+		$('#cb_quickMenuSearchBarSelect').checked = userOptions.quickMenuSearchBarSelect,
+		$('#range_quickMenuScale').value = userOptions.quickMenuScale;
+		$('#range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
+		$('#i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
+		$('#i_quickMenuIconScale').value = (parseFloat(userOptions.quickMenuIconScale) * 100).toFixed(0) + "%";
+		$('#n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
+		$('#n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
-		document.getElementById('s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
-		document.getElementById('cb_contextMenu').checked = userOptions.contextMenu;
-		// document.getElementById('i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
-		document.getElementById('h_position').value = userOptions.quickMenuPosition;
+		$('#s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
+		$('#cb_contextMenu').checked = userOptions.contextMenu;
+		// $('#i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
+		$('#h_position').value = userOptions.quickMenuPosition;
 
 		for (let p of document.getElementsByClassName('position')) {
 			p.className = p.className.replace(' active', '');
@@ -166,75 +169,77 @@ function restoreOptions() {
 		
 		buildToolIcons();
 
-		// document.getElementById('cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
+		// $('#cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
 
-		document.getElementById('s_contextMenuClick').value = userOptions.contextMenuClick;
-		document.getElementById('s_contextMenuMiddleClick').value = userOptions.contextMenuMiddleClick;
-		document.getElementById('s_contextMenuRightClick').value = userOptions.contextMenuRightClick;
-		document.getElementById('s_contextMenuShift').value = userOptions.contextMenuShift;
-		document.getElementById('s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
+		$('#s_contextMenuClick').value = userOptions.contextMenuClick;
+		$('#s_contextMenuMiddleClick').value = userOptions.contextMenuMiddleClick;
+		$('#s_contextMenuRightClick').value = userOptions.contextMenuRightClick;
+		$('#s_contextMenuShift').value = userOptions.contextMenuShift;
+		$('#s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
-		document.getElementById('cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
+		$('#cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
 		
-		document.getElementById('s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
-		document.getElementById('s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
-		document.getElementById('s_quickMenuMiddleClick').value = userOptions.quickMenuMiddleClick;
-		document.getElementById('s_quickMenuShift').value = userOptions.quickMenuShift;
-		document.getElementById('s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
-		document.getElementById('s_quickMenuAlt').value = userOptions.quickMenuAlt;
+		$('#s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
+		$('#s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
+		$('#s_quickMenuMiddleClick').value = userOptions.quickMenuMiddleClick;
+		$('#s_quickMenuShift').value = userOptions.quickMenuShift;
+		$('#s_quickMenuCtrl').value = userOptions.quickMenuCtrl;
+		$('#s_quickMenuAlt').value = userOptions.quickMenuAlt;
 		
-		document.getElementById('s_quickMenuFolderLeftClick').value = userOptions.quickMenuFolderLeftClick;
-		document.getElementById('s_quickMenuFolderRightClick').value = userOptions.quickMenuFolderRightClick;
-		document.getElementById('s_quickMenuFolderMiddleClick').value = userOptions.quickMenuFolderMiddleClick;
-		document.getElementById('s_quickMenuFolderShift').value = userOptions.quickMenuFolderShift;
-		document.getElementById('s_quickMenuFolderCtrl').value = userOptions.quickMenuFolderCtrl;
-		document.getElementById('s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
-		document.getElementById('s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
-		document.getElementById('n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
-		document.getElementById('n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
-		document.getElementById('n_quickMenuAutoTimeout').value = userOptions.quickMenuAutoTimeout;
+		$('#s_quickMenuFolderLeftClick').value = userOptions.quickMenuFolderLeftClick;
+		$('#s_quickMenuFolderRightClick').value = userOptions.quickMenuFolderRightClick;
+		$('#s_quickMenuFolderMiddleClick').value = userOptions.quickMenuFolderMiddleClick;
+		$('#s_quickMenuFolderShift').value = userOptions.quickMenuFolderShift;
+		$('#s_quickMenuFolderCtrl').value = userOptions.quickMenuFolderCtrl;
+		$('#s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
+		$('#s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
+		$('#n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
+		$('#n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
+		$('#n_quickMenuAutoTimeout').value = userOptions.quickMenuAutoTimeout;
 				
-		document.getElementById('cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
-		document.getElementById('cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
-		document.getElementById('cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
-		document.getElementById('cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
-		document.getElementById('cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
-		document.getElementById('n_searchBarColumns').value = userOptions.searchBarColumns;
+		$('#cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
+		$('#cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
+		$('#cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
+		$('#cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
+		$('#cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
+		$('#n_searchBarColumns').value = userOptions.searchBarColumns;
 		
-		document.getElementById('n_sideBarColumns').value = userOptions.sideBar.columns;
-		document.getElementById('cb_sideBarUseOldStyle').checked = userOptions.sideBar.singleColumn;
-		document.getElementById('s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
-		document.getElementById('cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
-		document.getElementById('cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
-		document.getElementById('s_sideBarType').value = userOptions.sideBar.type;
+		$('#n_sideBarColumns').value = userOptions.sideBar.columns;
+		$('#cb_sideBarUseOldStyle').checked = userOptions.sideBar.singleColumn;
+		$('#s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
+		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
+		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
+		$('#s_sideBarType').value = userOptions.sideBar.type;
 		
-		document.getElementById('t_userStyles').value = userOptions.userStyles;
-		document.getElementById('cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
-		document.getElementById('t_userStyles').disabled = !userOptions.userStylesEnabled;
-		document.getElementById('cb_enableAnimations').checked = userOptions.enableAnimations;
-	//	document.getElementById('s_quickMenuTheme').value = userOptions.quickMenuTheme;
-		document.getElementById('s_searchBarTheme').value = userOptions.searchBarTheme;
+		$('#t_userStyles').value = userOptions.userStyles;
+		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
+		$('#t_userStyles').disabled = !userOptions.userStylesEnabled;
+		$('#cb_enableAnimations').checked = userOptions.enableAnimations;
+	//	$('#s_quickMenuTheme').value = userOptions.quickMenuTheme;
+		$('#s_searchBarTheme').value = userOptions.searchBarTheme;
 		
-		document.getElementById('cb_highLightEnabled').checked = userOptions.highLight.enabled;
-		document.getElementById('cb_highLightFollowDomain').checked = userOptions.highLight.followDomain;
-		document.getElementById('cb_highLightFollowExternalLinks').checked = userOptions.highLight.followExternalLinks;
+		$('#cb_highLightEnabled').checked = userOptions.highLight.enabled;
+		$('#cb_highLightFollowDomain').checked = userOptions.highLight.followDomain;
+		$('#cb_highLightFollowExternalLinks').checked = userOptions.highLight.followExternalLinks;
 		
-		document.getElementById('c_highLightColor0').value = userOptions.highLight.styles[0].color;
-		document.getElementById('c_highLightBackground0').value = userOptions.highLight.styles[0].background;
-		document.getElementById('c_highLightColor1').value = userOptions.highLight.styles[1].color;
-		document.getElementById('c_highLightBackground1').value = userOptions.highLight.styles[1].background;
-		document.getElementById('c_highLightColor2').value = userOptions.highLight.styles[2].color;
-		document.getElementById('c_highLightBackground2').value = userOptions.highLight.styles[2].background;
-		document.getElementById('c_highLightColor3').value = userOptions.highLight.styles[3].color;
-		document.getElementById('c_highLightBackground3').value = userOptions.highLight.styles[3].background;
-		document.getElementById('c_highLightColorActive').value = userOptions.highLight.activeStyle.color;
-		document.getElementById('c_highLightBackgroundActive').value = userOptions.highLight.activeStyle.background;
+		$('#c_highLightColor0').value = userOptions.highLight.styles[0].color;
+		$('#c_highLightBackground0').value = userOptions.highLight.styles[0].background;
+		$('#c_highLightColor1').value = userOptions.highLight.styles[1].color;
+		$('#c_highLightBackground1').value = userOptions.highLight.styles[1].background;
+		$('#c_highLightColor2').value = userOptions.highLight.styles[2].color;
+		$('#c_highLightBackground2').value = userOptions.highLight.styles[2].background;
+		$('#c_highLightColor3').value = userOptions.highLight.styles[3].color;
+		$('#c_highLightBackground3').value = userOptions.highLight.styles[3].background;
+		$('#c_highLightColorActive').value = userOptions.highLight.activeStyle.color;
+		$('#c_highLightBackgroundActive').value = userOptions.highLight.activeStyle.background;
 		
-		document.getElementById('cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
-		document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
+		$('#cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
+		$('#cb_highLightShowFindBar').checked = userOptions.highLight.showFindBar;
+		$('#cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
 		
-		document.getElementById('cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
-		document.getElementById('s_findBarPosition').value = userOptions.highLight.findBar.position;
+		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
+		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
+		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
 
 		buildSearchEngineContainer();
 	}
@@ -261,66 +266,66 @@ function saveOptions(e) {
 	userOptions = {
 		searchEngines: userOptions.searchEngines,
 		nodeTree: JSON.parse(JSON.stringify(userOptions.nodeTree)),
-		quickMenu: document.getElementById('cb_quickMenu').checked,
-		quickMenuColumns: parseInt(document.getElementById('n_quickMenuColumns').value),
-		quickMenuRows: parseInt(document.getElementById('n_quickMenuRows').value),
+		quickMenu: $('#cb_quickMenu').checked,
+		quickMenuColumns: parseInt($('#n_quickMenuColumns').value),
+		quickMenuRows: parseInt($('#n_quickMenuRows').value),
 		
-		quickMenuKey: parseInt(document.getElementById('b_quickMenuKey').value),
-		contextMenuKey: parseInt(document.getElementById('b_contextMenuKey').value),
+		quickMenuKey: parseInt($('#b_quickMenuKey').value),
+		contextMenuKey: parseInt($('#b_contextMenuKey').value),
 		
-		quickMenuOnKey: document.getElementById('r_quickMenuOnKey').checked,
-		quickMenuOnHotkey: document.getElementById('cb_quickMenuOnHotkey').checked,
+		quickMenuOnKey: $('#r_quickMenuOnKey').checked,
+		quickMenuOnHotkey: $('#cb_quickMenuOnHotkey').checked,
 		quickMenuHotkey: function() {
 			let arr = [];
-			document.getElementById('d_hotkey').querySelectorAll('[data-keycode]').forEach( button => {
+			$('#d_hotkey').querySelectorAll('[data-keycode]').forEach( button => {
 				arr.push(parseInt(button.dataset.keycode));
 			});
 			return arr;
 		}(),
-		quickMenuOnMouse: document.getElementById('cb_quickMenuOnMouse').checked,
-		quickMenuOnMouseMethod: document.getElementById('s_quickMenuOnMouseMethod').value,
-		quickMenuSearchOnMouseUp: document.getElementById('cb_quickMenuSearchOnMouseUp').checked,
-		quickMenuMouseButton: parseInt(document.getElementById("s_quickMenuMouseButton").value),
-		quickMenuAuto: document.getElementById('r_quickMenuAuto').checked,
-		quickMenuAutoOnInputs: document.getElementById('cb_quickMenuAutoOnInputs').checked,
-		quickMenuOnLinks: document.getElementById('cb_quickMenuOnLinks').checked,
-		quickMenuOnImages: document.getElementById('cb_quickMenuOnImages').checked,
-		quickMenuScale: parseFloat(document.getElementById('range_quickMenuScale').value),
-		quickMenuIconScale: parseFloat(document.getElementById('range_quickMenuIconScale').value),
-		quickMenuOffset: {x: parseInt(document.getElementById('n_quickMenuOffsetX').value), y: parseInt(document.getElementById('n_quickMenuOffsetY').value)},
-		quickMenuCloseOnScroll: document.getElementById('cb_quickMenuCloseOnScroll').checked,
-		quickMenuCloseOnClick: document.getElementById('cb_quickMenuCloseOnClick').checked,
-		quickMenuPosition: document.getElementById('h_position').value,
-		contextMenuClick: document.getElementById('s_contextMenuClick').value,
-		contextMenuMiddleClick: document.getElementById('s_contextMenuMiddleClick').value,
-		contextMenuRightClick: document.getElementById('s_contextMenuRightClick').value,
-		contextMenuShift: document.getElementById('s_contextMenuShift').value,
-		contextMenuCtrl: document.getElementById('s_contextMenuCtrl').value,
-		contextMenuSearchLinksAs: document.getElementById('s_contextMenuSearchLinksAs').value,
-		contextMenuShowAddCustomSearch: document.getElementById('cb_contextMenuShowAddCustomSearch').checked,
-		quickMenuLeftClick: document.getElementById('s_quickMenuLeftClick').value,
-		quickMenuRightClick: document.getElementById('s_quickMenuRightClick').value,
-		quickMenuMiddleClick: document.getElementById('s_quickMenuMiddleClick').value,
-		quickMenuShift: document.getElementById('s_quickMenuShift').value,
-		quickMenuCtrl: document.getElementById('s_quickMenuCtrl').value,
-		quickMenuAlt: document.getElementById('s_quickMenuAlt').value,		
-		quickMenuFolderLeftClick: document.getElementById('s_quickMenuFolderLeftClick').value,
-		quickMenuFolderRightClick: document.getElementById('s_quickMenuFolderRightClick').value,
-		quickMenuFolderMiddleClick: document.getElementById('s_quickMenuFolderMiddleClick').value,
-		quickMenuFolderShift: document.getElementById('s_quickMenuFolderShift').value,
-		quickMenuFolderCtrl: document.getElementById('s_quickMenuFolderCtrl').value,
-		quickMenuFolderAlt: document.getElementById('s_quickMenuFolderAlt').value,
-		quickMenuSearchHotkeys: document.getElementById('s_quickMenuSearchHotkeys').value,
-		quickMenuSearchBar: document.getElementById('s_quickMenuSearchBar').value,
-		quickMenuSearchBarFocus: document.getElementById('cb_quickMenuSearchBarFocus').checked,
-		quickMenuSearchBarSelect: document.getElementById('cb_quickMenuSearchBarSelect').checked,
-		quickMenuAutoMaxChars: parseInt(document.getElementById('n_quickMenuAutoMaxChars').value) || 0,
-		quickMenuOpeningOpacity: parseFloat(document.getElementById('n_quickMenuOpeningOpacity').value) || .3,
-		quickMenuAutoTimeout: parseInt(document.getElementById('n_quickMenuAutoTimeout').value),
+		quickMenuOnMouse: $('#cb_quickMenuOnMouse').checked,
+		quickMenuOnMouseMethod: $('#s_quickMenuOnMouseMethod').value,
+		quickMenuSearchOnMouseUp: $('#cb_quickMenuSearchOnMouseUp').checked,
+		quickMenuMouseButton: parseInt($("#s_quickMenuMouseButton").value),
+		quickMenuAuto: $('#r_quickMenuAuto').checked,
+		quickMenuAutoOnInputs: $('#cb_quickMenuAutoOnInputs').checked,
+		quickMenuOnLinks: $('#cb_quickMenuOnLinks').checked,
+		quickMenuOnImages: $('#cb_quickMenuOnImages').checked,
+		quickMenuScale: parseFloat($('#range_quickMenuScale').value),
+		quickMenuIconScale: parseFloat($('#range_quickMenuIconScale').value),
+		quickMenuOffset: {x: parseInt($('#n_quickMenuOffsetX').value), y: parseInt($('#n_quickMenuOffsetY').value)},
+		quickMenuCloseOnScroll: $('#cb_quickMenuCloseOnScroll').checked,
+		quickMenuCloseOnClick: $('#cb_quickMenuCloseOnClick').checked,
+		quickMenuPosition: $('#h_position').value,
+		contextMenuClick: $('#s_contextMenuClick').value,
+		contextMenuMiddleClick: $('#s_contextMenuMiddleClick').value,
+		contextMenuRightClick: $('#s_contextMenuRightClick').value,
+		contextMenuShift: $('#s_contextMenuShift').value,
+		contextMenuCtrl: $('#s_contextMenuCtrl').value,
+		contextMenuSearchLinksAs: $('#s_contextMenuSearchLinksAs').value,
+		contextMenuShowAddCustomSearch: $('#cb_contextMenuShowAddCustomSearch').checked,
+		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
+		quickMenuRightClick: $('#s_quickMenuRightClick').value,
+		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,
+		quickMenuShift: $('#s_quickMenuShift').value,
+		quickMenuCtrl: $('#s_quickMenuCtrl').value,
+		quickMenuAlt: $('#s_quickMenuAlt').value,		
+		quickMenuFolderLeftClick: $('#s_quickMenuFolderLeftClick').value,
+		quickMenuFolderRightClick: $('#s_quickMenuFolderRightClick').value,
+		quickMenuFolderMiddleClick: $('#s_quickMenuFolderMiddleClick').value,
+		quickMenuFolderShift: $('#s_quickMenuFolderShift').value,
+		quickMenuFolderCtrl: $('#s_quickMenuFolderCtrl').value,
+		quickMenuFolderAlt: $('#s_quickMenuFolderAlt').value,
+		quickMenuSearchHotkeys: $('#s_quickMenuSearchHotkeys').value,
+		quickMenuSearchBar: $('#s_quickMenuSearchBar').value,
+		quickMenuSearchBarFocus: $('#cb_quickMenuSearchBarFocus').checked,
+		quickMenuSearchBarSelect: $('#cb_quickMenuSearchBarSelect').checked,
+		quickMenuAutoMaxChars: parseInt($('#n_quickMenuAutoMaxChars').value) || 0,
+		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
+		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
 		
-		contextMenu: document.getElementById('cb_contextMenu').checked,
+		contextMenu: $('#cb_contextMenu').checked,
 		// searchJsonPath: function () {
-			// let path = document.getElementById('i_searchJsonPath').value;
+			// let path = $('#i_searchJsonPath').value;
 			// if (path.match(/\/search.json.mozlz4$/) === null && path != "")
 				// path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
 			// return path;
@@ -332,79 +337,86 @@ function saveOptions(e) {
 			return tools;
 		}(),
 		
-		quickMenuToolsPosition: document.getElementById('s_quickMenuToolsPosition').value,
-		// reloadMethod: (document.getElementById('cb_automaticImport').checked) ? 'automatic' : 'manual',
+		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
+		// reloadMethod: ($('#cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
-		searchBarUseOldStyle: document.getElementById('cb_searchBarUseOldStyle').checked,
-		searchBarColumns: parseInt(document.getElementById('n_searchBarColumns').value),
-		searchBarCloseAfterSearch: document.getElementById('cb_searchBarCloseAfterSearch').checked,
+		searchBarUseOldStyle: $('#cb_searchBarUseOldStyle').checked,
+		searchBarColumns: parseInt($('#n_searchBarColumns').value),
+		searchBarCloseAfterSearch: $('#cb_searchBarCloseAfterSearch').checked,
 		
-		quickMenuUseOldStyle: document.getElementById('cb_quickMenuUseOldStyle').checked,
+		quickMenuUseOldStyle: $('#cb_quickMenuUseOldStyle').checked,
 		
 		 // take directly from loaded userOptions
-		searchBarSuggestions: document.getElementById('cb_searchBarSuggestions').checked,
-		searchBarEnableHistory: document.getElementById('cb_searchBarEnableHistory').checked,
+		searchBarSuggestions: $('#cb_searchBarSuggestions').checked,
+		searchBarEnableHistory: $('#cb_searchBarEnableHistory').checked,
 		searchBarHistory: userOptions.searchBarHistory,
 		
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,
-			columns:parseInt(document.getElementById('n_sideBarColumns').value),
-			singleColumn:document.getElementById('cb_sideBarUseOldStyle').checked,
+			columns:parseInt($('#n_sideBarColumns').value),
+			singleColumn:$('#cb_sideBarUseOldStyle').checked,
 			hotkey: [],
-			startOpen: document.getElementById('cb_sideBarStartOpen').checked,
-			type: document.getElementById('s_sideBarType').value,
+			startOpen: $('#cb_sideBarStartOpen').checked,
+			type: $('#s_sideBarType').value,
 			widget: {
-				enabled: document.getElementById('cb_sideBarWidgetEnable').checked,
-				position: document.getElementById('s_sideBarWidgetPosition').value,
+				enabled: $('#cb_sideBarWidgetEnable').checked,
+				position: $('#s_sideBarWidgetPosition').value,
 				offset: userOptions.sideBar.widget.offset
 			}
 		},
 		
 		highLight: {
-			enabled: document.getElementById('cb_highLightEnabled').checked,
-			followDomain: document.getElementById('cb_highLightFollowDomain').checked,
-			followExternalLinks: document.getElementById('cb_highLightFollowExternalLinks').checked,
+			enabled: $('#cb_highLightEnabled').checked,
+			followDomain: $('#cb_highLightFollowDomain').checked,
+			followExternalLinks: $('#cb_highLightFollowExternalLinks').checked,
+			showFindBar: $('#cb_highLightShowFindBar').checked,
 			
 			styles: [
 				{	
-					color: document.getElementById('c_highLightColor0').value,
-					background: document.getElementById('c_highLightBackground0').value
+					color: $('#c_highLightColor0').value,
+					background: $('#c_highLightBackground0').value
 				},
 				{	
-					color: document.getElementById('c_highLightColor1').value,
-					background: document.getElementById('c_highLightBackground1').value
+					color: $('#c_highLightColor1').value,
+					background: $('#c_highLightBackground1').value
 				},
 				{	
-					color: document.getElementById('c_highLightColor2').value,
-					background: document.getElementById('c_highLightBackground2').value
+					color: $('#c_highLightColor2').value,
+					background: $('#c_highLightBackground2').value
 				},
 				{	
-					color: document.getElementById('c_highLightColor3').value,
-					background: document.getElementById('c_highLightBackground3').value
+					color: $('#c_highLightColor3').value,
+					background: $('#c_highLightBackground3').value
 				}
 			],
 			activeStyle: {
-				color: document.getElementById('c_highLightColorActive').value,
-				background: document.getElementById('c_highLightBackgroundActive').value
+				color: $('#c_highLightColorActive').value,
+				background: $('#c_highLightBackgroundActive').value
 			},
 			navBar: {
-				enabled: document.getElementById('cb_highLightNavBarEnabled').checked
+				enabled: $('#cb_highLightNavBarEnabled').checked
 			},
 			findBar: {
-				enabled: document.getElementById('cb_findBarEnabled').checked,
-				hotKey: userOptions.highLight.findBar.hotKey,
-				position: document.getElementById('s_findBarPosition').value
+				enabled: $('#cb_findBarEnabled').checked,
+				hotKey: function() {
+					let arr = [];
+					$('#d_findBarHotKey').querySelectorAll('[data-keycode]').forEach( button => {
+						arr.push(parseInt(button.dataset.keycode));
+					});
+					return arr;
+				}(),
+				position: $('#s_findBarPosition').value
 			},
 			markOptions: {
-				separateWordSearch: document.getElementById('cb_highLightMarkOptionsSeparateWordSearch').checked
+				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked
 			}
 		},
 		
-		userStyles: document.getElementById('t_userStyles').value,
-		userStylesEnabled: document.getElementById('cb_userStylesEnabled').checked,
-		enableAnimations: document.getElementById('cb_enableAnimations').checked,
-		quickMenuTheme: document.getElementById('s_searchBarTheme').value,
-		searchBarTheme: document.getElementById('s_searchBarTheme').value
+		userStyles: $('#t_userStyles').value,
+		userStylesEnabled: $('#cb_userStylesEnabled').checked,
+		enableAnimations: $('#cb_enableAnimations').checked,
+		quickMenuTheme: $('#s_searchBarTheme').value,
+		searchBarTheme: $('#s_searchBarTheme').value
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -424,60 +436,60 @@ document.querySelectorAll('select').forEach( el => {
 	el.addEventListener('change', saveOptions);
 });
 
-document.getElementById('n_quickMenuColumns').addEventListener('change',  (e) => {
+$('#n_quickMenuColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 5, 1, 100);
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuRows').addEventListener('change',  (e) => {
+$('#n_quickMenuRows').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 5, 1, 100);
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuOffsetX').addEventListener('change', (e) => {
+$('#n_quickMenuOffsetX').addEventListener('change', (e) => {
 	fixNumberInput(e.target, 0, -999, 999);
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuOffsetY').addEventListener('change', (e) => {
+$('#n_quickMenuOffsetY').addEventListener('change', (e) => {
 	fixNumberInput(e.target, 0, -999, 999);
 	saveOptions(e);
 });
 
-document.getElementById('n_searchBarColumns').addEventListener('change',  (e) => {
+$('#n_searchBarColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
 	saveOptions(e);
 });
 
-document.getElementById('n_sideBarColumns').addEventListener('change',  (e) => {
+$('#n_sideBarColumns').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 4, 1, 100);
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuAutoMaxChars').addEventListener('change',  (e) => {
+$('#n_quickMenuAutoMaxChars').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 0, 0, 999);
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuAutoTimeout').addEventListener('change',  (e) => {
+$('#n_quickMenuAutoTimeout').addEventListener('change',  (e) => {
 	fixNumberInput(e.target, 1000, 0, 9999);
 	saveOptions(e);
 });
 
-document.getElementById('n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
+$('#n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
 
-document.getElementById('range_quickMenuScale').addEventListener('input', (ev) => {
-	document.getElementById('i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+$('#range_quickMenuScale').addEventListener('input', (ev) => {
+	$('#i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
-document.getElementById('range_quickMenuScale').addEventListener('change', saveOptions);
+$('#range_quickMenuScale').addEventListener('change', saveOptions);
 
-document.getElementById('range_quickMenuIconScale').addEventListener('input', (ev) => {
-	document.getElementById('i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+$('#range_quickMenuIconScale').addEventListener('input', (ev) => {
+	$('#i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
-document.getElementById('range_quickMenuIconScale').addEventListener('change', saveOptions);
-// document.getElementById('b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
-// document.getElementById('i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
-// document.getElementById('i_searchJsonPath').addEventListener('keydown', (ev) => {
+$('#range_quickMenuIconScale').addEventListener('change', saveOptions);
+// $('#b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
+// $('#i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
+// $('#i_searchJsonPath').addEventListener('keydown', (ev) => {
 	// if (
 		// ev.repeat ||
 		// ev.which !== 13
@@ -486,16 +498,16 @@ document.getElementById('range_quickMenuIconScale').addEventListener('change', s
 	// ev.target.blur();
 // });
 
-document.getElementById('t_userStyles').addEventListener('change', saveOptions);
-document.getElementById('cb_userStylesEnabled').addEventListener('change', (e) => {
-	document.getElementById('t_userStyles').disabled = ! e.target.checked;
+$('#t_userStyles').addEventListener('change', saveOptions);
+$('#cb_userStylesEnabled').addEventListener('change', (e) => {
+	$('#t_userStyles').disabled = ! e.target.checked;
 	saveOptions(e);
 });
 
 // function checkSearchJsonPath() {
 
-	// let el = document.getElementById('div_searchJsonPathResponse');
-	// let ev_target = document.getElementById('i_searchJsonPath');
+	// let el = $('#div_searchJsonPathResponse');
+	// let ev_target = $('#i_searchJsonPath');
 	
 	// el.innerText = browser.i18n.getMessage("Validating");
 	
@@ -545,8 +557,8 @@ document.getElementById('cb_userStylesEnabled').addEventListener('change', (e) =
 	// sending.then(onResponse, onError);	
 // }
 
-document.getElementById('b_quickMenuKey').addEventListener('click', keyButtonListener);
-document.getElementById('b_contextMenuKey').addEventListener('click', keyButtonListener);
+$('#b_quickMenuKey').addEventListener('click', keyButtonListener);
+$('#b_contextMenuKey').addEventListener('click', keyButtonListener);
 
 function keyButtonListener(e) {
 	e.target.innerText = '';
@@ -583,7 +595,7 @@ function keyArrayToButtons(arr) {
 	let div = document.createElement('div');
 	
 	if (arr.length === 0) {
-		div.innerText = 'Click To Set';
+		div.innerText = browser.i18n.getMessage('ClickToSet') || "Click to set";
 	}
 	
 	for (let i=0;i<arr.length;i++) {
@@ -616,7 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		history.pushState("", document.title, window.location.pathname);
 		
 		document.querySelector('button[data-tabid="enginesTab"]').click();
-		document.getElementById('selectMozlz4FileButton').click();
+		$('#selectMozlz4FileButton').click();
 	}
 });
 
@@ -633,9 +645,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Modify Options for BrowserAction
 document.addEventListener("DOMContentLoaded", () => {
 	if (window.location.hash === '#browser_action') {
-		document.getElementById('left_div').style.display = 'none';
-		document.getElementById('right_div').style.width = "auto";
-		let loadButton = document.getElementById("selectMozlz4FileButton");
+		$('#left_div').style.display = 'none';
+		$('#right_div').style.width = "auto";
+		let loadButton = $("#selectMozlz4FileButton");
 		loadButton.onclick = (e) => {
 			browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
 			e.preventDefault();
@@ -700,8 +712,8 @@ function buildToolIcons() {
 	let toolIcons = [
 		{name: 'close', src: "icons/close.png", title: browser.i18n.getMessage('tools_Close'), index: Number.MAX_VALUE, disabled: true},
 		{name: 'copy', src: "icons/clipboard.png", title: browser.i18n.getMessage('tools_Copy'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'link', src: "icons/link.png", title: browser.i18n.getMessage('tools_OpenAsLink'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'disable', src: "icons/power.png", title: browser.i18n.getMessage('tools_Disable'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'link', src: "icons/link.svg", title: browser.i18n.getMessage('tools_OpenAsLink'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'disable', src: "icons/power.svg", title: browser.i18n.getMessage('tools_Disable'), index: Number.MAX_VALUE, disabled: true},
 		{name: 'lock', src: "icons/lock.png", title: browser.i18n.getMessage('tools_Lock'), index: Number.MAX_VALUE, disabled: true}
 	];
 	
@@ -736,7 +748,7 @@ function buildToolIcons() {
 			saveOptions();
 		});
 		
-		let t_toolIcons = document.getElementById('t_toolIcons');
+		let t_toolIcons = $('#t_toolIcons');
 		img.addEventListener('mouseover', (e) => {
 			t_toolIcons.innerText = e.target.dataset.title;
 		});
@@ -745,7 +757,7 @@ function buildToolIcons() {
 			t_toolIcons.innerText = browser.i18n.getMessage(t_toolIcons.dataset.i18n);
 		});
 
-		document.getElementById('toolIcons').appendChild(img);
+		$('#toolIcons').appendChild(img);
 	}
 }
 
@@ -755,11 +767,11 @@ document.addEventListener("DOMContentLoaded", () => {
 			for (let _el of document.getElementsByClassName('position'))
 				_el.className = _el.className.replace(' active', '');
 			el.className+=' active';
-			document.getElementById('h_position').value = el.dataset.position;
+			$('#h_position').value = el.dataset.position;
 			saveOptions();
 		});
 		
-		let t_position = document.getElementById('t_position');
+		let t_position = $('#t_position');
 		el.addEventListener('mouseover', (e) => {
 			let parts = e.target.dataset.position.split(" ");
 			t_position.innerText = browser.i18n.getMessage("PositionRelativeToCursor").replace("%1", browser.i18n.getMessage(parts[0])).replace("%2",browser.i18n.getMessage(parts[1]));
@@ -774,7 +786,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-	document.getElementById('version').innerText = "" + browser.runtime.getManifest().version;
+	$('#version').innerText = "" + browser.runtime.getManifest().version;
 });
 
 // show/hide content based on native app compatibility
@@ -817,7 +829,7 @@ document.addEventListener("DOMContentLoaded", (e) => {
 });
 
 function showInfoMsg(el, msg) {
-	let div = document.getElementById('info_msg');
+	let div = $('#info_msg');
 		
 	let parsed = new DOMParser().parseFromString(msg, `text/html`);
 	let tag = parsed.getElementsByTagName('body')[0];
@@ -849,7 +861,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 		
 		el.addEventListener('mouseout', (e) => {
-			document.getElementById('info_msg').style.display = 'none';
+			$('#info_msg').style.display = 'none';
 		});
 	}
 });
@@ -870,22 +882,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.body.removeChild(element);
 	}
 	
-	let b_export = document.getElementById('b_exportSettings');
+	let b_export = $('#b_exportSettings');
 	b_export.onclick = function() {
 		let text = JSON.stringify(userOptions);
 		download("ContextSearchOptions.json", text);
 	}
 	
-	let b_import = document.getElementById('b_importSettings');
+	let b_import = $('#b_importSettings');
 	b_import.onclick = function() {
 		if (window.location.hash === '#browser_action') {
 			browser.runtime.sendMessage({action: "openOptions", hashurl:"?click=importSettings"});
 			return;
 		}
-		document.getElementById('importSettings').click();
+		$('#importSettings').click();
 	}
 	
-	document.getElementById('importSettings').addEventListener('change', (e) => {
+	$('#importSettings').addEventListener('change', (e) => {
 		var reader = new FileReader();
 
 		// Closure to capture the file information.
@@ -982,7 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementsByTagName( "head" )[0].appendChild( link );
 	
 	// set up localized help pages
-	let help = document.getElementById('helpTab');
+	let help = $('#helpTab');
 	
 	let loaded = false;
 	let iframe = document.createElement('iframe');
@@ -1049,36 +1061,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
 	
-	let hk = document.getElementById('d_hotkey');
-	hk.onclick = function() {
-		
-		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
-		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
+	['#d_hotkey', '#d_findBarHotKey'].forEach( id => {
+	
+		let hk = $(id);
+		hk.onclick = function() {
+			
+			hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
+			hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
+					
+			document.addEventListener('keyup', (e) => {
 				
-		document.addEventListener('keyup', (e) => {
+				e.preventDefault();
+
+				let keyArray = [];
+				
+				if ( e.which === 27 ) {
+					keyArray = [];
+					hk.innerHTML = null;
+					hk.appendChild(keyArrayToButtons(keyArray));
+					return;
+				}
+				
+				if (e.ctrlKey) keyArray.push(17);
+				if (e.altKey) keyArray.push(18);
+				if (e.shiftKey) keyArray.push(16);
+				
+				keyArray.push(e.keyCode);
+				
+				hk.innerHTML = null;
+				hk.appendChild(keyArrayToButtons(keyArray));
+				
+				saveOptions();
+				
+			}, {once: true});
 			
-			e.preventDefault();
-			
-			let keyArray = [];
-			
-			if (e.ctrlKey) keyArray.push(17);
-			if (e.altKey) keyArray.push(18);
-			if (e.shiftKey) keyArray.push(16);
-			
-			keyArray.push(e.keyCode);
-			
-			hk.innerHTML = null;
-			hk.appendChild(keyArrayToButtons(keyArray));
-			
-			saveOptions();
-			
-		}, {once: true});
-		
-	}
+		}
+	});
 });
 	
 document.addEventListener('DOMContentLoaded', () => {
-	let div = document.getElementById('d_clearSearchHistory');
+	let div = $('#d_clearSearchHistory');
 	div.animating = false;
 	div.onclick = function() {
 		if (div.animating) return false;
@@ -1111,10 +1133,10 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener('DOMContentLoaded', () => {
 	
 	(() => { // disable focus quick menu search bar when hotkeys enabled
-		let select = document.getElementById('s_quickMenuSearchHotkeys');
+		let select = $('#s_quickMenuSearchHotkeys');
 		
 		function toggle() {
-			let cb1 = document.getElementById('cb_quickMenuSearchBarFocus');
+			let cb1 = $('#cb_quickMenuSearchBarFocus');
 
 			if (select.value === 'noAction') {
 				cb1.disabled = false;
@@ -1131,8 +1153,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	})();
 	
 	(() => {
-		let cb = document.getElementById('cb_quickMenuUseOldStyle');
-		let input = document.getElementById('n_quickMenuColumns');
+		let cb = $('#cb_quickMenuUseOldStyle');
+		let input = $('#n_quickMenuColumns');
 		
 		function toggle() {
 
@@ -1151,8 +1173,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	})();
 	
 	(() => {
-		let cb = document.getElementById('cb_searchBarUseOldStyle');
-		let input = document.getElementById('n_searchBarColumns');
+		let cb = $('#cb_searchBarUseOldStyle');
+		let input = $('#n_searchBarColumns');
 		
 		function toggle() {
 
@@ -1171,8 +1193,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	})();
 	
 	(() => {
-		let cb = document.getElementById('cb_sideBarUseOldStyle');
-		let input = document.getElementById('n_sideBarColumns');
+		let cb = $('#cb_sideBarUseOldStyle');
+		let input = $('#n_sideBarColumns');
 		
 		function toggle() {
 

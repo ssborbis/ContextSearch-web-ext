@@ -442,7 +442,7 @@ function makeQuickMenu(options) {
 					break;
 				
 				case "link": // open as link
-					let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.png"), browser.i18n.getMessage("tools_OpenAsLink"));
+					let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.svg"), browser.i18n.getMessage("tools_OpenAsLink"));
 
 					// enable/disable link button on very basic 'is it a link' rules
 					function setDisabled() {
@@ -490,7 +490,7 @@ function makeQuickMenu(options) {
 					break;
 				
 				case "disable": // close the quick menu and disable for this page / session
-					let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.png"), browser.i18n.getMessage("tools_Disable"));
+					let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.svg"), browser.i18n.getMessage("tools_Disable"));
 					tile_disable.onclick = function(e) {
 						
 						userOptions.quickMenu = false;
@@ -560,9 +560,7 @@ function makeQuickMenu(options) {
 			moreTile.addEventListener('openFolder', _more);
 			
 			function _more(e) {
-				
-				console.log(e);
-				
+
 				moreTile.parentNode.removeChild(moreTile);
 
 				quickMenuElement.querySelectorAll('[data-hidden="true"]').forEach( div => {

@@ -25,7 +25,6 @@ BODY[data-theme="dark"] IMG {
 #close {
 	vertical-align:middle;
 	margin:0 4px;
-	float:right;
 }
 #close IMG {
 	width:20px;

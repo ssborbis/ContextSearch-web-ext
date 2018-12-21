@@ -1295,7 +1295,7 @@
   },
   
   "SelectTimeoutTooltip": {
-    "message": "How much time (in milliseconds) to allow after the last selection to cancel the popup",
+    "message": "Time (in milliseconds) to allow after the last selection to cancel the popup. 0 = no limit",
     "description": ""
   },
   
@@ -1319,24 +1319,24 @@
     "description": ""
   },
   
-  "___________": {
-    "message": "",
+  "ClickToSet": {
+    "message": "Click to set",
+    "description": ""
+  },
+  
+  "highlightshowfindbartooltip": {
+    "message": "Show Find bar when highlighting",
+    "description": ""
+  },
+  
+  "FindBarEnableHotkey": {
+    "message": "Open the Find bar using a hotkey",
     "description": ""
   },
   
   "___________": {
     "message": "",
     "description": ""
-  },
-  
-  "___________": {
-    "message": "",
-    "description": ""
-  },
-  
-  "___________": {
-    "message": "",
-    "description": ""
-  }
+  } 
 
 }

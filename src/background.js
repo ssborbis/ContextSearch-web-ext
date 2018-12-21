@@ -356,10 +356,6 @@ function loadUserOptions() {
 		}
 		
 		// // Update default values instead of replacing with object of potentially undefined values
-		// for (let key in defaultUserOptions) {
-			// userOptions[key] = (result.userOptions[key] !== undefined) ? result.userOptions[key] : defaultUserOptions[key];
-		// }
-
 		function traverse(defaultobj, userobj) {
 			for (let key in defaultobj) {
 				userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];
@@ -632,14 +628,12 @@ function contextMenuSearch(info, tab) {
 	if (info.menuItemId === 'showSuggestions') {
 		userOptions.searchBarSuggestions = info.checked;
 		notify({action: "saveOptions", userOptions:userOptions});
-
 		return;
 	}
 	
 	if (info.menuItemId === 'clearHistory') {
 		userOptions.searchBarHistory = [];
 		notify({action: "saveOptions", userOptions:userOptions});
-		
 		return;
 	}
 	
@@ -922,7 +916,7 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 		code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(searchTerms) + `"}));`,
 		runAt: 'document_idle'
 	}).then( () => {
-		if ( userOptions.highLight.followDomain ) {
+		if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
 			
 			let url = new URL(tab.url);
 
@@ -936,7 +930,7 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	
-	if ( !userOptions.highLight.followDomain ) return;
+	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
 
 	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
 	
@@ -944,7 +938,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	
 	let url = new URL(tab.url);
 
-	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( userOptions.highLight.followExternalLinks || ht.domain === url.hostname ) );
+	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
 	
 	if ( highlightInfo ) {
 		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
@@ -1289,6 +1283,7 @@ const defaultUserOptions = {
 		enabled: true,
 		followExternalLinks: false,
 		followDomain: true,
+		showFindBar: false,
 		markOptions: {
 			separateWordSearch: true
 		},
@@ -1304,7 +1299,7 @@ const defaultUserOptions = {
 		},
 		findBar: {
 			enabled: false,
-			hotKey: [17, 70],
+			hotKey: [17, 16, 70],
 			position: 'top'
 		}
 	},

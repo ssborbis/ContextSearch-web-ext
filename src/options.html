@@ -450,6 +450,7 @@
 				height:1em;
 				left:16px;
 				vertical-align:middle;
+				margin-top:2px;
 				filter:grayscale(100%);
 			}
 			
@@ -902,7 +903,7 @@
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><img alt="" src="icons/context_menu.png" />Context Menu</button>
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img alt="" src="icons/quick_menu.png" />Quick Menu</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</button>
-				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/folder4.png" style="width:6px;transform:scaleX(-1)" />Sidebar</button>
+				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</button>
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.png" />Highlight</button>
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img alt="" src="icons/search.svg" />Search Engines</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img alt="" src="icons/settings.svg" />General</button>
@@ -917,8 +918,8 @@
 			</div>
 			</p>
 			<div id="info">
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">Support<img alt="" src="icons/link.png"></a><br />
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">Source<img alt="" src="icons/link.png"></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">Support<img alt="" src="icons/link.svg"></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">Source<img alt="" src="icons/link.svg"></a><br />
 			</div>
 			
 		</div>
@@ -1657,6 +1658,13 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</label>
 						<div class="description" data-i18n="HighlightNavTooltip">Show navigation bar when highlighting</div>
 					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightShowFindBar" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightShowFindBarTooltip">Show Find bar when highlighting</div>
+					</div>
 					<p class="header1" data-i18n="Style">Style</p>
 					
 					<table style="text-align:center">
@@ -1699,14 +1707,15 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 					<br /><br />
 					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
-					<i>Experimental / Under Construction</i>
+					<i>Beta</i>
 					<hr />
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="cb_findBarEnabled" />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<span class="description" data-i18n="">Replace the browser find bar (CTRL-F)</span>
+						<span class="description" data-i18n="FindBarEnableHotkey">Open the Find bar using a hotkey</span>
+						<div id="d_findBarHotKey" style="margin-left:30px"></div>
 					</div>
 				
 					<p class="header1" data-i18n="Position">Position</p>
