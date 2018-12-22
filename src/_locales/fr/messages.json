@@ -1261,6 +1261,51 @@
     "description": ""
   },
   
+  "SelectTimeout": {
+    "message": "Temporisation de sélection",
+    "description": ""
+  },
+  
+  "SelectTimeoutTooltip": {
+    "message": "Délai (en millisecondes) d’annulation du menu instantané après la dernière sélection (0 = pas de limite)",
+    "description": ""
+  },
+  
+  "highlightfollowdomaintooltip": {
+    "message": "Étendre le surlignage aux pages du site des résultats de recherche",
+    "description": ""
+  },
+  
+  "highlightfollowexternallinkstooltip": {
+    "message": "Propager le surlignage aux liens externes de la page des résultats",
+    "description": ""
+  },
+  
+  "findbar": {
+    "message": "Barre de recherche dans la page",
+    "description": ""
+  },
+  
+  "findbarpositiontooltip": {
+    "message": "Choisir la position de la barre",
+    "description": ""
+  },
+  
+  "ClickToSet": {
+    "message": "Cliquer pour définir",
+    "description": ""
+  },
+  
+  "highlightshowfindbartooltip": {
+    "message": "Afficher une barre de recherche dans la page surlignée",
+    "description": ""
+  },
+  
+  "FindBarEnableHotkey": {
+    "message": "Ouvrir la barre en utilisant le raccourci clavier :",
+    "description": ""
+  },
+  
   "_________": {
     "message": "",
     "description": ""
