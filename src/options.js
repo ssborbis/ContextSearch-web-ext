@@ -125,10 +125,10 @@ function restoreOptions() {
 		$('#n_quickMenuRows').value = userOptions.quickMenuRows;
 		
 		$('#b_quickMenuKey').value = userOptions.quickMenuKey;
-		$('#b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || "Set";
+		$('#b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || browser.i18n.getMessage('ClickToSet');
 		
 		$('#b_contextMenuKey').value = userOptions.contextMenuKey;	
-		$('#b_contextMenuKey').innerText = keyTable[userOptions.contextMenuKey] || "Set";
+		$('#b_contextMenuKey').innerText = keyTable[userOptions.contextMenuKey] || browser.i18n.getMessage('ClickToSet');
 		$('#s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
 		
 		$('#r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
