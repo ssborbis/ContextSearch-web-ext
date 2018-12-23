@@ -14,13 +14,13 @@ BODY[data-theme="dark"] IMG {
 	display:inline-block;
 }
 #searchBar {
-	width: 200px;
+	width: 300px;
 	border:1px solid #888;
 	height:20px;
 	padding:0 10px;
 	margin-left:4px;
-	user-select:auto;
-	-moz-user-select:auto;
+	user-select:text;
+	-moz-user-select:text;
 }
 #close {
 	vertical-align:middle;
@@ -29,7 +29,7 @@ BODY[data-theme="dark"] IMG {
 #close IMG {
 	width:20px;
 	vertical-align:middle;
-	margin-top:-2px;
+	margin-top:-4px;
 }
 #previous, #next {
 	border:1px solid #888;

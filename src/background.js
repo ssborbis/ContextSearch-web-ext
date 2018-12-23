@@ -23,32 +23,6 @@ function notify(message, sender, sendResponse) {
 			});
 			break;
 			
-		// case "nativeAppRequest":
-		
-			// message.userOptions = userOptions;
-
-			// let nativeApping = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", message);
-			
-			// return nativeApping.then((result) => {	
-
-				// // quick check for valid userOptions
-				// if (result && result.searchEngines) {
-
-					// console.log("native app: adding " + (result.searchEngines.length - userOptions.searchEngines.length) + " search engines");
-
-					// userOptions = result;
-					
-					// notify({action: "saveOptions", userOptions:userOptions});					
-				// }
-				
-				// return result;
-
-			// }, (e) => {
-				// //console.log(e);
-			// });
-			
-			// break;
-			
 		case "openOptions":
 			browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
@@ -1353,13 +1327,6 @@ function checkForOneClickEngines() {
 
 browser.runtime.onMessage.addListener(notify);
 
-// // establish native listener
-// browser.tabs.onActivated.addListener((tab) => {
-	// if (userOptions.reloadMethod !== 'automatic') return false;
-	
-	// notify({action:"nativeAppRequest"});
-// });
-
 browser.runtime.onInstalled.addListener((details) => {
 
 	 
@@ -1441,7 +1408,7 @@ if (browser.pageAction) {
 			result = result.shift();
 
 			if (result) {
-				browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.svg"});
+				browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
 				browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("AddCustomSearch")});
 				browser.pageAction.show(tab.id);
 			} 

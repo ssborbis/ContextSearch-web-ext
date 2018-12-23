@@ -127,11 +127,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					document.body.removeChild(iframe);
 				},250);
 				
-				// run native app to check for updated search.json.mozlz4 with enough delay to process file
-				// setTimeout(() => {
-					// browser.runtime.sendMessage({action: "nativeAppRequest"});
-				// }, 1000);
-				
 				break;
 				
 		}

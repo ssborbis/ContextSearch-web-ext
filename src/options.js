@@ -26,7 +26,9 @@ $("#selectMozlz4FileButton").addEventListener('change', (ev) => {
 		$('#status_div').style.display='inline-block';
 		statusMessage({
 			img: browser.runtime.getURL("icons/spinner.svg"),
-			msg: browser.i18n.getMessage("LoadingRemoteContent")
+			msg: browser.i18n.getMessage("LoadingRemoteContent"),
+			color: "transparent",
+			invert: false
 		});
 
 		let newEngines = [];
@@ -78,17 +80,23 @@ $("#selectMozlz4FileButton").addEventListener('change', (ev) => {
 			if (details.hasFailedCount) {
 				statusMessage({
 					img: "icons/alert.png",
-					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount)
+					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount),
+					color: "transparent",
+					invert: false
 				});
 			} else if (details.hasTimedOut) {
 				statusMessage({
 					img: "icons/alert.png",
-					msg: browser.i18n.getMessage("LoadingRemoteContentTimeout")
+					msg: browser.i18n.getMessage("LoadingRemoteContentTimeout"),
+					color: "transparent",
+					invert: false
 				});
 			} else {
 				statusMessage({
-					img: "icons/yes.png",
-					msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length)
+					img: "icons/checkmark.svg",
+					msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length),
+					color: "#41ad49",
+					invert: true
 				});
 			}
 				
@@ -103,16 +111,27 @@ $("#selectMozlz4FileButton").addEventListener('change', (ev) => {
 
 		// print status message to Options page
 		statusMessage({
-			img: "icons/no.png",
-			msg: "Failed to load search engines :("
+			img: "icons/crossmark.svg",
+			msg: "Failed to load search engines :(",
+			color: "red",
+			invert: true
 		});
 	});
-	
-	function statusMessage(status) {				
-		$('#status_img').src = status.img || "";
-		$('#status').innerText = status.msg || "";
-	}
+
 });
+
+function statusMessage(status) {				
+	$('#status_img').src = status.img || "";
+	$('#status').innerText = status.msg || "";
+	
+	let img = $('#status_img');
+	
+	img.parentNode.style.backgroundColor = status.color;
+	img.style.filter = status.invert ? 'invert(1)' : 'none';
+
+}
+
+
 
 function restoreOptions() {
 
@@ -487,75 +506,13 @@ $('#range_quickMenuIconScale').addEventListener('input', (ev) => {
 	$('#i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
 $('#range_quickMenuIconScale').addEventListener('change', saveOptions);
-// $('#b_checkSearchJsonPath').addEventListener('click', checkSearchJsonPath);
-// $('#i_searchJsonPath').addEventListener('change', checkSearchJsonPath);
-// $('#i_searchJsonPath').addEventListener('keydown', (ev) => {
-	// if (
-		// ev.repeat ||
-		// ev.which !== 13
-	// ) return false;
-	
-	// ev.target.blur();
-// });
 
 $('#t_userStyles').addEventListener('change', saveOptions);
+
 $('#cb_userStylesEnabled').addEventListener('change', (e) => {
 	$('#t_userStyles').disabled = ! e.target.checked;
 	saveOptions(e);
 });
-
-// function checkSearchJsonPath() {
-
-	// let el = $('#div_searchJsonPathResponse');
-	// let ev_target = $('#i_searchJsonPath');
-	
-	// el.innerText = browser.i18n.getMessage("Validating");
-	
-	// ev_target.value = ev_target.value.replace(/\\/g, "/").trim();
-	// if (ev_target.value == "") {
-		// el.innerText = "";
-		// return false;
-	// }
-	
-	// let path = ev_target.value;
-	
-	// if (path.match(/\/search.json.mozlz4$/) === null) {
-		// path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
-	// }
-	
-	// saveOptions();
-
-	// function onResponse(response) {
-
-		// if (response.error) {
-			// el.innerHTML = "<img src='/icons/no.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-			// let span = document.createElement('span');
-			// span.innerText = response.error;
-			// el.appendChild(span);
-			// return false;
-		// }
-
-		// let tn = document.createTextNode("   " + browser.i18n.getMessage("ImportSuccessful"));
-		// el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />";
-		// el.appendChild(tn);
-
-		// // if response is a userOptions object
-		// if (response && response.searchEngines) {	
-			// console.log('building search engine container');
-			// buildSearchEngineContainer(response.searchEngines);
-		// }
-	// }
-	
-	// function onError(error) {
-		// console.log(error);
-		// el.innerHTML = "<img src='/icons/yes.png' style='height:16px;vertical-align:middle;' />&nbsp;&nbsp;&nbsp;";
-		// el.textContent = browser.i18n.getMessage("NativeAppImportError").replace("%1", error.message || "no error message");
-		// el.style.color = 'red';
-	// }
-
-	// var sending = browser.runtime.sendMessage({action: "nativeAppRequest", force: true});
-	// sending.then(onResponse, onError);	
-// }
 
 $('#b_quickMenuKey').addEventListener('click', keyButtonListener);
 $('#b_contextMenuKey').addEventListener('click', keyButtonListener);
@@ -788,27 +745,6 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
 	$('#version').innerText = "" + browser.runtime.getManifest().version;
 });
-
-// show/hide content based on native app compatibility
-// document.addEventListener("DOMContentLoaded", (e) => {
-	
-	// function onChecks() {
-		// console.log('Native Messenger addon installed');
-	// }
-	
-	// function onError() {
-		// console.log('Native Messenger addon not installed. Removing native content');
-		
-		// for (let el of document.getElementsByTagName('native'))
-			// el.style.display = 'none';
-		
-	// }
-	
-	// let nativeChecking = browser.runtime.sendMessage("contextsearch.webext.native.messenger@ssborbis.addons.mozilla.org", {action: "check"});
-	
-	// nativeChecking.then(onChecks, onError);
-
-// });
 
 // browser-specific modifications
 document.addEventListener("DOMContentLoaded", (e) => {
@@ -1109,22 +1045,17 @@ document.addEventListener('DOMContentLoaded', () => {
 		userOptions.searchBarHistory = [];
 		saveOptions();
 		
-		let img = document.createElement('img');
-		img.src = "/icons/yes.png";
-		img.style.height = '20px';
-		img.style.marginLeft = '20px';
-		img.style.opacity = 1;
-		img.style.transition = 'opacity 2s ease-out 1s';
-		img.style.verticalAlign = 'middle';
-		div.appendChild(img);
+		let yes = document.createElement('div');
+		yes.className = 'yes';
+		div.appendChild(imgContainer);
 		
-		img.addEventListener('transitionend', (e) => {
-			div.removeChild(img);
+		yes.addEventListener('transitionend', (e) => {
+			div.removeChild(yes);
 			div.animating = false;
 		});
 		
-		img.getBoundingClientRect();
-		img.style.opacity = 0;
+		yes.getBoundingClientRect();
+		yes.style.opacity = 0;
 		
 	}
 });

@@ -8,7 +8,7 @@ const displayCount = 10; // number of total suggestions to display (browser_acti
 	// if (result.href) {
 		// let sb = document.getElementById('searchBar');
 		// let img = document.createElement('img');
-		// img.src = '/icons/add_search.svg';
+		// img.src = '/icons/add_search.png';
 		// img.style = 'height:16px;position:absolute;right:4px;top:4px;z-index:2';
 		// img.title = browser.i18n.getMessage('AddOfficial') || "add official search engine for this site";
 		// document.body.appendChild(img);

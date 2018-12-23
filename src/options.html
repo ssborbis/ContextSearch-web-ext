@@ -874,7 +874,6 @@
 				background:url("icons/play-button.svg") no-repeat center center;
 				background-size:30px;
 				background-color: #ececec;
-				<!-- filter:invert(1); -->
 			}
 			.header1.help {
 				font-size:11pt;
@@ -883,7 +882,23 @@
 				margin:0;
 				padding:0 2px 4px 0;
 				color: #444;
-				<!-- text-decoration: underline; -->
+			}
+			.yes {
+				display:inline-block;
+				border-radius:50%;
+				background-color:#41ad49;
+				padding:2px;
+				height:20px;
+				width:20px;
+				margin-left:20px;
+				opacity:1;
+				transition:opacity 2s ease-out 1s;
+			}
+			.yes::before {
+				content: url("icons/checkmark.svg");
+				height:20px;
+				vertical-align:middle;
+				filter:invert(1);
 			}
 		</style>
 	</head>
@@ -1072,7 +1087,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				
 				<div data-browser="firefox" style="border-radius:10px;background-color:#efefef;padding:10px;margin:10px 0;display:inline-block">
 					<div style='display:table-cell;vertical-align:middle;border-right:1px solid #ccc;padding-right:10px;text-align:center'>
-						<img src="icons/alert_bw.png" style="height:2em;vertical-align:middle"/>
+						<img src="icons/alert.svg" style="height:2em;vertical-align:middle"/>
 					</div>
 					<div style="display:table-cell">
 						<div class="description" data-i18n="QuickMenuNote">Disabled on addons.mozilla.org</div><br /><br />
@@ -1799,7 +1814,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					<button type="button" name="copy" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.png" style="height:20px;vertical-align:middle"/></button>
 <div data-browser="firefox">					
-					<button type="button" name="addOpenSearchEngine" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add_search.svg" style="height:20px;vertical-align:middle"/></button>
+					<button type="button" name="addOpenSearchEngine" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add_search.png" style="height:20px;vertical-align:middle"/></button>
 </div>
 					</div>
 				</form>
@@ -1822,30 +1837,14 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 					
 					<div id="status_div" style="display:none;">
-						<img alt="" id="status_img" class="smallIcon" style="margin: 0 20px;height:30px" src="/icons/transparent.gif" />
-						<span id="status">&nbsp;</span>
+						<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
+							<img alt="" id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+						</div>
+						<div id="status" style='display:inline-block'>&nbsp;</div>
 					</div>
 					<br />
 					<br />
 				</div>
-
-<!-- <native>				 -->
-				<!-- <p class="header1" style="margin-top:0"  data-i18n="AutoImportHeader"> -->
-					<!-- Automatic Importing -->
-				<!-- </p> -->
-
-				<!-- <label class="container" style="display:inline-block" data-i18n="EnableAutoImport">Enable Automatic Import (requires app) -->
-					<!-- <input type="checkbox" id="cb_automaticImport" /> -->
-					<!-- <span class="checkmark checkmark2"></span> -->
-				<!-- </label> -->
-				<!-- <span class="info" data-msg="Import OpenSearch engines to ContextSearch automatically. Requires a separate app. See "Help" for more details" data-i18n_tooltip="EnableAutoImport">?</span> -->
-				
-				<!-- <div style="white-space:nowrap;width:100%"  data-i18n="ProfilePath"> -->
-				<!-- Profile path<br /> -->
-				<!-- <textarea class="inputNice code" id="i_searchJsonPath" style="width:calc(100% - 16px);padding:4px;margin:4px 0px" placeholder="example: C:/Users/<username>/AppData/Roaming/Mozilla/Firefox/Profiles/1a34asfs.default"></textarea></div> -->
-				<!-- <div id="div_searchJsonPathResponse" style="display:inline-block"></div><button id="b_checkSearchJsonPath" style="float:right;" data-i18n="Verify">Verify and Import</button> -->
-
-<!-- </native> -->
 			</div>
 		</div>
 			<div class="tabcontent" id="helpTab"></div>

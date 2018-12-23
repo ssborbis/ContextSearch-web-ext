@@ -238,7 +238,8 @@ function openFindBar(searchTerms, total, callback) {
 	fb.id = 'CS_findBarIframe';
 	fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 	fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
-	fb.style.width = 'calc(100% * ' + window.devicePixelRatio + ')';
+//	fb.style.width = 'calc(100% * ' + window.devicePixelRatio + ')';
+	fb.style.width = '600px';
 	
 	fb.style[userOptions.highLight.findBar.position] = '0';
 

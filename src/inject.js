@@ -35,16 +35,6 @@ window.addEventListener('mousedown', (e) => {
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
-// Good for checking new engines after window.external.AddSearchProvider()
-// window.addEventListener('focus', (ev) => {
-	
-	// setTimeout(() => {
-		// if (userOptions.reloadMethod !== 'automatic') return false;
-		
-		// browser.runtime.sendMessage({action: "nativeAppRequest"});
-	// }, 500);
-// });
-
 function runAtTransitionEnd(el, prop, callback) {
 	let oldProp = null;
 	let checkPropInterval = setInterval(() => {
