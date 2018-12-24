@@ -526,7 +526,7 @@ function keyButtonListener(e) {
 		evv.preventDefault();
 		
 		if ( evv.which === 27 ) {
-			e.target.innerHTML = '&nbsp;';
+			e.target.innerHTML = browser.i18n.getMessage('ClickToSet');
 			e.target.value = 0;
 		} else {
 			e.target.innerText = keyTable[evv.which];

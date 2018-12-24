@@ -1363,7 +1363,7 @@ browser.runtime.onInstalled.addListener((details) => {
 			}
 			
 		//	Show install page
-			if ( 
+*/			if ( 
 				details.reason === 'install'
 			) {
 				browser.tabs.create({
@@ -1374,7 +1374,7 @@ browser.runtime.onInstalled.addListener((details) => {
 					// });
 				});
 			}
-*/		});
+		});
 
 	}, 250);
 	
