@@ -1097,7 +1097,7 @@
   },
   
   "LinksTooltip": {
-    "message": "Mode de recherche des liens (selon le texte affiché ou selon l’URL de référence)",
+    "message": "Mode de recherche des liens (par le texte affiché ou par l’URL de référence, maintenir la touche [Ctrl] pour utiliser l’autre mode)",
     "description": ""
   },
   
