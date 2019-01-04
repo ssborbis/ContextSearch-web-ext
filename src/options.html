@@ -644,7 +644,7 @@
 				padding:auto 10px auto 0;
 				padding-left:20px;
 			}
-			#editSearchEngineContainer {
+			.editForm {
 				transition: max-height .5s ease-in-out;
 				max-height:0;
 				overflow:hidden;
@@ -654,7 +654,7 @@
 				border:4px solid #F4F4F4;*/
 			}
 						
-			#editSearchEngineContainer INPUT, #editSearchEngineContainer SELECT, #editSearchEngineContainer TEXTAREA {
+			.editForm INPUT, .editForm SELECT, .editForm TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
 				border:1px solid #E0E0E0;
@@ -663,19 +663,19 @@
 				padding:4px;
 				padding-top:8px;
 			}
-			#editSearchEngineContainer SELECT {
+			.editForm SELECT {
 				width:120px;
 			}
-			#editSearchEngineContainer INPUT:focus,  #editSearchEngineContainer TEXTAREA:focus{
+			.editForm INPUT:focus, .editForm TEXTAREA:focus{
 				border:1px solid #008afc;
 				box-shadow:0px 0px 3px 1px #008afc;
 				background-color:white;
 			}
-			#editSearchEngineContainer .error {
+			.editForm .error {
 				border:1px solid pink;
 				box-shadow:0px 0px 3px 1px pink;
 			}
-			#editSearchEngineContainer LABEL {
+			.editForm LABEL {
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
@@ -686,7 +686,7 @@
 				padding:0px 4px;
 				color:#646464;	
 			}
-			#editSearchEngineContainer ._hover:hover {
+			.editForm ._hover:hover {
 				background-color:#e5f1fb;
 			}
 			.fileUpload input[type="file"] {
@@ -1720,6 +1720,14 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</tr>
 					</table>
 					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightFlashSelected" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightFlashSelectedTooltip">Flash the currently active search term</div>
+					</div>
+					
 					<br /><br />
 					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
 					<i>Beta</i>
@@ -1731,6 +1739,14 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</label>
 						<span class="description" data-i18n="FindBarEnableHotkey">Open the Find bar using a hotkey</span>
 						<div id="d_findBarHotKey" style="margin-left:30px"></div>
+					</div>
+					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_findBarStartOpen" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<span class="description" data-i18n="FindBarStartOpen">Open the Find bar automatically when the page loads</span>
 					</div>
 				
 					<p class="header1" data-i18n="Position">Position</p>
@@ -1773,7 +1789,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 				</div>
 
-				<form id="editSearchEngineContainer" action="">
+				<form id="editSearchEngineContainer" class="editForm" action="">
 
 					<label data-i18n="Name">Name</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Description">Description</label><textarea name="description" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>

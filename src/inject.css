@@ -46,11 +46,12 @@
 	user-select:none;
 	-moz-user-select:none;
 	font-weight:bold;
-	color: #9abad2;
-	opacity:.3;
+	color: black;/*#9abad2;*/
+	opacity:.15;
 	font-size:11pt;
 	font-family: Arial;
-	z-index:2147483647
+	z-index:2147483647;
+	transition: var(--user-transition, left .15s ease-in-out, top .15s ease-in-out, opacity .1s );
 }
 #CS_resizeWidget:hover, #CS_editWidget:hover {
 	opacity:1;
@@ -82,6 +83,18 @@
 	display:inline-block;
 	left:0;
 	width:100%;
+}
+@keyframes CS_flash {
+	0% {filter: saturate(1)} 
+	50% {filter: saturate(.33)} 
+	100% {filter: saturate(1)} 
+	
+	/* 0% { opacity: 1;}  */
+	/* 50% { opacity: 0;}  */
+	/* 100% { opacity: 1;} */
+}
+.CS_mark_selected.CS_mark_flash {
+	animation: CS_flash linear 1s infinite;
 }
 #CS_findBarIframe {
 	position:fixed;

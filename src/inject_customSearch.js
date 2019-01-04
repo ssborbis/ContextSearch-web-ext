@@ -68,28 +68,23 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					
 					if (message.useOpenSearch) { // openCustomSearch called by page_action
 
-						readOpenSearchUrl( os_href ).then( (xml) => {
-								
-							if (!xml) return false;
+						browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: os_href}).then( details => {
 
-							openSearchXMLToSearchEngine(xml).then((details) => {
+							if (!details) {
+								console.log('Cannot build search engine from xml. Missing values');
+								return false;
+							}
+						
+							let se = details.searchEngines[0];
+							iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/customSearch.html'));
 
-								if (!details) {
-									console.log('Cannot build search engine from xml. Missing values');
-									return false;
-								}
-							
-								let se = details.searchEngines[0];
-								iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/customSearch.html'));
-								
-							});
-							
 						});
 					} else { // openCustomSearch called by context menu on FORM
 	
 						let formdata = getFormData();
 
-						dataToSearchEngine(formdata).then( (result) => {
+						//dataToSearchEngine(formdata).then( (result) => {
+						browser.runtime.sendMessage({action: "dataToSearchEngine", formdata: formdata}).then( result => {
 							
 							// use supplied search engine or get from focused form
 							let se = message.searchEngine || result.searchEngines[0];

@@ -16,7 +16,7 @@ function buildSearchEngineContainer() {
 			console.log('null node found');
 			return;
 		}
-		
+
 		let li = document.createElement('li');
 		parent.appendChild(li);
 		li.node = node;
@@ -282,13 +282,86 @@ function buildSearchEngineContainer() {
 		if (node.type === 'bookmarklet') {
 			
 			let img = document.createElement('img');
-			img.src = browser.runtime.getURL('icons/code.svg');
+			img.src = node.icon || browser.runtime.getURL('icons/code.svg');
 			li.appendChild(img);
+			
+			li.addEventListener('dblclick', (e) => {
+				editBm();
+			});	
 			
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
 			li.appendChild(text);
+			
+			function editBm() {
+
+				if ( li.querySelector(".editForm") ) {
+					let _form = li.querySelector(".editForm");
+					_form.closeForm();
+					return;
+				}
+				
+				let _form = document.createElement('form');
+				_form.innerHTML = `<label data-i18n="Icon">Icon URI</label><input name="iconURL" type="text" class="inputNice" />
+				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">close</button>
+				<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">save</button>`;
+				_form.className = 'editForm';
+				_form.action = "";
+				
+				_form.closeForm = function() {
+					_form.style.maxHeight = null;
+					setTimeout(() => {
+						_form.parentNode.removeChild(_form);
+					}, 1000);
+				}
+				
+				_form.addEventListener('mouseover', () => {
+					for (let _li of rootElement.getElementsByTagName('li'))
+						_li.setAttribute('draggable', false);
+				});
+				
+				_form.addEventListener('mouseout', () => {
+					for (let _li of rootElement.getElementsByTagName('li'))
+						_li.setAttribute('draggable', true);
+				});
+				
+				_form.close.onclick = function() {
+					_form.closeForm();
+				}
+				
+				_form.save.onclick = function() {
+					img.src = browser.runtime.getURL("/icons/spinner.svg");
+					let newIcon = new Image();
+					newIcon.onload = function() {
+						img.src = imageToBase64(this, 32) || tempImgToBase64(node.title.charAt(0).toUpperCase());
+					//	saveForm();
+						node.icon = img.src;
+						updateNodeList();
+						li.dispatchEvent(new MouseEvent('dblclick'));
+					}
+					newIcon.onerror = function() {	
+					//	showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
+						img.src = tempImgToBase64(node.title.charAt(0).toUpperCase());
+						node.icon = img.src;
+						updateNodeList();
+					//	saveForm(false);
+					}
+					
+					newIcon.src = _form.iconURL.value;
+					
+					setTimeout(() => {
+						if (!newIcon.complete)
+							newIcon.onerror();
+					}, 5000);
+				}
+				li.appendChild(_form);
+				
+				_form.getBoundingClientRect();
+				_form.style.maxHeight = '100px';
+				
+				
+			}
 		}
 		
 		if (node.type === 'separator') {
@@ -875,6 +948,8 @@ function buildSearchEngineContainer() {
 			if ( li.node.type === 'searchEngine')
 				li.dispatchEvent(new MouseEvent('dblclick'));
 			if (li.node.type === 'folder')
+				li.dispatchEvent(new MouseEvent('dblclick'));
+			if (li.node.type === 'bookmarklet')
 				li.dispatchEvent(new MouseEvent('dblclick'));
 			if (li.node.type === 'oneClickSearchEngine') {
 				// closeContextMenus();

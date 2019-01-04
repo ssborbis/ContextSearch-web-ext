@@ -16,6 +16,14 @@ function makeQuickMenu(options) {
 		(type === 'sidebar' && userOptions.sideBar.singleColumn)
 	) ? true : false;
 	
+	let columns = singleColumn ? 1 : getColumns();
+	
+	function getColumns() {
+		if (type === 'searchbar') return userOptions.searchBarColumns;
+		if (type === 'sidebar') return userOptions.sideBar.columns;
+		if (type === 'quickmenu') return userOptions.quickMenuColumns;
+	}
+	
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
 
@@ -29,14 +37,8 @@ function makeQuickMenu(options) {
 	quickMenuElement.tabIndex = -1;
 	
 	quickMenuElement.dataset.menu = type;
+	quickMenuElement.dataset.columns = columns;
 	document.body.dataset.menu = type;
-	
-	var columns = (() => {
-		if (singleColumn) return 1;
-		if (type === 'searchbar') return userOptions.searchBarColumns;
-		if (type === 'sidebar') return userOptions.sideBar.columns;
-		if (type === 'quickmenu') return userOptions.quickMenuColumns;
-	})();
 
 	let sb = document.getElementById('searchBar');
 	sb.onclick = function(e) {
@@ -61,6 +63,35 @@ function makeQuickMenu(options) {
 			sb.value = "";	
 			clearTimeout(sb.hoverTimer);
 		}
+	});
+	
+	// folder styling hotkey
+	document.addEventListener('keydown', (e) => {
+		if (e.keyCode === 190 && e.ctrlKey) {
+			
+			e.preventDefault();
+
+			quickMenuElement.rootNode.toggleLayout = !quickMenuElement.rootNode.toggleLayout;
+			
+			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+			
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			
+			quickMenuElement = quickMenuElementFromNodeTree( quickMenuElement.rootNode, false );
+			
+			browser.runtime.sendMessage({
+				action: "quickMenuIframeLoaded", 
+				size: {
+					width: quickMenuElement.getBoundingClientRect().width,
+					height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+				},
+				resizeOnly: true,
+				tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
+				tileCount: quickMenuElement.children.length
+			});
+			
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+		}	
 	});
 	
 	// enter key invokes search
@@ -217,6 +248,9 @@ function makeQuickMenu(options) {
 	}
 	
 	quickMenuElement.addEventListener('keydown', (e) => {
+		
+		// account for custom folders
+		let _columns = quickMenuElement.querySelector('div').classList.contains('singleColumn') ? 1 : columns;
 
 		if ( ! [ 37, 38, 39, 40, 9 ].includes(e.keyCode) ) return;
 		
@@ -228,9 +262,9 @@ function makeQuickMenu(options) {
 		else if (e.keyCode === 9 && e.shiftKey)
 			direction = -1;
 		else if (e.keyCode === 40)
-			direction = columns;
+			direction = _columns;
 		else if (e.keyCode === 38)
-			direction = -columns;
+			direction = -_columns;
 		else if (e.keyCode === 39)
 			direction = 1; 
 		else if (e.keyCode === 37)
@@ -538,17 +572,20 @@ function makeQuickMenu(options) {
 		return toolsArray;
 	}
 	
-	function insertBreaks() {
+	function insertBreaks(_columns) {
 		
 		quickMenuElement.querySelectorAll('br').forEach( br => {
 			quickMenuElement.removeChild(br);
 		});
-		quickMenuElement.querySelectorAll('.tile:nth-of-type(' + columns + 'n)').forEach( tile => {
+		quickMenuElement.querySelectorAll('.tile:nth-of-type(' + _columns + 'n)').forEach( tile => {
 			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
 		});
 	}
 	
 	function buildQuickMenuElement(options) {
+		
+		let _singleColumn = options.forceSingleColumn || ( options.toggleLayout ? !singleColumn : singleColumn );
+		let _columns = _singleColumn ? 1 : getColumns();
 
 		function buildMoreTile() {
 			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more') || 'more');
@@ -574,7 +611,7 @@ function makeQuickMenu(options) {
 				}
 				
 				// rebuild breaks
-				insertBreaks();
+				insertBreaks(_columns);
 
 				browser.runtime.sendMessage({
 					action: "quickMenuIframeLoaded", 
@@ -603,12 +640,12 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.transition = 'none';
 	
 		// remove separators if using grid
-		if (!singleColumn) {
+		if (!_singleColumn) {
 			tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 		}
 	
 		// set the number of tiles to show
-		let visibleTileCountMax = singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+		let visibleTileCountMax = _singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 
 		// set tools position
 		if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
@@ -627,7 +664,7 @@ function makeQuickMenu(options) {
 		}
 		
 		// shift tiles to match quickmenu and searchbar
-		if ( ['searchbar','sidebar'].includes(type) && userOptions.quickMenuColumns === userOptions.searchBarColumns && userOptions.quickMenuToolsPosition === "top" && !singleColumn && !options.parentId && toolsArray.length !== columns ) {
+		if ( ['searchbar','sidebar'].includes(type) && userOptions.quickMenuColumns === userOptions.searchBarColumns && userOptions.quickMenuToolsPosition === "top" && !_singleColumn && !options.parentId && toolsArray.length !== _columns ) {
 			toolsArray.forEach( tool => {
 				tool.dataset.disabled = true;
 				tool.dataset.hidden = true;
@@ -637,7 +674,7 @@ function makeQuickMenu(options) {
 
 		// add empty cells for resizing ( needs work )
 		if ( mode === "resize" ) {
-			let resizeMaxTiles = ( singleColumn ) ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+			let resizeMaxTiles = _singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 			for ( let i=tileArray.length; i<resizeMaxTiles;i++) {
 				let tile = document.createElement('div');
 				tile.dataset.type = 'empty';
@@ -651,12 +688,15 @@ function makeQuickMenu(options) {
 			tile.className = 'tile';
 			tile.dataset.title = tile.title;
 
-			if (singleColumn) tile.classList.add("singleColumn");
+			if (_singleColumn) tile.classList.add("singleColumn");
+			
+			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' )
+				tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
 			
 			quickMenuElement.appendChild(tile);
 		});
 		
-		insertBreaks();
+		insertBreaks(_columns);
 
 		// check if any search engines exist and link to Options if none
 		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
@@ -670,7 +710,7 @@ function makeQuickMenu(options) {
 		}
 
 		// set min-width to prevent menu shrinking with smaller folders
-		quickMenuElement.style.minWidth = columns * quickMenuElement.querySelector('.tile').getBoundingClientRect().width + "px";
+		quickMenuElement.style.minWidth = _columns * quickMenuElement.querySelector('.tile').getBoundingClientRect().width + "px";
 		
 		// slide-in animation
 		if ( !userOptions.enableAnimations ) quickMenuElement.style.setProperty('--user-transition', 'none');
@@ -688,7 +728,7 @@ function makeQuickMenu(options) {
 				let rect = t.getBoundingClientRect();
 				
 				if ( t.node.type === 'folder' ) {
-					if ( singleColumn ) {
+					if ( _singleColumn ) {
 						if ( e.y - rect.y < .3 * rect.height ) return "before";
 						else if ( e.y - rect.y > .7 * rect.height ) return "after";
 						else return "middle";
@@ -698,7 +738,7 @@ function makeQuickMenu(options) {
 						else return "middle";
 					}
 				} else {
-					if ( singleColumn ) 
+					if ( _singleColumn ) 
 						return ( e.y - rect.y < .5 * rect.height ) ? "before" : "after";
 					else
 						return ( e.x - rect.x < .5 * rect.width ) ? "before" : "after";
@@ -780,7 +820,7 @@ function makeQuickMenu(options) {
 						arrow = document.createElement('div');
 						document.body.appendChild(arrow);
 					}
-					if ( singleColumn ) arrow.className = 'singleColumn';
+					if ( _singleColumn ) arrow.className = 'singleColumn';
 					arrow.id = 'arrow';
 					arrow.style.top = targetDiv.getBoundingClientRect().top + "px";
 					arrow.style.display = null;
@@ -872,7 +912,7 @@ function makeQuickMenu(options) {
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
 				// rebuild breaks
-				insertBreaks();
+				insertBreaks(_columns);
 				
 			});
 			
@@ -889,6 +929,9 @@ function makeQuickMenu(options) {
 		
 		let nodes = rootNode.children;
 		let tileArray = [];
+		
+		// update the qm object with the current node
+		quickMenuElement.rootNode = rootNode;
 		
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 			
@@ -1007,7 +1050,8 @@ function makeQuickMenu(options) {
 									type:"folder",
 									parent:node.parent,
 									children:[],
-									id:node.id
+									id:node.id,
+									forceSingleColumn:true
 								}
 
 								let url = new URL(tab.url);								
@@ -1037,20 +1081,15 @@ function makeQuickMenu(options) {
 								}
 
 								quickMenuElement = quickMenuElementFromNodeTree(siteSearchNode);
-								
-								quickMenuElement.querySelectorAll('br').forEach( br => br.parentNode.removeChild(br));
-								quickMenuElement.querySelectorAll('.tile').forEach( _tile => {
-									_tile.classList.add('singleColumn');
-									_tile.style.width = 'auto';
-									_tile.style.paddingRight = '16px';
-									
+
+
+								for ( let _tile of quickMenuElement.querySelectorAll('.tile') ) {
 									if ( _tile.node.title === url.hostname ) {
 										_tile.classList.add('selectedFocus');
 										_tile.dataset.selectfirst = "true";
+										break;
 									}
-									
-									quickMenuElement.insertBefore(document.createElement('br'), _tile.nextSibling);
-								});
+								}
 
 								browser.runtime.sendMessage({
 									action: "quickMenuIframeLoaded", 
@@ -1090,7 +1129,7 @@ function makeQuickMenu(options) {
 			
 				case "bookmarklet":
 
-					tile = buildSearchIcon(browser.runtime.getURL('/icons/code.svg'), node.title);
+					tile = buildSearchIcon(node.icon || browser.runtime.getURL('/icons/code.svg'), node.title);
 					tile.dataset.type = 'bookmarklet';
 
 					addTileEventHandlers(tile, (e) => {
@@ -1132,7 +1171,7 @@ function makeQuickMenu(options) {
 					break;
 			
 				case "folder":
-					tile = buildSearchIcon( (singleColumn) ? "/icons/folder3.png": null, node.title);
+					tile = buildSearchIcon( browser.runtime.getURL("/icons/folder3.png"), node.title);
 
 					tile.dataset.type = 'folder';
 					
@@ -1235,7 +1274,7 @@ function makeQuickMenu(options) {
 		// do not display tools if in a subfolder
 		let toolsArray = rootNode.parent ? [] : createToolsArray();
 
-		return buildQuickMenuElement({tileArray:tileArray, toolsArray:toolsArray, reverse: reverse, parentId: rootNode.parent});
+		return buildQuickMenuElement({tileArray:tileArray, toolsArray:toolsArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, toggleLayout: rootNode.toggleLayout});
 	}
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));

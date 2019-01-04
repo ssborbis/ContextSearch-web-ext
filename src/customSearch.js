@@ -120,26 +120,20 @@ function addSearchEnginePopup(data) {
 		
 	} else {
 		if (openSearchUrl) {
+
+			browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: openSearchUrl}).then( details => {
+
+				if (!details) {
+					console.log('Cannot build search engine from xml. Missing values');
+					return false;
+				}
 			
-			readOpenSearchUrl( openSearchUrl ).then ((xml) => {
-
-				if (!xml) return false;
-
-				return openSearchXMLToSearchEngine(xml).then((details) => {
-					
-					if (!details) {
-						console.log('Cannot build search engine from xml. Missing values');
-						return false;
-					}
+				let se = details.searchEngines[0];
+				ose = se;
 				
-					let se = details.searchEngines[0];
-					ose = se;
+				if (se.title) 
+					simple.querySelector('input').value = se.title;
 					
-					if (se.title) 
-						simple.querySelector('input').value = se.title;
-					
-				});
-				
 			}, () => {
 				console.log('error');
 				simple.querySelector('input').value = se.title;

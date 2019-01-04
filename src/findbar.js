@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 });
 
 window.addEventListener("message", (e) => {
+	
+//	console.log(e.data);
 
 	let sb = document.getElementById('searchBar');
 	let counter = document.getElementById('mark_counter');
@@ -24,18 +26,18 @@ window.addEventListener("message", (e) => {
 });
 
 document.getElementById('next').addEventListener('click', (e) => {
-	window.parent.postMessage({action: "next"}, "*");
+	console.log('next');
+	browser.runtime.sendMessage({action: "findBarNext", searchTerms: e.target.value});
 });
 
 document.getElementById('previous').addEventListener('click', (e) => {
-	window.parent.postMessage({action: "previous"}, "*");
+	browser.runtime.sendMessage({action: "findBarPrevious", searchTerms: e.target.value});
 });
 
 document.getElementById('searchBar').addEventListener('change', (e) => {
-	window.parent.postMessage({action: "mark", searchTerms:e.target.value}, "*");
+	browser.runtime.sendMessage({action: "mark", searchTerms: e.target.value});
 });
 
 document.getElementById('close').addEventListener('click', (e) => {
-	window.parent.postMessage({action: "close"}, "*");
+	browser.runtime.sendMessage({action: "closeFindBar"});
 });
-		

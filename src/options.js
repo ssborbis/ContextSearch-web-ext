@@ -252,11 +252,14 @@ function restoreOptions() {
 		$('#c_highLightColorActive').value = userOptions.highLight.activeStyle.color;
 		$('#c_highLightBackgroundActive').value = userOptions.highLight.activeStyle.background;
 		
+		$('#cb_highLightFlashSelected').checked = userOptions.highLight.flashSelected;
+		
 		$('#cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
 		$('#cb_highLightShowFindBar').checked = userOptions.highLight.showFindBar;
 		$('#cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
 		
 		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
+		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
 		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
 
@@ -389,6 +392,7 @@ function saveOptions(e) {
 			followDomain: $('#cb_highLightFollowDomain').checked,
 			followExternalLinks: $('#cb_highLightFollowExternalLinks').checked,
 			showFindBar: $('#cb_highLightShowFindBar').checked,
+			flashSelected: $('#cb_highLightFlashSelected').checked,
 			
 			styles: [
 				{	
@@ -417,6 +421,7 @@ function saveOptions(e) {
 			},
 			findBar: {
 				enabled: $('#cb_findBarEnabled').checked,
+				startOpen: $('#cb_findBarStartOpen').checked,
 				hotKey: function() {
 					let arr = [];
 					$('#d_findBarHotKey').querySelectorAll('[data-keycode]').forEach( button => {
@@ -526,7 +531,7 @@ function keyButtonListener(e) {
 		evv.preventDefault();
 		
 		if ( evv.which === 27 ) {
-			e.target.innerHTML = browser.i18n.getMessage('ClickToSet');
+			e.target.innerText = browser.i18n.getMessage('ClickToSet');
 			e.target.value = 0;
 		} else {
 			e.target.innerText = keyTable[evv.which];

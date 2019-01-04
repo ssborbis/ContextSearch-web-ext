@@ -83,10 +83,10 @@ function closeQuickMenu(eventType) {
 	var quickMenuElement = document.getElementById('quickMenuIframe');
 	if (quickMenuElement) {
 		quickMenuElement.style.opacity=0;
+		document.dispatchEvent(new CustomEvent('closequickmenu'));
 		setTimeout(()=> {
 			if (quickMenuElement && quickMenuElement.parentNode) {
 				quickMenuElement.parentNode.removeChild(quickMenuElement);
-				document.dispatchEvent(new CustomEvent('closequickmenu'));
 			}
 		},100);
 	}
@@ -117,12 +117,6 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	
 	qmc.style.transformOrigin = "top left";
 	qmc.style.transform = "scale(" + new_scale + ")";
-	
-/*	qmc.addEventListener("transitionend", (e) => {
-		if (e.propertyName !== "height") return;
-		repositionOffscreenElement( qmc );
-	}, {once: true});
-*/
 	
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
@@ -226,7 +220,7 @@ document.addEventListener('keydown', (ev) => {
 		
 });
 
-window.addEventListener('wheel', scrollEventListener);
+window.addEventListener(window.hasOwnProperty('onmousewheel') ? 'mousewheel' : 'wheel', scrollEventListener);
 window.addEventListener('scroll', scrollEventListener);
 
 // Listen for quickMenuKey
@@ -590,45 +584,46 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}
 				
 				/* edit widget start */
-				// (() => {
-					// let iframe = document.getElementById('quickMenuIframe');
-					// let editWidget = document.getElementById('editWidget');
+				
+				// let iframe = document.getElementById('quickMenuIframe');
+				// let editWidget = document.getElementById('CS_editWidget');
+				
+				// if ( !editWidget ) {
+
+					// editWidget = document.createElement('img');
+					// editWidget.id = 'CS_editWidget';
+					// editWidget.src = browser.runtime.getURL('icons/settings.svg');
+
+					// editWidget.addEventListener('click', (e) => {
+						// e.preventDefault();
+						// e.stopPropagation();
+					// //	quickMenuObject.locked = true;
+						
+						// let menu = document.createElement('div');
+
+					// });
 					
-					// if ( !editWidget ) {
+					// // remove when menu is closed
+					// document.addEventListener('closequickmenu', () => {
+						// editWidget.parentNode.removeChild(editWidget);
+					// }, {once: true});
 
-						// editWidget = document.createElement('img');
-						// editWidget.id = 'editWidget';
-						// editWidget.src = browser.runtime.getURL('icons/settings.svg');
-
-						// editWidget.addEventListener('click', (e) => {
-							// quickMenuObject.locked = true;
-							
-							// let menu = document.createElement('div');
-
-						// });
-						
-						// // remove when menu is closed
-						// document.addEventListener('closequickmenu', () => {
-							// editWidget.parentNode.removeChild(editWidget);
-						// }, {once: true});
-
-						// document.body.appendChild(editWidget);
-					// }
-					// // queue reposition for transitions
-					// editWidget.addEventListener('transitionend', positionEditWidget, {once: true});
-						
+					// document.body.appendChild(editWidget);
+				// }
+				// // queue reposition for transitions
+				// iframe.addEventListener('transitionstart', (e) => {
 					// positionEditWidget();
-					
-					// function positionEditWidget() {
-						// let iframeRect = iframe.getBoundingClientRect();
-						// editWidget.style.left = parseInt(iframe.style.left) + iframeRect.width - 10 + "px";
-						// editWidget.style.top = parseInt(iframe.style.top) - 10 + "px";
-						// editWidget.style.transform = iframe.style.transform; 
-					// }
+				// }, {once: true});
+			// //	iframe.addEventListener('transitionend', positionEditWidget, {once: true});
 
-				// })();
-				
-				
+				// function positionEditWidget() {
+					// let iframeRect = iframe.getBoundingClientRect();
+					// editWidget.style.left = parseFloat(iframe.style.left) + parseFloat(iframe.style.width) / window.devicePixelRatio * userOptions.quickMenuScale - 10 + "px";
+					// editWidget.style.top = parseFloat(iframe.style.top) - 10 + "px";
+					// editWidget.style.transform = iframe.style.transform; 
+				// }
+
+
 				/* edit widget end */
 				
 				/* dnd resize start */	
@@ -640,7 +635,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				// overlay a div to capture mouse events over iframes
 				let overDiv = document.createElement('div');
-				overDiv.style = 'display:inline-block;position:absolute;left:0;top:0;width:100%;height:100%;z-index:2147483647;cursor:nwse-resize;';
+				overDiv.style = 'display:inline-block;position:fixed;left:0;top:0;right:0;bottom:0;z-index:2147483647;cursor:nwse-resize;';
 				
 				// build resize widget once per quick menu open
 				if ( !resizeWidget ) {
@@ -669,6 +664,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						iframe.style.transition = 'none';
 						iframe.style.borderWidth = '2px';
 						iframe.style.borderStyle = 'dashed';
+						
+						resizeWidget.style.transition = 'none';
+						editWidget.style.transition = 'none';
 						
 						// lower the quick menu in case zIndex = MAX
 						iframe.style.zIndex = window.getComputedStyle(iframe).zIndex - 1;
@@ -721,6 +719,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							iframe.style.borderStyle = null;
 							iframe.style.zIndex = null;
 							
+							resizeWidget.style.transition = null;
+							editWidget.style.transition = null;
+							
 							// rebuild the menu again to shrink empty rows
 							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
 
@@ -733,18 +734,24 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}
 				
 				// queue reposition for transitions
-				iframe.addEventListener('transitionend', positionResizeWidget, {once: true});
-				
-				positionResizeWidget();
-				
+				iframe.addEventListener('transitionstart', positionResizeWidget, {once: true});
+
 				function positionResizeWidget() {
 					let iframeRect = iframe.getBoundingClientRect();
-					resizeWidget.style.left = iframeRect.right - 10 + "px";
-					resizeWidget.style.top = iframeRect.bottom - 10 + "px";
+					resizeWidget.style.left = parseFloat(iframe.style.left) + parseFloat(iframe.style.width) / window.devicePixelRatio * userOptions.quickMenuScale - 10 + "px";
+					resizeWidget.style.top = parseFloat(iframe.style.top) + parseFloat(iframe.style.height) / window.devicePixelRatio * userOptions.quickMenuScale - 10 + "px";
 					resizeWidget.style.transform = iframe.style.transform; 
 				}
+				
+				// set animation state
+				[resizeWidget/*, editWidget*/].forEach( el => {
+					if ( !userOptions.enableAnimations ) el.style.setProperty('--user-transition', 'none');
+				});
 
 				/* dnd resize end */	
+				
+				positionResizeWidget();
+			//	positionEditWidget();
 				
 				break;
 

@@ -19,11 +19,14 @@ function post(path, params) {
 		form.appendChild(hiddenField);
 	}
 	
-	if (document.body === null || document.body === undefined)
-		document.body = document.createElement('body');
+	// prevent early execution before body loads
+	let bodyInterval = setInterval( () => {
+		if (document.body === null || document.body === undefined) return;
 
-	document.body.appendChild(form);
-	form.submit();
+		clearInterval(bodyInterval);
+		document.body.appendChild(form);
+		form.submit();
+	}, 100 );
 }
 
 if (typeof CONTEXTSEARCH_TEMP_ENGINE !== "undefined") // using a temp engine

@@ -1,12 +1,7 @@
 var userOptions = {};
 
-var CS_MARK_instance = null;
-
-var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
-var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
-
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
-	
+		
 	userOptions = result.userOptions;
 
 	let styleEl = document.createElement('style');
@@ -34,7 +29,52 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 			color: ${userOptions.highLight.activeStyle.color} !important;
 		}
 		`;
+		
+	if ( userOptions.highLight.findBar.startOpen ) browser.runtime.sendMessage({action: "openFindBar"});
 });
+
+document.addEventListener('keydown', (e) => {
+	if ( e.which === 27 ) {
+		browser.runtime.sendMessage({action: "unmark"}).then( () => {
+			browser.runtime.sendMessage({action: "closeFindBar"});
+		});
+	}
+});
+
+window.addEventListener('keydown', (e) => {
+
+	if (
+		!userOptions.highLight.findBar.enabled
+		|| !userOptions.highLight.findBar.hotKey.length
+		|| e.repeat
+		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
+	) return;
+	
+	for (let i=0;i<userOptions.highLight.findBar.hotKey.length;i++) {
+		let key = userOptions.highLight.findBar.hotKey[i];
+		if (key === 16 && !e.shiftKey) return;
+		if (key === 17 && !e.ctrlKey) return;
+		if (key === 18 && !e.altKey) return;
+		if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+	}
+
+	e.preventDefault();
+
+	let searchTerms = getSelectedText(e.target);
+	
+	browser.runtime.sendMessage({action: "unmark"}).then( () => {
+		browser.runtime.sendMessage({action: "mark", searchTerms: searchTerms});
+	});
+
+	window.getSelection().removeAllRanges();
+	
+});
+
+
+var CS_MARK_instance = null;
+
+var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
+var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
 
 document.addEventListener('CS_mark', (e) => {
 
@@ -55,13 +95,6 @@ document.addEventListener('CS_mark', (e) => {
 	
 });
 
-document.addEventListener('keydown', (e) => {
-	if ( e.which === 27 ) {
-		unmark();
-		closeFindBar();
-	}
-});
-
 function unmark() {
 	
 	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
@@ -71,7 +104,6 @@ function unmark() {
 //	closeFindBar();
 	
 	browser.runtime.sendMessage({action: "removeTabHighlighting"});
-	
 }
 
 function closeNavBar() {
@@ -85,14 +117,25 @@ function mark(searchTerms) {
 
 	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
 
+	// get quoted strings as single search term
 	let phrases = searchTerms.match(/".*?"/g) || [];
-
 	phrases.forEach( (phrase, i) => {
 		searchTerms = searchTerms.replace(phrase, "");
 		phrases[i] = phrase.replace(/^"(.*)"$/g, "$1");
 	});
 
-	let words = searchTerms.split(/\s+/).concat(phrases);
+	let words = searchTerms.split(/\s+/);
+	
+	// build phrases from word combos
+	let words2 = [];
+	for ( let i=words.length;i>1;i--) {
+		words2.push(words.slice(0,i).join(" "));
+	}
+
+	// build final array and filter empty
+	words = words.concat(words2).concat(phrases).filter( a => a.length );
+	
+//	console.log(words);
 
 	if ( !userOptions.highLight.markOptions.separateWordSearch )
 		words = [searchTerms];
@@ -105,30 +148,40 @@ function mark(searchTerms) {
 		CS_MARK_instance.mark(word, {
 			className:"CS_mark",
 			separateWordSearch: false,
-			
+
 			each: (el) => {
+				
 				if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
-					el.classList.remove('CS_mark');
+					el.classList.add('CS_unmark');
+				
+				if ( el.parentNode.classList.contains('CS_mark') )
+					el.classList.add('CS_unmark');
+				
+			//	el.id = 'CS_mark_' + gen();
 				
 			},
 			
 			done: () => {
 
 				if ( i !== words.length - 1 ) return;
+
+				CS_MARK_instance.unmark({className: 'CS_unmark'});
 				
 				document.querySelectorAll(".CS_mark").forEach( el => {
 					let index = words.findIndex( word => {
 						return word.toLowerCase() === el.textContent.toLowerCase();
 					});
 					
-					 if ( index !== -1 ) el.dataset.style = index > 3 ? index % 4 : index;	
+					if ( index !== -1 ) el.dataset.style = index > 3 ? index % 4 : index;	
 				});
 				
-				if ( userOptions.highLight.navBar.enabled )
-					openNavBar();
+				if ( window == top && userOptions.highLight.navBar.enabled )
+					setTimeout( openNavBar, 1000);
 
-				if ( getFindBar() || userOptions.highLight.showFindBar ) 
-					openFindBar(searchTerms, document.querySelectorAll(".CS_mark").length);
+				if ( window == top && ( getFindBar() || userOptions.highLight.showFindBar ) ) 
+					browser.runtime.sendMessage({action: "openFindBar", searchTerms:searchTerms});
+				
+				browser.runtime.sendMessage({action: "markDone"});
 			}
 		});
 	});
@@ -137,6 +190,15 @@ function openNavBar() {
 
 	let hls = document.querySelectorAll('.CS_mark');
 	
+	// get frame marks
+	let iframes = document.querySelectorAll('iframe:not([src="' + browser.runtime.getURL('findbar.html') + '"])');
+	
+	iframes.forEach( frame => {
+		let _hls = frame.contentDocument.querySelectorAll('.CS_mark');
+		
+		hls = Array.from(hls).concat(Array.from(_hls));
+	});
+
 	if ( ! hls.length ) return;
 
 	let div = document.createElement('div');
@@ -190,11 +252,17 @@ function openNavBar() {
 	hls.forEach( (hl, index) => {
 
 		let rect = hl.getBoundingClientRect();
-		
+
 		let marker = document.createElement('div');
 
 		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.height = rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
+		
+		if ( hl.ownerDocument != document ) {
+			let iframe = Array.from(document.querySelectorAll('iframe')).find( iframe => iframe.contentDocument == hl.ownerDocument );
+
+			marker.style.top = iframe.getBoundingClientRect().top * ratio / document.documentElement.clientHeight * 100 + "vh";
+		}
 
 		marker.style.backgroundColor = userOptions.highLight.styles[hl.dataset.style || 0].background;
 		
@@ -238,7 +306,6 @@ function openFindBar(searchTerms, total, callback) {
 	fb.id = 'CS_findBarIframe';
 	fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 	fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
-//	fb.style.width = 'calc(100% * ' + window.devicePixelRatio + ')';
 	fb.style.width = '600px';
 	
 	fb.style[userOptions.highLight.findBar.position] = '0';
@@ -253,66 +320,65 @@ function openFindBar(searchTerms, total, callback) {
 	fb.src = browser.runtime.getURL("/findbar.html");
 }
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-
-	if (typeof message.action === 'undefined') return;
 	
-	switch (message.action) {
+function nextPrevious(dir) {
 
-		case "getHighlightStatus":
-		
-			return Promise.resolve(true);
-			break;
-	}
-});
+	let marks = getMarks();
 
-window.addEventListener("message", (e) => {
-	
-	function nextPrevious(dir) {
-		let marks = document.querySelectorAll('.CS_mark');
-		let index = [].findIndex.call(marks, div => div.classList.contains("CS_mark_selected") );
+	let index = marks.findIndex(div => div.classList.contains("CS_mark_selected") );
 
-		index += dir;
-		
-		if ( index < 0 ) index = marks.length - 1;
-		if ( index >= marks.length ) index = 0;
-		
-		jumpTo(index);
-	}
+	index += dir;
 	
-	switch ( e.data.action ) {
-		case "next":
-			nextPrevious(1);
-			break;
-			
-		case "previous":
-			nextPrevious(-1);
-			break;
-			
-		case "mark":
-			unmark();
-			mark(e.data.searchTerms);
-			let marks = document.querySelectorAll('.CS_mark');
-			updateFindBar({total: marks.length});
-			break;
-		
-		case "close":
-			unmark();
-			closeFindBar();
-			break;
-			
-	}
+	if ( index < 0 ) index = marks.length - 1;
+	if ( index >= marks.length ) index = 0;
 	
-});
+	jumpTo(index);
+}
+
+function getMarks() {
+	let marks = Array.from(document.querySelectorAll('.CS_mark'));
+	document.querySelectorAll('iframe').forEach( iframe => {
+
+		if ( ! iframe.contentDocument ) return;
+
+		let _marks = Array.from(iframe.contentDocument.querySelectorAll('.CS_mark'));
+		
+//		console.log(_marks);
+
+		let iframeRect = iframe.getBoundingClientRect();
+
+		let index = marks.findIndex( mark => mark.getBoundingClientRect().top > iframeRect.top );
+
+		if ( index !== -1 )
+			marks.splice(index, 0, ..._marks);
+	});
+	
+//	console.log(marks);
+	
+	return marks;
+}
 
 function jumpTo(index) {
 	
-	document.querySelectorAll('.CS_mark_selected').forEach( _div => _div.classList.remove('CS_mark_selected') );
+//	console.log(index);
 	
-	let marks = document.querySelectorAll('.CS_mark');
+	document.querySelectorAll('iframe').forEach( iframe => {
+		
+		if ( !iframe.contentDocument ) return;
+		
+		iframe.contentDocument.querySelectorAll('.CS_mark_selected').forEach( _div => _div.classList.remove('CS_mark_selected', 'CS_mark_flash') );
+	});
+	
+	document.querySelectorAll('.CS_mark_selected').forEach( _div => _div.classList.remove('CS_mark_selected', 'CS_mark_flash') );
+	
+	let marks = getMarks();
+	
 	let mark = marks[index];
 
 	mark.classList.add('CS_mark_selected');
+	
+	if ( userOptions.highLight.flashSelected )
+		mark.classList.add('CS_mark_flash');
 	
 	let nav = getNavBar();
 	if ( nav ) {
@@ -320,42 +386,38 @@ function jumpTo(index) {
 		if ( navdivs[index] ) navdivs[index].classList.add('CS_mark_selected');
 	}
 
-	if ( window.getComputedStyle(mark, null).display !== 'none' )
-		document.documentElement.scrollTop = mark.getBoundingClientRect().top + document.documentElement.scrollTop - .5 * document.documentElement.clientHeight;
+	if ( window.getComputedStyle(mark, null).display !== 'none' ) {
+		
+		let workingDocument = document;
+
+		if ( mark.ownerDocument != document ) {
+
+			for ( let iframe of document.querySelectorAll('iframe') ) {
+				if (iframe.contentDocument == mark.ownerDocument) {
+					document.documentElement.scrollTop = iframe.getBoundingClientRect().top + document.documentElement.scrollTop - .5 * document.documentElement.clientHeight;
+
+					workingDocument = iframe.contentDocument;
+					break;	
+				}
+			}
+		}
+			
+		workingDocument.documentElement.scrollTop = mark.getBoundingClientRect().top + workingDocument.documentElement.scrollTop - .5 * workingDocument.documentElement.clientHeight;
+
+	}
 
 	updateFindBar({index: index, total: marks.length});
 }
 
-window.addEventListener('keydown', (e) => {
-	
-	if (
-		!userOptions.highLight.findBar.enabled
-		|| !userOptions.highLight.findBar.hotKey.length
-		|| e.repeat
-		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
-	) return;
-	
-	for (let i=0;i<userOptions.highLight.findBar.hotKey.length;i++) {
-		let key = userOptions.highLight.findBar.hotKey[i];
-		if (key === 16 && !e.shiftKey) return;
-		if (key === 17 && !e.ctrlKey) return;
-		if (key === 18 && !e.altKey) return;
-		if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
-	}
-
-	e.preventDefault();
-
-	let searchTerms = getSelectedText(e.target);
-	unmark();
-	mark(searchTerms);
-
-	window.getSelection().removeAllRanges();
-	
-});
-
 function updateFindBar(options) {
+	
+	if ( window != top ) {
+//		console.log(' not top window' );
+		return;
+	}
 	let fb = getFindBar();
-	if (fb) fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || ""}, browser.runtime.getURL('/findbar.html'));
+
+	if (fb) fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || ""}, browser.runtime.getURL('findbar.html'));
 }
 
 function closeFindBar() {
@@ -363,6 +425,53 @@ function closeFindBar() {
 	if ( fb ) fb.parentNode.removeChild(fb);
 }
 
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	if ( !message.action ) return;
+	
+	switch ( message.action ) {
+		case "openFindBar":
+			openFindBar(message.searchTerms || "", getMarks().length);
+			break;
+			
+		case "closeFindBar":
+			closeFindBar();
+			break;
+			
+		case "updateFindBar":
+			updateFindBar(message.options);
+			break;
+			
+		case "findBarNext":
+			nextPrevious(1);
+			break;
+		
+		case "findBarPrevious":
+			nextPrevious(-1);
+			break;
+			
+		case "mark":
+			mark(message.searchTerms);
+			break;
+			
+		case "unmark":
+			unmark();
+			break;
+			
+				// case "mark":
+			// unmark();
+			// mark(e.data.searchTerms);
+			// let marks = document.querySelectorAll('.CS_mark');
+			// updateFindBar({total: marks.length});
+			// break;
+		
+		// case "close":
+			// unmark();
+			// closeFindBar();
+			// break;
+			
+	// }
+	}
+});
 
 
 

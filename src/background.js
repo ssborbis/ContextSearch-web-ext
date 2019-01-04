@@ -96,6 +96,34 @@ function notify(message, sender, sendResponse) {
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
+		case "openFindBar":
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+			
+		case "closeFindBar":
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+			
+		case "updateFindBar":
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+			
+		case "findBarNext":
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+			
+		case "findBarPrevious":
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			break;
+			
+		case "mark":
+			return browser.tabs.sendMessage(sender.tab.id, message);
+			break;
+			
+		case "unmark":
+			return browser.tabs.sendMessage(sender.tab.id, message);
+			break;
+			
 		case "getOpenSearchHref":
 		
 			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( (tab) => {
@@ -316,6 +344,18 @@ function notify(message, sender, sendResponse) {
 			});
 
 			break;
+			
+		case "dataToSearchEngine":
+			return dataToSearchEngine(message.formdata);
+			break;
+			
+		case "openSearchUrlToSearchEngine":
+			return readOpenSearchUrl(message.url).then( xml => {
+				if ( !xml ) return false;
+				
+				return openSearchXMLToSearchEngine(xml);
+			});
+			break;
 	}
 }
 
@@ -428,8 +468,8 @@ function buildContextMenu() {
 				
 				if (isFirefox) {
 					createOptions.icons = {
-						"16": browser.runtime.getURL("/icons/code.svg"),
-						"32": browser.runtime.getURL("/icons/code.svg")
+						"16": node.icon || browser.runtime.getURL("/icons/code.svg"),
+						"32": node.icon || browser.runtime.getURL("/icons/code.svg")
 					}
 				}
 
@@ -531,22 +571,35 @@ function executeOneClickSearch(info) {
 	let engineId = info.menuItemId.replace("__oneClickSearchEngine__", "");
 	let engineName = findNodes( userOptions.nodeTree, node => node.id === engineId )[0].title;
 	
+	function searchAndHighlight(tab) {
+		browser.search.search({
+			query: searchTerms,
+			engine: engineName,
+			tabId: tab.id
+		});
+		
+		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
+			
+			if ( tabId !== tab.id ) return;
+		
+			if ( changeInfo.status !== 'complete' || changeInfo.url === 'about:blank' ) return;
+			
+			highlightSearchTermsInTab(__tab, searchTerms);
+			browser.tabs.onUpdated.removeListener(listener);
+		});
+	}
+	
 	switch (openMethod) {
 		case "openCurrentTab":
-			return browser.search.search({
-				query: searchTerms,
-				engine: engineName
-			});	
+			browser.tabs.getCurrent().then( tab => {
+				searchAndHighlight(tab);
+			});
 			break;
 		case "openNewTab":
 			return browser.tabs.create({
 				active: true
 			}).then( (tab) => {
-				browser.search.search({
-					query: searchTerms,
-					engine: engineName,
-					tabId: tab.id
-				});	
+				searchAndHighlight(tab);
 			});
 			break;
 		case "openNewWindow":
@@ -557,11 +610,7 @@ function executeOneClickSearch(info) {
 				// if new window
 				if (tab.tabs) tab = tab.tabs[0];
 				
-				browser.search.search({
-					query: searchTerms,
-					engine: engineName,
-					tabId: tab.id
-				});	
+				searchAndHighlight(tab);
 			});
 			break;
 		case "openNewIncognitoWindow":
@@ -572,22 +621,14 @@ function executeOneClickSearch(info) {
 				// if new window
 				if (tab.tabs) tab = tab.tabs[0];
 				
-				browser.search.search({
-					query: searchTerms,
-					engine: engineName,
-					tabId: tab.id
-				});	
+				searchAndHighlight(tab);
 			});
 			break;
 		case "openBackgroundTab":
 			return browser.tabs.create({
 				active: false
 			}).then( (tab) => {
-				browser.search.search({
-					query: searchTerms,
-					engine: engineName,
-					tabId: tab.id
-				});	
+				searchAndHighlight(tab);
 			});
 			break;
 	}
@@ -663,8 +704,6 @@ function contextMenuSearch(info, tab) {
 		searchTerms: searchTerms,
 		openMethod: openMethod, 
 		tab: tab
-	}).then( _tab => {
-		highlightSearchTermsInTab(_tab, info.selectionText);
 	});
 }
 
@@ -690,8 +729,6 @@ function quickMenuSearch(info, tab) {
 		openUrl: info.openUrl || null,
 		folder: info.folder,
 		domain: info.domain
-	}).then( _tab => {
-		highlightSearchTermsInTab(_tab, info.selectionText);
 	});
 }
 
@@ -786,9 +823,11 @@ function openSearch(details) {
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
 		
-		return new Promise( (resolve, reject ) => {
+	//	return new Promise( (resolve, reject ) => {				
 
 			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
+				
+				if ( tabId !== _tab.id ) return;
 		
 				let landing_url = new URL(q);
 				let current_url = new URL(__tab.url);
@@ -797,16 +836,17 @@ function openSearch(details) {
 
 				// non-POST should wait to complete
 				if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
-					
+
 					if ( changeInfo.status !== 'complete' ) return;
 					
-					resolve(__tab);
+				//	resolve(__tab);
+					highlightSearchTermsInTab(__tab, searchTerms);
 					browser.tabs.onUpdated.removeListener(listener);
 					return;
 				}
 				
 				browser.tabs.onUpdated.removeListener(listener);
-				
+
 				browser.tabs.executeScript(_tab.id, {
 					code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
 					runAt: 'document_start'
@@ -827,15 +867,18 @@ function openSearch(details) {
 					// listen for the results to complete
 					browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
 						
+						if ( _tabId !== _tab.id ) return;
+
 						if ( _tabInfo.status !== 'complete' ) return;
 						browser.tabs.onUpdated.removeListener(_listener);
 						
 						// send new tab based on results tabId
-						resolve(_tabInfo);
+					//	resolve(_tabInfo);
+						highlightSearchTermsInTab(_tabInfo, searchTerms);
 						//resolve(browser.tabs.get(_tabId));
 					});
 				});});});});
-			});
+		//	});
 		});
 	}
 	
@@ -883,12 +926,15 @@ function escapeDoubleQuotes(str) {
 var highlightTabs = [];
 
 function highlightSearchTermsInTab(tab, searchTerms) {
+	
+	if ( !tab ) return;
 
 	if ( !userOptions.highLight.enabled ) return;
 
 	return browser.tabs.executeScript(tab.id, {
 		code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(searchTerms) + `"}));`,
-		runAt: 'document_idle'
+		runAt: 'document_idle',
+		allFrames: true
 	}).then( () => {
 		if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
 			
@@ -1258,6 +1304,7 @@ const defaultUserOptions = {
 		followExternalLinks: false,
 		followDomain: true,
 		showFindBar: false,
+		flashSelected: true,
 		markOptions: {
 			separateWordSearch: true
 		},
@@ -1273,6 +1320,7 @@ const defaultUserOptions = {
 		},
 		findBar: {
 			enabled: false,
+			startOpen: false,
 			hotKey: [17, 16, 70],
 			position: 'top'
 		}
@@ -1443,4 +1491,185 @@ if (browser.pageAction) {
 		}, {frameId: 0});
 
 	});
+}
+
+browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+	if (changeInfo.status !== 'complete') return;
+	
+	if ( userOptions.quickMenu ) browser.tabs.executeScript(id, {file: "inject_quickmenu.js", allFrames: true, matchAboutBlank: false});
+});
+
+
+
+/**************************************
+/* moving inject code to background */
+
+// note: returns a promise to loadRemoteIcons
+function dataToSearchEngine(data) {
+	
+	// useful when using page_action to trigger custom search iframe
+	if (!data) return null;
+
+	let favicon_href = data.favicon_href || "";
+
+	let query_string = "";
+	let params = [];
+	
+	// convert single object to array
+	for (let k in data.params)
+		params.push({name: k, value: data.params[k]});
+
+	if (data.method === "GET" && data.query) {
+		
+		let param_str = data.query + "={searchTerms}";
+
+		for (let i in data.params) {
+			param_str+="&" + i + "=" + data.params[i];
+		}
+		// If the form.action already contains url parameters, use & not ?
+		query_string = data.action + ((data.action.indexOf('?') === -1) ? "?":"&") + param_str;	
+		
+	} else {
+		// POST form.template = form.action
+		query_string = data.action;
+		
+		if (data.query)
+			params.unshift({name: data.query, value: "{searchTerms}"});
+
+	}
+	
+	// build search engine from form data
+	let se = {
+		"searchForm": data.origin, 
+		"query_string":query_string,
+		"icon_url": data.favicon_href || data.origin + "/favicon.ico",
+		"title": data.title,
+		"order":userOptions.searchEngines.length, 
+		"icon_base64String": "", 
+		"method": data.method, 
+		"params": params, 
+		"template": data.action, 
+		"queryCharset": data.characterSet.toUpperCase(),
+		"description": data.description,
+		"id": gen()
+	};
+
+	return loadRemoteIcon({
+		searchEngines: [se],
+		timeout:5000
+	});
+
+}
+
+function readOpenSearchUrl(url) {
+	
+	return new Promise( (resolve, reject) => {
+		var xmlhttp;
+
+		xmlhttp = new XMLHttpRequest();
+
+		xmlhttp.onreadystatechange = function()	{
+			if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
+				if(xmlhttp.status == 200) {
+
+					let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
+					
+					if (parsed.documentElement.nodeName=="parsererror") {
+						console.log('xml parse error');
+						
+						console.log(parsed);
+						
+						// // try to repair bad template urls
+						// let regexStr = /<Url .* template="(.*)"/g;
+						// let matches = regexStr.exec(xmlhttp.responseText);
+						
+						// if ( matches.length === 2 ) {
+							// let template = matches[1];
+							
+							// template = template.replace(/&amp;/g, "&");
+							// template = template.replace(/&/g, "&amp;");
+							
+							// console.log(template);
+							
+							// let newXML = xmlhttp.responseText.replace(matches[1], template);
+							
+							// console.log(newXML);
+							
+							
+							
+							// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
+							
+							// if (parsed.documentElement.nodeName=="parsererror")
+								parsed = false;
+					//	}
+
+					}
+					resolve(parsed);
+			   } else {
+				   console.log('Error fetching ' + url);
+				   reject(false);
+			   }
+			}
+		}
+		
+		xmlhttp.ontimeout = function (e) {
+			console.log('Timeout fetching ' + url);
+			reject(false);
+		};
+
+		xmlhttp.open("GET", url, true);
+		xmlhttp.timeout = 2000;
+		xmlhttp.send();
+	});
+}
+
+function openSearchXMLToSearchEngine(xml) {
+		
+	let se = {};
+
+	let shortname = xml.documentElement.querySelector("ShortName");
+	if (shortname) se.title = shortname.textContent;
+	else reject();
+	
+	let description = xml.documentElement.querySelector("Description");
+	if (description) se.description = description.textContent;
+	else reject();
+	
+	let inputencoding = xml.documentElement.querySelector("InputEncoding");
+	if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
+	
+	let url = xml.documentElement.querySelector("Url[template]");
+	if (!url) reject();
+	
+	let template = url.getAttribute('template');
+	if (template) se.template = se.query_string = template;
+	
+	let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
+	if (searchform) se.searchForm = searchform.textContent;
+	else if (template) se.searchForm = new URL(template).origin;
+	
+	let image = xml.documentElement.querySelector("Image");
+	if (image) se.icon_url = image.textContent;
+	else se.icon_url = new URL(template).origin + '/favicon.ico';
+	
+	let method = url.getAttribute('method');
+	if (method) se.method = method.toUpperCase() || "GET";
+
+	let params = [];
+	for (let param of url.getElementsByTagName('Param')) {
+		params.push({name: param.getAttribute('name'), value: param.getAttribute('value')})
+	}
+	se.params = params;
+	
+	if (se.params.length > 0 && se.method === "GET") {
+		se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
+	}
+	
+	se.id = gen();
+
+	return loadRemoteIcon({
+		searchEngines: [se],
+		timeout:5000
+	});
+
 }
