@@ -26,7 +26,6 @@ window.addEventListener("message", (e) => {
 });
 
 document.getElementById('next').addEventListener('click', (e) => {
-	console.log('next');
 	browser.runtime.sendMessage({action: "findBarNext", searchTerms: e.target.value});
 });
 

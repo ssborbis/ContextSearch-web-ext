@@ -85,16 +85,21 @@
 	width:100%;
 }
 @keyframes CS_flash {
-	0% {filter: saturate(1)} 
-	50% {filter: saturate(.33)} 
-	100% {filter: saturate(1)} 
+	0% {color: var(--cs-mark-active-color);} 
+	50% {color: black;} 
+	100% {color: var(--cs-mark-active-color);} 
 	
 	/* 0% { opacity: 1;}  */
 	/* 50% { opacity: 0;}  */
 	/* 100% { opacity: 1;} */
+	
+	0% { background-color: var(--cs-mark-active-background);} 
+	50% { background-color: transparent;} 
+	100% { background-color: var(--cs-mark-active-background);}
+
 }
 .CS_mark_selected.CS_mark_flash {
-	animation: CS_flash linear 1s infinite;
+	animation: CS_flash linear .5s infinite;
 }
 #CS_findBarIframe {
 	position:fixed;

@@ -8,6 +8,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	document.head.appendChild(styleEl);
 	
 	styleEl.innerText = `
+		:root {
+			--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
+			--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
+		}
 		.CS_mark[data-style="0"] { 
 			background:${userOptions.highLight.styles[0].background};
 			color:${userOptions.highLight.styles[0].color};
@@ -24,9 +28,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 			background:${userOptions.highLight.styles[3].background};
 			color:${userOptions.highLight.styles[3].color};
 		}
-		.CS_mark_selected {
-			background: ${userOptions.highLight.activeStyle.background} !important;
-			color: ${userOptions.highLight.activeStyle.color} !important;
+		.CS_mark.CS_mark_selected {
+			background: ${userOptions.highLight.activeStyle.background};
+			color: ${userOptions.highLight.activeStyle.color};
 		}
 		`;
 		
@@ -188,16 +192,7 @@ function mark(searchTerms) {
 }
 function openNavBar() {
 
-	let hls = document.querySelectorAll('.CS_mark');
-	
-	// get frame marks
-	let iframes = document.querySelectorAll('iframe:not([src="' + browser.runtime.getURL('findbar.html') + '"])');
-	
-	iframes.forEach( frame => {
-		let _hls = frame.contentDocument.querySelectorAll('.CS_mark');
-		
-		hls = Array.from(hls).concat(Array.from(_hls));
-	});
+	let hls = getMarks();
 
 	if ( ! hls.length ) return;
 
@@ -256,7 +251,7 @@ function openNavBar() {
 		let marker = document.createElement('div');
 
 		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
-		marker.style.height = rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
+		marker.style.height = '.5vh';//rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
 		
 		if ( hl.ownerDocument != document ) {
 			let iframe = Array.from(document.querySelectorAll('iframe')).find( iframe => iframe.contentDocument == hl.ownerDocument );
@@ -342,19 +337,13 @@ function getMarks() {
 		if ( ! iframe.contentDocument ) return;
 
 		let _marks = Array.from(iframe.contentDocument.querySelectorAll('.CS_mark'));
-		
-//		console.log(_marks);
 
-		let iframeRect = iframe.getBoundingClientRect();
-
-		let index = marks.findIndex( mark => mark.getBoundingClientRect().top > iframeRect.top );
+		let index = marks.findIndex( mark => mark.offsetTop > iframe.offsetTop );
 
 		if ( index !== -1 )
 			marks.splice(index, 0, ..._marks);
 	});
-	
-//	console.log(marks);
-	
+
 	return marks;
 }
 
@@ -411,10 +400,8 @@ function jumpTo(index) {
 
 function updateFindBar(options) {
 	
-	if ( window != top ) {
-//		console.log(' not top window' );
-		return;
-	}
+	if ( window != top ) return;
+
 	let fb = getFindBar();
 
 	if (fb) fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || ""}, browser.runtime.getURL('findbar.html'));
