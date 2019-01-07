@@ -62,12 +62,11 @@
 #CS_highLightNavBar {
 	top:0;
 	bottom:0;
-	right:-20px;
+	/* right:-20px; */
+	right:0;
 	position:fixed;
 	width:20px;
 	z-index:2147483647;
-	/* border:1px solid #ccc; */
-	/* background-color:#eee; */
 	opacity:.7;
 	transform-origin:top right;
 }
@@ -81,22 +80,23 @@
 #CS_highLightNavBar > DIV {
 	position:absolute;
 	display:inline-block;
-	left:-20px;
+	/* left:-100%; */
+	left:0;
 	width:100%;
 }
 @keyframes CS_flash {
-	0% {color: var(--cs-mark-active-color);} 
-	50% {color: black;} 
-	100% {color: var(--cs-mark-active-color);} 
-	
-	/* 0% { opacity: 1;}  */
-	/* 50% { opacity: 0;}  */
-	/* 100% { opacity: 1;} */
-	
-	0% { background-color: var(--cs-mark-active-background);} 
-	50% { background-color: transparent;} 
-	100% { background-color: var(--cs-mark-active-background);}
-
+	0% {
+		color: var(--cs-mark-active-color);
+		background-color: var(--cs-mark-active-background);
+	} 
+	50% {
+		color: black;
+		background-color: transparent;
+	} 
+	100% {
+		color: var(--cs-mark-active-color);
+		background-color: var(--cs-mark-active-background);
+	} 
 }
 .CS_mark_selected.CS_mark_flash {
 	animation: CS_flash linear .5s infinite;
@@ -112,4 +112,12 @@
 	transform-origin:top left;
 	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
 	border:1px solid #9abad2;
+	transition: var(--user-transition, all .25s ease-in);
+	overflow: hidden;
+	opacity:1;
+	max-height:36px;
+}
+.CS_mark, #CS_highLightNavBar > DIV {
+	background: transparent;
+	transition: all .5s ease;
 }

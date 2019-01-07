@@ -178,7 +178,7 @@ function mark(searchTerms) {
 				
 				// add class to hits contained in other hits for removal later
 				if ( el.parentNode.classList.contains('CS_mark') )
-					el.classList.add('CS_unmark');				
+					el.classList.add('CS_unmark');	
 			},
 			
 			done: () => {
@@ -312,7 +312,10 @@ function openFindBar() {
 				fb.onload = function() { resolve(fb); }
 			else
 				resolve(fb);
-			return;
+			
+			fb.style.opacity = null;
+			fb.style.maxHeight = null;
+			return false;
 		}
 		
 		fb = document.createElement('iframe');
@@ -320,15 +323,20 @@ function openFindBar() {
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 		fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
 		fb.style.width = '600px';
+		fb.style.opacity = 0;
+		fb.style.maxHeight = 0;
+		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
 		
 		fb.style[userOptions.highLight.findBar.position] = '0';
 
 		document.body.appendChild(fb);
 		fb.onload = function() {
 			fb.focus();
+			fb.style.opacity = null;
+			fb.style.maxHeight = null;
 			resolve(fb);
 		}
-		
+
 		fb.src = browser.runtime.getURL("/findbar.html");
 	});
 }
@@ -370,9 +378,7 @@ function getMarks() {
 }
 
 function jumpTo(index) {
-	
-//	console.log(index);
-	
+
 	document.querySelectorAll('iframe').forEach( iframe => {
 		
 		if ( !iframe.contentDocument ) return;
@@ -382,7 +388,7 @@ function jumpTo(index) {
 	
 	document.querySelectorAll('.CS_mark_selected').forEach( _div => {
 		_div.classList.remove('CS_mark_selected', 'CS_mark_flash');
-		_div.style.backgroundColor = null;
+		_div.style.background = null;
 	});
 	
 	let marks = getMarks();
@@ -399,7 +405,7 @@ function jumpTo(index) {
 		let navdivs = nav.querySelectorAll('div');
 		if ( navdivs[index] ) {
 			navdivs[index].classList.add('CS_mark_selected');
-			navdivs[index].style.backgroundColor = 'var(--cs-mark-active-background)';
+			navdivs[index].style.background = 'var(--cs-mark-active-background)';
 		}
 	}
 
@@ -435,7 +441,11 @@ function updateFindBar(options) {
 
 function closeFindBar() {
 	let fb = getFindBar();
-	if ( fb ) fb.parentNode.removeChild(fb);
+	if ( fb ) {
+		runAtTransitionEnd(fb, "opacity", () => { fb.parentNode.removeChild(fb); });
+		fb.style.maxHeight = 0;
+		fb.style.opacity = 0;
+	}
 }
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -480,7 +490,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			if ( userOptions.highLight.navBar.enabled )
 				openNavBar();
 
-			if ( true /*userOptions.highLight.findBar.jumpToFirstInstance*/ ) {
+			if ( false /*userOptions.highLight.findBar.jumpToFirstInstance*/ ) {
 				
 				let marks = getMarks();
 				for (let w of message.words ) {

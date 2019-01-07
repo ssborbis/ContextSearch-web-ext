@@ -52,6 +52,8 @@ document.getElementById('close').addEventListener('click', (e) => {
 
 window.addEventListener('keydown', (e) => {
 	
-	if ( e.which === 27 )
+	if ( e.which === 27 ) {
 		browser.runtime.sendMessage({action: "closeFindBar"});
+		browser.runtime.sendMessage({action: "unmark"});
+	}
 });
