@@ -77,3 +77,20 @@ function getImage(el, e) {
 
 	return backgroundImage.slice(4, -1).replace(/"/g, "")
 }
+
+// apply global user styles for /^[\.|#]CS_/ matches in userStyles
+browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
+		
+	let userOptions = result.userOptions;
+
+	if ( userOptions.userStylesEnabled && userOptions.userStylesGlobal ) {
+		
+		let styleEl = document.createElement('style');
+		
+		styleEl.innerText = userOptions.userStylesGlobal;
+
+		document.head.appendChild(styleEl);
+	}
+});
+
+

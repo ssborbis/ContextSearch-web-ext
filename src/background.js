@@ -124,6 +124,9 @@ function notify(message, sender, sendResponse) {
 			return browser.tabs.sendMessage(sender.tab.id, message);
 			break;
 			
+		case "markDone":
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			
 		case "getOpenSearchHref":
 		
 			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( (tab) => {
@@ -374,10 +377,8 @@ function loadUserOptions() {
 			for (let key in defaultobj) {
 				userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];
 				
-				if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' ) {
-					console.log(key);
+				if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 					traverse(defaultobj[key], userobj[key]);
-				}
 			}
 		}
 
@@ -1329,6 +1330,7 @@ const defaultUserOptions = {
 `/* add custom styles to menus here */
 /* .tile { width:64px; } */
 `,
+	userStylesGlobal: "",
 	userStylesEnabled: false,
 	enableAnimations: true
 };

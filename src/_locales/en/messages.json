@@ -1334,6 +1334,21 @@
     "description": ""
   },
   
+  "FindBarNavMessage": {
+    "message": "$1 of $2 matches",
+    "description": ""
+  },
+  
+  "highlightflashselectedtooltip": {
+    "message": "Flash the currently active search term",
+    "description": ""
+  },
+  
+  "findbarstartopen": {
+    "message": "Open the Find bar automatically when the page loads",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

@@ -13,15 +13,18 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	document.getElementById('searchBar').focus();
 });
 
+document.addEventListener('DOMContentLoaded', (e) => {
+	document.getElementById('searchBar').focus();
+});
+
 window.addEventListener("message", (e) => {
-	
-//	console.log(e.data);
 
 	let sb = document.getElementById('searchBar');
 	let counter = document.getElementById('mark_counter');
 	
 	if ( e.data.searchTerms ) sb.value = e.data.searchTerms;
-	counter.innerText = e.data.index + 1 + ' of ' + e.data.total + ' matches';
+	
+	counter.innerText = browser.i18n.getMessage("FindBarNavMessage", [e.data.index + 1, e.data.total]);
 
 });
 
@@ -30,13 +33,25 @@ document.getElementById('next').addEventListener('click', (e) => {
 });
 
 document.getElementById('previous').addEventListener('click', (e) => {
-	browser.runtime.sendMessage({action: "findBarPrevious", searchTerms: e.target.value});
+	browser.runtime.sendMessage({action: "findBarPrevious"});
 });
 
 document.getElementById('searchBar').addEventListener('change', (e) => {
 	browser.runtime.sendMessage({action: "mark", searchTerms: e.target.value});
 });
 
+document.getElementById('searchBar').addEventListener('keypress', (e) => {
+	
+	if ( e.which === 13 )
+		browser.runtime.sendMessage({action: "findBarNext"});
+});
+
 document.getElementById('close').addEventListener('click', (e) => {
 	browser.runtime.sendMessage({action: "closeFindBar"});
+});
+
+window.addEventListener('keydown', (e) => {
+	
+	if ( e.which === 27 )
+		browser.runtime.sendMessage({action: "closeFindBar"});
 });

@@ -1202,7 +1202,7 @@ function buildSearchEngineContainer() {
 		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, copy, _delete].forEach((el) => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
-			el.addEventListener('click', () => {
+			el.addEventListener('click', (e) => {
 				closeContextMenus();
 			});
 		});
@@ -1229,6 +1229,8 @@ function buildSearchEngineContainer() {
 
 		// menu close listener
 		document.addEventListener('click', function contextMenuClose(e) {
+			
+			if ( e.which !== 1 ) return;
 			
 			let menus = document.querySelectorAll('.contextMenu');
 

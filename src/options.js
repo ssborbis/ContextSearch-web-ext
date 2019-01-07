@@ -438,6 +438,33 @@ function saveOptions(e) {
 		
 		userStyles: $('#t_userStyles').value,
 		userStylesEnabled: $('#cb_userStylesEnabled').checked,
+		userStylesGlobal: (() => {
+			
+			let styleText = "";
+
+			let styleEl = document.createElement('style');
+
+			document.head.appendChild(styleEl);
+
+			styleEl.innerText = $('#t_userStyles').value;
+			styleEl.sheet.disabled = true;
+
+			let sheet = styleEl.sheet;
+			
+			if ( !sheet ) return;
+
+			for ( let i in sheet.cssRules ) {
+				let rule = sheet.cssRules[i];
+				
+				if ( /^[\.|#]CS_/.test(rule.selectorText) )
+					styleText+=rule.cssText + "\n";
+			}
+		
+			styleEl.parentNode.removeChild(styleEl);
+			
+			return styleText;
+		})(),
+	
 		enableAnimations: $('#cb_enableAnimations').checked,
 		quickMenuTheme: $('#s_searchBarTheme').value,
 		searchBarTheme: $('#s_searchBarTheme').value

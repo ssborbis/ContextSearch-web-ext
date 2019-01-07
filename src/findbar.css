@@ -2,7 +2,7 @@ BODY[data-theme="dark"] IMG {
 	filter: invert(1);
 }
 #findbar {
-	padding:4px 0;
+	padding:6px 0;
 	vertical-align:middle;
 	font-size:10pt;
 	font-family:Arial;

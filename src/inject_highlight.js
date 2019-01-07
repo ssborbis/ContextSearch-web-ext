@@ -4,6 +4,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		
 	userOptions = result.userOptions;
 
+	// append marking styles
 	let styleEl = document.createElement('style');
 	document.head.appendChild(styleEl);
 	
@@ -12,31 +13,33 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 			--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
 			--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
 		}
-		.CS_mark[data-style="0"] { 
+		.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
 			background:${userOptions.highLight.styles[0].background};
 			color:${userOptions.highLight.styles[0].color};
 		}	
-		.CS_mark[data-style="1"] {
+		.CS_mark[data-style="1"], #CS_highLightNavBar[ > DIVdata-style="1"] {
 			background:${userOptions.highLight.styles[1].background};
 			color:${userOptions.highLight.styles[1].color};
 		}
-		.CS_mark[data-style="2"] {
+		.CS_mark[data-style="2"], #CS_highLightNavBar > DIV[data-style="2"] {
 			background:${userOptions.highLight.styles[2].background};
 			color:${userOptions.highLight.styles[2].color};
 		}
-		.CS_mark[data-style="3"] {
+		.CS_mark[data-style="3"], #CS_highLightNavBar > DIV[data-style="3"] {
 			background:${userOptions.highLight.styles[3].background};
 			color:${userOptions.highLight.styles[3].color};
 		}
-		.CS_mark.CS_mark_selected {
+		.CS_mark.CS_mark_selected, .CS_mark_selected {
 			background: ${userOptions.highLight.activeStyle.background};
 			color: ${userOptions.highLight.activeStyle.color};
 		}
 		`;
-		
-	if ( userOptions.highLight.findBar.startOpen ) browser.runtime.sendMessage({action: "openFindBar"});
+	
+	// open findbar on pageload if set
+	if ( window == top && userOptions.highLight.findBar.startOpen ) openFindBar();
 });
 
+// ESC to clear markers and navbar
 document.addEventListener('keydown', (e) => {
 	if ( e.which === 27 ) {
 		browser.runtime.sendMessage({action: "unmark"}).then( () => {
@@ -45,6 +48,7 @@ document.addEventListener('keydown', (e) => {
 	}
 });
 
+// listen for findbar hotkey
 window.addEventListener('keydown', (e) => {
 
 	if (
@@ -53,19 +57,22 @@ window.addEventListener('keydown', (e) => {
 		|| e.repeat
 		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
 	) return;
-	
-	for (let i=0;i<userOptions.highLight.findBar.hotKey.length;i++) {
+
+	for (let i in userOptions.highLight.findBar.hotKey) {
 		let key = userOptions.highLight.findBar.hotKey[i];
 		if (key === 16 && !e.shiftKey) return;
 		if (key === 17 && !e.ctrlKey) return;
 		if (key === 18 && !e.altKey) return;
-		if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+		if (![16,17,18,e.keyCode].includes(key)) return;
 	}
 
 	e.preventDefault();
 
 	let searchTerms = getSelectedText(e.target);
 	
+	if ( !searchTerms ) searchTerms = window.findBarLastSearchTerms || "";
+	
+	// search for selected terms
 	browser.runtime.sendMessage({action: "unmark"}).then( () => {
 		browser.runtime.sendMessage({action: "mark", searchTerms: searchTerms});
 	});
@@ -74,12 +81,13 @@ window.addEventListener('keydown', (e) => {
 	
 });
 
-
+// init marker.js object
 var CS_MARK_instance = null;
 
 var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
 var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
 
+// listen for execute_script call from background
 document.addEventListener('CS_mark', (e) => {
 
 	CS_MARK_instance = new Mark(document.body);
@@ -93,7 +101,8 @@ document.addEventListener('CS_mark', (e) => {
 		CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
 		CS_MARK_instance.unmark();
 		
-		mark(e.detail.trim());
+		let searchTerms = e.detail.trim();
+		mark(searchTerms);
 	
 	}, 100);
 	
@@ -105,7 +114,6 @@ function unmark() {
 	CS_MARK_instance.unmark();
 	
 	closeNavBar();
-//	closeFindBar();
 	
 	browser.runtime.sendMessage({action: "removeTabHighlighting"});
 }
@@ -115,12 +123,8 @@ function closeNavBar() {
 	if ( nav ) nav.parentNode.removeChild(nav);
 }
 
-function mark(searchTerms) {
+function buildSearchWords(searchTerms) {
 	
-	searchTerms = searchTerms.trim();
-
-	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
-
 	// get quoted strings as single search term
 	let phrases = searchTerms.match(/".*?"/g) || [];
 	phrases.forEach( (phrase, i) => {
@@ -146,6 +150,19 @@ function mark(searchTerms) {
 	
 	// sort largest to smallest to avoid small matches breaking larger matches
 	words.sort( (a, b) => {return ( a.length > b.length ) ? -1 : 1} );
+	
+	return words;
+}
+
+function mark(searchTerms) {
+	
+	searchTerms = searchTerms.trim();
+	
+	window.findBarLastSearchTerms = searchTerms;
+
+	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
+
+	let words = buildSearchWords(searchTerms);
 
 	words.forEach( (word, i) => {
 
@@ -155,22 +172,24 @@ function mark(searchTerms) {
 
 			each: (el) => {
 				
+				// add class to hidden makers for removal later
 				if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
 					el.classList.add('CS_unmark');
 				
+				// add class to hits contained in other hits for removal later
 				if ( el.parentNode.classList.contains('CS_mark') )
-					el.classList.add('CS_unmark');
-				
-			//	el.id = 'CS_mark_' + gen();
-				
+					el.classList.add('CS_unmark');				
 			},
 			
 			done: () => {
 
+				// only perform when done with all words
 				if ( i !== words.length - 1 ) return;
 
+				// remove marker queued for unmarking
 				CS_MARK_instance.unmark({className: 'CS_unmark'});
 				
+				// get hit index in words array for styling
 				document.querySelectorAll(".CS_mark").forEach( el => {
 					let index = words.findIndex( word => {
 						return word.toLowerCase() === el.textContent.toLowerCase();
@@ -178,14 +197,8 @@ function mark(searchTerms) {
 					
 					if ( index !== -1 ) el.dataset.style = index > 3 ? index % 4 : index;	
 				});
-				
-				if ( window == top && userOptions.highLight.navBar.enabled )
-					setTimeout( openNavBar, 1000);
 
-				if ( window == top && ( getFindBar() || userOptions.highLight.showFindBar ) ) 
-					browser.runtime.sendMessage({action: "openFindBar", searchTerms:searchTerms});
-				
-				browser.runtime.sendMessage({action: "markDone"});
+				browser.runtime.sendMessage({action: "markDone", searchTerms:searchTerms, words: words});
 			}
 		});
 	});
@@ -195,6 +208,8 @@ function openNavBar() {
 	let hls = getMarks();
 
 	if ( ! hls.length ) return;
+	
+	if ( getNavBar() ) closeNavBar();
 
 	let div = document.createElement('div');
 	div.id = 'CS_highLightNavBar';
@@ -259,7 +274,7 @@ function openNavBar() {
 			marker.style.top = iframe.getBoundingClientRect().top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		}
 
-		marker.style.backgroundColor = userOptions.highLight.styles[hl.dataset.style || 0].background;
+		marker.dataset.style = hl.dataset.style || 0;
 		
 		marker.onclick = function(e) {
 			
@@ -285,34 +300,37 @@ function openNavBar() {
 
 }
 
-function openFindBar(searchTerms, total, callback) {
+function openFindBar() {
+	
+	return new Promise( (resolve, reject) => {
 
-	let fb = getFindBar();
-	
-	callback = callback || function() {};
-	
-	if ( fb ) {
-		updateFindBar({searchTerms:searchTerms, total:total});
-		callback();
-		return;
-	}
-	
-	fb = document.createElement('iframe');
-	fb.id = 'CS_findBarIframe';
-	fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
-	fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
-	fb.style.width = '600px';
-	
-	fb.style[userOptions.highLight.findBar.position] = '0';
+		let fb = getFindBar();
 
-	document.body.appendChild(fb);
-	fb.onload = function() {
-		updateFindBar({searchTerms:searchTerms, index: -1, total:total});
-		fb.focus();
-		callback();
-	}
-	
-	fb.src = browser.runtime.getURL("/findbar.html");
+		if ( fb ) {
+			
+			if ( !fb.contentDocument || fb.contentDocument.readyState !== 'complete' )
+				fb.onload = function() { resolve(fb); }
+			else
+				resolve(fb);
+			return;
+		}
+		
+		fb = document.createElement('iframe');
+		fb.id = 'CS_findBarIframe';
+		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
+		fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
+		fb.style.width = '600px';
+		
+		fb.style[userOptions.highLight.findBar.position] = '0';
+
+		document.body.appendChild(fb);
+		fb.onload = function() {
+			fb.focus();
+			resolve(fb);
+		}
+		
+		fb.src = browser.runtime.getURL("/findbar.html");
+	});
 }
 
 	
@@ -343,6 +361,10 @@ function getMarks() {
 		if ( index !== -1 )
 			marks.splice(index, 0, ..._marks);
 	});
+	
+	// if ( true || userOptions.highLight.sortByAccuracy ) {
+		// marks.sort( (a,b) => { return a.textContent.toLowerCase() > b.textContent.toLowerCase() ? 1 : -1 } );
+	// }
 
 	return marks;
 }
@@ -358,7 +380,10 @@ function jumpTo(index) {
 		iframe.contentDocument.querySelectorAll('.CS_mark_selected').forEach( _div => _div.classList.remove('CS_mark_selected', 'CS_mark_flash') );
 	});
 	
-	document.querySelectorAll('.CS_mark_selected').forEach( _div => _div.classList.remove('CS_mark_selected', 'CS_mark_flash') );
+	document.querySelectorAll('.CS_mark_selected').forEach( _div => {
+		_div.classList.remove('CS_mark_selected', 'CS_mark_flash');
+		_div.style.backgroundColor = null;
+	});
 	
 	let marks = getMarks();
 	
@@ -372,7 +397,10 @@ function jumpTo(index) {
 	let nav = getNavBar();
 	if ( nav ) {
 		let navdivs = nav.querySelectorAll('div');
-		if ( navdivs[index] ) navdivs[index].classList.add('CS_mark_selected');
+		if ( navdivs[index] ) {
+			navdivs[index].classList.add('CS_mark_selected');
+			navdivs[index].style.backgroundColor = 'var(--cs-mark-active-background)';
+		}
 	}
 
 	if ( window.getComputedStyle(mark, null).display !== 'none' ) {
@@ -399,12 +427,10 @@ function jumpTo(index) {
 }
 
 function updateFindBar(options) {
-	
-	if ( window != top ) return;
 
-	let fb = getFindBar();
-
-	if (fb) fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || ""}, browser.runtime.getURL('findbar.html'));
+	openFindBar().then( fb => {
+		fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || window.findBarLastSearchTerms || ""}, browser.runtime.getURL('findbar.html'));	
+	});
 }
 
 function closeFindBar() {
@@ -417,10 +443,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 	switch ( message.action ) {
 		case "openFindBar":
-			openFindBar(message.searchTerms || "", getMarks().length);
+			updateFindBar({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length});
 			break;
 			
 		case "closeFindBar":
+			unmark();
 			closeFindBar();
 			break;
 			
@@ -437,26 +464,36 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "mark":
+			unmark();
 			mark(message.searchTerms);
+			if ( window == top && userOptions.highLight.showFindBar ) 
+				updateFindBar({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length});
+				getFindBar().focus();
 			break;
 			
 		case "unmark":
 			unmark();
 			break;
 			
-				// case "mark":
-			// unmark();
-			// mark(e.data.searchTerms);
-			// let marks = document.querySelectorAll('.CS_mark');
-			// updateFindBar({total: marks.length});
-			// break;
-		
-		// case "close":
-			// unmark();
-			// closeFindBar();
-			// break;
-			
-	// }
+		case "markDone":
+
+			if ( userOptions.highLight.navBar.enabled )
+				openNavBar();
+
+			if ( true /*userOptions.highLight.findBar.jumpToFirstInstance*/ ) {
+				
+				let marks = getMarks();
+				for (let w of message.words ) {
+					let index = marks.findIndex( m => m.textContent.toLowerCase() === w.toLowerCase() );
+					
+					if ( index !== -1 ) {
+						jumpTo(index);
+						break;
+					}
+				}
+			}
+
+			break;
 	}
 });
 
