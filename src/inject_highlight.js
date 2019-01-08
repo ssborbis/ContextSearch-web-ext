@@ -73,9 +73,7 @@ window.addEventListener('keydown', (e) => {
 	if ( !searchTerms ) searchTerms = window.findBarLastSearchTerms || "";
 	
 	// search for selected terms
-	browser.runtime.sendMessage({action: "unmark"}).then( () => {
-		browser.runtime.sendMessage({action: "mark", searchTerms: searchTerms});
-	});
+	browser.runtime.sendMessage({action: "mark", searchTerms: searchTerms});
 
 	window.getSelection().removeAllRanges();
 	
@@ -169,6 +167,7 @@ function mark(searchTerms) {
 		CS_MARK_instance.mark(word, {
 			className:"CS_mark",
 			separateWordSearch: false,
+			accuracy: userOptions.highLight.markOptions.accuracy,
 
 			each: (el) => {
 				
@@ -308,14 +307,19 @@ function openFindBar() {
 
 		if ( fb ) {
 			
-			if ( !fb.contentDocument || fb.contentDocument.readyState !== 'complete' )
-				fb.onload = function() { resolve(fb); }
-			else
+			// if ( !fb.contentDocument || ( fb.contentDocument && fb.contentDocument.readyState !== 'complete' ) ) {
+				// console.log('waiting on iframe load');
+				// fb.onload = function() { 
+					// console.log('loaded');
+					// resolve(fb); 
+				// }
+			// }
+			// else 
 				resolve(fb);
 			
 			fb.style.opacity = null;
 			fb.style.maxHeight = null;
-			return false;
+			return;
 		}
 		
 		fb = document.createElement('iframe');
@@ -435,7 +439,7 @@ function jumpTo(index) {
 function updateFindBar(options) {
 
 	openFindBar().then( fb => {
-		fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || window.findBarLastSearchTerms || ""}, browser.runtime.getURL('findbar.html'));	
+		fb.contentWindow.postMessage({index: options.index || 0, total: options.total || 0, searchTerms: options.searchTerms || ""}, browser.runtime.getURL('findbar.html'));	
 	});
 }
 
@@ -478,7 +482,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			mark(message.searchTerms);
 			if ( window == top && userOptions.highLight.showFindBar ) 
 				updateFindBar({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length});
-				getFindBar().focus();
+				if ( getFindBar() ) getFindBar().focus();
 			break;
 			
 		case "unmark":

@@ -1,3 +1,5 @@
+function getSearchBar() { return document.getElementById('searchBar') }
+
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 	
@@ -10,16 +12,16 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {
-	document.getElementById('searchBar').focus();
+	getSearchBar().focus();
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {
-	document.getElementById('searchBar').focus();
+	getSearchBar().focus();
 });
 
 window.addEventListener("message", (e) => {
 
-	let sb = document.getElementById('searchBar');
+	let sb = getSearchBar();
 	let counter = document.getElementById('mark_counter');
 	
 	if ( e.data.searchTerms ) sb.value = e.data.searchTerms;
@@ -36,13 +38,21 @@ document.getElementById('previous').addEventListener('click', (e) => {
 	browser.runtime.sendMessage({action: "findBarPrevious"});
 });
 
-document.getElementById('searchBar').addEventListener('change', (e) => {
-	browser.runtime.sendMessage({action: "mark", searchTerms: e.target.value});
+getSearchBar().addEventListener('change', (e) => {
+	
+	if ( e.target.value )
+		browser.runtime.sendMessage({action: "mark", searchTerms: e.target.value});
+	else {
+		browser.runtime.sendMessage({action: "unmark"});
+		document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
+	}
 });
 
-document.getElementById('searchBar').addEventListener('keypress', (e) => {
+getSearchBar().addEventListener('keypress', (e) => {
 	
-	if ( e.which === 13 )
+	if ( e.which !== 13 ) return;
+	
+	if ( e.target.value )
 		browser.runtime.sendMessage({action: "findBarNext"});
 });
 
@@ -56,4 +66,8 @@ window.addEventListener('keydown', (e) => {
 		browser.runtime.sendMessage({action: "closeFindBar"});
 		browser.runtime.sendMessage({action: "unmark"});
 	}
+});
+
+document.addEventListener('DOMContentLoaded', (e) => {
+	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
 });

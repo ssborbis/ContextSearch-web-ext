@@ -1349,6 +1349,26 @@
     "description": ""
   },
   
+  "accuracy": {
+    "message": "Accuracy",
+    "description": ""
+  },
+  
+  "partial": {
+    "message": "partial",
+    "description": ""
+  },
+  
+  "exact": {
+    "message": "exact",
+    "description": ""
+  },
+  
+  "highlightaccuracytooltip": {
+    "message": "Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

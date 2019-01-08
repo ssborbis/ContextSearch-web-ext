@@ -1307,7 +1307,8 @@ const defaultUserOptions = {
 		showFindBar: false,
 		flashSelected: true,
 		markOptions: {
-			separateWordSearch: true
+			separateWordSearch: true,
+			accuracy: "partially"
 		},
 		styles: [
 			{color: '#ffffff',background:'#ff00ff'},

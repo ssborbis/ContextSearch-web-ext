@@ -253,10 +253,12 @@ function restoreOptions() {
 		$('#c_highLightBackgroundActive').value = userOptions.highLight.activeStyle.background;
 		
 		$('#cb_highLightFlashSelected').checked = userOptions.highLight.flashSelected;
-		
+
 		$('#cb_highLightNavBarEnabled').checked = userOptions.highLight.navBar.enabled;
 		$('#cb_highLightShowFindBar').checked = userOptions.highLight.showFindBar;
+		
 		$('#cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
+		$('#s_highLightAccuracy').value = userOptions.highLight.markOptions.accuracy;
 		
 		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
@@ -432,7 +434,8 @@ function saveOptions(e) {
 				position: $('#s_findBarPosition').value
 			},
 			markOptions: {
-				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked
+				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,
+				accuracy: $('#s_highLightAccuracy').value
 			}
 		},
 		
