@@ -231,7 +231,7 @@ function openNavBar() {
 	
 	div.appendChild(img);
 	
-	let ratio = document.documentElement.clientHeight / document.documentElement.offsetHeight;
+	let ratio = document.documentElement.clientHeight / Math.max(document.documentElement.offsetHeight, document.body.offsetHeight);
 	
 	function navScrollToHandler(e) {
 		document.documentElement.scrollTop = e.clientY / ratio - .5 * document.documentElement.clientHeight;
@@ -260,17 +260,19 @@ function openNavBar() {
 
 	hls.forEach( (hl, index) => {
 
-		let rect = hl.getBoundingClientRect();
+	//	let rect = hl.getBoundingClientRect();
 
 		let marker = document.createElement('div');
 
-		marker.style.top = rect.top * ratio / document.documentElement.clientHeight * 100 + "vh";
+	//	marker.style.top = ( window.pageYOffset + rect.top ) * ratio / document.documentElement.clientHeight * 100 + "vh";
+		marker.style.top = offset(hl).top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.height = '.5vh';//rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
 		
 		if ( hl.ownerDocument != document ) {
 			let iframe = Array.from(document.querySelectorAll('iframe')).find( iframe => iframe.contentDocument == hl.ownerDocument );
 
-			marker.style.top = iframe.getBoundingClientRect().top * ratio / document.documentElement.clientHeight * 100 + "vh";
+		//	marker.style.top = ( window.pageYOffset + iframe.getBoundingClientRect().top ) * ratio / document.documentElement.clientHeight * 100 + "vh";
+			marker.style.top = offset(iframe).top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		}
 
 		marker.dataset.style = hl.dataset.style || 0;
@@ -326,7 +328,7 @@ function openFindBar() {
 		fb.id = 'CS_findBarIframe';
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 		fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
-		fb.style.width = '600px';
+		fb.style.width = '800px';
 		fb.style.opacity = 0;
 		fb.style.maxHeight = 0;
 		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
@@ -365,10 +367,12 @@ function getMarks() {
 	document.querySelectorAll('iframe').forEach( iframe => {
 
 		if ( ! iframe.contentDocument ) return;
+		
+		let iframeOffsetTop = offset(iframe).top;
 
 		let _marks = Array.from(iframe.contentDocument.querySelectorAll('.CS_mark'));
 
-		let index = marks.findIndex( mark => mark.offsetTop > iframe.offsetTop );
+		let index = marks.findIndex( mark => offset(mark).top > iframeOffsetTop );
 
 		if ( index !== -1 )
 			marks.splice(index, 0, ..._marks);
@@ -493,6 +497,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 			if ( userOptions.highLight.navBar.enabled )
 				openNavBar();
+			
+			updateFindBar({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length});
 
 			if ( false /*userOptions.highLight.findBar.jumpToFirstInstance*/ ) {
 				

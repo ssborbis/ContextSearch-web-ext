@@ -1354,13 +1354,13 @@
     "description": ""
   },
   
-  "partial": {
-    "message": "partial",
+  "partially": {
+    "message": "partially",
     "description": ""
   },
   
-  "exact": {
-    "message": "exact",
+  "exactly": {
+    "message": "exactly",
     "description": ""
   },
   

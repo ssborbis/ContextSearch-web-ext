@@ -1308,7 +1308,7 @@ const defaultUserOptions = {
 		flashSelected: true,
 		markOptions: {
 			separateWordSearch: true,
-			accuracy: "partially"
+			accuracy: "exactly"
 		},
 		styles: [
 			{color: '#ffffff',background:'#ff00ff'},

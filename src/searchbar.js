@@ -264,7 +264,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	function getSuggestions(terms, callback) {
 		
-		let url = 'http://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);
+		let url = 'https://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);
 		callback = callback || function() {};
 		var xmlhttp;
 

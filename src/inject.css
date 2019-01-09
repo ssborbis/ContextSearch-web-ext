@@ -102,6 +102,7 @@
 	animation: CS_flash linear .5s infinite;
 }
 #CS_findBarIframe {
+	all:unset;
 	position:fixed;
 	left:0;
 	right:0;

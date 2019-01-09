@@ -15,18 +15,11 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	getSearchBar().focus();
 });
 
-document.addEventListener('DOMContentLoaded', (e) => {
-	getSearchBar().focus();
-});
-
 window.addEventListener("message", (e) => {
 
-	let sb = getSearchBar();
-	let counter = document.getElementById('mark_counter');
+	if ( e.data.searchTerms ) getSearchBar().value = e.data.searchTerms;
 	
-	if ( e.data.searchTerms ) sb.value = e.data.searchTerms;
-	
-	counter.innerText = browser.i18n.getMessage("FindBarNavMessage", [e.data.index + 1, e.data.total]);
+	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [e.data.index + 1, e.data.total]);
 
 });
 

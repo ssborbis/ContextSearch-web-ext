@@ -1,3 +1,7 @@
+BODY[data-theme="dark"] {
+	color: #a4a4a4;
+}
+
 BODY[data-theme="dark"] IMG {
 	filter: invert(1);
 }
@@ -31,11 +35,14 @@ BODY[data-theme="dark"] IMG {
 	vertical-align:middle;
 	margin-top:-4px;
 }
-#previous, #next {
+.button {
 	border:1px solid #888;
 	text-align:center;
-	width:30px;
 	height:20px;
+	vertical-align:middle;
+	padding:0 8px;
+}
+#previous, #next {
 	vertical-align:top;
 }
 #previous IMG, #next IMG {
@@ -47,8 +54,7 @@ BODY[data-theme="dark"] IMG {
 }
 #mark_counter {
 	margin-left:16px;
-	opacity:.5;
 }
-BODY[data-theme="dark"] #previous, BODY[data-theme="dark"] #next {
+BODY[data-theme="dark"] .button {
 	background-color:#5b5b5d;
 }
