@@ -73,7 +73,7 @@ window.addEventListener('keydown', (e) => {
 	if ( !searchTerms ) searchTerms = window.findBarLastSearchTerms || "";
 	
 	// search for selected terms
-	browser.runtime.sendMessage({action: "mark", searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: "mark", searchTerms: searchTerms, findBarSearch:true});
 
 	window.getSelection().removeAllRanges();
 	
@@ -152,7 +152,7 @@ function buildSearchWords(searchTerms) {
 	return words;
 }
 
-function mark(searchTerms) {
+function mark(searchTerms, findBarSearch) {
 	
 	searchTerms = searchTerms.trim();
 	
@@ -160,14 +160,15 @@ function mark(searchTerms) {
 
 	CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
 
-	let words = buildSearchWords(searchTerms);
+	let words = findBarSearch ? [searchTerms] : buildSearchWords(searchTerms);
 
 	words.forEach( (word, i) => {
 
 		CS_MARK_instance.mark(word, {
 			className:"CS_mark",
 			separateWordSearch: false,
-			accuracy: userOptions.highLight.markOptions.accuracy,
+			accuracy: findBarSearch ? "partially" : userOptions.highLight.markOptions.accuracy,
+			ignorePunctuation: findBarSearch ? ":;.,-–—‒_(){}[]!'\"+=".split("") : [],
 
 			each: (el) => {
 				
@@ -197,7 +198,7 @@ function mark(searchTerms) {
 					if ( index !== -1 ) el.dataset.style = index > 3 ? index % 4 : index;	
 				});
 
-				browser.runtime.sendMessage({action: "markDone", searchTerms:searchTerms, words: words});
+				browser.runtime.sendMessage({action: "markDone", searchTerms:searchTerms, words: words, findBarSearch: findBarSearch});
 			}
 		});
 	});
@@ -260,18 +261,14 @@ function openNavBar() {
 
 	hls.forEach( (hl, index) => {
 
-	//	let rect = hl.getBoundingClientRect();
-
 		let marker = document.createElement('div');
 
-	//	marker.style.top = ( window.pageYOffset + rect.top ) * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.top = offset(hl).top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.height = '.5vh';//rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
 		
 		if ( hl.ownerDocument != document ) {
 			let iframe = Array.from(document.querySelectorAll('iframe')).find( iframe => iframe.contentDocument == hl.ownerDocument );
 
-		//	marker.style.top = ( window.pageYOffset + iframe.getBoundingClientRect().top ) * ratio / document.documentElement.clientHeight * 100 + "vh";
 			marker.style.top = offset(iframe).top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		}
 
@@ -309,15 +306,9 @@ function openFindBar() {
 
 		if ( fb ) {
 			
-			// if ( !fb.contentDocument || ( fb.contentDocument && fb.contentDocument.readyState !== 'complete' ) ) {
-				// console.log('waiting on iframe load');
-				// fb.onload = function() { 
-					// console.log('loaded');
-					// resolve(fb); 
-				// }
-			// }
-			// else 
+			setTimeout( () => {
 				resolve(fb);
+			}, 100);
 			
 			fb.style.opacity = null;
 			fb.style.maxHeight = null;
@@ -336,6 +327,7 @@ function openFindBar() {
 		fb.style[userOptions.highLight.findBar.position] = '0';
 
 		document.body.appendChild(fb);
+		
 		fb.onload = function() {
 			fb.focus();
 			fb.style.opacity = null;
@@ -483,7 +475,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 		case "mark":
 			unmark();
-			mark(message.searchTerms);
+			mark(message.searchTerms, message.findBarSearch || null);
 			if ( window == top && userOptions.highLight.showFindBar ) 
 				updateFindBar({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length});
 				if ( getFindBar() ) getFindBar().focus();
@@ -499,21 +491,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				openNavBar();
 			
 			updateFindBar({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length});
-
-			if ( false /*userOptions.highLight.findBar.jumpToFirstInstance*/ ) {
-				
-				let marks = getMarks();
-				for (let w of message.words ) {
-					let index = marks.findIndex( m => m.textContent.toLowerCase() === w.toLowerCase() );
-					
-					if ( index !== -1 ) {
-						jumpTo(index);
-						break;
-					}
-				}
-			}
-
+			
+			if ( message.findBarSearch ) jumpTo(0);
+			
 			break;
+			
+		case "findBarUpdateOptions":
+			userOptions = message.userOptions;
+			browser.runtime.sendMessage({action: "mark", searchTerms: message.searchTerms});
+			
 	}
 });
 

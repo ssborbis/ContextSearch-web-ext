@@ -1,7 +1,15 @@
 let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
 
 function notify(message, sender, sendResponse) {
-		
+	
+	function sendMessageToTopFrame() {
+		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+	}
+	
+	function sendMessageToAllFrames() {
+		return browser.tabs.sendMessage(sender.tab.id, message);
+	}
+
 	switch(message.action) {
 		
 		case "saveUserOptions":
@@ -68,24 +76,23 @@ function notify(message, sender, sendResponse) {
 			break;
 
 		case "openQuickMenu":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "closeQuickMenuRequest":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 		
 		case "quickMenuIframeLoaded":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 		
 		case "updateQuickMenuObject":
-			// send to all frames for bi-directional updates to/from quickmenu IFRAME v1.3.8+
-			return browser.tabs.sendMessage(sender.tab.id, message);
+			return sendMessageToAllFrames();
 			break;
 			
 		case "rebuildQuickMenu":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "closeWindowRequest":
@@ -93,39 +100,43 @@ function notify(message, sender, sendResponse) {
 			break;
 		
 		case "closeCustomSearch":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "openFindBar":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "closeFindBar":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "updateFindBar":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "findBarNext":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "findBarPrevious":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			break;
 			
 		case "mark":
-			return browser.tabs.sendMessage(sender.tab.id, message);
+			return sendMessageToAllFrames();
 			break;
 			
 		case "unmark":
-			return browser.tabs.sendMessage(sender.tab.id, message);
+			return sendMessageToAllFrames();
 			break;
-			
+		
+		case "findBarUpdateOptions":
+			return sendMessageToTopFrame();
+			break;
+	
 		case "markDone":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+			return sendMessageToTopFrame();
 			
 		case "getOpenSearchHref":
 		
@@ -1496,11 +1507,20 @@ if (browser.pageAction) {
 	});
 }
 
-browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-	if (changeInfo.status !== 'complete') return;
+// browser.tabs.onUpdated.addListener((tabId, info, tab) => {
+    // if ( info.status !== 'complete' || info.url === 'about:blank' ) return;
+
+	// browser.tabs.insertCSS(tab.id, {
+		// file: "/inject.css",
+		// cssOrigin: "user"
+	// });
+// });
+
+// browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
+	// if (changeInfo.status !== 'complete') return;
 	
-	if ( userOptions.quickMenu ) browser.tabs.executeScript(id, {file: "inject_quickmenu.js", allFrames: true, matchAboutBlank: false});
-});
+	// if ( userOptions.quickMenu ) browser.tabs.executeScript(id, {file: "inject_quickmenu.js", allFrames: true, matchAboutBlank: false});
+// });
 
 
 

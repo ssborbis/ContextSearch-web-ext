@@ -45,13 +45,14 @@
 				"inject.js",
 				"opensearch.js",
 				"searchEngineUtils.js",
+				"inject_quickmenu.js",
 				"inject_customSearch.js",
 				"inject_sidebar.js",
 				"inject_highlight.js"
 			],
 			"css": ["inject.css","inject_sidebar.css"],
 			"all_frames": true,
-			"match_about_blank": true
+			"match_about_blank": false
 		}
 	],
 	
@@ -86,4 +87,3 @@
 		"default_icon": "icons/icon48.png"
 	}
 }
-

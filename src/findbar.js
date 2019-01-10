@@ -1,5 +1,7 @@
 function getSearchBar() { return document.getElementById('searchBar') }
 
+var userOptions = {};
+
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 	
@@ -9,6 +11,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		document.querySelector('#dark').rel="stylesheet";
 	
 	document.body.dataset.theme = userOptions.quickMenuTheme;
+	// document.querySelector('#accuracy').dataset.accuracy =  userOptions.highLight.markOptions.accuracy;
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {
@@ -34,19 +37,21 @@ document.getElementById('previous').addEventListener('click', (e) => {
 getSearchBar().addEventListener('change', (e) => {
 	
 	if ( e.target.value )
-		browser.runtime.sendMessage({action: "mark", searchTerms: e.target.value});
+		browser.runtime.sendMessage({action: "mark", searchTerms: e.target.value, findBarSearch:true});
 	else {
 		browser.runtime.sendMessage({action: "unmark"});
 		document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
 	}
 });
 
-getSearchBar().addEventListener('keypress', (e) => {
+getSearchBar().addEventListener('keydown', (e) => {
 	
-	if ( e.which !== 13 ) return;
+	if ( !e.target.value ) return;
 	
-	if ( e.target.value )
+	if ( [13,40].includes(e.which) )
 		browser.runtime.sendMessage({action: "findBarNext"});
+	else if ( [38].includes(e.which) )
+		browser.runtime.sendMessage({action: "findBarPrevious"});
 });
 
 document.getElementById('close').addEventListener('click', (e) => {
@@ -64,3 +69,7 @@ window.addEventListener('keydown', (e) => {
 document.addEventListener('DOMContentLoaded', (e) => {
 	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
 });
+
+// document.querySelector('#accuracy').addEventListener('click', (e) => {
+	// this.dataset.accuracy = ( this.dataset.accuracy === 'exactly' ) ? 'partially' : 'exactly';
+// });
