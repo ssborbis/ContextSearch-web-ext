@@ -382,7 +382,9 @@ function openFindBar() {
 		fb = document.createElement('iframe');
 		fb.id = 'CS_findBarIframe';
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
-		fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
+		//fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
+		
+		fb.style.setProperty('transform', 'scale(' + 1 / window.devicePixelRatio + ')', "important");
 		fb.style.width = '800px';
 		fb.style.opacity = 0;
 		fb.style.maxHeight = 0;

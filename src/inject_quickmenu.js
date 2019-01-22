@@ -116,7 +116,9 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	let new_scale = (userOptions.quickMenuScaleOnZoom) ? (userOptions.quickMenuScale / window.devicePixelRatio) : userOptions.quickMenuScale;
 	
 	qmc.style.transformOrigin = "top left";
-	qmc.style.transform = "scale(" + new_scale + ")";
+//	qmc.style.transform = "scale(" + new_scale + ")";
+	
+	qmc.style.setProperty('transform', "scale(" + new_scale + ")", "important");
 	
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
@@ -656,7 +658,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						
 						let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(_message.tileCount, userOptions.quickMenuColumns);
 						let rows = Math.ceil(_message.tileCount / columns );
-												
+
 						let startSize = {columns: columns, rows: rows};
 
 						document.body.appendChild(overDiv);
@@ -666,7 +668,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						iframe.style.borderStyle = 'dashed';
 						
 						resizeWidget.style.transition = 'none';
-						editWidget.style.transition = 'none';
+					//	editWidget.style.transition = 'none';
 						
 						// lower the quick menu in case zIndex = MAX
 						iframe.style.zIndex = window.getComputedStyle(iframe).zIndex - 1;
@@ -720,7 +722,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							iframe.style.zIndex = null;
 							
 							resizeWidget.style.transition = null;
-							editWidget.style.transition = null;
+						//	editWidget.style.transition = null;
 							
 							// rebuild the menu again to shrink empty rows
 							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));

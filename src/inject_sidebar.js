@@ -96,7 +96,9 @@ if ( window != top ) {
 
 		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
-		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
+		//sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
+		
+		sbContainer.style.setProperty('transform', "scale(" + 1 / window.devicePixelRatio + ")", "important");
 		sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 		
 		if ( userOptions.searchBarTheme === 'dark' )
