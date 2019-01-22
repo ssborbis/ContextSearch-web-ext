@@ -80,7 +80,7 @@ function closeQuickMenu(eventType) {
 		return false;
 	}
 	
-	var quickMenuElement = document.getElementById('quickMenuIframe');
+	var quickMenuElement = document.getElementById('CS_quickMenuIframe');
 	if (quickMenuElement) {
 		quickMenuElement.style.opacity=0;
 		document.dispatchEvent(new CustomEvent('closequickmenu'));
@@ -100,7 +100,7 @@ function getOffsets() {
 }
 
 function scaleAndPositionQuickMenu(size, resizeOnly) {
-	let qmc = document.getElementById('quickMenuIframe');
+	let qmc = document.getElementById('CS_quickMenuIframe');
 	if (!qmc) return;
 	
 	resizeOnly = resizeOnly || false;
@@ -174,13 +174,13 @@ function repositionOffscreenElement( element ) {
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {
 
-	let qmc = document.getElementById('quickMenuIframe');
+	let qmc = document.getElementById('CS_quickMenuIframe');
 		
 	if (qmc) qmc.parentNode.removeChild(qmc);
 	
 	qmc = document.createElement('iframe');
 
-	qmc.id = "quickMenuIframe";
+	qmc.id = "CS_quickMenuIframe";
 
 	qmc.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
 	qmc.style.left = coords.x + getOffsets().x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + "px";
@@ -473,7 +473,7 @@ document.addEventListener("drag", (ev) => {
 window.addEventListener('keydown', (e) => {
 	if (
 		e.keyCode !== 9 ||
-		!document.getElementById('quickMenuIframe') 
+		!document.getElementById('CS_quickMenuIframe') 
 	) return;
 	
 	e.preventDefault();
@@ -551,7 +551,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (quickMenuObject.disabled)
 					userOptions.quickMenu = false;
 				
-				let qm = document.getElementById('quickMenuIframe')
+				let qm = document.getElementById('CS_quickMenuIframe')
 				
 				if( qm && message.toggleLock ) {
 				
@@ -585,7 +585,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				/* edit widget start */
 				
-				// let iframe = document.getElementById('quickMenuIframe');
+				// let iframe = document.getElementById('CS_quickMenuIframe');
 				// let editWidget = document.getElementById('CS_editWidget');
 				
 				// if ( !editWidget ) {
@@ -630,7 +630,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				_message = message;
 				
-				let iframe = document.getElementById('quickMenuIframe');
+				let iframe = document.getElementById('CS_quickMenuIframe');
 				let resizeWidget = document.getElementById('CS_resizeWidget');
 				
 				// overlay a div to capture mouse events over iframes

@@ -46,7 +46,44 @@ if ( window != top ) {
 			getOpeningTab().style.display = userOptions.sideBar.widget.enabled ? null : "none";
 		}
 	});
+	
+	function openSideBar() {
 		
+		let iframe = getIframe();
+		let sbContainer = getContainer();
+		let openingTab = getOpeningTab();
+		
+		iframe = document.createElement('iframe');
+		iframe.id = 'CS_sbIframe';
+		iframe.src = browser.runtime.getURL('/searchbar.html');
+		
+		openingTab.classList.add('CS_close');
+
+		sbContainer.appendChild(iframe);
+
+		sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
+		
+		sbContainer.style.opacity = 1;
+		sbContainer.dataset.opened = true;
+	}
+	
+	function closeSideBar() {
+		
+		let iframe = getIframe();
+		let sbContainer = getContainer();
+		let openingTab = getOpeningTab();
+		
+		iframe.style.maxWidth = null;
+		sbContainer.style.opacity = null;
+		sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
+		openingTab.classList.remove('CS_close');
+
+		runAtTransitionEnd(sbContainer, "height", () => { iframe.parentNode.removeChild(iframe) });
+
+		sbContainer.dataset.opened = false;
+		document.documentElement.classList.remove('CS_panel');
+	}
+	
 	function main() {
 		
 		document.documentElement.dataset.cs_sidebar_position = userOptions.sideBar.widget.position;
@@ -61,42 +98,20 @@ if ( window != top ) {
 		sbContainer.id = 'CS_sbContainer';
 		sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
 		sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
+		
+		if ( userOptions.searchBarTheme === 'dark' )
+			openingTab.classList.add('CS_dark');
 
 		openingTab.addEventListener('click', () => {
 			
 			if ( sbContainer.moving ) return false;
 			
 			let iframe = getIframe();
-			if ( iframe ) {
-				iframe.style.maxWidth = null;
-				sbContainer.style.opacity = null;
-				sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
-				openingTab.classList.remove('CS_close');
-
-				runAtTransitionEnd(sbContainer, "height", () => { iframe.parentNode.removeChild(iframe) });
-
-				sbContainer.dataset.opened = false;
-				document.documentElement.classList.remove('CS_panel');
-				
-				return;
-			}
-
-			iframe = document.createElement('iframe');
-			iframe.id = 'CS_sbIframe';
-			iframe.src = browser.runtime.getURL('/searchbar.html');
 			
-			openingTab.classList.add('CS_close');
-
-			sbContainer.appendChild(iframe);
-
-			sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
-			
-			sbContainer.style.opacity = 1;
-			sbContainer.dataset.opened = true;
-			
-			if ( userOptions.searchBarTheme === 'dark' )
-				openingTab.classList.add('CS_dark');
-
+			if ( iframe ) 
+				closeSideBar();
+			else 
+				openSideBar();
 		});
 		
 		// open sidebar if dragging text over
@@ -267,4 +282,24 @@ if ( window != top ) {
 			
 		});
 	}
+	
+	document.addEventListener("fullscreenchange", (e) => {
+		
+		let sbc = getContainer();
+		
+		if ( userOptions.sideBar.hideFullScreen && document.fullscreen ) {
+
+			sbc.style.display = 'none';
+		//	document.documentElement.classList.remove('CS_panel');
+		//	closeSideBar();
+			
+		} else {			
+			sbc.style.display = null;
+			
+		//	openSideBar();
+			
+		//	if ( userOptions.sideBar.type === 'panel' )
+		//		document.documentElement.classList.add('CS_panel');
+		}
+	});
 }

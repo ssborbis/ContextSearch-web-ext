@@ -1575,7 +1575,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="blobContainerHeader" data-i18n="SideBar">Sidebar</div>
 
 					<div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
-					
+
 					<p class="header1" data-i18n="Columns">Columns</p>
 					<div class="option">
 						<input type="number" id="n_sideBarColumns" size="2" class="inputNice">
@@ -1633,6 +1633,16 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span class="description" data-i18n="SideBarHotkeyTooltip">Open the Sidebar any time using a hotkey</span>
 					</div>
 					<div id="d_hotkey" style="margin-left:30px"></div>
+					
+					<p class="header1" data-i18n="General">General</p>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_sideBarHideFullScreen" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="SidebarHideFullScreenTooltip">Hide the Sidebar when in fullscreen</div>
+					</div>
+					
 
 				</div>
 				<div class="tabcontent" id="highLightTab">
@@ -1659,13 +1669,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</label>
 						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">Continue highlighting on external websites linked from the search results page</div>
 					</div>
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightMarkOptionsSeparateWordSearch" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightSeparateWordsTooltip">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
-					</div>
+					
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="cb_highLightNavBarEnabled" />
@@ -1683,14 +1687,47 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 					<p class="header1" data-i18n="Accuracy">Accuracy</p>
 					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightAccuracy">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightMarkOptionsAccuracy">
 							<option data-i18n="partially" value="partially">partially</option>
 							<option data-i18n="exactly" value="exactly">exactly</option>
 						</select>
 						<div class="description" data-i18n="HighLightAccuracyTooltip">Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted</div>
 					</div>
+					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightMarkOptionsSeparateWordSearch" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightSeparateWordsTooltip">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
+					</div>
+					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightMarkOptionsIgnorePunctuation" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightIgnorePunctuationTooltip">Ignore punctuation - Setting this option would match WORLDS, WORLD'S and WO'RLDS. One or more apostrophes between the letters would still produce a match (e.g. W'O''R'L'D'S)</div>
+					</div>
+					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightMarkOptionsCaseSensitive" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightCaseSensitiveTooltip">Case sensitive</div>
+					</div>
+					
 					<p class="header1" data-i18n="Style">Style</p>
 					
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightStyle">
+							<option data-i18n="background" value="background">background</option>
+							<option data-i18n="underline" value="underline">underline</option>
+						</select>
+						<div class="description" data-i18n="HighLightStyleToolTip">Style the highlighting using background / foreground colors or underlines. Choosing 'underline' will ignore text color values</div>
+					</div>
+					<br /><br />
 					<table style="text-align:center">
 						<tr>
 							<td></td>
@@ -1726,6 +1763,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							<td>Active</td>
 							<td><input type="color" id="c_highLightBackgroundActive" /></td>
 							<td><input type="color" id="c_highLightColorActive" /></td>
+							<td>
+							
+							</td>
 						</tr>
 					</table>
 					
@@ -1747,6 +1787,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="FindBarEnableHotkey">Open the Find bar using a hotkey</span>
+						<br /><br />
 						<div id="d_findBarHotKey" style="margin-left:30px"></div>
 					</div>
 					

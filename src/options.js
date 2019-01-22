@@ -229,6 +229,7 @@ function restoreOptions() {
 		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
 		$('#s_sideBarType').value = userOptions.sideBar.type;
+		$('#cb_sideBarHideFullScreen').checked = userOptions.sideBar.hideFullScreen;
 		
 		$('#t_userStyles').value = userOptions.userStyles;
 		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
@@ -240,6 +241,8 @@ function restoreOptions() {
 		$('#cb_highLightEnabled').checked = userOptions.highLight.enabled;
 		$('#cb_highLightFollowDomain').checked = userOptions.highLight.followDomain;
 		$('#cb_highLightFollowExternalLinks').checked = userOptions.highLight.followExternalLinks;
+		
+		$('#s_highLightStyle').value = userOptions.highLight.highlightStyle;
 		
 		$('#c_highLightColor0').value = userOptions.highLight.styles[0].color;
 		$('#c_highLightBackground0').value = userOptions.highLight.styles[0].background;
@@ -258,7 +261,9 @@ function restoreOptions() {
 		$('#cb_highLightShowFindBar').checked = userOptions.highLight.showFindBar;
 		
 		$('#cb_highLightMarkOptionsSeparateWordSearch').checked = userOptions.highLight.markOptions.separateWordSearch;
-		$('#s_highLightAccuracy').value = userOptions.highLight.markOptions.accuracy;
+		$('#cb_highLightMarkOptionsIgnorePunctuation').checked = userOptions.highLight.markOptions.ignorePunctuation;
+		$('#cb_highLightMarkOptionsCaseSensitive').checked = userOptions.highLight.markOptions.caseSensitive;
+		$('#s_highLightMarkOptionsAccuracy').value = userOptions.highLight.markOptions.accuracy;
 		
 		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
@@ -382,6 +387,7 @@ function saveOptions(e) {
 			hotkey: [],
 			startOpen: $('#cb_sideBarStartOpen').checked,
 			type: $('#s_sideBarType').value,
+			hideFullScreen: $('#cb_sideBarHideFullScreen').checked,
 			widget: {
 				enabled: $('#cb_sideBarWidgetEnable').checked,
 				position: $('#s_sideBarWidgetPosition').value,
@@ -395,6 +401,7 @@ function saveOptions(e) {
 			followExternalLinks: $('#cb_highLightFollowExternalLinks').checked,
 			showFindBar: $('#cb_highLightShowFindBar').checked,
 			flashSelected: $('#cb_highLightFlashSelected').checked,
+			highlightStyle: $('#s_highLightStyle').value,
 			
 			styles: [
 				{	
@@ -435,7 +442,9 @@ function saveOptions(e) {
 			},
 			markOptions: {
 				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,
-				accuracy: $('#s_highLightAccuracy').value
+				ignorePunctuation: $('#cb_highLightMarkOptionsIgnorePunctuation').checked,
+				caseSensitive: $('#cb_highLightMarkOptionsCaseSensitive').checked,
+				accuracy: $('#s_highLightMarkOptionsAccuracy').value
 			}
 		},
 		

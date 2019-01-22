@@ -1,4 +1,4 @@
-#quickMenuIframe {
+#CS_quickMenuIframe {
 	all:unset;
 	position:absolute;
 	cursor: pointer;
@@ -16,11 +16,12 @@
 	display:inline-block;
 	z-index: 2147483647; /* max 32-bit integer */
 	transition: var(--user-transition, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
+	transform:scale(1);
 }
-#quickMenuIframe[data-openingopacity] {
+#CS_quickMenuIframe[data-openingopacity] {
 	opacity:var(--opening-opacity);
 }
-#quickMenuIframe[data-openingopacity]:hover {
+#CS_quickMenuIframe[data-openingopacity]:hover {
 	opacity:1;
 }
 #CS_customSearchIframe {
@@ -98,8 +99,23 @@
 		background-color: var(--cs-mark-active-background);
 	} 
 }
-.CS_mark_selected.CS_mark_flash {
+
+@keyframes CS_flash_underline {
+	0% {
+		border-color: var(--cs-mark-active-background);
+	} 
+	50% {
+		border-color: transparent;
+	} 
+	100% {
+		border-color: var(--cs-mark-active-background);
+	} 
+}
+.CS_mark_selected.CS_mark_flash[data-flashstyle='background'] {
 	animation: CS_flash linear .5s infinite;
+}
+.CS_mark_selected.CS_mark_flash[data-flashstyle='underline'] {
+	animation: CS_flash_underline linear .5s infinite;
 }
 #CS_findBarIframe {
 	all:unset;
@@ -117,6 +133,7 @@
 	overflow: hidden;
 	opacity:1;
 	max-height:36px;
+	transform:scale(1);
 }
 .CS_mark, #CS_highLightNavBar > DIV {
 	background: transparent;

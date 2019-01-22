@@ -137,6 +137,7 @@ function notify(message, sender, sendResponse) {
 	
 		case "markDone":
 			return sendMessageToTopFrame();
+			break;
 			
 		case "getOpenSearchHref":
 		
@@ -1304,6 +1305,7 @@ const defaultUserOptions = {
 		singleColumn: false,
 		startOpen: false,
 		type: "overlay",
+		hideFullScreen: false,
 		hotkey: [],
 		widget: {
 			enabled: false,
@@ -1319,8 +1321,11 @@ const defaultUserOptions = {
 		flashSelected: true,
 		markOptions: {
 			separateWordSearch: true,
-			accuracy: "exactly"
+			accuracy: "exactly",
+			ignorePunctuation: true,
+			caseSensitive: false
 		},
+		highlightStyle: 'underline',
 		styles: [
 			{color: '#ffffff',background:'#ff00ff'},
 			{color: '#000000',background:'#FFA500'},
@@ -1335,7 +1340,8 @@ const defaultUserOptions = {
 			enabled: false,
 			startOpen: false,
 			hotKey: [17, 16, 70],
-			position: 'top'
+			position: 'top',
+			hideFullScreen: true
 		}
 	},
 	userStyles: 

@@ -1330,7 +1330,7 @@
   },
   
   "FindBarEnableHotkey": {
-    "message": "Open the Find bar using a hotkey",
+    "message": "Open the Find bar using a hotkey. Selected text will be highlighted immediately if found",
     "description": ""
   },
   
@@ -1366,6 +1366,36 @@
   
   "highlightaccuracytooltip": {
     "message": "Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted",
+    "description": ""
+  },
+  
+  "sidebarhidefullscreentooltip": {
+    "message": "Hide the Sidebar when in fullscreen",
+    "description": ""
+  },
+  
+  "highlightignorepunctuationtooltip": {
+    "message": "Ignore punctuation - Setting this option would match WORLDS, WORLD'S and WO'RLDS. One or more apostrophes between the letters would still produce a match (e.g. W'O''R'L'D'S)",
+    "description": ""
+  },
+  
+  "highlightcasesensitivetooltip": {
+    "message": "Case sensitive",
+    "description": ""
+  },
+  
+  "background": {
+    "message": "background",
+    "description": ""
+  },
+  
+  "underline": {
+    "message": "underline",
+    "description": ""
+  },
+  
+  "highlightstyletooltip": {
+    "message": "Style the highlighting using background / foreground colors or underlines. Choosing 'underline' will ignore text color values",
     "description": ""
   },
   

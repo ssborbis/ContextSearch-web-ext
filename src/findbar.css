@@ -53,8 +53,30 @@ BODY[data-theme="dark"] IMG {
 	transform:scaleY(-1);
 }
 #mark_counter {
-	margin-left:16px;
+	margin:0 16px;
 }
 BODY[data-theme="dark"] .button {
 	background-color:#5b5b5d;
 }
+.optionLabel {
+	display:inline-block;
+	text-align:center;
+	height:20px;
+	width:20px;
+	vertical-align:middle;
+	margin:0 2px;
+	border:2px solid transparent;
+	line-height:20px;
+}
+INPUT:checked + .optionLabel {
+	border:2px inset #888;
+	background-color:var(--hover);
+	box-shadow: 0 0 8px black inset;
+}
+.option {
+	position:absolute;
+	z-index:-1;
+	display:none;
+	opacity:0;
+}
+
