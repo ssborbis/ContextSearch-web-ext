@@ -1302,13 +1302,93 @@
   },
   
   "FindBarEnableHotkey": {
-    "message": "Ouvrir la barre en utilisant le raccourci clavier :",
+    "message": "Ouvrir la barre en utilisant le raccourci clavier (texte sélectionné immédiatement surligné si trouvé) :",
     "description": ""
   },
   
-  "_________": {
+  "FindBarNavMessage": {
+    "message": "Occurrence $1 sur $2",
+    "description": ""
+  },
+  
+  "highlightflashselectedtooltip": {
+    "message": "Faire clignoter le terme de recherche actif",
+    "description": ""
+  },
+  
+  "findbarstartopen": {
+    "message": "Ouvrir la barre automatiquement au chargement de la page",
+    "description": ""
+  },
+  
+  "accuracy": {
+    "message": "Exactitude",
+    "description": ""
+  },
+  
+  "partially": {
+    "message": "partielle",
+    "description": ""
+  },
+  
+  "exactly": {
+    "message": "totale",
+    "description": ""
+  },
+  
+  "highlightaccuracytooltip": {
+    "message": "Correspondance partielle des mots (« lorem » surligné pour « lor » recherché) ou totale (que le mot exact « lor » surligné)",
+    "description": ""
+  },
+  
+  "sidebarhidefullscreentooltip": {
+    "message": "Masquer la barre latérale en plein écran",
+    "description": ""
+  },
+  
+  "highlightignorepunctuationtooltip": {
+    "message": "Ignorer la ponctuation (correspondance de « QU'ELLE » mais aussi de « Q'U''E'L'L'E » (une ou plusieurs apostrophes entre les lettres) avec « QUELLE »)",
+    "description": ""
+  },
+  
+  "highlightcasesensitivetooltip": {
+    "message": "Respecter la casse",
+    "description": ""
+  },
+  
+  "background": {
+    "message": "surligné",
+    "description": ""
+  },
+  
+  "underline": {
+    "message": "souligné",
+    "description": ""
+  },
+  
+  "highlightstyletooltip": {
+    "message": "Texte « surligné » (choix de la couleur du texte et de l’arrière-plan) ou « souligné » (choix de la couleur du texte ignoré)",
+    "description": ""
+  },
+  
+  "casesensitive": {
+    "message": "Casse respectée",
+    "description": ""
+  },
+  
+  "ignorepunctuation": {
+    "message": "Ponctuation ignorée",
+    "description": ""
+  },
+  
+  "separateWordSearch": {
+    "message": "Recherche des mots séparés",
+    "description": ""
+  },
+  
+  "___________": {
     "message": "",
     "description": ""
-  }
-  
+  } 
+
 }
