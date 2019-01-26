@@ -1339,6 +1339,7 @@ const defaultUserOptions = {
 		findBar: {
 			enabled: false,
 			startOpen: false,
+			navBar: false,
 			hotKey: [17, 16, 70],
 			position: 'top',
 			hideFullScreen: true

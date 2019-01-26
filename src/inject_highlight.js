@@ -6,8 +6,24 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		
 	userOptions = result.userOptions;
 
+	// open findbar on pageload if set
+	if ( window == top && userOptions.highLight.findBar.startOpen ) {
+
+		markOptions = {
+			accuracy: userOptions.highLight.markOptions.accuracy,
+			caseSensitive: userOptions.highLight.markOptions.caseSensitive,
+			ignorePunctuation: userOptions.highLight.markOptions.ignorePunctuation,
+			separateWordSearch: userOptions.highLight.markOptions.separateWordSearch
+		};
+
+		updateFindBar(markOptions);
+	}
+});
+
+function addStyling() {
 	// append marking styles
 	let styleEl = document.createElement('style');
+	styleEl.id = 'CS_highlight_style';
 	document.head.appendChild(styleEl);
 	
 	if ( userOptions.highLight.highlightStyle === 'background' ) {
@@ -47,35 +63,33 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		}
 		.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
 			border-bottom: .2em solid ${userOptions.highLight.styles[0].background};
+			color:inherit;
 		}	
 		.CS_mark[data-style="1"], #CS_highLightNavBar > DIV[data-style="1"] {
 			border-bottom: .2em solid ${userOptions.highLight.styles[1].background};
+			color:inherit;
 		}
 		.CS_mark[data-style="2"], #CS_highLightNavBar > DIV[data-style="2"] {
 			border-bottom: .2em solid ${userOptions.highLight.styles[2].background};
+			color:inherit;
 		}
 		.CS_mark[data-style="3"], #CS_highLightNavBar > DIV[data-style="3"] {
 			border-bottom: .2em solid ${userOptions.highLight.styles[3].background};
+			color:inherit;
 		}
 		.CS_mark.CS_mark_selected, .CS_mark_selected {
 			border-bottom: .2em solid ${userOptions.highLight.activeStyle.background};
+			color:inherit;
 		}
 		`;
 	}
+}
+
+function removeStyling() {
+	let styleEl = document.getElementById('CS_highlight_style');
 	
-	// open findbar on pageload if set
-	if ( window == top && userOptions.highLight.findBar.startOpen ) {
-
-		markOptions = {
-			accuracy: userOptions.highLight.markOptions.accuracy,
-			caseSensitive: userOptions.highLight.markOptions.caseSensitive,
-			ignorePunctuation: userOptions.highLight.markOptions.ignorePunctuation,
-			separateWordSearch: userOptions.highLight.markOptions.separateWordSearch
-		};
-
-		updateFindBar(markOptions);
-	}
-});
+	if ( styleEl ) styleEl.parentNode.removeChild(styleEl);
+}
 
 // ESC to clear markers and navbar
 document.addEventListener('keydown', (e) => {
@@ -169,6 +183,7 @@ function unmark() {
 	CS_MARK_instance.unmark();
 	
 	closeNavBar();
+	removeStyling();
 	
 	browser.runtime.sendMessage({action: "removeTabHighlighting"});
 }
@@ -205,6 +220,8 @@ function buildSearchWords(searchTerms) {
 }
 
 function mark(options) {
+	
+	addStyling();
 
 	searchTerms = options.searchTerms.trim();
 	
@@ -356,6 +373,9 @@ function openNavBar() {
 			marker.style.marginTop = ++layers * 4 + 'px';
 		else
 			layers = 0;
+		
+		marker.style.background = userOptions.highLight.styles[parseInt(marker.dataset.style) || 0].background;
+		marker.style.border = 'none';
 		
 	});
 	

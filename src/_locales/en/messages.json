@@ -1399,6 +1399,21 @@
     "description": ""
   },
   
+  "casesensitive": {
+    "message": "case sensitive",
+    "description": ""
+  },
+  
+  "ignorepunctuation": {
+    "message": "ignore punctuation",
+    "description": ""
+  },
+  
+  "separateWordSearch": {
+    "message": "separate word search",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

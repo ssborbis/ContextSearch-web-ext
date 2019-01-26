@@ -10,10 +10,100 @@ if ( window != top ) {
 	
 	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		userOptions = message.userOptions || {};
-		main();
+		
+		if ( userOptions.sideBar.widget.enabled )	
+			main();
 		
 		if ( userOptions.sideBar.startOpen )
-			getOpeningTab().click();
+			openSideBar();
+			//getOpeningTab().click();
+			
+		// listen for quickMenuHotkey
+		window.addEventListener('keydown', (e) => {
+			if (
+				!userOptions.quickMenuOnHotkey
+				|| e.repeat
+			) return;
+			
+			for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
+				let key = userOptions.quickMenuHotkey[i];
+				if (key === 16 && !e.shiftKey) return;
+				if (key === 17 && !e.ctrlKey) return;
+				if (key === 18 && !e.altKey) return;
+				if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+			}
+
+			e.preventDefault();
+
+			openSideBar();
+			
+		});
+		
+		window.addEventListener('message', (e) => {
+
+			let url = new URL(browser.runtime.getURL(''));
+
+			if ( e.origin !== url.origin ) return;
+			
+			if ( !e.data.size ) return;
+
+			let iframe = getIframe();
+			let sbContainer = getContainer();
+			
+			if ( !userOptions.enableAnimations ) 
+				sbContainer.style.setProperty('--user-transition', 'none');
+
+			if ( !iframe ) return;
+			
+			if ( e.data.size.height ) {
+				iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";	
+				iframe.style.maxHeight = iframe.style.height;
+				
+				if ( userOptions.sideBar.type === 'panel' ) {
+					sbContainer.style.height = 100 * window.devicePixelRatio + '%';
+					iframe.style.height = '100%';
+					iframe.style.maxHeight = '100%';
+					sbContainer.style.top = '0';
+				}
+			}
+			
+			if ( e.data.size.width ) {
+				iframe.style.width = e.data.size.width + "px";
+				iframe.style.maxWidth = iframe.style.width;
+
+				let bodyPadding = window.getComputedStyle(document.body).getPropertyValue('padding-' + userOptions.sideBar.widget.position);
+
+				document.documentElement.style.setProperty('--cs-sidebar-width', sbContainer.getBoundingClientRect().width + parseFloat(bodyPadding) + "px");
+				
+				if ( userOptions.sideBar.type === 'panel' ) {
+					document.documentElement.classList.add('CS_panel');
+					
+					// document.body.querySelectorAll('DIV').forEach( el => {
+						
+						// if ( el === sbContainer ) return;
+						// let style = window.getComputedStyle(el);
+						// if ( style.getPropertyValue('position') === 'fixed') {
+
+							// console.log(style.getPropertyValue('width'));
+							// // style.getPropertyValue('width') === '100%'
+								// // parseInt(style.getPropertyValue('width')) === document.body.getBoundingClientRect().width
+
+							// el.style.width = 'calc(100% - ' + sbContainer.getBoundingClientRect().width + 'px)';
+						// //	el.classList.add('CS_panel');
+						// }
+					// });
+				}
+			}
+			
+			sbContainer.style.opacity = 1;
+
+			// test for bottom overflow
+			let rect = sbContainer.getBoundingClientRect();
+
+			if ( !userOptions.sideBar.type && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
+				sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
+		});
+		
 	});
 
 	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -49,10 +139,12 @@ if ( window != top ) {
 	
 	function openSideBar() {
 		
+		if ( !getContainer() ) main();
+		
 		let iframe = getIframe();
 		let sbContainer = getContainer();
 		let openingTab = getOpeningTab();
-		
+
 		iframe = document.createElement('iframe');
 		iframe.id = 'CS_sbIframe';
 		iframe.src = browser.runtime.getURL('/searchbar.html');
@@ -82,6 +174,13 @@ if ( window != top ) {
 
 		sbContainer.dataset.opened = false;
 		document.documentElement.classList.remove('CS_panel');
+		
+		if ( !userOptions.sideBar.widget.enabled ) {
+			delete document.documentElement.dataset.cs_sidebar_position;
+			document.documentElement.style.setProperty('--cs-sidebar-width', null);
+			
+			sbContainer.parentNode.removeChild(sbContainer);
+		}
 	}
 	
 	function main() {
@@ -187,9 +286,6 @@ if ( window != top ) {
 			sbContainer.style.top = _top + "px";
 		}
 
-		if ( !userOptions.sideBar.widget.enabled )	
-			openingTab.style.display = 'none';
-		
 		sbContainer.appendChild(openingTab);
 		document.body.appendChild(sbContainer);
 		
@@ -197,92 +293,7 @@ if ( window != top ) {
 		let rect = sbContainer.getBoundingClientRect();
 		if ( rect.bottom > window.innerHeight )
 			sbContainer.style.top = (window.innerHeight - rect.height) + "px";
-			
-		window.addEventListener('message', (e) => {
 
-			let url = new URL(browser.runtime.getURL(''));
-
-			if ( e.origin !== url.origin ) return;
-			
-			if ( !e.data.size ) return;
-
-			let iframe = getIframe();
-			let sbContainer = getContainer();
-			
-			if ( !userOptions.enableAnimations ) 
-				sbContainer.style.setProperty('--user-transition', 'none');
-
-			if ( !iframe ) return;
-			
-			if ( e.data.size.height ) {
-				iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";	
-				iframe.style.maxHeight = iframe.style.height;
-				
-				if ( userOptions.sideBar.type === 'panel' ) {
-					sbContainer.style.height = 100 * window.devicePixelRatio + '%';
-					iframe.style.height = '100%';
-					iframe.style.maxHeight = '100%';
-					sbContainer.style.top = '0';
-				}
-			}
-			
-			if ( e.data.size.width ) {
-				iframe.style.width = e.data.size.width + "px";
-				iframe.style.maxWidth = iframe.style.width;
-
-				let bodyPadding = window.getComputedStyle(document.body).getPropertyValue('padding-' + userOptions.sideBar.widget.position);
-
-				document.documentElement.style.setProperty('--cs-sidebar-width', sbContainer.getBoundingClientRect().width + parseFloat(bodyPadding) + "px");
-				
-				if ( userOptions.sideBar.type === 'panel' ) {
-					document.documentElement.classList.add('CS_panel');
-					
-					// document.body.querySelectorAll('DIV').forEach( el => {
-						
-						// if ( el === sbContainer ) return;
-						// let style = window.getComputedStyle(el);
-						// if ( style.getPropertyValue('position') === 'fixed') {
-
-							// console.log(style.getPropertyValue('width'));
-							// // style.getPropertyValue('width') === '100%'
-								// // parseInt(style.getPropertyValue('width')) === document.body.getBoundingClientRect().width
-
-							// el.style.width = 'calc(100% - ' + sbContainer.getBoundingClientRect().width + 'px)';
-						// //	el.classList.add('CS_panel');
-						// }
-					// });
-				}
-			}
-			
-			sbContainer.style.opacity = 1;
-
-			// test for bottom overflow
-			let rect = sbContainer.getBoundingClientRect();
-
-			if ( !userOptions.sideBar.type && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
-				sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
-		});
-		
-		// listen for quickMenuHotkey
-		window.addEventListener('keydown', (e) => {
-			if (
-				!userOptions.quickMenuOnHotkey
-				|| e.repeat
-			) return;
-			
-			for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
-				let key = userOptions.quickMenuHotkey[i];
-				if (key === 16 && !e.shiftKey) return;
-				if (key === 17 && !e.ctrlKey) return;
-				if (key === 18 && !e.altKey) return;
-				if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
-			}
-
-			e.preventDefault();
-
-			openingTab.click();
-			
-		});
 	}
 	
 	document.addEventListener("fullscreenchange", (e) => {
