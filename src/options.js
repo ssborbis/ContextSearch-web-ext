@@ -269,6 +269,7 @@ function restoreOptions() {
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
 		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
+		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
 
 		buildSearchEngineContainer();
 	}
@@ -431,6 +432,8 @@ function saveOptions(e) {
 			findBar: {
 				enabled: $('#cb_findBarEnabled').checked,
 				startOpen: $('#cb_findBarStartOpen').checked,
+				showNavBar: $('#cb_findBarShowNavBar').checked,
+				hideFullScreen: true,
 				hotKey: function() {
 					let arr = [];
 					$('#d_findBarHotKey').querySelectorAll('[data-keycode]').forEach( button => {

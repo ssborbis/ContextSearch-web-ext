@@ -66,16 +66,16 @@
 	/* right:-20px; */
 	right:0;
 	position:fixed;
-	width:20px;
+	width:16px;
 	z-index:2147483647;
-	opacity:.7;
+	opacity:.5;
 	transform-origin:top right;
 }
 #CS_highLightNavBar:hover {
-	opacity:.7;
+	opacity:.5;
 }
 #CS_highLightNavBar > IMG {
-	height:20px;
+	height:16px;
 	transform-origin:top right;
 }
 #CS_highLightNavBar > DIV {

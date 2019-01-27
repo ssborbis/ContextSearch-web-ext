@@ -104,8 +104,7 @@ document.addEventListener('keydown', (e) => {
 window.addEventListener('keydown', (e) => {
 
 	if (
-		!userOptions.highLight.findBar.enabled
-		|| !userOptions.highLight.findBar.hotKey.length
+		!userOptions.highLight.findBar.hotKey.length
 		|| e.repeat
 		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
 	) return;
@@ -344,6 +343,7 @@ function openNavBar() {
 	hls.forEach( (hl, index) => {
 
 		let marker = document.createElement('div');
+		marker.className = 'marker';
 
 		marker.style.top = offset(hl).top * ratio / document.documentElement.clientHeight * 100 + "vh";
 		marker.style.height = '.5vh';//rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
@@ -474,7 +474,11 @@ function jumpTo(index) {
 	
 	document.querySelectorAll('.CS_mark_selected').forEach( _div => {
 		_div.classList.remove('CS_mark_selected', 'CS_mark_flash');
-		_div.style.background = null;
+		
+		if ( _div.classList.contains('marker') )
+			_div.style.background = userOptions.highLight.styles[parseInt(_div.dataset.style) || 0].background;
+		else
+			_div.style.background = null;
 	});
 	
 	let marks = getMarks();
@@ -514,8 +518,9 @@ function jumpTo(index) {
 		workingDocument.documentElement.scrollTop = mark.getBoundingClientRect().top + workingDocument.documentElement.scrollTop - .5 * workingDocument.documentElement.clientHeight;
 
 	}
-
-	updateFindBar({index: index, total: marks.length});
+	
+	if ( getFindBar() )
+		updateFindBar({index: index, total: marks.length});
 }
 
 function updateFindBar(options) {
@@ -570,10 +575,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 		case "markDone":
 
-			if ( userOptions.highLight.navBar.enabled )
+			if ( 
+				( userOptions.highLight.navBar.enabled && !message.findBarSearch ) ||
+				( userOptions.highLight.findBar.showNavBar && message.findBarSearch )
+			)
 				openNavBar();
-			
-			if ( getFindBar() || userOptions.highLight.showFindBar ) 
+
+			if ( getFindBar() || ( userOptions.highLight.showFindBar && !message.findBarSearch ) || message.findBarSearch ) 
 				updateFindBar(Object.assign({index:-1, total: getMarks().length}, message));
 
 			if ( getFindBar() ) getFindBar().focus();
