@@ -206,7 +206,7 @@ function buildSearchWords(searchTerms) {
 	// build phrases from word combos
 	let words2 = [];
 	for ( let i=words.length;i>1;i--) {
-		words2.push(words.slice(0,i).join(" "));
+		words2.push(words.slice(0,i).join(" ").trim());
 	}
 
 	// build final array and filter empty
@@ -214,6 +214,8 @@ function buildSearchWords(searchTerms) {
 
 	// sort largest to smallest to avoid small matches breaking larger matches
 	words.sort( (a, b) => {return ( a.length > b.length ) ? -1 : 1} );
+	
+//	console.log(words);
 	
 	return words;
 }
@@ -600,11 +602,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 document.addEventListener("fullscreenchange", (e) => {
 	
 	let fb = getFindBar();
+	let navbar = getNavBar();
 	
 	if ( userOptions.highLight.findBar.hideFullScreen && document.fullscreen ) {
-		fb.style.display = 'none';		
+		if (fb) fb.style.display = 'none';	
+		if (navbar) navbar.style.display = 'none';
+		
 	} else {			
-		fb.style.display = null;
+		if (fb) fb.style.display = null;
+		if (navbar) navbar.style.display = null;
 	}
 });
 

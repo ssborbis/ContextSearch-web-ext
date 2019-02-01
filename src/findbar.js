@@ -1,6 +1,7 @@
 function getSearchBar() { return document.getElementById('searchBar') }
 
 var userOptions = {};
+var typeTimer = null;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
@@ -18,10 +19,9 @@ document.addEventListener('DOMContentLoaded', (e) => {
 });
 
 window.addEventListener("message", (e) => {
-	
-//	console.log(e.data);
 
-	getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";	
+	if ( !typeTimer ) // do not update value if typing in find bar
+		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";	
 
 	if ( e.data.accuracy ) document.querySelector('#accuracy').checked = e.data.accuracy === "exactly" ? true : false;
 	document.querySelector('#ignorePunctuation').checked = e.data.ignorePunctuation && e.data.ignorePunctuation.length || document.querySelector('#ignorePunctuation').checked;
@@ -73,6 +73,18 @@ getSearchBar().addEventListener('keydown', (e) => {
 		browser.runtime.sendMessage({action: "findBarNext"});
 	else if ( [38].includes(e.which) )
 		browser.runtime.sendMessage({action: "findBarPrevious"});
+	else {
+		
+		if ( userOptions.highLight.findBar.keyboardTimeout === 0 ) return;
+		clearTimeout(typeTimer);
+		
+		typeTimer = setTimeout(() => {
+			var evt = document.createEvent("HTMLEvents");
+			evt.initEvent("change", false, true);
+			getSearchBar().dispatchEvent(evt);
+		}, userOptions.highLight.findBar.keyboardTimeout);
+	}
+		
 });
 
 document.getElementById('close').addEventListener('click', (e) => {

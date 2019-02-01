@@ -270,6 +270,7 @@ function restoreOptions() {
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
 		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
 		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
+		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
 
 		buildSearchEngineContainer();
 	}
@@ -441,7 +442,8 @@ function saveOptions(e) {
 					});
 					return arr;
 				}(),
-				position: $('#s_findBarPosition').value
+				position: $('#s_findBarPosition').value,
+				keyboardTimeout: parseInt($('#n_findBarTimeout').value)
 			},
 			markOptions: {
 				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,

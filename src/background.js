@@ -39,7 +39,6 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
-		
 			if (!sender.tab) { // browser_action popup has no tab, use current tab
 				function onFound(tabs) {
 					let tab = tabs[0];
@@ -812,7 +811,7 @@ function openSearch(details) {
 		if (searchTerms.match(/^.*:\/\//) === null)
 			q = "http://" + searchTerms;
 	}
-
+	
 	switch (openMethod) {
 		case "openCurrentTab":
 			return openCurrentTab();
@@ -1342,7 +1341,8 @@ const defaultUserOptions = {
 			showNavBar: false,
 			hotKey: [17, 16, 70],
 			position: 'top',
-			hideFullScreen: true
+			hideFullScreen: true,
+			keyboardTimeout: 200
 		}
 	},
 	userStyles: 

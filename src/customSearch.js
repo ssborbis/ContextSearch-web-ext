@@ -437,10 +437,16 @@ function addSearchEnginePopup(data) {
 			alert(browser.i18n.getMessage("TemplateIncludeError"));
 			return;
 		}
-		if (form.template.value.match(/^http/i) === null) {
+		try {
+			let _url = new URL(form.template.value);
+		} catch (error) {
 			alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
 			return;
 		}
+		// if (form.template.value.match(/^http/i) === null) {
+			// alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
+			// return;
+		// }
 		if (form.searchform.value.match(/^http/i) === null) {
 			alert(browser.i18n.getMessage("FormPathURLError") + ' (' + _location.origin + ')');
 			return;

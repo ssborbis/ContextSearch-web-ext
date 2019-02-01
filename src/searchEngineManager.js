@@ -209,16 +209,30 @@ function buildSearchEngineContainer() {
 						showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
 						return;
 					}
-					if (edit_form.template.value.match(/^http/i) === null) {
+					try {
+						let _url = new URL(edit_form.template.value);
+					} catch (error) {
 						showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
 						return;
 					}
-					if (edit_form.searchform.value.match(/^http/i) === null) {
-						let url = new URL(edit_form.template.value);
-						edit_form.searchform.value = url.origin;
-						//showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
+					try {
+						let _url = new URL(edit_form.searchform.value);
+					} catch (error) {
+						let _url = new URL(edit_form.template.value);
+						edit_form.searchform.value = _url.origin;
+					//	showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
 					//	return;
 					}
+					// if (edit_form.template.value.match(/^http/i) === null) {
+						// showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+						// return;
+					// }
+					// if (edit_form.searchform.value.match(/^http/i) === null) {
+						// let url = new URL(edit_form.template.value);
+						// edit_form.searchform.value = url.origin;
+						// //showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
+					// //	return;
+					// }
 					if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
 						showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
 						return;
