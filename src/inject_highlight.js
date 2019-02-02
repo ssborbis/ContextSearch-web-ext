@@ -437,7 +437,7 @@ function openFindBar() {
 				if ( window.getComputedStyle(el, null).getPropertyValue('top') === '0px') {
 				//	console.log(el);
 					el.style.setProperty('--CS-original-top', el.style.top);
-					el.style.top = 36 * 1 / window.devicePixelRatio + "px";
+					el.style.setProperty('top', 36 * 1 / window.devicePixelRatio + "px", "important");
 					
 				}
 			});
