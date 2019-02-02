@@ -1331,6 +1331,7 @@ const defaultUserOptions = {
 			{color: '#ffffff',background:'#428bca'},
 			{color: '#000000',background:'#FFFF00'}		
 		],
+		opacity:1,
 		activeStyle: {color:'#ffffff', background:'#65FF00'},
 		navBar: {
 			enabled: true

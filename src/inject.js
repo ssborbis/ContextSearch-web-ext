@@ -58,8 +58,10 @@ function runAtTransitionEnd(el, prop, callback) {
 			oldProp = newProp;
 			return;
 		}
-		callback();
+		
 		clearInterval(checkPropInterval);
+		callback();
+		
 	},25);
 }
 

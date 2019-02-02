@@ -65,9 +65,19 @@ getSearchBar().addEventListener('change', (e) => {
 	}
 });
 
+window.addEventListener('keydown', (e) => {
+	
+	if ( e.which === 27 ) {
+		browser.runtime.sendMessage({action: "closeFindBar"});
+	}
+});
+
 getSearchBar().addEventListener('keydown', (e) => {
 	
 	if ( !e.target.value ) return;
+	
+	// prevent some closing weirdness
+	if (e.which === 27 ) return;
 	
 	if ( [13,40].includes(e.which) )
 		browser.runtime.sendMessage({action: "findBarNext"});
@@ -91,13 +101,6 @@ document.getElementById('close').addEventListener('click', (e) => {
 	browser.runtime.sendMessage({action: "closeFindBar"});
 });
 
-window.addEventListener('keydown', (e) => {
-	
-	if ( e.which === 27 ) {
-		browser.runtime.sendMessage({action: "closeFindBar"});
-		browser.runtime.sendMessage({action: "unmark"});
-	}
-});
 
 document.addEventListener('DOMContentLoaded', (e) => {
 	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);

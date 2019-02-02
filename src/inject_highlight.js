@@ -407,9 +407,10 @@ function openFindBar() {
 		//fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
 		
 		fb.style.setProperty('transform', 'scale(' + 1 / window.devicePixelRatio + ')', "important");
-		fb.style.width = '800px';
+	//	fb.style.width = '800px';
+		fb.style.width = 100 * window.devicePixelRatio + "%";
 		fb.style.opacity = 0;
-		fb.style.maxHeight = 0;
+		fb.style.maxHeight = '0px';
 		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
 		
 		fb.style[userOptions.highLight.findBar.position] = '0';
@@ -424,6 +425,24 @@ function openFindBar() {
 		}
 
 		fb.src = browser.runtime.getURL("/findbar.html");
+		
+		if ( userOptions.highLight.findBar.position === 'top' ) {
+		
+			document.documentElement.style.paddingTop = 36 * 1 / window.devicePixelRatio + "px";
+			
+			fb.modifiedFixedElements = findFixed();
+
+			fb.modifiedFixedElements.forEach( el => {
+			//	console.log( window.getComputedStyle(el, null).getPropertyValue('top') );
+				if ( window.getComputedStyle(el, null).getPropertyValue('top') === '0px') {
+				//	console.log(el);
+					el.style.setProperty('--CS-original-top', el.style.top);
+					el.style.top = 36 * 1 / window.devicePixelRatio + "px";
+					
+				}
+			});
+		}
+
 	});
 }
 
@@ -533,11 +552,24 @@ function updateFindBar(options) {
 }
 
 function closeFindBar() {
+
 	let fb = getFindBar();
 	if ( fb ) {
-		runAtTransitionEnd(fb, "opacity", () => { fb.parentNode.removeChild(fb); });
-		fb.style.maxHeight = 0;
+		
+		fb.style.maxHeight = '0px';
 		fb.style.opacity = 0;
+		
+		runAtTransitionEnd(fb, "max-height", () => {
+			fb.parentNode.removeChild(fb); 
+			document.documentElement.style.paddingTop = null;
+		});
+		
+		if ( fb.modifiedFixedElements ) {
+			fb.modifiedFixedElements.forEach( el => {
+				el.style.top = el.style.getPropertyValue('--CS-original-top');
+			});
+		}
+		
 	}
 }
 
@@ -613,5 +645,49 @@ document.addEventListener("fullscreenchange", (e) => {
 		if (navbar) navbar.style.display = null;
 	}
 });
+
+// https://stackoverflow.com/a/8769287
+function findFixed() {
+
+	//[style*=..] = attribute selector
+	var possibilities = ['[style*="position:fixed"],[style*="position: fixed"]'],
+		searchFor = /\bposition:\s*fixed;/,
+		cssProp = 'position',
+		cssValue = 'fixed',
+		styles = document.styleSheets,
+		i, j, l, rules, rule, elem, res = [];
+
+	
+	for (i=0; i<styles.length; i++) {
+	
+		try { // CORS causes some stylesheets to fail test
+			rules = styles[i].cssRules;
+			l = rules.length;
+			for (j=0; j<l; j++) {
+				rule = rules[j];
+				if (searchFor.test(rule.cssText)) {
+					possibilities.push(rule.selectorText.trim());
+				}
+			}
+		} catch (e) {
+			
+		}
+
+	}
+
+	possibilities = possibilities.join(',');
+
+	possibilities = document.querySelectorAll(possibilities);
+	l = possibilities.length;
+	for (i=0; i<l; i++) {
+	   elem = possibilities[i];
+	   // Test whether the element is really position:fixed
+	   if (window.getComputedStyle(elem, null).getPropertyValue(cssProp) === cssValue) {
+		   res.push(elem);
+	   }
+	}
+
+	return res; 
+}
 
 

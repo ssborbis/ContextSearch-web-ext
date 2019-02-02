@@ -1721,12 +1721,13 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<p class="header1" data-i18n="Style">Style</p>
 					
 					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightStyle">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="s_highLightStyle">
 							<option data-i18n="background" value="background">background</option>
 							<option data-i18n="underline" value="underline">underline</option>
 						</select>
 						<div class="description" data-i18n="HighLightStyleToolTip">Style the highlighting using background / foreground colors or underlines. Choosing 'underline' will ignore text color values</div>
 					</div>
+
 					<br /><br />
 					<table style="text-align:center">
 						<tr>
@@ -1768,7 +1769,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							</td>
 						</tr>
 					</table>
-					
+
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="cb_highLightFlashSelected" />
@@ -1778,6 +1779,33 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 					
 					<br /><br />
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:6px" id="s_highLightOpacity">
+							<option value="1">100%</option>
+							<option value=".95">95%</option>
+							<option value=".9">90%</option>
+							<option value=".85">85%</option>
+							<option value=".8">80%</option>
+							<option value=".75">75%</option>
+							<option value=".7">70%</option>
+							<option value=".65">65%</option>
+							<option value=".6">60%</option>
+							<option value=".55">55%</option>
+							<option value=".5">50%</option>
+							<option value=".45">45%</option>
+							<option value=".4">40%</option>
+							<option value=".35">35%</option>
+							<option value=".3">30%</option>
+							<option value=".25">25%</option>
+							<option value=".2">20%</option>
+							<option value=".15">15%</option>
+							<option value=".1">10%</option>
+							<option value=".05">5%</option>							
+						</select>
+						<div class="description" data-i18n="HighLightOpacityToolTip">Opacity of the highlight foreground color</div>
+					</div>
+					
+					<br />
 					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
 					<i>Beta</i>
 					<hr />
@@ -1809,7 +1837,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span class="description" data-i18n="HighlightNavTooltip">Show navigation bar when highlighting</span>
 					</div>
 					
-					<input type="number" id="n_findBarTimeout" size="3" class="inputNice" min="0" max="999">
+					<input type="number" id="n_findBarTimeout" size="3" class="inputNice" min="0" max="1000" step="10">
 					<span class="description" data-i18n="FindBarTimeout">Perform search after typing has stopped for n milliseconds. Values too low can cause performance issues. 0 = disabled</span>
 				
 					<p class="header1" data-i18n="Position">Position</p>

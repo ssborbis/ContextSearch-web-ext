@@ -136,7 +136,7 @@ function statusMessage(status) {
 function restoreOptions() {
 
 	function onGot(result) {
-		
+
 		userOptions = result.userOptions || {};
 
 		$('#cb_quickMenu').checked = userOptions.quickMenu;	
@@ -254,6 +254,7 @@ function restoreOptions() {
 		$('#c_highLightBackground3').value = userOptions.highLight.styles[3].background;
 		$('#c_highLightColorActive').value = userOptions.highLight.activeStyle.color;
 		$('#c_highLightBackgroundActive').value = userOptions.highLight.activeStyle.background;
+		$('#s_highLightOpacity').value = userOptions.highLight.opacity;
 		
 		$('#cb_highLightFlashSelected').checked = userOptions.highLight.flashSelected;
 
@@ -279,8 +280,9 @@ function restoreOptions() {
 		console.log(`Error: ${error}`);
 	}
 
-	var getting = browser.runtime.getBackgroundPage();
-	getting.then(onGot, onError);
+	browser.runtime.getBackgroundPage().then( w => {
+		w.checkForOneClickEngines().then(c => { onGot(w);}, onError);
+	}, onError);
 	
 }
 
@@ -404,6 +406,7 @@ function saveOptions(e) {
 			showFindBar: $('#cb_highLightShowFindBar').checked,
 			flashSelected: $('#cb_highLightFlashSelected').checked,
 			highlightStyle: $('#s_highLightStyle').value,
+			opacity: parseFloat($('#s_highLightOpacity').value),
 			
 			styles: [
 				{	
