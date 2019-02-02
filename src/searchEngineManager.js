@@ -250,7 +250,7 @@ function buildSearchEngineContainer() {
 						
 						if ( !edit_form.iconURL.value ) {
 							let url = new URL(edit_form.template.value);
-							edit_form.iconURL.value = url.origin + "/favicon.ico";
+							edit_form.iconURL.value = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
 						}
 						
 						icon.src = browser.runtime.getURL("/icons/spinner.svg");
@@ -262,6 +262,7 @@ function buildSearchEngineContainer() {
 						newIcon.onerror = function() {	
 							showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
 							icon.src = se.icon_base64String || tempImgToBase64(se.title.charAt(0).toUpperCase());
+						//	edit_form.iconURL.value = icon.src;
 							saveForm(false);
 						}
 						

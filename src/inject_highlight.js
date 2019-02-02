@@ -37,7 +37,7 @@ function addStyling() {
 				background:${userOptions.highLight.styles[0].background};
 				color:${userOptions.highLight.styles[0].color};
 			}	
-			.CS_mark[data-style="1"], #CS_highLightNavBar[ > DIVdata-style="1"] {
+			.CS_mark[data-style="1"], #CS_highLightNavBar > DIV[data-style="1"] {
 				background:${userOptions.highLight.styles[1].background};
 				color:${userOptions.highLight.styles[1].color};
 			}
