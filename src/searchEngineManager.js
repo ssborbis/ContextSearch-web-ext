@@ -264,6 +264,17 @@ function buildSearchEngineContainer() {
 						if ( !edit_form.iconURL.value ) {
 							let url = new URL(edit_form.template.value);
 							newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
+						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
+							
+							
+							let url = new URL(edit_form.iconURL.value.replace(/#/g, "%23"));
+	
+							// https://stackoverflow.com/a/8649003
+							let obj = JSON.parse('{"' + url.searchParams.toString().replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) });
+
+							newIcon.src = createCustomIcon(obj);
+							saveForm(false);
+						
 						} else {
 							newIcon.src = edit_form.iconURL.value;
 						}

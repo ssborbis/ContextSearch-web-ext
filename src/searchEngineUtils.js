@@ -59,19 +59,22 @@ function searchJsonObjectToArray(engines) {
 }
 
 function tempImgToBase64(str) {
+	return createCustomIcon({text: str.charAt(0)});
+}
+
+function createCustomIcon(options) {
 	var c = document.createElement('canvas');
 	var ctx = c.getContext('2d');
-	ctx.canvas.width = 16;
-	ctx.canvas.height = 16;
-	ctx.fillStyle = '#6ec179';
+	ctx.canvas.width = options.width || 16;
+	ctx.canvas.height = options.height || 16;
+	ctx.fillStyle = options.backgroundColor || '#6ec179';
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-	ctx.font="16px Georgia";
+	ctx.font = (options.fontSize || "16px") + " " + (options.fontFamily || "Georgia");
 	ctx.textAlign = 'center';
 	ctx.textBaseline="middle"; 
-	ctx.fillStyle = "#FFFFFF";
-	ctx.fillText(str.charAt(0),8,8);
-//		console.log(img.favicon_monogram);
+	ctx.fillStyle = options.textColor || "#FFFFFF";
+	ctx.fillText(options.text || "",ctx.canvas.width/2,ctx.canvas.height/2);
 	
 	return c.toDataURL();
 }

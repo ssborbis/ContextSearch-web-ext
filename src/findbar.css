@@ -6,7 +6,7 @@ BODY[data-theme="dark"] IMG {
 	filter: invert(1);
 }
 #findbar {
-	padding:6px 0;
+	margin-top:4px;
 	vertical-align:middle;
 	font-size:10pt;
 	font-family:Arial;
@@ -20,11 +20,12 @@ BODY[data-theme="dark"] IMG {
 #searchBar {
 	width: 300px;
 	border:1px solid #888;
-	height:20px;
+	height:24px;
 	padding:0 10px;
 	margin-left:4px;
 	user-select:text;
 	-moz-user-select:text;
+	border-radius:2px 0 0 2px;
 }
 #close {
 	vertical-align:middle;
@@ -38,7 +39,7 @@ BODY[data-theme="dark"] IMG {
 .button {
 	border:1px solid #888;
 	text-align:center;
-	height:20px;
+	height:24px;
 	vertical-align:middle;
 	padding:0 8px;
 }
@@ -48,9 +49,12 @@ BODY[data-theme="dark"] IMG {
 #previous IMG, #next IMG {
 	width:20px;
 	vertical-align:middle;
+	position:relative;
+	top:2px;
 }
 #next {
 	transform:scaleY(-1);
+	border-radius:0 2px 2px 0;
 }
 #mark_counter {
 	margin:0 16px;
@@ -61,11 +65,13 @@ BODY[data-theme="dark"] .button {
 .optionLabel {
 	display:inline-block;
 	text-align:center;
-	height:20px;
-	width:20px;
+	height:22px;
+	width:22px;
+	padding: 0 4px;
 	vertical-align:middle;
 	margin:0 2px;
 	border:2px solid transparent;
+	border-radius:2px;
 	line-height:20px;
 }
 INPUT:checked + .optionLabel {

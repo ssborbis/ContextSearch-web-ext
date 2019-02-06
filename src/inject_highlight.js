@@ -398,6 +398,8 @@ function openNavBar() {
 	});
 	
 	document.body.appendChild(div);
+	
+	//document.documentElement.style.paddingRight = parseFloat(window.getComputedStyle(document.documentElement, null).getPropertyValue('width')) + parseFloat(window.getComputedStyle(div, null).getPropertyValue('width')) + "px";
 
 }
 
@@ -446,14 +448,16 @@ function openFindBar() {
 		
 			document.documentElement.style.paddingTop = 36 * 1 / window.devicePixelRatio + "px";
 
-			let els1 = findFixedMethodOne();
-			let els2 = findFixedMethodTwo();
+			// let els1 = findFixedMethodOne();
+			// let els2 = findFixedMethodTwo();
 			
-			let set = new Set([...els1, ...els2]);
+			// let set = new Set([...els1, ...els2]);
 			
-			let els = Array.from(set);
+			// let els = Array.from(set);
 
-			hideFixed(els);
+			// hideFixed(els);
+			
+			hideFixed(findFixedMethodTwo());
 		}
 
 	});
@@ -461,17 +465,20 @@ function openFindBar() {
 
 function hideFixed(els) {
 	els.forEach( el => {
-		el.style.setProperty('--CS-original-top', el.style.top || 0);
-		el.style.setProperty('top', (parseFloat(el.style.top) || 0 ) + 36 * 1 / window.devicePixelRatio + "px", "important");
+
+		let top = parseFloat(window.getComputedStyle(el, null).getPropertyValue("top"));
+
+		el.style.setProperty('--CS-original-top', el.style.top || null);
+		el.style.setProperty('top', top + 36 * 1 / window.devicePixelRatio + "px", "important");
 
 	});
 	
 	let fb = getFindBar();
 	
-	if ( fb.modifiedFixedElements )	
-		fb.modifiedFixedElements = fb.modifiedFixedElements.concat(els);
-	else
-		fb.modifiedFixedElements = els;
+	// update modified list with new values
+	let set = new Set([...els, ...(fb.modifiedFixedElements || []) ]);
+	
+	fb.modifiedFixedElements = Array.from(set);
 }
 	
 function nextPrevious(dir) {
@@ -595,7 +602,9 @@ function closeFindBar() {
 		
 		if ( fb.modifiedFixedElements ) {
 			fb.modifiedFixedElements.forEach( el => {
-				el.style.top = el.style.getPropertyValue('--CS-original-top') || el.style.top;
+				
+				console.log("setting " + el.id + " top to " + el.style.getPropertyValue('--CS-original-top') || null  );
+				el.style.top = el.style.getPropertyValue('--CS-original-top') || null;
 				el.style.setProperty('--CS-original-top', null);
 			});
 		}
@@ -710,7 +719,7 @@ function findFixedMethodOne() {
 	for (i=0; i<l; i++) {
 	   elem = possibilities[i];
 	   // Test whether the element is really position:fixed
-	   if (/sticky|fixed|absolute/.test(window.getComputedStyle(elem, null).getPropertyValue("position")) && /0|0px/.test(window.getComputedStyle(elem, null).getPropertyValue("top") ) ) {
+	   if ( /sticky|fixed|absolute/.test(window.getComputedStyle(elem, null).getPropertyValue("position")) && parseFloat(window.getComputedStyle(elem, null).getPropertyValue("top") ) < 35 * 1 / window.devicePixelRatio ) {
 		   
 		   if ( window.getComputedStyle(elem, null).getPropertyValue("position") === 'absolute' && elem.parentNode !== document.body ) continue;
 		   res.push(elem);
@@ -724,10 +733,10 @@ function findFixedMethodTwo() {
 	let els = [];
 	
 	// check for elements at the findbar border every n pixels
-	for ( let i=0;i<document.body.offsetWidth;i+=10 ) {
+	for ( let i=0;i<document.documentElement.offsetWidth;i+=10 ) {
 		els = els.concat( document.elementsFromPoint(i,35 * 1 / window.devicePixelRatio) );
 	}
-	
+
 	// filter duplicates using Set
 	let set = new Set(els);
 	els = Array.from(set);
@@ -735,7 +744,9 @@ function findFixedMethodTwo() {
 	// filter potentials based on display attribute
 	els = els.filter( el => {
 		let styles = window.getComputedStyle(el, null);
-		return ( /fixed|sticky/.test(styles.getPropertyValue('position')));
+
+		return ( /fixed|sticky/.test(styles.getPropertyValue('position')) || 
+			( /absolute/.test(styles.getPropertyValue('position')) && el.parentNode === document.body && styles.getPropertyValue("position")) && parseFloat(styles.getPropertyValue("top") ) < 35 * 1 / window.devicePixelRatio )
 	});
 	
 	// skip child elements
