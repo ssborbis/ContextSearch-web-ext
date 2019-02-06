@@ -247,12 +247,7 @@ function buildSearchEngineContainer() {
 						}
 					}
 					if ( !edit_form.iconURL.value.startsWith("resource:") ) {
-						
-						if ( !edit_form.iconURL.value ) {
-							let url = new URL(edit_form.template.value);
-							edit_form.iconURL.value = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
-						}
-						
+
 						icon.src = browser.runtime.getURL("/icons/spinner.svg");
 						let newIcon = new Image();
 						newIcon.onload = function() {
@@ -266,7 +261,12 @@ function buildSearchEngineContainer() {
 							saveForm(false);
 						}
 						
-						newIcon.src = edit_form.iconURL.value;
+						if ( !edit_form.iconURL.value ) {
+							let url = new URL(edit_form.template.value);
+							newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
+						} else {
+							newIcon.src = edit_form.iconURL.value;
+						}
 						
 						setTimeout(() => {
 							if (!newIcon.complete)

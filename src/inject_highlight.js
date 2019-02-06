@@ -102,7 +102,7 @@ document.addEventListener('keydown', (e) => {
 
 // listen for findbar hotkey
 window.addEventListener('keydown', (e) => {
-
+	
 	if (
 		!userOptions.highLight.findBar.hotKey.length
 		|| e.repeat
@@ -121,8 +121,16 @@ window.addEventListener('keydown', (e) => {
 
 	let searchTerms = getSelectedText(e.target);
 	
-	if ( !searchTerms ) searchTerms = window.findBarLastSearchTerms || "";
+	if ( getFindBar() && !searchTerms ) {
+		browser.runtime.sendMessage({action: "closeFindBar"});
+		return;
+	}
+		
+	window.getSelection().removeAllRanges();
 	
+	if ( !searchTerms ) 
+		searchTerms = window.findBarLastSearchTerms || "";
+
 	// search for selected terms
 	browser.runtime.sendMessage(Object.assign({
 		action: "mark",
@@ -136,7 +144,7 @@ window.addEventListener('keydown', (e) => {
 		} : markOptions
 	));
 
-	window.getSelection().removeAllRanges();
+	
 	
 });
 
@@ -273,18 +281,26 @@ function mark(options) {
 						return word.toLowerCase() === el.textContent.toLowerCase();
 					});
 					
-					if ( index !== -1 ) el.dataset.style = index > 3 ? index % 4 : index;	
+					// if ( index !== -1 ) 
+					el.dataset.style = index > 3 ? index % 4 : index;	
 				});
 
-				browser.runtime.sendMessage(Object.assign({
-					action: "markDone", 
-					searchTerms:searchTerms, 
-					words: words, 
-					separateWordSearch: options.separateWordSearch
-				}, _markOptions));
+				done();
 			}
 		}, _markOptions));
 	});
+	
+	if ( words.length === 0 ) 
+		done();
+	
+	function done() {
+		browser.runtime.sendMessage(Object.assign({
+			action: "markDone", 
+			searchTerms:searchTerms, 
+			words: words, 
+			separateWordSearch: options.separateWordSearch
+		}, _markOptions));
+	}
 }
 function openNavBar() {
 
@@ -429,23 +445,34 @@ function openFindBar() {
 		if ( userOptions.highLight.findBar.position === 'top' ) {
 		
 			document.documentElement.style.paddingTop = 36 * 1 / window.devicePixelRatio + "px";
-			
-			fb.modifiedFixedElements = findFixed();
 
-			fb.modifiedFixedElements.forEach( el => {
-			//	console.log( window.getComputedStyle(el, null).getPropertyValue('top') );
-				if ( window.getComputedStyle(el, null).getPropertyValue('top') === '0px') {
-				//	console.log(el);
-					el.style.setProperty('--CS-original-top', el.style.top);
-					el.style.setProperty('top', 36 * 1 / window.devicePixelRatio + "px", "important");
-					
-				}
-			});
+			let els1 = findFixedMethodOne();
+			let els2 = findFixedMethodTwo();
+			
+			let set = new Set([...els1, ...els2]);
+			
+			let els = Array.from(set);
+
+			hideFixed(els);
 		}
 
 	});
 }
 
+function hideFixed(els) {
+	els.forEach( el => {
+		el.style.setProperty('--CS-original-top', el.style.top || 0);
+		el.style.setProperty('top', (parseFloat(el.style.top) || 0 ) + 36 * 1 / window.devicePixelRatio + "px", "important");
+
+	});
+	
+	let fb = getFindBar();
+	
+	if ( fb.modifiedFixedElements )	
+		fb.modifiedFixedElements = fb.modifiedFixedElements.concat(els);
+	else
+		fb.modifiedFixedElements = els;
+}
 	
 function nextPrevious(dir) {
 
@@ -505,6 +532,8 @@ function jumpTo(index) {
 	let marks = getMarks();
 	
 	let mark = marks[index];
+	
+	if ( !mark ) return;
 
 	mark.classList.add('CS_mark_selected');
 	
@@ -566,7 +595,8 @@ function closeFindBar() {
 		
 		if ( fb.modifiedFixedElements ) {
 			fb.modifiedFixedElements.forEach( el => {
-				el.style.top = el.style.getPropertyValue('--CS-original-top');
+				el.style.top = el.style.getPropertyValue('--CS-original-top') || el.style.top;
+				el.style.setProperty('--CS-original-top', null);
 			});
 		}
 		
@@ -647,13 +677,11 @@ document.addEventListener("fullscreenchange", (e) => {
 });
 
 // https://stackoverflow.com/a/8769287
-function findFixed() {
-
+function findFixedMethodOne() {
+	
 	//[style*=..] = attribute selector
-	var possibilities = ['[style*="position:fixed"],[style*="position: fixed"]'],
+	var possibilities = ['[style*="position:fixed"],[style*="position: fixed"],[style*="position:sticky"],[style*="position: sticky"]'],
 		searchFor = /\bposition:\s*fixed;/,
-		cssProp = 'position',
-		cssValue = 'fixed',
 		styles = document.styleSheets,
 		i, j, l, rules, rule, elem, res = [];
 
@@ -682,7 +710,9 @@ function findFixed() {
 	for (i=0; i<l; i++) {
 	   elem = possibilities[i];
 	   // Test whether the element is really position:fixed
-	   if (window.getComputedStyle(elem, null).getPropertyValue(cssProp) === cssValue) {
+	   if (/sticky|fixed|absolute/.test(window.getComputedStyle(elem, null).getPropertyValue("position")) && /0|0px/.test(window.getComputedStyle(elem, null).getPropertyValue("top") ) ) {
+		   
+		   if ( window.getComputedStyle(elem, null).getPropertyValue("position") === 'absolute' && elem.parentNode !== document.body ) continue;
 		   res.push(elem);
 	   }
 	}
@@ -690,4 +720,49 @@ function findFixed() {
 	return res; 
 }
 
+function findFixedMethodTwo() {
+	let els = [];
+	
+	// check for elements at the findbar border every n pixels
+	for ( let i=0;i<document.body.offsetWidth;i+=10 ) {
+		els = els.concat( document.elementsFromPoint(i,35 * 1 / window.devicePixelRatio) );
+	}
+	
+	// filter duplicates using Set
+	let set = new Set(els);
+	els = Array.from(set);
 
+	// filter potentials based on display attribute
+	els = els.filter( el => {
+		let styles = window.getComputedStyle(el, null);
+		return ( /fixed|sticky/.test(styles.getPropertyValue('position')));
+	});
+	
+	// skip child elements
+	return els.filter( el => {
+		return !els.find( _el => _el === el.parentNode );
+	});
+	
+}
+
+// check for sticky divs and banners that pop up when scrolling
+let scrollThrottler = null;
+document.addEventListener('scroll', (e) => {
+	
+	if ( scrollThrottler ) return;
+	
+	let fb = getFindBar();
+	
+	if ( !fb ) return;
+
+	scrollThrottler = setTimeout(() => {
+
+		let els = findFixedMethodTwo().filter( el => el !== fb );
+	
+		hideFixed(els);
+		
+		clearTimeout(scrollThrottler);
+		scrollThrottler = null;
+		
+	}, 500);	
+});

@@ -144,10 +144,10 @@ function restoreOptions() {
 		$('#n_quickMenuRows').value = userOptions.quickMenuRows;
 		
 		$('#b_quickMenuKey').value = userOptions.quickMenuKey;
-		$('#b_quickMenuKey').innerText = keyTable[userOptions.quickMenuKey] || browser.i18n.getMessage('ClickToSet');
+		$('#b_quickMenuKey').innerText = keyCodeToString(userOptions.quickMenuKey) || browser.i18n.getMessage('ClickToSet');
 		
 		$('#b_contextMenuKey').value = userOptions.contextMenuKey;	
-		$('#b_contextMenuKey').innerText = keyTable[userOptions.contextMenuKey] || browser.i18n.getMessage('ClickToSet');
+		$('#b_contextMenuKey').innerText = keyCodeToString(userOptions.contextMenuKey) || browser.i18n.getMessage('ClickToSet');
 		$('#s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
 		
 		$('#r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
@@ -575,13 +575,12 @@ function keyButtonListener(e) {
 	img.src = 'icons/spinner.svg';
 	e.target.appendChild(img);
 	e.target.addEventListener('keydown', function(evv) {
-		evv.preventDefault();
-		
+	
 		if ( evv.which === 27 ) {
 			e.target.innerText = browser.i18n.getMessage('ClickToSet');
 			e.target.value = 0;
 		} else {
-			e.target.innerText = keyTable[evv.which];
+			e.target.innerText = keyCodeToString(evv.which);
 			e.target.value = evv.which;
 		}
 		
@@ -599,6 +598,10 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (el.value < _min) el.value = _min;
 }
 
+function keyCodeToString(code) {
+	return keyTable[code] /*|| String.fromCharCode(code)*/ || code.toString();
+}
+
 function keyArrayToButtons(arr) {
 	
 	let div = document.createElement('div');
@@ -611,7 +614,7 @@ function keyArrayToButtons(arr) {
 
 		let hk = arr[i]
 		let span = document.createElement('span');
-		let key = keyTable[hk];
+		let key = keyCodeToString(hk);
 		if (key.length === 1) key = key.toUpperCase();
 		
 		span.innerText = key;
@@ -1052,7 +1055,14 @@ document.addEventListener('DOMContentLoaded', () => {
 	['#d_hotkey', '#d_findBarHotKey'].forEach( id => {
 	
 		let hk = $(id);
-		hk.onclick = function() {
+		hk.onclick = function(evv) {
+			
+			function preventDefaults(e) {
+				console.log('preventing defaults');
+				e.preventDefault();
+			}
+			
+			document.addEventListener('keydown', preventDefaults);
 			
 			hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
 			hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
@@ -1080,6 +1090,8 @@ document.addEventListener('DOMContentLoaded', () => {
 				hk.appendChild(keyArrayToButtons(keyArray));
 				
 				saveOptions();
+				
+				document.removeEventListener('keydown', preventDefaults);
 				
 			}, {once: true});
 			
