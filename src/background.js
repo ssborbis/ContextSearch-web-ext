@@ -138,6 +138,10 @@ function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 			
+		case "toggleNavBar":
+			return sendMessageToTopFrame();
+			break;
+			
 		case "getOpenSearchHref":
 		
 			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( (tab) => {
@@ -1304,7 +1308,6 @@ const defaultUserOptions = {
 		singleColumn: false,
 		startOpen: false,
 		type: "overlay",
-		hideFullScreen: false,
 		hotkey: [],
 		widget: {
 			enabled: false,
@@ -1342,7 +1345,6 @@ const defaultUserOptions = {
 			showNavBar: false,
 			hotKey: [17, 16, 70],
 			position: 'top',
-			hideFullScreen: true,
 			keyboardTimeout: 200
 		}
 	},

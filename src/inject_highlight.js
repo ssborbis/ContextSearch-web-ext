@@ -197,7 +197,13 @@ function unmark() {
 
 function closeNavBar() {
 	let nav = getNavBar();	
-	if ( nav ) nav.parentNode.removeChild(nav);
+	if ( nav ) {
+		nav.parentNode.removeChild(nav);
+		document.querySelectorAll('[style*="--cs-offset-navbar"]').forEach( el => {
+			removeOffsets(el, 'navbar');
+		});
+		
+	}
 }
 
 function buildSearchWords(searchTerms) {
@@ -325,8 +331,8 @@ function openNavBar() {
 		e.stopImmediatePropagation();
 	})
 	img.addEventListener('mouseup', (e) => {	
-		CS_MARK_instance.unmark();
-		div.parentNode.removeChild(div);
+		browser.runtime.sendMessage({action: "unmark"});
+		closeNavBar();
 	});
 	
 	div.appendChild(img);
@@ -399,8 +405,14 @@ function openNavBar() {
 	
 	document.body.appendChild(div);
 	
-	//document.documentElement.style.paddingRight = parseFloat(window.getComputedStyle(document.documentElement, null).getPropertyValue('width')) + parseFloat(window.getComputedStyle(div, null).getPropertyValue('width')) + "px";
-
+	let n_width = parseFloat(window.getComputedStyle(div).getPropertyValue('width')) / window.devicePixelRatio;
+	offsetElement(document.documentElement, 'padding-right', n_width, 'navbar');
+	let els = findFixedElements('right', n_width);
+	els.forEach( el => {
+		if ( el === div ) return;
+		
+		offsetElement(el, 'right', n_width, 'navbar');
+	});
 }
 
 function openFindBar() {
@@ -444,41 +456,15 @@ function openFindBar() {
 
 		fb.src = browser.runtime.getURL("/findbar.html");
 		
-		if ( userOptions.highLight.findBar.position === 'top' ) {
-		
-			document.documentElement.style.paddingTop = 36 * 1 / window.devicePixelRatio + "px";
-
-			// let els1 = findFixedMethodOne();
-			// let els2 = findFixedMethodTwo();
+		if ( userOptions.highLight.findBar.position === 'top' ) {		
+			offsetElement(document.documentElement, 'padding-top', 36 / window.devicePixelRatio, 'findbar');			
 			
-			// let set = new Set([...els1, ...els2]);
-			
-			// let els = Array.from(set);
-
-			// hideFixed(els);
-			
-			hideFixed(findFixedMethodTwo());
+			findFixedMethodTwo().forEach( el => {
+				offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
+			});
 		}
 
 	});
-}
-
-function hideFixed(els) {
-	els.forEach( el => {
-
-		let top = parseFloat(window.getComputedStyle(el, null).getPropertyValue("top"));
-
-		el.style.setProperty('--CS-original-top', el.style.top || null);
-		el.style.setProperty('top', top + 36 * 1 / window.devicePixelRatio + "px", "important");
-
-	});
-	
-	let fb = getFindBar();
-	
-	// update modified list with new values
-	let set = new Set([...els, ...(fb.modifiedFixedElements || []) ]);
-	
-	fb.modifiedFixedElements = Array.from(set);
 }
 	
 function nextPrevious(dir) {
@@ -583,7 +569,7 @@ function jumpTo(index) {
 function updateFindBar(options) {
 
 	openFindBar().then( fb => {
-		fb.contentWindow.postMessage(Object.assign({index: -1, total: 0}, options), browser.runtime.getURL('findbar.html'));	
+		fb.contentWindow.postMessage(Object.assign({index: -1, total: 0, navbar: (getNavBar() ? true : false) }, options), browser.runtime.getURL('findbar.html'));	
 	});
 }
 
@@ -596,18 +582,12 @@ function closeFindBar() {
 		fb.style.opacity = 0;
 		
 		runAtTransitionEnd(fb, "max-height", () => {
-			fb.parentNode.removeChild(fb); 
-			document.documentElement.style.paddingTop = null;
+			fb.parentNode.removeChild(fb);
 		});
-		
-		if ( fb.modifiedFixedElements ) {
-			fb.modifiedFixedElements.forEach( el => {
-				
-				console.log("setting " + el.id + " top to " + el.style.getPropertyValue('--CS-original-top') || null  );
-				el.style.top = el.style.getPropertyValue('--CS-original-top') || null;
-				el.style.setProperty('--CS-original-top', null);
-			});
-		}
+			
+		document.querySelectorAll('[style*="--cs-offset-findbar"]').forEach( el => {
+			removeOffsets(el, 'findbar');
+		});
 		
 	}
 }
@@ -667,67 +647,79 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			markOptions = message.markOptions;
 			break;
 			
+		case "toggleNavBar":
+			if ( message.state === true ) openNavBar();
+			else closeNavBar();
+			break;
+			
 	}
 });
 
+let fullscreenElements = [];
 document.addEventListener("fullscreenchange", (e) => {
 	
 	let fb = getFindBar();
 	let navbar = getNavBar();
-	
-	if ( userOptions.highLight.findBar.hideFullScreen && document.fullscreen ) {
-		if (fb) fb.style.display = 'none';	
-		if (navbar) navbar.style.display = 'none';
+
+	if ( document.fullscreen ) {
+		if (fb) {
+			fb.style.display = 'none';
+			unOffsetElement(document.documentElement, 'padding-top', 'findbar');
+		}
+		if (navbar) navbar.style.display = 'none';		
 		
 	} else {			
-		if (fb) fb.style.display = null;
+		if (fb) {
+			fb.style.display = null;
+			offsetElement(document.documentElement, 'padding-top', 36 / window.devicePixelRatio, 'findbar');
+		}
 		if (navbar) navbar.style.display = null;
 	}
 });
 
 // https://stackoverflow.com/a/8769287
-function findFixedMethodOne() {
+// function findFixedMethodOne() {
 	
-	//[style*=..] = attribute selector
-	var possibilities = ['[style*="position:fixed"],[style*="position: fixed"],[style*="position:sticky"],[style*="position: sticky"]'],
-		searchFor = /\bposition:\s*fixed;/,
-		styles = document.styleSheets,
-		i, j, l, rules, rule, elem, res = [];
+	// //[style*=..] = attribute selector
+	// var possibilities = ['[style*="position:fixed"],[style*="position: fixed"],[style*="position:sticky"],[style*="position: sticky"]'],
+		// searchFor = /\bposition:\s*fixed;/,
+		// styles = document.styleSheets,
+		// i, j, l, rules, rule, elem, res = [];
 
 	
-	for (i=0; i<styles.length; i++) {
+	// for (i=0; i<styles.length; i++) {
 	
-		try { // CORS causes some stylesheets to fail test
-			rules = styles[i].cssRules;
-			l = rules.length;
-			for (j=0; j<l; j++) {
-				rule = rules[j];
-				if (searchFor.test(rule.cssText)) {
-					possibilities.push(rule.selectorText.trim());
-				}
-			}
-		} catch (e) {
+		// try { // CORS causes some stylesheets to fail test
+			// rules = styles[i].cssRules;
+			// l = rules.length;
+			// for (j=0; j<l; j++) {
+				// rule = rules[j];
+				// if (searchFor.test(rule.cssText)) {
+					// possibilities.push(rule.selectorText.trim());
+				// }
+			// }
+		// } catch (e) {
 			
-		}
+		// }
 
-	}
+	// }
 
-	possibilities = possibilities.join(',');
+	// possibilities = possibilities.join(',');
 
-	possibilities = document.querySelectorAll(possibilities);
-	l = possibilities.length;
-	for (i=0; i<l; i++) {
-	   elem = possibilities[i];
-	   // Test whether the element is really position:fixed
-	   if ( /sticky|fixed|absolute/.test(window.getComputedStyle(elem, null).getPropertyValue("position")) && parseFloat(window.getComputedStyle(elem, null).getPropertyValue("top") ) < 35 * 1 / window.devicePixelRatio ) {
+	// possibilities = document.querySelectorAll(possibilities);
+	// l = possibilities.length;
+	// for (i=0; i<l; i++) {
+	   // elem = possibilities[i];
+	   // // Test whether the element is really position:fixed
+	   // if ( /sticky|fixed|absolute/.test(window.getComputedStyle(elem, null).getPropertyValue("position")) && parseFloat(window.getComputedStyle(elem, null).getPropertyValue("top") ) < 35 * 1 / window.devicePixelRatio ) {
 		   
-		   if ( window.getComputedStyle(elem, null).getPropertyValue("position") === 'absolute' && elem.parentNode !== document.body ) continue;
-		   res.push(elem);
-	   }
-	}
+		   // if ( window.getComputedStyle(elem, null).getPropertyValue("position") === 'absolute' && elem.parentNode !== document.body ) continue;
+		   // res.push(elem);
+	   // }
+	// }
 
-	return res; 
-}
+	// return res; 
+// }
 
 function findFixedMethodTwo() {
 	let els = [];
@@ -756,6 +748,53 @@ function findFixedMethodTwo() {
 	
 }
 
+function findFixedElements(side, dist) {
+
+	let els = [];
+	
+	// check for elements every n pixels
+	
+	switch ( side ) {
+		case "top":
+			for ( let i=0;i<document.documentElement.offsetWidth;i+=10 ) 
+				els = els.concat( document.elementsFromPoint(i,dist) );
+			break;
+		
+		// case "bottom":
+			// for ( let i=0;i<document.documentElement.offsetWidth;i+=10 ) 
+				// els = els.concat( document.elementsFromPoint(i,document.documentElement.offsetHeight - dist) );
+			// break;
+			
+		// case: "left":
+			// for ( let i=0;i<document.documentElement.offsetWidth;i+=10 ) 
+				// els = els.concat( document.elementsFromPoint(i,dist) );
+			// break;
+		
+		case "right":
+			for ( let i=0;i<document.documentElement.offsetHeight;i+=10 )
+				els = els.concat( document.elementsFromPoint(document.documentElement.offsetWidth - dist, i ));
+			break;
+	}
+
+	// filter duplicates using Set
+	let set = new Set(els);
+	els = Array.from(set);
+
+	// filter potentials based on display attribute
+	els = els.filter( el => {
+		let styles = window.getComputedStyle(el, null);
+
+		return ( /fixed|sticky/.test(styles.getPropertyValue('position')) || 
+			( /absolute/.test(styles.getPropertyValue('position')) && el.parentNode === document.body && styles.getPropertyValue("position")) && el.getBoundingClientRect[side] < dist )
+	});
+	
+	// skip child elements
+	return els.filter( el => {
+		return !els.find( _el => _el === el.parentNode );
+	});
+	
+}
+
 // check for sticky divs and banners that pop up when scrolling
 let scrollThrottler = null;
 document.addEventListener('scroll', (e) => {
@@ -770,7 +809,9 @@ document.addEventListener('scroll', (e) => {
 
 		let els = findFixedMethodTwo().filter( el => el !== fb );
 	
-		hideFixed(els);
+		els.forEach( el => {
+			offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
+		});
 		
 		clearTimeout(scrollThrottler);
 		scrollThrottler = null;

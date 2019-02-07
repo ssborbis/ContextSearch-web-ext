@@ -300,7 +300,7 @@ if ( window != top ) {
 		
 		let sbc = getContainer();
 		
-		if ( userOptions.sideBar.hideFullScreen && document.fullscreen ) {
+		if ( document.fullscreen ) {
 
 			sbc.style.display = 'none';
 		//	document.documentElement.classList.remove('CS_panel');

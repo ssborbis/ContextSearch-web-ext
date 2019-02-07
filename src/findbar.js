@@ -27,6 +27,7 @@ window.addEventListener("message", (e) => {
 	document.querySelector('#ignorePunctuation').checked = e.data.ignorePunctuation && e.data.ignorePunctuation.length || document.querySelector('#ignorePunctuation').checked;
 	document.querySelector('#caseSensitive').checked = e.data.caseSensitive || document.querySelector('#caseSensitive').checked;
 	document.querySelector('#separateWordSearch').checked = e.data.separateWordSearch || document.querySelector('#separateWordSearch').checked;
+	document.querySelector('#toggle_navbar').checked = e.data.navbar;
 
 	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: {
 		accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
@@ -118,8 +119,8 @@ getSearchBar().addEventListener('keydown', (e) => {
 
 document.getElementById('close').addEventListener('click', (e) => {
 	browser.runtime.sendMessage({action: "closeFindBar"});
+	browser.runtime.sendMessage({action: "unmark"});
 });
-
 
 document.addEventListener('DOMContentLoaded', (e) => {
 	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
@@ -133,4 +134,12 @@ document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separate
 	el.addEventListener('click', (e) => {
 		getSearchBar().dispatchEvent(new Event('change'));
 	});
+});
+
+document.querySelector('#toggle_mark').addEventListener('change', (e) => {
+	browser.runtime.sendMessage({action: "toggleMarks"});
+});
+
+document.querySelector('#toggle_navbar').addEventListener('change', (e) => {
+	browser.runtime.sendMessage({action: "toggleNavBar", state: e.target.checked});
 });

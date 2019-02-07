@@ -87,12 +87,42 @@ function getImage(el, e) {
 	let style = window.getComputedStyle(el, false);
 	
 	let backgroundImage = style.backgroundImage;
-	
-//	browser.runtime.sendMessage({action:"log", msg: backgroundImage});
 
 	if ( ! /^url\(/.test(backgroundImage) ) return false;
 
 	return backgroundImage.slice(4, -1).replace(/"/g, "")
+}
+
+function offsetElement(el, prop, by, name) {
+	
+	let orig = window.getComputedStyle(el, null).getPropertyValue(prop);
+	
+	el.style.setProperty('--cs-offset-'+name+'-'+prop, el.style.getPropertyValue(prop) || "none");
+	el.style.setProperty(prop, parseFloat(orig) + by + "px", "important");
+}
+
+function unOffsetElement(el, prop, name) {
+
+	let orig = el.style.getPropertyValue('--cs-offset-'+name+'-'+prop);
+	
+	el.style.setProperty(prop, orig !== 'none' ? orig : null);
+	el.style.setProperty('--cs-offset-'+name+'-'+prop, null);
+}
+
+function removeOffsets(el, name) {
+	
+	let props = [];
+	
+	for (let i=0;i<el.style.length;i++) {
+		if ( el.style[i].startsWith('--cs-offset-'+name) ) 	
+			props.push(el.style[i]);
+	}
+	
+	props.forEach( prop => {
+		let orig_prop = prop.replace('--cs-offset-'+name+'-', "");
+		unOffsetElement(el, orig_prop, name);
+	});
+
 }
 
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
