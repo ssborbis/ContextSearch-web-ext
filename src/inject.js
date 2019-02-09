@@ -93,36 +93,89 @@ function getImage(el, e) {
 	return backgroundImage.slice(4, -1).replace(/"/g, "")
 }
 
-function offsetElement(el, prop, by, name) {
-	
+function modifyStyleProperty(el, prop, val, name) {
 	let orig = window.getComputedStyle(el, null).getPropertyValue(prop);
 	
-	el.style.setProperty('--cs-offset-'+name+'-'+prop, el.style.getPropertyValue(prop) || "none");
-	el.style.setProperty(prop, parseFloat(orig) + by + "px", "important");
+	el.style.setProperty('--cs-'+name+'-'+prop, el.style.getPropertyValue(prop) || "none");
+	el.style.setProperty(prop, val, "important");
+}
+
+function offsetElement(el, prop, by, name) {
+	
+	let val = parseFloat(window.getComputedStyle(el, null).getPropertyValue(prop)) + by + "px";	
+	modifyStyleProperty(el, prop, val, name);
 }
 
 function unOffsetElement(el, prop, name) {
 
-	let orig = el.style.getPropertyValue('--cs-offset-'+name+'-'+prop);
+	let orig = el.style.getPropertyValue('--cs-'+name+'-'+prop);
 	
 	el.style.setProperty(prop, orig !== 'none' ? orig : null);
-	el.style.setProperty('--cs-offset-'+name+'-'+prop, null);
+	el.style.setProperty('--cs-'+name+'-'+prop, null);
 }
 
-function removeOffsets(el, name) {
+function resetStyleProperty(el, name) {
 	
 	let props = [];
 	
 	for (let i=0;i<el.style.length;i++) {
-		if ( el.style[i].startsWith('--cs-offset-'+name) ) 	
+		if ( el.style[i].startsWith('--cs-'+name) ) 	
 			props.push(el.style[i]);
 	}
 	
 	props.forEach( prop => {
-		let orig_prop = prop.replace('--cs-offset-'+name+'-', "");
+		let orig_prop = prop.replace('--cs-'+name+'-', "");
 		unOffsetElement(el, orig_prop, name);
 	});
 
+}
+
+function findFixedElements(side, dist) {
+
+	let els = [];
+	
+	let step = 10; // check for elements every (n) pixels
+
+	switch ( side ) {
+		case "top":
+			for ( let i=0;i<document.documentElement.offsetWidth;i+=step ) 
+				els = els.concat( document.elementsFromPoint(i,dist) );
+			break;
+		
+		// case "bottom":
+			// for ( let i=0;i<document.documentElement.offsetWidth;i+=step ) 
+				// els = els.concat( document.elementsFromPoint(i,document.documentElement.offsetHeight - dist) );
+			// break;
+			
+		case "left":
+			for ( let i=0;i<document.documentElement.offsetHeight;i+=step ) 
+				els = els.concat( document.elementsFromPoint(dist,i) );
+			break;
+		
+		case "right":
+			for ( let i=0;i<document.documentElement.offsetHeight;i+=step )
+				els = els.concat( document.elementsFromPoint(document.documentElement.offsetWidth - dist, i ));
+			break;
+	}
+
+	// filter duplicates using Set
+	let set = new Set(els);
+	els = Array.from(set);
+
+	// filter potentials based on display attribute
+	els = els.filter( el => {
+		let styles = window.getComputedStyle(el, null);
+
+		return ( /fixed|sticky/.test(styles.getPropertyValue('position')) || 
+			( /absolute/.test(styles.getPropertyValue('position')) && el.parentNode === document.body) && el.getBoundingClientRect()[side] < dist 
+		);
+	});
+	
+	// skip child elements
+	return els.filter( el => {
+		return !els.find( _el => _el === el.parentNode );
+	});
+	
 }
 
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles

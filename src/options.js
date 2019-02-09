@@ -229,7 +229,6 @@ function restoreOptions() {
 		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
 		$('#s_sideBarType').value = userOptions.sideBar.type;
-		$('#cb_sideBarHideFullScreen').checked = userOptions.sideBar.hideFullScreen;
 		
 		$('#t_userStyles').value = userOptions.userStyles;
 		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
@@ -391,7 +390,6 @@ function saveOptions(e) {
 			hotkey: [],
 			startOpen: $('#cb_sideBarStartOpen').checked,
 			type: $('#s_sideBarType').value,
-			hideFullScreen: $('#cb_sideBarHideFullScreen').checked,
 			widget: {
 				enabled: $('#cb_sideBarWidgetEnable').checked,
 				position: $('#s_sideBarWidgetPosition').value,
@@ -437,7 +435,6 @@ function saveOptions(e) {
 				enabled: $('#cb_findBarEnabled').checked,
 				startOpen: $('#cb_findBarStartOpen').checked,
 				showNavBar: $('#cb_findBarShowNavBar').checked,
-				hideFullScreen: true,
 				hotKey: function() {
 					let arr = [];
 					$('#d_findBarHotKey').querySelectorAll('[data-keycode]').forEach( button => {

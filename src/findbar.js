@@ -23,11 +23,12 @@ window.addEventListener("message", (e) => {
 	if ( !typeTimer ) // do not update value if typing in find bar
 		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";	
 
-	if ( e.data.accuracy ) document.querySelector('#accuracy').checked = e.data.accuracy === "exactly" ? true : false;
-	document.querySelector('#ignorePunctuation').checked = e.data.ignorePunctuation && e.data.ignorePunctuation.length || document.querySelector('#ignorePunctuation').checked;
-	document.querySelector('#caseSensitive').checked = e.data.caseSensitive || document.querySelector('#caseSensitive').checked;
-	document.querySelector('#separateWordSearch').checked = e.data.separateWordSearch || document.querySelector('#separateWordSearch').checked;
-	document.querySelector('#toggle_navbar').checked = e.data.navbar;
+	if ( e.data.accuracy ) document.querySelector('#accuracy').checked = ( e.data.accuracy === "exactly" );
+	if ( e.data.ignorePunctuation ) document.querySelector('#ignorePunctuation').checked = ( e.data.ignorePunctuation && e.data.ignorePunctuation !== [] ) 
+	if ( e.data.caseSensitive ) document.querySelector('#caseSensitive').checked = e.data.caseSensitive;
+	if ( e.data.separateWordSearch ) document.querySelector('#separateWordSearch').checked = e.data.separateWordSearch;
+	if ( e.data.navbar ) document.querySelector('#toggle_navbar').checked = e.data.navbar;
+	if ( e.data.total ) document.querySelector('#toggle_marks').checked = ( e.data.total > 0 );
 
 	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: {
 		accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
@@ -37,6 +38,10 @@ window.addEventListener("message", (e) => {
 	}});	
 	
 	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [e.data.index + 1, e.data.total]);
+	
+	document.querySelectorAll('INPUT[type="checkbox"]').forEach( el => {
+		el.disabled = false;
+	});
 
 });
 
@@ -48,9 +53,10 @@ document.getElementById('previous').addEventListener('click', (e) => {
 	browser.runtime.sendMessage({action: "findBarPrevious"});
 });
 
-getSearchBar().addEventListener('change', (e) => {
-	
-	if ( e.target.value )
+
+getSearchBar().addEventListener('type', (e) => {
+
+	if ( e.target.value ) {
 		browser.runtime.sendMessage({
 			action: "mark", 
 			searchTerms: e.target.value, 
@@ -60,6 +66,11 @@ getSearchBar().addEventListener('change', (e) => {
 			ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
 			separateWordSearch: document.querySelector('#separateWordSearch').checked
 		});
+		
+		document.querySelectorAll('INPUT[type="checkbox"]').forEach( el => {
+			el.disabled = true;
+		});
+	}
 	else {
 		browser.runtime.sendMessage({action: "unmark"});
 		document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
@@ -69,7 +80,17 @@ getSearchBar().addEventListener('change', (e) => {
 window.addEventListener('keydown', (e) => {
 	
 	if ( e.which === 27 ) {
+		browser.runtime.sendMessage({action: "unmark"});
 		browser.runtime.sendMessage({action: "closeFindBar"});
+		return;
+	}
+	
+	if ( [13,40].includes(e.which) ) {
+		browser.runtime.sendMessage({action: "findBarNext"});
+		return;
+	} else if ( [38].includes(e.which) ) {
+		browser.runtime.sendMessage({action: "findBarPrevious"});
+		return;
 	}
 	
 	if (
@@ -85,35 +106,27 @@ window.addEventListener('keydown', (e) => {
 		if (key === 18 && !e.altKey) return;
 		if (![16,17,18,e.keyCode].includes(key)) return;
 	}
-	
+
 	e.preventDefault();
 	
 	browser.runtime.sendMessage({action: "closeFindBar"});
 	
 });
 
-getSearchBar().addEventListener('keydown', (e) => {
+getSearchBar().addEventListener('keypress', (e) => {
 	
 	if ( !e.target.value ) return;
 	
 	// prevent some closing weirdness
 	if (e.which === 27 ) return;
+
+	if ( userOptions.highLight.findBar.keyboardTimeout === 0 ) return;
+	clearTimeout(typeTimer);
 	
-	if ( [13,40].includes(e.which) )
-		browser.runtime.sendMessage({action: "findBarNext"});
-	else if ( [38].includes(e.which) )
-		browser.runtime.sendMessage({action: "findBarPrevious"});
-	else {
-		
-		if ( userOptions.highLight.findBar.keyboardTimeout === 0 ) return;
-		clearTimeout(typeTimer);
-		
-		typeTimer = setTimeout(() => {
-			var evt = document.createEvent("HTMLEvents");
-			evt.initEvent("change", false, true);
-			getSearchBar().dispatchEvent(evt);
-		}, userOptions.highLight.findBar.keyboardTimeout);
-	}
+	typeTimer = setTimeout(() => {
+		getSearchBar().dispatchEvent(new CustomEvent('type'));
+		typeTimer = null;
+	}, userOptions.highLight.findBar.keyboardTimeout);
 		
 });
 
@@ -132,12 +145,15 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
 	el.addEventListener('click', (e) => {
-		getSearchBar().dispatchEvent(new Event('change'));
+		getSearchBar().dispatchEvent(new CustomEvent('type'));
 	});
 });
 
-document.querySelector('#toggle_mark').addEventListener('change', (e) => {
-	browser.runtime.sendMessage({action: "toggleMarks"});
+document.querySelector('#toggle_marks').addEventListener('change', (e) => {
+	if ( e.target.checked )
+		getSearchBar().dispatchEvent(new CustomEvent('type'));
+	else
+		browser.runtime.sendMessage({action: "unmark", saveTabHighlighting: true});
 });
 
 document.querySelector('#toggle_navbar').addEventListener('change', (e) => {

@@ -569,8 +569,11 @@ function executeBookmarklet(info) {
 		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
 			let code = decodeURI(bookmark.url);
 			browser.tabs.executeScript(tabs[0].id, {
+				code: 'CS_searchTerms = "' + escapeDoubleQuotes(info.selectionText) + '";'
+			}).then( () => {
+			browser.tabs.executeScript(tabs[0].id, {
 				code: code
-			});
+			});});
 		});
 
 	}, (error) => {
@@ -579,8 +582,7 @@ function executeBookmarklet(info) {
 }
 
 function executeOneClickSearch(info) {
-	console.log('one click search');
-	
+
 	let searchTerms = info.selectionText;
 	let openMethod = info.openMethod;
 		
@@ -838,63 +840,58 @@ function openSearch(details) {
 
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
-		
-	//	return new Promise( (resolve, reject ) => {				
-
-			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
 				
-				if ( tabId !== _tab.id ) return;
-		
-				let landing_url = new URL(q);
-				let current_url = new URL(__tab.url);
-				
-				if (current_url.hostname !== landing_url.hostname) return;
 
-				// non-POST should wait to complete
-				if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
+		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
+			
+			if ( tabId !== _tab.id ) return;
+	
+			let landing_url = new URL(q);
+			let current_url = new URL(__tab.url);
+			
+			if (current_url.hostname !== landing_url.hostname) return;
 
-					if ( changeInfo.status !== 'complete' ) return;
-					
-				//	resolve(__tab);
-					highlightSearchTermsInTab(__tab, searchTerms);
-					browser.tabs.onUpdated.removeListener(listener);
-					return;
-				}
+			// non-POST should wait to complete
+			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
+
+				if ( changeInfo.status !== 'complete' ) return;
 				
+				highlightSearchTermsInTab(__tab, searchTerms);
 				browser.tabs.onUpdated.removeListener(listener);
+				return;
+			}
+			
+			browser.tabs.onUpdated.removeListener(listener);
 
-				browser.tabs.executeScript(_tab.id, {
-					code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
-					runAt: 'document_start'
-				}).then(() => {
-				return browser.tabs.executeScript(_tab.id, {
-					file: '/lib/browser-polyfill.min.js',
-					runAt: 'document_start'
-				}).then(() => {
-				return browser.tabs.executeScript(_tab.id, {
-					file: '/opensearch.js',
-					runAt: 'document_start'
-				}).then(() => {
-				return browser.tabs.executeScript(_tab.id, {
-					file: '/execute.js',
-					runAt: 'document_start'
-				}).then(() => {
+			browser.tabs.executeScript(_tab.id, {
+				code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
+				runAt: 'document_start'
+			}).then(() => {
+			return browser.tabs.executeScript(_tab.id, {
+				file: '/lib/browser-polyfill.min.js',
+				runAt: 'document_start'
+			}).then(() => {
+			return browser.tabs.executeScript(_tab.id, {
+				file: '/opensearch.js',
+				runAt: 'document_start'
+			}).then(() => {
+			return browser.tabs.executeScript(_tab.id, {
+				file: '/execute.js',
+				runAt: 'document_start'
+			}).then(() => {
+				
+				// listen for the results to complete
+				browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
 					
-					// listen for the results to complete
-					browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
-						
-						if ( _tabId !== _tab.id ) return;
+					if ( _tabId !== _tab.id ) return;
 
-						if ( _tabInfo.status !== 'complete' ) return;
-						browser.tabs.onUpdated.removeListener(_listener);
-						
-						// send new tab based on results tabId
-					//	resolve(_tabInfo);
-						highlightSearchTermsInTab(_tabInfo, searchTerms);
-						//resolve(browser.tabs.get(_tabId));
-					});
-				});});});});
-		//	});
+					if ( _tabInfo.status !== 'complete' ) return;
+					browser.tabs.onUpdated.removeListener(_listener);
+					
+					// send new tab based on results tabId
+					highlightSearchTermsInTab(_tabInfo, searchTerms);
+				});
+			});});});});
 		});
 	}
 	

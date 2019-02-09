@@ -75,33 +75,24 @@ if ( window != top ) {
 
 				document.documentElement.style.setProperty('--cs-sidebar-width', sbContainer.getBoundingClientRect().width + parseFloat(bodyPadding) + "px");
 				
-				if ( userOptions.sideBar.type === 'panel' ) {
+				if ( userOptions.sideBar.type === 'panel' )
 					document.documentElement.classList.add('CS_panel');
-					
-					// document.body.querySelectorAll('DIV').forEach( el => {
-						
-						// if ( el === sbContainer ) return;
-						// let style = window.getComputedStyle(el);
-						// if ( style.getPropertyValue('position') === 'fixed') {
-
-							// console.log(style.getPropertyValue('width'));
-							// // style.getPropertyValue('width') === '100%'
-								// // parseInt(style.getPropertyValue('width')) === document.body.getBoundingClientRect().width
-
-							// el.style.width = 'calc(100% - ' + sbContainer.getBoundingClientRect().width + 'px)';
-						// //	el.classList.add('CS_panel');
-						// }
-					// });
-				}
 			}
 			
 			sbContainer.style.opacity = 1;
 
 			// test for bottom overflow
 			let rect = sbContainer.getBoundingClientRect();
-
-			if ( !userOptions.sideBar.type && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) 
-				sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
+			
+			if ( userOptions.sideBar.type === 'overlay' && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) {
+				
+				if ( true )
+					sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
+				else {
+					sbContainer.style.height = window.innerHeight - parseFloat(sbContainer.style.top) * 1/window.devicePixelRatio + "px";
+					iframe.style.maxHeight = sbContainer.style.height;
+				}
+			}
 		});
 		
 	});
@@ -110,29 +101,6 @@ if ( window != top ) {
 
 		if (typeof message.userOptions !== 'undefined') {
 			userOptions = message.userOptions;
-			
-			// let openingTab = getOpeningTab();
-			// let sbContainer = getContainer();
-
-			// document.documentElement.cs_sidebar_position = userOptions.sideBar.widget.position;
-			
-			// document.documentElement.classList.remove('CS_panel');
-			
-			// if ( getContainer().dataset.opened ) {
-				
-				// console.log('sending clicks');
-				// getOpeningTab().click();
-				// setTimeout( () => {
-					
-					// console.log(getContainer().dataset.opened);
-					// getOpeningTab().click();
-				// }, 2000);
-					
-			// }
-
-			// causing container to move on tile dnd
-		//	sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
-
 			getOpeningTab().style.display = userOptions.sideBar.widget.enabled ? null : "none";
 		}
 	});
@@ -300,19 +268,9 @@ if ( window != top ) {
 		
 		let sbc = getContainer();
 		
-		if ( document.fullscreen ) {
-
-			sbc.style.display = 'none';
-		//	document.documentElement.classList.remove('CS_panel');
-		//	closeSideBar();
-			
-		} else {			
+		if ( document.fullscreen )
+			sbc.style.display = 'none';		
+		else			
 			sbc.style.display = null;
-			
-		//	openSideBar();
-			
-		//	if ( userOptions.sideBar.type === 'panel' )
-		//		document.documentElement.classList.add('CS_panel');
-		}
 	});
 }
