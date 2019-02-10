@@ -149,6 +149,7 @@ window.addEventListener('keydown', (e) => {
 var CS_MARK_instance = null;
 
 var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
+var getFindBarContainer = () => {return document.getElementById('CS_findBarContainer');}
 var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
 
 // listen for execute_script call from background
@@ -431,54 +432,78 @@ function openFindBar() {
 			return;
 		}
 		
-		fb = document.createElement('iframe');
-		fb.id = 'CS_findBarIframe';
-		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
+		let fbc = document.createElement('div');
+		fbc.id = 'CS_findBarContainer';
+		
+		if ( userOptions.searchBarTheme === 'dark' )
+			fbc.classList.add('CS_dark');
+		
+		fbc.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 		//fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
 		
-		fb.style.setProperty('transform', 'scale(' + 1 / window.devicePixelRatio + ')', "important");
-	//	fb.style.width = '800px';
-		fb.style.width = 100 * window.devicePixelRatio + "%";
-		fb.style.opacity = 0;
-		fb.style.maxHeight = '0px';
-		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
+		fbc.style.setProperty('transform', 'scale(' + 1 / window.devicePixelRatio + ')', "important");
+		fbc.style.width = 100 * window.devicePixelRatio + "%";
+		fbc.style.opacity = 0;
+		fbc.style.maxHeight = '0px';
+		if ( !userOptions.enableAnimations ) fbc.style.setProperty('--user-transition', 'none');
 		
-		fb.style[userOptions.highLight.findBar.position] = '0';
+		fbc.style[userOptions.highLight.findBar.position] = '0';
+		
+		fb = document.createElement('iframe');
+		fb.id = 'CS_findBarIframe';
 
-		document.body.appendChild(fb);
+		let handle = new Image();
+		handle.src = browser.runtime.getURL('icons/handle.svg');
+		handle.dataset.handle = 'true';
+		
+		fbc.appendChild(handle);
+		
+		document.body.appendChild(fbc);
+		fbc.appendChild(fb);
 		
 		fb.onload = function() {
 			fb.focus();
-			fb.style.opacity = null;
-			fb.style.maxHeight = null;
+			fbc.style.opacity = null;
+			fbc.style.maxHeight = null;
 			resolve(fb);
 		}
 
 		fb.src = browser.runtime.getURL("/findbar.html");
-		
-		if ( userOptions.highLight.findBar.position === 'top' ) {		
-			offsetElement(document.body, 'padding-top', 36 / window.devicePixelRatio, 'findbar');			
-			
-			findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fb ).forEach( el => {
-				offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
-			});
-		}
 
+		makeDockable(fbc, {
+			handleElement:handle, 
+			dockedPosition: userOptions.highLight.findBar.position,
+			dockCallback: () => {
+				if ( userOptions.highLight.findBar.position === 'top' ) {		
+					offsetElement(document.body, 'padding-top', 36 / window.devicePixelRatio, 'findbar');			
+					
+					findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fbc ).forEach( el => {
+						offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
+					});
+				}	
+			},
+			undockCallback: () => {
+				document.querySelectorAll('[style*="--cs-findbar"]').forEach( el => {
+					resetStyleProperty(el, 'findbar');
+				});
+			},
+			windowType: "docked"
+		});
 	});
 }
 
 function closeFindBar() {
 
-	let fb = getFindBar();
-	if ( fb ) {
+	let fbc = getFindBarContainer();
+	if ( fbc ) {
 		
 		clearTimeout(scrollThrottler);
 		
-		fb.style.maxHeight = '0px';
-		fb.style.opacity = 0;
+		fbc.style.maxHeight = '0px';
+		fbc.style.opacity = 0;
 		
-		runAtTransitionEnd(fb, "max-height", () => {
-			fb.parentNode.removeChild(fb);
+		runAtTransitionEnd(fbc, "max-height", () => {
+			fbc.parentNode.removeChild(fbc);
 			scrollThrottler = null;
 		});
 			
@@ -488,7 +513,7 @@ function closeFindBar() {
 
 	}
 }
-	
+
 function nextPrevious(dir) {
 
 	let marks = getMarks();
@@ -662,20 +687,20 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 document.addEventListener("fullscreenchange", (e) => {
 	
-	let fb = getFindBar();
+	let fbc = getFindBarContainer();
 	let navbar = getNavBar();
 
 	if ( document.fullscreen ) {
-		if (fb) {
-			fb.style.display = 'none';
+		if (fbc) {
+			fbc.style.display = 'none';
 			if ( userOptions.highLight.findBar.position === 'top' )
 				unOffsetElement(document.documentElement, 'padding-top', 'findbar');
 		}
 		if (navbar) navbar.style.display = 'none';		
 		
 	} else {			
-		if (fb) {
-			fb.style.display = null;
+		if (fbc) {
+			fbc.style.display = null;
 			if ( userOptions.highLight.findBar.position === 'top' )
 				offsetElement(document.documentElement, 'padding-top', 36 / window.devicePixelRatio, 'findbar');
 		}
@@ -689,13 +714,13 @@ document.addEventListener('scroll', (e) => {
 	
 	if ( scrollThrottler ) return;
 	
-	let fb = getFindBar();
+	let fbc = getFindBarContainer();
 	
-	if ( !fb ) return;
+	if ( !fbc ) return;
 
 	scrollThrottler = setTimeout(() => {
 
-		if ( userOptions.highLight.findBar.position === 'top' ) {
+		if ( userOptions.highLight.findBar.position === 'top' && fbc.dataset.windowtype === 'docked' ) {
 
 			document.querySelectorAll('[style*="--cs-findbar"]').forEach( el => {
 				
@@ -703,7 +728,7 @@ document.addEventListener('scroll', (e) => {
 					resetStyleProperty(el, 'findbar');
 			});
 			
-			findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fb ).forEach( el => {
+			findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fbc ).forEach( el => {
 				offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
 			});
 

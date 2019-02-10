@@ -637,7 +637,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				// overlay a div to capture mouse events over iframes
 				let overDiv = document.createElement('div');
-				overDiv.style = 'display:inline-block;position:fixed;left:0;top:0;right:0;bottom:0;z-index:2147483647;cursor:nwse-resize;';
+				overDiv.className = "CS_overDiv";
+				overDiv.style = "cursor:nwse-resize";
 				
 				// build resize widget once per quick menu open
 				if ( !resizeWidget ) {

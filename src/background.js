@@ -1,4 +1,4 @@
-let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
+let isFirefox = /Firefox/.test(navigator.userAgent);
 
 function notify(message, sender, sendResponse) {
 	
@@ -840,7 +840,6 @@ function openSearch(details) {
 
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
-				
 
 		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
 			

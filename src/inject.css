@@ -117,11 +117,9 @@
 .CS_mark_selected.CS_mark_flash[data-flashstyle='underline'] {
 	animation: CS_flash_underline linear .5s infinite;
 }
-#CS_findBarIframe {
+#CS_findBarContainer {
 	all:unset;
 	position:fixed;
-	left:0;
-	right:0;
 	display:inline-block;
 	/* height:36px; */
 	z-index:2147483647;
@@ -133,8 +131,57 @@
 	opacity:1;
 	max-height:36px;
 	transform:scale(1);
+	white-space:nowrap;
+	background-color:#EFF0F1;
 }
+
+#CS_findBarContainer.CS_dark {
+	background-color:#323234;
+}
+
+#CS_findBarContainer.CS_dark IMG[data-handle]{
+	filter:invert(1) brightness(50%);
+}
+
+#CS_findBarContainer IMG[data-handle] {
+	width:16px !important;
+	height:36px !important;
+	position:relative !important;
+	top:6px !important;
+	vertical-align:top !important;
+}
+
+#CS_findBarIframe {
+	width:100%;
+	height:auto;
+	border:none;
+	padding:0;
+	margin:0;
+	position:relative;
+	top:6px;
+	height:36px;
+}
+
+#CS_findBarContainer[data-windowtype="docked"] {
+	left:0;
+	right:0;
+}
+
+#CS_findBarContainer[data-windowtype="floating"] {
+	width:875px !important;	
+}
+
 .CS_mark, #CS_highLightNavBar > DIV {
 	background: transparent;
 	transition: all .5s ease;
+}
+
+.CS_overDiv {
+	display:inline-block;
+	position:fixed;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	z-index:2147483647;
 }

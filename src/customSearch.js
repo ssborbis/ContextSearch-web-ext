@@ -1,6 +1,6 @@
 
 
-let isFirefox = navigator.userAgent.match('Firefox') ? true : false;
+let isFirefox = /Firefox/.test(navigator.userAgent);
 
 var userOptions = {};
 
@@ -447,11 +447,11 @@ function addSearchEnginePopup(data) {
 			// alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
 			// return;
 		// }
-		if (form.searchform.value.match(/^http/i) === null) {
+		if (!/^http/i.test(form.searchform.value)) {
 			alert(browser.i18n.getMessage("FormPathURLError") + ' (' + _location.origin + ')');
 			return;
 		}
-		if (form.iconURL.value.match(/^http/i) === null || form.iconURL.value == "") {
+		if (!/^http/i.test(form.iconURL.value) || form.iconURL.value == "") {
 			alert(browser.i18n.getMessage("IconURLError") + ' (' + _location.origin + '/favicon.ico)');
 			return;
 		}

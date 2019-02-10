@@ -178,6 +178,210 @@ function findFixedElements(side, dist) {
 	
 }
 
+function makeDockable(el, options) {
+	
+	let o = {
+		handleElement: el,
+		deadZone: 10,
+		movingClass: '',
+		dockCallback: function() {},
+		undockCallback: function() {},
+		windowType: 'docked',
+		dockedPosition: 'top',
+		undockedPosition: 'top left',
+		undockedOffsets: {
+			v:0,
+			h:0
+		}	
+	}
+	
+	Object.assign(o, options);
+	
+	el.dock = o.dockCallback;
+	el.undock = o.undockCallback;
+	el.dataset.windowtype = o.windowType;
+	
+	if ( o.windowType === 'docked' ) {
+		el.style[o.dockedPosition] = '0';
+		o.dockCallback();
+	} else {
+		o.undockCallback();
+	}
+	
+	// overlay a div to capture mouse events over iframes
+	let overDiv = document.createElement('div');
+	overDiv.className = "CS_overDiv";
+	
+	function translatePosition(v, h) {
+		let r = el.getBoundingClientRect();
+				
+		el.style.top = null;
+		el.style.left = null;
+		el.style.right = null;
+		el.style.bottom = null;
+		
+		el.style.transformOrigin = v + " " + h;
+		el.style[v] = ((v === 'bottom') ? window.innerHeight - r[v] : r[v]) + "px";
+		el.style[h] = ((h === 'right') ? window.innerWidth - r[h] : r[h]) + "px";
+		
+		el.getBoundingClientRect();
+	}
+	
+	function setDefaultFloatPosition() {
+		el.style.top = o.dockedPosition === 'top' ? '0' : null;
+		el.style.left = '0';
+		el.style.right = null;
+		el.style.bottom = o.dockedPosition === 'bottom' ? '0' : null;
+	}
+	
+	o.handleElement.addEventListener('dblclick', (e) => {
+
+		if ( el.dataset.windowtype === 'docked' ) {
+
+			if ( el.lastOffsets ) {
+				
+				el.style.transition = 'none';
+				el.dataset.windowtype = 'floating';
+
+				setDefaultFloatPosition();
+
+				let pos = getPositions(el.lastOffsets);
+				translatePosition(pos.v, pos.h);
+				
+				el.style.transition = null;
+				
+				setTimeout(() => {
+					el.style.transition = 'none';
+					translatePosition("top", "left");
+					el.style.transition = null;
+					
+					o.undockCallback();
+					
+				}, 250);
+				
+				el.style[pos.h] = el.lastOffsets[pos.h] / window.devicePixelRatio + "px";
+				el.style[pos.v] = el.lastOffsets[pos.v] / window.devicePixelRatio + "px";
+				
+				
+			} else {
+				setDefaultFloatPosition()
+				el.dataset.windowtype = 'floating';
+				
+				o.undockCallback();
+			}
+
+
+		} else if (el.dataset.windowtype === 'floating' ) {
+			
+			el.style.transition = 'none';
+			
+			el.lastOffsets = getOffsets();
+			let pos = getPositions(el.lastOffsets);
+			translatePosition(o.dockedPosition, "left");
+			
+			if ( pos.v === 'bottom' ) {
+				el.style.top = el.lastOffsets.top + "px";
+			}
+			
+			if ( pos.h === 'right' ) {
+				el.style.left = el.lastOffsets.left + "px";
+			}
+			
+			el.style.transition = null;
+			
+			setDefaultFloatPosition();
+			
+			el.style[o.dockedPosition] = '0';
+			
+			el.dataset.windowtype = 'docked';
+			o.dockCallback();
+			
+		}
+	});
+
+	o.handleElement.addEventListener('mousedown', (e) => {
+
+		el.X = e.clientX;
+		el.Y = e.clientY;
+		el.moving = false;
+		e.preventDefault();
+		
+		el.style.transition = "none";
+
+		document.addEventListener('mousemove', tabMoveListener);
+
+		document.addEventListener('mouseup', (_e) => {
+
+			el.style.transition = null;
+			
+			document.removeEventListener('mousemove', tabMoveListener);
+			
+			if ( !el.moving ) return;
+			
+			el.classList.remove('CS_moving');
+			
+			overDiv.parentNode.removeChild(overDiv);
+			
+			o.dockedPosition = getPositions(getOffsets()).v;
+
+		}, {once: true});
+	});
+
+	function tabMoveListener(e) {
+		e.preventDefault();
+
+		if ( !el.moving && Math.abs( el.X - e.clientX ) < 10 && Math.abs( el.Y - e.clientY ) < 10 )	return;
+		
+		else if ( !el.moving ) {
+			document.body.appendChild(overDiv);
+			el.moving = true;
+			el.classList.add('CS_moving');	
+
+			if ( el.dataset.windowtype === 'docked' ) {
+				o.undockCallback();
+				el.dataset.windowtype = 'floating';
+			}
+		}
+
+		let _top = el.offsetTop - ( el.Y - e.clientY );
+		if ( _top < 0 ) _top = 0;
+		if ( _top + el.getBoundingClientRect().height > window.innerHeight ) _top = window.innerHeight - el.getBoundingClientRect().height;
+
+		el.Y = e.clientY;
+		
+		let _left = el.offsetLeft - ( el.X - e.clientX );
+		if ( _left < 0 ) _left = 0;
+		if ( _left + el.getBoundingClientRect().width > window.innerWidth ) _left = window.innerWidth - el.getBoundingClientRect().width;
+		
+		el.X = e.clientX;
+
+		el.style.top = _top + "px";
+		el.style.left = _left + "px";
+	}
+	
+	function getPositions(r) {
+
+		let l_r = ( r.left > r.right ) ? 'right' : 'left';
+		let t_b = ( r.top > r.bottom ) ? 'bottom' : 'top';
+		
+		return {v:t_b, h:l_r};
+
+	}
+	
+	function getOffsets() {
+		
+		let r = el.getBoundingClientRect();
+		
+		return {
+			left: r.left * window.devicePixelRatio,
+			right: (window.innerWidth - r.right) * window.devicePixelRatio,
+			top: r.top * window.devicePixelRatio,
+			bottom: (window.innerHeight - r.bottom) * window.devicePixelRatio
+		}
+	}
+
+}
+
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		
