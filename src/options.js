@@ -443,7 +443,9 @@ function saveOptions(e) {
 					return arr;
 				}(),
 				position: $('#s_findBarPosition').value,
-				keyboardTimeout: parseInt($('#n_findBarTimeout').value)
+				keyboardTimeout: parseInt($('#n_findBarTimeout').value),
+				windowType: userOptions.highLight.findBar.windowType,
+				offsets: userOptions.highLight.findBar.offsets
 			},
 			markOptions: {
 				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,

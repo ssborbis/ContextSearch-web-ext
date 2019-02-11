@@ -91,7 +91,7 @@ function removeStyling() {
 	if ( styleEl ) styleEl.parentNode.removeChild(styleEl);
 }
 
-// ESC to clear markers and navbar
+// ESC to clear markers and navbar and findbar
 document.addEventListener('keydown', (e) => {
 	if ( e.which === 27 ) {
 		browser.runtime.sendMessage({action: "unmark"});
@@ -230,8 +230,21 @@ function mark(options) {
 	}
 
 	words.forEach( (word, i) => {
+		
+		let markMethod = CS_MARK_instance.mark;
+		
+		if ( /^\/.*\/[gimy]*$/.test(word) ) {
+			// Create regex
+			var flags = word.replace(/.*\/([gimy]*)$/, '$1');
+			var pattern = word.replace(new RegExp('^/(.*?)/' + flags + '$'), '$1');
+			var regex = new RegExp(pattern, flags);
+			
+			word = regex;
+			
+			markMethod = CS_MARK_instance.markRegExp;
+		}
 
-		CS_MARK_instance.mark(word, Object.assign({
+		markMethod(word, Object.assign({
 			className:"CS_mark",
 			acrossElements: false,
 			separateWordSearch: false,
@@ -256,14 +269,15 @@ function mark(options) {
 
 				// remove marker queued for unmarking
 				CS_MARK_instance.unmark({className: 'CS_unmark'});
-				
+
 				// get hit index in words array for styling
 				document.querySelectorAll(".CS_mark").forEach( el => {
-					let index = words.findIndex( word => {
-						return word.toLowerCase() === el.textContent.toLowerCase();
+					let index = words.findIndex( _word => {
+						return _word.toLowerCase() === el.textContent.toLowerCase();
 					});
 					
-					// if ( index !== -1 ) 
+					if ( index === -1 ) index = 0;
+					
 					el.dataset.style = index > 3 ? index % 4 : index;	
 				});
 
@@ -473,8 +487,15 @@ function openFindBar() {
 		makeDockable(fbc, {
 			handleElement:handle, 
 			dockedPosition: userOptions.highLight.findBar.position,
-			dockCallback: () => {
-				if ( userOptions.highLight.findBar.position === 'top' ) {		
+			dockCallback: (o) => {
+				
+				userOptions.highLight.findBar.offsets = o.lastOffsets;
+				userOptions.highLight.findBar.position = o.dockedPosition;
+				userOptions.highLight.findBar.windowType = o.windowType;
+				
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+				
+				if ( o.dockedPosition === 'top' ) {		
 					offsetElement(document.body, 'padding-top', 36 / window.devicePixelRatio, 'findbar');			
 					
 					findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fbc ).forEach( el => {
@@ -482,12 +503,21 @@ function openFindBar() {
 					});
 				}	
 			},
-			undockCallback: () => {
+			undockCallback: (o) => {
+
+				userOptions.highLight.findBar.offsets = o.lastOffsets;
+				userOptions.highLight.findBar.position = o.dockedPosition;
+				userOptions.highLight.findBar.windowType = o.windowType;
+				
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+				
 				document.querySelectorAll('[style*="--cs-findbar"]').forEach( el => {
 					resetStyleProperty(el, 'findbar');
 				});
 			},
-			windowType: "docked"
+			windowType: userOptions.highLight.findBar.windowType,
+			lastOffsets: userOptions.highLight.findBar.offsets,
+			dockedPosition: userOptions.highLight.findBar.position
 		});
 	});
 }

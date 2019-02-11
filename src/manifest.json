@@ -79,7 +79,8 @@
 		"/searchbar.html",
 		"/findbar.html",
 		"icons/search.svg",
-		"icons/crossmark.svg"
+		"icons/crossmark.svg",
+		"icons/handle.svg"
 	],
 
 	"browser_action": {

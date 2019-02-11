@@ -126,7 +126,7 @@
 	transform-origin:top left;
 	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
 	/* border:1px solid #9abad2; */
-	transition: var(--user-transition, all .25s ease-in);
+	transition: var(--user-transition, all .25s);
 	overflow: hidden;
 	opacity:1;
 	max-height:36px;
@@ -144,11 +144,13 @@
 }
 
 #CS_findBarContainer IMG[data-handle] {
+	all:unset;
 	width:16px !important;
 	height:36px !important;
 	position:relative !important;
 	top:6px !important;
 	vertical-align:top !important;
+	display:inline-block !important;
 }
 
 #CS_findBarIframe {

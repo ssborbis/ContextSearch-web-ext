@@ -51,6 +51,17 @@ function offset(elem) {
 }
 
 function runAtTransitionEnd(el, prop, callback) {
+	
+	if ( Array.isArray(prop)) {
+		var remaining = prop.length;
+		prop.forEach( _prop => {
+			runAtTransitionEnd(el, _prop, () => {
+				if ( --remaining === 0 ) callback();
+			});
+		});
+		return;
+	}
+	
 	let oldProp = null;
 	let checkPropInterval = setInterval(() => {
 		let newProp = window.getComputedStyle(el).getPropertyValue(prop);
@@ -188,33 +199,32 @@ function makeDockable(el, options) {
 		undockCallback: function() {},
 		windowType: 'docked',
 		dockedPosition: 'top',
-		undockedPosition: 'top left',
-		undockedOffsets: {
-			v:0,
-			h:0
-		}	
+		lastOffsets: {
+			top: 0,
+			left: 0,
+			right: null,
+			bottom: null	
+		}
 	}
 	
 	Object.assign(o, options);
 	
-	el.dock = o.dockCallback;
-	el.undock = o.undockCallback;
-	el.dataset.windowtype = o.windowType;
+	// set public functions
+	el.dock = dock;
+	el.undock = undock;
 	
-	if ( o.windowType === 'docked' ) {
-		el.style[o.dockedPosition] = '0';
-		o.dockCallback();
-	} else {
-		o.undockCallback();
-	}
+	// init 
+	if ( o.windowType === 'docked' ) dock();
+	else undock();
 	
 	// overlay a div to capture mouse events over iframes
 	let overDiv = document.createElement('div');
 	overDiv.className = "CS_overDiv";
 	
+	// set scaled window position by transformOrigin
 	function translatePosition(v, h) {
 		let r = el.getBoundingClientRect();
-				
+	
 		el.style.top = null;
 		el.style.left = null;
 		el.style.right = null;
@@ -224,6 +234,7 @@ function makeDockable(el, options) {
 		el.style[v] = ((v === 'bottom') ? window.innerHeight - r[v] : r[v]) + "px";
 		el.style[h] = ((h === 'right') ? window.innerWidth - r[h] : r[h]) + "px";
 		
+		// reflow
 		el.getBoundingClientRect();
 	}
 	
@@ -234,69 +245,64 @@ function makeDockable(el, options) {
 		el.style.bottom = o.dockedPosition === 'bottom' ? '0' : null;
 	}
 	
-	o.handleElement.addEventListener('dblclick', (e) => {
-
-		if ( el.dataset.windowtype === 'docked' ) {
-
-			if ( el.lastOffsets ) {
-				
-				el.style.transition = 'none';
-				el.dataset.windowtype = 'floating';
-
-				setDefaultFloatPosition();
-
-				let pos = getPositions(el.lastOffsets);
-				translatePosition(pos.v, pos.h);
-				
-				el.style.transition = null;
-				
-				setTimeout(() => {
-					el.style.transition = 'none';
-					translatePosition("top", "left");
-					el.style.transition = null;
-					
-					o.undockCallback();
-					
-				}, 250);
-				
-				el.style[pos.h] = el.lastOffsets[pos.h] / window.devicePixelRatio + "px";
-				el.style[pos.v] = el.lastOffsets[pos.v] / window.devicePixelRatio + "px";
-				
-				
-			} else {
-				setDefaultFloatPosition()
-				el.dataset.windowtype = 'floating';
-				
-				o.undockCallback();
-			}
-
-
-		} else if (el.dataset.windowtype === 'floating' ) {
-			
+	function dock() {
+		
+		if ( el.dataset.windowtype ) { // skip if init position
 			el.style.transition = 'none';
-			
-			el.lastOffsets = getOffsets();
-			let pos = getPositions(el.lastOffsets);
+				
+			o.lastOffsets = getOffsets();
+			let pos = getPositions(o.lastOffsets);
 			translatePosition(o.dockedPosition, "left");
 			
-			if ( pos.v === 'bottom' ) {
-				el.style.top = el.lastOffsets.top + "px";
-			}
+			if ( pos.v === 'bottom' )
+				el.style.top = o.lastOffsets.top + "px";
 			
-			if ( pos.h === 'right' ) {
-				el.style.left = el.lastOffsets.left + "px";
-			}
+			if ( pos.h === 'right' )
+				el.style.left = o.lastOffsets.left + "px";
 			
 			el.style.transition = null;
-			
-			setDefaultFloatPosition();
-			
-			el.style[o.dockedPosition] = '0';
-			
-			el.dataset.windowtype = 'docked';
-			o.dockCallback();
-			
 		}
+
+		setDefaultFloatPosition();
+
+		el.dataset.windowtype = 'docked';
+		o.windowType = 'docked';
+		o.dockCallback(o);
+	}
+	
+	function undock() {
+		el.style.transition = 'none';
+		el.dataset.windowtype = 'floating';
+		o.windowType = 'floating';
+
+		setDefaultFloatPosition();
+
+		let pos = getPositions(o.lastOffsets);
+		translatePosition(pos.v, pos.h);
+		
+		el.style.transition = null;
+		
+		runAtTransitionEnd(el, [pos.h, pos.v, "width"], () => {
+			el.style.transition = 'none';
+			translatePosition("top", "left");
+			el.style.transition = null;
+			o.undockCallback(o);
+		});
+		
+		let fixedLastOffsets = {};
+		
+		Object.keys(o.lastOffsets).forEach( key => {
+			fixedLastOffsets[key] = o.lastOffsets[key] / window.devicePixelRatio;
+		});
+
+		el.style[pos.h] = fixedLastOffsets[pos.h] + "px";
+		el.style[pos.v] = fixedLastOffsets[pos.v]  + "px";
+	}
+	
+	o.handleElement.addEventListener('dblclick', (e) => {
+
+		if ( el.dataset.windowtype === 'docked' ) undock();
+		else dock();	
 	});
 
 	o.handleElement.addEventListener('mousedown', (e) => {
@@ -308,13 +314,13 @@ function makeDockable(el, options) {
 		
 		el.style.transition = "none";
 
-		document.addEventListener('mousemove', tabMoveListener);
+		document.addEventListener('mousemove', moveListener);
 
 		document.addEventListener('mouseup', (_e) => {
 
 			el.style.transition = null;
 			
-			document.removeEventListener('mousemove', tabMoveListener);
+			document.removeEventListener('mousemove', moveListener);
 			
 			if ( !el.moving ) return;
 			
@@ -322,12 +328,14 @@ function makeDockable(el, options) {
 			
 			overDiv.parentNode.removeChild(overDiv);
 			
-			o.dockedPosition = getPositions(getOffsets()).v;
+			o.lastOffsets = getOffsets();
+			o.dockedPosition = getPositions(o.lastOffsets).v;
+			o.undockCallback(o);
 
 		}, {once: true});
 	});
 
-	function tabMoveListener(e) {
+	function moveListener(e) {
 		e.preventDefault();
 
 		if ( !el.moving && Math.abs( el.X - e.clientX ) < 10 && Math.abs( el.Y - e.clientY ) < 10 )	return;
@@ -338,20 +346,23 @@ function makeDockable(el, options) {
 			el.classList.add('CS_moving');	
 
 			if ( el.dataset.windowtype === 'docked' ) {
-				o.undockCallback();
 				el.dataset.windowtype = 'floating';
+				o.windowType = 'floating';
+				o.undockCallback(o);
 			}
 		}
+		
+		let rect = el.getBoundingClientRect();
 
 		let _top = el.offsetTop - ( el.Y - e.clientY );
 		if ( _top < 0 ) _top = 0;
-		if ( _top + el.getBoundingClientRect().height > window.innerHeight ) _top = window.innerHeight - el.getBoundingClientRect().height;
+		if ( _top + rect.height > window.innerHeight ) _top = window.innerHeight - rect.height;
 
 		el.Y = e.clientY;
 		
 		let _left = el.offsetLeft - ( el.X - e.clientX );
 		if ( _left < 0 ) _left = 0;
-		if ( _left + el.getBoundingClientRect().width > window.innerWidth ) _left = window.innerWidth - el.getBoundingClientRect().width;
+		if ( _left + rect.width > window.innerWidth ) _left = window.innerWidth - rect.width;
 		
 		el.X = e.clientX;
 

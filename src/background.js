@@ -1341,6 +1341,13 @@ const defaultUserOptions = {
 			showNavBar: false,
 			hotKey: [17, 16, 70],
 			position: 'top',
+			windowType: 'docked',
+			offsets: {
+				top:0,
+				left:0,
+				right:null,
+				bottom:null
+			},
 			keyboardTimeout: 200
 		}
 	},
