@@ -16,6 +16,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 document.addEventListener('DOMContentLoaded', (e) => {
 	getSearchBar().focus();
+	getSearchBar().oldValue = "";
 });
 
 window.addEventListener("message", (e) => {
@@ -54,13 +55,15 @@ document.getElementById('previous').addEventListener('click', (e) => {
 });
 
 
-getSearchBar().addEventListener('type', (e) => {
+getSearchBar().addEventListener('change', (e) => {
+
+	e.target.oldValue = e.target.value;
 
 	if ( e.target.value ) {
 		browser.runtime.sendMessage({
 			action: "mark", 
 			searchTerms: e.target.value, 
-			findBarSearch:true, 
+			findBarSearch: e.detail ? false : true, // detail = true - skip jump to first match
 			accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
 			caseSensitive: document.querySelector('#caseSensitive').checked,
 			ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
@@ -85,7 +88,7 @@ window.addEventListener('keydown', (e) => {
 		return;
 	}
 	
-	if ( [13,40].includes(e.which) ) {
+	if ( [40].includes(e.which) ) {
 		browser.runtime.sendMessage({action: "findBarNext"});
 		return;
 	} else if ( [38].includes(e.which) ) {
@@ -119,12 +122,20 @@ getSearchBar().addEventListener('keypress', (e) => {
 	
 	// prevent some closing weirdness
 	if (e.which === 27 ) return;
+	
+	if ( e.which === 13 ) {
+		if ( e.target.value !== e.target.oldValue )
+			getSearchBar().dispatchEvent(new Event('change'));
+		else
+			browser.runtime.sendMessage({action: "findBarNext"});
+		return;
+	}
 
 	if ( userOptions.highLight.findBar.keyboardTimeout === 0 ) return;
 	clearTimeout(typeTimer);
 	
 	typeTimer = setTimeout(() => {
-		getSearchBar().dispatchEvent(new CustomEvent('type'));
+		getSearchBar().dispatchEvent(new Event('change'));
 		typeTimer = null;
 	}, userOptions.highLight.findBar.keyboardTimeout);
 		
@@ -145,13 +156,13 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
 	el.addEventListener('click', (e) => {
-		getSearchBar().dispatchEvent(new CustomEvent('type'));
+		getSearchBar().dispatchEvent(new Event('change'));
 	});
 });
 
 document.querySelector('#toggle_marks').addEventListener('change', (e) => {
 	if ( e.target.checked )
-		getSearchBar().dispatchEvent(new CustomEvent('type'));
+		getSearchBar().dispatchEvent(new CustomEvent('change', {detail: true})); // detail = true means set findBarSearch = false to skip jump to first match
 	else
 		browser.runtime.sendMessage({action: "unmark", saveTabHighlighting: true});
 });

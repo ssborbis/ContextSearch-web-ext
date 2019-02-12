@@ -151,6 +151,78 @@ if ( window != top ) {
 		}
 	}
 	
+	// function main() {
+		// document.documentElement.dataset.cs_sidebar_position = userOptions.sideBar.widget.position;
+
+		// let openingTab = document.createElement('div');
+
+		// openingTab.id = 'CS_sbOpeningTab';
+		// openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
+		// openingTab.style.setProperty("--closing-icon", 'url(' + browser.runtime.getURL("/icons/crossmark.svg") + ')');
+
+		// let sbContainer = document.createElement('div');
+		// sbContainer.id = 'CS_sbContainer';
+		
+		// sbContainer.style.setProperty('transform', "scale(" + 1 / window.devicePixelRatio + ")", "important");
+		
+		// if ( userOptions.searchBarTheme === 'dark' )
+			// openingTab.classList.add('CS_dark');
+
+		// openingTab.addEventListener('click', () => {
+			
+			// if ( sbContainer.moving ) return false;
+			
+			// let iframe = getIframe();
+			
+			// if ( iframe ) 
+				// closeSideBar();
+			// else 
+				// openSideBar();
+		// });
+		
+		// // open sidebar if dragging text over
+		// openingTab.addEventListener('dragenter', (e) => {
+			// if ( getIframe() ) return;
+			// openingTab.dispatchEvent(new MouseEvent('click'));
+			// getIframe().focus();
+		// });
+		
+		// sbContainer.appendChild(openingTab);
+		// document.body.appendChild(sbContainer);
+		
+		// // move openingTab if offscreen
+		// let rect = sbContainer.getBoundingClientRect();
+		// if ( rect.bottom > window.innerHeight )
+			// sbContainer.style.top = (window.innerHeight - rect.height) + "px";
+		
+		// makeDockable(sbContainer, {
+			// windowType: 'undocked',
+			// dockedPosition: 'top',
+			// lastOffsets: {
+				// top:100,
+				// left:Number.MAX_SAFE_INTEGER,
+				// right:0,
+				// bottom:Number.MAX_SAFE_INTEGER
+			// }
+		// });
+	
+		// // let o = {
+			// // handleElement: el,
+			// // deadZone: 10,
+			// // movingClass: '',
+			// // dockCallback: function() {},
+			// // undockCallback: function() {},
+			// // windowType: 'docked',
+			// // dockedPosition: 'top',
+			// // lastOffsets: {
+				// // top: 0,
+				// // left: 0,
+				// // right: null,
+				// // bottom: null	
+			// // }
+		// // }
+	// }
+	
 	function main() {
 		
 		document.documentElement.dataset.cs_sidebar_position = userOptions.sideBar.widget.position;

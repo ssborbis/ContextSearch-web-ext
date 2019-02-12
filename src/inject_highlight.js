@@ -20,6 +20,18 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	}
 });
 
+
+// https://stackoverflow.com/a/11508164
+function hexToRgb(hex) {
+	hex = hex.replace("#", "");
+    var bigint = parseInt(hex, 16);
+    var r = (bigint >> 16) & 255;
+    var g = (bigint >> 8) & 255;
+    var b = bigint & 255;
+
+    return r + "," + g + "," + b;
+}
+
 function addStyling() {
 	// append marking styles
 	let styleEl = document.createElement('style');
@@ -38,19 +50,19 @@ function addStyling() {
 				color:${userOptions.highLight.activeStyle.color};
 			}
 			.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
-				background:${userOptions.highLight.styles[0].background};
+				background:rgba(` + hexToRgb(userOptions.highLight.styles[0].background) + ',' + userOptions.highLight.opacity + `);
 				color:${userOptions.highLight.styles[0].color};
 			}	
 			.CS_mark[data-style="1"], #CS_highLightNavBar > DIV[data-style="1"] {
-				background:${userOptions.highLight.styles[1].background};
+				background:rgba(` + hexToRgb(userOptions.highLight.styles[1].background) + ',' + userOptions.highLight.opacity + `);
 				color:${userOptions.highLight.styles[1].color};
 			}
 			.CS_mark[data-style="2"], #CS_highLightNavBar > DIV[data-style="2"] {
-				background:${userOptions.highLight.styles[2].background};
+				background:rgba(` + hexToRgb(userOptions.highLight.styles[2].background) + ',' + userOptions.highLight.opacity + `);
 				color:${userOptions.highLight.styles[2].color};
 			}
 			.CS_mark[data-style="3"], #CS_highLightNavBar > DIV[data-style="3"] {
-				background:${userOptions.highLight.styles[3].background};
+				background:rgba(` + hexToRgb(userOptions.highLight.styles[3].background) + ',' + userOptions.highLight.opacity + `);
 				color:${userOptions.highLight.styles[3].color};
 			}
 			`;
@@ -276,7 +288,7 @@ function mark(options) {
 						return _word.toLowerCase() === el.textContent.toLowerCase();
 					});
 					
-					if ( index === -1 ) index = 0;
+					if ( index === -1 ) index = 0; // regex
 					
 					el.dataset.style = index > 3 ? index % 4 : index;	
 				});
@@ -453,8 +465,6 @@ function openFindBar() {
 			fbc.classList.add('CS_dark');
 		
 		fbc.style.transformOrigin = userOptions.highLight.findBar.position + " left";
-		//fb.style.transform = 'scale(' + 1 / window.devicePixelRatio + ')';
-		
 		fbc.style.setProperty('transform', 'scale(' + 1 / window.devicePixelRatio + ')', "important");
 		fbc.style.width = 100 * window.devicePixelRatio + "%";
 		fbc.style.opacity = 0;

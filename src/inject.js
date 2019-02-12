@@ -189,11 +189,19 @@ function findFixedElements(side, dist) {
 	
 }
 
+function getScrollBarWidth() {
+	return window.innerWidth - document.documentElement.clientWidth;
+}
+
+function getScrollBarHeight() {
+	return window.innerHeight - document.documentElement.clientHeight;
+}
+
 function makeDockable(el, options) {
 	
 	let o = {
 		handleElement: el,
-		deadZone: 10,
+		deadzone: 10,
 		movingClass: '',
 		dockCallback: function() {},
 		undockCallback: function() {},
@@ -224,21 +232,25 @@ function makeDockable(el, options) {
 	// set scaled window position by transformOrigin
 	function translatePosition(v, h) {
 		let r = el.getBoundingClientRect();
-	
+
 		el.style.top = null;
 		el.style.left = null;
 		el.style.right = null;
 		el.style.bottom = null;
 		
 		el.style.transformOrigin = v + " " + h;
-		el.style[v] = ((v === 'bottom') ? window.innerHeight - r[v] : r[v]) + "px";
-		el.style[h] = ((h === 'right') ? window.innerWidth - r[h] : r[h]) + "px";
-		
+
+		el.style[v] = ((v === 'bottom') ? window.innerHeight - r[v] - getScrollBarHeight() : r[v]) + "px";
+		el.style[h] = ((h === 'right') ? window.innerWidth - r[h] - getScrollBarWidth() : r[h]) + "px";
+
 		// reflow
 		el.getBoundingClientRect();
 	}
 	
 	function setDefaultFloatPosition() {
+		
+		// undock animation should start in the corners
+		
 		el.style.top = o.dockedPosition === 'top' ? '0' : null;
 		el.style.left = '0';
 		el.style.right = null;
@@ -272,8 +284,8 @@ function makeDockable(el, options) {
 	
 	function undock() {
 		el.style.transition = 'none';
-		el.dataset.windowtype = 'floating';
-		o.windowType = 'floating';
+		el.dataset.windowtype = 'undocked';
+		o.windowType = 'undocked';
 
 		setDefaultFloatPosition();
 
@@ -283,9 +295,6 @@ function makeDockable(el, options) {
 		el.style.transition = null;
 		
 		runAtTransitionEnd(el, [pos.h, pos.v, "width"], () => {
-			el.style.transition = 'none';
-			translatePosition("top", "left");
-			el.style.transition = null;
 			o.undockCallback(o);
 		});
 		
@@ -312,14 +321,13 @@ function makeDockable(el, options) {
 		el.moving = false;
 		e.preventDefault();
 		
+		// disable transitions during move
 		el.style.transition = "none";
 
 		document.addEventListener('mousemove', moveListener);
 
 		document.addEventListener('mouseup', (_e) => {
 
-			el.style.transition = null;
-			
 			document.removeEventListener('mousemove', moveListener);
 			
 			if ( !el.moving ) return;
@@ -329,7 +337,17 @@ function makeDockable(el, options) {
 			overDiv.parentNode.removeChild(overDiv);
 			
 			o.lastOffsets = getOffsets();
-			o.dockedPosition = getPositions(o.lastOffsets).v;
+			let pos = getPositions(o.lastOffsets);
+			
+			// set docked position based on quadrant
+			o.dockedPosition = pos.v;
+			
+			// translate scale and position to quadrant
+			translatePosition(pos.v, pos.h);
+			
+			// restore transitions
+			el.style.transition = null;
+			
 			o.undockCallback(o);
 
 		}, {once: true});
@@ -338,7 +356,7 @@ function makeDockable(el, options) {
 	function moveListener(e) {
 		e.preventDefault();
 
-		if ( !el.moving && Math.abs( el.X - e.clientX ) < 10 && Math.abs( el.Y - e.clientY ) < 10 )	return;
+		if ( !el.moving && Math.abs( el.X - e.clientX ) < o.deadzone && Math.abs( el.Y - e.clientY ) < o.deadzone )	return;
 		
 		else if ( !el.moving ) {
 			document.body.appendChild(overDiv);
@@ -346,24 +364,26 @@ function makeDockable(el, options) {
 			el.classList.add('CS_moving');	
 
 			if ( el.dataset.windowtype === 'docked' ) {
-				el.dataset.windowtype = 'floating';
-				o.windowType = 'floating';
+				el.dataset.windowtype = 'undocked';
+				o.windowType = 'undocked';
 				o.undockCallback(o);
 			}
+			
+			translatePosition("top", "left");
 		}
 		
 		let rect = el.getBoundingClientRect();
 
 		let _top = el.offsetTop - ( el.Y - e.clientY );
 		if ( _top < 0 ) _top = 0;
-		if ( _top + rect.height > window.innerHeight ) _top = window.innerHeight - rect.height;
+		if ( _top + rect.height > window.innerHeight - getScrollBarHeight() ) _top = window.innerHeight - rect.height;
 
 		el.Y = e.clientY;
 		
 		let _left = el.offsetLeft - ( el.X - e.clientX );
 		if ( _left < 0 ) _left = 0;
-		if ( _left + rect.width > window.innerWidth ) _left = window.innerWidth - rect.width;
-		
+		if ( _left + rect.width > window.innerWidth - getScrollBarWidth() ) _left = window.innerWidth - rect.width;
+
 		el.X = e.clientX;
 
 		el.style.top = _top + "px";
@@ -376,7 +396,6 @@ function makeDockable(el, options) {
 		let t_b = ( r.top > r.bottom ) ? 'bottom' : 'top';
 		
 		return {v:t_b, h:l_r};
-
 	}
 	
 	function getOffsets() {

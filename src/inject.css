@@ -169,7 +169,7 @@
 	right:0;
 }
 
-#CS_findBarContainer[data-windowtype="floating"] {
+#CS_findBarContainer[data-windowtype="undocked"] {
 	width:875px !important;	
 }
 
