@@ -70,6 +70,14 @@ function createCustomIcon(options) {
 	ctx.fillStyle = options.backgroundColor || '#6ec179';
 	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+	if ( options.image ) {
+		
+		let img = new Image();
+		img.src = options.image;
+		
+		ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
+	}
+
 	ctx.font = (options.fontSize || "16px") + " " + (options.fontFamily || "Georgia");
 	ctx.textAlign = 'center';
 	ctx.textBaseline="middle"; 

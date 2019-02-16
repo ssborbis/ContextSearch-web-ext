@@ -16,7 +16,8 @@
 	display:inline-block;
 	z-index: 2147483647; /* max 32-bit integer */
 	transition: var(--user-transition, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
-	transform:scale(1);
+	transform:scale( calc( 1 / var(--cs-zoom, 1))) !important;
+	transform-origin: top left;
 }
 #CS_quickMenuIframe[data-openingopacity] {
 	opacity:var(--opening-opacity);
@@ -70,6 +71,7 @@
 	z-index:2147483647;
 	opacity:.5;
 	transform-origin:top right;
+	transform:scaleX( calc( 1 / var(--cs-zoom, 1))) !important;
 }
 #CS_highLightNavBar:hover {
 	opacity:.5;
@@ -77,6 +79,7 @@
 #CS_highLightNavBar > IMG {
 	height:16px;
 	transform-origin:top right;
+	transform:scaleY( calc( 1 / var(--cs-zoom, 1))) !important;
 }
 #CS_highLightNavBar > DIV {
 	position:absolute;
@@ -130,9 +133,9 @@
 	overflow: hidden;
 	opacity:1;
 	max-height:36px;
-	transform:scale(1);
 	white-space:nowrap;
 	background-color:#EFF0F1;
+	transform:scale( calc( 1 / var(--cs-zoom, 1))) !important;
 }
 
 #CS_findBarContainer.CS_dark {
@@ -167,6 +170,7 @@
 #CS_findBarContainer[data-windowtype="docked"] {
 	left:0;
 	right:0;
+	width: calc(var(--cs-zoom, 100) * 100%);
 }
 
 #CS_findBarContainer[data-windowtype="undocked"] {

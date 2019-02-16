@@ -45,10 +45,6 @@ function addStyling() {
 				--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
 				--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
 			}
-			.CS_mark.CS_mark_selected, .CS_mark_selected {
-				background: ${userOptions.highLight.activeStyle.background};
-				color:${userOptions.highLight.activeStyle.color};
-			}
 			.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
 				background:rgba(` + hexToRgb(userOptions.highLight.styles[0].background) + ',' + userOptions.highLight.opacity + `);
 				color:${userOptions.highLight.styles[0].color};
@@ -65,6 +61,10 @@ function addStyling() {
 				background:rgba(` + hexToRgb(userOptions.highLight.styles[3].background) + ',' + userOptions.highLight.opacity + `);
 				color:${userOptions.highLight.styles[3].color};
 			}
+			.CS_mark.CS_mark_selected, .CS_mark_selected {
+				background: ${userOptions.highLight.activeStyle.background};
+				color:${userOptions.highLight.activeStyle.color};
+			}
 			`;
 	} else if ( userOptions.highLight.highlightStyle === 'underline' ) {
 		
@@ -72,10 +72,6 @@ function addStyling() {
 		:root {
 			--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
 			--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
-		}
-		.CS_mark.CS_mark_selected, .CS_mark_selected {
-			border-bottom: .2em solid ${userOptions.highLight.activeStyle.background};
-			color:inherit;
 		}
 		.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
 			border-bottom: .2em solid ${userOptions.highLight.styles[0].background};
@@ -91,6 +87,10 @@ function addStyling() {
 		}
 		.CS_mark[data-style="3"], #CS_highLightNavBar > DIV[data-style="3"] {
 			border-bottom: .2em solid ${userOptions.highLight.styles[3].background};
+			color:inherit;
+		}
+		.CS_mark.CS_mark_selected, .CS_mark_selected {
+			border-bottom: .2em solid ${userOptions.highLight.activeStyle.background};
 			color:inherit;
 		}
 		`;
@@ -324,21 +324,23 @@ function unmark(saveTabHighlighting) {
 }
 
 function openNavBar() {
-
+	
 	let hls = getMarks();
 
 	if ( ! hls.length ) return;
 	
-	if ( getNavBar() ) closeNavBar();
+	let ratio = document.documentElement.clientHeight / Math.max(document.documentElement.offsetHeight, document.body.offsetHeight);
+
+	if ( getNavBar() ) { 
+		setMarkers(getNavBar());
+		return;
+	}	
 
 	let div = document.createElement('div');
 	div.id = 'CS_highLightNavBar';
 	
-	div.style.transform = 'scaleX(' + 1/window.devicePixelRatio + ')';
-	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/crossmark.svg');
-	img.style.transform = 'scaleY(' + 1/window.devicePixelRatio + ')';
 	
 	img.addEventListener('mousedown', (e) => {
 		e.preventDefault();
@@ -352,7 +354,7 @@ function openNavBar() {
 	
 	div.appendChild(img);
 	
-	let ratio = document.documentElement.clientHeight / Math.max(document.documentElement.offsetHeight, document.body.offsetHeight);
+	setMarkers(div);
 	
 	function navScrollToHandler(e) {
 		document.documentElement.scrollTop = e.clientY / ratio - .5 * document.documentElement.clientHeight;
@@ -375,71 +377,72 @@ function openNavBar() {
 			document.removeEventListener('mousemove', mouseMoveHandler);
 		}, {once:true});
 	});
-	
-	// keep track of markers with the same top offset
-	let layers = 0;
 
-	hls.forEach( (hl, index) => {
-
-		let marker = document.createElement('div');
-		marker.className = 'marker';
-
-		marker.style.top = offset(hl).top * ratio / document.documentElement.clientHeight * 100 + "vh";
-		marker.style.height = '.5vh';//rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
-		
-		if ( hl.ownerDocument != document ) {
-			let iframe = Array.from(document.querySelectorAll('iframe')).find( iframe => iframe.contentDocument == hl.ownerDocument );
-
-			marker.style.top = offset(iframe).top * ratio / document.documentElement.clientHeight * 100 + "vh";
-		}
-
-		marker.dataset.style = hl.dataset.style || 0;
-		
-		marker.onclick = function(e) {
-			
-			e.stopImmediatePropagation();
-
-			let _top = parseFloat(marker.style.top) / ratio;
-			navScrollToHandler(e);
-
-			jumpTo(index);
-		}
-		
-		div.appendChild(marker);
-		
-		// if stacking elements, offset margins
-		if ( marker.previousSibling && marker.previousSibling.style.top === marker.style.top )
-			marker.style.marginTop = ++layers * 4 + 'px';
-		else
-			layers = 0;
-		
-		marker.style.background = userOptions.highLight.styles[parseInt(marker.dataset.style) || 0].background;
-		marker.style.border = 'none';
-		
-	});
-	
 	document.body.appendChild(div);
-	
-	let n_width = parseFloat(window.getComputedStyle(div).getPropertyValue('width')) / window.devicePixelRatio;
 
-	offsetElement(document.documentElement, 'right', n_width, 'navbar');
-	modifyStyleProperty(document.documentElement, "position", "relative", "navbar");
+	let n_width = parseFloat(window.getComputedStyle(div).getPropertyValue('width')) / window.devicePixelRatio;
 	
-	findFixedElements('right', n_width).filter( el => el !== div ).forEach( el => {
-		offsetElement(el, 'right', n_width, 'navbar');
+	makeDockable(div, {
+		handleElement: null,
+		dockedPadding: {right:n_width},
+		windowType: 'docked',
+		offsetOnScroll: false,
+		dockedPosition: 'right'
 	});
+
+	function setMarkers(navbar) {
+		
+		navbar.querySelectorAll('.marker').forEach( m => m.parentNode.removeChild(m) );
+
+		// keep track of markers with the same top offset
+		let layers = 0;
+
+		hls.forEach( (hl, index) => {
+
+			let marker = document.createElement('div');
+			marker.className = 'marker';
+
+			marker.style.top = offset(hl).top * ratio / document.documentElement.clientHeight * 100 + "vh";
+			marker.style.height = '.5vh';//rect.height * ratio / document.documentElement.clientHeight * 100 + "vh";
+			
+			if ( hl.ownerDocument != document ) {
+				let iframe = Array.from(document.querySelectorAll('iframe')).find( iframe => iframe.contentDocument == hl.ownerDocument );
+
+				marker.style.top = offset(iframe).top * ratio / document.documentElement.clientHeight * 100 + "vh";
+			}
+
+			marker.dataset.style = hl.dataset.style || 0;
+			
+			marker.onclick = function(e) {
+				
+				e.stopImmediatePropagation();
+
+				let _top = parseFloat(marker.style.top) / ratio;
+				navScrollToHandler(e);
+
+				jumpTo(index);
+			}
+
+			navbar.appendChild(marker);
+			
+			// if stacking elements, offset margins
+			if ( marker.previousSibling && marker.previousSibling.style.top === marker.style.top )
+				marker.style.marginTop = ++layers * 4 + 'px';
+			else
+				layers = 0;
+			
+			marker.style.background = userOptions.highLight.styles[parseInt(marker.dataset.style) || 0].background;
+			marker.style.border = 'none';
+
+		});
+	}
 }
 
 function closeNavBar() {
+
 	let nav = getNavBar();	
 	
-	if ( !nav ) return;
-		
-	nav.parentNode.removeChild(nav);
-	document.querySelectorAll('[style*="--cs-navbar"]').forEach( el => {
-		resetStyleProperty(el, 'navbar');
-	});
-	
+	if ( nav ) nav.parentNode.removeChild(nav);
 }
 
 function openFindBar() {
@@ -465,14 +468,11 @@ function openFindBar() {
 			fbc.classList.add('CS_dark');
 		
 		fbc.style.transformOrigin = userOptions.highLight.findBar.position + " left";
-		fbc.style.setProperty('transform', 'scale(' + 1 / window.devicePixelRatio + ')', "important");
-		fbc.style.width = 100 * window.devicePixelRatio + "%";
+		
 		fbc.style.opacity = 0;
 		fbc.style.maxHeight = '0px';
 		if ( !userOptions.enableAnimations ) fbc.style.setProperty('--user-transition', 'none');
-		
-		fbc.style[userOptions.highLight.findBar.position] = '0';
-		
+
 		fb = document.createElement('iframe');
 		fb.id = 'CS_findBarIframe';
 
@@ -493,41 +493,28 @@ function openFindBar() {
 		}
 
 		fb.src = browser.runtime.getURL("/findbar.html");
+		
+		function saveFindBarOptions(o) {
+			userOptions.highLight.findBar.offsets = o.lastOffsets;
+			userOptions.highLight.findBar.position = o.dockedPosition;
+			userOptions.highLight.findBar.windowType = o.windowType;
+			
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+		}
 
 		makeDockable(fbc, {
 			handleElement:handle, 
 			dockedPosition: userOptions.highLight.findBar.position,
 			dockCallback: (o) => {
-				
-				userOptions.highLight.findBar.offsets = o.lastOffsets;
-				userOptions.highLight.findBar.position = o.dockedPosition;
-				userOptions.highLight.findBar.windowType = o.windowType;
-				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
-				
-				if ( o.dockedPosition === 'top' ) {		
-					offsetElement(document.body, 'padding-top', 36 / window.devicePixelRatio, 'findbar');			
-					
-					findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fbc ).forEach( el => {
-						offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
-					});
-				}	
+				saveFindBarOptions(o);	
 			},
 			undockCallback: (o) => {
-
-				userOptions.highLight.findBar.offsets = o.lastOffsets;
-				userOptions.highLight.findBar.position = o.dockedPosition;
-				userOptions.highLight.findBar.windowType = o.windowType;
-				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
-				
-				document.querySelectorAll('[style*="--cs-findbar"]').forEach( el => {
-					resetStyleProperty(el, 'findbar');
-				});
+				saveFindBarOptions(o);
 			},
 			windowType: userOptions.highLight.findBar.windowType,
 			lastOffsets: userOptions.highLight.findBar.offsets,
-			dockedPosition: userOptions.highLight.findBar.position
+			dockedPosition: userOptions.highLight.findBar.position,
+			dockedPadding: {top:36}
 		});
 	});
 }
@@ -536,21 +523,13 @@ function closeFindBar() {
 
 	let fbc = getFindBarContainer();
 	if ( fbc ) {
-		
-		clearTimeout(scrollThrottler);
-		
+				
 		fbc.style.maxHeight = '0px';
 		fbc.style.opacity = 0;
 		
 		runAtTransitionEnd(fbc, "max-height", () => {
 			fbc.parentNode.removeChild(fbc);
-			scrollThrottler = null;
 		});
-			
-		document.querySelectorAll('[style*="--cs-findbar"]').forEach( el => {
-			resetStyleProperty(el, 'findbar');
-		});
-
 	}
 }
 
@@ -646,7 +625,6 @@ function jumpTo(index) {
 		}
 			
 		workingDocument.documentElement.scrollTop = mark.getBoundingClientRect().top + workingDocument.documentElement.scrollTop - .5 * workingDocument.documentElement.clientHeight;
-
 	}
 	
 	if ( getFindBar() )
@@ -733,48 +711,27 @@ document.addEventListener("fullscreenchange", (e) => {
 	if ( document.fullscreen ) {
 		if (fbc) {
 			fbc.style.display = 'none';
-			if ( userOptions.highLight.findBar.position === 'top' )
-				unOffsetElement(document.documentElement, 'padding-top', 'findbar');
+			
+			if ( fbc.dataset.windowtype === 'docked' ) {
+				fbc.lastWindowType = 'docked';
+				fbc.undock();
+			}
 		}
 		if (navbar) navbar.style.display = 'none';		
 		
 	} else {			
 		if (fbc) {
 			fbc.style.display = null;
-			if ( userOptions.highLight.findBar.position === 'top' )
-				offsetElement(document.documentElement, 'padding-top', 36 / window.devicePixelRatio, 'findbar');
+			
+			if ( fbc.lastWindowType === 'docked')
+				fbc.dock();
+			
+			delete fbc.lastWindowType;
 		}
 		if (navbar) navbar.style.display = null;
 	}
 });
 
-// check for sticky divs and banners that pop up when scrolling
-let scrollThrottler = null;
-document.addEventListener('scroll', (e) => {
-	
-	if ( scrollThrottler ) return;
-	
-	let fbc = getFindBarContainer();
-	
-	if ( !fbc ) return;
-
-	scrollThrottler = setTimeout(() => {
-
-		if ( userOptions.highLight.findBar.position === 'top' && fbc.dataset.windowtype === 'docked' ) {
-
-			document.querySelectorAll('[style*="--cs-findbar"]').forEach( el => {
-				
-				if ( el !== document.body ) // skip document because it shouldn't change on scroll
-					resetStyleProperty(el, 'findbar');
-			});
-			
-			findFixedElements('top', 35 / window.devicePixelRatio).filter( el => el !== fbc ).forEach( el => {
-				offsetElement(el, 'top', 36 / window.devicePixelRatio, 'findbar');
-			});
-
-		}
-
-		scrollThrottler = null;
-		
-	}, 500);	
+document.addEventListener('zoom', (e) => {
+	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 });

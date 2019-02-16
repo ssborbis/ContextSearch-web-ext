@@ -105,13 +105,14 @@ function getImage(el, e) {
 }
 
 function modifyStyleProperty(el, prop, val, name) {
-	let orig = window.getComputedStyle(el, null).getPropertyValue(prop);
-	
+
 	el.style.setProperty('--cs-'+name+'-'+prop, el.style.getPropertyValue(prop) || "none");
 	el.style.setProperty(prop, val, "important");
 }
 
 function offsetElement(el, prop, by, name) {
+
+	if ( el.style.hasOwnProperty('--cs-'+name+'-'+prop) ) return;
 	
 	let val = parseFloat(window.getComputedStyle(el, null).getPropertyValue(prop)) + by + "px";	
 	modifyStyleProperty(el, prop, val, name);
@@ -178,10 +179,11 @@ function findFixedElements(side, dist) {
 		let styles = window.getComputedStyle(el, null);
 
 		return ( /fixed|sticky/.test(styles.getPropertyValue('position')) || 
-			( /absolute/.test(styles.getPropertyValue('position')) && el.parentNode === document.body) && el.getBoundingClientRect()[side] < dist 
+			( /absolute/.test(styles.getPropertyValue('position')) && el.parentNode === document.body) && 
+			document.body.getBoundingClientRect()[side] - el.getBoundingClientRect()[side] < dist 
 		);
 	});
-	
+
 	// skip child elements
 	return els.filter( el => {
 		return !els.find( _el => _el === el.parentNode );
@@ -212,7 +214,10 @@ function makeDockable(el, options) {
 			left: 0,
 			right: null,
 			bottom: null	
-		}
+		},
+		dockedPadding: {},
+		id: el.id,
+		offsetOnScroll: true
 	}
 	
 	Object.assign(o, options);
@@ -223,11 +228,69 @@ function makeDockable(el, options) {
 	
 	// init 
 	if ( o.windowType === 'docked' ) dock();
-	else undock();
+ 	else undock();
 	
 	// overlay a div to capture mouse events over iframes
 	let overDiv = document.createElement('div');
 	overDiv.className = "CS_overDiv";
+
+	// watch for element removal and do cleanup
+	var observer = new MutationObserver(() => {
+
+		if ( !el || !el.parentNode ) {
+			observer.disconnect();
+			undoOffset();
+			document.removeEventListener('scroll', scrollHandler);
+		}
+	});
+	
+	observer.observe(el.parentNode, {childList: true});
+	
+	// check for sticky divs and banners that pop up when scrolling	
+	let scrollThrottler = null;
+	if ( o.offsetOnScroll )
+		document.addEventListener('scroll', scrollHandler)
+	
+	function scrollHandler(e) {
+		
+		if ( scrollThrottler ) return;
+		
+		scrollThrottler = setTimeout(() => {
+
+			if ( o.dockedPadding[o.dockedPosition] && el.dataset.windowtype === 'docked' ) {
+				undoOffset(true);
+				doOffset(true);
+			}
+
+			scrollThrottler = null;
+			
+		}, 500);
+	}		
+	
+	function doOffset(notBody) {
+		
+		if ( o.dockedPadding[o.dockedPosition] ) {	
+
+			let dist = o.dockedPadding[o.dockedPosition] / window.devicePixelRatio;
+			
+			if ( !notBody )
+				offsetElement(document.body, 'padding-' + o.dockedPosition, dist, el.id);			
+			
+			findFixedElements(o.dockedPosition, dist - 1).filter( _el => _el !== el ).forEach( _el => {
+				offsetElement(_el, o.dockedPosition, dist, el.id);
+			});
+		}
+	}
+	
+	function undoOffset(notBody) {
+
+		document.querySelectorAll('[style*="--cs-' + o.id + '"]').forEach( _el => {
+			
+			if ( _el === document.body && notBody ) return;
+			
+			resetStyleProperty(_el, o.id);
+		});
+	}
 	
 	// set scaled window position by transformOrigin
 	function translatePosition(v, h) {
@@ -250,10 +313,9 @@ function makeDockable(el, options) {
 	function setDefaultFloatPosition() {
 		
 		// undock animation should start in the corners
-		
 		el.style.top = o.dockedPosition === 'top' ? '0' : null;
-		el.style.left = '0';
-		el.style.right = null;
+		el.style.left = o.dockedPosition !== 'right' ? '0' : null; // set absolute left for top, bottom, left
+		el.style.right = o.dockedPosition === 'right' ? '0' : null;
 		el.style.bottom = o.dockedPosition === 'bottom' ? '0' : null;
 	}
 	
@@ -264,7 +326,7 @@ function makeDockable(el, options) {
 				
 			o.lastOffsets = getOffsets();
 			let pos = getPositions(o.lastOffsets);
-			translatePosition(o.dockedPosition, "left");
+			translatePosition(o.dockedPosition === 'bottom' ? 'bottom' : 'top', o.dockedPostion === 'right' ? 'right' : 'left');
 			
 			if ( pos.v === 'bottom' )
 				el.style.top = o.lastOffsets.top + "px";
@@ -277,8 +339,10 @@ function makeDockable(el, options) {
 
 		setDefaultFloatPosition();
 
-		el.dataset.windowtype = 'docked';
-		o.windowType = 'docked';
+		el.dataset.windowtype = o.windowType = 'docked';
+		
+		doOffset();
+
 		o.dockCallback(o);
 	}
 	
@@ -306,52 +370,58 @@ function makeDockable(el, options) {
 
 		el.style[pos.h] = fixedLastOffsets[pos.h] + "px";
 		el.style[pos.v] = fixedLastOffsets[pos.v]  + "px";
+		
+		undoOffset();
 	}
 	
-	o.handleElement.addEventListener('dblclick', (e) => {
+	if ( o.handleElement) {
+		o.handleElement.addEventListener('dblclick', (e) => {
 
-		if ( el.dataset.windowtype === 'docked' ) undock();
-		else dock();	
-	});
+			if ( el.dataset.windowtype === 'docked' ) undock();
+			else dock();	
+		});
+	}
 
-	o.handleElement.addEventListener('mousedown', (e) => {
+	if ( o.handleElement ) {
+		o.handleElement.addEventListener('mousedown', (e) => {
 
-		el.X = e.clientX;
-		el.Y = e.clientY;
-		el.moving = false;
-		e.preventDefault();
-		
-		// disable transitions during move
-		el.style.transition = "none";
+			el.X = e.clientX;
+			el.Y = e.clientY;
+			el.moving = false;
+			e.preventDefault();
+			
+			// disable transitions during move
+			el.style.transition = "none";
 
-		document.addEventListener('mousemove', moveListener);
+			document.addEventListener('mousemove', moveListener);
 
-		document.addEventListener('mouseup', (_e) => {
+			document.addEventListener('mouseup', (_e) => {
 
-			document.removeEventListener('mousemove', moveListener);
-			
-			if ( !el.moving ) return;
-			
-			el.classList.remove('CS_moving');
-			
-			overDiv.parentNode.removeChild(overDiv);
-			
-			o.lastOffsets = getOffsets();
-			let pos = getPositions(o.lastOffsets);
-			
-			// set docked position based on quadrant
-			o.dockedPosition = pos.v;
-			
-			// translate scale and position to quadrant
-			translatePosition(pos.v, pos.h);
-			
-			// restore transitions
-			el.style.transition = null;
-			
-			o.undockCallback(o);
+				document.removeEventListener('mousemove', moveListener);
+				
+				if ( !el.moving ) return;
+				
+				el.classList.remove('CS_moving');
+				
+				overDiv.parentNode.removeChild(overDiv);
+				
+				o.lastOffsets = getOffsets();
+				let pos = getPositions(o.lastOffsets);
+				
+				// set docked position based on quadrant
+				o.dockedPosition = pos.v;
+				
+				// translate scale and position to quadrant
+				translatePosition(pos.v, pos.h);
+				
+				// restore transitions
+				el.style.transition = null;
+				
+				o.undockCallback(o);
 
-		}, {once: true});
-	});
+			}, {once: true});
+		});
+	}
 
 	function moveListener(e) {
 		e.preventDefault();
@@ -364,8 +434,8 @@ function makeDockable(el, options) {
 			el.classList.add('CS_moving');	
 
 			if ( el.dataset.windowtype === 'docked' ) {
-				el.dataset.windowtype = 'undocked';
-				o.windowType = 'undocked';
+				el.dataset.windowtype = o.windowType = 'undocked';
+				undoOffset();
 				o.undockCallback(o);
 			}
 			
@@ -411,6 +481,9 @@ function makeDockable(el, options) {
 	}
 
 }
+
+// set zoom attribute to be used for scaling objects
+document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {

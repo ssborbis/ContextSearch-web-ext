@@ -268,6 +268,7 @@ function restoreOptions() {
 		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
+		$('#s_findBarWindowType').value = userOptions.highLight.findBar.windowType;
 		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
 		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
@@ -444,7 +445,7 @@ function saveOptions(e) {
 				}(),
 				position: $('#s_findBarPosition').value,
 				keyboardTimeout: parseInt($('#n_findBarTimeout').value),
-				windowType: userOptions.highLight.findBar.windowType,
+				windowType: $('#s_findBarWindowType').value,
 				offsets: userOptions.highLight.findBar.offsets
 			},
 			markOptions: {

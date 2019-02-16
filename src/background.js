@@ -1243,7 +1243,6 @@ const defaultUserOptions = {
 	quickMenuOnImages: true,
 	quickMenuScale: 1,
 	quickMenuIconScale: 1,
-	quickMenuScaleOnZoom: true,
 	quickMenuPosition: "top center",
 	quickMenuOffset: {x:0, y:-20},
 	quickMenuCloseOnScroll: false,
@@ -1459,6 +1458,13 @@ browser.runtime.onInstalled.addListener((details) => {
 browser.browserAction.setPopup({popup: "/searchbar.html"});
 browser.browserAction.onClicked.addListener(() => {	
 	browser.browserAction.openPopup();
+});
+
+// trigger zoom event
+browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
+	browser.tabs.executeScript( zoomChangeInfo.tabId, {
+		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+	});
 });
 
 if (browser.pageAction) {

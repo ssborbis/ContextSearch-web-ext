@@ -110,16 +110,6 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 		height: qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("height")
 	};
 
-	// scale quickmenu
-	userOptions.quickMenuScaleOnZoom = userOptions.quickMenuScaleOnZoom || true;
-
-	let new_scale = (userOptions.quickMenuScaleOnZoom) ? (userOptions.quickMenuScale / window.devicePixelRatio) : userOptions.quickMenuScale;
-	
-	qmc.style.transformOrigin = "top left";
-//	qmc.style.transform = "scale(" + new_scale + ")";
-	
-	qmc.style.setProperty('transform', "scale(" + new_scale + ")", "important");
-	
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
 	
@@ -201,12 +191,8 @@ function makeQuickMenuContainer(coords) {
 
 }
 
-function isTextBox(element) {
-	
-	if ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable )
-		return true;
-	else
-		return false;
+function isTextBox(element) {	
+	return ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable );
 }
 
 // Listen for ESC and close Quick Menu
@@ -277,7 +263,7 @@ document.addEventListener('mousedown', (ev) => {
 		// prevent drag events when using search on mouseup
 	//	if (userOptions.quickMenuSearchOnMouseUp) {
 			window.addEventListener('dragstart', (e) => {
-				console.log('preventing dragstart once');
+			//	console.log('preventing dragstart once');
 				e.preventDefault();
 			}, {once: true});
 	//	}
@@ -507,6 +493,12 @@ window.addEventListener('keydown', (e) => {
 	
 // });
 
+document.addEventListener('zoom', (e) => {
+	
+	if ( !document.getElementById('CS_quickMenuIframe') ) return;
+	scaleAndPositionQuickMenu(null, true);
+});
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.userOptions !== 'undefined') {
@@ -553,7 +545,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (quickMenuObject.disabled)
 					userOptions.quickMenu = false;
 				
-				let qm = document.getElementById('CS_quickMenuIframe')
+				let qm = document.getElementById('CS_quickMenuIframe');
 				
 				if( qm && message.toggleLock ) {
 				

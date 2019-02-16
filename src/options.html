@@ -655,7 +655,7 @@
 				border:4px solid #F4F4F4;*/
 			}
 						
-			.editForm INPUT, .editForm SELECT, .editForm TEXTAREA {
+			.editForm INPUT:not(#iconPicker), .editForm SELECT, .editForm TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
 				border:1px solid #E0E0E0;
@@ -676,7 +676,7 @@
 				border:1px solid pink;
 				box-shadow:0px 0px 3px 1px pink;
 			}
-			.editForm LABEL {
+			.editForm LABEL:not([for="iconPicker"]) {
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
@@ -1718,6 +1718,32 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</select>
 						<div class="description" data-i18n="HighLightStyleToolTip">Style the highlighting using background / foreground colors or underlines. Choosing 'underline' will ignore text color values</div>
 					</div>
+					
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:6px" id="s_highLightOpacity">
+							<option value="1">100%</option>
+							<option value="0.95">95%</option>
+							<option value="0.9">90%</option>
+							<option value="0.85">85%</option>
+							<option value="0.8">80%</option>
+							<option value="0.75">75%</option>
+							<option value="0.7">70%</option>
+							<option value="0.65">65%</option>
+							<option value="0.6">60%</option>
+							<option value="0.55">55%</option>
+							<option value="0.5">50%</option>
+							<option value="0.45">45%</option>
+							<option value="0.4">40%</option>
+							<option value="0.35">35%</option>
+							<option value="0.3">30%</option>
+							<option value="0.25">25%</option>
+							<option value="0.2">20%</option>
+							<option value="0.15">15%</option>
+							<option value="0.1">10%</option>
+							<option value="0.05">5%</option>							
+						</select>
+						<div class="description" data-i18n="HighLightOpacityToolTip">Opacity of the background color</div>
+					</div>
 
 					<br /><br />
 					<table style="text-align:center">
@@ -1768,36 +1794,12 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 					
 					<br /><br />
-					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:6px" id="s_highLightOpacity">
-							<option value="1">100%</option>
-							<option value="0.95">95%</option>
-							<option value="0.9">90%</option>
-							<option value="0.85">85%</option>
-							<option value="0.8">80%</option>
-							<option value="0.75">75%</option>
-							<option value="0.7">70%</option>
-							<option value="0.65">65%</option>
-							<option value="0.6">60%</option>
-							<option value="0.55">55%</option>
-							<option value="0.5">50%</option>
-							<option value="0.45">45%</option>
-							<option value="0.4">40%</option>
-							<option value="0.35">35%</option>
-							<option value="0.3">30%</option>
-							<option value="0.25">25%</option>
-							<option value="0.2">20%</option>
-							<option value="0.15">15%</option>
-							<option value="0.1">10%</option>
-							<option value="0.05">5%</option>							
-						</select>
-						<div class="description" data-i18n="HighLightOpacityToolTip">Opacity of the background color</div>
-					</div>
 					
-					<br />
 					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
 					<i>Beta</i>
 					<hr />
+					
+					<p class="header1" data-i18n="opening">Opening</p>
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="cb_findBarEnabled" />
@@ -1817,6 +1819,28 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</label>
 						<span class="description" data-i18n="FindBarStartOpen">Open the Find bar automatically when the page loads</span>
 					</div>
+				
+					<p class="header1" data-i18n="Position">Position</p>
+					<p>	
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarPosition">
+							<option data-i18n="Top" value="top">top</option>
+							<option data-i18n="Bottom" value="bottom">bottom</option>
+						</select>
+						
+						<span class="description" data-i18n="FindBarPositionTooltip">Choose where to display the Find bar</span>
+					</p>
+					
+					<p class="header1" data-i18n="Window">Window</p>
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarWindowType">
+							<option data-i18n="undocked" value="undocked">undocked</option>
+							<option data-i18n="docked" value="docked">docked</option>
+						</select>
+						<div class="description" data-i18n="FindbarWindowTypeTooltip">Choose how to display the find bar. Find bar window style can be toggled by double-clicking the dock / undock / move icon or by dragging.
+						</div>
+					</div>
+					
+					<p class="header1" data-i18n="General">General</p>
 					
 					<div class="option">
 						<label class="container">
@@ -1828,16 +1852,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 					<input type="number" id="n_findBarTimeout" size="3" class="inputNice" min="0" max="1000" step="10">
 					<span class="description" data-i18n="FindBarTimeout">Perform search after typing has stopped for n milliseconds. Values too low can cause performance issues. 0 = disabled</span>
-				
-					<p class="header1" data-i18n="Position">Position</p>
-					<p>	
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarPosition">
-							<option data-i18n="Top" value="top">top</option>
-							<option data-i18n="Bottom" value="bottom">bottom</option>
-						</select>
-						
-						<span class="description" data-i18n="FindBarPositionTooltip">Choose where to display the Find bar</span>
-					</p>
 
 				</div>
 
@@ -1874,7 +1888,12 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<label data-i18n="Name">Name</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Description">Description</label><textarea name="description" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>
 					<label data-i18n="Template">Template</label><input name="template" type="text" class="inputNice" />
-					<label data-i18n="Icon">Icon URI</label><input name="iconURL" type="text" class="inputNice" />
+					<label data-i18n="Icon">Icon URI</label>
+					<div>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 100px)"/>
+						<label for="iconPicker" title="Browser for local image"><img src="/icons/folder-icon.png" style="height:20px"></label><input type="file" accept="image/*" id="iconPicker" style="display:none">
+						<img style='display:inline-block;height:20px' id="iconPreview" />
+					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">POST Params</label><input name="post_params" type="text" class="inputNice" />
 					<label data-i18n="Regex">Search Regex</label><textarea name="searchRegex" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>

@@ -203,6 +203,9 @@ if ( window != top ) {
 				// left:Number.MAX_SAFE_INTEGER,
 				// right:0,
 				// bottom:Number.MAX_SAFE_INTEGER
+			// },
+			// undockCallback: (o) => {
+				
 			// }
 		// });
 	
@@ -223,6 +226,11 @@ if ( window != top ) {
 		// // }
 	// }
 	
+	function scaleSideBar(sbc) {
+		sbc = sbc || getContainer();
+		sbc.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
+	}
+	
 	function main() {
 		
 		document.documentElement.dataset.cs_sidebar_position = userOptions.sideBar.widget.position;
@@ -235,10 +243,12 @@ if ( window != top ) {
 
 		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
-		//sbContainer.style.transform = "scale(" + 1 / window.devicePixelRatio + ")";
+
+		// overlay a div to capture mouse events over iframes
+		let overDiv = document.createElement('div');
+		overDiv.className = "CS_overDiv";
 		
-		sbContainer.style.setProperty('transform', "scale(" + 1 / window.devicePixelRatio + ")", "important");
-		sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
+		scaleSideBar(sbContainer);
 		
 		if ( userOptions.searchBarTheme === 'dark' )
 			openingTab.classList.add('CS_dark');
@@ -284,6 +294,8 @@ if ( window != top ) {
 				let iframe = getIframe();
 				
 				sbContainer.classList.remove('CS_moving');
+				
+				overDiv.parentNode.removeChild(overDiv);
 
 				userOptions.sideBar.widget.offset = parseInt(sbContainer.style.top) * window.devicePixelRatio;
 				userOptions.sideBar.widget.position = document.documentElement.dataset.cs_sidebar_position;
@@ -305,7 +317,8 @@ if ( window != top ) {
 			
 			else if ( !sbContainer.moving ) {
 				sbContainer.moving = true;
-				sbContainer.classList.add('CS_moving');				
+				sbContainer.classList.add('CS_moving');	
+				document.body.appendChild(overDiv);
 			}
 			
 			if ( e.clientX < window.innerWidth / 4 ) {	
@@ -344,5 +357,11 @@ if ( window != top ) {
 			sbc.style.display = 'none';		
 		else			
 			sbc.style.display = null;
+	});
+	
+	document.addEventListener('zoom', (e) => {
+	
+		if ( !getContainer() ) return;
+		scaleSideBar();
 	});
 }

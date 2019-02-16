@@ -189,8 +189,8 @@ function buildSearchEngineContainer() {
 						
 						updateNodeList();
 						
-						if (closeForm)
-							edit_form.style.maxHeight = null;
+						// if (closeForm)
+							// edit_form.style.maxHeight = null;
 					}
 
 					// Check bad form values
@@ -1391,4 +1391,28 @@ function buildSearchEngineContainer() {
 		
 		
 	});
+	
+	document.getElementById('iconPicker').addEventListener('change', (e) => {
+		let file = e.target.files[0];
+		
+		var reader  = new FileReader();
+		
+		reader.addEventListener("load", function () {
+			
+			let img = new Image();
+			
+			img.onload = function() {
+				let form = document.getElementById("editSearchEngineContainer");
+				form.iconURL.value = imageToBase64(img, 32);
+				document.getElementById('iconPreview').src = form.iconURL.value;
+			//	form.closest("LI").querySelector("img").src = form.iconURL.value;
+			}
+			img.src = reader.result;
+			
+		}, false);
+		
+		reader.readAsDataURL(file);
+		
+	});	
+	
 }
