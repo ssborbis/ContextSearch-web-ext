@@ -142,11 +142,11 @@
 	background-color:#323234;
 }
 
-#CS_findBarContainer.CS_dark IMG[data-handle]{
+#CS_findBarContainer.CS_dark IMG.CS_handle{
 	filter:invert(1) brightness(50%);
 }
 
-#CS_findBarContainer IMG[data-handle] {
+#CS_findBarContainer IMG.CS_handle {
 	all:unset;
 	width:16px !important;
 	height:36px !important;

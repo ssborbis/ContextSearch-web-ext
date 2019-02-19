@@ -1332,7 +1332,7 @@ const defaultUserOptions = {
 		opacity:1,
 		activeStyle: {color:'#ffffff', background:'#65FF00'},
 		navBar: {
-			enabled: true
+			enabled: false
 		},
 		findBar: {
 			enabled: false,

@@ -1820,7 +1820,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span class="description" data-i18n="FindBarStartOpen">Open the Find bar automatically when the page loads</span>
 					</div>
 				
-					<p class="header1" data-i18n="Position">Position</p>
+					<p class="header1" data-i18n="Location">Location</p>
 					<p>	
 						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarPosition">
 							<option data-i18n="Top" value="top">top</option>
@@ -1836,7 +1836,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							<option data-i18n="undocked" value="undocked">undocked</option>
 							<option data-i18n="docked" value="docked">docked</option>
 						</select>
-						<div class="description" data-i18n="FindbarWindowTypeTooltip">Choose how to display the find bar. Find bar window style can be toggled by double-clicking the dock / undock / move icon or by dragging.
+						<div class="description" data-i18n="FindbarWindowTypeTooltip">Choose how to display the find bar. Find bar window style can be toggled by double-clicking the dock / undock / move icon or by dragging
 						</div>
 					</div>
 					
@@ -1851,7 +1851,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 					
 					<input type="number" id="n_findBarTimeout" size="3" class="inputNice" min="0" max="1000" step="10">
-					<span class="description" data-i18n="FindBarTimeout">Perform search after typing has stopped for n milliseconds. Values too low can cause performance issues. 0 = disabled</span>
+					<span class="description" data-i18n="findbarkeyboardtimeout">Perform search after typing has stopped for n milliseconds. Values too low can cause performance issues. 0 = disabled</span>
 
 				</div>
 
@@ -1890,9 +1890,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<label data-i18n="Template">Template</label><input name="template" type="text" class="inputNice" />
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 100px)"/>
-						<label for="iconPicker" title="Browser for local image"><img src="/icons/folder-icon.png" style="height:20px"></label><input type="file" accept="image/*" id="iconPicker" style="display:none">
-						<img style='display:inline-block;height:20px' id="iconPreview" />
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 50px)"/>
+						<label for="iconPicker" title="Browse for local image"><img src="/icons/folder-icon.png" style="height:20px"></label><input type="file" accept="image/*" id="iconPicker" style="display:none">
+						<!-- <img style='display:inline-block;height:20px' id="iconPreview" /> -->
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">POST Params</label><input name="post_params" type="text" class="inputNice" />

@@ -313,12 +313,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	let tb = document.getElementById('titleBar');
 	let sg = document.getElementById('suggestions');
 	let ob = document.getElementById('optionsButton');
-	
-	// reset fixed element sizes for window resizing
-	qm.style.height = null;
-	qm.style.width = null;
-	sg.style.width = null;
-	tb.style.width = null;
 
 	qm.querySelectorAll('.tile').forEach( div => {
 		div.onmouseenter = () => tb.innerText = div.title;
@@ -336,36 +330,29 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	// listen for resize events, specifically the browser action resizing
 	// and add scrollbars when necessary
+	let resizeThrottler = null;
 	window.addEventListener('resize', () => {
 
 		if ( window != top ) return;
-		
-		// toolbar issue with FF64+
-		let innerHeight = 0;
-		let resizeInterval = setInterval( () => {
-			
-			if ( innerHeight !== window.innerHeight ) {
-				innerHeight = window.innerHeight;
-				return;
-			}
-			
-			clearInterval(resizeInterval);
 
-			if ( window.innerHeight < document.body.scrollHeight ) {
-				qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
-			} 
-			
-			// account for scroll bars
-			qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-			sg.style.width = qm.getBoundingClientRect().width + "px";
-			tb.style.width = sg.style.width;
+		if ( !resizeThrottler ) {
+			resizeThrottler = true;
+			runAtTransitionEnd(document.documentElement, ["height", "width"], () => {
+				if ( window.innerHeight < document.body.scrollHeight ) {
+					qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
+				} 
 
-			if (qm.getBoundingClientRect().width < window.innerWidth - 20 /* browser_action has a minimum window size */) {
-				qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
-					div.style.width = window.innerWidth / columns - 2 + "px";
-				});
-			}
-		}, 10);
+				if (qm.getBoundingClientRect().width < window.innerWidth ) {
+					qm.style.width = document.documentElement.scrollWidth + "px";
+					let div_width =  qm.scrollWidth / columns - 2 + "px";
+					qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
+						div.style.width = div_width;
+					});
+				}
+
+				resizeThrottler = null;
+			});
+		}
 
 	});
 	
@@ -401,4 +388,30 @@ function sideBarResize() {
 
 	// send size to parent window for sidebar widget
 	window.parent.postMessage({size: {width: rect_qm.width, height: rect.height}}, "*");
+}
+
+function runAtTransitionEnd(el, prop, callback) {
+	
+	if ( Array.isArray(prop)) {
+		var remaining = prop.length;
+		prop.forEach( _prop => {
+			runAtTransitionEnd(el, _prop, () => {
+				if ( --remaining === 0 ) callback();
+			});
+		});
+		return;
+	}
+	
+	let oldProp = null;
+	let checkPropInterval = setInterval(() => {
+		let newProp = window.getComputedStyle(el).getPropertyValue(prop);
+		if ( newProp !== oldProp ) {
+			oldProp = newProp;
+			return;
+		}
+		
+		clearInterval(checkPropInterval);
+		callback();
+		
+	},25);
 }

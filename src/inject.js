@@ -269,7 +269,7 @@ function makeDockable(el, options) {
 	
 	function doOffset(notBody) {
 		
-		if ( o.dockedPadding[o.dockedPosition] ) {	
+		if ( o.dockedPadding[o.dockedPosition] ) { 
 
 			let dist = o.dockedPadding[o.dockedPosition] / window.devicePixelRatio;
 			

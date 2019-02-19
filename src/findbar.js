@@ -112,6 +112,7 @@ window.addEventListener('keydown', (e) => {
 
 	e.preventDefault();
 	
+	browser.runtime.sendMessage({action: "unmark"});
 	browser.runtime.sendMessage({action: "closeFindBar"});
 	
 });
@@ -152,6 +153,8 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	document.querySelector('#caseSensitive + LABEL').title = browser.i18n.getMessage('casesensitive') || "Case Sensitive";
 	document.querySelector('#ignorePunctuation + LABEL').title = browser.i18n.getMessage('ignorepunctuation') || "Ignore Punctuation";
 	document.querySelector('#separateWordSearch + LABEL').title = browser.i18n.getMessage('separateWordSearch') || "Separate Word Search";
+	document.querySelector('#toggle_navbar + LABEL').title = browser.i18n.getMessage('Navbar');
+	document.querySelector('#toggle_marks + LABEL').title = browser.i18n.getMessage('highlight');
 });
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {

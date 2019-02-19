@@ -133,6 +133,7 @@ window.addEventListener('keydown', (e) => {
 	let searchTerms = getSelectedText(e.target);
 	
 	if ( getFindBar() && !searchTerms ) {
+		browser.runtime.sendMessage({action: "unmark"});
 		browser.runtime.sendMessage({action: "closeFindBar"});
 		return;
 	}
@@ -478,7 +479,8 @@ function openFindBar() {
 
 		let handle = new Image();
 		handle.src = browser.runtime.getURL('icons/handle.svg');
-		handle.dataset.handle = 'true';
+		handle.title = browser.i18n.getMessage("movedockundock");
+		handle.className = "CS_handle";
 		
 		fbc.appendChild(handle);
 		

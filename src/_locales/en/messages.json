@@ -1414,6 +1414,46 @@
     "description": ""
   },
   
+  "highlightopacitytooltip": {
+    "message": "Opacity of the background color",
+    "description": ""
+  },
+  
+  "docked": {
+    "message": "docked",
+    "description": ""
+  },
+  
+  "undocked": {
+    "message": "undocked",
+    "description": ""
+  },
+  
+  "findbarwindowtypetooltip": {
+    "message": "Choose how to display the find bar. Find bar window style can be toggled by double-clicking the dock / undock / move icon or by dragging",
+    "description": ""
+  },
+  
+  "findbarkeyboardtimeout": {
+    "message": "Perform search after typing has stopped for n milliseconds. Values too low can cause performance issues. 0 = disabled",
+    "description": ""
+  },
+  
+  "close": {
+    "message": "Close",
+    "description": ""
+  },
+
+  "movedockundock": {
+    "message": "move / dock / undock",
+    "description": ""
+  },
+
+  "navbar": {
+    "message": "Nav bar",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""

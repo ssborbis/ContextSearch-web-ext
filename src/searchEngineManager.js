@@ -568,7 +568,7 @@ function buildSearchEngineContainer() {
 		});
 		
 		li.querySelector('.label').addEventListener('click', (e) => {
-			console.log(node);
+//			console.log(node);
 			closeContextMenus();
 			e.stopPropagation();
 
@@ -1404,7 +1404,7 @@ function buildSearchEngineContainer() {
 			img.onload = function() {
 				let form = document.getElementById("editSearchEngineContainer");
 				form.iconURL.value = imageToBase64(img, 32);
-				document.getElementById('iconPreview').src = form.iconURL.value;
+			//	document.getElementById('iconPreview').src = form.iconURL.value;
 			//	form.closest("LI").querySelector("img").src = form.iconURL.value;
 			}
 			img.src = reader.result;

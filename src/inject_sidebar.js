@@ -16,7 +16,6 @@ if ( window != top ) {
 		
 		if ( userOptions.sideBar.startOpen )
 			openSideBar();
-			//getOpeningTab().click();
 			
 		// listen for quickMenuHotkey
 		window.addEventListener('keydown', (e) => {
@@ -35,7 +34,10 @@ if ( window != top ) {
 
 			e.preventDefault();
 
-			openSideBar();
+			if ( getIframe() )
+				closeSideBar();
+			else
+				openSideBar();
 			
 		});
 		
