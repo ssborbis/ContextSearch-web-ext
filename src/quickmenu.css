@@ -225,6 +225,7 @@ BODY {
 	font-family:Arial;
 	font-size:11pt;
 	background-color:inherit;
+	white-space:nowrap;
 }
 .tile.singleColumn {
 	width:300px;

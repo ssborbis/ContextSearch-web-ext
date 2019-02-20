@@ -320,13 +320,17 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	});
 
 	ob.onclick = function() {
-		document.body.style.visibility = 'hidden';
+		// document.body.style.visibility = 'hidden';
 		browser.runtime.sendMessage({action: "openOptions"});
 		if ( window == top ) window.close();
 	}
 
 	// focus the searchbar on open
 	sb.focus();
+	
+	qm.style.width = null;
+//	tb.style.width = null;
+	tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
 	
 	// listen for resize events, specifically the browser action resizing
 	// and add scrollbars when necessary
@@ -337,6 +341,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 		if ( !resizeThrottler ) {
 			resizeThrottler = true;
+			
 			runAtTransitionEnd(document.documentElement, ["height", "width"], () => {
 				if ( window.innerHeight < document.body.scrollHeight ) {
 					qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
@@ -344,7 +349,10 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 				if (qm.getBoundingClientRect().width < window.innerWidth ) {
 					qm.style.width = document.documentElement.scrollWidth + "px";
-					let div_width =  qm.scrollWidth / columns - 2 + "px";
+					tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+				//	let div_width =  qm.scrollWidth / columns - 2 + "px";
+				//	let div_width = 'calc(' + 100 / columns + '% - ' + (qm.offsetWidth - qm.clientWidth - 2) / columns + "px)";
+					let div_width = 'calc(' + 100 / columns + "% - 2px)";
 					qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 						div.style.width = div_width;
 					});

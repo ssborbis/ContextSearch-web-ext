@@ -194,6 +194,11 @@ function buildSearchEngineContainer() {
 					}
 
 					// Check bad form values
+
+					[edit_form.template, edit_form.post_params].forEach( el => {
+						el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
+					});
+					
 					if ( !edit_form.shortName.value.trim() ) {
 						showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
 						return;
