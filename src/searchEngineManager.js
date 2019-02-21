@@ -146,12 +146,31 @@ function buildSearchEngineContainer() {
 				}
 				
 				edit_form.save.onclick = function() {
+					
+					// clear error formatting
+					for (let label of edit_form.getElementsByTagName('label')) {
+						if (label.dataset.i18n) label.innerText = browser.i18n.getMessage(label.dataset.i18n);
+						label.style.color = null;
+						clearError(label.nextSibling)
+					}
 
 					function showError(el, msg) {
+						
+						if ( !el.previousSibling.dataset.oldmsg ) {
+							el.previousSibling.dataset.oldmsg = el.previousSibling.innerText;
+						}
+						
 						el.previousSibling.innerText = msg;
 						el.previousSibling.style.color = "red";
 						el.classList.add("error");
 					}
+					
+					// function clearError(el) {
+						// el.style.color = null;
+						// el.classList.remove('error');
+						// el.previousSibling.innerText = el.previousSibling.dataset.oldmsg || "";
+						// delete el.previousSibling.dataset.oldmsg;	
+					// }
 					
 					function saveForm(closeForm) {
 						

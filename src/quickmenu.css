@@ -252,3 +252,7 @@ BODY {
 	border:none;
 	display:block;
 }
+.tile.singleColumn[data-type="siteSearch"] {
+	width:auto;
+	padding-right:10px;
+}
