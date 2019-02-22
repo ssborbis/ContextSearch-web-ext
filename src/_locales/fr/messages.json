@@ -1386,6 +1386,46 @@
     "description": ""
   },
   
+  "highlightopacitytooltip": {
+    "message": "Opacité de la couleur d’arrière-plan",
+    "description": ""
+  },
+  
+  "docked": {
+    "message": "ancré",
+    "description": ""
+  },
+  
+  "undocked": {
+    "message": "désancré",
+    "description": ""
+  },
+  
+  "findbarwindowtypetooltip": {
+    "message": "Choisir le mode d’affichage de la barre de recherche (changement de mode par double-clic sur l’icône « Déplacer / Ancrer / Désancrer » ou par glissement)",
+    "description": ""
+  },
+  
+  "findbarkeyboardtimeout": {
+    "message": "Délai (en millisecondes) de lancement de la recherche après arrêt de la frappe (0 = désactivé ; problème de performance possible avec une valeur trop faible)",
+    "description": ""
+  },
+  
+  "close": {
+    "message": "Fermer",
+    "description": ""
+  },
+
+  "movedockundock": {
+    "message": "Déplacer / Ancrer / Désancrer",
+    "description": ""
+  },
+
+  "navbar": {
+    "message": "Barre de navigation",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""
