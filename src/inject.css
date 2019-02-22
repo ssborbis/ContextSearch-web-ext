@@ -16,7 +16,7 @@
 	display:inline-block;
 	z-index: 2147483647; /* max 32-bit integer */
 	transition: var(--user-transition, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
-	transform:scale( calc( 1 / var(--cs-zoom, 1))) !important;
+	transform:scale( calc( 1 / var(--cs-zoom, 1) * var(--cs-scale,1))) !important;
 	transform-origin: top left;
 }
 #CS_quickMenuIframe[data-openingopacity] {

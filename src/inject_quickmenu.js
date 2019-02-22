@@ -112,6 +112,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
+	qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 	
 	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 	
