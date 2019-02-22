@@ -329,6 +329,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	sb.focus();
 	
 	qm.style.width = null;
+	qm.style.height = null;
 
 //	tb.style.width = null;
 	tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
@@ -344,21 +345,15 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 			resizeThrottler = true;
 			
 			runAtTransitionEnd(document.documentElement, ["height", "width"], () => {
-			//	if ( window.innerHeight < document.body.scrollHeight ) {
-				
+
+				if ( window.innerHeight < document.body.scrollHeight ) {
 					qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
-					
-					// console.log(qm.style.height);
-					// console.log(window.innerHeight);
-				//	document.body.style.height = document.body.getBoundingClientRect().height;
-			//	} 
+				} 
 				
 				tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
 				if (qm.getBoundingClientRect().width < window.innerWidth) {
 					qm.style.width = document.documentElement.scrollWidth + "px";
-					
-				//	let div_width =  qm.scrollWidth / columns - 2 + "px";
-				//	let div_width = 'calc(' + 100 / columns + '% - ' + (qm.offsetWidth - qm.clientWidth - 2) / columns + "px)";
+
 					let div_width = 'calc(' + 100 / columns + "% - 2px)";
 					qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 						div.style.width = div_width;
