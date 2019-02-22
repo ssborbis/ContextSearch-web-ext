@@ -773,7 +773,7 @@ function openSearch(details) {
 		se = temporarySearchEngine || userOptions.searchEngines.find(se => se.id === searchEngineId);
 
 		// must be invalid
-		if (!se.query_string) return false;
+		if ( !se || !se.query_string) return false;
 
 		// legacy fix
 		se.queryCharset = se.queryCharset || "UTF-8";
@@ -1361,7 +1361,17 @@ const defaultUserOptions = {
 
 var userOptions = {};
 
-loadUserOptions().then( checkForOneClickEngines );
+loadUserOptions().then(() => {
+	updateUserOptionsVersion(userOptions).then((_uo) => {
+		userOptions = _uo;
+		browser.storage.local.set({"userOptions": userOptions});
+	})
+	.then( checkForOneClickEngines )
+	.then( buildContextMenu )
+	.then( () => {
+		document.dispatchEvent(new CustomEvent("loadUserOptions"));
+	});
+});
 
 function checkForOneClickEngines() {
 
@@ -1407,19 +1417,15 @@ browser.runtime.onInstalled.addListener((details) => {
 		// details.reason = 'install';
 	// Show new features page
 	
+	document.addEventListener('loadUserOptions', () => {
 
-	let loadUserOptionsInterval = setInterval(() => {
-		if (userOptions === {}) return;
+		// console.log("userOptions loaded. Updating objects");
 		
-		clearInterval(loadUserOptionsInterval);
-
-		console.log("userOptions loaded. Updating objects");
-		
-		updateUserOptionsVersion(userOptions).then((_uo) => {
-			userOptions = _uo;
-			browser.storage.local.set({"userOptions": userOptions});
-			buildContextMenu();
-		}).then(() => {
+		// updateUserOptionsVersion(userOptions).then((_uo) => {
+			// userOptions = _uo;
+			// browser.storage.local.set({"userOptions": userOptions});
+			// buildContextMenu();
+		// }).then(() => {
 /*
 			if (
 				details.reason === 'update' 
@@ -1450,7 +1456,6 @@ browser.runtime.onInstalled.addListener((details) => {
 			}
 		});
 
-	}, 250);
 	
 });
 

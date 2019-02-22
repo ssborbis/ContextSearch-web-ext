@@ -146,7 +146,7 @@
 	filter:invert(1) brightness(50%);
 }
 
-#CS_findBarContainer IMG.CS_handle {
+IMG.CS_handle {
 	all:unset;
 	width:16px !important;
 	height:36px !important;
