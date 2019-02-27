@@ -1454,6 +1454,11 @@
     "description": ""
   },
 
+  "browseForImage": {
+    "message": "Browse for local image",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""
