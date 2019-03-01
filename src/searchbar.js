@@ -300,7 +300,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	}
 	
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
-		document.body.insertBefore(qme, document.getElementById('optionsButton'));
+		document.body.insertBefore(qme, null);
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
 		
@@ -313,6 +313,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	let tb = document.getElementById('titleBar');
 	let sg = document.getElementById('suggestions');
 	let ob = document.getElementById('optionsButton');
+	let mb = document.getElementById('menuBar');
 
 	qm.querySelectorAll('.tile').forEach( div => {
 		div.onmouseenter = () => tb.innerText = div.title;
@@ -331,45 +332,42 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	qm.style.width = null;
 	qm.style.height = null;
 
-//	tb.style.width = null;
-	tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
-	
-	// listen for resize events, specifically the browser action resizing
-	// and add scrollbars when necessary
-	let resizeThrottler = null;
-	window.addEventListener('resize', () => {
-
-		if ( window != top ) return;
-
-		if ( !resizeThrottler ) {
-			resizeThrottler = true;
-			
-			runAtTransitionEnd(document.documentElement, ["height", "width"], () => {
-
-				if ( window.innerHeight < document.body.scrollHeight ) {
-					qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height ) + "px";
-				} 
-				
-				tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
-				if (qm.getBoundingClientRect().width < window.innerWidth) {
-					qm.style.width = document.documentElement.scrollWidth + "px";
-
-					let div_width = 'calc(' + 100 / columns + "% - 2px)";
-					qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
-						div.style.width = div_width;
-					});
-				}
-
-				resizeThrottler = null;
-			});
-		}
-
-	});
-	
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
 	sideBarResize();
+	toolBarResize();
 
 });
+
+function toolBarResize() {
+	
+	if ( window != top ) return;
+	
+	let qm = document.getElementById('quickMenuElement');
+	let sb = document.getElementById('searchBar');
+	let tb = document.getElementById('titleBar');
+	let sg = document.getElementById('suggestions');
+	let mb = document.getElementById('menuBar');
+
+	runAtTransitionEnd(document.body, ["width", "height"], () => {
+		if ( window.innerHeight < document.body.scrollHeight ) {
+			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height ) + "px";
+		} 
+
+		if (qm.getBoundingClientRect().width < window.innerWidth) {
+
+			qm.style.width = document.documentElement.scrollWidth + "px";
+			
+			tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+
+			let div_width = 'calc(' + 100 / columns + "% - 2px)";
+			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
+				div.style.width = div_width;
+			});
+		}
+		
+		tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+	});
+}
 
 function sideBarResize() {
 	if ( window == top ) return;
@@ -378,9 +376,9 @@ function sideBarResize() {
 	let sb = document.getElementById('searchBar');
 	let tb = document.getElementById('titleBar');
 	let sg = document.getElementById('suggestions');
-	let ob = document.getElementById('optionsButton');
+	let mb = document.getElementById('menuBar');
 	
-	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + ob.getBoundingClientRect().height;
+	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
 		
 	let qm_height = 'calc(100% - ' + allOtherElsHeight + "px)";
 	qm.style.height = qm_height;
@@ -391,6 +389,8 @@ function sideBarResize() {
 		// account for scrollbars
 		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 		window.parent.postMessage({size: {width: qm.getBoundingClientRect().width, height: allOtherElsHeight + parseFloat(qm.style.height)}}, "*");
+		
+		
 	}, 250);
 
 	let rect = document.body.getBoundingClientRect();
@@ -400,28 +400,19 @@ function sideBarResize() {
 	window.parent.postMessage({size: {width: rect_qm.width, height: rect.height}}, "*");
 }
 
-function runAtTransitionEnd(el, prop, callback) {
-	
-	if ( Array.isArray(prop)) {
-		var remaining = prop.length;
-		prop.forEach( _prop => {
-			runAtTransitionEnd(el, _prop, () => {
-				if ( --remaining === 0 ) callback();
-			});
-		});
-		return;
+window.addEventListener('message', (e) => {
+
+	switch (e.data.action) {
+		case "sideBarResize":
+			sideBarResize();
+			break;
 	}
+});
+
+document.getElementById('closeButton').addEventListener('click', (e) => {
 	
-	let oldProp = null;
-	let checkPropInterval = setInterval(() => {
-		let newProp = window.getComputedStyle(el).getPropertyValue(prop);
-		if ( newProp !== oldProp ) {
-			oldProp = newProp;
-			return;
-		}
-		
-		clearInterval(checkPropInterval);
-		callback();
-		
-	},25);
-}
+	if ( window != top )
+		window.parent.postMessage({action: "closeSideBar"}, "*");
+	else
+		window.close();
+});

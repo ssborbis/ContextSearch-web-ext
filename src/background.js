@@ -1213,7 +1213,17 @@ function updateUserOptionsVersion(uo) {
 		
 		return _uo;
 		
-	}).then((_uo) => {	
+	}).then((_uo) => {
+		
+		if ( !_uo.sideBar.type ) return _uo;
+		
+		console.log("-> 1.9.7");
+		
+		_uo.sideBar.windowType = _uo.sideBar.type === 'overlay' ? 'undocked' : 'docked';
+		delete _uo.sideBar.type;
+		
+		_uo.sideBar.offsets.top = _uo.sideBar.widget.offset;
+
 		return _uo;
 	}).then((_uo) => {	
 		console.log('done');
@@ -1302,12 +1312,19 @@ const defaultUserOptions = {
 		columns: 6,
 		singleColumn: false,
 		startOpen: false,
-		type: "overlay",
 		hotkey: [],
 		widget: {
 			enabled: false,
 			position: "right",
 			offset: 100
+		},
+		position: "right",
+		windowType: "undocked",
+		offsets: {
+			top:0,
+			left:Number.MAX_SAFE_INTEGER,
+			right:0,
+			bottom:Number.MAX_SAFE_INTEGER
 		}	
 	},
 	highLight: {
@@ -1362,6 +1379,7 @@ const defaultUserOptions = {
 var userOptions = {};
 
 loadUserOptions().then(() => {
+	console.log("userOptions loaded. Updating objects");
 	updateUserOptionsVersion(userOptions).then((_uo) => {
 		userOptions = _uo;
 		browser.storage.local.set({"userOptions": userOptions});
@@ -1419,42 +1437,35 @@ browser.runtime.onInstalled.addListener((details) => {
 	
 	document.addEventListener('loadUserOptions', () => {
 
-		// console.log("userOptions loaded. Updating objects");
+	/*
+		if (
+			details.reason === 'update' 
+			&& details.previousVersion < "1.9.4"
+		) {
+			browser.tabs.create({
+				url: browser.runtime.getURL("/options.html?tab=highLightTab"),
+				active: false
+				
+			}).then(_tab => {
+				browser.tabs.executeScript(_tab.id, {
+					file: browser.runtime.getURL("/update/update.js")
+				});
+			});
+		}
 		
-		// updateUserOptionsVersion(userOptions).then((_uo) => {
-			// userOptions = _uo;
-			// browser.storage.local.set({"userOptions": userOptions});
-			// buildContextMenu();
-		// }).then(() => {
-/*
-			if (
-				details.reason === 'update' 
-				&& details.previousVersion < "1.9.4"
-			) {
-				browser.tabs.create({
-					url: browser.runtime.getURL("/options.html?tab=highLightTab"),
-					active: false
-					
-				}).then(_tab => {
-					browser.tabs.executeScript(_tab.id, {
-						file: browser.runtime.getURL("/update/update.js")
-					});
-				});
-			}
-			
-		//	Show install page
+	//	Show install page
 */			if ( 
-				details.reason === 'install'
-			) {
-				browser.tabs.create({
-					url: "/options.html?tab=helpTab"
-				}).then(_tab => {
-					// browser.tabs.executeScript(_tab.id, {
-						// file: browser.runtime.getURL("/install/install.js")
-					// });
-				});
-			}
-		});
+			details.reason === 'install'
+		) {
+			browser.tabs.create({
+				url: "/options.html?tab=helpTab"
+			}).then(_tab => {
+				// browser.tabs.executeScript(_tab.id, {
+					// file: browser.runtime.getURL("/install/install.js")
+				// });
+			});
+		}
+	});
 
 	
 });

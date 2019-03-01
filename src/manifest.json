@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.9.6.1",
+	"version": "1.9.7",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	
@@ -42,6 +42,7 @@
 				"lib/browser-polyfill.min.js",
 				"lib/crossbrowser.js",
 				"lib/mark.es6.min.js",
+				"dock.js",
 				"inject.js",
 				"opensearch.js",
 				"searchEngineUtils.js",

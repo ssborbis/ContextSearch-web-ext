@@ -491,6 +491,8 @@ function openFindBar() {
 			fb.focus();
 			fbc.style.opacity = null;
 			fbc.style.maxHeight = null;
+			
+			fbc.init();
 			resolve(fb);
 		}
 
@@ -515,8 +517,7 @@ function openFindBar() {
 			},
 			windowType: userOptions.highLight.findBar.windowType,
 			lastOffsets: userOptions.highLight.findBar.offsets,
-			dockedPosition: userOptions.highLight.findBar.position,
-			dockedPadding: {top:36}
+			dockedPosition: userOptions.highLight.findBar.position
 		});
 	});
 }

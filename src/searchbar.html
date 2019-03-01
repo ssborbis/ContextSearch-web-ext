@@ -8,15 +8,20 @@
 		<link rel="stylesheet alternate" href="/dark.css" id="dark">
 	</head>
 	<body>
+	<div id='menuBar'>
+		<div id="optionsButton"></div>
+		<div id="closeButton"></div>
+	</div>
 	<div id='searchBarContainer'>
 		<img src='/icons/search.svg' />
 		<input id='searchBar' type='text' />
 	</div>
 	<div id='suggestions'></div>
 	<div id='titleBar'></div>
-	<div id="optionsButton"></div>
+	
 	<script src='/lib/browser-polyfill.min.js'></script>
 	<script src='/lib/crossbrowser.js'></script>
+	<script src='/dock.js'></script>
 	<script src='/searchbar.js'></script>
 	<script src='/tilemenu.js'></script>
 	<script src='/nodes.js'></script>

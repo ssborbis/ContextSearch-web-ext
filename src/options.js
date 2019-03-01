@@ -228,7 +228,6 @@ function restoreOptions() {
 		$('#s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
-		$('#s_sideBarType').value = userOptions.sideBar.type;
 		
 		$('#t_userStyles').value = userOptions.userStyles;
 		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
@@ -390,12 +389,14 @@ function saveOptions(e) {
 			singleColumn:$('#cb_sideBarUseOldStyle').checked,
 			hotkey: [],
 			startOpen: $('#cb_sideBarStartOpen').checked,
-			type: $('#s_sideBarType').value,
 			widget: {
 				enabled: $('#cb_sideBarWidgetEnable').checked,
 				position: $('#s_sideBarWidgetPosition').value,
 				offset: userOptions.sideBar.widget.offset
-			}
+			},
+			windowType: userOptions.sideBar.windowType,
+			offsets: userOptions.sideBar.offsets,
+			position: userOptions.sideBar.position
 		},
 		
 		highLight: {
