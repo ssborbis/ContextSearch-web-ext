@@ -32,8 +32,9 @@ function modifyStyleProperty(el, prop, val, name) {
 
 function offsetElement(el, prop, by, name) {
 
-	if ( el.style.hasOwnProperty('--cs-'+name+'-'+prop) ) return;
-	
+	if ( el.style.getPropertyValue('--cs-'+name+'-'+prop) )
+		unOffsetElement(el, prop, name);
+
 	let val = parseFloat(window.getComputedStyle(el, null).getPropertyValue(prop)) + by + "px";	
 	modifyStyleProperty(el, prop, val, name);
 }
@@ -125,8 +126,8 @@ function makeDockable(el, options) {
 		handleElement: el,
 		deadzone: 10,
 		movingClass: '',
-		dockCallback: function() {},
-		undockCallback: function() {},
+		onDock: function() {},
+		onUndock: function() {},
 		windowType: 'docked',
 		dockedPosition: 'top',
 		lastOffsets: {
@@ -143,12 +144,15 @@ function makeDockable(el, options) {
 	Object.assign(o, options);
 	
 	// set public functions
-	el.dock = dock;
-	el.undock = undock;
-	el.init = init;
-	el.offset = doOffset;
-	el.undoOffset = undoOffset;
-	
+	el.docking = {
+		dock: dock,
+		undock: undock,
+		init: init,
+		offset: doOffset,
+		undoOffset: undoOffset,
+		options: o
+	}
+
 	// init 
 	function init() {
 		if ( o.windowType === 'docked' ) dock();
@@ -195,6 +199,7 @@ function makeDockable(el, options) {
 	function doOffset(notBody) {
 
 		runAtTransitionEnd(el, ["width","height","max-width","max-height"], () => {
+
 			let dist = el.getBoundingClientRect()[ /top|bottom/.test(o.dockedPosition) ? "height" : "width"];
 
 			if ( !notBody )
@@ -236,8 +241,15 @@ function makeDockable(el, options) {
 	}
 	
 	function setDefaultFloatPosition() {
+		
+		let pos = getPositions(o.lastOffsets);
 
 		// undock animation should start in the corners
+		// el.style.top = pos.v !== 'bottom' ? '0' : null;
+		// el.style.left = pos.h !== 'right' ? '0' : null; // set absolute left for top, bottom, left
+		// el.style.right = pos.h === 'right' ? '0' : null;
+		// el.style.bottom = pos.v === 'bottom' ? '0' : null;
+		
 		el.style.top = o.dockedPosition !== 'bottom' ? '0' : null;
 		el.style.left = o.dockedPosition !== 'right' ? '0' : null; // set absolute left for top, bottom, left
 		el.style.right = o.dockedPosition === 'right' ? '0' : null;
@@ -268,23 +280,27 @@ function makeDockable(el, options) {
 		
 		doOffset();
 
-		o.dockCallback(o);
+		o.onDock(o);
 	}
 	
 	function undock() {
+
 		el.style.transition = 'none';
+		
+		if ( o.windowType === 'docked' ) setDefaultFloatPosition();
+		
 		el.dataset.windowtype = 'undocked';
 		o.windowType = 'undocked';
 
-		setDefaultFloatPosition();
+
+		
 
 		let pos = getPositions(o.lastOffsets);
 		translatePosition(pos.v, pos.h);
-		
 		el.style.transition = null;
 		
-		runAtTransitionEnd(el, [pos.h, pos.v, "width"], () => {
-			o.undockCallback(o);
+		runAtTransitionEnd(el, [pos.h, pos.v, "width", "height", "max-width","max-height"], () => {
+			o.onUndock(o);
 		});
 		
 		let fixedLastOffsets = {};
@@ -295,7 +311,7 @@ function makeDockable(el, options) {
 
 		el.style[pos.h] = fixedLastOffsets[pos.h] + "px";
 		el.style[pos.v] = fixedLastOffsets[pos.v]  + "px";
-		
+
 		undoOffset();
 	}
 	
@@ -342,7 +358,7 @@ function makeDockable(el, options) {
 				// restore transitions
 				el.style.transition = null;
 				
-				o.undockCallback(o);
+				o.onUndock(o);
 
 			}, {once: true});
 		});
@@ -361,7 +377,7 @@ function makeDockable(el, options) {
 			if ( el.dataset.windowtype === 'docked' ) {
 				el.dataset.windowtype = o.windowType = 'undocked';
 				undoOffset();
-				o.undockCallback(o);
+				o.onUndock(o);
 			}
 			
 			translatePosition("top", "left");

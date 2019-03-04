@@ -492,7 +492,7 @@ function openFindBar() {
 			fbc.style.opacity = null;
 			fbc.style.maxHeight = null;
 			
-			fbc.init();
+			fbc.docking.init();
 			resolve(fb);
 		}
 
@@ -509,10 +509,10 @@ function openFindBar() {
 		makeDockable(fbc, {
 			handleElement:handle, 
 			dockedPosition: userOptions.highLight.findBar.position,
-			dockCallback: (o) => {
+			onDock: (o) => {
 				saveFindBarOptions(o);	
 			},
-			undockCallback: (o) => {
+			onUndock: (o) => {
 				saveFindBarOptions(o);
 			},
 			windowType: userOptions.highLight.findBar.windowType,
@@ -727,7 +727,7 @@ document.addEventListener("fullscreenchange", (e) => {
 			fbc.style.display = null;
 			
 			if ( fbc.lastWindowType === 'docked')
-				fbc.dock();
+				fbc.docking.dock();
 			
 			delete fbc.lastWindowType;
 		}

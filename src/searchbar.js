@@ -370,13 +370,16 @@ function toolBarResize() {
 }
 
 function sideBarResize() {
-	if ( window == top ) return;
+	if ( window == top ) return
 	
 	let qm = document.getElementById('quickMenuElement');
 	let sb = document.getElementById('searchBar');
 	let tb = document.getElementById('titleBar');
 	let sg = document.getElementById('suggestions');
 	let mb = document.getElementById('menuBar');
+	
+	// throwing sidebar errors
+	if ( !qm ) return;
 	
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
 		
@@ -388,7 +391,7 @@ function sideBarResize() {
 
 		// account for scrollbars
 		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-		window.parent.postMessage({size: {width: qm.getBoundingClientRect().width, height: allOtherElsHeight + parseFloat(qm.style.height)}}, "*");
+		window.parent.postMessage({action:"resizeSideBar", size: {width: qm.getBoundingClientRect().width, height: allOtherElsHeight + parseFloat(qm.style.height)}}, "*");
 		
 		
 	}, 250);
@@ -397,7 +400,7 @@ function sideBarResize() {
 	let rect_qm = qm.getBoundingClientRect();
 
 	// send size to parent window for sidebar widget
-	window.parent.postMessage({size: {width: rect_qm.width, height: rect.height}}, "*");
+	window.parent.postMessage({action:"resizeSideBar", size: {width: rect_qm.width, height: rect.height}}, "*");
 }
 
 window.addEventListener('message', (e) => {

@@ -50,6 +50,53 @@ function offset(elem) {
     return { left: x, top: y };
 }
 
+function repositionOffscreenElement( element ) {
+	
+	// move if offscreen
+	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
+	
+	let rect = element.getBoundingClientRect();
+
+	if ( rect.bottom > window.innerHeight ) {
+		if ( element.style.bottom )
+			element.style.bottom = 0 + "px";
+		else 
+			element.style.top = (window.innerHeight - rect.height) + "px";
+	}
+
+	if (rect.top < 0) {
+		if ( element.style.bottom ) 
+			element.style.bottom = (window.innerHeight - rect.height) + "px";
+		else
+			element.style.top = 0 + "px";
+	}
+	
+	if ( rect.right > window.innerWidth ) {
+		if ( element.style.right )
+			element.style.right = 0 + "px";
+		else 
+			element.style.left = (window.innerWidth - rect.width) + "px";
+	}
+	
+	if ( rect.left < 0 ) {
+		if ( element.style.right ) 
+			element.style.right = (window.innerWidth - rect.width) + "px";
+		else
+			element.style.left = 0 + "px";
+	}
+	
+	// if (rect.y + rect.height > window.innerHeight) 
+		// element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
+	
+	// if (rect.left < 0) 
+		// element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
+	
+	// if (rect.x + rect.width > window.innerWidth) 
+		// element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+
+}
+
 function getLink(el, e) {
 
 	let a = el.closest('a');
