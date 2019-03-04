@@ -168,6 +168,8 @@ function makeQuickMenu(options) {
 
 		if ( [ 38, 40, 9 ].indexOf(e.keyCode) === -1 ) return;
 		
+		e.preventDefault();
+		
 		let direction = ( e.keyCode === 40 || ( e.keyCode === 9 && !e.shiftKey) ) ? 1 : -1;
 
 		sb.selectionEnd = sb.selectionStart;
@@ -177,7 +179,7 @@ function makeQuickMenu(options) {
 
 			let rows = suggestions.getElementsByTagName('div');
 			
-			if ( rows.length > 0) {
+			if ( rows.length > 0 && e.keyCode === 40 ) { // only down arrow moves to suggestions
 
 				rows.item(0).click();
 				
@@ -305,6 +307,9 @@ function makeQuickMenu(options) {
 		}
 
 		divs[sb.selectedIndex].classList.add('selectedFocus');
+		
+		
+		divs[sb.selectedIndex].scrollIntoView({block: "nearest"});
 
 	});
 

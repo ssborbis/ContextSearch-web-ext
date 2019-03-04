@@ -212,7 +212,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 					// for browser_action
 					// reset the menu height for window resizing
-					document.getElementById('quickMenuElement').style.height = null;
+				//	document.getElementById('quickMenuElement').style.height = null;
+				
+					toolBarResize();
 
 					// for sidebar
 					sideBarResize();
@@ -331,6 +333,8 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	qm.style.width = null;
 	qm.style.height = null;
+	
+	sg.style.width = null;
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
 	sideBarResize();
@@ -357,7 +361,7 @@ function toolBarResize() {
 
 			qm.style.width = document.documentElement.scrollWidth + "px";
 			
-			tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+		//	tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
 
 			let div_width = 'calc(' + 100 / columns + "% - 2px)";
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
@@ -366,6 +370,7 @@ function toolBarResize() {
 		}
 		
 		tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+		sg.style.width = document.documentElement.scrollWidth;
 	});
 }
 

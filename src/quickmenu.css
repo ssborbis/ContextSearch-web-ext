@@ -8,6 +8,9 @@ HTML, BODY {
 	padding:0;
 	margin:0;
 }
+HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
+	display:none;
+}
 BODY {
 	background-color:#eff0f1;
 	/* position:absolute; */
@@ -99,7 +102,7 @@ BODY {
 	/* background: linear-gradient(135deg, #fefcea 0%,#f1da36 100%); */
 	color:blue;
 }
-.tile:hover, #optionsButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
+.tile:hover, #optionsButton:hover, #closeButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: var(--hover);
 	border-color: var(--hover);
 }
@@ -219,6 +222,10 @@ BODY {
 	cursor:default;
 	user-select:none;
 	-moz-user-select: none;
+	overflow-x:hidden;
+	width: calc(100% - 30px);
+	min-width:200px;
+	max-width:400px;
 }
 #suggestions > DIV:hover {
 	background-color: var(--hover);

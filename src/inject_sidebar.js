@@ -182,8 +182,10 @@ if ( window != top ) {
 		
 		sbContainer.style.setProperty('transform', "scale(" + 1 / window.devicePixelRatio + ")", "important");
 		
-		if ( userOptions.searchBarTheme === 'dark' )
+		if ( userOptions.searchBarTheme === 'dark' ) {
+			sbContainer.classList.add('CS_dark');
 			openingTab.classList.add('CS_dark');
+		}
 
 		openingTab.addEventListener('click', () => {
 			

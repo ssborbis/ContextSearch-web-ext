@@ -40,6 +40,6 @@ BODY {
 .tile:hover {
 	background-color:var(--hover);
 }
-#optionsButton {
+#optionsButton, #closeButton {
 	filter:invert(1) brightness(50%);
 }

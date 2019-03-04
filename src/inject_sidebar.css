@@ -54,6 +54,9 @@
 #CS_sbContainer[data-opened="true"] #CS_sbOpeningTab.CS_close.CS_dark {
 	filter:invert(1) brightness(50%);
 }
+#CS_sbContainer[data-opened="true"].CS_dark {
+	background-color:#323234;
+}
 #CS_sbIframe {
 	display:inline-block;
 	max-width:0px;
