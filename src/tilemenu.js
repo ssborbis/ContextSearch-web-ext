@@ -65,6 +65,19 @@ function makeQuickMenu(options) {
 		}
 	});
 	
+	let csb = document.getElementById('clearSearchBarButton');
+	csb.onclick = () => { sb.value = null };
+	
+	// let shb = sbc.querySelector('IMG');
+	
+	// shb.onclick = () => {
+		// let s = document.createElement('select');
+		// s.innerHTML = `<option>test1</option><option>test2</option><option>test3</option>`;
+		// s.style = 'position:absolute;left:0';
+		
+		// sbc.appendChild(s);
+	// }
+	
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
 		if (e.keyCode === 190 && e.ctrlKey) {

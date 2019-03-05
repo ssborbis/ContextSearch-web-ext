@@ -19,11 +19,17 @@ if ( window != top ) {
 	
 		// listen for quickMenuHotkey
 		window.addEventListener('keydown', (e) => {
+
 			if (
 				!userOptions.quickMenuOnHotkey
 				|| e.repeat
 			) return;
+
+			// console.log(e);
+			// console.log(e);
 			
+			// console.log(e.which);
+
 			for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
 				let key = userOptions.quickMenuHotkey[i];
 				if (key === 16 && !e.shiftKey) return;
@@ -95,7 +101,9 @@ if ( window != top ) {
 
 				runAtTransitionEnd(sbContainer, ["width", "height", "max-width", "max-height"], () => {	
 					repositionOffscreenElement(sbContainer);
-					sbContainer.docking.offset();
+					
+					if ( sbContainer.docking.options.windowType === 'docked' )
+						sbContainer.docking.offset();
 				});
 			}
 
@@ -109,6 +117,12 @@ if ( window != top ) {
 		if (typeof message.userOptions !== 'undefined') {
 			userOptions = message.userOptions;
 			getOpeningTab().style.display = userOptions.sideBar.widget.enabled ? null : "none";
+		}
+		
+		switch ( message.action ) {
+			case "closeSideBar":
+				closeSideBar();
+				break;
 		}
 	});
 	

@@ -31,6 +31,9 @@ function modifyStyleProperty(el, prop, val, name) {
 }
 
 function offsetElement(el, prop, by, name) {
+	
+	// if ( /left|right/.test(prop) ) 
+		// offsetElement(el, "width", -by, name);
 
 	if ( el.style.getPropertyValue('--cs-'+name+'-'+prop) )
 		unOffsetElement(el, prop, name);
@@ -141,6 +144,9 @@ function makeDockable(el, options) {
 		offsetOnScroll: true
 	}
 	
+	let bodyElement = document.documentElement;
+	// let bodyElement = document.body;
+	
 	Object.assign(o, options);
 	
 	// set public functions
@@ -186,8 +192,8 @@ function makeDockable(el, options) {
 		
 		scrollThrottler = setTimeout(() => {
 
-			if ( /*o.dockedPadding[o.dockedPosition] && */el.dataset.windowtype === 'docked' ) {
-				undoOffset(true);
+			if ( el.dataset.windowtype === 'docked' ) {
+			//	undoOffset(true);
 				doOffset(true);
 			}
 
@@ -203,10 +209,33 @@ function makeDockable(el, options) {
 			let dist = el.getBoundingClientRect()[ /top|bottom/.test(o.dockedPosition) ? "height" : "width"];
 
 			if ( !notBody )
-				offsetElement(document.body, 'padding-' + o.dockedPosition, dist, el.id);			
+				offsetElement(bodyElement, 'padding-' + o.dockedPosition, dist, el.id);			
 			
-			findFixedElements(o.dockedPosition, dist - 1 * window.devicePixelRatio).filter( _el => _el !== el ).forEach( _el => {
-				offsetElement(_el, o.dockedPosition, dist, el.id);
+			findFixedElements(o.dockedPosition, dist - 1 ).filter( _el => _el !== el ).forEach( _el => {
+				
+				let rect = _el.getBoundingClientRect();
+				
+				let fixed_rect = {
+					left: rect.left,
+					right: bodyElement.clientWidth - rect.right,
+					top: rect.top,
+					bottom: rect.bottom
+				}
+				
+				// console.log(rect);
+				// console.log(fixed_rect);
+				
+				let shiftBy = dist - rect[o.dockedPosition] ;
+				offsetElement(_el, o.dockedPosition, shiftBy, el.id);
+				
+				 // offsetElement(_el, o.dockedPosition, dist, el.id);
+			
+				// rect.right = bodyElement.offsetWidth - rect.right;
+				// rect.bottom = bodyElement.offsetHeight - rect.bottom;
+				
+				// console.log(rect);
+				
+				
 			});
 		});
 
@@ -216,7 +245,7 @@ function makeDockable(el, options) {
 
 		document.querySelectorAll('[style*="--cs-' + o.id + '"]').forEach( _el => {
 			
-			if ( _el === document.body && notBody ) return;
+			if ( _el === bodyElement && notBody ) return;
 			
 			resetStyleProperty(_el, o.id);
 		});

@@ -142,6 +142,10 @@ function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 			
+		case "closeSideBar":
+			return sendMessageToTopFrame();
+			break;
+			
 		case "getOpenSearchHref":
 		
 			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( (tab) => {
@@ -1303,6 +1307,7 @@ const defaultUserOptions = {
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
+	searchBarDisplayLastSearch: true,
 	searchBarUseOldStyle: false,
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,

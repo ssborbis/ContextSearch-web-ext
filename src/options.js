@@ -218,6 +218,7 @@ function restoreOptions() {
 				
 		$('#cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		$('#cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
+		$('#cb_searchBarDisplayLastSearch').checked = userOptions.searchBarDisplayLastSearch;
 		$('#cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
 		$('#cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
 		$('#cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
@@ -382,6 +383,7 @@ function saveOptions(e) {
 		searchBarSuggestions: $('#cb_searchBarSuggestions').checked,
 		searchBarEnableHistory: $('#cb_searchBarEnableHistory').checked,
 		searchBarHistory: userOptions.searchBarHistory,
+		searchBarDisplayLastSearch: $('#cb_searchBarDisplayLastSearch').checked,
 		
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,

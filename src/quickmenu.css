@@ -175,12 +175,17 @@ BODY {
 #closeButton {
 	background: url(/icons/crossmark.svg) no-repeat center;
 }
-#searchBarContainer IMG {
+#searchBarContainer > IMG {
 	height:18px;
 	vertical-align:middle;
-	padding:4px;
+	padding:6px 4px;
 	opacity:.5;
 	position:absolute;
+}
+#searchBarContainer > IMG#clearSearchBarButton {
+	right:0;
+	opacity:.4;
+	height:16px;
 }
 #searchBar {
 	font-size:11pt;

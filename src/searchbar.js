@@ -102,7 +102,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
 		
 		// skip empty 
-		if (!message.lastSearch) return;
+		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 		
 		sb.value = message.lastSearch;
 		sb.select();
@@ -424,3 +424,27 @@ document.getElementById('closeButton').addEventListener('click', (e) => {
 	else
 		window.close();
 });
+
+// listen for sideBar hotkey
+if ( window != top ) {
+	window.addEventListener('keydown', (e) => {
+		
+		if (
+			!userOptions.quickMenuOnHotkey
+			|| e.repeat
+		) return;
+		
+		for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
+			let key = userOptions.quickMenuHotkey[i];
+			if (key === 16 && !e.shiftKey) return;
+			if (key === 17 && !e.ctrlKey) return;
+			if (key === 18 && !e.altKey) return;
+			if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
+		}
+
+		e.preventDefault();
+
+		browser.runtime.sendMessage({action: "closeSideBar"});
+		
+	});
+}
