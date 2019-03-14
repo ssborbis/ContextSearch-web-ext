@@ -125,6 +125,150 @@ function getImage(el, e) {
 	return backgroundImage.slice(4, -1).replace(/"/g, "")
 }
 
+function addResizeWidget(el, options) {
+	
+	let o = {
+		tileSize: {},
+		deadzone: 10,
+		onDragStart: function() {},
+		onDrag: function() {},
+		onDrop: function() {},
+		columns: 0,
+		rows: 0
+	}
+	
+	o = Object.assign(o, options);
+
+	let resizeWidget = el.resizeWidget;
+
+	// overlay a div to capture mouse events over els
+	let overDiv = document.createElement('div');
+	overDiv.className = "CS_overDiv";
+	overDiv.style = "cursor:nwse-resize";
+	
+	// build resize widget once per quick menu open
+	if ( !resizeWidget ) {
+		
+		let startCoords, endCoords, endSize;
+		
+		resizeWidget = document.createElement('div');
+		resizeWidget.className = 'CS_resizeWidget';
+
+		document.body.appendChild(resizeWidget);
+		el.resizeWidget = resizeWidget;
+
+		resizeWidget.addEventListener('mousedown', function elementResize(e) {
+
+			let startSize = {columns: o.columns, rows: o.rows};
+
+			document.body.appendChild(overDiv);
+
+			el.style.transition = 'none';
+			el.style.borderWidth = '2px';
+			el.style.borderStyle = 'dashed';
+			
+			resizeWidget.style.transition = 'none';
+
+			// lower the quick menu in case zIndex = MAX
+			el.style.zIndex = window.getComputedStyle(el).zIndex - 1;
+
+			// match grid to tile size after scaling
+			let stepX = el.getBoundingClientRect().width / el.offsetWidth * o.tileSize.width;
+			let stepY = el.getBoundingClientRect().height / el.offsetHeight * o.tileSize.height;
+			
+			// initialize the coords with some offset for a deadzone
+			startCoords = {x: e.clientX - o.deadzone, y: e.clientY - o.deadzone};
+
+			document.addEventListener('mousemove', elementDrag);
+
+			// track mod size to ignore repeat drag events
+			let mostRecentModSize = {columns:0,rows:0};
+			
+			function elementDrag(_e) {
+				endCoords = {x: _e.clientX, y: _e.clientY};
+
+				let colsMod = Math.floor (( endCoords.x - startCoords.x ) / stepX);
+				let rowsMod = Math.floor (( endCoords.y - startCoords.y ) / stepY);
+				
+				// size less than 1 do nothing
+				if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
+
+				// ignore repeat drag events
+				if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
+					return;
+				
+				
+				
+				o.onDrag({
+					columns: startSize.columns + colsMod,
+					rows: startSize.rows + rowsMod,
+					columnsOffset: colsMod,
+					rowsOffset: rowsMod,
+					xOffset: endCoords.x - startCoords.x,
+					yOffset: endCoords.y - startCoords.y,
+					endCoords: endCoords
+					
+				});
+				
+				mostRecentModSize = {columns: colsMod, rows: rowsMod};
+			}
+			
+			document.addEventListener('mouseup', (_e) => {
+				
+				_e.stopImmediatePropagation();
+
+				// clear overlay
+				overDiv.parentNode.removeChild(overDiv);
+				
+				// clear resize styling
+				el.style.transition = null;
+				el.style.borderWidth = null;
+				el.style.borderStyle = null;
+				el.style.zIndex = null;
+				
+				resizeWidget.style.transition = null;
+				
+				o.onDrop(o);
+				
+				document.removeEventListener('mousemove', elementDrag);
+			}, {once: true});
+			
+		});
+	}
+	
+	// queue reposition for transitions
+	el.addEventListener('transitionend', positionResizeWidget);
+
+	function positionResizeWidget() {
+		
+		resizeWidget.style.top = null;
+		resizeWidget.style.left = null;
+		resizeWidget.style.right = null;
+		resizeWidget.style.bottom = null;
+
+		let rect = el.getBoundingClientRect();
+		
+		let scale = rect.width / el.offsetWidth;
+		
+		if ( el.style.left ) 
+			resizeWidget.style.left = el.offsetLeft + rect.width - 8 * scale + "px";
+		if ( el.style.right )
+			resizeWidget.style.right = parseFloat(el.style.right) - 8 * scale + "px";
+		if ( el.style.top )
+			resizeWidget.style.top = el.offsetTop + rect.height - 8 * scale + "px";
+		if ( el.style.bottom )
+			resizeWidget.style.bottom = parseFloat(el.style.bottom) - 8 * scale + "px";
+	}
+	
+	// set animation state
+	if ( !userOptions.enableAnimations ) resizeWidget.style.setProperty('--user-transition', 'none');
+
+	/* dnd resize end */	
+	positionResizeWidget();
+	
+	return resizeWidget;
+}
+
 // set zoom attribute to be used for scaling objects
 document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 

@@ -601,6 +601,17 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (el.value < _min) el.value = _min;
 }
 
+function getKeyString(keys) {
+	if ( Array.isArray(keys) ) {
+		keys.forEach((key, index) => {
+			keys[index] = keyCodeToString(key);
+		});
+		
+		console.log(keys);
+	} else {
+	}
+}
+
 function keyCodeToString(code) {
 	return keyTable[code] /*|| String.fromCharCode(code)*/ || code.toString();
 }

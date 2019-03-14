@@ -127,8 +127,7 @@ function makeDockable(el, options) {
 	
 	let o = {
 		handleElement: el,
-		deadzone: 10,
-		movingClass: '',
+		deadzone: 4,
 		onDock: function() {},
 		onUndock: function() {},
 		windowType: 'docked',
@@ -156,13 +155,24 @@ function makeDockable(el, options) {
 		init: init,
 		offset: doOffset,
 		undoOffset: undoOffset,
+		translatePosition: translatePosition,
+		getPositions: getPositions,
 		options: o
 	}
 
 	// init 
 	function init() {
+		
+		// hide animations on init
+		el.style.setProperty('transition', 'none', 'important');
+
 		if ( o.windowType === 'docked' ) dock();
 		else undock();
+		
+		setTimeout(() => {
+			el.style.transition = null;
+		}, 250);
+		
 	}
 	
 	// overlay a div to capture mouse events over iframes
@@ -205,27 +215,29 @@ function makeDockable(el, options) {
 	function doOffset(notBody) {
 
 		runAtTransitionEnd(el, ["width","height","max-width","max-height"], () => {
+			
+			let rect = el.getBoundingClientRect();
 
-			let dist = el.getBoundingClientRect()[ /top|bottom/.test(o.dockedPosition) ? "height" : "width"];
+			let dist = rect[ /top|bottom/.test(o.dockedPosition) ? "height" : "width"];
 
 			if ( !notBody )
 				offsetElement(bodyElement, 'padding-' + o.dockedPosition, dist, el.id);			
 			
 			findFixedElements(o.dockedPosition, dist - 1 ).filter( _el => _el !== el ).forEach( _el => {
 				
-				let rect = _el.getBoundingClientRect();
+				let _rect = _el.getBoundingClientRect();
 				
-				let fixed_rect = {
-					left: rect.left,
-					right: bodyElement.clientWidth - rect.right,
-					top: rect.top,
-					bottom: rect.bottom
+				let dist_rect = {
+					left: Math.abs(rect.left - _rect.left),
+					right: Math.abs(rect.right - _rect.right),
+					top: Math.abs(rect.top - _rect.top),
+					bottom: Math.abs(rect.bottom - _rect.bottom)
 				}
 				
 				// console.log(rect);
-				// console.log(fixed_rect);
+				// console.log(dist_rect);
 				
-				let shiftBy = dist - rect[o.dockedPosition] ;
+				let shiftBy = dist - dist_rect[o.dockedPosition];
 				offsetElement(_el, o.dockedPosition, shiftBy, el.id);
 				
 				 // offsetElement(_el, o.dockedPosition, dist, el.id);
@@ -321,11 +333,9 @@ function makeDockable(el, options) {
 		el.dataset.windowtype = 'undocked';
 		o.windowType = 'undocked';
 
-
-		
-
 		let pos = getPositions(o.lastOffsets);
 		translatePosition(pos.v, pos.h);
+
 		el.style.transition = null;
 		
 		runAtTransitionEnd(el, [pos.h, pos.v, "width", "height", "max-width","max-height"], () => {
@@ -396,7 +406,7 @@ function makeDockable(el, options) {
 	function moveListener(e) {
 		e.preventDefault();
 
-		if ( !el.moving && Math.abs( el.X - e.clientX ) < o.deadzone && Math.abs( el.Y - e.clientY ) < o.deadzone )	return;
+		if ( !el.moving && ( Math.abs( el.X - e.clientX ) < o.deadzone || Math.abs( el.Y - e.clientY ) < o.deadzone ) )	return;
 		
 		else if ( !el.moving ) {
 			document.body.appendChild(overDiv);
@@ -444,9 +454,9 @@ function makeDockable(el, options) {
 		
 		return {
 			left: r.left * window.devicePixelRatio,
-			right: (window.innerWidth - r.right) * window.devicePixelRatio,
+			right: (window.innerWidth - r.right - getScrollBarWidth()) * window.devicePixelRatio,
 			top: r.top * window.devicePixelRatio,
-			bottom: (window.innerHeight - r.bottom) * window.devicePixelRatio
+			bottom: (window.innerHeight - r.bottom - getScrollBarHeight()) * window.devicePixelRatio
 		}
 	}
 

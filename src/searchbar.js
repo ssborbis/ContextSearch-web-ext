@@ -414,6 +414,10 @@ window.addEventListener('message', (e) => {
 		case "sideBarResize":
 			sideBarResize();
 			break;
+		
+		case "quickMenuIframeLoaded":
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			break;
 	}
 });
 

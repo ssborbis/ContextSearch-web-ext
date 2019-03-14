@@ -478,7 +478,7 @@ function openFindBar() {
 		fb.id = 'CS_findBarIframe';
 
 		let handle = new Image();
-		handle.src = browser.runtime.getURL('icons/handle.svg');
+		handle.src = browser.runtime.getURL('icons/vertical.svg');
 		handle.title = browser.i18n.getMessage("movedockundock");
 		handle.className = "CS_handle";
 		

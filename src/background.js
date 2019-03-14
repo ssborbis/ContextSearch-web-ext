@@ -256,7 +256,16 @@ function notify(message, sender, sendResponse) {
 				title: browser.i18n.getMessage("AddCustomSearch"),
 				contexts: ["editable"]
 			});
+			
+			// Delaying the removal should keep the menu item visible long enough to open the context menu
+			// setTimeout(() => {
+				// browser.contextMenus.remove("add_engine");
+			// }, 1000);
 
+			break;
+		
+		case "disableAddCustomSearchMenu":
+			browser.contextMenus.remove("add_engine");
 			break;
 
 		case "log":
@@ -765,7 +774,7 @@ function openSearch(details) {
 	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
 	var domain = details.domain || null;
 
-	if ( searchEngineId === null ) return false;
+	if ( !temporarySearchEngine && searchEngineId === null ) return false;
 
 	if (!tab) tab = {url:"", id:0}
 	
@@ -1315,6 +1324,7 @@ const defaultUserOptions = {
 	sideBar: {
 		enabled: true,
 		columns: 6,
+		height: 300,
 		singleColumn: false,
 		startOpen: false,
 		hotkey: [],

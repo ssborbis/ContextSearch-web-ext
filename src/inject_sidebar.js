@@ -57,54 +57,56 @@ if ( window != top ) {
 					
 				case "resizeSideBar":
 				
-				let url = new URL(browser.runtime.getURL(''));
+					let url = new URL(browser.runtime.getURL(''));
 
-				if ( e.origin !== url.origin ) return;
-				
-				if ( !e.data.size ) return;
-
-				let iframe = getIframe();
-				let sbContainer = getContainer();
-				
-				if ( !userOptions.enableAnimations ) 
-					sbContainer.style.setProperty('--user-transition', 'none');
-
-				if ( !iframe ) return;
-				
-				if ( e.data.size.height ) {
-					iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, sbContainer.dataset.windowtype === 'undocked' ? 300: Number.MAX_SAFE_INTEGER) + "px";
+					if ( e.origin !== url.origin ) return;
 					
-				//	iframe.style.maxHeight = iframe.style.height;
-				}
-				
-				if ( e.data.size.width ) {
-					
-					iframe.style.width = e.data.size.width + "px";
-					iframe.style.maxWidth = iframe.style.width;
+					if ( !e.data.size ) return;
 
-				}
-				
-				sbContainer.style.opacity = 1;
-
-				// test for bottom overflow
-				// let rect = sbContainer.getBoundingClientRect();
-				
-				// if ( userOptions.sideBar.type === 'overlay' && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) {
+					let iframe = getIframe();
+					let sbContainer = getContainer();
 					
-					// if ( true )
-						// sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
-					// else {
-						// sbContainer.style.height = window.innerHeight - parseFloat(sbContainer.style.top) * 1/window.devicePixelRatio + "px";
-						// iframe.style.maxHeight = sbContainer.style.height;
+					if ( !userOptions.enableAnimations ) 
+						sbContainer.style.setProperty('--user-transition', 'none');
+
+					if ( !iframe ) return;
+					
+					if ( e.data.size.height ) {
+						iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, sbContainer.dataset.windowtype === 'undocked' ? parseFloat(sbContainer.style.height) || userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
+						
+					//	iframe.style.maxHeight = iframe.style.height;
+					}
+					
+					if ( e.data.size.width ) {
+						
+						iframe.style.width = e.data.size.width + "px";
+						iframe.style.maxWidth = iframe.style.width;
+
+					}
+					
+					sbContainer.style.opacity = 1;
+
+					// test for bottom overflow
+					// let rect = sbContainer.getBoundingClientRect();
+					
+					// if ( userOptions.sideBar.type === 'overlay' && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) {
+						
+						// if ( true )
+							// sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
+						// else {
+							// sbContainer.style.height = window.innerHeight - parseFloat(sbContainer.style.top) * 1/window.devicePixelRatio + "px";
+							// iframe.style.maxHeight = sbContainer.style.height;
+						// }
 					// }
-				// }
 
-				runAtTransitionEnd(sbContainer, ["width", "height", "max-width", "max-height"], () => {	
-					repositionOffscreenElement(sbContainer);
+					runAtTransitionEnd(sbContainer, ["width", "height", "max-width", "max-height"], () => {	
+						repositionOffscreenElement(sbContainer);
+						
+						if ( sbContainer.docking.options.windowType === 'docked' )
+							sbContainer.docking.offset();
+					});
 					
-					if ( sbContainer.docking.options.windowType === 'docked' )
-						sbContainer.docking.offset();
-				});
+					break;
 			}
 
 			
@@ -152,6 +154,61 @@ if ( window != top ) {
 			
 			sbContainer.style.opacity = 1;
 			sbContainer.dataset.opened = true;
+			
+			// add resize widget	
+			let resizeWidget = addResizeWidget(sbContainer, {
+				tileSize: {width:32, height:32}, // snap size
+				columns: userOptions.sideBar.columns, // bogus init value
+				rows: 100, // bogus init value
+				onDrag: (o) => {
+					
+					// set the fixed quadrant to top-left
+					sbContainer.docking.translatePosition("top", "left");
+					
+					// step the container and iframe height
+					sbContainer.style.height = ( o.endCoords.y - sbContainer.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
+					iframe.style.height = iframe.style.maxHeight = sbContainer.style.height;
+					
+					// sbContainer.style.width = ( o.columns * 32 ) * window.devicePixelRatio + "px";
+					// iframe.style.width = iframe.style.maxWidth = sbContainer.style.width;
+					
+					// // set prefs
+					// userOptions.sideBar.columns = o.columns;
+					
+					// console.log(o.columns);
+					
+					// rebuild menu with new dimensions
+					iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));	
+				},
+				onDrop: (o) => {
+
+					// save prefs
+					userOptions.sideBar.height = parseFloat(sbContainer.style.height);
+					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});	
+
+					setTimeout(() => {
+						sbContainer.style.height = null;
+						sbContainer.style.maxHeight = null;
+						iframe.contentWindow.postMessage({action: "quickMenuIframeLoaded"}, browser.runtime.getURL('/searchbar.html'));	
+						sbContainer.dispatchEvent(new TransitionEvent('transitionend'));
+						
+						// reset the quadrant
+						let position = sbContainer.docking.getPositions(sbContainer.docking.options.lastOffsets);
+						sbContainer.docking.translatePosition(position.v, position.h);
+					}, 100);
+					
+				}
+			});
+			
+			resizeWidget.style.position = 'fixed';
+			
+			document.addEventListener('closesidebar', () => {
+				resizeWidget.parentNode.removeChild(resizeWidget);
+				delete sbContainer.resizeWidget;
+				
+			}, {once: true});
+			
+			
 		});
 
 	}
@@ -179,6 +236,8 @@ if ( window != top ) {
 		if ( !userOptions.sideBar.widget.enabled ) {
 			sbContainer.parentNode.removeChild(sbContainer);
 		}
+		
+		document.dispatchEvent(new CustomEvent('closesidebar'));
 
 	}
 	
@@ -188,7 +247,7 @@ if ( window != top ) {
 
 		openingTab.id = 'CS_sbOpeningTab';
 		openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
-		openingTab.style.setProperty("--handle-icon", 'url(' + browser.runtime.getURL("/icons/handle.svg") + ')');
+		openingTab.style.setProperty("--handle-icon", 'url(' + browser.runtime.getURL("/icons/vertical.svg") + ')');
 		openingTab.classList.add('CS_handle');
 
 		let sbContainer = document.createElement('div');
@@ -248,17 +307,19 @@ if ( window != top ) {
 				sbContainer.style.height = null;
 				let iframe = getIframe();
 				if ( iframe ) {
-					iframe.style.height = "300px";
-					iframe.style.maxHeight = iframe.style.height;
 					iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));	
-					// sbContainer.style.resize = 'both';
-					// sbContainer.style.overflow = 'auto';
+
+					// trigger transition event to reset resize widget
+					sbContainer.dispatchEvent(new TransitionEvent('transitionend'));
 				}
 
 				saveSideBarOptions(o);
 			},
 			onDock: (o) => {
 				let iframe = getIframe();
+				
+				// sbContainer.style.width = 100 * window.devicePixelRatio + '%';
+	
 				sbContainer.style.height = 100 * window.devicePixelRatio + '%';
 				iframe.style.height = '100%';
 				iframe.style.maxHeight = '100%';

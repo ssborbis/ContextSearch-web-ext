@@ -577,177 +577,38 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				} else {
 					qmc.style.opacity = 1;
 				}
-				
-				/* edit widget start */
-				
-				// let iframe = document.getElementById('CS_quickMenuIframe');
-				// let editWidget = document.getElementById('CS_editWidget');
-				
-				// if ( !editWidget ) {
-
-					// editWidget = document.createElement('img');
-					// editWidget.id = 'CS_editWidget';
-					// editWidget.src = browser.runtime.getURL('icons/settings.svg');
-
-					// editWidget.addEventListener('click', (e) => {
-						// e.preventDefault();
-						// e.stopPropagation();
-					// //	quickMenuObject.locked = true;
-						
-						// let menu = document.createElement('div');
-
-					// });
-					
-					// // remove when menu is closed
-					// document.addEventListener('closequickmenu', () => {
-						// editWidget.parentNode.removeChild(editWidget);
-					// }, {once: true});
-
-					// document.body.appendChild(editWidget);
-				// }
-				// // queue reposition for transitions
-				// iframe.addEventListener('transitionstart', (e) => {
-					// positionEditWidget();
-				// }, {once: true});
-			// //	iframe.addEventListener('transitionend', positionEditWidget, {once: true});
-
-				// function positionEditWidget() {
-					// let iframeRect = iframe.getBoundingClientRect();
-					// editWidget.style.left = parseFloat(iframe.style.left) + parseFloat(iframe.style.width) / window.devicePixelRatio * userOptions.quickMenuScale - 10 + "px";
-					// editWidget.style.top = parseFloat(iframe.style.top) - 10 + "px";
-					// editWidget.style.transform = iframe.style.transform; 
-				// }
-
-
-				/* edit widget end */
-				
-				/* dnd resize start */	
-				
+	
 				_message = message;
 				
 				let iframe = document.getElementById('CS_quickMenuIframe');
-				let resizeWidget = document.getElementById('CS_resizeWidget');
 				
-				// overlay a div to capture mouse events over iframes
-				let overDiv = document.createElement('div');
-				overDiv.className = "CS_overDiv";
-				overDiv.style = "cursor:nwse-resize";
-				
-				// build resize widget once per quick menu open
-				if ( !resizeWidget ) {
-					
-					let startCoords, endCoords, endSize;
-					
-					resizeWidget = document.createElement('div');
-					resizeWidget.id = 'CS_resizeWidget';
-					
-					document.addEventListener('closequickmenu', () => {
-						resizeWidget.parentNode.removeChild(resizeWidget);
-					}, {once: true});
-					
-					document.body.appendChild(resizeWidget);
+				let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(message.tileCount, userOptions.quickMenuColumns);
 
-					resizeWidget.innerHTML = '&#8690;';
-					resizeWidget.addEventListener('mousedown', function elementResize(e) {
-						
-						let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(_message.tileCount, userOptions.quickMenuColumns);
-						let rows = Math.ceil(_message.tileCount / columns );
+				let resizeWidget = addResizeWidget(iframe, {
+					tileSize: message.tileSize,
+					columns: columns,
+					rows: Math.ceil(message.tileCount / columns ),
+					onDrag: (o) => {
 
-						let startSize = {columns: columns, rows: rows};
+						// set prefs
+						userOptions.quickMenuColumns = o.columns;
+						userOptions.quickMenuRows = o.rows;
 
-						document.body.appendChild(overDiv);
+						// rebuild menu with new dimensions
+						iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
+					},
+					onDrop: (o) => {
+						// rebuild the menu again to shrink empty rows
+						iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
 
-						iframe.style.transition = 'none';
-						iframe.style.borderWidth = '2px';
-						iframe.style.borderStyle = 'dashed';
-						
-						resizeWidget.style.transition = 'none';
-					//	editWidget.style.transition = 'none';
-						
-						// lower the quick menu in case zIndex = MAX
-						iframe.style.zIndex = window.getComputedStyle(iframe).zIndex - 1;
-
-						// match grid to tile size after scaling
-						let step = iframe.getBoundingClientRect().width / iframe.offsetWidth * message.tileSize.height;
-						
-						// initialize the coords with some offset for a deadzone
-						startCoords = {x: e.clientX - 10, y: e.clientY - 10};
-
-						document.addEventListener('mousemove', elementDrag);
-
-						// track mod size to ignore repeat drag events
-						let mostRecentModSize = {columns:0,rows:0};
-						
-						function elementDrag(_e) {
-							endCoords = {x: _e.clientX, y: _e.clientY};
-
-							let colsMod = Math.floor (( endCoords.x - startCoords.x ) / step);
-							let rowsMod = Math.floor (( endCoords.y - startCoords.y ) / step);
-							
-							// size less than 1 do nothing
-							if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
-
-							// ignore repeat drag events
-							if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
-								return;
-							
-							mostRecentModSize = {columns: colsMod, rows: rowsMod}
-
-							// set prefs
-							userOptions.quickMenuColumns = startSize.columns + colsMod;
-							userOptions.quickMenuRows = startSize.rows + rowsMod;
-
-							// rebuild menu with new dimensions
-							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
-
-						}
-						
-						document.addEventListener('mouseup', (_e) => {
-							
-							_e.stopImmediatePropagation();
-
-							// clear overlay
-							overDiv.parentNode.removeChild(overDiv);
-							
-							// clear resize styling
-							iframe.style.transition = null;
-							iframe.style.borderWidth = null;
-							iframe.style.borderStyle = null;
-							iframe.style.zIndex = null;
-							
-							resizeWidget.style.transition = null;
-						//	editWidget.style.transition = null;
-							
-							// rebuild the menu again to shrink empty rows
-							iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
-
-							// save prefs
-							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-							document.removeEventListener('mousemove', elementDrag);
-						}, {once: true});
-						
-					});
-				}
-				
-				// queue reposition for transitions
-				iframe.addEventListener('transitionstart', positionResizeWidget, {once: true});
-
-				function positionResizeWidget() {
-					let iframeRect = iframe.getBoundingClientRect();
-					resizeWidget.style.left = parseFloat(iframe.style.left) + parseFloat(iframe.style.width) / window.devicePixelRatio * userOptions.quickMenuScale - 10 + "px";
-					resizeWidget.style.top = parseFloat(iframe.style.top) + parseFloat(iframe.style.height) / window.devicePixelRatio * userOptions.quickMenuScale - 10 + "px";
-					resizeWidget.style.transform = iframe.style.transform; 
-				}
-				
-				// set animation state
-				[resizeWidget/*, editWidget*/].forEach( el => {
-					if ( !userOptions.enableAnimations ) el.style.setProperty('--user-transition', 'none');
+						// save prefs
+						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+					}
 				});
-
-				/* dnd resize end */	
 				
-				positionResizeWidget();
-			//	positionEditWidget();
+				document.addEventListener('closequickmenu', () => {
+					resizeWidget.parentNode.removeChild(resizeWidget);
+				}, {once: true});
 				
 				break;
 

@@ -1,6 +1,7 @@
 // listen for right-mousedown and enable Add Custom Search menu item if no text is selected
 function inputAddCustomSearchHandler(input) {
 	input.addEventListener('mousedown', (ev) => {
+
 		if (
 			ev.which !== 3
 			|| getSelectedText(input)
@@ -18,19 +19,21 @@ function inputAddCustomSearchHandler(input) {
 }
 
 // Add Custom Search listener
-for (let input of document.getElementsByTagName('input')) {
+document.querySelectorAll('input').forEach( input => {
 	inputAddCustomSearchHandler(input);
-}
+});
 
 // Add listener for dynamically added inputs
 var CS_observer = new MutationObserver((mutationsList) => {
 	for(var mutation of mutationsList) {
         if (mutation.type == 'childList') {
 			for (let node of mutation.addedNodes) {
-				if (node.nodeName === "INPUT") {
-					console.log("INPUT added dynamically to the DOM. Adding listener");
+
+				if (node.nodeName === "INPUT")
 					inputAddCustomSearchHandler(node);
-				}
+				else
+					node.querySelectorAll('input').forEach( _node => inputAddCustomSearchHandler(_node) );
+
 			}
         }
     }

@@ -38,7 +38,7 @@
 	filter:none;
 }
 #CS_sbOpeningTab.CS_close {
-	width:16px;
+	width:24px;
 	height:16px;
 	/* background-image: var(--closing-icon); */
 	background-image: var(--handle-icon);
@@ -48,8 +48,9 @@
 	border:none;
 	filter:none;
 	background-color:transparent;
-	background-size: 16px 16px;
+	background-size: cover;
 	opacity:1;
+	cursor: grab;
 }
 #CS_sbContainer[data-opened="true"] #CS_sbOpeningTab.CS_close.CS_dark {
 	filter:invert(1) brightness(50%);
