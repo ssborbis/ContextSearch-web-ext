@@ -175,6 +175,9 @@ BODY {
 #closeButton {
 	background: url(/icons/crossmark.svg) no-repeat center;
 }
+#searchBarContainer {
+	white-space:nowrap;
+}
 #searchBarContainer > IMG {
 	height:18px;
 	vertical-align:middle;
@@ -252,7 +255,7 @@ BODY {
 	font-size:11pt;
 	background-color:inherit;
 	white-space:nowrap;
-	width:100%;
+	width:calc(100% - 10px);
 }
 .tile.singleColumn {
 	width:300px;

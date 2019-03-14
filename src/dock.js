@@ -170,6 +170,7 @@ function makeDockable(el, options) {
 		if ( o.windowType === 'docked' ) dock();
 		else undock();
 		
+		// enable animations after a short delay
 		setTimeout(() => {
 			el.style.transition = null;
 			el.getBoundingClientRect();
