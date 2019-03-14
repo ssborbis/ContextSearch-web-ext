@@ -196,9 +196,7 @@ function addResizeWidget(el, options) {
 				// ignore repeat drag events
 				if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
 					return;
-				
-				
-				
+
 				o.onDrag({
 					columns: startSize.columns + colsMod,
 					rows: startSize.rows + rowsMod,
@@ -245,19 +243,23 @@ function addResizeWidget(el, options) {
 		resizeWidget.style.left = null;
 		resizeWidget.style.right = null;
 		resizeWidget.style.bottom = null;
+		
+		let w_rect = resizeWidget.getBoundingClientRect();
 
 		let rect = el.getBoundingClientRect();
 		
 		let scale = rect.width / el.offsetWidth;
 		
+		let offset = 4 * scale;
+		
 		if ( el.style.left ) 
-			resizeWidget.style.left = el.offsetLeft + rect.width - 8 * scale + "px";
+			resizeWidget.style.left = el.offsetLeft + rect.width - w_rect.width + offset + "px";
 		if ( el.style.right )
-			resizeWidget.style.right = parseFloat(el.style.right) - 8 * scale + "px";
+			resizeWidget.style.right = parseFloat(el.style.right) - offset + "px";
 		if ( el.style.top )
-			resizeWidget.style.top = el.offsetTop + rect.height - 8 * scale + "px";
+			resizeWidget.style.top = el.offsetTop + rect.height - w_rect.height + offset + "px";
 		if ( el.style.bottom )
-			resizeWidget.style.bottom = parseFloat(el.style.bottom) - 8 * scale + "px";
+			resizeWidget.style.bottom = parseFloat(el.style.bottom) - offset + "px";
 	}
 	
 	// set animation state

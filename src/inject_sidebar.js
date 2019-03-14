@@ -193,14 +193,17 @@ if ( window != top ) {
 						sbContainer.dispatchEvent(new TransitionEvent('transitionend'));
 						
 						// reset the quadrant
+						sbContainer.style.transition = 'none';
 						let position = sbContainer.docking.getPositions(sbContainer.docking.options.lastOffsets);
 						sbContainer.docking.translatePosition(position.v, position.h);
+						sbContainer.style.transition = null;
 					}, 100);
 					
 				}
 			});
 			
 			resizeWidget.style.position = 'fixed';
+			resizeWidget.style.cursor = 'ns-resize';
 			
 			document.addEventListener('closesidebar', () => {
 				resizeWidget.parentNode.removeChild(resizeWidget);
@@ -221,13 +224,10 @@ if ( window != top ) {
 		
 		iframe.style.maxWidth = null;
 		sbContainer.style.opacity = null;
-	//	sbContainer.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
 		openingTab.classList.remove('CS_close');
 
 		runAtTransitionEnd(sbContainer, "height", () => { iframe.parentNode.removeChild(iframe) });
 
-		// document.documentElement.classList.remove('CS_panel');
-		
 		sbContainer.dataset.opened = false;
 		if (sbContainer.dataset.windowtype === 'docked') {
 			sbContainer.docking.undock();	
@@ -252,9 +252,7 @@ if ( window != top ) {
 
 		let sbContainer = document.createElement('div');
 		sbContainer.id = 'CS_sbContainer';
-		
-		sbContainer.style.setProperty('transform', "scale(" + 1 / window.devicePixelRatio + ")", "important");
-		
+
 		if ( userOptions.searchBarTheme === 'dark' ) {
 			sbContainer.classList.add('CS_dark');
 			openingTab.classList.add('CS_dark');
@@ -317,9 +315,7 @@ if ( window != top ) {
 			},
 			onDock: (o) => {
 				let iframe = getIframe();
-				
-				// sbContainer.style.width = 100 * window.devicePixelRatio + '%';
-	
+
 				sbContainer.style.height = 100 * window.devicePixelRatio + '%';
 				iframe.style.height = '100%';
 				iframe.style.maxHeight = '100%';
@@ -333,11 +329,6 @@ if ( window != top ) {
 
 		sbContainer.docking.init();
 	}
-	
-	function scaleSideBar(sbc) {
-		sbc = sbc || getContainer();
-	//	sbc.style.top = userOptions.sideBar.widget.offset * 1 / window.devicePixelRatio + "px";
-	}
 
 	document.addEventListener("fullscreenchange", (e) => {
 		
@@ -350,8 +341,6 @@ if ( window != top ) {
 	});
 	
 	document.addEventListener('zoom', (e) => {
-	
-		if ( !getContainer() ) return;
-		scaleSideBar();
+
 	});
 }

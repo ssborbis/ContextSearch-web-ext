@@ -164,13 +164,15 @@ function makeDockable(el, options) {
 	function init() {
 		
 		// hide animations on init
-		el.style.setProperty('transition', 'none', 'important');
+		el.style.transition = 'none';
+		el.getBoundingClientRect();
 
 		if ( o.windowType === 'docked' ) dock();
 		else undock();
 		
 		setTimeout(() => {
 			el.style.transition = null;
+			el.getBoundingClientRect();
 		}, 250);
 		
 	}
@@ -237,8 +239,13 @@ function makeDockable(el, options) {
 				// console.log(rect);
 				// console.log(dist_rect);
 				
-				let shiftBy = dist - dist_rect[o.dockedPosition];
+				//let shiftBy = dist - dist_rect[o.dockedPosition];
+				let shiftBy = dist;
 				offsetElement(_el, o.dockedPosition, shiftBy, el.id);
+				
+				// console.log("element to hide is offset by " + dist_rect[o.dockedPosition]);
+				// console.log("dock is " + dist);
+				// console.log("shift by " + shiftBy);
 				
 				 // offsetElement(_el, o.dockedPosition, dist, el.id);
 			
@@ -265,6 +272,7 @@ function makeDockable(el, options) {
 	
 	// set scaled window position by transformOrigin
 	function translatePosition(v, h) {
+
 		let r = el.getBoundingClientRect();
 
 		el.style.top = null;
@@ -279,6 +287,7 @@ function makeDockable(el, options) {
 
 		// reflow
 		el.getBoundingClientRect();
+
 	}
 	
 	function setDefaultFloatPosition() {
@@ -326,6 +335,8 @@ function makeDockable(el, options) {
 	
 	function undock() {
 
+		let origTransition = el.style.transition || null;
+		
 		el.style.transition = 'none';
 		
 		if ( o.windowType === 'docked' ) setDefaultFloatPosition();
@@ -336,8 +347,8 @@ function makeDockable(el, options) {
 		let pos = getPositions(o.lastOffsets);
 		translatePosition(pos.v, pos.h);
 
-		el.style.transition = null;
-		
+		el.style.transition = origTransition;
+
 		runAtTransitionEnd(el, [pos.h, pos.v, "width", "height", "max-width","max-height"], () => {
 			o.onUndock(o);
 		});
@@ -369,9 +380,6 @@ function makeDockable(el, options) {
 			el.Y = e.clientY;
 			el.moving = false;
 			e.preventDefault();
-			
-			// disable transitions during move
-			el.style.transition = "none";
 
 			document.addEventListener('mousemove', moveListener);
 
@@ -409,6 +417,10 @@ function makeDockable(el, options) {
 		if ( !el.moving && ( Math.abs( el.X - e.clientX ) < o.deadzone || Math.abs( el.Y - e.clientY ) < o.deadzone ) )	return;
 		
 		else if ( !el.moving ) {
+			
+			// disable transitions during move
+			el.style.transition = "none";
+			
 			document.body.appendChild(overDiv);
 			el.moving = true;
 			el.classList.add('CS_moving');	
