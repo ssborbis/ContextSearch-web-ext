@@ -155,6 +155,9 @@ function addResizeWidget(el, options) {
 		resizeWidget.className = 'CS_resizeWidget';
 
 		document.body.appendChild(resizeWidget);
+
+		resizeWidget.options = o;
+		resizeWidget.setPosition = positionResizeWidget;
 		el.resizeWidget = resizeWidget;
 
 		resizeWidget.addEventListener('mousedown', function elementResize(e) {
@@ -176,8 +179,10 @@ function addResizeWidget(el, options) {
 			let stepX = el.getBoundingClientRect().width / el.offsetWidth * o.tileSize.width;
 			let stepY = el.getBoundingClientRect().height / el.offsetHeight * o.tileSize.height;
 			
+			// console.log(stepX + "\t" + stepY);
+			
 			// initialize the coords with some offset for a deadzone
-			startCoords = {x: e.clientX - o.deadzone, y: e.clientY - o.deadzone};
+			startCoords = {x: e.clientX, y: e.clientY};
 
 			document.addEventListener('mousemove', elementDrag);
 
@@ -196,6 +201,8 @@ function addResizeWidget(el, options) {
 				// ignore repeat drag events
 				if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
 					return;
+				
+				o.columns = startSize.columns + colsMod;
 
 				o.onDrag({
 					columns: startSize.columns + colsMod,
@@ -255,11 +262,11 @@ function addResizeWidget(el, options) {
 		if ( el.style.left ) 
 			resizeWidget.style.left = el.offsetLeft + rect.width - w_rect.width + offset + "px";
 		if ( el.style.right )
-			resizeWidget.style.right = parseFloat(el.style.right) - offset + "px";
+			resizeWidget.style.right = parseFloat(el.style.right) - w_rect.width - offset + "px";
 		if ( el.style.top )
 			resizeWidget.style.top = el.offsetTop + rect.height - w_rect.height + offset + "px";
 		if ( el.style.bottom )
-			resizeWidget.style.bottom = parseFloat(el.style.bottom) - offset + "px";
+			resizeWidget.style.bottom = parseFloat(el.style.bottom) - w_rect.height - offset + "px";
 	}
 	
 	// set animation state

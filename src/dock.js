@@ -157,6 +157,7 @@ function makeDockable(el, options) {
 		undoOffset: undoOffset,
 		translatePosition: translatePosition,
 		getPositions: getPositions,
+		getOffsets: getOffsets,
 		options: o
 	}
 

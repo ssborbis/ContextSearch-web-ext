@@ -25,11 +25,6 @@ if ( window != top ) {
 				|| e.repeat
 			) return;
 
-			// console.log(e);
-			// console.log(e);
-			
-			// console.log(e.which);
-
 			for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
 				let key = userOptions.quickMenuHotkey[i];
 				if (key === 16 && !e.shiftKey) return;
@@ -56,7 +51,7 @@ if ( window != top ) {
 					break;
 					
 				case "resizeSideBar":
-				
+
 					let url = new URL(browser.runtime.getURL(''));
 
 					if ( e.origin !== url.origin ) return;
@@ -84,6 +79,15 @@ if ( window != top ) {
 
 					}
 					
+					if ( sbContainer.resizeWidget && e.data.tileSize) {
+						sbContainer.resizeWidget.options.tileSize = {
+							width: e.data.tileSize.width,
+							height: e.data.tileSize.height
+						};
+						
+						sbContainer.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
+					}
+					
 					sbContainer.style.opacity = 1;
 
 					// test for bottom overflow
@@ -104,6 +108,10 @@ if ( window != top ) {
 						
 						if ( sbContainer.docking.options.windowType === 'docked' )
 							sbContainer.docking.offset();
+						
+						if ( sbContainer.resizeWidget )
+							sbContainer.resizeWidget.setPosition();
+							
 					});
 					
 					break;
@@ -143,8 +151,7 @@ if ( window != top ) {
 		openingTab.classList.add('CS_close');
 
 		sbContainer.appendChild(iframe);
-
-		sbContainer.insertBefore(openingTab, userOptions.sideBar.widget.position === "right" ? iframe : iframe.nextSibling);
+		sbContainer.appendChild(openingTab);
 
 		// set the initial state of the sidebar, not the opening tab
 		sbContainer.docking.options.windowType = sbContainer.dataset.windowtype = userOptions.sideBar.windowType;
@@ -157,61 +164,67 @@ if ( window != top ) {
 			
 			// add resize widget	
 			let resizeWidget = addResizeWidget(sbContainer, {
-				tileSize: {width:32, height:32}, // snap size
-				columns: userOptions.sideBar.columns, // bogus init value
-				rows: 100, // bogus init value
+				tileSize: {width:32, height:32}, // snap size - should update on resizeSidebar message
+				columns: userOptions.sideBar.columns,
+				rows: 100, // arbitrary init value
+				allowHorizontal: true,
+				allowVertical: true,
 				onDrag: (o) => {
 					
 					// set the fixed quadrant to top-left
 					sbContainer.docking.translatePosition("top", "left");
 					
-					// step the container and iframe height
+					// step the container and iframe size
 					sbContainer.style.height = ( o.endCoords.y - sbContainer.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
 					iframe.style.height = iframe.style.maxHeight = sbContainer.style.height;
 					
-					// sbContainer.style.width = ( o.columns * 32 ) * window.devicePixelRatio + "px";
-					// iframe.style.width = iframe.style.maxWidth = sbContainer.style.width;
-					
-					// // set prefs
-					// userOptions.sideBar.columns = o.columns;
-					
-					// console.log(o.columns);
-					
+					// value set on resizeSideBar message based on singleColumn
+					if ( resizeWidget.options.allowHorizontal )
+						iframe.style.width = iframe.style.maxWidth = ( o.columns * resizeWidget.options.tileSize.width ) + "px";
+
 					// rebuild menu with new dimensions
-					iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));	
+					iframe.contentWindow.postMessage({action: "sideBarRebuild", columns:o.columns}, browser.runtime.getURL('/searchbar.html'));	
+
 				},
 				onDrop: (o) => {
 
+					// resize changes the offsets
+					sbContainer.docking.options.lastOffsets = sbContainer.docking.getOffsets();
+
 					// save prefs
 					userOptions.sideBar.height = parseFloat(sbContainer.style.height);
+					
+					if ( resizeWidget.options.allowHorizontal )
+						userOptions.sideBar.columns = o.columns;
+					
 					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});	
+					
+					// reset the fixed quadrant
+					sbContainer.style.transition = 'none';
+					let position = sbContainer.docking.getPositions(sbContainer.docking.options.lastOffsets);
+					sbContainer.docking.translatePosition(position.v, position.h);
+					sbContainer.style.transition = null;
 
+					// crop the sidebar size after a delay
 					setTimeout(() => {
 						sbContainer.style.height = null;
 						sbContainer.style.maxHeight = null;
 						iframe.contentWindow.postMessage({action: "quickMenuIframeLoaded"}, browser.runtime.getURL('/searchbar.html'));	
-						sbContainer.dispatchEvent(new TransitionEvent('transitionend'));
-						
-						// reset the quadrant
-						sbContainer.style.transition = 'none';
-						let position = sbContainer.docking.getPositions(sbContainer.docking.options.lastOffsets);
-						sbContainer.docking.translatePosition(position.v, position.h);
-						sbContainer.style.transition = null;
+						sbContainer.resizeWidget.setPosition();
 					}, 100);
 					
 				}
 			});
 			
+			// unlike the quickmenu, the sizebar should be fixed
 			resizeWidget.style.position = 'fixed';
-			resizeWidget.style.cursor = 'ns-resize';
 			
+			// add listener to remove the widget on close
 			document.addEventListener('closesidebar', () => {
 				resizeWidget.parentNode.removeChild(resizeWidget);
 				delete sbContainer.resizeWidget;
-				
 			}, {once: true});
-			
-			
+
 		});
 
 	}
@@ -308,7 +321,7 @@ if ( window != top ) {
 					iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));	
 
 					// trigger transition event to reset resize widget
-					sbContainer.dispatchEvent(new TransitionEvent('transitionend'));
+					sbContainer.resizeWidget.setPosition();
 				}
 
 				saveSideBarOptions(o);

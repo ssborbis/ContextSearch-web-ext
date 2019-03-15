@@ -405,7 +405,12 @@ function sideBarResize() {
 	let rect_qm = qm.getBoundingClientRect();
 
 	// send size to parent window for sidebar widget
-	window.parent.postMessage({action:"resizeSideBar", size: {width: rect_qm.width, height: rect.height}}, "*");
+	window.parent.postMessage({
+		action:"resizeSideBar", 
+		size: {width: rect_qm.width, height: rect.height}, 
+		tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}, 
+		singleColumn: qm.querySelector(".singleColumn") ? true : false
+	}, "*");
 }
 
 window.addEventListener('message', (e) => {
@@ -418,6 +423,25 @@ window.addEventListener('message', (e) => {
 		case "quickMenuIframeLoaded":
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 			break;
+			
+		case "sideBarRebuild":
+			let qm = document.getElementById('quickMenuElement');
+			
+			function insertBreaks(_columns) {
+		
+				qm.querySelectorAll('br').forEach( br => {
+					qm.removeChild(br);
+				});
+				qm.querySelectorAll('.tile:nth-of-type(' + _columns + 'n)').forEach( tile => {
+					tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+				});
+			}
+			
+			insertBreaks(e.data.columns);
+			
+			sideBarResize();
+
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	}
 });
 
