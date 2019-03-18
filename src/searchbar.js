@@ -438,6 +438,7 @@ window.addEventListener('message', (e) => {
 			}
 			
 			insertBreaks(e.data.columns);
+			qm.columns = e.data.columns;
 			
 			sideBarResize();
 

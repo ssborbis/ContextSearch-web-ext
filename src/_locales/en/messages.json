@@ -67,6 +67,10 @@
     "message": "Open In Background Tab"
   },
   
+   "SearchActionsBackgroundTabKeepOpen": {
+    "message": "Open In Background Tab (Keep Menu Open)"
+  },
+  
    "SearchActionsNewWindow": {
     "message": "Open In New Window"
   },
@@ -1456,6 +1460,11 @@
 
   "browseForImage": {
     "message": "Browse for local image",
+    "description": ""
+  },
+  
+  "enabledisplayprevioussearchtooltip": {
+    "message": "Display the last used search terms in the search box",
     "description": ""
   },
   

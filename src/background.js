@@ -656,6 +656,7 @@ function executeOneClickSearch(info) {
 			});
 			break;
 		case "openBackgroundTab":
+		case "openBackgroundTabKeepOpen":
 			return browser.tabs.create({
 				active: false
 			}).then( (tab) => {
@@ -845,6 +846,7 @@ function openSearch(details) {
 			return openNewWindow(true);
 			break;
 		case "openBackgroundTab":
+		case "openBackgroundTabKeepOpen":
 			return openBackgroundTab();
 			break;		
 	}
@@ -1324,7 +1326,7 @@ const defaultUserOptions = {
 	sideBar: {
 		enabled: true,
 		columns: 6,
-		height: 300,
+		height: 400,
 		singleColumn: false,
 		startOpen: false,
 		hotkey: [],

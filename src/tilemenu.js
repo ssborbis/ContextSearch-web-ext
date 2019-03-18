@@ -38,6 +38,7 @@ function makeQuickMenu(options) {
 	
 	quickMenuElement.dataset.menu = type;
 	quickMenuElement.dataset.columns = columns;
+	quickMenuElement.columns = columns;
 	document.body.dataset.menu = type;
 
 	let sb = document.getElementById('searchBar');
@@ -67,17 +68,7 @@ function makeQuickMenu(options) {
 	
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = () => { sb.value = null };
-	
-	// let shb = sbc.querySelector('IMG');
-	
-	// shb.onclick = () => {
-		// let s = document.createElement('select');
-		// s.innerHTML = `<option>test1</option><option>test2</option><option>test3</option>`;
-		// s.style = 'position:absolute;left:0';
-		
-		// sbc.appendChild(s);
-	// }
-	
+
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
 		if (e.keyCode === 190 && e.ctrlKey) {
@@ -384,10 +375,13 @@ function makeQuickMenu(options) {
 		
 		}
 
-		return openMethod
+		return openMethod;
 	}
 	
 	function keepMenuOpen(e) {
+		
+		if ( /KeepOpen$/.test(getOpenMethod(e)) ) return true;
+		
 		if (
 			!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
 			!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
@@ -591,7 +585,7 @@ function makeQuickMenu(options) {
 	}
 	
 	function insertBreaks(_columns) {
-		
+
 		quickMenuElement.querySelectorAll('br').forEach( br => {
 			quickMenuElement.removeChild(br);
 		});
@@ -656,6 +650,8 @@ function makeQuickMenu(options) {
 		quickMenuElement.style.position = 'relative';
 		quickMenuElement.style.visibility = 'hidden';
 		quickMenuElement.style.transition = 'none';
+		
+		quickMenuElement.columns = _columns;
 	
 		// remove separators if using grid
 		if (!_singleColumn) {
@@ -930,8 +926,10 @@ function makeQuickMenu(options) {
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
 				// rebuild breaks
-				insertBreaks(_columns);
-				
+			//	insertBreaks(_columns);
+			
+				insertBreaks(quickMenuElement.columns);
+
 			});
 			
 		});
@@ -1249,8 +1247,16 @@ function makeQuickMenu(options) {
 
 						function loop(message) {
 							browser.runtime.sendMessage(message).then( (result) => {
-								loop(messages.shift());
+								
+								if ( messages.length > 1 ) // not last run
+									loop(messages.shift());
+								
+								// else if (!keepMenuOpen(e) ) // last run
+									// browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_foldertile"});
+									
 							});
+							
+							
 						}
 						
 						loop(messages.shift());
