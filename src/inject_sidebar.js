@@ -16,32 +16,7 @@ if ( window != top ) {
 
 		if ( userOptions.sideBar.startOpen )
 			openSideBar();
-	
-		// listen for quickMenuHotkey
-		window.addEventListener('keydown', (e) => {
 
-			if (
-				!userOptions.quickMenuOnHotkey
-				|| e.repeat
-			) return;
-
-			for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
-				let key = userOptions.quickMenuHotkey[i];
-				if (key === 16 && !e.shiftKey) return;
-				if (key === 17 && !e.ctrlKey) return;
-				if (key === 18 && !e.altKey) return;
-				if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
-			}
-
-			e.preventDefault();
-
-			if ( getIframe() )
-				closeSideBar();
-			else
-				openSideBar();
-			
-		});
-	
 		window.addEventListener('message', (e) => {
 			
 			switch ( e.data.action ) {
@@ -132,6 +107,13 @@ if ( window != top ) {
 		switch ( message.action ) {
 			case "closeSideBar":
 				closeSideBar();
+				break;
+				
+			case "sideBarHotkey":
+				if ( getIframe() )
+					closeSideBar();
+				else
+					openSideBar();
 				break;
 		}
 	});

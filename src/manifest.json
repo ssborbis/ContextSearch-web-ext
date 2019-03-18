@@ -49,7 +49,8 @@
 				"inject_quickmenu.js",
 				"inject_customSearch.js",
 				"inject_sidebar.js",
-				"inject_highlight.js"
+				"inject_highlight.js",
+				"hotkeys.js"
 			],
 			"css": ["inject.css","inject_sidebar.css"],
 			"all_frames": true,

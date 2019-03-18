@@ -3,6 +3,10 @@ var styleEl = document.createElement('style');
 // Append <style> element to <head>
 document.head.appendChild(styleEl);
 
+function getSelectedText(el) {
+	return el.value.substring(el.selectionStart, el.selectionEnd);
+}
+
 function makeQuickMenu(options) {
 	
 	if ( userOptions.userStylesEnabled ) styleEl.innerText = userOptions.userStyles;
@@ -256,7 +260,7 @@ function makeQuickMenu(options) {
 	quickMenuElement.addEventListener('keydown', (e) => {
 		
 		// account for custom folders
-		let _columns = quickMenuElement.querySelector('div').classList.contains('singleColumn') ? 1 : columns;
+		let _columns = quickMenuElement.querySelector('div').classList.contains('singleColumn') ? 1 : quickMenuElement.columns;
 
 		if ( ! [ 37, 38, 39, 40, 9 ].includes(e.keyCode) ) return;
 		

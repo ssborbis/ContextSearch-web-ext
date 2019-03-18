@@ -112,50 +112,36 @@ document.addEventListener('keydown', (e) => {
 });
 
 // listen for findbar hotkey
-window.addEventListener('keydown', (e) => {
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+	if ( message.action === "findBarHotkey" ) {
+
+		let searchTerms = message.searchTerms;
 	
-	if (
-		!userOptions.highLight.findBar.hotKey.length
-		|| e.repeat
-		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
-	) return;
-
-	for (let i in userOptions.highLight.findBar.hotKey) {
-		let key = userOptions.highLight.findBar.hotKey[i];
-		if (key === 16 && !e.shiftKey) return;
-		if (key === 17 && !e.ctrlKey) return;
-		if (key === 18 && !e.altKey) return;
-		if (![16,17,18,e.keyCode].includes(key)) return;
-	}
-
-	e.preventDefault();
-
-	let searchTerms = getSelectedText(e.target);
-	
-	if ( getFindBar() && !searchTerms ) {
-		browser.runtime.sendMessage({action: "unmark"});
-		browser.runtime.sendMessage({action: "closeFindBar"});
-		return;
-	}
+		if ( getFindBar() && !searchTerms ) {
+			browser.runtime.sendMessage({action: "unmark"});
+			browser.runtime.sendMessage({action: "closeFindBar"});
+			return;
+		}
+			
+		window.getSelection().removeAllRanges();
 		
-	window.getSelection().removeAllRanges();
-	
-	if ( !searchTerms ) 
-		searchTerms = window.findBarLastSearchTerms || "";
+		if ( !searchTerms ) 
+			searchTerms = window.findBarLastSearchTerms || "";
 
-	// search for selected terms
-	browser.runtime.sendMessage(Object.assign({
-		action: "mark",
-		searchTerms: searchTerms, 
-		findBarSearch:true,	
-	}, !markOptions ? {
-			accuracy: "partially",
-			caseSensitive: false,
-			ignorePunctuation: true,
-			separateWordSearch: false
-		} : markOptions
-	));
-	
+		// search for selected terms
+		browser.runtime.sendMessage(Object.assign({
+			action: "mark",
+			searchTerms: searchTerms, 
+			findBarSearch:true,	
+		}, !markOptions ? {
+				accuracy: "partially",
+				caseSensitive: false,
+				ignorePunctuation: true,
+				separateWordSearch: false
+			} : markOptions
+		));
+	}
 });
 
 // init marker.js object

@@ -133,6 +133,10 @@ function notify(message, sender, sendResponse) {
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
 			break;
+			
+		case "findBarHotkey":
+			return sendMessageToTopFrame();
+			break;
 	
 		case "markDone":
 			return sendMessageToTopFrame();
@@ -143,6 +147,10 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "closeSideBar":
+			return sendMessageToTopFrame();
+			break;
+		
+		case "sideBarHotkey":
 			return sendMessageToTopFrame();
 			break;
 			

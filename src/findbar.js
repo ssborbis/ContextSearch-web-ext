@@ -96,25 +96,6 @@ window.addEventListener('keydown', (e) => {
 		return;
 	}
 	
-	if (
-		!userOptions.highLight.findBar.hotKey.length
-		|| e.repeat
-		|| !userOptions.highLight.findBar.hotKey.includes(e.keyCode)
-	) return;
-
-	for (let i in userOptions.highLight.findBar.hotKey) {
-		let key = userOptions.highLight.findBar.hotKey[i];
-		if (key === 16 && !e.shiftKey) return;
-		if (key === 17 && !e.ctrlKey) return;
-		if (key === 18 && !e.altKey) return;
-		if (![16,17,18,e.keyCode].includes(key)) return;
-	}
-
-	e.preventDefault();
-	
-	browser.runtime.sendMessage({action: "unmark"});
-	browser.runtime.sendMessage({action: "closeFindBar"});
-	
 });
 
 getSearchBar().addEventListener('keypress', (e) => {

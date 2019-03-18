@@ -88,6 +88,10 @@ function addToHistory(terms) {
 	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
 }
 
+function getSelectedText(el) {
+	return el.value.substring(el.selectionStart, el.selectionEnd);
+}
+
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 	
@@ -106,13 +110,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		
 		sb.value = message.lastSearch;
 		sb.select();
-		
-		function getSelectedText(el) {
-			let start = el.selectionStart;
-			let finish = el.selectionEnd;
-			return el.value.substring(start, finish);
-		}
-		
+
 		// workaround for linux 
 		var selectInterval = setInterval( () => {
 
@@ -453,27 +451,3 @@ document.getElementById('closeButton').addEventListener('click', (e) => {
 	else
 		window.close();
 });
-
-// listen for sideBar hotkey
-if ( window != top ) {
-	window.addEventListener('keydown', (e) => {
-		
-		if (
-			!userOptions.quickMenuOnHotkey
-			|| e.repeat
-		) return;
-		
-		for (let i=0;i<userOptions.quickMenuHotkey.length;i++) {
-			let key = userOptions.quickMenuHotkey[i];
-			if (key === 16 && !e.shiftKey) return;
-			if (key === 17 && !e.ctrlKey) return;
-			if (key === 18 && !e.altKey) return;
-			if (key !== 16 && key !== 17 && key !== 18 && key !== e.keyCode) return;
-		}
-
-		e.preventDefault();
-
-		browser.runtime.sendMessage({action: "closeSideBar"});
-		
-	});
-}
