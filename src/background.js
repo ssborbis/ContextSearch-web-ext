@@ -1,6 +1,6 @@
 let isFirefox = /Firefox/.test(navigator.userAgent);
 
-function notify(message, sender, sendResponse) {
+async function notify(message, sender, sendResponse) {
 	
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
@@ -9,6 +9,19 @@ function notify(message, sender, sendResponse) {
 	function sendMessageToAllFrames() {
 		return browser.tabs.sendMessage(sender.tab.id, message);
 	}
+
+	await (() => {
+		if (sender && !sender.tab) { // browser_action popup has no tab, use current tab
+			function onFound(tabs) {
+				sender.tab = tabs[0];
+			}
+
+			function onError(err){
+				console.error(err);
+			}
+			return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+		} 
+	})();
 
 	switch(message.action) {
 		
@@ -39,19 +52,7 @@ function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
-			if (!sender.tab) { // browser_action popup has no tab, use current tab
-				function onFound(tabs) {
-					let tab = tabs[0];
-					console.log(message.info);
-					return quickMenuSearch(message.info, tab);
-				}
-
-				function onError(err){
-					console.error(err);
-				}
-				return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
-			} else
-				return quickMenuSearch(message.info, sender.tab);
+			return quickMenuSearch(message.info, sender.tab);
 			break;
 			
 		case "enableContextMenu":
