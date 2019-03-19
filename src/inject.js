@@ -251,23 +251,23 @@ function addResizeWidget(el, options) {
 		resizeWidget.style.left = null;
 		resizeWidget.style.right = null;
 		resizeWidget.style.bottom = null;
-		
-		let w_rect = resizeWidget.getBoundingClientRect();
 
+		let w_rect = resizeWidget.getBoundingClientRect();
 		let rect = el.getBoundingClientRect();
+
+		resizeWidget.style.transformOrigin = window.getComputedStyle(el, null).getPropertyValue('transform-origin');
+		resizeWidget.style.transform = window.getComputedStyle(el, null).getPropertyValue('transform');
 		
-		let scale = rect.width / el.offsetWidth;
-		
-		let offset = 4 * scale;
-		
+		let offset = 4;
+
 		if ( el.style.left ) 
-			resizeWidget.style.left = el.offsetLeft + rect.width - w_rect.width + offset + "px";
+			resizeWidget.style.left = parseFloat(el.style.left) + rect.width - w_rect.width + offset + "px";
 		if ( el.style.right )
-			resizeWidget.style.right = parseFloat(el.style.right) - w_rect.width - offset + "px";
+			resizeWidget.style.right = parseFloat(el.style.right) - offset + "px";
 		if ( el.style.top )
-			resizeWidget.style.top = el.offsetTop + rect.height - w_rect.height + offset + "px";
+			resizeWidget.style.top = parseFloat(el.style.top) + rect.height - w_rect.height + offset + "px";
 		if ( el.style.bottom )
-			resizeWidget.style.bottom = parseFloat(el.style.bottom) - w_rect.height - offset + "px";
+			resizeWidget.style.bottom = parseFloat(el.style.bottom) - offset + "px";
 	}
 	
 	// set animation state

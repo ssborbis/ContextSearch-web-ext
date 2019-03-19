@@ -43,18 +43,17 @@
 	cursor:nwse-resize;
 	display:inline-block;
 
-	width: 0;
-	height: 0;
-	border-style: solid;
+	width:35px;
+	height:35px;
+	border: 4px dashed #3293d4;
+	border-width:0 4px 4px 0;
+
 	transform: scale(calc( 1 / var(--cs-zoom, 1))) !important;
-	border-width: 0 0 20px 20px;
-	border-color: transparent transparent #3293d4 transparent;
-	
 	opacity:0;
 	position:absolute;
 	user-select:none;
 	-moz-user-select:none;
-	z-index:2147483647;
+	z-index:2147483646;
 	transition: var(--user-transition, left .15s ease-in-out, top .15s ease-in-out, opacity .1s );
 }
 .CS_resizeWidget:hover {
