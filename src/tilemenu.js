@@ -72,6 +72,7 @@ function makeQuickMenu(options) {
 	
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = () => { sb.value = null };
+	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
