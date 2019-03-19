@@ -55,6 +55,10 @@
 	-moz-user-select:none;
 	z-index:2147483646;
 	transition: var(--user-transition, left .15s ease-in-out, top .15s ease-in-out, opacity .1s );
+	
+	/* opacity:1; */
+	/* background-color:red; */
+	/* z-index:2147483647; */
 }
 .CS_resizeWidget:hover {
 	opacity:1;

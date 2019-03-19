@@ -255,10 +255,10 @@ function addResizeWidget(el, options) {
 		let w_rect = resizeWidget.getBoundingClientRect();
 		let rect = el.getBoundingClientRect();
 
-		resizeWidget.style.transformOrigin = window.getComputedStyle(el, null).getPropertyValue('transform-origin');
+		resizeWidget.style.transformOrigin = el.style.transformOrigin || "top left";
 		resizeWidget.style.transform = window.getComputedStyle(el, null).getPropertyValue('transform');
 		
-		let offset = 4;
+		let offset = 4 / window.devicePixelRatio;
 
 		if ( el.style.left ) 
 			resizeWidget.style.left = parseFloat(el.style.left) + rect.width - w_rect.width + offset + "px";
