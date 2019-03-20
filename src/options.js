@@ -613,6 +613,8 @@ function getKeyString(keys) {
 }
 
 function keyCodeToString(code) {
+	if ( code === 0 ) return null;
+	
 	return keyTable[code] /*|| String.fromCharCode(code)*/ || code.toString();
 }
 

@@ -12,7 +12,7 @@ if ( window != top ) {
 		userOptions = message.userOptions || {};
 
 		if ( userOptions.sideBar.widget.enabled )	
-			main();
+			makeOpeningTab();
 
 		if ( userOptions.sideBar.startOpen )
 			openSideBar();
@@ -43,8 +43,6 @@ if ( window != top ) {
 					
 					if ( e.data.size.height ) {
 						iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, sbContainer.dataset.windowtype === 'undocked' ? parseFloat(sbContainer.style.height) || userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
-						
-					//	iframe.style.maxHeight = iframe.style.height;
 					}
 					
 					if ( e.data.size.width ) {
@@ -101,7 +99,6 @@ if ( window != top ) {
 
 		if (typeof message.userOptions !== 'undefined') {
 			userOptions = message.userOptions;
-			getOpeningTab().style.display = userOptions.sideBar.widget.enabled ? null : "none";
 		}
 		
 		switch ( message.action ) {
@@ -117,23 +114,23 @@ if ( window != top ) {
 				break;
 		}
 	});
-	
+		
 	function openSideBar() {
 		
-		if ( !getContainer() ) main();
+		// create the sidebar once per session
+		if ( !getContainer() ) createSideBarContainer();
 		
 		let sbContainer = getContainer();
 		let openingTab = getOpeningTab();
 		let iframe = getIframe();
+		
+		if ( openingTab ) openingTab.style.display = 'none';
 
 		iframe = document.createElement('iframe');
 		iframe.id = 'CS_sbIframe';
 		iframe.src = browser.runtime.getURL('/searchbar.html');
-		
-		openingTab.classList.add('CS_close');
 
 		sbContainer.appendChild(iframe);
-		sbContainer.appendChild(openingTab);
 
 		// set the initial state of the sidebar, not the opening tab
 		sbContainer.docking.options.windowType = sbContainer.dataset.windowtype = userOptions.sideBar.windowType;
@@ -174,7 +171,7 @@ if ( window != top ) {
 					sbContainer.docking.options.lastOffsets = sbContainer.docking.getOffsets();
 
 					// save prefs
-					userOptions.sideBar.height = parseFloat(sbContainer.style.height);
+					userOptions.sideBar.height = parseFloat( sbContainer.style.height || sbContainer.style.maxHeight || iframe.style.height || iframe.style.maxHeight );
 					
 					if ( resizeWidget.options.allowHorizontal )
 						userOptions.sideBar.columns = o.columns;
@@ -219,7 +216,11 @@ if ( window != top ) {
 		
 		iframe.style.maxWidth = null;
 		sbContainer.style.opacity = null;
-		openingTab.classList.remove('CS_close');
+		
+		if ( openingTab ) { // reposition the openingTab to match sidebar position
+			["left", "right","top","bottom"].forEach( side => openingTab.style[side] = sbContainer.style[side] );
+			openingTab.style.display = null;
+		}
 
 		runAtTransitionEnd(sbContainer, "height", () => { iframe.parentNode.removeChild(iframe) });
 
@@ -227,52 +228,72 @@ if ( window != top ) {
 		if (sbContainer.dataset.windowtype === 'docked') {
 			sbContainer.docking.undock();	
 		}
-		
-		if ( !userOptions.sideBar.widget.enabled ) {
-			sbContainer.parentNode.removeChild(sbContainer);
-		}
-		
+
 		document.dispatchEvent(new CustomEvent('closesidebar'));
 
 	}
 	
-	function main() {
+	function makeOpeningTab() {
 
 		let openingTab = document.createElement('div');
 
 		openingTab.id = 'CS_sbOpeningTab';
 		openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
-		openingTab.style.setProperty("--handle-icon", 'url(' + browser.runtime.getURL("/icons/vertical.svg") + ')');
 		openingTab.classList.add('CS_handle');
-
-		let sbContainer = document.createElement('div');
-		sbContainer.id = 'CS_sbContainer';
-
-		if ( userOptions.searchBarTheme === 'dark' ) {
-			sbContainer.classList.add('CS_dark');
-			openingTab.classList.add('CS_dark');
-		}
-
+		
 		openingTab.addEventListener('click', () => {
-			
-			if ( sbContainer.moving ) return false;
-			
-			let iframe = getIframe();
-			
-			if ( iframe ) 
-				;//closeSideBar();
-			else 
-				openSideBar();
+			if ( openingTab.moving ) return false;	
+			openSideBar();
 		});
 		
-		// open sidebar if dragging text over
+		//open sidebar if dragging text over
 		openingTab.addEventListener('dragenter', (e) => {
-			if ( getIframe() ) return;
 			openingTab.dispatchEvent(new MouseEvent('click'));
 			getIframe().focus();
 		});
 		
-		sbContainer.appendChild(openingTab);
+		// prevent docking on double-click
+		openingTab.addEventListener('dblclick', (e) => {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+		});
+		
+		if ( userOptions.searchBarTheme === 'dark' )
+			openingTab.classList.add('CS_dark');
+		
+		document.body.appendChild(openingTab);
+
+		makeDockable(openingTab, {
+			windowType: "undocked",
+			dockedPosition: userOptions.sideBar.position,
+			handleElement: openingTab,
+			lastOffsets: userOptions.sideBar.offsets,
+			onUndock: (o) => {
+				userOptions.sideBar.offsets = o.lastOffsets;
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+				
+				// match sbContainer position with openingTab
+				if ( getContainer() ) getContainer().docking.options.lastOffsets = o.lastOffsets;
+			}
+		});
+
+		openingTab.docking.init();
+	}
+	
+	function createSideBarContainer() {
+
+		let sbContainer = document.createElement('div');
+		sbContainer.id = 'CS_sbContainer';
+
+		if ( userOptions.searchBarTheme === 'dark' ) 
+			sbContainer.classList.add('CS_dark');
+
+		let handle = document.createElement('div');
+		handle.className = 'CS_handle';
+		handle.style.setProperty("--handle-icon", 'url(' + browser.runtime.getURL("/icons/vertical.svg") + ')');
+		
+		sbContainer.appendChild(handle);
+
 		document.body.appendChild(sbContainer);
 		
 		// move openingTab if offscreen
@@ -303,7 +324,7 @@ if ( window != top ) {
 					iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));	
 
 					// trigger transition event to reset resize widget
-					sbContainer.resizeWidget.setPosition();
+					if ( sbContainer.resizeWidget ) sbContainer.resizeWidget.setPosition();
 				}
 
 				saveSideBarOptions(o);
@@ -316,8 +337,7 @@ if ( window != top ) {
 				iframe.style.maxHeight = '100%';
 
 				iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));
-				
-				// dont save settings when opening tab
+
 				saveSideBarOptions(o);
 			}
 		});
@@ -328,11 +348,12 @@ if ( window != top ) {
 	document.addEventListener("fullscreenchange", (e) => {
 		
 		let sbc = getContainer();
+		let ot = getOpeningTab();
 		
-		if ( document.fullscreen )
-			sbc.style.display = 'none';		
-		else			
-			sbc.style.display = null;
+		if ( document.fullscreen )	
+			[sbc, ot].forEach( el => { if ( el ) el.classList.add('CS_hide');});
+		else 		
+			[sbc, ot].forEach( el => { if ( el ) el.classList.remove('CS_hide');});
 	});
 	
 	document.addEventListener('zoom', (e) => {

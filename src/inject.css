@@ -195,3 +195,6 @@ IMG.CS_handle {
 	bottom:0;
 	z-index:2147483647;
 }
+.CS_hide {
+	display:none !important;
+}
