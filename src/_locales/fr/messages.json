@@ -66,6 +66,10 @@
   "SearchActionsBackgroundTab": {
     "message": "Ouvrir dans un onglet en arrière-plan"
   },
+
+   "SearchActionsBackgroundTabKeepOpen": {
+    "message": "Ouvrir dans un onglet en arrière-plan (Garder le menu ouvert)"
+  },
   
   "SearchActionsNewWindow": {
     "message": "Ouvrir dans une nouvelle fenêtre"
@@ -1428,6 +1432,16 @@
 
   "browseForImage": {
     "message": "Rechercher une image locale",
+    "description": ""
+  },
+  
+  "enabledisplayprevioussearchtooltip": {
+    "message": "Afficher les derniers termes de recherche utilisés dans le champ de recherche",
+    "description": ""
+  },
+  
+  "resize": {
+    "message": "redimensionner",
     "description": ""
   },
   

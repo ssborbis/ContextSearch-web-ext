@@ -179,9 +179,7 @@ function addResizeWidget(el, options) {
 			// match grid to tile size after scaling
 			let stepX = el.getBoundingClientRect().width / el.offsetWidth * o.tileSize.width;
 			let stepY = el.getBoundingClientRect().height / el.offsetHeight * o.tileSize.height;
-			
-			// console.log(stepX + "\t" + stepY);
-			
+
 			// initialize the coords with some offset for a deadzone
 			startCoords = {x: e.clientX, y: e.clientY};
 
@@ -204,6 +202,7 @@ function addResizeWidget(el, options) {
 					return;
 				
 				o.columns = startSize.columns + colsMod;
+				o.rows = startSize.rows + rowsMod;
 
 				o.onDrag({
 					columns: startSize.columns + colsMod,
@@ -244,6 +243,15 @@ function addResizeWidget(el, options) {
 	
 	// queue reposition for transitions
 	el.addEventListener('transitionend', positionResizeWidget);
+	
+	// reposition on custom page zoom event
+	document.addEventListener('zoom', positionResizeWidget);
+	
+	// set animation state
+	if ( !userOptions.enableAnimations ) resizeWidget.style.setProperty('--user-transition', 'none');
+
+	/* dnd resize end */	
+	positionResizeWidget();
 
 	function positionResizeWidget() {
 		
@@ -269,12 +277,6 @@ function addResizeWidget(el, options) {
 		if ( el.style.bottom )
 			resizeWidget.style.bottom = parseFloat(el.style.bottom) - offset + "px";
 	}
-	
-	// set animation state
-	if ( !userOptions.enableAnimations ) resizeWidget.style.setProperty('--user-transition', 'none');
-
-	/* dnd resize end */	
-	positionResizeWidget();
 	
 	return resizeWidget;
 }

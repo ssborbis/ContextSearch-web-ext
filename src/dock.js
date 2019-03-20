@@ -296,12 +296,7 @@ function makeDockable(el, options) {
 		
 		let pos = getPositions(o.lastOffsets);
 
-		// undock animation should start in the corners
-		// el.style.top = pos.v !== 'bottom' ? '0' : null;
-		// el.style.left = pos.h !== 'right' ? '0' : null; // set absolute left for top, bottom, left
-		// el.style.right = pos.h === 'right' ? '0' : null;
-		// el.style.bottom = pos.v === 'bottom' ? '0' : null;
-		
+		// undock animation should start in the corners		
 		el.style.top = o.dockedPosition !== 'bottom' ? '0' : null;
 		el.style.left = o.dockedPosition !== 'right' ? '0' : null; // set absolute left for top, bottom, left
 		el.style.right = o.dockedPosition === 'right' ? '0' : null;
@@ -374,9 +369,14 @@ function makeDockable(el, options) {
 			else dock();	
 		});
 	}
+	
+	// timer for better mousemove handling
+	let mouseDownStart = null;
 
 	if ( o.handleElement ) {
 		o.handleElement.addEventListener('mousedown', (e) => {
+			
+			mouseDownStart = Date.now();
 
 			el.X = e.clientX;
 			el.Y = e.clientY;
@@ -416,7 +416,12 @@ function makeDockable(el, options) {
 	function moveListener(e) {
 		e.preventDefault();
 
-		if ( !el.moving && ( Math.abs( el.X - e.clientX ) < o.deadzone || Math.abs( el.Y - e.clientY ) < o.deadzone ) )	return;
+		if ( !el.moving && 
+			(
+				( Math.abs( el.X - e.clientX ) < o.deadzone || Math.abs( el.Y - e.clientY ) < o.deadzone ) 
+				&& Date.now() - mouseDownStart < 100
+			))	
+			return;
 		
 		else if ( !el.moving ) {
 			
