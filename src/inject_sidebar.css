@@ -53,7 +53,7 @@
 	cursor: grab;
 }
 
-#CS_sbContainer .CS_handle.CS_dark {
+#CS_sbContainer.CS_dark .CS_handle {
 	filter:invert(1) brightness(50%);
 }
 #CS_sbContainer.CS_dark {

@@ -9,12 +9,12 @@ function inputAddCustomSearchHandler(input) {
 
 		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
 		
-		setTimeout(() => {
-			window.addEventListener('mousemove', ()=> {
+		input.addEventListener('contextmenu', () => {
+			setTimeout( () => {
 				browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
-			}, {once: true});
-		}, 1000);
-			
+			}, 500);
+		}, {once: true});
+
 	});
 }
 
@@ -31,7 +31,7 @@ var CS_observer = new MutationObserver((mutationsList) => {
 
 				if (node.nodeName === "INPUT")
 					inputAddCustomSearchHandler(node);
-				else
+				else if ( node.nodeType === 1 )
 					node.querySelectorAll('input').forEach( _node => inputAddCustomSearchHandler(_node) );
 
 			}

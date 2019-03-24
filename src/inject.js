@@ -30,7 +30,7 @@ window.addEventListener('mousedown', (e) => {
 
 	if ( e.which !== 3 ) return false;
 
-	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e);
+	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
 
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
@@ -217,9 +217,9 @@ function addResizeWidget(el, options) {
 				
 				mostRecentModSize = {columns: colsMod, rows: rowsMod};
 			}
-			
+
 			document.addEventListener('mouseup', (_e) => {
-				
+
 				_e.stopImmediatePropagation();
 
 				// clear overlay

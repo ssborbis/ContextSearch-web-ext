@@ -351,7 +351,7 @@ function toolBarResize() {
 	let mb = document.getElementById('menuBar');
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
-		if ( window.innerHeight < document.body.scrollHeight ) {
+		if ( window.innerHeight < document.documentElement.scrollHeight ) {
 			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height ) + "px";
 		} 
 

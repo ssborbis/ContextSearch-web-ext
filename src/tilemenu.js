@@ -1253,7 +1253,7 @@ function makeQuickMenu(options) {
 						function loop(message) {
 							browser.runtime.sendMessage(message).then( (result) => {
 								
-								if ( messages.length > 1 ) // not last run
+								if ( messages.length ) // not last run
 									loop(messages.shift());
 								
 								// else if (!keepMenuOpen(e) ) // last run

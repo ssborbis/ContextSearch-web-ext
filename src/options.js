@@ -398,7 +398,8 @@ function saveOptions(e) {
 			},
 			windowType: userOptions.sideBar.windowType,
 			offsets: userOptions.sideBar.offsets,
-			position: userOptions.sideBar.position
+			position: userOptions.sideBar.position,
+			height: userOptions.sideBar.height
 		},
 		
 		highLight: {

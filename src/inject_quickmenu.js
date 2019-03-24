@@ -65,7 +65,7 @@ function openQuickMenu(ev) {
 }
 
 function closeQuickMenu(eventType) {
-	
+
 	eventType = eventType || null;
 		
 	if (

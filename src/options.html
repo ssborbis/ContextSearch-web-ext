@@ -884,7 +884,7 @@
 				padding:0 2px 4px 0;
 				color: #444;
 			}
-			.yes {
+			.yes, .no {
 				display:inline-block;
 				border-radius:50%;
 				background-color:#41ad49;
@@ -895,11 +895,17 @@
 				opacity:1;
 				transition:opacity 2s ease-out 1s;
 			}
-			.yes::before {
+			.yes::before, .no::before {
 				content: url("icons/checkmark.svg");
 				height:20px;
 				vertical-align:middle;
 				filter:invert(1);
+			}
+			.no {
+				background-color: red;
+			}
+			.no::before {
+				content: url("icons/crossmark.svg");
 			}
 		</style>
 	</head>
@@ -1936,10 +1942,13 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<option value="ISO-8859-2">iso-8859-2</option>
 					</select>
 					</div>
-	
+
 					<div style="inline">
+					
 					<button type="button" name="cancel" class="inputNice _hover" style="float:right;margin:10px 5px;text-transform:capitalize" data-i18n="Close">close</button>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
+					
+					<span id="editFormSaveMessage" style="float:right;margin-right:10px;margin: 10px 5px"></span>
 
 					<button type="button" name="copy" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.png" style="height:20px;vertical-align:middle"/></button>
 <div data-browser="firefox">					

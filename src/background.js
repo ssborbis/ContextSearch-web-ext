@@ -20,7 +20,8 @@ async function notify(message, sender, sendResponse) {
 				console.error(err);
 			}
 			return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
-		} 
+		} else
+			return Promise.resolve(true);
 	})();
 
 	switch(message.action) {
@@ -264,6 +265,9 @@ async function notify(message, sender, sendResponse) {
 				id: "add_engine",
 				title: browser.i18n.getMessage("AddCustomSearch"),
 				contexts: ["editable"]
+			}, () => {
+				if (browser.runtime.lastError)
+					console.log(browser.runtime.lastError);
 			});
 			
 			// Delaying the removal should keep the menu item visible long enough to open the context menu
@@ -274,7 +278,12 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "disableAddCustomSearchMenu":
-			browser.contextMenus.remove("add_engine");
+			
+			browser.contextMenus.remove("add_engine").then(() => {
+			}, () => {
+				if (browser.runtime.lastError)
+					console.log(browser.runtime.lastError);
+			});
 			break;
 
 		case "log":

@@ -86,6 +86,106 @@ function buildSearchEngineContainer() {
 						element.classList.remove('error');
 				}
 				
+				function showError(el, msg) {
+					
+					if ( !el.previousSibling || !el.previousSibling.dataset ) return;
+						
+					if ( !el.previousSibling.dataset.oldmsg ) {
+						el.previousSibling.dataset.oldmsg = el.previousSibling.innerText;
+					}
+					
+					el.previousSibling.innerText = msg;
+					el.previousSibling.style.color = "red";
+					el.classList.add("error");
+				}
+				
+				// Check bad form values
+				function checkFormValues() {
+	
+					[edit_form.template, edit_form.post_params].forEach( el => {
+						el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
+					});
+					
+					return new Promise( (resolve, reject) => {
+					
+						if ( !edit_form.shortName.value.trim() ) {
+							showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
+							resolve(false);
+						}
+						if (edit_form.shortName.value != li.node.title) {
+							
+							if (userOptions.searchEngines.find( _se => _se.title == edit_form.shortName.value) ) {
+								showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
+								resolve(false);
+							}
+						}
+						if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
+							showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
+						}
+						try {
+							let _url = new URL(edit_form.template.value);
+						} catch (error) {
+							showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+						}
+						try {
+							let _url = new URL(edit_form.searchform.value);
+						} catch (error) {
+							let _url = new URL(edit_form.template.value);
+							edit_form.searchform.value = _url.origin;
+						//	showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+						//	return;
+						}
+
+						if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
+							showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
+						}
+						if (edit_form.searchRegex.value) {
+							try {
+								let parts = JSON.parse('[' + edit_form.searchRegex.value + ']');
+								let rgx = new RegExp(parts[0], 'g');
+							} catch (error) {
+								showError(edit_form.searchRegex, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+							}
+						}
+						
+						if ( edit_form.iconURL.value.startsWith("resource:") ) {
+							resolve(true);
+						}
+
+						icon.src = browser.runtime.getURL("/icons/spinner.svg");
+						let newIcon = new Image();
+						newIcon.onload = function() {
+							icon.src = imageToBase64(this, 32) || tempImgToBase64(se.title.charAt(0).toUpperCase());
+							resolve(true);
+						}
+						newIcon.onerror = function() {	
+							showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
+							icon.src = se.icon_base64String || tempImgToBase64(se.title.charAt(0).toUpperCase());
+							resolve(true);
+						}
+						
+						if ( !edit_form.iconURL.value ) {
+							let url = new URL(edit_form.template.value);
+							newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
+						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
+
+							let url = new URL(edit_form.iconURL.value.replace(/#/g, "%23"));
+	
+							// https://stackoverflow.com/a/8649003
+							let obj = JSON.parse('{"' + url.searchParams.toString().replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) });
+
+							newIcon.src = createCustomIcon(obj);
+						
+						} else {
+							newIcon.src = edit_form.iconURL.value;
+						}
+						
+						// set a timeout for loading the image
+						setTimeout(() => { if (!newIcon.complete) newIcon.onerror(); }, 5000);
+					});
+
+				}
+				
 				// clear error formatting
 				for (let label of edit_form.getElementsByTagName('label')) {
 					if (label.dataset.i18n) label.innerText = browser.i18n.getMessage(label.dataset.i18n);
@@ -153,25 +253,35 @@ function buildSearchEngineContainer() {
 						label.style.color = null;
 						clearError(label.nextSibling)
 					}
+					
+					function showSaveMessage(str, color, _class) {
+						
+						color = color || "inherit";
 
-					function showError(el, msg) {
+						// clear and set save message
+						$("#editFormSaveMessage").innerHTML = null;	
+						let msgSpan = document.createElement('span');
+
+						let img = document.createElement('div');
+						img.className = _class;
+						//img.style.height = img.style.width = '1em';
+						img.style.marginRight = '10px';
+						msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
+						msgSpan.style.color = color;
+						//msgSpan.innerText = str;
 						
-						if ( !el.previousSibling.dataset.oldmsg ) {
-							el.previousSibling.dataset.oldmsg = el.previousSibling.innerText;
-						}
+						msgSpan.insertBefore(img, msgSpan.firstChild);
 						
-						el.previousSibling.innerText = msg;
-						el.previousSibling.style.color = "red";
-						el.classList.add("error");
+						$("#editFormSaveMessage").appendChild(msgSpan);
+						
+						msgSpan.addEventListener('transitionend', (e) => {
+							msgSpan.parentNode.removeChild(msgSpan);
+						});
+
+						msgSpan.getBoundingClientRect(); // reflow
+						msgSpan.style.opacity = 0;
 					}
-					
-					// function clearError(el) {
-						// el.style.color = null;
-						// el.classList.remove('error');
-						// el.previousSibling.innerText = el.previousSibling.dataset.oldmsg || "";
-						// delete el.previousSibling.dataset.oldmsg;	
-					// }
-					
+
 					function saveForm(closeForm) {
 						
 						closeForm = ( closeForm === undefined ) ? true : false;
@@ -208,108 +318,16 @@ function buildSearchEngineContainer() {
 						
 						updateNodeList();
 						
+						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes");
+
 						// if (closeForm)
 							// edit_form.style.maxHeight = null;
 					}
-
-					// Check bad form values
-
-					[edit_form.template, edit_form.post_params].forEach( el => {
-						el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
-					});
 					
-					if ( !edit_form.shortName.value.trim() ) {
-						showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
-						return;
-					}
-					if (edit_form.shortName.value != li.node.title) {
-						
-						if (userOptions.searchEngines.find( _se => _se.title == edit_form.shortName.value) ) {
-							showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
-							return;
-						}
-					}
-					if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
-						showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
-						return;
-					}
-					try {
-						let _url = new URL(edit_form.template.value);
-					} catch (error) {
-						showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
-						return;
-					}
-					try {
-						let _url = new URL(edit_form.searchform.value);
-					} catch (error) {
-						let _url = new URL(edit_form.template.value);
-						edit_form.searchform.value = _url.origin;
-					//	showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
-					//	return;
-					}
-					// if (edit_form.template.value.match(/^http/i) === null) {
-						// showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
-						// return;
-					// }
-					// if (edit_form.searchform.value.match(/^http/i) === null) {
-						// let url = new URL(edit_form.template.value);
-						// edit_form.searchform.value = url.origin;
-						// //showError(edit_form.searchform,browser.i18n.getMessage("FormPathURLError"));
-					// //	return;
-					// }
-					if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
-						showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
-						return;
-					}
-					if (edit_form.searchRegex.value) {
-						try {
-							let parts = JSON.parse('[' + edit_form.searchRegex.value + ']');
-							let rgx = new RegExp(parts[0], 'g');
-						} catch (error) {
-							showError(edit_form.searchRegex, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
-							return;
-						}
-					}
-					if ( !edit_form.iconURL.value.startsWith("resource:") ) {
-
-						icon.src = browser.runtime.getURL("/icons/spinner.svg");
-						let newIcon = new Image();
-						newIcon.onload = function() {
-							icon.src = imageToBase64(this, 32) || tempImgToBase64(se.title.charAt(0).toUpperCase());
-							saveForm();
-						}
-						newIcon.onerror = function() {	
-							showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
-							icon.src = se.icon_base64String || tempImgToBase64(se.title.charAt(0).toUpperCase());
-						//	edit_form.iconURL.value = icon.src;
-							saveForm(false);
-						}
-						
-						if ( !edit_form.iconURL.value ) {
-							let url = new URL(edit_form.template.value);
-							newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
-						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
-							
-							
-							let url = new URL(edit_form.iconURL.value.replace(/#/g, "%23"));
-	
-							// https://stackoverflow.com/a/8649003
-							let obj = JSON.parse('{"' + url.searchParams.toString().replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) });
-
-							newIcon.src = createCustomIcon(obj);
-							saveForm(false);
-						
-						} else {
-							newIcon.src = edit_form.iconURL.value;
-						}
-						
-						setTimeout(() => {
-							if (!newIcon.complete)
-								newIcon.onerror();
-						}, 5000);
-					} else {
-						saveForm();
-					}
+					checkFormValues().then( result => {
+						if ( result ) saveForm();
+						else showSaveMessage("cannot save", "red", "no");
+					});
 				}
 				
 				// clear error formatting on focus
@@ -325,6 +343,8 @@ function buildSearchEngineContainer() {
 				// reflow trick
 				edit_form.getBoundingClientRect();
 				edit_form.style.maxHeight = '400px';
+				
+				checkFormValues();
 			});
 
 		}
