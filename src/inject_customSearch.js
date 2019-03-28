@@ -5,15 +5,18 @@ function inputAddCustomSearchHandler(input) {
 		if (
 			ev.which !== 3
 			|| getSelectedText(input)
-		) return;
+		) {
+			browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
+			return;
+		}
 
 		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
 		
-		input.addEventListener('contextmenu', () => {
-			setTimeout( () => {
-				browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
-			}, 500);
-		}, {once: true});
+		// input.addEventListener('contextmenu', () => {
+			// setTimeout( () => {
+				// browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
+			// }, 500);
+		// }, {once: true});
 
 	});
 }
