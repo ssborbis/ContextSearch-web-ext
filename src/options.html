@@ -400,7 +400,7 @@
 			}
 
 			/* Style the buttons that are used to open the tab content */
-			.tab button {
+			.tab .tablinks {
 				border: 1px solid #ccc; 
 				border-right:none;
 				background-color: #eee;
@@ -415,14 +415,25 @@
 				width:100%;
 				padding-left:46px;
 			}
+			
+			.tab .tablinks.sublink {
+				border-radius:0;
+				width:95%;
+				font-size:10pt;
+				padding:4px 16px;
+				margin:0;
+				border:none;
+				border-left: 4px solid #eee;
+				background-color:transparent;
+			}
 
 			/* Change background color of buttons on hover */
-			.tab button:hover {
+			.tab .tablinks:hover {
 				background-color: #ddd;
 			}
 
 			/* Create an active/current tablink class */
-			.tab button.active {
+			.tab .tablinks.active {
 				/*background-color: white;
 				color:#343a40;
 				*/
@@ -865,6 +876,7 @@
 			}
 			.option > * {
 				vertical-align:top;
+				text-align:left;
 			}
 			DIV[data-gif] {
 				height:50px;
@@ -927,6 +939,8 @@
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</button>
 				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</button>
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.png" />Highlight</button>
+				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab"><img alt="" src="icons/transparent.gif" />Search Results</button>
+				<button class="tablinks sublink" data-tabid="highLightFindBarTab"><img alt="" src="icons/transparent.gif" />Find Bar</button>
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img alt="" src="icons/search.svg" />Search Engines</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img alt="" src="icons/settings.svg" />General</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img alt="" src="icons/help.svg" />Help</button>
@@ -1658,77 +1672,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</div>
 				<div class="tabcontent" id="highLightTab">
 					<div class="blobContainerHeader" data-i18n="Highlight">Highlight</div>
-					
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightEnabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightTooltip">Highlight search terms in search results page</div>
-					</div>
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightFollowDomain" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightFollowDomainTooltip">Continue highlighting pages on the search results website</div>
-					</div>
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightFollowExternalLinks" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">Continue highlighting on external websites linked from the search results page</div>
-					</div>
-					
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightNavBarEnabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightNavTooltip">Show navigation bar when highlighting</div>
-					</div>
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightShowFindBar" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightShowFindBarTooltip">Show Find bar when highlighting</div>
-					</div>
-					
-					<p class="header1" data-i18n="Accuracy">Accuracy</p>
-					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightMarkOptionsAccuracy">
-							<option data-i18n="partially" value="partially">partially</option>
-							<option data-i18n="exactly" value="exactly">exactly</option>
-						</select>
-						<div class="description" data-i18n="HighLightAccuracyTooltip">Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted</div>
-					</div>
-					
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightMarkOptionsSeparateWordSearch" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightSeparateWordsTooltip">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
-					</div>
-					
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightMarkOptionsIgnorePunctuation" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightIgnorePunctuationTooltip">Ignore punctuation - Setting this option would match WORLDS, WORLD'S and WO'RLDS. One or more apostrophes between the letters would still produce a match (e.g. W'O''R'L'D'S)</div>
-					</div>
-					
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_highLightMarkOptionsCaseSensitive" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="HighlightCaseSensitiveTooltip">Case sensitive</div>
-					</div>
-					
+
 					<p class="header1" data-i18n="Style">Style</p>
 					
 					<div class="option">
@@ -1814,10 +1758,118 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 					
 					<br /><br />
+				</div>
+				<div class="tabcontent" id="highLightSearchResultsTab">
+					<div class="blobContainerHeader" data-i18n="SearchResults">Search Results</div>
 					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightEnabled" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightTooltip">Highlight search terms in search results page</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightFollowDomain" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightFollowDomainTooltip">Continue highlighting pages on the search results website</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightFollowExternalLinks" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">Continue highlighting on external websites linked from the search results page</div>
+					</div>
+					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightNavBarEnabled" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightNavTooltip">Show navigation bar when highlighting</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_highLightShowFindBar" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="HighlightShowFindBarTooltip">Show Find bar when highlighting</div>
+					</div>
+					
+					<p class="header1" data-i18n="Accuracy">Accuracy</p>
+					<table>
+						<tr>
+							<!-- <td>Accuracy</td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightMarkOptionsAccuracy">
+										<option data-i18n="partially" value="partially">partially</option>
+										<option data-i18n="exactly" value="exactly">exactly</option>
+									</select>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighLightAccuracyTooltip">Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Separate Word Search -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<label class="container">
+										<input type="checkbox" id="cb_highLightMarkOptionsSeparateWordSearch" />
+										<span class="checkmark checkmark2"></span>
+									</label>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightSeparateWordsTooltip">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
+							</td>
+							
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Ignore Punctuation -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<label class="container">
+										<input type="checkbox" id="cb_highLightMarkOptionsIgnorePunctuation" />
+										<span class="checkmark checkmark2"></span>
+									</label>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightIgnorePunctuationTooltip">Ignore punctuation - Setting this option would match WORLDS, WORLD'S and WO'RLDS. One or more apostrophes between the letters would still produce a match (e.g. W'O''R'L'D'S)</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Case Sensitive -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<label class="container">
+										<input type="checkbox" id="cb_highLightMarkOptionsCaseSensitive" />
+										<span class="checkmark checkmark2"></span>
+									</label>
+									
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightCaseSensitiveTooltip">Case sensitive</div>
+							</td>
+						</tr>
+					</table>
+					
+				</div>
+				<div class="tabcontent" id="highLightFindBarTab">
 					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
-					<i>Beta</i>
-					<hr />
 					
 					<p class="header1" data-i18n="opening">Opening</p>
 					<div class="option">
@@ -1859,6 +1911,74 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<div class="description" data-i18n="FindbarWindowTypeTooltip">Choose how to display the find bar. Find bar window style can be toggled by double-clicking the dock / undock / move icon or by dragging
 						</div>
 					</div>
+					
+					<p class="header1" data-i18n="Accuracy">Accuracy</p>
+					<table>
+						<tr>
+							<!-- <td>Accuracy</td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarMarkOptionsAccuracy">
+										<option data-i18n="partially" value="partially">partially</option>
+										<option data-i18n="exactly" value="exactly">exactly</option>
+									</select>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighLightAccuracyTooltip">Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Separate Word Search -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<label class="container">
+										<input type="checkbox" id="cb_findBarMarkOptionsSeparateWordSearch" />
+										<span class="checkmark checkmark2"></span>
+									</label>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightSeparateWordsTooltip">Highlight each word in multi-word search separately. Disable to treat phrases as a single search term</div>
+							</td>
+							
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Ignore Punctuation -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<label class="container">
+										<input type="checkbox" id="cb_findBarMarkOptionsIgnorePunctuation" />
+										<span class="checkmark checkmark2"></span>
+									</label>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightIgnorePunctuationTooltip">Ignore punctuation - Setting this option would match WORLDS, WORLD'S and WO'RLDS. One or more apostrophes between the letters would still produce a match (e.g. W'O''R'L'D'S)</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Case Sensitive -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<label class="container">
+										<input type="checkbox" id="cb_findBarMarkOptionsCaseSensitive" />
+										<span class="checkmark checkmark2"></span>
+									</label>
+									
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightCaseSensitiveTooltip">Case sensitive</div>
+							</td>
+						</tr>
+					</table>
 					
 					<p class="header1" data-i18n="General">General</p>
 					

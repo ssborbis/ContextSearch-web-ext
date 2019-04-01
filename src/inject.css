@@ -18,6 +18,9 @@
 	transition: var(--user-transition, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
 	transform:scale( calc( 1 / var(--cs-zoom, 1) * var(--cs-scale,1))) !important;
 	transform-origin: top left;
+	
+	-webkit-mask-image: -webkit-radial-gradient(white, black);	
+	-webkit-backface-visibility: hidden;
 }
 #CS_quickMenuIframe[data-openingopacity] {
 	opacity:var(--opening-opacity);

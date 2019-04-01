@@ -461,9 +461,7 @@ function addSearchEnginePopup(data) {
 		}
 
 		let se = formToSearchEngine();
-		
-	//	alert('Adding search engine from custom form');
-	
+
 		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se}).then((response) => {
 	//		console.log(response);
 		});
@@ -536,9 +534,7 @@ function listenForFocusAndPromptToImport() {
 		if (result) {
 
 			window.addEventListener('focus', () => {
-				
-				console.log('focused');
-				
+
 				// look for new one-click engines
 				browser.runtime.sendMessage({action: "checkForOneClickEngines"}).then( newEngineCount => {
 					

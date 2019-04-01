@@ -13,15 +13,20 @@ function getSelectedText(el) {
 document.addEventListener("selectionchange", (ev) => {
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
 	
-	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: window.getSelection().toString()});
+	let searchTerms = window.getSelection().toString()
+	
+	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
 // selectionchange handler for input nodes
 for (let el of document.querySelectorAll("input[type='text'], input[type='search'], textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', (e) => {
-		let text = getSelectedText(e.target)
-		if (text)
-			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: text});
+		let searchTerms = getSelectedText(e.target)
+		if (searchTerms) {
+			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+		}
 	});
 }
 
@@ -31,7 +36,8 @@ window.addEventListener('mousedown', (e) => {
 	if ( e.which !== 3 ) return false;
 
 	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
-
+	
+	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 

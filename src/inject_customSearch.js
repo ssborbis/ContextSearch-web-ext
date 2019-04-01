@@ -1,10 +1,16 @@
 // listen for right-mousedown and enable Add Custom Search menu item if no text is selected
 function inputAddCustomSearchHandler(input) {
+	
+	input.addEventListener('focus', (e) => {
+		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
+	});
+	
 	input.addEventListener('mousedown', (ev) => {
 
 		if (
 			ev.which !== 3
 			|| getSelectedText(input)
+			|| input.ownerDocument.defaultView != top
 		) {
 			browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
 			return;
@@ -22,7 +28,7 @@ function inputAddCustomSearchHandler(input) {
 }
 
 // Add Custom Search listener
-document.querySelectorAll('input').forEach( input => {
+document.querySelectorAll('input,textarea').forEach( input => {
 	inputAddCustomSearchHandler(input);
 });
 
@@ -50,6 +56,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		switch (message.action) {
 							
 			case "openCustomSearch":
+			
+				if ( !window.document.querySelector("input:focus,textarea:focus") ) {
+					console.log("no focused input found");
+					return;
+				}
 
 				var iframe = document.createElement('iframe');
 				iframe.id = "CS_customSearchIframe";
@@ -97,7 +108,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							
 							if (!se.template && !message.timeout) {
 								
-								let input = window.document.querySelector("input:focus");
+								let input = window.document.querySelector("input:focus,textarea:focus");
 
 								// input change likely means search performed
 								input.addEventListener('change', () => {

@@ -105,7 +105,21 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "openFindBar":
-			return sendMessageToTopFrame();
+			console.log('openFindBar');
+			if ( userOptions.highLight.findBar.openInAllTabs ) {
+				console.log('openInAllTabs');
+				return new Promise( (resolve, reject) => {
+					getAllOpenTabs().then( tabs => {
+						tabs.forEach( tab => {
+							console.log(tab);
+							browser.tabs.sendMessage(tab.id, message, {frameId: 0});
+						});
+						
+						resolve();
+					});
+				});
+			} else
+				return sendMessageToTopFrame();
 			break;
 			
 		case "closeFindBar":
@@ -1393,13 +1407,20 @@ const defaultUserOptions = {
 			hotKey: [17, 16, 70],
 			position: 'top',
 			windowType: 'docked',
+			openInAllTabs: false,
 			offsets: {
 				top:0,
 				left:0,
 				right:null,
 				bottom:null
 			},
-			keyboardTimeout: 200
+			keyboardTimeout: 200,
+			markOptions: {
+				separateWordSearch: true,
+				accuracy: "exactly",
+				ignorePunctuation: true,
+				caseSensitive: false
+			}
 		}
 	},
 	userStyles: 

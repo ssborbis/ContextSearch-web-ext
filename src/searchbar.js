@@ -247,7 +247,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 					displaySuggestions(suggestions);
 					
 				});
-			} else
+			} else if ( userOptions.searchBarEnableHistory )
 				displaySuggestions(history);
 			
 		}, 250);

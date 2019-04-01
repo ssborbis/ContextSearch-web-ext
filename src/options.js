@@ -154,6 +154,7 @@ function restoreOptions() {
 		$('#cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
 		
 		$('#d_hotkey').appendChild(keyArrayToButtons(userOptions.quickMenuHotkey));
+		$('#d_hotkey').key = userOptions.quickMenuHotkey;
 		
 		$('#cb_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
 		$('#s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
@@ -270,6 +271,7 @@ function restoreOptions() {
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
 		$('#s_findBarWindowType').value = userOptions.highLight.findBar.windowType;
 		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
+		$('#d_findBarHotKey').key = userOptions.highLight.findBar.hotKey;
 		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
 
@@ -308,13 +310,7 @@ function saveOptions(e) {
 		
 		quickMenuOnKey: $('#r_quickMenuOnKey').checked,
 		quickMenuOnHotkey: $('#cb_quickMenuOnHotkey').checked,
-		quickMenuHotkey: function() {
-			let arr = [];
-			$('#d_hotkey').querySelectorAll('[data-keycode]').forEach( button => {
-				arr.push(parseInt(button.dataset.keycode));
-			});
-			return arr;
-		}(),
+		quickMenuHotkey: $('#d_hotkey').key,
 		quickMenuOnMouse: $('#cb_quickMenuOnMouse').checked,
 		quickMenuOnMouseMethod: $('#s_quickMenuOnMouseMethod').value,
 		quickMenuSearchOnMouseUp: $('#cb_quickMenuSearchOnMouseUp').checked,
@@ -440,13 +436,7 @@ function saveOptions(e) {
 				enabled: $('#cb_findBarEnabled').checked,
 				startOpen: $('#cb_findBarStartOpen').checked,
 				showNavBar: $('#cb_findBarShowNavBar').checked,
-				hotKey: function() {
-					let arr = [];
-					$('#d_findBarHotKey').querySelectorAll('[data-keycode]').forEach( button => {
-						arr.push(parseInt(button.dataset.keycode));
-					});
-					return arr;
-				}(),
+				hotKey: $('#d_findBarHotKey').key,
 				position: $('#s_findBarPosition').value,
 				keyboardTimeout: parseInt($('#n_findBarTimeout').value),
 				windowType: $('#s_findBarWindowType').value,
@@ -623,28 +613,42 @@ function keyArrayToButtons(arr) {
 	
 	let div = document.createElement('div');
 	
-	if (arr.length === 0) {
-		div.innerText = browser.i18n.getMessage('ClickToSet') || "Click to set";
-	}
-	
-	for (let i=0;i<arr.length;i++) {
-
-		let hk = arr[i]
+	function makeButton(str) {
 		let span = document.createElement('span');
-		let key = keyCodeToString(hk);
-		if (key.length === 1) key = key.toUpperCase();
-		
-		span.innerText = key;
-		span.dataset.keycode = hk;
+		span.innerText = str;
 		span.className = 'keyboardButton';
 		span.style = 'min-width:auto;padding:3px 10px;';
-		div.appendChild(span);
-		
-		if ( i + 1 < arr.length) {
-			let p = document.createElement('span');
-			p.innerHTML = '&nbsp;&nbsp;+&nbsp;&nbsp;';
-			div.appendChild(p);
+		return span;
+	}
+	
+	if ( Array.isArray(arr) ) {
+	
+		if (arr.length === 0) {
+			div.innerText = browser.i18n.getMessage('ClickToSet') || "Click to set";
 		}
+		
+		for (let i=0;i<arr.length;i++) {
+
+			let hk = arr[i]
+			let key = keyCodeToString(hk);
+			if (key.length === 1) key = key.toUpperCase();
+			
+			div.appendChild(makeButton(key));
+		}
+	} else {
+		if ( arr.alt ) div.appendChild(makeButton("Alt"));
+		if ( arr.ctrl ) div.appendChild(makeButton("Ctrl"));
+		if ( arr.meta ) div.appendChild(makeButton("Meta"));
+		if ( arr.shift ) div.appendChild(makeButton("Shift"));
+		
+		div.appendChild(makeButton(arr.key));
+	}
+	
+	let buttons = div.querySelectorAll('.keyboardButton');
+	for ( let i=1;i<buttons.length;i++ ) {
+		let spacer = document.createElement('span');
+		spacer.innerHTML = '&nbsp;&nbsp;+&nbsp;&nbsp;';
+		div.insertBefore(spacer, buttons[i]);
 	}
 	
 	return div;
@@ -1080,6 +1084,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			}
 			
 			document.addEventListener('keydown', preventDefaults);
+			document.addEventListener('keypress', preventDefaults);
 			
 			hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
 			hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
@@ -1087,28 +1092,48 @@ document.addEventListener('DOMContentLoaded', () => {
 			document.addEventListener('keyup', (e) => {
 				
 				e.preventDefault();
-
-				let keyArray = [];
 				
-				if ( e.which === 27 ) {
-					keyArray = [];
+				if ( e.key === "Escape" ) {
 					hk.innerHTML = null;
-					hk.appendChild(keyArrayToButtons(keyArray));
+					hk.appendChild(keyArrayToButtons([]));
 					return;
 				}
 				
-				if (e.ctrlKey) keyArray.push(17);
-				if (e.altKey) keyArray.push(18);
-				if (e.shiftKey) keyArray.push(16);
-				
-				keyArray.push(e.keyCode);
+				let key = {
+					alt: e.altKey,
+					ctrl: e.ctrlKey,
+					meta: e.metaKey,
+					shift: e.shiftKey,
+					key: e.key
+				}
 				
 				hk.innerHTML = null;
-				hk.appendChild(keyArrayToButtons(keyArray));
+				hk.appendChild(keyArrayToButtons(key));
+				
+				hk.key = key;
+
+				// let keyArray = [];
+				
+				// if ( e.which === 27 ) {
+					// keyArray = [];
+					// hk.innerHTML = null;
+					// hk.appendChild(keyArrayToButtons(keyArray));
+					// return;
+				// }
+				
+				// if (e.ctrlKey) keyArray.push(17);
+				// if (e.altKey) keyArray.push(18);
+				// if (e.shiftKey) keyArray.push(16);
+				
+				// keyArray.push(e.keyCode);
+				
+				// hk.innerHTML = null;
+				// hk.appendChild(keyArrayToButtons(keyArray));
 				
 				saveOptions();
 				
 				document.removeEventListener('keydown', preventDefaults);
+				document.removeEventListener('keypress', preventDefaults);
 				
 			}, {once: true});
 			
@@ -1128,7 +1153,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 		let yes = document.createElement('div');
 		yes.className = 'yes';
-		div.appendChild(imgContainer);
+		yes.style.verticalAlign = 'top';
+		div.appendChild(yes);
 		
 		yes.addEventListener('transitionend', (e) => {
 			div.removeChild(yes);
