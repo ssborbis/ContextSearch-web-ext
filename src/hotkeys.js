@@ -38,7 +38,7 @@ function addHotkey(enabled, key, callback) {
 
 		if (
 			!enabled
-			|| ( Array.isArray(key) && !keycodeArray.includes(e.keyCode) )
+			|| ( Array.isArray(key) && !key.includes(e.keyCode) )
 			|| ( typeof key.key !== 'undefined' && key.key !== e.key )
 			|| e.repeat
 		) return;
@@ -68,9 +68,9 @@ function addHotkey(enabled, key, callback) {
 				
 		} 
 		
-		// console.log(key);
-		// console.log(e);
-		// console.log(isHotkey(e, key));
+		console.log(key);
+		console.log(e);
+		console.log(isHotkey(e, key));
 
 		if ( !isHotkey(e, key) ) return false;
 
@@ -96,7 +96,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 			callback: (e) => {
 				
 				let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
-				browser.runtime.sendMessage({action: "findBarHotkey", searchTerms: searchTerms});
+				browser.runtime.sendMessage({action: "openFindBar", searchTerms: searchTerms});
 			}
 		}
 	].forEach( hko => {
