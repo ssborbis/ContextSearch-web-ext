@@ -35,17 +35,22 @@ function makeFrameContents(options) {
 		
 		let sb = document.getElementById('searchBar');
 		let sbc = document.getElementById('searchBarContainer');
+		let tb = document.getElementById('toolBar');
 		
 		sb.dataset.position = userOptions.quickMenuSearchBar;
 		
+		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
+			document.body.appendChild(tb);
+		
 		if (userOptions.quickMenuSearchBar === 'bottom') 
 			document.body.appendChild(sbc);
+		
 
 		browser.runtime.sendMessage({
 			action: "quickMenuIframeLoaded", 
 			size: {
 				width: qme.getBoundingClientRect().width,
-				height: qme.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+				height: qme.getBoundingClientRect().height + sbc.getBoundingClientRect().height + tb.getBoundingClientRect().height + 'px'
 			},
 			resizeOnly: options.resizeOnly,
 			tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},

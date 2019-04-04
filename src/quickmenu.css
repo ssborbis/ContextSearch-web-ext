@@ -286,3 +286,9 @@ BODY {
 	width:auto;
 	padding-right:10px;
 }
+#toolBar {
+	text-align:center;
+}
+#toolBar .tile {
+	border:none;
+}

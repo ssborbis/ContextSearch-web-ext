@@ -114,11 +114,11 @@ document.addEventListener('keydown', (e) => {
 // listen for findbar hotkey
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-	if ( message.action === "findBarHotkey" ) {
+	if ( message.action === "openFindBar" ) {
 
 		let searchTerms = message.searchTerms;
 	
-		if ( getFindBar() && !searchTerms ) {
+		if ( getFindBar() && !searchTerms) {
 			browser.runtime.sendMessage({action: "unmark"});
 			browser.runtime.sendMessage({action: "closeFindBar"});
 			return;
@@ -134,12 +134,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			action: "mark",
 			searchTerms: searchTerms, 
 			findBarSearch:true,	
-		}, !markOptions ? {
-				accuracy: "partially",
-				caseSensitive: false,
-				ignorePunctuation: true,
-				separateWordSearch: false
-			} : markOptions
+		}, !markOptions ? userOptions.highLight.findBar.markOptions : markOptions
 		));
 	}
 });

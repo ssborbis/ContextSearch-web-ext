@@ -150,9 +150,9 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 			
-		case "findBarHotkey":
-			return sendMessageToTopFrame();
-			break;
+		// case "findBarHotkey":
+			// return sendMessageToTopFrame();
+			// break;
 	
 		case "markDone":
 			return sendMessageToTopFrame();
@@ -880,7 +880,10 @@ function openSearch(details) {
 		case "openBackgroundTab":
 		case "openBackgroundTabKeepOpen":
 			return openBackgroundTab();
-			break;		
+			break;
+		case "openSideBar":
+			openSideBar();
+			break;
 	}
 	
 	function onCreate(_tab) {
@@ -975,6 +978,11 @@ function openSearch(details) {
 	}	
 	function openBackgroundTab() {
 		return openNewTab(true);
+	}
+	function openSideBar() {
+		browser.sidebarAction.setPanel({
+			panel: q
+		});
 	}
 }
 
@@ -1323,6 +1331,7 @@ const defaultUserOptions = {
 		{name: 'lock',		disabled: false}
 	],
 	quickMenuToolsPosition: "hidden",
+	quickMenuToolsAsToolbar: true,
 	searchJsonPath: "",
 	// reloadMethod: "",
 	contextMenuClick: "openNewTab",

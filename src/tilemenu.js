@@ -76,6 +76,8 @@ function makeQuickMenu(options) {
 		sb.focus();
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
+	
+	let tb = document.getElementById('toolBar') || document.createElement('div');
 
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
@@ -95,7 +97,7 @@ function makeQuickMenu(options) {
 				action: "quickMenuIframeLoaded", 
 				size: {
 					width: quickMenuElement.getBoundingClientRect().width,
-					height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+					height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height  + tb.getBoundingClientRect().height+ 'px'
 				},
 				resizeOnly: true,
 				tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -637,7 +639,7 @@ function makeQuickMenu(options) {
 					action: "quickMenuIframeLoaded", 
 					size: {
 						width: quickMenuElement.getBoundingClientRect().width,
-						height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+						height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + tb.getBoundingClientRect().height + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -670,7 +672,19 @@ function makeQuickMenu(options) {
 		let visibleTileCountMax = _singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 
 		// set tools position
-		if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
+		if ( userOptions.quickMenuToolsAsToolbar ) {
+			tb.style = 'overflow-x:hidden;white-space: nowrap;';
+			tb.addEventListener('wheel', (e) => {
+				tb.scrollLeft += (e.deltaY*10); // Multiplied by 40
+				e.preventDefault();
+			});
+			tb.innerHTML = null;
+			toolsArray.forEach( tool => {
+				tool.className = 'tile';
+				tb.appendChild(tool);
+			});
+			
+		} else if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
 			tileArray = toolsArray.concat(tileArray);
 		else if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu')
 			tileArray.splice(visibleTileCountMax - toolsArray.length - 1, 0, ...toolsArray);
@@ -976,7 +990,7 @@ function makeQuickMenu(options) {
 					action: "quickMenuIframeLoaded", 
 					size: {
 						width: quickMenuElement.getBoundingClientRect().width,
-						height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+						height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + tb.getBoundingClientRect().height + 'px'
 					},
 					resizeOnly: true,
 					tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -1119,7 +1133,7 @@ function makeQuickMenu(options) {
 									action: "quickMenuIframeLoaded", 
 									size: {
 										width: quickMenuElement.getBoundingClientRect().width,
-										height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+										height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + tb.getBoundingClientRect().height + 'px'
 									},
 									resizeOnly: true,
 									tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},
@@ -1142,6 +1156,9 @@ function makeQuickMenu(options) {
 								openMethod: getOpenMethod(e)
 							}
 						});
+						
+						if ( getOpenMethod(e) === 'openSideBar' )
+							browser.sidebarAction.open();
 						
 						if (typeof addToHistory !== "undefined") addToHistory(sb.value);
 					});
@@ -1223,7 +1240,7 @@ function makeQuickMenu(options) {
 								action: "quickMenuIframeLoaded", 
 								size: {
 									width: quickMenuElement.getBoundingClientRect().width,
-									height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + 'px'
+									height: quickMenuElement.getBoundingClientRect().height + sbc.getBoundingClientRect().height + tb.getBoundingClientRect().height + 'px'
 								},
 								resizeOnly: true,
 								tileSize: {width: quickMenuElement.firstChild.offsetWidth, height: quickMenuElement.firstChild.offsetHeight},

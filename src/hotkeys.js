@@ -62,15 +62,13 @@ function addHotkey(enabled, key, callback) {
 			if ( isSame(key,userOptions.quickMenuHotkey) ) 
 				userOptions.quickMenuHotkey = Object.assign({}, _key);
 			
+			console.log('converting hotkey',key,"to",_key);
+			
 			key = _key;
 
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
 		} 
-		
-		console.log(key);
-		console.log(e);
-		console.log(isHotkey(e, key));
 
 		if ( !isHotkey(e, key) ) return false;
 
