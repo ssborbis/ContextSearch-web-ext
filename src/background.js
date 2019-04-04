@@ -1331,7 +1331,7 @@ const defaultUserOptions = {
 		{name: 'lock',		disabled: false}
 	],
 	quickMenuToolsPosition: "hidden",
-	quickMenuToolsAsToolbar: true,
+	quickMenuToolsAsToolbar: false,
 	searchJsonPath: "",
 	// reloadMethod: "",
 	contextMenuClick: "openNewTab",
