@@ -105,16 +105,18 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "openFindBar":
-			console.log('openFindBar');
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
+				message.openInAllTabs = true;
 				console.log('openInAllTabs');
+				
+				let _message = Object.assign({}, message);
+				_message.searchTerms = "";
+				
 				return new Promise( (resolve, reject) => {
 					getAllOpenTabs().then( tabs => {
 						tabs.forEach( tab => {
-							console.log(tab);
-							browser.tabs.sendMessage(tab.id, message, {frameId: 0});
+							browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
 						});
-						
 						resolve();
 					});
 				});
@@ -123,7 +125,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "closeFindBar":
-			return sendMessageToTopFrame();
+			if ( userOptions.highLight.findBar.openInAllTabs ) {
+				return new Promise( (resolve, reject) => {
+					getAllOpenTabs().then( tabs => {
+						tabs.forEach( tab => {
+							browser.tabs.sendMessage(tab.id, message, {frameId: 0});
+						});
+						resolve();
+					});
+				});
+			} else
+				return sendMessageToTopFrame();
 			break;
 			
 		case "updateFindBar":
@@ -136,6 +148,12 @@ async function notify(message, sender, sendResponse) {
 			
 		case "findBarPrevious":
 			return sendMessageToTopFrame();
+			break;
+		
+		case "getFindBarOpenStatus":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: "getFindBar() ? true : false;"
+			});
 			break;
 			
 		case "mark":
@@ -186,6 +204,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateSearchTerms":
+			window.searchTerms = message.searchTerms;
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
@@ -610,11 +629,13 @@ function executeBookmarklet(info) {
 			console.error('bookmark not a bookmarklet');
 			return false;
 		}
+		
+		console.log(window.searchTerms, info.selectionText);
 
 		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
 			let code = decodeURI(bookmark.url);
 			browser.tabs.executeScript(tabs[0].id, {
-				code: 'CS_searchTerms = "' + escapeDoubleQuotes(info.selectionText) + '";'
+				code: 'CS_searchTerms = `' + ( window.searchTerms || escapeDoubleQuotes(info.selectionText) ) + '`;'
 			}).then( () => {
 			browser.tabs.executeScript(tabs[0].id, {
 				code: code
@@ -999,7 +1020,7 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 	if ( !userOptions.highLight.enabled ) return;
 
 	return browser.tabs.executeScript(tab.id, {
-		code: `document.dispatchEvent(new CustomEvent("CS_mark", {detail: "`+ escapeDoubleQuotes(searchTerms) + `"}));`,
+		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
 		runAt: 'document_idle',
 		allFrames: true
 	}).then( () => {
@@ -1426,7 +1447,7 @@ const defaultUserOptions = {
 			keyboardTimeout: 200,
 			markOptions: {
 				separateWordSearch: true,
-				accuracy: "exactly",
+				accuracy: "partially",
 				ignorePunctuation: true,
 				caseSensitive: false
 			}

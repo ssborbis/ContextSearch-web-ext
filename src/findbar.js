@@ -19,6 +19,15 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	getSearchBar().oldValue = "";
 });
 
+function buildMarkOptions() {
+	return {
+		accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
+		caseSensitive: document.querySelector('#caseSensitive').checked,
+		ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
+		separateWordSearch: document.querySelector('#separateWordSearch').checked
+	};
+}
+
 window.addEventListener("message", (e) => {
 
 	if ( !typeTimer ) // do not update value if typing in find bar
@@ -31,12 +40,7 @@ window.addEventListener("message", (e) => {
 	if ( e.data.navbar ) document.querySelector('#toggle_navbar').checked = e.data.navbar;
 	if ( e.data.total ) document.querySelector('#toggle_marks').checked = ( e.data.total > 0 );
 
-	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: {
-		accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
-		caseSensitive: document.querySelector('#caseSensitive').checked,
-		ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
-		separateWordSearch: document.querySelector('#separateWordSearch').checked
-	}});	
+	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
 	
 	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [e.data.index + 1, e.data.total]);
 	
@@ -60,15 +64,11 @@ getSearchBar().addEventListener('change', (e) => {
 	e.target.oldValue = e.target.value;
 
 	if ( e.target.value ) {
-		browser.runtime.sendMessage({
+		browser.runtime.sendMessage(Object.assign({
 			action: "mark", 
 			searchTerms: e.target.value, 
 			findBarSearch: e.detail ? false : true, // detail = true - skip jump to first match
-			accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
-			caseSensitive: document.querySelector('#caseSensitive').checked,
-			ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
-			separateWordSearch: document.querySelector('#separateWordSearch').checked
-		});
+		}, buildMarkOptions()));
 		
 		document.querySelectorAll('INPUT[type="checkbox"]').forEach( el => {
 			el.disabled = true;
@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
 	el.addEventListener('click', (e) => {
 		getSearchBar().dispatchEvent(new Event('change'));
+		browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
 	});
 });
 

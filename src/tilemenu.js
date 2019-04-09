@@ -70,6 +70,10 @@ function makeQuickMenu(options) {
 		}
 	});
 	
+	sb.addEventListener('change', (e) => {
+		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+	});
+	
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = () => { 
 		sb.value = null;
@@ -328,7 +332,7 @@ function makeQuickMenu(options) {
 	});
 
 	document.addEventListener('updatesearchterms', (e) => {
-		sb.value = quickMenuObject.searchTerms;
+		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
 	});
 	
 	if ( type === 'quickmenu' && userOptions.quickMenuSearchBar === 'hidden') {
@@ -672,16 +676,50 @@ function makeQuickMenu(options) {
 		let visibleTileCountMax = _singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 
 		// set tools position
-		if ( userOptions.quickMenuToolsAsToolbar ) {
+		if ( userOptions.quickMenuToolsAsToolbar && userOptions.quickMenuToolsPosition !== 'hidden' && type === 'quickmenu' ) {
+
 			tb.style = 'overflow-x:hidden;white-space: nowrap;';
 			tb.addEventListener('wheel', (e) => {
-				tb.scrollLeft += (e.deltaY*10); // Multiplied by 40
+				tb.scrollLeft += (e.deltaY*6);
 				e.preventDefault();
 			});
 			tb.innerHTML = null;
+			
+			let ls = document.createElement('img');
+			ls.style = 'width:15px;height:15px;background-color:gray;display:none;left:0;position:absolute;z-index:2;opacity:.6;transform:rotate(-90deg)';
+			ls.src = browser.runtime.getURL('icons/chevron-up.svg');
+			tb.appendChild(ls);
+			
+			let rs = document.createElement('img');
+			rs.style = 'width:15px;height:15px;background-color:gray;display:none;right:0;position:absolute;z-index:2;opacity:.6;transform:rotate(90deg)';
+			rs.src = browser.runtime.getURL('icons/chevron-up.svg');
+			tb.appendChild(rs);
+			
+			let mouseoverInterval = null;
+			rs.addEventListener('mouseenter', (e) => {
+				mouseoverInterval = setInterval(() => {tb.scrollLeft += 10;}, 50);
+			});
+			
+			ls.addEventListener('mouseenter', (e) => {	
+				mouseoverInterval = setInterval(() => {tb.scrollLeft -= 10;}, 50);
+			});
+			
+			[rs,ls].forEach(s => s.addEventListener('mouseleave', () => {clearInterval(mouseoverInterval)}));
+			
 			toolsArray.forEach( tool => {
 				tool.className = 'tile';
 				tb.appendChild(tool);
+			});
+			
+			function showScrollButtons() {
+				ls.style.display = tb.scrollLeft ? 'inline-block' : 'none';
+				rs.style.display = ( tb.scrollLeft < tb.scrollWidth - tb.clientWidth ) ? 'inline-block' : 'none';
+			}
+			
+			tb.addEventListener('scroll', showScrollButtons);
+			tb.addEventListener('mouseenter', showScrollButtons);
+			tb.addEventListener('mouseleave', () => {
+				ls.style.display = rs.style.display = 'none';
 			});
 			
 		} else if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')

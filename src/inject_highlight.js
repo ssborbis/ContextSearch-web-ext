@@ -1,25 +1,15 @@
 var userOptions = {};
 
-var markOptions = null;
-
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		
 	userOptions = result.userOptions;
 
 	// open findbar on pageload if set
 	if ( window == top && userOptions.highLight.findBar.startOpen ) {
-
-		markOptions = {
-			accuracy: userOptions.highLight.markOptions.accuracy,
-			caseSensitive: userOptions.highLight.markOptions.caseSensitive,
-			ignorePunctuation: userOptions.highLight.markOptions.ignorePunctuation,
-			separateWordSearch: userOptions.highLight.markOptions.separateWordSearch
-		};
-
+		markOptions = userOptions.highLight.findBar.markOptions;
 		updateFindBar(markOptions);
 	}
 });
-
 
 // https://stackoverflow.com/a/11508164
 function hexToRgb(hex) {
@@ -118,12 +108,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		let searchTerms = message.searchTerms;
 	
-		if ( getFindBar() && !searchTerms) {
-			browser.runtime.sendMessage({action: "unmark"});
-			browser.runtime.sendMessage({action: "closeFindBar"});
-			return;
-		}
-			
 		window.getSelection().removeAllRanges();
 		
 		if ( !searchTerms ) 
@@ -134,8 +118,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			action: "mark",
 			searchTerms: searchTerms, 
 			findBarSearch:true,	
-		}, !markOptions ? userOptions.highLight.findBar.markOptions : markOptions
-		));
+		}, userOptions.highLight.findBar.markOptions));
 	}
 });
 
@@ -146,8 +129,8 @@ var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
 var getFindBarContainer = () => {return document.getElementById('CS_findBarContainer');}
 var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
 
-// listen for execute_script call from background
-document.addEventListener('CS_mark', (e) => {
+// listen for execute_script call from background for search highlighting
+document.addEventListener('CS_markEvent', (e) => {
 
 	CS_MARK_instance = new Mark(document.body);
 	
@@ -160,16 +143,11 @@ document.addEventListener('CS_mark', (e) => {
 		CS_MARK_instance = CS_MARK_instance || new Mark(document.body);
 		CS_MARK_instance.unmark();
 		
-		let searchTerms = e.detail.trim();
+		let searchTerms = e.detail.searchTerms.trim();
 
 		mark(Object.assign({
-			searchTerms:searchTerms
-		}, !markOptions ? {
-			accuracy: userOptions.highLight.markOptions.accuracy,
-			caseSensitive: userOptions.highLight.markOptions.caseSensitive,
-			ignorePunctuation: userOptions.highLight.markOptions.ignorePunctuation,
-			separateWordSearch: userOptions.highLight.markOptions.separateWordSearch
-			} : markOptions
+				searchTerms:searchTerms
+			}, userOptions.highLight.markOptions
 		));
 	
 	}, 100);
@@ -216,7 +194,7 @@ function mark(options) {
 
 	let words = options.separateWordSearch === false ? [searchTerms] : buildSearchWords(searchTerms);
 	
-	let _markOptions = {
+	let _markOptions = { // object for Mark library, not the same as CS markOptions object
 		accuracy: options.accuracy,
 		ignorePunctuation: options.ignorePunctuation ? "?:;.,-–—‒_(){}[]!'\"+=".split("") : [],
 		caseSensitive: options.caseSensitive,
@@ -628,9 +606,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if ( !message.action ) return;
 	
 	switch ( message.action ) {
-		case "openFindBar":
-			updateFindBar(Object.assign({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length}, message));
-			break;
+		// case "openFindBar": // moved to separate listener
+			// updateFindBar(Object.assign({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length}, message));
+			// break;
 			
 		case "closeFindBar":
 			unmark();
@@ -676,7 +654,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "findBarUpdateOptions":
-			markOptions = message.markOptions;
+		//	console.log(message.markOptions);
+			userOptions.highLight.findBar.markOptions = message.markOptions;
+		//	if ( userOptions.highLight.findBar.saveOptions )
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			break;
 			
 		case "toggleNavBar":

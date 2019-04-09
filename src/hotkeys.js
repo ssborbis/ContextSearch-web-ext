@@ -13,7 +13,19 @@ function isHotkey(e, _key) {
 		return true;
 		
 	} else {
-		// return false;
+		
+		// check for hotkeys that could prevent typing in a text box
+		if ( 
+			e.target.contentEditable &&
+			!e.altKey &&
+			!e.ctrlKey &&
+			!e.metaKey &&
+			e.key.length === 1
+		) {
+			console.log(e.key, 'Hotkey appears to be a typeable character and target element is editable. Aborting hotkey');
+			return false;
+		}
+		
 		if ( 
 			e.key === _key.key &&
 			e.altKey === _key.alt &&
@@ -33,7 +45,6 @@ function isSame(array1, array2) {
 
 function addHotkey(enabled, key, callback) {
 	
-//	console.log(key);
 	window.addEventListener('keydown', (e) => {
 
 		if (
@@ -93,8 +104,17 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 			hotkey: userOptions.highLight.findBar.hotKey,
 			callback: (e) => {
 				
-				let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
-				browser.runtime.sendMessage({action: "openFindBar", searchTerms: searchTerms});
+				browser.runtime.sendMessage({action: "getFindBarOpenStatus"}).then( results => {
+					
+					let isOpen = results.shift(); // get the first array element ( true || false )
+
+					let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
+					
+					if (!isOpen || ( isOpen && searchTerms) )
+						browser.runtime.sendMessage({action: "openFindBar", searchTerms: searchTerms});
+					else
+						browser.runtime.sendMessage({action: "closeFindBar"});
+				});
 			}
 		}
 	].forEach( hko => {
