@@ -29,8 +29,6 @@ function buildMarkOptions() {
 }
 
 window.addEventListener("message", (e) => {
-	
-	console.log(e.data);
 
 	if ( !typeTimer ) // do not update value if typing in find bar
 		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";	

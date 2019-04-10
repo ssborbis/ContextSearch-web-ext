@@ -157,14 +157,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "mark":
-			return new Promise( (resolve, reject) => {
-				setTimeout(() => {
-					console.log('mark');
-					console.log(message);
-					resolve(sendMessageToAllFrames());
-				}, 5000);
-			});
-		//	return sendMessageToAllFrames();
+			return sendMessageToAllFrames();
 			break;
 			
 		case "unmark":

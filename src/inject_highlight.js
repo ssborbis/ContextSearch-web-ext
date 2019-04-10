@@ -272,6 +272,11 @@ function mark(options) {
 		done();
 	
 	function done() {
+		
+		// recursive loop fix
+		delete options.action;
+		delete options.searchTerms;
+
 		browser.runtime.sendMessage(Object.assign({
 			action: "markDone", 
 			searchTerms:searchTerms, 
@@ -604,7 +609,7 @@ function jumpTo(index) {
 
 function updateFindBar(options) {
 	
-	console.log(options);
+	// console.log(options);
 	
 	if ( window != top ) return;
 
@@ -639,10 +644,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "mark":
-			
-			// browser.runtime.sendMessage({action: "log", msg: "inject_highlight.js mark"});
-			// unmark();
-			// mark(message);
+			unmark();
+			mark(message);
 			break;
 
 		case "unmark":
@@ -650,8 +653,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "markDone":
-		
-			browser.runtime.sendMessage({action: "log", msg: "inject_highlight.js markDone"});
 
 			if ( 
 				( userOptions.highLight.navBar.enabled && !message.findBarSearch ) ||
