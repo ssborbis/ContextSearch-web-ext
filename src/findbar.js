@@ -29,16 +29,18 @@ function buildMarkOptions() {
 }
 
 window.addEventListener("message", (e) => {
+	
+	console.log(e.data);
 
 	if ( !typeTimer ) // do not update value if typing in find bar
 		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";	
 
-	if ( e.data.accuracy ) document.querySelector('#accuracy').checked = ( e.data.accuracy === "exactly" );
-	if ( e.data.ignorePunctuation ) document.querySelector('#ignorePunctuation').checked = ( e.data.ignorePunctuation && e.data.ignorePunctuation !== [] ) 
-	if ( e.data.caseSensitive ) document.querySelector('#caseSensitive').checked = e.data.caseSensitive;
-	if ( e.data.separateWordSearch ) document.querySelector('#separateWordSearch').checked = e.data.separateWordSearch;
-	if ( e.data.navbar ) document.querySelector('#toggle_navbar').checked = e.data.navbar;
-	if ( e.data.total ) document.querySelector('#toggle_marks').checked = ( e.data.total > 0 );
+	if ( typeof e.data.accuracy !== "undefined" ) document.querySelector('#accuracy').checked = ( e.data.accuracy === "exactly" );
+	if ( typeof e.data.ignorePunctuation !== "undefined" ) document.querySelector('#ignorePunctuation').checked = e.data.ignorePunctuation;
+	if ( typeof e.data.caseSensitive !== "undefined" ) document.querySelector('#caseSensitive').checked = e.data.caseSensitive;
+	if ( typeof e.data.separateWordSearch !== "undefined" ) document.querySelector('#separateWordSearch').checked = e.data.separateWordSearch;
+	if ( typeof e.data.navbar !== "undefined" ) document.querySelector('#toggle_navbar').checked = e.data.navbar;
+	if ( typeof e.data.total !== "undefined" ) document.querySelector('#toggle_marks').checked = ( e.data.total > 0 );
 
 	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
 	
@@ -67,7 +69,7 @@ getSearchBar().addEventListener('change', (e) => {
 		browser.runtime.sendMessage(Object.assign({
 			action: "mark", 
 			searchTerms: e.target.value, 
-			findBarSearch: e.detail ? false : true, // detail = true - skip jump to first match
+			findBarSearch: e.detail ? false : true // detail = true - skip jump to first match
 		}, buildMarkOptions()));
 		
 		document.querySelectorAll('INPUT[type="checkbox"]').forEach( el => {
@@ -141,7 +143,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
 	el.addEventListener('click', (e) => {
 		getSearchBar().dispatchEvent(new Event('change'));
-		browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
+	//	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	// infinite loop 100% cpu
 	});
 });
 

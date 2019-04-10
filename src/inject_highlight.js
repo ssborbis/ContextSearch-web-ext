@@ -5,7 +5,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	userOptions = result.userOptions;
 
 	// open findbar on pageload if set
-	if ( window == top && userOptions.highLight.findBar.startOpen ) {
+	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
 		markOptions = userOptions.highLight.findBar.markOptions;
 		updateFindBar(markOptions);
 	}
@@ -114,10 +114,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			searchTerms = window.findBarLastSearchTerms || "";
 
 		// search for selected terms
+		// mark(Object.assign({
+			// searchTerms: searchTerms, 
+			// findBarSearch:true,	
+		// }, userOptions.highLight.findBar.markOptions));
 		browser.runtime.sendMessage(Object.assign({
 			action: "mark",
 			searchTerms: searchTerms, 
 			findBarSearch:true,	
+			source: "inject_highlight.js"
 		}, userOptions.highLight.findBar.markOptions));
 	}
 });
@@ -149,6 +154,11 @@ document.addEventListener('CS_markEvent', (e) => {
 				searchTerms:searchTerms
 			}, userOptions.highLight.markOptions
 		));
+		
+		if ( getFindBar() )
+			updateFindBar(userOptions.highLight.markOptions);
+		
+		console.log( (getFindBar() ? true : false), userOptions.highLight.markOptions);
 	
 	}, 100);
 	
@@ -266,8 +276,7 @@ function mark(options) {
 			action: "markDone", 
 			searchTerms:searchTerms, 
 			words: words, 
-			separateWordSearch: options.separateWordSearch
-		}, _markOptions));
+		}, options));
 	}
 }
 
@@ -595,6 +604,8 @@ function jumpTo(index) {
 
 function updateFindBar(options) {
 	
+	console.log(options);
+	
 	if ( window != top ) return;
 
 	openFindBar().then( fb => {
@@ -628,8 +639,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "mark":
-			unmark();
-			mark(message);
+			
+			// browser.runtime.sendMessage({action: "log", msg: "inject_highlight.js mark"});
+			// unmark();
+			// mark(message);
 			break;
 
 		case "unmark":
@@ -637,6 +650,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "markDone":
+		
+			browser.runtime.sendMessage({action: "log", msg: "inject_highlight.js markDone"});
 
 			if ( 
 				( userOptions.highLight.navBar.enabled && !message.findBarSearch ) ||
