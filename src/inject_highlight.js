@@ -157,8 +157,6 @@ document.addEventListener('CS_markEvent', (e) => {
 		
 		if ( getFindBar() )
 			updateFindBar(userOptions.highLight.markOptions);
-		
-		console.log( (getFindBar() ? true : false), userOptions.highLight.markOptions);
 	
 	}, 100);
 	

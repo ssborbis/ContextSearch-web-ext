@@ -140,7 +140,8 @@ function addResizeWidget(el, options) {
 		onDrag: function() {},
 		onDrop: function() {},
 		columns: 0,
-		rows: 0
+		rows: 0,
+		isResizing: false
 	}
 	
 	o = Object.assign(o, options);
@@ -168,6 +169,8 @@ function addResizeWidget(el, options) {
 		el.resizeWidget = resizeWidget;
 
 		resizeWidget.addEventListener('mousedown', function elementResize(e) {
+			
+			o.isResizing = true;
 
 			let startSize = {columns: o.columns, rows: o.rows};
 
@@ -190,6 +193,10 @@ function addResizeWidget(el, options) {
 			startCoords = {x: e.clientX, y: e.clientY};
 
 			document.addEventListener('mousemove', elementDrag);
+			
+			document.addEventListener('click', function captureClick(_e) {
+				_e.stopPropagation();	
+			}, {capture: true, once: true});
 
 			// track mod size to ignore repeat drag events
 			let mostRecentModSize = {columns:0,rows:0};
@@ -226,6 +233,8 @@ function addResizeWidget(el, options) {
 
 			document.addEventListener('mouseup', (_e) => {
 
+				_e.preventDefault();
+				_e.stopPropagation();
 				_e.stopImmediatePropagation();
 
 				// clear overlay
@@ -242,6 +251,8 @@ function addResizeWidget(el, options) {
 				o.onDrop(o);
 				
 				document.removeEventListener('mousemove', elementDrag);
+				
+				o.isResizing = false;
 			}, {once: true});
 			
 		});

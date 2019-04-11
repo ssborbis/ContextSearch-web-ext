@@ -1444,6 +1444,21 @@
     "message": "redimensionner",
     "description": ""
   },
+
+  "searchresults": {
+    "message": "Résultats de la recherche",
+    "description": ""
+  },
+  
+  "FindBarOpenInAllTabs": {
+    "message": "Ouvrir et fermer la barre de recherche sur tous les onglets",
+    "description": ""
+  },
+  
+  "ToolsAsToolbar": {
+    "message": "Afficher les outils dans une barre d'outils séparée",
+    "description": ""
+  },
   
   "___________": {
     "message": "",
