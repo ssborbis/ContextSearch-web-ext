@@ -1436,12 +1436,12 @@
   },
   
   "enabledisplayprevioussearchtooltip": {
-    "message": "Afficher les derniers termes de recherche utilisés dans le champ de recherche",
+    "message": "Afficher les derniers termes recherchés dans le champ de recherche",
     "description": ""
   },
   
   "resize": {
-    "message": "redimensionner",
+    "message": "Redimensionner",
     "description": ""
   },
 
@@ -1451,12 +1451,12 @@
   },
   
   "FindBarOpenInAllTabs": {
-    "message": "Ouvrir et fermer la barre de recherche sur tous les onglets",
+    "message": "Ouvrir et fermer la barre de recherche dans la page pour tous les onglets",
     "description": ""
   },
   
   "ToolsAsToolbar": {
-    "message": "Afficher les outils dans une barre d'outils séparée",
+    "message": "Afficher les outils dans une barre séparée",
     "description": ""
   },
   
