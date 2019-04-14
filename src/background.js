@@ -106,11 +106,10 @@ async function notify(message, sender, sendResponse) {
 			
 		case "openFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
-				message.openInAllTabs = true;
-				console.log('openInAllTabs');
-				
 				let _message = Object.assign({}, message);
-				_message.searchTerms = "";
+				
+				if ( !userOptions.highLight.findBar.searchInAllTabs )
+					_message.searchTerms = "";
 				
 				return new Promise( (resolve, reject) => {
 					getAllOpenTabs().then( tabs => {
@@ -157,7 +156,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "mark":
-			return sendMessageToAllFrames();
+			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
+				return new Promise( (resolve, reject) => {
+					getAllOpenTabs().then( tabs => {
+						tabs.forEach( tab => {
+							browser.tabs.sendMessage(tab.id, message);
+						});
+						resolve();
+					});
+				});
+			} else
+				return sendMessageToAllFrames();
 			break;
 			
 		case "unmark":
@@ -353,6 +362,8 @@ async function notify(message, sender, sendResponse) {
 
 					if (tabInfo.url.indexOf(searchTerms) !== -1) {
 						
+						clearInterval(urlCheckInterval);
+						
 						let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}");
 						
 						let se = message.badSearchEngine;
@@ -360,9 +371,7 @@ async function notify(message, sender, sendResponse) {
 						se.template = se.query_string = newUrl;
 
 						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", searchEngine: se}, {frameId: 0});
-						
-						clearInterval(urlCheckInterval);
-						
+
 					}
 					
 					// No recognizable GET url. Prompt for advanced options
@@ -902,8 +911,8 @@ function openSearch(details) {
 		case "openBackgroundTabKeepOpen":
 			return openBackgroundTab();
 			break;
-		case "openSideBar":
-			openSideBar();
+		case "openSideBarAction":
+			openSideBarAction();
 			break;
 	}
 	
@@ -1000,7 +1009,7 @@ function openSearch(details) {
 	function openBackgroundTab() {
 		return openNewTab(true);
 	}
-	function openSideBar() {
+	function openSideBarAction() {
 		browser.sidebarAction.setPanel({
 			panel: q
 		});
@@ -1438,6 +1447,7 @@ const defaultUserOptions = {
 			position: 'top',
 			windowType: 'docked',
 			openInAllTabs: false,
+			searchInAllTabs: false,
 			offsets: {
 				top:0,
 				left:0,

@@ -78,7 +78,7 @@ function addHotkey(enabled, key, callback) {
 			key = _key;
 
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-				
+
 		} 
 
 		if ( !isHotkey(e, key) ) return false;

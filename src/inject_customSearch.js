@@ -57,7 +57,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							
 			case "openCustomSearch":
 			
-				if ( !window.document.querySelector("input:focus,textarea:focus") ) {
+				if ( !window.document.querySelector("input:focus,textarea:focus") && !message.searchEngine ) {
 					console.log("no focused input found");
 					return;
 				}

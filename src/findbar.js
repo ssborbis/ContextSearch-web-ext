@@ -12,11 +12,16 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		document.querySelector('#dark').rel="stylesheet";
 	
 	document.body.dataset.theme = userOptions.quickMenuTheme;
+	
+	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;
+	
+	console.log(document.querySelector('#toggle_searchalltabs').checked);
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {
 	getSearchBar().focus();
 	getSearchBar().oldValue = "";
+
 });
 
 function buildMarkOptions() {
@@ -113,7 +118,7 @@ getSearchBar().addEventListener('keypress', (e) => {
 		return;
 	}
 
-	if ( userOptions.highLight.findBar.keyboardTimeout === 0 ) return;
+	if ( userOptions.highLight.findBar.keyboardTimeout === 0 || userOptions.highLight.findBar.searchInAllTabs ) return;
 	clearTimeout(typeTimer);
 	
 	typeTimer = setTimeout(() => {
@@ -136,6 +141,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	document.querySelector('#separateWordSearch + LABEL').title = browser.i18n.getMessage('separateWordSearch') || "Separate Word Search";
 	document.querySelector('#toggle_navbar + LABEL').title = browser.i18n.getMessage('Navbar');
 	document.querySelector('#toggle_marks + LABEL').title = browser.i18n.getMessage('highlight');
+	document.querySelector('#toggle_searchalltabs + LABEL').title = browser.i18n.getMessage('searchalltabs') || "Search all tabs";
 });
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
@@ -154,4 +160,18 @@ document.querySelector('#toggle_marks').addEventListener('change', (e) => {
 
 document.querySelector('#toggle_navbar').addEventListener('change', (e) => {
 	browser.runtime.sendMessage({action: "toggleNavBar", state: e.target.checked});
+});
+
+document.querySelector('#toggle_searchalltabs').addEventListener('change', (e) => {
+	
+	// update the object before saving - this frame does not update userOptions automatically
+	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+		userOptions = message.userOptions || {};
+		userOptions.highLight.findBar.searchInAllTabs = e.target.checked;
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		
+		// search all tabs if button enabled and searchbar has text
+		if ( userOptions.highLight.findBar.searchInAllTabs && getSearchBar().value )
+			getSearchBar().dispatchEvent(new Event('change'));
+	});
 });

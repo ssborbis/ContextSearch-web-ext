@@ -88,5 +88,14 @@
 	"browser_action": {
 		"default_title": "ContextSearch",
 		"default_icon": "icons/icon48.png"
+	},
+	
+	"sidebar_action": {
+		"default_icon": {
+			"32": "icons/icon48.png"
+		},
+		"default_title": "ContextSearch web-ext",
+		"default_panel": "blank.html",
+		"open_at_install": false
 	}
 }

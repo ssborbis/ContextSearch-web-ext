@@ -275,6 +275,7 @@ function restoreOptions() {
 		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
 		$('#cb_findBarOpenInAllTabs').checked = userOptions.highLight.findBar.openInAllTabs;
+		$('#cb_findBarSearchInAllTabs').checked = userOptions.highLight.findBar.searchInAllTabs;
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
 		$('#s_findBarWindowType').value = userOptions.highLight.findBar.windowType;
 		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
@@ -444,6 +445,7 @@ function saveOptions(e) {
 				enabled: $('#cb_findBarEnabled').checked,
 				startOpen: $('#cb_findBarStartOpen').checked,
 				openInAllTabs: $('#cb_findBarOpenInAllTabs').checked,
+				searchInAllTabs: $('#cb_findBarSearchInAllTabs').checked,
 				showNavBar: $('#cb_findBarShowNavBar').checked,
 				hotKey: $('#d_findBarHotKey').key,
 				position: $('#s_findBarPosition').value,

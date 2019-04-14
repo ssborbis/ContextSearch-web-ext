@@ -177,7 +177,7 @@ IMG.CS_handle {
 }
 
 #CS_findBarContainer[data-windowtype="undocked"] {
-	width:875px !important;	
+	width:900px !important;	
 }
 
 .CS_mark, #CS_highLightNavBar > DIV {

@@ -57,12 +57,12 @@ window.addEventListener('contextmenu', (e) => {
 });
 
 // what was this for?
-setInterval(() => {
-	if ( browser.runtime === undefined ) return;
-	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
-		userOptions = message.userOptions || {};
-	});
-}, 1000);
+// setInterval(() => {
+	// if ( browser.runtime === undefined ) return;
+	// browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+		// userOptions = message.userOptions || {};
+	// });
+// }, 1000);
 
 function addToHistory(terms) {
 	
@@ -298,7 +298,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		xmlhttp.timeout = 500;
 		xmlhttp.send();
 	}
-	
+
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
 		document.body.insertBefore(qme, null);
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
@@ -341,7 +341,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 });
 
 function toolBarResize() {
-	
+
 	if ( window != top ) return;
 	
 	let qm = document.getElementById('quickMenuElement');
@@ -351,15 +351,21 @@ function toolBarResize() {
 	let mb = document.getElementById('menuBar');
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
+
 		if ( window.innerHeight < document.documentElement.scrollHeight ) {
-			qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height ) + "px";
+			
+			let sumHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
+			
+			qm.style.height = ( (window.innerHeight < 600 && qm.scrollHeight > (600 - sumHeight) ) ? 600 : window.innerHeight ) - sumHeight + "px";
+			
+		//	qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height ) + "px";
 		} 
 
 		if (qm.getBoundingClientRect().width < window.innerWidth) {
 
 			qm.style.width = document.documentElement.scrollWidth + "px";
 			
-		//	tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+			// tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
 
 			let div_width = 'calc(' + 100 / columns + "% - 2px)";
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
@@ -441,6 +447,7 @@ window.addEventListener('message', (e) => {
 			sideBarResize();
 
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			break;
 	}
 });
 
