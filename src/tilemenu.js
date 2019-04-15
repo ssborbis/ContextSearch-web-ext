@@ -1194,10 +1194,7 @@ function makeQuickMenu(options) {
 								openMethod: getOpenMethod(e)
 							}
 						});
-						
-						if ( getOpenMethod(e) === 'openSideBar' )
-							browser.sidebarAction.open();
-						
+
 						if (typeof addToHistory !== "undefined") addToHistory(sb.value);
 					});
 					

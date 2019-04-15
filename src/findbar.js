@@ -14,8 +14,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	document.body.dataset.theme = userOptions.quickMenuTheme;
 	
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;
-	
-	console.log(document.querySelector('#toggle_searchalltabs').checked);
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {

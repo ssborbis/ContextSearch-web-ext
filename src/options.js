@@ -949,18 +949,11 @@ document.addEventListener("DOMContentLoaded", () => {
 				browser.runtime.getBackgroundPage().then((w) => {
 					w.updateUserOptionsVersion(newUserOptions).then((_uo) => {
 
-						browser.runtime.sendMessage({action: "getDefaultUserOptions"}).then((message) => {
-							
-							let defaultUserOptions = message.defaultUserOptions;
+						_uo = w.updateUserOptionsObject(_uo);
 
-							for (let key in defaultUserOptions) {	
-								_uo[key] = (_uo[key] !== undefined) ? _uo[key] : defaultUserOptions[key];
-							}
-
-							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo}).then(() => {
-								userOptions = _uo;
-								location.reload();
-							});
+						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo}).then(() => {
+							userOptions = _uo;
+							location.reload();
 						});
 					});
 				});

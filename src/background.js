@@ -65,9 +65,9 @@ async function notify(message, sender, sendResponse) {
 			return Promise.resolve({"userOptions": userOptions});
 			break;
 		
-		case "getDefaultUserOptions":
-			return Promise.resolve({"defaultUserOptions": defaultUserOptions});
-			break;
+		// case "getDefaultUserOptions":
+			// return Promise.resolve({"defaultUserOptions": defaultUserOptions});
+			// break;
 			
 		case "getSearchEngineById":
 		
@@ -429,7 +429,7 @@ async function notify(message, sender, sendResponse) {
 			highlightTabs.findIndex( (hl, i) => {
 				if (hl.tabId === tabId) {
 					highlightTabs.splice(i, 1);
-					console.log('removing ' + tabId + ' from array');
+					console.log('removing tabId ' + tabId + ' from array');
 					return true;
 				}
 			});
@@ -447,7 +447,36 @@ async function notify(message, sender, sendResponse) {
 				return openSearchXMLToSearchEngine(xml);
 			});
 			break;
+		
+		case "showNotification":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: `CS_notification = document.createElement('div');
+					CS_notification.className = 'CS_notification';
+					CS_notification.innerText = "${message.msg}";
+					document.body.appendChild(CS_notification);
+					setTimeout(() => {
+						document.body.removeChild(CS_notification);
+						delete CS_notification;
+					}, 2000);
+				`
+			});
 	}
+}
+
+function updateUserOptionsObject(uo) {
+// Update default values instead of replacing with object of potentially undefined values
+	function traverse(defaultobj, userobj) {
+		for (let key in defaultobj) {
+			userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];
+
+			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
+				traverse(defaultobj[key], userobj[key]);
+		}
+	}
+
+	traverse(defaultUserOptions, uo);
+	
+	return uo;
 }
 
 function loadUserOptions() {
@@ -459,23 +488,10 @@ function loadUserOptions() {
 			userOptions = Object.assign({}, defaultUserOptions);
 			return false;
 		}
-		
-		// // Update default values instead of replacing with object of potentially undefined values
-		function traverse(defaultobj, userobj) {
-			for (let key in defaultobj) {
-				userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];
-				
-				if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
-					traverse(defaultobj[key], userobj[key]);
-			}
-		}
 
-		traverse(defaultUserOptions, result.userOptions);
-
-		userOptions = result.userOptions;
+		userOptions = updateUserOptionsObject( result.userOptions );
 
 		return true;
-
 	}
   
 	function onError(error) {
