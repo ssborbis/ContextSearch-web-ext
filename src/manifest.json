@@ -82,7 +82,8 @@
 		"/findbar.html",
 		"icons/search.svg",
 		"icons/crossmark.svg",
-		"icons/vertical.svg"
+		"icons/vertical.svg",
+		"icons/alert.png"
 	],
 
 	"browser_action": {

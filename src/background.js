@@ -450,15 +450,7 @@ async function notify(message, sender, sendResponse) {
 		
 		case "showNotification":
 			return browser.tabs.executeScript(sender.tab.id, {
-				code: `CS_notification = document.createElement('div');
-					CS_notification.className = 'CS_notification';
-					CS_notification.innerText = "${message.msg}";
-					document.body.appendChild(CS_notification);
-					setTimeout(() => {
-						document.body.removeChild(CS_notification);
-						delete CS_notification;
-					}, 2000);
-				`
+				code: `showNotification("${message.msg}")`
 			});
 	}
 }
@@ -1026,8 +1018,17 @@ function openSearch(details) {
 		return openNewTab(true);
 	}
 	function openSideBarAction() {
+		
+		if ( !browser.sidebarAction ) return;
+		
 		browser.sidebarAction.setPanel({
 			panel: q
+		}).then(() => {
+			browser.sidebarAction.isOpen({}).then(result => {
+				if ( !result) {
+					notify({action: "showNotification", msg: "Open Sidebar to see search results"}, {});
+				}
+			});
 		});
 	}
 }
