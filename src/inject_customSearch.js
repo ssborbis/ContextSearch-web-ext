@@ -109,13 +109,25 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							if (!se.template && !message.timeout) {
 								
 								let input = window.document.querySelector("input:focus,textarea:focus");
-
-								// input change likely means search performed
-								input.addEventListener('change', () => {
+								
+								function inputHandler() {
 									if (!input.value) return;
-								//	browser.runtime.sendMessage({action: "log", msg: input.value});
+									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
+								}
+
+								// capture ENTER event in case form executes before 'change' event
+								input.addEventListener('keypress', (e) => {
+									if ( e.keyCode !== 13 ) return;
+									if (!input.value) return;
+									
+									// remove the change handler to prevent duplicate test search
+									input.removeEventListener('change', inputHandler);
+									
 									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								});
+								
+								// input change likely means search performed
+								input.addEventListener('change', inputHandler);
 
 								iframe.contentWindow.postMessage({action: "promptToSearch"}, browser.runtime.getURL('/customSearch.html'));
 								

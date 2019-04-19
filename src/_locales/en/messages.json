@@ -1488,6 +1488,26 @@
     "description": ""
   },
   
+  "searchactionssidebaraction": {
+    "message": "Open In Sidebar",
+    "description": ""
+  },
+  
+  "findbarsearchinalltabs": {
+    "message": "Search all tabs when using the findbar ( note: type timer will be disabled )",
+    "description": ""
+  },
+  
+  "NotificationOpenSidebar": {
+    "message": "open sidebar to see search results",
+    "description": ""
+  },
+  
+  "searchalltabs": {
+    "message": "Search all tabs",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

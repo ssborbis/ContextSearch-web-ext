@@ -351,8 +351,10 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "executeTestSearch":
-		
+
 			var searchTerms = encodeURIComponent(message.searchTerms);
+			var searchRegex = new RegExp(searchTerms + "|" + searchTerms.replace(/%20/g,"\\+") + "|" + searchTerms.replace(/%20/g,"_"), 'g');
+			
 			var timeout = Date.now();
 
 			let urlCheckInterval = setInterval( () => {
@@ -360,11 +362,17 @@ async function notify(message, sender, sendResponse) {
 					
 					if (tabInfo.status !== 'complete') return;
 
-					if (tabInfo.url.indexOf(searchTerms) !== -1) {
+				//	if (tabInfo.url.indexOf(searchTerms) !== -1) {
+					
+						console.log(tabInfo.url);
+						console.log(searchRegex);
+					if ( searchRegex.test(tabInfo.url) ) {
 						
 						clearInterval(urlCheckInterval);
 						
-						let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}");
+					//	let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}");
+						
+						let newUrl = tabInfo.url.replace(searchRegex, "{searchTerms}");
 						
 						let se = message.badSearchEngine;
 						
@@ -1026,7 +1034,7 @@ function openSearch(details) {
 		}).then(() => {
 			browser.sidebarAction.isOpen({}).then(result => {
 				if ( !result) {
-					notify({action: "showNotification", msg: "Open Sidebar to see search results"}, {});
+					notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
 				}
 			});
 		});

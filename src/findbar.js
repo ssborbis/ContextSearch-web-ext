@@ -17,8 +17,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {
-	getSearchBar().focus();
-	getSearchBar().oldValue = "";
+//	if ( document.hasFocus() )
+		getSearchBar().focus();
+	
+	getSearchBar().oldValue = getSearchBar().value || "";
 
 });
 
@@ -34,7 +36,9 @@ function buildMarkOptions() {
 window.addEventListener("message", (e) => {
 
 	if ( !typeTimer ) // do not update value if typing in find bar
-		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";	
+		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";
+		
+	getSearchBar().oldValue = getSearchBar().value || "";
 
 	if ( typeof e.data.accuracy !== "undefined" ) document.querySelector('#accuracy').checked = ( e.data.accuracy === "exactly" );
 	if ( typeof e.data.ignorePunctuation !== "undefined" ) document.querySelector('#ignorePunctuation').checked = e.data.ignorePunctuation;

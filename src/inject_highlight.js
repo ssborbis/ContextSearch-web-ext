@@ -7,7 +7,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	// open findbar on pageload if set
 	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
 		markOptions = userOptions.highLight.findBar.markOptions;
-		updateFindBar(markOptions);
+		updateFindBar(Object.assign(markOptions, {noFocus: true}));
 	}
 });
 
@@ -417,7 +417,7 @@ function closeNavBar() {
 	if ( nav ) nav.parentNode.removeChild(nav);
 }
 
-function openFindBar() {
+function openFindBar(options) {
 	
 	return new Promise( (resolve, reject) => {
 
@@ -459,7 +459,9 @@ function openFindBar() {
 		fbc.appendChild(fb);
 		
 		fb.onload = function() {
-			fb.focus();
+			if ( !options || !options.noFocus ) {
+				fb.focus();
+			}
 			fbc.style.opacity = null;
 			fbc.style.maxHeight = null;
 			
@@ -611,7 +613,7 @@ function updateFindBar(options) {
 	
 	if ( window != top ) return;
 
-	openFindBar().then( fb => {
+	openFindBar(options).then( fb => {
 		fb.contentWindow.postMessage(Object.assign({index: -1, total: 0, navbar: (getNavBar() ? true : false) }, options), browser.runtime.getURL('findbar.html'));	
 	});
 }

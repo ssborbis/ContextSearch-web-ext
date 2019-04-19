@@ -1460,6 +1460,26 @@
     "description": ""
   },
   
+  "searchactionssidebaraction": {
+    "message": "Ouvrir dans la barre latérale",
+    "description": ""
+  },
+  
+  "findbarsearchinalltabs": {
+    "message": "Rechercher dans tous les onglets lors de l'utilisation de la barre de recherche ( note: le minuteur sera désactivé )",
+    "description": ""
+  },
+  
+  "NotificationOpenSidebar": {
+    "message": "ouvrir la barre latérale pour voir les résultats de la recherche",
+    "description": ""
+  },
+  
+  "searchalltabs": {
+    "message": "Rechercher dans tous les onglets",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""
