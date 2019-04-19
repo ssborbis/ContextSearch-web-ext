@@ -1466,12 +1466,12 @@
   },
   
   "findbarsearchinalltabs": {
-    "message": "Rechercher dans tous les onglets lors de l'utilisation de la barre de recherche ( note: le minuteur sera désactivé )",
+    "message": "Rechercher dans tous les onglets avec la barre de recherche dans la page (remarque : la temporisation est désactivée)",
     "description": ""
   },
   
   "NotificationOpenSidebar": {
-    "message": "ouvrir la barre latérale pour voir les résultats de la recherche",
+    "message": "Ouvrir la barre latérale pour voir les résultats de la recherche",
     "description": ""
   },
   
