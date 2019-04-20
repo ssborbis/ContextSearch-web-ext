@@ -5,14 +5,6 @@
 	"version": "2.00",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
-	
-	"applications": {
-		"gecko": {
-			"id": "{5dd73bb9-e728-4d1e-990b-c77d8e03670f}",
-			"strict_min_version": "57.0"
-		}
-	},
-
 	"background": {
 		"scripts": [
 			"lib/browser-polyfill.min.js",
@@ -29,15 +21,15 @@
 			"nodes.js"
 		]
 	},
-
 	"options_ui": {
 		"page": "options.html",
 		"open_in_tab": true
 	},
-	
 	"content_scripts": [
 		{
-			"matches": ["<all_urls>"],
+			"matches": [
+				"<all_urls>"
+			],
 			"js": [
 				"lib/browser-polyfill.min.js",
 				"lib/crossbrowser.js",
@@ -52,12 +44,14 @@
 				"inject_highlight.js",
 				"hotkeys.js"
 			],
-			"css": ["inject.css","inject_sidebar.css"],
+			"css": [
+				"inject.css",
+				"inject_sidebar.css"
+			],
 			"all_frames": true,
 			"match_about_blank": false
 		}
 	],
-	
 	"permissions": [
 		"<all_urls>",
 		"activeTab",
@@ -66,15 +60,12 @@
 		"tabs",
 		"search"
 	],
-	
 	"optional_permissions": [
 		"bookmarks"
 	],
-	
 	"icons": {
 		"48": "icons/icon48.png"
 	},
-	
 	"web_accessible_resources": [
 		"/quickmenu.html",
 		"/customSearch.html",
@@ -85,18 +76,8 @@
 		"icons/vertical.svg",
 		"icons/alert.png"
 	],
-
 	"browser_action": {
 		"default_title": "ContextSearch",
 		"default_icon": "icons/icon48.png"
-	},
-	
-	"sidebar_action": {
-		"default_icon": {
-			"32": "icons/icon48.png"
-		},
-		"default_title": "ContextSearch web-ext",
-		"default_panel": "blank.html",
-		"open_at_install": false
 	}
 }

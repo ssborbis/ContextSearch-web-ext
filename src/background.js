@@ -364,8 +364,8 @@ async function notify(message, sender, sendResponse) {
 
 				//	if (tabInfo.url.indexOf(searchTerms) !== -1) {
 					
-						console.log(tabInfo.url);
-						console.log(searchRegex);
+					// console.log(tabInfo.url);
+					// console.log(searchRegex);
 					if ( searchRegex.test(tabInfo.url) ) {
 						
 						clearInterval(urlCheckInterval);
