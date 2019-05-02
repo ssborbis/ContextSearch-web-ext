@@ -470,14 +470,16 @@ document.addEventListener('click', (e) => {
 	
 	function getWord(str, offset) {
 		let _start = _end = offset;
+		
+		let regex = new RegExp(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~' ]/);
 
 		do {
 		_start--;
-		} while ( _start > -1 && /[a-zA-Z0-9_]/.test(str.charAt(_start)) )
+		} while ( _start > -1 && !regex.test(str.charAt(_start)) )
 
 		do {
 		_end++;
-		} while ( _end < str.length && /[a-zA-Z0-9_]/.test(str.charAt(_end)) )
+		} while ( _end < str.length && !regex.test(str.charAt(_end)) )
 
 		return str.substring(_start+1, _end);
 	}
