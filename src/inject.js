@@ -334,6 +334,10 @@ function showNotification(msg) {
 // set zoom attribute to be used for scaling objects
 document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 
+document.addEventListener('zoom', (e) => {
+	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
+});
+
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		
@@ -348,5 +352,3 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		document.head.appendChild(styleEl);
 	}
 });
-
-

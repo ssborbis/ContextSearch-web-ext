@@ -430,7 +430,6 @@ function buildSearchEngineContainer() {
 				_form.getBoundingClientRect();
 				_form.style.maxHeight = '100px';
 				
-				
 			}
 		}
 		

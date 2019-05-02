@@ -13,10 +13,6 @@ HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
 }
 BODY {
 	background-color:#eff0f1;
-	/* position:absolute; */
-	/* border-radius:10px; */
-	/* -webkit-mask-image: radial-gradient(circle, white 100%, black 100%); */
-	/* z-index:1; */
 }
 .selectedFocus {
 	background-color: var(--select) !important;

@@ -1,5 +1,3 @@
-
-
 let isFirefox = /Firefox/.test(navigator.userAgent);
 
 var userOptions = {};
@@ -85,7 +83,6 @@ function buildOpenSearchAPIUrl() {
 		+ "?SHORTNAME=" + encodeURIComponent(form.shortname.value) 
 		+ "&DESCRIPTION=" + encodeURIComponent(form.description.value) 
 		+ "&TEMPLATE=" + encodeURIComponent(encodeURI(form.template.value)) 
-//		+ "&POST_PARAMS=" + encodeURIComponent(form.post_params.value) 
 		+ "&POST_PARAMS=" + encodeURIComponent(param_str) 
 		+ "&METHOD=" + form._method.value 
 		+ "&ENCODING=" + form._encoding.value 

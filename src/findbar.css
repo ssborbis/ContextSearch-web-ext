@@ -8,7 +8,7 @@ BODY[data-theme="dark"] {
 }
 
 BODY[data-theme="dark"] IMG {
-	filter: invert(1);
+	filter: invert(1) brightness(75%);
 }
 #findbar {
 	padding-top:4px;
@@ -26,7 +26,7 @@ BODY[data-theme="dark"] IMG {
 	width: 275px;
 	border:1px solid #888;
 	height:24px;
-	padding:0 10px;
+	padding:0 24px 0 10px;
 	margin-left:4px;
 	user-select:text;
 	-moz-user-select:text;
@@ -35,9 +35,8 @@ BODY[data-theme="dark"] IMG {
 }
 #close {
 	vertical-align:middle;
-	height:100%;
 	width:20px;
-	background: url('icons/crossmark.svg') center center no-repeat;
+	/* padding:8px 0; /* center image */ */
 }
 .button {
 	border:1px solid #888;
@@ -48,6 +47,7 @@ BODY[data-theme="dark"] IMG {
 }
 #previous, #next {
 	vertical-align:middle;
+	margin-left:-1px;
 }
 #previous IMG, #next IMG {
 	width:20px;
@@ -59,7 +59,6 @@ BODY[data-theme="dark"] IMG {
 	transform:scaleY(-1);
 	border-radius:0 2px 2px 0;
 }
-
 #mark_counter {
 	margin:0 16px;
 }
@@ -88,4 +87,12 @@ INPUT:checked + .optionLabel {
 	display:none;
 	opacity:0;
 }
-
+#clearSearchBar {
+	position:relative;
+	z-index:2;
+	margin-left:-22px;
+	margin-right:6px;
+	height:14px;
+	vertical-align:middle;
+	opacity:.3;
+}

@@ -1247,7 +1247,7 @@ function makeQuickMenu(options) {
 					break;
 			
 				case "folder":
-					tile = buildSearchIcon( browser.runtime.getURL("/icons/folder3.png"), node.title);
+					tile = buildSearchIcon( browser.runtime.getURL("/icons/folder-icon.png"), node.title);
 
 					tile.dataset.type = 'folder';
 					

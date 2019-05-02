@@ -1,5 +1,3 @@
-
-
 // unique object to reference globally
 var quickMenuObject = { 
 	delay: 250, // how long to hold right-click before quick menu events in ms
@@ -36,8 +34,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 });
 
-function openQuickMenu(ev) {
-	
+function openQuickMenu(ev, searchTerms) {
+
 	ev = ev || new Event('click');
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
@@ -58,7 +56,7 @@ function openQuickMenu(ev) {
 		screenCoords: {
 			x: quickMenuObject.screenCoords.x, 
 			y: quickMenuObject.screenCoords.y}, 
-		searchTerms: getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
+		searchTerms: searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
@@ -262,12 +260,9 @@ document.addEventListener('mousedown', (ev) => {
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
 		
 		// prevent drag events when using search on mouseup
-	//	if (userOptions.quickMenuSearchOnMouseUp) {
-			window.addEventListener('dragstart', (e) => {
-			//	console.log('preventing dragstart once');
-				e.preventDefault();
-			}, {once: true});
-	//	}
+		window.addEventListener('dragstart', (e) => {
+			e.preventDefault();
+		}, {once: true});
 
 		// ignore select / drag events
 		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
@@ -299,8 +294,6 @@ document.addEventListener('mousedown', (ev) => {
 		
 	}, quickMenuObject.delay);
 
-//	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
-
 });
 
 // Listen for HOLD quickMenuMouseButton
@@ -314,7 +307,6 @@ document.addEventListener('mouseup', (ev) => {
 	) return false;
 		
 	clearTimeout(quickMenuObject.mouseDownTimer);
-//	document.removeEventListener('contextmenu', preventContextMenuHandler);
 });
 
 // Listen for quickMenuAuto 
@@ -425,13 +417,70 @@ document.addEventListener('mouseup', (ev) => {
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	ev.stopPropagation();
-	
-	// document.addEventListener('contextmenu', (evv) => {
-		// evv.preventDefault();
-	// }, {once: true}); // parameter to run once, then delete
-	
+
 	openQuickMenu(ev);
 	
+});
+
+document.addEventListener('click', (e) => {
+
+	if ( 
+		!userOptions.quickMenu ||
+		!userOptions.quickMenuOnSimpleClick.enabled ||
+		!e.altKey && userOptions.quickMenuOnSimpleClick.alt ||
+		!e.ctrlKey && userOptions.quickMenuOnSimpleClick.ctrl ||
+		!e.shiftKey && userOptions.quickMenuOnSimpleClick.shift
+	) return;
+	
+	let range;
+	let textNode;
+	let offset;
+
+	if (document.caretPositionFromPoint) {
+		range = document.caretPositionFromPoint(e.clientX, e.clientY);
+		textNode = range.offsetNode;
+		offset = range.offset;    
+	} else if (document.caretRangeFromPoint) {
+		range = document.caretRangeFromPoint(e.clientX, e.clientY);
+		textNode = range.startContainer;
+		offset = range.startOffset;
+	}
+
+	// Only split TEXT_NODEs
+	if (textNode && textNode.nodeType == 3) {
+		let word = getWord(textNode.textContent, offset);
+		
+		if ( !word ) return;
+		
+		if ( e.shiftKey ) {
+			document.addEventListener('selectstart', (_e) => {
+				_e.preventDefault();
+				return false;
+			}, {once: true});
+		}
+		e.preventDefault();
+		
+		// console.log(word);
+		
+		// avoid close on document click with a short delay
+		setTimeout(() => {
+			openQuickMenu(e, word);
+		}, 50);
+	}
+	
+	function getWord(str, offset) {
+		let _start = _end = offset;
+
+		do {
+		_start--;
+		} while ( _start > -1 && /[a-zA-Z0-9_]/.test(str.charAt(_start)) )
+
+		do {
+		_end++;
+		} while ( _end < str.length && /[a-zA-Z0-9_]/.test(str.charAt(_end)) )
+
+		return str.substring(_start+1, _end);
+	}
 });
 
 // unlock if quickmenu is closed
@@ -475,9 +524,7 @@ window.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('zoom', (e) => {
-	
-	if ( !document.getElementById('CS_quickMenuIframe') ) return;
-	scaleAndPositionQuickMenu(null, true);
+	if ( document.getElementById('CS_quickMenuIframe') ) scaleAndPositionQuickMenu(null, true);
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -587,7 +634,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				
 				document.addEventListener('closequickmenu', () => {
-					resizeWidget.parentNode.removeChild(resizeWidget);
+					if ( resizeWidget ) 
+						resizeWidget.parentNode.removeChild(resizeWidget);
 				}, {once: true});
 				
 				break;

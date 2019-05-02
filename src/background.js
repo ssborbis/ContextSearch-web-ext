@@ -64,11 +64,7 @@ async function notify(message, sender, sendResponse) {
 		case "getUserOptions":
 			return Promise.resolve({"userOptions": userOptions});
 			break;
-		
-		// case "getDefaultUserOptions":
-			// return Promise.resolve({"defaultUserOptions": defaultUserOptions});
-			// break;
-			
+
 		case "getSearchEngineById":
 		
 			if ( !message.id) return;
@@ -176,11 +172,7 @@ async function notify(message, sender, sendResponse) {
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
 			break;
-			
-		// case "findBarHotkey":
-			// return sendMessageToTopFrame();
-			// break;
-	
+
 		case "markDone":
 			return sendMessageToTopFrame();
 			break;
@@ -311,11 +303,6 @@ async function notify(message, sender, sendResponse) {
 				if (browser.runtime.lastError)
 					console.log(browser.runtime.lastError);
 			});
-			
-			// Delaying the removal should keep the menu item visible long enough to open the context menu
-			// setTimeout(() => {
-				// browser.contextMenus.remove("add_engine");
-			// }, 1000);
 
 			break;
 		
@@ -417,17 +404,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getCurrentTabInfo": 
-			if (!sender.tab) { // browser_action popup has no tab, use current tab
-				function onFound(tabs) {
-					let tab = tabs[0];
-					return Promise.resolve(tab);
-				}
+			// if (!sender.tab) { // browser_action popup has no tab, use current tab
+				// function onFound(tabs) {
+					// let tab = tabs[0];
+					// return Promise.resolve(tab);
+				// }
 
-				function onError(err){
-					console.error(err);
-				}
-				return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
-			} else
+				// function onError(err){
+					// console.error(err);
+				// }
+				// return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+			// } else
 				return Promise.resolve(sender.tab);
 			break;
 		
@@ -617,8 +604,8 @@ function buildContextMenu() {
 				
 				if (isFirefox ) {
 					createOptions.icons = {
-						"16": "/icons/folder.png",
-						"32": "/icons/folder.png"
+						"16": "/icons/folder-icon.png",
+						"32": "/icons/folder-icon.png"
 					}
 				}
 
@@ -1361,6 +1348,12 @@ const defaultUserOptions = {
 	quickMenuAutoOnInputs: false,
 	quickMenuOnLinks: true,
 	quickMenuOnImages: true,
+	quickMenuOnSimpleClick: {
+		enabled: false,
+		alt: false,
+		ctrl: true,
+		shift: false
+	},
 	quickMenuScale: 1,
 	quickMenuIconScale: 1,
 	quickMenuPosition: "top center",
@@ -1388,7 +1381,6 @@ const defaultUserOptions = {
 	quickMenuToolsPosition: "hidden",
 	quickMenuToolsAsToolbar: false,
 	searchJsonPath: "",
-	// reloadMethod: "",
 	contextMenuClick: "openNewTab",
 	contextMenuMiddleClick: "openBackgroundTab",
 	contextMenuRightClick: "openCurrentTab",
@@ -1591,7 +1583,6 @@ browser.runtime.onInstalled.addListener((details) => {
 	
 });
 
-//browser.browserAction.setPopup({popup: "/options.html#browser_action"});
 browser.browserAction.setPopup({popup: "/searchbar.html"});
 browser.browserAction.onClicked.addListener(() => {	
 	browser.browserAction.openPopup();
@@ -1603,82 +1594,6 @@ browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
 		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
 	});
 });
-
-if (browser.pageAction) {
-	/*
-	Initialize the page action: set icon and title, then show.
-	Only operates on tabs whose URL's protocol is applicable.
-	*/
-	function initializePageAction(tab) {
-		
-		browser.pageAction.hide(tab.id);
-		
-		var anchor = document.createElement('a');
-		anchor.href = tab.url;
-		
-		if ( ! ['http:', 'https:'].includes(anchor.protocol)) return false;
-
-		browser.tabs.executeScript( tab.id, {
-			code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href;",
-			runAt: "document_end"
-		}).then( (result) => {
-
-			result = result.shift();
-
-			if (result) {
-				browser.pageAction.setIcon({tabId: tab.id, path: "icons/add_search.png"});
-				browser.pageAction.setTitle({tabId: tab.id, title: browser.i18n.getMessage("AddCustomSearch")});
-				browser.pageAction.show(tab.id);
-			} 
-				
-		});
-
-	}
-
-	/*
-	When first loaded, initialize the page action for all tabs.
-	*/
-	var gettingAllTabs = browser.tabs.query({});
-	gettingAllTabs.then((tabs) => {
-		for (let tab of tabs) {
-			initializePageAction(tab);
-		}
-	});
-
-	/*
-	Each time a tab is updated, reset the page action for that tab.
-	*/
-	browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-		if (changeInfo.status !== 'complete') return;
-		initializePageAction(tab);
-	});
-
-	browser.pageAction.onClicked.addListener((tab) => {
-		
-		browser.tabs.sendMessage(tab.id, {
-			action: "openCustomSearch",
-			useOpenSearch: true
-		}, {frameId: 0});
-
-	});
-}
-
-// browser.tabs.onUpdated.addListener((tabId, info, tab) => {
-    // if ( info.status !== 'complete' || info.url === 'about:blank' ) return;
-
-	// browser.tabs.insertCSS(tab.id, {
-		// file: "/inject.css",
-		// cssOrigin: "user"
-	// });
-// });
-
-// browser.tabs.onUpdated.addListener((id, changeInfo, tab) => {
-	// if (changeInfo.status !== 'complete') return;
-	
-	// if ( userOptions.quickMenu ) browser.tabs.executeScript(id, {file: "inject_quickmenu.js", allFrames: true, matchAboutBlank: false});
-// });
-
-
 
 /**************************************
 /* moving inject code to background */
@@ -1773,9 +1688,7 @@ function readOpenSearchUrl(url) {
 							// let newXML = xmlhttp.responseText.replace(matches[1], template);
 							
 							// console.log(newXML);
-							
-							
-							
+
 							// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
 							
 							// if (parsed.documentElement.nodeName=="parsererror")

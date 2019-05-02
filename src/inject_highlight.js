@@ -7,7 +7,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	// open findbar on pageload if set
 	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
 		markOptions = userOptions.highLight.findBar.markOptions;
-		updateFindBar(Object.assign(markOptions, {noFocus: true}));
+		updateFindBar(Object.assign(markOptions));
 	}
 });
 
@@ -34,56 +34,43 @@ function addStyling() {
 			:root {
 				--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
 				--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
-			}
-			.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
-				background:rgba(` + hexToRgb(userOptions.highLight.styles[0].background) + ',' + userOptions.highLight.opacity + `);
-				color:${userOptions.highLight.styles[0].color};
-			}	
-			.CS_mark[data-style="1"], #CS_highLightNavBar > DIV[data-style="1"] {
-				background:rgba(` + hexToRgb(userOptions.highLight.styles[1].background) + ',' + userOptions.highLight.opacity + `);
-				color:${userOptions.highLight.styles[1].color};
-			}
-			.CS_mark[data-style="2"], #CS_highLightNavBar > DIV[data-style="2"] {
-				background:rgba(` + hexToRgb(userOptions.highLight.styles[2].background) + ',' + userOptions.highLight.opacity + `);
-				color:${userOptions.highLight.styles[2].color};
-			}
-			.CS_mark[data-style="3"], #CS_highLightNavBar > DIV[data-style="3"] {
-				background:rgba(` + hexToRgb(userOptions.highLight.styles[3].background) + ',' + userOptions.highLight.opacity + `);
-				color:${userOptions.highLight.styles[3].color};
-			}
+			}`;
+			
+		for ( let i=0;i<4;i++) {
+			styleEl.innerText += `
+				.CS_mark[data-style="${i}"], #CS_highLightNavBar > DIV[data-style="${i}"] { 
+					background:rgba(` + hexToRgb(userOptions.highLight.styles[i].background) + ',' + userOptions.highLight.opacity + `);
+					color:${userOptions.highLight.styles[0].color};
+				}`;
+		}
+		
+		styleEl.innerText += `
 			.CS_mark.CS_mark_selected, .CS_mark_selected {
 				background: ${userOptions.highLight.activeStyle.background};
 				color:${userOptions.highLight.activeStyle.color};
-			}
-			`;
+			}`;
+			
 	} else if ( userOptions.highLight.highlightStyle === 'underline' ) {
 		
 		styleEl.innerText = `
-		:root {
-			--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
-			--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
+			:root {
+				--cs-mark-active-background: ${userOptions.highLight.activeStyle.background};
+				--cs-mark-active-color: ${userOptions.highLight.activeStyle.color};
+			}`;
+		
+		for ( let i=0;i<4;i++) {
+			styleEl.innerText+= `
+				.CS_mark[data-style="${i}"], #CS_highLightNavBar > DIV[data-style="${i}"] { 
+					border-bottom: .2em solid ${userOptions.highLight.styles[i].background};
+					color:inherit;
+				}`;
 		}
-		.CS_mark[data-style="0"], #CS_highLightNavBar > DIV[data-style="0"] { 
-			border-bottom: .2em solid ${userOptions.highLight.styles[0].background};
-			color:inherit;
-		}	
-		.CS_mark[data-style="1"], #CS_highLightNavBar > DIV[data-style="1"] {
-			border-bottom: .2em solid ${userOptions.highLight.styles[1].background};
-			color:inherit;
-		}
-		.CS_mark[data-style="2"], #CS_highLightNavBar > DIV[data-style="2"] {
-			border-bottom: .2em solid ${userOptions.highLight.styles[2].background};
-			color:inherit;
-		}
-		.CS_mark[data-style="3"], #CS_highLightNavBar > DIV[data-style="3"] {
-			border-bottom: .2em solid ${userOptions.highLight.styles[3].background};
-			color:inherit;
-		}
-		.CS_mark.CS_mark_selected, .CS_mark_selected {
-			border-bottom: .2em solid ${userOptions.highLight.activeStyle.background};
-			color:inherit;
-		}
-		`;
+		
+		styleEl.innerText += `
+			.CS_mark.CS_mark_selected, .CS_mark_selected {
+				border-bottom: .2em solid ${userOptions.highLight.activeStyle.background};
+				color:inherit;
+			}`;
 	}
 }
 
@@ -113,16 +100,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		if ( !searchTerms ) 
 			searchTerms = window.findBarLastSearchTerms || "";
 
-		// search for selected terms
-		// mark(Object.assign({
-			// searchTerms: searchTerms, 
-			// findBarSearch:true,	
-		// }, userOptions.highLight.findBar.markOptions));
 		browser.runtime.sendMessage(Object.assign({
 			action: "mark",
 			searchTerms: searchTerms, 
 			findBarSearch:true,	
-			source: "inject_highlight.js"
+			hotkey: true
 		}, userOptions.highLight.findBar.markOptions));
 	}
 });
@@ -184,9 +166,7 @@ function buildSearchWords(searchTerms) {
 
 	// sort largest to smallest to avoid small matches breaking larger matches
 	words.sort( (a, b) => {return ( a.length > b.length ) ? -1 : 1} );
-	
-//	console.log(words);
-	
+
 	return words;
 }
 
@@ -459,9 +439,6 @@ function openFindBar(options) {
 		fbc.appendChild(fb);
 		
 		fb.onload = function() {
-			if ( !options || !options.noFocus ) {
-				fb.focus();
-			}
 			fbc.style.opacity = null;
 			fbc.style.maxHeight = null;
 			
@@ -608,9 +585,7 @@ function jumpTo(index) {
 }
 
 function updateFindBar(options) {
-	
-	// console.log(options);
-	
+
 	if ( window != top ) return;
 
 	openFindBar(options).then( fb => {
@@ -650,6 +625,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		case "unmark":
 			unmark(message.saveTabHighlighting || false);
+			
+			if ( message.clearFindBarLastSearchTerms ) 
+				delete window.findBarLastSearchTerms;
 			break;
 			
 		case "markDone":
@@ -711,8 +689,4 @@ document.addEventListener("fullscreenchange", (e) => {
 		}
 		if (navbar) navbar.style.display = null;
 	}
-});
-
-document.addEventListener('zoom', (e) => {
-	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 });

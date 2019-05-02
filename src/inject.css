@@ -58,10 +58,6 @@
 	-moz-user-select:none;
 	z-index:2147483646;
 	transition: var(--user-transition, left .15s ease-in-out, top .15s ease-in-out, opacity .1s );
-	
-	/* opacity:1; */
-	/* background-color:red; */
-	/* z-index:2147483647; */
 }
 .CS_resizeWidget:hover {
 	opacity:1;
@@ -153,7 +149,7 @@ IMG.CS_handle {
 	width:24px !important;
 	height:36px !important;
 	position:relative !important;
-	top:4px !important;
+	/* top:4px !important; */
 	vertical-align:top !important;
 	display:inline-block !important;
 	cursor:grab;
@@ -166,7 +162,6 @@ IMG.CS_handle {
 	padding:0;
 	margin:0;
 	position:relative;
-	/* top:6px; */
 	height:36px;
 }
 

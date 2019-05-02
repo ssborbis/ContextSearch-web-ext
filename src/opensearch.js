@@ -1,6 +1,5 @@
 function replaceOpenSearchParams(options) {
 	
-//	in_str, searchterms, url
 	// replace OpenSearch params
 	template 	= options.template || "";
 	searchterms = options.searchterms || "";
@@ -9,8 +8,6 @@ function replaceOpenSearchParams(options) {
 	
 	let domains = getDomains(url);
 	
-//	console.log(domain);
-		
 	return template
 		.replace(/{searchTerms}/g, searchterms)
 		.replace(/{count[\?]?}/g, "50")
@@ -136,9 +133,3 @@ function getDomains(url) {
 	return {domain: domain, subdomain:subdomain};
 	
 }
-
-
-
-
-
-

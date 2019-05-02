@@ -70,7 +70,7 @@
 		"bookmarks"
 	],
 	"icons": {
-		"48": "icons/icon48.png"
+		"48": "icons/icon48-2.png"
 	},
 	"web_accessible_resources": [],
 	"browser_action": {
@@ -79,7 +79,7 @@
 	},
 	"sidebar_action": {
 		"default_icon": {
-			"32": "icons/icon48.png"
+			"32": "icons/icon48-2.png"
 		},
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",

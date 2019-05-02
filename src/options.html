@@ -896,7 +896,7 @@
 				padding:0 2px 4px 0;
 				color: #444;
 			}
-			.yes, .no {
+			.yes, .no, .add {
 				display:inline-block;
 				border-radius:50%;
 				background-color:#41ad49;
@@ -907,7 +907,7 @@
 				opacity:1;
 				transition:opacity 2s ease-out 1s;
 			}
-			.yes::before, .no::before {
+			.yes::before, .no::before, .add::before {
 				content: url("icons/checkmark.svg");
 				height:20px;
 				vertical-align:middle;
@@ -919,12 +919,18 @@
 			.no::before {
 				content: url("icons/crossmark.svg");
 			}
+			.add {
+				background-color: green;
+			}
+			.add::before {
+				content: url("icons/add.svg");
+			}
 		</style>
 	</head>
 	<body>
 		<div id="main">
 		<div id="left_div">
-			<img alt="" src="icons/icon48.png" /><br />
+			<img alt="" src="icons/icon48-2.png" /><br />
 			<p><span style="border-bottom:1px solid grey"><span style="font-weight:normal;font-variant:small-caps">Context</span><span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt">Search</span></span>
 			<br />
 			<span style="font-weight:normal;font-size:24pt;" data-i18n="Settings">Settings</span>
@@ -1272,6 +1278,41 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							</label>
 							<span class="description" data-i18n="SearchOnMouseupTooltip">Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search</span>
 						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label class="container" data-i18n="SimpleClick"> 
+							<input type="checkbox" id="cb_quickMenuOnSimpleClick" />
+							<span class="checkmark checkmark2"></span>
+							<img src="/icons/cursor.svg" style="height:24px;vertical-align:middle;margin:0 5px 0 10px" />Simple Click
+						</label>
+						<br />
+						<span style="font-size:9pt" data-i18n="SimpleClickTooltip">Click a word to open menu</span>
+					</td>
+					<td>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuOnSimpleClickAlt" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">Alt</span>
+						</div>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuOnSimpleClickCtrl" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">Ctrl</span>
+						</div>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuOnSimpleClickShift" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">Shift</span>
+						</div>
+						
 					</td>
 				</tr>
 				</table>
@@ -2108,7 +2149,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					<button type="button" name="copy" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.png" style="height:20px;vertical-align:middle"/></button>
 <div data-browser="firefox">					
-					<button type="button" name="addOpenSearchEngine" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add_search.png" style="height:20px;vertical-align:middle"/></button>
+					<button type="button" name="addOpenSearchEngine" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><span class="add" style="margin-left:0"></span></button>
 </div>
 					</div>
 				</form>

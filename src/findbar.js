@@ -17,11 +17,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 });
 
 document.addEventListener('DOMContentLoaded', (e) => {
-//	if ( document.hasFocus() )
-		getSearchBar().focus();
-	
 	getSearchBar().oldValue = getSearchBar().value || "";
-
 });
 
 function buildMarkOptions() {
@@ -54,6 +50,16 @@ window.addEventListener("message", (e) => {
 	document.querySelectorAll('INPUT[type="checkbox"]').forEach( el => {
 		el.disabled = false;
 	});
+	
+	// only if opening by hotkey, select all text
+	if ( e.data.hotkey )
+		getSearchBar().select();
+	
+	// only focus after marking - prevents focus with opening on pageload option
+	if ( e.data.action === "markDone" )
+		getSearchBar().focus();
+	
+	// console.log(e.data);
 
 });
 
@@ -64,7 +70,6 @@ document.getElementById('next').addEventListener('click', (e) => {
 document.getElementById('previous').addEventListener('click', (e) => {
 	browser.runtime.sendMessage({action: "findBarPrevious"});
 });
-
 
 getSearchBar().addEventListener('change', (e) => {
 
@@ -82,7 +87,7 @@ getSearchBar().addEventListener('change', (e) => {
 		});
 	}
 	else {
-		browser.runtime.sendMessage({action: "unmark"});
+		browser.runtime.sendMessage({action: "unmark", clearFindBarLastSearchTerms: true});
 		document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
 	}
 });
@@ -144,6 +149,7 @@ document.addEventListener('DOMContentLoaded', (e) => {
 	document.querySelector('#toggle_navbar + LABEL').title = browser.i18n.getMessage('Navbar');
 	document.querySelector('#toggle_marks + LABEL').title = browser.i18n.getMessage('highlight');
 	document.querySelector('#toggle_searchalltabs + LABEL').title = browser.i18n.getMessage('searchalltabs') || "Search all tabs";
+	document.querySelector('#clearSearchBar').title = browser.i18n.getMessage('delete') || "delete";
 });
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
@@ -176,4 +182,10 @@ document.querySelector('#toggle_searchalltabs').addEventListener('change', (e) =
 		if ( userOptions.highLight.findBar.searchInAllTabs && getSearchBar().value )
 			getSearchBar().dispatchEvent(new Event('change'));
 	});
+});
+
+document.getElementById('clearSearchBar').addEventListener('click', (e) => {
+	getSearchBar().value = null;
+	getSearchBar().dispatchEvent(new Event('change'));
+	getSearchBar().focus();
 });

@@ -355,8 +355,5 @@ if ( window != top ) {
 		else 		
 			[sbc, ot].forEach( el => { if ( el ) el.classList.remove('CS_hide');});
 	});
-	
-	document.addEventListener('zoom', (e) => {
 
-	});
 }

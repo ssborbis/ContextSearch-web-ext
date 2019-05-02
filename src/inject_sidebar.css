@@ -40,7 +40,6 @@
 #CS_sbContainer .CS_handle {
 	width:24px;
 	height:16px;
-	/* background-image: var(--closing-icon); */
 	background-image: var(--handle-icon);
 	position:absolute;
 	top:4px;

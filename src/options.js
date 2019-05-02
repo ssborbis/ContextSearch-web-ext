@@ -177,6 +177,11 @@ function restoreOptions() {
 		$('#n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
 		$('#n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
+		$('#cb_quickMenuOnSimpleClick').checked = userOptions.quickMenuOnSimpleClick.enabled;
+		$('#cb_quickMenuOnSimpleClickAlt').checked = userOptions.quickMenuOnSimpleClick.alt;
+		$('#cb_quickMenuOnSimpleClickCtrl').checked = userOptions.quickMenuOnSimpleClick.ctrl;
+		$('#cb_quickMenuOnSimpleClickShift').checked = userOptions.quickMenuOnSimpleClick.shift;
+		
 		$('#s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
 		$('#cb_contextMenu').checked = userOptions.contextMenu;
 		// $('#i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
@@ -360,13 +365,15 @@ function saveOptions(e) {
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
 		
+		quickMenuOnSimpleClick: {
+			enabled: $('#cb_quickMenuOnSimpleClick').checked,
+			alt: $('#cb_quickMenuOnSimpleClickAlt').checked,
+			ctrl: $('#cb_quickMenuOnSimpleClickCtrl').checked,
+			shift: $('#cb_quickMenuOnSimpleClickShift').checked
+		},
+		
 		contextMenu: $('#cb_contextMenu').checked,
-		// searchJsonPath: function () {
-			// let path = $('#i_searchJsonPath').value;
-			// if (path.match(/\/search.json.mozlz4$/) === null && path != "")
-				// path+=(path.charAt(path.length -1) === "/") ? "search.json.mozlz4" : "/search.json.mozlz4";
-			// return path;
-		// }(),
+
 		quickMenuTools: function() {
 			let tools = [];
 			for (let toolIcon of document.getElementsByClassName('toolIcon'))
@@ -376,7 +383,6 @@ function saveOptions(e) {
 		
 		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
 		quickMenuToolsAsToolbar: $('#cb_quickMenuToolsAsToolbar').checked,
-		// reloadMethod: ($('#cb_automaticImport').checked) ? 'automatic' : 'manual',
 		
 		searchBarUseOldStyle: $('#cb_searchBarUseOldStyle').checked,
 		searchBarColumns: parseInt($('#n_searchBarColumns').value),

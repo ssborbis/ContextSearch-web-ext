@@ -17,9 +17,9 @@ function isHotkey(e, _key) {
 		// check for hotkeys that could prevent typing in a text box
 		if ( 
 			e.target.contentEditable &&
-			!e.altKey &&
-			!e.ctrlKey &&
-			!e.metaKey &&
+			(!e.altKey && !_key.alt) &&
+			(!e.ctrlKey && !_key.ctrl) &&
+			(!e.metaKey && !_key.meta) &&
 			e.key.length === 1
 		) {
 			console.log(e.key, 'Hotkey appears to be a typeable character and target element is editable. Aborting hotkey');
@@ -84,8 +84,9 @@ function addHotkey(enabled, key, callback) {
 		if ( !isHotkey(e, key) ) return false;
 
 		e.preventDefault();
-
+		
 		callback(e);
+
 	});
 }
 
@@ -117,6 +118,20 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 				});
 			}
 		}
+		// },
+		// { // findbar next
+			// enabler: true,
+			// hotkey: {
+				// key: "F3",
+				// alt: false,
+				// ctrl: false,
+				// meta: false,
+				// shift: false
+			// },
+			// callback: (e) => {
+				
+			// }
+		// }
 	].forEach( hko => {
 		addHotkey( hko.enabler, hko.hotkey, hko.callback );
 	});

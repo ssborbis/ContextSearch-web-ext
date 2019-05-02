@@ -17,12 +17,6 @@ function inputAddCustomSearchHandler(input) {
 		}
 
 		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
-		
-		// input.addEventListener('contextmenu', () => {
-			// setTimeout( () => {
-				// browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
-			// }, 500);
-		// }, {once: true});
 
 	});
 }
@@ -100,7 +94,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 						let formdata = getFormData();
 
-						//dataToSearchEngine(formdata).then( (result) => {
 						browser.runtime.sendMessage({action: "dataToSearchEngine", formdata: formdata}).then( result => {
 							
 							// use supplied search engine or get from focused form
