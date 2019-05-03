@@ -1291,21 +1291,30 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span style="font-size:9pt" data-i18n="SimpleClickTooltip">Click a word to open menu</span>
 					</td>
 					<td>
-						<div class="option">
+						<br />
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px;display:inline-block" id="s_quickMenuOnSimpleClickButton">
+							<option data-i18n="LeftButton" value="1">Left Button</option>
+							<option data-i18n="MiddleButton" value="2">Middle Button</option>
+							<option data-i18n="RightButton" value="3">Right Button</option>
+						</select>
+						
+						<span style="margin-left:10px">+</span>
+							
+						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
 								<input type="checkbox" id="cb_quickMenuOnSimpleClickAlt" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Alt">Alt</span>
 						</div>
-						<div class="option">
+						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
 								<input type="checkbox" id="cb_quickMenuOnSimpleClickCtrl" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Alt">Ctrl</span>
 						</div>
-						<div class="option">
+						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
 								<input type="checkbox" id="cb_quickMenuOnSimpleClickShift" />
 								<span class="checkmark checkmark2"></span>

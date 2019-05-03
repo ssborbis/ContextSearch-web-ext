@@ -422,19 +422,19 @@ document.addEventListener('mouseup', (ev) => {
 	
 });
 
-document.addEventListener('click', (e) => {
+document.addEventListener('mousedown', (e) => {
 
 	if ( 
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnSimpleClick.enabled ||
+		userOptions.quickMenuOnSimpleClick.button !== e.which ||
 		!e.altKey && userOptions.quickMenuOnSimpleClick.alt ||
 		!e.ctrlKey && userOptions.quickMenuOnSimpleClick.ctrl ||
-		!e.shiftKey && userOptions.quickMenuOnSimpleClick.shift
+		!e.shiftKey && userOptions.quickMenuOnSimpleClick.shift /* ||
+		getSelectedText(e.target) */
 	) return;
-	
-	let range;
-	let textNode;
-	let offset;
+
+	let range, textNode, offset;
 
 	if (document.caretPositionFromPoint) {
 		range = document.caretPositionFromPoint(e.clientX, e.clientY);
@@ -452,34 +452,37 @@ document.addEventListener('click', (e) => {
 		
 		if ( !word ) return;
 		
-		if ( e.shiftKey ) {
-			document.addEventListener('selectstart', (_e) => {
-				_e.preventDefault();
-				return false;
-			}, {once: true});
-		}
 		e.preventDefault();
 		
-		// console.log(word);
+		if ( e.shiftKey ) document.addEventListener('selectstart', _e => _e.preventDefault(), {once: true});
+
+		if ( e.which === 3 ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
+
+		document.addEventListener('mouseup', (_e) => {
+			
+			if ( _e.which !== e.which ) return;
+			
+			_e.preventDefault();
 		
-		// avoid close on document click with a short delay
-		setTimeout(() => {
-			openQuickMenu(e, word);
-		}, 50);
+			// avoid close on document click with a short delay
+			setTimeout(() => openQuickMenu(e, word), 50);
+		}, {once: true});
 	}
 	
 	function getWord(str, offset) {
 		let _start = _end = offset;
 		
-		let regex = new RegExp(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~' ]/);
+		let tokens = '!"#$%&\\\'()\*+,-./:;<=>?@[]^_`{|}~ '.split("");
+		
+	//	let regex = new RegExp(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~' ]/);
 
 		do {
-		_start--;
-		} while ( _start > -1 && !regex.test(str.charAt(_start)) )
+			_start--;
+		} while ( _start > -1 && !tokens.includes(str.charAt(_start))/*!regex.test(str.charAt(_start))*/ )
 
 		do {
-		_end++;
-		} while ( _end < str.length && !regex.test(str.charAt(_end)) )
+			_end++;
+		} while ( _end < str.length && !tokens.includes(str.charAt(_end))/*!regex.test(str.charAt(_end))*/ )
 
 		return str.substring(_start+1, _end);
 	}

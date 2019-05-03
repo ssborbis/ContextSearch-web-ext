@@ -1350,6 +1350,7 @@ const defaultUserOptions = {
 	quickMenuOnImages: true,
 	quickMenuOnSimpleClick: {
 		enabled: false,
+		button: 1,
 		alt: false,
 		ctrl: true,
 		shift: false

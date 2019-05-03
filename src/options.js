@@ -178,6 +178,7 @@ function restoreOptions() {
 		$('#n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
 		$('#cb_quickMenuOnSimpleClick').checked = userOptions.quickMenuOnSimpleClick.enabled;
+		$('#s_quickMenuOnSimpleClickButton').value = userOptions.quickMenuOnSimpleClick.button.toString();
 		$('#cb_quickMenuOnSimpleClickAlt').checked = userOptions.quickMenuOnSimpleClick.alt;
 		$('#cb_quickMenuOnSimpleClickCtrl').checked = userOptions.quickMenuOnSimpleClick.ctrl;
 		$('#cb_quickMenuOnSimpleClickShift').checked = userOptions.quickMenuOnSimpleClick.shift;
@@ -367,6 +368,7 @@ function saveOptions(e) {
 		
 		quickMenuOnSimpleClick: {
 			enabled: $('#cb_quickMenuOnSimpleClick').checked,
+			button: parseInt($('#s_quickMenuOnSimpleClickButton').value),
 			alt: $('#cb_quickMenuOnSimpleClickAlt').checked,
 			ctrl: $('#cb_quickMenuOnSimpleClickCtrl').checked,
 			shift: $('#cb_quickMenuOnSimpleClickShift').checked
