@@ -11,7 +11,7 @@ BODY[data-theme="dark"] IMG {
 	filter: invert(1) brightness(75%);
 }
 #findbar {
-	padding-top:4px;
+	padding-top:5px;
 	font-size:10pt;
 	font-family:Arial;
 	font-weight:600;
@@ -36,7 +36,7 @@ BODY[data-theme="dark"] IMG {
 #close {
 	vertical-align:middle;
 	width:20px;
-	/* padding:8px 0; /* center image */ */
+	/* padding:6px 0; /* center image */
 }
 .button {
 	border:1px solid #888;

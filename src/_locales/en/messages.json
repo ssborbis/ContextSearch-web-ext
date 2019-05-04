@@ -1508,6 +1508,31 @@
     "description": ""
   },
   
+  "simpleclick": {
+    "message": "Simple Click",
+    "description": ""
+  },
+  
+  "simpleclicktooltip": {
+    "message": "Click a word to open menu. No selection required",
+    "description": ""
+  },
+  
+  "alt": {
+    "message": "Alt",
+    "description": ""
+  },
+  
+  "ctrl": {
+    "message": "Ctrl",
+    "description": ""
+  },
+  
+  "shift": {
+    "message": "Shift",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

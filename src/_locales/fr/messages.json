@@ -1480,6 +1480,31 @@
     "description": ""
   },
   
+  "simpleclick": {
+    "message": "Simple clic",
+    "description": ""
+  },
+  
+  "simpleclicktooltip": {
+    "message": "Cliquez sur un mot pour ouvrir le menu. Aucune sélection requise",
+    "description": ""
+  },
+  
+  "alt": {
+    "message": "Alt",
+    "description": ""
+  },
+  
+  "ctrl": {
+    "message": "Ctrl",
+    "description": ""
+  },
+  
+  "shift": {
+    "message": "Shift",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

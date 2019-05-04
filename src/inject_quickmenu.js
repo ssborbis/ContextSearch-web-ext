@@ -430,8 +430,8 @@ document.addEventListener('mousedown', (e) => {
 		userOptions.quickMenuOnSimpleClick.button !== e.which ||
 		!e.altKey && userOptions.quickMenuOnSimpleClick.alt ||
 		!e.ctrlKey && userOptions.quickMenuOnSimpleClick.ctrl ||
-		!e.shiftKey && userOptions.quickMenuOnSimpleClick.shift /* ||
-		getSelectedText(e.target) */
+		!e.shiftKey && userOptions.quickMenuOnSimpleClick.shift ||
+		getSelectedText(e.target)
 	) return;
 
 	let range, textNode, offset;
@@ -457,6 +457,9 @@ document.addEventListener('mousedown', (e) => {
 		if ( e.shiftKey ) document.addEventListener('selectstart', _e => _e.preventDefault(), {once: true});
 
 		if ( e.which === 3 ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
+		
+		// prevent links
+		document.addEventListener('click', _e => _e.preventDefault(), {once: true});
 
 		document.addEventListener('mouseup', (_e) => {
 			
