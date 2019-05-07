@@ -1476,17 +1476,17 @@
   },
   
   "searchalltabs": {
-    "message": "Rechercher dans tous les onglets",
+    "message": "Recherche dans tous les onglets",
     "description": ""
   },
   
   "simpleclick": {
-    "message": "Simple clic",
+    "message": "Clic simple",
     "description": ""
   },
   
   "simpleclicktooltip": {
-    "message": "Cliquez sur un mot pour ouvrir le menu. Aucune sélection requise",
+    "message": "Clic sur un mot (sélection non nécessaire)",
     "description": ""
   },
   
@@ -1501,7 +1501,7 @@
   },
   
   "shift": {
-    "message": "Shift",
+    "message": "Maj",
     "description": ""
   },
   
