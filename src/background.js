@@ -800,7 +800,8 @@ function contextMenuSearch(info, tab) {
 		searchEngineId: info.menuItemId, 
 		searchTerms: searchTerms,
 		openMethod: openMethod, 
-		tab: tab
+		tab: tab,
+		domain: new URL(tab.url).hostname
 	});
 }
 
