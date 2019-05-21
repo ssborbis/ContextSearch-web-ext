@@ -548,6 +548,39 @@ function buildContextMenu() {
 				}
 
 				browser.contextMenus.create( createOptions, onCreated);
+				
+				if ( /{selectdomain}/.test( se.template ) ) {
+					
+					browser.tabs.query({currentWindow: true, active: true}).then( tabs => {
+						
+						let tab = tabs[0];
+
+						let url = new URL(tab.url);	
+
+						let pathParts = url.pathname.split('/');
+
+						if (pathParts[pathParts.length - 1].indexOf('.') !== -1 ) pathParts.pop();
+
+						// add domain if subdomain
+						let domains = getDomains(tab.url);
+						domain = domains.domain;
+
+						for ( let i=0;i<pathParts.length;i++) {
+							
+							let title = url.hostname + pathParts.slice(0,i+1).join('/')
+							
+							let co = {
+								parentId: createOptions.id,
+								title: title,
+								id: '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(title),
+								contexts: ["selection", "link", "image"]
+							};
+							co.icons = createOptions.icons || undefined;
+							browser.contextMenus.create( co, onCreated);
+						}
+					});
+				}
+				
 			}
 			
 			if (node.type === 'bookmarklet') {
@@ -624,6 +657,9 @@ function buildContextMenu() {
 
 	});
 }
+
+// rebuild menu every time a tab is activated to updated selectdomain info
+browser.tabs.onActivated.addListener(buildContextMenu);
 
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
@@ -790,6 +826,14 @@ function contextMenuSearch(info, tab) {
 		return false;
 	}
 	
+	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
+		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(info.menuItemId);
+		// console.log(groups);
+		info.menuItemId = groups[1];
+		info.domain = atob(groups[2]);	
+		// console.log(info.domain);
+	}
+	
 	// run as bookmarklet
 	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
 		executeBookmarklet(info);
@@ -801,7 +845,7 @@ function contextMenuSearch(info, tab) {
 		searchTerms: searchTerms,
 		openMethod: openMethod, 
 		tab: tab,
-		domain: new URL(tab.url).hostname
+		domain: info.domain || new URL(tab.url).hostname
 	});
 }
 
