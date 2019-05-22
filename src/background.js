@@ -503,12 +503,14 @@ function buildContextMenu() {
 			contexts: ["selection", "link", "image"]
 		});
 
-		let root = userOptions.nodeTree;
+		let root = Object.assign({}, userOptions.nodeTree);
 
 		if (!root.children) return;
 	
 		let id = 0;
 		delete root.id;
+		
+		console.log('context menu build');
 		
 		function onCreated() {
 
@@ -660,7 +662,20 @@ function buildContextMenu() {
 
 // rebuild menu every time a tab is activated to updated selectdomain info
 browser.tabs.onActivated.addListener(buildContextMenu);
-
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
+	
+	function onFound(tabs) {
+		let tab = tabs[0];
+		
+		if ( tabId === tab.id && changeInfo.url && changeInfo.url !== "about:blank" ) 
+			buildContextMenu();
+	}
+	
+	function onError(err) { console.error(err) }
+	
+	browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);	
+	
+});
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function executeBookmarklet(info) {
