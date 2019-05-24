@@ -489,7 +489,9 @@ function loadUserOptions() {
 	return getting.then(onGot, onError).then(buildContextMenu);
 }
 
-function buildContextMenu() {
+async function buildContextMenu() {
+	
+	window.contextMenuSelectDomainMenus = [];
 	
 	function onCreated() {
 
@@ -507,146 +509,200 @@ function buildContextMenu() {
 		browser.contextMenus.create( createOptions, onCreated);
 	}
 	
-	browser.contextMenus.removeAll().then( () => {
-
-		if (!userOptions.contextMenu) return false;
-		
-		let hotkey = ''; 
-		if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
-
-		browser.contextMenus.create({
-			id: "search_engine_menu",
-			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith"),
-			contexts: ["selection", "link", "image"]
-		});
-
-		let root = Object.assign({}, userOptions.nodeTree);
-
-		if (!root.children) return;
+	await browser.contextMenus.removeAll();
 	
-		let id = 0;
-		delete root.id;
-		
-		console.log('context menu build');
+	let tabs = await browser.tabs.query({currentWindow: true, active: true});
+	let tab = tabs[0];
 
-		// add incremental menu ids to avoid duplicates
-		let count = 0;
+	if (!userOptions.contextMenu) return false;
+	
+	let hotkey = ''; 
+	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
+
+	browser.contextMenus.create({
+		id: "search_engine_menu",
+		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchForWithVariable"),
+		contexts: ["selection", "link", "image"]
+	});
+
+	let root = Object.assign({}, userOptions.nodeTree);
+
+	if (!root.children) return;
+
+	let id = 0;
+	delete root.id;
+
+	// add incremental menu ids to avoid duplicates
+	let count = 0;
+	
+	function traverse(node, parentId) {
 		
-		function traverse(node, parentId) {
+		if (node.hidden) return;
+
+		if ( node.type === 'searchEngine' ) {
+
+			let se = userOptions.searchEngines.find(se => se.id === node.id);
 			
-			if (node.hidden) return;
+			if (!se) {
+				console.log('no search engine found for ' + node.id);
+				return;
+			}
+			
+			let _id = se.id + '_' + count++;
 
-			if ( node.type === 'searchEngine' ) {
-
-				let se = userOptions.searchEngines.find(se => se.id === node.id);
-				
-				if (!se) {
-					console.log('no search engine found for ' + node.id);
-					return;
+			addMenuItem({
+				parentId: parentId,
+				title: se.title,
+				id: _id,	
+				icons: {
+					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+					"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 				}
+			});
+
+			if ( /{selectdomain}/.test( se.template ) ) {
 				
-				let _id = se.id + '_' + count++;
-
-				addMenuItem({
-					parentId: parentId,
-					title: se.title,
-					id: _id,	
-					icons: {
-						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
-						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
-					}
-				});
-
-				if ( /{selectdomain}/.test( se.template ) ) {
+				let pathIds = [];
+				
+				getDomainPaths(tab.url).forEach( path => {
 					
-					browser.tabs.query({currentWindow: true, active: true}).then( tabs => {
-						
-						let tab = tabs[0];
-
-						getDomainPaths(tab.url).forEach( path => {
-							addMenuItem({
-								parentId: _id,
-								title: path,
-								id: '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(path),
-								icons: {
-									"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
-									"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
-								}
-							});
-						});
+					let pathId = '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(path);
+					
+					addMenuItem({
+						parentId: _id,
+						title: path,
+						id: pathId,
+						icons: {
+							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png",
+							"32": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png"
+						}
 					});
-				}
-				
-			}
-			
-			if (node.type === 'bookmarklet') {
-				addMenuItem({
-					parentId: parentId,
-					title: node.title,
-					id: node.id + '_' + count++,	
-					icons: {
-						"16": node.icon || browser.runtime.getURL("/icons/code.svg"),
-						"32": node.icon || browser.runtime.getURL("/icons/code.svg")
-					}
-				});
-			}
-			
-			if (node.type === 'oneClickSearchEngine') {
-				addMenuItem({
-					parentId: parentId,
-					title: node.title,
-					id: "__oneClickSearchEngine__" + node.id + '_' + count++,
-					icons: {
-						"16": node.icon,
-						"32": node.icon
-					}
-				});
-			}
-			
-			if (node.type === 'separator' /* firefox */) {
-				browser.contextMenus.create({
-					parentId: parentId,
-					type: "separator"
-				});
-			}
-			
-			if ( node.type === 'folder' ) {
-				
-				let _id = "folder" + ++id
-				
-				addMenuItem({
-					parentId: parentId,
-					id: _id,
-					title: node.title,
-					icons: {
-						"16": "/icons/folder-icon.png",
-						"32": "/icons/folder-icon.png"
-					}
+					
+					pathIds.push(pathId);
 				});
 				
-				for (let child of node.children) {
-					traverse(child, _id);
-				}
+				window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
 			}
 			
 		}
 		
-		for (let child of root.children) {
-			traverse(child, "search_engine_menu");
+		if (node.type === 'bookmarklet') {
+			addMenuItem({
+				parentId: parentId,
+				title: node.title,
+				id: node.id + '_' + count++,	
+				icons: {
+					"16": node.icon || browser.runtime.getURL("/icons/code.svg"),
+					"32": node.icon || browser.runtime.getURL("/icons/code.svg")
+				}
+			});
 		}
+		
+		if (node.type === 'oneClickSearchEngine') {
+			addMenuItem({
+				parentId: parentId,
+				title: node.title,
+				id: "__oneClickSearchEngine__" + node.id + '_' + count++,
+				icons: {
+					"16": node.icon,
+					"32": node.icon
+				}
+			});
+		}
+		
+		if (node.type === 'separator' /* firefox */) {
+			browser.contextMenus.create({
+				parentId: parentId,
+				type: "separator"
+			});
+		}
+		
+		if ( node.type === 'folder' ) {
+			
+			let _id = "folder" + ++id
+			
+			addMenuItem({
+				parentId: parentId,
+				id: _id,
+				title: node.title,
+				icons: {
+					"16": "/icons/folder-icon.png",
+					"32": "/icons/folder-icon.png"
+				}
+			});
+			
+			for (let child of node.children) {
+				traverse(child, _id);
+			}
+		}
+		
+	}
+	
+	for (let child of root.children) {
+		traverse(child, "search_engine_menu");
+	}
 
+}
+
+function updateSelectDomainMenus(tab) {
+	window.contextMenuSelectDomainMenus.forEach( menu => {
+		
+		menu.pathIds.forEach( pathId => {
+			browser.contextMenus.remove( pathId );
+		});
+		
+		menu.pathIds = [];
+		
+		// create a new unique iterator
+		let count = Date.now();
+				
+		getDomainPaths(tab.url).forEach( path => {
+			
+			let pathId = '__selectDomain__' + menu.se.id + '_' + count++ + "_" + btoa(path);
+			
+			menu.pathIds.push(pathId);
+			
+			let createOptions = {
+				parentId: menu.id,
+				title: path,
+				id: pathId,
+				icons: {
+					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png",
+					"32": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
+				},
+				contexts: ["selection", "link", "image"]
+			};
+
+			if (!isFirefox) delete createOptions.icons;
+
+			browser.contextMenus.create( createOptions );
+
+		});
+		
 	});
 }
 
 // rebuild menu every time a tab is activated to updated selectdomain info
-browser.tabs.onActivated.addListener(buildContextMenu);
+browser.tabs.onActivated.addListener( async tabInfo => {
+	let tab = await browser.tabs.get( tabInfo.tabId );
+	updateSelectDomainMenus(tab);
+	
+	// reset the root menu
+	let hotkey = ''; 
+	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
+	
+	browser.contextMenus.update("search_engine_menu", {
+		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchForWithVariable")
+	});
+});
+
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	
 	function onFound(tabs) {
 		let tab = tabs[0];
 		
 		if ( tabId === tab.id && changeInfo.url && changeInfo.url !== "about:blank" ) 
-			buildContextMenu();
+			updateSelectDomainMenus(tab);
 	}
 	
 	function onError(err) { console.error(err) }
@@ -654,6 +710,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);	
 	
 });
+
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function executeBookmarklet(info) {
@@ -821,10 +878,8 @@ function contextMenuSearch(info, tab) {
 	
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
 		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(info.menuItemId);
-		// console.log(groups);
 		info.menuItemId = groups[1];
 		info.domain = atob(groups[2]);	
-		// console.log(info.domain);
 	}
 	
 	// run as bookmarklet
@@ -962,7 +1017,7 @@ function openSearch(details) {
 		// if new window
 		if (_tab.tabs) _tab = _tab.tabs[0];
 
-		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
+		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
 			if ( tabId !== _tab.id ) return;
 	
@@ -982,36 +1037,30 @@ function openSearch(details) {
 			}
 			
 			browser.tabs.onUpdated.removeListener(listener);
-
-			browser.tabs.executeScript(_tab.id, {
+			
+			await browser.tabs.executeScript(_tab.id, {
 				code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
 				runAt: 'document_start'
-			}).then(() => {
-			return browser.tabs.executeScript(_tab.id, {
-				file: '/lib/browser-polyfill.min.js',
-				runAt: 'document_start'
-			}).then(() => {
-			return browser.tabs.executeScript(_tab.id, {
-				file: '/opensearch.js',
-				runAt: 'document_start'
-			}).then(() => {
-			return browser.tabs.executeScript(_tab.id, {
-				file: '/execute.js',
-				runAt: 'document_start'
-			}).then(() => {
-				
-				// listen for the results to complete
-				browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
-					
-					if ( _tabId !== _tab.id ) return;
-
-					if ( _tabInfo.status !== 'complete' ) return;
-					browser.tabs.onUpdated.removeListener(_listener);
-					
-					// send new tab based on results tabId
-					highlightSearchTermsInTab(_tabInfo, searchTerms);
+			});
+			
+			['/lib/browser-polyfill.min.js', '/opensearch.js', '/execute.js'].forEach( async (file) => {
+				await browser.tabs.executeScript(_tab.id, {
+					file: file,
+					runAt: 'document_start'
 				});
-			});});});});
+			});
+				
+			// listen for the results to complete
+			browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
+					
+				if ( _tabId !== _tab.id ) return;
+
+				if ( _tabInfo.status !== 'complete' ) return;
+				browser.tabs.onUpdated.removeListener(_listener);
+				
+				// send new tab based on results tabId
+				highlightSearchTermsInTab(_tabInfo, searchTerms);
+			});
 		});
 	}
 	
@@ -1101,7 +1150,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 
 	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
 	
-	console.log(highlightTabs);
+	// console.log(highlightTabs);
 	
 	let url = new URL(tab.url);
 

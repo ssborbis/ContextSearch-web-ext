@@ -602,6 +602,10 @@
   "SearchFor": {
     "message": "Rechercher « %1 » avec…"
   },
+
+  "SearchForWithVariable": {
+	"message": ""Rechercher « %s » avec…"
+  },
   
   "AddCustomSearch": {
     "message": "Ajouter ce moteur de recherche"

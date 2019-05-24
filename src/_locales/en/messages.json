@@ -603,6 +603,10 @@
     "message": "Search for \"%1\""
   },
   
+  "SearchForWithVariable": {
+	"message": "Search for \"%s\""
+  },
+  
   "SearchWith": {
     "message": "Search with",
     "description": "title in context menu when searching"

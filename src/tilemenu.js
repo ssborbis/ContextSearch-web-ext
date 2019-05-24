@@ -1143,7 +1143,6 @@ function makeQuickMenu(options) {
 								
 								quickMenuElement = quickMenuElementFromNodeTree(siteSearchNode);
 
-
 								for ( let _tile of quickMenuElement.querySelectorAll('.tile') ) {
 									if ( _tile.node.title === url.hostname ) {
 										_tile.classList.add('selectedFocus');
@@ -1277,7 +1276,7 @@ function makeQuickMenu(options) {
 						for (let _node of node.children) {
 
 							if (_node.type === 'searchEngine') {
-								messages.push({
+								messages.push(browser.runtime.sendMessage({
 									action: "quickMenuSearch", 
 									info: {
 										menuItemId: _node.id,
@@ -1286,25 +1285,27 @@ function makeQuickMenu(options) {
 										openMethod: (messages.length === 0 ) ? method : "openBackgroundTab",
 										folder: true
 									}
-								});
+								}));
 							}	
 						}
-
-						function loop(message) {
-							browser.runtime.sendMessage(message).then( (result) => {
-								
-								if ( messages.length ) // not last run
-									loop(messages.shift());
-								
-								// else if (!keepMenuOpen(e) ) // last run
-									// browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_foldertile"});
-									
-							});
-							
-							
-						}
 						
-						loop(messages.shift());
+						Promise.all( messages );
+
+						// function loop(message) {
+							// browser.runtime.sendMessage(message).then( (result) => {
+								
+								// if ( messages.length ) // not last run
+									// loop(messages.shift());
+								
+								// // else if (!keepMenuOpen(e) ) // last run
+									// // browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_foldertile"});
+									
+							// });
+							
+							
+						// }
+						
+						// loop(messages.shift());
 
 					}
 					
