@@ -490,6 +490,23 @@ function loadUserOptions() {
 }
 
 function buildContextMenu() {
+	
+	function onCreated() {
+
+		if (browser.runtime.lastError) {
+			console.log(browser.runtime.lastError);
+		}
+	}
+	
+	function addMenuItem( createOptions ) {
+
+		createOptions.contexts = createOptions.contexts || ["selection", "link", "image"];
+
+		if (!isFirefox) delete createOptions.icons;
+
+		browser.contextMenus.create( createOptions, onCreated);
+	}
+	
 	browser.contextMenus.removeAll().then( () => {
 
 		if (!userOptions.contextMenu) return false;
@@ -511,14 +528,7 @@ function buildContextMenu() {
 		delete root.id;
 		
 		console.log('context menu build');
-		
-		function onCreated() {
 
-			if (browser.runtime.lastError) {
-				console.log(browser.runtime.lastError);
-			}
-		}
-		
 		// add incremental menu ids to avoid duplicates
 		let count = 0;
 		
@@ -534,91 +544,63 @@ function buildContextMenu() {
 					console.log('no search engine found for ' + node.id);
 					return;
 				}
+				
+				let _id = se.id + '_' + count++;
 
-				let createOptions = {
+				addMenuItem({
 					parentId: parentId,
 					title: se.title,
-					id: se.id + '_' + count++,
-					contexts: ["selection", "link", "image"]	
-				}
-
-				if (isFirefox) {
-					createOptions.icons = {
+					id: _id,	
+					icons: {
 						"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
 						"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 					}
-				}
+				});
 
-				browser.contextMenus.create( createOptions, onCreated);
-				
 				if ( /{selectdomain}/.test( se.template ) ) {
 					
 					browser.tabs.query({currentWindow: true, active: true}).then( tabs => {
 						
 						let tab = tabs[0];
 
-						let url = new URL(tab.url);	
-
-						let pathParts = url.pathname.split('/');
-
-						if (pathParts[pathParts.length - 1].indexOf('.') !== -1 ) pathParts.pop();
-
-						// add domain if subdomain
-						let domains = getDomains(tab.url);
-						domain = domains.domain;
-
-						for ( let i=0;i<pathParts.length;i++) {
-							
-							let title = url.hostname + pathParts.slice(0,i+1).join('/')
-							
-							let co = {
-								parentId: createOptions.id,
-								title: title,
-								id: '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(title),
-								contexts: ["selection", "link", "image"]
-							};
-							co.icons = createOptions.icons || undefined;
-							browser.contextMenus.create( co, onCreated);
-						}
+						getDomainPaths(tab.url).forEach( path => {
+							addMenuItem({
+								parentId: _id,
+								title: path,
+								id: '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(path),
+								icons: {
+									"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
+									"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
+								}
+							});
+						});
 					});
 				}
 				
 			}
 			
 			if (node.type === 'bookmarklet') {
-				let createOptions = {
+				addMenuItem({
 					parentId: parentId,
 					title: node.title,
-					id: node.id + '_' + count++,
-					contexts: ["selection", "link", "image"]	
-				}
-				
-				if (isFirefox) {
-					createOptions.icons = {
+					id: node.id + '_' + count++,	
+					icons: {
 						"16": node.icon || browser.runtime.getURL("/icons/code.svg"),
 						"32": node.icon || browser.runtime.getURL("/icons/code.svg")
 					}
-				}
-
-				browser.contextMenus.create( createOptions, onCreated);
+				});
 			}
 			
 			if (node.type === 'oneClickSearchEngine') {
-				let createOptions = {
+				addMenuItem({
 					parentId: parentId,
 					title: node.title,
 					id: "__oneClickSearchEngine__" + node.id + '_' + count++,
-					contexts: ["selection", "link", "image"]	
-				}
-				
-				if (isFirefox) {
-					createOptions.icons = {
+					icons: {
 						"16": node.icon,
 						"32": node.icon
 					}
-				}
-
-				browser.contextMenus.create( createOptions, onCreated);
+				});
 			}
 			
 			if (node.type === 'separator' /* firefox */) {
@@ -630,24 +612,20 @@ function buildContextMenu() {
 			
 			if ( node.type === 'folder' ) {
 				
-				let createOptions = {
-					parentId: parentId,
-					id: "folder" + ++id,
-					title: node.title,
-					contexts: ["selection", "link", "image"]
-				}
+				let _id = "folder" + ++id
 				
-				if (isFirefox ) {
-					createOptions.icons = {
+				addMenuItem({
+					parentId: parentId,
+					id: _id,
+					title: node.title,
+					icons: {
 						"16": "/icons/folder-icon.png",
 						"32": "/icons/folder-icon.png"
 					}
-				}
-
-				browser.contextMenus.create( createOptions, onCreated );
+				});
 				
 				for (let child of node.children) {
-					traverse(child, createOptions.id);
+					traverse(child, _id);
 				}
 			}
 			

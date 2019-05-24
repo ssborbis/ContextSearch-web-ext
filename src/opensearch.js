@@ -133,3 +133,35 @@ function getDomains(url) {
 	return {domain: domain, subdomain:subdomain};
 	
 }
+
+function getDomainPaths(_url) {
+
+	let url;
+	
+	if ( typeof _url === 'string' ) url = new URL(_url);
+	else if ( _url instanceof URL ) url = _url;
+	else {
+		console.log(typeof _url, "cannot be read as url");
+		return [];
+	}
+	
+	let pathname = url.pathname.charAt(url.pathname.length - 1) === '/' ? url.pathname.slice(0, -1) : url.pathname;
+		
+	let pathParts = pathname.split('/');
+
+	if (pathParts[pathParts.length - 1].indexOf('.') !== -1 ) pathParts.pop();
+
+	let paths = [];
+
+	for ( let i=0;i<pathParts.length;i++)
+		paths.push( url.hostname + pathParts.slice(0,i+1).join('/') );
+	
+	// add domain if subdomain
+	let domains = getDomains(url.href);
+	let domain = domains.domain;
+	
+	if ( !paths.includes( domain ) )
+		paths.unshift(domain);
+	
+	return paths;
+}

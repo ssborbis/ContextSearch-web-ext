@@ -1129,33 +1129,18 @@ function makeQuickMenu(options) {
 									id:node.id,
 									forceSingleColumn:true
 								}
+								
+								let url = new URL(tab.url);
 
-								let url = new URL(tab.url);								
-								let pathParts = url.pathname.split('/');
-
-								if (pathParts[pathParts.length - 1].indexOf('.') !== -1 ) pathParts.pop();
-
-								for ( let i=0;i<pathParts.length;i++ ) {
+								getDomainPaths(url).forEach( path => {
 									siteSearchNode.children.push({
 										type: "siteSearch",
-										title: url.hostname + pathParts.slice(0,i+1).join('/'),
+										title: path,
 										parent:node,
 										icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
 									});	
-								}
+								});
 								
-								// add domain if subdomain
-								let domains = getDomains(tab.url);
-								domain = domains.domain;
-
-								if ( domain && url.hostname !== domain ) {
-
-									let dNode = Object.assign({}, siteSearchNode.children[0]);
-									dNode.title = domain;
-									
-									siteSearchNode.children.unshift(dNode);
-								}
-
 								quickMenuElement = quickMenuElementFromNodeTree(siteSearchNode);
 
 
