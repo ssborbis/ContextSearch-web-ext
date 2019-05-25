@@ -647,9 +647,7 @@ async function buildContextMenu() {
 function updateSelectDomainMenus(tab) {
 	window.contextMenuSelectDomainMenus.forEach( menu => {
 		
-		menu.pathIds.forEach( pathId => {
-			browser.contextMenus.remove( pathId );
-		});
+		menu.pathIds.forEach( pathId => browser.contextMenus.remove( pathId ) );
 		
 		menu.pathIds = [];
 		
@@ -676,9 +674,7 @@ function updateSelectDomainMenus(tab) {
 			if (!isFirefox) delete createOptions.icons;
 
 			browser.contextMenus.create( createOptions );
-
 		});
-		
 	});
 }
 
@@ -1099,19 +1095,14 @@ function openSearch(details) {
 	function openBackgroundTab() {
 		return openNewTab(true);
 	}
-	function openSideBarAction() {
-		
+	async function openSideBarAction() {
+			
 		if ( !browser.sidebarAction ) return;
 		
-		browser.sidebarAction.setPanel({
-			panel: q
-		}).then(() => {
-			browser.sidebarAction.isOpen({}).then(result => {
-				if ( !result) {
-					notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
-				}
-			});
-		});
+		await browser.sidebarAction.setPanel( {panel: q} );
+			
+		if ( !await browser.sidebarAction.isOpen({}) )
+			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
 	}
 }
 

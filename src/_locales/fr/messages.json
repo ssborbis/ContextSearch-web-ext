@@ -604,7 +604,7 @@
   },
 
   "SearchForWithVariable": {
-	"message": ""Rechercher « %s » avec…"
+	"message": "Rechercher « %s » avec…"
   },
   
   "AddCustomSearch": {
