@@ -404,18 +404,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getCurrentTabInfo": 
-			// if (!sender.tab) { // browser_action popup has no tab, use current tab
-				// function onFound(tabs) {
-					// let tab = tabs[0];
-					// return Promise.resolve(tab);
-				// }
-
-				// function onError(err){
-					// console.error(err);
-				// }
-				// return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
-			// } else
-				return Promise.resolve(sender.tab);
+			return Promise.resolve(sender.tab);
 			break;
 		
 		case "removeTabHighlighting":
