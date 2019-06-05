@@ -510,7 +510,7 @@ async function buildContextMenu() {
 
 	browser.contextMenus.create({
 		id: "search_engine_menu",
-		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchForWithVariable"),
+		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith"),
 		contexts: ["selection", "link", "image"]
 	});
 
@@ -544,8 +544,7 @@ async function buildContextMenu() {
 				title: se.title,
 				id: _id,	
 				icons: {
-					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png",
-					"32": se.icon_base64String || se.icon_url || "/icons/icon48.png"
+					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png"
 				}
 			});
 
@@ -562,8 +561,7 @@ async function buildContextMenu() {
 						title: path,
 						id: pathId,
 						icons: {
-							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png",
-							"32": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png"
+							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png"
 						}
 					});
 					
@@ -581,8 +579,7 @@ async function buildContextMenu() {
 				title: node.title,
 				id: node.id + '_' + count++,	
 				icons: {
-					"16": node.icon || browser.runtime.getURL("/icons/code.svg"),
-					"32": node.icon || browser.runtime.getURL("/icons/code.svg")
+					"16": node.icon || browser.runtime.getURL("/icons/code.svg")
 				}
 			});
 		}
@@ -593,8 +590,7 @@ async function buildContextMenu() {
 				title: node.title,
 				id: "__oneClickSearchEngine__" + node.id + '_' + count++,
 				icons: {
-					"16": node.icon,
-					"32": node.icon
+					"16": node.icon
 				}
 			});
 		}
@@ -615,8 +611,7 @@ async function buildContextMenu() {
 				id: _id,
 				title: node.title,
 				icons: {
-					"16": "/icons/folder-icon.png",
-					"32": "/icons/folder-icon.png"
+					"16": "/icons/folder-icon.png"
 				}
 			});
 			
@@ -654,8 +649,7 @@ function updateSelectDomainMenus(tab) {
 				title: path,
 				id: pathId,
 				icons: {
-					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png",
-					"32": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
+					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
 				},
 				contexts: ["selection", "link", "image"]
 			};
@@ -677,7 +671,7 @@ browser.tabs.onActivated.addListener( async tabInfo => {
 	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 	
 	browser.contextMenus.update("search_engine_menu", {
-		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchForWithVariable")
+		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith")
 	});
 });
 
@@ -1647,8 +1641,6 @@ browser.runtime.onInstalled.addListener((details) => {
 			});
 		}
 	});
-
-	
 });
 
 browser.browserAction.setPopup({popup: "/searchbar.html"});
@@ -1739,30 +1731,8 @@ function readOpenSearchUrl(url) {
 					if (parsed.documentElement.nodeName=="parsererror") {
 						console.log('xml parse error');
 						
-						console.log(parsed);
-						
-						// // try to repair bad template urls
-						// let regexStr = /<Url .* template="(.*)"/g;
-						// let matches = regexStr.exec(xmlhttp.responseText);
-						
-						// if ( matches.length === 2 ) {
-							// let template = matches[1];
-							
-							// template = template.replace(/&amp;/g, "&");
-							// template = template.replace(/&/g, "&amp;");
-							
-							// console.log(template);
-							
-							// let newXML = xmlhttp.responseText.replace(matches[1], template);
-							
-							// console.log(newXML);
-
-							// parsed = new DOMParser().parseFromString(newXML, 'application/xml');
-							
-							// if (parsed.documentElement.nodeName=="parsererror")
-								parsed = false;
-					//	}
-
+						// console.log(parsed);
+						parsed = false;
 					}
 					resolve(parsed);
 			   } else {

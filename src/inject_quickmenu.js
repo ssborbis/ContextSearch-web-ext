@@ -389,7 +389,8 @@ document.addEventListener('mousedown', (ev) => {
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
 	function preventContextMenuHandler(evv) {
-		evv.preventDefault();
+		if ( !userOptions.quickMenuAllowContextMenu )
+			evv.preventDefault();
 	}
 	
 	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
@@ -500,6 +501,8 @@ document.addEventListener('closequickmenu', () => {
 document.addEventListener("click", (ev) => {
 
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
+	
+	if ( userOptions.quickMenuAllowContextMenu && ev.which !== 1 ) return;
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
 
