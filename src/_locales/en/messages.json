@@ -1537,6 +1537,11 @@
     "description": ""
   },
   
+  "QuickMenuAllowContextMenu": {
+    "message": "Hide the default context menu when opening the Quick Menu using right-click",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

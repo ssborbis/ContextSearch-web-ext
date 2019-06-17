@@ -421,6 +421,8 @@ function makeQuickMenu(options) {
 			quickMenuObject.mouseLastClickTime = Date.now();
 			
 			if (type === 'quickmenu') {
+				
+				quickMenuObject.searchTerms = sb.value;
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject

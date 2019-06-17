@@ -223,7 +223,8 @@ function restoreOptions() {
 		$('#n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
 		$('#n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
 		$('#n_quickMenuAutoTimeout').value = userOptions.quickMenuAutoTimeout;
-				
+		$('#cb_quickMenuAllowContextMenu').checked = !userOptions.quickMenuAllowContextMenu;
+
 		$('#cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		$('#cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
 		$('#cb_searchBarDisplayLastSearch').checked = userOptions.searchBarDisplayLastSearch;
@@ -290,6 +291,61 @@ function restoreOptions() {
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
 
 		buildSearchEngineContainer();
+		
+		// show / hide settings based on userOptions
+		(() => { // disable focus quick menu search bar when hotkeys enabled
+			let select = $('#s_quickMenuSearchHotkeys');
+			
+			function toggle() {
+				let cb1 = $('#cb_quickMenuSearchBarFocus');
+
+				if (select.value === 'noAction') {
+					cb1.disabled = false;
+					cb1.parentNode.style.opacity = null;
+				} else {
+					cb1.disabled = true;
+					cb1.parentNode.style.opacity = .5;
+				}		
+			}
+			select.addEventListener('change', toggle);
+			toggle();
+		})();
+		
+		[	
+			{cb: "#cb_quickMenuUseOldStyle", input: "#n_quickMenuColumns"},
+			{cb: "#cb_searchBarUseOldStyle", input: "#n_searchBarColumns"},
+			{cb: "#cb_sideBarUseOldStyle", input: "#n_sideBarColumns"}
+		].forEach( obj => {
+			let cb = $(obj.cb);
+			let input = $(obj.input);
+			
+			function toggle() {
+
+				if (!cb.checked) {
+					input.disabled = false;
+					input.style.opacity = null;
+				} else {
+					input.disabled = true;
+					input.style.opacity = .5;
+				}		
+			}
+			cb.addEventListener('change', toggle);
+			toggle();
+		});
+		
+		// allow context menu on right-click
+		(() => {
+			function onChange(e) {
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.visibility = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null	: 'hidden';	
+			}
+			
+			[$('#s_quickMenuMouseButton'), $('#s_quickMenuOnMouseMethod')].forEach( s => {
+				s.addEventListener('change', onChange);	
+				onChange();
+			});
+			
+			
+		})();
 	}
   
 	function onError(error) {
@@ -365,7 +421,7 @@ function saveOptions(e) {
 		quickMenuAutoMaxChars: parseInt($('#n_quickMenuAutoMaxChars').value) || 0,
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
-		quickMenuAllowContextMenu: userOptions.quickMenuAllowContextMenu || false,
+		quickMenuAllowContextMenu: !$('#cb_quickMenuAllowContextMenu').checked,
 		
 		quickMenuOnSimpleClick: {
 			enabled: $('#cb_quickMenuOnSimpleClick').checked,
@@ -1165,48 +1221,4 @@ document.addEventListener('DOMContentLoaded', () => {
 		yes.style.opacity = 0;
 		
 	}
-});
-
-// setup disabled options
-document.addEventListener('DOMContentLoaded', () => {
-	
-	(() => { // disable focus quick menu search bar when hotkeys enabled
-		let select = $('#s_quickMenuSearchHotkeys');
-		
-		function toggle() {
-			let cb1 = $('#cb_quickMenuSearchBarFocus');
-
-			if (select.value === 'noAction') {
-				cb1.disabled = false;
-				cb1.parentNode.style.opacity = null;
-			} else {
-				cb1.disabled = true;
-				cb1.parentNode.style.opacity = .5;
-			}		
-		}
-		select.addEventListener('change', toggle);
-		toggle();
-	})();
-	
-	[	
-		{cb: "#cb_quickMenuUseOldStyle", input: "#n_quickMenuColumns"},
-		{cb: "#cb_searchBarUseOldStyle", input: "#n_searchBarColumns"},
-		{cb: "#cb_sideBarUseOldStyle", input: "#n_sideBarColumns"}
-	].forEach( obj => {
-		let cb = $(obj.cb);
-		let input = $(obj.input);
-		
-		function toggle() {
-
-			if (!cb.checked) {
-				input.disabled = false;
-				input.style.opacity = null;
-			} else {
-				input.disabled = true;
-				input.style.opacity = .5;
-			}		
-		}
-		cb.addEventListener('change', toggle);
-		toggle();
-	});
 });

@@ -770,6 +770,7 @@
 			.openingTable TD {
 				border-bottom:1px solid #ccc;
 				padding:10px 0px;
+				min-width: 200px;
 			}
 			.openingTable TD:first-child {
 				border-right:1px solid #ccc;
@@ -1158,7 +1159,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 					<div class="description" data-i18n="EnableOnImages">Enable on images</div>
 				</div>
-				
+
 				<hr />
 
 				<p class="header1" data-i18n="Columns">Columns</p>
@@ -1208,6 +1209,16 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</table>
 				
 				<p class="header1" data-i18n="Opening">Opening</p>
+				
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_quickMenuAllowContextMenu" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<span class="description" data-i18n="QuickMenuAllowContextMenu">Hide the default context menu when opening the Quick Menu using right-click</span>
+				</div>
+				
+				<hr />
 	
 				<table class="openingTable">
 				<tr>
@@ -1268,9 +1279,10 @@ z						<option data-i18n="dark" value="dark">dark</option>
 								<option data-i18n="LeftButton" value="1">Left Button</option>
 								<option data-i18n="RightButton" value="3">Right Button</option>
 							</select>
+							
+							<div style="font-size:10pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:20px;margin-right:10px;vertical-align:middle" src="icons/alert.svg">Hold right button ~1s and release for default context menu</div>
 						</div>
 						
-						<br />
 						<div class="option">
 							<label class="container">
 								<input type="checkbox" id="cb_quickMenuSearchOnMouseUp" />
@@ -1327,7 +1339,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 				</tr>
 				</table>
-				
+
 				<hr />
 				
 				<p class="header1" data-i18n="Closing">Closing</p>

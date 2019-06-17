@@ -17,19 +17,6 @@ var quickMenuObject = {
 
 var userOptions = {};
 
-function preventContextMenuHandler(evv) {
-	evv.preventDefault();
-}
-
-function scrollEventListener(ev) {
-	if (window.scrollThrottler) return false;
-	window.scrollThrottler = true;
-	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: ev.type});
-	setTimeout(() => {
-		window.scrollThrottler = false;
-	},250);
-}
-
 browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 });
@@ -207,6 +194,16 @@ document.addEventListener('keydown', (ev) => {
 		
 });
 
+
+function scrollEventListener(ev) {
+	if (window.scrollThrottler) return false;
+	window.scrollThrottler = true;
+	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: ev.type});
+	setTimeout(() => {
+		window.scrollThrottler = false;
+	},250);
+}
+
 window.addEventListener(window.hasOwnProperty('onmousewheel') ? 'mousewheel' : 'wheel', scrollEventListener);
 window.addEventListener('scroll', scrollEventListener);
 
@@ -285,7 +282,8 @@ document.addEventListener('mousedown', (ev) => {
 		} else if (ev.which === 3) {
 			// Disable the default context menu once
 			document.addEventListener('contextmenu', (evv) => {
-				evv.preventDefault();
+				if ( !userOptions.quickMenuAllowContextMenu )
+					evv.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true}); // parameter to run once, then delete
 
@@ -423,6 +421,7 @@ document.addEventListener('mouseup', (ev) => {
 	
 });
 
+// listen for simple click
 document.addEventListener('mousedown', (e) => {
 
 	if ( 
@@ -457,7 +456,7 @@ document.addEventListener('mousedown', (e) => {
 		
 		if ( e.shiftKey ) document.addEventListener('selectstart', _e => _e.preventDefault(), {once: true});
 
-		if ( e.which === 3 ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
+		if ( e.which === 3 && !userOptions.quickMenuAllowContextMenu ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
 		
 		// prevent links
 		document.addEventListener('click', _e => _e.preventDefault(), {once: true});
@@ -477,16 +476,14 @@ document.addEventListener('mousedown', (e) => {
 		let _start = _end = offset;
 		
 		let tokens = '!"#$%&\\\'()\*+,-./:;<=>?@[]^_`{|}~ '.split("");
-		
-	//	let regex = new RegExp(/['!"#$%&\\'()\*+,\-\.\/:;<=>?@\[\\\]\^_`{|}~' ]/);
 
 		do {
 			_start--;
-		} while ( _start > -1 && !tokens.includes(str.charAt(_start))/*!regex.test(str.charAt(_start))*/ )
+		} while ( _start > -1 && !tokens.includes(str.charAt(_start)) )
 
 		do {
 			_end++;
-		} while ( _end < str.length && !tokens.includes(str.charAt(_end))/*!regex.test(str.charAt(_end))*/ )
+		} while ( _end < str.length && !tokens.includes(str.charAt(_end)) )
 
 		return str.substring(_start+1, _end);
 	}
@@ -564,7 +561,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "updateSearchTerms":
 
 				// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
-				if (quickMenuObject.locked || document.title === "QuickMenu") {
+				
+				if (quickMenuObject.locked || document.title === "QuickMenu" || document.getElementById('CS_quickMenuIframe')) {
 					quickMenuObject.searchTerms = message.searchTerms;
 					
 					// send event to OpenAsLink tile to enable/disable
@@ -574,7 +572,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						action: "updateQuickMenuObject", 
 						quickMenuObject: quickMenuObject
 					});
-				}
+				} 
 				break;
 			
 			case "updateQuickMenuObject":
