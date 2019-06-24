@@ -36,7 +36,7 @@
   },
   
    "AddCustomSearchMenu": {
-    "message": "Show \"Add Custom Search\""
+    "message": "Show \"Add to ContextSearch\""
   },
   
   "AddCustomSearchMenuTooltip": {
@@ -596,7 +596,7 @@
   },
   
   "AddCustomSearch": {
-    "message": "Add Custom Search"
+    "message": "Add to ContextSearch"
   },
   
   "SearchFor": {
@@ -1536,10 +1536,13 @@
     "message": "Shift",
     "description": ""
   },
-  
-  "QuickMenuAllowContextMenu": {
-    "message": "Hide the default context menu when opening the Quick Menu using right-click",
-    "description": ""
+
+  "HideContextMenu": {
+	"message": "Hide the default context menu when opening the Quick Menu using right-click"
+  },
+
+  "HoldForContextMenu": {
+	"message": "Hold right button ~1s and release for default context menu"
   },
   
   "___________": {

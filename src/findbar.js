@@ -189,3 +189,12 @@ document.getElementById('clearSearchBar').addEventListener('click', (e) => {
 	getSearchBar().dispatchEvent(new Event('change'));
 	getSearchBar().focus();
 });
+
+// override F3 opening default search
+document.addEventListener('keydown', (e) => {
+	if ( e.key === "F3" ) {
+		e.preventDefault();
+		browser.runtime.sendMessage({action: "findBarNext"});
+		return false;
+	}
+});
