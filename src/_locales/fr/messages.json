@@ -1509,6 +1509,14 @@
     "description": ""
   },
   
+  "HideContextMenu": {
+	"message": "Hide the default context menu when opening the Quick Menu using right-click"
+  },
+
+  "HoldForContextMenu": {
+	"message": "Hold right button ~1s and release for default context menu"
+  },
+  
   "___________": {
     "message": "",
     "description": ""
