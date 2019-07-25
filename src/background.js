@@ -11,7 +11,8 @@ async function notify(message, sender, sendResponse) {
 	}
 
 	await (() => {
-		if (sender && !sender.tab) { // browser_action popup has no tab, use current tab
+		sender = sender || {};
+		if ( !sender.tab ) { // page_action & browser_action popup has no tab, use current tab
 			function onFound(tabs) {
 				sender.tab = tabs[0];
 			}
@@ -1100,6 +1101,14 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 	if ( !tab ) return;
 
 	if ( !userOptions.highLight.enabled ) return;
+	
+	// show the page_action for highlighting
+	browser.pageAction.show(tab.id);
+	browser.pageAction.onClicked.addListener((tab) => {
+		notify({action: "unmark"});
+		notify({action: "removeTabHighlighting", tabId: tab.id});
+		browser.pageAction.hide(tab.id);
+	});
 
 	return browser.tabs.executeScript(tab.id, {
 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
@@ -1119,7 +1128,7 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 }
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-	
+
 	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
 
 	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;

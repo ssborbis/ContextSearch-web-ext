@@ -623,6 +623,8 @@ $('#n_quickMenuAutoTimeout').addEventListener('change',  (e) => {
 	saveOptions(e);
 });
 
+$('#n_findBarTimeout').addEventListener('change',  saveOptions);
+
 $('#n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
 
 $('#range_quickMenuScale').addEventListener('input', (ev) => {

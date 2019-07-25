@@ -44,7 +44,7 @@ window.addEventListener('contextmenu', (e) => {
 	}, 1000);
 });
 
-// what was this for?
+// what was this for? ( page_action is not considered a tab and does not receive userOptions updates )
 // setInterval(() => {
 	// if ( browser.runtime === undefined ) return;
 	// browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {

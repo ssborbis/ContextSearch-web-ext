@@ -12,7 +12,7 @@
 			}
 			BODY {
 				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; 
-				background-color:white;
+				background-color:#fafafa;
 				color: #4A4A4A;
 				margin:0;
 				padding:0;
@@ -43,7 +43,6 @@
 				width:calc(100% - 230px);
 				max-width:700px;
 				text-align:left;
-				background-color:white;
 				margin-left:300px;
 			}
 			#left_div #info {
@@ -84,8 +83,12 @@
 				font-size:24pt;
 				font-weight:300;
 				text-align:left;
-				margin-bottom:20px;
-				margin-left:-20px;
+				margin:10px 0 20px -20px;
+			}
+			.blobContainerHeader IMG {
+				height:1em;
+				vertical-align:middle;
+				margin:10px 16px 20px 0;
 			}
 			.keyboardButton {
 				font-family: Arial;
@@ -445,7 +448,6 @@
 			/* Style the tab content */
 			.tabcontent {
 				display: none;
-				padding: 20px;
 				font-weight:bold;
 				animation: fadeEffect .25s;
 				margin:0;
@@ -502,12 +504,27 @@
 				opacity:.4;
 			}
 			.header1 {
-				margin-left:-20px;
-				padding: 12px 2px;
 				text-align:left;
 				font-size:14pt;
 				font-variant: small-caps;
 				font-weight:300;
+				padding:0;
+				margin:0;
+				position:relative;
+				top:-1.5em;
+				background-color:white;
+				display:inline-block;
+				padding:0 10px;
+				border:1px solid transparent;
+				border-radius:16px;
+				border-width: 1px 1px 0 1px;
+			}
+			#helpTab .header1 {
+				display:block;
+				top:0;
+				padding:0;
+				margin:20px 0 10px 0;
+				border:none;
 			}
 			TABLE.searchActions {
 			}			
@@ -889,7 +906,7 @@
 				background-size:30px;
 				background-color: #ececec;
 			}
-			.header1.help {
+			#helpTab .header1.help {
 				font-size:11pt;
 				font-weight:bold;
 				text-variant:default;
@@ -926,6 +943,13 @@
 			.add::before {
 				content: url("icons/add.svg");
 			}
+			SECTION {
+				border:1px solid #ccc;
+				border-radius:10px;
+				padding:16px;
+				margin-top:24px;
+				background-color:#fff;
+			}
 		</style>
 	</head>
 	<body>
@@ -945,7 +969,7 @@
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img alt="" src="icons/quick_menu.png" />Quick Menu</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</button>
 				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img alt="" src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</button>
-				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.png" />Highlight</button>
+				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img alt="" src="icons/highlight.svg" />Highlight</button>
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img alt="" src="icons/transparent.gif" />Search Results</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img alt="" src="icons/transparent.gif" />Find Bar</button>
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img alt="" src="icons/search.svg" />Search Engines</button>
@@ -970,8 +994,9 @@
 		
 			<div class="tabcontent" id="generalTab">
 			
-				<div class="blobContainerHeader" data-i18n="General">General</div>
+				<div class="blobContainerHeader" data-i18n="General"><img alt="" src="icons/settings.svg" />General</div>
 			
+				<section>
 				<p class="header1" data-i18n="Links">Links</p>
 				<p>	
 					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_contextMenuSearchLinksAs">
@@ -981,7 +1006,9 @@
 					
 					<span class="description" data-i18n="LinksTooltip">Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting</span>
 				</p>
+				</section>
 				
+				<section>
 				<p class="header1" data-i18n="EnableAnimations">Animations</p>
 				<div class="option">			
 					<label class="container" data-i18n="EnableAnimations">
@@ -990,7 +1017,9 @@
 					</label>
 					<div class="description" data-i18n="EnableAnimationsTooltip">Enable resize, slide-in, opacity animations for all menus. Disable for faster interface with no eye candy</div>
 				</div>
+				</section>
 				
+				<section>
 				<p class="header1" data-i18n="MenuTheme">Menu Theme</p>
 				<div class="option">
 					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_searchBarTheme">
@@ -1000,6 +1029,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="ThemeTooltip">Theme to use with the menu</div>
 				</div>
 
+				</section>
+				
+				<section>
 				<p class="header1" data-i18n="UserStyles">User Styles</p>
 				<div class="option">
 					<label class="container">
@@ -1012,7 +1044,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 				<textarea id="t_userStyles" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px"></textarea>
 				
-				<!-- <p class="header1" data-i18n="">Images</p> -->
+				</section>
+				<!-- <section>
+<p class="header1" data-i18n="">Images</p> -->
 				<!-- <div class="option"> -->
 					<!-- <label class="container" data-i18n=""> -->
 						<!-- <input type="checkbox" id="cb_images____" /> -->
@@ -1026,7 +1060,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		
 			<div class="tabcontent" id="contextMenuTab">
 
-				<div class="blobContainerHeader" data-i18n="ContextMenu">Context Menu</div>
+				<div class="blobContainerHeader" data-i18n="ContextMenu"><img alt="" src="icons/context_menu.png" />Context Menu</div>
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="cb_contextMenu" />
@@ -1045,6 +1079,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="AddCustomSearchMenuTooltip">Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases</div>
 				</div>
 
+				<section>
 				<p class="header1" data-i18n="SearchActionsHeader">Search Actions</p>
 				<p class="short" style="border-width: 1px 0">
 					<span class="buttonLabel" data-i18n="LeftButton">Left Button</span><img alt="Left Button" title="Left Button" src="icons/leftmouse.png" class="smallIcon" />
@@ -1107,16 +1142,19 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
 					</select>
 				</p>
+				</section>
+				<section>
 				<p class="header1" data-i18n="Shortcut">Shortcut</p>
 				
 				<p>
 					<button id="b_contextMenuKey" class="keyboardButton" style="min-width:auto;min-height:1em;padding: 3px 10px;">&nbsp;</button>
 					<span class="description" data-i18n="ContextMenuHotKeyTooltip">Keyboard shortcut to expand the "Search With..." entry in the context menu</span>
 				</p>
+				</section>
 			</div>
 			
 			<div class="tabcontent" id="quickMenuTab">
-				<div class="blobContainerHeader" data-i18n="QuickMenu">Quick Menu</div>
+				<div class="blobContainerHeader" data-i18n="QuickMenu"><img alt="" src="icons/quick_menu.png" />Quick Menu</div>
 				
 				<div data-browser="firefox" style="border-radius:10px;background-color:#efefef;padding:10px;margin:10px 0;display:inline-block">
 					<div style='display:table-cell;vertical-align:middle;border-right:1px solid #ccc;padding-right:10px;text-align:center'>
@@ -1160,8 +1198,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="EnableOnImages">Enable on images</div>
 				</div>
 
-				<hr />
-
+				<section>
 				<p class="header1" data-i18n="Columns">Columns</p>
 				<div class="option">
 					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice">
@@ -1175,11 +1212,17 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
 				</div>
-
+				</section>
+				
+				<section>
 				<p class="header1" data-i18n="Rows">Rows</p>
-				<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
-				<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening</span>
-
+				<div class="option">
+					<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
+					<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening</span>
+				</div>
+				</section>
+				
+				<section>
 				<p class="header1" data-i18n="Size">Size</p>
 				<table>
 					<tr>
@@ -1207,7 +1250,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</td>
 					</tr>
 				</table>
+				</section>
 				
+				<section>
 				<p class="header1" data-i18n="Opening">Opening</p>
 				
 				<div class="option">
@@ -1339,9 +1384,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 				</tr>
 				</table>
-
-				<hr />
+				</section>
 				
+				<section>
 				<p class="header1" data-i18n="Closing">Closing</p>
 				<div class="option">
 					<label class="container">
@@ -1359,7 +1404,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="CloseOnScrollTooltip">Close menu by scrolling or using the mouse wheel</div>
 				</div>
 
-				<p class="header1" data-i18n="SearchActionsHeader">Search Actions</p>
+				</section><section>
+<p class="header1" data-i18n="SearchActionsHeader">Search Actions</p>
 				
 				<table class="searchActions">
 				<tr>
@@ -1558,7 +1604,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</tr>
 			</table>
 
-				<p class="header1" data-i18n="Position">Position</p>
+				</section><section>
+<p class="header1" data-i18n="Position">Position</p>
 				
 				<div>
 					<div style="font-size:0;line-height:0;display:inline-block;">
@@ -1577,7 +1624,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<div id="t_position" style="height:10pt;font-size:10pt;margin-left:2px" data-i18n="PositionDescription">choose where menu appears</div>
 				
 							
-				<p class="header1" data-i18n="Tools">Tools</p>
+				</section><section>
+<p class="header1" data-i18n="Tools">Tools</p>
 				
 				<div class="option">
 					<label class="container">
@@ -1601,7 +1649,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<div id="toolIcons"></div>
 				<div id="t_toolIcons" style="height:10pt;font-size:10pt;margin-left:10px" data-i18n="ToolsHelp">click to disable | drag to re-order</div>
 				
-				<p class="header1" data-i18n="SearchBar">Search Bar</p>
+				</section><section>
+<p class="header1" data-i18n="SearchBar">Search Bar</p>
 				
 				<div>	
 					<span data-i18n="Position">Position</span><span class="info" data-msg="Choose where to display the search bar in the Quick Menu" data-i18n_tooltip="SearchBar">?</span>
@@ -1632,11 +1681,12 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 				</div>
 				<div class="tabcontent" id="toolBarTab">
-				<div class="blobContainerHeader" data-i18n="Toolbar">Toolbar</div>
+				<div class="blobContainerHeader" data-i18n="Toolbar"><img alt="" src="icons/icon48.png" />Toolbar</div>
 				
 				<div class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</div>
 					
-				<p class="header1" data-i18n="Columns">Columns</p>
+				</section><section>
+<p class="header1" data-i18n="Columns">Columns</p>
 				<div class="option">
 					<input type="number" id="n_searchBarColumns" size="2" class="inputNice">
 					<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
@@ -1650,7 +1700,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
 				</div>
 				
-				<p class="header1" data-i18n="Closing">Closing</p>
+				</section><section>
+<p class="header1" data-i18n="Closing">Closing</p>
 				<div class="option">
 					<label class="container" data-i18n="CloseAfterSearch">
 						<input type="checkbox" id="cb_searchBarCloseAfterSearch" />
@@ -1659,7 +1710,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 				</div>
 				
-				<p class="header1" data-i18n="Suggestions">Suggestions</p>
+				</section><section>
+<p class="header1" data-i18n="Suggestions">Suggestions</p>
 				<div class="option">
 					<label class="container" data-i18n="ShowSuggestions">
 						<input type="checkbox" id="cb_searchBarSuggestions" />
@@ -1668,7 +1720,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="ShowSuggestionsTooltip">Fetch search suggestions from Google and display with search history in the search toolbar</div>
 				</div>
 				
-				<p class="header1" data-i18n="History">History</p>
+				</section><section>
+<p class="header1" data-i18n="History">History</p>
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="cb_searchBarDisplayLastSearch" />
@@ -1690,11 +1743,12 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 				</div>
 				<div class="tabcontent" id="sideBarTab">
-					<div class="blobContainerHeader" data-i18n="SideBar">Sidebar</div>
+					<div class="blobContainerHeader" data-i18n="SideBar"><img alt="" src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</div>
 
 					<div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
 
-					<p class="header1" data-i18n="Columns">Columns</p>
+					</section><section>
+<p class="header1" data-i18n="Columns">Columns</p>
 					<div class="option">
 						<input type="number" id="n_sideBarColumns" size="2" class="inputNice">
 						<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
@@ -1708,7 +1762,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
 					</div>
 				
-					<p class="header1" data-i18n="Location">Location</p>
+					</section><section>
+<p class="header1" data-i18n="Location">Location</p>
 					<div class="option">
 						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_sideBarWidgetPosition">
 							<option data-i18n="left" value="left">Left</option>
@@ -1717,7 +1772,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<div class="description" data-i18n="SideBarPositionTooltip">Choose where to display the side bar</div>
 					</div>
 
-					<!-- <p class="header1" data-i18n="Window">Window</p> -->
+					<!-- </section><section>
+<p class="header1" data-i18n="Window">Window</p> -->
 					<!-- <div class="option"> -->
 						<!-- <select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_sideBarType"> -->
 							<!-- <option data-i18n="overlay" value="overlay">overlay</option> -->
@@ -1728,7 +1784,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<!-- Panel creates a sidebar the height of the window and pads the document to avoid covering page content</div> -->
 					<!-- </div> -->
 
-					<p class="header1" data-i18n="Opening">Opening</p>
+					</section><section>
+<p class="header1" data-i18n="Opening">Opening</p>
 					<div class="option">
 						<label class="container" data-i18n="SidebarWidgetEnable">
 							<input type="checkbox" id="cb_sideBarWidgetEnable" />
@@ -1754,9 +1811,10 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 				</div>
 				<div class="tabcontent" id="highLightTab">
-					<div class="blobContainerHeader" data-i18n="Highlight">Highlight</div>
+					<div class="blobContainerHeader" data-i18n="Highlight"><img alt="" src="icons/highlight.svg" />Highlight</div>
 
-					<p class="header1" data-i18n="Style">Style</p>
+					</section><section>
+<p class="header1" data-i18n="Style">Style</p>
 					
 					<div class="option">
 						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="s_highLightStyle">
@@ -1843,7 +1901,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<br /><br />
 				</div>
 				<div class="tabcontent" id="highLightSearchResultsTab">
-					<div class="blobContainerHeader" data-i18n="SearchResults">Search Results</div>
+					<div class="blobContainerHeader" data-i18n="SearchResults"><img alt="" src="icons/highlight.svg" />Search Results</div>
 					
 					<div class="option">
 						<label class="container">
@@ -1882,7 +1940,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<div class="description" data-i18n="HighlightShowFindBarTooltip">Show Find bar when highlighting</div>
 					</div>
 					
-					<p class="header1" data-i18n="Accuracy">Accuracy</p>
+					</section><section>
+<p class="header1" data-i18n="Accuracy">Accuracy</p>
 					<table>
 						<tr>
 							<!-- <td>Accuracy</td> -->
@@ -1952,9 +2011,10 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 				</div>
 				<div class="tabcontent" id="highLightFindBarTab">
-					<div class="blobContainerHeader" data-i18n="FindBar">Find Bar</div>
+					<div class="blobContainerHeader" data-i18n="FindBar"><img alt="" src="icons/highlight.svg" />Find Bar</div>
 					
-					<p class="header1" data-i18n="opening">Opening</p>
+					</section><section>
+<p class="header1" data-i18n="opening">Opening</p>
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="cb_findBarEnabled" />
@@ -1992,7 +2052,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span class="description" data-i18n="FindBarSearchInAllTabs">Search all tabs when using the findbar ( note: type timer will be disabled )</span>
 					</div>
 				
-					<p class="header1" data-i18n="Location">Location</p>
+					</section><section>
+<p class="header1" data-i18n="Location">Location</p>
 					<p>	
 						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarPosition">
 							<option data-i18n="Top" value="top">top</option>
@@ -2002,7 +2063,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span class="description" data-i18n="FindBarPositionTooltip">Choose where to display the Find bar</span>
 					</p>
 					
-					<p class="header1" data-i18n="Window">Window</p>
+					</section><section>
+<p class="header1" data-i18n="Window">Window</p>
 					<div class="option">
 						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarWindowType">
 							<option data-i18n="undocked" value="undocked">undocked</option>
@@ -2012,7 +2074,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</div>
 					</div>
 					
-					<p class="header1" data-i18n="Accuracy">Accuracy</p>
+					</section><section>
+<p class="header1" data-i18n="Accuracy">Accuracy</p>
 					<table>
 						<tr>
 							<!-- <td>Accuracy</td> -->
@@ -2080,7 +2143,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</tr>
 					</table>
 					
-					<p class="header1" data-i18n="General">General</p>
+					</section><section>
+<p class="header1" data-i18n="General">General</p>
 					
 					<div class="option">
 						<label class="container">
@@ -2098,7 +2162,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		<div class="tabcontent" id="enginesTab">
 			<div style="font-weight:normal; font-family:'Source Sans Pro', sans-serif;">
 			
-				<div class="blobContainerHeader" data-i18n="SearchEngines">Search Engines</div>
+				<div class="blobContainerHeader" data-i18n="SearchEngines"><img alt="" src="icons/search.svg" />Search Engines</div>
 				
 				<div class="description">
 					<span data-i18n="AddingSearchEnginesInfoMessage">
@@ -2179,7 +2243,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<br />
 	
 				<div data-browser="firefox">
-					<p class="header1" style="margin-top:0" data-i18n="ImportHeader">
+					</section><section>
+<p class="header1" style="margin-top:0" data-i18n="ImportHeader">
 						Import One-Click Search Engines
 					</p>
 					<span data-i18n="ImportDescription">
