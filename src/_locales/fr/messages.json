@@ -1510,11 +1510,11 @@
   },
   
   "HideContextMenu": {
-	"message": "Hide the default context menu when opening the Quick Menu using right-click"
+	"message": "Masquer le menu contextuel standard si ouverture du menu instantané par clic droit"
   },
 
   "HoldForContextMenu": {
-	"message": "Hold right button ~1s and release for default context menu"
+	"message": "Le menu contextuel standard est obtenu en maintenant le bouton droit enfoncé pendant environ une seconde puis en le relâchant."
   },
   
   "___________": {
