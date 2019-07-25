@@ -82,6 +82,11 @@ function makeQuickMenu(options) {
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 	
 	let tb = document.getElementById('toolBar') || document.createElement('div');
+	
+	// prevent context menu on toolbar deadzone
+	if ( !userOptions.quickMenuAllowContextMenu ) {
+		tb.addEventListener('contextmenu', e => e.preventDefault());
+	}
 
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
