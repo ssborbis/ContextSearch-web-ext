@@ -56,3 +56,7 @@ Most websites that have an embeded search bar can be added to the list of search
 * Right-click on the search bar in the page to open the context menu
 * Select the menu item `Add Custom Search` to open the Add Custom Search dialog box
 * Click Add
+
+### Building from source / sideloading
+Replace `manifest.json` with `manifest_chrome.json` or `manifest_firefox.json` depending on which browser you are using.
+
