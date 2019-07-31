@@ -58,5 +58,5 @@ Most websites that have an embeded search bar can be added to the list of search
 * Click Add
 
 ### Building from source / sideloading
-Replace `manifest.json` with `manifest_chrome.json` or `manifest_firefox.json` depending on which browser you are using.
+Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
 
