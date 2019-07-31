@@ -6,6 +6,10 @@
 
 [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
+
+### Building from source / sideloading
+Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
+
 ___
 
 # ContextSearch web-ext
@@ -56,7 +60,3 @@ Most websites that have an embeded search bar can be added to the list of search
 * Right-click on the search bar in the page to open the context menu
 * Select the menu item `Add Custom Search` to open the Add Custom Search dialog box
 * Click Add
-
-### Building from source / sideloading
-Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
-
