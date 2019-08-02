@@ -422,6 +422,7 @@ function saveOptions(e) {
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
 		quickMenuAllowContextMenu: !$('#cb_quickMenuAllowContextMenu').checked,
+		quickMenuQuickSearch: userOptions.quickMenuQuickSearch,
 		
 		quickMenuOnSimpleClick: {
 			enabled: $('#cb_quickMenuOnSimpleClick').checked,
