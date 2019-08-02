@@ -6,6 +6,10 @@
 
 [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
+
+### Building from source / sideloading
+Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
+
 ___
 
 # ContextSearch web-ext
