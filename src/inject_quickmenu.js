@@ -605,6 +605,18 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					quickMenuObject: quickMenuObject
 				});
 				
+				// bypass displaying the menu and execute a search immedately if using quicksearch
+				if ( userOptions.quickMenuQuickSearch ) {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: document.getElementById('CS_quickMenuIframe').contentDocument.querySelector('DIV[data-type="searchEngine"]').dataset.id,
+							selectionText: quickMenuObject.searchTerms,
+							openMethod: userOptions.quickMenuLeftClick
+						}
+					});
+				}
+				
 				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 				
 				if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {

@@ -1474,6 +1474,7 @@ const defaultUserOptions = {
 	quickMenuSearchHotkeys: "noAction",
 	quickMenuAutoMaxChars: 0,
 	quickMenuOpeningOpacity: 1,
+	quickMenuQuickSearch: false,
 	quickMenuTheme: "lite",
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
