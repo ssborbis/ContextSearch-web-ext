@@ -427,6 +427,9 @@ function makeQuickMenu(options) {
 			
 			if (type === 'quickmenu') {
 				
+				// store the last used id
+				quickMenuObject.lastUsed = _tile.dataset.id || null;
+				
 				quickMenuObject.searchTerms = sb.value;
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
@@ -596,6 +599,36 @@ function makeQuickMenu(options) {
 					}
 
 					toolsArray.push(tile_lock);
+					break;
+					
+				case "repeatsearch": // execute searches immediately when opening menu
+					let tile_qs = buildSearchIcon(browser.runtime.getURL("/icons/repeatsearch.svg"), browser.i18n.getMessage("tools_repeatsearch"));
+
+					browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( result => {
+						let disabled = result.shift().lastUsed ? false : true;
+						tile_qs.dataset.disabled = tile_qs.disabled = disabled;
+					});
+
+					tile_qs.onclick = function(e) {
+
+						let lastUsedId = quickMenuObject.lastUsed || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
+						
+						quickMenuObject.lastUsed = lastUsedId;
+						
+						tile_qs.disabled = tile_qs.dataset.disabled = !tile_qs.disabled;
+						
+						if ( tile_qs.disabled ) {
+							console.log('deleting lastUsed');
+							delete quickMenuObject.lastUsed;
+						} 
+						
+						browser.runtime.sendMessage({
+							action: "updateQuickMenuObject", 
+							quickMenuObject: quickMenuObject
+						});
+					}
+
+					toolsArray.push(tile_qs);
 					break;
 			}
 		});

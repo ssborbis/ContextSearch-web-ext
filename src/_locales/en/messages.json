@@ -1545,6 +1545,10 @@
 	"message": "Hold right button ~1s and release for default context menu"
   },
   
+  "tools_repeatsearch": {
+    "message": "repeat search"
+  },
+  
   "___________": {
     "message": "",
     "description": ""

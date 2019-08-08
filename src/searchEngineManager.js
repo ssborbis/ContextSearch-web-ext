@@ -227,6 +227,11 @@ function buildSearchEngineContainer() {
 					addNewEngine(node, true);
 				}
 				
+				document.getElementById('iconrefresh').onclick = function() {
+					icon.src = browser.runtime.getURL('icons/spinner.gif');
+					icon.src = edit_form.iconURL.value;
+				}
+				
 				edit_form.addOpenSearchEngine.onclick = function() {
 
 					let url = "https://opensearch-api.appspot.com" 
@@ -1448,7 +1453,7 @@ function buildSearchEngineContainer() {
 				let form = document.getElementById("editSearchEngineContainer");
 				form.iconURL.value = imageToBase64(img, 32);
 			//	document.getElementById('iconPreview').src = form.iconURL.value;
-			//	form.closest("LI").querySelector("img").src = form.iconURL.value;
+				form.closest("LI").querySelector("img").src = form.iconURL.value;
 			}
 			img.src = reader.result;
 			

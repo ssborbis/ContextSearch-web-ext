@@ -437,6 +437,13 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: `showNotification("${message.msg}")`
 			});
+			break;
+			
+		case "getTabQuickMenuObject":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: `quickMenuObject;`
+			});
+			break;
 	}
 }
 
@@ -1392,6 +1399,21 @@ function updateUserOptionsVersion(uo) {
 		_uo.sideBar.offsets.top = _uo.sideBar.widget.offset;
 
 		return _uo;
+		
+	}).then((_uo) => {
+		
+		// remove campaign ID from ebay query_string ( mozilla request )
+		
+		let index = userOptions.searchEngines.findIndex( se => se.query_string === "https://rover.ebay.com/rover/1/711-53200-19255-0/1?ff3=4&toolid=20004&campid=5338192028&customid=&mpre=https://www.ebay.com/sch/{searchTerms}" );
+		
+		if ( index === -1 ) return _uo;
+
+		console.log("-> 1.14");
+		
+		userOptions.searchEngines[index].query_string = "https://www.ebay.com/sch/i.html?_nkw={searchTerms}";
+		userOptions.searchEngines[index].template = "https://www.ebay.com/sch/";
+		return _uo;	
+
 	}).then((_uo) => {	
 		console.log('done');
 		return _uo;
@@ -1448,7 +1470,8 @@ const defaultUserOptions = {
 		{name: 'close', 	disabled: false},
 		{name: 'copy', 		disabled: false},
 		{name: 'link', 		disabled: false},
-		{name: 'lock',		disabled: false}
+		{name: 'lock',		disabled: false},
+		{name: 'repeatsearch', disabled: true}
 	],
 	quickMenuToolsPosition: "hidden",
 	quickMenuToolsAsToolbar: false,
@@ -1474,7 +1497,6 @@ const defaultUserOptions = {
 	quickMenuSearchHotkeys: "noAction",
 	quickMenuAutoMaxChars: 0,
 	quickMenuOpeningOpacity: 1,
-	quickMenuQuickSearch: false,
 	quickMenuTheme: "lite",
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,

@@ -422,7 +422,6 @@ function saveOptions(e) {
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
 		quickMenuAllowContextMenu: !$('#cb_quickMenuAllowContextMenu').checked,
-		quickMenuQuickSearch: userOptions.quickMenuQuickSearch,
 		
 		quickMenuOnSimpleClick: {
 			enabled: $('#cb_quickMenuOnSimpleClick').checked,
@@ -832,11 +831,19 @@ function buildToolIcons() {
 		{name: 'copy', src: "icons/clipboard.png", title: browser.i18n.getMessage('tools_Copy'), index: Number.MAX_VALUE, disabled: true},
 		{name: 'link', src: "icons/link.svg", title: browser.i18n.getMessage('tools_OpenAsLink'), index: Number.MAX_VALUE, disabled: true},
 		{name: 'disable', src: "icons/power.svg", title: browser.i18n.getMessage('tools_Disable'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'lock', src: "icons/lock.png", title: browser.i18n.getMessage('tools_Lock'), index: Number.MAX_VALUE, disabled: true}
+		{name: 'lock', src: "icons/lock.png", title: browser.i18n.getMessage('tools_Lock'), index: Number.MAX_VALUE, disabled: true},
+		{name: 'repeatsearch', src: "icons/repeatsearch.svg", title: browser.i18n.getMessage('tools_repeatsearch'), index: Number.MAX_VALUE, disabled: true}
 	];
 	
 	toolIcons.forEach( toolIcon => {
 		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );
+		
+		// update quickMenuTools array with missing tools
+		if ( toolIcon.index === -1) {
+			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: false});
+			toolIcon.index = toolIcons.length - 1;
+		}
+		
 		toolIcon.disabled = userOptions.quickMenuTools[toolIcon.index].disabled;
 	});
 
