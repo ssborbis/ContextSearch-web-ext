@@ -605,8 +605,7 @@ function makeQuickMenu(options) {
 					let tile_qs = buildSearchIcon(browser.runtime.getURL("/icons/repeatsearch.svg"), browser.i18n.getMessage("tools_repeatsearch"));
 
 					browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( result => {
-						let disabled = result.shift().lastUsed ? false : true;
-						tile_qs.dataset.disabled = tile_qs.disabled = disabled;
+						tile_qs.dataset.disabled = tile_qs.disabled = !result.shift().repeatsearch;
 					});
 
 					tile_qs.onclick = function(e) {
@@ -617,10 +616,10 @@ function makeQuickMenu(options) {
 						
 						tile_qs.disabled = tile_qs.dataset.disabled = !tile_qs.disabled;
 						
-						if ( tile_qs.disabled ) {
-							console.log('deleting lastUsed');
-							delete quickMenuObject.lastUsed;
-						} 
+						if ( tile_qs.disabled ) 
+							quickMenuObject.repeatsearch = false;
+						else
+							quickMenuObject.repeatsearch = true;
 						
 						browser.runtime.sendMessage({
 							action: "updateQuickMenuObject", 
