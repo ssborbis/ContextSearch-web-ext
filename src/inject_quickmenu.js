@@ -606,16 +606,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				
 				// bypass displaying the menu and execute a search immedately if using repeatsearch
-				if ( quickMenuObject.lastUsed ) {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: quickMenuObject.lastUsed || document.getElementById('CS_quickMenuIframe').contentDocument.querySelector('DIV[data-type="searchEngine"]').dataset.id,
-							selectionText: quickMenuObject.searchTerms,
-							openMethod: userOptions.quickMenuLeftClick
-						}
-					});
-				}
+				// if ( quickMenuObject.lastUsed ) {
+					// browser.runtime.sendMessage({
+						// action: "quickMenuSearch", 
+						// info: {
+							// menuItemId: quickMenuObject.lastUsed || document.getElementById('CS_quickMenuIframe').contentDocument.querySelector('DIV[data-type="searchEngine"]').dataset.id,
+							// selectionText: quickMenuObject.searchTerms,
+							// openMethod: userOptions.quickMenuLeftClick
+						// }
+					// });
+				// }
 				
 				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 				
