@@ -1,14 +1,4 @@
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/firefox.png" width="80px">&nbsp;&nbsp;&nbsp;&nbsp;[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) 
-
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/chrome.png" width="80px">&nbsp;&nbsp;&nbsp;&nbsp;[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
-
-
-### Building from source / sideloading
-Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
-
-___
-
-# ContextSearch web-ext
+# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48-2.png" height="30px">&nbsp;ContextSearch web-ext
 
 Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search.
 
@@ -28,6 +18,16 @@ Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompr
 * International character coding for non-UTF-8 engines
 * Built-in tools
 * Easily add new engines from website search forms
+
+___
+
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/firefox.png" width="80px">&nbsp;&nbsp;&nbsp;&nbsp;[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) 
+
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/chrome.png" width="80px">&nbsp;&nbsp;&nbsp;&nbsp;[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+
+
+### Building from source / sideloading
+Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
 
 ___
 
