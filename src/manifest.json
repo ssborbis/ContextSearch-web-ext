@@ -103,6 +103,6 @@
 	"page_action": {
 		"browser_style": true,
 		"default_icon": "icons/highlight.svg",
-		"default_title": "Clear highlighting"
+		"default_title": "__MSG_ClearHighlighting__"
 	}
 }

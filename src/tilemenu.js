@@ -28,6 +28,8 @@ function addTileEventHandlers(_tile, handler) {
 
 	// all click events are attached to mouseup
 	_tile.addEventListener('mouseup', (e) => {
+		
+		if ( _tile.disabled ) return false;
 
 		// check if this tile was target of the latest mousedown event
 		if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
@@ -643,6 +645,9 @@ function makeQuickMenu(options) {
 			toolsArray.forEach( tool => {
 				tool.dataset.disabled = true;
 				tool.dataset.hidden = true;
+				tool.disabled = true;
+				tool.title = "";
+				tool.onclick = function(e) { e.preventDefault() };
 				tileArray.unshift(tool);
 			});
 		}

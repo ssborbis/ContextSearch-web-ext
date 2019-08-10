@@ -1553,6 +1553,11 @@
     "message": "Last used search engine"
   },
   
+  "ClearHighlighting": {
+    "message": "Clear Highlighting",
+    "description": ""
+  } ,
+  
   "___________": {
     "message": "",
     "description": ""
