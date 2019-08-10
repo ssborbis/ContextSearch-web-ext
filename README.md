@@ -1,10 +1,6 @@
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/firefox.png" width="200px">
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/firefox.png" width="80px">&nbsp;&nbsp;&nbsp;&nbsp;[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) 
 
-[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/)
-
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/chrome.png" width="200px">
-
-[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/chrome.png" width="80px">&nbsp;&nbsp;&nbsp;&nbsp;[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
 
 ### Building from source / sideloading
@@ -18,6 +14,23 @@ Load your current search engines into a context menu for easily searching select
 
 Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
 
+### Features ###
+* Context menu
+* Popup menu with several opening methods
+* Highlight search terms
+* Custom Find bar with regex support
+* Folders and subfolders for organizing search engines
+* Bookmarklets support for user scripts
+* Lite / Dark themes
+* Custom user CSS for menus
+* Site search support
+* Reverse image search support
+* International character coding for non-UTF-8 engines
+* Built-in tools
+* Easily add new engines from website search forms
+
+___
+
 ### Quick Start
 ContextSearch web-ext comes preloaded with some of the most popular search engines. No setup required.
 
@@ -28,9 +41,9 @@ ContextSearch web-ext comes preloaded with some of the most popular search engin
 The search results can be displayed in a number of ways depending on the key held while clicking the search engine.
 
 Defaults:
-  * Click  -> Open In New Tab
-  * Click + Shift -> Open In New Window
-  * Click + Ctrl  -> Open In Background Tab
+  * `Click  -> Open In New Tab`
+  * `Click + Shift -> Open In New Window`
+  * `Click + Ctrl  -> Open In Background Tab`
   
 These settings can be customized from `ContextSearch web-ext Options -> Context Menu -> Search Actions`
 
@@ -44,12 +57,12 @@ The Quick Menu is a robust popup menu that can be used to perform search actiosn
 The search results can be displayed in a number of ways depending on the button used or key held while clicking the search engine.
 
 Defaults:
-  * Left Click  -> Open In New Tab
-  * Middle Click  -> Open In Background Tab
-  * Right Click  -> Open In Current Tab
-  * Click + Shift -> Open In New Window
-  * Click + Ctrl  -> Open In Background Tab
-  * Click + Alt -> Keep Menu Open
+  * `Left Click  -> Open In New Tab`
+  * `Middle Click  -> Open In Background Tab`
+  * `Right Click  -> Open In Current Tab`
+  * `Click + Shift -> Open In New Window`
+  * `Click + Ctrl  -> Open In Background Tab`
+  * `Click + Alt -> Keep Menu Open`
   
 These settings can be customized from `ContextSearch web-ext Options -> Quick Menu -> Search Actions`
 
@@ -58,5 +71,5 @@ Most websites that have an embeded search bar can be added to the list of search
 
 * Open the website you want to add a search engine for
 * Right-click on the search bar in the page to open the context menu
-* Select the menu item `Add Custom Search` to open the Add Custom Search dialog box
+* Select the menu item `Add to ContextSearch` to open the Add Custom Search dialog box
 * Click Add
