@@ -1514,7 +1514,7 @@
   },
 
   "HoldForContextMenu": {
-	"message": "Le menu contextuel standard est obtenu en maintenant le bouton droit enfoncé pendant environ une seconde puis en le relâchant."
+	"message": "Clic droit long (~1 s) pour le menu contextuel standard !"
   },
   
   "tools_repeatsearch": {
