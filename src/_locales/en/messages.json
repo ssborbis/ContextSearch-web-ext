@@ -1549,6 +1549,10 @@
     "message": "Perform a left-button search with last engine used when the menu opens"
   },
   
+   "tools_lastused": {
+    "message": "Last used search engine"
+  },
+  
   "___________": {
     "message": "",
     "description": ""

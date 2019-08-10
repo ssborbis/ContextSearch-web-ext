@@ -3,15 +3,140 @@ var styleEl = document.createElement('style');
 // Append <style> element to <head>
 document.head.appendChild(styleEl);
 
+var type;
+
 function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
+}
+
+function getSearchBar() {
+	return document.getElementById('searchBar');
+}
+
+// generic search engine tile
+function buildSearchIcon(icon_url, title) {
+	var div = document.createElement('DIV');
+	
+	if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + '")';
+	div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
+	div.title = title;
+	return div;
+}
+
+// method for assigning tile click handler
+function addTileEventHandlers(_tile, handler) {
+
+	// all click events are attached to mouseup
+	_tile.addEventListener('mouseup', (e) => {
+
+		// check if this tile was target of the latest mousedown event
+		if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
+
+		// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
+		quickMenuObject.mouseLastClickTime = Date.now();
+		
+		if (type === 'quickmenu') {
+			
+			// store the last used id
+			quickMenuObject.lastUsed = _tile.dataset.id || quickMenuObject.lastUsed || null;
+			
+			quickMenuObject.searchTerms = getSearchBar().value;
+			browser.runtime.sendMessage({
+				action: "updateQuickMenuObject", 
+				quickMenuObject: quickMenuObject
+			});
+		}
+
+		// custom tile methods
+		handler(e);
+		
+		// check for locked / Keep Menu Open 
+		if ( !keepMenuOpen(e) )
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+		
+		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+
+	});
+	
+	// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
+	_tile.addEventListener('mousedown', (e) => {
+		_tile.parentNode.lastMouseDownTile = _tile;
+	});
+	
+	// stop all other mouse events for this tile from propagating
+	[/*'mousedown',*/'mouseup','click','contextmenu'].forEach( eventType => {
+		_tile.addEventListener(eventType, (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
+		});
+	});
+	
+	// allow dnd with left-button, ignore other events
+	_tile.addEventListener('mousedown', (e) => {
+		if ( e.which !== 1 ) {
+			e.preventDefault();
+			e.stopPropagation();
+			return false;
+		}
+	});
+	
+}
+
+// get open method based on user preferences
+function getOpenMethod(e, isFolder) {
+	
+	isFolder = isFolder || false;
+
+	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
+	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
+	let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
+	let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
+	let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
+	let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
+	
+	let openMethod = "";
+	if (e.which === 3)
+		openMethod = right;
+	else if (e.which === 2)
+		openMethod = middle;
+	else if (e.which === 1) {
+		openMethod = left;
+		
+		// ignore methods that aren't opening methods
+		if (e.shiftKey && shift !== 'keepMenuOpen')
+			openMethod = shift;
+		if (e.ctrlKey && ctrl !== 'keepMenuOpen')
+			openMethod = ctrl;
+		if (e.altKey && alt !== 'keepMenuOpen')
+			openMethod = alt;
+	
+	}
+
+	return openMethod;
+}
+
+function keepMenuOpen(e) {
+	
+	if ( /KeepOpen$/.test(getOpenMethod(e)) ) return true;
+	
+	if (
+		!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
+		!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
+		!(e.altKey && userOptions.quickMenuAlt === "keepMenuOpen") &&
+		userOptions.quickMenuCloseOnClick &&
+		!quickMenuObject.locked
+	) 
+		return false;
+	else 
+		return true;
 }
 
 function makeQuickMenu(options) {
 	
 	if ( userOptions.userStylesEnabled ) styleEl.innerText = userOptions.userStyles;
 
-	let type = options.type;
+	type = options.type;
 	let mode = options.mode;
 
 	let singleColumn = ( 
@@ -353,125 +478,6 @@ function makeQuickMenu(options) {
 			return false;
 		});
 	});
-	
-	// generic search engine tile
-	function buildSearchIcon(icon_url, title) {
-		var div = document.createElement('DIV');
-		
-		if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + '")';
-		div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
-		div.title = title;
-		return div;
-	}
-	
-	// get open method based on user preferences
-	function getOpenMethod(e, isFolder) {
-		
-		isFolder = isFolder || false;
-
-		let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
-		let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
-		let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
-		let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
-		let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
-		let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
-		
-		let openMethod = "";
-		if (e.which === 3)
-			openMethod = right;
-		else if (e.which === 2)
-			openMethod = middle;
-		else if (e.which === 1) {
-			openMethod = left;
-			
-			// ignore methods that aren't opening methods
-			if (e.shiftKey && shift !== 'keepMenuOpen')
-				openMethod = shift;
-			if (e.ctrlKey && ctrl !== 'keepMenuOpen')
-				openMethod = ctrl;
-			if (e.altKey && alt !== 'keepMenuOpen')
-				openMethod = alt;
-		
-		}
-
-		return openMethod;
-	}
-	
-	function keepMenuOpen(e) {
-		
-		if ( /KeepOpen$/.test(getOpenMethod(e)) ) return true;
-		
-		if (
-			!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
-			!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
-			!(e.altKey && userOptions.quickMenuAlt === "keepMenuOpen") &&
-			userOptions.quickMenuCloseOnClick &&
-			!quickMenuObject.locked
-		) 
-			return false;
-		else 
-			return true;
-	}
-	
-	// method for assigning tile click handler
-	function addTileEventHandlers(_tile, handler) {
-
-		// all click events are attached to mouseup
-		_tile.addEventListener('mouseup', (e) => {
-
-			// check if this tile was target of the latest mousedown event
-			if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
-
-			// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
-			quickMenuObject.mouseLastClickTime = Date.now();
-			
-			if (type === 'quickmenu') {
-				
-				// store the last used id
-				quickMenuObject.lastUsed = _tile.dataset.id || null;
-				
-				quickMenuObject.searchTerms = sb.value;
-				browser.runtime.sendMessage({
-					action: "updateQuickMenuObject", 
-					quickMenuObject: quickMenuObject
-				});
-			}
-
-			// custom tile methods
-			handler(e);
-			
-			// check for locked / Keep Menu Open 
-			if ( !keepMenuOpen(e) )
-				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
-			
-			if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
-
-		});
-		
-		// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
-		_tile.addEventListener('mousedown', (e) => {
-			_tile.parentNode.lastMouseDownTile = _tile;
-		});
-		
-		// stop all other mouse events for this tile from propagating
-		[/*'mousedown',*/'mouseup','click','contextmenu'].forEach( eventType => {
-			_tile.addEventListener(eventType, (e) => {
-				e.preventDefault();
-				e.stopPropagation();
-				return false;
-			});
-		});
-		
-		// allow dnd with left-button, ignore other events
-		_tile.addEventListener('mousedown', (e) => {
-			if ( e.which !== 1 ) {
-				e.preventDefault();
-				e.stopPropagation();
-				return false;
-			}
-		});
-		
-	}
 
 	function createToolsArray() {
 	
@@ -483,155 +489,11 @@ function makeQuickMenu(options) {
 			// skip disabled tools
 			if (tool.disabled) return;
 			
-			switch (tool.name) {
-				
-				case "copy": // clipboard
-					let tile_copy = buildSearchIcon(browser.runtime.getURL("/icons/clipboard.png"), browser.i18n.getMessage("tools_Copy"));
-					
-					addTileEventHandlers(tile_copy, (e) => {
+			let _tool = QMtools.find( t => t.name === tool.name );
+			toolsArray.push(_tool.init());
 
-						let input = document.createElement('input');
-						input.type = "text";
-						input.value = sb.value;
-						document.body.appendChild(input);
-
-						input.select();
-						
-						if ( !document.queryCommandSupported('copy') ) {
-							console.log('copy not supported');
-							return;
-						}
-
-						document.execCommand("copy");
-						
-						// chrome requires execCommand be run from background
-						browser.runtime.sendMessage({action: 'copy', msg: sb.value});
-					});
-					
-					toolsArray.push(tile_copy);
-					break;
-				
-				case "link": // open as link
-					let tile_link = buildSearchIcon(browser.runtime.getURL("/icons/link.svg"), browser.i18n.getMessage("tools_OpenAsLink"));
-
-					// enable/disable link button on very basic 'is it a link' rules
-					function setDisabled() {
-						if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
-							tile_link.dataset.disabled = true;
-						} else {
-							tile_link.dataset.disabled = false;
-						}
-					}
-					
-					// set initial disabled state
-					setDisabled();
-					
-					// when new search terms are set while locked, enable/disable link
-					document.addEventListener('updatesearchterms', (e) => {
-						setDisabled();
-					});
-					
-					addTileEventHandlers(tile_link, (e) => {
-
-						if (tile_link.dataset.disabled === "true") return;
-
-						browser.runtime.sendMessage({
-							action: "quickMenuSearch", 
-							info: {
-								menuItemId: "openAsLink",
-								selectionText: sb.value,
-								openMethod: getOpenMethod(e),
-								openUrl: true
-							}
-						});
-					});
-					
-					toolsArray.push(tile_link);
-					break;
-					
-				case "close": // simply close the quick menu
-					let tile_close = buildSearchIcon(browser.runtime.getURL("/icons/close.png"), browser.i18n.getMessage("tools_Close"));
-
-					tile_close.onclick = function(e) {
-						browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
-					}
-					
-					toolsArray.push(tile_close);
-					break;
-				
-				case "disable": // close the quick menu and disable for this page / session
-					let tile_disable = buildSearchIcon(browser.runtime.getURL("/icons/power.svg"), browser.i18n.getMessage("tools_Disable"));
-					tile_disable.onclick = function(e) {
-						
-						userOptions.quickMenu = false;
-						quickMenuObject.disabled = true;
-						
-						if (document.title === "QuickMenu") {
-							browser.runtime.sendMessage({
-								action: "updateQuickMenuObject", 
-								quickMenuObject: quickMenuObject
-							});
-						}
-						
-						browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
-					}
-
-					toolsArray.push(tile_disable);
-					break;
-					
-				case "lock": // keep quick menu open after clicking search / scrolling / window click
-					let tile_lock = buildSearchIcon(browser.runtime.getURL("/icons/lock.png"), browser.i18n.getMessage("tools_Lock"));
-					
-					tile_lock.dataset.locked = false;
-					tile_lock.onclick = function(e) {
-
-						if ( this.dataset.locked === "true" )
-							this.dataset.locked = quickMenuObject.locked = false;
-						else
-							this.dataset.locked = quickMenuObject.locked = true;
-
-						// lock styles methods moved to onMessage listener
-						browser.runtime.sendMessage({
-							action: "updateQuickMenuObject", 
-							quickMenuObject: quickMenuObject,
-							toggleLock: true
-						});
-					}
-
-					toolsArray.push(tile_lock);
-					break;
-					
-				case "repeatsearch": // execute searches immediately when opening menu
-					let tile_qs = buildSearchIcon(browser.runtime.getURL("/icons/repeatsearch.svg"), browser.i18n.getMessage("tools_repeatsearch"));
-
-					browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( result => {
-						tile_qs.dataset.disabled = tile_qs.disabled = !result.shift().repeatsearch;
-					});
-
-					tile_qs.onclick = function(e) {
-
-						let lastUsedId = quickMenuObject.lastUsed || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
-						
-						quickMenuObject.lastUsed = lastUsedId;
-						
-						tile_qs.disabled = tile_qs.dataset.disabled = !tile_qs.disabled;
-						
-						if ( tile_qs.disabled ) 
-							quickMenuObject.repeatsearch = false;
-						else
-							quickMenuObject.repeatsearch = true;
-						
-						browser.runtime.sendMessage({
-							action: "updateQuickMenuObject", 
-							quickMenuObject: quickMenuObject
-						});
-					}
-
-					toolsArray.push(tile_qs);
-					break;
-			}
 		});
-		
+
 		toolsArray.forEach( tool => tool.dataset.type = 'tool' );
 
 		return toolsArray;

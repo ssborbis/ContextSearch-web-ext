@@ -610,7 +610,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					browser.runtime.sendMessage({
 						action: "quickMenuSearch", 
 						info: {
-							menuItemId: quickMenuObject.lastUsed || document.getElementById('CS_quickMenuIframe').contentDocument.querySelector('DIV[data-type="searchEngine"]').dataset.id,
+							menuItemId: quickMenuObject.lastUsed, // || document.getElementById('CS_quickMenuIframe').contentDocument.querySelector('DIV[data-type="searchEngine"]').dataset.id,
 							selectionText: quickMenuObject.searchTerms,
 							openMethod: userOptions.quickMenuLeftClick
 						}

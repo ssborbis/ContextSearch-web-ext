@@ -185,7 +185,6 @@ function restoreOptions() {
 		
 		$('#s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
 		$('#cb_contextMenu').checked = userOptions.contextMenu;
-		// $('#i_searchJsonPath').value = userOptions.searchJsonPath.replace("/search.json.mozlz4","");
 		$('#h_position').value = userOptions.quickMenuPosition;
 
 		for (let p of document.getElementsByClassName('position')) {
@@ -826,21 +825,17 @@ function buildToolIcons() {
 		saveOptions();
 	}
 	
-	let toolIcons = [
-		{name: 'close', src: "icons/close.png", title: browser.i18n.getMessage('tools_Close'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'copy', src: "icons/clipboard.png", title: browser.i18n.getMessage('tools_Copy'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'link', src: "icons/link.svg", title: browser.i18n.getMessage('tools_OpenAsLink'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'disable', src: "icons/power.svg", title: browser.i18n.getMessage('tools_Disable'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'lock', src: "icons/lock.png", title: browser.i18n.getMessage('tools_Lock'), index: Number.MAX_VALUE, disabled: true},
-		{name: 'repeatsearch', src: "icons/repeatsearch.svg", title: browser.i18n.getMessage('tools_repeatsearch'), index: Number.MAX_VALUE, disabled: true}
-	];
+	let toolIcons = [];
+	QMtools.forEach( tool => {
+		toolIcons.push({name: tool.name, src: tool.icon, title: tool.title, index: Number.MAX_VALUE, disabled: true});
+	});
 	
 	toolIcons.forEach( toolIcon => {
 		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );
 		
 		// update quickMenuTools array with missing tools
 		if ( toolIcon.index === -1) {
-			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: false});
+			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: true});
 			toolIcon.index = toolIcons.length - 1;
 		}
 		
