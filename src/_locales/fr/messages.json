@@ -1517,6 +1517,14 @@
 	"message": "Le menu contextuel standard est obtenu en maintenant le bouton droit enfoncé pendant environ une seconde puis en le relâchant."
   },
   
+  "tools_repeatsearch": {
+    "message": "Effectuer une recherche clic gauche avec le dernier moteur utilisé à l’ouverture du menu"
+  },
+  
+  "tools_lastused": {
+    "message": "Dernier moteur de recherche utilisé"
+  },
+  
   "___________": {
     "message": "",
     "description": ""
