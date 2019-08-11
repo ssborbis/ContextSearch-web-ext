@@ -378,7 +378,7 @@ function buildSearchEngineContainer() {
 				}
 				
 				let _form = document.createElement('form');
-				_form.innerHTML = `<label data-i18n="Icon">Icon URI</label><input name="iconURL" type="text" class="inputNice" />
+				_form.innerHTML = `<label data-i18n="Icon">${browser.i18n.getMessage("icon")}</label><input name="iconURL" type="text" class="inputNice" />
 				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
 				<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>`;
 				_form.className = 'editForm';
