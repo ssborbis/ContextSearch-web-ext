@@ -1525,6 +1525,10 @@
     "message": "Dernier moteur de recherche utilisé"
   },
   
+  "ClearHighlighting": {
+	"message": "Effacer le surlignage"
+  },
+	
   "___________": {
     "message": "",
     "description": ""
