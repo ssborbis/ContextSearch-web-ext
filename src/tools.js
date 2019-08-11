@@ -6,9 +6,9 @@ var QMtools = [
 		init: function() {
 			let tile_close = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 
-			tile_close.onclick = function(e) {
+			addTileEventHandlers(tile_close, (e) => {
 				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
-			}
+			});
 			
 			return tile_close;
 		}
@@ -20,7 +20,7 @@ var QMtools = [
 		init: function() {
 			let tile_copy = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 					
-			tile_copy.onclick = function() {
+			addTileEventHandlers(tile_copy, (e) => {
 
 				let input = document.createElement('input');
 				input.type = "text";
@@ -38,7 +38,7 @@ var QMtools = [
 				
 				// chrome requires execCommand be run from background
 				browser.runtime.sendMessage({action: 'copy', msg: getSearchBar().value});
-			}
+			});
 			
 			return tile_copy;
 		}
@@ -91,7 +91,7 @@ var QMtools = [
 		title: browser.i18n.getMessage('tools_Disable'),
 		init: function() {
 			let tile_disable = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
-			tile_disable.onclick = function(e) {
+			addTileEventHandlers(tile_disable, (e) => {
 				
 				userOptions.quickMenu = false;
 				quickMenuObject.disabled = true;
@@ -104,7 +104,7 @@ var QMtools = [
 				}
 				
 				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
-			}
+			});
 			
 			return tile_disable;
 		}
@@ -117,7 +117,7 @@ var QMtools = [
 			let tile_lock = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 					
 			tile_lock.dataset.locked = false;
-			tile_lock.onclick = function(e) {
+			addTileEventHandlers(tile_lock, (e) => {
 
 				if ( this.dataset.locked === "true" )
 					this.dataset.locked = quickMenuObject.locked = false;
@@ -130,7 +130,7 @@ var QMtools = [
 					quickMenuObject: quickMenuObject,
 					toggleLock: true
 				});
-			}
+			});
 			
 			return tile_lock;
 		}
@@ -202,7 +202,7 @@ var QMtools = [
 				tile_qs.dataset.disabled = tile_qs.disabled = !result.shift().repeatsearch;
 			});
 
-			tile_qs.onclick = function(e) {
+			addTileEventHandlers(tile_qs, (e) => {
 
 				let lastUsedId = quickMenuObject.lastUsed || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
 				
@@ -216,7 +216,7 @@ var QMtools = [
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject
 				});
-			}
+			});
 			
 			return tile_qs;
 		}

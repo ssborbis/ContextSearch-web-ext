@@ -641,13 +641,15 @@ function makeQuickMenu(options) {
 		}
 		
 		// shift tiles to match quickmenu and searchbar
-		if ( ['searchbar','sidebar'].includes(type) && userOptions.quickMenuColumns === userOptions.searchBarColumns && userOptions.quickMenuToolsPosition === "top" && !_singleColumn && !options.parentId && toolsArray.length !== _columns ) {
+		if ( 
+			((type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns) ||
+			(type === "sidebar" && userOptions.quickMenuColumns === userOptions.sideBar.columns)) && 
+			userOptions.quickMenuToolsPosition === "top" && !_singleColumn && !options.parentId && toolsArray.length !== _columns && !userOptions.quickMenuToolsAsToolbar) {
 			toolsArray.forEach( tool => {
 				tool.dataset.disabled = true;
 				tool.dataset.hidden = true;
 				tool.disabled = true;
 				tool.title = "";
-				tool.onclick = function(e) { e.preventDefault() };
 				tileArray.unshift(tool);
 			});
 		}
