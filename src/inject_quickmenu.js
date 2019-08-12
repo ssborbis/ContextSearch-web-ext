@@ -54,7 +54,7 @@ function closeQuickMenu(eventType) {
 	eventType = eventType || null;
 		
 	if (
-		(eventType === 'wheel' || eventType === 'scroll') && 
+		(eventType === 'wheel' || eventType === 'scroll' || eventType === 'mousewheel') && 
 		(!userOptions.quickMenuCloseOnScroll || quickMenuObject.locked)
 	) return false;
 	

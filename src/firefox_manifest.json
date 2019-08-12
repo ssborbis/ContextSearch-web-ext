@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.15",
+	"version": "1.16",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"applications": {
@@ -88,6 +88,6 @@
 	"page_action": {
 		"browser_style": true,
 		"default_icon": "icons/highlight.svg",
-		"default_title": "Clear highlighting"
+		"default_title": "__MSG_ClearHighlighting__"
 	}
 }

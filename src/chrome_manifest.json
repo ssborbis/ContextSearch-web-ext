@@ -57,8 +57,7 @@
 		"activeTab",
 		"contextMenus",
 		"storage",
-		"tabs",
-		"search"
+		"tabs"
 	],
 	"optional_permissions": [
 		"bookmarks"
