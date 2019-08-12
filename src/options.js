@@ -836,7 +836,7 @@ function buildToolIcons() {
 		// update quickMenuTools array with missing tools
 		if ( toolIcon.index === -1) {
 			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: true});
-			toolIcon.index = toolIcons.length - 1;
+			toolIcon.index = userOptions.quickMenuTools.length - 1;
 		}
 		
 		toolIcon.disabled = userOptions.quickMenuTools[toolIcon.index].disabled;
