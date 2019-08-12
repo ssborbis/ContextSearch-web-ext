@@ -124,10 +124,10 @@ var QMtools = [
 			tile.dataset.locked = false;
 			addTileEventHandlers(tile, (e) => {
 
-				if ( this.dataset.locked === "true" )
-					this.dataset.locked = quickMenuObject.locked = false;
+				if ( tile.dataset.locked === "true" )
+					tile.dataset.locked = quickMenuObject.locked = false;
 				else
-					this.dataset.locked = quickMenuObject.locked = true;
+					tile.dataset.locked = quickMenuObject.locked = true;
 
 				// lock styles methods moved to onMessage listener
 				browser.runtime.sendMessage({
