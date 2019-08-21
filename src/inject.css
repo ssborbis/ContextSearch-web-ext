@@ -22,10 +22,10 @@
 	-webkit-mask-image: -webkit-radial-gradient(white, black);	
 	-webkit-backface-visibility: hidden;
 }
-#CS_quickMenuIframe[data-openingopacity] {
+#CS_quickMenuIframe[style*="--opening-opacity"] {
 	opacity:var(--opening-opacity);
 }
-#CS_quickMenuIframe[data-openingopacity]:hover {
+#CS_quickMenuIframe:hover {
 	opacity:1;
 }
 #CS_customSearchIframe {

@@ -65,14 +65,12 @@ function closeQuickMenu(eventType) {
 		return false;
 	}
 	
-	var quickMenuElement = document.getElementById('CS_quickMenuIframe');
-	if (quickMenuElement) {
-		quickMenuElement.style.opacity=0;
+	var qmc = document.getElementById('CS_quickMenuIframe');
+	if (qmc) {
+		qmc.style.opacity=0;
 		document.dispatchEvent(new CustomEvent('closequickmenu'));
 		setTimeout(()=> {
-			if (quickMenuElement && quickMenuElement.parentNode) {
-				quickMenuElement.parentNode.removeChild(quickMenuElement);
-			}
+			if (qmc && qmc.parentNode) qmc.parentNode.removeChild(qmc);
 		},100);
 	}
 }
@@ -610,7 +608,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					browser.runtime.sendMessage({
 						action: "quickMenuSearch", 
 						info: {
-							menuItemId: quickMenuObject.lastUsed, // || document.getElementById('CS_quickMenuIframe').contentDocument.querySelector('DIV[data-type="searchEngine"]').dataset.id,
+							menuItemId: quickMenuObject.lastUsed,
 							selectionText: quickMenuObject.searchTerms,
 							openMethod: userOptions.quickMenuLeftClick
 						}
@@ -621,7 +619,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
 					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-					qmc.dataset.openingopacity = true;
 				} else {
 					qmc.style.opacity = 1;
 				}
