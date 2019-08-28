@@ -25,7 +25,8 @@ function post(path, params) {
 
 		clearInterval(bodyInterval);
 		document.body.appendChild(form);
-		form.submit();
+
+		document.createElement('form').submit.call(form); // fix for name="submit" forms ( form.submit() is not a function )
 	}, 100 );
 }
 

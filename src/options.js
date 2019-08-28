@@ -194,6 +194,9 @@ function restoreOptions() {
 		}
 		
 		buildToolIcons();
+		
+		$('#cb_quickMenuToolsLockPersist').checked = userOptions.quickMenuTools.find( tool => tool.name === "lock").persist || false;
+		$('#cb_quickMenuToolsRepeatSearchPersist').checked = userOptions.quickMenuTools.find( tool => tool.name === "repeatsearch").persist || false;
 
 		// $('#cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
 
@@ -345,6 +348,8 @@ function restoreOptions() {
 			
 			
 		})();
+		
+		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
   
 	function onError(error) {
@@ -434,14 +439,25 @@ function saveOptions(e) {
 
 		quickMenuTools: function() {
 			let tools = [];
-			for (let toolIcon of document.getElementsByClassName('toolIcon'))
-				tools.push({"name": toolIcon.name, "disabled": toolIcon.disabled})			
+			
+			for (let toolIcon of document.getElementsByClassName('toolIcon')) {
+				let qmt = userOptions.quickMenuTools.find( _tool => _tool.name === toolIcon.name );
+				
+				if ( !qmt ) qmt = {"name": toolIcon.name};
+				qmt.disabled = toolIcon.disabled;
+				
+				if ( qmt.name === "lock" ) qmt.persist = $('#cb_quickMenuToolsLockPersist').checked;
+				if ( qmt.name === "repeatsearch" ) qmt.persist = $('#cb_quickMenuToolsRepeatSearchPersist').checked;
+				
+				tools.push(qmt);
+			}
+	
 			return tools;
 		}(),
 		
 		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
 		quickMenuToolsAsToolbar: $('#cb_quickMenuToolsAsToolbar').checked,
-		
+
 		searchBarUseOldStyle: $('#cb_searchBarUseOldStyle').checked,
 		searchBarColumns: parseInt($('#n_searchBarColumns').value),
 		searchBarCloseAfterSearch: $('#cb_searchBarCloseAfterSearch').checked,

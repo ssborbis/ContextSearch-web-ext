@@ -120,21 +120,31 @@ var QMtools = [
 		title: browser.i18n.getMessage('tools_Lock'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
-					
-			tile.dataset.locked = false;
+			
+			tile.keepOpen = true; // prevent close on click
+			
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+			
+			let on = ( tool.persist && tool.on ) ? true : false;
+
+			tile.dataset.locked = quickMenuObject.locked = on;
+			
+			if ( on ) browser.runtime.sendMessage({action: "lockQuickMenu"});
+
 			addTileEventHandlers(tile, (e) => {
 
-				if ( tile.dataset.locked === "true" )
+				if ( tile.dataset.locked === "true" ) {
 					tile.dataset.locked = quickMenuObject.locked = false;
-				else
+					browser.runtime.sendMessage({action: "unlockQuickMenu"});
+				} else {
 					tile.dataset.locked = quickMenuObject.locked = true;
+					browser.runtime.sendMessage({action: "lockQuickMenu"});
+				}
 
-				// lock styles methods moved to onMessage listener
-				browser.runtime.sendMessage({
-					action: "updateQuickMenuObject", 
-					quickMenuObject: quickMenuObject,
-					toggleLock: true
-				});
+				tool.on = quickMenuObject.locked;
+
+				if ( tool.persist )
+					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			});
 			
 			return tile;
@@ -150,31 +160,28 @@ var QMtools = [
 			
 			function updateIcon() {
 
-				browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( result => {
-					
-					let _id = result.shift().lastUsed;
+				let _id = userOptions.lastUsedId;
 
-					if ( _id ) {
+				if ( _id ) {
+					
+					tile.dataset.disabled = false;
+			
+					let node = findNodes(userOptions.nodeTree, _node => _node.id === _id)[0];
 						
-						tile.dataset.disabled = false;
-				
-						let node = findNodes(userOptions.nodeTree, _node => _node.id === _id)[0];
-							
-						let icon = function() {
-							switch (node.type) {
-								case "searchEngine":
-									let se = userOptions.searchEngines.find(_se => _se.id === node.id);
-									return se.icon_base64String;
-								case "oneClickSearchEngine":
-									return node.icon;
-							}
-						}() || browser.runtime.getURL('icons/search.svg');
-						
-						tile.style.backgroundImage = `url(${icon})`;
-						tile.title = node.title;
-					} else
-						tile.dataset.disabled = true;
-				});
+					let icon = function() {
+						switch (node.type) {
+							case "searchEngine":
+								let se = userOptions.searchEngines.find(_se => _se.id === node.id);
+								return se.icon_base64String;
+							case "oneClickSearchEngine":
+								return node.icon;
+						}
+					}() || browser.runtime.getURL('icons/search.svg');
+					
+					tile.style.backgroundImage = `url(${icon})`;
+					tile.title = node.title;
+				} else
+					tile.dataset.disabled = true;
 			}
 			
 			updateIcon();
@@ -182,16 +189,13 @@ var QMtools = [
 			document.addEventListener('updatesearchterms', updateIcon); // fires when a search executes, piggybacking for icon update
 
 			addTileEventHandlers(tile, (e) => {
-			
-				let lastUsedId = quickMenuObject.lastUsed || null;// || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
-				
-				if ( !lastUsedId) return;
 
-				quickMenuObject.lastUsed = lastUsedId;
+				if ( !userOptions.lastUsedId ) return;
+
 				browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
-						menuItemId: lastUsedId,
+						menuItemId: userOptions.lastUsedId,
 						selectionText: getSearchBar().value,
 						openMethod: getOpenMethod(e)
 					}
@@ -207,25 +211,42 @@ var QMtools = [
 		title: browser.i18n.getMessage('tools_repeatsearch'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			
+			tile.keepOpen = true; // prevent close on click
+			
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
-			browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( result => {
-				tile.dataset.disabled = !result.shift().repeatsearch;
+			tile.dataset.disabled = !tool.on;
+			
+			document.addEventListener('quickMenuComplete', () => {
+
+				// bypass displaying the menu and execute a search immedately if using repeatsearch
+				if ( tool.on ) {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId:userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null,
+							selectionText: quickMenuObject.searchTerms,
+							openMethod: userOptions.quickMenuLeftClick
+						}
+					});
+				}
+				
 			});
 
 			addTileEventHandlers(tile, (e) => {
 
-				let lastUsedId = quickMenuObject.lastUsed || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
+				tool.on = !tool.on;
 				
-				quickMenuObject.lastUsed = lastUsedId;
-				
-				quickMenuObject.repeatsearch = (tile.dataset.disabled == "true") ? true : false;
-				
-				tile.dataset.disabled = !quickMenuObject.repeatsearch;
+				tile.dataset.disabled = !tool.on;
+
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject
 				});
+				
 			});
 			
 			return tile;

@@ -964,6 +964,21 @@
 				background-color:#fff;
 				position:relative;
 			}
+			#advancedSettingsTable {
+				width: 100%;
+				font-size: 10pt;
+				font-weight: normal;
+			}
+			#advancedSettingsTable TR:nth-child(even) {
+				background-color:#eee;
+			}
+			#advancedSettingsTable INPUT {
+				border:none;
+				background-color:transparent;
+			}
+			#advancedSettingsTable TR > TD:nth-child(1) {
+				width:99%;
+			}
 		</style>
 	</head>
 	<body>
@@ -988,6 +1003,7 @@
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />Find Bar</button>
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img src="icons/search.svg" />Search Engines</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img src="icons/settings.svg" />General</button>
+				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.png" />Advanced</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img src="icons/help.svg" />Help</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
@@ -1005,6 +1021,39 @@
 			
 		</div>
 		<div id="right_div">
+		
+			<div class="tabcontent" id="advancedTab">
+				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.png" />Advanced</div>
+				<section>
+					<p class="header1" data-i18n="Settings">Settings</p>
+					<table id="advancedSettingsTable">
+					<tr>
+						<td>quickMenuOpeningOpacity</td>
+						<td><input type="number" id="n_quickMenuOpeningOpacity" min="0" max="1" step=".1"></td>
+					</tr>
+					<tr>
+						<td>quickMenuAutoMaxChars</td>
+						<td><input type="number" id="n_quickMenuAutoMaxChars" min="0" max="999" step="1"></td>
+					</tr>
+					<tr>
+						<td>quickMenuAutoTimeout</td>
+						<td><input type="number" id="n_quickMenuAutoTimeout" min="0" max="9999" step="1"></td>
+					</tr>
+					<tr>
+						<td>quickMenuSearchOnMouseUp</td>
+						<td><input type="checkbox" id="cb_quickMenuSearchOnMouseUp" /></td>
+					</tr>
+					<tr>
+						<td>quickMenuToolsLockPersist</td>
+						<td><input type="checkbox" id="cb_quickMenuToolsLockPersist" /></td>
+					</tr>
+					<tr>
+						<td>quickMenuToolsRepeatSearchPersist</td>
+						<td><input type="checkbox" id="cb_quickMenuToolsRepeatSearchPersist" /></td>
+					</tr>
+					</table>
+				</section>
+			</div>
 		
 			<div class="tabcontent" id="generalTab">
 			
@@ -1281,7 +1330,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 	
 				<table class="openingTable">
 				<tr>
-					<td>
+					<td colspan="2" style="border-right:none">
 						<label class="container" data-i18n="Auto">
 							<input type="checkbox" id="r_quickMenuAuto" />
 							<span class="checkmark checkmark2"></span>
@@ -1290,17 +1339,17 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<br />
 						<span style="font-size:9pt" data-i18n="AutoTooltip">Select text and open the Quick Menu automatically</span>
 					</td>
-					<td>
-						<input type="number" id="n_quickMenuAutoMaxChars" size="3" class="inputNice" min="0" max="999"><label style="margin-left:10px" data-i18n="AutoMaxChars">Character Limit</label>
-						<span class="info" data-msg="Do not open Quick menu if selection is over (n) characters in length. 0 = no limit" data-i18n_tooltip="AutoMaxChars">?</span>
-						<br /><br />
-						<input type="number" id="n_quickMenuOpeningOpacity" size="1" class="inputNice" min="0" max="1" step=".1"><label style="margin-left:10px" data-i18n="InitialOpacity">Initial Opacity</label>
-						<span class="info" data-msg="Quick menu opens with a lower opacity and becomes opaque on mouseover" data-i18n_tooltip="InitialOpacity">?</span>
-						<br /><br />
-						<input type="number" id="n_quickMenuAutoTimeout" size="1" class="inputNice" min="0" max="9999" step="1"><label style="margin-left:10px" data-i18n="SelectTimeout">Selection Timeout</label>
-						<span class="info" data-msg="How much time (in milliseconds) to allow after the last selection to cancel the popup" data-i18n_tooltip="SelectTimeout">?</span>
-						<br /><br />
-					</td>
+					<!-- <td> -->
+						<!-- <input type="number" id="n_quickMenuAutoMaxChars" size="3" class="inputNice" min="0" max="999"><label style="margin-left:10px" data-i18n="AutoMaxChars">Character Limit</label> -->
+						<!-- <span class="info" data-msg="Do not open Quick menu if selection is over (n) characters in length. 0 = no limit" data-i18n_tooltip="AutoMaxChars">?</span> -->
+						<!-- <br /><br /> -->
+						<!-- <input type="number" id="n_quickMenuOpeningOpacity" size="1" class="inputNice" min="0" max="1" step=".1"><label style="margin-left:10px" data-i18n="InitialOpacity">Initial Opacity</label> -->
+						<!-- <span class="info" data-msg="Quick menu opens with a lower opacity and becomes opaque on mouseover" data-i18n_tooltip="InitialOpacity">?</span> -->
+						<!-- <br /><br /> -->
+						<!-- <input type="number" id="n_quickMenuAutoTimeout" size="1" class="inputNice" min="0" max="9999" step="1"><label style="margin-left:10px" data-i18n="SelectTimeout">Selection Timeout</label> -->
+						<!-- <span class="info" data-msg="How much time (in milliseconds) to allow after the last selection to cancel the popup" data-i18n_tooltip="SelectTimeout">?</span> -->
+						<!-- <br /><br /> -->
+					<!-- </td> -->
 				</tr>
 				<tr>
 					<td>
@@ -1342,13 +1391,13 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							<div style="font-size:10pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:20px;margin-right:10px;vertical-align:middle" src="icons/alert.svg">Hold right button ~1s and release for default context menu</div>
 						</div>
 						
-						<div class="option">
-							<label class="container">
-								<input type="checkbox" id="cb_quickMenuSearchOnMouseUp" />
-								<span class="checkmark checkmark2"></span>
-							</label>
-							<span class="description" data-i18n="SearchOnMouseupTooltip">Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search</span>
-						</div>
+						<!-- <div class="option"> -->
+							<!-- <label class="container"> -->
+								<!-- <input type="checkbox" id="cb_quickMenuSearchOnMouseUp" /> -->
+								<!-- <span class="checkmark checkmark2"></span> -->
+							<!-- </label> -->
+							<!-- <span class="description" data-i18n="SearchOnMouseupTooltip">Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search</span> -->
+						<!-- </div> -->
 					</td>
 				</tr>
 				<tr>

@@ -37,11 +37,14 @@ function addTileEventHandlers(_tile, handler) {
 		// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
 		quickMenuObject.mouseLastClickTime = Date.now();
 		
-		if (type === 'quickmenu') {
-			
+		if ( _tile.dataset.id && quickMenuObject.lastUsed !== _tile.dataset.id ) {
 			// store the last used id
-			quickMenuObject.lastUsed = _tile.dataset.id || quickMenuObject.lastUsed || null;
-			
+			quickMenuObject.lastUsed = _tile.dataset.id || null;
+			userOptions.lastUsedId = quickMenuObject.lastUsed;
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		}
+		
+		if (type === 'quickmenu') {
 			quickMenuObject.searchTerms = getSearchBar().value;
 			browser.runtime.sendMessage({
 				action: "updateQuickMenuObject", 
@@ -53,7 +56,7 @@ function addTileEventHandlers(_tile, handler) {
 		handler(e);
 		
 		// check for locked / Keep Menu Open 
-		if ( !keepMenuOpen(e) )
+		if ( !keepMenuOpen(e) && !_tile.keepOpen )
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
 		
 		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();

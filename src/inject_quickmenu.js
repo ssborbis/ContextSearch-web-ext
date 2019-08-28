@@ -76,8 +76,8 @@ function closeQuickMenu(eventType) {
 }
 
 function getOffsets() {
-	let xOffset=Math.max(document.documentElement.scrollLeft,document.body.scrollLeft);	
-	let yOffset=Math.max(document.documentElement.scrollTop,document.body.scrollTop);
+	let xOffset=window.pageXOffset;
+	let yOffset=window.pageYOffset;
 	
 	return {x: xOffset, y: yOffset};
 }
@@ -577,44 +577,32 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				quickMenuObject = message.quickMenuObject;
 				
 				// iframe needs to disable here
-				if (quickMenuObject.disabled)
-					userOptions.quickMenu = false;
+				if (quickMenuObject.disabled) userOptions.quickMenu = false;
 				
-				let qm = document.getElementById('CS_quickMenuIframe');
-				
-				if( qm && message.toggleLock ) {
-				
-					if (quickMenuObject.locked) {
-						qm.style.left = parseFloat(qm.style.left) - getOffsets().x + "px";
-						qm.style.top = parseFloat(qm.style.top) - getOffsets().y + "px";
-						qm.style.position='fixed';
-					} else {
-						qm.style.left = parseFloat(qm.style.left) + getOffsets().x + "px";
-						qm.style.top = parseFloat(qm.style.top) + getOffsets().y + "px";
-						qm.style.position=null;
-					}
-				}
-		
 				break;
+				
+			case "lockQuickMenu":
+				var qm = document.getElementById('CS_quickMenuIframe');
+				qm.style.left = parseFloat(qm.style.left) - getOffsets().x + "px";
+				qm.style.top = parseFloat(qm.style.top) - getOffsets().y + "px";
+				qm.style.position='fixed';
+				quickMenuObject.locked = true;
+				break;
+				
+			case "unlockQuickMenu":
+				var qm = document.getElementById('CS_quickMenuIframe');
+				qm.style.left = parseFloat(qm.style.left) + getOffsets().x + "px";
+				qm.style.top = parseFloat(qm.style.top) + getOffsets().y + "px";
+				qm.style.position=null;
+				quickMenuObject.locked = false;
+				break;			
 				
 			case "quickMenuIframeLoaded":
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject
 				});
-				
-				// bypass displaying the menu and execute a search immedately if using repeatsearch
-				if ( quickMenuObject.repeatsearch ) {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: quickMenuObject.lastUsed,
-							selectionText: quickMenuObject.searchTerms,
-							openMethod: userOptions.quickMenuLeftClick
-						}
-					});
-				}
-				
+
 				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 				
 				if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
@@ -655,6 +643,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					if ( resizeWidget ) 
 						resizeWidget.parentNode.removeChild(resizeWidget);
 				}, {once: true});
+				
+				browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
 				
 				break;
 

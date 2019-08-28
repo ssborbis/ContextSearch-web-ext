@@ -65,12 +65,23 @@ async function notify(message, sender, sendResponse) {
 		case "getUserOptions":
 			return Promise.resolve({"userOptions": userOptions});
 			break;
+			
+		case "getDefaultUserOptions":
+			return Promise.resolve({"defaultUserOptions": defaultUserOptions});
+			break;
 
 		case "getSearchEngineById":
 		
 			if ( !message.id) return;
 
 			return Promise.resolve({"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)});
+			break;
+			
+		case "dispatchEvent":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
+				allFrames: true
+			});
 			break;
 
 		case "openQuickMenu":
@@ -87,6 +98,14 @@ async function notify(message, sender, sendResponse) {
 		
 		case "updateQuickMenuObject":
 			return sendMessageToAllFrames();
+			break;
+			
+		case "lockQuickMenu":
+			return sendMessageToTopFrame();
+			break;
+			
+		case "unlockQuickMenu":
+			return sendMessageToTopFrame();
 			break;
 			
 		case "rebuildQuickMenu":
@@ -637,6 +656,9 @@ async function buildContextMenu() {
 }
 
 function updateSelectDomainMenus(tab) {
+	
+	if (!window.contextMenuSelectDomainMenus ) return;
+	
 	window.contextMenuSelectDomainMenus.forEach( menu => {
 		
 		menu.pathIds.forEach( pathId => browser.contextMenus.remove( pathId ) );
@@ -1110,12 +1132,14 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 	if ( !userOptions.highLight.enabled ) return;
 	
 	// show the page_action for highlighting
-	browser.pageAction.show(tab.id);
-	browser.pageAction.onClicked.addListener((tab) => {
-		notify({action: "unmark"});
-		notify({action: "removeTabHighlighting", tabId: tab.id});
-		browser.pageAction.hide(tab.id);
-	});
+	if ( browser.pageAction ) {
+		browser.pageAction.show(tab.id);
+		browser.pageAction.onClicked.addListener((tab) => {
+			notify({action: "unmark"});
+			notify({action: "removeTabHighlighting", tabId: tab.id});
+			browser.pageAction.hide(tab.id);
+		});
+	}
 
 	return browser.tabs.executeScript(tab.id, {
 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
@@ -1596,6 +1620,16 @@ loadUserOptions().then(() => {
 	.then( buildContextMenu )
 	.then( () => {
 		document.dispatchEvent(new CustomEvent("loadUserOptions"));
+	});
+});
+
+// turn off repeatsearch if persist = false 
+document.addEventListener("loadUserOptions", () => {
+	userOptions.quickMenuTools.find( (tool,index) => { 
+		if ( tool.name === "repeatsearch" && tool.persist === false ) {
+			userOptions.quickMenuTools[index].on = false;
+			return true;
+		}
 	});
 });
 
