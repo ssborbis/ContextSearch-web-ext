@@ -559,7 +559,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "updateSearchTerms":
 
 				// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
-				
 				if (quickMenuObject.locked || document.title === "QuickMenu" || document.getElementById('CS_quickMenuIframe')) {
 					quickMenuObject.searchTerms = message.searchTerms;
 					

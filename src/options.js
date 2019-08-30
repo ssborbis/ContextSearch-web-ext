@@ -1238,6 +1238,5 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 		yes.getBoundingClientRect();
 		yes.style.opacity = 0;
-		
 	}
 });
