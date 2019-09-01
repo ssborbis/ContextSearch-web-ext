@@ -5,7 +5,7 @@
   },
     
   "Settings": {
-    "message": "Configuration"
+    "message": "Options"
   },
   
   "Support": {
@@ -360,11 +360,11 @@
   },
   
   "Simple": {
-    "message": "Mode simple"
+    "message": "Simple"
   },
   
   "Advanced": {
-    "message": "Mode avancé"
+    "message": "Avancé"
   },
   
   "Yes": {
@@ -580,7 +580,7 @@
   },
   
   "ImportSettingsNotFoundAlert": {
-    "message": "Configuration de ContextSearch introuvable !"
+    "message": "Options introuvables !"
   },
   
   "InvalidJSONAlert": {
