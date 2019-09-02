@@ -168,7 +168,7 @@
   },
   
   "Hold": {
-    "message": "Clic long"
+    "message": "Maintenir"
   },
   
   "HoldTooltip": {
@@ -184,7 +184,7 @@
   },
   
   "Click": {
-    "message": "Clic court"
+    "message": "Cliquer"
   },
   
   "ClickTooltip": {
@@ -1510,11 +1510,11 @@
   },
   
   "HideContextMenu": {
-	"message": "Masquer le menu contextuel standard si ouverture du menu instantané par clic droit"
+	"message": "Masquer le menu contextuel normal à l’ouverture du menu instantané par clic droit"
   },
 
   "HoldForContextMenu": {
-	"message": "Clic droit long (~1 s) pour le menu contextuel standard !"
+	"message": "Prolonger le clic droit (~1 s) pour le menu contextuel normal."
   },
   
   "tools_repeatsearch": {
