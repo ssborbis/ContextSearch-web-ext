@@ -1,5 +1,3 @@
-
-
 class CSBookmarks {
 	
 	static getType(node) { // for cross-browser compatibility

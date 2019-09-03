@@ -16,6 +16,11 @@ function buildSearchEngineContainer() {
 			console.log('null node found');
 			return;
 		}
+		
+		if ( node.type === "bookmark" ) {
+			node.parent.children.splice(node.parent.children.indexOf(node), 1).shift();
+			return;
+		}
 
 		let li = document.createElement('li');
 		parent.appendChild(li);

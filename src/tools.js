@@ -100,13 +100,11 @@ var QMtools = [
 				
 				userOptions.quickMenu = false;
 				quickMenuObject.disabled = true;
-				
-				if (document.title === "QuickMenu") {
-					browser.runtime.sendMessage({
-						action: "updateQuickMenuObject", 
-						quickMenuObject: quickMenuObject
-					});
-				}
+
+				browser.runtime.sendMessage({
+					action: "updateQuickMenuObject", 
+					quickMenuObject: quickMenuObject
+				});
 				
 				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
 			});
@@ -152,7 +150,7 @@ var QMtools = [
 	},
 	{
 		name: 'lastused', 
-		icon: "icons/search.svg", 
+		icon: "icons/history.png", 
 		title: browser.i18n.getMessage('tools_lastused'),
 		init: function() {
 
@@ -167,14 +165,19 @@ var QMtools = [
 					tile.dataset.disabled = false;
 			
 					let node = findNodes(userOptions.nodeTree, _node => _node.id === _id)[0];
+					
+					if ( !node ) return;
 						
 					let icon = function() {
+
 						switch (node.type) {
 							case "searchEngine":
 								let se = userOptions.searchEngines.find(_se => _se.id === node.id);
 								return se.icon_base64String;
 							case "oneClickSearchEngine":
 								return node.icon;
+							default:
+								return "";
 						}
 					}() || browser.runtime.getURL('icons/search.svg');
 					

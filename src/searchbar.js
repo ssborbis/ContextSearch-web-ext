@@ -1,7 +1,4 @@
 var userOptions;
-var typeTimer = null;
-const historyLength = 1024; // number of searches to save in userOptions
-const displayCount = 10; // number of total suggestions to display (browser_action height is limited!)
 
 var quickMenuObject = { 
 	delay: 250, // how long to hold right-click before quick menu events in ms
@@ -19,30 +16,29 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-let columns;
-let sb_width;
+//let columns;
 
 // context menu options
-window.addEventListener('contextmenu', (e) => {
+// window.addEventListener('contextmenu', (e) => {
 	
-	browser.contextMenus.create({
-		id: "showSuggestions",
-		title: browser.i18n.getMessage("ShowSuggestions"),
-		type: "checkbox",
-		checked: userOptions.searchBarSuggestions
-	}, () => {});
-	browser.contextMenus.create({
-		id: "clearHistory",
-		title: browser.i18n.getMessage("ClearSearchHistory")
-	}, () => {});
+	// browser.contextMenus.create({
+		// id: "showSuggestions",
+		// title: browser.i18n.getMessage("ShowSuggestions"),
+		// type: "checkbox",
+		// checked: userOptions.searchBarSuggestions
+	// }, () => {});
+	// browser.contextMenus.create({
+		// id: "clearHistory",
+		// title: browser.i18n.getMessage("ClearSearchHistory")
+	// }, () => {});
 
-	setTimeout(() => {
-		window.addEventListener('mousemove', ()=> {
-			browser.contextMenus.remove("showSuggestions");
-			browser.contextMenus.remove("clearHistory");
-		}, {once: true});
-	}, 1000);
-});
+	// setTimeout(() => {
+		// window.addEventListener('mousemove', ()=> {
+			// browser.contextMenus.remove("showSuggestions");
+			// browser.contextMenus.remove("clearHistory");
+		// }, {once: true});
+	// }, 1000);
+// });
 
 // what was this for? ( page_action is not considered a tab and does not receive userOptions updates )
 // setInterval(() => {
@@ -51,30 +47,6 @@ window.addEventListener('contextmenu', (e) => {
 		// userOptions = message.userOptions || {};
 	// });
 // }, 1000);
-
-function addToHistory(terms) {
-	
-	terms = terms.trim();
-	
-	// send last search to backgroundPage for session storage
-	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
-	
-	// return if history is disabled
-	if ( ! userOptions.searchBarEnableHistory ) return;
-	
-	// ignore duplicates
-	if (userOptions.searchBarHistory.includes(terms)) return;
-	
-	// remove first entry if over limit
-	if (userOptions.searchBarHistory.length === historyLength)
-		userOptions.searchBarHistory.shift();
-	
-	// add new term
-	userOptions.searchBarHistory.push(terms);
-	
-	// update prefs
-	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
-}
 
 function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
@@ -88,204 +60,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	if ( userOptions.searchBarTheme === 'dark' )
 		document.querySelector('#dark').rel="stylesheet";
 
-	let sb = document.getElementById('searchBar');
-	sb.placeholder = browser.i18n.getMessage('Search');
-
-	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
-		
-		// skip empty 
-		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-		
-		sb.value = message.lastSearch;
-		sb.select();
-
-		// workaround for linux 
-		var selectInterval = setInterval( () => {
-
-			if (getSelectedText(sb) == sb.value)
-				clearInterval(selectInterval);
-			else
-				sb.select();
-		}, 50);
-
-	});
-
-	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
-	let div_width = sb_width / columns;
-	
-	let suggest = document.getElementById('suggestions');
-		
-	sb.onkeypress = function(e) {
-		
-		clearTimeout(typeTimer);
-		
-		typeTimer = setTimeout(() => {
-			
-			if (!sb.value.trim()) {
-				suggest.style.maxHeight = null;
-				return;
-			}
-
-			suggest.innerHTML = null;
-			
-			let history = [];
-			let lc_searchTerms = sb.value.toLowerCase();
-			for (let h of userOptions.searchBarHistory) {
-				if (h.toLowerCase().indexOf(lc_searchTerms) === 0)
-					history.push({searchTerms: h, type: 0});
-				
-				if (history.length === displayCount) break;
-			}
-			
-			function displaySuggestions(suggestions) {
-				
-				suggestions = suggestions.sort(function(a,b) {
-					return a.searchTerms - b.searchTerms;
-				});
-				
-				for (let s of suggestions) {
-					let div = document.createElement('div');
-					div.style.height = "20px";
-					div.onclick = function() {
-						let selected = suggest.querySelector('.selectedFocus');
-						if (selected) selected.classList.remove('selectedFocus');
-						this.classList.add('selectedFocus');
-						sb.value = this.innerText;
-					}
-					
-					div.ondblclick = function() {
-						var e = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, keyCode: 13});
-						sb.dispatchEvent(e);
-					}
-					
-					let img = document.createElement("img");
-					img.src = "/icons/history.png";
-					img.title = browser.i18n.getMessage('History') || "history";
-					
-					if (s.type === 1) img.style.visibility = 'hidden';
-					div.appendChild(img);
-										
-					// put search terms in bold
-					// let matches = new RegExp("^(.*)(" + sb.value + ")(.*)").exec(s.searchTerms);
-					// //browser.runtime.sendMessage({action: "log", msg: matches});
-
-					// for (let i=1;i<matches.length;i++) {
-						// let part = matches[i];
-						// let el = null;
-						// if (!part) continue;
-						// else if (part === sb.value) {
-							// el = document.createElement('b');
-							// el.innerText = sb.value;
-							// el.style.fontWeight = '600';
-						// } else  {
-							// el = document.createTextNode(part);
-						// }
-
-						// div.appendChild(el);
-					// }
-
-					
-					let text = document.createTextNode(s.searchTerms);
-					div.appendChild(text);
-					
-//					div.innerHTML = div.innerText.replace(sb.value, "<b>" + sb.value + "</b>");
-					suggest.appendChild(div);
-				}
-				
-				suggest.style.width = sb.parentNode.getBoundingClientRect().width + "px";
-
-				suggest.addEventListener('transitionend', (e) => {
-
-					// for browser_action
-					// reset the menu height for window resizing
-				//	document.getElementById('quickMenuElement').style.height = null;
-				
-					toolBarResize();
-
-					// for sidebar
-					sideBarResize();
-				});
-				
-				let suggestionHeight = suggestions.length ? suggest.firstChild.getBoundingClientRect().height : 0;
-				
-				suggest.style.maxHeight = Math.min(suggestionHeight * 5, suggestions.length * suggestionHeight) + "px";
-
-			}
-			
-			if (userOptions.searchBarSuggestions) {
-				getSuggestions(sb.value, (xml) => {
-					
-					let suggestions = [];
-					for (let s of xml.getElementsByTagName('suggestion')) {
-						let searchTerms = s.getAttribute('data');
-						
-						let found = false;
-						for (let h of history) {
-							if (h.searchTerms.toLowerCase() === searchTerms.toLowerCase()) {
-								found = true;
-								break;
-							}
-						}
-						if (!found)
-							suggestions.push({searchTerms: searchTerms, type: 1});
-					}
-
-					suggestions = history.concat(suggestions);
-					
-					displaySuggestions(suggestions);
-					
-				});
-			} else if ( userOptions.searchBarEnableHistory )
-				displaySuggestions(history);
-			
-		}, 250);
-	}
-	
-	sb.onkeydown = function(e) {
-		if (e.keyCode === 13) {
-			
-			addToHistory(sb.value);
-			
-			if (userOptions.searchBarCloseAfterSearch) window.close();	
-		}
-	}
-	
-	function getSuggestions(terms, callback) {
-		
-		let url = 'https://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);
-		callback = callback || function() {};
-		var xmlhttp;
-
-		xmlhttp = new XMLHttpRequest();
-
-		xmlhttp.onreadystatechange = function()	{
-			if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-				if(xmlhttp.status == 200) {
-
-					let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
-					
-					if (parsed.documentElement.nodeName=="parsererror") {
-						console.log('xml parse error');
-						
-						console.log(parsed);
-						parsed = false;
-					}
-					callback(parsed);
-			   } else {
-				   console.log('Error fetching ' + url);
-			   }
-			}
-		}
-		
-		xmlhttp.ontimeout = function (e) {
-			console.log('Timeout fetching ' + url);
-			callback(false);
-		};
-
-		xmlhttp.open("GET", url, true);
-		xmlhttp.timeout = 500;
-		xmlhttp.send();
-	}
+	makeSearchBar();
 
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
 		document.body.insertBefore(qme, null);
@@ -296,23 +71,11 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 document.addEventListener('quickMenuIframeLoaded', () => {
 		
-	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('searchBar');
-	let tb = document.getElementById('titleBar');
-	let sg = document.getElementById('suggestions');
-	let ob = document.getElementById('optionsButton');
-	let mb = document.getElementById('menuBar');
-
-	qm.querySelectorAll('.tile').forEach( div => {
-		div.onmouseenter = () => tb.innerText = div.title;
-		div.onmouseleave = () => tb.innerText = ' ';
-	});
-
-	ob.onclick = function() {
-		// document.body.style.visibility = 'hidden';
-		browser.runtime.sendMessage({action: "openOptions"});
-		if ( window == top ) window.close();
-	}
+	qm = document.getElementById('quickMenuElement');
+	sb = document.getElementById('searchBar');
+	tb = document.getElementById('titleBar');
+	sg = document.getElementById('suggestions');
+	mb = document.getElementById('menuBar');
 
 	// focus the searchbar on open
 	sb.focus();
@@ -323,20 +86,13 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	sg.style.width = null;
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
-	sideBarResize();
-	toolBarResize();
+	resizeMenu();
 
 });
 
 function toolBarResize() {
 
 	if ( window != top ) return;
-	
-	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('searchBar');
-	let tb = document.getElementById('titleBar');
-	let sg = document.getElementById('suggestions');
-	let mb = document.getElementById('menuBar');
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 
@@ -367,13 +123,7 @@ function toolBarResize() {
 }
 
 function sideBarResize() {
-	if ( window == top ) return
-	
-	let qm = document.getElementById('quickMenuElement');
-	let sb = document.getElementById('searchBar');
-	let tb = document.getElementById('titleBar');
-	let sg = document.getElementById('suggestions');
-	let mb = document.getElementById('menuBar');
+	if ( window == top ) return;
 	
 	// throwing sidebar errors
 	if ( !qm ) return;
@@ -403,6 +153,11 @@ function sideBarResize() {
 		tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}, 
 		singleColumn: qm.querySelector(".singleColumn") ? true : false
 	}, "*");
+}
+
+function resizeMenu() {
+	toolBarResize();
+	sideBarResize();
 }
 
 window.addEventListener('message', (e) => {

@@ -597,6 +597,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;			
 				
 			case "quickMenuIframeLoaded":
+
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject
@@ -604,11 +605,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 				
-				if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
+				// if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
 					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-				} else {
-					qmc.style.opacity = 1;
-				}
+				// } else {
+					// qmc.style.opacity = 1;
+				// }
 	
 				_message = message;
 				

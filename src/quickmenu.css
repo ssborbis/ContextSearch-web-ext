@@ -206,6 +206,7 @@ BODY {
 #searchBar:focus {
 	border:1px solid #0a84ff;
 }
+
 #suggestions {
 	background-color:white;
 	color:#4a4a4a;
@@ -215,7 +216,7 @@ BODY {
 	overflow-y:auto;
 	border:1px solid #ccc;
 	border-width: 1px 0;
-	transition:max-height .25s ease-in-out;
+	transition:max-height .15s ease-in-out;
 	max-height:0;
 }
 #suggestions > DIV {

@@ -31,7 +31,7 @@ function makeFrameContents(options) {
 	
 		document.body.appendChild(qme);
 		
-		let sb = document.getElementById('searchBar');
+		// let sb = document.getElementById('searchBar');
 		let sbc = document.getElementById('searchBarContainer');
 		let tb = document.getElementById('toolBar');
 		
@@ -43,12 +43,15 @@ function makeFrameContents(options) {
 		if (userOptions.quickMenuSearchBar === 'bottom') 
 			document.body.appendChild(sbc);
 		
+		makeSearchBar();
+		
+		mb.style.display = document.getElementById('titleBar').style.display = "none";
 
 		browser.runtime.sendMessage({
 			action: "quickMenuIframeLoaded", 
 			size: {
 				width: qme.getBoundingClientRect().width,
-				height: qme.getBoundingClientRect().height + sbc.getBoundingClientRect().height + tb.getBoundingClientRect().height + 'px'
+				height: document.body.getBoundingClientRect().height
 			},
 			resizeOnly: options.resizeOnly,
 			tileSize: {width: qme.firstChild.offsetWidth, height: qme.firstChild.offsetHeight},
@@ -71,12 +74,29 @@ function makeFrameContents(options) {
 					qme.focus();
 				}
 			}, 100);
+			
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 		});
 	});
 	
 }
-	
 
+function resizeMenu() {
+	
+	if ( !window.location.href.endsWith("quickmenu.html") ) return;
+
+	let qm = document.getElementById('quickMenuElement');
+
+	browser.runtime.sendMessage({
+		action: "quickMenuIframeLoaded", 
+		size: {
+			width: qm.getBoundingClientRect().width, 
+			height: document.body.getBoundingClientRect().height
+		}, 
+		resizeOnly: true
+	});
+}
+	
 document.addEventListener("DOMContentLoaded", () => {
 
 	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {

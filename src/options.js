@@ -375,6 +375,7 @@ function saveOptions(e) {
 	userOptions = {
 		searchEngines: userOptions.searchEngines,
 		nodeTree: JSON.parse(JSON.stringify(userOptions.nodeTree)),
+		lastUsedId: userOptions.lastUsedId,
 		quickMenu: $('#cb_quickMenu').checked,
 		quickMenuColumns: parseInt($('#n_quickMenuColumns').value),
 		quickMenuRows: parseInt($('#n_quickMenuRows').value),

@@ -7,24 +7,24 @@
 		<link rel="stylesheet" href="/quickmenu.css">
 		<link rel="stylesheet alternate" href="/dark.css" id="dark">
 	</head>
-	<body>
+	<body style='overflow:hidden;padding:0;margin:0'>
 	<div id='menuBar'>
 		<div id="optionsButton"></div>
 		<div id="closeButton"></div>
 	</div>
 	<div id='searchBarContainer'>
-		<img src='/icons/search.svg' />
+		<img id="searchIcon" src='/icons/search.svg' />
 		<input id='searchBar' type='text' />
 		<img id="clearSearchBarButton" src='/icons/delete.png' />
+		<div id='suggestions'></div>
 	</div>
-	<div id='suggestions'></div>
 	<div id='titleBar'></div>
-	
+	<div id='toolBar'></div>
 	<script src='/lib/browser-polyfill.min.js'></script>
 	<script src='/lib/crossbrowser.js'></script>
 	<script src='/dock.js'></script>
-	<script src='/searchbar.js'></script>
 	<script src='/tilemenu.js'></script>
+	<script src='/searchbar.js'></script>
 	<script src='/nodes.js'></script>
 	<script src='/opensearch.js'></script>
 	<script src='/hotkeys.js'></script>

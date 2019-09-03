@@ -722,7 +722,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
-function executeBookmarklet(info) {
+function executeBookmarklet(info, tab) {
 	
 	if (!browser.bookmarks) {
 		console.error('No bookmarks permission');
@@ -732,8 +732,54 @@ function executeBookmarklet(info) {
 	browser.bookmarks.get(info.menuItemId).then((bookmark) => {
 		bookmark = bookmark.shift();
 		
-		if (!bookmark.url.startsWith("javascript")) {
-			console.error('bookmark not a bookmarklet');
+		if (!bookmark.url.startsWith("javascript")) { // assume bookmark
+			switch (info.openMethod) {
+				case "openCurrentTab":
+					browser.tabs.getCurrent().then( tab => {
+						browser.tabs.update(tab.id, { url: bookmark.url });
+					});
+					break;
+				case "openNewTab":
+					return browser.tabs.create({
+						active: true,
+						url: bookmark.url
+					});
+					break;
+				case "openNewWindow":
+					return browser.windows.create({
+						incognito: false,
+						url: bookmark.url
+					});
+					break;
+				case "openNewIncognitoWindow":
+					return browser.windows.create({
+						incognito: true,
+						url: bookmark.url
+					});
+					break;
+				case "openBackgroundTab":
+				case "openBackgroundTabKeepOpen":
+					return browser.tabs.create({
+						active: false,
+						url: bookmark.url
+					});
+					break;
+				case "openSideBarAction":
+					async function openSideBarAction() {
+				
+						if ( !browser.sidebarAction ) return;
+						
+						await browser.sidebarAction.setPanel( {panel: bookmark.url} );
+							
+						if ( !await browser.sidebarAction.isOpen({}) )
+							notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
+							
+					}
+					openSideBarAction();
+					break;
+			}
+	
+		//	console.error('bookmark not a bookmarklet');
 			return false;
 		}
 		
@@ -916,7 +962,7 @@ function quickMenuSearch(info, tab) {
 	
 	// run as bookmarklet
 	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
-		executeBookmarklet(info);
+		executeBookmarklet(info, tab);
 		return Promise.resolve(false);
 	}
 	
@@ -1447,6 +1493,7 @@ function updateUserOptionsVersion(uo) {
 const defaultUserOptions = {
 	searchEngines: defaultEngines || [],
 	nodeTree: {},
+	lastUsedId: null,
 	hiddenEngines: "",
 	quickMenu: true,
 	quickMenuColumns: 6,
