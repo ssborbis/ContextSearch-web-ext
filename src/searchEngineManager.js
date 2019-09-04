@@ -16,11 +16,6 @@ function buildSearchEngineContainer() {
 			console.log('null node found');
 			return;
 		}
-		
-		if ( node.type === "bookmark" ) {
-			node.parent.children.splice(node.parent.children.indexOf(node), 1).shift();
-			return;
-		}
 
 		let li = document.createElement('li');
 		parent.appendChild(li);
@@ -473,6 +468,18 @@ function buildSearchEngineContainer() {
 			li.appendChild(ff);
 		}
 		
+		if (node.type === 'bookmark') {
+
+			let img = document.createElement('img');
+			img.src = node.icon;
+			li.appendChild(img);
+
+			let text = document.createElement('span');
+			text.innerText = node.title;
+			text.className = "label";
+			li.appendChild(text);
+		}
+		
 		if (node.type === 'folder') {
 			
 			let img = document.createElement('img');
@@ -487,9 +494,8 @@ function buildSearchEngineContainer() {
 			let ul = document.createElement('ul');
 			li.appendChild(ul);
 			
-			for (let _node of node.children)
-				traverse(_node, ul);
-			
+			node.children.forEach( _node => traverse(_node, ul) );
+
 			li.addEventListener('dblclick', (e) => {
 				
 				e.stopPropagation();

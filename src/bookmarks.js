@@ -107,8 +107,7 @@ class CSBookmarks {
 
 					target.children.push(folder);
 					
-					for (let child of node.children)
-						traverse(child, folder);
+					node.children.forEach( child => traverse(child, folder) );
 				}
 				
 				if (node.type === 'separator' /* firefox */) {
@@ -118,8 +117,7 @@ class CSBookmarks {
 				}
 			}
 			
-			for (let child of tree.children)
-				traverse(child, root);
+			tree.children.forEach( child => traverse(child, root) );
 			
 			return root;
 		});
@@ -162,15 +160,11 @@ class CSBookmarks {
 			
 			function traverse(node) {
 
-				if ( CSBookmarks.getType(node) === 'folder' ) {
-					for (let child of node.children) {
-						traverse(child);
-					}
-				}
+				if ( CSBookmarks.getType(node) === 'folder' ) 
+					node.children.forEach( child => traverse(child) );
 				
-				if ( CSBookmarks.getType(node) === 'bookmark' && node.url.startsWith("javascript") ) {
+				if ( CSBookmarks.getType(node) === 'bookmark' && node.url.startsWith("javascript") )
 					results.push(node);
-				}
 			}
 			
 			traverse(tree);

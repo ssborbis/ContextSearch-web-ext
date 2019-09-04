@@ -289,3 +289,6 @@ BODY {
 #toolBar .tile {
 	border:none;
 }
+[data-menu="quickmenu"] #titleBar, [data-menu="quickmenu"] #menuBar {
+	display:none;
+}

@@ -24,11 +24,7 @@ function formToSearchEngine() {
 }
 
 function hasDuplicateName(name) {
-
-	for (let se of userOptions.searchEngines)
-		if (se.title == name) return true;
-	
-	return false;
+	return ( userOptions.searchEngines.find( se => se.title == name ) ) ? true : false;
 }
 
 function expandElement(el) {

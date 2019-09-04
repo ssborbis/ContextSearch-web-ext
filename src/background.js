@@ -649,9 +649,7 @@ async function buildContextMenu() {
 		
 	}
 	
-	for (let child of root.children) {
-		traverse(child, "search_engine_menu");
-	}
+	root.children.forEach( child => traverse(child, "search_engine_menu") );
 
 }
 

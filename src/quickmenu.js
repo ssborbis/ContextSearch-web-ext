@@ -45,7 +45,9 @@ function makeFrameContents(options) {
 		
 		makeSearchBar();
 		
-		mb.style.display = document.getElementById('titleBar').style.display = "none";
+		document.getElementById('closeButton').addEventListener('click', (e) => {
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
+		});
 
 		browser.runtime.sendMessage({
 			action: "quickMenuIframeLoaded", 
