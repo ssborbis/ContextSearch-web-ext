@@ -1164,6 +1164,7 @@ function openSearch(details) {
 }
 
 function escapeDoubleQuotes(str) {
+	if ( !str ) return str;
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 }
 

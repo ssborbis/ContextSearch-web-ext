@@ -135,15 +135,12 @@
 	background-color:#EFF0F1;
 	transform:scale( calc( 1 / var(--cs-zoom, 1))) !important;
 }
-
 #CS_findBarContainer.CS_dark {
 	background-color:#323234;
 }
-
 #CS_findBarContainer.CS_dark IMG.CS_handle{
 	filter:invert(1) brightness(50%);
 }
-
 IMG.CS_handle {
 	all:unset;
 	width:24px !important;
@@ -154,7 +151,6 @@ IMG.CS_handle {
 	display:inline-block !important;
 	cursor:grab;
 }
-
 #CS_findBarIframe {
 	width:100%;
 	height:auto;
@@ -164,22 +160,18 @@ IMG.CS_handle {
 	position:relative;
 	height:36px;
 }
-
 #CS_findBarContainer[data-windowtype="docked"] {
 	left:0;
 	right:0;
 	width: calc(var(--cs-zoom, 100) * 100%);
 }
-
 #CS_findBarContainer[data-windowtype="undocked"] {
 	width:900px !important;	
 }
-
 .CS_mark, #CS_highLightNavBar > DIV {
 	background: transparent;
 	transition: all .5s ease;
 }
-
 .CS_overDiv {
 	display:inline-block;
 	position:fixed;
@@ -188,6 +180,7 @@ IMG.CS_handle {
 	right:0;
 	bottom:0;
 	z-index:2147483647;
+	opacity:0;
 }
 .CS_hide {
 	display:none !important;
