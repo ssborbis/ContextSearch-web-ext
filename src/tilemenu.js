@@ -1,5 +1,3 @@
-var styleEl = document.createElement('style');
-
 var qm = document.getElementById('quickMenuElement');
 var sb = document.getElementById('searchBar');
 // var tb = document.getElementById('titleBar');
@@ -8,6 +6,7 @@ var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 
 // Append <style> element to <head>
+var styleEl = document.createElement('style');
 document.head.appendChild(styleEl);
 
 var type;

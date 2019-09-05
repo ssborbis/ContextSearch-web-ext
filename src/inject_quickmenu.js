@@ -644,7 +644,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						resizeWidget.parentNode.removeChild(resizeWidget);
 				}, {once: true});
 				
-				browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
+				if ( !message.resizeOnly )
+					browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
 				
 				break;
 

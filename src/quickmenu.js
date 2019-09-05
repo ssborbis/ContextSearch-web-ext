@@ -79,17 +79,14 @@ function makeFrameContents(options) {
 			
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 		});
-	});
-	
+	});	
 }
 
 function resizeMenu() {
-	
-	if ( !window.location.href.endsWith("quickmenu.html") ) return;
 
 	let qm = document.getElementById('quickMenuElement');
 
-	browser.runtime.sendMessage({
+	return browser.runtime.sendMessage({
 		action: "quickMenuIframeLoaded", 
 		size: {
 			width: qm.getBoundingClientRect().width, 

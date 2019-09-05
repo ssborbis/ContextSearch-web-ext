@@ -156,7 +156,6 @@ BODY {
 	-moz-user-select: none;
 	text-align:right;
 }
-
 #menuBar > DIV {
 	background-size:20px;
 	height:20px;
@@ -206,7 +205,6 @@ BODY {
 #searchBar:focus {
 	border:1px solid #0a84ff;
 }
-
 #suggestions {
 	background-color:white;
 	color:#4a4a4a;
