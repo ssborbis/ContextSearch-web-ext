@@ -400,7 +400,8 @@ function makeQuickMenu(options) {
 					selectedDiv = divs[currentIndex + direction];
 					
 				selectedDiv.click();
-				selectedDiv.scrollIntoView(); 
+				
+				selectedDiv.scrollIntoView({block: "nearest"}); 
 			}
 
 		});
@@ -1411,6 +1412,8 @@ function makeSearchBar() {
 	
 	si.onclick = function() {
 		
+		sb.focus();
+		
 		if ( sg.querySelector('div') ) {
 			sg.innerHTML = null;
 			//sg.addEventListener('transitionend', resizeMenu);
@@ -1572,7 +1575,7 @@ function makeSearchBar() {
 			} else if ( userOptions.searchBarEnableHistory )
 				displaySuggestions(history);
 			
-		}, 250);
+		}, 500);
 	}
 	
 	sb.onkeydown = function(e) {
