@@ -113,7 +113,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 var CS_MARK_instance = null;
 
 var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
-var getFindBarContainer = () => {return document.getElementById('CS_findBarContainer');}
 var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
 
 // listen for execute_script call from background for search highlighting
@@ -413,36 +412,26 @@ function openFindBar(options) {
 			return;
 		}
 		
-		let fbc = document.createElement('div');
-		fbc.id = 'CS_findBarContainer';
-		
-		if ( userOptions.searchBarTheme === 'dark' )
-			fbc.classList.add('CS_dark');
-		
-		fbc.style.transformOrigin = userOptions.highLight.findBar.position + " left";
-		
-		fbc.style.opacity = 0;
-		fbc.style.maxHeight = '0px';
-		if ( !userOptions.enableAnimations ) fbc.style.setProperty('--user-transition', 'none');
-
 		fb = document.createElement('iframe');
 		fb.id = 'CS_findBarIframe';
 
-		let handle = new Image();
-		handle.src = browser.runtime.getURL('icons/vertical.svg');
-		handle.title = browser.i18n.getMessage("movedockundock");
-		handle.className = "CS_handle";
+		if ( userOptions.searchBarTheme === 'dark' )
+			fb.classList.add('CS_dark');
 		
-		fbc.appendChild(handle);
+		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 		
-		document.body.appendChild(fbc);
-		fbc.appendChild(fb);
+		fb.style.opacity = 0;
+		fb.style.maxHeight = '0px';
+		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
+
+
+		document.body.appendChild(fb);
 		
 		fb.onload = function() {
-			fbc.style.opacity = null;
-			fbc.style.maxHeight = null;
+			fb.style.opacity = null;
+			fb.style.maxHeight = null;
 			
-			fbc.docking.init();
+			fb.docking.init();
 			resolve(fb);
 		}
 
@@ -456,8 +445,8 @@ function openFindBar(options) {
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 		}
 
-		makeDockable(fbc, {
-			handleElement:handle, 
+		makeDockable(fb, {
+			handleElement:fb,
 			dockedPosition: userOptions.highLight.findBar.position,
 			onDock: (o) => {
 				saveFindBarOptions(o);	
@@ -474,14 +463,14 @@ function openFindBar(options) {
 
 function closeFindBar() {
 
-	let fbc = getFindBarContainer();
-	if ( fbc ) {
+	let fb = getFindBar();
+	if ( fb ) {
 				
-		fbc.style.maxHeight = '0px';
-		fbc.style.opacity = 0;
+		fb.style.maxHeight = '0px';
+		fb.style.opacity = 0;
 		
-		runAtTransitionEnd(fbc, "max-height", () => {
-			fbc.parentNode.removeChild(fbc);
+		runAtTransitionEnd(fb, "max-height", () => {
+			fb.parentNode.removeChild(fb);
 		});
 	}
 }
@@ -664,29 +653,56 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 document.addEventListener("fullscreenchange", (e) => {
 	
-	let fbc = getFindBarContainer();
+	let fb = getFindBar();
 	let navbar = getNavBar();
 
 	if ( document.fullscreen ) {
-		if (fbc) {
-			fbc.style.display = 'none';
+		if (fb) {
+			fb.style.display = 'none';
 			
-			if ( fbc.dataset.windowtype === 'docked' ) {
-				fbc.lastWindowType = 'docked';
-				fbc.undock();
+			if ( fb.dataset.windowtype === 'docked' ) {
+				fb.lastWindowType = 'docked';
+				fb.undock();
 			}
 		}
 		if (navbar) navbar.style.display = 'none';		
 		
 	} else {			
-		if (fbc) {
-			fbc.style.display = null;
+		if (fb) {
+			fb.style.display = null;
 			
-			if ( fbc.lastWindowType === 'docked')
-				fbc.docking.dock();
+			if ( fb.lastWindowType === 'docked')
+				fb.docking.dock();
 			
-			delete fbc.lastWindowType;
+			delete fb.lastWindowType;
 		}
 		if (navbar) navbar.style.display = null;
+	}
+});
+
+window.addEventListener('message', (e) => {
+
+	if ( e.data.target !== "findBar" ) return;
+	if ( !getFindBar() ) return;
+	
+	let x = e.data.e.clientX / window.devicePixelRatio;
+	let y = e.data.e.clientY / window.devicePixelRatio;
+
+	switch ( e.data.action ) {
+		case "handle_dragstart":
+			getFindBar().docking.moveStart({clientX:x, clientY:y});
+			break;
+		
+		case "handle_dragend":
+			getFindBar().docking.moveEnd({clientX:x, clientY:y});
+			break;
+		
+		case "handle_dragmove":
+			getFindBar().docking.moveListener({clientX:x, clientY:y});
+			break;
+			
+		case "handle_dock":
+			getFindBar().docking.toggleDock();
+			break;
 	}
 });

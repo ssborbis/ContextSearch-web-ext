@@ -979,7 +979,7 @@ function openSearch(details) {
 	
 	console.log(details);
 	var searchEngineId = details.searchEngineId || null;
-	var searchTerms = details.searchTerms.trim();
+	var searchTerms = (details.searchTerms) ? details.searchTerms.trim() : "";
 	var openMethod = details.openMethod || "openNewTab";
 	var tab = details.tab || null;
 	var openUrl = details.openUrl || false;

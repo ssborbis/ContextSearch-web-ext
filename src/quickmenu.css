@@ -290,3 +290,15 @@ BODY {
 [data-menu="quickmenu"] #titleBar, [data-menu="quickmenu"] #menuBar {
 	display:none;
 }
+#handle {
+	position:relative;
+	top:4px;
+	width:24px;
+	height:16px;
+	filter:none;
+	cursor: grab;
+	background-image: url(icons/vertical.svg);
+	background-size:24px 16px;
+	display:inline-block
+	background-repeat:no-repeat;
+}

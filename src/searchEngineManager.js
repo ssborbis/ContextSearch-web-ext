@@ -354,13 +354,14 @@ function buildSearchEngineContainer() {
 
 		}
 		
-		if (node.type === 'bookmarklet') {
+		if (node.type === 'bookmarklet' || node.type === "bookmark") {
 			
 			let img = document.createElement('img');
 			img.src = node.icon || browser.runtime.getURL('icons/code.svg');
 			li.appendChild(img);
 			
 			li.addEventListener('dblclick', (e) => {
+				//console.log('dblclick');
 				editBm();
 			});	
 			
@@ -406,6 +407,7 @@ function buildSearchEngineContainer() {
 				}
 				
 				_form.save.onclick = function() {
+					if ( !_form.iconURL.value ) return;
 					img.src = browser.runtime.getURL("/icons/spinner.svg");
 					let newIcon = new Image();
 					newIcon.onload = function() {
@@ -468,17 +470,17 @@ function buildSearchEngineContainer() {
 			li.appendChild(ff);
 		}
 		
-		if (node.type === 'bookmark') {
+		// if (node.type === 'bookmark') {
 
-			let img = document.createElement('img');
-			img.src = node.icon;
-			li.appendChild(img);
+			// let img = document.createElement('img');
+			// img.src = node.icon;
+			// li.appendChild(img);
 
-			let text = document.createElement('span');
-			text.innerText = node.title;
-			text.className = "label";
-			li.appendChild(text);
-		}
+			// let text = document.createElement('span');
+			// text.innerText = node.title;
+			// text.className = "label";
+			// li.appendChild(text);
+		// }
 		
 		if (node.type === 'folder') {
 			

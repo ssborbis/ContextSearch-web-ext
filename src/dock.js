@@ -158,7 +158,11 @@ function makeDockable(el, options) {
 		translatePosition: translatePosition,
 		getPositions: getPositions,
 		getOffsets: getOffsets,
-		options: o
+		options: o,
+		moveListener: moveListener,
+		moveStart: moveStart,
+		moveEnd: moveEnd,
+		toggleDock: toggleDock
 	}
 
 	// init 
@@ -362,9 +366,13 @@ function makeDockable(el, options) {
 		undoOffset();
 	}
 	
+	function toggleDock() {
+		if ( o.windowType === "docked" ) undock();	
+		else if ( o.windowType === "undocked" ) dock();
+	}
+	
 	if ( o.handleElement) {
 		o.handleElement.addEventListener('dblclick', (e) => {
-
 			if ( el.dataset.windowtype === 'docked' ) undock();
 			else dock();	
 		});
@@ -372,49 +380,54 @@ function makeDockable(el, options) {
 	
 	// timer for better mousemove handling
 	let mouseDownStart = null;
+	
+	function moveStart(e) {
 
-	if ( o.handleElement ) {
-		o.handleElement.addEventListener('mousedown', (e) => {
-			
-			mouseDownStart = Date.now();
+		mouseDownStart = Date.now();
 
-			el.X = e.clientX;
-			el.Y = e.clientY;
-			el.moving = false;
+		el.X = e.clientX;
+		el.Y = e.clientY;
+		el.moving = false;
+		
+		if ( el.tagName !== "IFRAME" ) {
 			e.preventDefault();
 
 			document.addEventListener('mousemove', moveListener);
+			document.addEventListener('mouseup', moveEnd, {once: true});
+		}
+	}
+	
+	function moveEnd(e) {
+		document.removeEventListener('mousemove', moveListener);
+			
+		if ( !el.moving ) return;
+		
+		el.classList.remove('CS_moving');
+		
+		overDiv.parentNode.removeChild(overDiv);
+		
+		o.lastOffsets = getOffsets();
+		let pos = getPositions(o.lastOffsets);
+		
+		// set docked position based on quadrant
+		o.dockedPosition = /top|bottom/.test(o.dockedPosition) ? pos.v : pos.h;
+		
+		// translate scale and position to quadrant
+		translatePosition(pos.v, pos.h);
+		
+		// restore transitions
+		el.style.transition = null;
+		
+		o.onUndock(o);
+	}
 
-			document.addEventListener('mouseup', (_e) => {
-
-				document.removeEventListener('mousemove', moveListener);
-				
-				if ( !el.moving ) return;
-				
-				el.classList.remove('CS_moving');
-				
-				overDiv.parentNode.removeChild(overDiv);
-				
-				o.lastOffsets = getOffsets();
-				let pos = getPositions(o.lastOffsets);
-				
-				// set docked position based on quadrant
-				o.dockedPosition = /top|bottom/.test(o.dockedPosition) ? pos.v : pos.h;
-				
-				// translate scale and position to quadrant
-				translatePosition(pos.v, pos.h);
-				
-				// restore transitions
-				el.style.transition = null;
-				
-				o.onUndock(o);
-
-			}, {once: true});
-		});
+	if ( o.handleElement && o.handleElement.tagName !== "IFRAME" ) {
+		o.handleElement.addEventListener('mousedown', moveStart);
 	}
 
 	function moveListener(e) {
-		e.preventDefault();
+
+		if ( e.preventDefault )	e.preventDefault();
 
 		if ( !el.moving && 
 			(

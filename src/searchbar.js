@@ -201,3 +201,30 @@ document.getElementById('closeButton').addEventListener('click', (e) => {
 	else
 		window.close();
 });
+
+document.getElementById('menuBar').addEventListener('mousedown', (e) => {
+	if ( e.which !== 1 ) return;
+
+	document.getElementById('menuBar').moving = true;
+	window.parent.postMessage({action: "handle_dragstart", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+window.addEventListener('mouseup', (e) => {
+	if ( e.which !== 1 ) return;
+
+	document.getElementById('menuBar').moving = false;
+	window.parent.postMessage({action: "handle_dragend", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+window.addEventListener('mousemove', (e) => {
+	if ( e.which !== 1 ) return;
+	
+	if ( !document.getElementById('menuBar').moving ) return;
+	window.parent.postMessage({action: "handle_dragmove", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+document.getElementById('menuBar').addEventListener('dblclick', (e) => {
+	if ( e.which !== 1 ) return;
+
+	window.parent.postMessage({action: "handle_dock", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});

@@ -639,6 +639,25 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					}
 				});
 				
+				// let handle = document.createElement('div');
+				// handle.className = 'CS_handle';
+				// document.body.appendChild(handle);
+				
+				// makeDockable(iframe, {
+					// windowType: "undocked",
+					// dockedPosition: "top",
+					// handleElement: handle,
+					// lastOffsets: {
+						// top: iframe.getBoundingClientRect().top, left: iframe.getBoundingClientRect().left, right: iframe.getBoundingClientRect().right, bottom: iframe.getBoundingClientRect().bottom},
+					// onUndock: (o) => {},
+					// onDock: (o) => {}
+				// });
+				
+				// console.log(iframe.getBoundingClientRect().top, iframe.getBoundingClientRect().left);
+
+				// iframe.docking.init();
+				// iframe.docking.undock();
+				
 				document.addEventListener('closequickmenu', () => {
 					if ( resizeWidget ) 
 						resizeWidget.parentNode.removeChild(resizeWidget);
