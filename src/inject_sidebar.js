@@ -38,16 +38,6 @@ if ( window != top ) {
 						iframe.style.setProperty('--user-transition', 'none');
 
 					if ( !iframe ) return;
-
-					if ( e.data.size.height) {
-						if ( iframe.dataset.windowtype === 'undocked' )
-							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, iframe.dataset.windowtype === 'undocked' ? userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
-					}
-					
-					if ( e.data.size.width ) {						
-						iframe.style.width = e.data.size.width + "px";
-						iframe.style.maxWidth = iframe.style.width;
-					}
 					
 					if ( iframe.resizeWidget && e.data.tileSize) {
 						iframe.resizeWidget.options.tileSize = {
@@ -57,7 +47,16 @@ if ( window != top ) {
 						
 						iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
 					}
+
+					if ( e.data.size.height && !iframe.resizeWidget.options.isResizing) {
+						if ( iframe.dataset.windowtype === 'undocked' )
+							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, iframe.dataset.windowtype === 'undocked' ? userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
+					}
 					
+					if ( e.data.size.width ) {						
+						iframe.style.width = e.data.size.width + "px";
+					}
+
 					iframe.style.opacity = 1;
 
 					// test for bottom overflow
@@ -73,7 +72,7 @@ if ( window != top ) {
 						// }
 					// }
 
-					runAtTransitionEnd(iframe, ["width", "height", "max-width", "max-height"], () => {	
+					runAtTransitionEnd(iframe, ["width", "height"], () => {	
 						repositionOffscreenElement(iframe);
 						
 						if ( iframe.docking.options.windowType === 'docked' )
@@ -156,9 +155,7 @@ if ( window != top ) {
 				saveSideBarOptions(o);
 			},
 			onDock: (o) => {
-
 				iframe.style.height = 100 * window.devicePixelRatio + '%';
-				// iframe.style.maxHeight = 100 * window.devicePixelRatio + '%';
 				iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));
 
 				saveSideBarOptions(o);
@@ -170,7 +167,7 @@ if ( window != top ) {
 		// set the initial state of the sidebar, not the opening tab
 		iframe.docking.options.windowType = iframe.dataset.windowtype = userOptions.sideBar.windowType;
 		
-		runAtTransitionEnd(iframe, ["height", "width", "max-height", "max-width"], () => { 
+		runAtTransitionEnd(iframe, ["height", "width"], () => { 
 			iframe.docking.init();
 			
 			iframe.style.opacity = 1;
@@ -190,11 +187,11 @@ if ( window != top ) {
 					
 					// step the container and iframe size
 					iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
-					iframe.style.maxHeight = iframe.style.height;
+				//	iframe.style.maxHeight = iframe.style.height;
 					
 					// value set on resizeSideBar message based on singleColumn
 					if ( resizeWidget.options.allowHorizontal )
-						iframe.style.width = iframe.style.maxWidth = ( o.columns * resizeWidget.options.tileSize.width ) + "px";
+						iframe.style.width = ( o.columns * resizeWidget.options.tileSize.width ) + "px";
 
 					// rebuild menu with new dimensions
 					iframe.contentWindow.postMessage({action: "sideBarRebuild", columns:o.columns}, browser.runtime.getURL('/searchbar.html'));	
@@ -206,7 +203,7 @@ if ( window != top ) {
 					iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
 
 					// save prefs
-					userOptions.sideBar.height = parseFloat( iframe.style.height || iframe.style.maxHeight );
+					userOptions.sideBar.height = parseFloat( iframe.style.height );
 					
 					if ( resizeWidget.options.allowHorizontal )
 						userOptions.sideBar.columns = o.columns;
@@ -222,7 +219,6 @@ if ( window != top ) {
 					// crop the sidebar size after a delay
 					setTimeout(() => {
 						iframe.style.height = null;
-						iframe.style.maxHeight = null;
 						iframe.contentWindow.postMessage({action: "quickMenuIframeLoaded"}, browser.runtime.getURL('/searchbar.html'));	
 						iframe.resizeWidget.setPosition();
 					}, 100);
@@ -248,7 +244,7 @@ if ( window != top ) {
 		let iframe = getIframe();
 		let openingTab = getOpeningTab();
 		
-		iframe.style.maxWidth = null;
+		iframe.style.width = null;
 		iframe.style.opacity = null;
 		
 		if ( openingTab ) { // reposition the openingTab to match sidebar position
