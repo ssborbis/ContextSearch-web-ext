@@ -470,18 +470,6 @@ function buildSearchEngineContainer() {
 			li.appendChild(ff);
 		}
 		
-		// if (node.type === 'bookmark') {
-
-			// let img = document.createElement('img');
-			// img.src = node.icon;
-			// li.appendChild(img);
-
-			// let text = document.createElement('span');
-			// text.innerText = node.title;
-			// text.className = "label";
-			// li.appendChild(text);
-		// }
-		
 		if (node.type === 'folder') {
 			
 			let img = document.createElement('img');
@@ -497,8 +485,65 @@ function buildSearchEngineContainer() {
 			li.appendChild(ul);
 			
 			node.children.forEach( _node => traverse(_node, ul) );
-
+			
 			li.addEventListener('dblclick', (e) => {
+				if ( li.querySelector(".editForm") ) {
+					let _form = li.querySelector(".editForm");
+					_form.closeForm();
+					return;
+				}
+				
+				let _form = document.createElement('form');
+				_form.style.textAlign = "left";
+				_form.innerHTML = `
+				<div style="text-align:left">
+				Group color: <input name="groupColor" type="color" style="width:30px;display:inline-block"/><br />
+				Use Group layout: <input name="groupFolder" type="checkbox" style="display:inline-block;width:auto"/><br />
+				<!-- Display as: <select class="inputNice" style="display:inline-block;font-size:9pt;"><option>default</option><option>grid</option><option>text</option></select><br />-->
+				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
+				<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>
+				</div>
+				`;
+				_form.className = 'editForm';
+				_form.action = "";
+				
+				_form.closeForm = function() {
+					_form.style.maxHeight = null;
+					setTimeout(() => {
+						_form.parentNode.removeChild(_form);
+					}, 1000);
+				}
+				
+				_form.addEventListener('mouseover', () => {
+					for (let _li of rootElement.getElementsByTagName('li'))
+						_li.setAttribute('draggable', false);
+				});
+				
+				_form.addEventListener('mouseout', () => {
+					for (let _li of rootElement.getElementsByTagName('li'))
+						_li.setAttribute('draggable', true);
+				});
+				
+				_form.close.onclick = function() {
+					_form.closeForm();
+				}
+				
+				_form.save.onclick = function() {
+					node.groupColor = _form.groupColor.value;
+					node.groupFolder = _form.groupFolder.checked;
+					updateNodeList();
+				}
+				
+				li.insertBefore(_form, ul);
+				
+				_form.groupColor.value = node.groupColor || "";
+				_form.groupFolder.checked = node.groupFolder || false;
+				
+				_form.getBoundingClientRect();
+				_form.style.maxHeight = '100px';
+			});	
+			
+			text.addEventListener('dblclick', (e) => {
 				
 				e.stopPropagation();
 

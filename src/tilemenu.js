@@ -677,7 +677,7 @@ function makeQuickMenu(options) {
 		// make rows / columns
 		tileArray.forEach( tile => {
 			
-			tile.className = 'tile';
+			tile.classList.add('tile');
 			tile.dataset.title = tile.title;
 
 			if (_singleColumn) tile.classList.add("singleColumn");
@@ -783,8 +783,7 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('dragenter', (e) => {
-				
-			//	e.preventDefault();
+
 				e.target.dispatchEvent(new MouseEvent('mouseenter'));
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
@@ -819,7 +818,6 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('dragleave', (e) => {
-			//	e.preventDefault();
 				e.target.dispatchEvent(new MouseEvent('mouseleave'));
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
@@ -836,10 +834,13 @@ function makeQuickMenu(options) {
 				if ( arrow ) arrow.style.display = 'none';
 			});
 			div.addEventListener('dragend', (e) => {
-				
+
 				let dragDiv = document.getElementById('dragDiv');
-				dragDiv.style.opacity = null;
-				dragDiv.id = "";
+				
+				if ( dragDiv ) {
+					dragDiv.style.opacity = null;
+					dragDiv.id = "";
+				}
 				
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
@@ -848,9 +849,15 @@ function makeQuickMenu(options) {
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
 				
+				// refresh menu when moving groups
+				if ( dragDiv.node.groupFolder || dragDiv.node.parent.groupFolder ) {
+					quickMenuElementFromNodeTree(tileDivs[0].node.parent);
+				}
+				
 			});
 			div.addEventListener('drop', (e) => {
 				e.preventDefault();
+				
 			//	console.log(e.dataTransfer, e.dataTransfer.getData("text/html"), e.dataTransfer.getData("text/x-moz-place"), e.dataTransfer.getData("text/x-moz-url"));
 			
 				// console.log(e, e.dataTransfer);
@@ -949,9 +956,7 @@ function makeQuickMenu(options) {
 				
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
-				// rebuild breaks
-			//	insertBreaks(_columns);
-			
+				// rebuild breaks	
 				insertBreaks(qm.columns);
 
 			});
@@ -1055,9 +1060,21 @@ function makeQuickMenu(options) {
 		}
 
 		nodes.forEach( node => {
+
 			let tile = nodeToTile(node);
 			
 			if ( tile ) tileArray.push( tile );
+			
+			if ( node.groupFolder ) {
+				node.children.forEach( _node => {
+					let _tile = nodeToTile(_node);
+					_tile.style.setProperty("--group-color",tile.node.groupColor);
+					_tile.classList.add("groupFolder");
+	
+					if ( _tile ) tileArray.push( _tile );
+					
+				});
+			}
 		});
 
 		// do not display tools if in a subfolder
@@ -1268,21 +1285,6 @@ function makeQuickMenu(options) {
 					Promise.all( messages );
 				}
 
-				// if ( node.title === "Torrents" ) {
-
-					// tile.node = node;
-					// tileArray.push(tile);
-					
-					// node.children.forEach( _node => {
-						// let _tile = nodeToTile(_node);
-		
-						// if ( _tile ) tileArray.push( _tile );
-						
-					// });
-					
-					// return;
-				// }
-				
 				break;
 				
 			case "siteSearch":

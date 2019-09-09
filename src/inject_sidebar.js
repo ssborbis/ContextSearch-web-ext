@@ -33,12 +33,11 @@ if ( window != top ) {
 					if ( !e.data.size ) return;
 
 					let iframe = getIframe();
+					if ( !iframe ) return;
 					
 					if ( !userOptions.enableAnimations ) 
 						iframe.style.setProperty('--user-transition', 'none');
 
-					if ( !iframe ) return;
-					
 					if ( iframe.resizeWidget && e.data.tileSize) {
 						iframe.resizeWidget.options.tileSize = {
 							width: e.data.tileSize.width,
@@ -53,24 +52,11 @@ if ( window != top ) {
 							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, iframe.dataset.windowtype === 'undocked' ? userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
 					}
 					
-					if ( e.data.size.width ) {						
+					if ( e.data.size.width && !iframe.resizeWidget.options.isResizing ) {						
 						iframe.style.width = e.data.size.width + "px";
 					}
 
 					iframe.style.opacity = 1;
-
-					// test for bottom overflow
-					// let rect = sbContainer.getBoundingClientRect();
-					
-					// if ( userOptions.sideBar.type === 'overlay' && e.data.size.height * 1/window.devicePixelRatio + rect.top > window.innerHeight) {
-						
-						// if ( true )
-							// sbContainer.style.top = Math.max(0, window.innerHeight - e.data.size.height * 1/window.devicePixelRatio) + "px";
-						// else {
-							// sbContainer.style.height = window.innerHeight - parseFloat(sbContainer.style.top) * 1/window.devicePixelRatio + "px";
-							// iframe.style.maxHeight = sbContainer.style.height;
-						// }
-					// }
 
 					runAtTransitionEnd(iframe, ["width", "height"], () => {	
 						repositionOffscreenElement(iframe);

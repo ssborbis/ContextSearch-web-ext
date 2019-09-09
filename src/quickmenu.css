@@ -281,6 +281,9 @@ BODY {
 	width:auto;
 	padding-right:10px;
 }
+.tile.groupFolder {
+	background-color: var(--group-color);
+}
 #toolBar {
 	text-align:center;
 }
