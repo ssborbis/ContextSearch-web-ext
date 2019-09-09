@@ -258,34 +258,6 @@ function buildSearchEngineContainer() {
 						label.style.color = null;
 						clearError(label.nextSibling)
 					}
-					
-					function showSaveMessage(str, color, _class) {
-						
-						color = color || "inherit";
-
-						// clear and set save message
-						$("#editFormSaveMessage").innerHTML = null;	
-						let msgSpan = document.createElement('span');
-
-						let img = document.createElement('div');
-						img.className = _class;
-						//img.style.height = img.style.width = '1em';
-						img.style.marginRight = '10px';
-						msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
-						msgSpan.style.color = color;
-						//msgSpan.innerText = str;
-						
-						msgSpan.insertBefore(img, msgSpan.firstChild);
-						
-						$("#editFormSaveMessage").appendChild(msgSpan);
-						
-						msgSpan.addEventListener('transitionend', (e) => {
-							msgSpan.parentNode.removeChild(msgSpan);
-						});
-
-						msgSpan.getBoundingClientRect(); // reflow
-						msgSpan.style.opacity = 0;
-					}
 
 					function saveForm(closeForm) {
 						
@@ -323,7 +295,7 @@ function buildSearchEngineContainer() {
 						
 						updateNodeList();
 						
-						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes");
+						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes", $("#editFormSaveMessage"));
 
 						// if (closeForm)
 							// edit_form.style.maxHeight = null;
@@ -331,7 +303,7 @@ function buildSearchEngineContainer() {
 					
 					checkFormValues().then( result => {
 						if ( result ) saveForm();
-						else showSaveMessage("cannot save", "red", "no");
+						else showSaveMessage("cannot save", "red", "no", $("#editFormSaveMessage"));
 					});
 				}
 				
@@ -487,6 +459,8 @@ function buildSearchEngineContainer() {
 			node.children.forEach( _node => traverse(_node, ul) );
 			
 			li.addEventListener('dblclick', (e) => {
+				
+				e.stopPropagation();
 				if ( li.querySelector(".editForm") ) {
 					let _form = li.querySelector(".editForm");
 					_form.closeForm();
@@ -494,15 +468,31 @@ function buildSearchEngineContainer() {
 				}
 				
 				let _form = document.createElement('form');
-				_form.style.textAlign = "left";
 				_form.innerHTML = `
-				<div style="text-align:left">
-				Group color: <input name="groupColor" type="color" style="width:30px;display:inline-block"/><br />
-				Use Group layout: <input name="groupFolder" type="checkbox" style="display:inline-block;width:auto"/><br />
-				<!-- Display as: <select class="inputNice" style="display:inline-block;font-size:9pt;"><option>default</option><option>grid</option><option>text</option></select><br />-->
+				<table id="folderFormTable">
+					<tr>
+						<td>Display</td>
+						<td>
+							<select name="displayType" class="inputNice" style="display:inline-block;font-size:9pt;">
+								<option value="">default</option>
+								<option value="grid">grid</option>
+								<option value="text">text</option>
+							</select>
+						</td>
+					</tr>
+					<tr>
+						<td>Group layout</td>
+						<td><input name="groupFolder" type="checkbox" style="display:inline-block;width:auto"/></td>
+					</tr>
+					<tr>
+						<td>Group color</td>
+						<td><input name="groupColor" type="color" style="width:30px;display:inline-block"/></td>
+					</tr>
+				</table>
+				
 				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
 				<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>
-				</div>
+				<span class="saveMessage" style="float:right;margin: 10px 5px"></span>
 				`;
 				_form.className = 'editForm';
 				_form.action = "";
@@ -529,8 +519,11 @@ function buildSearchEngineContainer() {
 				}
 				
 				_form.save.onclick = function() {
+					showSaveMessage("saved", null, "yes", _form.querySelector(".saveMessage"));
+					
 					node.groupColor = _form.groupColor.value;
 					node.groupFolder = _form.groupFolder.checked;
+					node.displayType = _form.displayType.value;
 					updateNodeList();
 				}
 				
@@ -538,9 +531,10 @@ function buildSearchEngineContainer() {
 				
 				_form.groupColor.value = node.groupColor || "";
 				_form.groupFolder.checked = node.groupFolder || false;
+				_form.displayType.value = node.displayType;
 				
 				_form.getBoundingClientRect();
-				_form.style.maxHeight = '100px';
+				_form.style.maxHeight = '150px';
 			});	
 			
 			text.addEventListener('dblclick', (e) => {
@@ -1493,10 +1487,35 @@ function buildSearchEngineContainer() {
 				});
 			});
 		});
-		
-		
-		
 	});
+	
+	function showSaveMessage(str, color, _class, el) {
+
+		color = color || "inherit";
+
+		// clear and set save message
+		el.innerHTML = null;	
+		let msgSpan = document.createElement('span');
+
+		let img = document.createElement('div');
+		img.className = _class;
+		//img.style.height = img.style.width = '1em';
+		img.style.marginRight = '10px';
+		msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
+		msgSpan.style.color = color;
+		//msgSpan.innerText = str;
+		
+		msgSpan.insertBefore(img, msgSpan.firstChild);
+		
+		el.appendChild(msgSpan);
+		
+		msgSpan.addEventListener('transitionend', (e) => {
+			msgSpan.parentNode.removeChild(msgSpan);
+		});
+
+		msgSpan.getBoundingClientRect(); // reflow
+		msgSpan.style.opacity = 0;
+	}
 	
 	document.getElementById('iconPicker').addEventListener('change', (e) => {
 		let file = e.target.files[0];

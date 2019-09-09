@@ -228,7 +228,11 @@ function makeQuickMenu(options) {
 			
 			e.preventDefault();
 
-			qm.rootNode.toggleLayout = !qm.rootNode.toggleLayout;
+			qm.rootNode.displayType = function() {
+				if ( singleColumn && !qm.rootNode.displayType ) return "grid";
+				if ( !singleColumn && !qm.rootNode.displayType ) return "text";
+				return "";
+			}();
 			
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 			
@@ -521,7 +525,10 @@ function makeQuickMenu(options) {
 	
 	function buildQuickMenuElement(options) {
 		
-		let _singleColumn = options.forceSingleColumn || ( options.toggleLayout ? !singleColumn : singleColumn );
+		let _singleColumn = options.forceSingleColumn || options.node.displayType === "text";
+		
+		if ( options.node.displayType === "grid" ) _singleColumn = false;
+		
 		let _columns = _singleColumn ? 1 : getColumns();
 
 		function buildMoreTile() {
@@ -990,8 +997,8 @@ function makeQuickMenu(options) {
 			
 			function _back(e) {
 
-				// back button rebuilds the menu using the parent folder
-				let quickMenuElement = quickMenuElementFromNodeTree(rootNode.parent, true);
+				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
+				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
 				browser.runtime.sendMessage({
 					action: "quickMenuIframeLoaded", 
@@ -1064,6 +1071,7 @@ function makeQuickMenu(options) {
 			let tile = nodeToTile(node);
 			
 			if ( tile ) tileArray.push( tile );
+			else return;
 			
 			if ( node.groupFolder ) {
 				node.children.forEach( _node => {
@@ -1080,7 +1088,7 @@ function makeQuickMenu(options) {
 		// do not display tools if in a subfolder
 		let toolsArray = rootNode.parent ? [] : createToolsArray();
 
-		return buildQuickMenuElement({tileArray:tileArray, toolsArray:toolsArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, toggleLayout: rootNode.toggleLayout});
+		return buildQuickMenuElement({tileArray:tileArray, toolsArray:toolsArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
 	
 	function nodeToTile( node ) {

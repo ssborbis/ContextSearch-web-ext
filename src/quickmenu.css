@@ -155,6 +155,7 @@ BODY {
 	user-select: none; 
 	-moz-user-select: none;
 	text-align:right;
+	cursor:grab;
 }
 #menuBar > DIV {
 	background-size:20px;
@@ -163,6 +164,7 @@ BODY {
 	display:inline-block;
 	vertical-align:top;
 	padding:2px;
+	cursor:default;
 }
 #optionsButton {
 	background: url(/icons/settings.svg) no-repeat center;
