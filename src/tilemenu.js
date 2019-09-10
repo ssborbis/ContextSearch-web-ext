@@ -1081,7 +1081,7 @@ function makeQuickMenu(options) {
 			else return;
 			
 			if ( node.groupFolder ) {
-				let count = 1;
+				let count = 0;
 				node.children.forEach( _node => {
 					let _tile = nodeToTile(_node);
 					_tile.style.setProperty("--group-color",tile.node.groupColor);
