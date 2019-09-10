@@ -1080,12 +1080,24 @@ function makeQuickMenu(options) {
 			if ( tile ) tileArray.push( tile );
 			else return;
 			
+			// remove parent folder from menu
+			if ( node.groupFolder ) tileArray.pop();
+			
 			if ( node.groupFolder ) {
+				
+				tile.style.setProperty("--group-color",tile.node.groupColor);
+				tile.classList.add("groupFolder");
+				
 				let count = 0;
 				node.children.forEach( _node => {
 					let _tile = nodeToTile(_node);
+					
+					if ( !_tile ) return;
+					
 					_tile.style.setProperty("--group-color",tile.node.groupColor);
 					_tile.classList.add("groupFolder");
+					
+					_tile.title = tile.title + " / " + _tile.title;
 
 					if ( node.groupLimit && count >= node.groupLimit ) {
 						_tile.dataset.hidden = true;
@@ -1096,7 +1108,6 @@ function makeQuickMenu(options) {
 						tileArray.push( _tile );
 						count++;
 					}
-					
 				});
 				
 				if ( node.groupLimit && node.children.length >= node.groupLimit ) {
@@ -1115,11 +1126,8 @@ function makeQuickMenu(options) {
 							_div.style.display = null;
 						});
 						
-						insertBreaks(qm.columns);
-						
-						moreTile.addEventListener('mouseup', less);
-						moreTile.removeEventListener('mouseup', more);	
-						
+						insertBreaks(qm.columns);	
+						moreTile.onmouseup = less;	
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
 					}
 					
@@ -1132,15 +1140,11 @@ function makeQuickMenu(options) {
 						});
 						
 						insertBreaks(qm.columns);
-						
-						moreTile.addEventListener('mouseup', more);
-						moreTile.removeEventListener('mouseup', less);	
-						
+						moreTile.onmouseup = more;	
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
 					}
-					
-					moreTile.addEventListener('mouseup', more);
-					
+
+					moreTile.onmouseup = more;
 					tileArray.push( moreTile );
 				}
 			}

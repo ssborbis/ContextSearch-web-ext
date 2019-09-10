@@ -820,6 +820,7 @@ function buildSearchEngineContainer() {
 		let dragNode = window.dragRow.node;
 		let targetElement = nearestParent('LI', ev.target);
 		let targetNode = targetElement.node;
+		let position = dragover_position(targetElement, ev);
 		
 		// clear drag styling
 		targetElement.style = null;
@@ -834,49 +835,54 @@ function buildSearchEngineContainer() {
 		
 //		console.log(dragNode.parent.children.indexOf(dragNode));
 
-		// cut the node from the children array
-		let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
-
-		let position = dragover_position(targetElement, ev);
-		
-		// if target is bottom of populated folder, proceed as if drop on folder
-		if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
-			position = 'middle';
-
-		if ( position === 'top' ) {
-			
-			// set new parent
-			slicedNode.parent = targetNode.parent;
-
-			// add to children above target
-			targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
-
-			// insert into DOM
-			targetElement.parentNode.insertBefore(window.dragRow, targetElement);
-			
-		} else if ( position === 'bottom' ) {
-
-			// set new parent
-			slicedNode.parent = targetNode.parent;
-
-			// add to children above target
-			targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode) + 1, 0, slicedNode);
-
-			// insert into DOM
-			targetElement.parentNode.insertBefore(window.dragRow, targetElement.nextSibling);
+		if ( selectedRows.length === 0 ) selectedRows.push(window.dragRow);
 				
-		} else if ( position === 'middle' ) { // drop into folder
+		selectedRows.forEach( row => {
+			
+			let _node = row.node;
+
+			// cut the node from the children array
+			let slicedNode = _node.parent.children.splice(_node.parent.children.indexOf(_node), 1).shift();
+
+			// if target is bottom of populated folder, proceed as if drop on folder
+			if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
+				position = 'middle';
+			
+			if ( position === 'top' ) {
 				
-			// set new parent
-			slicedNode.parent = targetNode;
+				// set new parent
+				slicedNode.parent = targetNode.parent;
 
-			// add to children above target
-			targetNode.children.unshift(slicedNode);
+				// add to children above target
+				targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
 
-			// append element to children (ul)
-			let ul = targetElement.querySelector('ul');			
-			ul.insertBefore(window.dragRow, ul.firstChild);
-		}
+				// insert into DOM
+				targetElement.parentNode.insertBefore(row, targetElement);
+				
+			} else if ( position === 'bottom' ) {
+
+				// set new parent
+				slicedNode.parent = targetNode.parent;
+
+				// add to children above target
+				targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode) + 1, 0, slicedNode);
+
+				// insert into DOM
+				targetElement.parentNode.insertBefore(row, targetElement.nextSibling);
+					
+			} else if ( position === 'middle' ) { // drop into folder
+					
+				// set new parent
+				slicedNode.parent = targetNode;
+
+				// add to children above target
+				targetNode.children.unshift(slicedNode);
+
+				// append element to children (ul)
+				let ul = targetElement.querySelector('ul');			
+				ul.insertBefore(window.dragRow, ul.firstChild);
+			}
+		});
 	}
 	
 	function dragend_handler(ev) {
