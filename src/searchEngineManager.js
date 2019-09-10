@@ -460,6 +460,8 @@ function buildSearchEngineContainer() {
 			
 			li.addEventListener('dblclick', (e) => {
 				
+				if ( e.target !== li && e.target !== img ) return;
+				
 				e.stopPropagation();
 				if ( li.querySelector(".editForm") ) {
 					let _form = li.querySelector(".editForm");
@@ -487,6 +489,10 @@ function buildSearchEngineContainer() {
 					<tr>
 						<td>Group color</td>
 						<td><input name="groupColor" type="color" style="width:30px;display:inline-block"/></td>
+					</tr>
+					<tr>
+						<td>Group limit</td>
+						<td><input name="groupLimit" type="number" min="0" max="99" style="width:60px;display:inline-block"/></td>
 					</tr>
 				</table>
 				
@@ -523,6 +529,7 @@ function buildSearchEngineContainer() {
 					
 					node.groupColor = _form.groupColor.value;
 					node.groupFolder = _form.groupFolder.checked;
+					node.groupLimit = parseInt(_form.groupLimit.value);
 					node.displayType = _form.displayType.value;
 					updateNodeList();
 				}
@@ -531,10 +538,11 @@ function buildSearchEngineContainer() {
 				
 				_form.groupColor.value = node.groupColor || "";
 				_form.groupFolder.checked = node.groupFolder || false;
-				_form.displayType.value = node.displayType;
+				_form.groupLimit.value = node.groupLimit || 0;
+				_form.displayType.value = node.displayType || "";
 				
 				_form.getBoundingClientRect();
-				_form.style.maxHeight = '150px';
+				_form.style.maxHeight = '200px';
 			});	
 			
 			text.addEventListener('dblclick', (e) => {

@@ -513,13 +513,20 @@ function makeQuickMenu(options) {
 		return toolsArray;
 	}
 	
+	//#Source https://bit.ly/2neWfJ2 
+	const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
+	
 	function insertBreaks(_columns) {
 
 		qm.querySelectorAll('br').forEach( br => {
 			qm.removeChild(br);
 		});
-		qm.querySelectorAll('.tile:nth-of-type(' + _columns + 'n)').forEach( tile => {
-			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+		// qm.querySelectorAll('.tile:not([data-hidden]):nth-of-type(' + _columns + 'n)').forEach( tile => {
+			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+		// });
+		
+		every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
+			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);;
 		});
 	}
 	
@@ -532,7 +539,7 @@ function makeQuickMenu(options) {
 		let _columns = _singleColumn ? 1 : getColumns();
 
 		function buildMoreTile() {
-			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more') || 'more');
+			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
 
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "tool";
@@ -1074,14 +1081,68 @@ function makeQuickMenu(options) {
 			else return;
 			
 			if ( node.groupFolder ) {
+				let count = 1;
 				node.children.forEach( _node => {
 					let _tile = nodeToTile(_node);
 					_tile.style.setProperty("--group-color",tile.node.groupColor);
 					_tile.classList.add("groupFolder");
+
+					if ( node.groupLimit && count >= node.groupLimit ) {
+						_tile.dataset.hidden = true;
+						_tile.style.display = 'none';
+					}
 	
-					if ( _tile ) tileArray.push( _tile );
+					if ( _tile ) {
+						tileArray.push( _tile );
+						count++;
+					}
 					
 				});
+				
+				if ( node.groupLimit && node.children.length >= node.groupLimit ) {
+					let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
+
+					moreTile.style.textAlign='center';
+					moreTile.dataset.type = "tool";
+					moreTile.style.setProperty("--group-color",tile.node.groupColor);
+					moreTile.classList.add("groupFolder");
+					
+					function more() {
+						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
+							if ( _div.node.parent !== node ) return;
+							
+							_div.dataset.hidden = "false";
+							_div.style.display = null;
+						});
+						
+						insertBreaks(qm.columns);
+						
+						moreTile.addEventListener('mouseup', less);
+						moreTile.removeEventListener('mouseup', more);	
+						
+						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
+					}
+					
+					function less() {
+						qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
+							if ( _div.node.parent !== node ) return;
+							
+							_div.dataset.hidden = "true";
+							_div.style.display = "none";
+						});
+						
+						insertBreaks(qm.columns);
+						
+						moreTile.addEventListener('mouseup', more);
+						moreTile.removeEventListener('mouseup', less);	
+						
+						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
+					}
+					
+					moreTile.addEventListener('mouseup', more);
+					
+					tileArray.push( moreTile );
+				}
 			}
 		});
 
