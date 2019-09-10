@@ -1127,7 +1127,7 @@ function makeQuickMenu(options) {
 					
 					function more() {
 						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
-							if ( _div.node.parent !== node ) return;
+							if ( _div.node && _div.node.parent !== node ) return;
 							
 							_div.dataset.hidden = "false";
 							_div.style.display = null;
@@ -1135,20 +1135,22 @@ function makeQuickMenu(options) {
 						
 						insertBreaks(qm.columns);	
 						moreTile.onmouseup = less;	
+						moreTile.title = "less";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
 						resizeMenu();
 					}
 					
 					function less() {
 						qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
-							if ( _div.node.parent !== node ) return;
+							if ( _div.node && _div.node.parent !== node ) return;
 							
 							_div.dataset.hidden = "true";
 							_div.style.display = "none";
 						});
 						
 						insertBreaks(qm.columns);
-						moreTile.onmouseup = more;	
+						moreTile.onmouseup = more;
+						moreTile.title = "more";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
 						resizeMenu();
 					}
