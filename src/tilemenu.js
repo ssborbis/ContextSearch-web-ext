@@ -240,18 +240,20 @@ function makeQuickMenu(options) {
 			
 			quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
 			
-			browser.runtime.sendMessage({
-				action: "quickMenuIframeLoaded", 
-				size: {
-					width: qm.getBoundingClientRect().width,
-					height: document.body.getBoundingClientRect().height + "px"
-				},
-				resizeOnly: true,
-				tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-				tileCount: qm.children.length
-			});
+			// browser.runtime.sendMessage({
+				// action: "quickMenuIframeLoaded", 
+				// size: {
+					// width: qm.getBoundingClientRect().width,
+					// height: document.body.getBoundingClientRect().height
+				// },
+				// resizeOnly: true,
+				// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+				// tileCount: qm.children.length
+			// });
 			
-			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			
+			resizeMenu();
 		}	
 	});
 	
@@ -551,7 +553,7 @@ function makeQuickMenu(options) {
 
 				moreTile.parentNode.removeChild(moreTile);
 
-				qm.querySelectorAll('[data-hidden="true"]').forEach( div => {
+				qm.querySelectorAll('[data-hidden="true"]:not([data-grouphidden="true"])').forEach( div => {
 					div.style.display = null;
 					delete div.dataset.hidden;
 				});
@@ -563,19 +565,21 @@ function makeQuickMenu(options) {
 				
 				// rebuild breaks
 				insertBreaks(_columns);
-
-				browser.runtime.sendMessage({
-					action: "quickMenuIframeLoaded", 
-					size: {
-						width: qm.getBoundingClientRect().width,
-						height: document.body.getBoundingClientRect().height + "px"
-					},
-					resizeOnly: true,
-					tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
-				});
 				
-				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+				resizeMenu();
+
+				// browser.runtime.sendMessage({
+					// action: "quickMenuIframeLoaded", 
+					// size: {
+						// width: qm.getBoundingClientRect().width,
+						// height: document.body.getBoundingClientRect().height + "px"
+					// },
+					// resizeOnly: true,
+					// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+					// tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
+				// });
+				
+				// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 			}
 			
@@ -670,8 +674,8 @@ function makeQuickMenu(options) {
 			(type === "sidebar" && userOptions.quickMenuColumns === userOptions.sideBar.columns)) && 
 			userOptions.quickMenuToolsPosition === "top" && !_singleColumn && !options.parentId && toolsArray.length !== _columns && !userOptions.quickMenuToolsAsToolbar) {
 			toolsArray.forEach( tool => {
+				
 				tool.dataset.disabled = true;
-				tool.dataset.hidden = true;
 				tool.disabled = true;
 				tool.title = "";
 				tileArray.unshift(tool);
@@ -1007,18 +1011,20 @@ function makeQuickMenu(options) {
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
-				browser.runtime.sendMessage({
-					action: "quickMenuIframeLoaded", 
-					size: {
-						width: qm.getBoundingClientRect().width,
-						height: document.body.getBoundingClientRect().height + "px"
-					},
-					resizeOnly: true,
-					tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
-				});
+				// browser.runtime.sendMessage({
+					// action: "quickMenuIframeLoaded", 
+					// size: {
+						// width: qm.getBoundingClientRect().width,
+						// height: document.body.getBoundingClientRect().height
+					// },
+					// resizeOnly: true,
+					// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+					// tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
+				// });
 				
-				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+				// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+				
+				resizeMenu();
 
 			}
 			
@@ -1102,6 +1108,7 @@ function makeQuickMenu(options) {
 					if ( node.groupLimit && count >= node.groupLimit ) {
 						_tile.dataset.hidden = true;
 						_tile.style.display = 'none';
+						_tile.dataset.grouphidden = true;
 					}
 	
 					if ( _tile ) {
@@ -1129,6 +1136,7 @@ function makeQuickMenu(options) {
 						insertBreaks(qm.columns);	
 						moreTile.onmouseup = less;	
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
+						resizeMenu();
 					}
 					
 					function less() {
@@ -1142,6 +1150,7 @@ function makeQuickMenu(options) {
 						insertBreaks(qm.columns);
 						moreTile.onmouseup = more;	
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
+						resizeMenu();
 					}
 
 					moreTile.onmouseup = more;
@@ -1217,18 +1226,20 @@ function makeQuickMenu(options) {
 								}
 							}
 
-							browser.runtime.sendMessage({
-								action: "quickMenuIframeLoaded", 
-								size: {
-									width: qm.getBoundingClientRect().width,
-									height: document.body.getBoundingClientRect().height + "px"
-								},
-								resizeOnly: true,
-								tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-								tileCount: siteSearchNode.children.length
-							});
+							// browser.runtime.sendMessage({
+								// action: "quickMenuIframeLoaded", 
+								// size: {
+									// width: qm.getBoundingClientRect().width,
+									// height: document.body.getBoundingClientRect().height
+								// },
+								// resizeOnly: true,
+								// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+								// tileCount: siteSearchNode.children.length
+							// });
 							
-							document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+							// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+							
+							resizeMenu();
 						});
 					}
 					
@@ -1325,7 +1336,7 @@ function makeQuickMenu(options) {
 							action: "quickMenuIframeLoaded", 
 							size: {
 								width: qm.getBoundingClientRect().width,
-								height: document.body.getBoundingClientRect().height + "px"
+								height: document.body.getBoundingClientRect().height
 							},
 							resizeOnly: true,
 							tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
@@ -1333,6 +1344,8 @@ function makeQuickMenu(options) {
 						});
 
 						document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+						
+						// resizeMenu();
 
 						return;
 					}
