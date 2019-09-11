@@ -512,6 +512,7 @@ function makeQuickMenu(options) {
 
 		toolsArray.forEach( tool => tool.dataset.type = 'tool' );
 
+
 		return toolsArray;
 	}
 	
@@ -653,8 +654,7 @@ function makeQuickMenu(options) {
 				ls.style.display = rs.style.display = 'none';
 			});
 			
-		} 
-		if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
+		} else if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
 			tileArray = toolsArray.concat(tileArray);
 		
 		let visibleTiles = tileArray.filter( _tile => !_tile.dataset.hidden );
@@ -686,13 +686,17 @@ function makeQuickMenu(options) {
 			((type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns) ||
 			(type === "sidebar" && userOptions.quickMenuColumns === userOptions.sideBar.columns)) && 
 			userOptions.quickMenuToolsPosition === "top" && !_singleColumn && !options.parentId && toolsArray.length !== _columns && !userOptions.quickMenuToolsAsToolbar) {
+
 			toolsArray.forEach( tool => {
-				
+
+				if ( tool.dataset.show ) return;
+
 				tool.dataset.disabled = true;
 				tool.disabled = true;
 				tool.title = "";
-				tileArray.unshift(tool);
 			});
+
+			tileArray = toolsArray.concat(tileArray);	
 		}
 
 		// add empty cells for resizing ( needs work )

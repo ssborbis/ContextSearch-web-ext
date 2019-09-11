@@ -152,9 +152,11 @@ var QMtools = [
 		name: 'lastused', 
 		icon: "icons/history.png", 
 		title: browser.i18n.getMessage('tools_lastused'),
+		
 		init: function() {
 
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			tile.dataset.show = true;
 			
 			function updateIcon() {
 
