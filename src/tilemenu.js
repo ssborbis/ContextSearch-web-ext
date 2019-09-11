@@ -242,21 +242,8 @@ function makeQuickMenu(options) {
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			
 			quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
-			
-			browser.runtime.sendMessage({
-				action: "quickMenuIframeLoaded", 
-				size: {
-					width: qm.getBoundingClientRect().width,
-					height: document.body.getBoundingClientRect().height
-				},
-				resizeOnly: true,
-				tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-				tileCount: qm.children.length
-			});
-			
-			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-			
-			// resizeMenu();
+
+			resizeMenu();
 		}	
 	});
 	
@@ -518,9 +505,7 @@ function makeQuickMenu(options) {
 
 		return toolsArray;
 	}
-	
-	
-	
+
 	function insertBreaks(_columns) {
 
 		qm.querySelectorAll('br').forEach( br => {
@@ -569,20 +554,20 @@ function makeQuickMenu(options) {
 				// rebuild breaks
 				insertBreaks(_columns);
 				
-				// resizeMenu();
+				resizeMenu();
 
-				browser.runtime.sendMessage({
-					action: "quickMenuIframeLoaded", 
-					size: {
-						width: qm.getBoundingClientRect().width,
-						height: document.body.getBoundingClientRect().height + "px"
-					},
-					resizeOnly: true,
-					tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length
-				});
+				// browser.runtime.sendMessage({
+					// action: "quickMenuIframeLoaded", 
+					// size: {
+						// width: qm.getBoundingClientRect().width,
+						// height: document.body.getBoundingClientRect().height + "px"
+					// },
+					// resizeOnly: true,
+					// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+					// tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length
+				// });
 				
-				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+				// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 			}
 			
@@ -715,7 +700,6 @@ function makeQuickMenu(options) {
 		tileArray.forEach( tile => {
 			
 			tile.classList.add('tile');
-			tile.dataset.title = tile.title;
 
 			if (_singleColumn) tile.classList.add("singleColumn");
 			
@@ -783,6 +767,38 @@ function makeQuickMenu(options) {
 			}
 			
 			div.setAttribute('draggable', true);
+			
+			function getGroupDivs(_div) {
+				return [ ..._div.parentNode.childNodes].filter( __div => __div.node && __div.node.parent === _div.node.parent );
+			}
+			
+			// group move
+			let groupMove = false;
+			if ( div.classList.contains("groupFolder") ) {
+				div.addEventListener('mousedown', function holdListener(e) {
+					if ( e.which !== 1) return;
+
+					let holdTimeout = setTimeout(() => {
+						groupMove = true;
+						
+						let groupDivs = getGroupDivs(div);
+						
+						groupDivs.forEach( _div => {
+							_div.classList.add('groupMove');
+						});
+						
+						div.addEventListener('mouseup', () => {
+							groupDivs.forEach( _div => {
+								_div.classList.remove('groupMove');
+							});
+						});
+					}, 1000);
+					
+					div.addEventListener('mousemove', () => {
+						clearTimeout(holdTimeout);
+					});
+				});
+			}
 
 			div.addEventListener('dragstart', (e) => {
 				e.dataTransfer.setData("text", "");
@@ -995,12 +1011,17 @@ function makeQuickMenu(options) {
 				
 				// rebuild breaks	
 				insertBreaks(qm.columns);
-
 			});
 			
 		});
 		
 		/* end dnd */
+		
+		// add titlebar handler
+		qm.querySelectorAll('.tile').forEach( div => {
+			div.onmouseenter = () => document.getElementById('titleBar').innerText = div.title;
+			div.onmouseleave = () => document.getElementById('titleBar').innerText = ' ';
+		});
 
 		return qm;
 	}
@@ -1030,20 +1051,7 @@ function makeQuickMenu(options) {
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
-				browser.runtime.sendMessage({
-					action: "quickMenuIframeLoaded", 
-					size: {
-						width: qm.getBoundingClientRect().width,
-						height: document.body.getBoundingClientRect().height
-					},
-					resizeOnly: true,
-					tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
-				});
-				
-				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-				
-				// resizeMenu();
+				resizeMenu();
 
 			}
 			
@@ -1106,7 +1114,7 @@ function makeQuickMenu(options) {
 			else return;
 			
 			// remove parent folder from menu
-		//	if ( node.groupFolder ) tileArray.pop();
+			if ( node.groupFolder ) tileArray.pop();
 			
 			if ( node.groupFolder ) {
 				
@@ -1121,7 +1129,7 @@ function makeQuickMenu(options) {
 					
 					_tile.style.setProperty("--group-color",tile.node.groupColor);
 					_tile.classList.add("groupFolder");
-					
+
 					_tile.title = tile.title + " / " + _tile.title;
 
 					if ( node.groupLimit && count >= node.groupLimit ) {
@@ -1178,6 +1186,7 @@ function makeQuickMenu(options) {
 					tileArray.push( moreTile );
 				}
 			}
+
 		});
 
 		// do not display tools if in a subfolder
@@ -1204,6 +1213,7 @@ function makeQuickMenu(options) {
 				}
 
 				tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.svg'), se.title);
+				tile.dataset.title = se.title;
 				
 				// site search picker
 				if ( se.template.indexOf('{selectdomain}') !== -1 ) {
@@ -1289,6 +1299,7 @@ function makeQuickMenu(options) {
 
 				tile = buildSearchIcon(node.icon || browser.runtime.getURL('/icons/code.svg'), node.title);
 				tile.dataset.type = 'bookmarklet';
+				tile.dataset.title = node.title;
 
 				addTileEventHandlers(tile, (e) => {
 					browser.runtime.sendMessage({
@@ -1308,6 +1319,7 @@ function makeQuickMenu(options) {
 				tile = buildSearchIcon(node.icon, node.title);
 				tile.dataset.type = 'oneClickSearchEngine';
 				tile.dataset.id = node.id;
+				tile.dataset.title = node.title;
 
 				addTileEventHandlers(tile, (e) => {
 					browser.runtime.sendMessage({
@@ -1332,6 +1344,7 @@ function makeQuickMenu(options) {
 				tile = buildSearchIcon( browser.runtime.getURL("/icons/folder-icon.png"), node.title);
 
 				tile.dataset.type = 'folder';
+				tile.dataset.title = node.title;
 				
 				// prevent scroll icon
 				tile.addEventListener('mousedown', (e) => {
@@ -1353,20 +1366,7 @@ function makeQuickMenu(options) {
 					if (method === 'openFolder' || e.openFolder) { 
 						let quickMenuElement = quickMenuElementFromNodeTree(node);
 						
-						browser.runtime.sendMessage({
-							action: "quickMenuIframeLoaded", 
-							size: {
-								width: qm.getBoundingClientRect().width,
-								height: document.body.getBoundingClientRect().height
-							},
-							resizeOnly: true,
-							tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-							tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
-						});
-
-						document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-						
-						// resizeMenu();
+						resizeMenu();
 
 						return;
 					}
@@ -1695,16 +1695,9 @@ function makeSearchBar() {
 			if (userOptions.searchBarCloseAfterSearch) window.close();	
 		}
 	}
-	
+
 	// add titleBar & options button functions after menu is loaded
 	document.addEventListener('quickMenuIframeLoaded', () => {
-
-		let titleBar = document.getElementById('titleBar');
-		document.querySelectorAll('.tile').forEach( div => {
-			div.onmouseenter = () => titleBar.innerText = div.title;
-			div.onmouseleave = () => titleBar.innerText = ' ';
-		});
-
 		ob.onclick = function() {
 			// document.body.style.visibility = 'hidden';
 			browser.runtime.sendMessage({action: "openOptions"});

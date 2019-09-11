@@ -85,6 +85,8 @@ function makeFrameContents(options) {
 function resizeMenu() {
 
 	let qm = document.getElementById('quickMenuElement');
+	
+	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	return browser.runtime.sendMessage({
 		action: "quickMenuIframeLoaded", 

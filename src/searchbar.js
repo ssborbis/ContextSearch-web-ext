@@ -65,8 +65,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
 		document.body.insertBefore(qme, null);
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-	});
-		
+		//resizeMenu();
+	});	
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {
@@ -81,8 +81,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	sb.focus();
 	
 	qm.style.width = null;
-	qm.style.height = null;
-	
+	qm.style.height = null;	
 	sg.style.width = null;
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
@@ -123,6 +122,7 @@ function toolBarResize() {
 }
 
 function sideBarResize() {
+
 	if ( window == top ) return;
 	
 	// throwing sidebar errors
@@ -188,8 +188,7 @@ window.addEventListener('message', (e) => {
 			qm.columns = e.data.columns;
 			
 			sideBarResize();
-
-			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			
 			break;
 	}
 });
