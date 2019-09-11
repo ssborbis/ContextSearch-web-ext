@@ -720,9 +720,9 @@ function buildSearchEngineContainer() {
 					selectedRows.push(lis[i]);
 				}
 
-				console.log(liStartIndex + ' - ' + liEndIndex);
+				// console.log(liStartIndex + ' - ' + liEndIndex);
 				
-				console.log(slicedNodes);
+				// console.log(slicedNodes);
 			}
 			
 		});
@@ -772,7 +772,10 @@ function buildSearchEngineContainer() {
 	function dragstart_handler(ev) {
 		ev.dataTransfer.setData("text", "");
 		window.dragRow = nearestParent('LI', ev.target);
-		ev.effectAllowed = "copyMove";		
+		ev.effectAllowed = "copyMove";
+		selectedRows.unshift(dragRow);
+		window.dragRow.querySelector('SPAN:first-of-type').classList.add('selected');
+	//	selectedRows.push(dragRow);
 	}
 	
 	function dragover_handler(ev) {
@@ -832,10 +835,8 @@ function buildSearchEngineContainer() {
 		//	targetElement.querySelector("ul").firstChild.style = null;
 			targetElement.querySelector('img').style.filter = null;
 		} catch (error) {}
-		
-//		console.log(dragNode.parent.children.indexOf(dragNode));
 
-		if ( selectedRows.length === 0 ) selectedRows.push(window.dragRow);
+	//	if ( selectedRows.length === 0 ) selectedRows.push(window.dragRow);
 				
 		selectedRows.forEach( row => {
 			
@@ -880,7 +881,7 @@ function buildSearchEngineContainer() {
 
 				// append element to children (ul)
 				let ul = targetElement.querySelector('ul');			
-				ul.insertBefore(window.dragRow, ul.firstChild);
+				ul.insertBefore(row, ul.firstChild);
 			}
 		});
 	}

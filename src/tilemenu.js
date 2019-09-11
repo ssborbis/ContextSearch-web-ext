@@ -240,20 +240,20 @@ function makeQuickMenu(options) {
 			
 			quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
 			
-			// browser.runtime.sendMessage({
-				// action: "quickMenuIframeLoaded", 
-				// size: {
-					// width: qm.getBoundingClientRect().width,
-					// height: document.body.getBoundingClientRect().height
-				// },
-				// resizeOnly: true,
-				// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-				// tileCount: qm.children.length
-			// });
+			browser.runtime.sendMessage({
+				action: "quickMenuIframeLoaded", 
+				size: {
+					width: qm.getBoundingClientRect().width,
+					height: document.body.getBoundingClientRect().height
+				},
+				resizeOnly: true,
+				tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+				tileCount: qm.children.length
+			});
 			
-			// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 			
-			resizeMenu();
+			// resizeMenu();
 		}	
 	});
 	
@@ -526,7 +526,7 @@ function makeQuickMenu(options) {
 		// qm.querySelectorAll('.tile:not([data-hidden]):nth-of-type(' + _columns + 'n)').forEach( tile => {
 			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
 		// });
-		
+
 		every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
 			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);;
 		});
@@ -566,20 +566,20 @@ function makeQuickMenu(options) {
 				// rebuild breaks
 				insertBreaks(_columns);
 				
-				resizeMenu();
+				// resizeMenu();
 
-				// browser.runtime.sendMessage({
-					// action: "quickMenuIframeLoaded", 
-					// size: {
-						// width: qm.getBoundingClientRect().width,
-						// height: document.body.getBoundingClientRect().height + "px"
-					// },
-					// resizeOnly: true,
-					// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					// tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
-				// });
+				browser.runtime.sendMessage({
+					action: "quickMenuIframeLoaded", 
+					size: {
+						width: qm.getBoundingClientRect().width,
+						height: document.body.getBoundingClientRect().height + "px"
+					},
+					resizeOnly: true,
+					tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+					tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length
+				});
 				
-				// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 			}
 			
@@ -653,21 +653,34 @@ function makeQuickMenu(options) {
 				ls.style.display = rs.style.display = 'none';
 			});
 			
-		} else if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
+		} 
+		if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
 			tileArray = toolsArray.concat(tileArray);
-		else if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu')
-			tileArray.splice(visibleTileCountMax - toolsArray.length - 1, 0, ...toolsArray);
-	
-		// hide tiles outside initial grid dimensions
-		if ( type === 'quickmenu' && tileArray.length > visibleTileCountMax && !options.parentId ) {
-			tileArray.splice(visibleTileCountMax - 1, 0, buildMoreTile());
-			
-			for (let i=visibleTileCountMax;i<tileArray.length;i++) {
-				tileArray[i].style.display = 'none';
-				tileArray[i].dataset.hidden = true;
-			}
-		}
 		
+		let visibleTiles = tileArray.filter( _tile => !_tile.dataset.hidden );
+
+		if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu')
+			tileArray.splice(visibleTileCountMax - toolsArray.length - 1, 0, ...toolsArray);
+		
+		// hide tiles outside initial grid dimensions
+		if ( type === 'quickmenu' && !options.parentId ) {
+			let count = 0;
+			tileArray.filter( (_tile, index, arr) => {
+				
+				if (_tile.dataset.hidden == true) return;
+
+				if (count > visibleTileCountMax + 1) {
+					arr[index].dataset.hidden = true;
+					arr[index].style.display = 'none';
+				}
+				
+				count++;
+			});
+			
+			if ( visibleTiles.length > visibleTileCountMax )
+				tileArray.push(buildMoreTile());
+		}
+
 		// shift tiles to match quickmenu and searchbar
 		if ( 
 			((type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns) ||
@@ -1011,20 +1024,20 @@ function makeQuickMenu(options) {
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
-				// browser.runtime.sendMessage({
-					// action: "quickMenuIframeLoaded", 
-					// size: {
-						// width: qm.getBoundingClientRect().width,
-						// height: document.body.getBoundingClientRect().height
-					// },
-					// resizeOnly: true,
-					// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					// tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
-				// });
+				browser.runtime.sendMessage({
+					action: "quickMenuIframeLoaded", 
+					size: {
+						width: qm.getBoundingClientRect().width,
+						height: document.body.getBoundingClientRect().height
+					},
+					resizeOnly: true,
+					tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
+					tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length
+				});
 				
-				// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+				document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 				
-				resizeMenu();
+				// resizeMenu();
 
 			}
 			
@@ -1087,7 +1100,7 @@ function makeQuickMenu(options) {
 			else return;
 			
 			// remove parent folder from menu
-			if ( node.groupFolder ) tileArray.pop();
+		//	if ( node.groupFolder ) tileArray.pop();
 			
 			if ( node.groupFolder ) {
 				
