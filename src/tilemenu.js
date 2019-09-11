@@ -11,6 +11,9 @@ document.head.appendChild(styleEl);
 
 var type;
 
+//#Source https://bit.ly/2neWfJ2 
+const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
+
 function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
@@ -516,8 +519,7 @@ function makeQuickMenu(options) {
 		return toolsArray;
 	}
 	
-	//#Source https://bit.ly/2neWfJ2 
-	const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
+	
 	
 	function insertBreaks(_columns) {
 

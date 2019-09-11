@@ -836,9 +836,10 @@ function buildSearchEngineContainer() {
 			targetElement.querySelector('img').style.filter = null;
 		} catch (error) {}
 
-	//	if ( selectedRows.length === 0 ) selectedRows.push(window.dragRow);
-				
-		selectedRows.forEach( row => {
+		// sort with hierarchy
+		let sortedRows = [ ...$('#managerContainer').querySelectorAll('LI')].filter( row => selectedRows.indexOf(row) !== -1 ).reverse();
+	
+		sortedRows.forEach( row => {
 			
 			let _node = row.node;
 

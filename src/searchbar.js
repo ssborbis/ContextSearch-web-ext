@@ -179,8 +179,8 @@ window.addEventListener('message', (e) => {
 				qm.querySelectorAll('br').forEach( br => {
 					qm.removeChild(br);
 				});
-				qm.querySelectorAll('.tile:nth-of-type(' + _columns + 'n)').forEach( tile => {
-					tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+				every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
+					tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);;
 				});
 			}
 			
