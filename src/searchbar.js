@@ -80,8 +80,8 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// focus the searchbar on open
 	sb.focus();
 	
-	qm.style.width = null;
-	qm.style.height = null;	
+	// qm.style.width = null;
+	// qm.style.height = null;	
 	sg.style.width = null;
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
@@ -90,8 +90,11 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 });
 
 function toolBarResize() {
-
+	
 	if ( window != top ) return;
+
+	qm.style.width = null;
+	qm.style.height = null;
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 

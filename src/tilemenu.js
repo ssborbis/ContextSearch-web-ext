@@ -767,21 +767,16 @@ function makeQuickMenu(options) {
 			}
 			
 			div.setAttribute('draggable', true);
-			
-			function getGroupDivs(_div) {
-				return [ ..._div.parentNode.childNodes].filter( __div => __div.node && __div.node.parent === _div.node.parent );
-			}
-			
+	
 			// group move
-			let groupMove = false;
 			if ( div.classList.contains("groupFolder") ) {
 				div.addEventListener('mousedown', function holdListener(e) {
 					if ( e.which !== 1) return;
 
 					let holdTimeout = setTimeout(() => {
-						groupMove = true;
+						div.groupMove = true;
 						
-						let groupDivs = getGroupDivs(div);
+						let groupDivs = [ ...div.parentNode.childNodes].filter( _div => _div.node && _div.node.parent === div.node.parent );
 						
 						groupDivs.forEach( _div => {
 							_div.classList.add('groupMove');
@@ -894,19 +889,23 @@ function makeQuickMenu(options) {
 					dragDiv.style.opacity = null;
 					dragDiv.id = "";
 				}
-				
+
 				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv ) return;
-				targetDiv.classList.remove('dragHover');
+				if ( targetDiv ) targetDiv.classList.remove('dragHover');
 
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
 				
 				// refresh menu when moving groups
-				if ( dragDiv.node.groupFolder || dragDiv.node.parent.groupFolder ) {
+			//	if ( dragDiv.node.groupFolder || dragDiv.node.parent.groupFolder ) {
+
+				if ( div.groupMove ) {
+					let animation = userOptions.enableAnimations;
+					userOptions.enableAnimations = false;
 					quickMenuElementFromNodeTree(tileDivs[0].node.parent);
-				}
-				
+					userOptions.enableAnimations = animation;
+					resizeMenu();
+				}				
 			});
 			div.addEventListener('drop', (e) => {
 				e.preventDefault();
@@ -975,15 +974,7 @@ function makeQuickMenu(options) {
 				if (!dragDiv || !dragDiv.node) return;
 				if (targetDiv === dragDiv) return;
 				
-				let side = getSide(targetDiv, e);
-
-				if ( side === "before" )
-					dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
-				else if ( side === "after" )
-					dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
-				else dragDiv.parentNode.removeChild(dragDiv);
-
-				let dragNode = dragDiv.node;
+				let dragNode = ( dragDiv.groupMove) ? dragDiv.node.parent : dragDiv.node;
 				let targetNode = targetDiv.node;
 
 				// cut the node from the children array
@@ -992,18 +983,22 @@ function makeQuickMenu(options) {
 				// set new parent
 				slicedNode.parent = targetNode.parent;
 
+				let side = getSide(targetDiv, e);
 				if ( side === "before" ) {
 					// add to children before target
+					dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
 				} else if ( side === "after" ) {
 					// add to children after target
+					dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
 				} else {
+					dragDiv.parentNode.removeChild(dragDiv);
 					slicedNode.parent = targetNode;
 					// add to target children
 					targetNode.children.push(slicedNode);
 				}
-	
+
 				// save the tree
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
@@ -1052,7 +1047,6 @@ function makeQuickMenu(options) {
 				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
 				resizeMenu();
-
 			}
 			
 			tile.addEventListener('dragenter', (e) => {
@@ -1085,7 +1079,7 @@ function makeQuickMenu(options) {
 				
 				dragDiv.id = null;
 
-				let dragNode = dragDiv.node;
+				let dragNode = ( dragDiv.groupMove ) ? dragDiv.node.parent : dragDiv.node;
 				let targetNode = tile.node;
 				
 				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
@@ -1099,6 +1093,15 @@ function makeQuickMenu(options) {
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				
+				// refresh menu when moving groups
+				if ( dragDiv.groupMove ) {
+					let animation = userOptions.enableAnimations;
+					userOptions.enableAnimations = false;
+					quickMenuElementFromNodeTree(rootNode);
+					userOptions.enableAnimations = animation;
+					resizeMenu();
+				}
 				
 			});
 			
