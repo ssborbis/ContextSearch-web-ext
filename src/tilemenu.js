@@ -555,20 +555,6 @@ function makeQuickMenu(options) {
 				insertBreaks(_columns);
 				
 				resizeMenu();
-
-				// browser.runtime.sendMessage({
-					// action: "quickMenuIframeLoaded", 
-					// size: {
-						// width: qm.getBoundingClientRect().width,
-						// height: document.body.getBoundingClientRect().height + "px"
-					// },
-					// resizeOnly: true,
-					// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-					// tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length
-				// });
-				
-				// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-
 			}
 			
 			return moreTile;
@@ -652,18 +638,20 @@ function makeQuickMenu(options) {
 		// hide tiles outside initial grid dimensions
 		if ( type === 'quickmenu' && !options.parentId ) {
 			let count = 0;
+			
+	//		console.log(visibleTileCountMax);
 			tileArray.filter( (_tile, index, arr) => {
 				
-				if (_tile.dataset.hidden == true) return;
+				if (_tile.dataset.hidden == "true") return false;
 
-				if (count > visibleTileCountMax + 1) {
+				if (count > visibleTileCountMax - 2) {
 					arr[index].dataset.hidden = true;
 					arr[index].style.display = 'none';
 				}
 				
 				count++;
 			});
-			
+
 			if ( visibleTiles.length > visibleTileCountMax )
 				tileArray.push(buildMoreTile());
 		}
@@ -897,8 +885,6 @@ function makeQuickMenu(options) {
 				if ( arrow ) arrow.style.display = 'none';
 				
 				// refresh menu when moving groups
-			//	if ( dragDiv.node.groupFolder || dragDiv.node.parent.groupFolder ) {
-
 				if ( div.groupMove ) {
 					let animation = userOptions.enableAnimations;
 					userOptions.enableAnimations = false;
@@ -1260,19 +1246,6 @@ function makeQuickMenu(options) {
 								}
 							}
 
-							// browser.runtime.sendMessage({
-								// action: "quickMenuIframeLoaded", 
-								// size: {
-									// width: qm.getBoundingClientRect().width,
-									// height: document.body.getBoundingClientRect().height
-								// },
-								// resizeOnly: true,
-								// tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight},
-								// tileCount: siteSearchNode.children.length
-							// });
-							
-							// document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-							
 							resizeMenu();
 						});
 					}

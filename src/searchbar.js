@@ -80,7 +80,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// focus the searchbar on open
 	sb.focus();
 	
-	// qm.style.width = null;
+	qm.style.width = null;
 	// qm.style.height = null;	
 	sg.style.width = null;
 

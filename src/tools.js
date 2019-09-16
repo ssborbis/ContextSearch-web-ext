@@ -156,6 +156,8 @@ var QMtools = [
 		init: function() {
 
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			
+			// show in sidebar / toolbar
 			tile.dataset.show = true;
 			
 			function updateIcon() {

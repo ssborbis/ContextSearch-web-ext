@@ -48,8 +48,8 @@
 
 	width:35px;
 	height:35px;
-	border: 4px dashed #3293d4;
-	border-width:0 4px 4px 0;
+	border: 8px dashed #3293d4;
+	border-width:0 8px 8px 0;
 
 	transform: scale(calc( 1 / var(--cs-zoom, 1))) !important;
 	opacity:0;

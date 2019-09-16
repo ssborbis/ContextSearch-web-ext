@@ -283,7 +283,7 @@ function addResizeWidget(el, options) {
 		resizeWidget.style.transformOrigin = el.style.transformOrigin || "top left";
 		resizeWidget.style.transform = window.getComputedStyle(el, null).getPropertyValue('transform');
 		
-		let offset = 4 / window.devicePixelRatio;
+		let offset = 8 / window.devicePixelRatio;
 
 		if ( el.style.left ) 
 			resizeWidget.style.left = parseFloat(el.style.left) + rect.width - w_rect.width + offset + "px";
