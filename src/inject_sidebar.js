@@ -48,6 +48,7 @@ if ( window != top ) {
 					}
 
 					if ( e.data.size.height && !iframe.resizeWidget.options.isResizing) {
+
 						if ( iframe.dataset.windowtype === 'undocked' )
 							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, iframe.dataset.windowtype === 'undocked' ? userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
 					}

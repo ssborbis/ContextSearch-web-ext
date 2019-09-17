@@ -1,4 +1,4 @@
-#CS_sbIframe * {
+#CS_sbIframe, #CS_sbIframe * {
 	box-sizing:content-box !important;
 }
 #CS_sbIframe, #CS_sbOpeningTab {
