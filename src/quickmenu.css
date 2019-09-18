@@ -308,5 +308,5 @@ BODY {
 	background-repeat:no-repeat;
 }
 .groupMove {
-	border: 2px dashed #9abad2;
+	border: 2px dashed #9abad2 !important;
 }

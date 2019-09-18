@@ -770,10 +770,16 @@ function makeQuickMenu(options) {
 							_div.classList.add('groupMove');
 						});
 						
-						div.addEventListener('mouseup', () => {
+						div.disabled = true;
+
+						div.addEventListener('mouseup', (_e) => {
 							groupDivs.forEach( _div => {
 								_div.classList.remove('groupMove');
 							});
+							
+							setTimeout(() => {
+								div.disabled = false;
+							}, 100);
 						});
 					}, 1000);
 					
@@ -885,13 +891,13 @@ function makeQuickMenu(options) {
 				if ( arrow ) arrow.style.display = 'none';
 				
 				// refresh menu when moving groups
-				if ( div.groupMove ) {
+			//	if ( div.groupMove || div.node.parent.groupFolder || div.node.groupFolder || div.classList.contains('groupFolder') ) {
 					let animation = userOptions.enableAnimations;
 					userOptions.enableAnimations = false;
 					quickMenuElementFromNodeTree(tileDivs[0].node.parent);
 					userOptions.enableAnimations = animation;
 					resizeMenu();
-				}				
+				//}				
 			});
 			div.addEventListener('drop', (e) => {
 				e.preventDefault();
@@ -956,9 +962,26 @@ function makeQuickMenu(options) {
 					}
 				}	
 
-				if (!targetDiv) return;
-				if (!dragDiv || !dragDiv.node) return;
-				if (targetDiv === dragDiv) return;
+				if (!targetDiv) {
+					console.log('no target');
+					return;
+				}
+				if (!dragDiv || !dragDiv.node) {
+					console.log('no node');
+					return;
+				}
+				if (targetDiv === dragDiv) {
+					console.log('target = origin');
+					targetDiv.addEventListener('mouseup', (_e) => {
+						_e.stopImmediatePropagation();
+						_e.preventDefault();
+						console.log('attempting to stop event');
+					}, {once: true});
+					return;
+				}
+				
+				console.log(targetDiv.node === dragDiv.node);
+				console.log('here');
 				
 				let dragNode = ( dragDiv.groupMove) ? dragDiv.node.parent : dragDiv.node;
 				let targetNode = targetDiv.node;
@@ -972,14 +995,14 @@ function makeQuickMenu(options) {
 				let side = getSide(targetDiv, e);
 				if ( side === "before" ) {
 					// add to children before target
-					dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
+				//	dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
 				} else if ( side === "after" ) {
 					// add to children after target
-					dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
+				//	dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
 				} else {
-					dragDiv.parentNode.removeChild(dragDiv);
+				//	dragDiv.parentNode.removeChild(dragDiv);
 					slicedNode.parent = targetNode;
 					// add to target children
 					targetNode.children.push(slicedNode);
@@ -1137,9 +1160,12 @@ function makeQuickMenu(options) {
 					let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
 
 					moreTile.style.textAlign='center';
-					moreTile.dataset.type = "tool";
+					moreTile.dataset.type = "more";
 					moreTile.style.setProperty("--group-color",tile.node.groupColor);
 					moreTile.classList.add("groupFolder");
+					
+					moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
+					moreTile.setAttribute('draggable', false);
 					
 					function more() {
 						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
