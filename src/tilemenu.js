@@ -763,29 +763,20 @@ function makeQuickMenu(options) {
 
 					let holdTimeout = setTimeout(() => {
 						div.groupMove = true;
-						
-						let groupDivs = [ ...div.parentNode.childNodes].filter( _div => _div.node && _div.node.parent === div.node.parent );
-						
-						groupDivs.forEach( _div => {
-							_div.classList.add('groupMove');
-						});
-						
 						div.disabled = true;
+						
+						let groupDivs = [ ...div.parentNode.childNodes].filter( _div => _div.node && div.node && _div.node.parent === div.node.parent );
+						
+						groupDivs.forEach( _div => _div.classList.add('groupMove'));
 
 						div.addEventListener('mouseup', (_e) => {
-							groupDivs.forEach( _div => {
-								_div.classList.remove('groupMove');
-							});
-							
-							setTimeout(() => {
-								div.disabled = false;
-							}, 100);
+							groupDivs.forEach( _div => _div.classList.remove('groupMove'));	
+							setTimeout(() => div.disabled = false, 100);
 						});
+						
 					}, 1000);
 					
-					div.addEventListener('mousemove', () => {
-						clearTimeout(holdTimeout);
-					});
+					div.addEventListener('mousemove', () => clearTimeout(holdTimeout));
 				});
 			}
 
@@ -890,14 +881,21 @@ function makeQuickMenu(options) {
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
 				
-				// refresh menu when moving groups
-			//	if ( div.groupMove || div.node.parent.groupFolder || div.node.groupFolder || div.classList.contains('groupFolder') ) {
-					let animation = userOptions.enableAnimations;
-					userOptions.enableAnimations = false;
-					quickMenuElementFromNodeTree(tileDivs[0].node.parent);
-					userOptions.enableAnimations = animation;
-					resizeMenu();
-				//}				
+				// store expanded "more" tiles
+				let expandedDivs = qm.querySelectorAll('[data-type="less"]');
+				
+				let animation = userOptions.enableAnimations;
+				userOptions.enableAnimations = false;
+				quickMenuElementFromNodeTree(tileDivs[0].node.parent);
+				userOptions.enableAnimations = animation;
+				resizeMenu();
+				
+				// expand previously opened "more" tiles
+				expandedDivs.forEach( _div => {
+					let newDiv = qm.querySelector(`[data-type="more"][data-parentid="${_div.dataset.parentid}"]`);
+					if ( newDiv ) newDiv.dispatchEvent(new MouseEvent('mouseup')) 
+				});
+			
 			});
 			div.addEventListener('drop', (e) => {
 				e.preventDefault();
@@ -962,26 +960,13 @@ function makeQuickMenu(options) {
 					}
 				}	
 
-				if (!targetDiv) {
-					console.log('no target');
+				if (!targetDiv) return;
+				if (!dragDiv || !dragDiv.node) return;
+				if (targetDiv === dragDiv) return;
+				if ( dragDiv.groupMove && targetDiv.node.parent === dragDiv.node.parent ) {
+					console.error('cannot group move within parent');
 					return;
 				}
-				if (!dragDiv || !dragDiv.node) {
-					console.log('no node');
-					return;
-				}
-				if (targetDiv === dragDiv) {
-					console.log('target = origin');
-					targetDiv.addEventListener('mouseup', (_e) => {
-						_e.stopImmediatePropagation();
-						_e.preventDefault();
-						console.log('attempting to stop event');
-					}, {once: true});
-					return;
-				}
-				
-				console.log(targetDiv.node === dragDiv.node);
-				console.log('here');
 				
 				let dragNode = ( dragDiv.groupMove) ? dragDiv.node.parent : dragDiv.node;
 				let targetNode = targetDiv.node;
@@ -995,14 +980,11 @@ function makeQuickMenu(options) {
 				let side = getSide(targetDiv, e);
 				if ( side === "before" ) {
 					// add to children before target
-				//	dragDiv.parentNode.insertBefore(dragDiv, targetDiv);
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
 				} else if ( side === "after" ) {
 					// add to children after target
-				//	dragDiv.parentNode.insertBefore(dragDiv, targetDiv.nextSibling);
 					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
 				} else {
-				//	dragDiv.parentNode.removeChild(dragDiv);
 					slicedNode.parent = targetNode;
 					// add to target children
 					targetNode.children.push(slicedNode);
@@ -1012,9 +994,6 @@ function makeQuickMenu(options) {
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-				
-				// rebuild breaks	
-				insertBreaks(qm.columns);
 			});
 			
 		});
@@ -1104,13 +1083,13 @@ function makeQuickMenu(options) {
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
 				// refresh menu when moving groups
-				if ( dragDiv.groupMove ) {
+			//	if ( dragDiv.groupMove ) {
 					let animation = userOptions.enableAnimations;
 					userOptions.enableAnimations = false;
 					quickMenuElementFromNodeTree(rootNode);
 					userOptions.enableAnimations = animation;
 					resizeMenu();
-				}
+			//	}
 				
 			});
 			
@@ -1163,6 +1142,7 @@ function makeQuickMenu(options) {
 					moreTile.dataset.type = "more";
 					moreTile.style.setProperty("--group-color",tile.node.groupColor);
 					moreTile.classList.add("groupFolder");
+					moreTile.dataset.parentid = node.id;
 					
 					moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
 					moreTile.setAttribute('draggable', false);
@@ -1178,6 +1158,7 @@ function makeQuickMenu(options) {
 						insertBreaks(qm.columns);	
 						moreTile.onmouseup = less;	
 						moreTile.title = "less";
+						moreTile.dataset.type = "less";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
 						resizeMenu();
 					}
@@ -1198,6 +1179,10 @@ function makeQuickMenu(options) {
 					}
 
 					moreTile.onmouseup = more;
+					
+					moreTile.addEventListener('dragover', (e) => {
+						more();
+					});
 					tileArray.push( moreTile );
 				}
 			}
@@ -1466,7 +1451,7 @@ function addToHistory(terms) {
 //	if (userOptions.searchBarHistory.includes(terms)) return;
 	
 	// remove first entry if over limit
-	if (userOptions.searchBarHistory.length === historyLength)
+	if (userOptions.searchBarHistory.length >= historyLength)
 		userOptions.searchBarHistory.shift();
 	
 	// add new term

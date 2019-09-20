@@ -50,10 +50,14 @@ function removeNode(node, parent) {
 
 function repairNodeTree(tree) {
 	
+	let repaired = false;
+	
 	// append orphans
 	for (let se of userOptions.searchEngines) {
 
 		if (!se.id || findNodes(tree, node => node.id === se.id).length === 0) {
+			
+			repaired = true;
 			
 			if (!se.id) {
 				console.log(se.title + ' has no id. Generating...');
@@ -85,6 +89,8 @@ function repairNodeTree(tree) {
 		}
 	});
 	
+	if ( nodesToRemove.length ) repaired = true;
+	
 	nodesToRemove.forEach( node => removeNode(node, node.parent) );
 	
 	if ( browser.search) {
@@ -100,10 +106,14 @@ function repairNodeTree(tree) {
 				}
 			});
 			
+			if ( nodesToRemove.length ) repaired = true;
+			
 			nodesToRemove.forEach( node => removeNode(node, node.parent) );
+			
+			return Promise.resolve(repaired);
 			
 		});
 	} else {
-		return Promise.resolve();
+		return Promise.resolve(repaired);
 	}
 }

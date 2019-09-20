@@ -379,6 +379,7 @@ function saveOptions(e) {
 		quickMenu: $('#cb_quickMenu').checked,
 		quickMenuColumns: parseInt($('#n_quickMenuColumns').value),
 		quickMenuRows: parseInt($('#n_quickMenuRows').value),
+		defaultGroupColor: userOptions.defaultGroupColor,
 		
 		quickMenuKey: parseInt($('#b_quickMenuKey').value),
 		contextMenuKey: parseInt($('#b_contextMenuKey').value),

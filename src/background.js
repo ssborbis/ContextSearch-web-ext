@@ -1494,6 +1494,7 @@ const defaultUserOptions = {
 	nodeTree: {},
 	lastUsedId: null,
 	hiddenEngines: "",
+	defaultGroupColor: "#CED7FF",
 	quickMenu: true,
 	quickMenuColumns: 6,
 	quickMenuRows: 1,

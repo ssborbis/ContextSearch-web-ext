@@ -334,5 +334,16 @@ if ( window != top ) {
 		else 		
 			[iframe, ot].forEach( el => { if ( el ) el.classList.remove('CS_hide');});
 	});
+	
+	browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+		if (typeof message.action !== 'undefined') {
+			switch (message.action) {
+				case "updateSearchTerms":
+					//console.log(message);
+					break;
+			}
+		}
+	});
 
 }

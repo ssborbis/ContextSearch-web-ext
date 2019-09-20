@@ -536,7 +536,7 @@ function buildSearchEngineContainer() {
 				
 				li.insertBefore(_form, ul);
 				
-				_form.groupColor.value = node.groupColor || "";
+				_form.groupColor.value = node.groupColor || userOptions.defaultGroupColor;
 				_form.groupFolder.checked = node.groupFolder || false;
 				_form.groupLimit.value = node.groupLimit || 0;
 				_form.displayType.value = node.displayType || "";
@@ -739,7 +739,7 @@ function buildSearchEngineContainer() {
 	setParents(root);
 
 	// clear any dead nodes
-	repairNodeTree(root).then(() => {
+	repairNodeTree(root).then((result) => {
 
 		rootElement.node = root;
 		
@@ -748,7 +748,8 @@ function buildSearchEngineContainer() {
 		
 		table.appendChild(rootElement);
 		
-		console.log(root);
+		// console.log(root);
+		// console.log('repaired', result);
 		updateNodeList();
 		
 		document.getElementById('managerContainer').innerHTML = null;
@@ -1117,11 +1118,17 @@ function buildSearchEngineContainer() {
 		
 		let hide = createMenuItem(li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.png'));
 		hide.addEventListener('click', () => {
-			li.node.hidden = !li.node.hidden;
+			if ( selectedRows === [] ) selectedRows.push(li);
 			
-			if (li.node.hidden) li.classList.add('hidden');
-			else li.classList.remove('hidden');
-		//	li.style.opacity = li.node.hidden ? .5 : 1;
+			let hidden = !li.node.hidden;
+			
+			selectedRows.forEach( row => {
+				row.node.hidden = hidden;
+				
+				if (hidden) row.classList.add('hidden');
+				else row.classList.remove('hidden');
+			});
+			
 			updateNodeList();
 			closeContextMenus();
 		});
