@@ -37,7 +37,7 @@ function addTileEventHandlers(_tile, handler) {
 
 	// all click events are attached to mouseup
 	_tile.addEventListener('mouseup', (e) => {
-		
+
 		if ( _tile.disabled ) return false;
 
 		// check if this tile was target of the latest mousedown event
@@ -760,7 +760,7 @@ function makeQuickMenu(options) {
 			if ( div.classList.contains("groupFolder") ) {
 				div.addEventListener('mousedown', function holdListener(e) {
 					if ( e.which !== 1) return;
-
+					
 					let holdTimeout = setTimeout(() => {
 						div.groupMove = true;
 						div.disabled = true;
@@ -774,10 +774,13 @@ function makeQuickMenu(options) {
 							setTimeout(() => div.disabled = false, 100);
 						});
 						
+						
 					}, 1000);
 					
 					div.addEventListener('mousemove', () => clearTimeout(holdTimeout));
+					div.addEventListener('mouseup', () => clearTimeout(holdTimeout));
 				});
+				
 			}
 
 			div.addEventListener('dragstart', (e) => {

@@ -582,6 +582,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 			case "lockQuickMenu":
 				var qm = document.getElementById('CS_quickMenuIframe');
+				
+				if ( !qm ) break;
+				
 				qm.style.left = parseFloat(qm.style.left) - getOffsets().x + "px";
 				qm.style.top = parseFloat(qm.style.top) - getOffsets().y + "px";
 				qm.style.position='fixed';
@@ -590,6 +593,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 			case "unlockQuickMenu":
 				var qm = document.getElementById('CS_quickMenuIframe');
+				
+				if ( !qm ) break;
+				
 				qm.style.left = parseFloat(qm.style.left) + getOffsets().x + "px";
 				qm.style.top = parseFloat(qm.style.top) + getOffsets().y + "px";
 				qm.style.position=null;
