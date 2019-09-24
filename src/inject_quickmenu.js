@@ -160,6 +160,7 @@ function makeQuickMenuContainer(coords) {
 
 	qmc.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
 	qmc.style.left = coords.x + getOffsets().x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + "px";
+	qmc.style.opacity = 0;
 	
 	document.body.appendChild(qmc);
 	
@@ -616,7 +617,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				// } else {
 					// qmc.style.opacity = 1;
 				// }
-	
+
 				_message = message;
 				
 				let iframe = document.getElementById('CS_quickMenuIframe');
@@ -644,6 +645,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 					}
 				});
+				
+				qmc.style.opacity = null;
 				
 				// let handle = document.createElement('div');
 				// handle.className = 'CS_handle';
