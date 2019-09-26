@@ -24,7 +24,7 @@ if ( window != top ) {
 					return;
 					break;
 					
-				case "resizeSideBar":
+				case "resizeSideBarIframe":
 
 					let url = new URL(browser.runtime.getURL(''));
 
@@ -50,14 +50,14 @@ if ( window != top ) {
 					if ( e.data.size.height && !iframe.resizeWidget.options.isResizing) {
 
 						if ( iframe.dataset.windowtype === 'undocked' )
-							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio, iframe.dataset.windowtype === 'undocked' ? userOptions.sideBar.height : Number.MAX_SAFE_INTEGER) + "px";
+							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
+						else
+							iframe.style.height = window.innerHeight * window.devicePixelRatio + "px";
 					}
 					
 					if ( e.data.size.width && !iframe.resizeWidget.options.isResizing ) {						
 						iframe.style.width = e.data.size.width + "px";
 					}
-
-					iframe.style.opacity = 1;
 
 					runAtTransitionEnd(iframe, ["width", "height"], () => {	
 						repositionOffscreenElement(iframe);
@@ -104,8 +104,9 @@ if ( window != top ) {
 
 		let iframe = document.createElement('iframe');
 		iframe.id = 'CS_sbIframe';
-		iframe.src = browser.runtime.getURL('/searchbar.html');
-
+		iframe.style.opacity = 0;
+		iframe.style.width = "0px";
+		
 		if ( userOptions.searchBarTheme === 'dark' ) 
 			iframe.classList.add('CS_dark');
 
@@ -118,111 +119,113 @@ if ( window != top ) {
 		
 		function saveSideBarOptions(o) {
 			userOptions.sideBar.offsets = o.lastOffsets;
-			
+
 			if ( iframe.dataset.opened === "true" ) {
 				userOptions.sideBar.position = o.dockedPosition;
 				userOptions.sideBar.windowType = o.windowType;
 			}
-			
+
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 		}
 
-		makeDockable(iframe, {
-			windowType: "undocked",
-			dockedPosition: userOptions.sideBar.position,
-			handleElement: iframe,
-			lastOffsets: userOptions.sideBar.offsets,
-			onUndock: (o) => {
-				iframe.style.height = null;
-				iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));	
-
-				// trigger transition event to reset resize widget
-				if ( iframe.resizeWidget ) iframe.resizeWidget.setPosition();
-
-				saveSideBarOptions(o);
-			},
-			onDock: (o) => {
-				iframe.style.height = 100 * window.devicePixelRatio + '%';
-				iframe.contentWindow.postMessage({action: "sideBarResize"}, browser.runtime.getURL('/searchbar.html'));
-
-				saveSideBarOptions(o);
-			}
-		});
-
-		iframe.docking.init();
-
-		// set the initial state of the sidebar, not the opening tab
-		iframe.docking.options.windowType = iframe.dataset.windowtype = userOptions.sideBar.windowType;
-		
-		runAtTransitionEnd(iframe, ["height", "width"], () => { 
-			iframe.docking.init();
-			
-			iframe.style.opacity = 1;
-			iframe.dataset.opened = true;
-			
-			// add resize widget	
-			let resizeWidget = addResizeWidget(iframe, {
-				tileSize: {width:32, height:32}, // snap size - should update on resizeSidebar message
-				columns: userOptions.sideBar.columns,
-				rows: 100, // arbitrary init value
-				allowHorizontal: true,
-				allowVertical: true,
-				onDrag: (o) => {
+		iframe.onload = function() {
+			makeDockable(iframe, {
+				windowType: "undocked",
+				dockedPosition: userOptions.sideBar.position,
+				handleElement: iframe,
+				lastOffsets: userOptions.sideBar.offsets,
+				onUndock: (o) => {
+					saveSideBarOptions(o);
 					
-					// set the fixed quadrant to top-left
-					iframe.docking.translatePosition("top", "left");
-					
-					// step the container and iframe size
-					iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
-				//	iframe.style.maxHeight = iframe.style.height;
-					
-					// value set on resizeSideBar message based on singleColumn
-					if ( resizeWidget.options.allowHorizontal )
-						iframe.style.width = ( o.columns * resizeWidget.options.tileSize.width ) + "px";
+					runAtTransitionEnd(iframe, ["height", "width", "top", "bottom", "right", "left"], () => {
+						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: userOptions.sideBar.height, docked: false }, browser.runtime.getURL('/searchbar.html'));	
 
-					// rebuild menu with new dimensions
-					iframe.contentWindow.postMessage({action: "sideBarRebuild", columns:o.columns}, browser.runtime.getURL('/searchbar.html'));	
+						// trigger transition event to reset resize widget
+						if ( iframe.resizeWidget ) iframe.resizeWidget.setPosition();
 
-				},
-				onDrop: (o) => {
-
-					// resize changes the offsets
-					iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
-
-					// save prefs
-					userOptions.sideBar.height = parseFloat( iframe.style.height );
-					
-					if ( resizeWidget.options.allowHorizontal )
-						userOptions.sideBar.columns = o.columns;
-					
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});	
-					
-					// reset the fixed quadrant
-					iframe.style.transition = 'none';
-					let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
-					iframe.docking.translatePosition(position.v, position.h);
-					iframe.style.transition = null;
-
-					// crop the sidebar size after a delay
-					setTimeout(() => {
-						iframe.style.height = null;
-						iframe.contentWindow.postMessage({action: "quickMenuIframeLoaded"}, browser.runtime.getURL('/searchbar.html'));	
-						iframe.resizeWidget.setPosition();
 					}, 100);
-					
+				},
+				onDock: (o) => {
+					saveSideBarOptions(o);
+
+					runAtTransitionEnd(iframe, ["height", "width", "top", "bottom", "right", "left"], () => {
+						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: window.innerHeight * window.devicePixelRatio, docked: true}, browser.runtime.getURL('/searchbar.html'));
+					}, 100);
+
 				}
 			});
-			
-			// unlike the quickmenu, the sizebar should be fixed
-			resizeWidget.style.position = 'fixed';
-			
-			// add listener to remove the widget on close
-			document.addEventListener('closesidebar', () => {
-				resizeWidget.parentNode.removeChild(resizeWidget);
-				delete iframe.resizeWidget;
-			}, {once: true});
 
-		});
+			// set the initial state of the sidebar, not the opening tab
+			iframe.docking.options.windowType = iframe.dataset.windowtype = userOptions.sideBar.windowType;
+
+			runAtTransitionEnd(iframe, ["height", "width"], () => { 
+				iframe.docking.init();
+				
+				iframe.style.opacity = 1;
+				iframe.dataset.opened = true;
+				
+				// add resize widget	
+				let resizeWidget = addResizeWidget(iframe, {
+					tileSize: {width:32, height:32}, // snap size - should update on resizeSidebar message
+					columns: userOptions.sideBar.columns,
+					rows: 100, // arbitrary init value
+					allowHorizontal: true,
+					allowVertical: true,
+					onDrag: (o) => {
+						
+						// set the fixed quadrant to top-left
+						iframe.docking.translatePosition("top", "left");
+						
+						// step the container and iframe size
+						iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
+						
+						// value set on resizeSideBar message based on singleColumn
+						if ( resizeWidget.options.allowHorizontal )
+							iframe.style.width = ( o.columns * resizeWidget.options.tileSize.width ) + "px";
+
+						// rebuild menu with new dimensions
+						iframe.contentWindow.postMessage({action: "sideBarRebuild", columns:o.columns, iframeHeight: parseFloat( iframe.style.height )}, browser.runtime.getURL('/searchbar.html'));	
+
+					},
+					onDrop: (o) => {
+
+						// resize changes the offsets
+						iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
+
+						// save prefs
+						userOptions.sideBar.height = parseFloat( iframe.style.height );
+						
+						if ( resizeWidget.options.allowHorizontal )
+							userOptions.sideBar.columns = o.columns;
+						
+						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});	
+						
+						// reset the fixed quadrant
+						iframe.style.transition = 'none';
+						let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
+						iframe.docking.translatePosition(position.v, position.h);
+						iframe.style.transition = null;
+						
+						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight:userOptions.sideBar.height}, browser.runtime.getURL('/searchbar.html'));
+						
+						iframe.resizeWidget.setPosition();					
+					}
+				});
+				
+				// unlike the quickmenu, the sizebar should be fixed
+				resizeWidget.style.position = 'fixed';
+				
+				// add listener to remove the widget on close
+				document.addEventListener('closesidebar', () => {
+					resizeWidget.parentNode.removeChild(resizeWidget);
+					delete iframe.resizeWidget;
+				}, {once: true});
+
+			});
+		
+		}
+		
+		iframe.src = browser.runtime.getURL('/searchbar.html');
 
 	}
 	
@@ -230,9 +233,13 @@ if ( window != top ) {
 		
 		let iframe = getIframe();
 		let openingTab = getOpeningTab();
-		
-		iframe.style.width = null;
+
 		iframe.style.opacity = null;
+		
+		let onUndock = iframe.docking.options.onUndock;
+		iframe.docking.options.onUndock = function() {}
+		iframe.docking.undock();
+		iframe.docking.options.onUndock = onUndock;
 		
 		if ( openingTab ) { // reposition the openingTab to match sidebar position
 			["left", "right","top","bottom"].forEach( side => openingTab.style[side] = iframe.style[side] );
@@ -287,6 +294,7 @@ if ( window != top ) {
 			lastOffsets: userOptions.sideBar.offsets,
 			onUndock: (o) => {
 				userOptions.sideBar.offsets = o.lastOffsets;
+				// console.log('openingTab onUndock', o.lastOffsets);
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 				
 				// match sbContainer position with openingTab

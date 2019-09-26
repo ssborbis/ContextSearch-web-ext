@@ -69,6 +69,8 @@ function repositionOffscreenElement( element ) {
 			element.style.bottom = 0 + "px";
 		else 
 			element.style.top = (window.innerHeight - rect.height) + "px";
+		
+		// console.log('bottom overflow');
 	}
 
 	if (rect.top < 0) {
@@ -76,6 +78,8 @@ function repositionOffscreenElement( element ) {
 			element.style.bottom = (window.innerHeight - rect.height) + "px";
 		else
 			element.style.top = 0 + "px";
+		
+		// console.log('top overflow');
 	}
 	
 	if ( rect.right > window.innerWidth ) {
@@ -83,6 +87,8 @@ function repositionOffscreenElement( element ) {
 			element.style.right = 0 + "px";
 		else 
 			element.style.left = (window.innerWidth - rect.width) + "px";
+		
+		// console.log('right overflow');
 	}
 	
 	if ( rect.left < 0 ) {
@@ -90,6 +96,8 @@ function repositionOffscreenElement( element ) {
 			element.style.right = (window.innerWidth - rect.width) + "px";
 		else
 			element.style.left = 0 + "px";
+		
+		// console.log('left overflow');
 	}
 	
 	// if (rect.y + rect.height > window.innerHeight) 

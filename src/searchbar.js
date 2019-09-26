@@ -124,50 +124,52 @@ function toolBarResize() {
 	});
 }
 
-function sideBarResize() {
+function sideBarResize(options) {
+	
+	options = options || {};
 
 	if ( window == top ) return;
 	
 	// throwing sidebar errors
 	if ( !qm ) return;
 	
+	qm = document.getElementById('quickMenuElement');
+	sb = document.getElementById('searchBar');
+	tb = document.getElementById('titleBar');
+	sg = document.getElementById('suggestions');
+	mb = document.getElementById('menuBar');
+	
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
-		
-	let qm_height = 'calc(100% - ' + allOtherElsHeight + "px)";
-	qm.style.height = qm_height;
+	
+	let iframeHeight = options.iframeHeight || userOptions.sideBar.height || Number.MAX_SAFE_INTEGER;
 
-	setTimeout( () => {
-		qm.style.height = Math.min(window.innerHeight, window.innerHeight - allOtherElsHeight) + "px";
+	let qm_height = qm.style.height;
+	
+	qm.style.height = 'calc(100% - ' + allOtherElsHeight + "px)";
+	qm.style.width = null;
+	sg.style.width = null;
 
-		// account for scrollbars
-		qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-		window.parent.postMessage({action:"resizeSideBar", size: {width: qm.getBoundingClientRect().width, height: allOtherElsHeight + parseFloat(qm.style.height)}}, "*");
-		
-		
-	}, 250);
+	qm.style.height = function() {
+		if ( options.suggestionsResize ) return qm_height;
 
-	let rect = document.body.getBoundingClientRect();
-	let rect_qm = qm.getBoundingClientRect();
+		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height + allOtherElsHeight, ( !options.openFolder ? qm.getBoundingClientRect().height : Number.MAX_SAFE_INT ) ) + "px";
+	}();
 
-	// send size to parent window for sidebar widget
-	window.parent.postMessage({
-		action:"resizeSideBar", 
-		size: {width: rect_qm.width, height: rect.height}, 
-		tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}, 
-		singleColumn: qm.querySelector(".singleColumn") ? true : false
-	}, "*");
+	// account for scrollbars
+	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
+	window.parent.postMessage({action:"resizeSideBarIframe", size: {width: qm.getBoundingClientRect().width, height: allOtherElsHeight + parseFloat(qm.style.height)}}, "*");
 }
 
-function resizeMenu() {
-	toolBarResize();
-	sideBarResize();
+function resizeMenu(o) {
+	toolBarResize(o);
+	sideBarResize(o);
 }
 
 window.addEventListener('message', (e) => {
 
 	switch (e.data.action) {
 		case "sideBarResize":
-			sideBarResize();
+			sideBarResize({iframeHeight: e.data.iframeHeight});
 			break;
 		
 		case "quickMenuIframeLoaded":
@@ -176,21 +178,23 @@ window.addEventListener('message', (e) => {
 			
 		case "sideBarRebuild":
 			let qm = document.getElementById('quickMenuElement');
-			
-			function insertBreaks(_columns) {
-		
-				qm.querySelectorAll('br').forEach( br => {
-					qm.removeChild(br);
-				});
-				every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
-					tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);;
-				});
-			}
-			
-			insertBreaks(e.data.columns);
+
 			qm.columns = e.data.columns;
+			qm.insertBreaks(qm.columns);
 			
-			sideBarResize();
+			qm.style.height = null;
+			qm.style.width = null;
+			
+			let rect = document.body.getBoundingClientRect();
+			let rect_qm = qm.getBoundingClientRect();
+
+			// send size to parent window for sidebar widget
+			window.parent.postMessage({
+				action:"resizeSideBarIframe", 
+				size: {width: rect_qm.width, height: rect.height}, 
+				tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}, 
+				singleColumn: qm.querySelector(".singleColumn") ? true : false
+			}, "*");
 			
 			break;
 	}

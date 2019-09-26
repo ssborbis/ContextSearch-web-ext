@@ -506,7 +506,7 @@ function makeQuickMenu(options) {
 		return toolsArray;
 	}
 
-	function insertBreaks(_columns) {
+	qm.insertBreaks = function insertBreaks(_columns) {
 
 		qm.querySelectorAll('br').forEach( br => {
 			qm.removeChild(br);
@@ -552,9 +552,9 @@ function makeQuickMenu(options) {
 				}
 				
 				// rebuild breaks
-				insertBreaks(_columns);
+				qm.insertBreaks(_columns);
 				
-				resizeMenu();
+				resizeMenu({more: true});
 			}
 			
 			return moreTile;
@@ -697,7 +697,7 @@ function makeQuickMenu(options) {
 			qm.appendChild(tile);
 		});
 		
-		insertBreaks(_columns);
+		qm.insertBreaks(_columns);
 
 		// check if any search engines exist and link to Options if none
 		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
@@ -886,18 +886,34 @@ function makeQuickMenu(options) {
 				
 				// store expanded "more" tiles
 				let expandedDivs = qm.querySelectorAll('[data-type="less"]');
+				// let scrollY = document.getElementById('quickMenuElement').scrollTop;
 				
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
 				quickMenuElementFromNodeTree(tileDivs[0].node.parent);
 				userOptions.enableAnimations = animation;
-				resizeMenu();
 				
-				// expand previously opened "more" tiles
-				expandedDivs.forEach( _div => {
-					let newDiv = qm.querySelector(`[data-type="more"][data-parentid="${_div.dataset.parentid}"]`);
-					if ( newDiv ) newDiv.dispatchEvent(new MouseEvent('mouseup')) 
-				});
+				
+				// sidebar resize has 250ms timeout
+			//	setTimeout(() => {
+					// expand previously opened "more" tiles
+					expandedDivs.forEach( _div => {
+						let newDiv = qm.querySelector(`[data-type="more"][data-parentid="${_div.dataset.parentid}"]`);
+						if ( newDiv ) newDiv.dispatchEvent(new MouseEvent('mouseup')) 
+					});
+				
+					let movedDiv = [ ...qm.querySelectorAll('.tile')].find( _div => _div.node && _div.node.id === dragDiv.node.id );
+					
+					console.log(movedDiv);
+				
+				
+					if ( movedDiv ) movedDiv.scrollIntoView();
+			//	}, 300);
+			
+				resizeMenu({tileDrop: true});
+			
+				// console.log('attempting to scroll by ', scrollY);
+				// document.getElementById('quickMenuElement').scrollTop = scrollY;
 			
 			});
 			div.addEventListener('drop', (e) => {
@@ -1037,7 +1053,7 @@ function makeQuickMenu(options) {
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
-				resizeMenu();
+				resizeMenu({openFolder: true});
 			}
 			
 			tile.addEventListener('dragenter', (e) => {
@@ -1158,12 +1174,12 @@ function makeQuickMenu(options) {
 							_div.style.display = null;
 						});
 						
-						insertBreaks(qm.columns);	
+						qm.insertBreaks(qm.columns);	
 						moreTile.onmouseup = less;	
 						moreTile.title = "less";
 						moreTile.dataset.type = "less";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
-						resizeMenu();
+						resizeMenu({groupMore: true});
 					}
 					
 					function less() {
@@ -1174,11 +1190,11 @@ function makeQuickMenu(options) {
 							_div.style.display = "none";
 						});
 						
-						insertBreaks(qm.columns);
+						qm.insertBreaks(qm.columns);
 						moreTile.onmouseup = more;
 						moreTile.title = "more";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
-						resizeMenu();
+						resizeMenu({groupLess: true});
 					}
 
 					moreTile.onmouseup = more;
@@ -1260,7 +1276,7 @@ function makeQuickMenu(options) {
 								}
 							}
 
-							resizeMenu();
+							resizeMenu({openFolder: true});
 						});
 					}
 					
@@ -1356,7 +1372,7 @@ function makeQuickMenu(options) {
 					if (method === 'openFolder' || e.openFolder) { 
 						let quickMenuElement = quickMenuElementFromNodeTree(node);
 						
-						resizeMenu();
+						resizeMenu({openFolder: true});
 
 						return;
 					}
@@ -1517,7 +1533,7 @@ function makeSearchBar() {
 			sg.innerHTML = null;
 			//sg.addEventListener('transitionend', resizeMenu);
 			sg.style.maxHeight = null;
-			resizeMenu();
+			resizeMenu({suggestionsResize: true});
 			return;
 		}
 		
@@ -1531,6 +1547,8 @@ function makeSearchBar() {
 
 	sb.typeTimer = null;
 	sb.placeholder = browser.i18n.getMessage('Search');
+			
+	sb.dataset.position = userOptions.quickMenuSearchBar;
 
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
 		
@@ -1617,7 +1635,7 @@ function makeSearchBar() {
 			// reset the menu height for window resizing
 			// document.getElementById('quickMenuElement').style.height = null;
 
-			resizeMenu();
+			resizeMenu({suggestionsResize: true});
 		});
 		
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;

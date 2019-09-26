@@ -1,4 +1,4 @@
-function runAtTransitionEnd(el, prop, callback) {
+function runAtTransitionEnd(el, prop, callback, ms) {
 
 	if ( Array.isArray(prop)) {
 		var remaining = prop.length;
@@ -21,7 +21,7 @@ function runAtTransitionEnd(el, prop, callback) {
 		clearInterval(checkPropInterval);
 		callback();
 		
-	},25);
+	}, ms || 25);
 }
 
 function modifyStyleProperty(el, prop, val, name) {

@@ -24,7 +24,7 @@ function makeFrameContents(options) {
 	options.resizeOnly 	= options.resizeOnly || false;
 
 	makeQuickMenu({type: "quickmenu", mode: options.mode}).then( (qme) => {
-
+		
 		let old_qme = document.getElementById('quickMenuElement');
 		
 		if (old_qme) document.body.removeChild(old_qme);
@@ -34,8 +34,6 @@ function makeFrameContents(options) {
 		// let sb = document.getElementById('searchBar');
 		let sbc = document.getElementById('searchBarContainer');
 		let tb = document.getElementById('toolBar');
-		
-		sb.dataset.position = userOptions.quickMenuSearchBar;
 		
 		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
 			document.body.appendChild(tb);
