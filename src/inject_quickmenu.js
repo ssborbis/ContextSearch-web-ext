@@ -125,27 +125,27 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	return qmc;
 }
 
-function repositionOffscreenElement( element ) {
+// function repositionOffscreenElement( element ) {
 	
-	// move if offscreen
-	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
+	// // move if offscreen
+	// let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+	// let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
 	
-	let rect = element.getBoundingClientRect();
+	// let rect = element.getBoundingClientRect();
 
-	if (rect.y < 0) 
-		element.style.top = (parseFloat(element.style.top) - rect.y) + "px";
+	// if (rect.y < 0) 
+		// element.style.top = (parseFloat(element.style.top) - rect.y) + "px";
 	
-	if (rect.y + rect.height > window.innerHeight) 
-		element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
+	// if (rect.y + rect.height > window.innerHeight) 
+		// element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
 	
-	if (rect.x < 0) 
-		element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
+	// if (rect.x < 0) 
+		// element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
 	
-	if (rect.x + rect.width > window.innerWidth) 
-		element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+	// if (rect.x + rect.width > window.innerWidth) 
+		// element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
 
-}
+// }
 
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {

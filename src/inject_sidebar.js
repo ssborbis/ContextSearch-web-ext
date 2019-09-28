@@ -34,7 +34,7 @@ if ( window != top ) {
 
 					let iframe = getIframe();
 					if ( !iframe ) return;
-					
+
 					if ( !userOptions.enableAnimations ) 
 						iframe.style.setProperty('--user-transition', 'none');
 
@@ -49,18 +49,20 @@ if ( window != top ) {
 
 					if ( e.data.size.height && !iframe.resizeWidget.options.isResizing) {
 
-						if ( iframe.dataset.windowtype === 'undocked' )
+						if ( iframe.docking.options.windowType === 'undocked' )
 							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
 						else
-							iframe.style.height = window.innerHeight * window.devicePixelRatio + "px";
+							iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
 					}
-					
+
 					if ( e.data.size.width && !iframe.resizeWidget.options.isResizing ) {						
 						iframe.style.width = e.data.size.width + "px";
 					}
 
-					runAtTransitionEnd(iframe, ["width", "height"], () => {	
-						repositionOffscreenElement(iframe);
+					runAtTransitionEnd(iframe, ["width", "height", "top", "bottom", "left", "right"], () => {
+
+						if ( iframe.docking.options.windowType === 'undocked' )
+						;//	repositionOffscreenElement(iframe);
 						
 						if ( iframe.docking.options.windowType === 'docked' )
 							iframe.docking.offset();
@@ -111,14 +113,11 @@ if ( window != top ) {
 			iframe.classList.add('CS_dark');
 
 		document.body.appendChild(iframe);
-		
-		// move openingTab if offscreen
-		let rect = iframe.getBoundingClientRect();
-		if ( rect.bottom > window.innerHeight )
-			iframe.style.top = (window.innerHeight - rect.height) + "px";
-		
+
 		function saveSideBarOptions(o) {
 			userOptions.sideBar.offsets = o.lastOffsets;
+			
+			// console.log("saveSideBarOptions", o.lastOffsets);
 
 			if ( iframe.dataset.opened === "true" ) {
 				userOptions.sideBar.position = o.dockedPosition;
@@ -129,28 +128,46 @@ if ( window != top ) {
 		}
 
 		iframe.onload = function() {
+			
+			// console.log( "iframe.onload", userOptions.sideBar.offsets );
 			makeDockable(iframe, {
 				windowType: "undocked",
 				dockedPosition: userOptions.sideBar.position,
 				handleElement: iframe,
 				lastOffsets: userOptions.sideBar.offsets,
 				onUndock: (o) => {
+
+					iframe.style.height = Math.min( iframe.getBoundingClientRect().height * window.devicePixelRatio, userOptions.sideBar.height ) + "px";
+					
+					// console.log("onUndock", o.lastOffsets);
+					
 					saveSideBarOptions(o);
 					
-					runAtTransitionEnd(iframe, ["height", "width", "top", "bottom", "right", "left"], () => {
+					runAtTransitionEnd(iframe, ["height"], () => {
 						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: userOptions.sideBar.height, docked: false }, browser.runtime.getURL('/searchbar.html'));	
 
 						// trigger transition event to reset resize widget
 						if ( iframe.resizeWidget ) iframe.resizeWidget.setPosition();
-
-					}, 100);
+						
+						repositionOffscreenElement(iframe);
+						
+						if ( openingTab ) {
+							openingTab.docking.options.lastOffsets = iframe.docking.options.lastOffsets;
+							["left", "right","top","bottom"].forEach( side => openingTab.style[side] = iframe.style[side] );
+						}
+					});
 				},
 				onDock: (o) => {
+					
+					// console.log("onDock", o.lastOffsets);
+					
+					iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
+
 					saveSideBarOptions(o);
 
-					runAtTransitionEnd(iframe, ["height", "width", "top", "bottom", "right", "left"], () => {
+					runAtTransitionEnd(iframe, ["height"], () => {
 						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: window.innerHeight * window.devicePixelRatio, docked: true}, browser.runtime.getURL('/searchbar.html'));
-					}, 100);
+					});
 
 				}
 			});
@@ -158,9 +175,10 @@ if ( window != top ) {
 			// set the initial state of the sidebar, not the opening tab
 			iframe.docking.options.windowType = iframe.dataset.windowtype = userOptions.sideBar.windowType;
 
+			iframe.docking.init();
+
 			runAtTransitionEnd(iframe, ["height", "width"], () => { 
-				iframe.docking.init();
-				
+
 				iframe.style.opacity = 1;
 				iframe.dataset.opened = true;
 				
@@ -208,7 +226,7 @@ if ( window != top ) {
 						
 						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight:userOptions.sideBar.height}, browser.runtime.getURL('/searchbar.html'));
 						
-						iframe.resizeWidget.setPosition();					
+						iframe.resizeWidget.setPosition();
 					}
 				});
 				
@@ -235,23 +253,16 @@ if ( window != top ) {
 		let openingTab = getOpeningTab();
 
 		iframe.style.opacity = null;
-		
-		let onUndock = iframe.docking.options.onUndock;
-		iframe.docking.options.onUndock = function() {}
-		iframe.docking.undock();
-		iframe.docking.options.onUndock = onUndock;
-		
-		if ( openingTab ) { // reposition the openingTab to match sidebar position
-			["left", "right","top","bottom"].forEach( side => openingTab.style[side] = iframe.style[side] );
-			openingTab.style.display = null;
-		}
-
-		runAtTransitionEnd(iframe, "height", () => { iframe.parentNode.removeChild(iframe) });
-
 		iframe.dataset.opened = false;
 		
-		if (iframe.dataset.windowtype === 'docked')
-			iframe.docking.undock();	
+		// console.log("closeSideBar", iframe.docking.options.lastOffsets, openingTab.docking.options.lastOffsets);
+
+		if ( openingTab ) { 
+		//	openingTab.docking.undock();	
+			openingTab.style.display = null;
+		}
+		iframe.parentNode.removeChild(iframe);
+		delete iframe;
 
 		document.dispatchEvent(new CustomEvent('closesidebar'));
 

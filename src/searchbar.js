@@ -124,6 +124,8 @@ function toolBarResize() {
 	});
 }
 
+var docked = false;
+
 function sideBarResize(options) {
 	
 	options = options || {};
@@ -140,24 +142,34 @@ function sideBarResize(options) {
 	mb = document.getElementById('menuBar');
 	
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
-	
-	let iframeHeight = options.iframeHeight || userOptions.sideBar.height || Number.MAX_SAFE_INTEGER;
 
 	let qm_height = qm.style.height;
 	
-	qm.style.height = 'calc(100% - ' + allOtherElsHeight + "px)";
+	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 10000 );
+	
+	qm.style.height = null;
 	qm.style.width = null;
 	sg.style.width = null;
+	
+	// console.log(options, docked, iframeHeight, qm.getBoundingClientRect().height, userOptions.sideBar.height);
 
 	qm.style.height = function() {
+		// return the full height in some cases
 		if ( options.suggestionsResize ) return qm_height;
-
-		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height + allOtherElsHeight, ( !options.openFolder ? qm.getBoundingClientRect().height : Number.MAX_SAFE_INT ) ) + "px";
+		
+		if ( docked ) return `calc(100% - ${allOtherElsHeight}px)`;
+		
+		// if ( openFolder ) return 
+		
+		// if ( options.groupMore ) return qm.getBoundingClientRect().height + "px";
+		
+		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
 
 	// account for scrollbars
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-	window.parent.postMessage({action:"resizeSideBarIframe", size: {width: qm.getBoundingClientRect().width, height: allOtherElsHeight + parseFloat(qm.style.height)}}, "*");
+	
+	window.parent.postMessage({action:"resizeSideBarIframe", size: {width: parseFloat( qm.style.width ), height: document.body.offsetHeight}}, "*");
 }
 
 function resizeMenu(o) {
@@ -169,6 +181,7 @@ window.addEventListener('message', (e) => {
 
 	switch (e.data.action) {
 		case "sideBarResize":
+			if ( e.data.docked !== undefined ) docked = e.data.docked;
 			sideBarResize({iframeHeight: e.data.iframeHeight});
 			break;
 		

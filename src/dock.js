@@ -9,7 +9,7 @@ function runAtTransitionEnd(el, prop, callback, ms) {
 		});
 		return;
 	}
-	
+
 	let oldProp = null;
 	let checkPropInterval = setInterval(() => {
 		let newProp = window.getComputedStyle(el).getPropertyValue(prop);
@@ -175,12 +175,10 @@ function makeDockable(el, options) {
 		if ( o.windowType === 'docked' ) dock();
 		else undock();
 		
-		// enable animations after a short delay
-		setTimeout(() => {
+		runAtTransitionEnd(el, ["width","height","max-width","max-height","left","right","top","bottom"], () => {
 			el.style.transition = null;
 			el.getBoundingClientRect();
-		}, 250);
-		
+		});		
 	}
 	
 	// overlay a div to capture mouse events over iframes
@@ -309,11 +307,13 @@ function makeDockable(el, options) {
 	
 	function dock() {
 		
+		let pos = getPositions(o.lastOffsets);
+		
 		if ( el.dataset.windowtype ) { // skip if init position
 			el.style.transition = 'none';
 				
-			o.lastOffsets = getOffsets();
-			let pos = getPositions(o.lastOffsets);
+		//	o.lastOffsets = getOffsets();
+			
 			translatePosition(o.dockedPosition === 'bottom' ? 'bottom' : 'top', o.dockedPosition === 'right' ? 'right' : 'left');
 			
 			if ( pos.v === 'bottom' )
@@ -331,7 +331,10 @@ function makeDockable(el, options) {
 		
 		doOffset();
 
-		o.onDock(o);
+		runAtTransitionEnd(el, [pos.h, pos.v, "width", "height", "max-width","max-height"], () => {
+			o.onDock(o);
+		});
+		// o.onDock(o);
 	}
 	
 	function undock() {

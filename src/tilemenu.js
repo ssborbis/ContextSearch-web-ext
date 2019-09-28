@@ -1167,6 +1167,7 @@ function makeQuickMenu(options) {
 					moreTile.setAttribute('draggable', false);
 					
 					function more() {
+						var timer = 0;
 						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
 							if ( _div.node && _div.node.parent !== node ) return;
 							

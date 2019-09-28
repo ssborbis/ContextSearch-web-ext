@@ -57,7 +57,7 @@ function offset(elem) {
 }
 
 function repositionOffscreenElement( element ) {
-	
+
 	// move if offscreen
 	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
