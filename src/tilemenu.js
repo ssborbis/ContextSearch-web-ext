@@ -1193,15 +1193,22 @@ function makeQuickMenu(options) {
 						qm.insertBreaks(qm.columns);
 						moreTile.onmouseup = more;
 						moreTile.title = "more";
+						moreTile.dataset.type = "more";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
 						resizeMenu({groupLess: true});
 					}
 
 					moreTile.onmouseup = more;
 					
-					moreTile.addEventListener('dragover', (e) => {
-						more();
+					moreTile.addEventListener('dragenter', (e) => {
+
+						let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1000 );
+						
+						moreTile.addEventListener('dragleave', () => {
+							clearTimeout(moreTimer);
+						});
 					});
+					
 					tileArray.push( moreTile );
 				}
 			}
