@@ -69,6 +69,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	});	
 });
 
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	userOptions = message.userOptions || userOptions;
+});
+
 document.addEventListener('quickMenuIframeLoaded', () => {
 		
 	qm = document.getElementById('quickMenuElement');
@@ -140,7 +144,7 @@ function sideBarResize(options) {
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
-	
+
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
 
 	let qm_height = qm.style.height;
@@ -150,8 +154,6 @@ function sideBarResize(options) {
 	qm.style.height = null;
 	qm.style.width = null;
 	sg.style.width = null;
-	
-	// console.log(options, docked, iframeHeight, qm.getBoundingClientRect().height, userOptions.sideBar.height);
 
 	qm.style.height = function() {
 		// return the full height in some cases
@@ -197,6 +199,9 @@ window.addEventListener('message', (e) => {
 			
 			qm.style.height = null;
 			qm.style.width = null;
+			
+			// reset the minWidth for the tilemenu
+			qm.style.minWidth = qm.columns * qm.firstChild.offsetWidth + "px";
 			
 			let rect = document.body.getBoundingClientRect();
 			let rect_qm = qm.getBoundingClientRect();

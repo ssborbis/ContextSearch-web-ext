@@ -502,7 +502,6 @@ function makeQuickMenu(options) {
 
 		toolsArray.forEach( tool => tool.dataset.type = 'tool' );
 
-
 		return toolsArray;
 	}
 

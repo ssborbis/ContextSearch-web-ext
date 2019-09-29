@@ -116,8 +116,6 @@ if ( window != top ) {
 
 		function saveSideBarOptions(o) {
 			userOptions.sideBar.offsets = o.lastOffsets;
-			
-			// console.log("saveSideBarOptions", o.lastOffsets);
 
 			if ( iframe.dataset.opened === "true" ) {
 				userOptions.sideBar.position = o.dockedPosition;
@@ -128,8 +126,7 @@ if ( window != top ) {
 		}
 
 		iframe.onload = function() {
-			
-			// console.log( "iframe.onload", userOptions.sideBar.offsets );
+
 			makeDockable(iframe, {
 				windowType: "undocked",
 				dockedPosition: userOptions.sideBar.position,
@@ -138,9 +135,7 @@ if ( window != top ) {
 				onUndock: (o) => {
 
 					iframe.style.height = Math.min( iframe.getBoundingClientRect().height * window.devicePixelRatio, userOptions.sideBar.height ) + "px";
-					
-					// console.log("onUndock", o.lastOffsets);
-					
+
 					saveSideBarOptions(o);
 					
 					runAtTransitionEnd(iframe, ["height"], () => {
@@ -158,9 +153,7 @@ if ( window != top ) {
 					});
 				},
 				onDock: (o) => {
-					
-					// console.log("onDock", o.lastOffsets);
-					
+
 					iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
 
 					saveSideBarOptions(o);
@@ -206,7 +199,7 @@ if ( window != top ) {
 
 					},
 					onDrop: (o) => {
-
+						
 						// resize changes the offsets
 						iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
 
@@ -215,18 +208,19 @@ if ( window != top ) {
 						
 						if ( resizeWidget.options.allowHorizontal )
 							userOptions.sideBar.columns = o.columns;
-						
-						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});	
-						
-						// reset the fixed quadrant
-						iframe.style.transition = 'none';
-						let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
-						iframe.docking.translatePosition(position.v, position.h);
-						iframe.style.transition = null;
-						
-						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight:userOptions.sideBar.height}, browser.runtime.getURL('/searchbar.html'));
-						
-						iframe.resizeWidget.setPosition();
+
+						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions}).then(() => {
+
+							// reset the fixed quadrant
+							iframe.style.transition = 'none';
+							let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
+							iframe.docking.translatePosition(position.v, position.h);
+							iframe.style.transition = null;
+
+							iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight:userOptions.sideBar.height}, browser.runtime.getURL('/searchbar.html'));
+							
+							iframe.resizeWidget.setPosition();
+						});
 					}
 				});
 				
@@ -254,8 +248,6 @@ if ( window != top ) {
 
 		iframe.style.opacity = null;
 		iframe.dataset.opened = false;
-		
-		// console.log("closeSideBar", iframe.docking.options.lastOffsets, openingTab.docking.options.lastOffsets);
 
 		if ( openingTab ) { 
 		//	openingTab.docking.undock();	
@@ -305,7 +297,6 @@ if ( window != top ) {
 			lastOffsets: userOptions.sideBar.offsets,
 			onUndock: (o) => {
 				userOptions.sideBar.offsets = o.lastOffsets;
-				// console.log('openingTab onUndock', o.lastOffsets);
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 				
 				// match sbContainer position with openingTab
