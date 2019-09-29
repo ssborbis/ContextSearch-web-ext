@@ -884,37 +884,26 @@ function makeQuickMenu(options) {
 				if ( arrow ) arrow.style.display = 'none';
 				
 				// store expanded "more" tiles
-				let expandedDivs = qm.querySelectorAll('[data-type="less"]');
-				// let scrollY = document.getElementById('quickMenuElement').scrollTop;
+				let moreParents = [];
+				qm.querySelectorAll('[data-type="less"]').forEach( _div => moreParents.push(_div.parent) );
+				
+				// store scroll position
+				let scrollPos = qm.scrollTop;
 				
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
 				quickMenuElementFromNodeTree(tileDivs[0].node.parent);
 				userOptions.enableAnimations = animation;
-				
-				
-				// sidebar resize has 250ms timeout
-			//	setTimeout(() => {
-					// expand previously opened "more" tiles
-					expandedDivs.forEach( _div => {
-						let newDiv = qm.querySelector(`[data-type="more"][data-parentid="${_div.dataset.parentid}"]`);
-						if ( newDiv ) newDiv.dispatchEvent(new MouseEvent('mouseup')) 
-					});
-				
-					let movedDiv = [ ...qm.querySelectorAll('.tile')].find( _div => _div.node && _div.node.id === dragDiv.node.id );
-					
-					console.log(movedDiv);
-				
-				
-					if ( movedDiv ) movedDiv.scrollIntoView();
-			//	}, 300);
-			
+
+				qm.querySelectorAll('[data-type="more"]').forEach( more => {
+					if ( moreParents.includes(more.parent) ) more.dispatchEvent(new MouseEvent('mouseup'));
+				});
+
 				resizeMenu({tileDrop: true});
-			
-				// console.log('attempting to scroll by ', scrollY);
-				// document.getElementById('quickMenuElement').scrollTop = scrollY;
-			
+				
+				qm.scrollTop = scrollPos;			
 			});
+			
 			div.addEventListener('drop', (e) => {
 				e.preventDefault();
 				
@@ -1160,13 +1149,17 @@ function makeQuickMenu(options) {
 					moreTile.dataset.type = "more";
 					moreTile.style.setProperty("--group-color",tile.node.groupColor);
 					moreTile.classList.add("groupFolder");
-					moreTile.dataset.parentid = node.id;
+					moreTile.parent = node;
+					moreTile.dataset.parentid = node.title + Date.now();
 					
 					moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
 					moreTile.setAttribute('draggable', false);
 					
 					function more() {
-						var timer = 0;
+						
+						// store scroll position
+						let scrollTop = qm.scrollTop;
+						
 						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
 							if ( _div.node && _div.node.parent !== node ) return;
 							
@@ -1180,9 +1173,15 @@ function makeQuickMenu(options) {
 						moreTile.dataset.type = "less";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
 						resizeMenu({groupMore: true});
+						
+						qm.scrollTop = scrollTop;
 					}
 					
 					function less() {
+						
+						// store scroll position
+						let scrollTop = qm.scrollTop;
+						
 						qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
 							if ( _div.node && _div.node.parent !== node ) return;
 							
@@ -1196,6 +1195,8 @@ function makeQuickMenu(options) {
 						moreTile.dataset.type = "more";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
 						resizeMenu({groupLess: true});
+						
+						qm.scrollTop = scrollTop;
 					}
 
 					moreTile.onmouseup = more;

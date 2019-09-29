@@ -144,6 +144,9 @@ function sideBarResize(options) {
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
+	
+	// store scroll position
+	let scrollTop = qm.scrollTop;
 
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
 
@@ -172,6 +175,8 @@ function sideBarResize(options) {
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	
 	window.parent.postMessage({action:"resizeSideBarIframe", size: {width: parseFloat( qm.style.width ), height: document.body.offsetHeight}}, "*");
+	
+	qm.scrollTop = scrollTop;
 }
 
 function resizeMenu(o) {
