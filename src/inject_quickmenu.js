@@ -97,6 +97,16 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	qmc.style.height = parseFloat(size.height) + "px";
 	qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 	
+	// if ( qmc.getBoundingClientRect().height > window.innerHeight * window.devicePixelRatio ) {
+		// console.log("qmc height overflow");
+		// qmc.style.height =  window.innerHeight * window.devicePixelRatio + "px";
+		// qmc.style.overflowY = 'auto';
+		// qmc.style.position = 'fixed';
+		// qmc.style.top = '0px';
+		
+		// return qmc;
+	// }
+	
 	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 	
 	runAtTransitionEnd( qmc, "height", () => { repositionOffscreenElement( qmc ) });
@@ -124,28 +134,6 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	
 	return qmc;
 }
-
-// function repositionOffscreenElement( element ) {
-	
-	// // move if offscreen
-	// let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
-	// let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
-	
-	// let rect = element.getBoundingClientRect();
-
-	// if (rect.y < 0) 
-		// element.style.top = (parseFloat(element.style.top) - rect.y) + "px";
-	
-	// if (rect.y + rect.height > window.innerHeight) 
-		// element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
-	
-	// if (rect.x < 0) 
-		// element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
-	
-	// if (rect.x + rect.width > window.innerWidth) 
-		// element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
-
-// }
 
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {
@@ -645,7 +633,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 					}
 				});
-				
+
 				qmc.style.opacity = null;
 				
 				// let handle = document.createElement('div');

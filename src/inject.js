@@ -57,20 +57,38 @@ function offset(elem) {
 }
 
 function repositionOffscreenElement( element ) {
+	
+	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
 
 	// move if offscreen
 	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
 	
 	let rect = element.getBoundingClientRect();
-
-	if ( rect.bottom > window.innerHeight ) {
-		if ( element.style.bottom )
-			element.style.bottom = 0 + "px";
-		else 
-			element.style.top = (window.innerHeight - rect.height) + "px";
+	
+	if ( ! fixed ) {
+		if (rect.y < 0) 
+			element.style.top = (parseFloat(element.style.top) - rect.y) + "px";
 		
-		// console.log('bottom overflow');
+		if (rect.y + rect.height > window.innerHeight) 
+			element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
+		
+		if (rect.x < 0) 
+			element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
+		
+		if (rect.x + rect.width > window.innerWidth) 
+			element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+
+		if ( rect.bottom > window.innerHeight ) {
+			if ( element.style.bottom )
+				element.style.bottom = 0 + "px";
+			else 
+				element.style.top = (window.innerHeight - rect.height) + "px";
+			
+			// console.log('bottom overflow');
+		}
+		
+		return;
 	}
 
 	if (rect.top < 0) {

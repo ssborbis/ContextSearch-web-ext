@@ -139,7 +139,7 @@ if ( window != top ) {
 					saveSideBarOptions(o);
 					
 					runAtTransitionEnd(iframe, ["height"], () => {
-						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: userOptions.sideBar.height, docked: false }, browser.runtime.getURL('/searchbar.html'));	
+						iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: userOptions.sideBar.height, docked: false, suggestionsResize: true }, browser.runtime.getURL('/searchbar.html'));	
 
 						// trigger transition event to reset resize widget
 						if ( iframe.resizeWidget ) iframe.resizeWidget.setPosition();

@@ -160,6 +160,7 @@ function sideBarResize(options) {
 
 	qm.style.height = function() {
 		// return the full height in some cases
+		
 		if ( options.suggestionsResize ) return qm_height;
 		
 		if ( docked ) return `calc(100% - ${allOtherElsHeight}px)`;
