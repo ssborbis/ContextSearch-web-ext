@@ -553,7 +553,7 @@ function makeQuickMenu(options) {
 				// rebuild breaks
 				qm.insertBreaks(_columns);
 				
-				resizeMenu({more: true});
+				resizeMenu({quickMenuMore: true});
 			}
 			
 			return moreTile;
@@ -635,10 +635,9 @@ function makeQuickMenu(options) {
 			tileArray.splice(visibleTileCountMax - toolsArray.length - 1, 0, ...toolsArray);
 		
 		// hide tiles outside initial grid dimensions
-		if ( type === 'quickmenu' && !options.parentId ) {
+		if ( type === 'quickmenu' && !options.parentId) {
 			let count = 0;
-			
-	//		console.log(visibleTileCountMax);
+
 			tileArray.filter( (_tile, index, arr) => {
 				
 				if (_tile.dataset.hidden == "true") return false;
@@ -651,8 +650,9 @@ function makeQuickMenu(options) {
 				count++;
 			});
 
-			if ( visibleTiles.length > visibleTileCountMax )
+			if ( visibleTiles.length > visibleTileCountMax ) {
 				tileArray.push(buildMoreTile());
+			}
 		}
 
 		// shift tiles to match quickmenu and searchbar
@@ -892,7 +892,7 @@ function makeQuickMenu(options) {
 				
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
-				quickMenuElementFromNodeTree(tileDivs[0].node.parent);
+				quickMenuElementFromNodeTree(qm.rootNode);
 				userOptions.enableAnimations = animation;
 
 				qm.querySelectorAll('[data-type="more"]').forEach( more => {

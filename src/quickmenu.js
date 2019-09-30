@@ -34,12 +34,19 @@ function makeFrameContents(options) {
 		// let sb = document.getElementById('searchBar');
 		let sbc = document.getElementById('searchBarContainer');
 		let tb = document.getElementById('toolBar');
-		
+
 		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
 			document.body.appendChild(tb);
 		
 		if (userOptions.quickMenuSearchBar === 'bottom') 
 			document.body.appendChild(sbc);
+		
+		if ( options.mode === "resize" ) {
+			// qme.style.minWidth = null;
+			qme.style.overflowY = null;
+			qme.style.height = null;
+			qme.style.width = null;
+		}
 		
 		makeSearchBar();
 		
@@ -59,7 +66,7 @@ function makeFrameContents(options) {
 		}).then(() => {
 			
 			// setTimeout needed to trigger after updatesearchterms
-			setTimeout(() => {
+			setTimeout(() => {				
 				if (userOptions.quickMenuSearchBarSelect) {
 					sb.addEventListener('focus', ()=> {
 						sb.select();
@@ -80,16 +87,39 @@ function makeFrameContents(options) {
 	});	
 }
 
-function resizeMenu() {
+function resizeMenu(o) {
+	
+	qm = document.getElementById('quickMenuElement');
+	sb = document.getElementById('searchBar');
+	tb = document.getElementById('titleBar');
+	sg = document.getElementById('suggestions');
+	mb = document.getElementById('menuBar');
+	
+	// console.log('resizeMenu options',o);
+	
+	let initialHeight = qm.firstChild.offsetHeight * userOptions.quickMenuRows;
 
-	let qm = document.getElementById('quickMenuElement');
+	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
+
+	qm.style.height = null;
+	qm.style.overflowY = null;
+	qm.style.width = null;
+	
+	if ( o.openFolder ) 
+		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
+	else if ( o.quickMenuMore )
+		qm.style.height = qm.getBoundingClientRect().height;
+	else
+		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
+
+	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	return browser.runtime.sendMessage({
 		action: "quickMenuIframeLoaded", 
 		size: {
-			width: qm.getBoundingClientRect().width, 
+			width:  qm.getBoundingClientRect().width, 
 			height: document.body.getBoundingClientRect().height
 		}, 
 		resizeOnly: true
@@ -136,7 +166,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				sb.focus();
 
 				break;
-
 		}
 	}
 });
@@ -148,6 +177,10 @@ window.addEventListener('message', (e) => {
 		case "rebuildQuickMenu":
 			userOptions = e.data.userOptions;
 			makeFrameContents(e.data.makeQuickMenuOptions);
+			break;
+			
+		case "resizeMenu":
+			resizeMenu(e.data.options);
 			break;
 	}
 });

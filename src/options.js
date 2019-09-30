@@ -611,12 +611,12 @@ $('#n_quickMenuRows').addEventListener('change',  (e) => {
 });
 
 $('#n_quickMenuOffsetX').addEventListener('change', (e) => {
-	fixNumberInput(e.target, 0, -999, 999);
+	fixNumberInput(e.target, 0, -9999, 9999);
 	saveOptions(e);
 });
 
 $('#n_quickMenuOffsetY').addEventListener('change', (e) => {
-	fixNumberInput(e.target, 0, -999, 999);
+	fixNumberInput(e.target, 0, -9999, 9999);
 	saveOptions(e);
 });
 

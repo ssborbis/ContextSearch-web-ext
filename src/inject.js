@@ -67,28 +67,32 @@ function repositionOffscreenElement( element ) {
 	let rect = element.getBoundingClientRect();
 	
 	if ( ! fixed ) {
-		if (rect.y < 0) 
-			element.style.top = (parseFloat(element.style.top) - rect.y) + "px";
 		
-		if (rect.y + rect.height > window.innerHeight) 
+		let maxWidth = Math.min(window.innerWidth, document.body.getBoundingClientRect().right);
+		let maxHeight = Math.min(window.innerHeight, document.body.getBoundingClientRect().bottom);
+		
+		if (rect.y < 0) 
+			element.style.top = Math.max(parseFloat(element.style.top) - rect.y, 0) + "px";
+		
+		if (rect.bottom > window.innerHeight) 
 			element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
 		
 		if (rect.x < 0) 
-			element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
+			element.style.left = Math.max(parseFloat(element.style.left) - rect.x, 0) + "px";
 		
-		if (rect.x + rect.width > window.innerWidth) 
-			element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+		if (rect.right > maxWidth ) 
+			element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - maxWidth) + "px";
 
-		if ( rect.bottom > window.innerHeight ) {
-			if ( element.style.bottom )
-				element.style.bottom = 0 + "px";
-			else 
-				element.style.top = (window.innerHeight - rect.height) + "px";
-			
-			// console.log('bottom overflow');
-		}
-		
 		return;
+	}
+	
+	if ( rect.bottom > window.innerHeight ) {
+		if ( element.style.bottom )
+			element.style.bottom = 0 + "px";
+		else 
+			element.style.top = (window.innerHeight - rect.height) + "px";
+		
+		// console.log('bottom overflow');
 	}
 
 	if (rect.top < 0) {

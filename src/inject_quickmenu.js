@@ -95,21 +95,32 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 
 	qmc.style.width = parseFloat(size.width) + "px";
 	qmc.style.height = parseFloat(size.height) + "px";
+	
 	qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
-	
-	// if ( qmc.getBoundingClientRect().height > window.innerHeight * window.devicePixelRatio ) {
-		// console.log("qmc height overflow");
-		// qmc.style.height =  window.innerHeight * window.devicePixelRatio + "px";
-		// qmc.style.overflowY = 'auto';
-		// qmc.style.position = 'fixed';
-		// qmc.style.top = '0px';
+
+	if ( /*qmc.getBoundingClientRect().height*/ size.height / window.devicePixelRatio > window.innerHeight ) {
+		qmc.style.transition = 'none';
+		qmc.style.height = window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) - 20 + "px";
+		qmc.style.transition = null;
 		
-		// return qmc;
-	// }
-	
+	//	setTimeout(() => {
+		qmc.addEventListener('reposition',() => {
+			runAtTransitionEnd( qmc, ["left", "top", "height", "width"], () => { 
+				qmc.contentWindow.postMessage({action: "resizeMenu", options:{} }, browser.runtime.getURL('/quickmenu.html'));
+			});
+			setTimeout(() => {
+				repositionOffscreenElement( qmc );
+			}, 250);
+			
+		}, {once: true});
+	} 
+		
 	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 	
-	runAtTransitionEnd( qmc, "height", () => { repositionOffscreenElement( qmc ) });
+	runAtTransitionEnd( qmc, ["height", "width"], () => { 
+		repositionOffscreenElement( qmc );
+		qmc.dispatchEvent(new CustomEvent('reposition'));
+	});
 		
 	if (! resizeOnly) { // skip positioning if this is a resize only
 		for (let position of userOptions.quickMenuPosition.split(" ")) {
@@ -130,7 +141,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 			}
 		}
 	}
-	repositionOffscreenElement( qmc );
+//	repositionOffscreenElement( qmc );
 	
 	return qmc;
 }
