@@ -49,7 +49,7 @@ function makeFrameContents(options) {
 		}
 		
 		makeSearchBar();
-		
+
 		document.getElementById('closeButton').addEventListener('click', (e) => {
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 		});
@@ -89,23 +89,29 @@ function makeFrameContents(options) {
 
 function resizeMenu(o) {
 	
+	o = o || {};
+	
 	qm = document.getElementById('quickMenuElement');
 	sb = document.getElementById('searchBar');
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
-	
+
 	// console.log('resizeMenu options',o);
 	
 	let initialHeight = qm.firstChild.offsetHeight * userOptions.quickMenuRows;
 
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
 
+	let currentHeight = qm.style.height;
+
 	qm.style.height = null;
 	qm.style.overflowY = null;
 	qm.style.width = null;
 	
-	if ( o.openFolder ) 
+	if ( o.suggestionsResize || o.lockResize ) 
+		qm.style.height = currentHeight;
+	else if ( o.openFolder ) 
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
 	else if ( o.quickMenuMore )
 		qm.style.height = qm.getBoundingClientRect().height;
@@ -139,6 +145,15 @@ document.addEventListener("DOMContentLoaded", () => {
 		makeFrameContents();
 		
 	});
+});
+
+// prevent context menu when using right-hold
+function preventContextMenu(e) { if ( e.which === 3 ) e.preventDefault(); }		
+document.addEventListener('contextmenu', preventContextMenu);
+document.addEventListener('mousedown', function rightMouseDownHandler(e) {
+	if ( e.which !== 3 ) return;
+	document.removeEventListener('contextmenu', preventContextMenu);
+	document.removeEventListener('mousedown', rightMouseDownHandler);
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -182,5 +197,48 @@ window.addEventListener('message', (e) => {
 		case "resizeMenu":
 			resizeMenu(e.data.options);
 			break;
+			
+		case "showMenuBar":
+			document.getElementById('menuBar').style.display = 'block';
+			resizeMenu({lockResize: true});
+			break;
+			
+		case "hideMenuBar":
+			document.getElementById('menuBar').style.display = null;
+			resizeMenu({lockResize: true});
+			break;
+			
 	}
+});
+
+document.getElementById('menuBar').addEventListener('dblclick', (e) => {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+});
+
+document.getElementById('menuBar').addEventListener('mousedown', (e) => {
+	if ( e.which !== 1 ) return;
+
+	document.getElementById('menuBar').moving = true;
+	window.parent.postMessage({action: "handle_dragstart", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+window.addEventListener('mouseup', (e) => {
+	if ( e.which !== 1 ) return;
+
+	document.getElementById('menuBar').moving = false;
+	window.parent.postMessage({action: "handle_dragend", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+window.addEventListener('mousemove', (e) => {
+	if ( e.which !== 1 ) return;
+	
+	if ( !document.getElementById('menuBar').moving ) return;
+	window.parent.postMessage({action: "handle_dragmove", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+document.getElementById('menuBar').addEventListener('dblclick', (e) => {
+	if ( e.which !== 1 ) return;
+
+	window.parent.postMessage({action: "handle_dock", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });

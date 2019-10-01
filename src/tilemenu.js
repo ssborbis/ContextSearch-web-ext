@@ -1089,15 +1089,12 @@ function makeQuickMenu(options) {
 				
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 				
-				// refresh menu when moving groups
-			//	if ( dragDiv.groupMove ) {
-					let animation = userOptions.enableAnimations;
-					userOptions.enableAnimations = false;
-					quickMenuElementFromNodeTree(rootNode);
-					userOptions.enableAnimations = animation;
-					resizeMenu();
-			//	}
-				
+				// rebuild menu
+				let animation = userOptions.enableAnimations;
+				userOptions.enableAnimations = false;
+				quickMenuElementFromNodeTree(rootNode);
+				userOptions.enableAnimations = animation;
+				resizeMenu();				
 			});
 			
 			delete sb.selectedIndex;

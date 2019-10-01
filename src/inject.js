@@ -104,11 +104,11 @@ function repositionOffscreenElement( element ) {
 		// console.log('top overflow');
 	}
 	
-	if ( rect.right > window.innerWidth ) {
+	if ( rect.right > window.innerWidth - scrollbarWidth ) {
 		if ( element.style.right )
 			element.style.right = 0 + "px";
 		else 
-			element.style.left = (window.innerWidth - rect.width) + "px";
+			element.style.left = (window.innerWidth - scrollbarWidth - rect.width) + "px";
 		
 		// console.log('right overflow');
 	}

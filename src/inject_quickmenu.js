@@ -581,25 +581,72 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 				
 			case "lockQuickMenu":
-				var qm = document.getElementById('CS_quickMenuIframe');
 				
-				if ( !qm ) break;
+				var qmc = document.getElementById('CS_quickMenuIframe');
 				
-				qm.style.left = parseFloat(qm.style.left) - getOffsets().x + "px";
-				qm.style.top = parseFloat(qm.style.top) - getOffsets().y + "px";
-				qm.style.position='fixed';
-				quickMenuObject.locked = true;
+				if ( quickMenuObject.locked ) return;
+					
+				if ( !qmc.resizeWidget ) {
+					document.addEventListener('quickMenuComplete', lock);
+					break;
+				}
+				
+				lock();
+					
+				function lock() {
+					
+					qmc.style.left = parseFloat(qmc.style.left) - getOffsets().x + "px";
+					qmc.style.top = parseFloat(qmc.style.top) - getOffsets().y + "px";
+					qmc.style.position='fixed';
+					quickMenuObject.locked = true;
+					
+					if ( qmc.resizeWidget ) qmc.resizeWidget.style.position = 'fixed';
+					
+					qmc.contentWindow.postMessage({action: "showMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
+
+					makeDockable(qmc, {
+						windowType: "undocked",
+						dockedPosition: "left",
+						handleElement: qmc,
+						lastOffsets: {
+							top: (parseFloat(qmc.style.top) + getOffsets().y) * window.devicePixelRatio, 
+							left: (parseFloat(qmc.style.left) + getOffsets().x) * window.devicePixelRatio, 
+							right: (parseFloat(qmc.style.left) + getOffsets().x + qmc.getBoundingClientRect().width) * window.devicePixelRatio, 
+							bottom: (parseFloat(qmc.style.top) + getOffsets().y + qmc.getBoundingClientRect().height) * window.devicePixelRatio
+						},
+						onUndock: (o) => {
+							qmc.docking.translatePosition('top', 'left');
+							qmc.style.transformOrigin = null;
+							qmc.getBoundingClientRect();
+							if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
+						},
+						onDock: (o) => {}
+					});
+					
+
+					setTimeout(() => {
+					//	qmc.docking.init();
+						repositionOffscreenElement( qmc );
+					}, 500);
+				}
+
 				break;
 				
 			case "unlockQuickMenu":
-				var qm = document.getElementById('CS_quickMenuIframe');
+				var qmc = document.getElementById('CS_quickMenuIframe');
 				
-				if ( !qm ) break;
+				if ( !qmc ) break;
 				
-				qm.style.left = parseFloat(qm.style.left) + getOffsets().x + "px";
-				qm.style.top = parseFloat(qm.style.top) + getOffsets().y + "px";
-				qm.style.position=null;
+				qmc.style.left = parseFloat(qmc.style.left) + getOffsets().x + "px";
+				qmc.style.top = parseFloat(qmc.style.top) + getOffsets().y + "px";
+				qmc.style.position=null;
 				quickMenuObject.locked = false;
+				
+				qmc.contentWindow.postMessage({action: "hideMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
+				
+				qmc.resizeWidget.style.position = null;
+				qmc.resizeWidget.setPosition();
+				qmc.docking = null;
 				break;			
 				
 			case "quickMenuIframeLoaded":
@@ -609,7 +656,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					quickMenuObject: quickMenuObject
 				});
 
-				let qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
+				var qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 				
 				// if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
 					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
@@ -619,11 +666,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				_message = message;
 				
-				let iframe = document.getElementById('CS_quickMenuIframe');
-				
 				let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(message.tileCount, userOptions.quickMenuColumns);
 
-				let resizeWidget = addResizeWidget(iframe, {
+				let resizeWidget = addResizeWidget(qmc, {
 					tileSize: message.tileSize,
 					columns: columns,
 					rows: Math.ceil(message.tileCount / columns ),
@@ -634,11 +679,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						userOptions.quickMenuRows = o.rows;
 
 						// rebuild menu with new dimensions
-						iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
 					},
 					onDrop: (o) => {
 						// rebuild the menu again to shrink empty rows
-						iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
 
 						// save prefs
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -646,26 +691,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 
 				qmc.style.opacity = null;
-				
-				// let handle = document.createElement('div');
-				// handle.className = 'CS_handle';
-				// document.body.appendChild(handle);
-				
-				// makeDockable(iframe, {
-					// windowType: "undocked",
-					// dockedPosition: "top",
-					// handleElement: handle,
-					// lastOffsets: {
-						// top: iframe.getBoundingClientRect().top, left: iframe.getBoundingClientRect().left, right: iframe.getBoundingClientRect().right, bottom: iframe.getBoundingClientRect().bottom},
-					// onUndock: (o) => {},
-					// onDock: (o) => {}
-				// });
-				
-				// console.log(iframe.getBoundingClientRect().top, iframe.getBoundingClientRect().left);
 
-				// iframe.docking.init();
-				// iframe.docking.undock();
-				
 				document.addEventListener('closequickmenu', () => {
 					if ( resizeWidget ) 
 						resizeWidget.parentNode.removeChild(resizeWidget);
@@ -677,5 +703,34 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 
 		}
+	}
+});
+
+// docking event listeners for iframe
+window.addEventListener('message', (e) => {
+
+	if ( e.data.target !== "quickMenu" ) return;
+	
+	let iframe = document.getElementById('CS_quickMenuIframe');
+	
+	let x = e.data.e.clientX / window.devicePixelRatio;
+	let y = e.data.e.clientY / window.devicePixelRatio;
+
+	switch ( e.data.action ) {
+		case "handle_dragstart":
+			iframe.docking.moveStart({clientX:x, clientY:y});
+			break;
+		
+		case "handle_dragend":
+			iframe.docking.moveEnd({clientX:x, clientY:y});
+			break;
+		
+		case "handle_dragmove":
+			iframe.docking.moveListener({clientX:x, clientY:y});
+			break;
+			
+		case "handle_dock":
+			iframe.docking.toggleDock();
+			break;
 	}
 });
