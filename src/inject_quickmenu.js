@@ -24,6 +24,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 function openQuickMenu(ev, searchTerms) {
 
 	ev = ev || new Event('click');
+	
+	if ( document.getElementById('CS_quickMenuIframe') ) closeQuickMenu();
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
 	if (userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
