@@ -27,6 +27,7 @@ function openQuickMenu(ev, searchTerms) {
 
 	// keep open if locked
 	if ( quickMenuObject.locked ) {
+		quickMenuObject.searchTerms = searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev);
 		browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
 		return;
 	}
