@@ -1,11 +1,13 @@
 function runAtTransitionEnd(el, prop, callback, ms) {
+	
+	ms = ms || 25;
 
 	if ( Array.isArray(prop)) {
 		var remaining = prop.length;
 		prop.forEach( _prop => {
 			runAtTransitionEnd(el, _prop, () => {
 				if ( --remaining === 0 ) callback();
-			});
+			}, ms);
 		});
 		return;
 	}
@@ -21,7 +23,7 @@ function runAtTransitionEnd(el, prop, callback, ms) {
 		clearInterval(checkPropInterval);
 		callback();
 		
-	}, ms || 25);
+	}, ms);
 }
 
 function modifyStyleProperty(el, prop, val, name) {
