@@ -121,15 +121,13 @@ function resizeMenu(o) {
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-
-	return browser.runtime.sendMessage({
-		action: "quickMenuIframeLoaded", 
+	
+	window.parent.postMessage({
+		action: "quickMenuResize",
 		size: {
 			width:  qm.getBoundingClientRect().width, 
 			height: document.body.getBoundingClientRect().height
-		}, 
-		resizeOnly: true
-	});
+		}}, "*");
 }
 	
 document.addEventListener("DOMContentLoaded", () => {
