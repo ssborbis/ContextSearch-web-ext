@@ -510,24 +510,31 @@ function lockQuickMenu() {
 		
 	function lock() {
 		
-		qmc.style.left = parseFloat(qmc.style.left) - getOffsets().x + "px";
-		qmc.style.top = parseFloat(qmc.style.top) - getOffsets().y + "px";
+		console.log(window.quickMenuLastOffsets);
+		
+		let offsets = getOffsets();
+		
+		qmc.style.left = parseFloat(qmc.style.left) - offsets.x + "px";
+		qmc.style.top = parseFloat(qmc.style.top) - offsets.y + "px";
 		qmc.style.position='fixed';
 		quickMenuObject.locked = true;
 		
 		if ( qmc.resizeWidget ) qmc.resizeWidget.style.position = 'fixed';
 		
 		qmc.contentWindow.postMessage({action: "showMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
+		
+		let rect = qmc.getBoundingClientRect();
 
 		makeDockable(qmc, {
 			windowType: "undocked",
 			dockedPosition: "left",
 			handleElement: qmc,
 			lastOffsets: window.quickMenuLastOffsets || {
-				top: (parseFloat(qmc.style.top) + getOffsets().y) * window.devicePixelRatio, 
-				left: (parseFloat(qmc.style.left) + getOffsets().x) * window.devicePixelRatio, 
-				right: (parseFloat(qmc.style.left) + getOffsets().x + qmc.getBoundingClientRect().width) * window.devicePixelRatio, 
-				bottom: (parseFloat(qmc.style.top) + getOffsets().y + qmc.getBoundingClientRect().height) * window.devicePixelRatio
+				top: rect.top * window.devicePixelRatio, 
+				left: rect.left * window.devicePixelRatio, 
+				right: rect.right * window.devicePixelRatio, 
+				bottom: rect.bottom * window.devicePixelRatio
+			//	bottom: (parseFloat(qmc.style.top) + offsets.y + qmc.getBoundingClientRect().height) * window.devicePixelRatio
 			},
 			onUndock: (o) => {
 				qmc.docking.translatePosition('top', 'left');
