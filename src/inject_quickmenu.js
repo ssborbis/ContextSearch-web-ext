@@ -502,7 +502,7 @@ function lockQuickMenu() {
 	if ( quickMenuObject.locked ) return;
 		
 	if ( !qmc.resizeWidget ) {
-		document.addEventListener('quickMenuComplete', lock);
+		document.addEventListener('quickMenuComplete', lock, {once: true});
 		return;
 	}
 	
