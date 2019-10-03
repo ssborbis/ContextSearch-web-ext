@@ -123,6 +123,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	runAtTransitionEnd( qmc, ["height", "width", "top", "left", "bottom", "right"], () => { 
 		repositionOffscreenElement( qmc );
 		qmc.dispatchEvent(new CustomEvent('reposition'));
+		if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 	}, 50);
 		
 	if (! resizeOnly) { // skip positioning if this is a resize only
