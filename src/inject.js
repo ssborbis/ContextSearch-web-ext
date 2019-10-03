@@ -57,7 +57,7 @@ function offset(elem) {
 }
 
 function repositionOffscreenElement( element ) {
-	
+
 	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
 
 	// move if offscreen

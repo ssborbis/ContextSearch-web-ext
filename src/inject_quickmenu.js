@@ -24,6 +24,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 function openQuickMenu(ev, searchTerms) {
 
 	ev = ev || new Event('click');
+
+	// keep open if locked
+	if ( quickMenuObject.locked ) return;
 	
 	if ( document.getElementById('CS_quickMenuIframe') ) closeQuickMenu();
 		
@@ -107,19 +110,17 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 		
 	//	setTimeout(() => {
 		qmc.addEventListener('reposition',() => {
-			runAtTransitionEnd( qmc, ["left", "top", "height", "width"], () => { 
+			runAtTransitionEnd( qmc, ["left", "top", "bottom", "right", "height", "width"], () => { 
 				qmc.contentWindow.postMessage({action: "resizeMenu", options:{} }, browser.runtime.getURL('/quickmenu.html'));
 			});
-			setTimeout(() => {
-				repositionOffscreenElement( qmc );
-			}, 250);
+			setTimeout(() => { repositionOffscreenElement( qmc ); }, 250);
 			
 		}, {once: true});
 	} 
 		
 	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 	
-	runAtTransitionEnd( qmc, ["height", "width"], () => { 
+	runAtTransitionEnd( qmc, ["height", "width", "top", "left", "bottom", "right"], () => { 
 		repositionOffscreenElement( qmc );
 		qmc.dispatchEvent(new CustomEvent('reposition'));
 	});
@@ -548,6 +549,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 				
 			case "openQuickMenu":
+				
 				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
 				
 				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
@@ -586,7 +588,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				var qmc = document.getElementById('CS_quickMenuIframe');
 				
-				if ( quickMenuObject.locked ) return;
+				if ( quickMenuObject.locked ) break;;
 					
 				if ( !qmc.resizeWidget ) {
 					document.addEventListener('quickMenuComplete', lock);
@@ -610,7 +612,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						windowType: "undocked",
 						dockedPosition: "left",
 						handleElement: qmc,
-						lastOffsets: {
+						lastOffsets: window.quickMenuLastOffsets || {
 							top: (parseFloat(qmc.style.top) + getOffsets().y) * window.devicePixelRatio, 
 							left: (parseFloat(qmc.style.left) + getOffsets().x) * window.devicePixelRatio, 
 							right: (parseFloat(qmc.style.left) + getOffsets().x + qmc.getBoundingClientRect().width) * window.devicePixelRatio, 
@@ -621,15 +623,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							qmc.style.transformOrigin = null;
 							qmc.getBoundingClientRect();
 							if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
+							
+							// store last qm position
+							window.quickMenuLastOffsets = o.lastOffsets;
 						},
 						onDock: (o) => {}
 					});
 					
+					qmc.docking.init();
 
-					setTimeout(() => {
-					//	qmc.docking.init();
-						repositionOffscreenElement( qmc );
-					}, 500);
+					setTimeout(() => { repositionOffscreenElement( qmc ); }, 500);
 				}
 
 				break;
@@ -641,7 +644,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				qmc.style.left = parseFloat(qmc.style.left) + getOffsets().x + "px";
 				qmc.style.top = parseFloat(qmc.style.top) + getOffsets().y + "px";
-				qmc.style.position=null;
+				qmc.style.position = null;
 				quickMenuObject.locked = false;
 				
 				qmc.contentWindow.postMessage({action: "hideMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
@@ -649,6 +652,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.resizeWidget.style.position = null;
 				qmc.resizeWidget.setPosition();
 				qmc.docking = null;
+				
+				// clear qm position
+				delete window.quickMenuLastOffsets;
 				break;			
 				
 			case "quickMenuIframeLoaded":

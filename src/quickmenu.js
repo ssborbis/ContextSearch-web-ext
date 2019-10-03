@@ -113,7 +113,7 @@ function resizeMenu(o) {
 		qm.style.height = currentHeight;
 	else if ( o.openFolder ) 
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
-	else if ( o.quickMenuMore )
+	else if ( o.quickMenuMore || o.groupMore )
 		qm.style.height = qm.getBoundingClientRect().height;
 	else
 		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
