@@ -56,7 +56,9 @@ function offset(elem) {
     return { left: x, top: y };
 }
 
-function repositionOffscreenElement( element ) {
+function repositionOffscreenElement( element, padding ) {
+	
+	padding = padding || { top:0, bottom:0, left:0, right:0 };
 
 	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
 
@@ -72,16 +74,16 @@ function repositionOffscreenElement( element ) {
 		let maxHeight = Math.min(window.innerHeight, document.body.getBoundingClientRect().bottom);
 		
 		if (rect.y < 0) 
-			element.style.top = Math.max(parseFloat(element.style.top) - rect.y, 0) + "px";
+			element.style.top = Math.max(parseFloat(element.style.top) - rect.y, 0) + padding.top + "px";
 		
 		if (rect.bottom > window.innerHeight) 
-			element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
+			element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight - padding.bottom + "px";
 		
 		if (rect.x < 0) 
-			element.style.left = Math.max(parseFloat(element.style.left) - rect.x, 0) + "px";
+			element.style.left = Math.max(parseFloat(element.style.left) - rect.x, 0) + padding.left + "px";
 		
 		if (rect.right > maxWidth ) 
-			element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - maxWidth) + "px";
+			element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - maxWidth) - padding.right + "px";
 
 		return;
 	}

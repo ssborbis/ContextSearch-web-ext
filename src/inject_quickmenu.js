@@ -21,23 +21,15 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 });
 
+function getIframe() {
+	document.getElementById('CS_quickMenuIframe');
+}
+
 function openQuickMenu(ev, searchTerms) {
 
 	ev = ev || new Event('click');
 
-	// keep open if locked
-	if ( quickMenuObject.locked ) {
-		quickMenuObject.searchTerms = searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev);
-		browser.runtime.sendMessage({
-			action: "updateQuickMenuObject", 
-			quickMenuObject: quickMenuObject
-		}).then(() => {
-			browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
-		});
-		return;
-	}
-	
-	if ( document.getElementById('CS_quickMenuIframe') ) closeQuickMenu();
+	// if ( document.getElementById('CS_quickMenuIframe') ) closeQuickMenu();
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
 	if (userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
@@ -127,7 +119,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 	
 	runAtTransitionEnd( qmc, ["height", "width", "top", "left", "bottom", "right"], () => { 
-		repositionOffscreenElement( qmc );
+		repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8});
 		qmc.dispatchEvent(new CustomEvent('reposition'));
 		if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 	}, 50);
@@ -510,8 +502,6 @@ function lockQuickMenu() {
 		
 	function lock() {
 		
-		console.log(window.quickMenuLastOffsets);
-		
 		let offsets = getOffsets();
 		
 		qmc.style.left = parseFloat(qmc.style.left) - offsets.x + "px";
@@ -534,7 +524,6 @@ function lockQuickMenu() {
 				left: rect.left * window.devicePixelRatio, 
 				right: rect.right * window.devicePixelRatio, 
 				bottom: rect.bottom * window.devicePixelRatio
-			//	bottom: (parseFloat(qmc.style.top) + offsets.y + qmc.getBoundingClientRect().height) * window.devicePixelRatio
 			},
 			onUndock: (o) => {
 				qmc.docking.translatePosition('top', 'left');
@@ -550,7 +539,7 @@ function lockQuickMenu() {
 		
 		qmc.docking.init();
 
-		setTimeout(() => { repositionOffscreenElement( qmc ); }, 500);
+		setTimeout(() => { repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); }, 250);
 	}
 }
 
@@ -577,7 +566,7 @@ function unlockQuickMenu() {
 // unlock if quickmenu is closed
 document.addEventListener('closequickmenu', () => {
 	quickMenuObject.locked = false;
-	delete window.quickMenuLastOffsets;
+	// delete window.quickMenuLastOffsets;
 });
 
 // close quickmenu when clicking anywhere on page
@@ -640,9 +629,22 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
 
 				quickMenuObject.searchTerms = message.searchTerms;
+				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
+				
+				// keep old menu if locked
+				if ( quickMenuObject.locked ) {
+					quickMenuObject.searchTerms = message.searchTerms;
+					browser.runtime.sendMessage({
+						action: "updateQuickMenuObject", 
+						quickMenuObject: quickMenuObject
+					}).then(() => {
+						browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
+					});
+					break;
+				}
+				
 				makeQuickMenuContainer({'x': x,'y': y});
 				
-				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
 				break;
 			
 			case "updateSearchTerms":
