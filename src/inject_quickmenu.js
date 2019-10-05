@@ -712,8 +712,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
 					},
 					onDrop: (o) => {
-						// rebuild the menu again to shrink empty rows
-						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {resizeOnly:true} }, browser.runtime.getURL('/quickmenu.html'));
+						// resize the menu again to shrink empty rows					
+						qmc.contentWindow.postMessage({action: "resizeMenu"}, browser.runtime.getURL('/quickmenu.html'));
 
 						// save prefs
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

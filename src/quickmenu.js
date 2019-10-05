@@ -115,6 +115,8 @@ function resizeMenu(o) {
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
 	else if ( o.quickMenuMore || o.groupMore )
 		qm.style.height = qm.getBoundingClientRect().height;
+	else if ( o.widgetResize )
+		qm.style.height = qm.firstChild.getBoundingClientRect().height * o.rows + "px";
 	else
 		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
 
@@ -188,8 +190,12 @@ window.addEventListener('message', (e) => {
 
 	switch (e.data.action) {
 		case "rebuildQuickMenu":
-			userOptions = e.data.userOptions;
-			makeFrameContents(e.data.makeQuickMenuOptions);
+			userOptions = e.data.userOptions;	
+			let qm = document.getElementById('quickMenuElement');
+			qm.columns = userOptions.quickMenuColumns
+			qm.insertBreaks(qm.columns);
+			
+			resizeMenu({widgetResize: true, rows: userOptions.quickMenuRows});
 			break;
 			
 		case "resizeMenu":
