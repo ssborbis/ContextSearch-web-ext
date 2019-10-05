@@ -521,7 +521,7 @@ function makeQuickMenu(options) {
 	
 	function buildQuickMenuElement(options) {
 		
-		let _singleColumn = options.forceSingleColumn || options.node.displayType === "text";
+		let _singleColumn = options.forceSingleColumn || options.node.displayType === "text" || singleColumn;
 		
 		if ( options.node.displayType === "grid" ) _singleColumn = false;
 		
@@ -981,21 +981,46 @@ function makeQuickMenu(options) {
 				// cut the node from the children array
 				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
 
-				// set new parent
-				slicedNode.parent = targetNode.parent;
-
 				let side = getSide(targetDiv, e);
-				if ( side === "before" ) {
-					// add to children before target
-					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
-				} else if ( side === "after" ) {
-					// add to children after target
-					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
-				} else {
-					slicedNode.parent = targetNode;
-					// add to target children
-					targetNode.children.push(slicedNode);
-				}
+				
+				// if ( targetDiv.node.parent.groupFolder && targetDiv.node.parent !== dragDiv.node.parent ) {
+					// let targetIndex = targetNode.parent.children.indexOf(targetNode);
+					// if ( targetIndex === 0 && side === "before" ) { // target should be placed before group folder
+						// // slicedNode.parent = targetNode.parent.parent;
+						// // slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
+						
+						// console.log('target = groupfolder; placing in ' + targetNode.parent.parent.title + ' before ');
+						// window.addEventListener('dragend', (_e) => { _e.stopPropagation();}, {once:true, capture: true});
+						// return;
+						
+					// } else if ( targetIndex === targetNode.parent.children.length - 1 && side === "after" ) {
+						// // slicedNode.parent = targetNode.parent.parent;
+						// // slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent)+1,0,slicedNode);
+						
+						// console.log('target = groupfolder; placing in ' + targetNode.parent.parent.title + ' after ');
+						// window.addEventListener('dragend', (_e) => { _e.stopPropagation();}, {once:true, capture: true});
+						// return;
+					// }
+				// }
+						
+				// } else {
+
+					// set new parent
+					slicedNode.parent = targetNode.parent;
+
+					
+					if ( side === "before" ) {
+						// add to children before target
+						targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
+					} else if ( side === "after" ) {
+						// add to children after target
+						targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
+					} else {
+						slicedNode.parent = targetNode;
+						// add to target children
+						targetNode.children.push(slicedNode);
+					}
+				// }
 
 				// save the tree
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
