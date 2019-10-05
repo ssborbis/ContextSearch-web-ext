@@ -117,7 +117,7 @@ function toolBarResize() {
 			
 			// tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
 
-			let div_width = 'calc(' + 100 / columns + "% - 2px)";
+			let div_width = 'calc(' + 100 / qm.columns + "% - 2px)";
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 				div.style.width = div_width;
 			});
