@@ -500,7 +500,10 @@ function makeQuickMenu(options) {
 
 		});
 
-		toolsArray.forEach( tool => tool.dataset.type = 'tool' );
+		toolsArray.forEach( tool => {
+			tool.dataset.type = 'tool';
+			tool.dataset.title = tool.title;
+		});
 
 		return toolsArray;
 	}
@@ -671,16 +674,6 @@ function makeQuickMenu(options) {
 			});
 
 			tileArray = toolsArray.concat(tileArray);	
-		}
-
-		// add empty cells for resizing ( needs work )
-		if ( mode === "resize" ) {
-			let resizeMaxTiles = _singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
-			for ( let i=tileArray.length; i<resizeMaxTiles;i++) {
-				let tile = document.createElement('div');
-				tile.dataset.type = 'empty';
-				tileArray.push(tile);
-			}
 		}
 
 		// make rows / columns
