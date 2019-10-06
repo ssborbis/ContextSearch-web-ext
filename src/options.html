@@ -981,8 +981,7 @@
 			}
 			#folderFormTable TD {
 				padding:5px 20px;
-			}
-			
+			}			
 		</style>
 	</head>
 	<body>
@@ -1055,8 +1054,18 @@
 						<td>quickMenuTools.repeatsearch.persist</td>
 						<td><input type="checkbox" id="cb_quickMenuToolsRepeatSearchPersist" /></td>
 					</tr>
+					<tr>
+						<td>searchBar.historyLength</td>
+						<td><input type="number" id="n_searchBarHistoryLength" min="0" max="99999" step="1"></td>
+					</tr>
+					<tr>
+						<td>searchBar.suggestionsCount</td>
+						<td><input type="number" id="n_searchBarSuggestionsCount" min="0" max="999" step="1"></td>
+					</tr>
 					</table>
 				</section>
+				
+				<div style="float:right"><button class="saveOptions">Save</button></div>
 			</div>
 		
 			<div class="tabcontent" id="generalTab">

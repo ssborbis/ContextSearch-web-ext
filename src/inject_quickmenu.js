@@ -106,7 +106,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 
 	if ( size.height / window.devicePixelRatio > window.innerHeight ) {
 		qmc.style.transition = 'none';
-		qmc.style.height = window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) - window.devicePixelRatio + "px";
+		qmc.style.height = Math.floor(window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) - window.devicePixelRatio) + "px";
 		qmc.style.transition = null;
 
 		qmc.addEventListener('reposition',() => {

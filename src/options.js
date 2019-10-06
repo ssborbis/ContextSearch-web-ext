@@ -349,6 +349,9 @@ function restoreOptions() {
 			
 		})();
 		
+		$('#n_searchBarHistoryLength').value = userOptions.searchBarHistoryLength;
+		$('#n_searchBarSuggestionsCount').value = userOptions.searchBarSuggestionsCount;
+		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
   
@@ -580,7 +583,10 @@ function saveOptions(e) {
 	
 		enableAnimations: $('#cb_enableAnimations').checked,
 		quickMenuTheme: $('#s_searchBarTheme').value,
-		searchBarTheme: $('#s_searchBarTheme').value
+		searchBarTheme: $('#s_searchBarTheme').value,
+		
+		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
+		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value)
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -1241,4 +1247,43 @@ document.addEventListener('DOMContentLoaded', () => {
 		yes.getBoundingClientRect();
 		yes.style.opacity = 0;
 	}
+});
+
+function showSaveMessage(str, color, _class, el) {
+
+	color = color || "inherit";
+
+	// clear and set save message
+	el.innerHTML = null;	
+	let msgSpan = document.createElement('span');
+
+	let img = document.createElement('div');
+	img.className = _class;
+	//img.style.height = img.style.width = '1em';
+	img.style.marginRight = '10px';
+	msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
+	msgSpan.style.color = color;
+	//msgSpan.innerText = str;
+	
+	msgSpan.insertBefore(img, msgSpan.firstChild);
+	
+	el.appendChild(msgSpan);
+	
+	msgSpan.addEventListener('transitionend', (e) => {
+		msgSpan.parentNode.removeChild(msgSpan);
+	});
+
+	msgSpan.getBoundingClientRect(); // reflow
+	msgSpan.style.opacity = 0;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+	document.querySelectorAll('BUTTON.saveOptions').forEach( button => {
+		button.onclick = function() {
+			let span = document.createElement('span');
+			button.parentNode.insertBefore(span, button);
+			saveOptions();
+			showSaveMessage("saved", null, "yes", span);
+		}
+	});
 });

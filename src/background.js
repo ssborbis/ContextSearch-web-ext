@@ -1652,7 +1652,10 @@ const defaultUserOptions = {
 `,
 	userStylesGlobal: "",
 	userStylesEnabled: false,
-	enableAnimations: true
+	enableAnimations: true,
+	
+	searchBarHistoryLength: 1024,
+	searchBarSuggestionsCount: 20
 };
 
 var userOptions = {};
