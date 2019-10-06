@@ -1510,7 +1510,7 @@ function addToHistory(terms) {
 //	if (userOptions.searchBarHistory.includes(terms)) return;
 	
 	// remove first entry if over limit
-	if (userOptions.searchBarHistory.length >= historyLength)
+	if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength || 1024)
 		userOptions.searchBarHistory.shift();
 	
 	// add new term
@@ -1557,11 +1557,11 @@ function getSuggestions(terms, callback) {
 	xmlhttp.send();
 }
 
-const historyLength = 1024; // number of searches to save in userOptions
-const suggestionsCount = 10; // number of total sg to display (browser_action height is limited!)
-const suggestionsDisplayCount = 5;
-
 function makeSearchBar() {
+	
+	const suggestionsCount = userOptions.searchBarSuggestionsCount || 25; // number of total sg to display (browser_action height is limited!)
+	const suggestionsDisplayCount = 5;
+	
 	let si = document.getElementById('searchIcon');
 	let sb = document.getElementById('searchBar');
 	

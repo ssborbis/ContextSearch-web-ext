@@ -1512,33 +1512,6 @@ function buildSearchEngineContainer() {
 		});
 	});
 	
-	function showSaveMessage(str, color, _class, el) {
-
-		color = color || "inherit";
-
-		// clear and set save message
-		el.innerHTML = null;	
-		let msgSpan = document.createElement('span');
-
-		let img = document.createElement('div');
-		img.className = _class;
-		//img.style.height = img.style.width = '1em';
-		img.style.marginRight = '10px';
-		msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
-		msgSpan.style.color = color;
-		//msgSpan.innerText = str;
-		
-		msgSpan.insertBefore(img, msgSpan.firstChild);
-		
-		el.appendChild(msgSpan);
-		
-		msgSpan.addEventListener('transitionend', (e) => {
-			msgSpan.parentNode.removeChild(msgSpan);
-		});
-
-		msgSpan.getBoundingClientRect(); // reflow
-		msgSpan.style.opacity = 0;
-	}
 	
 	document.getElementById('iconPicker').addEventListener('change', (e) => {
 		let file = e.target.files[0];

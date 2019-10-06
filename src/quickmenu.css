@@ -198,10 +198,10 @@ BODY {
 	color:#4a4a4a;
 	background-color:white;	
 }
-#searchBar[data-position="bottom"] {
+[data-menu="quickmenu"] #searchBar[data-position="bottom"] {
 	border-radius:0 0 10px 10px;
 }
-#searchBar[data-position="top"] {
+[data-menu="quickmenu"] #searchBar[data-position="top"] {
 	border-radius:10px 10px 0 0;
 }
 #searchBar:focus {
