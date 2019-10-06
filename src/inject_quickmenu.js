@@ -104,7 +104,7 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	
 	qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 
-	if (qmc.getBoundingClientRect().height > window.innerHeight ) {
+	if ( size.height / window.devicePixelRatio > window.innerHeight ) {
 		qmc.style.transition = 'none';
 		qmc.style.height = window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) - window.devicePixelRatio + "px";
 		qmc.style.transition = null;

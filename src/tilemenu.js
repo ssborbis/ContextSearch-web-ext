@@ -540,6 +540,9 @@ function makeQuickMenu(options) {
 			moreTile.addEventListener('openFolder', _more);
 			
 			function _more(e) {
+				
+				// store scroll position
+				let scrollTop = qm.scrollTop;
 
 				moreTile.parentNode.removeChild(moreTile);
 
@@ -557,6 +560,13 @@ function makeQuickMenu(options) {
 				qm.insertBreaks(_columns);
 				
 				resizeMenu({quickMenuMore: true});
+				
+				qm.scrollTop = scrollTop;
+
+				// scroll again in case of 100% window resize - trigger on next resizeMenu() via quickMenuIframeLoaded event
+				let _scrollListener = (e) => qm.scrollTop = scrollTop;
+				document.addEventListener('quickMenuIframeLoaded', _scrollListener, {once: true});
+				setTimeout(() => { document.removeEventListener('quickMenuIframeLoaded', _scrollListener);}, 1000);
 			}
 			
 			return moreTile;
@@ -1174,7 +1184,7 @@ function makeQuickMenu(options) {
 						
 						// store scroll position
 						let scrollTop = qm.scrollTop;
-						
+	
 						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
 							if ( _div.node && _div.node.parent !== node ) return;
 							
@@ -1190,6 +1200,13 @@ function makeQuickMenu(options) {
 						resizeMenu({groupMore: true});
 						
 						qm.scrollTop = scrollTop;
+
+						// scroll again in case of 100% window resize - trigger on next resizeMenu() via quickMenuIframeLoaded event
+						let _scrollListener = (e) => qm.scrollTop = scrollTop;
+						document.addEventListener('quickMenuIframeLoaded', _scrollListener, {once: true});
+						setTimeout(() => { document.removeEventListener('quickMenuIframeLoaded', _scrollListener);}, 1000);
+						
+						
 					}
 					
 					function less() {
