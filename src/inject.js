@@ -90,7 +90,7 @@ function repositionOffscreenElement( element, padding ) {
 	
 	if ( rect.bottom > window.innerHeight ) {
 		if ( element.style.bottom )
-			element.style.bottom = 0 + "px";
+			element.style.bottom = "0";
 		else 
 			element.style.top = (window.innerHeight - rect.height) + "px";
 		
@@ -101,14 +101,14 @@ function repositionOffscreenElement( element, padding ) {
 		if ( element.style.bottom ) 
 			element.style.bottom = (window.innerHeight - rect.height) + "px";
 		else
-			element.style.top = 0 + "px";
+			element.style.top = "0";
 		
 		// console.log('top overflow');
 	}
 	
 	if ( rect.right > window.innerWidth - scrollbarWidth ) {
 		if ( element.style.right )
-			element.style.right = 0 + "px";
+			element.style.right = "0";
 		else 
 			element.style.left = (window.innerWidth - scrollbarWidth - rect.width) + "px";
 		
@@ -119,7 +119,7 @@ function repositionOffscreenElement( element, padding ) {
 		if ( element.style.right ) 
 			element.style.right = (window.innerWidth - rect.width) + "px";
 		else
-			element.style.left = 0 + "px";
+			element.style.left = "0";
 		
 		// console.log('left overflow');
 	}

@@ -104,11 +104,11 @@ function scaleAndPositionQuickMenu(size, resizeOnly) {
 	
 	qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 
-	if ( size.height / window.devicePixelRatio > window.innerHeight ) {
+	if (qmc.getBoundingClientRect().height > window.innerHeight ) {
 		qmc.style.transition = 'none';
-		qmc.style.height = window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) + "px";
+		qmc.style.height = window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) - window.devicePixelRatio + "px";
 		qmc.style.transition = null;
-		
+
 		qmc.addEventListener('reposition',() => {
 			runAtTransitionEnd( qmc, ["left", "top", "bottom", "right", "height", "width"], () => { 
 				qmc.contentWindow.postMessage({action: "resizeMenu", options:{} }, browser.runtime.getURL('/quickmenu.html'));
@@ -709,7 +709,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						userOptions.quickMenuRows = o.rows;
 
 						// rebuild menu with new dimensions
-						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, makeQuickMenuOptions: {mode: "resize", resizeOnly: true} }, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions}, browser.runtime.getURL('/quickmenu.html'));
 					},
 					onDrop: (o) => {
 						// resize the menu again to shrink empty rows					
