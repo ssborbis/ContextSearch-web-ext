@@ -635,18 +635,18 @@ function makeQuickMenu(options) {
 			
 			tb.addEventListener('scroll', showScrollButtons);
 			tb.addEventListener('mouseenter', showScrollButtons);
-			tb.addEventListener('mouseleave', () => {
-				ls.style.display = rs.style.display = 'none';
-			});
+			tb.addEventListener('mouseleave', () => { ls.style.display = rs.style.display = 'none'; });
 			
 		} else if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
 			tileArray = toolsArray.concat(tileArray);
 		
 		let visibleTiles = tileArray.filter( _tile => !_tile.dataset.hidden );
 
-		if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu')
-			tileArray.splice(visibleTileCountMax - toolsArray.length - 1, 0, ...toolsArray);
-		
+		if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu') {			
+			let lastVisibleTile = visibleTiles[visibleTileCountMax - 1];			
+			tileArray.splice(tileArray.indexOf(lastVisibleTile) - toolsArray.length, 0, ...toolsArray);
+		}
+
 		// hide tiles outside initial grid dimensions
 		if ( type === 'quickmenu' && !options.parentId) {
 			let count = 0;
