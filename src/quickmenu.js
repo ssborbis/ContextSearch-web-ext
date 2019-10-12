@@ -97,6 +97,8 @@ var maxHeight = Number.MAX_SAFE_INTEGER;
 
 function resizeMenu(o) {
 	
+	toolsHandler();
+	
 	o = o || {};
 
 	qm = document.getElementById('quickMenuElement');
