@@ -98,6 +98,7 @@ var maxHeight = Number.MAX_SAFE_INTEGER;
 function resizeMenu(o) {
 	
 	if ( o.openFolder )	toolsHandler();
+		toolsHandler();
 	
 	o = o || {};
 
