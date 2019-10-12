@@ -61,12 +61,17 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		document.querySelector('#dark').rel="stylesheet";
 
 	makeSearchBar();
+	
+	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
-	makeQuickMenu({type: window == top ? "searchbar" : "sidebar"}).then( (qme) => {
+	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( (qme) => {
+				
 		document.body.insertBefore(qme, null);
+		
+		toolsHandler();	
+		
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-		//resizeMenu();
-	});	
+	});
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -92,6 +97,40 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	resizeMenu();
 
 });
+
+function toolsHandler() {
+	
+	let qm = document.getElementById('quickMenuElement');
+
+	let singleColumn = qm.querySelector('.singleColumn') ? true : false;
+	let isRootNode = !qm.rootNode.parent;
+	
+	if ( !isRootNode ) return;
+	
+	if (  // match quickmenu and searchbar tools
+		((type === "searchbar" && userOptions.quickMenuColumns === qm.columns) ||
+		(type === "sidebar" && userOptions.quickMenuColumns === qm.columns)) && 
+		userOptions.quickMenuToolsPosition === "top" && !singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
+
+		qm.toolsArray.reverse().forEach( tool => {
+			
+			tool.dataset.hidden = false;
+			tool.style.display = null;
+
+			if ( tool.dataset.show ) return;
+
+			tool.dataset.disabled = true;
+			tool.disabled = true;
+			tool.title = "";
+			
+			qm.insertBefore(tool, qm.firstChild);
+		});	
+	} else {
+		qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );
+	}
+	
+	qm.insertBreaks(qm.columns);
+}
 
 function toolBarResize() {
 	
@@ -175,12 +214,21 @@ function sideBarResize(options) {
 	// account for scrollbars
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	
-	window.parent.postMessage({action:"resizeSideBarIframe", size: {width: parseFloat( qm.style.width ), height: document.body.offsetHeight}}, "*");
+	let first = qm.querySelector(`*:not([data-hidden="true"])`);
+	
+	window.parent.postMessage({
+		action:"resizeSideBarIframe", 
+		size: {width: parseFloat( qm.style.width ), height: document.body.offsetHeight}, 
+		singleColumn: qm.querySelector('.singleColumn') ? true : false,
+		tileSize: {width: first.offsetWidth, height: first.offsetHeight}
+	}, "*");
 	
 	qm.scrollTop = scrollTop;
 }
 
 function resizeMenu(o) {
+	let scrollTop = qm.scrollTop;
+	toolsHandler();
 	toolBarResize(o);
 	sideBarResize(o);
 }
@@ -190,7 +238,7 @@ window.addEventListener('message', (e) => {
 	switch (e.data.action) {
 		case "sideBarResize":
 			if ( e.data.docked !== undefined ) docked = e.data.docked;
-			sideBarResize({iframeHeight: e.data.iframeHeight});
+			resizeMenu({iframeHeight: e.data.iframeHeight});
 			break;
 		
 		case "quickMenuIframeLoaded":
@@ -199,15 +247,20 @@ window.addEventListener('message', (e) => {
 			
 		case "sideBarRebuild":
 			let qm = document.getElementById('quickMenuElement');
+			
+			let singleColumn = qm.querySelector('.singleColumn') ? true : false;
 
 			qm.columns = e.data.columns;
-			qm.insertBreaks(qm.columns);
+
+			toolsHandler();//qm.insertBreaks(qm.columns);
 			
 			qm.style.height = null;
 			qm.style.width = null;
 			
+			let first = qm.querySelector(`*:not([data-hidden="true"])`);
+			
 			// reset the minWidth for the tilemenu
-			qm.style.minWidth = qm.columns * qm.firstChild.offsetWidth + "px";
+			qm.style.minWidth = ( singleColumn ? 1 : qm.columns ) * first.offsetWidth + "px";
 			
 			let rect = document.body.getBoundingClientRect();
 			let rect_qm = qm.getBoundingClientRect();
@@ -216,7 +269,7 @@ window.addEventListener('message', (e) => {
 			window.parent.postMessage({
 				action:"resizeSideBarIframe", 
 				size: {width: rect_qm.width, height: rect.height}, 
-				tileSize: {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}, 
+				tileSize: {width: first.offsetWidth, height: first.offsetHeight}, 
 				singleColumn: qm.querySelector(".singleColumn") ? true : false
 			}, "*");
 			

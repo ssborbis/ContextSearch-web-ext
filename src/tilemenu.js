@@ -153,11 +153,7 @@ function makeQuickMenu(options) {
 	type = options.type;
 	let mode = options.mode;
 
-	let singleColumn = ( 
-		(type === 'searchbar' && userOptions.searchBarUseOldStyle) ||
-		(type === 'quickmenu' && userOptions.quickMenuUseOldStyle) ||
-		(type === 'sidebar' && userOptions.sideBar.singleColumn)
-	) ? true : false;
+	let singleColumn = options.singleColumn;
 	
 	let columns = singleColumn ? 1 : getColumns();
 	
@@ -470,12 +466,7 @@ function makeQuickMenu(options) {
 	document.addEventListener('updatesearchterms', (e) => {
 		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
 	});
-	
-	if ( type === 'quickmenu' && userOptions.quickMenuSearchBar === 'hidden') {
-		sb.parentNode.style.display = 'none';
-		sb.parentNode.style.height = '0';
-	}
-	
+
 	// prevent click events from propagating
 	[/*'mousedown',*/ 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
 		qm.addEventListener(eventType, (e) => {
@@ -565,7 +556,7 @@ function makeQuickMenu(options) {
 
 				// scroll again in case of 100% window resize - trigger on next resizeMenu() via quickMenuIframeLoaded event
 				let _scrollListener = (e) => qm.scrollTop = scrollTop;
-				document.addEventListener('quickMenuIframeLoaded', _scrollListener, {once: true});
+				document.addEventListener('quickMenuIframeLoaded', _scrollListener);
 				setTimeout(() => { document.removeEventListener('quickMenuIframeLoaded', _scrollListener);}, 1000);
 			}
 			
@@ -588,103 +579,12 @@ function makeQuickMenu(options) {
 		if (!_singleColumn) {
 			tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 		}
-	
-		// set the number of tiles to show
-		let visibleTileCountMax = _singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
-
-		// set tools position
-		if ( userOptions.quickMenuToolsAsToolbar && userOptions.quickMenuToolsPosition !== 'hidden' && type === 'quickmenu' ) {
-
-			tb.style = 'overflow-x:hidden;white-space: nowrap;';
-			tb.addEventListener('wheel', (e) => {
-				tb.scrollLeft += (e.deltaY*6);
-				e.preventDefault();
-			});
-			tb.innerHTML = null;
-			
-			let ls = document.createElement('img');
-			ls.style = 'width:15px;height:15px;background-color:gray;display:none;left:0;position:absolute;z-index:2;opacity:.6;transform:rotate(-90deg)';
-			ls.src = browser.runtime.getURL('icons/chevron-up.svg');
-			tb.appendChild(ls);
-			
-			let rs = document.createElement('img');
-			rs.style = 'width:15px;height:15px;background-color:gray;display:none;right:0;position:absolute;z-index:2;opacity:.6;transform:rotate(90deg)';
-			rs.src = browser.runtime.getURL('icons/chevron-up.svg');
-			tb.appendChild(rs);
-			
-			let mouseoverInterval = null;
-			rs.addEventListener('mouseenter', (e) => {
-				mouseoverInterval = setInterval(() => {tb.scrollLeft += 10;}, 50);
-			});
-			
-			ls.addEventListener('mouseenter', (e) => {	
-				mouseoverInterval = setInterval(() => {tb.scrollLeft -= 10;}, 50);
-			});
-			
-			[rs,ls].forEach(s => s.addEventListener('mouseleave', () => {clearInterval(mouseoverInterval)}));
-			
-			toolsArray.forEach( tool => {
-				tool.className = 'tile';
-				tb.appendChild(tool);
-			});
-			
-			function showScrollButtons() {
-				ls.style.display = tb.scrollLeft ? 'inline-block' : 'none';
-				rs.style.display = ( tb.scrollLeft < tb.scrollWidth - tb.clientWidth ) ? 'inline-block' : 'none';
-			}
-			
-			tb.addEventListener('scroll', showScrollButtons);
-			tb.addEventListener('mouseenter', showScrollButtons);
-			tb.addEventListener('mouseleave', () => { ls.style.display = rs.style.display = 'none'; });
-			
-		} else if (userOptions.quickMenuToolsPosition === 'top' && type === 'quickmenu')
-			tileArray = toolsArray.concat(tileArray);
 		
-		let visibleTiles = tileArray.filter( _tile => !_tile.dataset.hidden );
-
-		if (userOptions.quickMenuToolsPosition === 'bottom' && type === 'quickmenu') {			
-			let lastVisibleTile = visibleTiles[visibleTileCountMax - 1];			
-			tileArray.splice(tileArray.indexOf(lastVisibleTile) - toolsArray.length, 0, ...toolsArray);
-		}
-
-		// hide tiles outside initial grid dimensions
-		if ( type === 'quickmenu' && !options.parentId) {
-			let count = 0;
-
-			tileArray.filter( (_tile, index, arr) => {
-				
-				if (_tile.dataset.hidden == "true") return false;
-
-				if (count > visibleTileCountMax - 2) {
-					arr[index].dataset.hidden = true;
-					arr[index].style.display = 'none';
-				}
-				
-				count++;
-			});
-
-			if ( visibleTiles.length > visibleTileCountMax ) {
-				tileArray.push(buildMoreTile());
-			}
-		}
-
-		// shift tiles to match quickmenu and searchbar
-		if ( 
-			((type === "searchbar" && userOptions.quickMenuColumns === userOptions.searchBarColumns) ||
-			(type === "sidebar" && userOptions.quickMenuColumns === userOptions.sideBar.columns)) && 
-			userOptions.quickMenuToolsPosition === "top" && !_singleColumn && !options.parentId && toolsArray.length !== _columns && !userOptions.quickMenuToolsAsToolbar) {
-
-			toolsArray.forEach( tool => {
-
-				if ( tool.dataset.show ) return;
-
-				tool.dataset.disabled = true;
-				tool.disabled = true;
-				tool.title = "";
-			});
-
-			tileArray = toolsArray.concat(tileArray);	
-		}
+		// moved tools handlers to menu iframe js
+		toolsArray.forEach( tile => tile.classList.add('tile') );
+		qm.toolsArray = toolsArray;
+		qm.moreTile = buildMoreTile();
+		qm.moreTile.classList.add('tile');
 
 		// make rows / columns
 		tileArray.forEach( tile => {
@@ -724,7 +624,7 @@ function makeQuickMenu(options) {
 		qm.style.left = '0px';
 
 		/* dnd */
-		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"]):not([data-type="empty"])');
+		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 			
 			function getSide(t, e) {
@@ -1200,13 +1100,12 @@ function makeQuickMenu(options) {
 						resizeMenu({groupMore: true});
 						
 						qm.scrollTop = scrollTop;
-
+						
 						// scroll again in case of 100% window resize - trigger on next resizeMenu() via quickMenuIframeLoaded event
-						let _scrollListener = (e) => qm.scrollTop = scrollTop;
-						document.addEventListener('quickMenuIframeLoaded', _scrollListener, {once: true});
+						let _scrollListener = (e) => document.getElementById('quickMenuElement').scrollTop = scrollTop;
+						document.addEventListener('quickMenuIframeLoaded', _scrollListener);
 						setTimeout(() => { document.removeEventListener('quickMenuIframeLoaded', _scrollListener);}, 1000);
-						
-						
+
 					}
 					
 					function less() {

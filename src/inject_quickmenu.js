@@ -21,8 +21,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	userOptions = message.userOptions || {};
 });
 
-function getIframe() {
-	document.getElementById('CS_quickMenuIframe');
+function getQM() {
+	return document.getElementById('CS_quickMenuIframe');
 }
 
 function openQuickMenu(ev, searchTerms) {
@@ -88,65 +88,6 @@ function getOffsets() {
 	return {x: xOffset, y: yOffset};
 }
 
-function scaleAndPositionQuickMenu(size, resizeOnly) {
-	let qmc = document.getElementById('CS_quickMenuIframe');
-	if (!qmc) return;
-	
-	resizeOnly = resizeOnly || false;
-	
-	size = size || {
-		width: qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("width"), 
-		height: qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("height")
-	};
-
-	qmc.style.width = parseFloat(size.width) + "px";
-	qmc.style.height = parseFloat(size.height) + "px";
-	
-	qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
-
-	if ( size.height / window.devicePixelRatio > window.innerHeight ) {
-		qmc.style.transition = 'none';
-		qmc.style.height = Math.floor(window.innerHeight * window.devicePixelRatio - ( window.innerHeight - document.documentElement.clientHeight ) - window.devicePixelRatio) + "px";
-		qmc.style.transition = null;
-
-		qmc.addEventListener('reposition',() => {
-			runAtTransitionEnd( qmc, ["left", "top", "bottom", "right", "height", "width"], () => { 
-				qmc.contentWindow.postMessage({action: "resizeMenu", options:{} }, browser.runtime.getURL('/quickmenu.html'));
-			});			
-		}, {once: true});
-	} 
-		
-	if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
-	
-	runAtTransitionEnd( qmc, ["height", "width", "top", "left", "bottom", "right"], () => { 
-		repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8});
-		qmc.dispatchEvent(new CustomEvent('reposition'));
-		if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
-	}, 50);
-		
-	if (! resizeOnly) { // skip positioning if this is a resize only
-		for (let position of userOptions.quickMenuPosition.split(" ")) {
-			switch (position) {
-				case "left":
-					qmc.style.left = parseFloat(qmc.style.left) - parseFloat(qmc.style.width) * userOptions.quickMenuScale / window.devicePixelRatio + "px";
-					break;
-				case "right":
-					break;
-				case "center":
-					qmc.style.left = parseFloat(qmc.style.left) - parseFloat(qmc.style.width) / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio + "px";
-					break;
-				case "top":
-					qmc.style.top = parseFloat(qmc.style.top) - parseFloat(qmc.style.height) * userOptions.quickMenuScale / window.devicePixelRatio + "px";
-					break;
-				case "bottom":
-					break;
-			}
-		}
-	}
-
-	return qmc;
-}
-
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {
 
@@ -157,13 +98,15 @@ function makeQuickMenuContainer(coords) {
 	qmc = document.createElement('iframe');
 
 	qmc.id = "CS_quickMenuIframe";
-
-	qmc.style.top = coords.y + getOffsets().y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + "px";
-	qmc.style.left = coords.x + getOffsets().x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + "px";
+	
 	qmc.style.opacity = 0;
+	qmc.style.width = 0;
+	qmc.style.height = 0;
 	
-	document.body.appendChild(qmc);
+	qmc.openingCoords = coords;
 	
+	document.body.appendChild(qmc);	
+
 	qmc.src = browser.runtime.getURL('quickmenu.html');
 
 	// Check if quickmenu fails to display
@@ -501,45 +444,37 @@ function lockQuickMenu() {
 	lock();
 		
 	function lock() {
-		
-		let offsets = getOffsets();
-		
-		qmc.style.left = parseFloat(qmc.style.left) - offsets.x + "px";
-		qmc.style.top = parseFloat(qmc.style.top) - offsets.y + "px";
-		qmc.style.position='fixed';
+				
+		qmc.contentWindow.postMessage({action: "showMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
 		quickMenuObject.locked = true;
 		
-		if ( qmc.resizeWidget ) qmc.resizeWidget.style.position = 'fixed';
-		
-		qmc.contentWindow.postMessage({action: "showMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
-		
-		let rect = qmc.getBoundingClientRect();
+		// let rect = qmc.getBoundingClientRect();
 
-		makeDockable(qmc, {
-			windowType: "undocked",
-			dockedPosition: "left",
-			handleElement: qmc,
-			lastOffsets: window.quickMenuLastOffsets || {
-				top: rect.top * window.devicePixelRatio, 
-				left: rect.left * window.devicePixelRatio, 
-				right: rect.right * window.devicePixelRatio, 
-				bottom: rect.bottom * window.devicePixelRatio
-			},
-			onUndock: (o) => {
-				qmc.docking.translatePosition('top', 'left');
-				qmc.style.transformOrigin = null;
-				qmc.getBoundingClientRect();
-				if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
+		// makeDockable(qmc, {
+			// windowType: "undocked",
+			// dockedPosition: "left",
+			// handleElement: qmc,
+			// lastOffsets: window.quickMenuLastOffsets || {
+				// top: rect.top * window.devicePixelRatio, 
+				// left: rect.left * window.devicePixelRatio, 
+				// right: rect.right * window.devicePixelRatio, 
+				// bottom: rect.bottom * window.devicePixelRatio
+			// },
+			// onUndock: (o) => {
+				// qmc.docking.translatePosition('top', 'left');
+				// qmc.style.transformOrigin = null;
+				// qmc.getBoundingClientRect();
+				// if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 				
-				// store last qm position
-				window.quickMenuLastOffsets = o.lastOffsets;
-			},
-			onDock: (o) => {}
-		});
+				// // store last qm position
+				// window.quickMenuLastOffsets = o.lastOffsets;
+			// },
+			// onDock: (o) => {}
+		// });
 		
-		qmc.docking.init();
+		// qmc.docking.init();
 
-		setTimeout(() => { repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); }, 250);
+		// setTimeout(() => { repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); }, 250);
 	}
 }
 
@@ -548,18 +483,18 @@ function unlockQuickMenu() {
 				
 	if ( !qmc ) return;
 	
-	qmc.style.left = parseFloat(qmc.style.left) + getOffsets().x + "px";
-	qmc.style.top = parseFloat(qmc.style.top) + getOffsets().y + "px";
-	qmc.style.position = null;
+	// qmc.style.left = parseFloat(qmc.style.left) + getOffsets().x + "px";
+	// qmc.style.top = parseFloat(qmc.style.top) + getOffsets().y + "px";
+	// qmc.style.position = null;
 	quickMenuObject.locked = false;
 	
 	qmc.contentWindow.postMessage({action: "hideMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
 	
-	qmc.resizeWidget.style.position = null;
-	qmc.resizeWidget.setPosition();
-	qmc.docking = null;
+	// qmc.resizeWidget.style.position = null;
+	// qmc.resizeWidget.setPosition();
+	// qmc.docking = null;
 	
-	// clear qm position
+	// // clear qm position
 	delete window.quickMenuLastOffsets;
 }
 
@@ -685,14 +620,65 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					action: "updateQuickMenuObject", 
 					quickMenuObject: quickMenuObject
 				});
-
-				var qmc = scaleAndPositionQuickMenu(message.size, message.resizeOnly || false);
 				
-				// if (quickMenuObject.lastOpeningMethod && quickMenuObject.lastOpeningMethod === 'auto') {
-					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-				// } else {
-					// qmc.style.opacity = 1;
-				// }
+				var qmc = getQM();
+				
+				qmc.style.position = 'fixed';
+				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
+				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
+				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
+
+				let coords = qmc.openingCoords;
+				
+				let leftOffset = topOffset = 0;
+
+				for (let position of userOptions.quickMenuPosition.split(" ")) {
+					switch (position) {
+						case "left":
+							leftOffset = - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio;
+							break;
+						case "right":
+							break;
+						case "center":
+							leftOffset = - message.size.width / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio;
+							break;
+						case "top":
+							topOffset = - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio;
+							break;
+						case "bottom":
+							break;
+					}
+				}
+
+				let initialOffsetX = Math.max(0, Math.min(coords.x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio - 8 - getScrollBarWidth()));
+				
+				let initialOffsetY = Math.max(0, Math.min(coords.y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio - 8 - getScrollBarHeight()));
+
+				makeDockable(qmc, {
+					windowType: "undocked",
+					dockedPosition: "left",
+					handleElement: qmc,
+					lastOffsets: window.quickMenuLastOffsets || {
+						left: initialOffsetX * window.devicePixelRatio,
+						right: Number.MAX_SAFE_INTEGER,
+						top: initialOffsetY * window.devicePixelRatio,
+						bottom: Number.MAX_SAFE_INTEGER 
+					},
+					onUndock: (o) => {
+						if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
+						
+						qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
+						
+						window.quickMenuLastOffsets = o.lastOffsets;
+					},
+					onDock: (o) => {}
+				});
+				
+				qmc.docking.init();
+				
+				quickMenuResize({data: message});
+
+				setTimeout(() => { repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); }, 250);
 
 				_message = message;
 				
@@ -713,13 +699,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					},
 					onDrop: (o) => {
 						// resize the menu again to shrink empty rows					
-						qmc.contentWindow.postMessage({action: "resizeMenu"}, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
 
 						// save prefs
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 					}
 				});
-
+				
 				qmc.style.opacity = null;
 
 				document.addEventListener('closequickmenu', () => {
@@ -736,10 +722,67 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
+function getMaxIframeHeight() {
+	return (window.innerHeight - getScrollBarHeight()) * window.devicePixelRatio / userOptions.quickMenuScale - window.devicePixelRatio;
+}
+
+function quickMenuResize(e) {
+
+	let iframe = getQM();
+	if ( !iframe ) return;
+
+	if ( iframe.resizeWidget && e.data.tileSize) {
+		iframe.resizeWidget.options.tileSize = {
+			width: e.data.tileSize.width,
+			height: e.data.tileSize.height
+		};
+		
+		iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
+	}
+
+	if ( e.data.size.height) {
+		
+		// console.log(e.data.size.height, getMaxIframeHeight());
+
+		if ( e.data.size.height <= getMaxIframeHeight() )
+			iframe.style.height = e.data.size.height + "px"; 
+		else {
+			console.warn('height exceeds window - bad resizeMenu');
+			// iframe.style.height = getMaxIframeHeight() + "px";
+			// runAtTransitionEnd(iframe, ["height"], () => {
+				// iframe.contentWindow.postMessage({action: "resizeMenu"}, browser.runtime.getURL('/quickmenu.html'));
+			// });
+		}
+	}
+
+	if ( e.data.size.width ) {						
+		iframe.style.width = e.data.size.width + "px";
+	}
+
+	runAtTransitionEnd(iframe, ["width", "height", "top", "bottom", "left", "right"], () => {
+
+		if ( iframe.docking.options.windowType === 'undocked' )
+			repositionOffscreenElement(iframe);
+		
+		if ( iframe.docking.options.windowType === 'docked' )
+			iframe.docking.offset();
+		
+		if ( iframe.resizeWidget )
+			iframe.resizeWidget.setPosition();	
+	});
+}
+
 window.addEventListener('message', (e) => {
 	switch ( e.data.action ) {
 		case "quickMenuResize":
-			scaleAndPositionQuickMenu(e.data.size, true);
+
+			let url = new URL(browser.runtime.getURL(''));
+
+			if ( e.origin !== url.origin ) return;
+			
+			if ( !e.data.size ) return;
+		
+			quickMenuResize(e);
 			break;
 	}
 });

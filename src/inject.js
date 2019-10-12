@@ -61,10 +61,17 @@ function repositionOffscreenElement( element, padding ) {
 	padding = padding || { top:0, bottom:0, left:0, right:0 };
 
 	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
+	
+	// let originalTransition = element.style.transition || null;
+	let originalDisplay = element.style.display || null;
+	// element.style.transition = 'none';
+	element.style.display = 'none';
 
 	// move if offscreen
 	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
+	
+	element.style.display = originalDisplay;
 	
 	let rect = element.getBoundingClientRect();
 	
@@ -88,11 +95,11 @@ function repositionOffscreenElement( element, padding ) {
 		return;
 	}
 	
-	if ( rect.bottom > window.innerHeight ) {
+	if ( rect.bottom > window.innerHeight - scrollbarHeight ) {
 		if ( element.style.bottom )
 			element.style.bottom = "0";
 		else 
-			element.style.top = (window.innerHeight - rect.height) + "px";
+			element.style.top = (window.innerHeight - scrollbarHeight - rect.height) + "px";
 		
 		// console.log('bottom overflow');
 	}
@@ -173,7 +180,9 @@ function addResizeWidget(el, options) {
 		onDrop: function() {},
 		columns: 0,
 		rows: 0,
-		isResizing: false
+		isResizing: false,
+		allowHorizontal: true,
+		allowVertical: true
 	}
 	
 	o = Object.assign(o, options);
@@ -246,12 +255,12 @@ function addResizeWidget(el, options) {
 				if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
 					return;
 				
-				o.columns = startSize.columns + colsMod;
-				o.rows = startSize.rows + rowsMod;
+				if ( o.allowHorizontal ) o.columns = startSize.columns + colsMod;
+				if ( o.allowVertical ) o.rows = startSize.rows + rowsMod;
 
 				o.onDrag({
-					columns: startSize.columns + colsMod,
-					rows: startSize.rows + rowsMod,
+					columns: o.columns,//startSize.columns + colsMod,
+					rows: o.rows,//startSize.rows + rowsMod,
 					columnsOffset: colsMod,
 					rowsOffset: rowsMod,
 					xOffset: endCoords.x - startCoords.x,

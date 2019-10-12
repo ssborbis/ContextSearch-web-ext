@@ -1,6 +1,8 @@
 :root {
 	--hover: #ccdbe8;
 	--select: #0078d7;
+	--background: #eff0f1;
+	--border: #e0e0e0;
 }
 
 HTML, BODY {
@@ -288,6 +290,15 @@ BODY {
 }
 #toolBar {
 	text-align:center;
+	overflow-x:hidden;
+	white-space: nowrap;
+}
+#toolBar SPAN {
+	background-color:var(--background);
+	border:1px solid var(--border);
+	display:none;
+	position:absolute;
+	z-index:2;
 }
 #toolBar .tile {
 	border:none;

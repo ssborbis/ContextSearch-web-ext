@@ -43,9 +43,10 @@ if ( window != top ) {
 							width: e.data.tileSize.width,
 							height: e.data.tileSize.height
 						};
-						
-						iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
 					}
+					
+					if ( iframe.resizeWidget && e.data.singleColumn !== undefined )
+						iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
 
 					if ( e.data.size.height && !iframe.resizeWidget.options.isResizing) {
 
@@ -62,7 +63,7 @@ if ( window != top ) {
 					runAtTransitionEnd(iframe, ["width", "height", "top", "bottom", "left", "right"], () => {
 
 						if ( iframe.docking.options.windowType === 'undocked' )
-						;//	repositionOffscreenElement(iframe);
+							repositionOffscreenElement(iframe);
 						
 						if ( iframe.docking.options.windowType === 'docked' )
 							iframe.docking.offset();
@@ -195,7 +196,7 @@ if ( window != top ) {
 							iframe.style.width = ( o.columns * resizeWidget.options.tileSize.width ) + "px";
 
 						// rebuild menu with new dimensions
-						iframe.contentWindow.postMessage({action: "sideBarRebuild", columns:o.columns, iframeHeight: parseFloat( iframe.style.height )}, browser.runtime.getURL('/searchbar.html'));	
+						iframe.contentWindow.postMessage({action: "sideBarRebuild", columns: o.columns, iframeHeight: parseFloat( iframe.style.height )}, browser.runtime.getURL('/searchbar.html'));	
 
 					},
 					onDrop: (o) => {
