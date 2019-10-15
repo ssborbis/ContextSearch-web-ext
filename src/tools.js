@@ -24,7 +24,7 @@ var QMtools = [
 
 				let input = document.createElement('input');
 				input.type = "text";
-				input.value = getSearchBar().value;
+				input.value = sb.value;
 				document.body.appendChild(input);
 
 				input.select();
@@ -37,7 +37,7 @@ var QMtools = [
 				document.execCommand("copy");
 				
 				// chrome requires execCommand be run from background
-				browser.runtime.sendMessage({action: 'copy', msg: getSearchBar().value});
+				browser.runtime.sendMessage({action: 'copy', msg: sb.value});
 				
 				tile.style.backgroundImage = `url(${browser.runtime.getURL('icons/checkmark.svg')})`;
 				setTimeout( () => {
@@ -80,7 +80,7 @@ var QMtools = [
 					action: "quickMenuSearch", 
 					info: {
 						menuItemId: "openAsLink",
-						selectionText: getSearchBar().value,
+						selectionText: sb.value,
 						openMethod: getOpenMethod(e),
 						openUrl: true
 					}
@@ -203,7 +203,7 @@ var QMtools = [
 					action: "quickMenuSearch", 
 					info: {
 						menuItemId: userOptions.lastUsedId,
-						selectionText: getSearchBar().value,
+						selectionText: sb.value,
 						openMethod: getOpenMethod(e)
 					}
 				});

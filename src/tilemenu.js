@@ -18,10 +18,6 @@ function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
 
-function getSearchBar() {
-	return document.getElementById('searchBar');
-}
-
 // generic search engine tile
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
@@ -54,7 +50,7 @@ function addTileEventHandlers(_tile, handler) {
 		}
 		
 		if (type === 'quickmenu') {
-			quickMenuObject.searchTerms = getSearchBar().value;
+			quickMenuObject.searchTerms = sb.value;
 			browser.runtime.sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
@@ -726,7 +722,6 @@ function makeQuickMenu(options) {
 			});
 			div.addEventListener('dragenter', (e) => {
 
-				e.target.dispatchEvent(new MouseEvent('mouseenter'));
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
 
@@ -760,7 +755,6 @@ function makeQuickMenu(options) {
 				}
 			});
 			div.addEventListener('dragleave', (e) => {
-				e.target.dispatchEvent(new MouseEvent('mouseleave'));
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
 
@@ -941,13 +935,11 @@ function makeQuickMenu(options) {
 		
 		// add titlebar handler
 		qm.querySelectorAll('.tile').forEach( div => {
-		//	div.onmouseenter = () => document.getElementById('titleBar').innerText = div.title;
-		//	div.onmouseleave = () => document.getElementById('titleBar').innerText = ' ';
-		
-			div.addEventListener('mouseenter', () => {
-				setTimeout(() => {document.getElementById('titleBar').innerText = div.title || div.dataset.title}, 1);
+			['mouseenter','dragenter'].forEach( ev => {
+				div.addEventListener(ev, () => {document.getElementById('titleBar').innerText = div.title || div.dataset.title})
 			});
-			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''});
+			
+			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''})
 		});
 		
 		toolsHandler(qm);
@@ -1482,7 +1474,7 @@ function makeSearchBar() {
 			sg.innerHTML = null;
 			//sg.addEventListener('transitionend', resizeMenu);
 			sg.style.maxHeight = null;
-			resizeMenu({suggestionsResize: true});
+			// resizeMenu({suggestionsResize: true});
 			return;
 		}
 		

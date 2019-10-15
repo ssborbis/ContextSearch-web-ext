@@ -112,9 +112,11 @@ function resizeMenu(o) {
 	qm.style.height = null;
 	qm.style.overflowY = null;
 	qm.style.width = null;
-	
-	if ( o.suggestionsResize || o.lockResize ) 
+
+	if ( o.lockResize )
 		qm.style.height = currentHeight + "px";
+	else if ( o.suggestionsResize ) 
+		qm.style.height = qm.getBoundingClientRect().height + "px";
 	else if ( o.openFolder ) 
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
 	else if ( o.quickMenuMore || o.groupMore )

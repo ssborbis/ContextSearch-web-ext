@@ -433,7 +433,9 @@ document.addEventListener('mousedown', (e) => {
 
 function lockQuickMenu() {
 	var qmc = document.getElementById('CS_quickMenuIframe');
-				
+	
+	if ( !qmc ) return;
+
 	if ( quickMenuObject.locked ) return;
 		
 	if ( !qmc.resizeWidget ) {
@@ -773,6 +775,7 @@ function quickMenuResize(e) {
 }
 
 window.addEventListener('message', (e) => {
+
 	switch ( e.data.action ) {
 		case "quickMenuResize":
 
