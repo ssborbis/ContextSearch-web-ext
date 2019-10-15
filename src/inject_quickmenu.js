@@ -691,15 +691,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					onDrag: (o) => {
 
 						// set prefs
-						userOptions.quickMenuColumns = o.columns;
-						userOptions.quickMenuRows = o.rows;
+						if ( resizeWidget.options.allowHorizontal ) userOptions.quickMenuColumns = o.columns;
+						if ( resizeWidget.options.allowVertical ) userOptions.quickMenuRows = o.rows;
 
 						// rebuild menu with new dimensions
 						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions}, browser.runtime.getURL('/quickmenu.html'));
 					},
 					onDrop: (o) => {
 						// resize the menu again to shrink empty rows					
-						qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
 
 						// save prefs
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

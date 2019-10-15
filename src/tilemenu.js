@@ -214,12 +214,12 @@ function makeQuickMenu(options) {
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 	
-	let tb = document.getElementById('toolBar') || document.createElement('div');
+	// let tb = document.getElementById('toolBar') || document.createElement('div');
 	
-	// prevent context menu on toolbar deadzone
-	if ( !userOptions.quickMenuAllowContextMenu ) {
-		tb.addEventListener('contextmenu', e => e.preventDefault());
-	}
+	// // prevent context menu on toolbar deadzone
+	// if ( !userOptions.quickMenuAllowContextMenu ) {
+		// tb.addEventListener('contextmenu', e => e.preventDefault());
+	// }
 
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
@@ -239,7 +239,7 @@ function makeQuickMenu(options) {
 			
 			quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
 
-			resizeMenu();
+			resizeMenu({toggleSingleColumn: true});
 		}	
 	});
 	
@@ -487,7 +487,7 @@ function makeQuickMenu(options) {
 			if (tool.disabled) return;
 			
 			let _tool = QMtools.find( t => t.name === tool.name );
-			toolsArray.push(_tool.init());
+			if ( _tool ) toolsArray.push(_tool.init());
 
 		});
 
@@ -541,14 +541,9 @@ function makeQuickMenu(options) {
 					div.style.display = null;
 					delete div.dataset.hidden;
 				});
-				
-				// if tools are on the bottom, move them
-				if (userOptions.quickMenuToolsPosition === 'bottom') {
-					qm.querySelectorAll('[data-type="tool"]').forEach( div => { qm.appendChild(div) } );
-				}
-				
+
 				// rebuild breaks
-				qm.insertBreaks(_columns);
+				qm.insertBreaks(qm.columns);
 				
 				resizeMenu({quickMenuMore: true});
 				
@@ -581,11 +576,18 @@ function makeQuickMenu(options) {
 		}
 		
 		// moved tools handlers to menu iframe js
-		toolsArray.forEach( tile => tile.classList.add('tile') );
+		toolsArray.forEach( tile => {
+			tile.classList.add('tile');
+			if (_singleColumn) tile.classList.add('singleColumn');
+		});
+		
 		qm.toolsArray = toolsArray;
 		qm.moreTile = buildMoreTile();
 		qm.moreTile.classList.add('tile');
-
+		if (_singleColumn) qm.moreTile.classList.add('singleColumn');
+		
+		qm.singleColumn = _singleColumn;
+		
 		// make rows / columns
 		tileArray.forEach( tile => {
 			
@@ -599,6 +601,8 @@ function makeQuickMenu(options) {
 			qm.appendChild(tile);
 		});
 		
+		qm.getTileSize = function() {return {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}};
+
 		qm.insertBreaks(_columns);
 
 		// check if any search engines exist and link to Options if none
@@ -937,9 +941,16 @@ function makeQuickMenu(options) {
 		
 		// add titlebar handler
 		qm.querySelectorAll('.tile').forEach( div => {
-			div.onmouseenter = () => document.getElementById('titleBar').innerText = div.title;
-			div.onmouseleave = () => document.getElementById('titleBar').innerText = ' ';
+		//	div.onmouseenter = () => document.getElementById('titleBar').innerText = div.title;
+		//	div.onmouseleave = () => document.getElementById('titleBar').innerText = ' ';
+		
+			div.addEventListener('mouseenter', () => {
+				setTimeout(() => {document.getElementById('titleBar').innerText = div.title || div.dataset.title}, 1);
+			});
+			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''});
 		});
+		
+		toolsHandler(qm);
 
 		return qm;
 	}
@@ -1462,7 +1473,6 @@ function makeSearchBar() {
 	const suggestionsDisplayCount = 5;
 	
 	let si = document.getElementById('searchIcon');
-	let sb = document.getElementById('searchBar');
 	
 	si.onclick = function() {
 		

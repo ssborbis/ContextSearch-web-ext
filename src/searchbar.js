@@ -67,9 +67,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( (qme) => {
 				
 		document.body.insertBefore(qme, null);
-		
-		toolsHandler();	
-		
+
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
 });
@@ -98,11 +96,12 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 });
 
-function toolsHandler() {
+function toolsHandler(qm) {
 	
-	let qm = document.getElementById('quickMenuElement');
+	qm = qm || document.getElementById('quickMenuElement');
+	
+	if ( !qm ) return;
 
-	let singleColumn = qm.querySelector('.singleColumn') ? true : false;
 	let isRootNode = !qm.rootNode.parent;
 	
 	if ( !isRootNode ) return;
@@ -110,7 +109,7 @@ function toolsHandler() {
 	if (  // match quickmenu and searchbar tools
 		((type === "searchbar" && userOptions.quickMenuColumns === qm.columns) ||
 		(type === "sidebar" && userOptions.quickMenuColumns === qm.columns)) && 
-		userOptions.quickMenuToolsPosition === "top" && !singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
+		userOptions.quickMenuToolsPosition === "top" && !qm.singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
 
 		qm.toolsArray.reverse().forEach( tool => {
 			
@@ -213,14 +212,12 @@ function sideBarResize(options) {
 
 	// account for scrollbars
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-	
-	let first = qm.querySelector(`*:not([data-hidden="true"])`);
-	
+
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
 		size: {width: parseFloat( qm.style.width ), height: document.body.offsetHeight}, 
-		singleColumn: qm.querySelector('.singleColumn') ? true : false,
-		tileSize: {width: first.offsetWidth, height: first.offsetHeight}
+		singleColumn: qm.singleColumn,
+		tileSize: qm.getTileSize()
 	}, "*");
 	
 	qm.scrollTop = scrollTop;
@@ -228,7 +225,7 @@ function sideBarResize(options) {
 
 function resizeMenu(o) {
 	let scrollTop = qm.scrollTop;
-	toolsHandler();
+	// toolsHandler();
 	toolBarResize(o);
 	sideBarResize(o);
 }
@@ -248,8 +245,6 @@ window.addEventListener('message', (e) => {
 		case "sideBarRebuild":
 			let qm = document.getElementById('quickMenuElement');
 			
-			let singleColumn = qm.querySelector('.singleColumn') ? true : false;
-
 			qm.columns = e.data.columns;
 
 			toolsHandler();//qm.insertBreaks(qm.columns);
@@ -257,10 +252,10 @@ window.addEventListener('message', (e) => {
 			qm.style.height = null;
 			qm.style.width = null;
 			
-			let first = qm.querySelector(`*:not([data-hidden="true"])`);
+		//	let first = qm.querySelector(`*:not([data-hidden="true"])`);
 			
 			// reset the minWidth for the tilemenu
-			qm.style.minWidth = ( singleColumn ? 1 : qm.columns ) * first.offsetWidth + "px";
+			qm.style.minWidth = ( qm.singleColumn ? 1 : qm.columns ) * qm.getTileSize().width + "px";
 			
 			let rect = document.body.getBoundingClientRect();
 			let rect_qm = qm.getBoundingClientRect();
@@ -269,8 +264,8 @@ window.addEventListener('message', (e) => {
 			window.parent.postMessage({
 				action:"resizeSideBarIframe", 
 				size: {width: rect_qm.width, height: rect.height}, 
-				tileSize: {width: first.offsetWidth, height: first.offsetHeight}, 
-				singleColumn: qm.querySelector(".singleColumn") ? true : false
+				tileSize: qm.getTileSize(), 
+				singleColumn: qm.singleColumn
 			}, "*");
 			
 			break;
