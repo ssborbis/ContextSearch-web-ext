@@ -209,17 +209,10 @@ function makeQuickMenu(options) {
 		sb.focus();
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
-	
-	// let tb = document.getElementById('toolBar') || document.createElement('div');
-	
-	// // prevent context menu on toolbar deadzone
-	// if ( !userOptions.quickMenuAllowContextMenu ) {
-		// tb.addEventListener('contextmenu', e => e.preventDefault());
-	// }
 
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
-		if (e.keyCode === 190 && e.ctrlKey) {
+		if (e.key === "." && e.ctrlKey) {
 			
 			e.preventDefault();
 
@@ -241,7 +234,7 @@ function makeQuickMenu(options) {
 	
 	// enter key invokes search
 	document.addEventListener('keydown', (e) => {
-		if (e.keyCode === 13) {
+		if (e.key === "Enter") {
 
 			let div = qm.querySelector('div.selectedFocus') || qm.querySelector('div.selectedNoFocus') || qm.querySelector('div[data-id]');
 			
@@ -311,11 +304,11 @@ function makeQuickMenu(options) {
 
 	sb.addEventListener('keydown', (e) => {
 
-		if ( [ 38, 40, 9 ].indexOf(e.keyCode) === -1 ) return;
+		if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) return;
 		
 		e.preventDefault();
 		
-		let direction = ( e.keyCode === 40 || ( e.keyCode === 9 && !e.shiftKey) ) ? 1 : -1;
+		let direction = ( e.key === "ArrowDown" || ( e.key === "Tab" && !e.shiftKey) ) ? 1 : -1;
 
 		sb.selectionEnd = sb.selectionStart;
 		
@@ -324,7 +317,7 @@ function makeQuickMenu(options) {
 
 			let rows = sg.getElementsByTagName('div');
 			
-			if ( rows.length > 0 && e.keyCode === 40 ) { // only down arrow moves to sg
+			if ( rows.length > 0 && e.key === "ArrowDown" ) { // only down arrow moves to sg
 
 				rows.item(0).click();
 				
@@ -354,18 +347,18 @@ function makeQuickMenu(options) {
 	if (sg) {
 		sg.addEventListener('keydown', (e) => {
 
-			if ( [ 38, 40, 9 ].indexOf(e.keyCode) === -1 ) return;
+			if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) return;
 			
 			// prevent default action (scroll)
 			e.preventDefault();
 			
-			if (e.keyCode === 9 && !e.shiftKey) {
+			if (e.key === "Tab" && !e.shiftKey) {
 				qm.focus();
 				qm.selectFirstTile();
 				return;
 			}
 	
-			let direction = (e.keyCode === 40) ? 1 : -1;
+			let direction = (e.key === "ArrowDown") ? 1 : -1;
 			
 			let divs = sg.getElementsByTagName('div');
 
@@ -400,22 +393,22 @@ function makeQuickMenu(options) {
 		// account for custom folders
 		let _columns = qm.querySelector('div').classList.contains('singleColumn') ? 1 : qm.columns;
 
-		if ( ! [ 37, 38, 39, 40, 9 ].includes(e.keyCode) ) return;
+		if ( ![ "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab" ].includes(e.key) ) return;
 		
 		e.preventDefault();
 
 		let direction = 0;
-		if (e.keyCode === 9 && !e.shiftKey)
+		if (e.key === "Tab" && !e.shiftKey)
 			direction = 1;
-		else if (e.keyCode === 9 && e.shiftKey)
+		else if (e.key === "Tab" && e.shiftKey)
 			direction = -1;
-		else if (e.keyCode === 40)
+		else if (e.key === "ArrowDown")
 			direction = _columns;
-		else if (e.keyCode === 38)
+		else if (e.key === "ArrowUp")
 			direction = -_columns;
-		else if (e.keyCode === 39)
+		else if (e.key === "ArrowRight")
 			direction = 1; 
-		else if (e.keyCode === 37)
+		else if (e.key === "ArrowLeft")
 			direction = -1;
 
 		// get all tiles
@@ -426,8 +419,8 @@ function makeQuickMenu(options) {
 			divs[sb.selectedIndex].classList.remove('selectedFocus');
 
 		if (
-			(e.keyCode === 9 && e.shiftKey && sb.selectedIndex === undefined) ||
-			(e.keyCode === 38 && sb.selectedIndex === undefined)
+			(e.key === "Tab" && e.shiftKey && sb.selectedIndex === undefined) ||
+			(e.key === "ArrowUp" && sb.selectedIndex === undefined)
 		)
 			sb.selectedIndex = divs.length -1;
 		else if (sb.selectedIndex === undefined)
@@ -812,6 +805,9 @@ function makeQuickMenu(options) {
 			
 				// console.log(e, e.dataTransfer);
 				// console.log(e.dataTransfer.getData("text"));
+				
+				let targetDiv = getTargetElement(e.target);
+				targetDiv.classList.remove('dragHover');
 
 				// look for text dnd
 				if ( e.dataTransfer.getData("text") && !e.dataTransfer.getData("text/x-moz-place") ) {
@@ -823,10 +819,7 @@ function makeQuickMenu(options) {
 				}
 
 				let dragDiv = document.getElementById('dragDiv');
-				
-				let targetDiv = getTargetElement(e.target);
-				targetDiv.classList.remove('dragHover');
-				
+
 				// firefox DnD for bookmarks
 				if ( e.dataTransfer.getData("text/x-moz-place") ) {
 					let _bm = JSON.parse(e.dataTransfer.getData("text/x-moz-place"));
@@ -1531,7 +1524,7 @@ function makeSearchBar() {
 			}
 			
 			div.ondblclick = function() {
-				var e = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, keyCode: 13});
+				var e = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, key: "Enter"});
 				sb.dispatchEvent(e);
 			}
 			
@@ -1637,7 +1630,7 @@ function makeSearchBar() {
 	}
 	
 	sb.onkeydown = function(e) {
-		if (e.keyCode === 13) {
+		if (e.key === "Enter") {
 			
 			addToHistory(sb.value);
 			

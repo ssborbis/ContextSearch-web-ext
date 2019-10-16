@@ -110,7 +110,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 								// capture ENTER event in case form executes before 'change' event
 								input.addEventListener('keypress', (e) => {
-									if ( e.keyCode !== 13 ) return;
+									if ( e.key !== "Enter" ) return;
 									if (!input.value) return;
 									
 									// remove the change handler to prevent duplicate test search

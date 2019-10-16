@@ -417,7 +417,7 @@ document.addEventListener('mousedown', (e) => {
 	function getWord(str, offset) {
 		let _start = _end = offset;
 		
-		let tokens = '!"#$%&\\\'()\*+,-./:;<=>?@[]^_`{|}~ '.split("");
+		let tokens = '!"#$%&\\\'()\*+,-./:;<=>?@[]^_`{|}~ «»""“”‘’'.split("");
 
 		do {
 			_start--;
@@ -530,7 +530,7 @@ document.addEventListener("drag", (ev) => {
 
 window.addEventListener('keydown', (e) => {
 	if (
-		e.keyCode !== 9 ||
+		e.key !== "Tab" ||
 		!document.getElementById('CS_quickMenuIframe') 
 	) return;
 	

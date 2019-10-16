@@ -566,12 +566,12 @@ function buildSearchEngineContainer() {
 				});
 				
 				input.addEventListener('keypress', (ev) => {
-					if (ev.keyCode === 13)
+					if (ev.key === "Enter")
 						saveTitleChange(ev);
 				});
 				
 				input.addEventListener('keydown', (e) => {
-					if (e.keyCode === 27) {
+					if (e.key === "Escape") {
 						text.removeChild(input);
 						text.innerText = node.title;
 					}
