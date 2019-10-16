@@ -183,11 +183,13 @@ if ( window != top ) {
 					rows: 100, // arbitrary init value
 					allowHorizontal: true,
 					allowVertical: true,
-					onDrag: (o) => {
+					onDragStart: (o) => {
 						
 						// set the fixed quadrant to top-left
 						iframe.docking.translatePosition("top", "left");
-						
+					},	
+					onDrag: (o) => {
+
 						// step the container and iframe size
 						iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
 						
@@ -224,10 +226,7 @@ if ( window != top ) {
 						});
 					}
 				});
-				
-				// unlike the quickmenu, the sizebar should be fixed
-				resizeWidget.style.position = 'fixed';
-				
+
 				// add listener to remove the widget on close
 				document.addEventListener('closesidebar', () => {
 					resizeWidget.parentNode.removeChild(resizeWidget);

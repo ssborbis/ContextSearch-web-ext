@@ -246,6 +246,8 @@ function addResizeWidget(el, options) {
 			// track mod size to ignore repeat drag events
 			let mostRecentModSize = {columns:0,rows:0};
 			
+			o.onDragStart(o);
+			
 			function elementDrag(_e) {
 
 				endCoords = {x: _e.clientX, y: _e.clientY};

@@ -677,10 +677,22 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				
 				qmc.docking.init();
-				
+
 				quickMenuResize({data: message});
 
-				setTimeout(() => { repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); }, 250);
+				setTimeout(() => { 
+					repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); 
+					
+					// set proper translated position ( dock not doing this on init() ? )
+					let cs = window.getComputedStyle(qmc, null);
+					let position = qmc.docking.getPositions({
+						right: parseFloat(cs.getPropertyValue("right")),
+						left: parseFloat(cs.getPropertyValue("left")),
+						top: parseFloat(cs.getPropertyValue("top")),
+						bottom: parseFloat(cs.getPropertyValue("bottom"))
+					});
+					qmc.docking.translatePosition(position.v, position.h);
+				}, 250);
 
 				_message = message;
 				
@@ -690,6 +702,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					tileSize: message.tileSize,
 					columns: columns,
 					rows: Math.ceil(message.tileCount / columns ),
+					onDragStart: (o) => {
+						qmc.docking.translatePosition('top', 'left');
+					},
 					onDrag: (o) => {
 
 						// set prefs
@@ -700,6 +715,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions}, browser.runtime.getURL('/quickmenu.html'));
 					},
 					onDrop: (o) => {
+						
+						// resize changes the offsets
+						qmc.docking.options.lastOffsets = qmc.docking.getOffsets();
+						
+						// reset the fixed quadrant
+						qmc.style.transition = 'none';
+						let position = qmc.docking.getPositions(qmc.docking.options.lastOffsets);
+						qmc.docking.translatePosition(position.v, position.h);
+						qmc.style.transition = null;
+							
 						// resize the menu again to shrink empty rows					
 						qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
 
@@ -743,23 +768,15 @@ function quickMenuResize(e) {
 	}
 
 	if ( e.data.size.height) {
-		
-		// console.log(e.data.size.height, getMaxIframeHeight());
 
 		if ( e.data.size.height <= getMaxIframeHeight() )
 			iframe.style.height = e.data.size.height + "px"; 
-		else {
+		else 
 			console.warn('height exceeds window - bad resizeMenu');
-			// iframe.style.height = getMaxIframeHeight() + "px";
-			// runAtTransitionEnd(iframe, ["height"], () => {
-				// iframe.contentWindow.postMessage({action: "resizeMenu"}, browser.runtime.getURL('/quickmenu.html'));
-			// });
-		}
 	}
 
-	if ( e.data.size.width ) {						
+	if ( e.data.size.width ) 					
 		iframe.style.width = e.data.size.width + "px";
-	}
 
 	runAtTransitionEnd(iframe, ["width", "height", "top", "bottom", "left", "right"], () => {
 

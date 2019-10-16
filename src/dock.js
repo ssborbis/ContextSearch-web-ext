@@ -160,6 +160,7 @@ function makeDockable(el, options) {
 		translatePosition: translatePosition,
 		getPositions: getPositions,
 		getOffsets: getOffsets,
+		setDefaultFloatPosition: setDefaultFloatPosition,
 		options: o,
 		moveListener: moveListener,
 		moveStart: moveStart,
@@ -478,6 +479,8 @@ function makeDockable(el, options) {
 	}
 	
 	function getPositions(r) {
+		
+		r = r || el.getBoundingClientRect();
 
 		let l_r = ( r.left > r.right ) ? 'right' : 'left';
 		let t_b = ( r.top > r.bottom ) ? 'bottom' : 'top';
