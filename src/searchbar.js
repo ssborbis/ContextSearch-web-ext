@@ -48,6 +48,23 @@ var quickMenuObject = {
 	// });
 // }, 1000);
 
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
+	if (typeof message.action !== 'undefined') {
+		switch (message.action) {
+			case "updateQuickMenuObject":
+				quickMenuObject = message.quickMenuObject;
+				
+				// quickMenuObject can update before userOptions. Grab the lastUsed
+				userOptions.lastUsedId = quickMenuObject.lastUsed || userOptions.lastUsedId;
+				
+				// send event to OpenAsLink tile to enable/disable
+				document.dispatchEvent(new CustomEvent('updatesearchterms'));
+				break;
+		}
+	}
+});
+
 function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
@@ -113,6 +130,8 @@ function toolsHandler(qm) {
 
 		qm.toolsArray.reverse().forEach( tool => {
 			
+			qm.insertBefore(tool, qm.firstChild);
+			
 			tool.dataset.hidden = false;
 			tool.style.display = null;
 
@@ -121,8 +140,6 @@ function toolsHandler(qm) {
 			tool.dataset.disabled = true;
 			tool.disabled = true;
 			tool.title = "";
-			
-			qm.insertBefore(tool, qm.firstChild);
 		});	
 	} else {
 		qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );

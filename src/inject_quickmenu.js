@@ -447,7 +447,7 @@ function lockQuickMenu() {
 		
 	function lock() {
 				
-		qmc.contentWindow.postMessage({action: "showMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
+		qmc.contentWindow.postMessage({action: "lock" }, browser.runtime.getURL('/quickmenu.html'));
 		quickMenuObject.locked = true;
 		
 		// let rect = qmc.getBoundingClientRect();
@@ -490,7 +490,7 @@ function unlockQuickMenu() {
 	// qmc.style.position = null;
 	quickMenuObject.locked = false;
 	
-	qmc.contentWindow.postMessage({action: "hideMenuBar" }, browser.runtime.getURL('/quickmenu.html'));
+	qmc.contentWindow.postMessage({action: "unlock" }, browser.runtime.getURL('/quickmenu.html'));
 	
 	// qmc.resizeWidget.style.position = null;
 	// qmc.resizeWidget.setPosition();
@@ -625,7 +625,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				var qmc = getQM();
 				
-				qmc.style.position = 'fixed';
 				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
 				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');

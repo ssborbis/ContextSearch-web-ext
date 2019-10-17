@@ -300,6 +300,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "updateQuickMenuObject":
 				quickMenuObject = message.quickMenuObject;
 				
+				// quickMenuObject can update before userOptions. Grab the lastUsed
+				userOptions.lastUsedId = quickMenuObject.lastUsed || userOptions.lastUsedId;
+
 				// send event to OpenAsLink tile to enable/disable
 				document.dispatchEvent(new CustomEvent('updatesearchterms'));
 				break;
@@ -336,15 +339,13 @@ window.addEventListener('message', (e) => {
 			resizeMenu(e.data.options);
 			break;
 			
-		case "showMenuBar":
-			document.getElementById('menuBar').style.display = 'block';
-			document.getElementById('titleBar').style.display = 'block';
+		case "lock":
+			document.body.classList.add('locked');
 			resizeMenu({lockResize: true});
 			break;
 			
-		case "hideMenuBar":
-			document.getElementById('menuBar').style.display = null;
-			document.getElementById('titleBar').style.display = null;
+		case "unlock":
+			document.body.classList.remove('locked');
 			resizeMenu({lockResize: true});
 			break;
 			

@@ -446,8 +446,6 @@ function makeQuickMenu(options) {
 		}
 
 		divs[sb.selectedIndex].classList.add('selectedFocus');
-		
-		
 		divs[sb.selectedIndex].scrollIntoView({block: "nearest"});
 
 	});
@@ -1039,6 +1037,9 @@ function makeQuickMenu(options) {
 				
 				tile.style.setProperty("--group-color",tile.node.groupColor);
 				tile.classList.add("groupFolder");
+				
+				tile.draggable = false;
+				tile.dataset.groupfolderheader = true;
 				
 				let count = 0;
 				node.children.forEach( _node => {

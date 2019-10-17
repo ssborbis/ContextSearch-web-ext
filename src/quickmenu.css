@@ -58,7 +58,15 @@ BODY {
 	overflow-y:auto;
 	transition:var(--user-transition, left .15s ease-in-out);
 }
-.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])::before {
+/* .tile[data-type="folder"][data-groupfolderheader]:not(.singleColumn):not([data-subtype])::before { */
+	/* content:""; */
+	/* width:100%; */
+	/* height:4px; */
+	/* background-color:red; */
+	/* position:absolute; */
+	/* top: 0; */
+/* } */
+.tile[data-type="folder"]:not(.singleColumn):not([data-subtype]):not([data-groupfolderheader])::before {
 	content:"";
 	top:0;
 	float:right;
@@ -305,6 +313,9 @@ BODY {
 }
 [data-menu="quickmenu"] #titleBar, [data-menu="quickmenu"] #menuBar {
 	display:none;
+}
+[data-menu="quickmenu"].locked #titleBar, [data-menu="quickmenu"].locked #menuBar {
+	display:block;
 }
 #handle {
 	position:relative;
