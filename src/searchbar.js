@@ -16,8 +16,6 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-//let columns;
-
 // context menu options
 // window.addEventListener('contextmenu', (e) => {
 	
@@ -82,8 +80,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( (qme) => {
-				
-		document.body.insertBefore(qme, null);
+		document.body.appendChild(qme);
 
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
@@ -103,10 +100,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 	// focus the searchbar on open
 	sb.focus();
-	
-	qm.style.width = null;
-	// qm.style.height = null;	
-	sg.style.width = null;
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
 	resizeMenu();
@@ -154,6 +147,7 @@ function toolBarResize() {
 
 	qm.style.width = null;
 	qm.style.height = null;
+	sg.style.width = null;
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 
@@ -241,8 +235,6 @@ function sideBarResize(options) {
 }
 
 function resizeMenu(o) {
-	let scrollTop = qm.scrollTop;
-	// toolsHandler();
 	toolBarResize(o);
 	sideBarResize(o);
 }
@@ -264,13 +256,11 @@ window.addEventListener('message', (e) => {
 			
 			qm.columns = e.data.columns;
 
-			toolsHandler();//qm.insertBreaks(qm.columns);
+			toolsHandler();
 			
 			qm.style.height = null;
 			qm.style.width = null;
-			
-		//	let first = qm.querySelector(`*:not([data-hidden="true"])`);
-			
+
 			// reset the minWidth for the tilemenu
 			qm.style.minWidth = ( qm.singleColumn ? 1 : qm.columns ) * qm.getTileSize().width + "px";
 			

@@ -97,11 +97,5 @@
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",
 		"open_at_install": false
-	},
-	
-	"page_action": {
-		"browser_style": true,
-		"default_icon": "icons/highlight.svg",
-		"default_title": "__MSG_ClearHighlighting__"
 	}
 }

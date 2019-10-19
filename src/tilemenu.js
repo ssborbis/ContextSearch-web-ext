@@ -340,7 +340,7 @@ function makeQuickMenu(options) {
 			let selectedDiv = ( direction === 1 ) ? divs[0] : divs[divs.length - 1];
 
 			selectedDiv.classList.add('selectedFocus');
-			sb.selectedIndex = [].indexOf.call(qm.querySelectorAll('.tile'), selectedDiv);
+			sb.selectedIndex = [...qm.querySelectorAll('.tile')].indexOf( selectedDiv )
 		}
 	});
 	
@@ -362,7 +362,8 @@ function makeQuickMenu(options) {
 			
 			let divs = sg.getElementsByTagName('div');
 
-			let currentIndex = [].findIndex.call(divs, div => div.classList.contains( "selectedFocus" ));
+		//	let currentIndex = [].findIndex.call(divs, div => div.classList.contains( "selectedFocus" ));
+			let currentIndex = [...divs].findIndex( div => div.classList.contains( "selectedFocus" ) );
 
 			if ( currentIndex !== -1 ) {
 				divs[currentIndex].classList.remove("selectedFocus");
@@ -1479,8 +1480,7 @@ function makeSearchBar() {
 		});
 		displaySuggestions(history);
 	}
-
-	sb.typeTimer = null;
+	
 	sb.placeholder = browser.i18n.getMessage('Search');
 			
 	sb.dataset.position = userOptions.quickMenuSearchBar;
@@ -1508,7 +1508,8 @@ function makeSearchBar() {
 	
 	function displaySuggestions(suggestions) {
 		
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+		// losing keystrokes. Why was this used?
+	//	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
 				
 		suggestions = suggestions.sort(function(a,b) {
 			return a.searchTerms - b.searchTerms;
@@ -1535,7 +1536,7 @@ function makeSearchBar() {
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
-								
+
 			// put search terms in bold
 			// let matches = new RegExp("^(.*)(" + sb.value + ")(.*)").exec(s.searchTerms);
 			// //browser.runtime.sendMessage({action: "log", msg: matches});
@@ -1579,13 +1580,14 @@ function makeSearchBar() {
 
 	}
 		
+	sb.typeTimer = null;
 	sb.onkeypress = function(e) {
 		
 		clearTimeout(sb.typeTimer);
 		
 		sb.typeTimer = setTimeout(() => {
 			
-			if (!sb.value.trim()) {
+			if (sb.value.trim() === "") {
 				sg.style.maxHeight = null;
 				return;
 			}

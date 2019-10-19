@@ -112,17 +112,20 @@ function resizeMenu(o) {
 	qm.style.height = null;
 	qm.style.overflowY = null;
 	qm.style.width = null;
+	sg.style.width = null;
 
 	if ( o.lockResize )
-		qm.style.height = currentHeight + "px";
+		qm.style.height = currentHeight;
 	else if ( o.suggestionsResize ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";
-	else if ( o.openFolder ) 
+	else if ( o.openFolder || o.toggleSingleColumn ) 
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
 	else if ( o.quickMenuMore || o.groupMore )
 		qm.style.height = qm.getBoundingClientRect().height + "px";	
 	else if ( o.widgetResize )
 		qm.style.height = qm.firstChild.getBoundingClientRect().height * o.rows + "px";
+	// else if ( o.toggleSingleColumn )
+		// qm.style.height = currentHeight;
 	else
 		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
 	

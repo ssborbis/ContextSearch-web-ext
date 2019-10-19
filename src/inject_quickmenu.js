@@ -671,6 +671,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
 						
 						window.quickMenuLastOffsets = o.lastOffsets;
+						
+						if ( !quickMenuObject.locked ) delete window.quickMenuLastOffsets;
 					},
 					onDock: (o) => {}
 				});
@@ -683,14 +685,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); 
 					
 					// set proper translated position ( dock not doing this on init() ? )
-					let cs = window.getComputedStyle(qmc, null);
-					let position = qmc.docking.getPositions({
-						right: parseFloat(cs.getPropertyValue("right")),
-						left: parseFloat(cs.getPropertyValue("left")),
-						top: parseFloat(cs.getPropertyValue("top")),
-						bottom: parseFloat(cs.getPropertyValue("bottom"))
-					});
+					let position = qmc.docking.getPositions(qmc.docking.getOffsets());
 					qmc.docking.translatePosition(position.v, position.h);
+					
 				}, 250);
 
 				_message = message;
