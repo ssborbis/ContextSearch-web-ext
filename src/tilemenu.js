@@ -209,6 +209,24 @@ function makeQuickMenu(options) {
 		sb.focus();
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
+	
+	function toggleDisplayMode() {
+		qm.rootNode.displayType = function() {
+			if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
+			if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
+			return "";
+		}();
+		
+		userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+		
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		
+		quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
+
+		resizeMenu({toggleSingleColumn: true});
+	}
+	
+	document.addEventListener('toggleDisplayMode', toggleDisplayMode);
 
 	// folder styling hotkey
 	document.addEventListener('keydown', (e) => {
@@ -216,19 +234,7 @@ function makeQuickMenu(options) {
 			
 			e.preventDefault();
 
-			qm.rootNode.displayType = function() {
-				if ( singleColumn && !qm.rootNode.displayType ) return "grid";
-				if ( !singleColumn && !qm.rootNode.displayType ) return "text";
-				return "";
-			}();
-			
-			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-			
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-			
-			quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
-
-			resizeMenu({toggleSingleColumn: true});
+			toggleDisplayMode();
 		}	
 	});
 	
@@ -573,6 +579,10 @@ function makeQuickMenu(options) {
 		qm.moreTile = buildMoreTile();
 		qm.moreTile.classList.add('tile');
 		if (_singleColumn) qm.moreTile.classList.add('singleColumn');
+		qm.moreTile.addEventListener('dragenter', (e) => {
+			let timer = setTimeout( () => qm.moreTile.dispatchEvent(new MouseEvent('mouseup')), 1000);		
+			qm.moreTile.addEventListener('dragleave', () => clearTimeout(timer), {once: true});
+		});
 		
 		qm.singleColumn = _singleColumn;
 		
@@ -925,6 +935,8 @@ function makeQuickMenu(options) {
 		
 		/* end dnd */
 		
+		toolsHandler(qm);
+		
 		// add titlebar handler
 		qm.querySelectorAll('.tile').forEach( div => {
 			['mouseenter','dragenter'].forEach( ev => {
@@ -933,8 +945,6 @@ function makeQuickMenu(options) {
 			
 			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''})
 		});
-		
-		toolsHandler(qm);
 
 		return qm;
 	}
@@ -1132,11 +1142,8 @@ function makeQuickMenu(options) {
 					
 					moreTile.addEventListener('dragenter', (e) => {
 
-						let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1000 );
-						
-						moreTile.addEventListener('dragleave', () => {
-							clearTimeout(moreTimer);
-						});
+						let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1000 );		
+						moreTile.addEventListener('dragleave', () => clearTimeout(moreTimer), {once: true});
 					});
 					
 					tileArray.push( moreTile );

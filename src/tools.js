@@ -260,34 +260,25 @@ var QMtools = [
 			
 			return tile;
 		}
-	}
-	// {
-		// name: 'toggleview', 
-		// icon: "icons/quick_menu.png", 
-		// title: browser.i18n.getMessage('toggle_view'),
-		// init: function() {
-			// let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+	},
+	{
+		name: 'toggleview', 
+		icon: "icons/quick_menu.png", 
+		title: browser.i18n.getMessage('toggle_view') || "Grid / Text",
+		init: function() {
+			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 
-			// let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-
-			// addTileEventHandlers(tile, (e) => {
-				
-				// console.log(qm.rootNode);
-
-				// // tool.on = !tool.on;
-				
-				// // tile.dataset.disabled = !tool.on;
-
-				// // browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-
-				// // browser.runtime.sendMessage({
-					// // action: "updateQuickMenuObject", 
-					// // quickMenuObject: quickMenuObject
-				// // });
-				
-			// });
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
-			// return tile;
-		// }
-	// }
+			let timer;
+			tile.addEventListener('dragenter', (e) => {
+				timer = setTimeout(() => document.dispatchEvent(new CustomEvent('toggleDisplayMode')), 1000);
+				tile.addEventListener('dragleave', (e) => clearTimeout(timer), {once: true});
+			});
+				
+			addTileEventHandlers(tile, (e) => document.dispatchEvent(new CustomEvent('toggleDisplayMode')) );
+			
+			return tile;
+		}
+	}
 ];
