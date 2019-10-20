@@ -82,7 +82,7 @@ function removeStyling() {
 
 // ESC to clear markers and navbar and findbar
 document.addEventListener('keydown', (e) => {
-	if ( e.which === 27 ) {
+	if ( e.key === "Escape" ) {
 		browser.runtime.sendMessage({action: "unmark"});
 		browser.runtime.sendMessage({action: "closeFindBar"});
 	}

@@ -94,16 +94,16 @@ getSearchBar().addEventListener('change', (e) => {
 
 window.addEventListener('keydown', (e) => {
 	
-	if ( e.which === 27 ) {
+	if ( e.key === "Escape" ) {
 		browser.runtime.sendMessage({action: "unmark"});
 		browser.runtime.sendMessage({action: "closeFindBar"});
 		return;
 	}
 	
-	if ( [40].includes(e.which) ) {
+	if ( e.key === "ArrowDown" ) {
 		browser.runtime.sendMessage({action: "findBarNext"});
 		return;
-	} else if ( [38].includes(e.which) ) {
+	} else if ( e.key === "ArrowUp" ) {
 		browser.runtime.sendMessage({action: "findBarPrevious"});
 		return;
 	}
@@ -115,9 +115,9 @@ getSearchBar().addEventListener('keypress', (e) => {
 	if ( !e.target.value ) return;
 	
 	// prevent some closing weirdness
-	if (e.which === 27 ) return;
+	if (e.key === "Escape" ) return;
 	
-	if ( e.which === 13 ) {
+	if ( e.key === "Enter" ) {
 		if ( e.target.value !== e.target.oldValue )
 			getSearchBar().dispatchEvent(new Event('change'));
 		else

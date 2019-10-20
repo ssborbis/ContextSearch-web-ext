@@ -624,7 +624,7 @@ function buildSearchEngineContainer() {
 					
 					if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
 
-					if (evv.which === 27) {
+					if (evv.key === "Escape") {
 						node.hotkey = null;
 						
 						// set hotkey for all copies

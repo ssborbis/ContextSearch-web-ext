@@ -677,7 +677,7 @@ function keyButtonListener(e) {
 	e.target.appendChild(img);
 	e.target.addEventListener('keydown', function(evv) {
 	
-		if ( evv.which === 27 ) {
+		if ( evv.key === "Escape" ) {
 			e.target.innerText = browser.i18n.getMessage('ClickToSet');
 			e.target.value = 0;
 		} else {
