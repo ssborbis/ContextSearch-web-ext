@@ -98,6 +98,8 @@ var maxHeight = Number.MAX_SAFE_INTEGER;
 function resizeMenu(o) {
 	
 	o = o || {};
+	
+	let scrollTop = qm.scrollTop;
 
 	tb = document.getElementById('titleBar');
 	toolBar = document.getElementById('toolBar');
@@ -124,8 +126,6 @@ function resizeMenu(o) {
 		qm.style.height = qm.getBoundingClientRect().height + "px";	
 	else if ( o.widgetResize )
 		qm.style.height = qm.firstChild.getBoundingClientRect().height * o.rows + "px";
-	// else if ( o.toggleSingleColumn )
-		// qm.style.height = currentHeight;
 	else
 		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
 	
@@ -138,7 +138,10 @@ function resizeMenu(o) {
 	
 	setTimeout(() => {
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+		qm.scrollTop = scrollTop;
 	}, 100);
+	
+	qm.scrollTop = scrollTop;
 	
 	window.parent.postMessage({
 		action: "quickMenuResize",

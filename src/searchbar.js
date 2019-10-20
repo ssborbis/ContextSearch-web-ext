@@ -232,6 +232,7 @@ function sideBarResize(options) {
 	}, "*");
 	
 	qm.scrollTop = scrollTop;
+	setTimeout(() => qm.scrollTop = scrollTop, 100);
 }
 
 function resizeMenu(o) {

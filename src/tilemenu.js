@@ -525,9 +525,6 @@ function makeQuickMenu(options) {
 			moreTile.addEventListener('openFolder', _more);
 			
 			function _more(e) {
-				
-				// store scroll position
-				let scrollTop = qm.scrollTop;
 
 				moreTile.parentNode.removeChild(moreTile);
 
@@ -540,13 +537,6 @@ function makeQuickMenu(options) {
 				qm.insertBreaks(qm.columns);
 				
 				resizeMenu({quickMenuMore: true});
-				
-				qm.scrollTop = scrollTop;
-
-				// scroll again in case of 100% window resize - trigger on next resizeMenu() via quickMenuIframeLoaded event
-				let _scrollListener = (e) => qm.scrollTop = scrollTop;
-				document.addEventListener('quickMenuIframeLoaded', _scrollListener);
-				setTimeout(() => { document.removeEventListener('quickMenuIframeLoaded', _scrollListener);}, 1000);
 			}
 			
 			return moreTile;
@@ -801,10 +791,11 @@ function makeQuickMenu(options) {
 				qm.querySelectorAll('[data-type="more"]').forEach( more => {
 					if ( moreParents.includes(more.parent) ) more.dispatchEvent(new MouseEvent('mouseup'));
 				});
+				
+				qm.scrollTop = scrollPos;
 
 				resizeMenu({tileDrop: true});
-				
-				qm.scrollTop = scrollPos;			
+					
 			});
 			
 			div.addEventListener('drop', (e) => {
@@ -1089,10 +1080,6 @@ function makeQuickMenu(options) {
 					moreTile.setAttribute('draggable', false);
 					
 					function more() {
-						
-						// store scroll position
-						let scrollTop = qm.scrollTop;
-	
 						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
 							if ( _div.node && _div.node.parent !== node ) return;
 							
@@ -1106,21 +1093,9 @@ function makeQuickMenu(options) {
 						moreTile.dataset.type = "less";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
 						resizeMenu({groupMore: true});
-						
-						qm.scrollTop = scrollTop;
-						
-						// scroll again in case of 100% window resize - trigger on next resizeMenu() via quickMenuIframeLoaded event
-						let _scrollListener = (e) => document.getElementById('quickMenuElement').scrollTop = scrollTop;
-						document.addEventListener('quickMenuIframeLoaded', _scrollListener);
-						setTimeout(() => { document.removeEventListener('quickMenuIframeLoaded', _scrollListener);}, 1000);
-
 					}
 					
 					function less() {
-						
-						// store scroll position
-						let scrollTop = qm.scrollTop;
-						
 						qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
 							if ( _div.node && _div.node.parent !== node ) return;
 							
@@ -1134,8 +1109,6 @@ function makeQuickMenu(options) {
 						moreTile.dataset.type = "more";
 						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
 						resizeMenu({groupLess: true});
-						
-						qm.scrollTop = scrollTop;
 					}
 
 					moreTile.onmouseup = more;
