@@ -49,13 +49,13 @@ function addTileEventHandlers(_tile, handler) {
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		}
 		
-		if (type === 'quickmenu') {
+	//	if (type === 'quickmenu') {
 			quickMenuObject.searchTerms = sb.value;
 			browser.runtime.sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
-		}
+	//	}
 
 		// custom tile methods
 		handler(e);
@@ -69,9 +69,7 @@ function addTileEventHandlers(_tile, handler) {
 	});
 	
 	// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
-	_tile.addEventListener('mousedown', (e) => {
-		_tile.parentNode.lastMouseDownTile = _tile;
-	});
+	_tile.addEventListener('mousedown', (e) => _tile.parentNode.lastMouseDownTile = _tile);
 	
 	// stop all other mouse events for this tile from propagating
 	[/*'mousedown',*/'mouseup','click','contextmenu'].forEach( eventType => {
@@ -175,12 +173,8 @@ function makeQuickMenu(options) {
 	document.body.dataset.menu = type;
 
 	let sb = document.getElementById('searchBar');
-	sb.onclick = function(e) {
-		e.stopPropagation();
-	}
-	sb.onmouseup = function(e) {
-		e.stopPropagation();
-	}
+	sb.onclick = function(e) { e.stopPropagation();	}
+	sb.onmouseup = function(e) { e.stopPropagation(); }
 	
 	let sbc = document.getElementById('searchBarContainer');
 	
@@ -199,9 +193,7 @@ function makeQuickMenu(options) {
 		}
 	});
 	
-	sb.addEventListener('change', (e) => {
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
-	});
+	sb.addEventListener('change', (e) => browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value}));
 	
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = () => { 
@@ -217,8 +209,7 @@ function makeQuickMenu(options) {
 			return "";
 		}();
 		
-		userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-		
+		userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		
 		quickMenuElement = quickMenuElementFromNodeTree( qm.rootNode, false );
@@ -591,7 +582,7 @@ function makeQuickMenu(options) {
 		
 		qm.getTileSize = function() {return {width: qm.firstChild.offsetWidth, height: qm.firstChild.offsetHeight}};
 
-		qm.insertBreaks(_columns);
+	//	qm.insertBreaks(_columns);
 
 		// check if any search engines exist and link to Options if none
 		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
@@ -917,8 +908,7 @@ function makeQuickMenu(options) {
 				// }
 
 				// save the tree
-				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-				
+				userOptions.nodeTree = JSON.parse(JSON.stringify(root));	
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			});
 			
@@ -981,12 +971,9 @@ function makeQuickMenu(options) {
 					tile.dispatchEvent(_e);
 				}, 500);
 			});
-			tile.addEventListener('dragleave', (e) => {
-				// clear hover timer
-				clearTimeout(tile.textDragOverFolderTimer);
-			});
-			tile.addEventListener('dragover', (e) => {e.preventDefault();});
-			tile.addEventListener('dragend', (e) => {e.preventDefault();});
+			tile.addEventListener('dragleave', (e) => clearTimeout(tile.textDragOverFolderTimer));
+			tile.addEventListener('dragover', (e) => e.preventDefault());
+			tile.addEventListener('dragend', (e) => e.preventDefault());
 			tile.addEventListener('drop', (e) => {
 				e.preventDefault();
 				

@@ -60,7 +60,9 @@ if ( window != top ) {
 						iframe.style.width = e.data.size.width + "px";
 					}
 
-					runAtTransitionEnd(iframe, ["width", "height", "top", "bottom", "left", "right"], () => {
+					runAtTransitionEnd(iframe, ["width", "height"], () => {
+						
+						iframe.contentWindow.postMessage({action: "resizeDone"}, browser.runtime.getURL('/searchbar.html'));
 
 						if ( iframe.docking.options.windowType === 'undocked' )
 							repositionOffscreenElement(iframe);
@@ -70,7 +72,6 @@ if ( window != top ) {
 						
 						if ( iframe.resizeWidget )
 							iframe.resizeWidget.setPosition();
-							
 					});
 					
 					break;

@@ -774,7 +774,9 @@ function quickMenuResize(e) {
 	if ( e.data.size.width ) 					
 		iframe.style.width = e.data.size.width + "px";
 
-	runAtTransitionEnd(iframe, ["width", "height", "top", "bottom", "left", "right"], () => {
+	runAtTransitionEnd(iframe, ["width", "height"], () => {
+		
+		iframe.contentWindow.postMessage({action: "resizeDone"}, browser.runtime.getURL('/quickmenu.html'));
 
 		if ( iframe.docking.options.windowType === 'undocked' )
 			repositionOffscreenElement(iframe);
@@ -783,7 +785,8 @@ function quickMenuResize(e) {
 			iframe.docking.offset();
 		
 		if ( iframe.resizeWidget )
-			iframe.resizeWidget.setPosition();	
+			iframe.resizeWidget.setPosition();
+	
 	});
 }
 

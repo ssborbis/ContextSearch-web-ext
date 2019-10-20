@@ -100,6 +100,13 @@ function resizeMenu(o) {
 	o = o || {};
 	
 	let scrollTop = qm.scrollTop;
+	window.addEventListener('message', function resizeDoneListener(e) {
+		if ( e.data.action && e.data.action === "resizeDone" ) {
+			qm.scrollTop = scrollTop;
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			window.removeEventListener('message', resizeDoneListener);
+		}
+	});
 
 	tb = document.getElementById('titleBar');
 	toolBar = document.getElementById('toolBar');
@@ -135,11 +142,6 @@ function resizeMenu(o) {
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	
 	// console.log(o.groupMore, qm.style.height, maxHeight, allOtherElsHeight, parseFloat(qm.style.height) + allOtherElsHeight, document.body.getBoundingClientRect().height);
-	
-	setTimeout(() => {
-		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-		qm.scrollTop = scrollTop;
-	}, 100);
 	
 	qm.scrollTop = scrollTop;
 	

@@ -193,9 +193,6 @@ function sideBarResize(options) {
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
-	
-	// store scroll position
-	let scrollTop = qm.scrollTop;
 
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
 
@@ -230,14 +227,22 @@ function sideBarResize(options) {
 		singleColumn: qm.singleColumn,
 		tileSize: qm.getTileSize()
 	}, "*");
-	
-	qm.scrollTop = scrollTop;
-	setTimeout(() => qm.scrollTop = scrollTop, 100);
 }
 
 function resizeMenu(o) {
+	// store scroll position
+	let scrollTop = qm.scrollTop;
+	window.addEventListener('message', function resizeDoneListener(e) {
+		if ( e.data.action && e.data.action === "resizeDone" ) {
+			qm.scrollTop = scrollTop;
+			window.removeEventListener('message', resizeDoneListener);
+		}
+	});
+
 	toolBarResize(o);
 	sideBarResize(o);
+	
+	qm.scrollTop = scrollTop;
 }
 
 window.addEventListener('message', (e) => {
