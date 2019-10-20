@@ -267,6 +267,9 @@ var QMtools = [
 		title: browser.i18n.getMessage('toggle_view') || "Grid / Text",
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			
+			// show in sidebar / toolbar
+			tile.dataset.show = true;
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
