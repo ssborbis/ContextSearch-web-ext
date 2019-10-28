@@ -3,7 +3,7 @@ function getSearchBar() { return document.getElementById('searchBar') }
 var userOptions = {};
 var typeTimer = null;
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 	userOptions = message.userOptions || {};
 	
 	if ( userOptions === {} ) return;
@@ -16,7 +16,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;
 });
 
-document.addEventListener('DOMContentLoaded', (e) => {
+document.addEventListener('DOMContentLoaded', e => {
 	getSearchBar().oldValue = getSearchBar().value || "";
 });
 
@@ -29,7 +29,7 @@ function buildMarkOptions() {
 	};
 }
 
-window.addEventListener("message", (e) => {
+window.addEventListener("message", e => {
 
 	if ( !typeTimer ) // do not update value if typing in find bar
 		getSearchBar().value = e.data.searchTerms || getSearchBar().value || "";
@@ -63,15 +63,15 @@ window.addEventListener("message", (e) => {
 
 });
 
-document.getElementById('next').addEventListener('click', (e) => {
+document.getElementById('next').addEventListener('click', e => {
 	browser.runtime.sendMessage({action: "findBarNext", searchTerms: e.target.value});
 });
 
-document.getElementById('previous').addEventListener('click', (e) => {
+document.getElementById('previous').addEventListener('click', e => {
 	browser.runtime.sendMessage({action: "findBarPrevious"});
 });
 
-getSearchBar().addEventListener('change', (e) => {
+getSearchBar().addEventListener('change', e => {
 
 	e.target.oldValue = e.target.value;
 
@@ -92,7 +92,7 @@ getSearchBar().addEventListener('change', (e) => {
 	}
 });
 
-window.addEventListener('keydown', (e) => {
+window.addEventListener('keydown', e => {
 	
 	if ( e.key === "Escape" ) {
 		browser.runtime.sendMessage({action: "unmark"});
@@ -110,7 +110,7 @@ window.addEventListener('keydown', (e) => {
 	
 });
 
-getSearchBar().addEventListener('keypress', (e) => {
+getSearchBar().addEventListener('keypress', e => {
 	
 	if ( !e.target.value ) return;
 	
@@ -135,12 +135,12 @@ getSearchBar().addEventListener('keypress', (e) => {
 		
 });
 
-document.getElementById('close').addEventListener('click', (e) => {
+document.getElementById('close').addEventListener('click', e => {
 	browser.runtime.sendMessage({action: "closeFindBar"});
 	browser.runtime.sendMessage({action: "unmark"});
 });
 
-document.addEventListener('DOMContentLoaded', (e) => {
+document.addEventListener('DOMContentLoaded', e => {
 	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
 	document.querySelector('#accuracy + LABEL').title = browser.i18n.getMessage('accuracy') || "Accuracy";
 	document.querySelector('#caseSensitive + LABEL').title = browser.i18n.getMessage('casesensitive') || "Case Sensitive";
@@ -153,27 +153,27 @@ document.addEventListener('DOMContentLoaded', (e) => {
 });
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
-	el.addEventListener('click', (e) => {
+	el.addEventListener('click', e => {
 		getSearchBar().dispatchEvent(new Event('change'));
 	//	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	// infinite loop 100% cpu
 	});
 });
 
-document.querySelector('#toggle_marks').addEventListener('change', (e) => {
+document.querySelector('#toggle_marks').addEventListener('change', e => {
 	if ( e.target.checked )
 		getSearchBar().dispatchEvent(new CustomEvent('change', {detail: true})); // detail = true means set findBarSearch = false to skip jump to first match
 	else
 		browser.runtime.sendMessage({action: "unmark", saveTabHighlighting: true});
 });
 
-document.querySelector('#toggle_navbar').addEventListener('change', (e) => {
+document.querySelector('#toggle_navbar').addEventListener('change', e => {
 	browser.runtime.sendMessage({action: "toggleNavBar", state: e.target.checked});
 });
 
-document.querySelector('#toggle_searchalltabs').addEventListener('change', (e) => {
+document.querySelector('#toggle_searchalltabs').addEventListener('change', e => {
 	
 	// update the object before saving - this frame does not update userOptions automatically
-	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+	browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 		userOptions = message.userOptions || {};
 		userOptions.highLight.findBar.searchInAllTabs = e.target.checked;
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -184,14 +184,14 @@ document.querySelector('#toggle_searchalltabs').addEventListener('change', (e) =
 	});
 });
 
-document.getElementById('clearSearchBar').addEventListener('click', (e) => {
+document.getElementById('clearSearchBar').addEventListener('click', e => {
 	getSearchBar().value = null;
 	getSearchBar().dispatchEvent(new Event('change'));
 	getSearchBar().focus();
 });
 
 // override F3 opening default search
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
 	if ( e.key === "F3" ) {
 		e.preventDefault();
 		browser.runtime.sendMessage({action: "findBarNext"});
@@ -199,26 +199,26 @@ document.addEventListener('keydown', (e) => {
 	}
 });
 
-document.getElementById('handle').addEventListener('mousedown', (e) => {
+document.getElementById('handle').addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
 	document.getElementById('handle').moving = true;
 	window.parent.postMessage({action: "handle_dragstart", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-document.getElementById('handle').addEventListener('dblclick', (e) => {
+document.getElementById('handle').addEventListener('dblclick', e => {
 	console.log('dblclick');
 	window.parent.postMessage({action: "handle_dock", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-window.addEventListener('mouseup', (e) => {
+window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
 	document.getElementById('handle').moving = false;
 	window.parent.postMessage({action: "handle_dragend", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-window.addEventListener('mousemove', (e) => {
+window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
 	if ( !document.getElementById('handle').moving ) return;

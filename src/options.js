@@ -5,7 +5,7 @@ window.browser = (function () {
 })();
 
 // not jQuery 
-var $ = (s) => {
+var $ = s => {
 	return document.querySelector(s);
 }
 
@@ -13,11 +13,11 @@ var $ = (s) => {
 var userOptions = {};
 
 // Browse button for manual import
-$("#selectMozlz4FileButton").addEventListener('change', (ev) => {
+$("#selectMozlz4FileButton").addEventListener('change', ev => {
 	
 	let searchEngines = [];
 	let file = ev.target.files[0];
-	readMozlz4File(file, (text) => { // on success
+	readMozlz4File(file, text => { // on success
 
 		// parse the mozlz4 JSON into an object
 		var engines = JSON.parse(text).engines;	
@@ -606,42 +606,42 @@ document.querySelectorAll('select').forEach( el => {
 	el.addEventListener('change', saveOptions);
 });
 
-$('#n_quickMenuColumns').addEventListener('change',  (e) => {
+$('#n_quickMenuColumns').addEventListener('change',  e => {
 	fixNumberInput(e.target, 5, 1, 100);
 	saveOptions(e);
 });
 
-$('#n_quickMenuRows').addEventListener('change',  (e) => {
+$('#n_quickMenuRows').addEventListener('change',  e => {
 	fixNumberInput(e.target, 5, 1, 100);
 	saveOptions(e);
 });
 
-$('#n_quickMenuOffsetX').addEventListener('change', (e) => {
+$('#n_quickMenuOffsetX').addEventListener('change', e => {
 	fixNumberInput(e.target, 0, -9999, 9999);
 	saveOptions(e);
 });
 
-$('#n_quickMenuOffsetY').addEventListener('change', (e) => {
+$('#n_quickMenuOffsetY').addEventListener('change', e => {
 	fixNumberInput(e.target, 0, -9999, 9999);
 	saveOptions(e);
 });
 
-$('#n_searchBarColumns').addEventListener('change',  (e) => {
+$('#n_searchBarColumns').addEventListener('change',  e => {
 	fixNumberInput(e.target, 4, 1, 100);
 	saveOptions(e);
 });
 
-$('#n_sideBarColumns').addEventListener('change',  (e) => {
+$('#n_sideBarColumns').addEventListener('change',  e => {
 	fixNumberInput(e.target, 4, 1, 100);
 	saveOptions(e);
 });
 
-$('#n_quickMenuAutoMaxChars').addEventListener('change',  (e) => {
+$('#n_quickMenuAutoMaxChars').addEventListener('change',  e => {
 	fixNumberInput(e.target, 0, 0, 999);
 	saveOptions(e);
 });
 
-$('#n_quickMenuAutoTimeout').addEventListener('change',  (e) => {
+$('#n_quickMenuAutoTimeout').addEventListener('change',  e => {
 	fixNumberInput(e.target, 1000, 0, 9999);
 	saveOptions(e);
 });
@@ -650,19 +650,19 @@ $('#n_findBarTimeout').addEventListener('change',  saveOptions);
 
 $('#n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
 
-$('#range_quickMenuScale').addEventListener('input', (ev) => {
+$('#range_quickMenuScale').addEventListener('input', ev => {
 	$('#i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
 $('#range_quickMenuScale').addEventListener('change', saveOptions);
 
-$('#range_quickMenuIconScale').addEventListener('input', (ev) => {
+$('#range_quickMenuIconScale').addEventListener('input', ev => {
 	$('#i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 });
 $('#range_quickMenuIconScale').addEventListener('change', saveOptions);
 
 $('#t_userStyles').addEventListener('change', saveOptions);
 
-$('#cb_userStylesEnabled').addEventListener('change', (e) => {
+$('#cb_userStylesEnabled').addEventListener('change', e => {
 	$('#t_userStyles').disabled = ! e.target.checked;
 	saveOptions(e);
 });
@@ -788,7 +788,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		$('#left_div').style.display = 'none';
 		$('#right_div').style.width = "auto";
 		let loadButton = $("#selectMozlz4FileButton");
-		loadButton.onclick = (e) => {
+		loadButton.onclick = e => {
 			browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
 			e.preventDefault();
 		}
@@ -799,7 +799,7 @@ function makeTabs() {
 	
 	let tabs = document.getElementsByClassName("tablinks");
 	for (let tab of tabs) {
-		tab.addEventListener('click', (e) => {
+		tab.addEventListener('click', e => {
 
 			for (let tabcontent of document.getElementsByClassName("tabcontent"))
 				tabcontent.style.display = "none";
@@ -885,7 +885,7 @@ function buildToolIcons() {
 		img.addEventListener('drop',drop_handler);
 		img.addEventListener('dragover',dragover_handler);
 
-		img.addEventListener('click',(e) => {
+		img.addEventListener('click',e => {
 			e.target.disabled = e.target.disabled || false;
 			e.target.style.opacity = e.target.disabled ? 1 : .4;
 			e.target.disabled = !e.target.disabled;	
@@ -893,11 +893,11 @@ function buildToolIcons() {
 		});
 		
 		let t_toolIcons = $('#t_toolIcons');
-		img.addEventListener('mouseover', (e) => {
+		img.addEventListener('mouseover', e => {
 			t_toolIcons.innerText = e.target.dataset.title;
 		});
 		
-		img.addEventListener('mouseout', (e) => {
+		img.addEventListener('mouseout', e => {
 			t_toolIcons.innerText = browser.i18n.getMessage(t_toolIcons.dataset.i18n);
 		});
 
@@ -907,7 +907,7 @@ function buildToolIcons() {
 
 document.addEventListener("DOMContentLoaded", () => {
 	for (let el of document.getElementsByClassName('position')) {
-		el.addEventListener('click', (e) => {
+		el.addEventListener('click', e => {
 			for (let _el of document.getElementsByClassName('position'))
 				_el.className = _el.className.replace(' active', '');
 			el.className+=' active';
@@ -916,12 +916,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		});
 		
 		let t_position = $('#t_position');
-		el.addEventListener('mouseover', (e) => {
+		el.addEventListener('mouseover', e => {
 			let parts = e.target.dataset.position.split(" ");
 			t_position.innerText = browser.i18n.getMessage("PositionRelativeToCursor").replace("%1", browser.i18n.getMessage(parts[0])).replace("%2",browser.i18n.getMessage(parts[1]));
 		});
 		
-		el.addEventListener('mouseout', (e) => {
+		el.addEventListener('mouseout', e => {
 			t_position.innerText = browser.i18n.getMessage(t_position.dataset.i18n);
 		});
 		
@@ -934,7 +934,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // browser-specific modifications
-document.addEventListener("DOMContentLoaded", (e) => {
+document.addEventListener("DOMContentLoaded", e => {
 	if (!browser.runtime.getBrowserInfo) {
 		for (let el of document.querySelectorAll('[data-browser="firefox"]'))
 			el.style.display = 'none';
@@ -979,11 +979,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 	
 	for (let el of document.getElementsByClassName('info')) {
-		el.addEventListener('mouseover', (e) => {
+		el.addEventListener('mouseover', e => {
 			showInfoMsg(el, el.dataset.msg);
 		});
 		
-		el.addEventListener('mouseout', (e) => {
+		el.addEventListener('mouseout', e => {
 			$('#info_msg').style.display = 'none';
 		});
 	}
@@ -1020,7 +1020,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		$('#importSettings').click();
 	}
 	
-	$('#importSettings').addEventListener('change', (e) => {
+	$('#importSettings').addEventListener('change', e => {
 		var reader = new FileReader();
 
 		// Closure to capture the file information.
@@ -1040,8 +1040,8 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 				
 				// update imported options
-				browser.runtime.getBackgroundPage().then((w) => {
-					w.updateUserOptionsVersion(newUserOptions).then((_uo) => {
+				browser.runtime.getBackgroundPage().then( w => {
+					w.updateUserOptionsVersion(newUserOptions).then( _uo => {
 
 						_uo = w.updateUserOptionsObject(_uo);
 
@@ -1138,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		help.removeChild(iframe);
 		
 		help.querySelectorAll("[data-gif]").forEach( el => {
-			el.addEventListener('click', (_e) => {
+			el.addEventListener('click', _e => {
 				let div = document.createElement('div');
 				div.style = 'position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.8);z-index:2;text-align:center';
 				
@@ -1190,7 +1190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
 			hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
 					
-			document.addEventListener('keyup', (e) => {
+			document.addEventListener('keyup', e => {
 				
 				e.preventDefault();
 				
@@ -1239,7 +1239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		yes.style.verticalAlign = 'top';
 		div.appendChild(yes);
 		
-		yes.addEventListener('transitionend', (e) => {
+		yes.addEventListener('transitionend', e => {
 			div.removeChild(yes);
 			div.animating = false;
 		});
@@ -1269,7 +1269,7 @@ function showSaveMessage(str, color, _class, el) {
 	
 	el.appendChild(msgSpan);
 	
-	msgSpan.addEventListener('transitionend', (e) => {
+	msgSpan.addEventListener('transitionend', e => {
 		msgSpan.parentNode.removeChild(msgSpan);
 	});
 

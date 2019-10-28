@@ -35,7 +35,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateUserOptions":
-			return getAllOpenTabs().then((tabs) => {
+			return getAllOpenTabs().then( tabs => {
 				for (let tab of tabs) {
 					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch(function(error) {
 						//console.log(error);
@@ -211,10 +211,10 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getOpenSearchHref":
 		
-			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( (tab) => {
+			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( tab => {
 				return browser.tabs.executeScript( tab.id, {
 					code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
-				}).then( (result) => {
+				}).then( result => {
 
 					result = result.shift();
 
@@ -352,7 +352,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getCurrentTheme":
-			browser.theme.getCurrent().then((theme) => {
+			browser.theme.getCurrent().then( theme => {
 				console.log(theme);
 			});
 			break;
@@ -365,7 +365,7 @@ async function notify(message, sender, sendResponse) {
 			var timeout = Date.now();
 
 			let urlCheckInterval = setInterval( () => {
-				browser.tabs.get(sender.tab.id).then( (tabInfo) => {
+				browser.tabs.get(sender.tab.id).then( tabInfo => {
 					
 					if (tabInfo.status !== 'complete') return;
 
@@ -727,7 +727,7 @@ function executeBookmarklet(info, tab) {
 		return;
 	}
 	// run as bookmarklet
-	browser.bookmarks.get(info.menuItemId).then((bookmark) => {
+	browser.bookmarks.get(info.menuItemId).then( bookmark => {
 		bookmark = bookmark.shift();
 		
 		if (!bookmark.url.startsWith("javascript")) { // assume bookmark
@@ -783,7 +783,7 @@ function executeBookmarklet(info, tab) {
 		
 		console.log(window.searchTerms, info.selectionText);
 
-		browser.tabs.query({currentWindow: true, active: true}).then( (tabs) => {
+		browser.tabs.query({currentWindow: true, active: true}).then( tabs => {
 			let code = decodeURI(bookmark.url);
 			browser.tabs.executeScript(tabs[0].id, {
 				code: 'CS_searchTerms = `' + ( window.searchTerms || escapeDoubleQuotes(info.selectionText) ) + '`;'
@@ -793,7 +793,7 @@ function executeBookmarklet(info, tab) {
 			});});
 		});
 
-	}, (error) => {
+	}, error => {
 		console.error(error);
 	});
 }
@@ -1179,7 +1179,7 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 	// show the page_action for highlighting
 	if ( browser.pageAction ) {
 		browser.pageAction.show(tab.id);
-		browser.pageAction.onClicked.addListener((tab) => {
+		browser.pageAction.onClicked.addListener( tab => {
 			notify({action: "unmark"});
 			notify({action: "removeTabHighlighting", tabId: tab.id});
 			browser.pageAction.hide(tab.id);
@@ -1265,7 +1265,7 @@ function encodeCharset(string, encoding) {
 function updateUserOptionsVersion(uo) {
 
 	// v1.1.0 to v 1.2.0
-	return browser.storage.local.get("searchEngines").then((result) => {
+	return browser.storage.local.get("searchEngines").then( result => {
 		if (typeof result.searchEngines !== 'undefined') {
 			console.log("-> 1.2.0");
 			uo.searchEngines = result.searchEngines || uo.searchEngines;
@@ -1273,7 +1273,7 @@ function updateUserOptionsVersion(uo) {
 		}
 		
 		return uo;
-	}).then((_uo) => {
+	}).then( _uo => {
 	
 		// v1.2.4 to v1.2.5
 		if (_uo.backgroundTabs !== undefined && _uo.swapKeys !== undefined) {
@@ -1297,7 +1297,7 @@ function updateUserOptionsVersion(uo) {
 		
 		return _uo;
 		
-	}).then((_uo) => {
+	}).then( _uo => {
 	
 		//v1.5.8
 		if (_uo.quickMenuOnClick !== undefined) {
@@ -1318,7 +1318,7 @@ function updateUserOptionsVersion(uo) {
 		
 		return _uo;
 
-	}).then((_uo) => {
+	}).then( _uo => {
 		
 		if (browser.bookmarks === undefined) return _uo;
 
@@ -1326,21 +1326,21 @@ function updateUserOptionsVersion(uo) {
 		
 		console.log("-> 1.6.0");
 		
-		browser.bookmarks.search({title: "ContextSearch Menu"}).then((bookmarks) => {
+		browser.bookmarks.search({title: "ContextSearch Menu"}).then( bookmarks => {
 
 			if (bookmarks.length === 0) return _uo;
 
 			console.log('New locale string for bookmark name. Attempting to rename');
 			return browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(() => {
 				console.log(bookmarks[0]);
-			}, (error) => {
+			}, error => {
 				console.log(`An error: ${error}`);
 			});
 
 		});
 		
 		return _uo;
-	}).then((_uo) => {
+	}).then( _uo => {
 
 		// version met
 		if (_uo.nodeTree.children) return _uo;
@@ -1410,7 +1410,7 @@ function updateUserOptionsVersion(uo) {
 				
 		}
 
-	}).then((_uo) => {
+	}).then( _uo => {
 		
 		if ( _uo.quickMenuItems == undefined ) return _uo;
 		
@@ -1437,7 +1437,7 @@ function updateUserOptionsVersion(uo) {
 		_uo.quickMenuRows = rows;
 		
 		return _uo;
-	}).then((_uo) => {
+	}).then( _uo => {
 		
 		if (!_uo.searchEngines.find(se => se.hotkey) ) return _uo;
 		
@@ -1456,7 +1456,7 @@ function updateUserOptionsVersion(uo) {
 		
 		return _uo;
 		
-	}).then((_uo) => {
+	}).then( _uo => {
 		
 		if ( !_uo.sideBar.type ) return _uo;
 		
@@ -1469,21 +1469,21 @@ function updateUserOptionsVersion(uo) {
 
 		return _uo;
 		
-	}).then((_uo) => {
+	}).then( _uo => {
 		
 		// remove campaign ID from ebay query_string ( mozilla request )
 		
-		let index = userOptions.searchEngines.findIndex( se => se.query_string === "https://rover.ebay.com/rover/1/711-53200-19255-0/1?ff3=4&toolid=20004&campid=5338192028&customid=&mpre=https://www.ebay.com/sch/{searchTerms}" );
+		let index = _uo.searchEngines.findIndex( se => se.query_string === "https://rover.ebay.com/rover/1/711-53200-19255-0/1?ff3=4&toolid=20004&campid=5338192028&customid=&mpre=https://www.ebay.com/sch/{searchTerms}" );
 		
 		if ( index === -1 ) return _uo;
 
 		console.log("-> 1.14");
 		
-		userOptions.searchEngines[index].query_string = "https://www.ebay.com/sch/i.html?_nkw={searchTerms}";
-		userOptions.searchEngines[index].template = "https://www.ebay.com/sch/";
+		_uo.searchEngines[index].query_string = "https://www.ebay.com/sch/i.html?_nkw={searchTerms}";
+		_uo.searchEngines[index].template = "https://www.ebay.com/sch/";
 		return _uo;	
 
-	}).then((_uo) => {	
+	}).then( _uo => {
 		console.log('done');
 		return _uo;
 	});
@@ -1662,7 +1662,7 @@ var userOptions = {};
 
 loadUserOptions().then(() => {
 	console.log("userOptions loaded. Updating objects");
-	updateUserOptionsVersion(userOptions).then((_uo) => {
+	updateUserOptionsVersion(userOptions).then( _uo => {
 		userOptions = _uo;
 		browser.storage.local.set({"userOptions": userOptions});
 	})
@@ -1721,7 +1721,7 @@ function checkForOneClickEngines() {
 
 browser.runtime.onMessage.addListener(notify);
 
-browser.runtime.onInstalled.addListener((details) => {
+browser.runtime.onInstalled.addListener( details => {
 
 	 
 		// details.reason = 'install';

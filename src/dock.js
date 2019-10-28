@@ -378,7 +378,7 @@ function makeDockable(el, options) {
 	}
 	
 	if ( o.handleElement) {
-		o.handleElement.addEventListener('dblclick', (e) => {
+		o.handleElement.addEventListener('dblclick', e => {
 			if ( el.dataset.windowtype === 'docked' ) undock();
 			else dock();	
 		});

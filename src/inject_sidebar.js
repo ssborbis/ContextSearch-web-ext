@@ -7,7 +7,7 @@ if ( window != top ) {
 	function getIframe() { return document.getElementById('CS_sbIframe') }
 	function getOpeningTab() { return document.getElementById('CS_sbOpeningTab') }
 	
-	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+	browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 		userOptions = message.userOptions || {};
 
 		if ( userOptions.sideBar.widget.enabled )	
@@ -16,7 +16,7 @@ if ( window != top ) {
 		if ( userOptions.sideBar.startOpen )
 			openSideBar();
 
-		window.addEventListener('message', (e) => {
+		window.addEventListener('message', e => {
 			
 			switch ( e.data.action ) {
 				case "closeSideBar":
@@ -135,7 +135,7 @@ if ( window != top ) {
 				dockedPosition: userOptions.sideBar.position,
 				handleElement: iframe,
 				lastOffsets: userOptions.sideBar.offsets,
-				onUndock: (o) => {
+				onUndock: o => {
 
 					iframe.style.height = Math.min( iframe.getBoundingClientRect().height * window.devicePixelRatio, userOptions.sideBar.height ) + "px";
 
@@ -155,7 +155,7 @@ if ( window != top ) {
 						}
 					});
 				},
-				onDock: (o) => {
+				onDock: o => {
 
 					iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
 
@@ -185,12 +185,12 @@ if ( window != top ) {
 					rows: 100, // arbitrary init value
 					allowHorizontal: true,
 					allowVertical: true,
-					onDragStart: (o) => {
+					onDragStart: o => {
 						
 						// set the fixed quadrant to top-left
 						iframe.docking.translatePosition("top", "left");
 					},	
-					onDrag: (o) => {
+					onDrag: o => {
 
 						// step the container and iframe size
 						iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
@@ -203,7 +203,7 @@ if ( window != top ) {
 						iframe.contentWindow.postMessage({action: "sideBarRebuild", columns: o.columns, iframeHeight: parseFloat( iframe.style.height )}, browser.runtime.getURL('/searchbar.html'));	
 
 					},
-					onDrop: (o) => {
+					onDrop: o => {
 						
 						// resize changes the offsets
 						iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
@@ -276,13 +276,13 @@ if ( window != top ) {
 		});
 		
 		//open sidebar if dragging text over
-		openingTab.addEventListener('dragenter', (e) => {
+		openingTab.addEventListener('dragenter', e => {
 			openingTab.dispatchEvent(new MouseEvent('click'));
 			getIframe().focus();
 		});
 		
 		// prevent docking on double-click
-		openingTab.addEventListener('dblclick', (e) => {
+		openingTab.addEventListener('dblclick', e => {
 			e.preventDefault();
 			e.stopImmediatePropagation();
 		});
@@ -297,7 +297,7 @@ if ( window != top ) {
 			dockedPosition: userOptions.sideBar.position,
 			handleElement: openingTab,
 			lastOffsets: userOptions.sideBar.offsets,
-			onUndock: (o) => {
+			onUndock: o => {
 				userOptions.sideBar.offsets = o.lastOffsets;
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 				
@@ -310,7 +310,7 @@ if ( window != top ) {
 	}
 
 	// docking event listeners for iframe
-	window.addEventListener('message', (e) => {
+	window.addEventListener('message', e => {
 	
 		if ( e.data.target !== "sideBar" ) return;
 		
@@ -336,7 +336,7 @@ if ( window != top ) {
 		}
 	});
 
-	document.addEventListener("fullscreenchange", (e) => {
+	document.addEventListener("fullscreenchange", e => {
 		
 		let iframe = getIframe();
 		let ot = getOpeningTab();

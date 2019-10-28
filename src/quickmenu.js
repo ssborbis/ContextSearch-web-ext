@@ -56,7 +56,7 @@ function makeFrameContents(options) {
 			sbc.style.height = '0';
 		}
 
-		document.getElementById('closeButton').addEventListener('click', (e) => {
+		document.getElementById('closeButton').addEventListener('click', e => {
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 		});
 
@@ -73,11 +73,8 @@ function makeFrameContents(options) {
 			
 			// setTimeout needed to trigger after updatesearchterms
 			setTimeout(() => {				
-				if (userOptions.quickMenuSearchBarSelect) {
-					sb.addEventListener('focus', ()=> {
-						sb.select();
-					},{once:true});
-				}
+				if (userOptions.quickMenuSearchBarSelect)
+					sb.addEventListener('focus', () => sb.select(), {once:true});
 
 				if (userOptions.quickMenuSearchBarFocus)
 					sb.focus();
@@ -128,8 +125,9 @@ function resizeMenu(o) {
 	else if ( o.suggestionsResize ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";
 	else if ( o.openFolder || o.toggleSingleColumn ) 
-		qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
-	else if ( o.quickMenuMore || o.groupMore )
+	//	qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
+		qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
+	else if ( o.quickMenuMore || o.groupMore ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";	
 	else if ( o.widgetResize )
 		qm.style.height = qm.firstChild.getBoundingClientRect().height * o.rows + "px";
@@ -140,8 +138,6 @@ function resizeMenu(o) {
 		qm.style.height = Math.floor(maxHeight - allOtherElsHeight) + "px";
 	
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
-	
-	// console.log(o.groupMore, qm.style.height, maxHeight, allOtherElsHeight, parseFloat(qm.style.height) + allOtherElsHeight, document.body.getBoundingClientRect().height);
 	
 	qm.scrollTop = scrollTop;
 	
@@ -177,7 +173,6 @@ function toolsHandler(qm) {
 	// set the number of tiles to show
 	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 	
-	let toolsArray = qm.toolsArray;
 	let tileArray = qm.querySelectorAll('.tile:not([data-type="tool"])');
 
 	// set tools position
@@ -200,17 +195,17 @@ function toolsHandler(qm) {
 		toolBar.appendChild(rs);
 		
 		let mouseoverInterval = null;
-		rs.addEventListener('mouseenter', (e) => {
-			mouseoverInterval = setInterval(() => {toolBar.scrollLeft += 10;}, 50);
+		rs.addEventListener('mouseenter', e => {
+			mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
 		});
 		
-		ls.addEventListener('mouseenter', (e) => {	
-			mouseoverInterval = setInterval(() => {toolBar.scrollLeft -= 10;}, 50);
+		ls.addEventListener('mouseenter', e => {	
+			mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
 		});
 		
-		[rs,ls].forEach(s => s.addEventListener('mouseleave', () => {clearInterval(mouseoverInterval)}));
+		[rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
 		
-		toolsArray.forEach( tool => {
+		qm.toolsArray.forEach( tool => {
 			tool.className = 'tile';
 			toolBar.appendChild(tool);
 		});
@@ -221,28 +216,28 @@ function toolsHandler(qm) {
 		}
 		
 		// scroll on mouse wheel
-		toolBar.addEventListener('wheel', (e) => {
+		toolBar.addEventListener('wheel', e => {
 			toolBar.scrollLeft += (e.deltaY*6);
 			e.preventDefault();
 		});
 		
 		toolBar.addEventListener('scroll', showScrollButtons);
 		toolBar.addEventListener('mouseenter', showScrollButtons);
-		toolBar.addEventListener('mouseleave', () => { ls.style.display = rs.style.display = null; });	
+		toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null);	
 	} 
 
 	let count = 1;
 	let alwaysShowTools = true;
 	
 	if ( userOptions.quickMenuToolsPosition === 'bottom' && !userOptions.quickMenuToolsAsToolbar ) {	
-		toolsArray.forEach(tool => qm.appendChild(tool));
-		if ( alwaysShowTools) count = toolsArray.length + 1; // shift hidden tiles to start after tools
+		qm.toolsArray.forEach(tool => qm.appendChild(tool));
+		if ( alwaysShowTools) count = qm.toolsArray.length + 1; // shift hidden tiles to start after tools
 	} else if ( userOptions.quickMenuToolsPosition === 'top' && !userOptions.quickMenuToolsAsToolbar ) {
-		toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+		qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
 	}
 
 	if ( visibleTileCountMax <= count && position === 'bottom' && alwaysShowTools ) {
-		toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+		qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
 		count = 1;
 		position = 'top';
 	}
@@ -269,17 +264,20 @@ function toolsHandler(qm) {
 	if ( newVisibleTiles.length < visibleTiles.length ) {
 		qm.moreTile.classList.add('tile');
 		qm.appendChild(qm.moreTile);
-	}
-	
+	}	
 	// end moreTile
-
-	qm.insertBreaks(qm.columns);
 	
+	qm.toolsArray.forEach( tool => {
+		if (qm.singleColumn) tool.classList.add('singleColumn');
+		else tool.classList.remove('singleColumn');
+	});
+
+	qm.insertBreaks(qm.columns);	
 }
 	
 document.addEventListener("DOMContentLoaded", () => {
 
-	browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+	browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 		userOptions = message.userOptions || {};
 		
 		if ( userOptions === {} ) return;
@@ -330,7 +328,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 // listen for messages from parent window
-window.addEventListener('message', (e) => {
+window.addEventListener('message', e => {
 
 	switch (e.data.action) {
 		case "rebuildQuickMenu":
@@ -360,33 +358,33 @@ window.addEventListener('message', (e) => {
 	}
 });
 
-document.getElementById('menuBar').addEventListener('dblclick', (e) => {
+document.getElementById('menuBar').addEventListener('dblclick', e => {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 });
 
-document.getElementById('menuBar').addEventListener('mousedown', (e) => {
+document.getElementById('menuBar').addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
 	document.getElementById('menuBar').moving = true;
 	window.parent.postMessage({action: "handle_dragstart", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-window.addEventListener('mouseup', (e) => {
+window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
 	document.getElementById('menuBar').moving = false;
 	window.parent.postMessage({action: "handle_dragend", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-window.addEventListener('mousemove', (e) => {
+window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
 	if ( !document.getElementById('menuBar').moving ) return;
 	window.parent.postMessage({action: "handle_dragmove", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-document.getElementById('menuBar').addEventListener('dblclick', (e) => {
+document.getElementById('menuBar').addEventListener('dblclick', e => {
 	if ( e.which !== 1 ) return;
 
 	window.parent.postMessage({action: "handle_dock", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");

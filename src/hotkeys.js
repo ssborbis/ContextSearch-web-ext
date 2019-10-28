@@ -45,7 +45,7 @@ function isSame(array1, array2) {
 
 function addHotkey(enabled, key, callback) {
 	
-	window.addEventListener('keydown', (e) => {
+	window.addEventListener('keydown', e => {
 
 		if (
 			!enabled
@@ -96,14 +96,14 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 		{ // sidebar
 			enabler: userOptions.quickMenuOnHotkey,
 			hotkey: userOptions.quickMenuHotkey,
-			callback: (e) => {
+			callback: e => {
 				browser.runtime.sendMessage({action: "sideBarHotkey"});
 			}
 		},
 		{ // findbar
 			enabler: userOptions.highLight.findBar.enabled,
 			hotkey: userOptions.highLight.findBar.hotKey,
-			callback: (e) => {
+			callback: e => {
 				
 				browser.runtime.sendMessage({action: "getFindBarOpenStatus"}).then( results => {
 					
@@ -128,7 +128,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 				// meta: false,
 				// shift: false
 			// },
-			// callback: (e) => {
+			// callback: e => {
 				
 			// }
 		// }

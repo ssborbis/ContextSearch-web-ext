@@ -17,7 +17,7 @@ class CSBookmarks {
 		
 		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
-		return browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")}).then((bookmarks) => {
+		return browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")}).then( bookmarks => {
 
 			if (bookmarks.length === 0) return false;
 			return bookmarks[0];
@@ -28,7 +28,7 @@ class CSBookmarks {
 		
 		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
-		return this.get().then( (bookmark) => {
+		return this.get().then( bookmark => {
 
 			if (!bookmark) return false;
 			
@@ -59,7 +59,7 @@ class CSBookmarks {
 		
 		let root = {};
 		
-		return this.getAll().then((tree) => {
+		return this.getAll().then( tree => {
 			
 			if (!tree) return [];
 
@@ -127,7 +127,7 @@ class CSBookmarks {
 		
 		if (browser.bookmarks === undefined) return Promise.resolve("");
 		
-		return this.getAll().then( (b) => {
+		return this.getAll().then( b => {
 			
 			let paths = [];
 
@@ -135,7 +135,7 @@ class CSBookmarks {
 				paths.unshift(bm.title);
 
 				if (bm.parentId) {
-					return browser.bookmarks.get(bm.parentId).then((bm)=> {
+					return browser.bookmarks.get(bm.parentId).then( bm => {
 						return p(bm.shift());
 					});
 				} else {
@@ -152,7 +152,7 @@ class CSBookmarks {
 	static getAllBookmarklets() {
 		if (browser.bookmarks === undefined) return Promise.resolve("");
 		
-		return browser.bookmarks.getTree().then((tree) => {
+		return browser.bookmarks.getTree().then( tree => {
 			
 			tree = tree.shift();
 			

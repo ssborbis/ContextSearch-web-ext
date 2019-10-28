@@ -326,7 +326,7 @@ BODY {
 	cursor: grab;
 	background-image: url(icons/vertical.svg);
 	background-size:24px 16px;
-	display:inline-block
+	display:inline-block;
 	background-repeat:no-repeat;
 }
 .groupMove {

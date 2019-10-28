@@ -81,7 +81,7 @@ function removeStyling() {
 }
 
 // ESC to clear markers and navbar and findbar
-document.addEventListener('keydown', (e) => {
+document.addEventListener('keydown', e => {
 	if ( e.key === "Escape" ) {
 		browser.runtime.sendMessage({action: "unmark"});
 		browser.runtime.sendMessage({action: "closeFindBar"});
@@ -116,7 +116,7 @@ var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
 var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
 
 // listen for execute_script call from background for search highlighting
-document.addEventListener('CS_markEvent', (e) => {
+document.addEventListener('CS_markEvent', e => {
 
 	CS_MARK_instance = new Mark(document.body);
 	
@@ -208,7 +208,7 @@ function mark(options) {
 			acrossElements: false,
 			separateWordSearch: false,
 
-			each: (el) => {
+			each: el => {
 				
 				// add class to hidden makers for removal later
 				if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
@@ -293,12 +293,12 @@ function openNavBar() {
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/crossmark.svg');
 	
-	img.addEventListener('mousedown', (e) => {
+	img.addEventListener('mousedown', e => {
 		e.preventDefault();
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 	})
-	img.addEventListener('mouseup', (e) => {	
+	img.addEventListener('mouseup', e => {	
 		browser.runtime.sendMessage({action: "unmark"});
 		closeNavBar();
 	});
@@ -313,7 +313,7 @@ function openNavBar() {
 	
 	div.onclick = navScrollToHandler;
 	
-	div.addEventListener('mousedown', (e) => {
+	div.addEventListener('mousedown', e => {
 		
 		e.preventDefault();
 		
@@ -448,10 +448,10 @@ function openFindBar(options) {
 		makeDockable(fb, {
 			handleElement:fb,
 			dockedPosition: userOptions.highLight.findBar.position,
-			onDock: (o) => {
+			onDock: o => {
 				saveFindBarOptions(o);	
 			},
-			onUndock: (o) => {
+			onUndock: o => {
 				saveFindBarOptions(o);
 			},
 			windowType: userOptions.highLight.findBar.windowType,
@@ -651,7 +651,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
-document.addEventListener("fullscreenchange", (e) => {
+document.addEventListener("fullscreenchange", e => {
 	
 	let fb = getFindBar();
 	let navbar = getNavBar();
@@ -680,7 +680,7 @@ document.addEventListener("fullscreenchange", (e) => {
 	}
 });
 
-window.addEventListener('message', (e) => {
+window.addEventListener('message', e => {
 
 	if ( e.data.target !== "findBar" ) return;
 	if ( !getFindBar() ) return;

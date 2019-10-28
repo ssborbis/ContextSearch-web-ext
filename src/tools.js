@@ -6,7 +6,7 @@ var QMtools = [
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 			});
 			
@@ -20,7 +20,7 @@ var QMtools = [
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 					
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 
 				let input = document.createElement('input');
 				input.type = "text";
@@ -68,11 +68,11 @@ var QMtools = [
 			setDisabled();
 			
 			// when new search terms are set while locked, enable/disable link
-			document.addEventListener('updatesearchterms', (e) => {
+			document.addEventListener('updatesearchterms', e => {
 				setDisabled();
 			});
 			
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 
 				if (tile.dataset.disabled === "true") return;
 
@@ -96,7 +96,7 @@ var QMtools = [
 		title: browser.i18n.getMessage('tools_Disable'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 				
 				userOptions.quickMenu = false;
 				quickMenuObject.disabled = true;
@@ -129,7 +129,7 @@ var QMtools = [
 			
 			if ( on ) browser.runtime.sendMessage({action: "lockQuickMenu"});
 
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 
 				if ( tile.dataset.locked === "true" ) {
 					tile.dataset.locked = quickMenuObject.locked = false;
@@ -195,7 +195,7 @@ var QMtools = [
 
 			document.addEventListener('updatesearchterms', updateIcon); // fires when a search executes, piggybacking for icon update
 
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 
 				if ( !userOptions.lastUsedId ) return;
 
@@ -229,21 +229,23 @@ var QMtools = [
 
 				// bypass displaying the menu and execute a search immedately if using repeatsearch
 				if ( tool.on ) {
+					
+					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
 					browser.runtime.sendMessage({
 						action: "quickMenuSearch", 
 						info: {
-							menuItemId:userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null,
+							menuItemId:_id,
 							selectionText: quickMenuObject.searchTerms,
 							openMethod: userOptions.quickMenuLeftClick
 						}
 					});
 					
-					addToHistory(quickMenuObject.searchTerms);
+					addToHistory(quickMenuObject.searchTerms, _id);
 				}
 				
 			});
 
-			addTileEventHandlers(tile, (e) => {
+			addTileEventHandlers(tile, e => {
 
 				tool.on = !tool.on;
 				
@@ -274,12 +276,12 @@ var QMtools = [
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
 			let timer;
-			tile.addEventListener('dragenter', (e) => {
+			tile.addEventListener('dragenter', e => {
 				timer = setTimeout(() => document.dispatchEvent(new CustomEvent('toggleDisplayMode')), 1000);
-				tile.addEventListener('dragleave', (e) => clearTimeout(timer), {once: true});
+				tile.addEventListener('dragleave', e => clearTimeout(timer), {once: true});
 			});
 				
-			addTileEventHandlers(tile, (e) => document.dispatchEvent(new CustomEvent('toggleDisplayMode')) );
+			addTileEventHandlers(tile, e => document.dispatchEvent(new CustomEvent('toggleDisplayMode')) );
 			
 			return tile;
 		}

@@ -17,7 +17,7 @@ var quickMenuObject = {
 };
 
 // context menu options
-// window.addEventListener('contextmenu', (e) => {
+// window.addEventListener('contextmenu', e => {
 	
 	// browser.contextMenus.create({
 		// id: "showSuggestions",
@@ -41,7 +41,7 @@ var quickMenuObject = {
 // what was this for? ( page_action is not considered a tab and does not receive userOptions updates )
 // setInterval(() => {
 	// if ( browser.runtime === undefined ) return;
-	// browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+	// browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 		// userOptions = message.userOptions || {};
 	// });
 // }, 1000);
@@ -79,7 +79,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 	
 	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
-	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( (qme) => {
+	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( qme => {
 		document.body.appendChild(qme);
 
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
@@ -121,9 +121,9 @@ function toolsHandler(qm) {
 		(type === "sidebar" && userOptions.quickMenuColumns === qm.columns)) && 
 		userOptions.quickMenuToolsPosition === "top" && !qm.singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
 
-		qm.toolsArray.reverse().forEach( tool => {
+		qm.toolsArray.forEach( (tool, index) => {
 			
-			qm.insertBefore(tool, qm.firstChild);
+			qm.insertBefore(tool, qm.children.item(index))
 			
 			tool.dataset.hidden = false;
 			tool.style.display = null;
@@ -137,6 +137,11 @@ function toolsHandler(qm) {
 	} else {
 		qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );
 	}
+	
+	qm.toolsArray.forEach( tool => {
+		if (qm.singleColumn) tool.classList.add('singleColumn');
+		else tool.classList.remove('singleColumn');
+	});
 	
 	qm.insertBreaks(qm.columns);
 }
@@ -234,6 +239,7 @@ function resizeMenu(o) {
 	let scrollTop = qm.scrollTop;
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {
+			console.log(sg.scrollTop);
 			qm.scrollTop = scrollTop;
 			window.removeEventListener('message', resizeDoneListener);
 		}
@@ -245,7 +251,7 @@ function resizeMenu(o) {
 	qm.scrollTop = scrollTop;
 }
 
-window.addEventListener('message', (e) => {
+window.addEventListener('message', e => {
 
 	switch (e.data.action) {
 		case "sideBarResize":
@@ -285,7 +291,7 @@ window.addEventListener('message', (e) => {
 	}
 });
 
-document.getElementById('closeButton').addEventListener('click', (e) => {
+document.getElementById('closeButton').addEventListener('click', e => {
 	
 	if ( window != top )
 		window.parent.postMessage({action: "closeSideBar"}, "*");
@@ -293,28 +299,28 @@ document.getElementById('closeButton').addEventListener('click', (e) => {
 		window.close();
 });
 
-document.getElementById('menuBar').addEventListener('mousedown', (e) => {
+document.getElementById('menuBar').addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
 	document.getElementById('menuBar').moving = true;
 	window.parent.postMessage({action: "handle_dragstart", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-window.addEventListener('mouseup', (e) => {
+window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
 	document.getElementById('menuBar').moving = false;
 	window.parent.postMessage({action: "handle_dragend", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-window.addEventListener('mousemove', (e) => {
+window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
 	if ( !document.getElementById('menuBar').moving ) return;
 	window.parent.postMessage({action: "handle_dragmove", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-document.getElementById('menuBar').addEventListener('dblclick', (e) => {
+document.getElementById('menuBar').addEventListener('dblclick', e => {
 	if ( e.which !== 1 ) return;
 
 	window.parent.postMessage({action: "handle_dock", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");

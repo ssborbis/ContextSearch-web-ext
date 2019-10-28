@@ -10,7 +10,7 @@ function getSelectedText(el) {
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
-document.addEventListener("selectionchange", (ev) => {
+document.addEventListener("selectionchange", ev => {
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
 	
 	let searchTerms = window.getSelection().toString()
@@ -21,7 +21,7 @@ document.addEventListener("selectionchange", (ev) => {
 
 // selectionchange handler for input nodes
 for (let el of document.querySelectorAll("input[type='text'], input[type='search'], textarea, [contenteditable='true']")) {
-	el.addEventListener('mouseup', (e) => {
+	el.addEventListener('mouseup', e => {
 		let searchTerms = getSelectedText(e.target)
 		if (searchTerms) {
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
@@ -31,7 +31,7 @@ for (let el of document.querySelectorAll("input[type='text'], input[type='search
 }
 
 // Relabel context menu root on mousedown to fire before oncontextmenu
-window.addEventListener('mousedown', (e) => {
+window.addEventListener('mousedown', e => {
 
 	if ( e.which !== 3 ) return false;
 
@@ -57,7 +57,7 @@ function offset(elem) {
 }
 
 function repositionOffscreenElement( element, padding ) {
-	
+
 	padding = padding || { top:0, bottom:0, left:0, right:0 };
 
 	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
@@ -65,6 +65,7 @@ function repositionOffscreenElement( element, padding ) {
 	// let originalTransition = element.style.transition || null;
 	let originalDisplay = element.style.display || null;
 	// element.style.transition = 'none';
+
 	element.style.display = 'none';
 
 	// move if offscreen
@@ -279,7 +280,7 @@ function addResizeWidget(el, options) {
 				mostRecentModSize = {columns: colsMod, rows: rowsMod};
 			}
 
-			document.addEventListener('mouseup', (_e) => {
+			document.addEventListener('mouseup', _e => {
 
 				_e.preventDefault();
 				_e.stopPropagation();
@@ -382,7 +383,7 @@ function showNotification(msg) {
 // set zoom attribute to be used for scaling objects
 document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 
-document.addEventListener('zoom', (e) => {
+document.addEventListener('zoom', e => {
 	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 });
 

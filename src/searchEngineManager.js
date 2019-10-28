@@ -63,7 +63,7 @@ function buildSearchEngineContainer() {
 				e.stopPropagation();
 			}
 			
-			li.addEventListener('dblclick', (e) => {
+			li.addEventListener('dblclick', e => {
 
 				e.stopPropagation();
 				
@@ -332,7 +332,7 @@ function buildSearchEngineContainer() {
 			img.src = node.icon || browser.runtime.getURL('icons/code.svg');
 			li.appendChild(img);
 			
-			li.addEventListener('dblclick', (e) => {
+			li.addEventListener('dblclick', e => {
 				//console.log('dblclick');
 				editBm();
 			});	
@@ -458,7 +458,7 @@ function buildSearchEngineContainer() {
 			
 			node.children.forEach( _node => traverse(_node, ul) );
 			
-			li.addEventListener('dblclick', (e) => {
+			li.addEventListener('dblclick', e => {
 				
 				if ( e.target !== li && e.target !== img ) return;
 				
@@ -545,7 +545,7 @@ function buildSearchEngineContainer() {
 				_form.style.maxHeight = '200px';
 			});	
 			
-			text.addEventListener('dblclick', (e) => {
+			text.addEventListener('dblclick', e => {
 				
 				e.stopPropagation();
 
@@ -565,12 +565,12 @@ function buildSearchEngineContainer() {
 						_li.setAttribute('draggable', true);
 				});
 				
-				input.addEventListener('keypress', (ev) => {
+				input.addEventListener('keypress', ev => {
 					if (ev.key === "Enter")
 						saveTitleChange(ev);
 				});
 				
-				input.addEventListener('keydown', (e) => {
+				input.addEventListener('keydown', e => {
 					if (e.key === "Escape") {
 						text.removeChild(input);
 						text.innerText = node.title;
@@ -666,7 +666,7 @@ function buildSearchEngineContainer() {
 			}
 		}
 		
-		document.addEventListener('click', (e) => {
+		document.addEventListener('click', e => {
 			if ( e.target.classList.contains('label') ) return;
 			
 			table.querySelectorAll('.selected').forEach( _span => {
@@ -675,7 +675,7 @@ function buildSearchEngineContainer() {
 			selectedRows = [];
 		});
 		
-		li.querySelector('.label').addEventListener('click', (e) => {
+		li.querySelector('.label').addEventListener('click', e => {
 //			console.log(node);
 			closeContextMenus();
 			e.stopPropagation();
@@ -739,7 +739,7 @@ function buildSearchEngineContainer() {
 	setParents(root);
 
 	// clear any dead nodes
-	repairNodeTree(root).then((result) => {
+	repairNodeTree(root).then( result => {
 
 		rootElement.node = root;
 		
@@ -967,7 +967,7 @@ function buildSearchEngineContainer() {
 				item1.className = 'menuItem';
 				item1.innerText = browser.i18n.getMessage('RemoveNode');
 				
-				item1.addEventListener('click', (_e) => {
+				item1.addEventListener('click', _e => {
 					
 					// append orphaned search engines
 					engines.forEach( engine => {
@@ -992,7 +992,7 @@ function buildSearchEngineContainer() {
 				item2.className = 'menuItem';
 				item2.innerText = browser.i18n.getMessage('DeleteEngines', engineCount);//"Delete " + engineCount + " engines";
 				
-				item2.addEventListener('click', (_e) => {
+				item2.addEventListener('click', _e => {
 					removeNode(li.node, li.node.parent);
 					li.parentNode.removeChild(li);
 					
@@ -1039,7 +1039,7 @@ function buildSearchEngineContainer() {
 					item1.className = 'menuItem';
 					item1.innerText = browser.i18n.getMessage('Confirm');
 					
-					item1.addEventListener('click', (_e) => {
+					item1.addEventListener('click', _e => {
 						
 						let index = userOptions.searchEngines.findIndex( se => se.id === li.node.id);					
 						if (index !== -1) userOptions.searchEngines.splice(index, 1);
@@ -1085,7 +1085,7 @@ function buildSearchEngineContainer() {
 		}
 
 		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
-		edit.addEventListener('click', (e) => {
+		edit.addEventListener('click', e => {
 			e.stopPropagation();
 
 			if ( li.node.type === 'searchEngine')
@@ -1158,7 +1158,7 @@ function buildSearchEngineContainer() {
 		});
 		
 		let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
-		newBookmarklet.addEventListener('click', (e) => {
+		newBookmarklet.addEventListener('click', e => {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
@@ -1188,7 +1188,7 @@ function buildSearchEngineContainer() {
 			document.body.appendChild(bmContainer);
 			openMenu(bmContainer);
 
-			CSBookmarks.getAllBookmarklets().then((results) => {
+			CSBookmarks.getAllBookmarklets().then( results => {
 
 				if (results.length === 0) {
 					item1.innerHTML = "<i>none found</i>";
@@ -1205,7 +1205,7 @@ function buildSearchEngineContainer() {
 					bmDiv.className = 'menuItem';
 					bmDiv.innerText = bm.title;
 					
-					bmDiv.addEventListener('click', (e) => {
+					bmDiv.addEventListener('click', e => {
 						
 						let newBm = {
 							type: "bookmarklet",
@@ -1239,7 +1239,7 @@ function buildSearchEngineContainer() {
 		});
 		
 		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/clipboard.png'));	
-		copy.addEventListener('click', (e) => {
+		copy.addEventListener('click', e => {
 			
 			let newNode;
 			if (li.node.type === 'searchEngine') {
@@ -1261,7 +1261,7 @@ function buildSearchEngineContainer() {
 				item1.className = 'menuItem';
 				item1.innerText = browser.i18n.getMessage('AsShortcut');
 				
-				item1.addEventListener('click', (_e) => {
+				item1.addEventListener('click', _e => {
 					let _newNode = Object.assign({}, li.node);
 					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, _newNode);
 			
@@ -1275,7 +1275,7 @@ function buildSearchEngineContainer() {
 				item2.className = 'menuItem';
 				item2.innerText = browser.i18n.getMessage('AsNewEngine');
 				
-				item2.addEventListener('click', (_e) => {
+				item2.addEventListener('click', _e => {
 					let _newNode = addNewEngine(li.node, true);
 					
 					if ( _newNode ) {
@@ -1348,10 +1348,10 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, copy, _delete].forEach((el) => {
+		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
-			el.addEventListener('click', (e) => {
+			el.addEventListener('click', e => {
 				closeContextMenus();
 			});
 		});
@@ -1466,7 +1466,7 @@ function buildSearchEngineContainer() {
 		}
 	}
 	
-	document.getElementById('b_addSearchEngine').addEventListener('click', (e) => {
+	document.getElementById('b_addSearchEngine').addEventListener('click', e => {
 		let newNode = addNewEngine(rootElement.node.children.slice(-1)[0]);
 		if (newNode) {
 			
@@ -1481,7 +1481,7 @@ function buildSearchEngineContainer() {
 		}
 	});
 	
-	document.getElementById('b_resetAllSearchEngines').addEventListener('click', (e) => {
+	document.getElementById('b_resetAllSearchEngines').addEventListener('click', e => {
 		
 		if ( !confirm(browser.i18n.getMessage("ConfirmResetAllSearchEngines")) ) return;
 		
@@ -1513,7 +1513,7 @@ function buildSearchEngineContainer() {
 	});
 	
 	
-	document.getElementById('iconPicker').addEventListener('change', (e) => {
+	document.getElementById('iconPicker').addEventListener('change', e => {
 		let file = e.target.files[0];
 		
 		var reader  = new FileReader();
