@@ -284,7 +284,7 @@ function makeQuickMenu(options) {
 			}
 		});
 		
-		if ( typeof addToHistory !== 'undefined' ) addToHistory(sb.value);
+		addToHistory(sb.value);
 		
 		if ( !keepMenuOpen(e) )
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
@@ -1189,7 +1189,7 @@ function makeQuickMenu(options) {
 						}
 					});
 
-					if (typeof addToHistory !== "undefined") addToHistory(sb.value);
+					addToHistory(sb.value);
 				});
 				
 				tile.dataset.id = node.id;
@@ -1357,7 +1357,7 @@ function addToHistory(terms) {
 	terms = terms.trim();
 	
 	if ( !terms ) return;
-	
+
 	// send last search to backgroundPage for session storage
 	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
 	
@@ -1367,8 +1367,9 @@ function addToHistory(terms) {
 	// if (userOptions.searchBarHistory.includes(terms)) return;
 	
 	// remove first entry if over limit
-	if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength || 1024)
+	if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength) {
 		userOptions.searchBarHistory.shift();
+	}
 	
 	// add new term
 	userOptions.searchBarHistory.push(terms);
