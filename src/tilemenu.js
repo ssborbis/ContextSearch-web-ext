@@ -50,6 +50,7 @@ function addTileEventHandlers(_tile, handler) {
 		}
 		
 	//	if (type === 'quickmenu') {
+		
 			quickMenuObject.searchTerms = sb.value;
 			browser.runtime.sendMessage({
 				action: "updateQuickMenuObject", 
@@ -1353,32 +1354,7 @@ function makeQuickMenu(options) {
 }
 
 function addToHistory(terms) {
-	
-	terms = terms.trim();
-	
-	if ( !terms ) return;
-
-	// send last search to backgroundPage for session storage
-	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
-	
-	// return if history is disabled
-	if ( ! userOptions.searchBarEnableHistory ) return;
-	
-	// if (userOptions.searchBarHistory.includes(terms)) return;
-	
-	// remove first entry if over limit
-	if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength) {
-		userOptions.searchBarHistory.shift();
-	}
-	
-	// add new term
-	userOptions.searchBarHistory.push(terms);
-	
-	// ignore duplicates
-	userOptions.searchBarHistory = [...new Set([...userOptions.searchBarHistory].reverse())].reverse();
-	
-	// update prefs
-	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
+	browser.runtime.sendMessage({action: "addToHistory", searchTerms: terms});
 }
 
 function getSuggestions(terms, callback) {

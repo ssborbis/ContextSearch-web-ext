@@ -463,6 +463,38 @@ async function notify(message, sender, sendResponse) {
 				code: `quickMenuObject;`
 			});
 			break;
+		
+		case "addToHistory":
+	
+			let terms = message.searchTerms.trim();
+			
+			if ( !terms ) return;
+
+			// send last search to backgroundPage for session storage
+			// browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
+			notify({action: "setLastSearch", lastSearch: terms});
+			
+			// return if history is disabled
+			if ( ! userOptions.searchBarEnableHistory ) return;
+			
+			// if (userOptions.searchBarHistory.includes(terms)) return;
+			
+			// remove first entry if over limit
+			if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength) {
+				userOptions.searchBarHistory.shift();
+			}
+			
+			// add new term
+			userOptions.searchBarHistory.push(terms);
+			
+			// ignore duplicates
+			userOptions.searchBarHistory = [...new Set([...userOptions.searchBarHistory].reverse())].reverse();
+			
+			// update prefs
+		//	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
+			notify({action: "saveUserOptions", "userOptions": userOptions});
+			return Promise.resolve(userOptions);
+			break;
 	}
 }
 
@@ -867,6 +899,9 @@ function executeOneClickSearch(info) {
 				searchAndHighlight(tab);
 			});
 			break;
+		case "openSideBarAction":
+			console.log("one-click search engines cannot be used with sidebaraction");
+			break;
 	}
 
 }
@@ -1153,7 +1188,7 @@ function openSearch(details) {
 		return openNewTab(true);
 	}
 	async function openSideBarAction() {
-			
+
 		if ( !browser.sidebarAction ) return;
 		
 		await browser.sidebarAction.setPanel( {panel: q} );

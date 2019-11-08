@@ -63,7 +63,7 @@ function closeQuickMenu(eventType) {
 	) return false;
 	
 	if (
-		eventType === 'click_window' && 
+		(eventType === 'click_window' || eventType === 'click_quickmenutile' ) && 
 		quickMenuObject.locked
 	) return false;
 	
@@ -438,7 +438,7 @@ function unlockQuickMenu() {
 	if ( !qmc ) return;
 
 	quickMenuObject.locked = false;
-	
+
 	qmc.contentWindow.postMessage({action: "unlock" }, browser.runtime.getURL('/quickmenu.html'));
 	
 	// clear qm position
@@ -447,7 +447,9 @@ function unlockQuickMenu() {
 
 // unlock if quickmenu is closed
 document.addEventListener('closequickmenu', () => {
-	quickMenuObject.locked = false;
+		
+	if ( !userOptions.quickMenuTools.find( tool => tool.name === "lock" && tool.persist ) )
+		quickMenuObject.locked = false;
 });
 
 // close quickmenu when clicking anywhere on page
@@ -509,7 +511,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
 				
 				// keep old menu if locked
-				if ( quickMenuObject.locked ) {
+				if ( quickMenuObject.locked && getQM() ) {
 					quickMenuObject.searchTerms = message.searchTerms;
 					browser.runtime.sendMessage({
 						action: "updateQuickMenuObject", 
@@ -542,7 +544,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 			case "updateQuickMenuObject":
 				quickMenuObject = message.quickMenuObject;
-				
+
 				// iframe needs to disable here
 				if (quickMenuObject.disabled) userOptions.quickMenu = false;
 				

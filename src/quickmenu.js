@@ -300,6 +300,8 @@ document.addEventListener('mousedown', function rightMouseDownHandler(e) {
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	
+	if ( message.userOptions ) userOptions = message.userOptions;
 
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
@@ -348,11 +350,13 @@ window.addEventListener('message', e => {
 		case "lock":
 			document.body.classList.add('locked');
 			resizeMenu({lockResize: true});
+			quickMenuObject.locked = true;
 			break;
 			
 		case "unlock":
 			document.body.classList.remove('locked');
 			resizeMenu({lockResize: true});
+			quickMenuObject.locked = false;
 			break;
 			
 	}
