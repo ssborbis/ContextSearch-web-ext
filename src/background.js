@@ -1191,6 +1191,8 @@ function openSearch(details) {
 
 		if ( !browser.sidebarAction ) return;
 		
+		await browser.sidebarAction.setPanel( {panel: null} ); // forefox appears to ignore subsequent calls to setPanel if old url = new url, even tincases of differing #hash
+		
 		await browser.sidebarAction.setPanel( {panel: q} );
 			
 		if ( !await browser.sidebarAction.isOpen({}) )
