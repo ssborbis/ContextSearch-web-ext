@@ -97,9 +97,12 @@ function resizeMenu(o) {
 	o = o || {};
 	
 	let scrollTop = qm.scrollTop;
+	let sgScrollTop = sg.scrollTop;
+	
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {
 			qm.scrollTop = scrollTop;
+			sg.scrollTop = sgScrollTop;
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 			window.removeEventListener('message', resizeDoneListener);
 		}
@@ -140,6 +143,7 @@ function resizeMenu(o) {
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	
 	qm.scrollTop = scrollTop;
+	sg.scrollTop = sgScrollTop;
 	
 	window.parent.postMessage({
 		action: "quickMenuResize",

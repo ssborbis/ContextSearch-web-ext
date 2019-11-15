@@ -63,16 +63,20 @@ function repositionOffscreenElement( element, padding ) {
 	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
 	
 	// let originalTransition = element.style.transition || null;
-	let originalDisplay = element.style.display || null;
+	// let originalDisplay = element.style.display || null;
 	// element.style.transition = 'none';
 
-	element.style.display = 'none';
+//	element.style.display = 'none';
+
+	element.style.maxHeight = element.style.maxWidth = 0;
 
 	// move if offscreen
 	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
 	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
 	
-	element.style.display = originalDisplay;
+	element.style.maxHeight = element.style.maxWidth = null;
+	
+	// element.style.display = originalDisplay;
 	
 	let rect = element.getBoundingClientRect();
 	

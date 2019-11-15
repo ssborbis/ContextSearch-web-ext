@@ -299,9 +299,12 @@ function sideBarResize(options) {
 function resizeMenu(o) {
 	// store scroll position
 	let scrollTop = qm.scrollTop;
+	let sgScrollTop = sg.scrollTop;
+
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {
 			qm.scrollTop = scrollTop;
+			sg.scrollTop = sgScrollTop;
 			window.removeEventListener('message', resizeDoneListener);
 		}
 	});
@@ -310,6 +313,7 @@ function resizeMenu(o) {
 	sideBarResize(o);
 	
 	qm.scrollTop = scrollTop;
+	sg.scrollTop = sgScrollTop;
 }
 
 window.addEventListener('message', e => {
