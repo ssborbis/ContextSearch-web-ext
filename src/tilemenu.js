@@ -1458,6 +1458,7 @@ function makeSearchBar() {
 		for (let s of suggestions) {
 			let div = document.createElement('div');
 			div.style.height = "20px";
+			div.type = s.type;
 			div.onclick = function() {
 				let selected = sg.querySelector('.selectedFocus');
 				if (selected) selected.classList.remove('selectedFocus');
@@ -1491,6 +1492,25 @@ function makeSearchBar() {
 		sg.style.maxHeight = Math.min(sg_height * suggestionsDisplayCount, suggestions.length * sg_height) + "px";
 
 	}
+	
+	// listen for backspace and delete history
+	document.addEventListener('keydown', (e) => {
+
+		if ( e.key === "Backspace" && document.activeElement === sg && document.activeElement.querySelector('.selectedFocus') ) {
+			let selected = sg.querySelector('.selectedFocus');
+			
+			// test for suggestions type ( history / google suggestion )	
+			if ( selected.type !== 0 ) return;
+			
+			selected.parentNode.removeChild(selected);
+			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
+			console.log('deleting', selected.innerText, i);
+			
+			userOptions.searchBarHistory.splice(i,1);
+			
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		}
+	});
 		
 	sb.typeTimer = null;
 	sb.onkeypress = function(e) {
