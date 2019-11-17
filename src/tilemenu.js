@@ -1410,8 +1410,11 @@ function makeSearchBar() {
 			//sg.addEventListener('transitionend', resizeMenu);
 			sg.style.maxHeight = null;
 			// resizeMenu({suggestionsResize: true});
+			sg.userOpen = false;
 			return;
 		}
+		
+		sg.userOpen = true;
 		
 		sg.innerHTML = null;
 		let history = [];
@@ -1496,11 +1499,14 @@ function makeSearchBar() {
 	// listen for backspace and delete history
 	document.addEventListener('keydown', (e) => {
 
-		if ( e.key === "Backspace" && document.activeElement === sg && document.activeElement.querySelector('.selectedFocus') ) {
+		if ( ( e.key === "Backspace" || e.key === "Delete" ) && document.activeElement === sg && document.activeElement.querySelector('.selectedFocus') ) {
 			let selected = sg.querySelector('.selectedFocus');
 			
 			// test for suggestions type ( history / google suggestion )	
 			if ( selected.type !== 0 ) return;
+			
+			if ( selected.nextSibling ) selected.nextSibling.click();
+			else if ( selected.previousSibling ) selected.previousSibling.click();
 			
 			selected.parentNode.removeChild(selected);
 			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
@@ -1515,6 +1521,8 @@ function makeSearchBar() {
 	sb.typeTimer = null;
 	sb.onkeypress = function(e) {
 		
+		if ( sg.userOpen ) return;
+		
 		clearTimeout(sb.typeTimer);
 		
 		sb.typeTimer = setTimeout(() => {
@@ -1524,6 +1532,7 @@ function makeSearchBar() {
 				return;
 			}
 
+			sg.style.minHeight = sg.getBoundingClientRect().height + "px";
 			sg.innerHTML = null;
 			
 			let history = [];
@@ -1560,6 +1569,8 @@ function makeSearchBar() {
 				});
 			} else if ( userOptions.searchBarEnableHistory )
 				displaySuggestions(history);
+			
+			sg.style.minHeight = null;
 			
 		}, 500);
 	}
