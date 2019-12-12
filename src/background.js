@@ -864,7 +864,8 @@ function executeOneClickSearch(info) {
 			break;
 		case "openNewTab":
 			return browser.tabs.create({
-				active: true
+				active: true,
+				url: browser.runtime.getURL("blank.html")
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -894,7 +895,8 @@ function executeOneClickSearch(info) {
 		case "openBackgroundTab":
 		case "openBackgroundTabKeepOpen":
 			return browser.tabs.create({
-				active: false
+				active: false,
+				url: browser.runtime.getURL("blank.html")
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -930,7 +932,7 @@ function contextMenuSearch(info, tab) {
 	}
 	
 	// if searchEngines is empty, open Options
-	if (userOptions.searchEngines.length === 0) {	
+	if (userOptions.searchEngines.length === 0 && userOptions.nodeTree.children.length === 0 ) {	
 		browser.runtime.openOptionsPage();
 		return false;	
 	}
