@@ -350,7 +350,7 @@ function makeQuickMenu(options) {
 		sg.addEventListener('keydown', e => {
 
 			// not move key means append search terms in search bar
-			if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) {
+			if ( ![ "ArrowUp", "ArrowDown", "Tab", "Delete" ].includes(e.key) ) {
 				sb.focus();
 				sb.selectionStart = sb.selectionEnd = sb.value.length;
 				return;
@@ -1506,6 +1506,7 @@ function makeSearchBar() {
 	}
 	
 	// listen for backspace and delete history
+	var historyDeleteTimer = null;
 	document.addEventListener('keydown', (e) => {
 
 		if ( ( e.key === "Backspace" || e.key === "Delete" ) && document.activeElement === sg && document.activeElement.querySelector('.selectedFocus') ) {
@@ -1519,11 +1520,20 @@ function makeSearchBar() {
 			
 			selected.parentNode.removeChild(selected);
 			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
-			console.log('deleting', selected.innerText, i);
+		//	console.log('deleting', selected.innerText, i);
 			
 			userOptions.searchBarHistory.splice(i,1);
 			
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			if ( historyDeleteTimer === null ) {
+			
+				historyDeleteTimer = setTimeout( () => {
+					
+					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+					historyDeleteTimer = null;
+				}, 200);
+			} else {
+				console.log('throttling delete');
+			}
 		}
 	});
 		
