@@ -317,7 +317,11 @@ function makeQuickMenu(options) {
 			
 			if ( rows.length > 0 && e.key === "ArrowDown" ) { // only down arrow moves to sg
 
-				rows.item(0).click();
+				// check if a suggestion is selected already
+				let currentSelection = sg.querySelector('.selectedFocus');
+				
+				if ( currentSelection ) currentSelection.click();				
+				else rows.item(0).click();
 				
 				e.preventDefault();
 				sg.focus();
@@ -345,7 +349,12 @@ function makeQuickMenu(options) {
 	if (sg) {
 		sg.addEventListener('keydown', e => {
 
-			if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) return;
+			// not move key means append search terms in search bar
+			if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) {
+				sb.focus();
+				sb.selectionStart = sb.selectionEnd = sb.value.length;
+				return;
+			}
 			
 			// prevent default action (scroll)
 			e.preventDefault();
@@ -1016,7 +1025,7 @@ function makeQuickMenu(options) {
 			// remove parent folder from menu
 			if ( node.groupFolder ) tileArray.pop();
 			
-			if ( node.groupFolder ) {
+			if ( node.groupFolder && !node.parent.parent) { // only top-level folders
 				
 				tile.style.setProperty("--group-color",tile.node.groupColor);
 				tile.classList.add("groupFolder");

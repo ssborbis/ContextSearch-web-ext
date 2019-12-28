@@ -473,25 +473,25 @@ function buildSearchEngineContainer() {
 				_form.innerHTML = `
 				<table id="folderFormTable">
 					<tr>
-						<td>Display</td>
+						<td>${browser.i18n.getMessage("display")}</td>
 						<td>
 							<select name="displayType" class="inputNice" style="display:inline-block;font-size:9pt;">
-								<option value="">default</option>
-								<option value="grid">grid</option>
-								<option value="text">text</option>
+								<option value="">${browser.i18n.getMessage("default")}</option>
+								<option value="grid">${browser.i18n.getMessage("grid")}</option>
+								<option value="text">${browser.i18n.getMessage("text")}</option>
 							</select>
 						</td>
 					</tr>
 					<tr>
-						<td>Group layout</td>
-						<td><input name="groupFolder" type="checkbox" style="display:inline-block;width:auto"/></td>
+						<td>${browser.i18n.getMessage("grouplayout")}</td>
+						<td><input name="groupFolder" type="checkbox" style="display:inline-block;width:auto"/> ${browser.i18n.getMessage("grouplayoutmessage")}</td>
 					</tr>
 					<tr>
-						<td>Group color</td>
+						<td>${browser.i18n.getMessage("groupcolor")}</td>
 						<td><input name="groupColor" type="color" style="width:30px;display:inline-block"/></td>
 					</tr>
 					<tr>
-						<td>Group limit</td>
+						<td>${browser.i18n.getMessage("grouplimit")}</td>
 						<td><input name="groupLimit" type="number" min="0" max="99" style="width:60px;display:inline-block"/></td>
 					</tr>
 				</table>

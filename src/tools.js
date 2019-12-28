@@ -213,8 +213,8 @@ var QMtools = [
 		}
 	},
 	{
-		name: 'repeatsearch', 
-		icon: "icons/repeatsearch.svg", 
+		name: 'repeatsearch',
+		icon: "icons/repeatsearch.svg",
 		title: browser.i18n.getMessage('tools_repeatsearch'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);

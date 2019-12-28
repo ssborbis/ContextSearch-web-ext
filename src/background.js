@@ -1635,7 +1635,8 @@ const defaultUserOptions = {
 			left:Number.MAX_SAFE_INTEGER,
 			right:0,
 			bottom:Number.MAX_SAFE_INTEGER
-		}	
+		},
+		closeAfterSearch: false
 	},
 	highLight: {
 		enabled: true,
