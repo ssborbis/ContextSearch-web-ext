@@ -1556,8 +1556,43 @@
   "ClearHighlighting": {
     "message": "Clear Highlighting",
     "description": ""
-  } ,
+  },
   
+  "display": {
+    "message": "Display",
+    "description": ""
+  },
+  
+  "grouplayout": {
+    "message": "Group layout",
+    "description": ""
+  },
+  
+  "groupcolor": {
+    "message": "Group color",
+    "description": ""
+  },
+  
+  "grouplimit": {
+    "message": "Group limit",
+    "description": ""
+  },
+
+  "default": {
+    "message": "default",
+    "description": ""
+  },
+
+  "grid": {
+    "message": "grid",
+    "description": ""
+  },
+
+  "grouplayoutmessage": {
+    "message": "note: top-tier folders only",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""
