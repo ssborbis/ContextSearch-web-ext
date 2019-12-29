@@ -348,6 +348,8 @@ function makeQuickMenu(options) {
 	
 	if (sg) {
 		sg.addEventListener('keydown', e => {
+			
+			if ( e.key === "Delete" ) return;
 
 			// not move key means append search terms in search bar
 			if ( ![ "ArrowUp", "ArrowDown", "Tab", "Delete" ].includes(e.key) ) {
@@ -1505,41 +1507,47 @@ function makeSearchBar() {
 
 	}
 	
-	// listen for backspace and delete history
-	var historyDeleteTimer = null;
+	var saveDebounce = null;
+	
+	// listen for and delete history
 	document.addEventListener('keydown', (e) => {
 
-		if ( ( e.key === "Backspace" || e.key === "Delete" ) && document.activeElement === sg && document.activeElement.querySelector('.selectedFocus') ) {
+		if ( e.key === "Delete" && document.activeElement === sg && sg.querySelector('.selectedFocus') ) {
+			
 			let selected = sg.querySelector('.selectedFocus');
 			
 			// test for suggestions type ( history / google suggestion )	
 			if ( selected.type !== 0 ) return;
 			
+			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
+			
 			if ( selected.nextSibling ) selected.nextSibling.click();
 			else if ( selected.previousSibling ) selected.previousSibling.click();
 			
 			selected.parentNode.removeChild(selected);
-			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
-		//	console.log('deleting', selected.innerText, i);
-			
+
 			userOptions.searchBarHistory.splice(i,1);
 			
-			if ( historyDeleteTimer === null ) {
-			
-				historyDeleteTimer = setTimeout( () => {
-					
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-					historyDeleteTimer = null;
-				}, 200);
-			} else {
-				console.log('throttling delete');
+			// clear old timers
+			if ( saveDebounce !== null ) {
+				clearTimeout(saveDebounce);
+				console.log('debouncing save');
 			}
+				
+			saveDebounce = setTimeout( () => {
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				saveDebounce = null;
+				console.log('executing save');
+			}, 200);
+			
+			// browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+	
 		}
 	});
 		
 	sb.typeTimer = null;
 	sb.onkeypress = function(e) {
-		
+
 		if ( sg.userOpen ) return;
 		
 		clearTimeout(sb.typeTimer);
@@ -1594,14 +1602,20 @@ function makeSearchBar() {
 		}, 500);
 	}
 	
-	sb.onkeydown = function(e) {
+	sb.addEventListener('keydown', (e) => {
 		if (e.key === "Enter") {
 			
 			addToHistory(sb.value);
 			
 			if (userOptions.searchBarCloseAfterSearch) window.close();	
 		}
-	}
+	});
+	
+	// execute a keypress event to trigger some sb methods reserved for typing events
+	sb.addEventListener('keydown', (e) => {
+		if ( [ "Backspace", "Delete" ].includes(e.key) )
+			sb.dispatchEvent(new KeyboardEvent('keypress'));
+	});
 
 	ob.onclick = function() {
 		browser.runtime.sendMessage({action: "openOptions"});
