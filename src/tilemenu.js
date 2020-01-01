@@ -610,6 +610,11 @@ function makeQuickMenu(options) {
 		qm.style.transition = null;
 		qm.style.visibility = null;
 		qm.style.left = '0px';
+		
+		function getGroupFolderSiblings(div) {
+			//[ ...div.parentNode.childNodes].filter( _div => _div.node && div.node && _div.node.parent === div.node.parent );
+			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
+		}
 
 		/* dnd */
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
@@ -655,7 +660,7 @@ function makeQuickMenu(options) {
 						div.groupMove = true;
 						div.disabled = true;
 						
-						let groupDivs = [ ...div.parentNode.childNodes].filter( _div => _div.node && div.node && _div.node.parent === div.node.parent );
+						let groupDivs = getGroupFolderSiblings(div);
 						
 						groupDivs.forEach( _div => _div.classList.add('groupMove'));
 
@@ -706,6 +711,17 @@ function makeQuickMenu(options) {
 					arrow.style.setProperty('--target-width', rect.width + "px");
 					arrow.style.setProperty('--target-height', rect.height + "px");
 					arrow.dataset.side = side;
+					
+					if ( targetDiv.classList.contains("groupFolder") ) {
+						
+						let targetGroupDivs = getGroupFolderSiblings(targetDiv);
+							
+						if ( side === "before" && (!targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
+							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+						} else {
+							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
+						}
+					}
 				}
 			});
 			div.addEventListener('dragenter', e => {
@@ -756,6 +772,8 @@ function makeQuickMenu(options) {
 				
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
+				
+				getGroupFolderSiblings(targetDiv).forEach( el => el.classList.remove('groupHighlight') );
 			});
 			div.addEventListener('dragend', e => {
 
@@ -894,6 +912,18 @@ function makeQuickMenu(options) {
 				// }
 						
 				// } else {
+					
+					if ( targetDiv.classList.contains("groupFolder") ) {
+						if ( side === "before" && (!targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
+							slicedNode.parent = targetNode.parent.parent;
+							slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
+							
+							// save the tree
+							userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+							return;
+						}
+					}
 
 					// set new parent
 					slicedNode.parent = targetNode.parent;
@@ -913,7 +943,7 @@ function makeQuickMenu(options) {
 				// }
 
 				// save the tree
-				userOptions.nodeTree = JSON.parse(JSON.stringify(root));	
+				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			});
 			

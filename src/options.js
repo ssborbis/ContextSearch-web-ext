@@ -368,6 +368,7 @@ function restoreOptions() {
 function saveOptions(e) {
 
 	function onSet() {
+		showSaveMessage("saved", null, "yes", document.getElementById('saveNoticeDiv'));
 		return Promise.resolve(true);
 	}
 	
@@ -1263,7 +1264,7 @@ function showSaveMessage(str, color, _class, el) {
 	img.style.marginRight = '10px';
 	msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
 	msgSpan.style.color = color;
-	//msgSpan.innerText = str;
+	msgSpan.innerText = str;
 	
 	msgSpan.insertBefore(img, msgSpan.firstChild);
 	
@@ -1279,11 +1280,6 @@ function showSaveMessage(str, color, _class, el) {
 
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelectorAll('BUTTON.saveOptions').forEach( button => {
-		button.onclick = function() {
-			let span = document.createElement('span');
-			button.parentNode.insertBefore(span, button);
-			saveOptions();
-			showSaveMessage("saved", null, "yes", span);
-		}
+		button.onclick = saveOptions;
 	});
 });

@@ -332,3 +332,6 @@ BODY {
 .groupMove {
 	border: 2px dashed #9abad2 !important;
 }
+.groupHighlight {
+	border: 1px dotted var(--select);
+}

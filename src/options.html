@@ -981,7 +981,13 @@
 			}
 			#folderFormTable TD {
 				padding:5px 20px;
-			}			
+			}	
+			#saveNoticeDiv {
+				position:fixed;
+				right: 10px;
+				top: 10px;
+				z-index:9999;
+			}
 		</style>
 	</head>
 	<body>
@@ -2352,7 +2358,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		</div>
 		</div>
 		
-		
+		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>
 		<script src="lib/browser-polyfill.min.js"></script>
 		<script src="mozlz4.js"></script>
