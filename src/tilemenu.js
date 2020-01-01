@@ -620,24 +620,25 @@ function makeQuickMenu(options) {
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 			
+			function getSideDecimal(t, e) {
+				let rect = t.getBoundingClientRect();
+				
+				if ( _singleColumn ) return ( e.y - rect.y ) / rect.height;
+				else return ( e.x - rect.x ) / rect.width;
+			}
+			
 			function getSide(t, e) {
 				let rect = t.getBoundingClientRect();
 				
+				let dec = getSideDecimal(t, e);
+				
 				if ( t.node.type === 'folder' ) {
-					if ( _singleColumn ) {
-						if ( e.y - rect.y < .3 * rect.height ) return "before";
-						else if ( e.y - rect.y > .7 * rect.height ) return "after";
-						else return "middle";
-					} else {
-						if ( e.x - rect.x < .3 * rect.width ) return "before";
-						else if ( e.x - rect.x > .7 * rect.width ) return "after";
-						else return "middle";
-					}
+					if ( dec < .3 ) return "before";
+					else if ( dec > .7 ) return "after";
+					else return "middle";
 				} else {
-					if ( _singleColumn ) 
-						return ( e.y - rect.y < .5 * rect.height ) ? "before" : "after";
-					else
-						return ( e.x - rect.x < .5 * rect.width ) ? "before" : "after";
+					if ( dec < .5 ) return "before";
+					else return "after";
 				}
 			}
 			
@@ -714,13 +715,17 @@ function makeQuickMenu(options) {
 					
 					if ( targetDiv.classList.contains("groupFolder") ) {
 						
+						let dec = getSideDecimal(targetDiv, e);
+						
 						let targetGroupDivs = getGroupFolderSiblings(targetDiv);
 							
-						if ( side === "before" && (!targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
+						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) 
 							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						} else {
+							
+						// } else if ( dec > .8 && (!targetDiv.nextSibling || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) {
+							// targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+						else
 							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
-						}
 					}
 				}
 			});
@@ -890,7 +895,7 @@ function makeQuickMenu(options) {
 				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
 
 				let side = getSide(targetDiv, e);
-				
+
 				// if ( targetDiv.node.parent.groupFolder && targetDiv.node.parent !== dragDiv.node.parent ) {
 					// let targetIndex = targetNode.parent.children.indexOf(targetNode);
 					// if ( targetIndex === 0 && side === "before" ) { // target should be placed before group folder
@@ -914,7 +919,8 @@ function makeQuickMenu(options) {
 				// } else {
 					
 					if ( targetDiv.classList.contains("groupFolder") ) {
-						if ( side === "before" && (!targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
+						let dec = getSideDecimal(targetDiv, e);
+						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
 							slicedNode.parent = targetNode.parent.parent;
 							slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
 							
@@ -928,7 +934,6 @@ function makeQuickMenu(options) {
 					// set new parent
 					slicedNode.parent = targetNode.parent;
 
-					
 					if ( side === "before" ) {
 						// add to children before target
 						targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
