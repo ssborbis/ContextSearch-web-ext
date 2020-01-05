@@ -26,7 +26,7 @@ async function notify(message, sender, sendResponse) {
 	})();
 
 	switch(message.action) {
-		
+
 		case "saveUserOptions":
 			userOptions = message.userOptions;
 			return browser.storage.local.set({"userOptions": message.userOptions}).then(() => {
@@ -544,7 +544,7 @@ async function buildContextMenu() {
 	function onCreated() {
 
 		if (browser.runtime.lastError) {
-			console.log(browser.runtime.lastError);
+			if ( !browser.runtime.lastError.indexOf("ID already exists") ) console.log(browser.runtime.lastError);
 		}
 	}
 	

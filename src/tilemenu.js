@@ -632,7 +632,7 @@ function makeQuickMenu(options) {
 				
 				let dec = getSideDecimal(t, e);
 				
-				if ( t.node.type === 'folder' ) {
+				if ( t.node && t.node.type === 'folder' ) {
 					if ( dec < .3 ) return "before";
 					else if ( dec > .7 ) return "after";
 					else return "middle";
@@ -642,9 +642,10 @@ function makeQuickMenu(options) {
 				}
 			}
 			
-			function getTargetElement(el) {
+			function getTargetElement(el) {		
 				while ( el.parentNode ) {
 					if ( el.node ) return el;
+					if ( el.dataset.type && ['more','less'].includes(el.dataset.type) ) return el;
 					el = el.parentNode;
 				}
 				return null;
@@ -721,9 +722,8 @@ function makeQuickMenu(options) {
 							
 						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) 
 							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-							
-						// } else if ( dec > .8 && (!targetDiv.nextSibling || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) {
-							// targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+						else if ( dec > .8 && (!targetDiv.nextSibling || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) 
+							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 						else
 							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
 					}
@@ -797,8 +797,8 @@ function makeQuickMenu(options) {
 				
 				// store expanded "more" tiles
 				let moreParents = [];
-				qm.querySelectorAll('[data-type="less"]').forEach( _div => moreParents.push(_div.parent) );
-				
+				qm.querySelectorAll('[data-type="less"]').forEach( _div => moreParents.push(_div.node.parent) );
+
 				// store scroll position
 				let scrollPos = qm.scrollTop;
 				
@@ -808,7 +808,7 @@ function makeQuickMenu(options) {
 				userOptions.enableAnimations = animation;
 
 				qm.querySelectorAll('[data-type="more"]').forEach( more => {
-					if ( moreParents.includes(more.parent) ) more.dispatchEvent(new MouseEvent('mouseup'));
+					if ( moreParents.includes(more.node.parent) ) more.dispatchEvent(new MouseEvent('mouseup'));
 				});
 				
 				qm.scrollTop = scrollPos;
@@ -921,12 +921,30 @@ function makeQuickMenu(options) {
 					if ( targetDiv.classList.contains("groupFolder") ) {
 						let dec = getSideDecimal(targetDiv, e);
 						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
+							
+							console.log('moving before group');
 							slicedNode.parent = targetNode.parent.parent;
 							slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
 							
-							// save the tree
-							userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-							browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+							_save();
+							return;
+						} else if ( dec > .8 && (!targetDiv.nextSibling || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) {
+							
+							console.log('moving after group');
+							slicedNode.parent = targetNode.parent.parent;
+							slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent) + 1,0,slicedNode);
+							
+							_save();
+							return;
+						}
+						
+						if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
+							
+							console.log('drop to more / less tile ... appending tile to group');
+							slicedNode.parent = targetNode.parent;
+							slicedNode.parent.children.push(slicedNode);
+							
+							_save();
 							return;
 						}
 					}
@@ -946,10 +964,14 @@ function makeQuickMenu(options) {
 						targetNode.children.push(slicedNode);
 					}
 				// }
-
-				// save the tree
-				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				
+				_save();
+				
+				function _save() {
+					// save the tree
+					userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				}
 			});
 			
 		});
@@ -1100,7 +1122,8 @@ function makeQuickMenu(options) {
 					moreTile.dataset.type = "more";
 					moreTile.style.setProperty("--group-color",tile.node.groupColor);
 					moreTile.classList.add("groupFolder");
-					moreTile.parent = node;
+				//	moreTile.parent = node;
+					moreTile.node = { parent: node };
 					moreTile.dataset.parentid = node.title + Date.now();
 					
 					moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
@@ -1144,8 +1167,8 @@ function makeQuickMenu(options) {
 					
 					moreTile.addEventListener('dragenter', e => {
 
-						let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1000 );		
-						moreTile.addEventListener('dragleave', () => clearTimeout(moreTimer), {once: true});
+						let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1500 );		
+						['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTimer), {once: true}); } );
 					});
 					
 					tileArray.push( moreTile );
@@ -1548,6 +1571,8 @@ function makeSearchBar() {
 	document.addEventListener('keydown', (e) => {
 
 		if ( e.key === "Delete" && document.activeElement === sg && sg.querySelector('.selectedFocus') ) {
+			
+			e.preventDefault();
 			
 			let selected = sg.querySelector('.selectedFocus');
 			
