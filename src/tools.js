@@ -272,6 +272,8 @@ var QMtools = [
 			
 			// show in sidebar / toolbar
 			tile.dataset.show = true;
+			
+			tile.keepOpen = true; // prevent close on click
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			

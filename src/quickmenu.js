@@ -247,28 +247,30 @@ function toolsHandler(qm) {
 	}
 
 	// begin moreTile - hide tiles outside initial grid dimensions
-	let tilesToHide = position === 'top' || !alwaysShowTools ? qm.querySelectorAll('.tile') : qm.querySelectorAll('.tile:not([data-type="tool"])');
-	
-	let visibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-grouphidden])')].filter( tile => tile.style.display !== 'none' );
-	
-	tilesToHide.forEach( _tile => {
+	if ( !window.moreTileClicked ) {
+		let tilesToHide = position === 'top' || !alwaysShowTools ? qm.querySelectorAll('.tile') : qm.querySelectorAll('.tile:not([data-type="tool"])');
 		
-		if (_tile.dataset.hidden == "true") return false;
-
-		if (count > visibleTileCountMax - 1) {
-			_tile.dataset.hidden = true;
-			_tile.style.display = 'none';
-		}
+		let visibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-grouphidden])')].filter( tile => tile.style.display !== 'none' );
 		
-		count++;
-	});
+		tilesToHide.forEach( _tile => {
+			
+			if (_tile.dataset.hidden == "true") return false;
 
-	let newVisibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-grouphidden])')].filter( tile => tile.style.display !== 'none' );
+			if (count > visibleTileCountMax - 1) {
+				_tile.dataset.hidden = true;
+				_tile.style.display = 'none';
+			}
+			
+			count++;
+		});
 
-	if ( newVisibleTiles.length < visibleTiles.length ) {
-		qm.moreTile.classList.add('tile');
-		qm.appendChild(qm.moreTile);
-	}	
+		let newVisibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-grouphidden])')].filter( tile => tile.style.display !== 'none' );
+
+		if ( newVisibleTiles.length < visibleTiles.length ) {
+			qm.moreTile.classList.add('tile');
+			qm.appendChild(qm.moreTile);
+		}	
+	}
 	// end moreTile
 	
 	qm.toolsArray.forEach( tool => {

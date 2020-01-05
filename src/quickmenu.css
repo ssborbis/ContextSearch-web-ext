@@ -275,6 +275,7 @@ BODY {
 	background-position:4px 2px;
 	background-size:16px;
 	display:block;
+	border:1px solid transparent;
 }
 .tile.singleColumn::before {
 	content: attr(data-title);
@@ -333,5 +334,5 @@ BODY {
 	border: 2px dashed #9abad2 !important;
 }
 .groupHighlight {
-	border: 1px dotted var(--select);
+	border: 1px dotted var(--select) !important;
 }

@@ -542,6 +542,8 @@ function makeQuickMenu(options) {
 				// rebuild breaks
 				qm.insertBreaks(qm.columns);
 				
+				window.moreTileClicked = true; // record that the more tile was clicked this session
+				
 				resizeMenu({quickMenuMore: true});
 			}
 			
@@ -722,7 +724,7 @@ function makeQuickMenu(options) {
 							
 						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) 
 							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						else if ( dec > .8 && (!targetDiv.nextSibling || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) 
+						else if ( dec > .8 && ( ( !targetDiv.nextSibling || targetDiv.nextSibling.nodeName === "BR" ) || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) 
 							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 						else
 							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
@@ -928,7 +930,7 @@ function makeQuickMenu(options) {
 							
 							_save();
 							return;
-						} else if ( dec > .8 && (!targetDiv.nextSibling || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) {
+						} else if ( dec > .8 && ( ( !targetDiv.nextSibling || targetDiv.nextSibling.nodeName === "BR" ) || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) {
 							
 							console.log('moving after group');
 							slicedNode.parent = targetNode.parent.parent;
