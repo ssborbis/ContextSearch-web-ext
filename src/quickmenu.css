@@ -57,6 +57,7 @@ BODY {
 	z-index:1;
 	overflow-y:auto;
 	transition:var(--user-transition, left .15s ease-in-out);
+	/* display:grid; */
 }
 /* .tile[data-type="folder"][data-groupfolderheader]:not(.singleColumn):not([data-subtype])::before { */
 	/* content:""; */

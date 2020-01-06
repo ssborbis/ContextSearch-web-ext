@@ -500,6 +500,14 @@ function makeQuickMenu(options) {
 	qm.toolsArray = createToolsArray();
 
 	qm.insertBreaks = function insertBreaks(_columns) {
+		
+		// let transition = qm.style.transition;
+		// qm.style.transition = 'none';
+		
+		// qm.style.setProperty("grid-template-columns", `repeat(${_columns}, 32px)`);
+		
+		// qm.style.transition = transition;
+		// return;
 
 		qm.querySelectorAll('br').forEach( br => {
 			qm.removeChild(br);
@@ -653,6 +661,28 @@ function makeQuickMenu(options) {
 				return null;
 			}
 			
+			function getPreviousSiblingOfType(_div) {
+				let s = _div.previousSibling;
+				while( s && s.nodeName !== _div.nodeName ) s = s.previousSibling;
+				return s;
+			}
+			
+			function getNextSiblingOfType(_div) {
+				let s = _div.nextSibling;
+				while( s && s.nodeName !== _div.nodeName ) s = s.nextSibling;
+				return s;
+			}
+			
+			function isTargetBeforeGroup(_div, dec) {
+				let sibling = getPreviousSiblingOfType(_div);
+				return ( dec < .2 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+			}
+			
+			function isTargetAfterGroup(_div, dec) {
+				let sibling = getNextSiblingOfType(_div);
+				return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+			}
+			
 			div.setAttribute('draggable', true);
 	
 			// group move
@@ -721,10 +751,10 @@ function makeQuickMenu(options) {
 						let dec = getSideDecimal(targetDiv, e);
 						
 						let targetGroupDivs = getGroupFolderSiblings(targetDiv);
-							
-						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) 
+
+						if ( isTargetBeforeGroup(targetDiv, dec) ) 
 							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						else if ( dec > .8 && ( ( !targetDiv.nextSibling || targetDiv.nextSibling.nodeName === "BR" ) || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) 
+						else if ( isTargetAfterGroup(targetDiv, dec) ) 
 							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 						else
 							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
@@ -897,75 +927,54 @@ function makeQuickMenu(options) {
 				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
 
 				let side = getSide(targetDiv, e);
-
-				// if ( targetDiv.node.parent.groupFolder && targetDiv.node.parent !== dragDiv.node.parent ) {
-					// let targetIndex = targetNode.parent.children.indexOf(targetNode);
-					// if ( targetIndex === 0 && side === "before" ) { // target should be placed before group folder
-						// // slicedNode.parent = targetNode.parent.parent;
-						// // slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
-						
-						// console.log('target = groupfolder; placing in ' + targetNode.parent.parent.title + ' before ');
-						// window.addEventListener('dragend', _e => { _e.stopPropagation();}, {once:true, capture: true});
-						// return;
-						
-					// } else if ( targetIndex === targetNode.parent.children.length - 1 && side === "after" ) {
-						// // slicedNode.parent = targetNode.parent.parent;
-						// // slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent)+1,0,slicedNode);
-						
-						// console.log('target = groupfolder; placing in ' + targetNode.parent.parent.title + ' after ');
-						// window.addEventListener('dragend', _e => { _e.stopPropagation();}, {once:true, capture: true});
-						// return;
-					// }
-				// }
-						
-				// } else {
+	
+				if ( targetDiv.classList.contains("groupFolder") ) {
 					
-					if ( targetDiv.classList.contains("groupFolder") ) {
-						let dec = getSideDecimal(targetDiv, e);
-						if ( dec < .2 && (!targetDiv.previousSibling || !targetDiv.previousSibling.node || targetDiv.previousSibling.node.parent !== targetDiv.node.parent )) {
-							
-							console.log('moving before group');
-							slicedNode.parent = targetNode.parent.parent;
-							slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
-							
-							_save();
-							return;
-						} else if ( dec > .8 && ( ( !targetDiv.nextSibling || targetDiv.nextSibling.nodeName === "BR" ) || !targetDiv.nextSibling.node || targetDiv.nextSibling.node.parent !== targetDiv.node.parent )) {
-							
-							console.log('moving after group');
-							slicedNode.parent = targetNode.parent.parent;
-							slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent) + 1,0,slicedNode);
-							
-							_save();
-							return;
-						}
+					let dec = getSideDecimal(targetDiv, e);
+					
+					if ( isTargetBeforeGroup(targetDiv, dec) ) {
 						
-						if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
-							
-							console.log('drop to more / less tile ... appending tile to group');
-							slicedNode.parent = targetNode.parent;
-							slicedNode.parent.children.push(slicedNode);
-							
-							_save();
-							return;
-						}
+						console.log('moving before group');
+						slicedNode.parent = targetNode.parent.parent;
+						slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
+						
+						_save();
+						return;
+					} else if ( isTargetAfterGroup(targetDiv, dec) ) {
+						
+						console.log('moving after group');
+						slicedNode.parent = targetNode.parent.parent;
+						slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent) + 1,0,slicedNode);
+						
+						_save();
+						return;
 					}
-
-					// set new parent
-					slicedNode.parent = targetNode.parent;
-
-					if ( side === "before" ) {
-						// add to children before target
-						targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
-					} else if ( side === "after" ) {
-						// add to children after target
-						targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
-					} else {
-						slicedNode.parent = targetNode;
-						// add to target children
-						targetNode.children.push(slicedNode);
+					
+					if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
+						
+						console.log('drop to more / less tile ... appending tile to group');
+						slicedNode.parent = targetNode.parent;
+						slicedNode.parent.children.push(slicedNode);
+						
+						_save();
+						return;
 					}
-				// }
+				}
+
+				// set new parent
+				slicedNode.parent = targetNode.parent;
+
+				if ( side === "before" ) {
+					// add to children before target
+					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
+				} else if ( side === "after" ) {
+					// add to children after target
+					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
+				} else {
+					slicedNode.parent = targetNode;
+					// add to target children
+					targetNode.children.push(slicedNode);
+				}
 				
 				_save();
 				
