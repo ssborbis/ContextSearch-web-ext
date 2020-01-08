@@ -544,7 +544,7 @@ async function buildContextMenu() {
 	function onCreated() {
 
 		if (browser.runtime.lastError) {
-			if ( !browser.runtime.lastError.indexOf("ID already exists") ) console.log(browser.runtime.lastError);
+			if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) console.log(browser.runtime.lastError);
 		}
 	}
 	
@@ -1798,11 +1798,6 @@ browser.runtime.onInstalled.addListener( details => {
 			});
 		}
 	});
-});
-
-browser.browserAction.setPopup({popup: "/searchbar.html"});
-browser.browserAction.onClicked.addListener(() => {	
-	browser.browserAction.openPopup();
 });
 
 // trigger zoom event

@@ -283,13 +283,14 @@ BODY {
 	margin-left:24px;
 }
 .tile.singleColumn[data-type="separator"] {
-	height:2px;
-	maxHeight:2px;
-	margin:4px 0;
+	height:4px;
+	margin:4px 6px;
 	overflow:hidden;
-	background-color:#ddd;
+	background-color:#ccc;
 	border:none;
 	display:block;
+	border-radius:2px;
+	width: calc(100% - 12px);
 }
 .tile.singleColumn[data-type="siteSearch"] {
 	width:auto;
@@ -332,7 +333,7 @@ BODY {
 	background-repeat:no-repeat;
 }
 .groupMove {
-	border: 2px dashed #9abad2 !important;
+	border: 1px solid #9abad2 !important;
 }
 .groupHighlight {
 	border: 1px dotted var(--select) !important;

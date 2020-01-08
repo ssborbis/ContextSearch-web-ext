@@ -209,12 +209,14 @@ function toolsHandler(qm) {
 }
 
 function toolBarResize() {
-	
+		
 	if ( window != top ) return;
 
 	qm.style.width = null;
 	qm.style.height = null;
 	sg.style.width = null;
+	
+	qm.insertBreaks(qm.columns); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 
