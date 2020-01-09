@@ -500,7 +500,7 @@ function makeQuickMenu(options) {
 	qm.toolsArray = createToolsArray();
 
 	qm.insertBreaks = function insertBreaks(_columns) {
-		
+
 		// let transition = qm.style.transition;
 		// qm.style.transition = 'none';
 		
@@ -517,7 +517,7 @@ function makeQuickMenu(options) {
 		// });
 
 		every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
-			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);;
+			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
 		});
 	}
 	
@@ -746,7 +746,7 @@ function makeQuickMenu(options) {
 					arrow.style.setProperty('--target-height', rect.height + "px");
 					arrow.dataset.side = side;
 					
-					if ( targetDiv.classList.contains("groupFolder") ) {
+					if ( targetDiv.classList.contains("groupFolder") && !targetDiv.classList.contains('groupMove') ) {
 						
 						let dec = getSideDecimal(targetDiv, e);
 						
@@ -789,7 +789,8 @@ function makeQuickMenu(options) {
 						arrow = document.createElement('div');
 						document.body.appendChild(arrow);
 					}
-					if ( _singleColumn ) arrow.className = 'singleColumn';
+					arrow.className = ( qm.singleColumn ) ? 'singleColumn' : null;
+					
 					arrow.id = 'arrow';
 					arrow.style.top = targetDiv.getBoundingClientRect().top + "px";
 					arrow.style.display = null;
@@ -1084,8 +1085,100 @@ function makeQuickMenu(options) {
 			delete sb.selectedIndex;
 			tileArray.push(tile);
 		}
+		
+		function makeGroup( node ) {
+			
+			let _tileArray = [];
+			
+			_tileArray.push( nodeToTile( {type: "separator"}) );
 
-		nodes.forEach( node => {
+			let count = 0;
+			node.children.forEach( _node => {
+				let _tile = nodeToTile(_node);
+				
+				if ( !_tile ) return;
+				
+				_tile.style.setProperty("--group-color",node.groupColor);
+				_tile.classList.add("groupFolder");
+
+				_tile.title = node.title + " / " + _tile.title;
+
+				if ( node.groupLimit && count >= node.groupLimit ) {
+					_tile.dataset.hidden = true;
+					_tile.style.display = 'none';
+					_tile.dataset.grouphidden = true;
+				}
+
+				if ( _tile ) {
+					_tileArray.push( _tile );
+					count++;
+				}
+			});
+			
+			if ( node.groupLimit && node.children.length >= node.groupLimit ) {
+				let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
+
+				moreTile.style.textAlign='center';
+				moreTile.dataset.type = "more";
+				moreTile.style.setProperty("--group-color",node.groupColor);
+				moreTile.classList.add("groupFolder");
+				moreTile.node = { parent: node };
+				moreTile.dataset.parentid = node.title + Date.now();
+				
+				moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
+				moreTile.setAttribute('draggable', false);
+				
+				function more() {
+					qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
+						
+						if ( _div.node && _div.node.parent !== node ) return;
+						
+						_div.dataset.hidden = "false";
+						_div.style.display = null;
+					});
+					
+					qm.insertBreaks(qm.columns);	
+					moreTile.onmouseup = less;	
+					moreTile.title = "less";
+					moreTile.dataset.type = "less";
+					moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
+					resizeMenu({groupMore: true});
+				}
+				
+				function less() {
+					qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
+						
+						if ( _div.node && _div.node.parent !== node ) return;
+						
+						_div.dataset.hidden = "true";
+						_div.style.display = "none";
+					});
+					
+					qm.insertBreaks(qm.columns);
+					moreTile.onmouseup = more;
+					moreTile.title = "more";
+					moreTile.dataset.type = "more";
+					moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
+					resizeMenu({groupLess: true});
+				}
+
+				moreTile.onmouseup = more;
+				
+				moreTile.addEventListener('dragenter', e => {
+
+					let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1500 );		
+					['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTimer), {once: true}); } );
+				});
+				
+				_tileArray.push( moreTile );
+			}
+			
+			_tileArray.push( nodeToTile( {type: "separator"}) );
+			
+			return _tileArray
+		}
+
+		nodes.forEach( (node, index) => {
 
 			let tile = nodeToTile(node);
 			
@@ -1097,93 +1190,19 @@ function makeQuickMenu(options) {
 			
 			if ( node.groupFolder && !node.parent.parent) { // only top-level folders
 				
-				tile.style.setProperty("--group-color",tile.node.groupColor);
-				tile.classList.add("groupFolder");
+				// tile.style.setProperty("--group-color",tile.node.groupColor);
+				// tile.classList.add("groupFolder");
 				
-				tile.draggable = false;
-				tile.dataset.groupfolderheader = true;
+				// tile.draggable = false;
+				// tile.dataset.groupfolderheader = true;
 				
-				let count = 0;
-				node.children.forEach( _node => {
-					let _tile = nodeToTile(_node);
-					
-					if ( !_tile ) return;
-					
-					_tile.style.setProperty("--group-color",tile.node.groupColor);
-					_tile.classList.add("groupFolder");
-
-					_tile.title = tile.title + " / " + _tile.title;
-
-					if ( node.groupLimit && count >= node.groupLimit ) {
-						_tile.dataset.hidden = true;
-						_tile.style.display = 'none';
-						_tile.dataset.grouphidden = true;
-					}
-	
-					if ( _tile ) {
-						tileArray.push( _tile );
-						count++;
-					}
-				});
+				let groupTiles = makeGroup( node );
 				
-				if ( node.groupLimit && node.children.length >= node.groupLimit ) {
-					let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
+				// remove leading separator if consecutive groups
+				let previousNode = nodes[index - 1];
+				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
 
-					moreTile.style.textAlign='center';
-					moreTile.dataset.type = "more";
-					moreTile.style.setProperty("--group-color",tile.node.groupColor);
-					moreTile.classList.add("groupFolder");
-				//	moreTile.parent = node;
-					moreTile.node = { parent: node };
-					moreTile.dataset.parentid = node.title + Date.now();
-					
-					moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
-					moreTile.setAttribute('draggable', false);
-					
-					function more() {
-						qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
-							
-							if ( _div.node && _div.node.parent !== node ) return;
-							
-							_div.dataset.hidden = "false";
-							_div.style.display = null;
-						});
-						
-						qm.insertBreaks(qm.columns);	
-						moreTile.onmouseup = less;	
-						moreTile.title = "less";
-						moreTile.dataset.type = "less";
-						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
-						resizeMenu({groupMore: true});
-					}
-					
-					function less() {
-						qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
-							
-							if ( _div.node && _div.node.parent !== node ) return;
-							
-							_div.dataset.hidden = "true";
-							_div.style.display = "none";
-						});
-						
-						qm.insertBreaks(qm.columns);
-						moreTile.onmouseup = more;
-						moreTile.title = "more";
-						moreTile.dataset.type = "more";
-						moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
-						resizeMenu({groupLess: true});
-					}
-
-					moreTile.onmouseup = more;
-					
-					moreTile.addEventListener('dragenter', e => {
-
-						let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1500 );		
-						['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTimer), {once: true}); } );
-					});
-					
-					tileArray.push( moreTile );
-				}
+				tileArray = tileArray.concat(groupTiles);
 			}
 
 		});
