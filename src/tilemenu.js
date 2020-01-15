@@ -1181,6 +1181,9 @@ function makeQuickMenu(options) {
 			
 			_tiles.push( moreTile );
 			
+			_tiles.unshift( nodeToTile( {type: "separator"}) );
+			_tiles.push( nodeToTile( {type: "separator"}) );
+			
 			return _tiles;
 		}
 	
@@ -1218,7 +1221,13 @@ function makeQuickMenu(options) {
 				let groupTiles = makeGroupTilesFromNode( node );
 				
 				makeMoreLessFromTiles( groupTiles, node.groupLimit );
+				
+				// remove leading separator if consecutive groups
+				let previousNode = nodes[index - 1];
+				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
+				
 				tileArray = tileArray.concat(groupTiles);
+
 				// tile.style.setProperty("--group-color",tile.node.groupColor);
 				// tile.classList.add("groupFolder");
 				
