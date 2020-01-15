@@ -637,7 +637,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				let columns = _message.columns;
 
 				let resizeWidget = addResizeWidget(qmc, {
-					tileSize: message.tileSize,
+					tileSize: _message.tileSize,
 					columns: columns,
 					rows: Math.ceil(message.tileCount / columns ),
 					onDragStart: o => {
@@ -697,10 +697,7 @@ function quickMenuResize(e) {
 	if ( !iframe ) return;
 
 	if ( iframe.resizeWidget && e.data.tileSize) {
-		iframe.resizeWidget.options.tileSize = {
-			width: e.data.tileSize.width,
-			height: e.data.tileSize.height
-		};
+		iframe.resizeWidget.options.tileSize = e.data.tileSize
 		
 		iframe.resizeWidget.options.rows = Math.ceil(e.data.tileCount / e.data.columns );
 		iframe.resizeWidget.options.columns = e.data.columns;
@@ -744,7 +741,7 @@ window.addEventListener('message', e => {
 			if ( e.origin !== url.origin ) return;
 			
 			if ( !e.data.size ) return;
-		
+
 			quickMenuResize(e);
 			break;
 	}

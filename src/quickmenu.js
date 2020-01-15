@@ -36,8 +36,8 @@ function makeFrameContents(options) {
 		let sbc = document.getElementById('searchBarContainer');
 		let tb = document.getElementById('toolBar');
 
-		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
-			document.body.appendChild(tb);
+		// if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
+			// document.body.appendChild(tb);
 		
 		if (userOptions.quickMenuSearchBar === 'bottom') 
 			document.body.appendChild(sbc);
@@ -104,7 +104,7 @@ function resizeMenu(o) {
 	let sgScrollTop = sg.scrollTop;
 	
 	let tileSize = qm.getTileSize();
-	
+
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {
 			qm.scrollTop = scrollTop;
@@ -192,6 +192,10 @@ function toolsHandler(qm) {
 		
 		createToolsBar(qm);
 	}
+	
+	if ( !userOptions.quickMenuToolsAsToolbar ) {
+		if ( qm.singleColumn ) qm.toolsArray.forEach( tool => tool.classList.add('singleColumn') );
+	}
 
 	// unhide tiles hidden by more tile
 	qm.querySelectorAll('.tile[data-grouphidden]').forEach( tile => {
@@ -217,13 +221,16 @@ function toolsHandler(qm) {
 		let tileArray = qm.querySelectorAll('.tile');
 		tileArray = qm.makeMoreLessFromTiles([...tileArray], visibleTileCountMax, moreTileID);
 		
+		// remove group separators
+		if (!qm.singleColumn) tileArray = tileArray.filter( _tile => _tile.dataset.type !== 'separator' );
+		
 		// replace qm
 		qm.innerHTML = null;
 		tileArray.forEach( tile => qm.appendChild( tile ) );
 		
 		// qm moreTile is special case
 		moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
-		moreTile.className = 'tile';
+		moreTile.classList.add('tile');
 		
 		// unhide tools hidden by grouping
 		qm.toolsArray.forEach( tool => {
@@ -250,8 +257,8 @@ function toolsHandler(qm) {
 			_div.moreTile = moreTile;
 		});
 	}
-
-	qm.insertBreaks(qm.columns);	
+	
+	qm.insertBreaks(qm.columns);
 }
 	
 document.addEventListener("DOMContentLoaded", () => {

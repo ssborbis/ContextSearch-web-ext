@@ -34,7 +34,8 @@ BODY {
 	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: background-color .25s ease-out, width .075s;
+	/* transition: background-color .25s ease-out, width .075s; */
+	transition: background-color .25s ease-out;
 }
 .tile[data-disabled="true"] {
 	opacity:.1;
@@ -281,6 +282,9 @@ BODY {
 .tile.singleColumn::before {
 	content: attr(data-title);
 	margin-left:24px;
+}
+.tile[data-type="separator"] {
+	display:none;
 }
 .tile.singleColumn[data-type="separator"] {
 	height:4px;

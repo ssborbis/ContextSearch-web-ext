@@ -526,36 +526,7 @@ function makeQuickMenu(options) {
 		if ( options.node.displayType === "grid" ) _singleColumn = false;
 		
 		let _columns = _singleColumn ? 1 : getColumns();
-
-		// function buildMoreTile() {
-			// let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
-
-			// moreTile.style.textAlign='center';
-			// moreTile.dataset.type = "tool";
-
-			// moreTile.addEventListener('mouseup', _more);
-			// moreTile.addEventListener('openFolder', _more);
-			
-			// function _more(e) {
-
-				// moreTile.parentNode.removeChild(moreTile);
-
-				// qm.querySelectorAll('[data-hidden="true"]:not([data-grouphidden="true"])').forEach( div => {
-					// div.style.display = null;
-					// delete div.dataset.hidden;
-				// });
-
-				// // rebuild breaks
-				// qm.insertBreaks(qm.columns);
-				
-				// window.moreTileClicked = true; // record that the more tile was clicked this session
-				
-				// resizeMenu({quickMenuMore: true});
-			// }
-			
-			// return moreTile;
-		// }
-		
+	
 		let tileArray = options.tileArray;
 
 		qm.innerHTML = null;
@@ -568,9 +539,7 @@ function makeQuickMenu(options) {
 		qm.columns = _columns;
 	
 		// remove separators if using grid
-		if (!_singleColumn) {
-			tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
-		}
+		if (!_singleColumn) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 	
 		qm.singleColumn = _singleColumn;
 			
@@ -603,7 +572,7 @@ function makeQuickMenu(options) {
 		
 		qm.setDisplay = function() {
 			qm.querySelectorAll('.tile').forEach( _tile => {
-				if (qm.singleColumn) _tile.classList.add("singleColumn");
+				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
 				else _tile.classList.remove("singleColumn");
 			});
 		}
@@ -1180,7 +1149,7 @@ function makeQuickMenu(options) {
 			});
 			
 			_tiles.push( moreTile );
-			
+
 			_tiles.unshift( nodeToTile( {type: "separator"}) );
 			_tiles.push( nodeToTile( {type: "separator"}) );
 			
