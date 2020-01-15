@@ -68,7 +68,9 @@ function makeFrameContents(options) {
 			},
 			resizeOnly: options.resizeOnly,
 			tileSize: qm.getTileSize(),
-			tileCount: qm.querySelectorAll('div:not([data-hidden])').length
+			tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length,
+			columns: qm.columns,
+			singleColumn: qm.singleColumn
 		}).then(() => {
 			
 			// setTimeout needed to trigger after updatesearchterms
@@ -94,10 +96,14 @@ var maxHeight = Number.MAX_SAFE_INTEGER;
 
 function resizeMenu(o) {
 	
+	qm.setDisplay();
+	
 	o = o || {};
 	
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
+	
+	let tileSize = qm.getTileSize();
 	
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {
@@ -111,7 +117,7 @@ function resizeMenu(o) {
 	tb = document.getElementById('titleBar');
 	toolBar = document.getElementById('toolBar');
 
-	let initialHeight = qm.firstChild.offsetHeight * userOptions.quickMenuRows;
+	let initialHeight = tileSize.height * userOptions.quickMenuRows;
 	maxHeight = o.maxHeight || maxHeight || Number.MAX_SAFE_INTEGER;
 
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
@@ -133,7 +139,7 @@ function resizeMenu(o) {
 	else if ( o.quickMenuMore || o.groupMore ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";	
 	else if ( o.widgetResize )
-		qm.style.height = qm.firstChild.getBoundingClientRect().height * o.rows + "px";
+		qm.style.height = tileSize.height * o.rows + "px";
 	else
 		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
 	
@@ -152,7 +158,9 @@ function resizeMenu(o) {
 			height: document.body.getBoundingClientRect().height
 		},
 		singleColumn: qm.singleColumn,
-		tileSize: qm.getTileSize()
+		tileSize: tileSize,
+		tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length,
+		columns: qm.columns
 	}, "*");
 }
 
@@ -161,122 +169,87 @@ function toolsHandler(qm) {
 	qm = qm || document.getElementById('quickMenuElement');
 	toolBar = document.getElementById('toolBar');
 	
+	let getVisibleTiles = () => { 
+		return [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( tile => tile.style.display !== 'none' );
+	}
+	
+	let moreTileID = "QM_MORE_TILE";
+	
 	if ( qm.rootNode.parent ) return; // has parent = child node
 	
 	let position = userOptions.quickMenuToolsPosition;
 
-	// unhide tile hidden by more tile
-	qm.querySelectorAll('[data-hidden="true"]:not([data-grouphidden])').forEach( tile => {
-		tile.dataset.hidden = 'false';
-		tile.style.display = null;
-	});
+	let moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
 	
-	// remove more tile
-	if ( qm.moreTile.parentNode ) qm.removeChild(qm.moreTile);
-
-	// set the number of tiles to show
-	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+	if ( moreTile ) qm.removeChild( moreTile );
 	
-	let tileArray = qm.querySelectorAll('.tile:not([data-type="tool"])');
-
-	// set tools position
+//	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
+	
 	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' ) {
 		
 		// move tools bar below qm
 		if ( position === 'bottom' ) toolBar.parentNode.insertBefore(toolBar, qm.nextSibling);
 		
-		// clear the old tools bar
-		toolBar.innerHTML = null;
+		createToolsBar(qm);
+	}
 
-		let ls = document.createElement('span');
-		ls.innerHTML = "&#9668;";		
-		ls.style.left = 0;
-		toolBar.appendChild(ls);
-		
-		let rs = document.createElement('span');
-		rs.innerHTML = "&#9658;";
-		rs.style.right = 0;
-		toolBar.appendChild(rs);
-		
-		let mouseoverInterval = null;
-		rs.addEventListener('mouseenter', e => {
-			mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
-		});
-		
-		ls.addEventListener('mouseenter', e => {	
-			mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
-		});
-		
-		[rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
-		
-		qm.toolsArray.forEach( tool => {
-			tool.className = 'tile';
-			toolBar.appendChild(tool);
-		});
-		
-		function showScrollButtons() {
-			ls.style.display = toolBar.scrollLeft ? 'inline-block' : null;
-			rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : null;
+	// unhide tiles hidden by more tile
+	qm.querySelectorAll('.tile[data-grouphidden]').forEach( tile => {
+		if ( tile.moreTile && tile.moreTile.dataset.parentid === moreTileID ) {
+			delete tile.dataset.hidden;
+			tile.style.display = null;
+			delete tile.dataset.grouphidden;
 		}
-		
-		// scroll on mouse wheel
-		toolBar.addEventListener('wheel', e => {
-			toolBar.scrollLeft += (e.deltaY*6);
-			e.preventDefault();
-		});
-		
-		toolBar.addEventListener('scroll', showScrollButtons);
-		toolBar.addEventListener('mouseenter', showScrollButtons);
-		toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null);	
-	} 
-
-	let count = 1;
-	let alwaysShowTools = true;
-	
-	if ( userOptions.quickMenuToolsPosition === 'bottom' && !userOptions.quickMenuToolsAsToolbar ) {	
-		qm.toolsArray.forEach(tool => qm.appendChild(tool));
-		if ( alwaysShowTools) count = qm.toolsArray.length + 1; // shift hidden tiles to start after tools
-	} else if ( userOptions.quickMenuToolsPosition === 'top' && !userOptions.quickMenuToolsAsToolbar ) {
-		qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
-	}
-
-	if ( visibleTileCountMax <= count && position === 'bottom' && alwaysShowTools ) {
-		qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
-		count = 1;
-		position = 'top';
-	}
-
-	// begin moreTile - hide tiles outside initial grid dimensions
-	if ( !window.moreTileClicked ) {
-		let tilesToHide = position === 'top' || !alwaysShowTools ? qm.querySelectorAll('.tile') : qm.querySelectorAll('.tile:not([data-type="tool"])');
-		
-		let visibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-grouphidden])')].filter( tile => tile.style.display !== 'none' );
-		
-		tilesToHide.forEach( _tile => {
-			
-			if (_tile.dataset.hidden == "true") return false;
-
-			if (count > visibleTileCountMax - 1) {
-				_tile.dataset.hidden = true;
-				_tile.style.display = 'none';
-			}
-			
-			count++;
-		});
-
-		let newVisibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-grouphidden])')].filter( tile => tile.style.display !== 'none' );
-
-		if ( newVisibleTiles.length < visibleTiles.length ) {
-			qm.moreTile.classList.add('tile');
-			qm.appendChild(qm.moreTile);
-		}	
-	}
-	// end moreTile
-	
-	qm.toolsArray.forEach( tool => {
-		if (qm.singleColumn) tool.classList.add('singleColumn');
-		else tool.classList.remove('singleColumn');
 	});
+	
+	if ( !userOptions.quickMenuToolsAsToolbar ) {
+		if ( userOptions.quickMenuToolsPosition === 'bottom' )
+			qm.toolsArray.forEach(tool => qm.appendChild(tool));
+		else if ( userOptions.quickMenuToolsPosition === 'top' )
+			qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+	}
+
+	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+
+	// more tile
+	if ( getVisibleTiles().length > visibleTileCountMax ) {
+
+		let tileArray = qm.querySelectorAll('.tile');
+		tileArray = qm.makeMoreLessFromTiles([...tileArray], visibleTileCountMax, moreTileID);
+		
+		// replace qm
+		qm.innerHTML = null;
+		tileArray.forEach( tile => qm.appendChild( tile ) );
+		
+		// qm moreTile is special case
+		moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
+		moreTile.className = 'tile';
+		
+		// unhide tools hidden by grouping
+		qm.toolsArray.forEach( tool => {
+			
+			if ( tool.dataset.grouphidden == "true" ) {
+				delete tool.dataset.hidden;
+				tool.style.display = null;
+				delete tool.dataset.grouphidden;
+				delete tool.moreTile;
+			}
+		});
+		
+		// collect visible se tiles
+		let visibleTiles = [...qm.querySelectorAll(`.tile:not([data-hidden="true"]):not([data-type="tool"]):not([data-parentid=${moreTileID}])`)].filter( tile => tile.style.display !== 'none' );
+
+		// collect tiles to be offset by tools
+		let toolsOffset = getVisibleTiles().length - visibleTileCountMax;
+		let lastVisibleTiles = visibleTiles.slice( visibleTiles.length - toolsOffset, visibleTiles.length );
+
+		lastVisibleTiles.forEach( _div => {
+			_div.dataset.hidden = "true";
+			_div.style.display = "none";
+			_div.dataset.grouphidden = "true";
+			_div.moreTile = moreTile;
+		});
+	}
 
 	qm.insertBreaks(qm.columns);	
 }
@@ -341,12 +314,17 @@ window.addEventListener('message', e => {
 	switch (e.data.action) {
 		case "rebuildQuickMenu":
 			userOptions = e.data.userOptions;	
-			qm.columns = userOptions.quickMenuColumns;
+			// qm.columns = qm.singleColumn ? 1 : userOptions.quickMenuColumns;
+			
+			qm.columns = qm.singleColumn ? 1 : e.data.columns;
 			
 			toolsHandler();
 			qm.insertBreaks(qm.columns);
+
+			qm.setMinWidth();
 			
-			resizeMenu({widgetResize: true, rows: userOptions.quickMenuRows});
+			resizeMenu({widgetResize: true, rows: e.data.rows});
+			
 			break;
 			
 		case "resizeMenu":

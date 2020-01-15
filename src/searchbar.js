@@ -99,6 +99,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
+	toolBar = document.getElementById('toolBar');
 
 	// focus the searchbar on open
 	sb.focus();
@@ -123,60 +124,8 @@ function toolsHandler(qm) {
 	let position = userOptions.quickMenuToolsPosition;
 	
 	// set tools position
-	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' ) {
-		
-		// move tools bar below qm
-		if ( position === 'bottom' ) {
-			document.addEventListener('quickMenuIframeLoaded', () => toolBar.parentNode.appendChild(toolBar), {once: true});
-		}
-		
-		// clear the old tools bar
-		toolBar.innerHTML = null;
-
-		let ls = document.createElement('span');
-		ls.innerHTML = "&#9668;";		
-		ls.style.left = 0;
-		toolBar.appendChild(ls);
-		
-		let rs = document.createElement('span');
-		rs.innerHTML = "&#9658;";
-		rs.style.right = 0;
-		toolBar.appendChild(rs);
-		
-		let mouseoverInterval = null;
-		rs.addEventListener('mouseenter', e => {
-			mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
-		});
-		
-		ls.addEventListener('mouseenter', e => {	
-			mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
-		});
-		
-		[rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
-		
-		qm.toolsArray.forEach( tool => {
-			tool.className = 'tile';
-			toolBar.appendChild(tool);
-		});
-		
-		function showScrollButtons() {
-			ls.style.display = toolBar.scrollLeft ? 'inline-block' : null;
-			rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : null;
-		}
-		
-		// scroll on mouse wheel
-		toolBar.addEventListener('wheel', e => {
-			toolBar.scrollLeft += (e.deltaY*6);
-			e.preventDefault();
-		});
-		
-		toolBar.addEventListener('scroll', showScrollButtons);
-		toolBar.addEventListener('mouseenter', showScrollButtons);
-		toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null);	
-		
-		qm.insertBreaks(qm.columns);
-		return;
-	} 	
+	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' ) 
+		createToolsBar(qm);
 	
 	if (  // match quickmenu and searchbar tools
 		((type === "searchbar" && userOptions.quickMenuColumns === qm.columns) ||
@@ -200,10 +149,7 @@ function toolsHandler(qm) {
 		qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );
 	}
 	
-	qm.toolsArray.forEach( tool => {
-		if (qm.singleColumn) tool.classList.add('singleColumn');
-		else tool.classList.remove('singleColumn');
-	});
+	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
 	
 	qm.insertBreaks(qm.columns);
 }
@@ -222,7 +168,7 @@ function toolBarResize() {
 
 		if ( window.innerHeight < document.documentElement.scrollHeight ) {
 			
-			let sumHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
+			let sumHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
 			
 			qm.style.height = ( (window.innerHeight < 600 && qm.scrollHeight > (600 - sumHeight) ) ? 600 : window.innerHeight ) - sumHeight + "px";
 			

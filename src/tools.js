@@ -217,11 +217,12 @@ var QMtools = [
 		icon: "icons/repeatsearch.svg",
 		title: browser.i18n.getMessage('tools_repeatsearch'),
 		init: function() {
+
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 			
 			tile.keepOpen = true; // prevent close on click
 			
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === this.name );
 
 			tile.dataset.disabled = !tool.on;
 			
@@ -246,6 +247,8 @@ var QMtools = [
 			});
 
 			addTileEventHandlers(tile, e => {
+				
+				tool = userOptions.quickMenuTools.find( _tool => _tool.name === this.name );
 
 				tool.on = !tool.on;
 				
@@ -279,11 +282,11 @@ var QMtools = [
 			
 			let timer;
 			tile.addEventListener('dragenter', e => {
-				timer = setTimeout(() => document.dispatchEvent(new CustomEvent('toggleDisplayMode')), 1000);
+				timer = setTimeout(() => qm.toggleDisplayMode(), 1000);
 				tile.addEventListener('dragleave', e => clearTimeout(timer), {once: true});
 			});
 				
-			addTileEventHandlers(tile, e => document.dispatchEvent(new CustomEvent('toggleDisplayMode')) );
+			addTileEventHandlers(tile, e => qm.toggleDisplayMode());
 			
 			return tile;
 		}

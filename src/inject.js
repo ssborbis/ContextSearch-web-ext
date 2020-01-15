@@ -270,6 +270,7 @@ function addResizeWidget(el, options) {
 				o.columns = startSize.columns + colsMod;
 				o.rows = startSize.rows + rowsMod;
 
+				// add code to skip when !allowHorizontal and only rows change
 				o.onDrag({
 					columns: o.columns,
 					rows: o.rows,

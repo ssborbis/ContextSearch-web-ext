@@ -34,7 +34,7 @@ BODY {
 	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: background-size .25s ease-in-out, background-color .25s ease-out, width .075s;
+	transition: background-color .25s ease-out, width .075s;
 }
 .tile[data-disabled="true"] {
 	opacity:.1;

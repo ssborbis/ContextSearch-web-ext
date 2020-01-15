@@ -634,7 +634,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				_message = message;
 				
-				let columns = userOptions.quickMenuUseOldStyle ? 1 : Math.min(message.tileCount, userOptions.quickMenuColumns);
+				let columns = _message.columns;
 
 				let resizeWidget = addResizeWidget(qmc, {
 					tileSize: message.tileSize,
@@ -650,7 +650,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						if ( resizeWidget.options.allowVertical ) userOptions.quickMenuRows = o.rows;
 
 						// rebuild menu with new dimensions
-						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions}, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
 					},
 					onDrop: o => {
 						
@@ -670,7 +670,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 					}
 				});
-				
+
 				qmc.style.opacity = null;
 
 				document.addEventListener('closequickmenu', () => {
@@ -702,6 +702,8 @@ function quickMenuResize(e) {
 			height: e.data.tileSize.height
 		};
 		
+		iframe.resizeWidget.options.rows = Math.ceil(e.data.tileCount / e.data.columns );
+		iframe.resizeWidget.options.columns = e.data.columns;
 		iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
 	}
 
