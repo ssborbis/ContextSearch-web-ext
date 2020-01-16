@@ -1521,7 +1521,19 @@ function updateUserOptionsVersion(uo) {
 		_uo.searchEngines[index].query_string = "https://www.ebay.com/sch/i.html?_nkw={searchTerms}";
 		_uo.searchEngines[index].template = "https://www.ebay.com/sch/";
 		return _uo;	
+		
+	}).then( _uo => {
+		
+		if ( _uo.nodeTree.id ) return _uo;
+		
+		console.log("-> 1.19");
+		
+		findNodes(_uo.nodeTree, node => {
+			if ( node.type === "folder" && !node.id )
+				node.id = gen();
+		});
 
+		return _uo;	
 	}).then( _uo => {
 		console.log('done');
 		return _uo;

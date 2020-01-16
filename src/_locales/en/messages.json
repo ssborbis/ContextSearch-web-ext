@@ -1106,6 +1106,11 @@
     "message": "more",
     "description": ""
   },
+  
+  "less": {
+    "message": "less",
+    "description": ""
+  },
 
   "OCSEDeleteWarning": {
     "message": "Firefox One-Click Search Engines cannot be deleted. Hide to disable",

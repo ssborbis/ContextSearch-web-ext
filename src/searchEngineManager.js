@@ -1140,6 +1140,7 @@ function buildSearchEngineContainer() {
 				parent: li.node.parent,
 				children: [],
 				title: browser.i18n.getMessage('NewFolder'),
+				id: gen(),
 				toJSON: li.node.toJSON
 			}
 			

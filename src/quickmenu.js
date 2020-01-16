@@ -173,7 +173,7 @@ function toolsHandler(qm) {
 		return [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( tile => tile.style.display !== 'none' );
 	}
 	
-	let moreTileID = "QM_MORE_TILE";
+	let moreTileID = userOptions.nodeTree.id;
 	
 	if ( qm.rootNode.parent ) return; // has parent = child node
 	
@@ -219,14 +219,16 @@ function toolsHandler(qm) {
 	if ( getVisibleTiles().length > visibleTileCountMax ) {
 
 		let tileArray = qm.querySelectorAll('.tile');
-		tileArray = qm.makeMoreLessFromTiles([...tileArray], visibleTileCountMax, moreTileID);
+		tileArray = qm.makeMoreLessFromTiles([...tileArray], visibleTileCountMax);
 		
-		// remove group separators
-		if (!qm.singleColumn) tileArray = tileArray.filter( _tile => _tile.dataset.type !== 'separator' );
-		
+		// remove separator bookends
+		tileArray.pop();
+		tileArray.shift();
+
 		// replace qm
 		qm.innerHTML = null;
 		tileArray.forEach( tile => qm.appendChild( tile ) );
+		// qm.appendChild( tileArray );
 		
 		// qm moreTile is special case
 		moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);

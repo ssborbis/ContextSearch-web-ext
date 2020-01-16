@@ -68,6 +68,9 @@ BODY {
 	/* position:absolute; */
 	/* top: 0; */
 /* } */
+.tile.groupFolder {
+	background-color: var(--group-color);
+}
 .tile[data-type="folder"]:not(.singleColumn):not([data-subtype]):not([data-groupfolderheader])::before {
 	content:"";
 	top:0;
@@ -299,9 +302,6 @@ BODY {
 .tile.singleColumn[data-type="siteSearch"] {
 	width:auto;
 	padding-right:10px;
-}
-.tile.groupFolder {
-	background-color: var(--group-color);
 }
 #toolBar {
 	text-align:center;
