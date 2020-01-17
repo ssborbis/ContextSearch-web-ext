@@ -83,7 +83,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( qme => {
 		document.body.appendChild(qme);
-
+		
+		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
+			document.body.appendChild(document.getElementById('toolBar'));
+		
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
 });
@@ -126,7 +129,7 @@ function toolsHandler(qm) {
 	let position = userOptions.quickMenuToolsPosition;
 	
 	// set tools position
-	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' ) 
+	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' )
 		createToolsBar(qm);
 	
 	if ( !userOptions.quickMenuToolsAsToolbar ) {
@@ -159,8 +162,7 @@ function toolsHandler(qm) {
 	// }
 	
 	qm.toolsArray.forEach( tool => {
-
-		if ( qm.singleColumn ) tool.classList.add('singleColumn');
+		if ( qm.singleColumn && !userOptions.quickMenuToolsAsToolbar ) tool.classList.add('singleColumn');
 	});
 
 	qm.insertBreaks(qm.columns);
@@ -260,6 +262,8 @@ function resizeMenu(o) {
 	// store scroll position
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
+	
+	qm.setDisplay();
 
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {

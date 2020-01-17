@@ -36,8 +36,8 @@ function makeFrameContents(options) {
 		let sbc = document.getElementById('searchBarContainer');
 		let tb = document.getElementById('toolBar');
 
-		// if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
-			// document.body.appendChild(tb);
+		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
+			document.body.appendChild(tb);
 		
 		if (userOptions.quickMenuSearchBar === 'bottom') 
 			document.body.appendChild(sbc);
@@ -185,13 +185,8 @@ function toolsHandler(qm) {
 	
 //	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
 	
-	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' ) {
-		
-		// move tools bar below qm
-		if ( position === 'bottom' ) toolBar.parentNode.insertBefore(toolBar, qm.nextSibling);
-		
+	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' )
 		createToolsBar(qm);
-	}
 	
 	if ( !userOptions.quickMenuToolsAsToolbar ) {
 		if ( qm.singleColumn ) qm.toolsArray.forEach( tool => tool.classList.add('singleColumn') );

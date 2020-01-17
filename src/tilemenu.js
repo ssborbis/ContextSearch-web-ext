@@ -218,6 +218,8 @@ function makeQuickMenu(options) {
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		
 		qm = quickMenuElementFromNodeTree( qm.rootNode, false );
+		
+		qm.insertBreaks(qm.columns);
 
 		resizeMenu({toggleSingleColumn: true});
 	}
@@ -586,6 +588,8 @@ function makeQuickMenu(options) {
 				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
 				else _tile.classList.remove("singleColumn");
 			});
+			
+			qm.insertBreaks(qm.columns);
 		}
 
 		// check if any search engines exist and link to Options if none
@@ -1428,7 +1432,7 @@ function makeQuickMenu(options) {
 
 					if (method === 'openFolder' || e.openFolder) { 
 						let quickMenuElement = quickMenuElementFromNodeTree(node);
-						
+
 						resizeMenu({openFolder: true});
 
 						return;

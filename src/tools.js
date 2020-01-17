@@ -285,7 +285,9 @@ var QMtools = [
 			
 			let timer;
 			tile.addEventListener('dragenter', e => {
-				timer = setTimeout(() => qm.toggleDisplayMode(), 1000);
+				timer = setTimeout(() => {
+					qm.toggleDisplayMode();
+				}, 1000);
 				tile.addEventListener('dragleave', e => clearTimeout(timer), {once: true});
 			});
 				
