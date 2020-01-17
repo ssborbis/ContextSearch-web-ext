@@ -113,6 +113,9 @@ BODY {
 	/* background: linear-gradient(135deg, #fefcea 0%,#f1da36 100%); */
 	color:blue;
 }
+.tile.groupFolder {
+	background-color: var(--group-color);
+}
 .tile:hover, #optionsButton:hover, #closeButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: var(--hover);
 	border-color: var(--hover);

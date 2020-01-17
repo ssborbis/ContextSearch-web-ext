@@ -121,36 +121,48 @@ function toolsHandler(qm) {
 	
 	if ( !isRootNode ) return;
 	
+	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
+	
 	let position = userOptions.quickMenuToolsPosition;
 	
 	// set tools position
 	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' ) 
 		createToolsBar(qm);
 	
-	if (  // match quickmenu and searchbar tools
-		((type === "searchbar" && userOptions.quickMenuColumns === qm.columns) ||
-		(type === "sidebar" && userOptions.quickMenuColumns === qm.columns)) && 
-		userOptions.quickMenuToolsPosition === "top" && !qm.singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
-
-		qm.toolsArray.forEach( (tool, index) => {
-			
-			qm.insertBefore(tool, qm.children.item(index))
-			
-			tool.dataset.hidden = false;
-			tool.style.display = null;
-
-			if ( tool.dataset.show ) return;
-
-			tool.dataset.disabled = true;
-			tool.disabled = true;
-			tool.title = "";
-		});	
-	} else {
-		qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );
+	if ( !userOptions.quickMenuToolsAsToolbar ) {
+		if ( position === "top")
+			qm.toolsArray.forEach( (tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+		else if ( position === "bottom" )
+			qm.toolsArray.forEach( (tool, index) => qm.appendChild( tool ));
 	}
 	
-	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
+	// if (  // match quickmenu and searchbar tools
+		// ((type === "searchbar" && userOptions.quickMenuColumns === qm.columns) ||
+		// (type === "sidebar" && userOptions.quickMenuColumns === qm.columns)) && 
+		// userOptions.quickMenuToolsPosition === "top" && !qm.singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
+
+		// qm.toolsArray.forEach( (tool, index) => {
+			
+			// qm.insertBefore(tool, qm.children.item(index))
+			
+			// tool.dataset.hidden = false;
+			// tool.style.display = null;
+
+			// if ( tool.dataset.show ) return;
+
+			// tool.dataset.disabled = true;
+			// tool.disabled = true;
+			// tool.title = "";
+		// });	
+	// } else {
+		// qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );
+	// }
 	
+	qm.toolsArray.forEach( tool => {
+
+		if ( qm.singleColumn ) tool.classList.add('singleColumn');
+	});
+
 	qm.insertBreaks(qm.columns);
 }
 

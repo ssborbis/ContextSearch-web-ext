@@ -335,6 +335,13 @@ if ( window != top ) {
 				break;
 		}
 	});
+	
+	window.addEventListener('message', e => {
+		if ( e.data.action !== "tile_clicked" ) return;
+		
+		if ( userOptions.sideBar.closeAfterSearch )
+			closeSideBar();
+	});
 
 	document.addEventListener("fullscreenchange", e => {
 		

@@ -1,7 +1,8 @@
 var QMtools = [
 	{
 		name: 'close', 
-		icon: "icons/close.png", 
+		icon: "icons/close.png",
+		context: ["quickmenu"],
 		title: browser.i18n.getMessage('tools_Close'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
@@ -17,6 +18,7 @@ var QMtools = [
 		name: 'copy', 
 		icon: "icons/clipboard.png", 
 		title: browser.i18n.getMessage('tools_Copy'),
+		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 					
@@ -36,6 +38,8 @@ var QMtools = [
 
 				document.execCommand("copy");
 				
+				input.parentNode.removeChild(input);
+				
 				// chrome requires execCommand be run from background
 				browser.runtime.sendMessage({action: 'copy', msg: sb.value});
 				
@@ -52,14 +56,17 @@ var QMtools = [
 		name: 'link', 
 		icon: "icons/link.svg", 
 		title: browser.i18n.getMessage('tools_OpenAsLink'),
+		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 
 			// enable/disable link button on very basic 'is it a link' rules
 			function setDisabled() {
 				if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
+					tile.disabled = true;
 					tile.dataset.disabled = true;
 				} else {
+					delete tile.disabled;
 					tile.dataset.disabled = false;
 				}
 			}
@@ -94,6 +101,7 @@ var QMtools = [
 		name: 'disable', 
 		icon: "icons/power.svg", 
 		title: browser.i18n.getMessage('tools_Disable'),
+		context: ["quickmenu"],
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 			addTileEventHandlers(tile, e => {
@@ -116,6 +124,7 @@ var QMtools = [
 		name: 'lock', 
 		icon: "icons/lock.png", 
 		title: browser.i18n.getMessage('tools_Lock'),
+		context: ["quickmenu"],
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 			
@@ -151,14 +160,10 @@ var QMtools = [
 	{
 		name: 'lastused', 
 		icon: "icons/history.png", 
-		title: browser.i18n.getMessage('tools_lastused'),
-		
+		title: browser.i18n.getMessage('tools_lastused'),		
 		init: function() {
 
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
-			
-			// show in sidebar / toolbar
-			tile.dataset.show = true;
 			
 			function updateIcon() {
 
@@ -216,6 +221,7 @@ var QMtools = [
 		name: 'repeatsearch',
 		icon: "icons/repeatsearch.svg",
 		title: browser.i18n.getMessage('tools_repeatsearch'),
+		context: ["quickmenu", "sidebar"],
 		init: function() {
 
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
@@ -272,10 +278,7 @@ var QMtools = [
 		title: browser.i18n.getMessage('toggle_view') || "Grid / Text",
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
-			
-			// show in sidebar / toolbar
-			tile.dataset.show = true;
-			
+
 			tile.keepOpen = true; // prevent close on click
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );

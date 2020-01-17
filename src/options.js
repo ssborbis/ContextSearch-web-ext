@@ -240,6 +240,7 @@ function restoreOptions() {
 		$('#s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
+		$('#cb_sideBarCloseAfterSearch').checked = userOptions.sideBar.closeAfterSearch;
 		
 		$('#t_userStyles').value = userOptions.userStyles;
 		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
@@ -490,7 +491,8 @@ function saveOptions(e) {
 			windowType: userOptions.sideBar.windowType,
 			offsets: userOptions.sideBar.offsets,
 			position: userOptions.sideBar.position,
-			height: userOptions.sideBar.height
+			height: userOptions.sideBar.height,
+			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked
 		},
 		
 		highLight: {

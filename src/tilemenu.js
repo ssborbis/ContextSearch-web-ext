@@ -14,6 +14,8 @@ var type;
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
+var moreLessStatus = [];
+
 function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
@@ -62,8 +64,10 @@ function addTileEventHandlers(_tile, handler) {
 		handler(e);
 		
 		// check for locked / Keep Menu Open 
-		if ( !keepMenuOpen(e) && !_tile.keepOpen )
+		if ( !keepMenuOpen(e) && !_tile.keepOpen ) {
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+			window.parent.postMessage({action: "tile_clicked"}, "*");
+		}
 		
 		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
 
@@ -483,6 +487,8 @@ function makeQuickMenu(options) {
 			
 			let _tool = QMtools.find( t => t.name === tool.name );
 			if ( _tool ) toolsArray.push(_tool.init());
+			
+			toolsArray[toolsArray.length - 1].context = _tool.context;
 
 		});
 
@@ -490,6 +496,11 @@ function makeQuickMenu(options) {
 			tool.dataset.type = 'tool';
 			tool.dataset.title = tool.title;
 			tool.classList.add('tile');
+
+			if ( tool.context && !tool.context.includes(type) ) {
+				tool.disabled = true;
+				tool.dataset.disabled = true;
+			}
 		});
 
 		return toolsArray;
@@ -701,6 +712,7 @@ function makeQuickMenu(options) {
 			});
 			div.addEventListener('dragover', e => {
 				e.preventDefault();
+				
 				let targetDiv = getTargetElement(e.target);
 				if ( !targetDiv ) return;
 				let dragDiv = document.getElementById('dragDiv');
@@ -826,7 +838,7 @@ function makeQuickMenu(options) {
 				qm.scrollTop = scrollPos;
 
 				resizeMenu({tileDrop: true});
-					
+				
 			});
 			
 			div.addEventListener('drop', e => {
@@ -979,6 +991,14 @@ function makeQuickMenu(options) {
 			
 			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''})
 		});
+		
+		let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
+
+		moreLessStatus.forEach( id => {
+			let moreTile = moreTiles.find( div => div.dataset.parentid === id );
+			
+			if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
+		});
 
 		return qm;
 	}
@@ -1065,20 +1085,29 @@ function makeQuickMenu(options) {
 			tileArray.push(tile);
 		}
 		
-		function makeMoreLessFromTiles( _tiles, limit, id ) {
-
-			if ( !limit ) return _tiles;
+		function makeMoreLessFromTiles( _tiles, limit ) {
 			
 			let node = _tiles.find( _tile => _tile.node ).node.parent;
-	
+			
+			if ( !node.id ) node.id = gen();
+			
+			let label = nodeToTile( node );
+			label.style.setProperty("--group-color", node.groupColor || null);
+			label.classList.add("groupFolder");
+			label.style.textAlign='center';
+			_tiles.unshift( label );
+
+			if ( !limit ) return _tiles;
+
 			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
 
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "more";
+			moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 			moreTile.style.setProperty("--group-color",node.groupColor);
 			moreTile.classList.add("groupFolder");
 			moreTile.node = { parent: node };
-			moreTile.dataset.parentid = id || node.title + Date.now();
+			moreTile.dataset.parentid = node.id;
 			
 			moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
 			moreTile.setAttribute('draggable', false);
@@ -1097,10 +1126,13 @@ function makeQuickMenu(options) {
 				
 				qm.insertBreaks(qm.columns);	
 				moreTile.onmouseup = less;	
-				moreTile.title = "less";
+				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
 				moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
 				resizeMenu({groupMore: true});
+	
+				if ( !moreLessStatus.includes( node.id ) )
+					moreLessStatus.push(node.id);
 			}
 			
 			function less() {
@@ -1117,10 +1149,12 @@ function makeQuickMenu(options) {
 				
 				qm.insertBreaks(qm.columns);
 				moreTile.onmouseup = more;
-				moreTile.title = "more";
+				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
 				moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
 				resizeMenu({groupLess: true});
+				
+				moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
 			}
 
 			moreTile.onmouseup = more;
@@ -1204,6 +1238,33 @@ function makeQuickMenu(options) {
 			}
 
 		});
+		
+		// (() => {
+			// let tools = qm.toolsArray;
+			
+			// tools.forEach( tool => {
+				
+				// tool.setAttribute('draggable', true);
+
+				// tool.addEventListener('dragstart', e => {
+					// // e.dataTransfer.setData("text", "");
+					// // let img = new Image();
+					// // img.src = browser.runtime.getURL('icons/transparent.gif');
+					// // e.dataTransfer.setDragImage(img, 0, 0);
+					// // tool.id = 'dragDiv';
+					// // tool.style.opacity = .5;
+				// });
+				// tool.addEventListener('dragenter', e => {
+				// });
+				// tool.addEventListener('dragover', e => {
+					// e.preventDefault();
+				// });
+				// tool.addEventListener('dragend', e => {
+				// });
+				// tool.addEventListener('drop', e => {
+				// });
+			// });
+		// })();
 		
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
@@ -1435,6 +1496,13 @@ function makeQuickMenu(options) {
 						}
 					});
 				});
+				
+				break;
+				
+			case "grouplabel":
+				tile = document.createElement('div');
+				tile.dataset.type = 'grouplabel';	
+				tile.dataset.title = node.title;
 				
 				break;
 		}
