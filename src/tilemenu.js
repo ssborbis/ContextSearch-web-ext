@@ -1091,6 +1091,11 @@ function makeQuickMenu(options) {
 		
 		function makeMoreLessFromTiles( _tiles, limit ) {
 			
+			function addSeparators() {
+				_tiles.unshift( nodeToTile( {type: "separator"}) );
+				_tiles.push( nodeToTile( {type: "separator"}) );
+			}
+			
 			let node = _tiles.find( _tile => _tile.node ).node.parent;
 			
 			if ( !node.id ) node.id = gen();
@@ -1101,7 +1106,10 @@ function makeQuickMenu(options) {
 			label.style.textAlign='center';
 			_tiles.unshift( label );
 
-			if ( !limit ) return _tiles;
+			if ( !limit ) {
+				addSeparators();
+				return _tiles;
+			}
 
 			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
 
@@ -1188,8 +1196,7 @@ function makeQuickMenu(options) {
 			
 			_tiles.push( moreTile );
 
-			_tiles.unshift( nodeToTile( {type: "separator"}) );
-			_tiles.push( nodeToTile( {type: "separator"}) );
+			addSeparators();
 			
 			return _tiles;
 		}
