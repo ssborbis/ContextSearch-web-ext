@@ -35,10 +35,13 @@ BODY {
 	background-position: center;
 	background-repeat: no-repeat;
 	/* transition: background-color .25s ease-out, width .075s; */
-	transition: background-color .25s ease-out;
+	transition: background-color .25s ease-out, opacity .25s linear;
 }
 .tile[data-disabled="true"] {
 	opacity:.1;
+}
+.tile.dragDisabled {
+	opacity:.5;
 }
 .tile[data-locked="true"] {
 	background-color:#dee7f0;

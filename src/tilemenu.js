@@ -519,7 +519,8 @@ function makeQuickMenu(options) {
 				img.src = browser.runtime.getURL('icons/transparent.gif');
 				e.dataTransfer.setDragImage(img, 0, 0);
 				tool.id = 'dragDiv';
-				// tool.style.opacity = .5;
+				
+				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
 			});
 			tool.addEventListener('dragenter', e => {
 				e.preventDefault();
@@ -531,7 +532,10 @@ function makeQuickMenu(options) {
 				if ( getDragDiv().dataset.type !== "tool" ) return;
 			});
 			tool.addEventListener('dragend', e => {
+				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );
+				
 				if ( getDragDiv().dataset.type !== "tool" ) return;
+				
 			});
 			tool.addEventListener('drop', e => {	
 				e.preventDefault();
@@ -681,6 +685,10 @@ function makeQuickMenu(options) {
 			//[ ...div.parentNode.childNodes].filter( _div => _div.node && div.node && _div.node.parent === div.node.parent );
 			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
 		}
+		
+		function isTool(e) {
+			return ( e.dataTransfer.getData("text") === "tool" );
+		}
 
 		/* dnd */
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
@@ -727,7 +735,7 @@ function makeQuickMenu(options) {
 				e.preventDefault();
 				
 				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv ) return;
+				if ( !targetDiv || isTool(e) ) return;
 				let dragDiv = document.getElementById('dragDiv');
 
 				if ( targetDiv === dragDiv ) return;
@@ -768,7 +776,7 @@ function makeQuickMenu(options) {
 			div.addEventListener('dragenter', e => {
 
 				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv ) return;
+				if ( !targetDiv || isTool(e) ) return;
 
 				targetDiv.style.transition = 'none';
 				
@@ -802,7 +810,7 @@ function makeQuickMenu(options) {
 			});
 			div.addEventListener('dragleave', e => {
 				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv ) return;
+				if ( !targetDiv || isTool(e) ) return;
 
 				targetDiv.classList.remove('dragHover');
 				targetDiv.style.transition = null;
@@ -818,6 +826,8 @@ function makeQuickMenu(options) {
 				getGroupFolderSiblings(targetDiv).forEach( el => el.classList.remove('groupHighlight') );
 			});
 			div.addEventListener('dragend', e => {
+				
+				if ( isTool(e) ) return;
 
 				let dragDiv = document.getElementById('dragDiv');
 				
@@ -850,6 +860,8 @@ function makeQuickMenu(options) {
 			
 			div.addEventListener('drop', e => {
 				e.preventDefault();
+				
+				if ( isTool(e) ) return;
 				
 			//	console.log(e.dataTransfer, e.dataTransfer.getData("text/html"), e.dataTransfer.getData("text/x-moz-place"), e.dataTransfer.getData("text/x-moz-url"));
 			
