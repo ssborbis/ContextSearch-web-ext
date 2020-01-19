@@ -354,33 +354,33 @@ window.addEventListener('message', e => {
 	}
 });
 
-document.getElementById('menuBar').addEventListener('dblclick', e => {
+mb.addEventListener('dblclick', e => {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 });
 
-document.getElementById('menuBar').addEventListener('mousedown', e => {
+mb.addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
-	document.getElementById('menuBar').moving = true;
+	mb.moving = true;
 	window.parent.postMessage({action: "handle_dragstart", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
 window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
-	document.getElementById('menuBar').moving = false;
+	mb.moving = false;
 	window.parent.postMessage({action: "handle_dragend", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
 window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
-	if ( !document.getElementById('menuBar').moving ) return;
+	if ( !mb.moving ) return;
 	window.parent.postMessage({action: "handle_dragmove", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-document.getElementById('menuBar').addEventListener('dblclick', e => {
+mb.addEventListener('dblclick', e => {
 	if ( e.which !== 1 ) return;
 
 	window.parent.postMessage({action: "handle_dock", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");

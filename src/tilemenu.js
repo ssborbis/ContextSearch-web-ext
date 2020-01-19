@@ -491,6 +491,7 @@ function makeQuickMenu(options) {
 			if ( _tool ) toolsArray.push(_tool.init());
 			
 			toolsArray[toolsArray.length - 1].context = _tool.context;
+			toolsArray[toolsArray.length - 1].tool = _tool;
 
 		});
 
@@ -504,6 +505,65 @@ function makeQuickMenu(options) {
 				tool.dataset.disabled = true;
 				// tool.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/disabled.svg') + ')';
 			}
+		});
+
+		let getDragDiv = () => { return document.getElementById('dragDiv') };
+		
+		toolsArray.forEach( tool => {
+			
+			tool.setAttribute('draggable', true);
+
+			tool.addEventListener('dragstart', e => {
+				// e.dataTransfer.setData("text", "");
+				// let img = new Image();
+				// img.src = browser.runtime.getURL('icons/transparent.gif');
+				// e.dataTransfer.setDragImage(img, 0, 0);
+				tool.id = 'dragDiv';
+				// tool.style.opacity = .5;
+			});
+			tool.addEventListener('dragenter', e => {
+				e.preventDefault();
+				if ( getDragDiv().dataset.type !== "tool" ) return;
+			});
+			tool.addEventListener('dragover', e => {
+				e.preventDefault();
+				
+				if ( getDragDiv().dataset.type !== "tool" ) return;
+			});
+			tool.addEventListener('dragend', e => {
+				if ( getDragDiv().dataset.type !== "tool" ) return;
+			});
+			tool.addEventListener('drop', e => {	
+				e.preventDefault();
+				
+				if ( getDragDiv().dataset.type !== "tool" ) return;
+				
+				let side = getSide(tool, e);
+				
+				let qmt = userOptions.quickMenuTools;
+				
+				dragName = getDragDiv().tool.name;
+				targetName = e.target.tool.name;
+				
+				dragIndex = qmt.findIndex( t => t.name === dragName );
+				targetIndex = qmt.findIndex( t => t.name === targetName );
+
+				if ( side === "before" ) {
+					qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
+					// getDragDiv().parentNode.insertBefore(getDragDiv(), e.target);
+				} else {
+					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
+					// getDragDiv().parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
+				}
+				
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			
+				// rebuild menu
+				toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
+				qm.toolsArray = createToolsArray();
+				toolsHandler();
+				resizeMenu({tileDrop: true});
+			});
 		});
 
 		return toolsArray;
@@ -624,60 +684,7 @@ function makeQuickMenu(options) {
 		/* dnd */
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
-			
-			function getSideDecimal(t, e) {
-				let rect = t.getBoundingClientRect();
-				
-				if ( _singleColumn ) return ( e.y - rect.y ) / rect.height;
-				else return ( e.x - rect.x ) / rect.width;
-			}
-			
-			function getSide(t, e) {
-				let rect = t.getBoundingClientRect();
-				
-				let dec = getSideDecimal(t, e);
-				
-				if ( t.node && t.node.type === 'folder' ) {
-					if ( dec < .3 ) return "before";
-					else if ( dec > .7 ) return "after";
-					else return "middle";
-				} else {
-					if ( dec < .5 ) return "before";
-					else return "after";
-				}
-			}
-			
-			function getTargetElement(el) {		
-				while ( el.parentNode ) {
-					if ( el.node ) return el;
-					if ( el.dataset.type && ['more','less'].includes(el.dataset.type) ) return el;
-					el = el.parentNode;
-				}
-				return null;
-			}
-			
-			function getPreviousSiblingOfType(_div) {
-				let s = _div.previousSibling;
-				while( s && s.nodeName !== _div.nodeName ) s = s.previousSibling;
-				return s;
-			}
-			
-			function getNextSiblingOfType(_div) {
-				let s = _div.nextSibling;
-				while( s && s.nodeName !== _div.nodeName ) s = s.nextSibling;
-				return s;
-			}
-			
-			function isTargetBeforeGroup(_div, dec) {
-				let sibling = getPreviousSiblingOfType(_div);
-				return ( dec < .2 && ( !sibling || sibling.node.parent !== _div.node.parent ));
-			}
-			
-			function isTargetAfterGroup(_div, dec) {
-				let sibling = getNextSiblingOfType(_div);
-				return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
-			}
-			
+
 			div.setAttribute('draggable', true);
 	
 			// group move
@@ -1250,34 +1257,7 @@ function makeQuickMenu(options) {
 			}
 
 		});
-		
-		// (() => {
-			// let tools = qm.toolsArray;
-			
-			// tools.forEach( tool => {
-				
-				// tool.setAttribute('draggable', true);
 
-				// tool.addEventListener('dragstart', e => {
-					// // e.dataTransfer.setData("text", "");
-					// // let img = new Image();
-					// // img.src = browser.runtime.getURL('icons/transparent.gif');
-					// // e.dataTransfer.setDragImage(img, 0, 0);
-					// // tool.id = 'dragDiv';
-					// // tool.style.opacity = .5;
-				// });
-				// tool.addEventListener('dragenter', e => {
-				// });
-				// tool.addEventListener('dragover', e => {
-					// e.preventDefault();
-				// });
-				// tool.addEventListener('dragend', e => {
-				// });
-				// tool.addEventListener('drop', e => {
-				// });
-			// });
-		// })();
-		
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
@@ -1613,7 +1593,7 @@ function makeSearchBar() {
 		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 		
 		sb.value = message.lastSearch;
-		sb.select();
+		// sb.select();
 
 		// workaround for linux 
 		var selectInterval = setInterval( () => {
@@ -1621,7 +1601,7 @@ function makeSearchBar() {
 			if (getSelectedText(sb) == sb.value)
 				clearInterval(selectInterval);
 			else
-				sb.select();
+	;//			sb.select();
 		}, 50);
 
 	});
@@ -1840,4 +1820,57 @@ function createToolsBar(qm) {
 	toolBar.addEventListener('scroll', showScrollButtons);
 	toolBar.addEventListener('mouseenter', showScrollButtons);
 	toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null);	
+}
+
+function getSideDecimal(t, e) {
+	let rect = t.getBoundingClientRect();
+	
+	if ( qm.singleColumn ) return ( e.y - rect.y ) / rect.height;
+	else return ( e.x - rect.x ) / rect.width;
+}
+
+function getSide(t, e) {
+	let rect = t.getBoundingClientRect();
+	
+	let dec = getSideDecimal(t, e);
+	
+	if ( t.node && t.node.type === 'folder' ) {
+		if ( dec < .3 ) return "before";
+		else if ( dec > .7 ) return "after";
+		else return "middle";
+	} else {
+		if ( dec < .5 ) return "before";
+		else return "after";
+	}
+}
+
+function getTargetElement(el) {		
+	while ( el.parentNode ) {
+		if ( el.node ) return el;
+		if ( el.dataset.type && ['more','less'].includes(el.dataset.type) ) return el;
+		el = el.parentNode;
+	}
+	return null;
+}
+
+function getPreviousSiblingOfType(_div) {
+	let s = _div.previousSibling;
+	while( s && s.nodeName !== _div.nodeName ) s = s.previousSibling;
+	return s;
+}
+
+function getNextSiblingOfType(_div) {
+	let s = _div.nextSibling;
+	while( s && s.nodeName !== _div.nodeName ) s = s.nextSibling;
+	return s;
+}
+
+function isTargetBeforeGroup(_div, dec) {
+	let sibling = getPreviousSiblingOfType(_div);
+	return ( dec < .2 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+}
+
+function isTargetAfterGroup(_div, dec) {
+	let sibling = getNextSiblingOfType(_div);
+	return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
 }
