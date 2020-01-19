@@ -502,6 +502,7 @@ function makeQuickMenu(options) {
 			if ( tool.context && !tool.context.includes(type) ) {
 				tool.disabled = true;
 				tool.dataset.disabled = true;
+				// tool.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/disabled.svg') + ')';
 			}
 		});
 

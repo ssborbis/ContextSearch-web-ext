@@ -728,7 +728,7 @@ function quickMenuResize(e) {
 		if ( iframe.resizeWidget )
 			iframe.resizeWidget.setPosition();
 	
-	});
+	}, 100); // shorter interval caused menu to remain offscreen
 }
 
 window.addEventListener('message', e => {

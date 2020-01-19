@@ -862,7 +862,7 @@
   },
   
   "SearchBarCloseAterSearchTooltip": {
-    "message": "Close the Toolbar Search menu after performing a search"
+    "message": "Close the menu after performing a search"
   },
   
   "PerformASearchHeader": {

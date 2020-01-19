@@ -219,6 +219,10 @@ function toolsHandler(qm) {
 		// remove separator bookends
 		tileArray.pop();
 		tileArray.shift();
+		
+		// remove group label for root
+		if ( tileArray[0].className === "groupFolder" )
+			tileArray.shift();
 
 		// replace qm
 		qm.innerHTML = null;

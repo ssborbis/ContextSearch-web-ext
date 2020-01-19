@@ -221,7 +221,7 @@ var QMtools = [
 		name: 'repeatsearch',
 		icon: "icons/repeatsearch.svg",
 		title: browser.i18n.getMessage('tools_repeatsearch'),
-		context: ["quickmenu", "sidebar"],
+		context: ["quickmenu"],
 		init: function() {
 
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
@@ -231,8 +231,10 @@ var QMtools = [
 			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === this.name );
 
 			tile.dataset.disabled = !tool.on;
-			
+
 			document.addEventListener('quickMenuComplete', () => {
+				
+				if ( !this.context.includes(type) ) return;
 
 				// bypass displaying the menu and execute a search immedately if using repeatsearch
 				if ( tool.on ) {
