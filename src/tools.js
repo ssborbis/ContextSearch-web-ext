@@ -287,6 +287,8 @@ var QMtools = [
 			
 			let timer;
 			tile.addEventListener('dragenter', e => {
+				
+				if ( e.dataTransfer.getData("text") === "tool" ) return;
 
 				timer = setTimeout(() => {
 					qm.toggleDisplayMode();

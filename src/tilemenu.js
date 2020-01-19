@@ -514,10 +514,10 @@ function makeQuickMenu(options) {
 			tool.setAttribute('draggable', true);
 
 			tool.addEventListener('dragstart', e => {
-				// e.dataTransfer.setData("text", "");
-				// let img = new Image();
-				// img.src = browser.runtime.getURL('icons/transparent.gif');
-				// e.dataTransfer.setDragImage(img, 0, 0);
+				e.dataTransfer.setData("text", "tool");
+				let img = new Image();
+				img.src = browser.runtime.getURL('icons/transparent.gif');
+				e.dataTransfer.setDragImage(img, 0, 0);
 				tool.id = 'dragDiv';
 				// tool.style.opacity = .5;
 			});
@@ -562,6 +562,7 @@ function makeQuickMenu(options) {
 				toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
 				qm.toolsArray = createToolsArray();
 				toolsHandler();
+				qm.expandMoreTiles();
 				resizeMenu({tileDrop: true});
 			});
 		});
@@ -830,10 +831,6 @@ function makeQuickMenu(options) {
 
 				let arrow = document.getElementById('arrow');
 				if ( arrow ) arrow.style.display = 'none';
-				
-				// store expanded "more" tiles
-				let moreParents = [];
-				qm.querySelectorAll('[data-type="less"]').forEach( _div => moreParents.push(_div.node.parent) );
 
 				// store scroll position
 				let scrollPos = qm.scrollTop;
@@ -843,9 +840,7 @@ function makeQuickMenu(options) {
 				quickMenuElementFromNodeTree(qm.rootNode);
 				userOptions.enableAnimations = animation;
 
-				qm.querySelectorAll('[data-type="more"]').forEach( more => {
-					if ( moreParents.includes(more.node.parent) ) more.dispatchEvent(new MouseEvent('mouseup'));
-				});
+				qm.expandMoreTiles();
 				
 				qm.scrollTop = scrollPos;
 
@@ -1004,13 +999,25 @@ function makeQuickMenu(options) {
 			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''})
 		});
 		
-		let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
+		// let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
 
-		moreLessStatus.forEach( id => {
-			let moreTile = moreTiles.find( div => div.dataset.parentid === id );
+		// moreLessStatus.forEach( id => {
+			// let moreTile = moreTiles.find( div => div.dataset.parentid === id );
 			
-			if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
-		});
+			// if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
+		// });
+		
+		qm.expandMoreTiles = () => {
+			let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
+
+			moreLessStatus.forEach( id => {
+				let moreTile = moreTiles.find( div => div.dataset.parentid === id );
+				
+				if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
+			});
+		}
+		
+		qm.expandMoreTiles();
 
 		return qm;
 	}
