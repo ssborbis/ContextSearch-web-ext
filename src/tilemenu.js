@@ -224,6 +224,16 @@ function makeQuickMenu(options) {
 		resizeMenu({toggleSingleColumn: true});
 	}
 	
+	qm.addTitleBarTextHandler = div => {
+		
+		let tb = document.getElementById('titleBar');
+		['mouseenter','dragenter'].forEach( ev => {
+			div.addEventListener(ev, () => tb.innerText = div.title || div.dataset.title)
+		});
+		
+		div.addEventListener('mouseleave', () => tb.innerText = '');
+	}
+	
 	// folder styling hotkey
 	document.addEventListener('keydown', e => {
 		if (e.key === "." && e.ctrlKey) {
@@ -507,7 +517,8 @@ function makeQuickMenu(options) {
 			}
 		});
 
-		let getDragDiv = () => { return document.getElementById('dragDiv') };
+		let getDragDiv = () => {return document.getElementById('dragDiv')};
+		let isTool = e => e.dataTransfer.getData("text") === "tool";
 		
 		toolsArray.forEach( tool => {
 			
@@ -524,23 +535,20 @@ function makeQuickMenu(options) {
 			});
 			tool.addEventListener('dragenter', e => {
 				e.preventDefault();
-				if ( getDragDiv().dataset.type !== "tool" ) return;
+				if ( !isTool(e) ) return;
 			});
 			tool.addEventListener('dragover', e => {
 				e.preventDefault();
 				
-				if ( getDragDiv().dataset.type !== "tool" ) return;
+				if ( !isTool(e) ) return;
 			});
 			tool.addEventListener('dragend', e => {
-				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );
-				
-				if ( getDragDiv().dataset.type !== "tool" ) return;
-				
+				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
 			});
 			tool.addEventListener('drop', e => {	
 				e.preventDefault();
 				
-				if ( getDragDiv().dataset.type !== "tool" ) return;
+				if ( !isTool(e) ) return;
 				
 				let side = getSide(tool, e);
 				
@@ -552,13 +560,10 @@ function makeQuickMenu(options) {
 				dragIndex = qmt.findIndex( t => t.name === dragName );
 				targetIndex = qmt.findIndex( t => t.name === targetName );
 
-				if ( side === "before" ) {
+				if ( side === "before" ) 
 					qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
-					// getDragDiv().parentNode.insertBefore(getDragDiv(), e.target);
-				} else {
+				else
 					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
-					// getDragDiv().parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
-				}
 				
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			
@@ -570,6 +575,8 @@ function makeQuickMenu(options) {
 				resizeMenu({tileDrop: true});
 			});
 		});
+		
+		toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
 
 		return toolsArray;
 	}
@@ -577,6 +584,8 @@ function makeQuickMenu(options) {
 	qm.toolsArray = createToolsArray();
 
 	qm.insertBreaks = function insertBreaks(_columns) {
+		
+		_columns = _columns || qm.columns;
 
 		// let transition = qm.style.transition;
 		// qm.style.transition = 'none';
@@ -999,26 +1008,11 @@ function makeQuickMenu(options) {
 		});
 		
 		/* end dnd */
-		
-		toolsHandler(qm);
-		
-		// add titlebar handler
-		qm.querySelectorAll('.tile').forEach( div => {
-			['mouseenter','dragenter'].forEach( ev => {
-				div.addEventListener(ev, () => {document.getElementById('titleBar').innerText = div.title || div.dataset.title})
-			});
-			
-			div.addEventListener('mouseleave', () => {document.getElementById('titleBar').innerText = ''})
-		});
-		
-		// let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
 
-		// moreLessStatus.forEach( id => {
-			// let moreTile = moreTiles.find( div => div.dataset.parentid === id );
-			
-			// if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
-		// });
-		
+		toolsHandler(qm);
+
+		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
+
 		qm.expandMoreTiles = () => {
 			let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
 
@@ -1153,9 +1147,7 @@ function makeQuickMenu(options) {
 			
 			function more() {
 				qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
-					
-				//	if ( _div.node && _div.node.parent !== node ) return;
-				
+
 					// ignore divs not associated with this more tile
 					if ( _div.moreTile !== moreTile ) return;
 					
@@ -1176,9 +1168,7 @@ function makeQuickMenu(options) {
 			
 			function less() {
 				qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
-					
-				//	if ( _div.node && _div.node.parent !== node ) return;
-				
+
 					// ignore divs not associated with this more tile
 					if ( _div.moreTile !== moreTile ) return;
 					
@@ -1268,11 +1258,6 @@ function makeQuickMenu(options) {
 				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
 				
 				tileArray = tileArray.concat(groupTiles);
-
-				// tile.style.setProperty("--group-color",tile.node.groupColor);
-				// tile.classList.add("groupFolder");
-				
-				// tile.draggable = false;
 			}
 
 		});
@@ -1798,6 +1783,13 @@ function createToolsBar(qm) {
 	
 	// clear the old tools bar
 	toolBar.innerHTML = null;
+	
+	if ( qm.toolsArray.length === 0 ) return;
+	
+	qm.toolsArray.forEach( tool => {
+		tool.className = 'tile';
+		toolBar.appendChild(tool);
+	});
 
 	let ls = document.createElement('span');
 	ls.innerHTML = "&#9668;";		
@@ -1809,6 +1801,9 @@ function createToolsBar(qm) {
 	rs.style.right = 0;
 	toolBar.appendChild(rs);
 	
+	ls.className = rs.className = "toolBarArrow";
+	ls.style.height = rs.style.height = ls.style.lineHeight = rs.style.lineHeight = qm.toolsArray[0].offsetHeight + "px";
+	
 	let mouseoverInterval = null;
 	rs.addEventListener('mouseenter', e => {
 		mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
@@ -1819,12 +1814,7 @@ function createToolsBar(qm) {
 	});
 	
 	[rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
-	
-	qm.toolsArray.forEach( tool => {
-		tool.className = 'tile';
-		toolBar.appendChild(tool);
-	});
-	
+
 	function showScrollButtons() {
 		ls.style.display = toolBar.scrollLeft ? 'inline-block' : null;
 		rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : null;

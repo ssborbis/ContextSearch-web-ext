@@ -1549,6 +1549,7 @@ const defaultUserOptions = {
 	quickMenu: true,
 	quickMenuColumns: 6,
 	quickMenuRows: 1,
+	quickMenuRowsSingleColumn: 6,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnHotkey: false,

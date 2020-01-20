@@ -1,12 +1,14 @@
 :root {
     --hover: #666667;
+	--background: #323234;
+	--border: #444;
 }
 BODY { 
-    background-color:#323234;
+    background-color:var(--background);
     color:#f9f9fa; 
 }
 .tile {
-    border-color:#444;
+    border-color:var(--border);
 }
 #suggestions, #searchBar { 
     background-color:#454547;

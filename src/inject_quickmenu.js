@@ -647,7 +647,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 						// set prefs
 						if ( resizeWidget.options.allowHorizontal ) userOptions.quickMenuColumns = o.columns;
-						if ( resizeWidget.options.allowVertical ) userOptions.quickMenuRows = o.rows;
+						if ( resizeWidget.options.allowVertical ) {
+							
+							// check for singleColumn
+							if ( resizeWidget.options.allowHorizontal )
+								userOptions.quickMenuRows = o.rows;
+							else
+								userOptions.quickMenuRowsSingleColumn = o.rows;
+						}
 
 						// rebuild menu with new dimensions
 						qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));

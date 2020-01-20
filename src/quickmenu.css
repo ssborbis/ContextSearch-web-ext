@@ -146,6 +146,8 @@ BODY {
 	border-right: 12px solid transparent; 
 	border-top: 12px solid #6ec179;
 	z-index:2;
+	opacity:.5;
+	border-top-color:var(--select);
 }
 #arrow[data-side="before"] {
 	left: calc( var(--target-left) - 12px);
@@ -314,13 +316,6 @@ BODY {
 	overflow-x:hidden;
 	white-space: nowrap;
 }
-#toolBar SPAN {
-	background-color:var(--background);
-	border:1px solid var(--border);
-	display:none;
-	position:absolute;
-	z-index:2;
-}
 #toolBar .tile {
 	border:none;
 }
@@ -347,4 +342,14 @@ BODY {
 }
 .groupHighlight {
 	border: 1px dotted var(--select) !important;
+}
+.toolBarArrow {
+	border:1px solid var(--border);
+	display:none;
+	position:absolute;
+	z-index:2;
+	padding: 0 2px;
+	color: var(--select);
+	background-color:var(--background);
+	border:none;
 }

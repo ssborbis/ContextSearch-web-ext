@@ -138,29 +138,7 @@ function toolsHandler(qm) {
 		else if ( position === "bottom" )
 			qm.toolsArray.forEach( (tool, index) => qm.appendChild( tool ));
 	}
-	
-	// if (  // match quickmenu and searchbar tools
-		// ((type === "searchbar" && userOptions.quickMenuColumns === qm.columns) ||
-		// (type === "sidebar" && userOptions.quickMenuColumns === qm.columns)) && 
-		// userOptions.quickMenuToolsPosition === "top" && !qm.singleColumn && isRootNode && qm.querySelectorAll('[data-type="tool"]').length !== qm.columns && !userOptions.quickMenuToolsAsToolbar) {
 
-		// qm.toolsArray.forEach( (tool, index) => {
-			
-			// qm.insertBefore(tool, qm.children.item(index))
-			
-			// tool.dataset.hidden = false;
-			// tool.style.display = null;
-
-			// if ( tool.dataset.show ) return;
-
-			// tool.dataset.disabled = true;
-			// tool.disabled = true;
-			// tool.title = "";
-		// });	
-	// } else {
-		// qm.querySelectorAll('[data-type="tool"]').forEach( tool => tool.parentNode.removeChild(tool) );
-	// }
-	
 	qm.toolsArray.forEach( tool => {
 		if ( qm.singleColumn && !userOptions.quickMenuToolsAsToolbar ) tool.classList.add('singleColumn');
 	});
@@ -328,28 +306,28 @@ document.getElementById('closeButton').addEventListener('click', e => {
 		window.close();
 });
 
-document.getElementById('menuBar').addEventListener('mousedown', e => {
+mb.addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
-	document.getElementById('menuBar').moving = true;
+	mb.moving = true;
 	window.parent.postMessage({action: "handle_dragstart", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
 window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
-	document.getElementById('menuBar').moving = false;
+	mb.moving = false;
 	window.parent.postMessage({action: "handle_dragend", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
 window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
-	if ( !document.getElementById('menuBar').moving ) return;
+	if ( !mb.moving ) return;
 	window.parent.postMessage({action: "handle_dragmove", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
-document.getElementById('menuBar').addEventListener('dblclick', e => {
+mb.addEventListener('dblclick', e => {
 	if ( e.which !== 1 ) return;
 
 	window.parent.postMessage({action: "handle_dock", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");

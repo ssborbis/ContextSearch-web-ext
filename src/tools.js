@@ -191,7 +191,7 @@ var QMtools = [
 					}() || browser.runtime.getURL('icons/search.svg');
 					
 					tile.style.backgroundImage = `url(${icon})`;
-					tile.title = node.title;
+					tile.title = tile.dataset.title = "«" + node.title + "»";
 				} else
 					tile.dataset.disabled = true;
 			}

@@ -117,7 +117,7 @@ function resizeMenu(o) {
 	tb = document.getElementById('titleBar');
 	toolBar = document.getElementById('toolBar');
 
-	let initialHeight = tileSize.height * userOptions.quickMenuRows;
+	let initialHeight = tileSize.height * ((qm.singleColumn) ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows);
 	maxHeight = o.maxHeight || maxHeight || Number.MAX_SAFE_INTEGER;
 
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
@@ -175,7 +175,7 @@ function toolsHandler(qm) {
 	
 	let moreTileID = userOptions.nodeTree.id;
 	
-	if ( qm.rootNode.parent ) return; // has parent = child node
+	if ( ! userOptions.quickMenuToolsAsToolbar && qm.rootNode.parent ) return; // has parent = subfolder
 	
 	let position = userOptions.quickMenuToolsPosition;
 
@@ -208,7 +208,7 @@ function toolsHandler(qm) {
 			qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
 	}
 
-	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRows : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 
 	// more tile
 	if ( getVisibleTiles().length > visibleTileCountMax ) {
@@ -227,8 +227,7 @@ function toolsHandler(qm) {
 		// replace qm
 		qm.innerHTML = null;
 		tileArray.forEach( tile => qm.appendChild( tile ) );
-		// qm.appendChild( tileArray );
-		
+
 		// qm moreTile is special case
 		moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
 		moreTile.classList.add('tile');
