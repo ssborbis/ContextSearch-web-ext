@@ -119,10 +119,8 @@ function toolsHandler(qm) {
 	toolBar = document.getElementById('toolBar');
 	
 	if ( !qm ) return;
-
-	let isRootNode = !qm.rootNode.parent;
 	
-	if ( !isRootNode ) return;
+	if ( ! userOptions.quickMenuToolsAsToolbar && qm.rootNode.parent ) return; // has parent = subfolder
 	
 	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
 	
