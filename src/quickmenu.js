@@ -211,7 +211,7 @@ function toolsHandler(qm) {
 	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows * userOptions.quickMenuColumns;
 
 	// more tile
-	if ( getVisibleTiles().length > visibleTileCountMax ) {
+	if ( getVisibleTiles().length > visibleTileCountMax && !qm.rootNode.parent ) {
 
 		let tileArray = qm.querySelectorAll('.tile');
 		tileArray = qm.makeMoreLessFromTiles([...tileArray], visibleTileCountMax);
@@ -258,7 +258,7 @@ function toolsHandler(qm) {
 		});
 	}
 	
-	qm.insertBreaks(qm.columns);
+	qm.insertBreaks();
 }
 	
 document.addEventListener("DOMContentLoaded", () => {
@@ -326,7 +326,7 @@ window.addEventListener('message', e => {
 			qm.columns = qm.singleColumn ? 1 : e.data.columns;
 			
 			toolsHandler();
-			qm.insertBreaks(qm.columns);
+			// qm.insertBreaks(qm.columns);
 
 			qm.setMinWidth();
 			

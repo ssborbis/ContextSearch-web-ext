@@ -141,7 +141,7 @@ function toolsHandler(qm) {
 		if ( qm.singleColumn && !userOptions.quickMenuToolsAsToolbar ) tool.classList.add('singleColumn');
 	});
 
-	qm.insertBreaks(qm.columns);
+	qm.insertBreaks();
 }
 
 function toolBarResize() {
@@ -152,7 +152,7 @@ function toolBarResize() {
 	qm.style.height = null;
 	sg.style.width = null;
 	
-	qm.insertBreaks(qm.columns); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
+	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 

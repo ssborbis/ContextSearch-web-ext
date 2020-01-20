@@ -219,7 +219,7 @@ function makeQuickMenu(options) {
 		
 		qm = quickMenuElementFromNodeTree( qm.rootNode, false );
 		
-		qm.insertBreaks(qm.columns);
+		qm.insertBreaks();
 
 		resizeMenu({toggleSingleColumn: true});
 	}
@@ -664,7 +664,7 @@ function makeQuickMenu(options) {
 				else _tile.classList.remove("singleColumn");
 			});
 			
-			qm.insertBreaks(qm.columns);
+			qm.insertBreaks();
 		}
 
 		// check if any search engines exist and link to Options if none
@@ -1117,9 +1117,15 @@ function makeQuickMenu(options) {
 				_tiles.push( nodeToTile( {type: "separator"}) );
 			}
 			
-			let node = _tiles.find( _tile => _tile.node ).node.parent;
+			let firstTile = _tiles.find( _tile => _tile.node );
 			
-			if ( !node.id ) node.id = gen();
+			if ( !firstTile ) return _tiles;
+			
+			let node = firstTile.node.parent;
+			
+			if (!node) return _tiles;
+			
+			if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 			
 			let label = nodeToTile( node );
 			label.style.setProperty("--group-color", node.groupColor || null);
@@ -1155,7 +1161,7 @@ function makeQuickMenu(options) {
 					_div.style.display = null;
 				});
 				
-				qm.insertBreaks(qm.columns);	
+				qm.insertBreaks();	
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
@@ -1176,7 +1182,7 @@ function makeQuickMenu(options) {
 					_div.style.display = "none";
 				});
 				
-				qm.insertBreaks(qm.columns);
+				qm.insertBreaks();
 				moreTile.onmouseup = more;
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
@@ -1423,7 +1429,7 @@ function makeQuickMenu(options) {
 					if (method === 'noAction') return;
 
 					if (method === 'openFolder' || e.openFolder) { 
-						let quickMenuElement = quickMenuElementFromNodeTree(node);
+						qm = quickMenuElementFromNodeTree(node);
 
 						resizeMenu({openFolder: true});
 
