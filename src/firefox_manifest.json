@@ -75,7 +75,8 @@
 	"web_accessible_resources": [],
 	"browser_action": {
 		"default_title": "ContextSearch",
-		"default_icon": "icons/icon48.png"
+		"default_icon": "icons/icon48.png",
+		"default_popup": "searchbar.html"
 	},
 	"sidebar_action": {
 		"default_icon": {

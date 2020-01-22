@@ -498,10 +498,12 @@ function makeQuickMenu(options) {
 			if (tool.disabled) return;
 			
 			let _tool = QMtools.find( t => t.name === tool.name );
-			if ( _tool ) toolsArray.push(_tool.init());
+			if ( _tool ) {
+				toolsArray.push(_tool.init());
 			
-			toolsArray[toolsArray.length - 1].context = _tool.context;
-			toolsArray[toolsArray.length - 1].tool = _tool;
+				toolsArray[toolsArray.length - 1].context = _tool.context;
+				toolsArray[toolsArray.length - 1].tool = _tool;
+			}
 
 		});
 
@@ -1211,7 +1213,7 @@ function makeQuickMenu(options) {
 				moreTile.classList.remove('tile');
 				moreTile.classList.add('groupLabelMoreTile');
 				
-				['mouseover', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave', 'click'].forEach( _e => {
+				['mouseup', 'click'].forEach( _e => {
 					moreTile.addEventListener(_e, e => e.stopPropagation() );
 				});
 				
@@ -1221,9 +1223,7 @@ function makeQuickMenu(options) {
 				_tiles.push( moreTile );
 
 			addSeparators();
-			
-			
-			
+
 			return _tiles;
 		}
 	

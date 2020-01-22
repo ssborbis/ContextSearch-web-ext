@@ -1114,6 +1114,40 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</section>
 				
 				<section>
+<p class="header1" data-i18n="Suggestions">Suggestions</p>
+				<div class="option">
+					<label class="container" data-i18n="ShowSuggestions">
+						<input type="checkbox" id="cb_searchBarSuggestions" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="ShowSuggestionsTooltip">Fetch search suggestions from Google and display with search history in the search toolbar</div>
+				</div>
+				
+				</section><section>
+<p class="header1" data-i18n="History">History</p>
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="cb_searchBarDisplayLastSearch" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableDisplayPreviousSearchTooltip">Display the last used search terms in the search box</div>
+				</div>
+				<div class="option">
+					<label class="container" data-i18n="EnableHistory">
+						<input type="checkbox" id="cb_searchBarEnableHistory" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="EnableHistoryTooltip">Remember search terms and display them with search suggestions</div>
+				</div>
+				
+				<div class="option">
+					<div id="d_clearSearchHistory"><img src="/icons/delete.png" style="height:20px;vertical-align:middle" /><span class="description" data-i18n="ClearSearchHistory">Clear Search History</span>
+					</div>
+				</div>
+				
+				</section>
+				
+				<section>
 				<p class="header1" data-i18n="UserStyles">User Styles</p>
 				<div class="option">
 					<label class="container">
@@ -1143,6 +1177,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 			<div class="tabcontent" id="contextMenuTab">
 
 				<div class="blobContainerHeader" data-i18n="ContextMenu"><img src="icons/context_menu.png" />Context Menu</div>
+				<section>
+					<p class="header1" data-i18n="General">General</p>
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="cb_contextMenu" />
@@ -1160,6 +1196,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 					<div class="description" data-i18n="AddCustomSearchMenuTooltip">Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases</div>
 				</div>
+				
+				</section>
 
 				<section>
 				<p class="header1" data-i18n="SearchActionsHeader">Search Actions</p>
@@ -1247,7 +1285,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<div class="description" data-i18n="MouseHelp">Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus</div>
 					</div>
 				</div>
-				
+				<section>
+				<p class="header1" data-i18n="General">General</p>
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="cb_quickMenu" />
@@ -1279,6 +1318,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 					<div class="description" data-i18n="EnableOnImages">Enable on images</div>
 				</div>
+				</section>
 
 				<section>
 				<p class="header1" data-i18n="Layout">Layout</p>
@@ -1798,37 +1838,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 				</div>
 				
-				</section><section>
-<p class="header1" data-i18n="Suggestions">Suggestions</p>
-				<div class="option">
-					<label class="container" data-i18n="ShowSuggestions">
-						<input type="checkbox" id="cb_searchBarSuggestions" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="ShowSuggestionsTooltip">Fetch search suggestions from Google and display with search history in the search toolbar</div>
-				</div>
-				
-				</section><section>
-<p class="header1" data-i18n="History">History</p>
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_searchBarDisplayLastSearch" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableDisplayPreviousSearchTooltip">Display the last used search terms in the search box</div>
-				</div>
-				<div class="option">
-					<label class="container" data-i18n="EnableHistory">
-						<input type="checkbox" id="cb_searchBarEnableHistory" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableHistoryTooltip">Remember search terms and display them with search suggestions</div>
-				</div>
-				
-				<div class="option">
-					<div id="d_clearSearchHistory"><img src="/icons/delete.png" style="height:20px;vertical-align:middle" /><span class="description" data-i18n="ClearSearchHistory">Clear Search History</span>
-					</div>
-					</div>
+				</section>
 				</div>
 				<div class="tabcontent" id="sideBarTab">
 					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</div>
@@ -2002,6 +2012,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<div class="tabcontent" id="highLightSearchResultsTab">
 					<div class="blobContainerHeader" data-i18n="SearchResults"><img src="icons/highlight.svg" />Search Results</div>
 					
+					<section>
+					<p class="header1" data-i18n="General">General</p>
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="cb_highLightEnabled" />
