@@ -591,7 +591,8 @@ function saveOptions(e) {
 		searchBarTheme: $('#s_searchBarTheme').value,
 		
 		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
-		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value)
+		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
+		groupLabelMoreTile: userOptions.groupLabelMoreTile
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

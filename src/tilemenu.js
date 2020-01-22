@@ -1206,9 +1206,23 @@ function makeQuickMenu(options) {
 				count++;
 			});
 			
-			_tiles.push( moreTile );
+			if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
+				
+				moreTile.classList.remove('tile');
+				moreTile.classList.add('groupLabelMoreTile');
+				
+				['mouseover', 'mousedown', 'mouseup', 'mouseenter', 'mouseleave', 'click'].forEach( _e => {
+					moreTile.addEventListener(_e, e => e.stopPropagation() );
+				});
+				
+				label.appendChild(moreTile);
+				
+			} else
+				_tiles.push( moreTile );
 
 			addSeparators();
+			
+			
 			
 			return _tiles;
 		}
@@ -1247,7 +1261,7 @@ function makeQuickMenu(options) {
 				let groupTiles = makeGroupTilesFromNode( node );
 				
 				makeMoreLessFromTiles( groupTiles, node.groupLimit );
-				
+
 				// remove leading separator if consecutive groups
 				let previousNode = nodes[index - 1];
 				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);

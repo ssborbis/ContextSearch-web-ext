@@ -230,7 +230,8 @@ function toolsHandler(qm) {
 
 		// qm moreTile is special case
 		moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
-		moreTile.classList.add('tile');
+		
+		if ( moreTile ) moreTile.classList.add('tile');
 		
 		// unhide tools hidden by grouping
 		qm.toolsArray.forEach( tool => {

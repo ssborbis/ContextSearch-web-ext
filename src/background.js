@@ -1709,7 +1709,8 @@ const defaultUserOptions = {
 	enableAnimations: true,
 	
 	searchBarHistoryLength: 1024,
-	searchBarSuggestionsCount: 20
+	searchBarSuggestionsCount: 20,
+	groupLabelMoreTile: false
 };
 
 var userOptions = {};

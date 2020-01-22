@@ -353,3 +353,17 @@ BODY {
 	background-color:var(--background);
 	border:none;
 }
+.groupLabelMoreTile {
+	position:absolute;
+	width:16px;
+	height:16px;
+	right:0;
+	top:0;
+	z-index:2;
+	opacity:.25;
+	background-color:var(--background);
+	border-radius:2px;
+}
+.groupLabelMoreTile:hover {
+	opacity:1;
+}
