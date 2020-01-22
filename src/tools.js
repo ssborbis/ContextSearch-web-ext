@@ -277,7 +277,7 @@ var QMtools = [
 	{
 		name: 'toggleview', 
 		icon: "icons/quick_menu.png", 
-		title: browser.i18n.getMessage('toggle_view') || "Grid / Text",
+		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('text'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 

@@ -142,6 +142,7 @@ function restoreOptions() {
 		$('#cb_quickMenu').checked = userOptions.quickMenu;	
 		$('#n_quickMenuColumns').value = userOptions.quickMenuColumns;
 		$('#n_quickMenuRows').value = userOptions.quickMenuRows;
+		$('#n_quickMenuRowsSingleColumn').value = userOptions.quickMenuRowsSingleColumn;
 		
 		$('#b_quickMenuKey').value = userOptions.quickMenuKey;
 		$('#b_quickMenuKey').innerText = keyCodeToString(userOptions.quickMenuKey) || browser.i18n.getMessage('ClickToSet');
@@ -230,13 +231,13 @@ function restoreOptions() {
 		$('#cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		$('#cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
 		$('#cb_searchBarDisplayLastSearch').checked = userOptions.searchBarDisplayLastSearch;
-		$('#cb_searchBarUseOldStyle').checked = userOptions.searchBarUseOldStyle;
+		$('#s_searchBarDefaultView').value = userOptions.searchBarUseOldStyle ? "text" : "grid";
 		$('#cb_searchBarCloseAfterSearch').checked = userOptions.searchBarCloseAfterSearch;
-		$('#cb_quickMenuUseOldStyle').checked = userOptions.quickMenuUseOldStyle;
+		$('#s_quickMenuDefaultView').value = userOptions.quickMenuUseOldStyle ? "text" : "grid";
 		$('#n_searchBarColumns').value = userOptions.searchBarColumns;
 		
 		$('#n_sideBarColumns').value = userOptions.sideBar.columns;
-		$('#cb_sideBarUseOldStyle').checked = userOptions.sideBar.singleColumn;
+		$('#s_sideBarDefaultView').checked = userOptions.sideBar.singleColumn ? "text" : "grid";
 		$('#s_sideBarWidgetPosition').value = userOptions.sideBar.widget.position;
 		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
@@ -314,27 +315,27 @@ function restoreOptions() {
 			toggle();
 		})();
 		
-		[	
-			{cb: "#cb_quickMenuUseOldStyle", input: "#n_quickMenuColumns"},
-			{cb: "#cb_searchBarUseOldStyle", input: "#n_searchBarColumns"},
-			{cb: "#cb_sideBarUseOldStyle", input: "#n_sideBarColumns"}
-		].forEach( obj => {
-			let cb = $(obj.cb);
-			let input = $(obj.input);
+		// [	
+			// {s: "#s_quickMenuDefaultView", input: "#n_quickMenuColumns"},
+			// {s: "#s_searchBarDefaultView", input: "#n_searchBarColumns"},
+			// {s: "#s_sideBarDefaultView", input: "#n_sideBarColumns"}
+		// ].forEach( obj => {
+			// let s = $(obj.s);
+			// let input = $(obj.input);
 			
-			function toggle() {
+			// function toggle() {
 
-				if (!cb.checked) {
-					input.disabled = false;
-					input.style.opacity = null;
-				} else {
-					input.disabled = true;
-					input.style.opacity = .5;
-				}		
-			}
-			cb.addEventListener('change', toggle);
-			toggle();
-		});
+				// if (!s.value === "text") {
+					// input.disabled = false;
+					// input.style.opacity = null;
+				// } else {
+					// input.disabled = true;
+					// input.style.opacity = .5;
+				// }		
+			// }
+			// s.addEventListener('change', toggle);
+			// toggle();
+		// });
 		
 		// allow context menu on right-click
 		(() => {
@@ -384,7 +385,7 @@ function saveOptions(e) {
 		quickMenu: $('#cb_quickMenu').checked,
 		quickMenuColumns: parseInt($('#n_quickMenuColumns').value),
 		quickMenuRows: parseInt($('#n_quickMenuRows').value),
-		quickMenuRowsSingleColumn: userOptions.quickMenuRowsSingleColumn,
+		quickMenuRowsSingleColumn: parseInt($('#n_quickMenuRowsSingleColumn').value),
 		defaultGroupColor: userOptions.defaultGroupColor,
 		
 		quickMenuKey: parseInt($('#b_quickMenuKey').value),
@@ -466,11 +467,11 @@ function saveOptions(e) {
 		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
 		quickMenuToolsAsToolbar: $('#cb_quickMenuToolsAsToolbar').checked,
 
-		searchBarUseOldStyle: $('#cb_searchBarUseOldStyle').checked,
+		searchBarUseOldStyle: $('#s_searchBarDefaultView').value === "text",
 		searchBarColumns: parseInt($('#n_searchBarColumns').value),
 		searchBarCloseAfterSearch: $('#cb_searchBarCloseAfterSearch').checked,
 		
-		quickMenuUseOldStyle: $('#cb_quickMenuUseOldStyle').checked,
+		quickMenuUseOldStyle: $('#s_quickMenuDefaultView').value === "text",
 		
 		 // take directly from loaded userOptions
 		searchBarSuggestions: $('#cb_searchBarSuggestions').checked,
@@ -481,7 +482,7 @@ function saveOptions(e) {
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,
 			columns:parseInt($('#n_sideBarColumns').value),
-			singleColumn:$('#cb_sideBarUseOldStyle').checked,
+			singleColumn:$('#s_sideBarDefaultView').value === "text",
 			hotkey: [],
 			startOpen: $('#cb_sideBarStartOpen').checked,
 			widget: {
@@ -617,6 +618,11 @@ $('#n_quickMenuColumns').addEventListener('change',  e => {
 
 $('#n_quickMenuRows').addEventListener('change',  e => {
 	fixNumberInput(e.target, 5, 1, 100);
+	saveOptions(e);
+});
+
+$('#n_quickMenuRowsSingleColumn').addEventListener('change',  e => {
+	fixNumberInput(e.target, 10, 1, 100);
 	saveOptions(e);
 });
 

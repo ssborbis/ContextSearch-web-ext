@@ -1281,28 +1281,33 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</div>
 
 				<section>
-				<p class="header1" data-i18n="Columns">Columns</p>
+				<p class="header1" data-i18n="Layout">Layout</p>
+				
+				<p class="header2" data-i18n="DefaultView">Default View</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto" id="s_quickMenuDefaultView">
+						<option value="grid">Grid</option>
+						<option value="text">Text</option>
+					</select>
+					<span class="description" data-i18n="DefaultViewToolTip">Set the default display mode for the menu. Each folder view can be set separately using the grid / text tool or by editing the folder in the search engines manager</span>
+				</div>
+				<p class="header2" data-i18n="Columns">Columns</p>
 				<div class="option">
 					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice">
 					<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
 				</div>
 
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuUseOldStyle" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
-				</div>
-				</section>
-				
-				<section>
-				<p class="header1" data-i18n="Rows">Rows</p>
+				<p class="header2" data-i18n="Rows">Rows</p>
 				<div class="option">
 					<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
-					<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening</span>
+					<span class="description" data-i18n="RowsTooltip">Maximum number of rows to display on opening (grid view)</span>
+				</div>
+				<div class="option">
+					<input type="number" id="n_quickMenuRowsSingleColumn" size="2" min="1" max="99" class="inputNice">
+					<span class="description" data-i18n="RowsSingleColumnTooltip">Maximum number of rows to display on opening (text view)</span>
 				</div>
 				</section>
+
 				
 				<section>
 				<p class="header1" data-i18n="Size">Size</p>
@@ -1769,20 +1774,20 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<div class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</div>
 					
 				</section><section>
-<p class="header1" data-i18n="Columns">Columns</p>
+				<p class="header1" data-i18n="Layout">Layout</p>
+				<p class="header2" data-i18n="DefaultView">Default View</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto" id="s_searchBarDefaultView">
+						<option value="grid">Grid</option>
+						<option value="text">Text</option>
+					</select>
+					<span class="description" data-i18n="DefaultViewToolTip">Set the default display mode for the menu. Each folder view can be set separately using the grid / text tool or by editing the folder in the search engines manager</span>
+				</div>
+				<p class="header2" data-i18n="Columns">Columns</p>
 				<div class="option">
 					<input type="number" id="n_searchBarColumns" size="2" class="inputNice">
 					<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
 				</div>
-
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_searchBarUseOldStyle" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
-				</div>
-				
 				</section><section>
 <p class="header1" data-i18n="Closing">Closing</p>
 				<div class="option">
@@ -1831,20 +1836,21 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
 
 					</section><section>
-<p class="header1" data-i18n="Columns">Columns</p>
+					<p class="header1" data-i18n="Layout">Layout</p>
+				<p class="header2" data-i18n="DefaultView">Default View</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto" id="s_sideBarDefaultView">
+						<option value="grid">Grid</option>
+						<option value="text">Text</option>
+					</select>
+					<span class="description" data-i18n="DefaultViewToolTip">Set the default display mode for the menu. Each folder view can be set separately using the grid / text tool or by editing the folder in the search engines manager</span>
+				</div>
+				<p class="header2" data-i18n="Columns">Columns</p>
 					<div class="option">
 						<input type="number" id="n_sideBarColumns" size="2" class="inputNice">
 						<span class="description" data-i18n="ColumnsTooltip">Maximum number of search engine icons per row</span>
 					</div>
 
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_sideBarUseOldStyle" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<div class="description" data-i18n="SearchBarUseOldStyleTooltip">Display search engines in a single column with labels. Overrides columns setting</div>
-					</div>
-				
 					</section><section>
 <p class="header1" data-i18n="Location">Location</p>
 					<div class="option">

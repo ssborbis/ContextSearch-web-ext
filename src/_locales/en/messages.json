@@ -104,7 +104,7 @@
   },
   
   "ColumnsTooltip": {
-    "message": "Maximum number of search engine icons per row"
+    "message": "Maximum number of search engine icons per row (grid view)"
   },
   
   "Items": {
@@ -990,7 +990,12 @@
   },
   
   "RowsTooltip": {
-    "message": "Maximum number of rows to display on opening",
+    "message": "Maximum number of rows to display on opening (grid view)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "RowsSingleColumnTooltip": {
+    "message": "Maximum number of rows to display on opening (text view)",
     "description": "Quick menu rows tooltip"
   },
   
@@ -1595,6 +1600,11 @@
 
   "grouplayoutmessage": {
     "message": "note: top-tier folders only",
+    "description": ""
+  },
+
+  "toggleview": {
+    "message": "",
     "description": ""
   },
 

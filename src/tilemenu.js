@@ -587,20 +587,7 @@ function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		// let transition = qm.style.transition;
-		// qm.style.transition = 'none';
-		
-		// qm.style.setProperty("grid-template-columns", `repeat(${_columns}, 32px)`);
-		
-		// qm.style.transition = transition;
-		// return;
-
-		qm.querySelectorAll('br').forEach( br => {
-			qm.removeChild(br);
-		});
-		// qm.querySelectorAll('.tile:not([data-hidden]):nth-of-type(' + _columns + 'n)').forEach( tile => {
-			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
-		// });
+		qm.querySelectorAll('br').forEach( br => qm.removeChild(br) );
 
 		every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
 			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
@@ -1194,10 +1181,12 @@ function makeQuickMenu(options) {
 
 			moreTile.onmouseup = more;
 			
+			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1500 )};	
+			
 			moreTile.addEventListener('dragenter', e => {
-
-				let moreTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, 1500 );		
-				['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTimer), {once: true}); } );
+				moreTile.expandTimerStart();
+			
+				['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTile.expandTimer), {once: true}); } );
 			});
 
 			let count = 1;
@@ -1603,7 +1592,7 @@ function makeSearchBar() {
 		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 		
 		sb.value = message.lastSearch;
-		// sb.select();
+		sb.select();
 
 		// workaround for linux 
 		var selectInterval = setInterval( () => {
@@ -1611,7 +1600,7 @@ function makeSearchBar() {
 			if (getSelectedText(sb) == sb.value)
 				clearInterval(selectInterval);
 			else
-	;//			sb.select();
+				sb.select();
 		}, 50);
 
 	});
