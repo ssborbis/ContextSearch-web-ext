@@ -151,9 +151,11 @@ function toolBarResize() {
 	qm.style.width = null;
 	qm.style.height = null;
 	sg.style.width = null;
+	// qm.style.minWidth = qm.columns * qm.getTileSize().width + "px";
+	// qm.style.minWidth = "200px";
 	
 	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
-
+	
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 
 		if ( window.innerHeight < document.documentElement.scrollHeight ) {
@@ -167,11 +169,13 @@ function toolBarResize() {
 
 		if (qm.getBoundingClientRect().width < window.innerWidth) {
 
+			
 			// chrome min width fix
-			qm.style.width = Math.max(qm.columns * qm.getTileSize().width, document.documentElement.scrollWidth, sg.getBoundingClientRect().width) + "px";
+		//	qm.style.width = Math.max(qm.columns * qm.getTileSize().width, document.documentElement.scrollWidth, sg.getBoundingClientRect().width) + "px";
+		
+			qm.style.width = Math.max(200, document.documentElement.scrollWidth) + "px";
 			
 			// tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
-
 			let div_width = 'calc(' + 100 / qm.columns + "% - 2px)";
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 				div.style.width = div_width;

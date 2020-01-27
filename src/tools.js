@@ -164,6 +164,7 @@ var QMtools = [
 		init: function() {
 
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			tile.dataset.nocolorinvert = true;
 			
 			function updateIcon() {
 

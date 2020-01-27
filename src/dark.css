@@ -27,6 +27,9 @@ BODY {
     filter:invert(1) brightness(50%);
 	color:black;
 }
+.tile[data-type="tool"][data-nocolorinvert] {
+    filter:unset;
+}
 .tile[data-type="folder"] {
     background-color:#3293d4;
     color:#dedede;
@@ -44,4 +47,8 @@ BODY {
 }
 #optionsButton, #closeButton {
 	filter:invert(1) brightness(50%);
+}
+.tile[data-quickmenumore] {
+	filter:invert(1) brightness(50%);
+	color:black;
 }

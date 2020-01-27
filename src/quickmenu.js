@@ -179,7 +179,7 @@ function toolsHandler(qm) {
 	
 	let position = userOptions.quickMenuToolsPosition;
 
-	let moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
+	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}]"`);
 	
 	if ( moreTile ) qm.removeChild( moreTile );
 	
@@ -229,9 +229,12 @@ function toolsHandler(qm) {
 		tileArray.forEach( tile => qm.appendChild( tile ) );
 
 		// qm moreTile is special case
-		moreTile = qm.querySelector(`[data-parentid=${moreTileID}]`);
+		moreTile = qm.querySelector(`[data-parentid="${moreTileID}]"`);
 		
-		if ( moreTile ) moreTile.classList.add('tile');
+		if ( moreTile ) {
+			moreTile.classList.add('tile');
+			moreTile.dataset.quickmenumore = true;
+		}
 		
 		// unhide tools hidden by grouping
 		qm.toolsArray.forEach( tool => {
@@ -245,7 +248,7 @@ function toolsHandler(qm) {
 		});
 		
 		// collect visible se tiles
-		let visibleTiles = [...qm.querySelectorAll(`.tile:not([data-hidden="true"]):not([data-type="tool"]):not([data-parentid=${moreTileID}])`)].filter( tile => tile.style.display !== 'none' );
+		let visibleTiles = [...qm.querySelectorAll(`.tile:not([data-hidden="true"]):not([data-type="tool"]):not([data-parentid="${moreTileID}"])`)].filter( tile => tile.style.display !== 'none' );
 
 		// collect tiles to be offset by tools
 		let toolsOffset = getVisibleTiles().length - visibleTileCountMax;
