@@ -592,10 +592,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							break;
 					}
 				}
-
-				let initialOffsetX = Math.max(0, Math.min(coords.x - 2 + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio - 8 - getScrollBarWidth()));
 				
-				let initialOffsetY = Math.max(0, Math.min(coords.y - 2 + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio - 8 - getScrollBarHeight()));
+				const borderOffset = 0;
+				const resizeWidgetOffset = 8.0;
+
+				let initialOffsetX = Math.max(0, Math.min(coords.x - borderOffset + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio - resizeWidgetOffset - getScrollBarWidth()));
+				
+				let initialOffsetY = Math.max(0, Math.min(coords.y - borderOffset + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio - resizeWidgetOffset - getScrollBarHeight()));
 
 				makeDockable(qmc, {
 					windowType: "undocked",
@@ -624,7 +627,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				quickMenuResize({data: message});
 
 				setTimeout(() => { 
-					repositionOffscreenElement( qmc, {left:0, right:8, top:0, bottom:8} ); 
+					repositionOffscreenElement( qmc, {left:0, right:resizeWidgetOffset, top:0, bottom:resizeWidgetOffset} ); 
 					
 					// set proper translated position ( dock not doing this on init() ? )
 					let position = qmc.docking.getPositions(qmc.docking.getOffsets());

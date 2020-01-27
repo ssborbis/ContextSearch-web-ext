@@ -1608,6 +1608,11 @@
     "description": ""
   },
 
+  "DefaultViewToolTip": {
+    "message": "Set the default display mode for the menu. Each folder view can be set separately using the grid / text tool or by editing the folder in the search engines manager",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

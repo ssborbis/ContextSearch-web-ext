@@ -69,7 +69,8 @@ function addTileEventHandlers(_tile, handler) {
 			window.parent.postMessage({action: "tile_clicked"}, "*");
 		}
 		
-		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+		// no separate inject.js for searchbar ( toolbar )
+		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch && !keepMenuOpen(e) && !_tile.keepOpen) window.close();
 
 	});
 	

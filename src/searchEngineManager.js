@@ -463,10 +463,13 @@ function buildSearchEngineContainer() {
 				if ( e.target !== li && e.target !== img ) return;
 				
 				e.stopPropagation();
+				// get the first form of the LI and check if folder form
 				if ( li.querySelector(".editForm") ) {
 					let _form = li.querySelector(".editForm");
-					_form.closeForm();
-					return;
+					if ( _form && _form.closeForm ) {
+						_form.closeForm();
+						return;
+					}
 				}
 				
 				let _form = document.createElement('form');

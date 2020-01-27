@@ -48,7 +48,7 @@ if ( window != top ) {
 					if ( iframe.resizeWidget && e.data.singleColumn !== undefined )
 						iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
 
-					if ( e.data.size.height && !iframe.resizeWidget.options.isResizing) {
+					if ( e.data.size.height && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing) {
 
 						if ( iframe.docking.options.windowType === 'undocked' )
 							iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
@@ -56,9 +56,8 @@ if ( window != top ) {
 							iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
 					}
 
-					if ( e.data.size.width && !iframe.resizeWidget.options.isResizing ) {						
+					if ( e.data.size.width && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing )						
 						iframe.style.width = e.data.size.width + "px";
-					}
 
 					runAtTransitionEnd(iframe, ["width", "height"], () => {
 						

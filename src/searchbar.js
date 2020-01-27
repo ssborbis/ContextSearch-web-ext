@@ -167,7 +167,8 @@ function toolBarResize() {
 
 		if (qm.getBoundingClientRect().width < window.innerWidth) {
 
-			qm.style.width = document.documentElement.scrollWidth + "px";
+			// chrome min width fix
+			qm.style.width = Math.max(qm.columns * qm.getTileSize().width, document.documentElement.scrollWidth, sg.getBoundingClientRect().width) + "px";
 			
 			// tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
 

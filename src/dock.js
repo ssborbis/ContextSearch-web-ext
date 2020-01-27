@@ -40,7 +40,8 @@ function offsetElement(el, prop, by, name) {
 	if ( el.style.getPropertyValue('--cs-'+name+'-'+prop) )
 		unOffsetElement(el, prop, name);
 
-	let val = parseFloat(window.getComputedStyle(el, null).getPropertyValue(prop)) + by + "px";	
+	let val = el.getBoundingClientRect()[prop] + by + "px";	
+	// let val = parseFloat(window.getComputedStyle(el, null).getPropertyValue(prop)) + by + "px";	
 	modifyStyleProperty(el, prop, val, name);
 }
 
