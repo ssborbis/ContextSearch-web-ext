@@ -370,7 +370,7 @@ function restoreOptions() {
 function saveOptions(e) {
 
 	function onSet() {
-		showSaveMessage("saved", null, "yes", document.getElementById('saveNoticeDiv'));
+		showSaveMessage(browser.i18n.getMessage("saved"), null, "yes", document.getElementById('saveNoticeDiv'));
 		return Promise.resolve(true);
 	}
 	
