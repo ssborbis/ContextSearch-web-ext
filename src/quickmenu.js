@@ -179,7 +179,7 @@ function toolsHandler(qm) {
 	
 	let position = userOptions.quickMenuToolsPosition;
 
-	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}]"`);
+	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
 	
 	if ( moreTile ) qm.removeChild( moreTile );
 	
@@ -229,7 +229,7 @@ function toolsHandler(qm) {
 		tileArray.forEach( tile => qm.appendChild( tile ) );
 
 		// qm moreTile is special case
-		moreTile = qm.querySelector(`[data-parentid="${moreTileID}]"`);
+		moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
 		
 		if ( moreTile ) {
 			moreTile.classList.add('tile');
