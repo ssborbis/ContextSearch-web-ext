@@ -1123,7 +1123,7 @@ function makeQuickMenu(options) {
 			label.style.textAlign='center';
 			_tiles.unshift( label );
 
-			if ( !limit ) {
+			if ( !limit || limit >= _tiles.length ) {
 				addSeparators();
 				return _tiles;
 			}
@@ -1441,24 +1441,34 @@ function makeQuickMenu(options) {
 					}
 
 					let messages = [];
+					let hasRun = false;
 
 					for (let _node of node.children) {
 
-						if (_node.type === 'searchEngine') {
-							messages.push(browser.runtime.sendMessage({
-								action: "quickMenuSearch", 
-								info: {
-									menuItemId: _node.id,
-									selectionText: sb.value,
-								//	when opening method is a new window, only do so on first engine, then open in background
-									openMethod: (messages.length === 0 ) ? method : "openBackgroundTab",
-									folder: true
-								}
+						if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
+							
+							messages.push( () => new Promise( resolve => {
+
+								browser.runtime.sendMessage({
+									action: "quickMenuSearch", 
+									info: {
+										menuItemId: _node.id,
+										selectionText: sb.value,
+										//	when opening method is a new window, only do so on first engine, then open in background
+										openMethod: !hasRun ? method : "openBackgroundTab",
+										folder: true
+									}
+								}).then( () => hasRun = true).then( () => resolve(true) );
+
 							}));
 						}	
 					}
-					
-					Promise.all( messages );
+
+					async function runPromisesInSequence(promises) {
+						for (let promise of promises) 
+							await promise();
+					}
+					runPromisesInSequence(messages);
 				}
 
 				break;

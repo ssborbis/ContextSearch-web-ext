@@ -1014,6 +1014,8 @@ function quickMenuSearch(info, tab) {
 
 function openSearch(details) {
 	
+	if (!details.folder) delete window.folderWindowId;
+	
 	console.log(details);
 	var searchEngineId = details.searchEngineId || null;
 	var searchTerms = (details.searchTerms) ? details.searchTerms.trim() : "";
@@ -1105,7 +1107,12 @@ function openSearch(details) {
 	function onCreate(_tab) {
 
 		// if new window
-		if (_tab.tabs) _tab = _tab.tabs[0];
+		if (_tab.tabs) {
+			window.folderWindowId = _tab.id;
+			_tab = _tab.tabs[0];
+			
+			console.log('window created');
+		}
 
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
@@ -1152,6 +1159,7 @@ function openSearch(details) {
 				highlightSearchTermsInTab(_tabInfo, searchTerms);
 			});
 		});
+
 	}
 	
 	function onError() {
@@ -1177,13 +1185,14 @@ function openSearch(details) {
 	function openNewTab(inBackground) {	// open in new tab
 	
 		inBackground = inBackground || false;
-		
+
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: details.folder ? null : (tab.id || null)
+			openerTabId: (details.folder ? null : (tab.id || null))
 		});
-		return creating.then(onCreate, onError)
+
+		return creating.then(onCreate, onError);
 
 	}	
 	function openBackgroundTab() {
@@ -1206,6 +1215,18 @@ function escapeDoubleQuotes(str) {
 	if ( !str ) return str;
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 }
+
+// let wInt = setInterval(() => {
+			
+		 // browser.windows.getCurrent().then(result => {
+			
+			 
+			 // if ( result.id !== 1 ) {
+				  // console.log(result);
+				 // clearInterval(wInt);
+			 // }
+		 // });
+// }, 100);
 
 var highlightTabs = [];
 
