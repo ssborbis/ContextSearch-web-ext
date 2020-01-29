@@ -625,14 +625,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.docking.init();
 
 				quickMenuResize({data: message});
+				
+				// set proper translated position ( dock not doing this on init() ? )
+				let position = qmc.docking.getPositions(qmc.docking.getOffsets());
+				qmc.docking.translatePosition(position.v, position.h);
 
 				setTimeout(() => { 
 					repositionOffscreenElement( qmc, {left:0, right:resizeWidgetOffset, top:0, bottom:resizeWidgetOffset} ); 
-					
-					// set proper translated position ( dock not doing this on init() ? )
-					let position = qmc.docking.getPositions(qmc.docking.getOffsets());
-					qmc.docking.translatePosition(position.v, position.h);
-					
 				}, 250);
 
 				_message = message;
