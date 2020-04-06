@@ -336,10 +336,9 @@ if ( window != top ) {
 	});
 	
 	window.addEventListener('message', e => {
-		if ( e.data.action !== "tile_clicked" ) return;
+		if ( e.data.action !== "closeSideBarRequest" ) return;
 		
-		if ( userOptions.sideBar.closeAfterSearch )
-			closeSideBar();
+		closeSideBar();
 	});
 
 	document.addEventListener("fullscreenchange", e => {

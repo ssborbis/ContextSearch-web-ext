@@ -89,6 +89,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
 		
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 	});
+
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -259,6 +260,14 @@ function resizeMenu(o) {
 	
 	qm.scrollTop = scrollTop;
 	sg.scrollTop = sgScrollTop;
+}
+
+function closeMenuRequest() {
+	if ( window == top ) {
+		if ( userOptions.searchBarCloseAfterSearch ) window.close();
+	} else if ( userOptions.sideBar.closeAfterSearch ) {
+		window.parent.postMessage({action: "closeSideBarRequest"}, "*");
+	}
 }
 
 window.addEventListener('message', e => {

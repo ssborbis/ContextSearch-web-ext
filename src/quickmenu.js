@@ -164,6 +164,11 @@ function resizeMenu(o) {
 	}, "*");
 }
 
+function closeMenuRequest() {
+	if ( userOptions.quickMenuCloseOnClick && !quickMenuObject.locked )
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+}
+
 function toolsHandler(qm) {
 	
 	qm = qm || document.getElementById('quickMenuElement');

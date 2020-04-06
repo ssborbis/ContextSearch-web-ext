@@ -2,6 +2,7 @@
     --hover: #666667;
 	--background: #323234;
 	--border: #444;
+	--tools-color:#bbb;
 }
 BODY { 
     background-color:var(--background);
@@ -24,11 +25,9 @@ BODY {
     filter:invert(1);
 }
 .tile[data-type="tool"] {
-    filter:invert(1) brightness(50%);
 	color:black;
 }
 .tile[data-type="tool"][data-nocolorinvert] {
-    filter:unset;
 }
 .tile[data-type="folder"] {
     background-color:#3293d4;
@@ -49,6 +48,6 @@ BODY {
 	filter:invert(1) brightness(50%);
 }
 .tile[data-quickmenumore] {
-	filter:invert(1) brightness(50%);
-	color:black;
+	/* filter:invert(1) brightness(50%); */
+	/* color:black; */
 }

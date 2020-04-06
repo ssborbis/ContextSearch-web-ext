@@ -3,6 +3,7 @@
 	--select: #0078d7;
 	--background: #eff0f1;
 	--border: #e0e0e0;
+	--tools-color:#444;
 }
 
 HTML, BODY {
@@ -35,7 +36,16 @@ BODY {
 	background-position: center;
 	background-repeat: no-repeat;
 	transition: background-color .25s ease-out, opacity .25s linear, width .2s ease-out;
+	z-index:2;
 }
+/* .tile[data-type="tool"]::after { */
+	/* content:""; */
+	/* background-color:red; */
+	/* width:100%; */
+	/* height:100%; */
+	/* display:inline-block; */
+	/* z-index:0; */
+/* } */
 .tile[data-disabled="true"] {
 	opacity:.1;
 }
@@ -179,6 +189,10 @@ BODY {
 	text-align:right;
 	cursor:grab;
 }
+[data-menu="searchbar"] #menuBar {
+	cursor:default;
+}
+
 #menuBar > DIV {
 	background-size:20px;
 	height:20px;

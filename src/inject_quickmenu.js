@@ -605,9 +605,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					dockedPosition: "left",
 					handleElement: qmc,
 					lastOffsets: window.quickMenuLastOffsets || {
-						left: initialOffsetX * window.devicePixelRatio,
+						left: Math.floor(initialOffsetX * window.devicePixelRatio),
 						right: Number.MAX_SAFE_INTEGER,
-						top: initialOffsetY * window.devicePixelRatio,
+						top: Math.floor(initialOffsetY * window.devicePixelRatio),
 						bottom: Number.MAX_SAFE_INTEGER 
 					},
 					onUndock: o => {
@@ -624,11 +624,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				qmc.docking.init();
 
-				quickMenuResize({data: message});
+				// quickMenuResize({data: message}); // caused slight menu movement and disabled opening animation ( width / height )
 				
 				// set proper translated position ( dock not doing this on init() ? )
-				let position = qmc.docking.getPositions(qmc.docking.getOffsets());
-				qmc.docking.translatePosition(position.v, position.h);
+				// let position = qmc.docking.getPositions(qmc.docking.getOffsets());
+				// qmc.docking.translatePosition(position.v, position.h);
 
 				setTimeout(() => { 
 					repositionOffscreenElement( qmc, {left:0, right:resizeWidgetOffset, top:0, bottom:resizeWidgetOffset} ); 
@@ -680,8 +680,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					}
 				});
 
+				qmc.getBoundingClientRect();
 				qmc.style.opacity = null;
-
+				
+				// qmc.classList.add("webkitBorderRadiusFix"); // prevented drop shadow
+				
 				document.addEventListener('closequickmenu', () => {
 					if ( resizeWidget ) 
 						resizeWidget.parentNode.removeChild(resizeWidget);

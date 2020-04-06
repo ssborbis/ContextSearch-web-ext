@@ -56,8 +56,10 @@ window.addEventListener("message", e => {
 		getSearchBar().select();
 	
 	// only focus after marking - prevents focus with opening on pageload option
-	if ( e.data.action === "markDone" )
+	if ( e.data.action === "markDone" ) {
 		getSearchBar().focus();
+		document.querySelector("#searchIcon").src = browser.runtime.getURL('icons/search.svg');
+	}
 	
 	// console.log(e.data);
 
@@ -74,6 +76,8 @@ document.getElementById('previous').addEventListener('click', e => {
 getSearchBar().addEventListener('change', e => {
 
 	e.target.oldValue = e.target.value;
+	
+	document.querySelector("#searchIcon").src = browser.runtime.getURL('icons/spinner.svg');
 
 	if ( e.target.value ) {
 		browser.runtime.sendMessage(Object.assign({

@@ -295,7 +295,6 @@ function makeDockable(el, options) {
 
 		// reflow
 		el.getBoundingClientRect();
-
 	}
 	
 	function setDefaultFloatPosition() {

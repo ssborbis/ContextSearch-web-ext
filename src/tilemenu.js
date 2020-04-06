@@ -30,6 +30,21 @@ function buildSearchIcon(icon_url, title) {
 	return div;
 }
 
+function setToolIconColor(_toolTile) {
+	
+	let bg = _toolTile.style.getPropertyValue("background-image");
+	console.log(bg);
+	
+	_toolTile.style.setProperty("background-image", "none");
+	_toolTile.style.setProperty("background-color", "var(--tools-color)");
+	_toolTile.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
+	_toolTile.style.setProperty("mask", `${bg} no-repeat center`);
+//	_toolTile.style.setProperty("-webkit-mask", `url(${browser.runtime.getURL(_tool.icon)}) no-repeat center`);
+//	_toolTile.style.setProperty("mask", `url(${browser.runtime.getURL(_tool.icon)}) no-repeat center`);
+	_toolTile.style.setProperty("mask-size","var(--tile-background-size, 16px)");
+	_toolTile.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
+}
+
 // method for assigning tile click handler
 function addTileEventHandlers(_tile, handler) {
 
@@ -64,13 +79,8 @@ function addTileEventHandlers(_tile, handler) {
 		handler(e);
 		
 		// check for locked / Keep Menu Open 
-		if ( !keepMenuOpen(e) && !_tile.keepOpen ) {
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
-			window.parent.postMessage({action: "tile_clicked"}, "*");
-		}
-		
-		// no separate inject.js for searchbar ( toolbar )
-		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch && !keepMenuOpen(e) && !_tile.keepOpen) window.close();
+		if ( !keepMenuOpen(e) && !_tile.keepOpen )
+			closeMenuRequest();
 
 	});
 	
@@ -137,9 +147,7 @@ function keepMenuOpen(e) {
 	if (
 		!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
 		!(e.ctrlKey && userOptions.quickMenuCtrl === "keepMenuOpen") &&
-		!(e.altKey && userOptions.quickMenuAlt === "keepMenuOpen") &&
-		userOptions.quickMenuCloseOnClick &&
-		!quickMenuObject.locked
+		!(e.altKey && userOptions.quickMenuAlt === "keepMenuOpen")
 	) 
 		return false;
 	else 
@@ -500,10 +508,16 @@ function makeQuickMenu(options) {
 			
 			let _tool = QMtools.find( t => t.name === tool.name );
 			if ( _tool ) {
+				
 				toolsArray.push(_tool.init());
 			
 				toolsArray[toolsArray.length - 1].context = _tool.context;
 				toolsArray[toolsArray.length - 1].tool = _tool;
+				
+				if ( ! toolsArray[toolsArray.length - 1].dataset.nocolorinvert ) {
+					setToolIconColor(toolsArray[toolsArray.length - 1]);
+				}
+
 			}
 
 		});
@@ -1129,6 +1143,7 @@ function makeQuickMenu(options) {
 			}
 
 			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
+			setToolIconColor(moreTile);
 
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "more";
@@ -1156,6 +1171,7 @@ function makeQuickMenu(options) {
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
 				moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
+				setToolIconColor(moreTile);
 				resizeMenu({groupMore: true});
 	
 				if ( !moreLessStatus.includes( node.id ) )
@@ -1177,6 +1193,7 @@ function makeQuickMenu(options) {
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
 				moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
+				setToolIconColor(moreTile);
 				resizeMenu({groupLess: true});
 				
 				moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
@@ -1694,6 +1711,11 @@ function makeSearchBar() {
 			if ( selected.type !== 0 ) return;
 			
 			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
+			
+			if ( i === -1 ) {
+				console.error( "search string not found" );
+				return;
+			}
 			
 			if ( selected.nextSibling ) selected.nextSibling.click();
 			else if ( selected.previousSibling ) selected.previousSibling.click();
