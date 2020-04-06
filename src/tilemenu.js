@@ -5,10 +5,6 @@ var sg = document.getElementById('suggestions');
 var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 
-// Append <style> element to <head>
-var styleEl = document.createElement('style');
-document.head.appendChild(styleEl);
-
 var type;
 
 //#Source https://bit.ly/2neWfJ2 
@@ -33,17 +29,67 @@ function buildSearchIcon(icon_url, title) {
 function setToolIconColor(_toolTile) {
 	
 	let bg = _toolTile.style.getPropertyValue("background-image");
-	console.log(bg);
 	
-	_toolTile.style.setProperty("background-image", "none");
-	_toolTile.style.setProperty("background-color", "var(--tools-color)");
-	_toolTile.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
-	_toolTile.style.setProperty("mask", `${bg} no-repeat center`);
-//	_toolTile.style.setProperty("-webkit-mask", `url(${browser.runtime.getURL(_tool.icon)}) no-repeat center`);
-//	_toolTile.style.setProperty("mask", `url(${browser.runtime.getURL(_tool.icon)}) no-repeat center`);
-	_toolTile.style.setProperty("mask-size","var(--tile-background-size, 16px)");
-	_toolTile.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
+	let img = new Image();
+	let fixedbg = bg.replace(/^url\("/, '').replace(/"\)/, '');
+
+	let color = window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
+
+	img.onload = function() {
+
+		var canvas=document.createElement("canvas");
+		var ctx=canvas.getContext("2d");
+		ctx.canvas.width = img.width;
+		ctx.canvas.height = img.height;
+		ctx.save();
+		
+		// draw the shape we want to use for clipping
+		ctx.drawImage(img, 0, 0);
+
+		// change composite mode to use that shape
+		ctx.globalCompositeOperation = 'source-in';
+
+		// draw the image to be clipped
+		// ctx.drawImage(img, 0, 0);
+
+		ctx.beginPath();
+		ctx.rect(0, 0, img.width, img.height);
+		ctx.fillStyle = color;
+		ctx.fill();
+		ctx.restore();
+		
+		let newbg = canvas.toDataURL("image/jpg");
+		_toolTile.style.backgroundImage = `url(${newbg})`;
+	}
+	
+	img.src = fixedbg;
+
 }
+
+// function setToolIconColor(_toolTile) {
+	
+	// let div = document.createElement('div');
+	// let bg = _toolTile.style.getPropertyValue("background-image");
+	
+	// // _toolTile.style.setProperty("background-image", "none");
+	// // _toolTile.style.setProperty("background-color", "var(--tools-color)");
+	// // _toolTile.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
+	// // _toolTile.style.setProperty("mask", `${bg} no-repeat center`);
+	// // _toolTile.style.setProperty("mask-size","var(--tile-background-size, 16px)");
+	// // _toolTile.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
+	
+	// div.style.setProperty("background-image", "none");
+	// div.style.setProperty("background-color", "var(--tools-color)");
+	// div.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
+	// div.style.setProperty("mask", `${bg} no-repeat center`);
+	// div.style.setProperty("mask-size","var(--tile-background-size, 16px)");
+	// div.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
+	
+	// div.style.width = '100%';
+	// div.style.height = '100%';
+	
+	// _toolTile.appendChild(div);
+// }
 
 // method for assigning tile click handler
 function addTileEventHandlers(_tile, handler) {
@@ -155,8 +201,6 @@ function keepMenuOpen(e) {
 }
 
 function makeQuickMenu(options) {
-	
-	if ( userOptions.userStylesEnabled ) styleEl.innerText = userOptions.userStyles;
 
 	type = options.type;
 	let mode = options.mode;

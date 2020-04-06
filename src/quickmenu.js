@@ -269,20 +269,42 @@ function toolsHandler(qm) {
 	
 	qm.insertBreaks();
 }
-	
-document.addEventListener("DOMContentLoaded", () => {
 
-	browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-		userOptions = message.userOptions || {};
+if ( userOptions.quickMenuTheme === 'dark' ) {
+	let d = document.querySelector('#dark');
+	d.rel="stylesheet";
+}
+	
+document.addEventListener("DOMContentLoaded", async () => {
+
+	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
+	
+	userOptions = msg.userOptions;
+
+	if ( userOptions.quickMenuTheme === 'dark' ) {
+		await new Promise(r => {	
+			let url = browser.runtime.getURL('/dark.css');
+			var link = document.createElement('link');
+			link.type = 'text/css';
+			link.rel = 'stylesheet';
+			link.href = url;
+
+			link.onload = r;
+			
+			document.head.appendChild(link);
+		});
+
+	}  
+	
+	if ( userOptions.userStylesEnabled ) {
+		// Append <style> element to <head>
+		var styleEl = document.createElement('style');
+		document.head.appendChild(styleEl);
+		styleEl.innerText = userOptions.userStyles;
+	}
 		
-		if ( userOptions === {} ) return;
-		
-		if ( userOptions.quickMenuTheme === 'dark' )
-			document.querySelector('#dark').rel="stylesheet";
-		
-		makeFrameContents();
-		
-	});
+	makeFrameContents();
+
 });
 
 // prevent context menu when using right-hold

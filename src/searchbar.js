@@ -69,13 +69,36 @@ function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then((message) => {
+browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 	userOptions = message.userOptions || {};
 	
 	if ( userOptions === {} ) return;
 	
-	if ( userOptions.searchBarTheme === 'dark' )
-		document.querySelector('#dark').rel="stylesheet";
+	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
+	
+	userOptions = msg.userOptions;
+
+	if ( userOptions.quickMenuTheme === 'dark' ) {
+		await new Promise(r => {	
+			let url = browser.runtime.getURL('/dark.css');
+			var link = document.createElement('link');
+			link.type = 'text/css';
+			link.rel = 'stylesheet';
+			link.href = url;
+
+			link.onload = r;
+			
+			document.head.appendChild(link);
+		});
+
+	}  
+	
+	if ( userOptions.userStylesEnabled ) {
+		// Append <style> element to <head>
+		var styleEl = document.createElement('style');
+		document.head.appendChild(styleEl);
+		styleEl.innerText = userOptions.userStyles;
+	}
 
 	makeSearchBar();
 	
