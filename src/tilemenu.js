@@ -1532,11 +1532,12 @@ function makeQuickMenu(options) {
 					async function runPromisesInSequence(promises) {
 						for (let promise of promises) 
 							await promise();
+						
+						if ( !keepMenuOpen(e, true))
+							closeMenuRequest();
 					}
 					runPromisesInSequence(messages);
-					
-					if ( !keepMenuOpen(e, true))
-						closeMenuRequest();
+
 				}
 
 				break;
