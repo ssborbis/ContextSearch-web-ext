@@ -186,9 +186,11 @@ function getOpenMethod(e, isFolder) {
 	return openMethod;
 }
 
-function keepMenuOpen(e) {
+function keepMenuOpen(e, isFolder) {
 	
-	if ( /KeepOpen$/.test(getOpenMethod(e)) ) return true;
+	isFolder = isFolder || false;
+	
+	if ( /KeepOpen$/.test(getOpenMethod(e, isFolder)) ) return true;
 	
 	if (
 		!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
@@ -1096,6 +1098,8 @@ function makeQuickMenu(options) {
 			tile.addEventListener('mouseup', _back);
 			tile.addEventListener('openFolder', _back);
 			
+			setToolIconColor(tile);
+			
 			function _back(e) {
 
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
@@ -1530,6 +1534,9 @@ function makeQuickMenu(options) {
 							await promise();
 					}
 					runPromisesInSequence(messages);
+					
+					if ( !keepMenuOpen(e, true))
+						closeMenuRequest();
 				}
 
 				break;

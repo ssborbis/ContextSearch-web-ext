@@ -1745,9 +1745,7 @@ loadUserOptions().then(() => {
 	})
 	.then( checkForOneClickEngines )
 	.then( buildContextMenu )
-	.then( () => {
-		document.dispatchEvent(new CustomEvent("loadUserOptions"));
-	});
+	.then( () => document.dispatchEvent(new CustomEvent("loadUserOptions")) );
 });
 
 // turn off repeatsearch if persist = false 
