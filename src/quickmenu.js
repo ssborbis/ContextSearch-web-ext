@@ -122,7 +122,7 @@ function resizeMenu(o) {
 
 	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
 
-	let currentHeight = qm.style.height;
+	let currentHeight = qm.style.height || 0;
 
 	qm.style.height = null;
 	qm.style.overflowY = null;
@@ -141,7 +141,7 @@ function resizeMenu(o) {
 	else if ( o.widgetResize )
 		qm.style.height = tileSize.height * o.rows + "px";
 	else
-		qm.style.height = Math.min(qm.getBoundingClientRect().height, window.innerHeight - allOtherElsHeight) + "px";
+		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
 	
 	if ( qm.getBoundingClientRect().height > maxHeight - allOtherElsHeight )
 		qm.style.height = Math.floor(maxHeight - allOtherElsHeight) + "px";
@@ -150,6 +150,11 @@ function resizeMenu(o) {
 	
 	qm.scrollTop = scrollTop;
 	sg.scrollTop = sgScrollTop;
+	
+	// console.log(o, window.innerHeight, qm.style.height, initialHeight, currentHeight, allOtherElsHeight, maxHeight, tileSize, qm.getBoundingClientRect().height, qm.scrollHeight, {
+			// width:  qm.getBoundingClientRect().width, 
+			// height: document.body.getBoundingClientRect().height
+		// });
 	
 	window.parent.postMessage({
 		action: "quickMenuResize",
@@ -162,6 +167,7 @@ function resizeMenu(o) {
 		tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length,
 		columns: qm.columns
 	}, "*");
+	
 }
 
 function closeMenuRequest() {
@@ -205,15 +211,17 @@ function toolsHandler(qm) {
 			delete tile.dataset.grouphidden;
 		}
 	});
-	
+
+	// place tools at the beginning before hiding tiles > limit
 	if ( !userOptions.quickMenuToolsAsToolbar ) {
-		if ( userOptions.quickMenuToolsPosition === 'bottom' )
-			qm.toolsArray.forEach(tool => qm.appendChild(tool));
-		else if ( userOptions.quickMenuToolsPosition === 'top' )
-			qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+		qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
 	}
 
 	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows * userOptions.quickMenuColumns;
+	
+	// hide tools
+	if ( !userOptions.quickMenuToolsAsToolbar && position === 'hidden' )
+		qm.toolsArray.forEach( _div => qm.removeChild(_div) );
 
 	// more tile
 	if ( getVisibleTiles().length > visibleTileCountMax && !qm.rootNode.parent ) {
@@ -240,31 +248,26 @@ function toolsHandler(qm) {
 			moreTile.classList.add('tile');
 			moreTile.dataset.quickmenumore = true;
 		}
-		
-		// unhide tools hidden by grouping
-		qm.toolsArray.forEach( tool => {
-			
-			if ( tool.dataset.grouphidden == "true" ) {
-				delete tool.dataset.hidden;
-				tool.style.display = null;
-				delete tool.dataset.grouphidden;
-				delete tool.moreTile;
-			}
-		});
-		
-		// collect visible se tiles
-		let visibleTiles = [...qm.querySelectorAll(`.tile:not([data-hidden="true"]):not([data-type="tool"]):not([data-parentid="${moreTileID}"])`)].filter( tile => tile.style.display !== 'none' );
 
-		// collect tiles to be offset by tools
-		let toolsOffset = getVisibleTiles().length - visibleTileCountMax;
-		let lastVisibleTiles = visibleTiles.slice( visibleTiles.length - toolsOffset, visibleTiles.length );
-
-		lastVisibleTiles.forEach( _div => {
+		let visibleTiles = getVisibleTiles().filter( tile => ! ( tile.dataset.parentid && tile.dataset.parentid === moreTileID ) );
+		
+		for ( let i=visibleTileCountMax;i<visibleTiles.length;i++) {
+			let _div = visibleTiles[i];
 			_div.dataset.hidden = "true";
 			_div.style.display = "none";
 			_div.dataset.grouphidden = "true";
 			_div.moreTile = moreTile;
-		});
+		}
+		
+		if ( !userOptions.quickMenuToolsAsToolbar) {
+			if ( userOptions.quickMenuToolsPosition === 'bottom' )
+				qm.toolsArray.forEach(tool => qm.appendChild(tool));
+			else if ( userOptions.quickMenuToolsPosition === 'top' )
+				qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+		}
+		
+		// move moreTile to end
+		if ( moreTile) qm.appendChild(moreTile);
 	}
 	
 	qm.insertBreaks();

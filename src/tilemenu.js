@@ -1163,7 +1163,7 @@ function makeQuickMenu(options) {
 		}
 		
 		function makeMoreLessFromTiles( _tiles, limit ) {
-			
+
 			function addSeparators() {
 				_tiles.unshift( nodeToTile( {type: "separator"}) );
 				_tiles.push( nodeToTile( {type: "separator"}) );
@@ -1269,6 +1269,10 @@ function makeQuickMenu(options) {
 					_tiles[index].style.display = 'none';
 					_tiles[index].dataset.grouphidden = true;
 					_tiles[index].moreTile = moreTile;
+					
+					// console.log('hiding tile ' + _tiles[index].title);
+				} else {
+					// console.log('showing tile ' + _tiles[index].title);
 				}
 				
 				count++;
