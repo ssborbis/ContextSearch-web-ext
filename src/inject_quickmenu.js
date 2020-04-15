@@ -676,6 +676,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 					}
 				});
+				
+				resizeWidget.style.visibility = 'hidden';
+				setTimeout(() => resizeWidget.style.visibility = null, 500);
 
 				qmc.getBoundingClientRect();
 				qmc.style.opacity = null;
