@@ -43,10 +43,7 @@ function openQuickMenu(ev, searchTerms) {
 
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
-		screenCoords: {
-			x: quickMenuObject.screenCoords.x, 
-			y: quickMenuObject.screenCoords.y
-		}, 
+		screenCoords: quickMenuObject.screenCoords,
 		searchTerms: searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
