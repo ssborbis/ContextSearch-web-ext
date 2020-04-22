@@ -301,5 +301,21 @@ var QMtools = [
 			
 			return tile;
 		}
+	},
+	{
+		name: 'findinpage', 
+		icon: "icons/highlight.svg", 
+		title: browser.i18n.getMessage('findinpage'),
+		init: function() {
+			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+			
+			addTileEventHandlers(tile, () => {
+				browser.runtime.sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
+			});
+			
+			return tile;
+		}
 	}
 ];

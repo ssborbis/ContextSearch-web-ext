@@ -1277,7 +1277,7 @@ function makeQuickMenu(options) {
 				
 				count++;
 			});
-			
+
 			if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
 				
 				moreTile.classList.remove('tile');
@@ -1287,10 +1287,11 @@ function makeQuickMenu(options) {
 					moreTile.addEventListener(_e, e => e.stopPropagation() );
 				});
 				
-				label.appendChild(moreTile);
+				if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
 				
-			} else
-				_tiles.push( moreTile );
+			} else {
+				if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
+			}
 
 			addSeparators();
 
@@ -1613,41 +1614,26 @@ function addToHistory(terms) {
 	browser.runtime.sendMessage({action: "addToHistory", searchTerms: terms});
 }
 
-function getSuggestions(terms, callback) {
-		
+async function getSuggestions(terms) {
+
 	let url = 'https://suggestqueries.google.com/complete/search?output=toolbar&hl=' + browser.i18n.getUILanguage() + '&q=' + encodeURIComponent(terms);
-	callback = callback || function() {};
-	var xmlhttp;
-
-	xmlhttp = new XMLHttpRequest();
-
-	xmlhttp.onreadystatechange = function()	{
-		if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-			if(xmlhttp.status == 200) {
-
-				let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
-				
-				if (parsed.documentElement.nodeName=="parsererror") {
-					console.log('xml parse error');
-					
-					console.log(parsed);
-					parsed = false;
-				}
-				callback(parsed);
-		   } else {
-			   console.log('Error fetching ' + url);
-		   }
-		}
+	
+	setTimeout(() => {return false}, 500);
+	
+	let resp = await fetch(url);
+	
+	if (!resp.ok) return false;
+	
+	let text = await resp.text();
+	
+	let parsed = new DOMParser().parseFromString(text, 'application/xml');
+	
+	if (parsed.documentElement.nodeName=="parsererror") {
+		console.log('xml parse error', parsed);
+		return false;
 	}
 	
-	xmlhttp.ontimeout = function (e) {
-		console.log('Timeout fetching ' + url);
-		callback(false);
-	};
-
-	xmlhttp.open("GET", url, true);
-	xmlhttp.timeout = 500;
-	xmlhttp.send();
+	return parsed;	
 }
 
 function makeSearchBar() {
@@ -1804,7 +1790,7 @@ function makeSearchBar() {
 		
 		clearTimeout(sb.typeTimer);
 		
-		sb.typeTimer = setTimeout(() => {
+		sb.typeTimer = setTimeout(async () => {
 			
 			if (sb.value.trim() === "") {
 				sg.style.maxHeight = null;
@@ -1824,28 +1810,27 @@ function makeSearchBar() {
 			}
 
 			if (userOptions.searchBarSuggestions) {
-				getSuggestions(sb.value, xml => {
+				let xml = await getSuggestions(sb.value);
 					
-					let suggestions = [];
-					for (let s of xml.getElementsByTagName('suggestion')) {
-						let searchTerms = s.getAttribute('data');
-						
-						let found = false;
-						for (let h of history) {
-							if (h.searchTerms.toLowerCase() === searchTerms.toLowerCase()) {
-								found = true;
-								break;
-							}
+				let suggestions = [];
+				for (let s of xml.getElementsByTagName('suggestion')) {
+					let searchTerms = s.getAttribute('data');
+					
+					let found = false;
+					for (let h of history) {
+						if (h.searchTerms.toLowerCase() === searchTerms.toLowerCase()) {
+							found = true;
+							break;
 						}
-						if (!found)
-							suggestions.push({searchTerms: searchTerms, type: 1});
 					}
+					if (!found)
+						suggestions.push({searchTerms: searchTerms, type: 1});
+				}
 
-					suggestions = history.concat(suggestions);
+				suggestions = history.concat(suggestions);
+				
+				displaySuggestions(suggestions);
 					
-					displaySuggestions(suggestions);
-					
-				});
 			} else if ( userOptions.searchBarEnableHistory )
 				displaySuggestions(history);
 			

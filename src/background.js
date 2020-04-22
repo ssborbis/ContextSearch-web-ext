@@ -172,6 +172,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "mark":
+
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
 				return new Promise( (resolve, reject) => {
 					getAllOpenTabs().then( tabs => {
@@ -1903,6 +1904,30 @@ function dataToSearchEngine(data) {
 }
 
 function readOpenSearchUrl(url) {
+	return new Promise( async (resolve, reject) => {
+		
+		let t = setTimeout(() => {
+			console.log('Error fetching ' + url);
+			reject(false);
+		}, 2000);
+		
+		let resp = await fetch(url);
+		let text = await resp.text();
+		
+		let parsed = new DOMParser().parseFromString(text, 'application/xml');
+
+		if (parsed.documentElement.nodeName=="parsererror") {
+			console.log('xml parse error');
+			clearTimeout(t);
+			resolve(false);
+		}
+		
+		clearTimeout(t);
+		resolve(parsed);
+	});
+}
+
+function readOpenSearchUrl2(url) {
 	
 	return new Promise( (resolve, reject) => {
 		var xmlhttp;

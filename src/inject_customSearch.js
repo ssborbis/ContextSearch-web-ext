@@ -22,9 +22,7 @@ function inputAddCustomSearchHandler(input) {
 }
 
 // Add Custom Search listener
-document.querySelectorAll('input,textarea').forEach( input => {
-	inputAddCustomSearchHandler(input);
-});
+document.querySelectorAll('input,textarea').forEach( input => inputAddCustomSearchHandler(input) );
 
 // Add listener for dynamically added inputs
 var CS_observer = new MutationObserver( mutationsList => {

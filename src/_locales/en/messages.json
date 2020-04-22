@@ -1613,6 +1613,16 @@
     "description": ""
   },
   
+  "grouphidemoretile": {
+    "message": "Hide \"More\" tile",
+    "description": ""
+  },
+  
+  "findinpage": {
+    "message": "Find in page",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

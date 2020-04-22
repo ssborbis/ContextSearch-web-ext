@@ -677,8 +677,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					}
 				});
 				
+				// hide the widget until the menu is done transitioning
 				resizeWidget.style.visibility = 'hidden';
-				setTimeout(() => resizeWidget.style.visibility = null, 500);
+				resizeWidget.style.zIndex = -1;
+				setTimeout(() => {
+					resizeWidget.style.visibility = null;
+					resizeWidget.style.zIndex = null;
+				}, 500);
 
 				qmc.getBoundingClientRect();
 				qmc.style.opacity = null;
