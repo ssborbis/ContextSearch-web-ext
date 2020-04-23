@@ -1,6 +1,6 @@
 # <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48-2.png" height="30px">&nbsp;ContextSearch web-ext
 
-Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Written as a simple replacement for Ben Basson's Context Search.
+Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Originally written as a replacement for Ben Basson's Context Search.
 
 Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
 
