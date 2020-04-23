@@ -1596,11 +1596,16 @@
     "description": ""
   },
 
-  "toggleview": {
-    "message": "",
+  "grouphidemoretile": {
+    "message": "Sans case « Plus »",
     "description": ""
   },
-
+  
+  "findinpage": {
+    "message": "Rechercher dans la page page",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""
