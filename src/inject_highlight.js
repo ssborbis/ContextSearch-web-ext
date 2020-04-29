@@ -490,21 +490,20 @@ function nextPrevious(dir) {
 }
 
 function getMarks() {
-	let marks = Array.from(document.querySelectorAll('.CS_mark'));
+	let marks = [...document.querySelectorAll('.CS_mark')];
 	document.querySelectorAll('iframe').forEach( iframe => {
 
 		if ( ! iframe.contentDocument ) return;
+
+		let _marks = [...iframe.contentDocument.querySelectorAll('.CS_mark')];
 		
-		let iframeOffsetTop = offset(iframe).top;
-
-		let _marks = Array.from(iframe.contentDocument.querySelectorAll('.CS_mark'));
-
-		let index = marks.findIndex( mark => offset(mark).top > iframeOffsetTop );
-
-		if ( index !== -1 )
-			marks.splice(index, 0, ..._marks);
+		marks = marks.concat(_marks);
 	});
 	
+	marks = marks.sort( (a,b) => {
+		return (offset(a) < offset(b)) ? 1 : -1;
+	});
+
 	// if ( true || userOptions.highLight.sortByAccuracy ) {
 		// marks.sort( (a,b) => { return a.textContent.toLowerCase() > b.textContent.toLowerCase() ? 1 : -1 } );
 	// }
@@ -587,8 +586,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 	switch ( message.action ) {
 		// case "openFindBar": // moved to separate listener
-			// updateFindBar(Object.assign({index:-1, searchTerms: message.searchTerms || "", total: getMarks().length}, message));
-			// break;
 			
 		case "closeFindBar":
 			unmark();
@@ -620,24 +617,26 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 			
 		case "markDone":
+			clearTimeout(window.markTimeout);
+			window.markTimeout = setTimeout(() => {
 
-			if ( 
-				( userOptions.highLight.navBar.enabled && !message.findBarSearch ) ||
-				( userOptions.highLight.findBar.showNavBar && message.findBarSearch )
-			)
-				openNavBar();
+				if ( 
+					( userOptions.highLight.navBar.enabled && !message.findBarSearch ) ||
+					( userOptions.highLight.findBar.showNavBar && message.findBarSearch )
+				)
+					openNavBar();
 
-			if ( getFindBar() || ( userOptions.highLight.showFindBar && !message.findBarSearch ) || message.findBarSearch ) 
-				updateFindBar(Object.assign({index:-1, total: getMarks().length}, message));
+				if ( getFindBar() || ( userOptions.highLight.showFindBar && !message.findBarSearch ) || message.findBarSearch ) 
+					updateFindBar(Object.assign({index:-1, total: getMarks().length}, message));
 
-			if ( getFindBar() ) getFindBar().focus();
+				if ( getFindBar() ) getFindBar().focus();
 
-			if ( message.findBarSearch ) jumpTo(0);
+				if ( message.findBarSearch ) jumpTo(0);
+			}, 100);
 			
 			break;
 			
 		case "findBarUpdateOptions":
-		//	console.log(message.markOptions);
 			userOptions.highLight.findBar.markOptions = message.markOptions;
 		//	if ( userOptions.highLight.findBar.saveOptions )
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

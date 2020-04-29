@@ -111,15 +111,12 @@ function addTileEventHandlers(_tile, handler) {
 			userOptions.lastUsedId = quickMenuObject.lastUsed;
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		}
-		
-	//	if (type === 'quickmenu') {
-		
-			quickMenuObject.searchTerms = sb.value;
-			browser.runtime.sendMessage({
-				action: "updateQuickMenuObject", 
-				quickMenuObject: quickMenuObject
-			});
-	//	}
+
+		quickMenuObject.searchTerms = sb.value;
+		browser.runtime.sendMessage({
+			action: "updateQuickMenuObject", 
+			quickMenuObject: quickMenuObject
+		});
 
 		// custom tile methods
 		handler(e);
@@ -1726,6 +1723,8 @@ function makeSearchBar() {
 			let text = document.createTextNode(s.searchTerms);
 			div.appendChild(text);
 			sg.appendChild(div);
+			
+			div.searchTerms = s.searchTerms;
 		}
 		
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
@@ -1751,8 +1750,8 @@ function makeSearchBar() {
 			
 			// test for suggestions type ( history / google suggestion )	
 			if ( selected.type !== 0 ) return;
-			
-			let i = userOptions.searchBarHistory.lastIndexOf(selected.innerText);
+
+			let i = userOptions.searchBarHistory.lastIndexOf(selected.searchTerms);
 			
 			if ( i === -1 ) {
 				console.error( "search string not found" );
