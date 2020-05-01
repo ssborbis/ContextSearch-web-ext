@@ -199,7 +199,7 @@ function keepMenuOpen(e, isFolder) {
 		return true;
 }
 
-function makeQuickMenu(options) {
+async function makeQuickMenu(options) {
 
 	type = options.type;
 	let mode = options.mode;
@@ -1085,8 +1085,11 @@ function makeQuickMenu(options) {
 		// update the qm object with the current node
 		qm.rootNode = rootNode;
 		
+		// set the lastOpenedFolder object
+		browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
+		
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
-			
+
 			let tile = buildSearchIcon(browser.runtime.getURL('/icons/back.png'), browser.i18n.getMessage('back') || 'back');
 			
 			tile.dataset.type = "tool";
@@ -1602,6 +1605,16 @@ function makeQuickMenu(options) {
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 	setParents(root);
+	
+	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"}).then( folderId => {
+		return folderId;
+	});
+	
+	if ( true && lastFolderId ) {
+		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
+		
+		if ( folder ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
+	}
 
 	return Promise.resolve(quickMenuElementFromNodeTree(root));
 	

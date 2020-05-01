@@ -496,6 +496,15 @@ async function notify(message, sender, sendResponse) {
 			notify({action: "saveUserOptions", "userOptions": userOptions});
 			return Promise.resolve(userOptions);
 			break;
+			
+		case "setLastOpenedFolder":
+			window.lastOpenedFolder = message.folderId;
+			return true;
+			break;
+			
+		case "getLastOpenedFolder":
+			return window.lastOpenedFolder || null;
+			break;
 	}
 }
 

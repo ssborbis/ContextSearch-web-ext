@@ -419,9 +419,8 @@ function lockQuickMenu() {
 	if ( !qmc.resizeWidget ) {
 		document.addEventListener('quickMenuComplete', lock, {once: true});
 		return;
-	}
-	
-	lock();
+	} else
+		lock();
 		
 	function lock() {
 		qmc.contentWindow.postMessage({action: "lock" }, browser.runtime.getURL('/quickmenu.html'));

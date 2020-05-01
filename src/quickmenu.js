@@ -111,6 +111,7 @@ function resizeMenu(o) {
 			sg.scrollTop = sgScrollTop;
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 			window.removeEventListener('message', resizeDoneListener);
+			document.dispatchEvent(new CustomEvent('resizeDone'));
 		}
 	});
 

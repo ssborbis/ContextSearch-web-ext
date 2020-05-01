@@ -136,7 +136,13 @@ var QMtools = [
 
 			tile.dataset.locked = quickMenuObject.locked = on;
 			
-			if ( on ) browser.runtime.sendMessage({action: "lockQuickMenu"});
+			if ( on ) {
+				// wait for first resize event to lock menu
+				document.addEventListener('resizeDone', () => {
+					tile.dataset.locked = quickMenuObject.locked = true;
+					browser.runtime.sendMessage({action: "lockQuickMenu"});
+				}, {once: true});
+			}
 
 			addTileEventHandlers(tile, e => {
 
@@ -313,6 +319,22 @@ var QMtools = [
 			
 			addTileEventHandlers(tile, () => {
 				browser.runtime.sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
+			});
+			
+			return tile;
+		}
+	},
+	{
+		name: 'openoptions', 
+		icon: "icons/settings.svg", 
+		title: browser.i18n.getMessage('settings'),
+		init: function() {
+			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+			
+			addTileEventHandlers(tile, () => {
+				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=quickMenuTab"});
 			});
 			
 			return tile;
