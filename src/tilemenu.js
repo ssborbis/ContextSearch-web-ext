@@ -1613,7 +1613,7 @@ async function makeQuickMenu(options) {
 	if ( true && lastFolderId ) {
 		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
 		
-		if ( folder ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
+		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
 	}
 
 	return Promise.resolve(quickMenuElementFromNodeTree(root));
