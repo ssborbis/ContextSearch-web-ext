@@ -17,6 +17,7 @@ document.addEventListener("selectionchange", ev => {
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+
 });
 
 // selectionchange handler for input nodes

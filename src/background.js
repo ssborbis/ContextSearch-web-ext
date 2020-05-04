@@ -406,6 +406,16 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "copy":
+		
+			// async function writeToClipboard(text) {
+				// try {
+					// await navigator.clipboard.writeText(text);
+				// } catch (error) {
+					// console.error(error);
+				// }
+			// }
+			
+			// if ( 
 			let input = document.createElement('input');
 			input.type = "text";
 			input.value = message.msg;
@@ -1055,7 +1065,7 @@ function openSearch(details) {
 		if (se.searchRegex && !openUrl) {
 			try {
 				let parts = JSON.parse('[' + se.searchRegex + ']');
-				let _find = new RegExp(parts[0], 'g');
+				let _find = new RegExp(parts[0], parts[2] || 'g');
 				let _replace = parts[1];
 				let newSearchTerms = searchTerms.replace(_find, _replace);
 				
@@ -1742,7 +1752,10 @@ const defaultUserOptions = {
 	
 	searchBarHistoryLength: 1024,
 	searchBarSuggestionsCount: 20,
-	groupLabelMoreTile: false
+	groupLabelMoreTile: false,
+	groupRowBreaks: false,
+	autoCopyOnSearch: false,
+	rememberLastOpenedFolder: false
 };
 
 var userOptions = {};
@@ -1916,7 +1929,8 @@ function readOpenSearchUrl(url) {
 	return new Promise( async (resolve, reject) => {
 		
 		let t = setTimeout(() => {
-			console.log('Error fetching ' + url);
+			console.error('Error fetching ' + url + " This may be due to Content Security Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP");
+			
 			reject(false);
 		}, 2000);
 		

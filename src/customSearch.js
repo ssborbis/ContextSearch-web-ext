@@ -419,8 +419,10 @@ function addSearchEnginePopup(data) {
 			}
 		}
 		if (form.description.value.trim() == "") {
-			alert(browser.i18n.getMessage("DescriptionEmptyError"));
-			return;
+			console.log('no description ... using title');
+			form.description.value = "no description for " + form.shortname.value;
+			//alert(browser.i18n.getMessage("DescriptionEmptyError"));
+			//return;
 		}
 		if (form.description.value.length > 1024 ) {
 			alert(browser.i18n.getMessage("DescriptionSizeError"));

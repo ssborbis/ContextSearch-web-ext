@@ -592,7 +592,10 @@ function saveOptions(e) {
 		
 		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
 		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
-		groupLabelMoreTile: userOptions.groupLabelMoreTile
+		groupLabelMoreTile: userOptions.groupLabelMoreTile,
+		groupRowBreaks: userOptions.groupRowBreaks,
+		autoCopyOnSearch: userOptions.autoCopyOnSearch,
+		rememberLastOpenedFolder: userOptions.rememberLastOpenedFolder
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

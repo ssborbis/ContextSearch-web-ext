@@ -592,7 +592,7 @@
   },
   
   "ErrorParsing": {
-    "message": "Error parsing %1"
+    "message": "Error parsing %1\nIf you continue to receive this error, it's likely your Content Security Policy settings"
   },
   
   "AddCustomSearch": {

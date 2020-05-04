@@ -98,6 +98,18 @@ function addTileEventHandlers(_tile, handler) {
 	_tile.addEventListener('mouseup', e => {
 
 		if ( _tile.disabled ) return false;
+		
+		if ( userOptions.autoCopyOnSearch /*copypaste*/) {
+			let input = document.createElement('input');
+			input.type = "text";
+			input.value = sb.value;
+			document.body.appendChild(input);
+			input.select();
+			document.execCommand("copy");
+			document.body.removeChild(input);
+			
+			browser.runtime.sendMessage({action: "copy", msg: sb.value});
+		}
 
 		// check if this tile was target of the latest mousedown event
 		if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
@@ -647,11 +659,24 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		qm.querySelectorAll('br').forEach( br => qm.removeChild(br) );
-
-		every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
-			tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+		qm.querySelectorAll('br:not(.groupBr)').forEach( br => qm.removeChild(br) );
+		
+		let count = 1;
+		qm.querySelectorAll('.tile:not([data-hidden="true"])').forEach( tile => {
+			if ( tile.nodeName === "BR" ) 
+				count = 0;
+			
+			if ( count === _columns ) {
+				tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+				count = 0;
+			}
+			
+			count++;
 		});
+
+		// every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
+			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
+		// });
 	}
 	
 	function buildQuickMenuElement(options) {
@@ -1337,6 +1362,14 @@ async function makeQuickMenu(options) {
 				let previousNode = nodes[index - 1];
 				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
 				
+				if ( userOptions.groupRowBreaks ) {
+					// separate groupFolders in rows
+					let _br = document.createElement('br');
+					_br.className = 'groupBr';
+					groupTiles.push(_br);
+					groupTiles.unshift(_br.cloneNode());
+				}
+				
 				tileArray = tileArray.concat(groupTiles);
 			}
 
@@ -1610,7 +1643,7 @@ async function makeQuickMenu(options) {
 		return folderId;
 	});
 	
-	if ( true && lastFolderId ) {
+	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
 		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
 		
 		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
@@ -1698,7 +1731,7 @@ function makeSearchBar() {
 		}, 50);
 
 	});
-	
+
 	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
 	
 	function displaySuggestions(suggestions) {
