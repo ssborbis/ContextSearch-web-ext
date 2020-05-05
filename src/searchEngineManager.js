@@ -208,6 +208,7 @@ function buildSearchEngineContainer() {
 					}
 				}();
 				edit_form.searchRegex.value = se.searchRegex || "";
+				edit_form.searchCode.value = se.searchCode || "";
 				
 				edit_form.addEventListener('mouseover', () => {
 					for (let _li of rootElement.getElementsByTagName('li'))
@@ -292,6 +293,7 @@ function buildSearchEngineContainer() {
 						se.params = paramStringToNameValueArray(edit_form.post_params.value);
 						se.id = se.id || gen();
 						se.searchRegex = edit_form.searchRegex.value;
+						se.searchCode = edit_form.searchCode.value;
 						
 						updateNodeList();
 						
@@ -319,7 +321,7 @@ function buildSearchEngineContainer() {
 				
 				// reflow trick
 				edit_form.getBoundingClientRect();
-				edit_form.style.maxHeight = '400px';
+				edit_form.style.maxHeight = '500px';
 				
 				checkFormValues();
 			});

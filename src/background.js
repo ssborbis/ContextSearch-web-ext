@@ -1124,6 +1124,15 @@ function openSearch(details) {
 			break;
 	}
 	
+	function executePostSearchCode(tabId) {
+		if ( !se.searchCode ) return;
+		
+		browser.tabs.executeScript(tabId, {
+			code: `searchTerms = "${escapeDoubleQuotes(searchTerms)}"; ${se.searchCode}`,
+			runAt: 'document_idle'
+		});
+	}
+	
 	function onCreate(_tab) {
 
 		// if new window
@@ -1150,6 +1159,9 @@ function openSearch(details) {
 				
 				highlightSearchTermsInTab(__tab, searchTerms);
 				browser.tabs.onUpdated.removeListener(listener);
+				
+				executePostSearchCode(_tab.id);
+				
 				return;
 			}
 			
@@ -1166,7 +1178,7 @@ function openSearch(details) {
 					runAt: 'document_start'
 				});
 			});
-				
+	
 			// listen for the results to complete
 			browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
 					
@@ -1177,6 +1189,8 @@ function openSearch(details) {
 				
 				// send new tab based on results tabId
 				highlightSearchTermsInTab(_tabInfo, searchTerms);
+				
+				executePostSearchCode(_tabId);
 			});
 		});
 
