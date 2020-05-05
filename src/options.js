@@ -353,10 +353,10 @@ function restoreOptions() {
 		
 		$('#n_searchBarHistoryLength').value = userOptions.searchBarHistoryLength;
 		$('#n_searchBarSuggestionsCount').value = userOptions.searchBarSuggestionsCount;
-		$('#cb_groupLabelMoreTile').checked = groupLabelMoreTile;
-		$('#cb_groupFolderRowBreaks').checked = groupFolderRowBreaks;
-		$('#cb_autoCopyOnSearch').checked = autoCopyOnSearch;
-		$('#cb_rememberLastOpenedFolder').checked = rememberLastOpenedFolder;
+		$('#cb_groupLabelMoreTile').checked = userOptions.groupLabelMoreTile;
+		$('#cb_groupFolderRowBreaks').checked = userOptions.groupFolderRowBreaks;
+		$('#cb_autoCopyOnSearch').checked = userOptions.autoCopyOnSearch;
+		$('#cb_rememberLastOpenedFolder').checked = userOptions.rememberLastOpenedFolder;
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
@@ -596,10 +596,10 @@ function saveOptions(e) {
 		
 		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
 		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
-		groupLabelMoreTile: $('#cb_groupLabelMoreTile'),
-		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks'),
-		autoCopyOnSearch: $('#cb_autoCopyOnSearch'),
-		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder')
+		groupLabelMoreTile: $('#cb_groupLabelMoreTile').checked,
+		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
+		autoCopyOnSearch: $('#cb_autoCopyOnSearch').checked,
+		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
