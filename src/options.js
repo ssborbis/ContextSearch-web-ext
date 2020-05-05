@@ -353,6 +353,10 @@ function restoreOptions() {
 		
 		$('#n_searchBarHistoryLength').value = userOptions.searchBarHistoryLength;
 		$('#n_searchBarSuggestionsCount').value = userOptions.searchBarSuggestionsCount;
+		$('#cb_groupLabelMoreTile').checked = groupLabelMoreTile;
+		$('#cb_groupFolderRowBreaks').checked = groupFolderRowBreaks;
+		$('#cb_autoCopyOnSearch').checked = autoCopyOnSearch;
+		$('#cb_rememberLastOpenedFolder').checked = rememberLastOpenedFolder;
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
