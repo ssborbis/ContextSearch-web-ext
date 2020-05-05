@@ -1064,13 +1064,16 @@ function openSearch(details) {
 		
 		if (se.searchRegex && !openUrl) {
 			try {
-				let parts = JSON.parse('[' + se.searchRegex + ']');
-				let _find = new RegExp(parts[0], parts[2] || 'g');
-				let _replace = parts[1];
-				let newSearchTerms = searchTerms.replace(_find, _replace);
-				
-				console.log(searchTerms + " -> " + newSearchTerms);
-				searchTerms = newSearchTerms;
+				let lines = se.searchRegex.split(/\n/);
+				lines.forEach( line => {
+					let parts = JSON.parse('[' + line.trim() + ']');
+					let _find = new RegExp(parts[0], parts[2] || 'g');
+					let _replace = parts[1];
+					let newSearchTerms = searchTerms.replace(_find, _replace);
+					
+					console.log("regex", searchTerms + " -> " + newSearchTerms);
+					searchTerms = newSearchTerms;
+				});
 			} catch (error) {
 				console.error("regex replace failed");
 			}
@@ -1769,7 +1772,8 @@ const defaultUserOptions = {
 	groupLabelMoreTile: false,
 	groupFolderRowBreaks: false,
 	autoCopyOnSearch: false,
-	rememberLastOpenedFolder: false
+	rememberLastOpenedFolder: false,
+	autoPasteFromClipboard: false
 };
 
 var userOptions = {};

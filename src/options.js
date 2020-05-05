@@ -357,6 +357,7 @@ function restoreOptions() {
 		$('#cb_groupFolderRowBreaks').checked = userOptions.groupFolderRowBreaks;
 		$('#cb_autoCopyOnSearch').checked = userOptions.autoCopyOnSearch;
 		$('#cb_rememberLastOpenedFolder').checked = userOptions.rememberLastOpenedFolder;
+		$('#cb_autoPasteFromClipboard').checked = userOptions.autoPasteFromClipboard;
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
@@ -599,6 +600,7 @@ function saveOptions(e) {
 		groupLabelMoreTile: $('#cb_groupLabelMoreTile').checked,
 		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
 		autoCopyOnSearch: $('#cb_autoCopyOnSearch').checked,
+		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
 		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked
 	}
 

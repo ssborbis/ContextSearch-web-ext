@@ -1715,6 +1715,12 @@ function makeSearchBar() {
 
 	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
 		
+		if ( userOptions.autoPasteFromClipboard ) {
+			sb.select();
+			document.execCommand("paste");
+			return;
+		}
+		
 		// skip empty 
 		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 		

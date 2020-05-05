@@ -73,6 +73,13 @@ function buildSearchEngineContainer() {
 				
 				// close if open on same TR
 				if (edit_form.parentNode === li && edit_form.style.maxHeight) {
+					
+					// resize TEXTAREA fix
+					if ( edit_form.style.maxHeight === "none" ) {
+						edit_form.style.maxHeight = edit_form.scrollHeight + "px";
+						edit_form.getBoundingClientRect();
+					}
+					
 					edit_form.style.maxHeight = null;
 					return;
 				}
@@ -141,8 +148,12 @@ function buildSearchEngineContainer() {
 						}
 						if (edit_form.searchRegex.value) {
 							try {
-								let parts = JSON.parse('[' + edit_form.searchRegex.value + ']');
-								let rgx = new RegExp(parts[0], 'g');
+								let lines = edit_form.searchRegex.value.split(/\n/);
+								lines.forEach( (line, index) => {
+							
+									let parts = JSON.parse('[' + line.trim() + ']');
+									let rgx = new RegExp(parts[0], parts[2] || 'g');
+								});
 							} catch (error) {
 								showError(edit_form.searchRegex, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
 							}
@@ -321,7 +332,17 @@ function buildSearchEngineContainer() {
 				
 				// reflow trick
 				edit_form.getBoundingClientRect();
-				edit_form.style.maxHeight = '500px';
+				// edit_form.style.maxHeight = '500px';
+				edit_form.style.maxHeight = edit_form.scrollHeight + "px";
+				
+				// resize TEXTAREA fix
+				// edit_form.querySelectorAll('textarea').forEach( ta => {
+					// ta.addEventListener
+				setTimeout(() => {
+					if ( Math.abs(edit_form.offsetHeight - edit_form.scrollHeight) < 2 ) {
+						edit_form.style.maxHeight = "none";
+					}
+				}, 2000);
 				
 				checkFormValues();
 			});

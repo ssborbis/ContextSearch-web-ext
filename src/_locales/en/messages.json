@@ -1628,6 +1628,26 @@
     "description": ""
   },
   
+  "Layout": {
+    "message": "Layout",
+    "description": ""
+  },
+  
+  "DefaultView": {
+    "message": "Default View",
+    "description": ""
+  },
+  
+  "Saved": {
+    "message": "Saved",
+    "description": ""
+  },
+  
+  "invalidregex": {
+    "message": "Invalid Regex",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""
