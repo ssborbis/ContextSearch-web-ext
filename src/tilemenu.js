@@ -1362,7 +1362,7 @@ async function makeQuickMenu(options) {
 				let previousNode = nodes[index - 1];
 				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
 				
-				if ( userOptions.groupRowBreaks ) {
+				if ( userOptions.groupFolderRowBreaks ) {
 					// separate groupFolders in rows
 					let _br = document.createElement('br');
 					_br.className = 'groupBr';

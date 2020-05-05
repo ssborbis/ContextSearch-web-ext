@@ -592,10 +592,10 @@ function saveOptions(e) {
 		
 		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
 		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
-		groupLabelMoreTile: userOptions.groupLabelMoreTile,
-		groupRowBreaks: userOptions.groupRowBreaks,
-		autoCopyOnSearch: userOptions.autoCopyOnSearch,
-		rememberLastOpenedFolder: userOptions.rememberLastOpenedFolder
+		groupLabelMoreTile: $('#cb_groupLabelMoreTile'),
+		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks'),
+		autoCopyOnSearch: $('#cb_autoCopyOnSearch'),
+		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder')
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -1296,3 +1296,96 @@ document.addEventListener('DOMContentLoaded', () => {
 		button.onclick = saveOptions;
 	});
 });
+
+// (() => {
+	// let advancedOptions = [
+	// {
+		// name: "quickMenuOpeningOpacity",
+		// inputOptions: {
+			// type: "number",
+			// min: 0,
+			// max: 1,
+			// step:.1
+		// }
+	// },
+	// {	
+		// name: "quickMenuAutoMaxChars",
+		// inputOptions: {
+			// type: "number",
+			// min: 0,
+			// max: 999,
+			// step:1
+		// }
+	// },
+	// {
+		// name: "quickMenuAutoTimeout",
+		// inputOptions: {
+			// type: "number",
+			// min: 0,
+			// max: 9999,
+			// step:1
+		// }
+	// },
+	// {
+		// name: "searchBar.historyLength",
+		// inputOptions: {
+			// type: "number",
+			// min: 0,
+			// max: 99999,
+			// step:1
+		// }
+	// },
+	// {
+		// name: "searchBar.suggestionsCount",
+		// inputOptions: {
+			// type: "number",
+			// min: 0,
+			// max: 999,
+			// step:1
+		// }
+	// },
+	// {
+		// name: "quickMenuSearchOnMouseUp",
+		// inputOptions: {
+			// type: "checkbox"
+		// }
+	// },
+	// {
+		// name: "rememberLastOpenedFolder",
+		// inputOptions: {
+			// type: "checkbox"
+		// }
+	// },
+	// {
+		// name: "groupLabelMoreTile",
+		// inputOptions: {
+			// type: "checkbox"
+		// }
+	// },
+	// {
+		// name: "groupFolderRowBreaks",
+		// inputOptions: {
+			// type: "checkbox"
+		// }
+	// },
+	// {
+		// name: "autoCopyOnSearch",
+		// inputOptions: {
+			// type: "checkbox"
+		// }
+	// }
+	// ];
+	
+	// document.addEventListener('DOMContentLoaded', () => {
+	// });
+ 		
+	
+// // quickMenuTools.lock.persist 	
+// // quickMenuTools.repeatsearch.persist 	
+ 	
+ 	
+	
+ 	
+ 	
+
+// })();

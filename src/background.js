@@ -1753,7 +1753,7 @@ const defaultUserOptions = {
 	searchBarHistoryLength: 1024,
 	searchBarSuggestionsCount: 20,
 	groupLabelMoreTile: false,
-	groupRowBreaks: false,
+	groupFolderRowBreaks: false,
 	autoCopyOnSearch: false,
 	rememberLastOpenedFolder: false
 };
