@@ -1078,8 +1078,9 @@ function openSearch(details) {
 				console.error("regex replace failed");
 			}
 		}
-		
+
 		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
+		
 		var q = replaceOpenSearchParams({template: se.query_string, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
 		
 		// set landing page for POST engines
@@ -1127,7 +1128,7 @@ function openSearch(details) {
 			break;
 	}
 	
-	function executePostSearchCode(tabId) {
+	function executeSearchCode(tabId) {
 		if ( !se.searchCode ) return;
 		
 		browser.tabs.executeScript(tabId, {
@@ -1163,7 +1164,7 @@ function openSearch(details) {
 				highlightSearchTermsInTab(__tab, searchTerms);
 				browser.tabs.onUpdated.removeListener(listener);
 				
-				executePostSearchCode(_tab.id);
+				executeSearchCode(_tab.id);
 				
 				return;
 			}
@@ -1193,10 +1194,9 @@ function openSearch(details) {
 				// send new tab based on results tabId
 				highlightSearchTermsInTab(_tabInfo, searchTerms);
 				
-				executePostSearchCode(_tabId);
+				executeSearchCode(_tabId);
 			});
 		});
-
 	}
 	
 	function onError() {
@@ -1339,6 +1339,9 @@ function getAllOpenTabs() {
 function encodeCharset(string, encoding) {
 
 	try {
+		
+		if ( encoding.toLowerCase() === "none" )
+			return {ascii: string, uri: string};
 		
 		if (encoding.toLowerCase() === 'utf-8') 
 			return {ascii: string, uri: encodeURIComponent(string)};
