@@ -241,7 +241,18 @@ function buildSearchEngineContainer() {
 				
 				document.getElementById('iconrefresh').onclick = function() {
 					icon.src = browser.runtime.getURL('icons/spinner.gif');
-					icon.src = edit_form.iconURL.value;
+					
+					if ( edit_form.iconURL.value )
+						icon.src = edit_form.iconURL.value;
+					else {
+						let url = new URL(edit_form.template.value);
+						icon.onerror = function() {
+							icon.src = tempImgToBase64(se.title.charAt(0).toUpperCase());
+							edit_form.iconURL.value = icon.src;
+						}
+						icon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
+						edit_form.iconURL.value = icon.src;
+					}
 				}
 				
 				edit_form.addOpenSearchEngine.onclick = function() {
