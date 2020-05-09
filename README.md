@@ -73,3 +73,34 @@ Most websites that have an embeded search bar can be added to the list of search
 * Right-click on the search bar in the page to open the context menu
 * Select the menu item `Add to ContextSearch` to open the Add Custom Search dialog box
 * Click Add
+
+#### Highlighting Searched Words
+After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
+
+#### Modifying Search Terms
+Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the follwing order:
+
+`FIND_REGEX, REPLACE_REGEX [, REGEX_MODIFIERS]`
+
+Some search engines require `+` instead of spaces. In this case, to change a query from `this is a search` to `this+is+a+search` the Search Regex would be `"\\s","+"`. Note the use of quotes and the need to escape the backslash. A literal backslash would require four backslashes `\\\\`
+
+Regex can be chained using one regex replacement per line in the Search Regex field.
+
+#### Javascript-Driven Search Engines
+Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript to form a query. For these engines, the template should exclude `{searchTerms}` and instead, users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
+
+For a simple example, if somewebsite.com used a javascript-driven search form, we could perform the search by using the Search Code field like this
+
+* Name: Some Website Search Engine
+* Template: https://somewebsite.com
+* Search Code:
+```
+let input = document.querySelector('input');
+input.value = searchTerms;
+input.dispatchEvent(new KeyboardEvent('keydown', {keyCode:13, key:"Enter"});
+```
+
+The search bar is assumed to be the first INPUT element which is filled in with the query string using the CS variable `searchTerms` and the Enter key is simulated.
+
+#### Search Engines Requiring Logins and Tokens
+The same approach as the Javascript-Driven Search Engines above my be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
