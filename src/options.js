@@ -611,6 +611,21 @@ function saveOptions(e) {
 document.addEventListener("DOMContentLoaded", makeTabs());
 document.addEventListener("DOMContentLoaded", restoreOptions);
 
+$('#cb_autoPasteFromClipboard').addEventListener('change', async (e) => {
+	
+	if ( e.target.checked === true ) {
+		e.target.checked = await browser.permissions.request({permissions: ["clipboardRead"]});
+		saveOptions();
+	}
+});
+
+$('#cb_autoCopyOnSearch').addEventListener('change', async (e) => {
+	if ( e.target.checked === true ) {
+		e.target.checked = await browser.permissions.request({permissions: ["clipboardWrite"]});
+		saveOptions();
+	}
+});
+
 // listen to all checkboxes for change
 document.querySelectorAll("input[type='checkbox'], input[type='color']").forEach( el => {
 	el.addEventListener('change', saveOptions);

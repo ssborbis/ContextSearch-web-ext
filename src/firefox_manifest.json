@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.20.1",
+	"version": "1.21.1",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"applications": {
@@ -67,7 +67,9 @@
 		"search"
 	],
 	"optional_permissions": [
-		"bookmarks"
+		"bookmarks",
+		"clipboardWrite",
+		"clipboardRead"
 	],
 	"icons": {
 		"48": "icons/icon48-2.png"
