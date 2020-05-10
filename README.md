@@ -79,7 +79,7 @@ Most websites that have an embeded search bar can be added to the list of search
 After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
 
 ## Modifying Search Terms
-Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the follwing order:
+Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the following order:
 
 `FIND_REGEX, REPLACE_REGEX [, REGEX_MODIFIERS]`
 
