@@ -49,7 +49,7 @@ These settings can be customized from `ContextSearch web-ext Options -> Context 
 
 
 #### Search using the Quick Menu
-The Quick Menu is a robust popup menu that can be used to perform search actiosn not available to the context menu
+The Quick Menu is a robust popup menu that can be used to perform search actions not available to the context menu
 
 * Select text and hold down the right mouse button until the menu appears
 * Click the icon for the desired search engine
@@ -87,7 +87,7 @@ Some search engines require `+` instead of spaces. In this case, to change a que
 Regex can be chained using one regex replacement per line in the Search Regex field.
 
 #### Javascript-Driven Search Engines
-Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript to form a query. For these engines, the template should exclude `{searchTerms}` and instead, users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
+Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript to perform a query. For these engines, the template should exclude `{searchTerms}` and instead, users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
 
 For a simple example, if somewebsite.com used a javascript-driven search form, we could perform the search by using the Search Code field like this
 
