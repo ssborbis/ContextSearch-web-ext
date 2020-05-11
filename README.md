@@ -34,7 +34,7 @@ ___
 ## Quick Start
 ContextSearch web-ext comes preloaded with some of the most popular search engines. No setup required.
 
-## Search using the context menu
+## Search Using the Context Menu
 * Select some text and right-click to bring up the context menu
 * Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48.png" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
 
@@ -47,7 +47,7 @@ Defaults:
   
 These settings can be customized from `ContextSearch web-ext Options -> Context Menu -> Search Actions`
 
-## Search using the Quick Menu
+## Search Using the Quick Menu
 The Quick Menu is a robust popup menu that can be used to perform search actions not available to the context menu
 
 * Select text and hold down the right mouse button until the menu appears
@@ -77,6 +77,8 @@ Most websites that have an embeded search bar can be added to the list of search
 
 ## Highlighting Searched Words
 After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
+
+Highlighting can be removed from a page by pressing ESC
 
 ## Modifying Search Terms
 Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the following order:
