@@ -600,7 +600,7 @@
   },
   
   "ErrorParsing": {
-    "message": "Erreur d’analyse de %1"
+    "message": "Erreur d’analyse de %1\nSi cette erreur persiste, votre stratégie de blocage du contenu est probablement en cause."
   },
   
   "SearchFor": {
@@ -1602,7 +1602,12 @@
   },
   
   "findinpage": {
-    "message": "Rechercher dans la page page",
+    "message": "Rechercher dans la page",
+    "description": ""
+  },
+  
+  "SearchCode": {
+    "message": "Code de recherche",
     "description": ""
   },
   
