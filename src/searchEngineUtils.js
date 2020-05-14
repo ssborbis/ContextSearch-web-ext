@@ -58,6 +58,57 @@ function searchJsonObjectToArray(engines) {
 	return searchEngines;
 }
 
+
+function imageToBase64(image, maxSize) {
+	
+	function isCanvasBlank(canvas) {
+		var blank = document.createElement('canvas');
+		blank.width = canvas.width;
+		blank.height = canvas.height;
+
+		return canvas.toDataURL() == blank.toDataURL();
+	}
+	
+	let c = document.createElement('canvas');
+	let ctx = c.getContext('2d');
+	
+	ctx.canvas.width = image.naturalWidth || 16;
+	ctx.canvas.height = image.naturalHeight || 16;
+
+	try {
+
+		if ( maxSize && ( image.naturalWidth > maxSize || image.naturalHeight > maxSize ) ) {
+			
+			let whichIsLarger = (image.naturalWidth > image.naturalHeight) ? image.naturalWidth : image.naturalHeight;
+			let scalePercent = maxSize / whichIsLarger;
+			
+			ctx.canvas.width = image.naturalWidth * scalePercent;
+			ctx.canvas.height = image.naturalHeight * scalePercent;
+			ctx.scale(scalePercent, scalePercent);
+		}
+		
+		ctx.drawImage(image, 0, 0);
+		
+		if (isCanvasBlank(c)) {
+			console.log('canvas is empty');
+			console.log(image.naturalWidth + "x" + image.naturalHeight);
+			return "";
+		}
+		
+		return c.toDataURL();
+		
+	} catch (e) {
+		
+		console.log(e);
+		
+		// ctx.drawImage(image, 0, 0);
+		
+		// return c.toDataURL();
+		
+		return "";
+	} 	
+}
+
 function tempImgToBase64(str) {
 	return createCustomIcon({text: str.charAt(0)});
 }
@@ -193,4 +244,3 @@ function loadRemoteIcon(options) {
 function gen() {
 	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 }
-		

@@ -21,32 +21,21 @@ var QMtools = [
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
-					
-			addTileEventHandlers(tile, e => {
+
+			addTileEventHandlers(tile, async (e) => {
 
 				let input = document.createElement('input');
-				input.type = "text";
-				input.value = sb.value;
+				input.style.visibility = 'none';
 				document.body.appendChild(input);
-
+				input.value = sb.value;
 				input.select();
-				
-				if ( !document.queryCommandSupported('copy') ) {
-					console.log('copy not supported');
-					return;
-				}
-
-				document.execCommand("copy");
-				
+				document.execCommand('copy');
 				input.parentNode.removeChild(input);
-				
-				// chrome requires execCommand be run from background
-				browser.runtime.sendMessage({action: 'copy', msg: sb.value});
-				
+
+				let backgroundImage = tile.style.backgroundImage;
 				tile.style.backgroundImage = `url(${browser.runtime.getURL('icons/checkmark.svg')})`;
-				setTimeout( () => {
-					tile.style.backgroundImage = `url(${browser.runtime.getURL(this.icon)})`;
-				}, 500);
+				
+				setTimeout(() => tile.style.backgroundImage = backgroundImage, 500);
 			});
 			
 			return tile;

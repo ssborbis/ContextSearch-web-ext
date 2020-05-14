@@ -99,17 +99,9 @@ function addTileEventHandlers(_tile, handler) {
 
 		if ( _tile.disabled ) return false;
 		
-		if ( userOptions.autoCopyOnSearch /*copypaste*/) {
-			let input = document.createElement('input');
-			input.type = "text";
-			input.value = sb.value;
-			document.body.appendChild(input);
-			input.select();
-			document.execCommand("copy");
-			document.body.removeChild(input);
-			
-			browser.runtime.sendMessage({action: "copy", msg: sb.value});
-		}
+		// if ( userOptions.autoCopy /*copypaste*/) {
+			// browser.runtime.sendMessage({action: "copy", msg: sb.value});
+		// }
 
 		// check if this tile was target of the latest mousedown event
 		if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
@@ -1397,7 +1389,7 @@ async function makeQuickMenu(options) {
 					return;
 				}
 
-				tile = buildSearchIcon(se.icon_base64String || browser.runtime.getURL('/icons/search.svg'), se.title);
+				tile = buildSearchIcon(se.icon_base64String || se.icon_url || browser.runtime.getURL('/icons/search.svg'), se.title);
 				tile.dataset.title = se.title;
 				
 				// site search picker

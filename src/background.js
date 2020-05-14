@@ -227,6 +227,10 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateSearchTerms":
 			window.searchTerms = message.searchTerms;
+			
+			if ( userOptions.autoCopy )
+				notify({action: "copy", msg: message.searchTerms});
+			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
 			
@@ -406,24 +410,14 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "copy":
-		
-			// async function writeToClipboard(text) {
-				// try {
-					// await navigator.clipboard.writeText(text);
-				// } catch (error) {
-					// console.error(error);
-				// }
-			// }
-			
-			// if ( 
-			let input = document.createElement('input');
-			input.type = "text";
-			input.value = message.msg;
-			document.body.appendChild(input);
-
-			input.select();
-
-			document.execCommand("copy");
+			return new Promise(async (r) => {
+				try {
+					await navigator.clipboard.writeText(message.msg);
+					r(true);
+				} catch (error) {
+					r(false);
+				}
+			});
 			break;
 			
 		case "hasBrowserSearch":
@@ -514,6 +508,16 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getLastOpenedFolder":
 			return window.lastOpenedFolder || null;
+			break;
+			
+		case "injectComplete":
+			if ( userOptions.quickMenu ) {
+				browser.tabs.executeScript(sender.tab.id, {
+					file: "inject_quickmenu.js",
+					frameId: sender.frameId
+				});
+			}
+			
 			break;
 	}
 }
@@ -1774,7 +1778,7 @@ const defaultUserOptions = {
 	searchBarSuggestionsCount: 20,
 	groupLabelMoreTile: false,
 	groupFolderRowBreaks: false,
-	autoCopyOnSearch: false,
+	autoCopy: false,
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false
 };
@@ -1885,9 +1889,6 @@ browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
 		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
 	});
 });
-
-/**************************************
-/* moving inject code to background */
 
 // note: returns a promise to loadRemoteIcons
 function dataToSearchEngine(data) {

@@ -355,7 +355,7 @@ function restoreOptions() {
 		$('#n_searchBarSuggestionsCount').value = userOptions.searchBarSuggestionsCount;
 		$('#cb_groupLabelMoreTile').checked = userOptions.groupLabelMoreTile;
 		$('#cb_groupFolderRowBreaks').checked = userOptions.groupFolderRowBreaks;
-		$('#cb_autoCopyOnSearch').checked = userOptions.autoCopyOnSearch;
+		$('#cb_autoCopy').checked = userOptions.autoCopy;
 		$('#cb_rememberLastOpenedFolder').checked = userOptions.rememberLastOpenedFolder;
 		$('#cb_autoPasteFromClipboard').checked = userOptions.autoPasteFromClipboard;
 		
@@ -599,7 +599,7 @@ function saveOptions(e) {
 		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
 		groupLabelMoreTile: $('#cb_groupLabelMoreTile').checked,
 		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
-		autoCopyOnSearch: $('#cb_autoCopyOnSearch').checked,
+		autoCopy: $('#cb_autoCopy').checked,
 		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
 		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked
 	}
@@ -619,7 +619,7 @@ $('#cb_autoPasteFromClipboard').addEventListener('change', async (e) => {
 	}
 });
 
-$('#cb_autoCopyOnSearch').addEventListener('change', async (e) => {
+$('#cb_autoCopy').addEventListener('change', async (e) => {
 	if ( e.target.checked === true ) {
 		e.target.checked = await browser.permissions.request({permissions: ["clipboardWrite"]});
 		saveOptions();
@@ -1390,7 +1390,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		// }
 	// },
 	// {
-		// name: "autoCopyOnSearch",
+		// name: "autoCopy",
 		// inputOptions: {
 			// type: "checkbox"
 		// }

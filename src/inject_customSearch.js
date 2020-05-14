@@ -46,7 +46,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
-							
+
 			case "openCustomSearch":
 			
 				if ( !window.document.querySelector("input:focus,textarea:focus") && !message.searchEngine ) {

@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.21.1",
+	"version": "1.22",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	
@@ -42,18 +42,27 @@
 				"lib/browser-polyfill.min.js",
 				"lib/crossbrowser.js",
 				"lib/mark.es6.min.js",
-				"dock.js",
 				"inject.js",
-				"opensearch.js",
-				"searchEngineUtils.js",
-				"inject_quickmenu.js",
-				"inject_customSearch.js",
-				"inject_sidebar.js",
 				"inject_highlight.js",
 				"hotkeys.js"
 			],
-			"css": ["inject.css","inject_sidebar.css"],
+			"css": ["inject.css"],
 			"all_frames": true,
+			"match_about_blank": false
+		},
+		{
+			"matches": ["<all_urls>"],
+			"js": [
+				"utils.js",
+				"opensearch.js",
+				"searchEngineUtils.js",
+				"dock.js",
+				"inject_sidebar.js",
+				"inject_customSearch.js",
+				"resizeWidget.js"
+			],
+			"css": ["inject_sidebar.css"],
+			"all_frames": false,
 			"match_about_blank": false
 		}
 	],
