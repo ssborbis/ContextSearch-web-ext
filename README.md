@@ -107,7 +107,7 @@ input.dispatchEvent(new KeyboardEvent('keydown', {keyCode:13, key:"Enter"});
 
 The search bar is assumed to be the first INPUT element which is filled in with the query string using the CS variable `searchTerms` and the Enter key is simulated. 
 
-Some sites will require more precise selectors and events ( click, change, etc ) in order to perform a search, but nearly all should be accessable with the search code field.
+Some sites will require more precise selectors and events ( click, change, etc ) in order to perform a search, but nearly all should be accessible with the search code field.
 
 ## Search Engines Requiring Logins and Tokens
 The same approach as the Javascript-Driven Search Engines above my be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
