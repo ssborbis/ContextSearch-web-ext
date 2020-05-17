@@ -102,7 +102,7 @@ For a simple example, if somewebsite.com used a javascript-driven search form, w
 ```
 let input = document.querySelector('input');
 input.value = searchTerms;
-input.dispatchEvent(new KeyboardEvent('keydown', {keyCode:13, key:"Enter"});
+input.dispatchEvent(new KeyboardEvent('keydown', {keyCode:13, key:"Enter"}));
 ```
 
 The search bar is assumed to be the first INPUT element which is filled in with the query string using the CS variable `searchTerms` and the Enter key is simulated. 
