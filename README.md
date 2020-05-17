@@ -110,4 +110,4 @@ The search bar is assumed to be the first INPUT element which is filled in with 
 Some sites will require more precise selectors and events ( click, change, etc ) in order to perform a search, but nearly all should be accessible with the search code field.
 
 ## Search Engines Requiring Logins and Tokens
-The same approach as the Javascript-Driven Search Engines above my be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
+The same approach as the Javascript-Driven Search Engines above may be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
