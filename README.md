@@ -96,6 +96,8 @@ For a simple example, if somewebsite.com used a javascript-driven search form, w
 
 * Name: Some Website Search Engine
 * Template: https://somewebsite.com
+* Method: **GET**
+* POST params: *empty*
 * Search Code:
 ```
 let input = document.querySelector('input');
