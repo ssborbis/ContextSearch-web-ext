@@ -1,10 +1,11 @@
 # <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48-2.png" height="30px">&nbsp;ContextSearch web-ext
 
-Add any search engine to your context menu. FF 57+ compatible. Originally written as a replacement for Ben Basson's Context Search.
+Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search.
 
 Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
 
 ## Features ###
+* Works with any search engine.
 * Context menu
 * Popup menu with several opening methods
 * Highlight search terms
