@@ -1,10 +1,11 @@
 # <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48-2.png" height="30px">&nbsp;ContextSearch web-ext
 
-Load your current search engines into a context menu for easily searching selected text. FF 57+ compatible. Originally written as a replacement for Ben Basson's Context Search.
+Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search.
 
 Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
 
 ## Features ###
+* Works with any search engine.
 * Context menu
 * Popup menu with several opening methods
 * Highlight search terms
@@ -90,20 +91,24 @@ Some search engines require `+` instead of spaces. In this case, to change a que
 Regex can be chained using one regex replacement per line in the Search Regex field.
 
 ## Javascript-Driven Search Engines
-Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript to perform a query. For these engines, the template should exclude `{searchTerms}` and instead, users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
+Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript. For these engines, the template should exclude `{searchTerms}` and instead users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
 
 For a simple example, if somewebsite.com used a javascript-driven search form, we could perform the search by using the Search Code field like this
 
 * Name: Some Website Search Engine
 * Template: https://somewebsite.com
+* Method: **GET**
+* POST params: *empty*
 * Search Code:
 ```
 let input = document.querySelector('input');
 input.value = searchTerms;
-input.dispatchEvent(new KeyboardEvent('keydown', {keyCode:13, key:"Enter"});
+input.dispatchEvent(new KeyboardEvent('keydown', {keyCode:13, key:'Enter'}));
 ```
 
-The search bar is assumed to be the first INPUT element which is filled in with the query string using the CS variable `searchTerms` and the Enter key is simulated.
+The search bar is assumed to be the first INPUT element which is filled in with the query string using the CS variable `searchTerms` and the Enter key is simulated. 
+
+Some sites will require more precise selectors and events ( click, change, etc ) in order to perform a search, but nearly all should be accessible with the search code field.
 
 ## Search Engines Requiring Logins and Tokens
-The same approach as the Javascript-Driven Search Engines above my be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
+The same approach as the Javascript-Driven Search Engines above may be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
