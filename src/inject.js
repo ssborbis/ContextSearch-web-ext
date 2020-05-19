@@ -231,30 +231,3 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 });
 
 browser.runtime.sendMessage({action: "injectComplete"});
-
-// document.addEventListener('mouseup', e => {
-	
-	// if ( e.which !== 1 ) return;
-	
-	// let selection = document.getSelection().toString();
-	
-	// if ( !selection ) return;
-	
-	// if ( selection.length > 2048 ) return;
-
-	// let input = document.createElement('input');
-	// input.type = "text";
-	// input.value = document.getSelection().toString();
-	// input.style.display = 'none';
-	// document.body.appendChild(input);
-
-	// input.select();
-	
-	// if ( !document.queryCommandSupported('copy') ) {
-		// console.log('copy not supported');
-		// return;
-	// }
-
-	// document.execCommand("copy");
-	// browser.runtime.sendMessage({action: 'copy', msg: selection});
-// });

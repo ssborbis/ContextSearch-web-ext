@@ -41,8 +41,8 @@
 			"js": [
 				"lib/browser-polyfill.min.js",
 				"lib/crossbrowser.js",
-				"lib/mark.es6.min.js",
 				"inject.js",
+				"lib/mark.es6.min.js",
 				"inject_highlight.js",
 				"hotkeys.js"
 			],

@@ -170,20 +170,20 @@ async function notify(message, sender, sendResponse) {
 				code: "getFindBar() ? true : false;"
 			});
 			break;
-			
-		case "mark":
 
-			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
-				return new Promise( (resolve, reject) => {
+		case "mark":
+			return new Promise( async (resolve) => {
+				if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
 					getAllOpenTabs().then( tabs => {
 						tabs.forEach( tab => {
 							browser.tabs.sendMessage(tab.id, message);
 						});
 						resolve();
 					});
-				});
-			} else
-				return sendMessageToAllFrames();
+				} else {
+					resolve(sendMessageToAllFrames());
+				}
+			});
 			break;
 			
 		case "unmark":
@@ -521,6 +521,27 @@ async function notify(message, sender, sendResponse) {
 			break;
 	}
 }
+
+// async function injectHighlighting(tabId) {
+	// let result = await browser.tabs.executeScript(tabId, {
+		// code: "typeof CS_MARK_instance !== 'undefined';"
+	// });
+	
+	// if ( !result ) return;
+	
+	// let hasInjected = result.shift();
+
+	// if ( !hasInjected ) {
+		// await browser.tabs.executeScript(tabId, {
+			// file: "lib/mark.es6.min.js",
+			// allFrames: true
+		// });
+		// await browser.tabs.executeScript(tabId, {
+			// file: "inject_highlight.js",
+			// allFrames: true
+		// });
+	// }
+// }
 
 function updateUserOptionsObject(uo) {
 // Update default values instead of replacing with object of potentially undefined values

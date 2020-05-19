@@ -126,7 +126,7 @@ function buildSearchEngineContainer() {
 								resolve(false);
 							}
 						}
-						if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' ) {
+						if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' && edit_form.searchCode.value.trim() === "") {
 							showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
 						}
 						try {

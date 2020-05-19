@@ -465,7 +465,7 @@ function closeFindBar() {
 
 	let fb = getFindBar();
 	if ( fb ) {
-				
+
 		fb.style.maxHeight = '0px';
 		fb.style.opacity = 0;
 		
@@ -501,7 +501,13 @@ function getMarks() {
 	});
 	
 	marks = marks.sort( (a,b) => {
-		return (offset(a) < offset(b)) ? 1 : -1;
+		let offsetA = offset(a);
+		let offsetB = offset(b);
+		
+		// cross-browser weirdness using 1-liner
+		if ( offsetA.top < offsetB.top ) return -1;
+		else if ( offsetA.top > offsetB.top ) return 1;
+		else return 0;
 	});
 
 	// if ( true || userOptions.highLight.sortByAccuracy ) {

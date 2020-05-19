@@ -104,7 +104,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 			enabler: userOptions.highLight.findBar.enabled,
 			hotkey: userOptions.highLight.findBar.hotKey,
 			callback: e => {
-				
+
 				browser.runtime.sendMessage({action: "getFindBarOpenStatus"}).then( results => {
 					
 					let isOpen = results.shift(); // get the first array element ( true || false )
