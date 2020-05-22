@@ -202,7 +202,7 @@ function showNotification(msg) {
 		CS_notification.style.opacity = 0;
 	}, 3000);
 	
-	CS_notification.onclick = () => {
+	CS_notification.onclick = function() {
 		document.body.removeChild(CS_notification);
 		delete CS_notification;
 	}

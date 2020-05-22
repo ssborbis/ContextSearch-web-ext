@@ -823,7 +823,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		$('#left_div').style.display = 'none';
 		$('#right_div').style.width = "auto";
 		let loadButton = $("#selectMozlz4FileButton");
-		loadButton.onclick = e => {
+		loadButton.onclick = function(e) {
 			browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
 			e.preventDefault();
 		}
@@ -1069,7 +1069,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		var reader = new FileReader();
 
 		// Closure to capture the file information.
-		reader.onload = function() {
+		reader.onload = () => {
 			try {
 				let newUserOptions = JSON.parse(reader.result);
 				

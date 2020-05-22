@@ -35,7 +35,7 @@ function setToolIconColor(_toolTile) {
 
 	let color = window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
 
-	img.onload = function() {
+	img.onload = () => {
 
 		var canvas=document.createElement("canvas");
 		var ctx=canvas.getContext("2d");
@@ -234,7 +234,7 @@ async function makeQuickMenu(options) {
 
 	let sb = document.getElementById('searchBar');
 	sb.onclick = function(e) { e.stopPropagation();	}
-	sb.onmouseup = function(e) { e.stopPropagation(); }
+	sb.onmouseup = e => { e.stopPropagation(); }
 	
 	let sbc = document.getElementById('searchBarContainer');
 	
@@ -256,13 +256,13 @@ async function makeQuickMenu(options) {
 	sb.addEventListener('change', e => browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value}));
 	
 	let csb = document.getElementById('clearSearchBarButton');
-	csb.onclick = () => { 
+	csb.onclick = function() { 
 		sb.value = null;
 		sb.focus();
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 	
-	qm.toggleDisplayMode = function() {
+	qm.toggleDisplayMode = () => {
 		qm.rootNode.displayType = function() {
 			if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
 			if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
@@ -363,7 +363,7 @@ async function makeQuickMenu(options) {
 
 	});
 	
-	qm.selectFirstTile = function() {
+	qm.selectFirstTile = () => {
 		let firstTile = qm.querySelector('.tile:not([data-hidden])');
 		firstTile.classList.add('selectedFocus');
 		sb.selectedIndex = [].indexOf.call(qm.querySelectorAll(".tile"), firstTile);
@@ -706,7 +706,7 @@ async function makeQuickMenu(options) {
 			qm.appendChild(tile);
 		});
 		
-		qm.getTileSize = function() { 
+		qm.getTileSize = () => { 
 
 			let div = document.createElement('div');
 			div.className = "tile";
@@ -720,7 +720,7 @@ async function makeQuickMenu(options) {
 			return {width: rect.width, height: rect.height};
 		};
 		
-		qm.setDisplay = function() {
+		qm.setDisplay = () => {
 			qm.querySelectorAll('.tile').forEach( _tile => {
 				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
 				else _tile.classList.remove("singleColumn");
@@ -741,7 +741,7 @@ async function makeQuickMenu(options) {
 		}
 
 		// set min-width to prevent menu shrinking with smaller folders
-		qm.setMinWidth = function() { qm.style.minWidth = qm.columns * qm.getTileSize().width + "px"; }	
+		qm.setMinWidth = () => { qm.style.minWidth = qm.columns * qm.getTileSize().width + "px"; }	
 		qm.setMinWidth();
 
 		// slide-in animation
@@ -977,7 +977,7 @@ async function makeQuickMenu(options) {
 						let _url = new URL(_bm.uri);
 						let img = new Image();
 
-						img.onload = function() {
+						img.onload = () => {
 							dragDiv.node.icon = imageToBase64(img, 32);
 							dragDiv.style.backgroundImage = `url(${dragDiv.node.icon})`;
 							
@@ -1215,7 +1215,7 @@ async function makeQuickMenu(options) {
 			moreTile.node = { parent: node };
 			moreTile.dataset.parentid = node.id;
 			
-			moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = function() { return false; }
+			moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = () => { return false; }
 			moreTile.setAttribute('draggable', false);
 			
 			function more() {
@@ -1749,7 +1749,7 @@ function makeSearchBar() {
 				sb.value = this.innerText;
 			}
 			
-			div.ondblclick = function() {
+			div.ondblclick = () => {
 				var e = new KeyboardEvent("keydown", {bubbles : true, cancelable : true, key: "Enter"});
 				sb.dispatchEvent(e);
 			}
