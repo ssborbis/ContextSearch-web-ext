@@ -166,12 +166,12 @@ function buildSearchEngineContainer() {
 						icon.src = browser.runtime.getURL("/icons/spinner.svg");
 						let newIcon = new Image();
 						newIcon.onload = function() {
-							icon.src = imageToBase64(this, 32) || tempImgToBase64(se.title.charAt(0).toUpperCase());
+							icon.src = imageToBase64(this, 32) || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
 							resolve(true);
 						}
 						newIcon.onerror = function() {	
 							showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
-							icon.src = se.icon_base64String || tempImgToBase64(se.title.charAt(0).toUpperCase());
+							icon.src = se.icon_base64String || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
 							resolve(true);
 						}
 						
@@ -247,7 +247,7 @@ function buildSearchEngineContainer() {
 					else {
 						let url = new URL(edit_form.template.value);
 						icon.onerror = function() {
-							icon.src = tempImgToBase64(se.title.charAt(0).toUpperCase());
+							icon.src = createCustomIcon({text: se.title.charAt(0).toUpperCase()});
 							edit_form.iconURL.value = icon.src;
 						}
 						icon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
@@ -417,7 +417,7 @@ function buildSearchEngineContainer() {
 					img.src = browser.runtime.getURL("/icons/spinner.svg");
 					let newIcon = new Image();
 					newIcon.onload = function() {
-						img.src = imageToBase64(this, 32) || tempImgToBase64(node.title.charAt(0).toUpperCase());
+						img.src = imageToBase64(this, 32) || createCustomIcon({text: node.title.charAt(0).toUpperCase()});
 					//	saveForm();
 						node.icon = img.src;
 						updateNodeList();
@@ -425,7 +425,7 @@ function buildSearchEngineContainer() {
 					}
 					newIcon.onerror = function() {	
 					//	showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
-						img.src = tempImgToBase64(node.title.charAt(0).toUpperCase());
+						img.src = createCustomIcon({text: node.title.charAt(0).toUpperCase()});
 						node.icon = img.src;
 						updateNodeList();
 					//	saveForm(false);
@@ -1525,35 +1525,32 @@ function buildSearchEngineContainer() {
 		}
 	});
 	
-	document.getElementById('b_resetAllSearchEngines').addEventListener('click', e => {
+	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {
 		
 		if ( !confirm(browser.i18n.getMessage("ConfirmResetAllSearchEngines")) ) return;
 		
-		browser.runtime.getBackgroundPage().then( w => {
-			userOptions.nodeTree.children = [];	
-			
-			// reset searchEngines to defaults
-			userOptions.searchEngines = w.defaultEngines;
-			
-			// build nodes with default engines
-			repairNodeTree(userOptions.nodeTree);
-			
-			// unhide all default engines
-			findNodes( userOptions.nodeTree, node => node.hidden = false );
+		let w = browser.runtime.getBackgroundPage();
+		userOptions.nodeTree.children = [];	
+		
+		// reset searchEngines to defaults
+		userOptions.searchEngines = w.defaultEngines;
+		
+		// build nodes with default engines
+		repairNodeTree(userOptions.nodeTree);
+		
+		// unhide all default engines
+		findNodes( userOptions.nodeTree, node => node.hidden = false );
 
-			// updated the background page UO
-			w.userOptions = userOptions;
+		// updated the background page UO
+		w.userOptions = userOptions;
+		
+		// add OCSE to the nodeTree
+		await w.checkForOneClickEngines();
 			
-			// add OCSE to the nodeTree
-			w.checkForOneClickEngines().then( () => {
-				
-				// updated the local UO
-				userOptions = w.userOptions;
-				saveOptions().then( () => {
-					location.href = "options.html?tab=enginesTab";
-				});
-			});
-		});
+		// updated the local UO
+		userOptions = w.userOptions;
+		await saveOptions();
+		location.href = "options.html?tab=enginesTab";
 	});
 	
 	

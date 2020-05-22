@@ -136,8 +136,6 @@ function addSearchEnginePopup(data) {
 		} else 
 			simple.querySelector('input').value = se.title;
 	}
-		
-	
 
 	//setup buttons
 	document.getElementById('a_simple_moreOptions').onclick = function() {
@@ -522,61 +520,114 @@ function closeCustomSearchIframe() {
 	},250);
 }
 
-function listenForFocusAndPromptToImport() {
+async function listenForFocusAndPromptToImport() {
 
-	browser.runtime.sendMessage({action: "hasBrowserSearch"}).then( result => {
+	let hasBrowserSearch = browser.runtime.sendMessage({action: "hasBrowserSearch"});
 		
-		if (result) {
+	if (hasBrowserSearch) {
 
-			window.addEventListener('focus', () => {
+		window.addEventListener('focus', async() => {
 
-				// look for new one-click engines
-				browser.runtime.sendMessage({action: "checkForOneClickEngines"}).then( newEngineCount => {
-					
-					console.log('found ' + newEngineCount + ' new engines');
-					
-					// do nothing if no engines added
-					if ( !newEngineCount ) return;
-					
-					// show auto notification
-					showMenu('CS_notifyAutomaticUpdated');
-
-					let text = document.querySelector('[data-i18n="NewEngineImported"]');
-					
-					text.innerText = browser.i18n.getMessage("NewEngineImported", newEngineCount);
-						
-					// close iframe after x milliseconds
-					setTimeout(closeCustomSearchIframe, 2000);
-				});
-
-			}, {once: true});
+			// look for new one-click engines
+			let newEngineCount = browser.runtime.sendMessage({action: "checkForOneClickEngines"});
+				
+			console.log('found ' + newEngineCount + ' new engines');
 			
-			return;
-		} else {
-			let dialog = document.getElementById('CS_postSearchEngineInstall');
-	
-			dialog.querySelector('[name="import"]').onclick = function() {
-				browser.runtime.sendMessage({action: "openOptions", hashurl:"#quickload"});
-				closeCustomSearchIframe();	
+			// do nothing if no engines added
+			if ( !newEngineCount ) return;
+			
+			// show auto notification
+			showMenu('CS_notifyAutomaticUpdated');
+
+			let text = document.querySelector('[data-i18n="NewEngineImported"]');
+			
+			text.innerText = browser.i18n.getMessage("NewEngineImported", newEngineCount);
+				
+			// close iframe after x milliseconds
+			setTimeout(closeCustomSearchIframe, 2000);
+
+		}, {once: true});
+		
+		return;
+	} else {
+		let dialog = document.getElementById('CS_postSearchEngineInstall');
+
+		dialog.querySelector('[name="import"]').onclick = function() {
+			browser.runtime.sendMessage({action: "openOptions", hashurl:"#quickload"});
+			closeCustomSearchIframe();	
+		}
+		
+		window.addEventListener('focus', () => {
+			
+			dialog.querySelector('[name="moreInfo"]').onclick = function() {
+				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=helpTab#help_importing"});
 			}
 			
-			window.addEventListener('focus', () => {
-				
-				dialog.querySelector('[name="moreInfo"]').onclick = function() {
-					browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=helpTab#help_importing"});
-				}
-				
-				showMenu(dialog);
-				
-				dialog.querySelector('[name="cancel"]').onclick = function() {
-					showMenu('CS_customSearchDialogOptions');
-				}
-				
-			}, {once: true});
-		}
-	});
-
+			showMenu(dialog);
+			
+			dialog.querySelector('[name="cancel"]').onclick = function() {
+				showMenu('CS_customSearchDialogOptions');
+			}
+			
+		}, {once: true});
+	}
 }
+
+// function listenForFocusAndPromptToImport() {
+
+	// browser.runtime.sendMessage({action: "hasBrowserSearch"}).then( result => {
+		
+		// if (result) {
+
+			// window.addEventListener('focus', () => {
+
+				// // look for new one-click engines
+				// browser.runtime.sendMessage({action: "checkForOneClickEngines"}).then( newEngineCount => {
+					
+					// console.log('found ' + newEngineCount + ' new engines');
+					
+					// // do nothing if no engines added
+					// if ( !newEngineCount ) return;
+					
+					// // show auto notification
+					// showMenu('CS_notifyAutomaticUpdated');
+
+					// let text = document.querySelector('[data-i18n="NewEngineImported"]');
+					
+					// text.innerText = browser.i18n.getMessage("NewEngineImported", newEngineCount);
+						
+					// // close iframe after x milliseconds
+					// setTimeout(closeCustomSearchIframe, 2000);
+				// });
+
+			// }, {once: true});
+			
+			// return;
+		// } else {
+			// let dialog = document.getElementById('CS_postSearchEngineInstall');
+	
+			// dialog.querySelector('[name="import"]').onclick = function() {
+				// browser.runtime.sendMessage({action: "openOptions", hashurl:"#quickload"});
+				// closeCustomSearchIframe();	
+			// }
+			
+			// window.addEventListener('focus', () => {
+				
+				// dialog.querySelector('[name="moreInfo"]').onclick = function() {
+					// browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=helpTab#help_importing"});
+				// }
+				
+				// showMenu(dialog);
+				
+				// dialog.querySelector('[name="cancel"]').onclick = function() {
+					// showMenu('CS_customSearchDialogOptions');
+				// }
+				
+			// }, {once: true});
+		// }
+	// });
+
+// }
 
 // close iframe when clicking anywhere in the window
 document.addEventListener('click', e => {

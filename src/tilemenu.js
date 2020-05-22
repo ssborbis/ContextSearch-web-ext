@@ -128,7 +128,6 @@ function addTileEventHandlers(_tile, handler) {
 		// check for locked / Keep Menu Open 
 		if ( !keepMenuOpen(e) && !_tile.keepOpen )
 			closeMenuRequest();
-
 	});
 	
 	// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
@@ -441,7 +440,6 @@ async function makeQuickMenu(options) {
 			
 			let divs = sg.getElementsByTagName('div');
 
-		//	let currentIndex = [].findIndex.call(divs, div => div.classList.contains( "selectedFocus" ));
 			let currentIndex = [...divs].findIndex( div => div.classList.contains( "selectedFocus" ) );
 
 			if ( currentIndex !== -1 ) {
@@ -755,7 +753,6 @@ async function makeQuickMenu(options) {
 		qm.style.left = '0px';
 		
 		function getGroupFolderSiblings(div) {
-			//[ ...div.parentNode.childNodes].filter( _div => _div.node && div.node && _div.node.parent === div.node.parent );
 			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
 		}
 		
@@ -1542,9 +1539,9 @@ async function makeQuickMenu(options) {
 
 						if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
 							
-							messages.push( () => new Promise( resolve => {
+							messages.push( () => new Promise( async resolve => {
 
-								browser.runtime.sendMessage({
+								await browser.runtime.sendMessage({
 									action: "quickMenuSearch", 
 									info: {
 										menuItemId: _node.id,
@@ -1553,8 +1550,10 @@ async function makeQuickMenu(options) {
 										openMethod: !hasRun ? method : "openBackgroundTab",
 										folder: true
 									}
-								}).then( () => hasRun = true).then( () => resolve(true) );
-
+								});
+								
+								hasRun = true;
+								resolve(true);
 							}));
 						}	
 					}
@@ -1566,8 +1565,8 @@ async function makeQuickMenu(options) {
 						if ( !keepMenuOpen(e, true))
 							closeMenuRequest();
 					}
+					
 					runPromisesInSequence(messages);
-
 				}
 
 				break;
@@ -1630,10 +1629,8 @@ async function makeQuickMenu(options) {
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 	setParents(root);
-	
-	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"}).then( folderId => {
-		return folderId;
-	});
+
+	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
 	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
 		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;

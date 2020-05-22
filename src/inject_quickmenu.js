@@ -117,7 +117,7 @@ function isTextBox(element) {
 
 // Listen for ESC and close Quick Menu
 document.addEventListener('keydown', ev => {
-		
+
 	if (
 		ev.key !== "Escape" ||
 		ev.repeat ||

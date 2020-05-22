@@ -13,13 +13,9 @@ async function notify(message, sender, sendResponse) {
 	await (() => {
 		sender = sender || {};
 		if ( !sender.tab ) { // page_action & browser_action popup has no tab, use current tab
-			function onFound(tabs) {
-				sender.tab = tabs[0];
-			}
-
-			function onError(err){
-				console.error(err);
-			}
+			let onFound = tabs => sender.tab = tabs[0];
+			let onError = err => console.error(err);
+			
 			return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
 		} else
 			return Promise.resolve(true);
@@ -29,7 +25,7 @@ async function notify(message, sender, sendResponse) {
 
 		case "saveUserOptions":
 			userOptions = message.userOptions;
-			return browser.storage.local.set({"userOptions": message.userOptions}).then(() => {
+			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions"});
 			});
 			break;
@@ -50,7 +46,6 @@ async function notify(message, sender, sendResponse) {
 			browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
-			
 			break;
 			
 		case "quickMenuSearch":
@@ -71,7 +66,6 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "getSearchEngineById":
-		
 			if ( !message.id) return;
 
 			return Promise.resolve({"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)});
@@ -127,13 +121,12 @@ async function notify(message, sender, sendResponse) {
 				if ( !userOptions.highLight.findBar.searchInAllTabs )
 					_message.searchTerms = "";
 				
-				return new Promise( (resolve, reject) => {
-					getAllOpenTabs().then( tabs => {
-						tabs.forEach( tab => {
-							browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
-						});
-						resolve();
+				return new Promise( async (resolve, reject) => {
+					let tabs = await getAllOpenTabs();
+					tabs.forEach( tab => {
+						browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
 					});
+					resolve();
 				});
 			} else
 				return sendMessageToTopFrame();
@@ -141,13 +134,10 @@ async function notify(message, sender, sendResponse) {
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
-				return new Promise( (resolve, reject) => {
-					getAllOpenTabs().then( tabs => {
-						tabs.forEach( tab => {
-							browser.tabs.sendMessage(tab.id, message, {frameId: 0});
-						});
-						resolve();
-					});
+				return new Promise( async (resolve, reject) => {
+					let tabs = await getAllOpenTabs();
+					tabs.forEach( tab => browser.tabs.sendMessage(tab.id, message, {frameId: 0}));
+					resolve();
 				});
 			} else
 				return sendMessageToTopFrame();
@@ -174,12 +164,9 @@ async function notify(message, sender, sendResponse) {
 		case "mark":
 			return new Promise( async (resolve) => {
 				if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
-					getAllOpenTabs().then( tabs => {
-						tabs.forEach( tab => {
-							browser.tabs.sendMessage(tab.id, message);
-						});
-						resolve();
-					});
+					let tabs = await getAllOpenTabs();
+					tabs.forEach( tab => browser.tabs.sendMessage(tab.id, message));
+					resolve(true);
 				} else {
 					resolve(sendMessageToAllFrames());
 				}
@@ -212,19 +199,18 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getOpenSearchHref":
 		
-			return Promise.resolve(browser.tabs.query({currentWindow: true, active: true}).then( tab => {
-				return browser.tabs.executeScript( tab.id, {
+			return new Promise( async resolve => {
+				let tab = await browser.tabs.query({currentWindow: true, active: true});
+				let result = await browser.tabs.executeScript( tab.id, {
 					code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
-				}).then( result => {
-
-					result = result.shift();
-
-					return result ? {href: result} : {};
 				});
-			}));
+				
+				result = result.shift();
+				resolve( result ? {href: result} : {} );
+			});
 
 			break;
-			
+
 		case "updateSearchTerms":
 			window.searchTerms = message.searchTerms;
 			
@@ -374,15 +360,9 @@ async function notify(message, sender, sendResponse) {
 					
 					if (tabInfo.status !== 'complete') return;
 
-				//	if (tabInfo.url.indexOf(searchTerms) !== -1) {
-					
-					// console.log(tabInfo.url);
-					// console.log(searchRegex);
 					if ( searchRegex.test(tabInfo.url) ) {
 						
 						clearInterval(urlCheckInterval);
-						
-					//	let newUrl = tabInfo.url.replace(searchTerms, "{searchTerms}");
 						
 						let newUrl = tabInfo.url.replace(searchRegex, "{searchTerms}");
 						
@@ -391,7 +371,6 @@ async function notify(message, sender, sendResponse) {
 						se.template = se.query_string = newUrl;
 
 						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", searchEngine: se}, {frameId: 0});
-
 					}
 					
 					// No recognizable GET url. Prompt for advanced options
@@ -860,14 +839,16 @@ function executeBookmarklet(info, tab) {
 		
 		console.log(window.searchTerms, info.selectionText);
 
-		browser.tabs.query({currentWindow: true, active: true}).then( tabs => {
+		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
-			browser.tabs.executeScript(tabs[0].id, {
+			
+			await browser.tabs.executeScript(tabs[0].id, {
 				code: 'CS_searchTerms = `' + ( window.searchTerms || escapeDoubleQuotes(info.selectionText) ) + '`;'
-			}).then( () => {
-			browser.tabs.executeScript(tabs[0].id, {
+			});
+			
+			await browser.tabs.executeScript(tabs[0].id, {
 				code: code
-			});});
+			});
 		});
 
 	}, error => {
@@ -1195,17 +1176,25 @@ function openSearch(details) {
 			}
 			
 			browser.tabs.onUpdated.removeListener(listener);
-			
-			await browser.tabs.executeScript(_tab.id, {
-				code: 'var _ID="' + searchEngineId + '", _SEARCHTERMS="' + /*encodedSearchTermsObject.ascii */ escapeDoubleQuotes(searchTerms) + '"' + ((temporarySearchEngine) ? ', CONTEXTSEARCH_TEMP_ENGINE=' + JSON.stringify(temporarySearchEngine) : ""), 
-				runAt: 'document_start'
-			});
-			
-			['/lib/browser-polyfill.min.js', '/opensearch.js', '/execute.js'].forEach( async (file) => {
+
+			let promises = ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js'].map( async (file) => {
 				await browser.tabs.executeScript(_tab.id, {
 					file: file,
 					runAt: 'document_start'
 				});
+			});
+			
+			await Promise.all(promises);
+			
+			let _se = temporarySearchEngine || userOptions.searchEngines.find(__se => __se.id === searchEngineId )
+				
+			browser.tabs.executeScript(_tab.id, {
+				code: `
+					let se = ${JSON.stringify(_se)};
+					let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
+					post(se.template, se.params);
+					`,
+				runAt: 'document_start'
 			});
 	
 			// listen for the results to complete
@@ -1278,18 +1267,6 @@ function escapeDoubleQuotes(str) {
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 }
 
-// let wInt = setInterval(() => {
-			
-		 // browser.windows.getCurrent().then(result => {
-			
-			 
-			 // if ( result.id !== 1 ) {
-				  // console.log(result);
-				 // clearInterval(wInt);
-			 // }
-		 // });
-// }, 100);
-
 var highlightTabs = [];
 
 function highlightSearchTermsInTab(tab, searchTerms) {
@@ -1349,13 +1326,8 @@ browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
 
 function getAllOpenTabs() {
 	
-	function onGot(tabs) {
-		return tabs;
-	}
-
-	function onError(error) {
-		console.log(`Error: ${error}`);
-	}
+	function onGot(tabs) { return tabs; }
+	function onError(error) { console.log(`Error: ${error}`); }
 
 	var querying = browser.tabs.query({});
 	return querying.then(onGot, onError);
@@ -1806,16 +1778,15 @@ const defaultUserOptions = {
 
 var userOptions = {};
 
-loadUserOptions().then(() => {
+(async () => {
+	await loadUserOptions();
 	console.log("userOptions loaded. Updating objects");
-	updateUserOptionsVersion(userOptions).then( _uo => {
-		userOptions = _uo;
-		browser.storage.local.set({"userOptions": userOptions});
-	})
-	.then( checkForOneClickEngines )
-	.then( buildContextMenu )
-	.then( () => document.dispatchEvent(new CustomEvent("loadUserOptions")) );
-});
+	userOptions = await updateUserOptionsVersion(userOptions);
+	await browser.storage.local.set({"userOptions": userOptions});
+	await checkForOneClickEngines();
+	await buildContextMenu();
+	document.dispatchEvent(new CustomEvent("loadUserOptions"));
+})();
 
 // turn off repeatsearch if persist = false 
 document.addEventListener("loadUserOptions", () => {
@@ -1990,44 +1961,6 @@ function readOpenSearchUrl(url) {
 		
 		clearTimeout(t);
 		resolve(parsed);
-	});
-}
-
-function readOpenSearchUrl2(url) {
-	
-	return new Promise( (resolve, reject) => {
-		var xmlhttp;
-
-		xmlhttp = new XMLHttpRequest();
-
-		xmlhttp.onreadystatechange = function()	{
-			if (xmlhttp.readyState == XMLHttpRequest.DONE ) {
-				if(xmlhttp.status == 200) {
-
-					let parsed = new DOMParser().parseFromString(xmlhttp.responseText, 'application/xml');
-					
-					if (parsed.documentElement.nodeName=="parsererror") {
-						console.log('xml parse error');
-						
-						// console.log(parsed);
-						parsed = false;
-					}
-					resolve(parsed);
-			   } else {
-				   console.log('Error fetching ' + url);
-				   reject(false);
-			   }
-			}
-		}
-		
-		xmlhttp.ontimeout = function (e) {
-			console.log('Timeout fetching ' + url);
-			reject(false);
-		};
-
-		xmlhttp.open("GET", url, true);
-		xmlhttp.timeout = 2000;
-		xmlhttp.send();
 	});
 }
 

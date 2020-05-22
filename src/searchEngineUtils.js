@@ -109,10 +109,6 @@ function imageToBase64(image, maxSize) {
 	} 	
 }
 
-function tempImgToBase64(str) {
-	return createCustomIcon({text: str.charAt(0)});
-}
-
 function createCustomIcon(options) {
 	var c = document.createElement('canvas');
 	var ctx = c.getContext('2d');
@@ -190,7 +186,7 @@ function loadRemoteIcon(options) {
 					console.log("Trying favicon at " + this.src);
 				}
 				else {
-					this.base64String = tempImgToBase64(this.favicon_monogram);
+					this.base64String = createCustomIcon({text: this.favicon_monogram});
 					this.failed = true;
 				}
 			};
@@ -227,7 +223,7 @@ function loadRemoteIcon(options) {
 				
 				for (let i=0;i<icons.length;i++) {
 					if (typeof icons[i].base64String === 'undefined')
-						searchEngines[i].icon_base64String = tempImgToBase64(icons[i]);
+						searchEngines[i].icon_base64String = createCustomIcon({text: icons[i].favicon_monogram});
 				}
 				onComplete();
 			}

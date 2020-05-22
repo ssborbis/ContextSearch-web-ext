@@ -1042,8 +1042,18 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	let b_export = $('#b_exportSettings');
 	b_export.onclick = function() {
-		let text = JSON.stringify(userOptions);
-		download("ContextSearchOptions.json", text);
+		
+		if ( userOptions.exportWithoutBase64Icons ) {
+			let uoCopy = Object.assign({}, userOptions);
+			uoCopy.searchEngines.forEach( se => se.icon_base64String = "");
+			findNodes(uoCopy.nodeTree, node => {
+				if ( node.type === "oneClickSearchEngine" )
+					node.icon = "";
+			});
+			download("ContextSearchOptions.json", JSON.stringify(uoCopy));
+		} else {
+			download("ContextSearchOptions.json", JSON.stringify(userOptions));
+		}
 	}
 	
 	let b_import = $('#b_importSettings');
@@ -1075,16 +1085,43 @@ document.addEventListener("DOMContentLoaded", () => {
 				}
 				
 				// update imported options
-				browser.runtime.getBackgroundPage().then( w => {
-					w.updateUserOptionsVersion(newUserOptions).then( _uo => {
+				browser.runtime.getBackgroundPage().then( async w => {
+					let _uo = await w.updateUserOptionsVersion(newUserOptions);
 
-						_uo = w.updateUserOptionsObject(_uo);
-
-						browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo}).then(() => {
-							userOptions = _uo;
-							location.reload();
-						});
+					_uo = w.updateUserOptionsObject(_uo);
+					
+					// load icons to base64 if missing
+					let overDiv = document.createElement('div');
+					overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
+					overDiv.innerText = "Fetching remote content";
+					// let msgDiv = document.createElement('div');
+					// msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
+					// msgDiv.innerText = "Fetching remote content";
+					// overDiv.appendChild(msgDiv);
+					document.body.appendChild(overDiv);
+					let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
+					let details = await loadRemoteIcon({searchEngines: sesToBase64, timeout:10000});
+					_uo.searchEngines.forEach( (se,index) => {
+						let updatedSe = details.searchEngines.find( _se => _se.id === se.id );
+						
+						if ( updatedSe ) _uo.searchEngines[index].icon_base64String = updatedSe.icon_base64String;
 					});
+					
+					// load OCSE favicons
+					if ( browser.search ) {
+						let ocses = await browser.search.get();
+						findNodes(_uo.nodeTree, node => {
+							if ( node.type === "oneClickSearchEngine" && !node.icon ) {
+								let ocse = ocses.find(_ocse => _ocse.name === node.title);	
+								if ( ocse ) node.icon = ocse.favIconUrl;
+							}
+						});
+					}
+
+					await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
+					
+					userOptions = _uo;
+					location.reload();
 				});
 
 			} catch(err) {
