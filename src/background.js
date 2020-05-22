@@ -31,13 +31,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateUserOptions":
-			return getAllOpenTabs().then( tabs => {
+			return Promise.resolve(async () => {
+				let tabs = await getAllOpenTabs();
 				for (let tab of tabs) {
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch(function(error) {
-						//console.log(error);
-					});	
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
 				}
-			}).then(() => {
 				buildContextMenu();
 			});
 			break;
@@ -121,12 +119,11 @@ async function notify(message, sender, sendResponse) {
 				if ( !userOptions.highLight.findBar.searchInAllTabs )
 					_message.searchTerms = "";
 				
-				return new Promise( async (resolve, reject) => {
+				return Promise.resolve(async () => {
 					let tabs = await getAllOpenTabs();
 					tabs.forEach( tab => {
 						browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
 					});
-					resolve();
 				});
 			} else
 				return sendMessageToTopFrame();
@@ -134,10 +131,9 @@ async function notify(message, sender, sendResponse) {
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
-				return new Promise( async (resolve, reject) => {
+				return Promise.resolve(async() => {
 					let tabs = await getAllOpenTabs();
 					tabs.forEach( tab => browser.tabs.sendMessage(tab.id, message, {frameId: 0}));
-					resolve();
 				});
 			} else
 				return sendMessageToTopFrame();

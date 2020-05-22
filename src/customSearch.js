@@ -58,7 +58,6 @@ function showMenu(el) {
 		child.style.maxHeight = '0px';
 	
 	expandElement(el);
-	
 }
 
 function buildOpenSearchAPIUrl() {
@@ -97,8 +96,6 @@ function addSearchEnginePopup(data) {
 	let _location = new URL(data.location) || null;
 	
 	let simple = document.getElementById('simple');
-	
-//	console.log(se);
 	
 	// if page offers an opensearch engine, grab the xml and copy the name into the simple form
 	let ose = null;
@@ -224,9 +221,7 @@ function addSearchEnginePopup(data) {
 					browser.runtime.sendMessage({action: "removeContextSearchEngine", id: userOptions.searchEngines[userOptions.searchEngines.length - 1].id});
 					
 					showMenu('simple_remove');
-					setTimeout(() => {
-						showMenu('customForm');
-					}, 1000);
+					setTimeout(() => showMenu('customForm'), 1000);
 				}
 				
 				showMenu(simple_confirm);
@@ -485,11 +480,7 @@ function addSearchEnginePopup(data) {
 
 function testOpenSearch(form) {
 
-	let params = [];
-
-//	console.log(params);
-	
-	params = paramStringToNameValueArray(form.post_params.value);
+	let params = paramStringToNameValueArray(form.post_params.value);
 
 	let tempSearchEngine = {
 		"searchForm": form.searchform.value, 
@@ -522,14 +513,14 @@ function closeCustomSearchIframe() {
 
 async function listenForFocusAndPromptToImport() {
 
-	let hasBrowserSearch = browser.runtime.sendMessage({action: "hasBrowserSearch"});
+	let hasBrowserSearch = await browser.runtime.sendMessage({action: "hasBrowserSearch"});
 		
 	if (hasBrowserSearch) {
 
 		window.addEventListener('focus', async() => {
 
 			// look for new one-click engines
-			let newEngineCount = browser.runtime.sendMessage({action: "checkForOneClickEngines"});
+			let newEngineCount = await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
 				
 			console.log('found ' + newEngineCount + ' new engines');
 			
@@ -638,7 +629,7 @@ document.addEventListener('click', e => {
 // i18n string replacement and styles
 document.addEventListener('DOMContentLoaded', () => {
 
-		// Build tooltips
+	// Build tooltips
 	let info_msg = document.createElement('div');
 	info_msg.id = "CS_info_msg";
 	document.body.appendChild(info_msg);
@@ -710,14 +701,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		document.dispatchEvent(new CustomEvent('getUserOptionsEvent', {
 				
-				// if search engines length has changed, true else false
-				detail: ( userOptions.searchEngines.length !== message.userOptions.searchEngines.length )
-			}
-		));
+			// if search engines length has changed, true else false
+			detail: ( userOptions.searchEngines.length !== message.userOptions.searchEngines.length )
+		}));
 		
 		userOptions = message.userOptions || {};
 	}
-	
+
 });
 
 // listen for the custom engine to prompt to add
@@ -738,4 +728,3 @@ window.addEventListener("message", e => {
 document.addEventListener('DOMContentLoaded', () => {
 	window.parent.postMessage({status: "complete"}, "*");
 });
-
