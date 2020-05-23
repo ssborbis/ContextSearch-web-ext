@@ -393,9 +393,7 @@ function buildSearchEngineContainer() {
 				
 				_form.closeForm = function() {
 					_form.style.maxHeight = null;
-					setTimeout(() => {
-						_form.parentNode.removeChild(_form);
-					}, 1000);
+					setTimeout(() => _form.parentNode.removeChild(_form), 1000);
 				}
 				
 				_form.addEventListener('mouseover', () => {
@@ -546,9 +544,7 @@ function buildSearchEngineContainer() {
 				
 				_form.closeForm = function() {
 					_form.style.maxHeight = null;
-					setTimeout(() => {
-						_form.parentNode.removeChild(_form);
-					}, 1000);
+					setTimeout(() => _form.parentNode.removeChild(_form), 1000);
 				}
 				
 				_form.addEventListener('mouseover', () => {
@@ -685,9 +681,7 @@ function buildSearchEngineContainer() {
 
 					if ( findNodes(rootElement.node, _node => _node.hotkey === evv.which && _node.id !== node.id).length ) {						
 						hotkey.style.backgroundColor = 'pink';
-						setTimeout( () => {
-							hotkey.style.backgroundColor = null;
-						},250);
+						setTimeout(() => hotkey.style.backgroundColor = null, 250);
 						return;
 					}
 
@@ -1193,9 +1187,7 @@ function buildSearchEngineContainer() {
 			li.parentNode.insertBefore(newLi, li);
 			
 			// required delay to work
-			setTimeout(() => {
-				newLi.dispatchEvent(new MouseEvent('dblclick'));
-			}, 100);
+			setTimeout(() => newLi.dispatchEvent(new MouseEvent('dblclick')), 100);
 			
 			updateNodeList();
 			closeContextMenus();

@@ -115,6 +115,18 @@ function isTextBox(element) {
 	return ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable );
 }
 
+function linkOrImage(el, e) {
+	
+	let link = getLink(el, e);
+	let img = getImage(el, e);
+
+	if ( img && userOptions.quickMenuOnImages ) return img;
+	
+	if ( link && userOptions.quickMenuOnLinks ) return link;
+	
+	return false;	
+}
+
 // Listen for ESC and close Quick Menu
 document.addEventListener('keydown', ev => {
 
@@ -271,7 +283,7 @@ document.addEventListener('mouseup', ev => {
 	
 	// // skip erroneous short selections
 	let searchTerms = getSelectedText(ev.target);
-	setTimeout( () => {
+	setTimeout(() => {
 		if ( searchTerms === getSelectedText(ev.target) ) {
 			 openQuickMenu(ev);
 			 
@@ -281,18 +293,6 @@ document.addEventListener('mouseup', ev => {
 		}
 	}, 50);
 });
-
-function linkOrImage(el, e) {
-	
-	let link = getLink(el, e);
-	let img = getImage(el, e);
-
-	if ( img && userOptions.quickMenuOnImages ) return img;
-	
-	if ( link && userOptions.quickMenuOnLinks ) return link;
-	
-	return false;	
-}
 
 // Listen for quickMenuOnClick
 document.addEventListener('mousedown', ev => {
@@ -619,12 +619,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				
 				qmc.docking.init();
-
-				// quickMenuResize({data: message}); // caused slight menu movement and disabled opening animation ( width / height )
-				
-				// set proper translated position ( dock not doing this on init() ? )
-				// let position = qmc.docking.getPositions(qmc.docking.getOffsets());
-				// qmc.docking.translatePosition(position.v, position.h);
 
 				setTimeout(() => { 
 					repositionOffscreenElement( qmc, {left:0, right:resizeWidgetOffset, top:0, bottom:resizeWidgetOffset} ); 

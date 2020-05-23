@@ -138,9 +138,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				iframe.style.opacity = 0;
 				
 				// remove after transition effect completes
-				setTimeout(() => {
-					document.body.removeChild(iframe);
-				},250);
+				setTimeout(() => document.body.removeChild(iframe), 250);
 				
 				break;
 				

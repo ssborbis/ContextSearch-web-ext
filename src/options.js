@@ -1235,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}
 	
-	setTimeout( () => {
+	setTimeout(() => {
 		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
 	}, 250);
 	

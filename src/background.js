@@ -119,11 +119,12 @@ async function notify(message, sender, sendResponse) {
 				if ( !userOptions.highLight.findBar.searchInAllTabs )
 					_message.searchTerms = "";
 				
-				return Promise.resolve(async () => {
+				return new Promise(async (resolve) => {
 					let tabs = await getAllOpenTabs();
 					tabs.forEach( tab => {
 						browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
 					});
+					resolve();
 				});
 			} else
 				return sendMessageToTopFrame();
@@ -131,9 +132,10 @@ async function notify(message, sender, sendResponse) {
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
-				return Promise.resolve(async() => {
+				return new Promise(async(resolve) => {
 					let tabs = await getAllOpenTabs();
 					tabs.forEach( tab => browser.tabs.sendMessage(tab.id, message, {frameId: 0}));
+					resolve();
 				});
 			} else
 				return sendMessageToTopFrame();
@@ -1249,7 +1251,7 @@ function openSearch(details) {
 
 		if ( !browser.sidebarAction ) return;
 		
-		await browser.sidebarAction.setPanel( {panel: null} ); // forefox appears to ignore subsequent calls to setPanel if old url = new url, even tincases of differing #hash
+		await browser.sidebarAction.setPanel( {panel: null} ); // forefox appears to ignore subsequent calls to setPanel if old url = new url, even in cases of differing #hash
 		
 		await browser.sidebarAction.setPanel( {panel: q} );
 			

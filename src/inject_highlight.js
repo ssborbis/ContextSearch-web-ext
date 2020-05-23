@@ -403,10 +403,7 @@ function openFindBar(options) {
 		let fb = getFindBar();
 
 		if ( fb ) {
-			setTimeout( () => {
-				resolve(fb);
-			}, 100);
-			
+			setTimeout(() => resolve(fb), 100);
 			fb.style.opacity = null;
 			fb.style.maxHeight = null;
 			return;

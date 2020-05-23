@@ -506,9 +506,7 @@ function closeCustomSearchIframe() {
 	for (let el of document.getElementsByClassName('CS_menuItem')) {
 		el.style.maxHeight = '0px';
 	}
-	setTimeout(() => {
-		browser.runtime.sendMessage({action: "closeCustomSearch"});
-	},250);
+	setTimeout(() => browser.runtime.sendMessage({action: "closeCustomSearch"}), 250);
 }
 
 async function listenForFocusAndPromptToImport() {
@@ -590,9 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		
 		info.addEventListener('mouseleave', e => {
 			info_msg.style.opacity = 0;
-			setTimeout(() => {
-				info_msg.style.display = 'none';
-			},250);
+			setTimeout(() => info_msg.style.display = 'none', 250);
 		});
 	}
 
