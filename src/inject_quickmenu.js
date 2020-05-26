@@ -430,7 +430,7 @@ function lockQuickMenu() {
 
 function unlockQuickMenu() {
 	var qmc = document.getElementById('CS_quickMenuIframe');
-				
+
 	if ( !qmc ) return;
 
 	quickMenuObject.locked = false;
