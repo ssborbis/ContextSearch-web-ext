@@ -18,6 +18,25 @@ function findNodes(tree, callback) {
 	return results;
 }
 
+function findNode(tree, callback) {
+	
+	function _traverse(node, parent) {
+		
+		if ( callback(node, parent) ) return node;
+		
+		if (node && node.children) {
+			for (let child of node.children) {
+				let found = _traverse(child, node);
+				if ( found ) return found;
+			}
+		}
+		
+		return null;
+	}
+	
+	return _traverse(tree, null);
+}
+
 function setParents(tree) {
 	
 	findNodes( tree, (node, parent) => {

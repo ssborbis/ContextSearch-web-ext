@@ -358,6 +358,7 @@ function restoreOptions() {
 		$('#cb_autoCopy').checked = userOptions.autoCopy;
 		$('#cb_rememberLastOpenedFolder').checked = userOptions.rememberLastOpenedFolder;
 		$('#cb_autoPasteFromClipboard').checked = userOptions.autoPasteFromClipboard;
+		$('#cb_allowHotkeysWithoutMenu').checked = userOptions.allowHotkeysWithoutMenu;
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
@@ -601,6 +602,7 @@ function saveOptions(e) {
 		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
 		autoCopy: $('#cb_autoCopy').checked,
 		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
+		allowHotkeysWithoutMenu: $('#cb_allowHotkeysWithoutMenu').checked,
 		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked
 	}
 
@@ -1115,6 +1117,10 @@ document.addEventListener("DOMContentLoaded", () => {
 								let ocse = ocses.find(_ocse => _ocse.name === node.title);	
 								if ( ocse ) node.icon = ocse.favIconUrl;
 							}
+						});
+					} else {
+						findNodes(_uo.nodeTree, node => {
+							if ( node.type === "oneClickSearchEngine" ) node.hidden = true;
 						});
 					}
 

@@ -9,17 +9,26 @@ async function notify(message, sender, sendResponse) {
 	function sendMessageToAllFrames() {
 		return browser.tabs.sendMessage(sender.tab.id, message);
 	}
+	
+	sender = sender || {};
+	if ( !sender.tab ) { // page_action & browser_action popup has no tab, use current tab
+		let onFound = tabs => sender.tab = tabs[0];
+		let onError = err => console.error(err);
+		
+		await browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+	}
 
-	await (() => {
-		sender = sender || {};
-		if ( !sender.tab ) { // page_action & browser_action popup has no tab, use current tab
-			let onFound = tabs => sender.tab = tabs[0];
-			let onError = err => console.error(err);
+
+	// await (() => {
+		// sender = sender || {};
+		// if ( !sender.tab ) { // page_action & browser_action popup has no tab, use current tab
+			// let onFound = tabs => sender.tab = tabs[0];
+			// let onError = err => console.error(err);
 			
-			return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
-		} else
-			return Promise.resolve(true);
-	})();
+			// return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+		// } else
+			// return Promise.resolve(true);
+	// })();
 
 	switch(message.action) {
 
@@ -1771,7 +1780,8 @@ const defaultUserOptions = {
 	groupFolderRowBreaks: false,
 	autoCopy: false,
 	rememberLastOpenedFolder: false,
-	autoPasteFromClipboard: false
+	autoPasteFromClipboard: false,
+	allowHotkeysWithoutMenu: false
 };
 
 var userOptions = {};

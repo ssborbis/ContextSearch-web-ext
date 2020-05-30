@@ -785,3 +785,31 @@ window.addEventListener('message', e => {
 			break;
 	}
 });
+
+document.addEventListener('keydown', e => {
+
+	if ( 
+		!userOptions.allowHotkeysWithoutMenu ||
+		isTextBox(e.target) ||
+		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey ||
+		!getSelectedText(e.target)
+	) return false;
+
+	let node = findNode( userOptions.nodeTree, n => n.hotkey === e.keyCode );
+
+	if ( !node ) return false;
+	
+	let se = userOptions.searchEngines.find( _se => _se.id === node.id );
+	
+	if ( !se ) return false;
+	
+	browser.runtime.sendMessage({
+		action: "quickMenuSearch", 
+		info: {
+			menuItemId: se.id,
+			selectionText: getSelectedText(e.target),
+			openMethod: userOptions.quickMenuSearchHotkeys
+		}
+	});
+	
+});

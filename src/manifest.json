@@ -54,6 +54,7 @@
 			"matches": ["<all_urls>"],
 			"js": [
 				"utils.js",
+				"nodes.js",
 				"opensearch.js",
 				"searchEngineUtils.js",
 				"dock.js",

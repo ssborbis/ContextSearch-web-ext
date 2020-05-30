@@ -1117,7 +1117,7 @@ function buildSearchEngineContainer() {
 			let copies = findNodes(rootElement.node, node => node.type === 'oneClickSearchEngine' && node.id === li.node.id && node !== li.node );
 
 			if ( copies.length === 0 ) {
-				_delete.style.display = 'none';
+				if ( browser.search ) _delete.style.display = 'none';
 			}
 		}
 
