@@ -40,7 +40,7 @@ function addStyling() {
 			styleEl.innerText += `
 				.CS_mark[data-style="${i}"], #CS_highLightNavBar > DIV[data-style="${i}"] { 
 					background:rgba(` + hexToRgb(userOptions.highLight.styles[i].background) + ',' + userOptions.highLight.opacity + `);
-					color:${userOptions.highLight.styles[0].color};
+					color:${userOptions.highLight.styles[i].color};
 				}`;
 		}
 		
