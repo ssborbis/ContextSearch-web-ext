@@ -229,7 +229,7 @@ document.addEventListener('mousedown', ev => {
 		}	
 		openQuickMenu(ev);
 		
-	}, quickMenuObject.delay);
+	}, userOptions.quickMenuHoldTimeout);
 });
 
 // Listen for HOLD quickMenuMouseButton
@@ -319,7 +319,7 @@ document.addEventListener('mousedown', ev => {
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
 		document.removeEventListener('contextmenu', preventContextMenuHandler);
 		quickMenuObject.mouseDownTimer = null;
-	}, quickMenuObject.delay);
+	}, userOptions.quickMenuHoldTimeout);
 });
 		
 // Listen for quickMenuOnClick	
@@ -516,6 +516,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
 					});
 					break;
+				}
+				
+				// if menuless repeatsearch
+				if ( false ) {
+					
 				}
 				
 				makeQuickMenuContainer({'x': x,'y': y});

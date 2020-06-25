@@ -360,6 +360,9 @@ function restoreOptions() {
 		$('#cb_autoPasteFromClipboard').checked = userOptions.autoPasteFromClipboard;
 		$('#cb_allowHotkeysWithoutMenu').checked = userOptions.allowHotkeysWithoutMenu;
 		
+		$('#n_quickMenuHoldTimeout').value = userOptions.quickMenuHoldTimeout;
+		
+		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
   
@@ -603,7 +606,8 @@ function saveOptions(e) {
 		autoCopy: $('#cb_autoCopy').checked,
 		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
 		allowHotkeysWithoutMenu: $('#cb_allowHotkeysWithoutMenu').checked,
-		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked
+		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked,
+		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value)
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -1095,11 +1099,11 @@ document.addEventListener("DOMContentLoaded", () => {
 					// load icons to base64 if missing
 					let overDiv = document.createElement('div');
 					overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
-					overDiv.innerText = "Fetching remote content";
-					// let msgDiv = document.createElement('div');
-					// msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
-					// msgDiv.innerText = "Fetching remote content";
-					// overDiv.appendChild(msgDiv);
+					// overDiv.innerText = "Fetching remote content";
+					let msgDiv = document.createElement('div');
+					msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
+					msgDiv.innerText = "Fetching remote content";
+					overDiv.appendChild(msgDiv);
 					document.body.appendChild(overDiv);
 					let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
 					let details = await loadRemoteIcon({searchEngines: sesToBase64, timeout:10000});

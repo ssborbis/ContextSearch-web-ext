@@ -1781,7 +1781,8 @@ const defaultUserOptions = {
 	autoCopy: false,
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false,
-	allowHotkeysWithoutMenu: false
+	allowHotkeysWithoutMenu: false,
+	quickMenuHoldTimeout: 250
 };
 
 var userOptions = {};
