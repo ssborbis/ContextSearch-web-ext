@@ -361,6 +361,7 @@ function restoreOptions() {
 		$('#cb_allowHotkeysWithoutMenu').checked = userOptions.allowHotkeysWithoutMenu;
 		
 		$('#n_quickMenuHoldTimeout').value = userOptions.quickMenuHoldTimeout;
+		$('#cb_exportWithoutBase64Icons').checked = userOptions.exportWithoutBase64Icons;
 		
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
@@ -607,7 +608,8 @@ function saveOptions(e) {
 		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
 		allowHotkeysWithoutMenu: $('#cb_allowHotkeysWithoutMenu').checked,
 		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked,
-		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value)
+		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value),
+		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

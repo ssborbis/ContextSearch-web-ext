@@ -614,6 +614,38 @@ async function buildContextMenu() {
 	// add incremental menu ids to avoid duplicates
 	let count = 0;
 	
+	// last used engine
+	let lse = findNode(userOptions.nodeTree, node => node.id === userOptions.lastUsedId);
+	
+	if ( lse ) {
+		
+		let icon = function() {
+			switch (lse.type) {
+				case "searchEngine":
+					let se = userOptions.searchEngines.find(_se => _se.id === lse.id);
+					return se.icon_base64String;
+				case "oneClickSearchEngine":
+					return lse.icon;
+				default:
+					return "";
+			}
+		}() || browser.runtime.getURL('icons/search.svg');
+
+		addMenuItem({
+			parentId: "search_engine_menu",
+			title: lse.title,
+			id: lse.id,	
+			icons: {
+				"16": icon
+			}
+		});
+
+		browser.contextMenus.create({
+			parentId: "search_engine_menu",
+			type: "separator"
+		});
+	}
+	
 	function traverse(node, parentId) {
 		
 		if (node.hidden) return;
@@ -996,6 +1028,9 @@ function contextMenuSearch(info, tab) {
 		info.selectionText = searchTerms;
 		info.openMethod = openMethod;
 		executeOneClickSearch(info);
+		
+		userOptions.lastUsedId = info.menuItemId.replace("__oneClickSearchEngine__", "");
+		buildContextMenu();
 		return false;
 	}
 	
@@ -1018,6 +1053,9 @@ function contextMenuSearch(info, tab) {
 		tab: tab,
 		domain: info.domain || new URL(tab.url).hostname
 	});
+	
+	userOptions.lastUsedId = info.menuItemId;
+	buildContextMenu();
 }
 
 function quickMenuSearch(info, tab) {
@@ -1782,7 +1820,8 @@ const defaultUserOptions = {
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
-	quickMenuHoldTimeout: 250
+	quickMenuHoldTimeout: 250,
+	exportWithoutBase64Icons: false
 };
 
 var userOptions = {};
