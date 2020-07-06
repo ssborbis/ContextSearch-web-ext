@@ -117,3 +117,15 @@ The same approach as the Javascript-Driven Search Engines above may be used to b
 Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Bookmarklet. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add.
 
 Bookmarklets have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
+
+You could, for instance, create a search engine tile that toggles the 'menuless search via hotkey' option using the following bookmarklet code:
+
+```
+javascript:(async () => {
+	userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
+	browser.runtime.sendMessage({action: "showNotification", msg: "hotkeys are " + (userOptions.allowHotkeysWithoutMenu ? "on" : "off")});
+})();
+```
+
+The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current tab and a short notification is displayed by messaging the extension background page. Check out background.js -> notify() for available actions.
+
