@@ -271,6 +271,22 @@ function buildSearchEngineContainer() {
 						+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 					
 					browser.runtime.sendMessage({action: "addSearchEngine", url:url});
+					
+					if ( true ) {
+
+						// let links = document.querySelectorAll('link[rel="search"]');
+						// links.forEach(link => {
+							// link.parentNode.removeChild(link);
+						// });
+						let link = document.createElement('link');
+						link.rel = "search";
+						link.type = "application/opensearchdescription+xml";
+						
+						link.href = url;
+						link.title = edit_form.shortName.value;
+						
+						document.head.appendChild(link);
+					}
 				}
 				
 				edit_form.save.onclick = function() {

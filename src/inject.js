@@ -9,6 +9,10 @@ function getSelectedText(el) {
 
 }
 
+function isTextBox(element) {	
+	return ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable );
+}
+
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
@@ -228,6 +232,35 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 
 		document.head.appendChild(styleEl);
 	}
+});
+
+// menuless hotkey
+document.addEventListener('keydown', e => {
+
+	if ( 
+		!userOptions.allowHotkeysWithoutMenu ||
+		isTextBox(e.target) ||
+		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey ||
+		!getSelectedText(e.target)
+	) return false;
+
+	let node = findNode( userOptions.nodeTree, n => n.hotkey === e.keyCode );
+
+	if ( !node ) return false;
+	
+	let se = userOptions.searchEngines.find( _se => _se.id === node.id );
+	
+	if ( !se ) return false;
+	
+	browser.runtime.sendMessage({
+		action: "quickMenuSearch", 
+		info: {
+			menuItemId: se.id,
+			selectionText: getSelectedText(e.target),
+			openMethod: userOptions.quickMenuSearchHotkeys
+		}
+	});
+	
 });
 
 browser.runtime.sendMessage({action: "injectComplete"});

@@ -252,6 +252,17 @@ async function notify(message, sender, sendResponse) {
 			
 		case "addSearchEngine":
 			let url = message.url;
+			
+			// if (true) {
+				// console.log('injecting addSearchProvider');
+				// browser.tabs.executeScript(sender.tab.id, {
+					// file: "addSearchProvider.js"
+				// }).then(() => {
+					// browser.tabs.executeScript(sender.tab.id, {
+					// code: `addSearchProvider(${url});`
+				// });});
+			// }
+			
 			window.external.AddSearchProvider(url);
 			break;
 		
@@ -633,7 +644,7 @@ async function buildContextMenu() {
 
 		addMenuItem({
 			parentId: "search_engine_menu",
-			title: lse.title,
+			title: lse.title + "    ⭮",
 			id: lse.id,	
 			icons: {
 				"16": icon
