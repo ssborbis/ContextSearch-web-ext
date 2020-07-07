@@ -1524,7 +1524,7 @@ function buildSearchEngineContainer() {
 		
 		if ( !confirm(browser.i18n.getMessage("ConfirmResetAllSearchEngines")) ) return;
 		
-		let w = browser.runtime.getBackgroundPage();
+		let w = await browser.runtime.getBackgroundPage();
 		userOptions.nodeTree.children = [];	
 		
 		// reset searchEngines to defaults
