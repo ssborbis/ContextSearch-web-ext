@@ -1648,6 +1648,10 @@
     "description": ""
   },
   
+  "AddUsingFirefoxSearchBar": {
+	"message": "Firefox 78+ Users - Add your engine using the Firefox Search bar"
+  },
+  
   "___________": {
     "message": "",
     "description": ""

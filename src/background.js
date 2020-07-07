@@ -252,16 +252,17 @@ async function notify(message, sender, sendResponse) {
 			
 		case "addSearchEngine":
 			let url = message.url;
-			
-			// if (true) {
-				// console.log('injecting addSearchProvider');
-				// browser.tabs.executeScript(sender.tab.id, {
-					// file: "addSearchProvider.js"
-				// }).then(() => {
-					// browser.tabs.executeScript(sender.tab.id, {
-					// code: `addSearchProvider(${url});`
-				// });});
-			// }
+
+			if (true) {
+				browser.tabs.executeScript(sender.tab.id, {
+					file: "addSearchProvider.js",
+					frameId:0
+				}).then(() => {
+					browser.tabs.executeScript(sender.tab.id, {
+					code: `addSearchProvider("${url}");`,
+					frameId:0
+				});});
+			}
 			
 			window.external.AddSearchProvider(url);
 			break;
