@@ -1833,7 +1833,8 @@ const defaultUserOptions = {
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
 	quickMenuHoldTimeout: 250,
-	exportWithoutBase64Icons: false
+	exportWithoutBase64Icons: false,
+	addSearchProviderHideNotification: false
 };
 
 var userOptions = {};

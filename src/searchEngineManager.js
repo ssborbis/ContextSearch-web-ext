@@ -272,8 +272,6 @@ function buildSearchEngineContainer() {
 					
 					browser.runtime.sendMessage({action: "addSearchEngine", url:url});
 					
-					if ( true ) addSearchProvider(url);
-					
 				}
 				
 				edit_form.save.onclick = function() {
@@ -980,6 +978,13 @@ function buildSearchEngineContainer() {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
+			
+			// selectedRows.forEach( row => {
+				// row.node.hidden = hidden;
+				
+				// if (hidden) row.classList.add('hidden');
+				// else row.classList.remove('hidden');
+			// });
 			
 
 			// move the edit form if open on node

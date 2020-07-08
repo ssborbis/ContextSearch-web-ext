@@ -10,8 +10,16 @@ function addSearchProvider(url) {
 
 	link.title = decodeURIComponent(match[1]);
 	
+	// check for existing opensearch engine of the same name
+	if ( document.head.querySelector('link[rel="search"][title="' + link.title + '"]') ) {
+		console.log("OpenSearch engine by the same name exists");
+		return;
+	}
+	
 	document.head.appendChild(link);
 	
+	if ( userOptions.addSearchProviderHideNotification ) return;
+
 	let div = document.createElement('div');
 	div.style="position:fixed;top:0;right:0;background-color:rgba(200,200,200,.8);padding:20px;z-index:2147483647;width:220px;text-align:center;opacity:0;transition:opacity .5s ease-out";
 	let img = new Image();
@@ -20,6 +28,18 @@ function addSearchProvider(url) {
 	div.appendChild(img);
 	div.appendChild(document.createElement('hr'));
 	div.appendChild(document.createTextNode(browser.i18n.getMessage("addusingfirefoxsearchbar")));
+	
+	let cb = document.createElement('input');
+	cb.type = "checkbox";
+	cb.onchange = function() {
+		userOptions.addSearchProviderHideNotification = cb.checked;
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+	}
+	div.appendChild(document.createElement('br'));
+	div.appendChild(document.createElement('br'));
+	div.appendChild(cb);
+	div.appendChild(document.createTextNode(" Don't show this again"));
+	
 	document.body.appendChild(div);
 	div.onclick = () => {
 		div.style.opacity = 0;

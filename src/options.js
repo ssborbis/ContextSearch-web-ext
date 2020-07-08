@@ -362,6 +362,7 @@ function restoreOptions() {
 		
 		$('#n_quickMenuHoldTimeout').value = userOptions.quickMenuHoldTimeout;
 		$('#cb_exportWithoutBase64Icons').checked = userOptions.exportWithoutBase64Icons;
+		$('#cb_addSearchProviderHideNotification').checked = userOptions.addSearchProviderHideNotification;
 		
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
@@ -609,7 +610,8 @@ function saveOptions(e) {
 		allowHotkeysWithoutMenu: $('#cb_allowHotkeysWithoutMenu').checked,
 		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked,
 		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value),
-		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked
+		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked,
+		addSearchProviderHideNotification: $('#cb_addSearchProviderHideNotification').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
