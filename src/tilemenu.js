@@ -262,7 +262,7 @@ async function makeQuickMenu(options) {
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 	
-	qm.toggleDisplayMode = () => {
+	qm.toggleDisplayMode = async() => {
 		qm.rootNode.displayType = function() {
 			if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
 			if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
@@ -272,7 +272,7 @@ async function makeQuickMenu(options) {
 		userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		
-		qm = quickMenuElementFromNodeTree( qm.rootNode, false );
+		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
 		
 		qm.insertBreaks();
 
@@ -895,7 +895,7 @@ async function makeQuickMenu(options) {
 				
 				getGroupFolderSiblings(targetDiv).forEach( el => el.classList.remove('groupHighlight') );
 			});
-			div.addEventListener('dragend', e => {
+			div.addEventListener('dragend', async e => {
 				
 				if ( isTool(e) ) return;
 
@@ -917,7 +917,7 @@ async function makeQuickMenu(options) {
 				
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
-				quickMenuElementFromNodeTree(qm.rootNode);
+				await quickMenuElementFromNodeTree(qm.rootNode);
 				userOptions.enableAnimations = animation;
 
 				qm.expandMoreTiles();
@@ -1089,7 +1089,7 @@ async function makeQuickMenu(options) {
 		return qm;
 	}
 
-	function quickMenuElementFromNodeTree( rootNode, reverse ) {
+	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
 		reverse = reverse || false; // for slide-in animation direction
 		
@@ -1098,6 +1098,29 @@ async function makeQuickMenu(options) {
 		
 		// update the qm object with the current node
 		qm.rootNode = rootNode;
+		
+		if ( userOptions.syncWithFirefoxSearch ) {	
+			nodes = [];
+			qm.rootNode = Object.assign({}, qm.rootNode);
+			let ffses = await browser.runtime.sendMessage({action: "getFirefoxSearchEngines"});
+			
+			ffses.forEach( ffse => {
+				let node = findNode( userOptions.nodeTree, n => n.title === ffse.name );
+				
+				if ( !node ) {
+					console.log("couldn't find node for " + ffse.name);
+					return;
+				}
+				
+				node.parent = qm.rootNode;
+				
+				nodes.push(node);
+			});
+			
+			qm.rootNode.children = nodes;
+			
+			rootNode = qm.rootNode;
+		}
 		
 		// set the lastOpenedFolder object
 		browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
@@ -1114,10 +1137,10 @@ async function makeQuickMenu(options) {
 			
 			setToolIconColor(tile);
 			
-			function _back(e) {
+			async function _back(e) {
 
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
-				let quickMenuElement = quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
+				let quickMenuElement = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
 				resizeMenu({openFolder: true});
 			}
@@ -1138,7 +1161,7 @@ async function makeQuickMenu(options) {
 			tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
 			tile.addEventListener('dragover', e => e.preventDefault());
 			tile.addEventListener('dragend', e => e.preventDefault());
-			tile.addEventListener('drop', e => {
+			tile.addEventListener('drop', async e => {
 				e.preventDefault();
 				
 				let dragDiv = document.getElementById('dragDiv');
@@ -1167,7 +1190,7 @@ async function makeQuickMenu(options) {
 				// rebuild menu
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
-				quickMenuElementFromNodeTree(rootNode);
+				await quickMenuElementFromNodeTree(rootNode);
 				userOptions.enableAnimations = animation;
 				resizeMenu();				
 			});
@@ -1398,41 +1421,40 @@ async function makeQuickMenu(options) {
 					tile.addEventListener('mouseup', openFolder);
 					tile.addEventListener('openFolder', openFolder);
 					
-					function openFolder(e) {
+					async function openFolder(e) {
 
-						browser.runtime.sendMessage({action: 'getCurrentTabInfo'}).then( tab => {
+						let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
 
-							let siteSearchNode = {
-								type:"folder",
-								parent:node.parent,
-								children:[],
-								id:node.id,
-								forceSingleColumn:true
-							}
-							
-							let url = new URL(tab.url);
+						let siteSearchNode = {
+							type:"folder",
+							parent:node.parent,
+							children:[],
+							id:node.id,
+							forceSingleColumn:true
+						}
+						
+						let url = new URL(tab.url);
 
-							getDomainPaths(url).forEach( path => {
-								siteSearchNode.children.push({
-									type: "siteSearch",
-									title: path,
-									parent:node,
-									icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-								});	
-							});
-							
-							quickMenuElement = quickMenuElementFromNodeTree(siteSearchNode);
-
-							for ( let _tile of qm.querySelectorAll('.tile') ) {
-								if ( _tile.node.title === url.hostname ) {
-									_tile.classList.add('selectedFocus');
-									_tile.dataset.selectfirst = "true";
-									break;
-								}
-							}
-
-							resizeMenu({openFolder: true});
+						getDomainPaths(url).forEach( path => {
+							siteSearchNode.children.push({
+								type: "siteSearch",
+								title: path,
+								parent:node,
+								icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+							});	
 						});
+						
+						quickMenuElement = await quickMenuElementFromNodeTree(siteSearchNode);
+
+						for ( let _tile of qm.querySelectorAll('.tile') ) {
+							if ( _tile.node.title === url.hostname ) {
+								_tile.classList.add('selectedFocus');
+								_tile.dataset.selectfirst = "true";
+								break;
+							}
+						}
+
+						resizeMenu({openFolder: true});
 					}
 					
 					break;
@@ -1519,13 +1541,13 @@ async function makeQuickMenu(options) {
 				tile.addEventListener('mouseup', openFolder);
 				tile.addEventListener('openFolder', openFolder);
 					
-				function openFolder(e) {
+				async function openFolder(e) {
 					let method = getOpenMethod(e, true);
 
 					if (method === 'noAction') return;
 
 					if (method === 'openFolder' || e.openFolder) { 
-						qm = quickMenuElementFromNodeTree(node);
+						qm = await quickMenuElementFromNodeTree(node);
 
 						resizeMenu({openFolder: true});
 

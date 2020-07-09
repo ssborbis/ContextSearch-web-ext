@@ -254,14 +254,42 @@ async function notify(message, sender, sendResponse) {
 			let url = message.url;
 
 			if (true) {
-				browser.tabs.executeScript(sender.tab.id, {
-					file: "addSearchProvider.js",
-					frameId:0
-				}).then(() => {
-					browser.tabs.executeScript(sender.tab.id, {
-					code: `addSearchProvider("${url}");`,
-					frameId:0
-				});});
+				
+				(async() => {
+					let match = /SHORTNAME=(.*?)&DESCRIPTION/.exec(url);	
+					
+					if (!match[1]) return;
+
+					let title = decodeURIComponent(match[1]);
+
+					await browser.tabs.executeScript(sender.tab.id, {
+						file: "addSearchProvider.js",
+						frameId:0
+					});
+					
+					// check for existing opensearch engine of the same name					
+					let exists = await browser.tabs.executeScript(sender.tab.id, {
+						code: `getSearchProviderUrlByTitle("${title}")`,
+						frameId:0
+					});
+
+					exists = exists.shift();
+
+					if ( exists ) {
+						console.log('OpenSearch engine with name ' + title + ' already exists on page');
+
+						if ( new URL(exists) == new URL(url) )
+							console.log('exists but same url');
+						else
+							return;
+					}
+					
+					await browser.tabs.executeScript(sender.tab.id, {
+						code: `addSearchProvider("${url}");`,
+						frameId:0
+					});
+					
+				})();
 			}
 			
 			window.external.AddSearchProvider(url);
@@ -517,6 +545,10 @@ async function notify(message, sender, sendResponse) {
 			}
 			
 			break;
+			
+		case "getFirefoxSearchEngines":
+			if ( browser.search ) return browser.search.get();
+			break;
 	}
 }
 
@@ -656,6 +688,28 @@ async function buildContextMenu() {
 			parentId: "search_engine_menu",
 			type: "separator"
 		});
+	}
+	
+	if ( userOptions.syncWithFirefoxSearch ) {
+		let ses = await browser.search.get();
+		
+		let count = 0;
+		ses.forEach(se => {
+			let node = findNode(userOptions.nodeTree, _node => _node.title === se.name && (_node.type === "oneClickSearchEngine" || _node.type === "searchEngine") );
+			
+			if ( !node ) console.log(se);
+
+			addMenuItem({
+				parentId: "search_engine_menu",
+				title: se.name,
+				id: "__oneClickSearchEngine__" + node.id + '_' + count++,
+				icons: {
+					"16": se.favIconUrl || browser.runtime.getURL('icons/search.svg')
+				}
+			});
+		});
+		
+		return;
 	}
 	
 	function traverse(node, parentId) {
@@ -1834,7 +1888,8 @@ const defaultUserOptions = {
 	allowHotkeysWithoutMenu: false,
 	quickMenuHoldTimeout: 250,
 	exportWithoutBase64Icons: false,
-	addSearchProviderHideNotification: false
+	addSearchProviderHideNotification: false,
+	syncWithFirefoxSearch: false
 };
 
 var userOptions = {};

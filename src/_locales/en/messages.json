@@ -1652,6 +1652,11 @@
 	"message": "Firefox 78+ Users - Add your engine using the Firefox Search bar"
   },
   
+  "SyncWithFirefoxSearch": {
+    "message": "Disable all ContextSearch engines, subfolders, bookmarklets, etc and rely solely on the search engines installed to the Firefox Search bar",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

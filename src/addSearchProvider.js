@@ -1,3 +1,8 @@
+function getSearchProviderUrlByTitle(title) {
+	let link = document.head.querySelector(`link[rel="search"][title="${title}"]`);	
+	return link ? link.href : null;
+}
+
 function addSearchProvider(url) {
 	
 	let link = document.createElement('link');
@@ -9,12 +14,6 @@ function addSearchProvider(url) {
 	if (!match[1]) return;
 
 	link.title = decodeURIComponent(match[1]);
-	
-	// check for existing opensearch engine of the same name
-	if ( document.head.querySelector('link[rel="search"][title="' + link.title + '"]') ) {
-		console.log("OpenSearch engine by the same name exists");
-		return;
-	}
 	
 	document.head.appendChild(link);
 	

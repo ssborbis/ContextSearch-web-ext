@@ -363,6 +363,7 @@ function restoreOptions() {
 		$('#n_quickMenuHoldTimeout').value = userOptions.quickMenuHoldTimeout;
 		$('#cb_exportWithoutBase64Icons').checked = userOptions.exportWithoutBase64Icons;
 		$('#cb_addSearchProviderHideNotification').checked = userOptions.addSearchProviderHideNotification;
+		$('#cb_syncWithFirefoxSearch').checked = userOptions.syncWithFirefoxSearch;
 		
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
@@ -611,7 +612,8 @@ function saveOptions(e) {
 		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked,
 		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value),
 		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked,
-		addSearchProviderHideNotification: $('#cb_addSearchProviderHideNotification').checked
+		addSearchProviderHideNotification: $('#cb_addSearchProviderHideNotification').checked,
+		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -1368,6 +1370,10 @@ document.addEventListener('DOMContentLoaded', () => {
 		button.onclick = saveOptions;
 	});
 });
+
+$('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
+	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
+});	
 
 // (() => {
 	// let advancedOptions = [
