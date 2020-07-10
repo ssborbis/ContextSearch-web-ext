@@ -2426,11 +2426,19 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 					<br /><br />
 					
-					<label for="selectMozlz4FileButton" class="fileUpload"  data-i18n="ImportSelectFile">
+					<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
 						<img src="/icons/import.png" style="margin-right:10px" />
 						Select file...
 						<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
 					</label>
+					
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="cb_overwriteOnImport" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<span class="description" data-i18n="">Clear Search Engine List and Sync With Firefox Search Bar</span>
+					</div>
 					
 					<div id="status_div" style="display:none;">
 						<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>

@@ -17,6 +17,11 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	
 	let searchEngines = [];
 	let file = ev.target.files[0];
+	
+	if ( $('#cb_overwriteOnImport').checked && confirm("This will delete all custom search engines, folders, bookmarklets, separators, etc. Are you sure?") ) {
+		userOptions.nodeTree.children = [];
+		userOptions.searchEngines = [];
+	}
 	readMozlz4File(file, text => { // on success
 
 		// parse the mozlz4 JSON into an object
@@ -717,6 +722,13 @@ $('#cb_userStylesEnabled').addEventListener('change', e => {
 $('#b_quickMenuKey').addEventListener('click', keyButtonListener);
 $('#b_contextMenuKey').addEventListener('click', keyButtonListener);
 
+$('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
+	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
+});
+document.addEventListener('userOptionsLoaded', () => {
+	$('#cb_syncWithFirefoxSearch').dispatchEvent(new Event('change'));
+});
+
 function keyButtonListener(e) {
 	e.target.innerText = '';
 	var img = document.createElement('img');
@@ -1370,10 +1382,6 @@ document.addEventListener('DOMContentLoaded', () => {
 		button.onclick = saveOptions;
 	});
 });
-
-$('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
-	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
-});	
 
 // (() => {
 	// let advancedOptions = [
