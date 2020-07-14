@@ -22,9 +22,12 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		userOptions.nodeTree.children = [];
 		userOptions.searchEngines = [];
 	}
+	
 	readMozlz4File(file, text => { // on success
 
 		// parse the mozlz4 JSON into an object
+		
+		console.log(JSON.parse(text));
 		var engines = JSON.parse(text).engines;	
 		searchEngines = searchJsonObjectToArray(engines);
 
@@ -50,7 +53,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 					type: "searchEngine",
 					title: se.title,
 					id: se.id,
-					hidden: false
+					hidden: se.hidden || false
 				}
 
 				// replace one-click nodes with same name
