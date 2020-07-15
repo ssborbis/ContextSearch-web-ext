@@ -174,19 +174,28 @@ function addSearchEnginePopup(data) {
 		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine()});
 
 		if ( isFirefox /* firefox */) {
-			// reassign the yes button to add official OpenSearch xml
-			document.getElementById('b_simple_import_yes').onclick = function() {
-
-				// build the GET url for opensearch-api.appspot.com
-				let url = buildOpenSearchAPIUrl();
-
-				// if using OpenSearch engine and name has not changed, use url to OpenSearch.xml
-				if (useOpenSearch && shortname === ose.title)
-					url = openSearchUrl;
+			(async() => {
+				let exists = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: shortname});
 				
-				simpleImportHandler(url, true);
-			}
-			showMenu('simple_import');
+				if ( exists ) {
+					closeCustomSearchIframe();
+					return;
+				}
+				
+				// reassign the yes button to add official OpenSearch xml
+				document.getElementById('b_simple_import_yes').onclick = function() {
+
+					// build the GET url for opensearch-api.appspot.com
+					let url = buildOpenSearchAPIUrl();
+
+					// if using OpenSearch engine and name has not changed, use url to OpenSearch.xml
+					if (useOpenSearch && shortname === ose.title)
+						url = openSearchUrl;
+					
+					simpleImportHandler(url, true);
+				}
+				showMenu('simple_import');
+			})();
 		} else {
 			closeCustomSearchIframe();
 		}

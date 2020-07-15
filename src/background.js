@@ -250,6 +250,13 @@ async function notify(message, sender, sendResponse) {
 
 			break;
 			
+		case "getFirefoxSearchEngineByName":
+			return new Promise(async r => {
+				let engines = await browser.search.get();
+				r(engines.find(e => e.name === message.name));
+			});
+			break;
+			
 		case "addSearchEngine":
 			let url = message.url;
 
@@ -280,8 +287,27 @@ async function notify(message, sender, sendResponse) {
 
 						if ( new URL(exists) == new URL(url) )
 							console.log('exists but same url');
-						else
+						else {
+							console.log('open new tab to include fresh opensearch link');
+							let tab = await browser.tabs.create({
+								active:true,
+								url: browser.runtime.getURL('addSearchProvider.html')
+							});
+							
+							await browser.tabs.executeScript(tab.id, {
+								code: `
+									var userOptions = {};
+
+									browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
+										userOptions = message.userOptions || {};
+									});`
+							});
+							
+							await new Promise(r => setTimeout(r, 500));
+
+							notify({action: "addSearchEngine", url: url});
 							return;
+						}
 					}
 					
 					await browser.tabs.executeScript(sender.tab.id, {
