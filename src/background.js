@@ -289,13 +289,16 @@ async function notify(message, sender, sendResponse) {
 							console.log('exists but same url');
 						else {
 							console.log('open new tab to include fresh opensearch link');
+							
+							let favicon = sender.tab.favIconUrl;
+							
 							let tab = await browser.tabs.create({
 								active:true,
 								url: browser.runtime.getURL('addSearchProvider.html')
 							});
-							
+
 							await browser.tabs.executeScript(tab.id, {
-								code: `
+								code: `							
 									var userOptions = {};
 
 									browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
@@ -304,6 +307,10 @@ async function notify(message, sender, sendResponse) {
 							});
 							
 							await new Promise(r => setTimeout(r, 500));
+
+							await browser.tabs.executeScript(tab.id, {
+								code: `setFavIconUrl("${favicon}");`
+							});
 
 							notify({action: "addSearchEngine", url: url});
 							return;
