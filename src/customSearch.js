@@ -407,7 +407,7 @@ function addSearchEnginePopup(data) {
 	}
 
 	// Form submit
-	form.add.onclick = function(ev) {
+	form.add.onclick = async function(ev) {
 		
 		// Check bad form values
 		if (form.shortname.value.trim() == "") {
@@ -469,8 +469,14 @@ function addSearchEnginePopup(data) {
 				let url = buildOpenSearchAPIUrl();
 				simpleImportHandler(url, true);
 			}
+
+			let exists = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: form.shortname.value});
 			
-			showMenu('simple_import');
+			if ( exists )
+				closeCustomSearchIframe();
+			else	
+				showMenu('simple_import');
+			
 		} else {
 			closeCustomSearchIframe();
 		}
