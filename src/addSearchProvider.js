@@ -4,6 +4,9 @@ function getSearchProviderUrlByTitle(title) {
 }
 
 function setFavIconUrl(url) {
+	
+	if (!url) return;
+	
     var link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';

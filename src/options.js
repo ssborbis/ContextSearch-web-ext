@@ -372,6 +372,7 @@ function restoreOptions() {
 		$('#cb_exportWithoutBase64Icons').checked = userOptions.exportWithoutBase64Icons;
 		$('#cb_addSearchProviderHideNotification').checked = userOptions.addSearchProviderHideNotification;
 		$('#cb_syncWithFirefoxSearch').checked = userOptions.syncWithFirefoxSearch;
+		$('#cb_quickMenuTilesDraggable').checked = userOptions.quickMenuTilesDraggable; 
 		
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
@@ -621,7 +622,8 @@ function saveOptions(e) {
 		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value),
 		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked,
 		addSearchProviderHideNotification: $('#cb_addSearchProviderHideNotification').checked,
-		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked
+		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked,
+		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

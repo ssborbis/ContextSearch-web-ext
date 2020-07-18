@@ -584,7 +584,7 @@ async function makeQuickMenu(options) {
 		
 		toolsArray.forEach( tool => {
 			
-			tool.setAttribute('draggable', true);
+			tool.setAttribute('draggable', userOptions.quickMenuTilesDraggable);
 
 			tool.addEventListener('dragstart', e => {
 				e.dataTransfer.setData("text", "tool");
@@ -764,7 +764,7 @@ async function makeQuickMenu(options) {
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 
-			div.setAttribute('draggable', true);
+			div.setAttribute('draggable', userOptions.quickMenuTilesDraggable);
 	
 			// group move
 			if ( div.classList.contains("groupFolder") ) {

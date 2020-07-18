@@ -268,16 +268,24 @@ async function notify(message, sender, sendResponse) {
 					if (!match[1]) return;
 
 					let title = decodeURIComponent(match[1]);
+					
+					let engines = await browser.search.get();
+					
+					if ( engines.find(e => e.name === title) ) {
+					//	notify({action: "showNotification", msg: title + " exists"});
+						await browser.tabs.executeScript(sender.tab.id, {
+							code: `alert("${title} exists");`
+						});
+						return;
+					}
 
 					await browser.tabs.executeScript(sender.tab.id, {
-						file: "addSearchProvider.js",
-						frameId:0
+						file: "addSearchProvider.js"
 					});
 					
 					// check for existing opensearch engine of the same name					
 					let exists = await browser.tabs.executeScript(sender.tab.id, {
-						code: `getSearchProviderUrlByTitle("${title}")`,
-						frameId:0
+						code: `getSearchProviderUrlByTitle("${title}")`
 					});
 
 					exists = exists.shift();
@@ -318,8 +326,7 @@ async function notify(message, sender, sendResponse) {
 					}
 					
 					await browser.tabs.executeScript(sender.tab.id, {
-						code: `addSearchProvider("${url}");`,
-						frameId:0
+						code: `addSearchProvider("${url}");`
 					});
 					
 				})();
@@ -1922,7 +1929,8 @@ const defaultUserOptions = {
 	quickMenuHoldTimeout: 250,
 	exportWithoutBase64Icons: false,
 	addSearchProviderHideNotification: false,
-	syncWithFirefoxSearch: false
+	syncWithFirefoxSearch: false,
+	quickMenuTilesDraggable: true
 };
 
 var userOptions = {};
