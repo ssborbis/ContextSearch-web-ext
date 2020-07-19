@@ -260,9 +260,14 @@ async function notify(message, sender, sendResponse) {
 		case "addSearchEngine":
 			let url = message.url;
 
-			if (true) {
+			if (browser.runtime.getBrowserInfo) {
 				
 				(async() => {
+					
+					// skip for Firefox version < 78 where window.external.AddSearchProvider is available
+					let info = await browser.runtime.getBrowserInfo();	
+					if ( parseFloat(info.version) < 78 ) return;
+					
 					let match = /SHORTNAME=(.*?)&DESCRIPTION/.exec(url);	
 					
 					if (!match[1]) return;
@@ -272,9 +277,8 @@ async function notify(message, sender, sendResponse) {
 					let engines = await browser.search.get();
 					
 					if ( engines.find(e => e.name === title) ) {
-					//	notify({action: "showNotification", msg: title + " exists"});
 						await browser.tabs.executeScript(sender.tab.id, {
-							code: `alert("${title} exists");`
+							code: `alert("${title} already exists in FF search bar");`
 						});
 						return;
 					}
@@ -293,9 +297,12 @@ async function notify(message, sender, sendResponse) {
 					if ( exists ) {
 						console.log('OpenSearch engine with name ' + title + ' already exists on page');
 
-						if ( new URL(exists) == new URL(url) )
+						let oldURL = new URL(exists);
+						let newURL = new URL(url);
+
+						if ( oldURL.href == newURL.href ) {
 							console.log('exists but same url');
-						else {
+						} else {
 							console.log('open new tab to include fresh opensearch link');
 							
 							let favicon = sender.tab.favIconUrl;
@@ -306,19 +313,17 @@ async function notify(message, sender, sendResponse) {
 							});
 
 							await browser.tabs.executeScript(tab.id, {
-								code: `							
+								code: `
 									var userOptions = {};
 
 									browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 										userOptions = message.userOptions || {};
-									});`
+									});
+									
+									setFavIconUrl("${favicon}");`
 							});
 							
 							await new Promise(r => setTimeout(r, 500));
-
-							await browser.tabs.executeScript(tab.id, {
-								code: `setFavIconUrl("${favicon}");`
-							});
 
 							notify({action: "addSearchEngine", url: url});
 							return;
