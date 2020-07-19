@@ -278,7 +278,7 @@ async function notify(message, sender, sendResponse) {
 					
 					if ( engines.find(e => e.name === title) ) {
 						await browser.tabs.executeScript(sender.tab.id, {
-							code: `alert("${title} already exists in FF search bar");`
+							code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
 						});
 						return;
 					}

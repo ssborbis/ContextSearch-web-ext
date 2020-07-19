@@ -532,7 +532,7 @@
   },
   
   "TemplateIncludeError": {
-    "message": "Template must include {searchTerms}"
+    "message": "Template should include {searchTerms}"
   },
 
   "TemplateURLError": {
@@ -1652,8 +1652,17 @@
 	"message": "Firefox 78+ Users - Add your engine using the Firefox Search bar"
   },
   
+  "SyncWithFirefoxSearchHeader": {
+    "message": "Sync With Firefox Search (Basic Mode)"
+  },
+  
   "SyncWithFirefoxSearch": {
-    "message": "Disable all ContextSearch engines, subfolders, bookmarklets, etc and rely solely on the search engines installed to the Firefox Search bar",
+    "message": "Disable all ContextSearch engines, subfolders, bookmarklets, etc and only display search engines installed to the Firefox Search bar",
+    "description": ""
+  },
+  
+  "FFEngineExists": {
+    "message": "$1 already installed to Firefox Search bar",
     "description": ""
   },
   
