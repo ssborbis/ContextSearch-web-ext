@@ -344,6 +344,9 @@ var QMtools = [
 				
 				d.rel = ( userOptions.quickMenuTheme === 'dark' ) ? "stylesheet alternate" : "stylesheet";
 				userOptions.quickMenuTheme = ( userOptions.quickMenuTheme === 'dark' ) ? "lite" : "dark";
+				
+				let tools = document.querySelectorAll('.tile[data-type="tool"]:not([data-nocolorinvert])');
+				tools.forEach( tool => setToolIconColor(tool));
 
 				saveUserOptions();
 			});
@@ -365,10 +368,10 @@ var QMtools = [
 			
 			addTileEventHandlers(tile, () => {
 				userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
-				
-				console.log(userOptions.allowHotkeysWithoutMenu);
+
 				tile.dataset.disabled = userOptions.allowHotkeysWithoutMenu ? "false" : "true";
 				saveUserOptions();
+
 			});
 			
 			return tile;

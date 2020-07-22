@@ -96,21 +96,23 @@ function setToolIconColor(_toolTile) {
 // }
 
 async function setTheme() {
-	if ( userOptions.quickMenuTheme === 'dark' ) {
-		await new Promise(r => {	
-			let url = browser.runtime.getURL('/dark.css');
-			var link = document.createElement('link');
-			link.type = 'text/css';
-			link.rel = 'stylesheet';
-			link.href = url;
-			link.id = "dark";
 
-			link.onload = r;
-			
-			document.head.appendChild(link);
-		});
+	await new Promise(r => {	
+		var link = document.createElement('link');
+		link.type = 'text/css';
+		link.rel = "stylesheet";
+		link.id = "dark";
+		link.as = "style";
+		
+		link.onload = function() {
+			link.rel = ( userOptions.quickMenuTheme === 'dark' ) ? 'stylesheet' : 'stylesheet alternate';
+			r();
+		}
+		
+		link.href = browser.runtime.getURL('/dark.css');
 
-	}  
+		document.head.appendChild(link);
+	});
 }
 
 function setUserStyles() {
