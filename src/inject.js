@@ -1,3 +1,13 @@
+var userOptions = {};
+
+browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
+	userOptions = message.userOptions || {};
+});
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {	
+	if ( message.userOptions ) userOptions = message.userOptions;
+});
+
 function getSelectedText(el) {
 	
 	if (el && typeof el.selectionStart !== 'undefined') {

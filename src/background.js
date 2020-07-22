@@ -40,13 +40,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateUserOptions":
-			return Promise.resolve(async () => {
-				let tabs = await getAllOpenTabs();
-				for (let tab of tabs) {
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-				}
-				buildContextMenu();
-			});
+			let tabs = await getAllOpenTabs();
+			for (let tab of tabs) {
+				browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+			}
+			buildContextMenu();
 			break;
 			
 		case "openOptions":
@@ -658,7 +656,7 @@ function loadUserOptions() {
 }
 
 async function buildContextMenu() {
-	
+
 	window.contextMenuSelectDomainMenus = [];
 	
 	function onCreated() {
@@ -706,7 +704,7 @@ async function buildContextMenu() {
 	// last used engine
 	let lse = findNode(userOptions.nodeTree, node => node.id === userOptions.lastUsedId);
 	
-	if ( lse ) {
+	if ( lse && userOptions.contextMenuShowLastUsed ) {
 		
 		let icon = function() {
 			switch (lse.type) {
@@ -722,7 +720,7 @@ async function buildContextMenu() {
 
 		addMenuItem({
 			parentId: "search_engine_menu",
-			title: lse.title + "    ⭮",
+			title: lse.title + "    \u21BB",
 			id: lse.id,	
 			icons: {
 				"16": icon
@@ -1935,7 +1933,8 @@ const defaultUserOptions = {
 	exportWithoutBase64Icons: false,
 	addSearchProviderHideNotification: false,
 	syncWithFirefoxSearch: false,
-	quickMenuTilesDraggable: true
+	quickMenuTilesDraggable: true,
+	contextMenuShowLastUsed: true
 };
 
 var userOptions = {};

@@ -1,5 +1,3 @@
-var userOptions;
-
 function getIframe() { return document.getElementById('CS_sbIframe') }
 function getOpeningTab() { return document.getElementById('CS_sbOpeningTab') }
 
@@ -78,10 +76,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-	if (typeof message.userOptions !== 'undefined') {
-		userOptions = message.userOptions;
-	}
-	
 	switch ( message.action ) {
 		case "closeSideBar":
 			closeSideBar();

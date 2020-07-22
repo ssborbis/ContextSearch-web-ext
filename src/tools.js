@@ -16,7 +16,7 @@ var QMtools = [
 	},
 	{
 		name: 'copy', 
-		icon: "icons/clipboard.png", 
+		icon: "icons/copy.png", 
 		title: browser.i18n.getMessage('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
@@ -146,7 +146,7 @@ var QMtools = [
 				tool.on = quickMenuObject.locked;
 
 				if ( tool.persist )
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+					saveUserOptions();
 			});
 			
 			return tile;
@@ -258,7 +258,7 @@ var QMtools = [
 				
 				tile.dataset.disabled = !tool.on;
 
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				saveUserOptions();
 
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
@@ -322,6 +322,53 @@ var QMtools = [
 			
 			addTileEventHandlers(tile, () => {
 				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=quickMenuTab"});
+			});
+			
+			return tile;
+		}
+	},
+	{
+		name: 'toggle_theme', 
+		icon: "icons/theme.svg", 
+		title: browser.i18n.getMessage('theme') || "theme",
+		init: function() {
+			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			tile.keepOpen = true;
+
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+			
+			addTileEventHandlers(tile, () => {
+				let d = document.querySelector('#dark');
+	
+				if ( !d ) return;
+				
+				d.rel = ( userOptions.quickMenuTheme === 'dark' ) ? "stylesheet alternate" : "stylesheet";
+				userOptions.quickMenuTheme = ( userOptions.quickMenuTheme === 'dark' ) ? "lite" : "dark";
+
+				saveUserOptions();
+			});
+			
+			return tile;
+		}
+	},
+	{
+		name: 'toggle_hotkeys', 
+		icon: "icons/keyboard.png", 
+		title: browser.i18n.getMessage('toggleHotkeys') || "Toggle hotkeys",
+		init: function() {
+			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			tile.keepOpen = true;
+
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+			
+			tile.dataset.disabled = userOptions.allowHotkeysWithoutMenu ? "false" : "true";
+			
+			addTileEventHandlers(tile, () => {
+				userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
+				
+				console.log(userOptions.allowHotkeysWithoutMenu);
+				tile.dataset.disabled = userOptions.allowHotkeysWithoutMenu ? "false" : "true";
+				saveUserOptions();
 			});
 			
 			return tile;

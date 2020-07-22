@@ -285,27 +285,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	userOptions = msg.userOptions;
 
-	if ( userOptions.quickMenuTheme === 'dark' ) {
-		await new Promise(r => {	
-			let url = browser.runtime.getURL('/dark.css');
-			var link = document.createElement('link');
-			link.type = 'text/css';
-			link.rel = 'stylesheet';
-			link.href = url;
-
-			link.onload = r;
-			
-			document.head.appendChild(link);
-		});
-
-	}  
+	await setTheme();
 	
-	if ( userOptions.userStylesEnabled ) {
-		// Append <style> element to <head>
-		var styleEl = document.createElement('style');
-		document.head.appendChild(styleEl);
-		styleEl.innerText = userOptions.userStyles;
-	}
+	setUserStyles();
 		
 	makeFrameContents();
 

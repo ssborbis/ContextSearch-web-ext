@@ -890,6 +890,12 @@
 				margin-left:-16px;
 				list-style-type: none;
 			}
+			#managerContainer .header IMG {
+				height:16px;
+				width:16px;
+				margin-right:10px;
+				vertical-align:middle;
+			}
 			.description {
 				font-weight:normal;
 				font-size:10pt;
@@ -1236,6 +1242,15 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</label>
 					
 					<div class="description" data-i18n="AddCustomSearchMenuTooltip">Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases</div>
+				</div>
+				
+				<div class="option">
+					<label class="container" data-i18n="ContexMenuShowLastUsed">
+						<input type="checkbox" id="cb_contextMenuShowLastUsed" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					
+					<div class="description" data-i18n="ContexMenuShowLastUsedTooltip">Show the last-used search engine at the top of the menu</div>
 				</div>
 				
 				</section>

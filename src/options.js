@@ -216,6 +216,7 @@ function restoreOptions() {
 		$('#s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
 		$('#cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
+		$('#cb_contextMenuShowLastUsed').checked = userOptions.contextMenuShowLastUsed;
 		
 		$('#s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		$('#s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -436,6 +437,7 @@ function saveOptions(e) {
 		contextMenuCtrl: $('#s_contextMenuCtrl').value,
 		contextMenuSearchLinksAs: $('#s_contextMenuSearchLinksAs').value,
 		contextMenuShowAddCustomSearch: $('#cb_contextMenuShowAddCustomSearch').checked,
+		contextMenuShowLastUsed: $('#cb_contextMenuShowLastUsed').checked,
 		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
 		quickMenuRightClick: $('#s_quickMenuRightClick').value,
 		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,

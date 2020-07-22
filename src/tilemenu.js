@@ -16,6 +16,10 @@ function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
 
+function saveUserOptions() {
+	return browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+}
+
 // generic search engine tile
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
@@ -91,6 +95,33 @@ function setToolIconColor(_toolTile) {
 	// _toolTile.appendChild(div);
 // }
 
+async function setTheme() {
+	if ( userOptions.quickMenuTheme === 'dark' ) {
+		await new Promise(r => {	
+			let url = browser.runtime.getURL('/dark.css');
+			var link = document.createElement('link');
+			link.type = 'text/css';
+			link.rel = 'stylesheet';
+			link.href = url;
+			link.id = "dark";
+
+			link.onload = r;
+			
+			document.head.appendChild(link);
+		});
+
+	}  
+}
+
+function setUserStyles() {
+	if ( userOptions.userStylesEnabled ) {
+		// Append <style> element to <head>
+		var styleEl = document.createElement('style');
+		document.head.appendChild(styleEl);
+		styleEl.innerText = userOptions.userStyles;
+	}
+}
+
 // method for assigning tile click handler
 function addTileEventHandlers(_tile, handler) {
 
@@ -113,7 +144,7 @@ function addTileEventHandlers(_tile, handler) {
 			// store the last used id
 			quickMenuObject.lastUsed = _tile.dataset.id || null;
 			userOptions.lastUsedId = quickMenuObject.lastUsed;
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			saveUserOptions();
 		}
 
 		quickMenuObject.searchTerms = sb.value;
@@ -270,7 +301,7 @@ async function makeQuickMenu(options) {
 		}();
 		
 		userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		saveUserOptions();
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
 		
@@ -627,7 +658,7 @@ async function makeQuickMenu(options) {
 				else
 					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
 				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				saveUserOptions();
 			
 				// rebuild menu
 				toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
@@ -983,7 +1014,7 @@ async function makeQuickMenu(options) {
 							
 							setTimeout(() => {
 								userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-								browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+								saveUserOptions();
 							}, 500);
 							
 						}
@@ -1062,7 +1093,7 @@ async function makeQuickMenu(options) {
 				function _save() {
 					// save the tree
 					userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+					saveUserOptions();
 				}
 			});
 			
@@ -1185,7 +1216,7 @@ async function makeQuickMenu(options) {
 				// save the tree
 				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				saveUserOptions();
 				
 				// rebuild menu
 				let animation = userOptions.enableAnimations;
@@ -1835,12 +1866,12 @@ function makeSearchBar() {
 			}
 				
 			saveDebounce = setTimeout( () => {
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				saveUserOptions();
 				saveDebounce = null;
 				console.log('executing save');
 			}, 200);
 			
-			// browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			// saveUserOptions();
 	
 		}
 	});

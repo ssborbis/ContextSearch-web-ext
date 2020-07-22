@@ -1,5 +1,3 @@
-var userOptions = {};
-
 browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		
 	userOptions = result.userOptions;

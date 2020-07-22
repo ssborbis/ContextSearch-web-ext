@@ -1666,6 +1666,16 @@
     "description": ""
   },
   
+  "ContexMenuShowLastUsed": {
+    "message": "Show Last Used Engine",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsedToolTip": {
+    "message": "Show the last-used search engine at the top of the menu",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

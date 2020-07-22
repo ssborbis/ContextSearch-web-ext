@@ -15,12 +15,6 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-var userOptions = {};
-
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions || {};
-});
-
 function getQM() {
 	return document.getElementById('CS_quickMenuIframe');
 }
@@ -483,9 +477,6 @@ document.addEventListener('zoom', e => {
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-	if (typeof message.userOptions !== 'undefined') {
-		userOptions = message.userOptions || {};
-	}
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
 			
