@@ -272,7 +272,7 @@ var QMtools = [
 	},
 	{
 		name: 'toggleview', 
-		icon: "icons/quick_menu.png", 
+		icon: "icons/quick_menu.svg", 
 		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('text'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
@@ -356,7 +356,7 @@ var QMtools = [
 	},
 	{
 		name: 'toggle_hotkeys', 
-		icon: "icons/keyboard.png", 
+		icon: "icons/keyboard.svg", 
 		title: browser.i18n.getMessage('toggleHotkeys'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);

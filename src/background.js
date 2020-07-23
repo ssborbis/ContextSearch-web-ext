@@ -321,6 +321,7 @@ async function notify(message, sender, sendResponse) {
 									setFavIconUrl("${favicon}");`
 							});
 							
+							// some delay needed
 							await new Promise(r => setTimeout(r, 500));
 
 							notify({action: "addSearchEngine", url: url});

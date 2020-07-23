@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="252" height="252">
+  <path d="M30,10 h194 a20,20 0 0 1 20,20 v194 a20,20 0 0 1 -20,20 h-194 a20,20 0 0 1 -20,-20 v-194 a20,20 0 0 1 20,-20 z" fill="none" stroke="black" stroke-width="16" />
+  
+  <rect x="32" y="32" width="40" height="40" />
+  <rect x="82" y="32" width="40" height="40" />
+  <rect x="132" y="32" width="40" height="40" />
+  <rect x="182" y="32" width="40" height="40" />
+  
+  <rect x="32" y="82" width="40" height="40" />
+  <rect x="82" y="82" width="40" height="40" />
+  <rect x="132" y="82" width="40" height="40" />
+  <rect x="182" y="82" width="40" height="40" />
+  
+  <rect x="32" y="132" width="40" height="40" />
+  <rect x="82" y="132" width="40" height="40" />
+  <rect x="132" y="132" width="40" height="40" />
+  <rect x="182" y="132" width="40" height="40" />
+  
+  <rect x="32" y="182" width="40" height="40" />
+  <rect x="82" y="182" width="40" height="40" />
+  <rect x="132" y="182" width="40" height="40" />
+  <rect x="182" y="182" width="40" height="40" />
+</svg>
