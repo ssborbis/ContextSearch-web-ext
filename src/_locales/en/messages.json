@@ -1676,6 +1676,16 @@
     "description": ""
   },
   
+  "ToggleTheme": {
+    "message": "Toggle theme",
+    "description": ""
+  },
+  
+  "ToggleHotkeys": {
+    "message": "Toggle hotkeys",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

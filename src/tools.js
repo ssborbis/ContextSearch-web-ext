@@ -330,7 +330,7 @@ var QMtools = [
 	{
 		name: 'toggle_theme', 
 		icon: "icons/theme.svg", 
-		title: browser.i18n.getMessage('theme') || "theme",
+		title: browser.i18n.getMessage('ToggleTheme'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 			tile.keepOpen = true;
@@ -345,7 +345,7 @@ var QMtools = [
 				d.rel = ( userOptions.quickMenuTheme === 'dark' ) ? "stylesheet alternate" : "stylesheet";
 				userOptions.quickMenuTheme = ( userOptions.quickMenuTheme === 'dark' ) ? "lite" : "dark";
 				
-				let tools = document.querySelectorAll('.tile[data-type="tool"]:not([data-nocolorinvert])');
+				let tools = document.querySelectorAll('.tile[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]');
 				tools.forEach( tool => setToolIconColor(tool));
 
 				saveUserOptions();
@@ -357,7 +357,7 @@ var QMtools = [
 	{
 		name: 'toggle_hotkeys', 
 		icon: "icons/keyboard.png", 
-		title: browser.i18n.getMessage('toggleHotkeys') || "Toggle hotkeys",
+		title: browser.i18n.getMessage('toggleHotkeys'),
 		init: function() {
 			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
 			tile.keepOpen = true;
