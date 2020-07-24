@@ -540,7 +540,7 @@
   },
   
   "TemplateIncludeError": {
-    "message": "{searchTerms} doit être inclus dans le modèle."
+    "message": "{searchTerms} devrait être inclus dans le modèle."
   },
 
   "TemplateURLError": {
@@ -1609,6 +1609,58 @@
   "SearchCode": {
     "message": "Code de recherche",
     "description": ""
+  },
+  
+  "AddUsingFirefoxSearchBar": {
+    "message": "Sous Firefox 78+, l’ajout d’un moteur se fait en passant par la barre de recherche du navigateur."
+  },
+  
+  "SyncWithFirefoxSearchHeader": {
+    "message": "Synchronisation avec la recherche de Firefox (mode simple)"
+  },
+  
+  "SyncWithFirefoxSearch": {
+    "message": "Désactiver les moteurs de recherche, les sous-dossiers, les marque-pages scriptés, etc. et ne conserver que les moteurs installés dans Firefox",
+    "description": ""
+  },
+  
+  "FFEngineExists": {
+    "message": "$1 est déjà installé dans la barre de recherche de Firefox.",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsed": {
+    "message": "Afficher le dernier moteur utilisé",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsedToolTip": {
+    "message": "Afficher le dernier moteur de recherche utilisé en haut du menu.",
+    "description": ""
+  },
+  
+  "ToggleTheme": {
+    "message": "Changer de thème",
+    "description": ""
+  },
+  
+  "ToggleHotkeys": {
+    "message": "Changer de raccourci clavier",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsed": {
+    "message": "Afficher les moteurs récemment utilisés",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedToolTip": {
+    "message": "Faire apparaître en haut du menu un dossier contenant les derniers moteurs de recherche utilisés.",
+    "description": ""
+  },
+  
+  "ClearSearchList": {
+    "message": "Effacer la liste des moteurs et synchroniser avec la barre de recherche de Firefox"
   },
   
   "___________": {
