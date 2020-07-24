@@ -111,7 +111,7 @@ var QMtools = [
 	},
 	{
 		name: 'lock', 
-		icon: "icons/lock.png", 
+		icon: "icons/lock.svg", 
 		title: browser.i18n.getMessage('tools_Lock'),
 		context: ["quickmenu"],
 		init: function() {
@@ -177,7 +177,6 @@ var QMtools = [
 						let se = userOptions.searchEngines.find( se => se.id === node.id );
 						tile.style.backgroundImage = `url('${se.img_base64String || se.icon_url}')`;
 					} else {
-						console.log(node);
 						tile.style.backgroundImage = `url('${node.icon}')`;
 					}
 
