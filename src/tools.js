@@ -169,13 +169,18 @@ var QMtools = [
 					
 					tile.dataset.disabled = false;
 
-					let node = findNodes(userOptions.nodeTree, _node => _node.id === _id)[0];
+					let node = findNode(userOptions.nodeTree, _node => _node.id === _id);
 					
 					if ( !node ) return;
 					
-					let newTile = nodeToTile(node);
-					tile.style.backgroundImage = newTile.style.backgroundImage;
-					tile.title = tile.dataset.title = "«" + newTile.title + "»";
+					if ( node.type === "searchEngine" ) {
+						let se = userOptions.searchEngines.find( se => se.id === node.id );
+						tile.style.backgroundImage = `url('${se.img_base64String || se.icon_url})`;
+					} else {
+						tile.style.backgroundImage = `url('${node.icon})`;
+					}
+
+					tile.title = tile.dataset.title = "«" + node.title + "»";
 					
 				} else
 					tile.dataset.disabled = true;

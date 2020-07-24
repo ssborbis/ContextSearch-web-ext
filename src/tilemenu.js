@@ -1425,6 +1425,262 @@ async function makeQuickMenu(options) {
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
+	
+	function nodeToTile( node ) {
+
+		let tile;
+
+		if (node.hidden) return;
+		
+		switch ( node.type ) {
+
+			case "searchEngine":
+
+				let se = userOptions.searchEngines.find(se => se.id === node.id);
+				
+				if (!se) {
+					console.log('no search engine found for ' + node.id);
+					return;
+				}
+
+				tile = buildSearchIcon(se.icon_base64String || se.icon_url || browser.runtime.getURL('/icons/search.svg'), se.title);
+				tile.dataset.title = se.title;
+				
+				// site search picker
+				if ( se.template.indexOf('{selectdomain}') !== -1 ) {
+					tile.dataset.id = node.id;
+					tile.dataset.type = 'folder';
+					tile.dataset.subtype = 'sitesearch';
+
+					tile.addEventListener('mouseup', openFolder);
+					tile.addEventListener('openFolder', openFolder);
+					
+					async function openFolder(e) {
+
+						let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+						let siteSearchNode = {
+							type:"folder",
+							parent:node.parent,
+							children:[],
+							id:node.id,
+							forceSingleColumn:true
+						}
+						
+						let url = new URL(tab.url);
+
+						getDomainPaths(url).forEach( path => {
+							siteSearchNode.children.push({
+								type: "siteSearch",
+								title: path,
+								parent:node,
+								icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+							});	
+						});
+						
+						quickMenuElement = await quickMenuElementFromNodeTree(siteSearchNode);
+
+						for ( let _tile of qm.querySelectorAll('.tile') ) {
+							if ( _tile.node.title === url.hostname ) {
+								_tile.classList.add('selectedFocus');
+								_tile.dataset.selectfirst = "true";
+								break;
+							}
+						}
+
+						resizeMenu({openFolder: true});
+					}
+					
+					break;
+				}
+				
+				addTileEventHandlers(tile, e => {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: node.id,
+							selectionText: sb.value,
+							openMethod: getOpenMethod(e)
+						}
+					});
+
+					addToHistory(sb.value);
+				});
+				
+				tile.dataset.id = node.id;
+				tile.dataset.type = 'searchEngine';
+				
+				break;
+		
+			case "bookmarklet":
+
+				tile = buildSearchIcon(node.icon || browser.runtime.getURL('/icons/code.svg'), node.title);
+				tile.dataset.type = 'bookmarklet';
+				tile.dataset.title = node.title;
+
+				addTileEventHandlers(tile, e => {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: node.id, // needs work
+							selectionText: sb.value,
+							openMethod: getOpenMethod(e)
+						}
+					});
+				});
+
+				break;
+
+			case "oneClickSearchEngine":
+
+				tile = buildSearchIcon(node.icon, node.title);
+				tile.dataset.type = 'oneClickSearchEngine';
+				tile.dataset.id = node.id;
+				tile.dataset.title = node.title;
+
+				addTileEventHandlers(tile, e => {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: "__oneClickSearchEngine__" + node.id, // needs work
+							selectionText: sb.value,
+							openMethod: getOpenMethod(e)
+						}
+					});
+				});
+
+				break;
+
+			case "separator":
+				tile = document.createElement('hr');
+				tile.dataset.type = 'separator';
+
+				break;
+		
+			case "folder":
+				tile = buildSearchIcon( browser.runtime.getURL("/icons/folder-icon.png"), node.title);
+
+				tile.dataset.type = 'folder';
+				tile.dataset.title = node.title;
+				
+				// prevent scroll icon
+				tile.addEventListener('mousedown', e => {
+					
+					// skip for dnd events
+					if ( e.which === 1 ) return;
+					e.preventDefault();
+					e.stopPropagation();
+				});
+
+				tile.addEventListener('mouseup', openFolder);
+				tile.addEventListener('openFolder', openFolder);
+					
+				async function openFolder(e) {
+					let method = getOpenMethod(e, true);
+
+					if (method === 'noAction') return;
+
+					if (method === 'openFolder' || e.openFolder) { 
+						qm = await quickMenuElementFromNodeTree(node);
+
+						resizeMenu({openFolder: true});
+
+						return;
+					}
+
+					let messages = [];
+					let hasRun = false;
+
+					for (let _node of node.children) {
+
+						if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
+							
+							messages.push( () => new Promise( async resolve => {
+
+								await browser.runtime.sendMessage({
+									action: "quickMenuSearch", 
+									info: {
+										menuItemId: _node.id,
+										selectionText: sb.value,
+										//	when opening method is a new window, only do so on first engine, then open in background
+										openMethod: !hasRun ? method : "openBackgroundTab",
+										folder: true
+									}
+								});
+								
+								hasRun = true;
+								resolve(true);
+							}));
+						}	
+					}
+
+					async function runPromisesInSequence(promises) {
+						for (let promise of promises) 
+							await promise();
+						
+						if ( !keepMenuOpen(e, true))
+							closeMenuRequest();
+					}
+					
+					runPromisesInSequence(messages);
+				}
+
+				break;
+				
+			case "siteSearch":
+
+				tile = buildSearchIcon(node.icon, node.title);
+				tile.dataset.type = 'siteSearch';
+				tile.dataset.id = node.id || "";	
+				tile.dataset.title = node.title;
+
+				addTileEventHandlers(tile, e => {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: node.parent.id,
+							selectionText: sb.value,
+							openMethod: getOpenMethod(e),
+							domain: tile.dataset.title
+						}
+					});
+					
+					// click the back button
+					tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
+				});
+
+				break;
+				
+			case "bookmark":
+				tile = buildSearchIcon(node.icon, node.title);
+				tile.dataset.type = 'bookmark';
+				tile.dataset.id = node.id || "";	
+				tile.dataset.title = node.title;
+
+				addTileEventHandlers(tile, e => {
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: node.id,
+							openMethod: getOpenMethod(e),
+						}
+					});
+				});
+				
+				break;
+				
+			case "grouplabel":
+				tile = document.createElement('div');
+				tile.dataset.type = 'grouplabel';	
+				tile.dataset.title = node.title;
+				
+				break;
+		}
+		
+		tile.node = node;
+		
+		return tile;
+	}
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
@@ -1440,262 +1696,6 @@ async function makeQuickMenu(options) {
 
 	return Promise.resolve(quickMenuElementFromNodeTree(root));
 	
-}
-
-function nodeToTile( node ) {
-
-	let tile;
-
-	if (node.hidden) return;
-	
-	switch ( node.type ) {
-
-		case "searchEngine":
-
-			let se = userOptions.searchEngines.find(se => se.id === node.id);
-			
-			if (!se) {
-				console.log('no search engine found for ' + node.id);
-				return;
-			}
-
-			tile = buildSearchIcon(se.icon_base64String || se.icon_url || browser.runtime.getURL('/icons/search.svg'), se.title);
-			tile.dataset.title = se.title;
-			
-			// site search picker
-			if ( se.template.indexOf('{selectdomain}') !== -1 ) {
-				tile.dataset.id = node.id;
-				tile.dataset.type = 'folder';
-				tile.dataset.subtype = 'sitesearch';
-
-				tile.addEventListener('mouseup', openFolder);
-				tile.addEventListener('openFolder', openFolder);
-				
-				async function openFolder(e) {
-
-					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-					let siteSearchNode = {
-						type:"folder",
-						parent:node.parent,
-						children:[],
-						id:node.id,
-						forceSingleColumn:true
-					}
-					
-					let url = new URL(tab.url);
-
-					getDomainPaths(url).forEach( path => {
-						siteSearchNode.children.push({
-							type: "siteSearch",
-							title: path,
-							parent:node,
-							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-						});	
-					});
-					
-					quickMenuElement = await quickMenuElementFromNodeTree(siteSearchNode);
-
-					for ( let _tile of qm.querySelectorAll('.tile') ) {
-						if ( _tile.node.title === url.hostname ) {
-							_tile.classList.add('selectedFocus');
-							_tile.dataset.selectfirst = "true";
-							break;
-						}
-					}
-
-					resizeMenu({openFolder: true});
-				}
-				
-				break;
-			}
-			
-			addTileEventHandlers(tile, e => {
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: node.id,
-						selectionText: sb.value,
-						openMethod: getOpenMethod(e)
-					}
-				});
-
-				addToHistory(sb.value);
-			});
-			
-			tile.dataset.id = node.id;
-			tile.dataset.type = 'searchEngine';
-			
-			break;
-	
-		case "bookmarklet":
-
-			tile = buildSearchIcon(node.icon || browser.runtime.getURL('/icons/code.svg'), node.title);
-			tile.dataset.type = 'bookmarklet';
-			tile.dataset.title = node.title;
-
-			addTileEventHandlers(tile, e => {
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: node.id, // needs work
-						selectionText: sb.value,
-						openMethod: getOpenMethod(e)
-					}
-				});
-			});
-
-			break;
-
-		case "oneClickSearchEngine":
-
-			tile = buildSearchIcon(node.icon, node.title);
-			tile.dataset.type = 'oneClickSearchEngine';
-			tile.dataset.id = node.id;
-			tile.dataset.title = node.title;
-
-			addTileEventHandlers(tile, e => {
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: "__oneClickSearchEngine__" + node.id, // needs work
-						selectionText: sb.value,
-						openMethod: getOpenMethod(e)
-					}
-				});
-			});
-
-			break;
-
-		case "separator":
-			tile = document.createElement('hr');
-			tile.dataset.type = 'separator';
-
-			break;
-	
-		case "folder":
-			tile = buildSearchIcon( browser.runtime.getURL("/icons/folder-icon.png"), node.title);
-
-			tile.dataset.type = 'folder';
-			tile.dataset.title = node.title;
-			
-			// prevent scroll icon
-			tile.addEventListener('mousedown', e => {
-				
-				// skip for dnd events
-				if ( e.which === 1 ) return;
-				e.preventDefault();
-				e.stopPropagation();
-			});
-
-			tile.addEventListener('mouseup', openFolder);
-			tile.addEventListener('openFolder', openFolder);
-				
-			async function openFolder(e) {
-				let method = getOpenMethod(e, true);
-
-				if (method === 'noAction') return;
-
-				if (method === 'openFolder' || e.openFolder) { 
-					qm = await quickMenuElementFromNodeTree(node);
-
-					resizeMenu({openFolder: true});
-
-					return;
-				}
-
-				let messages = [];
-				let hasRun = false;
-
-				for (let _node of node.children) {
-
-					if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
-						
-						messages.push( () => new Promise( async resolve => {
-
-							await browser.runtime.sendMessage({
-								action: "quickMenuSearch", 
-								info: {
-									menuItemId: _node.id,
-									selectionText: sb.value,
-									//	when opening method is a new window, only do so on first engine, then open in background
-									openMethod: !hasRun ? method : "openBackgroundTab",
-									folder: true
-								}
-							});
-							
-							hasRun = true;
-							resolve(true);
-						}));
-					}	
-				}
-
-				async function runPromisesInSequence(promises) {
-					for (let promise of promises) 
-						await promise();
-					
-					if ( !keepMenuOpen(e, true))
-						closeMenuRequest();
-				}
-				
-				runPromisesInSequence(messages);
-			}
-
-			break;
-			
-		case "siteSearch":
-
-			tile = buildSearchIcon(node.icon, node.title);
-			tile.dataset.type = 'siteSearch';
-			tile.dataset.id = node.id || "";	
-			tile.dataset.title = node.title;
-
-			addTileEventHandlers(tile, e => {
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: node.parent.id,
-						selectionText: sb.value,
-						openMethod: getOpenMethod(e),
-						domain: tile.dataset.title
-					}
-				});
-				
-				// click the back button
-				tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
-			});
-
-			break;
-			
-		case "bookmark":
-			tile = buildSearchIcon(node.icon, node.title);
-			tile.dataset.type = 'bookmark';
-			tile.dataset.id = node.id || "";	
-			tile.dataset.title = node.title;
-
-			addTileEventHandlers(tile, e => {
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: node.id,
-						openMethod: getOpenMethod(e),
-					}
-				});
-			});
-			
-			break;
-			
-		case "grouplabel":
-			tile = document.createElement('div');
-			tile.dataset.type = 'grouplabel';	
-			tile.dataset.title = node.title;
-			
-			break;
-	}
-	
-	tile.node = node;
-	
-	return tile;
 }
 
 function addToHistory(terms) {
