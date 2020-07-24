@@ -593,6 +593,10 @@ async function notify(message, sender, sendResponse) {
 		case "getFirefoxSearchEngines":
 			if ( browser.search ) return browser.search.get();
 			break;
+			
+		case "setLastUsed":
+			lastSearchHandler(message.id);
+			break;
 	}
 }
 
@@ -692,7 +696,7 @@ async function buildContextMenu() {
 		contexts: ["selection", "link", "image"]
 	});
 
-	let root = Object.assign({}, userOptions.nodeTree);
+	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 	if (!root.children) return;
 
@@ -704,34 +708,32 @@ async function buildContextMenu() {
 	
 	// last used engine
 	let lse = findNode(userOptions.nodeTree, node => node.id === userOptions.lastUsedId);
-	
 	if ( lse && userOptions.contextMenuShowLastUsed ) {
 		
-		let icon = function() {
-			switch (lse.type) {
-				case "searchEngine":
-					let se = userOptions.searchEngines.find(_se => _se.id === lse.id);
-					return se.icon_base64String;
-				case "oneClickSearchEngine":
-					return lse.icon;
-				default:
-					return "";
-			}
-		}() || browser.runtime.getURL('icons/search.svg');
-
-		addMenuItem({
-			parentId: "search_engine_menu",
-			title: lse.title + "    \u21BB",
-			id: lse.id,	
-			icons: {
-				"16": icon
-			}
-		});
-
-		browser.contextMenus.create({
-			parentId: "search_engine_menu",
+		let nodeCopy = Object.assign({}, lse);
+		root.children.unshift({
 			type: "separator"
 		});
+		root.children.unshift(nodeCopy);
+
+	}
+	
+	// recently used engines
+	if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
+		
+		let folder = {
+			type: "folder",
+			id: "___recent___",
+			title: "Recent",
+			children: []
+		}	
+		
+		userOptions.recentlyUsedList.forEach( id => {
+			let lse = findNode(userOptions.nodeTree, node => node.id === id);
+			folder.children.push(Object.assign({}, lse));
+		});
+		
+		root.children.unshift(folder);
 	}
 	
 	if ( userOptions.syncWithFirefoxSearch ) {
@@ -1012,7 +1014,7 @@ function executeOneClickSearch(info) {
 		
 	let engineId = info.menuItemId.replace("__oneClickSearchEngine__", "");
 	let engineName = findNodes( userOptions.nodeTree, node => node.id === engineId )[0].title;
-	
+
 	function searchAndHighlight(tab) {
 		browser.search.search({
 			query: searchTerms,
@@ -1138,8 +1140,9 @@ function contextMenuSearch(info, tab) {
 		info.selectionText = searchTerms;
 		info.openMethod = openMethod;
 		executeOneClickSearch(info);
+
+		lastSearchHandler(info.menuItemId.replace("__oneClickSearchEngine__", ""));
 		
-		userOptions.lastUsedId = info.menuItemId.replace("__oneClickSearchEngine__", "");
 		buildContextMenu();
 		return false;
 	}
@@ -1164,8 +1167,19 @@ function contextMenuSearch(info, tab) {
 		domain: info.domain || new URL(tab.url).hostname
 	});
 	
-	userOptions.lastUsedId = info.menuItemId;
+	lastSearchHandler(info.menuItemId);
+	
 	buildContextMenu();
+}
+
+function lastSearchHandler(id) {
+	
+	userOptions.lastUsedId = id;
+	
+	userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
+	userOptions.recentlyUsedList = [...new Set(userOptions.recentlyUsedList)].slice(0, userOptions.recentlyUsedListLength);
+	
+	notify({action: "saveUserOptions", userOptions: userOptions});
 }
 
 function quickMenuSearch(info, tab) {
@@ -1935,7 +1949,10 @@ const defaultUserOptions = {
 	addSearchProviderHideNotification: false,
 	syncWithFirefoxSearch: false,
 	quickMenuTilesDraggable: true,
-	contextMenuShowLastUsed: true
+	contextMenuShowLastUsed: false,
+	contextMenuShowRecentlyUsed: false,
+	recentlyUsedList: [],
+	recentlyUsedListLength: 10
 };
 
 var userOptions = {};

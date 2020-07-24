@@ -87,14 +87,14 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 			
 			if (details.hasFailedCount) {
 				statusMessage({
-					img: "icons/alert.png",
+					img: "icons/alert.svg",
 					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount),
 					color: "transparent",
 					invert: false
 				});
 			} else if (details.hasTimedOut) {
 				statusMessage({
-					img: "icons/alert.png",
+					img: "icons/alert.svg",
 					msg: browser.i18n.getMessage("LoadingRemoteContentTimeout"),
 					color: "transparent",
 					invert: false
@@ -217,6 +217,7 @@ function restoreOptions() {
 		
 		$('#cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
 		$('#cb_contextMenuShowLastUsed').checked = userOptions.contextMenuShowLastUsed;
+		$('#cb_contextMenuShowRecentlyUsed').checked = userOptions.contextMenuShowRecentlyUsed;
 		
 		$('#s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		$('#s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -438,6 +439,7 @@ function saveOptions(e) {
 		contextMenuSearchLinksAs: $('#s_contextMenuSearchLinksAs').value,
 		contextMenuShowAddCustomSearch: $('#cb_contextMenuShowAddCustomSearch').checked,
 		contextMenuShowLastUsed: $('#cb_contextMenuShowLastUsed').checked,
+		contextMenuShowRecentlyUsed: $('#cb_contextMenuShowRecentlyUsed').checked,
 		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
 		quickMenuRightClick: $('#s_quickMenuRightClick').value,
 		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,
@@ -625,7 +627,9 @@ function saveOptions(e) {
 		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked,
 		addSearchProviderHideNotification: $('#cb_addSearchProviderHideNotification').checked,
 		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked,
-		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked
+		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked,
+		recentlyUsedList: userOptions.recentlyUsedList,
+		recentlyUsedListLength: userOptions.recentlyUsedListLength
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

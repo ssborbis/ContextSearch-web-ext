@@ -194,7 +194,8 @@ function showNotification(msg) {
 	CS_notification.className = 'CS_notification';
 	
 	let img = new Image();
-	img.src = browser.runtime.getURL('icons/alert.png');
+	img.src = browser.runtime.getURL('icons/alert.svg');
+	
 	
 	let content = document.createElement('div');
 	content.className = 'content';

@@ -1686,6 +1686,16 @@
     "description": ""
   },
   
+  "ContexMenuShowRecentlyUsed": {
+    "message": "Show Recently Used Engines",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedToolTip": {
+    "message": "Show a folder of recently used engines at the top of the menu",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""

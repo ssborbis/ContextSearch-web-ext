@@ -1,7 +1,7 @@
 var QMtools = [
 	{
 		name: 'close', 
-		icon: "icons/close.png",
+		icon: "icons/close.svg",
 		context: ["quickmenu"],
 		title: browser.i18n.getMessage('tools_Close'),
 		init: function() {
@@ -16,7 +16,7 @@ var QMtools = [
 	},
 	{
 		name: 'copy', 
-		icon: "icons/copy.png", 
+		icon: "icons/copy.svg", 
 		title: browser.i18n.getMessage('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
@@ -168,26 +168,15 @@ var QMtools = [
 				if ( _id ) {
 					
 					tile.dataset.disabled = false;
-			
+
 					let node = findNodes(userOptions.nodeTree, _node => _node.id === _id)[0];
 					
 					if ( !node ) return;
-						
-					let icon = function() {
-
-						switch (node.type) {
-							case "searchEngine":
-								let se = userOptions.searchEngines.find(_se => _se.id === node.id);
-								return se.icon_base64String;
-							case "oneClickSearchEngine":
-								return node.icon;
-							default:
-								return "";
-						}
-					}() || browser.runtime.getURL('icons/search.svg');
 					
-					tile.style.backgroundImage = `url(${icon})`;
-					tile.title = tile.dataset.title = "«" + node.title + "»";
+					let newTile = nodeToTile(node);
+					tile.style.backgroundImage = newTile.style.backgroundImage;
+					tile.title = tile.dataset.title = "«" + newTile.title + "»";
+					
 				} else
 					tile.dataset.disabled = true;
 			}
