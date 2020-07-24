@@ -1156,6 +1156,7 @@ function contextMenuSearch(info, tab) {
 	// run as bookmarklet
 	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
 		executeBookmarklet(info);
+		lastSearchHandler(info.menuItemId);
 		return false;
 	}
 
@@ -1193,6 +1194,7 @@ function quickMenuSearch(info, tab) {
 	// run as bookmarklet
 	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
 		executeBookmarklet(info, tab);
+		lastSearchHandler(info.menuItemId);
 		return Promise.resolve(false);
 	}
 	

@@ -62,7 +62,7 @@ function setToolIconColor(_toolTile) {
 		ctx.fill();
 		ctx.restore();
 		
-		let newbg = canvas.toDataURL("image/jpg");
+		let newbg = canvas.toDataURL("image/png");
 		_toolTile.style.backgroundImage = `url(${newbg})`;
 	}
 	
@@ -1811,7 +1811,7 @@ function makeSearchBar() {
 			}
 			
 			let img = document.createElement("img");
-			img.src = "/icons/history.png";
+			img.src = "/icons/history.svg";
 			img.title = browser.i18n.getMessage('History') || "history";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';

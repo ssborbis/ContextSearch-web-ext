@@ -154,7 +154,7 @@ var QMtools = [
 	},
 	{
 		name: 'lastused', 
-		icon: "icons/history.png", 
+		icon: "icons/history.svg", 
 		title: browser.i18n.getMessage('tools_lastused'),		
 		init: function() {
 
