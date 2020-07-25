@@ -706,34 +706,35 @@ async function buildContextMenu() {
 	// add incremental menu ids to avoid duplicates
 	let count = 0;
 	
-	// last used engine
-	let lse = findNode(userOptions.nodeTree, node => node.id === userOptions.lastUsedId);
-	if ( lse && userOptions.contextMenuShowLastUsed ) {
-		
-		let nodeCopy = Object.assign({}, lse);
-		root.children.unshift({
-			type: "separator"
-		});
-		root.children.unshift(nodeCopy);
-
-	}
-	
 	// recently used engines
 	if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
 		
-		let folder = {
-			type: "folder",
-			id: "___recent___",
-			title: "Recent",
-			children: []
-		}	
-		
-		userOptions.recentlyUsedList.forEach( id => {
-			let lse = findNode(userOptions.nodeTree, node => node.id === id);
-			folder.children.push(Object.assign({}, lse));
-		});
-		
-		root.children.unshift(folder);
+		if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {
+			let folder = {
+				type: "folder",
+				id: "___recent___",
+				title: browser.i18n.getMessage('Recent'),
+				children: []
+			}	
+
+			userOptions.recentlyUsedList.forEach( (id,index) => {
+				if ( index > userOptions.recentlyUsedListLength -1 ) return;
+				let lse = findNode(userOptions.nodeTree, node => node.id === id);
+				folder.children.push(Object.assign({}, lse));
+			});
+			
+			root.children.unshift(folder);
+		} else {
+			let recent = [];
+			userOptions.recentlyUsedList.forEach( (id,index) => {
+				if ( index > userOptions.recentlyUsedListLength -1 ) return;
+				let lse = findNode(userOptions.nodeTree, node => node.id === id);
+				recent.push(Object.assign({}, lse));
+			});
+			
+			root.children.unshift({type: "separator"});			
+			root.children = recent.concat(root.children);
+		}
 	}
 	
 	if ( userOptions.syncWithFirefoxSearch ) {
@@ -1951,8 +1952,8 @@ const defaultUserOptions = {
 	addSearchProviderHideNotification: false,
 	syncWithFirefoxSearch: false,
 	quickMenuTilesDraggable: true,
-	contextMenuShowLastUsed: false,
 	contextMenuShowRecentlyUsed: false,
+	contextMenuShowRecentlyUsedAsFolder:true,
 	recentlyUsedList: [],
 	recentlyUsedListLength: 10
 };

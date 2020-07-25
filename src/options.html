@@ -1244,14 +1244,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="AddCustomSearchMenuTooltip">Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases</div>
 				</div>
 				
-				<div class="option">
-					<label class="container" data-i18n="ContexMenuShowLastUsed">
-						<input type="checkbox" id="cb_contextMenuShowLastUsed" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
-					<div class="description" data-i18n="ContexMenuShowLastUsedTooltip">Show the last-used search engine at the top of the menu</div>
-				</div>
+				</section>
+				<section>
+				<p class="header1" data-i18n="RecentlyUsed">Recently Used</p>
 				
 				<div class="option">
 					<label class="container" data-i18n="ContexMenuShowRecentlyUsed">
@@ -1259,7 +1254,21 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
-					<div class="description" data-i18n="ContexMenuShowRecentlyUsedTooltip">Show a folder of recently used engines at the top of the menu</div>
+					<div class="description" data-i18n="ContexMenuShowRecentlyUsedTooltip">Show recently used engines at the top of the menu</div>
+				</div>
+				
+				<div class="option">
+					<label class="container" data-i18n="ContexMenuShowRecentlyUsedAsFolder">
+						<input type="checkbox" id="cb_contextMenuShowRecentlyUsedAsFolder" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					
+					<div class="description" data-i18n="ContexMenuShowRecentlyUsedAsFolderTooltip">Show as folder</div>
+				</div>
+				
+				<div class="option">
+					<input type="number" id="n_contextMenuRecentlyUsedLength" size="2" step="1" low="1" high="99" class="inputNice">
+					<span class="description" data-i18n="ContexMenuShowRecentlyUsedLengthTooltip">Number of recent engines to show</span>
 				</div>
 				
 				</section>
@@ -2465,7 +2474,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 							<input type="checkbox" id="cb_overwriteOnImport" />
 							<span class="checkmark checkmark2"></span>
 						</label>
-						<span class="description" data-i18n="">Clear Search Engine List and Sync With Firefox Search Bar</span>
+						<span class="description" data-i18n="ClearSearchList">Clear Search Engine List and Sync With Firefox Search Bar</span>
 					</div>
 					
 					<div id="status_div" style="display:none;">

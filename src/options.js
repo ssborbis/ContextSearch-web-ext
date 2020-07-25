@@ -216,8 +216,9 @@ function restoreOptions() {
 		$('#s_contextMenuCtrl').value = userOptions.contextMenuCtrl;
 		
 		$('#cb_contextMenuShowAddCustomSearch').checked = userOptions.contextMenuShowAddCustomSearch;
-		$('#cb_contextMenuShowLastUsed').checked = userOptions.contextMenuShowLastUsed;
 		$('#cb_contextMenuShowRecentlyUsed').checked = userOptions.contextMenuShowRecentlyUsed;
+		$('#cb_contextMenuShowRecentlyUsedAsFolder').checked = userOptions.contextMenuShowRecentlyUsedAsFolder;
+		$('#n_contextMenuRecentlyUsedLength').value = userOptions.recentlyUsedListLength;
 		
 		$('#s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		$('#s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -438,8 +439,8 @@ function saveOptions(e) {
 		contextMenuCtrl: $('#s_contextMenuCtrl').value,
 		contextMenuSearchLinksAs: $('#s_contextMenuSearchLinksAs').value,
 		contextMenuShowAddCustomSearch: $('#cb_contextMenuShowAddCustomSearch').checked,
-		contextMenuShowLastUsed: $('#cb_contextMenuShowLastUsed').checked,
 		contextMenuShowRecentlyUsed: $('#cb_contextMenuShowRecentlyUsed').checked,
+		contextMenuShowRecentlyUsedAsFolder: $('#cb_contextMenuShowRecentlyUsedAsFolder').checked,
 		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
 		quickMenuRightClick: $('#s_quickMenuRightClick').value,
 		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,
@@ -629,7 +630,7 @@ function saveOptions(e) {
 		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked,
 		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked,
 		recentlyUsedList: userOptions.recentlyUsedList,
-		recentlyUsedListLength: userOptions.recentlyUsedListLength
+		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value)
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -739,6 +740,8 @@ $('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
 document.addEventListener('userOptionsLoaded', () => {
 	$('#cb_syncWithFirefoxSearch').dispatchEvent(new Event('change'));
 });
+
+$('#n_contextMenuRecentlyUsedLength').addEventListener('change', saveOptions);
 
 function keyButtonListener(e) {
 	e.target.innerText = '';

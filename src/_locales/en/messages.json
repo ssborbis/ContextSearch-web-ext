@@ -1692,10 +1692,35 @@
   },
   
   "ContexMenuShowRecentlyUsedToolTip": {
-    "message": "Show a folder of recently used engines at the top of the menu",
+    "message": "Show recently used engines at the top of the menu",
     "description": ""
   },
   
+  "ContexMenuShowRecentlyUsedAsFolder": {
+    "message": "",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+    "message": "Show as folder",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedLengthTooltip": {
+    "message": "Number of recent engines to show",
+    "description": ""
+  },
+  
+  "RecentlyUsed": {
+    "message": "Recently Used",
+    "description": ""
+  },
+    
+  "Recent": {
+    "message": "Recent",
+    "description": ""
+  },
+    
   "___________": {
     "message": "",
     "description": ""
