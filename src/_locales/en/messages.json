@@ -1721,6 +1721,11 @@
     "description": ""
   },
     
+  "ClearSearchList": {
+    "message": "Clear Search Engine List and Sync With Firefox Search Bar",
+    "description": ""
+  },
+  
   "___________": {
     "message": "",
     "description": ""
