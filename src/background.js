@@ -776,7 +776,7 @@ async function buildContextMenu() {
 
 			addMenuItem({
 				parentId: parentId,
-				title: se.title,
+				title: node.title,
 				id: _id,	
 				icons: {
 					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png"

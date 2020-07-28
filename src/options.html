@@ -652,8 +652,8 @@
 			}
 			#searchEnginesContainer .hotkey {
 				background-color: #E4E4E4;
-				border-radius:5px;
-				border:1px solid #c4c4c4;
+			/*	border-radius:5px; */
+			/*	border:1px solid #c4c4c4; */
 				right:30px;
 				display:inline-block;
 				min-width:1em;
@@ -862,8 +862,8 @@
 			}
 			.hotkey {
 				background-color: #E4E4E4;
-				border-radius:5px;
-				border:1px solid #c4c4c4;
+				border-radius:2px;
+			/*	border:1px solid #c4c4c4;*/
 				right:30px;
 				display:inline-block;
 				min-width:1em;
@@ -874,13 +874,24 @@
 				font-weight:bold;
 				transition: background-color .25s;
 				font-size:9pt;
+				margin-top:1px;
 			}
+			.hotkey:hover {
+				background-color:#C4C4C4;
+			}
+			/* LI > .header:hover {
+				background-color:#F4F4F4;
+			}*/
 			.hidden {
 				opacity: .5;
 			}
 			.selected {
 				background-color:#0078d7;
 				color:white;
+			}
+			.error {
+				background-color: pink;
+				opacity: .5;
 			}
 			#managerContainer > DIV {
 				position:relative;
@@ -1352,7 +1363,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				
 				<div data-browser="firefox" style="border-radius:10px;background-color:#efefef;padding:10px;margin:10px 0;display:inline-block">
 					<div style='display:table-cell;vertical-align:middle;border-right:1px solid #ccc;padding-right:10px;text-align:center'>
-						<img src="icons/alert.svg" style="fill:none;height:2em;vertical-align:middle"/>
+						<img src="icons/alert.svg" style="filter:saturate(0);height:2em;vertical-align:middle"/>
 					</div>
 					<div style="display:table-cell">
 						<div class="description" data-i18n="QuickMenuNote">Disabled on addons.mozilla.org</div><br /><br />

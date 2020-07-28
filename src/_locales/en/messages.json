@@ -1707,7 +1707,7 @@
   },
   
   "ContexMenuShowRecentlyUsedLengthTooltip": {
-    "message": "Number of recent engines to show",
+    "message": "Recent engines to show",
     "description": ""
   },
   
@@ -1723,6 +1723,11 @@
     
   "ClearSearchList": {
     "message": "Clear Search Engine List and Sync With Firefox Search Bar",
+    "description": ""
+  },
+  
+  "CannotEditOneClickEngines": {
+    "message": "Firefox engines must be imported before making changes",
     "description": ""
   },
   

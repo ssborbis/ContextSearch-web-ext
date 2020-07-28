@@ -34,6 +34,11 @@ function buildSearchEngineContainer() {
 		li.addEventListener('drop',drop_handler);
 		li.addEventListener('dragover',dragover_handler);
 		li.addEventListener('dragleave',dragleave_handler);
+		
+		let header = document.createElement('div');
+		header.className = "header";
+		
+		li.appendChild(header);
 
 		if (node.type === 'searchEngine') {
 			
@@ -47,12 +52,12 @@ function buildSearchEngineContainer() {
 
 			let icon = document.createElement('img');
 			icon.src = se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
-			li.appendChild(icon);
+			header.appendChild(icon);
 			
 			let text = document.createElement('span');
 			text.className = "label";
 			text.innerText = se.title;
-			li.appendChild(text);
+			header.appendChild(text);
 
 			let edit_form = document.getElementById('editSearchEngineContainer');
 			edit_form.style.maxHeight = null;
@@ -365,7 +370,7 @@ function buildSearchEngineContainer() {
 			
 			let img = document.createElement('img');
 			img.src = node.icon || browser.runtime.getURL('icons/code.svg');
-			li.appendChild(img);
+			header.appendChild(img);
 			
 			li.addEventListener('dblclick', e => {
 				//console.log('dblclick');
@@ -375,7 +380,7 @@ function buildSearchEngineContainer() {
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
-			li.appendChild(text);
+			header.appendChild(text);
 			
 			function editBm() {
 
@@ -452,19 +457,19 @@ function buildSearchEngineContainer() {
 			div.style = 'display:inline-block;width:200px;height:4px;background-color:#aaa';
 			text.appendChild(div);
 			text.className = "label";
-			li.appendChild(text);
+			header.appendChild(text);
 		}
 		
 		if (node.type === 'oneClickSearchEngine') {
 
 			let img = document.createElement('img');
 			img.src = node.icon;
-			li.appendChild(img);
+			header.appendChild(img);
 
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
-			li.appendChild(text);
+			header.appendChild(text);
 			
 			// indicate as a firefox one-click
 			let ff = document.createElement('span');
@@ -472,28 +477,44 @@ function buildSearchEngineContainer() {
 			ff.style = 'background-color:rgb(234, 172, 92);color:white;border-radius:4px;font-size:7pt;font-weight:bold;margin-left:5px;padding:1px 5px;vertical-align:middle';
 			ff.title = 'Firefox One-Click Search Engine';
 
-			li.appendChild(ff);
+			header.appendChild(ff);
+			
+			li.addEventListener('dblclick', e => {
+				alert( browser.i18n.getMessage('CannotEditOneClickEngines'));
+			});
 		}
 		
 		if (node.type === 'folder') {
 			
 			let img = document.createElement('img');
 			img.src = browser.runtime.getURL('/icons/folder-icon.png');
-			li.appendChild(img);
+			header.appendChild(img);
 			
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
-			li.appendChild(text);
+			header.appendChild(text);
+			
+			let expand = document.createElement('span');
+			expand.innerText = "-";
+			expand.style.marginLeft = "-20px";
+			expand.style.padding = "0 6px";
+			expand.style.fontFamily = "monospace";
+			header.insertBefore(expand, header.firstChild);
 
 			let ul = document.createElement('ul');
 			li.appendChild(ul);
+			
+			expand.onclick = function() {
+				ul.style.display = ul.style.display ? null : "none";
+				expand.innerText = ul.style.display ? "+" : "-";
+			}
 			
 			node.children.forEach( _node => traverse(_node, ul) );
 			
 			li.addEventListener('dblclick', e => {
 				
-				if ( e.target !== li && e.target !== img ) return;
+				if ( e.target !== li && e.target !== img && e.target !== header ) return;
 				
 				e.stopPropagation();
 				// get the first form of the LI and check if folder form
@@ -648,16 +669,17 @@ function buildSearchEngineContainer() {
 			hotkey.className = 'hotkey';
 			hotkey.style.right = "0px";
 
-			li.appendChild(hotkey);
+			header.appendChild(hotkey);
 			hotkey.innerText = keyTable[node.hotkey] || "";
 			
 			hotkey.onclick = function(e) {
 				e.stopPropagation();			
-				e.target.innerText = '';
+				e.target.innerText = null;
 				let img = document.createElement('img');
 				img.src = 'icons/spinner.svg';
 				img.style.height = '1em';
 				img.style.verticalAlign = 'middle';
+				img.style.margin = '0';
 				e.target.appendChild(img);
 				window.addEventListener('keydown', function keyPressListener(evv) {
 					evv.preventDefault();
@@ -703,34 +725,26 @@ function buildSearchEngineContainer() {
 				
 			}
 		}
-		
-		document.addEventListener('click', e => {
-			if ( e.target.classList.contains('label') ) return;
-			
-			table.querySelectorAll('.selected').forEach( _span => {
-				_span.classList.remove('selected');
-			});
-			selectedRows = [];
+
+		document.addEventListener('click', e => {			
+			if ( document.getElementById('managerContainer').contains(e.target) ) return;			
+			clearSelectedRows();
 		});
-		
-		li.querySelector('.label').addEventListener('click', e => {
-//			console.log(node);
+
+		li.querySelector('.header').addEventListener('click', e => {
 			closeContextMenus();
-			e.stopPropagation();
+		//	e.stopPropagation();
 
 			if (!selectedRows.length) {
-				li.querySelector('SPAN:first-of-type').classList.add('selected');
+				li.querySelector('.header').classList.add('selected');
 				selectedRows.push(li);
 				return;
 			}
 			
 			if (selectedRows.length && !e.shiftKey) {
-				table.querySelectorAll('.selected').forEach( _span => {
-					_span.classList.remove('selected');
-				});
-				selectedRows = [];
-				
-				li.querySelector('SPAN:first-of-type').classList.add('selected');
+				clearSelectedRows();
+
+				li.querySelector('.header').classList.add('selected');
 				selectedRows.push(li);
 				return;
 			}
@@ -754,13 +768,11 @@ function buildSearchEngineContainer() {
 				liEndIndex = Math.max(start, end);
 				
 				for (let i=liStartIndex;i<liEndIndex + 1;i++) {
-					lis[i].querySelector('SPAN:first-of-type').classList.add('selected');
+					lis[i].querySelector('.header').classList.add('selected');
 					selectedRows.push(lis[i]);
 				}
 
-				// console.log(liStartIndex + ' - ' + liEndIndex);
-				
-				// console.log(slicedNodes);
+				selectedRows = [...new Set(selectedRows)];
 			}
 			
 		});
@@ -785,9 +797,7 @@ function buildSearchEngineContainer() {
 			traverse(child, rootElement);
 		
 		table.appendChild(rootElement);
-		
-		// console.log(root);
-		// console.log('repaired', result);
+
 		updateNodeList();
 		
 		document.getElementById('managerContainer').innerHTML = null;
@@ -812,17 +822,20 @@ function buildSearchEngineContainer() {
 		ev.dataTransfer.setData("text", "");
 		window.dragRow = nearestParent('LI', ev.target);
 		ev.effectAllowed = "copyMove";
-		selectedRows.unshift(dragRow);
-		window.dragRow.querySelector('SPAN:first-of-type').classList.add('selected');
-	//	selectedRows.push(dragRow);
+		
+		// if dragrow is not selected
+		if ( !selectedRows.includes(window.dragRow) ) {
+			clearSelectedRows();
+			window.dragRow.querySelector('.header').classList.add('selected');
+			selectedRows.push(window.dragRow);
+		}
 	}
 	
 	function dragover_handler(ev) {
 		let overNode = nearestParent('LI', ev.target);
-		
-		if (window.dragRow.contains(overNode) ) {
-			window.dragRow.style.backgroundColor = "pink";
-			window.dragRow.style.opacity = .5;
+
+		if ( selectedRows.includes(overNode) ) {
+			overNode.querySelectorAll('.header').forEach( row => row.classList.add('error') );
 			return;
 		}
 		
@@ -832,14 +845,13 @@ function buildSearchEngineContainer() {
 			position = 'middle';
 		
 		overNode.style = null;
-		overNode.querySelector('.label').style = null;
 
 		if ( position === 'top' ) {
 			overNode.style.borderTop = '2px solid #008afc';
 		} else if ( position === 'bottom' ) {
 			overNode.style.borderBottom = '2px solid #008afc';
 		} else {
-			overNode.querySelector('img').style.filter = 'hue-rotate(180deg)';
+			overNode.querySelector('.header').classList.add('selected');
 		}
 
 		ev.preventDefault();
@@ -848,12 +860,11 @@ function buildSearchEngineContainer() {
 		window.dragRow.style = null;
 		let overNode = nearestParent('LI', ev.target);
 		overNode.style=null;
+		overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 		
 		// clear folder styling
-		try {
-		//	overNode.querySelector("ul").firstChild.style = null;
-			overNode.querySelector('img').style.filter = null;
-		} catch (error) {}
+		if ( overNode.node.type === "folder" && !selectedRows.includes(overNode) ) // only remove if not originally selected
+			overNode.querySelector('.header').classList.remove('selected');
 	}
 	function drop_handler(ev) {
 		
@@ -867,13 +878,6 @@ function buildSearchEngineContainer() {
 		// clear drag styling
 		targetElement.style = null;
 		window.dragRow.style = null;
-		window.dragRow.querySelector('.label').style = null;
-		
-		// clear folder styling
-		try {
-		//	targetElement.querySelector("ul").firstChild.style = null;
-			targetElement.querySelector('img').style.filter = null;
-		} catch (error) {}
 
 		// sort with hierarchy
 		let sortedRows = [ ...$('#managerContainer').querySelectorAll('LI')].filter( row => selectedRows.indexOf(row) !== -1 ).reverse();
@@ -942,9 +946,9 @@ function buildSearchEngineContainer() {
 		userOptions.nodeTree = JSON.parse(JSON.stringify(rootElement.node));
 		saveOptions();
 	}
-	
+
 	function contextMenuHandler(e) {
-		
+
 		if (document.getElementById('editSearchEngineContainer').contains(e.target) ) return false;
 		e.preventDefault();
 		
@@ -973,33 +977,68 @@ function buildSearchEngineContainer() {
 		}
 
 		let _delete = createMenuItem(browser.i18n.getMessage('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
-
+		
 		_delete.onclick = function(e) {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
-			
-			// selectedRows.forEach( row => {
-				// row.node.hidden = hidden;
-				
-				// if (hidden) row.classList.add('hidden');
-				// else row.classList.remove('hidden');
-			// });
-			
 
-			// move the edit form if open on node
-			let editForm = document.getElementById('editSearchEngineContainer');
-			if ( li.contains(editForm) ) {
-				editForm.style.maxHeight = '0px';
-				document.body.appendChild(editForm);	
+			// count the nodes to delete for prompt		
+			function incrementKey(obj, key) {
+				if ( !obj.hasOwnProperty(key) ) obj[key] = 1;
+				else obj[key]++;
 			}
-
-			let engines = findNodes(li.node, node => node.type === "searchEngine");
-			let engineCount = engines.length;
 			
-			if ( li.node.type === 'folder' && engineCount ) {
-				let _menu = document.createElement('div');
+			let nodesToDelete = [];	
+			selectedRows.forEach( row => {
+				nodesToDelete = nodesToDelete.concat(findNodes(row.node, n => true));
+			});
 
+			let objectsToDelete = {};	
+			[...new Set(nodesToDelete)].forEach(n => incrementKey(objectsToDelete, n.type)); 
+			
+			if ( !selectedRows.length ) selectedRows.push(li);
+			
+			if ( selectedRows.length > 1 || li.node.children ) {
+				
+				let msgDiv = document.createElement('div');
+				let msgDivHead = document.createElement('div');
+				msgDivHead.innerText = browser.i18n.getMessage('confirm');
+				msgDiv.appendChild(msgDivHead);
+			//	msgDiv.appendChild(document.createElement('hr'));
+				let msgDivRow = document.createElement('div');
+				msgDiv.appendChild(msgDivRow);
+				
+				let nodeIcons = {
+					searchEngine: "settings.svg",
+					oneClickSearchEngine: "new.png",
+					bookmarklet: "code.svg",
+					folder: "folder.svg",
+					separator: "separator.png"
+				}
+				
+				// build delete message from objectsToDelete
+				for ( let key in objectsToDelete) {
+					if ( objectsToDelete.hasOwnProperty(key) ) {
+						let d = document.createElement('div');
+						let img = new Image();
+						img.style = "display:inline-block;height:16px;width:16px;vertical-align:middle";
+						img.src = browser.runtime.getURL('icons/' + nodeIcons[key]);
+						
+						msgDivRow.appendChild(d);
+						d.innerText = objectsToDelete[key];
+						d.insertBefore(img, d.firstChild);
+						
+						// let x = new Image();
+						// x.style = img.style;
+						// x.src = browser.runtime.getURL('icons/crossmark.svg');
+						// x.style+= "filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);";
+						
+						// d.insertBefore(x, d.firstChild);
+					}
+				}
+				
+				let _menu = document.createElement('div');
 				_menu.className = 'contextMenu subMenu';
 				
 				// position to the right of opening div
@@ -1010,123 +1049,55 @@ function buildSearchEngineContainer() {
 				// add menu items
 				let item1 = document.createElement('div');
 				item1.className = 'menuItem';
-				item1.innerText = browser.i18n.getMessage('RemoveNode');
+				item1.appendChild(msgDiv);
 				
-				item1.addEventListener('click', _e => {
-					
-					// append orphaned search engines
-					engines.forEach( engine => {
-						if ( findNodes( root, _node => _node.id === engine.id ).length === 1 ) {
-							let orphanedNode = Object.assign({}, engine);
-							orphanedNode.hidden = true;
-							orphanedNode.parent = root;
-							root.children.push(orphanedNode);
-							traverse(orphanedNode, rootElement);
-						}
-					});
-
-					removeNode(li.node, li.node.parent);
-
-					li.parentNode.removeChild(li);
-					
-					updateNodeList();
-					closeContextMenus();
-				});
+				item1.addEventListener('click', removeNodesAndRows);
 				
-				let item2 = document.createElement('div');
-				item2.className = 'menuItem';
-				item2.innerText = browser.i18n.getMessage('DeleteEngines', engineCount);//"Delete " + engineCount + " engines";
-				
-				item2.addEventListener('click', _e => {
-					removeNode(li.node, li.node.parent);
-					li.parentNode.removeChild(li);
-					
-					engines.forEach( engine => {
-						// remove search engines
-						let index = userOptions.searchEngines.findIndex( se => se.id === engine.id);					
-						if (index !== -1) userOptions.searchEngines.splice(index, 1);
-						
-						// remove other nodes using engine
-						removeNodesById(rootElement.node, engine.id);
-						for (let _li of rootElement.querySelectorAll('li[data-nodeid="' + engine.id + '"]'))
-							_li.parentNode.removeChild(_li);
-					
-					});
-					
-					updateNodeList();
-					closeContextMenus();
-				});
-				
-				[item1, item2].forEach( el => { _menu.appendChild(el) });
-	
+				_menu.appendChild(item1);
 				document.body.appendChild(_menu);
 				openMenu(_menu);
 				
+			} else {
+				removeNodesAndRows();
+			}
+			
+			async function removeNodesAndRows() {
 
-			} else if ( li.node.type === 'searchEngine' ) {
+				// remember OCSEs to append hidden
+				let ffses = [];
+				selectedRows.forEach( row => {					
+					ffses = ffses.concat(findNodes( row.node, n => n.type === "oneClickSearchEngine"));
+				});
+
+				// remove nodes and rows
+				selectedRows.forEach( row => {
+					if ( row.node.parent ) removeNode(row.node, row.node.parent);
+					if ( row.parentNode ) row.parentNode.removeChild(row);
+				});
 				
-				let duplicateNodes = findNodes( root, _node => _node.id === li.node.id );
-				
-				// only one engine, delete
-				if ( duplicateNodes.length === 1 ) {
-					
-					let _menu = document.createElement('div');
+				// remove nodeless searchEngines
+				let indexesToRemove = [];
+				userOptions.searchEngines.forEach( (se,index) => {
+					if ( !findNode(rootElement.node, node => node.id === se.id) ) {
+						indexesToRemove.push(index);
+					}
+				});
 
-					_menu.className = 'contextMenu subMenu';
-					
-					// position to the right of opening div
-					let rect = _delete.getBoundingClientRect();
-					_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
-					_menu.style.top = rect.y + window.scrollY + "px";
-
-					// add menu items
-					let item1 = document.createElement('div');
-					item1.className = 'menuItem';
-					item1.innerText = browser.i18n.getMessage('Confirm');
-					
-					item1.addEventListener('click', _e => {
-						
-						let index = userOptions.searchEngines.findIndex( se => se.id === li.node.id);					
-						if (index !== -1) userOptions.searchEngines.splice(index, 1);
-						
-						removeNode(li.node, li.node.parent);
-						li.parentNode.removeChild(li);
-
-						updateNodeList();
-						closeContextMenus();
-					});
-					
-					[item1].forEach( el => { _menu.appendChild(el) });
-	
-					document.body.appendChild(_menu);
-					openMenu(_menu);
-					
-				} else {
-				
-					removeNode(li.node, li.node.parent);
-					li.parentNode.removeChild(li);
-					
-					updateNodeList();
-					closeContextMenus();
+				for ( let i=indexesToRemove.length -1; i>-1; i-- ) {
+					userOptions.searchEngines.splice(indexesToRemove[i], 1);
 				}
 
+				// append hidden OCSEs
+				ffses.forEach( n => {
+					n.parent = rootElement.node;
+					n.hidden = true;
+					rootElement.node.children.push(n);
+				});
 
-			} else {
-				removeNode(li.node, li.node.parent);
-				li.parentNode.removeChild(li);
-				
 				updateNodeList();
 				closeContextMenus();
 			}
 
-		}
-		
-		if ( li.node.type === 'oneClickSearchEngine') {
-			let copies = findNodes(rootElement.node, node => node.type === 'oneClickSearchEngine' && node.id === li.node.id && node !== li.node );
-
-			if ( copies.length === 0 ) {
-				if ( browser.search ) _delete.style.display = 'none';
-			}
 		}
 
 		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
@@ -1139,34 +1110,18 @@ function buildSearchEngineContainer() {
 				li.dispatchEvent(new MouseEvent('dblclick'));
 			if (li.node.type === 'bookmarklet')
 				li.dispatchEvent(new MouseEvent('dblclick'));
-			if (li.node.type === 'oneClickSearchEngine') {
-				// closeContextMenus();
-				
-				// e.preventDefault();
-				// e.stopImmediatePropagation();
-				
-				// let menu = document.createElement('div');
-				// menu.className = "contextMenu";
-				// menu.style.left = e.pageX + "px";
-				// menu.style.top = e.pageY + "px";	
-				// menu.style.padding = '10px';
-				// menu.innerText = browser.i18n.getMessage('CannotEditOneClickEngines') || "Firefox One-Click engines must be imported before making changes";
-				// document.body.appendChild(menu);
-
-				// openMenu(menu);
-				
-				// return false;
-			}
+			if (li.node.type === 'oneClickSearchEngine')
+				li.dispatchEvent(new MouseEvent('dblclick'));
 			
 			closeContextMenus();
 		});
 		
 		let hide = createMenuItem(li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.png'));
 		hide.addEventListener('click', () => {
-			if ( selectedRows === [] ) selectedRows.push(li);
+			if ( !selectedRows.length ) selectedRows.push(li);
 			
 			let hidden = !li.node.hidden;
-			
+
 			selectedRows.forEach( row => {
 				row.node.hidden = hidden;
 				
@@ -1178,7 +1133,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newFolder = createMenuItem(browser.i18n.getMessage('NewFolder'), browser.runtime.getURL('icons/folder4.png'));		
+		let newFolder = createMenuItem(browser.i18n.getMessage('NewFolder'), browser.runtime.getURL('icons/folder.svg'));		
 		newFolder.addEventListener('click', () => {
 			let newFolder = {
 				type: "folder",
@@ -1282,7 +1237,7 @@ function buildSearchEngineContainer() {
 
 		});
 		
-		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/clipboard.png'));	
+		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/copy.svg'));	
 		copy.addEventListener('click', e => {
 			
 			let newNode;
@@ -1449,6 +1404,11 @@ function buildSearchEngineContainer() {
 		}
 	}
 	
+	function clearSelectedRows() {
+		table.querySelectorAll('.selected').forEach( row => row.classList.remove('selected') );
+		selectedRows = [];
+	}
+	
 	function addNewEngine(node, copy) {
 		
 		copy = copy || false;
@@ -1576,5 +1536,4 @@ function buildSearchEngineContainer() {
 		reader.readAsDataURL(file);
 		
 	});	
-	
 }
