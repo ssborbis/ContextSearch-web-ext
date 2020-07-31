@@ -75,7 +75,7 @@ function buildSearchEngineContainer() {
 				if (document.getElementById('editSearchEngineContainer').contains(e.target) ) return false;
 
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
-				
+
 				// close if open on same TR
 				if (edit_form.parentNode === li && edit_form.style.maxHeight) {
 					
@@ -360,6 +360,8 @@ function buildSearchEngineContainer() {
 						edit_form.style.maxHeight = "none";
 					}
 				}, 2000);
+				
+				li.scrollIntoView({block: "start", behavior:"smooth"});
 				
 				checkFormValues();
 			});
@@ -973,6 +975,15 @@ function buildSearchEngineContainer() {
 			
 			menuItem.appendChild(span);
 			
+			
+			menuItem.addEventListener('click', e => {
+				if ( menuItem.disabled ) {
+					e.preventDefault();
+					e.stopImmediatePropagation();
+					return false;
+				}
+			});
+			
 			return menuItem;
 		}
 
@@ -1014,7 +1025,7 @@ function buildSearchEngineContainer() {
 					oneClickSearchEngine: "new.png",
 					bookmarklet: "code.svg",
 					folder: "folder.svg",
-					separator: "separator.png"
+					separator: "separator.svg"
 				}
 				
 				// build delete message from objectsToDelete
@@ -1331,7 +1342,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newSeparator = createMenuItem(browser.i18n.getMessage('NewSeparator'), browser.runtime.getURL('icons/separator.png'));	
+		let newSeparator = createMenuItem(browser.i18n.getMessage('NewSeparator'), browser.runtime.getURL('icons/separator.svg'));	
 		newSeparator.addEventListener('click', () => {
 			let newNode = {
 				type: "separator",
@@ -1347,13 +1358,20 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
+		// attach options to menu
 		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
-			el.addEventListener('click', e => {
-				closeContextMenus();
-			});
+			el.addEventListener('click', closeContextMenus);
 		});
+		
+		// disable some menu items when multiple rows are selected
+		if ( selectedRows.length > 1 ) {
+			[edit, newFolder, newEngine, newSeparator, newBookmarklet, copy].forEach( el => {
+				el.disabled = true;
+				el.style.opacity = .5;
+			});
+		}
 
 		menu.style.left = e.pageX + "px";
 		menu.style.top = e.pageY + "px";

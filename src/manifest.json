@@ -94,7 +94,8 @@
 		"/findbar.html",
 		"icons/search.svg",
 		"icons/crossmark.svg",
-		"icons/alert.svg"
+		"icons/alert.svg",
+		"icons/spinner.svg"
 	],
 
 	"browser_action": {

@@ -492,7 +492,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				quickMenuObject.searchTerms = message.searchTerms;
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
-				
+
 				// keep old menu if locked
 				if ( quickMenuObject.locked && getQM() ) {
 					quickMenuObject.searchTerms = message.searchTerms;
@@ -504,12 +504,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					});
 					break;
 				}
-				
-				// if menuless repeatsearch
-				if ( false ) {
-					
-				}
-				
+
 				makeQuickMenuContainer({'x': x,'y': y});
 				
 				break;

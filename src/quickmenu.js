@@ -17,79 +17,78 @@ var quickMenuObject = {
 
 var userOptions = {};
 
-function makeFrameContents(options) {
-	
+async function makeFrameContents(options) {
+
 	options 			= options || {};	
 	options.mode 		= options.mode || "normal";
 	options.resizeOnly 	= options.resizeOnly || false;
 
-	makeQuickMenu({type: "quickmenu", mode: options.mode, singleColumn: userOptions.quickMenuUseOldStyle}).then( (qme) => {
-		
-		let old_qme = document.getElementById('quickMenuElement');
-		
-		if (old_qme) document.body.removeChild(old_qme);
+	let qme = await makeQuickMenu({type: "quickmenu", mode: options.mode, singleColumn: userOptions.quickMenuUseOldStyle});
+
+	let old_qme = document.getElementById('quickMenuElement');
 	
-		document.body.appendChild(qme);
-		
-		qm = qme;
+	if (old_qme) document.body.removeChild(old_qme);
 
-		let sbc = document.getElementById('searchBarContainer');
-		let tb = document.getElementById('toolBar');
+	document.body.appendChild(qme);
+	
+	qm = qme;
 
-		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
-			document.body.appendChild(tb);
+	let sbc = document.getElementById('searchBarContainer');
+	let tb = document.getElementById('toolBar');
+
+	if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
+		document.body.appendChild(tb);
+	
+	if (userOptions.quickMenuSearchBar === 'bottom') 
+		document.body.appendChild(sbc);
+	
+	if ( options.mode === "resize" ) {
+		// qm.style.minWidth = null;
+		qm.style.overflowY = null;
+		qm.style.height = null;
+		qm.style.width = null;
+	}
+	
+	makeSearchBar();
+	
+	if ( userOptions.quickMenuSearchBar === 'hidden') {
+		sbc.style.display = 'none';
+		sbc.style.height = '0';
+	}
+
+	document.getElementById('closeButton').addEventListener('click', e => {
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
+	});
+
+	await browser.runtime.sendMessage({
+		action: "quickMenuIframeLoaded", 
+		size: {
+			width: qm.getBoundingClientRect().width,
+			height: document.body.getBoundingClientRect().height
+		},
+		resizeOnly: options.resizeOnly,
+		tileSize: qm.getTileSize(),
+		tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length,
+		columns: qm.columns,
+		singleColumn: qm.singleColumn
+	});
+
+	// setTimeout needed to trigger after updatesearchterms
+	setTimeout(() => {				
+		if (userOptions.quickMenuSearchBarSelect)
+			sb.addEventListener('focus', () => sb.select(), {once:true});
+
+		if (userOptions.quickMenuSearchBarFocus)
+			sb.focus();
 		
-		if (userOptions.quickMenuSearchBar === 'bottom') 
-			document.body.appendChild(sbc);
-		
-		if ( options.mode === "resize" ) {
-			// qm.style.minWidth = null;
-			qm.style.overflowY = null;
-			qm.style.height = null;
-			qm.style.width = null;
+		if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
+			sb.blur();
+			qm.focus();
 		}
-		
-		makeSearchBar();
-		
-		if ( userOptions.quickMenuSearchBar === 'hidden') {
-			sbc.style.display = 'none';
-			sbc.style.height = '0';
-		}
+	}, 100);
+	
+	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
-		document.getElementById('closeButton').addEventListener('click', e => {
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
-		});
-
-		browser.runtime.sendMessage({
-			action: "quickMenuIframeLoaded", 
-			size: {
-				width: qm.getBoundingClientRect().width,
-				height: document.body.getBoundingClientRect().height
-			},
-			resizeOnly: options.resizeOnly,
-			tileSize: qm.getTileSize(),
-			tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length,
-			columns: qm.columns,
-			singleColumn: qm.singleColumn
-		}).then(() => {
-			
-			// setTimeout needed to trigger after updatesearchterms
-			setTimeout(() => {				
-				if (userOptions.quickMenuSearchBarSelect)
-					sb.addEventListener('focus', () => sb.select(), {once:true});
-
-				if (userOptions.quickMenuSearchBarFocus)
-					sb.focus();
-				
-				if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
-					sb.blur();
-					qm.focus();
-				}
-			}, 100);
-			
-			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-		});
-	});	
 }
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
