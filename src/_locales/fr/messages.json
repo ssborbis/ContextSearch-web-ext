@@ -1629,38 +1629,58 @@
     "description": ""
   },
   
-  "ContexMenuShowLastUsed": {
-    "message": "Afficher le dernier moteur utilisé",
-    "description": ""
-  },
-  
-  "ContexMenuShowLastUsedToolTip": {
-    "message": "Afficher le dernier moteur de recherche utilisé en haut du menu.",
-    "description": ""
-  },
-  
   "ToggleTheme": {
-    "message": "Changer de thème",
+    "message": "Basculer le thème",
     "description": ""
   },
   
   "ToggleHotkeys": {
-    "message": "Changer de raccourci clavier",
+    "message": "Basculer les raccourcis clavier",
     "description": ""
   },
   
   "ContexMenuShowRecentlyUsed": {
-    "message": "Afficher les moteurs récemment utilisés",
+    "message": "Afficher les moteurs de recherche récemment utilisés",
     "description": ""
   },
   
   "ContexMenuShowRecentlyUsedToolTip": {
-    "message": "Faire apparaître en haut du menu un dossier contenant les derniers moteurs de recherche utilisés.",
+    "message": "Afficher les moteurs récemment utilisés en tête de liste",
     "description": ""
   },
   
   "ClearSearchList": {
     "message": "Effacer la liste des moteurs et synchroniser avec la barre de recherche de Firefox"
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolder": {
+    "message": "",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+    "message": "Regrouper les moteurs récemment utilisés dans un dossier",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedLengthTooltip": {
+    "message": "Nombre de moteurs à afficher",
+    "description": ""
+  },
+  
+  "RecentlyUsed": {
+    "message": "Moteurs récemment utilisés",
+    "description": ""
+  },
+    
+  "Recent": {
+    "message": "Récents",
+    "description": ""
+  },
+    
+  "CannotEditOneClickEngines": {
+    "message": "Les moteurs de recherche de Firefox doivent être importés avant d’effectuer des changements.",
+    "description": ""
   },
   
   "___________": {
