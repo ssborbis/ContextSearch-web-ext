@@ -1630,12 +1630,12 @@
   },
   
   "ToggleTheme": {
-    "message": "Basculer le thème",
+    "message": "Changer de thème",
     "description": ""
   },
   
   "ToggleHotkeys": {
-    "message": "Basculer les raccourcis clavier",
+    "message": "Activer ou désactiver les touches d’accès",
     "description": ""
   },
   
