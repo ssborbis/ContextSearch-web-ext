@@ -1227,6 +1227,8 @@ function openSearch(details) {
 
 	if (!tab) tab = {url:"", id:0}
 	
+	console.log("openingTabId: ",( userOptions.disableNewTabSorting ? null : (tab.id || null)));
+	
 	var se;
 
 	if (!openUrl) {
@@ -1393,7 +1395,7 @@ function openSearch(details) {
 		
 		var creating = browser.tabs.update({
 			url: q,
-			openerTabId: tab.id
+			openerTabId: ( userOptions.disableNewTabSorting ? null : (tab.id || null ) )
 		});
 		return creating.then(onCreate, onError);
 	} 
@@ -1412,7 +1414,7 @@ function openSearch(details) {
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: (details.folder ? null : (tab.id || null))
+			openerTabId: (details.folder ? null : ( userOptions.disableNewTabSorting ? null : (tab.id || null)))
 		});
 
 		return creating.then(onCreate, onError);
@@ -1955,7 +1957,9 @@ const defaultUserOptions = {
 	contextMenuShowRecentlyUsed: false,
 	contextMenuShowRecentlyUsedAsFolder:true,
 	recentlyUsedList: [],
-	recentlyUsedListLength: 10
+	recentlyUsedListLength: 10,
+	
+	disableNewTabSorting: false
 };
 
 var userOptions = {};

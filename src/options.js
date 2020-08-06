@@ -376,6 +376,8 @@ function restoreOptions() {
 		$('#cb_addSearchProviderHideNotification').checked = userOptions.addSearchProviderHideNotification;
 		$('#cb_syncWithFirefoxSearch').checked = userOptions.syncWithFirefoxSearch;
 		$('#cb_quickMenuTilesDraggable').checked = userOptions.quickMenuTilesDraggable; 
+		$('#cb_disableNewTabSorting').checked = userOptions.disableNewTabSorting; 
+		
 		
 		
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
@@ -630,7 +632,8 @@ function saveOptions(e) {
 		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked,
 		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked,
 		recentlyUsedList: userOptions.recentlyUsedList,
-		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value)
+		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value),
+		disableNewTabSorting: $('#cb_disableNewTabSorting').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
