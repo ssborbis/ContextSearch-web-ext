@@ -65,6 +65,7 @@ BODY {
 	-moz-user-select: none;
 	overflow:hidden;
 	white-space: nowrap;
+	outline:none;
 }
 #quickMenuElement {
 	z-index:1;
@@ -233,6 +234,7 @@ BODY {
 	border:1px solid transparent;
 	color:#4a4a4a;
 	background-color:white;	
+	outline:none;
 }
 [data-menu="quickmenu"] #searchBar[data-position="bottom"] {
 	border-radius:0 0 10px 10px;

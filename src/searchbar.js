@@ -78,7 +78,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 	
 	userOptions = msg.userOptions;
 	
-	await setTheme();
+	setTheme();
 	
 	setUserStyles();
 

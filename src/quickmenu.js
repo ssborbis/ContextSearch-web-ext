@@ -284,7 +284,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	userOptions = msg.userOptions;
 
-	await setTheme();
+	setTheme();
 	
 	setUserStyles();
 		

@@ -332,14 +332,14 @@ var QMtools = [
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
 			addTileEventHandlers(tile, () => {
-				let d = document.querySelector('#dark');
-	
-				if ( !d ) return;
-				
-				d.rel = ( userOptions.quickMenuTheme === 'dark' ) ? "stylesheet alternate" : "stylesheet";
-				userOptions.quickMenuTheme = ( userOptions.quickMenuTheme === 'dark' ) ? "lite" : "dark";
-				
+				let d = document.head.querySelector('#dark');
+				let stylesheet = d.sheet || d.styleSheet;
+
+				stylesheet.disabled = !stylesheet.disabled;
+				userOptions.quickMenuTheme = ( stylesheet.disabled ) ? "lite" : "dark";
+
 				let tools = document.querySelectorAll('.tile[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]');
+				
 				tools.forEach( tool => setToolIconColor(tool));
 
 				saveUserOptions();

@@ -67,7 +67,6 @@ function setToolIconColor(_toolTile) {
 	}
 	
 	img.src = fixedbg;
-
 }
 
 // function setToolIconColor(_toolTile) {
@@ -95,24 +94,10 @@ function setToolIconColor(_toolTile) {
 	// _toolTile.appendChild(div);
 // }
 
-async function setTheme() {
-
-	await new Promise(r => {	
-		var link = document.createElement('link');
-		link.type = 'text/css';
-		link.rel = "stylesheet";
-		link.id = "dark";
-		link.as = "style";
-		
-		link.onload = function() {
-			link.rel = ( userOptions.quickMenuTheme === 'dark' ) ? 'stylesheet' : 'stylesheet alternate';
-			r();
-		}
-		
-		link.href = browser.runtime.getURL('/dark.css');
-
-		document.head.appendChild(link);
-	});
+function setTheme() {
+	let d = document.head.querySelector('#dark');
+	let stylesheet = d.sheet || d.styleSheet;
+	stylesheet.disabled = ( userOptions.quickMenuTheme !== 'dark' );
 }
 
 function setUserStyles() {
@@ -121,6 +106,8 @@ function setUserStyles() {
 		var styleEl = document.createElement('style');
 		document.head.appendChild(styleEl);
 		styleEl.innerText = userOptions.userStyles;
+		
+		document.body.getBoundingClientRect();
 	}
 }
 
