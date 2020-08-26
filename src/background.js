@@ -846,7 +846,7 @@ async function buildContextMenu() {
 				id: _id,
 				title: node.title,
 				icons: {
-					"16": "/icons/folder-icon.png"
+					"16": "/icons/folder-icon.svg"
 				}
 			});
 			

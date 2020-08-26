@@ -489,7 +489,7 @@ function buildSearchEngineContainer() {
 		if (node.type === 'folder') {
 			
 			let img = document.createElement('img');
-			img.src = browser.runtime.getURL('/icons/folder-icon.png');
+			img.src = browser.runtime.getURL('/icons/folder-icon.svg');
 			header.appendChild(img);
 			
 			let text = document.createElement('span');
