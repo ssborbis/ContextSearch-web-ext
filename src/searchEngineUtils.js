@@ -4,6 +4,11 @@ function searchJsonObjectToArray(engines) {
 
 	// iterate over search engines in search.json.mozlz4
 	for (var engine of engines) {
+
+		if ( !engine._urls ) {
+			console.log('no data', engine._name);
+			continue;
+		}
 		
 		var query_string = "", params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
 
