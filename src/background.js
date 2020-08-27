@@ -1014,15 +1014,18 @@ function executeOneClickSearch(info) {
 	let openMethod = info.openMethod;
 		
 	let engineId = info.menuItemId.replace("__oneClickSearchEngine__", "");
-	let engineName = findNodes( userOptions.nodeTree, node => node.id === engineId )[0].title;
+	let engineName = findNode( userOptions.nodeTree, node => node.id === engineId ).title;
 
-	function searchAndHighlight(tab) {
+	async function searchAndHighlight(tab) {
+
+		await new Promise(r => setTimeout(r, 50));
+		
 		browser.search.search({
 			query: searchTerms,
 			engine: engineName,
 			tabId: tab.id
 		});
-		
+
 		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
 			
 			if ( tabId !== tab.id ) return;
@@ -1185,7 +1188,7 @@ function lastSearchHandler(id) {
 }
 
 function quickMenuSearch(info, tab) {
-	
+
 	// run as one-click search
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__oneClickSearchEngine__") ) {
 		executeOneClickSearch(info);
