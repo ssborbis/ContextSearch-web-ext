@@ -193,11 +193,15 @@ var QMtools = [
 			addTileEventHandlers(tile, e => {
 
 				if ( !userOptions.lastUsedId ) return;
+				
+				let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
+				
+				let id = node.type === "oneClickSearchEngine" ? `__oneClickSearchEngine__${node.id}` : node.id;
 
 				browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
-						menuItemId: userOptions.lastUsedId,
+						menuItemId: id,
 						selectionText: sb.value,
 						openMethod: getOpenMethod(e)
 					}
