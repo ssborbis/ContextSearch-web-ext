@@ -1018,7 +1018,7 @@ function executeOneClickSearch(info) {
 
 	async function searchAndHighlight(tab) {
 
-		await new Promise(r => setTimeout(r, 50));
+		// await new Promise(r => setTimeout(r, 50));
 		
 		browser.search.search({
 			query: searchTerms,
@@ -1046,7 +1046,7 @@ function executeOneClickSearch(info) {
 		case "openNewTab":
 			return browser.tabs.create({
 				active: true,
-				url: browser.runtime.getURL("blank.html")
+				url: "about:blank"//browser.runtime.getURL("blank.html")
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -1077,7 +1077,7 @@ function executeOneClickSearch(info) {
 		case "openBackgroundTabKeepOpen":
 			return browser.tabs.create({
 				active: false,
-				url: browser.runtime.getURL("blank.html")
+				url: "about:blank"//browser.runtime.getURL("blank.html")
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
