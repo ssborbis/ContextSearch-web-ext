@@ -208,6 +208,14 @@ document.addEventListener('mousedown', ev => {
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true}); // parameter to run once, then delete
 			
+		} else if (ev.which === 2) {
+			// Disable click to prevent links from opening
+			ev.target.addEventListener('mousedown', evv => {
+				if (evv.which !== 2) return;
+				evv.preventDefault();
+				quickMenuObject.mouseLastClickTime = Date.now();
+			}, {once: true}); // parameter to run once, then delete
+			
 		} else if (ev.which === 3) {
 			// Disable the default context menu once
 			document.addEventListener('contextmenu', evv => {
@@ -302,6 +310,9 @@ document.addEventListener('mousedown', ev => {
 		if ( !userOptions.quickMenuAllowContextMenu )
 			evv.preventDefault();
 	}
+	
+	if ( ev.which === 2 && !getSelectedText(ev.target) ) return false;
+	if ( ev.which === 2 ) ev.preventDefault();
 	
 	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 	

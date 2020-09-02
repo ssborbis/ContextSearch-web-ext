@@ -388,7 +388,7 @@ function restoreOptions() {
 	}
 
 	browser.runtime.getBackgroundPage().then( w => {
-		w.checkForOneClickEngines().then(c => { onGot(w);}, onError);
+		w.checkForOneClickEngines().then(c => onGot(w), onError);
 	}, onError);
 	
 }

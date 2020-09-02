@@ -3,7 +3,7 @@
 }
 #CS_sbIframe, #CS_sbOpeningTab {
 	position:fixed;
-	z-index:2147483647;
+	z-index:2147483646;
 	white-space: nowrap;
 	transition: var(--user-transition, all 0.15s);
 	line-height:0;
