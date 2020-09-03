@@ -377,6 +377,7 @@ function restoreOptions() {
 		$('#cb_syncWithFirefoxSearch').checked = userOptions.syncWithFirefoxSearch;
 		$('#cb_quickMenuTilesDraggable').checked = userOptions.quickMenuTilesDraggable; 
 		$('#cb_disableNewTabSorting').checked = userOptions.disableNewTabSorting; 
+		$('cb_sideBarRememberState').checked = userOptions.sideBar.rememberState;
 		
 		
 		
@@ -522,7 +523,8 @@ function saveOptions(e) {
 			offsets: userOptions.sideBar.offsets,
 			position: userOptions.sideBar.position,
 			height: userOptions.sideBar.height,
-			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked
+			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked,
+			rememberState: $('#cb_sideBarRememberState').checked
 		},
 		
 		highLight: {

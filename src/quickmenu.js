@@ -378,6 +378,7 @@ mb.addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
 	mb.moving = true;
+	
 	window.parent.postMessage({action: "handle_dragstart", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
@@ -385,6 +386,9 @@ window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
 	mb.moving = false;
+	
+	document.body.classList.remove("noMouse");
+	
 	window.parent.postMessage({action: "handle_dragend", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
@@ -392,6 +396,10 @@ window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
 	if ( !mb.moving ) return;
+	
+	// suppress mouse events in iframe to prevent dnd fail
+	document.body.classList.add("noMouse");
+	
 	window.parent.postMessage({action: "handle_dragmove", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 

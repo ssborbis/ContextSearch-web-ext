@@ -229,6 +229,8 @@ function openSideBar() {
 	}
 	
 	iframe.src = browser.runtime.getURL('/searchbar.html');
+	
+	saveState(true);
 
 }
 
@@ -248,7 +250,16 @@ function closeSideBar() {
 	delete iframe;
 
 	document.dispatchEvent(new CustomEvent('closesidebar'));
+	
+	saveState(false)
 
+}
+
+function saveState(state) {
+	if ( userOptions.sideBar.rememberState ) {
+		userOptions.sideBar.startOpen = state;
+		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
+	}
 }
 
 function makeOpeningTab() {

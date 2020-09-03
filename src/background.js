@@ -1886,7 +1886,8 @@ const defaultUserOptions = {
 			right:0,
 			bottom:Number.MAX_SAFE_INTEGER
 		},
-		closeAfterSearch: false
+		closeAfterSearch: false,
+		rememberState: false
 	},
 	highLight: {
 		enabled: true,

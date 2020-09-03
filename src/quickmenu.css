@@ -382,3 +382,6 @@ BODY {
 .groupLabelMoreTile:hover {
 	opacity:1;
 }
+.noMouse {
+	pointer-events: none;
+}

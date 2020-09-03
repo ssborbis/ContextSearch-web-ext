@@ -310,7 +310,7 @@ document.addEventListener('mousedown', ev => {
 		if ( !userOptions.quickMenuAllowContextMenu )
 			evv.preventDefault();
 	}
-	
+
 	if ( ev.which === 2 && !getSelectedText(ev.target) ) return false;
 	if ( ev.which === 2 ) ev.preventDefault();
 	

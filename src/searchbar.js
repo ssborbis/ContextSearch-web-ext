@@ -246,6 +246,8 @@ function sideBarResize(options) {
 }
 
 function resizeMenu(o) {
+	
+	if (!qm) return;
 	// store scroll position
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
@@ -316,7 +318,7 @@ window.addEventListener('message', e => {
 });
 
 document.getElementById('closeButton').addEventListener('click', e => {
-	
+
 	if ( window != top )
 		window.parent.postMessage({action: "closeSideBar"}, "*");
 	else
@@ -327,6 +329,7 @@ mb.addEventListener('mousedown', e => {
 	if ( e.which !== 1 ) return;
 
 	mb.moving = true;
+
 	window.parent.postMessage({action: "handle_dragstart", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 
@@ -334,13 +337,21 @@ window.addEventListener('mouseup', e => {
 	if ( e.which !== 1 ) return;
 
 	mb.moving = false;
+	
+	document.body.classList.remove("noMouse");
+	
 	window.parent.postMessage({action: "handle_dragend", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+	
 });
 
 window.addEventListener('mousemove', e => {
 	if ( e.which !== 1 ) return;
 	
 	if ( !mb.moving ) return;
+	
+	// suppress mouse events in iframe to prevent dnd fail
+	document.body.classList.add("noMouse");
+	
 	window.parent.postMessage({action: "handle_dragmove", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 

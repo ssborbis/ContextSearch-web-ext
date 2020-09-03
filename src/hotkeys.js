@@ -16,7 +16,7 @@ function isHotkey(e, _key) {
 		
 		// check for hotkeys that could prevent typing in a text box
 		if ( 
-			e.target.contentEditable &&
+			isTextBox(e.target) &&
 			(!e.altKey && !_key.alt) &&
 			(!e.ctrlKey && !_key.ctrl) &&
 			(!e.metaKey && !_key.meta) &&
