@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48-2.png" height="30px">&nbsp;ContextSearch web-ext
+# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/logo.png" height="30px">&nbsp;ContextSearch web-ext
 
 Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search.
 
@@ -128,4 +128,10 @@ javascript:(async () => {
 ```
 
 The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current tab and a short notification is displayed by messaging the extension background page. Check out background.js -> notify() for available actions.
+
+## Template Parameters
+`{searchTerms}` - The current selection or link URL / image URL \
+`{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
+`{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
+`{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) \
 
