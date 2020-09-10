@@ -133,5 +133,5 @@ The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current ta
 `{searchTerms}` - The current selection or link URL / image URL \
 `{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
 `{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
-`{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) \
+`{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) 
 
