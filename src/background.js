@@ -1466,6 +1466,14 @@ var highlightTabs = [];
 async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( !tab ) return;
+	
+	if ( userOptions.sideBar.openOnResults ) {
+		await browser.tabs.executeScript(tab.id, {
+			code: `openSideBar({noSave: true});`,
+			runAt: 'document_idle',
+			allFrames: true
+		});
+	}
 
 	if ( !userOptions.highLight.enabled ) return;
 	
@@ -1484,15 +1492,7 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 		runAt: 'document_idle',
 		allFrames: true
 	});
-	
-	if ( userOptions.sideBar.openOnResults ) {
-		await browser.tabs.executeScript(tab.id, {
-			code: `openSideBar({noSave: true});`,
-			runAt: 'document_idle',
-			allFrames: true
-		});
-	}
-	
+
 	if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
 		
 		let url = new URL(tab.url);
