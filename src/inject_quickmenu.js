@@ -311,9 +311,10 @@ document.addEventListener('mousedown', ev => {
 			evv.preventDefault();
 	}
 
+	// middle-click often used to open links and requires some caveots
 	if ( ev.which === 2 && !getSelectedText(ev.target) ) return false;
 	if ( ev.which === 2 ) ev.preventDefault();
-	
+
 	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 	
 	// timer for right mouse down
@@ -338,6 +339,7 @@ document.addEventListener('mouseup', ev => {
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	ev.stopPropagation();
+	if ( ev.which === 2 ) ev.preventDefault();
 
 	openQuickMenu(ev);	
 });

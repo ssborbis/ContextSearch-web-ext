@@ -597,6 +597,12 @@ async function notify(message, sender, sendResponse) {
 		case "setLastUsed":
 			lastSearchHandler(message.id);
 			break;
+			
+		case "getSelectedText":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: "getSelectedText(document.activeElement);"
+			});	
+			break;
 	}
 }
 
@@ -1018,8 +1024,6 @@ function executeOneClickSearch(info) {
 
 	async function searchAndHighlight(tab) {
 
-		// await new Promise(r => setTimeout(r, 50));
-		
 		browser.search.search({
 			query: searchTerms,
 			engine: engineName,
@@ -1046,7 +1050,8 @@ function executeOneClickSearch(info) {
 		case "openNewTab":
 			return browser.tabs.create({
 				active: true,
-				url: "about:blank"//browser.runtime.getURL("blank.html")
+				url: "about:blank", //browser.runtime.getURL("blank.html")
+				openerTabId: ( userOptions.disableNewTabSorting ? null : (tab.id || null ) )
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -1077,7 +1082,8 @@ function executeOneClickSearch(info) {
 		case "openBackgroundTabKeepOpen":
 			return browser.tabs.create({
 				active: false,
-				url: "about:blank"//browser.runtime.getURL("blank.html")
+				url: "about:blank", //browser.runtime.getURL("blank.html")
+				openerTabId: ( userOptions.disableNewTabSorting ? null : (tab.id || null ) )
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -1446,7 +1452,7 @@ function escapeDoubleQuotes(str) {
 
 var highlightTabs = [];
 
-function highlightSearchTermsInTab(tab, searchTerms) {
+async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( !tab ) return;
 
@@ -1462,21 +1468,29 @@ function highlightSearchTermsInTab(tab, searchTerms) {
 		});
 	}
 
-	return browser.tabs.executeScript(tab.id, {
+	await browser.tabs.executeScript(tab.id, {
 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
 		runAt: 'document_idle',
 		allFrames: true
-	}).then( () => {
-		if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
-			
-			let url = new URL(tab.url);
-
-			let obj = {tabId: tab.id, searchTerms: searchTerms, domain: url.hostname};
-			
-			if ( ! highlightTabs.find( ht => JSON.stringify(obj) === JSON.stringify(ht) ) )
-				highlightTabs.push(obj);
-		}
 	});
+	
+	if ( userOptions.sideBar.openOnResults ) {
+		await browser.tabs.executeScript(tab.id, {
+			code: `openSideBar({noSave: true});`,
+			runAt: 'document_idle',
+			allFrames: true
+		});
+	}
+	
+	if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
+		
+		let url = new URL(tab.url);
+
+		let obj = {tabId: tab.id, searchTerms: searchTerms, domain: url.hostname};
+		
+		if ( ! highlightTabs.find( ht => JSON.stringify(obj) === JSON.stringify(ht) ) )
+			highlightTabs.push(obj);
+	}
 }
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
@@ -1887,7 +1901,8 @@ const defaultUserOptions = {
 			bottom:Number.MAX_SAFE_INTEGER
 		},
 		closeAfterSearch: false,
-		rememberState: false
+		rememberState: false,
+		openOnResults: false
 	},
 	highLight: {
 		enabled: true,
@@ -2041,7 +2056,7 @@ browser.runtime.onInstalled.addListener( details => {
 			&& details.previousVersion < "1.9.4"
 		) {
 			browser.tabs.create({
-				url: browser.runtime.getURL("/options.html?tab=highLightTab"),
+				url: browser.runtime.getURL("/options.html#highLight"),
 				active: false
 				
 			}).then(_tab => {
@@ -2056,7 +2071,7 @@ browser.runtime.onInstalled.addListener( details => {
 			details.reason === 'install'
 		) {
 			browser.tabs.create({
-				url: "/options.html?tab=helpTab"
+				url: "/options.html#help"
 			}).then(_tab => {
 				// browser.tabs.executeScript(_tab.id, {
 					// file: browser.runtime.getURL("/install/install.js")

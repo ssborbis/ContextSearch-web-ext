@@ -945,8 +945,14 @@ function buildSearchEngineContainer() {
 	}
 	
 	function updateNodeList() {
-		userOptions.nodeTree = JSON.parse(JSON.stringify(rootElement.node));
-		saveOptions();
+		
+		let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
+		
+		if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) ) {
+			console.log('nodeTrees unequal. Saving');
+			userOptions.nodeTree = currentNodeTree
+			saveOptions();
+		}
 	}
 
 	function contextMenuHandler(e) {
@@ -1528,7 +1534,7 @@ function buildSearchEngineContainer() {
 		// updated the local UO
 		userOptions = w.userOptions;
 		await saveOptions();
-		location.href = "options.html?tab=enginesTab";
+		location.href = "options.html#engines";
 	});
 	
 	

@@ -108,9 +108,9 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 				});
 			}
 				
-			if (window.location.hash === '#quickload') {
-				browser.runtime.sendMessage({action: "closeWindowRequest"});
-			}
+			// if (window.location.hash === '#quickload') {
+				// browser.runtime.sendMessage({action: "closeWindowRequest"});
+			// }
 			
 			buildSearchEngineContainer();
 		});
@@ -377,7 +377,8 @@ function restoreOptions() {
 		$('#cb_syncWithFirefoxSearch').checked = userOptions.syncWithFirefoxSearch;
 		$('#cb_quickMenuTilesDraggable').checked = userOptions.quickMenuTilesDraggable; 
 		$('#cb_disableNewTabSorting').checked = userOptions.disableNewTabSorting; 
-		$('cb_sideBarRememberState').checked = userOptions.sideBar.rememberState;
+		$('#cb_sideBarRememberState').checked = userOptions.sideBar.rememberState;
+		$('#cb_sideBarOpenOnResults').checked = userOptions.sideBar.openOnResults;
 		
 		
 		
@@ -395,7 +396,7 @@ function restoreOptions() {
 }
 
 function saveOptions(e) {
-
+	
 	function onSet() {
 		showSaveMessage(browser.i18n.getMessage("saved"), null, "yes", document.getElementById('saveNoticeDiv'));
 		return Promise.resolve(true);
@@ -524,7 +525,8 @@ function saveOptions(e) {
 			position: userOptions.sideBar.position,
 			height: userOptions.sideBar.height,
 			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked,
-			rememberState: $('#cb_sideBarRememberState').checked
+			rememberState: $('#cb_sideBarRememberState').checked,
+			openOnResults: $('#cb_sideBarOpenOnResults').checked
 		},
 		
 		highLight: {
@@ -743,7 +745,7 @@ $('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
 	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
 });
 document.addEventListener('userOptionsLoaded', () => {
-	$('#cb_syncWithFirefoxSearch').dispatchEvent(new Event('change'));
+	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
 });
 
 $('#n_contextMenuRecentlyUsedLength').addEventListener('change', saveOptions);
@@ -840,38 +842,53 @@ function keyArrayToButtons(arr) {
 }
 
 // Modify Options for quickload popup
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
 
-	if (window.location.hash === '#quickload') {
-		history.pushState("", document.title, window.location.pathname);
+	// if (window.location.hash === '#quickload') {
+		// history.pushState("", document.title, window.location.pathname);
 		
-		document.querySelector('button[data-tabid="enginesTab"]').click();
-		$('#selectMozlz4FileButton').click();
-	}
-});
+		// document.querySelector('button[data-tabid="enginesTab"]').click();
+		// $('#selectMozlz4FileButton').click();
+	// }
+// });
 
+document.addEventListener('DOMContentLoaded', hashChange);
+window.addEventListener('hashchange', hashChange);
+	
 // switch to tab based on params
-document.addEventListener('DOMContentLoaded', () => {
-	
-	let params = new URLSearchParams(location.search);
-	
-	if ( params.get('tab') )
-		document.querySelector('button[data-tabid="' + params.get('tab') + '"]').click();
+function hashChange(e) {	
 
-});
-
-// Modify Options for BrowserAction
-document.addEventListener("DOMContentLoaded", () => {
-	if (window.location.hash === '#browser_action') {
-		$('#left_div').style.display = 'none';
-		$('#right_div').style.width = "auto";
-		let loadButton = $("#selectMozlz4FileButton");
-		loadButton.onclick = function(e) {
-			browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
-			e.preventDefault();
+	let hash = location.hash.split("#");
+	
+	let buttons = document.querySelectorAll('.tablinks');
+	
+	// no hash, click first buttony
+	if ( !hash || !hash[1] ) {
+		buttons[0].click();
+		return;
+	}
+	
+	for ( button of buttons ) {
+		if ( button.dataset.tabid.toLowerCase() === (hash[1] + "tab").toLowerCase() ) {
+			button.click();
+			break;
 		}
 	}
-});
+	
+}
+
+// Modify Options for BrowserAction
+// document.addEventListener("DOMContentLoaded", () => {
+	// if (window.location.hash === '#browser_action') {
+		// $('#left_div').style.display = 'none';
+		// $('#right_div').style.width = "auto";
+		// let loadButton = $("#selectMozlz4FileButton");
+		// loadButton.onclick = function(e) {
+			// browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
+			// e.preventDefault();
+		// }
+	// }
+// });
 
 function makeTabs() {
 	
@@ -891,9 +908,11 @@ function makeTabs() {
 			// Show the current tab, and add an "active" class to the button that opened the tab
 			document.getElementById(e.target.dataset.tabid).style.display = "block";
 			e.currentTarget.className += " active";
+			
+			location.hash = e.target.dataset.tabid.toLowerCase().replace(/tab$/,"");
 		});
 	}
-	tabs[0].click();
+//	tabs[0].click();
 }
 
 function buildToolIcons() {
@@ -1101,10 +1120,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	let b_import = $('#b_importSettings');
 	b_import.onclick = function() {
-		if (window.location.hash === '#browser_action') {
-			browser.runtime.sendMessage({action: "openOptions", hashurl:"?click=importSettings"});
-			return;
-		}
+		// if (window.location.hash === '#browser_action') {
+			// browser.runtime.sendMessage({action: "openOptions", hashurl:"?click=importSettings"});
+			// return;
+		// }
 		$('#importSettings').click();
 	}
 	

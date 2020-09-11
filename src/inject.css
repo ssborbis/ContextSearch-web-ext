@@ -201,3 +201,31 @@
 		display:none;
 	}
 }
+.CS_pageTilesContainer {
+	position:fixed;
+	left:0;
+	top:0;
+	right:0;
+	bottom:0;
+	z-index:99999;
+	line-height:0;
+}
+.CS_pageTile {
+	display:inline-block;
+	border:1px solid black;
+	background-size:calc(100% / 4);
+	background-position:center center;
+	background-repeat:no-repeat;
+	color:white;
+	font-size:1em;
+	text-align:center;
+	background-color: rgba(0,0,0,.85);
+	width: calc(100% / var(--cs-pagetilecols) - 2px);
+	height: calc(100% / var(--cs-pagetilerows) - 2px);
+	line-height:normal;
+	overflow:hidden;
+	/* padding-top:10%; */
+}
+.CS_pageTile.dragover {
+	background-color: rgba(0,0,255,.85);
+}

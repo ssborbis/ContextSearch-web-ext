@@ -756,7 +756,7 @@ async function makeQuickMenu(options) {
 			div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 			div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
 			div.onclick = function() {
-				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=enginesTab"});
+				browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
 			}	
 			qm.appendChild(div);
 		}
@@ -1750,6 +1750,7 @@ function makeSearchBar() {
 		if ( userOptions.autoPasteFromClipboard ) {
 			sb.select();
 			document.execCommand("paste");
+			sb.select();
 			return;
 		}
 		

@@ -319,7 +319,7 @@ var QMtools = [
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
 			addTileEventHandlers(tile, () => {
-				browser.runtime.sendMessage({action: "openOptions", hashurl: "?tab=quickMenuTab"});
+				browser.runtime.sendMessage({action: "openOptions", hashurl: "#quickMenu"});
 			});
 			
 			return tile;

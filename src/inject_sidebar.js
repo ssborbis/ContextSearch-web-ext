@@ -90,7 +90,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 	
-function openSideBar() {
+function openSideBar(options) {
+	
+	options = options || {};
 
 	let openingTab = getOpeningTab();
 	
@@ -230,7 +232,7 @@ function openSideBar() {
 	
 	iframe.src = browser.runtime.getURL('/searchbar.html');
 	
-	saveState(true);
+	if ( !options.noSave ) saveState(true);
 
 }
 

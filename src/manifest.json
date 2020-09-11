@@ -60,6 +60,7 @@
 				"dock.js",
 				"inject_sidebar.js",
 				"inject_customSearch.js",
+				"inject_pageTiles.js",
 				"resizeWidget.js"
 			],
 			"css": ["inject_sidebar.css"],

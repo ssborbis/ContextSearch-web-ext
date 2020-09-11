@@ -115,6 +115,14 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
 	resizeMenu();
+	
+	// replace text with selection
+	(async () => {
+		let results = await browser.runtime.sendMessage({action: "getSelectedText"});
+		let text = results.shift();
+	
+		if ( text ) sb.value = text;
+	})();
 
 });
 
