@@ -122,6 +122,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		let text = results.shift();
 	
 		if ( text ) sb.value = text;
+		sb.select();
 	})();
 
 });

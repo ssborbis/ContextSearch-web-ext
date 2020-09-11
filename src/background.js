@@ -1244,10 +1244,10 @@ function openSearch(details) {
 	var domain = details.domain || null;
 
 	if ( !temporarySearchEngine && searchEngineId === null ) return false;
-
-	if (!tab) tab = {url:"", id:0}
 	
 	var openerTabId = ( userOptions.disableNewTabSorting ? null : (tab.id || null));
+
+	if (!tab) tab = {url:"", id:0}
 	
 	var se;
 
