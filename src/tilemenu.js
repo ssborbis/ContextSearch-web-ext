@@ -369,7 +369,7 @@ async function makeQuickMenu(options) {
 		browser.runtime.sendMessage({
 			action: "quickMenuSearch", 
 			info: {
-				menuItemId: (hotkeyNodes[0].type === 'oneClickSearchEngine') ? "__oneClickSearchEngine__" + hotkeyNodes[0].id : hotkeyNodes[0].id,
+				menuItemId: hotkeyNodes[0].id,
 				selectionText: sb.value,
 				openMethod: userOptions.quickMenuSearchHotkeys
 			}
@@ -1529,7 +1529,7 @@ async function makeQuickMenu(options) {
 					browser.runtime.sendMessage({
 						action: "quickMenuSearch", 
 						info: {
-							menuItemId: "__oneClickSearchEngine__" + node.id, // needs work
+							menuItemId: node.id, // needs work
 							selectionText: sb.value,
 							openMethod: getOpenMethod(e)
 						}

@@ -755,7 +755,7 @@ async function buildContextMenu() {
 			addMenuItem({
 				parentId: "search_engine_menu",
 				title: se.name,
-				id: "__oneClickSearchEngine__" + node.id + '_' + count++,
+				id: node.id + '_' + count++,
 				icons: {
 					"16": se.favIconUrl || browser.runtime.getURL('icons/search.svg')
 				}
@@ -829,7 +829,7 @@ async function buildContextMenu() {
 			addMenuItem({
 				parentId: parentId,
 				title: node.title,
-				id: "__oneClickSearchEngine__" + node.id + '_' + count++,
+				id: node.id + '_' + count++,
 				icons: {
 					"16": node.icon
 				}
@@ -1018,9 +1018,12 @@ function executeOneClickSearch(info) {
 
 	let searchTerms = info.selectionText;
 	let openMethod = info.openMethod;
+	let engineId = info.menuItemId;
+	let openerTabId = ( userOptions.disableNewTabSorting ? null : (info.openerTabId || null ) );
 		
-	let engineId = info.menuItemId.replace("__oneClickSearchEngine__", "");
 	let engineName = findNode( userOptions.nodeTree, node => node.id === engineId ).title;
+	
+	console.log(info, engineName);
 
 	async function searchAndHighlight(tab) {
 
@@ -1040,7 +1043,7 @@ function executeOneClickSearch(info) {
 			browser.tabs.onUpdated.removeListener(listener);
 		});
 	}
-	
+
 	switch (openMethod) {
 		case "openCurrentTab":
 			browser.tabs.getCurrent().then( tab => {
@@ -1051,7 +1054,7 @@ function executeOneClickSearch(info) {
 			return browser.tabs.create({
 				active: true,
 				url: "about:blank", //browser.runtime.getURL("blank.html")
-				openerTabId: ( userOptions.disableNewTabSorting ? null : (tab.id || null ) )
+				openerTabId: openerTabId
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -1082,8 +1085,8 @@ function executeOneClickSearch(info) {
 		case "openBackgroundTabKeepOpen":
 			return browser.tabs.create({
 				active: false,
-				url: "about:blank", //browser.runtime.getURL("blank.html")
-				openerTabId: ( userOptions.disableNewTabSorting ? null : (tab.id || null ) )
+				url: "about:blank",
+				openerTabId: openerTabId
 			}).then( (tab) => {
 				searchAndHighlight(tab);
 			});
@@ -1099,6 +1102,8 @@ function contextMenuSearch(info, tab) {
 	
 	// remove incremental menu ids
 	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
+	
+	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 	
 	if (info.menuItemId === 'showSuggestions') {
 		userOptions.searchBarSuggestions = info.checked;
@@ -1146,12 +1151,13 @@ function contextMenuSearch(info, tab) {
 	else 
 		searchTerms = info.selectionText.trim();
 	
-	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__oneClickSearchEngine__") ) {
+	if ( node && node.type === "oneClickSearchEngine" ) {
 		info.selectionText = searchTerms;
 		info.openMethod = openMethod;
+		info.openerTabId = tab.id;
 		executeOneClickSearch(info);
 
-		lastSearchHandler(info.menuItemId.replace("__oneClickSearchEngine__", ""));
+		lastSearchHandler(info.menuItemId);
 		
 		buildContextMenu();
 		return false;
@@ -1194,9 +1200,14 @@ function lastSearchHandler(id) {
 }
 
 function quickMenuSearch(info, tab) {
+	
+	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	
+	// console.log(node);
 
 	// run as one-click search
-	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__oneClickSearchEngine__") ) {
+	if ( node && node.type === "oneClickSearchEngine" ) {
+		info.openerTabId = tab.id;
 		executeOneClickSearch(info);
 		return false;
 	}
@@ -1236,7 +1247,7 @@ function openSearch(details) {
 
 	if (!tab) tab = {url:"", id:0}
 	
-	console.log("openingTabId: ",( userOptions.disableNewTabSorting ? null : (tab.id || null)));
+	var openerTabId = ( userOptions.disableNewTabSorting ? null : (tab.id || null));
 	
 	var se;
 
@@ -1404,7 +1415,7 @@ function openSearch(details) {
 		
 		var creating = browser.tabs.update({
 			url: q,
-			openerTabId: ( userOptions.disableNewTabSorting ? null : (tab.id || null ) )
+			openerTabId: openerTabId
 		});
 		return creating.then(onCreate, onError);
 	} 
@@ -1423,7 +1434,7 @@ function openSearch(details) {
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: (details.folder ? null : ( userOptions.disableNewTabSorting ? null : (tab.id || null)))
+			openerTabId: (details.folder ? null : openerTabid)
 		});
 
 		return creating.then(onCreate, onError);

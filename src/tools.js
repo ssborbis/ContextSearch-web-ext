@@ -195,13 +195,11 @@ var QMtools = [
 				if ( !userOptions.lastUsedId ) return;
 				
 				let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
-				
-				let id = node.type === "oneClickSearchEngine" ? `__oneClickSearchEngine__${node.id}` : node.id;
 
 				browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
-						menuItemId: id,
+						menuItemId: node.id,
 						selectionText: sb.value,
 						openMethod: getOpenMethod(e)
 					}

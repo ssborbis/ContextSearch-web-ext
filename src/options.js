@@ -379,6 +379,7 @@ function restoreOptions() {
 		$('#cb_disableNewTabSorting').checked = userOptions.disableNewTabSorting; 
 		$('#cb_sideBarRememberState').checked = userOptions.sideBar.rememberState;
 		$('#cb_sideBarOpenOnResults').checked = userOptions.sideBar.openOnResults;
+		$('#cb_enablePageTiles').checked = userOptions.enablePageTiles;
 		
 		
 		
@@ -637,7 +638,8 @@ function saveOptions(e) {
 		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked,
 		recentlyUsedList: userOptions.recentlyUsedList,
 		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value),
-		disableNewTabSorting: $('#cb_disableNewTabSorting').checked
+		disableNewTabSorting: $('#cb_disableNewTabSorting').checked,
+		enablePageTiles: $('#cb_enablePageTiles').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

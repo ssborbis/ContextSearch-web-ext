@@ -38,7 +38,7 @@ document.addEventListener('dragstart', e => {
 		
 		div.style.backgroundImage = `url(${node.icon})`;
 		
-		console.log(node);
+		// console.log(node);
 		
 		div.ondragenter = function(e) { 
 			e.preventDefault();
@@ -54,16 +54,17 @@ document.addEventListener('dragstart', e => {
 			_e.preventDefault();
 			const data = _e.dataTransfer.getData("text/plain");			
 			console.log("got", data);
-			mainDiv.parentNode.removeChild(mainDiv);
+
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: node.id,
+					selectionText: data,
+					openMethod: "openBackgroundTab"
+				}
+			});
 			
-			// browser.runtime.sendMessage({
-				// action: "quickMenuSearch", 
-				// info: {
-					// menuItemId: node.id, // needs work
-					// selectionText: data,
-					// openMethod: "openBackgroundTab"
-				// }
-			// });
+			mainDiv.parentNode.removeChild(mainDiv);
 		});
 		
 		div.addEventListener('dragend', () => {mainDiv.parentNode.removeChild(mainDiv)});
