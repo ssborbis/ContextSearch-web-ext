@@ -1,10 +1,12 @@
-document.addEventListener('dragstart', e => {
+document.addEventListener('dragstart', async e => {
 	
 	if ( !userOptions.enablePageTiles ) return;
 	
 	let pageTilesFolder = findNode( userOptions.nodeTree, n => n.type === "folder" && n.title === "Page Tiles" );
 	
 	if ( !pageTilesFolder ) return false;
+	
+	//await new Promise(r => setTimeout(r, 50));
 	
 	let selectedText = getSelectedText(e.target);
 	e.dataTransfer.setData("text/plain", selectedText);
@@ -50,9 +52,12 @@ document.addEventListener('dragstart', e => {
 		}
 		div.ondragover = e => e.preventDefault();
 
-		div.addEventListener('drop', _e => {
-			_e.preventDefault();
-			const data = _e.dataTransfer.getData("text/plain");			
+		div.ondrop = searchHandler;
+		div.onclick = searchHandler;
+			
+		function searchHandler(e) {
+			e.preventDefault();
+			const data = e.dataTransfer.getData("text/plain");			
 			console.log("got", data);
 
 			browser.runtime.sendMessage({
@@ -65,7 +70,7 @@ document.addEventListener('dragstart', e => {
 			});
 			
 			mainDiv.parentNode.removeChild(mainDiv);
-		});
+		}
 		
 		div.addEventListener('dragend', () => {mainDiv.parentNode.removeChild(mainDiv)});
 		div.addEventListener('click', () => {mainDiv.parentNode.removeChild(mainDiv)});
@@ -73,6 +78,8 @@ document.addEventListener('dragstart', e => {
 		mainDiv.appendChild(div);
 	});
 
-	document.body.appendChild(mainDiv);
+	setTimeout(() => { // chrome / slow browser fix
+		document.body.appendChild(mainDiv);
+	}, 50);
 });
 
