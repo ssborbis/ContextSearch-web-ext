@@ -1434,7 +1434,7 @@ function openSearch(details) {
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: (details.folder ? null : openerTabid)
+			openerTabId: (details.folder ? null : openerTabId)
 		});
 
 		return creating.then(onCreate, onError);
