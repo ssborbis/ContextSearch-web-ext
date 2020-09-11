@@ -744,8 +744,8 @@ $('#b_contextMenuKey').addEventListener('click', keyButtonListener);
 $('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
 	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
 });
-document.addEventListener('userOptionsLoaded', () => {
-	$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
+document.addEventListener('userOptionsLoaded', e => {
+	$('#searchEnginesParentContainer').style.display = $('#cb_syncWithFirefoxSearch').checked ? "none" : null;
 });
 
 $('#n_contextMenuRecentlyUsedLength').addEventListener('change', saveOptions);
