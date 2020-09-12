@@ -97,6 +97,7 @@ function openSideBar(options) {
 	let openingTab = getOpeningTab();
 	
 	if ( openingTab ) openingTab.style.display = 'none';
+	if ( openingTab && !userOptions.sideBar.widget.enabled ) openingTab.parentNode.removeChild(openingTab);
 
 	let iframe = document.createElement('iframe');
 	iframe.id = 'CS_sbIframe';
@@ -236,7 +237,7 @@ function openSideBar(options) {
 
 }
 
-function closeSideBar() {
+function closeSideBar(minimize) {
 	
 	let iframe = getIframe();
 	let openingTab = getOpeningTab();
@@ -244,7 +245,9 @@ function closeSideBar() {
 	iframe.style.opacity = null;
 	iframe.dataset.opened = false;
 
-	if ( openingTab ) { 
+	if ( openingTab || minimize) { 
+	
+		if ( !openingTab ) openingTab = makeOpeningTab();
 	//	openingTab.docking.undock();	
 		openingTab.style.display = null;
 	}
@@ -253,7 +256,8 @@ function closeSideBar() {
 
 	document.dispatchEvent(new CustomEvent('closesidebar'));
 	
-	saveState(false)
+	saveState(false);
+
 
 }
 
@@ -309,6 +313,8 @@ function makeOpeningTab() {
 	});
 
 	openingTab.docking.init();
+	
+	return openingTab;
 }
 
 // docking event listeners for iframe
@@ -339,9 +345,10 @@ window.addEventListener('message', e => {
 });
 
 window.addEventListener('message', e => {
-	if ( e.data.action !== "closeSideBarRequest" ) return;
-	
-	closeSideBar();
+	if ( e.data.action === "closeSideBarRequest" ) 
+		closeSideBar();
+	if ( e.data.action === "minimizeSideBarRequest" )
+		closeSideBar(true);
 });
 
 document.addEventListener("fullscreenchange", e => {

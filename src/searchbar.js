@@ -369,3 +369,11 @@ mb.addEventListener('dblclick', e => {
 
 	window.parent.postMessage({action: "handle_dock", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
+
+if ( window == top ) {
+	document.getElementById('minimizeButton').style.display = "none";
+}
+
+document.getElementById('minimizeButton').addEventListener('click', e => {
+	window.parent.postMessage({action: "minimizeSideBarRequest"}, "*");
+});

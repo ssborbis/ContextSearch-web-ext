@@ -129,7 +129,7 @@ BODY {
 .tile.groupFolder {
 	background-color: var(--group-color);
 }
-.tile:hover, #optionsButton:hover, #closeButton:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
+.tile:hover, #menuBar > DIV:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: var(--hover);
 	border-color: var(--hover);
 }
@@ -209,6 +209,10 @@ BODY {
 #closeButton {
 	background: url(/icons/crossmark.svg) no-repeat center;
 }
+#minimizeButton {
+	background: url(/icons/minimize.svg) no-repeat center;
+}
+
 #searchBarContainer {
 	white-space:nowrap;
 }
