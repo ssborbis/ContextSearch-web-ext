@@ -258,15 +258,11 @@ document.addEventListener('keydown', e => {
 	let node = findNode( userOptions.nodeTree, n => n.hotkey === e.keyCode );
 
 	if ( !node ) return false;
-	
-	let se = userOptions.searchEngines.find( _se => _se.id === node.id );
-	
-	if ( !se ) return false;
-	
+
 	browser.runtime.sendMessage({
 		action: "quickMenuSearch", 
 		info: {
-			menuItemId: se.id,
+			menuItemId: node.id,
 			selectionText: getSelectedText(e.target),
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}

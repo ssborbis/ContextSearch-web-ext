@@ -1,3 +1,7 @@
+function isTextBox(element) {	
+	return ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable );
+}
+
 function isHotkey(e, _key) {
 	
 	if ( Array.isArray(_key) ) {
@@ -22,7 +26,7 @@ function isHotkey(e, _key) {
 			(!e.metaKey && !_key.meta) &&
 			e.key.length === 1
 		) {
-			console.log(e.key, 'Hotkey appears to be a typeable character and target element is editable. Aborting hotkey');
+			console.warn(e.key, 'Hotkey appears to be a typeable character and target element is editable. Aborting hotkey');
 			return false;
 		}
 		

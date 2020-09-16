@@ -362,14 +362,14 @@ async function makeQuickMenu(options) {
 		// ignore hotkeys when the search bar is being edited
 		if (document.activeElement === sb) return;
 
-		let hotkeyNodes = findNodes(userOptions.nodeTree, node => node.hotkey === e.which);
+		let hotkeyNode = findNode(userOptions.nodeTree, node => node.hotkey === e.which);
 
-		if (!hotkeyNodes.length) return;
+		if (!hotkeyNode) return;
 		
 		browser.runtime.sendMessage({
 			action: "quickMenuSearch", 
 			info: {
-				menuItemId: hotkeyNodes[0].id,
+				menuItemId: hotkeyNode.id,
 				selectionText: sb.value,
 				openMethod: userOptions.quickMenuSearchHotkeys
 			}
@@ -1568,48 +1568,18 @@ async function makeQuickMenu(options) {
 					if (method === 'noAction') return;
 
 					if (method === 'openFolder' || e.openFolder) { 
-						qm = await quickMenuElementFromNodeTree(node);
-
-						resizeMenu({openFolder: true});
-
-						return;
-					}
-
-					let messages = [];
-					let hasRun = false;
-
-					for (let _node of node.children) {
-
-						if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
-							
-							messages.push( () => new Promise( async resolve => {
-
-								await browser.runtime.sendMessage({
-									action: "quickMenuSearch", 
-									info: {
-										menuItemId: _node.id,
-										selectionText: sb.value,
-										//	when opening method is a new window, only do so on first engine, then open in background
-										openMethod: !hasRun ? method : "openBackgroundTab",
-										folder: true
-									}
-								});
-								
-								hasRun = true;
-								resolve(true);
-							}));
-						}	
-					}
-
-					async function runPromisesInSequence(promises) {
-						for (let promise of promises) 
-							await promise();
-						
-						if ( !keepMenuOpen(e, true))
-							closeMenuRequest();
+						qm = await quickMenuElementFromNodeTree(node);		
+						return resizeMenu({openFolder: true});
 					}
 					
-					runPromisesInSequence(messages);
+					browser.runtime.sendMessage({
+						action: "quickMenuSearch", 
+						info: {
+							menuItemId: node.id,
+							selectionText: sb.value,
+							openMethod: method
+						}
+					});
 				}
 
 				break;

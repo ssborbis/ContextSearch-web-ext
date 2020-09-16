@@ -131,9 +131,9 @@ function buildSearchEngineContainer() {
 								resolve(false);
 							}
 						}
-						if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' && edit_form.searchCode.value.trim() === "") {
-							showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
-						}
+						// if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' && edit_form.searchCode.value.trim() === "") {
+							// showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
+						// }
 						try {
 							let _url = new URL(edit_form.template.value);
 						} catch (error) {
@@ -148,9 +148,9 @@ function buildSearchEngineContainer() {
 						//	return;
 						}
 
-						if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
-							showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
-						}
+						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
+							// showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
+						// }
 						if (edit_form.searchRegex.value) {
 							try {
 								let lines = edit_form.searchRegex.value.split(/\n/);
@@ -503,6 +503,8 @@ function buildSearchEngineContainer() {
 			expand.style.padding = "0 6px";
 			expand.style.fontFamily = "monospace";
 			header.insertBefore(expand, header.firstChild);
+			
+			
 
 			let ul = document.createElement('ul');
 			li.appendChild(ul);
@@ -556,7 +558,7 @@ function buildSearchEngineContainer() {
 					<tr>
 						<td>${browser.i18n.getMessage("grouphidemoretile")}</td>
 						<td><input name="groupHideMoreTile" type="checkbox" style="width:60px;display:inline-block"/></td>
-					</tr>
+					</tr>			
 				</table>
 				
 				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
@@ -664,7 +666,7 @@ function buildSearchEngineContainer() {
 		}
 		
 		// add hotkeys for some node types
-		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet'].includes(node.type) ) {
+		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder'].includes(node.type) ) {
 			
 			let hotkey = document.createElement('span');
 			hotkey.title = browser.i18n.getMessage('Hotkey');

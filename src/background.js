@@ -1203,6 +1203,8 @@ function quickMenuSearch(info, tab) {
 	
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 	
+	if ( node.type === "folder" ) return folderSearch(info, tab);
+	
 	// console.log(node);
 
 	// run as one-click search
@@ -1454,6 +1456,36 @@ function openSearch(details) {
 		if ( !await browser.sidebarAction.isOpen({}) )
 			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
 	}
+}
+
+function folderSearch(info, tab) {
+
+	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	
+	let messages = [];
+	
+	node.children.forEach( (_node, index) => {
+
+		if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
+			
+			let _info = Object.assign({}, info);
+			_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
+			_info.folder = index ? true : false;
+			_info.menuItemId = _node.id;
+
+			messages.push( async() => await quickMenuSearch(_info, tab) );
+		}	
+	});
+
+	async function runPromisesInSequence(promises) {
+		for (let promise of promises) 
+			await promise();
+		
+		if ( !keepMenuOpen(e, true))
+			closeMenuRequest();
+	}
+
+	return runPromisesInSequence(messages);
 }
 
 function escapeDoubleQuotes(str) {
