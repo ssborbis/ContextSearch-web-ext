@@ -1055,91 +1055,91 @@
 					<p class="header1" data-i18n="Settings">Settings</p>
 					<table id="advancedSettingsTable">
 					<tr>
-						<td>quickMenuOpeningOpacity</td>
+						<td data-i18n_tooltip="Transparency level of the quick menu when opened. Becomes opaque on hover">quickMenuOpeningOpacity</td>
 						<td><input type="number" id="n_quickMenuOpeningOpacity" min="0" max="1" step=".1"></td>
 					</tr>
 					<tr>
-						<td>quickMenuAutoMaxChars</td>
+						<td data-i18n_tooltip="Maximum number of characters to be selected and still open the quick menu using the Auto method. Selecting more that the number will not open the menu. 0 = no limit ">quickMenuAutoMaxChars</td>
 						<td><input type="number" id="n_quickMenuAutoMaxChars" min="0" max="999" step="1"></td>
 					</tr>
 					<tr>
-						<td>quickMenuAutoTimeout</td>
+						<td data-i18n_tooltip="Cancels opening the quick menu if pausing for a set number of milliseconds before releasing the mouse button. 0 = disabled">quickMenuAutoTimeout</td>
 						<td><input type="number" id="n_quickMenuAutoTimeout" min="0" max="9999" step="1"></td>
 					</tr>
 					<tr>
-						<td>quickMenuSearchOnMouseUp</td>
+						<td data-i18n_tooltip="Allows a search to be performed from the quick menu on mouseup without requiring a mousedown. Useful when opening the menu on Hold and releasing the mouse on a search tile to perform a search.">quickMenuSearchOnMouseUp</td>
 						<td><input type="checkbox" id="cb_quickMenuSearchOnMouseUp" /></td>
 					</tr>
 					<tr>
-						<td>quickMenuTools.lock.persist</td>
+						<td data-i18n_tooltip="The state of the lock tool will be remembered across sessions">quickMenuTools.lock.persist</td>
 						<td><input type="checkbox" id="cb_quickMenuToolsLockPersist" /></td>
 					</tr>
 					<tr>
-						<td>quickMenuTools.repeatsearch.persist</td>
+						<td data-i18n_tooltip="The state of the repeat search tool will be remembered across sessions">quickMenuTools.repeatsearch.persist</td>
 						<td><input type="checkbox" id="cb_quickMenuToolsRepeatSearchPersist" /></td>
 					</tr>
 					<tr>
-						<td>searchBar.historyLength</td>
+						<td data-i18n_tooltip="Maximum number of history entries to store">searchBar.historyLength</td>
 						<td><input type="number" id="n_searchBarHistoryLength" min="0" max="99999" step="1"></td>
 					</tr>
 					<tr>
-						<td>searchBar.suggestionsCount</td>
+						<td data-i18n_tooltip="Maximum number of Google suggestions to include">searchBar.suggestionsCount</td>
 						<td><input type="number" id="n_searchBarSuggestionsCount" min="0" max="999" step="1"></td>
 					</tr>
 					<tr>
-						<td>rememberLastOpenedFolder</td>
+						<td data-i18n_tooltip="Open menus to the last folder used">rememberLastOpenedFolder</td>
 						<td><input type="checkbox" id="cb_rememberLastOpenedFolder" /></td>
 					</tr>
 					<tr>
-						<td>groupLabelMoreTile</td>
+						<td data-i18n_tooltip="Show the more / less icon for group folders inside the label tile vs using a separate tile">groupLabelMoreTile</td>
 						<td><input type="checkbox" id="cb_groupLabelMoreTile" /></td>
 					</tr>
 					<tr>
-						<td>groupFolderRowBreaks</td>
+						<td data-i18n_tooltip="Group folder tiles are shown on separate rows from other tiles">groupFolderRowBreaks</td>
 						<td><input type="checkbox" id="cb_groupFolderRowBreaks" /></td>
 					</tr>
 					<tr>
-						<td>autoCopy</td>
+						<td data-i18n_tooltip="Selected text is copied to the clipboard">autoCopy</td>
 						<td><input type="checkbox" id="cb_autoCopy" /></td>
 					</tr>
 					<tr>
-						<td>autoPasteFromClipboard</td>
+						<td data-i18n_tooltip="Text in the clipboard is pasted to searchbars when search menus are opened">autoPasteFromClipboard</td>
 						<td><input type="checkbox" id="cb_autoPasteFromClipboard" /></td>
 					</tr>
 					<tr>
-						<td>allowHotkeysWithoutMenu</td>
+						<td data-i18n_tooltip="Hotkeys for search engines work anytime text is selected. No search menu required">allowHotkeysWithoutMenu</td>
 						<td><input type="checkbox" id="cb_allowHotkeysWithoutMenu" /></td>
 					</tr>
 					<tr>
-						<td>quickMenuHoldTimeout</td>
+						<td data-i18n_tooltip="Time in millisections to hold a mouse button before opening the quick menu using HOLD">quickMenuHoldTimeout</td>
 						<td><input type="number" min="1" max="99999" step="1" id="n_quickMenuHoldTimeout" /></td>
 					</tr>
 					<tr>
-						<td>exportWithoutBase64Icons</td>
+						<td data-i18n_tooltip="Exported configs are smaller by excluding icon data URIs. May cause custom icons to be lost">exportWithoutBase64Icons</td>
 						<td><input type="checkbox" id="cb_exportWithoutBase64Icons" /></td>
 					</tr>
 					<tr>
-						<td>addSearchProviderHideNotification</td>
+						<td data-i18n_tooltip="Notice for Firefox users to add opensearch engines using the Firefox search bar">addSearchProviderHideNotification</td>
 						<td><input type="checkbox" id="cb_addSearchProviderHideNotification" /></td>
 					</tr>
 					<tr>
-						<td>quickMenuTilesDraggable</td>
+						<td data-i18n_tooltip="Search menu tiles can be rearranged by drag & drop">quickMenuTilesDraggable</td>
 						<td><input type="checkbox" id="cb_quickMenuTilesDraggable" /></td>
 					</tr>
 					<tr>
-						<td>disableNewTabSorting</td>
+						<td data-i18n_tooltip="Enable to let the browser decide how to sort new search result tabs. Good to prevent conflicts with tab managers">disableNewTabSorting</td>
 						<td><input type="checkbox" id="cb_disableNewTabSorting" /></td>
 					</tr>
 					<tr>
-						<td>sideBar.rememberState</td>
+						<td data-i18n_tooltip="Remember the opened state of the sidebar">sideBar.rememberState</td>
 						<td><input type="checkbox" id="cb_sideBarRememberState" /></td>
 					</tr>
 					<tr>
-						<td>sideBar.openOnResults</td>
+						<td data-i18n_tooltip="Open the sidebar on search results tabs">sideBar.openOnResults</td>
 						<td><input type="checkbox" id="cb_sideBarOpenOnResults" /></td>
 					</tr>
 					<tr>
-						<td>enablePageTiles</td>
+						<td data-i18n_tooltip="Dragging selected text will open a full-page tiled menu of search engines ( experimental )">enablePageTiles</td>
 						<td><input type="checkbox" id="cb_enablePageTiles" /></td>
 					</tr>
 					</table>
@@ -1448,7 +1448,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<span class="description" data-i18n="RowsSingleColumnTooltip">Maximum number of rows to display on opening (text view)</span>
 				</div>
 				</section>
-
 				
 				<section>
 				<p class="header1" data-i18n="Size">Size</p>
@@ -1665,7 +1664,17 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
 					</select>
 					</td>
-					<td></td>
+					<td>
+					<select class="inputNice" id="s_quickMenuSearchHotkeysFolders">
+						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
+						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
+						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
+					</select>
+					</td>
 				</tr>
 				<tr>
 					<td>

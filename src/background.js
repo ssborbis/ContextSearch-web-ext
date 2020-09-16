@@ -1911,6 +1911,7 @@ const defaultUserOptions = {
 	quickMenuFolderCtrl: "noAction",
 	quickMenuFolderAlt: "noAction",
 	quickMenuSearchHotkeys: "noAction",
+	quickMenuSearchHotkeysFolders: "noAction",
 	quickMenuAutoMaxChars: 0,
 	quickMenuOpeningOpacity: 1,
 	quickMenuTheme: "lite",

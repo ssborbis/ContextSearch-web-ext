@@ -234,6 +234,8 @@ function restoreOptions() {
 		$('#s_quickMenuFolderCtrl').value = userOptions.quickMenuFolderCtrl;
 		$('#s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		$('#s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
+		$('#s_quickMenuSearchHotkeysFolders').value = userOptions.quickMenuSearchHotkeysFolders;
+		
 		$('#n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
 		$('#n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
 		$('#n_quickMenuAutoTimeout').value = userOptions.quickMenuAutoTimeout;
@@ -459,6 +461,7 @@ function saveOptions(e) {
 		quickMenuFolderCtrl: $('#s_quickMenuFolderCtrl').value,
 		quickMenuFolderAlt: $('#s_quickMenuFolderAlt').value,
 		quickMenuSearchHotkeys: $('#s_quickMenuSearchHotkeys').value,
+		quickMenuSearchHotkeysFolders: $('#s_quickMenuSearchHotkeysFolders').value,
 		quickMenuSearchBar: $('#s_quickMenuSearchBar').value,
 		quickMenuSearchBarFocus: $('#cb_quickMenuSearchBarFocus').checked,
 		quickMenuSearchBarSelect: $('#cb_quickMenuSearchBarSelect').checked,
@@ -1074,10 +1077,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
 	for (let el of i18n_tooltips) {
-		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg;
-	}
-	
-	for (let el of document.getElementsByClassName('info')) {
+		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
+		
 		el.addEventListener('mouseover', e => {
 			showInfoMsg(el, el.dataset.msg);
 		});
@@ -1086,6 +1087,16 @@ document.addEventListener("DOMContentLoaded", () => {
 			$('#info_msg').style.display = 'none';
 		});
 	}
+	
+	// for (let el of document.getElementsByClassName('info')) {
+		// el.addEventListener('mouseover', e => {
+			// showInfoMsg(el, el.dataset.msg);
+		// });
+		
+		// el.addEventListener('mouseout', e => {
+			// $('#info_msg').style.display = 'none';
+		// });
+	// }
 });
 
 // import/export buttons
