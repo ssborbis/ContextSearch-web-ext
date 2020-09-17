@@ -768,6 +768,13 @@ async function buildContextMenu() {
 	function traverse(node, parentId) {
 		
 		if (node.hidden) return;
+		
+		let getTitleWithHotkey = (n) => {
+			if ( userOptions.contextMenuHotkeys ) 
+				return n.title + (n.hotkey ? ` (&${keyTable[n.hotkey].toUpperCase()})` : "");
+			else 
+				return n.title;
+		}
 
 		if ( node.type === 'searchEngine' ) {
 
@@ -782,7 +789,7 @@ async function buildContextMenu() {
 
 			addMenuItem({
 				parentId: parentId,
-				title: node.title,
+				title: getTitleWithHotkey(node),
 				id: _id,	
 				icons: {
 					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png"
@@ -817,7 +824,7 @@ async function buildContextMenu() {
 		if (node.type === 'bookmarklet') {
 			addMenuItem({
 				parentId: parentId,
-				title: node.title,
+				title: getTitleWithHotkey(node),
 				id: node.id + '_' + count++,	
 				icons: {
 					"16": node.icon || browser.runtime.getURL("/icons/code.svg")
@@ -828,7 +835,7 @@ async function buildContextMenu() {
 		if (node.type === 'oneClickSearchEngine') {
 			addMenuItem({
 				parentId: parentId,
-				title: node.title,
+				title: getTitleWithHotkey(node),
 				id: node.id + '_' + count++,
 				icons: {
 					"16": node.icon
@@ -850,7 +857,7 @@ async function buildContextMenu() {
 			addMenuItem({
 				parentId: parentId,
 				id: _id,
-				title: node.title,
+				title: getTitleWithHotkey(node),
 				icons: {
 					"16": "/icons/folder-icon.svg"
 				}
@@ -2020,9 +2027,9 @@ const defaultUserOptions = {
 	contextMenuShowRecentlyUsed: false,
 	contextMenuShowRecentlyUsedAsFolder:true,
 	recentlyUsedList: [],
-	recentlyUsedListLength: 10,
-	
-	disableNewTabSorting: false
+	recentlyUsedListLength: 10,	
+	disableNewTabSorting: false,
+	contextMenuHotkeys: false
 };
 
 var userOptions = {};

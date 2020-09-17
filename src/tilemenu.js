@@ -23,7 +23,7 @@ function saveUserOptions() {
 // generic search engine tile
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
-	
+
 	if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + '")';
 	div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
 	div.title = title;
@@ -35,7 +35,7 @@ function setToolIconColor(_toolTile) {
 	let bg = _toolTile.style.getPropertyValue("background-image");
 	
 	let img = new Image();
-	let fixedbg = bg.replace(/^url\("/, '').replace(/"\)/, '');
+	let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
 
 	let color = window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
 

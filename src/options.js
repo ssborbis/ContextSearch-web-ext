@@ -382,6 +382,8 @@ function restoreOptions() {
 		$('#cb_sideBarRememberState').checked = userOptions.sideBar.rememberState;
 		$('#cb_sideBarOpenOnResults').checked = userOptions.sideBar.openOnResults;
 		$('#cb_enablePageTiles').checked = userOptions.enablePageTiles;
+		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
+		
 		
 		
 		
@@ -642,7 +644,8 @@ function saveOptions(e) {
 		recentlyUsedList: userOptions.recentlyUsedList,
 		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value),
 		disableNewTabSorting: $('#cb_disableNewTabSorting').checked,
-		enablePageTiles: $('#cb_enablePageTiles').checked
+		enablePageTiles: $('#cb_enablePageTiles').checked,
+		contextMenuHotkeys: $('#cb_contextMenuHotkeys').checked
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
