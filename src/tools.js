@@ -240,8 +240,6 @@ var QMtools = [
 							openMethod: userOptions.quickMenuLeftClick
 						}
 					});
-					
-					addToHistory(quickMenuObject.searchTerms, _id);
 				}
 				
 			});

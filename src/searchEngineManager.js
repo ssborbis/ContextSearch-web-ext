@@ -38,6 +38,12 @@ function buildSearchEngineContainer() {
 		let header = document.createElement('div');
 		header.className = "header";
 		
+		// show id in the console
+		li.addEventListener('click', e => {
+			e.stopPropagation();
+			console.log(node.id);
+		});
+		
 		li.appendChild(header);
 
 		if (node.type === 'searchEngine') {
@@ -142,11 +148,13 @@ function buildSearchEngineContainer() {
 						try {
 							let _url = new URL(edit_form.searchform.value);
 						} catch (error) {
-							let _url = new URL(edit_form.template.value);
-							edit_form.searchform.value = _url.origin;
+							try {
+								let _url = new URL(edit_form.template.value);
+								edit_form.searchform.value = _url.origin;
+							} catch (_error) {}
+						}
 						//	showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
 						//	return;
-						}
 
 						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
 							// showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
@@ -181,8 +189,12 @@ function buildSearchEngineContainer() {
 						}
 						
 						if ( !edit_form.iconURL.value ) {
-							let url = new URL(edit_form.template.value);
-							newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
+							try {
+								let url = new URL(edit_form.template.value);
+								newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
+							} catch (error) {
+								console.log(error);
+							}
 						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
 
 							let url = new URL(edit_form.iconURL.value.replace(/#/g, "%23"));

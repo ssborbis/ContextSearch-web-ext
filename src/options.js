@@ -383,10 +383,7 @@ function restoreOptions() {
 		$('#cb_sideBarOpenOnResults').checked = userOptions.sideBar.openOnResults;
 		$('#cb_enablePageTiles').checked = userOptions.enablePageTiles;
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
-		
-		
-		
-		
+
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
   

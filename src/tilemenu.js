@@ -375,8 +375,6 @@ async function makeQuickMenu(options) {
 			}
 		});
 		
-		addToHistory(sb.value);
-		
 		if ( !keepMenuOpen(e) )
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 
@@ -1490,8 +1488,6 @@ async function makeQuickMenu(options) {
 							openMethod: getOpenMethod(e)
 						}
 					});
-
-					addToHistory(sb.value);
 				});
 				
 				tile.dataset.id = node.id;
@@ -1653,10 +1649,6 @@ async function makeQuickMenu(options) {
 
 	return Promise.resolve(quickMenuElementFromNodeTree(root));
 	
-}
-
-function addToHistory(terms) {
-	browser.runtime.sendMessage({action: "addToHistory", searchTerms: terms});
 }
 
 async function getSuggestions(terms) {
@@ -1895,9 +1887,6 @@ function makeSearchBar() {
 	
 	sb.addEventListener('keydown', (e) => {
 		if (e.key === "Enter") {
-			
-			addToHistory(sb.value);
-			
 			if (userOptions.searchBarCloseAfterSearch) window.close();	
 		}
 	});

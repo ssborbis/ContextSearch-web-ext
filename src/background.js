@@ -1,5 +1,3 @@
-let isFirefox = /Firefox/.test(navigator.userAgent);
-
 async function notify(message, sender, sendResponse) {
 	
 	function sendMessageToTopFrame() {
@@ -17,18 +15,6 @@ async function notify(message, sender, sendResponse) {
 		
 		await browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
 	}
-
-
-	// await (() => {
-		// sender = sender || {};
-		// if ( !sender.tab ) { // page_action & browser_action popup has no tab, use current tab
-			// let onFound = tabs => sender.tab = tabs[0];
-			// let onError = err => console.error(err);
-			
-			// return browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
-		// } else
-			// return Promise.resolve(true);
-	// })();
 
 	switch(message.action) {
 
@@ -126,24 +112,23 @@ async function notify(message, sender, sendResponse) {
 				if ( !userOptions.highLight.findBar.searchInAllTabs )
 					_message.searchTerms = "";
 				
-				return new Promise(async (resolve) => {
-					let tabs = await getAllOpenTabs();
-					tabs.forEach( tab => {
-						browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
-					});
-					resolve();
-				});
+				let tabs = await getAllOpenTabs();
+				return Promise.all(tabs.map( tab => {
+					return browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
+				}));
+				
 			} else
 				return sendMessageToTopFrame();
 			break;
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
-				return new Promise(async(resolve) => {
-					let tabs = await getAllOpenTabs();
-					tabs.forEach( tab => browser.tabs.sendMessage(tab.id, message, {frameId: 0}));
-					resolve();
-				});
+				
+				let tabs = await getAllOpenTabs();
+				return Promise.all(tabs.map( tab => {
+					return browser.tabs.sendMessage(tab.id, message, {frameId: 0});
+				}));
+				
 			} else
 				return sendMessageToTopFrame();
 			break;
@@ -167,15 +152,13 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "mark":
-			return new Promise( async (resolve) => {
-				if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
-					let tabs = await getAllOpenTabs();
-					tabs.forEach( tab => browser.tabs.sendMessage(tab.id, message));
-					resolve(true);
-				} else {
-					resolve(sendMessageToAllFrames());
-				}
-			});
+			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
+				let tabs = await getAllOpenTabs();
+				return Promise.all(tabs.map( tab => browser.tabs.sendMessage(tab.id, message)));
+			} else {
+				return sendMessageToAllFrames();
+			}
+
 			break;
 			
 		case "unmark":
@@ -204,15 +187,13 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getOpenSearchHref":
 		
-			return new Promise( async resolve => {
-				let tab = await browser.tabs.query({currentWindow: true, active: true});
-				let result = await browser.tabs.executeScript( tab.id, {
-					code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
-				});
-				
-				result = result.shift();
-				resolve( result ? {href: result} : {} );
+			let tab = await browser.tabs.query({currentWindow: true, active: true});
+			let result = await browser.tabs.executeScript( tab.id, {
+				code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
 			});
+			
+			result = result.shift();
+			return result ? {href: result} : {};
 
 			break;
 
@@ -249,91 +230,86 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getFirefoxSearchEngineByName":
-			return new Promise(async r => {
-				let engines = await browser.search.get();
-				r(engines.find(e => e.name === message.name));
-			});
+			let engines = await browser.search.get();
+			return engines.find(e => e.name === message.name);
 			break;
 			
 		case "addSearchEngine":
 			let url = message.url;
 
 			if (browser.runtime.getBrowserInfo) {
-				
-				(async() => {
-					
-					// skip for Firefox version < 78 where window.external.AddSearchProvider is available
-					let info = await browser.runtime.getBrowserInfo();	
-					if ( parseFloat(info.version) < 78 ) return;
-					
-					let match = /SHORTNAME=(.*?)&DESCRIPTION/.exec(url);	
-					
-					if (!match[1]) return;
 
-					let title = decodeURIComponent(match[1]);
-					
-					let engines = await browser.search.get();
-					
-					if ( engines.find(e => e.name === title) ) {
-						await browser.tabs.executeScript(sender.tab.id, {
-							code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+				// skip for Firefox version < 78 where window.external.AddSearchProvider is available
+				let info = await browser.runtime.getBrowserInfo();	
+				if ( parseFloat(info.version) < 78 ) return;
+				
+				let match = /SHORTNAME=(.*?)&DESCRIPTION/.exec(url);	
+				
+				if (!match[1]) return;
+
+				let title = decodeURIComponent(match[1]);
+				
+				let engines = await browser.search.get();
+				
+				if ( engines.find(e => e.name === title) ) {
+					await browser.tabs.executeScript(sender.tab.id, {
+						code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+					});
+					return;
+				}
+
+				await browser.tabs.executeScript(sender.tab.id, {
+					file: "/addSearchProvider.js"
+				});
+				
+				// check for existing opensearch engine of the same name					
+				let exists = await browser.tabs.executeScript(sender.tab.id, {
+					code: `getSearchProviderUrlByTitle("${title}")`
+				});
+
+				exists = exists.shift();
+
+				if ( exists ) {
+					console.log('OpenSearch engine with name ' + title + ' already exists on page');
+
+					let oldURL = new URL(exists);
+					let newURL = new URL(url);
+
+					if ( oldURL.href == newURL.href ) {
+						console.log('exists but same url');
+					} else {
+						console.log('open new tab to include fresh opensearch link');
+						
+						let favicon = sender.tab.favIconUrl;
+						
+						let tab = await browser.tabs.create({
+							active:true,
+							url: browser.runtime.getURL('addSearchProvider.html')
 						});
+
+						await browser.tabs.executeScript(tab.id, {
+							code: `
+								var userOptions = {};
+
+								browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
+									userOptions = message.userOptions || {};
+								});
+								
+								setFavIconUrl("${favicon}");`
+						});
+						
+						// some delay needed
+						await new Promise(r => setTimeout(r, 500));
+
+						notify({action: "addSearchEngine", url: url});
 						return;
 					}
-
-					await browser.tabs.executeScript(sender.tab.id, {
-						file: "addSearchProvider.js"
-					});
+				}
+				
+				await browser.tabs.executeScript(sender.tab.id, {
+					code: `addSearchProvider("${url}");`
+				});
 					
-					// check for existing opensearch engine of the same name					
-					let exists = await browser.tabs.executeScript(sender.tab.id, {
-						code: `getSearchProviderUrlByTitle("${title}")`
-					});
-
-					exists = exists.shift();
-
-					if ( exists ) {
-						console.log('OpenSearch engine with name ' + title + ' already exists on page');
-
-						let oldURL = new URL(exists);
-						let newURL = new URL(url);
-
-						if ( oldURL.href == newURL.href ) {
-							console.log('exists but same url');
-						} else {
-							console.log('open new tab to include fresh opensearch link');
-							
-							let favicon = sender.tab.favIconUrl;
-							
-							let tab = await browser.tabs.create({
-								active:true,
-								url: browser.runtime.getURL('addSearchProvider.html')
-							});
-
-							await browser.tabs.executeScript(tab.id, {
-								code: `
-									var userOptions = {};
-
-									browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-										userOptions = message.userOptions || {};
-									});
-									
-									setFavIconUrl("${favicon}");`
-							});
-							
-							// some delay needed
-							await new Promise(r => setTimeout(r, 500));
-
-							notify({action: "addSearchEngine", url: url});
-							return;
-						}
-					}
-					
-					await browser.tabs.executeScript(sender.tab.id, {
-						code: `addSearchProvider("${url}");`
-					});
-					
-				})();
 			}
 			
 			window.external.AddSearchProvider(url);
@@ -430,7 +406,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getLastSearch":
-			return Promise.resolve({lastSearch: sessionStorage.getItem("lastSearch")});
+			return {lastSearch: sessionStorage.getItem("lastSearch")};
 			break;
 			
 		case "getCurrentTheme":
@@ -480,18 +456,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "copy":
-			return new Promise(async (r) => {
-				try {
-					await navigator.clipboard.writeText(message.msg);
-					r(true);
-				} catch (error) {
-					r(false);
-				}
-			});
+			try {
+				await navigator.clipboard.writeText(message.msg);
+				return true;
+			} catch (error) {
+				return false;
+			}
+
 			break;
 			
 		case "hasBrowserSearch":
-			return Promise.resolve(typeof browser.search !== 'undefined');
+			return typeof browser.search !== 'undefined';
 			break;
 			
 		case "checkForOneClickEngines":	
@@ -555,9 +530,8 @@ async function notify(message, sender, sendResponse) {
 			// if (userOptions.searchBarHistory.includes(terms)) return;
 			
 			// remove first entry if over limit
-			if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength) {
+			if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength)
 				userOptions.searchBarHistory.shift();
-			}
 			
 			// add new term
 			userOptions.searchBarHistory.push(terms);
@@ -566,8 +540,9 @@ async function notify(message, sender, sendResponse) {
 			userOptions.searchBarHistory = [...new Set([...userOptions.searchBarHistory].reverse())].reverse();
 			
 			// update prefs
-		//	browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
 			notify({action: "saveUserOptions", "userOptions": userOptions});
+			
+			console.info('adding to history', terms);
 			return Promise.resolve(userOptions);
 			break;
 			
@@ -583,7 +558,7 @@ async function notify(message, sender, sendResponse) {
 		case "injectComplete":
 			if ( userOptions.quickMenu ) {
 				browser.tabs.executeScript(sender.tab.id, {
-					file: "inject_quickmenu.js",
+					file: "/inject_quickmenu.js",
 					frameId: sender.frameId
 				});
 			}
@@ -681,9 +656,12 @@ async function buildContextMenu() {
 
 		createOptions.contexts = createOptions.contexts || ["selection", "link", "image"];
 
-		if (!isFirefox) delete createOptions.icons;
-
-		browser.contextMenus.create( createOptions, onCreated);
+		try {
+			browser.contextMenus.create( createOptions, onCreated);
+		} catch (error) { // non-Firefox
+			delete createOptions.icons;
+			browser.contextMenus.create( createOptions, onCreated);
+		}
 	}
 	
 	await browser.contextMenus.removeAll();
@@ -903,9 +881,12 @@ function updateSelectDomainMenus(tab) {
 				contexts: ["selection", "link", "image"]
 			};
 
-			if (!isFirefox) delete createOptions.icons;
-
-			browser.contextMenus.create( createOptions );
+			try {
+				browser.contextMenus.create( createOptions);
+			} catch (error) { // non-Firefox
+				delete createOptions.icons;
+				browser.contextMenus.create( createOptions);
+			}
 		});
 	});
 }
@@ -1030,7 +1011,7 @@ function executeOneClickSearch(info) {
 		
 	let engineName = findNode( userOptions.nodeTree, node => node.id === engineId ).title;
 	
-	console.log(info, engineName);
+	notify({action: "addToHistory", searchTerms: searchTerms});
 
 	async function searchAndHighlight(tab) {
 
@@ -1223,9 +1204,58 @@ function quickMenuSearch(info, tab) {
 	
 	// run as bookmarklet
 	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
+		console.log('bookmarklet');
 		executeBookmarklet(info, tab);
 		lastSearchHandler(info.menuItemId);
 		return Promise.resolve(false);
+	}
+	
+	// check for multiple engines (v1.27+)
+	if ( node && node.type === "searchEngine" ) {
+		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
+		if (!se) return;
+		
+		// check for CS://id+id format
+		if (/^CS:\/\//.test(se.template) ) {
+			let ids = se.template.replace(/^CS:\/\//, "").split(/\+|,|&|\s+/);
+			
+			for ( let index in ids ) {
+				let id = ids[index].trim();
+
+				// make sure id != node id
+				if ( id === node.id ) return;
+				
+				let _info = Object.assign({}, info);
+				_info.menuItemId = id;
+				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
+				quickMenuSearch(_info, tab);
+			}
+			return;
+		}
+		
+		// check for URL + URL format
+		if ( /[;|,|\s]\s*http/.test(se.query_string) ) {
+
+			let newString = se.query_string.replace(/[;|,|\s]\s*http/g, "____REPLACE____http");
+			let urls = newString.split("____REPLACE____");
+			
+			console.log("multiple URLs detected", urls);
+			
+			for ( let index in urls ) {
+				let url = urls[index].trim();
+
+				let _info = Object.assign({}, info);
+				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
+				
+				// use a temporary engine to allow the replacement template
+				se.query_string = url;
+				_info.temporarySearchEngine = se;
+				
+				quickMenuSearch(_info, tab);
+			}
+			
+			return;
+		}
 	}
 	
 	return openSearch({
@@ -1235,7 +1265,8 @@ function quickMenuSearch(info, tab) {
 		tab: tab,
 		openUrl: info.openUrl || null,
 		folder: info.folder,
-		domain: info.domain
+		domain: info.domain,
+		temporarySearchEngine: info.temporarySearchEngine || null
 	});
 }
 
@@ -1259,6 +1290,9 @@ function openSearch(details) {
 	if (!tab) tab = {url:"", id:0}
 	
 	var se;
+	
+	if ( !openUrl && !temporarySearchEngine )
+		notify({action: "addToHistory", searchTerms: searchTerms});
 
 	if (!openUrl) {
 
@@ -1508,9 +1542,8 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( userOptions.sideBar.openOnResults ) {
 		await browser.tabs.executeScript(tab.id, {
-			code: `openSideBar({noSave: true});`,
-			runAt: 'document_idle',
-			allFrames: true
+			code: `openSideBar({noSave: true})`,
+			runAt: 'document_idle'
 		});
 	}
 
