@@ -223,14 +223,14 @@ function buildSearchEngineContainer() {
 
 				edit_form.shortName.value = se.title;
 				edit_form.description.value = se.description || "";
-				edit_form.template.value = se.query_string;
+				edit_form.template.value = se.template;
 				edit_form.iconURL.value = se.icon_url || se.icon_base64String;
 				edit_form._method.value = se.method || "GET";
 				edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
 				edit_form._encoding.value = se.queryCharset || "UTF-8";
 				edit_form.searchform.value = se.searchForm || function() {
 					try {
-						return new URL(se.query_string).origin;
+						return new URL(se.template).origin;
 					} catch (err) {
 						return "";
 					}
@@ -325,7 +325,7 @@ function buildSearchEngineContainer() {
 
 						se.icon_base64String = icon.src;
 						se.description = edit_form.description.value;
-						se.query_string = se.template = edit_form.template.value;
+						se.template = edit_form.template.value;
 						se.searchForm = edit_form.searchform.value;
 						se.icon_url = edit_form.iconURL.value;
 						se.method = edit_form._method.value;
@@ -1482,7 +1482,6 @@ function buildSearchEngineContainer() {
 		} else {
 			se = {
 				"searchForm": "", 
-				"query_string":"",
 				"icon_url":"",
 				"title":shortName,
 				"order":userOptions.searchEngines.length, 

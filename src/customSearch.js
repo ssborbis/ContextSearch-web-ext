@@ -8,7 +8,6 @@ function formToSearchEngine() {
 	return {
 		"searchForm": form.searchform.value, 
 		"description": form.description.value,
-		"query_string":form.template.value,
 		"icon_url":form.iconURL.value,
 		"title":form.shortname.value,
 		"order":userOptions.searchEngines.length, 
@@ -278,10 +277,11 @@ function addSearchEnginePopup(data) {
 	let template = se.template;
 	
 	if (form._method.value === "GET") {
-		form.template.innerText = se.query_string;
-
+		
 		if (!template) form.template.innerText = browser.i18n.getMessage("TemplateMissingeMessage");
 		
+		form.template.innerText = se.template;
+
 	} else {
 		// POST form.template = form.action
 		form.template.innerText = template;
@@ -499,7 +499,6 @@ function testOpenSearch(form) {
 
 	let tempSearchEngine = {
 		"searchForm": form.searchform.value, 
-		"query_string":form.template.value,
 		"icon_url": form.iconURL.value,
 		"title": form.shortname.value,
 		"order":"", 

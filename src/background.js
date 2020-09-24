@@ -49,17 +49,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getUserOptions":
-			return Promise.resolve({"userOptions": userOptions});
+			return {"userOptions": userOptions};
 			break;
 			
 		case "getDefaultUserOptions":
-			return Promise.resolve({"defaultUserOptions": defaultUserOptions});
+			return {"defaultUserOptions": defaultUserOptions};
 			break;
 
 		case "getSearchEngineById":
 			if ( !message.id) return;
 
-			return Promise.resolve({"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)});
+			return {"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)};
 			break;
 			
 		case "dispatchEvent":
@@ -435,7 +435,7 @@ async function notify(message, sender, sendResponse) {
 						
 						let se = message.badSearchEngine;
 						
-						se.template = se.query_string = newUrl;
+						se.template = newUrl;
 
 						browser.tabs.sendMessage(tabInfo.id, {action: "openCustomSearch", searchEngine: se}, {frameId: 0});
 					}
@@ -1232,15 +1232,15 @@ function quickMenuSearch(info, tab) {
 			}
 			return;
 		}
-		
-		// check for URL + URL format
-		if ( /[;|,|\s]\s*http/.test(se.query_string) ) {
 
-			let newString = se.query_string.replace(/[;|,|\s]\s*http/g, "____REPLACE____http");
+		// check for URL + URL format
+		if ( /[;|,|\s]\s*http/.test(se.template) ) {
+
+			let newString = se.template.replace(/[;|,|\s]\s*http/g, "____REPLACE____http");
 			let urls = newString.split("____REPLACE____");
 			
 			console.log("multiple URLs detected", urls);
-			
+
 			for ( let index in urls ) {
 				let url = urls[index].trim();
 
@@ -1248,7 +1248,7 @@ function quickMenuSearch(info, tab) {
 				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 				
 				// use a temporary engine to allow the replacement template
-				se.query_string = url;
+				se.template = url;
 				_info.temporarySearchEngine = se;
 				
 				quickMenuSearch(_info, tab);
@@ -1300,7 +1300,7 @@ function openSearch(details) {
 		se = temporarySearchEngine || userOptions.searchEngines.find(se => se.id === searchEngineId);
 
 		// must be invalid
-		if ( !se || !se.query_string) return false;
+		if ( !se || !se.template) return false;
 
 		// legacy fix
 		se.queryCharset = se.queryCharset || "UTF-8";
@@ -1324,7 +1324,7 @@ function openSearch(details) {
 
 		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
 		
-		var q = replaceOpenSearchParams({template: se.query_string, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
+		var q = replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
 		
 		// set landing page for POST engines
 		if ( 
@@ -1842,7 +1842,7 @@ function updateUserOptionsVersion(uo) {
 		
 	}).then( _uo => {
 		
-		// remove campaign ID from ebay query_string ( mozilla request )
+		// remove campaign ID from ebay template ( mozilla request )
 		
 		let index = _uo.searchEngines.findIndex( se => se.query_string === "https://rover.ebay.com/rover/1/711-53200-19255-0/1?ff3=4&toolid=20004&campid=5338192028&customid=&mpre=https://www.ebay.com/sch/{searchTerms}" );
 		
@@ -1851,7 +1851,7 @@ function updateUserOptionsVersion(uo) {
 		console.log("-> 1.14");
 		
 		_uo.searchEngines[index].query_string = "https://www.ebay.com/sch/i.html?_nkw={searchTerms}";
-		_uo.searchEngines[index].template = "https://www.ebay.com/sch/";
+
 		return _uo;	
 		
 	}).then( _uo => {
@@ -1863,6 +1863,26 @@ function updateUserOptionsVersion(uo) {
 		findNodes(_uo.nodeTree, node => {
 			if ( node.type === "folder" && !node.id )
 				node.id = gen();
+		});
+
+		return _uo;	
+	}).then( _uo => {
+		
+		// delete se.query_string in a future release
+		// if ( !_uo.searchEngines.find( se => se.query_string ) ) return _uo;
+
+		console.log("-> 1.27");
+		
+		_uo.searchEngines.forEach( (se,index,arr) => {
+			if ( se.query_string ) {
+				
+				if ( se.query_string.length > se.template.length) {
+					console.log("replacing template with query_string", se.template, se.query_string);
+					arr[index].template = arr[index].query_string;
+				}
+				
+				arr[index].query_string = arr[index].template;
+			}
 		});
 
 		return _uo;	
@@ -2180,7 +2200,7 @@ function dataToSearchEngine(data) {
 
 	let favicon_href = data.favicon_href || "";
 
-	let query_string = "";
+	let template = "";
 	let params = [];
 	
 	// convert single object to array
@@ -2195,11 +2215,11 @@ function dataToSearchEngine(data) {
 			param_str+="&" + i + "=" + data.params[i];
 		}
 		// If the form.action already contains url parameters, use & not ?
-		query_string = data.action + ((data.action.indexOf('?') === -1) ? "?":"&") + param_str;	
+		template = data.action + ((data.action.indexOf('?') === -1) ? "?":"&") + param_str;	
 		
 	} else {
 		// POST form.template = form.action
-		query_string = data.action;
+		template = data.action;
 		
 		if (data.query)
 			params.unshift({name: data.query, value: "{searchTerms}"});
@@ -2209,14 +2229,13 @@ function dataToSearchEngine(data) {
 	// build search engine from form data
 	let se = {
 		"searchForm": data.origin, 
-		"query_string":query_string,
 		"icon_url": data.favicon_href || data.origin + "/favicon.ico",
 		"title": data.title,
 		"order":userOptions.searchEngines.length, 
 		"icon_base64String": "", 
 		"method": data.method, 
 		"params": params, 
-		"template": data.action, 
+		"template": template, 
 		"queryCharset": data.characterSet.toUpperCase(),
 		"description": data.description,
 		"id": gen()
@@ -2273,7 +2292,7 @@ function openSearchXMLToSearchEngine(xml) {
 	if (!url) reject();
 	
 	let template = url.getAttribute('template');
-	if (template) se.template = se.query_string = template;
+	if (template) se.template = template;
 	
 	let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
 	if (searchform) se.searchForm = searchform.textContent;
@@ -2293,7 +2312,7 @@ function openSearchXMLToSearchEngine(xml) {
 	se.params = params;
 	
 	if (se.params.length > 0 && se.method === "GET") {
-		se.query_string = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
+		se.template = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
 	}
 	
 	se.id = gen();

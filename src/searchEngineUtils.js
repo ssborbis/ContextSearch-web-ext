@@ -10,7 +10,7 @@ function searchJsonObjectToArray(engines) {
 			continue;
 		}
 		
-		var query_string = "", params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
+		var params_str = "", method = "", params, template = "", searchForm = "", hidden = false;
 
 		// hidden search engines
 		if (engine._metaData && engine._metaData.hidden && engine._metaData.hidden == true) hidden = true;
@@ -26,20 +26,17 @@ function searchJsonObjectToArray(engines) {
 			method = url.method || "GET";
 			
 			// get the main search url
-			query_string = url.template;
-			
 			template = url.template;
 
 			params = url.params;
 		}
 		
 		if (params.length > 0 && method.toUpperCase() === "GET")
-			query_string += ( (query_string.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(url.params);
+			template += ( (template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(url.params);
 
 		// push object to array for storage.local
 		searchEngines.push({
 			"searchForm": engine.__searchForm || "", 
-			"query_string": query_string,
 			"icon_url": engine._iconURL,
 			"title": engine._name,
 			"order": engine._metaData.order, 
@@ -161,7 +158,7 @@ function loadRemoteIcon(options) {
 			img.favicon_urls = [];		
 			img.favicon_monogram = se.title.charAt(0).toUpperCase();
 
-			var url = new URL(se.query_string || se.template || se.searchForm || window.location.href);
+			var url = new URL(se.template || se.searchForm || window.location.href);
 			
 			// security policy may mean only the favicon may be converted by canvas
 			img.favicon_urls = [

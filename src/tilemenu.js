@@ -115,7 +115,7 @@ function setUserStyles() {
 function addTileEventHandlers(_tile, handler) {
 
 	// all click events are attached to mouseup
-	_tile.addEventListener('mouseup', e => {
+	_tile.addEventListener('mouseup', async e => {
 
 		if ( _tile.disabled ) return false;
 		
