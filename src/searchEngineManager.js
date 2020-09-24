@@ -193,6 +193,7 @@ function buildSearchEngineContainer() {
 								let url = new URL(edit_form.template.value);
 								newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
 							} catch (error) {
+								newIcon.src = browser.runtime.getURL('/icons/search.svg');
 								console.log(error);
 							}
 						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
