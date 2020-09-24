@@ -140,19 +140,19 @@ function buildSearchEngineContainer() {
 						// if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' && edit_form.searchCode.value.trim() === "") {
 							// showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
 						// }
-						try {
-							let _url = new URL(edit_form.template.value);
-						} catch (error) {
-							showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
-						}
-						try {
-							let _url = new URL(edit_form.searchform.value);
-						} catch (error) {
-							try {
-								let _url = new URL(edit_form.template.value);
-								edit_form.searchform.value = _url.origin;
-							} catch (_error) {}
-						}
+						// try {
+							// let _url = new URL(edit_form.template.value);
+						// } catch (error) {
+							// showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+						// }
+						// try {
+							// let _url = new URL(edit_form.searchform.value);
+						// } catch (error) {
+							// try {
+								// let _url = new URL(edit_form.template.value);
+								// edit_form.searchform.value = _url.origin;
+							// } catch (_error) {}
+						// }
 						//	showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
 						//	return;
 
@@ -193,7 +193,7 @@ function buildSearchEngineContainer() {
 								let url = new URL(edit_form.template.value);
 								newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
 							} catch (error) {
-								newIcon.src = browser.runtime.getURL('/icons/search.svg');
+								newIcon.src = createCustomIcon({text: edit_form.shortName.value.charAt(0).toUpperCase()});
 								console.log(error);
 							}
 						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
