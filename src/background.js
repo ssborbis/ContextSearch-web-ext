@@ -1,5 +1,5 @@
 async function notify(message, sender, sendResponse) {
-	
+
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 	}

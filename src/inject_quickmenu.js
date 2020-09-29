@@ -457,6 +457,10 @@ document.addEventListener("click", ev => {
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
 	
 	if ( userOptions.quickMenuAllowContextMenu && ev.which !== 1 ) return;
+	
+	// prevent links from opening
+	if ( document.getElementById('CS_quickMenuIframe') )
+		ev.preventDefault();
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
 });

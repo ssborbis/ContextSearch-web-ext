@@ -1897,8 +1897,8 @@ function makeSearchBar() {
 			sb.dispatchEvent(new KeyboardEvent('keypress'));
 	});
 
-	ob.onclick = function() {
-		browser.runtime.sendMessage({action: "openOptions"});
+	ob.onclick = async function() {
+		await browser.runtime.sendMessage({action: "openOptions"});
 		if ( window == top ) window.close(); // close toolbar menu
 	}
 }

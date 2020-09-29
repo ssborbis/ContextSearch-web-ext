@@ -117,6 +117,20 @@ function buildSearchEngineContainer() {
 					el.classList.add("error");
 				}
 				
+				function templateStringToURLArray(url) {
+					let newString = url.replace(/[;|,|\s]\s*http/g, "____REPLACE____http");
+					let urls = newString.split("____REPLACE____");
+					
+					let URLs = [];
+					urls.forEach( _url => {
+						try {
+							URLS.push( new URL(_url) );
+						} catch ( error ) {}
+					});
+					
+					return URLs;	
+				}
+				
 				// Check bad form values
 				function checkFormValues() {
 	
@@ -137,23 +151,31 @@ function buildSearchEngineContainer() {
 								resolve(false);
 							}
 						}
+						
+						// multi-URL to single URL
+						if ( /[;|,|\s]\s*http/.test(edit_form.template.value) ) {
+							edit_form.template.value = edit_form.template.value.replace(/[;|,|\s]\s*http/g, "+http");
+							
+							if ( !/^CS:\/\//.test(edit_form.template.value) )
+								edit_form.template.value = edit_form.template.value.replace(/^/, "CS://");
+						}
 						// if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' && edit_form.searchCode.value.trim() === "") {
 							// showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
 						// }
-						// try {
-							// let _url = new URL(edit_form.template.value);
-						// } catch (error) {
+						try {
+							let _url = new URL(edit_form.template.value);
+						} catch (error) {
+							showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+						}
+						try {
+							let _url = new URL(edit_form.searchform.value);
+						} catch (error) {
+							try {
+								let _url = new URL(edit_form.template.value);
+								edit_form.searchform.value = _url.origin;
+							} catch (_error) {}
+						}
 							// showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
-						// }
-						// try {
-							// let _url = new URL(edit_form.searchform.value);
-						// } catch (error) {
-							// try {
-								// let _url = new URL(edit_form.template.value);
-								// edit_form.searchform.value = _url.origin;
-							// } catch (_error) {}
-						// }
-						//	showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
 						//	return;
 
 						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
@@ -306,7 +328,7 @@ function buildSearchEngineContainer() {
 						closeForm = ( closeForm === undefined ) ? true : false;
 						// loading icon is last step. Set values after everything else
 							
-						// alert of problems with changing name
+						// alert problems with changing name
 						if (se.title !== edit_form.shortName.value) {
 
 							if ( !browser.runtime.getBrowserInfo || confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
@@ -336,7 +358,8 @@ function buildSearchEngineContainer() {
 						se.searchRegex = edit_form.searchRegex.value;
 						se.searchCode = edit_form.searchCode.value;
 						
-						updateNodeList();
+						updateNodeList();	
+						saveOptions();
 						
 						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes", $("#editFormSaveMessage"));
 
@@ -964,9 +987,11 @@ function buildSearchEngineContainer() {
 		let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
 		
 		if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) ) {
-			console.log('nodeTrees unequal. Saving');
+			// console.log('nodeTrees unequal. Saving');
 			userOptions.nodeTree = currentNodeTree
 			saveOptions();
+		} else {
+			// console.log('node trees are the same - skipping save');
 		}
 	}
 
