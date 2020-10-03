@@ -358,8 +358,8 @@ function buildSearchEngineContainer() {
 						se.searchRegex = edit_form.searchRegex.value;
 						se.searchCode = edit_form.searchCode.value;
 						
-						updateNodeList();	
-						saveOptions();
+						// force a save even if the nodeTree is unchanged
+						updateNodeList(true);	
 						
 						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes", $("#editFormSaveMessage"));
 
@@ -982,11 +982,13 @@ function buildSearchEngineContainer() {
 		return target;
 	}
 	
-	function updateNodeList() {
+	function updateNodeList(forceSave) {
+		
+		forceSave = forceSave || false;
 		
 		let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
 		
-		if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) ) {
+		if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
 			// console.log('nodeTrees unequal. Saving');
 			userOptions.nodeTree = currentNodeTree
 			saveOptions();

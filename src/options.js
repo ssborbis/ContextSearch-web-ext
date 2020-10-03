@@ -26,8 +26,6 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	readMozlz4File(file, text => { // on success
 
 		// parse the mozlz4 JSON into an object
-		
-		console.log(JSON.parse(text));
 		var engines = JSON.parse(text).engines;	
 		searchEngines = searchJsonObjectToArray(engines);
 
