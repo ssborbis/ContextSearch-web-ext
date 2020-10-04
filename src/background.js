@@ -1004,12 +1004,9 @@ function executeBookmarklet(info, tab) {
 
 function executeOneClickSearch(info) {
 
-	let searchTerms = info.selectionText;
+	let searchTerms = info.searchTerms;
 	let openMethod = info.openMethod;
-	let engineId = info.menuItemId;
 	let openerTabId = ( userOptions.disableNewTabSorting ? null : (info.openerTabId || null ) );
-		
-	let engineName = findNode( userOptions.nodeTree, node => node.id === engineId ).title;
 	
 	notify({action: "addToHistory", searchTerms: searchTerms});
 
@@ -1017,7 +1014,7 @@ function executeOneClickSearch(info) {
 
 		browser.search.search({
 			query: searchTerms,
-			engine: engineName,
+			engine: info.node.title,
 			tabId: tab.id
 		});
 
@@ -1138,33 +1135,15 @@ function contextMenuSearch(info, tab) {
 		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;
 	else 
 		searchTerms = info.selectionText.trim();
-	
-	if ( node && node.type === "oneClickSearchEngine" ) {
-		info.selectionText = searchTerms;
-		info.openMethod = openMethod;
-		info.openerTabId = tab.id;
-		executeOneClickSearch(info);
 
-		lastSearchHandler(info.menuItemId);
-		
-		buildContextMenu();
-		return false;
-	}
-	
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
 		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(info.menuItemId);
 		info.menuItemId = groups[1];
 		info.domain = atob(groups[2]);	
 	}
-	
-	// run as bookmarklet
-	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) ) {
-		executeBookmarklet(info);
-		lastSearchHandler(info.menuItemId);
-		return false;
-	}
 
 	openSearch({
+		node: node,
 		searchEngineId: info.menuItemId, 
 		searchTerms: searchTerms,
 		openMethod: openMethod, 
@@ -1187,78 +1166,26 @@ function lastSearchHandler(id) {
 	notify({action: "saveUserOptions", userOptions: userOptions});
 }
 
+function isValidHttpUrl(string) {
+	let url;
+
+	try {
+		url = new URL(string);
+	} catch (_) {
+		return false;  
+	}
+
+	return url.protocol === "http:" || url.protocol === "https:";
+}
+
 function quickMenuSearch(info, tab) {
-	
+
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 	
 	if ( node.type === "folder" ) return folderSearch(info, tab);
-	
-	// console.log(node);
 
-	// run as one-click search
-	if ( node && node.type === "oneClickSearchEngine" ) {
-		info.openerTabId = tab.id;
-		executeOneClickSearch(info);
-		return false;
-	}
-	
-	// run as bookmarklet
-	if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
-		console.log('bookmarklet');
-		executeBookmarklet(info, tab);
-		lastSearchHandler(info.menuItemId);
-		return Promise.resolve(false);
-	}
-	
-	// check for multiple engines (v1.27+)
-	if ( node && node.type === "searchEngine" ) {
-		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
-		if (!se) return;
-		
-		// check for CS://id+id format
-		if (/^CS:\/\//.test(se.template) ) {
-			let ids = se.template.replace(/^CS:\/\//, "").split(/\+|,|&|\s+/);
-			
-			for ( let index in ids ) {
-				let id = ids[index].trim();
-
-				// make sure id != node id
-				if ( id === node.id ) return;
-				
-				let _info = Object.assign({}, info);
-				_info.menuItemId = id;
-				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
-				quickMenuSearch(_info, tab);
-			}
-			return;
-		}
-
-		// check for URL + URL format
-		if ( /[;|,|\s]\s*http/.test(se.template) ) {
-
-			let newString = se.template.replace(/[;|,|\s]\s*http/g, "____REPLACE____http");
-			let urls = newString.split("____REPLACE____");
-			
-			console.log("multiple URLs detected", urls);
-
-			for ( let index in urls ) {
-				let url = urls[index].trim();
-
-				let _info = Object.assign({}, info);
-				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
-				
-				// use a temporary engine to allow the replacement template
-				se.template = url;
-				_info.temporarySearchEngine = se;
-				
-				quickMenuSearch(_info, tab);
-			}
-			
-			return;
-		}
-	}
-	
 	return openSearch({
+		node: node,
 		searchEngineId: info.menuItemId, 
 		searchTerms: info.selectionText,
 		openMethod: info.openMethod, 
@@ -1270,18 +1197,69 @@ function quickMenuSearch(info, tab) {
 	});
 }
 
-function openSearch(details) {
+function openSearch(info) {
 	
-	if (!details.folder) delete window.folderWindowId;
+	console.log(info);
 	
-	console.log(details);
-	var searchEngineId = details.searchEngineId || null;
-	var searchTerms = (details.searchTerms) ? details.searchTerms.trim() : "";
-	var openMethod = details.openMethod || "openNewTab";
-	var tab = details.tab || null;
-	var openUrl = details.openUrl || false;
-	var temporarySearchEngine = details.temporarySearchEngine || null; // unused now | intended to remove temp engine
-	var domain = details.domain || null;
+	if (!info.folder) delete window.folderWindowId;
+	
+	// check for multiple engines (v1.27+)
+	let node = info.node;
+	if ( node && node.type === "searchEngine" ) {
+		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
+		if (!se) return;
+		
+		// check for CS://id+id format
+		if (/^CS:\/\//.test(se.template) ) {
+			let parts = se.template.replace(/^CS:\/\//, "").split(/\+|,|&|\s+/);
+			
+			for ( let index in parts ) {
+				let part = parts[index].trim();
+				
+				console.log(parts);
+
+				// make sure id != node id
+				if ( part === node.id ) return;
+
+				let _info = Object.assign({}, info);
+				_info.menuItemId = part;
+				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
+				
+				// if url and not ID
+				if ( isValidHttpUrl(part) ) {
+					se.template = part;
+					_info.temporarySearchEngine = se;
+				}
+				
+				openSearch(_info);
+			}
+			return;
+		}
+
+	}
+	
+	if ( info.node && info.node.type === "oneClickSearchEngine" ) {
+		executeOneClickSearch(info);
+		lastSearchHandler(info.menuItemId);	
+		// buildContextMenu();
+		return false;
+	}
+	
+	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
+	if ( node.type === "bookmarklet" ) {
+		console.log('bookmarklet');
+		executeBookmarklet(info, info.tab);
+		lastSearchHandler(info.menuItemId);
+		return false;
+	}
+
+	var searchEngineId = info.searchEngineId || null;
+	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
+	var openMethod = info.openMethod || "openNewTab";
+	var tab = info.tab || null;
+	var openUrl = info.openUrl || false;
+	var temporarySearchEngine = info.temporarySearchEngine || null; // unused now | intended to remove temp engine
+	var domain = info.domain || null;
 
 	if ( !temporarySearchEngine && searchEngineId === null ) return false;
 	
@@ -1477,7 +1455,7 @@ function openSearch(details) {
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: (details.folder ? null : openerTabId)
+			openerTabId: (info.folder ? null : openerTabId)
 		});
 
 		return creating.then(onCreate, onError);

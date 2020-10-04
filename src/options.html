@@ -1025,6 +1025,7 @@
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" />Quick Menu</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img src="icons/sidebar.svg" style="transform:rotate(90deg);" />Toolbar</button>
 				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</button>
+				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="Hotkeys"><img src="icons/keyboard.svg" style="transform:scaleX(-1)" />Hotkeys</button>
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img src="icons/highlight.svg" />Highlight</button>
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />Search Results</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />Find Bar</button>
@@ -1105,10 +1106,6 @@
 					<tr>
 						<td data-i18n_tooltip="Text in the clipboard is pasted to searchbars when search menus are opened">autoPasteFromClipboard</td>
 						<td><input type="checkbox" id="cb_autoPasteFromClipboard" /></td>
-					</tr>
-					<tr>
-						<td data-i18n_tooltip="Hotkeys for search engines work anytime text is selected. No search menu required">allowHotkeysWithoutMenu</td>
-						<td><input type="checkbox" id="cb_allowHotkeysWithoutMenu" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Time in millisections to hold a mouse button before opening the quick menu using HOLD">quickMenuHoldTimeout</td>
@@ -1648,40 +1645,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</tr>
 				<tr>
 					<td>
-					<span class="buttonLabel" data-i18n="Hotkey">
-						Hotkey
-					</span>
-					
-					<span class="keyboardButton" style="min-width:16px">
-						&nbsp;
-					</span>
-					</td>
-					<td>
-					<select class="inputNice" id="s_quickMenuSearchHotkeys">
-						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
-						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
-						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
-						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
-						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
-						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option>
-						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">Open In Sidebar</option>
-						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
-					</select>
-					</td>
-					<td>
-					<select class="inputNice" id="s_quickMenuSearchHotkeysFolders">
-						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
-						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
-						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
-						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
-						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
-						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option>
-						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
-					</select>
-					</td>
-				</tr>
-				<tr>
-					<td>
 					<span class="buttonLabel" data-i18n="LeftButton">Left Button</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
 					</td>
 					<td>
@@ -2029,7 +1992,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 					<div id="d_hotkey" style="margin-left:30px"></div>
 					</section><section>
-<p class="header1" data-i18n="Closing">Closing</p>
+					<p class="header1" data-i18n="Closing">Closing</p>
 				<div class="option">
 					<label class="container" data-i18n="CloseAfterSearch">
 						<input type="checkbox" id="cb_sideBarCloseAfterSearch" />
@@ -2040,10 +2003,73 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				
 				</section>
 				</div>
+				<div class="tabcontent" id="hotkeysTab">
+					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />Hotkeys</div>
+					
+					<div class="description" data-i18n="HotkeysTooltip">Select text and press a key to search. Hotkeys can be set in the <a href="/options.html#engines">Search Engines</a> tab</div>
+					<br /><br />
+					
+					<section style="min-width:720px">
+					<p class="header1" data-i18n="General">General</p>
+					
+					<div class="option">
+					<label class="container" data-i18n="">
+						<input type="checkbox" id="cb_allowHotkeysWithoutMenu" />
+						<span class="checkmark checkmark2"></span>
+						<div class="description" data-i18n="">Enable hotkeys anytime except when editing content ( disable to allow hotkeys only when a ContextSearch menu is in focus )</div>
+					</label>
+					</div>
+					</section>
+
+					<section style="min-width:720px">
+					<p class="header1" data-i18n="SearchActionsHeader">Search Actions</p>
+									
+				<table class="searchActions">
+				<tr>
+					<td></td>
+					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">Search Engines</span></td>
+					<td style="text-align:center"><span class="header2" data-i18n="Folders">Folders</span></td>
+				</tr>
+				<tr>
+					<td>
+					<span class="buttonLabel" data-i18n="Hotkey">
+						Hotkey
+					</span>
+					
+					<span class="keyboardButton" style="min-width:16px">
+						&nbsp;
+					</span>
+					</td>
+					<td>
+					<select class="inputNice" id="s_quickMenuSearchHotkeys">
+						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
+						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
+						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option>
+						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">Open In Sidebar</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_quickMenuSearchHotkeysFolders">
+						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
+						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
+						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
+					</select>
+					</td>
+				</tr>
+				</table>
+				</div>
 				<div class="tabcontent" id="highLightTab">
 					<div class="blobContainerHeader" data-i18n="Highlight"><img src="icons/highlight.svg" />Highlight</div>
 
-					</section><section>
+					<section>
 <p class="header1" data-i18n="Style">Style</p>
 					
 					<div class="option">
