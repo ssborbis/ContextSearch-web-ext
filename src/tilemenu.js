@@ -130,11 +130,11 @@ function addTileEventHandlers(_tile, handler) {
 		quickMenuObject.mouseLastClickTime = Date.now();
 		
 		if ( _tile.dataset.id && quickMenuObject.lastUsed !== _tile.dataset.id ) {
-			// store the last used id
+			// // store the last used id
 			quickMenuObject.lastUsed = _tile.dataset.id || null;
 			userOptions.lastUsedId = quickMenuObject.lastUsed;
 			
-			browser.runtime.sendMessage({action: "setLastUsed", id: userOptions.lastUsedId});
+			// browser.runtime.sendMessage({action: "setLastUsed", id: userOptions.lastUsedId});
 		}
 
 		quickMenuObject.searchTerms = sb.value;

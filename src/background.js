@@ -1141,23 +1141,18 @@ function contextMenuSearch(info, tab) {
 		info.menuItemId = groups[1];
 		info.domain = atob(groups[2]);	
 	}
+	
+	info.searchTerms = searchTerms;
+	info.openMethod = openMethod;
+	info.tab = tab;
 
-	openSearch({
-		node: node,
-		searchEngineId: info.menuItemId, 
-		searchTerms: searchTerms,
-		openMethod: openMethod, 
-		tab: tab,
-		domain: info.domain || new URL(tab.url).hostname
-	});
-	
-	lastSearchHandler(info.menuItemId);
-	
+	openSearch(info);
+	// domain: info.domain || new URL(tab.url).hostname
+
 	buildContextMenu();
 }
 
 function lastSearchHandler(id) {
-	
 	userOptions.lastUsedId = id;
 	
 	userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
@@ -1183,29 +1178,38 @@ function quickMenuSearch(info, tab) {
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 	
 	if ( node.type === "folder" ) return folderSearch(info, tab);
+	
+	info.node = node;
+	info.searchTerms = info.selectionText;
+	info.tab = tab;
+	
+	// return openSearch({
+// -		node: node,
+// -		searchEngineId: info.menuItemId, 
+// -		searchTerms: info.selectionText,
+// -		openMethod: info.openMethod, 
+// -		tab: tab,
+// -		openUrl: info.openUrl || null,
+// -		folder: info.folder,
+// -		domain: info.domain,
+// -		temporarySearchEngine: info.temporarySearchEngine || null
+// -	});
 
-	return openSearch({
-		node: node,
-		searchEngineId: info.menuItemId, 
-		searchTerms: info.selectionText,
-		openMethod: info.openMethod, 
-		tab: tab,
-		openUrl: info.openUrl || null,
-		folder: info.folder,
-		domain: info.domain,
-		temporarySearchEngine: info.temporarySearchEngine || null
-	});
+	return openSearch(info);
 }
 
 function openSearch(info) {
-	
+
 	console.log(info);
-	
+
 	if (!info.folder) delete window.folderWindowId;
 	
+	if ( !info.temporarySearchEngine ) 
+		lastSearchHandler(info.menuItemId);
+	
 	// check for multiple engines (v1.27+)
-	let node = info.node;
-	if ( node && node.type === "searchEngine" ) {
+	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	if ( node && node.type === "searchEngine" && !info.temporarySearchEngine ) {
 		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
 		if (!se) return;
 		
@@ -1222,13 +1226,17 @@ function openSearch(info) {
 				if ( part === node.id ) return;
 
 				let _info = Object.assign({}, info);
-				_info.menuItemId = part;
 				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 				
 				// if url and not ID
 				if ( isValidHttpUrl(part) ) {
-					se.template = part;
-					_info.temporarySearchEngine = se;
+				//	se.template = part;
+					_info.temporarySearchEngine = Object.assign({}, se);
+					_info.temporarySearchEngine.template = part;
+				} else if ( findNode(userOptions.nodeTree, n => n.id === part )) {
+					_info.menuItemId = part;
+				} else {
+					continue;
 				}
 				
 				openSearch(_info);
@@ -1238,22 +1246,20 @@ function openSearch(info) {
 
 	}
 	
-	if ( info.node && info.node.type === "oneClickSearchEngine" ) {
+	if ( node && node.type === "oneClickSearchEngine" ) {
 		executeOneClickSearch(info);
-		lastSearchHandler(info.menuItemId);	
 		// buildContextMenu();
 		return false;
 	}
 	
 	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
-	if ( node.type === "bookmarklet" ) {
+	if ( node && node.type === "bookmarklet" ) {
 		console.log('bookmarklet');
 		executeBookmarklet(info, info.tab);
-		lastSearchHandler(info.menuItemId);
 		return false;
 	}
 
-	var searchEngineId = info.searchEngineId || null;
+	var searchEngineId = info.searchEngineId || info.menuItemId || null;
 	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
