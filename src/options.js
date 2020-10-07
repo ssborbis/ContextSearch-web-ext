@@ -379,6 +379,7 @@ function restoreOptions() {
 		$('#cb_disableNewTabSorting').checked = userOptions.disableNewTabSorting; 
 		$('#cb_sideBarRememberState').checked = userOptions.sideBar.rememberState;
 		$('#cb_sideBarOpenOnResults').checked = userOptions.sideBar.openOnResults;
+		$('#cb_sideBarOpenOnResultsMinimized').checked = userOptions.sideBar.openOnResultsMinimized;
 		$('#cb_enablePageTiles').checked = userOptions.enablePageTiles;
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
@@ -527,7 +528,8 @@ function saveOptions(e) {
 			height: userOptions.sideBar.height,
 			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked,
 			rememberState: $('#cb_sideBarRememberState').checked,
-			openOnResults: $('#cb_sideBarOpenOnResults').checked
+			openOnResults: $('#cb_sideBarOpenOnResults').checked,
+			openOnResultsMinimized: $('#cb_sideBarOpenOnResultsMinimized').checked
 		},
 		
 		highLight: {
@@ -1429,6 +1431,50 @@ function showSaveMessage(str, color, _class, el) {
 document.addEventListener('DOMContentLoaded', () => {
 	document.querySelectorAll('BUTTON.saveOptions').forEach( button => {
 		button.onclick = saveOptions;
+	});
+});
+
+function makeTableHTML(ar) {
+  return `<table>${ar.reduce((c, o) => c += `<tr>${o.reduce((c, d) => (c += `<td><img src="${d}" /></td>`), '')}</tr>`, '')}</table>`
+}
+
+[$('#n_pageTilesRows'), $('#n_pageTilesColumns')].forEach(el => {
+	el.addEventListener('change', e => {
+		let rows = parseInt($('#n_pageTilesRows').value);
+		let cols = parseInt($('#n_pageTilesColumns').value);
+		
+		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine", "bookmarklet"].includes(n.type));
+		
+		
+		
+	//	nodes.forEach(n => console.log(n.title));
+		let i = 0;
+
+		let A = [];
+		for ( row=0;row<rows;row++) {
+			let newColArray = [];
+			for ( col=0;col<cols;col++ ) {
+				
+				let icon = (() => {
+					if ( nodes[i].type === "searchEngine" ) {
+						let se = userOptions.searchEngines.find( se => se.id === nodes[i].id );
+						return se.icon_base64String || se.icon_url;
+					} else if ( nodes[i].type === "bookmarklet" ) {
+						return nodes[i].icon || browser.runtime.getURL('/icons/code.svg');
+					} else {
+						return nodes[i].icon;
+					}
+				})();
+				newColArray.push(icon);
+				i++;
+			}
+			A[row] = newColArray;
+		}
+		
+		console.log(A);
+		$('#pageTilesTable').innerHTML = makeTableHTML(A);
+		
+		
 	});
 });
 

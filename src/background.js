@@ -1523,10 +1523,10 @@ var highlightTabs = [];
 async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( !tab ) return;
-	
+
 	if ( userOptions.sideBar.openOnResults ) {
 		await browser.tabs.executeScript(tab.id, {
-			code: `openSideBar({noSave: true})`,
+			code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}})`,
 			runAt: 'document_idle'
 		});
 	}
@@ -1990,7 +1990,8 @@ const defaultUserOptions = {
 		},
 		closeAfterSearch: false,
 		rememberState: false,
-		openOnResults: false
+		openOnResults: false,
+		openOnResultsMinimized: false
 	},
 	highLight: {
 		enabled: true,

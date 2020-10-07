@@ -94,6 +94,11 @@ function openSideBar(options) {
 	
 	options = options || {};
 
+	if ( options.minimized ) {
+		closeSideBar(true);
+		return;
+	}
+
 	let openingTab = getOpeningTab();
 	
 	if ( openingTab ) openingTab.style.display = 'none';
@@ -242,23 +247,23 @@ function closeSideBar(minimize) {
 	let iframe = getIframe();
 	let openingTab = getOpeningTab();
 
-	iframe.style.opacity = null;
-	iframe.dataset.opened = false;
-
 	if ( openingTab || minimize) { 
 	
 		if ( !openingTab ) openingTab = makeOpeningTab();
 	//	openingTab.docking.undock();	
 		openingTab.style.display = null;
 	}
-	iframe.parentNode.removeChild(iframe);
-	delete iframe;
+	
+	if ( iframe ) {
+		iframe.style.opacity = null;
+		iframe.dataset.opened = false;
+		iframe.parentNode.removeChild(iframe);
+		delete iframe;
+	}
 
 	document.dispatchEvent(new CustomEvent('closesidebar'));
 	
 	saveState(false);
-
-
 }
 
 function saveState(state) {

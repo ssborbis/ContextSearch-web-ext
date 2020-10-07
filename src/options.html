@@ -1006,6 +1006,17 @@
 				top: 10px;
 				z-index:9999;
 			}
+			#pageTilesTable {
+				border-collapse: collapse;
+			}
+			#pageTilesTable TD {
+				border:2px outset rgba(0,0,0,.4);
+				padding:4px;
+				}
+			#pageTilesTable IMG {
+				width:16px;
+				height:16px;
+			}
 		</style>
 	</head>
 	<body>
@@ -1030,6 +1041,7 @@
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />Search Results</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />Find Bar</button>
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img src="icons/search.svg" />Search Engines</button>
+				<!-- <button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><img src="icons/transparent.gif" />Page Tiles</button> -->
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img src="icons/settings.svg" />General</button>
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.png" />Advanced</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img src="icons/help.svg" />Help</button>
@@ -1134,6 +1146,10 @@
 					<tr>
 						<td data-i18n_tooltip="Open the sidebar on search results tabs">sideBar.openOnResults</td>
 						<td><input type="checkbox" id="cb_sideBarOpenOnResults" /></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Open the sidebar on search results tabs minimized">sideBar.openOnResultsMinimized</td>
+						<td><input type="checkbox" id="cb_sideBarOpenOnResultsMinimized" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Dragging selected text will open a full-page tiled menu of search engines ( experimental )">enablePageTiles</td>
@@ -2002,6 +2018,20 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</div>
 				
 				</section>
+				</div>
+				<div class="tabcontent" id="pageTilesTab">
+					<div class="blobContainerHeader" data-i18n="PageTiles"><img src="icons/transparent.gif" />Page Tiles</div>
+					
+					<div class="description" data-i18n="">Drag and drop text to a tile representing a search engine</div>
+					<br /><br />
+					
+					<section style="min-width:720px">
+					<p class="header1" data-i18n="General">General</p>
+					
+					Rows: <input type="number" class="inputNice" id="n_pageTilesRows" min="2"/>
+					Columns: <input type="number" class="inputNice" id="n_pageTilesColumns" min="2" />
+					<div id="pageTilesTable"></div>
+					</section>
 				</div>
 				<div class="tabcontent" id="hotkeysTab">
 					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />Hotkeys</div>
