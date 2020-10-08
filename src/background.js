@@ -1155,8 +1155,10 @@ function contextMenuSearch(info, tab) {
 function lastSearchHandler(id) {
 	userOptions.lastUsedId = id;
 	
-	userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
-	userOptions.recentlyUsedList = [...new Set(userOptions.recentlyUsedList)].slice(0, userOptions.recentlyUsedListLength);
+	if ( findNode(userOptions.nodeTree, n => n.id === id ).type !== "folder" ) {
+		userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
+		userOptions.recentlyUsedList = [...new Set(userOptions.recentlyUsedList)].slice(0, userOptions.recentlyUsedListLength);
+	}
 	
 	notify({action: "saveUserOptions", userOptions: userOptions});
 }
@@ -1204,7 +1206,7 @@ function openSearch(info) {
 
 	if (!info.folder) delete window.folderWindowId;
 	
-	if ( !info.temporarySearchEngine ) 
+	if ( !info.temporarySearchEngine && !info.folder) 
 		lastSearchHandler(info.menuItemId);
 	
 	// check for multiple engines (v1.27+)
@@ -1213,36 +1215,64 @@ function openSearch(info) {
 		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
 		if (!se) return;
 		
-		// check for CS://id+id format
-		if (/^CS:\/\//.test(se.template) ) {
-			let parts = se.template.replace(/^CS:\/\//, "").split(/\+|,|&|\s+/);
+		// check for arrays
+		try { 		
+			let arr = JSON.parse(se.template);
 			
-			for ( let index in parts ) {
-				let part = parts[index].trim();
-				
-				console.log(parts);
+			arr.forEach( (url, index) => {
 
 				// make sure id != node id
-				if ( part === node.id ) return;
+				if ( url === node.id ) return;
 
 				let _info = Object.assign({}, info);
 				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 				
 				// if url and not ID
-				if ( isValidHttpUrl(part) ) {
+				if ( isValidHttpUrl(url) ) {
 				//	se.template = part;
 					_info.temporarySearchEngine = Object.assign({}, se);
-					_info.temporarySearchEngine.template = part;
-				} else if ( findNode(userOptions.nodeTree, n => n.id === part )) {
-					_info.menuItemId = part;
+					_info.temporarySearchEngine.template = url;
+				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
+					_info.menuItemId = url;
 				} else {
-					continue;
+					return;
 				}
 				
 				openSearch(_info);
-			}
+			});
 			return;
-		}
+			
+		} catch (error) {}
+		
+		// if (/^CS:\/\//.test(se.template) ) {
+			// let parts = se.template.replace(/^CS:\/\//, "").split(/\+|,|\s+/);
+			
+			// for ( let index in parts ) {
+				// let part = parts[index].trim();
+				
+				// console.log(parts);
+
+				// // make sure id != node id
+				// if ( part === node.id ) return;
+
+				// let _info = Object.assign({}, info);
+				// _info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
+				
+				// // if url and not ID
+				// if ( isValidHttpUrl(part) ) {
+				// //	se.template = part;
+					// _info.temporarySearchEngine = Object.assign({}, se);
+					// _info.temporarySearchEngine.template = part;
+				// } else if ( findNode(userOptions.nodeTree, n => n.id === part )) {
+					// _info.menuItemId = part;
+				// } else {
+					// continue;
+				// }
+				
+				// openSearch(_info);
+			// }
+			// return;
+		// }
 
 	}
 	
@@ -1486,7 +1516,7 @@ function openSearch(info) {
 function folderSearch(info, tab) {
 
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
-	
+
 	let messages = [];
 	
 	node.children.forEach( (_node, index) => {
@@ -1506,8 +1536,10 @@ function folderSearch(info, tab) {
 		for (let promise of promises) 
 			await promise();
 		
-		if ( !keepMenuOpen(e, true))
-			closeMenuRequest();
+		// if ( !keepMenuOpen(e, true))
+			// closeMenuRequest();
+		
+		lastSearchHandler(node.id);
 	}
 
 	return runPromisesInSequence(messages);

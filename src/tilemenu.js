@@ -134,6 +134,8 @@ function addTileEventHandlers(_tile, handler) {
 			quickMenuObject.lastUsed = _tile.dataset.id || null;
 			userOptions.lastUsedId = quickMenuObject.lastUsed;
 			
+			document.dispatchEvent(new CustomEvent('updateLastUsed'));
+			
 			// browser.runtime.sendMessage({action: "setLastUsed", id: userOptions.lastUsedId});
 		}
 
@@ -1576,6 +1578,10 @@ async function makeQuickMenu(options) {
 							openMethod: method
 						}
 					});
+					
+					quickMenuObject.lastUsed = node.id
+					userOptions.lastUsedId = quickMenuObject.lastUsed;
+					document.dispatchEvent(new CustomEvent('updateLastUsed'));
 				}
 
 				break;
