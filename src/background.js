@@ -1491,7 +1491,8 @@ function openSearch(info) {
 		var creating = browser.tabs.create({
 			url: q,
 			active: !inBackground,
-			openerTabId: (info.folder ? null : openerTabId)
+			openerTabId: ( userOptions.openFoldersAfterLastTab ) ? null : openerTabId
+			//openerTabId: (info.folder ? null : openerTabId)
 		});
 
 		return creating.then(onCreate, onError);
@@ -1527,8 +1528,9 @@ function folderSearch(info, tab) {
 			_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 			_info.folder = index ? true : false;
 			_info.menuItemId = _node.id;
+			_info.tab = tab;
 
-			messages.push( async() => await quickMenuSearch(_info, tab) );
+			messages.push( async() => await openSearch(_info) );
 		}	
 	});
 
