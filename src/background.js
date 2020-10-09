@@ -1219,6 +1219,8 @@ function openSearch(info) {
 		try { 		
 			let arr = JSON.parse(se.template);
 			
+			console.log(arr);
+			
 			arr.forEach( (url, index) => {
 
 				// make sure id != node id
@@ -1229,12 +1231,20 @@ function openSearch(info) {
 				
 				// if url and not ID
 				if ( isValidHttpUrl(url) ) {
-				//	se.template = part;
+					
 					_info.temporarySearchEngine = Object.assign({}, se);
 					_info.temporarySearchEngine.template = url;
+
+					// parse encoding for multi-URLs
+					let matches = /{encoding=(.*?)}/.exec(url);
+		
+					if ( matches && matches[1] )
+						_info.temporarySearchEngine.queryCharset = matches[1];
+
 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
 					_info.menuItemId = url;
 				} else {
+					console.log('url invalid', url);
 					return;
 				}
 				
@@ -1242,38 +1252,9 @@ function openSearch(info) {
 			});
 			return;
 			
-		} catch (error) {}
-		
-		// if (/^CS:\/\//.test(se.template) ) {
-			// let parts = se.template.replace(/^CS:\/\//, "").split(/\+|,|\s+/);
-			
-			// for ( let index in parts ) {
-				// let part = parts[index].trim();
-				
-				// console.log(parts);
-
-				// // make sure id != node id
-				// if ( part === node.id ) return;
-
-				// let _info = Object.assign({}, info);
-				// _info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
-				
-				// // if url and not ID
-				// if ( isValidHttpUrl(part) ) {
-				// //	se.template = part;
-					// _info.temporarySearchEngine = Object.assign({}, se);
-					// _info.temporarySearchEngine.template = part;
-				// } else if ( findNode(userOptions.nodeTree, n => n.id === part )) {
-					// _info.menuItemId = part;
-				// } else {
-					// continue;
-				// }
-				
-				// openSearch(_info);
-			// }
-			// return;
-		// }
-
+		} catch (error) {
+			console.log(error);
+		}
 	}
 	
 	if ( node && node.type === "oneClickSearchEngine" ) {
@@ -1299,9 +1280,9 @@ function openSearch(info) {
 
 	if ( !temporarySearchEngine && searchEngineId === null ) return false;
 	
-	var openerTabId = ( userOptions.disableNewTabSorting ? null : (tab.id || null));
-
 	if (!tab) tab = {url:"", id:0}
+	
+	var openerTabId = userOptions.disableNewTabSorting ? null : tab.id;
 	
 	var se;
 	
@@ -1339,7 +1320,7 @@ function openSearch(info) {
 		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
 		
 		var q = replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
-		
+
 		// set landing page for POST engines
 		if ( 
 			!searchTerms || // empty searches should go to the landing page also
