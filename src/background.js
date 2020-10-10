@@ -1218,9 +1218,7 @@ function openSearch(info) {
 		// check for arrays
 		try { 		
 			let arr = JSON.parse(se.template);
-			
-			console.log(arr);
-			
+
 			arr.forEach( (url, index) => {
 
 				// make sure id != node id
@@ -1253,13 +1251,12 @@ function openSearch(info) {
 			return;
 			
 		} catch (error) {
-			console.log(error);
+		//	console.log(error);
 		}
 	}
 	
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		executeOneClickSearch(info);
-		// buildContextMenu();
 		return false;
 	}
 	
@@ -1510,6 +1507,7 @@ function folderSearch(info, tab) {
 			_info.folder = index ? true : false;
 			_info.menuItemId = _node.id;
 			_info.tab = tab;
+			_info.searchTerms = info.selectionText;
 
 			messages.push( async() => await openSearch(_info) );
 		}	
