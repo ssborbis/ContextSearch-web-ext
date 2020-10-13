@@ -1467,7 +1467,14 @@ function makePageTilesGrid() {
 	
 	if ( userOptions.pageTiles.grid ) {
 		userOptions.pageTiles.grid.forEach( g => {
-			gridNodes.push(nodes.find(n => n.id === g));
+			if ( !g ) 
+				gridNodes.push({
+					id: null,
+					type: "bookmarklet",
+					icon: browser.runtime.getURL('/icons/empty.svg')
+				});
+			else
+				gridNodes.push(nodes.find(n => n.id === g));
 		});
 	}
 	

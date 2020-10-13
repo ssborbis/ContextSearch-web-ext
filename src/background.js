@@ -2084,7 +2084,7 @@ const defaultUserOptions = {
 	pageTiles: {
 		rows: 4,
 		columns: 4,
-		enabled: true,
+		enabled: false,
 		grid: []
 	}
 };

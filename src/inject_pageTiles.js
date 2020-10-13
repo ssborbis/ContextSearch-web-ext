@@ -25,12 +25,12 @@ document.addEventListener('dragstart', async e => {
 
 	let nodes = findNodes(userOptions.nodeTree, n => true);
 	
-	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) );
+	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) || {id: null, type: "bookmarklet", title: "", icon: browser.runtime.getURL('/icons/empty.svg')} );
 	
 	gridNodes.forEach( node => {
 		
 	//	if ( ['separator', 'folder'].includes(node.type) ) return;
-		
+
 		let div = document.createElement('div');
 		div.className = 'CS_pageTile';
 		div.innerText = node.title;
@@ -76,6 +76,14 @@ document.addEventListener('dragstart', async e => {
 		
 		div.addEventListener('dragend', () => {mainDiv.parentNode.removeChild(mainDiv)});
 		div.addEventListener('click', () => {mainDiv.parentNode.removeChild(mainDiv)});
+		
+		if ( !node.id ) {
+			div.ondragover = null;
+			div.ondrop = null;
+			div.onclick = null;
+			div.ondragleave = null;
+			div.ondragenter = null;
+		}
 		
 		mainDiv.appendChild(div);
 	});
