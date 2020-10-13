@@ -177,7 +177,7 @@ var QMtools = [
 						let se = userOptions.searchEngines.find( se => se.id === node.id );
 						tile.style.backgroundImage = `url('${se.icon_base64String || se.icon_url}')`;
 					} else if ( node.type === "folder" ) {
-						tile.style.backgroundImage = `url(${browser.runtime.getURL("/icons/folder-icon.svg")})`;
+						tile.style.backgroundImage = `url(${node.icon || browser.runtime.getURL("/icons/folder-icon.svg")})`;
 					} else {
 						tile.style.backgroundImage = `url('${node.icon}')`;
 					}

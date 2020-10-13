@@ -1,6 +1,6 @@
 document.addEventListener('dragstart', async e => {
 	
-	if ( !userOptions.enablePageTiles ) return;
+	if ( !userOptions.pageTiles.enabled ) return;
 	
 	let pageTilesFolder = findNode( userOptions.nodeTree, n => n.type === "folder" && n.title === "Page Tiles" );
 	
@@ -9,6 +9,9 @@ document.addEventListener('dragstart', async e => {
 	//await new Promise(r => setTimeout(r, 50));
 	
 	let selectedText = getSelectedText(e.target);
+	
+	if (!selectedText) return false;
+	
 	e.dataTransfer.setData("text/plain", selectedText);
 
 	var mainDiv = document.createElement('div');
@@ -19,10 +22,12 @@ document.addEventListener('dragstart', async e => {
 	
 	mainDiv.style.setProperty("--cs-pagetilerows", rows);
 	mainDiv.style.setProperty("--cs-pagetilecols", cols);
+
+	let nodes = findNodes(userOptions.nodeTree, n => true);
 	
-	console.log("rows", rows, "cols", cols);
+	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) );
 	
-	pageTilesFolder.children.forEach( node => {
+	gridNodes.forEach( node => {
 		
 	//	if ( ['separator', 'folder'].includes(node.type) ) return;
 		
@@ -39,9 +44,7 @@ document.addEventListener('dragstart', async e => {
 			node.icon = node.icon || browser.runtime.getURL('icons/code.svg');
 		
 		div.style.backgroundImage = `url(${node.icon})`;
-		
-		// console.log(node);
-		
+
 		div.ondragenter = function(e) { 
 			e.preventDefault();
 			div.classList.add('dragover');
@@ -58,7 +61,6 @@ document.addEventListener('dragstart', async e => {
 		function searchHandler(e) {
 			e.preventDefault();
 			const data = e.dataTransfer.getData("text/plain");			
-			console.log("got", data);
 
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 

@@ -1543,7 +1543,7 @@ async function makeQuickMenu(options) {
 				break;
 		
 			case "folder":
-				tile = buildSearchIcon( browser.runtime.getURL("/icons/folder-icon.svg"), node.title);
+				tile = buildSearchIcon( node.icon || browser.runtime.getURL("/icons/folder-icon.svg"), node.title);
 
 				tile.dataset.type = 'folder';
 				tile.dataset.title = node.title;

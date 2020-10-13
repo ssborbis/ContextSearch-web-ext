@@ -837,7 +837,7 @@ async function buildContextMenu() {
 				id: _id,
 				title: getTitleWithHotkey(node),
 				icons: {
-					"16": "/icons/folder-icon.svg"
+					"16": node.icon || "/icons/folder-icon.svg"
 				}
 			});
 			
@@ -2080,7 +2080,13 @@ const defaultUserOptions = {
 	recentlyUsedList: [],
 	recentlyUsedListLength: 10,	
 	disableNewTabSorting: false,
-	contextMenuHotkeys: false
+	contextMenuHotkeys: false,
+	pageTiles: {
+		rows: 4,
+		columns: 4,
+		enabled: true,
+		grid: []
+	}
 };
 
 var userOptions = {};

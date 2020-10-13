@@ -529,7 +529,7 @@ function buildSearchEngineContainer() {
 		if (node.type === 'folder') {
 			
 			let img = document.createElement('img');
-			img.src = browser.runtime.getURL('/icons/folder-icon.svg');
+			img.src = node.icon || browser.runtime.getURL('/icons/folder-icon.svg');
 			header.appendChild(img);
 			
 			let text = document.createElement('span');
@@ -543,8 +543,6 @@ function buildSearchEngineContainer() {
 			expand.style.padding = "0 6px";
 			expand.style.fontFamily = "monospace";
 			header.insertBefore(expand, header.firstChild);
-			
-			
 
 			let ul = document.createElement('ul');
 			li.appendChild(ul);
