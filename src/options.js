@@ -1457,6 +1457,14 @@ function getIconFromNode(node) {
 
 }
 
+function makeEmptyGridNode() {	
+	return {
+		id: null,
+		type: "bookmarklet",
+		icon: browser.runtime.getURL('/icons/empty.svg')
+	}
+}
+
 function makePageTilesGrid() {
 	let rows = parseInt($('#n_pageTilesRows').value);
 	let cols = parseInt($('#n_pageTilesColumns').value);
@@ -1465,27 +1473,21 @@ function makePageTilesGrid() {
 	
 	let gridNodes = [];
 	
-	if ( userOptions.pageTiles.grid ) {
-		userOptions.pageTiles.grid.forEach( g => {
-			if ( !g ) 
-				gridNodes.push({
-					id: null,
-					type: "bookmarklet",
-					icon: browser.runtime.getURL('/icons/empty.svg')
-				});
-			else
-				gridNodes.push(nodes.find(n => n.id === g));
-		});
-	}
+	userOptions.pageTiles.grid.forEach( g => {
+		if ( !g ) 
+			gridNodes.push(makeEmptyGridNode());
+		else
+			gridNodes.push(nodes.find(n => n.id === g));
+	});
 	
 	if ( !gridNodes.length ) gridNodes = nodes;
 		
-	let w_ratio = window.screen.width / cols;
-	let h_ratio = window.screen.height / rows;
+	// let w_ratio = window.screen.width / cols;
+	// let h_ratio = window.screen.height / rows;
 
 	let table = $('#pageTilesTable');
 	table.innerHTML = null;
-	table.style.setProperty("--width-ratio", w_ratio / h_ratio);
+	// table.style.setProperty("--width-ratio", w_ratio / h_ratio);
 	let i = 0;
 
 	for ( row=0;row<rows;row++) {
@@ -1494,6 +1496,10 @@ function makePageTilesGrid() {
 		for ( col=0;col<cols;col++ ) {
 			let td = document.createElement('td');
 			let node = gridNodes[i++];
+			
+			// outside array bounds
+			if ( !node ) node = makeEmptyGridNode();
+			
 			let icon = getIconFromNode(node);
 			
 			let img = new Image();
@@ -1542,11 +1548,7 @@ document.addEventListener('userOptionsLoaded', () => {
 	
 	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "bookmarklet", "oneClickSearchEngine"].includes(n.type));
 	
-	nodes.push({
-		id: null,
-		type: "bookmarklet",
-		icon: browser.runtime.getURL('/icons/empty.svg')
-	});
+	nodes.push(makeEmptyGridNode());
 	
 	nodes.forEach(n => {
 
