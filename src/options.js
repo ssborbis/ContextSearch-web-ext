@@ -383,7 +383,7 @@ function restoreOptions() {
 
 		$('#n_pageTilesRows').value = userOptions.pageTiles.rows;
 		$('#n_pageTilesColumns').value = userOptions.pageTiles.columns;
-		$('#cb_pageTilesEnabled').value = userOptions.pageTiles.enabled;
+		$('#cb_pageTilesEnabled').checked = userOptions.pageTiles.enabled;
 		
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
