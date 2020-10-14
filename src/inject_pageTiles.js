@@ -17,8 +17,8 @@ document.addEventListener('dragstart', async e => {
 	var mainDiv = document.createElement('div');
 	mainDiv.className = "CS_pageTilesContainer";
 
-	let rows = Math.ceil(Math.sqrt(pageTilesFolder.children.length));
-	let cols = Math.ceil(pageTilesFolder.children.length / rows);
+	let rows = userOptions.pageTiles.rows;
+	let cols = userOptions.pageTiles.columns;
 	
 	mainDiv.style.setProperty("--cs-pagetilerows", rows);
 	mainDiv.style.setProperty("--cs-pagetilecols", cols);
