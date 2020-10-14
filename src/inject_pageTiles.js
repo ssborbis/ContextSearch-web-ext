@@ -67,7 +67,7 @@ document.addEventListener('dragstart', async e => {
 				info: {
 					menuItemId: node.id,
 					selectionText: data,
-					openMethod: "openBackgroundTab"
+					openMethod: userOptions.pageTiles.openMethod
 				}
 			});
 			

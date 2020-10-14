@@ -2033,6 +2033,41 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<div class="description" data-i18n="PageTilesEnabledTooltip">Enable Page Tiles</div>
 					</div>
 					
+				<table class="searchActions">
+				<tr>
+					<td></td>
+					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">Search Engines</span></td>
+					<!-- <td style="text-align:center"><span class="header2" data-i18n="Folders">Folders</span></td> -->
+				</tr>
+				<tr>
+					<td>
+					<span class="buttonLabel" data-i18n="">Drop</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="s_pageTilesOpenMethod">
+						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
+						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
+						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option>
+						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">Open In Sidebar</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
+					</select>
+					</td>
+					<!-- <td> -->
+					<!-- <select class="inputNice" id="s_pageTileOpenMethodFolder"> -->
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option> -->
+						<!-- <option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option> -->
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option> -->
+						<!-- <option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option> -->
+						<!-- <option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">Open In Incognito Window</option> -->
+						<!-- <option value="noAction" data-i18n="SearchActionsNoAction">No Action</option> -->
+					<!-- </select> -->
+					<!-- </td> -->
+				</tr>
+				</table>
+					
 					<hr />
 					
 					<div id="pageTilesChooser"></div>

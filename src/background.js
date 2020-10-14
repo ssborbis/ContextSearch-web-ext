@@ -2085,7 +2085,8 @@ const defaultUserOptions = {
 		rows: 4,
 		columns: 4,
 		enabled: false,
-		grid: []
+		grid: [],
+		openMethod: "openBackgroundTab"
 	}
 };
 

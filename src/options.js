@@ -384,6 +384,7 @@ function restoreOptions() {
 		$('#n_pageTilesRows').value = userOptions.pageTiles.rows;
 		$('#n_pageTilesColumns').value = userOptions.pageTiles.columns;
 		$('#cb_pageTilesEnabled').checked = userOptions.pageTiles.enabled;
+		$('#s_pageTilesOpenMethod').value = userOptions.pageTiles.openMethod;
 		
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
@@ -651,6 +652,7 @@ function saveOptions(e) {
 			enabled: $('#cb_pageTilesEnabled').checked,
 			rows: parseInt($('#n_pageTilesRows').value),
 			columns: parseInt($('#n_pageTilesColumns').value),
+			openMethod: $('#s_pageTilesOpenMethod').value,
 			grid: userOptions.pageTiles.grid
 		}
 	}
@@ -1461,7 +1463,8 @@ function makeEmptyGridNode() {
 	return {
 		id: null,
 		type: "bookmarklet",
-		icon: browser.runtime.getURL('/icons/empty.svg')
+		icon: browser.runtime.getURL('/icons/empty.svg'),
+		title: ""
 	}
 }
 
