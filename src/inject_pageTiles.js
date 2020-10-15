@@ -2,8 +2,6 @@ document.addEventListener('dragstart', async e => {
 	
 	if ( !userOptions.pageTiles.enabled ) return;
 		
-	//await new Promise(r => setTimeout(r, 50));
-	
 	let selectedText = getSelectedText(e.target);
 	
 	if (!selectedText) return false;
@@ -22,6 +20,8 @@ document.addEventListener('dragstart', async e => {
 	let nodes = findNodes(userOptions.nodeTree, n => true);
 	
 	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) || {id: null, type: "bookmarklet", title: "", icon: browser.runtime.getURL('/icons/empty.svg')} );
+	
+	gridNodes = gridNodes.slice(0, rows * cols);
 	
 	gridNodes.forEach( node => {
 		
@@ -73,6 +73,7 @@ document.addEventListener('dragstart', async e => {
 		div.addEventListener('dragend', () => {mainDiv.parentNode.removeChild(mainDiv)});
 		div.addEventListener('click', () => {mainDiv.parentNode.removeChild(mainDiv)});
 		
+		// clear events for empty tiles
 		if ( !node.id ) {
 			div.ondragover = null;
 			div.ondrop = null;
@@ -87,5 +88,13 @@ document.addEventListener('dragstart', async e => {
 	setTimeout(() => { // chrome / slow browser fix
 		document.body.appendChild(mainDiv);
 	}, 50);
+});
+
+document.addEventListener('keydown', e => {
+	if ( e.key !== "Escape" ) return;
+	
+	let el = document.querySelector('.CS_pageTilesContainer');
+	
+	if ( el ) el.parentNode.removeChild(el);
 });
 

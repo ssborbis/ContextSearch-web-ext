@@ -563,6 +563,13 @@ async function notify(message, sender, sendResponse) {
 				});
 			}
 			
+			if ( userOptions.pageTiles.enabled ) {
+				browser.tabs.executeScript(sender.tab.id, {
+					file: "/inject_pagetiles.js",
+					frameId: sender.frameId
+				});
+			}
+			
 			break;
 			
 		case "getFirefoxSearchEngines":
@@ -922,6 +929,71 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 
 browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
+function openWithMethod(o) {
+	if ( !o.url ) return;
+	
+	o.openerTabId = o.openerTabId || null;
+	
+	switch (o.openMethod) {
+		case "openCurrentTab":
+			return openCurrentTab();
+			break;
+		case "openNewTab":
+			return openNewTab(false);
+			break;
+		case "openNewWindow":
+			return openNewWindow(false);
+			break;
+		case "openNewIncognitoWindow":
+			return openNewWindow(true);
+			break;
+		case "openBackgroundTab":
+		case "openBackgroundTabKeepOpen":
+			return openNewTab(true);
+			break;
+		case "openSideBarAction":
+			return openSideBarAction(o.url);
+			break;
+	}
+	
+	function openCurrentTab() {
+		
+		return browser.tabs.update({
+			url: o.url,
+			openerTabId: o.openerTabId
+		});
+	} 
+	function openNewWindow(incognito) {	// open in new window
+
+		return browser.windows.create({
+			url: o.url,
+			incognito: incognito
+		});
+	} 
+	function openNewTab(inBackground) {	// open in new tab
+
+		return browser.tabs.create({
+			url: o.url,
+			active: !inBackground,
+			openerTabId: ( userOptions.openFoldersAfterLastTab ) ? null : o.openerTabId
+			//openerTabId: (info.folder ? null : openerTabId)
+		});
+
+	}	
+
+	async function openSideBarAction(url) {
+
+		if ( !browser.sidebarAction ) return;
+		
+		await browser.sidebarAction.setPanel( {panel: null} ); // firefox appears to ignore subsequent calls to setPanel if old url = new url, even in cases of differing #hash
+		
+		await browser.sidebarAction.setPanel( {panel: url} );
+			
+		if ( !await browser.sidebarAction.isOpen({}) )
+			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
+	}
+}
+
 function executeBookmarklet(info, tab) {
 	
 	if (!browser.bookmarks) {
@@ -933,52 +1005,13 @@ function executeBookmarklet(info, tab) {
 		bookmark = bookmark.shift();
 		
 		if (!bookmark.url.startsWith("javascript")) { // assume bookmark
-			switch (info.openMethod) {
-				case "openCurrentTab":
-					browser.tabs.getCurrent().then( tab => {
-						browser.tabs.update(tab.id, { url: bookmark.url });
-					});
-					break;
-				case "openNewTab":
-					return browser.tabs.create({
-						active: true,
-						url: bookmark.url
-					});
-					break;
-				case "openNewWindow":
-					return browser.windows.create({
-						incognito: false,
-						url: bookmark.url
-					});
-					break;
-				case "openNewIncognitoWindow":
-					return browser.windows.create({
-						incognito: true,
-						url: bookmark.url
-					});
-					break;
-				case "openBackgroundTab":
-				case "openBackgroundTabKeepOpen":
-					return browser.tabs.create({
-						active: false,
-						url: bookmark.url
-					});
-					break;
-				case "openSideBarAction":
-					async function openSideBarAction() {
+		
+			openWithMethod({
+				openMethod: info.openMethod, 
+				url: bookmark.url,
+				openerTabId: null
+			});
 				
-						if ( !browser.sidebarAction ) return;
-						
-						await browser.sidebarAction.setPanel( {panel: bookmark.url} );
-							
-						if ( !await browser.sidebarAction.isOpen({}) )
-							notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
-							
-					}
-					openSideBarAction();
-					break;
-			}
-	
 		//	console.error('bookmark not a bookmarklet');
 			return false;
 		}
@@ -1006,7 +1039,7 @@ function executeOneClickSearch(info) {
 
 	let searchTerms = info.searchTerms;
 	let openMethod = info.openMethod;
-	let openerTabId = ( userOptions.disableNewTabSorting ? null : (info.openerTabId || null ) );
+	let openerTabId = userOptions.disableNewTabSorting ? null : info.tab.id;
 	
 	notify({action: "addToHistory", searchTerms: searchTerms});
 
@@ -1028,58 +1061,24 @@ function executeOneClickSearch(info) {
 			browser.tabs.onUpdated.removeListener(listener);
 		});
 	}
-
-	switch (openMethod) {
-		case "openCurrentTab":
-			browser.tabs.getCurrent().then( tab => {
-				searchAndHighlight(tab);
-			});
-			break;
-		case "openNewTab":
-			return browser.tabs.create({
-				active: true,
-				url: "about:blank", //browser.runtime.getURL("blank.html")
-				openerTabId: openerTabId
-			}).then( (tab) => {
-				searchAndHighlight(tab);
-			});
-			break;
-		case "openNewWindow":
-			return browser.windows.create({
-				incognito: false
-			}).then( (tab) => {
-				
-				// if new window
-				if (tab.tabs) tab = tab.tabs[0];
-				
-				searchAndHighlight(tab);
-			});
-			break;
-		case "openNewIncognitoWindow":
-			return browser.windows.create({
-				incognito: true
-			}).then( (tab) => {
-				
-				// if new window
-				if (tab.tabs) tab = tab.tabs[0];
-				
-				searchAndHighlight(tab);
-			});
-			break;
-		case "openBackgroundTab":
-		case "openBackgroundTabKeepOpen":
-			return browser.tabs.create({
-				active: false,
-				url: "about:blank",
-				openerTabId: openerTabId
-			}).then( (tab) => {
-				searchAndHighlight(tab);
-			});
-			break;
-		case "openSideBarAction":
-			console.log("one-click search engines cannot be used with sidebaraction");
-			break;
+	
+	function onError(error) {
+		console.log(`Error: ${error}`);
 	}
+	
+	if ( openMethod === "openSideBarAction" ) {
+		return console.log("one-click search engines cannot be used with sidebaraction");
+	}
+	
+	openWithMethod({
+		openMethod: openMethod, 
+		url: "about:blank",
+		openerTabId: openerTabId
+	}).then( tab => {
+		// if new window
+		if (tab.tabs) tab = tab.tabs[0];
+		searchAndHighlight(tab);
+	}, onError);
 
 }
 
@@ -1341,27 +1340,11 @@ function openSearch(info) {
 			q = "http://" + searchTerms;
 	}
 	
-	switch (openMethod) {
-		case "openCurrentTab":
-			return openCurrentTab();
-			break;
-		case "openNewTab":
-			return openNewTab();
-			break;
-		case "openNewWindow":
-			return openNewWindow();
-			break;
-		case "openNewIncognitoWindow":
-			return openNewWindow(true);
-			break;
-		case "openBackgroundTab":
-		case "openBackgroundTabKeepOpen":
-			return openBackgroundTab();
-			break;
-		case "openSideBarAction":
-			openSideBarAction();
-			break;
-	}
+	openWithMethod({
+		openMethod: openMethod, 
+		url: q, 
+		openerTabId: openerTabId
+	}).then(onCreate, onError);
 	
 	function executeSearchCode(tabId) {
 		if ( !se.searchCode ) return;
@@ -1442,54 +1425,10 @@ function openSearch(info) {
 		});
 	}
 	
-	function onError() {
+	function onError(error) {
 		console.log(`Error: ${error}`);
 	}
-			
-	function openCurrentTab() {
-		
-		var creating = browser.tabs.update({
-			url: q,
-			openerTabId: openerTabId
-		});
-		return creating.then(onCreate, onError);
-	} 
-	function openNewWindow(incognito) {	// open in new window
 
-		var creating = browser.windows.create({
-			url: q,
-			incognito: incognito || false
-		});
-		return creating.then(onCreate, onError);
-	} 
-	function openNewTab(inBackground) {	// open in new tab
-	
-		inBackground = inBackground || false;
-
-		var creating = browser.tabs.create({
-			url: q,
-			active: !inBackground,
-			openerTabId: ( userOptions.openFoldersAfterLastTab ) ? null : openerTabId
-			//openerTabId: (info.folder ? null : openerTabId)
-		});
-
-		return creating.then(onCreate, onError);
-
-	}	
-	function openBackgroundTab() {
-		return openNewTab(true);
-	}
-	async function openSideBarAction() {
-
-		if ( !browser.sidebarAction ) return;
-		
-		await browser.sidebarAction.setPanel( {panel: null} ); // forefox appears to ignore subsequent calls to setPanel if old url = new url, even in cases of differing #hash
-		
-		await browser.sidebarAction.setPanel( {panel: q} );
-			
-		if ( !await browser.sidebarAction.isOpen({}) )
-			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
-	}
 }
 
 function folderSearch(info, tab) {
