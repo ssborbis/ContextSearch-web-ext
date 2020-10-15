@@ -212,20 +212,22 @@
 }
 .CS_pageTile {
 	display:inline-block;
-	border:1px solid black;
+	border:1px solid #e0e0e0;
 	background-size:calc(100% / 4);
 	background-position:center center;
 	background-repeat:no-repeat;
+	background-color: #eff0f1;
 	color:white;
+	color:#444;
 	font-size:1em;
 	text-align:center;
-	background-color: rgba(0,0,0,.85);
 	width: calc(100% / var(--cs-pagetilecols) - 2px);
 	height: calc(100% / var(--cs-pagetilerows) - 2px);
 	line-height:normal;
 	overflow:hidden;
+	font-family:Segoe UI;
 	/* padding-top:10%; */
 }
 .CS_pageTile.dragover {
-	background-color: rgba(0,0,255,.85);
+	background-color: #ccdbe8;
 }
