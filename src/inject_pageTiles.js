@@ -1,9 +1,9 @@
 document.addEventListener('dragstart', async e => {
-	
+
 	if ( !userOptions.pageTiles.enabled ) return;
 		
 	let selectedText = getSelectedText(e.target);
-	
+
 	if (!selectedText) return false;
 	
 	e.dataTransfer.setData("text/plain", selectedText);
@@ -18,13 +18,13 @@ document.addEventListener('dragstart', async e => {
 	mainDiv.style.setProperty("--cs-pagetilecols", cols);
 
 	let nodes = findNodes(userOptions.nodeTree, n => true);
-	
+
 	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) || {id: null, type: "bookmarklet", title: "", icon: browser.runtime.getURL('/icons/empty.svg')} );
 	
 	gridNodes = gridNodes.slice(0, rows * cols);
-	
+
 	gridNodes.forEach( node => {
-		
+
 	//	if ( ['separator', 'folder'].includes(node.type) ) return;
 
 		let div = document.createElement('div');

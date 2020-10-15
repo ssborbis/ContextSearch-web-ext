@@ -1515,11 +1515,7 @@ function makePageTilesGrid() {
 				img.src = window.dragSource.src;
 				e.target.nodeid = window.dragSource.nodeid;
 				
-				let grid_array = [...table.querySelectorAll('img')].map(i => i.nodeid);
-				console.log(grid_array);
-	
-				userOptions.pageTiles.grid = grid_array;
-				saveOptions();
+				saveGrid();
 			}
 			
 			img.ondragstart = function(e) {
@@ -1537,11 +1533,18 @@ function makePageTilesGrid() {
 
 }
 
-// window.addEventListener("hashchange", () => {
-	// if ( location.hash !== "#pagetiles" ) return;
-	
-	// makePageTilesGrid();
-// });
+function saveGrid() {
+	let table = $('#pageTilesTable');
+	let grid_array = [...table.querySelectorAll('img')].map(i => i.nodeid);
+
+	userOptions.pageTiles.grid = grid_array;
+	saveOptions();
+}
+
+$('#cb_pageTilesEnabled').addEventListener('change', e => {
+	if ( !userOptions.pageTiles.grid.length )
+		saveGrid();
+});
 
 document.addEventListener('userOptionsLoaded', () => {
 	

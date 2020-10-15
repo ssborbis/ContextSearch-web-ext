@@ -994,7 +994,7 @@ function openWithMethod(o) {
 	}
 }
 
-function executeBookmarklet(info, tab) {
+function executeBookmarklet(info) {
 	
 	if (!browser.bookmarks) {
 		console.error('No bookmarks permission');
@@ -1009,14 +1009,14 @@ function executeBookmarklet(info, tab) {
 			openWithMethod({
 				openMethod: info.openMethod, 
 				url: bookmark.url,
-				openerTabId: null
+				openerTabId: userOptions.disableNewTabSorting ? null : info.tab.id
 			});
 				
 		//	console.error('bookmark not a bookmarklet');
 			return false;
 		}
 		
-		console.log(window.searchTerms, info.selectionText);
+		// console.log(window.searchTerms, info.selectionText);
 
 		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
@@ -1262,7 +1262,7 @@ function openSearch(info) {
 	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
 	if ( node && node.type === "bookmarklet" ) {
 		console.log('bookmarklet');
-		executeBookmarklet(info, info.tab);
+		executeBookmarklet(info);
 		return false;
 	}
 
@@ -2021,7 +2021,7 @@ const defaultUserOptions = {
 	disableNewTabSorting: false,
 	contextMenuHotkeys: false,
 	pageTiles: {
-		rows: 4,
+		rows: 3,
 		columns: 4,
 		enabled: false,
 		grid: [],
