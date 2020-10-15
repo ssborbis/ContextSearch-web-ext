@@ -1,11 +1,7 @@
 document.addEventListener('dragstart', async e => {
 	
 	if ( !userOptions.pageTiles.enabled ) return;
-	
-	let pageTilesFolder = findNode( userOptions.nodeTree, n => n.type === "folder" && n.title === "Page Tiles" );
-	
-	if ( !pageTilesFolder ) return false;
-	
+		
 	//await new Promise(r => setTimeout(r, 50));
 	
 	let selectedText = getSelectedText(e.target);
