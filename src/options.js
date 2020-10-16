@@ -1512,9 +1512,18 @@ function makePageTilesGrid() {
 			img.ondragover = function(e) { e.preventDefault();}
 			img.ondrop = function(e) {
 				e.preventDefault();
-				img.src = window.dragSource.src;
-				e.target.nodeid = window.dragSource.nodeid;
-				
+
+				if ( table.contains(window.dragSource) ) {
+					let td1 = window.dragSource.parentNode;
+					let td2 = img.parentNode;
+					
+					td2.appendChild(window.dragSource);
+					td1.appendChild(img);
+				} else {
+					img.src = window.dragSource.src;
+					img.nodeid = window.dragSource.nodeid;
+				}
+
 				saveGrid();
 			}
 			
@@ -1525,7 +1534,6 @@ function makePageTilesGrid() {
 				window.dragSource = img;
 			}
 	
-			img.setAttribute("draggable", "true");
 			td.appendChild(img);
 			tr.appendChild(td);
 		}
