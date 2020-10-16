@@ -1184,17 +1184,15 @@ function quickMenuSearch(info, tab) {
 	info.searchTerms = info.selectionText;
 	info.tab = tab;
 	
-	// return openSearch({
-// -		node: node,
-// -		searchEngineId: info.menuItemId, 
-// -		searchTerms: info.selectionText,
-// -		openMethod: info.openMethod, 
-// -		tab: tab,
-// -		openUrl: info.openUrl || null,
-// -		folder: info.folder,
-// -		domain: info.domain,
-// -		temporarySearchEngine: info.temporarySearchEngine || null
-// -	});
+// -	node: node,
+// -	searchEngineId: info.menuItemId, 
+// -	searchTerms: info.selectionText,
+// -	openMethod: info.openMethod, 
+// -	tab: tab,
+// -	openUrl: info.openUrl || null,
+// -	folder: info.folder,
+// -	domain: info.domain,
+// -	temporarySearchEngine: info.temporarySearchEngine || null
 
 	return openSearch(info);
 }
@@ -1255,13 +1253,14 @@ function openSearch(info) {
 	}
 	
 	if ( node && node.type === "oneClickSearchEngine" ) {
+		console.log("oneClickSearchEngine");
 		executeOneClickSearch(info);
 		return false;
 	}
 	
 	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
 	if ( node && node.type === "bookmarklet" ) {
-		console.log('bookmarklet');
+		console.log("bookmarklet");
 		executeBookmarklet(info);
 		return false;
 	}

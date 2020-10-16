@@ -70,8 +70,8 @@ document.addEventListener('dragstart', async e => {
 			mainDiv.parentNode.removeChild(mainDiv);
 		}
 		
-		div.addEventListener('dragend', () => {mainDiv.parentNode.removeChild(mainDiv)});
-		div.addEventListener('click', () => {mainDiv.parentNode.removeChild(mainDiv)});
+		div.addEventListener('dragend', () => mainDiv.parentNode.removeChild(mainDiv));
+		div.addEventListener('click', () => mainDiv.parentNode.removeChild(mainDiv));
 		
 		// clear events for empty tiles
 		if ( !node.id ) {
@@ -85,9 +85,8 @@ document.addEventListener('dragstart', async e => {
 		mainDiv.appendChild(div);
 	});
 
-	setTimeout(() => { // chrome / slow browser fix
-		document.body.appendChild(mainDiv);
-	}, 50);
+	// chrome / slow browser fix
+	setTimeout(() => document.body.appendChild(mainDiv), 50);
 });
 
 document.addEventListener('keydown', e => {
