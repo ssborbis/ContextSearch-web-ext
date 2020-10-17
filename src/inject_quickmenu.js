@@ -459,7 +459,7 @@ document.addEventListener("click", ev => {
 	if ( userOptions.quickMenuAllowContextMenu && ev.which !== 1 ) return;
 	
 	// prevent links from opening
-	if ( document.getElementById('CS_quickMenuIframe') )
+	if ( document.getElementById('CS_quickMenuIframe') && !quickMenuObject.locked)
 		ev.preventDefault();
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
