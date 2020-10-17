@@ -42,6 +42,22 @@ function openQuickMenu(ev, searchTerms) {
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
+	
+	addUnderDiv();
+}
+
+function addUnderDiv() {
+	if ( !userOptions.quickMenuPreventPageClicks ) return;
+	
+	let ud = document.getElementById('CS_underDiv') || document.createElement('div');
+	ud.id = 'CS_underDiv';
+	document.body.appendChild(ud);
+}
+
+function removeUnderDiv() {
+	let ud = document.getElementById('CS_underDiv');
+	
+	if ( ud ) ud.parentNode.removeChild(ud);
 }
 
 function closeQuickMenu(eventType) {
@@ -66,6 +82,8 @@ function closeQuickMenu(eventType) {
 			if (qmc && qmc.parentNode) qmc.parentNode.removeChild(qmc);
 		}, 100);
 	}
+	
+	removeUnderDiv();
 }
 
 function getOffsets() {
@@ -428,6 +446,8 @@ function lockQuickMenu() {
 	function lock() {
 		qmc.contentWindow.postMessage({action: "lock" }, browser.runtime.getURL('/quickmenu.html'));
 		quickMenuObject.locked = true;
+		
+		removeUnderDiv();
 	}
 }
 
@@ -442,6 +462,8 @@ function unlockQuickMenu() {
 	
 	// clear qm position
 	delete window.quickMenuLastOffsets;
+	
+	addUnderDiv();
 }
 
 // unlock if quickmenu is closed
