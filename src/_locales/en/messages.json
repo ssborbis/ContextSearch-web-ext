@@ -1731,6 +1731,41 @@
     "description": ""
   },
   
+  "hotkeys": {
+    "message": "Hotkeys",
+    "description": ""
+  },
+  
+  "pagetiles": {
+    "message": "Page Tiles",
+    "description": ""
+  },
+  
+  "pagetilesenabledtooltip": {
+    "message": "Enable Page Tiles",
+    "description": ""
+  },
+  
+  "drop": {
+    "message": "Drop",
+    "description": ""
+  },
+  
+  "hotkeystooltip": {
+    "message": "Select text and press a key to search. Hotkeys can be set in the Search Engines tab",
+    "description": ""
+  },
+  
+  "pagetilesdescription": {
+    "message": "Drag and drop text to a full-page tiled menu of search engines ( experimental )",
+    "description": ""
+  },
+  
+  "EnableHotkeysDescription": {
+    "message": "Enable hotkeys anytime except when editing content ( disable to allow hotkeys only when a ContextSearch menu is in focus )",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""
