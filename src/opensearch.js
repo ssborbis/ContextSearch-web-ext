@@ -87,7 +87,13 @@ function getDomainPaths(_url) {
 
 	let url;
 	
-	if ( typeof _url === 'string' ) url = new URL(_url);
+	if ( typeof _url === 'string' ) {
+		try {
+			url = new URL(_url);
+		} catch (error) {
+			return [];
+		}
+	}
 	else if ( _url instanceof URL ) url = _url;
 	else {
 		console.log(typeof _url, "cannot be read as url");

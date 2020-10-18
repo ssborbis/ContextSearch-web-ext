@@ -1175,15 +1175,15 @@ function isValidHttpUrl(string) {
 }
 
 function quickMenuSearch(info, tab) {
+	
+	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
+	
+	if ( node && node.type === "folder" ) return folderSearch(info, tab);
 
-	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
-	
-	if ( node.type === "folder" ) return folderSearch(info, tab);
-	
 	info.node = node;
 	info.searchTerms = info.selectionText;
 	info.tab = tab;
-	
+
 // -	node: node,
 // -	searchEngineId: info.menuItemId, 
 // -	searchTerms: info.selectionText,
@@ -1198,16 +1198,14 @@ function quickMenuSearch(info, tab) {
 }
 
 function openSearch(info) {
-
-	console.log(info);
-
+	
 	if (!info.folder) delete window.folderWindowId;
 	
-	if ( !info.temporarySearchEngine && !info.folder) 
+	if ( !info.temporarySearchEngine && !info.folder && !info.openUrl) 
 		lastSearchHandler(info.menuItemId);
 	
 	// check for multiple engines (v1.27+)
-	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	if ( node && node.type === "searchEngine" && !info.temporarySearchEngine ) {
 		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
 		if (!se) return;
