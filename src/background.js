@@ -1437,6 +1437,8 @@ function folderSearch(info, tab) {
 	let messages = [];
 	
 	node.children.forEach( (_node, index) => {
+		
+		if ( _node.hidden) return;
 
 		if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
 			
