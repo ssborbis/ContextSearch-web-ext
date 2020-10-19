@@ -1683,6 +1683,41 @@
     "description": ""
   },
   
+  "hotkeys": {
+    "message": "Touches d’accès",
+    "description": ""
+  },
+  
+  "pagetiles": {
+    "message": "Mosaïque",
+    "description": ""
+  },
+  
+  "pagetilesenabledtooltip": {
+    "message": "Activer la mosaïque",
+    "description": ""
+  },
+  
+  "drop": {
+    "message": "Relâcher",
+    "description": ""
+  },
+  
+  "hotkeystooltip": {
+    "message": "Sélectionner un texte et appuyer sur la touche attribuée au moteur choisi pour lancer la recherche. Les touches d’accès sont à configurer à l’onglet « Moteurs de recherche ».",
+    "description": ""
+  },
+  
+  "pagetilesdescription": {
+    "message": "Glisser un texte pour ouvrir une mosaïque de moteurs de recherche en pleine page et relâcher sur le moteur désiré. Cette fonction est expérimentale.",
+    "description": ""
+  },
+  
+  "EnableHotkeysDescription": {
+    "message": "Activer les touches d’accès à tout moment hormis pendant l’édition du contenu (décocher pour les autoriser uniquement quand un panneau a le focus)",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""
