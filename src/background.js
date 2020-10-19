@@ -1144,6 +1144,7 @@ function contextMenuSearch(info, tab) {
 	info.searchTerms = searchTerms;
 	info.openMethod = openMethod;
 	info.tab = tab;
+	info.node = node;
 
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
