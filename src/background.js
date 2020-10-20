@@ -645,7 +645,7 @@ function loadUserOptions() {
 	}
 
 	var getting = browser.storage.local.get("userOptions");
-	return getting.then(onGot, onError).then(buildContextMenu);
+	return getting.then(onGot, onError);
 }
 
 async function buildContextMenu() {
@@ -862,6 +862,8 @@ async function buildContextMenu() {
 function updateSelectDomainMenus(tab) {
 	
 	if (!window.contextMenuSelectDomainMenus ) return;
+	
+	window.contextMenuSelectDomainMenus = [...new Set(window.contextMenuSelectDomainMenus)];
 	
 	window.contextMenuSelectDomainMenus.forEach( menu => {
 		
@@ -1149,7 +1151,7 @@ function contextMenuSearch(info, tab) {
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
 
-	buildContextMenu();
+	// buildContextMenu();
 }
 
 function lastSearchHandler(id) {
@@ -1447,6 +1449,7 @@ function folderSearch(info, tab) {
 			_info.menuItemId = _node.id;
 			_info.tab = tab;
 			_info.searchTerms = info.selectionText;
+			_info.node = _node;
 
 			messages.push( async() => await openSearch(_info) );
 		}	
