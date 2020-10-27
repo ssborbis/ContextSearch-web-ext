@@ -209,11 +209,12 @@
 	bottom:0;
 	z-index:99999;
 	line-height:0;
+	direction: ltr;
 }
 .CS_pageTile {
 	display:inline-block;
 	border:1px solid #e0e0e0;
-	background-size:calc(100% / 4);
+	background-size:32px;
 	background-position:center center;
 	background-repeat:no-repeat;
 	background-color: #eff0f1;

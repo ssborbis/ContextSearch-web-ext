@@ -96,7 +96,8 @@
 		"icons/search.svg",
 		"icons/crossmark.svg",
 		"icons/alert.svg",
-		"icons/spinner.svg"
+		"icons/spinner.svg",
+		"icons/code.svg"
 	],
 
 	"browser_action": {

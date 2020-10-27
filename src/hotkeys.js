@@ -1,5 +1,5 @@
 function isTextBox(element) {	
-	return ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable );
+	return ( element.nodeName === 'INPUT' || element.type === 'text' || element.nodeName === 'TEXTAREA' || element.isContentEditable );
 }
 
 function isHotkey(e, _key) {

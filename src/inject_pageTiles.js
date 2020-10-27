@@ -73,13 +73,13 @@ document.addEventListener('dragstart', async e => {
 		div.addEventListener('dragend', () => mainDiv.parentNode.removeChild(mainDiv));
 		div.addEventListener('click', () => mainDiv.parentNode.removeChild(mainDiv));
 		
-		// clear events for empty tiles
+		// // clear events for empty tiles
 		if ( !node.id ) {
-			div.ondragover = null;
-			div.ondrop = null;
-			div.onclick = null;
-			div.ondragleave = null;
-			div.ondragenter = null;
+			div.classList.add('CS_pageTilesEmptyTile');
+			// div.ondragover = null;
+			// div.ondrop = div.click;
+			// div.ondragleave = null;
+			// div.ondragenter = null;
 		}
 		
 		mainDiv.appendChild(div);

@@ -70,8 +70,7 @@ function findFixedElements(side, dist) {
 	}
 
 	// filter duplicates using Set
-	let set = new Set(els);
-	els = Array.from(set);
+	els = [...new Set(els)];
 
 	// filter potentials based on display attribute
 	els = els.filter( el => {
