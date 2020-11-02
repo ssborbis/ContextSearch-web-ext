@@ -1130,19 +1130,26 @@ function contextMenuSearch(info, tab) {
 		openMethod = userOptions.contextMenuClick;
 
 	var searchTerms;
-	if (!info.selectionText && info.srcUrl)
-		searchTerms = info.srcUrl;
-	else if (info.linkUrl && !info.selectionText)
-		searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;
-	else 
+	if ( info.selectionText )
 		searchTerms = info.selectionText.trim();
+	else if ( info.srcUrl )
+		searchTerms = info.srcUrl;
+	else if ( info.linkUrl ) {
+		if ( [info.linkUrl, info.linkText].includes(window.searchTerms) ) // if content_script updated the window.searchTerms var properly, use that
+			searchTerms = window.searchTerms;
+		else
+			searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;
+			
+	}
+	
+	if ( !searchTerms ) return;
 
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
 		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(info.menuItemId);
 		info.menuItemId = groups[1];
 		info.domain = atob(groups[2]);	
 	}
-	
+
 	info.searchTerms = searchTerms;
 	info.openMethod = openMethod;
 	info.tab = tab;

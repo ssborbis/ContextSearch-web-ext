@@ -19,8 +19,14 @@ function getSelectedText(el) {
 
 }
 
-function isTextBox(element) {	
-	return ( element.type === 'text' || element.type === 'textarea' || element.isContentEditable );
+function isTextBox(element) {
+	return ( element.nodeType == 1 && 
+		(
+			element.nodeName == "TEXTAREA" ||
+			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
+			element.isContentEditable
+		)
+	);
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
@@ -34,8 +40,10 @@ document.addEventListener("selectionchange", ev => {
 });
 
 // selectionchange handler for input nodes
-for (let el of document.querySelectorAll("input[type='text'], input[type='search'], textarea, [contenteditable='true']")) {
+for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', e => {
+		if ( !isTextBox(e.target) ) return false;
+		
 		let searchTerms = getSelectedText(e.target)
 		if (searchTerms) {
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});

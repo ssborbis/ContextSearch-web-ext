@@ -42,8 +42,6 @@ function openQuickMenu(ev, searchTerms) {
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
-	
-	addUnderDiv();
 }
 
 function addUnderDiv() {
@@ -119,8 +117,11 @@ function makeQuickMenuContainer(coords) {
 		if (!qmc || qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("display") === 'none') {
 			console.log('iframe quick menu hidden by external script (adblocker?).  Enabling context menu');
 			browser.runtime.sendMessage({action: 'enableContextMenu'});
+			removeUnderDiv();
 		}
 	}, 1000);
+	
+	addUnderDiv();
 }
 
 function linkOrImage(el, e) {
@@ -545,6 +546,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}
 
 				makeQuickMenuContainer({'x': x,'y': y});
+				
 				
 				break;
 			

@@ -1,5 +1,11 @@
-function isTextBox(element) {	
-	return ( element.nodeName === 'INPUT' || element.type === 'text' || element.nodeName === 'TEXTAREA' || element.isContentEditable );
+function isTextBox(element) {
+	return ( element.nodeType == 1 && 
+		(
+			element.nodeName == "TEXTAREA" ||
+			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
+			element.isContentEditable
+		)
+	);
 }
 
 function isHotkey(e, _key) {
