@@ -783,7 +783,7 @@ function buildSearchEngineContainer() {
 				return;
 			}
 			
-			if (selectedRows.length && !e.shiftKey) {
+			if (selectedRows.length && !e.shiftKey && !e.ctrlKey) {
 				clearSelectedRows();
 
 				li.querySelector('.header').classList.add('selected');
@@ -792,7 +792,9 @@ function buildSearchEngineContainer() {
 			}
 			
 			if (selectedRows.length && e.shiftKey) {
-				let startNode = selectedRows[0].node;
+			//	let startNode = selectedRows[0].node;
+				let startRow = selectedRows.slice(-1)[0]
+				let startNode = startRow.node
 				let endNode = li.node;
 				
 				if (startNode.parent !== endNode.parent) return;
@@ -803,7 +805,8 @@ function buildSearchEngineContainer() {
 				let slicedNodes = startNode.parent.children.slice(startIndex, endIndex + 1);
 				
 				let lis = [...table.querySelectorAll('li')];
-				let start = lis.indexOf(selectedRows[0]);
+			//	let start = lis.indexOf(selectedRows[0]);
+				let start = lis.indexOf(startRow);
 				let end = lis.indexOf(li);
 				
 				liStartIndex = Math.min(start, end);
@@ -815,6 +818,9 @@ function buildSearchEngineContainer() {
 				}
 
 				selectedRows = [...new Set(selectedRows)];
+			} else if ( selectedRows.length && e.ctrlKey ) {
+				li.querySelector('.header').classList.add('selected');
+				selectedRows.push(li);
 			}
 			
 		});
