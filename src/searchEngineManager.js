@@ -818,9 +818,18 @@ function buildSearchEngineContainer() {
 				}
 
 				selectedRows = [...new Set(selectedRows)];
-			} else if ( selectedRows.length && e.ctrlKey ) {
-				li.querySelector('.header').classList.add('selected');
-				selectedRows.push(li);
+			} else if ( selectedRows.length && e.ctrlKey ) {	
+
+				if ( li.querySelector('.header').classList.contains('selected') ) {
+					let i = selectedRows.indexOf(li);
+					selectedRows.splice(i,1);
+					console.log('removing selected row', i, selectedRows);
+				} else {
+					selectedRows.push(li);
+					console.log('pushing selected row', selectedRows);
+				}
+				
+				li.querySelector('.header').classList.toggle('selected');
 			}
 			
 		});
