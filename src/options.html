@@ -679,8 +679,7 @@
 			#searchEnginesContainer .hide {
 				display:inline;
 				text-align:center;
-				padding:auto 10px auto 0;
-				padding-left:20px;
+				padding:0 10px 0 20px;
 			}
 			.editForm {
 				transition: max-height .5s ease-in-out;
@@ -939,7 +938,6 @@
 			#helpTab .header1.help {
 				font-size:11pt;
 				font-weight:bold;
-				font-variant:default;
 				margin:0;
 				padding:0 2px 4px 0;
 				color: #444;
@@ -1017,12 +1015,27 @@
 				width:16px;
 				height:16px;
 			}
+			.promptForImage {
+				display:inline-block;
+				width:400px;
+				height:200px;
+				padding:50px;
+				background-color:#f7f7f7;
+				position: absolute;
+				top: 50%; left: 50%;
+				transform: translate(-50%,-50%);
+				box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
+				text-align:left;
+			}
+			.promptForImage INPUT {
+				width:200px;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="main">
 		<div id="left_div">
-			<img src="icons/logo.svg" style="border-radius:5px;height:64px;"/><br />
+			<img src="icons/icon.svg" style="border-radius:5px;height:64px;"/><br />
 			<p><span style="border-bottom:1px solid grey"><span style="font-weight:normal;font-variant:small-caps">Context</span><span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt">Search</span></span>
 			<br />
 			<!-- <span style="font-weight:normal;font-size:24pt;" data-i18n="Settings">Settings</span> -->
@@ -1043,7 +1056,7 @@
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img src="icons/search.svg" />Search Engines</button>
 				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><img src="icons/page_tiles.svg" />Page Tiles</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img src="icons/settings.svg" />General</button>
-				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.png" />Advanced</button>
+				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.svg" />Advanced</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img src="icons/help.svg" />Help</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
@@ -1063,7 +1076,7 @@
 		<div id="right_div">
 		
 			<div class="tabcontent" id="advancedTab" >
-				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.png" />Advanced</div>
+				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.svg" />Advanced</div>
 				<section>
 					<p class="header1" data-i18n="Settings">Settings</p>
 					<table id="advancedSettingsTable">
@@ -1320,7 +1333,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<section>
 				<p class="header1" data-i18n="SearchActionsHeader">Search Actions</p>
 				<p class="short" style="border-width: 1px 0">
-					<span class="buttonLabel" data-i18n="LeftButton">Left Button</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					<span class="buttonLabel" data-i18n="LeftButton">Left Button</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
@@ -1332,7 +1345,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</p>
 
 				<p class="short" style="border-width: 1px 0" data-browser="firefox" data-minversion="64">
-					<span class="buttonLabel" data-i18n="MiddleButton">Middle Button</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.png" class="smallIcon" style="transform:scaleX(-1);" />
+					<span class="buttonLabel" data-i18n="MiddleButton">Middle Button</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuMiddleClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
@@ -1344,7 +1357,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</select>
 				</p>
 				<p class="short" style="border-width: 1px 0" data-browser="firefox" data-minversion="64">
-					<span class="buttonLabel" data-i18n="RightButton">Right Button</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" style="transform:scaleX(-1);" />
+					<span class="buttonLabel" data-i18n="RightButton">Right Button</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuRightClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
@@ -1356,7 +1369,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</select>
 				</p>
 
-				<p class="short" data-browser="firefox"><span class="keyboardButton" id="default_shift" data-i18n="ShiftKey">Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+				<p class="short" data-browser="firefox"><span class="keyboardButton" id="default_shift" data-i18n="ShiftKey">Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuShift">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
@@ -1368,7 +1381,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<option value="noAction" data-i18n="SearchActionsNoAction">No Action</option>
 					</select>
 				</p>
-				<p class="short" data-browser="firefox"><span class="keyboardButton" id="default_ctrl">Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+				<p class="short" data-browser="firefox"><span class="keyboardButton" id="default_ctrl">Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					<select style="margin-left:32px;width:auto;" class="inputNice" id="s_contextMenuCtrl">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">Open In Current Tab</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">Open In New Tab</option>
@@ -1515,7 +1528,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<label class="container" data-i18n="Auto">
 							<input type="checkbox" id="r_quickMenuAuto" />
 							<span class="checkmark checkmark2"></span>
-							<img src="/icons/auto.png" style="height:30px;vertical-align:middle;margin:0 10px" />Auto
+							<img src="/icons/auto.svg" style="height:30px;vertical-align:middle;margin:0 10px" />Auto
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="AutoTooltip">Select text and open the Quick Menu automatically</span>
@@ -1552,7 +1565,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						<label class="container" data-i18n="Mouse"> 
 							<input type="checkbox" id="cb_quickMenuOnMouse" />
 							<span class="checkmark checkmark2"></span>
-							<img src="/icons/mouse.png" style="height:30px;vertical-align:middle;margin:0 10px" />Mouse
+							<img src="/icons/mouse.svg" style="height:30px;vertical-align:middle;margin:0 10px" />Mouse
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="MouseTooltip">Select text and open using a mouse button</span>
@@ -1661,7 +1674,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</tr>
 				<tr>
 					<td>
-					<span class="buttonLabel" data-i18n="LeftButton">Left Button</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					<span class="buttonLabel" data-i18n="LeftButton">Left Button</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuLeftClick">
@@ -1688,7 +1701,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</tr>
 				<tr>
 					<td>
-					<span class="buttonLabel" data-i18n="MiddleButton">Middle Button</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.png" class="smallIcon" style="transform:scaleX(-1);" />
+					<span class="buttonLabel" data-i18n="MiddleButton">Middle Button</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuMiddleClick">
@@ -1715,7 +1728,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</tr>
 				<tr>
 					<td>
-					<span class="buttonLabel" data-i18n="RightButton">Right Button</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" style="transform:scaleX(-1);" />
+					<span class="buttonLabel" data-i18n="RightButton">Right Button</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuRightClick">
@@ -1744,7 +1757,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<td>
 					<span class="keyboardButton" data-i18n="ShiftKey">
 						Shift
-					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuShift">
@@ -1774,7 +1787,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<td>
 					<span class="keyboardButton">
 						Ctrl
-					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuCtrl">
@@ -1804,7 +1817,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<td>
 					<span class="keyboardButton">
 						Alt
-					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuAlt">
@@ -2045,7 +2058,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				</tr>
 				<tr>
 					<td>
-					<span class="buttonLabel" data-i18n="Drop">Drop</span><img data-i18n="Drop" alt="i18n_text" title="i18n_text" src="icons/leftmouse.png" class="smallIcon" />
+					<span class="buttonLabel" data-i18n="Drop">Drop</span><img data-i18n="Drop" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
 					<select class="inputNice" id="s_pageTilesOpenMethod">
@@ -2576,7 +2589,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</select>
 					</div>
 
-					<div style="inline">
+					<div>
 					
 					<button type="button" name="cancel" class="inputNice _hover" style="float:right;margin:10px 5px;text-transform:capitalize" data-i18n="Close">close</button>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
@@ -2619,7 +2632,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<br /><br />
 					
 					<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
-						<img src="/icons/import.png" style="margin-right:10px" />
+						<img src="/icons/import.svg" style="margin-right:10px" />
 						Select file...
 						<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
 					</label>

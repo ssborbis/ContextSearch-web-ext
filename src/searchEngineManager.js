@@ -38,12 +38,6 @@ function buildSearchEngineContainer() {
 		let header = document.createElement('div');
 		header.className = "header";
 		
-		// show id in the console
-		li.addEventListener('click', e => {
-			e.stopPropagation();
-			console.log(node.id);
-		});
-		
 		li.appendChild(header);
 
 		if (node.type === 'searchEngine') {
@@ -1087,7 +1081,7 @@ function buildSearchEngineContainer() {
 				
 				let nodeIcons = {
 					searchEngine: "settings.svg",
-					oneClickSearchEngine: "new.png",
+					oneClickSearchEngine: "new.svg",
 					bookmarklet: "code.svg",
 					folder: "folder.svg",
 					separator: "separator.svg"
@@ -1386,7 +1380,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newEngine = createMenuItem(browser.i18n.getMessage('NewEngine'), browser.runtime.getURL('icons/new.png'));	
+		let newEngine = createMenuItem(browser.i18n.getMessage('NewEngine'), browser.runtime.getURL('icons/new.svg'));	
 		newEngine.addEventListener('click', () => {
 			
 			let newNode = addNewEngine(li.node, false);
