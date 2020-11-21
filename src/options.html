@@ -1301,6 +1301,15 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="AddCustomSearchMenuTooltip">Enable the context-menu item "Add Custom Search" on INPUT elements. Disable to prevent a tiered menu in some cases</div>
 				</div>
 				
+				<div class="option">
+					<label class="container" data-i18n="">
+						<input type="checkbox" id="cb_contextMenuShowFolderSearch" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					
+					<div class="description" data-i18n="">Show an option to search the entire folder at the top of the menu</div>
+				</div>
+				
 				</section>
 				<section>
 				<p class="header1" data-i18n="RecentlyUsed">Recently Used</p>
@@ -1690,7 +1699,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuFolderLeftClick">
-						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option>
+						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
@@ -1717,7 +1726,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuFolderMiddleClick">
-						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option>
+						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
@@ -1744,7 +1753,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuFolderRightClick">
-						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option>
+						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
@@ -1774,7 +1783,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuFolderShift">
-						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option>
+						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
@@ -1804,7 +1813,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuFolderCtrl">
-						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option>
+						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
@@ -1834,7 +1843,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<td>
 					<select class="inputNice" id="s_quickMenuFolderAlt">
-						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option>
+						<option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option>
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option>
@@ -2074,7 +2083,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</td>
 					<!-- <td> -->
 					<!-- <select class="inputNice" id="s_pageTileOpenMethodFolder"> -->
-						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">Open Folder</option> -->
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">Browse Folder</option> -->
 						<!-- <option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">Open In Background Tab</option> -->
 						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">Open In Background Tab (Keep Menu Open)</option> -->
 						<!-- <option value="openNewWindow" data-i18n="SearchActionsNewWindow">Open In New Window</option> -->
@@ -2651,8 +2660,24 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						</div>
 						<div id="status" style='display:inline-block'>&nbsp;</div>
 					</div>
-					<br />
-					<br />
+
+					</section>
+					
+					<!-- <section> -->
+					<!-- <p class="header1" style="margin-top:0" data-i18n=""> -->
+						<!-- Replace Firefox Search Engines -->
+					<!-- </p> -->
+					<!-- <span data-i18n="ImportDescription"> -->
+						<!-- Browse to your profile folder and select your search.json.mozlz4 file -->
+					<!-- </span> -->
+					
+					<!-- <br /><br /> -->
+					<!-- <label for="replaceMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile"> -->
+						<!-- <img src="/icons/import.svg" style="margin-right:10px" /> -->
+						<!-- Select file... -->
+						<!-- <input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" /> -->
+					<!-- </label> -->
+					<!-- </section> -->
 				</div>
 			</div>
 		</div>

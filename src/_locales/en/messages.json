@@ -894,7 +894,7 @@
   },
   
   "SearchActionsOpenFolder": {
-    "message": "Open Folder",
+    "message": "Browse Folder",
 	"description": "SELECT option label for opening quick menu folder"
   },
   
@@ -1763,6 +1763,11 @@
   
   "EnableHotkeysDescription": {
     "message": "Enable hotkeys anytime except when editing content ( disable to allow hotkeys only when a ContextSearch menu is in focus )",
+    "description": ""
+  },
+
+  "SearchAll": {
+    "message": "« search all »",
     "description": ""
   },
 

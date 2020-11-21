@@ -136,6 +136,27 @@ function createCustomIcon(options) {
 	return c.toDataURL();
 }
 
+async function promptForImage() {
+	let od = document.createElement('div');
+	od.style = "position:fixed;left:0;top:0;right:0;bottom:0;z-index:99;text-align:center;background-color:rgba(255,255,255,.5)";
+	let div = document.createElement('div');
+	div.className = "promptForImage";
+	
+	div.innerHTML = `
+		Icon URL<br />
+		<input type='text' class='inputNice' /><br />
+		<button>Save</button>
+	`;
+	
+	let container = document.getElementById('searchEnginesParentContainer');
+	
+	od.appendChild(div);
+	container.appendChild(od);
+	
+	od.onclick = function() { od.parentNode.removeChild(od);}
+	
+}
+
 function loadRemoteIcon(options) {
 	
 	return new Promise( (resolve,reject) => {

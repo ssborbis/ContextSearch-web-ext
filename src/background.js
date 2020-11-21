@@ -848,6 +848,19 @@ async function buildContextMenu() {
 				}
 			});
 			
+			// add menu item to search entire folder
+			if ( userOptions.contextMenuShowFolderSearch && node.children.length ) {
+				
+				addMenuItem({
+					parentId: _id,
+					id: node.id + "_" + id,
+					title: browser.i18n.getMessage("SearchAll"),
+					icons: {
+						"16": "icons/search.svg"
+					}
+				});
+			}
+			
 			for (let child of node.children) {
 				traverse(child, _id);
 			}
@@ -1154,6 +1167,8 @@ function contextMenuSearch(info, tab) {
 	info.openMethod = openMethod;
 	info.tab = tab;
 	info.node = node;
+	
+	if ( node && node.type === "folder" ) return folderSearch(info, tab);
 
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
@@ -2076,3 +2091,21 @@ function openSearchXMLToSearchEngine(xml) {
 	});
 
 }
+
+browser.omnibox.setDefaultSuggestion({
+  description: "ContextSearch with a hotkey"
+});
+
+browser.omnibox.onInputChanged.addListener((input, suggest) => {
+	let nodes = findNodes(userOptions.nodeTree, n => n.hotkey);
+	
+	let suggestions = [];
+	nodes.forEach(n => {
+		suggestions.push({
+			content: n.id,
+			description: `${n.title} ${n.hotkey}`
+		});
+	});
+	
+	suggest(suggestions);
+});

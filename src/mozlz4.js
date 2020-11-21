@@ -62,6 +62,35 @@ function decodeLz4Block(input, output, sIdx, eIdx)
     return j;
 }
 
+function readMozlz4File(file, onRead, onError)
+{
+    let reader = new FileReader();
+
+    reader.onload = function() {
+        let input = new Uint8Array(reader.result);
+        let output;
+        let uncompressedSize = input.length*3;  // size estimate for uncompressed data!
+		
+        // Decode whole file.
+        do {
+            output = new Uint8Array(uncompressedSize);
+            uncompressedSize = decodeLz4Block(input, output, 8+4);  // skip 8 byte magic number + 4 byte data size field
+            // if there's more data than our output estimate, create a bigger output array and retry (at most one retry)
+        } while (uncompressedSize > output.length);
+
+        output = output.slice(0, uncompressedSize); // remove excess bytes
+
+        let decodedText = new TextDecoder().decode(output);
+        onRead(decodedText);
+    };
+
+    if (onError) {
+        reader.onerror = onError;
+    }
+
+    reader.readAsArrayBuffer(file); // read as bytes
+};
+
 var
 	maxInputSize	= 0x7E000000
 ,	minMatch		= 4
@@ -206,7 +235,10 @@ function compressBlock(input, dst, pos, hashTable, sIdx, eIdx) {
 	}
 
 	// cannot compress input
-	if (anchor == 0) return 0
+	if (anchor == 0) {
+		throw new Error("cannot compress");
+		return 0;
+	}
 
 	// Write last literals
 	// encode literals length
@@ -232,44 +264,56 @@ function compressBlock(input, dst, pos, hashTable, sIdx, eIdx) {
 	return dpos
 }
 
-function readMozlz4File(file, onRead, onError)
-{
-    let reader = new FileReader();
+function encodeLz4Block(data) {
 
-    reader.onload = function() {
-        let input = new Uint8Array(reader.result);
-        let output;
-        let uncompressedSize = input.length*3;  // size estimate for uncompressed data!
-		
-        // Decode whole file.
-        do {
-            output = new Uint8Array(uncompressedSize);
-            uncompressedSize = decodeLz4Block(input, output, 8+4);  // skip 8 byte magic number + 4 byte data size field
-            // if there's more data than our output estimate, create a bigger output array and retry (at most one retry)
-        } while (uncompressedSize > output.length);
+	let output = new Array(data.length * 2);
+	let size = compress(data, output);
 
-        output = output.slice(0, uncompressedSize); // remove excess bytes
+	return output.slice(0,size);	
+}
 
-        let decodedText = new TextDecoder().decode(output);
-        onRead(decodedText);
-    };
-
-    if (onError) {
-        reader.onerror = onError;
-    }
-
-    reader.readAsArrayBuffer(file); // read as bytes
-};
-
-function ___foo(json) {
-//	let json = JSON.stringify(userOptions);
-	let output = new ArrayBuffer(json.length + 4096);
-	// let output = new Uint8Array(json.length + 4096);
-	let size = compress(json, output);
+function encodeMozLz4(str) {
+	let comp = encodeLz4Block(new TextEncoder("utf-8").encode(str));
 	
-	console.log(size);
+	let header = new TextEncoder("utf-8").encode("mozLz40\0");
+	let size = new Uint8Array(toBytesInt32(str.length));
 	
+	let mozlz4 = Uint8Array.from([...header, ...size.reverse(), ...comp]).buffer;
+	
+	return mozlz4;
+	
+}
 
+function decompress(data) {
+	let input = new Uint8Array(data);
+	let output;
+	let uncompressedSize = input.length*3;  // size estimate for uncompressed data!
+	
+	// Decode whole file.
+	do {
+		output = new Uint8Array(uncompressedSize);
+		uncompressedSize = decodeLz4Block(input, output, 8+4 );  // skip 8 byte magic number + 4 byte data size field
+		// if there's more data than our output estimate, create a bigger output array and retry (at most one retry)
+	} while (uncompressedSize > output.length);
+
+	output = output.slice(0, uncompressedSize); // remove excess bytes
+
+	let decodedText = new TextDecoder().decode(output);
+	
+	return decodedText;
+}
+
+function toBytesInt32 (num) {
+    arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
+    view = new DataView(arr);
+    view.setUint32(0, num, false); // byteOffset = 0; litteEndian = false
+    return arr;
+}
+
+function exportSearchJsonMozLz4AsBlob(data) {
+	
+	let output = encodeMozLz4(data);
+	
 	let b = new Blob([output], {type: "octet/stream"});
 	url = window.URL.createObjectURL(b);
 	
@@ -282,6 +326,4 @@ function ___foo(json) {
 	window.URL.revokeObjectURL(url);
 	
 	return b;
-	
 }
-

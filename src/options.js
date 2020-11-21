@@ -217,6 +217,7 @@ function restoreOptions() {
 		$('#cb_contextMenuShowRecentlyUsed').checked = userOptions.contextMenuShowRecentlyUsed;
 		$('#cb_contextMenuShowRecentlyUsedAsFolder').checked = userOptions.contextMenuShowRecentlyUsedAsFolder;
 		$('#n_contextMenuRecentlyUsedLength').value = userOptions.recentlyUsedListLength;
+		$('#cb_contextMenuShowFolderSearch').checked = userOptions.contextMenuShowFolderSearch;
 		
 		$('#s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		$('#s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -308,23 +309,23 @@ function restoreOptions() {
 		buildSearchEngineContainer();
 		
 		// show / hide settings based on userOptions
-		(() => { // disable focus quick menu search bar when hotkeys enabled
-			let select = $('#s_quickMenuSearchHotkeys');
+		// (() => { // disable focus quick menu search bar when hotkeys enabled
+			// let select = $('#s_quickMenuSearchHotkeys');
 			
-			function toggle() {
-				let cb1 = $('#cb_quickMenuSearchBarFocus');
+			// function toggle() {
+				// let cb1 = $('#cb_quickMenuSearchBarFocus');
 
-				if (select.value === 'noAction') {
-					cb1.disabled = false;
-					cb1.parentNode.style.opacity = null;
-				} else {
-					cb1.disabled = true;
-					cb1.parentNode.style.opacity = .5;
-				}		
-			}
-			select.addEventListener('change', toggle);
-			toggle();
-		})();
+				// if (select.value === 'noAction') {
+					// cb1.disabled = false;
+					// cb1.parentNode.style.opacity = null;
+				// } else {
+					// cb1.disabled = true;
+					// cb1.parentNode.style.opacity = .5;
+				// }		
+			// }
+			// select.addEventListener('change', toggle);
+			// toggle();
+		// })();
 		
 		// [	
 			// {s: "#s_quickMenuDefaultView", input: "#n_quickMenuColumns"},
@@ -452,6 +453,7 @@ function saveOptions(e) {
 		contextMenuShowAddCustomSearch: $('#cb_contextMenuShowAddCustomSearch').checked,
 		contextMenuShowRecentlyUsed: $('#cb_contextMenuShowRecentlyUsed').checked,
 		contextMenuShowRecentlyUsedAsFolder: $('#cb_contextMenuShowRecentlyUsedAsFolder').checked,
+		contextMenuShowFolderSearch: $('#cb_contextMenuShowFolderSearch').checked,	
 		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
 		quickMenuRightClick: $('#s_quickMenuRightClick').value,
 		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,
@@ -1600,7 +1602,85 @@ document.addEventListener('userOptionsLoaded', () => {
 	});
 });
 
+// generate new search.json.mozlz4 
+$("#replaceMozlz4FileButton").addEventListener('change', ev => {
+	
+	let searchEngines = [];
+	let file = ev.target.files[0];
+	
+	readMozlz4File(file, text => { // on success
 
+		// parse the mozlz4 JSON into an object
+		var json = JSON.parse(text);	
+
+		console.log(json);
+		
+	//	window.engines = json.engines; // console object for testing
+		
+		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine"].includes(n.type) );
+		
+		let ses = [];
+		userOptions.searchEngines.forEach( se => {
+			ses.push(CS2FF(se));
+		});
+		
+		for ( let i in ses) {
+			ses[i]._metaData.order = i;
+		}
+		
+	//	console.log(ses);
+		
+		
+	//	json.engines = json.engines.slice(0, json.engines.length - 6);
+		
+		console.log(json);
+		
+		
+	//	json.engines = ses;
+		
+		// console.log(json);
+		
+		exportSearchJsonMozLz4AsBlob(JSON.stringify(json));
+		
+	});
+	
+	function CS2FF(se) {
+
+		let ff = {
+			_name: se.title,
+			_loadPath: "[profile]/searchplugins/generic.xml",
+			description: se.title,
+			__searchForm: se.searchForm,
+			_iconURL: se.icon_base64String,
+			_iconMapObj: {
+				"{\"width\":16,\"height\":16}": se.icon_base64String
+			},
+			_metaData: {
+				order: null
+			},
+			_urls: [
+				{
+					params: [],
+					rels: [],
+					template: se.template
+				}
+			],
+			_isAppProvided: false,
+			_orderHint: null,
+			_telemetryId: null,
+			_updateInterval: null,
+			_updateURL: null,
+			_iconUpdateURL: null,
+			_filePath: "C:\\Users\\null\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\abcdefgh.default\\searchplugins\\generic.xml",
+			_extensionID: null,
+			_locale: null,
+			_definedAliases: [],
+			queryCharset: "UTF-8"
+		}
+		
+		return ff;
+	}
+});
 
 // (() => {
 	// let advancedOptions = [
