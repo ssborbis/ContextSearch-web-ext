@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/logo.png" height="30px">&nbsp;ContextSearch web-ext
+# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="30px">&nbsp;ContextSearch web-ext
 
 Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search.
 
