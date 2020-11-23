@@ -1177,9 +1177,14 @@ function contextMenuSearch(info, tab) {
 }
 
 function lastSearchHandler(id) {
+
+	let node = findNode(userOptions.nodeTree, n => n.id === id );
+	
+	if ( !node ) return;
+	
 	userOptions.lastUsedId = id;
 	
-	if ( findNode(userOptions.nodeTree, n => n.id === id ).type !== "folder" ) {
+	if ( node.type !== "folder" ) {
 		userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
 		userOptions.recentlyUsedList = [...new Set(userOptions.recentlyUsedList)].slice(0, userOptions.recentlyUsedListLength);
 	}
@@ -1453,9 +1458,9 @@ function openSearch(info) {
 
 }
 
-function folderSearch(info, tab) {
+function folderSearch(info, tab, folderNode) {
 
-	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	let node = folderNode || findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 
 	let messages = [];
 	
@@ -2091,21 +2096,3 @@ function openSearchXMLToSearchEngine(xml) {
 	});
 
 }
-
-browser.omnibox.setDefaultSuggestion({
-  description: "ContextSearch with a hotkey"
-});
-
-browser.omnibox.onInputChanged.addListener((input, suggest) => {
-	let nodes = findNodes(userOptions.nodeTree, n => n.hotkey);
-	
-	let suggestions = [];
-	nodes.forEach(n => {
-		suggestions.push({
-			content: n.id,
-			description: `${n.title} ${n.hotkey}`
-		});
-	});
-	
-	suggest(suggestions);
-});

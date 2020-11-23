@@ -67,20 +67,7 @@ function readMozlz4File(file, onRead, onError)
     let reader = new FileReader();
 
     reader.onload = function() {
-        let input = new Uint8Array(reader.result);
-        let output;
-        let uncompressedSize = input.length*3;  // size estimate for uncompressed data!
-		
-        // Decode whole file.
-        do {
-            output = new Uint8Array(uncompressedSize);
-            uncompressedSize = decodeLz4Block(input, output, 8+4);  // skip 8 byte magic number + 4 byte data size field
-            // if there's more data than our output estimate, create a bigger output array and retry (at most one retry)
-        } while (uncompressedSize > output.length);
-
-        output = output.slice(0, uncompressedSize); // remove excess bytes
-
-        let decodedText = new TextDecoder().decode(output);
+       let decodedText = decompress(reader.result);
         onRead(decodedText);
     };
 
@@ -90,6 +77,20 @@ function readMozlz4File(file, onRead, onError)
 
     reader.readAsArrayBuffer(file); // read as bytes
 };
+
+function magicBitsToUint32(arr) {
+	console.log(arr);
+	var data = new Uint8Array(arr);
+	var dataview = new DataView(data.buffer);
+	return dataview.getUint32(0, true);
+}
+
+function magicBitsFromUint32(i) {
+	var buffer = new ArrayBuffer(4);
+	var dataview = new DataView(buffer);
+	dataview.setUint32(0, i, true);
+	return new Uint8Array(buffer);
+}
 
 var
 	maxInputSize	= 0x7E000000
@@ -261,24 +262,25 @@ function compressBlock(input, dst, pos, hashTable, sIdx, eIdx) {
 		dst[dpos++] = input[pos++]
 	}
 
-	return dpos
+	return dpos;
 }
 
 function encodeLz4Block(data) {
 
-	let output = new Array(data.length * 2);
+	let output = new Array(data.length * 3);
 	let size = compress(data, output);
 
 	return output.slice(0,size);	
 }
 
-function encodeMozLz4(str) {
-	let comp = encodeLz4Block(new TextEncoder("utf-8").encode(str));
+function encodeMozLz4(data) {
+	let enc_str = new TextEncoder("utf-8").encode(data);
+	let comp = encodeLz4Block(enc_str);
 	
 	let header = new TextEncoder("utf-8").encode("mozLz40\0");
-	let size = new Uint8Array(toBytesInt32(str.length));
+	let size = magicBitsFromUint32(enc_str.length);
 	
-	let mozlz4 = Uint8Array.from([...header, ...size.reverse(), ...comp]).buffer;
+	let mozlz4 = Uint8Array.from([...header, ...size, ...comp]).buffer;
 	
 	return mozlz4;
 	
@@ -301,13 +303,6 @@ function decompress(data) {
 	let decodedText = new TextDecoder().decode(output);
 	
 	return decodedText;
-}
-
-function toBytesInt32 (num) {
-    arr = new ArrayBuffer(4); // an Int32 takes 4 bytes
-    view = new DataView(arr);
-    view.setUint32(0, num, false); // byteOffset = 0; litteEndian = false
-    return arr;
 }
 
 function exportSearchJsonMozLz4AsBlob(data) {

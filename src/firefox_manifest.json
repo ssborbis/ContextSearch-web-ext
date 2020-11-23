@@ -22,6 +22,7 @@
 			"bookmarks.js",
 			"defaultUserOptions.js",
 			"background.js",
+			"omnibox.js",
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",

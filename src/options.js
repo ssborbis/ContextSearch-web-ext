@@ -1613,11 +1613,9 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 		// parse the mozlz4 JSON into an object
 		var json = JSON.parse(text);	
 
-		console.log(json);
-		
-	//	window.engines = json.engines; // console object for testing
-		
 		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine"].includes(n.type) );
+		
+		console.log(json.engines);
 		
 		let ses = [];
 		userOptions.searchEngines.forEach( se => {
@@ -1628,18 +1626,10 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 			ses[i]._metaData.order = i;
 		}
 		
-	//	console.log(ses);
-		
-		
-	//	json.engines = json.engines.slice(0, json.engines.length - 6);
-		
-		console.log(json);
-		
-		
-	//	json.engines = ses;
-		
-		// console.log(json);
-		
+		console.log(ses);
+
+		json.engines = ses;
+
 		exportSearchJsonMozLz4AsBlob(JSON.stringify(json));
 		
 	});
@@ -1648,19 +1638,18 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 
 		let ff = {
 			_name: se.title,
-			_loadPath: "[profile]/searchplugins/generic.xml",
+			_loadPath: "[other]addEngineWithDetails",
 			description: se.title,
 			__searchForm: se.searchForm,
 			_iconURL: se.icon_base64String,
-			_iconMapObj: {
-				"{\"width\":16,\"height\":16}": se.icon_base64String
-			},
 			_metaData: {
+				alias: null,
 				order: null
 			},
 			_urls: [
 				{
-					params: [],
+					method: se.method,
+					params: se.params,
 					rels: [],
 					template: se.template
 				}
@@ -1671,11 +1660,11 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 			_updateInterval: null,
 			_updateURL: null,
 			_iconUpdateURL: null,
-			_filePath: "C:\\Users\\null\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\abcdefgh.default\\searchplugins\\generic.xml",
+			_filePath: null,
 			_extensionID: null,
 			_locale: null,
 			_definedAliases: [],
-			queryCharset: "UTF-8"
+			queryCharset: se.queryCharset.toLowerCase()
 		}
 		
 		return ff;
@@ -1774,3 +1763,4 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
  	
 
 // })();
+
