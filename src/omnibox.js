@@ -75,7 +75,7 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 		selectionText: input.searchTerms,
 		node: folderNode
 	}
-	
-	folderSearch(info, tab, folderNode);
+
+	folderSearch(info, true); // allowFolders = true
 	
 });

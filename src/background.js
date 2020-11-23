@@ -40,7 +40,8 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
-			return quickMenuSearch(message.info, sender.tab);
+			message.info.tab = sender.tab;
+			return quickMenuSearch(message.info);
 			break;
 			
 		case "enableContextMenu":
@@ -1168,7 +1169,7 @@ function contextMenuSearch(info, tab) {
 	info.tab = tab;
 	info.node = node;
 	
-	if ( node && node.type === "folder" ) return folderSearch(info, tab);
+	if ( node && node.type === "folder" ) return folderSearch(info);
 
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
@@ -1204,15 +1205,14 @@ function isValidHttpUrl(string) {
 	return url.protocol === "http:" || url.protocol === "https:";
 }
 
-function quickMenuSearch(info, tab) {
+function quickMenuSearch(info) {
 	
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	
-	if ( node && node.type === "folder" ) return folderSearch(info, tab);
-
 	info.node = node;
 	info.searchTerms = info.selectionText;
-	info.tab = tab;
+	
+	if ( node && node.type === "folder" ) return folderSearch(info);
 
 // -	node: node,
 // -	searchEngineId: info.menuItemId, 
@@ -1458,28 +1458,29 @@ function openSearch(info) {
 
 }
 
-function folderSearch(info, tab, folderNode) {
+function folderSearch(info, allowFolders) {
 
-	let node = folderNode || findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 
 	let messages = [];
-	
+
 	node.children.forEach( (_node, index) => {
 		
 		if ( _node.hidden) return;
+		if ( _node.type === "separator" ) return;
+		if ( _node.type === "folder" && !allowFolders ) return;
 
-		if (_node.type === 'searchEngine' || _node.type === "oneClickSearchEngine") {
-			
-			let _info = Object.assign({}, info);
-			_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
-			_info.folder = index ? true : false;
-			_info.menuItemId = _node.id;
-			_info.tab = tab;
-			_info.searchTerms = info.selectionText;
-			_info.node = _node;
+		let _info = Object.assign({}, info);
+		_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
+		_info.folder = index ? true : false;
+		_info.menuItemId = _node.id;
+		_info.searchTerms = info.selectionText;
+		_info.node = _node;
 
+		if ( _node.type === "folder" && allowFolders )
+			messages.push( async() => await folderSearch(_info) );
+		else
 			messages.push( async() => await openSearch(_info) );
-		}	
 	});
 
 	async function runPromisesInSequence(promises) {
