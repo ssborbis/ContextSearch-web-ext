@@ -13,28 +13,31 @@ function getNodesFromHotkeys(hotkeys) {
 }
 
 function parseOmniboxInput(input) {
-	let matches = /(\w+) (.*)/.exec(input);
 
-	if ( !matches ) return null;
-
-	return {
-		hotkeys: matches[1].split(''),
-		searchTerms: matches[2]
-	}
+	let partial_match = /(\w+)$/.exec(input);
+	let full_match = /(\w+)\s+(.*)/.exec(input);
+	
+	if ( full_match ) return {hotkeys: full_match[1].split(''), searchTerms: full_match[2]};
+	
+	if ( partial_match ) return { searchTerms: partial_match[1] }
+	
+	return null;	
 }
 
 browser.omnibox.onInputChanged.addListener((input, suggest) => {
-
-	let nodes = [...new Set(findNodes(userOptions.nodeTree, n => n.hotkey))];
-	let suggestions = [];
-	nodes.forEach(n => {
-		suggestions.push({
-			content: String.fromCharCode(n.hotkey).toLowerCase(),
-			description: n.title
-		});
-	});
 	
-	suggest(suggestions);
+	parseOmniboxInput(input);
+
+	// let nodes = [...new Set(findNodes(userOptions.nodeTree, n => n.hotkey))];
+	// let suggestions = [];
+	// nodes.forEach(n => {
+		// suggestions.push({
+			// content: String.fromCharCode(n.hotkey).toLowerCase(),
+			// description: n.title
+		// });
+	// });
+	
+	// suggest(suggestions);
 });
 
 browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
@@ -42,7 +45,12 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	let input = parseOmniboxInput(text);
 	
 	if ( !input ) return;
-
+	
+	if ( !input.hotkeys ) {
+		let node = findNode(userOptions.nodeTree, n => n.hotkey);
+		input.hotkeys = node ? [String.fromCharCode(node.hotkey).toLowerCase()] : [];
+	}
+	
 	let nodes = getNodesFromHotkeys(input.hotkeys);
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 	

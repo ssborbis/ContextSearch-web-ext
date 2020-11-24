@@ -1460,7 +1460,7 @@ function openSearch(info) {
 
 function folderSearch(info, allowFolders) {
 
-	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+	let node = info.node;
 
 	let messages = [];
 
