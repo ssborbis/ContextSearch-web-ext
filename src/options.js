@@ -1615,18 +1615,24 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 
 		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine"].includes(n.type) );
 		
-		console.log(json.engines);
+		// console.log(json.engines);
 		
 		let ses = [];
 		userOptions.searchEngines.forEach( se => {
 			ses.push(CS2FF(se));
 		});
 		
-		for ( let i in ses) {
-			ses[i]._metaData.order = i;
+		if ( true /* respect order */ ) {
+			
 		}
 		
-		console.log(ses);
+		for ( let i in ses) {
+			ses[i]._metaData.order = i;
+			
+			
+		}
+		
+		// console.log(ses);
 
 		json.engines = ses;
 

@@ -17,9 +17,11 @@ function parseOmniboxInput(input) {
 	let partial_match = /(\w+)$/.exec(input);
 	let full_match = /(\w+)\s+(.*)/.exec(input);
 	
-	if ( full_match ) return {hotkeys: full_match[1].split(''), searchTerms: full_match[2]};
+	if ( full_match ) 
+		return { hotkeys: full_match[1].split(''), searchTerms: full_match[2] };
 	
-	if ( partial_match ) return { searchTerms: partial_match[1] }
+	if ( partial_match ) 
+		return { searchTerms: partial_match[1] }
 	
 	return null;	
 }
@@ -55,20 +57,18 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 	
 	let method = "openBackgroundTab";
-	switch (disposition) {
-		case "currentTab":
-			method = "openCurrentTab";
-			break;
-		case "newForegroundTab":
-			method = "openNewTab";
-			break;
-		case "newBackgroundTab":
-			method = "openBackgroundTab";
-			break;
-	}
-	
-	method = "openBackgroundTab";
-	
+	// switch (disposition) {
+		// case "currentTab":
+			// method = "openCurrentTab";
+			// break;
+		// case "newForegroundTab":
+			// method = "openNewTab";
+			// break;
+		// case "newBackgroundTab":
+			// method = "openBackgroundTab";
+			// break;
+	// }
+
 	let folderNode = {
 		type: "folder",
 		id: gen(),

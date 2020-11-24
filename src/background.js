@@ -1458,11 +1458,22 @@ function openSearch(info) {
 
 }
 
-function folderSearch(info, allowFolders) {
+async function folderSearch(info, allowFolders) {
 
 	let node = info.node;
 
 	let messages = [];
+	
+	if ( ["openNewWindow", "openNewIncognitoWindow"].includes(info.openMethod) ) {
+		
+		let win = await browser.windows.create({
+			url: "about:blank",
+			incognito: info.openMethod === "openNewIncognitoWindow" ? true : false
+		});
+		
+		info.tab = win.tabs[0];
+		info.openMethod = "openCurrentTab";	
+	}
 
 	node.children.forEach( (_node, index) => {
 		
@@ -1471,6 +1482,7 @@ function folderSearch(info, allowFolders) {
 		if ( _node.type === "folder" && !allowFolders ) return;
 
 		let _info = Object.assign({}, info);
+		
 		_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 		_info.folder = index ? true : false;
 		_info.menuItemId = _node.id;
