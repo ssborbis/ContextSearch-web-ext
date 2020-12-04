@@ -305,20 +305,21 @@ function decompress(data) {
 	return decodedText;
 }
 
-function exportSearchJsonMozLz4AsBlob(data) {
-	
-	let output = encodeMozLz4(data);
-	
-	let b = new Blob([output], {type: "octet/stream"});
+function exportFile( data, filename ) {
+	let b = new Blob([data], {type: "octet/stream"});
 	url = window.URL.createObjectURL(b);
 	
 	var a = document.createElement("a");
     document.body.appendChild(a);
     a.style = "display: none";
 	a.href = url;
-	a.download = "search.json.mozlz4";
+	a.download = filename;
 	a.click();
 	window.URL.revokeObjectURL(url);
+}
+
+function exportSearchJsonMozLz4(data) {	
+	let output = encodeMozLz4(data);
 	
-	return b;
+	exportFile(output, "search.json.mozlz4");
 }

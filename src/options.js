@@ -1608,6 +1608,9 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 	let searchEngines = [];
 	let file = ev.target.files[0];
 	
+	// create backup with timestamp
+	exportFile(file, "search.json.mozlz4_" + Date.now() );
+	
 	readMozlz4File(file, text => { // on success
 
 		// parse the mozlz4 JSON into an object
@@ -1618,25 +1621,26 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 		// console.log(json.engines);
 		
 		let ses = [];
-		userOptions.searchEngines.forEach( se => {
-			ses.push(CS2FF(se));
+
+		nodes.forEach( n => {
+			if ( n.type === "searchEngine" ) {
+				let se = userOptions.searchEngines.find( _se => _se.id === n.id );
+				if ( se ) ses.push(CS2FF(se));
+			}
+			
+			if ( n.type === "oneClickSearchEngine" ) {
+				let ocse = json.engines.find( _ocse => _ocse._name === n.title );
+				if ( ocse ) ses.push(ocse);
+			}
 		});
-		
-		if ( true /* respect order */ ) {
-			
-		}
-		
-		for ( let i in ses) {
-			ses[i]._metaData.order = i;
-			
-			
-		}
+
+		for ( let i in ses) ses[i]._metaData.order = i;
 		
 		// console.log(ses);
 
 		json.engines = ses;
 
-		exportSearchJsonMozLz4AsBlob(JSON.stringify(json));
+		exportSearchJsonMozLz4(JSON.stringify(json));
 		
 	});
 	

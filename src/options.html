@@ -874,6 +874,7 @@
 				transition: background-color .25s;
 				font-size:9pt;
 				margin-top:1px;
+				color:#444;
 			}
 			.hotkey:hover {
 				background-color:#C4C4C4;
@@ -2614,6 +2615,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<br />
 				
 				<div data-browser="firefox">
+				<hr>
 				<section>
 					<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
 						Sync With Firefox Search (Basic Mode)
@@ -2627,9 +2629,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					</div>
 				</section>
 				<br />
-				</div>
-	
-				<div data-browser="firefox">
+
 					<section>
 <p class="header1" style="margin-top:0" data-i18n="ImportHeader">
 						Import One-Click Search Engines
@@ -2667,15 +2667,12 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<p class="header1" style="margin-top:0" data-i18n="">
 						Replace Firefox Search Engines
 					</p>
-					<span data-i18n="ImportDescription">
-						Browse to your profile folder and select your search.json.mozlz4 file
-					</span>
-					<br />
-					<br />
-					( TESTING! BACKUP YOUR SEARCH.JSON.MOZLZ4 FILE BEFORE REPLACING! ) <br />
-					POST engines still need work
+					Export your ContextSearch engines to a search.json.mozlz4 file. 
+					<ol>
+						<li>Browse to your profile folder and select your search.json.mozlz4 file</li>
+						<li>You will be prompted with two files: a new search.json.mozlz4 file and a timestamped backup of your original file. Save both files to your profile directory. You will need to restart Firefox to see the changes.
+					</ol>
 					
-					<br /><br />
 					<label for="replaceMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
 						<img src="/icons/import.svg" style="margin-right:10px" />
 						Select file...
