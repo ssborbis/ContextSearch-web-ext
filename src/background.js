@@ -558,17 +558,21 @@ async function notify(message, sender, sendResponse) {
 			
 		case "injectComplete":
 			if ( userOptions.quickMenu ) {
-				browser.tabs.executeScript(sender.tab.id, {
+				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_quickmenu.js",
 					frameId: sender.frameId
 				});
+				
+				console.log("injected quickmenu", sender);
 			}
 			
 			if ( userOptions.pageTiles.enabled ) {
-				browser.tabs.executeScript(sender.tab.id, {
+				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_pagetiles.js",
 					frameId: sender.frameId
 				});
+				
+				console.log("injected pagetiles", sender);
 			}
 			
 			break;

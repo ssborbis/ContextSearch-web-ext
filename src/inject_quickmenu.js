@@ -15,15 +15,13 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-function getQM() {
-	return document.getElementById('CS_quickMenuIframe');
-}
+var getQM = () => document.getElementById('CS_quickMenuIframe');
 
 function openQuickMenu(ev, searchTerms) {
 
 	ev = ev || new Event('click');
 
-	// if ( document.getElementById('CS_quickMenuIframe') ) closeQuickMenu();
+	// if ( getQM() ) closeQuickMenu();
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
 	if (userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
@@ -38,22 +36,25 @@ function openQuickMenu(ev, searchTerms) {
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: quickMenuObject.screenCoords,
+		mouseCoords: quickMenuObject.mouseCoords,
 		searchTerms: searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
 		quickMenuObject: quickMenuObject,
 		openingMethod: ev.openingMethod || null
 	});
 }
 
+var getUnderDiv = () => document.getElementById('CS_underDiv');
+
 function addUnderDiv() {
 	if ( !userOptions.quickMenuPreventPageClicks ) return;
 	
-	let ud = document.getElementById('CS_underDiv') || document.createElement('div');
+	let ud = getUnderDiv() || document.createElement('div');
 	ud.id = 'CS_underDiv';
 	document.body.appendChild(ud);
 }
 
 function removeUnderDiv() {
-	let ud = document.getElementById('CS_underDiv');
+	let ud = getUnderDiv();
 	
 	if ( ud ) ud.parentNode.removeChild(ud);
 }
@@ -72,7 +73,7 @@ function closeQuickMenu(eventType) {
 		quickMenuObject.locked
 	) return false;
 	
-	var qmc = document.getElementById('CS_quickMenuIframe');
+	var qmc = getQM();
 	if (qmc) {
 		qmc.style.opacity = 0;
 		document.dispatchEvent(new CustomEvent('closequickmenu'));
@@ -94,7 +95,7 @@ function getOffsets() {
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {
 
-	let qmc = document.getElementById('CS_quickMenuIframe');
+	let qmc = getQM();
 		
 	if (qmc) qmc.parentNode.removeChild(qmc);
 	
@@ -108,7 +109,8 @@ function makeQuickMenuContainer(coords) {
 	
 	qmc.openingCoords = coords;
 	
-	document.body.appendChild(qmc);	
+	if ( document.body ) document.body.appendChild(qmc);
+	else document.documentElement.appendChild(qmc);
 
 	qmc.src = browser.runtime.getURL('quickmenu.html');
 
@@ -432,7 +434,7 @@ document.addEventListener('mousedown', e => {
 });
 
 function lockQuickMenu() {
-	var qmc = document.getElementById('CS_quickMenuIframe');
+	var qmc = getQM();
 	
 	if ( !qmc ) return;
 
@@ -453,7 +455,7 @@ function lockQuickMenu() {
 }
 
 function unlockQuickMenu() {
-	var qmc = document.getElementById('CS_quickMenuIframe');
+	var qmc = getQM();
 
 	if ( !qmc ) return;
 
@@ -482,7 +484,7 @@ document.addEventListener("click", ev => {
 	if ( userOptions.quickMenuAllowContextMenu && ev.which !== 1 ) return;
 	
 	// prevent links from opening
-	if ( document.getElementById('CS_quickMenuIframe') && !quickMenuObject.locked)
+	if ( getQM() && !quickMenuObject.locked)
 		ev.preventDefault();
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
@@ -500,7 +502,7 @@ document.addEventListener("drag", ev => clearTimeout(quickMenuObject.mouseDownTi
 window.addEventListener('keydown', e => {
 	if (
 		e.key !== "Tab" ||
-		!document.getElementById('CS_quickMenuIframe') 
+		!getQM() 
 	) return;
 	
 	e.preventDefault();
@@ -512,7 +514,7 @@ window.addEventListener('keydown', e => {
 });
 
 document.addEventListener('zoom', e => {
-	if ( document.getElementById('CS_quickMenuIframe') ) scaleAndPositionQuickMenu(null, true);
+	if ( getQM() ) scaleAndPositionQuickMenu(null, true);
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -525,7 +527,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 				
 			case "openQuickMenu":
-				
+
+
 				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
 				
 				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
@@ -547,13 +550,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				makeQuickMenuContainer({'x': x,'y': y});
 				
-				
 				break;
 			
 			case "updateSearchTerms":
 
 				// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
-				if (quickMenuObject.locked || document.title === "QuickMenu" || document.getElementById('CS_quickMenuIframe')) {
+				if (quickMenuObject.locked || document.title === "QuickMenu" || getQM()) {
 					quickMenuObject.searchTerms = message.searchTerms;
 					
 					// send event to OpenAsLink tile to enable/disable
@@ -790,26 +792,26 @@ window.addEventListener('message', e => {
 
 	if ( e.data.target !== "quickMenu" ) return;
 	
-	let iframe = document.getElementById('CS_quickMenuIframe');
+	let qmc = getQM();
 	
 	let x = e.data.e.clientX / window.devicePixelRatio;
 	let y = e.data.e.clientY / window.devicePixelRatio;
 
 	switch ( e.data.action ) {
 		case "handle_dragstart":
-			iframe.docking.moveStart({clientX:x, clientY:y});
+			qmc.docking.moveStart({clientX:x, clientY:y});
 			break;
 		
 		case "handle_dragend":
-			iframe.docking.moveEnd({clientX:x, clientY:y});
+			qmc.docking.moveEnd({clientX:x, clientY:y});
 			break;
 		
 		case "handle_dragmove":
-			iframe.docking.moveListener({clientX:x, clientY:y});
+			qmc.docking.moveListener({clientX:x, clientY:y});
 			break;
 			
 		case "handle_dock":
-			iframe.docking.toggleDock();
+			qmc.docking.toggleDock();
 			break;
 	}
 });

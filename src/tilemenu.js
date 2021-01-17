@@ -767,7 +767,7 @@ async function makeQuickMenu(options) {
 
 		// slide-in animation
 		if ( !userOptions.enableAnimations ) qm.style.setProperty('--user-transition', 'none');
-		qm.style.left = qm.getBoundingClientRect().width * ( (options.reverse) ? -1 : 1 ) + "px";
+		qm.style.left = qm.getBoundingClientRect().width * ( options.reverse ? -1 : 1 ) + "px";
 		void( qm.offsetHeight );
 		qm.style.transition = null;
 		qm.style.visibility = null;

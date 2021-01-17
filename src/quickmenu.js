@@ -27,7 +27,7 @@ async function makeFrameContents(options) {
 
 	let old_qme = document.getElementById('quickMenuElement');
 	
-	if (old_qme) document.body.removeChild(old_qme);
+	if (old_qme) old_qme.parentNode.removeChild(old_qme);
 
 	document.body.appendChild(qme);
 	
@@ -192,7 +192,7 @@ function toolsHandler(qm) {
 
 	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
 	
-	if ( moreTile ) qm.removeChild( moreTile );
+	if ( moreTile ) moreTile.parentNode.removeChild( moreTile );
 	
 //	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
 	
