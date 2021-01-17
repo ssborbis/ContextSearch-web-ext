@@ -321,27 +321,35 @@ function buildSearchEngineContainer() {
 						clearError(label.nextSibling)
 					}
 
-					function saveForm(closeForm) {
+					async function saveForm(closeForm) {
 						
 						closeForm = ( closeForm === undefined ) ? true : false;
 						// loading icon is last step. Set values after everything else
 							
 						// alert problems with changing name
 						if (se.title !== edit_form.shortName.value) {
-
-							if ( !browser.runtime.getBrowserInfo || confirm(browser.i18n.getMessage('NameChangeWarning')) ) {
-
-								se.title = li.node.title = node.title = edit_form.shortName.value;
+							
+							// if firefox, check for ocses and confirm if name exists
+							if ( browser.search ) {
+								let ocses = await browser.search.get();
+							
+								let ocse = ocses.find( _ocse => _ocse.name == edit_form.shortName.value );
 								
-								// change name on all labels
-								[].forEach.call( table.getElementsByTagName('li'), _li => {
-									if ( _li.node.id === node.id )
-										_li.querySelector('.label').innerText = _li.node.title = se.title;
-
-								});
-
-								updateNodeList();
+								if ( ocse && !confirm(browser.i18n.getMessage('NameChangeWarning')))
+									return;
 							}
+
+							se.title = li.node.title = node.title = edit_form.shortName.value;
+							
+							// change name on all labels
+							[].forEach.call( table.getElementsByTagName('li'), _li => {
+								if ( _li.node.id === node.id )
+									_li.querySelector('.label').innerText = _li.node.title = se.title;
+
+							});
+
+							updateNodeList();
+							
 						}
 
 						se.icon_base64String = icon.src;
