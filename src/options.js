@@ -971,14 +971,15 @@ function buildToolIcons() {
 	QMtools.forEach( tool => {
 		toolIcons.push({name: tool.name, src: tool.icon, title: tool.title, index: Number.MAX_VALUE, disabled: true});
 	});
-	
+
+	let modifiedFlag = false;
 	toolIcons.forEach( toolIcon => {
 		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );
-		
 		// update quickMenuTools array with missing tools
 		if ( toolIcon.index === -1) {
+			modifiedFlag = true;
+			toolIcon.index = userOptions.quickMenuTools.length
 			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: true});
-			toolIcon.index = userOptions.quickMenuTools.length - 1;
 		}
 		
 		toolIcon.disabled = userOptions.quickMenuTools[toolIcon.index].disabled;
@@ -1020,6 +1021,11 @@ function buildToolIcons() {
 		});
 
 		$('#toolIcons').appendChild(img);
+	}
+
+	if ( modifiedFlag ) {
+		console.warn("tools were modified - saving ...");
+		saveOptions();
 	}
 }
 
