@@ -112,8 +112,7 @@ function openSideBar(options) {
 	if ( userOptions.searchBarTheme === 'dark' ) 
 		iframe.classList.add('CS_dark');
 
-	if ( document.body ) document.body.appendChild(iframe);
-	else document.documentElement.appendChild(iframe);
+	document.body.appendChild(iframe);
 
 	function saveSideBarOptions(o) {
 		userOptions.sideBar.offsets = o.lastOffsets;
@@ -302,8 +301,7 @@ function makeOpeningTab() {
 	if ( userOptions.searchBarTheme === 'dark' )
 		openingTab.classList.add('CS_dark');
 	
-	if ( document.body ) document.body.appendChild(openingTab);
-	else document.documentElement.appendChild(openingTab);
+	document.body.appendChild(openingTab);
 
 	makeDockable(openingTab, {
 		windowType: "undocked",

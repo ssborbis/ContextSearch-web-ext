@@ -1417,15 +1417,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 			<div class="tabcontent" id="quickMenuTab">
 				<div class="blobContainerHeader" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" />Quick Menu</div>
 				
-				<div data-browser="firefox" style="border-radius:10px;background-color:#efefef;padding:10px;margin:10px 0;display:inline-block">
-					<div style='display:table-cell;vertical-align:middle;border-right:1px solid #ccc;padding-right:10px;text-align:center'>
-						<img src="icons/alert.svg" style="filter:saturate(0);height:2em;vertical-align:middle"/>
-					</div>
-					<div style="display:table-cell">
-						<div class="description" data-i18n="QuickMenuNote">Disabled on addons.mozilla.org</div><br /><br />
-						<div class="description" data-i18n="MouseHelp">Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus</div>
-					</div>
-				</div>
 				<section>
 				<p class="header1" data-i18n="General">General</p>
 				<div class="option">
@@ -1592,8 +1583,11 @@ z						<option data-i18n="dark" value="dark">dark</option>
 								<option data-i18n="MiddleButton" value="2">Middle Button</option>
 								<option data-i18n="RightButton" value="3">Right Button</option>
 							</select>
-							
-							<div style="font-size:10pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:20px;margin-right:10px;vertical-align:middle" src="icons/alert.svg">Hold right button ~1s and release for default context menu</div>
+						
+							<div style="font-size:8pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:10px;margin-right:6px;vertical-align:middle" src="icons/alert.svg">Hold right button ~1s and release for default context menu</div>
+							<div style="margin-top: 4px">
+								<b>*</b><span class="description" style="font-size:8pt" data-i18n="MouseHelp">Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus</span>
+							</div>
 						</div>
 						
 						<!-- <div class="option"> -->

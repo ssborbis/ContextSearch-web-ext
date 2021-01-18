@@ -74,9 +74,11 @@ function closeQuickMenu(eventType) {
 	) return false;
 	
 	var qmc = getQM();
+
 	if (qmc) {
 		qmc.style.opacity = 0;
 		document.dispatchEvent(new CustomEvent('closequickmenu'));
+		
 		setTimeout(() => {
 			if (qmc && qmc.parentNode) qmc.parentNode.removeChild(qmc);
 		}, 100);
@@ -96,7 +98,7 @@ function getOffsets() {
 function makeQuickMenuContainer(coords) {
 
 	let qmc = getQM();
-		
+
 	if (qmc) qmc.parentNode.removeChild(qmc);
 	
 	qmc = document.createElement('iframe');
@@ -109,15 +111,14 @@ function makeQuickMenuContainer(coords) {
 	
 	qmc.openingCoords = coords;
 	
-	if ( document.body ) document.body.appendChild(qmc);
-	else document.documentElement.appendChild(qmc);
+	document.body.appendChild(qmc);
 
 	qmc.src = browser.runtime.getURL('quickmenu.html');
 
 	// Check if quickmenu fails to display
 	setTimeout(() => {
 		if (!qmc || qmc.ownerDocument.defaultView.getComputedStyle(qmc, null).getPropertyValue("display") === 'none') {
-			console.log('iframe quick menu hidden by external script (adblocker?).  Enabling context menu');
+			console.error('iframe quick menu hidden by external script (adblocker?).  Enabling context menu');
 			browser.runtime.sendMessage({action: 'enableContextMenu'});
 			removeUnderDiv();
 		}
@@ -523,6 +524,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		switch (message.action) {
 			
 			case "closeQuickMenuRequest":
+				if ( !getQM() ) break;
 				closeQuickMenu(message.eventType || null);
 				break;
 				

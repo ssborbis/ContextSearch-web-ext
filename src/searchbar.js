@@ -77,7 +77,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
 	
 	userOptions = msg.userOptions;
-	
+
 	setTheme();
 	
 	setUserStyles();
@@ -93,6 +93,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 			document.body.appendChild(document.getElementById('toolBar'));
 		
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+
 	});
 
 });
@@ -102,6 +103,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {
+
+	// combined with inline body style prevents glitching when opening menu
+	document.body.style.display = 'block';
 		
 	qm = document.getElementById('quickMenuElement');
 	sb = document.getElementById('searchBar');

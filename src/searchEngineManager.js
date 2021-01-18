@@ -274,7 +274,11 @@ function buildSearchEngineContainer() {
 				}
 				
 				edit_form.copy.onclick = function() {
-					addNewEngine(node, true);
+					let newNode = addNewEngine(node, true);
+					addNode(newNode, li);
+					updateNodeList(true);
+
+					newLi.dispatchEvent(new MouseEvent('dblclick'));
 				}
 				
 				document.getElementById('iconrefresh').onclick = function() {
@@ -1354,13 +1358,8 @@ function buildSearchEngineContainer() {
 				
 				item2.addEventListener('click', _e => {
 					let _newNode = addNewEngine(li.node, true);
-					
-					if ( _newNode ) {
-						li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, _newNode);
-				
-						let newLi = traverse(_newNode, li.parentNode);
-						li.parentNode.insertBefore(newLi, li);
-					}
+					addNode(_newNode, li);
+					updateNodeList(true);
 					
 					closeContextMenus();
 				});
@@ -1391,20 +1390,11 @@ function buildSearchEngineContainer() {
 		let newEngine = createMenuItem(browser.i18n.getMessage('NewEngine'), browser.runtime.getURL('icons/new.svg'));	
 		newEngine.addEventListener('click', () => {
 			
-			let newNode = addNewEngine(li.node, false);
-			
-			if (newNode) {
-			
-				li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newNode);
+			let newNode = addNewEngine(li.node, false);		
+			addNode(newNode, li);
+			updateNodeList(true);
 				
-				let newLi = traverse(newNode, li.parentNode);
-
-				li.parentNode.insertBefore(newLi, li);
-				
-				updateNodeList();
-				
-				newLi.dispatchEvent(new MouseEvent('dblclick'));
-			}
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
 			
 			closeContextMenus();
 		});
@@ -1493,6 +1483,18 @@ function buildSearchEngineContainer() {
 		table.querySelectorAll('.selected').forEach( row => row.classList.remove('selected') );
 		selectedRows = [];
 	}
+
+	function addNode(node, li) {
+		if ( !node || !li ) {
+			console.log("node or parent does not exist");
+			return false;
+		}
+
+		li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, node);
+
+		let newLi = traverse(node, li.parentNode);
+		li.parentNode.insertBefore(newLi, li.nextSibling);
+	}
 	
 	function addNewEngine(node, copy) {
 		
@@ -1562,7 +1564,7 @@ function buildSearchEngineContainer() {
 			
 			let newLi = traverse(newNode, rootElement);
 
-			updateNodeList();
+			updateNodeList(true);
 			
 			newLi.scrollIntoView();
 			newLi.dispatchEvent(new MouseEvent('dblclick'));

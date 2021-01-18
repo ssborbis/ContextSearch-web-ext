@@ -35,8 +35,7 @@ function addResizeWidget(el, options) {
 		resizeWidget.className = 'CS_resizeWidget';
 		resizeWidget.title = browser.i18n.getMessage('resize');
 
-		if ( document.body ) document.body.appendChild(resizeWidget);
-		else document.documentElement.appendChild(resizeWidget);
+		document.body.appendChild(resizeWidget);
 
 		resizeWidget.options = o;
 		resizeWidget.setPosition = positionResizeWidget;
@@ -48,8 +47,7 @@ function addResizeWidget(el, options) {
 
 			let startSize = {columns: o.columns, rows: o.rows};
 			
-			if ( document.body ) document.body.appendChild(overDiv);
-			else document.documentElement.appendChild(overDiv);
+			document.body.appendChild(overDiv);
 
 			el.style.transition = 'none';
 			el.style.borderWidth = '2px';

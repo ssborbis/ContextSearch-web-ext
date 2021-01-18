@@ -352,7 +352,7 @@ function restoreOptions() {
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
-				document.querySelector('[data-i18n="HoldForContextMenu"]').style.visibility = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null	: 'hidden';	
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null	: 'none';	
 			}
 			
 			[$('#s_quickMenuMouseButton'), $('#s_quickMenuOnMouseMethod')].forEach( s => {
