@@ -750,7 +750,7 @@ function buildSearchEngineContainer() {
 					
 					node.hotkey = evv.which;
 
-					if ( findNodes(rootElement.node, _node => _node.hotkey === evv.which && _node.id !== node.id).length ) {						
+					if ( findNode(rootElement.node, _node => _node.hotkey === evv.which && _node.id !== node.id) ) {						
 						hotkey.style.backgroundColor = 'pink';
 						setTimeout(() => hotkey.style.backgroundColor = null, 250);
 						return;
@@ -770,8 +770,64 @@ function buildSearchEngineContainer() {
 					window.removeEventListener('keydown', keyPressListener);
 					updateNodeList();
 				}); 
-				
 			}
+
+			let keyword = document.createElement('input');
+			keyword.title = browser.i18n.getMessage('Keyword') || "Omnibox keyword";
+			keyword.style = "float:right;font-weight:normal;display:inline-block;right:40px;border:none";
+			keyword.className = "inputNice hotkey keyword";
+
+
+			header.appendChild(keyword);
+			keyword.value = node.keyword || "";
+
+			keyword.onclick = e => e.stopPropagation();
+			keyword.ondblclick = e => e.stopPropagation();
+			keyword.addEventListener('dragstart', (e) => {
+				e.preventDefault();
+				e.stopImmediatePropagation();
+			});
+			keyword.addEventListener('mousedown', () => li.setAttribute("draggable", false));
+			keyword.addEventListener('mouseup', () => li.setAttribute("draggable", true));
+			keyword.setAttribute('draggable', false);
+
+			keyword.addEventListener('keydown', e => {
+				if ( e.key === "Enter") {
+					keyword.dispatchEvent(new Event('change'));
+					keyword.blur();
+				}
+			});
+
+			keyword.addEventListener('keydown', e => {
+				if ( e.key === "Escape") {
+					keyword.value = "";
+					keyword.dispatchEvent(new Event('change'));
+					keyword.blur();
+				}
+			});
+
+			keyword.addEventListener('change', e => {
+				keyword.value = keyword.value.trim();
+
+				// check for duplicates
+				if ( keyword.value && findNode(rootElement.node, _node => _node.keyword === keyword.value && _node.id !== node.id) ) {
+
+					keyword.style.backgroundColor = 'pink';
+					return;
+				}
+
+				node.keyword = keyword.value;
+
+				// set keyword for all copies
+				for (let _li of rootElement.querySelectorAll('li')) {
+					if (_li.node.id === node.id) {
+						_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
+						_li.querySelector('.keyword').style.backgroundColor = null;
+					}
+				}
+				
+				saveOptions();
+			})	
 		}
 
 		document.addEventListener('click', e => {			

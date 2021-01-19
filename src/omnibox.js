@@ -4,6 +4,10 @@ browser.omnibox.setDefaultSuggestion({
 
 function getNodesFromHotkeys(hotkeys) {
 	let nodes = [];
+
+	let keywordNode = findNode(userOptions.nodeTree, n => n.keyword && n.keyword === hotkeys.join(''));
+	if ( keywordNode ) return [keywordNode];
+
 	hotkeys.forEach( k => {
 		let node = findNode(userOptions.nodeTree, n => k.toLowerCase() == String.fromCharCode(n.hotkey).toLowerCase());
 		if ( node ) nodes.push(node);
