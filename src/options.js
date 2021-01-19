@@ -390,6 +390,8 @@ function restoreOptions() {
 		
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
+		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
+
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
   
@@ -651,6 +653,7 @@ function saveOptions(e) {
 		disableNewTabSorting: $('#cb_disableNewTabSorting').checked,
 		contextMenuHotkeys: $('#cb_contextMenuHotkeys').checked,
 		quickMenuPreventPageClicks: $('#cb_quickMenuPreventPageClicks').checked,
+		openFoldersOnHoverTimeout: parseInt($('#n_openFoldersOnHoverTimeout').value),
 		
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,

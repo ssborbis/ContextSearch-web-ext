@@ -574,7 +574,7 @@ async function notify(message, sender, sendResponse) {
 					frameId: sender.frameId
 				});
 				
-				console.log("injected quickmenu", sender);
+				console.log("injected quickmenu");
 			}
 			
 			if ( userOptions.pageTiles.enabled ) {
@@ -583,7 +583,7 @@ async function notify(message, sender, sendResponse) {
 					frameId: sender.frameId
 				});
 				
-				console.log("injected pagetiles", sender);
+				console.log("injected pagetiles");
 			}
 			
 			break;
@@ -626,7 +626,7 @@ async function notify(message, sender, sendResponse) {
 // }
 
 function updateUserOptionsObject(uo) {
-// Update default values instead of replacing with object of potentially undefined values
+	// Update default values instead of replacing with object of potentially undefined values
 	function traverse(defaultobj, userobj) {
 		for (let key in defaultobj) {
 			userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];

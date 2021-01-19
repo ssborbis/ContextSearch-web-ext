@@ -1155,6 +1155,8 @@ async function makeQuickMenu(options) {
 			
 			tile.addEventListener('mouseup', _back);
 			tile.addEventListener('openFolder', _back);
+
+			addOpenFolderOnHover(tile);
 			
 			setToolIconColor(tile);
 			
@@ -1559,6 +1561,8 @@ async function makeQuickMenu(options) {
 
 				tile.addEventListener('mouseup', openFolder);
 				tile.addEventListener('openFolder', openFolder);
+
+				addOpenFolderOnHover(tile);
 					
 				async function openFolder(e) {
 					let method = getOpenMethod(e, true);
@@ -2014,4 +2018,23 @@ function isTargetBeforeGroup(_div, dec) {
 function isTargetAfterGroup(_div, dec) {
 	let sibling = getNextSiblingOfType(_div);
 	return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+}
+
+function addOpenFolderOnHover(_tile) {
+
+	if ( !userOptions.openFoldersOnHoverTimeout ) return;
+
+	_tile.addEventListener('mouseover', e => {
+		_tile.mouseOverFolderTimer = setTimeout(() => {					
+			let _e = new CustomEvent('openFolder');
+			_e.openFolder = true;
+			_tile.dispatchEvent(_e);
+		}, userOptions.openFoldersOnHoverTimeout);
+	});
+
+	_tile.addEventListener('mouseout', e => {
+		clearTimeout(_tile.mouseOverFolderTimer);
+		_tile.mouseOverFolderTimer = null;
+	});
+				
 }

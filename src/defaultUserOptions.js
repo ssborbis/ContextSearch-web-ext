@@ -200,5 +200,6 @@ const defaultUserOptions = {
 		enabled: false,
 		grid: [],
 		openMethod: "openBackgroundTab"
-	}
+	},
+	openFoldersOnHoverTimeout: 0
 };
