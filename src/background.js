@@ -34,6 +34,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "openOptions":
+			let optionsPageURL = browser.runtime.getURL("/options.html");
+			let optionsPage = await browser.tabs.query({url: optionsPageURL + "*"});
+
+			optionsPage = optionsPage.shift();
+
+			if ( optionsPage ) {
+				browser.tabs.update(optionsPage.id, { active: true });
+				browser.tabs.reload(optionsPage.id);
+				return;
+
+			}
 			browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
