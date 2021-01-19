@@ -1008,9 +1008,19 @@
 			#advancedSettingsTable TR > TD:nth-child(1) {
 				width:99%;
 			}
+			#folderFormTable {
+				width:100%;
+			}
 			#folderFormTable TD {
 				padding:5px 20px;
+				white-space: nowrap;
 			}	
+			#folderFormTable TD:nth-child(2) {
+				width:100%;
+			}
+			#folderFormTable INPUT {
+				display:inline-block !important;
+			}
 			#saveNoticeDiv {
 				position:fixed;
 				right: 10px;
@@ -1186,7 +1196,7 @@
 						<td><input type="checkbox" id="cb_quickMenuPreventPageClicks" /></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Number of milliseconds to hover before opening a folder. 0 = disabled">openFoldersOnHoverTimeout</td>
+						<td data-i18n_tooltip="Number of milliseconds to hover before opening a folder. 500 = default, 0 = disabled">openFoldersOnHoverTimeout</td>
 						<td><input type="number" id="n_openFoldersOnHoverTimeout" min="0" max="9999" step="1"></td>
 					</tr>
 					<tr>

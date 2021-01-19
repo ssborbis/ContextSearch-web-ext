@@ -721,9 +721,14 @@ async function makeQuickMenu(options) {
 
 			if (_singleColumn) tile.classList.add("singleColumn");
 			
-			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' )
-				tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
-			
+			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
+				
+				if ( tile.node.icon )
+					tile.dataset.hasicon = 'true';
+				else
+					tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
+			}
+
 			qm.appendChild(tile);
 		});
 		

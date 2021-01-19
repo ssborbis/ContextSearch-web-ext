@@ -97,7 +97,7 @@ BODY {
 	border-radius: 0 0 0 4px;
 	display:inline-block;
 }
-.tile[data-type="folder"]:not(.singleColumn):not([data-subtype])::after {
+.tile[data-type="folder"]:not(.singleColumn):not([data-subtype]):not([data-hasicon])::after {
 	content:attr(data-title);
 	font-size:7pt;
 	line-height:1em;

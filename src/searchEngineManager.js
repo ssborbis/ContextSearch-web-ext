@@ -589,20 +589,26 @@ function buildSearchEngineContainer() {
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("grouplayout")}</td>
-						<td><input name="groupFolder" type="checkbox" style="display:inline-block;width:auto"/> ${browser.i18n.getMessage("grouplayoutmessage")}</td>
+						<td><input name="groupFolder" type="checkbox" style="width:auto"/>
+							 ${browser.i18n.getMessage("grouplayoutmessage")}
+							</td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("groupcolor")}</td>
-						<td><input name="groupColor" type="color" style="width:30px;display:inline-block"/></td>
+						<td><input name="groupColor" type="color" style="width:30px;"/></td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("grouplimit")}</td>
-						<td><input name="groupLimit" type="number" min="0" max="99" style="width:60px;display:inline-block"/></td>
+						<td><input name="groupLimit" type="number" min="0" max="99" style="width:60px;"/></td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("grouphidemoretile")}</td>
-						<td><input name="groupHideMoreTile" type="checkbox" style="width:60px;display:inline-block"/></td>
-					</tr>			
+						<td><input name="groupHideMoreTile" type="checkbox" style="width:auto;"/></td>
+					</tr>
+					<tr>
+						<td>${browser.i18n.getMessage("icon")}</td>
+						<td><input name="iconURL" type="text"/></td>
+					</tr>		
 				</table>
 				
 				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
@@ -639,8 +645,14 @@ function buildSearchEngineContainer() {
 					node.groupLimit = parseInt(_form.groupLimit.value);
 					node.displayType = _form.displayType.value;
 					node.groupHideMoreTile = _form.groupHideMoreTile.checked;
+					node.icon = _form.iconURL.value;
 					updateNodeList();
 				}
+
+				_form.iconURL.addEventListener('change', () => {
+					let img = li.querySelector('.header IMG');
+					img.src = _form.iconURL.value;
+				});
 				
 				li.insertBefore(_form, ul);
 				
@@ -649,9 +661,10 @@ function buildSearchEngineContainer() {
 				_form.groupLimit.value = node.groupLimit || 0;
 				_form.displayType.value = node.displayType || "";
 				_form.groupHideMoreTile.checked = node.groupHideMoreTile || false;
+				_form.iconURL.value = node.icon || "";
 				
 				_form.getBoundingClientRect();
-				_form.style.maxHeight = '200px';
+				_form.style.maxHeight = '250px';
 			});	
 			
 			text.addEventListener('dblclick', e => {
