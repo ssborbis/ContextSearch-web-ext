@@ -1185,6 +1185,20 @@
 						<td data-i18n_tooltip="Prevent mouse events on the current webpage while the quick menu is open">quickMenuPreventPageClicks</td>
 						<td><input type="checkbox" id="cb_quickMenuPreventPageClicks" /></td>
 					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Browse to your profile folder and select your search.json.mozlz4 file. You will be prompted with two files: a new search.json.mozlz4 file and a backup of your original file. Save both files to your profile directory. Restart Firefox to see the changes.">Export to Firefox search</td>
+						<td>
+							<label for="replaceMozlz4FileButton" class="fileUpload" style="font-size:8pt" data-i18n="ImportSelectFile">
+							<img src="/icons/import.svg" style="height:10px" />
+							Select file...
+							<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
+						</label>
+						</td>
+					</tr>
 					</table>
 				</section>
 
@@ -2669,7 +2683,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					</section>
 					
-					<section>
+					<!-- <section>
 					<p class="header1" style="margin-top:0" data-i18n="">
 						Replace Firefox Search Engines
 					</p>
@@ -2684,7 +2698,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						Select file...
 						<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
 					</label>
-					</section>
+					</section> -->
 				</div>
 			</div>
 		</div>
