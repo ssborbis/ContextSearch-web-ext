@@ -724,7 +724,7 @@ async function makeQuickMenu(options) {
 			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
 				
 				if ( tile.node.icon )
-					tile.dataset.hasicon = 'true';
+					tile.dataset.hasicon = 'true'; // removes pseudo element label set by content:attr(data-title) in quickmenu.css 
 				else
 					tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
 			}

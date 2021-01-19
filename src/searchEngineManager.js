@@ -651,7 +651,7 @@ function buildSearchEngineContainer() {
 
 				_form.iconURL.addEventListener('change', () => {
 					let img = li.querySelector('.header IMG');
-					img.src = _form.iconURL.value;
+					img.src = _form.iconURL.value || browser.runtime.getURL('icons/folder-icon.svg');
 				});
 				
 				li.insertBefore(_form, ul);
