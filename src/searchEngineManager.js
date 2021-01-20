@@ -51,7 +51,7 @@ function buildSearchEngineContainer() {
 			}
 
 			let icon = document.createElement('img');
-			icon.src = se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
+			icon.src = getIconFromNode(node);
 			header.appendChild(icon);
 			
 			let text = document.createElement('span');
@@ -417,7 +417,7 @@ function buildSearchEngineContainer() {
 		if (node.type === 'bookmarklet' || node.type === "bookmark") {
 			
 			let img = document.createElement('img');
-			img.src = node.icon || browser.runtime.getURL('icons/code.svg');
+			img.src = getIconFromNode(node);
 			header.appendChild(img);
 			
 			li.addEventListener('dblclick', e => {
@@ -511,7 +511,7 @@ function buildSearchEngineContainer() {
 		if (node.type === 'oneClickSearchEngine') {
 
 			let img = document.createElement('img');
-			img.src = node.icon;
+			img.src = getIconFromNode(node);
 			header.appendChild(img);
 
 			let text = document.createElement('span');
@@ -535,7 +535,7 @@ function buildSearchEngineContainer() {
 		if (node.type === 'folder') {
 			
 			let img = document.createElement('img');
-			img.src = node.icon || browser.runtime.getURL('/icons/folder-icon.svg');
+			img.src = getIconFromNode(node);
 			header.appendChild(img);
 			
 			let text = document.createElement('span');

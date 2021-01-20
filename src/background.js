@@ -225,7 +225,9 @@ async function notify(message, sender, sendResponse) {
 			window.searchTerms = searchTerms;
 
 			if (searchTerms === '') {
-				browser.contextMenus.update("search_engine_menu", {visible:false});
+				try {
+					browser.contextMenus.update("search_engine_menu", {visible:false});
+				} catch (err) {}
 				break;
 			}
 			
@@ -236,12 +238,14 @@ async function notify(message, sender, sendResponse) {
 			if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 			
 			let title = hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms);
-
-			browser.contextMenus.update("search_engine_menu", {visible: true, title: title});
+			try {
+				browser.contextMenus.update("search_engine_menu", {visible: true, title: title});
+			} catch (err) {}
 
 			break;
 			
 		case "getFirefoxSearchEngineByName":
+			if ( !browser.search ) return [];
 			let engines = await browser.search.get();
 			return engines.find(e => e.name === message.name);
 			break;
@@ -249,7 +253,7 @@ async function notify(message, sender, sendResponse) {
 		case "addSearchEngine":
 			let url = message.url;
 
-			if (browser.runtime.getBrowserInfo) {
+			if ( browser.runtime.getBrowserInfo && browser.search ) {
 
 				// skip for Firefox version < 78 where window.external.AddSearchProvider is available
 				let info = await browser.runtime.getBrowserInfo();	

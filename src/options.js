@@ -1459,19 +1459,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
-function getIconFromNode(node) {
-	
-	if ( node.type === "searchEngine" ) {
-		let se = userOptions.searchEngines.find( se => se.id === node.id );
-		return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
-	} else if ( node.type === "bookmarklet" ) {
-		return node.icon || browser.runtime.getURL('/icons/code.svg');
-	} else {
-		return node.icon || null;
-	}
-
-}
-
 function makeEmptyGridNode() {	
 	return {
 		id: null,
@@ -1485,7 +1472,7 @@ function makePageTilesGrid() {
 	let rows = parseInt($('#n_pageTilesRows').value);
 	let cols = parseInt($('#n_pageTilesColumns').value);
 
-	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine", "bookmarklet"].includes(n.type));
+	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine", "bookmarklet", "folder"].includes(n.type));
 	
 	let gridNodes = [];
 	
@@ -1573,7 +1560,7 @@ document.addEventListener('userOptionsLoaded', () => {
 	
 	let chooser = $('#pageTilesChooser');
 	
-	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "bookmarklet", "oneClickSearchEngine"].includes(n.type));
+	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "bookmarklet", "oneClickSearchEngine", "folder"].includes(n.type));
 	
 	nodes.push(makeEmptyGridNode());
 	

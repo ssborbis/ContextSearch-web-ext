@@ -514,9 +514,9 @@ window.addEventListener('keydown', e => {
 	browser.runtime.sendMessage({action: "focusSearchBar"});
 });
 
-document.addEventListener('zoom', e => {
-	if ( getQM() ) scaleAndPositionQuickMenu(null, true);
-});
+// document.addEventListener('zoom', e => {
+// 	if ( getQM() ) scaleAndPositionQuickMenu(null, true);
+// });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 

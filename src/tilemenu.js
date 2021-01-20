@@ -1437,7 +1437,7 @@ async function makeQuickMenu(options) {
 					return;
 				}
 
-				tile = buildSearchIcon(se.icon_base64String || se.icon_url || browser.runtime.getURL('/icons/search.svg'), se.title);
+				tile = buildSearchIcon(getIconFromNode(node), se.title);
 				tile.dataset.title = se.title;
 				
 				// site search picker
@@ -1506,7 +1506,7 @@ async function makeQuickMenu(options) {
 		
 			case "bookmarklet":
 
-				tile = buildSearchIcon(node.icon || browser.runtime.getURL('/icons/code.svg'), node.title);
+				tile = buildSearchIcon(getIconFromNode(node), node.title);
 				tile.dataset.type = 'bookmarklet';
 				tile.dataset.title = node.title;
 
@@ -1525,7 +1525,7 @@ async function makeQuickMenu(options) {
 
 			case "oneClickSearchEngine":
 
-				tile = buildSearchIcon(node.icon, node.title);
+				tile = buildSearchIcon(getIconFromNode(node), node.title);
 				tile.dataset.type = 'oneClickSearchEngine';
 				tile.dataset.id = node.id;
 				tile.dataset.title = node.title;
@@ -1550,7 +1550,7 @@ async function makeQuickMenu(options) {
 				break;
 		
 			case "folder":
-				tile = buildSearchIcon( node.icon || browser.runtime.getURL("/icons/folder-icon.svg"), node.title);
+				tile = buildSearchIcon( getIconFromNode(node), node.title);
 
 				tile.dataset.type = 'folder';
 				tile.dataset.title = node.title;

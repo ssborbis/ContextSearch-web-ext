@@ -232,6 +232,9 @@
 .CS_pageTile.dragover {
 	background-color: #ccdbe8;
 }
+.CS_pageTilesEmptyTile {
+	opacity:0;
+}
 #CS_underDiv {
 	width:100%;
 	height:100%;
