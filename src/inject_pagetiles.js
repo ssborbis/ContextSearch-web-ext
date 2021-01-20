@@ -55,7 +55,6 @@ document.addEventListener('dragstart', async e => {
 			div.classList.add('dragover');
 		}
 		div.ondragleave = function(e) { 
-			if ( e.currentTarget.contains(e.relatedTarget) ) return; // prevent children triggering
 			e.preventDefault();
 			div.classList.remove('dragover');
 		}

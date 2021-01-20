@@ -237,6 +237,7 @@
 	padding: 10px 0 10px 0;
 }
 .CS_pageTile.dragover DIV {
+	pointer-events: none;
 	background-color:inherit;
 	filter:brightness(1.05);
 	transition: var(--user-transition,.1s ease filter);
