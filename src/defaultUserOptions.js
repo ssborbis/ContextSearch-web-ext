@@ -199,7 +199,8 @@ const defaultUserOptions = {
 		columns: 4,
 		enabled: false,
 		grid: [],
-		openMethod: "openBackgroundTab"
+		openMethod: "openBackgroundTab",
+		paletteString: "eff0f1"
 	},
 	openFoldersOnHoverTimeout: 0
 };

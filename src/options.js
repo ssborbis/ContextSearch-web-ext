@@ -387,6 +387,7 @@ function restoreOptions() {
 		$('#n_pageTilesColumns').value = userOptions.pageTiles.columns;
 		$('#cb_pageTilesEnabled').checked = userOptions.pageTiles.enabled;
 		$('#s_pageTilesOpenMethod').value = userOptions.pageTiles.openMethod;
+		$('#s_pageTilesPalette').value = userOptions.pageTiles.paletteString;
 		
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
@@ -660,7 +661,8 @@ function saveOptions(e) {
 			rows: parseInt($('#n_pageTilesRows').value),
 			columns: parseInt($('#n_pageTilesColumns').value),
 			openMethod: $('#s_pageTilesOpenMethod').value,
-			grid: userOptions.pageTiles.grid
+			grid: userOptions.pageTiles.grid,
+			paletteString: $('#s_pageTilesPalette').value
 		}
 	}
 
@@ -1549,6 +1551,18 @@ function saveGrid() {
 	saveOptions();
 }
 
+function makePageTilesPalette() {
+	let s = $('#s_pageTilesPalette');
+	palettes.forEach( (p,index) => {
+		let o = document.createElement('option');
+		o.value = p.color;
+		o.innerText = p.name;
+		s.appendChild(o);
+	});
+
+	s.value = userOptions.pageTiles.paletteString;
+}
+
 $('#cb_pageTilesEnabled').addEventListener('change', e => {
 	if ( !userOptions.pageTiles.grid.length )
 		saveGrid();
@@ -1557,6 +1571,7 @@ $('#cb_pageTilesEnabled').addEventListener('change', e => {
 document.addEventListener('userOptionsLoaded', () => {
 	
 	makePageTilesGrid();
+	makePageTilesPalette();
 	
 	let chooser = $('#pageTilesChooser');
 	
@@ -1565,6 +1580,8 @@ document.addEventListener('userOptionsLoaded', () => {
 	nodes.push(makeEmptyGridNode());
 	
 	nodes.forEach(n => {
+
+		if ( n === nodes[0] ) return;
 
 		let img = new Image();
 		chooser.appendChild(img);

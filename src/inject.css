@@ -213,24 +213,32 @@
 }
 .CS_pageTile {
 	display:inline-block;
-	border:1px solid #e0e0e0;
+	border:2px solid #e8e8e8;
 	background-size:32px;
 	background-position:center center;
 	background-repeat:no-repeat;
 	background-color: #eff0f1;
-	color:white;
 	color:#444;
 	font-size:1em;
 	text-align:center;
-	width: calc(100% / var(--cs-pagetilecols) - 2px);
-	height: calc(100% / var(--cs-pagetilerows) - 2px);
+	width: calc(100% / var(--cs-pagetilecols) - 4px);
+	height: calc(100% / var(--cs-pagetilerows) - 4px);
 	line-height:normal;
 	overflow:hidden;
-	font-family:Segoe UI;
-	/* padding-top:10%; */
+	font-family:Arial;
+	border-radius:10px;
 }
 .CS_pageTile.dragover {
-	background-color: #ccdbe8;
+	filter:brightness(1.1);
+	transition: var(--user-transition,.1s ease filter);
+}
+.CS_pageTile DIV {
+	padding: 10px 0 10px 0;
+}
+.CS_pageTile.dragover DIV {
+	background-color:inherit;
+	filter:brightness(1.05);
+	transition: var(--user-transition,.1s ease filter);
 }
 .CS_pageTilesEmptyTile {
 	opacity:0;

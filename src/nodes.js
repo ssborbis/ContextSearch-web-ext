@@ -112,7 +112,7 @@ function repairNodeTree(tree) {
 	
 	nodesToRemove.forEach( node => removeNode(node, node.parent) );
 	
-	if ( browser.search) {
+	if ( browser.search ) {
 		
 		return browser.search.get().then( ocses => {
 			
@@ -149,5 +149,4 @@ function getIconFromNode(node) {
 	} else {
 		return node.icon || null;
 	}
-
 }
