@@ -2,7 +2,7 @@
 var palettes = [
 	{color: "eff0f1", name: "none"}, 
 	{color: "ee6352-59cd90-3fa7d6-fac05e-f79d84", name: "alphabet"},
-	{color: "05299e-5e4ae3-947bd3-f0a7a0-f26ca7", name: "bouquette"},
+	{color: "05299e-5e4ae3-947bd3-f0a7a0-f26ca7", name: "bouquet"},
 	{color: "04e762-f5b700-dc0073-008bf8-89fc00", name: "dayglow"},	
 	{color: "312f2f-84dccf-a6d9f7-bccce0-bf98a0", name: "easter"},
 	{color: "808d8e-766c7f-947eb0-a3a5c3-a9d2d5", name: "lavender"},
