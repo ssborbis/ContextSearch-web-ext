@@ -231,6 +231,7 @@
 .CS_pageTile.dragover {
 	filter:brightness(1.1);
 	transition: var(--user-transition,.1s ease filter);
+	background-color:#ccdbe8;
 }
 .CS_pageTile DIV {
 	padding: 10px 0 10px 0;

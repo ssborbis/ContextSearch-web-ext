@@ -39,10 +39,14 @@ document.addEventListener('dragstart', async e => {
 		div.appendChild(header);
 		
 		node.icon = getIconFromNode(node);
-		
-		let bgcolor = '#' + colorFromString(node.id || node.type);
-		div.style.backgroundColor = bgcolor;
-		if ( getLuma(bgcolor) < 140) div.style.color = '#ccc ';
+
+		if ( colors.length !== 1 ) {
+			let bgcolor = '#' + colorFromString(node.id || node.type);
+			div.style.backgroundColor = bgcolor;
+			if ( getLuma(bgcolor) < 140) div.style.color = '#ccc ';
+		} else {
+			div.style.filter = 'none';
+		}
 
 		div.style.backgroundImage = `url(${node.icon})`;
 
@@ -51,6 +55,7 @@ document.addEventListener('dragstart', async e => {
 			div.classList.add('dragover');
 		}
 		div.ondragleave = function(e) { 
+			if ( e.currentTarget.contains(e.relatedTarget) ) return; // prevent children triggering
 			e.preventDefault();
 			div.classList.remove('dragover');
 		}
