@@ -1563,6 +1563,23 @@ function makePageTilesPalette() {
 	s.value = userOptions.pageTiles.paletteString;
 }
 
+function makePageTilesPaletteSample() {
+	let span = $('#pageTilesPaletteSample');
+	let s = $('#s_pageTilesPalette');
+
+	span.innerHTML = null;
+
+	let colors = s.value.split('-');
+	colors.forEach(c => {
+		let cdiv = document.createElement('div');
+		cdiv.style = "display:inline-block;width:16px;height:16px;margin:2px";
+		cdiv.style.backgroundColor = '#' + c;
+		span.appendChild(cdiv);
+	});
+}
+
+$('#s_pageTilesPalette').addEventListener('change', makePageTilesPaletteSample);
+
 $('#cb_pageTilesEnabled').addEventListener('change', e => {
 	if ( !userOptions.pageTiles.grid.length )
 		saveGrid();
@@ -1572,6 +1589,7 @@ document.addEventListener('userOptionsLoaded', () => {
 	
 	makePageTilesGrid();
 	makePageTilesPalette();
+	makePageTilesPaletteSample();
 	
 	let chooser = $('#pageTilesChooser');
 	
