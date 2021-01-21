@@ -3,8 +3,25 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
-		<title>ContextSearch Options</title>		
+		<title>ContextSearch Options</title>	
 		<style>
+			:root {
+				--bg-color1:#fafafa;
+				--bg-color2:#F3F3F3;
+				--bg-color3:#eee;
+				--bg-color4:#E4E4E4;
+
+				--border-color1:#ccc;
+				--border-color2:#ddd;
+				--border-color3:#858585;
+
+				--color:#4A4A4A;
+				--color2:#555;
+
+				--hover1:#ddd;
+
+				--cs-green: #6ec179;
+			}
 			HTML {
 				height:100%;
 				padding:0;
@@ -12,8 +29,8 @@
 			}
 			BODY {
 				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; 
-				background-color:#fafafa;
-				color: #4A4A4A;
+				background-color:var(--bg-color1);
+				color: var(--color);
 				margin:0;
 				padding:0;
 				text-align:left;
@@ -33,7 +50,7 @@
 				margin-right:10px;
 				vertical-align:top;
 				display:inline-block;
-				background-color:#F3F3F3;
+				background-color:var(--bg-color2);
 				position:fixed;
 				height:calc(100% - 40px);
 				overflow-y:auto;
@@ -75,11 +92,21 @@
 				border-top: 3px solid #F3F3F3; /*#E9ECEF;*/
 				margin: 1em 0;
 				padding: 0; 
-			}	
+			}
+			BUTTON {
+				background-color:var(--bg-color3);
+				border-radius:4px;
+				color:var(--color1);
+				border:1px solid var(--border-color1);
+				padding:2px 8px;
+			}
+			BUTTON:hover {
+				background-color:var(--hover1);
+			}
 			.header_hr {
 				width:calc(100% + 40px);
 				margin-left:-20px;
-				border-top:4px solid #6ec179;
+				border-top:4px solid var(--cs-green);
 			}
 			.blobContainerHeader {
 				font-size:24pt;
@@ -141,15 +168,17 @@
 				width: 16px;
 				height: 16px;
 				border-radius: 50%;
-				background: #6ec179;
+				background: var(--cs-green);
 				cursor: pointer;
 			}
 			.inputNice {
 				width:55px;
 				font-size:inherit;
 				border-radius:4px;
-				border:1px solid #858585;
+				border:1px solid var(--border-color3);
 				padding:2px;
+				background-color:var(--bg-color1);
+				color:var(--color);
 			}
 
 			 /* The switch - the box around the slider */
@@ -192,7 +221,7 @@
 			}
 
 			input:checked + .toggleSlider {
-			  background-color: #6ec179;
+			  background-color: var(--cs-green);
 			}
 			
 			.toggleSlider.round::after {
@@ -216,7 +245,7 @@
 
 			input:checked + .toggleSlider:before {
 			  transform: translateX(32px);
-			  background-color:#6ec179;
+			  background-color:var(--cs-green);
 			  background-image: linear-gradient(to bottom, white 40%, #f0f0f0);
 			/*  box-shadow:2px 2px 2px #666, inset 2px 2px 4px #fff; */
 			}
@@ -279,7 +308,7 @@
 
 			/* When the radio button is checked, add a blue background */
 			.container input:checked ~ .checkmark {
-				background-color: #6ec179;
+				background-color: var(--cs-green);
 			}
 
 			/* Create the indicator (the dot/circle - hidden when not checked) */
@@ -361,7 +390,7 @@
 			}
 			.checkboxOpeningChoice input:checked + label {
 				color:white;
-				background-color: #6ec179;
+				background-color: var(--cs-green);
 			}
 			.checkboxOpeningChoice input:checked + label > IMG {
 				opacity:1;
@@ -406,16 +435,16 @@
 
 			/* Style the buttons that are used to open the tab content */
 			.tab .tablinks {
-				border: 1px solid #ccc; 
+				border: 1px solid var(--border-color1); 
 				border-right:none;
-				background-color: #eee;
+				background-color: var(--bg-color3);
 				outline: none;
 				cursor: pointer;
 				padding: 6px 16px;
 				font-size:11pt;
 				text-align:left;
 				margin:0;
-				color:#555;
+				color:var(--color2);
 				border-radius:8px 0 0 8px;
 				width:100%;
 				padding-left:46px;
@@ -429,13 +458,13 @@
 				padding:4px 16px;
 				margin:0;
 				border:none;
-				border-left: 4px solid #eee;
+				border-left: 4px solid var(--border-color2);
 				background-color:transparent;
 			}
 
 			/* Change background color of buttons on hover */
 			.tab .tablinks:hover {
-				background-color: #ddd;
+				background-color: var(--hover1);
 			}
 
 			/* Create an active/current tablink class */
@@ -443,7 +472,7 @@
 				/*background-color: white;
 				color:#343a40;
 				*/
-				background-color: #6ec179;;
+				background-color: var(--cs-green);
 				color:white;
 				font-weight:600;
 			}
@@ -498,11 +527,11 @@
 			}
 			
 			.position.active, .position.active:hover {
-				background-color:#6ec179;
+				background-color:var(--cs-green);
 				opacity:1;
 			}
 			.position:hover {
-				background-color:#6ec179;
+				background-color:var(--cs-green);
 				opacity:.4;
 			}
 			.header1 {
@@ -514,10 +543,10 @@
 				margin:0;
 				position:absolute;
 				top:-.7em;
-				background-color:white;
+				background-color:var(--bg-color2);
 				display:inline-block;
 				padding:4px 16px;
-				border:solid #ccc;
+				border:solid var(--border-color1);
 				border-radius:32px;
 				border-width: 1px 0 0 0;
 			}
@@ -552,12 +581,12 @@
 				margin:0;
 				padding:2px 16px;
 				border-style:dashed;
-				border-color: #DDD;
+				border-color: var(--border-color2);
 				border-width:0px 0px 1px 0px;
 				position:relative;
 			}
 			TABLE.searchActions TD:nth-of-type(3n) {
-				border-left: 1px dashed #ddd;
+				border-left: 1px dashed var(--border-color2);
 			}
 			TABLE.searchActions TD:first-of-type {
 				white-space:nowrap;
@@ -566,7 +595,7 @@
 				margin:0;
 				padding:2px 0;
 				border-style:dashed;
-				border-color: #DDD;
+				border-color: var(--border-color2);
 				border-width:0px 0px 1px 0px;
 				position:relative;
 				width:auto;
@@ -694,11 +723,13 @@
 			.editForm INPUT:not(#iconPicker), .editForm SELECT, .editForm TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
-				border:1px solid #E0E0E0;
+				border:1px solid var(--border-color1);
 				margin:1px;
 				margin-top:-8px;
 				padding:4px;
 				padding-top:8px;
+				background-color:var(--bg-color1);
+				color:var(--color1);
 			}
 			.editForm SELECT {
 				width:120px;
@@ -706,7 +737,6 @@
 			.editForm INPUT:focus, .editForm TEXTAREA:focus{
 				border:1px solid #008afc;
 				box-shadow:0px 0px 3px 1px #008afc;
-				background-color:white;
 			}
 			.editForm .error {
 				border:1px solid pink;
@@ -716,12 +746,12 @@
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
-				background-color:white;
+				background-color:var(--bg-color2);
 				position:relative;
 				z-index:2;
 				left:20px;
 				padding:0px 4px;
-				color:#646464;	
+				color:var(--color2);	
 			}
 			.editForm ._hover:hover {
 				background-color:#e5f1fb;
@@ -780,7 +810,7 @@
 				display:inline-block;
 				width:.9em;
 				height:.9em;
-				background-color:#6ec179;
+				background-color:var(--cs-green);
 				margin-right:10px;
 				border-radius:50%;
 			}
@@ -849,7 +879,7 @@
 				width: 20px;
 			}
 			.treeNode {
-				border-top: 1px solid #eee;
+				border-top: 1px solid var(--bg-color3);
 				cursor:default;
 				transition: padding .1s linear;
 			}
@@ -860,7 +890,7 @@
 				vertical-align:middle;
 			}
 			.hotkey {
-				background-color: #E4E4E4;
+				background-color: var(--bg-color4);
 				border-radius:2px;
 			/*	border:1px solid #c4c4c4;*/
 				right:30px;
@@ -874,10 +904,10 @@
 				transition: background-color .25s;
 				font-size:9pt;
 				margin-top:1px;
-				color:#444;
+				color:var(--color2);
 			}
 			.hotkey:hover {
-				background-color:#C4C4C4;
+				background-color:var(--hover1);
 			}
 			/* LI > .header:hover {
 				background-color:#F4F4F4;
@@ -902,7 +932,7 @@
 				overflow:hidden;
 				font-size:11pt;
 				text-align:left;
-				background-color:white;
+				background-color:var(--bg-color2);
 				resize:both;
 			}
 			#managerContainer > DIV {
@@ -986,11 +1016,11 @@
 				content: url("icons/add.svg");
 			}
 			SECTION {
-				border:1px solid #ccc;
+				border:1px solid var(--border-color1);
 				border-radius:10px;
 				padding:28px 16px 16px 16px;
 				margin-top:24px;
-				background-color:#fff;
+				background-color:var(--bg-color2);
 				position:relative;
 			}
 			#advancedSettingsTable {
@@ -1054,6 +1084,7 @@
 				width:200px;
 			}
 		</style>
+		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
 	<body>
 		<div id="main">
@@ -2733,6 +2764,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 			<div class="tabcontent" id="helpTab"></div>
 		</div>
 		</div>
+		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:16px;z-index: 4" />
 		
 		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>

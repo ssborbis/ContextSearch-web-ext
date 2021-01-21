@@ -1712,6 +1712,10 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 	}
 });
 
+$('#nightmode').addEventListener('click', () => {
+	$('#style_dark').disabled = !$('#style_dark').disabled;
+})
+
 // (() => {
 	// let advancedOptions = [
 	// {

@@ -10,4 +10,4 @@ var palettes = [
 	{color: "828a95-ceeaf7-ccd7e4-d5c9df-dcb8cb", name: "nursery"},
 	{color: "c9cad9-d1d2f9-a3bcf9-7796cb-576490", name: "social"},
 	{color: "0a369d-4472ca-5e7ce2-92b4f4-cfdee7", name: "water"}
-]
+];

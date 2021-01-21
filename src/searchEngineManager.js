@@ -589,21 +589,21 @@ function buildSearchEngineContainer() {
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("grouplayout")}</td>
-						<td><input name="groupFolder" type="checkbox" style="width:auto"/>
+						<td><input name="groupFolder" type="checkbox" class="inputNice" style="width:auto"/>
 							 ${browser.i18n.getMessage("grouplayoutmessage")}
 							</td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("groupcolor")}</td>
-						<td><input name="groupColor" type="color" style="width:30px;"/></td>
+						<td><input name="groupColor" type="color" class="inputNice" style="width:30px;"/></td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("grouplimit")}</td>
-						<td><input name="groupLimit" type="number" min="0" max="99" style="width:60px;"/></td>
+						<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;"/></td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("grouphidemoretile")}</td>
-						<td><input name="groupHideMoreTile" type="checkbox" style="width:auto;"/></td>
+						<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
 					</tr>
 					<tr>
 						<td>${browser.i18n.getMessage("icon")}</td>
