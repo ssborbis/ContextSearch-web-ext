@@ -611,8 +611,8 @@ function buildSearchEngineContainer() {
 					</tr>		
 				</table>
 				
-				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
-				<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>
+				<button type="button" name="close" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
+				<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>
 				<span class="saveMessage" style="float:right;margin: 10px 5px"></span>
 				`;
 				_form.className = 'editForm';

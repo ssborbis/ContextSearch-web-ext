@@ -89,7 +89,7 @@
 				display: block;
 				height: 1px;
 				border: 0;
-				border-top: 3px solid #F3F3F3; /*#E9ECEF;*/
+				border-top: 3px solid var(--bg-color2); /*#E9ECEF;*/
 				margin: 1em 0;
 				padding: 0; 
 			}
@@ -753,9 +753,6 @@
 				padding:0px 4px;
 				color:var(--color2);	
 			}
-			.editForm ._hover:hover {
-				background-color:#e5f1fb;
-			}
 			.fileUpload input[type="file"] {
 				display: none;
 			}
@@ -1061,7 +1058,7 @@
 				border-collapse: collapse;
 			}
 			#pageTilesTable TD {
-				border:2px outset rgba(0,0,0,.4);
+				border:1px solid var(--color);
 				padding: 4px 8px;
 			}
 			#pageTilesTable IMG {
@@ -1334,7 +1331,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div class="description" data-i18n="UserStylesTooltip">Apply custom CSS styling to menus</div>
 				</div>
 
-				<textarea id="t_userStyles" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px"></textarea>
+				<textarea id="t_userStyles" class="inputNice" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px;font-size:9pt"></textarea>
 				
 				</section>
 				<!-- <section>
@@ -2680,14 +2677,14 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					<div>
 					
-					<button type="button" name="cancel" class="inputNice _hover" style="float:right;margin:10px 5px;text-transform:capitalize" data-i18n="Close">close</button>
-					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
+					<button type="button" name="cancel" class="inputNice" style="float:right;margin:10px 5px;text-transform:capitalize" data-i18n="Close">close</button>
+					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
 					
 					<span id="editFormSaveMessage" style="float:right;margin: 10px 5px"></span>
 
-					<button type="button" name="copy" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" style="height:20px;vertical-align:middle"/></button>
+					<button type="button" name="copy" class="inputNice" style="float:left;margin:10px 5px;width:30px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" style="height:20px;vertical-align:middle"/></button>
 <div data-browser="firefox">					
-					<button type="button" name="addOpenSearchEngine" class="inputNice _hover" style="float:left;margin:10px 5px;width:30px;height:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><span class="add" style="margin-left:0"></span></button>
+					<button type="button" name="addOpenSearchEngine" class="inputNice" style="float:left;margin:10px 5px;width:30px;height:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><span class="add" style="margin-left:0"></span></button>
 </div>
 					</div>
 				</form>
@@ -2764,7 +2761,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 			<div class="tabcontent" id="helpTab"></div>
 		</div>
 		</div>
-		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:16px;z-index: 4" />
+		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:16px;z-index:4;background-color:white;border-radius:2px;border:1px solid white" />
 		
 		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>
