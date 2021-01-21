@@ -346,8 +346,10 @@ async function notify(message, sender, sendResponse) {
 			
 			se.id = gen();
 
+			let parentNode = message.folderId ? findNode(userOptions.nodeTree, n => n.id === message.folderId) : userOptions.nodeTree;
+						
 			userOptions.searchEngines.push(se);
-			userOptions.nodeTree.children.push({
+			parentNode.children.push({
 				type: "searchEngine",
 				title: se.title,
 				id: se.id,

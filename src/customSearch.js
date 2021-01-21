@@ -169,8 +169,9 @@ function addSearchEnginePopup(data) {
 		}
 		
 		document.getElementById('customForm').shortname.value = shortname;
+		let folder = el.querySelector('[name="folder"]');
 
-		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine()});
+		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine(), folderId: folder.value});
 
 		if ( isFirefox /* firefox */) {
 			(async() => {
@@ -200,6 +201,18 @@ function addSearchEnginePopup(data) {
 		}
 
 	}
+
+	let s_folder = simple.querySelector('[name="folder"]');
+
+	let folders = findNodes(userOptions.nodeTree, n => n.type === "folder");
+
+	folders.forEach(f => {
+		let o = document.createElement('option');
+		o.value = f.id;
+		o.innerText = f.title;
+
+		s_folder.appendChild(o);
+	});
 	
 	function simpleImportHandler(url, _confirm) {
 		

@@ -13,6 +13,10 @@
 					<div style='display:inline-block;width:225px'>
 						<label class='H2' data-i18n='Name'>Name <span class='CS_info' data-msg='Unique name for this search engine' data-i18n_tooltip='Name' >?</span></label>
 						<input type='text' name='shortname' />
+						<!-- <label class='H2' data-i18n='folder'>Folder <span class='CS_info' data-msg='' data-i18n_tooltip='Name' >?</span></label> -->
+						<div style="display:inline-block;width:calc(100% - 20px);font-size:8pt">
+							<img src="icons/folder-icon.svg" style="height:16px;vertical-align: middle;" /><select name="folder" style="font-size:8pt;padding:2px;width:auto;max-width:200px"></select>
+						</div>
 					</div>
 					<div id='b_simple_add' class='iconButton' style='background-color:#6ec179;position:relative;bottom:8px;' data-i18n='Add'>
 						<img src='/icons/add.svg' /> Add
@@ -178,5 +182,6 @@
 		<script src='/searchEngineUtils.js'></script>
 		<script src='/customSearch.js'></script>
 		<script src='/opensearch.js'></script>
+		<script src='/nodes.js'></script>
 	</body>
 </html>
