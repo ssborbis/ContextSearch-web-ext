@@ -393,6 +393,8 @@ function restoreOptions() {
 
 		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
 
+		$('#style_dark').disabled = !userOptions.nightMode;
+
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
   
@@ -655,7 +657,8 @@ function saveOptions(e) {
 		contextMenuHotkeys: $('#cb_contextMenuHotkeys').checked,
 		quickMenuPreventPageClicks: $('#cb_quickMenuPreventPageClicks').checked,
 		openFoldersOnHoverTimeout: parseInt($('#n_openFoldersOnHoverTimeout').value),
-		
+		nightMode: userOptions.nightMode,
+
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
 			rows: parseInt($('#n_pageTilesRows').value),
@@ -1438,8 +1441,9 @@ function showSaveMessage(str, color, _class, el) {
 	let img = document.createElement('div');
 	img.className = _class;
 	//img.style.height = img.style.width = '1em';
+	img.style.verticalAlign = "middle";
 	img.style.marginRight = '10px';
-	msgSpan.style = 'opacity:1;transition:opacity 1s .75s';
+	msgSpan.style = 'opacity:1;transition:opacity 1s .75s;';
 	msgSpan.style.color = color;
 	msgSpan.innerText = str;
 	
@@ -1510,6 +1514,7 @@ function makePageTilesGrid() {
 			let img = new Image();
 			img.src = icon;
 			img.nodeid = node.id;
+			img.title = node.title;
 			
 			img.ondragover = function(e) { e.preventDefault();}
 			img.ondrop = function(e) {
@@ -1522,10 +1527,13 @@ function makePageTilesGrid() {
 					td2.appendChild(window.dragSource);
 					td1.appendChild(img);
 				} else {
-					img.src = window.dragSource.src;
+					let srcImg = window.dragSource.querySelector('img');
+					img.src = srcImg ? srcImg.src : window.dragSource.src;
 					img.nodeid = window.dragSource.nodeid;
+					img.title = window.dragSource.title;
 				}
 
+				setPageTilesGridPalette();
 				saveGrid();
 			}
 			
@@ -1535,11 +1543,27 @@ function makePageTilesGrid() {
 				// e.preventDefault();
 				window.dragSource = img;
 			}
+
+			img.onclick = function() {
+				let node = makeEmptyGridNode();
+			
+				let icon = getIconFromNode(node);
+				
+				img.src = icon;
+				img.nodeid = node.id;
+				img.title = node.title;
+
+				setPageTilesGridPalette();
+				saveGrid();
+			}
+
 	
 			td.appendChild(img);
 			tr.appendChild(td);
 		}
 	}
+
+	setPageTilesGridPalette();
 
 }
 
@@ -1578,7 +1602,89 @@ function makePageTilesPaletteSample() {
 	});
 }
 
+function setPageTilesGridPalette() {
+	let colors = userOptions.pageTiles.paletteString.split('-');
+	function colorFromString(str) {
+		let num = 0;
+		let letters = str.split('');
+		letters.forEach(l => num+=l.charCodeAt(0));
+		let index = num % colors.length;
+
+		return colors[index];
+	}
+
+	$('#pageTilesTable').querySelectorAll('img').forEach( img => {
+		let node = findNode(userOptions.nodeTree, n => n.id === img.nodeid);
+
+		if ( !node ) {
+			img.parentNode.style.boxShadow = null;
+			return;
+		}
+		let color = colorFromString(node.id || gen());
+
+	//	img.parentNode.style.backgroundColor = '#' + color;
+		img.parentNode.style.boxShadow = 'inset 0px 0px 24px #' + color;
+	});
+
+}
+
+function makePageTilesFolderBrowser() {
+	let ul = $('#pageTilesFolderBrowser');
+
+	traverse(userOptions.nodeTree, ul);
+		
+
+	function traverse(node, parentEl) {
+
+		if ( !node.id ) return;
+		
+		let _li = document.createElement('li');
+		_li.nodeid = node.id;
+		_li.title = node.title;
+		let icon = getIconFromNode(node);
+
+		_li.innerHTML = `<img src="${icon}" /> ${node.title}`;
+		parentEl.appendChild(_li);
+
+		if ( node.children ) {
+			let _ul = document.createElement('ul');
+			_li.appendChild(_ul);
+
+			let collapse = document.createElement('span');
+			collapse.innerText = '+';
+			_li.insertBefore(collapse,_li.firstChild);
+			_ul.style.display = 'none';
+
+			collapse.onclick = function() {	
+				_ul.style.display = _ul.style.display ? null : 'none';
+				collapse.innerText = _ul.style.display ? "+" : "-";
+			}
+
+			node.children.forEach( child => traverse(child, _ul) );
+		}
+	}
+
+	ul.querySelectorAll('li').forEach( li => {
+
+		li.setAttribute("draggable", "true");
+
+		li.ondragstart = function(e) {
+			e.stopPropagation();
+
+			e.dataTransfer.setData("text/plain", li.nodeid);
+			e.effectAllowed = "copyMove";
+			// e.preventDefault();
+			window.dragSource = li;
+		}
+
+		li.ondragend = function(e) {e.preventDefault();}
+	});
+
+	ul.querySelector('ul').style.display = null;
+}
+
 $('#s_pageTilesPalette').addEventListener('change', makePageTilesPaletteSample);
+$('#s_pageTilesPalette').addEventListener('change', setPageTilesGridPalette);
 
 $('#cb_pageTilesEnabled').addEventListener('change', e => {
 	if ( !userOptions.pageTiles.grid.length )
@@ -1590,39 +1696,7 @@ document.addEventListener('userOptionsLoaded', () => {
 	makePageTilesGrid();
 	makePageTilesPalette();
 	makePageTilesPaletteSample();
-	
-	let chooser = $('#pageTilesChooser');
-	
-	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "bookmarklet", "oneClickSearchEngine", "folder"].includes(n.type));
-	
-	nodes.push(makeEmptyGridNode());
-	
-	nodes.forEach(n => {
-
-		if ( n === nodes[0] ) return;
-
-		let img = new Image();
-		chooser.appendChild(img);
-		img.src = getIconFromNode(n);
-		img.height = 16;
-		img.width = 16;
-		img.style.padding = "2px";
-		img.title = n.title;
-		img.nodeid = n.id;
-		
-		img.setAttribute("draggable", "true");
-
-		img.ondragstart = function(e) {
-			e.dataTransfer.setData("text/plain", n.id);
-			e.effectAllowed = "copyMove";
-			// e.preventDefault();
-			window.dragSource = img;
-		}
-
-		img.ondragend = function(e) {e.preventDefault();}
-
-	});
-	
+	makePageTilesFolderBrowser();
 	
 });
 
@@ -1714,6 +1788,8 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 
 $('#nightmode').addEventListener('click', () => {
 	$('#style_dark').disabled = !$('#style_dark').disabled;
+	userOptions.nightMode = $('#style_dark').disabled ? false : true;
+	saveOptions();
 })
 
 // (() => {

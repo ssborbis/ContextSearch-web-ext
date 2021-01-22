@@ -21,6 +21,7 @@
 				--hover1:#ddd;
 
 				--cs-green: #6ec179;
+				--selected: #0078d7;
 			}
 			HTML {
 				height:100%;
@@ -737,8 +738,8 @@
 				width:120px;
 			}
 			.editForm INPUT:focus, .editForm TEXTAREA:focus{
-				border:1px solid #008afc;
-				box-shadow:0px 0px 3px 1px #008afc;
+				border:1px solid var(--selected, #008afc);
+				box-shadow:0px 0px 3px 1px var(--selected, #008afc);
 			}
 			.editForm .error {
 				border:1px solid pink;
@@ -764,10 +765,10 @@
 				font-size:11pt;
 				cursor:pointer;
 				text-align:center;
-				border:2px solid #ccc;
+				border:2px solid var(--border-color1);
 				border-radius:3px;
 				padding:2px 4px;
-				background-color:#E8E8E8;
+				background-color:var(--bg-color4);
 			}
 			.fileUpload > IMG {
 				vertical-align:middle;
@@ -776,7 +777,7 @@
 			}
 			DIV.blurb {
 				font-size:10pt;
-				border-left:10px solid #E9ECEF;
+				border-left:10px solid var(--bg-color3);
 				padding-left:10px;
 				margin-top:16px;
 				margin-left:5px;
@@ -915,7 +916,7 @@
 				opacity: .5;
 			}
 			.selected {
-				background-color:#0078d7;
+				background-color:var(--selected);
 				color:white;
 			}
 			.error {
@@ -1053,20 +1054,56 @@
 			}
 			#saveNoticeDiv {
 				position:fixed;
-				right: 10px;
+				/*right: 10px;*/
+				left:50%;
 				top: 10px;
 				z-index:9999;
+				vertical-align: middle;
 			}
 			#pageTilesTable {
-				border-collapse: collapse;
+				/*border-collapse: collapse;*/
+				border-spacing:4px;
+				border-collapse: separate;
 			}
 			#pageTilesTable TD {
-				border:1px solid var(--color);
-				padding: 4px 8px;
+				background-color:#888;
+				/*var(--color);*/
+				/*border:1px solid var(--color);*/
+				padding: 8px;
+				border-radius:4px;
 			}
 			#pageTilesTable IMG {
-				width:16px;
+				width:24px;
+				height:24px;
+				vertical-align: middle;
+			}
+			#pageTilesFolderBrowser {
+				user-select: none;
+				display:inline-block;
+				vertical-align:middle;
+				margin-right:30px;
+				list-style-type:none;
+				font-size:12px;
+				height:400px;
+				width:300px;
+				overflow-y:scroll;
+				overflow-x:hidden;
+				resize:both;
+			}
+			#pageTilesFolderBrowser LI, #pageTilesFolderBrowser UI {
+				list-style-type:none;
+				position:relative;
+			}
+			#pageTilesFolderBrowser UL {
+				padding-left:24px;
+			}
+			#pageTilesFolderBrowser IMG {
 				height:16px;
+				vertical-align:middle;
+			}
+			#pageTilesFolderBrowser SPAN {
+				position:absolute;
+				left:-10px;
 			}
 			.promptForImage {
 				display:inline-block;
@@ -2182,10 +2219,13 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					<hr />
 					
-					<div id="pageTilesChooser"></div>
+				<!-- 	<div id="pageTilesChooser"></div>
 					<hr />
-					
-					<table id="pageTilesTable"></table>
+					 -->
+					 <div>
+					<ul id="pageTilesFolderBrowser"></ul>
+					<table id="pageTilesTable" style="display:inline-block;position:relative;vertical-align:middle"></table>
+				</div>
 					
 					<br /><br />
 					<!-- <button id="b_pageTilesClear">Clear</button> -->

@@ -202,5 +202,6 @@ const defaultUserOptions = {
 		openMethod: "openBackgroundTab",
 		paletteString: "eff0f1"
 	},
-	openFoldersOnHoverTimeout: 0
+	openFoldersOnHoverTimeout: 0,
+	nightMode: false
 };
