@@ -272,6 +272,20 @@ function buildSearchEngineContainer() {
 				edit_form.cancel.onclick = function() {
 					edit_form.style.maxHeight = null;
 				}
+
+				edit_form.test.onclick = function() {
+					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
+	
+					let tempSearchEngine = {
+						"searchForm": edit_form.searchform.value,
+						"method": edit_form._method.value, 
+						"params": paramStringToNameValueArray(edit_form.post_params.value), 
+						"template": edit_form.template.value, 
+						"queryCharset": edit_form._encoding.value
+					};
+
+					browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+				}
 				
 				edit_form.copy.onclick = function() {
 					let newNode = addNewEngine(node, true);
