@@ -1082,13 +1082,18 @@
 				display:inline-block;
 				vertical-align:middle;
 				margin-right:30px;
+				margin-bottom:30px;
 				list-style-type:none;
 				font-size:12px;
+				font-weight:initial;
 				height:300px;
 				width:300px;
 				overflow-y:scroll;
 				overflow-x:hidden;
 				resize:both;
+				padding:16px;
+				background-color:var(--bg-color2);
+				border-radius:10px;
 			}
 			#pageTilesFolderBrowser LI, #pageTilesFolderBrowser UI {
 				list-style-type:none;
@@ -1099,6 +1104,7 @@
 			}
 			#pageTilesFolderBrowser LI {
 				padding:1px;
+				border-bottom:2px solid var(--bg-color1);
 			}
 			#pageTilesFolderBrowser IMG {
 				height:16px;
@@ -1106,7 +1112,14 @@
 			}
 			#pageTilesFolderBrowser SPAN {
 				position:absolute;
-				left:-10px;
+				left:-14px;
+				border:1px solid var(--border-color1);
+				border-radius:4px;
+				width:10px;
+				height:10px;
+				text-align:center;
+				display:inline-block;
+				line-height:10px;
 			}
 			.promptForImage {
 				display:inline-block;
