@@ -1213,7 +1213,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					});
 					
 					// load OCSE favicons
-					if ( browser.search ) {
+					if ( browser.search && browser.search.get ) {
 						let ocses = await browser.search.get();
 						findNodes(_uo.nodeTree, node => {
 							if ( node.type === "oneClickSearchEngine" && !node.icon ) {

@@ -112,7 +112,7 @@ function repairNodeTree(tree) {
 	
 	nodesToRemove.forEach( node => removeNode(node, node.parent) );
 	
-	if ( browser.search ) {
+	if ( browser.search && browser.search.get ) {
 		
 		return browser.search.get().then( ocses => {
 			

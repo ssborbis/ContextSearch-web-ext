@@ -348,7 +348,7 @@ function buildSearchEngineContainer() {
 						if (se.title !== edit_form.shortName.value) {
 							
 							// if firefox, check for ocses and confirm if name exists
-							if ( browser.search ) {
+							if ( browser.search && browser.search.get ) {
 								let ocses = await browser.search.get();
 							
 								let ocse = ocses.find( _ocse => _ocse.name == edit_form.shortName.value );

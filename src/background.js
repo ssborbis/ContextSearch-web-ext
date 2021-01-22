@@ -245,7 +245,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getFirefoxSearchEngineByName":
-			if ( !browser.search ) return [];
+			if ( !browser.search || !browser.search.get ) return [];
 			let engines = await browser.search.get();
 			return engines.find(e => e.name === message.name);
 			break;
@@ -253,7 +253,7 @@ async function notify(message, sender, sendResponse) {
 		case "addSearchEngine":
 			let url = message.url;
 
-			if ( browser.runtime.getBrowserInfo && browser.search ) {
+			if ( browser.runtime.getBrowserInfo && browser.search && browser.search.get ) {
 
 				// skip for Firefox version < 78 where window.external.AddSearchProvider is available
 				let info = await browser.runtime.getBrowserInfo();	
@@ -484,7 +484,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "hasBrowserSearch":
-			return typeof browser.search !== 'undefined';
+			return typeof browser.search !== 'undefined' && typeof browser.search.get !== 'undefined';
 			break;
 			
 		case "checkForOneClickEngines":	
@@ -595,7 +595,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getFirefoxSearchEngines":
-			if ( browser.search ) return browser.search.get();
+			if ( browser.search && browser.search.get ) return browser.search.get();
 			break;
 			
 		case "setLastUsed":
@@ -1917,7 +1917,7 @@ document.addEventListener("loadUserOptions", () => {
 async function checkForOneClickEngines() {
 
 	// not FF 63+
-	if ( !browser.search ) return -1;
+	if ( !browser.search || !browser.search.get ) return -1;
 	
 	// don't add before nodeTree is populated
 	if ( userOptions.nodeTree === {} ) {
