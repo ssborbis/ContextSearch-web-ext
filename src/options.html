@@ -123,8 +123,8 @@
 				font-family: Arial;
 				font-weight:bold;
 				border-radius:5px;
-				background-color:#DDD;
-				border:1px outset #ccc;
+				background-color:var(--border-color2);
+				border:1px outset var(--border-color1);
 				font-size:10pt;
 				color:#666;
 				padding:3px 4px;
@@ -132,7 +132,7 @@
 				min-height:16px;
 				display:inline-block;
 				text-align:center;
-				box-shadow:1px 1px 4px #444, inset -2px -2px 4px #fff, inset 2px 2px 4px #aaa;
+				box-shadow:1px 1px 4px #444, inset -2px -2px 4px var(--bg-color1), inset 2px 2px 4px #aaa;
 			}
 			.keyboardButton IMG {
 				height: 1em;
@@ -163,6 +163,7 @@
 				-webkit-transition: .2s;
 				transition: opacity .2s;
 				max-width: 200px;
+				background-color:var(--border-color2);
 			}
 			.slider::-moz-range-thumb {
 				width: 16px;
@@ -325,6 +326,7 @@
 
 			.container .checkmark2 {
 				border-radius:4px;
+				background-color:var(--bg-color1);
 			}
 
 			/* Style the checkmark/indicator */
@@ -401,7 +403,7 @@
 				font-size:7pt;
 				border-radius:2px;
 				padding: 2px;
-				background-color:#EFEFEF;
+				background-color:var(--bg-color1);
 				vertical-align:top;
 				cursor:default;
 			}
@@ -522,8 +524,8 @@
 				display:inline-block;
 				width:26px;
 				height:26px;
-				background-color:#ddd;
-				border:1px solid white;
+				background-color:var(--border-color1);
+				border:1px solid var(--border-color2);
 			}
 			
 			.position.active, .position.active:hover {
@@ -823,12 +825,12 @@
 				width:725px;
 			}
 			.openingTable TD {
-				border-bottom:1px solid #ccc;
+				border-bottom:1px solid var(--border-color2);
 				padding:10px 0px;
 				min-width: 200px;
 			}
 			.openingTable TD:first-child {
-				border-right:1px solid #ccc;
+				border-right:1px solid var(--border-color2);
 				vertical-align:top;
 				max-width:275px;
 				padding-right:10px;
@@ -1026,11 +1028,12 @@
 				font-weight: normal;
 			}
 			#advancedSettingsTable TR:nth-child(even) {
-				background-color:#eee;
+				background-color:var(--bg-color1);
 			}
 			#advancedSettingsTable INPUT {
 				border:none;
 				background-color:transparent;
+				color:var(--color);
 			}
 			#advancedSettingsTable TR > TD:nth-child(1) {
 				width:99%;
@@ -1923,6 +1926,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<div>
 					<div style="font-size:0;line-height:0;display:inline-block;">
 						<div class="position" data-position="top left"></div><div class="position" data-position="top center"></div><div class="position" data-position="top right"></div><br />
+						<div class="position" data-position="middle left"></div><div class="position" data-position="middle center"></div><div class="position" data-position="middle right"></div><br />
 						<div class="position" data-position="bottom left"></div><div class="position" data-position="bottom center"></div><div class="position" data-position="bottom right"></div>
 					</div>
 					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
@@ -2679,6 +2683,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 					<button type="button" name="cancel" class="inputNice" style="float:right;margin:10px 5px;text-transform:capitalize" data-i18n="Close">close</button>
 					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
+					<button type="button" name="test" class="inputNice" style="float:right;margin:10px 5px;" data-i18n="Test" title="i18n_text">Test</button>
+					</div>
 					
 					<span id="editFormSaveMessage" style="float:right;margin: 10px 5px"></span>
 
@@ -2686,7 +2692,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 <div data-browser="firefox">					
 					<button type="button" name="addOpenSearchEngine" class="inputNice" style="float:left;margin:10px 5px;width:30px;height:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><span class="add" style="margin-left:0"></span></button>
 </div>
-					</div>
 				</form>
 				<br />
 				
