@@ -616,6 +616,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						case "top":
 							topOffset = - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio;
 							break;
+						case "middle":
+							topOffset = - message.size.height / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio;
+							break;
 						case "bottom":
 							break;
 					}
