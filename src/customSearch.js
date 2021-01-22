@@ -169,7 +169,7 @@ function addSearchEnginePopup(data) {
 		}
 		
 		document.getElementById('customForm').shortname.value = shortname;
-		let folder = el.querySelector('[name="folder"]');
+		let folder = simple.querySelector('[name="folder"]');
 
 		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine(), folderId: folder.value});
 
@@ -202,16 +202,19 @@ function addSearchEnginePopup(data) {
 
 	}
 
-	let s_folder = simple.querySelector('[name="folder"]');
+
+	let s_folders = document.querySelectorAll('[name="folder"]');
 
 	let folders = findNodes(userOptions.nodeTree, n => n.type === "folder");
 
-	folders.forEach(f => {
-		let o = document.createElement('option');
-		o.value = f.id;
-		o.innerText = f.title;
+	s_folders.forEach( s_folder => {
+		folders.forEach(f => {
+			let o = document.createElement('option');
+			o.value = f.id;
+			o.innerText = f.title;
 
-		s_folder.appendChild(o);
+			s_folder.appendChild(o);
+		});
 	});
 	
 	function simpleImportHandler(url, _confirm) {
@@ -393,7 +396,7 @@ function addSearchEnginePopup(data) {
 		// Show button
 		div.style.display=null;
 	
-	} 
+	}
 	
 	if (isFirefox) {
 		// Find Plugin listener
@@ -472,7 +475,7 @@ function addSearchEnginePopup(data) {
 
 		let se = formToSearchEngine();
 
-		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se}).then( response => {
+		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se, folderId: form.folder.value}).then( response => {
 	//		console.log(response);
 		});
 		
@@ -512,17 +515,17 @@ function testOpenSearch(form) {
 
 	let tempSearchEngine = {
 		"searchForm": form.searchform.value, 
-		"icon_url": form.iconURL.value,
-		"title": form.shortname.value,
-		"order":"", 
-		"icon_base64String": "", 
+		// "icon_url": form.iconURL.value,
+		// "title": form.shortname.value,
+		// "order":"", 
+		// "icon_base64String": "", 
 		"method": form._method.value, 
 		"params": params, 
 		"template": form.template.value, 
 		"queryCharset": form._encoding.value
 	};
 
-	let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"firefox");
+	let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
 	
 	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 	
