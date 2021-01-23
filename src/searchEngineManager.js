@@ -281,7 +281,9 @@ function buildSearchEngineContainer() {
 						"method": edit_form._method.value, 
 						"params": paramStringToNameValueArray(edit_form.post_params.value), 
 						"template": edit_form.template.value, 
-						"queryCharset": edit_form._encoding.value
+						"queryCharset": edit_form._encoding.value,
+						"searchRegex": edit_form.searchRegex.value,
+						"searchCode": edit_form.searchCode.value
 					};
 
 					browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
