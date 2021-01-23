@@ -1707,6 +1707,8 @@ document.addEventListener('userOptionsLoaded', () => {
 	});
 });
 
+document.addEventListener('userOptionsLoaded', () => document.body.style.opacity = 1);
+
 // generate new search.json.mozlz4 
 $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 	
