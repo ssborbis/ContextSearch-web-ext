@@ -219,7 +219,7 @@
 	background-repeat:no-repeat;
 	background-color: #eff0f1;
 	color:#444;
-	font-size:1em;
+	font-size:18pt;
 	text-align:center;
 	width: calc(100% / var(--cs-pagetilecols) - 4px);
 	height: calc(100% / var(--cs-pagetilerows) - 4px);
