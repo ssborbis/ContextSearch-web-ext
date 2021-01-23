@@ -559,9 +559,8 @@ function buildSearchEngineContainer() {
 			
 			let expand = document.createElement('span');
 			expand.innerText = "-";
-			expand.style.marginLeft = "-20px";
-			expand.style.padding = "0 6px";
-			expand.style.fontFamily = "monospace";
+			expand.className = "collapse";
+
 			header.insertBefore(expand, header.firstChild);
 
 			let ul = document.createElement('ul');
@@ -853,7 +852,7 @@ function buildSearchEngineContainer() {
 					}
 				}
 				
-				saveOptions();
+				updateNodeList();
 			})	
 		}
 

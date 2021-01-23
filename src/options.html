@@ -883,6 +883,7 @@
 			.treeNode {
 				border-top: 1px solid var(--bg-color3);
 				cursor:default;
+				position:relative;
 				transition: padding .1s linear;
 			}
 			.treeNode > IMG {
@@ -1112,16 +1113,17 @@
 				height:16px;
 				vertical-align:middle;
 			}
-			#pageTilesFolderBrowser SPAN {
+			#pageTilesFolderBrowser SPAN, .collapse {
 				position:absolute;
 				left:-14px;
-				border:1px solid var(--border-color1);
+				border:1px solid var(--border-color2);
 				border-radius:4px;
 				width:10px;
 				height:10px;
 				text-align:center;
 				display:inline-block;
 				line-height:10px;
+				color:var(--color);
 			}
 			.promptForImage {
 				display:inline-block;
