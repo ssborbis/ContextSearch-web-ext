@@ -1,5 +1,5 @@
 browser.omnibox.setDefaultSuggestion({
-  description: "ContextSearch ->"
+  description: "ContextSearch"
 });
 
 function getNodesFromHotkeys(hotkeys) {
@@ -12,6 +12,9 @@ function getNodesFromHotkeys(hotkeys) {
 		let node = findNode(userOptions.nodeTree, n => k.toLowerCase() == String.fromCharCode(n.hotkey).toLowerCase());
 		if ( node ) nodes.push(node);
 	});
+
+	if ( !hotkeys )
+		return [findNode(userOptions.nodeTree, n => n.hotkey)];
 	
 	return nodes;
 }
@@ -31,19 +34,22 @@ function parseOmniboxInput(input) {
 }
 
 browser.omnibox.onInputChanged.addListener((input, suggest) => {
-	
-	parseOmniboxInput(input);
 
-	// let nodes = [...new Set(findNodes(userOptions.nodeTree, n => n.hotkey))];
-	// let suggestions = [];
-	// nodes.forEach(n => {
-		// suggestions.push({
-			// content: String.fromCharCode(n.hotkey).toLowerCase(),
-			// description: n.title
-		// });
-	// });
+	let _input = parseOmniboxInput(input);
 	
-	// suggest(suggestions);
+	if ( !_input ) return;
+	
+	let nodes = getNodesFromHotkeys(_input.hotkeys);
+
+	let suggestions = [];
+	nodes.forEach(n => {
+		suggestions.push({
+			content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + _input.searchTerms,
+			description: n.title
+		});
+	});
+	
+	suggest(suggestions);
 });
 
 browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
@@ -51,11 +57,6 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	let input = parseOmniboxInput(text);
 	
 	if ( !input ) return;
-	
-	if ( !input.hotkeys ) {
-		let node = findNode(userOptions.nodeTree, n => n.hotkey);
-		input.hotkeys = node ? [String.fromCharCode(node.hotkey).toLowerCase()] : [];
-	}
 	
 	let nodes = getNodesFromHotkeys(input.hotkeys);
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
