@@ -28,7 +28,7 @@ ___
 
 
 ## Building from source / sideloading
-Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using.
+Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using. Some browser forks may require modifications to the manifest to work. Waterfox Classic, for instance, requires the explicit `web_accessible_resources` section found in the generic manifest.json
 
 ___
 
