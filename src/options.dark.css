@@ -9,5 +9,10 @@
 	--border-color2:#222;
 	--border-color3:#333;
 	--hover1:#666;
+	--hover2:#555;
 	--selected:#537a58;
+}
+
+a, a:link, a:visited, a:active {
+	color: var(--selected);
 }

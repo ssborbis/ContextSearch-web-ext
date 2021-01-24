@@ -19,6 +19,7 @@
 				--color2:#555;
 
 				--hover1:#ddd;
+				--hover2:#ddd;
 
 				--cs-green: #6ec179;
 				--selected: #0078d7;
@@ -912,9 +913,9 @@
 			.hotkey:hover {
 				background-color:var(--hover1);
 			}
-			/* LI > .header:hover {
-				background-color:#F4F4F4;
-			}*/
+			 .treeNode .header:not(.selected):hover {
+				background-color:var(--hover2);
+			}
 			.hidden {
 				opacity: .5;
 			}
@@ -1109,6 +1110,9 @@
 				padding:1px;
 				border-bottom:2px solid var(--bg-color1);
 			}
+/*			#pageTilesFolderBrowser LI:hover {
+				background-color:var(--selected);
+			}*/
 			#pageTilesFolderBrowser IMG {
 				height:16px;
 				vertical-align:middle;
@@ -1124,6 +1128,7 @@
 				display:inline-block;
 				line-height:10px;
 				color:var(--color);
+				background-color:var(--bg-color1);
 			}
 			.promptForImage {
 				display:inline-block;
@@ -2237,20 +2242,13 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					</section>
 
-					<hr />
-					
-				<!-- 	<div id="pageTilesChooser"></div>
-					<hr />
-					 -->
+					<section>
+						<p class="header1" data-i18n="Layout">Layout</p>
 					 <div>
-					<ul id="pageTilesFolderBrowser"></ul>
-					<table id="pageTilesTable" style="display:inline-block;position:relative;vertical-align:middle"></table>
-				</div>
-					
-					<br /><br />
-					<!-- <button id="b_pageTilesClear">Clear</button> -->
-					<!-- <button id="b_pageTilesReset">Reset</button> -->
-					
+						<ul id="pageTilesFolderBrowser"></ul>
+						<table id="pageTilesTable" style="display:inline-block;position:relative;vertical-align:middle"></table>
+					</div>	
+					</section>				
 					
 				</div>
 				<div class="tabcontent" id="hotkeysTab">
@@ -2841,5 +2839,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		<script src="searchEngineManager.js"></script>
 		<script src="tools.js"></script>
 		<script src="palettes.js"></script>
+		<script src="options.pagetiles.js"></script>
 	</body>
 </html>

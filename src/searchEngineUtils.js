@@ -74,8 +74,8 @@ function imageToBase64(image, maxSize) {
 	let c = document.createElement('canvas');
 	let ctx = c.getContext('2d');
 	
-	ctx.canvas.width = image.naturalWidth || 16;
-	ctx.canvas.height = image.naturalHeight || 16;
+	ctx.canvas.width = image.naturalWidth || maxSize;
+	ctx.canvas.height = image.naturalHeight || maxSize;
 
 	try {
 
