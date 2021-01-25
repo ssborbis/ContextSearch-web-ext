@@ -882,7 +882,7 @@
 				width: 20px;
 			}
 			.treeNode {
-				border-top: 1px solid var(--bg-color3);
+				border-top: 2px solid var(--bg-color1);
 				cursor:default;
 				position:relative;
 				transition: padding .1s linear;
@@ -1129,6 +1129,7 @@
 				line-height:10px;
 				color:var(--color);
 				background-color:var(--bg-color1);
+				top:2.5px;
 			}
 			.promptForImage {
 				display:inline-block;
@@ -1291,6 +1292,14 @@
 					<tr>
 						<td data-i18n_tooltip="Number of milliseconds to hover before opening a folder. 500 = default, 0 = disabled">openFoldersOnHoverTimeout</td>
 						<td><input type="number" id="n_openFoldersOnHoverTimeout" min="0" max="9999" step="1"></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Use the most recently used search engine when no keywords or hotkeys are used with the omnibox">contextMenuUseInnerText</td>
+						<td><input type="checkbox" id="cb_omniboxDefaultToLastUsedEngine" /></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">contextMenuUseInnerText</td>
+						<td><input type="checkbox" id="cb_contextMenuUseInnerText" /></td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
@@ -1719,7 +1728,9 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						
 							<div style="font-size:8pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:10px;margin-right:6px;vertical-align:middle" src="icons/alert.svg">Hold right button ~1s and release for default context menu</div>
 							<div style="margin-top: 4px">
+<div data-browser="firefox">	
 								<b>*</b><span class="description" style="font-size:8pt" data-i18n="MouseHelp">Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus</span>
+</div>
 							</div>
 						</div>
 						
@@ -2679,10 +2690,12 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				
 				<br /><br />
 		
-				<div id="searchEnginesParentContainer">
+				<section id="searchEnginesParentContainer">
+					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
 					<div id="managerContainer">
 					</div>
 					<div></div>
+					<br />
 
 					<button id="b_addSearchEngine" data-i18n="Add">Add</button>
 					<button id="b_resetAllSearchEngines" style="float:right;clear:both" data-i18n="ResetDefaults">Restore Defaults</button>
@@ -2691,7 +2704,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 						Drag &amp; drop to re-order, click to edit
 					</div>
 					
-				</div>
+				</section>
 
 				<form id="editSearchEngineContainer" class="editForm" action="">
 
@@ -2754,7 +2767,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 				<br />
 				
 				<div data-browser="firefox">
-				<hr>
 				<section>
 					<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
 						Sync With Firefox Search (Basic Mode)

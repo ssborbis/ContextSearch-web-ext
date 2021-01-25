@@ -2,8 +2,19 @@ browser.omnibox.setDefaultSuggestion({
   description: "ContextSearch"
 });
 
+function getDefaultNode() {
+	// return either the last used engine or the first engine with a keyword or hotkey
+	let lastNode = findNode(userOptions.nodeTree, n => n.id === userOptions.lastUsedId);
+	if ( userOptions.omniboxDefaultToLastUsedEngine && (lastNode.hotkey || lastNode.keyword) )
+		return lastNode
+	else
+		return findNode(userOptions.nodeTree, n => n.hotkey || n.keyword);
+}
+
 function getNodesFromHotkeys(hotkeys) {
 	let nodes = [];
+
+	if ( !hotkeys ) return [];
 
 	let keywordNode = findNode(userOptions.nodeTree, n => n.keyword && n.keyword === hotkeys.join(''));
 	if ( keywordNode ) return [keywordNode];
@@ -12,9 +23,6 @@ function getNodesFromHotkeys(hotkeys) {
 		let node = findNode(userOptions.nodeTree, n => k.toLowerCase() == String.fromCharCode(n.hotkey).toLowerCase());
 		if ( node ) nodes.push(node);
 	});
-
-	if ( !hotkeys )
-		return [findNode(userOptions.nodeTree, n => n.hotkey)];
 	
 	return nodes;
 }
@@ -28,27 +36,37 @@ function parseOmniboxInput(input) {
 		return { hotkeys: full_match[1].split(''), searchTerms: full_match[2] };
 	
 	if ( partial_match ) 
-		return { searchTerms: partial_match[1] }
+		return { searchTerms: partial_match[1]}
 	
 	return null;	
 }
 
-browser.omnibox.onInputChanged.addListener((input, suggest) => {
+browser.omnibox.onInputChanged.addListener((text, suggest) => {
 
-	let _input = parseOmniboxInput(input);
+	let input = parseOmniboxInput(text);
 	
-	if ( !_input ) return;
+	if ( !input ) return;
 	
-	let nodes = getNodesFromHotkeys(_input.hotkeys);
+	let nodes = [];
+
+	if ( !input.hotkeys ) nodes = [getDefaultNode()];
+	else nodes = getNodesFromHotkeys(input.hotkeys);
+
+	let defaultDescriptions = nodes.map( n => n.title );
+
+	browser.omnibox.setDefaultSuggestion({
+		description: defaultDescriptions.join(" | ")
+	});
 
 	let suggestions = [];
+
 	nodes.forEach(n => {
 		suggestions.push({
 			content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + _input.searchTerms,
 			description: n.title
 		});
 	});
-	
+
 	suggest(suggestions);
 });
 
@@ -58,9 +76,13 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	
 	if ( !input ) return;
 	
-	let nodes = getNodesFromHotkeys(input.hotkeys);
+	let nodes = [];
+
+	if ( !input.hotkeys ) nodes = [getDefaultNode()];
+	else nodes = getNodesFromHotkeys(input.hotkeys);
+
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
-	
+
 	let method = "openBackgroundTab";
 	// switch (disposition) {
 		// case "currentTab":

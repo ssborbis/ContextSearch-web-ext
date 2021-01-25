@@ -68,6 +68,7 @@ const defaultUserOptions = {
 	contextMenuShift: "openNewWindow",
 	contextMenuCtrl: "openBackgroundTab",
 	contextMenuSearchLinksAs: "text",
+	contextMenuUseInnerText: false,
 	quickMenuLeftClick: "openNewTab",
 	quickMenuRightClick: "openCurrentTab",
 	quickMenuMiddleClick: "openBackgroundTab",
@@ -203,5 +204,6 @@ const defaultUserOptions = {
 		paletteString: "eff0f1"
 	},
 	openFoldersOnHoverTimeout: 0,
-	nightMode: false
+	nightMode: false,
+	omniboxDefaultToLastUsedEngine: false
 };

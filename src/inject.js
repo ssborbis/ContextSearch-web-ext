@@ -58,9 +58,13 @@ window.addEventListener('mousedown', e => {
 	if ( e.which !== 3 ) return false;
 
 	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
+
+	if ( !searchTerms && userOptions.contextMenuUseInnerText ) {
+		searchTerms = e.target.innerText.trim();
+	}
 	
-	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 });
 
 // https://stackoverflow.com/a/1045012
@@ -232,26 +236,15 @@ function showNotification(msg) {
 }
 
 // set zoom attribute to be used for scaling objects
-document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
-
-document.addEventListener('zoom', e => {
+function setZoomProperty() {
 	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
-});
+}
 
-// apply global user styles for /^[\.|#]CS_/ matches in userStyles
-browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
-		
-	let userOptions = result.userOptions;
+document.addEventListener('zoom', setZoomProperty);
+setZoomProperty();
 
-	if ( userOptions.userStylesEnabled && userOptions.userStylesGlobal ) {
-		
-		let styleEl = document.createElement('style');
-		
-		styleEl.innerText = userOptions.userStylesGlobal;
-
-		document.head.appendChild(styleEl);
-	}
-});
+// // apply global user styles for /^[\.|#]CS_/ matches in userStyles
+browser.runtime.sendMessage({action: "addUserStyles"});
 
 // menuless hotkey
 document.addEventListener('keydown', e => {
@@ -277,5 +270,20 @@ document.addEventListener('keydown', e => {
 	});
 	
 });
+
+// let mouseTracker = [];
+// let mouseLastCoords = null;
+// document.addEventListener('mousemove', e => {
+// 	mouseLastCoords = {x: e.clientX, y: e.clientY};
+// });
+
+// setInterval({
+// 	mouseTracker.push(mouseLastCoords);
+// 	if ( mouseTracker.length > 10 ) mouseTracker.shift();
+
+
+
+
+// }, 50 )
 
 browser.runtime.sendMessage({action: "injectComplete"});

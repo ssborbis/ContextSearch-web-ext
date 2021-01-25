@@ -345,7 +345,7 @@ function restoreOptions() {
 					// input.style.opacity = .5;
 				// }		
 			// }
-			// s.addEventListener('change', toggle);
+			// s.addEventListener('change', toggle); 
 			// toggle();
 		// });
 		
@@ -382,6 +382,8 @@ function restoreOptions() {
 		$('#cb_sideBarOpenOnResults').checked = userOptions.sideBar.openOnResults;
 		$('#cb_sideBarOpenOnResultsMinimized').checked = userOptions.sideBar.openOnResultsMinimized;
 		$('#cb_quickMenuPreventPageClicks').checked = userOptions.quickMenuPreventPageClicks;
+		$('#cb_omniboxDefaultToLastUsedEngine').checked = userOptions.omniboxDefaultToLastUsedEngine;
+		$('#cb_contextMenuUseInnerText').checked = userOptions.contextMenuUseInnerText;
 
 		$('#n_pageTilesRows').value = userOptions.pageTiles.rows;
 		$('#n_pageTilesColumns').value = userOptions.pageTiles.columns;
@@ -657,6 +659,8 @@ function saveOptions(e) {
 		contextMenuHotkeys: $('#cb_contextMenuHotkeys').checked,
 		quickMenuPreventPageClicks: $('#cb_quickMenuPreventPageClicks').checked,
 		openFoldersOnHoverTimeout: parseInt($('#n_openFoldersOnHoverTimeout').value),
+		omniboxDefaultToLastUsedEngine: $('#cb_omniboxDefaultToLastUsedEngine').checked,
+		contextMenuUseInnerText: $('#cb_contextMenuUseInnerText').checked,
 		nightMode: userOptions.nightMode,
 
 		pageTiles: {

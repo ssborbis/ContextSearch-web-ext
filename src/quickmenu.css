@@ -15,7 +15,7 @@ HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
 	display:none;
 }
 BODY {
-	background-color:#eff0f1;
+	background-color: var(--background);
 }
 
 .selectedFocus {
@@ -29,7 +29,7 @@ BODY {
 .tile {
 	width:32px;
 	height:32px;
-	border:1px solid #e0e0e0;
+	border:1px solid var(--border);
 	padding:0;
 	margin:0;
 	display:inline-block;

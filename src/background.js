@@ -607,6 +607,15 @@ async function notify(message, sender, sendResponse) {
 				code: "getSelectedText(document.activeElement);"
 			});	
 			break;
+
+		case "addUserStyles":
+			if ( userOptions.userStylesEnabled && userOptions.userStylesGlobal ) {
+				console.log('adding user styles');
+				return browser.tabs.insertCSS( sender.tab.id, {
+					code: userOptions.userStylesGlobal
+				});
+			}
+			break;
 	}
 }
 
@@ -683,7 +692,7 @@ async function buildContextMenu() {
 	
 	function addMenuItem( createOptions ) {
 
-		createOptions.contexts = createOptions.contexts || ["selection", "link", "image"];
+		createOptions.contexts = createOptions.contexts || ["selection", "link", "image", "page"];
 
 		try {
 			browser.contextMenus.create( createOptions, onCreated);
@@ -706,7 +715,7 @@ async function buildContextMenu() {
 	browser.contextMenus.create({
 		id: "search_engine_menu",
 		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith"),
-		contexts: ["selection", "link", "image"]
+		contexts: ["selection", "link", "image", "page"]
 	});
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
@@ -922,7 +931,7 @@ function updateSelectDomainMenus(tab) {
 				icons: {
 					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
 				},
-				contexts: ["selection", "link", "image"]
+				contexts: ["selection", "link", "image", "page"]
 			};
 
 			try {
