@@ -1677,12 +1677,12 @@
   },
   
   "ToggleTheme": {
-    "message": "Toggle theme",
+    "message": "Dark theme on / off",
     "description": ""
   },
   
   "ToggleHotkeys": {
-    "message": "Toggle hotkeys",
+    "message": "Hotkeys on / off",
     "description": ""
   },
   
@@ -1769,6 +1769,14 @@
   "SearchAll": {
     "message": "« search all »",
     "description": ""
+  },
+
+  "pagetilesselectpalette": {
+    "message": "Color palette"
+  },
+
+  "keyword": {
+    "message": "keyword"
   },
 
   "___________": {
