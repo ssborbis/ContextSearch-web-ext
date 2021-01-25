@@ -14,7 +14,7 @@ function getDefaultNode() {
 function getNodesFromHotkeys(hotkeys) {
 	let nodes = [];
 
-	if ( !hotkeys ) return [];
+	if ( !hotkeys ) return [getDefaultNode()];
 
 	let keywordNode = findNode(userOptions.nodeTree, n => n.keyword && n.keyword === hotkeys.join(''));
 	if ( keywordNode ) return [keywordNode];
@@ -47,10 +47,7 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 	
 	if ( !input ) return;
 	
-	let nodes = [];
-
-	if ( !input.hotkeys ) nodes = [getDefaultNode()];
-	else nodes = getNodesFromHotkeys(input.hotkeys);
+	let nodes = getNodesFromHotkeys(input.hotkeys);
 
 	let defaultDescriptions = nodes.map( n => n.title );
 
@@ -62,7 +59,7 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 
 	nodes.forEach(n => {
 		suggestions.push({
-			content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + _input.searchTerms,
+			content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + input.searchTerms,
 			description: n.title
 		});
 	});
@@ -76,10 +73,7 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	
 	if ( !input ) return;
 	
-	let nodes = [];
-
-	if ( !input.hotkeys ) nodes = [getDefaultNode()];
-	else nodes = getNodesFromHotkeys(input.hotkeys);
+	let nodes = getNodesFromHotkeys(input.hotkeys);
 
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 
