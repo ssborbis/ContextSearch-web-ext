@@ -897,7 +897,7 @@
   },
   
   "SearchActionsOpenFolder": {
-    "message": "Ouvrir le dossier",
+    "message": "Explorer le dossier",
 	"description": "SELECT option label for opening quick menu folder"
   },
   
@@ -1718,6 +1718,101 @@
     "description": ""
   },
 
+  "SearchAll": {
+    "message": "Tous les moteurs ci-dessous",
+    "description": ""
+  },
+	
+  "Keyword": {
+    "message": "Mot-clé",
+    "description": ""
+  },
+	
+  "openFoldersOnHoverTimeoutTooltip": {
+    "message": "Délai (en millisecondes) de survol avant ouverture d’un dossier (500 = valeur par défaut, 0 = désactivé)",
+    "description": "Number of milliseconds to hover before opening a folder. 500 = default, 0 = disabled (options.html)"
+  },
+	
+  "exportToFirefoxSearch": {
+    "message": "Exporter dans les moteurs de recherche de Firefox",
+    "description": "Export to Firefox search (options.html)"
+  },
+	
+  "exportToFirefoxSearchTooltip": {
+    "message": "Naviguer jusqu’au dossier du profil et sélectionner le fichier « search.json.mozlz4 ». Deux fichiers seront proposés : un nouveau fichier « search.json.mozlz4 » et une sauvegarde du fichier original. Enregistrer les deux fichiers dans le dossier du profil. Redémarrer Firefox pour voir les changements.",
+    "description": "Browse to your profile folder and select your search.json.mozlz4 file. You will be prompted with two files: a new search.json.mozlz4 file and a backup of your original file. Save both files to your profile directory. Restart Firefox to see the changes. (options.html)"
+  },
+	
+  "ShowFolderSearch": {
+    "message": "Ajouter en tête de menu une option de recherche avec tous les moteurs d’un dossier",
+    "description": "Show an option to search the entire folder at the top of the menu (options.html)"
+  },
+	
+  "PageTilesSelectPalette": {
+    "message": "Gamme de couleurs",
+    "description": "Color palette (options.html)"
+  },
+	
+  "nonePalette": {
+    "message": "Aucune",
+    "description": "none (palettes.js)"
+  },
+	
+  "alphabetPalette": {
+    "message": "Alphabet",
+    "description": "alphabet (palettes.js) - optional"
+  },
+	
+  "bouquetPalette": {
+    "message": "Bouquet",
+    "description": "bouquet (palettes.js) - optional"
+  },
+	
+  "dayglowPalette": {
+    "message": "Éclat",
+    "description": "dayglow (palettes.js) - optional"
+  },
+	
+  "easterPalette": {
+    "message": "Pâques",
+    "description": "easter (palettes.js) - optional"
+  },
+	
+  "lavenderPalette": {
+    "message": "Lavande",
+    "description": "lavender (palettes.js) - optional"
+  },
+	
+  "metalPalette": {
+    "message": "Métal",
+    "description": "metal (palettes.js) - optional"
+  },
+	
+  "nurseryPalette": {
+    "message": "Crèche",
+    "description": "nursery (palettes.js) - optional"
+  },
+	
+  "socialPalette": {
+    "message": "Social",
+    "description": "social (palettes.js) - optional"
+  },
+	
+  "waterPalette": {
+    "message": "Eau",
+    "description": "water (palettes.js) - optional"
+  },
+  
+  "FailedToLoad": {
+    "message": "Échec du chargement des moteurs de recherche",
+    "description": "Failed to load search engines (options.js)"
+  },
+	
+  "fetchingRemoteContent": {
+    "message": "Récupération du contenu distant",
+    "description": "Fetching remote content (options.js)"
+  },
+	
   "___________": {
     "message": "",
     "description": ""
