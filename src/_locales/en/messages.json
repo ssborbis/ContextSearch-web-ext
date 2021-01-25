@@ -1774,9 +1774,74 @@
   "pagetilesselectpalette": {
     "message": "Color palette"
   },
+  
+  "nonePalette": {
+    "message": "None",
+    "description": "none (palettes.js)"
+  },
+  
+  "alphabetPalette": {
+    "message": "Alphabet",
+    "description": "alphabet (palettes.js) - optional"
+  },
+  
+  "bouquetPalette": {
+    "message": "Bouquet",
+    "description": "bouquet (palettes.js) - optional"
+  },
+  
+  "dayglowPalette": {
+    "message": "Dayglow",
+    "description": "dayglow (palettes.js) - optional"
+  },
+  
+  "easterPalette": {
+    "message": "Easter",
+    "description": "easter (palettes.js) - optional"
+  },
+  
+  "lavenderPalette": {
+    "message": "Lavender",
+    "description": "lavender (palettes.js) - optional"
+  },
+  
+  "metalPalette": {
+    "message": "Metal",
+    "description": "metal (palettes.js) - optional"
+  },
+  
+  "nurseryPalette": {
+    "message": "Nursery",
+    "description": "nursery (palettes.js) - optional"
+  },
+  
+  "socialPalette": {
+    "message": "Social",
+    "description": "social (palettes.js) - optional"
+  },
+  
+  "waterPalette": {
+    "message": "Water",
+    "description": "water (palettes.js) - optional"
+  },
 
   "keyword": {
-    "message": "keyword"
+    "message": "Omnibox keyword"
+  },
+
+  "FailedToLoad": {
+    "message": "Failed to load search engines :(",
+    "description": "Failed to load search engines (options.js)"
+  },
+  
+  "fetchingRemoteContent": {
+    "message": "Fetching remote content",
+    "description": "Fetching remote content (options.js)"
+  },
+
+  "searchenginesmanager": {
+    "message": "Search Engines Manager",
+    "description": ""
   },
 
   "___________": {

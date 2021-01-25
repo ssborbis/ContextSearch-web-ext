@@ -801,7 +801,7 @@ function buildSearchEngineContainer() {
 			}
 
 			let keyword = document.createElement('input');
-			keyword.title = browser.i18n.getMessage('Keyword') || "Omnibox keyword";
+			keyword.title = browser.i18n.getMessage('Keyword');
 			keyword.style = "float:right;font-weight:normal;display:inline-block;right:40px;border:none;width:40px";
 			keyword.className = "inputNice hotkey keyword";
 

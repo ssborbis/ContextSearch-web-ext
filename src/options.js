@@ -118,7 +118,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		// print status message to Options page
 		statusMessage({
 			img: "icons/crossmark.svg",
-			msg: "Failed to load search engines :(",
+			msg: browser.i18n.getMessage("FailedToLoad"),
 			color: "red",
 			invert: true
 		});
@@ -1205,7 +1205,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					// overDiv.innerText = "Fetching remote content";
 					let msgDiv = document.createElement('div');
 					msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
-					msgDiv.innerText = "Fetching remote content";
+					msgDiv.innerText = browser.i18n.getMessage("Fetchingremotecontent");
 					overDiv.appendChild(msgDiv);
 					document.body.appendChild(overDiv);
 					let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
