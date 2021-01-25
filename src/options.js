@@ -660,6 +660,7 @@ function saveOptions(e) {
 		quickMenuPreventPageClicks: $('#cb_quickMenuPreventPageClicks').checked,
 		openFoldersOnHoverTimeout: parseInt($('#n_openFoldersOnHoverTimeout').value),
 		omniboxDefaultToLastUsedEngine: $('#cb_omniboxDefaultToLastUsedEngine').checked,
+		omniboxLastUsedIds: userOptions.omniboxLastUsedIds,
 		contextMenuUseInnerText: $('#cb_contextMenuUseInnerText').checked,
 		nightMode: userOptions.nightMode,
 

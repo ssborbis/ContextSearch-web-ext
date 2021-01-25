@@ -205,5 +205,6 @@ const defaultUserOptions = {
 	},
 	openFoldersOnHoverTimeout: 0,
 	nightMode: false,
-	omniboxDefaultToLastUsedEngine: false
+	omniboxDefaultToLastUsedEngine: false,
+	omniboxLastUsedIds: []
 };

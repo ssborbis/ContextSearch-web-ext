@@ -2,19 +2,19 @@ browser.omnibox.setDefaultSuggestion({
   description: "ContextSearch"
 });
 
-function getDefaultNode() {
+function getDefaultNodes() {
 	// return either the last used engine or the first engine with a keyword or hotkey
-	let lastNode = findNode(userOptions.nodeTree, n => n.id === userOptions.lastUsedId);
-	if ( userOptions.omniboxDefaultToLastUsedEngine && (lastNode.hotkey || lastNode.keyword) )
-		return lastNode
-	else
-		return findNode(userOptions.nodeTree, n => n.hotkey || n.keyword);
+	if ( userOptions.omniboxDefaultToLastUsedEngine && userOptions.omniboxLastUsedIds.length ) {
+		let nodes = findNodes(userOptions.nodeTree, n => userOptions.omniboxLastUsedIds.includes(n.id));
+		return [...new Set(nodes)];
+	} else
+		return [findNode(userOptions.nodeTree, n => n.hotkey || n.keyword)];
 }
 
 function getNodesFromHotkeys(hotkeys) {
 	let nodes = [];
 
-	if ( !hotkeys ) return [getDefaultNode()];
+	if ( !hotkeys ) return getDefaultNodes();
 
 	let keywordNode = findNode(userOptions.nodeTree, n => n.keyword && n.keyword === hotkeys.join(''));
 	if ( keywordNode ) return [keywordNode];
@@ -106,5 +106,9 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	}
 
 	folderSearch(info, true); // allowFolders = true
+
+	// save last used engine(s)
+	userOptions.omniboxLastUsedIds = nodes.map(n => n.id);
+	notify({action: "saveUserOptions", "userOptions": userOptions});
 	
 });
