@@ -1182,10 +1182,10 @@ function contextMenuSearch(info, tab) {
 		if ( [info.linkUrl, info.linkText].includes(window.searchTerms) ) // if content_script updated the window.searchTerms var properly, use that
 			searchTerms = window.searchTerms;
 		else
-			searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;
-			
-	}
-	
+			searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;		
+	} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
+		searchTerms = window.searchTerms.trim();
+
 	if ( !searchTerms ) return;
 
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
