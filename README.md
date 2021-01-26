@@ -146,12 +146,18 @@ gradient background and white tools ( newer source-code only )
     --tools-color:white;
 }
 ```
-gradient background and white tools ( older code )
+gradient background and white tools for the quick menu only ( older code )
 ```
 [data-menu="quickmenu"] { background:linear-gradient(#e66465, #9198e5);}
 :root { --tools-color:white; }
 }
 
+```
+
+gradient background and white tools for all menus ( older code )
+```
+[data-menu] { background:linear-gradient(#e66465, #9198e5);}
+:root { --tools-color:white; }
 ```
 
 No quick menu resize handle:
