@@ -1110,6 +1110,15 @@ function buildSearchEngineContainer() {
 		e.preventDefault();
 		
 		let li = nearestParent('LI', e.target);
+
+		// flag if opened from button vs context menu
+		let buttonAdd = e.target === document.querySelector('#b_addSearchEngine') ? true : false;
+		if ( buttonAdd && !li ) {
+			// if ( selectedRows && selectedRows.length === 1)
+			// 	li = selectedRows[0];
+			// else
+				li = document.querySelector('#managerContainer ul').lastChild;
+		}
 		
 		closeContextMenus();
 
@@ -1229,6 +1238,14 @@ function buildSearchEngineContainer() {
 			
 			async function removeNodesAndRows() {
 
+				let edit_form = document.getElementById('editSearchEngineContainer');
+				selectedRows.forEach( row => {
+					if ( row.contains(edit_form)) {
+						edit_form.style.maxHeight = null;
+						document.body.appendChild(edit_form);
+					}
+				})
+
 				// remember OCSEs to append hidden
 				let ffses = [];
 				selectedRows.forEach( row => {					
@@ -1310,13 +1327,17 @@ function buildSearchEngineContainer() {
 				toJSON: li.node.toJSON
 			}
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newFolder);
+			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newFolder);
 			
 			let newLi = traverse(newFolder, li.parentNode);
-			li.parentNode.insertBefore(newLi, li);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
 			
 			// required delay to work
-			setTimeout(() => newLi.dispatchEvent(new MouseEvent('dblclick')), 100);
+			setTimeout(() => {
+			//	newLi.dispatchEvent(new MouseEvent('dblclick'));
+				newLi.querySelector('.header .label').dispatchEvent(new MouseEvent('dblclick'));
+			}, 100);
+
 			
 			updateNodeList();
 			closeContextMenus();
@@ -1380,10 +1401,10 @@ function buildSearchEngineContainer() {
 							toJSON: li.node.toJSON
 						}
 						
-						li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newBm);
+						li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newBm);
 				
 						let newLi = traverse(newBm, li.parentNode);
-						li.parentNode.insertBefore(newLi, li);
+						li.parentNode.insertBefore(newLi, li.nextSibling);
 				
 						updateNodeList();
 						
@@ -1462,10 +1483,10 @@ function buildSearchEngineContainer() {
 			
 			if (!newNode) return;
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newNode);
+			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newNode);
 			
 			let newLi = traverse(newNode, li.parentNode);
-			li.parentNode.insertBefore(newLi, li);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
 			
 			updateNodeList();
 			closeContextMenus();
@@ -1475,7 +1496,7 @@ function buildSearchEngineContainer() {
 		newEngine.addEventListener('click', () => {
 			
 			let newNode = addNewEngine(li.node, false);		
-			addNode(newNode, li);
+			let newLi = addNode(newNode, li);
 			updateNodeList(true);
 				
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
@@ -1491,10 +1512,10 @@ function buildSearchEngineContainer() {
 				toJSON: li.node.toJSON
 			}
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, newNode);
+			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newNode);
 			
 			let newLi = traverse(newNode, li.parentNode);
-			li.parentNode.insertBefore(newLi, li);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
 			
 			updateNodeList();
 		});
@@ -1513,6 +1534,9 @@ function buildSearchEngineContainer() {
 				el.style.opacity = .5;
 			});
 		}
+
+		// remove some options when using button
+		if ( buttonAdd ) [edit, hide, copy, _delete].forEach( el => el.parentNode.removeChild(el));
 
 		menu.style.left = e.pageX + "px";
 		menu.style.top = e.pageY + "px";
@@ -1578,6 +1602,8 @@ function buildSearchEngineContainer() {
 
 		let newLi = traverse(node, li.parentNode);
 		li.parentNode.insertBefore(newLi, li.nextSibling);
+
+		return newLi;
 	}
 	
 	function addNewEngine(node, copy) {
@@ -1641,18 +1667,21 @@ function buildSearchEngineContainer() {
 	}
 	
 	document.getElementById('b_addSearchEngine').addEventListener('click', e => {
-		let newNode = addNewEngine(rootElement.node.children.slice(-1)[0]);
-		if (newNode) {
-			
-			rootElement.node.children.push(newNode);
-			
-			let newLi = traverse(newNode, rootElement);
+		e.stopPropagation();
+		contextMenuHandler(e);
 
-			updateNodeList(true);
+		// let newNode = addNewEngine(rootElement.node.children.slice(-1)[0]);
+		// if (newNode) {
 			
-			newLi.scrollIntoView();
-			newLi.dispatchEvent(new MouseEvent('dblclick'));
-		}
+		// 	rootElement.node.children.push(newNode);
+			
+		// 	let newLi = traverse(newNode, rootElement);
+
+		// 	updateNodeList(true);
+			
+		// 	newLi.scrollIntoView();
+		// 	newLi.dispatchEvent(new MouseEvent('dblclick'));
+		// }
 	});
 	
 	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {

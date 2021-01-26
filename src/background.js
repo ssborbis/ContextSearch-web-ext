@@ -1129,7 +1129,7 @@ function executeOneClickSearch(info) {
 }
 
 function contextMenuSearch(info, tab) {
-	
+
 	// remove incremental menu ids
 	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
 	
