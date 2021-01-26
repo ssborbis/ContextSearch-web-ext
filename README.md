@@ -186,12 +186,9 @@ image background with tile modifications borders tools and text
 ```
 :root {
     --tools-color: #ddd;
-    --border:transparent;
     --border:rgba(255,255,255,.2);
-}
-
-BODY[data-menu] {
-    background: url('https://img5.goodfon.com/wallpaper/nbig/f/b6/gradient-abstraktsiia-sinii-linii-background.jpg');
+    --background: url('https://img5.goodfon.com/wallpaper/nbig/f/b6/gradient-abstraktsiia-sinii-linii-background.jpg');
+    color:white;
 }
 
 .tile {
