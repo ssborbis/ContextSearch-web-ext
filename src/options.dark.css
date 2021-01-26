@@ -9,8 +9,10 @@
 	--border-color2:#222;
 	--border-color3:#333;
 	--hover1:#666;
-	--hover2:#555;
+	--hover2:#3d3d3d;
 	--selected:#537a58;
+
+	--tree-row-border: 1px solid #444;
 }
 
 a, a:link, a:visited, a:active {

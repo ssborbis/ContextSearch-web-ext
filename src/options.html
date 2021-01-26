@@ -19,10 +19,12 @@
 				--color2:#555;
 
 				--hover1:#ddd;
-				--hover2:#ddd;
+				--hover2:#eee;
 
 				--cs-green: #6ec179;
 				--selected: #0078d7;
+
+				--tree-row-border: 1px solid #fff;
 			}
 			HTML {
 				height:100%;
@@ -882,7 +884,7 @@
 				width: 20px;
 			}
 			.treeNode {
-				border-top: 2px solid var(--bg-color1);
+				border-top: var(--tree-row-border);
 				cursor:default;
 				position:relative;
 				transition: padding .1s linear;
@@ -907,11 +909,18 @@
 				font-weight:bold;
 				transition: background-color .25s;
 				font-size:9pt;
-				margin-top:1px;
+				margin:1px 0;
 				color:var(--color2);
+				border:none;
 			}
 			.hotkey:hover {
 				background-color:var(--hover1);
+			}
+			.keyword {
+				float:right;
+				font-weight:normal;
+				right:40px;
+				width:40px;
 			}
 			 .treeNode .header:not(.selected):hover {
 				background-color:var(--hover2);
@@ -1294,7 +1303,7 @@
 						<td><input type="number" id="n_openFoldersOnHoverTimeout" min="0" max="9999" step="1"></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Use the most recently used search engine when no keywords or hotkeys are used with the omnibox">omniboxDefaultToLastUsedEngine</td>
+						<td data-i18n_tooltip="Default to the most recent search engine used with the omnibox">omniboxDefaultToLastUsedEngine</td>
 						<td><input type="checkbox" id="cb_omniboxDefaultToLastUsedEngine" /></td>
 					</tr>
 					<tr>

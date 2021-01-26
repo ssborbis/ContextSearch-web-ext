@@ -802,7 +802,6 @@ function buildSearchEngineContainer() {
 
 			let keyword = document.createElement('input');
 			keyword.title = browser.i18n.getMessage('Keyword');
-			keyword.style = "float:right;font-weight:normal;display:inline-block;right:40px;border:none;width:40px";
 			keyword.className = "inputNice hotkey keyword";
 
 
@@ -1336,6 +1335,7 @@ function buildSearchEngineContainer() {
 			setTimeout(() => {
 			//	newLi.dispatchEvent(new MouseEvent('dblclick'));
 				newLi.querySelector('.header .label').dispatchEvent(new MouseEvent('dblclick'));
+				newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			}, 100);
 
 			
@@ -1405,6 +1405,7 @@ function buildSearchEngineContainer() {
 				
 						let newLi = traverse(newBm, li.parentNode);
 						li.parentNode.insertBefore(newLi, li.nextSibling);
+						newLi.scrollIntoView({block: "start", behavior:"smooth"});
 				
 						updateNodeList();
 						
@@ -1499,6 +1500,7 @@ function buildSearchEngineContainer() {
 			let newLi = addNode(newNode, li);
 			updateNodeList(true);
 				
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
 			
 			closeContextMenus();
@@ -1516,6 +1518,7 @@ function buildSearchEngineContainer() {
 			
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			
 			updateNodeList();
 		});
