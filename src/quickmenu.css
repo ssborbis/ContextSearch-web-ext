@@ -15,7 +15,7 @@ HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
 	display:none;
 }
 BODY {
-	background-color: var(--background);
+	background: var(--background);
 }
 
 .selectedFocus {
