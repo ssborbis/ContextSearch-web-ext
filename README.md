@@ -139,7 +139,7 @@ The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current ta
 ## Menu Styling
 Most CSS styling can be overridden in Options -> General -> User Styles.
 
-gradient background and white tools ( newer source-code only )
+sunset gradient background and white tools ( newer source-code only )
 ```
 :root {
     --background: linear-gradient(#e66465, #9198e5);
@@ -148,13 +148,16 @@ gradient background and white tools ( newer source-code only )
 ```
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="200px" />
 
-gradient background and white tools for the quick menu only ( older code )
+blue gradient background no tile borders and off-white tools for the quick menu only ( older code )
 ```
-[data-menu="quickmenu"] { background:linear-gradient(#e66465, #9198e5);}
-:root { --tools-color:white; }
+[data-menu="quickmenu"] { background:linear-gradient(315deg, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%);}
+:root { 
+    --tools-color:#ddd;
+    --border:transparent;
 }
 
 ```
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu_blue.png" width="200px" />
 
 gradient background and white tools for all menus ( older code )
 ```
