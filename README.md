@@ -135,3 +135,36 @@ The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current ta
 `{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
 `{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) 
 
+
+## Menu Styling
+Most CSS styling can be overridden in Options -> General -> User Styles.
+
+gradient background and white tools ( newer source-code only )
+```
+:root {
+    --background: linear-gradient(#e66465, #9198e5);
+    --tools-color:white;
+}
+```
+
+No quick menu resize handle:
+```
+.CS_resizeWidget { display:none; }
+```
+
+Smaller tools bar
+```
+#toolBar .tile {
+    transform:scale(.60);
+}
+```
+
+Fat green qm border
+```
+#CS_quickMenuIframe {
+    border-width:6px;
+    border-color: #6ec179;
+}
+```
+
+
