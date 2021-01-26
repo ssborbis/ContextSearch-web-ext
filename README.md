@@ -139,7 +139,9 @@ The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current ta
 ## Menu Styling
 Most CSS styling can be overridden in Options -> General -> User Styles.
 
-sunset gradient background and white tools ( newer source-code only )
+A few examples...
+
+sunset gradient background and white tools ( newer code )
 ```
 :root {
     --background: linear-gradient(#e66465, #9198e5);
@@ -150,11 +152,9 @@ sunset gradient background and white tools ( newer source-code only )
 
 blue gradient background no tile borders and off-white tools for the quick menu only ( older code )
 ```
-[data-menu="quickmenu"] { background:linear-gradient(315deg, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%);}
-:root { 
-    --tools-color:#ddd;
-    --border:transparent;
-}
+[data-menu="quickmenu"] { background:linear-gradient(315deg, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); }
+.tile { border-color:transparent;}
+:root { --tools-color:#ddd; }
 
 ```
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu_blue.png" width="200px" />
@@ -165,12 +165,13 @@ gradient background and white tools for all menus ( older code )
 :root { --tools-color:white; }
 ```
 
-image background semi-transparent border and olive tools for all menus ( newer code )
+image background semi-transparent border white text and olive tools for all menus ( newer code )
 ```
 :root {
-    --background: url('https://www.ppt-backgrounds.net/thumbs/green-slide-download-downloads-backgrounds.jpg') 300px;
+    --background: url('https://www.ppt-backgrounds.net/thumbs/green-slide-download-downloads-backgrounds.jpg') repeat fixed right center;
     --tools-color: olive;
     --border:rgba(255,255,255,.3);
+    color:white;
 }
 ```
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
