@@ -141,6 +141,8 @@ Most CSS styling can be overridden in Options -> General -> User Styles.
 
 A few examples...
 
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="200px" />
+
 sunset gradient background and white tools ( newer code )
 ```
 :root {
@@ -148,7 +150,8 @@ sunset gradient background and white tools ( newer code )
     --tools-color:white;
 }
 ```
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="200px" />
+
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu_blue.png" width="200px" />
 
 blue gradient background no tile borders and off-white tools for the quick menu only ( older code )
 ```
@@ -157,13 +160,15 @@ blue gradient background no tile borders and off-white tools for the quick menu 
 :root { --tools-color:#ddd; }
 
 ```
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu_blue.png" width="200px" />
 
 gradient background and white tools for all menus ( older code )
 ```
 [data-menu] { background:linear-gradient(#e66465, #9198e5);}
 :root { --tools-color:white; }
 ```
+---
+
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
 
 image background semi-transparent border white text and olive tools for all menus ( newer code )
 ```
@@ -174,7 +179,8 @@ image background semi-transparent border white text and olive tools for all menu
     color:white;
 }
 ```
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
+
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_border_radius.png" width="200px" />
 
 image background with tile modifications borders tools and text 
 ```
@@ -194,7 +200,6 @@ BODY[data-menu] {
     background-color:rgba(255,255,255,.3);
 }
 ```
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_border_radius.png" width="200px" />
 
 No quick menu resize handle:
 ```
