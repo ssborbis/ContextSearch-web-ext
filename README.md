@@ -176,6 +176,26 @@ image background semi-transparent border white text and olive tools for all menu
 ```
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
 
+image background with tile modifications borders tools and text 
+```
+:root {
+    --tools-color: #ddd;
+    --border:transparent;
+    --border:rgba(255,255,255,.2);
+}
+
+BODY[data-menu] {
+    background: url('https://img5.goodfon.com/wallpaper/nbig/f/b6/gradient-abstraktsiia-sinii-linii-background.jpg');
+}
+
+.tile {
+    border-radius:10px;
+    margin:4px;
+    background-color:rgba(255,255,255,.3);
+}
+```
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_border_radius.png" width="200px" />
+
 No quick menu resize handle:
 ```
 .CS_resizeWidget { display:none; }
