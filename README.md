@@ -165,12 +165,13 @@ gradient background and white tools for all menus ( older code )
 :root { --tools-color:white; }
 ```
 
-image background semi-transparent border and olive tools for all menus ( newer code )
+image background semi-transparent border white text and olive tools for all menus ( newer code )
 ```
 :root {
-    --background: url('https://www.ppt-backgrounds.net/thumbs/green-slide-download-downloads-backgrounds.jpg') 300px;
+    --background: url('https://www.ppt-backgrounds.net/thumbs/green-slide-download-downloads-backgrounds.jpg') repeat fixed right center;
     --tools-color: olive;
     --border:rgba(255,255,255,.3);
+    color:white;
 }
 ```
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
