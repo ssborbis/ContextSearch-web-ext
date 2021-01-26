@@ -146,6 +146,8 @@ gradient background and white tools ( newer source-code only )
     --tools-color:white;
 }
 ```
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="120px" />
+
 gradient background and white tools for the quick menu only ( older code )
 ```
 [data-menu="quickmenu"] { background:linear-gradient(#e66465, #9198e5);}
