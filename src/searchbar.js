@@ -174,6 +174,7 @@ function toolBarResize() {
 	// qm.style.minWidth = "200px";
 	
 	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
+	toolBar.style.width = 0;
 	
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 
@@ -201,7 +202,7 @@ function toolBarResize() {
 			});
 		}
 		
-		tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+		tb.style.maxWidth = toolBar.style.maxWidth = toolBar.style.width = document.documentElement.scrollWidth - 10 + "px";
 		sg.style.width = document.documentElement.scrollWidth;
 	});
 }
