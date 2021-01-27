@@ -65,7 +65,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getDefaultUserOptions":
-			return {"defaultUserOptions": defaultUserOptions};
+			return defaultUserOptions;
 			break;
 
 		case "getSearchEngineById":
@@ -615,6 +615,10 @@ async function notify(message, sender, sendResponse) {
 					code: userOptions.userStylesGlobal
 				});
 			}
+			break;
+
+		case "editQuickMenu":
+			sendMessageToTopFrame();
 			break;
 	}
 }

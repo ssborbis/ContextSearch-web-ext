@@ -11,6 +11,7 @@ var $ = s => {
 
 // array for storage.local
 var userOptions = {};
+var defaultUserOptions = {};
 
 // Browse button for manual import
 $("#selectMozlz4FileButton").addEventListener('change', ev => {
@@ -199,9 +200,7 @@ function restoreOptions() {
 			if (p.dataset.position === userOptions.quickMenuPosition)
 				p.className+=' active';
 		}
-		
-		buildToolIcons();
-		
+				
 		$('#cb_quickMenuToolsLockPersist').checked = userOptions.quickMenuTools.find( tool => tool.name === "lock").persist || false;
 		$('#cb_quickMenuToolsRepeatSearchPersist').checked = userOptions.quickMenuTools.find( tool => tool.name === "repeatsearch").persist || false;
 
@@ -307,48 +306,7 @@ function restoreOptions() {
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
 
 		buildSearchEngineContainer();
-		
-		// show / hide settings based on userOptions
-		// (() => { // disable focus quick menu search bar when hotkeys enabled
-			// let select = $('#s_quickMenuSearchHotkeys');
-			
-			// function toggle() {
-				// let cb1 = $('#cb_quickMenuSearchBarFocus');
-
-				// if (select.value === 'noAction') {
-					// cb1.disabled = false;
-					// cb1.parentNode.style.opacity = null;
-				// } else {
-					// cb1.disabled = true;
-					// cb1.parentNode.style.opacity = .5;
-				// }		
-			// }
-			// select.addEventListener('change', toggle);
-			// toggle();
-		// })();
-		
-		// [	
-			// {s: "#s_quickMenuDefaultView", input: "#n_quickMenuColumns"},
-			// {s: "#s_searchBarDefaultView", input: "#n_searchBarColumns"},
-			// {s: "#s_sideBarDefaultView", input: "#n_sideBarColumns"}
-		// ].forEach( obj => {
-			// let s = $(obj.s);
-			// let input = $(obj.input);
-			
-			// function toggle() {
-
-				// if (!s.value === "text") {
-					// input.disabled = false;
-					// input.style.opacity = null;
-				// } else {
-					// input.disabled = true;
-					// input.style.opacity = .5;
-				// }		
-			// }
-			// s.addEventListener('change', toggle); 
-			// toggle();
-		// });
-		
+				
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
@@ -383,6 +341,7 @@ function restoreOptions() {
 		$('#cb_sideBarOpenOnResultsMinimized').checked = userOptions.sideBar.openOnResultsMinimized;
 		$('#cb_quickMenuPreventPageClicks').checked = userOptions.quickMenuPreventPageClicks;
 		$('#cb_omniboxDefaultToLastUsedEngine').checked = userOptions.omniboxDefaultToLastUsedEngine;
+		$('#s_omniboxSearch').value = userOptions.omniboxSearch;
 		$('#cb_contextMenuUseInnerText').checked = userOptions.contextMenuUseInnerText;
 
 		$('#n_pageTilesRows').value = userOptions.pageTiles.rows;
@@ -396,6 +355,8 @@ function restoreOptions() {
 		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
 
 		$('#style_dark').disabled = !userOptions.nightMode;
+
+		buildToolIcons();
 
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
@@ -492,24 +453,6 @@ function saveOptions(e) {
 		},
 		
 		contextMenu: $('#cb_contextMenu').checked,
-
-		quickMenuTools: function() {
-			let tools = [];
-			
-			for (let toolIcon of document.getElementsByClassName('toolIcon')) {
-				let qmt = userOptions.quickMenuTools.find( _tool => _tool.name === toolIcon.name );
-				
-				if ( !qmt ) qmt = {"name": toolIcon.name};
-				qmt.disabled = toolIcon.disabled;
-				
-				if ( qmt.name === "lock" ) qmt.persist = $('#cb_quickMenuToolsLockPersist').checked;
-				if ( qmt.name === "repeatsearch" ) qmt.persist = $('#cb_quickMenuToolsRepeatSearchPersist').checked;
-				
-				tools.push(qmt);
-			}
-	
-			return tools;
-		}(),
 		
 		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
 		quickMenuToolsAsToolbar: $('#cb_quickMenuToolsAsToolbar').checked,
@@ -661,6 +604,7 @@ function saveOptions(e) {
 		openFoldersOnHoverTimeout: parseInt($('#n_openFoldersOnHoverTimeout').value),
 		omniboxDefaultToLastUsedEngine: $('#cb_omniboxDefaultToLastUsedEngine').checked,
 		omniboxLastUsedIds: userOptions.omniboxLastUsedIds,
+		omniboxSearch: $('#s_omniboxSearch').value,
 		contextMenuUseInnerText: $('#cb_contextMenuUseInnerText').checked,
 		nightMode: userOptions.nightMode,
 
@@ -671,7 +615,9 @@ function saveOptions(e) {
 			openMethod: $('#s_pageTilesOpenMethod').value,
 			grid: userOptions.pageTiles.grid,
 			paletteString: $('#s_pageTilesPalette').value
-		}
+		},
+
+		quickMenuTools: userOptions.quickMenuTools
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -856,13 +802,16 @@ function keyArrayToButtons(arr) {
 			
 			div.appendChild(makeButton(key));
 		}
-	} else {
+	} else if ( typeof arr === 'object' ) {
 		if ( arr.alt ) div.appendChild(makeButton("Alt"));
 		if ( arr.ctrl ) div.appendChild(makeButton("Ctrl"));
 		if ( arr.meta ) div.appendChild(makeButton("Meta"));
 		if ( arr.shift ) div.appendChild(makeButton("Shift"));
 		
 		div.appendChild(makeButton(arr.key));
+	} else {
+		console.error('keyCodeToString error')
+		return;
 	}
 	
 	let buttons = div.querySelectorAll('.keyboardButton');
@@ -950,6 +899,7 @@ function makeTabs() {
 }
 
 function buildToolIcons() {
+
 	function getToolIconIndex(element) {
 		return [].indexOf.call(document.querySelectorAll('.toolIcon'), element);
 	}
@@ -977,22 +927,36 @@ function buildToolIcons() {
 	}
 	function dragend_handler(ev) {
 		ev.target.style.border = '';
+		saveQuickMenuTools();
+	}
+	function saveQuickMenuTools() {
+		let tools = [];
+		let tool_buttons = document.querySelectorAll('#toolIcons IMG');
+
+		tool_buttons.forEach(b => {
+			let tool = { name: b.name, disabled: b.disabled};
+
+			if ( b.name === "lock" ) tool.persist = $('#cb_quickMenuToolsLockPersist').checked;
+			if ( b.name === "repeatsearch" ) tool.persist = $('#cb_quickMenuToolsRepeatSearchPersist').checked;
+
+			tools.push(tool);
+		});
+
+		userOptions.quickMenuTools = tools;
 		saveOptions();
 	}
 	
-	let toolIcons = [];
+	var toolIcons = [];
 	QMtools.forEach( tool => {
 		toolIcons.push({name: tool.name, src: tool.icon, title: tool.title, index: Number.MAX_VALUE, disabled: true});
 	});
 
-	let modifiedFlag = false;
 	toolIcons.forEach( toolIcon => {
 		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );
 		// update quickMenuTools array with missing tools
 		if ( toolIcon.index === -1) {
-			modifiedFlag = true;
 			toolIcon.index = userOptions.quickMenuTools.length
-			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: true});
+			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: toolIcon.disabled});
 		}
 		
 		toolIcon.disabled = userOptions.quickMenuTools[toolIcon.index].disabled;
@@ -1020,8 +984,8 @@ function buildToolIcons() {
 		img.addEventListener('click',e => {
 			e.target.disabled = e.target.disabled || false;
 			e.target.style.opacity = e.target.disabled ? 1 : .4;
-			e.target.disabled = !e.target.disabled;	
-			saveOptions();
+			e.target.disabled = !e.target.disabled;
+			saveQuickMenuTools();	
 		});
 		
 		let t_toolIcons = $('#t_toolIcons');
@@ -1034,11 +998,6 @@ function buildToolIcons() {
 		});
 
 		$('#toolIcons').appendChild(img);
-	}
-
-	if ( modifiedFlag ) {
-		console.warn("tools were modified - saving ...");
-		saveOptions();
 	}
 }
 

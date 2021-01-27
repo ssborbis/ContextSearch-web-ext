@@ -77,7 +77,7 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 
-	let method = "openBackgroundTab";
+	// let method = "openBackgroundTab";
 	// switch (disposition) {
 		// case "currentTab":
 			// method = "openCurrentTab";
@@ -98,7 +98,7 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	
 	let info = {
 		folder: true,
-		openMethod: method,
+		openMethod: userOptions.omniboxSearch,
 		tab: tab,
 		searchTerms: input.searchTerms,
 		selectionText: input.searchTerms,
@@ -109,6 +109,5 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	// save last used engine(s)
 	userOptions.omniboxLastUsedIds = nodes.map(n => n.id);
-	notify({action: "saveUserOptions", "userOptions": userOptions});
-	
+	notify({action: "saveUserOptions", "userOptions": userOptions});	
 });

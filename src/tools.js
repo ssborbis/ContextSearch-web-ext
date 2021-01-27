@@ -374,5 +374,28 @@ var QMtools = [
 			
 			return tile;
 		}
+	},
+	{
+		name: 'edit', 
+		icon: "icons/edit.png", 
+		title: browser.i18n.getMessage('edit'),
+		init: function() {
+			let tile = buildSearchIcon(browser.runtime.getURL(this.icon), this.title);
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			addTileEventHandlers(tile, () => {
+				browser.runtime.sendMessage({action: "editQuickMenu"});
+				window.tilesDraggable = !window.tilesDraggable;
+				tile.style.backgroundColor = window.tilesDraggable ? "var(--cs-green)" : null;
+
+				if ( tile.style.backgroundColor )
+					setToolIconColor(tile, "white");
+				else
+					setToolIconColor(tile);
+			});
+			
+			return tile;
+		}
 	}
 ];

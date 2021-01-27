@@ -58,7 +58,8 @@ const defaultUserOptions = {
 		{name: 'findinpage',	disabled: true},
 		{name: 'openoptions',	disabled: true},
 		{name: 'toggle_theme',	disabled: true},
-		{name: 'toggle_hotkeys',disabled: true}
+		{name: 'toggle_hotkeys',disabled: true},
+		{name: 'edit',			disabled: true}
 	],
 	quickMenuToolsPosition: "top",
 	quickMenuToolsAsToolbar: true,
@@ -206,5 +207,6 @@ const defaultUserOptions = {
 	openFoldersOnHoverTimeout: 0,
 	nightMode: false,
 	omniboxDefaultToLastUsedEngine: false,
-	omniboxLastUsedIds: []
+	omniboxLastUsedIds: [],
+	omniboxSearch: "openBackgroundTab"
 };

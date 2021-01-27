@@ -7,6 +7,18 @@ var mb = document.getElementById('menuBar');
 
 var type;
 
+// track if tiles can be moved
+window.tilesDraggable = false;
+
+// set menu icons to match tools
+["optionsButton","minimizeButton","closeButton"].forEach( id => {
+	let button = document.getElementById(id);
+
+	if ( !button ) return;
+
+	setToolIconColor(button);
+});
+
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
@@ -30,14 +42,14 @@ function buildSearchIcon(icon_url, title) {
 	return div;
 }
 
-function setToolIconColor(_toolTile) {
+function setToolIconColor(el, color) {
 	
-	let bg = _toolTile.style.getPropertyValue("background-image");
+	let bg = el.style.getPropertyValue("background-image") || window.getComputedStyle(el).getPropertyValue("background-image");
 	
 	let img = new Image();
 	let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
 
-	let color = window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
+	color = color || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
 
 	img.onload = () => {
 
@@ -63,7 +75,7 @@ function setToolIconColor(_toolTile) {
 		ctx.restore();
 		
 		let newbg = canvas.toDataURL("image/png");
-		_toolTile.style.backgroundImage = `url(${newbg})`;
+		el.style.backgroundImage = `url(${newbg})`;
 	}
 	
 	img.src = fixedbg;
@@ -605,9 +617,12 @@ async function makeQuickMenu(options) {
 		
 		toolsArray.forEach( tool => {
 			
-			tool.setAttribute('draggable', userOptions.quickMenuTilesDraggable);
+			tool.setAttribute('draggable', true);
 
 			tool.addEventListener('dragstart', e => {
+
+				if ( !window.tilesDraggable ) return false;
+
 				e.dataTransfer.setData("text", "tool");
 				let img = new Image();
 				img.src = browser.runtime.getURL('icons/transparent.gif');
@@ -739,7 +754,7 @@ async function makeQuickMenu(options) {
 			
 			if ( qm.singleColumn ) div.classList.add('singleColumn');
 			qm.appendChild(div);
-			
+
 			let rect = div.getBoundingClientRect();
 			qm.removeChild(div);
 
@@ -790,7 +805,7 @@ async function makeQuickMenu(options) {
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 
-			div.setAttribute('draggable', userOptions.quickMenuTilesDraggable);
+			div.setAttribute('draggable', true);
 	
 			// group move
 			if ( div.classList.contains("groupFolder") ) {
@@ -820,6 +835,9 @@ async function makeQuickMenu(options) {
 			}
 
 			div.addEventListener('dragstart', e => {
+
+				if ( !window.tilesDraggable ) return false;
+
 				e.dataTransfer.setData("text", "");
 				let img = new Image();
 				img.src = browser.runtime.getURL('icons/transparent.gif');
