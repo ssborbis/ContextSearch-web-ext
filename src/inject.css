@@ -64,9 +64,20 @@
 	opacity:1;
 }
 
+.CS_resizeWidget.editQuickMenu {
+	padding:8px 0 0 8px;
+	border-style:solid;
+	opacity:1;
+}
+
+.CS_resizing {
+	border-width: 3px !important;
+	border-style: dashed !important;
+}
+
 #CS_highLightNavBar {
 	top:0;
-	bottom:0;
+	bottom:0;dolor
 	right:0;
 	position:fixed;
 	width:16px;
@@ -255,4 +266,11 @@
 	position:fixed;
 	z-index:2147483645;
 	/* background-color:rgba(255,0,0,.5); */
+}
+.CS_overDiv.editQuickMenu {
+	opacity:.5;
+	background-color:white;
+	z-index:2147483645;
+
+	transition:opacity .5s, background-color .5s;
 }

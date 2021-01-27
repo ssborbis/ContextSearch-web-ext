@@ -25,7 +25,7 @@ BODY {
     filter:invert(1);
 }
 .tile[data-type="tool"] {
-	color:f9f9fa;
+	color:#f9f9fa;
 }
 .tile[data-type="tool"][data-nocolorinvert] {
 }
@@ -43,9 +43,6 @@ BODY {
 }
 .tile:hover {
 	background-color:var(--hover);
-}
-#optionsButton, #closeButton {
-	filter:invert(1) brightness(50%);
 }
 .tile[data-quickmenumore] {
 	/* filter:invert(1) brightness(50%); */

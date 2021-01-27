@@ -4,6 +4,8 @@
 	--background: #eff0f1;
 	--border: #e0e0e0;
 	--tools-color:#444;
+	--separator: #ccc;
+	--cs-green: #6ec179;
 }
 
 HTML, BODY {
@@ -321,7 +323,7 @@ BODY {
 	height:4px;
 	margin:4px 6px;
 	overflow:hidden;
-	background-color:#ccc;
+	background-color:var(--separator);
 	border:none;
 	display:block;
 	border-radius:2px;
