@@ -23,6 +23,14 @@ function saveUserOptions() {
 	return browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 }
 
+function clickChecker(el) {
+	// check if this element was target of the latest mousedown event
+	if ( !userOptions.quickMenuSearchOnMouseUp && !el.isSameNode(el.parentNode.lastMouseDownTile)) 
+		return false;
+	else 
+		return true;
+}
+
 // generic search engine tile
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
@@ -31,6 +39,17 @@ function buildSearchIcon(icon_url, title) {
 	div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
 	div.title = title;
 	return div;
+}
+
+function buildCommonIcons() {
+
+	setIconColor(browser.runtime.getURL('/icons/add.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
+		qm.moreIcon = data;
+	});
+
+	setIconColor(browser.runtime.getURL('/icons/crossmark.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
+		qm.lessIcon = data;
+	});
 }
 
 function setTheme(theme) {
@@ -75,20 +94,16 @@ function addTileEventHandlers(_tile, handler) {
 			// browser.runtime.sendMessage({action: "copy", msg: sb.value});
 		// }
 
-		// check if this tile was target of the latest mousedown event
-		if ( !userOptions.quickMenuSearchOnMouseUp && !_tile.isSameNode(_tile.parentNode.lastMouseDownTile)) return;
+		if ( !clickChecker(_tile) ) return;
 
 		// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
 		quickMenuObject.mouseLastClickTime = Date.now();
 		
 		if ( _tile.dataset.id && quickMenuObject.lastUsed !== _tile.dataset.id ) {
 			// // store the last used id
-			quickMenuObject.lastUsed = _tile.dataset.id || null;
-			userOptions.lastUsedId = quickMenuObject.lastUsed;
+			userOptions.lastUsedId = quickMenuObject.lastUsed = _tile.dataset.id || null;
 			
 			document.dispatchEvent(new CustomEvent('updateLastUsed'));
-			
-			// browser.runtime.sendMessage({action: "setLastUsed", id: userOptions.lastUsedId});
 		}
 
 		quickMenuObject.searchTerms = sb.value;
@@ -106,6 +121,7 @@ function addTileEventHandlers(_tile, handler) {
 	});
 	
 	// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
+	// this sets a reference to the last mousedown element to be referenced in clickChecker()
 	_tile.addEventListener('mousedown', e => _tile.parentNode.lastMouseDownTile = _tile);
 	
 	// stop all other mouse events for this tile from propagating
@@ -1220,7 +1236,7 @@ async function makeQuickMenu(options) {
 				return _tiles;
 			}
 
-			let moreTile = buildSearchIcon(browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
+			let moreTile = buildSearchIcon(qm.moreIcon || browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
 			setToolIconColor(moreTile);
 
 			moreTile.style.textAlign='center';
@@ -1240,15 +1256,22 @@ async function makeQuickMenu(options) {
 					// ignore divs not associated with this more tile
 					if ( _div.moreTile !== moreTile ) return;
 					
+					_div.style.transition = 'none';
+					_div.style.opacity = 0;
 					_div.dataset.hidden = "false";
 					_div.style.display = null;
+
+					_div.style.transition = null;
+					_div.offsetWidth;
+					_div.style.opacity = null;
+
 				});
 				
 				qm.insertBreaks();	
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
-				moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/crossmark.svg')}`;
+				moreTile.style.backgroundImage = `url(${qm.lessIcon || browser.runtime.getURL('icons/crossmark.svg')}`;
 				setToolIconColor(moreTile);
 				resizeMenu({groupMore: true});
 	
@@ -1270,7 +1293,7 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = more;
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
-				moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/add.svg')}`;
+				moreTile.style.backgroundImage = `url(${qm.moreIcon || browser.runtime.getURL('icons/add.svg')}`;
 				setToolIconColor(moreTile);
 				resizeMenu({groupLess: true});
 				
@@ -1416,6 +1439,8 @@ async function makeQuickMenu(options) {
 					
 					async function openFolder(e) {
 
+				//		if ( !clickChecker(tile) ) return false;
+
 						let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
 
 						let siteSearchNode = {
@@ -1535,6 +1560,9 @@ async function makeQuickMenu(options) {
 				addOpenFolderOnHover(tile);
 					
 				async function openFolder(e) {
+
+				//	if ( !clickChecker(e.target) ) return false;
+
 					let method = getOpenMethod(e, true);
 
 					if (method === 'noAction') return;

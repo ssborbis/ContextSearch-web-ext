@@ -411,84 +411,59 @@ function setAllToolIconColors() {
 	let tools = document.querySelectorAll('[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]');
 	
 	tools.forEach( tool => setToolIconColor(tool));
+
+	buildCommonIcons();
+}
+
+function setIconColor(url, color) {
+
+	return new Promise( (resolve, reject) => {
+
+		let img = new Image();
+
+		img.onload = () => {
+
+			var canvas=document.createElement("canvas");
+			var ctx=canvas.getContext("2d");
+			ctx.canvas.width = img.width;
+			ctx.canvas.height = img.height;
+			ctx.save();
+			
+			// draw the shape we want to use for clipping
+			ctx.drawImage(img, 0, 0);
+
+			// change composite mode to use that shape
+			ctx.globalCompositeOperation = 'source-in';
+
+			// draw the image to be clipped
+			// ctx.drawImage(img, 0, 0);
+
+			ctx.beginPath();
+			ctx.rect(0, 0, img.width, img.height);
+			ctx.fillStyle = color;
+			ctx.fill();
+			ctx.restore();
+			
+			let data = canvas.toDataURL("image/png");
+
+			if (data.length < 10) reject("BadDataURL");
+			else resolve(data);
+		}
+
+		img.onerror = function(err) { reject(err) }
+		
+		img.src = url;
+
+	});
 }
 
 async function setToolIconColor(el, color) {
-	
 	let bg = el.style.getPropertyValue("background-image") || window.getComputedStyle(el).getPropertyValue("background-image");
-	
-	let img = new Image();
+		
 	let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
 
 	color = color || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
-	
-	img.onload = () => {
-
-		var canvas=document.createElement("canvas");
-		var ctx=canvas.getContext("2d");
-		ctx.canvas.width = img.width;
-		ctx.canvas.height = img.height;
-		ctx.save();
 		
-		// draw the shape we want to use for clipping
-		ctx.drawImage(img, 0, 0);
-
-		// change composite mode to use that shape
-		ctx.globalCompositeOperation = 'source-in';
-
-		// draw the image to be clipped
-		// ctx.drawImage(img, 0, 0);
-
-		ctx.beginPath();
-		ctx.rect(0, 0, img.width, img.height);
-		ctx.fillStyle = color;
-		ctx.fill();
-		ctx.restore();
-		
-		let newbg = canvas.toDataURL("image/png");
-
-		if (newbg.length < 10) throw "BadDataURL " + fixedbg + " " + newbg;
-		el.style.backgroundImage = `url(${newbg})`;
-	}
-
-	img.onerror = function(err) {console.log(err, fixedbg)}
-	
-	img.src = fixedbg;
+	let newIcon = await setIconColor(fixedbg, color);
+	el.style.backgroundImage = `url(${newIcon})`;
 }
-
-// function setToolIconColor(_toolTile) {
-	
-	// let div = document.createElement('div');
-	// let bg = _toolTile.style.getPropertyValue("background-image");
-	
-	// // _toolTile.style.setProperty("background-image", "none");
-	// // _toolTile.style.setProperty("background-color", "var(--tools-color)");
-	// // _toolTile.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
-	// // _toolTile.style.setProperty("mask", `${bg} no-repeat center`);
-	// // _toolTile.style.setProperty("mask-size","var(--tile-background-size, 16px)");
-	// // _toolTile.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
-	
-	// div.style.setProperty("background-image", "none");
-	// div.style.setProperty("background-color", "var(--tools-color)");
-	// div.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
-	// div.style.setProperty("mask", `${bg} no-repeat center`);
-	// div.style.setProperty("mask-size","var(--tile-background-size, 16px)");
-	// div.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
-	
-	// div.style.width = '100%';
-	// div.style.height = '100%';
-	
-	// _toolTile.appendChild(div);
-// }
-
-// function addStyle(filename) {
-// 	var link = document.createElement('link');
-	
-// 	link.rel ="stylesheet";
-// 	link.href = filename;
-// 	document.head.appendChild(link);
-
-// 	document.body.getBoundingClientRect();
-
-// 	return link;
-// }
