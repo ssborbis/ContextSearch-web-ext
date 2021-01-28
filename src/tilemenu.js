@@ -66,7 +66,10 @@ function setTheme(theme) {
 		link.className = "theme";
 		link.href = theme.path;
 
-		document.head.appendChild(link);
+		let style = document.head.querySelector('style');
+		if ( style ) document.head.insertBefore(link, style);
+		else document.head.appendChild(link);
+
 		document.body.getBoundingClientRect();
 	});
 }
