@@ -1,5 +1,5 @@
 // https://coolors.co/
-var palettes = [
+const palettes = [
 	{color: "eff0f1", name: browser.i18n.getMessage("nonePalette")}, 
 	{color: "ee6352-59cd90-3fa7d6-fac05e-f79d84", name: browser.i18n.getMessage("alphabetPalette")},
 	{color: "05299e-5e4ae3-947bd3-f0a7a0-f26ca7", name: browser.i18n.getMessage("bouquetPalette")},

@@ -10,15 +10,6 @@ var type;
 // track if tiles can be moved
 window.tilesDraggable = false;
 
-// set menu icons to match tools
-["optionsButton","minimizeButton","closeButton"].forEach( id => {
-	let button = document.getElementById(id);
-
-	if ( !button ) return;
-
-	setToolIconColor(button);
-});
-
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
@@ -42,74 +33,23 @@ function buildSearchIcon(icon_url, title) {
 	return div;
 }
 
-function setToolIconColor(el, color) {
-	
-	let bg = el.style.getPropertyValue("background-image") || window.getComputedStyle(el).getPropertyValue("background-image");
-	
-	let img = new Image();
-	let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
+function setTheme(theme) {
+	return new Promise(resolve => {
+		theme = theme || themes.find( t => t.name === userOptions.quickMenuTheme );
 
-	color = color || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
+		if ( !theme ) theme = themes[0];
 
-	img.onload = () => {
+		let link = document.createElement('link');
 
-		var canvas=document.createElement("canvas");
-		var ctx=canvas.getContext("2d");
-		ctx.canvas.width = img.width;
-		ctx.canvas.height = img.height;
-		ctx.save();
-		
-		// draw the shape we want to use for clipping
-		ctx.drawImage(img, 0, 0);
+		link.onload = function() { resolve(link) }
 
-		// change composite mode to use that shape
-		ctx.globalCompositeOperation = 'source-in';
+		link.rel ="stylesheet";
+		link.className = "theme";
+		link.href = theme.path;
 
-		// draw the image to be clipped
-		// ctx.drawImage(img, 0, 0);
-
-		ctx.beginPath();
-		ctx.rect(0, 0, img.width, img.height);
-		ctx.fillStyle = color;
-		ctx.fill();
-		ctx.restore();
-		
-		let newbg = canvas.toDataURL("image/png");
-		el.style.backgroundImage = `url(${newbg})`;
-	}
-	
-	img.src = fixedbg;
-}
-
-// function setToolIconColor(_toolTile) {
-	
-	// let div = document.createElement('div');
-	// let bg = _toolTile.style.getPropertyValue("background-image");
-	
-	// // _toolTile.style.setProperty("background-image", "none");
-	// // _toolTile.style.setProperty("background-color", "var(--tools-color)");
-	// // _toolTile.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
-	// // _toolTile.style.setProperty("mask", `${bg} no-repeat center`);
-	// // _toolTile.style.setProperty("mask-size","var(--tile-background-size, 16px)");
-	// // _toolTile.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
-	
-	// div.style.setProperty("background-image", "none");
-	// div.style.setProperty("background-color", "var(--tools-color)");
-	// div.style.setProperty("-webkit-mask", `${bg} no-repeat center`);
-	// div.style.setProperty("mask", `${bg} no-repeat center`);
-	// div.style.setProperty("mask-size","var(--tile-background-size, 16px)");
-	// div.style.setProperty("-webkit-mask-size","var(--tile-background-size, 16px)");
-	
-	// div.style.width = '100%';
-	// div.style.height = '100%';
-	
-	// _toolTile.appendChild(div);
-// }
-
-function setTheme() {
-	let d = document.head.querySelector('#dark');
-	let stylesheet = d.sheet || d.styleSheet;
-	stylesheet.disabled = ( userOptions.quickMenuTheme !== 'dark' );
+		document.head.appendChild(link);
+		document.body.getBoundingClientRect();
+	});
 }
 
 function setUserStyles() {
@@ -592,9 +532,9 @@ async function makeQuickMenu(options) {
 				toolsArray[toolsArray.length - 1].context = _tool.context;
 				toolsArray[toolsArray.length - 1].tool = _tool;
 				
-				if ( ! toolsArray[toolsArray.length - 1].dataset.nocolorinvert ) {
-					setToolIconColor(toolsArray[toolsArray.length - 1]);
-				}
+				// if ( ! toolsArray[toolsArray.length - 1].dataset.nocolorinvert ) {
+				// 	setToolIconColor(toolsArray[toolsArray.length - 1]);
+				// }
 
 			}
 
@@ -608,7 +548,6 @@ async function makeQuickMenu(options) {
 			if ( tool.context && !tool.context.includes(type) ) {
 				tool.disabled = true;
 				tool.dataset.disabled = true;
-				// tool.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/disabled.svg') + ')';
 			}
 		});
 
@@ -756,9 +695,17 @@ async function makeQuickMenu(options) {
 			qm.appendChild(div);
 
 			let rect = div.getBoundingClientRect();
+
+			var style = window.getComputedStyle ? getComputedStyle(div, null) : div.currentStyle;
+	
+			var marginLeft = parseInt(style.marginLeft) || 0;
+			var marginRight = parseInt(style.marginRight) || 0;
+			var marginTop = parseInt(style.marginTop) || 0;
+			var marginBottom = parseInt(style.marginBottom) || 0;
+
 			qm.removeChild(div);
 
-			return {width: rect.width, height: rect.height};
+			return {width: rect.width + marginLeft + marginRight, height: rect.height + marginTop + marginBottom, rectWidth: rect.width, rectHeight: rect.height };
 		};
 		
 		qm.setDisplay = () => {

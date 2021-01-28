@@ -6,30 +6,33 @@
 		<title>FindBar</title>
 		<link rel="stylesheet" href="/quickmenu.css">
 		<link rel="stylesheet" href="/findbar.css">
-		<link rel="stylesheet alternate" href="/dark.css" id="dark">
 	</head>
 	<body>
 	<div id="findbar">
-		<div id="handle"></div>
-		<img id="close" src="icons/crossmark.svg" />
+		<div id="handle" data-type="tool"></div>
+		<div id="close" data-type="tool"></div>
 		<input id="searchBar" type="text" />
-		<img id="searchIcon" src="icons/search.svg" />
-		<img id="clearSearchBar" src="icons/delete.svg" />
-		<div id="previous" class="button"><img src="icons/chevron-up.svg" /></div>
-		<div id="next" class="button"><img src="icons/chevron-up.svg" /></div>
+		<!-- <img id="searchIcon" src="icons/search.svg" />
+		<img id="clearSearchBar" src="icons/delete.svg" /> -->
+		<div id="searchIcon" data-type="tool"></div>
+		<div id="clearSearchBar" data-type="tool"></div>
+		<div id="previous" class="button" data-type="tool"></div>
+		<div id="next" class="button" data-type="tool"></div>
 		<div id="mark_counter"></div>
 		<input type="checkbox" class="option" id="separateWordSearch" /><label class="optionLabel" for="separateWordSearch">_ _</label>
 		<input type="checkbox" class="option" id="accuracy" /><label class="optionLabel" for="accuracy">&xoplus;</label>
 		<input type="checkbox" class="option" id="caseSensitive" /><label class="optionLabel" for="caseSensitive">Aa</label>
 		<input type="checkbox" class="option" id="ignorePunctuation" /><label class="optionLabel" for="ignorePunctuation">!</label>
-		<input type="checkbox" class="option" id="toggle_navbar" /><label class="optionLabel" for="toggle_navbar"><img src="/icons/sidebar.svg" style='vertical-align:middle;height:1em;transform:scaleX(-1)'></label>
-		<input type="checkbox" class="option" id="toggle_marks" /><label class="optionLabel" for="toggle_marks"><img src="/icons/highlight.svg" style='vertical-align:middle;height:1em'></label>
-		<input type="checkbox" class="option" id="toggle_searchalltabs" /><label class="optionLabel" for="toggle_searchalltabs"><img src="/icons/tabs.svg" style='vertical-align:middle;height:1em'></label>
+		<input type="checkbox" class="option" id="toggle_navbar" /><label class="optionLabel" for="toggle_navbar"><div data-type="tool"></div></label>
+		<input type="checkbox" class="option" id="toggle_marks" /><label class="optionLabel" for="toggle_marks"><div data-type="tool"></div></label>
+		<input type="checkbox" class="option" id="toggle_searchalltabs"/><label class="optionLabel" for="toggle_searchalltabs"><div data-type="tool"></div></label>
 	</div>
 	
 	<script src='/lib/browser-polyfill.min.js'></script>
 	<script src='/lib/crossbrowser.js'></script>
+	<script src='/tools.js'></script>
 	<script src='/findbar.js'></script>
 	<script src='/hotkeys.js'></script>
+	<script src='/themes.js'></script>
 	</body>
 </html>

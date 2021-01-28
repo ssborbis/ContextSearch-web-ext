@@ -284,11 +284,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	userOptions = msg.userOptions;
 
-	setTheme();
+	let onSetTheme = setTheme();
 	
 	setUserStyles();
 		
 	makeFrameContents();
+
+	onSetTheme.then(() => setAllToolIconColors());
 
 });
 

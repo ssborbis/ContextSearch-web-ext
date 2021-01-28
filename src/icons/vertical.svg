@@ -1,5 +1,3 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-	<rect x="17" width="2" height="52"/>
-	<rect x="25" width="2" height="52"/>
-	<rect x="33" width="2" height="52"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 12" width="14" height="12" >
+	<path d="M 4 2 l 0 8 l 1 0 l 0 -8 l -1 0 m 2 0 l 0 8 l 1 0 l 0 -8 l 0 0 l -1 0 m 2 0 l 0 8 l 1 0 l 0 -8 l -1 0" />
 </svg>

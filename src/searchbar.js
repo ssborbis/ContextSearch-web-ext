@@ -78,12 +78,12 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 	
 	userOptions = msg.userOptions;
 
-	setTheme();
+	let onSetTheme = setTheme();
 	
 	setUserStyles();
-
+		
 	makeSearchBar();
-	
+
 	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
 	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( qme => {
@@ -94,6 +94,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 		
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
+	}).then(() => {
+		onSetTheme.then(() => setAllToolIconColors());
 	});
 
 });
@@ -196,7 +198,13 @@ function toolBarResize() {
 			qm.style.width = Math.max(200, document.documentElement.scrollWidth) + "px";
 			
 			// tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
-			let div_width = 'calc(' + 100 / qm.columns + "% - 2px)";
+			let tileSize = qm.getTileSize();
+
+			let padding = tileSize.width - tileSize.rectWidth;
+
+			let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
+
+		//	let div_width = 'calc(' + 100 / qm.columns + "% - 2px)";
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 				div.style.width = div_width;
 			});

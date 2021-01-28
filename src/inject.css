@@ -66,7 +66,7 @@
 
 .CS_resizeWidget.editQuickMenu {
 	padding:8px 0 0 8px;
-	border-style:solid;
+	border-style: double;
 	opacity:1;
 }
 
@@ -149,19 +149,19 @@
 	padding:0;
 	margin:0;
 }
-#CS_findBarIframe.CS_dark {
+/*#CS_findBarIframe.CS_dark {
 	background-color:#323234;
 }
 #CS_findBarIframe.CS_dark IMG.CS_handle{
 	filter:invert(1) brightness(50%);
-}
+}*/
 #CS_findBarIframe[data-windowtype="docked"] {
 	left:0;
 	right:0;
 	width: calc(var(--cs-zoom, 100) * 100%);
 }
 #CS_findBarIframe[data-windowtype="undocked"] {
-	width:900px !important;	
+	width:960px !important;	
 }
 .CS_mark, #CS_highLightNavBar > DIV {
 	background: transparent;
@@ -269,7 +269,7 @@
 }
 .CS_overDiv.editQuickMenu {
 	opacity:.5;
-	background-color:white;
+	background-color:#888;
 	z-index:2147483645;
 
 	transition:opacity .5s, background-color .5s;

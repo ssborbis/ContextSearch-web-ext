@@ -48,3 +48,6 @@ BODY {
 	/* filter:invert(1) brightness(50%); */
 	/* color:black; */
 }
+.button { /* findbar */
+    background-color:#5b5b5d;
+}

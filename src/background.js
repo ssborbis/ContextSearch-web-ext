@@ -609,17 +609,30 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "addUserStyles":
-			if ( userOptions.userStylesEnabled && userOptions.userStylesGlobal ) {
-				console.log('adding user styles');
-				return browser.tabs.insertCSS( sender.tab.id, {
-					code: userOptions.userStylesGlobal
-				});
-			}
+			if ( !userOptions.userStylesEnabled ) return false;
+
+			console.log('adding user styles');
+
+			let style = message.global ? userOptions.userStylesGlobal : userOptions.userStyles;
+
+			if ( !style.trim() ) return false;
+
+			return browser.tabs.insertCSS( sender.tab.id, {
+				code: style,
+				frameId: message.global ? null : sender.frameId
+			});
+			
 			break;
 
 		case "editQuickMenu":
 			sendMessageToTopFrame();
 			break;
+
+		case "addStyles":
+			return browser.tabs.insertCSS( sender.tab.id, {
+				file: message.file,
+				frameId: sender.frameId
+			});
 	}
 }
 

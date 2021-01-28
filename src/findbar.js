@@ -7,10 +7,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 	userOptions = message.userOptions || {};
 	
 	if ( userOptions === {} ) return;
-	
-	if ( userOptions.quickMenuTheme === 'dark' ) 
-		document.querySelector('#dark').rel="stylesheet";
-	
+
+	let theme = themes.find(t => t.name === userOptions.quickMenuTheme);
+	if ( theme ) browser.runtime.sendMessage({action: "addStyles", file: theme.path}).then(() => setAllToolIconColors());
+
 	document.body.dataset.theme = userOptions.quickMenuTheme;
 	
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;

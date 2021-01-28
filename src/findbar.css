@@ -1,15 +1,11 @@
+:root {
+	--tools-color:#444;
+}
 BODY, HTML {
 	margin:0;
 	padding:0;
 }
 
-BODY[data-theme="dark"] {
-	color: #a4a4a4;
-}
-
-BODY[data-theme="dark"] IMG {
-	filter: invert(1) brightness(75%);
-}
 #findbar {
 	padding-top:5px;
 	font-size:10pt;
@@ -36,24 +32,23 @@ BODY[data-theme="dark"] IMG {
 #close {
 	vertical-align:middle;
 	width:20px;
+	height:20px;
+	background: url("/icons/crossmark.svg") no-repeat center;
 	/* padding:6px 0; /* center image */
 }
 .button {
 	border:1px solid #888;
 	text-align:center;
 	height:24px;
+	width:32px;
+	display:inline-block;
 	vertical-align:top;
 	padding:0 6px;
 }
 #previous, #next {
 	vertical-align:middle;
 	margin-left:-1px;
-}
-#previous IMG, #next IMG {
-	width:20px;
-	vertical-align:middle;
-	position:relative;
-	top:2px;
+	background: url("/icons/chevron-up.svg") no-repeat center;
 }
 #next {
 	transform:scaleY(-1);
@@ -61,9 +56,6 @@ BODY[data-theme="dark"] IMG {
 }
 #mark_counter {
 	margin:0 16px;
-}
-BODY[data-theme="dark"] .button {
-	background-color:#5b5b5d;
 }
 .optionLabel {
 	display:inline-block;
@@ -79,7 +71,7 @@ BODY[data-theme="dark"] .button {
 }
 INPUT:checked + .optionLabel {
 	border:2px solid #888;
-	background-color:var(--hover);
+	background:var(--hover);
 }
 .option {
 	position:absolute;
@@ -87,21 +79,43 @@ INPUT:checked + .optionLabel {
 	display:none;
 	opacity:0;
 }
-#searchIcon {
+#searchIcon, #clearSearchBar {
 	position:absolute;
 	z-index:2;
 	left:60px;
 	top:12px;
 	height:14px;
+	width:14px;
 	vertical-align:middle;
-	opacity:.3;
+	opacity:.5;
+	background-size:contain;
+}
+#searchIcon {
+	left:60px;
+	background: url(icons/search.svg) no-repeat center;
 }
 #clearSearchBar {
-	position:absolute;
-	z-index:2;
 	left:364px;
-	top:12px;
-	height:14px;
-	vertical-align:middle;
-	opacity:.3;
+	background: url(icons/delete.svg) no-repeat center;
+}
+[for="toggle_navbar"] [data-type="tool"] {
+	display:inline-block;
+	background: url("/icons/sidebar.svg") no-repeat center;
+	background-size:contain;
+	width:20px;
+	height:20px;
+}
+[for="toggle_marks"] [data-type="tool"] {
+	display:inline-block;
+	background: url("/icons/highlight.svg") no-repeat center;
+	background-size:contain;
+	width:20px;
+	height:20px;
+}
+[for="toggle_searchalltabs"] [data-type="tool"] {
+	display:inline-block;
+	background: url("/icons/tabs.svg") no-repeat center;
+	background-size:contain;
+	width:20px;
+	height:20px;
 }

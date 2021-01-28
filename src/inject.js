@@ -244,7 +244,7 @@ document.addEventListener('zoom', setZoomProperty);
 setZoomProperty();
 
 // // apply global user styles for /^[\.|#]CS_/ matches in userStyles
-browser.runtime.sendMessage({action: "addUserStyles"});
+browser.runtime.sendMessage({action: "addUserStyles", global: true });
 
 // menuless hotkey
 document.addEventListener('keydown', e => {
