@@ -34,7 +34,6 @@ BODY, HTML {
 	width:20px;
 	height:20px;
 	background: url("/icons/crossmark.svg") no-repeat center;
-	/* padding:6px 0; /* center image */
 }
 .button {
 	border:1px solid #888;
@@ -58,7 +57,6 @@ BODY, HTML {
 	margin:0 16px;
 }
 .optionLabel {
-	display:inline-block;
 	text-align:center;
 	height:22px;
 	width:22px;
@@ -98,24 +96,20 @@ INPUT:checked + .optionLabel {
 	left:364px;
 	background: url(icons/delete.svg) no-repeat center;
 }
+LABEL DIV[data-type="tool"] {
+	background-size:contain;
+	width:20px;
+	height:20px;
+}
 [for="toggle_navbar"] [data-type="tool"] {
-	display:inline-block;
 	background: url("/icons/sidebar.svg") no-repeat center;
 	background-size:contain;
-	width:20px;
-	height:20px;
 }
 [for="toggle_marks"] [data-type="tool"] {
-	display:inline-block;
 	background: url("/icons/highlight.svg") no-repeat center;
 	background-size:contain;
-	width:20px;
-	height:20px;
 }
 [for="toggle_searchalltabs"] [data-type="tool"] {
-	display:inline-block;
 	background: url("/icons/tabs.svg") no-repeat center;
 	background-size:contain;
-	width:20px;
-	height:20px;
 }
