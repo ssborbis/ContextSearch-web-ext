@@ -1522,7 +1522,10 @@ async function folderSearch(info, allowFolders) {
 		info.openMethod = "openCurrentTab";	
 	}
 
-	node.children.forEach( (_node, index) => {
+	// track index outside forEach to avoid incrementing on skipped nodes
+	let index = 0;
+
+	node.children.forEach( _node => {
 		
 		if ( _node.hidden) return;
 		if ( _node.type === "separator" ) return;
@@ -1531,7 +1534,7 @@ async function folderSearch(info, allowFolders) {
 		let _info = Object.assign({}, info);
 		
 		_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
-		_info.folder = index ? true : false;
+		_info.folder = index++ ? true : false;
 		_info.menuItemId = _node.id;
 		_info.searchTerms = info.selectionText;
 		_info.node = _node;
