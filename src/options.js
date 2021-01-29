@@ -1119,9 +1119,9 @@ document.addEventListener("DOMContentLoaded", () => {
 				if ( node.type === "oneClickSearchEngine" )
 					node.icon = "";
 			});
-			download("ContextSearchOptions.json", JSON.stringify(uoCopy));
+			download(`ContextSearchOptions_${Date.now()}.json`, JSON.stringify(uoCopy));
 		} else {
-			download("ContextSearchOptions.json", JSON.stringify(userOptions));
+			download(`ContextSearchOptions_${Date.now()}.json`, JSON.stringify(userOptions));
 		}
 	}
 	

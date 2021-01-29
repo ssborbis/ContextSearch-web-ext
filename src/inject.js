@@ -271,19 +271,4 @@ document.addEventListener('keydown', e => {
 	
 });
 
-// let mouseTracker = [];
-// let mouseLastCoords = null;
-// document.addEventListener('mousemove', e => {
-// 	mouseLastCoords = {x: e.clientX, y: e.clientY};
-// });
-
-// setInterval({
-// 	mouseTracker.push(mouseLastCoords);
-// 	if ( mouseTracker.length > 10 ) mouseTracker.shift();
-
-
-
-
-// }, 50 )
-
 browser.runtime.sendMessage({action: "injectComplete"});

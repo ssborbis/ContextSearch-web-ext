@@ -66,6 +66,7 @@ function setTheme(theme) {
 		link.className = "theme";
 		link.href = theme.path;
 
+		// insert before STYLE to allow userStyles to supersede theme styling
 		let style = document.head.querySelector('style');
 		if ( style ) document.head.insertBefore(link, style);
 		else document.head.appendChild(link);

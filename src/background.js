@@ -633,6 +633,11 @@ async function notify(message, sender, sendResponse) {
 				file: message.file,
 				frameId: sender.frameId
 			});
+			break;
+
+		case "closePageTiles":
+			return sendMessageToTopFrame();
+			break;
 	}
 }
 

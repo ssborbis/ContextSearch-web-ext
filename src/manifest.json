@@ -98,7 +98,8 @@
 		"icons/crossmark.svg",
 		"icons/alert.svg",
 		"icons/spinner.svg",
-		"icons/code.svg"
+		"icons/code.svg",
+		"/pagetiles.html"
 	],
 
 	"browser_action": {
