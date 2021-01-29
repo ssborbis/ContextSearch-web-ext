@@ -1514,6 +1514,13 @@ $('#nightmode').addEventListener('click', () => {
 	$('#style_dark').disabled = !$('#style_dark').disabled;
 	userOptions.nightMode = $('#style_dark').disabled ? false : true;
 	saveOptions();
+});
+
+$('#s_searchBarTheme').innerHTML = null;
+themes.forEach( t => {
+	let option = document.createElement('option');
+	option.value = option.innerText = t.name;
+	$('#s_searchBarTheme').appendChild(option);
 })
 
 // (() => {
