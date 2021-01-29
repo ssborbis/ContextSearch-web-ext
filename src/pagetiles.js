@@ -116,7 +116,7 @@ document.addEventListener('keydown', e => {
 	if ( e.key == "Escape" ) close();
 });
 
-function close() {
+let close = () => {
 	browser.runtime.sendMessage({action: "closePageTiles"});
 }
 

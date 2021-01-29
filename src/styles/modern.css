@@ -4,6 +4,7 @@
 	color: white;
 	--border: rgba(255,255,255,.2);
 	--hover: rgba(2,0,36,.2);
+	--separator: #fff4;
 }
 
 .tile {
@@ -13,5 +14,34 @@
 }
 
 #toolBar .tile {
-	transform:scale(.60);
+	transform:scale(.75);
+	margin:2px;
+}
+
+#searchBar {
+	background: #0005;
+	color:white;
+}
+#searchBar:focus {
+	border:1px solid transparent;
+}
+
+#searchIcon {
+	--tools-color: #fff;
+	opacity:1;
+}
+
+#clearSearchBarButton {
+	--tools-color:#fff;
+	opacity:1;
+}
+
+.tile[data-locked="true"] {
+	background-color:var(--cs-green);
+	box-shadow:initial;
+}
+
+.tile.singleColumn {
+	border-radius:0;
+	margin:.5px 4px;
 }

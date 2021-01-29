@@ -394,12 +394,7 @@ var QMtools = [
 			addTileEventHandlers(tile, () => {
 				browser.runtime.sendMessage({action: "editQuickMenu"});
 				window.tilesDraggable = !window.tilesDraggable;
-				tile.style.backgroundColor = window.tilesDraggable ? "var(--cs-green)" : null;
-
-				if ( tile.style.backgroundColor )
-					setToolIconColor(tile, "white");
-				else
-					setToolIconColor(tile);
+				tile.dataset.locked = window.tilesDraggable;
 			});
 			
 			return tile;
@@ -458,12 +453,19 @@ function setIconColor(url, color) {
 }
 
 async function setToolIconColor(el, color) {
-	let bg = el.style.getPropertyValue("background-image") || window.getComputedStyle(el).getPropertyValue("background-image");
-		
-	let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
 
-	color = color || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
-		
-	let newIcon = await setIconColor(fixedbg, color);
-	el.style.backgroundImage = `url(${newIcon})`;
+	color = color || window.getComputedStyle(el).getPropertyValue('--tools-color');
+
+	if ( el.nodeName === "IMG") {
+
+		let newIcon = await setIconColor(el.src, color);
+		el.src = newIcon;
+
+	} else {
+
+		let bg = el.style.getPropertyValue("background-image") || window.getComputedStyle(el).getPropertyValue("background-image");
+		let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
+		let newIcon = await setIconColor(fixedbg, color);
+		el.style.backgroundImage = `url(${newIcon})`;
+	}
 }

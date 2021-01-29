@@ -441,10 +441,10 @@ function lockQuickMenu() {
 
 //	if ( quickMenuObject.locked ) return;
 		
-	if ( !qmc.resizeWidget ) {
-		document.addEventListener('quickMenuComplete', lock, {once: true});
-		return;
-	} else
+	// if ( !qmc.resizeWidget ) {
+	// 	document.addEventListener('quickMenuComplete', lock, {once: true});
+	// 	return;
+	// } else
 		lock();
 		
 	function lock() {
