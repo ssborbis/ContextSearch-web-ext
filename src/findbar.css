@@ -34,6 +34,7 @@ BODY, HTML {
 	width:20px;
 	height:20px;
 	background: url("/icons/crossmark.svg") no-repeat center;
+	background-size:contain;
 }
 .button {
 	border:1px solid #888;
@@ -48,6 +49,7 @@ BODY, HTML {
 	vertical-align:middle;
 	margin-left:-1px;
 	background: url("/icons/chevron-up.svg") no-repeat center;
+	background-size:contain;
 }
 #next {
 	transform:scaleY(-1);
@@ -86,15 +88,16 @@ INPUT:checked + .optionLabel {
 	width:14px;
 	vertical-align:middle;
 	opacity:.5;
-	background-size:contain;
 }
 #searchIcon {
 	left:60px;
 	background: url(icons/search.svg) no-repeat center;
+	background-size: contain;
 }
 #clearSearchBar {
 	left:364px;
 	background: url(icons/delete.svg) no-repeat center;
+	background-size: contain;
 }
 LABEL DIV[data-type="tool"] {
 	background-size:contain;

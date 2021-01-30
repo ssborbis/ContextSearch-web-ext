@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225 205" width="200px" height="200px">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 225 205" width="64" height="64">
 	<mask id="circle">
 		<rect width="250" height="250" fill="white" />
 		<circle cx="165" cy="144" r="45" fill="black" />

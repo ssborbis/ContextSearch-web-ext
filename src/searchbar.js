@@ -82,16 +82,17 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 
 	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
-	makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( qme => {
-		document.body.appendChild(qme);
-		
-		if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
-			document.body.appendChild(document.getElementById('toolBar'));
-		
-		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-
-	}).then(() => setTheme())
+	setTheme()
 		.then(() => setUserStyles())
+		.then(() => makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( qme => {
+			document.body.appendChild(qme);
+			
+			if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
+				document.body.appendChild(document.getElementById('toolBar'));
+			
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+
+		}))
 		.then(() => setAllToolIconColors());
 
 });

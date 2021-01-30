@@ -303,10 +303,6 @@ async function makeQuickMenu(options) {
 		qm.insertBreaks();
 
 		resizeMenu({toggleSingleColumn: true});
-
-		qm.querySelectorAll('[data-type="tool"],[data-type="more"],[data-type="less"]').forEach( t => {
-			setToolIconColor(t);
-		});
 	}
 	
 	qm.addTitleBarTextHandler = div => {
@@ -1142,6 +1138,8 @@ async function makeQuickMenu(options) {
 		
 		qm.expandMoreTiles();
 
+		qm.querySelectorAll(toolSelector).forEach( t => setToolIconColor(t));
+
 		return qm;
 	}
 
@@ -1193,8 +1191,6 @@ async function makeQuickMenu(options) {
 
 			addOpenFolderOnHover(tile);
 			
-			setToolIconColor(tile);
-
 			qm.back = _back;
 			
 			async function _back(e) {
@@ -2057,22 +2053,7 @@ function createToolsBar(qm) {
 		});
 	});
 
-	// rs.addEventListener('mouseenter', e => {
-	// 	rs.style.opacity = 1
-	// 	rs.addEventListener('mouseleave', () => rs.style.opacity = null, {once: true});	
-	// });
-
-	// ls.addEventListener('mouseenter', e => {
-	// 	ls.style.opacity = 1;
-	// 	ls.addEventListener('mouseleave', () => ls.style.opacity = null, {once: true});	
-	// });
-	
-	
 	toolBar.addEventListener('scroll', showScrollButtons);
-	// toolBar.addEventListener('mouseenter', e => {
-	// 	showScrollButtons();
-	// 	toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null, {once: true});	
-	// });
 }
 
 function getSideDecimal(t, e) {

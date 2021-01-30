@@ -403,7 +403,7 @@ var QMtools = [
 ];
 
 function setAllToolIconColors() {
-	let tools = document.querySelectorAll('[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]');
+	let tools = document.querySelectorAll(toolSelector);
 	
 	tools.forEach( tool => setToolIconColor(tool));
 
@@ -454,7 +454,7 @@ function setIconColor(url, color) {
 
 async function setToolIconColor(el, color) {
 
-	color = color || window.getComputedStyle(el).getPropertyValue('--tools-color');
+	color = color || window.getComputedStyle(el).getPropertyValue('--tools-color') || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
 
 	if ( el.nodeName === "IMG") {
 
@@ -469,3 +469,5 @@ async function setToolIconColor(el, color) {
 		el.style.backgroundImage = `url(${newIcon})`;
 	}
 }
+
+const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
