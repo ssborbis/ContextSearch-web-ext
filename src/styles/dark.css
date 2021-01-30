@@ -18,12 +18,12 @@ BODY {
 #suggestions {
     border-color:#535355;
 }
-#suggestions IMG {
+/*#suggestions IMG {
     filter:invert(1);
-}
-#searchBarContainer > IMG {
+}*/
+/*#searchBarContainer > IMG {
     filter:invert(1);
-}
+}*/
 .tile[data-type="tool"] {
 	color:#f9f9fa;
 }
@@ -50,4 +50,7 @@ BODY {
 }
 .button { /* findbar */
     background-color:#5b5b5d;
+}
+.tile[data-locked="true"] {
+    background-color:#555;
 }

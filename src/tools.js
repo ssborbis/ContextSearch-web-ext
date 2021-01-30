@@ -226,7 +226,7 @@ var QMtools = [
 			
 			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === this.name );
 
-			tile.dataset.disabled = !tool.on;
+			tile.dataset.locked = tool.on;
 
 			document.addEventListener('quickMenuComplete', () => {
 				
@@ -254,7 +254,7 @@ var QMtools = [
 
 				tool.on = !tool.on;
 				
-				tile.dataset.disabled = !tool.on;
+				tile.dataset.locked = tool.on;
 
 				saveUserOptions();
 
@@ -369,12 +369,12 @@ var QMtools = [
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
-			tile.dataset.disabled = userOptions.allowHotkeysWithoutMenu ? "false" : "true";
+			tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 			
 			addTileEventHandlers(tile, () => {
 				userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
 
-				tile.dataset.disabled = userOptions.allowHotkeysWithoutMenu ? "false" : "true";
+				tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 				saveUserOptions();
 
 			});

@@ -10,12 +10,13 @@
 .tile {
     border-radius:10px;
     margin:4px;
-    background-color:rgba(255,255,255,.3);
+    background-color:#fff3
 }
 
 #toolBar .tile {
 	transform:scale(.75);
 	margin:2px;
+	background-color:#0003;
 }
 
 #searchBar {
@@ -37,7 +38,7 @@
 }
 
 .tile[data-locked="true"] {
-	background-color:var(--cs-green);
+	background-color:var(--cs-green) !important;
 	box-shadow:initial;
 }
 
@@ -46,9 +47,22 @@
 	margin:.5px 4px;
 }
 
+.tile.singleColumn[data-type="folder"] {
+	background-color:#fff3;
+	color:white;
+}
+
+.tile.singleColumn[data-type="folder"]:hover {
+	background-color:#FBFACE88;
+}
+
 #suggestions {
 	background:#0005;
 	color:white;
 	border:none;
 	margin-top:1px;
 }
+
+/*.toolBarArrow {
+	background-color:#0005;
+}*/

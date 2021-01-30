@@ -304,7 +304,7 @@ async function makeQuickMenu(options) {
 
 		resizeMenu({toggleSingleColumn: true});
 
-		qm.querySelectorAll('[data-type="tool"').forEach( t => {
+		qm.querySelectorAll('[data-type="tool"],[data-type="more"],[data-type="less"]').forEach( t => {
 			setToolIconColor(t);
 		});
 	}
@@ -1803,7 +1803,10 @@ function makeSearchBar() {
 		suggestions = suggestions.sort(function(a,b) {
 			return a.searchTerms - b.searchTerms;
 		});
-		
+
+		// get history icon color
+		let getIcon = setIconColor(browser.runtime.getURL("/icons/history.svg"), window.getComputedStyle(document.body).getPropertyValue('--tools-color'));
+
 		for (let s of suggestions) {
 			let div = document.createElement('div');
 			div.style.height = "20px";
@@ -1824,6 +1827,7 @@ function makeSearchBar() {
 			let img = document.createElement("img");
 			img.src = "/icons/history.svg";
 			img.title = browser.i18n.getMessage('History') || "history";
+			img.dataset.type = "tool";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
@@ -1834,6 +1838,11 @@ function makeSearchBar() {
 			
 			div.searchTerms = s.searchTerms;
 		}
+
+		// set history icon color
+		getIcon.then( src => {
+			sg.querySelectorAll('img').forEach( img => img.src = src );
+		});
 		
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 
@@ -1991,20 +2000,48 @@ function createToolsBar(qm) {
 	ls.className = rs.className = "toolBarArrow";
 	ls.style.height = rs.style.height = ls.style.lineHeight = rs.style.lineHeight = qm.toolsArray[0].offsetHeight + "px";
 	
-	let mouseoverInterval = null;
-	rs.addEventListener('mouseenter', e => {
-		mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
-	});
+	// let mouseoverInterval = null;
+	// rs.addEventListener('mouseenter', e => {
+	// 	if ( !e.buttons ) return;
+	// 	mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
+	// });
 	
-	ls.addEventListener('mouseenter', e => {	
-		mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
-	});
+	// ls.addEventListener('mouseenter', e => {
+	// 	if ( !e.buttons ) return;	
+	// 	mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
+	// });
 	
-	[rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
+	// [rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
+
+	rs.addEventListener('click', e => {
+		let amount = toolBar.getBoundingClientRect().width / 2;
+		if ( toolBar.scrollTo )
+			toolBar.scrollTo({left:toolBar.scrollLeft + amount, behavior:'smooth'})
+		else
+			toolBar.scrollLeft += amount;
+
+		// if ( toolBar.scrollLeft >= toolBar.scrollWidth - toolBar.offsetWidth )
+		// 	rs.style.display = null;
+		// else
+		// 	rs.style.display = 'inline-block';
+	});
+
+	ls.addEventListener('click', e => {
+		let amount = toolBar.getBoundingClientRect().width / 2;
+		if ( toolBar.scrollTo )
+			toolBar.scrollTo({left:toolBar.scrollLeft - amount, behavior:'smooth'})
+		else
+			toolBar.scrollLeft -= amount;
+
+		// if ( toolBar.scrollLeft - amount <= 0 )
+		// 	ls.style.display = null;
+		// else
+		// 	ls.style.display = 'inline-block';	
+	});
 
 	function showScrollButtons() {
-		ls.style.display = toolBar.scrollLeft ? 'inline-block' : null;
-		rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : null;
+		ls.style.display = toolBar.scrollLeft ? 'inline-block' : 'none';
+		rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : 'none';
 	}
 	
 	// scroll on mouse wheel
@@ -2012,10 +2049,30 @@ function createToolsBar(qm) {
 		toolBar.scrollLeft += (e.deltaY*6);
 		e.preventDefault();
 	});
+
+	[rs,ls].forEach( s => {
+		s.addEventListener('mouseenter', e => {
+		 	showScrollButtons();
+			s.addEventListener('mouseleave',showScrollButtons, {once: true});	
+		});
+	});
+
+	// rs.addEventListener('mouseenter', e => {
+	// 	rs.style.opacity = 1
+	// 	rs.addEventListener('mouseleave', () => rs.style.opacity = null, {once: true});	
+	// });
+
+	// ls.addEventListener('mouseenter', e => {
+	// 	ls.style.opacity = 1;
+	// 	ls.addEventListener('mouseleave', () => ls.style.opacity = null, {once: true});	
+	// });
+	
 	
 	toolBar.addEventListener('scroll', showScrollButtons);
-	toolBar.addEventListener('mouseenter', showScrollButtons);
-	toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null);	
+	// toolBar.addEventListener('mouseenter', e => {
+	// 	showScrollButtons();
+	// 	toolBar.addEventListener('mouseleave', () => ls.style.display = rs.style.display = null, {once: true});	
+	// });
 }
 
 function getSideDecimal(t, e) {

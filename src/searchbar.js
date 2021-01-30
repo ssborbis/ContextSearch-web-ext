@@ -164,15 +164,18 @@ function toolsHandler(qm) {
 function toolBarResize(options) {
 
 	options = options || {}
-		
+
 	if ( window != top ) return;
 
+	let minWidth = 200;
+	let maxHeight = 600;
+
 	// set fixed width for singleColumn
-	if ( qm.singleColumn )
-		document.body.style.maxWidth = 330 + "px";
+	//if ( qm.singleColumn )
+		//document.body.style.maxWidth = 330 + "px";
 
 	// minimum toolbar width for Chrome ( Firefox min = 200 )
-	document.body.style.minWidth = "200px";
+	document.body.style.minWidth = minWidth + "px";
 
 	qm.style.height = null;
 
@@ -187,13 +190,13 @@ function toolBarResize(options) {
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
 
-		let minWindowWidth = Math.max(200, window.innerWidth);
+		let minWindowWidth = Math.max(minWidth, window.innerWidth);
 
 		if ( window.innerHeight < document.documentElement.scrollHeight ) {
 			
 			let sumHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
 			
-			qm.style.height = ( (window.innerHeight < 600 && qm.scrollHeight > (600 - sumHeight) ) ? 600 : window.innerHeight ) - sumHeight + "px";
+			qm.style.height = ( (window.innerHeight < maxHeight && qm.scrollHeight > (maxHeight - sumHeight) ) ? maxHeight : window.innerHeight ) - sumHeight + "px";
 			
 		//	qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height ) + "px";
 		} 

@@ -386,6 +386,16 @@ BODY {
 	color: var(--select);
 	background-color:var(--background);
 	border:none;
+	scroll-behavior: smooth;
+	cursor:pointer;
+	background-color:#fff8;
+	border-radius:4px;
+	user-select: none;
+	opacity:0;
+	display:inline-block;
+}
+.toolBarArrow:hover {
+	opacity:1;
 }
 .groupLabelMoreTile {
 	position:absolute;
