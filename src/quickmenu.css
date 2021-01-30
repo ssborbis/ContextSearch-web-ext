@@ -252,6 +252,11 @@ BODY {
 #searchBar:focus {
 	border:1px solid #0a84ff;
 }
+#searchBar::placeholder {
+	color: inherit;
+	font-style:italic;
+	opacity:.5;
+}
 #suggestions {
 	background-color:white;
 	color:#4a4a4a;
@@ -263,6 +268,10 @@ BODY {
 	border-width: 1px 0;
 	transition:max-height .15s ease-in-out;
 	max-height:0;
+	/*max-width:calc(100%);*/
+	min-width:200px;
+	/*max-width:400px;*/
+	width:100%;
 }
 #suggestions > DIV {
 	padding-left: 5px;
@@ -273,9 +282,10 @@ BODY {
 	user-select:none;
 	-moz-user-select: none;
 	overflow-x:hidden;
-	width: calc(100% - 30px);
-	min-width:200px;
-	max-width:400px;
+	/*width: calc(100% - 30px);
+	min-width:200px;*/
+	width:100%;
+
 }
 #suggestions > DIV:hover {
 	background-color: var(--hover);
@@ -300,7 +310,9 @@ BODY {
 	width:calc(100% - 10px);
 }
 .tile.singleColumn {
-	width:300px;
+	width:100%;
+	max-width:300px;
+	min-width:300px;
 	height:20px;
 	font-size:11pt;
 	border:none;

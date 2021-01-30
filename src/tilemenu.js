@@ -31,6 +31,19 @@ function clickChecker(el) {
 		return true;
 }
 
+function getFullElementSize(el) {
+	let rect = el.getBoundingClientRect();
+
+	var style = window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle;
+
+	var marginLeft = parseInt(style.marginLeft) || 0;
+	var marginRight = parseInt(style.marginRight) || 0;
+	var marginTop = parseInt(style.marginTop) || 0;
+	var marginBottom = parseInt(style.marginBottom) || 0;
+
+	return {width: rect.width + marginLeft + marginRight, height: rect.height + marginTop + marginBottom, rectWidth: rect.width, rectHeight: rect.height };
+}
+
 // generic search engine tile
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
@@ -86,6 +99,18 @@ function setUserStyles() {
 	}
 }
 
+function mouseClickBack(e) {
+	// assume mouse click is a call to go back
+	if ( qm.rootNode.parent && getOpenMethod(e) === "noAction" && getOpenMethod(e, true) === "openFolder" ) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		qm.back();
+		return true;
+	}
+
+	return false;
+}
+
 // method for assigning tile click handler
 function addTileEventHandlers(_tile, handler) {
 
@@ -99,6 +124,8 @@ function addTileEventHandlers(_tile, handler) {
 		// }
 
 		if ( !clickChecker(_tile) ) return;
+
+		if ( mouseClickBack(e) ) return;
 
 		// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
 		quickMenuObject.mouseLastClickTime = Date.now();
@@ -283,7 +310,17 @@ async function makeQuickMenu(options) {
 		
 		div.addEventListener('mouseleave', () => tb.innerText = '');
 	}
-	
+
+	// prevent context menu anywhere but the search bar
+	document.documentElement.addEventListener('contextmenu', e => {
+		if (e.target !== sb ) e.preventDefault();
+	});
+
+	// openFolder button will trigger back
+	qm.addEventListener("mouseup", e => {
+		if ( qm === e.target ) mouseClickBack(e);
+	});
+
 	// folder styling hotkey
 	document.addEventListener('keydown', e => {
 		if (e.key === "." && e.ctrlKey) {
@@ -1142,13 +1179,15 @@ async function makeQuickMenu(options) {
 			
 			tile.dataset.type = "tool";
 			tile.node = rootNode.parent;
-			
+	
 			tile.addEventListener('mouseup', _back);
 			tile.addEventListener('openFolder', _back);
 
 			addOpenFolderOnHover(tile);
 			
 			setToolIconColor(tile);
+
+			qm.back = _back;
 			
 			async function _back(e) {
 
@@ -1611,7 +1650,8 @@ async function makeQuickMenu(options) {
 					});
 					
 					// click the back button
-					tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
+					qm.back();
+					//tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
 				});
 
 				break;
@@ -1760,6 +1800,7 @@ function makeSearchBar() {
 			let div = document.createElement('div');
 			div.style.height = "20px";
 			div.type = s.type;
+
 			div.onclick = function() {
 				let selected = sg.querySelector('.selectedFocus');
 				if (selected) selected.classList.remove('selectedFocus');

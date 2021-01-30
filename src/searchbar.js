@@ -165,20 +165,33 @@ function toolsHandler(qm) {
 	qm.insertBreaks();
 }
 
-function toolBarResize() {
+function toolBarResize(options) {
+
+	options = options || {}
 		
 	if ( window != top ) return;
 
-	qm.style.width = null;
+	// set fixed width for singleColumn
+	if ( qm.singleColumn )
+		document.body.style.maxWidth = 330 + "px";
+
+	// minimum toolbar width for Chrome ( Firefox min = 200 )
+	document.body.style.minWidth = "200px";
+
 	qm.style.height = null;
-	sg.style.width = null;
-	// qm.style.minWidth = qm.columns * qm.getTileSize().width + "px";
-	// qm.style.minWidth = "200px";
+
+	// ignore width resizing if only opening suggestions ( prevents flashing )
+	if ( !options.suggestionsResize ) {
+		sg.style.width = 0;
+		qm.style.width = 0;
+		toolBar.style.width = 0;
+	}
 	
 	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
-	toolBar.style.width = 0;
-	
+
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
+
+		let minWindowWidth = Math.max(200, window.innerWidth);
 
 		if ( window.innerHeight < document.documentElement.scrollHeight ) {
 			
@@ -191,27 +204,27 @@ function toolBarResize() {
 
 		if (qm.getBoundingClientRect().width < window.innerWidth) {
 
-			
-			// chrome min width fix
-		//	qm.style.width = Math.max(qm.columns * qm.getTileSize().width, document.documentElement.scrollWidth, sg.getBoundingClientRect().width) + "px";
-		
-			qm.style.width = Math.max(200, document.documentElement.scrollWidth) + "px";
-			
-			// tb.style.maxWidth = document.documentElement.scrollWidth - 10 + "px";
+			let maxWidth = 9999;
+
 			let tileSize = qm.getTileSize();
+
+			if ( !qm.singleColumn )
+				maxWidth = Math.max(minWindowWidth, tileSize.width * qm.columns + 30);
+
+			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth) ) + "px";
 
 			let padding = tileSize.width - tileSize.rectWidth;
 
 			let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
 
-		//	let div_width = 'calc(' + 100 / qm.columns + "% - 2px)";
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 				div.style.width = div_width;
 			});
 		}
 		
 		tb.style.maxWidth = toolBar.style.maxWidth = toolBar.style.width = document.documentElement.scrollWidth - 10 + "px";
-		sg.style.width = document.documentElement.scrollWidth;
+		sg.style.width = document.documentElement.scrollWidth + "px";
+				
 	});
 }
 

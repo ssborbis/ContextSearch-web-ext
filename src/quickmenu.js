@@ -120,9 +120,9 @@ function resizeMenu(o) {
 	let initialHeight = tileSize.height * ((qm.singleColumn) ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows);
 	maxHeight = o.maxHeight || maxHeight || Number.MAX_SAFE_INTEGER;
 
-	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
-
-	let currentHeight = qm.style.height || 0;
+	let allOtherElsHeightOld = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
+	let allOtherElsHeight = getFullElementSize(sb).height + getFullElementSize(sg).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+	let currentHeight = qm.style.height || qm.getBoundingClientRect().height || 0;
 
 	qm.style.height = null;
 	qm.style.overflowY = null;

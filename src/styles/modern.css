@@ -45,3 +45,10 @@
 	border-radius:0;
 	margin:.5px 4px;
 }
+
+#suggestions {
+	background:#0005;
+	color:white;
+	border:none;
+	margin-top:1px;
+}
