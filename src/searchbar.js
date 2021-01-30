@@ -77,10 +77,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
 	
 	userOptions = msg.userOptions;
-
-	let onSetTheme = setTheme();
-	
-	setUserStyles();
 		
 	makeSearchBar();
 
@@ -94,9 +90,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 		
 		document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
-	}).then(() => {
-		onSetTheme.then(() => setAllToolIconColors());
-	});
+	}).then(() => setTheme())
+		.then(() => setUserStyles())
+		.then(() => setAllToolIconColors());
 
 });
 

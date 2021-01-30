@@ -89,14 +89,18 @@ function setTheme(theme) {
 }
 
 function setUserStyles() {
-	if ( userOptions.userStylesEnabled ) {
-		// Append <style> element to <head>
-		var styleEl = document.createElement('style');
-		document.head.appendChild(styleEl);
-		styleEl.innerText = userOptions.userStyles;
-		
-		document.body.getBoundingClientRect();
-	}
+	return new Promise(resolve => {
+
+		if ( userOptions.userStylesEnabled ) {
+			// Append <style> element to <head>
+			var styleEl = document.createElement('style');
+			styleEl.innerText = userOptions.userStyles;
+			styleEl.onload = () => { resolve(true) }
+
+			document.head.appendChild(styleEl);
+			document.body.getBoundingClientRect();
+		} else resolve();
+	});
 }
 
 function mouseClickBack(e) {
@@ -299,6 +303,10 @@ async function makeQuickMenu(options) {
 		qm.insertBreaks();
 
 		resizeMenu({toggleSingleColumn: true});
+
+		qm.querySelectorAll('[data-type="tool"').forEach( t => {
+			setToolIconColor(t);
+		});
 	}
 	
 	qm.addTitleBarTextHandler = div => {

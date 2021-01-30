@@ -283,15 +283,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
 	
 	userOptions = msg.userOptions;
-
-	let onSetTheme = setTheme();
 	
-	setUserStyles();
-		
-	makeFrameContents();
-
-	onSetTheme.then(() => setAllToolIconColors());
-
+	makeFrameContents()
+		.then(() => setTheme())
+		.then(() => setUserStyles())
+		.then(() => setAllToolIconColors());
 });
 
 // prevent context menu when using right-hold
