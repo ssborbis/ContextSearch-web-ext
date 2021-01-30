@@ -284,9 +284,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	userOptions = msg.userOptions;
 	
-	makeFrameContents()
-		.then(() => setTheme())
+	setTheme()
 		.then(() => setUserStyles())
+		.then(() => makeFrameContents())		
 		.then(() => setAllToolIconColors());
 });
 
