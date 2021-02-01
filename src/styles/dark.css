@@ -3,6 +3,8 @@
 	--background: #323234;
 	--border: #444;
 	--tools-color:#bbb;
+    --folder-color: #3293d4;
+    --folder-label-color: #dedede;
 }
 BODY { 
     background-color:var(--background);
@@ -24,8 +26,8 @@ BODY {
 .tile[data-type="tool"][data-nocolorinvert] {
 }
 .tile[data-type="folder"] {
-    background-color:#3293d4;
-    color:#dedede;
+    background-color:var(--folder-color);
+    color:var(--folder-label-color);
 }
 .tile[data-type="folder"]:not(.singleColumn) {
 	/* background-color:#3293d4; */
