@@ -18,12 +18,6 @@ BODY {
 #suggestions {
     border-color:#535355;
 }
-/*#suggestions IMG {
-    filter:invert(1);
-}*/
-/*#searchBarContainer > IMG {
-    filter:invert(1);
-}*/
 .tile[data-type="tool"] {
 	color:#f9f9fa;
 }
@@ -33,10 +27,6 @@ BODY {
     background-color:#3293d4;
     color:#dedede;
 }
-.tile[data-type="folder"]:not(.singleColumn):not([data-subtype]):not([data-hasicon])::before {
-	background-color:#287cb3;
-	border-color:#777;
-}
 .tile[data-type="folder"]:not(.singleColumn) {
 	/* background-color:#3293d4; */
     color:#dedede;
@@ -44,13 +34,12 @@ BODY {
 .tile:hover {
 	background-color:var(--hover);
 }
-.tile[data-quickmenumore] {
-	/* filter:invert(1) brightness(50%); */
-	/* color:black; */
-}
 .button { /* findbar */
     background-color:#5b5b5d;
 }
 .tile[data-locked="true"] {
     background-color:#555;
+}
+.tile.groupFolder {
+    background-color: var(--group-color);
 }

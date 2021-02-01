@@ -5,6 +5,10 @@
 	--border: rgba(255,255,255,.2);
 	--hover: rgba(2,0,36,.2);
 	--separator: #fff4;
+	--folder-color:#fff3;
+	--folder-label-color: white;
+	--folder-label-color-singlecolumn: white;
+	--group-label-color: #fff;
 }
 
 .tile {
@@ -47,11 +51,6 @@
 	margin:.5px 4px;
 }
 
-.tile.singleColumn[data-type="folder"] {
-	background-color:#fff3;
-	color:white;
-}
-
 .tile.singleColumn[data-type="folder"]:hover {
 	background-color:#FBFACE88;
 }
@@ -65,4 +64,13 @@
 
 /*.toolBarArrow {
 	background-color:#0005;
+}*/
+
+/*.tile.groupFolder {
+	background-color:transparent;
+}
+.tile.groupFolder::before {
+    background-color: var(--group-color);
+    width:100%;
+    height:100%;
 }*/

@@ -135,6 +135,7 @@ function statusMessage(status) {
 	
 	img.parentNode.style.backgroundColor = status.color;
 	img.style.filter = status.invert ? 'invert(1)' : 'none';
+	img.style.height = "20px";
 
 }
 

@@ -1011,10 +1011,11 @@
 			}
 			.yes::before, .no::before, .add::before {
 				content: url("icons/checkmark.svg");
-				height:20px;
-				width:20px;
 				vertical-align:middle;
 				filter:invert(1);
+				display:inline-block;
+				transform:scale(.33);
+				transform-origin: top left;
 			}
 			.no {
 				background-color: red;
@@ -2919,5 +2920,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		<script src="tools.js"></script>
 		<script src="palettes.js"></script>
 		<script src="options.pagetiles.js"></script>
+		<script src="iconUtils.js"></script>
 	</body>
 </html>

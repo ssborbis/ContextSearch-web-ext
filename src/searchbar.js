@@ -240,16 +240,19 @@ function sideBarResize(options) {
 	if ( !qm ) return;
 	
 	qm = document.getElementById('quickMenuElement');
-	sb = document.getElementById('searchBar');
+	sbc = document.getElementById('searchBarContainer');
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
+	toolBar = document.getElementById('toolBar');
 
-	let allOtherElsHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height;
+	let allOtherElsHeight = getFullElementSize(sbc).height + getFullElementSize(sg).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
 
 	let qm_height = qm.style.height;
 	
 	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 10000 );
+	
+	document.body.style.height = docked ? "100vh" : document.body.style.height;
 	
 	qm.style.height = null;
 	qm.style.width = null;
@@ -268,6 +271,8 @@ function sideBarResize(options) {
 		
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
+
+	// document.body.style.height = docked ? "100vh" : null;
 
 	// account for scrollbars
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
