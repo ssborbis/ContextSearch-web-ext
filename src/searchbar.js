@@ -171,9 +171,8 @@ function toolBarResize(options) {
 	let minWidth = 200;
 	let maxHeight = 600;
 
-	// set fixed width for singleColumn
-	//if ( qm.singleColumn )
-		//document.body.style.maxWidth = 330 + "px";
+	// set min width for singleColumn
+	if ( qm.singleColumn ) minWidth = qm.getTileSize().width;
 
 	// minimum toolbar width for Chrome ( Firefox min = 200 )
 	document.body.style.minWidth = minWidth + "px";
@@ -181,7 +180,7 @@ function toolBarResize(options) {
 	qm.style.height = null;
 
 	// ignore width resizing if only opening suggestions ( prevents flashing )
-	if ( !options.suggestionsResize ) {
+	if ( !options.suggestionsResize && !options.groupMore && !options.groupLess ) {
 		sg.style.width = 0;
 		qm.style.width = 0;
 		toolBar.style.width = 0;
@@ -212,6 +211,9 @@ function toolBarResize(options) {
 				maxWidth = Math.max(minWindowWidth, tileSize.width * qm.columns + 30);
 
 			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth) ) + "px";
+
+			// pad for scrollbars
+			qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
 
 			let padding = tileSize.width - tileSize.rectWidth;
 
