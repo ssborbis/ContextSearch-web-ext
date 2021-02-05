@@ -10,7 +10,7 @@
 	--folder-label-color:blue;
 	--folder-label-color-singlecolumn:#444;
 	--folder-border-color:#c2c2c2;
-	--group-label-color: #ccc;
+	--group-label-color: #444;
 }
 
 HTML, BODY {
@@ -95,13 +95,14 @@ BODY {
 	text-align:center;
 	display:table-cell;
 	vertical-align:middle;
-	height:100%;
+	height:auto;
 	overflow:hidden;
 	white-space:normal;
 	text-align:center;
 	width:100%;
 	position:absolute;
-	top: calc(50% - 6px);
+	top:50%;
+	transform:translateY(-50%);
 }
 .tile[data-type="folder"] {
 	font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
@@ -397,3 +398,13 @@ BODY {
 .noMouse {
 	pointer-events: none;
 }
+
+.tile.singleColumn[data-type="more"]::before, .tile.singleColumn[data-type="less"]::before {
+	content:"";
+}
+.tile.singleColumn[data-type="more"], .tile.singleColumn[data-type="less"] {
+	background-position: center center;
+}
+/*.tile.singleColumn[data-type="folder"].groupFolder::before {
+	margin-left:0;
+}*/

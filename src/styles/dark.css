@@ -31,7 +31,7 @@ BODY {
 }
 .tile[data-type="folder"]:not(.singleColumn) {
 	/* background-color:#3293d4; */
-    color:#dedede;
+    color:var(--folder-label-color);;
 }
 .tile:hover {
 	background-color:var(--hover);

@@ -5,7 +5,7 @@
 	--border: rgba(255,255,255,.2);
 	--hover: rgba(2,0,36,.2);
 	--separator: #fff4;
-	--folder-color:#fff3;
+	--folder-color:#FBFACE;/*#fff3;*/
 	--folder-label-color: white;
 	--folder-label-color-singlecolumn: white;
 	--group-label-color: #fff;
@@ -55,6 +55,10 @@
 	background-color:#FBFACE88;
 }
 
+.tile.singleColumn[data-type="folder"] {
+	background-color:#fff3;
+}
+
 #suggestions {
 	background:#0005;
 	color:white;
@@ -62,15 +66,22 @@
 	margin-top:1px;
 }
 
-/*.toolBarArrow {
-	background-color:#0005;
-}*/
-
-/*.tile.groupFolder {
-	background-color:transparent;
+.tile.groupFolder.singleColumn {
+	background-color:#fff3;
+	/*border-left:12px solid var(--group-color);*/
+	border-right:6px solid var(--group-color);
+	box-sizing: border-box;
 }
-.tile.groupFolder::before {
-    background-color: var(--group-color);
-    width:100%;
-    height:100%;
-}*/
+
+.tile.groupFolder.singleColumn:hover {
+	background-color:#FBFACE88;
+}
+
+.tile[data-type="folder"]::after {
+	content:"";
+    text-shadow:
+   -.5px -.5px 0 #000,  
+    .5px -.5px 0 #000,
+    -.5px .5px 0 #000,
+     .5px .5px 0 #000;
+}

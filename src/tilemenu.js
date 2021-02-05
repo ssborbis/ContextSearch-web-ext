@@ -56,11 +56,11 @@ function buildSearchIcon(icon_url, title) {
 
 function buildCommonIcons() {
 
-	setIconColor(browser.runtime.getURL('/icons/add.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
+	setIconColor(browser.runtime.getURL('/icons/chevron-down.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
 		qm.moreIcon = data;
 	});
 
-	setIconColor(browser.runtime.getURL('/icons/crossmark.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
+	setIconColor(browser.runtime.getURL('/icons/chevron-up.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
 		qm.lessIcon = data;
 	});
 }
@@ -1275,7 +1275,7 @@ async function makeQuickMenu(options) {
 			let label = nodeToTile( node );
 			label.style.setProperty("--group-color", node.groupColor || null);
 			label.classList.add("groupFolder");
-			label.style.textAlign='center';
+		//	label.style.textAlign='center';
 			_tiles.unshift( label );
 
 			if ( !limit || limit >= _tiles.length ) {
@@ -1283,7 +1283,7 @@ async function makeQuickMenu(options) {
 				return _tiles;
 			}
 
-			let moreTile = buildSearchIcon(qm.moreIcon || browser.runtime.getURL('/icons/add.svg'), browser.i18n.getMessage('more'));
+			let moreTile = buildSearchIcon(qm.moreIcon || browser.runtime.getURL('/icons/chevron-down.svg'), browser.i18n.getMessage('more'));
 			setToolIconColor(moreTile);
 
 			moreTile.style.textAlign='center';
@@ -1318,7 +1318,7 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
-				moreTile.style.backgroundImage = `url(${qm.lessIcon || browser.runtime.getURL('icons/crossmark.svg')}`;
+				moreTile.style.backgroundImage = `url(${qm.lessIcon || browser.runtime.getURL('icons/chevron-up.svg')}`;
 				setToolIconColor(moreTile);
 				resizeMenu({groupMore: true});
 	
@@ -1340,7 +1340,7 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = more;
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
-				moreTile.style.backgroundImage = `url(${qm.moreIcon || browser.runtime.getURL('icons/add.svg')}`;
+				moreTile.style.backgroundImage = `url(${qm.moreIcon || browser.runtime.getURL('icons/chevron-down.svg')}`;
 				setToolIconColor(moreTile);
 				resizeMenu({groupLess: true});
 				
@@ -1417,6 +1417,38 @@ async function makeQuickMenu(options) {
 			return tiles;
 		}
 
+		function newGroupStyler(tiles) {
+			let first = tiles.find(t => t.dataset.type === 'folder' );
+
+			if ( !first ) return tiles;
+
+			let newNode = first.cloneNode(true);
+
+			if ( first.node.icon ) newNode.dataset.hasicon = true;
+
+			console.log(qm.singleColumn, first.node.icon)
+
+			if ( qm.singleColumn && !first.node.icon ) {
+				newNode.style.backgroundImage = 'none';
+
+				
+			}
+
+			tiles.splice(tiles.indexOf(first), 1, newNode );
+
+			let moreTile = tiles.find(t => t.dataset.type === 'more');
+
+			if ( moreTile ) tiles.splice(tiles.indexOf(moreTile), 1);
+
+			if ( moreTile ) {
+				newNode.onclick = function() { 
+					moreTile.dispatchEvent(new MouseEvent('mouseup'));
+				};
+			}
+
+			return tiles;
+		}
+
 		nodes.forEach( (node, index) => {
 
 			let tile = nodeToTile(node);
@@ -1430,8 +1462,10 @@ async function makeQuickMenu(options) {
 			if ( node.groupFolder && !node.parent.parent) { // only top-level folders
 			
 				let groupTiles = makeGroupTilesFromNode( node );
-				
+
 				makeMoreLessFromTiles( groupTiles, node.groupLimit );
+
+				// groupTiles = newGroupStyler(groupTiles);
 
 				// remove leading separator if consecutive groups
 				let previousNode = nodes[index - 1];
