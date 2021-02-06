@@ -1156,10 +1156,20 @@
 			.promptForImage INPUT {
 				width:200px;
 			}
+			#console {
+				position:fixed;
+				top:0;
+				left:0;
+				right:0;
+				z-index:9999;
+				text-align:center;
+				height:auto;
+			}
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
 	<body>
+		<div id="console"></div>
 		<div id="main">
 		<div id="left_div">
 			<img src="icons/icon.svg" style="border-radius:5px;height:64px;"/><br />
@@ -1324,6 +1334,18 @@
 							Select file...
 							<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
 						</label>
+						</td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Delete search engine icon cache. Icons can still be used and re-cached provided they have a valid URL ">clear icon cache</td>
+						<td>
+							<button id="b_uncacheIcons" class="inputNice">exec</button>
+						</td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="cache search engine icons from their icon URLs">cache icons</td>
+						<td>
+							<button id="b_cacheIcons" class="inputNice">exec</button>
 						</td>
 					</tr>
 					</table>
@@ -2920,6 +2942,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		<script src="tools.js"></script>
 		<script src="palettes.js"></script>
 		<script src="options.pagetiles.js"></script>
-		<!-- <script src="iconUtils.js"></script> -->
+		<script src="iconUtils.js"></script>
 	</body>
 </html>

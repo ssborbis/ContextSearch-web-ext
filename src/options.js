@@ -11,7 +11,6 @@ var $ = s => {
 
 // array for storage.local
 var userOptions = {};
-var defaultUserOptions = {};
 
 // Browse button for manual import
 $("#selectMozlz4FileButton").addEventListener('change', ev => {
@@ -1522,98 +1521,37 @@ themes.forEach( t => {
 	let option = document.createElement('option');
 	option.value = option.innerText = t.name;
 	$('#s_searchBarTheme').appendChild(option);
+});
+
+
+$('#b_cacheIcons').addEventListener('click', e => {
+	cacheAllIcons();
+});
+
+$('#b_uncacheIcons').addEventListener('click', e => {
+	if ( confirm('remove all icon cache?'))	uncacheIcons();
 })
 
-// (() => {
-	// let advancedOptions = [
-	// {
-		// name: "quickMenuOpeningOpacity",
-		// inputOptions: {
-			// type: "number",
-			// min: 0,
-			// max: 1,
-			// step:.1
-		// }
-	// },
-	// {	
-		// name: "quickMenuAutoMaxChars",
-		// inputOptions: {
-			// type: "number",
-			// min: 0,
-			// max: 999,
-			// step:1
-		// }
-	// },
-	// {
-		// name: "quickMenuAutoTimeout",
-		// inputOptions: {
-			// type: "number",
-			// min: 0,
-			// max: 9999,
-			// step:1
-		// }
-	// },
-	// {
-		// name: "searchBar.historyLength",
-		// inputOptions: {
-			// type: "number",
-			// min: 0,
-			// max: 99999,
-			// step:1
-		// }
-	// },
-	// {
-		// name: "searchBar.suggestionsCount",
-		// inputOptions: {
-			// type: "number",
-			// min: 0,
-			// max: 999,
-			// step:1
-		// }
-	// },
-	// {
-		// name: "quickMenuSearchOnMouseUp",
-		// inputOptions: {
-			// type: "checkbox"
-		// }
-	// },
-	// {
-		// name: "rememberLastOpenedFolder",
-		// inputOptions: {
-			// type: "checkbox"
-		// }
-	// },
-	// {
-		// name: "groupLabelMoreTile",
-		// inputOptions: {
-			// type: "checkbox"
-		// }
-	// },
-	// {
-		// name: "groupFolderRowBreaks",
-		// inputOptions: {
-			// type: "checkbox"
-		// }
-	// },
-	// {
-		// name: "autoCopy",
-		// inputOptions: {
-			// type: "checkbox"
-		// }
-	// }
-	// ];
-	
-	// document.addEventListener('DOMContentLoaded', () => {
-	// });
- 		
-	
-// // quickMenuTools.lock.persist 	
-// // quickMenuTools.repeatsearch.persist 	
- 	
- 	
-	
- 	
- 	
+function cacheAllIcons() {
+	let result = cacheIcons();
+	let msg = document.getElementById('console');
+	msg.innerText = "cache progress";
 
-// })();
+	let interval = setInterval(() => {
+		msg.innerText = `caching ${result.count - 1} / ${userOptions.searchEngines.length}`;
+	}, 100);
 
+	result.oncomplete = function() {
+		clearInterval(interval);
+		if ( result.bad.length )
+			msg.innerText = "some icons could not be cached";
+		else
+			msg.innerText = "done";
+
+		setTimeout(() => msg.innerText = null, 5000);
+
+		saveOptions();
+	}
+
+	result.cache();
+}

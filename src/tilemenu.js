@@ -1286,6 +1286,8 @@ async function makeQuickMenu(options) {
 			let moreTile = buildSearchIcon(qm.moreIcon || browser.runtime.getURL('/icons/chevron-down.svg'), browser.i18n.getMessage('more'));
 			setToolIconColor(moreTile);
 
+			// let moreTile = buildSearchIcon(browser.runtime.getURL('icons/transparent.gif'), browser.i18n.getMessage('more'))
+
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "more";
 			moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
@@ -1341,6 +1343,7 @@ async function makeQuickMenu(options) {
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
 				moreTile.style.backgroundImage = `url(${qm.moreIcon || browser.runtime.getURL('icons/chevron-down.svg')}`;
+				// moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/transparent.gif')})`;
 				setToolIconColor(moreTile);
 				resizeMenu({groupLess: true});
 				
@@ -1392,6 +1395,8 @@ async function makeQuickMenu(options) {
 			} else {
 				if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
 			}
+
+			moreTile.dataset.hiddencount = _tiles.filter( t => t.dataset.grouphidden == "true" && t.moreTile === moreTile ).length;
 
 			addSeparators();
 
@@ -1774,14 +1779,20 @@ function makeSearchBar() {
 		
 		sb.focus();
 		
+		// if suggestions are open
 		if ( sg.querySelector('div') ) {
 			sg.innerHTML = null;
 			//sg.addEventListener('transitionend', resizeMenu);
 			sg.style.maxHeight = null;
 			// resizeMenu({suggestionsResize: true});
 			sg.userOpen = false;
+
+			si.style.transform = null;
+
 			return;
 		}
+
+		si.style.transform = 'scaleY(-1)';
 		
 		sg.userOpen = true;
 		

@@ -2018,9 +2018,9 @@ browser.runtime.onInstalled.addListener( details => {
 			browser.tabs.create({
 				url: "/options.html#help"
 			}).then(_tab => {
-				// browser.tabs.executeScript(_tab.id, {
-					// file: browser.runtime.getURL("/install/install.js")
-				// });
+				browser.tabs.executeScript(_tab.id, {
+					code: `cacheAllIcons()`
+				});
 			});
 		}
 	});

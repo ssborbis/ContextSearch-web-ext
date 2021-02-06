@@ -256,7 +256,7 @@ BODY {
 	transition:max-height .15s ease-in-out;
 	max-height:0;
 	/*max-width:calc(100%);*/
-	min-width:200px;
+	/*min-width:200px;*/
 	/*max-width:400px;*/
 	width:100%;
 }
@@ -408,3 +408,6 @@ BODY {
 /*.tile.singleColumn[data-type="folder"].groupFolder::before {
 	margin-left:0;
 }*/
+.tile[data-type="more"] {
+	position:relative;
+}

@@ -51,12 +51,12 @@
 	margin:.5px 4px;
 }
 
-.tile.singleColumn[data-type="folder"]:hover {
-	background-color:#FBFACE88;
-}
-
 .tile.singleColumn[data-type="folder"] {
 	background-color:#fff3;
+}
+
+.tile.singleColumn[data-type="folder"]:hover {
+	background-color:var(--hover);
 }
 
 #suggestions {
@@ -74,7 +74,7 @@
 }
 
 .tile.groupFolder.singleColumn:hover {
-	background-color:#FBFACE88;
+	background-color:var(--hover);
 }
 
 .tile[data-type="folder"]::after {
@@ -84,4 +84,28 @@
     .5px -.5px 0 #000,
     -.5px .5px 0 #000,
      .5px .5px 0 #000;
+}
+
+X.tile[data-type="more"]::before {
+	content:attr(data-hiddencount);
+	font-size:7pt;
+	line-height:1em;
+	padding:1px;
+	font-family:Arial;
+	font-weight:bold;
+	color:inherit;
+	text-align:center;
+	display:table-cell;
+	vertical-align:middle;
+	height:auto;
+	overflow:hidden;
+	white-space:normal;
+	/*text-align:center;*/
+	text-align:right;
+	right:2px;
+	width:100%;
+	position:absolute;
+	/*top:50%;
+	transform:translateY(-50%);*/
+	background:none;
 }
