@@ -22,7 +22,6 @@ function uncacheIcons() {
 
 		if ( isDataURI )
 			console.warn(se.title + " has no URL");
-
 	}
 }
 
