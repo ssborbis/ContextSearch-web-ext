@@ -128,6 +128,7 @@ function buildSearchEngineContainer() {
 				// Check bad form values
 				function checkFormValues() {
 	
+					// correct for case
 					[edit_form.template, edit_form.post_params].forEach( el => {
 						el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
 					});
@@ -196,15 +197,18 @@ function buildSearchEngineContainer() {
 							resolve(true);
 						}
 
+						// show icon as loading
 						icon.src = browser.runtime.getURL("/icons/spinner.svg");
+
+						// new Image to check icon_url
 						let newIcon = new Image();
 						newIcon.onload = function() {
-							icon.src = imageToBase64(this, 32) || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
+							icon.src = imageToBase64(this, userOptions.cacheIconsMaxSize) || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
 							resolve(true);
 						}
 						newIcon.onerror = function() {	
 							showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
-							icon.src = se.icon_base64String || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
+							//icon.src = se.icon_base64String || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
 							resolve(true);
 						}
 						
@@ -296,23 +300,7 @@ function buildSearchEngineContainer() {
 
 					newLi.dispatchEvent(new MouseEvent('dblclick'));
 				}
-				
-				document.getElementById('iconrefresh').onclick = function() {
-					icon.src = browser.runtime.getURL('icons/spinner.gif');
-					
-					if ( edit_form.iconURL.value )
-						icon.src = edit_form.iconURL.value;
-					else {
-						let url = new URL(edit_form.template.value);
-						icon.onerror = function() {
-							icon.src = createCustomIcon({text: se.title.charAt(0).toUpperCase()});
-							edit_form.iconURL.value = icon.src;
-						}
-						icon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
-						edit_form.iconURL.value = icon.src;
-					}
-				}
-				
+								
 				edit_form.addOpenSearchEngine.onclick = function() {
 
 					let url = "https://opensearch-api.appspot.com" 
@@ -485,7 +473,7 @@ function buildSearchEngineContainer() {
 					img.src = browser.runtime.getURL("/icons/spinner.svg");
 					let newIcon = new Image();
 					newIcon.onload = function() {
-						img.src = imageToBase64(this, 32) || createCustomIcon({text: node.title.charAt(0).toUpperCase()});
+						img.src = imageToBase64(this, userOptions.cacheIconsMaxSize) || createCustomIcon({text: node.title.charAt(0).toUpperCase()});
 					//	saveForm();
 						node.icon = img.src;
 						updateNodeList();
@@ -743,7 +731,7 @@ function buildSearchEngineContainer() {
 			let hotkey = document.createElement('span');
 			hotkey.title = browser.i18n.getMessage('Hotkey');
 			hotkey.className = 'hotkey';
-			hotkey.style.right = "0px";
+			hotkey.style.right = "4px";
 
 			header.appendChild(hotkey);
 			hotkey.innerText = keyTable[node.hotkey] || "";
@@ -751,12 +739,12 @@ function buildSearchEngineContainer() {
 			hotkey.onclick = function(e) {
 				e.stopPropagation();			
 				e.target.innerText = null;
+
 				let img = document.createElement('img');
 				img.src = 'icons/spinner.svg';
-				img.style.height = '1em';
-				img.style.verticalAlign = 'middle';
-				img.style.margin = '0';
+
 				e.target.appendChild(img);
+
 				window.addEventListener('keydown', function keyPressListener(evv) {
 					evv.preventDefault();
 					
@@ -1714,8 +1702,7 @@ function buildSearchEngineContainer() {
 		await saveOptions();
 		location.href = "options.html#engines";
 	});
-	
-	
+		
 	document.getElementById('iconPicker').addEventListener('change', e => {
 		let file = e.target.files[0];
 		
@@ -1727,7 +1714,7 @@ function buildSearchEngineContainer() {
 			
 			img.onload = function() {
 				let form = document.getElementById("editSearchEngineContainer");
-				form.iconURL.value = imageToBase64(img, 32);
+				form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
 			//	document.getElementById('iconPreview').src = form.iconURL.value;
 				form.closest("LI").querySelector("img").src = form.iconURL.value;
 			}
@@ -1737,5 +1724,7 @@ function buildSearchEngineContainer() {
 		
 		reader.readAsDataURL(file);
 		
-	});	
+	});
+
+
 }

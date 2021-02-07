@@ -1030,7 +1030,7 @@ async function makeQuickMenu(options) {
 						let img = new Image();
 
 						img.onload = () => {
-							dragDiv.node.icon = imageToBase64(img, 32);
+							dragDiv.node.icon = imageToBase64(img, userOptions.cacheIconsMaxSize);
 							dragDiv.style.backgroundImage = `url(${dragDiv.node.icon})`;
 							
 							setTimeout(() => {
