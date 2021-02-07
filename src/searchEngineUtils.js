@@ -193,7 +193,7 @@ function loadRemoteIcon(options) {
 				img.src = se.icon_url;
 
 			img.onload = function() {
-				this.base64String = imageToBase64(this, 32);
+				this.base64String = imageToBase64(this, userOptions.cacheIconsMaxSize);
 				
 				// image was loaded but canvas was tainted
 				if (!this.base64String) {

@@ -6,8 +6,16 @@ function uncacheIcons() {
 		let isDataURI = se.icon_url.startsWith("data:");
 		let hasURL = se.icon_url.startsWith("http");
 
+		if ( !se.icon_base64String) continue;
+
 		if ( hasURL && hasDataURI) {
 			console.log(se.title + " cache will be cleared");
+			se.icon_base64String = "";
+			continue;
+		}
+
+		if ( hasDataURI && isDataURI && hasDataURI == isDataURI ) {
+			console.log(se.title + " duplicate data URIs. Removing cache");
 			se.icon_base64String = "";
 			continue;
 		}
@@ -57,7 +65,7 @@ function cacheIcons() {
 			},10000);
 
 			img.onload = async function() {
-				let data = await imageToBase64(img, userOptions.cacheIconsMaxSize || 64); 
+				let data = await imageToBase64(img, userOptions.cacheIconsMaxSize); 
 
 				if ( data != "" ) {
 					se.icon_base64String = data;
@@ -86,169 +94,99 @@ function cacheIcons() {
 	return result;
 }
 
-// async function displayChoices() {
+async function findFavicons(url) {
+	let tab;
+	try {
 
-// 	let fetch = new fetchIcons();
-// 	fetch.fetch();
+		tab = await browser.tabs.create({url:url, active:false});
 
-// 	let container = document.createElement('div');
-// 	container.style = "padding:20px;position:fixed;z-index:99;left:0;right:0;margin:auto;width:800px;height:80%;top:100px;overflow-y:scroll;background-color:white;box-shadow:10px 10px 30px #0005";
+		let hrefs = await browser.tabs.executeScript(tab.id, {
+			code: `
+			    var hrefs = [];
+				document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"],link[rel^="apple-touch-icon"]').forEach( l => hrefs.push(l.href));
+				hrefs;
+			`
+		});
 
-// 	document.body.appendChild(container);
+		hrefs = hrefs.shift();
 
-// 	let update = setInterval(() => {
-// 		container.innerHTML = null;
+		try {
+			let _url = new URL(url);
+			hrefs.unshift(_url.origin + "/favicon.ico");
+		} catch(error) {};
 
-// 		[...fetch.found].forEach( f => {
+		if ( tab ) browser.tabs.remove(tab.id);
 
-// 			// if ( f.icons.length < 2 ) return;
-// 			let row = document.createElement("div");
+		return hrefs;
+	} catch (error) {
+		if ( tab ) browser.tabs.remove(tab.id);
+		return [];
+	}
+}
 
-// 			row.innerText = f.engine.title;
+function findFaviconsWrapper(url) {
+	let promise1 = findFavicons(url);
+	let promise2 = new Promise(r => setTimeout(() => r([]),5000));
 
-// 			f.icons.forEach( i => {
-// 				let box = document.createElement('div');
-// 				box.style = "vertical-align:middle;display:inline-block;width:64px;height:64px;border:2px solid gray";
-// 				box.style.background = 'url(' + i + ") no-repeat center";
+	return Promise.race([promise1, promise2]);
+}
 
-// 				row.appendChild(box);
-// 				// let img = new Image();
-// 				// img.src = i;
-// 				// row.appendChild(img);
-// 			});
+// options.html
+$('#faviconFinder').onclick = async function() {
 
-// 			container.appendChild(row);
-// 		});
-// 	}, 1000)
+	let form = $('#editSearchEngineContainer');
 
-// 	fetch.onComplete = function() {
-// 		clearInterval(update);
-// 		console.log(fetch);
-// 	}
-// }
+	let url;
+	try {
+		url = new URL(form.searchform.value || form.template.value);
+	} catch( error ) {
+		return;
+	}
 
-// async function getLargestImg(imgUrls) {
-// 	let promises = [];
+	let urls = await findFaviconsWrapper(url.origin);
 
-// 	imgUrls.forEach( url => {
-		
-// 		promises.push(new Promise( (resolve, reject) => {
-// 			let img = new Image();
-// 			img.onload = function() {
-// 				resolve(img);
-// 			}
-// 			img.onerror = function() { resolve(null) }
-// 			img.src = url;
-// 		}));
-// 	});
+	// include the current icon URI in the picker
+	if ( form.iconURL.value && !urls.includes(form.iconURL.value))
+		urls.push(form.iconURL.value);
 
-// 	return Promise.all(promises).then(values => {
+	if ( !urls.length ) return;
 
-// 		values = values.filter(v => v !== null);
-// 		if ( !values.length ) return;
-// 		return values.reduce((a, b) => a.naturalWidth < b.naturalWidth ? b : a).src;
-// 	})
-// }
+	let overdiv = document.createElement('div');
+	overdiv.style = "position:fixed;left:0;right:0;top:0;bottom:0;background-color:#0008;z-index:9999";
+	let div = document.createElement('div');
+	div.id = "faviconPickerContainer";
+	overdiv.appendChild(div);
+	document.body.appendChild(overdiv);
 
-// function fetchIcons() {
-// 	this.count = 0;
-// 	this.found = [];
-// 	this.onComplete = function(){}
+	urls.forEach( _url => {
 
-// 	function equalUrls(url1, url2) {
-// 		try {
-// 			return new URL(url1).pathname === new URL(url2).pathname;
-// 		} catch (err) {
-// 			return false;
-// 		}
-// 	}
+		let box = document.createElement('div');
+		box.className = "faviconPickerBox";
 
-// 	function getIcons(tab, url) {
+		let img = new Image();
+		img.src = _url;
 
-// 		return new Promise(resolve => {
+		img.onload = function() {
+			let label = document.createElement('div');
+			label.innerText = this.naturalWidth + " x " + this.naturalHeight;
+			box.appendChild(label);
+		}
 
-// 			browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, tabInfo) {
-// 				if ( tabId === tab.id && changeInfo.status === "complete" && equalUrls(tabInfo.url, url)) {
-// 					browser.tabs.onUpdated.removeListener(listener);
+		img.onerror = function() {
+			box.parentNode.removeChild(box);
+		}
 
-// 					let icons = browser.tabs.executeScript(tabId, {
-// 						code: `
-// 						    var hrefs = [];
-// 							document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"],link[rel^="apple-touch-icon"]').forEach( l => hrefs.push(l.href));
-// 							hrefs;
-// 						`
-// 					});
+		box.appendChild(img);
+		div.appendChild(box);
 
-// 					resolve(icons);
-// 				}
-// 			});
+		box.onclick = function() {
+			form.iconURL.value = img.src;
+			form.save.click();
+		}
+	})
 
-// 			browser.tabs.update(tab.id, { url: url });	
+	overdiv.onclick = function(e) {
+		overdiv.parentNode.removeChild(overdiv);
+	}
 
-// 		});
-// 	}
-
-
-// 	this.fetch = async () => {
-
-// 		var tab = await browser.tabs.create({ url: "about:blank", active:false });
-// 		for (let se of userOptions.searchEngines) {
-
-// 			let hasDataURI = se.icon_base64String.startsWith('data:');
-// 			let isDataURI = se.icon_url.startsWith("data:");
-// 			let hasURL = se.icon_url.startsWith("http");
-
-// 			if ( (isDataURI && hasDataURI) ) continue;
-
-// 			let promise2 = new Promise( (resolve,reject) => {
-
-// 				async function listener(tabId, changeInfo, tabInfo) {
-// 					if ( tabId === tab.id && changeInfo.status === "complete" && equalUrls(tabInfo.url, se.searchForm)) {
-// 						browser.tabs.onUpdated.removeListener(listener);
-
-// 						let icons = browser.tabs.executeScript(tabId, {
-// 							code: `
-// 							    var hrefs = [];
-// 								document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"],link[rel^="apple-touch-icon"]').forEach( l => hrefs.push(l.href));
-// 								hrefs;
-// 							`
-// 						});
-
-// 						icons.then(result => {
-// 							resolve(result);
-// 						}, error => {
-// 							console.log(error);
-// 							resolve();
-// 						});
-// 					}
-// 				}
-
-// 				browser.tabs.onUpdated.addListener(listener);
-
-// 				browser.tabs.update(tab.id, { url: se.searchForm }).then(_tab => tab = _tab, error => {
-// 					browser.tabs.onUpdated.removeListener(listener);
-// 					resolve();
-// 				});
-
-// 				setTimeout(() => {
-// 					browser.tabs.onUpdated.removeListener(listener);
-// 					resolve();
-// 				}, 4000);
-// 			});			
-
-// 			let values = await promise2;
-
-// 			console.log(values);
-			
-// 			if ( values && values.length ) this.found.push({engine: se, icons: values[0]});
-
-// 		}
-
-// 		this.completed = true;
-
-// 		if ( tab ) browser.tabs.remove(tab.id);
-
-// 		this.onComplete();
-// 	}
-
-// }
+}

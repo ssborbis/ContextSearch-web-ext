@@ -1844,6 +1844,11 @@
     "description": ""
   },
 
+  "faviconFinder": {
+    "message": "Find favicons by scraping the host site ( opens a background tab )",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""

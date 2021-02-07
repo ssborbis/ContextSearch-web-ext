@@ -689,18 +689,22 @@
 			}
 			#searchEnginesContainer .hotkey {
 				background-color: #E4E4E4;
-			/*	border-radius:5px; */
-			/*	border:1px solid #c4c4c4; */
 				right:30px;
 				display:inline-block;
 				min-width:1em;
 				padding:0px 10px;
 				height:calc(100% - 2px);
-			/*	box-shadow:1px 1px 4px #444, inset -1px -2px 2px #fff, inset 1px 1px 2px #aaa; */
 				text-align:center;
 				vertical-align:middle;
 				font-weight:bold;
 				transition: background-color .25s;
+			}
+			#searchEnginesContainer .hotkey IMG {				
+				height:1em;
+				width:1em;
+				vertical-align:middle;
+				margin:0;
+				padding:0;
 			}
 			#searchEnginesContainer .add_search	{
 				height:16px;
@@ -1165,6 +1169,53 @@
 				text-align:center;
 				height:auto;
 			}
+			.faviconPickerBox {
+				height:64px;
+				width:64px;
+				background-color:var(--bg-color2);
+				border:2px solid var(--border-color1);
+				display:inline-block;
+				position:relative;
+				vertical-align: middle;
+				margin:4px;
+				padding-bottom:10px;
+				cursor:pointer;
+			}
+			.faviconPickerBox IMG {
+				max-height:48px;
+				max-width:48px;
+				vertical-align:middle;
+				position:relative;
+				top:50%;
+				transform: translateY(-50%);
+
+			}
+			#faviconPickerContainer {
+				padding:20px;
+				text-align:center;
+				box-shadow:4px 4px 20px #0005;
+				position:fixed;
+				top:50%;
+				left:50%;
+				transform:translate(-50%, -50%);
+				background-color:var(--bg-color1);
+				max-width:800px;
+				border-radius: 10px;
+			}
+			.faviconPickerBox DIV {
+				position:absolute;
+				bottom:0;
+				font-size:8pt;
+				z-index:2;
+				width:100%;
+			}
+			.textShadow {
+				text-shadow:
+					-.5px -.5px 0 #000,  
+					.5px -.5px 0 #000,
+					-.5px .5px 0 #000,
+					.5px .5px 0 #000;
+			}
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
@@ -1323,6 +1374,10 @@
 						<td><input type="checkbox" id="cb_contextMenuUseInnerText" /></td>
 					</tr>
 					<tr>
+						<td data-i18n_tooltip="Max width or height to resize icons for caching">cacheIconsMaxSize</td>
+						<td><input type="number" min="16" max="512" step="2" id="n_cacheIconsMaxSize" /></td>
+					</tr>
+					<tr>
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
 					</tr>
@@ -1337,15 +1392,15 @@
 						</td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Delete search engine icon cache. Icons can still be used and re-cached provided they have a valid URL ">clear icon cache</td>
+						<td data-i18n_tooltip="cache search engine icons from their URLs">cache icons</td>
 						<td>
-							<button id="b_uncacheIcons" class="inputNice">exec</button>
+							<button id="b_cacheIcons"> run </button>
 						</td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="cache search engine icons from their icon URLs">cache icons</td>
+						<td data-i18n_tooltip="Delete search engine icon cache for search engines containing icon URLs. Warning: bad URLs will not be checked">uncache icons</td>
 						<td>
-							<button id="b_cacheIcons" class="inputNice">exec</button>
+							<button id="b_uncacheIcons"> run </button>
 						</td>
 					</tr>
 					</table>
@@ -2802,10 +2857,10 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<label data-i18n="Template">Template</label><input name="template" type="text" class="inputNice" />
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 75px)"/>
-						<label for="iconPicker"><img src="/icons/folder-icon.svg" style="height:20px" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" id="iconPicker" style="display:none">
-						<div id="iconrefresh" style='display:inline-block;font-size:24px;height:100%;'>&#x21bb;</div>
-						<!-- <img style='display:inline-block;height:20px' id="iconPreview" /> -->
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 85px)"/>
+						<img id="faviconFinder" src="icons/search.svg" style="width:20px;vertical-align:middle;margin:0 4px;cursor:pointer" title="i18n_text" data-i18n="faviconFinder"/>
+						<label for="iconPicker"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" id="iconPicker" style="display:none">
+						
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">POST Params</label><input name="post_params" type="text" class="inputNice" />

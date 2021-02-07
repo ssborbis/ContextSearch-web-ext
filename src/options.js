@@ -343,6 +343,7 @@ function restoreOptions() {
 		$('#cb_omniboxDefaultToLastUsedEngine').checked = userOptions.omniboxDefaultToLastUsedEngine;
 		$('#s_omniboxSearch').value = userOptions.omniboxSearch;
 		$('#cb_contextMenuUseInnerText').checked = userOptions.contextMenuUseInnerText;
+		$('#n_cacheIconsMaxSize').value = userOptions.cacheIconsMaxSize;
 
 		$('#n_pageTilesRows').value = userOptions.pageTiles.rows;
 		$('#n_pageTilesColumns').value = userOptions.pageTiles.columns;
@@ -606,6 +607,7 @@ function saveOptions(e) {
 		omniboxLastUsedIds: userOptions.omniboxLastUsedIds,
 		omniboxSearch: $('#s_omniboxSearch').value,
 		contextMenuUseInnerText: $('#cb_contextMenuUseInnerText').checked,
+		cacheIconsMaxSize: parseInt($('#n_cacheIconsMaxSize').value),
 		nightMode: userOptions.nightMode,
 
 		pageTiles: {
@@ -1523,19 +1525,37 @@ themes.forEach( t => {
 	$('#s_searchBarTheme').appendChild(option);
 });
 
+document.addEventListener('userOptionsLoaded', e => {
+
+	if ( !userOptions.nightMode ) return;
+	
+	document.querySelectorAll('img').forEach( img => {
+		let icons = "theme.svg|mouse.svg|cursor.svg|history.svg|edit.png|power.svg|settings.svg|auto.svg|checkmark.svg|close.svg|context_menu.svg|copy.svg|crossmark.svg|delete.svg|highlight.svg|keyboard.svg|help.svg|import.svg|page_tiles.svg|link.svg|load.svg|lock.svg|omnibox.svg|quick_menu.svg|repeatsearch.svg|search.svg|sidebar.svg|tabs.svg".split("|");
+		
+		icons.forEach(icon => {
+			if ( img.src.endsWith(icon) ) {
+				setToolIconColor(img);
+				return;
+			}
+		})
+	})
+});
+
 
 $('#b_cacheIcons').addEventListener('click', e => {
-	cacheAllIcons();
+	cacheAllIcons(e);
 });
 
 $('#b_uncacheIcons').addEventListener('click', e => {
 	if ( confirm('remove all icon cache?'))	uncacheIcons();
 })
 
-function cacheAllIcons() {
+function cacheAllIcons(e) {
 	let result = cacheIcons();
-	let msg = document.getElementById('console');
+	let msg = document.createElement('div');
+	msg.style = "margin:2px";
 	msg.innerText = "cache progress";
+	e.target.parentNode.insertBefore(msg, e.target.nextSibling);
 
 	let interval = setInterval(() => {
 		msg.innerText = `caching ${result.count - 1} / ${userOptions.searchEngines.length}`;
@@ -1548,7 +1568,7 @@ function cacheAllIcons() {
 		else
 			msg.innerText = "done";
 
-		setTimeout(() => msg.innerText = null, 5000);
+		setTimeout(() => msg.parentNode.removeChild(msg), 5000);
 
 		saveOptions();
 	}

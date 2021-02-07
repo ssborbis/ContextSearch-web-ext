@@ -11,7 +11,7 @@ function formToSearchEngine() {
 		"icon_url":form.iconURL.value,
 		"title":form.shortname.value,
 		"order":userOptions.searchEngines.length, 
-		"icon_base64String": imageToBase64(form.icon, 32), 
+		"icon_base64String": imageToBase64(form.icon, userOptions.cacheIconsMaxSize), 
 		"method": form._method.value, 
 		"params": paramStringToNameValueArray(form.post_params.value), 
 		"template": form.template.value, 

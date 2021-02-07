@@ -208,5 +208,8 @@ const defaultUserOptions = {
 	nightMode: false,
 	omniboxDefaultToLastUsedEngine: false,
 	omniboxLastUsedIds: [],
-	omniboxSearch: "openBackgroundTab"
+	omniboxSearch: "openBackgroundTab",
+	cacheIconsMaxSize: 32,
+	cacheIcons: true
+
 };
