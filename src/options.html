@@ -46,6 +46,7 @@
 			#main {
 				padding:0;
 				margin:0;
+				transition: filter .1s;
 			}
 			#left_div {
 				width:250px;
@@ -732,7 +733,7 @@
 				border:4px solid #F4F4F4;*/
 			}
 						
-			.editForm INPUT:not(#iconPicker), .editForm SELECT, .editForm TEXTAREA {
+			.editForm INPUT:not([name="iconPicker"]), .editForm SELECT, .editForm TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
 				border:1px solid var(--border-color1);
@@ -754,7 +755,7 @@
 				border:1px solid pink;
 				box-shadow:0px 0px 3px 1px pink;
 			}
-			.editForm LABEL:not([for="iconPicker"]) {
+			.editForm > LABEL {
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
@@ -1216,6 +1217,43 @@
 					-.5px .5px 0 #000,
 					.5px .5px 0 #000;
 			}
+			#floatingEditFormContainer {
+				overflow-y: auto;
+				max-height: calc(100% - 90px);
+				opacity: 0;
+				resize: both;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				width: 600px;
+				height: auto;
+				box-shadow: #0008 4px 4px 16px;
+				padding: 20px;
+				z-index: 2;
+				background-color: var(--bg-color2);
+				border-radius: 10px;
+				margin: 20px;
+				transition: opacity .5s;
+				border:2px solid var(--border-color2);
+			}
+			#main.blur {
+				filter:blur(1px);
+				pointer-events: none;
+			}
+
+			/*.header:hover .editIcon {
+				opacity:.5;
+			}
+
+			.editIcon {
+				height:1em;
+				left:-32px;
+				position:absolute;
+				opacity:0;
+				cursor:pointer;
+				transition: opacity .1s;
+			}*/
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
@@ -1223,15 +1261,17 @@
 		<div id="console"></div>
 		<div id="main">
 		<div id="left_div">
-			<img src="icons/icon.svg" style="border-radius:5px;height:64px;"/><br />
-			<p><span style="border-bottom:1px solid grey"><span style="font-weight:normal;font-variant:small-caps">Context</span><span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt">Search</span></span>
-			<br />
-			<!-- <span style="font-weight:normal;font-size:24pt;" data-i18n="Settings">Settings</span> -->
-			
+			<img src="icons/icon.svg" style="border-radius:5px;height:48px;"/><br />
+			<div style="display:inline-block">
+				<span style="border-bottom:1px solid grey">
+					<span style="font-weight:normal;font-variant:small-caps">Context</span>
+					<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt">Search</span>
+				</span>
+			</div>
 			<div id="version" style="font-size:11pt">&nbsp;</div>
-			
+
 			<br />
-			
+						
 			<div class="tab">
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><img src="icons/context_menu.svg" />Context Menu</button>
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" />Quick Menu</button>
@@ -1439,9 +1479,7 @@
 				<section>
 				<p class="header1" data-i18n="MenuTheme">Menu Theme</p>
 				<div class="option">
-					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_searchBarTheme">
-z						<option data-i18n="dark" value="dark">dark</option>
-						<option data-i18n="lite" value="lite">lite</option>
+					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_quickMenuTheme">
 					</select>
 					<div class="description" data-i18n="ThemeTooltip">Theme to use with the menu</div>
 				</div>
@@ -2850,7 +2888,8 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					
 				</section>
 
-				<form id="editSearchEngineContainer" class="editForm" action="">
+				<form id="editSearchEngineForm" class="editForm" action="">
+					<div style="text-align:right;"><button type="button" name="close" style="height:24px;"><img src="icons/crossmark.svg" style="height:100%"></button></div>
 
 					<label data-i18n="Name">Name</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Description">Description</label><textarea name="description" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>
@@ -2859,8 +2898,7 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 85px)"/>
 						<img id="faviconFinder" src="icons/search.svg" style="width:20px;vertical-align:middle;margin:0 4px;cursor:pointer" title="i18n_text" data-i18n="faviconFinder"/>
-						<label for="iconPicker"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" id="iconPicker" style="display:none">
-						
+						<label for="iconPicker"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">POST Params</label><input name="post_params" type="text" class="inputNice" />
@@ -2896,7 +2934,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 
 					<div>
 					
-					<button type="button" name="cancel" style="float:right;margin:10px 5px;text-transform:capitalize" data-i18n="Close">close</button>
 					<button type="button" name="save" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
 					<button type="button" name="test" style="float:right;margin:10px 5px;" data-i18n="Test" title="i18n_text">Test</button>
 					</div>
@@ -2908,6 +2945,57 @@ z						<option data-i18n="dark" value="dark">dark</option>
 					<button type="button" name="addOpenSearchEngine" class="inputNice" style="float:left;margin:10px 5px;width:30px;height:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><span class="add" style="margin-left:0"></span></button>
 </div>
 				</form>
+				<form id="editFolderForm" class="editForm" action="">
+					<div style="text-align:right;"><button type="button" name="close" style="height:24px;"><img src="icons/crossmark.svg" style="height:100%"></button></div>
+					<table id="folderFormTable">
+						<tr>
+							<td data-i18n="display">_</td>
+							<td>
+								<select name="displayType" class="inputNice" style="display:inline-block;font-size:9pt;">
+									<option value="" data-i18n="default">_</option>
+									<option value="grid" data-i18n="grid">_</option>
+									<option value="text" data-i18n="text">_</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="grouplayout">_</td>
+							<td><input name="groupFolder" type="checkbox" class="inputNice" style="width:auto"/>
+								 <span data-i18n="grouplayoutmessage">_</span>
+								</td>
+						</tr>
+						<tr>
+							<td data-i18n="groupcolor">_</td>
+							<td><input name="groupColor" type="color" class="inputNice" style="width:30px;"/></td>
+						</tr>
+						<tr>
+							<td data-i18n="grouplimit">_</td>
+							<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;"/></td>
+						</tr>
+						<tr>
+							<td data-i18n="grouphidemoretile">_</td>
+							<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
+						</tr>	
+					</table>
+					<label data-i18n="Icon">Icon URI</label>
+					<div>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 45px)"/>
+						<label for="iconPickerFolder"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
+					</div>
+					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
+					<span class="saveMessage" style="float:right;margin: 10px 5px"></span>
+				</form>
+
+				<form id="editBookmarkletForm" class="editForm" action="">
+					<div style="text-align:right;"><button type="button" name="close" style="height:24px;"><img src="icons/crossmark.svg" style="height:100%"></button></div>
+					<label data-i18n="Icon">Icon URI</label>
+					<div>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 45px)"/>
+						<label for="iconPickerBookmarklet"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
+					</div>
+					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
+				</form>
+				
 				<br />
 				
 				<div data-browser="firefox">
@@ -2998,5 +3086,6 @@ z						<option data-i18n="dark" value="dark">dark</option>
 		<script src="palettes.js"></script>
 		<script src="options.pagetiles.js"></script>
 		<script src="iconUtils.js"></script>
+		<script src="utils.js"></script>
 	</body>
 </html>

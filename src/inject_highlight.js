@@ -410,9 +410,6 @@ function openFindBar(options) {
 		fb = document.createElement('iframe');
 		fb.id = 'CS_findBarIframe';
 
-		if ( userOptions.searchBarTheme === 'dark' )
-			fb.classList.add('CS_dark');
-		
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 		
 		fb.style.opacity = 0;

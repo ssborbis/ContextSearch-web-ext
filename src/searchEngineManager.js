@@ -59,9 +59,7 @@ function buildSearchEngineContainer() {
 			text.innerText = se.title;
 			header.appendChild(text);
 
-			let edit_form = document.getElementById('editSearchEngineContainer');
-			edit_form.style.maxHeight = null;
-			document.body.appendChild(edit_form);
+			let edit_form = document.getElementById('editSearchEngineForm');
 			
 			// prevent click events from closing the form
 			edit_form.onclick = function(e) {
@@ -72,7 +70,7 @@ function buildSearchEngineContainer() {
 
 				e.stopPropagation();
 				
-				if (document.getElementById('editSearchEngineContainer').contains(e.target) ) return false;
+				if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
 
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
 
@@ -273,9 +271,7 @@ function buildSearchEngineContainer() {
 						_li.setAttribute('draggable', true);
 				});
 				
-				edit_form.cancel.onclick = function() {
-					edit_form.style.maxHeight = null;
-				}
+				edit_form.close.onclick = edit_form.closeForm;
 
 				edit_form.test.onclick = function() {
 					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
@@ -329,9 +325,8 @@ function buildSearchEngineContainer() {
 						clearError(label.nextSibling)
 					}
 
-					async function saveForm(closeForm) {
-						
-						closeForm = ( closeForm === undefined ) ? true : false;
+					async function saveForm() {
+
 						// loading icon is last step. Set values after everything else
 							
 						// alert problems with changing name
@@ -377,8 +372,6 @@ function buildSearchEngineContainer() {
 						
 						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes", $("#editFormSaveMessage"));
 
-						// if (closeForm)
-							// edit_form.style.maxHeight = null;
 					}
 					
 					checkFormValues().then( result => {
@@ -394,25 +387,9 @@ function buildSearchEngineContainer() {
 					});
 				}
 
-				// attach form to title cell
-				li.appendChild(edit_form);
-				
-				// reflow trick
-				edit_form.getBoundingClientRect();
-				// edit_form.style.maxHeight = '500px';
-				edit_form.style.maxHeight = edit_form.scrollHeight + "px";
-				
-				// resize TEXTAREA fix
-				// edit_form.querySelectorAll('textarea').forEach( ta => {
-					// ta.addEventListener
-				setTimeout(() => {
-					if ( Math.abs(edit_form.offsetHeight - edit_form.scrollHeight) < 2 ) {
-						edit_form.style.maxHeight = "none";
-					}
-				}, 2000);
-				
-				li.scrollIntoView({block: "start", behavior:"smooth"});
-				
+				createFormContainer(edit_form);
+				addIconPickerListener(edit_form.iconPicker, li)
+
 				checkFormValues();
 			});
 
@@ -442,18 +419,8 @@ function buildSearchEngineContainer() {
 					return;
 				}
 				
-				let _form = document.createElement('form');
-				_form.innerHTML = `<label data-i18n="Icon">${browser.i18n.getMessage("icon")}</label><input name="iconURL" type="text" class="inputNice" />
-				<button type="button" name="close" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
-				<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>`;
-				_form.className = 'editForm';
-				_form.action = "";
-				
-				_form.closeForm = function() {
-					_form.style.maxHeight = null;
-					setTimeout(() => _form.parentNode.removeChild(_form), 1000);
-				}
-				
+				let _form = $('#editBookmarkletForm');
+								
 				_form.addEventListener('mouseover', () => {
 					for (let _li of rootElement.getElementsByTagName('li'))
 						_li.setAttribute('draggable', false);
@@ -464,9 +431,7 @@ function buildSearchEngineContainer() {
 						_li.setAttribute('draggable', true);
 				});
 				
-				_form.close.onclick = function() {
-					_form.closeForm();
-				}
+				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
 					if ( !_form.iconURL.value ) return;
@@ -494,10 +459,9 @@ function buildSearchEngineContainer() {
 							newIcon.onerror();
 					}, 5000);
 				}
-				li.appendChild(_form);
 				
-				_form.getBoundingClientRect();
-				_form.style.maxHeight = '100px';
+				createFormContainer(_form);
+				addIconPickerListener(_form.iconPicker, li);
 				
 			}
 		}
@@ -577,54 +541,9 @@ function buildSearchEngineContainer() {
 					}
 				}
 				
-				let _form = document.createElement('form');
-				_form.innerHTML = `
-				<table id="folderFormTable">
-					<tr>
-						<td>${browser.i18n.getMessage("display")}</td>
-						<td>
-							<select name="displayType" class="inputNice" style="display:inline-block;font-size:9pt;">
-								<option value="">${browser.i18n.getMessage("default")}</option>
-								<option value="grid">${browser.i18n.getMessage("grid")}</option>
-								<option value="text">${browser.i18n.getMessage("text")}</option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>${browser.i18n.getMessage("grouplayout")}</td>
-						<td><input name="groupFolder" type="checkbox" class="inputNice" style="width:auto"/>
-							 ${browser.i18n.getMessage("grouplayoutmessage")}
-							</td>
-					</tr>
-					<tr>
-						<td>${browser.i18n.getMessage("groupcolor")}</td>
-						<td><input name="groupColor" type="color" class="inputNice" style="width:30px;"/></td>
-					</tr>
-					<tr>
-						<td>${browser.i18n.getMessage("grouplimit")}</td>
-						<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;"/></td>
-					</tr>
-					<tr>
-						<td>${browser.i18n.getMessage("grouphidemoretile")}</td>
-						<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
-					</tr>
-					<tr>
-						<td>${browser.i18n.getMessage("icon")}</td>
-						<td><input name="iconURL" type="text"/></td>
-					</tr>		
-				</table>
+				let _form = $('#editFolderForm');
 				
-				<button type="button" name="close" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Close">${browser.i18n.getMessage("close")}</button>
-				<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">${browser.i18n.getMessage("save")}</button>
-				<span class="saveMessage" style="float:right;margin: 10px 5px"></span>
-				`;
-				_form.className = 'editForm';
-				_form.action = "";
-				
-				_form.closeForm = function() {
-					_form.style.maxHeight = null;
-					setTimeout(() => _form.parentNode.removeChild(_form), 1000);
-				}
+				_form.closeForm = _form.closeForm;
 				
 				_form.addEventListener('mouseover', () => {
 					for (let _li of rootElement.getElementsByTagName('li'))
@@ -636,9 +555,7 @@ function buildSearchEngineContainer() {
 						_li.setAttribute('draggable', true);
 				});
 				
-				_form.close.onclick = function() {
-					_form.closeForm();
-				}
+				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
 					showSaveMessage("saved", null, "yes", _form.querySelector(".saveMessage"));
@@ -656,9 +573,7 @@ function buildSearchEngineContainer() {
 					let img = li.querySelector('.header IMG');
 					img.src = _form.iconURL.value || browser.runtime.getURL('icons/folder-icon.svg');
 				});
-				
-				li.insertBefore(_form, ul);
-				
+								
 				_form.groupColor.value = node.groupColor || userOptions.defaultGroupColor;
 				_form.groupFolder.checked = node.groupFolder || false;
 				_form.groupLimit.value = node.groupLimit || 0;
@@ -666,8 +581,8 @@ function buildSearchEngineContainer() {
 				_form.groupHideMoreTile.checked = node.groupHideMoreTile || false;
 				_form.iconURL.value = node.icon || "";
 				
-				_form.getBoundingClientRect();
-				_form.style.maxHeight = '250px';
+				createFormContainer(_form);
+				addIconPickerListener(_form.iconPicker, li)
 			});	
 			
 			text.addEventListener('dblclick', e => {
@@ -842,7 +757,13 @@ function buildSearchEngineContainer() {
 				}
 				
 				updateNodeList();
-			})	
+			});
+
+			// let edit = new Image();
+			// edit.className = "editIcon";
+			// edit.src = 'icons/settings.svg';
+			// header.appendChild(edit);
+
 		}
 
 		document.addEventListener('click', e => {			
@@ -1093,7 +1014,7 @@ function buildSearchEngineContainer() {
 
 	function contextMenuHandler(e) {
 
-		if (document.getElementById('editSearchEngineContainer').contains(e.target) ) return false;
+		if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
 		e.preventDefault();
 		
 		let li = nearestParent('LI', e.target);
@@ -1225,7 +1146,7 @@ function buildSearchEngineContainer() {
 			
 			async function removeNodesAndRows() {
 
-				let edit_form = document.getElementById('editSearchEngineContainer');
+				let edit_form = document.getElementById('editSearchEngineForm');
 				selectedRows.forEach( row => {
 					if ( row.contains(edit_form)) {
 						edit_form.style.maxHeight = null;
@@ -1702,29 +1623,60 @@ function buildSearchEngineContainer() {
 		await saveOptions();
 		location.href = "options.html#engines";
 	});
-		
-	document.getElementById('iconPicker').addEventListener('change', e => {
-		let file = e.target.files[0];
-		
-		var reader  = new FileReader();
-		
-		reader.addEventListener("load", function () {
-			
-			let img = new Image();
-			
-			img.onload = function() {
-				let form = document.getElementById("editSearchEngineContainer");
-				form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
-			//	document.getElementById('iconPreview').src = form.iconURL.value;
-				form.closest("LI").querySelector("img").src = form.iconURL.value;
-			}
-			img.src = reader.result;
-			
-		}, false);
-		
-		reader.readAsDataURL(file);
-		
-	});
 
+	function addIconPickerListener(el, li) {
+		el.addEventListener('change', e => {
+			let file = e.target.files[0];
+			
+			var reader  = new FileReader();
+			
+			reader.addEventListener("load", function () {
+				
+				let img = new Image();
+				
+				img.onload = function() {
+					let form = el.closest('form');;
+					form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
+					li.querySelector("img").src = form.iconURL.value;
+				}
+				img.src = reader.result;
+				
+			}, false);
+			
+			reader.readAsDataURL(file);
+			
+		});
+	}
 
+}
+
+['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
+
+	$('#' + id).closeForm = () => {
+		let formContainer = $('#floatingEditFormContainer');
+
+		if ( !formContainer ) return;
+		
+		formContainer.style.opacity = 0;
+		$('#main').classList.remove('blur');
+		runAtTransitionEnd(formContainer, "opacity", () => {
+			let form = formContainer.querySelector('form')
+			form.style.maxHeight = null;
+			document.body.appendChild(form);
+			formContainer.parentNode.removeChild(formContainer);
+
+		});
+	}
+});
+
+function createFormContainer(_form) {
+	let formContainer = document.createElement('div');
+	formContainer.id = "floatingEditFormContainer";
+	formContainer.appendChild(_form);
+	document.body.appendChild(formContainer);
+	_form.style.maxHeight = "none";
+	$('#main').classList.add('blur');
+
+	formContainer.getBoundingClientRect();
+	formContainer.style.opacity = 1;
 }

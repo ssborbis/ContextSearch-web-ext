@@ -95,7 +95,6 @@ const defaultUserOptions = {
 	searchBarUseOldStyle: false,
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
-	searchBarTheme: "lite",
 	sideBar: {
 		enabled: true,
 		columns: 6,

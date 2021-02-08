@@ -94,7 +94,7 @@ function cacheIcons() {
 }
 
 async function findFavicons(url) {
-	let tab;
+	// let tab;
 	try {
 
 		tab = await browser.tabs.create({url:url, active:false});
@@ -103,6 +103,7 @@ async function findFavicons(url) {
 			code: `
 			    var hrefs = [];
 				document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"],link[rel^="apple-touch-icon"]').forEach( l => hrefs.push(l.href));
+				document.querySelectorAll('meta[property="og:image"]').forEach( m => hrefs.push(m.content));
 				hrefs;
 			`
 		});
@@ -133,7 +134,7 @@ function findFaviconsWrapper(url) {
 // options.html
 $('#faviconFinder').onclick = async function() {
 
-	let form = $('#editSearchEngineContainer');
+	let form = $('#editSearchEngineForm');
 
 	let url;
 	try {
@@ -185,6 +186,7 @@ $('#faviconFinder').onclick = async function() {
 	})
 
 	overdiv.onclick = function(e) {
+		overdiv.innerHTML = null;
 		overdiv.parentNode.removeChild(overdiv);
 	}
 

@@ -258,8 +258,7 @@ function restoreOptions() {
 		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
 		$('#t_userStyles').disabled = !userOptions.userStylesEnabled;
 		$('#cb_enableAnimations').checked = userOptions.enableAnimations;
-	//	$('#s_quickMenuTheme').value = userOptions.quickMenuTheme;
-		$('#s_searchBarTheme').value = userOptions.searchBarTheme;
+		$('#s_quickMenuTheme').value = userOptions.quickMenuTheme;
 		
 		$('#cb_highLightEnabled').checked = userOptions.highLight.enabled;
 		$('#cb_highLightFollowDomain').checked = userOptions.highLight.followDomain;
@@ -581,8 +580,7 @@ function saveOptions(e) {
 		})(),
 	
 		enableAnimations: $('#cb_enableAnimations').checked,
-		quickMenuTheme: $('#s_searchBarTheme').value,
-		searchBarTheme: $('#s_searchBarTheme').value,
+		quickMenuTheme: $('#s_quickMenuTheme').value,
 		
 		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
 		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
@@ -1518,11 +1516,11 @@ $('#nightmode').addEventListener('click', () => {
 	saveOptions();
 });
 
-$('#s_searchBarTheme').innerHTML = null;
+$('#s_quickMenuTheme').innerHTML = null;
 themes.forEach( t => {
 	let option = document.createElement('option');
 	option.value = option.innerText = t.name;
-	$('#s_searchBarTheme').appendChild(option);
+	$('#s_quickMenuTheme').appendChild(option);
 });
 
 document.addEventListener('userOptionsLoaded', e => {

@@ -1845,7 +1845,7 @@
   },
 
   "faviconFinder": {
-    "message": "Find favicons by scraping the host site ( opens a background tab )",
+    "message": "Find favicons by checking the host site ( opens a background tab )",
     "description": ""
   },
 

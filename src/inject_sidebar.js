@@ -109,9 +109,6 @@ function openSideBar(options) {
 	iframe.style.opacity = 0;
 	iframe.style.width = "0px";
 	
-	if ( userOptions.searchBarTheme === 'dark' ) 
-		iframe.classList.add('CS_dark');
-
 	document.body.appendChild(iframe);
 
 	function saveSideBarOptions(o) {
@@ -297,9 +294,6 @@ function makeOpeningTab() {
 		e.preventDefault();
 		e.stopImmediatePropagation();
 	});
-	
-	if ( userOptions.searchBarTheme === 'dark' )
-		openingTab.classList.add('CS_dark');
 	
 	document.body.appendChild(openingTab);
 
