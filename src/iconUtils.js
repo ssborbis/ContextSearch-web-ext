@@ -158,6 +158,7 @@ $('#faviconFinder').onclick = async function() {
 	overdiv.appendChild(div);
 	document.body.appendChild(overdiv);
 
+	urls = [...new Set(urls)];
 	urls.forEach( _url => {
 
 		let box = document.createElement('div');
@@ -170,6 +171,11 @@ $('#faviconFinder').onclick = async function() {
 			let label = document.createElement('div');
 			label.innerText = this.naturalWidth + " x " + this.naturalHeight;
 			box.appendChild(label);
+
+			if ( _url === form.iconURL.value ) {
+				let currentLabel = document.createElement('div');
+				box.classList.add('current');
+			}
 		}
 
 		img.onerror = function() {
