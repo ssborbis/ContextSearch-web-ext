@@ -435,6 +435,8 @@ function buildSearchEngineContainer() {
 					for (let _li of rootElement.getElementsByTagName('li'))
 						_li.setAttribute('draggable', true);
 				});
+
+				_form.iconURL.value = node.icon;
 				
 				_form.close.onclick = _form.closeForm;
 				
@@ -1686,6 +1688,14 @@ function buildSearchEngineContainer() {
 		img.src = url;
 		box.appendChild(img);
 		box.classList.add('inputNice');
+		box.classList.add('upload');
+
+
+		let forlabel = document.createElement('label');
+		forlabel.setAttribute('for', form.iconPicker.id);
+		forlabel.style = 'cursor:pointer;width:100%;height:100%;z-index:3;position:absolute;left:0;top:0';
+		forlabel.title = browser.i18n.getMessage('uploadfromlocal');
+		box.insertBefore(forlabel, box.firstChild);
 
 		img.onload = () => {
 			let label = document.createElement('div');

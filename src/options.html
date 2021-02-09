@@ -1185,6 +1185,7 @@
 				position:relative;
 				top:50%;
 				transform: translateY(-50%);
+				transition: opacity .2s;
 
 			}
 			#faviconPickerContainer {
@@ -1205,9 +1206,20 @@
 				font-size:8pt;
 				z-index:2;
 				width:100%;
+				transition: opacity .2s;
 			}
 			.faviconPickerBox.current {
 				border-color:var(--selected);
+			}
+			.faviconPickerBox.upload:hover {
+				background:#555 url(icons/upload.svg) no-repeat center;
+				background-size: 50%;
+			}
+			.faviconPickerBox.upload:hover IMG {
+				opacity:0;
+			}
+			.faviconPickerBox.upload:hover DIV {
+				opacity:0;
 			}
 			.textShadow {
 				text-shadow:
@@ -1226,7 +1238,7 @@
 				transform: translate(-50%, -50%);
 				width: 600px;
 				height: auto;
-				box-shadow: #0008 4px 4px 16px;
+				box-shadow:4px 4px 20px #0005;
 				padding: 20px;
 				z-index: 2;
 				background-color: var(--bg-color2);
@@ -1255,18 +1267,6 @@
 				transition:opacity .5s;
 			}
 
-			/*.header:hover .editIcon {
-				opacity:.5;
-			}
-
-			.editIcon {
-				height:1em;
-				left:-32px;
-				position:absolute;
-				opacity:0;
-				cursor:pointer;
-				transition: opacity .1s;
-			}*/
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
@@ -2914,9 +2914,9 @@
 					<label data-i18n="Template">Template</label><input name="template" type="text" class="inputNice" />
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 85px)"/>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 60px)"/>
 						<img id="faviconFinder" src="icons/search.svg" data-type="tool" style="width:20px;vertical-align:middle;margin:0 4px;cursor:pointer" title="i18n_text" data-i18n="faviconFinder"/>
-						<label for="iconPicker"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
+						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">POST Params</label><input name="post_params" type="text" class="inputNice" />
@@ -3001,8 +3001,8 @@
 					</table>
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 45px)"/>
-						<label for="iconPickerFolder"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;"/>
+						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
 					<span class="saveMessage" style="float:right;margin: 10px 5px"></span>
@@ -3017,8 +3017,8 @@
 					</div>
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 45px)"/>
-						<label for="iconPickerBookmarklet"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;"/>
+						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
 				</form>

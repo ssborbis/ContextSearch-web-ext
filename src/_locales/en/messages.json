@@ -1849,6 +1849,11 @@
     "description": ""
   },
 
+  "uploadfromlocal": {
+    "message": "Use an image from your computer",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""
