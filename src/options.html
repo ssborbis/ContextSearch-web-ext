@@ -1232,10 +1232,10 @@
 				background-color: var(--bg-color2);
 				border-radius: 10px;
 				margin: 20px;
-				transition: opacity .5s;
+				transition: blur .5s;
 				border:2px solid var(--border-color2);
 			}
-			#main.blur {
+			.blur {
 				filter:blur(1px);
 				pointer-events: none;
 			}
@@ -1250,7 +1250,7 @@
 				right:0;
 				top:0;
 				bottom:0;
-				background-color:#0008;
+				background-color:#0004;
 				z-index:9999;
 				transition:opacity .5s;
 			}
@@ -1286,20 +1286,20 @@
 			<br />
 						
 			<div class="tab">
-				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><img src="icons/context_menu.svg" />Context Menu</button>
-				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" />Quick Menu</button>
-				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img src="icons/sidebar.svg" style="transform:rotate(90deg);" />Toolbar</button>
-				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</button>
-				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />Hotkeys</button>
-				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><img src="icons/omnibox.svg" />Omnibox</button>
-				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img src="icons/highlight.svg" />Highlight</button>
+				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><img src="icons/context_menu.svg" data-type="tool" />Context Menu</button>
+				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" data-type="tool" />Quick Menu</button>
+				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img src="icons/sidebar.svg" data-type="tool" style="transform:rotate(90deg);" />Toolbar</button>
+				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img src="icons/sidebar.svg" data-type="tool" style="transform:scaleX(-1)" />Sidebar</button>
+				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="Hotkeys"><img src="icons/keyboard.svg" data-type="tool" />Hotkeys</button>
+				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><img src="icons/omnibox.svg" data-type="tool" />Omnibox</button>
+				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img src="icons/highlight.svg" data-type="tool" />Highlight</button>
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />Search Results</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />Find Bar</button>
-				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img src="icons/search.svg" />Search Engines</button>
-				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><img src="icons/page_tiles.svg" />Page Tiles</button>
-				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img src="icons/settings.svg" />General</button>
-				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.svg" />Advanced</button>
-				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img src="icons/help.svg" />Help</button>
+				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img src="icons/search.svg" data-type="tool" />Search Engines</button>
+				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><img src="icons/page_tiles.svg" data-type="tool" />Page Tiles</button>
+				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img src="icons/settings.svg" data-type="tool" />General</button>
+				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.svg" data-type="tool" />Advanced</button>
+				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img src="icons/help.svg" data-type="tool" />Help</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
 				<label for="importSettings">
@@ -2904,8 +2904,8 @@
 				<form id="editSearchEngineForm" class="editForm" action="">
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px">
-							<img src="icons/crossmark.svg" style="height:100%">
+						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
+							<img src="icons/crossmark.svg" data-type="tool" style="height:100%">
 						</button>
 					</div>
 
@@ -2915,7 +2915,7 @@
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 85px)"/>
-						<img id="faviconFinder" src="icons/search.svg" style="width:20px;vertical-align:middle;margin:0 4px;cursor:pointer" title="i18n_text" data-i18n="faviconFinder"/>
+						<img id="faviconFinder" src="icons/search.svg" data-type="tool" style="width:20px;vertical-align:middle;margin:0 4px;cursor:pointer" title="i18n_text" data-i18n="faviconFinder"/>
 						<label for="iconPicker"><img src="/icons/folder-icon.svg" style="height:20px;vertical-align:middle;cursor:pointer" data-i18n="browseForImage" title="i18n_text"></label><input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
@@ -2951,9 +2951,9 @@
 					</div>
 
 					<div style="float:right;margin:16px">
-						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" style="display:inline;height:1em;vertical-align:middle"/></button>
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" data-type="tool" style="display:inline;height:1em;vertical-align:middle"/></button>
 <span data-browser="firefox">					
-						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add.svg" style="height:1em;vertical-align:middle;display:inline;"/></button>
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add.svg" data-type="tool" style="height:1em;vertical-align:middle;display:inline;"/></button>
 </span>
 						<button type="button" name="test" style="margin-left:20px" data-i18n="Test" title="i18n_text">Test</button>
 						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">save</button>
@@ -2965,8 +2965,8 @@
 				<form id="editFolderForm" class="editForm" action="">
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px">
-							<img src="icons/crossmark.svg" style="height:100%">
+						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
+							<img src="icons/crossmark.svg" data-type="tool" style="height:100%">
 						</button>
 					</div>
 					<table id="folderFormTable">
@@ -3011,8 +3011,8 @@
 				<form id="editBookmarkletForm" class="editForm" action="">
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px">
-							<img src="icons/crossmark.svg" style="height:100%">
+						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
+							<img src="icons/crossmark.svg" data-type="tool" style="height:100%">
 						</button>
 					</div>
 					<label data-i18n="Icon">Icon URI</label>
@@ -3095,7 +3095,7 @@
 			<div class="tabcontent" id="helpTab"></div>
 		</div>
 		</div>
-		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:16px;z-index:4;background-color:white;border-radius:2px;border:1px solid white" />
+		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:16px;z-index:10000;background-color:white;border-radius:2px;border:1px solid white" />
 		
 		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>

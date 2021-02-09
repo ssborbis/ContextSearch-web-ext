@@ -1511,10 +1511,17 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 });
 
 $('#nightmode').addEventListener('click', () => {
-	$('#style_dark').disabled = !$('#style_dark').disabled;
-	userOptions.nightMode = $('#style_dark').disabled ? false : true;
+	userOptions.nightMode = !userOptions.nightMode;
+
+	$('#style_dark').disabled = !userOptions.nightMode;
+
+	setOptionsToolsColors();
 	saveOptions();
 });
+
+document.addEventListener('userOptionsLoaded', e => {
+	setOptionsToolsColors();
+})
 
 $('#s_quickMenuTheme').innerHTML = null;
 themes.forEach( t => {
@@ -1523,22 +1530,23 @@ themes.forEach( t => {
 	$('#s_quickMenuTheme').appendChild(option);
 });
 
-document.addEventListener('userOptionsLoaded', e => {
+function getAllToolIcons() {
+	return document.querySelectorAll('img[data-type="tool"]');
+}
 
-	if ( !userOptions.nightMode ) return;
-	
-	document.querySelectorAll('img').forEach( img => {
-		let icons = "add.svg|theme.svg|mouse.svg|cursor.svg|history.svg|edit.png|power.svg|settings.svg|auto.svg|checkmark.svg|close.svg|context_menu.svg|copy.svg|crossmark.svg|delete.svg|highlight.svg|keyboard.svg|help.svg|import.svg|page_tiles.svg|link.svg|load.svg|lock.svg|omnibox.svg|quick_menu.svg|repeatsearch.svg|search.svg|sidebar.svg|tabs.svg".split("|");
-		
-		icons.forEach(icon => {
-			if ( img.src.endsWith(icon) ) {
-				setToolIconColor(img);
-				return;
-			}
-		})
-	})
-});
+function setOptionsToolsColors() {
 
+	let icons = getAllToolIcons();
+
+	for ( let icon of icons ) {
+		if ( !icon.originalSrc ) icon.originalSrc = icon.src;
+	}
+
+	for ( let icon of icons ) {
+		if ( userOptions.nightMode ) setToolIconColor(icon, "#888");
+		else icon.src = icon.originalSrc;
+	}
+}
 
 $('#b_cacheIcons').addEventListener('click', e => {
 	cacheAllIcons(e);

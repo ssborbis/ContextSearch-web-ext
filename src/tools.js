@@ -456,6 +456,8 @@ async function setToolIconColor(el, color) {
 
 	color = color || window.getComputedStyle(el).getPropertyValue('--tools-color') || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
 
+	if ( !color ) return;
+
 	if ( el.nodeName === "IMG") {
 
 		let newIcon = await setIconColor(el.src, color);

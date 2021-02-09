@@ -153,13 +153,16 @@ $('#faviconFinder').onclick = async function(e) {
 
 	let overdiv = document.createElement('div');
 	overdiv.className = 'overDiv';
-	// overdiv.style.backgroundColor = 'transparent';
-	// form.style.filter = 'blur(1px)';
+	form.parentNode.classList.add('blur');
 
 	let div = document.createElement('div');
 	div.id = "faviconPickerContainer";
+	overdiv.style.opacity = 0;
 	overdiv.appendChild(div);
 	document.body.appendChild(overdiv);
+
+	overdiv.offsetWidth;
+	overdiv.style.opacity = 1;
 
 	urls = [...new Set(urls)];
 	urls.forEach( _url => {
@@ -197,9 +200,13 @@ $('#faviconFinder').onclick = async function(e) {
 	})
 
 	overdiv.onclick = function(e) {
-		overdiv.innerHTML = null;
-		overdiv.parentNode.removeChild(overdiv);
-		form.style.filter = null;
+		overdiv.style.opacity = 0;
+		form.parentNode.classList.remove('blur');
+		runAtTransitionEnd(overdiv, "opacity", () => {
+			overdiv.innerHTML = null;
+			overdiv.parentNode.removeChild(overdiv);
+		});
+		
 	}
 
 }
