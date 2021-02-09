@@ -106,6 +106,9 @@ async function findFavicons(url) {
 
 		if ( !tab ) return [];
 
+		// chrome requires a delay
+		await new Promise(r => setTimeout(r, 500));
+
 		let hrefs = await browser.tabs.executeScript(tab.id, {
 			code: `
 			    var hrefs = [];
@@ -127,6 +130,7 @@ async function findFavicons(url) {
 		return hrefs;
 	} catch (error) {
 		if ( tab ) browser.tabs.remove(tab.id);
+		console.log(error);
 		return [];
 	}
 }
