@@ -1714,7 +1714,10 @@ function createFormContainer(form) {
 	overdiv.style.opacity = 0;
 	document.body.appendChild(overdiv);
 
-	overdiv.onclick = function() {form.close.click()};
+	overdiv.onclick = function(e) {
+		if ( overdiv !== e.target) return;
+		form.close.click();
+	};
 
 	let formContainer = document.createElement('div');
 	formContainer.id = "floatingEditFormContainer";
