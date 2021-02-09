@@ -372,13 +372,13 @@ function buildSearchEngineContainer() {
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);	
 						
-						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "", $("#editFormSaveMessage"));
+						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "", edit_form.querySelector('.saveMessage'));
 
 					}
 					
 					checkFormValues().then( result => {
 						if ( result ) saveForm();
-						else showSaveMessage("cannot save", "red", "no", $("#editFormSaveMessage"));
+						else showSaveMessage("cannot save", "red", "no", edit_form.querySelector('.saveMessage'));
 					});
 				}
 				
@@ -436,12 +436,12 @@ function buildSearchEngineContainer() {
 						_li.setAttribute('draggable', true);
 				});
 
-				_form.iconURL.value = node.icon;
+				_form.iconURL.value = node.icon || "";
 				
 				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
-					if ( !_form.iconURL.value ) return;
+
 					img.src = browser.runtime.getURL("/icons/spinner.svg");
 					let newIcon = new Image();
 					newIcon.onload = function() {
@@ -454,6 +454,8 @@ function buildSearchEngineContainer() {
 						node.icon = img.src;
 						updateNodeList();
 					}
+
+					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
 					
 					newIcon.src = _form.iconURL.value;
 					
@@ -563,7 +565,7 @@ function buildSearchEngineContainer() {
 				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
-					showSaveMessage("saved", null, "yes", _form.querySelector(".saveMessage"));
+					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
 					
 					node.groupColor = _form.groupColor.value;
 					node.groupFolder = _form.groupFolder.checked;

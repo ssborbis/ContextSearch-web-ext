@@ -1269,6 +1269,11 @@
 				z-index:9999;
 				transition:opacity .5s;
 			}
+			.editForm .saveMessage {
+				position:absolute;
+				bottom:4px;
+				right:40px;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -2962,7 +2967,7 @@
 						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">save</button>
 					</div>
 					
-					<span id="editFormSaveMessage" style="position:absolute;bottom:4px;right:40px;"></span>
+					<span class="saveMessage"></span>
 
 				</form>
 				<form id="editFolderForm" class="editForm" action="">
@@ -3008,7 +3013,7 @@
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
-					<span class="saveMessage" style="float:right;margin: 10px 5px"></span>
+					<span class="saveMessage"></span>
 				</form>
 
 				<form id="editBookmarkletForm" class="editForm" action="">
@@ -3024,6 +3029,7 @@
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
+					<span class="saveMessage"></span>
 				</form>
 				
 				<br />
