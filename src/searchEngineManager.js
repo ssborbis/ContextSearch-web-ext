@@ -60,6 +60,8 @@ function buildSearchEngineContainer() {
 			header.appendChild(text);
 
 			let edit_form = document.getElementById('editSearchEngineForm');
+
+			edit_form.node = node;
 			
 			// prevent click events from closing the form
 			edit_form.onclick = function(e) {
@@ -370,7 +372,7 @@ function buildSearchEngineContainer() {
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);	
 						
-						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "yes", $("#editFormSaveMessage"));
+						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "", $("#editFormSaveMessage"));
 
 					}
 					
@@ -388,7 +390,9 @@ function buildSearchEngineContainer() {
 				}
 
 				createFormContainer(edit_form);
-				addIconPickerListener(edit_form.iconPicker, li)
+				addIconPickerListener(edit_form.iconPicker, li);
+
+				edit_form.addFaviconBox(getIconFromNode(node));
 
 				checkFormValues();
 			});
@@ -420,6 +424,7 @@ function buildSearchEngineContainer() {
 				}
 				
 				let _form = $('#editBookmarkletForm');
+				_form.node = node;
 								
 				_form.addEventListener('mouseover', () => {
 					for (let _li of rootElement.getElementsByTagName('li'))
@@ -439,17 +444,13 @@ function buildSearchEngineContainer() {
 					let newIcon = new Image();
 					newIcon.onload = function() {
 						img.src = imageToBase64(this, userOptions.cacheIconsMaxSize) || createCustomIcon({text: node.title.charAt(0).toUpperCase()});
-					//	saveForm();
 						node.icon = img.src;
 						updateNodeList();
-						li.dispatchEvent(new MouseEvent('dblclick'));
 					}
 					newIcon.onerror = function() {	
-					//	showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
 						img.src = createCustomIcon({text: node.title.charAt(0).toUpperCase()});
 						node.icon = img.src;
 						updateNodeList();
-					//	saveForm(false);
 					}
 					
 					newIcon.src = _form.iconURL.value;
@@ -462,6 +463,7 @@ function buildSearchEngineContainer() {
 				
 				createFormContainer(_form);
 				addIconPickerListener(_form.iconPicker, li);
+				_form.addFaviconBox(getIconFromNode(node));
 				
 			}
 		}
@@ -542,6 +544,7 @@ function buildSearchEngineContainer() {
 				}
 				
 				let _form = $('#editFolderForm');
+				_form.node = node;
 				
 				_form.closeForm = _form.closeForm;
 				
@@ -582,7 +585,8 @@ function buildSearchEngineContainer() {
 				_form.iconURL.value = node.icon || "";
 				
 				createFormContainer(_form);
-				addIconPickerListener(_form.iconPicker, li)
+				addIconPickerListener(_form.iconPicker, li);
+				_form.addFaviconBox(getIconFromNode(node));
 			});	
 			
 			text.addEventListener('dblclick', e => {
@@ -1638,6 +1642,9 @@ function buildSearchEngineContainer() {
 					let form = el.closest('form');;
 					form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
 					li.querySelector("img").src = form.iconURL.value;
+
+					form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
+					form.save.click();
 				}
 				img.src = reader.result;
 				
@@ -1652,31 +1659,74 @@ function buildSearchEngineContainer() {
 
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
 
-	$('#' + id).closeForm = () => {
+	let form = $('#' + id);
+
+	form.addEventListener('input', e => form.save.classList.add('changed'));
+
+	form.closeForm = () => {
+		
 		let formContainer = $('#floatingEditFormContainer');
 
 		if ( !formContainer ) return;
 		
-		formContainer.style.opacity = 0;
+		formContainer.parentNode.style.opacity = 0;
 		$('#main').classList.remove('blur');
 		runAtTransitionEnd(formContainer, "opacity", () => {
-			let form = formContainer.querySelector('form')
-			form.style.maxHeight = null;
+			form.style.display = null;
 			document.body.appendChild(form);
-			formContainer.parentNode.removeChild(formContainer);
-
+			// formContainer.parentNode.removeChild(formContainer);
+			document.body.removeChild(formContainer.parentNode);
 		});
 	}
+
+	form.addFaviconBox = (url) => {
+		let box = form.querySelector('[name="faviconBox"]');
+		box.innerHTML = null;
+		let img = new Image();
+		img.src = url;
+		box.appendChild(img);
+		box.classList.add('inputNice');
+
+		img.onload = () => {
+			let label = document.createElement('div');
+			label.innerText = img.naturalHeight + " x " + img.naturalWidth;
+			box.appendChild(label);
+
+		}
+	}
+
+	// update the favicon when the user changes the url
+	form.iconURL.addEventListener('change', e => {
+
+		let defaultIcon = getIconFromNode({type:form.node.type});
+
+		let img = form.querySelector('[name="faviconBox"] img');
+		img.src = form.iconURL.value || defaultIcon;
+	})
+
+	form.save.addEventListener('click', e => form.save.classList.remove('changed'));
 });
 
-function createFormContainer(_form) {
+function createFormContainer(form) {
+
+	let overdiv = document.createElement('div');
+	overdiv.className = 'overDiv';
+	overdiv.style.opacity = 0;
+	document.body.appendChild(overdiv);
+
+	overdiv.onclick = function() {form.close.click()};
+
 	let formContainer = document.createElement('div');
 	formContainer.id = "floatingEditFormContainer";
-	formContainer.appendChild(_form);
-	document.body.appendChild(formContainer);
-	_form.style.maxHeight = "none";
+
+	overdiv.appendChild(formContainer);
+	formContainer.appendChild(form);
+
+	form.style.display = "block";
 	$('#main').classList.add('blur');
 
-	formContainer.getBoundingClientRect();
-	formContainer.style.opacity = 1;
+	overdiv.getBoundingClientRect();
+	overdiv.style.opacity = null;
+
+	form.save.classList.remove('changed');
 }

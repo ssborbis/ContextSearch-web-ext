@@ -132,7 +132,7 @@ function findFaviconsWrapper(url) {
 }
 
 // options.html
-$('#faviconFinder').onclick = async function() {
+$('#faviconFinder').onclick = async function(e) {
 
 	let form = $('#editSearchEngineForm');
 
@@ -152,7 +152,10 @@ $('#faviconFinder').onclick = async function() {
 	if ( !urls.length ) return;
 
 	let overdiv = document.createElement('div');
-	overdiv.style = "position:fixed;left:0;right:0;top:0;bottom:0;background-color:#0008;z-index:9999";
+	overdiv.className = 'overDiv';
+	// overdiv.style.backgroundColor = 'transparent';
+	// form.style.filter = 'blur(1px)';
+
 	let div = document.createElement('div');
 	div.id = "faviconPickerContainer";
 	overdiv.appendChild(div);
@@ -187,6 +190,8 @@ $('#faviconFinder').onclick = async function() {
 
 		box.onclick = function() {
 			form.iconURL.value = img.src;
+			// update the favicon when the user picks an icon
+			form.iconURL.dispatchEvent(new Event('change'));
 			form.save.click();
 		}
 	})
@@ -194,6 +199,7 @@ $('#faviconFinder').onclick = async function() {
 	overdiv.onclick = function(e) {
 		overdiv.innerHTML = null;
 		overdiv.parentNode.removeChild(overdiv);
+		form.style.filter = null;
 	}
 
 }

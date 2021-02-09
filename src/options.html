@@ -724,13 +724,8 @@
 				padding:0 10px 0 20px;
 			}
 			.editForm {
-				transition: max-height .5s ease-in-out;
-				max-height:0;
+				display:none;
 				overflow:hidden;
-				/*padding:10px;
-				margin:20px;
-				border-radius:10px;
-				border:4px solid #F4F4F4;*/
 			}
 						
 			.editForm INPUT:not([name="iconPicker"]), .editForm SELECT, .editForm TEXTAREA {
@@ -1173,7 +1168,7 @@
 			.faviconPickerBox {
 				height:64px;
 				width:64px;
-				background-color:var(--bg-color2);
+				background-color:var(--bg-color1);
 				border:2px solid var(--border-color1);
 				display:inline-block;
 				position:relative;
@@ -1181,6 +1176,7 @@
 				margin:4px;
 				padding-bottom:10px;
 				cursor:pointer;
+				text-align:center;
 			}
 			.faviconPickerBox IMG {
 				max-height:48px;
@@ -1199,7 +1195,7 @@
 				top:50%;
 				left:50%;
 				transform:translate(-50%, -50%);
-				background-color:var(--bg-color1);
+				background-color:var(--bg-color2);
 				max-width:800px;
 				border-radius: 10px;
 			}
@@ -1223,7 +1219,6 @@
 			#floatingEditFormContainer {
 				overflow-y: auto;
 				max-height: calc(100% - 90px);
-				opacity: 0;
 				resize: both;
 				position: absolute;
 				top: 50%;
@@ -1243,6 +1238,21 @@
 			#main.blur {
 				filter:blur(1px);
 				pointer-events: none;
+			}
+
+			.changed {
+				background-color:var(--cs-green);
+				color:white;
+			}
+			.overDiv {
+				position:fixed;
+				left:0;
+				right:0;
+				top:0;
+				bottom:0;
+				background-color:#0008;
+				z-index:9999;
+				transition:opacity .5s;
 			}
 
 			/*.header:hover .editIcon {
@@ -2892,7 +2902,12 @@
 				</section>
 
 				<form id="editSearchEngineForm" class="editForm" action="">
-					<div style="text-align:right;"><button type="button" name="close" style="height:24px;"><img src="icons/crossmark.svg" style="height:100%"></button></div>
+					<div>
+						<div class="faviconPickerBox" name="faviconBox"></div>
+						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px">
+							<img src="icons/crossmark.svg" style="height:100%">
+						</button>
+					</div>
 
 					<label data-i18n="Name">Name</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Description">Description</label><textarea name="description" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>
@@ -2935,21 +2950,25 @@
 					</select>
 					</div>
 
-					<div>
-					
-					<button type="button" name="save" style="float:right;margin:10px 5px" data-i18n="Save">save</button>
-					<button type="button" name="test" style="float:right;margin:10px 5px;" data-i18n="Test" title="i18n_text">Test</button>
+					<div style="float:right;margin:16px">
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" style="display:inline;height:1em;vertical-align:middle"/></button>
+<span data-browser="firefox">					
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add.svg" style="height:1em;vertical-align:middle;display:inline;"/></button>
+</span>
+						<button type="button" name="test" style="margin-left:20px" data-i18n="Test" title="i18n_text">Test</button>
+						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">save</button>
 					</div>
 					
-					<span id="editFormSaveMessage" style="float:right;margin: 10px 5px"></span>
+					<span id="editFormSaveMessage" style="position:absolute;bottom:4px;right:40px;"></span>
 
-					<button type="button" name="copy" class="inputNice" style="float:left;margin:10px 5px;width:30px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" style="height:20px;vertical-align:middle"/></button>
-<div data-browser="firefox">					
-					<button type="button" name="addOpenSearchEngine" class="inputNice" style="float:left;margin:10px 5px;width:30px;height:30px" data-i18n="AddOpenSearchEngine" title="i18n_text"><span class="add" style="margin-left:0"></span></button>
-</div>
 				</form>
 				<form id="editFolderForm" class="editForm" action="">
-					<div style="text-align:right;"><button type="button" name="close" style="height:24px;"><img src="icons/crossmark.svg" style="height:100%"></button></div>
+					<div>
+						<div class="faviconPickerBox" name="faviconBox"></div>
+						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px">
+							<img src="icons/crossmark.svg" style="height:100%">
+						</button>
+					</div>
 					<table id="folderFormTable">
 						<tr>
 							<td data-i18n="display">_</td>
@@ -2990,7 +3009,12 @@
 				</form>
 
 				<form id="editBookmarkletForm" class="editForm" action="">
-					<div style="text-align:right;"><button type="button" name="close" style="height:24px;"><img src="icons/crossmark.svg" style="height:100%"></button></div>
+					<div>
+						<div class="faviconPickerBox" name="faviconBox"></div>
+						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px">
+							<img src="icons/crossmark.svg" style="height:100%">
+						</button>
+					</div>
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 45px)"/>
