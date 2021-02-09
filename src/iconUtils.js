@@ -94,10 +94,17 @@ function cacheIcons() {
 }
 
 async function findFavicons(url) {
-	// let tab;
+	let tab;
 	try {
 
-		tab = await browser.tabs.create({url:url, active:false});
+		let promise1 = new Promise(resolve => {
+			setTimeout(() => resolve(browser.tabs.remove(tab.id)),5000);
+		});
+		let promise2 = browser.tabs.create({url:url, active:false});
+
+		tab = await Promise.race([promise1, promise2]);
+
+		if ( !tab ) return [];
 
 		let hrefs = await browser.tabs.executeScript(tab.id, {
 			code: `
@@ -124,13 +131,6 @@ async function findFavicons(url) {
 	}
 }
 
-function findFaviconsWrapper(url) {
-	let promise1 = findFavicons(url);
-	let promise2 = new Promise(r => setTimeout(() => r([]),5000));
-
-	return Promise.race([promise1, promise2]);
-}
-
 // options.html
 $('#faviconFinder').onclick = async function(e) {
 
@@ -143,7 +143,7 @@ $('#faviconFinder').onclick = async function(e) {
 		return;
 	}
 
-	let urls = await findFaviconsWrapper(url.origin);
+	let urls = await findFavicons(url.origin);
 
 	// include the current icon URI in the picker
 	if ( form.iconURL.value && !urls.includes(form.iconURL.value))
