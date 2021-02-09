@@ -1177,6 +1177,10 @@
 				padding-bottom:10px;
 				cursor:pointer;
 				text-align:center;
+				transition:background-color .25s;
+			}
+			.faviconPickerBox:hover {
+				background-color:var(--hover1);
 			}
 			.faviconPickerBox IMG {
 				max-height:48px;
@@ -1185,8 +1189,7 @@
 				position:relative;
 				top:50%;
 				transform: translateY(-50%);
-				transition: opacity .2s;
-
+				transition: opacity .05s;
 			}
 			#faviconPickerContainer {
 				padding:20px;
@@ -1206,7 +1209,7 @@
 				font-size:8pt;
 				z-index:2;
 				width:100%;
-				transition: opacity .2s;
+				transition: opacity .05s;
 			}
 			.faviconPickerBox.current {
 				border-color:var(--selected);
