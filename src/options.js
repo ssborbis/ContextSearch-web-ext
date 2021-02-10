@@ -879,23 +879,21 @@ function makeTabs() {
 	for (let tab of tabs) {
 		tab.addEventListener('click', e => {
 
-			for (let tabcontent of document.getElementsByClassName("tabcontent"))
-				tabcontent.style.display = "none";
-
-			e.target.getElementsByTagName('img')[0].className = 'fade-in';
+			document.querySelectorAll('.tabcontent').forEach( el => {
+				el.style.display = "none";
+			});
 				
 			// Get all elements with class="tablinks" and remove the class "active"
-			for (let tablink of document.getElementsByClassName("tablinks")) 
-				tablink.className = tablink.className.replace(" active", "");
+			for (let tablink of document.getElementsByClassName("tablinks"))
+				tablink.classList.remove('active');
 
 			// Show the current tab, and add an "active" class to the button that opened the tab
 			document.getElementById(e.target.dataset.tabid).style.display = "block";
-			e.currentTarget.className += " active";
+			e.currentTarget.classList.add('active');
 			
 			location.hash = e.target.dataset.tabid.toLowerCase().replace(/tab$/,"");
 		});
 	}
-//	tabs[0].click();
 }
 
 function buildToolIcons() {
@@ -967,7 +965,7 @@ function buildToolIcons() {
 	});
 
 	for (let icon of toolIcons) {
-		let img = document.createElement('img');
+		let img = document.createElement('div');
 		img.disabled = icon.disabled;
 		img.style.opacity = (img.disabled) ? .4 : 1;
 		img.className = 'toolIcon';
@@ -975,6 +973,8 @@ function buildToolIcons() {
 		img.src = icon.src;
 		img.setAttribute('data-title',icon.title);
 		img.name = icon.name;
+		img.classList.add('tool');
+		img.style.setProperty('--mask-image', `url(${icon.src})`);
 
 		img.addEventListener('dragstart',dragstart_handler);
 		img.addEventListener('dragend',dragend_handler);
@@ -1514,14 +1514,8 @@ $('#nightmode').addEventListener('click', () => {
 	userOptions.nightMode = !userOptions.nightMode;
 
 	$('#style_dark').disabled = !userOptions.nightMode;
-
-	setOptionsToolsColors();
 	saveOptions();
 });
-
-document.addEventListener('userOptionsLoaded', e => {
-	setOptionsToolsColors();
-})
 
 $('#s_quickMenuTheme').innerHTML = null;
 themes.forEach( t => {
@@ -1530,31 +1524,13 @@ themes.forEach( t => {
 	$('#s_quickMenuTheme').appendChild(option);
 });
 
-function getAllToolIcons() {
-	return document.querySelectorAll('img[data-type="tool"]');
-}
-
-function setOptionsToolsColors() {
-
-	let icons = getAllToolIcons();
-
-	for ( let icon of icons ) {
-		if ( !icon.originalSrc ) icon.originalSrc = icon.src;
-	}
-
-	for ( let icon of icons ) {
-		if ( userOptions.nightMode ) setToolIconColor(icon, "#888");
-		else icon.src = icon.originalSrc;
-	}
-}
-
 $('#b_cacheIcons').addEventListener('click', e => {
 	cacheAllIcons(e);
 });
 
 $('#b_uncacheIcons').addEventListener('click', e => {
 	if ( confirm('remove all icon cache?'))	uncacheIcons();
-})
+});
 
 function cacheAllIcons(e) {
 	let result = cacheIcons();

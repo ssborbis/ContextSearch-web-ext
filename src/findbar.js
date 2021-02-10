@@ -9,7 +9,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 	if ( userOptions === {} ) return;
 
 	let theme = themes.find(t => t.name === userOptions.quickMenuTheme);
-	if ( theme ) browser.runtime.sendMessage({action: "addStyles", file: theme.path}).then(() => setAllToolIconColors());
+	if ( theme ) browser.runtime.sendMessage({action: "addStyles", file: theme.path});
 
 	document.body.dataset.theme = userOptions.quickMenuTheme;
 	

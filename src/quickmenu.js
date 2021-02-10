@@ -286,8 +286,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 	
 	setTheme()
 		.then(() => setUserStyles())
-		.then(() => makeFrameContents())		
-		.then(() => setAllToolIconColors());
+		.then(() => makeFrameContents());
 });
 
 // prevent context menu when using right-hold

@@ -54,17 +54,6 @@ function buildSearchIcon(icon_url, title) {
 	return div;
 }
 
-function buildCommonIcons() {
-
-	setIconColor(browser.runtime.getURL('/icons/chevron-down.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
-		qm.moreIcon = data;
-	});
-
-	setIconColor(browser.runtime.getURL('/icons/chevron-up.svg'), window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color')).then( data => {
-		qm.lessIcon = data;
-	});
-}
-
 function setTheme(theme) {
 	return new Promise(resolve => {
 		theme = theme || themes.find( t => t.name === userOptions.quickMenuTheme );
@@ -1138,7 +1127,7 @@ async function makeQuickMenu(options) {
 		
 		qm.expandMoreTiles();
 
-		qm.querySelectorAll(toolSelector).forEach( t => setToolIconColor(t));
+	//	qm.querySelectorAll(toolSelector).forEach( t => setToolIconColor(t));
 
 		return qm;
 	}
@@ -1283,10 +1272,8 @@ async function makeQuickMenu(options) {
 				return _tiles;
 			}
 
-			let moreTile = buildSearchIcon(qm.moreIcon || browser.runtime.getURL('/icons/chevron-down.svg'), browser.i18n.getMessage('more'));
-			setToolIconColor(moreTile);
-
-			// let moreTile = buildSearchIcon(browser.runtime.getURL('icons/transparent.gif'), browser.i18n.getMessage('more'))
+			let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
+			moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
 
 			moreTile.style.textAlign='center';
 			moreTile.dataset.type = "more";
@@ -1320,8 +1307,7 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
-				moreTile.style.backgroundImage = `url(${qm.lessIcon || browser.runtime.getURL('icons/chevron-up.svg')}`;
-				setToolIconColor(moreTile);
+				moreTile.querySelector('.tool').style.setProperty('--mask-image', 'url(icons/chevron-up.svg');
 				resizeMenu({groupMore: true});
 	
 				if ( !moreLessStatus.includes( node.id ) )
@@ -1342,9 +1328,7 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = more;
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
-				moreTile.style.backgroundImage = `url(${qm.moreIcon || browser.runtime.getURL('icons/chevron-down.svg')}`;
-				// moreTile.style.backgroundImage = `url(${browser.runtime.getURL('icons/transparent.gif')})`;
-				setToolIconColor(moreTile);
+				moreTile.querySelector('.tool').style.setProperty('--mask-image', 'url(icons/chevron-down.svg');
 				resizeMenu({groupLess: true});
 				
 				moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
@@ -1845,9 +1829,6 @@ function makeSearchBar() {
 			return a.searchTerms - b.searchTerms;
 		});
 
-		// get history icon color
-		let getIcon = setIconColor(browser.runtime.getURL("/icons/history.svg"), window.getComputedStyle(document.body).getPropertyValue('--tools-color'));
-
 		for (let s of suggestions) {
 			let div = document.createElement('div');
 			div.style.height = "20px";
@@ -1865,10 +1846,11 @@ function makeSearchBar() {
 				sb.dispatchEvent(e);
 			}
 			
-			let img = document.createElement("img");
-			img.src = "/icons/history.svg";
+			let img = document.createElement("div");
+			img.style.setProperty("--mask-image", "url(/icons/history.svg)");
 			img.title = browser.i18n.getMessage('History') || "history";
-			img.dataset.type = "tool";
+			img.classList.add('tool');
+			img.style.height = "1em";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
@@ -1879,11 +1861,6 @@ function makeSearchBar() {
 			
 			div.searchTerms = s.searchTerms;
 		}
-
-		// set history icon color
-		getIcon.then( src => {
-			sg.querySelectorAll('img').forEach( img => img.src = src );
-		});
 		
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 

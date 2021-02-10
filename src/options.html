@@ -25,6 +25,7 @@
 				--selected: #0078d7;
 
 				--tree-row-border: 1px solid #fff;
+				--tools-color:#000;
 			}
 			HTML {
 				height:100%;
@@ -478,12 +479,10 @@
 
 			/* Create an active/current tablink class */
 			.tab .tablinks.active {
-				/*background-color: white;
-				color:#343a40;
-				*/
 				background-color: var(--cs-green);
 				color:white;
 				font-weight:600;
+				--tools-color:white;
 			}
 
 			/* Style the tab content */
@@ -492,7 +491,6 @@
 				font-weight:bold;
 				animation: fadeEffect .25s;
 				margin:0;
-				
 			} 
 
 			/* Go from zero to full opacity */
@@ -500,7 +498,7 @@
 				from {opacity: 0;}
 				to {opacity: 1;}
 			}
-			.tablinks IMG {
+			.tablinks .tool {
 				position:absolute;
 				height:1em;
 				left:16px;
@@ -1274,6 +1272,20 @@
 				bottom:4px;
 				right:40px;
 			}
+			.tool {
+				background:var(--tools-color);
+				display:inline-block;
+				width:20px;
+				height:20px;
+				mask-position:center;
+				mask-size:contain;
+				mask-image:var(--mask-image);
+				mask-repeat:no-repeat;
+				-webkit-mask-position:center;
+				-webkit-mask-size:contain;
+				-webkit-mask-image:var(--mask-image);
+				-webkit-mask-repeat:no-repeat;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -1294,20 +1306,20 @@
 			<br />
 						
 			<div class="tab">
-				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><img src="icons/context_menu.svg" data-type="tool" />Context Menu</button>
-				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" data-type="tool" />Quick Menu</button>
-				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><img src="icons/sidebar.svg" data-type="tool" style="transform:rotate(90deg);" />Toolbar</button>
-				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><img src="icons/sidebar.svg" data-type="tool" style="transform:scaleX(-1)" />Sidebar</button>
-				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="Hotkeys"><img src="icons/keyboard.svg" data-type="tool" />Hotkeys</button>
-				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><img src="icons/omnibox.svg" data-type="tool" />Omnibox</button>
-				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><img src="icons/highlight.svg" data-type="tool" />Highlight</button>
+				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><div class="tool" style="--mask-image: url(icons/context_menu.svg)"></div>Context Menu</button>
+				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><div class="tool" style="--mask-image: url(icons/quick_menu.svg)"></div>Quick Menu</button>
+				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:rotate(90deg)"></div>Toolbar</button>
+				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:scaleX(-1)"></div>Sidebar</button>
+				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="Hotkeys"><div class="tool" style="--mask-image: url(icons/keyboard.svg)"></div>Hotkeys</button>
+				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><div class="tool" style="--mask-image: url(icons/omnibox.svg)"></div>Omnibox</button>
+				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><div class="tool" style="--mask-image: url(icons/highlight.svg)"></div>Highlight</button>
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />Search Results</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />Find Bar</button>
-				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><img src="icons/search.svg" data-type="tool" />Search Engines</button>
-				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><img src="icons/page_tiles.svg" data-type="tool" />Page Tiles</button>
-				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><img src="icons/settings.svg" data-type="tool" />General</button>
-				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><img src="icons/auto.svg" data-type="tool" />Advanced</button>
-				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><img src="icons/help.svg" data-type="tool" />Help</button>
+				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><div class="tool" style="--mask-image: url(icons/search.svg)"></div>Search Engines</button>
+				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><div class="tool" style="--mask-image: url(icons/page_tiles.svg)"></div>Page Tiles</button>
+				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><div class="tool" style="--mask-image: url(icons/settings.svg)"></div>General</button>
+				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><div class="tool" style="--mask-image: url(icons/auto.svg)"></div>Advanced</button>
+				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><div class="tool" style="--mask-image: url(icons/help.svg)"></div>Help</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
 				<label for="importSettings">
@@ -1318,13 +1330,12 @@
 			</div>
 			</p>
 			<div id="info">
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">Support<img src="icons/link.svg"></a><br />
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">Source<img src="icons/link.svg"></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">Support<div class="tool" style="--mask-image: url(icons/link.svg);margin-left:8px;height:1em"></div></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">Source<div class="tool" style="--mask-image: url(icons/link.svg);margin-left:8px;height:1em"></div></a><br />
 			</div>
 			
 		</div>
 		<div id="right_div">
-		
 			<div class="tabcontent" id="advancedTab" >
 				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.svg" />Advanced</div>
 				<section>
@@ -2913,7 +2924,7 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<img src="icons/crossmark.svg" data-type="tool" style="height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
 						</button>
 					</div>
 
@@ -2923,7 +2934,7 @@
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" style="padding:4px 5px;position: relative;top:-3px"><img id="faviconFinder" src="icons/search.svg" data-type="tool" style="width:20px;vertical-align:middle;margin:0 4px;cursor:pointer" title="i18n_text" data-i18n="faviconFinder"/></button>
+						<button type="button" id="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
@@ -2959,9 +2970,9 @@
 					</div>
 
 					<div style="float:right;margin:16px">
-						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><img src="/icons/copy.svg" data-type="tool" style="display:inline;height:1em;vertical-align:middle"/></button>
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><div class="tool" style="--mask-image: url(icons/copy.svg);height:1em;vertical-align: middle"></button>
 <span data-browser="firefox">					
-						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><img src="/icons/add.svg" data-type="tool" style="height:1em;vertical-align:middle;display:inline;"/></button>
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></button>
 </span>
 						<button type="button" name="test" style="margin-left:20px" data-i18n="Test" title="i18n_text">Test</button>
 						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">save</button>
@@ -2974,7 +2985,7 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<img src="icons/crossmark.svg" data-type="tool" style="height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
 						</button>
 					</div>
 					<table id="folderFormTable">
@@ -3020,7 +3031,7 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<img src="icons/crossmark.svg" data-type="tool" style="height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
 						</button>
 					</div>
 					<label data-i18n="Icon">Icon URI</label>

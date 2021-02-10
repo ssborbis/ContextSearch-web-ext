@@ -84,6 +84,7 @@
     .5px -.5px 0 #000,
     -.5px .5px 0 #000,
      .5px .5px 0 #000;
+     padding:4px 1px !important;
 }
 
 X.tile[data-type="more"]::before {

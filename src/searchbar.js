@@ -92,8 +92,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 			
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
-		}))
-		.then(() => setAllToolIconColors());
+		}));
 
 });
 
