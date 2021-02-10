@@ -1,6 +1,6 @@
 :root {
 	--hover: #ccdbe8;
-	--select: #0078d7;
+	--selected: #0078d7;
 	--background: #eff0f1;
 	--border: #e0e0e0;
 	--tools-color:#444;
@@ -26,7 +26,7 @@ BODY {
 }
 
 .selectedFocus {
-	background-color: var(--select) !important;
+	background-color: var(--selected) !important;
 	position:relative;
 	color:white !important;
 }
@@ -53,8 +53,9 @@ BODY {
 	opacity:.5;
 }
 .tile[data-locked="true"] {
-	background-color:#dee7f0;
-	box-shadow:inset 2px 2px 4px #193047;
+	/*background-color:#dee7f0;
+	box-shadow:inset 2px 2px 4px #193047;*/
+	--tools-color: var(--selected);
 }
 #quickMenuElement, .tile {
 	display:inline-block;
@@ -124,17 +125,17 @@ BODY {
 	border-color: var(--hover);
 }
 .tile.dragHover:not([data-side]) {
-	background-color:var(--select);
+	background-color:var(--selected);
 	color:white;
 }
 .dragHover * {
 	pointer-events:none;
 }
 .dragHover.singleColumn[data-side="before"] {
-	border-top:1px solid var(--select);
+	border-top:1px solid var(--selected);
 }
 .dragHover.singleColumn[data-side="after"] {
-	border-bottom:1px solid var(--select);
+	border-bottom:1px solid var(--selected);
 }
 #arrow {
 	pointer-events:none;
@@ -147,7 +148,7 @@ BODY {
 	border-top: 12px solid var(--cs-green);
 	z-index:2;
 	opacity:.5;
-	border-top-color:var(--select);
+	border-top-color:var(--selected);
 }
 #arrow[data-side="before"] {
 	left: calc( var(--target-left) - 12px);
@@ -167,10 +168,10 @@ BODY {
 #arrow.singleColumn {
 	transform: rotate(-90deg);
 	left:-6px;
-	border-top-color:var(--select);
+	border-top-color:var(--selected);
 }
 .tile[data-type="folder"][data-side="middle"].dragHover {
-	background-color:var(--select);
+	background-color:var(--selected);
 	color:white;
 }
 #menuBar {
@@ -190,7 +191,7 @@ BODY {
 	width:20px;
 	display:inline-block;
 	vertical-align:top;
-	padding:2px;
+	margin-top:4px;
 	cursor:default;
 }
 #searchBarContainer {
@@ -204,10 +205,13 @@ BODY {
 	padding:2px;
 }
 #searchBarContainer > #clearSearchBarButton {
-	right:2px;
-	opacity:.4;
-	height:16px;
-	margin-top:2px;
+	right: 2px;
+	opacity: .4;
+	height: 12px;
+	margin-top: 6px;
+}
+#searchBarContainer > #searchIcon {
+	transition: transform .25s;
 }
 #searchBar {
 	font-size:11pt;
@@ -265,7 +269,7 @@ BODY {
 #suggestions > DIV:hover {
 	background-color: var(--hover);
 }
-#suggestions > DIV IMG {
+#suggestions > DIV .tool {
 	height:1em;
 	margin-right:5px;
 	opacity:.75;
@@ -350,7 +354,7 @@ BODY {
 	border: 1px solid #9abad2 !important;
 }
 .groupHighlight {
-	border: 1px dotted var(--select) !important;
+	border: 1px dotted var(--selected) !important;
 }
 .toolBarArrow {
 	border:1px solid var(--border);
@@ -358,7 +362,7 @@ BODY {
 	position:absolute;
 	z-index:2;
 	padding: 0 2px;
-	color: var(--select);
+	color: var(--selected);
 	background-color:var(--background);
 	border:none;
 	scroll-behavior: smooth;
@@ -390,17 +394,23 @@ BODY {
 	pointer-events: none;
 }
 
+.tile .tool {
+	transition: transform .25s;
+}
+
 .tile.singleColumn[data-type="more"]::before, .tile.singleColumn[data-type="less"]::before {
 	content:"";
 }
-.tile.singleColumn[data-type="more"], .tile.singleColumn[data-type="less"] {
-	background-position: center center;
+.tile.singleColumn[data-type="more"] .tool, .tile.singleColumn[data-type="less"] .tool {
+	width:20px;
+	height:20px;
 }
-/*.tile.singleColumn[data-type="folder"].groupFolder::before {
-	margin-left:0;
-}*/
+
 .tile[data-type="more"] {
 	position:relative;
+}
+.tile[data-type="less"] .tool {
+	transform:rotate(-180deg);
 }
 .tool {
 	background:var(--tools-color);

@@ -1,7 +1,7 @@
 var QMtools = [
 	{
 		name: 'close', 
-		icon: "icons/close.svg",
+		icon: "icons/crossmark.svg",
 		context: ["quickmenu"],
 		title: browser.i18n.getMessage('tools_Close'),
 		init: function() {
@@ -34,10 +34,11 @@ var QMtools = [
 				document.execCommand('copy');
 				input.parentNode.removeChild(input);
 
-				let backgroundImage = tile.style.backgroundImage;
-				tile.style.backgroundImage = `url(${browser.runtime.getURL('icons/checkmark.svg')})`;
+				tile.dataset.locked = true;
 				
-				setTimeout(() => tile.style.backgroundImage = backgroundImage, 500);
+				setTimeout(() => {
+					tile.dataset.locked = false;
+				}, 150);
 			});
 			
 			return tile;

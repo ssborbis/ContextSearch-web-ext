@@ -1170,8 +1170,9 @@ async function makeQuickMenu(options) {
 		
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 
-			let tile = buildSearchIcon(browser.runtime.getURL('/icons/back.svg'), browser.i18n.getMessage('back'));
-			
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask({icon: 'icons/back.svg'}));
+
 			tile.dataset.type = "tool";
 			tile.node = rootNode.parent;
 	
@@ -1307,7 +1308,6 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
-				moreTile.querySelector('.tool').style.setProperty('--mask-image', 'url(icons/chevron-up.svg');
 				resizeMenu({groupMore: true});
 	
 				if ( !moreLessStatus.includes( node.id ) )
@@ -1328,7 +1328,6 @@ async function makeQuickMenu(options) {
 				moreTile.onmouseup = more;
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
-				moreTile.querySelector('.tool').style.setProperty('--mask-image', 'url(icons/chevron-down.svg');
 				resizeMenu({groupLess: true});
 				
 				moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
@@ -1776,7 +1775,7 @@ function makeSearchBar() {
 			return;
 		}
 
-		si.style.transform = 'scaleY(-1)';
+		si.style.transform = 'rotate(-180deg)';
 		
 		sg.userOpen = true;
 		
@@ -1850,7 +1849,6 @@ function makeSearchBar() {
 			img.style.setProperty("--mask-image", "url(/icons/history.svg)");
 			img.title = browser.i18n.getMessage('History') || "history";
 			img.classList.add('tool');
-			img.style.height = "1em";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
