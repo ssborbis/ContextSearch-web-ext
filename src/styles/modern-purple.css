@@ -1,3 +1,8 @@
 :root { 
+	--background-color: #b242e1;
 	--background: linear-gradient(to bottom, #000000 0%,#000000 28%,#b242e1 100%);
+}
+
+#findbar {
+	background:linear-gradient(to right, #000000 0%,#000000 28%,#b242e1 100%);
 }

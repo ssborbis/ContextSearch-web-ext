@@ -4,6 +4,7 @@
 BODY, HTML {
 	margin:0;
 	padding:0;
+	background:none;
 }
 
 #findbar {

@@ -1,3 +1,7 @@
 :root { 
-	--background: linear-gradient(#e66465, #9198e5);
+	--background: linear-gradient(to bottom, #e66465, #9198e5);
+}
+
+#findbar {
+	background: linear-gradient(to right, #e66465, #9198e5);
 }

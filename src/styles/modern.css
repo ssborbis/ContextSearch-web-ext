@@ -11,6 +11,10 @@
 	--group-label-color: #fff;
 }
 
+#findbar {
+	background: linear-gradient(to right, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); 
+}
+
 #quickMenuElement {
 	/*padding:6px;*/
 }
