@@ -112,12 +112,33 @@ function imageToBase64(image, maxSize) {
 }
 
 function createCustomIcon(options) {
+	// https://www.scriptol.com/html5/canvas/rounded-rectangle.php
+	function roundRect(x, y, w, h, radius) {
+		var r = x + w;
+		var b = y + h;
+		ctx.beginPath();
+		ctx.strokeStyle="green";
+		ctx.lineWidth="4";
+		ctx.moveTo(x+radius, y);
+		ctx.lineTo(r-radius, y);
+		ctx.quadraticCurveTo(r, y, r, y+radius);
+		ctx.lineTo(r, y+h-radius);
+		ctx.quadraticCurveTo(r, b, r-radius, b);
+		ctx.lineTo(x+radius, b);
+		ctx.quadraticCurveTo(x, b, x, b-radius);
+		ctx.lineTo(x, y+radius);
+		ctx.quadraticCurveTo(x, y, x+radius, y);
+		ctx.closePath();
+		ctx.fill();
+	}
+
 	var c = document.createElement('canvas');
 	var ctx = c.getContext('2d');
-	ctx.canvas.width = options.width || 16;
-	ctx.canvas.height = options.height || 16;
+	ctx.canvas.width = options.width || userOptions.cacheIconsMaxSize || 32;
+	ctx.canvas.height = options.height || userOptions.cacheIconsMaxSize || 32;
 	ctx.fillStyle = options.backgroundColor || '#6ec179';
-	ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	//ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+	roundRect(0, 0, ctx.canvas.width, ctx.canvas.height, ctx.canvas.width / 3);
 
 	if ( options.image ) {
 		
@@ -127,7 +148,7 @@ function createCustomIcon(options) {
 		ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
 	}
 
-	ctx.font = (options.fontSize || "16px") + " " + (options.fontFamily || "Georgia");
+	ctx.font = (options.fontSize || ctx.canvas.height *.8 + "px") + " " + (options.fontFamily || "Georgia");
 	ctx.textAlign = 'center';
 	ctx.textBaseline="middle"; 
 	ctx.fillStyle = options.textColor || "#FFFFFF";

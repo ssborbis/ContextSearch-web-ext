@@ -1849,6 +1849,11 @@
     "description": ""
   },
 
+  "faviconFinderShort": {
+    "message": "Find favicons",
+    "description": ""
+  },
+
   "uploadfromlocal": {
     "message": "Use an image from your computer",
     "description": ""

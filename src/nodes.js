@@ -142,7 +142,7 @@ function getIconFromNode(node) {
 	if ( node.type === "searchEngine" ) {
 		let se = userOptions.searchEngines.find( se => se.id === node.id );
 		if ( !se ) return browser.runtime.getURL('icons/search.svg');
-		return se.icon_base64String || se.icon_url;
+		return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
 	} else if ( node.type === "bookmarklet" ) {
 		return node.icon || browser.runtime.getURL('icons/code.svg');
 	} else if ( node.type === "folder" ) {

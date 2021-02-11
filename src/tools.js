@@ -347,12 +347,16 @@ var QMtools = [
 			
 			addTileEventHandlers(tile, async () => {
 
-				let currentLink = document.querySelector('link[rel="stylesheet"].theme');
+				let currentLink = document.querySelector('link[rel="stylesheet"].theme:not(.requires)');
 
 				let currentThemeIndex = themes.findIndex(t => currentLink.href.endsWith(t.path));
 
 				let theme = themes[(1 + currentThemeIndex) % themes.length];
-				currentLink.parentNode.removeChild(currentLink);
+				
+				// remove all themes and requires
+				document.querySelectorAll('link[rel="stylesheet"].theme').forEach( link => {
+					link.parentNode.removeChild(link);
+				})
 
 				await setTheme(theme);
 

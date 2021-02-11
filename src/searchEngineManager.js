@@ -59,36 +59,16 @@ function buildSearchEngineContainer() {
 			text.innerText = se.title;
 			header.appendChild(text);
 
-			let edit_form = document.getElementById('editSearchEngineForm');
-
-			edit_form.node = node;
-			
-			// prevent click events from closing the form
-			edit_form.onclick = function(e) {
-				e.stopPropagation();
-			}
-			
 			li.addEventListener('dblclick', e => {
 
+				let edit_form = document.getElementById('editSearchEngineForm');
+
+				edit_form.node = node;
+
 				e.stopPropagation();
 				
-				if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
-
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
-
-				// close if open on same TR
-				if (edit_form.parentNode === li && edit_form.style.maxHeight) {
-					
-					// resize TEXTAREA fix
-					if ( edit_form.style.maxHeight === "none" ) {
-						edit_form.style.maxHeight = edit_form.scrollHeight + "px";
-						edit_form.getBoundingClientRect();
-					}
-					
-					edit_form.style.maxHeight = null;
-					return;
-				}
-				
+			
 				function clearError( element ) {
 					if ( 
 						element 
@@ -197,44 +177,8 @@ function buildSearchEngineContainer() {
 							resolve(true);
 						}
 
-						// show icon as loading
-						icon.src = browser.runtime.getURL("/icons/spinner.svg");
+						resolve(true);
 
-						// new Image to check icon_url
-						let newIcon = new Image();
-						newIcon.onload = function() {
-							icon.src = imageToBase64(this, userOptions.cacheIconsMaxSize) || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
-							resolve(true);
-						}
-						newIcon.onerror = function() {	
-							showError(edit_form.iconURL,browser.i18n.getMessage("IconLoadError"));
-							//icon.src = se.icon_base64String || createCustomIcon({text: se.title.charAt(0).toUpperCase()});
-							resolve(true);
-						}
-						
-						if ( !edit_form.iconURL.value ) {
-							try {
-								let url = new URL(edit_form.template.value);
-								newIcon.src = (!url.origin || url.origin == 'null' ) ? "" : url.origin + "/favicon.ico";
-							} catch (error) {
-								newIcon.src = createCustomIcon({text: edit_form.shortName.value.charAt(0).toUpperCase()});
-								console.log(error);
-							}
-						} else if ( /^generate:/.test(edit_form.iconURL.value) ) {
-
-							let url = new URL(edit_form.iconURL.value.replace(/#/g, "%23"));
-	
-							// https://stackoverflow.com/a/8649003
-							let obj = JSON.parse('{"' + url.searchParams.toString().replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) });
-
-							newIcon.src = createCustomIcon(obj);
-						
-						} else {
-							newIcon.src = edit_form.iconURL.value;
-						}
-						
-						// set a timeout for loading the image
-						setTimeout(() => { if (!newIcon.complete) newIcon.onerror(); }, 5000);
 					});
 
 				}
@@ -262,17 +206,7 @@ function buildSearchEngineContainer() {
 				}();
 				edit_form.searchRegex.value = se.searchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
-				
-				edit_form.addEventListener('mouseover', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', false);
-				});
-				
-				edit_form.addEventListener('mouseout', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', true);
-				});
-				
+								
 				edit_form.close.onclick = edit_form.closeForm;
 
 				edit_form.test.onclick = function() {
@@ -354,10 +288,28 @@ function buildSearchEngineContainer() {
 							});
 
 							updateNodeList();
-							
 						}
 
-						se.icon_base64String = icon.src;
+						let iconBase64 = await new Promise( resolve => {
+							let img = new Image();
+							img.onload = () => resolve(imageToBase64(img, userOptions.cacheIconsMaxSize));
+							img.onerror = () => resolve("");
+
+							setTimeout(() => resolve(""), 2500);
+
+							let src = getIconSourceFromURL(edit_form.iconURL.value);
+
+							if ( src.startsWith('data:')) {
+								resolve(src);
+								return;
+							}
+
+							img.src = src;
+						});
+
+						icon.src = iconBase64 || "icons/search.svg";
+
+						se.icon_base64String = iconBase64;  //icon.src;
 						se.description = edit_form.description.value;
 						se.template = edit_form.template.value;
 						se.searchForm = edit_form.searchform.value;
@@ -405,10 +357,7 @@ function buildSearchEngineContainer() {
 			img.src = getIconFromNode(node);
 			header.appendChild(img);
 			
-			li.addEventListener('dblclick', e => {
-				//console.log('dblclick');
-				editBm();
-			});	
+			li.addEventListener('dblclick', editBm);
 			
 			let text = document.createElement('span');
 			text.innerText = node.title;
@@ -416,53 +365,39 @@ function buildSearchEngineContainer() {
 			header.appendChild(text);
 			
 			function editBm() {
-
-				if ( li.querySelector(".editForm") ) {
-					let _form = li.querySelector(".editForm");
-					_form.closeForm();
-					return;
-				}
-				
+			
 				let _form = $('#editBookmarkletForm');
+				
 				_form.node = node;
 								
-				_form.addEventListener('mouseover', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', false);
-				});
-				
-				_form.addEventListener('mouseout', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', true);
-				});
-
 				_form.iconURL.value = node.icon || "";
 				
 				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
 
-					img.src = browser.runtime.getURL("/icons/spinner.svg");
 					let newIcon = new Image();
 					newIcon.onload = function() {
-						img.src = imageToBase64(this, userOptions.cacheIconsMaxSize) || createCustomIcon({text: node.title.charAt(0).toUpperCase()});
-						node.icon = img.src;
+						node.icon = imageToBase64(this, userOptions.cacheIconsMaxSize);
+						onloadend();
 						updateNodeList();
 					}
 					newIcon.onerror = function() {	
-						img.src = createCustomIcon({text: node.title.charAt(0).toUpperCase()});
-						node.icon = img.src;
+						node.icon = _form.iconURL.value;
+						onloadend();
 						updateNodeList();
+					}
+
+					let onloadend = function () {
+						 _form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
+						 img.src = getIconFromNode(node);
 					}
 
 					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
 					
-					newIcon.src = _form.iconURL.value;
+					newIcon.src = getIconSourceFromURL(_form.iconURL.value);
 					
-					setTimeout(() => {
-						if (!newIcon.complete)
-							newIcon.onerror();
-					}, 5000);
+					setTimeout(() => { if (!newIcon.complete) newIcon.onerror()}, 5000);
 				}
 				
 				createFormContainer(_form);
@@ -538,29 +473,11 @@ function buildSearchEngineContainer() {
 				if ( e.target !== li && e.target !== img && e.target !== header ) return;
 				
 				e.stopPropagation();
-				// get the first form of the LI and check if folder form
-				if ( li.querySelector(".editForm") ) {
-					let _form = li.querySelector(".editForm");
-					if ( _form && _form.closeForm ) {
-						_form.closeForm();
-						return;
-					}
-				}
 				
 				let _form = $('#editFolderForm');
 				_form.node = node;
 				
 				_form.closeForm = _form.closeForm;
-				
-				_form.addEventListener('mouseover', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', false);
-				});
-				
-				_form.addEventListener('mouseout', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', true);
-				});
 				
 				_form.close.onclick = _form.closeForm;
 				
@@ -1744,4 +1661,21 @@ function createFormContainer(form) {
 	overdiv.style.opacity = null;
 
 	form.save.classList.remove('changed');
+}
+
+function getIconSourceFromURL(_url) {
+	if ( /^generate:/.test(_url) ) {
+		try {
+			let url = new URL(_url.replace(/#/g, "%23"));
+
+			// https://stackoverflow.com/a/8649003
+			let obj = JSON.parse('{"' + url.searchParams.toString().replace(/&/g, '","').replace(/=/g,'":"') + '"}', function(key, value) { return key===""?value:decodeURIComponent(value) });
+
+			return createCustomIcon(obj);
+		} catch (err) {
+			return _url;
+		}
+	} else {
+		return _url;
+	}
 }

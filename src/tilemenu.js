@@ -54,27 +54,35 @@ function buildSearchIcon(icon_url, title) {
 	return div;
 }
 
-function setTheme(theme) {
+function addStylesheet(href) {
 	return new Promise(resolve => {
-		theme = theme || themes.find( t => t.name === userOptions.quickMenuTheme );
-
-		if ( !theme ) theme = themes[0];
-
 		let link = document.createElement('link');
 
 		link.onload = function() { resolve(link) }
 
 		link.rel ="stylesheet";
-		link.className = "theme";
-		link.href = theme.path;
+		link.href = href;
 
 		// insert before STYLE to allow userStyles to supersede theme styling
 		let style = document.head.querySelector('style');
 		if ( style ) document.head.insertBefore(link, style);
 		else document.head.appendChild(link);
-
-		document.body.getBoundingClientRect();
 	});
+}
+
+async function setTheme(theme) {
+	theme = theme || themes.find( t => t.name === userOptions.quickMenuTheme ) || themes[0];
+
+	if ( theme.requires ) {
+		for ( let l of theme.requires ) {
+			let link = await addStylesheet(l);
+			link.className = "theme requires"
+		}
+	}
+
+	let link = await addStylesheet(theme.path);
+	link.className = "theme";
+	return link;
 }
 
 function setUserStyles() {

@@ -32,18 +32,3 @@ let closePageTiles = () => {
 	let iframe = getPageTilesIframe();
 	if ( iframe ) iframe.parentNode.removeChild(iframe);
 }
-
-// let mouseTracker = [];
-// let mouseLastCoords = null;
-// document.addEventListener('mousemove', e => {
-// 	mouseLastCoords = {x: e.clientX, y: e.clientY};
-// });
-
-// setInterval({
-// 	mouseTracker.push(mouseLastCoords);
-// 	if ( mouseTracker.length > 10 ) mouseTracker.shift();
-
-
-
-
-// }, 50 )

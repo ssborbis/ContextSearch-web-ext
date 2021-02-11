@@ -1198,7 +1198,7 @@
 				left:50%;
 				transform:translate(-50%, -50%);
 				background-color:var(--bg-color2);
-				max-width:800px;
+				max-width:430px;
 				border-radius: 10px;
 			}
 			.faviconPickerBox DIV {
@@ -2934,7 +2934,7 @@
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" id="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">Form Path</label><input name="searchform" type="text" class="inputNice" />
@@ -3020,7 +3020,8 @@
 					</table>
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;"/>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
@@ -3036,7 +3037,8 @@
 					</div>
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;"/>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
