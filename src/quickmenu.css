@@ -45,6 +45,7 @@ BODY {
 	background-repeat: no-repeat;
 	transition: background-color .25s ease-out, opacity .25s linear, width .2s ease-out;
 	z-index:2;
+	position: relative;
 }
 .tile[data-disabled="true"] {
 	opacity:.1;
@@ -396,7 +397,19 @@ BODY {
 }
 
 .tile .tool {
+	vertical-align:middle;
+	width:100%;
+	height:100%;
+	mask-size: var(--tile-background-size);
+	-webkit-mask-size: var(--tile-background-size);
+	pointer-events: none;
 	transition: transform .25s;
+}
+
+.tile.singleColumn .tool {
+	width:20px;
+	position:absolute;
+	left:0;
 }
 
 .tile.singleColumn[data-type="more"]::before, .tile.singleColumn[data-type="less"]::before {
@@ -405,6 +418,8 @@ BODY {
 .tile.singleColumn[data-type="more"] .tool, .tile.singleColumn[data-type="less"] .tool {
 	width:20px;
 	height:20px;
+	left:-10px;
+	position: relative;
 }
 
 .tile[data-type="more"] {
@@ -426,13 +441,4 @@ BODY {
 	-webkit-mask-size:contain;
 	-webkit-mask-image:var(--mask-image);
 	-webkit-mask-repeat:no-repeat;
-}
-
-.tile .tool {
-	vertical-align:middle;
-	width:100%;
-	height:100%;
-	mask-size: var(--tile-background-size);
-	-webkit-mask-size: var(--tile-background-size);
-	pointer-events: none;
 }
