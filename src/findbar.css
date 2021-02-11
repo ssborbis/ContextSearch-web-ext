@@ -33,8 +33,6 @@ BODY, HTML {
 	vertical-align:middle;
 	width:20px;
 	height:20px;
-	background: url("/icons/crossmark.svg") no-repeat center;
-	background-size:contain;
 }
 .button {
 	border:1px solid #888;
@@ -48,11 +46,8 @@ BODY, HTML {
 #previous, #next {
 	vertical-align:middle;
 	margin-left:-1px;
-	background: url("/icons/chevron-up.svg") no-repeat center;
-	background-size:contain;
 }
 #next {
-	transform:scaleY(-1);
 	border-radius:0 2px 2px 0;
 }
 #mark_counter {
@@ -79,7 +74,7 @@ INPUT:checked + .optionLabel {
 	display:none;
 	opacity:0;
 }
-#searchIcon, #clearSearchBar {
+#searchIcon, #clearSearchBarButton {
 	position:absolute;
 	z-index:2;
 	left:60px;
@@ -91,28 +86,11 @@ INPUT:checked + .optionLabel {
 }
 #searchIcon {
 	left:60px;
-	background: url(icons/search.svg) no-repeat center;
-	background-size: contain;
 }
-#clearSearchBar {
+#clearSearchBarButton {
 	left:364px;
-	background: url(icons/delete.svg) no-repeat center;
-	background-size: contain;
 }
-LABEL DIV[data-type="tool"] {
-	background-size:contain;
+LABEL .tool {
 	width:20px;
 	height:20px;
-}
-[for="toggle_navbar"] [data-type="tool"] {
-	background: url("/icons/sidebar.svg") no-repeat center;
-	background-size:contain;
-}
-[for="toggle_marks"] [data-type="tool"] {
-	background: url("/icons/highlight.svg") no-repeat center;
-	background-size:contain;
-}
-[for="toggle_searchalltabs"] [data-type="tool"] {
-	background: url("/icons/tabs.svg") no-repeat center;
-	background-size:contain;
 }

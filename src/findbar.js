@@ -8,10 +8,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 	
 	if ( userOptions === {} ) return;
 
-	let theme = themes.find(t => t.name === userOptions.quickMenuTheme);
-	if ( theme ) browser.runtime.sendMessage({action: "addStyles", file: theme.path});
-
-	document.body.dataset.theme = userOptions.quickMenuTheme;
+	setTheme();
 	
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;
 });
@@ -153,7 +150,7 @@ document.addEventListener('DOMContentLoaded', e => {
 	document.querySelector('#toggle_navbar + LABEL').title = browser.i18n.getMessage('Navbar');
 	document.querySelector('#toggle_marks + LABEL').title = browser.i18n.getMessage('highlight');
 	document.querySelector('#toggle_searchalltabs + LABEL').title = browser.i18n.getMessage('searchalltabs') || "Search all tabs";
-	document.querySelector('#clearSearchBar').title = browser.i18n.getMessage('delete') || "delete";
+	document.querySelector('#clearSearchBarButton').title = browser.i18n.getMessage('delete') || "delete";
 });
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
@@ -188,7 +185,7 @@ document.querySelector('#toggle_searchalltabs').addEventListener('change', e => 
 	});
 });
 
-document.getElementById('clearSearchBar').addEventListener('click', e => {
+document.getElementById('clearSearchBarButton').addEventListener('click', e => {
 	getSearchBar().value = null;
 	getSearchBar().dispatchEvent(new Event('change'));
 	getSearchBar().focus();
