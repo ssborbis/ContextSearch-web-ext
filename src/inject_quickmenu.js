@@ -460,9 +460,38 @@ document.addEventListener('dragstart', e => {
 			closeQuickMenu();
 	}, {once: true});
 
-	// let ds = new DragShake();
-	// ds.onshake = () => closeQuickMenu();
-	// ds.start();
+	// if ( window.chrome ) {
+	// 	let od = document.createElement('div');
+	// 	od.style = "position:fixed;left:0;right:0;top:0;bottom:0;z-index:2147483647";
+	// 	od.id = "CS_quickMenuOverDiv";
+
+	// 	document.body.appendChild(od);
+
+	// 	od.addEventListener('dragover', e => {
+	// 		e.preventDefault();
+	// 	})
+
+	// 	od.addEventListener('drop', e => {
+
+	// 		iframe.contentWindow.postMessage({
+	// 			pageX:e.pageX, 
+	// 			pageY:e.pageY,
+	// 			clientX:e.clientX,
+	// 			clientY:e.clientY,
+	// 			offsetX:e.offsetX,
+	// 			offsetY:e.offsetY,
+	// 			screenX:e.screenX,
+	// 			screenY:e.screen
+	// 		}, iframe.src);
+	// 	});
+
+	// }
+
+	let ds = new DragShake();
+	ds.onshake = () => closeQuickMenu();
+	ds.start();
+
+	document.addEventListener('closequickmenu', e => ds.stop(), {once: true})
 
 	openQuickMenu(e);
 });
