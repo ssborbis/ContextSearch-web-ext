@@ -777,10 +777,10 @@ function keyArrayToButtons(arr, options) {
 	let div = document.createElement('div');
 	
 	function makeButton(str) {
-		let span = document.createElement('span');
+		let span = document.createElement(options.nodeType || 'span');
 		span.innerText = str;
-		span.className = 'className' in options ? options.className : 'keyboardButton';
-		span.style = 'style' in options ? options.style : 'min-width:auto;padding:3px 10px;';
+		span.className = options.className || null;
+		span.style = options.style || null;
 		return span;
 	}
 	
@@ -810,26 +810,15 @@ function keyArrayToButtons(arr, options) {
 		return;
 	}
 	
-	let buttons = div.querySelectorAll('span');
+	let buttons = div.querySelectorAll(options.nodeType || 'span');
 	for ( let i=1;i<buttons.length;i++ ) {
 		let spacer = document.createElement('span');
-		spacer.innerHTML = '&nbsp;&nbsp;+&nbsp;&nbsp;';
+		spacer.innerHTML = '&nbsp;+&nbsp;';
 		div.insertBefore(spacer, buttons[i]);
 	}
 	
 	return div;
 }
-
-// Modify Options for quickload popup
-// document.addEventListener('DOMContentLoaded', () => {
-
-	// if (window.location.hash === '#quickload') {
-		// history.pushState("", document.title, window.location.pathname);
-		
-		// document.querySelector('button[data-tabid="enginesTab"]').click();
-		// $('#selectMozlz4FileButton').click();
-	// }
-// });
 
 document.addEventListener('DOMContentLoaded', hashChange);
 window.addEventListener('hashchange', hashChange);
@@ -855,19 +844,6 @@ function hashChange(e) {
 	}
 	
 }
-
-// Modify Options for BrowserAction
-// document.addEventListener("DOMContentLoaded", () => {
-	// if (window.location.hash === '#browser_action') {
-		// $('#left_div').style.display = 'none';
-		// $('#right_div').style.width = "auto";
-		// let loadButton = $("#selectMozlz4FileButton");
-		// loadButton.onclick = function(e) {
-			// browser.runtime.sendMessage({action:"openOptions", hashurl:"#quickload"});
-			// e.preventDefault();
-		// }
-	// }
-// });
 
 function makeTabs() {
 	
@@ -1510,7 +1486,7 @@ function buildShortcutTable() {
 
 	setButtons = (el, key) => {
 		el.innerText = null;
-		el.appendChild(keyArrayToButtons(key, {className:null, style:"", text:""}));
+		el.appendChild(keyArrayToButtons(key));
 	}
 
 	defaultToUser = key => {
@@ -1528,14 +1504,14 @@ function buildShortcutTable() {
 	defaultShortcuts.forEach( s => {
 
 		const us = userOptions.userShortcuts.find(_s => _s.id == s.id);
-		const ds = defaultToUser(defaultShortcuts.find(d => d.id == s.id ));
+		const ds = defaultToUser(s);
 
 		let tr = document.createElement('tr');
 		tr.shortcut = s;
 		tr.innerHTML = `
 			<td></td>
 			<td>${s.name || s.action}</td>
-			<td><span style="cursor:pointer;user-select:none;" data-id="${s.id}">set</span></td>
+			<td><span style="cursor:pointer;user-select:none;" title="click to change" data-id="${s.id}">set</span></td>
 			`;
 		table.appendChild(tr);
 
@@ -1544,7 +1520,7 @@ function buildShortcutTable() {
 		input.checked = us ? us.enabled : false;
 
 		input.onchange = () => {
-			let key = us || defaultToUser(s);
+			let key = userOptions.userShortcuts.find(_s => _s.id == s.id) || defaultToUser(s);
 			key.enabled = input.checked;
 			setUserShortcut(key);
 		}
@@ -1574,10 +1550,12 @@ function buildShortcutTable() {
 
 		key = defaultToUser(key);
 
-		let us = userOptions.userShortcuts.find( s => s.id === key.id);
+		let us = userOptions.userShortcuts.find( s => s.id == key.id);
 
-		if ( us ) userOptions.userShortcuts.splice(userOptions.userShortcuts.indexOf(us), 1, key);
-		else userOptions.userShortcuts.push(key);
+		if ( us ) {
+			key.enabled = us.enabled;
+			userOptions.userShortcuts.splice(userOptions.userShortcuts.indexOf(us), 1, key);
+		} else userOptions.userShortcuts.push(key);
 
 		saveOptions();
 	}
@@ -1599,7 +1577,7 @@ function shortcutListener(hk, options) {
 		document.addEventListener('keydown', preventDefaults);
 		document.addEventListener('keypress', preventDefaults);
 		
-		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
+		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
 		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
 				
 		document.addEventListener('keyup', e => {
@@ -1623,7 +1601,7 @@ function shortcutListener(hk, options) {
 			}
 			
 			hk.innerHTML = null;
-			hk.appendChild(keyArrayToButtons(key, {className:null, style:null, text:""}));
+			hk.appendChild(keyArrayToButtons(key));
 								
 			document.removeEventListener('keydown', preventDefaults);
 			document.removeEventListener('keypress', preventDefaults);

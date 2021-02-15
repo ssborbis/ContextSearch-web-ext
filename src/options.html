@@ -1298,10 +1298,17 @@
 			#shortcutTable TD {
 				white-space:nowrap;
 			}
-
-			#shortcutTable SPAN {
-				display:inline-block;
+			#shortcutTable TD:nth-of-type(1) {
+				width:0;
 			}
+			#shortcutTable TD > SPAN {
+				display:inline-block;
+				padding:2px 6px;
+			}
+			#shortcutTable TD > SPAN:hover {
+				background-color:#0001;
+			}
+
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -2509,6 +2516,7 @@
 					</section>
 
 					<section>
+						<p class="header1" data-i18n="Shortcuts">Shortcuts</p>
 						<table style="width:100%;font-weight:normal" id="shortcutTable"></table>
 					</section>
 				</div>
