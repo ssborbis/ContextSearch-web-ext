@@ -10,11 +10,10 @@ const defaultUserOptions = {
 	quickMenuRowsSingleColumn: 6,
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
-	quickMenuOnHotkey: false,
-	quickMenuHotkey: [17, 192],
 	quickMenuOnMouse: true,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
+	quickMenuOnDrag: false,
 	quickMenuMouseButton: 3,
 	quickMenuAuto: false,
 	quickMenuAutoTimeout: 1000,
@@ -26,7 +25,8 @@ const defaultUserOptions = {
 		button: 1,
 		alt: false,
 		ctrl: true,
-		shift: false
+		shift: false,
+		useInnerText: false
 	},
 	quickMenuScale: 1,
 	quickMenuIconScale: 1,
@@ -101,7 +101,6 @@ const defaultUserOptions = {
 		height: 400,
 		singleColumn: false,
 		startOpen: false,
-		hotkey: [],
 		widget: {
 			enabled: false,
 			position: "right",
@@ -145,10 +144,8 @@ const defaultUserOptions = {
 			enabled: false
 		},
 		findBar: {
-			enabled: false,
 			startOpen: false,
 			showNavBar: false,
-			hotKey: [17, 16, 70],
 			position: 'top',
 			windowType: 'docked',
 			openInAllTabs: false,
@@ -209,6 +206,6 @@ const defaultUserOptions = {
 	omniboxLastUsedIds: [],
 	omniboxSearch: "openBackgroundTab",
 	cacheIconsMaxSize: 32,
-	cacheIcons: true
-
+	cacheIcons: true,
+	userShortcuts: []
 };

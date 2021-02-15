@@ -104,6 +104,13 @@ async function notify(message, sender, sendResponse) {
 		case "unlockQuickMenu":
 			return sendMessageToTopFrame();
 			break;
+
+		case "toggleLockQuickMenu":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: 'if ( quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
+				allFrames:false
+			});
+			break;
 			
 		case "rebuildQuickMenu":
 			return sendMessageToTopFrame();
@@ -193,6 +200,7 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 		
+		case "openSideBar":
 		case "sideBarHotkey":
 			return sendMessageToTopFrame();
 			break;
@@ -638,6 +646,23 @@ async function notify(message, sender, sendResponse) {
 		case "closePageTiles":
 			return sendMessageToTopFrame();
 			break;
+
+		case "openBrowserAction":
+			browser.browserAction.openPopup();
+			return;
+
+		case "openPageTiles":
+			await browser.tabs.executeScript(sender.tab.id, {
+				file: "/inject_pagetiles.js"
+			}).catch(e => {});
+
+			return sendMessageToTopFrame();
+			break;
+
+
+
+		//case "toggleDisplayMode":
+
 	}
 }
 
@@ -1382,6 +1407,7 @@ function openSearch(info) {
 					let parts = JSON.parse('[' + line.trim() + ']');
 					let _find = new RegExp(parts[0], parts[2] || 'g');
 					let _replace = parts[1];
+
 					let newSearchTerms = searchTerms.replace(_find, _replace);
 					
 					console.log("regex", searchTerms + " -> " + newSearchTerms);
@@ -1921,6 +1947,41 @@ function updateUserOptionsVersion(uo) {
 
 		return _uo;	
 	}).then( _uo => {
+
+		// replace hotkeys for sidebar ( quickMenuHotkey ) and findbar
+		if ( 'quickMenuHotkey' in _uo ) {
+			let enabled = _uo.quickMenuOnHotkey;
+			let key = _uo.quickMenuHotkey;
+
+			if ( 'key' in key ) {
+				key.id = 4;
+				key.enabled = enabled;
+
+				let us = _uo.userShortcuts.find(s => s.id === 4 );
+				if ( us ) _uo.userShortcuts[_uo.userShortcuts.indexOf(us)] = key;
+				else _uo.userShortcuts.push(key);
+			}
+
+		}
+
+		if ( 'hotKey' in _uo.highLight.findBar ) {
+			let enabled = _uo.highLight.findBar.enabled;
+			let key = _uo.highLight.findBar.hotKey;
+
+			if ( 'key' in key ) {
+				key.id = 1;
+				key.enabled = enabled;
+
+				let us = _uo.userShortcuts.find(s => s.id === 1 );
+				if ( us ) _uo.userShortcuts[_uo.userShortcuts.indexOf(us)] = key;
+				else _uo.userShortcuts.push(key);
+			}
+			console.log("-> 1.29");
+		}
+
+		return _uo;
+
+	}).then( _uo => {
 		console.log('done');
 		return _uo;
 	});
@@ -2071,7 +2132,7 @@ function dataToSearchEngine(data) {
 	let se = {
 		"searchForm": data.origin, 
 		"icon_url": data.favicon_href || data.origin + "/favicon.ico",
-		"title": data.title,
+		"title": data.name || data.title,
 		"order":userOptions.searchEngines.length, 
 		"icon_base64String": "", 
 		"method": data.method, 

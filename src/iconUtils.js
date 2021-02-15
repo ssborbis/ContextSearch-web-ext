@@ -121,7 +121,7 @@ async function findFavicons(url) {
 			`
 		});
 
-		let promise4 = new Promise(resolve => setTimeout(resolve,2500));
+		let promise4 = new Promise(resolve => setTimeout(resolve,5000));
 
 		hrefs = await Promise.race([promise3, promise4]);
 
@@ -145,8 +145,17 @@ async function findFavicons(url) {
 document.querySelectorAll('[name="faviconFinder"').forEach( finder => {
 	finder.onclick = async function(e) {
 
+		let overdiv = document.createElement('div');
+		overdiv.className = 'overDiv';
+		document.body.appendChild(overdiv);
+
+		let spinner = new Image();
+		spinner.src = 'icons/spinner.svg';
+		spinner.style = 'height:64px;width:64px;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000';
+		overdiv.appendChild(spinner);
 
 		let form = finder.closest("form");
+		form.parentNode.classList.add('blur');
 
 		let url;
 		let urls = [];
@@ -186,15 +195,12 @@ document.querySelectorAll('[name="faviconFinder"').forEach( finder => {
 			return _urls;
 		}
 
-		let overdiv = document.createElement('div');
-		overdiv.className = 'overDiv';
-		form.parentNode.classList.add('blur');
+		spinner.parentNode.removeChild(spinner);
 
 		let div = document.createElement('div');
 		div.id = "faviconPickerContainer";
 		overdiv.style.opacity = 0;
 		overdiv.appendChild(div);
-		document.body.appendChild(overdiv);
 
 		overdiv.offsetWidth;
 		overdiv.style.opacity = 1;
@@ -212,7 +218,7 @@ document.querySelectorAll('[name="faviconFinder"').forEach( finder => {
 				let img = new Image();
 
 				img.onload = function() {
-					let label = document.createElement('div');
+					let label = box.querySelector('div') || document.createElement('div');
 					label.innerText = this.naturalWidth + " x " + this.naturalHeight;
 					box.appendChild(label);
 

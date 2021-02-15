@@ -371,6 +371,7 @@ function buildSearchEngineContainer() {
 				_form.node = node;
 								
 				_form.iconURL.value = node.icon || "";
+				_form.shortName.value = node.title;
 				
 				_form.close.onclick = _form.closeForm;
 				
@@ -392,6 +393,10 @@ function buildSearchEngineContainer() {
 						 _form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
 						 img.src = getIconFromNode(node);
 					}
+
+					node.title = _form.shortName.value.trim();
+
+					text.innerText = node.title;
 
 					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
 					
@@ -452,18 +457,28 @@ function buildSearchEngineContainer() {
 			text.className = "label";
 			header.appendChild(text);
 			
-			let expand = document.createElement('span');
-			expand.innerText = "-";
-			expand.className = "collapse";
+			let ec = document.createElement('span');
+			ec.innerText = "-";
+			ec.className = "collapse";
 
-			header.insertBefore(expand, header.firstChild);
+			header.insertBefore(ec, header.firstChild);
 
 			let ul = document.createElement('ul');
 			li.appendChild(ul);
+
+			ec.expand = () => {
+				ul.style.display = null;
+				ec.innerText = "-";
+			}
+
+			ec.collapse = () => {
+				ul.style.display = 'none';
+				ec.innerText = "+";
+			}
 			
-			expand.onclick = function() {
-				ul.style.display = ul.style.display ? null : "none";
-				expand.innerText = ul.style.display ? "+" : "-";
+			ec.onclick = function() {
+				if ( ul.style.display ) ec.expand();
+				else ec.collapse();
 			}
 			
 			node.children.forEach( _node => traverse(_node, ul) );
@@ -483,7 +498,8 @@ function buildSearchEngineContainer() {
 				
 				_form.save.onclick = function() {
 					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
-					
+
+					node.title = _form.shortName.value.trim();
 					node.groupColor = _form.groupColor.value;
 					node.groupFolder = _form.groupFolder.checked;
 					node.groupLimit = parseInt(_form.groupLimit.value);
@@ -491,6 +507,8 @@ function buildSearchEngineContainer() {
 					node.groupHideMoreTile = _form.groupHideMoreTile.checked;
 					node.icon = _form.iconURL.value;
 					updateNodeList();
+
+					text.innerText = node.title;
 				}
 
 				_form.iconURL.addEventListener('change', () => {
@@ -498,6 +516,7 @@ function buildSearchEngineContainer() {
 					img.src = _form.iconURL.value || browser.runtime.getURL('icons/folder-icon.svg');
 				});
 								
+				_form.shortName.value = node.title;
 				_form.groupColor.value = node.groupColor || userOptions.defaultGroupColor;
 				_form.groupFolder.checked = node.groupFolder || false;
 				_form.groupLimit.value = node.groupLimit || 0;
@@ -1576,6 +1595,21 @@ function buildSearchEngineContainer() {
 		});
 	}
 
+	let main_ec = document.createElement('div');
+	main_ec.style = "position:absolute;top:0;left:10px;width:12px;height:12px;display:inline-block;z-index:2;cursor:pointer;user-select:none";
+	main_ec.className = "collapse";
+	main_ec.innerText = "±";
+	main_ec.onclick = function() {
+		if ( main_ec.expand ) {
+			table.querySelectorAll('UL .collapse').forEach(c => c.expand());
+			main_ec.expand = false;
+		} else {
+			table.querySelectorAll('UL .collapse').forEach(c => c.collapse());
+			main_ec.expand = true;
+		}
+	}
+	table.appendChild(main_ec);
+
 }
 
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
@@ -1609,7 +1643,6 @@ function buildSearchEngineContainer() {
 		box.classList.add('inputNice');
 		box.classList.add('upload');
 
-
 		let forlabel = document.createElement('label');
 		forlabel.setAttribute('for', form.iconPicker.id);
 		forlabel.style = 'cursor:pointer;width:100%;height:100%;z-index:3;position:absolute;left:0;top:0';
@@ -1620,7 +1653,6 @@ function buildSearchEngineContainer() {
 			let label = document.createElement('div');
 			label.innerText = img.naturalHeight + " x " + img.naturalWidth;
 			box.appendChild(label);
-
 		}
 	}
 

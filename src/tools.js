@@ -139,23 +139,26 @@ var QMtools = [
 				}, {once: true});
 			}
 
-			addTileEventHandlers(tile, e => {
-
-				if ( tile.dataset.locked === "true" ) {
-					tile.dataset.locked = quickMenuObject.locked = false;
-					browser.runtime.sendMessage({action: "unlockQuickMenu"});
-				} else {
-					tile.dataset.locked = quickMenuObject.locked = true;
-					browser.runtime.sendMessage({action: "lockQuickMenu"});
-				}
-
-				tool.on = quickMenuObject.locked;
-
-				if ( tool.persist )
-					saveUserOptions();
-			});
+			addTileEventHandlers(tile, () => this.action());
 			
 			return tile;
+		},
+		action: function() {
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			quickMenuObject.locked = !quickMenuObject.locked;
+
+			if ( quickMenuObject.locked )
+				browser.runtime.sendMessage({action: "lockQuickMenu"});
+			else
+				browser.runtime.sendMessage({action: "unlockQuickMenu"});
+
+			tool.on = quickMenuObject.locked;
+
+			if ( tool.persist )	saveUserOptions();
+
+			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			if ( tile ) tile.dataset.locked = quickMenuObject.locked;
 		}
 	},
 	{
@@ -345,30 +348,12 @@ var QMtools = [
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
-			addTileEventHandlers(tile, async () => {
-
-				let currentLink = document.querySelector('link[rel="stylesheet"].theme:not(.requires)');
-
-				let currentThemeIndex = themes.findIndex(t => currentLink.href.endsWith(t.path));
-
-				let theme = themes[(1 + currentThemeIndex) % themes.length];
-				
-				// remove all themes and requires
-				document.querySelectorAll('link[rel="stylesheet"].theme').forEach( link => {
-					link.parentNode.removeChild(link);
-				})
-
-				await setTheme(theme);
-
-				qm.setMinWidth();
-				resizeMenu({widgetResize: true});
-
-				userOptions.quickMenuTheme = theme.name;
-			
-				saveUserOptions();
-			});
+			addTileEventHandlers(tile, () => this.action());
 			
 			return tile;
+		},
+		action: async function() {
+			nextTheme();
 		}
 	},
 	{
@@ -384,15 +369,16 @@ var QMtools = [
 			
 			tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 			
-			addTileEventHandlers(tile, () => {
-				userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
-
-				tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
-				saveUserOptions();
-
-			});
+			addTileEventHandlers(tile, () => this.action());
 			
 			return tile;
+		},
+		action: function() {
+			userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
+			saveUserOptions();
+
+			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			if ( tile ) tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 		}
 	},
 	{
@@ -406,24 +392,21 @@ var QMtools = [
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
-			addTileEventHandlers(tile, () => {
-				browser.runtime.sendMessage({action: "editQuickMenu"});
-				window.tilesDraggable = !window.tilesDraggable;
-				tile.dataset.locked = window.tilesDraggable;
-			});
+			addTileEventHandlers(tile, () => this.action());
 			
 			return tile;
+		}, 
+		action: function() {
+			browser.runtime.sendMessage({action: "editQuickMenu"});
+			window.tilesDraggable = !window.tilesDraggable;
+
+			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			if ( tile ) tile.dataset.locked = window.tilesDraggable;
 		}
 	}
 ];
 
-function setAllToolIconColors() {
-	let tools = document.querySelectorAll(toolSelector);
-	
-	tools.forEach( tool => setToolIconColor(tool));
-}
-
-function setIconColor(url, color) {
+function makeMaskCanvas(url, color) {
 
 	return new Promise( (resolve, reject) => {
 
@@ -463,27 +446,6 @@ function setIconColor(url, color) {
 		img.src = url;
 
 	});
-}
-
-async function setToolIconColor(el, color) {
-	return null;
-
-	color = color || window.getComputedStyle(el).getPropertyValue('--tools-color') || window.getComputedStyle(document.documentElement).getPropertyValue('--tools-color');
-
-	if ( !color ) return;
-
-	if ( el.nodeName === "IMG") {
-
-		let newIcon = await setIconColor(el.src, color);
-		el.src = newIcon;
-
-	} else {
-
-		let bg = el.style.getPropertyValue("background-image") || window.getComputedStyle(el).getPropertyValue("background-image");
-		let fixedbg = bg.replace(/^url\("(.*)"\)/, '$1');
-		let newIcon = await setIconColor(fixedbg, color);
-		el.style.backgroundImage = `url(${newIcon})`;
-	}
 }
 
 function makeToolMask(tool) {

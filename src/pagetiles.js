@@ -5,7 +5,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 
 	setUserStyles();
 	makePageTiles();
-	if ( true ) detectShake();
+	
+	let ds = new DragShake();
+	ds.onshake = () => close();
+	ds.start();
 })
 
 // document.addEventListener('mouseup', e => {
@@ -73,7 +76,6 @@ function makePageTiles() {
 
 		div.onmouseup = searchHandler;
 		div.ondrop = searchHandler;
-		div.onclick = searchHandler;
 			
 		async function searchHandler(e) {
 			e.preventDefault();
@@ -117,9 +119,7 @@ document.addEventListener('keydown', e => {
 	if ( e.key == "Escape" ) close();
 });
 
-let close = () => {
-	browser.runtime.sendMessage({action: "closePageTiles"});
-}
+let close = () => browser.runtime.sendMessage({action: "closePageTiles"});
 
 function colorFromString(str) {
 	let num = 0;
@@ -140,58 +140,13 @@ function getLuma(hexcolor) {
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 }
 
-function setUserStyles() {
-	if ( userOptions.userStylesEnabled ) {
-		// Append <style> element to <head>
-		var styleEl = document.createElement('style');
-		document.head.appendChild(styleEl);
-		styleEl.innerText = userOptions.userStyles;
-		
-		document.body.getBoundingClientRect();
-	}
-}
+window.addEventListener("message", e => {
+	// console.log(e);
 
-let detectShake = function() {
+	let tile = document.elementFromPoint(e.data.clientX, e.data.clientY);
+	// console.log(tile.innerText);
 
-	let lastMovementX = 0;
-	let reversals = [];
-	const shake_threshold = 5;
+	if ( tile === document.body ) close();
 
-	// function handler(event) {
-	// 	if ( event.movementX * lastMovementX < 0 )
-	// 		reversals.push(Date.now());
-
-	// 	if ( reversals.length > shake_threshold ) reversals.shift();
-
-	// 	lastMovementX = event.movementX;
-
-	// 	if ( reversals.length === shake_threshold && Date.now() - reversals[0] < 1000 )
-	// 		close();
-
-	// }
-
-	// document.addEventListener('mousemove', handler);
-
-	function dragHandler(e) {
-		let deltaX = e.clientX - start.x;
-
-		if ( deltaX * lastMovementX < 0 )
-			reversals.push(Date.now());
-
-		if ( reversals.length > shake_threshold ) reversals.shift();
-
-		lastMovementX = deltaX;
-
-		if ( reversals.length === shake_threshold && Date.now() - reversals[0] < 1000 )
-			close();
-
-	}
-
-	var start = null;
-
-	document.addEventListener('dragover', e => {
-	    start = {x: e.clientX, y: e.clientY}
-	}, {once: true});
-
-	document.addEventListener('dragover', dragHandler);
-}
+	tile.ondrop(new DragEvent('drop'));
+});

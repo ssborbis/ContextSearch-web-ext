@@ -107,6 +107,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		
 	qm = document.getElementById('quickMenuElement');
 	sb = document.getElementById('searchBar');
+	sbc = document.getElementById('searchBarContainer');
 	tb = document.getElementById('titleBar');
 	sg = document.getElementById('suggestions');
 	mb = document.getElementById('menuBar');
@@ -161,6 +162,10 @@ function toolsHandler(qm) {
 	qm.insertBreaks();
 }
 
+getAllOtherHeights = () => {
+	return getFullElementSize(sbc).height + getFullElementSize(sg).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+}
+
 function toolBarResize(options) {
 
 	options = options || {}
@@ -183,24 +188,30 @@ function toolBarResize(options) {
 		sg.style.width = 0;
 		qm.style.width = 0;
 		toolBar.style.width = 0;
-	}
+		// qm.style.height = null;
 	
-	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
+		qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
+	}
 
-	runAtTransitionEnd(document.body, ["width", "height"], () => {
+	runAtTransitionEnd(document.documentElement, ["width", "height"], () => {
+
+		if ( window.innerHeight < document.documentElement.scrollHeight ) {
+
+			let sumHeight = getAllOtherHeights();
+
+		//	qm.style.height = ( (window.innerHeight < maxHeight && qm.scrollHeight > (maxHeight - sumHeight) ) ? maxHeight : window.innerHeight ) - sumHeight + "px";
+			
+		//	qm.style.height = document.documentElement.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
+
+			qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
+
+		//	console.log(sumHeight, qm.style.height, qm.scrollHeight, window.innerHeight);
+
+		} 
 
 		let minWindowWidth = Math.max(minWidth, window.innerWidth);
 
-		if ( window.innerHeight < document.documentElement.scrollHeight ) {
-			
-			let sumHeight = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
-			
-			qm.style.height = ( (window.innerHeight < maxHeight && qm.scrollHeight > (maxHeight - sumHeight) ) ? maxHeight : window.innerHeight ) - sumHeight + "px";
-			
-		//	qm.style.height = window.innerHeight - ( sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height ) + "px";
-		} 
-
-		if (qm.getBoundingClientRect().width < window.innerWidth) {
+		if ( qm.getBoundingClientRect().width < window.innerWidth) {
 
 			let maxWidth = 9999;
 
@@ -225,8 +236,11 @@ function toolBarResize(options) {
 		
 		tb.style.maxWidth = toolBar.style.maxWidth = toolBar.style.width = document.documentElement.scrollWidth - 10 + "px";
 		sg.style.width = document.documentElement.scrollWidth + "px";
+
+		document.dispatchEvent(new CustomEvent('resizeDone'));
 				
 	});
+
 }
 
 var docked = false;
@@ -247,7 +261,7 @@ function sideBarResize(options) {
 	mb = document.getElementById('menuBar');
 	toolBar = document.getElementById('toolBar');
 
-	let allOtherElsHeight = getFullElementSize(sbc).height + getFullElementSize(sg).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+	let allOtherElsHeight = getAllOtherHeights();
 
 	let qm_height = qm.style.height;
 	
@@ -260,20 +274,14 @@ function sideBarResize(options) {
 	sg.style.width = null;
 
 	qm.style.height = function() {
-		// return the full height in some cases
-		
 		if ( options.suggestionsResize ) return qm_height;
 		
 		if ( docked ) return `calc(100% - ${allOtherElsHeight}px)`;
-		
-		// if ( openFolder ) return 
-		
+				
 		// if ( options.groupMore ) return qm.getBoundingClientRect().height + "px";
 		
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
-
-	// document.body.style.height = docked ? "100vh" : null;
 
 	// account for scrollbars
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
@@ -295,13 +303,18 @@ function resizeMenu(o) {
 	
 	qm.setDisplay();
 
-	window.addEventListener('message', function resizeDoneListener(e) {
-		if ( e.data.action && e.data.action === "resizeDone" ) {
-			qm.scrollTop = scrollTop;
-			sg.scrollTop = sgScrollTop;
-			window.removeEventListener('message', resizeDoneListener);
-		}
+	document.addEventListener('resizeDone', e => {
+		qm.scrollTop = scrollTop;
+		sg.scrollTop = sgScrollTop;
 	});
+
+	// window.addEventListener('message', function resizeDoneListener(e) {
+	// 	if ( e.data.action && e.data.action === "resizeDone" ) {
+	// 		qm.scrollTop = scrollTop;
+	// 		sg.scrollTop = sgScrollTop;
+	// 		window.removeEventListener('message', resizeDoneListener);
+	// 	}
+	// });
 
 	toolBarResize(o);
 	sideBarResize(o);

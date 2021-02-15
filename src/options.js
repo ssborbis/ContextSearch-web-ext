@@ -159,11 +159,7 @@ function restoreOptions() {
 		$('#s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
 		
 		$('#r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
-		$('#cb_quickMenuOnHotkey').checked = userOptions.quickMenuOnHotkey;
-		
-		$('#d_hotkey').appendChild(keyArrayToButtons(userOptions.quickMenuHotkey));
-		$('#d_hotkey').key = userOptions.quickMenuHotkey;
-		
+				
 		$('#cb_quickMenuOnMouse').checked = userOptions.quickMenuOnMouse;
 		$('#s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
 		$('#cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
@@ -190,6 +186,8 @@ function restoreOptions() {
 		$('#cb_quickMenuOnSimpleClickAlt').checked = userOptions.quickMenuOnSimpleClick.alt;
 		$('#cb_quickMenuOnSimpleClickCtrl').checked = userOptions.quickMenuOnSimpleClick.ctrl;
 		$('#cb_quickMenuOnSimpleClickShift').checked = userOptions.quickMenuOnSimpleClick.shift;
+		$('#cb_quickMenuSimpleClickUseInnerText').checked = userOptions.quickMenuOnSimpleClick.useInnerText;
+		$('#cb_quickMenuOnDrag').checked = userOptions.quickMenuOnDrag;
 		
 		$('#s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
 		$('#cb_contextMenu').checked = userOptions.contextMenu;
@@ -293,14 +291,11 @@ function restoreOptions() {
 		$('#cb_findBarMarkOptionsCaseSensitive').checked = userOptions.highLight.findBar.markOptions.caseSensitive;
 		$('#s_findBarMarkOptionsAccuracy').value = userOptions.highLight.findBar.markOptions.accuracy;
 		
-		$('#cb_findBarEnabled').checked = userOptions.highLight.findBar.enabled;
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
 		$('#cb_findBarOpenInAllTabs').checked = userOptions.highLight.findBar.openInAllTabs;
 		$('#cb_findBarSearchInAllTabs').checked = userOptions.highLight.findBar.searchInAllTabs;
 		$('#s_findBarPosition').value = userOptions.highLight.findBar.position;
 		$('#s_findBarWindowType').value = userOptions.highLight.findBar.windowType;
-		$('#d_findBarHotKey').appendChild(keyArrayToButtons(userOptions.highLight.findBar.hotKey));
-		$('#d_findBarHotKey').key = userOptions.highLight.findBar.hotKey;
 		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
 
@@ -396,8 +391,7 @@ function saveOptions(e) {
 		contextMenuKey: parseInt($('#b_contextMenuKey').value),
 		
 		quickMenuOnKey: $('#r_quickMenuOnKey').checked,
-		quickMenuOnHotkey: $('#cb_quickMenuOnHotkey').checked,
-		quickMenuHotkey: $('#d_hotkey').key,
+		quickMenuOnDrag: $('#cb_quickMenuOnDrag').checked,
 		quickMenuOnMouse: $('#cb_quickMenuOnMouse').checked,
 		quickMenuOnMouseMethod: $('#s_quickMenuOnMouseMethod').value,
 		quickMenuSearchOnMouseUp: $('#cb_quickMenuSearchOnMouseUp').checked,
@@ -449,7 +443,8 @@ function saveOptions(e) {
 			button: parseInt($('#s_quickMenuOnSimpleClickButton').value),
 			alt: $('#cb_quickMenuOnSimpleClickAlt').checked,
 			ctrl: $('#cb_quickMenuOnSimpleClickCtrl').checked,
-			shift: $('#cb_quickMenuOnSimpleClickShift').checked
+			shift: $('#cb_quickMenuOnSimpleClickShift').checked,
+			useInnerText: $('#cb_quickMenuSimpleClickUseInnerText').checked
 		},
 		
 		contextMenu: $('#cb_contextMenu').checked,
@@ -525,12 +520,10 @@ function saveOptions(e) {
 				enabled: $('#cb_highLightNavBarEnabled').checked
 			},
 			findBar: {
-				enabled: $('#cb_findBarEnabled').checked,
 				startOpen: $('#cb_findBarStartOpen').checked,
 				openInAllTabs: $('#cb_findBarOpenInAllTabs').checked,
 				searchInAllTabs: $('#cb_findBarSearchInAllTabs').checked,
 				showNavBar: $('#cb_findBarShowNavBar').checked,
-				hotKey: $('#d_findBarHotKey').key,
 				position: $('#s_findBarPosition').value,
 				keyboardTimeout: parseInt($('#n_findBarTimeout').value),
 				windowType: $('#s_findBarWindowType').value,
@@ -607,6 +600,7 @@ function saveOptions(e) {
 		contextMenuUseInnerText: $('#cb_contextMenuUseInnerText').checked,
 		cacheIconsMaxSize: parseInt($('#n_cacheIconsMaxSize').value),
 		nightMode: userOptions.nightMode,
+		userShortcuts: userOptions.userShortcuts,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
@@ -776,22 +770,24 @@ function keyCodeToString(code) {
 	return keyTable[code] /*|| String.fromCharCode(code)*/ || code.toString();
 }
 
-function keyArrayToButtons(arr) {
+function keyArrayToButtons(arr, options) {
+
+	options = options || {}
 	
 	let div = document.createElement('div');
 	
 	function makeButton(str) {
 		let span = document.createElement('span');
 		span.innerText = str;
-		span.className = 'keyboardButton';
-		span.style = 'min-width:auto;padding:3px 10px;';
+		span.className = 'className' in options ? options.className : 'keyboardButton';
+		span.style = 'style' in options ? options.style : 'min-width:auto;padding:3px 10px;';
 		return span;
 	}
 	
 	if ( Array.isArray(arr) ) {
 	
 		if (arr.length === 0) {
-			div.innerText = browser.i18n.getMessage('ClickToSet') || "Click to set";
+			div.innerText = 'text' in options ? options.text : browser.i18n.getMessage('ClickToSet') || "Click to set";
 		}
 		
 		for (let i=0;i<arr.length;i++) {
@@ -814,7 +810,7 @@ function keyArrayToButtons(arr) {
 		return;
 	}
 	
-	let buttons = div.querySelectorAll('.keyboardButton');
+	let buttons = div.querySelectorAll('span');
 	for ( let i=1;i<buttons.length;i++ ) {
 		let spacer = document.createElement('span');
 		spacer.innerHTML = '&nbsp;&nbsp;+&nbsp;&nbsp;';
@@ -1111,6 +1107,8 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	let b_export = $('#b_exportSettings');
 	b_export.onclick = function() {
+
+		let date = new Date().toISOString().replace(/:|\..*/g,"").replace("T", "_");
 		
 		if ( userOptions.exportWithoutBase64Icons ) {
 			let uoCopy = Object.assign({}, userOptions);
@@ -1119,9 +1117,9 @@ document.addEventListener("DOMContentLoaded", () => {
 				if ( node.type === "oneClickSearchEngine" )
 					node.icon = "";
 			});
-			download(`ContextSearchOptions_${Date.now()}.json`, JSON.stringify(uoCopy));
+			download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy));
 		} else {
-			download(`ContextSearchOptions_${Date.now()}.json`, JSON.stringify(userOptions));
+			download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions));
 		}
 	}
 	
@@ -1317,57 +1315,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	help.appendChild(iframe);
 
 });
-
-document.addEventListener('DOMContentLoaded', () => {
-	
-	['#d_hotkey', '#d_findBarHotKey'].forEach( id => {
-	
-		let hk = $(id);
-		hk.onclick = function(evv) {
-			
-			function preventDefaults(e) {
-				e.preventDefault();
-			}
-			
-			document.addEventListener('keydown', preventDefaults);
-			document.addEventListener('keypress', preventDefaults);
-			
-			hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
-			hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
-					
-			document.addEventListener('keyup', e => {
-				
-				e.preventDefault();
-				
-				if ( e.key === "Escape" ) {
-					hk.innerHTML = null;
-					hk.appendChild(keyArrayToButtons([]));
-					return;
-				}
-				
-				let key = {
-					alt: e.altKey,
-					ctrl: e.ctrlKey,
-					meta: e.metaKey,
-					shift: e.shiftKey,
-					key: e.key
-				}
-				
-				hk.innerHTML = null;
-				hk.appendChild(keyArrayToButtons(key));
-				
-				hk.key = key;
-				
-				saveOptions();
-				
-				document.removeEventListener('keydown', preventDefaults);
-				document.removeEventListener('keypress', preventDefaults);
-				
-			}, {once: true});
-			
-		}
-	});
-});
 	
 document.addEventListener('DOMContentLoaded', () => {
 	let div = $('#d_clearSearchHistory');
@@ -1557,3 +1504,134 @@ function cacheAllIcons(e) {
 
 	result.cache();
 }
+
+function buildShortcutTable() {
+	let table = $('#shortcutTable');
+
+	setButtons = (el, key) => {
+		el.innerText = null;
+		el.appendChild(keyArrayToButtons(key, {className:null, style:"", text:""}));
+	}
+
+	defaultToUser = key => {
+		return {
+			alt: key.alt,
+			shift: key.shift,
+			ctrl: key.ctrl,
+			meta: key.meta,
+			key: key.key,
+			id: key.id,
+			enabled: key.enabled || false
+		}
+	}
+
+	defaultShortcuts.forEach( s => {
+
+		const us = userOptions.userShortcuts.find(_s => _s.id == s.id);
+		const ds = defaultToUser(defaultShortcuts.find(d => d.id == s.id ));
+
+		let tr = document.createElement('tr');
+		tr.shortcut = s;
+		tr.innerHTML = `
+			<td></td>
+			<td>${s.name || s.action}</td>
+			<td><span style="cursor:pointer;user-select:none;" data-id="${s.id}">set</span></td>
+			`;
+		table.appendChild(tr);
+
+		let input = document.createElement('input');
+		input.type = "checkbox";
+		input.checked = us ? us.enabled : false;
+
+		input.onchange = () => {
+			let key = us || defaultToUser(s);
+			key.enabled = input.checked;
+			setUserShortcut(key);
+		}
+
+		tr.querySelector('td').appendChild(input);
+		
+		const b = tr.querySelector('span')
+		setButtons(b, us || ds);
+
+		b.onclick = async () => {
+
+			let key = await shortcutListener(b);
+
+			if ( !key )
+				setUserShortcut(ds);
+			else {
+				key.id = ds.id;
+				setUserShortcut(key);
+			}
+
+			setButtons(b, key || ds);
+		}
+	});
+
+	function setUserShortcut(key) {
+		if ( ! 'id' in key ) throw new Error('NO_ID');
+
+		key = defaultToUser(key);
+
+		let us = userOptions.userShortcuts.find( s => s.id === key.id);
+
+		if ( us ) userOptions.userShortcuts.splice(userOptions.userShortcuts.indexOf(us), 1, key);
+		else userOptions.userShortcuts.push(key);
+
+		saveOptions();
+	}
+}
+
+document.addEventListener('userOptionsLoaded', buildShortcutTable);
+
+function shortcutListener(hk, options) {
+
+	options = options || {};
+
+	return new Promise(resolve => {
+			
+		preventDefaults = e => {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+		document.addEventListener('keydown', preventDefaults);
+		document.addEventListener('keypress', preventDefaults);
+		
+		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em" /> ';
+		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
+				
+		document.addEventListener('keyup', e => {
+			
+			e.preventDefault();
+			e.stopPropagation();
+			
+			if ( e.key === "Escape" ) {
+				hk.innerHTML = null;
+				hk.appendChild(keyArrayToButtons(options.defaultKeys || []));
+				resolve(null);
+				return;
+			}
+			
+			let key = {
+				alt: e.altKey,
+				ctrl: e.ctrlKey,
+				meta: e.metaKey,
+				shift: e.shiftKey,
+				key: e.key
+			}
+			
+			hk.innerHTML = null;
+			hk.appendChild(keyArrayToButtons(key, {className:null, style:null, text:""}));
+								
+			document.removeEventListener('keydown', preventDefaults);
+			document.removeEventListener('keypress', preventDefaults);
+
+			resolve(key);
+			
+		}, {once: true});
+	});	
+}
+
+

@@ -5,6 +5,7 @@ BODY, HTML {
 	margin:0;
 	padding:0;
 	background:none;
+	text-align: left;
 }
 
 #findbar {

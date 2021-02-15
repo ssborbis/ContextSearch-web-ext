@@ -1,8 +1,25 @@
 :root { 
 	--background-color: #b242e1;
 	--background: linear-gradient(to bottom, #000000 0%,#000000 28%,#b242e1 100%);
+	--tools-color: #ddd; 
+	color: white;
+	--border: rgba(255,255,255,.2);
+	--hover: rgba(2,0,36,.2);
+	--separator: #fff4;
+	--folder-color:#FBFACE;/*#fff3;*/
+	--folder-label-color: white;
+	--folder-label-color-singlecolumn: white;
+	--group-label-color: #fff;
 }
 
 #findbar {
 	background:linear-gradient(to right, #000000 0%,#000000 28%,#b242e1 100%);
+}
+
+#suggestions {
+	background:#0005;
+}
+
+#searchBar {
+	background: #0005;
 }

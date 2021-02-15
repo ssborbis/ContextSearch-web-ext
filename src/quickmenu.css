@@ -11,6 +11,7 @@
 	--folder-label-color-singlecolumn:#444;
 	--folder-border-color:#c2c2c2;
 	--group-label-color: #444;
+	color: #4a4a4a;
 }
 
 HTML, BODY {
@@ -23,6 +24,7 @@ HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
 }
 BODY {
 	background: var(--background);
+	/*text-align:center;*/
 }
 
 .selectedFocus {
@@ -121,9 +123,12 @@ BODY {
 	background-color: var(--group-color);
 	color:var(--group-label-color);
 }
-.tile:hover, #menuBar > DIV:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
+.tile:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
 	background-color: var(--hover);
 	border-color: var(--hover);
+}
+#menuBar > .tool:hover {
+	opacity:.7;
 }
 .tile.dragHover:not([data-side]) {
 	background-color:var(--selected);
@@ -223,9 +228,9 @@ BODY {
 	margin:0;
 	text-align:left;
 	border:1px solid transparent;
-	color:#4a4a4a;
 	background-color:white;	
 	outline:none;
+	color:inherit;
 }
 [data-menu="quickmenu"] #searchBar[data-position="bottom"] {
 	border-radius:0 0 10px 10px;
@@ -243,7 +248,6 @@ BODY {
 }
 #suggestions {
 	background-color:white;
-	color:#4a4a4a;
 	height:100px;
 	white-space: nowrap;
 	overflow-x:hidden;
@@ -256,6 +260,7 @@ BODY {
 	/*min-width:200px;*/
 	/*max-width:400px;*/
 	width:100%;
+	text-align: left;
 }
 #suggestions > DIV {
 	padding-left: 5px;
@@ -304,6 +309,7 @@ BODY {
 	background-size:16px;
 	display:block;
 	border:1px solid transparent;
+	text-align:left;
 }
 .tile.singleColumn::before {
 	content: attr(data-title);

@@ -46,7 +46,9 @@
 				"inject.js",
 				"lib/mark.es6.min.js",
 				"inject_highlight.js",
-				"hotkeys.js"
+				"hotkeys.js",
+				"defaultShortcuts.js",
+				"dragshake.js"
 			],
 			"css": ["inject.css"],
 			"all_frames": true,

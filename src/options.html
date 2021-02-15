@@ -121,6 +121,7 @@
 				font-weight:300;
 				text-align:left;
 				margin:10px 0 20px -20px;
+				display:none;
 			}
 			.blobContainerHeader IMG {
 				height:1em;
@@ -131,8 +132,8 @@
 				font-family: Arial;
 				font-weight:bold;
 				border-radius:5px;
-				background-color:var(--border-color2);
-				border:1px outset var(--border-color1);
+				background-color:#ddd;/*var(--border-color2);*/
+				border:1px outset #ccc; /*var(--border-color1);*/
 				font-size:10pt;
 				color:#666;
 				padding:3px 4px;
@@ -140,7 +141,7 @@
 				min-height:16px;
 				display:inline-block;
 				text-align:center;
-				box-shadow:1px 1px 4px #444, inset -2px -2px 4px var(--bg-color1), inset 2px 2px 4px #aaa;
+				box-shadow:1px 1px 4px #444, inset -2px -2px 4px #ccc, inset 2px 2px 4px #aaa;
 			}
 			.keyboardButton IMG {
 				height: 1em;
@@ -485,12 +486,16 @@
 				--tools-color:white;
 			}
 
+			.tab .tablinks[data-tabid="enginesTab"] {
+			}
+
 			/* Style the tab content */
 			.tabcontent {
 				display: none;
 				font-weight:bold;
 				animation: fadeEffect .25s;
 				margin:0;
+				padding-top:10px;
 			} 
 
 			/* Go from zero to full opacity */
@@ -1287,6 +1292,17 @@
 				-webkit-mask-repeat:no-repeat;
 			}
 
+			#shortcutTable TR:nth-child(even) {
+				background-color:var(--bg-color1);
+			}
+			#shortcutTable TD {
+				white-space:nowrap;
+			}
+
+			#shortcutTable SPAN {
+				display:inline-block;
+			}
+
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
@@ -1294,18 +1310,17 @@
 		<div id="console"></div>
 		<div id="main">
 		<div id="left_div">
-			<img src="icons/icon.svg" style="border-radius:5px;height:48px;"/><br />
-			<div style="display:inline-block">
+			<img src="icons/icon.svg" style="border-radius:5px;height:48px;vertical-align:top;margin-right:4px"/>
+			<div style="display:inline-block;margin-bottom:20px">
 				<span style="border-bottom:1px solid grey">
 					<span style="font-weight:normal;font-variant:small-caps">Context</span>
 					<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt">Search</span>
 				</span>
+				<div id="version" style="font-size:11pt;text-align:left">&nbsp;</div>
 			</div>
-			<div id="version" style="font-size:11pt">&nbsp;</div>
-
-			<br />
 						
 			<div class="tab">
+				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><div class="tool" style="--mask-image: url(icons/search.svg)"></div>Search Engines</button>
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><div class="tool" style="--mask-image: url(icons/context_menu.svg)"></div>Context Menu</button>
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><div class="tool" style="--mask-image: url(icons/quick_menu.svg)"></div>Quick Menu</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:rotate(90deg)"></div>Toolbar</button>
@@ -1315,7 +1330,6 @@
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><div class="tool" style="--mask-image: url(icons/highlight.svg)"></div>Highlight</button>
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />Search Results</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />Find Bar</button>
-				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><div class="tool" style="--mask-image: url(icons/search.svg)"></div>Search Engines</button>
 				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><div class="tool" style="--mask-image: url(icons/page_tiles.svg)"></div>Page Tiles</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><div class="tool" style="--mask-image: url(icons/settings.svg)"></div>General</button>
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><div class="tool" style="--mask-image: url(icons/auto.svg)"></div>Advanced</button>
@@ -1444,6 +1458,10 @@
 					<tr>
 						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">contextMenuUseInnerText</td>
 						<td><input type="checkbox" id="cb_contextMenuUseInnerText" /></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">quickMenuSimpleClickUseInnerText</td>
+						<td><input type="checkbox" id="cb_quickMenuSimpleClickUseInnerText" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Max width or height to resize icons for caching">cacheIconsMaxSize</td>
@@ -1947,6 +1965,19 @@
 						
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<label class="container" data-i18n="">
+							<input type="checkbox" id="cb_quickMenuOnDrag" />
+							<span class="checkmark checkmark2"></span> 
+							<img src="/icons/mouse.svg" style="height:30px;vertical-align:middle;margin:0 10px" />Drag
+						</label>
+						<br />
+						<span style="font-size:9pt" data-i18n="">Drag text / links / images to open </span>
+					</td>
+					<td>	
+					</td>
+				</tr>
 				</table>
 				</section>
 				
@@ -2231,7 +2262,7 @@
 				<div class="tabcontent" id="toolBarTab">
 				<div class="blobContainerHeader" data-i18n="Toolbar"><img src="icons/sidebar.svg" style="transform:rotate(90deg);"/>Toolbar</div>
 				
-				<div class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</div>
+				<!-- <div class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</div> -->
 					
 				</section><section>
 				<p class="header1" data-i18n="Layout">Layout</p>
@@ -2263,9 +2294,9 @@
 				<div class="tabcontent" id="sideBarTab">
 					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />Sidebar</div>
 
-					<div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div>
+					<!-- <div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div> -->
 
-					</section><section>
+					<section>
 					<p class="header1" data-i18n="Layout">Layout</p>
 				<p class="header2" data-i18n="DefaultView">Default View</p>
 				<div class="option">
@@ -2319,15 +2350,8 @@
 						</label>
 						<span class="description" data-i18n="SideBarStartOpenTooltip">Open the sidebar automatically when the page loads</span>
 					</div>
-					<div class="option">
-						<label class="container" data-i18n="Hotkey"> 
-							<input type="checkbox" id="cb_quickMenuOnHotkey" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<span class="description" data-i18n="SideBarHotkeyTooltip">Open the Sidebar any time using a hotkey</span>
-					</div>
-					<div id="d_hotkey" style="margin-left:30px"></div>
-					</section><section>
+					</section>
+					<section>
 					<p class="header1" data-i18n="Closing">Closing</p>
 				<div class="option">
 					<label class="container" data-i18n="CloseAfterSearch">
@@ -2343,8 +2367,8 @@
 				<div class="tabcontent" id="pageTilesTab">
 					<div class="blobContainerHeader" data-i18n="PageTiles"><img src="icons/page_tiles.svg" />Page Tiles</div>
 					
-					<div class="description" data-i18n="pagetilesdescription">Drag and drop text to a full-page tiled menu of search engines ( experimental )</div>
-					<br /><br />
+					<!-- <div class="description" data-i18n="pagetilesdescription">Drag and drop text to a full-page tiled menu of search engines ( experimental )</div>
+					<br /><br /> -->
 					
 					<section style="min-width:720px">
 					<p class="header1" data-i18n="General">General</p>
@@ -2423,8 +2447,8 @@
 				<div class="tabcontent" id="hotkeysTab">
 					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />Hotkeys</div>
 					
-					<div class="description" data-i18n="HotkeysTooltip">Select text and press a key to search. Hotkeys can be set in the Search Engines tab</div>
-					<br /><br />
+					<!-- <div class="description" data-i18n="HotkeysTooltip">Select text and press a key to search. Hotkeys can be set in the Search Engines tab</div>
+					<br /><br /> -->
 					
 					<section style="min-width:720px">
 					<p class="header1" data-i18n="General">General</p>
@@ -2482,6 +2506,11 @@
 						</td>
 					</tr>
 					</table>
+					</section>
+
+					<section>
+						<table style="width:100%;font-weight:normal" id="shortcutTable"></table>
+					</section>
 				</div>
 				<div class="tabcontent" id="omniboxTab">
 					<div class="blobContainerHeader" data-i18n="Omnibox"><img src="icons/omnibox.svg" />Omnibox</div>
@@ -2746,17 +2775,6 @@
 					
 					</section><section>
 <p class="header1" data-i18n="opening">Opening</p>
-					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_findBarEnabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
-						<span class="description" data-i18n="FindBarEnableHotkey">Open the Find bar using a hotkey</span>
-						<br /><br />
-						<div id="d_findBarHotKey" style="margin-left:30px"></div>
-					</div>
-					
-					<br />
 					
 					<div class="option">
 						<label class="container">
@@ -2895,14 +2913,14 @@
 			
 				<div class="blobContainerHeader" data-i18n="SearchEngines"><img src="icons/search.svg" />Search Engines</div>
 
-				<div class="description">
+				<!-- <div class="description">
 					<span data-i18n="AddingSearchEnginesInfoMessage">
 						Search engines can be added manually here or automatically via the Context Menu. See the following link for more info - 
 					</span>
 					<a href="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_search.gif" target="_blank" data-i18n="AddingSearchEnginesLinkText">Adding search engines</a>
 				</div>
 				
-				<br /><br />
+				<br /><br /> -->
 		
 				<section id="searchEnginesParentContainer">
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
@@ -2988,6 +3006,13 @@
 							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
 						</button>
 					</div>
+					<label data-i18n="Name">Name</label><input name="shortName" type="text" class="inputNice" />
+					<label data-i18n="Icon">Icon URI</label>
+					<div>
+						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
+					</div>
 					<table id="folderFormTable">
 						<tr>
 							<td data-i18n="display">_</td>
@@ -3018,12 +3043,7 @@
 							<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
 						</tr>	
 					</table>
-					<label data-i18n="Icon">Icon URI</label>
-					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
-						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
-					</div>
+					
 					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
 					<span class="saveMessage"></span>
 				</form>
@@ -3035,6 +3055,7 @@
 							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
 						</button>
 					</div>
+					<label data-i18n="Name">Name</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Icon">Icon URI</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
@@ -3121,6 +3142,7 @@
 		
 		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>
+
 		<script src="lib/browser-polyfill.min.js"></script>
 		<script src="mozlz4.js"></script>
 		<script src="searchEngineUtils.js"></script>
@@ -3128,13 +3150,15 @@
 		<script src="opensearch.js"></script>
 		<script src="bookmarks.js"></script>
 		<script src="themes.js"></script>
-		<script src="options.js"></script>
+		<script src="defaultShortcuts.js"></script>
+		<script src="iconUtils.js"></script>
+		<script src="utils.js"></script>
 		<script src="nodes.js"></script>
+		<script src="options.js"></script>
 		<script src="searchEngineManager.js"></script>
 		<script src="tools.js"></script>
 		<script src="palettes.js"></script>
 		<script src="options.pagetiles.js"></script>
-		<script src="iconUtils.js"></script>
-		<script src="utils.js"></script>
+		<script src="dragshake.js"></script>
 	</body>
 </html>

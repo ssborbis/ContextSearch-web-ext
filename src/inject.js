@@ -67,6 +67,18 @@ window.addEventListener('mousedown', e => {
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 });
 
+function linkOrImage(el, e) {
+	
+	let link = getLink(el, e);
+	let img = getImage(el, e);
+
+	if ( img && userOptions.quickMenuOnImages ) return img;
+	
+	if ( link && userOptions.quickMenuOnLinks ) return link;
+	
+	return false;	
+}
+
 // https://stackoverflow.com/a/1045012
 function offset(elem) {
     if(!elem) elem = this;
@@ -88,7 +100,7 @@ function repositionOffscreenElement( element, padding ) {
 
 	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
 	
-	// let originalTransition = element.style.transition || null;
+	let originalTransition = element.style.transition || null;
 	// let originalDisplay = element.style.display || null;
 	// element.style.transition = 'none';
 
@@ -103,6 +115,9 @@ function repositionOffscreenElement( element, padding ) {
 	element.style.maxHeight = element.style.maxWidth = null;
 	
 	// element.style.display = originalDisplay;
+
+
+	element.style.transition = 'all .15s';
 	
 	let rect = element.getBoundingClientRect();
 	
@@ -161,6 +176,10 @@ function repositionOffscreenElement( element, padding ) {
 		
 		// console.log('left overflow');
 	}
+
+	runAtTransitionEnd(element, ["top", "bottom", "left", "right"], () => {
+		element.style.transition = originalTransition;
+	})
 	
 	// if (rect.y + rect.height > window.innerHeight) 
 		// element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
@@ -247,8 +266,7 @@ setZoomProperty();
 browser.runtime.sendMessage({action: "addUserStyles", global: true });
 
 // menuless hotkey
-document.addEventListener('keydown', e => {
-
+function checkForNodeHotkeys(e) {
 	if ( 
 		!userOptions.allowHotkeysWithoutMenu ||
 		isTextBox(e.target) ||
@@ -268,7 +286,6 @@ document.addEventListener('keydown', e => {
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
 	});
-	
-});
+}
 
 browser.runtime.sendMessage({action: "injectComplete"});

@@ -277,14 +277,14 @@ async function makeQuickMenu(options) {
 	});
 
 	// folder styling hotkey
-	document.addEventListener('keydown', e => {
-		if (e.key === "." && e.ctrlKey) {
+	// document.addEventListener('keydown', e => {
+	// 	if (e.key === "." && e.ctrlKey) {
 			
-			e.preventDefault();
+	// 		e.preventDefault();
 
-			qm.toggleDisplayMode();
-		}	
-	});
+	// 		qm.toggleDisplayMode();
+	// 	}	
+	// });
 	
 	// enter key invokes search
 	document.addEventListener('keydown', e => {
@@ -319,35 +319,7 @@ async function makeQuickMenu(options) {
 		let div = qm.querySelector('div[data-id]');
 		if (div) div.classList.remove('selectedNoFocus');
 	});
-	
-	// hotkey listener
-	document.addEventListener('keydown', e => {
 
-		if (!userOptions.quickMenuSearchHotkeys || userOptions.quickMenuSearchHotkeys === 'noAction') return;
-
-		// ignore hotkeys when the search bar is being edited
-		if (document.activeElement === sb) return;
-
-		let hotkeyNode = findNode(userOptions.nodeTree, node => node.hotkey === e.which);
-
-		if (!hotkeyNode) return;
-		
-		browser.runtime.sendMessage({
-			action: "quickMenuSearch", 
-			info: {
-				menuItemId: hotkeyNode.id,
-				selectionText: sb.value,
-				openMethod: userOptions.quickMenuSearchHotkeys
-			}
-		});
-		
-		if ( !keepMenuOpen(e) )
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
-
-		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
-
-	});
-	
 	qm.selectFirstTile = () => {
 		let firstTile = qm.querySelector('.tile:not([data-hidden])');
 		firstTile.classList.add('selectedFocus');
@@ -423,7 +395,7 @@ async function makeQuickMenu(options) {
 	
 			let direction = (e.key === "ArrowDown") ? 1 : -1;
 			
-			let divs = sg.getElementsByTagName('div');
+			let divs = sg.querySelectorAll('div:not(.tool)');
 
 			let currentIndex = [...divs].findIndex( div => div.classList.contains( "selectedFocus" ) );
 
@@ -555,6 +527,7 @@ async function makeQuickMenu(options) {
 		toolsArray.forEach( tool => {
 			tool.dataset.type = 'tool';
 			tool.dataset.title = tool.title;
+			tool.dataset.name = tool.tool.name;
 			tool.classList.add('tile');
 
 			if ( tool.context && !tool.context.includes(type) ) {
@@ -655,6 +628,27 @@ async function makeQuickMenu(options) {
 			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
 		// });
 	}
+
+	// qm.insertBreaks = function insertBreaks(_columns) {
+		
+	// 	_columns = _columns || qm.columns;
+
+	// 	qm.querySelectorAll('.break').forEach( br => br.classList.remove('break'));
+		
+	// 	let count = 1;
+	// 	let row = document.createElement('div');
+	// 	qm.querySelectorAll('.tile:not([data-hidden="true"])').forEach( tile => {
+
+	// 		qm.appendChild(row);
+	// 		row.appendChild(tile);
+	// 		if ( count === _columns ) {
+	// 			row = document.createElement('div');
+	// 			count = 0;
+	// 		}
+			
+	// 		count++;
+	// 	});
+	// }
 	
 	function buildQuickMenuElement(options) {
 		
@@ -1132,7 +1126,7 @@ async function makeQuickMenu(options) {
 		
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 
-			let tile = buildSearchIcon(null, this.title);
+			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
 			tile.appendChild(makeToolMask({icon: 'icons/back.svg'}));
 
 			tile.dataset.type = "tool";
@@ -1266,7 +1260,8 @@ async function makeQuickMenu(options) {
 
 				});
 				
-				qm.insertBreaks();	
+				qm.insertBreaks();
+
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 				moreTile.dataset.type = "less";
@@ -2108,4 +2103,35 @@ function addOpenFolderOnHover(_tile) {
 		_tile.mouseOverFolderTimer = null;
 	});
 				
+}
+
+// hotkey listener
+function checkForNodeHotkeys(e) {
+
+	if (!userOptions.quickMenuSearchHotkeys || userOptions.quickMenuSearchHotkeys === 'noAction') return;
+
+	// ignore hotkeys when the search bar is being edited
+	if (document.activeElement === sb) return;
+
+	let hotkeyNode = findNode(userOptions.nodeTree, node => node.hotkey === e.which);
+
+	if (!hotkeyNode) return;
+
+	e.preventDefault();
+	e.stopPropagation();
+	
+	browser.runtime.sendMessage({
+		action: "quickMenuSearch", 
+		info: {
+			menuItemId: hotkeyNode.id,
+			selectionText: sb.value,
+			openMethod: userOptions.quickMenuSearchHotkeys
+		}
+	});
+	
+	if ( !keepMenuOpen(e) )
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
+
+	if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+
 }

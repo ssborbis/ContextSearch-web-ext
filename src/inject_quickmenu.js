@@ -24,13 +24,15 @@ function openQuickMenu(ev, searchTerms) {
 	// if ( getQM() ) closeQuickMenu();
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
-	if (userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
+	if ( userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
 		
 		// restore selection to text boxes
 		if (ev.target.selectionStart)  // is a text box
 			document.addEventListener('closequickmenu', e => ev.target.focus(), {once: true});
 		
-		ev.target.blur();
+		// don't blur on drag
+		if ( !ev.dataTransfer )
+			ev.target.blur();
 	}
 
 	browser.runtime.sendMessage({
@@ -127,18 +129,6 @@ function makeQuickMenuContainer(coords) {
 	addUnderDiv();
 }
 
-function linkOrImage(el, e) {
-	
-	let link = getLink(el, e);
-	let img = getImage(el, e);
-
-	if ( img && userOptions.quickMenuOnImages ) return img;
-	
-	if ( link && userOptions.quickMenuOnLinks ) return link;
-	
-	return false;	
-}
-
 // Listen for ESC and close Quick Menu
 document.addEventListener('keydown', ev => {
 
@@ -207,10 +197,11 @@ document.addEventListener('mousedown', ev => {
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
 	// timer for mouse down
-	quickMenuObject.mouseDownTimer = setTimeout(() => {
-		
+	quickMenuObject.mouseDownTimer = setTimeout(() => {	
+
 		// prevent drag events when using search on mouseup
-		window.addEventListener('dragstart', e => e.preventDefault(), {once: true});
+		function preventDrag(e) { e.preventDefault() }
+		window.addEventListener('dragstart', preventDrag, {once: true});
 
 		// ignore select / drag events
 		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
@@ -220,7 +211,7 @@ document.addEventListener('mousedown', ev => {
 			if (evv.which !== ev.which) return;
 			evv.preventDefault();
 			quickMenuObject.mouseLastClickTime = Date.now();
-		}, {once: true}); // parameter to run once, then delete
+		}, {once: true});
 		
 		if (ev.which === 1) {
 			// Disable click to prevent links from opening
@@ -228,7 +219,7 @@ document.addEventListener('mousedown', ev => {
 				if (evv.which !== 1) return;
 				evv.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
-			}, {once: true}); // parameter to run once, then delete
+			}, {once: true});
 			
 		} else if (ev.which === 2) {
 			// Disable click to prevent links from opening
@@ -236,7 +227,7 @@ document.addEventListener('mousedown', ev => {
 				if (evv.which !== 2) return;
 				evv.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
-			}, {once: true}); // parameter to run once, then delete
+			}, {once: true});
 			
 		} else if (ev.which === 3) {
 			// Disable the default context menu once
@@ -244,10 +235,14 @@ document.addEventListener('mousedown', ev => {
 				if ( !userOptions.quickMenuAllowContextMenu )
 					evv.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
-			}, {once: true}); // parameter to run once, then delete
+			}, {once: true});
 
-		}	
+		}
+
 		openQuickMenu(ev);
+
+		// remove listener to prevent next drag event not working
+		window.removeEventListener('dragstart', preventDrag);
 		
 	}, userOptions.quickMenuHoldTimeout);
 });
@@ -379,6 +374,22 @@ document.addEventListener('mousedown', e => {
 		getSelectedText(e.target)
 	) return;
 
+	if ( userOptions.quickMenuOnSimpleClick.useInnerText && e.target.nodeType !== 3 ) {
+		e.target.classList.add('CS_invert');
+		setTimeout(() => e.target.classList.remove('CS_invert'), 250);
+
+		document.addEventListener('mouseup', _e => {
+			
+			if ( _e.which !== e.which ) return;
+			
+			_e.preventDefault();
+		
+			// avoid close on document click with a short delay
+			setTimeout(() => openQuickMenu(e, e.target.innerText), 50);
+		}, {once: true});
+		return;
+	}
+
 	let range, textNode, offset;
 
 	if (document.caretPositionFromPoint) {
@@ -434,18 +445,34 @@ document.addEventListener('mousedown', e => {
 	}
 });
 
+document.addEventListener('dragstart', e => {
+	if (
+		!userOptions.quickMenu ||
+		!userOptions.quickMenuOnDrag
+	) return;
+
+	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e);
+
+	if ( !searchTerms ) return;
+
+	document.addEventListener('keydown', e => {
+		if ( e.key === "Escape" && getQM())
+			closeQuickMenu();
+	}, {once: true});
+
+	// let ds = new DragShake();
+	// ds.onshake = () => closeQuickMenu();
+	// ds.start();
+
+	openQuickMenu(e);
+});
+
 function lockQuickMenu() {
 	var qmc = getQM();
 	
 	if ( !qmc ) return;
-
-//	if ( quickMenuObject.locked ) return;
-		
-	// if ( !qmc.resizeWidget ) {
-	// 	document.addEventListener('quickMenuComplete', lock, {once: true});
-	// 	return;
-	// } else
-		lock();
+	
+	lock();
 		
 	function lock() {
 		qmc.contentWindow.postMessage({action: "lock" }, browser.runtime.getURL('/quickmenu.html'));
@@ -530,6 +557,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 			case "openQuickMenu":
 
+				// opened by shortcut
+				if ( !message.screenCoords) {
+					makeQuickMenuContainer(quickMenuObject.mouseCoords);
+					return;
+				}
 
 				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
 				

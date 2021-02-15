@@ -46,6 +46,7 @@ function setUserStyles() {
 			// Append <style> element to <head>
 			var styleEl = document.createElement('style');
 			styleEl.innerText = userOptions.userStyles;
+			styleEl.id = "CS_userStyles";
 			styleEl.onload = () => { resolve(true) }
 
 			document.head.appendChild(styleEl);
@@ -53,3 +54,33 @@ function setUserStyles() {
 		} else resolve();
 	});
 }
+
+function removeUserStyles() {
+	let style = document.getElementById('CS_userStyles');
+	if (style) style.parentNode.removeChild(style);
+}
+
+async function changeTheme(i) {
+	let currentLink = document.querySelector('link[rel="stylesheet"].theme:not(.requires)');
+
+	let currentThemeIndex = themes.findIndex(t => currentLink.href.endsWith(t.path));
+
+	let theme = themes[((i + currentThemeIndex) % themes.length + themes.length) % themes.length];
+
+	// remove all themes and requires
+	document.querySelectorAll('link[rel="stylesheet"].theme').forEach( link => {
+		link.parentNode.removeChild(link);
+	})
+
+	await setTheme(theme);
+
+	qm.setMinWidth();
+	resizeMenu({widgetResize: true});
+
+	userOptions.quickMenuTheme = theme.name;
+
+	saveUserOptions();
+}
+
+function nextTheme() { changeTheme(1) }
+function previousTheme() { changeTheme(-1) }

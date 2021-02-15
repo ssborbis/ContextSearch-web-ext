@@ -1,18 +1,20 @@
 :root { 
 	--background: linear-gradient(135deg, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); 
-	--tools-color: #ddd; 
-	color: white;
-	--border: rgba(255,255,255,.2);
+
+	--background: #eee;
+	--tools-color: #555; 
+	color: #555;
+	--border: #ccc;
 	--hover: rgba(2,0,36,.2);
-	--separator: #fff4;
+	--separator: #0004;
 	--folder-color:#FBFACE;/*#fff3;*/
 	--folder-label-color: white;
-	--folder-label-color-singlecolumn: white;
-	--group-label-color: #fff;
+	--folder-label-color-singlecolumn: #555;
+	--group-label-color: #555;
 }
 
 #findbar {
-	background: linear-gradient(to right, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); 
+	/*background: linear-gradient(to right, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); */
 }
 
 #quickMenuElement {
@@ -21,7 +23,7 @@
 
 .tile {
     border-radius:10px;
-    margin:6px;
+    margin:4px;
     background-color:#fff3;
     background-size:contain;
 }
@@ -33,26 +35,25 @@
 }
 
 #searchBar {
-	background: #0005;
-	color:white;
+	background: #fff;
 }
 #searchBar:focus {
 	border:1px solid transparent;
 }
 
 #searchIcon {
-	--tools-color: #fff;
 	opacity:1;
 }
 
 #clearSearchBarButton {
-	--tools-color:#fff;
 	opacity:1;
 }
 
 .tile[data-locked="true"] {
 	background-color:var(--cs-green) !important;
 	box-shadow:initial;
+	--tools-color:white !important;
+	color:white;
 }
 
 .tile.singleColumn {
@@ -69,8 +70,7 @@
 }
 
 #suggestions {
-	background:#0005;
-	color:white;
+	background:#fff;
 	border:none;
 	margin-top:1px;
 }

@@ -80,7 +80,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "closeSideBar":
 			closeSideBar();
 			break;
-			
+		case "openSideBar":
 		case "sideBarHotkey":
 			if ( getIframe() )
 				closeSideBar();
