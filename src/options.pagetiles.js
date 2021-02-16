@@ -48,6 +48,8 @@ function makePageTilesGrid() {
 			img.src = icon;
 			img.nodeid = node.id;
 			img.title = node.title;
+
+			if ( node.hidden ) img.style.opacity = .5;
 			
 			img.ondragover = function(e) { e.preventDefault();}
 			img.ondrop = function(e) {
@@ -178,6 +180,8 @@ function makePageTilesFolderBrowser() {
 
 		_li.innerHTML = `<img src="${icon}" /> ${node.title}`;
 		parentEl.appendChild(_li);
+
+		if ( node.hidden ) _li.style.opacity = .5;
 
 		if ( node.children ) {
 			let _ul = document.createElement('ul');

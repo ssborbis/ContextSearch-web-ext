@@ -80,6 +80,8 @@ function makePageTiles() {
 		async function searchHandler(e) {
 			e.preventDefault();
 
+			if ( node.hidden ) return;
+
 			let searchTerms = e.dataTransfer ? e.dataTransfer.getData("text/plain") : null;
 
 			if ( ! searchTerms ) {
@@ -105,7 +107,7 @@ function makePageTiles() {
 		div.addEventListener('click', close);
 		
 		// // clear events for empty tiles
-		if ( !node.id )	div.classList.add('empty');
+		if ( !node.id || node.hidden ) div.classList.add('empty');
 
 		mainDiv.appendChild(div);
 	});
