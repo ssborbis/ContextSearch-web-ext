@@ -14,7 +14,7 @@ Ways To Search
 * [Omnibox](#omnibox)
 * [Hotkeys](#hotkeys) 
 
-[Highlighting Results](#highlighting) 
+[Highlighting Results](#highlighting)   
 [Adding Engines](#addingengines)  
 [Editing Engines](#editingengines)  
 * [Modifying Terms](#modifyingterms)
