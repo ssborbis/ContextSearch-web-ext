@@ -21,7 +21,8 @@ Add any search engine to your WebExtensions compatible browser. Originally writt
   3.7 [Hotkeys](#hotkeys)  
 4. [Highlighting Results](#highlighting)  
 5. [Adding Engines](#addingengines)  
-6. [Editing Engines](#editingengines)  
+6. Editing Engines   
+  6.0 [Search Engines Manager](#searchenginesmanager)  
   6.1 [Modifying Terms](#modifyingterms)  
   6.2 [Template Parameters](#templateparameters)  
   6.3 [Javascript and Form-Based Engines](#javascriptengines)  
@@ -59,6 +60,8 @@ ___
 The easiest way to build your own package is to install [web-ext](https://www.npmjs.com/package/web-ext)
 
 Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using. Some browser forks may require modifications to the manifest to work. Waterfox Classic, for instance, requires the explicit `web_accessible_resources` section found in the generic manifest.json and `strict_min_version` to `"56.0"`
+
+___
 
 <a name="contextmenu"/>
 
@@ -104,6 +107,8 @@ Choose how different buttons / button + key combos will display the search resul
 ```
 #### Shortcut
 Some OS's allow a key to be used to jump to a particular context menu entry. If you use a keyboard to quickly navigate the context menu, this may be useful to set.
+
+___
 
 <a name="quickmenu"/>
 
@@ -207,6 +212,8 @@ Like to edit your search terms after opening the menu?
 #### `Select all text in the search bar when it receives focus`
 When used with 'Set focus...', the first thing you type replaces the search terms in the search bar. If you're using a shortcut to open the quick menu, not necessarily selecting text first, you may want to enable this to erase and replace the currently displayed search terms with a keystroke.
 
+___
+
 <a name="toolbarmenu"/>
 
 ## [3.3 Toolbar Menu](#toc)
@@ -216,6 +223,9 @@ A version of the quick menu accessible from an icon on the browser's toolbar men
 Unlike the quick menu, the search bar is always at the top of the Toolbar menu.
 
 Sometimes, a website just won't allow content scripts to be injected. This menu provides a way to access all ContextSearch web-ext engines whenever the browser is open, regardless of the website.
+
+
+___
 
 <a name="sidebarmenu"/>
 
@@ -233,6 +243,9 @@ You can also minimize this menu to a small-ish icon that can also be moved aroun
 #### `Open the sidebar automatically when the page loads`
 Want the menu to show up whenever a new page is opened? 
 
+
+___
+
 <a name="pagetiles"/>
 
 ## [3.5 Page Tiles](#toc)
@@ -246,6 +259,8 @@ Like other menus, you can set columns and rows, but the search engine order is c
 Search actions can be set just for this menu.
 
 There's also a few palette options to give menu a bit of color.
+
+___
 
 <a name="omnibox"/>
 
@@ -270,6 +285,7 @@ If I type `CS aeg socks` and press Enter, I'll get a new results tab for each en
 
 Unlike hotkeys, keywords cannot be chained. You can set a hotkey and a keyword for each engine, but only one keyword will be recognized in the omnibox at a time.
 
+___
 
 <a name="hotkeys"/>
 
@@ -278,6 +294,8 @@ Unlike hotkeys, keywords cannot be chained. You can set a hotkey and a keyword f
 The [Search Engines Manager](#searchenginesmanager) allows you to set a hotkey for each engine / folder / bookmarklet which can be used in either the omnibox or as a way to perform a quick search without opening one of the ContextSearch menus.
 
 Select text and press the key corresponding to a search engine. Boom, done. A results tab will open according to the Search Actions setting under the Hotkeys tab.
+
+___
 
 <a name="addingengines"/>
 
@@ -296,12 +314,16 @@ Clicking `Advanced` will show more options.
 * Link to MycroftProject to browse opensearch xml files for the current domain
 * Open a Create Custom Engine form to customize and test the engine before installing. You can also change it after installing from the [Search Engines Manager](#searchenginesmanager)
 
+___
+
 <a name="highlighting"/>
 
 ## [5. Highlighting Results](#toc)
 After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
 
 Highlighting can be removed from a page by pressing ESC
+
+___
 
 <a name="modifyingterms"/>
 
@@ -314,6 +336,8 @@ Some search engines require `+` instead of spaces. In this case, to change a que
 
 Regex can be chained using one regex replacement per line in the Search Regex field.
 
+___
+
 <a name="templateparameters"/>
 
 ## [6.2 Template Parameters](#toc)
@@ -321,6 +345,8 @@ Regex can be chained using one regex replacement per line in the Search Regex fi
 `{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
 `{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
 `{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) 
+
+___
 
 <a name="javascriptengines"/>
 
@@ -344,10 +370,14 @@ The search bar is assumed to be the first INPUT element which is filled in with 
 
 Some sites will require more precise selectors and events ( click, change, etc ) in order to perform a search, but nearly all should be accessible with the search code field.
 
+___
+
 <a name="loginsandtokens"/>
 
 ## [6.4 Search Engines Requiring Logins and Tokens](#toc)
 The same approach as the Javascript-Driven Search Engines above may be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
+
+___
 
 <a name="bookmarklets"/>
 
@@ -366,6 +396,8 @@ javascript:(async () => {
 ```
 
 The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current tab and a short notification is displayed by messaging the extension background page. Check out background.js -> notify() for available actions.
+
+___
 
 <a name="styling"/>
 
