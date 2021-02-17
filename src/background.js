@@ -1695,6 +1695,8 @@ function encodeCharset(string, encoding) {
 
 function updateUserOptionsVersion(uo) {
 
+	let start = Date.now();
+
 	// v1.1.0 to v 1.2.0
 	return browser.storage.local.get("searchEngines").then( result => {
 		if (typeof result.searchEngines !== 'undefined') {
@@ -1983,6 +1985,7 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 		console.log('done');
+		console.log(Date.now() - start);
 		return _uo;
 	});
 }

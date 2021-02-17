@@ -66,8 +66,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (message.action && message.action === "closePageTiles")
 		closePageTiles();
 
-	if ( message.action && message.action === "openPageTiles")
-		openPageTiles({});
+	if ( message.action && message.action === "openPageTiles" ) {
+		if ( getPageTilesIframe() ) closePageTiles();
+		else openPageTiles({});
+	}
 });
 
 document.addEventListener('keydown', e => {

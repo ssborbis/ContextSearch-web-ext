@@ -1859,6 +1859,11 @@
     "description": ""
   },
 
+  "Shortcuts": {
+    "message": "Shortcuts",
+    "description": "keyboard shortcuts"
+  },
+
   "___________": {
     "message": "",
     "description": ""

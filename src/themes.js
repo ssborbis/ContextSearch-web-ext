@@ -4,6 +4,7 @@ const themes = [
 	// { name: "sunset", path: "/styles/sunset.css"},
 	// { name: "blue", path: "/styles/blue.css"},
 	{ name: "modern", path: "/styles/modern.css"},
+	{ name: "modern dark", path: "/styles/modern-dark.css", requires: ["/styles/modern.css"]},
 	{ name: "modern purple", path: "/styles/modern-purple.css", requires: ["/styles/modern.css"]},
 	{ name: "modern sunset", path: "/styles/modern-sunset.css", requires: ["/styles/modern.css"]}
 ];

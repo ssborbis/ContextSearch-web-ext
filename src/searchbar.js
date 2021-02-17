@@ -16,36 +16,6 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-// context menu options
-// window.addEventListener('contextmenu', e => {
-	
-	// browser.contextMenus.create({
-		// id: "showSuggestions",
-		// title: browser.i18n.getMessage("ShowSuggestions"),
-		// type: "checkbox",
-		// checked: userOptions.searchBarSuggestions
-	// }, () => {});
-	// browser.contextMenus.create({
-		// id: "clearHistory",
-		// title: browser.i18n.getMessage("ClearSearchHistory")
-	// }, () => {});
-
-	// setTimeout(() => {
-		// window.addEventListener('mousemove', ()=> {
-			// browser.contextMenus.remove("showSuggestions");
-			// browser.contextMenus.remove("clearHistory");
-		// }, {once: true});
-	// }, 1000);
-// });
-
-// what was this for? ( page_action is not considered a tab and does not receive userOptions updates )
-// setInterval(() => {
-	// if ( browser.runtime === undefined ) return;
-	// browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-		// userOptions = message.userOptions || {};
-	// });
-// }, 1000);
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 	if ( message.userOptions ) userOptions = message.userOptions;

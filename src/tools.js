@@ -294,6 +294,8 @@ var QMtools = [
 				
 				if ( e.dataTransfer.getData("text") === "tool" ) return;
 
+				if ( window.tilesDraggable ) return false;
+
 				timer = setTimeout(qm.toggleDisplayMode, 1000);
 				tile.addEventListener('dragleave', e => clearTimeout(timer), {once: true});
 			});
@@ -402,6 +404,10 @@ var QMtools = [
 
 			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
 			if ( tile ) tile.dataset.locked = window.tilesDraggable;
+
+			// special handler for when mouseup is disabled in addTileEventHandlers
+			if ( window.tilesDraggable ) 
+				tile.addEventListener('mouseup', e => this.action(), {once: true});
 		}
 	}
 ];

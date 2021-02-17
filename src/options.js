@@ -298,22 +298,6 @@ function restoreOptions() {
 		$('#s_findBarWindowType').value = userOptions.highLight.findBar.windowType;
 		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
-
-		buildSearchEngineContainer();
-				
-		// allow context menu on right-click
-		(() => {
-			function onChange(e) {
-				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null	: 'none';	
-			}
-			
-			[$('#s_quickMenuMouseButton'), $('#s_quickMenuOnMouseMethod')].forEach( s => {
-				s.addEventListener('change', onChange);	
-				onChange();
-			});
-			
-			
-		})();
 		
 		$('#n_searchBarHistoryLength').value = userOptions.searchBarHistoryLength;
 		$('#n_searchBarSuggestionsCount').value = userOptions.searchBarSuggestionsCount;
@@ -324,7 +308,7 @@ function restoreOptions() {
 		$('#cb_autoPasteFromClipboard').checked = userOptions.autoPasteFromClipboard;
 		$('#cb_allowHotkeysWithoutMenu').checked = userOptions.allowHotkeysWithoutMenu;
 		
-		$('#n_quickMenuHoldTimeout').value = userOptions.quickMenuHoldTimeout;
+		$('#n_quickMenuHoldTimeout').value = userOptions.quickMenuHoldTimeout || 250;
 		$('#cb_exportWithoutBase64Icons').checked = userOptions.exportWithoutBase64Icons;
 		$('#cb_addSearchProviderHideNotification').checked = userOptions.addSearchProviderHideNotification;
 		$('#cb_syncWithFirefoxSearch').checked = userOptions.syncWithFirefoxSearch;
@@ -350,6 +334,20 @@ function restoreOptions() {
 		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
 
 		$('#style_dark').disabled = !userOptions.nightMode;
+
+		buildSearchEngineContainer();
+				
+		// allow context menu on right-click
+		(() => {
+			function onChange(e) {
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null	: 'none';	
+			}
+			
+			[$('#s_quickMenuMouseButton'), $('#s_quickMenuOnMouseMethod')].forEach( s => {
+				s.addEventListener('change', onChange);	
+				onChange();
+			});
+		})();
 
 		buildToolIcons();
 
@@ -1053,16 +1051,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			$('#info_msg').style.display = 'none';
 		});
 	}
-	
-	// for (let el of document.getElementsByClassName('info')) {
-		// el.addEventListener('mouseover', e => {
-			// showInfoMsg(el, el.dataset.msg);
-		// });
-		
-		// el.addEventListener('mouseout', e => {
-			// $('#info_msg').style.display = 'none';
-		// });
-	// }
 });
 
 // import/export buttons
@@ -1101,10 +1089,6 @@ document.addEventListener("DOMContentLoaded", () => {
 	
 	let b_import = $('#b_importSettings');
 	b_import.onclick = function() {
-		// if (window.location.hash === '#browser_action') {
-			// browser.runtime.sendMessage({action: "openOptions", hashurl:"?click=importSettings"});
-			// return;
-		// }
 		$('#importSettings').click();
 	}
 	
@@ -1501,7 +1485,7 @@ function buildShortcutTable() {
 		}
 	}
 
-	defaultShortcuts.forEach( s => {
+	defaultShortcuts.sort((a,b) => a.name > b.name).forEach( s => {
 
 		const us = userOptions.userShortcuts.find(_s => _s.id == s.id);
 		const ds = defaultToUser(s);
