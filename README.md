@@ -1,6 +1,6 @@
 # <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="30px">&nbsp;ContextSearch web-ext
 
-Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search.
+Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search. 
 
 ##### Table of Contents  
 [Features](#features)  
@@ -12,21 +12,20 @@ Ways To Search
 * [Sidebar Menu](#sidebarmenu)
 * [Page Tiles](#pagetiles)
 * [Omnibox](#omnibox)
-* [Hotkeys](#hotkeys)
+* [Hotkeys](#hotkeys) 
 
-[Highlighting Results](#highlighting)  
+[Highlighting Results](#highlighting) 
 [Adding Engines](#addingengines)  
 [Editing Engines](#editingengines)  
 * [Modifying Terms](#modifyingterms)
 * [Template Parameters](#templateparameters)
 * [Javascript and Form-Based Engines](#javascriptengines)
-* [Engines With Logins and Tokens](#loginsandtokens)
+* [Engines With Logins and Tokens](#loginsandtokens) 
 
 [Bookmarklets](#bookmarklets)  
 [Styling](#styling)  
 
-  
-Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
+___
 
 <a name="features"/>
 
@@ -185,7 +184,7 @@ Show tools on the top or bottom of the quick menu, or hide them altogether
 |Disable Menu|This closes the menu and prevents it from opening again on the current tab session. Useful if the menu opens unwanted on a partiulcar page but you don't want to disable it everywhere.|
 |Lock|Keep the menu open after performing a search and it stays in the same place. You can reposition it by dragging the menu bar.|
 |Open As Link|If the selected text is thought to be an URL, this tool will become enabled. Click to navigate to the URL|
-|Find In Page|Use the built-in Findbar to highlight words in the current page. See the [Highlight](#highlight) section for more info.|
+|Find In Page|Use the built-in Findbar to highlight words in the current page. See the [Highlight](#highlighting) section for more info.|
 |Grid / Text|oggle the menu display
 |Options|Open the options page
 |Next Theme|Cycle through some build-in themes for the menus. Find something you like.
@@ -201,6 +200,73 @@ Like to edit your search terms after opening the menu?
 
 ###### Select all text in the search bar when it receives focus
 When used with 'Set focus...', the first thing you type replaces the search terms in the search bar. If you're using a shortcut to open the quick menu, not necessarily selecting text first, you may want to enable this to erase and replace the currently displayed search terms with a keystroke.
+
+<a name="toolbar"/>
+
+## Toolbar Menu
+
+A version of the quick menu accessible from an icon on the browser's toolbar menu. The columns setting is independent of the quick menu columns and there is no row setting. Tools that only perform functions on the quick menu will be shown but disabled. Nearly all settings, search functions, etc will be the same as the quick menu.
+
+Unlike the quick menu, the search bar is always at the top of the Toolbar menu.
+
+Sometimes, a website just won't allow content scripts to be injected. This menu provides a way to access all ContextSearch web-ext engines whenever the browser is open, regardless of the website.
+
+## Sidebar Menu
+
+Yet another version of the quick menu. Think of this as a quick menu that always stays put.
+
+Like the Toolbar menu, this gets its own column setting. Unlike the quick menu, it can be dragged around by the menu bar and docked to the left or right of the screen. Double-click the menu bar to dock, and you'll get a full viewheight menu the width of the undocked menu. Why? Why not.
+
+### Options
+
+##### Overlay an icon for opening the sidebar
+You can also minimize this menu to a smallish icon that can also be moved around, but if you want to see the opener icon when you visit a new page, enable this. The position is remembered next time you open the menu. In Firefox, this menu will open on drag events if you're the type to drag text / links / images to be searched. Once opened, you can drop onto a search engine tile.
+
+##### Open the sidebar automatically when the page loads
+Want the menu to show up whenever a new page is opened? 
+
+<a name="pagetiles"/>
+
+## Page Tiles
+
+Drag text and get a full-page menu of search engine tiles ala Web Search Pro. Drop to search. Dropping on an empty tile closes the menu.
+
+You can also close the menu by pressing ESC or shaking the mouse left and right a few times. Didn't want the menu opened this time but still want to complete your drag event? Shake it.
+
+Like other menus, you can set columns and rows, but the search engine order is completely independent of the other menus. Under the Page Tiles tab in Optionss, using the folder view tree, drag and drop engines or folders where you want them to show up in the menu. Clicking a tile on the preview will clear the tile.
+
+Search actions can be set just for this menu.
+
+There's also a few palette options to give menu a bit of color.
+
+## Omnibox
+
+Modern browsers have a versatile URL bar that do more than point to a web page. Enter the [omnibox](http://www.chromium.org/user-experience/omnibox)
+
+If you're into that sort of thing, you can access any ContextSearch engine, folder, bookmarklet you've set a hotkey or keyword to in the omnibox.
+
+Format: `CS [keyword / hotkey] searchterms`
+
+Say I've set a hotkey for Google to `g` in the [Search Engines Manager](#searchenginesmanager) and want to search for the term "movies", I'd type this in the URL bar (just kidding, I use the other menus) `CS g movies` and press Enter. This will perform the search using whatever tab opening method I've chosen under Search Actions.
+
+If you've set hotkeys, they can be chained like so.
+
+Amazon `a`
+eBay: `e`
+Google `g`
+
+If I type `CS aeg socks` and press Enter, I'll get a new results tab for each engine.
+
+Unlike hotkeys, keywords cannot be chained. You can set a hotkey and a keyword for each engine, but only one keyword will be recognized in the omnibox at a time.
+
+
+<a name="hotkeys"/>
+
+## Hotkeys
+
+The [Search Engines Manager](#searchenginesmanager) allows you to set a hotkey for each engine / folder / bookmarklet which can be used in either the omnibox or as a way to perform a quick search without openeing one of the ContextSearch menus.
+
+Select text and press the key corrosponding to a search engine. Boom, done. A results tab will open according to the Search Actions setting under the Hotkeys tab.
 
 <a name="addingengines"/>
 
@@ -374,4 +440,4 @@ Fat green qm border
 }
 ```
 
-
+Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
