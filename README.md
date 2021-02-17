@@ -3,33 +3,31 @@
 Add any search engine to your WebExtensions-compatible browser. Originally written as a replacement for Ben Basson's Context Search. 
 
 ##### Table of Contents  
-[Features](#features)  
-[Building From Source](#building)  
-Ways To Search  
-* [Context Menu](#contextmenu)
-* [Quick Menu](#quickmenu)
-* [Toolbar Menu](#toolbarmenu)
-* [Sidebar Menu](#sidebarmenu)
-* [Page Tiles](#pagetiles)
-* [Omnibox](#omnibox)
-* [Hotkeys](#hotkeys) 
-
-[Highlighting Results](#highlighting) 
-[Adding Engines](#addingengines)  
-[Editing Engines](#editingengines)  
-* [Modifying Terms](#modifyingterms)
-* [Template Parameters](#templateparameters)
-* [Javascript and Form-Based Engines](#javascriptengines)
-* [Engines With Logins and Tokens](#loginsandtokens) 
-
-[Bookmarklets](#bookmarklets)  
-[Styling](#styling)  
+1. [Features](#features)  
+2. [Building From Source](#building)  
+3. Ways To Search  
+  3.1 [Context Menu](#contextmenu)  
+  3.2 [Quick Menu](#quickmenu)  
+  3.3 [Toolbar Menu](#toolbarmenu)  
+  3.4 [Sidebar Menu](#sidebarmenu)  
+  3.5 [Page Tiles](#pagetiles)  
+  3.6 [Omnibox](#omnibox)  
+  3.7 [Hotkeys](#hotkeys)  
+4. [Highlighting Results](#highlighting)  
+5. [Adding Engines](#addingengines)  
+6. [Editing Engines](#editingengines)  
+  6.1 [Modifying Terms](#modifyingterms)  
+  6.2 [Template Parameters](#templateparameters)  
+  6.3 [Javascript and Form-Based Engines](#javascriptengines)  
+  6.4 [Engines With Logins and Tokens](#loginsandtokens)  
+7. [Bookmarklets](#bookmarklets)  
+8. [Styling](#styling)  
 
 ___
 
 <a name="features"/>
 
-## Features
+## 1 Features
 * Works with any search engine.
 * Context menu
 * Popup menu with several opening methods
@@ -53,7 +51,7 @@ ___
 
 <a name="building"/>
 
-## Building from source / sideloading
+## 2 Building from source / sideloading
 
 The easiest way to build your own package is to install [web-ext](https://www.npmjs.com/package/web-ext)
 
@@ -61,7 +59,7 @@ Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` d
 
 <a name="contextmenu"/>
 
-## Context Menu
+## 3.1 Context Menu
 
 Display search engines in the context (right-click) menu.
 
@@ -104,7 +102,7 @@ Some OS's allow a key to be used to jump to a particular context menu entry. If 
 
 <a name="quickmenu"/>
 
-## Quick Menu
+## 3.2 Quick Menu
 The Quick Menu is a robust popup menu that can be used to perform search actions not available to the context menu
 
 ### Usage
@@ -201,9 +199,9 @@ Like to edit your search terms after opening the menu?
 ###### Select all text in the search bar when it receives focus
 When used with 'Set focus...', the first thing you type replaces the search terms in the search bar. If you're using a shortcut to open the quick menu, not necessarily selecting text first, you may want to enable this to erase and replace the currently displayed search terms with a keystroke.
 
-<a name="toolbar"/>
+<a name="toolbarmenu"/>
 
-## Toolbar Menu
+## 3.3 Toolbar Menu
 
 A version of the quick menu accessible from an icon on the browser's toolbar menu. The columns setting is independent of the quick menu columns and there is no row setting. Tools that only perform functions on the quick menu will be shown but disabled. Nearly all settings, search functions, etc will be the same as the quick menu.
 
@@ -211,7 +209,9 @@ Unlike the quick menu, the search bar is always at the top of the Toolbar menu.
 
 Sometimes, a website just won't allow content scripts to be injected. This menu provides a way to access all ContextSearch web-ext engines whenever the browser is open, regardless of the website.
 
-## Sidebar Menu
+<a name="sidebarmenu"/>
+
+## 3.4 Sidebar Menu
 
 Yet another version of the quick menu. Think of this as a quick menu that always stays put.
 
@@ -227,7 +227,7 @@ Want the menu to show up whenever a new page is opened?
 
 <a name="pagetiles"/>
 
-## Page Tiles
+## 3.5 Page Tiles
 
 Drag text and get a full-page menu of search engine tiles ala Web Search Pro. Drop to search. Dropping on an empty tile closes the menu.
 
@@ -239,7 +239,9 @@ Search actions can be set just for this menu.
 
 There's also a few palette options to give menu a bit of color.
 
-## Omnibox
+<a name="omnibox"/>
+
+## 3.6 Omnibox
 
 Modern browsers have a versatile URL bar that do more than point to a web page. Enter the [omnibox](http://www.chromium.org/user-experience/omnibox)
 
@@ -262,7 +264,7 @@ Unlike hotkeys, keywords cannot be chained. You can set a hotkey and a keyword f
 
 <a name="hotkeys"/>
 
-## Hotkeys
+## 3.7 Hotkeys
 
 The [Search Engines Manager](#searchenginesmanager) allows you to set a hotkey for each engine / folder / bookmarklet which can be used in either the omnibox or as a way to perform a quick search without openeing one of the ContextSearch menus.
 
@@ -270,7 +272,7 @@ Select text and press the key corrosponding to a search engine. Boom, done. A re
 
 <a name="addingengines"/>
 
-## Adding Search Engines
+## 4 Adding Search Engines
 Most websites that have an embeded search bar can be added to the list of search engines in ContextSearch web-ext using the Add Custom Search option from the context menu.
 
 * Open the website you want to add a search engine for
@@ -287,14 +289,14 @@ Clicking `Advanced` will show more options.
 
 <a name="highlighting"/>
 
-## Highlighting Searched Words
+## 5 Highlighting Searched Words
 After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
 
 Highlighting can be removed from a page by pressing ESC
 
 <a name="modifyingterms"/>
 
-## Modifying Search Terms
+## 6.1 Modifying Search Terms
 Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the following order:
 
 `FIND_REGEX, REPLACE_REGEX [, REGEX_MODIFIERS]`
@@ -303,9 +305,17 @@ Some search engines require `+` instead of spaces. In this case, to change a que
 
 Regex can be chained using one regex replacement per line in the Search Regex field.
 
+<a name="templateparameters"/>
+
+## 6.2 Template Parameters
+`{searchTerms}` - The current selection or link URL / image URL \
+`{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
+`{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
+`{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) 
+
 <a name="javascriptengines"/>
 
-## Javascript-Driven Search Engines
+## 6.3 Javascript-Driven Search Engines
 Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript. For these engines, the template should exclude `{searchTerms}` and instead users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
 
 For a simple example, if somewebsite.com used a javascript-driven search form, we could perform the search by using the Search Code field like this
@@ -327,12 +337,12 @@ Some sites will require more precise selectors and events ( click, change, etc )
 
 <a name="loginsandtokens"/>
 
-## Search Engines Requiring Logins and Tokens
+## 6.4 Search Engines Requiring Logins and Tokens
 The same approach as the Javascript-Driven Search Engines above may be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
 
 <a name="bookmarklets"/>
 
-## Bookmarklets 
+## 7 Bookmarklets 
 Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Bookmarklet. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add.
 
 Bookmarklets have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
@@ -348,17 +358,9 @@ javascript:(async () => {
 
 The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current tab and a short notification is displayed by messaging the extension background page. Check out background.js -> notify() for available actions.
 
-<a name="templateparameters"/>
-
-## Template Parameters
-`{searchTerms}` - The current selection or link URL / image URL \
-`{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
-`{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
-`{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) 
-
 <a name="styling"/>
 
-## Menu Styling
+## 8 Menu Styling
 Most CSS styling can be overridden in Options -> General -> User Styles.
 
 A few examples...
