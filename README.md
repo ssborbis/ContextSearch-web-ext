@@ -6,6 +6,8 @@ Add any search engine to your WebExtensions compatible browser. Originally writt
 [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) 
 [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
+<a name="toc"/>
+
 #### Table of Contents  
 1. [Features](#features)  
 2. [Building From Source](#building)  
@@ -31,7 +33,7 @@ ___
 
 <a name="features"/>
 
-## 1. Features
+## [1. Features](#toc)
 * Works with any search engine.
 * Context menu
 * Popup menu with several opening methods
@@ -52,7 +54,7 @@ ___
 
 <a name="building"/>
 
-## 2. Building from source / sideloading
+## [2. Building from source / sideloading](#toc)
 
 The easiest way to build your own package is to install [web-ext](https://www.npmjs.com/package/web-ext)
 
@@ -60,7 +62,7 @@ Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` d
 
 <a name="contextmenu"/>
 
-## 3.1 Context Menu
+## [3.1 Context Menu](#toc)
 
 Display search engines in the context (right-click) menu.
 
@@ -105,7 +107,7 @@ Some OS's allow a key to be used to jump to a particular context menu entry. If 
 
 <a name="quickmenu"/>
 
-## 3.2 Quick Menu
+## [3.2 Quick Menu](#toc)
 The Quick Menu is a robust popup menu that can be used to perform search actions not available to the context menu
 
 ### Usage
@@ -207,7 +209,7 @@ When used with 'Set focus...', the first thing you type replaces the search term
 
 <a name="toolbarmenu"/>
 
-## 3.3 Toolbar Menu
+## [3.3 Toolbar Menu](#toc)
 
 A version of the quick menu accessible from an icon on the browser's toolbar menu. The columns setting is independent of the quick menu columns and there is no row setting. Tools that only perform functions on the quick menu will be shown but disabled. Nearly all settings, search functions, etc will be the same as the quick menu.
 
@@ -217,7 +219,7 @@ Sometimes, a website just won't allow content scripts to be injected. This menu 
 
 <a name="sidebarmenu"/>
 
-## 3.4 Sidebar Menu
+## [3.4 Sidebar Menu](#toc)
 
 Yet another version of the quick menu. Think of this as a quick menu that always stays put.
 
@@ -226,14 +228,14 @@ Like the Toolbar menu, this gets its own column setting. Unlike the quick menu, 
 ### Options
 
 #### `Overlay an icon for opening the sidebar`
-You can also minimize this menu to a smallish icon that can also be moved around, but if you want to see the opener icon when you visit a new page, enable this. The position is remembered next time you open the menu. In Firefox, this menu will open on drag events if you're the type to drag text / links / images to be searched. Once opened, you can drop onto a search engine tile.
+You can also minimize this menu to a small-ish icon that can also be moved around, but if you want to see the opener icon when you visit a new page, enable this. The position is remembered next time you open the menu. In Firefox, this menu will open on drag events if you're the type to drag text / links / images to be searched. Once opened, you can drop onto a search engine tile.
 
 #### `Open the sidebar automatically when the page loads`
 Want the menu to show up whenever a new page is opened? 
 
 <a name="pagetiles"/>
 
-## 3.5 Page Tiles
+## [3.5 Page Tiles](#toc)
 
 Drag text and get a full-page menu of search engine tiles ala Web Search Pro. Drop to search. Dropping on an empty tile closes the menu.
 
@@ -247,7 +249,7 @@ There's also a few palette options to give menu a bit of color.
 
 <a name="omnibox"/>
 
-## 3.6 Omnibox
+## [3.6 Omnibox](#toc)
 
 Modern browsers have a versatile URL bar that do more than point to a web page. Enter the [omnibox](http://www.chromium.org/user-experience/omnibox)
 
@@ -271,7 +273,7 @@ Unlike hotkeys, keywords cannot be chained. You can set a hotkey and a keyword f
 
 <a name="hotkeys"/>
 
-## 3.7 Hotkeys
+## [3.7 Hotkeys](#toc)
 
 The [Search Engines Manager](#searchenginesmanager) allows you to set a hotkey for each engine / folder / bookmarklet which can be used in either the omnibox or as a way to perform a quick search without opening one of the ContextSearch menus.
 
@@ -279,7 +281,7 @@ Select text and press the key corresponding to a search engine. Boom, done. A re
 
 <a name="addingengines"/>
 
-## 4. Adding Search Engines
+## [4. Adding Search Engines](#toc)
 Most websites that have an embeded search bar can be added to the list of search engines in ContextSearch web-ext using the Add Custom Search option from the context menu.
 
 * Open the website you want to add a search engine for
@@ -296,14 +298,14 @@ Clicking `Advanced` will show more options.
 
 <a name="highlighting"/>
 
-## 5. Highlighting Searched Words
+## [5. Highlighting Results](#toc)
 After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
 
 Highlighting can be removed from a page by pressing ESC
 
 <a name="modifyingterms"/>
 
-## 6.1 Modifying Search Terms
+## [6.1 Modifying Search Terms](#toc)
 Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the following order:
 
 `FIND_REGEX, REPLACE_REGEX [, REGEX_MODIFIERS]`
@@ -314,7 +316,7 @@ Regex can be chained using one regex replacement per line in the Search Regex fi
 
 <a name="templateparameters"/>
 
-## 6.2 Template Parameters
+## [6.2 Template Parameters](#toc)
 `{searchTerms}` - The current selection or link URL / image URL \
 `{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
 `{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
@@ -322,7 +324,7 @@ Regex can be chained using one regex replacement per line in the Search Regex fi
 
 <a name="javascriptengines"/>
 
-## 6.3 Javascript-Driven Search Engines
+## [6.3 Javascript-Driven Search Engines](#toc)
 Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript. For these engines, the template should exclude `{searchTerms}` and instead users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
 
 For a simple example, if somewebsite.com used a javascript-driven search form, we could perform the search by using the Search Code field like this
@@ -344,12 +346,12 @@ Some sites will require more precise selectors and events ( click, change, etc )
 
 <a name="loginsandtokens"/>
 
-## 6.4 Search Engines Requiring Logins and Tokens
+## [6.4 Search Engines Requiring Logins and Tokens](#toc)
 The same approach as the Javascript-Driven Search Engines above may be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
 
 <a name="bookmarklets"/>
 
-## 7. Bookmarklets 
+## [7. Bookmarklets](#toc)
 Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Bookmarklet. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add.
 
 Bookmarklets have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
@@ -367,8 +369,11 @@ The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current ta
 
 <a name="styling"/>
 
-## 8. Menu Styling
-Most CSS styling can be overridden in Options -> General -> User Styles.
+## [8. Menu Styling](#toc)
+
+Set the menu theme in CS Options > General. You can also use the `Next Theme` tool or the keyboard shortcut ( if enabled ).
+
+In addition to themes, most CSS styling can be overridden in Options -> General -> User Styles.
 
 A few examples...
 
