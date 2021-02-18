@@ -270,9 +270,9 @@ Modern browsers have a versatile URL bar that do more than point to a web page. 
 
 If you're into that sort of thing, you can access any ContextSearch engine, folder, bookmarklet you've set a hotkey or keyword to in the omnibox.
 
-Format: `CS [keyword | hotkey] searchterms`
+Format: `cs [keyword | hotkey] searchterms`
 
-Say I've set a hotkey for Google to `g` in the [Search Engines Manager](#searchenginesmanager) and want to search for the term "movies", I'd type this in the URL bar (just kidding, I use the other menus) `CS g movies` and press Enter. This will perform the search using whatever tab opening method I've chosen under Search Actions.
+Say I've set a hotkey for Google to `g` in the [Search Engines Manager](#searchenginesmanager) and want to search for the term "movies", I'd type this in the URL bar (just kidding, I use the other menus) `cs g movies` and press Enter. This will perform the search using whatever tab opening method I've chosen under Search Actions.
 
 If you've set hotkeys, they can be chained like so.
 |||
@@ -281,7 +281,7 @@ If you've set hotkeys, they can be chained like so.
 |eBay| `e`|
 |Google| `g`|
 
-If I type `CS aeg socks` and press Enter, I'll get a new results tab for each engine.
+If I type `cs aeg socks` and press Enter, I'll get a new results tab for each engine.
 
 Unlike hotkeys, keywords cannot be chained. You can set a hotkey and a keyword for each engine, but only one keyword will be recognized in the omnibox at a time.
 
