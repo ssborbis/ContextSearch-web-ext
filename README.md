@@ -29,6 +29,7 @@ Add any search engine to your WebExtensions compatible browser. Originally writt
   6.4 [Engines With Logins and Tokens](#loginsandtokens)  
 7. [Bookmarklets](#bookmarklets)  
 8. [Styling](#styling)  
+9. [Security](#security)
 
 ___
 
@@ -67,13 +68,13 @@ ___
 
 ## [3.1 Context Menu](#toc)
 
-Display search engines in the context (right-click) menu.
+Display search engines in the context (right-click) menu. The menu is a single entry that expands to all engines and folders not hidden in the [Search Engines Manager](#searchenginesmanager)
 
 ### Usage
 * Select some text and right-click to bring up the context menu
 * Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48.png" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
 
-The search results can be displayed in a number of ways depending on the key held while clicking the search engine.
+The search results can be displayed in a number of ways depending on the key held while clicking the menu.
 
 Defaults
 | | |
@@ -96,7 +97,8 @@ Each folder will display `<<Search All>>` as the first entry at the top of the f
 Display the most recently-used search engines at the top of the main folder. Optionally display them as a folder. Set the number / limit to display
 
 #### Search Actions
-Choose how different buttons / button + key combos will display the search results.
+Choose how different buttons / button + key combos will display the search results. FYI, Mozilla-based browsers recognize more buttons and actions when interacting with the context menu than chromium-based 
+
 ```
   Current Tab
   New Tab
@@ -113,7 +115,7 @@ ___
 <a name="quickmenu"/>
 
 ## [3.2 Quick Menu](#toc)
-The Quick Menu is a robust popup menu that can be used to perform search actions not available to the context menu
+The Quick Menu is a robust popup menu that can be used to perform search actions not available to the context menu. It opens with a user-defined number of columns and rows, and can be expanded to show hidden engines by clicking the `More` button.
 
 ### Usage
 Select text and hold down the right mouse button until the menu appears. 
@@ -166,7 +168,14 @@ Optionally close the menu after clicking a search tile or by scrolling the mouse
 
 #### Search Actions
 
-Choose how different buttons / button + key combos will display the search results.
+Choose how different buttons / button + key combos will display the search results. You can set a different action for folders. 
+
+Note: If you open folders in a new window, only one new window will be created. The rest of the folder content results will be background tabs in that new window.
+
+Folders also have the choice `Browse Folder`. Normally this would be left-click, but you can set it to anything you want.
+
+If a button ( say middle-click ) is set to `Browse Folder` ujnder the folder column and `No Action` under the search engines column, clicking that button ( middle-click ) anywhere in the menu will close the folder and go back to the original menu.
+
 ```
   Current Tab
   New Tab
@@ -270,7 +279,7 @@ Modern browsers have a versatile URL bar that do more than point to a web page. 
 
 If you're into that sort of thing, you can access any ContextSearch engine, folder, bookmarklet you've set a hotkey or keyword to in the omnibox.
 
-Format: `cs [keyword | hotkey] searchterms`
+Format: `cs [keyword | hotkey(s)] searchterms`
 
 Say I've set a hotkey for Google to `g` in the [Search Engines Manager](#searchenginesmanager) and want to search for the term "movies", I'd type this in the URL bar (just kidding, I use the other menus) `cs g movies` and press Enter. This will perform the search using whatever tab opening method I've chosen under Search Actions.
 
@@ -322,6 +331,32 @@ ___
 After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
 
 Highlighting can be removed from a page by pressing ESC
+
+
+___
+
+<a name="searchenginesmanager"/>
+
+## [6.0 Search Engnines Manager](#toc)
+Under the `Search Engines` tab of CS Options is where you'll find the main menu for editing, moving, copying, deleting, hiding engines.
+
+Each engine / folder / bookmarklet is displayed as a row in a table consisting of an icon, name, omnibox keyword, and hotkey. 
+
+A custom right-click menu provides several options.
+
+You can edit your engines by double-clicking the row or Right-click menu -> Edit
+
+When editing engines, folders and bookmarklets, you can change the name or icon using either the favicon finder or clicking the current icon and uploading an image from your computer. Search engine icons  will be resized according to `cacheIconsMaxSize` under Advanced, and cached. The default size is 32x32, but if you are wanting higher-res images used with some custom user styles, raise this number.
+
+### Additional Options for Firefox
+
+Firefox comes with it's own searchbar, but those engines can be used by ContextSearch. These engines are added automatically to your search engine list, and are distinguishable by the orange (FF) tag. While they can be used by ContextSearch, they cannot be edited without first importing them. ( see below )
+
+If you've curated a ton of OpenSearch engines and just want to access them in a more context-friendly way, you can `Sync With Firefox Search` and let Firefox manage your search engines. No folders or bookmarklets. Only engines in the Firefox search bar will show up in ContextSearch menus. Changing this will not lose your current search engine list.
+
+If you want to not only use your Firefox search engines with ContextSearch, but also customize icons and templates, you'll need to `Import One-Click Search Engines`. Clicking this will prompt to browse to your Firefox profile and import your `search.json.mozlz4` file where Firefox stores its search engines. After importing, your Firefox engines should lose the (FF) tag indicating they are copied to ContextSearch and can be edited.
+
+Under the Advanced menu, there is also an option to export ContextSearch engines to the Firefox searchbar. This is done by replacing your current `search.json.mozlz4` file with one generated by ContextSearch. You will also receive a renamed backup of your original `search.json.mozlz4` for safe-keeping, just in case.
 
 ___
 
@@ -487,3 +522,15 @@ Fat green qm border
 ```
 
 Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
+
+___
+
+<a name="security"/>
+
+## [9. Security](#toc)
+
+This addon does not use any tracking or analytics. No information is collected, sold, etc. How you use it is your business. There are, however, a few things to note.
+
+1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). Like other addons, there is the possiblility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
+
+2. Search suggestions are fetched from Google when typing in any ContextSearch searchbar unless disable in CS Options -> General -> Suggestions.
