@@ -710,14 +710,23 @@ async function makeQuickMenu(options) {
 
 			var style = window.getComputedStyle ? getComputedStyle(div, null) : div.currentStyle;
 	
-			var marginLeft = parseInt(style.marginLeft) || 0;
-			var marginRight = parseInt(style.marginRight) || 0;
-			var marginTop = parseInt(style.marginTop) || 0;
-			var marginBottom = parseInt(style.marginBottom) || 0;
+			var marginLeft = parseFloat(style.marginLeft) || 0;
+			var marginRight = parseFloat(style.marginRight) || 0;
+			var marginTop = parseFloat(style.marginTop) || 0;
+			var marginBottom = parseFloat(style.marginBottom) || 0;
 
+			var paddingLeft = parseFloat(style.paddingLeft) || 0;
+			var paddingRight = parseFloat(style.paddingRight) || 0;
+			var paddingTop = parseFloat(style.paddingTop) || 0;
+			var paddingBottom = parseFloat(style.paddingBottom) || 0;
+
+    		var borderLeft = parseFloat(style.borderLeftWidth) || 0;
+    		var borderRight = parseFloat(style.borderRightWidth) || 0;
+    		var borderTop = parseFloat(style.borderTopWidth) || 0;
+			var borderBottom = parseFloat(style.borderBottomWidth) || 0;
 			qm.removeChild(div);
 
-			return {width: rect.width + marginLeft + marginRight, height: rect.height + marginTop + marginBottom, rectWidth: rect.width, rectHeight: rect.height };
+			return {width: rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeft + borderRight, height: rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTop + borderBottom, rectWidth: rect.width, rectHeight: rect.height };
 		};
 		
 		qm.setDisplay = () => {

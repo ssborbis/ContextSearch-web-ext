@@ -198,7 +198,8 @@ const defaultUserOptions = {
 		enabled: false,
 		grid: [],
 		openMethod: "openBackgroundTab",
-		paletteString: "eff0f1"
+		paletteString: "eff0f1",
+		closeOnShake: true
 	},
 	openFoldersOnHoverTimeout: 0,
 	nightMode: false,

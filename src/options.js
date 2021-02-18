@@ -328,6 +328,7 @@ function restoreOptions() {
 		$('#cb_pageTilesEnabled').checked = userOptions.pageTiles.enabled;
 		$('#s_pageTilesOpenMethod').value = userOptions.pageTiles.openMethod;
 		$('#s_pageTilesPalette').value = userOptions.pageTiles.paletteString;
+		$('#cb_pageTilesCloseOnShake').checked = userOptions.pageTiles.closeOnShake;
 		
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
@@ -606,7 +607,8 @@ function saveOptions(e) {
 			columns: parseInt($('#n_pageTilesColumns').value),
 			openMethod: $('#s_pageTilesOpenMethod').value,
 			grid: userOptions.pageTiles.grid,
-			paletteString: $('#s_pageTilesPalette').value
+			paletteString: $('#s_pageTilesPalette').value,
+			closeOnShake: $('#cb_pageTilesCloseOnShake').checked
 		},
 
 		quickMenuTools: userOptions.quickMenuTools

@@ -50,6 +50,14 @@ function openPageTiles(e) {
 				}, iframe.src);
 			});
 
+			if ( userOptions.pageTiles.closeOnShake ) {
+				let ds = new DragShake();
+				ds.onshake = () => closePageTiles();
+				ds.start();
+
+				document.addEventListener('closePageTiles', e => ds.stop(), {once: true});
+			}
+
 		}
 	}, 50);
 }
@@ -86,5 +94,7 @@ let closePageTiles = (e) => {
 
 	let overDiv = getOverDiv();
 	if ( overDiv ) overDiv.parentNode.removeChild(overDiv);
+
+	document.dispatchEvent(new CustomEvent('closePageTiles'));
 }
 

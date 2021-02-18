@@ -6,18 +6,15 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 	setUserStyles();
 	makePageTiles();
 	
-	let ds = new DragShake();
-	ds.onshake = () => close();
-	ds.start();
+	if ( userOptions.pageTiles.closeOnShake ) {
+		let ds = new DragShake();
+		ds.onshake = () => close();
+		ds.start();
+	}
 })
 
-// document.addEventListener('mouseup', e => {
-// 	console.info('iframe captured mouseup');
-// });
-
-// document.addEventListener('drop', e => {
-// 	console.info('iframe captured drop');
-// })
+// document.addEventListener('mouseup', e => console.info('iframe captured mouseup'));
+// document.addEventListener('drop', e => console.info('iframe captured drop'))
 
 var colors;
 
