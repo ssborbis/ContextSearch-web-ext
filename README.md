@@ -4,6 +4,7 @@
 Add any search engine to your WebExtensions compatible browser. Originally written as a replacement for Ben Basson's Context Search. 
 
 [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) 
+
 [Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
 <a name="toc"/>
@@ -22,11 +23,11 @@ Add any search engine to your WebExtensions compatible browser. Originally writt
 4. [Highlighting Results](#highlighting)  
 5. [Adding Engines](#addingengines)  
 6. Editing Engines   
-  6.0 [Search Engines Manager](#searchenginesmanager)  
-  6.1 [Modifying Terms](#modifyingterms)  
-  6.2 [Template Parameters](#templateparameters)  
-  6.3 [Javascript and Form-Based Engines](#javascriptengines)  
-  6.4 [Engines With Logins and Tokens](#loginsandtokens)  
+  6.1 [Search Engines Manager](#searchenginesmanager)  
+  6.2 [Modifying Terms](#modifyingterms)  
+  6.3 [Template Parameters](#templateparameters)  
+  6.4 [Javascript and Form-Based Engines](#javascriptengines)  
+  6.5 [Engines With Logins and Tokens](#loginsandtokens)  
 7. [Bookmarklets](#bookmarklets)  
 8. [Styling](#styling)  
 9. [Security](#security)
@@ -337,7 +338,7 @@ ___
 
 <a name="searchenginesmanager"/>
 
-## [6.0 Search Engnines Manager](#toc)
+## [6.1 Search Engnines Manager](#toc)
 Under the `Search Engines` tab of CS Options is where you'll find the main menu for editing, moving, copying, deleting, hiding engines.
 
 Each engine / folder / bookmarklet is displayed as a row in a table consisting of an icon, name, omnibox keyword, and hotkey. 
@@ -362,7 +363,7 @@ ___
 
 <a name="modifyingterms"/>
 
-## [6.1 Modifying Search Terms](#toc)
+## [6.2 Modifying Search Terms](#toc)
 Each search engine's handling of the query string can be modified with the `Search Regex` field. The format should be a well-formed array in the following order:
 
 `FIND_REGEX, REPLACE_REGEX [, REGEX_MODIFIERS]`
@@ -375,7 +376,7 @@ ___
 
 <a name="templateparameters"/>
 
-## [6.2 Template Parameters](#toc)
+## [6.3 Template Parameters](#toc)
 `{searchTerms}` - The current selection or link URL / image URL \
 `{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
 `{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
@@ -385,7 +386,7 @@ ___
 
 <a name="javascriptengines"/>
 
-## [6.3 Javascript-Driven Search Engines](#toc)
+## [6.4 Javascript-Driven Search Engines](#toc)
 Some websites use search bars that do not offer a GET or POST query, instead relying on web forms and javascript. For these engines, the template should exclude `{searchTerms}` and instead users can rely on the Search Code field. This field allows users to write javascript code to be executed after the GET or POST query is performed. For most javascript-driven engines, this means setting the search template to the URL of the website's search form and using DOM and CSS selectors to fill in the search form and simulate a submit.
 
 For a simple example, if somewebsite.com used a javascript-driven search form, we could perform the search by using the Search Code field like this
@@ -409,7 +410,7 @@ ___
 
 <a name="loginsandtokens"/>
 
-## [6.4 Search Engines Requiring Logins and Tokens](#toc)
+## [6.5 Search Engines Requiring Logins and Tokens](#toc)
 The same approach as the Javascript-Driven Search Engines above may be used to bypass session-based tokens and logins, provided the user is logged in using cookies or otherwise authenticated.
 
 ___
