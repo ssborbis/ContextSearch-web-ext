@@ -1,13 +1,29 @@
+// unique object to reference globally
+var quickMenuObject = { 
+	keyDownTimer: 0,
+	mouseDownTimer: 0,
+	mouseCoords: {x:0, y:0},
+	screenCoords: {x:0, y:0},
+	mouseCoordsInit: {x:0, y:0},
+	mouseLastClickTime: 0,
+	mouseDragDeadzone: 4,
+	lastSelectTime: 0,
+	locked: false,
+	searchTerms: "",
+	disabled: false,
+	mouseDownTargetIsTextBox: false
+};
+
 var qm = document.getElementById('quickMenuElement');
 var sb = document.getElementById('searchBar');
-// var tb = document.getElementById('titleBar');
+var tb = document.getElementById('titleBar');
 var sg = document.getElementById('suggestions');
 var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
+var toolBar = document.getElementById('toolBar');
+let sbc = document.getElementById('searchBarContainer');
 
 var type;
-
-var dragOverFolderTimeout = 1000;
 
 // track if tiles can be moved
 window.tilesDraggable = false;
@@ -38,12 +54,25 @@ function getFullElementSize(el) {
 
 	var style = window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle;
 
-	var marginLeft = parseInt(style.marginLeft) || 0;
-	var marginRight = parseInt(style.marginRight) || 0;
-	var marginTop = parseInt(style.marginTop) || 0;
-	var marginBottom = parseInt(style.marginBottom) || 0;
+	var marginLeft = parseFloat(style.marginLeft) || 0;
+	var marginRight = parseFloat(style.marginRight) || 0;
+	var marginTop = parseFloat(style.marginTop) || 0;
+	var marginBottom = parseFloat(style.marginBottom) || 0;
 
-	return {width: rect.width + marginLeft + marginRight, height: rect.height + marginTop + marginBottom, rectWidth: rect.width, rectHeight: rect.height };
+	var paddingLeft = parseFloat(style.paddingLeft) || 0;
+	var paddingRight = parseFloat(style.paddingRight) || 0;
+	var paddingTop = parseFloat(style.paddingTop) || 0;
+	var paddingBottom = parseFloat(style.paddingBottom) || 0;
+
+	var borderLeft = parseFloat(style.borderLeftWidth) || 0;
+	var borderRight = parseFloat(style.borderRightWidth) || 0;
+	var borderTop = parseFloat(style.borderTopWidth) || 0;
+	var borderBottom = parseFloat(style.borderBottomWidth) || 0;
+
+	let fullWidth = rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeft + borderRight;
+	let fullHeight = rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTop + borderBottom;
+
+	return {width: fullWidth, height: fullHeight, rectWidth: rect.width, rectHeight: rect.height, noBorderWidth: fullWidth - borderLeft - borderRight };
 }
 
 // generic search engine tile
@@ -204,7 +233,7 @@ async function makeQuickMenu(options) {
 	// sg div for toolbar search
 	if (sg) sg.tabIndex = -1;
 
-	var qm = document.getElementById('quickMenuElement') || document.createElement('div');
+	qm = qm || document.createElement('div');
 	qm.id = 'quickMenuElement';
 	qm.tabIndex = -1;
 	
@@ -213,12 +242,10 @@ async function makeQuickMenu(options) {
 	qm.columns = columns;
 	document.body.dataset.menu = type;
 
-	let sb = document.getElementById('searchBar');
+//	let sb = document.getElementById('searchBar');
 	sb.onclick = function(e) { e.stopPropagation();	}
 	sb.onmouseup = e => { e.stopPropagation(); }
-	
-	let sbc = document.getElementById('searchBarContainer');
-	
+		
 	// replace / append dragged text based on timer
 	sb.addEventListener('dragenter', e => {
 		sb.select();
@@ -262,7 +289,7 @@ async function makeQuickMenu(options) {
 	
 	qm.addTitleBarTextHandler = div => {
 		
-		let tb = document.getElementById('titleBar');
+		
 		['mouseenter','dragenter'].forEach( ev => {
 			div.addEventListener(ev, () => tb.innerText = div.title || div.dataset.title)
 		});
@@ -672,6 +699,7 @@ async function makeQuickMenu(options) {
 		qm.style.position = 'relative';
 		qm.style.visibility = 'hidden';
 		qm.style.transition = 'none';
+	//	qm.style.pointerEvents = 'none';
 		
 		qm.columns = _columns;
 	
@@ -706,27 +734,11 @@ async function makeQuickMenu(options) {
 			if ( qm.singleColumn ) div.classList.add('singleColumn');
 			qm.appendChild(div);
 
-			let rect = div.getBoundingClientRect();
-
-			var style = window.getComputedStyle ? getComputedStyle(div, null) : div.currentStyle;
-	
-			var marginLeft = parseFloat(style.marginLeft) || 0;
-			var marginRight = parseFloat(style.marginRight) || 0;
-			var marginTop = parseFloat(style.marginTop) || 0;
-			var marginBottom = parseFloat(style.marginBottom) || 0;
-
-			var paddingLeft = parseFloat(style.paddingLeft) || 0;
-			var paddingRight = parseFloat(style.paddingRight) || 0;
-			var paddingTop = parseFloat(style.paddingTop) || 0;
-			var paddingBottom = parseFloat(style.paddingBottom) || 0;
-
-    		var borderLeft = parseFloat(style.borderLeftWidth) || 0;
-    		var borderRight = parseFloat(style.borderRightWidth) || 0;
-    		var borderTop = parseFloat(style.borderTopWidth) || 0;
-			var borderBottom = parseFloat(style.borderBottomWidth) || 0;
+			let size = getFullElementSize(div);
+			
 			qm.removeChild(div);
 
-			return {width: rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeft + borderRight, height: rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTop + borderBottom, rectWidth: rect.width, rectHeight: rect.height };
+			return size;
 		};
 		
 		qm.setDisplay = () => {
@@ -750,7 +762,7 @@ async function makeQuickMenu(options) {
 		}
 
 		// set min-width to prevent menu shrinking with smaller folders
-		qm.setMinWidth = () => { qm.style.minWidth = qm.columns * qm.getTileSize().width + "px"; }	
+		qm.setMinWidth = () => qm.style.minWidth = qm.columns * qm.getTileSize().noBorderWidth + "px";
 		qm.setMinWidth();
 
 		// slide-in animation
@@ -760,6 +772,10 @@ async function makeQuickMenu(options) {
 		qm.style.transition = null;
 		qm.style.visibility = null;
 		qm.style.left = '0px';
+
+		// runAtTransitionEnd(qm, "left", () => {
+		// 	qm.style.pointerEvents = null;
+		// }, 1000)
 		
 		function getGroupFolderSiblings(div) {
 			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
@@ -867,11 +883,7 @@ async function makeQuickMenu(options) {
 				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
 
 					// open folders on dragover
-					targetDiv.textDragOverFolderTimer = setTimeout(() => {					
-						let _e = new CustomEvent('openFolder');
-						_e.openFolder = true;
-						targetDiv.dispatchEvent(_e);
-					}, dragOverFolderTimeout);
+					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv);
 					return;
 				}
 				
@@ -1167,13 +1179,7 @@ async function makeQuickMenu(options) {
 				if ( document.getElementById('dragDiv') ) return;
 				
 				// start hover timer
-				tile.textDragOverFolderTimer = setTimeout(() => {
-
-					let _e = new CustomEvent("openFolder");
-					// let _e = new MouseEvent('mouseup');
-					_e.openFolder = true;
-					tile.dispatchEvent(_e);
-				}, dragOverFolderTimeout);
+				tile.textDragOverFolderTimer = openFolderTimer(tile);;
 			});
 			tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
 			tile.addEventListener('dragover', e => e.preventDefault());
@@ -1307,7 +1313,7 @@ async function makeQuickMenu(options) {
 
 			moreTile.onmouseup = more;
 			
-			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragOverFolderTimeout )};	
+			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, openFoldersOnHoverTimeout )};	
 			
 			moreTile.addEventListener('dragenter', e => {
 				moreTile.expandTimerStart();
@@ -1480,8 +1486,6 @@ async function makeQuickMenu(options) {
 					
 					async function openFolder(e) {
 
-				//		if ( !clickChecker(tile) ) return false;
-
 						let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
 
 						let siteSearchNode = {
@@ -1601,8 +1605,6 @@ async function makeQuickMenu(options) {
 				addOpenFolderOnHover(tile);
 					
 				async function openFolder(e) {
-
-				//	if ( !clickChecker(e.target) ) return false;
 
 					let method = getOpenMethod(e, true);
 
@@ -1962,7 +1964,7 @@ function makeSearchBar() {
 }
 
 function createToolsBar(qm) {
-	toolBar = document.getElementById('toolBar');
+	
 	qm = qm || document.getElementById('quickMenuElement');
 	
 	// clear the old tools bar
@@ -2101,23 +2103,26 @@ function isTargetAfterGroup(_div, dec) {
 	return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
 }
 
+function dispatchOpenFolderEvent(el) {
+	let e = new CustomEvent('openFolder');
+	e.openFolder = true;
+	el.dispatchEvent(e);
+}
+
+function openFolderTimer(el) {
+	return setTimeout(() => dispatchOpenFolderEvent(el), userOptions.openFoldersOnHoverTimeout);
+}
+
 function addOpenFolderOnHover(_tile) {
 
 	if ( !userOptions.openFoldersOnHoverTimeout ) return;
 
-	_tile.addEventListener('mouseover', e => {
-		_tile.mouseOverFolderTimer = setTimeout(() => {					
-			let _e = new CustomEvent('openFolder');
-			_e.openFolder = true;
-			_tile.dispatchEvent(_e);
-		}, userOptions.openFoldersOnHoverTimeout);
-	});
+	_tile.addEventListener('mouseenter', e => _tile.mouseOverFolderTimer = openFolderTimer(_tile));
 
-	_tile.addEventListener('mouseout', e => {
+	_tile.addEventListener('mouseleave', e => {
 		clearTimeout(_tile.mouseOverFolderTimer);
 		_tile.mouseOverFolderTimer = null;
-	});
-				
+	});			
 }
 
 // hotkey listener

@@ -59,3 +59,53 @@ let DragShake = function() {
 
 	return this;
 }
+
+function dragOverIframeDiv(el) {
+	var rect = el.getBoundingClientRect();
+
+	var style = window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle;
+
+	if ( !style.position || style.position !== "fixed" ) {
+		console.warn('NotFixedPosition', el);
+		return;
+	}
+
+	let div = document.createElement('div');
+	div.style.display = 'inline-block';
+	div.style.position = 'fixed';
+	div.id = 'CS_' + gen();
+	div.style.left = style.left;
+	div.style.top = style.top;
+	div.style.width = rect.width + "px";
+	div.style.height = rect.height + "px";
+	div.style.zIndex = style.zIndex ? style.zIndex + 1 : 2;
+
+	div.style.border="1px dashed #6ec17988"
+
+	document.body.appendChild(div);
+
+	div.addEventListener('dragover', e => e.preventDefault())
+
+	div.addEventListener('drop', e => {
+
+		el.contentWindow.postMessage({
+			drop: true,
+			pageX:e.pageX, 
+			pageY:e.pageY,
+			clientX:e.clientX,
+			clientY:e.clientY,
+			offsetX:e.offsetX,
+			offsetY:e.offsetY,
+			screenX:e.screenX,
+			screenY:e.screen
+		}, el.src);
+
+	});
+
+	document.addEventListener('dragend', e => {
+		if (div && div.parentNode) div.parentNode.removeChild(div)
+	}, {once: true});
+
+	return div;
+}
+

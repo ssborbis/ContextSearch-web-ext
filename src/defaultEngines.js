@@ -13,7 +13,7 @@ var defaultEngines = [
 	{
 		"searchForm": "https://www.amazon.com/",
 		"template": "https://www.amazon.com/exec/obidos/external-search/?field-keywords={searchTerms}&ie={inputEncoding}&mode=blended",
-		"icon_url": "http://amazon.com/favicon.ico",
+		"icon_url": "https://www.amazon.com/favicon.ico",
 		"title": "Amazon.com",
 		"icon_base64String": "",
 		"method": "GET",

@@ -1,20 +1,3 @@
-// unique object to reference globally
-var quickMenuObject = { 
-	delay: 250, // how long to hold right-click before quick menu events in ms
-	keyDownTimer: 0,
-	mouseDownTimer: 0,
-	mouseCoords: {x:0, y:0},
-	screenCoords: {x:0, y:0},
-	mouseCoordsInit: {x:0, y:0},
-	mouseLastClickTime: 0,
-	mouseDragDeadzone: 4,
-	lastSelectTime: 0,
-	locked: false,
-	searchTerms: "",
-	disabled: false,
-	mouseDownTargetIsTextBox: false
-};
-
 var userOptions = {};
 
 async function makeFrameContents(options) {
@@ -32,9 +15,6 @@ async function makeFrameContents(options) {
 	document.body.appendChild(qme);
 	
 	qm = qme;
-
-	let sbc = document.getElementById('searchBarContainer');
-	let tb = document.getElementById('toolBar');
 
 	if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
 		document.body.appendChild(tb);
@@ -114,9 +94,6 @@ function resizeMenu(o) {
 		}
 	});
 
-	tb = document.getElementById('titleBar');
-	toolBar = document.getElementById('toolBar');
-
 	let initialHeight = tileSize.height * ((qm.singleColumn) ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows);
 	maxHeight = o.maxHeight || maxHeight || Number.MAX_SAFE_INTEGER;
 
@@ -176,10 +153,7 @@ function closeMenuRequest() {
 }
 
 function toolsHandler(qm) {
-	
-	qm = qm || document.getElementById('quickMenuElement');
-	toolBar = document.getElementById('toolBar');
-	
+
 	let getVisibleTiles = () => { 
 		return [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( tile => tile.style.display !== 'none' );
 	}
@@ -404,4 +378,14 @@ mb.addEventListener('dblclick', e => {
 	if ( e.which !== 1 ) return;
 
 	window.parent.postMessage({action: "handle_dock", target: "quickMenu", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
+});
+
+// drag overdiv listener for chrome
+window.addEventListener("message", e => {
+	if ( !e.data.drop ) return;
+	let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+
+	// dispatch both to fool timer
+	el.dispatchEvent(new MouseEvent('mousedown'));
+	el.dispatchEvent(new MouseEvent('mouseup'));
 });

@@ -1864,6 +1864,11 @@
     "description": "keyboard shortcuts"
   },
 
+  "ClosePageTilesOnShake": {
+    "message": "Close Page Tiles by shaking the mouse",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""

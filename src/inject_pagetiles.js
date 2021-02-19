@@ -20,35 +20,14 @@ function openPageTiles(e) {
 		// add listener after iframe is loaded to avoid closing on chrome
 		// chrome fires dragend when over iframe
 		iframe.onload = () => {
-			document.addEventListener('dragend', closePageTiles, {once: true});
+		//	document.addEventListener('dragend', closePageTiles, {once: true});
 		}
 
 		iframe.src = browser.runtime.getURL('/pagetiles.html');
 
 		if ( window.chrome ) {
-			let od = document.createElement('div');
-			od.style = "position:fixed;left:0;right:0;top:0;bottom:0;z-index:2147483647";
+			let od = dragOverIframeDiv(iframe);
 			od.id = "CS_pageTilesOverDiv";
-
-			document.body.appendChild(od);
-
-			od.addEventListener('dragover', e => {
-				e.preventDefault();
-			})
-
-			od.addEventListener('drop', e => {
-
-				iframe.contentWindow.postMessage({
-					pageX:e.pageX, 
-					pageY:e.pageY,
-					clientX:e.clientX,
-					clientY:e.clientY,
-					offsetX:e.offsetX,
-					offsetY:e.offsetY,
-					screenX:e.screenX,
-					screenY:e.screen
-				}, iframe.src);
-			});
 
 			if ( userOptions.pageTiles.closeOnShake ) {
 				let ds = new DragShake();

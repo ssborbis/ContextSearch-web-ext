@@ -1,6 +1,5 @@
 // unique object to reference globally
 var quickMenuObject = { 
-	delay: 250, // how long to hold right-click before quick menu events in ms
 	keyDownTimer: 0,
 	mouseDownTimer: 0,
 	mouseCoords: {x:0, y:0},
@@ -41,7 +40,7 @@ function openQuickMenu(ev, searchTerms) {
 		mouseCoords: quickMenuObject.mouseCoords,
 		searchTerms: searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
 		quickMenuObject: quickMenuObject,
-		openingMethod: ev.openingMethod || null
+		openingMethod: ev.openingMethod || ev.type || null
 	});
 }
 
@@ -460,40 +459,8 @@ document.addEventListener('dragstart', e => {
 			closeQuickMenu();
 	}, {once: true});
 
-	// if ( window.chrome ) {
-	// 	let od = document.createElement('div');
-	// 	od.style = "position:fixed;left:0;right:0;top:0;bottom:0;z-index:2147483647";
-	// 	od.id = "CS_quickMenuOverDiv";
-
-	// 	document.body.appendChild(od);
-
-	// 	od.addEventListener('dragover', e => {
-	// 		e.preventDefault();
-	// 	})
-
-	// 	od.addEventListener('drop', e => {
-
-	// 		iframe.contentWindow.postMessage({
-	// 			pageX:e.pageX, 
-	// 			pageY:e.pageY,
-	// 			clientX:e.clientX,
-	// 			clientY:e.clientY,
-	// 			offsetX:e.offsetX,
-	// 			offsetY:e.offsetY,
-	// 			screenX:e.screenX,
-	// 			screenY:e.screen
-	// 		}, iframe.src);
-	// 	});
-
-	// }
-
-	let ds = new DragShake();
-	ds.onshake = () => closeQuickMenu();
-	ds.start();
-
-	document.addEventListener('closequickmenu', e => ds.stop(), {once: true})
-
 	openQuickMenu(e);
+
 });
 
 function lockQuickMenu() {
@@ -732,6 +699,24 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.columns = _message.columns;
 				qmc.tileCount = _message.tileCount;
 				qmc.tileSize = _message.tileSize;
+
+				if ( quickMenuObject.lastOpeningMethod === 'dragstart' ) {
+					let ds = new DragShake();
+					ds.onshake = () => closeQuickMenu();
+					ds.start();
+					document.addEventListener('closequickmenu', e => ds.stop(), {once: true});
+
+					if ( window.chrome ) {
+						let od;
+						document.addEventListener('closequickmenu', e => {
+							if (od) od.parentNode.removeChild(od);
+						}, {once: true});
+						
+						runAtTransitionEnd(qmc, ["height", "width", "opacity"], () => {
+							od = dragOverIframeDiv(qmc);
+						}, 75);
+					}
+				}
 
 				break;
 

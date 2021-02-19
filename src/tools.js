@@ -157,7 +157,7 @@ var QMtools = [
 
 			if ( tool.persist )	saveUserOptions();
 
-			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
 			if ( tile ) tile.dataset.locked = quickMenuObject.locked;
 		}
 	},
@@ -379,7 +379,7 @@ var QMtools = [
 			userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
 			saveUserOptions();
 
-			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
 			if ( tile ) tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 		}
 	},
@@ -402,11 +402,11 @@ var QMtools = [
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			window.tilesDraggable = !window.tilesDraggable;
 
-			let tile = qm.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
 			if ( tile ) tile.dataset.locked = window.tilesDraggable;
 
 			// special handler for when mouseup is disabled in addTileEventHandlers
-			if ( window.tilesDraggable ) 
+			if ( window.tilesDraggable && tile ) 
 				tile.addEventListener('mouseup', e => this.action(), {once: true});
 		}
 	}

@@ -1497,7 +1497,7 @@ function buildShortcutTable() {
 		tr.innerHTML = `
 			<td></td>
 			<td>${s.name || s.action}</td>
-			<td><span style="cursor:pointer;user-select:none;" title="click to change" data-id="${s.id}">set</span></td>
+			<td><span style="cursor:pointer;user-select:none;" title="${browser.i18n.getMessage("ClickToSet")}" data-id="${s.id}">set</span></td>
 			`;
 		table.appendChild(tr);
 

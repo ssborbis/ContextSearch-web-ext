@@ -139,13 +139,11 @@ function getLuma(hexcolor) {
 	return 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
 }
 
+// drag overdiv listener
 window.addEventListener("message", e => {
-	// console.log(e);
+	if ( !e.data.drop ) return;
+	let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+	if ( el === document.body ) close();
 
-	let tile = document.elementFromPoint(e.data.clientX, e.data.clientY);
-	// console.log(tile.innerText);
-
-	if ( tile === document.body ) close();
-
-	tile.ondrop(new DragEvent('drop'));
+	el.ondrop(new DragEvent('drop'));
 });

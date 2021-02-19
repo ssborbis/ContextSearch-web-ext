@@ -1,21 +1,5 @@
 var userOptions;
 
-var quickMenuObject = { 
-	delay: 250, // how long to hold right-click before quick menu events in ms
-	keyDownTimer: 0,
-	mouseDownTimer: 0,
-	mouseCoords: {x:0, y:0},
-	screenCoords: {x:0, y:0},
-	mouseCoordsInit: {x:0, y:0},
-	mouseLastClickTime: 0,
-	mouseDragDeadzone: 4,
-	lastSelectTime: 0,
-	locked: false,
-	searchTerms: "",
-	disabled: false,
-	mouseDownTargetIsTextBox: false
-};
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 	if ( message.userOptions ) userOptions = message.userOptions;
@@ -58,7 +42,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 			document.body.appendChild(qme);
 			
 			if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
-				document.body.appendChild(document.getElementById('toolBar'));
+				document.body.appendChild(toolBar);
 			
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
@@ -66,23 +50,11 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 
 });
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	userOptions = message.userOptions || userOptions;
-});
-
 document.addEventListener('quickMenuIframeLoaded', () => {
 
 	// combined with inline body style prevents glitching when opening menu
 	document.body.style.display = 'block';
 		
-	qm = document.getElementById('quickMenuElement');
-	sb = document.getElementById('searchBar');
-	sbc = document.getElementById('searchBarContainer');
-	tb = document.getElementById('titleBar');
-	sg = document.getElementById('suggestions');
-	mb = document.getElementById('menuBar');
-	toolBar = document.getElementById('toolBar');
-
 	// focus the searchbar on open
 	sb.focus();
 
@@ -101,10 +73,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 });
 
 function toolsHandler(qm) {
-	
-	qm = qm || document.getElementById('quickMenuElement');
-	
-	toolBar = document.getElementById('toolBar');
 	
 	if ( !qm ) return;
 	
@@ -223,13 +191,6 @@ function sideBarResize(options) {
 	
 	// throwing sidebar errors
 	if ( !qm ) return;
-	
-	qm = document.getElementById('quickMenuElement');
-	sbc = document.getElementById('searchBarContainer');
-	tb = document.getElementById('titleBar');
-	sg = document.getElementById('suggestions');
-	mb = document.getElementById('menuBar');
-	toolBar = document.getElementById('toolBar');
 
 	let allOtherElsHeight = getAllOtherHeights();
 
@@ -314,8 +275,6 @@ window.addEventListener('message', e => {
 			break;
 			
 		case "sideBarRebuild":
-			let qm = document.getElementById('quickMenuElement');
-			
 			qm.columns = e.data.columns;
 
 			toolsHandler();
@@ -324,7 +283,7 @@ window.addEventListener('message', e => {
 			qm.style.width = null;
 
 			// reset the minWidth for the tilemenu
-			qm.style.minWidth = ( qm.singleColumn ? 1 : qm.columns ) * qm.getTileSize().width + "px";
+			qm.setMinWidth();
 			
 			let rect = document.body.getBoundingClientRect();
 			let rect_qm = qm.getBoundingClientRect();
