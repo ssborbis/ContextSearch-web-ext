@@ -1982,6 +1982,7 @@ function updateUserOptionsVersion(uo) {
 		}
 
 		if ( !_uo.highLight.styles.find(s => s.background !== "#000000" && s.color !== "#000000") ) {
+			console.log('resetting highLight.styles');
 			_uo.highLight.styles = defaultUserOptions.highLight.styles; 
 			_uo.highLight.activeStyle = defaultUserOptions.highLight.activeStyle; 
 		}
@@ -1989,8 +1990,7 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
-		console.log('done');
-		console.log(Date.now() - start);
+		console.log('Done', Date.now() - start);
 		return _uo;
 	});
 }
@@ -2004,18 +2004,17 @@ var userOptions = {};
 	await browser.storage.local.set({"userOptions": userOptions});
 	await checkForOneClickEngines();
 	await buildContextMenu();
+	resetPersist();
 	document.dispatchEvent(new CustomEvent("loadUserOptions"));
 })();
 
-// turn off repeatsearch if persist = false 
-document.addEventListener("loadUserOptions", () => {
-	userOptions.quickMenuTools.find( (tool,index) => { 
-		if ( tool.name === "repeatsearch" && tool.persist === false ) {
+function resetPersist() {
+// turn off if persist = false 
+	userOptions.quickMenuTools.forEach( (tool,index) => { 
+		if ( tool.persist && tool.persist === false )
 			userOptions.quickMenuTools[index].on = false;
-			return true;
-		}
 	});
-});
+}
 
 async function checkForOneClickEngines() {
 
@@ -2023,7 +2022,7 @@ async function checkForOneClickEngines() {
 	if ( !browser.search || !browser.search.get ) return -1;
 	
 	// don't add before nodeTree is populated
-	if ( userOptions.nodeTree === {} ) {
+	if ( !Object.keys(userOptions.nodeTree).length ) {
 		console.log('empty nodeTree - aborting one-click check');
 		return -1;
 	}

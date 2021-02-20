@@ -4,9 +4,7 @@ var userOptions = {};
 var typeTimer = null;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions || {};
-	
-	if ( userOptions === {} ) return;
+	userOptions = message.userOptions;
 
 	setTheme();
 	

@@ -24,9 +24,7 @@ function getSelectedText(el) {
 }
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
-	userOptions = message.userOptions || {};
-	
-	if ( userOptions === {} ) return;
+	userOptions = message.userOptions;
 	
 	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
 	
