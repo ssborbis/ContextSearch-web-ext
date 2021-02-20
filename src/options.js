@@ -188,9 +188,9 @@ function restoreOptions() {
 		$('#h_position').value = userOptions.quickMenuPosition;
 
 		for (let p of document.getElementsByClassName('position')) {
-			p.className = p.className.replace(' active', '');
+			p.classList.remove('active')
 			if (p.dataset.position === userOptions.quickMenuPosition)
-				p.className+=' active';
+				p.classList.add('active');
 		}
 				
 		$('#cb_quickMenuToolsLockPersist').checked = (() => {let _tool = userOptions.quickMenuTools.find( tool => tool.name === "lock"); return (_tool) ? _tool.persist || false : false})();

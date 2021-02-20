@@ -691,7 +691,7 @@ function updateUserOptionsObject(uo) {
 	// Update default values instead of replacing with object of potentially undefined values
 	function traverse(defaultobj, userobj) {
 		for (let key in defaultobj) {
-			userobj[key] = (userobj[key] !== undefined && userobj[key] !== NaN) ? userobj[key] : defaultobj[key];
+			userobj[key] = (userobj[key] !== undefined && userobj[key] == userobj[key] ) ? userobj[key] : defaultobj[key];
 
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 				traverse(defaultobj[key], userobj[key]);
@@ -1979,6 +1979,11 @@ function updateUserOptionsVersion(uo) {
 				else _uo.userShortcuts.push(key);
 			}
 			console.log("-> 1.29");
+		}
+
+		if ( !_uo.highLight.styles.find(s => s.background !== "#000000" && s.color !== "#000000") ) {
+			_uo.highLight.styles = defaultUserOptions.highLight.styles; 
+			_uo.highLight.activeStyle = defaultUserOptions.highLight.activeStyle; 
 		}
 
 		return _uo;
