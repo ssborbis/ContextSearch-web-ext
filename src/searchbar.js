@@ -177,7 +177,7 @@ function toolBarResize(options) {
 
 		document.dispatchEvent(new CustomEvent('resizeDone'));
 				
-	});
+	}, 50);
 
 }
 

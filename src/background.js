@@ -691,7 +691,7 @@ function updateUserOptionsObject(uo) {
 	// Update default values instead of replacing with object of potentially undefined values
 	function traverse(defaultobj, userobj) {
 		for (let key in defaultobj) {
-			userobj[key] = (userobj[key] !== undefined) ? userobj[key] : defaultobj[key];
+			userobj[key] = (userobj[key] !== undefined && userobj[key] !== NaN) ? userobj[key] : defaultobj[key];
 
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 				traverse(defaultobj[key], userobj[key]);

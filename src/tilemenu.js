@@ -21,7 +21,7 @@ var sg = document.getElementById('suggestions');
 var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 var toolBar = document.getElementById('toolBar');
-let sbc = document.getElementById('searchBarContainer');
+var sbc = document.getElementById('searchBarContainer');
 
 var type;
 
@@ -536,11 +536,6 @@ async function makeQuickMenu(options) {
 			
 				toolsArray[toolsArray.length - 1].context = _tool.context;
 				toolsArray[toolsArray.length - 1].tool = _tool;
-				
-				// if ( ! toolsArray[toolsArray.length - 1].dataset.nocolorinvert ) {
-				// 	setToolIconColor(toolsArray[toolsArray.length - 1]);
-				// }
-
 			}
 
 		});
@@ -699,7 +694,7 @@ async function makeQuickMenu(options) {
 		qm.style.position = 'relative';
 		qm.style.visibility = 'hidden';
 		qm.style.transition = 'none';
-	//	qm.style.pointerEvents = 'none';
+		qm.style.pointerEvents = 'none';
 		
 		qm.columns = _columns;
 	
@@ -773,9 +768,9 @@ async function makeQuickMenu(options) {
 		qm.style.visibility = null;
 		qm.style.left = '0px';
 
-		// runAtTransitionEnd(qm, "left", () => {
-		// 	qm.style.pointerEvents = null;
-		// }, 1000)
+		runAtTransitionEnd(qm, "left", () => {
+			qm.style.pointerEvents = null;
+		}, 100)
 		
 		function getGroupFolderSiblings(div) {
 			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
@@ -1029,7 +1024,7 @@ async function makeQuickMenu(options) {
 				let targetNode = targetDiv.node;
 
 				// cut the node from the children array
-				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
+				let slicedNode = nodeCut(dragNode);
 
 				let side = getSide(targetDiv, e);
 	
@@ -1038,19 +1033,13 @@ async function makeQuickMenu(options) {
 					let dec = getSideDecimal(targetDiv, e);
 					
 					if ( isTargetBeforeGroup(targetDiv, dec) ) {
-						
 						console.log('moving before group');
-						slicedNode.parent = targetNode.parent.parent;
-						slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent),0,slicedNode);
-						
+						nodeInsertBefore(slicedNode, targetNode.parent);
 						_save();
 						return;
 					} else if ( isTargetAfterGroup(targetDiv, dec) ) {
-						
 						console.log('moving after group');
-						slicedNode.parent = targetNode.parent.parent;
-						slicedNode.parent.children.splice(slicedNode.parent.children.indexOf(targetNode.parent) + 1,0,slicedNode);
-						
+						nodeInsertAfter(slicedNode, targetNode.parent);
 						_save();
 						return;
 					}
@@ -1058,28 +1047,18 @@ async function makeQuickMenu(options) {
 					if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
 						
 						console.log('drop to more / less tile ... appending tile to group');
-						slicedNode.parent = targetNode.parent;
-						slicedNode.parent.children.push(slicedNode);
+						// slicedNode.parent = targetNode.parent;
+						// slicedNode.parent.children.push(slicedNode);
+						nodeAppendChild(slicedNode, targetNode.parent);
 						
 						_save();
 						return;
 					}
 				}
 
-				// set new parent
-				slicedNode.parent = targetNode.parent;
-
-				if ( side === "before" ) {
-					// add to children before target
-					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
-				} else if ( side === "after" ) {
-					// add to children after target
-					targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode)+1,0,slicedNode);
-				} else {
-					slicedNode.parent = targetNode;
-					// add to target children
-					targetNode.children.push(slicedNode);
-				}
+				if ( side === "before" ) nodeInsertBefore(slicedNode, targetNode);
+				else if ( side === "after" ) nodeInsertAfter(slicedNode, targetNode);
+				else nodeAppendChild(slicedNode, targetNode);
 				
 				_save();
 				
@@ -1198,7 +1177,7 @@ async function makeQuickMenu(options) {
 				let dragNode = ( dragDiv.groupMove ) ? dragDiv.node.parent : dragDiv.node;
 				let targetNode = tile.node;
 				
-				let slicedNode = dragNode.parent.children.splice(dragNode.parent.children.indexOf(dragNode), 1).shift();
+				let slicedNode = nodeCut(dragNode);
 				
 				slicedNode.parent = targetNode;
 					
@@ -1313,7 +1292,7 @@ async function makeQuickMenu(options) {
 
 			moreTile.onmouseup = more;
 			
-			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, openFoldersOnHoverTimeout )};	
+			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, userOptions.openFoldersOnHoverTimeout )};	
 			
 			moreTile.addEventListener('dragenter', e => {
 				moreTile.expandTimerStart();

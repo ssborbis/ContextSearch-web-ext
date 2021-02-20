@@ -151,3 +151,23 @@ function getIconFromNode(node) {
 		return node.icon || null;
 	}
 }
+
+function nodeCut(node) {
+	return node.parent.children.splice(node.parent.children.indexOf(node), 1).shift();
+}
+
+function nodeInsertBefore(node, sibling) {
+	node.parent = sibling.parent;
+	node.parent.children.splice(node.parent.children.indexOf(sibling), 0, node);
+}
+
+function nodeInsertAfter(node, sibling) {
+	node.parent = sibling.parent;
+	node.parent.children.splice(node.parent.children.indexOf(sibling) + 1, 0, node);
+}
+
+function nodeAppendChild(node, parent) {
+	node.parent = parent;
+	node.parent.children.push(node);
+}
+

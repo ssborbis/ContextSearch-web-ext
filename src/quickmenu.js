@@ -17,7 +17,7 @@ async function makeFrameContents(options) {
 	qm = qme;
 
 	if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
-		document.body.appendChild(tb);
+		document.body.appendChild(toolBar);
 	
 	if (userOptions.quickMenuSearchBar === 'bottom') 
 		document.body.appendChild(sbc);
@@ -245,11 +245,6 @@ function toolsHandler(qm) {
 	}
 	
 	qm.insertBreaks();
-}
-
-if ( userOptions.quickMenuTheme === 'dark' ) {
-	let d = document.querySelector('#dark');
-	d.rel="stylesheet";
 }
 	
 document.addEventListener("DOMContentLoaded", async () => {

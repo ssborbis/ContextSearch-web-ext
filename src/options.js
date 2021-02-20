@@ -105,11 +105,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 					invert: true
 				});
 			}
-				
-			// if (window.location.hash === '#quickload') {
-				// browser.runtime.sendMessage({action: "closeWindowRequest"});
-			// }
-			
+
 			buildSearchEngineContainer();
 		});
 
@@ -137,8 +133,6 @@ function statusMessage(status) {
 	img.style.height = "20px";
 
 }
-
-
 
 function restoreOptions() {
 
@@ -1115,10 +1109,9 @@ document.addEventListener("DOMContentLoaded", () => {
 				
 				// update imported options
 				browser.runtime.getBackgroundPage().then( async w => {
-					let _uo = await w.updateUserOptionsVersion(newUserOptions);
-
-					_uo = w.updateUserOptionsObject(_uo);
-					
+					let _uo = w.updateUserOptionsObject(newUserOptions);
+					_uo = await w.updateUserOptionsVersion(_uo);
+	
 					// load icons to base64 if missing
 					let overDiv = document.createElement('div');
 					overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
@@ -1151,9 +1144,10 @@ document.addEventListener("DOMContentLoaded", () => {
 						});
 					}
 
-					await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
+					//await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
 					
 					userOptions = _uo;
+					await saveOptions();
 					location.reload();
 				});
 

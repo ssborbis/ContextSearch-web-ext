@@ -886,32 +886,18 @@ function buildSearchEngineContainer() {
 			let _node = row.node;
 
 			// cut the node from the children array
-			let slicedNode = _node.parent.children.splice(_node.parent.children.indexOf(_node), 1).shift();
+			let slicedNode = nodeCut(_node);
 
 			// if target is bottom of populated folder, proceed as if drop on folder
 			if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
 				position = 'middle';
 			
 			if ( position === 'top' ) {
-				
-				// set new parent
-				slicedNode.parent = targetNode.parent;
-
-				// add to children above target
-				targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode),0,slicedNode);
-
-				// insert into DOM
+				nodeInsertBefore(slicedNode, targetNode);
 				targetElement.parentNode.insertBefore(row, targetElement);
 				
 			} else if ( position === 'bottom' ) {
-
-				// set new parent
-				slicedNode.parent = targetNode.parent;
-
-				// add to children above target
-				targetNode.parent.children.splice(targetNode.parent.children.indexOf(targetNode) + 1, 0, slicedNode);
-
-				// insert into DOM
+				nodeInsertAfter(slicedNode, targetNode);
 				targetElement.parentNode.insertBefore(row, targetElement.nextSibling);
 					
 			} else if ( position === 'middle' ) { // drop into folder
@@ -1179,7 +1165,7 @@ function buildSearchEngineContainer() {
 				toJSON: li.node.toJSON
 			}
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newFolder);
+			nodeInsertAfter(newFolder, li.node);
 			
 			let newLi = traverse(newFolder, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
@@ -1254,15 +1240,17 @@ function buildSearchEngineContainer() {
 							toJSON: li.node.toJSON
 						}
 						
-						li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newBm);
-				
+						nodeInsertAfter(newBm, li.node);
+
 						let newLi = traverse(newBm, li.parentNode);
 						li.parentNode.insertBefore(newLi, li.nextSibling);
 						newLi.scrollIntoView({block: "start", behavior:"smooth"});
+						newLi.dispatchEvent(new MouseEvent('dblclick'));
 				
 						updateNodeList();
 						
 						closeContextMenus();
+
 
 					});
 					
@@ -1303,7 +1291,7 @@ function buildSearchEngineContainer() {
 				
 				item1.addEventListener('click', _e => {
 					let _newNode = Object.assign({}, li.node);
-					li.node.parent.children.splice(li.node.parent.children.indexOf(li.node), 0, _newNode);
+					nodeInsertBefore(_newNode, li.node);
 			
 					let newLi = traverse(_newNode, li.parentNode);
 					li.parentNode.insertBefore(newLi, li);
@@ -1337,7 +1325,7 @@ function buildSearchEngineContainer() {
 			
 			if (!newNode) return;
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newNode);
+			nodeInsertAfter(newNode, li.node);
 			
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
@@ -1367,7 +1355,7 @@ function buildSearchEngineContainer() {
 				toJSON: li.node.toJSON
 			}
 			
-			li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, newNode);
+			insertAfter(newNode, li.node);
 			
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
@@ -1454,7 +1442,7 @@ function buildSearchEngineContainer() {
 			return false;
 		}
 
-		li.node.parent.children.splice(li.node.parent.children.indexOf(li.node) + 1, 0, node);
+		nodeInsertAfter(node, li.node);
 
 		let newLi = traverse(node, li.parentNode);
 		li.parentNode.insertBefore(newLi, li.nextSibling);
