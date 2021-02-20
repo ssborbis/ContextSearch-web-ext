@@ -193,10 +193,8 @@ function restoreOptions() {
 				p.className+=' active';
 		}
 				
-		$('#cb_quickMenuToolsLockPersist').checked = userOptions.quickMenuTools.find( tool => tool.name === "lock").persist || false;
-		$('#cb_quickMenuToolsRepeatSearchPersist').checked = userOptions.quickMenuTools.find( tool => tool.name === "repeatsearch").persist || false;
-
-		// $('#cb_automaticImport').checked = (userOptions.reloadMethod === 'automatic')
+		$('#cb_quickMenuToolsLockPersist').checked = (() => {let _tool = userOptions.quickMenuTools.find( tool => tool.name === "lock"); return (_tool) ? _tool.persist || false : false})();
+		$('#cb_quickMenuToolsRepeatSearchPersist').checked = (() => {let _tool = userOptions.quickMenuTools.find( tool => tool.name === "repeatsearch"); return (_tool) ? _tool.persist || false : false})();
 
 		$('#s_contextMenuClick').value = userOptions.contextMenuClick;
 		$('#s_contextMenuMiddleClick').value = userOptions.contextMenuMiddleClick;
@@ -335,7 +333,7 @@ function restoreOptions() {
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
-				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null	: 'none';	
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null : 'none';	
 			}
 			
 			[$('#s_quickMenuMouseButton'), $('#s_quickMenuOnMouseMethod')].forEach( s => {
