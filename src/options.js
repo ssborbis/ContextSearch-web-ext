@@ -900,7 +900,7 @@ function buildToolIcons() {
 	}
 	function saveQuickMenuTools() {
 		let tools = [];
-		let tool_buttons = document.querySelectorAll('#toolIcons IMG');
+		let tool_buttons = document.querySelectorAll('#toolIcons .toolIcon');
 
 		tool_buttons.forEach(b => {
 			let tool = { name: b.name, disabled: b.disabled};
@@ -953,9 +953,9 @@ function buildToolIcons() {
 		img.addEventListener('dragover',dragover_handler);
 
 		img.addEventListener('click',e => {
-			e.target.disabled = e.target.disabled || false;
-			e.target.style.opacity = e.target.disabled ? 1 : .4;
-			e.target.disabled = !e.target.disabled;
+			img.disabled = img.disabled || false;
+			img.style.opacity = img.disabled ? 1 : .4;
+			img.disabled = !img.disabled;
 			saveQuickMenuTools();	
 		});
 		

@@ -1,10 +1,6 @@
-
-
-
-
 # <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="40px">&nbsp;ContextSearch web-ext
 
-Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser. Originally written as a replacement for Ben Basson's Context Search. 
+Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser and search using a variety of menus and shortcuts. Originally written as a replacement for Ben Basson's Context Search. 
 
 [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) <br>[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
@@ -539,8 +535,6 @@ Fat green qm border
 }
 ```
 
-Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
-
 ___
 
 <a name="security"/>
@@ -552,3 +546,7 @@ This addon does not use any tracking or analytics. No information is collected, 
 1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). Like other addons, there is the possibility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
 
 2. Search suggestions are fetched from Google when typing in any ContextSearch searchbar unless disable in CS Options -> General -> Suggestions.
+
+___
+
+Big thanks to [CanisLupus](https://github.com/CanisLupus) for his mozlz4 decompression script
