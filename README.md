@@ -152,7 +152,7 @@ These settings can be customized from `ContextSearch web-ext Options -> Quick Me
 |--- | --- |
 | Enable on &lt;textarea&gt; and input elements | If you don't want the menu to open when you're working in a text field, uncheck this.
 | Enable on links | Links can be treated as selected text and allow the menu to open. The search terms can be either the link URL or link text, depending on whether CTRL is held down. More options under the General tab.
-|Enable on images | Links can be treated as selected text and allow the menu to open. The image URL will be used as the search terms. This can be useful for reverse-image searches.
+|Enable on images | Images can be treated as selected text and allow the menu to open. The image URL will be used as the search terms. This can be useful for reverse-image searches.
 ___
 | Layout | |
 | --- | --- |

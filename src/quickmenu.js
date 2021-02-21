@@ -74,7 +74,7 @@ async function makeFrameContents(options) {
 var maxHeight = Number.MAX_SAFE_INTEGER;
 
 function resizeMenu(o) {
-	
+
 	qm.setDisplay();
 	
 	o = o || {};
@@ -152,7 +152,7 @@ function closeMenuRequest() {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
 }
 
-function toolsHandler(qm) {
+function toolsHandler() {
 
 	let getVisibleTiles = () => { 
 		return [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( tile => tile.style.display !== 'none' );
