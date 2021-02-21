@@ -1513,19 +1513,6 @@ function buildSearchEngineContainer() {
 	document.getElementById('b_addSearchEngine').addEventListener('click', e => {
 		e.stopPropagation();
 		contextMenuHandler(e);
-
-		// let newNode = addNewEngine(rootElement.node.children.slice(-1)[0]);
-		// if (newNode) {
-			
-		// 	rootElement.node.children.push(newNode);
-			
-		// 	let newLi = traverse(newNode, rootElement);
-
-		// 	updateNodeList(true);
-			
-		// 	newLi.scrollIntoView();
-		// 	newLi.dispatchEvent(new MouseEvent('dblclick'));
-		// }
 	});
 	
 	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {
@@ -1584,9 +1571,9 @@ function buildSearchEngineContainer() {
 	}
 
 	let main_ec = document.createElement('div');
-	main_ec.style = "position:absolute;top:0;left:10px;width:12px;height:12px;display:inline-block;z-index:2;cursor:pointer;user-select:none";
+	main_ec.style = "position:absolute;top:0;left:0;width:20px;height:1em;display:inline-block;z-index:2;cursor:pointer;user-select:none";
 	main_ec.className = "collapse";
-	main_ec.innerText = "±";
+	main_ec.innerHTML = "<sup>+</sup>&#8260;-";
 	main_ec.onclick = function() {
 		if ( main_ec.expand ) {
 			table.querySelectorAll('UL .collapse').forEach(c => c.expand());

@@ -193,9 +193,6 @@ function restoreOptions() {
 				p.classList.add('active');
 		}
 				
-		$('#cb_quickMenuToolsLockPersist').checked = (() => {let _tool = userOptions.quickMenuTools.find( tool => tool.name === "lock"); return (_tool) ? _tool.persist || false : false})();
-		$('#cb_quickMenuToolsRepeatSearchPersist').checked = (() => {let _tool = userOptions.quickMenuTools.find( tool => tool.name === "repeatsearch"); return (_tool) ? _tool.persist || false : false})();
-
 		$('#s_contextMenuClick').value = userOptions.contextMenuClick;
 		$('#s_contextMenuMiddleClick').value = userOptions.contextMenuMiddleClick;
 		$('#s_contextMenuRightClick').value = userOptions.contextMenuRightClick;
@@ -327,6 +324,16 @@ function restoreOptions() {
 		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
 
 		$('#style_dark').disabled = !userOptions.nightMode;
+
+		$('#cb_quickMenuToolsLockPersist').checked = (() => {
+			let tool = userOptions.quickMenuTools.find( t => t.name === "lock"); 
+			return (tool) ? tool.persist || false : false;
+		})();
+
+		$('#cb_quickMenuToolsRepeatSearchPersist').checked = (() => {
+			let tool = userOptions.quickMenuTools.find( t => t.name === "repeatsearch"); 
+			return (tool) ? tool.persist || false : false;
+		})();
 
 		buildSearchEngineContainer();
 				
@@ -1108,7 +1115,12 @@ document.addEventListener("DOMContentLoaded", () => {
 				// update imported options
 				browser.runtime.getBackgroundPage().then( async w => {
 					let _uo = w.updateUserOptionsObject(newUserOptions);
-					_uo = await w.updateUserOptionsVersion(_uo);
+					try {
+						_uo = await w.updateUserOptionsVersion(_uo);
+					} catch ( error ) {
+						if ( !confirm("Failed to update config. This may cause some features to not work. Install anyway?"))
+							return;
+					}
 	
 					// load icons to base64 if missing
 					let overDiv = document.createElement('div');
@@ -1142,8 +1154,6 @@ document.addEventListener("DOMContentLoaded", () => {
 						});
 					}
 
-					//await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
-					
 					userOptions = _uo;
 					await saveOptions();
 					location.reload();

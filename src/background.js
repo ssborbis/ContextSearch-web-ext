@@ -2188,17 +2188,17 @@ function openSearchXMLToSearchEngine(xml) {
 
 	let shortname = xml.documentElement.querySelector("ShortName");
 	if (shortname) se.title = shortname.textContent;
-	else reject();
+	else return Promise.reject();
 	
 	let description = xml.documentElement.querySelector("Description");
 	if (description) se.description = description.textContent;
-	else reject();
+	else return Promise.reject();
 	
 	let inputencoding = xml.documentElement.querySelector("InputEncoding");
 	if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
 	
 	let url = xml.documentElement.querySelector("Url[template]");
-	if (!url) reject();
+	if (!url) return Promise.reject();
 	
 	let template = url.getAttribute('template');
 	if (template) se.template = template;

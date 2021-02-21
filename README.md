@@ -1,17 +1,19 @@
 
-# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="30px">&nbsp;ContextSearch web-ext
 
-Add any search engine to your WebExtensions compatible browser. Originally written as a replacement for Ben Basson's Context Search. 
 
-[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) 
 
-[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="40px">&nbsp;ContextSearch web-ext
+
+Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser. Originally written as a replacement for Ben Basson's Context Search. 
+
+[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) <br>[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+
 
 <a name="toc"/>
 
-#### Table of Contents  
+#### Table of Contents
 1. [Features](#features)  
-2. [Building From Source](#building)  
+2. [Building From Source & Sideloading](#building)  
 3. Ways To Search  
   3.1 [Context Menu](#contextmenu)  
   3.2 [Quick Menu](#quickmenu)  
@@ -57,11 +59,24 @@ ___
 
 <a name="building"/>
 
-## [2. Building from source / sideloading](#toc)
+## [2. Building From Source / Sideloading](#toc)
 
 The easiest way to build your own package is to install [web-ext](https://www.npmjs.com/package/web-ext)
 
 Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using. Some browser forks may require modifications to the manifest to work. Waterfox Classic, for instance, requires the explicit `web_accessible_resources` section found in the generic manifest.json and `strict_min_version` to `"56.0"`
+
+#### Mozilla
+If you build your own package, it will no be "verified". Not all versions of Firefox will allow you to install an unverified addon. If your browser does allow it, you will likely need to set `xpinstall.signatures.required = false` in about:config.
+
+You can install as a "temporary addon" from about:debugging -> This Firefox -> Load Temporary addon and browse to src/manifest.json in the unzipped source code. Temporary addons will be removed when you close Firefox, but good for testing. DO NOT use the `Remove` button or risk losing your ContextSearch config. Simply restart Firefox instead.
+
+#### Chromium
+Chrome variants allow you to install "unpacked" extensions from Menu -> More Tools -> Extensions -> Load Unpacked. Addons installed this way will persist after restarting the browser.
+
+**Downgrading may result in loss of user preferences!**
+Always backup your config before upgrading. The repo code is always being updated and not all changes to the default user preferences play nice with older versions. This is especially important if you're just installing temporarily for testing.
+
+If something does go wrong, it's doubtful you've lost all the engines you've worked so hard to curate. Just post a new issue or contact me directly and we'll see about getting your engines back.
 
 ___
 
@@ -175,7 +190,7 @@ Note: If you open folders in a new window, only one new window will be created. 
 
 Folders also have the choice `Browse Folder`. Normally this would be left-click, but you can set it to anything you want.
 
-If a button ( say middle-click ) is set to `Browse Folder` ujnder the folder column and `No Action` under the search engines column, clicking that button ( middle-click ) anywhere in the menu will close the folder and go back to the original menu.
+If a button ( say middle-click ) is set to `Browse Folder` under the folder column and `No Action` under the search engines column, clicking that button ( middle-click ) anywhere in the menu will close the folder and go back to the original menu.
 
 ```
   Current Tab
@@ -310,7 +325,7 @@ ___
 <a name="addingengines"/>
 
 ## [4. Adding Search Engines](#toc)
-Most websites that have an embeded search bar can be added to the list of search engines in ContextSearch web-ext using the Add Custom Search option from the context menu.
+Most websites that have an embedded search bar can be added to the list of search engines in ContextSearch web-ext using the Add Custom Search option from the context menu.
 
 * Open the website you want to add a search engine for
 * Right-click on the search bar in the page to open the context menu
@@ -329,7 +344,7 @@ ___
 <a name="highlighting"/>
 
 ## [5. Highlighting Results](#toc)
-After performing a search, search terms in the results page can be highlighted. The highlight styling and behaviour can be found in CS Options -> Highlight
+After performing a search, search terms in the results page can be highlighted. The highlight styling and behavior can be found in CS Options -> Highlight
 
 Highlighting can be removed from a page by pressing ESC
 
@@ -377,10 +392,12 @@ ___
 <a name="templateparameters"/>
 
 ## [6.3 Template Parameters](#toc)
-`{searchTerms}` - The current selection or link URL / image URL \
-`{domain}` - Current domain ( "`http://www.example.com/this/path/`" -> `example.com` ) \
-`{subdomain}` - Current subdomain ( "`http://www.example.com/this/path/`" -> `www.example.com` ) \
-`{selectdomain}` - Engine becomes a folder with all subdomains and paths listed separately ( "`http://www.example.com/this/path/`" -> `example.com`, `www.example.com`, `www.example.com/this`, `www.example.com/this/path` ) 
+|||
+|-|-|
+|`{searchTerms}`|The current selection or link URL / image URL|
+|`{domain}`|on `http://www.example.com/this/path`<br>replaced with<br>`example.com`|
+|`{subdomain}`|on `http://www.example.com/this/path/`<br>replaced with <br>`www.example.com`|
+|`{selectdomain}`|Engine becomes a folder with all subdomains and paths listed separately<br><br>on `http://www.example.com/this/path/`<br>replaced with <br>`example.com`<br>`www.example.com`<br> `www.example.com/this`<br>`www.example.com/this/path`|
 
 ___
 
@@ -532,6 +549,6 @@ ___
 
 This addon does not use any tracking or analytics. No information is collected, sold, etc. How you use it is your business. There are, however, a few things to note.
 
-1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). Like other addons, there is the possiblility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
+1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). Like other addons, there is the possibility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
 
 2. Search suggestions are fetched from Google when typing in any ContextSearch searchbar unless disable in CS Options -> General -> Suggestions.
