@@ -42,7 +42,7 @@ let DragShake = function() {
 		let deltaX = last_x - e.clientX;
 		let dir = deltaX > 0 ? 1 : -1;
 
-		if (Math.abs(deltaX) > 2 && dir != last_dir ) {
+		if (Math.abs(deltaX) > userOptions.shakeSensitivity && dir != last_dir ) {
 			reversals.push(Date.now());
 		}
 

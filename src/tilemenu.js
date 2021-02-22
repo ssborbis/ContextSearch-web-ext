@@ -25,9 +25,6 @@ var sbc = document.getElementById('searchBarContainer');
 
 var type;
 
-// track if tiles can be moved
-window.tilesDraggable = false;
-
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
@@ -105,7 +102,7 @@ function addTileEventHandlers(_tile, handler) {
 
 		if ( _tile.disabled ) return false;
 
-		if ( window.tilesDraggable ) return false;
+		if ( qm.tilesDraggable ) return false;
 		
 		// if ( userOptions.autoCopy /*copypaste*/) {
 			// browser.runtime.sendMessage({action: "copy", msg: sb.value});
@@ -237,12 +234,14 @@ async function makeQuickMenu(options) {
 	qm.id = 'quickMenuElement';
 	qm.tabIndex = -1;
 	
+	// track if tiles can be moved
+	qm.tilesDraggable = false;
+
 	qm.dataset.menu = type;
 	qm.dataset.columns = columns;
 	qm.columns = columns;
 	document.body.dataset.menu = type;
 
-//	let sb = document.getElementById('searchBar');
 	sb.onclick = function(e) { e.stopPropagation();	}
 	sb.onmouseup = e => { e.stopPropagation(); }
 		
@@ -573,7 +572,7 @@ async function makeQuickMenu(options) {
 
 			tool.addEventListener('dragstart', e => {
 
-				if ( !window.tilesDraggable ) return false;
+				if ( !qm.tilesDraggable ) return false;
 
 				e.dataTransfer.setData("tool", "true");
 				let img = new Image();
@@ -815,7 +814,7 @@ async function makeQuickMenu(options) {
 
 			div.addEventListener('dragstart', e => {
 
-				if ( !window.tilesDraggable ) return false;
+				if ( !qm.tilesDraggable ) return false;
 
 				e.dataTransfer.setData("text", "");
 				let img = new Image();
@@ -878,7 +877,7 @@ async function makeQuickMenu(options) {
 				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
 
 					// open folders on dragover
-					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv);
+					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv, 500);
 					return;
 				}
 				
@@ -976,7 +975,6 @@ async function makeQuickMenu(options) {
 					let _bm = JSON.parse(e.dataTransfer.getData("text/x-moz-place"));
 					
 					if ( !_bm.uri ) return; // ignore folders
-			//		console.log(_bm);
 
 					dragDiv = nodeToTile({
 						title: _bm.title,
@@ -1073,7 +1071,7 @@ async function makeQuickMenu(options) {
 		
 		/* end dnd */
 
-		toolsHandler(qm);
+		toolsHandler();
 
 		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
 
@@ -1088,8 +1086,6 @@ async function makeQuickMenu(options) {
 		}
 		
 		qm.expandMoreTiles();
-
-	//	qm.querySelectorAll(toolSelector).forEach( t => setToolIconColor(t));
 
 		return qm;
 	}
@@ -2088,15 +2084,16 @@ function dispatchOpenFolderEvent(el) {
 	el.dispatchEvent(e);
 }
 
-function openFolderTimer(el) {
-	return setTimeout(() => dispatchOpenFolderEvent(el), userOptions.openFoldersOnHoverTimeout);
+function openFolderTimer(el, ms) {
+	ms = ms || userOptions.openFoldersOnHoverTimeout;
+	return setTimeout(() => dispatchOpenFolderEvent(el), ms);
 }
 
-function addOpenFolderOnHover(_tile) {
+function addOpenFolderOnHover(_tile, ms) {
 
-	if ( !userOptions.openFoldersOnHoverTimeout ) return;
+	if ( !userOptions.openFoldersOnHoverTimeout && !ms) return;
 
-	_tile.addEventListener('mouseenter', e => _tile.mouseOverFolderTimer = openFolderTimer(_tile));
+	_tile.addEventListener('mouseenter', e => _tile.mouseOverFolderTimer = openFolderTimer(_tile, ms));
 
 	_tile.addEventListener('mouseleave', e => {
 		clearTimeout(_tile.mouseOverFolderTimer);

@@ -70,7 +70,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 
 });
 
-function toolsHandler(qm) {
+function toolsHandler() {
 	
 	if ( !qm ) return;
 	

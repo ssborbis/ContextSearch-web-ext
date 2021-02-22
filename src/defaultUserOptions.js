@@ -208,5 +208,6 @@ const defaultUserOptions = {
 	omniboxSearch: "openBackgroundTab",
 	cacheIconsMaxSize: 32,
 	cacheIcons: true,
-	userShortcuts: []
+	userShortcuts: [],
+	shakeSensitivity: 3
 };

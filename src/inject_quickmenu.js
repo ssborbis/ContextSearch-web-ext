@@ -26,11 +26,11 @@ function openQuickMenu(ev, searchTerms) {
 	if ( userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
 		
 		// restore selection to text boxes
-		if (ev.target.selectionStart)  // is a text box
+		if (ev.target && ev.target.selectionStart)  // is a text box
 			document.addEventListener('closequickmenu', e => ev.target.focus(), {once: true});
 		
 		// don't blur on drag
-		if ( !ev.dataTransfer )
+		if ( ev.target && !ev.dataTransfer )
 			ev.target.blur();
 	}
 
@@ -554,10 +554,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "openQuickMenu":
 
 				// opened by shortcut
-				if ( !message.screenCoords) {
-					makeQuickMenuContainer(quickMenuObject.mouseCoords);
-					return;
-				}
+				if ( !message.screenCoords) return openQuickMenu();
 
 				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
 				

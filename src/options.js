@@ -322,6 +322,7 @@ function restoreOptions() {
 		$('#cb_contextMenuHotkeys').checked = userOptions.contextMenuHotkeys;
 
 		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
+		$('#n_shakeSensitivity').value = userOptions.shakeSensitivity;
 
 		$('#style_dark').disabled = !userOptions.nightMode;
 
@@ -599,6 +600,7 @@ function saveOptions(e) {
 		cacheIconsMaxSize: parseInt($('#n_cacheIconsMaxSize').value),
 		nightMode: userOptions.nightMode,
 		userShortcuts: userOptions.userShortcuts,
+		shakeSensitivity: parseInt($('#n_shakeSensitivity').value),
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
