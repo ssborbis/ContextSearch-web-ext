@@ -1,11 +1,14 @@
+
 [![Promo video](media/promo.gif)](media/promo.gif)
 
-
-# <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="40px">&nbsp;ContextSearch web-ext
+# <img src="src/icons/icon.svg" height="36px">&nbsp;ContextSearch web-ext
 
 Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser and search using a variety of menus and shortcuts. Originally written as a replacement for Ben Basson's Context Search. 
 
 [Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) <br>[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+
+###### *AMO and Chromestore will not be as up-to-date as the git
+
 
 
 <a name="toc"/>
@@ -31,7 +34,8 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
   6.5 [Engines With Logins and Tokens](#loginsandtokens)  
 7. [Bookmarklets](#bookmarklets)  
 8. [Styling](#styling)  
-9. [Security](#security)
+9. [Advanced Options](#advanced)  
+10. [Security](#security)
 
 ___
 
@@ -347,6 +351,33 @@ After performing a search, search terms in the results page can be highlighted. 
 
 Highlighting can be removed from a page by pressing ESC
 
+#### Highlight Options
+Search results are marked an alternating color scheme to distinguish between separate words ( if enabled ). Four sets of background and foreground colors can be chosen using color pickers.
+
+Results can be marked as either foreground / background colors, or as underlines to be less obtrusive.  The opacity of the background color can also be changed.
+
+A separate color scheme for the currently active result is provided, and can be customized.
+
+#### Search Results & Navigation
+It's often useful to not only mark results on the initial search results page, but on subsequent pages in the same tab. 
+You can choose to highlight only on the current domain / website, or follow links offsite and continue marking.
+
+* `Continue highlighting pages on the search results website` 
+* `Continue highlighting on external websites linked from the search results page`
+
+You can also display the CS Find bar and / or a navigation bar ( page preview ) when highlighting.
+
+#### Accuracy
+Marking search words is done using the [mark.js](https://markjs.io/) library. Most relevant mark.js options can be set through CS options here. These values can also be changed on-the-fly in the Find bar.
+
+#### Find Bar
+A custom Find-In-Page style search bar for navigating through highlighted results. There is no cross-browser API available to interact with built-in page search functions, so for the sake of chromium users, this was developed instead.
+
+Like the Sidebar, the Find bar is dockable. There is a small handle to move the menu around on the far-left side of the window. Double-click to dock. Keyboard shortcuts for Next Result / Previous Result can be set in the Hotkeys tab. 
+
+Thanks to the mark.js library, regex can be used for searching from the Find bar. 
+
+You can search for words in ALL TABS simultaneously by enabling the All Tabs option, or button
 
 ___
 
@@ -459,6 +490,8 @@ Set the menu theme in CS Options > General. You can also use the `Next Theme` to
 
 In addition to themes, most CSS styling can be overridden in Options -> General -> User Styles.
 
+Several important colors and values are given variable names under the :root style to make altering menu styles a bit easier, but some changes require more exact CSS selectors.
+
 A few examples...
 
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="200px" />
@@ -525,24 +558,25 @@ No quick menu resize handle:
 
 Smaller tools bar
 ```css
-#toolBar .tile {
-    transform:scale(.60);
-}
+#toolBar .tile { transform:scale(.60); }
 ```
 
 Fat green qm border
 ```css
-#CS_quickMenuIframe {
-    border-width:6px;
-    border-color: #6ec179;
-}
+#CS_quickMenuIframe { border-width:6px; border-color: #6ec179; }
 ```
+___
 
+<a name="advanced"/>
+
+## [9. Advanced Options](#toc)
+
+A number of settings that don't appear in the main options tabs can be set here. Some of them are really quite useful and probably belong with their respective settings menus, but for simplicity were moved here. This is also where a lot of fixes and user-requested changes show up. Take note, unlike most other settings, these do not always force the config to save when changed. There is a save button you can mash to make extra sure changes are written.
 ___
 
 <a name="security"/>
 
-## [9. Security](#toc)
+## [10. Security](#toc)
 
 This addon does not use any tracking or analytics. No information is collected, sold, etc. How you use it is your business. There are, however, a few things to note.
 
