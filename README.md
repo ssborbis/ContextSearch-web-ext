@@ -352,7 +352,7 @@ After performing a search, search terms in the results page can be highlighted. 
 Highlighting can be removed from a page by pressing ESC
 
 #### Highlight Options
-Search results are marked an alternating color scheme to distinguish between separate words ( if enabled ). Four sets of background and foreground colors can be chosen using color pickers.
+Search results are marked with an alternating color scheme to distinguish between separate words ( if enabled ). Four sets of background and foreground colors can be chosen using color pickers.
 
 Results can be marked as either foreground / background colors, or as underlines to be less obtrusive.  The opacity of the background color can also be changed.
 
@@ -383,7 +383,7 @@ ___
 
 <a name="searchenginesmanager"/>
 
-## [6.1 Search Engnines Manager](#toc)
+## [6.1 Search Engines Manager](#toc)
 Under the `Search Engines` tab of CS Options is where you'll find the main menu for editing, moving, copying, deleting, hiding engines.
 
 Each engine / folder / bookmarklet is displayed as a row in a table consisting of an icon, name, omnibox keyword, and hotkey. 
