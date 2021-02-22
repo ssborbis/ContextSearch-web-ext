@@ -1,3 +1,6 @@
+[![Promo video](media/promo.gif)](media/promo.gif)
+
+
 # <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="40px">&nbsp;ContextSearch web-ext
 
 Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser and search using a variety of menus and shortcuts. Originally written as a replacement for Ben Basson's Context Search. 
