@@ -14,6 +14,8 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
+var dragFolderTimeout = 500
+
 var qm = document.getElementById('quickMenuElement');
 var sb = document.getElementById('searchBar');
 var tb = document.getElementById('titleBar');
@@ -242,8 +244,8 @@ async function makeQuickMenu(options) {
 	qm.columns = columns;
 	document.body.dataset.menu = type;
 
-	sb.onclick = function(e) { e.stopPropagation();	}
-	sb.onmouseup = e => { e.stopPropagation(); }
+	sb.onclick = e => e.stopPropagation();
+	sb.onmouseup = e => e.stopPropagation();
 		
 	// replace / append dragged text based on timer
 	sb.addEventListener('dragenter', e => {
@@ -287,7 +289,6 @@ async function makeQuickMenu(options) {
 	}
 	
 	qm.addTitleBarTextHandler = div => {
-		
 		
 		['mouseenter','dragenter'].forEach( ev => {
 			div.addEventListener(ev, () => tb.innerText = div.title || div.dataset.title)
@@ -877,7 +878,7 @@ async function makeQuickMenu(options) {
 				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
 
 					// open folders on dragover
-					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv, 500);
+					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv, dragFolderTimeout);
 					return;
 				}
 				
@@ -1154,7 +1155,7 @@ async function makeQuickMenu(options) {
 				if ( document.getElementById('dragDiv') ) return;
 				
 				// start hover timer
-				tile.textDragOverFolderTimer = openFolderTimer(tile);;
+				tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);;
 			});
 			tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
 			tile.addEventListener('dragover', e => e.preventDefault());
@@ -1288,7 +1289,7 @@ async function makeQuickMenu(options) {
 
 			moreTile.onmouseup = more;
 			
-			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, userOptions.openFoldersOnHoverTimeout )};	
+			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
 			
 			moreTile.addEventListener('dragenter', e => {
 				moreTile.expandTimerStart();
