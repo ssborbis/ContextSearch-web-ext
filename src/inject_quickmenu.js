@@ -375,7 +375,22 @@ document.addEventListener('mousedown', e => {
 		getSelectedText(e.target)
 	) return;
 
-	if ( userOptions.quickMenuOnSimpleClick.useInnerText && e.target.nodeType !== 3 ) {
+	let range, textNode, offset, word;
+
+	if (document.caretPositionFromPoint) {
+		range = document.caretPositionFromPoint(e.clientX, e.clientY);
+		textNode = range.offsetNode;
+		offset = range.offset;    
+	} else if (document.caretRangeFromPoint) {
+		range = document.caretRangeFromPoint(e.clientX, e.clientY);
+		textNode = range.startContainer;
+		offset = range.startOffset;
+	}
+
+	if (textNode && textNode.nodeType == 3)
+		word = getWord(textNode.textContent, offset);
+
+	if ( userOptions.quickMenuOnSimpleClick.useInnerText && !word ) {
 		e.target.classList.add('CS_invert');
 		setTimeout(() => e.target.classList.remove('CS_invert'), 250);
 
@@ -391,24 +406,8 @@ document.addEventListener('mousedown', e => {
 		return;
 	}
 
-	let range, textNode, offset;
-
-	if (document.caretPositionFromPoint) {
-		range = document.caretPositionFromPoint(e.clientX, e.clientY);
-		textNode = range.offsetNode;
-		offset = range.offset;    
-	} else if (document.caretRangeFromPoint) {
-		range = document.caretRangeFromPoint(e.clientX, e.clientY);
-		textNode = range.startContainer;
-		offset = range.startOffset;
-	}
-
 	// Only split TEXT_NODEs
-	if (textNode && textNode.nodeType == 3) {
-		let word = getWord(textNode.textContent, offset);
-		
-		if ( !word ) return;
-		
+	if ( word ) {		
 		e.preventDefault();
 		
 		if ( e.shiftKey ) document.addEventListener('selectstart', _e => _e.preventDefault(), {once: true});
@@ -430,6 +429,8 @@ document.addEventListener('mousedown', e => {
 	}
 	
 	function getWord(str, offset) {
+
+		if ( offset === str.length ) return null;
 		let _start = _end = offset;
 		
 		let tokens = '!"#$%&\\\'()\*+,-./:;<=>?@[]^_`{|}~ «»""“”‘’'.split("");
