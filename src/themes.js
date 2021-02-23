@@ -6,7 +6,8 @@ const themes = [
 	{ name: "modern", path: "/styles/modern.css"},
 	{ name: "modern dark", path: "/styles/modern-dark.css", requires: ["/styles/modern.css"]},
 	{ name: "modern purple", path: "/styles/modern-purple.css", requires: ["/styles/modern.css"]},
-	{ name: "modern sunset", path: "/styles/modern-sunset.css", requires: ["/styles/modern.css"]}
+	{ name: "modern sunset", path: "/styles/modern-sunset.css", requires: ["/styles/modern.css"]},
+	{ name: "modern glass", path: "/styles/modern-glass.css", requires: ["/styles/modern.css"]}
 ];
 
 function addStylesheet(href) {

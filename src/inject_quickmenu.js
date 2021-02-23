@@ -109,6 +109,8 @@ function makeQuickMenuContainer(coords) {
 	qmc.style.opacity = 0;
 	qmc.style.width = 0;
 	qmc.style.height = 0;
+
+	qmc.allowTransparency = true;
 	
 	qmc.openingCoords = coords;
 	

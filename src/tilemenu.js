@@ -569,7 +569,7 @@ async function makeQuickMenu(options) {
 		
 		toolsArray.forEach( tool => {
 			
-			tool.setAttribute('draggable', true);
+			tool.setAttribute('draggable', false);
 
 			tool.addEventListener('dragstart', e => {
 
@@ -768,9 +768,7 @@ async function makeQuickMenu(options) {
 		qm.style.visibility = null;
 		qm.style.left = '0px';
 
-		runAtTransitionEnd(qm, "left", () => {
-			qm.style.pointerEvents = null;
-		}, 100)
+		runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
 		
 		function getGroupFolderSiblings(div) {
 			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
@@ -784,7 +782,7 @@ async function makeQuickMenu(options) {
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 
-			div.setAttribute('draggable', true);
+			div.setAttribute('draggable', false);
 	
 			// group move
 			if ( div.classList.contains("groupFolder") ) {
@@ -936,7 +934,7 @@ async function makeQuickMenu(options) {
 				
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
-				await quickMenuElementFromNodeTree(qm.rootNode);
+				qm = await quickMenuElementFromNodeTree(qm.rootNode);
 				userOptions.enableAnimations = animation;
 
 				qm.expandMoreTiles();
@@ -1044,12 +1042,8 @@ async function makeQuickMenu(options) {
 					}
 					
 					if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
-						
 						console.log('drop to more / less tile ... appending tile to group');
-						// slicedNode.parent = targetNode.parent;
-						// slicedNode.parent.children.push(slicedNode);
-						nodeAppendChild(slicedNode, targetNode.parent);
-						
+						nodeAppendChild(slicedNode, targetNode.parent);	
 						_save();
 						return;
 					}
@@ -1145,7 +1139,7 @@ async function makeQuickMenu(options) {
 			async function _back(e) {
 
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
-				let quickMenuElement = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
+				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
 				resizeMenu({openFolder: true});
 			}
@@ -1189,7 +1183,7 @@ async function makeQuickMenu(options) {
 				// rebuild menu
 				let animation = userOptions.enableAnimations;
 				userOptions.enableAnimations = false;
-				await quickMenuElementFromNodeTree(rootNode);
+				qm = await quickMenuElementFromNodeTree(rootNode);
 				userOptions.enableAnimations = animation;
 				resizeMenu();				
 			});
@@ -1483,7 +1477,7 @@ async function makeQuickMenu(options) {
 							});	
 						});
 						
-						quickMenuElement = await quickMenuElementFromNodeTree(siteSearchNode);
+						qm = await quickMenuElementFromNodeTree(siteSearchNode);
 
 						for ( let _tile of qm.querySelectorAll('.tile') ) {
 							if ( _tile.node.title === url.hostname ) {
@@ -1854,14 +1848,11 @@ function makeSearchBar() {
 				console.log('debouncing save');
 			}
 				
-			saveDebounce = setTimeout( () => {
+			saveDebounce = setTimeout(() => {
 				saveUserOptions();
 				saveDebounce = null;
 				console.log('executing save');
-			}, 200);
-			
-			// saveUserOptions();
-	
+			}, 200);	
 		}
 	});
 		

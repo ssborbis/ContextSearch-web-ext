@@ -582,7 +582,7 @@ This addon does not use any tracking or analytics. No information is collected, 
 
 1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). Like other addons, there is the possibility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
 
-2. Search suggestions are fetched from Google when typing in any ContextSearch searchbar unless disable in CS Options -> General -> Suggestions.
+2. Search suggestions are fetched from Google when typing in any ContextSearch searchbar unless disabled in CS Options -> General -> Suggestions.
 
 ___
 

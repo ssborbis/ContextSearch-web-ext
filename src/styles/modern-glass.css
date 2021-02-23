@@ -1,0 +1,31 @@
+:root { 
+	--background: #42588cc6;
+	--tools-color: #ddd; 
+	color: white;
+	--border: rgba(255,255,255,.2);
+	--hover: #0005;
+	--separator: #fff4;
+	--folder-color:#FBFACE;/*#fff3;*/
+	--folder-label-color: white;
+	--folder-label-color-singlecolumn: white;
+	--group-label-color: #fff;
+}
+
+.tile {
+	background-color:#fff1;
+}
+
+.tile.singleColumn {
+	background-color:#fff1;
+}
+#suggestions {
+	background:#0005;
+}
+
+#searchBar {
+	background: #0005;
+}
+
+.tile.singleColumn[data-type="folder"] {
+	background-color:inherit;
+}

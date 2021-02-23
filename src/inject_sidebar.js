@@ -108,6 +108,8 @@ function openSideBar(options) {
 	iframe.id = 'CS_sbIframe';
 	iframe.style.opacity = 0;
 	iframe.style.width = "0px";
+
+	iframe.allowTransparency = true;
 	
 	document.body.appendChild(iframe);
 

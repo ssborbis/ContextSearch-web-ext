@@ -410,6 +410,7 @@ function openFindBar(options) {
 		fb = document.createElement('iframe');
 		fb.id = 'CS_findBarIframe';
 
+		fb.allowTransparency = true;
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
 		
 		fb.style.opacity = 0;

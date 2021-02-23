@@ -13,10 +13,6 @@
 	--group-label-color: #555;
 }
 
-#findbar {
-	/*background: linear-gradient(to right, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); */
-}
-
 #quickMenuElement {
 	/*padding:6px;*/
 }
@@ -24,14 +20,13 @@
 .tile {
     border-radius:10px;
     margin:4px;
-    background-color:#fff3;
+    background-color:#fff1;
     background-size:contain;
 }
 
 #toolBar .tile {
 	transform:scale(.75);
 	margin:2px;
-	background-color:#0003;
 }
 
 #searchBar {

@@ -173,7 +173,7 @@ document.querySelector('#toggle_searchalltabs').addEventListener('change', e => 
 	
 	// update the object before saving - this frame does not update userOptions automatically
 	browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-		userOptions = message.userOptions || {};
+		userOptions = message.userOptions;
 		userOptions.highLight.findBar.searchInAllTabs = e.target.checked;
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		
@@ -197,7 +197,6 @@ document.getElementById('handle').addEventListener('mousedown', e => {
 });
 
 document.getElementById('handle').addEventListener('dblclick', e => {
-	console.log('dblclick');
 	window.parent.postMessage({action: "handle_dock", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
 });
 

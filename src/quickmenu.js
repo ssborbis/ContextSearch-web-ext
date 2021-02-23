@@ -97,9 +97,9 @@ function resizeMenu(o) {
 	let initialHeight = tileSize.height * ((qm.singleColumn) ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows);
 	maxHeight = o.maxHeight || maxHeight || Number.MAX_SAFE_INTEGER;
 
-	let allOtherElsHeightOld = sb.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
+	let allOtherElsHeightOld = sbc.getBoundingClientRect().height + sg.getBoundingClientRect().height + tb.getBoundingClientRect().height + mb.getBoundingClientRect().height + toolBar.getBoundingClientRect().height;
 	let allOtherElsHeight = getFullElementSize(sb).height + getFullElementSize(sg).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
-	let currentHeight = qm.style.height || qm.getBoundingClientRect().height || 0;
+	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
 
 	qm.style.height = null;
 	qm.style.overflowY = null;
@@ -118,7 +118,7 @@ function resizeMenu(o) {
 	else if ( o.widgetResize )
 		qm.style.height = tileSize.height * o.rows + "px";
 	else
-		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
+		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeightOld) ) + "px";
 	
 	if ( qm.getBoundingClientRect().height > maxHeight - allOtherElsHeight )
 		qm.style.height = Math.floor(maxHeight - allOtherElsHeight) + "px";
