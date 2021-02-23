@@ -21,23 +21,23 @@ let DragShake = function() {
 	shake = () => this.onshake();
 	this.stop = stop;
 
-	// function dragHandler(e) {
-	// 	let deltaX = e.clientX - start.x;
-
-	// 	if ( deltaX * lastMovementX < 0 )
-	// 		reversals.push(Date.now());
-
-	// 	if ( reversals.length > shake_threshold ) reversals.shift();
-
-	// 	lastMovementX = deltaX;
-
-	// 	if ( reversals.length === shake_threshold && Date.now() - reversals[0] < 1000 ) {
-	// 		stop();
-	// 		shake();
-	// 	}
-	// }
-
 	function dragHandler(e) {
+		let deltaX = e.clientX - start.x;
+
+		if ( deltaX * lastMovementX < 0 )
+			reversals.push(Date.now());
+
+		if ( reversals.length > shake_threshold ) reversals.shift();
+
+		lastMovementX = deltaX;
+
+		if ( reversals.length === shake_threshold && Date.now() - reversals[0] < 1000 ) {
+			stop();
+			shake();
+		}
+	}
+
+	function dragHandler2(e) {
 
 		let deltaX = last_x - e.clientX;
 		let dir = deltaX > 0 ? 1 : -1;
