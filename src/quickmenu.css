@@ -56,8 +56,6 @@ BODY {
 	opacity:.5;
 }
 .tile[data-locked="true"] {
-	/*background-color:#dee7f0;
-	box-shadow:inset 2px 2px 4px #193047;*/
 	--tools-color: var(--selected);
 }
 #quickMenuElement, .tile {
@@ -291,7 +289,6 @@ BODY {
 	color:inherit;
 	font-family:Arial;
 	font-size:11pt;
-	background-color:inherit;
 	white-space:nowrap;
 	width:calc(100% - 10px);
 }
