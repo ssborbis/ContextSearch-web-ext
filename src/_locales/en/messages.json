@@ -1148,7 +1148,7 @@
   },
   
   "Text": {
-    "message": "text",
+    "message": "List",
     "description": ""
   },
   
@@ -1594,7 +1594,7 @@
   },
 
   "grid": {
-    "message": "grid",
+    "message": "Grid",
     "description": ""
   },
 
@@ -1609,7 +1609,7 @@
   },
 
   "DefaultViewToolTip": {
-    "message": "Set the default display mode for the menu. Each folder view can be set separately using the grid / text tool or by editing the folder in the search engines manager",
+    "message": "Set the default display mode for the menu. Each folder view can be set separately using the grid / list tool or by editing the folder in the search engines manager",
     "description": ""
   },
   
@@ -1881,6 +1881,11 @@
 
   "OpenOnDragTooltip": {
     "message": "Drag text / links / images to open",
+    "description": ""
+  },
+
+  "Drag": {
+    "message": "Drag",
     "description": ""
   },
 

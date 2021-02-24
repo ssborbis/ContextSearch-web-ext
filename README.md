@@ -224,7 +224,7 @@ Show tools on the top or bottom of the quick menu, or hide them altogether
 |`Lock`|Keep the menu open after performing a search and it stays in the same place. You can reposition it by dragging the menu bar.|
 |`Open As Link`|If the selected text is thought to be an URL, this tool will become enabled. Click to navigate to the URL|
 |`Find In Page`|Use the built-in Find bar to highlight words in the current page. See the [Highlighting](#highlighting) section for more info.|
-|`Grid / Text`|Toggle the menu display
+|`Grid / List`|Toggle the menu display
 |`Options`|Open the options page
 |`Next Theme`|Cycle through some build-in themes for the menus. Find something you like.
 |`Edit`|Put the menu into 'edit' mode to resize the layout or rearrange tiles. When editing, tiles can be dragged & dropped to re-order, and the lower-right corner of the menu can be dragged to resize and change the columns / rows count.

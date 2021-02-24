@@ -1329,7 +1329,7 @@
 			<div class="tab">
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><div class="tool" style="--mask-image: url(icons/search.svg)"></div>_</button>
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><div class="tool" style="--mask-image: url(icons/context_menu.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><div class="tool" style="--mask-image: url(icons/quick_menu.svg)"></div>_</button>
+				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><div class="tool" style="--mask-image: url(icons/qm.svg)"></div>_</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:rotate(90deg)"></div>_</button>
 				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:scaleX(-1)"></div>_</button>
 				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="Hotkeys"><div class="tool" style="--mask-image: url(icons/keyboard.svg)"></div>_</button>
@@ -1671,67 +1671,156 @@
 
 				<section>
 				<p class="header1" data-i18n="SearchActionsHeader">_</p>
-				<p class="short" style="border-width: 1px 0">
+
+				<table class="searchActions">
+				<tr>
+					<td></td>
+					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">_</span></td>
+					<td style="text-align:center"><span class="header2" data-i18n="Folders">_</span></td>
+				</tr>
+				<tr>
+					<td>
 					<span class="buttonLabel" data-i18n="LeftButton">_</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
-					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuClick">
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
 						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
 						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
 					</select>
-				</p>
-
-				<p class="short" style="border-width: 1px 0" data-browser="firefox" data-minversion="64">
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderClick">
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option> -->
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
 					<span class="buttonLabel" data-i18n="MiddleButton">_</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
-					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuMiddleClick">
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuMiddleClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
 						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
 						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
 						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
 					</select>
-				</p>
-				<p class="short" style="border-width: 1px 0" data-browser="firefox" data-minversion="64">
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderMiddleClick">
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option> -->
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
 					<span class="buttonLabel" data-i18n="RightButton">_</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
-					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuRightClick">
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuRightClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
 						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
 						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
 						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
 						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
 					</select>
-				</p>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderRightClick">
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option> -->
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
+					<span class="keyboardButton" data-i18n="ShiftKey">
+						_
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuShift">
+						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
+						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
+						<!-- <option value="keepMenuOpen" data-i18n="KeepMenuOpen">_</option> -->
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderShift">
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option> -->
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
+					<span class="keyboardButton">
+						Ctrl
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuCtrl">
+						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
+						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
+						<!-- <option value="keepMenuOpen" data-i18n="KeepMenuOpen">_</option> -->
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderCtrl">
+						<!-- <option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option> -->
+						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
+						<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
+						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
+						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
+						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
+					</select>
+					</td>
+				</tr>
+			</table>
 
-				<p class="short" data-browser="firefox"><span class="keyboardButton" id="default_shift" data-i18n="ShiftKey">Shift</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
-					<select style="margin-left:32px;width:auto" class="inputNice" id="s_contextMenuShift">
-						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
-						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
-						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
-						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
-						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
-						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
-						<option value="keepMenuOpen" data-i18n="KeepMenuOpen">_</option>
-						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
-					</select>
-				</p>
-				<p class="short" data-browser="firefox"><span class="keyboardButton" id="default_ctrl">Ctrl</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
-					<select style="margin-left:32px;width:auto;" class="inputNice" id="s_contextMenuCtrl">
-						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
-						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
-						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
-						<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
-						<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
-						<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>
-						<option value="keepMenuOpen" data-i18n="KeepMenuOpen">_</option>
-						<option value="noAction" data-i18n="SearchActionsNoAction">_</option>
-					</select>
-				</p>
 				</section>
 				<section>
 				<p class="header1" data-i18n="Shortcut">_</p>
@@ -1744,7 +1833,7 @@
 			</div>
 			
 			<div class="tabcontent" id="quickMenuTab">
-				<div class="blobContainerHeader" data-i18n="QuickMenu"><img src="icons/quick_menu.svg" />_</div>
+				<div class="blobContainerHeader" data-i18n="QuickMenu"><img src="icons/qm.svg" />_</div>
 				
 				<section>
 				<p class="header1" data-i18n="General">_</p>

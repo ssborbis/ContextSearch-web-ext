@@ -279,7 +279,7 @@ var QMtools = [
 	},
 	{
 		name: 'toggleview', 
-		icon: "icons/quick_menu.svg", 
+		icon: "icons/list.svg", 
 		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('text'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
