@@ -18,7 +18,7 @@ document.addEventListener('keydown', e => {
 
 			let action = defaultShortcuts.find(d => d.id === s.id).action;
 
-			if ( typeof s.action === 'string')
+			if ( typeof action === 'string')
 				browser.runtime.sendMessage({action: action});
 			else if ( typeof action === 'function' ) action(e);
 			return;
