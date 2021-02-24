@@ -170,8 +170,8 @@ function restoreOptions() {
 		$('#cb_quickMenuSearchBarSelect').checked = userOptions.quickMenuSearchBarSelect;
 		$('#range_quickMenuScale').value = userOptions.quickMenuScale;
 		$('#range_quickMenuIconScale').value = userOptions.quickMenuIconScale;
-		$('#i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
-		$('#i_quickMenuIconScale').value = (parseFloat(userOptions.quickMenuIconScale) * 100).toFixed(0) + "%";
+		// $('#i_quickMenuScale').value = (parseFloat(userOptions.quickMenuScale) * 100).toFixed(0) + "%";
+		// $('#i_quickMenuIconScale').value = (parseFloat(userOptions.quickMenuIconScale) * 100).toFixed(0) + "%";
 		$('#n_quickMenuOffsetX').value = userOptions.quickMenuOffset.x;
 		$('#n_quickMenuOffsetY').value = userOptions.quickMenuOffset.y;
 		
@@ -240,6 +240,8 @@ function restoreOptions() {
 		$('#cb_sideBarWidgetEnable').checked = userOptions.sideBar.widget.enabled;
 		$('#cb_sideBarStartOpen').checked = userOptions.sideBar.startOpen;
 		$('#cb_sideBarCloseAfterSearch').checked = userOptions.sideBar.closeAfterSearch;
+		$('#range_sideBarScale').value = userOptions.sideBar.scale;
+		// $('#i_sideBarScale').value = (parseFloat(userOptions.sideBar.scale) * 100).toFixed(0) + "%";
 		
 		$('#t_userStyles').value = userOptions.userStyles;
 		$('#cb_userStylesEnabled').checked = userOptions.userStylesEnabled;
@@ -287,7 +289,9 @@ function restoreOptions() {
 		$('#s_findBarWindowType').value = userOptions.highLight.findBar.windowType;
 		$('#cb_findBarShowNavBar').checked = userOptions.highLight.findBar.showNavBar;
 		$('#n_findBarTimeout').value = userOptions.highLight.findBar.keyboardTimeout;
-		
+		$('#range_findBarScale').value = userOptions.highLight.findBar.scale;
+		// $('#i_findBarScale').value = (parseFloat(userOptions.highLight.findBar.scale) * 100).toFixed(0) + "%";
+	
 		$('#n_searchBarHistoryLength').value = userOptions.searchBarHistoryLength;
 		$('#n_searchBarSuggestionsCount').value = userOptions.searchBarSuggestionsCount;
 		$('#cb_groupLabelMoreTile').checked = userOptions.groupLabelMoreTile;
@@ -481,7 +485,8 @@ function saveOptions(e) {
 			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked,
 			rememberState: $('#cb_sideBarRememberState').checked,
 			openOnResults: $('#cb_sideBarOpenOnResults').checked,
-			openOnResultsMinimized: $('#cb_sideBarOpenOnResultsMinimized').checked
+			openOnResultsMinimized: $('#cb_sideBarOpenOnResultsMinimized').checked,
+			scale: parseFloat($('#range_sideBarScale').value),
 		},
 		
 		highLight: {
@@ -532,7 +537,8 @@ function saveOptions(e) {
 					ignorePunctuation: $('#cb_findBarMarkOptionsIgnorePunctuation').checked,
 					caseSensitive: $('#cb_findBarMarkOptionsCaseSensitive').checked,
 					accuracy: $('#s_findBarMarkOptionsAccuracy').value
-				}
+				},
+				scale: parseFloat($('#range_findBarScale').value),
 			},
 			markOptions: {
 				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,
@@ -696,15 +702,15 @@ $('#n_findBarTimeout').addEventListener('change',  saveOptions);
 
 $('#n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
 
-$('#range_quickMenuScale').addEventListener('input', ev => {
-	$('#i_quickMenuScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
-});
-$('#range_quickMenuScale').addEventListener('change', saveOptions);
+["quickMenuScale", "sideBarScale", "findBarScale", "quickMenuIconScale"].forEach( id => {
+	$(`#range_${id}`).addEventListener('input', ev => {
+		$(`#i_${id}`).value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+	});
 
-$('#range_quickMenuIconScale').addEventListener('input', ev => {
-	$('#i_quickMenuIconScale').value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+	$(`#range_${id}`).addEventListener('change', saveOptions);
+
+	document.addEventListener('userOptionsLoaded', e => $(`#range_${id}`).dispatchEvent(new Event('input')));
 });
-$('#range_quickMenuIconScale').addEventListener('change', saveOptions);
 
 $('#t_userStyles').addEventListener('change', saveOptions);
 

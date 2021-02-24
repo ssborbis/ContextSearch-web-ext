@@ -350,10 +350,7 @@ BODY {
 	height:16px;
 	filter:none;
 	cursor: grab;
-	background-image: url(icons/vertical.svg);
-	background-size:24px 16px;
 	display:inline-block;
-	background-repeat:no-repeat;
 }
 .groupMove {
 	border: 1px solid #9abad2 !important;

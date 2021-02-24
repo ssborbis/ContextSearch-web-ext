@@ -1,6 +1,3 @@
-:root {
-	--tools-color:#444;
-}
 BODY, HTML {
 	margin:0;
 	padding:0;
@@ -14,7 +11,6 @@ BODY, HTML {
 	font-family:Arial;
 	font-weight:600;
 	user-select:none;
-	-moz-user-select:none;
 	height:36px;
 }
 #findbar > * {
@@ -27,7 +23,6 @@ BODY, HTML {
 	padding:0 24px 0 24px;
 	margin-left:4px;
 	user-select:text;
-	-moz-user-select:text;
 	border-radius:2px 0 0 2px;
 	vertical-align:middle;
 }
@@ -88,9 +83,11 @@ INPUT:checked + .optionLabel {
 }
 #searchIcon {
 	left:60px;
+	display:none;
 }
 #clearSearchBarButton {
-	left:364px;
+	left:360px;
+	opacity:.5;
 }
 LABEL .tool {
 	width:20px;

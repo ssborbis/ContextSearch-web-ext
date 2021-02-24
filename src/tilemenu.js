@@ -1709,9 +1709,7 @@ function makeSearchBar() {
 		// if suggestions are open
 		if ( sg.querySelector('div') ) {
 			sg.innerHTML = null;
-			//sg.addEventListener('transitionend', resizeMenu);
 			sg.style.maxHeight = null;
-			// resizeMenu({suggestionsResize: true});
 			sg.userOpen = false;
 
 			si.style.transform = null;
@@ -1806,6 +1804,7 @@ function makeSearchBar() {
 		
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 
+		// works for open and close
 		sg.addEventListener('transitionend', e => resizeMenu({suggestionsResize: true}));
 		
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;

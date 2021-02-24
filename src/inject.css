@@ -143,7 +143,7 @@
 	opacity:1;
 	height:36px;
 	white-space:nowrap;
-	transform:scale( calc( 1 / var(--cs-zoom, 1))) !important;
+	transform:scale( calc( var(--cs-dpi) / var(--cs-zoom, 1))) !important;
 	border:none; 
 	padding:0;
 	margin:0;
@@ -155,7 +155,7 @@
 	width: calc(var(--cs-zoom, 100) * 100%);
 }
 #CS_findBarIframe[data-windowtype="undocked"] {
-	width:960px !important;	
+	width:870px !important;	
 }
 .CS_mark, #CS_highLightNavBar > DIV {
 	background: transparent;

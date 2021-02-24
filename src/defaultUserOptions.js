@@ -117,7 +117,8 @@ const defaultUserOptions = {
 		closeAfterSearch: false,
 		rememberState: false,
 		openOnResults: false,
-		openOnResultsMinimized: false
+		openOnResultsMinimized: false,
+		scale:1
 	},
 	highLight: {
 		enabled: true,
@@ -162,7 +163,8 @@ const defaultUserOptions = {
 				accuracy: "partially",
 				ignorePunctuation: true,
 				caseSensitive: false
-			}
+			},
+			scale: 1
 		}
 	},
 	userStyles: 

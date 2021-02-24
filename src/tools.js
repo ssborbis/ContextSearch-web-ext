@@ -403,7 +403,7 @@ var QMtools = [
 			qm.tilesDraggable = !qm.tilesDraggable;
 
 			document.querySelectorAll('.tile').forEach( el => el.setAttribute('draggable', qm.tilesDraggable));
-
+			
 			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
 			if ( tile ) tile.dataset.locked = qm.tilesDraggable;
 

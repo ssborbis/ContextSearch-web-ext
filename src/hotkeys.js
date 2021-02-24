@@ -16,11 +16,11 @@ document.addEventListener('keydown', e => {
 			e.preventDefault();
 			e.stopPropagation();
 
-			s.action = defaultShortcuts.find(d => d.id === s.id).action;
+			let action = defaultShortcuts.find(d => d.id === s.id).action;
 
 			if ( typeof s.action === 'string')
-				browser.runtime.sendMessage({action: s.action});
-			else if ( typeof s.action === 'function' ) s.action(e);
+				browser.runtime.sendMessage({action: action});
+			else if ( typeof action === 'function' ) action(e);
 			return;
 		}
 

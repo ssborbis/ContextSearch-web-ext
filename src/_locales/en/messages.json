@@ -1143,7 +1143,7 @@
   },
   
   "LinksTooltip": {
-    "message": "",
+    "message": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting",
     "description": ""
   },
   
@@ -1869,9 +1869,24 @@
     "description": ""
   },
 
+  "ShowFolderSearch": {
+    "message": "Show an option to search the entire folder at the top of the menu",
+    "description": ""
+  },
+
+  "Omnibox": {
+    "message": "Omnibox",
+    "description": ""
+  },
+
+  "OpenOnDragTooltip": {
+    "message": "Drag text / links / images to open",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""
-  } 
+  }
 
 }

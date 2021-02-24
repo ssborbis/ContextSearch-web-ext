@@ -409,6 +409,7 @@ function openFindBar(options) {
 		
 		fb = document.createElement('iframe');
 		fb.id = 'CS_findBarIframe';
+		fb.style.setProperty('--cs-dpi', userOptions.highLight.findBar.scale);
 
 		fb.allowTransparency = true;
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
@@ -441,12 +442,8 @@ function openFindBar(options) {
 		makeDockable(fb, {
 			handleElement:fb,
 			dockedPosition: userOptions.highLight.findBar.position,
-			onDock: o => {
-				saveFindBarOptions(o);	
-			},
-			onUndock: o => {
-				saveFindBarOptions(o);
-			},
+			onDock: o => saveFindBarOptions(o),
+			onUndock: o => saveFindBarOptions(o),
 			windowType: userOptions.highLight.findBar.windowType,
 			lastOffsets: userOptions.highLight.findBar.offsets,
 			dockedPosition: userOptions.highLight.findBar.position

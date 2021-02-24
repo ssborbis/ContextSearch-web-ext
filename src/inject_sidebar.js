@@ -109,6 +109,8 @@ function openSideBar(options) {
 	iframe.style.opacity = 0;
 	iframe.style.width = "0px";
 
+	iframe.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
+
 	iframe.allowTransparency = true;
 	
 	document.body.appendChild(iframe);
@@ -279,6 +281,7 @@ function makeOpeningTab() {
 	openingTab.id = 'CS_sbOpeningTab';
 	openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
 	openingTab.classList.add('CS_handle');
+	openingTab.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
 	
 	openingTab.addEventListener('click', () => {
 		if ( openingTab.moving ) return false;	
