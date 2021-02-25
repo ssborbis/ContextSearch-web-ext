@@ -98,10 +98,6 @@ function toolsHandler() {
 	qm.insertBreaks();
 }
 
-getAllOtherHeights = () => {
-	return getFullElementSize(sbc).height + getFullElementSize(sg).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
-}
-
 function toolBarResize(options) {
 
 	options = options || {}
@@ -181,11 +177,30 @@ function toolBarResize(options) {
 
 var docked = false;
 
+function minifySideBar() {
+	document.body.classList.toggle('mini');
+	setTimeout(sideBarResize, 500);
+}
+function unminifySideBar() {
+	document.body.classList.remove('mini');
+	sideBarResize();
+}
+
 function sideBarResize(options) {
 	
 	options = options || {};
 
 	if ( window == top ) return;
+
+	// simple resize when mini
+	if ( document.body.classList.contains('mini') ) {
+		return window.parent.postMessage({
+			action:"resizeSideBarIframe", 
+			size: {width: sbc.getBoundingClientRect().width, height: sbc.getBoundingClientRect().height + mb.getBoundingClientRect().height}, 
+			singleColumn: qm.singleColumn,
+			tileSize: qm.getTileSize()
+		}, "*");
+	}
 	
 	// throwing sidebar errors
 	if ( !qm ) return;
@@ -203,9 +218,10 @@ function sideBarResize(options) {
 	sg.style.width = null;
 
 	qm.style.height = function() {
-		if ( options.suggestionsResize ) return qm_height;
 		
 		if ( docked ) return `calc(100% - ${allOtherElsHeight}px)`;
+
+		if ( options.suggestionsResize ) return qm_height;
 				
 		// if ( options.groupMore ) return qm.getBoundingClientRect().height + "px";
 		
@@ -294,6 +310,10 @@ window.addEventListener('message', e => {
 				singleColumn: qm.singleColumn
 			}, "*");
 			
+			break;
+
+		case "minifySideBar":
+			minifySideBar();
 			break;
 	}
 });

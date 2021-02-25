@@ -2122,3 +2122,7 @@ function checkForNodeHotkeys(e) {
 	if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
 
 }
+
+getAllOtherHeights = () => {
+	return getFullElementSize(sbc).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+}

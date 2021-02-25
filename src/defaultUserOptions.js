@@ -130,7 +130,8 @@ const defaultUserOptions = {
 			separateWordSearch: true,
 			accuracy: "exactly",
 			ignorePunctuation: true,
-			caseSensitive: false
+			caseSensitive: false,
+			limit: 0
 		},
 		highlightStyle: 'underline',
 		styles: [
@@ -157,12 +158,13 @@ const defaultUserOptions = {
 				right:null,
 				bottom:null
 			},
-			keyboardTimeout: 200,
+			keyboardTimeout: 500,
 			markOptions: {
 				separateWordSearch: true,
 				accuracy: "partially",
 				ignorePunctuation: true,
-				caseSensitive: false
+				caseSensitive: false,
+				limit: 0
 			},
 			scale: 1
 		}

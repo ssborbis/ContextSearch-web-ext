@@ -183,7 +183,8 @@ function mark(options) {
 		accuracy: options.accuracy,
 		ignorePunctuation: options.ignorePunctuation ? "?:;.,-–—‒_(){}[]!'\"+=".split("") : [],
 		caseSensitive: options.caseSensitive,
-		findBarSearch: options.findBarSearch
+		findBarSearch: options.findBarSearch,
+		limit: options.limit || 0
 	}
 
 	words.forEach( (word, i) => {
@@ -239,7 +240,11 @@ function mark(options) {
 				});
 
 				done();
-			}
+			},
+
+			// limit
+			filter: (node, range, term, index) => { return index < _markOptions.limit || _markOptions.limit === 0}
+
 		}, _markOptions));
 	});
 	

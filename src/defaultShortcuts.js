@@ -118,6 +118,15 @@ const defaultShortcuts = [
 		shift:false,
 		meta:false,
 		id: 12
+	},{
+		name:"sideBarMinify",
+		action:"minifySideBar",
+		key: "M",
+		ctrl: true,
+		alt: false,
+		shift:true,
+		meta:false,
+		id: 13
 	}
 ];
 

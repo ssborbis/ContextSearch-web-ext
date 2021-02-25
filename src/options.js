@@ -276,11 +276,13 @@ function restoreOptions() {
 		$('#cb_highLightMarkOptionsIgnorePunctuation').checked = userOptions.highLight.markOptions.ignorePunctuation;
 		$('#cb_highLightMarkOptionsCaseSensitive').checked = userOptions.highLight.markOptions.caseSensitive;
 		$('#s_highLightMarkOptionsAccuracy').value = userOptions.highLight.markOptions.accuracy;
-		
+		$('#n_highLightMarkOptionsLimit').value = userOptions.highLight.markOptions.limit;
+
 		$('#cb_findBarMarkOptionsSeparateWordSearch').checked = userOptions.highLight.findBar.markOptions.separateWordSearch;
 		$('#cb_findBarMarkOptionsIgnorePunctuation').checked = userOptions.highLight.findBar.markOptions.ignorePunctuation;
 		$('#cb_findBarMarkOptionsCaseSensitive').checked = userOptions.highLight.findBar.markOptions.caseSensitive;
 		$('#s_findBarMarkOptionsAccuracy').value = userOptions.highLight.findBar.markOptions.accuracy;
+		$('#n_findBarMarkOptionsLimit').value = userOptions.highLight.findBar.markOptions.limit;
 		
 		$('#cb_findBarStartOpen').checked = userOptions.highLight.findBar.startOpen;
 		$('#cb_findBarOpenInAllTabs').checked = userOptions.highLight.findBar.openInAllTabs;
@@ -536,7 +538,8 @@ function saveOptions(e) {
 					separateWordSearch: $('#cb_findBarMarkOptionsSeparateWordSearch').checked,
 					ignorePunctuation: $('#cb_findBarMarkOptionsIgnorePunctuation').checked,
 					caseSensitive: $('#cb_findBarMarkOptionsCaseSensitive').checked,
-					accuracy: $('#s_findBarMarkOptionsAccuracy').value
+					accuracy: $('#s_findBarMarkOptionsAccuracy').value,
+					limit: parseInt($('#n_findBarMarkOptionsLimit').value)
 				},
 				scale: parseFloat($('#range_findBarScale').value),
 			},
@@ -544,7 +547,8 @@ function saveOptions(e) {
 				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,
 				ignorePunctuation: $('#cb_highLightMarkOptionsIgnorePunctuation').checked,
 				caseSensitive: $('#cb_highLightMarkOptionsCaseSensitive').checked,
-				accuracy: $('#s_highLightMarkOptionsAccuracy').value
+				accuracy: $('#s_highLightMarkOptionsAccuracy').value,
+				limit: parseInt($('#n_highLightMarkOptionsLimit').value)
 			}
 		},
 		
@@ -653,54 +657,22 @@ document.querySelectorAll('select').forEach( el => {
 	el.addEventListener('change', saveOptions);
 });
 
-$('#n_quickMenuColumns').addEventListener('change',  e => {
-	fixNumberInput(e.target, 5, 1, 100);
-	saveOptions(e);
-});
+[	'#n_quickMenuColumns',
+	'#n_quickMenuRows',
+	'#n_quickMenuRowsSingleColumn',
+	'#n_quickMenuOffsetX',
+	'#n_quickMenuOffsetY',
+	'#n_searchBarColumns',
+	'#n_sideBarColumns',
+	'#n_quickMenuAutoMaxChars',
+	'#n_quickMenuAutoTimeout',
+	'#n_findBarTimeout', 
+	'#n_findBarMarkOptionsLimit', 
+	'#n_highLightMarkOptionsLimit',
+	'#n_quickMenuOpeningOpacity',
+	'#n_contextMenuRecentlyUsedLength'
+].forEach( id => $(id).addEventListener('change',  saveOptions) );
 
-$('#n_quickMenuRows').addEventListener('change',  e => {
-	fixNumberInput(e.target, 5, 1, 100);
-	saveOptions(e);
-});
-
-$('#n_quickMenuRowsSingleColumn').addEventListener('change',  e => {
-	fixNumberInput(e.target, 10, 1, 100);
-	saveOptions(e);
-});
-
-$('#n_quickMenuOffsetX').addEventListener('change', e => {
-	fixNumberInput(e.target, 0, -9999, 9999);
-	saveOptions(e);
-});
-
-$('#n_quickMenuOffsetY').addEventListener('change', e => {
-	fixNumberInput(e.target, 0, -9999, 9999);
-	saveOptions(e);
-});
-
-$('#n_searchBarColumns').addEventListener('change',  e => {
-	fixNumberInput(e.target, 4, 1, 100);
-	saveOptions(e);
-});
-
-$('#n_sideBarColumns').addEventListener('change',  e => {
-	fixNumberInput(e.target, 4, 1, 100);
-	saveOptions(e);
-});
-
-$('#n_quickMenuAutoMaxChars').addEventListener('change',  e => {
-	fixNumberInput(e.target, 0, 0, 999);
-	saveOptions(e);
-});
-
-$('#n_quickMenuAutoTimeout').addEventListener('change',  e => {
-	fixNumberInput(e.target, 1000, 0, 9999);
-	saveOptions(e);
-});
-
-$('#n_findBarTimeout').addEventListener('change',  saveOptions);
-
-$('#n_quickMenuOpeningOpacity').addEventListener('change',  saveOptions);
 
 ["quickMenuScale", "sideBarScale", "findBarScale", "quickMenuIconScale"].forEach( id => {
 	$(`#range_${id}`).addEventListener('input', ev => {
@@ -728,8 +700,6 @@ $('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
 document.addEventListener('userOptionsLoaded', e => {
 	$('#searchEnginesParentContainer').style.display = $('#cb_syncWithFirefoxSearch').checked ? "none" : null;
 });
-
-$('#n_contextMenuRecentlyUsedLength').addEventListener('change', saveOptions);
 
 function keyButtonListener(e) {
 	e.target.innerText = '';

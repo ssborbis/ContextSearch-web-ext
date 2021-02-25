@@ -45,9 +45,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
 				if ( e.data.size.height && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing) {
 
 					if ( iframe.docking.options.windowType === 'undocked' )
-						iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio) + "px";
+						iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale) + "px";
 					else
-						iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
+						iframe.style.height = window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale + 'px';
 				}
 
 				if ( e.data.size.width && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing )						
@@ -155,12 +155,12 @@ function openSideBar(options) {
 			},
 			onDock: o => {
 
-				iframe.style.height = window.innerHeight * window.devicePixelRatio + 'px';
+				iframe.style.height = window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale + 'px';
 
 				saveSideBarOptions(o);
 
 				runAtTransitionEnd(iframe, ["height"], () => {
-					iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: window.innerHeight * window.devicePixelRatio, docked: true}, browser.runtime.getURL('/searchbar.html'));
+					iframe.contentWindow.postMessage({action: "sideBarResize", iframeHeight: window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale, docked: true}, browser.runtime.getURL('/searchbar.html'));
 				});
 
 			}
@@ -353,6 +353,8 @@ window.addEventListener('message', e => {
 		closeSideBar();
 	if ( e.data.action === "minimizeSideBarRequest" )
 		closeSideBar(true);
+	if ( e.data.action === "undock")
+		getIframe().docking.undock();
 });
 
 document.addEventListener("fullscreenchange", e => {
@@ -373,8 +375,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "updateSearchTerms":
 				//console.log(message);
 				break;
+
+			case "minifySideBar":
+				minifySideBar();
+				break;
 		}
 	}
 });
 
-
+function minifySideBar() {
+	getIframe().docking.undock();
+	runAtTransitionEnd(getIframe(), ["height", "width", "left", "top"], () => {
+		getIframe().contentWindow.postMessage({action: "minifySideBar"}, browser.runtime.getURL('/searchbar.html'));
+	});
+}

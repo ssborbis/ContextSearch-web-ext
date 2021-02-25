@@ -659,6 +659,11 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 
+		case "minifySideBar":
+			console.log('bg');
+			return sendMessageToTopFrame();
+			break;
+
 
 
 		//case "toggleDisplayMode":

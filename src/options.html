@@ -1368,11 +1368,11 @@
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Maximum number of characters to be selected and still open the quick menu using the Auto method. Selecting more that the number will not open the menu. 0 = no limit ">quickMenuAutoMaxChars</td>
-						<td><input type="number" id="n_quickMenuAutoMaxChars" min="0" max="999" step="1"></td>
+						<td><input type="number" id="n_quickMenuAutoMaxChars" min="0" max="999" step="1" value="0"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Cancels opening the quick menu if pausing for a set number of milliseconds before releasing the mouse button. 0 = disabled">quickMenuAutoTimeout</td>
-						<td><input type="number" id="n_quickMenuAutoTimeout" min="0" max="9999" step="1"></td>
+						<td><input type="number" id="n_quickMenuAutoTimeout" min="0" max="9999" step="1" value="1000"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Allows a search to be performed from the quick menu on mouseup without requiring a mousedown. Useful when opening the menu on Hold and releasing the mouse on a search tile to perform a search.">quickMenuSearchOnMouseUp</td>
@@ -1883,17 +1883,17 @@
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 				<div class="option">
-					<input type="number" id="n_quickMenuColumns" size="2" class="inputNice">
+					<input type="number" id="n_quickMenuColumns" size="2"  min="1" max="99" step="1" value="5" class="inputNice">
 					<span class="description" data-i18n="ColumnsTooltip">_</span>
 				</div>
 
 				<p class="header2" data-i18n="Rows">_</p>
 				<div class="option">
-					<input type="number" id="n_quickMenuRows" size="2" class="inputNice">
+					<input type="number" id="n_quickMenuRows" size="2" min="1" max="99" step="1" value="5" class="inputNice">
 					<span class="description" data-i18n="RowsTooltip">_</span>
 				</div>
 				<div class="option">
-					<input type="number" id="n_quickMenuRowsSingleColumn" size="2" min="1" max="99" class="inputNice">
+					<input type="number" id="n_quickMenuRowsSingleColumn" size="2" min="1" max="99" step="1" value="10" class="inputNice">
 					<span class="description" data-i18n="RowsSingleColumnTooltip">_</span>
 				</div>
 				</section>
@@ -2284,10 +2284,10 @@
 						<div class="position" data-position="bottom left"></div><div class="position" data-position="bottom center"></div><div class="position" data-position="bottom right"></div>
 					</div>
 					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
-						<input type="number" id="n_quickMenuOffsetX" size="2" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
+						<input type="number" id="n_quickMenuOffsetX" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
 						<span class="info" data-msg="Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left" data-i18n_tooltip="HorizontalOffset">?</span>
 						<br />
-						<input type="number" id="n_quickMenuOffsetY" size="2" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
+						<input type="number" id="n_quickMenuOffsetY" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
 						<span class="info" data-msg="Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up" data-i18n_tooltip="VerticalOffset">?</span>
 					</div>
 				</div>
@@ -2368,7 +2368,7 @@
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 				<div class="option">
-					<input type="number" id="n_searchBarColumns" size="2" class="inputNice">
+					<input type="number" id="n_searchBarColumns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
 					<span class="description" data-i18n="ColumnsTooltip">_</span>
 				</div>
 				</section>
@@ -2401,7 +2401,7 @@
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 					<div class="option">
-						<input type="number" id="n_sideBarColumns" size="2" class="inputNice">
+						<input type="number" id="n_sideBarColumns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
 						<span class="description" data-i18n="ColumnsTooltip">_</span>
 					</div>
 
@@ -2883,6 +2883,19 @@
 								<div class="description" data-i18n="HighlightCaseSensitiveTooltip">Case sensitive</div>
 							</td>
 						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Limit -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<input type="number" min="0" max="9999" step="1" id="n_highLightMarkOptionsLimit" style="width:60px"/>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightLimitTooltip">_</div>
+							</td>
+						</tr>
 					</table>
 					
 				</div>
@@ -3044,6 +3057,19 @@
 							</td>
 							<td>
 								<div class="description" data-i18n="HighlightCaseSensitiveTooltip">_</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Limit -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<input type="number" min="0" max="9999" step="1" id="n_findBarMarkOptionsLimit" style="width:60px"/>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightLimitTooltip">_</div>
 							</td>
 						</tr>
 					</table>

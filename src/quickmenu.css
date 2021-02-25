@@ -254,9 +254,6 @@ BODY {
 	border-width: 1px 0;
 	transition:max-height .15s ease-in-out;
 	max-height:0;
-	/*max-width:calc(100%);*/
-	/*min-width:200px;*/
-	/*max-width:400px;*/
 	width:100%;
 	text-align: left;
 }
@@ -442,3 +439,10 @@ BODY {
 	-webkit-mask-image:var(--mask-image);
 	-webkit-mask-repeat:no-repeat;
 }
+
+.mini #titleBar, .mini #toolBar, .mini #suggestions, .mini #quickMenuElement {
+	display:none;
+}
+.mini #menuBar { height:5px; }
+.mini #menuBar .tool { display:none; }
+.mini #searchBarContainer {	width:300px; }

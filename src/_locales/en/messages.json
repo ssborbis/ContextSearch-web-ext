@@ -1889,6 +1889,11 @@
     "description": ""
   },
 
+  "HighlightLimitTooltip": {
+    "message": "Limit the number of matches to highlight. A lower limit can prevent slowdowns when marking. 0 = no limit",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""

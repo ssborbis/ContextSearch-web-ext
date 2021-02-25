@@ -20,7 +20,8 @@ function buildMarkOptions() {
 		accuracy: document.querySelector('#accuracy').checked ? "exactly" : "partially",
 		caseSensitive: document.querySelector('#caseSensitive').checked,
 		ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
-		separateWordSearch: document.querySelector('#separateWordSearch').checked
+		separateWordSearch: document.querySelector('#separateWordSearch').checked,
+		limit: userOptions.highLight.findBar.markOptions.limit
 	};
 }
 
