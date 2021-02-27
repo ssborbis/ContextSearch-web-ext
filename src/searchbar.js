@@ -205,8 +205,6 @@ function sideBarResize(options) {
 	// throwing sidebar errors
 	if ( !qm ) return;
 
-	let allOtherElsHeight = getAllOtherHeights();
-
 	let qm_height = qm.style.height;
 	
 	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 10000 );
@@ -216,6 +214,8 @@ function sideBarResize(options) {
 	qm.style.height = null;
 	qm.style.width = null;
 	sg.style.width = null;
+
+	let allOtherElsHeight = getAllOtherHeights();
 
 	qm.style.height = function() {
 		
@@ -230,6 +230,7 @@ function sideBarResize(options) {
 
 	// account for scrollbars
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
+	toolBar.style.width = qm.style.width;
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
