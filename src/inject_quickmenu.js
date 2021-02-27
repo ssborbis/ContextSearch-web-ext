@@ -55,7 +55,8 @@ function addUnderDiv() {
 }
 
 function removeUnderDiv() {
-	if ( getUnderDiv() ) getUnderDiv().parentNode.removeChild(ud);
+	
+	if ( getUnderDiv() ) getUnderDiv().parentNode.removeChild(getUnderDiv() );
 }
 
 function closeQuickMenu(eventType) {
@@ -621,7 +622,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
 				let coords = qmc.openingCoords;
-				
+
 				let leftOffset = topOffset = 0;
 
 				for (let position of userOptions.quickMenuPosition.split(" ")) {
