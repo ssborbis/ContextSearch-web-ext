@@ -140,14 +140,11 @@ function toolBarResize(options) {
 
 		let minWindowWidth = Math.max(minWidth, window.innerWidth);
 
-		if ( qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
+		if ( !qm.singleColumn && qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
 
 			let maxWidth = 800;
 
-			// if ( !qm.singleColumn )
-			// 	maxWidth = Math.max(minWindowWidth, tileSize.width * qm.columns + 30);
-
-			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth) ) + "px";
+			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth ) ) + "px";
 
 			// pad for scrollbars
 			qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
