@@ -106,51 +106,46 @@ function toolBarResize(options) {
 
 	let minWidth = 200;
 	let maxHeight = 600;
+	let maxWidth = 800;
 
-	// set min width for singleColumn
-	if ( qm.singleColumn ) minWidth = qm.getTileSize().width;
+	let tileSize = qm.getTileSize();
 
-	// minimum toolbar width for Chrome ( Firefox min = 200 )
-	document.body.style.minWidth = minWidth + "px";
-
+	qm.style.minWidth = 'initial';
 	qm.style.height = null;
 
 	// ignore width resizing if only opening suggestions ( prevents flashing )
 	if ( !options.suggestionsResize && !options.groupMore && !options.groupLess ) {
 		sg.style.width = 0;
-		qm.style.width = 0;
+		qm.style.width = null;
 		toolBar.style.width = 0;
-		// qm.style.height = null;
+		tb.style.width = 0;
+		qm.style.overflowX = null;
 	
 		qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
 	}
+	
+	// set min width for singleColumn
+	if ( qm.singleColumn ) minWidth = tileSize.width;
+
+	// minimum toolbar width for Chrome ( Firefox min = 200 )
+	document.body.style.minWidth = minWidth + "px";
 
 	runAtTransitionEnd(document.documentElement, ["width", "height"], () => {
 
 		if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
 			let sumHeight = getAllOtherHeights();
-
-		//	qm.style.height = ( (window.innerHeight < maxHeight && qm.scrollHeight > (maxHeight - sumHeight) ) ? maxHeight : window.innerHeight ) - sumHeight + "px";
-			
-		//	qm.style.height = document.documentElement.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
-
 			qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
-
-		//	console.log(sumHeight, qm.style.height, qm.scrollHeight, window.innerHeight);
-
 		} 
 
 		let minWindowWidth = Math.max(minWidth, window.innerWidth);
 
-		if ( qm.getBoundingClientRect().width < window.innerWidth) {
+		if ( qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
 
-			let maxWidth = 9999;
+			let maxWidth = 800;
 
-			let tileSize = qm.getTileSize();
-
-			if ( !qm.singleColumn )
-				maxWidth = Math.max(minWindowWidth, tileSize.width * qm.columns + 30);
+			// if ( !qm.singleColumn )
+			// 	maxWidth = Math.max(minWindowWidth, tileSize.width * qm.columns + 30);
 
 			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth) ) + "px";
 
@@ -164,15 +159,23 @@ function toolBarResize(options) {
 			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
 				div.style.width = div_width;
 			});
+
+		} else if ( qm.scrollWidth <= window.innerWidth ) {
+		} else {
+			qm.style.overflowX = 'scroll';
+			qm.style.width = '100%';
 		}
-		
-		tb.style.maxWidth = toolBar.style.maxWidth = toolBar.style.width = document.documentElement.scrollWidth - 10 + "px";
-		sg.style.width = document.documentElement.scrollWidth + "px";
 
 		document.dispatchEvent(new CustomEvent('resizeDone'));
 				
 	}, 50);
 
+	window.addEventListener('resize', e => {
+		toolBar.style.width = document.body.offsetWidth + "px";
+		sg.style.width = document.body.offsetWidth + "px";
+		tb.style.width = document.body.offsetWidth - 20 + "px";
+
+	});
 }
 
 var docked = false;
@@ -252,14 +255,6 @@ function resizeMenu(o) {
 		qm.scrollTop = scrollTop;
 		sg.scrollTop = sgScrollTop;
 	});
-
-	// window.addEventListener('message', function resizeDoneListener(e) {
-	// 	if ( e.data.action && e.data.action === "resizeDone" ) {
-	// 		qm.scrollTop = scrollTop;
-	// 		sg.scrollTop = sgScrollTop;
-	// 		window.removeEventListener('message', resizeDoneListener);
-	// 	}
-	// });
 
 	toolBarResize(o);
 	sideBarResize(o);

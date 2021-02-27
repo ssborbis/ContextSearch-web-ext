@@ -1,4 +1,4 @@
-function getSearchBar() { return document.getElementById('searchBar') }
+var getSearchBar = () => document.getElementById('searchBar');
 
 var userOptions = {};
 var typeTimer = null;
@@ -56,9 +56,6 @@ window.addEventListener("message", e => {
 		getSearchBar().focus();
 		document.querySelector("#searchIcon").src = browser.runtime.getURL('icons/search.svg');
 	}
-	
-	// console.log(e.data);
-
 });
 
 document.getElementById('next').addEventListener('click', e => {

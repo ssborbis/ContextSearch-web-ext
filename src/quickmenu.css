@@ -288,6 +288,7 @@ BODY {
 	font-size:11pt;
 	white-space:nowrap;
 	width:calc(100% - 10px);
+	text-overflow: ellipsis;
 }
 .tile.singleColumn {
 	width:100%;

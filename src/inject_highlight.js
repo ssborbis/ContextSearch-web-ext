@@ -110,8 +110,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // init marker.js object
 var CS_MARK_instance = null;
 
-var getFindBar = () => {return document.getElementById('CS_findBarIframe');}
-var getNavBar = () => {return document.getElementById('CS_highLightNavBar');}
+var getFindBar = () => document.getElementById('CS_findBarIframe');
+var getNavBar = () => document.getElementById('CS_highLightNavBar');
 
 // listen for execute_script call from background for search highlighting
 document.addEventListener('CS_markEvent', e => {

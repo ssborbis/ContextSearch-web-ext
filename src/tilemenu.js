@@ -27,6 +27,9 @@ var sbc = document.getElementById('searchBarContainer');
 
 var type;
 
+// track if tiles can be moved
+window.tilesDraggable = false;
+
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
@@ -104,7 +107,7 @@ function addTileEventHandlers(_tile, handler) {
 
 		if ( _tile.disabled ) return false;
 
-		if ( qm.tilesDraggable ) return false;
+		if ( window.tilesDraggable ) return false;
 		
 		// if ( userOptions.autoCopy /*copypaste*/) {
 			// browser.runtime.sendMessage({action: "copy", msg: sb.value});
@@ -236,9 +239,6 @@ async function makeQuickMenu(options) {
 	qm.id = 'quickMenuElement';
 	qm.tabIndex = -1;
 	
-	// track if tiles can be moved
-	qm.tilesDraggable = false;
-
 	qm.dataset.menu = type;
 	qm.dataset.columns = columns;
 	qm.columns = columns;
@@ -569,11 +569,11 @@ async function makeQuickMenu(options) {
 		
 		toolsArray.forEach( tool => {
 			
-			tool.setAttribute('draggable', false);
+			tool.setAttribute('draggable', window.tilesDraggable);
 
 			tool.addEventListener('dragstart', e => {
 
-				if ( !qm.tilesDraggable ) return false;
+				if ( !window.tilesDraggable ) return false;
 
 				e.dataTransfer.setData("tool", "true");
 				let img = new Image();
@@ -782,7 +782,7 @@ async function makeQuickMenu(options) {
 		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
 		tileDivs.forEach( div => {
 
-			div.setAttribute('draggable', false);
+			div.setAttribute('draggable', window.tilesDraggable);
 	
 			// group move
 			if ( div.classList.contains("groupFolder") ) {
@@ -813,7 +813,7 @@ async function makeQuickMenu(options) {
 
 			div.addEventListener('dragstart', e => {
 
-				if ( !qm.tilesDraggable ) return false;
+				if ( !window.tilesDraggable ) return false;
 
 				e.dataTransfer.setData("text", "");
 				let img = new Image();

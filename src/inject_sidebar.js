@@ -191,7 +191,7 @@ function openSideBar(options) {
 				onDrag: o => {
 
 					// step the container and iframe size
-					iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio + "px";
+					iframe.style.height = ( o.endCoords.y - iframe.getBoundingClientRect().y ) * window.devicePixelRatio / userOptions.sideBar.scale + "px";
 					
 					// value set on resizeSideBar message based on singleColumn
 					if ( resizeWidget.options.allowHorizontal )
@@ -372,10 +372,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
-			case "updateSearchTerms":
-				//console.log(message);
-				break;
-
 			case "minifySideBar":
 				minifySideBar();
 				break;

@@ -1,7 +1,10 @@
 const defaultShortcuts = [
 	{
 		name:"quickMenuOpen",
-		action: "openQuickMenu",
+		action: e => {
+			let searchTerms = getSelectedText().trim() || "";
+			browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:searchTerms});
+		},
 		key: "x",
 		ctrl: true,
 		alt: true,

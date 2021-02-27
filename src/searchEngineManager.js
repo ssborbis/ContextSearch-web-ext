@@ -324,13 +324,15 @@ function buildSearchEngineContainer() {
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);	
 						
-						showSaveMessage(edit_form.querySelector('.error') ? 'saved with errors' : "saved", null, "", edit_form.querySelector('.saveMessage'));
-
+						if ( edit_form.querySelector('.error') )
+							showSaveMessage('saved with errors', 'red', edit_form.querySelector('.saveMessage'));
+						else
+							showSaveMessage('saved', null, edit_form.querySelector('.saveMessage'));
 					}
 					
 					checkFormValues().then( result => {
 						if ( result ) saveForm();
-						else showSaveMessage("cannot save", "red", "no", edit_form.querySelector('.saveMessage'));
+						else showSaveMessage("cannot save", "red", edit_form.querySelector('.saveMessage'));
 					});
 				}
 				
@@ -398,7 +400,7 @@ function buildSearchEngineContainer() {
 
 					text.innerText = node.title;
 
-					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
+					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 					
 					newIcon.src = getIconSourceFromURL(_form.iconURL.value);
 					
@@ -497,7 +499,7 @@ function buildSearchEngineContainer() {
 				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
-					showSaveMessage("saved", null, "", _form.querySelector(".saveMessage"));
+					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 
 					node.title = _form.shortName.value.trim();
 					node.groupColor = _form.groupColor.value;

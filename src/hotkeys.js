@@ -1,7 +1,5 @@
 document.addEventListener('keydown', e => {
 
-//	console.log(e);
-
 	for ( let s of userOptions.userShortcuts ) {
 		if (
 			s.enabled &&

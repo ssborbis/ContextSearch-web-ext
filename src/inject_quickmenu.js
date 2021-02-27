@@ -16,9 +16,9 @@ var quickMenuObject = {
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
 
-function openQuickMenu(ev, searchTerms) {
+function openQuickMenu(e, searchTerms) {
 
-	ev = ev || new Event('click');
+	e = e || new Event('click');
 
 	// if ( getQM() ) closeQuickMenu();
 		
@@ -26,21 +26,21 @@ function openQuickMenu(ev, searchTerms) {
 	if ( userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
 		
 		// restore selection to text boxes
-		if (ev.target && ev.target.selectionStart)  // is a text box
-			document.addEventListener('closequickmenu', e => ev.target.focus(), {once: true});
+		if (e.target && e.target.selectionStart)  // is a text box
+			document.addEventListener('closequickmenu', e => e.target.focus(), {once: true});
 		
 		// don't blur on drag
-		if ( ev.target && !ev.dataTransfer )
-			ev.target.blur();
+		if ( e.target && !e.dataTransfer )
+			e.target.blur();
 	}
 
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: quickMenuObject.screenCoords,
 		mouseCoords: quickMenuObject.mouseCoords,
-		searchTerms: searchTerms || getSelectedText(ev.target).trim() || linkOrImage(ev.target, ev),
+		searchTerms: searchTerms || getSelectedText(e.target).trim() || linkOrImage(e.target, e),
 		quickMenuObject: quickMenuObject,
-		openingMethod: ev.openingMethod || ev.type || null
+		openingMethod: e.openingMethod || e.type || null
 	});
 }
 
@@ -55,9 +55,7 @@ function addUnderDiv() {
 }
 
 function removeUnderDiv() {
-	let ud = getUnderDiv();
-	
-	if ( ud ) ud.parentNode.removeChild(ud);
+	if ( getUnderDiv() ) getUnderDiv().parentNode.removeChild(ud);
 }
 
 function closeQuickMenu(eventType) {
@@ -131,21 +129,21 @@ function makeQuickMenuContainer(coords) {
 }
 
 // Listen for ESC and close Quick Menu
-document.addEventListener('keydown', ev => {
+document.addEventListener('keydown', e => {
 
 	if (
-		ev.key !== "Escape" ||
-		ev.repeat ||
+		e.key !== "Escape" ||
+		e.repeat ||
 		!userOptions.quickMenu		
 	) return false;
 	
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "esc"});	
 });
 
-function scrollEventListener(ev) {
+function scrollEventListener(e) {
 	if (window.scrollThrottler) return false;
 	window.scrollThrottler = true;
-	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: ev.type});
+	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: e.type});
 	setTimeout(() => window.scrollThrottler = false, 250);
 }
 
@@ -153,32 +151,32 @@ window.addEventListener(window.hasOwnProperty('onmousewheel') ? 'mousewheel' : '
 window.addEventListener('scroll', scrollEventListener);
 
 // Listen for quickMenuKey
-document.addEventListener('keydown', ev => {
+document.addEventListener('keydown', e => {
 	
 	if (
-		ev.which !== userOptions.quickMenuKey ||
-		ev.repeat ||
+		e.which !== userOptions.quickMenuKey ||
+		e.repeat ||
 		!userOptions.quickMenuOnKey ||
 		!userOptions.quickMenu ||
-		getSelectedText(ev.target) === "" ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
+		getSelectedText(e.target) === "" ||
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
 	quickMenuObject.keyDownTimer = Date.now();	
 });
 
 // Listen for quickMenuKey
-document.addEventListener('keyup', ev => {
+document.addEventListener('keyup', e => {
 	
 	if (
-		ev.which !== userOptions.quickMenuKey ||
-		ev.repeat ||
+		e.which !== userOptions.quickMenuKey ||
+		e.repeat ||
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnKey
 	) return false;
 	
 	if (Date.now() - quickMenuObject.keyDownTimer < 250)
-		openQuickMenu(ev);
+		openQuickMenu(e);
 	
 	quickMenuObject.keyDownTimer = 0;	
 });
@@ -249,48 +247,48 @@ document.addEventListener('mousedown', ev => {
 });
 
 // Listen for HOLD quickMenuMouseButton
-document.addEventListener('mouseup', ev => {
+document.addEventListener('mouseup', e => {
 
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
-		ev.which !== userOptions.quickMenuMouseButton
+		e.which !== userOptions.quickMenuMouseButton
 	) return false;
 		
 	clearTimeout(quickMenuObject.mouseDownTimer);
 });
 
 // Listen for quickMenuAuto 
-document.addEventListener('mousedown', ev => {
+document.addEventListener('mousedown', e => {
 	
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuAuto || 
-		ev.which !== 1 ||
-		ev.target.id === 'quickMenuElement' ||
-		ev.target.parentNode.id === 'quickMenuElement'
+		e.which !== 1 ||
+		e.target.id === 'quickMenuElement' ||
+		e.target.parentNode.id === 'quickMenuElement'
 	) return false;
 	
-	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(ev.target);
+	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(e.target);
 });
 
-document.addEventListener('mouseup', ev => {
+document.addEventListener('mouseup', e => {
 
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuAuto || 
-		ev.which !== 1 ||
-		ev.target.id === 'quickMenuElement' ||
-		ev.target.parentNode.id === 'quickMenuElement' ||
-		getSelectedText(ev.target).trim() === "" ||
-		( userOptions.quickMenuAutoMaxChars && getSelectedText(ev.target).length > userOptions.quickMenuAutoMaxChars ) ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
+		e.which !== 1 ||
+		e.target.id === 'quickMenuElement' ||
+		e.target.parentNode.id === 'quickMenuElement' ||
+		getSelectedText(e.target).trim() === "" ||
+		( userOptions.quickMenuAutoMaxChars && getSelectedText(e.target).length > userOptions.quickMenuAutoMaxChars ) ||
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
 		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
 		
 	) return false;
 	
-	ev.openingMethod = "auto";
+	e.openingMethod = "auto";
 
 	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
 	
@@ -298,13 +296,13 @@ document.addEventListener('mouseup', ev => {
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	
 	// // skip erroneous short selections
-	let searchTerms = getSelectedText(ev.target);
+	let searchTerms = getSelectedText(e.target);
 	setTimeout(() => {
-		if ( searchTerms === getSelectedText(ev.target) ) {
-			 openQuickMenu(ev);
+		if ( searchTerms === getSelectedText(e.target) ) {
+			 openQuickMenu(e);
 			 
-			if ( userOptions.quickMenuCloseOnEdit && isTextBox(ev.target) ) {
-				ev.target.addEventListener('input', e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+			if ( userOptions.quickMenuCloseOnEdit && isTextBox(e.target) ) {
+				e.target.addEventListener('input', e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
 			}
 		}
 	}, 50);
@@ -343,23 +341,23 @@ document.addEventListener('mousedown', ev => {
 });
 		
 // Listen for quickMenuOnClick	
-document.addEventListener('mouseup', ev => {	
+document.addEventListener('mouseup', e => {	
 
 	if (
 		!userOptions.quickMenu || 
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
-		ev.which !== userOptions.quickMenuMouseButton ||
+		e.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) )
+		( getSelectedText(e.target) === "" && !linkOrImage(e.target, e) )
 	) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
-	ev.stopPropagation();
-	if ( ev.which === 2 ) ev.preventDefault();
+	e.stopPropagation();
+	if ( e.which === 2 ) e.preventDefault();
 
-	openQuickMenu(ev);	
+	openQuickMenu(e);	
 });
 
 // listen for simple click
@@ -504,27 +502,27 @@ document.addEventListener('closequickmenu', () => {
 });
 
 // close quickmenu when clicking anywhere on page
-document.addEventListener("click", ev => {
+document.addEventListener("click", e => {
 
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
 	
-	if ( userOptions.quickMenuAllowContextMenu && ev.which !== 1 ) return;
+	if ( userOptions.quickMenuAllowContextMenu && e.which !== 1 ) return;
 	
 	// prevent links from opening
 	if ( getQM() && !quickMenuObject.locked)
-		ev.preventDefault();
+		e.preventDefault();
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
 });
 
 // track mouse position
-document.addEventListener("mousemove", ev => {
-	quickMenuObject.mouseCoords = {x: ev.clientX, y: ev.clientY};
-	quickMenuObject.screenCoords = {x: ev.screenX, y: ev.screenY};
+document.addEventListener("mousemove", e => {
+	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
+	quickMenuObject.screenCoords = {x: e.screenX, y: e.screenY};
 });
 
 // prevent quickmenu during drag events
-document.addEventListener("drag", ev => clearTimeout(quickMenuObject.mouseDownTimer));
+document.addEventListener("drag", e => clearTimeout(quickMenuObject.mouseDownTimer));
 
 window.addEventListener('keydown', e => {
 	if (
@@ -540,10 +538,6 @@ window.addEventListener('keydown', e => {
 	browser.runtime.sendMessage({action: "focusSearchBar"});
 });
 
-// document.addEventListener('zoom', e => {
-// 	if ( getQM() ) scaleAndPositionQuickMenu(null, true);
-// });
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.action !== 'undefined') {
@@ -557,10 +551,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "openQuickMenu":
 
 				// opened by shortcut
-				if ( !message.screenCoords) return openQuickMenu();
+				if ( !message.screenCoords) message.screenCoords = quickMenuObject.screenCoords;
 
-				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;
-				
+				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;				
 				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
 
 				quickMenuObject.searchTerms = message.searchTerms;

@@ -1013,24 +1013,25 @@
 				transition:opacity 2s ease-out 1s;
 			}
 			.yes::before, .no::before, .add::before {
-				content: url("icons/checkmark.svg");
-				vertical-align:middle;
+				content: "";
+				background-image:url("icons/checkmark.svg");
+				background-size:contain;
+				width:100%;
+				height:100%;
 				filter:invert(1);
 				display:inline-block;
-				transform:scale(.33);
-				transform-origin: top left;
 			}
 			.no {
 				background-color: red;
 			}
 			.no::before {
-				content: url("icons/crossmark.svg");
+				background-image:url("icons/crossmark.svg");
 			}
 			.add {
 				background-color: green;
 			}
 			.add::before {
-				content: url("icons/add.svg");
+				background-image: url("icons/add.svg");
 			}
 			SECTION {
 				border:1px solid var(--border-color1);
@@ -2535,7 +2536,7 @@
 							<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 							<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 							<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
-							<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
+							<!-- <option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option> -->
 							<option value="openNewWindow" data-i18n="SearchActionsNewWindow">_</option>
 							<option value="openNewIncognitoWindow" data-i18n="SearchActionsIncognitoWindow">_</option>
 							<option data-browser="firefox" data-minversion="62" value="openSideBarAction" data-i18n="SearchActionsSidebarAction">_</option>

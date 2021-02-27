@@ -374,7 +374,7 @@ function restoreOptions() {
 function saveOptions(e) {
 	
 	function onSet() {
-		showSaveMessage(browser.i18n.getMessage("saved"), null, "yes", document.getElementById('saveNoticeDiv'));
+		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
 		return Promise.resolve(true);
 	}
 	
@@ -1271,6 +1271,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		let yes = document.createElement('div');
 		yes.className = 'yes';
 		yes.style.verticalAlign = 'top';
+		yes.style.height = yes.style.width = '1em';
 		div.appendChild(yes);
 		
 		yes.addEventListener('transitionend', e => {
@@ -1283,25 +1284,24 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 });
 
-function showSaveMessage(str, color, _class, el) {
-
-	color = color || "inherit";
+function showSaveMessage(str, color, el) {
 
 	// clear and set save message
 	el.innerHTML = null;	
 	let msgSpan = document.createElement('span');
 
-	let img = document.createElement('div');
-	img.className = _class;
-	//img.style.height = img.style.width = '1em';
-	img.style.verticalAlign = "middle";
-	img.style.marginRight = '10px';
-	msgSpan.style = 'opacity:1;transition:opacity 1s .75s;';
-	msgSpan.style.color = color;
+	msgSpan.style = "display:inline-block;font-size:10pt;font-family:'Courier New', monospace;font-weight:600;opacity:1;transition:opacity 1s .75s;padding:1px 12px;border-radius:8px;box-shadow:4px 4px 8px #0003;border:2px solid var(--border1)";
+	msgSpan.style.backgroundColor = "var(--bg-color2)";
 	msgSpan.innerText = str;
-	
-	msgSpan.insertBefore(img, msgSpan.firstChild);
-	
+
+	let div = document.createElement('div')
+	div.className = 'yes';
+	div.style.verticalAlign = 'middle';
+	div.style.marginRight = '16px';
+	div.style.marginLeft = '0';
+	div.style.height = div.style.width = "1em";
+	msgSpan.insertBefore(div, msgSpan.firstChild);
+
 	el.appendChild(msgSpan);
 	
 	msgSpan.addEventListener('transitionend', e => {
