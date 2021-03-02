@@ -337,13 +337,13 @@ window.addEventListener('message', e => {
 });
 
 // prevent docking
-mb.addEventListener('dblclick', e => {
-	e.preventDefault();
-	e.stopImmediatePropagation();
-});
+// mb.addEventListener('dblclick', e => {
+// 	e.preventDefault();
+// 	e.stopImmediatePropagation();
+// });
 
 // addChildDockingListeners(mb, "quickMenu");
-addChildDockingListeners(document.body, "quickMenu");
+addChildDockingListeners(document.body, "quickMenu", "#searchBarContainer > *");
 
 // drag overdiv listener for chrome
 window.addEventListener("message", e => {

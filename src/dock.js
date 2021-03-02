@@ -486,18 +486,26 @@ function makeDockable(el, options) {
 	}
 }
 
-function addChildDockingListeners(handle, target_id) {
+function addChildDockingListeners(handle, target_id, ignoreSelector) {
 
 	let deadzone = 12;
-
 	let moving = false;
 
-	handle.addEventListener('mousedown', e => {
+	ignoreSelector = ignoreSelector || null;
 
-		if ( e.target.tagName === "INPUT" ) return;
+	ignoreTarget = e => {
+		let elsToIgnore = [...document.querySelectorAll(ignoreSelector)];
+
+		if ( elsToIgnore.includes(e.target) ) return true;
+		else return false
+	}
+
+	handle.addEventListener('mousedown', e => {	
+
+		if ( ignoreTarget(e) ) return false;
 		
 		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
-	})
+	});
 
 	window.addEventListener('mouseup', e => {
 		if ( e.which !== 1 ) return;
@@ -530,6 +538,8 @@ function addChildDockingListeners(handle, target_id) {
 
 	handle.addEventListener('dblclick', e => {
 		if ( e.which !== 1 ) return;
+
+		if ( ignoreTarget(e) ) return false;
 
 		window.parent.postMessage({action: "handle_dock", target: target_id, e: {x: e.screenX, y: e.screenY}}, "*");
 	});

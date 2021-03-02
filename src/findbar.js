@@ -21,7 +21,7 @@ function buildMarkOptions() {
 		caseSensitive: document.querySelector('#caseSensitive').checked,
 		ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
 		separateWordSearch: document.querySelector('#separateWordSearch').checked,
-		limit: userOptions.highLight.findBar.markOptions.limit || 0
+		limit: userOptions.highLight ? userOptions.highLight.findBar.markOptions.limit : 0
 	};
 }
 
@@ -187,4 +187,5 @@ document.getElementById('clearSearchBarButton').addEventListener('click', e => {
 	getSearchBar().focus();
 });
 
-addChildDockingListeners(document.getElementById('handle'), "findBar");
+//addChildDockingListeners(document.getElementById('handle'), "findBar");
+addChildDockingListeners(document.body, "findBar", "#searchBar");
