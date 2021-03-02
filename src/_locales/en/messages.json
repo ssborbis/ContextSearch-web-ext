@@ -919,7 +919,7 @@
   },
   
   "ShortcutKey_tooltip": {
-    "message": "Shortcut key to expand the \"Search With...\" menu in the context menu",
+    "message": "Key to expand the \"Search With...\" menu in the context menu",
     "description": "context menu hotkey tooltip"
   },
   
@@ -1005,7 +1005,7 @@
   },
   
   "ContextMenuHotKeyTooltip": {
-    "message": "Keyboard shortcut to expand the \"Search With...\" entry in the context menu",
+    "message": "Access key for the ContextSearch submenu",
     "description": "Description for Context Menu shortcut key"
   },
   
@@ -1338,7 +1338,7 @@
   },
   
   "ClickToSet": {
-    "message": "Click to set",
+    "message": "Set",
     "description": ""
   },
   
