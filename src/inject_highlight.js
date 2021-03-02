@@ -104,6 +104,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			findBarSearch:true,	
 			hotkey: true
 		}, userOptions.highLight.findBar.markOptions));
+
+		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	}
 });
 
@@ -680,4 +682,3 @@ document.addEventListener("fullscreenchange", e => {
 	}
 });
 
-addParentDockingListeners('CS_findBarIframe', 'findBar');

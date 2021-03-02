@@ -21,7 +21,7 @@ function buildMarkOptions() {
 		caseSensitive: document.querySelector('#caseSensitive').checked,
 		ignorePunctuation: document.querySelector('#ignorePunctuation').checked,
 		separateWordSearch: document.querySelector('#separateWordSearch').checked,
-		limit: userOptions.highLight.findBar.markOptions.limit
+		limit: userOptions.highLight.findBar.markOptions.limit || 0
 	};
 }
 
