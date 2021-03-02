@@ -493,6 +493,9 @@ function addChildDockingListeners(handle, target_id) {
 	let moving = false;
 
 	handle.addEventListener('mousedown', e => {
+
+		if ( e.target.tagName === "INPUT" ) return;
+		
 		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
 	})
 
