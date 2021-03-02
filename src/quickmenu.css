@@ -66,13 +66,13 @@ BODY {
 	user-select: none; 
 	-moz-user-select: none;
 	overflow:hidden;
-	white-space: nowrap;
 	outline:none;
 }
 #quickMenuElement {
 	z-index:1;
 	overflow-y:auto;
 	transition:var(--user-transition, left .15s ease-in-out);
+	white-space:nowrap;
 }
 .tile[data-type="folder"]:not(.singleColumn):not([data-subtype]):not([data-groupfolderheader])::before {
 	content:"";
@@ -267,6 +267,7 @@ BODY {
 	-moz-user-select: none;
 	overflow-x:hidden;
 	width:100%;
+	text-overflow:ellipsis;
 }
 #suggestions > DIV:hover {
 	background-color: var(--hover);

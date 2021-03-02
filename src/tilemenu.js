@@ -217,7 +217,6 @@ function keepMenuOpen(e, isFolder) {
 async function makeQuickMenu(options) {
 
 	type = options.type;
-	let mode = options.mode;
 
 	let singleColumn = options.singleColumn;
 	
@@ -283,8 +282,6 @@ async function makeQuickMenu(options) {
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
 		
-		qm.insertBreaks();
-
 		resizeMenu({toggleSingleColumn: true});
 	}
 	
@@ -633,6 +630,10 @@ async function makeQuickMenu(options) {
 	
 	qm.toolsArray = createToolsArray();
 
+	qm.removeBreaks = () => {
+		qm.querySelectorAll('br:not(.groupBr)').forEach( br => qm.removeChild(br) );
+	}
+
 	qm.insertBreaks = function insertBreaks(_columns) {
 		
 		_columns = _columns || qm.columns;
@@ -758,8 +759,7 @@ async function makeQuickMenu(options) {
 
 		// set min-width to prevent menu shrinking with smaller folders
 		qm.setMinWidth = () => qm.style.minWidth = qm.columns * qm.getTileSize().noBorderWidth + "px";
-		qm.setMinWidth();
-
+		
 		// slide-in animation
 		if ( !userOptions.enableAnimations ) qm.style.setProperty('--user-transition', 'none');
 		qm.style.left = qm.getBoundingClientRect().width * ( options.reverse ? -1 : 1 ) + "px";
@@ -1251,7 +1251,7 @@ async function makeQuickMenu(options) {
 
 				});
 				
-				qm.insertBreaks();
+//				qm.insertBreaks();
 
 				moreTile.onmouseup = less;	
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
@@ -1272,7 +1272,7 @@ async function makeQuickMenu(options) {
 					_div.style.display = "none";
 				});
 				
-				qm.insertBreaks();
+//				qm.insertBreaks();
 				moreTile.onmouseup = more;
 				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
 				moreTile.dataset.type = "more";
@@ -2125,4 +2125,8 @@ function checkForNodeHotkeys(e) {
 
 getAllOtherHeights = () => {
 	return getFullElementSize(sbc).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+}
+
+isMoving = e => {
+	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
 }

@@ -321,32 +321,7 @@ function makeOpeningTab() {
 	return openingTab;
 }
 
-// docking event listeners for iframe
-window.addEventListener('message', e => {
-
-	if ( e.data.target !== "sideBar" ) return;
-	
-	let x = e.data.e.clientX / window.devicePixelRatio;
-	let y = e.data.e.clientY / window.devicePixelRatio;
-
-	switch ( e.data.action ) {
-		case "handle_dragstart":
-			getIframe().docking.moveStart({clientX:x, clientY:y});
-			break;
-		
-		case "handle_dragend":
-			getIframe().docking.moveEnd({clientX:x, clientY:y});
-			break;
-		
-		case "handle_dragmove":
-			getIframe().docking.moveListener({clientX:x, clientY:y});
-			break;
-			
-		case "handle_dock":
-			getIframe().docking.toggleDock();
-			break;
-	}
-});
+addParentDockingListeners('CS_sbIframe', 'sideBar');
 
 window.addEventListener('message', e => {
 	if ( e.data.action === "closeSideBarRequest" ) 

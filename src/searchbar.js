@@ -41,7 +41,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 			
 			if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
 				document.body.appendChild(toolBar);
-			
+
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 		}));
@@ -95,7 +95,7 @@ function toolsHandler() {
 		if ( qm.singleColumn && !userOptions.quickMenuToolsAsToolbar ) tool.classList.add('singleColumn');
 	});
 
-	qm.insertBreaks();
+//	qm.insertBreaks();
 }
 
 function toolBarResize(options) {
@@ -121,7 +121,7 @@ function toolBarResize(options) {
 		tb.style.width = 0;
 		qm.style.overflowX = null;
 	
-		qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
+	//	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
 	}
 	
 	// set min width for singleColumn
@@ -192,6 +192,9 @@ function sideBarResize(options) {
 
 	if ( window == top ) return;
 
+	qm.style.whiteSpace = null;
+	qm.insertBreaks();
+
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
 		return window.parent.postMessage({
@@ -232,9 +235,12 @@ function sideBarResize(options) {
 	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
 	toolBar.style.width = qm.style.width;
 
+	qm.removeBreaks();
+	qm.style.whiteSpace = 'normal';
+
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
-		size: {width: parseFloat( qm.style.width ), height: document.body.offsetHeight}, 
+		size: {width: qm.getBoundingClientRect().width, height: document.body.offsetHeight}, 
 		singleColumn: qm.singleColumn,
 		tileSize: qm.getTileSize()
 	}, "*");
@@ -319,41 +325,7 @@ document.getElementById('closeButton').addEventListener('click', e => {
 		window.close();
 });
 
-mb.addEventListener('mousedown', e => {
-	if ( e.which !== 1 ) return;
-
-	mb.moving = true;
-
-	window.parent.postMessage({action: "handle_dragstart", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
-
-window.addEventListener('mouseup', e => {
-	if ( e.which !== 1 ) return;
-
-	mb.moving = false;
-	
-	document.body.classList.remove("noMouse");
-	
-	window.parent.postMessage({action: "handle_dragend", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-	
-});
-
-window.addEventListener('mousemove', e => {
-	if ( e.which !== 1 ) return;
-	
-	if ( !mb.moving ) return;
-	
-	// suppress mouse events in iframe to prevent dnd fail
-	document.body.classList.add("noMouse");
-	
-	window.parent.postMessage({action: "handle_dragmove", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
-
-mb.addEventListener('dblclick', e => {
-	if ( e.which !== 1 ) return;
-
-	window.parent.postMessage({action: "handle_dock", target: "sideBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
+addChildDockingListeners(mb, "sideBar");
 
 if ( window == top ) {
 	document.getElementById('minimizeButton').style.display = "none";

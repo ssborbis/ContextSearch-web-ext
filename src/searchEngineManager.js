@@ -529,6 +529,11 @@ function buildSearchEngineContainer() {
 				createFormContainer(_form);
 				addIconPickerListener(_form.iconPicker, li);
 				_form.addFaviconBox(getIconFromNode(node));
+
+				_form.groupColorPicker.value = _form.groupColor.value;
+				_form.groupColorPicker.onchange = (e) => {
+					_form.groupColor.value = e.target.value;
+				}
 			});	
 			
 			text.addEventListener('dblclick', e => {

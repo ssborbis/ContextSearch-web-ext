@@ -671,8 +671,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						window.quickMenuLastOffsets = o.lastOffsets;
 						
 						if ( !quickMenuObject.locked ) delete window.quickMenuLastOffsets;
+						else lockQuickMenu();
+
 					},
-					onDock: o => {}
+					onDock: o => {
+						lockQuickMenu();
+					},
+					onMoveStart: o => {}
 				});
 				
 				qmc.docking.init();
@@ -883,31 +888,4 @@ window.addEventListener('message', e => {
 	}
 });
 
-// docking event listeners for iframe
-window.addEventListener('message', e => {
-
-	if ( e.data.target !== "quickMenu" ) return;
-	
-	let qmc = getQM();
-	
-	let x = e.data.e.clientX / window.devicePixelRatio;
-	let y = e.data.e.clientY / window.devicePixelRatio;
-
-	switch ( e.data.action ) {
-		case "handle_dragstart":
-			qmc.docking.moveStart({clientX:x, clientY:y});
-			break;
-		
-		case "handle_dragend":
-			qmc.docking.moveEnd({clientX:x, clientY:y});
-			break;
-		
-		case "handle_dragmove":
-			qmc.docking.moveListener({clientX:x, clientY:y});
-			break;
-			
-		case "handle_dock":
-			qmc.docking.toggleDock();
-			break;
-	}
-});
+addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');

@@ -680,29 +680,4 @@ document.addEventListener("fullscreenchange", e => {
 	}
 });
 
-window.addEventListener('message', e => {
-
-	if ( e.data.target !== "findBar" ) return;
-	if ( !getFindBar() ) return;
-	
-	let x = e.data.e.clientX / window.devicePixelRatio;
-	let y = e.data.e.clientY / window.devicePixelRatio;
-
-	switch ( e.data.action ) {
-		case "handle_dragstart":
-			getFindBar().docking.moveStart({clientX:x, clientY:y});
-			break;
-		
-		case "handle_dragend":
-			getFindBar().docking.moveEnd({clientX:x, clientY:y});
-			break;
-		
-		case "handle_dragmove":
-			getFindBar().docking.moveListener({clientX:x, clientY:y});
-			break;
-			
-		case "handle_dock":
-			getFindBar().docking.toggleDock();
-			break;
-	}
-});
+addParentDockingListeners('CS_findBarIframe', 'findBar');

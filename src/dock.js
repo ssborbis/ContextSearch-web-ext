@@ -104,6 +104,9 @@ function makeDockable(el, options) {
 		deadzone: 4,
 		onDock: function() {},
 		onUndock: function() {},
+		onMoveStart: function() {},
+		onMove: function() {},
+		onMoveEnd: function() {},
 		windowType: 'docked',
 		dockedPosition: 'top',
 		lastOffsets: {
@@ -114,7 +117,9 @@ function makeDockable(el, options) {
 		},
 		dockedPadding: {},
 		id: el.id,
-		offsetOnScroll: true
+		offsetOnScroll: true,
+		overDiv: null,
+		zoom: 1
 	}
 	
 	let bodyElement = document.documentElement;
@@ -153,12 +158,12 @@ function makeDockable(el, options) {
 		runAtTransitionEnd(el, ["width","height","max-width","max-height","left","right","top","bottom"], () => {
 			el.style.transition = null;
 			el.getBoundingClientRect();
-		});		
+		});
 	}
 	
 	// overlay a div to capture mouse events over iframes
-	let overDiv = document.createElement('div');
-	overDiv.className = "CS_overDiv";
+	o.overDiv = document.createElement('div');
+	o.overDiv.className = "CS_overDiv";
 
 	// watch for element removal and do cleanup
 	var observer = new MutationObserver(() => {
@@ -360,10 +365,14 @@ function makeDockable(el, options) {
 	
 	function moveStart(e) {
 
+		// only iframes need zoom adjustment. Why?
+		if ( el.tagName === "IFRAME")
+			browser.runtime.sendMessage({action: "getZoom"}).then(z => o.zoom = z);
+
 		mouseDownStart = Date.now();
 
-		el.X = e.clientX;
-		el.Y = e.clientY;
+		el.X = e.x;
+		el.Y = e.y;
 		el.moving = false;
 		
 		if ( el.tagName !== "IFRAME" ) {
@@ -372,16 +381,19 @@ function makeDockable(el, options) {
 			document.addEventListener('mousemove', moveListener);
 			document.addEventListener('mouseup', moveEnd, {once: true});
 		}
+
+		o.onMoveStart(o);
 	}
 	
 	function moveEnd(e) {
+
 		document.removeEventListener('mousemove', moveListener);
 			
 		if ( !el.moving ) return;
 		
 		el.classList.remove('CS_moving');
 		
-		overDiv.parentNode.removeChild(overDiv);
+		if ( o.overDiv && o.overDiv.parentNode ) o.overDiv.parentNode.removeChild(o.overDiv);
 		
 		o.lastOffsets = getOffsets();
 		let pos = getPositions(o.lastOffsets);
@@ -396,6 +408,7 @@ function makeDockable(el, options) {
 		el.style.transition = null;
 		
 		o.onUndock(o);
+		o.onMoveEnd(o);
 	}
 
 	if ( o.handleElement && o.handleElement.tagName !== "IFRAME" ) {
@@ -408,7 +421,7 @@ function makeDockable(el, options) {
 
 		if ( !el.moving && 
 			(
-				( Math.abs( el.X - e.clientX ) < o.deadzone || Math.abs( el.Y - e.clientY ) < o.deadzone ) 
+				( Math.abs( el.X - e.x ) < o.deadzone || Math.abs( el.Y - e.y ) < o.deadzone ) 
 				&& Date.now() - mouseDownStart < 100
 			))	
 			return;
@@ -418,7 +431,7 @@ function makeDockable(el, options) {
 			// disable transitions during move
 			el.style.transition = "none";
 			
-			document.body.appendChild(overDiv);
+			document.body.appendChild(o.overDiv);
 			el.moving = true;
 			el.classList.add('CS_moving');	
 
@@ -433,20 +446,21 @@ function makeDockable(el, options) {
 		
 		let rect = el.getBoundingClientRect();
 
-		let _top = el.offsetTop - ( el.Y - e.clientY );
+		let _top = el.offsetTop - ( el.Y - e.y ) / o.zoom;
 		if ( _top < 0 ) _top = 0;
 		if ( _top + rect.height > window.innerHeight - getScrollBarHeight() ) _top = window.innerHeight - rect.height;
 
-		el.Y = e.clientY;
-		
-		let _left = el.offsetLeft - ( el.X - e.clientX );
+		let _left = el.offsetLeft - ( el.X - e.x ) / o.zoom;
 		if ( _left < 0 ) _left = 0;
 		if ( _left + rect.width > window.innerWidth - getScrollBarWidth() ) _left = window.innerWidth - rect.width - getScrollBarWidth();
 
-		el.X = e.clientX;
-
 		el.style.top = _top + "px";
 		el.style.left = _left + "px";
+
+		el.X = e.x;
+		el.Y = e.y;
+
+		o.onMove(o);
 	}
 	
 	function getPositions(r) {
@@ -470,5 +484,83 @@ function makeDockable(el, options) {
 			bottom: (window.innerHeight - r.bottom - getScrollBarHeight()) * window.devicePixelRatio
 		}
 	}
+}
 
+function addChildDockingListeners(handle, target_id) {
+
+	let deadzone = 12;
+
+	let moving = false;
+
+	handle.addEventListener('mousedown', e => {
+		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
+	})
+
+	window.addEventListener('mouseup', e => {
+		if ( e.which !== 1 ) return;
+
+		moving = false;
+		
+		document.body.classList.remove("noMouse");
+
+		delete handle.lastMouseDownCoords;
+		
+		window.parent.postMessage({action: "handle_dragend", target: target_id, e: {x: e.screenX, y: e.screenY}}, "*");
+	});
+
+	window.addEventListener('mousemove', e => {
+		if ( e.buttons !== 1 ) return;
+
+		if ( !handle.lastMouseDownCoords ) return;
+
+		if ( Math.abs(e.screenX - handle.lastMouseDownCoords.x) < deadzone && Math.abs(e.screenY - handle.lastMouseDownCoords.y) < deadzone ) return;
+
+		if ( !moving ) {
+			document.body.classList.add("noMouse");
+			moving = true;
+			window.parent.postMessage({action: "handle_dragstart", target: target_id, e: {x: e.screenX, y: e.screenY}}, "*");
+			return;
+		}
+
+		window.parent.postMessage({action: "handle_dragmove", target: target_id, e: {x: e.screenX, y: e.screenY}}, "*");
+	});
+
+	handle.addEventListener('dblclick', e => {
+		if ( e.which !== 1 ) return;
+
+		window.parent.postMessage({action: "handle_dock", target: target_id, e: {x: e.screenX, y: e.screenY}}, "*");
+	});
+}
+
+function addParentDockingListeners(id, target_id) {
+	// docking event listeners for iframe
+	window.addEventListener('message', e => {
+
+		if ( e.data.target !== target_id ) return;
+
+		let el = document.getElementById(id);
+
+		if ( !el ) return;
+		
+		let x = e.data.e.x;
+		let y = e.data.e.y;
+
+		switch ( e.data.action ) {
+			case "handle_dragstart":
+				el.docking.moveStart({x:x, y:y});
+				break;
+			
+			case "handle_dragend":
+				el.docking.moveEnd({x:x, y:y});
+				break;
+			
+			case "handle_dragmove":
+				el.docking.moveListener({x:x, y:y});
+				break;
+				
+			case "handle_dock":
+				el.docking.toggleDock();
+				break;
+		}
+	});
 }

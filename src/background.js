@@ -664,6 +664,10 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 
+		case "getZoom":
+			return browser.tabs.getZoom(sender.tab.id);
+			break;
+
 
 
 		//case "toggleDisplayMode":

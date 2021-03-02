@@ -187,27 +187,4 @@ document.getElementById('clearSearchBarButton').addEventListener('click', e => {
 	getSearchBar().focus();
 });
 
-document.getElementById('handle').addEventListener('mousedown', e => {
-	if ( e.which !== 1 ) return;
-
-	document.getElementById('handle').moving = true;
-	window.parent.postMessage({action: "handle_dragstart", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
-
-document.getElementById('handle').addEventListener('dblclick', e => {
-	window.parent.postMessage({action: "handle_dock", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
-
-window.addEventListener('mouseup', e => {
-	if ( e.which !== 1 ) return;
-
-	document.getElementById('handle').moving = false;
-	window.parent.postMessage({action: "handle_dragend", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
-
-window.addEventListener('mousemove', e => {
-	if ( e.which !== 1 ) return;
-	
-	if ( !document.getElementById('handle').moving ) return;
-	window.parent.postMessage({action: "handle_dragmove", target: "findBar", e: {clientX: e.screenX, clientY: e.screenY}}, "*");
-});
+addChildDockingListeners(document.getElementById('handle'), "findBar");

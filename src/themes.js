@@ -76,7 +76,7 @@ async function changeTheme(i) {
 
 	await setTheme(theme);
 
-	qm.setMinWidth();
+//	qm.setMinWidth();
 	resizeMenu({widgetResize: true});
 
 	userOptions.quickMenuTheme = theme.name;
