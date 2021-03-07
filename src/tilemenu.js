@@ -306,15 +306,15 @@ async function makeQuickMenu(options) {
 	
 	// enter key invokes search
 	document.addEventListener('keydown', e => {
-		if (e.key === "Enter") {
+		if ("Enter" === e.key || ( " " === e.key && e.target === qm ) ) {
 
 			let div = qm.querySelector('div.selectedFocus') || qm.querySelector('div.selectedNoFocus') || qm.querySelector('div[data-id]');
 			
 			if (!div) return;
 			
 			div.parentNode.lastMouseDownTile = div;
-			div.dispatchEvent(new MouseEvent('mouseup'));
-		}	
+			div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+		}
 	});
 
 	// tab and arrow keys move selected search engine
@@ -1517,6 +1517,7 @@ async function makeQuickMenu(options) {
 				tile = buildSearchIcon(getIconFromNode(node), node.title);
 				tile.dataset.type = 'bookmarklet';
 				tile.dataset.title = node.title;
+				tile.dataset.id = node.id;
 
 				addTileEventHandlers(tile, e => {
 					browser.runtime.sendMessage({
