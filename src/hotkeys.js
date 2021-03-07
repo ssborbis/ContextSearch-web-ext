@@ -14,12 +14,20 @@ document.addEventListener('keydown', e => {
 			e.preventDefault();
 			e.stopPropagation();
 
+			// prevent quickMenuKey opening method using keyup
+			document.addEventListener('keyup', _e => {
+				_e.preventDefault();
+				_e.stopPropagation();
+				_e.stopImmediatePropagation();
+			}, {once: true, capture: true});
+
 			let action = defaultShortcuts.find(d => d.id === s.id).action;
 
 			if ( typeof action === 'string')
 				browser.runtime.sendMessage({action: action});
 			else if ( typeof action === 'function' ) action(e);
-			return;
+			
+			return false;
 		}
 
 	}

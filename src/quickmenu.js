@@ -336,6 +336,10 @@ window.addEventListener('message', e => {
 	}
 });
 
+document.addEventListener('keydown', e => {
+	if ( e.key === 'Escape' ) closeMenuRequest();
+});
+
 // prevent docking
 // mb.addEventListener('dblclick', e => {
 // 	e.preventDefault();

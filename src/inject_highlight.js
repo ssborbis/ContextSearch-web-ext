@@ -7,6 +7,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 		markOptions = userOptions.highLight.findBar.markOptions;
 		updateFindBar(Object.assign(markOptions));
 	}
+
+	addParentDockingListeners('CS_findBarIframe', 'findBar');
 });
 
 // https://stackoverflow.com/a/11508164
@@ -104,8 +106,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			findBarSearch:true,	
 			hotkey: true
 		}, userOptions.highLight.findBar.markOptions));
-
-		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	}
 });
 
@@ -447,7 +447,7 @@ function openFindBar(options) {
 		}
 
 		makeDockable(fb, {
-			handleElement:fb,
+			handleElement:null,
 			dockedPosition: userOptions.highLight.findBar.position,
 			onDock: o => saveFindBarOptions(o),
 			onUndock: o => saveFindBarOptions(o),

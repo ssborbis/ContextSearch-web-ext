@@ -1577,10 +1577,7 @@ function buildSearchEngineContainer() {
 		});
 	}
 
-	let main_ec = document.createElement('div');
-	main_ec.style = "position:absolute;top:0;left:0;width:20px;height:1em;display:inline-block;z-index:2;cursor:pointer;user-select:none";
-	main_ec.className = "collapse";
-	main_ec.innerHTML = "<sup>+</sup>&#8260;-";
+	let main_ec = $('#collapseAll');
 	main_ec.onclick = function() {
 		if ( main_ec.expand ) {
 			table.querySelectorAll('UL .collapse').forEach(c => c.expand());
@@ -1590,8 +1587,6 @@ function buildSearchEngineContainer() {
 			main_ec.expand = true;
 		}
 	}
-	table.appendChild(main_ec);
-
 }
 
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
@@ -1693,3 +1688,18 @@ function getIconSourceFromURL(_url) {
 		return _url;
 	}
 }
+
+$('#searchEnginesManagerSearch').addEventListener('keyup', e => {
+	let labels = document.querySelectorAll('.label');
+
+	for ( let label of labels ) {
+		let li = label.closest('li');
+		li.style.display = null;
+		label.parentNode.style.display = null;
+		if ( !e.target.value ) continue;
+		if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
+			if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
+			else li.style.display = 'none';
+		}
+	}
+})

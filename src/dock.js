@@ -165,6 +165,8 @@ function makeDockable(el, options) {
 	o.overDiv = document.createElement('div');
 	o.overDiv.className = "CS_overDiv";
 
+	o.overDiv.onclick = moveEnd;
+
 	// watch for element removal and do cleanup
 	var observer = new MutationObserver(() => {
 
@@ -172,6 +174,8 @@ function makeDockable(el, options) {
 			observer.disconnect();
 			undoOffset();
 			document.removeEventListener('scroll', scrollHandler);
+			if ( o.overDiv && o.overDiv.parentNode) 
+				o.overDiv.parentNode.removeChild(o.overDiv);
 		}
 	});
 	
@@ -503,12 +507,14 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 	handle.addEventListener('mousedown', e => {	
 
 		if ( ignoreTarget(e) ) return false;
-		
+
 		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
 	});
 
 	window.addEventListener('mouseup', e => {
 		if ( e.which !== 1 ) return;
+
+		if ( !moving ) return;
 
 		moving = false;
 		
@@ -546,8 +552,8 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 }
 
 function addParentDockingListeners(id, target_id) {
-	// docking event listeners for iframe
-	window.addEventListener('message', e => {
+
+	parentDockingListener = e => {
 
 		if ( e.data.target !== target_id ) return;
 
@@ -575,5 +581,8 @@ function addParentDockingListeners(id, target_id) {
 				el.docking.toggleDock();
 				break;
 		}
-	});
+	}
+
+	// docking event listeners for iframe
+	window.addEventListener('message', parentDockingListener);
 }

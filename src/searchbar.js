@@ -1,4 +1,5 @@
 var userOptions;
+var focusSearchBar = true;
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
@@ -34,17 +35,20 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 
 	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
-	setTheme()
-		.then(() => setUserStyles())
-		.then(() => makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn}).then( qme => {
+	await setTheme();
+	await setUserStyles();
+	await makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn})
+		.then( qme => {
 			document.body.appendChild(qme);
 			
 			if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
 				document.body.appendChild(toolBar);
+		});
 
-			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
+	if ( sideBarOpenedOnSearchResults.shift() ) focusSearchBar = false;
 
-		}));
+	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 });
 
@@ -54,7 +58,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	document.body.style.display = 'block';
 		
 	// focus the searchbar on open
-	sb.focus();
+	if ( focusSearchBar ) sb.focus();
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
 	resizeMenu();
@@ -65,7 +69,8 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		let text = results.shift();
 	
 		if ( text ) sb.value = text;
-		sb.select();
+
+		if ( focusSearchBar ) sb.select();
 	})();
 
 });
@@ -192,7 +197,6 @@ function sideBarResize(options) {
 
 	if ( window == top ) return;
 
-	qm.style.whiteSpace = null;
 	qm.insertBreaks();
 
 	// simple resize when mini
@@ -232,11 +236,12 @@ function sideBarResize(options) {
 	}();
 
 	// account for scrollbars
-	qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth + "px";
+	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
+
+	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
 	toolBar.style.width = qm.style.width;
 
 	qm.removeBreaks();
-	qm.style.whiteSpace = 'normal';
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
@@ -333,4 +338,11 @@ if ( window == top ) {
 
 document.getElementById('minimizeButton').addEventListener('click', e => {
 	window.parent.postMessage({action: "minimizeSideBarRequest"}, "*");
+});
+
+document.addEventListener('keydown', e => {
+	if ( e.key === 'Escape' ) {
+		if ( window != top)
+			window.parent.postMessage({action: "minimizeSideBarRequest"}, "*");
+	}
 });

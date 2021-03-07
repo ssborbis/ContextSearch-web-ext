@@ -668,33 +668,18 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.getZoom(sender.tab.id);
 			break;
 
+		case "sideBarOpenedOnSearchResults":
 
-
-		//case "toggleDisplayMode":
-
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: `(() => {
+					let result = window.openedOnSearchResults;
+					delete window.openedOnSearchResults;
+					return result;
+				})();`
+			});
+			break;
 	}
 }
-
-// async function injectHighlighting(tabId) {
-	// let result = await browser.tabs.executeScript(tabId, {
-		// code: "typeof CS_MARK_instance !== 'undefined';"
-	// });
-	
-	// if ( !result ) return;
-	
-	// let hasInjected = result.shift();
-
-	// if ( !hasInjected ) {
-		// await browser.tabs.executeScript(tabId, {
-			// file: "lib/mark.es6.min.js",
-			// allFrames: true
-		// });
-		// await browser.tabs.executeScript(tabId, {
-			// file: "inject_highlight.js",
-			// allFrames: true
-		// });
-	// }
-// }
 
 function updateUserOptionsObject(uo) {
 	// Update default values instead of replacing with object of potentially undefined values
@@ -1322,8 +1307,11 @@ function openSearch(info) {
 	
 	// check for multiple engines (v1.27+)
 	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
-	if ( node && node.type === "searchEngine" && !info.temporarySearchEngine ) {
-		let se = userOptions.searchEngines.find(_se => _se.id === node.id );
+	if ( 
+		( node && node.type === "searchEngine" ) ||
+		( info.temporarySearchEngine && !info.noMultiURL ) // allow temporary, but not subsequent multiurl templates
+	 ) {
+		let se = info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id );
 		if (!se) return;
 		
 		// check for arrays
@@ -1335,7 +1323,7 @@ function openSearch(info) {
 				// make sure id != node id
 				if ( url === node.id ) return;
 
-				let _info = Object.assign({}, info);
+				let _info = Object.assign({noMultiURL: true}, info);
 				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 				
 				// if url and not ID
@@ -1359,6 +1347,8 @@ function openSearch(info) {
 				
 				openSearch(_info);
 			});
+			
+			notify({action: "addToHistory", searchTerms: info.searchTerms});
 			return;
 			
 		} catch (error) {
@@ -1611,7 +1601,7 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 
 	if ( userOptions.sideBar.openOnResults ) {
 		await browser.tabs.executeScript(tab.id, {
-			code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}})`,
+			code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}, openedOnSearchResults: true})`,
 			runAt: 'document_idle'
 		});
 	}

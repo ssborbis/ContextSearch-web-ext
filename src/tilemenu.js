@@ -492,7 +492,10 @@ async function makeQuickMenu(options) {
 			sb.selectedIndex+=direction;
 			
 			// skip hidden tiles by reissuing the event
-			if ( divs[sb.selectedIndex].dataset.hidden && divs[sb.selectedIndex].dataset.hidden == "true" ) {
+			if ( 
+				(divs[sb.selectedIndex].dataset.hidden && divs[sb.selectedIndex].dataset.hidden == "true")
+				|| (divs[sb.selectedIndex].node && divs[sb.selectedIndex].node.type === 'separator')
+			) {
 				qm.dispatchEvent(new e.constructor(e.type, e));
 				return;
 			}

@@ -175,7 +175,7 @@ document.addEventListener('keyup', e => {
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnKey
 	) return false;
-	
+
 	if (Date.now() - quickMenuObject.keyDownTimer < 250)
 		openQuickMenu(e);
 	
@@ -647,16 +647,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}
 				
 				const borderOffset = 0;
-				const resizeWidgetOffset = 8.0;
 
-				let initialOffsetX = Math.max(0, Math.min(coords.x - borderOffset + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio - resizeWidgetOffset - getScrollBarWidth()));
+				let initialOffsetX = Math.max(0, Math.min(coords.x - borderOffset + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarWidth()));
 				
-				let initialOffsetY = Math.max(0, Math.min(coords.y - borderOffset + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio - resizeWidgetOffset - getScrollBarHeight()));
+				let initialOffsetY = Math.max(0, Math.min(coords.y - borderOffset + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarHeight()));
 
 				makeDockable(qmc, {
 					windowType: "undocked",
 					dockedPosition: "left",
-					handleElement: qmc,
+					handleElement:null,
 					lastOffsets: window.quickMenuLastOffsets || {
 						left: Math.floor(initialOffsetX * window.devicePixelRatio),
 						right: Number.MAX_SAFE_INTEGER,
@@ -683,7 +682,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.docking.init();
 
 				setTimeout(() => { 
-					repositionOffscreenElement( qmc, {left:0, right:resizeWidgetOffset, top:0, bottom:resizeWidgetOffset} ); 
+					repositionOffscreenElement( qmc, {left:0, right:0, top:0, bottom:0} ); 
 				}, 250);
 
 				_message = message;
@@ -748,17 +747,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 function installResizeWidget() {
 
-	let qmc = getQM();
-	let columns = qmc.columns;
-	let tileCount = qmc.tileCount;
-	let tileSize = qmc.tileSize;
+	let iframe = getQM();
+	let columns = iframe.columns;
+	let tileCount = iframe.tileCount;
+	let tileSize = iframe.tileSize;
 
-	let resizeWidget = addResizeWidget(qmc, {
+	let resizeWidget = addResizeWidget(iframe, {
 		tileSize: tileSize,
 		columns: columns,
 		rows: Math.ceil(tileCount / columns ),
 		onDragStart: o => {
-			qmc.docking.translatePosition('top', 'left');
+			iframe.docking.translatePosition('top', 'left');
 		},
 		onDrag: o => {
 
@@ -776,23 +775,23 @@ function installResizeWidget() {
 			}
 
 			// rebuild menu with new dimensions
-			qmc.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
+			iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
 		},
 		onDrop: o => {
 
 			resizeWidget.style.visibility = null;
 			
 			// resize changes the offsets
-			qmc.docking.options.lastOffsets = qmc.docking.getOffsets();
+			iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
 			
 			// reset the fixed quadrant
-			qmc.style.transition = 'none';
-			let position = qmc.docking.getPositions(qmc.docking.options.lastOffsets);
-			qmc.docking.translatePosition(position.v, position.h);
-			qmc.style.transition = null;
+			iframe.style.transition = 'none';
+			let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
+			iframe.docking.translatePosition(position.v, position.h);
+			iframe.style.transition = null;
 				
 			// resize the menu again to shrink empty rows					
-			qmc.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
+			iframe.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
 
 			// save prefs
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
@@ -800,7 +799,7 @@ function installResizeWidget() {
 	});
 
 //	resizeWidget.style.opacity = 1;
-	qmc.classList.add('CS_resizing');
+	iframe.classList.add('CS_resizing');
 	resizeWidget.classList.add("editQuickMenu");
 	
 	// hide the widget until the menu is done transitioning
@@ -811,7 +810,7 @@ function installResizeWidget() {
 		resizeWidget.style.zIndex = null;
 	}, 500);
 
-	qmc.resizeWidget = resizeWidget;
+	iframe.resizeWidget = resizeWidget;
 	
 	// qmc.classList.add("webkitBorderRadiusFix"); // prevented drop shadow
 	document.addEventListener('closequickmenu', removeResizeWidget, {once: true});

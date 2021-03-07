@@ -15,7 +15,7 @@
 	background-color:transparent;
 	opacity:0;
 }
-#CS_sbOpeningTab.CS_moving , #CS_sbIframe.CS_moving {
+#CS_sbOpeningTab.CS_moving , #CS_sbIframe.CS_moving, #CS_quickMenuIframe.CS_moving {
 	border: 2px dashed #9abad2;
 }
 #CS_sbOpeningTab {

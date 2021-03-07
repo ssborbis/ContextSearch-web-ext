@@ -94,6 +94,8 @@ function openSideBar(options) {
 	
 	options = options || {};
 
+	window.openedOnSearchResults = options.openedOnSearchResults || false;
+
 	if ( options.minimized ) {
 		closeSideBar(true);
 		return;
