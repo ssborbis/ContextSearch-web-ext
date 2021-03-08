@@ -176,6 +176,8 @@ document.addEventListener('keyup', e => {
 		!userOptions.quickMenuOnKey
 	) return false;
 
+	if ( e.ctrlKey || e.shiftKey || e.altKey || e.metaKey ) return false;
+
 	if (Date.now() - quickMenuObject.keyDownTimer < 250)
 		openQuickMenu(e);
 	
@@ -390,8 +392,14 @@ document.addEventListener('mousedown', e => {
 		word = getWord(textNode.textContent, offset);
 
 	if ( userOptions.quickMenuOnSimpleClick.useInnerText && !word ) {
-		e.target.classList.add('CS_invert');
-		setTimeout(() => e.target.classList.remove('CS_invert'), 250);
+		
+		let rect = e.target.getBoundingClientRect();
+
+		let flash = document.createElement('div');
+		flash.className = 'CS_highlightTextBlock';
+		flash.style = `top:${rect.top}px;left:${rect.left}px;width:${rect.width}px;height:${rect.height}px;`
+		document.body.appendChild(flash);
+		setTimeout(() => flash.parentNode.removeChild(flash), 250);
 
 		document.addEventListener('mouseup', _e => {
 			

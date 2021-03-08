@@ -1689,8 +1689,29 @@ function getIconSourceFromURL(_url) {
 	}
 }
 
+document.addEventListener('keydown', e => {
+	if ( e.key === 'f' && e.ctrlKey ) {
+		e.preventDefault();
+		$('#searchEnginesManagerSearch').focus();
+		$('#searchEnginesManagerSearch').scrollIntoView();
+	}
+});
+
 $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
+
 	let labels = document.querySelectorAll('.label');
+
+	if ( e.key === "Escape" ) {
+		labels.forEach( label => {
+			let li = label.closest('li');
+			li.style.display = null;
+			label.parentNode.style.display = null;
+		});
+
+		e.target.value = null;
+
+		return;
+	}
 
 	for ( let label of labels ) {
 		let li = label.closest('li');

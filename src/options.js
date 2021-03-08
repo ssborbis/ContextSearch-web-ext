@@ -1133,7 +1133,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					}
 
 					userOptions = _uo;
-					await saveOptions();
+					await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
 					location.reload();
 				});
 

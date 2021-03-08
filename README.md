@@ -428,7 +428,7 @@ ___
 |`{domain}`|on `http://www.example.com/this/path`<br>replaced with<br>`example.com`|
 |`{subdomain}`|on `http://www.example.com/this/path/`<br>replaced with <br>`www.example.com`|
 |`{selectdomain}`|Engine becomes a folder with all subdomains and paths listed separately<br><br>on `http://www.example.com/this/path/`<br>replaced with <br>`example.com`<br>`www.example.com`<br> `www.example.com/this`<br>`www.example.com/this/path`|
-|`["url1", "url2", ...]`|Array of templates can be used in place of a single template to search multiple sites at once<br><br>example: `["https://google.com/search?q={searchTerms}", "https://bing.com/search?q={searchTerms}"]`<br><br>Use a well-formed, JSON.stringify-able array|
+|`["url1", "url2", ...]`|Array of templates can be used in place of a single template to search multiple sites at once<br><br>example: `["https://google.com/search?q={searchTerms}", "https://bing.com/search?q={searchTerms}"]`<br><br>Use a well-formed, JSON.stringify-able array<br><br>If search engines require a different encoding, add `{encoding=...}` to specify, i.e. `https://example.com/search?q={searchTerms}{encoding=gbk}` or `https://example.com/search?q={searchTerms}{encoding=shift_js}`|
 
 ___
 
