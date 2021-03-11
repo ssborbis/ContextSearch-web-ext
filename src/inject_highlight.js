@@ -6,9 +6,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
 	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
 		markOptions = userOptions.highLight.findBar.markOptions;
 		updateFindBar(Object.assign(markOptions));
+
+		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	}
 
-	addParentDockingListeners('CS_findBarIframe', 'findBar');
 });
 
 // https://stackoverflow.com/a/11508164

@@ -724,6 +724,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					}
 				}
 
+				// capture next selection to prevent some elements clearing the searchTerms
+				document.addEventListener('selectionchange', e => {
+					e.stopPropagation();
+					e.preventDefault();
+				}, {once: true, capture: true});
+
 				break;
 
 			case "editQuickMenu":
@@ -895,4 +901,6 @@ window.addEventListener('message', e => {
 	}
 });
 
-addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
+if ( window == top )
+	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
+
