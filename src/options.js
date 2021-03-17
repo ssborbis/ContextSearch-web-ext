@@ -1003,15 +1003,21 @@ function showInfoMsg(el, msg) {
 	let tag = parsed.getElementsByTagName('body')[0];
 				
 	div.innerHTML = null;
+	let point = document.createElement('div');
+	point.className = 'point';
+	div.appendChild(point);
 	div.appendChild(tag.firstChild);
 
-	div.style.top = el.getBoundingClientRect().top + window.scrollY + 10 + 'px';
-	div.style.left = el.getBoundingClientRect().left + window.scrollX + 20 + 'px';
+	let rect = el.getBoundingClientRect()
+
+	div.style.top = rect.top + window.scrollY + 26 + 'px';
+	div.style.left = rect.left + rect.width / 2 + window.scrollX - 16 + 'px';
 	
-	if (el.getBoundingClientRect().left > ( window.innerWidth - 220) )
+	if (rect.left > ( window.innerWidth - 220) )
 		div.style.left = parseFloat(div.style.left) - 230 + "px";
 	
 	div.style.display = 'block';
+
 }
 
 // set up info bubbles
@@ -1022,11 +1028,11 @@ document.addEventListener("DOMContentLoaded", () => {
 	for (let el of i18n_tooltips) {
 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
 		
-		el.addEventListener('mouseover', e => {
+		el.addEventListener('mouseenter', e => {
 			showInfoMsg(el, el.dataset.msg);
 		});
 		
-		el.addEventListener('mouseout', e => {
+		el.addEventListener('mouseleave', e => {
 			$('#info_msg').style.display = 'none';
 		});
 	}
@@ -1577,5 +1583,16 @@ function shortcutListener(hk, options) {
 		}, {once: true});
 	});	
 }
+
+// sort advanced
+document.addEventListener('DOMContentLoaded', e => {
+	let table = $('#advancedSettingsTable');
+	let trs = table.querySelectorAll('tr');
+	trs = [...trs].sort((a,b) => {
+		return a.querySelector('td').innerText > b.querySelector('td').innerText ? 1 : -1;
+	});
+	table.innerHTML = null;
+	trs.forEach( tr => table.appendChild(tr));
+})
 
 

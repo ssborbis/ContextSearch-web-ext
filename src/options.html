@@ -428,10 +428,24 @@
 				max-width:200px;
 				width:auto;
 				font-size:10pt;
-				background-color:#FEFEFE;
-				border:1px solid #9abad2;
+				background-color:var(--bg-color1);
+				border:1px solid var(--selected);
 				box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
 				text-align:left;
+			}
+
+			#info_msg .point {
+				background-color:inherit;
+				z-index:-1;
+				display:inline-block;
+				width:16px;
+				height:16px;
+				transform:rotate(45deg);
+				position:absolute;
+				top:-8.5px;
+				left:10px;
+				border:inherit;
+				border-width:1px 0px 0px 1px;
 			}
 			
 			 /* Style the tab */
@@ -1057,6 +1071,9 @@
 			#advancedSettingsTable TR > TD:nth-child(1) {
 				width:99%;
 			}
+			#advancedSettingsTable TR:hover {
+				background-color:#ddd;
+			}
 			#folderFormTable {
 				width:100%;
 			}
@@ -1483,7 +1500,7 @@
 						<td>&nbsp;</td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Browse to your profile folder and select your search.json.mozlz4 file. You will be prompted with two files: a new search.json.mozlz4 file and a backup of your original file. Save both files to your profile directory. Restart Firefox to see the changes.">Export to Firefox search</td>
+						<td data-i18n_tooltip="Browse to your profile folder and select your search.json.mozlz4 file. You will be prompted with two files: a new search.json.mozlz4 file and a backup of your original file. Save both files to your profile directory. Restart Firefox to see the changes.">export to Firefox search</td>
 						<td>
 							<label for="replaceMozlz4FileButton" class="fileUpload" style="font-size:8pt" data-i18n="ImportSelectFile">
 							<img src="/icons/import.svg" style="height:10px" />
@@ -1493,15 +1510,10 @@
 						</td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="cache search engine icons from their URLs">cache icons</td>
+						<td >iconCache</td>
 						<td>
-							<button id="b_cacheIcons"> run </button>
-						</td>
-					</tr>
-					<tr>
-						<td data-i18n_tooltip="Delete search engine icon cache for search engines containing icon URLs. Warning: bad URLs will not be checked">uncache icons</td>
-						<td>
-							<button id="b_uncacheIcons"> run </button>
+							<button id="b_cacheIcons" data-i18n_tooltip="cache search engine icons from their URLs">cache</button> / 
+							<button id="b_uncacheIcons" data-i18n_tooltip="Delete search engine icon cache only for search engines containing icon URLs. Warning: URLs will not be checked for bad or invalid before removing cache">uncache</button>
 						</td>
 					</tr>
 					</table>

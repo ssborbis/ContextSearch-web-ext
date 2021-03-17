@@ -20,3 +20,6 @@
 a, a:link, a:visited, a:active {
 	color: var(--selected);
 }
+#advancedSettingsTable TR:hover {
+	background-color:#444;
+}
