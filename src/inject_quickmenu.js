@@ -112,7 +112,7 @@ function makeQuickMenuContainer(coords) {
 	qmc.allowTransparency = true;
 	
 	qmc.openingCoords = coords;
-	
+
 	document.body.appendChild(qmc);
 
 	qmc.src = browser.runtime.getURL('quickmenu.html');
@@ -354,7 +354,7 @@ document.addEventListener('mouseup', e => {
 		!quickMenuObject.mouseDownTimer ||
 		( getSelectedText(e.target) === "" && !linkOrImage(e.target, e) )
 	) return false;
-	
+
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	e.stopPropagation();
@@ -586,10 +586,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 			case "updateSearchTerms":
 
-				// only update if quickmenu is opened and locked OR using IFRAME popup to avoid unwanted behavior
-				if (quickMenuObject.locked || document.title === "QuickMenu" || getQM()) {
+				// only update if quickmenu is opened and locked
+				if (quickMenuObject.locked || getQM()) {
 					quickMenuObject.searchTerms = message.searchTerms;
-					
+
 					// send event to OpenAsLink tile to enable/disable
 					document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
@@ -862,8 +862,10 @@ function quickMenuResize(e) {
 
 		if ( e.data.size.height <= getMaxIframeHeight() )
 			iframe.style.height = e.data.size.height + "px"; 
-		else 
+		else {
 			console.warn('height exceeds window - bad resizeMenu');
+			iframe.style.height = getMaxIframeHeight() + "px";
+		}
 	}
 
 	if ( e.data.size.width ) 					

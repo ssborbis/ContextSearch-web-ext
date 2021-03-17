@@ -31,6 +31,7 @@ function isTextBox(element) {
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
+
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
 	
 	let searchTerms = window.getSelection().toString();
