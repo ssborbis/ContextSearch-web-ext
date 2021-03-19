@@ -1019,7 +1019,7 @@ function buildSearchEngineContainer() {
 			
 			if ( !selectedRows.length ) selectedRows.push(li);
 			
-			if ( selectedRows.length > 1 || li.node.children ) {
+		//	if ( selectedRows.length > 1 || li.node.children ) {
 				
 				let msgDiv = document.createElement('div');
 				let msgDivHead = document.createElement('div');
@@ -1077,9 +1077,7 @@ function buildSearchEngineContainer() {
 				document.body.appendChild(_menu);
 				openMenu(_menu);
 				
-			} else {
-				removeNodesAndRows();
-			}
+		//	}
 			
 			async function removeNodesAndRows() {
 
