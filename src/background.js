@@ -723,6 +723,11 @@ function loadUserOptions() {
 async function buildContextMenu() {
 
 	window.contextMenuSelectDomainMenus = [];
+
+	let contexts = ["selection", "page"];
+
+	if ( userOptions.contextMenuOnImages) contexts.push("image");
+	if ( userOptions.contextMenuOnLinks) contexts.push("link");
 	
 	function onCreated() {
 
@@ -733,7 +738,7 @@ async function buildContextMenu() {
 	
 	function addMenuItem( createOptions ) {
 
-		createOptions.contexts = createOptions.contexts || ["selection", "link", "image", "page"];
+		createOptions.contexts = createOptions.contexts || contexts;
 
 		try {
 			browser.contextMenus.create( createOptions, onCreated);
@@ -756,7 +761,7 @@ async function buildContextMenu() {
 	browser.contextMenus.create({
 		id: "search_engine_menu",
 		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith"),
-		contexts: ["selection", "link", "image", "page"]
+		contexts: contexts
 	});
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));

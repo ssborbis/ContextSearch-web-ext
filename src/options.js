@@ -151,6 +151,8 @@ function restoreOptions() {
 		$('#b_contextMenuKey').value = userOptions.contextMenuKey;	
 		$('#b_contextMenuKey').innerText = keyCodeToString(userOptions.contextMenuKey) || browser.i18n.getMessage('ClickToSet');
 		$('#s_contextMenuSearchLinksAs').value = userOptions.contextMenuSearchLinksAs;
+		$('#cb_contextMenuOnLinks').checked = userOptions.contextMenuOnLinks;
+		$('#cb_contextMenuOnImages').checked = userOptions.contextMenuOnImages;
 		
 		$('#r_quickMenuOnKey').checked = userOptions.quickMenuOnKey;
 				
@@ -453,6 +455,8 @@ function saveOptions(e) {
 		},
 		
 		contextMenu: $('#cb_contextMenu').checked,
+		contextMenuOnLinks: $('#cb_contextMenuOnLinks').checked,
+		contextMenuOnImages: $('#cb_contextMenuOnImages').checked,
 		
 		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
 		quickMenuToolsAsToolbar: $('#cb_quickMenuToolsAsToolbar').checked,

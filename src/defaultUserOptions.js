@@ -45,6 +45,8 @@ const defaultUserOptions = {
 	contextMenuKey: 0,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
+	contextMenuOnLinks: true,
+	contextMenuOnImages: true,
 	quickMenuBookmarks: false,
 	quickMenuTools: [
 		{name: 'lastused', 		disabled: false},
