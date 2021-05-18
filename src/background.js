@@ -13,7 +13,7 @@ async function notify(message, sender, sendResponse) {
 		let onFound = tabs => sender.tab = tabs[0];
 		let onError = err => console.error(err);
 		
-		sender.tab = await browser.tabs.query({currentWindow: true, active: true});
+		await browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
 	}
 
 	switch(message.action) {
@@ -106,10 +106,13 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "toggleLockQuickMenu":
+			onFound = () => {}
+			onError = () => {}
+
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: 'if ( quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
 				allFrames:false
-			});
+			}).then(onFound, onError);
 			break;
 			
 		case "rebuildQuickMenu":
@@ -165,9 +168,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "getFindBarOpenStatus":
+			onFound = () => {}
+			onError = () => {}
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getFindBar() ? true : false;"
-			});
+			}).then(onFound, onError);
 			break;
 
 		case "mark":
@@ -206,23 +211,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getOpenSearchLinks":
+
+			onFound = results => results.shift();
+			onError = results => null;
 		
-		//	let tab = await browser.tabs.query({currentWindow: true, active: true});
-			try {
-				let results = await browser.tabs.executeScript( sender.tab.id, {
-					code: `
-						(() => {
-							let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
-							if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
-						})()`
-				});
-				
-				results = results.shift();
-				return results;
-			} catch (err) { 
-				console.error(err);
-				return null;
-			}
+			return await browser.tabs.executeScript( sender.tab.id, {
+				code: `
+					(() => {
+						let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
+						if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
+					})()`
+			}).then(onFound, onError);
 
 			break;
 
@@ -541,15 +540,21 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "showNotification":
+			onFound = () => {}
+			onError = () => {}
+
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: `showNotification("${message.msg}")`
-			});
+			}).then(onFound, onError);
 			break;
 			
 		case "getTabQuickMenuObject":
+			onFound = () => {}
+			onError = () => {}
+
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: `quickMenuObject;`
-			});
+			}).then(onFound, onError);;
 			break;
 		
 		case "addToHistory":
@@ -594,11 +599,14 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "injectComplete":
+			onFound = () => {}
+			onError = () => {}
+
 			if ( userOptions.quickMenu ) {
 				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_quickmenu.js",
 					frameId: sender.frameId
-				});
+				}).then(onFound, onError);
 				
 				console.log("injected quickmenu");
 			}
@@ -607,7 +615,7 @@ async function notify(message, sender, sendResponse) {
 				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_pagetiles.js",
 					frameId: sender.frameId
-				});
+				}).then(onFound, onError);
 				
 				console.log("injected pagetiles");
 			}
@@ -623,9 +631,12 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getSelectedText":
+			onFound = () => {}
+			onError = () => {}
+
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getSelectedText(document.activeElement);"
-			});	
+			}).then(onFound, onError);	
 			break;
 
 		case "addUserStyles":
@@ -683,21 +694,17 @@ async function notify(message, sender, sendResponse) {
 
 		case "sideBarOpenedOnSearchResults":
 
-			// restricted pages throw anonymous errors from searchbar.js (pageAction)
-			try {
-				let result = await browser.tabs.executeScript(sender.tab.id, {
-					code: `(() => {
-						let result = window.openedOnSearchResults;
-						delete window.openedOnSearchResults;
-						return result;
-					})();`
-				});
+			onFound = results => results;
+			onError = results => null;
+			
+			return await browser.tabs.executeScript(sender.tab.id, {
+				code: `(() => {
+					let result = window.openedOnSearchResults;
+					delete window.openedOnSearchResults;
+					return result;
+				})();`
+			}).then( onFound, onError);
 
-				return result;
-			} catch (err) {
-				console.error(err);
-				return null;
-			}
 			break;
 
 		case "injectContentScripts":
@@ -1034,7 +1041,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	function onFound(tabs) {
 		let tab = tabs[0];
 		
-		if ( tabId === tab.id && changeInfo.url && changeInfo.url !== "about:blank" ) 
+		if ( tab && tab.id && tabId === tab.id && changeInfo.url && changeInfo.url !== "about:blank" ) 
 			updateSelectDomainMenus(tab);
 	}
 	
@@ -2125,9 +2132,13 @@ browser.runtime.onInstalled.addListener( details => {
 
 // trigger zoom event
 browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
+
+	onFound = () => {}
+	onError = () => {}
+
 	browser.tabs.executeScript( zoomChangeInfo.tabId, {
 		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
-	});
+	}).then(onFound, onError);
 });
 
 // note: returns a promise to loadRemoteIcons
@@ -2306,6 +2317,9 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 })
 
 function injectContentScripts(tab) {
+
+	onFound = () => {}
+	onError = () => {}
 	[
 		"/lib/browser-polyfill.min.js",
 		"/lib/crossbrowser.js",
@@ -2315,8 +2329,8 @@ function injectContentScripts(tab) {
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js"
-	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, allFrames: true, matchAboutBlank:false}))
-	browser.tabs.insertCSS(tab.id, {file: "/inject.css", allFrames: true, matchAboutBlank:false});
+	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, allFrames: true, matchAboutBlank:false}).then(onFound, onError))
+	browser.tabs.insertCSS(tab.id, {file: "/inject.css", allFrames: true, matchAboutBlank:false}).then(onFound, onError);
 
 	[
 		"/utils.js",
@@ -2327,6 +2341,6 @@ function injectContentScripts(tab) {
 		"/inject_sidebar.js",
 		"/inject_customSearch.js",
 		"/resizeWidget.js"
-	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, allFrames: false, matchAboutBlank:false}))
-	browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", allFrames: false, matchAboutBlank:false});
+	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, allFrames: false, matchAboutBlank:false}).then(onFound, onError))
+	browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", allFrames: false, matchAboutBlank:false}).then(onFound, onError);
 }
