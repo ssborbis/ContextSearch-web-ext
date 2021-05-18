@@ -644,8 +644,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 });
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions || {};
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

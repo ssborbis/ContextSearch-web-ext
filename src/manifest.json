@@ -36,42 +36,7 @@
 		"page": "options.html",
 		"open_in_tab": true
 	},
-	
-	"content_scripts": [
-		{
-			"matches": ["<all_urls>"],
-			"js": [
-				"lib/browser-polyfill.min.js",
-				"lib/crossbrowser.js",
-				"inject.js",
-				"lib/mark.es6.min.js",
-				"inject_highlight.js",
-				"hotkeys.js",
-				"defaultShortcuts.js",
-				"dragshake.js"
-			],
-			"css": ["inject.css"],
-			"all_frames": true,
-			"match_about_blank": false
-		},
-		{
-			"matches": ["<all_urls>"],
-			"js": [
-				"utils.js",
-				"nodes.js",
-				"opensearch.js",
-				"searchEngineUtils.js",
-				"dock.js",
-				"inject_sidebar.js",
-				"inject_customSearch.js",
-				"resizeWidget.js"
-			],
-			"css": ["inject_sidebar.css"],
-			"all_frames": false,
-			"match_about_blank": false
-		}
-	],
-	
+		
 	"permissions": [
 		"<all_urls>",
 		"activeTab",

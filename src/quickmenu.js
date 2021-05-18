@@ -20,14 +20,13 @@ async function makeFrameContents() {
 	
 	makeSearchBar();
 
-	// needed for flexible tools bar 
-	qm.insertBreaks();
-	toolBar.style.width = qm.getBoundingClientRect().width + "px";
-
 	if ( userOptions.quickMenuSearchBar === 'hidden') {
 		sbc.style.display = 'none';
 		sbc.style.height = '0';
 	}
+
+	// get proper sizing for opening position
+	setMenuSize();
 
 	document.getElementById('closeButton').addEventListener('click', e => {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
@@ -66,38 +65,47 @@ async function makeFrameContents() {
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
 
-function resizeMenu(o) {
-
-	qm.setDisplay();
-	qm.insertBreaks();
-	qm.style.whiteSpace = null;
-	
+function setMenuSize(o) {
 	o = o || {};
-	
-	let scrollTop = qm.scrollTop;
-	let sgScrollTop = sg.scrollTop;
-	
+
+	maxHeight = o.maxHeight || maxHeight;
+
 	let tileSize = qm.getTileSize();
 
-	window.addEventListener('message', function resizeDoneListener(e) {
-		if ( e.data.action && e.data.action === "resizeDone" ) {
-			qm.scrollTop = scrollTop;
-			sg.scrollTop = sgScrollTop;
-			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-			window.removeEventListener('message', resizeDoneListener);
-			document.dispatchEvent(new CustomEvent('resizeDone'));
-		}
-	});
-
-	let initialHeight = tileSize.height * ((qm.singleColumn) ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows);
-	maxHeight = o.maxHeight || maxHeight || Number.MAX_SAFE_INTEGER;
+	qm.style.transition = 'none';
+	document.body.style.transition = 'none';
+	qm.insertBreaks();
 
 	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
 
 	qm.style.height = null;
-	qm.style.overflowY = null;
+	qm.style.overflow = null;
 	qm.style.width = null;
-	sg.style.width = null;
+	document.body.style.width = '9999px';
+	document.body.style.height = '9999px';
+
+	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
+	
+	if ( !o.more ) {
+		let toolBarMore = toolBar.querySelector('[data-type="more"]');
+		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
+			t.dataset.hidden = false;
+			t.style.display = null;
+		})
+
+		if ( toolBarMore ) toolBar.removeChild(toolBarMore);
+
+		makeContainerMore(toolBar, 1, false);
+
+		// qm.querySelectorAll('group').forEach( g => {
+		// 	if ( g.style.display != 'block') return;
+
+		// 	let c = g.querySelector('container');
+		// 	if ( c ) makeContainerMore(c, 1);
+		// })
+	}
+
+	//if ( !o.more ) makeContainerMore(toolBar, 1, false);
 
 	let allOtherElsHeight = getAllOtherHeights();
 
@@ -106,9 +114,8 @@ function resizeMenu(o) {
 	else if ( o.suggestionsResize ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";
 	else if ( o.openFolder || o.toggleSingleColumn ) 
-	//	qm.style.height = Math.min( qm.getBoundingClientRect().height, initialHeight ) + "px";
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
-	else if ( o.quickMenuMore || o.groupMore ) 
+	else if ( o.more ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";	
 	else if ( o.widgetResize )
 		qm.style.height = tileSize.height * o.rows + "px";
@@ -116,13 +123,39 @@ function resizeMenu(o) {
 		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
 	
 	if ( qm.getBoundingClientRect().height > maxHeight - allOtherElsHeight )
-		qm.style.height = Math.floor(maxHeight - allOtherElsHeight) + "px";
+		qm.style.height = Math.ceil(maxHeight - allOtherElsHeight) + "px";
 
-	let scrollbarWidth = qm.offsetWidth - qm.clientWidth;
-	qm.style.width = qm.clientWidth + scrollbarWidth + "px";
-	//qm.style.width = tileSize.width * qm.columns - qm.columns + scrollbarWidth + "px";
-	//qm.style.width = qm.scrollWidth + qm.offsetWidth - qm.clientWidth  + "px";
-	toolBar.style.width = qm.style.width;
+	let scrollbarWidth = qm.offsetWidth - qm.clientWidth; // account for fractions
+
+	qm.style.width = Math.ceil(qm.getBoundingClientRect().width + scrollbarWidth) + "px";
+
+	document.body.style.height = null;
+	document.body.style.width = null;
+
+	qm.removeBreaks();
+
+	qm.style.transition = null;
+	document.body.style.transition = null;
+
+	console.log(qm.style.height, getAllOtherHeights(), window.innerHeight, maxHeight);
+}
+
+function resizeMenu(o) {
+
+	let scrollTop = qm.scrollTop;
+	let sgScrollTop = sg.scrollTop;
+	
+	let tileSize = qm.getTileSize();
+
+	window.addEventListener('message', function resizeDoneListener(e) {
+		if ( e.data.action && e.data.action === "resizeDone" ) {
+			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+			window.removeEventListener('message', resizeDoneListener);
+			document.dispatchEvent(new CustomEvent('resizeDone'));
+		}
+	});
+
+	setMenuSize(o);
 
 	qm.scrollTop = scrollTop;
 	sg.scrollTop = sgScrollTop;
@@ -130,8 +163,8 @@ function resizeMenu(o) {
 	window.parent.postMessage({
 		action: "quickMenuResize",
 		size: {
-			width:  qm.offsetWidth, 
-			height: document.body.getBoundingClientRect().height
+			width: qm.getBoundingClientRect().width, 
+			height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
 		},
 		singleColumn: qm.singleColumn,
 		tileSize: tileSize,
@@ -139,8 +172,8 @@ function resizeMenu(o) {
 		columns: qm.columns
 	}, "*");
 
-	qm.removeBreaks();
-	qm.style.whiteSpace = 'normal';
+//	qm.style.width = null;
+//	qm.style.height = null;
 }
 
 function closeMenuRequest() {
@@ -150,21 +183,14 @@ function closeMenuRequest() {
 
 function toolsHandler() {
 
-	let getVisibleTiles = () => { 
-		return [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( tile => tile.style.display !== 'none' );
-	}
-	
 	let moreTileID = userOptions.nodeTree.id;
-	
-	if ( ! userOptions.quickMenuToolsAsToolbar && qm.rootNode.parent ) return; // has parent = subfolder
-	
-	let position = userOptions.quickMenuToolsPosition;
-
 	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
 	
 	if ( moreTile ) moreTile.parentNode.removeChild( moreTile );
 	
-//	qm.toolsArray.forEach( tool => tool.classList.remove('singleColumn'));
+	if ( ! userOptions.quickMenuToolsAsToolbar && qm.rootNode.parent ) return; // has parent = subfolder
+	
+	let position = userOptions.quickMenuToolsPosition;
 	
 	if ( userOptions.quickMenuToolsAsToolbar && position !== 'hidden' )
 		createToolsBar(qm);
@@ -174,11 +200,11 @@ function toolsHandler() {
 	}
 
 	// unhide tiles hidden by more tile
-	qm.querySelectorAll('.tile[data-grouphidden]').forEach( tile => {
+	qm.querySelectorAll('.tile[data-morehidden]').forEach( tile => {
 		if ( tile.moreTile && tile.moreTile.dataset.parentid === moreTileID ) {
 			delete tile.dataset.hidden;
 			tile.style.display = null;
-			delete tile.dataset.grouphidden;
+			delete tile.dataset.morehidden;
 		}
 	});
 
@@ -187,66 +213,85 @@ function toolsHandler() {
 		qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
 	}
 
-	let visibleTileCountMax = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows * userOptions.quickMenuColumns;
-	
 	// hide tools
 	if ( !userOptions.quickMenuToolsAsToolbar && position === 'hidden' )
 		qm.toolsArray.forEach( _div => qm.removeChild(_div) );
 
-	// more tile
-	if ( getVisibleTiles().length > visibleTileCountMax && !qm.rootNode.parent ) {
+	qm.insertBreaks();
 
-		let tileArray = qm.querySelectorAll('.tile');
-		tileArray = qm.makeMoreLessFromTiles([...tileArray], visibleTileCountMax);
-		
-		// remove separator bookends
-		tileArray.pop();
-		tileArray.shift();
-		
-		// remove group label for root
-		if ( tileArray[0].className === "groupFolder" )
-			tileArray.shift();
+	let rows = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows;
+	let lastBreak = qm.getElementsByTagName('br').item(rows);
 
-		// replace qm
-		qm.innerHTML = null;
-		tileArray.forEach( tile => qm.appendChild( tile ) );
+	if ( lastBreak ) {
 
-		// qm moreTile is special case
-		moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
-		
-		if ( moreTile ) {
-			moreTile.classList.add('tile');
-			moreTile.dataset.quickmenumore = true;
-		}
+		(() => {
 
-		let visibleTiles = getVisibleTiles().filter( tile => ! ( tile.dataset.parentid && tile.dataset.parentid === moreTileID ) );
-		
-		for ( let i=visibleTileCountMax;i<visibleTiles.length;i++) {
-			let _div = visibleTiles[i];
-			_div.dataset.hidden = "true";
-			_div.style.display = "none";
-			_div.dataset.grouphidden = "true";
-			_div.moreTile = moreTile;
-		}
-		
-		if ( !userOptions.quickMenuToolsAsToolbar) {
-			if ( userOptions.quickMenuToolsPosition === 'bottom' )
-				qm.toolsArray.forEach(tool => qm.appendChild(tool));
-			else if ( userOptions.quickMenuToolsPosition === 'top' )
-				qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
-		}
-		
-		// move moreTile to end
-		if ( moreTile) qm.appendChild(moreTile);
+			let visibleElements = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"]), BR')].filter( tile => tile.style.display !== 'none' );
+
+			let breakIndex = visibleElements.indexOf(lastBreak);
+
+			let lastVisible;
+			for ( let i=breakIndex;i>-1;i--) {
+				if ( visibleElements[i].classList.contains('tile')) {
+					lastVisible = visibleElements[i];
+					break;
+				}
+			}
+			
+			qm.removeBreaks();
+
+			let visibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"])')].filter( tile => tile.style.display !== 'none' );
+
+			let index = visibleTiles.indexOf(lastVisible);
+			let tileArray = visibleTiles.slice(index + 1, visibleTiles.length);
+
+			tileArray = qm.makeMoreLessFromTiles(tileArray, 1);
+
+			if ( !tileArray ) return;
+			
+			moreTile = tileArray.pop();
+
+			if ( !moreTile ) return;
+
+			for ( let i=index + 1;i<visibleTiles.length;i++) {
+				let el = visibleTiles[i];
+				el.dataset.hidden = "true";
+				el.style.display = "none";
+				el.dataset.morehidden = "true";
+				el.moreTile = moreTile;
+				//el.style.backgroundColor = null;
+			}
+
+			moreTile.classList.add('quickMenuMore');
+			moreTile.classList.remove('tile');
+			moreTile.dataset.parentid = moreTileID;
+		})();
+	}
+
+	qm.removeBreaks();
+
+	if ( !userOptions.quickMenuToolsAsToolbar) {
+		if ( userOptions.quickMenuToolsPosition === 'bottom' ) 
+			qm.toolsArray.forEach(tool => qm.appendChild(tool));
+		else if ( userOptions.quickMenuToolsPosition === 'top' )
+			qm.toolsArray.forEach((tool, index) => qm.insertBefore(tool, qm.children.item(index)));
+	}
+
+	// move moreTile to end
+	if ( moreTile ) {
+		qm.appendChild(moreTile);
+
+		// moreTile sometimes hidden?
+		delete moreTile.dataset.hidden;
+		delete moreTile.dataset.morehidden;
+		moreTile.style.display = null;
 	}
 }
 	
 document.addEventListener("DOMContentLoaded", async () => {
 
-	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
-	
-	userOptions = msg.userOptions;
-	
+	userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+		
 	setTheme()
 		.then(() => setUserStyles())
 		.then(() => makeFrameContents());
@@ -305,12 +350,7 @@ window.addEventListener('message', e => {
 			qm.columns = qm.singleColumn ? 1 : e.data.columns;
 			
 			toolsHandler();
-	//		qm.insertBreaks(qm.columns);
-
-		//	qm.setMinWidth();
-			
-			resizeMenu({widgetResize: true, rows: e.data.rows});
-			
+			resizeMenu({widgetResize: true, rows: e.data.rows});		
 			break;
 			
 		case "resizeMenu":
@@ -341,10 +381,10 @@ document.addEventListener('keydown', e => {
 });
 
 // prevent docking
-// mb.addEventListener('dblclick', e => {
-// 	e.preventDefault();
-// 	e.stopImmediatePropagation();
-// });
+document.body.addEventListener('dblclick', e => {
+	e.preventDefault();
+	e.stopImmediatePropagation();
+});
 
 // addChildDockingListeners(mb, "quickMenu");
 addChildDockingListeners(document.body, "quickMenu", "#searchBarContainer > *");

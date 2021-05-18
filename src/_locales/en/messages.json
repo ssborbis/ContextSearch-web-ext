@@ -1894,6 +1894,16 @@
     "description": ""
   },
 
+  "AddToBlockList": {
+    "message": "Add to blocklist",
+    "description": ""
+  },
+
+  "AddToBlockListConfirm": {
+    "message": "Add \"$1\" to blocklist?",
+    "description": ""
+  },
+
   "___________": {
     "message": "",
     "description": ""

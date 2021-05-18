@@ -24,6 +24,7 @@ var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 var toolBar = document.getElementById('toolBar');
 var sbc = document.getElementById('searchBarContainer');
+var aeb = document.getElementById('addEngineBar');
 
 var type;
 
@@ -512,7 +513,10 @@ async function makeQuickMenu(options) {
 
 	// prevent click events from propagating
 	[/*'mousedown',*/ 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
+
 		qm.addEventListener(eventType, e => {
+
+			if ( e.target.closest('.tile')) return;
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -634,53 +638,55 @@ async function makeQuickMenu(options) {
 	qm.toolsArray = createToolsArray();
 
 	qm.removeBreaks = () => {
-		qm.querySelectorAll('br:not(.groupBr)').forEach( br => qm.removeChild(br) );
+		qm.querySelectorAll('br').forEach( br => br.parentNode.removeChild(br) );
+		qm.style.whiteSpace = null;
+		qm.style.overflow = null;
 	}
 
-	qm.insertBreaks = function insertBreaks(_columns) {
+	qm.insertBreaks = _columns => {
+
+		qm.removeBreaks();
+
+		qm.style.whiteSpace = 'nowrap';
+		qm.style.overflow = 'hidden';
 		
 		_columns = _columns || qm.columns;
 
-		qm.querySelectorAll('br:not(.groupBr)').forEach( br => qm.removeChild(br) );
-		
+		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
+
+		isBlock = el => el.style.display === 'block';
+
 		let count = 1;
-		qm.querySelectorAll('.tile:not([data-hidden="true"])').forEach( tile => {
-			if ( tile.nodeName === "BR" ) 
-				count = 0;
-			
-			if ( count === _columns ) {
-				tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
-				count = 0;
+		tiles.forEach( (t,i,a) => {
+
+			if ( t.nodeName === 'HR' ) {
+				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
+				count = 1;
+				return
 			}
-			
+
+			if ( count === _columns ) {
+				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
+				count = 1;
+				return
+			}
+
+			if ( i && a[i-1].parentNode !== t.parentNode ) {
+				if ( isBlock(t.parentNode) ) {
+					qm.insertBefore(document.createElement('br'), t.parentNode);
+					count = 2;
+					return;
+				}
+				else if ( isBlock(a[i-1].parentNode) ) {
+					qm.insertBefore(document.createElement('br'), a[i-1].parentNode.nextSibling);
+					count = 2;
+					return;
+				}		
+			}
+
 			count++;
-		});
-
-		// every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
-			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
-		// });
+		})
 	}
-
-	// qm.insertBreaks = function insertBreaks(_columns) {
-		
-	// 	_columns = _columns || qm.columns;
-
-	// 	qm.querySelectorAll('.break').forEach( br => br.classList.remove('break'));
-		
-	// 	let count = 1;
-	// 	let row = document.createElement('div');
-	// 	qm.querySelectorAll('.tile:not([data-hidden="true"])').forEach( tile => {
-
-	// 		qm.appendChild(row);
-	// 		row.appendChild(tile);
-	// 		if ( count === _columns ) {
-	// 			row = document.createElement('div');
-	// 			count = 0;
-	// 		}
-			
-	// 		count++;
-	// 	});
-	// }
 	
 	function buildQuickMenuElement(options) {
 		
@@ -703,7 +709,7 @@ async function makeQuickMenu(options) {
 		qm.columns = _columns;
 	
 		// remove separators if using grid
-		if (!_singleColumn) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
+		//if (!_singleColumn) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 	
 		qm.singleColumn = _singleColumn;
 			
@@ -724,7 +730,7 @@ async function makeQuickMenu(options) {
 
 			qm.appendChild(tile);
 		});
-		
+
 		qm.getTileSize = () => { 
 
 			let div = document.createElement('div');
@@ -745,8 +751,6 @@ async function makeQuickMenu(options) {
 				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
 				else _tile.classList.remove("singleColumn");
 			});
-			
-			qm.insertBreaks();
 		}
 
 		// check if any search engines exist and link to Options if none
@@ -772,11 +776,7 @@ async function makeQuickMenu(options) {
 		qm.style.left = '0px';
 
 		runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
-		
-		function getGroupFolderSiblings(div) {
-			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
-		}
-		
+				
 		function isTool(e) {
 			return ( e.dataTransfer.getData("tool") === "true" );
 		}
@@ -814,262 +814,277 @@ async function makeQuickMenu(options) {
 				
 			}
 
-			div.addEventListener('dragstart', e => {
+			// div.addEventListener('dragstart', e => {
 
-				if ( !window.tilesDraggable ) return false;
+			// 	if ( !window.tilesDraggable ) return false;
 
-				e.dataTransfer.setData("text", "");
-				let img = new Image();
-				img.src = browser.runtime.getURL('icons/transparent.gif');
-				e.dataTransfer.setDragImage(img, 0, 0);
-				div.id = 'dragDiv';
-				div.style.opacity = .5;
-			});
-			div.addEventListener('dragover', e => {
-				e.preventDefault();
+			// 	e.dataTransfer.setData("text", "");
+			// 	let img = new Image();
+			// 	img.src = browser.runtime.getURL('icons/transparent.gif');
+			// 	e.dataTransfer.setDragImage(img, 0, 0);
+			// 	div.id = 'dragDiv';
+			// 	div.style.opacity = .5;
+			// });
+			// div.addEventListener('dragover', e => {
+			// 	e.preventDefault();
 				
-				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv || isTool(e) ) return;
-				let dragDiv = document.getElementById('dragDiv');
+			// 	let targetDiv = getTargetElement(e.target);
+			// 	if ( !targetDiv || isTool(e) ) return;
+			// 	let dragDiv = document.getElementById('dragDiv');
 
-				if ( targetDiv === dragDiv ) return;
+			// 	if ( targetDiv === dragDiv ) return;
 
-				targetDiv.classList.add('dragHover');
+			// 	targetDiv.classList.add('dragHover');
 
-				// if moving tiles, show arrow
-				if ( dragDiv ) {
+			// 	// if moving tiles, show arrow
+			// 	if ( dragDiv ) {
 					
-					let side = getSide(targetDiv, e);
-					targetDiv.dataset.side = side;
+			// 		let side = getSide(targetDiv, e);
+			// 		targetDiv.dataset.side = side;
 					
-					let arrow = document.getElementById('arrow');
-					arrow.style.display = null;
+			// 		let arrow = document.getElementById('arrow');
+			// 		arrow.style.display = null;
 					
-					let rect = targetDiv.getBoundingClientRect();
-					arrow.style.setProperty('--target-left', rect.left + "px");
-					arrow.style.setProperty('--target-top', rect.top + "px");
-					arrow.style.setProperty('--target-width', rect.width + "px");
-					arrow.style.setProperty('--target-height', rect.height + "px");
-					arrow.dataset.side = side;
+			// 		let rect = targetDiv.getBoundingClientRect();
+			// 		arrow.style.setProperty('--target-left', rect.left + "px");
+			// 		arrow.style.setProperty('--target-top', rect.top + "px");
+			// 		arrow.style.setProperty('--target-width', rect.width + "px");
+			// 		arrow.style.setProperty('--target-height', rect.height + "px");
+			// 		arrow.dataset.side = side;
 					
-					if ( targetDiv.classList.contains("groupFolder") && !targetDiv.classList.contains('groupMove') ) {
+			// 		if ( targetDiv.classList.contains("groupFolder") && !targetDiv.classList.contains('groupMove') ) {
 						
-						let dec = getSideDecimal(targetDiv, e);
+			// 			let dec = getSideDecimal(targetDiv, e);
 						
-						let targetGroupDivs = getGroupFolderSiblings(targetDiv);
+			// 			let targetGroupDivs = getGroupFolderSiblings(targetDiv);
 
-						if ( isTargetBeforeGroup(targetDiv, dec) ) 
-							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						else if ( isTargetAfterGroup(targetDiv, dec) ) 
-							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						else
-							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
-					}
-				}
-			});
-			div.addEventListener('dragenter', e => {
+			// 			if ( isTargetBeforeGroup(targetDiv, dec) ) 
+			// 				targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+			// 			else if ( isTargetAfterGroup(targetDiv, dec) ) 
+			// 				targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+			// 			else
+			// 				targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
+			// 		}
+			// 	}
+			// });
+			// div.addEventListener('dragenter', e => {
 
-				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv || isTool(e) ) return;
+			// 	let targetDiv = getTargetElement(e.target);
+			// 	if ( !targetDiv || isTool(e) ) return;
 
-				targetDiv.style.transition = 'none';
+			// 	targetDiv.style.transition = 'none';
 				
-				let dragDiv = document.getElementById('dragDiv');
+			// 	let dragDiv = document.getElementById('dragDiv');
 				
-				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
+			// 	if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
 
-					// open folders on dragover
-					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv, dragFolderTimeout);
-					return;
-				}
+			// 		// open folders on dragover
+			// 		targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv, dragFolderTimeout);
+			// 		return;
+			// 	}
 				
-				// if moving tiles, show indicator
-				if ( dragDiv ) {
-					let arrow = document.getElementById('arrow');
+			// 	// if moving tiles, show indicator
+			// 	if ( dragDiv ) {
+			// 		let arrow = document.getElementById('arrow');
 						
-					if ( !arrow ) {
-						arrow = document.createElement('div');
-						document.body.appendChild(arrow);
-					}
-					arrow.className = ( qm.singleColumn ) ? 'singleColumn' : null;
+			// 		if ( !arrow ) {
+			// 			arrow = document.createElement('div');
+			// 			document.body.appendChild(arrow);
+			// 		}
+			// 		arrow.className = ( qm.singleColumn ) ? 'singleColumn' : null;
 					
-					arrow.id = 'arrow';
-					arrow.style.top = targetDiv.getBoundingClientRect().top + "px";
-					arrow.style.display = null;
-				}
-			});
-			div.addEventListener('dragleave', e => {
-				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv || isTool(e) ) return;
+			// 		arrow.id = 'arrow';
+			// 		arrow.style.top = targetDiv.getBoundingClientRect().top + "px";
+			// 		arrow.style.display = null;
+			// 	}
+			// });
+			// div.addEventListener('dragleave', e => {
+			// 	let targetDiv = getTargetElement(e.target);
+			// 	if ( !targetDiv || isTool(e) ) return;
 
-				targetDiv.classList.remove('dragHover');
-				targetDiv.style.transition = null;
+			// 	targetDiv.classList.remove('dragHover');
+			// 	targetDiv.style.transition = null;
 				
-				delete targetDiv.dataset.side;
+			// 	delete targetDiv.dataset.side;
 				
-				if ( targetDiv.textDragOverFolderTimer )
-					clearTimeout(targetDiv.textDragOverFolderTimer);
+			// 	if ( targetDiv.textDragOverFolderTimer )
+			// 		clearTimeout(targetDiv.textDragOverFolderTimer);
 				
-				let arrow = document.getElementById('arrow');
-				if ( arrow ) arrow.style.display = 'none';
+			// 	let arrow = document.getElementById('arrow');
+			// 	if ( arrow ) arrow.style.display = 'none';
 				
-				getGroupFolderSiblings(targetDiv).forEach( el => el.classList.remove('groupHighlight') );
-			});
-			div.addEventListener('dragend', async e => {
+			// 	getGroupFolderSiblings(targetDiv).forEach( el => el.classList.remove('groupHighlight') );
+			// });
+			// div.addEventListener('dragend', async e => {
 				
-				if ( isTool(e) ) return;
+			// 	if ( isTool(e) ) return;
 
-				let dragDiv = document.getElementById('dragDiv');
+			// 	let dragDiv = document.getElementById('dragDiv');
 				
-				if ( dragDiv ) {
-					dragDiv.style.opacity = null;
-					dragDiv.id = "";
-				}
+			// 	if ( dragDiv ) {
+			// 		dragDiv.style.opacity = null;
+			// 		dragDiv.id = "";
+			// 	}
 
-				let targetDiv = getTargetElement(e.target);
-				if ( targetDiv ) targetDiv.classList.remove('dragHover');
+			// 	let targetDiv = getTargetElement(e.target);
+			// 	if ( targetDiv ) targetDiv.classList.remove('dragHover');
 
-				let arrow = document.getElementById('arrow');
-				if ( arrow ) arrow.style.display = 'none';
+			// 	let arrow = document.getElementById('arrow');
+			// 	if ( arrow ) arrow.style.display = 'none';
 
-				// store scroll position
-				let scrollPos = qm.scrollTop;
+			// 	// store scroll position
+			// 	let scrollPos = qm.scrollTop;
 				
-				let animation = userOptions.enableAnimations;
-				userOptions.enableAnimations = false;
-				qm = await quickMenuElementFromNodeTree(qm.rootNode);
-				userOptions.enableAnimations = animation;
+			// 	let animation = userOptions.enableAnimations;
+			// 	userOptions.enableAnimations = false;
+			// 	qm = await quickMenuElementFromNodeTree(qm.rootNode);
+			// 	userOptions.enableAnimations = animation;
 
-				qm.expandMoreTiles();
+			// 	qm.expandMoreTiles();
 				
-				qm.scrollTop = scrollPos;
+			// 	qm.scrollTop = scrollPos;
 
-				resizeMenu({tileDrop: true});
+			// 	resizeMenu({tileDrop: true});
 				
-			});
+			// });
 			
-			div.addEventListener('drop', e => {
-				e.preventDefault();
+		// 	div.addEventListener('drop', e => {
+		// 		e.preventDefault();
 				
-				if ( isTool(e) ) return;
+		// 		if ( isTool(e) ) return;
 				
-			//	console.log(e.dataTransfer, e.dataTransfer.getData("text/html"), e.dataTransfer.getData("text/x-moz-place"), e.dataTransfer.getData("text/x-moz-url"));
+		// 	//	console.log(e.dataTransfer, e.dataTransfer.getData("text/html"), e.dataTransfer.getData("text/x-moz-place"), e.dataTransfer.getData("text/x-moz-url"));
 			
-				// console.log(e, e.dataTransfer);
-				// console.log(e.dataTransfer.getData("text"));
+		// 		// console.log(e, e.dataTransfer);
+		// 		// console.log(e.dataTransfer.getData("text"));
 				
-				let targetDiv = getTargetElement(e.target);
-				targetDiv.classList.remove('dragHover');
+		// 		let targetDiv = getTargetElement(e.target);
+		// 		targetDiv.classList.remove('dragHover');
 
-				// look for text dnd
-				if ( e.dataTransfer.getData("text") && !e.dataTransfer.getData("text/x-moz-place") ) {
-					e.preventDefault();
-					sb.value = e.dataTransfer.getData("text");
-					div.parentNode.lastMouseDownTile = div;
-					div.dispatchEvent(new MouseEvent('mouseup'));
-					return;
-				}
+		// 		// look for text dnd
+		// 		if ( e.dataTransfer.getData("text") && !e.dataTransfer.getData("text/x-moz-place") ) {
+		// 			e.preventDefault();
+		// 			sb.value = e.dataTransfer.getData("text");
+		// 			div.parentNode.lastMouseDownTile = div;
+		// 			div.dispatchEvent(new MouseEvent('mouseup'));
+		// 			return;
+		// 		}
 
-				let dragDiv = document.getElementById('dragDiv');
+		// 		let dragDiv = document.getElementById('dragDiv');
 
-				// firefox DnD for bookmarks
-				if ( e.dataTransfer.getData("text/x-moz-place") ) {
-					let _bm = JSON.parse(e.dataTransfer.getData("text/x-moz-place"));
+		// 		// firefox DnD for bookmarks
+		// 		if ( e.dataTransfer.getData("text/x-moz-place") ) {
+		// 			let _bm = JSON.parse(e.dataTransfer.getData("text/x-moz-place"));
 					
-					if ( !_bm.uri ) return; // ignore folders
+		// 			if ( !_bm.uri ) return; // ignore folders
 
-					dragDiv = nodeToTile({
-						title: _bm.title,
-						type: "bookmark",
-						uri: _bm.uri,
-						id: _bm.itemGuid,
-						parent: targetDiv.node.parent,
-						toJSON: targetDiv.node.toJSON,
-						icon: browser.runtime.getURL('icons/search.svg')
-					});
+		// 			dragDiv = nodeToTile({
+		// 				title: _bm.title,
+		// 				type: "bookmark",
+		// 				uri: _bm.uri,
+		// 				id: _bm.itemGuid,
+		// 				parent: targetDiv.node.parent,
+		// 				toJSON: targetDiv.node.toJSON,
+		// 				icon: browser.runtime.getURL('icons/search.svg')
+		// 			});
 
-					dragDiv.className = "tile";
-					targetDiv.parentNode.appendChild(dragDiv);
-					targetDiv.node.parent.children.push(dragDiv.node);
+		// 			dragDiv.className = "tile";
+		// 			targetDiv.parentNode.appendChild(dragDiv);
+		// 			targetDiv.node.parent.children.push(dragDiv.node);
 
-					try {
-						let _url = new URL(_bm.uri);
-						let img = new Image();
+		// 			try {
+		// 				let _url = new URL(_bm.uri);
+		// 				let img = new Image();
 
-						img.onload = () => {
-							dragDiv.node.icon = imageToBase64(img, userOptions.cacheIconsMaxSize);
-							dragDiv.style.backgroundImage = `url(${dragDiv.node.icon})`;
+		// 				img.onload = () => {
+		// 					dragDiv.node.icon = imageToBase64(img, userOptions.cacheIconsMaxSize);
+		// 					dragDiv.style.backgroundImage = `url(${dragDiv.node.icon})`;
 							
-							setTimeout(() => {
-								userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-								saveUserOptions();
-							}, 500);
+		// 					setTimeout(() => {
+		// 						userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+		// 						saveUserOptions();
+		// 					}, 500);
 							
-						}
-						img.src = 'https://s2.googleusercontent.com/s2/favicons?domain_url=' + _url.hostname;
-					} catch (error) {
-						console.log(error);
-					}
-				}	
+		// 				}
+		// 				img.src = 'https://s2.googleusercontent.com/s2/favicons?domain_url=' + _url.hostname;
+		// 			} catch (error) {
+		// 				console.log(error);
+		// 			}
+		// 		}	
 
-				if (!targetDiv) return;
-				if (!dragDiv || !dragDiv.node) return;
-				if (targetDiv === dragDiv) return;
-				if ( dragDiv.groupMove && targetDiv.node.parent === dragDiv.node.parent ) {
-					console.error('cannot group move within parent');
-					return;
-				}
+		// 		if (!targetDiv) return;
+		// 		if (!dragDiv || !dragDiv.node) return;
+		// 		if (targetDiv === dragDiv) return;
+		// 		if ( dragDiv.groupMove && targetDiv.node.parent === dragDiv.node.parent ) {
+		// 			console.error('cannot group move within parent');
+		// 			return;
+		// 		}
 				
-				let dragNode = ( dragDiv.groupMove) ? dragDiv.node.parent : dragDiv.node;
-				let targetNode = targetDiv.node;
+		// 		let dragNode = ( dragDiv.groupMove) ? dragDiv.node.parent : dragDiv.node;
+		// 		let targetNode = targetDiv.node;
 
-				// cut the node from the children array
-				let slicedNode = nodeCut(dragNode);
+		// 		// cut the node from the children array
+		// 		let slicedNode = nodeCut(dragNode);
 
-				let side = getSide(targetDiv, e);
+		// 		let side = getSide(targetDiv, e);
 	
-				if ( targetDiv.classList.contains("groupFolder") ) {
+		// 		if ( targetDiv.classList.contains("groupFolder") ) {
 					
-					let dec = getSideDecimal(targetDiv, e);
+		// 			let dec = getSideDecimal(targetDiv, e);
 					
-					if ( isTargetBeforeGroup(targetDiv, dec) ) {
-						console.log('moving before group');
-						nodeInsertBefore(slicedNode, targetNode.parent);
-						_save();
-						return;
-					} else if ( isTargetAfterGroup(targetDiv, dec) ) {
-						console.log('moving after group');
-						nodeInsertAfter(slicedNode, targetNode.parent);
-						_save();
-						return;
-					}
+		// 			if ( isTargetBeforeGroup(targetDiv, dec) ) {
+		// 				console.log('moving before group');
+		// 				nodeInsertBefore(slicedNode, targetNode.parent);
+		// 				_save();
+		// 				return;
+		// 			} else if ( isTargetAfterGroup(targetDiv, dec) ) {
+		// 				console.log('moving after group');
+		// 				nodeInsertAfter(slicedNode, targetNode.parent);
+		// 				_save();
+		// 				return;
+		// 			}
 					
-					if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
-						console.log('drop to more / less tile ... appending tile to group');
-						nodeAppendChild(slicedNode, targetNode.parent);	
-						_save();
-						return;
-					}
-				}
+		// 			if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
+		// 				console.log('drop to more / less tile ... appending tile to group');
+		// 				nodeAppendChild(slicedNode, targetNode.parent);	
+		// 				_save();
+		// 				return;
+		// 			}
+		// 		}
 
-				if ( side === "before" ) nodeInsertBefore(slicedNode, targetNode);
-				else if ( side === "after" ) nodeInsertAfter(slicedNode, targetNode);
-				else nodeAppendChild(slicedNode, targetNode);
+		// 		if ( side === "before" ) nodeInsertBefore(slicedNode, targetNode);
+		// 		else if ( side === "after" ) nodeInsertAfter(slicedNode, targetNode);
+		// 		else nodeAppendChild(slicedNode, targetNode);
 				
-				_save();
+		// 		_save();
 				
-				function _save() {
-					// save the tree
-					userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-					saveUserOptions();
-				}
-			});
+		// 		function _save() {
+		// 			// save the tree
+		// 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+		// 			saveUserOptions();
+		// 		}
+		// 	});
 			
 		});
 		
 		/* end dnd */
 
-		toolsHandler();
+		qm.setDisplay();
+
+		let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder );
+
+		groupFolders.forEach( gf => {
+
+			let g = makeGroupFolderFromTile(gf);
+			if ( !g ) return;
+
+			qm.insertBefore(g, gf);
+			if ( gf.parentNode && g.style.display === 'block' ) gf.parentNode.removeChild(gf);
+			else {
+				gf.style.backgroundColor = gf.node.groupColor ? 'var(--group-color)' : null;
+				g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
+			}
+		});
 
 		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
 
@@ -1084,6 +1099,8 @@ async function makeQuickMenu(options) {
 		}
 		
 		qm.expandMoreTiles();
+
+		toolsHandler();
 
 		return qm;
 	}
@@ -1194,149 +1211,7 @@ async function makeQuickMenu(options) {
 			delete sb.selectedIndex;
 			tileArray.push(tile);
 		}
-		
-		function makeMoreLessFromTiles( _tiles, limit ) {
-
-			function addSeparators() {
-				_tiles.unshift( nodeToTile( {type: "separator"}) );
-				_tiles.push( nodeToTile( {type: "separator"}) );
-			}
 			
-			let firstTile = _tiles.find( _tile => _tile.node );
-			
-			if ( !firstTile ) return _tiles;
-			
-			let node = firstTile.node.parent;
-			
-			if (!node) return _tiles;
-			
-			if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
-			
-			let label = nodeToTile( node );
-			label.style.setProperty("--group-color", node.groupColor || null);
-			label.classList.add("groupFolder");
-		//	label.style.textAlign='center';
-			_tiles.unshift( label );
-
-			if ( !limit || limit >= _tiles.length ) {
-				addSeparators();
-				return _tiles;
-			}
-
-			let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
-			moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
-
-			moreTile.style.textAlign='center';
-			moreTile.dataset.type = "more";
-			moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
-			moreTile.style.setProperty("--group-color",node.groupColor);
-			moreTile.classList.add("groupFolder");
-			moreTile.node = { parent: node };
-			moreTile.dataset.parentid = node.id;
-			
-			moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = () => { return false; }
-			moreTile.setAttribute('draggable', false);
-			
-			function more() {
-				qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
-
-					// ignore divs not associated with this more tile
-					if ( _div.moreTile !== moreTile ) return;
-					
-					_div.style.transition = 'none';
-					_div.style.opacity = 0;
-					_div.dataset.hidden = "false";
-					_div.style.display = null;
-
-					_div.style.transition = null;
-					_div.offsetWidth;
-					_div.style.opacity = null;
-
-				});
-				
-//				qm.insertBreaks();
-
-				moreTile.onmouseup = less;	
-				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
-				moreTile.dataset.type = "less";
-				resizeMenu({groupMore: true});
-	
-				if ( !moreLessStatus.includes( node.id ) )
-					moreLessStatus.push(node.id);
-			}
-			
-			function less() {
-				qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
-
-					// ignore divs not associated with this more tile
-					if ( _div.moreTile !== moreTile ) return;
-					
-					_div.dataset.hidden = "true";
-					_div.style.display = "none";
-				});
-				
-//				qm.insertBreaks();
-				moreTile.onmouseup = more;
-				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
-				moreTile.dataset.type = "more";
-				resizeMenu({groupLess: true});
-				
-				moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
-			}
-
-			moreTile.onmouseup = more;
-			
-			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
-			
-			moreTile.addEventListener('dragenter', e => {
-				moreTile.expandTimerStart();
-			
-				['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTile.expandTimer), {once: true}); } );
-			});
-
-			let count = 1;
-			_tiles.forEach( ( _tile, index ) => {
-				
-				if ( _tile.dataset.hidden == "true" || _tile.style.display === 'none' ) {
-					return false;
-				}
-
-				if ( count > limit ) {
-					_tiles[index].dataset.hidden = true;
-					_tiles[index].style.display = 'none';
-					_tiles[index].dataset.grouphidden = true;
-					_tiles[index].moreTile = moreTile;
-					
-					// console.log('hiding tile ' + _tiles[index].title);
-				} else {
-					// console.log('showing tile ' + _tiles[index].title);
-				}
-				
-				count++;
-			});
-
-			if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
-				
-				moreTile.classList.remove('tile');
-				moreTile.classList.add('groupLabelMoreTile');
-				
-				['mouseup', 'click'].forEach( _e => {
-					moreTile.addEventListener(_e, e => e.stopPropagation() );
-				});
-				
-				if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
-				
-			} else {
-				if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
-			}
-
-			moreTile.dataset.hiddencount = _tiles.filter( t => t.dataset.grouphidden == "true" && t.moreTile === moreTile ).length;
-
-			addSeparators();
-
-			return _tiles;
-		}
-	
 		function makeGroupTilesFromNode( node ) {
 			let tiles = [];
 			
@@ -1344,9 +1219,6 @@ async function makeQuickMenu(options) {
 				let _tile = nodeToTile(_node);
 				
 				if ( !_tile ) return;
-				
-				_tile.style.setProperty("--group-color",node.groupColor);
-				_tile.classList.add("groupFolder");
 
 				_tile.title = node.title + " / " + _tile.title;
 
@@ -1356,68 +1228,17 @@ async function makeQuickMenu(options) {
 			return tiles;
 		}
 
-		function newGroupStyler(tiles) {
-			let first = tiles.find(t => t.dataset.type === 'folder' );
-
-			if ( !first ) return tiles;
-
-			let newNode = first.cloneNode(true);
-
-			if ( first.node.icon ) newNode.dataset.hasicon = true;
-
-			console.log(qm.singleColumn, first.node.icon)
-
-			if ( qm.singleColumn && !first.node.icon ) {
-				newNode.style.backgroundImage = 'none';
-
-				
-			}
-
-			tiles.splice(tiles.indexOf(first), 1, newNode );
-
-			let moreTile = tiles.find(t => t.dataset.type === 'more');
-
-			if ( moreTile ) tiles.splice(tiles.indexOf(moreTile), 1);
-
-			if ( moreTile ) {
-				newNode.onclick = function() { 
-					moreTile.dispatchEvent(new MouseEvent('mouseup'));
-				};
-			}
-
-			return tiles;
-		}
-
-		nodes.forEach( (node, index) => {
+		nodes.forEach( node => {
 
 			let tile = nodeToTile(node);
 			
 			if ( tile ) tileArray.push( tile );
 			else return;
-			
-			// remove parent folder from menu
-			if ( node.groupFolder ) tileArray.pop();
-			
+						
 			if ( node.groupFolder && !node.parent.parent) { // only top-level folders
 			
 				let groupTiles = makeGroupTilesFromNode( node );
 
-				makeMoreLessFromTiles( groupTiles, node.groupLimit );
-
-				// groupTiles = newGroupStyler(groupTiles);
-
-				// remove leading separator if consecutive groups
-				let previousNode = nodes[index - 1];
-				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
-				
-				if ( userOptions.groupFolderRowBreaks ) {
-					// separate groupFolders in rows
-					let _br = document.createElement('br');
-					_br.className = 'groupBr';
-					groupTiles.push(_br);
-					groupTiles.unshift(_br.cloneNode());
-				}
-				
 				tileArray = tileArray.concat(groupTiles);
 			}
 
@@ -1428,238 +1249,7 @@ async function makeQuickMenu(options) {
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
 	
-	function nodeToTile( node ) {
-
-		let tile;
-
-		if (node.hidden) return;
-		
-		switch ( node.type ) {
-
-			case "searchEngine":
-
-				let se = userOptions.searchEngines.find(se => se.id === node.id);
-				
-				if (!se) {
-					console.log('no search engine found for ' + node.id);
-					return;
-				}
-
-				tile = buildSearchIcon(getIconFromNode(node), se.title);
-				tile.dataset.title = se.title;
-				
-				// site search picker
-				if ( se.template.indexOf('{selectdomain}') !== -1 ) {
-					tile.dataset.id = node.id;
-					tile.dataset.type = 'folder';
-					tile.dataset.subtype = 'sitesearch';
-
-					tile.addEventListener('mouseup', openFolder);
-					tile.addEventListener('openFolder', openFolder);
-					
-					async function openFolder(e) {
-
-						let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-						let siteSearchNode = {
-							type:"folder",
-							parent:node.parent,
-							children:[],
-							id:node.id,
-							forceSingleColumn:true
-						}
-						
-						let url = new URL(tab.url);
-
-						getDomainPaths(url).forEach( path => {
-							siteSearchNode.children.push({
-								type: "siteSearch",
-								title: path,
-								parent:node,
-								icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-							});	
-						});
-						
-						qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-						for ( let _tile of qm.querySelectorAll('.tile') ) {
-							if ( _tile.node.title === url.hostname ) {
-								_tile.classList.add('selectedFocus');
-								_tile.dataset.selectfirst = "true";
-								break;
-							}
-						}
-
-						resizeMenu({openFolder: true});
-					}
-					
-					break;
-				}
-				
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-				
-				tile.dataset.id = node.id;
-				tile.dataset.type = 'searchEngine';
-				
-				break;
-		
-			case "bookmarklet":
-
-				tile = buildSearchIcon(getIconFromNode(node), node.title);
-				tile.dataset.type = 'bookmarklet';
-				tile.dataset.title = node.title;
-				tile.dataset.id = node.id;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id, // needs work
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-
-				break;
-
-			case "oneClickSearchEngine":
-
-				tile = buildSearchIcon(getIconFromNode(node), node.title);
-				tile.dataset.type = 'oneClickSearchEngine';
-				tile.dataset.id = node.id;
-				tile.dataset.title = node.title;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id, // needs work
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-
-				break;
-
-			case "separator":
-				tile = document.createElement('hr');
-				tile.dataset.type = 'separator';
-
-				break;
-		
-			case "folder":
-				tile = buildSearchIcon( getIconFromNode(node), node.title);
-
-				tile.dataset.type = 'folder';
-				tile.dataset.title = node.title;
-				
-				// prevent scroll icon
-				tile.addEventListener('mousedown', e => {
-					
-					// skip for dnd events
-					if ( e.which === 1 ) return;
-					e.preventDefault();
-					e.stopPropagation();
-				});
-
-				tile.addEventListener('mouseup', openFolder);
-				tile.addEventListener('openFolder', openFolder);
-
-				addOpenFolderOnHover(tile);
-					
-				async function openFolder(e) {
-
-					let method = getOpenMethod(e, true);
-
-					if (method === 'noAction') return;
-
-					if (method === 'openFolder' || e.openFolder) { 
-						qm = await quickMenuElementFromNodeTree(node);		
-						return resizeMenu({openFolder: true});
-					}
-					
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							selectionText: sb.value,
-							openMethod: method
-						}
-					});
-					
-					quickMenuObject.lastUsed = node.id
-					userOptions.lastUsedId = quickMenuObject.lastUsed;
-					document.dispatchEvent(new CustomEvent('updateLastUsed'));
-				}
-
-				break;
-				
-			case "siteSearch":
-
-				tile = buildSearchIcon(node.icon, node.title);
-				tile.dataset.type = 'siteSearch';
-				tile.dataset.id = node.id || "";	
-				tile.dataset.title = node.title;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.parent.id,
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e),
-							domain: tile.dataset.title
-						}
-					});
-					
-					// click the back button
-					qm.back();
-					//tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
-				});
-
-				break;
-				
-			case "bookmark":
-				tile = buildSearchIcon(node.icon, node.title);
-				tile.dataset.type = 'bookmark';
-				tile.dataset.id = node.id || "";	
-				tile.dataset.title = node.title;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							openMethod: getOpenMethod(e),
-						}
-					});
-				});
-				
-				break;
-				
-			case "grouplabel":
-				tile = document.createElement('div');
-				tile.dataset.type = 'grouplabel';	
-				tile.dataset.title = node.title;
-				
-				break;
-		}
-		
-		tile.node = node;
-		
-		return tile;
-	}
+	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
@@ -1809,7 +1399,9 @@ function makeSearchBar() {
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 
 		// works for open and close
-		sg.addEventListener('transitionend', e => resizeMenu({suggestionsResize: true}));
+		sg.addEventListener('transitionend', e => {
+			resizeMenu({suggestionsResize: true});
+		}, {once: true});
 		
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;
 		
@@ -1947,6 +1539,7 @@ function createToolsBar(qm) {
 		toolBar.appendChild(tool);
 	});
 
+/*
 	let ls = document.createElement('span');
 	ls.innerHTML = "&#9668;";		
 	ls.style.left = 0;
@@ -2018,6 +1611,7 @@ function createToolsBar(qm) {
 	});
 
 	toolBar.addEventListener('scroll', showScrollButtons);
+	*/
 }
 
 function getSideDecimal(t, e) {
@@ -2051,26 +1645,30 @@ function getTargetElement(el) {
 	return null;
 }
 
-function getPreviousSiblingOfType(_div) {
-	let s = _div.previousSibling;
-	while( s && s.nodeName !== _div.nodeName ) s = s.previousSibling;
+function getPreviousSiblingOfType(el) {
+	let s = el.previousSibling;
+	while( s && s.nodeName !== el.nodeName ) s = s.previousSibling;
 	return s;
 }
 
-function getNextSiblingOfType(_div) {
-	let s = _div.nextSibling;
-	while( s && s.nodeName !== _div.nodeName ) s = s.nextSibling;
+function getNextSiblingOfType(el) {
+	let s = el.nextSibling;
+	while( s && s.nodeName !== el.nodeName ) s = s.nextSibling;
 	return s;
 }
 
-function isTargetBeforeGroup(_div, dec) {
-	let sibling = getPreviousSiblingOfType(_div);
-	return ( dec < .2 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+function isTargetBeforeGroup(el, dec) {
+	let sibling = getPreviousSiblingOfType(el);
+	return ( dec < .2 && ( !sibling || sibling.node.parent !== el.node.parent ));
 }
 
-function isTargetAfterGroup(_div, dec) {
-	let sibling = getNextSiblingOfType(_div);
-	return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+function isTargetAfterGroup(el, dec) {
+	let sibling = getNextSiblingOfType(el);
+	return ( dec > .8 && ( !sibling || sibling.node.parent !== el.node.parent ));
+}
+
+function getGroupFolderSiblings(el) {
+	return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === el.node.parent);
 }
 
 function dispatchOpenFolderEvent(el) {
@@ -2128,9 +1726,787 @@ function checkForNodeHotkeys(e) {
 }
 
 getAllOtherHeights = () => {
-	return getFullElementSize(sbc).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+	return getFullElementSize(sbc).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height + getFullElementSize(aeb).height;
 }
 
 isMoving = e => {
 	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
+}
+
+document.addEventListener('mousedown', e => {
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	if ( !tile.node ) {
+		console.log('no node', tile);
+		return;
+	}
+
+	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch'].includes(tile.node.type)) return;
+
+	tile.parentNode.lastMouseDownTile = tile;
+});
+
+document.addEventListener('mouseup', e => {
+
+	console.log(e);
+
+	// docking drag throws error on HTMLDocument element
+	if ( !e.target.closest) return;
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch'].includes(tile.node.type)) return;
+
+	if ( tile.disabled ) return false;
+
+	if ( window.tilesDraggable ) return false;
+
+	if ( mouseClickBack(e) ) return;
+
+	if ( !clickChecker(tile) ) return;
+
+	e.stopImmediatePropagation();
+	e.preventDefault();
+
+	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
+
+	console.log(tile.dataset.id, tile.node);
+
+	if ( tile.dataset.id && quickMenuObject.lastUsed !== tile.dataset.id ) {
+		// // store the last used id
+		userOptions.lastUsedId = quickMenuObject.lastUsed = tile.dataset.id || null;
+		
+		document.dispatchEvent(new CustomEvent('updateLastUsed'));
+	}
+
+	quickMenuObject.mouseLastClickTime = Date.now();
+	quickMenuObject.searchTerms = sb.value;
+
+	browser.runtime.sendMessage({
+		action: "updateQuickMenuObject", 
+		quickMenuObject: quickMenuObject
+	});
+
+	let node = tile.node;
+
+	switch ( node.type ) {
+	
+		case 'searchEngine':
+
+			if ( tile.dataset.subtype && tile.dataset.subtype === 'sitesearch') {
+
+				async function openFolder(e) {
+					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+					let siteSearchNode = {
+						type:"folder",
+						parent:node.parent,
+						children:[],
+						id:node.id,
+						forceSingleColumn:true
+					}
+					
+					let url = new URL(tab.url);
+
+					getDomainPaths(url).forEach( path => {
+						siteSearchNode.children.push({
+							type: "siteSearch",
+							title: path,
+							parent:node,
+							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+						});	
+					});
+					
+					qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+					for ( let _tile of qm.querySelectorAll('.tile') ) {
+						if ( _tile.node.title === url.hostname ) {
+							_tile.classList.add('selectedFocus');
+							_tile.dataset.selectfirst = "true";
+							break;
+						}
+					}
+
+					resizeMenu({openFolder: true});
+				}
+
+				openFolder(e);
+
+					// tile.addEventListener('mouseup', openFolder);
+					// tile.addEventListener('openFolder', openFolder);
+
+				break;
+			}
+
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: tile.node.id,
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e)
+				}
+			});
+			break;
+
+		case 'bookmarklet':
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: tile.node.id, // needs work
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e)
+				}
+			});
+			break;
+
+		case 'oneClickSearchEngine':
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: tile.node.id, // needs work
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e)
+				}
+			});
+			break;
+
+		case 'siteSearch':
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: tile.node.parent.id,
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e),
+					domain: tile.dataset.title
+				}
+			});
+			
+			// click the back button
+			qm.back();
+			break;
+	}
+
+	// check for locked / Keep Menu Open 
+	if ( !keepMenuOpen(e) && !tile.keepOpen )
+		closeMenuRequest();
+
+	return false;
+
+});
+
+document.addEventListener('dragstart', e => {
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	if ( !window.tilesDraggable ) return false;
+
+	e.dataTransfer.setData("id", tile.node.id);
+	tile.classList.add('drag');
+
+	qm.style.overflowY = 'hidden';
+
+	let dummy = document.createElement('div');
+	dummy.className = 'tile dummy';
+	document.body.appendChild(dummy);
+
+});
+
+document.addEventListener('dragend', e => {
+
+	e.preventDefault();
+
+	let dummy = document.querySelector('.dummy');
+	if ( dummy ) dummy.parentNode.removeChild(dummy);
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	let dragTile = document.querySelector('.drag');
+
+	if ( !dragTile ) return;
+
+});
+
+document.addEventListener('dragenter', e => {
+
+	let tile = e.target.closest('.tile');
+	let dragTile = document.querySelector('.drag');
+
+	if ( !tile ) return;
+
+	if ( !dragTile && tile.dataset.type === 'folder' ) {
+
+		// open folders on dragover
+		tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);
+		return;
+	}
+
+	if ( !dragTile ) return;
+
+	let side = getSide(tile, e);
+
+});
+
+document.addEventListener('dragover', e => {
+
+	let tile = e.target.closest('.tile');
+	let dragTile = document.querySelector('.drag');
+
+	if ( !tile ) return;
+	if ( !dragTile ) return;
+
+	e.preventDefault();
+
+	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
+
+	tile.lastDragOver = Date.now();
+
+	let side = getSide(tile, e);
+
+	let dummy = document.querySelector('.dummy');
+
+	if ( side === 'before' )
+		tile.parentNode.insertBefore(dummy, tile);
+	if ( side === 'after' )
+		tile.parentNode.insertBefore(dummy, tile.nextSibling);
+	if ( side === 'middle' )
+		document.body.appendChild(dummy);
+
+	tile.dataset.side = side;
+
+	tile.classList.add('dragHover');
+
+	// if ( tile.classList.contains("groupFolder") && !tile.classList.contains('groupMove') ) {
+		
+	// 	let dec = getSideDecimal(tile, e);
+		
+	// 	let targetGroupDivs = getGroupFolderSiblings(tile);
+
+	// 	if ( isTargetBeforeGroup(tile, dec) ) 
+	// 		targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+	// 	else if ( isTargetAfterGroup(tile, dec) ) 
+	// 		targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+	// 	else
+	// 		targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
+	// }	
+});
+
+document.addEventListener('drop', e => {
+
+	let tile = e.target.closest('.tile');
+	let dragTile = document.querySelector('.drag');
+
+	if ( !tile ) return;
+	if ( !dragTile ) return;
+
+	e.preventDefault();
+
+	let side = getSide(tile, e);
+
+	if ( side === 'before' )
+		tile.parentNode.insertBefore(dragTile, tile);
+	if ( side === 'after' )
+		tile.parentNode.insertBefore(dragTile, tile.nextSibling);
+
+	dragTile.classList.remove('drag');
+
+	let dummy = document.querySelector('.dummy');
+	if ( dummy ) dummy.parentNode.removeChild(dummy);
+
+	// if ( side === 'middle' )
+	// 	document.body.appendChild(dummy);
+
+});
+
+clearDragStyling = el => {
+	let t = document.querySelector('.dragOver');
+	if ( t ) t.classList.remove('dragOver', 'before', 'after', 'middle');
+}
+
+
+// document.addEventListener('dragleave', e => {
+
+// 	let tile = e.target.closest('.tile');
+
+// 	if ( !tile ) return;
+
+// 	if ( tile.textDragOverFolderTimer )
+// 		clearTimeout(tile.textDragOverFolderTimer);
+// });
+
+function nodeToTile( node ) {
+
+	let tile;
+
+	if (node.hidden) return;
+	
+	switch ( node.type ) {
+
+		case "searchEngine":
+
+			let se = userOptions.searchEngines.find(se => se.id === node.id);
+			
+			if (!se) {
+				console.log('no search engine found for ' + node.id);
+				return;
+			}
+
+			tile = buildSearchIcon(getIconFromNode(node), se.title);
+			tile.dataset.title = se.title;
+
+			
+			// // site search picker
+			if ( se.template.indexOf('{selectdomain}') !== -1 ) {
+				tile.dataset.id = node.id;
+				tile.dataset.type = 'folder';
+				tile.dataset.subtype = 'sitesearch';
+			}
+
+			// 	tile.addEventListener('mouseup', openFolder);
+			// 	tile.addEventListener('openFolder', openFolder);
+				
+			// 	async function openFolder(e) {
+
+			// 		let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+			// 		let siteSearchNode = {
+			// 			type:"folder",
+			// 			parent:node.parent,
+			// 			children:[],
+			// 			id:node.id,
+			// 			forceSingleColumn:true
+			// 		}
+					
+			// 		let url = new URL(tab.url);
+
+			// 		getDomainPaths(url).forEach( path => {
+			// 			siteSearchNode.children.push({
+			// 				type: "siteSearch",
+			// 				title: path,
+			// 				parent:node,
+			// 				icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+			// 			});	
+			// 		});
+					
+			// 		qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+			// 		for ( let _tile of qm.querySelectorAll('.tile') ) {
+			// 			if ( _tile.node.title === url.hostname ) {
+			// 				_tile.classList.add('selectedFocus');
+			// 				_tile.dataset.selectfirst = "true";
+			// 				break;
+			// 			}
+			// 		}
+
+			// 		resizeMenu({openFolder: true});
+			// 	}
+				
+			// 	break;
+			// }
+			
+			// addTileEventHandlers(tile, e => {
+			// 	browser.runtime.sendMessage({
+			// 		action: "quickMenuSearch", 
+			// 		info: {
+			// 			menuItemId: node.id,
+			// 			selectionText: sb.value,
+			// 			openMethod: getOpenMethod(e)
+			// 		}
+			// 	});
+			// });
+			
+			tile.dataset.id = node.id;
+			tile.dataset.type = 'searchEngine';
+			
+			break;
+	
+		case "bookmarklet":
+
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'bookmarklet';
+			tile.dataset.title = node.title;
+			tile.dataset.id = node.id;
+
+			break;
+
+		case "oneClickSearchEngine":
+
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'oneClickSearchEngine';
+			tile.dataset.id = node.id;
+			tile.dataset.title = node.title;
+
+			break;
+
+		case "separator":
+			tile = document.createElement('hr');
+			tile.dataset.type = 'separator';
+
+			break;
+	
+		case "folder":
+			tile = buildSearchIcon( getIconFromNode(node), node.title);
+
+			tile.dataset.type = 'folder';
+			tile.dataset.title = node.title;
+			
+			// prevent scroll icon
+			tile.addEventListener('mousedown', e => {
+				
+				// skip for dnd events
+				if ( e.which === 1 ) return;
+				e.preventDefault();
+				e.stopPropagation();
+			});
+
+			tile.addEventListener('mouseup', openFolder);
+			tile.addEventListener('openFolder', openFolder);
+
+			addOpenFolderOnHover(tile);
+				
+			async function openFolder(e) {
+
+				let method = getOpenMethod(e, true);
+
+				if (method === 'noAction') return;
+
+				if (method === 'openFolder' || e.openFolder) { 
+					qm = await quickMenuElementFromNodeTree(node);		
+					return resizeMenu({openFolder: true});
+				}
+				
+				browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: node.id,
+						selectionText: sb.value,
+						openMethod: method
+					}
+				});
+				
+				quickMenuObject.lastUsed = node.id
+				userOptions.lastUsedId = quickMenuObject.lastUsed;
+				document.dispatchEvent(new CustomEvent('updateLastUsed'));
+			}
+
+			break;
+			
+		case "siteSearch":
+
+			tile = buildSearchIcon(node.icon, node.title);
+			tile.dataset.type = 'siteSearch';
+			tile.dataset.id = node.id || "";	
+			tile.dataset.title = node.title;
+
+			// addTileEventHandlers(tile, e => {
+			// 	browser.runtime.sendMessage({
+			// 		action: "quickMenuSearch", 
+			// 		info: {
+			// 			menuItemId: node.parent.id,
+			// 			selectionText: sb.value,
+			// 			openMethod: getOpenMethod(e),
+			// 			domain: tile.dataset.title
+			// 		}
+			// 	});
+				
+			// 	// click the back button
+			// 	qm.back();
+			// 	//tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
+			// });
+
+			break;
+			
+		case "bookmark":
+			tile = buildSearchIcon(node.icon, node.title);
+			tile.dataset.type = 'bookmark';
+			tile.dataset.id = node.id || "";	
+			tile.dataset.title = node.title;
+
+			addTileEventHandlers(tile, e => {
+				browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: node.id,
+						openMethod: getOpenMethod(e),
+					}
+				});
+			});
+			
+			break;
+	}
+	
+	tile.node = node;
+	
+	return tile;
+}
+
+
+function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
+
+	noFolder = noFolder || false;
+
+	if ( !_tiles.length ) return;
+
+	_tiles.forEach( t => t.style.backgroundColor = 'var(--group-color)');
+
+	parentNode = parentNode || qm;
+	let node = parentNode.node || {}
+	let classList = _tiles[0].classList;
+
+	if ( !noFolder && node.parent ) {
+		let label = nodeToTile( node );
+		label.classList.add("groupFolder", "textShadow");
+		_tiles.unshift( label );
+	}
+
+	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+
+	if ( !limit || limit >= _tiles.length ) return _tiles;
+
+	let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
+	moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
+
+	moreTile.style.textAlign='center';
+	moreTile.dataset.type = "more";
+	moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
+	
+	moreTile.classList = classList;
+	moreTile.classList.add('groupFolder')
+	moreTile.node = { parent: node };
+	moreTile.dataset.parentid = node.id;
+	
+	moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = () => { return false; }
+	moreTile.setAttribute('draggable', false);
+	
+	function more() {
+		let hiddenEls = parentNode.querySelectorAll('.tile[data-hidden="true"]');
+		hiddenEls.forEach( _div => {
+
+			// ignore divs not associated with this more tile
+			if ( _div.moreTile !== moreTile ) return;
+			
+			_div.style.transition = 'none';
+			_div.style.opacity = 0;
+			_div.dataset.hidden = "false";
+			_div.style.display = null;
+
+			_div.style.transition = null;
+			_div.offsetWidth;
+			_div.style.opacity = null;
+
+		});
+		
+		moreTile.onmouseup = less;	
+		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
+		moreTile.dataset.type = "less";
+		resizeMenu({more: true});
+
+		if ( !moreLessStatus.includes( node.id ) )
+			moreLessStatus.push(node.id);
+	}
+	
+	function less() {
+		parentNode.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
+
+			// ignore divs not associated with this more tile
+			if ( _div.moreTile !== moreTile ) return;
+			
+			_div.dataset.hidden = "true";
+			_div.style.display = "none";
+		});
+		
+		moreTile.onmouseup = more;
+		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
+		moreTile.dataset.type = "more";
+		resizeMenu({more: true});
+		
+		moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
+	}
+
+	moreTile.onmouseup = more;
+	
+	moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
+	
+	moreTile.addEventListener('dragenter', e => {
+		moreTile.expandTimerStart();
+	
+		['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTile.expandTimer), {once: true}); } );
+	});
+
+	let count = 1;
+	_tiles.forEach( ( _tile, index ) => {
+		
+		if ( _tile.dataset.hidden == "true" || _tile.style.display === 'none' ) {
+			return false;
+		}
+
+		if ( count > limit ) {
+			_tiles[index].dataset.hidden = true;
+			_tiles[index].style.display = 'none';
+			_tiles[index].dataset.morehidden = true;
+			_tiles[index].moreTile = moreTile;
+			
+			// console.log('hiding tile ' + _tiles[index].title);
+		} else {
+			// console.log('showing tile ' + _tiles[index].title);
+		}
+		
+		count++;
+	});
+
+	if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
+		
+		moreTile.classList.remove('tile');
+		moreTile.classList.add('groupLabelMoreTile');
+		
+		['mouseup', 'click'].forEach( _e => {
+			moreTile.addEventListener(_e, e => e.stopPropagation() );
+		});
+		
+		if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
+		
+	} else {
+		if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
+		else console.log('not pushing moreTile', node);
+	}
+
+	return _tiles;
+}
+
+function makeGroupFolderFromTile(gf) {
+
+	// ignore non-top tier
+	if ( !gf.node.parent ) null;
+
+	let children = [...qm.querySelectorAll('.tile')].filter( t => t.node && t.node.parent === gf.node );
+
+	if ( !children.length ) return;
+
+	let g = document.createElement('group');
+	g.style.setProperty("--group-color", gf.node.groupColor);
+	g.style.display = Math.random() > .5 ? 'block' : 'inline';
+	
+
+	if ( g.style.display === 'inline' ) {
+		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit);
+	//	mlt.shift();
+		mlt.forEach(c => g.appendChild(c));
+
+	} else {
+
+		let label = document.createElement('label');
+	//	label.className = 'textShadow';
+		label.innerText = gf.node.title;
+		
+		if ( g.style.display === 'block') g.appendChild(label);
+
+		// label.ondblclick = e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+
+		// 	g.querySelectorAll('.tile').forEach( t => {
+		// 		t.classList.toggle('singleColumn');
+
+		// 		if ( t.classList.contains('singleColumn')) {
+		// 			t.style.maxWidth = 'none !important';
+		// 			t.style.minWidth = 'none !important';
+		// 		}
+
+		// 	});
+
+		// 	resizeMenu({more: true});
+		// }
+
+		label.hidden = false;
+		label.onclick = e => {
+
+			e.stopPropagation();
+			e.preventDefault();
+			label.hidden = !label.hidden;
+			g.querySelectorAll('.tile').forEach( t => {
+				t.style.display = label.hidden ? 'none': null;
+			});
+
+			resizeMenu({more: true});
+		}
+
+		let groupQM = document.createElement('div');
+		groupQM.className = 'container';
+		children.forEach( c => groupQM.appendChild(c));
+		g.appendChild(groupQM);
+
+		// children.forEach( c => g.appendChild(c));
+
+		let footer = document.createElement('div');
+		footer.style = 'height:2px;background-color:var(--group-color);cursor:row-resize';
+		g.appendChild(footer);
+
+		footer.draggable = false;
+
+		footer.addEventListener('mousedown', e => {
+			e.preventDefault();
+			e.stopPropagation();
+		}, {capture: true})
+
+		footer.addEventListener('dragstart', e => {
+			e.preventDefault();
+			e.stopPropagation();
+			console.log('dragstart');
+			return false;
+		}, {capture: true})
+
+
+	}
+
+	return g;
+}
+
+function makeContainerMore(el, rows) {
+	let visibleCount = getElementCountBeforeOverflow(el, rows);
+
+	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);
+	el.innerHTML = null;
+	moreified.forEach(t => el.appendChild(t));
+}
+
+function getElementCountBeforeOverflow(el, rows) {
+	rows = rows || 1;
+
+	el.style.transition = 'none';
+	el.style.position = 'relative';
+	el.style.overflow = 'auto';
+
+	if ( !el.firstChild || el.firstChild.offsetTop == el.lastChild.offsetTop ) return 0;
+
+	let rowCount = 0;
+
+	let wrap = null;
+
+	for ( c of [...el.children]) {
+		if ( c.nextSibling && c.offsetTop !== c.nextSibling.offsetTop) rowCount++;
+
+		if ( rowCount === rows ) {
+			wrap = c;
+			break;
+		}
+	}
+
+	el.style.position = null;
+	el.style.transition = null;
+	el.style.overflow = null;
+
+	if ( !wrap ) return 0;
+
+	let preWrap = wrap.previousSibling;
+
+	console.log('prewrap', [...el.children].indexOf(preWrap))
+		
+	return [...el.children].indexOf(wrap);
 }

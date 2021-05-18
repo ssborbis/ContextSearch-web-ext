@@ -215,5 +215,6 @@ const defaultUserOptions = {
 	cacheIconsMaxSize: 32,
 	cacheIcons: true,
 	userShortcuts: [],
-	shakeSensitivity: 3
+	shakeSensitivity: 3,
+	blockList: []
 };

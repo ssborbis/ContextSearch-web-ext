@@ -1,7 +1,7 @@
 var userOptions = {};
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions || {};
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {	
@@ -79,6 +79,7 @@ function linkOrImage(el, e) {
 	
 	return false;	
 }
+
 
 // https://stackoverflow.com/a/1045012
 function offset(elem) {

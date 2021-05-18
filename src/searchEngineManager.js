@@ -1,3 +1,5 @@
+var selectedRows = [];
+
 function buildSearchEngineContainer() {
 	
 	let table = document.createElement('div');
@@ -8,8 +10,6 @@ function buildSearchEngineContainer() {
 	table.style.verticalAlign = 'top';
 	table.style.overflowY = 'scroll';
 	
-	let selectedRows = [];
-
 	function traverse(node, parent) {	
 	
 		if ( !node ) {
@@ -1078,54 +1078,8 @@ function buildSearchEngineContainer() {
 				openMenu(_menu);
 				
 		//	}
-			
-			async function removeNodesAndRows() {
-
-				let edit_form = document.getElementById('editSearchEngineForm');
-				selectedRows.forEach( row => {
-					if ( row.contains(edit_form)) {
-						edit_form.style.maxHeight = null;
-						document.body.appendChild(edit_form);
-					}
-				})
-
-				// remember OCSEs to append hidden
-				let ffses = [];
-				selectedRows.forEach( row => {					
-					ffses = ffses.concat(findNodes( row.node, n => n.type === "oneClickSearchEngine"));
-				});
-
-				// remove nodes and rows
-				selectedRows.forEach( row => {
-					if ( row.node.parent ) removeNode(row.node, row.node.parent);
-					if ( row.parentNode ) row.parentNode.removeChild(row);
-				});
-				
-				// remove nodeless searchEngines
-				let indexesToRemove = [];
-				userOptions.searchEngines.forEach( (se,index) => {
-					if ( !findNode(rootElement.node, node => node.id === se.id) ) {
-						indexesToRemove.push(index);
-					}
-				});
-
-				for ( let i=indexesToRemove.length -1; i>-1; i-- ) {
-					userOptions.searchEngines.splice(indexesToRemove[i], 1);
-				}
-
-				// append hidden OCSEs
-				ffses.forEach( n => {
-					n.parent = rootElement.node;
-					n.hidden = true;
-					rootElement.node.children.push(n);
-				});
-
-				updateNodeList();
-				closeContextMenus();
-			}
-
 		}
-
+			
 		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
 		edit.addEventListener('click', e => {
 			e.stopPropagation();
@@ -1587,6 +1541,51 @@ function buildSearchEngineContainer() {
 	}
 }
 
+async function removeNodesAndRows() {
+
+	let edit_form = document.getElementById('editSearchEngineForm');
+	selectedRows.forEach( row => {
+		if ( row.contains(edit_form)) {
+			edit_form.style.maxHeight = null;
+			document.body.appendChild(edit_form);
+		}
+	})
+
+	// remember OCSEs to append hidden
+	let ffses = [];
+	selectedRows.forEach( row => {					
+		ffses = ffses.concat(findNodes( row.node, n => n.type === "oneClickSearchEngine"));
+	});
+
+	// remove nodes and rows
+	selectedRows.forEach( row => {
+		if ( row.node.parent ) removeNode(row.node, row.node.parent);
+		if ( row.parentNode ) row.parentNode.removeChild(row);
+	});
+	
+	// remove nodeless searchEngines
+	let indexesToRemove = [];
+	userOptions.searchEngines.forEach( (se,index) => {
+		if ( !findNode(rootElement.node, node => node.id === se.id) ) {
+			indexesToRemove.push(index);
+		}
+	});
+
+	for ( let i=indexesToRemove.length -1; i>-1; i-- ) {
+		userOptions.searchEngines.splice(indexesToRemove[i], 1);
+	}
+
+	// append hidden OCSEs
+	ffses.forEach( n => {
+		n.parent = rootElement.node;
+		n.hidden = true;
+		rootElement.node.children.push(n);
+	});
+
+	updateNodeList();
+	closeContextMenus();
+}
+
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
 
 	let form = $('#' + id);
@@ -1692,6 +1691,16 @@ document.addEventListener('keydown', e => {
 		e.preventDefault();
 		$('#searchEnginesManagerSearch').focus();
 		$('#searchEnginesManagerSearch').scrollIntoView();
+	}
+});
+
+document.addEventListener('keydown', e => {
+	if ( e.key === 'Delete' && selectedRows.length ) {
+		e.preventDefault();
+
+		if ( confirm(`Delete ${selectedRows.length} nodes?`)) {
+			removeNodesAndRows();
+		}
 	}
 });
 

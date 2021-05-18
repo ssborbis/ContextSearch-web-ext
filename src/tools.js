@@ -411,6 +411,33 @@ var QMtools = [
 			if ( window.tilesDraggable && tile ) 
 				tile.addEventListener('mouseup', e => this.action(), {once: true});
 		}
+	},
+	{
+		name: 'block', 
+		icon: "icons/block.svg",
+		title: browser.i18n.getMessage('addtoblocklist'),
+		context: ["quickmenu", "sidebar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			addTileEventHandlers(tile, () => this.action());
+			
+			return tile;
+		}, 
+		action: async function() {
+			let tabInfo = await browser.runtime.sendMessage({action:"getCurrentTabInfo"});
+			let url = new URL(tabInfo.url);
+
+			if ( !userOptions.blockList.includes(url.hostname) && confirm(browser.i18n.getMessage('addtoblocklistconfirm', url.hostname))) {
+				console.log('adding to blocklist', url.hostname);
+				userOptions.blockList.push(url.hostname);
+				saveUserOptions();
+			}
+		}
 	}
 ];
 

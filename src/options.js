@@ -344,6 +344,8 @@ function restoreOptions() {
 			return (tool) ? tool.persist || false : false;
 		})();
 
+		$('#t_blockList').value = userOptions.blockList.filter(el => el.trim()).join('\n');
+
 		buildSearchEngineContainer();
 				
 		// allow context menu on right-click
@@ -626,7 +628,8 @@ function saveOptions(e) {
 			closeOnShake: $('#cb_pageTilesCloseOnShake').checked
 		},
 
-		quickMenuTools: userOptions.quickMenuTools
+		quickMenuTools: userOptions.quickMenuTools,
+		blockList: $('#t_blockList').value.split(/\r?\n/)
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});

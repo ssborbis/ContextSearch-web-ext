@@ -3,8 +3,8 @@ var getSearchBar = () => document.getElementById('searchBar');
 var userOptions = {};
 var typeTimer = null;
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions;
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
 
 	setTheme();
 	
@@ -170,8 +170,8 @@ document.querySelector('#toggle_navbar').addEventListener('change', e => {
 document.querySelector('#toggle_searchalltabs').addEventListener('change', e => {
 	
 	// update the object before saving - this frame does not update userOptions automatically
-	browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-		userOptions = message.userOptions;
+	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+		userOptions = uo;
 		userOptions.highLight.findBar.searchInAllTabs = e.target.checked;
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		

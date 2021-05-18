@@ -13,7 +13,7 @@ async function notify(message, sender, sendResponse) {
 		let onFound = tabs => sender.tab = tabs[0];
 		let onError = err => console.error(err);
 		
-		await browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
+		sender.tab = await browser.tabs.query({currentWindow: true, active: true});
 	}
 
 	switch(message.action) {
@@ -61,7 +61,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getUserOptions":
-			return {"userOptions": userOptions};
+			return userOptions;
 			break;
 			
 		case "getDefaultUserOptions":
@@ -205,15 +205,24 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			break;
 			
-		case "getOpenSearchHref":
+		case "getOpenSearchLinks":
 		
-			let tab = await browser.tabs.query({currentWindow: true, active: true});
-			let result = await browser.tabs.executeScript( tab.id, {
-				code: "document.querySelector('link[type=\"application/opensearchdescription+xml\"]').href"
-			});
-			
-			result = result.shift();
-			return result ? {href: result} : {};
+		//	let tab = await browser.tabs.query({currentWindow: true, active: true});
+			try {
+				let results = await browser.tabs.executeScript( sender.tab.id, {
+					code: `
+						(() => {
+							let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
+							if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
+						})()`
+				});
+				
+				results = results.shift();
+				return results;
+			} catch (err) { 
+				console.error(err);
+				return null;
+			}
 
 			break;
 
@@ -315,8 +324,8 @@ async function notify(message, sender, sendResponse) {
 							code: `
 								var userOptions = {};
 
-								browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-									userOptions = message.userOptions || {};
+								browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+									userOptions = uo;
 								});
 								
 								setFavIconUrl("${favicon}");`
@@ -357,14 +366,17 @@ async function notify(message, sender, sendResponse) {
 			let parentNode = message.folderId ? findNode(userOptions.nodeTree, n => n.id === message.folderId) : userOptions.nodeTree;
 						
 			userOptions.searchEngines.push(se);
-			parentNode.children.push({
+
+			let node = {
 				type: "searchEngine",
 				title: se.title,
 				id: se.id,
 				hidden: false
-			});
+			}
+			parentNode.children.push(node);
 
 			notify({action: "saveOptions", userOptions:userOptions});
+			return node;
 			
 			break;
 			
@@ -648,6 +660,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "openBrowserAction":
+			console.log('openBrowserAction')
 			browser.browserAction.openPopup();
 			return;
 
@@ -670,13 +683,25 @@ async function notify(message, sender, sendResponse) {
 
 		case "sideBarOpenedOnSearchResults":
 
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: `(() => {
-					let result = window.openedOnSearchResults;
-					delete window.openedOnSearchResults;
-					return result;
-				})();`
-			});
+			// restricted pages throw anonymous errors from searchbar.js (pageAction)
+			try {
+				let result = await browser.tabs.executeScript(sender.tab.id, {
+					code: `(() => {
+						let result = window.openedOnSearchResults;
+						delete window.openedOnSearchResults;
+						return result;
+					})();`
+				});
+
+				return result;
+			} catch (err) {
+				console.error(err);
+				return null;
+			}
+			break;
+
+		case "injectContentScripts":
+			injectContentScripts(sender.tab);
 			break;
 	}
 }
@@ -2235,4 +2260,73 @@ function openSearchXMLToSearchEngine(xml) {
 		timeout:5000
 	});
 
+}
+
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+
+	if ( changeInfo.status !== "complete" ) return;
+
+	try {
+		let url = new URL(tab.url);
+
+		// test for pure hostname
+		if ( userOptions.blockList.includes(url.hostname)) return;
+
+		for ( let pattern of userOptions.blockList) {
+
+			// skip blank
+			if ( !pattern.trim() ) continue;
+
+			// skip disabled
+			if ( /^!|^#/.test(pattern) ) continue
+
+			// test for pure regex
+			try {
+				let regex = new RegExp(pattern);
+				if ( regex.test(url.href)) {
+					console.log(url.href + " matches " + pattern);
+					return;
+				}
+				continue;
+			} catch( err ) {}
+			
+			// test for wildcards
+			try {
+				let regex = new RegExp(pattern.replace(/\*/g, "[^ ]*").replace(/\./g, "\\."));
+				if ( regex.test(url.hostname) || regex.test(url.href)) {
+					console.log(url.href + " matches " + pattern);
+					return;
+				}
+				continue;
+			} catch (err) {}
+		}
+	} catch (err) { console.log('bad url for tab', tabId)}
+
+	injectContentScripts(tab);
+})
+
+function injectContentScripts(tab) {
+	[
+		"/lib/browser-polyfill.min.js",
+		"/lib/crossbrowser.js",
+		"/inject.js",
+		"/lib/mark.es6.min.js",
+		"/inject_highlight.js",
+		"/hotkeys.js",
+		"/defaultShortcuts.js",
+		"/dragshake.js"
+	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, allFrames: true, matchAboutBlank:false}))
+	browser.tabs.insertCSS(tab.id, {file: "/inject.css", allFrames: true, matchAboutBlank:false});
+
+	[
+		"/utils.js",
+		"/nodes.js",
+		"/opensearch.js",
+		"/searchEngineUtils.js",
+		"/dock.js",
+		"/inject_sidebar.js",
+		"/inject_customSearch.js",
+		"/resizeWidget.js"
+	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, allFrames: false, matchAboutBlank:false}))
+	browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", allFrames: false, matchAboutBlank:false});
 }

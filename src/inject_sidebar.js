@@ -1,8 +1,8 @@
 function getIframe() { return document.getElementById('CS_sbIframe') }
 function getOpeningTab() { return document.getElementById('CS_sbOpeningTab') }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions || {};
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
 
 	if ( userOptions.sideBar.widget.enabled )	
 		makeOpeningTab();

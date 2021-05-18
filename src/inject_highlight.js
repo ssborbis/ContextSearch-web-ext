@@ -1,6 +1,6 @@
-browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 		
-	userOptions = result.userOptions;
+	userOptions = uo;
 
 	// open findbar on pageload if set
 	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {

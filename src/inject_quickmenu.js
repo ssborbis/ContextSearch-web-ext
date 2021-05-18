@@ -753,6 +753,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				document.addEventListener('closequickmenu', removeOverDiv, {once: true});
 				installResizeWidget();
+
 				break;
 
 		}
@@ -765,6 +766,7 @@ function installResizeWidget() {
 	let columns = iframe.columns;
 	let tileCount = iframe.tileCount;
 	let tileSize = iframe.tileSize;
+	let originalRect;
 
 	let resizeWidget = addResizeWidget(iframe, {
 		tileSize: tileSize,
@@ -772,43 +774,47 @@ function installResizeWidget() {
 		rows: Math.ceil(tileCount / columns ),
 		onDragStart: o => {
 			iframe.docking.translatePosition('top', 'left');
+			originalRect = iframe.getBoundingClientRect();
 		},
 		onDrag: o => {
 
-			resizeWidget.style.visibility = 'hidden';
+			iframe.style.width = (originalRect.width + o.xOffset) * window.devicePixelRatio + "px";
+			iframe.style.height = (originalRect.height + o.yOffset) * window.devicePixelRatio + "px";
 
-			// set prefs
-			if ( resizeWidget.options.allowHorizontal ) userOptions.quickMenuColumns = o.columns;
-			if ( resizeWidget.options.allowVertical ) {
+			// resizeWidget.style.visibility = 'hidden';
+
+			// // set prefs
+			// if ( resizeWidget.options.allowHorizontal ) userOptions.quickMenuColumns = o.columns;
+			// if ( resizeWidget.options.allowVertical ) {
 				
-				// check for singleColumn
-				if ( resizeWidget.options.allowHorizontal )
-					userOptions.quickMenuRows = o.rows;
-				else
-					userOptions.quickMenuRowsSingleColumn = o.rows;
-			}
+			// 	// check for singleColumn
+			// 	if ( resizeWidget.options.allowHorizontal )
+			// 		userOptions.quickMenuRows = o.rows;
+			// 	else
+			// 		userOptions.quickMenuRowsSingleColumn = o.rows;
+			// }
 
-			// rebuild menu with new dimensions
-			iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
+			// // rebuild menu with new dimensions
+			// iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
 		},
 		onDrop: o => {
 
-			resizeWidget.style.visibility = null;
+			// resizeWidget.style.visibility = null;
 			
-			// resize changes the offsets
-			iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
+			// // resize changes the offsets
+			// iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
 			
-			// reset the fixed quadrant
-			iframe.style.transition = 'none';
-			let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
-			iframe.docking.translatePosition(position.v, position.h);
-			iframe.style.transition = null;
+			// // reset the fixed quadrant
+			// iframe.style.transition = 'none';
+			// let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
+			// iframe.docking.translatePosition(position.v, position.h);
+			// iframe.style.transition = null;
 				
-			// resize the menu again to shrink empty rows					
-			iframe.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
+			// // resize the menu again to shrink empty rows					
+			// iframe.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
 
-			// save prefs
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			// // save prefs
+			// browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		}
 	});
 

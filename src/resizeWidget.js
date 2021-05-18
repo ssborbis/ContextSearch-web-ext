@@ -14,7 +14,9 @@ function addResizeWidget(el, options) {
 		minRows: 1,
 		minCols: 1,
 		maxCols: 100,
-		maxRows: 100
+		maxRows: 100,
+		dx:0,
+		dy:0
 	}
 	
 	o = Object.assign(o, options);
@@ -84,11 +86,11 @@ function addResizeWidget(el, options) {
 				let rowsMod = Math.floor (( endCoords.y - startCoords.y ) / stepY);
 				
 				// size less than 1 do nothing
-				if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
+			//	if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
 
 				// ignore repeat drag events
-				if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
-					return;
+			//	if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
+				//	return;
 
 				o.columns = startSize.columns + colsMod;
 				o.rows = startSize.rows + rowsMod;
@@ -101,8 +103,7 @@ function addResizeWidget(el, options) {
 					rowsOffset: rowsMod,
 					xOffset: endCoords.x - startCoords.x,
 					yOffset: endCoords.y - startCoords.y,
-					endCoords: endCoords
-					
+					endCoords: endCoords					
 				});
 				
 				mostRecentModSize = {columns: colsMod, rows: rowsMod};

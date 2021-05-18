@@ -74,10 +74,13 @@ async function changeTheme(i) {
 		link.parentNode.removeChild(link);
 	})
 
+	qm.insertBreaks();
 	await setTheme(theme);
 
-//	qm.setMinWidth();
-	resizeMenu({widgetResize: true});
+	//resizeMenu({widgetResize: true});
+	runAtTransitionEnd(document.body, ["width", "height"], () => {
+		resizeMenu();
+	});
 
 	userOptions.quickMenuTheme = theme.name;
 
