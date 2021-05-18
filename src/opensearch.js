@@ -70,6 +70,8 @@ function getDomains(url) {
 		if (!subdomain) return "";
 		
 		var parts = subdomain.split('.');
+
+		if ( parts.length === 1 ) return parts[0]; // localhost, etc
 		
 		let code = parts[parts.length-1];
 			
@@ -113,6 +115,7 @@ function getDomainPaths(_url) {
 	
 	// add domain if subdomain
 	let domains = getDomains(url.href);
+
 	let domain = domains.domain;
 	
 	if ( !paths.includes( domain ) )

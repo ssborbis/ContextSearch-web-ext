@@ -63,7 +63,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// replace text with selection
 	(async () => {
 		let results = await browser.runtime.sendMessage({action: "getSelectedText"});
-		let text = results.shift();
+		let text = results ? results.shift() : null;
 	
 		if ( text ) sb.value = text;
 

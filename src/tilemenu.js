@@ -1799,6 +1799,8 @@ document.addEventListener('mouseup', e => {
 
 			if ( tile.dataset.subtype && tile.dataset.subtype === 'sitesearch') {
 
+				tile.keepOpen = true;
+
 				async function openFolder(e) {
 					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
 
@@ -2062,7 +2064,7 @@ function nodeToTile( node ) {
 			tile.dataset.title = se.title;
 
 			
-			// // site search picker
+			// site search picker
 			if ( se.template.indexOf('{selectdomain}') !== -1 ) {
 				tile.dataset.id = node.id;
 				tile.dataset.type = 'folder';
