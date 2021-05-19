@@ -1733,6 +1733,12 @@ isMoving = e => {
 	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
 }
 
+// prevent most click events
+document.addEventListener('mousedown', e => {
+	if ( !e.target.closest("INPUT"))
+		e.preventDefault();
+});
+
 document.addEventListener('mousedown', e => {
 	let tile = e.target.closest('.tile');
 
@@ -1745,7 +1751,7 @@ document.addEventListener('mousedown', e => {
 
 	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch'].includes(tile.node.type)) return;
 
-	tile.parentNode.lastMouseDownTile = tile;
+	tile.parentNode.lastMouseDownTile = tile;	
 });
 
 document.addEventListener('mouseup', e => {
@@ -1796,54 +1802,6 @@ document.addEventListener('mouseup', e => {
 	switch ( node.type ) {
 	
 		case 'searchEngine':
-
-			if ( tile.dataset.subtype && tile.dataset.subtype === 'sitesearch') {
-
-				tile.keepOpen = true;
-
-				async function openFolder(e) {
-					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-					let siteSearchNode = {
-						type:"folder",
-						parent:node.parent,
-						children:[],
-						id:node.id,
-						forceSingleColumn:true
-					}
-					
-					let url = new URL(tab.url);
-
-					getDomainPaths(url).forEach( path => {
-						siteSearchNode.children.push({
-							type: "siteSearch",
-							title: path,
-							parent:node,
-							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-						});	
-					});
-					
-					qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-					for ( let _tile of qm.querySelectorAll('.tile') ) {
-						if ( _tile.node.title === url.hostname ) {
-							_tile.classList.add('selectedFocus');
-							_tile.dataset.selectfirst = "true";
-							break;
-						}
-					}
-
-					resizeMenu({openFolder: true});
-				}
-
-				openFolder(e);
-
-					// tile.addEventListener('mouseup', openFolder);
-					// tile.addEventListener('openFolder', openFolder);
-
-				break;
-			}
-
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
 				info: {
@@ -1877,18 +1835,46 @@ document.addEventListener('mouseup', e => {
 			break;
 
 		case 'siteSearch':
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: tile.node.parent.id,
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e),
-					domain: tile.dataset.title
+
+			tile.keepOpen = true;
+
+			async function openFolder(e) {
+				let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+				let siteSearchNode = {
+					type:"folder",
+					parent:node.parent,
+					children:[],
+					id:node.id,
+					forceSingleColumn:true
 				}
-			});
-			
-			// click the back button
-			qm.back();
+				
+				let url = new URL(tab.url);
+
+				getDomainPaths(url).forEach( path => {
+					siteSearchNode.children.push({
+						type: "siteSearch",
+						title: path,
+						parent:node,
+						icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+					});	
+				});
+				
+				qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+				for ( let _tile of qm.querySelectorAll('.tile') ) {
+					if ( _tile.node.title === url.hostname ) {
+						_tile.classList.add('selectedFocus');
+						_tile.dataset.selectfirst = "true";
+						break;
+					}
+				}
+
+				resizeMenu({openFolder: true});
+			}
+
+			openFolder(e);
+
 			break;
 	}
 
@@ -2060,70 +2046,13 @@ function nodeToTile( node ) {
 				return;
 			}
 
+			// site search picker
+			if ( se.template.includes('{selectdomain}') )
+				return nodeToTile(Object.assign(node, {type: "siteSearch"}));
+
 			tile = buildSearchIcon(getIconFromNode(node), se.title);
 			tile.dataset.title = se.title;
-
-			
-			// site search picker
-			if ( se.template.indexOf('{selectdomain}') !== -1 ) {
-				tile.dataset.id = node.id;
-				tile.dataset.type = 'folder';
-				tile.dataset.subtype = 'sitesearch';
-			}
-
-			// 	tile.addEventListener('mouseup', openFolder);
-			// 	tile.addEventListener('openFolder', openFolder);
 				
-			// 	async function openFolder(e) {
-
-			// 		let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-			// 		let siteSearchNode = {
-			// 			type:"folder",
-			// 			parent:node.parent,
-			// 			children:[],
-			// 			id:node.id,
-			// 			forceSingleColumn:true
-			// 		}
-					
-			// 		let url = new URL(tab.url);
-
-			// 		getDomainPaths(url).forEach( path => {
-			// 			siteSearchNode.children.push({
-			// 				type: "siteSearch",
-			// 				title: path,
-			// 				parent:node,
-			// 				icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-			// 			});	
-			// 		});
-					
-			// 		qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-			// 		for ( let _tile of qm.querySelectorAll('.tile') ) {
-			// 			if ( _tile.node.title === url.hostname ) {
-			// 				_tile.classList.add('selectedFocus');
-			// 				_tile.dataset.selectfirst = "true";
-			// 				break;
-			// 			}
-			// 		}
-
-			// 		resizeMenu({openFolder: true});
-			// 	}
-				
-			// 	break;
-			// }
-			
-			// addTileEventHandlers(tile, e => {
-			// 	browser.runtime.sendMessage({
-			// 		action: "quickMenuSearch", 
-			// 		info: {
-			// 			menuItemId: node.id,
-			// 			selectionText: sb.value,
-			// 			openMethod: getOpenMethod(e)
-			// 		}
-			// 	});
-			// });
-			
 			tile.dataset.id = node.id;
 			tile.dataset.type = 'searchEngine';
 			
@@ -2148,12 +2077,14 @@ function nodeToTile( node ) {
 			break;
 
 		case "separator":
+
 			tile = document.createElement('hr');
 			tile.dataset.type = 'separator';
 
 			break;
 	
 		case "folder":
+
 			tile = buildSearchIcon( getIconFromNode(node), node.title);
 
 			tile.dataset.type = 'folder';
@@ -2202,26 +2133,13 @@ function nodeToTile( node ) {
 			
 		case "siteSearch":
 
-			tile = buildSearchIcon(node.icon, node.title);
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
 			tile.dataset.type = 'siteSearch';
 			tile.dataset.id = node.id || "";	
 			tile.dataset.title = node.title;
 
-			// addTileEventHandlers(tile, e => {
-			// 	browser.runtime.sendMessage({
-			// 		action: "quickMenuSearch", 
-			// 		info: {
-			// 			menuItemId: node.parent.id,
-			// 			selectionText: sb.value,
-			// 			openMethod: getOpenMethod(e),
-			// 			domain: tile.dataset.title
-			// 		}
-			// 	});
-				
-			// 	// click the back button
-			// 	qm.back();
-			// 	//tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
-			// });
+			tile.dataset.type = 'folder';
+			tile.dataset.subtype = 'sitesearch';
 
 			break;
 			

@@ -139,7 +139,7 @@ function repairNodeTree(tree) {
 
 function getIconFromNode(node) {
 	
-	if ( node.type === "searchEngine" ) {
+	if ( node.type === "searchEngine" || node.type === "siteSearch") {
 		let se = userOptions.searchEngines.find( se => se.id === node.id );
 		if ( !se ) return browser.runtime.getURL('icons/search.svg');
 		return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
