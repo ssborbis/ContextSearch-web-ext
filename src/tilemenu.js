@@ -2114,6 +2114,7 @@ function nodeToTile( node ) {
 	tile.node = node;
 	
 	return tile;
+	
 }
 
 
