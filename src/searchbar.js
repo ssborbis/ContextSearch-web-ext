@@ -42,10 +42,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 				document.body.appendChild(toolBar);
 		});
 
+	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+
 	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
 	if ( sideBarOpenedOnSearchResults ) focusSearchBar = false;
-
-	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 });
 
@@ -199,7 +199,7 @@ async function sideBarResize(options) {
 
 	qm.insertBreaks();
 
-	await new Promise(r => setTimeout(r, 500));
+	// await new Promise(r => setTimeout(r, 500));
 
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
@@ -216,20 +216,25 @@ async function sideBarResize(options) {
 
 	let qm_height = qm.style.height;
 
-	await new Promise(r => setTimeout(r, 500));
+	// await new Promise(r => setTimeout(r, 500));
 
-	console.log(qm.style.height);
+	// console.log(qm.style.height);
 	
-	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 10000 );
+	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 9999 );
 	
 	document.body.style.height = docked ? "100vh" : document.body.style.height;
 	
-	qm.style.height = null;
+	//document.body.style.height = 9999 + "px";
+	document.body.style.width = 9999 + "px";
+
 	qm.style.width = null;
+	qm.style.height = null;
 
-	await new Promise(r => setTimeout(r, 500));
+	// console.log(qm.style.width, qm.style.height)
 
-	console.log(qm.style.height, document.body.style.height, document.body.getBoundingClientRect().height);
+	// await new Promise(r => setTimeout(r, 500));
+
+	// console.log(qm.style.height, document.body.style.height, document.body.getBoundingClientRect().height);
 
 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");	
 
@@ -246,30 +251,33 @@ async function sideBarResize(options) {
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
 
-	await new Promise(r => setTimeout(r, 500));
+	// await new Promise(r => setTimeout(r, 500));
 
-	console.log(qm.style.height);
+	// console.log(qm.style.height);
 
 	// account for scrollbars
 	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
 
 	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
 
-	await new Promise(r => setTimeout(r, 500));
+	// await new Promise(r => setTimeout(r, 500));
 
-	console.log(qm.style.height);
+	// console.log(qm.style.height);
+
+	document.body.style.width = null;
+//	document.body.style.height = null;
 
 	document.documentElement.style.setProperty('--iframe-body-width', document.body.offsetWidth + "px");
 
-	await new Promise(r => setTimeout(r, 500));
+	// await new Promise(r => setTimeout(r, 500));
 
-	console.log(qm.style.height);
+	// console.log(qm.style.height);
 
 	qm.removeBreaks();
 
-	await new Promise(r => setTimeout(r, 500));
+	// await new Promise(r => setTimeout(r, 500));
 
-	console.log(qm.style.height);
+	// console.log(qm.style.height);
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 

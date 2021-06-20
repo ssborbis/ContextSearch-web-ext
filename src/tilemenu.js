@@ -1308,6 +1308,8 @@ function makeSearchBar() {
 
 			si.style.transform = null;
 
+			runAtTransitionEnd(sg, "height", resizeMenu)
+
 			return;
 		}
 
@@ -1538,80 +1540,6 @@ function createToolsBar(qm) {
 		tool.className = 'tile';
 		toolBar.appendChild(tool);
 	});
-
-/*
-	let ls = document.createElement('span');
-	ls.innerHTML = "&#9668;";		
-	ls.style.left = 0;
-	toolBar.appendChild(ls);
-	
-	let rs = document.createElement('span');
-	rs.innerHTML = "&#9658;";
-	rs.style.right = 0;
-	toolBar.appendChild(rs);
-	
-	ls.className = rs.className = "toolBarArrow";
-	ls.style.height = rs.style.height = ls.style.lineHeight = rs.style.lineHeight = qm.toolsArray[0].offsetHeight + "px";
-	
-	// let mouseoverInterval = null;
-	// rs.addEventListener('mouseenter', e => {
-	// 	if ( !e.buttons ) return;
-	// 	mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
-	// });
-	
-	// ls.addEventListener('mouseenter', e => {
-	// 	if ( !e.buttons ) return;	
-	// 	mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
-	// });
-	
-	// [rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
-
-	rs.addEventListener('click', e => {
-		let amount = toolBar.getBoundingClientRect().width / 2;
-		if ( toolBar.scrollTo )
-			toolBar.scrollTo({left:toolBar.scrollLeft + amount, behavior:'smooth'})
-		else
-			toolBar.scrollLeft += amount;
-
-		// if ( toolBar.scrollLeft >= toolBar.scrollWidth - toolBar.offsetWidth )
-		// 	rs.style.display = null;
-		// else
-		// 	rs.style.display = 'inline-block';
-	});
-
-	ls.addEventListener('click', e => {
-		let amount = toolBar.getBoundingClientRect().width / 2;
-		if ( toolBar.scrollTo )
-			toolBar.scrollTo({left:toolBar.scrollLeft - amount, behavior:'smooth'})
-		else
-			toolBar.scrollLeft -= amount;
-
-		// if ( toolBar.scrollLeft - amount <= 0 )
-		// 	ls.style.display = null;
-		// else
-		// 	ls.style.display = 'inline-block';	
-	});
-
-	function showScrollButtons() {
-		ls.style.display = toolBar.scrollLeft ? 'inline-block' : 'none';
-		rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : 'none';
-	}
-	
-	// scroll on mouse wheel
-	toolBar.addEventListener('wheel', e => {
-		toolBar.scrollLeft += (e.deltaY*6);
-		e.preventDefault();
-	});
-
-	[rs,ls].forEach( s => {
-		s.addEventListener('mouseenter', e => {
-		 	showScrollButtons();
-			s.addEventListener('mouseleave',showScrollButtons, {once: true});	
-		});
-	});
-
-	toolBar.addEventListener('scroll', showScrollButtons);
-	*/
 }
 
 function getSideDecimal(t, e) {
@@ -1749,7 +1677,7 @@ document.addEventListener('mousedown', e => {
 		return;
 	}
 
-	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch'].includes(tile.node.type)) return;
+	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
 
 	tile.parentNode.lastMouseDownTile = tile;	
 });
@@ -1765,7 +1693,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !tile ) return;
 
-	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch'].includes(tile.node.type)) return;
+	if (!['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
 
 	if ( tile.disabled ) return false;
 
@@ -1834,7 +1762,7 @@ document.addEventListener('mouseup', e => {
 			});
 			break;
 
-		case 'siteSearch':
+		case 'siteSearchFolder':
 
 			tile.keepOpen = true;
 
@@ -1856,6 +1784,7 @@ document.addEventListener('mouseup', e => {
 						type: "siteSearch",
 						title: path,
 						parent:node,
+						id: node.id,
 						icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
 					});	
 				});
@@ -1876,6 +1805,20 @@ document.addEventListener('mouseup', e => {
 			openFolder(e);
 
 			break;
+
+		case 'siteSearch':
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: tile.node.id, // needs work
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e),
+					domain: tile.node.title
+				}
+			});
+
+			break;
+
 	}
 
 	// check for locked / Keep Menu Open 
@@ -2048,7 +1991,7 @@ function nodeToTile( node ) {
 
 			// site search picker
 			if ( se.template.includes('{selectdomain}') )
-				return nodeToTile(Object.assign(node, {type: "siteSearch"}));
+				return nodeToTile(Object.assign(node, {type: "siteSearchFolder"}));
 
 			tile = buildSearchIcon(getIconFromNode(node), se.title);
 			tile.dataset.title = se.title;
@@ -2131,16 +2074,22 @@ function nodeToTile( node ) {
 
 			break;
 			
-		case "siteSearch":
+		case "siteSearchFolder":
 
 			tile = buildSearchIcon(getIconFromNode(node), node.title);
-			tile.dataset.type = 'siteSearch';
+			tile.dataset.type = 'siteSearchFolder';
 			tile.dataset.id = node.id || "";	
 			tile.dataset.title = node.title;
 
 			tile.dataset.type = 'folder';
 			tile.dataset.subtype = 'sitesearch';
 
+			break;
+
+		case "siteSearch":
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'siteSearch';
+			tile.dataset.title = node.title;
 			break;
 			
 		case "bookmark":

@@ -82,7 +82,7 @@ function setMenuSize(o) {
 	qm.style.overflow = null;
 	qm.style.width = null;
 	document.body.style.width = '9999px';
-	document.body.style.height = '9999px';
+	document.body.style.height = maxHeight + "px";
 
 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
 	
@@ -293,8 +293,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 	userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
 		
 	setTheme()
-		.then(() => setUserStyles())
-		.then(() => makeFrameContents());
+		.then(setUserStyles)
+		.then(makeFrameContents);
 });
 
 // prevent context menu when using right-hold
