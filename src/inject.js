@@ -15,7 +15,7 @@ function getSelectedText(el) {
 		let finish = el.selectionEnd;
 		return el.value.substring(start, finish);
 	} else
-		return window.getSelection().toString();
+		return window.getSelection().toString().trim();
 
 }
 
@@ -34,7 +34,7 @@ document.addEventListener("selectionchange", ev => {
 
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
 	
-	let searchTerms = window.getSelection().toString();
+	let searchTerms = window.getSelection().toString().trim();
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
