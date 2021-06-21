@@ -2035,6 +2035,8 @@ function nodeToTile( node ) {
 			
 			// prevent scroll icon
 			tile.addEventListener('mousedown', e => {
+
+				tile.parentNode.lastMouseDownTile = tile;
 				
 				// skip for dnd events
 				if ( e.which === 1 ) return;
@@ -2042,7 +2044,10 @@ function nodeToTile( node ) {
 				e.stopPropagation();
 			});
 
-			tile.addEventListener('mouseup', openFolder);
+			tile.addEventListener('mouseup', e => {
+				if ( clickChecker(tile) ) openFolder(e);
+			});
+
 			tile.addEventListener('openFolder', openFolder);
 
 			addOpenFolderOnHover(tile);
@@ -2276,35 +2281,46 @@ function makeGroupFolderFromTile(gf) {
 		let label = document.createElement('label');
 	//	label.className = 'textShadow';
 		label.innerText = gf.node.title;
+		label.style.position = 'relative';
 		
 		if ( g.style.display === 'block') g.appendChild(label);
 
-		// label.ondblclick = e => {
-		// 	e.preventDefault();
-		// 	e.stopPropagation();
+		label.ondblclick = e => {
+			e.preventDefault();
+			e.stopPropagation();
 
-		// 	g.querySelectorAll('.tile').forEach( t => {
-		// 		t.classList.toggle('singleColumn');
+			g.querySelectorAll('.tile').forEach( t => {
+				t.classList.toggle('singleColumn');
 
-		// 		if ( t.classList.contains('singleColumn')) {
-		// 			t.style.maxWidth = 'none !important';
-		// 			t.style.minWidth = 'none !important';
-		// 		}
+				if ( t.classList.contains('singleColumn')) {
+					t.style.maxWidth = 'none !important';
+					t.style.minWidth = 'none !important';
+				}
 
-		// 	});
+			});
 
-		// 	resizeMenu({more: true});
-		// }
+			resizeMenu({more: true});
+		}
+
+		let showHide = document.createElement('div');
+		showHide.className = 'labelShowHide';
+		showHide.style = "display:inline-block;position:absolute;z-index:2;right:0;top:0;width:20px;height:100%;";
+		label.appendChild(showHide);
+		showHide.innerText = "▢";
 
 		label.hidden = false;
-		label.onclick = e => {
+		showHide.ondblclick = e => e.stopPropagation();
+		showHide.onclick = e => {
 
 			e.stopPropagation();
 			e.preventDefault();
 			label.hidden = !label.hidden;
 			g.querySelectorAll('.tile').forEach( t => {
 				t.style.display = label.hidden ? 'none': null;
+				t.dataset.hidden = label.hidden;
 			});
+
+			showHide.innerText = label.hidden ? "_" : "▢";
 
 			resizeMenu({more: true});
 		}
