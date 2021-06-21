@@ -3236,22 +3236,28 @@
 								</select>
 							</td>
 						</tr>
+						
 						<tr>
 							<td data-i18n="grouplayout">_</td>
-							<td><input name="groupFolder" type="checkbox" class="inputNice" style="width:auto"/>
-								 <span data-i18n="grouplayoutmessage">_</span>
-								</td>
+							<td>
+								<select name="groupFolder" type="checkbox" class="inputNice" style="width:auto;font-size:9pt;">
+									<option value="none">none</option>
+									<option value="inline">inline</option>
+									<option value="block">block</option>
+								</select>
+								<span style="font-size:9pt;" data-i18n="grouplayoutmessage">_</span>
+							</td>
 						</tr>
 						<tr>
 							<td data-i18n="groupcolor">_</td>
 							<td>
-								<input type="text" class="inputNice" style="width:150px" name="groupColor" />
+								<input type="text" class="inputNice" style="width:150px;font-size:9pt;" name="groupColor" />
 								<input name="groupColorPicker" type="color" class="inputNice" style="width:30px;"/>
 							</td>
 						</tr>
 						<tr>
 							<td data-i18n="grouplimit">_</td>
-							<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;"/></td>
+							<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;font-size:9pt;"/></td>
 						</tr>
 						<tr>
 							<td data-i18n="grouphidemoretile">_</td>

@@ -652,7 +652,7 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
+		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"]), LABEL');
 
 		isBlock = el => el.style.display === 'block';
 
@@ -2114,7 +2114,7 @@ function nodeToTile( node ) {
 	tile.node = node;
 	
 	return tile;
-	
+
 }
 
 
@@ -2261,8 +2261,10 @@ function makeGroupFolderFromTile(gf) {
 
 	let g = document.createElement('group');
 	g.style.setProperty("--group-color", gf.node.groupColor);
-	g.style.display = Math.random() > .5 ? 'block' : 'inline';
-	
+//	g.style.display = Math.random() > .5 ? 'block' : 'inline';
+
+	if ( gf.node.groupFolder && ['inline', 'block'].includes(gf.node.groupFolder) )
+		g.style.display = gf.node.groupFolder;
 
 	if ( g.style.display === 'inline' ) {
 		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit);

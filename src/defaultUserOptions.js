@@ -216,5 +216,6 @@ const defaultUserOptions = {
 	cacheIcons: true,
 	userShortcuts: [],
 	shakeSensitivity: 3,
-	blockList: []
+	blockList: [],
+	version: 1
 };

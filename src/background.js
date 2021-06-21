@@ -2026,6 +2026,30 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
+
+		// groupFolder object changed from true/false to none/inline/block
+		findNodes(_uo.nodeTree, n => {
+
+			if ( !n.groupFolder ) return;
+
+			if ( n.groupFolder === true ) {
+				n.groupFolder = "inline";
+				console.log(n.title, "groupFolder changed to inline");
+			} else if ( n.groupFolder === false ) {
+				n.groupFolder = "none";
+				console.log(n.title, "groupFolder changed to none");
+			}
+		});
+
+		return _uo;
+
+	}).then( _uo => {
+
+		_uo.version = browser.runtime.getManifest().version;
+
+		return _uo;
+
+	}).then( _uo => {
 		console.log('Done', Date.now() - start);
 		return _uo;
 	});

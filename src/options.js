@@ -629,7 +629,8 @@ function saveOptions(e) {
 		},
 
 		quickMenuTools: userOptions.quickMenuTools,
-		blockList: $('#t_blockList').value.split(/\r?\n/)
+		blockList: $('#t_blockList').value.split(/\r?\n/),
+		version: userOptions.version
 	}
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
