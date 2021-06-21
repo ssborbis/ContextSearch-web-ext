@@ -48,8 +48,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		switch (message.action) {
 
 			case "openCustomSearch":
+
+				// if message contains a search engine, use that
+				if ( message.se ) {
+
+				}
 			
-				if ( !window.document.querySelector("input:focus,textarea:focus") && !message.searchEngine ) {
+				if ( !message.se && !window.document.querySelector("input:focus,textarea:focus") && !message.searchEngine ) {
 					console.log("no focused input found");
 					return;
 				}
@@ -74,6 +79,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 					if (e.origin !== new URL(browser.runtime.getURL('/')).origin) return;	
 					if (e.data.status !== 'complete') return;
+
+					if ( message.se ) {
+						iframe.contentWindow.postMessage({searchEngine: message.se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/customSearch.html'));
+						return true;
+					}
 					
 					if (message.useOpenSearch) { // openCustomSearch called by page_action
 

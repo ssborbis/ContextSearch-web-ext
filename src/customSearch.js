@@ -664,7 +664,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 // listen for the custom engine to prompt to add
-window.addEventListener("message", e => {
+window.addEventListener("message", async e => {
+
+	// in case message is early
+	if ( !userOptions.nodeTree )
+		userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
 
 	if (e.data.action && e.data.action === "promptToSearch") {
 		let ok = document.getElementById('b_simple_search_ok');

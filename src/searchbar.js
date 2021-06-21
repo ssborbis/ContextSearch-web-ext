@@ -348,6 +348,10 @@ async function makeAddEngineBar() {
 		div.insertBefore(img, div.firstChild);
 
 		div.onclick = async() => {
+
+			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
+			return;
+
 			img.src = browser.runtime.getURL('icons/spinner.svg');
 			let loadImages = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url:ose.href});
 			let se = loadImages.searchEngines[0];

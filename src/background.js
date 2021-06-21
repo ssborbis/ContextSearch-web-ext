@@ -710,6 +710,10 @@ async function notify(message, sender, sendResponse) {
 		case "injectContentScripts":
 			injectContentScripts(sender.tab);
 			break;
+
+		case "openCustomSearch":
+			sendMessageToTopFrame();
+			break;
 	}
 }
 
