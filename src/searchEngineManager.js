@@ -1649,7 +1649,14 @@ function createFormContainer(form) {
 	overdiv.style.opacity = 0;
 	document.body.appendChild(overdiv);
 
+	// chrome fix for menu closing on text select events
+	overdiv.onmousedown = e => {
+		if ( overdiv !== e.target) return;
+		overdiv.mousedown = true;
+	}
+
 	overdiv.onclick = e => {
+		if ( !overdiv.mousedown ) return;
 		if ( overdiv !== e.target) return;
 		form.close.click();
 	}
