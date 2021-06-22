@@ -747,8 +747,7 @@
 			.editForm {
 				display:none;
 				overflow:hidden;
-			}
-						
+			}			
 			.editForm INPUT:not([name="iconPicker"]), .editForm SELECT, .editForm TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
@@ -759,12 +758,14 @@
 				padding-top:8px;
 				background-color:var(--bg-color1);
 				color:var(--color1);
-
-				height:18px;
 				font-family:inherit;
-				resize:vertical;
-				line-height: 20px;
 			}
+			.editForm TEXTAREA {
+				line-height: 20px;
+				height: 18px;
+				resize:vertical;
+			}
+
 			.editForm SELECT {
 				width:120px;
 			}
@@ -777,7 +778,7 @@
 				border:1px solid pink;
 				box-shadow:0px 0px 3px 1px pink;
 			}
-			.editForm > LABEL {
+			.editForm > LABEL, .editForm > DIV > LABEL {
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
@@ -3174,16 +3175,16 @@
 						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
-					<label data-i18n="POSTparams">_</label><input name="post_params" type="text" class="inputNice" />
+					<label data-i18n="POSTparams">_</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
 					<label data-i18n="Regex">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
 					<label data-i18n="SearchCode">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
 
 					<div style="display:inline-block">
 					<label data-i18n="Method">_</label>
-					<select name="_method" class="inputNice">
-						<option value="GET">GET</option>
-						<option value="POST">POST</option>
-					</select>
+						<select name="_method" class="inputNice">
+							<option value="GET">GET</option>
+							<option value="POST">POST</option>
+						</select>
 					</div>
 					
 					<div style="display:inline-block">
