@@ -316,6 +316,11 @@ async function makeQuickMenu(options) {
 			div.parentNode.lastMouseDownTile = div;
 			div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
 		}
+
+		// backspace triggers Back event
+		if ('Backspace' === e.key && qm.rootNode.parent && sb !== document.activeElement ) {
+			qm.back();
+		}
 	});
 
 	// tab and arrow keys move selected search engine
