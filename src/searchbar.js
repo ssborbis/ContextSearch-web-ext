@@ -239,16 +239,17 @@ async function sideBarResize(options) {
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
 
-	// account for scrollbars
-	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
-
-	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
+	qm.style.width = qm.getBoundingClientRect().width + "px";
 
 	document.body.style.width = null;
 
 	document.documentElement.style.setProperty('--iframe-body-width', document.body.offsetWidth + "px");
 
 	qm.removeBreaks();
+
+	// account for scrollbars
+	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
+	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
 
 	toolBar.style.width = qm.style.width;
 
