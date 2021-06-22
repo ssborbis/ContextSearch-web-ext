@@ -199,8 +199,6 @@ async function sideBarResize(options) {
 
 	qm.insertBreaks();
 
-	// await new Promise(r => setTimeout(r, 500));
-
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
 		return window.parent.postMessage({
@@ -216,10 +214,6 @@ async function sideBarResize(options) {
 
 	let qm_height = qm.style.height;
 
-	// await new Promise(r => setTimeout(r, 500));
-
-	// console.log(qm.style.height);
-	
 	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 9999 );
 	
 	document.body.style.height = docked ? "100vh" : document.body.style.height;
@@ -229,12 +223,6 @@ async function sideBarResize(options) {
 
 	qm.style.width = null;
 	qm.style.height = null;
-
-	// console.log(qm.style.width, qm.style.height)
-
-	// await new Promise(r => setTimeout(r, 500));
-
-	// console.log(qm.style.height, document.body.style.height, document.body.getBoundingClientRect().height);
 
 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");	
 
@@ -251,33 +239,18 @@ async function sideBarResize(options) {
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
 
-	// await new Promise(r => setTimeout(r, 500));
-
-	// console.log(qm.style.height);
-
 	// account for scrollbars
 	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
 
 	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
 
-	// await new Promise(r => setTimeout(r, 500));
-
-	// console.log(qm.style.height);
-
 	document.body.style.width = null;
-//	document.body.style.height = null;
 
 	document.documentElement.style.setProperty('--iframe-body-width', document.body.offsetWidth + "px");
 
-	// await new Promise(r => setTimeout(r, 500));
-
-	// console.log(qm.style.height);
-
 	qm.removeBreaks();
 
-	// await new Promise(r => setTimeout(r, 500));
-
-	// console.log(qm.style.height);
+	toolBar.style.width = qm.style.width;
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
@@ -352,28 +325,28 @@ async function makeAddEngineBar() {
 			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 			return;
 
-			img.src = browser.runtime.getURL('icons/spinner.svg');
-			let loadImages = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url:ose.href});
-			let se = loadImages.searchEngines[0];
+			// img.src = browser.runtime.getURL('icons/spinner.svg');
+			// let loadImages = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url:ose.href});
+			// let se = loadImages.searchEngines[0];
 
-			if ( !se ) return;
+			// if ( !se ) return;
 
-			let node = await browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine:se});
-			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+			// let node = await browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine:se});
+			// userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
 			
-			div.addEventListener('transitionend', async e => {
-				div.parentNode.removeChild(div);
+			// div.addEventListener('transitionend', async e => {
+			// 	div.parentNode.removeChild(div);
 
-				let tile = nodeToTile(node);
+			// 	let tile = nodeToTile(node);
 
-				let firstTile = qm.querySelector('DIV.tile');
-				tile.className = firstTile.className;
-				tile.style.width = firstTile.style.width;
-				qm.appendChild(tile);
-				tile.scrollIntoView({block: "start", behavior:"smooth"});
-			});
-			img.src = browser.runtime.getURL('icons/checkmark.svg');
-			div.style.opacity = 0;
+			// 	let firstTile = qm.querySelector('DIV.tile');
+			// 	tile.className = firstTile.className;
+			// 	tile.style.width = firstTile.style.width;
+			// 	qm.appendChild(tile);
+			// 	tile.scrollIntoView({block: "start", behavior:"smooth"});
+			// });
+			// img.src = browser.runtime.getURL('icons/checkmark.svg');
+			// div.style.opacity = 0;
 
 		}
 		
