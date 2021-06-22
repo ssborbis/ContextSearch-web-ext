@@ -438,6 +438,47 @@ var QMtools = [
 				saveUserOptions();
 			}
 		}
+	},
+	{
+		name: 'recentlyused', 
+		icon: "icons/history.svg",
+		title: browser.i18n.getMessage('recentlyused'),
+		context: ["quickmenu", "sidebar", "toolbar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			addTileEventHandlers(tile, () => this.action());
+			
+			return tile;
+		}, 
+		action: async function() {
+
+			// recently used engines
+//	if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
+
+			let folder = {
+				type: "folder",
+				id: "___recent___",
+				title: browser.i18n.getMessage('Recent'),
+				children: [],
+				parent: qm.rootNode
+			}	
+
+			userOptions.recentlyUsedList.forEach( (id,index) => {
+				if ( index > userOptions.recentlyUsedListLength -1 ) return;
+				let lse = findNode(userOptions.nodeTree, node => node.id === id);
+				folder.children.push(Object.assign({}, lse));
+			});
+
+			qm = await quickMenuElementFromNodeTree(folder);
+			
+			resizeMenu({openFolder: true});
+		
+		}
 	}
 ];
 
