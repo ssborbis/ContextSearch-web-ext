@@ -443,7 +443,7 @@ var QMtools = [
 		name: 'recentlyused', 
 		icon: "icons/history.svg",
 		title: browser.i18n.getMessage('recentlyused'),
-		context: ["quickmenu", "sidebar", "toolbar"],
+		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
