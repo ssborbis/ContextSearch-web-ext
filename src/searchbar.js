@@ -106,86 +106,117 @@ function toolBarResize(options) {
 
 	if ( window != top ) return;
 
-// 	qm.style.opacity = 0;
-// 	qm.style.width = null;
-// 	qm.insertBreaks();
-// 	document.body.style.maxWidth = qm.getBoundingClientRect().width + "px";
-// 	document.body.style.minWidth = '200px';
-// //	qm.removeBreaks();
-// 	qm.style.opacity = null;
+	qm.style.opacity = 0;
+	qm.style.width = null;
+	qm.insertBreaks();
+	document.body.style.maxWidth = qm.getBoundingClientRect().width + "px";
+	document.body.style.minWidth = '200px';
 
-	let setFlexWidth = () => {
-		document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
-	}
-
-	let resizeHeightOnly = options.suggestionsResize || options.more || options.groupLess;
+	let qmNaturalSize = qm.getBoundingClientRect();
+	qm.removeBreaks();
+	qm.style.opacity = null;
+	qm.style.width = '100%';
 
 	let minWidth = 200;
 	let maxHeight = 600;
 	let maxWidth = 800;
 
-	if ( !window.firstRun ) document.documentElement.style.visibility = 'hidden';
-	window.firstRun = true;
+	if ( qmNaturalSize.width < minWidth || qmNaturalSize > maxWidth ) {
+		let tileSize = qm.getTileSize();
 
-	let tileSize = qm.getTileSize();
+		//	pad for scrollbars
+		qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
 
-	qm.style.minWidth = 'initial';
-	qm.style.height = null;
-	qm.style.overflowY = 'scroll';
+		let padding = tileSize.width - tileSize.rectWidth;
 
-	// ignore width resizing if only opening suggestions ( prevents flashing )
-	if ( !resizeHeightOnly ) {
-		qm.style.width = null;
-		qm.style.overflowX = null;
-		setFlexWidth();
+		let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
+
+		qm.querySelectorAll('DIV.tile:not(.singleColumn)').forEach( div => {
+			div.style.transition = 'none';
+			div.style.width = div_width;
+			div.offsetWidth;
+			div.style.transition = null;
+		});
 	}
+
+	if ( window.innerHeight < document.documentElement.scrollHeight ) {
+
+		let sumHeight = getAllOtherHeights();
+		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
+	} 
+
+	// let setFlexWidth = () => {
+	// 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
+	// }
+
+	// let resizeHeightOnly = options.suggestionsResize || options.more || options.groupLess;
+
+	// let minWidth = 200;
+	// let maxHeight = 600;
+	// let maxWidth = 800;
+
+	// if ( !window.firstRun ) document.documentElement.style.visibility = 'hidden';
+	// window.firstRun = true;
+
+	// let tileSize = qm.getTileSize();
+
+	// qm.style.minWidth = 'initial';
+	// qm.style.height = null;
+	// qm.style.overflowY = 'scroll';
+
+	// // ignore width resizing if only opening suggestions ( prevents flashing )
+	// if ( !resizeHeightOnly ) {
+	// 	qm.style.width = null;
+	// 	qm.style.overflowX = null;
+	// 	setFlexWidth();
+	// }
 	
-	// set min width for singleColumn
-	if ( qm.singleColumn ) minWidth = tileSize.width;
+	// // set min width for singleColumn
+	// if ( qm.singleColumn ) minWidth = tileSize.width;
 
-	// minimum toolbar width for Chrome ( Firefox min = 200 )
-	document.body.style.minWidth = minWidth + "px";
+	// // minimum toolbar width for Chrome ( Firefox min = 200 )
+	// document.body.style.minWidth = minWidth + "px";
 
-	runAtTransitionEnd(document.documentElement, ["width", "height"], () => {
+	// runAtTransitionEnd(document.documentElement, ["width", "height"], () => {
 
-		let minWindowWidth = Math.max(minWidth, window.innerWidth);
+	// 	let minWindowWidth = Math.max(minWidth, window.innerWidth);
 
-		if ( !resizeHeightOnly && !qm.singleColumn && qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
+	// 	if ( !resizeHeightOnly && !qm.singleColumn && qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
 
-			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth ) ) + "px";
+	// 		qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth ) ) + "px";
 
-			// pad for scrollbars
-			qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
+	// 		// pad for scrollbars
+	// 		qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
 
-			let padding = tileSize.width - tileSize.rectWidth;
+	// 		let padding = tileSize.width - tileSize.rectWidth;
 
-			let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
+	// 		let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
 
-			qm.querySelectorAll('DIV.tile:not(.singleColumn)').forEach( div => {
-				div.style.transition = 'none';
-				div.style.width = div_width;
-				div.offsetWidth;
-				div.style.transition = null;
-			});
+	// 		qm.querySelectorAll('DIV.tile:not(.singleColumn)').forEach( div => {
+	// 			div.style.transition = 'none';
+	// 			div.style.width = div_width;
+	// 			div.offsetWidth;
+	// 			div.style.transition = null;
+	// 		});
 
-		} else if ( qm.scrollWidth <= window.innerWidth ) {
-		} else {
-			qm.style.overflowX = 'scroll';
-			qm.style.width = '100%';
-		}
+	// 	} else if ( qm.scrollWidth <= window.innerWidth ) {
+	// 	} else {
+	// 		qm.style.overflowX = 'scroll';
+	// 		qm.style.width = '100%';
+	// 	}
 
-		setFlexWidth();
+	// 	setFlexWidth();
 
-		if ( window.innerHeight < document.documentElement.scrollHeight ) {
+	// 	if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
-			let sumHeight = getAllOtherHeights();
-			qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
-		} 
+	// 		let sumHeight = getAllOtherHeights();
+	// 		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
+	// 	} 
 
-		document.dispatchEvent(new CustomEvent('resizeDone'));
+	// 	document.dispatchEvent(new CustomEvent('resizeDone'));
 
-		document.documentElement.style.visibility = null;				
-	}, 50);
+	// 	document.documentElement.style.visibility = null;				
+	// }, 50);
 }
 
 var docked = false;
