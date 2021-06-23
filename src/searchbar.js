@@ -106,12 +106,13 @@ function toolBarResize(options) {
 
 	if ( window != top ) return;
 
-	qm.style.opacity = 0;
-	qm.style.width = null;
-	qm.insertBreaks();
-	document.body.style.maxWidth = qm.getBoundingClientRect().width + "px";
-	qm.removeBreaks();
-	qm.style.opacity = null;
+// 	qm.style.opacity = 0;
+// 	qm.style.width = null;
+// 	qm.insertBreaks();
+// 	document.body.style.maxWidth = qm.getBoundingClientRect().width + "px";
+// 	document.body.style.minWidth = '200px';
+// //	qm.removeBreaks();
+// 	qm.style.opacity = null;
 
 	let setFlexWidth = () => {
 		document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
