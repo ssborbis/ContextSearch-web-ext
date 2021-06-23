@@ -447,30 +447,30 @@ function addSearchEnginePopup(data) {
 			return;
 		}
 		if (form.post_params.value.indexOf('{searchTerms}') === -1 && form.template.value.indexOf('{searchTerms}') === -1) {
-			alert(browser.i18n.getMessage("TemplateIncludeError"));
-			return;
+			if ( !confirm(browser.i18n.getMessage("TemplateIncludeError")))
+				return;
 		}
 		try {
 			let _url = new URL(form.template.value);
 		} catch (error) {
-			alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
-			return;
+			if ( !confirm(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)') )
+				return;
 		}
 		// if (form.template.value.match(/^http/i) === null) {
 			// alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
 			// return;
 		// }
 		if (!/^http/i.test(form.searchform.value)) {
-			alert(browser.i18n.getMessage("FormPathURLError") + ' (' + _location.origin + ')');
-			return;
+			if ( !confirm(browser.i18n.getMessage("FormPathURLError") + ' (' + _location.origin + ')') )
+				return;
 		}
 		if (!/^http/i.test(form.iconURL.value) || form.iconURL.value == "") {
-			alert(browser.i18n.getMessage("IconURLError") + ' (' + _location.origin + '/favicon.ico)');
-			return;
+			if ( !confirm(browser.i18n.getMessage("IconURLError") + ' (' + _location.origin + '/favicon.ico)') )
+				return;
 		}
 		if (typeof form.icon.naturalWidth != "undefined" && form.icon.naturalWidth == 0) {
-			alert(browser.i18n.getMessage("IconLoadError") + ' (' + form.iconURL.value + ')');
-			return;
+			if ( !confirm(browser.i18n.getMessage("IconLoadError") + ' (' + form.iconURL.value + ')') )
+				return;
 		}
 
 		let se = formToSearchEngine();
