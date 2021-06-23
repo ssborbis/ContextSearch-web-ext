@@ -1,4 +1,5 @@
 var selectedRows = [];
+var rootElement;
 
 function buildSearchEngineContainer() {
 	
@@ -787,7 +788,7 @@ function buildSearchEngineContainer() {
 	}
 		
 	// high-scope veriable to access node tree
-	let rootElement = document.createElement('ul');
+	rootElement = document.createElement('ul');
 	rootElement.style.position = 'relative';
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
@@ -934,21 +935,6 @@ function buildSearchEngineContainer() {
 		return target;
 	}
 	
-	function updateNodeList(forceSave) {
-		
-		forceSave = forceSave || false;
-		
-		let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
-		
-		if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
-			// console.log('nodeTrees unequal. Saving');
-			userOptions.nodeTree = currentNodeTree
-			saveOptions();
-		} else {
-			// console.log('node trees are the same - skipping save');
-		}
-	}
-
 	function contextMenuHandler(e) {
 
 		if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
@@ -1375,21 +1361,7 @@ function buildSearchEngineContainer() {
 			document.removeEventListener('click', contextMenuClose);
 		});
 	}
-	
-	function closeContextMenus() {
-		for (let m of document.querySelectorAll('.contextMenu')) {
-			if (m && m.parentNode) m.parentNode.removeChild(m);
-		}
 		
-		closeSubMenus();
-	}
-	
-	function closeSubMenus() {
-		for (let m of document.querySelectorAll('.subMenu')) {
-			if (m && m.parentNode) m.parentNode.removeChild(m);
-		}
-	}
-	
 	function clearSelectedRows() {
 		table.querySelectorAll('.selected').forEach( row => row.classList.remove('selected') );
 		selectedRows = [];
@@ -1584,6 +1556,35 @@ async function removeNodesAndRows() {
 
 	updateNodeList();
 	closeContextMenus();
+}
+
+function closeContextMenus() {
+	for (let m of document.querySelectorAll('.contextMenu')) {
+		if (m && m.parentNode) m.parentNode.removeChild(m);
+	}
+	
+	closeSubMenus();
+}
+
+function closeSubMenus() {
+	for (let m of document.querySelectorAll('.subMenu')) {
+		if (m && m.parentNode) m.parentNode.removeChild(m);
+	}
+}
+
+function updateNodeList(forceSave) {
+	
+	forceSave = forceSave || false;
+	
+	let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
+	
+	if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
+		// console.log('nodeTrees unequal. Saving');
+		userOptions.nodeTree = currentNodeTree
+		saveOptions();
+	} else {
+		// console.log('node trees are the same - skipping save');
+	}
 }
 
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
