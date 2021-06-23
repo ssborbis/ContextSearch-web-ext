@@ -2134,7 +2134,11 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	if ( !_tiles.length ) return;
 
-	_tiles.forEach( t => t.style.backgroundColor = 'var(--group-color)');
+	_tiles.forEach( t => {
+		// skip assigning group color to root / no group color folders
+		if ( t.node && t.node.parent.groupColor )
+			t.style.backgroundColor = 'var(--group-color)';
+	});
 
 	parentNode = parentNode || qm;
 	let node = parentNode.node || {}
@@ -2270,7 +2274,10 @@ function makeGroupFolderFromTile(gf) {
 	if ( !children.length ) return;
 
 	let g = document.createElement('group');
-	g.style.setProperty("--group-color", gf.node.groupColor);
+
+	if ( gf.node.groupColor ) 
+		g.style.setProperty("--group-color", gf.node.groupColor);
+
 //	g.style.display = Math.random() > .5 ? 'block' : 'inline';
 
 	if ( gf.node.groupFolder && ['inline', 'block'].includes(gf.node.groupFolder) )

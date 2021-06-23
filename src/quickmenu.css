@@ -127,8 +127,8 @@ BODY {
 	color:var(--group-label-color);
 }
 .tile:hover, .quickMenuMore:hover /*, .dragHover , .tile[data-type="folder"].dragHover*/ {
-	background-color: var(--hover);
-	border-color: var(--hover);
+	background-color: var(--hover) !important;
+	border-color: var(--hover) !important;
 }
 #menuBar > .tool:hover {
 	opacity:.7;

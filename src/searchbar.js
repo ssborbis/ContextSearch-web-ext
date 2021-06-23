@@ -145,6 +145,8 @@ function toolBarResize(options) {
 		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
 	} 
 
+	document.dispatchEvent(new CustomEvent('resizeDone'));
+
 	// let setFlexWidth = () => {
 	// 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
 	// }
