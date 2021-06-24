@@ -2387,7 +2387,9 @@ function makeContainerMore(el, rows) {
 
 	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);
 	el.innerHTML = null;
-	moreified.forEach(t => el.appendChild(t));
+
+	if (moreified)
+		moreified.forEach(t => el.appendChild(t));
 }
 
 function getElementCountBeforeOverflow(el, rows) {
