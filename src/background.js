@@ -168,7 +168,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "getFindBarOpenStatus":
-			onFound = () => {}
+			onFound = result => result
 			onError = () => {}
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getFindBar() ? true : false;"
