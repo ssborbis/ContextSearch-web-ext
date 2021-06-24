@@ -26,19 +26,24 @@ var QMtools = [
 
 			addTileEventHandlers(tile, async (e) => {
 
-				let input = document.createElement('input');
-				input.style.visibility = 'none';
-				document.body.appendChild(input);
-				input.value = sb.value;
-				input.select();
-				document.execCommand('copy');
-				input.parentNode.removeChild(input);
+				// let input = document.createElement('input');
+				// input.style.visibility = 'none';
+				// document.body.appendChild(input);
+				// input.value = sb.value;
+				// input.select();
+				// document.execCommand('copy');
+				// input.parentNode.removeChild(input);
+
+				let rawtext = await browser.runtime.sendMessage({action: "getRawSelectedText"});
+				
+				copyToClip(rawtext);
 
 				tile.dataset.locked = true;
 				
 				setTimeout(() => {
 					tile.dataset.locked = false;
 				}, 150);
+
 			});
 			
 			return tile;
@@ -456,28 +461,9 @@ var QMtools = [
 			return tile;
 		}, 
 		action: async function() {
-
-			// recently used engines
-//	if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
-
-			let folder = {
-				type: "folder",
-				id: "___recent___",
-				title: browser.i18n.getMessage('Recent'),
-				children: [],
-				parent: qm.rootNode
-			}	
-
-			userOptions.recentlyUsedList.forEach( (id,index) => {
-				if ( index > userOptions.recentlyUsedListLength -1 ) return;
-				let lse = findNode(userOptions.nodeTree, node => node.id === id);
-				folder.children.push(Object.assign({}, lse));
-			});
-
-			qm = await quickMenuElementFromNodeTree(folder);
+			qm = await quickMenuElementFromNodeTree(recentlyUsedListToFolder());
 			
-			resizeMenu({openFolder: true});
-		
+			resizeMenu({openFolder: true});	
 		}
 	}
 ];
@@ -532,3 +518,14 @@ function makeToolMask(tool) {
 }
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
+
+function copyToClip(str) {
+  function listener(e) {
+    e.clipboardData.setData("text/html", str);
+    e.clipboardData.setData("text/plain", str);
+    e.preventDefault();
+  }
+  document.addEventListener("copy", listener);
+  document.execCommand("copy");
+  document.removeEventListener("copy", listener);
+};
