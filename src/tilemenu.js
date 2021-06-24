@@ -1074,6 +1074,9 @@ async function makeQuickMenu(options) {
 		
 		/* end dnd */
 
+		// let recentFolder = nodeToTile(recentlyUsedListToFolder());
+		// tileArray.unshift(recentFolder);
+
 		qm.setDisplay();
 
 		let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder );
@@ -2267,9 +2270,20 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 function makeGroupFolderFromTile(gf) {
 
 	// ignore non-top tier
-	if ( !gf.node.parent ) null;
+	if ( !gf.node.parent ) return;
 
 	let children = [...qm.querySelectorAll('.tile')].filter( t => t.node && t.node.parent === gf.node );
+
+	// tile is folder, but no children tiles in qm
+	if ( !children.length && gf.node.children.length ) {
+		qm.insertBefore(gf, qm.firstChild);
+		gf.node.children.forEach( node => {
+			let tile = nodeToTile(node);
+			tile.classList.add('tile');
+			children.push(tile);
+		//	qm.appendChild(tile);
+		});
+	}
 
 	if ( !children.length ) return;
 
@@ -2409,4 +2423,24 @@ function getElementCountBeforeOverflow(el, rows) {
 	console.log('prewrap', [...el.children].indexOf(preWrap))
 		
 	return [...el.children].indexOf(wrap);
+}
+
+function recentlyUsedListToFolder() {
+	let folder = {
+		type: "folder",
+		id: "___recent___",
+		title: browser.i18n.getMessage('Recent'),
+		children: [],
+		parent: qm.rootNode,
+		groupFolder: "block",
+		groupColor: "#CED7FF"
+	}	
+
+	userOptions.recentlyUsedList.forEach( (id,index) => {
+		if ( index > userOptions.recentlyUsedListLength -1 ) return;
+		let lse = findNode(userOptions.nodeTree, node => node.id === id);
+		folder.children.push(Object.assign({}, lse));
+	});
+
+	return folder;
 }
