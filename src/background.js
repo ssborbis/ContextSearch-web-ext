@@ -714,6 +714,15 @@ async function notify(message, sender, sendResponse) {
 		case "openCustomSearch":
 			sendMessageToTopFrame();
 			break;
+
+		case "getRawSelectedText":
+			onFound = results => results;
+			onError = results => null;
+			
+			return await browser.tabs.executeScript(sender.tab.id, {
+				code: `getRawSelectedText(document.activeElement)`
+			}).then( onFound, onError);
+			break;
 	}
 }
 

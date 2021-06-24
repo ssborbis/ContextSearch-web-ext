@@ -8,8 +8,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if ( message.userOptions ) userOptions = message.userOptions;
 });
 
-function getSelectedText(el) {
-	
+function getRawSelectedText(el) {
 	if (el && typeof el.selectionStart !== 'undefined') {
 		let start = el.selectionStart;
 		let finish = el.selectionEnd;
@@ -17,6 +16,10 @@ function getSelectedText(el) {
 	} else
 		return window.getSelection().toString().trim();
 
+}
+
+function getSelectedText(el) {
+	return getRawSelectedText(el).trim();
 }
 
 function isTextBox(element) {
