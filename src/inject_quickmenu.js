@@ -911,4 +911,3 @@ window.addEventListener('message', e => {
 
 if ( window == top )
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
-

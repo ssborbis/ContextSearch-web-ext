@@ -1669,11 +1669,12 @@ isMoving = e => {
 	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
 }
 
+// causing window drag to fail in chrome
 // prevent most click events
-document.addEventListener('mousedown', e => {
-	if ( !e.target.closest("INPUT"))
-		e.preventDefault();
-});
+// document.addEventListener('mousedown', e => {
+// 	if ( !e.target.closest("INPUT"))
+// 		e.preventDefault();
+// });
 
 document.addEventListener('mousedown', e => {
 	let tile = e.target.closest('.tile');

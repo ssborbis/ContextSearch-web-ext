@@ -314,7 +314,7 @@ function makeOpeningTab() {
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 			
 			// match sbContainer position with openingTab
-			if ( getIframe() ) getIframe().docking.options.lastOffsets = o.lastOffsets;
+			if ( getIframe() && getIframe().docking ) getIframe().docking.options.lastOffsets = o.lastOffsets;
 		}
 	});
 
