@@ -6,8 +6,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
 		markOptions = userOptions.highLight.findBar.markOptions;
 		updateFindBar(Object.assign(markOptions));
-
-		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	}
 
 });
@@ -456,6 +454,8 @@ function openFindBar(options) {
 			lastOffsets: userOptions.highLight.findBar.offsets,
 			dockedPosition: userOptions.highLight.findBar.position
 		});
+
+		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	});
 }
 
