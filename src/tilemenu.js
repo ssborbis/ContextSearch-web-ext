@@ -1074,25 +1074,53 @@ async function makeQuickMenu(options) {
 		
 		/* end dnd */
 
-		// let recentFolder = nodeToTile(recentlyUsedListToFolder());
-		// tileArray.unshift(recentFolder);
+		
+		(() => { // addRecentlyUsedFolder()
+			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
+				let recentFolder = nodeToTile(recentlyUsedListToFolder());
+				recentFolder.classList.add('tile');
+				tileArray.unshift(recentFolder);
+				qm.insertBefore(recentFolder, qm.firstChild);
+			}
+		})();
 
 		qm.setDisplay();
 
-		let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder );
+		(() => { //formatGroupFolders()
 
-		groupFolders.forEach( gf => {
+			let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder );
 
-			let g = makeGroupFolderFromTile(gf);
-			if ( !g ) return;
+			groupFolders.forEach( gf => {
 
-			qm.insertBefore(g, gf);
-			if ( gf.parentNode && g.style.display === 'block' ) gf.parentNode.removeChild(gf);
-			else {
-				gf.style.backgroundColor = gf.node.groupColor ? 'var(--group-color)' : null;
-				g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
-			}
-		});
+				let g = makeGroupFolderFromTile(gf);
+				if ( !g ) return;
+
+				qm.insertBefore(g, gf);
+				if ( gf.parentNode && g.style.display === 'block' ) gf.parentNode.removeChild(gf);
+				else {
+					gf.style.backgroundColor = gf.node.groupColor ? 'var(--group-color)' : null;
+					g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
+				}
+
+				let footer = g.querySelector('.footer');
+
+				// display groups limited to a row count and change more tile style
+				if ( gf.node.groupFolder === "block") {
+					makeContainerMore(g.querySelector('.container'), 1, qm.columns);
+					let moreTile = g.querySelector('[data-type="more"]');
+
+					if (moreTile) {
+						moreTile.parentNode.removeChild(moreTile);
+
+						footer.appendChild(moreTile);
+
+						moreTile.className = "groupMoreTile";
+					} else {
+						footer.parentNode.removeChild(footer);	
+					}
+				}
+			});
+		})();
 
 		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
 
@@ -1844,7 +1872,7 @@ document.addEventListener('dragstart', e => {
 
 	if ( !tile ) return;
 
-	if ( !window.tilesDraggable ) return false;
+	if ( !window.tilesDraggable ) return;
 
 	e.dataTransfer.setData("id", tile.node.id);
 	tile.classList.add('drag');
@@ -2326,30 +2354,7 @@ function makeGroupFolderFromTile(gf) {
 
 			});
 
-			resizeMenu({more: true});
-		}
-
-		let showHide = document.createElement('div');
-		showHide.className = 'labelShowHide';
-		showHide.style = "display:inline-block;position:absolute;z-index:2;right:0;top:0;width:20px;height:100%;";
-		label.appendChild(showHide);
-		showHide.innerText = "▢";
-
-		label.hidden = false;
-		showHide.ondblclick = e => e.stopPropagation();
-		showHide.onclick = e => {
-
-			e.stopPropagation();
-			e.preventDefault();
-			label.hidden = !label.hidden;
-			g.querySelectorAll('.tile').forEach( t => {
-				t.style.display = label.hidden ? 'none': null;
-				t.dataset.hidden = label.hidden;
-			});
-
-			showHide.innerText = label.hidden ? "_" : "▢";
-
-			resizeMenu({more: true});
+			runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}));
 		}
 
 		let groupQM = document.createElement('div');
@@ -2359,23 +2364,25 @@ function makeGroupFolderFromTile(gf) {
 
 		// children.forEach( c => g.appendChild(c));
 
-		let footer = document.createElement('div');
-		footer.style = 'height:2px;background-color:var(--group-color);cursor:row-resize';
+		let footer = document.createElement('label');
+		//footer.style = 'position:relative;height:2px;background-color:var(--group-color);cursor:row-resize';
 		g.appendChild(footer);
 
-		footer.draggable = false;
+		footer.classList.add('footer');
 
-		footer.addEventListener('mousedown', e => {
-			e.preventDefault();
-			e.stopPropagation();
-		}, {capture: true})
+		// footer.draggable = false;
 
-		footer.addEventListener('dragstart', e => {
-			e.preventDefault();
-			e.stopPropagation();
-			console.log('dragstart');
-			return false;
-		}, {capture: true})
+		// footer.addEventListener('mousedown', e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+		// }, {capture: true})
+
+		// footer.addEventListener('dragstart', e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+		// 	console.log('dragstart');
+		// 	return false;
+		// }, {capture: true})
 
 
 	}
@@ -2383,8 +2390,8 @@ function makeGroupFolderFromTile(gf) {
 	return g;
 }
 
-function makeContainerMore(el, rows) {
-	let visibleCount = getElementCountBeforeOverflow(el, rows);
+function makeContainerMore(el, rows, columns) {
+	let visibleCount = columns ? rows * columns : getElementCountBeforeOverflow(el, rows);
 
 	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);
 	el.innerHTML = null;
@@ -2432,11 +2439,13 @@ function recentlyUsedListToFolder() {
 	let folder = {
 		type: "folder",
 		id: "___recent___",
-		title: browser.i18n.getMessage('Recent'),
+	//	title: browser.i18n.getMessage('Recent'),
+		title: "",
 		children: [],
 		parent: qm.rootNode,
-		groupFolder: "block",
-		groupColor: "#CED7FF"
+		icon: browser.runtime.getURL('icons/history.svg')
+	//	groupFolder: "block",
+	//	groupColor: "#CED7FF"
 	}	
 
 	userOptions.recentlyUsedList.forEach( (id,index) => {

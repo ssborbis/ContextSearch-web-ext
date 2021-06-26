@@ -137,7 +137,7 @@ function setMenuSize(o) {
 	qm.style.transition = null;
 	document.body.style.transition = null;
 
-	console.log(qm.style.height, getAllOtherHeights(), window.innerHeight, maxHeight);
+//	console.log(qm.style.height, getAllOtherHeights(), window.innerHeight, maxHeight);
 }
 
 function resizeMenu(o) {

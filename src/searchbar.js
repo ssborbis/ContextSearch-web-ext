@@ -338,8 +338,6 @@ async function makeAddEngineBar() {
 
 	if ( !oses ) return;
 
-	console.log("oses", oses);
-
 	oses.forEach( async ose => {
 
 		let div = document.createElement('div');

@@ -451,7 +451,7 @@ GROUP {
 	/*display:inline;*/
 	/*float:left;*/
 	white-space: normal;
-	resize:vertical;
+	/*resize:vertical;*/
 	overflow:hidden;
 }
 
@@ -515,4 +515,30 @@ GROUP > LABEL {
 	height:1em;
 	margin-right:6px;
 	vertical-align: middle;
+}
+
+.footer {
+	height: 8px;
+	border-radius: 50% 50% 0 0;
+	opacity: 0;
+	transition: opacity .5s;
+	position: relative;
+	margin-top: -8px;
+	z-index: 999;
+}
+
+.footer:hover {
+	opacity: 1;
+}
+
+.groupMoreTile {
+	display:inline-block;
+	height:100%;
+	border:none;
+	width: 100%;
+}
+
+.groupMoreTile .tool {
+	--mask-image: url(icons/more.svg) !important;
+	height: 10px;
 }

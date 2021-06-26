@@ -1,4 +1,6 @@
 function runAtTransitionEnd(el, prop, callback, ms) {
+
+	if ( ! el instanceof Element ) return;
 	
 	ms = ms || 25;
 
