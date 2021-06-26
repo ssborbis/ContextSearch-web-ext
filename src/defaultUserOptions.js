@@ -217,5 +217,6 @@ const defaultUserOptions = {
 	userShortcuts: [],
 	shakeSensitivity: 3,
 	blockList: [],
-	version: 1
+	version: 1,
+	quickMenuShowRecentlyUsed: false
 };

@@ -206,6 +206,8 @@ function restoreOptions() {
 		$('#cb_contextMenuShowRecentlyUsedAsFolder').checked = userOptions.contextMenuShowRecentlyUsedAsFolder;
 		$('#n_contextMenuRecentlyUsedLength').value = userOptions.recentlyUsedListLength;
 		$('#cb_contextMenuShowFolderSearch').checked = userOptions.contextMenuShowFolderSearch;
+
+		$('#cb_quickMenuShowRecentlyUsed').checked = userOptions.quickMenuShowRecentlyUsed;
 		
 		$('#s_quickMenuLeftClick').value = userOptions.quickMenuLeftClick;
 		$('#s_quickMenuRightClick').value = userOptions.quickMenuRightClick;
@@ -605,6 +607,7 @@ function saveOptions(e) {
 		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked,
 		recentlyUsedList: userOptions.recentlyUsedList,
 		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value),
+		quickMenuShowRecentlyUsed: $('#cb_quickMenuShowRecentlyUsed').checked,
 		disableNewTabSorting: $('#cb_disableNewTabSorting').checked,
 		contextMenuHotkeys: $('#cb_contextMenuHotkeys').checked,
 		quickMenuPreventPageClicks: $('#cb_quickMenuPreventPageClicks').checked,
@@ -1092,6 +1095,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		reader.onload = () => {
 			try {
 				let newUserOptions = JSON.parse(reader.result);
+
+				console.log(newUserOptions);
 				
 				// run a few test to check if it's valid
 				if ( 
