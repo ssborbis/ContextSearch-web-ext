@@ -2354,7 +2354,7 @@ function makeGroupFolderFromTile(gf) {
 
 			});
 
-			runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}));
+			runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}), 50);
 		}
 
 		let groupQM = document.createElement('div');

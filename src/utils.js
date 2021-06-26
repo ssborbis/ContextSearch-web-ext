@@ -1,7 +1,5 @@
 function runAtTransitionEnd(el, prop, callback, ms) {
 
-	if ( ! el instanceof Element ) return;
-	
 	ms = ms || 25;
 
 	if ( Array.isArray(prop)) {
@@ -16,14 +14,18 @@ function runAtTransitionEnd(el, prop, callback, ms) {
 
 	let oldProp = null;
 	let checkPropInterval = setInterval(() => {
-		let newProp = window.getComputedStyle(el).getPropertyValue(prop);
-		if ( newProp !== oldProp ) {
-			oldProp = newProp;
-			return;
-		}
+		try {
+			let newProp = window.getComputedStyle(el).getPropertyValue(prop);
+			if ( newProp !== oldProp ) {
+				oldProp = newProp;
+				return;
+			}
 
-		clearInterval(checkPropInterval);
-		callback();
+			clearInterval(checkPropInterval);
+			callback();
+		} catch (e) {
+			clearInterval(checkPropInterval);
+		}
 		
 	}, ms);
 }
