@@ -476,6 +476,14 @@ GROUP > LABEL {
      .5px .5px 0 #000;
 }
 
+.quickMenuMore[data-type="more"] {
+	border-radius: 0 0 50% 50%;
+}
+
+.quickMenuMore[data-type="less"] {
+	border-radius: 50% 50% 0 0;
+}
+
 .quickMenuMore .tool {
 	height: 16px;
 }
@@ -519,12 +527,12 @@ GROUP > LABEL {
 
 .footer {
 	height: 8px;
-	border-radius: 50% 50% 0 0;
+	/*border-radius: 50% 50% 0 0;*/
 	opacity: 0;
 	transition: opacity .5s;
 	position: relative;
 	margin-top: -8px;
-	z-index: 999;
+	z-index: 2;
 }
 
 .footer:hover {
@@ -538,7 +546,12 @@ GROUP > LABEL {
 	width: 100%;
 }
 
-.groupMoreTile .tool {
-	--mask-image: url(icons/more.svg) !important;
+.groupMoreTile .tool{
 	height: 10px;
+}
+.groupMoreTile[data-type="more"] .tool {
+	--mask-image: url(icons/more.svg) !important;
+}
+.groupMoreTile[data-type="less"] .tool {
+	--mask-image: url(icons/separator.svg) !important;
 }
