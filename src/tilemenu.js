@@ -2354,6 +2354,7 @@ function makeGroupFolderFromTile(gf) {
 
 			});
 
+			runAtTransitionEnd(g, ['height', 'width'], () => resizeMenu({more: true}), 50);
 			runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}), 50);
 		}
 
