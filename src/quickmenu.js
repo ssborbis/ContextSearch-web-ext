@@ -183,6 +183,19 @@ function closeMenuRequest() {
 
 function toolsHandler() {
 
+	let hideEmptyGroups = moreTile => {
+		qm.querySelectorAll('GROUP').forEach(g => {
+			if ( !getVisibleTiles(g).length ) {
+				g.style.display = 'none';
+				g.moreTile = moreTile;
+				g.dataset.hidden = 'true';
+				g.dataset.morehidden = 'true';
+			}
+		})
+	}
+
+	let getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"])');
+
 	let moreTileID = userOptions.nodeTree.id;
 	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
 	
@@ -240,7 +253,7 @@ function toolsHandler() {
 			
 			qm.removeBreaks();
 
-			let visibleTiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"])')].filter( tile => tile.style.display !== 'none' );
+			let visibleTiles = [...getVisibleTiles(qm)].filter( tile => tile.style.display !== 'none' );
 
 			let index = visibleTiles.indexOf(lastVisible);
 			let tileArray = visibleTiles.slice(index + 1, visibleTiles.length);
@@ -265,6 +278,9 @@ function toolsHandler() {
 			moreTile.classList.add('quickMenuMore');
 			moreTile.classList.remove('tile');
 			moreTile.dataset.parentid = moreTileID;
+
+			hideEmptyGroups(moreTile);
+
 		})();
 	}
 

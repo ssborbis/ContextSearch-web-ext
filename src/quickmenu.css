@@ -555,3 +555,11 @@ GROUP > LABEL {
 .groupMoreTile[data-type="less"] .tool {
 	--mask-image: url(icons/separator.svg) !important;
 }
+
+GROUP.inline {
+	display: inline;
+}
+GROUP.block {
+	display: block;
+}
+

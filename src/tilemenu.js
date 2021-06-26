@@ -1096,7 +1096,7 @@ async function makeQuickMenu(options) {
 				if ( !g ) return;
 
 				qm.insertBefore(g, gf);
-				if ( gf.parentNode && g.style.display === 'block' ) gf.parentNode.removeChild(gf);
+				if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
 				else {
 					gf.style.backgroundColor = gf.node.groupColor ? 'var(--group-color)' : null;
 					g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
@@ -2202,7 +2202,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	moreTile.setAttribute('draggable', false);
 	
 	function more() {
-		let hiddenEls = parentNode.querySelectorAll('.tile[data-hidden="true"]');
+		let hiddenEls = parentNode.querySelectorAll('[data-hidden="true"]');
 		hiddenEls.forEach( _div => {
 
 			// ignore divs not associated with this more tile
@@ -2229,7 +2229,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	}
 	
 	function less() {
-		parentNode.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
+		parentNode.querySelectorAll('[data-hidden="false"]').forEach( _div => {
 
 			// ignore divs not associated with this more tile
 			if ( _div.moreTile !== moreTile ) return;
@@ -2324,9 +2324,11 @@ function makeGroupFolderFromTile(gf) {
 //	g.style.display = Math.random() > .5 ? 'block' : 'inline';
 
 	if ( gf.node.groupFolder && ['inline', 'block'].includes(gf.node.groupFolder) )
-		g.style.display = gf.node.groupFolder;
+		g.classList.add(gf.node.groupFolder);
 
-	if ( g.style.display === 'inline' ) {
+		//g.style.display = gf.node.groupFolder;
+
+	if ( g.classList.contains('inline') ) {
 		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit);
 	//	mlt.shift();
 		mlt.forEach(c => g.appendChild(c));
@@ -2338,7 +2340,7 @@ function makeGroupFolderFromTile(gf) {
 		label.innerText = gf.node.title;
 		label.style.position = 'relative';
 		
-		if ( g.style.display === 'block') g.appendChild(label);
+		if ( g.classList.contains('block')) g.appendChild(label);
 
 		label.ondblclick = e => {
 			e.preventDefault();
@@ -2366,7 +2368,6 @@ function makeGroupFolderFromTile(gf) {
 		// children.forEach( c => g.appendChild(c));
 
 		let footer = document.createElement('label');
-		//footer.style = 'position:relative;height:2px;background-color:var(--group-color);cursor:row-resize';
 		g.appendChild(footer);
 
 		footer.classList.add('footer');
@@ -2431,7 +2432,7 @@ function getElementCountBeforeOverflow(el, rows) {
 
 	let preWrap = wrap.previousSibling;
 
-	console.log('prewrap', [...el.children].indexOf(preWrap))
+//	console.log('prewrap', [...el.children].indexOf(preWrap))
 		
 	return [...el.children].indexOf(wrap);
 }
