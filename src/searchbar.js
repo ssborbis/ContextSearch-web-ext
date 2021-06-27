@@ -253,14 +253,16 @@ async function sideBarResize(options) {
 	// throwing sidebar errors
 	if ( !qm ) return;
 
+	let maxWindowHeight = screen.height;
+
 	let qm_height = qm.style.height;
 
-	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 9999 );
+	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : maxWindowHeight );
 	
-	document.body.style.height = docked ? "100vh" : document.body.style.height;
+	document.body.style.height = docked ? "100vh" : 'auto';//document.body.style.height;
 	
 	//document.body.style.height = 9999 + "px";
-	document.body.style.width = 9999 + "px";
+	//document.body.style.width = 9999 + "px";
 
 	qm.style.width = null;
 	qm.style.height = null;
@@ -305,12 +307,14 @@ async function sideBarResize(options) {
 function resizeMenu(o) {
 	
 	if (!qm) return;
+
 	// store scroll position
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
 	
-	qm.setDisplay();
-	qm.insertBreaks();
+// 	why?
+//	qm.setDisplay();
+//	qm.insertBreaks();
 
 	document.addEventListener('resizeDone', e => {
 		qm.scrollTop = scrollTop;
