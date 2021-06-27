@@ -2014,6 +2014,13 @@ function nodeToTile( node ) {
 	let tile;
 
 	if (node.hidden) return;
+
+	let getTitleWithHotkey = n => {
+		if ( userOptions.quickMenuShowHotkeysInTitle ) 
+			return n.title + (n.hotkey ? ` (${keyTable[n.hotkey]})` : "");
+		else
+			return n.title;
+	}
 	
 	switch ( node.type ) {
 
@@ -2030,8 +2037,8 @@ function nodeToTile( node ) {
 			if ( se.template.includes('{selectdomain}') )
 				return nodeToTile(Object.assign(node, {type: "siteSearchFolder"}));
 
-			tile = buildSearchIcon(getIconFromNode(node), se.title);
-			tile.dataset.title = se.title;
+			tile = buildSearchIcon(getIconFromNode(node), getTitleWithHotkey(node));
+			tile.dataset.title = getTitleWithHotkey(node);
 				
 			tile.dataset.id = node.id;
 			tile.dataset.type = 'searchEngine';
