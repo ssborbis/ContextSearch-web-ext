@@ -1079,6 +1079,7 @@ async function makeQuickMenu(options) {
 			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
 				let recentFolder = nodeToTile(recentlyUsedListToFolder());
 				recentFolder.classList.add('tile');
+				recentFolder.dataset.hasicon = 'true';
 				tileArray.unshift(recentFolder);
 				qm.insertBefore(recentFolder, qm.firstChild);
 			}
@@ -2011,7 +2012,7 @@ clearDragStyling = el => {
 
 function nodeToTile( node ) {
 
-	let tile;
+	let tile = {};
 
 	if (node.hidden) return;
 
@@ -2163,9 +2164,7 @@ function nodeToTile( node ) {
 	tile.node = node;
 	
 	return tile;
-
 }
-
 
 function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
@@ -2448,8 +2447,7 @@ function recentlyUsedListToFolder() {
 	let folder = {
 		type: "folder",
 		id: "___recent___",
-	//	title: browser.i18n.getMessage('Recent'),
-		title: "",
+		title: browser.i18n.getMessage('Recent'),
 		children: [],
 		parent: qm.rootNode,
 		icon: browser.runtime.getURL('icons/history.svg')
