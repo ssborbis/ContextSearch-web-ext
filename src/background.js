@@ -40,6 +40,7 @@ async function notify(message, sender, sendResponse) {
 			optionsPage = optionsPage.shift();
 
 			if ( optionsPage ) {
+				browser.windows.update(optionsPage.windowId, {focused: true})
 				browser.tabs.update(optionsPage.id, { active: true });
 				browser.tabs.reload(optionsPage.id);
 				return;
