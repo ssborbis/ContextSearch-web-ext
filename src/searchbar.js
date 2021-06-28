@@ -240,6 +240,8 @@ async function sideBarResize(options) {
 
 	qm.insertBreaks();
 
+	document.body.style.width = screen.width + "px";
+
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
 		return window.parent.postMessage({
@@ -261,9 +263,6 @@ async function sideBarResize(options) {
 	
 	document.body.style.height = docked ? "100vh" : 'auto';//document.body.style.height;
 	
-	//document.body.style.height = 9999 + "px";
-	//document.body.style.width = 9999 + "px";
-
 	qm.style.width = null;
 	qm.style.height = null;
 
