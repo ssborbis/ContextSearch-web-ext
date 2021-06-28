@@ -657,7 +657,7 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"]), LABEL');
+		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"]), GROUP.block');
 
 		isBlock = el => el.style.display === 'block';
 
@@ -2251,6 +2251,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		
 		moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
 	}
+
+	moreTile.more = more;
+	moreTile.less = less;
 
 	moreTile.onmouseup = more;
 	

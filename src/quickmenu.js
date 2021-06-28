@@ -301,6 +301,13 @@ function toolsHandler() {
 		delete moreTile.dataset.hidden;
 		delete moreTile.dataset.morehidden;
 		moreTile.style.display = null;
+
+		// open more on back
+		moreTile.addEventListener('mouseup', e => {
+			window.moreTileOpened = moreTile.dataset.type === 'less'
+		});
+
+		if ( window.moreTileOpened ) moreTile.more();
 	}
 }
 	
