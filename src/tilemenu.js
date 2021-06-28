@@ -2172,6 +2172,8 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	if ( !_tiles.length ) return;
 
+	let title = (_tiles.length - limit) + " " + browser.i18n.getMessage("more");
+
 	_tiles.forEach( t => {
 		// skip assigning group color to root / no group color folders
 		if ( t.node && t.node.parent.groupColor )
@@ -2197,8 +2199,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	moreTile.style.textAlign='center';
 	moreTile.dataset.type = "more";
-	moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
-	
+	moreTile.dataset.title = moreTile.title = title;
 	moreTile.classList = classList;
 	moreTile.classList.add('groupFolder')
 	moreTile.node = { parent: node };
@@ -2245,7 +2246,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		});
 		
 		moreTile.onmouseup = more;
-		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
+		moreTile.dataset.title = moreTile.title = title;
 		moreTile.dataset.type = "more";
 		resizeMenu({more: true});
 		
