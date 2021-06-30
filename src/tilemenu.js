@@ -1115,7 +1115,7 @@ async function makeQuickMenu(options) {
 
 				// display groups limited to a row count and change more tile style
 				if ( gf.node.groupFolder === "block") {
-					makeContainerMore(g.querySelector('.container'), 1, qm.columns);
+					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit, qm.columns);
 					let moreTile = g.querySelector('[data-type="more"]');
 
 					if (moreTile) {
@@ -2411,6 +2411,7 @@ function makeGroupFolderFromTile(gf) {
 }
 
 function makeContainerMore(el, rows, columns) {
+	rows = rows || Math.MAX_SAFE_INTEGER;
 	let visibleCount = columns ? rows * columns : getElementCountBeforeOverflow(el, rows);
 
 	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);
@@ -2421,7 +2422,6 @@ function makeContainerMore(el, rows, columns) {
 }
 
 function getElementCountBeforeOverflow(el, rows) {
-	rows = rows || 1;
 
 	el.style.transition = 'none';
 	el.style.position = 'relative';
