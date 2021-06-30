@@ -233,7 +233,8 @@ function toolsHandler() {
 	qm.insertBreaks();
 
 	let rows = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows;
-	let lastBreak = qm.getElementsByTagName('br').item(rows);
+
+	let lastBreak = qm.getElementsByTagName('br').item(rows - 1);
 
 	if ( lastBreak ) {
 
@@ -267,7 +268,9 @@ function toolsHandler() {
 			if ( !moreTile ) return;
 
 			for ( let i=index + 1;i<visibleTiles.length;i++) {
+
 				let el = visibleTiles[i];
+
 				el.dataset.hidden = "true";
 				el.style.display = "none";
 				el.dataset.morehidden = "true";

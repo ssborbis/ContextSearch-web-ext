@@ -666,6 +666,7 @@ async function makeQuickMenu(options) {
 
 			if ( t.nodeName === 'HR' || t.nodeName === 'GROUP' ) {
 				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
+				t.parentNode.insertBefore(document.createElement('br'), t);
 				count = 1;
 				return
 			}
@@ -691,6 +692,13 @@ async function makeQuickMenu(options) {
 
 			count++;
 		})
+
+		// remove doubles
+		qm.querySelectorAll('br').forEach( br => {
+			if (br.previousSibling && br.previousSibling.nodeName === 'BR')
+				br.parentNode.removeChild(br);
+		})
+
 	}
 	
 	function buildQuickMenuElement(options) {
