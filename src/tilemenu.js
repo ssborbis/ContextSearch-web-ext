@@ -659,12 +659,12 @@ async function makeQuickMenu(options) {
 
 		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"]), GROUP.block');
 
-		isBlock = el => el.style.display === 'block';
+		isBlock = el => window.getComputedStyle(el).display === 'block';
 
 		let count = 1;
 		tiles.forEach( (t,i,a) => {
 
-			if ( t.nodeName === 'HR' ) {
+			if ( t.nodeName === 'HR' || t.nodeName === 'GROUP' ) {
 				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
 				count = 1;
 				return
@@ -678,7 +678,7 @@ async function makeQuickMenu(options) {
 
 			if ( i && a[i-1].parentNode !== t.parentNode ) {
 				if ( isBlock(t.parentNode) ) {
-					qm.insertBefore(document.createElement('br'), t.parentNode);
+					qm.insertBefore(document.createElement('br'), t.closest('GROUP'));//parentNode);
 					count = 2;
 					return;
 				}
