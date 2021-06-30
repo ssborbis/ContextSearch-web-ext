@@ -218,5 +218,6 @@ const defaultUserOptions = {
 	shakeSensitivity: 3,
 	blockList: [],
 	version: 1,
-	quickMenuShowRecentlyUsed: false
+	quickMenuShowRecentlyUsed: false,
+	quickMenuShowHotkeysInTitle: false
 };

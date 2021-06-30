@@ -2357,6 +2357,7 @@ function makeGroupFolderFromTile(gf) {
 	//	label.className = 'textShadow';
 		label.innerText = gf.node.title;
 		label.style.position = 'relative';
+		label.node = gf.node;
 		
 		if ( g.classList.contains('block')) g.appendChild(label);
 

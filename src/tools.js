@@ -396,6 +396,9 @@ var QMtools = [
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 
+			tile.dataset.disabled = true;
+			tile.disabled = true;
+
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
@@ -404,6 +407,7 @@ var QMtools = [
 			return tile;
 		}, 
 		action: function() {
+
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			window.tilesDraggable = !window.tilesDraggable;
 

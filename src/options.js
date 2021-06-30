@@ -224,6 +224,9 @@ function restoreOptions() {
 		$('#s_quickMenuFolderAlt').value = userOptions.quickMenuFolderAlt;
 		$('#s_quickMenuSearchHotkeys').value = userOptions.quickMenuSearchHotkeys;
 		$('#s_quickMenuSearchHotkeysFolders').value = userOptions.quickMenuSearchHotkeysFolders;
+
+		
+		$('#cb_quickMenuShowHotkeysInTitle').checked = userOptions.quickMenuShowHotkeysInTitle;
 		
 		$('#n_quickMenuAutoMaxChars').value = userOptions.quickMenuAutoMaxChars;
 		$('#n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
@@ -448,6 +451,7 @@ function saveOptions(e) {
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
 		quickMenuAllowContextMenu: !$('#cb_quickMenuAllowContextMenu').checked,
+		quickMenuShowHotkeysInTitle: $('#cb_quickMenuShowHotkeysInTitle').checked,
 		
 		quickMenuOnSimpleClick: {
 			enabled: $('#cb_quickMenuOnSimpleClick').checked,
