@@ -1119,6 +1119,7 @@ document.addEventListener("DOMContentLoaded", () => {
 					try {
 						_uo = await w.updateUserOptionsVersion(_uo);
 					} catch ( error ) {
+						console.log(error);
 						if ( !confirm("Failed to update config. This may cause some features to not work. Install anyway?"))
 							return;
 					}
@@ -1161,6 +1162,7 @@ document.addEventListener("DOMContentLoaded", () => {
 				});
 
 			} catch(err) {
+				console.log(err);
 				alert(browser.i18n.getMessage("InvalidJSONAlert"));
 			}
 		}

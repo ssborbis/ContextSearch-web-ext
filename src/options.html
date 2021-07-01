@@ -621,6 +621,9 @@
 			TABLE.searchActions TD:first-of-type {
 				white-space:nowrap;
 			}
+			TABLE.searchActions[data-menu="contextMenu"] TD:nth-of-type(3n) {
+				display: none;
+			}	
 			P.short {
 				margin:0;
 				padding:2px 0;
@@ -1735,7 +1738,7 @@
 				<section>
 				<p class="header1" data-i18n="SearchActionsHeader">_</p>
 
-				<table class="searchActions">
+				<table class="searchActions" data-menu="contextMenu">
 				<tr>
 					<td></td>
 					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">_</span></td>
