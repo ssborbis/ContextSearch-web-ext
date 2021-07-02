@@ -657,14 +657,28 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"]), GROUP.block');
+		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
 
 		isBlock = el => window.getComputedStyle(el).display === 'block';
 
 		let count = 1;
 		tiles.forEach( (t,i,a) => {
 
-			if ( t.nodeName === 'HR' || t.nodeName === 'GROUP' ) {
+			// first in GROUP.block, reset counter
+			if ( !t.previousSibling && t.closest('GROUP.block')) {
+				qm.insertBefore(document.createElement('br'), t.closest('GROUP.block'));
+				count = 2;
+				return;
+			}
+
+			// last in GROUP.block, reset counter
+			if ( !t.nextSibling && t.closest('GROUP.block') ) {
+				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
+				count = 1;
+				return;
+			}
+
+			if ( t.nodeName === 'HR' ) {
 				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
 				t.parentNode.insertBefore(document.createElement('br'), t);
 				count = 1;
@@ -677,19 +691,6 @@ async function makeQuickMenu(options) {
 				return
 			}
 
-			if ( i && a[i-1].parentNode !== t.parentNode ) {
-				if ( isBlock(t.parentNode) ) {
-					qm.insertBefore(document.createElement('br'), t.closest('GROUP'));//parentNode);
-					count = 2;
-					return;
-				}
-				else if ( isBlock(a[i-1].parentNode) ) {
-					qm.insertBefore(document.createElement('br'), a[i-1].parentNode.nextSibling);
-					count = 2;
-					return;
-				}		
-			}
-
 			count++;
 		})
 
@@ -697,7 +698,11 @@ async function makeQuickMenu(options) {
 		qm.querySelectorAll('br').forEach( br => {
 			if (br.previousSibling && br.previousSibling.nodeName === 'BR')
 				br.parentNode.removeChild(br);
-		})
+		});
+
+		// qm.querySelectorAll('GROUP.block .container:last-child').forEach( lc => {
+		// 	console.log(lc.nodeName);
+		// })
 
 	}
 	
