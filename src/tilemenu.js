@@ -659,34 +659,35 @@ async function makeQuickMenu(options) {
 
 		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
 
-		isBlock = el => window.getComputedStyle(el).display === 'block';
+		let br = () => document.createElement('br');
 
 		let count = 1;
-		tiles.forEach( (t,i,a) => {
+		tiles.forEach( t => {
+			let closestBlock = t.closest('GROUP.block');
 
 			// first in GROUP.block, reset counter
-			if ( !t.previousSibling && t.closest('GROUP.block')) {
-				qm.insertBefore(document.createElement('br'), t.closest('GROUP.block'));
+			if ( !t.previousSibling && closestBlock) {
+				qm.insertBefore(br(), closestBlock);
 				count = 2;
 				return;
 			}
 
 			// last in GROUP.block, reset counter
-			if ( !t.nextSibling && t.closest('GROUP.block') ) {
-				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
+			if ( !t.nextSibling && closestBlock ) {
+				t.parentNode.insertBefore(br(), t.nextSibling);
 				count = 1;
 				return;
 			}
 
 			if ( t.nodeName === 'HR' ) {
-				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
-				t.parentNode.insertBefore(document.createElement('br'), t);
+				t.parentNode.insertBefore(br(), t.nextSibling);
+				t.parentNode.insertBefore(br(), t);
 				count = 1;
 				return
 			}
 
 			if ( count === _columns ) {
-				t.parentNode.insertBefore(document.createElement('br'), t.nextSibling);
+				t.parentNode.insertBefore(br(), t.nextSibling);
 				count = 1;
 				return
 			}
@@ -1156,6 +1157,8 @@ async function makeQuickMenu(options) {
 	}
 
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+
+		let debug = rootNode.title === "empty";
 
 		reverse = reverse || false; // for slide-in animation direction
 		
@@ -1683,6 +1686,8 @@ function checkForNodeHotkeys(e) {
 	let hotkeyNode = findNode(userOptions.nodeTree, node => node.hotkey === e.which);
 
 	if (!hotkeyNode) return;
+
+	if ( e.ctrlKey || e.altKey || e.shiftKey || e.metaKey ) return;
 
 	e.preventDefault();
 	e.stopPropagation();

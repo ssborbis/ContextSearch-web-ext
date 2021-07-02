@@ -2009,6 +2009,8 @@ function updateUserOptionsVersion(uo) {
 				key.id = 4;
 				key.enabled = enabled;
 
+				console.log('userShortcuts', _uo.userShortcuts);
+
 				let us = _uo.userShortcuts.find(s => s.id === 4 );
 				if ( us ) _uo.userShortcuts[_uo.userShortcuts.indexOf(us)] = key;
 				else _uo.userShortcuts.push(key);
@@ -2041,7 +2043,7 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 
-		// groupFolder object changed from true/false to none/inline/block
+		// groupFolder object changed from true/false to false/inline/block
 		findNodes(_uo.nodeTree, n => {
 
 			if ( !n.groupFolder ) return;
@@ -2049,9 +2051,9 @@ function updateUserOptionsVersion(uo) {
 			if ( n.groupFolder === true ) {
 				n.groupFolder = "inline";
 				console.log(n.title, "groupFolder changed to inline");
-			} else if ( n.groupFolder === false ) {
-				n.groupFolder = "none";
-				console.log(n.title, "groupFolder changed to none");
+			} else if ( n.groupFolder === "none" ) {
+				n.groupFolder = false;
+				console.log(n.title, "groupFolder changed to false");
 			}
 		});
 
@@ -2060,7 +2062,6 @@ function updateUserOptionsVersion(uo) {
 	}).then( _uo => {
 
 		_uo.version = browser.runtime.getManifest().version;
-
 		return _uo;
 
 	}).then( _uo => {

@@ -504,7 +504,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.groupColor = _form.groupColor.value;
-					node.groupFolder = _form.groupFolder.value;
+					node.groupFolder = _form.groupFolder.value || false;
 					node.groupLimit = parseInt(_form.groupLimit.value);
 					node.displayType = _form.displayType.value;
 					node.groupHideMoreTile = _form.groupHideMoreTile.checked;
@@ -521,7 +521,7 @@ function buildSearchEngineContainer() {
 								
 				_form.shortName.value = node.title;
 				_form.groupColor.value = node.groupColor || userOptions.defaultGroupColor;
-				_form.groupFolder.value = node.groupFolder || "none";
+				_form.groupFolder.value = node.groupFolder || "";
 				_form.groupLimit.value = node.groupLimit || 0;
 				_form.displayType.value = node.displayType || "";
 				_form.groupHideMoreTile.checked = node.groupHideMoreTile || false;
