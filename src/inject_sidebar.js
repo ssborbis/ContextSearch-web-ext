@@ -278,7 +278,7 @@ function saveState(state) {
 
 function makeOpeningTab() {
 
-	let openingTab = document.getElementById('CS_sbOpeningTab') || document.createElement('div');
+	let openingTab = getOpeningTab() || document.createElement('div');
 
 	openingTab.id = 'CS_sbOpeningTab';
 	openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
