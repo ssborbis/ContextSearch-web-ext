@@ -1103,7 +1103,7 @@ async function makeQuickMenu(options) {
 
 		(() => { //formatGroupFolders()
 
-			let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' );
+			let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' && t.node.parent === qm.rootNode );
 
 			groupFolders.forEach( gf => {
 
