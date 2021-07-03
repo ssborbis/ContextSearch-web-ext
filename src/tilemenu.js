@@ -445,6 +445,9 @@ async function makeQuickMenu(options) {
 			}
 
 		});
+
+		// works for open and close
+		sg.addEventListener('transitionend', e => resizeMenu({suggestionsResize: true}));
 	}
 	
 	qm.addEventListener('keydown', e => {
@@ -1452,11 +1455,6 @@ function makeSearchBar() {
 		}
 		
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
-
-		// works for open and close
-		sg.addEventListener('transitionend', e => {
-			resizeMenu({suggestionsResize: true});
-		}, {once: true});
 		
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;
 		
