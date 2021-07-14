@@ -97,6 +97,7 @@ const defaultUserOptions = {
 	searchBarUseOldStyle: false,
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
+	searchBarIcon: "icons/icon48.png",
 	sideBar: {
 		enabled: true,
 		columns: 6,

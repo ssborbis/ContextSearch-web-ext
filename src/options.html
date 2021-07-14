@@ -1343,6 +1343,35 @@
 			#shortcutTable TD > SPAN:hover {
 				background-color:#0001;
 			}
+			#toolBarIconPickerContainer {}
+			#toolBarIconPickerContainer IMG {
+				height: 32px;
+				width: 32px;
+				vertical-align: middle;
+				margin: 0 10px;
+			}
+			#toolBarIconPickerContainer > DIV {
+				display: inline-block;
+				background-color: var(--bg-color1);
+				padding: 10px 20px;
+				border-radius: 10px;
+				margin: 10px;
+			}
+			#toolBarIconPickerContainer .toolBarIconCustom {
+				width: 30px;height: 30px;
+				border: 2px dashed var(--border-color2);
+				cursor: pointer;
+				display: inline-block;
+				vertical-align: middle;
+				margin: 0 10px;
+				background-repeat: no-repeat;
+				background-position: center;
+			}
+
+			#toolBarIconPickerContainer .toolBarIconCustom:hover {
+				background-image: url(icons/upload.svg) !important;
+				background-size: 66%;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -2441,6 +2470,32 @@
 				</div>
 				
 				</section>
+				<section>
+				<p class="header1" data-i18n="Icon">_</p>
+				<form class="option" id="toolBarIconPickerContainer">
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_1" value="icons/logo_notext.svg"/>
+						<label for="toolBarIcon_1">
+							<img src="icons/logo_notext.svg" />
+						</label>
+					</div>
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_2" value="icons/icon48.png"/>
+						<label for="toolBarIcon_2">
+							<img src="icons/icon48.png" />
+						</label>
+					</div>
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_3" value="" />
+						<input type="file" accept="image/*" name='toolBarIconPicker' id="toolBarIconPicker" style="display:none">
+						
+						<label for="toolBarIconPicker">
+							<div class="toolBarIconCustom"></div>
+						</label>			
+					</div>
+				</form>
+				
+				</section>
 				</div>
 				<div class="tabcontent" id="sideBarTab">
 					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />_</div>
@@ -3173,7 +3228,7 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
 						</button>
 					</div>
 
@@ -3183,7 +3238,7 @@
 					<label data-i18n="Icon">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
@@ -3219,9 +3274,9 @@
 					</div>
 
 					<div style="float:right;margin:16px">
-						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><div class="tool" style="--mask-image: url(icons/copy.svg);height:1em;vertical-align: middle"></button>
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><div class="tool" style="--mask-image: url(icons/copy.svg);height:1em;vertical-align: middle"></div></button>
 <span data-browser="firefox">					
-						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></button>
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></div></button>
 </span>
 						<button type="button" name="test" style="margin-left:20px" data-i18n="Test" title="i18n_text">_</button>
 						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">_</button>
@@ -3234,14 +3289,14 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
 						</button>
 					</div>
 					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Icon">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
 					</div>
 					<table id="folderFormTable">
@@ -3292,14 +3347,14 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
 						</button>
 					</div>
 					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Icon">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>

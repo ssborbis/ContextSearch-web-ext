@@ -2080,6 +2080,7 @@ var userOptions = {};
 	await checkForOneClickEngines();
 	await buildContextMenu();
 	resetPersist();
+	setIcon();
 	document.dispatchEvent(new CustomEvent("loadUserOptions"));
 })();
 
@@ -2089,6 +2090,10 @@ function resetPersist() {
 		if ( tool.persist && tool.persist === false )
 			userOptions.quickMenuTools[index].on = false;
 	});
+}
+
+function setIcon() {
+	browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/icon48.png'});
 }
 
 async function checkForOneClickEngines() {

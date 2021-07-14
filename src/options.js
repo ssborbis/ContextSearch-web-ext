@@ -351,6 +351,14 @@ function restoreOptions() {
 
 		$('#t_blockList').value = userOptions.blockList.filter(el => el.trim()).join('\n');
 
+		// toolBar icon
+		(() => {
+			let radios = document.querySelectorAll(`#toolBarIconPickerContainer input[type="radio"]`);
+			let radio = [...radios].find( r => r.value === userOptions.searchBarIcon );
+			if ( radio ) radio.checked = true;
+			else setToolBarIconOption(userOptions.searchBarIcon);
+		})();
+
 		buildSearchEngineContainer();
 				
 		// allow context menu on right-click
@@ -383,6 +391,7 @@ function restoreOptions() {
 function saveOptions(e) {
 	
 	function onSet() {
+		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/icon48.png'});
 		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
 		return Promise.resolve(true);
 	}
@@ -480,6 +489,7 @@ function saveOptions(e) {
 		searchBarEnableHistory: $('#cb_searchBarEnableHistory').checked,
 		searchBarHistory: userOptions.searchBarHistory,
 		searchBarDisplayLastSearch: $('#cb_searchBarDisplayLastSearch').checked,
+		searchBarIcon: $('#toolBarIconPickerContainer input[type="radio"]:checked').value,
 		
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,
@@ -1613,5 +1623,41 @@ document.addEventListener('DOMContentLoaded', e => {
 	table.innerHTML = null;
 	trs.forEach( tr => table.appendChild(tr));
 })
+
+function imageUploadHandler(el, callback) {
+	el.addEventListener('change', e => {
+		let file = e.target.files[0];
+		
+		var reader = new FileReader();
+		
+		reader.addEventListener("load", function () {
+			
+			let img = new Image();
+			
+			img.onload = function() {
+				callback(img);
+			}
+			img.src = reader.result;
+			
+		}, false);
+		
+		reader.readAsDataURL(file);
+		
+	});
+}
+
+imageUploadHandler($('#toolBarIconPicker'), img => {
+	let uri = imageToBase64(img, 32);
+	setToolBarIconOption(uri);
+	saveOptions();
+});
+
+function setToolBarIconOption(uri) {
+	$('#toolBarIconPickerContainer .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
+	$('#toolBarIcon_3').checked = true;
+	$('#toolBarIcon_3').value = uri;
+}
+
+$('#toolBarIconPickerContainer').addEventListener('change', saveOptions);
 
 

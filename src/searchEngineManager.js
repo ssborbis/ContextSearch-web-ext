@@ -1475,30 +1475,14 @@ function buildSearchEngineContainer() {
 	});
 
 	function addIconPickerListener(el, li) {
-		el.addEventListener('change', e => {
-			let file = e.target.files[0];
-			
-			var reader  = new FileReader();
-			
-			reader.addEventListener("load", function () {
-				
-				let img = new Image();
-				
-				img.onload = function() {
-					let form = el.closest('form');;
-					form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
-					li.querySelector("img").src = form.iconURL.value;
+		imageUploadHandler(el, img => {
+			let form = el.closest('form');;
+			form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
+			li.querySelector("img").src = form.iconURL.value;
 
-					form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
-					form.save.click();
-				}
-				img.src = reader.result;
-				
-			}, false);
-			
-			reader.readAsDataURL(file);
-			
-		});
+			form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
+			form.save.click();
+		})
 	}
 
 	let main_ec = $('#collapseAll');
