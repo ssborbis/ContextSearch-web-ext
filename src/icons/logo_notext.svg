@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 54 54" fill="white">
+	<style>
+		.text { 
+			fill:#ddd;
+			font-family:Arial;
+			font-size:5px;
+			font-variant:small-caps;
+		}
+	</style>
+	<defs>
+		<linearGradient id="grad1" gradientTransform="rotate(45)">
+			<stop offset="70%" style="stop-color:#37383c;stop-opacity:1" />
+			<stop offset="100%" style="stop-color:#ddd;stop-opacity:1" />
+		</linearGradient>
+		<mask id="rc" x="0" y="0" width="54" height="54">
+			<rect id="rounded-rectangle" x="1" y="1" height="52" width="52" rx="10" fill="white" />
+		</mask>
+	</defs>
+	<mask id="piston">
+		<rect width="54" height="54" fill="white" />
+		<circle cx="26.5" cy="32.5" r="2.25" fill="black" />
+		<circle cx="38.5" cy="20.5" r="1.25" fill="black" />
+		<path d="M 36 11 L 47 22" stroke="black" stroke-width=".75" />
+	</mask>
+	<rect width="54" height="54" style="fill:#4e4f54" mask="url(#rc)" />
+	<path d="M 49 20 L 55 25 L 54 56 L 30 56 L 7 22 L 18 12 L 34 25 L 36 23 L 31 18 L 39 10 Z" fill="#37383c" mask="url(#rc)" />
+    <path d="M 39 10 C 44 13 46 15 49 20 L 41 28 L 39 26 C 39 25 40 25 39 24 L 35 20 C 34 19 34 20 33 20 L 33 20 L 31 18 Z M 35 21 L 38 24 C 34 28 32 31 32 32 C 33 33 33 34 33 34 C 33 35 29 39 28 39 C 28 39 27 39 26 38 C 23 38 21 36 21 33 L 21 33 C 20 32 20 31 20 31 C 20 30 24 26 25 26 C 25 26 26 26 27 27 C 28 27 31 25 35 21" mask="url(#piston)" />
+	
+	<circle cx="13" cy="17" r="8" fill="#6ec179" />
+	<path d="M 24 26 C 22 27 21 28 20 30 C 19 27 17 24 13 20 L 15 18 C 18 22 21 25 24 26" fill="#6ec179" />
+	<circle cx="13" cy="17" r="5.5" fill="url(#grad1)" />
+</svg>
