@@ -96,8 +96,6 @@ function toolsHandler() {
 	qm.toolsArray.forEach( tool => {
 		if ( qm.singleColumn && !userOptions.quickMenuToolsAsToolbar ) tool.classList.add('singleColumn');
 	});
-
-//	qm.insertBreaks();
 }
 
 function toolBarResize(options) {
@@ -146,79 +144,6 @@ function toolBarResize(options) {
 	} 
 
 	document.dispatchEvent(new CustomEvent('resizeDone'));
-
-	// let setFlexWidth = () => {
-	// 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
-	// }
-
-	// let resizeHeightOnly = options.suggestionsResize || options.more || options.groupLess;
-
-	// let minWidth = 200;
-	// let maxHeight = 600;
-	// let maxWidth = 800;
-
-	// if ( !window.firstRun ) document.documentElement.style.visibility = 'hidden';
-	// window.firstRun = true;
-
-	// let tileSize = qm.getTileSize();
-
-	// qm.style.minWidth = 'initial';
-	// qm.style.height = null;
-	// qm.style.overflowY = 'scroll';
-
-	// // ignore width resizing if only opening suggestions ( prevents flashing )
-	// if ( !resizeHeightOnly ) {
-	// 	qm.style.width = null;
-	// 	qm.style.overflowX = null;
-	// 	setFlexWidth();
-	// }
-	
-	// // set min width for singleColumn
-	// if ( qm.singleColumn ) minWidth = tileSize.width;
-
-	// // minimum toolbar width for Chrome ( Firefox min = 200 )
-	// document.body.style.minWidth = minWidth + "px";
-
-	// runAtTransitionEnd(document.documentElement, ["width", "height"], () => {
-
-	// 	let minWindowWidth = Math.max(minWidth, window.innerWidth);
-
-	// 	if ( !resizeHeightOnly && !qm.singleColumn && qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
-
-	// 		qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth ) ) + "px";
-
-	// 		// pad for scrollbars
-	// 		qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
-
-	// 		let padding = tileSize.width - tileSize.rectWidth;
-
-	// 		let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
-
-	// 		qm.querySelectorAll('DIV.tile:not(.singleColumn)').forEach( div => {
-	// 			div.style.transition = 'none';
-	// 			div.style.width = div_width;
-	// 			div.offsetWidth;
-	// 			div.style.transition = null;
-	// 		});
-
-	// 	} else if ( qm.scrollWidth <= window.innerWidth ) {
-	// 	} else {
-	// 		qm.style.overflowX = 'scroll';
-	// 		qm.style.width = '100%';
-	// 	}
-
-	// 	setFlexWidth();
-
-	// 	if ( window.innerHeight < document.documentElement.scrollHeight ) {
-
-	// 		let sumHeight = getAllOtherHeights();
-	// 		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
-	// 	} 
-
-	// 	document.dispatchEvent(new CustomEvent('resizeDone'));
-
-	// 	document.documentElement.style.visibility = null;				
-	// }, 50);
 }
 
 var docked = false;
@@ -310,10 +235,6 @@ function resizeMenu(o) {
 	// store scroll position
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
-	
-// 	why?
-//	qm.setDisplay();
-//	qm.insertBreaks();
 
 	document.addEventListener('resizeDone', e => {
 		qm.scrollTop = scrollTop;

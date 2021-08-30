@@ -2192,7 +2192,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	_tiles.forEach( t => {
 		// skip assigning group color to root / no group color folders
-		if ( t.node && t.node.parent.groupColor )
+		if ( t.node && t.node.parent && t.node.parent.groupColor )
 			t.style.backgroundColor = 'var(--group-color)';
 	});
 

@@ -160,6 +160,9 @@ function restoreOptions() {
 		$('#s_quickMenuOnMouseMethod').value = userOptions.quickMenuOnMouseMethod;
 		$('#cb_quickMenuSearchOnMouseUp').checked = userOptions.quickMenuSearchOnMouseUp;
 		$('#r_quickMenuAuto').checked = userOptions.quickMenuAuto;
+		$('#cb_quickMenuAutoAlt').checked = userOptions.quickMenuAutoAlt;
+		$('#cb_quickMenuAutoShift').checked = userOptions.quickMenuAutoShift;
+		$('#cb_quickMenuAutoCtrl').checked = userOptions.quickMenuAutoCtrl;
 		$('#cb_quickMenuAutoOnInputs').checked = userOptions.quickMenuAutoOnInputs;
 		$('#cb_quickMenuOnLinks').checked = userOptions.quickMenuOnLinks;
 		$('#cb_quickMenuOnImages').checked = userOptions.quickMenuOnImages;
@@ -353,7 +356,7 @@ function restoreOptions() {
 
 		// toolBar icon
 		(() => {
-			let radios = document.querySelectorAll(`#toolBarIconPickerContainer input[type="radio"]`);
+			let radios = document.querySelectorAll(`#toolBarIconForm input[type="radio"]`);
 			let radio = [...radios].find( r => r.value === userOptions.searchBarIcon );
 			if ( radio ) radio.checked = true;
 			else setToolBarIconOption(userOptions.searchBarIcon);
@@ -420,6 +423,9 @@ function saveOptions(e) {
 		quickMenuSearchOnMouseUp: $('#cb_quickMenuSearchOnMouseUp').checked,
 		quickMenuMouseButton: parseInt($("#s_quickMenuMouseButton").value),
 		quickMenuAuto: $('#r_quickMenuAuto').checked,
+		quickMenuAutoAlt: $('#cb_quickMenuAutoAlt').checked,
+		quickMenuAutoShift: $('#cb_quickMenuAutoShift').checked,
+		quickMenuAutoCtrl: $('#cb_quickMenuAutoCtrl').checked,
 		quickMenuAutoOnInputs: $('#cb_quickMenuAutoOnInputs').checked,
 		quickMenuOnLinks: $('#cb_quickMenuOnLinks').checked,
 		quickMenuOnImages: $('#cb_quickMenuOnImages').checked,
@@ -489,7 +495,7 @@ function saveOptions(e) {
 		searchBarEnableHistory: $('#cb_searchBarEnableHistory').checked,
 		searchBarHistory: userOptions.searchBarHistory,
 		searchBarDisplayLastSearch: $('#cb_searchBarDisplayLastSearch').checked,
-		searchBarIcon: $('#toolBarIconPickerContainer input[type="radio"]:checked').value,
+		searchBarIcon: $('#toolBarIconForm input[type="radio"]:checked').value,
 		
 		sideBar: {
 			enabled: userOptions.sideBar.enabled,
@@ -1653,11 +1659,11 @@ imageUploadHandler($('#toolBarIconPicker'), img => {
 });
 
 function setToolBarIconOption(uri) {
-	$('#toolBarIconPickerContainer .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
+	$('#toolBarIconForm .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
 	$('#toolBarIcon_3').checked = true;
 	$('#toolBarIcon_3').value = uri;
 }
 
-$('#toolBarIconPickerContainer').addEventListener('change', saveOptions);
+$('#toolBarIconForm').addEventListener('change', saveOptions);
 
 

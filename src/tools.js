@@ -465,6 +465,9 @@ var QMtools = [
 			return tile;
 		}, 
 		action: async function() {
+
+			if (qm.rootNode.id === '___recent___') return;
+			
 			qm = await quickMenuElementFromNodeTree(recentlyUsedListToFolder());
 			
 			resizeMenu({openFolder: true});	

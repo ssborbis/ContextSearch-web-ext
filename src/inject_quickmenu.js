@@ -290,6 +290,13 @@ document.addEventListener('mouseup', e => {
 		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
 		
 	) return false;
+
+	// check for modifier keys
+	if ( 
+		e.shiftKey !== userOptions.quickMenuAutoShift ||
+		e.altKey !== userOptions.quickMenuAutoAlt ||
+		e.ctrlKey !== userOptions.quickMenuAutoCtrl
+	) return false;
 	
 	e.openingMethod = "auto";
 

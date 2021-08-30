@@ -1343,32 +1343,29 @@
 			#shortcutTable TD > SPAN:hover {
 				background-color:#0001;
 			}
-			#toolBarIconPickerContainer {}
-			#toolBarIconPickerContainer IMG {
+			#toolBarIconForm {}
+			#toolBarIconForm IMG, #toolBarIconForm .toolBarIconCustom {
 				height: 32px;
 				width: 32px;
 				vertical-align: middle;
 				margin: 0 10px;
+				cursor: pointer;
 			}
-			#toolBarIconPickerContainer > DIV {
+			#toolBarIconForm > DIV {
 				display: inline-block;
 				background-color: var(--bg-color1);
 				padding: 10px 20px;
 				border-radius: 10px;
 				margin: 10px;
 			}
-			#toolBarIconPickerContainer .toolBarIconCustom {
-				width: 30px;height: 30px;
-				border: 2px dashed var(--border-color2);
-				cursor: pointer;
+			#toolBarIconForm .toolBarIconCustom {
 				display: inline-block;
-				vertical-align: middle;
-				margin: 0 10px;
+				box-sizing: border-box;
+				border: 2px dashed var(--border-color2);
 				background-repeat: no-repeat;
 				background-position: center;
 			}
-
-			#toolBarIconPickerContainer .toolBarIconCustom:hover {
+			#toolBarIconForm .toolBarIconCustom:hover {
 				background-image: url(icons/upload.svg) !important;
 				background-size: 66%;
 				background-color: #444;
@@ -2031,7 +2028,7 @@
 	
 				<table class="openingTable">
 				<tr>
-					<td colspan="2" style="border-right:none">
+					<td>
 						<label class="container" data-i18n="Auto">
 							<input type="checkbox" id="r_quickMenuAuto" />
 							<span class="checkmark checkmark2"></span>
@@ -2039,6 +2036,32 @@
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="AutoTooltip">_</span>
+					</td>
+
+					<td>
+						<div class="option" style="display:inline-block;">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuAutoAlt" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuAutoCtrl" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Ctrl">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuAutoShift" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Shift">_</span>
+						</div>
 					</td>
 					<!-- <td> -->
 						<!-- <input type="number" id="n_quickMenuAutoMaxChars" size="3" class="inputNice" min="0" max="999"><label style="margin-left:10px" data-i18n="AutoMaxChars">Character Limit</label> -->
@@ -2473,7 +2496,7 @@
 				</section>
 				<section>
 				<p class="header1" data-i18n="Icon">_</p>
-				<form class="option" id="toolBarIconPickerContainer">
+				<form class="option" id="toolBarIconForm">
 					<div>
 						<input type="radio" name="toolBarIcon" id="toolBarIcon_1" value="icons/logo_notext.svg"/>
 						<label for="toolBarIcon_1">
