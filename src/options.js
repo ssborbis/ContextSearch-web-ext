@@ -209,6 +209,7 @@ function restoreOptions() {
 		$('#cb_contextMenuShowRecentlyUsedAsFolder').checked = userOptions.contextMenuShowRecentlyUsedAsFolder;
 		$('#n_contextMenuRecentlyUsedLength').value = userOptions.recentlyUsedListLength;
 		$('#cb_contextMenuShowFolderSearch').checked = userOptions.contextMenuShowFolderSearch;
+		$('#i_contextMenuTitle').value = userOptions.contextMenuTitle;
 
 		$('#cb_quickMenuShowRecentlyUsed').checked = userOptions.quickMenuShowRecentlyUsed;
 		
@@ -445,6 +446,7 @@ function saveOptions(e) {
 		contextMenuShowRecentlyUsed: $('#cb_contextMenuShowRecentlyUsed').checked,
 		contextMenuShowRecentlyUsedAsFolder: $('#cb_contextMenuShowRecentlyUsedAsFolder').checked,
 		contextMenuShowFolderSearch: $('#cb_contextMenuShowFolderSearch').checked,	
+		contextMenuTitle: $('#i_contextMenuTitle').value,
 		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
 		quickMenuRightClick: $('#s_quickMenuRightClick').value,
 		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,

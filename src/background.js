@@ -254,7 +254,8 @@ async function notify(message, sender, sendResponse) {
 			let hotkey = ''; 
 			if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 			
-			let title = hotkey + browser.i18n.getMessage("SearchFor").replace("%1", searchTerms);
+			let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", searchTerms);
+
 			try {
 				browser.contextMenus.update("search_engine_menu", {visible: true, title: title});
 			} catch (err) {}
