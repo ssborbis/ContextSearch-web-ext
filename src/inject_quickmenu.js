@@ -467,6 +467,13 @@ document.addEventListener('dragstart', e => {
 		!userOptions.quickMenuOnDrag
 	) return;
 
+	// check for modifier keys
+	if ( 
+		e.shiftKey !== userOptions.quickMenuDragShift ||
+		e.altKey !== userOptions.quickMenuDragAlt ||
+		e.ctrlKey !== userOptions.quickMenuDragCtrl
+	) return false;
+
 	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e);
 
 	if ( !searchTerms ) return;

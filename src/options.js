@@ -187,6 +187,9 @@ function restoreOptions() {
 		$('#cb_quickMenuOnSimpleClickShift').checked = userOptions.quickMenuOnSimpleClick.shift;
 		$('#cb_quickMenuSimpleClickUseInnerText').checked = userOptions.quickMenuOnSimpleClick.useInnerText;
 		$('#cb_quickMenuOnDrag').checked = userOptions.quickMenuOnDrag;
+		$('#cb_quickMenuDragAlt').checked = userOptions.quickMenuDragAlt;
+		$('#cb_quickMenuDragShift').checked = userOptions.quickMenuDragShift;
+		$('#cb_quickMenuDragCtrl').checked = userOptions.quickMenuDragCtrl;
 		
 		$('#s_quickMenuMouseButton').value = userOptions.quickMenuMouseButton.toString();
 		$('#cb_contextMenu').checked = userOptions.contextMenu;
@@ -419,6 +422,9 @@ function saveOptions(e) {
 		
 		quickMenuOnKey: $('#r_quickMenuOnKey').checked,
 		quickMenuOnDrag: $('#cb_quickMenuOnDrag').checked,
+		quickMenuDragAlt: $('#cb_quickMenuDragAlt').checked,
+		quickMenuDragShift: $('#cb_quickMenuDragShift').checked,
+		quickMenuDragCtrl: $('#cb_quickMenuDragCtrl').checked,
 		quickMenuOnMouse: $('#cb_quickMenuOnMouse').checked,
 		quickMenuOnMouseMethod: $('#s_quickMenuOnMouseMethod').value,
 		quickMenuSearchOnMouseUp: $('#cb_quickMenuSearchOnMouseUp').checked,
