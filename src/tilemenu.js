@@ -1560,11 +1560,11 @@ function makeSearchBar() {
 		}, 500);
 	}
 	
-	sb.addEventListener('keydown', (e) => {
-		if (e.key === "Enter") {
-			if (userOptions.searchBarCloseAfterSearch) window.close();	
-		}
-	});
+	// sb.addEventListener('keydown', (e) => {
+	// 	if (e.key === "Enter" && userOptions.searchBarCloseAfterSearch) {
+	// 		setTimeout(window.close, 100);
+	// 	}
+	// });
 	
 	// execute a keypress event to trigger some sb methods reserved for typing events
 	sb.addEventListener('keydown', (e) => {
@@ -1697,12 +1697,12 @@ function checkForNodeHotkeys(e) {
 			selectionText: sb.value,
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
-	});
-	
-	if ( !keepMenuOpen(e) )
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
+	}).then(() => {
+		if ( !keepMenuOpen(e) )
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 
-	if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+	});
 
 }
 
@@ -1781,103 +1781,108 @@ document.addEventListener('mouseup', e => {
 
 	let node = tile.node;
 
-	switch ( node.type ) {
-	
-		case 'searchEngine':
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: tile.node.id,
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e)
-				}
-			});
-			break;
+	let searchPromise = (() => {
 
-		case 'bookmarklet':
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: tile.node.id, // needs work
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e)
-				}
-			});
-			break;
-
-		case 'oneClickSearchEngine':
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: tile.node.id, // needs work
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e)
-				}
-			});
-			break;
-
-		case 'siteSearchFolder':
-
-			tile.keepOpen = true;
-
-			async function openFolder(e) {
-				let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-				let siteSearchNode = {
-					type:"folder",
-					parent:node.parent,
-					children:[],
-					id:node.id,
-					forceSingleColumn:true
-				}
-				
-				let url = new URL(tab.url);
-
-				getDomainPaths(url).forEach( path => {
-					siteSearchNode.children.push({
-						type: "siteSearch",
-						title: path,
-						parent:node,
-						id: node.id,
-						icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-					});	
-				});
-				
-				qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-				for ( let _tile of qm.querySelectorAll('.tile') ) {
-					if ( _tile.node.title === url.hostname ) {
-						_tile.classList.add('selectedFocus');
-						_tile.dataset.selectfirst = "true";
-						break;
+		switch ( node.type ) {
+		
+			case 'searchEngine':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id,
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e)
 					}
+				});
+				break;
+
+			case 'bookmarklet':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id, // needs work
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e)
+					}
+				});
+				break;
+
+			case 'oneClickSearchEngine':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id, // needs work
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e)
+					}
+				});
+				break;
+
+			case 'siteSearchFolder':
+
+				tile.keepOpen = true;
+
+				async function openFolder(e) {
+					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+					let siteSearchNode = {
+						type:"folder",
+						parent:node.parent,
+						children:[],
+						id:node.id,
+						forceSingleColumn:true
+					}
+					
+					let url = new URL(tab.url);
+
+					getDomainPaths(url).forEach( path => {
+						siteSearchNode.children.push({
+							type: "siteSearch",
+							title: path,
+							parent:node,
+							id: node.id,
+							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+						});	
+					});
+					
+					qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+					for ( let _tile of qm.querySelectorAll('.tile') ) {
+						if ( _tile.node.title === url.hostname ) {
+							_tile.classList.add('selectedFocus');
+							_tile.dataset.selectfirst = "true";
+							break;
+						}
+					}
+
+					resizeMenu({openFolder: true});
 				}
 
-				resizeMenu({openFolder: true});
-			}
+				return openFolder(e);
 
-			openFolder(e);
+				break;
 
-			break;
+			case 'siteSearch':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id, // needs work
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e),
+						domain: tile.node.title
+					}
+				});
 
-		case 'siteSearch':
-			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
-				info: {
-					menuItemId: tile.node.id, // needs work
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e),
-					domain: tile.node.title
-				}
-			});
+				break;
 
-			break;
+		}
+	})();
 
-	}
-
-	// check for locked / Keep Menu Open 
-	if ( !keepMenuOpen(e) && !tile.keepOpen )
-		closeMenuRequest();
+	searchPromise.then(() => {
+		// check for locked / Keep Menu Open 
+		if ( !keepMenuOpen(e) && !tile.keepOpen )
+			closeMenuRequest();
+	});
 
 	return false;
 
@@ -2352,11 +2357,8 @@ function makeGroupFolderFromTile(gf) {
 	if ( gf.node.groupFolder && ['inline', 'block'].includes(gf.node.groupFolder) )
 		g.classList.add(gf.node.groupFolder);
 
-		//g.style.display = gf.node.groupFolder;
-
 	if ( g.classList.contains('inline') ) {
 		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit);
-	//	mlt.shift();
 		mlt.forEach(c => g.appendChild(c));
 
 	} else {
@@ -2459,8 +2461,6 @@ function getElementCountBeforeOverflow(el, rows) {
 
 	let preWrap = wrap.previousSibling;
 
-//	console.log('prewrap', [...el.children].indexOf(preWrap))
-		
 	return [...el.children].indexOf(wrap);
 }
 
@@ -2472,9 +2472,7 @@ function recentlyUsedListToFolder() {
 		children: [],
 		parent: qm.rootNode,
 		icon: browser.runtime.getURL('icons/history.svg')
-	//	groupFolder: "block",
-	//	groupColor: "#CED7FF"
-	}	
+	}
 
 	userOptions.recentlyUsedList.forEach( (id,index) => {
 		if ( index > userOptions.recentlyUsedListLength -1 ) return;
@@ -2484,3 +2482,94 @@ function recentlyUsedListToFolder() {
 
 	return folder;
 }
+
+(() => {
+
+	function convertSearchActions() {
+
+		const sa = {
+			event:"mouseup",
+			button:0,
+			altKey:false,
+			ctrlKey:false,
+			metaKey:false,
+			shiftKey:false,
+			action: ""
+		}
+
+		// contextMenuClick: "openNewTab",
+		// contextMenuMiddleClick: "openBackgroundTab",
+		// contextMenuRightClick: "openCurrentTab",
+		// contextMenuShift: "openNewWindow",
+		// contextMenuCtrl: "openBackgroundTab",
+
+		return [
+			Object.assign({...sa}, {button: 0, action: userOptions.quickMenuLeftClick}),
+			Object.assign({...sa}, {button: 2, action: userOptions.quickMenuRightClick}),
+			Object.assign({...sa}, {button: 1, action: userOptions.quickMenuMiddleClick}),
+
+			Object.assign({...sa}, {button: 0, altKey: true, action: userOptions.quickMenuAlt}),
+			Object.assign({...sa}, {button: 0, shiftKey: true, action: userOptions.quickMenuShift}),
+			Object.assign({...sa}, {button: 0, ctrlKey: true, action: userOptions.quickMenuCtrl}),
+
+			Object.assign({...sa}, {event: "dblclick", button: 2, action: "doubleClickSearchAction"})
+		];
+
+		// quickMenuFolderLeftClick: "openFolder",
+		// quickMenuFolderRightClick: "noAction",
+		// quickMenuFolderMiddleClick: "openBackgroundTab",
+		// quickMenuFolderShift: "openNewWindow",
+		// quickMenuFolderCtrl: "noAction",
+		// quickMenuFolderAlt: "noAction"
+	}
+
+	setTimeout(() => {
+		var searchActions = convertSearchActions();
+
+		searchActions.forEach( g => {
+			document.addEventListener(g.event, e => {
+
+				if ( !isSearchAction(g,e) ) return;
+
+				console.log(g.action);
+			})
+		})
+
+		document.addEventListener('contextmenu', e => {
+
+			if ( window.contextMenuTimer ) {
+				e.preventDefault();
+				return document.dispatchEvent(new MouseEvent('dblclick', e));	
+			}
+
+			window.contextMenuTimer = setTimeout(() => {
+				clearTimeout(window.contextMenuTimer);
+				delete window.contextMenuTimer;
+			}, 250);
+		});
+
+		// trigger dblclick event for other buttons
+		let dblClickHandler = e => {
+			if ( e.detail === 2 && e.button !== 0 ) {
+				console.log(e);
+				document.dispatchEvent(new MouseEvent('dblclick', e));
+			}
+		}
+		document.addEventListener('mousedown', dblClickHandler);
+
+		function isSearchAction(g, e) {
+
+			return (
+				e.altKey === g.altKey &&
+				e.ctrlKey === g.ctrlKey &&
+				e.shiftKey === g.shiftKey &&
+				e.metaKey === g.metaKey &&
+
+				g.button === e.button &&
+				g.key === e.key
+			)
+		}
+	}, 1000)
+
+});
+
