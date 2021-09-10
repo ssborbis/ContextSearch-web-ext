@@ -34,6 +34,7 @@ function buildSearchEngineContainer() {
 		li.addEventListener('dragend',dragend_handler);
 		li.addEventListener('drop',drop_handler);
 		li.addEventListener('dragover',dragover_handler);
+		li.addEventListener('dragenter',dragenter_handler);
 		li.addEventListener('dragleave',dragleave_handler);
 		
 		let header = document.createElement('div');
@@ -814,12 +815,12 @@ function buildSearchEngineContainer() {
 	function dragover_position(el, ev) {
 		let rect = el.getBoundingClientRect();
 
-		let rowHeight = 19;
+		let rowHeight = 22;// + (el.position !== 'middle') ? 20 : 0;
 		let position = 'bottom';
 
-		if ( ev.pageY - rect.y < rowHeight / 2 ) position = 'top';
+		if ( ev.offsetY < rowHeight / 2 ) position = 'top';
 
-		if ( el.node.type === 'folder' && ( ev.pageY - rect.y > rowHeight / 3 ) && ( ev.pageY - rect.y < rowHeight / ( 3 / 2 ) ) )
+		if ( el.node.type === 'folder' && ev.offsetY > rowHeight / 3 && ev.offsetY < rowHeight / 3 * 2 )
 			position = 'middle';
 		
 		return position;
@@ -839,6 +840,9 @@ function buildSearchEngineContainer() {
 	}
 	
 	function dragover_handler(ev) {
+
+		ev.preventDefault();
+
 		let overNode = nearestParent('LI', ev.target);
 
 		if ( selectedRows.includes(overNode) ) {
@@ -850,28 +854,41 @@ function buildSearchEngineContainer() {
 		
 		if ( overNode.node.type === 'folder' && overNode.node.children.length && position === 'bottom' )
 			position = 'middle';
+
+		// skip repeat events
+		if ( overNode.position && overNode.position === position) return;
+
+		overNode.position = position;
 		
-		overNode.style = null;
+		overNode.style = '';
 
 		if ( position === 'top' ) {
-			overNode.style.borderTop = '2px solid #008afc';
+			overNode.style.borderTop = '1px solid var(--selected)';
 		} else if ( position === 'bottom' ) {
-			overNode.style.borderBottom = '2px solid #008afc';
+			overNode.style.borderBottom = '1px solid var(--selected)';
 		} else {
 			overNode.querySelector('.header').classList.add('selected');
 		}
 
+		
+	}
+	function dragenter_handler(ev) {
+		// clear positioning
+		let overNode = nearestParent('LI', ev.target);
+		overNode.position = null;
 		ev.preventDefault();
 	}
 	function dragleave_handler(ev) {
-		window.dragRow.style = null;
 		let overNode = nearestParent('LI', ev.target);
-		overNode.style=null;
+
+		window.dragRow.style = '';
 		overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 		
 		// clear folder styling
 		if ( overNode.node.type === "folder" && !selectedRows.includes(overNode) ) // only remove if not originally selected
 			overNode.querySelector('.header').classList.remove('selected');
+
+		overNode.style = '';
 	}
 	function drop_handler(ev) {
 		
@@ -883,8 +900,8 @@ function buildSearchEngineContainer() {
 		let position = dragover_position(targetElement, ev);
 		
 		// clear drag styling
-		targetElement.style = null;
-		window.dragRow.style = null;
+		targetElement.style = '';
+		window.dragRow.style = '';
 
 		// sort with hierarchy
 		let sortedRows = [ ...$('#managerContainer').querySelectorAll('LI')].filter( row => selectedRows.indexOf(row) !== -1 ).reverse();
