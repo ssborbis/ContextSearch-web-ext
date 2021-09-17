@@ -868,16 +868,16 @@ function buildSearchEngineContainer() {
 			overNode.style.borderBottom = '1px solid var(--selected)';
 		} else {
 			overNode.querySelector('.header').classList.add('selected');
-		}
-
-		
+		}	
 	}
+
 	function dragenter_handler(ev) {
 		// clear positioning
 		let overNode = nearestParent('LI', ev.target);
 		overNode.position = null;
 		ev.preventDefault();
 	}
+
 	function dragleave_handler(ev) {
 		let overNode = nearestParent('LI', ev.target);
 
@@ -890,6 +890,7 @@ function buildSearchEngineContainer() {
 
 		overNode.style = '';
 	}
+	
 	function drop_handler(ev) {
 		
 		ev.preventDefault();
