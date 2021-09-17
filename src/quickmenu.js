@@ -176,9 +176,11 @@ function resizeMenu(o) {
 //	qm.style.height = null;
 }
 
-function closeMenuRequest() {
-	if ( userOptions.quickMenuCloseOnClick && !quickMenuObject.locked )
+function closeMenuRequest(e) {
+	if ( e.key === "Escape" || userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
+
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+	}
 }
 
 function toolsHandler() {
@@ -403,7 +405,7 @@ window.addEventListener('message', e => {
 });
 
 document.addEventListener('keydown', e => {
-	if ( e.key === 'Escape' ) closeMenuRequest();
+	if ( e.key === 'Escape' ) closeMenuRequest(e);
 });
 
 // prevent docking
