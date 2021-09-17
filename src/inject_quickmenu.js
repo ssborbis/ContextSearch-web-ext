@@ -716,7 +716,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.docking.init();
 
 				setTimeout(() => { 
-					repositionOffscreenElement( qmc, {left:0, right:0, top:0, bottom:0} ); 
+					repositionOffscreenElement( qmc, {left:0, right:0, top:0, bottom:0} );
 				}, 250);
 
 				_message = message;
@@ -756,7 +756,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}, {once: true, capture: true});
 
 				setTimeout(() => {
-					browser.runtime.sendMessage({action: "focusSearchBar"});
+					if ( userOptions.quickMenuSearchBarFocus )
+						browser.runtime.sendMessage({action: "focusSearchBar"});
 				}, 50);
 
 				break;
