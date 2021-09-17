@@ -21,6 +21,8 @@ function openQuickMenu(e, searchTerms) {
 	e = e || new Event('click');
 
 	// if ( getQM() ) closeQuickMenu();
+
+	window.lastActiveElement = document.activeElement;
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
 	if ( userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
@@ -567,8 +569,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		switch (message.action) {
 			
 			case "closeQuickMenuRequest":
+
+				if ( window.lastActiveElement) {
+					window.lastActiveElement.focus();
+					delete window.lastActiveElement;
+				}
+				
 				if ( !getQM() ) break;
 				closeQuickMenu(message.eventType || null);
+
+				
 				break;
 				
 			case "openQuickMenu":
@@ -593,6 +603,32 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					});
 					break;
 				}
+
+				// if ( true && getQM() ) {
+				// 	let qmc = getQM();
+
+				// 	qmc.style.display = null;
+
+				// 	let rect = qmc.getBoundingClientRect();
+				// 	qmc.style.opacity = 1;
+
+
+				// 	let coords = getQuickMenuOpeningPosition({
+				// 		width: rect.width,
+				// 		height: rect.height,
+				// 		x: quickMenuObject.mouseCoords.x,
+				// 		y: quickMenuObject.mouseCoords.y
+				// 	})
+
+				// 	qmc.openingCoords = quickMenuObject.mouseCoords;
+
+				// 	qmc.style.left = coords.x + "px";
+				// 	qmc.style.top = coords.y + "px";
+
+				// 	browser.runtime.sendMessage({action: "quickMenuIframeLoaded", size: {width:rect.width, height:rect.height}});
+
+				// 	break;
+				// }
 
 				makeQuickMenuContainer({'x': x,'y': y});
 				
@@ -643,45 +679,21 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
-				let coords = qmc.openingCoords;
-
-				let leftOffset = topOffset = 0;
-
-				for (let position of userOptions.quickMenuPosition.split(" ")) {
-					switch (position) {
-						case "left":
-							leftOffset = - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio;
-							break;
-						case "right":
-							break;
-						case "center":
-							leftOffset = - message.size.width / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio;
-							break;
-						case "top":
-							topOffset = - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio;
-							break;
-						case "middle":
-							topOffset = - message.size.height / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio;
-							break;
-						case "bottom":
-							break;
-					}
-				}
-				
-				const borderOffset = 0;
-
-				let initialOffsetX = Math.max(0, Math.min(coords.x - borderOffset + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - message.size.width * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarWidth()));
-				
-				let initialOffsetY = Math.max(0, Math.min(coords.y - borderOffset + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - message.size.height * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarHeight()));
+				let initialOffsets = getQuickMenuOpeningPosition({
+					width: message.size.width,
+					height: message.size.height,
+					x: qmc.openingCoords.x,
+					y: qmc.openingCoords.y
+				});
 
 				makeDockable(qmc, {
 					windowType: "undocked",
 					dockedPosition: "left",
 					handleElement:null,
 					lastOffsets: window.quickMenuLastOffsets || {
-						left: Math.floor(initialOffsetX * window.devicePixelRatio),
+						left: Math.floor(initialOffsets.x * window.devicePixelRatio),
 						right: Number.MAX_SAFE_INTEGER,
-						top: Math.floor(initialOffsetY * window.devicePixelRatio),
+						top: Math.floor(initialOffsets.y * window.devicePixelRatio),
 						bottom: Number.MAX_SAFE_INTEGER 
 					},
 					onUndock: o => {
@@ -743,6 +755,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					e.stopPropagation();
 					e.preventDefault();
 				}, {once: true, capture: true});
+
+				browser.runtime.sendMessage({action: "focusSearchBar"});
 
 				break;
 
@@ -927,6 +941,41 @@ window.addEventListener('message', e => {
 			break;
 	}
 });
+
+function getQuickMenuOpeningPosition(o) {
+
+	let leftOffset = topOffset = 0;
+
+	for (let position of userOptions.quickMenuPosition.split(" ")) {
+		switch (position) {
+			case "left":
+				leftOffset = - o.width * userOptions.quickMenuScale / window.devicePixelRatio;
+				break;
+			case "right":
+				break;
+			case "center":
+				leftOffset = - o.width / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio;
+				break;
+			case "top":
+				topOffset = - o.height * userOptions.quickMenuScale / window.devicePixelRatio;
+				break;
+			case "middle":
+				topOffset = - o.height / 2.0 * userOptions.quickMenuScale / window.devicePixelRatio;
+				break;
+			case "bottom":
+				break;
+		}
+	}
+	
+	const borderOffset = 0;
+
+	let initialOffsetX = Math.max(0, Math.min(o.x - borderOffset + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - o.width * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarWidth()));
+	
+	let initialOffsetY = Math.max(0, Math.min(o.y - borderOffset + (userOptions.quickMenuOffset.y / window.devicePixelRatio) + topOffset, window.innerHeight - o.height * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarHeight()));
+
+	return {x: initialOffsetX, y: initialOffsetY}
+
+}
 
 if ( window == top )
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');

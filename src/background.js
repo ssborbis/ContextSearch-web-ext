@@ -87,7 +87,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "closeQuickMenuRequest":
-			return sendMessageToTopFrame();
+			return sendMessageToAllFrames();
 			break;
 		
 		case "quickMenuIframeLoaded":
@@ -807,7 +807,7 @@ async function buildContextMenu() {
 
 	browser.contextMenus.create({
 		id: "search_engine_menu",
-		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith"),
+		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchWith") ),
 		contexts: contexts
 	});
 
@@ -1047,7 +1047,7 @@ browser.tabs.onActivated.addListener( async tabInfo => {
 	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 	
 	browser.contextMenus.update("search_engine_menu", {
-		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + browser.i18n.getMessage("SearchWith")
+		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchWith") )
 	});
 });
 
