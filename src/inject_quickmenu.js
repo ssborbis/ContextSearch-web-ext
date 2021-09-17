@@ -727,7 +727,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if ( !message.resizeOnly )
 					browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});
 				
-
 				qmc.columns = _message.columns;
 				qmc.tileCount = _message.tileCount;
 				qmc.tileSize = _message.tileSize;
@@ -756,7 +755,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					e.preventDefault();
 				}, {once: true, capture: true});
 
-				browser.runtime.sendMessage({action: "focusSearchBar"});
+				setTimeout(() => {
+					browser.runtime.sendMessage({action: "focusSearchBar"});
+				}, 50);
 
 				break;
 
