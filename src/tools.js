@@ -21,8 +21,6 @@ var QMtools = [
 		title: browser.i18n.getMessage('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
-
-			console.log(this);
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 			
