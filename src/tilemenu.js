@@ -287,6 +287,7 @@ async function makeQuickMenu(options) {
 	sb.addEventListener('keydown', e => {
 
 		if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) return;
+		if ( e.ctrlKey || e.altKey || e.metaKey ) return;
 		
 		e.preventDefault();
 		
@@ -390,6 +391,8 @@ async function makeQuickMenu(options) {
 		let _columns = qm.querySelector('div').classList.contains('singleColumn') ? 1 : qm.columns;
 
 		if ( ![ "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab" ].includes(e.key) ) return;
+		
+		if ( e.ctrlKey || e.altKey || e.metaKey ) return;
 		
 		e.preventDefault();
 
@@ -1700,7 +1703,7 @@ document.addEventListener('mouseup', e => {
 	tile.action(e);
 
 	if ( !keepMenuOpen(e) && !tile.keepOpen )
-		closeMenuRequest();
+		closeMenuRequest(e);
 });
 
 document.addEventListener('mouseup', e => {
@@ -1861,7 +1864,7 @@ document.addEventListener('mouseup', e => {
 	searchPromise.then(() => {
 		// check for locked / Keep Menu Open 
 		if ( !keepMenuOpen(e) && !tile.keepOpen )
-			closeMenuRequest();
+			closeMenuRequest(e);
 	}, () => {});
 
 	return false;
