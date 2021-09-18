@@ -554,6 +554,8 @@ window.addEventListener('keydown', e => {
 		e.key !== "Tab" ||
 		!getQM() 
 	) return;
+
+	if (e.ctrlKey || e.altKey || e.shiftKey || e.metaKey ) return;
 	
 	e.preventDefault();
 	
