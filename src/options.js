@@ -239,6 +239,7 @@ function restoreOptions() {
 		$('#n_quickMenuOpeningOpacity').value = userOptions.quickMenuOpeningOpacity;
 		$('#n_quickMenuAutoTimeout').value = userOptions.quickMenuAutoTimeout;
 		$('#cb_quickMenuAllowContextMenu').checked = !userOptions.quickMenuAllowContextMenu;
+		$('#cb_quickMenuFocusOnOpen').checked = userOptions.quickMenuFocusOnOpen;
 
 		$('#cb_searchBarSuggestions').checked = userOptions.searchBarSuggestions;
 		$('#cb_searchBarEnableHistory').checked = userOptions.searchBarEnableHistory;
@@ -475,6 +476,7 @@ function saveOptions(e) {
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
 		quickMenuAllowContextMenu: !$('#cb_quickMenuAllowContextMenu').checked,
 		quickMenuShowHotkeysInTitle: $('#cb_quickMenuShowHotkeysInTitle').checked,
+		quickMenuFocusOnOpen: $('#cb_quickMenuFocusOnOpen').checked,
 		
 		quickMenuOnSimpleClick: {
 			enabled: $('#cb_quickMenuOnSimpleClick').checked,

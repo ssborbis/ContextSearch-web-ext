@@ -53,7 +53,7 @@ async function makeFrameContents() {
 		if (userOptions.quickMenuSearchBarFocus)
 			sb.focus();
 		
-		if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction') {
+		if (userOptions.quickMenuSearchHotkeys && userOptions.quickMenuSearchHotkeys !== 'noAction' && userOptions.quickMenuFocusOnOpen ) {
 			sb.blur();
 			qm.focus();
 		}
