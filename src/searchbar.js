@@ -98,9 +98,9 @@ function toolsHandler() {
 	});
 }
 
-function toolBarResize(options) {
+function toolBarResize(o) {
 
-	options = options || {}
+	o = o || {}
 
 	if ( window != top ) return;
 
@@ -108,11 +108,16 @@ function toolBarResize(options) {
 	let maxHeight = 600;
 	let maxWidth = 800;
 
-	document.body.style.width = maxWidth + 'px';
-	document.body.style.maxWidth = null;
-
 	qm.style.opacity = 0;
+
+	let tileSize = qm.getTileSize();
+
+	// less() is glitching the window width to max
+	//document.body.style.width = o.less ? document.body.getBoundingClientRect().width + "px" : maxWidth + 'px';
+	document.body.style.width = o.less ? document.body.getBoundingClientRect().width + "px" :  tileSize.width * qm.columns + "px";
+	document.body.style.maxWidth = null;
 	qm.style.width = null;
+
 	qm.insertBreaks();
 	document.body.style.maxWidth = qm.getBoundingClientRect().width + "px";
 	document.body.style.minWidth = '200px';
@@ -123,9 +128,8 @@ function toolBarResize(options) {
 	qm.style.opacity = null;
 	qm.style.width = '100%';
 
-	if ( qmNaturalSize.width < minWidth || qmNaturalSize.width > maxWidth ) {
-		let tileSize = qm.getTileSize();
-
+	if ( qmNaturalSize.width > maxWidth ) {
+		
 		//	pad for scrollbars
 		qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
 

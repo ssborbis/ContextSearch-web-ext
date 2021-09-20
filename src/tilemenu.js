@@ -2244,9 +2244,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		moreTile.onmouseup = more;
 		moreTile.dataset.title = moreTile.title = title;
 		moreTile.dataset.type = "more";
-		resizeMenu({more: true});
 		
 		moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
+		resizeMenu({more: true, less:true});
 	}
 
 	moreTile.more = more;
