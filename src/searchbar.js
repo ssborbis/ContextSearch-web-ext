@@ -109,6 +109,7 @@ function toolBarResize(options) {
 	let maxWidth = 800;
 
 	document.body.style.width = maxWidth + 'px';
+	document.body.style.maxWidth = null;
 
 	qm.style.opacity = 0;
 	qm.style.width = null;
