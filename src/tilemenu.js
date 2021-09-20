@@ -640,6 +640,9 @@ async function makeQuickMenu(options) {
 			if (br.previousSibling && br.previousSibling.nodeName === 'BR')
 				br.parentNode.removeChild(br);
 		});
+		// qm.querySelectorAll('br').forEach( lc => {
+		// 	console.log('break after', lc.previousSibling);
+		// })
 
 		// qm.querySelectorAll('GROUP.block .container:last-child').forEach( lc => {
 		// 	console.log(lc.nodeName);
