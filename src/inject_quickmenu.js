@@ -236,6 +236,9 @@ document.addEventListener('mousedown', ev => {
 		} else if (ev.which === 3) {
 			// Disable the default context menu once
 			document.addEventListener('contextmenu', evv => {
+				// don't disable if menu has been closed
+				if ( !getQM() ) return;
+				
 				if ( !userOptions.quickMenuAllowContextMenu )
 					evv.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
