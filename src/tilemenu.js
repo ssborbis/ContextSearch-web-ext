@@ -2461,7 +2461,9 @@ function recentlyUsedListToFolder() {
 	userOptions.recentlyUsedList.forEach( (id,index) => {
 		if ( index > userOptions.recentlyUsedListLength -1 ) return;
 		let lse = findNode(userOptions.nodeTree, node => node.id === id);
-		folder.children.push(Object.assign({}, lse));
+
+		// filter missing nodes
+		if ( lse ) folder.children.push(Object.assign({}, lse));
 	});
 
 	return folder;
