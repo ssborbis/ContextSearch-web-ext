@@ -392,8 +392,8 @@ var QMtools = [
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 
-			tile.dataset.disabled = true;
-			tile.disabled = true;
+			// tile.dataset.disabled = true;
+			// tile.disabled = true;
 
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
@@ -411,8 +411,8 @@ var QMtools = [
 			this.dataset.locked = window.tilesDraggable;
 
 			// special handler for when mouseup is disabled in addTileEventHandlers
-			if ( window.tilesDraggable && this ) 
-				this.addEventListener('mouseup', e => this.action(), {once: true});
+			// if ( window.tilesDraggable && this ) 
+			// 	this.addEventListener('mouseup', e => this.action(), {once: true});
 		}
 	},
 	{

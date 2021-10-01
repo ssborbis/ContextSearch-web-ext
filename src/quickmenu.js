@@ -117,8 +117,10 @@ function setMenuSize(o) {
 		qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
 	else if ( o.more ) 
 		qm.style.height = qm.getBoundingClientRect().height + "px";	
-	else if ( o.widgetResize )
+	else if ( o.widgetResize ) {
 		qm.style.height = tileSize.height * o.rows + "px";
+		// qm.style.width = tileSize.width * o.columns + "px";
+	}
 	else
 		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
 	
@@ -150,10 +152,15 @@ function resizeMenu(o) {
 	window.addEventListener('message', function resizeDoneListener(e) {
 		if ( e.data.action && e.data.action === "resizeDone" ) {
 			document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
-			window.removeEventListener('message', resizeDoneListener);
 			document.dispatchEvent(new CustomEvent('resizeDone'));
 		}
-	});
+	}, {once: true});
+
+	if ( o.widgetResize) {
+		qm.style.width = null;
+		qm.style.height = "auto";
+		return;
+	}
 
 	setMenuSize(o);
 
@@ -183,7 +190,9 @@ function closeMenuRequest(e) {
 	}
 }
 
-function toolsHandler() {
+function toolsHandler(o) {
+
+	o = o || {};
 
 	let hideEmptyGroups = moreTile => {
 		qm.querySelectorAll('GROUP').forEach(g => {
@@ -215,7 +224,7 @@ function toolsHandler() {
 	}
 
 	// unhide tiles hidden by more tile
-	qm.querySelectorAll('.tile[data-morehidden]').forEach( tile => {
+	qm.querySelectorAll('[data-morehidden]').forEach( tile => {
 		if ( tile.moreTile && tile.moreTile.dataset.parentid === moreTileID ) {
 			delete tile.dataset.hidden;
 			tile.style.display = null;
@@ -232,9 +241,9 @@ function toolsHandler() {
 	if ( !userOptions.quickMenuToolsAsToolbar && position === 'hidden' )
 		qm.toolsArray.forEach( _div => qm.removeChild(_div) );
 
-	qm.insertBreaks();
+	qm.insertBreaks(o.columns);
 
-	let rows = qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows;
+	let rows = o.rows || ( qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows );
 
 	let lastBreak = qm.getElementsByTagName('br').item(rows - 1);
 
@@ -312,7 +321,8 @@ function toolsHandler() {
 			window.moreTileOpened = moreTile.dataset.type === 'less'
 		});
 
-		if ( window.moreTileOpened ) moreTile.more();
+		if ( window.moreTileOpened && !o.widgetResize )
+			moreTile.more();
 	}
 }
 	
@@ -376,9 +386,11 @@ window.addEventListener('message', e => {
 		case "rebuildQuickMenu":
 			userOptions = e.data.userOptions;	
 			qm.columns = qm.singleColumn ? 1 : e.data.columns;
+
+			let o = {widgetResize: true, rows: e.data.rows, columns:e.data.columns};
 			
-			toolsHandler();
-			resizeMenu({widgetResize: true, rows: e.data.rows});		
+			toolsHandler(o);
+			resizeMenu(o);
 			break;
 			
 		case "resizeMenu":

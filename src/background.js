@@ -658,7 +658,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "editQuickMenu":
-			// sendMessageToTopFrame();
+			sendMessageToTopFrame();
 			break;
 
 		case "addStyles":

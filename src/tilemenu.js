@@ -648,6 +648,8 @@ async function makeQuickMenu(options) {
 		// 	console.log(lc.nodeName);
 		// })
 
+		return qm.querySelectorAll('br').length;
+
 	}
 	
 	function buildQuickMenuElement(options) {
@@ -1679,6 +1681,8 @@ document.addEventListener('mousedown', e => {
 		return;
 	}
 
+	if ( window.tilesDraggable ) return;
+
 	// if (tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
 
 	tile.parentNode.lastMouseDownTile = tile;
@@ -1688,13 +1692,16 @@ document.addEventListener('mousedown', e => {
 
 // tools
 document.addEventListener('mouseup', e => {
+
+	if ( !e.target.closest ) return;
+
 	let tile = e.target.closest('.tile');
 
 	if ( !tile || !tile.action ) return;
 
 	if ( tile.disabled ) return false;
 
-	if ( window.tilesDraggable ) return false;
+	if ( window.tilesDraggable && !tile.dataset.type === "tool" && !tile.dataset.name === "edit") return false;
 
 	if ( mouseClickBack(e) ) return;
 
@@ -2347,6 +2354,8 @@ function makeGroupFolderFromTile(gf) {
 		if ( g.classList.contains('block')) g.appendChild(label);
 
 		label.ondblclick = e => {
+			return false;
+
 			e.preventDefault();
 			e.stopPropagation();
 

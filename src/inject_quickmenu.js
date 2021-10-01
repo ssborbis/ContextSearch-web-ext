@@ -832,7 +832,6 @@ function installResizeWidget() {
 				else
 					userOptions.quickMenuRowsSingleColumn = o.rows;
 			}
-			
 
 			// // rebuild menu with new dimensions
 			iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
@@ -854,7 +853,7 @@ function installResizeWidget() {
 			iframe.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
 
 			// // save prefs
-			// browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		}
 	});
 
