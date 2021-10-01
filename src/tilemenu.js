@@ -1926,8 +1926,8 @@ document.addEventListener('dragenter', e => {
 
 	if ( !dragTile && tile.dataset.type === 'folder' ) {
 
-		// open folders on dragover
-		tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);
+		// open folders on dragover - bind to qm instead of tile
+		qm.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);
 		return;
 	}
 
@@ -2014,15 +2014,15 @@ clearDragStyling = el => {
 }
 
 
-// document.addEventListener('dragleave', e => {
+document.addEventListener('dragleave', e => {
 
-// 	let tile = e.target.closest('.tile');
+	let tile = e.target.closest('.tile');
 
-// 	if ( !tile ) return;
+	if ( !tile ) return;
 
-// 	if ( tile.textDragOverFolderTimer )
-// 		clearTimeout(tile.textDragOverFolderTimer);
-// });
+	if ( qm.textDragOverFolderTimer )
+		clearTimeout(qm.textDragOverFolderTimer);
+});
 
 function nodeToTile( node ) {
 
