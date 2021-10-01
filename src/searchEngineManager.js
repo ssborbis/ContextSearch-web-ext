@@ -536,6 +536,22 @@ function buildSearchEngineContainer() {
 				_form.groupColorPicker.onchange = (e) => {
 					_form.groupColor.value = e.target.value;
 				}
+
+				function showHideGroupSettings() {
+		
+					if ( !_form.groupFolder.value) {
+						['groupColor', 'groupLimit', 'groupHideMoreTile'].forEach( name => {
+							_form[name].closest('TR').style.display = 'none';
+						})
+					} else {
+						['groupColor', 'groupLimit', 'groupHideMoreTile'].forEach( name => {
+							_form[name].closest('TR').style.display = null;
+						})
+					}
+				}
+
+				_form.groupFolder.addEventListener('change', showHideGroupSettings);
+				showHideGroupSettings();
 			});	
 			
 			text.addEventListener('dblclick', e => {
@@ -899,6 +915,9 @@ function buildSearchEngineContainer() {
 		let targetElement = nearestParent('LI', ev.target);
 		let targetNode = targetElement.node;
 		let position = dragover_position(targetElement, ev);
+
+		if ( targetNode === dragNode )
+			return false;
 		
 		// clear drag styling
 		targetElement.style = '';
@@ -943,6 +962,9 @@ function buildSearchEngineContainer() {
 	
 	function dragend_handler(ev) {
 		updateNodeList();
+
+		 let overNode = nearestParent('LI', ev.target);
+		 overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 	}
 	
 	function nearestParent( tagName, target ) {
