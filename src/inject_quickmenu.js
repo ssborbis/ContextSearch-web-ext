@@ -815,7 +815,7 @@ function installResizeWidget() {
 
 			resizeWidget.style.visibility = 'hidden';
 
-			if ( o.columns == userOptions.quickMenuColumns && o.rows === userOptions.quickMenuRows ) {
+			if ( o.columns == userOptions.quickMenuColumns && o.rows == userOptions.quickMenuRows ) {
 				return;
 			}
 
@@ -840,19 +840,21 @@ function installResizeWidget() {
 
 			resizeWidget.style.visibility = null;
 			
-			// // resize changes the offsets
+			// resize changes the offsets
 			iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
-			
-			// // reset the fixed quadrant
-			iframe.style.transition = 'none';
-			let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
-			iframe.docking.translatePosition(position.v, position.h);
-			iframe.style.transition = null;
-				
+
 			// resize the menu again to shrink empty rows					
 			iframe.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
-
-			// // save prefs
+			
+			// reset the fixed quadrant
+			runAtTransitionEnd(iframe, ["height", "width"], () => {
+				iframe.style.transition = 'none';
+				let position = iframe.docking.getPositions(iframe.docking.options.lastOffsets);
+				iframe.docking.translatePosition(position.v, position.h);
+				iframe.style.transition = null;
+			});
+				
+			// save prefs
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 		}
 	});
@@ -897,8 +899,7 @@ function quickMenuResize(e) {
 
 	if ( iframe.resizeWidget && e.data.tileSize) {
 		iframe.resizeWidget.options.tileSize = e.data.tileSize
-		
-		iframe.resizeWidget.options.rows = Math.ceil(e.data.tileCount / e.data.columns );
+		iframe.resizeWidget.options.rows = e.data.rows;
 		iframe.resizeWidget.options.columns = e.data.columns;
 		iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
 	}

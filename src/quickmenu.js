@@ -74,7 +74,7 @@ function setMenuSize(o) {
 
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
-	qm.insertBreaks();
+	let rows = qm.insertBreaks();
 
 	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
 
@@ -140,6 +140,8 @@ function setMenuSize(o) {
 	document.body.style.transition = null;
 
 //	console.log(qm.style.height, getAllOtherHeights(), window.innerHeight, maxHeight);
+
+	return rows;
 }
 
 function resizeMenu(o) {
@@ -162,7 +164,7 @@ function resizeMenu(o) {
 		return;
 	}
 
-	setMenuSize(o);
+	let rows = setMenuSize(o);
 
 	qm.scrollTop = scrollTop;
 	sg.scrollTop = sgScrollTop;
@@ -176,7 +178,8 @@ function resizeMenu(o) {
 		singleColumn: qm.singleColumn,
 		tileSize: tileSize,
 		tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length,
-		columns: qm.columns
+		columns: qm.columns,
+		rows: rows
 	}, "*");
 
 //	qm.style.width = null;

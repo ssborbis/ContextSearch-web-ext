@@ -1875,7 +1875,7 @@ document.addEventListener('mouseup', e => {
 		// check for locked / Keep Menu Open 
 		if ( !keepMenuOpen(e) && !tile.keepOpen )
 			closeMenuRequest(e);
-	}, () => {});
+	}, err => { console.log(err)});
 
 	return false;
 
