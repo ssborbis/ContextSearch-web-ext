@@ -769,6 +769,9 @@ function loadUserOptions() {
 
 async function buildContextMenu() {
 
+	// catch android
+	if ( !browser.contextMenus ) return;
+
 	window.contextMenuSelectDomainMenus = [];
 
 	let contexts = ["selection", "page"];
@@ -1046,9 +1049,13 @@ browser.tabs.onActivated.addListener( async tabInfo => {
 	let hotkey = ''; 
 	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';
 	
-	browser.contextMenus.update("search_engine_menu", {
-		title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchWith") )
-	});
+	try {
+		browser.contextMenus.update("search_engine_menu", {
+			title: (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchWith") )
+		});
+	} catch (e) {
+		console.log(e);
+	}
 });
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
@@ -1066,12 +1073,27 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	
 });
 
-browser.contextMenus.onClicked.addListener(contextMenuSearch);
+var isAndroid;
+
+(async() => {
+	let info = await browser.runtime.getPlatformInfo();
+	if ( info && info.os === "android")
+		isAndroid = true;
+})();
+
+if ( browser.contextMenus ) // catch android
+	browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function openWithMethod(o) {
 	if ( !o.url ) return;
 	
 	o.openerTabId = o.openerTabId || null;
+
+	function filterOptions(_o) {
+		if ( isAndroid) delete _o.openerTabId;
+
+		return _o;
+	}
 	
 	switch (o.openMethod) {
 		case "openCurrentTab":
@@ -1097,10 +1119,10 @@ function openWithMethod(o) {
 	
 	function openCurrentTab() {
 		
-		return browser.tabs.update({
+		return browser.tabs.update(filterOptions({
 			url: o.url,
 			openerTabId: o.openerTabId
-		});
+		}));
 	} 
 	function openNewWindow(incognito) {	// open in new window
 
@@ -1111,12 +1133,12 @@ function openWithMethod(o) {
 	} 
 	function openNewTab(inBackground) {	// open in new tab
 
-		return browser.tabs.create({
+		return browser.tabs.create(filterOptions({
 			url: o.url,
 			active: !inBackground,
 			openerTabId: ( userOptions.openFoldersAfterLastTab ) ? null : o.openerTabId
 			//openerTabId: (info.folder ? null : openerTabId)
-		});
+		}));
 
 	}	
 
@@ -2176,15 +2198,19 @@ browser.runtime.onInstalled.addListener( details => {
 });
 
 // trigger zoom event
-browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
+try {
+	browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
 
-	onFound = () => {}
-	onError = () => {}
+		onFound = () => {}
+		onError = () => {}
 
-	browser.tabs.executeScript( zoomChangeInfo.tabId, {
-		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
-	}).then(onFound, onError);
-});
+		browser.tabs.executeScript( zoomChangeInfo.tabId, {
+			code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+		}).then(onFound, onError);
+	});
+} catch(e) {
+	console.log(e);
+}
 
 // note: returns a promise to loadRemoteIcons
 function dataToSearchEngine(data) {
