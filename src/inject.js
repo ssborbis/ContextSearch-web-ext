@@ -6,6 +6,21 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {	
 	if ( message.userOptions ) userOptions = message.userOptions;
+
+	switch (message.action) {
+		case "updateSearchTerms":
+
+			quickMenuObject.searchTerms = message.searchTerms;
+
+			// send event to OpenAsLink tile to enable/disable
+			document.dispatchEvent(new CustomEvent('updatesearchterms'));
+
+			browser.runtime.sendMessage({
+				action: "updateQuickMenuObject", 
+				quickMenuObject: quickMenuObject
+			});
+			break;
+	}
 });
 
 function getRawSelectedText(el) {

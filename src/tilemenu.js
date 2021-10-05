@@ -1327,31 +1327,40 @@ function makeSearchBar() {
 			
 	sb.dataset.position = userOptions.quickMenuSearchBar;
 
-	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
-		
-		if ( userOptions.autoPasteFromClipboard ) {
-			sb.select();
-			document.execCommand("paste");
-			sb.select();
-			return;
-		}
-		
-		// skip empty 
-		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-		
-		sb.value = message.lastSearch;
-		sb.select();
+	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
+		let qmo = message[0];
 
-		// workaround for linux 
-		var selectInterval = setInterval( () => {
-
-			if (getSelectedText(sb) == sb.value)
-				clearInterval(selectInterval);
-			else
-				sb.select();
-		}, 50);
-
+		if ( qmo.searchTerms) sb.value = qmo.searchTerms;
+		else displayLastSearchTerms();
 	});
+
+	function displayLastSearchTerms() {
+		browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
+			
+			if ( userOptions.autoPasteFromClipboard ) {
+				sb.select();
+				document.execCommand("paste");
+				sb.select();
+				return;
+			}
+			
+			// skip empty 
+			if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
+			
+			sb.value = message.lastSearch;
+			sb.select();
+
+			// workaround for linux 
+			var selectInterval = setInterval( () => {
+
+				if (getSelectedText(sb) == sb.value)
+					clearInterval(selectInterval);
+				else
+					sb.select();
+			}, 50);
+
+		});
+	}
 
 	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
 	

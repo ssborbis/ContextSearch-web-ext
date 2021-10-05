@@ -551,12 +551,10 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getTabQuickMenuObject":
-			onFound = () => {}
-			onError = () => {}
 
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: `quickMenuObject;`
-			}).then(onFound, onError);;
+			});
 			break;
 		
 		case "addToHistory":

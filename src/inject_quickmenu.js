@@ -642,17 +642,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			case "updateSearchTerms":
 
 				// only update if quickmenu is opened and locked
-				if (quickMenuObject.locked || getQM()) {
-					quickMenuObject.searchTerms = message.searchTerms;
+				// if (quickMenuObject.locked || getQM()) {
+				// 	quickMenuObject.searchTerms = message.searchTerms;
 
-					// send event to OpenAsLink tile to enable/disable
-					document.dispatchEvent(new CustomEvent('updatesearchterms'));
+				// 	// send event to OpenAsLink tile to enable/disable
+				// 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-					browser.runtime.sendMessage({
-						action: "updateQuickMenuObject", 
-						quickMenuObject: quickMenuObject
-					});
-				} 
+				// 	browser.runtime.sendMessage({
+				// 		action: "updateQuickMenuObject", 
+				// 		quickMenuObject: quickMenuObject
+				// 	});
+				// } 
 				break;
 			
 			case "updateQuickMenuObject":
