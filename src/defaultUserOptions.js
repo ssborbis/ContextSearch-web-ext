@@ -226,7 +226,7 @@ const defaultUserOptions = {
 	userShortcuts: [],
 	shakeSensitivity: 3,
 	blockList: ["moz-extension://*", "chrome://*"],
-	version: 1,
+	version: "1",
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false
 };

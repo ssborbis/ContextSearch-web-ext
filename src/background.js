@@ -736,6 +736,21 @@ function updateUserOptionsObject(uo) {
 
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 				traverse(defaultobj[key], userobj[key]);
+
+			// fix broken object arrays but skip searchEngines
+			if ( defaultobj[key] instanceof Array && defaultobj[key][0] && defaultobj[key][0] instanceof Object && key !== "searchEngines" ) {
+			 	
+			 	if ( userobj[key].includes( undefined ) ) {
+			 		console.error(key, "Found broken settings array in config. Restoring defaults")
+			 		userobj[key] = defaultobj[key];
+			 	}
+			}
+
+			// fix broken values
+			if ( typeof defaultobj[key] === 'number' && ( typeof userobj[key] !== 'number' || !isFinite(userobj[key]) ) ) {
+				console.error(key, userobj[key], "Found broken value. Restoring default");
+				userobj[key] = defaultobj[key];
+			}
 		}
 	}
 
