@@ -442,7 +442,7 @@ BODY {
 .mini #searchBarContainer {	width:300px; }
 
 .drag {
-	display:none;
+	/*display:none;*/
 }
 
 GROUP {

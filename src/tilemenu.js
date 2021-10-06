@@ -1953,6 +1953,7 @@ document.addEventListener('dragover', e => {
 
 	if ( !tile ) return;
 	if ( !dragTile ) return;
+	if ( tile.dataset.type === 'tool' ) return;
 
 	e.preventDefault();
 
@@ -2022,7 +2023,6 @@ clearDragStyling = el => {
 	if ( t ) t.classList.remove('dragOver', 'before', 'after', 'middle');
 }
 
-
 document.addEventListener('dragleave', e => {
 
 	let tile = e.target.closest('.tile');
@@ -2031,6 +2031,8 @@ document.addEventListener('dragleave', e => {
 
 	if ( qm.textDragOverFolderTimer )
 		clearTimeout(qm.textDragOverFolderTimer);
+
+	clearDragStyling(tile);
 });
 
 function nodeToTile( node ) {
