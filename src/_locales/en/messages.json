@@ -1582,6 +1582,10 @@
     "message": "Group color",
     "description": ""
   },
+   "groupcolortext": {
+    "message": "Text color",
+    "description": ""
+  },
   
   "grouplimit": {
     "message": "Group limit",
