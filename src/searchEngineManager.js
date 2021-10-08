@@ -505,6 +505,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.groupColor = _form.groupColor.value;
+					node.groupColorText = _form.groupColorText.value;
 					node.groupFolder = _form.groupFolder.value || false;
 					node.groupLimit = parseInt(_form.groupLimit.value);
 					node.displayType = _form.displayType.value;
@@ -522,6 +523,7 @@ function buildSearchEngineContainer() {
 								
 				_form.shortName.value = node.title;
 				_form.groupColor.value = node.groupColor || userOptions.defaultGroupColor;
+				_form.groupColorText.value = node.groupColorText || userOptions.defaultGroupColorText;
 				_form.groupFolder.value = node.groupFolder || "";
 				_form.groupLimit.value = node.groupLimit || 0;
 				_form.displayType.value = node.displayType || "";
@@ -532,9 +534,20 @@ function buildSearchEngineContainer() {
 				addIconPickerListener(_form.iconPicker, li);
 				_form.addFaviconBox(getIconFromNode(node));
 
-				_form.groupColorPicker.value = _form.groupColor.value;
-				_form.groupColorPicker.onchange = (e) => {
+				_form.c_groupColor.value = _form.groupColor.value;
+				_form.c_groupColor.onchange = (e) => {
 					_form.groupColor.value = e.target.value;
+				}
+				_form.groupColor.onchange = (e) => {
+					_form.c_groupColor.value = e.target.value;
+				}
+
+				_form.c_groupColorText.value = _form.groupColorText.value;
+				_form.c_groupColorText.onchange = (e) => {
+					_form.groupColorText.value = e.target.value;
+				}
+				_form.groupColorText.onchange = (e) => {
+					_form.c_groupColorText.value = e.target.value;
 				}
 
 				function showHideGroupSettings() {

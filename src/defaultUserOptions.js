@@ -4,6 +4,7 @@ const defaultUserOptions = {
 	lastUsedId: null,
 	hiddenEngines: "",
 	defaultGroupColor: "#CED7FF",
+	defaultGroupColorText: "#444444",
 	quickMenu: true,
 	quickMenuColumns: 6,
 	quickMenuRows: 1,

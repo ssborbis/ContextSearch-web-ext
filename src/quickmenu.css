@@ -142,9 +142,11 @@ BODY {
 }
 .dragHover.singleColumn[data-side="before"] {
 	border-top:1px solid var(--selected);
+	/*box-sizing: border-box;*/
 }
 .dragHover.singleColumn[data-side="after"] {
 	border-bottom:1px solid var(--selected);
+	/*box-sizing: border-box;*/
 }
 #arrow {
 	pointer-events:none;
@@ -556,6 +558,10 @@ GROUP > LABEL {
 	--mask-image: url(icons/separator.svg) !important;
 }
 
+GROUP {
+	color: var(--group-color-text);
+}
+
 GROUP.inline {
 	display: inline;
 }
@@ -563,3 +569,25 @@ GROUP.block {
 	display: block;
 }
 
+GROUP.inline .tile {
+	background-color: var(--group-color);
+}
+
+.dummy {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	/*background: url('/icons/chevron-down.svg') no-repeat center/100%;*/
+	margin-left: -16px;
+	margin-right: -16px;
+	--tools-color:var(--selected);
+	position: relative;
+	z-index: 3;
+}
+
+.dummy.singleColumn {
+	margin-top: -10px;
+	margin-bottom: -10px;
+	transform: rotate(-90deg);
+	padding-left: 10px;
+}
