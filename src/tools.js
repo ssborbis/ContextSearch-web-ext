@@ -531,4 +531,17 @@ function copyToClip(str) {
   document.addEventListener("copy", listener);
   document.execCommand("copy");
   document.removeEventListener("copy", listener);
-};
+}
+
+function getBrightness(el) {
+
+	let rgbCSS = window.getComputedStyle(el, null).getPropertyValue('background-color');
+
+	let sep = rgbCSS.indexOf(",") > -1 ? "," : " ";
+  rgb = rgbCSS.substr(4).split(")")[0].split(sep);
+
+ 	return Math.round(((parseInt(rgb[0]) * 299) +
+                      (parseInt(rgb[1]) * 587) +
+                      (parseInt(rgb[2]) * 114)) / 1000);
+}
+

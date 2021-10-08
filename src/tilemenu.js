@@ -1057,10 +1057,7 @@ async function makeQuickMenu(options) {
 
 				qm.insertBefore(g, gf);
 				if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
-				else {
-					gf.style.backgroundColor = gf.node.groupColor ? 'var(--group-color)' : null;
-					g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
-				}
+				else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
 
 				let footer = g.querySelector('.footer');
 
@@ -1557,8 +1554,8 @@ function getSide(t, e) {
 	let dec = getSideDecimal(t, e);
 	
 	if ( t.node && t.node.type === 'folder' ) {
-		if ( dec < .3 ) return "before";
-		else if ( dec > .7 ) return "after";
+		if ( dec < .25 ) return "before";
+		else if ( dec > .75 ) return "after";
 		else return "middle";
 	} else {
 		if ( dec < .5 ) return "before";
@@ -1904,14 +1901,19 @@ document.addEventListener('dragstart', e => {
 	qm.style.overflowY = 'hidden';
 
 	let dummy = document.createElement('div');
-	dummy.className = 'tile dummy';
+	dummy.className = 'tool dummy';
+	dummy.style="--mask-image: url(icons/chevron-down.svg)";
+	if ( qm.singleColumn) dummy.classList.add('singleColumn');
 	document.body.appendChild(dummy);
 
 });
 
-document.addEventListener('dragend', e => {
+// setTimeout(() => {
+// 	document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
+// 	document.querySelector('[data-name="edit"]').action();
+// }, 500);
 
-	e.preventDefault();
+document.addEventListener('dragend', e => {
 
 	let dummy = document.querySelector('.dummy');
 	if ( dummy ) dummy.parentNode.removeChild(dummy);
@@ -1955,13 +1957,13 @@ document.addEventListener('dragover', e => {
 	if ( !dragTile ) return;
 	if ( tile.dataset.type === 'tool' ) return;
 
-	e.preventDefault();
-
 	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
 
 	tile.lastDragOver = Date.now();
 
 	let side = getSide(tile, e);
+
+	if ( tile.dataset.side === side ) return;
 
 	let dummy = document.querySelector('.dummy');
 
@@ -2010,8 +2012,8 @@ document.addEventListener('drop', e => {
 
 	dragTile.classList.remove('drag');
 
-	let dummy = document.querySelector('.dummy');
-	if ( dummy ) dummy.parentNode.removeChild(dummy);
+//	let dummy = document.querySelector('.dummy');
+//	if ( dummy ) dummy.parentNode.removeChild(dummy);
 
 	// if ( side === 'middle' )
 	// 	document.body.appendChild(dummy);
@@ -2019,8 +2021,8 @@ document.addEventListener('drop', e => {
 });
 
 clearDragStyling = el => {
-	let t = document.querySelector('.dragOver');
-	if ( t ) t.classList.remove('dragOver', 'before', 'after', 'middle');
+	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover');
+//	delete el.dataset.side;
 }
 
 document.addEventListener('dragleave', e => {
@@ -2188,12 +2190,6 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	let title = (_tiles.length - limit) + " " + browser.i18n.getMessage("more");
 
-	_tiles.forEach( t => {
-		// skip assigning group color to root / no group color folders
-		if ( t.node && t.node.parent && t.node.parent.groupColor )
-			t.style.backgroundColor = 'var(--group-color)';
-	});
-
 	parentNode = parentNode || qm;
 	let node = parentNode.node || {}
 	let classList = _tiles[0].classList;
@@ -2344,6 +2340,17 @@ function makeGroupFolderFromTile(gf) {
 
 	if ( gf.node.groupColor ) 
 		g.style.setProperty("--group-color", gf.node.groupColor);
+
+	if ( gf.node.groupColorText ) 
+		g.style.setProperty("--group-color-text", gf.node.groupColorText);
+
+	// setTimeout(() => {
+	// 	let brightness = getBrightness(g);
+	// 	if ( brightness > 200 ) g.style.setProperty("color", "#000")
+	// 	console.log(brightness);
+	// }, 500);
+
+
 
 //	g.style.display = Math.random() > .5 ? 'block' : 'inline';
 
