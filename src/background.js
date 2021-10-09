@@ -742,6 +742,16 @@ function updateUserOptionsObject(uo) {
 			 		console.error(key, "Found broken settings array in config. Restoring defaults")
 			 		userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
 			 	}
+
+		 		for(let i=userobj[key].length-1;i>-1;i--) {
+				 	try {
+						String(userobj[key][i]);
+					} catch (e) {
+						console.error('Dead objects found. Replacing with defaults');
+						userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
+						break;
+					}
+				}
 			}
 
 			// fix broken values
