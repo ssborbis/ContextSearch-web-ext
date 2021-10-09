@@ -730,7 +730,7 @@ function updateUserOptionsObject(uo) {
 	// Update default values instead of replacing with object of potentially undefined values
 	function traverse(defaultobj, userobj) {
 		for (let key in defaultobj) {
-			userobj[key] = (userobj[key] !== undefined && userobj[key] == userobj[key] ) ? userobj[key] : defaultobj[key];
+			userobj[key] = (userobj[key] !== undefined && userobj[key] == userobj[key] ) ? userobj[key] : JSON.parse(JSON.stringify(defaultobj[key]));
 
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 				traverse(defaultobj[key], userobj[key]);
@@ -740,14 +740,14 @@ function updateUserOptionsObject(uo) {
 			 	
 			 	if ( userobj[key].includes( undefined ) ) {
 			 		console.error(key, "Found broken settings array in config. Restoring defaults")
-			 		userobj[key] = defaultobj[key];
+			 		userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
 			 	}
 			}
 
 			// fix broken values
 			if ( typeof defaultobj[key] === 'number' && ( typeof userobj[key] !== 'number' || !isFinite(userobj[key]) ) ) {
 				console.error(key, userobj[key], "Found broken value. Restoring default");
-				userobj[key] = defaultobj[key];
+				userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
 			}
 		}
 	}
@@ -2047,8 +2047,8 @@ function updateUserOptionsVersion(uo) {
 
 				console.log('userShortcuts', _uo.userShortcuts);
 
-				let us = _uo.userShortcuts.find(s => s.id === 4 );
-				if ( us ) _uo.userShortcuts[_uo.userShortcuts.indexOf(us)] = key;
+				let us_index = _uo.userShortcuts.findIndex(s => s.id === 4 );
+				if ( us_index !== -1 ) _uo.userShortcuts[us_index] = key;
 				else _uo.userShortcuts.push(key);
 			}
 

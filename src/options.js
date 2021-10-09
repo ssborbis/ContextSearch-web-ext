@@ -919,8 +919,9 @@ function buildToolIcons() {
 		saveQuickMenuTools();
 	}
 	function saveQuickMenuTools() {
-		let tools = [];
 		let tool_buttons = document.querySelectorAll('#toolIcons .toolIcon');
+
+		userOptions.quickMenuTools = [];
 
 		tool_buttons.forEach(b => {
 			let tool = { name: b.name, disabled: b.disabled};
@@ -928,26 +929,25 @@ function buildToolIcons() {
 			if ( b.name === "lock" ) tool.persist = $('#cb_quickMenuToolsLockPersist').checked;
 			if ( b.name === "repeatsearch" ) tool.persist = $('#cb_quickMenuToolsRepeatSearchPersist').checked;
 
-			tools.push(tool);
+			userOptions.quickMenuTools.push(JSON.parse(JSON.stringify(tool)));
 		});
 
-		userOptions.quickMenuTools = tools;
 		saveOptions();
 	}
 	
 	var toolIcons = [];
+	
 	QMtools.forEach( tool => {
 		toolIcons.push({name: tool.name, src: tool.icon, title: tool.title, index: Number.MAX_VALUE, disabled: true});
 	});
 
 	toolIcons.forEach( toolIcon => {
 		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );
-		// update quickMenuTools array with missing tools
-		if ( toolIcon.index === -1) {
-			toolIcon.index = userOptions.quickMenuTools.length
-			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: toolIcon.disabled});
+
+		if (toolIcon.index === -1) {
+			userOptions.quickMenuTools.push({name: toolIcon.name, disabled: true});
+			toolIcon.index = userOptions.quickMenuTools.length -1;
 		}
-		
 		toolIcon.disabled = userOptions.quickMenuTools[toolIcon.index].disabled;
 	});
 
@@ -1126,8 +1126,6 @@ document.addEventListener("DOMContentLoaded", () => {
 		reader.onload = () => {
 			try {
 				let newUserOptions = JSON.parse(reader.result);
-
-				console.log(newUserOptions);
 				
 				// run a few test to check if it's valid
 				if ( 
