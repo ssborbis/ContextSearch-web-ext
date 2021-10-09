@@ -1111,6 +1111,7 @@ function openWithMethod(o) {
 	if ( !o.url ) return;
 	
 	o.openerTabId = o.openerTabId || null;
+	o.index = o.index || null;
 
 	function filterOptions(_o) {
 		if ( isAndroid) delete _o.openerTabId;
@@ -1154,12 +1155,20 @@ function openWithMethod(o) {
 			incognito: incognito
 		});
 	} 
-	function openNewTab(inBackground) {	// open in new tab
+	async function openNewTab(inBackground) {	// open in new tab
+
+		if ( userOptions.forceOpenReultsTabsAdjacent ) {
+			try {
+				let actives = await browser.tabs.query({currentWindow: true, active: true});
+				o.index = actives[0].index + 1;
+			} catch (err) {}
+		}
 
 		return browser.tabs.create(filterOptions({
 			url: o.url,
 			active: !inBackground,
-			openerTabId: ( userOptions.openFoldersAfterLastTab ) ? null : o.openerTabId
+			openerTabId: o.openerTabId,
+			index: o.index
 			//openerTabId: (info.folder ? null : openerTabId)
 		}));
 

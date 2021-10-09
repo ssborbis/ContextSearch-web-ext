@@ -231,5 +231,6 @@ const defaultUserOptions = {
 	blockList: ["moz-extension://*", "chrome://*"],
 	version: "1",
 	quickMenuShowRecentlyUsed: false,
-	quickMenuShowHotkeysInTitle: false
+	quickMenuShowHotkeysInTitle: false,
+	forceOpenReultsTabsAdjacent: false
 };

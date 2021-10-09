@@ -332,6 +332,7 @@ function restoreOptions() {
 		$('#s_omniboxSearch').value = userOptions.omniboxSearch;
 		$('#cb_contextMenuUseInnerText').checked = userOptions.contextMenuUseInnerText;
 		$('#n_cacheIconsMaxSize').value = userOptions.cacheIconsMaxSize;
+		$('#cb_forceOpenReultsTabsAdjacent').checked = userOptions.forceOpenReultsTabsAdjacent;
 
 		$('#n_pageTilesRows').value = userOptions.pageTiles.rows;
 		$('#n_pageTilesColumns').value = userOptions.pageTiles.columns;
@@ -651,6 +652,7 @@ function saveOptions(e) {
 		nightMode: userOptions.nightMode,
 		userShortcuts: userOptions.userShortcuts,
 		shakeSensitivity: parseInt($('#n_shakeSensitivity').value),
+		forceOpenReultsTabsAdjacent: $('#cb_forceOpenReultsTabsAdjacent').checked,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
