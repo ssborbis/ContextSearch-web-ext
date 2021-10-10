@@ -2419,7 +2419,13 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	injectContentScripts(tab);
 })
 
-function injectContentScripts(tab) {
+async function injectContentScripts(tab) {
+
+	let check = await browser.tabs.executeScript(tab.id, { code: "window.hasRun", matchAboutBlank:false});
+	if ( check[0] && check[0] === true ) {
+		console.log('already injected');
+		return;
+	}
 
 	onFound = () => {}
 	onError = () => {}

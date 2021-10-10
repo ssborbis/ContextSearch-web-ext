@@ -383,4 +383,6 @@ function checkForNodeHotkeys(e) {
 
 });
 
+window.hasRun = true;
+
 browser.runtime.sendMessage({action: "injectComplete"});
