@@ -438,6 +438,6 @@ window.addEventListener("message", e => {
 	let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
 
 	// dispatch both to fool timer
-	el.dispatchEvent(new MouseEvent('mousedown'));
-	el.dispatchEvent(new MouseEvent('mouseup'));
+	el.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+	el.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
 });

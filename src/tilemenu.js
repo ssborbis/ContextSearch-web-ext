@@ -1169,39 +1169,39 @@ async function makeQuickMenu(options) {
 			tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
 			tile.addEventListener('dragover', e => e.preventDefault());
 			tile.addEventListener('dragend', e => e.preventDefault());
-			tile.addEventListener('drop', async e => {
-				e.preventDefault();
+			// tile.addEventListener('drop', async e => {
+			// 	e.preventDefault();
 				
-				let dragDiv = document.getElementById('dragDiv');
+			// 	let dragDiv = document.getElementById('dragDiv');
 				
-				if ( !dragDiv || !dragDiv.node ) return;
+			// 	if ( !dragDiv || !dragDiv.node ) return;
 				
-				dragDiv.parentNode.removeChild(dragDiv);
+			// 	dragDiv.parentNode.removeChild(dragDiv);
 				
-				dragDiv.id = null;
+			// 	dragDiv.id = null;
 
-				let dragNode = ( dragDiv.groupMove ) ? dragDiv.node.parent : dragDiv.node;
-				let targetNode = tile.node;
+			// 	let dragNode = ( dragDiv.groupMove ) ? dragDiv.node.parent : dragDiv.node;
+			// 	let targetNode = tile.node;
 				
-				let slicedNode = nodeCut(dragNode);
+			// 	let slicedNode = nodeCut(dragNode);
 				
-				slicedNode.parent = targetNode;
+			// 	slicedNode.parent = targetNode;
 					
-				// add to target children
-				targetNode.children.push(slicedNode);
+			// 	// add to target children
+			// 	targetNode.children.push(slicedNode);
 				
-				// save the tree
-				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+			// 	// save the tree
+			// 	userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 				
-				saveUserOptions();
+			// 	saveUserOptions();
 				
-				// rebuild menu
-				let animation = userOptions.enableAnimations;
-				userOptions.enableAnimations = false;
-				qm = await quickMenuElementFromNodeTree(rootNode);
-				userOptions.enableAnimations = animation;
-				resizeMenu();				
-			});
+			// 	// rebuild menu
+			// 	let animation = userOptions.enableAnimations;
+			// 	userOptions.enableAnimations = false;
+			// 	qm = await quickMenuElementFromNodeTree(rootNode);
+			// 	userOptions.enableAnimations = animation;
+			// 	resizeMenu();				
+			// });
 			
 			delete sb.selectedIndex;
 			tileArray.push(tile);
@@ -1991,6 +1991,28 @@ document.addEventListener('dragover', e => {
 	// 	else
 	// 		targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
 	// }	
+});
+
+document.addEventListener('dragover', e => {
+	if ( window.tilesDraggable ) return;
+
+	e.preventDefault();
+});
+
+// text, image, url drag & drop
+document.addEventListener('drop', e => {
+
+	console.log(e);
+	let tile = e.target.closest('.tile');
+	
+	if ( !tile ) return;
+	if ( window.tilesDraggable ) return;
+
+	e.preventDefault();
+
+	tile.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+	tile.dispatchEvent(new MouseEvent('mouseup', {bubbles:true}));
+
 });
 
 document.addEventListener('drop', e => {
