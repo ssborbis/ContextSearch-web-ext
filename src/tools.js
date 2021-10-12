@@ -173,7 +173,7 @@ var QMtools = [
 	},
 	{
 		name: 'lastused', 
-		icon: "icons/history.svg", 
+		icon: "icons/history_one.svg", 
 		title: browser.i18n.getMessage('tools_lastused'),		
 		init: function() {
 
