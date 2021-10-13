@@ -211,7 +211,7 @@ document.addEventListener('mousedown', ev => {
 		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
 
 		// prevent losing text selection
-		ev.target.addEventListener('mouseup', evv => {
+		document.addEventListener('mouseup', evv => {
 			if (evv.which !== ev.which) return;
 			evv.preventDefault();
 			quickMenuObject.mouseLastClickTime = Date.now();
