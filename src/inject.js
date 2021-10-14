@@ -50,6 +50,9 @@ function isTextBox(element) {
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 
+	// if an opener method timer is running, skip
+	if ( quickMenuObject.mouseDownTimer ) return;
+
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
 	
 	let searchTerms = window.getSelection().toString().trim();
