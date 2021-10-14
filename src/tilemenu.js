@@ -1724,8 +1724,6 @@ document.addEventListener('mouseup', e => {
 
 document.addEventListener('mouseup', e => {
 
-	console.log(e);
-
 	// docking drag throws error on HTMLDocument element
 	if ( !e.target.closest) return;
 
@@ -1993,28 +1991,6 @@ document.addEventListener('dragover', e => {
 	// }	
 });
 
-document.addEventListener('dragover', e => {
-	if ( window.tilesDraggable ) return;
-
-	e.preventDefault();
-});
-
-// text, image, url drag & drop
-document.addEventListener('drop', e => {
-
-	console.log(e);
-	let tile = e.target.closest('.tile');
-	
-	if ( !tile ) return;
-	if ( window.tilesDraggable ) return;
-
-	e.preventDefault();
-
-	tile.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
-	tile.dispatchEvent(new MouseEvent('mouseup', {bubbles:true}));
-
-});
-
 document.addEventListener('drop', e => {
 
 	let tile = e.target.closest('.tile');
@@ -2058,6 +2034,29 @@ document.addEventListener('dragleave', e => {
 
 	clearDragStyling(tile);
 });
+
+(() => { // text, image, url drag & drop
+	document.addEventListener('dragover', e => {
+		if ( window.tilesDraggable ) return;
+
+		e.preventDefault();
+	});
+
+	document.addEventListener('drop', e => {
+
+		console.log(e, quickMenuObject);
+
+		if ( window.tilesDraggable ) return;
+
+		let tile = e.target.closest('.tile');	
+		if ( !tile ) return;
+
+		e.preventDefault();
+
+		tile.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+		tile.dispatchEvent(new MouseEvent('mouseup', {bubbles:true}));
+	});
+})();
 
 function nodeToTile( node ) {
 
