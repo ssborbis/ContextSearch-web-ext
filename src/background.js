@@ -1238,6 +1238,9 @@ function executeOneClickSearch(info) {
 
 	async function searchAndHighlight(tab) {
 
+		// new tab requires a delay for some reason???
+		await new Promise(r => setTimeout(r, 500));
+
 		browser.search.search({
 			query: searchTerms,
 			engine: info.node.title,
@@ -1267,9 +1270,10 @@ function executeOneClickSearch(info) {
 		openMethod: openMethod, 
 		url: "about:blank",
 		openerTabId: openerTabId
-	}).then( tab => {
+	}).then( async tab => {
 		// if new window
 		if (tab.tabs) tab = tab.tabs[0];
+
 		searchAndHighlight(tab);
 	}, onError);
 
