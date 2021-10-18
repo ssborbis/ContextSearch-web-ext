@@ -1,7 +1,7 @@
 // unique object to reference globally
 var quickMenuObject = { 
 	keyDownTimer: 0,
-	mouseDownTimer: 0,
+	mouseDownTimer: null,
 	mouseCoords: {x:0, y:0},
 	screenCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
@@ -200,7 +200,8 @@ document.addEventListener('mousedown', ev => {
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		ev.which !== userOptions.quickMenuMouseButton ||
 		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) ) ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs )
+		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
+		!ev.isTrusted
 	) return false;
 	
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};

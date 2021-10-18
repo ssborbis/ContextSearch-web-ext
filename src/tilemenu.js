@@ -1,7 +1,7 @@
 // unique object to reference globally
 var quickMenuObject = { 
 	keyDownTimer: 0,
-	mouseDownTimer: 0,
+	mouseDownTimer: null,
 	mouseCoords: {x:0, y:0},
 	screenCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
