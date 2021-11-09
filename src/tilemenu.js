@@ -1254,11 +1254,15 @@ async function makeQuickMenu(options) {
 
 		});
 
-		await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
-			let qmo = message[0];
+		try { // fails on restricted pages
+			await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
+				let qmo = message[0];
 
-			if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
-		});
+				if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
+			});
+		} catch (error) {
+
+		}
 
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
