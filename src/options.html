@@ -1561,7 +1561,10 @@
 						<td data-i18n_tooltip="Override context menu title. Use %1 in place of searchTerms. blank = default">contextMenuTitle</td>
 						<td><input type="text" id="i_contextMenuTitle"/></td>
 					</tr>
-
+					<tr>
+						<td data-i18n_tooltip="Require a double-click to display the default context menu when using HOLD right mouse button to open the quick menu. Useful for preventing errant menus on systems that display the context menu on mouse down vs mouse up">rightClickMenuOnMouseDownFix</td>
+						<td><input type="checkbox" id="cb_rightClickMenuOnMouseDownFix"/></td>
+					</tr>
 					<tr>
 						<td>&nbsp;</td>
 						<td>&nbsp;</td>
@@ -2036,6 +2039,7 @@
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<span class="description" data-i18n="HideContextMenu">_</span>
+					<span class="info" data-msg="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix. " data-i18n_tooltip="">ⓘ</span>
 				</div>
 				
 				<hr />
@@ -2126,6 +2130,8 @@
 								<option data-i18n="MiddleButton" value="2">_</option>
 								<option data-i18n="RightButton" value="3">_</option>
 							</select>
+
+							<span class="info" data-msg="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix. " data-i18n_tooltip="">ⓘ</span>
 						
 							<div style="font-size:8pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:10px;margin-right:6px;vertical-align:middle" src="icons/alert.svg">_</div>
 							<div style="margin-top: 4px">
@@ -2133,6 +2139,7 @@
 								<b>*</b><span class="description" style="font-size:8pt" data-i18n="MouseHelp">_</span>
 </div>
 							</div>
+
 						</div>
 					</td>
 				</tr>
@@ -3305,6 +3312,7 @@
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">_</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
 					<label data-i18n="Regex">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
+					<label data-i18n="MatchSearchTermsRegex">_</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
 					<label data-i18n="SearchCode">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
 
 					<div style="display:inline-block">

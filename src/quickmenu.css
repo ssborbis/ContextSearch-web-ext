@@ -583,6 +583,7 @@ GROUP.inline .tile {
 	--tools-color:var(--selected);
 	position: relative;
 	z-index: 3;
+	pointer-events: none;
 }
 
 .dummy.singleColumn {

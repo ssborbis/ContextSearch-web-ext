@@ -1032,7 +1032,6 @@ async function makeQuickMenu(options) {
 		});
 		
 		/* end dnd */
-
 		
 		(() => { // addRecentlyUsedFolder()
 			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
@@ -1041,6 +1040,22 @@ async function makeQuickMenu(options) {
 				recentFolder.dataset.hasicon = 'true';
 				tileArray.unshift(recentFolder);
 				qm.insertBefore(recentFolder, qm.firstChild);
+			}
+		})();
+
+		(() => { // matchingEnginesToFolder(s) 
+			if ( !qm.rootNode.parent && true ) {
+
+				let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+
+				if ( !folder.children.length )
+					return;// console.log('no regex matches for searchTerms');
+
+				let _tile = nodeToTile( folder );
+				_tile.classList.add('tile');
+				_tile.dataset.hasicon = 'true';
+				tileArray.unshift(_tile);
+				qm.insertBefore(_tile, qm.firstChild);
 			}
 		})();
 
@@ -1239,6 +1254,12 @@ async function makeQuickMenu(options) {
 
 		});
 
+		await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
+			let qmo = message[0];
+
+			if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
+		});
+
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
@@ -1327,7 +1348,7 @@ function makeSearchBar() {
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
 		let qmo = message[0];
 
-		if ( qmo.searchTerms) sb.value = qmo.searchTerms;
+		if ( qmo && qmo.searchTerms) sb.value = qmo.searchTerms;
 		else displayLastSearchTerms();
 	});
 
@@ -1705,9 +1726,9 @@ document.addEventListener('mouseup', e => {
 
 	if ( !tile || !tile.action ) return;
 
-	if ( tile.disabled ) return false;
+	if ( tile.disabled ) return;
 
-	if ( window.tilesDraggable && !tile.dataset.type === "tool" && !tile.dataset.name === "edit") return false;
+	if ( window.tilesDraggable && !tile.dataset.type === "tool" && !tile.dataset.name === "edit") return;
 
 	if ( mouseClickBack(e) ) return;
 
@@ -1733,9 +1754,9 @@ document.addEventListener('mouseup', e => {
 
 	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
 
-	if ( tile.disabled ) return false;
+	if ( tile.disabled ) return;
 
-	if ( window.tilesDraggable ) return false;
+	if ( window.tilesDraggable ) return;
 
 	if ( mouseClickBack(e) ) return;
 
@@ -2503,6 +2524,46 @@ function recentlyUsedListToFolder() {
 
 		// filter missing nodes
 		if ( lse ) folder.children.push(Object.assign({}, lse));
+	});
+
+	return folder;
+}
+
+function matchingEnginesToFolder(s) {
+	let folder = {
+		type: "folder",
+		id: "___matching___",
+		title: "( .* )",
+		children: [],
+		parent: qm.rootNode,
+		icon: browser.runtime.getURL('icons/chevron-down.svg'),
+		groupFolder: 'block',
+		groupColor: '#88bbdd'
+	}
+
+	let matchingEngines = userOptions.searchEngines.filter( se => {
+
+		if ( !se.matchRegex ) return false;
+
+		let lines = se.matchRegex.split(/\n/);
+
+		for ( let line of lines ) {
+
+			try {
+				let parts = JSON.parse('[' + line.trim() + ']');
+				let rgx = new RegExp(parts[0], parts[1] || 'g');
+
+				if ( rgx.test(s) ) return true;
+			} catch (error) {}
+		}
+
+		return false;
+
+	});
+
+	matchingEngines.forEach( se => {
+		let node = findNode(userOptions.nodeTree, n => n.id === se.id )
+		if ( node ) folder.children.push(Object.assign({}, node));
 	});
 
 	return folder;

@@ -162,18 +162,40 @@ function buildSearchEngineContainer() {
 						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
 							// showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
 						// }
-						if (edit_form.searchRegex.value) {
-							try {
-								let lines = edit_form.searchRegex.value.split(/\n/);
-								lines.forEach( (line, index) => {
-							
-									let parts = JSON.parse('[' + line.trim() + ']');
-									let rgx = new RegExp(parts[0], parts[2] || 'g');
-								});
-							} catch (error) {
-								showError(edit_form.searchRegex, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+
+						// replace regex
+						[edit_form.searchRegex].forEach( el => {
+
+							if (el.value) {
+								try {
+									let lines = el.value.split(/\n/);
+									lines.forEach( (line, index) => {
+								
+										let parts = JSON.parse('[' + line.trim() + ']');
+										let rgx = new RegExp(parts[0], parts[2] || 'g');
+									});
+								} catch (error) {
+									showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+								}
 							}
-						}
+						});
+
+						// match regex
+						[edit_form.matchRegex].forEach( el => {
+
+							if (el.value) {
+								try {
+									let lines = el.value.split(/\n/);
+									lines.forEach( (line, index) => {
+								
+										let parts = JSON.parse('[' + line.trim() + ']');
+										let rgx = new RegExp(parts[0], parts[1] || 'g');
+									});
+								} catch (error) {
+									showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+								}
+							}
+						});
 						
 						if ( edit_form.iconURL.value.startsWith("resource:") ) {
 							resolve(true);
@@ -207,6 +229,7 @@ function buildSearchEngineContainer() {
 					}
 				}();
 				edit_form.searchRegex.value = se.searchRegex || "";
+				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
 								
 				edit_form.close.onclick = edit_form.closeForm;
@@ -221,6 +244,7 @@ function buildSearchEngineContainer() {
 						"template": edit_form.template.value, 
 						"queryCharset": edit_form._encoding.value,
 						"searchRegex": edit_form.searchRegex.value,
+						"matchRegex": edit_form.matchRegex.value,
 						"searchCode": edit_form.searchCode.value
 					};
 
@@ -321,6 +345,7 @@ function buildSearchEngineContainer() {
 						se.params = paramStringToNameValueArray(edit_form.post_params.value);
 						se.id = se.id || gen();
 						se.searchRegex = edit_form.searchRegex.value;
+						se.matchRegex = edit_form.matchRegex.value;
 						se.searchCode = edit_form.searchCode.value;
 						
 						// force a save even if the nodeTree is unchanged
@@ -746,6 +771,25 @@ function buildSearchEngineContainer() {
 			// edit.src = 'icons/settings.svg';
 			// header.appendChild(edit);
 
+		}
+
+		// add match icons for some node types
+		if ( ['searchEngine'].includes(node.type) ) {
+
+			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
+
+			if ( se && se.matchRegex ) {
+			
+				let el = document.createElement('span');
+				el.title = browser.i18n.getMessage('matchsearchtermsregex');
+				el.className = 'hotkey';
+				el.style.right = "104px";
+
+				header.appendChild(el);
+				el.innerText = "( .* )";
+				
+				el.onclick = function(e) {}
+			}
 		}
 
 		document.addEventListener('click', e => {			

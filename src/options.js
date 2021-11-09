@@ -345,6 +345,8 @@ function restoreOptions() {
 
 		$('#n_openFoldersOnHoverTimeout').value = userOptions.openFoldersOnHoverTimeout;
 		$('#n_shakeSensitivity').value = userOptions.shakeSensitivity;
+		$('#cb_rightClickMenuOnMouseDownFix').checked = userOptions.rightClickMenuOnMouseDownFix;
+		
 
 		$('#style_dark').disabled = !userOptions.nightMode;
 
@@ -653,6 +655,7 @@ function saveOptions(e) {
 		userShortcuts: userOptions.userShortcuts,
 		shakeSensitivity: parseInt($('#n_shakeSensitivity').value),
 		forceOpenReultsTabsAdjacent: $('#cb_forceOpenReultsTabsAdjacent').checked,
+		rightClickMenuOnMouseDownFix: $('#cb_rightClickMenuOnMouseDownFix').checked,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
@@ -1676,5 +1679,12 @@ function setToolBarIconOption(uri) {
 }
 
 $('#toolBarIconForm').addEventListener('change', saveOptions);
+
+// window.addEventListener('focus', async e => {
+// 	let uo = await browser.runtime.sendMessage({action: 'getUserOptions'});
+
+// 	if ( JSON.stringify(uo) !== JSON.stringify(userOptions))
+// 		console.log('changed');
+// })
 
 
