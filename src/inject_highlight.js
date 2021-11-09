@@ -80,10 +80,10 @@ function removeStyling() {
 }
 
 // ESC to clear markers and navbar and findbar
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', async e => {
 	if ( e.key === "Escape" ) {
-		browser.runtime.sendMessage({action: "unmark"});
-		browser.runtime.sendMessage({action: "closeFindBar"});
+		await browser.runtime.sendMessage({action: "unmark"});
+		await browser.runtime.sendMessage({action: "closeFindBar"});
 	}
 });
 
@@ -408,8 +408,8 @@ function openFindBar(options) {
 
 		if ( fb ) {
 			setTimeout(() => resolve(fb), 100);
-			fb.style.opacity = null;
-			fb.style.maxHeight = null;
+			//fb.style.opacity = null;
+			//fb.style.maxHeight = null;
 			return;
 		}
 		
@@ -428,9 +428,7 @@ function openFindBar(options) {
 		document.body.appendChild(fb);
 		
 		fb.onload = function() {
-			fb.style.opacity = null;
-			fb.style.maxHeight = null;
-			
+	//		fb.style.maxHeight = null;		
 			fb.docking.init();
 			resolve(fb);
 		}
@@ -471,6 +469,12 @@ function closeFindBar() {
 			fb.parentNode.removeChild(fb);
 		});
 	}
+}
+
+function showFindBar() {
+	let fb = getFindBar();
+	fb.style.opacity = null;
+	fb.style.maxHeight = null;
 }
 
 function nextPrevious(dir) {

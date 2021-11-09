@@ -6,7 +6,10 @@ var typeTimer = null;
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
 
-	setTheme();
+	setTheme().then(() => {
+		// unhide the findbar after theme is set to prevent flashing
+		browser.runtime.sendMessage({action: "executeScript", code: "showFindBar();"});
+	});
 	
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;
 });
@@ -89,11 +92,11 @@ getSearchBar().addEventListener('change', e => {
 	}
 });
 
-window.addEventListener('keydown', e => {
+window.addEventListener('keydown', async e => {
 	
 	if ( e.key === "Escape" ) {
-		browser.runtime.sendMessage({action: "unmark"});
-		browser.runtime.sendMessage({action: "closeFindBar"});
+		await browser.runtime.sendMessage({action: "unmark"});
+		await browser.runtime.sendMessage({action: "closeFindBar"});
 		return;
 	}
 	

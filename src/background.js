@@ -16,6 +16,10 @@ async function notify(message, sender, sendResponse) {
 		await browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
 	}
 
+	if ( message.sendMessageToTopFrame ) {
+		return sendMessageToTopFrame();
+	}
+
 	switch(message.action) {
 
 		case "saveUserOptions":
@@ -597,6 +601,13 @@ async function notify(message, sender, sendResponse) {
 		case "getLastOpenedFolder":
 			return window.lastOpenedFolder || null;
 			break;
+
+		case "executeScript": 
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: message.code,
+				frameId: 0
+			});
+			break;
 			
 		case "injectComplete":
 			onFound = () => {}
@@ -1065,6 +1076,7 @@ function updateSelectDomainMenus(tab) {
 
 // rebuild menu every time a tab is activated to updated selectdomain info
 browser.tabs.onActivated.addListener( async tabInfo => {
+
 	let tab = await browser.tabs.get( tabInfo.tabId );
 	updateSelectDomainMenus(tab);
 	
