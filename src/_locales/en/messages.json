@@ -909,7 +909,12 @@
   },
   
   "Regex": {
-    "message": "Search Regex",
+    "message": "Modify Terms Regex",
+    "description": ""
+  },
+
+  "MatchSearchTermsRegex": {
+    "message": "Match Terms Regex",
     "description": ""
   },
   
