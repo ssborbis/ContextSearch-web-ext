@@ -128,7 +128,7 @@ function makeQuickMenuContainer(coords) {
 			removeUnderDiv();
 		}
 	}, 1000);
-	
+
 	addUnderDiv();
 }
 

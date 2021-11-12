@@ -28,7 +28,8 @@
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",
-			"nodes.js"
+			"nodes.js",
+			"utils.js"
 		]
 	},
 

@@ -779,16 +779,13 @@ function buildSearchEngineContainer() {
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
 
 			if ( se && se.matchRegex ) {
-			
-				let el = document.createElement('span');
-				el.title = browser.i18n.getMessage('matchsearchtermsregex');
-				el.className = 'hotkey';
-				el.style.right = "104px";
-
-				header.appendChild(el);
-				el.innerText = "( .* )";
-				
-				el.onclick = function(e) {}
+				let tool = document.createElement('div');
+				tool.title = browser.i18n.getMessage('matchsearchtermsregex');
+				tool.className = 'tool';
+				tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL('icons/regex.svg')})`);
+				header.appendChild(tool);
+				tool.style.right = "104px";
+				tool.style.position = 'absolute';
 			}
 		}
 

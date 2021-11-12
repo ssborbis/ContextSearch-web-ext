@@ -1,3 +1,7 @@
+// context menu entries need to be tracked to be updated
+window.contextMenuSelectDomainMenus = [];
+window.contextMenuMatchRegexMenus = [];
+
 async function notify(message, sender, sendResponse) {
 
 	function sendMessageToTopFrame() {
@@ -263,6 +267,8 @@ async function notify(message, sender, sendResponse) {
 			try {
 				browser.contextMenus.update("search_engine_menu", {visible: true, title: title});
 			} catch (err) {}
+
+			updateMatchRegexFolder(searchTerms);
 
 			break;
 			
@@ -860,33 +866,21 @@ async function buildContextMenu() {
 	
 	// recently used engines
 	if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
-		
-		if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {
-			let folder = {
-				type: "folder",
-				id: "___recent___",
-				title: browser.i18n.getMessage('Recent'),
-				children: []
-			}	
 
-			userOptions.recentlyUsedList.forEach( (id,index) => {
-				if ( index > userOptions.recentlyUsedListLength -1 ) return;
-				let lse = findNode(userOptions.nodeTree, node => node.id === id);
-				folder.children.push(Object.assign({}, lse));
-			});
-			
+		let folder = recentlyUsedListToFolder();
+		
+		if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
 			root.children.unshift(folder);
 		} else {
-			let recent = [];
-			userOptions.recentlyUsedList.forEach( (id,index) => {
-				if ( index > userOptions.recentlyUsedListLength -1 ) return;
-				let lse = findNode(userOptions.nodeTree, node => node.id === id);
-				recent.push(Object.assign({}, lse));
-			});
-			
 			root.children.unshift({type: "separator"});			
-			root.children = recent.concat(root.children);
+			root.children = folder.children.concat(root.children);
 		}
+	}
+
+	// matching regex engines
+	 if ( true ) {
+	 	let folder = matchingEnginesToFolder("");
+	 	root.children.unshift(folder);
 	}
 	
 	if ( userOptions.syncWithFirefoxSearch ) {
@@ -999,6 +993,9 @@ async function buildContextMenu() {
 		if ( node.type === 'folder' ) {
 			
 			let _id = "folder" + ++id
+
+			// special case for regex matching
+			if ( node.id === '___matching___') _id = node.id;
 			
 			addMenuItem({
 				parentId: parentId,
@@ -1071,6 +1068,44 @@ function updateSelectDomainMenus(tab) {
 				browser.contextMenus.create( createOptions);
 			}
 		});
+	});
+}
+
+function updateMatchRegexFolder(s) {
+
+	let folder = matchingEnginesToFolder(s);
+	
+	//window.contextMenuMatchRegexMenus = [...new Set(window.contextMenuMatchRegexMenus)];
+	
+	window.contextMenuMatchRegexMenus.forEach( menu => {	
+		browser.contextMenus.remove( menu );
+	});
+			
+	// create a new unique iterator
+	let count = Date.now();
+				
+	folder.children.forEach( node => {
+		
+		let id = node.id + '_' + count++;
+
+		let createOptions = {
+			parentId: '___matching___',
+			title: node.title,
+			id: id,
+			icons: {
+				"16": getIconFromNode(node)
+			},
+			contexts: ["selection", "link", "image", "page"]
+		};
+
+		try {
+			browser.contextMenus.create( createOptions);
+		} catch (error) { // non-Firefox
+			delete createOptions.icons;
+			browser.contextMenus.create( createOptions);
+		}
+
+		window.contextMenuMatchRegexMenus.push(id);
 	});
 }
 
