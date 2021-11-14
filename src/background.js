@@ -740,7 +740,37 @@ async function notify(message, sender, sendResponse) {
 				code: `getRawSelectedText(document.activeElement)`
 			}).then( onFound, onError);
 			break;
+
+		case "updateUserOptionsObject":
+			return updateUserOptionsObject(message.userOptions);
+			break;
+
+		case "updateUserOptionsVersion":
+			return updateUserOptionsVersion(message.userOptions);
+			break;
 	}
+}
+
+function checkUserOptionsValueTypes(repair) {
+	const traverse  = (obj, obj2) => {
+	    Object.keys(obj).forEach(key => {
+	      
+			if ( typeof obj[key] !== typeof obj2[key]) {
+				console.error('mismatched object types', key, typeof obj[key], typeof obj2[key], obj[key], obj2[key]);
+
+				if ( repair ) {
+					console.log('repairing');
+					obj2[key] = Object.assign({}, obj[key]);
+				}
+			}
+
+	    	if (typeof obj[key] === 'object' && obj[key] instanceof Object ) {
+	            traverse(obj[key], obj2[key])
+	        }
+	    })
+	}
+
+	traverse(defaultUserOptions, userOptions);
 }
 
 function updateUserOptionsObject(uo) {

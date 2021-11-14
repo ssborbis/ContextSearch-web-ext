@@ -1529,7 +1529,7 @@
 						<td><input type="checkbox" id="cb_contextMenuUseInnerText" /></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">quickMenuSimpleClickUseInnerText</td>
+						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">quickMenuSimpleClick.useInnerText</td>
 						<td><input type="checkbox" id="cb_quickMenuSimpleClickUseInnerText" /></td>
 					</tr>
 					<tr>
@@ -1539,6 +1539,14 @@
 					<tr>
 						<td data-i18n_tooltip="Show recently used engines at the top of the menu">quickMenuShowRecentlyUsed</td>
 						<td><input type="checkbox" id="cb_quickMenuShowRecentlyUsed"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Show regex matching engines at the top of the menu">contextMenuRegexMatchedEngines</td>
+						<td><input type="checkbox" id="cb_contextMenuRegexMatchedEngines"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Show regex matching engines at the top of the menu">quickMenuRegexMatchedEngines</td>
+						<td><input type="checkbox" id="cb_quickMenuRegexMatchedEngines"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Max width or height to resize icons for caching">cacheIconsMaxSize</td>
@@ -1555,6 +1563,10 @@
 					<tr>
 						<td data-i18n_tooltip="force search results to appear in next tab">forceOpenReultsTabsAdjacent</td>
 						<td><input type="checkbox" id="cb_forceOpenReultsTabsAdjacent"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix">quickMenuAllowContextMenu</td>
+						<td><input type="checkbox" id="cb_quickMenuAllowContextMenu"/></td>
 					</tr>
 					
 					<tr>
@@ -2032,18 +2044,7 @@
 				
 				<section style="min-width:720px">
 				<p class="header1" data-i18n="Opening">_</p>
-				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuAllowContextMenu" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<span class="description" data-i18n="HideContextMenu">_</span>
-					<span class="info" data-msg="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix. " data-i18n_tooltip="">ⓘ</span>
-				</div>
-				
-				<hr />
-	
+
 				<table class="openingTable">
 				<tr>
 					<td>
@@ -2133,11 +2134,15 @@
 
 							<span class="info" data-msg="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix. " data-i18n_tooltip="">ⓘ</span>
 						
-							<div style="font-size:8pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:10px;margin-right:6px;vertical-align:middle" src="icons/alert.svg">_</div>
-							<div style="margin-top: 4px">
-<div data-browser="firefox">	
-								<b>*</b><span class="description" style="font-size:8pt" data-i18n="MouseHelp">_</span>
-</div>
+							<div>
+								<img style="height:10px;vertical-align:middle" src="icons/alert.svg">
+								<span class="description" style="font-size:8pt;padding-top:8px" data-i18n="HoldForContextMenu">_</span>
+							</div>
+							<hr>
+							<div>
+							
+								<img style="height:10px;vertical-align:middle" src="icons/alert.svg">	
+								<span class="description" style="font-size:8pt" data-i18n="MouseHelp">_</span>
 							</div>
 
 						</div>

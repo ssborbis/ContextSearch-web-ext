@@ -1,7 +1,7 @@
 const defaultUserOptions = {
 	searchEngines: defaultEngines || [],
 	nodeTree: {},
-	lastUsedId: null,
+	lastUsedId: "",
 	hiddenEngines: "",
 	defaultGroupColor: "#CED7FF",
 	defaultGroupColorText: "#444444",
@@ -169,8 +169,8 @@ const defaultUserOptions = {
 			offsets: {
 				top:0,
 				left:0,
-				right:null,
-				bottom:null
+				right:Number.MAX_SAFE_INTEGER,
+				bottom:Number.MAX_SAFE_INTEGER
 			},
 			keyboardTimeout: 500,
 			markOptions: {
@@ -233,5 +233,7 @@ const defaultUserOptions = {
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
 	forceOpenReultsTabsAdjacent: false,
-	rightClickMenuOnMouseDownFix: false
+	rightClickMenuOnMouseDownFix: false,
+	contextMenuRegexMatchedEngines: false,
+	quickMenuRegexMatchedEngines: false
 };

@@ -12,7 +12,7 @@ var quickMenuObject = {
 	searchTerms: "",
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
-	mouseLastContextMenuTime:0
+	mouseLastContextMenuTime:0,
 };
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
@@ -370,6 +370,17 @@ document.addEventListener('mousedown', ev => {
 	// middle-click often used to open links and requires some caveots
 	if ( ev.which === 2 && !getSelectedText(ev.target) ) return false;
 	if ( ev.which === 2 ) ev.preventDefault();
+
+	// context menu on mousedown fixes
+	if ( ev.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
+
+		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < 500 ) {
+			closeQuickMenu();
+			document.removeEventListener('contextmenu', preventContextMenuHandler);
+			return;
+		}
+		quickMenuObject.mouseLastContextMenuTime = Date.now();
+	}
 
 	document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 	
@@ -1012,6 +1023,24 @@ function getQuickMenuOpeningPosition(o) {
 	return {x: initialOffsetX, y: initialOffsetY}
 
 }
+
+function checkContextMenuEventOrder() {
+	document.addEventListener('mousedown', e => {
+		if ( e.which !== 3 ) return;
+
+		let time = Date.now();
+
+		document.addEventListener('contextmenu', _e => {
+			if ( Date.now() - time < 10 ) {
+				console.log('context on mousedown')
+			} else {
+				
+			}
+		}, {once: true})
+	});
+}
+
+//checkContextMenuEventOrder();
 
 if ( window == top )
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');

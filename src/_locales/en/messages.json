@@ -220,7 +220,7 @@
   },
   
   "MouseHelp": {
-    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus"
+    "message": "Linux and MacOS X environments where the default context menu is opened on mousedown vs mouseup can set 'ui.context_menus.after_mouseup = true' in about:config ( Firefox ) for mouse actions to work properly and prevent unwanted menus. Chrome users can enable 'rightClickMenuOnMouseDownFix' under Advanced options to hide the default context menu on single-click and display on double-click "
   },
 
   "Position": {
