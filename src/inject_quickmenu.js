@@ -840,6 +840,7 @@ function installResizeWidget() {
 	let iframe = getQM();
 	let columns = iframe.columns;
 	let tileCount = iframe.tileCount;
+
 	let tileSize = iframe.tileSize;
 	let originalRect;
 
@@ -855,12 +856,12 @@ function installResizeWidget() {
 
 			resizeWidget.style.visibility = 'hidden';
 
+			iframe.style.width = (originalRect.width + o.xOffset) * window.devicePixelRatio / userOptions.quickMenuScale + "px";
+			iframe.style.height = (originalRect.height + o.yOffset) * window.devicePixelRatio / userOptions.quickMenuScale + "px";
+
 			if ( o.columns == userOptions.quickMenuColumns && o.rows == userOptions.quickMenuRows ) {
 				return;
 			}
-
-			iframe.style.width = (originalRect.width + o.xOffset) * window.devicePixelRatio + "px";
-			iframe.style.height = (originalRect.height + o.yOffset) * window.devicePixelRatio + "px";
 
 			// set prefs
 			if ( resizeWidget.options.allowHorizontal ) userOptions.quickMenuColumns = o.columns;
@@ -874,7 +875,7 @@ function installResizeWidget() {
 			}
 
 			// // rebuild menu with new dimensions
-			iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows}, browser.runtime.getURL('/quickmenu.html'));
+			iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows, rect: iframe.getBoundingClientRect(), devicePixelRatio: window.devicePixelRatio}, browser.runtime.getURL('/quickmenu.html'));
 		},
 		onDrop: o => {
 
