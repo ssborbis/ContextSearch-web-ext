@@ -722,7 +722,7 @@ function addDOMListeners() {
 			$(`#i_${id}`).value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 		});
 
-		document.addEventListener('userOptionsLoaded', e => $(`#range_${id}`).dispatchEvent(new Event('input')));
+		$(`#range_${id}`).dispatchEvent(new Event('input'));
 	});
 
 	$('#cb_userStylesEnabled').addEventListener('change', e => {

@@ -391,7 +391,7 @@ window.addEventListener('message', e => {
 			qm.columns = qm.singleColumn ? 1 : e.data.columns;
 
 			let o = {widgetResize: true, rows: e.data.rows, columns:e.data.columns};
-			
+
 			toolsHandler(o);
 			resizeMenu(o);
 			break;
