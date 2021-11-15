@@ -89,8 +89,7 @@ function setMenuSize(o) {
 	if ( !o.more ) {
 		let toolBarMore = toolBar.querySelector('[data-type="more"]');
 		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
-			t.dataset.hidden = false;
-			t.style.display = null;
+			unhideTile(t);
 		})
 
 		if ( toolBarMore ) toolBar.removeChild(toolBarMore);
@@ -161,6 +160,9 @@ function resizeMenu(o) {
 	if ( o.widgetResize) {
 		qm.style.width = null;
 		qm.style.height = "auto";
+		document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
+		toolBar.querySelectorAll('[data-hidden]').forEach( unhideTile );
+		makeContainerMore(toolBar, 1, o.columns);
 		return;
 	}
 
@@ -200,10 +202,7 @@ function toolsHandler(o) {
 	let hideEmptyGroups = moreTile => {
 		qm.querySelectorAll('GROUP').forEach(g => {
 			if ( !getVisibleTiles(g).length ) {
-				g.style.display = 'none';
-				g.moreTile = moreTile;
-				g.dataset.hidden = 'true';
-				g.dataset.morehidden = 'true';
+				hideTile(g, moreTile);
 			}
 		})
 	}
@@ -229,9 +228,7 @@ function toolsHandler(o) {
 	// unhide tiles hidden by more tile
 	qm.querySelectorAll('[data-morehidden]').forEach( tile => {
 		if ( tile.moreTile && tile.moreTile.dataset.parentid === moreTileID ) {
-			delete tile.dataset.hidden;
-			tile.style.display = null;
-			delete tile.dataset.morehidden;
+			unhideTile(tile);
 		}
 	});
 
@@ -285,10 +282,7 @@ function toolsHandler(o) {
 
 				let el = visibleTiles[i];
 
-				el.dataset.hidden = "true";
-				el.style.display = "none";
-				el.dataset.morehidden = "true";
-				el.moreTile = moreTile;
+				hideTile(el, moreTile);
 				//el.style.backgroundColor = null;
 			}
 
@@ -315,9 +309,7 @@ function toolsHandler(o) {
 		qm.appendChild(moreTile);
 
 		// moreTile sometimes hidden?
-		delete moreTile.dataset.hidden;
-		delete moreTile.dataset.morehidden;
-		moreTile.style.display = null;
+		unhideTile(moreTile);
 
 		// open more on back
 		moreTile.addEventListener('mouseup', e => {

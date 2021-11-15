@@ -2387,3 +2387,18 @@ function matchingEnginesToFolder(s) {
 
 });
 
+function hideTile(el, moreTile) {
+	el.style.display = 'none';
+	el.dataset.hidden = 'true';
+
+	if ( moreTile) {
+		el.moreTile = moreTile;
+		el.dataset.morehidden = 'true';
+	}
+}
+
+function unhideTile(el) {
+	el.style.display = null;
+	delete el.dataset.hidden;
+	delete el.dataset.morehidden;
+}
