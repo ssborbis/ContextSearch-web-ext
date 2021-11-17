@@ -365,8 +365,9 @@ BODY {
 	cursor: grab;
 	display:inline-block;
 }
-.groupMove {
+.groupMove .tile {
 	border: 1px solid #9abad2 !important;
+	background-color: var(--selected) !important;
 }
 .groupHighlight {
 	border: 1px dotted var(--selected) !important;
@@ -569,6 +570,10 @@ GROUP.block {
 	display: block;
 }
 
+GROUP.block > LABEL {
+	pointer-events: none;
+}
+
 GROUP.inline .tile {
 	background-color: var(--group-color);
 }
@@ -580,10 +585,11 @@ GROUP.inline .tile {
 	/*background: url('/icons/chevron-down.svg') no-repeat center/100%;*/
 	margin-left: -16px;
 	margin-right: -16px;
+	margin-top: -10px;
 	--tools-color:var(--selected);
 	position: relative;
 	z-index: 3;
-	pointer-events: none;
+	/*pointer-events: none;*/
 }
 
 .dummy.singleColumn {
