@@ -760,7 +760,7 @@ async function makeQuickMenu(options) {
 		})();
 
 		(() => { // matchingEnginesToFolder(s) 
-			if ( !qm.rootNode.parent && true ) {
+			if ( !qm.rootNode.parent && userOptions.quickMenuRegexMatchedEngines ) {
 
 				let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
 
@@ -969,8 +969,9 @@ async function makeQuickMenu(options) {
 			if ( tile ) tileArray.push( tile );
 			else return;
 						
-			if ( node.groupFolder && !node.parent.parent) { // only top-level folders
-			
+		//	if ( node.groupFolder && !node.parent.parent) { // only top-level folders
+
+			if ( node.groupFolder && node.parent === qm.rootNode ) { 
 				let groupTiles = makeGroupTilesFromNode( node );
 
 				tileArray = tileArray.concat(groupTiles);
@@ -1936,6 +1937,7 @@ function nodeToTile( node ) {
 				if (method === 'noAction') return;
 
 				if (method === 'openFolder' || e.openFolder) { 
+				//	if ( !node.children.length ) return;
 					qm = await quickMenuElementFromNodeTree(node);		
 					return resizeMenu({openFolder: true});
 				}
@@ -1993,7 +1995,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	if ( !_tiles.length ) return [];
 
-	let title = (_tiles.length - limit) + " " + browser.i18n.getMessage("more");
+	let hidden_count = _tiles.length - limit;
+	if ( hidden_count < 0 ) hidden_count = 0;
+	let title = hidden_count + " " + browser.i18n.getMessage("more");
 
 	parentNode = parentNode || qm;
 	let node = parentNode.node || {}
@@ -2011,10 +2015,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		if ( tile ) node.id = tile.node.parent.id;
 	}
 
-	// 
 	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 
-	if ( !limit || limit >= _tiles.length ) return _tiles;
+	if ( limit >= _tiles.length ) return _tiles;
 
 	let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
 	moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
@@ -2122,7 +2125,11 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 function makeGroupFolderFromTile(gf) {
 
 	// ignore non-top tier
-	if ( !gf.node.parent ) return;
+//	if ( !gf.node.parent ) return;
+	if ( gf.node.parent !== qm.rootNode ) {
+		console.log('skipping group', gf.node.parent, qm.rootNode);
+		return;
+	}
 
 	let children = [...qm.querySelectorAll('.tile')].filter( t => t.node && t.node.parent === gf.node );
 
@@ -2161,7 +2168,7 @@ function makeGroupFolderFromTile(gf) {
 		g.classList.add(gf.node.groupFolder);
 
 	if ( g.classList.contains('inline') ) {
-		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit);
+		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit || Number.MAX_SAFE_INTEGER);
 		mlt.forEach(c => g.appendChild(c));
 	} else {
 
@@ -2225,6 +2232,7 @@ function makeGroupFolderFromTile(gf) {
 
 function makeContainerMore(el, rows, columns) {
 	rows = rows || Math.MAX_SAFE_INTEGER;
+
 	let visibleCount = columns ? rows * columns : getElementCountBeforeOverflow(el, rows);
 
 	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);

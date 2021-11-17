@@ -94,7 +94,7 @@ function setMenuSize(o) {
 
 		if ( toolBarMore ) toolBar.removeChild(toolBarMore);
 
-		makeContainerMore(toolBar, 1, false);
+		makeContainerMore(toolBar, 1);
 
 		// qm.querySelectorAll('group').forEach( g => {
 		// 	if ( g.style.display != 'block') return;
