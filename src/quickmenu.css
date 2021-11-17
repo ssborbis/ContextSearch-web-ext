@@ -182,7 +182,7 @@ BODY {
 	border-top-color:var(--selected);
 }
 .tile[data-type="folder"][data-side="middle"].dragHover {
-	background-color:var(--selected);
+	background-color:var(--selected) !important;
 	color:white;
 }
 #menuBar {
@@ -589,7 +589,7 @@ GROUP.inline .tile {
 	--tools-color:var(--selected);
 	position: relative;
 	z-index: 3;
-	/*pointer-events: none;*/
+	pointer-events: none;
 }
 
 .dummy.singleColumn {

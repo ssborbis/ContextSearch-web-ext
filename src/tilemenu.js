@@ -754,6 +754,7 @@ async function makeQuickMenu(options) {
 				recentFolder.classList.add('tile');
 				recentFolder.dataset.hasicon = 'true';
 				recentFolder.dataset.undraggable = true;
+
 				tileArray.unshift(recentFolder);
 				qm.insertBefore(recentFolder, qm.firstChild);
 			}
@@ -879,8 +880,9 @@ async function makeQuickMenu(options) {
 			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
 			tile.appendChild(makeToolMask({icon: 'icons/back.svg'}));
 
-			tile.dataset.type = "tool";
+			tile.dataset.type = "folder";
 			tile.node = rootNode.parent;
+			tile.dataset.undraggable = true;
 	
 			tile.addEventListener('mouseup', _back);
 			tile.addEventListener('openFolder', _back);
@@ -1795,7 +1797,7 @@ document.addEventListener('drop', e => {
 document.addEventListener('dragend', e => {
 	
 	// clear group styling
-	['groupMove', 'dragHover', 'dragOver'].forEach( c => {
+	['groupMove', 'dragHover', 'dragOver', 'drag'].forEach( c => {
 		document.querySelectorAll("." + c).forEach( el => el.classList.remove(c));
 	})
 
@@ -1815,6 +1817,10 @@ document.addEventListener('dragend', e => {
 
 undraggable = el => {
 	return el.dataset.undraggable ? true : false;
+}
+
+undroppable = el => {
+	return el.dataset.undroppable ? true : false;
 }
 
 clearDragStyling = el => {
