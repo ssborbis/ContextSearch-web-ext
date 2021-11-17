@@ -676,6 +676,8 @@ function saveOptions(e) {
 }
 
 document.addEventListener("DOMContentLoaded", async e => {
+
+	// build the DOM
 	makeTabs();
 	//initAdvancedOptions();
 	buildPositionWidget();
@@ -688,12 +690,16 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSaveButtons();
 	hashChange();
 	buildUploadOnHash();
+	buildThemes();
+
+	// restore settings and set INPUT values
 	await restoreOptions();
 
 	// build DOM objects requiring prefs restored
 	buildShortcutTable();
 	buildSearchEngineContainer();
 	buildToolIcons();
+	sortAdvancedOptions();
 
 	document.body.style.opacity = 1;
 	addDOMListeners();
@@ -1449,12 +1455,14 @@ $('#nightmode').addEventListener('click', () => {
 	saveOptions();
 });
 
-$('#s_quickMenuTheme').innerHTML = null;
-themes.forEach( t => {
-	let option = document.createElement('option');
-	option.value = option.innerText = t.name;
-	$('#s_quickMenuTheme').appendChild(option);
-});
+function buildThemes() {
+	$('#s_quickMenuTheme').innerHTML = null;
+	themes.forEach( t => {
+		let option = document.createElement('option');
+		option.value = option.innerText = t.name;
+		$('#s_quickMenuTheme').appendChild(option);
+	});
+}
 
 $('#b_cacheIcons').addEventListener('click', cacheAllIcons);
 
@@ -1649,6 +1657,18 @@ function setToolBarIconOption(uri) {
 	$('#toolBarIconForm .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
 	$('#toolBarIcon_3').checked = true;
 	$('#toolBarIcon_3').value = uri;
+}
+
+function sortAdvancedOptions() {
+	let table = $('#advancedSettingsTable');
+
+	let trs = table.querySelectorAll('tr');
+
+	trs = [...trs].sort((a,b) => {
+		return a.querySelector('td').innerText > b.querySelector('td').innerText ? 1 : -1;
+	});
+	table.innerHTML = null;
+	trs.forEach( tr => table.appendChild(tr));
 }
 
 // window.addEventListener('focus', async e => {
