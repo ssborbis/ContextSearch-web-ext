@@ -567,11 +567,14 @@ async function makeQuickMenu(options) {
 				saveUserOptions();
 			
 				// rebuild menu
-				toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
-				qm.toolsArray = createToolsArray();
-				toolsHandler();
-				qm.expandMoreTiles();
-				resizeMenu({tileDrop: true});
+				// toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
+				// qm.toolsArray = createToolsArray();
+			//	toolsHandler();
+
+			//	qm.expandMoreTiles();
+
+			//	resizeMenu({tileDrop: true});
+
 			});
 		});
 		
@@ -744,24 +747,13 @@ async function makeQuickMenu(options) {
 		function isTool(e) {
 			return ( e.dataTransfer.getData("tool") === "true" );
 		}
-
-		/* dnd */
-		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
-		tileDivs.forEach( div => {
-
-			div.setAttribute('draggable', window.tilesDraggable);
-	
-			
-			
-		});
-		
-		/* end dnd */
 		
 		(() => { // addRecentlyUsedFolder()
 			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
 				let recentFolder = nodeToTile(recentlyUsedListToFolder());
 				recentFolder.classList.add('tile');
 				recentFolder.dataset.hasicon = 'true';
+				recentFolder.dataset.undraggable = true;
 				tileArray.unshift(recentFolder);
 				qm.insertBefore(recentFolder, qm.firstChild);
 			}
@@ -778,6 +770,7 @@ async function makeQuickMenu(options) {
 				let _tile = nodeToTile( folder );
 				_tile.classList.add('tile');
 				_tile.dataset.hasicon = 'true';
+				_tile.dataset.undraggable = true;
 				tileArray.unshift(_tile);
 				qm.insertBefore(_tile, qm.firstChild);
 			}
@@ -794,14 +787,21 @@ async function makeQuickMenu(options) {
 				let g = makeGroupFolderFromTile(gf);
 				if ( !g ) return;
 
+				// make GROUP draggable
+				g.draggable = true;
+
 				qm.insertBefore(g, gf);
 				if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
 				else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
+
+				// bubbles the drag event for the inline root folder to the GROUP
+				gf.dataset.undraggable = true;
 
 				let footer = g.querySelector('.footer');
 
 				// display groups limited to a row count and change more tile style
 				if ( gf.node.groupFolder === "block") {
+
 					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit, qm.columns);
 					let moreTile = g.querySelector('[data-type="more"]');
 
@@ -821,18 +821,17 @@ async function makeQuickMenu(options) {
 		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
 
 		qm.expandMoreTiles = () => {
-			let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
+			let moreTiles = [...document.querySelectorAll('[data-type="more"], [data-type="less"]')];
 
 			moreLessStatus.forEach( id => {
-				let moreTile = moreTiles.find( div => div.dataset.parentid === id );
-				
-				if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
+				let moreTile = moreTiles.find( div => div.dataset.parentid === id );				
+				if ( moreTile ) moreTile.more();
 			});
 		}
 		
-		qm.expandMoreTiles();
-
 		toolsHandler();
+
+		qm.expandMoreTiles();
 
 		return qm;
 	}
@@ -895,19 +894,20 @@ async function makeQuickMenu(options) {
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 
+				qm.expandMoreTiles();
 				resizeMenu({openFolder: true});
 			}
 			
-			tile.addEventListener('dragenter', e => {
-				// ignore tile dnd
-				if ( document.getElementById('dragDiv') ) return;
+			// tile.addEventListener('dragenter', e => {
+			// 	// ignore tile dnd
+			// 	if ( document.getElementById('dragDiv') ) return;
 				
-				// start hover timer
-				tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);;
-			});
-			tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
-			tile.addEventListener('dragover', e => e.preventDefault());
-			tile.addEventListener('dragend', e => e.preventDefault());
+			// 	// start hover timer
+			// 	tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);;
+			// });
+			// tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
+			// tile.addEventListener('dragover', e => e.preventDefault());
+			// tile.addEventListener('dragend', e => e.preventDefault());
 			// tile.addEventListener('drop', async e => {
 			// 	e.preventDefault();
 				
@@ -1404,7 +1404,9 @@ function checkForNodeHotkeys(e) {
 }
 
 getAllOtherHeights = () => {
-	return getFullElementSize(sbc).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height + getFullElementSize(aeb).height;
+	let height = 0;
+	[sbc,tb,mb,toolBar,aeb].forEach( el => height += getFullElementSize(el).height );
+	return height;
 }
 
 isMoving = e => {
@@ -1512,7 +1514,7 @@ document.addEventListener('mouseup', e => {
 
 	let node = tile.node;
 
-	let searchPromise = (() => {
+	let searchPromise = (async () => {
 
 		switch ( node.type ) {
 		
@@ -1618,7 +1620,7 @@ document.addEventListener('mouseup', e => {
 				break;
 
 			default:
-				return Promise.reject();
+				return Promise.reject('unknown node type', node.type);
 				break;
 
 		}
@@ -1636,13 +1638,16 @@ document.addEventListener('mouseup', e => {
 
 document.addEventListener('dragstart', e => {
 
-	let tile = e.target.closest('.tile');
-
-	if ( !tile ) return;
-
 	if ( !window.tilesDraggable ) return;
 
-	e.dataTransfer.setData("id", tile.node.id);
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) {
+		let g = e.target.closest('group');
+		if ( g ) tile = g;
+		else return;
+	}
+
 	tile.classList.add('drag');
 
 	qm.style.overflowY = 'hidden';
@@ -1653,29 +1658,13 @@ document.addEventListener('dragstart', e => {
 	if ( qm.singleColumn) dummy.classList.add('singleColumn');
 	document.body.appendChild(dummy);
 
-});
-
-// setTimeout(() => {
-// 	document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
-// 	document.querySelector('[data-name="edit"]').action();
-// }, 500);
-
-document.addEventListener('dragend', e => {
-
-	let dummy = document.querySelector('.dummy');
-	if ( dummy ) dummy.parentNode.removeChild(dummy);
-
-	let tile = e.target.closest('.tile');
-
-	if ( !tile ) return;
-
-	let dragTile = document.querySelector('.drag');
-
-	if ( !dragTile ) return;
-
+	// apply style to inline groups
+	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
 });
 
 document.addEventListener('dragenter', e => {
+
+	console.log('enter');
 
 	let tile = e.target.closest('.tile');
 	let dragTile = document.querySelector('.drag');
@@ -1691,18 +1680,28 @@ document.addEventListener('dragenter', e => {
 
 	if ( !dragTile ) return;
 
-	let side = getSide(tile, e);
+//	tile.ondragover = function(_e) { _e.preventDefault()}
+
+//	let side = getSide(tile, e);
 
 });
 
 document.addEventListener('dragover', e => {
 
+	e.preventDefault();
+    e.stopPropagation();
+
 	let tile = e.target.closest('.tile');
 	let dragTile = document.querySelector('.drag');
 
-	if ( !tile ) return;
+	if ( e.target === document.querySelector('.dummy') )
+		tile = e.target.nextSibling;
+
+	if ( !tile ) { console.log('no tile', e.target); return; }
 	if ( !dragTile ) return;
 	if ( tile.dataset.type === 'tool' ) return;
+
+	if ( undraggable(tile) ) return console.log('undraggable');
 
 	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
 
@@ -1725,6 +1724,7 @@ document.addEventListener('dragover', e => {
 
 	tile.classList.add('dragHover');
 
+
 	// if ( tile.classList.contains("groupFolder") && !tile.classList.contains('groupMove') ) {
 		
 	// 	let dec = getSideDecimal(tile, e);
@@ -1738,19 +1738,43 @@ document.addEventListener('dragover', e => {
 	// 	else
 	// 		targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
 	// }	
+
+});
+
+document.addEventListener('dragleave', e => {
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	if ( qm.textDragOverFolderTimer )
+		clearTimeout(qm.textDragOverFolderTimer);
+
+	clearDragStyling(tile);
+
 });
 
 document.addEventListener('drop', e => {
 
+	console.log('drop');
+
 	let tile = e.target.closest('.tile');
 	let dragTile = document.querySelector('.drag');
+
+	if ( e.target === document.querySelector('.dummy') )
+		tile = e.target.nextSibling;
+
+	
+	console.log(e.target, tile);
 
 	if ( !tile ) return;
 	if ( !dragTile ) return;
 
-	e.preventDefault();
+	if ( undraggable(tile) ) return console.log('undraggable');
 
 	let side = getSide(tile, e);
+
+	console.log(side);
 
 	if ( side === 'before' )
 		tile.parentNode.insertBefore(dragTile, tile);
@@ -1767,22 +1791,35 @@ document.addEventListener('drop', e => {
 
 });
 
+document.addEventListener('dragend', e => {
+	
+	// clear group styling
+	['groupMove', 'dragHover', 'dragOver'].forEach( c => {
+		document.querySelectorAll("." + c).forEach( el => el.classList.remove(c));
+	})
+
+	// remove indicator
+	let dummy = document.querySelector('.dummy');
+	if ( dummy ) dummy.parentNode.removeChild(dummy);
+
+	// let tile = e.target.closest('.tile');
+
+	// if ( !tile ) return;
+
+	// let dragTile = document.querySelector('.drag');
+
+	// if ( !dragTile ) return;
+
+});
+
+undraggable = el => {
+	return el.dataset.undraggable ? true : false;
+}
+
 clearDragStyling = el => {
 	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover');
 //	delete el.dataset.side;
 }
-
-document.addEventListener('dragleave', e => {
-
-	let tile = e.target.closest('.tile');
-
-	if ( !tile ) return;
-
-	if ( qm.textDragOverFolderTimer )
-		clearTimeout(qm.textDragOverFolderTimer);
-
-	clearDragStyling(tile);
-});
 
 (() => { // text, image, url drag & drop
 	document.addEventListener('dragover', e => {
@@ -1792,8 +1829,6 @@ document.addEventListener('dragleave', e => {
 	});
 
 	document.addEventListener('drop', e => {
-
-		console.log(e, quickMenuObject);
 
 		if ( window.tilesDraggable ) return;
 
@@ -1956,7 +1991,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 
 	noFolder = noFolder || false;
 
-	if ( !_tiles.length ) return;
+	if ( !_tiles.length ) return [];
 
 	let title = (_tiles.length - limit) + " " + browser.i18n.getMessage("more");
 
@@ -1970,6 +2005,13 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		_tiles.unshift( label );
 	}
 
+	// use a referenced id on GROUPs for more() tracking
+	if ( !node.id ) {
+		let tile = _tiles.find( t => t.node && t.node.parent );
+		if ( tile ) node.id = tile.node.parent.id;
+	}
+
+	// 
 	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 
 	if ( !limit || limit >= _tiles.length ) return _tiles;
@@ -1984,9 +2026,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	moreTile.classList.add('groupFolder')
 	moreTile.node = { parent: node };
 	moreTile.dataset.parentid = node.id;
-	
-	moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = () => { return false; }
-	moreTile.setAttribute('draggable', false);
+	moreTile.dataset.undraggable = true;
 	
 	function more() {
 		let hiddenEls = parentNode.querySelectorAll('[data-hidden="true"]');
@@ -1997,6 +2037,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 			
 			_div.style.transition = 'none';
 			_div.style.opacity = 0;
+
 			_div.dataset.hidden = "false";
 			_div.style.display = null;
 
@@ -2011,8 +2052,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		moreTile.dataset.type = "less";
 		resizeMenu({more: true});
 
-		if ( !moreLessStatus.includes( node.id ) )
-			moreLessStatus.push(node.id);
+		// use dataset.parentid instead of node.id in case it's been changed
+		if ( !moreLessStatus.includes( moreTile.dataset.parentid ) )
+			moreLessStatus.push(moreTile.dataset.parentid);
 	}
 	
 	function less() {
@@ -2023,6 +2065,8 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 			
 			_div.dataset.hidden = "true";
 			_div.style.display = "none";
+
+			//hideTile(_div);
 		});
 		
 		moreTile.onmouseup = more;
@@ -2049,20 +2093,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	let count = 1;
 	_tiles.forEach( ( _tile, index ) => {
 		
-		if ( _tile.dataset.hidden == "true" || _tile.style.display === 'none' ) {
-			return false;
-		}
+		if ( _tile.dataset.hidden == "true" || _tile.style.display === 'none' ) return false;
 
-		if ( count > limit ) {
-			_tiles[index].dataset.hidden = true;
-			_tiles[index].style.display = 'none';
-			_tiles[index].dataset.morehidden = true;
-			_tiles[index].moreTile = moreTile;
-			
-			// console.log('hiding tile ' + _tiles[index].title);
-		} else {
-			// console.log('showing tile ' + _tiles[index].title);
-		}
+		if ( count > limit ) hideTile(_tiles[index], moreTile);
 		
 		count++;
 	});
@@ -2130,7 +2163,6 @@ function makeGroupFolderFromTile(gf) {
 	if ( g.classList.contains('inline') ) {
 		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit);
 		mlt.forEach(c => g.appendChild(c));
-
 	} else {
 
 		let label = document.createElement('label');
@@ -2186,8 +2218,6 @@ function makeGroupFolderFromTile(gf) {
 		// 	console.log('dragstart');
 		// 	return false;
 		// }, {capture: true})
-
-
 	}
 
 	return g;
@@ -2234,67 +2264,6 @@ function getElementCountBeforeOverflow(el, rows) {
 	let preWrap = wrap.previousSibling;
 
 	return [...el.children].indexOf(wrap);
-}
-
-function recentlyUsedListToFolder() {
-	let folder = {
-		type: "folder",
-		id: "___recent___",
-		title: browser.i18n.getMessage('Recent'),
-		children: [],
-		parent: qm.rootNode,
-		icon: browser.runtime.getURL('icons/history.svg')
-	}
-
-	userOptions.recentlyUsedList.forEach( (id,index) => {
-		if ( index > userOptions.recentlyUsedListLength -1 ) return;
-		let lse = findNode(userOptions.nodeTree, node => node.id === id);
-
-		// filter missing nodes
-		if ( lse ) folder.children.push(Object.assign({}, lse));
-	});
-
-	return folder;
-}
-
-function matchingEnginesToFolder(s) {
-	let folder = {
-		type: "folder",
-		id: "___matching___",
-		title: "( .* )",
-		children: [],
-		parent: qm.rootNode,
-		icon: browser.runtime.getURL('icons/chevron-down.svg'),
-		groupFolder: 'block',
-		groupColor: '#88bbdd'
-	}
-
-	let matchingEngines = userOptions.searchEngines.filter( se => {
-
-		if ( !se.matchRegex ) return false;
-
-		let lines = se.matchRegex.split(/\n/);
-
-		for ( let line of lines ) {
-
-			try {
-				let parts = JSON.parse('[' + line.trim() + ']');
-				let rgx = new RegExp(parts[0], parts[1] || 'g');
-
-				if ( rgx.test(s) ) return true;
-			} catch (error) {}
-		}
-
-		return false;
-
-	});
-
-	matchingEngines.forEach( se => {
-		let node = findNode(userOptions.nodeTree, n => n.id === se.id )
-		if ( node ) folder.children.push(Object.assign({}, node));
-	});
-
-	return folder;
 }
 
 (() => {
@@ -2402,3 +2371,10 @@ function unhideTile(el) {
 	delete el.dataset.hidden;
 	delete el.dataset.morehidden;
 }
+
+// setTimeout(() => {
+// 	try {
+// 		//document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
+// 		document.querySelector('[data-name="edit"]').action();
+// 	} catch ( err ) {}
+// }, 500);

@@ -406,7 +406,7 @@ var QMtools = [
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			window.tilesDraggable = !window.tilesDraggable;
 
-			document.querySelectorAll('.tile').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
+			document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
 			
 			this.dataset.locked = window.tilesDraggable;
 

@@ -310,14 +310,6 @@ function toolsHandler(o) {
 
 		// moreTile sometimes hidden?
 		unhideTile(moreTile);
-
-		// open more on back
-		moreTile.addEventListener('mouseup', e => {
-			window.moreTileOpened = moreTile.dataset.type === 'less'
-		});
-
-		if ( window.moreTileOpened && !o.widgetResize )
-			moreTile.more();
 	}
 }
 	
