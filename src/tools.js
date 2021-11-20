@@ -405,9 +405,10 @@ var QMtools = [
 
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			window.tilesDraggable = !window.tilesDraggable;
-
-			document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
 			
+		//	document.addEventListener('changeFolder', setDraggable);
+			setDraggable();
+
 			this.dataset.locked = window.tilesDraggable;
 
 			// special handler for when mouseup is disabled in addTileEventHandlers

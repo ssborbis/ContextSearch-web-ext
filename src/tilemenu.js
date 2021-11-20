@@ -14,7 +14,7 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-var dragFolderTimeout = 500
+var dragFolderTimeout = 1500;
 
 var qm = document.getElementById('quickMenuElement');
 var sb = document.getElementById('searchBar');
@@ -216,6 +216,7 @@ async function makeQuickMenu(options) {
 		saveUserOptions();
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
+		setDraggable();	
 		
 		resizeMenu({toggleSingleColumn: true});
 	}
@@ -754,6 +755,7 @@ async function makeQuickMenu(options) {
 				recentFolder.classList.add('tile');
 				recentFolder.dataset.hasicon = 'true';
 				recentFolder.dataset.undraggable = true;
+				recentFolder.dataset.undroppable = true;
 
 				tileArray.unshift(recentFolder);
 				qm.insertBefore(recentFolder, qm.firstChild);
@@ -772,6 +774,8 @@ async function makeQuickMenu(options) {
 				_tile.classList.add('tile');
 				_tile.dataset.hasicon = 'true';
 				_tile.dataset.undraggable = true;
+				_tile.dataset.undroppable = true;
+
 				tileArray.unshift(_tile);
 				qm.insertBefore(_tile, qm.firstChild);
 			}
@@ -803,7 +807,7 @@ async function makeQuickMenu(options) {
 				// display groups limited to a row count and change more tile style
 				if ( gf.node.groupFolder === "block") {
 
-					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit, qm.columns);
+					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit || Number.MAX_SAFE_INTEGER, qm.columns);
 					let moreTile = g.querySelector('[data-type="more"]');
 
 					if (moreTile) {
@@ -895,55 +899,11 @@ async function makeQuickMenu(options) {
 
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
-
+				setDraggable();	
 				qm.expandMoreTiles();
 				resizeMenu({openFolder: true});
 			}
-			
-			// tile.addEventListener('dragenter', e => {
-			// 	// ignore tile dnd
-			// 	if ( document.getElementById('dragDiv') ) return;
-				
-			// 	// start hover timer
-			// 	tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);;
-			// });
-			// tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
-			// tile.addEventListener('dragover', e => e.preventDefault());
-			// tile.addEventListener('dragend', e => e.preventDefault());
-			// tile.addEventListener('drop', async e => {
-			// 	e.preventDefault();
-				
-			// 	let dragDiv = document.getElementById('dragDiv');
-				
-			// 	if ( !dragDiv || !dragDiv.node ) return;
-				
-			// 	dragDiv.parentNode.removeChild(dragDiv);
-				
-			// 	dragDiv.id = null;
-
-			// 	let dragNode = ( dragDiv.groupMove ) ? dragDiv.node.parent : dragDiv.node;
-			// 	let targetNode = tile.node;
-				
-			// 	let slicedNode = nodeCut(dragNode);
-				
-			// 	slicedNode.parent = targetNode;
-					
-			// 	// add to target children
-			// 	targetNode.children.push(slicedNode);
-				
-			// 	// save the tree
-			// 	userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-				
-			// 	saveUserOptions();
-				
-			// 	// rebuild menu
-			// 	let animation = userOptions.enableAnimations;
-			// 	userOptions.enableAnimations = false;
-			// 	qm = await quickMenuElementFromNodeTree(rootNode);
-			// 	userOptions.enableAnimations = animation;
-			// 	resizeMenu();				
-			// });
-			
+						
 			delete sb.selectedIndex;
 			tileArray.push(tile);
 		}
@@ -999,6 +959,8 @@ async function makeQuickMenu(options) {
 	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+	window.root = root;
 
 	setParents(root);
 
@@ -1296,7 +1258,7 @@ function createToolsBar(qm) {
 function getSideDecimal(t, e) {
 	let rect = t.getBoundingClientRect();
 	
-	if ( qm.singleColumn ) return ( e.y - rect.y ) / rect.height;
+	if ( qm.singleColumn || t.classList.contains('block')) return ( e.y - rect.y ) / rect.height;
 	else return ( e.x - rect.x ) / rect.width;
 }
 
@@ -1326,24 +1288,26 @@ function getTargetElement(el) {
 
 function getPreviousSiblingOfType(el) {
 	let s = el.previousSibling;
-	while( s && s.nodeName !== el.nodeName ) s = s.previousSibling;
+//	while( s && s.nodeName !== el.nodeName ) s = s.previousSibling;
 	return s;
 }
 
 function getNextSiblingOfType(el) {
 	let s = el.nextSibling;
-	while( s && s.nodeName !== el.nodeName ) s = s.nextSibling;
+//	while( s && s.nodeName !== el.nodeName ) s = s.nextSibling;
 	return s;
 }
 
 function isTargetBeforeGroup(el, dec) {
 	let sibling = getPreviousSiblingOfType(el);
-	return ( dec < .2 && ( !sibling || sibling.node.parent !== el.node.parent ));
+	return ( dec < .2 && ( !sibling || !sibling.node || sibling.node.parent !== el.node.parent ));
 }
 
 function isTargetAfterGroup(el, dec) {
 	let sibling = getNextSiblingOfType(el);
-	return ( dec > .8 && ( !sibling || sibling.node.parent !== el.node.parent ));
+
+	//if ( !sibling.node ) console.log('no node', sibling);
+	return ( dec > .8 && ( !sibling || !sibling.node || sibling.node.parent !== el.node.parent ));
 }
 
 function getGroupFolderSiblings(el) {
@@ -1643,50 +1607,41 @@ document.addEventListener('dragstart', e => {
 
 	if ( !window.tilesDraggable ) return;
 
-	let tile = e.target.closest('.tile');
+	let tile = e.target.closest('.tile') || e.target.closest('group');
 
-	if ( !tile ) {
-		let g = e.target.closest('group');
-		if ( g ) tile = g;
-		else return;
-	}
+	if ( !tile ) return;
+
+	if ( undraggable(tile) ) return;
+
+	// required by ff for dragend
+	e.dataTransfer.setData("text", "");
 
 	tile.classList.add('drag');
 
-	qm.style.overflowY = 'hidden';
+	window.dragNode = tile.node;
+	window.dragTile = tile;
 
-	let dummy = document.createElement('div');
-	dummy.className = 'tool dummy';
-	dummy.style="--mask-image: url(icons/chevron-down.svg)";
-	if ( qm.singleColumn) dummy.classList.add('singleColumn');
-	document.body.appendChild(dummy);
+	qm.style.overflowY = 'hidden';
 
 	// apply style to inline groups
 	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
+
 });
 
 document.addEventListener('dragenter', e => {
 
-	console.log('enter');
-
 	let tile = e.target.closest('.tile');
-	let dragTile = document.querySelector('.drag');
 
 	if ( !tile ) return;
 
-	if ( !dragTile && tile.dataset.type === 'folder' ) {
+	if ( tile.dataset.type === 'folder' && !undroppable(tile) ) {
 
 		// open folders on dragover - bind to qm instead of tile
 		qm.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);
 		return;
 	}
 
-	if ( !dragTile ) return;
-
-//	tile.ondragover = function(_e) { _e.preventDefault()}
-
-//	let side = getSide(tile, e);
-
+	if ( !window.dragNode ) return;
 });
 
 document.addEventListener('dragover', e => {
@@ -1694,17 +1649,17 @@ document.addEventListener('dragover', e => {
 	e.preventDefault();
     e.stopPropagation();
 
-	let tile = e.target.closest('.tile');
-	let dragTile = document.querySelector('.drag');
+	let tile = e.target.closest('.tile') || e.target.closest('group');
 
 	if ( e.target === document.querySelector('.dummy') )
 		tile = e.target.nextSibling;
 
-	if ( !tile ) { console.log('no tile', e.target); return; }
-	if ( !dragTile ) return;
+//	if ( !tile ) { console.log('no tile', e.target); return; }
+	if ( !tile ) return;
+	if ( !window.dragNode ) return;
 	if ( tile.dataset.type === 'tool' ) return;
 
-	if ( undraggable(tile) ) return console.log('undraggable');
+	if ( undroppable(tile) ) return;
 
 	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
 
@@ -1712,46 +1667,57 @@ document.addEventListener('dragover', e => {
 
 	let side = getSide(tile, e);
 
-	if ( tile.dataset.side === side ) return;
+//	if ( tile.dataset.side === side ) return;
 
-	let dummy = document.querySelector('.dummy');
+	let dummy = makeMarker();
 
 	if ( side === 'before' )
 		tile.parentNode.insertBefore(dummy, tile);
 	if ( side === 'after' )
 		tile.parentNode.insertBefore(dummy, tile.nextSibling);
-	if ( side === 'middle' )
+	if ( side === 'middle' ) {
 		document.body.appendChild(dummy);
+		dummy.style.display = 'none';
+	}
+
+	if ( tile.classList.contains('block') ) dummy.classList.add('wide');
+	else tile.classList.remove('wide');
 
 	tile.dataset.side = side;
 
 	tile.classList.add('dragHover');
 
+	if ( !tile.node ) console.log('no node', tile);
 
-	// if ( tile.classList.contains("groupFolder") && !tile.classList.contains('groupMove') ) {
+	if ( tile.classList.contains("groupFolder") && !tile.classList.contains('groupMove') ) {
 		
-	// 	let dec = getSideDecimal(tile, e);
+		let dec = getSideDecimal(tile, e);
 		
-	// 	let targetGroupDivs = getGroupFolderSiblings(tile);
+		let targetGroupDivs = getGroupFolderSiblings(tile);
 
-	// 	if ( isTargetBeforeGroup(tile, dec) ) 
-	// 		targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-	// 	else if ( isTargetAfterGroup(tile, dec) ) 
-	// 		targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-	// 	else
-	// 		targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
-	// }	
+		if ( isTargetBeforeGroup(tile, dec) ) 
+			tile.classList.remove('groupHighlight');
+			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+		else if ( isTargetAfterGroup(tile, dec) ) 
+			tile.classList.remove('groupHighlight');
+			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+		else
+			tile.classList.add('groupHighlight');
+			//targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
+	}	
 
 });
 
 document.addEventListener('dragleave', e => {
 
-	let tile = e.target.closest('.tile');
+	let tile = e.target.closest('.tile') || e.target.closest('group');
 
 	if ( !tile ) return;
 
-	if ( qm.textDragOverFolderTimer )
+	if ( qm.textDragOverFolderTimer && tile.node && tile.node.type === "folder") {
 		clearTimeout(qm.textDragOverFolderTimer);
+		qm.textDragOverFolderTimer = null;
+	}
 
 	clearDragStyling(tile);
 
@@ -1759,43 +1725,71 @@ document.addEventListener('dragleave', e => {
 
 document.addEventListener('drop', e => {
 
-	console.log('drop');
+	let tile = e.target.closest('.tile') || e.target.closest('group');
 
-	let tile = e.target.closest('.tile');
-	let dragTile = document.querySelector('.drag');
+	let dummy = document.querySelector('.dummy');
 
-	if ( e.target === document.querySelector('.dummy') )
-		tile = e.target.nextSibling;
-
-	
-	console.log(e.target, tile);
+	if ( e.target === dummy || e.target === qm )
+		tile = dummy.nextSibling;
 
 	if ( !tile ) return;
-	if ( !dragTile ) return;
+	if ( !window.dragNode ) return;
 
-	if ( undraggable(tile) ) return console.log('undraggable');
+	if ( undroppable(tile) ) return console.log('undroppable');
 
 	let side = getSide(tile, e);
 
-	console.log(side);
+	let old_node_count = findNodes(root, n => true).length;
 
-	if ( side === 'before' )
-		tile.parentNode.insertBefore(dragTile, tile);
+	// cut the node from the children array
+	let slicedNode = nodeCut(window.dragNode);
+
+	let dragTile = document.querySelector('.drag') || window.dragTile;
+	let targetNode = tile.node || tile.parentNode.node;
+
+	// special handler for inline groups
+	if ( tile.classList.contains("groupFolder") ) {
+		
+		let dec = getSideDecimal(tile, e);
+		
+		if ( isTargetBeforeGroup(tile, dec) ) {
+			console.log('moving before group');
+			nodeInsertBefore(slicedNode, targetNode.parent);
+		} else if ( isTargetAfterGroup(tile, dec) ) {
+			console.log('moving after group');
+			nodeInsertAfter(slicedNode, targetNode.parent);
+		} else if ( tile.dataset.type && ['more','less'].includes(tile.dataset.type) ) {
+			console.log('drop to more / less tile ... appending tile to group');
+			nodeAppendChild(slicedNode, targetNode.parent);			
+		} else {
+			return;
+		}
+
+		console.log('moving', slicedNode.title, 'to', targetNode.parent.title);
+		dragSave();
+		return;
+	}
+
+	if ( side === 'before' ) 
+		nodeInsertBefore(slicedNode, tile.node);
+	
 	if ( side === 'after' )
-		tile.parentNode.insertBefore(dragTile, tile.nextSibling);
-
-	dragTile.classList.remove('drag');
-
-//	let dummy = document.querySelector('.dummy');
-//	if ( dummy ) dummy.parentNode.removeChild(dummy);
-
-	// if ( side === 'middle' )
-	// 	document.body.appendChild(dummy);
+		nodeInsertAfter(slicedNode, tile.node);
+	
+	if ( side === 'middle' && tile.node.type === "folder" )
+		nodeAppendChild(slicedNode, tile.node);
+	
+	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
+	dragSave();
 
 });
 
 document.addEventListener('dragend', e => {
-	
+	dragCleanup();
+	clearTimeout(qm.textDragOverFolderTimer);
+});
+
+dragCleanup = () => {
 	// clear group styling
 	['groupMove', 'dragHover', 'dragOver', 'drag'].forEach( c => {
 		document.querySelectorAll("." + c).forEach( el => el.classList.remove(c));
@@ -1804,28 +1798,53 @@ document.addEventListener('dragend', e => {
 	// remove indicator
 	let dummy = document.querySelector('.dummy');
 	if ( dummy ) dummy.parentNode.removeChild(dummy);
-
-	// let tile = e.target.closest('.tile');
-
-	// if ( !tile ) return;
-
-	// let dragTile = document.querySelector('.drag');
-
-	// if ( !dragTile ) return;
-
-});
+}
 
 undraggable = el => {
-	return el.dataset.undraggable ? true : false;
+	return el.dataset.undraggable === "true";
 }
 
 undroppable = el => {
-	return el.dataset.undroppable ? true : false;
+	return el.dataset.undroppable === "true";
 }
 
 clearDragStyling = el => {
-	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover');
-//	delete el.dataset.side;
+	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover', 'groupHighlight');
+}
+
+setDraggable = e => {
+	if ( window.tilesDraggable )
+		document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
+}
+
+makeMarker = () => {
+	let dummy = document.querySelector('.dummy') || document.createElement('dummy');
+	dummy.className = 'tool dummy';
+	dummy.style="--mask-image: url(icons/chevron-down.svg);";
+	if ( qm.singleColumn) dummy.classList.add('singleColumn');
+	return dummy;
+}
+
+dragSave = () => {
+
+	// let new_node_count = findNodes(root, n => true).length;
+
+	// if ( old_node_count === new_node_count ) {
+	// 	userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+	// //	saveUserOptions();
+	// } else {
+	// 	console.error('a node has been lost. aborting', old_node_count, new_node_count);
+	// }
+
+	(async () => {
+		let orig = userOptions.enableAnimations;
+		userOptions.enableAnimations = false;
+		qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
+		userOptions.enableAnimations = orig;
+		setDraggable();
+		resizeMenu({tileDrop: true});
+	})();
+
 }
 
 (() => { // text, image, url drag & drop
@@ -1839,7 +1858,7 @@ clearDragStyling = el => {
 
 		if ( window.tilesDraggable ) return;
 
-		let tile = e.target.closest('.tile');	
+		let tile = e.target.closest('.tile');
 		if ( !tile ) return;
 
 		e.preventDefault();
@@ -1944,7 +1963,8 @@ function nodeToTile( node ) {
 
 				if (method === 'openFolder' || e.openFolder) { 
 				//	if ( !node.children.length ) return;
-					qm = await quickMenuElementFromNodeTree(node);		
+					qm = await quickMenuElementFromNodeTree(node);
+					setDraggable();	
 					return resizeMenu({openFolder: true});
 				}
 				
@@ -2018,7 +2038,9 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	// use a referenced id on GROUPs for more() tracking
 	if ( !node.id ) {
 		let tile = _tiles.find( t => t.node && t.node.parent );
-		if ( tile ) node.id = tile.node.parent.id;
+	//	if ( tile ) node.id = tile.node.parent.id;
+
+		if ( tile ) node = tile.node.parent;
 	}
 
 	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
@@ -2166,7 +2188,7 @@ function makeGroupFolderFromTile(gf) {
 	// 	console.log(brightness);
 	// }, 500);
 
-
+	g.node = gf.node;
 
 //	g.style.display = Math.random() > .5 ? 'block' : 'inline';
 
@@ -2388,7 +2410,7 @@ function unhideTile(el) {
 
 // setTimeout(() => {
 // 	try {
-// 		//document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
 // 		document.querySelector('[data-name="edit"]').action();
-// 	} catch ( err ) {}
+// 		document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
+// 	} catch ( err ) { console.log(err)}
 // }, 500);

@@ -370,7 +370,8 @@ BODY {
 	background-color: var(--selected) !important;
 }
 .groupHighlight {
-	border: 1px dotted var(--selected) !important;
+	/*background-image: url(icons/add.svg);*/
+	background-color: var(--selected) !important;
 }
 .groupLabelMoreTile {
 	position:absolute;
@@ -571,7 +572,7 @@ GROUP.block {
 }
 
 GROUP.block > LABEL {
-	pointer-events: none;
+	/*pointer-events: none;*/
 }
 
 GROUP.inline .tile {
@@ -587,7 +588,7 @@ GROUP.inline .tile {
 	margin-right: -16px;
 	margin-top: -10px;
 	--tools-color:var(--selected);
-	position: relative;
+	position: absolute;
 	z-index: 3;
 	pointer-events: none;
 }
@@ -597,4 +598,8 @@ GROUP.inline .tile {
 	margin-bottom: -10px;
 	transform: rotate(-90deg);
 	padding-left: 10px;
+}
+
+.dummy.wide {
+	width: 100%;
 }
