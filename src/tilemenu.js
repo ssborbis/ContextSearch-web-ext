@@ -1782,6 +1782,27 @@ document.addEventListener('drop', e => {
 	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
 	dragSave();
 
+	function dragSave() {
+
+		let new_node_count = findNodes(root, n => true).length;
+
+		if ( old_node_count === new_node_count ) {
+			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+			saveUserOptions();
+		} else {
+			console.error('a node has been lost. aborting', old_node_count, new_node_count);
+		}
+
+		(async () => {
+			let orig = userOptions.enableAnimations;
+			userOptions.enableAnimations = false;
+			qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
+			userOptions.enableAnimations = orig;
+			setDraggable();
+			resizeMenu({tileDrop: true});
+		})();
+	}
+
 });
 
 document.addEventListener('dragend', e => {
@@ -1823,28 +1844,6 @@ makeMarker = () => {
 	dummy.style="--mask-image: url(icons/chevron-down.svg);";
 	if ( qm.singleColumn) dummy.classList.add('singleColumn');
 	return dummy;
-}
-
-dragSave = () => {
-
-	// let new_node_count = findNodes(root, n => true).length;
-
-	// if ( old_node_count === new_node_count ) {
-	// 	userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-	// //	saveUserOptions();
-	// } else {
-	// 	console.error('a node has been lost. aborting', old_node_count, new_node_count);
-	// }
-
-	(async () => {
-		let orig = userOptions.enableAnimations;
-		userOptions.enableAnimations = false;
-		qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
-		userOptions.enableAnimations = orig;
-		setDraggable();
-		resizeMenu({tileDrop: true});
-	})();
-
 }
 
 (() => { // text, image, url drag & drop
