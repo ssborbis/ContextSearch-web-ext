@@ -138,12 +138,11 @@ function setMenuSize(o) {
 	qm.style.transition = null;
 	document.body.style.transition = null;
 
-//	console.log(qm.style.height, getAllOtherHeights(), window.innerHeight, maxHeight);
-
 	return rows;
 }
 
 function resizeMenu(o) {
+	o = o || {};
 
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;

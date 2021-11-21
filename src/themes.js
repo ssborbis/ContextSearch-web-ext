@@ -74,7 +74,7 @@ async function changeTheme(i) {
 		link.parentNode.removeChild(link);
 	})
 
-	qm.insertBreaks();
+//	qm.insertBreaks();
 	await setTheme(theme);
 
 	//resizeMenu({widgetResize: true});
