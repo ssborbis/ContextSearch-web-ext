@@ -1851,6 +1851,13 @@ makeMarker = () => {
 		if ( window.tilesDraggable ) return;
 
 		e.preventDefault();
+
+		let tile = e.target.closest('.tile');
+
+		if ( !tile ) return;
+
+		tile.classList.add("dragHover");
+
 	});
 
 	document.addEventListener('drop', e => {
@@ -2300,96 +2307,6 @@ function getElementCountBeforeOverflow(el, rows) {
 
 	return [...el.children].indexOf(wrap);
 }
-
-(() => {
-
-	function convertSearchActions() {
-
-		const sa = {
-			event:"mouseup",
-			button:0,
-			altKey:false,
-			ctrlKey:false,
-			metaKey:false,
-			shiftKey:false,
-			action: ""
-		}
-
-		// contextMenuClick: "openNewTab",
-		// contextMenuMiddleClick: "openBackgroundTab",
-		// contextMenuRightClick: "openCurrentTab",
-		// contextMenuShift: "openNewWindow",
-		// contextMenuCtrl: "openBackgroundTab",
-
-		return [
-			Object.assign({...sa}, {button: 0, action: userOptions.quickMenuLeftClick}),
-			Object.assign({...sa}, {button: 2, action: userOptions.quickMenuRightClick}),
-			Object.assign({...sa}, {button: 1, action: userOptions.quickMenuMiddleClick}),
-
-			Object.assign({...sa}, {button: 0, altKey: true, action: userOptions.quickMenuAlt}),
-			Object.assign({...sa}, {button: 0, shiftKey: true, action: userOptions.quickMenuShift}),
-			Object.assign({...sa}, {button: 0, ctrlKey: true, action: userOptions.quickMenuCtrl}),
-
-			Object.assign({...sa}, {event: "dblclick", button: 2, action: "doubleClickSearchAction"})
-		];
-
-		// quickMenuFolderLeftClick: "openFolder",
-		// quickMenuFolderRightClick: "noAction",
-		// quickMenuFolderMiddleClick: "openBackgroundTab",
-		// quickMenuFolderShift: "openNewWindow",
-		// quickMenuFolderCtrl: "noAction",
-		// quickMenuFolderAlt: "noAction"
-	}
-
-	setTimeout(() => {
-		var searchActions = convertSearchActions();
-
-		searchActions.forEach( g => {
-			document.addEventListener(g.event, e => {
-
-				if ( !isSearchAction(g,e) ) return;
-
-				console.log(g.action);
-			})
-		})
-
-		document.addEventListener('contextmenu', e => {
-
-			if ( window.contextMenuTimer ) {
-				e.preventDefault();
-				return document.dispatchEvent(new MouseEvent('dblclick', e));	
-			}
-
-			window.contextMenuTimer = setTimeout(() => {
-				clearTimeout(window.contextMenuTimer);
-				delete window.contextMenuTimer;
-			}, 250);
-		});
-
-		// trigger dblclick event for other buttons
-		let dblClickHandler = e => {
-			if ( e.detail === 2 && e.button !== 0 ) {
-				console.log(e);
-				document.dispatchEvent(new MouseEvent('dblclick', e));
-			}
-		}
-		document.addEventListener('mousedown', dblClickHandler);
-
-		function isSearchAction(g, e) {
-
-			return (
-				e.altKey === g.altKey &&
-				e.ctrlKey === g.ctrlKey &&
-				e.shiftKey === g.shiftKey &&
-				e.metaKey === g.metaKey &&
-
-				g.button === e.button &&
-				g.key === e.key
-			)
-		}
-	}, 1000)
-
-});
 
 function hideTile(el, moreTile) {
 	el.style.display = 'none';
