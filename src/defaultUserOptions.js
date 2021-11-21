@@ -194,7 +194,6 @@ const defaultUserOptions = {
 	searchBarHistoryLength: 1024,
 	searchBarSuggestionsCount: 20,
 	groupLabelMoreTile: false,
-	groupFolderRowBreaks: false,
 	autoCopy: false,
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false,

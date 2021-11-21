@@ -2130,21 +2130,21 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 		count++;
 	});
 
-	if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
+	// if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
 		
-		moreTile.classList.remove('tile');
-		moreTile.classList.add('groupLabelMoreTile');
+	// 	moreTile.classList.remove('tile');
+	// 	moreTile.classList.add('groupLabelMoreTile');
 		
-		['mouseup', 'click'].forEach( _e => {
-			moreTile.addEventListener(_e, e => e.stopPropagation() );
-		});
+	// 	['mouseup', 'click'].forEach( _e => {
+	// 		moreTile.addEventListener(_e, e => e.stopPropagation() );
+	// 	});
 		
-		if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
+	// 	if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
 		
-	} else {
+	// } else {
 		if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
-		else console.log('not pushing moreTile', node);
-	}
+	//	else console.log('not pushing moreTile', node);
+	// }
 
 	return _tiles;
 }

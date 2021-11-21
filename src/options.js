@@ -310,7 +310,6 @@ async function restoreOptions() {
 		$('#n_searchBarHistoryLength').value = uo.searchBarHistoryLength;
 		$('#n_searchBarSuggestionsCount').value = uo.searchBarSuggestionsCount;
 		$('#cb_groupLabelMoreTile').checked = uo.groupLabelMoreTile;
-		$('#cb_groupFolderRowBreaks').checked = uo.groupFolderRowBreaks;
 		$('#cb_autoCopy').checked = uo.autoCopy;
 		$('#cb_rememberLastOpenedFolder').checked = uo.rememberLastOpenedFolder;
 		$('#cb_autoPasteFromClipboard').checked = uo.autoPasteFromClipboard;
@@ -628,7 +627,6 @@ function saveOptions(e) {
 		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
 		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
 		groupLabelMoreTile: $('#cb_groupLabelMoreTile').checked,
-		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
 		autoCopy: $('#cb_autoCopy').checked,
 		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
 		allowHotkeysWithoutMenu: $('#cb_allowHotkeysWithoutMenu').checked,
