@@ -305,8 +305,7 @@ async function restoreOptions() {
 		$('#cb_findBarShowNavBar').checked = uo.highLight.findBar.showNavBar;
 		$('#n_findBarTimeout').value = uo.highLight.findBar.keyboardTimeout;
 		$('#range_findBarScale').value = uo.highLight.findBar.scale;
-		// $('#i_findBarScale').value = (parseFloat(uo.highLight.findBar.scale) * 100).toFixed(0) + "%";
-	
+
 		$('#n_searchBarHistoryLength').value = uo.searchBarHistoryLength;
 		$('#n_searchBarSuggestionsCount').value = uo.searchBarSuggestionsCount;
 		$('#cb_groupLabelMoreTile').checked = uo.groupLabelMoreTile;
@@ -330,6 +329,8 @@ async function restoreOptions() {
 		$('#cb_contextMenuUseInnerText').checked = uo.contextMenuUseInnerText;
 		$('#n_cacheIconsMaxSize').value = uo.cacheIconsMaxSize;
 		$('#cb_forceOpenReultsTabsAdjacent').checked = uo.forceOpenReultsTabsAdjacent;
+
+		$('#n_quickMenuToolbarRows').value = uo.quickMenuToolbarRows;
 
 		$('#n_pageTilesRows').value = uo.pageTiles.rows;
 		$('#n_pageTilesColumns').value = uo.pageTiles.columns;
@@ -411,7 +412,7 @@ function saveOptions(e) {
 	
 	userOptions = {
 		searchEngines: userOptions.searchEngines,
-		nodeTree: JSON.parse(JSON.stringify(userOptions.nodeTree)),
+		nodeTree: userOptions.nodeTree,
 		lastUsedId: userOptions.lastUsedId,
 		quickMenu: $('#cb_quickMenu').checked,
 		quickMenuColumns: parseInt($('#n_quickMenuColumns').value),
@@ -653,6 +654,7 @@ function saveOptions(e) {
 		shakeSensitivity: parseInt($('#n_shakeSensitivity').value),
 		forceOpenReultsTabsAdjacent: $('#cb_forceOpenReultsTabsAdjacent').checked,
 		rightClickMenuOnMouseDownFix: $('#cb_rightClickMenuOnMouseDownFix').checked,
+		quickMenuToolbarRows: parseInt($('#n_quickMenuToolbarRows').value),
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
@@ -668,6 +670,9 @@ function saveOptions(e) {
 		blockList: $('#t_blockList').value.split(/\r?\n/),
 		version: userOptions.version
 	}
+
+	// prevent DeadObjects
+	userOptions = JSON.parse(JSON.stringify(userOptions));
 
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	return setting.then(onSet, onError);

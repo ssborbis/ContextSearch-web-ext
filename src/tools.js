@@ -392,9 +392,6 @@ var QMtools = [
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 
-			// tile.dataset.disabled = true;
-			// tile.disabled = true;
-
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
@@ -410,6 +407,9 @@ var QMtools = [
 			setDraggable();
 
 			this.dataset.locked = window.tilesDraggable;
+
+		//	setOptionsBar();
+			resizeMenu();
 
 			// special handler for when mouseup is disabled in addTileEventHandlers
 			// if ( window.tilesDraggable && this ) 

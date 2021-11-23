@@ -838,6 +838,8 @@ async function makeQuickMenu(options) {
 
 		qm.expandMoreTiles();
 
+		//setOptionsBar();
+
 		return qm;
 	}
 
@@ -2174,7 +2176,6 @@ function makeGroupFolderFromTile(gf) {
 			let tile = nodeToTile(node);
 			tile.classList.add('tile');
 			children.push(tile);
-		//	qm.appendChild(tile);
 		});
 	}
 
@@ -2188,15 +2189,7 @@ function makeGroupFolderFromTile(gf) {
 	if ( gf.node.groupColorText ) 
 		g.style.setProperty("--group-color-text", gf.node.groupColorText);
 
-	// setTimeout(() => {
-	// 	let brightness = getBrightness(g);
-	// 	if ( brightness > 200 ) g.style.setProperty("color", "#000")
-	// 	console.log(brightness);
-	// }, 500);
-
 	g.node = gf.node;
-
-//	g.style.display = Math.random() > .5 ? 'block' : 'inline';
 
 	if ( gf.node.groupFolder && ['inline', 'block'].includes(gf.node.groupFolder) )
 		g.classList.add(gf.node.groupFolder);
@@ -2214,32 +2207,28 @@ function makeGroupFolderFromTile(gf) {
 		
 		if ( g.classList.contains('block')) g.appendChild(label);
 
-		label.ondblclick = e => {
-			return false;
+		// label.ondblclick = e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
 
-			e.preventDefault();
-			e.stopPropagation();
+		// 	g.querySelectorAll('.tile').forEach( t => {
+		// 		t.classList.toggle('singleColumn');
 
-			g.querySelectorAll('.tile').forEach( t => {
-				t.classList.toggle('singleColumn');
+		// 		if ( t.classList.contains('singleColumn')) {
+		// 			t.style.maxWidth = 'none !important';
+		// 			t.style.minWidth = 'none !important';
+		// 		}
 
-				if ( t.classList.contains('singleColumn')) {
-					t.style.maxWidth = 'none !important';
-					t.style.minWidth = 'none !important';
-				}
+		// 	});
 
-			});
-
-			runAtTransitionEnd(g, ['height', 'width'], () => resizeMenu({more: true}), 50);
-			runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}), 50);
-		}
+		// 	runAtTransitionEnd(g, ['height', 'width'], () => resizeMenu({more: true}), 50);
+		// 	runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}), 50);
+		// }
 
 		let groupQM = document.createElement('div');
 		groupQM.className = 'container';
 		children.forEach( c => groupQM.appendChild(c));
 		g.appendChild(groupQM);
-
-		// children.forEach( c => g.appendChild(c));
 
 		let footer = document.createElement('label');
 		g.appendChild(footer);
@@ -2322,6 +2311,39 @@ function unhideTile(el) {
 	el.style.display = null;
 	delete el.dataset.hidden;
 	delete el.dataset.morehidden;
+}
+
+function initOptionsBar() {
+
+	document.querySelector('#folderOptionsButton').onclick = function() {
+		let fo = document.querySelector('#folderOptionsDiv');
+
+		fo.style.maxHeight = fo.style.maxHeight ? null : fo.scrollHeight + "px";
+		runAtTransitionEnd(fo, "max-height", resizeMenu);
+	}
+}
+
+function setOptionsBar() {
+
+	let optionsBar = document.querySelector('#optionsBar');
+
+	if ( !optionsBar ) return;
+
+	optionsBar.style.display = null;
+
+	if ( !qm.rootNode.parent ) return;
+
+	let node = findNode(userOptions.nodeTree, n => n.id === qm.rootNode.id );
+
+	// check for generated folders
+	if ( !node ) return;
+
+	let form = optionsBar.querySelector('form');
+
+	form.title.value = node.title;
+
+	optionsBar.style.display = 'block';
+
 }
 
 // setTimeout(() => {

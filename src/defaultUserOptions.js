@@ -108,7 +108,7 @@ const defaultUserOptions = {
 	searchBarUseOldStyle: false,
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
-	searchBarIcon: "icons/icon48.png",
+	searchBarIcon: "icons/logo.svg",
 	sideBar: {
 		enabled: true,
 		columns: 6,
@@ -234,5 +234,7 @@ const defaultUserOptions = {
 	forceOpenReultsTabsAdjacent: false,
 	rightClickMenuOnMouseDownFix: false,
 	contextMenuRegexMatchedEngines: false,
-	quickMenuRegexMatchedEngines: false
+	quickMenuRegexMatchedEngines: false,
+	quickMenuToolbarRows: 1,
+	groupFolderRowBreaks: false
 };

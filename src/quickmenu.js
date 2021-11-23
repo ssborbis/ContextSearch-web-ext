@@ -94,7 +94,7 @@ function setMenuSize(o) {
 
 		if ( toolBarMore ) toolBar.removeChild(toolBarMore);
 
-		makeContainerMore(toolBar, 1);
+		makeContainerMore(toolBar, userOptions.quickMenuToolbarRows);
 
 		// qm.querySelectorAll('group').forEach( g => {
 		// 	if ( g.style.display != 'block') return;
@@ -161,7 +161,7 @@ function resizeMenu(o) {
 		qm.style.height = "auto";
 		document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
 		toolBar.querySelectorAll('[data-hidden]').forEach( unhideTile );
-		makeContainerMore(toolBar, 1, o.columns);
+		makeContainerMore(toolBar, userOptions.quickmenuToolbarRows, o.columns);
 		return;
 	}
 
@@ -424,3 +424,5 @@ window.addEventListener("message", e => {
 	el.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
 	el.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
 });
+
+// initOptionsBar();

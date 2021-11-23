@@ -54,7 +54,7 @@
 	],
 	
 	"icons": {
-		"48": "icons/icon48.png"
+		"48": "icons/logo.svg"
 	},
 	
 	"web_accessible_resources": [
@@ -72,13 +72,13 @@
 
 	"browser_action": {
 		"default_title": "ContextSearch",
-		"default_icon": "icons/icon48.png",
+		"default_icon": "icons/logo.svg",
 		"default_popup": "searchbar.html"
 	},
 	
 	"sidebar_action": {
 		"default_icon": {
-			"48": "icons/icon48.png"
+			"48": "icons/logo.svg"
 		},
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",

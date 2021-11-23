@@ -603,3 +603,15 @@ GROUP.inline .tile {
 .dummy.wide {
 	width: 100%;
 }
+
+#optionsBar {
+	display: none;
+	padding: 4px;
+	text-align: left
+}
+
+#folderOptionsDiv {
+	max-height: 0;
+	overflow-y:hidden;
+	transition:max-height .25s;
+}
