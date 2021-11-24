@@ -128,7 +128,7 @@ function toolBarResize(o) {
 	qm.style.opacity = null;
 	qm.style.width = '100%';
 
-	if ( qmNaturalSize.width > maxWidth ) {
+	if ( qmNaturalSize.width < maxWidth ) {
 		
 		//	pad for scrollbars
 		qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";

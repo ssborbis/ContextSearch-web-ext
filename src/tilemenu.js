@@ -544,8 +544,9 @@ async function makeQuickMenu(options) {
 			});
 			tool.addEventListener('dragend', e => {
 				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
+				if ( getDragDiv ) getDragDiv.id = null;
 			});
-			tool.addEventListener('drop', e => {	
+			tool.addEventListener('drop', async e => {	
 				e.preventDefault();
 				
 				if ( !isTool(e) ) return;
@@ -560,10 +561,14 @@ async function makeQuickMenu(options) {
 				dragIndex = qmt.findIndex( t => t.name === dragName );
 				targetIndex = qmt.findIndex( t => t.name === targetName );
 
-				if ( side === "before" ) 
+				if ( side === "before" ) {
 					qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
-				else
+					e.target.parentNode.insertBefore(getDragDiv(), e.target);
+				}
+				else {
 					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
+					e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
+				}
 				
 				saveUserOptions();
 			
@@ -575,6 +580,8 @@ async function makeQuickMenu(options) {
 			//	qm.expandMoreTiles();
 
 			//	resizeMenu({tileDrop: true});
+
+			//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
 
 			});
 		});
@@ -1599,7 +1606,9 @@ document.addEventListener('mouseup', e => {
 		// check for locked / Keep Menu Open 
 		if ( !keepMenuOpen(e) && !tile.keepOpen )
 			closeMenuRequest(e);
-	}, err => { console.log(err)});
+	}, err => { 
+		//console.log(err)
+	});
 
 	return false;
 
@@ -2256,7 +2265,9 @@ function makeGroupFolderFromTile(gf) {
 function makeContainerMore(el, rows, columns) {
 	rows = rows || Math.MAX_SAFE_INTEGER;
 
-	let visibleCount = columns ? rows * columns : getElementCountBeforeOverflow(el, rows);
+	let elementsBeforeWrap = getElementCountBeforeOverflow(el, rows);
+
+	let visibleCount = columns ? rows * columns : elementsBeforeWrap;
 
 	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);
 	el.innerHTML = null;
@@ -2271,7 +2282,7 @@ function getElementCountBeforeOverflow(el, rows) {
 	el.style.position = 'relative';
 	el.style.overflow = 'auto';
 
-	if ( !el.firstChild || el.firstChild.offsetTop == el.lastChild.offsetTop ) return 0;
+	if ( !el.firstChild || el.firstChild.offsetTop == el.lastChild.offsetTop ) return Number.MAX_SAFE_INTEGER;
 
 	let rowCount = 0;
 
@@ -2290,7 +2301,7 @@ function getElementCountBeforeOverflow(el, rows) {
 	el.style.transition = null;
 	el.style.overflow = null;
 
-	if ( !wrap ) return 0;
+	if ( !wrap ) return Number.MAX_SAFE_INTEGER;
 
 	let preWrap = wrap.previousSibling;
 
