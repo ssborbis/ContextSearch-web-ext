@@ -684,7 +684,7 @@ async function makeQuickMenu(options) {
 		qm.columns = _columns;
 	
 		// remove separators if using grid
-		//if (!_singleColumn) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
+		if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 	
 		qm.singleColumn = _singleColumn;
 			

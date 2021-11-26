@@ -344,6 +344,7 @@ async function restoreOptions() {
 		$('#n_openFoldersOnHoverTimeout').value = uo.openFoldersOnHoverTimeout;
 		$('#n_shakeSensitivity').value = uo.shakeSensitivity;
 		$('#cb_rightClickMenuOnMouseDownFix').checked = uo.rightClickMenuOnMouseDownFix;
+		$('#cb_quickMenuHideSeparatorsInGrid').checked = uo.quickMenuHideSeparatorsInGrid;
 		
 
 		$('#style_dark').disabled = !uo.nightMode;
@@ -655,6 +656,7 @@ function saveOptions(e) {
 		forceOpenReultsTabsAdjacent: $('#cb_forceOpenReultsTabsAdjacent').checked,
 		rightClickMenuOnMouseDownFix: $('#cb_rightClickMenuOnMouseDownFix').checked,
 		quickMenuToolbarRows: parseInt($('#n_quickMenuToolbarRows').value),
+		quickMenuHideSeparatorsInGrid: $('#cb_quickMenuHideSeparatorsInGrid').checked,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,

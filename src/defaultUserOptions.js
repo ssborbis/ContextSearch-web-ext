@@ -236,5 +236,6 @@ const defaultUserOptions = {
 	contextMenuRegexMatchedEngines: false,
 	quickMenuRegexMatchedEngines: false,
 	quickMenuToolbarRows: 1,
-	groupFolderRowBreaks: false
+	groupFolderRowBreaks: false,
+	quickMenuHideSeparatorsInGrid: false
 };
