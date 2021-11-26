@@ -44,7 +44,8 @@
 		"contextMenus",
 		"storage",
 		"tabs",
-		"search"
+		"search",
+		"clipboardWrite"
 	],
 	
 	"optional_permissions": [

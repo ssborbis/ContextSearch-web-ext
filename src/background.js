@@ -507,6 +507,7 @@ async function notify(message, sender, sendResponse) {
 		case "copy":
 			try {
 				await navigator.clipboard.writeText(message.msg);
+				
 				return true;
 			} catch (error) {
 				return false;
@@ -1025,7 +1026,13 @@ async function buildContextMenu() {
 			let _id = "folder" + ++id
 
 			// special case for regex matching
-			if ( node.id === '___matching___') _id = node.id;
+			if ( node.id === '___matching___') {
+
+				if ( !userOptions.contextMenuRegexMatchedEngines )
+					return;
+				else
+					_id = node.id;
+			}
 			
 			addMenuItem({
 				parentId: parentId,

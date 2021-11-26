@@ -29,19 +29,12 @@ var QMtools = [
 		}, 
 		action: async function(e) {
 
-			// let input = document.createElement('input');
-				// input.style.visibility = 'none';
-				// document.body.appendChild(input);
-				// input.value = sb.value;
-				// input.select();
-				// document.execCommand('copy');
-				// input.parentNode.removeChild(input);
-
-			//	let tile = getToolTile(this.name);//document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
-
 				let rawtext = await browser.runtime.sendMessage({action: "getRawSelectedText"});
-					
-				copyToClip(rawtext);
+
+				browser.runtime.sendMessage({action:"copy", msg: rawtext });
+
+			//	if ( rawtext ) navigator.clipboard.writeText(rawtext);
+			//	copyToClip(rawtext);
 
 				this.dataset.locked = true;
 				
