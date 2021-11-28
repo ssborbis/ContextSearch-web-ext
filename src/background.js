@@ -734,7 +734,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "getRawSelectedText":
-			onFound = results => results;
+			onFound = results => results[0];
 			onError = results => null;
 			
 			return await browser.tabs.executeScript(sender.tab.id, {

@@ -31,16 +31,19 @@ var QMtools = [
 
 				let rawtext = await browser.runtime.sendMessage({action: "getRawSelectedText"});
 
+				rawtext = rawtext || sb.value;
+
 				browser.runtime.sendMessage({action:"copy", msg: rawtext });
 
-			//	if ( rawtext ) navigator.clipboard.writeText(rawtext);
-			//	copyToClip(rawtext);
-
 				this.dataset.locked = true;
-				
+
+				this.style.backgroundImage = 'url(icons/checkmark.svg)';
+				this.querySelector('.tool').style.opacity = 0;
 				setTimeout(() => {
 					this.dataset.locked = false;
-				}, 150);
+					this.style.backgroundImage = null;
+					this.querySelector('.tool').style.opacity = null;
+				}, 500);
 		}
 	},
 	{
