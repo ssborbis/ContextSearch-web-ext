@@ -676,9 +676,9 @@ function saveOptions(e) {
 	}
 
 	// prevent DeadObjects
-	userOptions = JSON.parse(JSON.stringify(userOptions));
+//	userOptions = JSON.parse(JSON.stringify(userOptions));
 
-	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
 	return setting.then(onSet, onError);
 }
 

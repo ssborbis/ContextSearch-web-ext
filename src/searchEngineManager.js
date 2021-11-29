@@ -349,7 +349,7 @@ function buildSearchEngineContainer() {
 						se.searchCode = edit_form.searchCode.value;
 						
 						// force a save even if the nodeTree is unchanged
-						updateNodeList(true);	
+						updateNodeList(true);
 						
 						if ( edit_form.querySelector('.error') )
 							showSaveMessage('saved with errors', 'red', edit_form.querySelector('.saveMessage'));
@@ -1656,13 +1656,13 @@ function updateNodeList(forceSave) {
 	
 	let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
 	
-	if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
+//	if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
 		// console.log('nodeTrees unequal. Saving');
 		userOptions.nodeTree = currentNodeTree
 		saveOptions();
-	} else {
+//	} else {
 		// console.log('node trees are the same - skipping save');
-	}
+	//}
 }
 
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
