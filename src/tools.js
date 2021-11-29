@@ -29,6 +29,16 @@ var QMtools = [
 		}, 
 		action: async function(e) {
 
+				let hasPermission = await browser.runtime.sendMessage({action: "hasPermission", permission: "clipboardWrite"});
+
+				if ( !hasPermission ) {
+					try {
+						await browser.permissions.request({permissions: ['clipboardWrite']});
+					} catch (err) {
+						browser.runtime.sendMessage({action: "openOptions", hashurl:"#requestPermissions"});
+						return;
+					}
+				}
 				let rawtext = await browser.runtime.sendMessage({action: "getRawSelectedText"});
 
 				rawtext = rawtext || sb.value;

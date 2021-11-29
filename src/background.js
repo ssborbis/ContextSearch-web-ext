@@ -749,6 +749,14 @@ async function notify(message, sender, sendResponse) {
 		case "updateUserOptionsVersion":
 			return updateUserOptionsVersion(message.userOptions);
 			break;
+
+		case "requestPermission":
+			return browser.permissions.request({permissions: [message.permission]});
+			break;
+
+		case "hasPermission":
+			return browser.permissions.contains({permissions: [message.permission]});
+			break;
 	}
 }
 

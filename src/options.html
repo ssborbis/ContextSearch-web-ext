@@ -1403,6 +1403,8 @@
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><div class="tool" style="--mask-image: url(icons/settings.svg)"></div>_</button>
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><div class="tool" style="--mask-image: url(icons/auto.svg)"></div>_</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><div class="tool" style="--mask-image: url(icons/help.svg)"></div>_</button>
+
+				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n="requestPermissions"><div class="tool" style="--mask-image: url(icons/help.svg)"></div>_</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
 				<label for="importSettings">
@@ -3272,6 +3274,18 @@
 					
 					</section>
 				</div>
+
+		<div class="tabcontent" id="requestPermissionsTab">
+					
+			<section id="requestPermissions" style="font-weight:normal;text-align:center">
+				<div style="text-align: center;margin-bottom:20px">
+					<img style="height:30px;vertical-align:middle" src="icons/alert.svg" />
+				</div>
+				<i><b>clipboardWrite</i></b> permission is required to interact with the clipboard. <br>Click the button below to request the <i><b>clipboardWrite</i></b>  permission.
+				<br><br>
+				<button id="b_requestClipboardPermissions">Request</button>
+			</section>
+		</div>
 
 		<div class="tabcontent" id="enginesTab">
 			<div style="font-weight:normal;">

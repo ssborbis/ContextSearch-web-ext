@@ -748,6 +748,11 @@ function addDOMListeners() {
 	$('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
 		$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
 	});
+
+	$('#b_requestClipboardPermissions').addEventListener('click', async () => {
+		await browser.permissions.request({permissions: ['clipboardWrite']});
+		window.close();
+	})
 }
 
 document.addEventListener('userOptionsLoaded', e => {
@@ -859,7 +864,7 @@ function hashChange(e) {
 	
 	let buttons = document.querySelectorAll('.tablinks');
 	
-	// no hash, click first buttony
+	// no hash, click first button
 	if ( !hash || !hash[1] ) {
 		buttons[0].click();
 		return;
@@ -871,7 +876,6 @@ function hashChange(e) {
 			break;
 		}
 	}
-	
 }
 
 function makeTabs() {
