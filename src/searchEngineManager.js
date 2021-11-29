@@ -1394,7 +1394,7 @@ function buildSearchEngineContainer() {
 				toJSON: li.node.toJSON
 			}
 			
-			insertAfter(newNode, li.node);
+			nodeInsertAfter(newNode, li.node);
 			
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);

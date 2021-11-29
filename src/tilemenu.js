@@ -612,6 +612,12 @@ async function makeQuickMenu(options) {
 
 		let br = () => document.createElement('br');
 
+		let hr = () => {
+			let h = document.createElement('hr');
+			h.className = 'break';
+			return h;
+		}
+
 		let count = 1;
 		tiles.forEach( t => {
 			let closestBlock = t.closest('GROUP.block');
@@ -644,7 +650,14 @@ async function makeQuickMenu(options) {
 			}
 
 			count++;
-		})
+		});
+
+		if ( userOptions.groupFolderRowBreaks ) {
+			qm.querySelectorAll('GROUP.inline').forEach( g => {
+				g.parentNode.insertBefore(hr(), g);
+				g.parentNode.insertBefore(hr(), g.nextSibling);
+			});
+		}
 
 		// remove doubles
 		qm.querySelectorAll('br').forEach( br => {

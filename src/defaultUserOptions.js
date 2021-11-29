@@ -47,7 +47,7 @@ const defaultUserOptions = {
 	quickMenuSearchBarFocus: false,
 	quickMenuSearchBarSelect: true,
 	quickMenuUseOldStyle: false,
-	quickMenuAllowContextMenu: false,
+	quickMenuAllowContextMenuNew: false,
 	quickMenuFocusOnOpen: true,
 	contextMenu: true,
 	contextMenuKey: 0,

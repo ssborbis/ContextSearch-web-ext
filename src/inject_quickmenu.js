@@ -260,7 +260,7 @@ document.addEventListener('mousedown', ev => {
 				// don't disable if menu has been closed
 				if ( !getQM() ) return;
 
-				if ( !userOptions.quickMenuAllowContextMenu ) {
+				if ( !userOptions.quickMenuAllowContextMenuNew ) {
 					evv.preventDefault();
 					evv.stopImmediatePropagation();
 				}
@@ -355,7 +355,7 @@ document.addEventListener('mouseup', e => {
 });
 
 function preventContextMenuHandler(evv) {
-	if ( !userOptions.quickMenuAllowContextMenu )
+	if ( !userOptions.quickMenuAllowContextMenuNew )
 		evv.preventDefault();
 }
 
@@ -474,7 +474,7 @@ document.addEventListener('mousedown', e => {
 		
 		if ( e.shiftKey ) document.addEventListener('selectstart', _e => _e.preventDefault(), {once: true});
 
-		if ( e.which === 3 && !userOptions.quickMenuAllowContextMenu ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
+		if ( e.which === 3 && !userOptions.quickMenuAllowContextMenuNew ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
 		
 		// prevent links
 		document.addEventListener('click', _e => _e.preventDefault(), {once: true});
@@ -577,7 +577,7 @@ document.addEventListener("click", e => {
 
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
 	
-	if ( userOptions.quickMenuAllowContextMenu && e.which !== 1 ) return;
+	if ( userOptions.quickMenuAllowContextMenuNew && e.which !== 1 ) return;
 	
 	// prevent links from opening
 	if ( getQM() && !quickMenuObject.locked)

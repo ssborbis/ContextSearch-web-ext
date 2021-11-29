@@ -236,7 +236,7 @@ async function restoreOptions() {
 		$('#n_quickMenuAutoMaxChars').value = uo.quickMenuAutoMaxChars;
 		$('#n_quickMenuOpeningOpacity').value = uo.quickMenuOpeningOpacity;
 		$('#n_quickMenuAutoTimeout').value = uo.quickMenuAutoTimeout;
-		$('#cb_quickMenuAllowContextMenu').checked = uo.quickMenuAllowContextMenu;
+		$('#cb_quickMenuAllowContextMenuNew').checked = uo.quickMenuAllowContextMenuNew;
 		$('#cb_quickMenuFocusOnOpen').checked = uo.quickMenuFocusOnOpen;
 
 		$('#cb_searchBarSuggestions').checked = uo.searchBarSuggestions;
@@ -345,6 +345,7 @@ async function restoreOptions() {
 		$('#n_shakeSensitivity').value = uo.shakeSensitivity;
 		$('#cb_rightClickMenuOnMouseDownFix').checked = uo.rightClickMenuOnMouseDownFix;
 		$('#cb_quickMenuHideSeparatorsInGrid').checked = uo.quickMenuHideSeparatorsInGrid;
+		$('#cb_groupFolderRowBreaks').checked = uo.groupFolderRowBreaks;
 		
 
 		$('#style_dark').disabled = !uo.nightMode;
@@ -478,7 +479,7 @@ function saveOptions(e) {
 		quickMenuAutoMaxChars: parseInt($('#n_quickMenuAutoMaxChars').value) || 0,
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
-		quickMenuAllowContextMenu: $('#cb_quickMenuAllowContextMenu').checked,
+		quickMenuAllowContextMenuNew: $('#cb_quickMenuAllowContextMenuNew').checked,
 		quickMenuShowHotkeysInTitle: $('#cb_quickMenuShowHotkeysInTitle').checked,
 		quickMenuFocusOnOpen: $('#cb_quickMenuFocusOnOpen').checked,
 		
@@ -657,6 +658,7 @@ function saveOptions(e) {
 		rightClickMenuOnMouseDownFix: $('#cb_rightClickMenuOnMouseDownFix').checked,
 		quickMenuToolbarRows: parseInt($('#n_quickMenuToolbarRows').value),
 		quickMenuHideSeparatorsInGrid: $('#cb_quickMenuHideSeparatorsInGrid').checked,
+		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
