@@ -236,7 +236,7 @@ async function restoreOptions() {
 		$('#n_quickMenuAutoMaxChars').value = uo.quickMenuAutoMaxChars;
 		$('#n_quickMenuOpeningOpacity').value = uo.quickMenuOpeningOpacity;
 		$('#n_quickMenuAutoTimeout').value = uo.quickMenuAutoTimeout;
-		$('#cb_quickMenuAllowContextMenu').checked = !uo.quickMenuAllowContextMenu;
+		$('#cb_quickMenuAllowContextMenu').checked = uo.quickMenuAllowContextMenu;
 		$('#cb_quickMenuFocusOnOpen').checked = uo.quickMenuFocusOnOpen;
 
 		$('#cb_searchBarSuggestions').checked = uo.searchBarSuggestions;
@@ -478,7 +478,7 @@ function saveOptions(e) {
 		quickMenuAutoMaxChars: parseInt($('#n_quickMenuAutoMaxChars').value) || 0,
 		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
 		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
-		quickMenuAllowContextMenu: !$('#cb_quickMenuAllowContextMenu').checked,
+		quickMenuAllowContextMenu: $('#cb_quickMenuAllowContextMenu').checked,
 		quickMenuShowHotkeysInTitle: $('#cb_quickMenuShowHotkeysInTitle').checked,
 		quickMenuFocusOnOpen: $('#cb_quickMenuFocusOnOpen').checked,
 		

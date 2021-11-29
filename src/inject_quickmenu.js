@@ -254,12 +254,18 @@ document.addEventListener('mousedown', ev => {
 			}, {once: true});
 			
 		} else if (ev.which === 3) {
+			
 			// Disable the default context menu once
-			document.addEventListener('contextmenu', evv => {
+			document.addEventListener('contextmenu', evv => {	
 				// don't disable if menu has been closed
 				if ( !getQM() ) return;
+
+				if ( !userOptions.quickMenuAllowContextMenu ) {
+					evv.preventDefault();
+					evv.stopImmediatePropagation();
+				}
 				
-				preventContextMenuHandler(evv);
+				//preventContextMenuHandler(evv);
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true});
 
@@ -348,6 +354,11 @@ document.addEventListener('mouseup', e => {
 	}, 50);
 });
 
+function preventContextMenuHandler(evv) {
+	if ( !userOptions.quickMenuAllowContextMenu )
+		evv.preventDefault();
+}
+
 // Listen for quickMenuOnClick
 document.addEventListener('mousedown', ev => {
 
@@ -362,11 +373,6 @@ document.addEventListener('mousedown', ev => {
 
 	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
 	
-	function preventContextMenuHandler(evv) {
-		if ( !userOptions.quickMenuAllowContextMenu )
-			evv.preventDefault();
-	}
-
 	// middle-click often used to open links and requires some caveots
 	if ( ev.which === 2 && !getSelectedText(ev.target) ) return false;
 	if ( ev.which === 2 ) ev.preventDefault();
