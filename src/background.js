@@ -28,6 +28,11 @@ async function notify(message, sender, sendResponse) {
 
 		case "saveUserOptions":
 			userOptions = message.userOptions;
+
+			// let op = await browser.tabs.query({url: browser.runtime.getURL("/options.html") + "*"});
+			// op = op.shift();
+
+			// if ( optionsPage ) {}
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions"});
 			});
@@ -49,7 +54,7 @@ async function notify(message, sender, sendResponse) {
 
 			if ( optionsPage ) {
 				browser.windows.update(optionsPage.windowId, {focused: true})
-				browser.tabs.update(optionsPage.id, { active: true });
+				browser.tabs.update(optionsPage.id, { active: true, url: browser.runtime.getURL("/options.html" + (message.hashurl || ""))});
 				browser.tabs.reload(optionsPage.id);
 				return;
 
@@ -119,7 +124,7 @@ async function notify(message, sender, sendResponse) {
 			onError = () => {}
 
 			return browser.tabs.executeScript(sender.tab.id, {
-				code: 'if ( quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
+				code: 'if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
 				allFrames:false
 			}).then(onFound, onError);
 			break;
