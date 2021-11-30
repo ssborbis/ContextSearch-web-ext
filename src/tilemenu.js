@@ -612,15 +612,9 @@ async function makeQuickMenu(options) {
 
 		let br = () => document.createElement('br');
 
-		let hr = () => {
-			let h = document.createElement('hr');
-			h.className = 'break';
-			return h;
-		}
-
 		let count = 1;
 		tiles.forEach( t => {
-			let closestBlock = t.closest('GROUP.block');
+			let closestBlock = t.closest('GROUP.block, GROUP.break');
 
 			// first in GROUP.block, reset counter
 			if ( !t.previousSibling && closestBlock) {
@@ -652,17 +646,10 @@ async function makeQuickMenu(options) {
 			count++;
 		});
 
-		if ( userOptions.groupFolderRowBreaks ) {
-			qm.querySelectorAll('GROUP.inline').forEach( g => {
-				g.parentNode.insertBefore(hr(), g);
-				g.parentNode.insertBefore(hr(), g.nextSibling);
-			});
-		}
-
 		// remove doubles
-		qm.querySelectorAll('br').forEach( br => {
-			if (br.previousSibling && br.previousSibling.nodeName === 'BR')
-				br.parentNode.removeChild(br);
+		qm.querySelectorAll('br').forEach( el => {
+			if (el.previousSibling && el.previousSibling.nodeName === el.nodeName && el.previousSibling.className === el.className )
+				el.parentNode.removeChild(el);
 		});
 		// qm.querySelectorAll('br').forEach( lc => {
 		// 	console.log('break after', lc.previousSibling);
@@ -670,7 +657,7 @@ async function makeQuickMenu(options) {
 
 		// qm.querySelectorAll('GROUP.block .container:last-child').forEach( lc => {
 		// 	console.log(lc.nodeName);
-		// })
+		// }
 
 		return qm.querySelectorAll('br').length;
 
@@ -2045,7 +2032,8 @@ function nodeToTile( node ) {
 	return tile;
 }
 
-function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
+function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
+
 
 	noFolder = noFolder || false;
 
@@ -2056,7 +2044,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	let title = hidden_count + " " + browser.i18n.getMessage("more");
 
 	parentNode = parentNode || qm;
-	let node = parentNode.node || {}
+	node = node || parentNode.node || {}
 	let classList = _tiles[0].classList;
 
 	if ( !noFolder && node.parent ) {
@@ -2173,7 +2161,12 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode ) {
 	// 	if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
 		
 	// } else {
-		if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
+
+		if ( !node.groupHideMoreTile ) {
+
+			_tiles.push( moreTile );
+			// console.log(node, moreTile);
+		}
 	//	else console.log('not pushing moreTile', node);
 	// }
 
@@ -2270,6 +2263,10 @@ function makeGroupFolderFromTile(gf) {
 		// 	console.log('dragstart');
 		// 	return false;
 		// }, {capture: true})
+	}
+
+	if ( userOptions.groupFolderRowBreaks && g.classList.contains('inline')) {
+		g.classList.add('break');
 	}
 
 	return g;

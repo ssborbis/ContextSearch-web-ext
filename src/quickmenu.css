@@ -578,6 +578,9 @@ GROUP.block > LABEL {
 GROUP.inline .tile {
 	background-color: var(--group-color);
 }
+GROUP.inline.break {
+	display: block;
+}
 
 .dummy {
 	display: inline-block;

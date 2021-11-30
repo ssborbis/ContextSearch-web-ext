@@ -269,7 +269,7 @@ function toolsHandler(o) {
 			let index = visibleTiles.indexOf(lastVisible);
 			let tileArray = visibleTiles.slice(index + 1, visibleTiles.length);
 
-			tileArray = qm.makeMoreLessFromTiles(tileArray, 1);
+			tileArray = qm.makeMoreLessFromTiles(tileArray, 1, false, qm, qm.rootNode);
 
 			if ( !tileArray ) return;
 			
