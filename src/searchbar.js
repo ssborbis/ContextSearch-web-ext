@@ -112,8 +112,6 @@ function toolBarResize(o) {
 
 	let tileSize = qm.getTileSize();
 
-	let currentRect = qm.getBoundingClientRect();
-
 	// less() is glitching the window width to max
 	//document.body.style.width = o.less ? document.body.getBoundingClientRect().width + "px" : maxWidth + 'px';
 	document.body.style.width = o.less ? document.body.getBoundingClientRect().width + "px" :  tileSize.width * qm.columns + "px";
@@ -121,14 +119,14 @@ function toolBarResize(o) {
 	qm.style.width = null;
 
 	qm.insertBreaks();
-	document.body.style.maxWidth = o.suggestionsResize ? document.body.style.maxWidth : qm.getBoundingClientRect().width + "px";
+//	document.body.style.maxWidth = document.body.style.width || qm.getBoundingClientRect().width + "px";
+	document.body.style.maxWidth = tileSize.width * qm.columns + "px";
 	document.body.style.minWidth = '200px';
 
 	let qmNaturalSize = qm.getBoundingClientRect();
 
 	qm.removeBreaks();
 	qm.style.opacity = null;
-
 
 	qm.style.width = '100%';
 
