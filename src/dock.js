@@ -176,6 +176,10 @@ function makeDockable(el, options) {
 			document.removeEventListener('scroll', scrollHandler);
 			if ( o.overDiv && o.overDiv.parentNode) 
 				o.overDiv.parentNode.removeChild(o.overDiv);
+
+			if ( el.parentDockingListener ) {
+				window.removeEventListener('message', el.parentDockingListener);
+			}
 		}
 	});
 	
@@ -589,4 +593,7 @@ function addParentDockingListeners(id, target_id) {
 
 	// docking event listeners for iframe
 	window.addEventListener('message', parentDockingListener);
+
+	let el = document.getElementById(id);
+	if ( el ) el.parentDockingListener = parentDockingListener;
 }
