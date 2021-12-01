@@ -133,7 +133,7 @@ function toolBarResize(o) {
 	if ( qmNaturalSize.width < maxWidth ) {
 		
 		//	pad for scrollbars
-		qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
+	//	qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
 
 		let padding = tileSize.width - tileSize.rectWidth;
 
@@ -152,7 +152,8 @@ function toolBarResize(o) {
 		let sumHeight = getAllOtherHeights();
 		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
 
-		qm.style.width = `calc(100% + ${qm.offsetWidth - qm.scrollWidth}px)`;
+		// qm.style.width = `calc(100% - ${qm.offsetWidth - qm.scrollWidth}px)`;
+		qm.style.width = `calc(100%)`;
 	}
 
 	document.dispatchEvent(new CustomEvent('resizeDone'));
