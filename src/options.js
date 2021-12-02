@@ -346,7 +346,8 @@ async function restoreOptions() {
 		$('#cb_rightClickMenuOnMouseDownFix').checked = uo.rightClickMenuOnMouseDownFix;
 		$('#cb_quickMenuHideSeparatorsInGrid').checked = uo.quickMenuHideSeparatorsInGrid;
 		$('#cb_groupFolderRowBreaks').checked = uo.groupFolderRowBreaks;
-		
+		$('#cb_quickMenuRegexMatchedEngines').checked = uo.quickMenuRegexMatchedEngines;
+		$('#cb_contextMenuRegexMatchedEngines').checked = uo.contextMenuRegexMatchedEngines;
 
 		$('#style_dark').disabled = !uo.nightMode;
 
@@ -659,6 +660,8 @@ function saveOptions(e) {
 		quickMenuToolbarRows: parseInt($('#n_quickMenuToolbarRows').value),
 		quickMenuHideSeparatorsInGrid: $('#cb_quickMenuHideSeparatorsInGrid').checked,
 		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
+		quickMenuRegexMatchedEngines: $('#cb_quickMenuRegexMatchedEngines').checked,
+		contextMenuRegexMatchedEngines: $('#cb_contextMenuRegexMatchedEngines').checked,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
