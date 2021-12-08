@@ -348,6 +348,8 @@ async function restoreOptions() {
 		$('#cb_groupFolderRowBreaks').checked = uo.groupFolderRowBreaks;
 		$('#cb_quickMenuRegexMatchedEngines').checked = uo.quickMenuRegexMatchedEngines;
 		$('#cb_contextMenuRegexMatchedEngines').checked = uo.contextMenuRegexMatchedEngines;
+		$('#cb_alwaysAllowTileRearranging').checked = uo.alwaysAllowTileRearranging;
+
 
 		$('#style_dark').disabled = !uo.nightMode;
 
@@ -662,6 +664,7 @@ function saveOptions(e) {
 		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
 		quickMenuRegexMatchedEngines: $('#cb_quickMenuRegexMatchedEngines').checked,
 		contextMenuRegexMatchedEngines: $('#cb_contextMenuRegexMatchedEngines').checked,
+		alwaysAllowTileRearranging: $('#cb_alwaysAllowTileRearranging').checked,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,
@@ -676,7 +679,7 @@ function saveOptions(e) {
 		quickMenuTools: userOptions.quickMenuTools,
 		blockList: $('#t_blockList').value.split(/\r?\n/),
 		version: userOptions.version
-	}
+	};
 
 	// prevent DeadObjects
 //	userOptions = JSON.parse(JSON.stringify(userOptions));

@@ -31,6 +31,14 @@ var type;
 // track if tiles can be moved
 window.tilesDraggable = false;
 
+document.addEventListener('quickMenuIframeLoaded', e => {
+	if ( !userOptions.alwaysAllowTileRearranging ) return;
+
+	window.tilesDraggable = true;
+	setDraggable();
+}, {once: true});
+
+
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
@@ -544,7 +552,7 @@ async function makeQuickMenu(options) {
 			});
 			tool.addEventListener('dragend', e => {
 				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
-				if ( getDragDiv ) getDragDiv.id = null;
+				if ( getDragDiv() ) getDragDiv().id = null;
 			});
 			tool.addEventListener('drop', async e => {	
 				e.preventDefault();
@@ -1414,11 +1422,12 @@ document.addEventListener('mousedown', e => {
 		return;
 	}
 
-	if ( window.tilesDraggable ) return;
-
 	// if (tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
 
 	tile.parentNode.lastMouseDownTile = tile;
+
+	// allow tile actions if override is set
+	if ( window.tilesDraggable ) return;
 
 	e.preventDefault();
 });
@@ -1462,7 +1471,8 @@ document.addEventListener('mouseup', e => {
 
 	if ( tile.disabled ) return;
 
-	if ( window.tilesDraggable ) return;
+	// allow tile actions if override is set
+	if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging) return;
 
 	if ( mouseClickBack(e) ) return;
 
