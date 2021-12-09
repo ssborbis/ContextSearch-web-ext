@@ -86,7 +86,7 @@ function setMenuSize(o) {
 
 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
 	
-	if ( !o.more ) {
+	if ( !o.more && !o.move ) {
 		let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
 		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
 			unhideTile(t);
