@@ -231,6 +231,12 @@ function buildSearchEngineContainer() {
 				edit_form.searchRegex.value = se.searchRegex || "";
 				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
+
+				// set contexts
+				(() => {
+					let contexts = $('#contexts').querySelectorAll('INPUT');
+					contexts.forEach( cb => cb.checked = ((se.contexts & parseInt(cb.value)) == cb.value) );
+				})();
 								
 				edit_form.close.onclick = edit_form.closeForm;
 
@@ -347,6 +353,13 @@ function buildSearchEngineContainer() {
 						se.searchRegex = edit_form.searchRegex.value;
 						se.matchRegex = edit_form.matchRegex.value;
 						se.searchCode = edit_form.searchCode.value;
+
+						se.contexts = (() => {
+							let contexts = $('#contexts').querySelectorAll('INPUT:checked');
+							let total = 0;
+							contexts.forEach( cb => {total+=parseInt(cb.value)});
+							return total;
+						})();
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);

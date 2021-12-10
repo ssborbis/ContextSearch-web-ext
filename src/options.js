@@ -349,6 +349,8 @@ async function restoreOptions() {
 		$('#cb_quickMenuRegexMatchedEngines').checked = uo.quickMenuRegexMatchedEngines;
 		$('#cb_contextMenuRegexMatchedEngines').checked = uo.contextMenuRegexMatchedEngines;
 		$('#cb_alwaysAllowTileRearranging').checked = uo.alwaysAllowTileRearranging;
+		$('#cb_contextMenuUseContextualLayout').checked = uo.contextMenuUseContextualLayout;	
+		$('#n_contextMenuContextualLayoutFlattenLimit').value = uo.contextMenuContextualLayoutFlattenLimit;
 
 
 		$('#style_dark').disabled = !uo.nightMode;
@@ -665,6 +667,8 @@ function saveOptions(e) {
 		quickMenuRegexMatchedEngines: $('#cb_quickMenuRegexMatchedEngines').checked,
 		contextMenuRegexMatchedEngines: $('#cb_contextMenuRegexMatchedEngines').checked,
 		alwaysAllowTileRearranging: $('#cb_alwaysAllowTileRearranging').checked,
+		contextMenuUseContextualLayout: $('#cb_contextMenuUseContextualLayout').checked,
+		contextMenuContextualLayoutFlattenLimit: parseInt($('#n_contextMenuContextualLayoutFlattenLimit').value),
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,

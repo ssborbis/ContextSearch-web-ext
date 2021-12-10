@@ -1426,6 +1426,9 @@ document.addEventListener('mousedown', e => {
 
 	tile.parentNode.lastMouseDownTile = tile;
 
+	// cancel scroll icon always
+	if ( e.button === 1 ) e.preventDefault();
+
 	// allow tile actions if override is set
 	if ( window.tilesDraggable ) return;
 

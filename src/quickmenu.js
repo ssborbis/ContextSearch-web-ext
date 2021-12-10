@@ -90,7 +90,7 @@ function setMenuSize(o) {
 		let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
 		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
 			unhideTile(t);
-		})
+		});
 
 		if ( toolBarMore ) toolBar.removeChild(toolBarMore);
 

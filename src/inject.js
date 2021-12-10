@@ -85,8 +85,8 @@ window.addEventListener('mousedown', e => {
 		searchTerms = e.target.innerText.trim();
 	}
 	
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
 function linkOrImage(el, e) {

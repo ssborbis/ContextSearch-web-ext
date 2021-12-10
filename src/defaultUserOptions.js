@@ -238,5 +238,7 @@ const defaultUserOptions = {
 	quickMenuToolbarRows: 1,
 	groupFolderRowBreaks: false,
 	quickMenuHideSeparatorsInGrid: false,
-	alwaysAllowTileRearranging: false
+	alwaysAllowTileRearranging: false,
+	contextMenuUseContextualLayout: false,
+	contextMenuContextualLayoutFlattenLimit: 10
 };

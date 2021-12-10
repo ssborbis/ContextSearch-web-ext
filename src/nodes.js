@@ -37,6 +37,21 @@ function findNode(tree, callback) {
 	return _traverse(tree, null);
 }
 
+function traverseNodesDeep(tree, callback) {
+			
+	function _traverse(node, parent) {
+				
+		if (node && node.children) {
+			for ( let i=node.children.length-1;i>=0;i--)
+				_traverse(node.children[i], node);
+		}
+
+		callback(node, parent);
+	}
+	
+	_traverse(tree, null);
+}
+
 function setParents(tree) {
 	
 	findNodes( tree, (node, parent) => {

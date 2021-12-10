@@ -252,10 +252,12 @@ function resizeMenu(o) {
 	document.addEventListener('resizeDone', e => {
 		qm.scrollTop = scrollTop;
 		sg.scrollTop = sgScrollTop;
-	});
+	}, {once: true});
 
 	toolBarResize(o);
 	sideBarResize(o);
+
+//	qm.expandMoreTiles();
 	
 	qm.scrollTop = scrollTop;
 	sg.scrollTop = sgScrollTop;

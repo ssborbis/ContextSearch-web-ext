@@ -17,6 +17,15 @@ var quickMenuObject = {
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
 
+function deselectAllText(e) {
+	window.getSelection().removeAllRanges();
+
+	[document.activeElement, window.lastActiveElement].forEach( el => {
+		if ( el && el.selectionStart )
+			el.setSelectionRange(0,0);
+	});
+}
+
 function openQuickMenu(e, searchTerms) {
 
 	e = e || new Event('click');
@@ -88,6 +97,12 @@ function closeQuickMenu(eventType) {
 	}
 	
 	removeUnderDiv();
+	
+	if ( ( userOptions.quickMenuDeselectTextOnSearch ) && eventType === 'click_quickmenutile' ) {
+		browser.runtime.sendMessage({action: "deselectAllText"});
+
+		console.log('text should deselect');
+	}
 }
 
 function getOffsets() {
@@ -226,7 +241,7 @@ document.addEventListener('mousedown', ev => {
 		window.addEventListener('dragstart', preventDrag, {once: true});
 
 		// ignore select / drag events
-		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
+	//	if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
 
 		// prevent losing text selection
 		document.addEventListener('mouseup', evv => {
@@ -257,8 +272,11 @@ document.addEventListener('mousedown', ev => {
 			
 			// Disable the default context menu once
 			document.addEventListener('contextmenu', evv => {	
+
+
 				// don't disable if menu has been closed
-				if ( !getQM() ) return;
+				// ! fails in iframes
+			//	if ( !getQM() ) return;
 
 				if ( !userOptions.quickMenuAllowContextMenuNew ) {
 					evv.preventDefault();
@@ -332,7 +350,7 @@ document.addEventListener('mouseup', e => {
 		e.altKey !== userOptions.quickMenuAutoAlt ||
 		e.ctrlKey !== userOptions.quickMenuAutoCtrl
 	) return false;
-	
+
 	e.openingMethod = "auto";
 
 	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
@@ -340,10 +358,11 @@ document.addEventListener('mouseup', e => {
 	quickMenuObject.mouseLastClickTime = Date.now();
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	quickMenuObject.mouseDownTimer = null;
-	
+
 	// // skip erroneous short selections
 	let searchTerms = getSelectedText(e.target);
 	setTimeout(() => {
+
 		if ( searchTerms === getSelectedText(e.target) ) {
 			 openQuickMenu(e);
 			 
@@ -629,7 +648,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if ( !getQM() ) break;
 				closeQuickMenu(message.eventType || null);
 
-				
 				break;
 				
 			case "openQuickMenu":
@@ -702,7 +720,22 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 			
 			case "updateQuickMenuObject":
-				quickMenuObject = message.quickMenuObject;
+
+				quickMenuObject = { 
+					keyDownTimer: quickMenuObject.keyDownTimer,
+					mouseDownTimer: quickMenuObject.mouseDownTimer,
+					mouseCoords: quickMenuObject.mouseCoords,
+					screenCoords: quickMenuObject.screenCoords,
+					mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
+					mouseLastClickTime: Math.max(message.quickMenuObject.mouseLastClickTime, quickMenuObject.mouseLastClickTime),
+					mouseDragDeadzone: quickMenuObject.mouseDragDeadzone,
+					lastSelectTime: Math.max(message.quickMenuObject.lastSelectTime, quickMenuObject.lastSelectTime),
+					locked: message.quickMenuObject.locked,
+					searchTerms: message.quickMenuObject.searchTerms,
+					disabled: message.quickMenuObject.disabled,
+					mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
+					mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
+				};
 
 				// iframe needs to disable here
 				if (quickMenuObject.disabled) userOptions.quickMenu = false;
@@ -1049,5 +1082,5 @@ function checkContextMenuEventOrder() {
 
 //checkContextMenuEventOrder();
 
-if ( window == top )
+if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
