@@ -271,7 +271,9 @@ async function notify(message, sender, sendResponse) {
 			updateMatchRegexFolders(searchTerms);
 		
 			let title = contextMenuTitle(searchTerms);
-			//browser.contextMenus.update(context, {visible: true, title: title});
+			try {
+				browser.contextMenus.update("root_menu", {visible: true, title: title});
+			} catch (error) {}
 
 			break;
 			
