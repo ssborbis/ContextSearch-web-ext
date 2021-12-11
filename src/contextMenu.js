@@ -302,8 +302,9 @@ function contextMenuTitle(searchTerms, context) {
 	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", searchTerms);
 	
 	if ( !searchTerms ) {
+		title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith"));
 	//	if ( context === 'selection')
-			title = (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchForWithVariable") );
+	//		title = (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchForWithVariable") );
 	}
 
 	// if ( context === 'link' ) 
@@ -380,7 +381,8 @@ async function buildContextMenu(searchTerms) {
 		if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
 			root.children.unshift(folder);
 		} else {
-			root.children.unshift({type: "separator"});			
+			root.children.unshift({type: "separator"});
+			folder.children.forEach( c => c.title = "🕒 " + c.title);		
 			root.children = folder.children.concat(root.children);
 		}
 	}
