@@ -28,6 +28,9 @@ async function makeFrameContents() {
 	// get proper sizing for opening position
 	setMenuSize();
 
+	// override layout
+	setLayoutOrder(userOptions.quickMenuDomLayout);
+
 	document.getElementById('closeButton').addEventListener('click', e => {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 	});

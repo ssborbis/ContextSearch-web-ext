@@ -351,6 +351,7 @@ async function restoreOptions() {
 		$('#cb_alwaysAllowTileRearranging').checked = uo.alwaysAllowTileRearranging;
 		$('#cb_contextMenuUseContextualLayout').checked = uo.contextMenuUseContextualLayout;	
 		$('#n_contextMenuContextualLayoutFlattenLimit').value = uo.contextMenuContextualLayoutFlattenLimit;
+		$('#i_quickMenuDomLayout').value = uo.quickMenuDomLayout;
 
 
 		$('#style_dark').disabled = !uo.nightMode;
@@ -669,6 +670,7 @@ function saveOptions(e) {
 		alwaysAllowTileRearranging: $('#cb_alwaysAllowTileRearranging').checked,
 		contextMenuUseContextualLayout: $('#cb_contextMenuUseContextualLayout').checked,
 		contextMenuContextualLayoutFlattenLimit: parseInt($('#n_contextMenuContextualLayoutFlattenLimit').value),
+		quickMenuDomLayout: $('#i_quickMenuDomLayout').value,
 
 		pageTiles: {
 			enabled: $('#cb_pageTilesEnabled').checked,

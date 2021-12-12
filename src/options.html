@@ -1372,14 +1372,14 @@
 				background-color: #444;
 			}
 
-			#contexts SPAN {
-				border: 1px solid var(--border-color1);
+			#contexts LABEL {
+				display: inline;
 				border-radius: 4px;
 				padding: 2px 8px;
 				background-color: var(--bg-color1);
 				margin: 2px;
 				display: inline-block;
-				font-size: 8pt;
+				font-size: 7pt;
 			}
 
 			#contexts INPUT {
@@ -1387,7 +1387,8 @@
 				width: initial;
 				margin: initial;
 				margin-right: 10px;
-				width: 10px;height: 10px;
+				width: 8px;
+				height: 8px;
 			}
 
 		</style>
@@ -1600,6 +1601,10 @@
 					<tr>
 						<td data-i18n_tooltip="Override context menu title. Use %1 in place of searchTerms. blank = default">contextMenuTitle</td>
 						<td><input type="text" id="i_contextMenuTitle"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Override the quick menu layout. blank = default">quickMenuDomLayout</td>
+						<td><input type="text" id="i_quickMenuDomLayout"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Always allow tiles to be rearranged in the menus">alwaysAllowTileRearranging</td>
@@ -3352,10 +3357,22 @@
 
 				<form id="editSearchEngineForm" class="editForm" action="">
 					<div>
-						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
-						</button>
+						<div style="display:inline-block">
+							<div class="faviconPickerBox" name="faviconBox"></div>
+							<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
+								<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
+							</button>
+						</div>
+
+						<div id="contexts" style="display:inline-block;vertical-align:bottom">
+							<label><input type="checkbox" class="inputNice" value="1"/>audio</label>
+							<label><input type="checkbox" class="inputNice" value="2"/>frame</label>
+							<label><input type="checkbox" class="inputNice" value="4"/>image</label>
+							<label><input type="checkbox" class="inputNice" value="8"/>link</label>
+							<label><input type="checkbox" class="inputNice" value="16"/>page</label>
+							<label><input type="checkbox" class="inputNice" value="32"/>selection</label>
+							<label><input type="checkbox" class="inputNice" value="64"/>video</label>
+						</div>
 					</div>
 
 					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
@@ -3372,17 +3389,6 @@
 					<label data-i18n="Regex">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
 					<label data-i18n="MatchSearchTermsRegex">_</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
 					<label data-i18n="SearchCode">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
-
-					<div id="contexts">
-						<!-- <span><input type="checkbox" class="inputNice" value="1"/>all</span> -->
-						<span><input type="checkbox" class="inputNice" value="1"/>audio</span>
-						<span><input type="checkbox" class="inputNice" value="2"/>frame</span>
-						<span><input type="checkbox" class="inputNice" value="4"/>image</span>
-						<span><input type="checkbox" class="inputNice" value="8"/>link</span>
-						<span><input type="checkbox" class="inputNice" value="16"/>page</span>
-						<span><input type="checkbox" class="inputNice" value="32"/>selection</span>
-						<span><input type="checkbox" class="inputNice" value="64"/>video</span>
-					</div>
 
 					<div style="display:inline-block">
 					<label data-i18n="Method">_</label>

@@ -240,5 +240,6 @@ const defaultUserOptions = {
 	quickMenuHideSeparatorsInGrid: false,
 	alwaysAllowTileRearranging: false,
 	contextMenuUseContextualLayout: false,
-	contextMenuContextualLayoutFlattenLimit: 10
+	contextMenuContextualLayoutFlattenLimit: 10,
+	quickMenuDomLayout: ""
 };

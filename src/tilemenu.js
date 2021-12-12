@@ -205,7 +205,7 @@ async function makeQuickMenu(options) {
 	});
 	
 	sb.addEventListener('change', e => browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value}));
-	
+
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = function() { 
 		sb.value = null;
@@ -288,7 +288,7 @@ async function makeQuickMenu(options) {
 	});
 
 	qm.selectFirstTile = () => {
-		let firstTile = qm.querySelector('.tile:not([data-hidden])');
+		let firstTile = qm.querySelector('.tile:not([data-hidden]):not([data-undraggable])');
 		firstTile.classList.add('selectedFocus');
 		sb.selectedIndex = [].indexOf.call(qm.querySelectorAll(".tile"), firstTile);
 	}
@@ -463,6 +463,7 @@ async function makeQuickMenu(options) {
 
 	document.addEventListener('updatesearchterms', e => {
 		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
+		updateMatchRegexFolder();
 	});
 
 	// prevent click events from propagating
@@ -782,8 +783,8 @@ async function makeQuickMenu(options) {
 
 				let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
 
-				if ( !folder.children.length )
-					return;// console.log('no regex matches for searchTerms');
+				// if ( !folder.children.length )
+				// 	return;// console.log('no regex matches for searchTerms');
 
 				let _tile = nodeToTile( folder );
 				_tile.classList.add('tile');
@@ -2378,6 +2379,28 @@ function setOptionsBar() {
 
 	optionsBar.style.display = 'block';
 
+}
+
+function updateMatchRegexFolder() {
+	let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+
+	qm.querySelectorAll(`[data-type="folder"]`).forEach(f => {
+		if ( f.node.id == folder.id ) f.node = folder;
+	});
+}
+
+function setLayoutOrder(arr) {
+
+	if ( !arr ) return;
+
+	if ( typeof arr === 'string')
+		arr = arr.split(",").map(id => id.trim());
+
+	arr.forEach(id => {
+		let el = document.getElementById(id);
+		if ( el ) document.body.appendChild(el);
+		else console.log('bad id', id);
+	});
 }
 
 // setTimeout(() => {
