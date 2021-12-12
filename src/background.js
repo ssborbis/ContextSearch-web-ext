@@ -1,5 +1,5 @@
 // context menu entries need to be tracked to be updated
-window.contextMenuSelectDomainMenus = [];
+// window.contextMenuSelectDomainMenus = [];
 window.contextMenuMatchRegexMenus = [];
 
 window.contextMenuSearchTerms = "";
@@ -31,10 +31,6 @@ async function notify(message, sender, sendResponse) {
 		case "saveUserOptions":
 			userOptions = message.userOptions;
 
-			// let op = await browser.tabs.query({url: browser.runtime.getURL("/options.html") + "*"});
-			// op = op.shift();
-
-			// if ( optionsPage ) {}
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions"});
 			});
@@ -269,9 +265,10 @@ async function notify(message, sender, sendResponse) {
 			window.contextMenuSearchTerms = searchTerms;
 
 			updateMatchRegexFolders(searchTerms);
-		
-			let title = contextMenuTitle(searchTerms);
+
 			try {
+				// legacy menus
+				let title = contextMenuTitle(searchTerms);
 				browser.contextMenus.update("root_menu", {visible: true, title: title});
 			} catch (error) {}
 

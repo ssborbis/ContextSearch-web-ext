@@ -37,7 +37,7 @@ async function buildContextMenuContextually(searchTerms) {
 	// catch android
 	if ( !browser.contextMenus ) return;
 
-	window.contextMenuSelectDomainMenus = [];
+	// window.contextMenuSelectDomainMenus = [];
 	
 	function onCreated() {
 
@@ -56,10 +56,6 @@ async function buildContextMenuContextually(searchTerms) {
 			delete createOptions.icons;
 			browser.contextMenus.create( createOptions, onCreated);
 		}
-	}
-
-	function addRecentlyUsed() {
-
 	}
 	
 	await browser.contextMenus.removeAll();
@@ -80,13 +76,6 @@ async function buildContextMenuContextually(searchTerms) {
 
 	// add incremental menu ids to avoid duplicates
 	let count = 0;
-
-	// // create root folders based on context
-	// let contextualRootFolders = [];
-	// contexts.forEach( context => {
-	// 	let f = filterContexts(root, context);
-	// 	if ( f.children && f.children.length ) contextualRootFolders.push({context: context, folder: f})
-	// });
 	
 	if ( userOptions.syncWithFirefoxSearch ) {
 		let ses = await browser.search.get();
@@ -110,11 +99,6 @@ async function buildContextMenuContextually(searchTerms) {
 	}
 
 	contexts.forEach( ( context, index ) => {
-
-		// if ( context === 'all' ) {
-		// //	root.children.forEach( child => traverse(child, null) );
-		// 	return;
-		// }
 
 		// create node tree for context
 		let filteredNodeTree = filterContexts(root, context);
@@ -217,7 +201,7 @@ async function buildContextMenuContextually(searchTerms) {
 					pathIds.push(pathId);
 				});
 				
-				window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
+				// window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
 			}
 			
 		}
@@ -328,7 +312,7 @@ async function buildContextMenu(searchTerms) {
 	// catch android
 	if ( !browser.contextMenus ) return;
 
-	window.contextMenuSelectDomainMenus = [];
+	// window.contextMenuSelectDomainMenus = [];
 
 	let contexts = ["selection"];
 
@@ -476,7 +460,7 @@ async function buildContextMenu(searchTerms) {
 					pathIds.push(pathId);
 				});
 				
-				window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
+				// window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
 			}
 			
 		}
@@ -549,46 +533,46 @@ async function buildContextMenu(searchTerms) {
 	}
 }
 
-function updateSelectDomainMenus(tab) {
+// function updateSelectDomainMenus(tab) {
 	
-	if (!window.contextMenuSelectDomainMenus ) return;
+// 	if (!window.contextMenuSelectDomainMenus ) return;
 	
-	window.contextMenuSelectDomainMenus = [...new Set(window.contextMenuSelectDomainMenus)];
+// 	window.contextMenuSelectDomainMenus = [...new Set(window.contextMenuSelectDomainMenus)];
 	
-	window.contextMenuSelectDomainMenus.forEach( menu => {
+// 	window.contextMenuSelectDomainMenus.forEach( menu => {
 		
-		menu.pathIds.forEach( pathId => browser.contextMenus.remove( pathId ) );
+// 		menu.pathIds.forEach( pathId => browser.contextMenus.remove( pathId ) );
 		
-		menu.pathIds = [];
+// 		menu.pathIds = [];
 		
-		// create a new unique iterator
-		let count = Date.now();
+// 		// create a new unique iterator
+// 		let count = Date.now();
 				
-		getDomainPaths(tab.url).forEach( path => {
+// 		getDomainPaths(tab.url).forEach( path => {
 			
-			let pathId = '__selectDomain__' + menu.se.id + '_' + count++ + "_" + btoa(path);
+// 			let pathId = '__selectDomain__' + menu.se.id + '_' + count++ + "_" + btoa(path);
 			
-			menu.pathIds.push(pathId);
+// 			menu.pathIds.push(pathId);
 			
-			let createOptions = {
-				parentId: menu.id,
-				title: path,
-				id: pathId,
-				icons: {
-					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
-				},
-				contexts: ["selection", "link", "image", "page"]
-			};
+// 			let createOptions = {
+// 				parentId: menu.id,
+// 				title: path,
+// 				id: pathId,
+// 				icons: {
+// 					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
+// 				},
+// 				contexts: ["selection", "link", "image", "page"]
+// 			};
 
-			try {
-				browser.contextMenus.create( createOptions);
-			} catch (error) { // non-Firefox
-				delete createOptions.icons;
-				browser.contextMenus.create( createOptions);
-			}
-		});
-	});
-}
+// 			try {
+// 				browser.contextMenus.create( createOptions);
+// 			} catch (error) { // non-Firefox
+// 				delete createOptions.icons;
+// 				browser.contextMenus.create( createOptions);
+// 			}
+// 		});
+// 	});
+// }
 
 function updateMatchRegexFolders(s) {
 	console.log('updateMatchRegexFolders');
@@ -648,17 +632,17 @@ function contextMenuSearch(info, tab) {
 	
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 	
-	if (info.menuItemId === 'showSuggestions') {
-		userOptions.searchBarSuggestions = info.checked;
-		notify({action: "saveOptions", userOptions:userOptions});
-		return;
-	}
+	// if (info.menuItemId === 'showSuggestions') {
+	// 	userOptions.searchBarSuggestions = info.checked;
+	// 	notify({action: "saveOptions", userOptions:userOptions});
+	// 	return;
+	// }
 	
-	if (info.menuItemId === 'clearHistory') {
-		userOptions.searchBarHistory = [];
-		notify({action: "saveOptions", userOptions:userOptions});
-		return;
-	}
+	// if (info.menuItemId === 'clearHistory') {
+	// 	userOptions.searchBarHistory = [];
+	// 	notify({action: "saveOptions", userOptions:userOptions});
+	// 	return;
+	// }
 	
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
@@ -716,8 +700,6 @@ function contextMenuSearch(info, tab) {
 
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
-
-	// buildContextMenu();
 }
 
 // rebuild menu every time a tab is activated to updated selectdomain info
