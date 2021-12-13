@@ -2163,17 +2163,25 @@ function waitOnInjection(tabId) {
 				r(false);
 			}, 15000);
 		}), 
-		new Promise( r => {
+		new Promise( ( r, reject ) => {
 			ival = setInterval(async () => {
-				let result = await browser.tabs.executeScript(tabId, {
-					code: "window.hasRun"
-				});
+				try {
+					let result = await browser.tabs.executeScript(tabId, {
+						code: "window.hasRun"
+					});
 
-				if ( result[0] ) {
+					if ( result[0] ) {
+						clearInterval(ival);
+						clearTimeout(timeout);
+						r(true);
+					}
+				} catch ( error ) {
 					clearInterval(ival);
 					clearTimeout(timeout);
-					r(true);
+					r(false);
 				}
+
+				
 			}, 500);
 		})
 	]);
