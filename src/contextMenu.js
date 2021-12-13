@@ -315,11 +315,13 @@ async function buildContextMenu(searchTerms) {
 			id: ROOT_MENU,
 			title: contextMenuTitle(""),
 			contexts: contexts
-		});
+		}, () => {
 
-		browser.contextMenus.update("add_engine", { parentId: ROOT_MENU}).then(() => {
-			if (browser.runtime.lastError)
-				console.log(browser.runtime.lastError);
+			// browser.contextMenus.update("add_engine", { parentId: ROOT_MENU}).then(() => {
+			// 	if (browser.runtime.lastError)
+			// 		console.log(browser.runtime.lastError);
+			// });
+
 		});
 
 		if ( userOptions.syncWithFirefoxSearch ) {
