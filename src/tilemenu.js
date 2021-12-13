@@ -90,7 +90,7 @@ function getFullElementSize(el) {
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
 
-	if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + '")';
+	if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/logo_notext.svg") ) + '")';
 	div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
 	div.title = title;
 	return div;

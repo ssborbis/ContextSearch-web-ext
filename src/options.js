@@ -409,7 +409,7 @@ async function restoreOptions() {
 function saveOptions(e) {
 	
 	function onSet() {
-		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/icon48.png'});
+		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
 		return Promise.resolve(true);
 	}

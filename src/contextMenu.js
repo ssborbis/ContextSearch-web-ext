@@ -1,6 +1,7 @@
 const contexts = ["audio", "frame", "image", "link", "page", "selection", "video"];
 const contextCodes = [1,2,4,8,16,32,64];
 const contextsLabels = ["Search for AUDIO", "Search for FRAME", "Search for IMAGE", "Search for URL", "Search for PAGE", "Search for %s", "Search for VIDEO"];
+const ROOT_MENU = "root_menu";
 
 function hasContext(contextText, contextCode) {
 	let power = contexts.indexOf(contextText);
@@ -30,14 +31,7 @@ function filterContexts(root, context) {
 	return filteredNodeTree;
 }
 
-async function buildContextMenuContextually(searchTerms) {
-
-	let start = Date.now();
-
-	// catch android
-	if ( !browser.contextMenus ) return;
-
-	// window.contextMenuSelectDomainMenus = [];
+async function buildContextMenu(searchTerms) {
 	
 	function onCreated() {
 
@@ -57,96 +51,7 @@ async function buildContextMenuContextually(searchTerms) {
 			browser.contextMenus.create( createOptions, onCreated);
 		}
 	}
-	
-	await browser.contextMenus.removeAll();
-	
-	let tabs = await browser.tabs.query({currentWindow: true, active: true});
-	let tab = tabs[0];
 
-	let domainPaths = getDomainPaths(tab.url);
-
-	if (!userOptions.contextMenu) return false;
-	
-	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
-
-	if (!root.children) return;
-
-	let id = 0;
-	delete root.id;
-
-	// add incremental menu ids to avoid duplicates
-	let count = 0;
-	
-	if ( userOptions.syncWithFirefoxSearch ) {
-		let ses = await browser.search.get();
-		
-		let count = 0;
-		ses.forEach(se => {
-			let node = findNode(userOptions.nodeTree, _node => _node.title === se.name && (_node.type === "oneClickSearchEngine" || _node.type === "searchEngine") );
-			
-			if ( !node ) console.log(se);
-
-			addMenuItem({
-				title: se.name,
-				id: node.id + '_' + count++,
-				icons: {
-					"16": se.favIconUrl || browser.runtime.getURL('icons/search.svg')
-				}
-			});
-		});
-		
-		return;
-	}
-
-	contexts.forEach( ( context, index ) => {
-
-		// create node tree for context
-		let filteredNodeTree = filterContexts(root, context);
-
-		// skip empty contexts
-		if ( !filteredNodeTree.children.length ) return;
-
-		// flatten
-		let seNodes = findNodes(filteredNodeTree, n => n.type === 'searchEngine');
-		if ( seNodes.length < userOptions.contextMenuContextualLayoutFlattenLimit ) {
-			filteredNodeTree.children = seNodes;
-		}
-
-		browser.contextMenus.create({
-			id: context,
-			title: contextsLabels[index],
-			contexts: [context]
-		});
-
-		// recently used engines
-		if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
-
-			let folder = recentlyUsedListToFolder();
-			
-			if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
-				
-			} else {
-				
-			} 
-
-			traverse(folder, context);
-		}
-
-		// matching regex engines
-		 if ( userOptions.contextMenuRegexMatchedEngines ) {
-		 	let folder = matchingEnginesToFolder(searchTerms || "");
-
-		 //	folder.id = context + folder.id;
-
-		 	traverse(folder, context);
-		}
-
-		filteredNodeTree.children.forEach( child => traverse(child, context) );
-		//root.children.forEach( child => traverse(child, context) );
-	});
-	
-	console.log(Date.now() - start);
-	
 	function traverse(node, parentId) {
 		
 		if (node.hidden) return;
@@ -168,7 +73,7 @@ async function buildContextMenuContextually(searchTerms) {
 			}
 
 			if ( !se.hasOwnProperty('contexts') )
-				se.contexts = 32;
+				se.contexts = 32; // selection
 			
 			let _id = se.id + '_' + count++;
 
@@ -177,7 +82,7 @@ async function buildContextMenuContextually(searchTerms) {
 				title: getTitleWithHotkey(node),
 				id: _id,	
 				icons: {
-					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png"
+					"16": se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 				}
 			});
 
@@ -194,7 +99,7 @@ async function buildContextMenuContextually(searchTerms) {
 						title: path,
 						id: pathId,
 						icons: {
-							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png"
+							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 						}
 					});
 					
@@ -241,7 +146,12 @@ async function buildContextMenuContextually(searchTerms) {
 
 			// special case for regex matching
 			if ( node.id === '___matching___') {
-				_id = parentId + node.id;
+
+				// prepend context if using contextual menus
+				if ( contexts.includes(parentId) )
+					_id = parentId + node.id;
+				else
+					_id = node.id;
 			}
 			
 			addMenuItem({
@@ -272,6 +182,175 @@ async function buildContextMenuContextually(searchTerms) {
 		}
 		
 	}
+
+	// catch android
+	if ( !browser.contextMenus ) return;
+
+	// window.contextMenuSelectDomainMenus = [];
+	
+	await browser.contextMenus.removeAll();
+	
+	let tabs = await browser.tabs.query({currentWindow: true, active: true});
+	let tab = tabs[0];
+
+	let domainPaths = getDomainPaths(tab.url);
+
+	if (!userOptions.contextMenu) return false;
+
+	if (userOptions.contextMenuShowAddCustomSearch) {
+
+		addMenuItem({
+			id: "add_engine",
+			title: browser.i18n.getMessage("AddCustomSearch"),
+			contexts: ["editable"],
+			icons: { "16": browser.runtime.getURL('icons/logo_notext.svg') },
+			visible: false
+		});
+	}
+
+	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+	if (!root.children) return;
+
+	let id = 0;
+	delete root.id;
+
+	// add incremental menu ids to avoid duplicates
+	let count = 0;
+
+	let buildContextually = async () => {
+			
+		if ( userOptions.syncWithFirefoxSearch ) {
+			let ses = await browser.search.get();
+			
+			ses.forEach(se => {
+				let node = findNode(userOptions.nodeTree, _node => _node.title === se.name && (_node.type === "oneClickSearchEngine" || _node.type === "searchEngine") );
+				
+				if ( !node ) console.log(se);
+
+				addMenuItem({
+					title: se.name,
+					id: node.id + '_' + count++,
+					icons: {
+						"16": se.favIconUrl || browser.runtime.getURL('icons/search.svg')
+					}
+				});
+			});
+			
+			return;
+		}
+
+		contexts.forEach( ( context, index ) => {
+
+			// create node tree for context
+			let filteredNodeTree = filterContexts(root, context);
+
+			// skip empty contexts
+			if ( !filteredNodeTree.children.length ) return;
+
+			// flatten
+			let seNodes = findNodes(filteredNodeTree, n => n.type === 'searchEngine');
+			if ( seNodes.length < userOptions.contextMenuContextualLayoutFlattenLimit ) {
+				filteredNodeTree.children = seNodes;
+			}
+
+			browser.contextMenus.create({
+				id: context,
+				title: contextsLabels[index],
+				contexts: [context]
+			});
+
+			// recently used engines
+			if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
+
+				let folder = recentlyUsedListToFolder();
+				
+				if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
+					
+				} else {
+					
+				} 
+
+				traverse(folder, context);
+			}
+
+			// matching regex engines
+			 if ( userOptions.contextMenuRegexMatchedEngines ) {
+			 	let folder = matchingEnginesToFolder(searchTerms || "");
+			 	traverse(folder, context);
+			}
+
+			filteredNodeTree.children.forEach( child => traverse(child, context) );
+		});
+	}
+
+	let buildLegacy = async () => {
+		let contexts = ["selection"];
+
+		if ( userOptions.contextMenuOnImages) contexts.push("image");
+		if ( userOptions.contextMenuOnLinks) contexts.push("link");
+		
+		// recently used engines
+		if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
+
+			let folder = recentlyUsedListToFolder();
+			
+			if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
+				root.children.unshift(folder);
+			} else {
+				root.children.unshift({type: "separator"});
+				folder.children.forEach( c => c.title = "🕒 " + c.title);		
+				root.children = folder.children.concat(root.children);
+			}
+		}
+
+		// matching regex engines
+		 if ( userOptions.contextMenuRegexMatchedEngines ) {
+		 	let folder = matchingEnginesToFolder(searchTerms || "");
+
+		 	root.children.unshift(folder);
+		}
+
+		browser.contextMenus.create({
+			id: ROOT_MENU,
+			title: contextMenuTitle(""),
+			contexts: contexts
+		});
+
+		browser.contextMenus.update("add_engine", { parentId: ROOT_MENU}).then(() => {
+			if (browser.runtime.lastError)
+				console.log(browser.runtime.lastError);
+		});
+
+		if ( userOptions.syncWithFirefoxSearch ) {
+			let ses = await browser.search.get();
+			
+			ses.forEach(se => {
+				let node = findNode(userOptions.nodeTree, _node => _node.title === se.name && (_node.type === "oneClickSearchEngine" || _node.type === "searchEngine") );
+				
+				if ( !node ) console.log(se);
+
+				addMenuItem({
+					parentId: ROOT_MENU,
+					title: se.name,
+					id: node.id + '_' + count++,
+					icons: {
+						"16": se.favIconUrl || browser.runtime.getURL('icons/search.svg')
+					}
+				});
+			});
+			
+			return;
+		}
+
+		root.children.forEach( child => traverse(child, ROOT_MENU) );
+
+	}
+
+	if ( userOptions.contextMenuUseContextualLayout )
+		buildContextually();
+	else
+		buildLegacy();
 }
 
 
@@ -302,237 +381,6 @@ function contextMenuTitle(searchTerms, context) {
 
 }
 
-async function buildContextMenu(searchTerms) {
-
-	if ( userOptions.contextMenuUseContextualLayout )
-		return buildContextMenuContextually(searchTerms);
-
-	let start = Date.now();
-
-	// catch android
-	if ( !browser.contextMenus ) return;
-
-	// window.contextMenuSelectDomainMenus = [];
-
-	let contexts = ["selection"];
-
-	if ( userOptions.contextMenuOnImages) contexts.push("image");
-	if ( userOptions.contextMenuOnLinks) contexts.push("link");
-	
-	function onCreated() {
-
-		if (browser.runtime.lastError) {
-			if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) console.log(browser.runtime.lastError);
-		}
-	}
-	
-	function addMenuItem( createOptions ) {
-
-		createOptions.contexts = createOptions.contexts || contexts;
-
-		try {
-			browser.contextMenus.create( createOptions, onCreated);
-		} catch (error) { // non-Firefox
-			delete createOptions.icons;
-			browser.contextMenus.create( createOptions, onCreated);
-		}
-	}
-	
-	await browser.contextMenus.removeAll();
-	
-	let tabs = await browser.tabs.query({currentWindow: true, active: true});
-	let tab = tabs[0];
-
-	let domainPaths = getDomainPaths(tab.url);
-
-	if (!userOptions.contextMenu) return false;
-	
-	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
-
-	if (!root.children) return;
-
-	let id = 0;
-	delete root.id;
-
-	// add incremental menu ids to avoid duplicates
-	let count = 0;
-
-	// recently used engines
-	if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
-
-		let folder = recentlyUsedListToFolder();
-		
-		if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
-			root.children.unshift(folder);
-		} else {
-			root.children.unshift({type: "separator"});
-			folder.children.forEach( c => c.title = "🕒 " + c.title);		
-			root.children = folder.children.concat(root.children);
-		}
-	}
-
-	// matching regex engines
-	 if ( userOptions.contextMenuRegexMatchedEngines ) {
-	 	let folder = matchingEnginesToFolder(searchTerms || "");
-
-	 	root.children.unshift(folder);
-	}
-
-	browser.contextMenus.create({
-		id: "root_menu",
-		title: contextMenuTitle(""),
-		contexts: contexts
-	});
-	
-	if ( userOptions.syncWithFirefoxSearch ) {
-		let ses = await browser.search.get();
-		
-		let count = 0;
-		ses.forEach(se => {
-			let node = findNode(userOptions.nodeTree, _node => _node.title === se.name && (_node.type === "oneClickSearchEngine" || _node.type === "searchEngine") );
-			
-			if ( !node ) console.log(se);
-
-			addMenuItem({
-				parentId: "root_menu",
-				title: se.name,
-				id: node.id + '_' + count++,
-				icons: {
-					"16": se.favIconUrl || browser.runtime.getURL('icons/search.svg')
-				}
-			});
-		});
-		
-		return;
-	}
-
-	root.children.forEach( child => traverse(child, "root_menu") );
-	console.log(Date.now() - start);
-	
-	function traverse(node, parentId) {
-		
-		if (node.hidden) return;
-		
-		let getTitleWithHotkey = (n) => {
-			if ( userOptions.contextMenuHotkeys ) 
-				return n.title + (n.hotkey ? ` (&${keyTable[n.hotkey].toUpperCase()})` : "");
-			else 
-				return n.title;
-		}
-
-		if ( node.type === 'searchEngine' ) {
-
-			let se = userOptions.searchEngines.find(se => se.id === node.id);
-			
-			if (!se) {
-				console.log('no search engine found for ' + node.id);
-				return;
-			}
-			
-			let _id = se.id + '_' + count++;
-
-			addMenuItem({
-				parentId: parentId,
-				title: getTitleWithHotkey(node),
-				id: _id,	
-				icons: {
-					"16": se.icon_base64String || se.icon_url || "/icons/icon48.png"
-				}
-			});
-
-			if ( /{selectdomain}/.test( se.template ) ) {
-				
-				let pathIds = [];
-				
-				domainPaths.forEach( path => {
-					
-					let pathId = '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(path);
-					
-					addMenuItem({
-						parentId: _id,
-						title: path,
-						id: pathId,
-						icons: {
-							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/icon48.png"
-						}
-					});
-					
-					pathIds.push(pathId);
-				});
-				
-				// window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
-			}
-			
-		}
-		
-		if (node.type === 'bookmarklet') {
-			addMenuItem({
-				parentId: parentId,
-				title: getTitleWithHotkey(node),
-				id: node.id + '_' + count++,	
-				icons: {
-					"16": node.icon || browser.runtime.getURL("/icons/code.svg")
-				}
-			});
-		}
-		
-		if (node.type === 'oneClickSearchEngine') {
-			addMenuItem({
-				parentId: parentId,
-				title: getTitleWithHotkey(node),
-				id: node.id + '_' + count++,
-				icons: {
-					"16": node.icon
-				}
-			});
-		}
-		
-		if (node.type === 'separator' /* firefox */) {
-			browser.contextMenus.create({
-				parentId: parentId,
-				type: "separator"
-			});
-		}
-		
-		if ( node.type === 'folder' ) {
-			
-			let _id = "folder" + ++id
-
-			// special case for regex matching
-			if ( node.id === '___matching___') {
-				_id = node.id;
-			}
-			
-			addMenuItem({
-				parentId: parentId,
-				id: _id,
-				title: getTitleWithHotkey(node),
-				icons: {
-					"16": node.icon || "/icons/folder-icon.svg"
-				}
-			});
-			
-			// add menu item to search entire folder
-			if ( userOptions.contextMenuShowFolderSearch && node.children.length ) {
-				
-				addMenuItem({
-					parentId: _id,
-					id: node.id + "_" + id,
-					title: browser.i18n.getMessage("SearchAll"),
-					icons: {
-						"16": "icons/search.svg"
-					}
-				});
-			}
-			
-			for (let child of node.children) {
-				traverse(child, _id);
-			}
-		}
-		
-	}
-}
-
 // function updateSelectDomainMenus(tab) {
 	
 // 	if (!window.contextMenuSelectDomainMenus ) return;
@@ -559,7 +407,7 @@ async function buildContextMenu(searchTerms) {
 // 				title: path,
 // 				id: pathId,
 // 				icons: {
-// 					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/icon48.png"
+// 					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/logo_notext.svg"
 // 				},
 // 				contexts: ["selection", "link", "image", "page"]
 // 			};
@@ -587,8 +435,6 @@ function updateMatchRegexFolder(s, context) {
 	context = context || "";
 
 	let folder = matchingEnginesToFolder(s);
-
-	//console.log(context, folder);
 	
 	// only remove if non-contextual
 	if ( ! context ) {

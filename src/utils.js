@@ -57,7 +57,7 @@ function matchingEnginesToFolder(s) {
 	let folder = {
 		type: "folder",
 		id: "___matching___",
-		title: "( .* )",
+		title: "Regex Matches",
 		children: [],
 		parent: (window.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/regex.svg'),

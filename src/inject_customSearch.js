@@ -1,9 +1,9 @@
 // listen for right-mousedown and enable Add Custom Search menu item if no text is selected
 function inputAddCustomSearchHandler(input) {
 	
-	input.addEventListener('focus', e => {
-		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
-	});
+	// input.addEventListener('focus', e => {
+	// 	browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
+	// });
 	
 	input.addEventListener('mousedown', ev => {
 

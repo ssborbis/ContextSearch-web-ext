@@ -269,8 +269,9 @@ async function notify(message, sender, sendResponse) {
 			try {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
-				browser.contextMenus.update("root_menu", {visible: true, title: title});
-			} catch (error) {}
+				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title});
+				updateMatchRegexFolder(searchTerms);
+			} catch (error) { console.log(error)}
 
 			break;
 			
@@ -424,11 +425,7 @@ async function notify(message, sender, sendResponse) {
 
 			if (!userOptions.contextMenuShowAddCustomSearch) return;
 
-			browser.contextMenus.create({
-				id: "add_engine",
-				title: browser.i18n.getMessage("AddCustomSearch"),
-				contexts: ["editable"]
-			}, () => {
+			browser.contextMenus.update("add_engine", { visible: true }).then(() => {
 				if (browser.runtime.lastError)
 					console.log(browser.runtime.lastError);
 			});
@@ -437,8 +434,7 @@ async function notify(message, sender, sendResponse) {
 		
 		case "disableAddCustomSearchMenu":
 			
-			browser.contextMenus.remove("add_engine").then(() => {
-			}, () => {
+			browser.contextMenus.update("add_engine", { visible: false }).then(() => {
 				if (browser.runtime.lastError)
 					console.log(browser.runtime.lastError);
 			});
@@ -1004,14 +1000,17 @@ function executeOneClickSearch(info) {
 			tabId: tab.id
 		});
 
-		browser.tabs.onUpdated.addListener(function listener(tabId, changeInfo, __tab) {
+		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
 			if ( tabId !== tab.id ) return;
 		
 			if ( changeInfo.status !== 'complete' || changeInfo.url === 'about:blank' ) return;
-			
-			highlightSearchTermsInTab(__tab, searchTerms);
+
 			browser.tabs.onUpdated.removeListener(listener);
+			
+			waitOnInjection(tabId).then(value => {
+				highlightSearchTermsInTab(__tab, searchTerms);
+			});
 		});
 	}
 	
@@ -1270,12 +1269,13 @@ function openSearch(info) {
 			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
 
 				if ( changeInfo.status !== 'complete' ) return;
-				
-				highlightSearchTermsInTab(__tab, searchTerms);
+
 				browser.tabs.onUpdated.removeListener(listener);
 				
-				executeSearchCode(_tab.id);
-				
+				waitOnInjection(tabId).then(value => {
+					highlightSearchTermsInTab(__tab, searchTerms);
+					executeSearchCode(_tab.id);
+				});
 				return;
 			}
 			
@@ -1302,17 +1302,17 @@ function openSearch(info) {
 			});
 	
 			// listen for the results to complete
-			browser.tabs.onUpdated.addListener(function _listener(_tabId, _changeInfo, _tabInfo) {
+			browser.tabs.onUpdated.addListener(async function _listener(_tabId, _changeInfo, _tabInfo) {
 					
 				if ( _tabId !== _tab.id ) return;
 
 				if ( _tabInfo.status !== 'complete' ) return;
 				browser.tabs.onUpdated.removeListener(_listener);
 				
-				// send new tab based on results tabId
-				highlightSearchTermsInTab(_tabInfo, searchTerms);
-				
-				executeSearchCode(_tabId);
+				waitOnInjection(tabId).then(value => {
+					highlightSearchTermsInTab(_tabInfo, searchTerms);
+					executeSearchCode(_tabId);
+				});
 			});
 		});
 	}
@@ -1423,7 +1423,7 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	}
 }
 
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
 
@@ -1436,8 +1436,11 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
 	
 	if ( highlightInfo ) {
-		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
-		highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
+		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');	
+
+		waitOnInjection(tabId).then(value => {
+			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
+		});
 	}
 });
 
@@ -1795,6 +1798,12 @@ function updateUserOptionsVersion(uo) {
 		});
 
 		return _uo;
+	}).then( _uo => {
+
+		// 1.32
+		if ( _uo.searchBarIcon.indexOf('icon48.png') )
+			_uo.searchBaricon = 'icons/icon.svg'
+		return _uo;
 
 	}).then( _uo => {
 
@@ -1830,7 +1839,7 @@ function resetPersist() {
 }
 
 function setIcon() {
-	browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/icon48.png'});
+	browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 }
 
 async function checkForOneClickEngines() {
@@ -2119,7 +2128,7 @@ async function injectContentScripts(tab, frameId) {
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js"
-	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId}).then(onFound, onError))
+	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
@@ -2132,8 +2141,40 @@ async function injectContentScripts(tab, frameId) {
 			"/inject_sidebar.js",
 			"/inject_customSearch.js",
 			"/resizeWidget.js"
-		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false}).then(onFound, onError))
+		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
 		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false}).then(onFound, onError);
 	}
 
+}
+
+function waitOnInjection(tabId) {
+
+	let ival;
+	let timeout;
+
+	console.log('waitOnInjection', tabId);
+
+	return Promise.race([ 
+		new Promise(r => {
+			timeout = setTimeout(() => {
+				clearInterval(ival);
+				clearTimeout(timeout);
+				console.log('waitOnInjection timeout', tabId);
+				r(false);
+			}, 15000);
+		}), 
+		new Promise( r => {
+			ival = setInterval(async () => {
+				let result = await browser.tabs.executeScript(tabId, {
+					code: "window.hasRun"
+				});
+
+				if ( result[0] ) {
+					clearInterval(ival);
+					clearTimeout(timeout);
+					r(true);
+				}
+			}, 500);
+		})
+	]);
 }

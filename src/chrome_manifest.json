@@ -82,7 +82,7 @@
 		"clipboardRead"
 	],
 	"icons": {
-		"48": "icons/icon48.png"
+		"48": "icons/logo_notext.svg"
 	},
 	"web_accessible_resources": [
 		"/quickmenu.html",
@@ -98,7 +98,7 @@
 	],
 	"browser_action": {
 		"default_title": "ContextSearch",
-		"default_icon": "icons/icon48.png",
+		"default_icon": "icons/logo_notext.svg",
 		"default_popup": "searchbar.html"
 	},
 	"commands": {
