@@ -191,4 +191,4 @@ document.getElementById('clearSearchBarButton').addEventListener('click', e => {
 });
 
 //addChildDockingListeners(document.getElementById('handle'), "findBar");
-addChildDockingListeners(document.body, "findBar", "#searchBar");
+addChildDockingListeners(document.body, "findBar", "#searchBar, LABEL, .tool:not(#handle)");

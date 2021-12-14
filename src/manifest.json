@@ -63,7 +63,7 @@
 	],
 	
 	"icons": {
-		"48": "/icons/logo.svg"
+		"48": "/icons/logo_notext.svg"
 	},
 	
 	"web_accessible_resources": [
