@@ -999,9 +999,6 @@ function executeOneClickSearch(info) {
 
 	async function searchAndHighlight(tab) {
 
-		// new tab requires a delay if the current page is options.html for some reason???
-		await new Promise(r => setTimeout(r, 50));
-
 		browser.search.search({
 			query: searchTerms,
 			engine: info.node.title,
@@ -1038,7 +1035,20 @@ function executeOneClickSearch(info) {
 		// if new window
 		if (tab.tabs) tab = tab.tabs[0];
 
-		searchAndHighlight(tab);
+		let start = Date.now();
+
+		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
+			if ( tabId !== tab.id ) return;
+		
+			if ( changeInfo.status !== 'complete' ) return;
+
+			browser.tabs.onUpdated.removeListener(listener);
+
+			console.log('tab took', Date.now() - start );
+
+			searchAndHighlight(tab);
+		});
+
 	}, onError);
 
 }
@@ -2075,9 +2085,11 @@ function openSearchXMLToSearchEngine(xml) {
 
 }
 
-function isAllowedURL(url) {
+function isAllowedURL(_url) {
+
+
 	try {
-		let url = new URL(url);
+		let url = new URL(_url);
 
 		// test for pure hostname
 		if ( userOptions.blockList.includes(url.hostname)) return false;
@@ -2110,7 +2122,7 @@ function isAllowedURL(url) {
 				continue;
 			} catch (err) {}
 		}
-	} catch (err) { console.log('bad url for tab', url)}
+	} catch (err) { console.log('bad url for tab', _url)}
 
 	return true;
 }
