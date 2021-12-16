@@ -1750,6 +1750,8 @@ document.addEventListener('dragleave', e => {
 
 document.addEventListener('drop', e => {
 
+	e.preventDefault();
+
 	let tile = e.target.closest('.tile') || e.target.closest('group');
 
 	let dummy = document.querySelector('.dummy');
@@ -1873,7 +1875,7 @@ makeMarker = () => {
 
 (() => { // text, image, url drag & drop
 	document.addEventListener('dragover', e => {
-		if ( window.tilesDraggable ) return;
+		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
 
 		e.preventDefault();
 
@@ -1887,7 +1889,7 @@ makeMarker = () => {
 
 	document.addEventListener('drop', e => {
 
-		if ( window.tilesDraggable ) return;
+		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
 
 		let tile = e.target.closest('.tile');
 		if ( !tile ) return;
