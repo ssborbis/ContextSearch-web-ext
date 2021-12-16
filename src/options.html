@@ -426,7 +426,7 @@
 				position:absolute;
 				top:0;
 				left:0;
-				z-index:2;
+				z-index:2147483647;
 				padding:5px;
 				border-radius:5px;
 				max-width:200px;
@@ -781,7 +781,7 @@
 				border:1px solid pink;
 				box-shadow:0px 0px 3px 1px pink;
 			}
-			.editForm > LABEL, .editForm > DIV > LABEL {
+			.editForm > LABEL, .editForm > DIV > LABEL, .editForm .formLabel {
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
@@ -3363,15 +3363,14 @@
 								<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
 							</button>
 						</div>
-
-						<div id="contexts" style="display:inline-block;vertical-align:bottom">
-							<label><input type="checkbox" class="inputNice" value="1"/>audio</label>
-							<label><input type="checkbox" class="inputNice" value="2"/>frame</label>
-							<label><input type="checkbox" class="inputNice" value="4"/>image</label>
-							<label><input type="checkbox" class="inputNice" value="8"/>link</label>
-							<label><input type="checkbox" class="inputNice" value="16"/>page</label>
-							<label><input type="checkbox" class="inputNice" value="32"/>selection</label>
-							<label><input type="checkbox" class="inputNice" value="64"/>video</label>
+						<div id="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);background-color:var(--bg-color1);border-radius: 4px;padding:6px 0">
+							<label><input type="checkbox" class="inputNice" value="1" data-i18n="audio" />audio</label>
+							<label><input type="checkbox" class="inputNice" value="2" data-i18n="frame" />frame</label>
+							<label><input type="checkbox" class="inputNice" value="4" data-i18n="image" />image</label>
+							<label><input type="checkbox" class="inputNice" value="8" data-i18n="link" />link</label>
+							<label><input type="checkbox" class="inputNice" value="16" data-i18n="page" />page</label>
+							<label><input type="checkbox" class="inputNice" value="32" data-i18n="selection" />selection</label>
+							<label><input type="checkbox" class="inputNice" value="64" data-i18n="video" />video</label>
 						</div>
 					</div>
 
@@ -3386,9 +3385,9 @@
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">_</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
-					<label data-i18n="Regex">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
-					<label data-i18n="MatchSearchTermsRegex">_</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
-					<label data-i18n="SearchCode">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
+					<label data-i18n="Regex" title="Modify the search terms using regex before submitting">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
+					<label data-i18n="MatchSearchTermsRegex" title="Display this engine in the Regex Matches folder if the search terms match the following regex">_</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
+					<label data-i18n="SearchCode" title="Run some javascript after opening the template URL">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
 
 					<div style="display:inline-block">
 					<label data-i18n="Method">_</label>
