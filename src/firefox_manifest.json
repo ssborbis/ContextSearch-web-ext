@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.29",
+	"version": "1.32",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"applications": {
@@ -21,17 +21,15 @@
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",
+			"contextMenu.js",
 			"background.js",
 			"omnibox.js",
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",
-			"nodes.js"
+			"nodes.js",
+			"utils.js"
 		]
-	},
-	"options_ui": {
-		"page": "options.html",
-		"open_in_tab": true
 	},
 	"content_scripts": [
 		{
@@ -41,40 +39,15 @@
 			"js": [
 				"lib/browser-polyfill.min.js",
 				"lib/crossbrowser.js",
-				"inject.js",
-				"lib/mark.es6.min.js",
-				"inject_highlight.js",
-				"hotkeys.js",
-				"defaultShortcuts.js",
-				"dragshake.js"
+				"init_content.js"
 			],
-			"css": [
-				"inject.css"
-			],
-			"all_frames": true,
-			"match_about_blank": false
-		},
-		{
-			"matches": [
-				"<all_urls>"
-			],
-			"js": [
-				"utils.js",
-				"nodes.js",
-				"opensearch.js",
-				"searchEngineUtils.js",
-				"dock.js",
-				"inject_sidebar.js",
-				"inject_customSearch.js",
-				"resizeWidget.js"
-			],
-			"css": [
-				"inject_sidebar.css"
-			],
-			"all_frames": false,
-			"match_about_blank": false
+			"all_frames": true
 		}
 	],
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
 	"permissions": [
 		"<all_urls>",
 		"activeTab",
@@ -89,17 +62,19 @@
 		"clipboardRead"
 	],
 	"icons": {
-		"48": "icons/logo_notext.svg"
+		"48": "/icons/logo_notext.svg"
 	},
 	"web_accessible_resources": [],
 	"browser_action": {
 		"default_title": "ContextSearch",
-		"default_icon": "icons/logo_notext.svg",
+		"default_icon": {
+			"48": "/icons/logo_notext.svg"
+		},
 		"default_popup": "searchbar.html"
 	},
 	"sidebar_action": {
 		"default_icon": {
-			"48": "icons/logo_notext.svg"
+			"48": "/icons/logo_notext.svg"
 		},
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",
