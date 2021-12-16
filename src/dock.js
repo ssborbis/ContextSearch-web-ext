@@ -90,11 +90,11 @@ function findFixedElements(side, dist) {
 }
 
 function getScrollBarWidth() {
-	return window.innerWidth - document.documentElement.clientWidth;
+	return window.innerWidth - (document.documentElement.clientWidth || document.body.clientWidth);
 }
 
 function getScrollBarHeight() {
-	return window.innerHeight - document.documentElement.clientHeight;
+	return window.innerHeight - (document.documentElement.clientHeight || document.body.clientHeight);
 }
 
 function makeDockable(el, options) {
@@ -176,6 +176,10 @@ function makeDockable(el, options) {
 			document.removeEventListener('scroll', scrollHandler);
 			if ( o.overDiv && o.overDiv.parentNode) 
 				o.overDiv.parentNode.removeChild(o.overDiv);
+
+			if ( el.parentDockingListener ) {
+				window.removeEventListener('message', el.parentDockingListener);
+			}
 		}
 	});
 	
@@ -506,7 +510,11 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 
 	handle.addEventListener('mousedown', e => {	
 
+		delete handle.lastMouseDownCoords;
+
 		if ( ignoreTarget(e) ) return false;
+
+		if ( window.tilesDraggable ) return false;
 
 		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
 	});
@@ -585,4 +593,7 @@ function addParentDockingListeners(id, target_id) {
 
 	// docking event listeners for iframe
 	window.addEventListener('message', parentDockingListener);
+
+	let el = document.getElementById(id);
+	if ( el ) el.parentDockingListener = parentDockingListener;
 }

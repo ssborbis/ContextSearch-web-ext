@@ -24,14 +24,11 @@ function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
-	userOptions = message.userOptions;
+browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
+	userOptions = uo;
 	
-	let msg = await browser.runtime.sendMessage({action: "getUserOptions"});
-	
-	userOptions = msg.userOptions;
-		
 	makeSearchBar();
+	makeAddEngineBar();
 
 	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
 
@@ -45,10 +42,10 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async message => {
 				document.body.appendChild(toolBar);
 		});
 
-	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
-	if ( sideBarOpenedOnSearchResults.shift() ) focusSearchBar = false;
-
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
+
+	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
+	if ( sideBarOpenedOnSearchResults ) focusSearchBar = false;
 
 });
 
@@ -66,7 +63,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// replace text with selection
 	(async () => {
 		let results = await browser.runtime.sendMessage({action: "getSelectedText"});
-		let text = results.shift();
+		let text = results ? results.shift() : null;
 	
 		if ( text ) sb.value = text;
 
@@ -99,13 +96,11 @@ function toolsHandler() {
 	qm.toolsArray.forEach( tool => {
 		if ( qm.singleColumn && !userOptions.quickMenuToolsAsToolbar ) tool.classList.add('singleColumn');
 	});
-
-//	qm.insertBreaks();
 }
 
-function toolBarResize(options) {
+function toolBarResize(o) {
 
-	options = options || {}
+	o = o || {}
 
 	if ( window != top ) return;
 
@@ -113,71 +108,55 @@ function toolBarResize(options) {
 	let maxHeight = 600;
 	let maxWidth = 800;
 
+	qm.style.opacity = 0;
+
 	let tileSize = qm.getTileSize();
 
-	qm.style.minWidth = 'initial';
-	qm.style.height = null;
+	// less() is glitching the window width to max
+	//document.body.style.width = o.less ? document.body.getBoundingClientRect().width + "px" : maxWidth + 'px';
+	document.body.style.width = o.less ? document.body.getBoundingClientRect().width + "px" :  tileSize.width * qm.columns + "px";
+	document.body.style.maxWidth = null;
+	qm.style.width = null;
 
-	// ignore width resizing if only opening suggestions ( prevents flashing )
-	if ( !options.suggestionsResize && !options.groupMore && !options.groupLess ) {
-		sg.style.width = 0;
-		qm.style.width = null;
-		toolBar.style.width = 0;
-		tb.style.width = 0;
-		qm.style.overflowX = null;
-	
-	//	qm.insertBreaks(); // this is usually handled in the toolsHandler, but currently the toolbar does not use that method
+	qm.insertBreaks();
+//	document.body.style.maxWidth = document.body.style.width || qm.getBoundingClientRect().width + "px";
+	document.body.style.maxWidth = tileSize.width * qm.columns + "px";
+	document.body.style.minWidth = '200px';
+
+	let qmNaturalSize = qm.getBoundingClientRect();
+
+	qm.removeBreaks();
+	qm.style.opacity = null;
+
+	qm.style.width = '100%';
+
+	if ( qmNaturalSize.width < maxWidth ) {
+		
+		//	pad for scrollbars
+	//	qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
+
+		let padding = tileSize.width - tileSize.rectWidth;
+
+		let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
+
+		qm.querySelectorAll('DIV.tile:not(.singleColumn)').forEach( div => {
+			div.style.transition = 'none';
+			div.style.width = div_width;
+			div.offsetWidth;
+			div.style.transition = null;
+		});
 	}
-	
-	// set min width for singleColumn
-	if ( qm.singleColumn ) minWidth = tileSize.width;
 
-	// minimum toolbar width for Chrome ( Firefox min = 200 )
-	document.body.style.minWidth = minWidth + "px";
+	if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
-	runAtTransitionEnd(document.documentElement, ["width", "height"], () => {
+		let sumHeight = getAllOtherHeights();
+		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
 
-		if ( window.innerHeight < document.documentElement.scrollHeight ) {
+		// qm.style.width = `calc(100% - ${qm.offsetWidth - qm.scrollWidth}px)`;
+		qm.style.width = `calc(100%)`;
+	}
 
-			let sumHeight = getAllOtherHeights();
-			qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
-		} 
-
-		let minWindowWidth = Math.max(minWidth, window.innerWidth);
-
-		if ( !qm.singleColumn && qm.scrollWidth <= window.innerWidth && qm.columns * tileSize.width <= document.documentElement.scrollWidth ) {
-
-			let maxWidth = 800;
-
-			qm.style.width = Math.max( minWindowWidth, Math.min(maxWidth, document.documentElement.scrollWidth ) ) + "px";
-
-			// pad for scrollbars
-			qm.style.paddingRight = qm.offsetWidth - qm.clientWidth + "px";
-
-			let padding = tileSize.width - tileSize.rectWidth;
-
-			let div_width = 'calc(' + 100 / qm.columns + "% - " + padding + "px)";
-
-			qm.querySelectorAll('.tile:not(.singleColumn)').forEach( div => {
-				div.style.width = div_width;
-			});
-
-		} else if ( qm.scrollWidth <= window.innerWidth ) {
-		} else {
-			qm.style.overflowX = 'scroll';
-			qm.style.width = '100%';
-		}
-
-		document.dispatchEvent(new CustomEvent('resizeDone'));
-				
-	}, 50);
-
-	window.addEventListener('resize', e => {
-		toolBar.style.width = document.body.offsetWidth + "px";
-		sg.style.width = document.body.offsetWidth + "px";
-		tb.style.width = document.body.offsetWidth - 20 + "px";
-
-	});
+	document.dispatchEvent(new CustomEvent('resizeDone'));
 }
 
 var docked = false;
@@ -191,13 +170,15 @@ function unminifySideBar() {
 	sideBarResize();
 }
 
-function sideBarResize(options) {
+async function sideBarResize(options) {
 	
 	options = options || {};
 
 	if ( window == top ) return;
 
 	qm.insertBreaks();
+
+	document.body.style.width = screen.width + "px";
 
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
@@ -212,15 +193,18 @@ function sideBarResize(options) {
 	// throwing sidebar errors
 	if ( !qm ) return;
 
+	let maxWindowHeight = screen.height;
+
 	let qm_height = qm.style.height;
+
+	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : maxWindowHeight );
 	
-	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : 10000 );
+	document.body.style.height = docked ? "100vh" : 'auto';//document.body.style.height;
 	
-	document.body.style.height = docked ? "100vh" : document.body.style.height;
-	
-	qm.style.height = null;
 	qm.style.width = null;
-	sg.style.width = null;
+	qm.style.height = null;
+
+	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");	
 
 	let allOtherElsHeight = getAllOtherHeights();
 
@@ -230,18 +214,24 @@ function sideBarResize(options) {
 
 		if ( options.suggestionsResize ) return qm_height;
 				
-		// if ( options.groupMore ) return qm.getBoundingClientRect().height + "px";
+		// if ( options.more ) return qm.getBoundingClientRect().height + "px";
 		
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
 
-	// account for scrollbars
-	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
+	qm.style.width = qm.getBoundingClientRect().width + "px";
 
-	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
-	toolBar.style.width = qm.style.width;
+	document.body.style.width = null;
+
+	document.documentElement.style.setProperty('--iframe-body-width', document.body.offsetWidth + "px");
 
 	qm.removeBreaks();
+
+	// account for scrollbars
+	let scrollbarWidth = qm.offsetWidth - qm.clientWidth + 1; // account for fractions
+	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
+
+	toolBar.style.width = qm.style.width;
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
@@ -254,19 +244,20 @@ function sideBarResize(options) {
 function resizeMenu(o) {
 	
 	if (!qm) return;
+
 	// store scroll position
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
-	
-	qm.setDisplay();
 
 	document.addEventListener('resizeDone', e => {
 		qm.scrollTop = scrollTop;
 		sg.scrollTop = sgScrollTop;
-	});
+	}, {once: true});
 
 	toolBarResize(o);
 	sideBarResize(o);
+
+//	qm.expandMoreTiles();
 	
 	qm.scrollTop = scrollTop;
 	sg.scrollTop = sgScrollTop;
@@ -278,6 +269,73 @@ function closeMenuRequest() {
 	} else if ( userOptions.sideBar.closeAfterSearch ) {
 		window.parent.postMessage({action: "closeSideBarRequest"}, "*");
 	}
+}
+
+async function makeAddEngineBar() {
+
+	let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks"});
+
+	if ( !oses ) return;
+
+	oses.forEach( async ose => {
+
+		let div = document.createElement('div');
+		let img = new Image();
+		img.src = browser.runtime.getURL('icons/add.svg');
+		div.innerText = " ";
+		div.insertBefore(img, div.firstChild);
+		div.title = browser.i18n.getMessage("AddCustomSearch");
+		aeb.appendChild(div);
+
+		let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
+			return (!details) ? null : details.searchEngines[0];
+		});
+
+		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
+			div.parentNode.removeChild(div);
+			return;
+		} 
+
+		div.innerText = xml_se.title;
+		div.insertBefore(img, div.firstChild);
+
+		div.onclick = async() => {
+
+			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
+			return;
+
+			// img.src = browser.runtime.getURL('icons/spinner.svg');
+			// let loadImages = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url:ose.href});
+			// let se = loadImages.searchEngines[0];
+
+			// if ( !se ) return;
+
+			// let node = await browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine:se});
+			// userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+			
+			// div.addEventListener('transitionend', async e => {
+			// 	div.parentNode.removeChild(div);
+
+			// 	let tile = nodeToTile(node);
+
+			// 	let firstTile = qm.querySelector('DIV.tile');
+			// 	tile.className = firstTile.className;
+			// 	tile.style.width = firstTile.style.width;
+			// 	qm.appendChild(tile);
+			// 	tile.scrollIntoView({block: "start", behavior:"smooth"});
+			// });
+			// img.src = browser.runtime.getURL('icons/checkmark.svg');
+			// div.style.opacity = 0;
+
+		}
+		
+		
+	});
+
+	document.body.appendChild(aeb);
+
+	// place at the end again after qm loads
+	document.addEventListener('quickMenuIframeLoaded', e => document.body.appendChild(aeb), {once: true})
 }
 
 window.addEventListener('message', e => {

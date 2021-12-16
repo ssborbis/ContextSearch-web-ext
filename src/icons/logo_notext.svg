@@ -29,6 +29,4 @@
 	<circle cx="13" cy="17" r="8" fill="#6ec179" />
 	<path d="M 24 26 C 22 27 21 28 20 30 C 19 27 17 24 13 20 L 15 18 C 18 22 21 25 24 26" fill="#6ec179" />
 	<circle cx="13" cy="17" r="5.5" fill="url(#grad1)" />
-	<text x="6" y="49" class="text">Context</text>
-	<text x="27" y="49" class="text" style="font-size:6px;font-style:italic;font-weight:bold;fill:white">Search</text>
 </svg>

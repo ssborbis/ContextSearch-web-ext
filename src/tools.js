@@ -7,12 +7,12 @@ var QMtools = [
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
-
-			addTileEventHandlers(tile, e => {
-				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
-			});
 			
+			tile.action = this.action;
 			return tile;
+		},
+		action: function(e) {
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 		}
 	},
 	{
@@ -23,25 +23,33 @@ var QMtools = [
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
-
-			addTileEventHandlers(tile, async (e) => {
-
-				let input = document.createElement('input');
-				input.style.visibility = 'none';
-				document.body.appendChild(input);
-				input.value = sb.value;
-				input.select();
-				document.execCommand('copy');
-				input.parentNode.removeChild(input);
-
-				tile.dataset.locked = true;
-				
-				setTimeout(() => {
-					tile.dataset.locked = false;
-				}, 150);
-			});
 			
+			tile.action = this.action;
 			return tile;
+		}, 
+		action: async function(e) {
+
+				let hasPermission = await browser.runtime.sendMessage({action: "hasPermission", permission: "clipboardWrite"});
+
+				if ( !hasPermission ) {
+					try {
+						await browser.permissions.request({permissions: ['clipboardWrite']});
+					} catch (err) {
+						browser.runtime.sendMessage({action: "openOptions", hashurl:"#requestPermissions"});
+						return;
+					}
+				}
+				let copy = await browser.runtime.sendMessage({action: "copyRaw"});
+
+				this.dataset.locked = true;
+
+				this.style.backgroundImage = 'url(icons/checkmark.svg)';
+				this.querySelector('.tool').style.opacity = 0;
+				setTimeout(() => {
+					this.dataset.locked = false;
+					this.style.backgroundImage = null;
+					this.querySelector('.tool').style.opacity = null;
+				}, 500);
 		}
 	},
 	{
@@ -71,23 +79,24 @@ var QMtools = [
 			document.addEventListener('updatesearchterms', e => {
 				setDisabled();
 			});
-			
-			addTileEventHandlers(tile, e => {
 
-				if (tile.dataset.disabled === "true") return;
-
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: "openAsLink",
-						selectionText: sb.value,
-						openMethod: getOpenMethod(e),
-						openUrl: true
-					}
-				});
-			});
-			
+			tile.action = this.action;
+						
 			return tile;
+		},
+		action: function(e) {
+
+			if (this.dataset.disabled === "true") return;
+
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: "openAsLink",
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e),
+					openUrl: true
+				}
+			});
 		}
 	},
 	{
@@ -98,20 +107,21 @@ var QMtools = [
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
-			addTileEventHandlers(tile, e => {
-				
-				userOptions.quickMenu = false;
-				quickMenuObject.disabled = true;
+			
+			tile.action = this.action;
+			return tile;
+		},
+		action: function(e) {
+			userOptions.quickMenu = false;
+			quickMenuObject.disabled = true;
 
-				browser.runtime.sendMessage({
-					action: "updateQuickMenuObject", 
-					quickMenuObject: quickMenuObject
-				});
-				
-				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
+			browser.runtime.sendMessage({
+				action: "updateQuickMenuObject", 
+				quickMenuObject: quickMenuObject
 			});
 			
-			return tile;
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
+
 		}
 	},
 	{
@@ -139,12 +149,12 @@ var QMtools = [
 				}, {once: true});
 			}
 
-			addTileEventHandlers(tile, () => this.action());
+			tile.action = this.action;
 			
 			return tile;
 		},
-		action: function() {
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+		action: function(e) {
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === "lock" );
 
 			quickMenuObject.locked = !quickMenuObject.locked;
 
@@ -157,13 +167,15 @@ var QMtools = [
 
 			if ( tool.persist )	saveUserOptions();
 
-			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
-			if ( tile ) tile.dataset.locked = quickMenuObject.locked;
+			// let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
+			// if ( tile ) tile.dataset.locked = quickMenuObject.locked;
+
+			this.dataset.locked = quickMenuObject.locked;
 		}
 	},
 	{
 		name: 'lastused', 
-		icon: "icons/history.svg", 
+		icon: "icons/history_one.svg", 
 		title: browser.i18n.getMessage('tools_lastused'),		
 		init: function() {
 
@@ -198,27 +210,25 @@ var QMtools = [
 			
 			updateIcon();
 
-			document.addEventListener('updatesearchterms', updateIcon); // fires when a search executes, piggybacking for icon update
-			
+			document.addEventListener('updatesearchterms', updateIcon); // fires when a search executes, piggybacking for icon update	
 			document.addEventListener('updateLastUsed', updateIcon);
 
-			addTileEventHandlers(tile, e => {
-
-				if ( !userOptions.lastUsedId ) return;
-				
-				let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
-
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: node.id,
-						selectionText: sb.value,
-						openMethod: getOpenMethod(e)
-					}
-				});
-			});
-			
+			tile.action = this.action;
 			return tile;
+		},
+		action: function(e) {
+			if ( !userOptions.lastUsedId ) return;
+				
+			let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
+
+			browser.runtime.sendMessage({
+				action: "quickMenuSearch", 
+				info: {
+					menuItemId: node.id,
+					selectionText: sb.value,
+					openMethod: getOpenMethod(e)
+				}
+			});
 		}
 	},
 	{
@@ -256,25 +266,23 @@ var QMtools = [
 				}
 				
 			});
-
-			addTileEventHandlers(tile, e => {
-				
-				tool = userOptions.quickMenuTools.find( _tool => _tool.name === this.name );
-
-				tool.on = !tool.on;
-				
-				tile.dataset.locked = tool.on;
-
-				saveUserOptions();
-
-				browser.runtime.sendMessage({
-					action: "updateQuickMenuObject", 
-					quickMenuObject: quickMenuObject
-				});
-				
-			});
 			
+			tile.action = this.action;
 			return tile;
+		},
+		action: function(e) {
+			tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+
+			tool.on = !tool.on;
+			
+			this.dataset.locked = tool.on;
+
+			saveUserOptions();
+
+			browser.runtime.sendMessage({
+				action: "updateQuickMenuObject", 
+				quickMenuObject: quickMenuObject
+			});
 		}
 	},
 	{
@@ -300,9 +308,11 @@ var QMtools = [
 				tile.addEventListener('dragleave', e => clearTimeout(timer), {once: true});
 			});
 				
-			addTileEventHandlers(tile, e => qm.toggleDisplayMode());
-			
+			tile.action = this.action;
 			return tile;
+		},
+		action: function(e) {
+			qm.toggleDisplayMode()
 		}
 	},
 	{
@@ -314,12 +324,12 @@ var QMtools = [
 			tile.appendChild(makeToolMask(this));
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-			
-			addTileEventHandlers(tile, () => {
-				browser.runtime.sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
-			});
-			
+						
+			tile.action = this.action;
 			return tile;
+		},
+		action: function(e) {
+			browser.runtime.sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
 		}
 	},
 	{
@@ -330,13 +340,11 @@ var QMtools = [
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-			
-			addTileEventHandlers(tile, () => {
-				browser.runtime.sendMessage({action: "openOptions", hashurl: "#quickMenu"});
-			});
-			
+			tile.action = this.action;
 			return tile;
+		},
+		action: function(e) {
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "#quickMenu"});
 		}
 	},
 	{
@@ -347,14 +355,11 @@ var QMtools = [
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 			tile.keepOpen = true;
-
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 			
-			addTileEventHandlers(tile, () => this.action());
-			
+			tile.action = this.action;
 			return tile;
 		},
-		action: async function() {
+		action: function() {
 			nextTheme();
 		}
 	},
@@ -371,16 +376,14 @@ var QMtools = [
 			
 			tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 			
-			addTileEventHandlers(tile, () => this.action());
-			
+			tile.action = this.action;
 			return tile;
 		},
 		action: function() {
 			userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
 			saveUserOptions();
 
-			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
-			if ( tile ) tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
+			this.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 		}
 	},
 	{
@@ -394,25 +397,82 @@ var QMtools = [
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
-			addTileEventHandlers(tile, () => this.action());
-			
+			tile.action = this.action;
 			return tile;
 		}, 
 		action: function() {
+
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			window.tilesDraggable = !window.tilesDraggable;
-
-			document.querySelectorAll('.tile').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
 			
-			let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
-			if ( tile ) tile.dataset.locked = window.tilesDraggable;
+		//	document.addEventListener('changeFolder', setDraggable);
+			setDraggable();
+
+			this.dataset.locked = window.tilesDraggable;
+
+		//	setOptionsBar();
+			resizeMenu();
 
 			// special handler for when mouseup is disabled in addTileEventHandlers
-			if ( window.tilesDraggable && tile ) 
-				tile.addEventListener('mouseup', e => this.action(), {once: true});
+			// if ( window.tilesDraggable && this ) 
+			// 	this.addEventListener('mouseup', e => this.action(), {once: true});
+		}
+	},
+	{
+		name: 'block', 
+		icon: "icons/block.svg",
+		title: browser.i18n.getMessage('addtoblocklist'),
+		context: ["quickmenu", "sidebar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;			
+			return tile;
+		}, 
+		action: async function() {
+			let tabInfo = await browser.runtime.sendMessage({action:"getCurrentTabInfo"});
+			let url = new URL(tabInfo.url);
+
+			if ( !userOptions.blockList.includes(url.hostname) && confirm(browser.i18n.getMessage('addtoblocklistconfirm', url.hostname))) {
+				console.log('adding to blocklist', url.hostname);
+				userOptions.blockList.push(url.hostname);
+				saveUserOptions();
+			}
+		}
+	},
+	{
+		name: 'recentlyused', 
+		icon: "icons/history.svg",
+		title: browser.i18n.getMessage('recentlyused'),
+		context: ["quickmenu", "sidebar", "searchbar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			return tile;
+		}, 
+		action: async function() {
+
+			if (qm.rootNode.id === '___recent___') return;
+			
+			qm = await quickMenuElementFromNodeTree(recentlyUsedListToFolder());
+			
+			resizeMenu({openFolder: true});	
 		}
 	}
 ];
+
+function getToolTile(name) {
+	return document.querySelector(`[data-type="tool"][data-name="${name}"]`);
+}
 
 function makeMaskCanvas(url, color) {
 
@@ -464,3 +524,27 @@ function makeToolMask(tool) {
 }
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
+
+function copyToClip(str) {
+  function listener(e) {
+    e.clipboardData.setData("text/html", str);
+    e.clipboardData.setData("text/plain", str);
+    e.preventDefault();
+  }
+  document.addEventListener("copy", listener);
+  document.execCommand("copy");
+  document.removeEventListener("copy", listener);
+}
+
+function getBrightness(el) {
+
+	let rgbCSS = window.getComputedStyle(el, null).getPropertyValue('background-color');
+
+	let sep = rgbCSS.indexOf(",") > -1 ? "," : " ";
+  rgb = rgbCSS.substr(4).split(")")[0].split(sep);
+
+ 	return Math.round(((parseInt(rgb[0]) * 299) +
+                      (parseInt(rgb[1]) * 587) +
+                      (parseInt(rgb[2]) * 114)) / 1000);
+}
+

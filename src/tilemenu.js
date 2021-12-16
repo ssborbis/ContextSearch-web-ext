@@ -1,7 +1,7 @@
 // unique object to reference globally
 var quickMenuObject = { 
 	keyDownTimer: 0,
-	mouseDownTimer: 0,
+	mouseDownTimer: null,
 	mouseCoords: {x:0, y:0},
 	screenCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
@@ -14,7 +14,7 @@ var quickMenuObject = {
 	mouseDownTargetIsTextBox: false
 };
 
-var dragFolderTimeout = 500
+var dragFolderTimeout = 1500;
 
 var qm = document.getElementById('quickMenuElement');
 var sb = document.getElementById('searchBar');
@@ -24,11 +24,20 @@ var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 var toolBar = document.getElementById('toolBar');
 var sbc = document.getElementById('searchBarContainer');
+var aeb = document.getElementById('addEngineBar');
 
 var type;
 
 // track if tiles can be moved
 window.tilesDraggable = false;
+
+document.addEventListener('quickMenuIframeLoaded', e => {
+	if ( !userOptions.alwaysAllowTileRearranging ) return;
+
+	window.tilesDraggable = true;
+	setDraggable();
+}, {once: true});
+
 
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
@@ -81,7 +90,7 @@ function getFullElementSize(el) {
 function buildSearchIcon(icon_url, title) {
 	var div = document.createElement('DIV');
 
-	if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/icon48.png") ) + '")';
+	if ( icon_url )	div.style.backgroundImage = 'url("' + ( icon_url || browser.runtime.getURL("/icons/logo_notext.svg") ) + '")';
 	div.style.setProperty('--tile-background-size', 16 * userOptions.quickMenuIconScale + "px");
 	div.title = title;
 	return div;
@@ -97,72 +106,6 @@ function mouseClickBack(e) {
 	}
 
 	return false;
-}
-
-// method for assigning tile click handler
-function addTileEventHandlers(_tile, handler) {
-
-	// all click events are attached to mouseup
-	_tile.addEventListener('mouseup', async e => {
-
-		if ( _tile.disabled ) return false;
-
-		if ( window.tilesDraggable ) return false;
-		
-		// if ( userOptions.autoCopy /*copypaste*/) {
-			// browser.runtime.sendMessage({action: "copy", msg: sb.value});
-		// }
-
-		if ( !clickChecker(_tile) ) return;
-
-		if ( mouseClickBack(e) ) return;
-
-		// prevents unwanted propagation from triggering a parentWindow.click event call to closequickmenu
-		quickMenuObject.mouseLastClickTime = Date.now();
-		
-		if ( _tile.dataset.id && quickMenuObject.lastUsed !== _tile.dataset.id ) {
-			// // store the last used id
-			userOptions.lastUsedId = quickMenuObject.lastUsed = _tile.dataset.id || null;
-			
-			document.dispatchEvent(new CustomEvent('updateLastUsed'));
-		}
-
-		quickMenuObject.searchTerms = sb.value;
-		browser.runtime.sendMessage({
-			action: "updateQuickMenuObject", 
-			quickMenuObject: quickMenuObject
-		});
-
-		// custom tile methods
-		handler(e);
-		
-		// check for locked / Keep Menu Open 
-		if ( !keepMenuOpen(e) && !_tile.keepOpen )
-			closeMenuRequest();
-	});
-	
-	// prevent triggering click event accidentally releasing mouse button when menu is opened by HOLD method
-	// this sets a reference to the last mousedown element to be referenced in clickChecker()
-	_tile.addEventListener('mousedown', e => _tile.parentNode.lastMouseDownTile = _tile);
-	
-	// stop all other mouse events for this tile from propagating
-	[/*'mousedown',*/'mouseup','click','contextmenu'].forEach( eventType => {
-		_tile.addEventListener(eventType, e => {
-			e.preventDefault();
-			e.stopPropagation();
-			return false;
-		});
-	});
-	
-	// allow dnd with left-button, ignore other events
-	_tile.addEventListener('mousedown', e => {
-		if ( e.which !== 1 ) {
-			e.preventDefault();
-			e.stopPropagation();
-			return false;
-		}
-	});
-	
 }
 
 // get open method based on user preferences
@@ -262,7 +205,7 @@ async function makeQuickMenu(options) {
 	});
 	
 	sb.addEventListener('change', e => browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value}));
-	
+
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = function() { 
 		sb.value = null;
@@ -281,6 +224,7 @@ async function makeQuickMenu(options) {
 		saveUserOptions();
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
+		setDraggable();	
 		
 		resizeMenu({toggleSingleColumn: true});
 	}
@@ -315,6 +259,11 @@ async function makeQuickMenu(options) {
 			div.parentNode.lastMouseDownTile = div;
 			div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
 		}
+
+		// backspace triggers Back event
+		if ('Backspace' === e.key && qm.rootNode.parent && sb !== document.activeElement ) {
+			qm.back();
+		}
 	});
 
 	// tab and arrow keys move selected search engine
@@ -339,7 +288,7 @@ async function makeQuickMenu(options) {
 	});
 
 	qm.selectFirstTile = () => {
-		let firstTile = qm.querySelector('.tile:not([data-hidden])');
+		let firstTile = qm.querySelector('.tile:not([data-hidden]):not([data-undraggable])');
 		firstTile.classList.add('selectedFocus');
 		sb.selectedIndex = [].indexOf.call(qm.querySelectorAll(".tile"), firstTile);
 	}
@@ -347,6 +296,7 @@ async function makeQuickMenu(options) {
 	sb.addEventListener('keydown', e => {
 
 		if ( ![ "ArrowUp", "ArrowDown", "Tab" ].includes(e.key) ) return;
+		if ( e.ctrlKey || e.altKey || e.metaKey ) return;
 		
 		e.preventDefault();
 		
@@ -439,6 +389,9 @@ async function makeQuickMenu(options) {
 			}
 
 		});
+
+		// works for open and close
+		sg.addEventListener('transitionend', e => resizeMenu({suggestionsResize: true}));
 	}
 	
 	qm.addEventListener('keydown', e => {
@@ -447,6 +400,8 @@ async function makeQuickMenu(options) {
 		let _columns = qm.querySelector('div').classList.contains('singleColumn') ? 1 : qm.columns;
 
 		if ( ![ "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab" ].includes(e.key) ) return;
+		
+		if ( e.ctrlKey || e.altKey || e.metaKey ) return;
 		
 		e.preventDefault();
 
@@ -508,11 +463,15 @@ async function makeQuickMenu(options) {
 
 	document.addEventListener('updatesearchterms', e => {
 		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
+		updateMatchRegexFolder();
 	});
 
 	// prevent click events from propagating
 	[/*'mousedown',*/ 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
+
 		qm.addEventListener(eventType, e => {
+
+			if ( e.target.closest('.tile')) return;
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -594,8 +553,9 @@ async function makeQuickMenu(options) {
 			});
 			tool.addEventListener('dragend', e => {
 				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
+				if ( getDragDiv() ) getDragDiv().id = null;
 			});
-			tool.addEventListener('drop', e => {	
+			tool.addEventListener('drop', async e => {	
 				e.preventDefault();
 				
 				if ( !isTool(e) ) return;
@@ -610,19 +570,28 @@ async function makeQuickMenu(options) {
 				dragIndex = qmt.findIndex( t => t.name === dragName );
 				targetIndex = qmt.findIndex( t => t.name === targetName );
 
-				if ( side === "before" ) 
+				if ( side === "before" ) {
 					qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
-				else
+					e.target.parentNode.insertBefore(getDragDiv(), e.target);
+				}
+				else {
 					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
+					e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
+				}
 				
 				saveUserOptions();
 			
 				// rebuild menu
-				toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
-				qm.toolsArray = createToolsArray();
-				toolsHandler();
-				qm.expandMoreTiles();
-				resizeMenu({tileDrop: true});
+				// toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
+				// qm.toolsArray = createToolsArray();
+			//	toolsHandler();
+
+			//	qm.expandMoreTiles();
+
+			//	resizeMenu({tileDrop: true});
+
+			//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
+
 			});
 		});
 		
@@ -634,53 +603,74 @@ async function makeQuickMenu(options) {
 	qm.toolsArray = createToolsArray();
 
 	qm.removeBreaks = () => {
-		qm.querySelectorAll('br:not(.groupBr)').forEach( br => qm.removeChild(br) );
+		qm.querySelectorAll('br').forEach( br => br.parentNode.removeChild(br) );
+		qm.style.whiteSpace = null;
+		qm.style.overflow = null;
 	}
 
-	qm.insertBreaks = function insertBreaks(_columns) {
+	qm.insertBreaks = _columns => {
+
+		qm.removeBreaks();
+
+		qm.style.whiteSpace = 'nowrap';
+		qm.style.overflow = 'hidden';
 		
 		_columns = _columns || qm.columns;
 
-		qm.querySelectorAll('br:not(.groupBr)').forEach( br => qm.removeChild(br) );
-		
+		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
+
+		let br = () => document.createElement('br');
+
 		let count = 1;
-		qm.querySelectorAll('.tile:not([data-hidden="true"])').forEach( tile => {
-			if ( tile.nodeName === "BR" ) 
-				count = 0;
-			
-			if ( count === _columns ) {
-				tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
-				count = 0;
+		tiles.forEach( t => {
+			let closestBlock = t.closest('GROUP.block, GROUP.break');
+
+			// first in GROUP.block, reset counter
+			if ( !t.previousSibling && closestBlock) {
+				qm.insertBefore(br(), closestBlock);
+				count = 2;
+				return;
 			}
-			
+
+			// last in GROUP.block, reset counter
+			if ( !t.nextSibling && closestBlock ) {
+				t.parentNode.insertBefore(br(), t.nextSibling);
+				count = 1;
+				return;
+			}
+
+			if ( t.nodeName === 'HR' ) {
+				t.parentNode.insertBefore(br(), t.nextSibling);
+				t.parentNode.insertBefore(br(), t);
+				count = 1;
+				return
+			}
+
+			if ( count === _columns ) {
+				t.parentNode.insertBefore(br(), t.nextSibling);
+				count = 1;
+				return
+			}
+
 			count++;
 		});
 
-		// every_nth([ ...qm.querySelectorAll('.tile:not([data-hidden="true"])')], _columns).forEach( tile => {
-			// tile.parentNode.insertBefore(document.createElement('br'), tile.nextSibling);
-		// });
+		// remove doubles
+		qm.querySelectorAll('br').forEach( el => {
+			if (el.previousSibling && el.previousSibling.nodeName === el.nodeName && el.previousSibling.className === el.className )
+				el.parentNode.removeChild(el);
+		});
+		// qm.querySelectorAll('br').forEach( lc => {
+		// 	console.log('break after', lc.previousSibling);
+		// })
+
+		// qm.querySelectorAll('GROUP.block .container:last-child').forEach( lc => {
+		// 	console.log(lc.nodeName);
+		// }
+
+		return qm.querySelectorAll('br').length;
+
 	}
-
-	// qm.insertBreaks = function insertBreaks(_columns) {
-		
-	// 	_columns = _columns || qm.columns;
-
-	// 	qm.querySelectorAll('.break').forEach( br => br.classList.remove('break'));
-		
-	// 	let count = 1;
-	// 	let row = document.createElement('div');
-	// 	qm.querySelectorAll('.tile:not([data-hidden="true"])').forEach( tile => {
-
-	// 		qm.appendChild(row);
-	// 		row.appendChild(tile);
-	// 		if ( count === _columns ) {
-	// 			row = document.createElement('div');
-	// 			count = 0;
-	// 		}
-			
-	// 		count++;
-	// 	});
-	// }
 	
 	function buildQuickMenuElement(options) {
 		
@@ -703,7 +693,7 @@ async function makeQuickMenu(options) {
 		qm.columns = _columns;
 	
 		// remove separators if using grid
-		if (!_singleColumn) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
+		if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 	
 		qm.singleColumn = _singleColumn;
 			
@@ -724,7 +714,7 @@ async function makeQuickMenu(options) {
 
 			qm.appendChild(tile);
 		});
-		
+
 		qm.getTileSize = () => { 
 
 			let div = document.createElement('div');
@@ -745,8 +735,6 @@ async function makeQuickMenu(options) {
 				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
 				else _tile.classList.remove("singleColumn");
 			});
-			
-			qm.insertBreaks();
 		}
 
 		// check if any search engines exist and link to Options if none
@@ -772,323 +760,108 @@ async function makeQuickMenu(options) {
 		qm.style.left = '0px';
 
 		runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
-		
-		function getGroupFolderSiblings(div) {
-			return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === div.node.parent);
-		}
-		
+				
 		function isTool(e) {
 			return ( e.dataTransfer.getData("tool") === "true" );
 		}
-
-		/* dnd */
-		let tileDivs = qm.querySelectorAll('.tile:not([data-type="tool"])');
-		tileDivs.forEach( div => {
-
-			div.setAttribute('draggable', window.tilesDraggable);
-	
-			// group move
-			if ( div.classList.contains("groupFolder") ) {
-				div.addEventListener('mousedown', function holdListener(e) {
-					if ( e.which !== 1) return;
-					
-					let holdTimeout = setTimeout(() => {
-						div.groupMove = true;
-						div.disabled = true;
-						
-						let groupDivs = getGroupFolderSiblings(div);
-						
-						groupDivs.forEach( _div => _div.classList.add('groupMove'));
-
-						div.addEventListener('mouseup', _e => {
-							groupDivs.forEach( _div => _div.classList.remove('groupMove'));	
-							setTimeout(() => div.disabled = false, 100);
-						});
-						
-						
-					}, 1000);
-					
-					div.addEventListener('mousemove', () => clearTimeout(holdTimeout));
-					div.addEventListener('mouseup', () => clearTimeout(holdTimeout));
-				});
-				
-			}
-
-			div.addEventListener('dragstart', e => {
-
-				if ( !window.tilesDraggable ) return false;
-
-				e.dataTransfer.setData("text", "");
-				let img = new Image();
-				img.src = browser.runtime.getURL('icons/transparent.gif');
-				e.dataTransfer.setDragImage(img, 0, 0);
-				div.id = 'dragDiv';
-				div.style.opacity = .5;
-			});
-			div.addEventListener('dragover', e => {
-				e.preventDefault();
-				
-				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv || isTool(e) ) return;
-				let dragDiv = document.getElementById('dragDiv');
-
-				if ( targetDiv === dragDiv ) return;
-
-				targetDiv.classList.add('dragHover');
-
-				// if moving tiles, show arrow
-				if ( dragDiv ) {
-					
-					let side = getSide(targetDiv, e);
-					targetDiv.dataset.side = side;
-					
-					let arrow = document.getElementById('arrow');
-					arrow.style.display = null;
-					
-					let rect = targetDiv.getBoundingClientRect();
-					arrow.style.setProperty('--target-left', rect.left + "px");
-					arrow.style.setProperty('--target-top', rect.top + "px");
-					arrow.style.setProperty('--target-width', rect.width + "px");
-					arrow.style.setProperty('--target-height', rect.height + "px");
-					arrow.dataset.side = side;
-					
-					if ( targetDiv.classList.contains("groupFolder") && !targetDiv.classList.contains('groupMove') ) {
-						
-						let dec = getSideDecimal(targetDiv, e);
-						
-						let targetGroupDivs = getGroupFolderSiblings(targetDiv);
-
-						if ( isTargetBeforeGroup(targetDiv, dec) ) 
-							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						else if ( isTargetAfterGroup(targetDiv, dec) ) 
-							targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
-						else
-							targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
-					}
-				}
-			});
-			div.addEventListener('dragenter', e => {
-
-				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv || isTool(e) ) return;
-
-				targetDiv.style.transition = 'none';
-				
-				let dragDiv = document.getElementById('dragDiv');
-				
-				if ( !dragDiv && targetDiv.dataset.type === 'folder' ) {
-
-					// open folders on dragover
-					targetDiv.textDragOverFolderTimer = openFolderTimer(targetDiv, dragFolderTimeout);
-					return;
-				}
-				
-				// if moving tiles, show indicator
-				if ( dragDiv ) {
-					let arrow = document.getElementById('arrow');
-						
-					if ( !arrow ) {
-						arrow = document.createElement('div');
-						document.body.appendChild(arrow);
-					}
-					arrow.className = ( qm.singleColumn ) ? 'singleColumn' : null;
-					
-					arrow.id = 'arrow';
-					arrow.style.top = targetDiv.getBoundingClientRect().top + "px";
-					arrow.style.display = null;
-				}
-			});
-			div.addEventListener('dragleave', e => {
-				let targetDiv = getTargetElement(e.target);
-				if ( !targetDiv || isTool(e) ) return;
-
-				targetDiv.classList.remove('dragHover');
-				targetDiv.style.transition = null;
-				
-				delete targetDiv.dataset.side;
-				
-				if ( targetDiv.textDragOverFolderTimer )
-					clearTimeout(targetDiv.textDragOverFolderTimer);
-				
-				let arrow = document.getElementById('arrow');
-				if ( arrow ) arrow.style.display = 'none';
-				
-				getGroupFolderSiblings(targetDiv).forEach( el => el.classList.remove('groupHighlight') );
-			});
-			div.addEventListener('dragend', async e => {
-				
-				if ( isTool(e) ) return;
-
-				let dragDiv = document.getElementById('dragDiv');
-				
-				if ( dragDiv ) {
-					dragDiv.style.opacity = null;
-					dragDiv.id = "";
-				}
-
-				let targetDiv = getTargetElement(e.target);
-				if ( targetDiv ) targetDiv.classList.remove('dragHover');
-
-				let arrow = document.getElementById('arrow');
-				if ( arrow ) arrow.style.display = 'none';
-
-				// store scroll position
-				let scrollPos = qm.scrollTop;
-				
-				let animation = userOptions.enableAnimations;
-				userOptions.enableAnimations = false;
-				qm = await quickMenuElementFromNodeTree(qm.rootNode);
-				userOptions.enableAnimations = animation;
-
-				qm.expandMoreTiles();
-				
-				qm.scrollTop = scrollPos;
-
-				resizeMenu({tileDrop: true});
-				
-			});
-			
-			div.addEventListener('drop', e => {
-				e.preventDefault();
-				
-				if ( isTool(e) ) return;
-				
-			//	console.log(e.dataTransfer, e.dataTransfer.getData("text/html"), e.dataTransfer.getData("text/x-moz-place"), e.dataTransfer.getData("text/x-moz-url"));
-			
-				// console.log(e, e.dataTransfer);
-				// console.log(e.dataTransfer.getData("text"));
-				
-				let targetDiv = getTargetElement(e.target);
-				targetDiv.classList.remove('dragHover');
-
-				// look for text dnd
-				if ( e.dataTransfer.getData("text") && !e.dataTransfer.getData("text/x-moz-place") ) {
-					e.preventDefault();
-					sb.value = e.dataTransfer.getData("text");
-					div.parentNode.lastMouseDownTile = div;
-					div.dispatchEvent(new MouseEvent('mouseup'));
-					return;
-				}
-
-				let dragDiv = document.getElementById('dragDiv');
-
-				// firefox DnD for bookmarks
-				if ( e.dataTransfer.getData("text/x-moz-place") ) {
-					let _bm = JSON.parse(e.dataTransfer.getData("text/x-moz-place"));
-					
-					if ( !_bm.uri ) return; // ignore folders
-
-					dragDiv = nodeToTile({
-						title: _bm.title,
-						type: "bookmark",
-						uri: _bm.uri,
-						id: _bm.itemGuid,
-						parent: targetDiv.node.parent,
-						toJSON: targetDiv.node.toJSON,
-						icon: browser.runtime.getURL('icons/search.svg')
-					});
-
-					dragDiv.className = "tile";
-					targetDiv.parentNode.appendChild(dragDiv);
-					targetDiv.node.parent.children.push(dragDiv.node);
-
-					try {
-						let _url = new URL(_bm.uri);
-						let img = new Image();
-
-						img.onload = () => {
-							dragDiv.node.icon = imageToBase64(img, userOptions.cacheIconsMaxSize);
-							dragDiv.style.backgroundImage = `url(${dragDiv.node.icon})`;
-							
-							setTimeout(() => {
-								userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-								saveUserOptions();
-							}, 500);
-							
-						}
-						img.src = 'https://s2.googleusercontent.com/s2/favicons?domain_url=' + _url.hostname;
-					} catch (error) {
-						console.log(error);
-					}
-				}	
-
-				if (!targetDiv) return;
-				if (!dragDiv || !dragDiv.node) return;
-				if (targetDiv === dragDiv) return;
-				if ( dragDiv.groupMove && targetDiv.node.parent === dragDiv.node.parent ) {
-					console.error('cannot group move within parent');
-					return;
-				}
-				
-				let dragNode = ( dragDiv.groupMove) ? dragDiv.node.parent : dragDiv.node;
-				let targetNode = targetDiv.node;
-
-				// cut the node from the children array
-				let slicedNode = nodeCut(dragNode);
-
-				let side = getSide(targetDiv, e);
-	
-				if ( targetDiv.classList.contains("groupFolder") ) {
-					
-					let dec = getSideDecimal(targetDiv, e);
-					
-					if ( isTargetBeforeGroup(targetDiv, dec) ) {
-						console.log('moving before group');
-						nodeInsertBefore(slicedNode, targetNode.parent);
-						_save();
-						return;
-					} else if ( isTargetAfterGroup(targetDiv, dec) ) {
-						console.log('moving after group');
-						nodeInsertAfter(slicedNode, targetNode.parent);
-						_save();
-						return;
-					}
-					
-					if ( targetDiv.dataset.type && ['more','less'].includes(targetDiv.dataset.type) ) {
-						console.log('drop to more / less tile ... appending tile to group');
-						nodeAppendChild(slicedNode, targetNode.parent);	
-						_save();
-						return;
-					}
-				}
-
-				if ( side === "before" ) nodeInsertBefore(slicedNode, targetNode);
-				else if ( side === "after" ) nodeInsertAfter(slicedNode, targetNode);
-				else nodeAppendChild(slicedNode, targetNode);
-				
-				_save();
-				
-				function _save() {
-					// save the tree
-					userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-					saveUserOptions();
-				}
-			});
-			
-		});
 		
-		/* end dnd */
+		(() => { // addRecentlyUsedFolder()
+			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
+				let recentFolder = nodeToTile(recentlyUsedListToFolder());
+				recentFolder.classList.add('tile');
+				recentFolder.dataset.hasicon = 'true';
+				recentFolder.dataset.undraggable = true;
+				recentFolder.dataset.undroppable = true;
 
-		toolsHandler();
+				tileArray.unshift(recentFolder);
+				qm.insertBefore(recentFolder, qm.firstChild);
+			}
+		})();
+
+		(() => { // matchingEnginesToFolder(s) 
+			if ( !qm.rootNode.parent && userOptions.quickMenuRegexMatchedEngines ) {
+
+				let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+
+				// if ( !folder.children.length )
+				// 	return;// console.log('no regex matches for searchTerms');
+
+				let _tile = nodeToTile( folder );
+				_tile.classList.add('tile');
+				_tile.dataset.hasicon = 'true';
+				_tile.dataset.undraggable = true;
+				_tile.dataset.undroppable = true;
+
+				tileArray.unshift(_tile);
+				qm.insertBefore(_tile, qm.firstChild);
+			}
+		})();
+
+		qm.setDisplay();
+
+		(() => { //formatGroupFolders()
+
+			let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' && t.node.parent === qm.rootNode );
+
+			groupFolders.forEach( gf => {
+
+				let g = makeGroupFolderFromTile(gf);
+				if ( !g ) return;
+
+				// make GROUP draggable
+				g.draggable = true;
+
+				qm.insertBefore(g, gf);
+				if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
+				else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
+
+				// bubbles the drag event for the inline root folder to the GROUP
+				gf.dataset.undraggable = true;
+
+				let footer = g.querySelector('.footer');
+
+				// display groups limited to a row count and change more tile style
+				if ( gf.node.groupFolder === "block") {
+
+					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit || Number.MAX_SAFE_INTEGER, qm.columns);
+					let moreTile = g.querySelector('[data-type="more"]');
+
+					if (moreTile) {
+						moreTile.parentNode.removeChild(moreTile);
+
+						footer.appendChild(moreTile);
+
+						moreTile.className = "groupMoreTile";
+					} else {
+						footer.parentNode.removeChild(footer);	
+					}
+				}
+			});
+		})();
 
 		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
 
 		qm.expandMoreTiles = () => {
-			let moreTiles = [...qm.querySelectorAll('[data-type="more"]')];
+			let moreTiles = [...document.querySelectorAll('[data-type="more"], [data-type="less"]')];
 
 			moreLessStatus.forEach( id => {
-				let moreTile = moreTiles.find( div => div.dataset.parentid === id );
-				
-				if ( moreTile ) moreTile.dispatchEvent(new MouseEvent("mouseup"));
+				let moreTile = moreTiles.find( div => div.dataset.parentid === id );				
+				if ( moreTile ) moreTile.more();
 			});
 		}
 		
+		toolsHandler();
+
 		qm.expandMoreTiles();
+
+		//setOptionsBar();
 
 		return qm;
 	}
 
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+
+		let debug = rootNode.title === "empty";
 
 		reverse = reverse || false; // for slide-in animation direction
 		
@@ -1129,8 +902,9 @@ async function makeQuickMenu(options) {
 			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
 			tile.appendChild(makeToolMask({icon: 'icons/back.svg'}));
 
-			tile.dataset.type = "tool";
+			tile.dataset.type = "folder";
 			tile.node = rootNode.parent;
+			tile.dataset.undraggable = true;
 	
 			tile.addEventListener('mouseup', _back);
 			tile.addEventListener('openFolder', _back);
@@ -1143,200 +917,15 @@ async function makeQuickMenu(options) {
 
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
-
+				setDraggable();	
+				qm.expandMoreTiles();
 				resizeMenu({openFolder: true});
 			}
-			
-			tile.addEventListener('dragenter', e => {
-				// ignore tile dnd
-				if ( document.getElementById('dragDiv') ) return;
-				
-				// start hover timer
-				tile.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);;
-			});
-			tile.addEventListener('dragleave', e => clearTimeout(tile.textDragOverFolderTimer));
-			tile.addEventListener('dragover', e => e.preventDefault());
-			tile.addEventListener('dragend', e => e.preventDefault());
-			tile.addEventListener('drop', async e => {
-				e.preventDefault();
-				
-				let dragDiv = document.getElementById('dragDiv');
-				
-				if ( !dragDiv || !dragDiv.node ) return;
-				
-				dragDiv.parentNode.removeChild(dragDiv);
-				
-				dragDiv.id = null;
-
-				let dragNode = ( dragDiv.groupMove ) ? dragDiv.node.parent : dragDiv.node;
-				let targetNode = tile.node;
-				
-				let slicedNode = nodeCut(dragNode);
-				
-				slicedNode.parent = targetNode;
-					
-				// add to target children
-				targetNode.children.push(slicedNode);
-				
-				// save the tree
-				userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-				
-				saveUserOptions();
-				
-				// rebuild menu
-				let animation = userOptions.enableAnimations;
-				userOptions.enableAnimations = false;
-				qm = await quickMenuElementFromNodeTree(rootNode);
-				userOptions.enableAnimations = animation;
-				resizeMenu();				
-			});
-			
+						
 			delete sb.selectedIndex;
 			tileArray.push(tile);
 		}
-		
-		function makeMoreLessFromTiles( _tiles, limit ) {
-
-			function addSeparators() {
-				_tiles.unshift( nodeToTile( {type: "separator"}) );
-				_tiles.push( nodeToTile( {type: "separator"}) );
-			}
 			
-			let firstTile = _tiles.find( _tile => _tile.node );
-			
-			if ( !firstTile ) return _tiles;
-			
-			let node = firstTile.node.parent;
-			
-			if (!node) return _tiles;
-			
-			if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
-			
-			let label = nodeToTile( node );
-			label.style.setProperty("--group-color", node.groupColor || null);
-			label.classList.add("groupFolder");
-		//	label.style.textAlign='center';
-			_tiles.unshift( label );
-
-			if ( !limit || limit >= _tiles.length ) {
-				addSeparators();
-				return _tiles;
-			}
-
-			let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
-			moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
-
-			moreTile.style.textAlign='center';
-			moreTile.dataset.type = "more";
-			moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
-			moreTile.style.setProperty("--group-color",node.groupColor);
-			moreTile.classList.add("groupFolder");
-			moreTile.node = { parent: node };
-			moreTile.dataset.parentid = node.id;
-			
-			moreTile.ondragstart = moreTile.ondragover = moreTile.ondragenter = moreTile.ondragend = moreTile.ondragleave = () => { return false; }
-			moreTile.setAttribute('draggable', false);
-			
-			function more() {
-				qm.querySelectorAll('.tile[data-hidden="true"]').forEach( _div => {
-
-					// ignore divs not associated with this more tile
-					if ( _div.moreTile !== moreTile ) return;
-					
-					_div.style.transition = 'none';
-					_div.style.opacity = 0;
-					_div.dataset.hidden = "false";
-					_div.style.display = null;
-
-					_div.style.transition = null;
-					_div.offsetWidth;
-					_div.style.opacity = null;
-
-				});
-				
-//				qm.insertBreaks();
-
-				moreTile.onmouseup = less;	
-				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
-				moreTile.dataset.type = "less";
-				resizeMenu({groupMore: true});
-	
-				if ( !moreLessStatus.includes( node.id ) )
-					moreLessStatus.push(node.id);
-			}
-			
-			function less() {
-				qm.querySelectorAll('.tile[data-hidden="false"]').forEach( _div => {
-
-					// ignore divs not associated with this more tile
-					if ( _div.moreTile !== moreTile ) return;
-					
-					_div.dataset.hidden = "true";
-					_div.style.display = "none";
-				});
-				
-//				qm.insertBreaks();
-				moreTile.onmouseup = more;
-				moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("more");
-				moreTile.dataset.type = "more";
-				resizeMenu({groupLess: true});
-				
-				moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
-			}
-
-			moreTile.onmouseup = more;
-			
-			moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
-			
-			moreTile.addEventListener('dragenter', e => {
-				moreTile.expandTimerStart();
-			
-				['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTile.expandTimer), {once: true}); } );
-			});
-
-			let count = 1;
-			_tiles.forEach( ( _tile, index ) => {
-				
-				if ( _tile.dataset.hidden == "true" || _tile.style.display === 'none' ) {
-					return false;
-				}
-
-				if ( count > limit ) {
-					_tiles[index].dataset.hidden = true;
-					_tiles[index].style.display = 'none';
-					_tiles[index].dataset.grouphidden = true;
-					_tiles[index].moreTile = moreTile;
-					
-					// console.log('hiding tile ' + _tiles[index].title);
-				} else {
-					// console.log('showing tile ' + _tiles[index].title);
-				}
-				
-				count++;
-			});
-
-			if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
-				
-				moreTile.classList.remove('tile');
-				moreTile.classList.add('groupLabelMoreTile');
-				
-				['mouseup', 'click'].forEach( _e => {
-					moreTile.addEventListener(_e, e => e.stopPropagation() );
-				});
-				
-				if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
-				
-			} else {
-				if ( !node.groupHideMoreTile ) _tiles.push( moreTile );
-			}
-
-			moreTile.dataset.hiddencount = _tiles.filter( t => t.dataset.grouphidden == "true" && t.moreTile === moreTile ).length;
-
-			addSeparators();
-
-			return _tiles;
-		}
-	
 		function makeGroupTilesFromNode( node ) {
 			let tiles = [];
 			
@@ -1344,9 +933,6 @@ async function makeQuickMenu(options) {
 				let _tile = nodeToTile(_node);
 				
 				if ( !_tile ) return;
-				
-				_tile.style.setProperty("--group-color",node.groupColor);
-				_tile.classList.add("groupFolder");
 
 				_tile.title = node.title + " / " + _tile.title;
 
@@ -1356,312 +942,43 @@ async function makeQuickMenu(options) {
 			return tiles;
 		}
 
-		function newGroupStyler(tiles) {
-			let first = tiles.find(t => t.dataset.type === 'folder' );
-
-			if ( !first ) return tiles;
-
-			let newNode = first.cloneNode(true);
-
-			if ( first.node.icon ) newNode.dataset.hasicon = true;
-
-			console.log(qm.singleColumn, first.node.icon)
-
-			if ( qm.singleColumn && !first.node.icon ) {
-				newNode.style.backgroundImage = 'none';
-
-				
-			}
-
-			tiles.splice(tiles.indexOf(first), 1, newNode );
-
-			let moreTile = tiles.find(t => t.dataset.type === 'more');
-
-			if ( moreTile ) tiles.splice(tiles.indexOf(moreTile), 1);
-
-			if ( moreTile ) {
-				newNode.onclick = function() { 
-					moreTile.dispatchEvent(new MouseEvent('mouseup'));
-				};
-			}
-
-			return tiles;
-		}
-
-		nodes.forEach( (node, index) => {
+		nodes.forEach( node => {
 
 			let tile = nodeToTile(node);
 			
 			if ( tile ) tileArray.push( tile );
 			else return;
-			
-			// remove parent folder from menu
-			if ( node.groupFolder ) tileArray.pop();
-			
-			if ( node.groupFolder && !node.parent.parent) { // only top-level folders
-			
+						
+		//	if ( node.groupFolder && !node.parent.parent) { // only top-level folders
+
+			if ( node.groupFolder && node.parent === qm.rootNode ) { 
 				let groupTiles = makeGroupTilesFromNode( node );
 
-				makeMoreLessFromTiles( groupTiles, node.groupLimit );
-
-				// groupTiles = newGroupStyler(groupTiles);
-
-				// remove leading separator if consecutive groups
-				let previousNode = nodes[index - 1];
-				if ( previousNode && previousNode.groupFolder ) groupTiles.splice(0,1);
-				
-				if ( userOptions.groupFolderRowBreaks ) {
-					// separate groupFolders in rows
-					let _br = document.createElement('br');
-					_br.className = 'groupBr';
-					groupTiles.push(_br);
-					groupTiles.unshift(_br.cloneNode());
-				}
-				
 				tileArray = tileArray.concat(groupTiles);
 			}
 
 		});
+
+		try { // fails on restricted pages
+			await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
+				let qmo = message[0];
+
+				if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
+			});
+		} catch (error) {
+
+		}
 
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
 	
-	function nodeToTile( node ) {
-
-		let tile;
-
-		if (node.hidden) return;
-		
-		switch ( node.type ) {
-
-			case "searchEngine":
-
-				let se = userOptions.searchEngines.find(se => se.id === node.id);
-				
-				if (!se) {
-					console.log('no search engine found for ' + node.id);
-					return;
-				}
-
-				tile = buildSearchIcon(getIconFromNode(node), se.title);
-				tile.dataset.title = se.title;
-				
-				// site search picker
-				if ( se.template.indexOf('{selectdomain}') !== -1 ) {
-					tile.dataset.id = node.id;
-					tile.dataset.type = 'folder';
-					tile.dataset.subtype = 'sitesearch';
-
-					tile.addEventListener('mouseup', openFolder);
-					tile.addEventListener('openFolder', openFolder);
-					
-					async function openFolder(e) {
-
-						let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-						let siteSearchNode = {
-							type:"folder",
-							parent:node.parent,
-							children:[],
-							id:node.id,
-							forceSingleColumn:true
-						}
-						
-						let url = new URL(tab.url);
-
-						getDomainPaths(url).forEach( path => {
-							siteSearchNode.children.push({
-								type: "siteSearch",
-								title: path,
-								parent:node,
-								icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-							});	
-						});
-						
-						qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-						for ( let _tile of qm.querySelectorAll('.tile') ) {
-							if ( _tile.node.title === url.hostname ) {
-								_tile.classList.add('selectedFocus');
-								_tile.dataset.selectfirst = "true";
-								break;
-							}
-						}
-
-						resizeMenu({openFolder: true});
-					}
-					
-					break;
-				}
-				
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-				
-				tile.dataset.id = node.id;
-				tile.dataset.type = 'searchEngine';
-				
-				break;
-		
-			case "bookmarklet":
-
-				tile = buildSearchIcon(getIconFromNode(node), node.title);
-				tile.dataset.type = 'bookmarklet';
-				tile.dataset.title = node.title;
-				tile.dataset.id = node.id;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id, // needs work
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-
-				break;
-
-			case "oneClickSearchEngine":
-
-				tile = buildSearchIcon(getIconFromNode(node), node.title);
-				tile.dataset.type = 'oneClickSearchEngine';
-				tile.dataset.id = node.id;
-				tile.dataset.title = node.title;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id, // needs work
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e)
-						}
-					});
-				});
-
-				break;
-
-			case "separator":
-				tile = document.createElement('hr');
-				tile.dataset.type = 'separator';
-
-				break;
-		
-			case "folder":
-				tile = buildSearchIcon( getIconFromNode(node), node.title);
-
-				tile.dataset.type = 'folder';
-				tile.dataset.title = node.title;
-				
-				// prevent scroll icon
-				tile.addEventListener('mousedown', e => {
-					
-					// skip for dnd events
-					if ( e.which === 1 ) return;
-					e.preventDefault();
-					e.stopPropagation();
-				});
-
-				tile.addEventListener('mouseup', openFolder);
-				tile.addEventListener('openFolder', openFolder);
-
-				addOpenFolderOnHover(tile);
-					
-				async function openFolder(e) {
-
-					let method = getOpenMethod(e, true);
-
-					if (method === 'noAction') return;
-
-					if (method === 'openFolder' || e.openFolder) { 
-						qm = await quickMenuElementFromNodeTree(node);		
-						return resizeMenu({openFolder: true});
-					}
-					
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							selectionText: sb.value,
-							openMethod: method
-						}
-					});
-					
-					quickMenuObject.lastUsed = node.id
-					userOptions.lastUsedId = quickMenuObject.lastUsed;
-					document.dispatchEvent(new CustomEvent('updateLastUsed'));
-				}
-
-				break;
-				
-			case "siteSearch":
-
-				tile = buildSearchIcon(node.icon, node.title);
-				tile.dataset.type = 'siteSearch';
-				tile.dataset.id = node.id || "";	
-				tile.dataset.title = node.title;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.parent.id,
-							selectionText: sb.value,
-							openMethod: getOpenMethod(e),
-							domain: tile.dataset.title
-						}
-					});
-					
-					// click the back button
-					qm.back();
-					//tile.parentNode.querySelector('.tile').dispatchEvent(new MouseEvent('mouseup'));
-				});
-
-				break;
-				
-			case "bookmark":
-				tile = buildSearchIcon(node.icon, node.title);
-				tile.dataset.type = 'bookmark';
-				tile.dataset.id = node.id || "";	
-				tile.dataset.title = node.title;
-
-				addTileEventHandlers(tile, e => {
-					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
-						info: {
-							menuItemId: node.id,
-							openMethod: getOpenMethod(e),
-						}
-					});
-				});
-				
-				break;
-				
-			case "grouplabel":
-				tile = document.createElement('div');
-				tile.dataset.type = 'grouplabel';	
-				tile.dataset.title = node.title;
-				
-				break;
-		}
-		
-		tile.node = node;
-		
-		return tile;
-	}
+	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+	window.root = root;
 
 	setParents(root);
 
@@ -1718,6 +1035,8 @@ function makeSearchBar() {
 
 			si.style.transform = null;
 
+			runAtTransitionEnd(sg, "height", resizeMenu)
+
 			return;
 		}
 
@@ -1737,31 +1056,40 @@ function makeSearchBar() {
 			
 	sb.dataset.position = userOptions.quickMenuSearchBar;
 
-	browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
-		
-		if ( userOptions.autoPasteFromClipboard ) {
-			sb.select();
-			document.execCommand("paste");
-			sb.select();
-			return;
-		}
-		
-		// skip empty 
-		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-		
-		sb.value = message.lastSearch;
-		sb.select();
+	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
+		let qmo = message[0];
 
-		// workaround for linux 
-		var selectInterval = setInterval( () => {
-
-			if (getSelectedText(sb) == sb.value)
-				clearInterval(selectInterval);
-			else
-				sb.select();
-		}, 50);
-
+		if ( qmo && qmo.searchTerms) sb.value = qmo.searchTerms;
+		else displayLastSearchTerms();
 	});
+
+	function displayLastSearchTerms() {
+		browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
+			
+			if ( userOptions.autoPasteFromClipboard ) {
+				sb.select();
+				document.execCommand("paste");
+				sb.select();
+				return;
+			}
+			
+			// skip empty 
+			if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
+			
+			sb.value = message.lastSearch;
+			sb.select();
+
+			// workaround for linux 
+			var selectInterval = setInterval( () => {
+
+				if (getSelectedText(sb) == sb.value)
+					clearInterval(selectInterval);
+				else
+					sb.select();
+			}, 50);
+
+		});
+	}
 
 	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
 	
@@ -1807,9 +1135,6 @@ function makeSearchBar() {
 		}
 		
 		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
-
-		// works for open and close
-		sg.addEventListener('transitionend', e => resizeMenu({suggestionsResize: true}));
 		
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;
 		
@@ -1915,11 +1240,11 @@ function makeSearchBar() {
 		}, 500);
 	}
 	
-	sb.addEventListener('keydown', (e) => {
-		if (e.key === "Enter") {
-			if (userOptions.searchBarCloseAfterSearch) window.close();	
-		}
-	});
+	// sb.addEventListener('keydown', (e) => {
+	// 	if (e.key === "Enter" && userOptions.searchBarCloseAfterSearch) {
+	// 		setTimeout(window.close, 100);
+	// 	}
+	// });
 	
 	// execute a keypress event to trigger some sb methods reserved for typing events
 	sb.addEventListener('keydown', (e) => {
@@ -1946,84 +1271,12 @@ function createToolsBar(qm) {
 		tool.className = 'tile';
 		toolBar.appendChild(tool);
 	});
-
-	let ls = document.createElement('span');
-	ls.innerHTML = "&#9668;";		
-	ls.style.left = 0;
-	toolBar.appendChild(ls);
-	
-	let rs = document.createElement('span');
-	rs.innerHTML = "&#9658;";
-	rs.style.right = 0;
-	toolBar.appendChild(rs);
-	
-	ls.className = rs.className = "toolBarArrow";
-	ls.style.height = rs.style.height = ls.style.lineHeight = rs.style.lineHeight = qm.toolsArray[0].offsetHeight + "px";
-	
-	// let mouseoverInterval = null;
-	// rs.addEventListener('mouseenter', e => {
-	// 	if ( !e.buttons ) return;
-	// 	mouseoverInterval = setInterval(() => toolBar.scrollLeft += 10, 50);
-	// });
-	
-	// ls.addEventListener('mouseenter', e => {
-	// 	if ( !e.buttons ) return;	
-	// 	mouseoverInterval = setInterval(() => toolBar.scrollLeft -= 10, 50);
-	// });
-	
-	// [rs,ls].forEach(s => s.addEventListener('mouseleave', () => clearInterval(mouseoverInterval)));
-
-	rs.addEventListener('click', e => {
-		let amount = toolBar.getBoundingClientRect().width / 2;
-		if ( toolBar.scrollTo )
-			toolBar.scrollTo({left:toolBar.scrollLeft + amount, behavior:'smooth'})
-		else
-			toolBar.scrollLeft += amount;
-
-		// if ( toolBar.scrollLeft >= toolBar.scrollWidth - toolBar.offsetWidth )
-		// 	rs.style.display = null;
-		// else
-		// 	rs.style.display = 'inline-block';
-	});
-
-	ls.addEventListener('click', e => {
-		let amount = toolBar.getBoundingClientRect().width / 2;
-		if ( toolBar.scrollTo )
-			toolBar.scrollTo({left:toolBar.scrollLeft - amount, behavior:'smooth'})
-		else
-			toolBar.scrollLeft -= amount;
-
-		// if ( toolBar.scrollLeft - amount <= 0 )
-		// 	ls.style.display = null;
-		// else
-		// 	ls.style.display = 'inline-block';	
-	});
-
-	function showScrollButtons() {
-		ls.style.display = toolBar.scrollLeft ? 'inline-block' : 'none';
-		rs.style.display = ( toolBar.scrollLeft < toolBar.scrollWidth - toolBar.clientWidth ) ? 'inline-block' : 'none';
-	}
-	
-	// scroll on mouse wheel
-	toolBar.addEventListener('wheel', e => {
-		toolBar.scrollLeft += (e.deltaY*6);
-		e.preventDefault();
-	});
-
-	[rs,ls].forEach( s => {
-		s.addEventListener('mouseenter', e => {
-		 	showScrollButtons();
-			s.addEventListener('mouseleave',showScrollButtons, {once: true});	
-		});
-	});
-
-	toolBar.addEventListener('scroll', showScrollButtons);
 }
 
 function getSideDecimal(t, e) {
 	let rect = t.getBoundingClientRect();
 	
-	if ( qm.singleColumn ) return ( e.y - rect.y ) / rect.height;
+	if ( qm.singleColumn || t.classList.contains('block')) return ( e.y - rect.y ) / rect.height;
 	else return ( e.x - rect.x ) / rect.width;
 }
 
@@ -2033,8 +1286,8 @@ function getSide(t, e) {
 	let dec = getSideDecimal(t, e);
 	
 	if ( t.node && t.node.type === 'folder' ) {
-		if ( dec < .3 ) return "before";
-		else if ( dec > .7 ) return "after";
+		if ( dec < .25 ) return "before";
+		else if ( dec > .75 ) return "after";
 		else return "middle";
 	} else {
 		if ( dec < .5 ) return "before";
@@ -2051,26 +1304,32 @@ function getTargetElement(el) {
 	return null;
 }
 
-function getPreviousSiblingOfType(_div) {
-	let s = _div.previousSibling;
-	while( s && s.nodeName !== _div.nodeName ) s = s.previousSibling;
+function getPreviousSiblingOfType(el) {
+	let s = el.previousSibling;
+//	while( s && s.nodeName !== el.nodeName ) s = s.previousSibling;
 	return s;
 }
 
-function getNextSiblingOfType(_div) {
-	let s = _div.nextSibling;
-	while( s && s.nodeName !== _div.nodeName ) s = s.nextSibling;
+function getNextSiblingOfType(el) {
+	let s = el.nextSibling;
+//	while( s && s.nodeName !== el.nodeName ) s = s.nextSibling;
 	return s;
 }
 
-function isTargetBeforeGroup(_div, dec) {
-	let sibling = getPreviousSiblingOfType(_div);
-	return ( dec < .2 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+function isTargetBeforeGroup(el, dec) {
+	let sibling = getPreviousSiblingOfType(el);
+	return ( dec < .2 && ( !sibling || !sibling.node || sibling.node.parent !== el.node.parent ));
 }
 
-function isTargetAfterGroup(_div, dec) {
-	let sibling = getNextSiblingOfType(_div);
-	return ( dec > .8 && ( !sibling || sibling.node.parent !== _div.node.parent ));
+function isTargetAfterGroup(el, dec) {
+	let sibling = getNextSiblingOfType(el);
+
+	//if ( !sibling.node ) console.log('no node', sibling);
+	return ( dec > .8 && ( !sibling || !sibling.node || sibling.node.parent !== el.node.parent ));
+}
+
+function getGroupFolderSiblings(el) {
+	return [ ...qm.querySelectorAll('.groupFolder')].filter( el => el.node && el.node.parent === el.node.parent);
 }
 
 function dispatchOpenFolderEvent(el) {
@@ -2108,6 +1367,8 @@ function checkForNodeHotkeys(e) {
 
 	if (!hotkeyNode) return;
 
+	if ( e.ctrlKey || e.altKey || e.shiftKey || e.metaKey ) return;
+
 	e.preventDefault();
 	e.stopPropagation();
 	
@@ -2118,19 +1379,1035 @@ function checkForNodeHotkeys(e) {
 			selectionText: sb.value,
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
-	});
-	
-	if ( !keepMenuOpen(e) )
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
+	}).then(() => {
+		if ( !keepMenuOpen(e) )
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 
-	if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
+	});
 
 }
 
 getAllOtherHeights = () => {
-	return getFullElementSize(sbc).height + getFullElementSize(tb).height + getFullElementSize(mb).height + getFullElementSize(toolBar).height;
+	let height = 0;
+	[sbc,tb,mb,toolBar,aeb].forEach( el => height += getFullElementSize(el).height );
+	return height;
 }
 
 isMoving = e => {
 	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
 }
+
+// causing window drag to fail in chrome
+// prevent most click events
+// document.addEventListener('mousedown', e => {
+// 	if ( !e.target.closest("INPUT"))
+// 		e.preventDefault();
+// });
+
+document.addEventListener('click', e => {
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	e.preventDefault();
+})
+
+document.addEventListener('mousedown', e => {
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	if ( !tile.node && !tile.action ) {
+		console.log('no node or action', tile);
+		return;
+	}
+
+	// if (tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
+
+	tile.parentNode.lastMouseDownTile = tile;
+
+	// cancel scroll icon always
+	if ( e.button === 1 ) e.preventDefault();
+
+	// allow tile actions if override is set
+	if ( window.tilesDraggable ) return;
+
+	e.preventDefault();
+});
+
+// tools
+document.addEventListener('mouseup', e => {
+
+	if ( !e.target.closest ) return;
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile || !tile.action ) return;
+
+	if ( tile.disabled ) return;
+
+	if ( window.tilesDraggable && !tile.dataset.type === "tool" && !tile.dataset.name === "edit") return;
+
+	if ( mouseClickBack(e) ) return;
+
+//	if ( !clickChecker(tile) ) return;
+
+	e.stopImmediatePropagation();
+	e.preventDefault();
+
+	tile.action(e);
+
+	if ( !keepMenuOpen(e) && !tile.keepOpen )
+		closeMenuRequest(e);
+});
+
+document.addEventListener('mouseup', e => {
+
+	// docking drag throws error on HTMLDocument element
+	if ( !e.target.closest) return;
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile || !tile.node ) return;
+
+	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
+
+	if ( tile.disabled ) return;
+
+	// allow tile actions if override is set
+	if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging) return;
+
+	if ( mouseClickBack(e) ) return;
+
+	if ( !clickChecker(tile) ) return;
+
+	e.stopImmediatePropagation();
+	e.preventDefault();
+
+	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
+
+	if ( tile.dataset.id && quickMenuObject.lastUsed !== tile.dataset.id ) {
+		// // store the last used id
+		userOptions.lastUsedId = quickMenuObject.lastUsed = tile.dataset.id || null;
+		
+		document.dispatchEvent(new CustomEvent('updateLastUsed'));
+	}
+
+	quickMenuObject.mouseLastClickTime = Date.now();
+	quickMenuObject.searchTerms = sb.value;
+
+	browser.runtime.sendMessage({
+		action: "updateQuickMenuObject", 
+		quickMenuObject: quickMenuObject
+	});
+
+	let node = tile.node;
+
+	let searchPromise = (async () => {
+
+		switch ( node.type ) {
+		
+			case 'searchEngine':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id,
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e)
+					}
+				});
+				break;
+
+			case 'bookmarklet':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id, // needs work
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e)
+					}
+				});
+				break;
+
+			case 'oneClickSearchEngine':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id, // needs work
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e)
+					}
+				});
+				break;
+
+			case 'siteSearchFolder':
+
+				tile.keepOpen = true;
+
+				async function openFolder(e) {
+					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+					let siteSearchNode = {
+						type:"folder",
+						parent:node.parent,
+						children:[],
+						id:node.id,
+						forceSingleColumn:true
+					}
+					
+					let url = new URL(tab.url);
+
+					getDomainPaths(url).forEach( path => {
+						siteSearchNode.children.push({
+							type: "siteSearch",
+							title: path,
+							parent:node,
+							id: node.id,
+							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+						});	
+					});
+					
+					qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+					for ( let _tile of qm.querySelectorAll('.tile') ) {
+						if ( _tile.node.title === url.hostname ) {
+							_tile.classList.add('selectedFocus');
+							_tile.dataset.selectfirst = "true";
+							break;
+						}
+					}
+
+					resizeMenu({openFolder: true});
+				}
+
+				return openFolder(e);
+
+				break;
+
+			case 'siteSearch':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id, // needs work
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e),
+						domain: tile.node.title
+					}
+				});
+
+				break;
+
+			case 'bookmark':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id,
+						openMethod: getOpenMethod(e),
+					}
+				});
+
+				break;
+
+			default:
+				return Promise.reject('unknown node type', node.type);
+				break;
+
+		}
+	})();
+
+	searchPromise.then(() => {
+		// check for locked / Keep Menu Open 
+		if ( !keepMenuOpen(e) && !tile.keepOpen )
+			closeMenuRequest(e);
+	}, err => { 
+		//console.log(err)
+	});
+
+	return false;
+
+});
+
+document.addEventListener('dragstart', e => {
+
+	if ( !window.tilesDraggable ) return;
+
+	let tile = e.target.closest('.tile') || e.target.closest('group');
+
+	if ( !tile ) return;
+
+	if ( undraggable(tile) ) return;
+
+	// required by ff for dragend
+	e.dataTransfer.setData("text", "");
+
+	tile.classList.add('drag');
+
+	window.dragNode = tile.node;
+	window.dragTile = tile;
+
+	qm.style.overflowY = 'hidden';
+
+	// apply style to inline groups
+	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
+
+});
+
+document.addEventListener('dragenter', e => {
+
+	let tile = e.target.closest('.tile');
+
+	if ( !tile ) return;
+
+	if ( tile.dataset.type === 'folder' && !undroppable(tile) ) {
+
+		// open folders on dragover - bind to qm instead of tile
+		qm.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);
+		return;
+	}
+
+	if ( !window.dragNode ) return;
+});
+
+document.addEventListener('dragover', e => {
+
+	e.preventDefault();
+    e.stopPropagation();
+
+	let tile = e.target.closest('.tile') || e.target.closest('group');
+
+	if ( e.target === document.querySelector('.dummy') )
+		tile = e.target.nextSibling;
+
+//	if ( !tile ) { console.log('no tile', e.target); return; }
+	if ( !tile ) return;
+	if ( !window.dragNode ) return;
+	if ( tile.dataset.type === 'tool' ) return;
+
+	if ( undroppable(tile) ) return;
+
+	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
+
+	tile.lastDragOver = Date.now();
+
+	let side = getSide(tile, e);
+
+//	if ( tile.dataset.side === side ) return;
+
+	let dummy = makeMarker();
+
+	if ( side === 'before' )
+		tile.parentNode.insertBefore(dummy, tile);
+	if ( side === 'after' )
+		tile.parentNode.insertBefore(dummy, tile.nextSibling);
+	if ( side === 'middle' ) {
+		document.body.appendChild(dummy);
+		dummy.style.display = 'none';
+	}
+
+	if ( tile.classList.contains('block') ) dummy.classList.add('wide');
+	else tile.classList.remove('wide');
+
+	tile.dataset.side = side;
+
+	tile.classList.add('dragHover');
+
+	if ( !tile.node ) console.log('no node', tile);
+
+	if ( tile.classList.contains("groupFolder") && !tile.classList.contains('groupMove') ) {
+		
+		let dec = getSideDecimal(tile, e);
+		
+		let targetGroupDivs = getGroupFolderSiblings(tile);
+
+		if ( isTargetBeforeGroup(tile, dec) ) 
+			tile.classList.remove('groupHighlight');
+			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+		else if ( isTargetAfterGroup(tile, dec) ) 
+			tile.classList.remove('groupHighlight');
+			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
+		else
+			tile.classList.add('groupHighlight');
+			//targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
+	}	
+
+});
+
+document.addEventListener('dragleave', e => {
+
+	let tile = e.target.closest('.tile') || e.target.closest('group');
+
+	if ( !tile ) return;
+
+	if ( qm.textDragOverFolderTimer && tile.node && tile.node.type === "folder") {
+		clearTimeout(qm.textDragOverFolderTimer);
+		qm.textDragOverFolderTimer = null;
+	}
+
+	clearDragStyling(tile);
+
+});
+
+document.addEventListener('drop', e => {
+
+	e.preventDefault();
+
+	let tile = e.target.closest('.tile') || e.target.closest('group');
+
+	let dummy = document.querySelector('.dummy');
+
+	if ( e.target === dummy || e.target === qm )
+		tile = dummy.nextSibling;
+
+	if ( !tile ) return;
+	if ( !window.dragNode ) return;
+
+	if ( undroppable(tile) ) return console.log('undroppable');
+
+	let side = getSide(tile, e);
+
+	let old_node_count = findNodes(root, n => true).length;
+
+	// cut the node from the children array
+	let slicedNode = nodeCut(window.dragNode);
+
+	let dragTile = document.querySelector('.drag') || window.dragTile;
+	let targetNode = tile.node || tile.parentNode.node;
+
+	// special handler for inline groups
+	if ( tile.classList.contains("groupFolder") ) {
+		
+		let dec = getSideDecimal(tile, e);
+		
+		if ( isTargetBeforeGroup(tile, dec) ) {
+			console.log('moving before group');
+			nodeInsertBefore(slicedNode, targetNode.parent);
+		} else if ( isTargetAfterGroup(tile, dec) ) {
+			console.log('moving after group');
+			nodeInsertAfter(slicedNode, targetNode.parent);
+		} else if ( tile.dataset.type && ['more','less'].includes(tile.dataset.type) ) {
+			console.log('drop to more / less tile ... appending tile to group');
+			nodeAppendChild(slicedNode, targetNode.parent);			
+		} else {
+			return;
+		}
+
+		console.log('moving', slicedNode.title, 'to', targetNode.parent.title);
+		dragSave();
+		return;
+	}
+
+	if ( side === 'before' ) 
+		nodeInsertBefore(slicedNode, tile.node);
+	
+	if ( side === 'after' )
+		nodeInsertAfter(slicedNode, tile.node);
+	
+	if ( side === 'middle' && tile.node.type === "folder" )
+		nodeAppendChild(slicedNode, tile.node);
+	
+	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
+	dragSave();
+
+	function dragSave() {
+
+		let new_node_count = findNodes(root, n => true).length;
+
+		if ( old_node_count === new_node_count ) {
+			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
+			saveUserOptions();
+		} else {
+			console.error('a node has been lost. aborting', old_node_count, new_node_count);
+		}
+
+		(async () => {
+			let orig = userOptions.enableAnimations;
+			userOptions.enableAnimations = false;
+			qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
+			userOptions.enableAnimations = orig;
+			setDraggable();
+			resizeMenu({tileDrop: true});
+		})();
+	}
+
+});
+
+document.addEventListener('dragend', e => {
+	dragCleanup();
+	clearTimeout(qm.textDragOverFolderTimer);
+});
+
+dragCleanup = () => {
+	// clear group styling
+	['groupMove', 'dragHover', 'dragOver', 'drag'].forEach( c => {
+		document.querySelectorAll("." + c).forEach( el => el.classList.remove(c));
+	})
+
+	// remove indicator
+	let dummy = document.querySelector('.dummy');
+	if ( dummy ) dummy.parentNode.removeChild(dummy);
+}
+
+undraggable = el => {
+	return el.dataset.undraggable === "true";
+}
+
+undroppable = el => {
+	return el.dataset.undroppable === "true";
+}
+
+clearDragStyling = el => {
+	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover', 'groupHighlight');
+}
+
+setDraggable = e => {
+	if ( window.tilesDraggable )
+		document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
+}
+
+makeMarker = () => {
+	let dummy = document.querySelector('.dummy') || document.createElement('dummy');
+	dummy.className = 'tool dummy';
+	dummy.style="--mask-image: url(icons/chevron-down.svg);";
+	if ( qm.singleColumn) dummy.classList.add('singleColumn');
+	return dummy;
+}
+
+(() => { // text, image, url drag & drop
+	document.addEventListener('dragover', e => {
+		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
+
+		e.preventDefault();
+
+		let tile = e.target.closest('.tile');
+
+		if ( !tile ) return;
+
+		tile.classList.add("dragHover");
+
+	});
+
+	document.addEventListener('drop', e => {
+
+		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
+
+		let tile = e.target.closest('.tile');
+		if ( !tile ) return;
+
+		e.preventDefault();
+
+		tile.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+		tile.dispatchEvent(new MouseEvent('mouseup', {bubbles:true}));
+	});
+})();
+
+function nodeToTile( node ) {
+
+	let tile = {};
+
+	if (node.hidden) return;
+
+	let getTitleWithHotkey = n => {
+		if ( userOptions.quickMenuShowHotkeysInTitle ) 
+			return n.title + (n.hotkey ? ` (${keyTable[n.hotkey]})` : "");
+		else
+			return n.title;
+	}
+	
+	switch ( node.type ) {
+
+		case "searchEngine":
+
+			let se = userOptions.searchEngines.find(se => se.id === node.id);
+			
+			if (!se) {
+				console.log('no search engine found for ' + node.id);
+				return;
+			}
+
+			// site search picker
+			if ( se.template.includes('{selectdomain}') )
+				return nodeToTile(Object.assign(node, {type: "siteSearchFolder"}));
+
+			tile = buildSearchIcon(getIconFromNode(node), getTitleWithHotkey(node));
+			tile.dataset.title = getTitleWithHotkey(node);
+				
+			tile.dataset.id = node.id;
+			tile.dataset.type = 'searchEngine';
+			
+			break;
+	
+		case "bookmarklet":
+
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'bookmarklet';
+			tile.dataset.title = node.title;
+			tile.dataset.id = node.id;
+
+			break;
+
+		case "oneClickSearchEngine":
+
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'oneClickSearchEngine';
+			tile.dataset.id = node.id;
+			tile.dataset.title = node.title;
+
+			break;
+
+		case "separator":
+
+			tile = document.createElement('hr');
+			tile.dataset.type = 'separator';
+
+			break;
+	
+		case "folder":
+
+			tile = buildSearchIcon( getIconFromNode(node), node.title);
+
+			tile.dataset.type = 'folder';
+			tile.dataset.title = node.title;
+			
+			// prevent scroll icon
+			tile.addEventListener('mousedown', e => {
+
+				tile.parentNode.lastMouseDownTile = tile;
+				
+				// skip for dnd events
+				if ( e.which === 1 ) return;
+				e.preventDefault();
+				e.stopPropagation();
+			});
+
+			tile.addEventListener('mouseup', e => {
+				if ( clickChecker(tile) ) openFolder(e);
+			});
+
+			tile.addEventListener('openFolder', openFolder);
+
+			addOpenFolderOnHover(tile);
+				
+			async function openFolder(e) {
+
+				let method = getOpenMethod(e, true);
+
+				if (method === 'noAction') return;
+
+				if (method === 'openFolder' || e.openFolder) { 
+				//	if ( !node.children.length ) return;
+					qm = await quickMenuElementFromNodeTree(node);
+					setDraggable();	
+					return resizeMenu({openFolder: true});
+				}
+				
+				browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: node.id,
+						selectionText: sb.value,
+						openMethod: method
+					}
+				});
+				
+				quickMenuObject.lastUsed = node.id
+				userOptions.lastUsedId = quickMenuObject.lastUsed;
+				document.dispatchEvent(new CustomEvent('updateLastUsed'));
+			}
+
+			break;
+			
+		case "siteSearchFolder":
+
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'siteSearchFolder';
+			tile.dataset.id = node.id || "";	
+			tile.dataset.title = node.title;
+
+			tile.dataset.type = 'folder';
+			tile.dataset.subtype = 'sitesearch';
+
+			break;
+
+		case "siteSearch":
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'siteSearch';
+			tile.dataset.title = node.title;
+			break;
+			
+		case "bookmark":
+			tile = buildSearchIcon(node.icon, node.title);
+			tile.dataset.type = 'bookmark';
+			tile.dataset.id = node.id || "";	
+			tile.dataset.title = node.title;			
+			break;
+	}
+	
+	tile.node = node;
+	
+	return tile;
+}
+
+function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
+
+
+	noFolder = noFolder || false;
+
+	if ( !_tiles.length ) return [];
+
+	let hidden_count = _tiles.length - limit;
+	if ( hidden_count < 0 ) hidden_count = 0;
+	let title = hidden_count + " " + browser.i18n.getMessage("more");
+
+	parentNode = parentNode || qm;
+	node = node || parentNode.node || {}
+	let classList = _tiles[0].classList;
+
+	if ( !noFolder && node.parent ) {
+		let label = nodeToTile( node );
+		label.classList.add("groupFolder", "textShadow");
+		_tiles.unshift( label );
+	}
+
+	// use a referenced id on GROUPs for more() tracking
+	if ( !node.id ) {
+		let tile = _tiles.find( t => t.node && t.node.parent );
+	//	if ( tile ) node.id = tile.node.parent.id;
+
+		if ( tile ) node = tile.node.parent;
+	}
+
+	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+
+	if ( limit >= _tiles.length ) return _tiles;
+
+	let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
+	moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
+
+	moreTile.style.textAlign='center';
+	moreTile.dataset.type = "more";
+	moreTile.dataset.title = moreTile.title = title;
+	moreTile.classList = classList;
+	moreTile.classList.add('groupFolder')
+	moreTile.node = { parent: node };
+	moreTile.dataset.parentid = node.id;
+	moreTile.dataset.undraggable = true;
+	
+	function more() {
+		let hiddenEls = parentNode.querySelectorAll('[data-hidden="true"]');
+		hiddenEls.forEach( _div => {
+
+			// ignore divs not associated with this more tile
+			if ( _div.moreTile !== moreTile ) return;
+			
+			_div.style.transition = 'none';
+			_div.style.opacity = 0;
+
+			_div.dataset.hidden = "false";
+			_div.style.display = null;
+
+			_div.style.transition = null;
+			_div.offsetWidth;
+			_div.style.opacity = null;
+
+		});
+		
+		moreTile.onmouseup = less;	
+		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
+		moreTile.dataset.type = "less";
+		resizeMenu({more: true});
+
+		// use dataset.parentid instead of node.id in case it's been changed
+		if ( !moreLessStatus.includes( moreTile.dataset.parentid ) )
+			moreLessStatus.push(moreTile.dataset.parentid);
+	}
+	
+	function less() {
+		parentNode.querySelectorAll('[data-hidden="false"]').forEach( _div => {
+
+			// ignore divs not associated with this more tile
+			if ( _div.moreTile !== moreTile ) return;
+			
+			_div.dataset.hidden = "true";
+			_div.style.display = "none";
+
+			//hideTile(_div);
+		});
+		
+		moreTile.onmouseup = more;
+		moreTile.dataset.title = moreTile.title = title;
+		moreTile.dataset.type = "more";
+		
+		moreLessStatus = moreLessStatus.filter( id => id !== moreTile.dataset.parentid );
+		resizeMenu({more: true, less:true});
+	}
+
+	moreTile.more = more;
+	moreTile.less = less;
+
+	moreTile.onmouseup = more;
+	
+	moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
+	
+	moreTile.addEventListener('dragenter', e => {
+		moreTile.expandTimerStart();
+	
+		['dragleave', 'drop', 'dragexit', 'dragend'].forEach( _e => { moreTile.addEventListener(_e, () => clearTimeout(moreTile.expandTimer), {once: true}); } );
+	});
+
+	let count = 1;
+	_tiles.forEach( ( _tile, index ) => {
+		
+		if ( _tile.dataset.hidden == "true" || _tile.style.display === 'none' ) return false;
+
+		if ( count > limit ) hideTile(_tiles[index], moreTile);
+		
+		count++;
+	});
+
+	// if ( userOptions.groupLabelMoreTile && node !== qm.rootNode) {
+		
+	// 	moreTile.classList.remove('tile');
+	// 	moreTile.classList.add('groupLabelMoreTile');
+		
+	// 	['mouseup', 'click'].forEach( _e => {
+	// 		moreTile.addEventListener(_e, e => e.stopPropagation() );
+	// 	});
+		
+	// 	if ( !node.groupHideMoreTile ) label.appendChild(moreTile);
+		
+	// } else {
+
+		if ( !node.groupHideMoreTile ) {
+
+			_tiles.push( moreTile );
+			// console.log(node, moreTile);
+		}
+	//	else console.log('not pushing moreTile', node);
+	// }
+
+	return _tiles;
+}
+
+function makeGroupFolderFromTile(gf) {
+
+	// ignore non-top tier
+//	if ( !gf.node.parent ) return;
+	if ( gf.node.parent !== qm.rootNode ) {
+		console.log('skipping group', gf.node.parent, qm.rootNode);
+		return;
+	}
+
+	let children = [...qm.querySelectorAll('.tile')].filter( t => t.node && t.node.parent === gf.node );
+
+	// tile is folder, but no children tiles in qm
+	if ( !children.length && gf.node.children.length ) {
+		qm.insertBefore(gf, qm.firstChild);
+		gf.node.children.forEach( node => {
+			let tile = nodeToTile(node);
+			tile.classList.add('tile');
+			children.push(tile);
+		});
+	}
+
+	if ( !children.length ) return;
+
+	let g = document.createElement('group');
+
+	if ( gf.node.groupColor ) 
+		g.style.setProperty("--group-color", gf.node.groupColor);
+
+	if ( gf.node.groupColorText ) 
+		g.style.setProperty("--group-color-text", gf.node.groupColorText);
+
+	g.node = gf.node;
+
+	if ( gf.node.groupFolder && ['inline', 'block'].includes(gf.node.groupFolder) )
+		g.classList.add(gf.node.groupFolder);
+
+	if ( g.classList.contains('inline') ) {
+		let mlt = makeMoreLessFromTiles(children, gf.node.groupLimit || Number.MAX_SAFE_INTEGER);
+		mlt.forEach(c => g.appendChild(c));
+	} else {
+
+		let label = document.createElement('label');
+	//	label.className = 'textShadow';
+		label.innerText = gf.node.title;
+		label.style.position = 'relative';
+		label.node = gf.node;
+		
+		if ( g.classList.contains('block')) g.appendChild(label);
+
+		// label.ondblclick = e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+
+		// 	g.querySelectorAll('.tile').forEach( t => {
+		// 		t.classList.toggle('singleColumn');
+
+		// 		if ( t.classList.contains('singleColumn')) {
+		// 			t.style.maxWidth = 'none !important';
+		// 			t.style.minWidth = 'none !important';
+		// 		}
+
+		// 	});
+
+		// 	runAtTransitionEnd(g, ['height', 'width'], () => resizeMenu({more: true}), 50);
+		// 	runAtTransitionEnd(g.querySelector('.tile:not([data-hidden])'), ['height', 'width'], () => resizeMenu({more: true}), 50);
+		// }
+
+		let groupQM = document.createElement('div');
+		groupQM.className = 'container';
+		children.forEach( c => groupQM.appendChild(c));
+		g.appendChild(groupQM);
+
+		let footer = document.createElement('label');
+		g.appendChild(footer);
+
+		footer.classList.add('footer');
+
+		// footer.draggable = false;
+
+		// footer.addEventListener('mousedown', e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+		// }, {capture: true})
+
+		// footer.addEventListener('dragstart', e => {
+		// 	e.preventDefault();
+		// 	e.stopPropagation();
+		// 	console.log('dragstart');
+		// 	return false;
+		// }, {capture: true})
+	}
+
+	if ( userOptions.groupFolderRowBreaks && g.classList.contains('inline')) {
+		g.classList.add('break');
+	}
+
+	return g;
+}
+
+function makeContainerMore(el, rows, columns) {
+	rows = rows || Math.MAX_SAFE_INTEGER;
+
+	let elementsBeforeWrap = getElementCountBeforeOverflow(el, rows);
+
+	let visibleCount = columns ? rows * columns : elementsBeforeWrap;
+
+	let moreified = makeMoreLessFromTiles([...el.children], visibleCount, true, el);
+	el.innerHTML = null;
+
+	if (moreified)
+		moreified.forEach(t => el.appendChild(t));
+}
+
+function getElementCountBeforeOverflow(el, rows) {
+
+	el.style.transition = 'none';
+	el.style.position = 'relative';
+	el.style.overflow = 'auto';
+
+	if ( !el.firstChild || el.firstChild.offsetTop == el.lastChild.offsetTop ) return Number.MAX_SAFE_INTEGER;
+
+	let rowCount = 0;
+
+	let wrap = null;
+
+	for ( c of [...el.children]) {
+		if ( c.nextSibling && c.offsetTop !== c.nextSibling.offsetTop) rowCount++;
+
+		if ( rowCount === rows ) {
+			wrap = c;
+			break;
+		}
+	}
+
+	el.style.position = null;
+	el.style.transition = null;
+	el.style.overflow = null;
+
+	if ( !wrap ) return Number.MAX_SAFE_INTEGER;
+
+	let preWrap = wrap.previousSibling;
+
+	return [...el.children].indexOf(wrap);
+}
+
+function hideTile(el, moreTile) {
+	el.style.display = 'none';
+	el.dataset.hidden = 'true';
+
+	if ( moreTile) {
+		el.moreTile = moreTile;
+		el.dataset.morehidden = 'true';
+	}
+}
+
+function unhideTile(el) {
+	el.style.display = null;
+	delete el.dataset.hidden;
+	delete el.dataset.morehidden;
+}
+
+function initOptionsBar() {
+
+	document.querySelector('#folderOptionsButton').onclick = function() {
+		let fo = document.querySelector('#folderOptionsDiv');
+
+		fo.style.maxHeight = fo.style.maxHeight ? null : fo.scrollHeight + "px";
+		runAtTransitionEnd(fo, "max-height", resizeMenu);
+	}
+}
+
+function setOptionsBar() {
+
+	let optionsBar = document.querySelector('#optionsBar');
+
+	if ( !optionsBar ) return;
+
+	optionsBar.style.display = null;
+
+	if ( !qm.rootNode.parent ) return;
+
+	let node = findNode(userOptions.nodeTree, n => n.id === qm.rootNode.id );
+
+	// check for generated folders
+	if ( !node ) return;
+
+	let form = optionsBar.querySelector('form');
+
+	form.title.value = node.title;
+
+	optionsBar.style.display = 'block';
+
+}
+
+function updateMatchRegexFolder() {
+	let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+
+	qm.querySelectorAll(`[data-type="folder"]`).forEach(f => {
+		if ( f.node.id == folder.id ) f.node = folder;
+	});
+}
+
+function setLayoutOrder(arr) {
+
+	if ( !arr ) return;
+
+	if ( typeof arr === 'string')
+		arr = arr.split(",").map(id => id.trim());
+
+	arr.forEach(id => {
+		let el = document.getElementById(id);
+		if ( el ) document.body.appendChild(el);
+		else console.log('bad id', id);
+	});
+}
+
+// setTimeout(() => {
+// 	try {
+// 		document.querySelector('[data-name="edit"]').action();
+// 		document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
+// 	} catch ( err ) { console.log(err)}
+// }, 500);

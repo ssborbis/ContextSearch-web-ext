@@ -1,22 +1,40 @@
 var userOptions = {};
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions || {};
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {	
 	if ( message.userOptions ) userOptions = message.userOptions;
+
+	switch (message.action) {
+		case "updateSearchTerms":
+
+			quickMenuObject.searchTerms = message.searchTerms;
+
+			// send event to OpenAsLink tile to enable/disable
+			document.dispatchEvent(new CustomEvent('updatesearchterms'));
+
+			browser.runtime.sendMessage({
+				action: "updateQuickMenuObject", 
+				quickMenuObject: quickMenuObject
+			});
+			break;
+	}
 });
 
-function getSelectedText(el) {
-	
+function getRawSelectedText(el) {
 	if (el && typeof el.selectionStart !== 'undefined') {
 		let start = el.selectionStart;
 		let finish = el.selectionEnd;
 		return el.value.substring(start, finish);
 	} else
-		return window.getSelection().toString();
+		return window.getSelection().toString().trim();
 
+}
+
+function getSelectedText(el) {
+	return getRawSelectedText(el).trim();
 }
 
 function isTextBox(element) {
@@ -29,12 +47,20 @@ function isTextBox(element) {
 	);
 }
 
+function copyRaw() {
+	let rawText = getRawSelectedText(window.activeElement);
+	navigator.clipboard.writeText(rawText);
+}
+
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 
+	let searchTerms = window.getSelection().toString().trim();
+
+	// if an opener method timer is running, skip
+	if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
+
 	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
-	
-	let searchTerms = window.getSelection().toString();
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
@@ -64,8 +90,8 @@ window.addEventListener('mousedown', e => {
 		searchTerms = e.target.innerText.trim();
 	}
 	
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 });
 
 function linkOrImage(el, e) {
@@ -79,6 +105,7 @@ function linkOrImage(el, e) {
 	
 	return false;	
 }
+
 
 // https://stackoverflow.com/a/1045012
 function offset(elem) {
@@ -288,5 +315,82 @@ function checkForNodeHotkeys(e) {
 		}
 	});
 }
+
+(() => {
+
+	var gestures = [
+		{
+			event: 'dblclick',
+			button: 1,
+			altKey:false,
+			ctrlKey:false,
+			metaKey:false,
+			shiftKey:false,
+			targetTypes: ['*'],
+			textSelected: true,
+			action: "test1"
+		},
+		{
+			event: 'keydown',
+			key: 'F1',
+			altKey:false,
+			ctrlKey:false,
+			metaKey:false,
+			shiftKey:false,
+			targetTypes: ['*'],
+			action: "test2",
+			textSelected: true
+		}
+	];
+
+	gestures.forEach( g => {
+		document.addEventListener(g.event, e => {
+
+			console.log(e);
+			if ( !isGesture(g,e) ) return;
+
+			console.log(g.action);
+		})
+	})
+
+	document.addEventListener('contextmenu', e => {
+
+		if ( window.contextMenuTimer ) {
+			e.preventDefault();
+			return document.dispatchEvent(new MouseEvent('dblclick', e));	
+		}
+
+		window.contextMenuTimer = setTimeout(() => {
+			clearTimeout(window.contextMenuTimer);
+			delete window.contextMenuTimer;
+		}, 250);
+	});
+
+	// trigger dblclick event for other buttons
+	let dblClickHandler = e => {
+		if ( e.detail === 2 && e.button !== 0 ) {
+			console.log(e);
+			document.dispatchEvent(new MouseEvent('dblclick', e));
+		}
+	}
+	document.addEventListener('mousedown', dblClickHandler);
+
+	function isGesture(g, e) {
+		return (
+			e.altKey === g.altKey &&
+			e.ctrlKey === g.ctrlKey &&
+			e.shiftKey === g.shiftKey &&
+			e.metaKey === g.metaKey &&
+
+			( 
+				g.button && g.button === e.button ||
+				g.key && g.key === e.key
+			)
+		)
+	}
+
+});
+
+window.hasRun = true;
 
 browser.runtime.sendMessage({action: "injectComplete"});

@@ -44,6 +44,10 @@
 				opacity:0;
 				transition:.2s opacity;
 			}
+			TEXTAREA {
+				color: var(--color);
+				background-color:var(--bg-color1);
+			}
 			#main {
 				padding:0;
 				margin:0;
@@ -66,8 +70,8 @@
 			}
 			#right_div {
 				display:inline-block;
-				width:calc(100% - 250px);
-				max-width:750px;
+				width:calc(100% - 330px);
+				/*max-width:750px;*/
 				text-align:left;
 				margin-left:300px;
 				margin-bottom:16px;
@@ -422,7 +426,7 @@
 				position:absolute;
 				top:0;
 				left:0;
-				z-index:2;
+				z-index:2147483647;
 				padding:5px;
 				border-radius:5px;
 				max-width:200px;
@@ -617,6 +621,9 @@
 			TABLE.searchActions TD:first-of-type {
 				white-space:nowrap;
 			}
+			TABLE.searchActions[data-menu="contextMenu"] TD:nth-of-type(3n) {
+				display: none;
+			}	
 			P.short {
 				margin:0;
 				padding:2px 0;
@@ -743,8 +750,7 @@
 			.editForm {
 				display:none;
 				overflow:hidden;
-			}
-						
+			}			
 			.editForm INPUT:not([name="iconPicker"]), .editForm SELECT, .editForm TEXTAREA {
 				display:block;
 				width:calc(100% - 20px);
@@ -755,19 +761,27 @@
 				padding-top:8px;
 				background-color:var(--bg-color1);
 				color:var(--color1);
+				font-family:inherit;
 			}
+			.editForm TEXTAREA {
+				line-height: 20px;
+				height: 18px;
+				resize:vertical;
+			}
+
 			.editForm SELECT {
 				width:120px;
 			}
 			.editForm INPUT:focus, .editForm TEXTAREA:focus{
-				border:1px solid var(--selected, #008afc);
-				box-shadow:0px 0px 3px 1px var(--selected, #008afc);
+				/*border:1px solid var(--selected, #008afc);*/
+				box-shadow:0px 0px 3px 2px var(--selected, #008afc);
+				outline: none;
 			}
 			.editForm .error {
 				border:1px solid pink;
 				box-shadow:0px 0px 3px 1px pink;
 			}
-			.editForm > LABEL {
+			.editForm > LABEL, .editForm > DIV > LABEL, .editForm .formLabel {
 				font-size:10pt;
 				font-variant:small-caps;
 				display:inline-block;
@@ -902,6 +916,7 @@
 			}
 			.treeNode {
 				border-top: var(--tree-row-border);
+				border-bottom: 1px solid transparent;
 				cursor:default;
 				position:relative;
 				transition: padding .1s linear;
@@ -973,7 +988,7 @@
 				margin-left:-16px;
 				list-style-type: none;
 			}
-			#managerContainer .header IMG {
+			#managerContainer .header > IMG {
 				height:16px;
 				width:16px;
 				margin-right:10px;
@@ -1073,6 +1088,9 @@
 			}
 			#advancedSettingsTable TR:hover {
 				background-color:#ddd;
+			}
+			#advancedSettingsTable TD {
+				white-space: nowrap;
 			}
 			#folderFormTable {
 				width:100%;
@@ -1326,6 +1344,52 @@
 			#shortcutTable TD > SPAN:hover {
 				background-color:#0001;
 			}
+			#toolBarIconForm {}
+			#toolBarIconForm IMG, #toolBarIconForm .toolBarIconCustom {
+				height: 32px;
+				width: 32px;
+				vertical-align: middle;
+				margin: 0 10px;
+				cursor: pointer;
+			}
+			#toolBarIconForm > DIV {
+				display: inline-block;
+				background-color: var(--bg-color1);
+				padding: 10px 20px;
+				border-radius: 10px;
+				margin: 10px;
+			}
+			#toolBarIconForm .toolBarIconCustom {
+				display: inline-block;
+				box-sizing: border-box;
+				border: 2px dashed var(--border-color2);
+				background-repeat: no-repeat;
+				background-position: center;
+			}
+			#toolBarIconForm .toolBarIconCustom:hover {
+				background-image: url(icons/upload.svg) !important;
+				background-size: 66%;
+				background-color: #444;
+			}
+
+			#contexts LABEL {
+				display: inline;
+				border-radius: 4px;
+				padding: 2px 8px;
+				background-color: var(--bg-color1);
+				margin: 2px;
+				display: inline-block;
+				font-size: 7pt;
+			}
+
+			#contexts INPUT {
+				display: initial;
+				width: initial;
+				margin: initial;
+				margin-right: 10px;
+				width: 8px;
+				height: 8px;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -1358,6 +1422,8 @@
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><div class="tool" style="--mask-image: url(icons/settings.svg)"></div>_</button>
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><div class="tool" style="--mask-image: url(icons/auto.svg)"></div>_</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><div class="tool" style="--mask-image: url(icons/help.svg)"></div>_</button>
+
+				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n="requestPermissions"><div class="tool" style="--mask-image: url(icons/help.svg)"></div>_</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
 				<label for="importSettings">
@@ -1420,10 +1486,6 @@
 						<td><input type="checkbox" id="cb_groupLabelMoreTile" /></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Group folder tiles are shown on separate rows from other tiles">groupFolderRowBreaks</td>
-						<td><input type="checkbox" id="cb_groupFolderRowBreaks" /></td>
-					</tr>
-					<tr>
 						<td data-i18n_tooltip="Selected text is copied to the clipboard">autoCopy</td>
 						<td><input type="checkbox" id="cb_autoCopy" /></td>
 					</tr>
@@ -1443,7 +1505,7 @@
 						<td data-i18n_tooltip="Notice for Firefox users to add opensearch engines using the Firefox search bar">addSearchProviderHideNotification</td>
 						<td><input type="checkbox" id="cb_addSearchProviderHideNotification" /></td>
 					</tr>
-					<tr>
+					<tr style="display:none">
 						<td data-i18n_tooltip="Search menu tiles can be rearranged by drag & drop">quickMenuTilesDraggable</td>
 						<td><input type="checkbox" id="cb_quickMenuTilesDraggable" /></td>
 					</tr>
@@ -1484,7 +1546,7 @@
 						<td><input type="checkbox" id="cb_contextMenuUseInnerText" /></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">quickMenuSimpleClickUseInnerText</td>
+						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">quickMenuSimpleClick.useInnerText</td>
 						<td><input type="checkbox" id="cb_quickMenuSimpleClickUseInnerText" /></td>
 					</tr>
 					<tr>
@@ -1492,8 +1554,74 @@
 						<td><input type="number" min="1" max="100" step="1" id="n_shakeSensitivity" /></td>
 					</tr>
 					<tr>
+						<td data-i18n_tooltip="Show recently used engines at the top of the menu">quickMenuShowRecentlyUsed</td>
+						<td><input type="checkbox" id="cb_quickMenuShowRecentlyUsed"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Show regex matching engines at the top of the menu">contextMenuRegexMatchedEngines</td>
+						<td><input type="checkbox" id="cb_contextMenuRegexMatchedEngines"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Show regex matching engines at the top of the menu">quickMenuRegexMatchedEngines</td>
+						<td><input type="checkbox" id="cb_quickMenuRegexMatchedEngines"/></td>
+					</tr>
+					<tr>
 						<td data-i18n_tooltip="Max width or height to resize icons for caching">cacheIconsMaxSize</td>
 						<td><input type="number" min="16" max="512" step="2" id="n_cacheIconsMaxSize" /></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Show hotkeys with titles">quickMenuShowHotkeysInTitle</td>
+						<td><input type="checkbox" id="cb_quickMenuShowHotkeysInTitle"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="set focus to the quick menu after opening">quickMenuFocusOnOpen</td>
+						<td><input type="checkbox" id="cb_quickMenuFocusOnOpen"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="hide separators when using the quick menu in grid view">quickMenuHideSeparatorsInGrid</td>
+						<td><input type="checkbox" id="cb_quickMenuHideSeparatorsInGrid"/></td>
+					</tr>
+					
+					<tr>
+						<td data-i18n_tooltip="force search results to appear in next tab">forceOpenResultsTabsAdjacent</td>
+						<td><input type="checkbox" id="cb_forceOpenReultsTabsAdjacent"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix">quickMenuAllowContextMenuNew</td>
+						<td><input type="checkbox" id="cb_quickMenuAllowContextMenuNew"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Enable to show inline group folders as block elements">groupFolderRowBreaks</td>
+						<td><input type="checkbox" id="cb_groupFolderRowBreaks"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Display the context menu in subfolders according to the current context">contextMenuUseContextualLayout</td>
+						<td><input type="checkbox" id="cb_contextMenuUseContextualLayout"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Override context menu title. Use %1 in place of searchTerms. blank = default">contextMenuTitle</td>
+						<td><input type="text" id="i_contextMenuTitle"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Override the quick menu layout. blank = default">quickMenuDomLayout</td>
+						<td><input type="text" id="i_quickMenuDomLayout"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Always allow tiles to be rearranged in the menus">alwaysAllowTileRearranging</td>
+						<td><input type="checkbox" id="cb_alwaysAllowTileRearranging"/></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Remove subfolders and flatten menu if only n number of engines are to be shown. 0 = no limit">contextMenuContextualLayoutFlattenLimit</td>
+						<td><input type="number" min="0" max="999" step="1" id="n_contextMenuContextualLayoutFlattenLimit" /></td>
+					</tr>
+
+					<tr>
+						<td data-i18n_tooltip="Maximum number of tool rows to display. 0 = no limit">quickMenuToolbarRows</td>
+						<td><input type="number" min="0" max="99" step="1" id="n_quickMenuToolbarRows" /></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="Require a double-click to display the default context menu when using HOLD right mouse button to open the quick menu. Useful for preventing errant menus on systems that display the context menu on mouse down vs mouse up">rightClickMenuOnMouseDownFix</td>
+						<td><input type="checkbox" id="cb_rightClickMenuOnMouseDownFix"/></td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
@@ -1520,6 +1648,11 @@
 				</section>
 
 				<div style="float:right"><button class="saveOptions">Save</button></div>
+				<br>
+				<section>
+					<p class="header1" data-i18n="">Blocklist <span class="info" data-msg="URLs to disable ContextSearch with. Accepts hostnames www.example.com, wildcards  *.example.com and regex. ! or # prefix will disable an entry #example.com or !example.com" data-i18n_tooltip="">&#9432;</span></p>
+					<textarea id="t_blockList" style="height:200px;width:calc(100% - 16px);padding:2px 8px;resize:vertical"></textarea>
+				</section>
 			</div>
 		
 			<div class="tabcontent" id="generalTab">
@@ -1560,7 +1693,7 @@
 				</section>
 				
 				<section>
-<p class="header1" data-i18n="Suggestions">_</p>
+				<p class="header1" data-i18n="Suggestions">_</p>
 				<div class="option">
 					<label class="container" data-i18n="ShowSuggestions">
 						<input type="checkbox" id="cb_searchBarSuggestions" />
@@ -1570,7 +1703,7 @@
 				</div>
 				
 				</section><section>
-<p class="header1" data-i18n="History">_</p>
+				<p class="header1" data-i18n="History">_</p>
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="cb_searchBarDisplayLastSearch" />
@@ -1707,7 +1840,7 @@
 				<section>
 				<p class="header1" data-i18n="SearchActionsHeader">_</p>
 
-				<table class="searchActions">
+				<table class="searchActions" data-menu="contextMenu">
 				<tr>
 					<td></td>
 					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">_</span></td>
@@ -1934,7 +2067,7 @@
 						</td>
 						<td>
 							<label style="margin-left:10px" data-i18n="MenuSize">_</label>
-							<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">?</span>
+							<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
 						</td>
 						<td>
 							<input type="range" id="range_quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
@@ -1946,7 +2079,7 @@
 						</td>
 						<td>
 							<label style="margin-left:10px" data-i18n="IconSize">_</label>
-							<span class="info" data-msg="Scaled size of search engine icons. At 200%, icons fill their container entirely" data-i18n_tooltip="IconSize">?</span>
+							<span class="info" data-msg="Scaled size of search engine icons. At 200%, icons fill their container entirely" data-i18n_tooltip="IconSize">&#9432;</span>
 						</td>
 						<td>
 							<input type="range" id="range_quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
@@ -1957,20 +2090,10 @@
 				
 				<section style="min-width:720px">
 				<p class="header1" data-i18n="Opening">_</p>
-				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="cb_quickMenuAllowContextMenu" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<span class="description" data-i18n="HideContextMenu">_</span>
-				</div>
-				
-				<hr />
-	
+
 				<table class="openingTable">
 				<tr>
-					<td colspan="2" style="border-right:none">
+					<td>
 						<label class="container" data-i18n="Auto">
 							<input type="checkbox" id="r_quickMenuAuto" />
 							<span class="checkmark checkmark2"></span>
@@ -1978,6 +2101,32 @@
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="AutoTooltip">_</span>
+					</td>
+
+					<td>
+						<div class="option" style="display:inline-block;">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuAutoAlt" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuAutoCtrl" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Ctrl">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuAutoShift" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Shift">_</span>
+						</div>
 					</td>
 					<!-- <td> -->
 						<!-- <input type="number" id="n_quickMenuAutoMaxChars" size="3" class="inputNice" min="0" max="999"><label style="margin-left:10px" data-i18n="AutoMaxChars">Character Limit</label> -->
@@ -2003,7 +2152,7 @@
 					</td>
 					<td>	
 						<button id="b_quickMenuKey" class="keyboardButton">_</button>
-						<span class="info" data-msg="Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key" data-i18n_tooltip="ChooseKey">?</span>
+						<span class="info" data-msg="Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key" data-i18n_tooltip="ChooseKey">&#9432;</span>
 					</td>
 				</tr>
 				<tr>
@@ -2028,13 +2177,20 @@
 								<option data-i18n="MiddleButton" value="2">_</option>
 								<option data-i18n="RightButton" value="3">_</option>
 							</select>
+
+							<span class="info" data-msg="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix. " data-i18n_tooltip="">ⓘ</span>
 						
-							<div style="font-size:8pt;font-weight:bold;padding-top:8px" data-i18n="HoldForContextMenu"><img style="height:10px;margin-right:6px;vertical-align:middle" src="icons/alert.svg">_</div>
-							<div style="margin-top: 4px">
-<div data-browser="firefox">	
-								<b>*</b><span class="description" style="font-size:8pt" data-i18n="MouseHelp">_</span>
-</div>
+							<div>
+								<!-- <img style="height:10px;vertical-align:middle" src="icons/alert.svg"> -->
+								<span class="description" style="font-size:8pt;padding-top:8px" data-i18n="HoldForContextMenu">_</span>
 							</div>
+							<hr>
+							<div>
+							
+								<img style="height:10px;vertical-align:middle" src="icons/alert.svg">	
+								<span class="description" style="font-size:8pt" data-i18n="MouseHelp">_</span>
+							</div>
+
 						</div>
 					</td>
 				</tr>
@@ -2094,7 +2250,30 @@
 						<br />
 						<span style="font-size:9pt" data-i18n="OpenOnDragTooltip">_</span>
 					</td>
-					<td>	
+					<td>
+						<div class="option" style="display:inline-block;">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuDragAlt" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuDragCtrl" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Ctrl">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="cb_quickMenuDragShift" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Shift">_</span>
+						</div>
 					</td>
 				</tr>
 				</table>
@@ -2312,10 +2491,10 @@
 					</div>
 					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
 						<input type="number" id="n_quickMenuOffsetX" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
-						<span class="info" data-msg="Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left" data-i18n_tooltip="HorizontalOffset">?</span>
+						<span class="info" data-msg="Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left" data-i18n_tooltip="HorizontalOffset">&#9432;</span>
 						<br />
 						<input type="number" id="n_quickMenuOffsetY" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
-						<span class="info" data-msg="Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up" data-i18n_tooltip="VerticalOffset">?</span>
+						<span class="info" data-msg="Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up" data-i18n_tooltip="VerticalOffset">&#9432;</span>
 					</div>
 				</div>
 				<input id="h_position" type="hidden" />
@@ -2333,7 +2512,7 @@
 					</label>
 				</div>
 				<div>	
-					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the tools in the Quick Menu" data-i18n_tooltip="ToolsPosition">?</span>
+					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the tools in the Quick Menu" data-i18n_tooltip="ToolsPosition">&#9432;</span>
 					
 					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="s_quickMenuToolsPosition">
 						<option data-i18n="top" value="top">Top</option>
@@ -2351,7 +2530,7 @@
 <p class="header1" data-i18n="SearchBar">_</p>
 				
 				<div>	
-					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the search bar in the Quick Menu" data-i18n_tooltip="SearchBar">?</span>
+					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the search bar in the Quick Menu" data-i18n_tooltip="SearchBar">&#9432;</span>
 					
 					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="s_quickMenuSearchBar">
 						<option data-i18n="top" value="top">Top</option>
@@ -2410,6 +2589,32 @@
 				</div>
 				
 				</section>
+				<section>
+				<p class="header1" data-i18n="Icon">_</p>
+				<form class="option" id="toolBarIconForm">
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_1" value="icons/logo_notext.svg"/>
+						<label for="toolBarIcon_1">
+							<img src="icons/logo_notext.svg" />
+						</label>
+					</div>
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_2" value="icons/icon.svg"/>
+						<label for="toolBarIcon_2">
+							<img src="icons/icon.svg" />
+						</label>
+					</div>
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_3" value="" />
+						<input type="file" accept="image/*" name='toolBarIconPicker' id="toolBarIconPicker" style="display:none">
+						
+						<label for="toolBarIconPicker">
+							<div class="toolBarIconCustom"></div>
+						</label>			
+					</div>
+				</form>
+				
+				</section>
 				</div>
 				<div class="tabcontent" id="sideBarTab">
 					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />_</div>
@@ -2442,7 +2647,7 @@
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">_</label>
-								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">?</span>
+								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
 							</td>
 							<td>
 								<input type="range" id="range_sideBarScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
@@ -2971,7 +3176,7 @@
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">_</label>
-								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">?</span>
+								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
 							</td>
 							<td>
 								<input type="range" id="range_findBarScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
@@ -3105,6 +3310,18 @@
 					</section>
 				</div>
 
+		<div class="tabcontent" id="requestPermissionsTab">
+					
+			<section id="requestPermissions" style="font-weight:normal;text-align:center">
+				<div style="text-align: center;margin-bottom:20px">
+					<img style="height:30px;vertical-align:middle" src="icons/alert.svg" />
+				</div>
+				<i><b>clipboardWrite</i></b> permission is required to interact with the clipboard. <br>Click the button below to request the <i><b>clipboardWrite</i></b>  permission.
+				<br><br>
+				<button id="b_requestClipboardPermissions">Request</button>
+			</section>
+		</div>
+
 		<div class="tabcontent" id="enginesTab">
 			<div style="font-weight:normal;">
 			
@@ -3140,32 +3357,44 @@
 
 				<form id="editSearchEngineForm" class="editForm" action="">
 					<div>
-						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
-						</button>
+						<div style="display:inline-block">
+							<div class="faviconPickerBox" name="faviconBox"></div>
+							<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
+								<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
+							</button>
+						</div>
+						<div id="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);background-color:var(--bg-color1);border-radius: 4px;padding:6px 0">
+							<label><input type="checkbox" class="inputNice" value="1" data-i18n="audio" />audio</label>
+							<label><input type="checkbox" class="inputNice" value="2" data-i18n="frame" />frame</label>
+							<label><input type="checkbox" class="inputNice" value="4" data-i18n="image" />image</label>
+							<label><input type="checkbox" class="inputNice" value="8" data-i18n="link" />link</label>
+							<label><input type="checkbox" class="inputNice" value="16" data-i18n="page" />page</label>
+							<label><input type="checkbox" class="inputNice" value="32" data-i18n="selection" />selection</label>
+							<label><input type="checkbox" class="inputNice" value="64" data-i18n="video" />video</label>
+						</div>
 					</div>
 
 					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
-					<label data-i18n="Description">_</label><textarea name="description" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>
-					<label data-i18n="Template">_</label><input name="template" type="text" class="inputNice" />
+					<label data-i18n="Description">_</label><textarea name="description" type="text" class="inputNice"></textarea>
+					<label data-i18n="Template">_</label><textarea name="template" type="text" class="inputNice"></textarea>
 					<label data-i18n="Icon">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
-					<label data-i18n="POSTparams">_</label><input name="post_params" type="text" class="inputNice" />
-					<label data-i18n="Regex">_</label><textarea name="searchRegex" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical" placeholder='e.g. "\\s","_"'></textarea>
-					<label data-i18n="SearchCode">_</label><textarea name="searchCode" type="text" class="inputNice" style="height:18px;font-family:inherit;resize:vertical"></textarea>
+					<label data-i18n="POSTparams">_</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
+					<label data-i18n="Regex" title="Modify the search terms using regex before submitting">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
+					<label data-i18n="MatchSearchTermsRegex" title="Display this engine in the Regex Matches folder if the search terms match the following regex">_</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
+					<label data-i18n="SearchCode" title="Run some javascript after opening the template URL">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
 
 					<div style="display:inline-block">
 					<label data-i18n="Method">_</label>
-					<select name="_method" class="inputNice">
-						<option value="GET">GET</option>
-						<option value="POST">POST</option>
-					</select>
+						<select name="_method" class="inputNice">
+							<option value="GET">GET</option>
+							<option value="POST">POST</option>
+						</select>
 					</div>
 					
 					<div style="display:inline-block">
@@ -3188,9 +3417,9 @@
 					</div>
 
 					<div style="float:right;margin:16px">
-						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><div class="tool" style="--mask-image: url(icons/copy.svg);height:1em;vertical-align: middle"></button>
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><div class="tool" style="--mask-image: url(icons/copy.svg);height:1em;vertical-align: middle"></div></button>
 <span data-browser="firefox">					
-						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></button>
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></div></button>
 </span>
 						<button type="button" name="test" style="margin-left:20px" data-i18n="Test" title="i18n_text">_</button>
 						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">_</button>
@@ -3203,14 +3432,14 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
 						</button>
 					</div>
 					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Icon">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
 					</div>
 					<table id="folderFormTable">
@@ -3224,27 +3453,40 @@
 								</select>
 							</td>
 						</tr>
+						
 						<tr>
-							<td data-i18n="grouplayout">_</td>
-							<td><input name="groupFolder" type="checkbox" class="inputNice" style="width:auto"/>
-								 <span data-i18n="grouplayoutmessage">_</span>
-								</td>
+							<td data-i18n="layout">_</td>
+							<td>
+								<select name="groupFolder" type="checkbox" class="inputNice" style="width:auto;font-size:9pt;">
+									<option value="">icon</option>
+									<option value="inline">inline</option>
+									<option value="block">block</option>
+								</select>
+								<!-- <span style="font-size:9pt;" data-i18n="grouplayoutmessage">_</span> -->
+							</td>
 						</tr>
 						<tr>
 							<td data-i18n="groupcolor">_</td>
 							<td>
-								<input type="text" class="inputNice" style="width:150px" name="groupColor" />
-								<input name="groupColorPicker" type="color" class="inputNice" style="width:30px;"/>
+								<input type="text" class="inputNice" style="width:150px;font-size:9pt;" name="groupColor" />
+								<input name="c_groupColor" type="color" class="inputNice" style="width:30px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="groupcolortext">_</td>
+							<td>
+								<input type="text" class="inputNice" style="width:150px;font-size:9pt;" name="groupColorText" />
+								<input name="c_groupColorText" type="color" class="inputNice" style="width:30px;"/>
 							</td>
 						</tr>
 						<tr>
 							<td data-i18n="grouplimit">_</td>
-							<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;"/></td>
+							<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;font-size:9pt;"/></td>
 						</tr>
 						<tr>
 							<td data-i18n="grouphidemoretile">_</td>
 							<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
-						</tr>	
+						</tr>
 					</table>
 					
 					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
@@ -3255,14 +3497,14 @@
 					<div>
 						<div class="faviconPickerBox" name="faviconBox"></div>
 						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%">
+							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
 						</button>
 					</div>
 					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
 					<label data-i18n="Icon">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
 					</div>
 					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
@@ -3352,6 +3594,8 @@
 		<script src="keyTable.js"></script>
 		<script src="opensearch.js"></script>
 		<script src="bookmarks.js"></script>
+		<script src="defaultEngines.js"></script>
+		<script src="defaultUserOptions.js"></script>
 		<script src="themes.js"></script>
 		<script src="defaultShortcuts.js"></script>
 		<script src="iconUtils.js"></script>

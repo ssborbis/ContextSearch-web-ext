@@ -1,7 +1,7 @@
 var userOptions;
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( message => {
-	userOptions = message.userOptions;
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
 
 	setUserStyles();
 	makePageTiles();

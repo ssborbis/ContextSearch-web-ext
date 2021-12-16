@@ -1,13 +1,11 @@
-browser.runtime.sendMessage({action: "getUserOptions"}).then( result => {
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 		
-	userOptions = result.userOptions;
+	userOptions = uo;
 
 	// open findbar on pageload if set
 	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
 		markOptions = userOptions.highLight.findBar.markOptions;
 		updateFindBar(Object.assign(markOptions));
-
-		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	}
 
 });
@@ -82,10 +80,10 @@ function removeStyling() {
 }
 
 // ESC to clear markers and navbar and findbar
-document.addEventListener('keydown', e => {
+document.addEventListener('keydown', async e => {
 	if ( e.key === "Escape" ) {
-		browser.runtime.sendMessage({action: "unmark"});
-		browser.runtime.sendMessage({action: "closeFindBar"});
+		await browser.runtime.sendMessage({action: "unmark"});
+		await browser.runtime.sendMessage({action: "closeFindBar"});
 	}
 });
 
@@ -410,8 +408,8 @@ function openFindBar(options) {
 
 		if ( fb ) {
 			setTimeout(() => resolve(fb), 100);
-			fb.style.opacity = null;
-			fb.style.maxHeight = null;
+			//fb.style.opacity = null;
+			//fb.style.maxHeight = null;
 			return;
 		}
 		
@@ -430,9 +428,7 @@ function openFindBar(options) {
 		document.body.appendChild(fb);
 		
 		fb.onload = function() {
-			fb.style.opacity = null;
-			fb.style.maxHeight = null;
-			
+	//		fb.style.maxHeight = null;		
 			fb.docking.init();
 			resolve(fb);
 		}
@@ -456,6 +452,8 @@ function openFindBar(options) {
 			lastOffsets: userOptions.highLight.findBar.offsets,
 			dockedPosition: userOptions.highLight.findBar.position
 		});
+
+		addParentDockingListeners('CS_findBarIframe', 'findBar');
 	});
 }
 
@@ -471,6 +469,12 @@ function closeFindBar() {
 			fb.parentNode.removeChild(fb);
 		});
 	}
+}
+
+function showFindBar() {
+	let fb = getFindBar();
+	fb.style.opacity = null;
+	fb.style.maxHeight = null;
 }
 
 function nextPrevious(dir) {

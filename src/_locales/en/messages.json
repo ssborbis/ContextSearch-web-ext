@@ -220,7 +220,7 @@
   },
   
   "MouseHelp": {
-    "message": "Linux and MacOS X users may need to set ui.context_menus.after_mouseup = true in about:config for mouse actions to work properly and prevent unwanted menus"
+    "message": "Linux and MacOS X environments where the default context menu is opened on mousedown vs mouseup can set 'ui.context_menus.after_mouseup = true' in about:config ( Firefox ) for mouse actions to work properly and prevent unwanted menus. Chrome users can enable 'rightClickMenuOnMouseDownFix' under Advanced options to hide the default context menu on single-click and display on double-click "
   },
 
   "Position": {
@@ -909,7 +909,12 @@
   },
   
   "Regex": {
-    "message": "Search Regex",
+    "message": "Modify Terms Regex",
+    "description": ""
+  },
+
+  "MatchSearchTermsRegex": {
+    "message": "Match Terms Regex",
     "description": ""
   },
   
@@ -1582,6 +1587,10 @@
     "message": "Group color",
     "description": ""
   },
+   "groupcolortext": {
+    "message": "Text color",
+    "description": ""
+  },
   
   "grouplimit": {
     "message": "Group limit",
@@ -1891,6 +1900,56 @@
 
   "HighlightLimitTooltip": {
     "message": "Limit the number of matches to highlight. A lower limit can prevent slowdowns when marking. 0 = no limit",
+    "description": ""
+  },
+
+  "AddToBlockList": {
+    "message": "Add to blocklist",
+    "description": ""
+  },
+
+  "AddToBlockListConfirm": {
+    "message": "Add \"$1\" to blocklist?",
+    "description": ""
+  },
+
+  "regexmatches": {
+    "message": "Regex Matches",
+    "description": ""
+  },
+
+  "audio": {
+    "message": "audio",
+    "description": ""
+  },
+
+  "frame": {
+    "message": "frame",
+    "description": ""
+  },
+
+  "image": {
+    "message": "image",
+    "description": ""
+  },
+
+  "link": {
+    "message": "link",
+    "description": ""
+  },
+
+  "page": {
+    "message": "page",
+    "description": ""
+  },
+
+  "selection": {
+    "message": "selection",
+    "description": ""
+  },
+
+  "video": {
+    "message": "video",
     "description": ""
   },
 

@@ -77,18 +77,19 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 
-	// let method = "openBackgroundTab";
-	// switch (disposition) {
-		// case "currentTab":
-			// method = "openCurrentTab";
-			// break;
-		// case "newForegroundTab":
-			// method = "openNewTab";
-			// break;
-		// case "newBackgroundTab":
-			// method = "openBackgroundTab";
-			// break;
-	// }
+	// get disposition but only override 'currentTab' with searchAction
+	let method;
+	switch (disposition) {
+		case "currentTab":
+			method = "openCurrentTab";
+			break;
+		case "newForegroundTab":
+			method = "openNewTab";
+			break;
+		case "newBackgroundTab":
+			method = "openBackgroundTab";
+			break;
+	}
 
 	let folderNode = {
 		type: "folder",
@@ -98,7 +99,7 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	
 	let info = {
 		folder: true,
-		openMethod: userOptions.omniboxSearch,
+		openMethod: ( method === 'openCurrentTab' ) ? userOptions.omniboxSearch : method,
 		tab: tab,
 		searchTerms: input.searchTerms,
 		selectionText: input.searchTerms,

@@ -71,8 +71,8 @@
 }
 
 .CS_resizing {
-	border-width: 3px !important;
-	border-style: dashed !important;
+	border: 3px dashed !important;
+	transition: none !important;
 }
 
 #CS_highLightNavBar {

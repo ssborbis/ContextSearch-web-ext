@@ -1,3 +1,6 @@
+var selectedRows = [];
+var rootElement;
+
 function buildSearchEngineContainer() {
 	
 	let table = document.createElement('div');
@@ -8,8 +11,6 @@ function buildSearchEngineContainer() {
 	table.style.verticalAlign = 'top';
 	table.style.overflowY = 'scroll';
 	
-	let selectedRows = [];
-
 	function traverse(node, parent) {	
 	
 		if ( !node ) {
@@ -33,6 +34,7 @@ function buildSearchEngineContainer() {
 		li.addEventListener('dragend',dragend_handler);
 		li.addEventListener('drop',drop_handler);
 		li.addEventListener('dragover',dragover_handler);
+		li.addEventListener('dragenter',dragenter_handler);
 		li.addEventListener('dragleave',dragleave_handler);
 		
 		let header = document.createElement('div');
@@ -160,18 +162,40 @@ function buildSearchEngineContainer() {
 						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
 							// showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
 						// }
-						if (edit_form.searchRegex.value) {
-							try {
-								let lines = edit_form.searchRegex.value.split(/\n/);
-								lines.forEach( (line, index) => {
-							
-									let parts = JSON.parse('[' + line.trim() + ']');
-									let rgx = new RegExp(parts[0], parts[2] || 'g');
-								});
-							} catch (error) {
-								showError(edit_form.searchRegex, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+
+						// replace regex
+						[edit_form.searchRegex].forEach( el => {
+
+							if (el.value) {
+								try {
+									let lines = el.value.split(/\n/);
+									lines.forEach( (line, index) => {
+								
+										let parts = JSON.parse('[' + line.trim() + ']');
+										let rgx = new RegExp(parts[0], parts[2] || 'g');
+									});
+								} catch (error) {
+									showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+								}
 							}
-						}
+						});
+
+						// match regex
+						[edit_form.matchRegex].forEach( el => {
+
+							if (el.value) {
+								try {
+									let lines = el.value.split(/\n/);
+									lines.forEach( (line, index) => {
+								
+										let parts = JSON.parse('[' + line.trim() + ']');
+										let rgx = new RegExp(parts[0], parts[1] || 'g');
+									});
+								} catch (error) {
+									showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+								}
+							}
+						});
 						
 						if ( edit_form.iconURL.value.startsWith("resource:") ) {
 							resolve(true);
@@ -205,7 +229,14 @@ function buildSearchEngineContainer() {
 					}
 				}();
 				edit_form.searchRegex.value = se.searchRegex || "";
+				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
+
+				// set contexts
+				(() => {
+					let contexts = $('#contexts').querySelectorAll('INPUT');
+					contexts.forEach( cb => cb.checked = ((se.contexts & parseInt(cb.value)) == cb.value) );
+				})();
 								
 				edit_form.close.onclick = edit_form.closeForm;
 
@@ -219,6 +250,7 @@ function buildSearchEngineContainer() {
 						"template": edit_form.template.value, 
 						"queryCharset": edit_form._encoding.value,
 						"searchRegex": edit_form.searchRegex.value,
+						"matchRegex": edit_form.matchRegex.value,
 						"searchCode": edit_form.searchCode.value
 					};
 
@@ -319,10 +351,18 @@ function buildSearchEngineContainer() {
 						se.params = paramStringToNameValueArray(edit_form.post_params.value);
 						se.id = se.id || gen();
 						se.searchRegex = edit_form.searchRegex.value;
+						se.matchRegex = edit_form.matchRegex.value;
 						se.searchCode = edit_form.searchCode.value;
+
+						se.contexts = (() => {
+							let contexts = $('#contexts').querySelectorAll('INPUT:checked');
+							let total = 0;
+							contexts.forEach( cb => {total+=parseInt(cb.value)});
+							return total;
+						})();
 						
 						// force a save even if the nodeTree is unchanged
-						updateNodeList(true);	
+						updateNodeList(true);
 						
 						if ( edit_form.querySelector('.error') )
 							showSaveMessage('saved with errors', 'red', edit_form.querySelector('.saveMessage'));
@@ -503,7 +543,8 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.groupColor = _form.groupColor.value;
-					node.groupFolder = _form.groupFolder.checked;
+					node.groupColorText = _form.groupColorText.value;
+					node.groupFolder = _form.groupFolder.value || false;
 					node.groupLimit = parseInt(_form.groupLimit.value);
 					node.displayType = _form.displayType.value;
 					node.groupHideMoreTile = _form.groupHideMoreTile.checked;
@@ -520,7 +561,8 @@ function buildSearchEngineContainer() {
 								
 				_form.shortName.value = node.title;
 				_form.groupColor.value = node.groupColor || userOptions.defaultGroupColor;
-				_form.groupFolder.checked = node.groupFolder || false;
+				_form.groupColorText.value = node.groupColorText || userOptions.defaultGroupColorText;
+				_form.groupFolder.value = node.groupFolder || "";
 				_form.groupLimit.value = node.groupLimit || 0;
 				_form.displayType.value = node.displayType || "";
 				_form.groupHideMoreTile.checked = node.groupHideMoreTile || false;
@@ -530,10 +572,37 @@ function buildSearchEngineContainer() {
 				addIconPickerListener(_form.iconPicker, li);
 				_form.addFaviconBox(getIconFromNode(node));
 
-				_form.groupColorPicker.value = _form.groupColor.value;
-				_form.groupColorPicker.onchange = (e) => {
+				_form.c_groupColor.value = _form.groupColor.value;
+				_form.c_groupColor.onchange = (e) => {
 					_form.groupColor.value = e.target.value;
 				}
+				_form.groupColor.onchange = (e) => {
+					_form.c_groupColor.value = e.target.value;
+				}
+
+				_form.c_groupColorText.value = _form.groupColorText.value;
+				_form.c_groupColorText.onchange = (e) => {
+					_form.groupColorText.value = e.target.value;
+				}
+				_form.groupColorText.onchange = (e) => {
+					_form.c_groupColorText.value = e.target.value;
+				}
+
+				function showHideGroupSettings() {
+		
+					if ( !_form.groupFolder.value) {
+						['groupColor', 'groupLimit', 'groupHideMoreTile'].forEach( name => {
+							_form[name].closest('TR').style.display = 'none';
+						})
+					} else {
+						['groupColor', 'groupLimit', 'groupHideMoreTile'].forEach( name => {
+							_form[name].closest('TR').style.display = null;
+						})
+					}
+				}
+
+				_form.groupFolder.addEventListener('change', showHideGroupSettings);
+				showHideGroupSettings();
 			});	
 			
 			text.addEventListener('dblclick', e => {
@@ -717,6 +786,22 @@ function buildSearchEngineContainer() {
 
 		}
 
+		// add match icons for some node types
+		if ( ['searchEngine'].includes(node.type) ) {
+
+			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
+
+			if ( se && se.matchRegex ) {
+				let tool = document.createElement('div');
+				tool.title = browser.i18n.getMessage('matchsearchtermsregex');
+				tool.className = 'tool';
+				tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL('icons/regex.svg')})`);
+				header.appendChild(tool);
+				tool.style.right = "104px";
+				tool.style.position = 'absolute';
+			}
+		}
+
 		document.addEventListener('click', e => {			
 			if ( document.getElementById('managerContainer').contains(e.target) ) return;			
 			clearSelectedRows();
@@ -787,7 +872,7 @@ function buildSearchEngineContainer() {
 	}
 		
 	// high-scope veriable to access node tree
-	let rootElement = document.createElement('ul');
+	rootElement = document.createElement('ul');
 	rootElement.style.position = 'relative';
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
@@ -813,12 +898,12 @@ function buildSearchEngineContainer() {
 	function dragover_position(el, ev) {
 		let rect = el.getBoundingClientRect();
 
-		let rowHeight = 19;
+		let rowHeight = 22;// + (el.position !== 'middle') ? 20 : 0;
 		let position = 'bottom';
 
-		if ( ev.pageY - rect.y < rowHeight / 2 ) position = 'top';
+		if ( ev.offsetY < rowHeight / 2 ) position = 'top';
 
-		if ( el.node.type === 'folder' && ( ev.pageY - rect.y > rowHeight / 3 ) && ( ev.pageY - rect.y < rowHeight / ( 3 / 2 ) ) )
+		if ( el.node.type === 'folder' && ev.offsetY > rowHeight / 3 && ev.offsetY < rowHeight / 3 * 2 )
 			position = 'middle';
 		
 		return position;
@@ -838,6 +923,9 @@ function buildSearchEngineContainer() {
 	}
 	
 	function dragover_handler(ev) {
+
+		ev.preventDefault();
+
 		let overNode = nearestParent('LI', ev.target);
 
 		if ( selectedRows.includes(overNode) ) {
@@ -849,29 +937,43 @@ function buildSearchEngineContainer() {
 		
 		if ( overNode.node.type === 'folder' && overNode.node.children.length && position === 'bottom' )
 			position = 'middle';
+
+		// skip repeat events
+		if ( overNode.position && overNode.position === position) return;
+
+		overNode.position = position;
 		
-		overNode.style = null;
+		overNode.style = '';
 
 		if ( position === 'top' ) {
-			overNode.style.borderTop = '2px solid #008afc';
+			overNode.style.borderTop = '1px solid var(--selected)';
 		} else if ( position === 'bottom' ) {
-			overNode.style.borderBottom = '2px solid #008afc';
+			overNode.style.borderBottom = '1px solid var(--selected)';
 		} else {
 			overNode.querySelector('.header').classList.add('selected');
-		}
+		}	
+	}
 
+	function dragenter_handler(ev) {
+		// clear positioning
+		let overNode = nearestParent('LI', ev.target);
+		overNode.position = null;
 		ev.preventDefault();
 	}
+
 	function dragleave_handler(ev) {
-		window.dragRow.style = null;
 		let overNode = nearestParent('LI', ev.target);
-		overNode.style=null;
+
+		window.dragRow.style = '';
 		overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 		
 		// clear folder styling
 		if ( overNode.node.type === "folder" && !selectedRows.includes(overNode) ) // only remove if not originally selected
 			overNode.querySelector('.header').classList.remove('selected');
+
+		overNode.style = '';
 	}
+	
 	function drop_handler(ev) {
 		
 		ev.preventDefault();
@@ -880,10 +982,13 @@ function buildSearchEngineContainer() {
 		let targetElement = nearestParent('LI', ev.target);
 		let targetNode = targetElement.node;
 		let position = dragover_position(targetElement, ev);
+
+		if ( targetNode === dragNode )
+			return false;
 		
 		// clear drag styling
-		targetElement.style = null;
-		window.dragRow.style = null;
+		targetElement.style = '';
+		window.dragRow.style = '';
 
 		// sort with hierarchy
 		let sortedRows = [ ...$('#managerContainer').querySelectorAll('LI')].filter( row => selectedRows.indexOf(row) !== -1 ).reverse();
@@ -924,6 +1029,9 @@ function buildSearchEngineContainer() {
 	
 	function dragend_handler(ev) {
 		updateNodeList();
+
+		 let overNode = nearestParent('LI', ev.target);
+		 overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 	}
 	
 	function nearestParent( tagName, target ) {
@@ -934,21 +1042,6 @@ function buildSearchEngineContainer() {
 		return target;
 	}
 	
-	function updateNodeList(forceSave) {
-		
-		forceSave = forceSave || false;
-		
-		let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
-		
-		if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
-			// console.log('nodeTrees unequal. Saving');
-			userOptions.nodeTree = currentNodeTree
-			saveOptions();
-		} else {
-			// console.log('node trees are the same - skipping save');
-		}
-	}
-
 	function contextMenuHandler(e) {
 
 		if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
@@ -1078,54 +1171,8 @@ function buildSearchEngineContainer() {
 				openMenu(_menu);
 				
 		//	}
-			
-			async function removeNodesAndRows() {
-
-				let edit_form = document.getElementById('editSearchEngineForm');
-				selectedRows.forEach( row => {
-					if ( row.contains(edit_form)) {
-						edit_form.style.maxHeight = null;
-						document.body.appendChild(edit_form);
-					}
-				})
-
-				// remember OCSEs to append hidden
-				let ffses = [];
-				selectedRows.forEach( row => {					
-					ffses = ffses.concat(findNodes( row.node, n => n.type === "oneClickSearchEngine"));
-				});
-
-				// remove nodes and rows
-				selectedRows.forEach( row => {
-					if ( row.node.parent ) removeNode(row.node, row.node.parent);
-					if ( row.parentNode ) row.parentNode.removeChild(row);
-				});
-				
-				// remove nodeless searchEngines
-				let indexesToRemove = [];
-				userOptions.searchEngines.forEach( (se,index) => {
-					if ( !findNode(rootElement.node, node => node.id === se.id) ) {
-						indexesToRemove.push(index);
-					}
-				});
-
-				for ( let i=indexesToRemove.length -1; i>-1; i-- ) {
-					userOptions.searchEngines.splice(indexesToRemove[i], 1);
-				}
-
-				// append hidden OCSEs
-				ffses.forEach( n => {
-					n.parent = rootElement.node;
-					n.hidden = true;
-					rootElement.node.children.push(n);
-				});
-
-				updateNodeList();
-				closeContextMenus();
-			}
-
 		}
-
+			
 		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
 		edit.addEventListener('click', e => {
 			e.stopPropagation();
@@ -1360,7 +1407,7 @@ function buildSearchEngineContainer() {
 				toJSON: li.node.toJSON
 			}
 			
-			insertAfter(newNode, li.node);
+			nodeInsertAfter(newNode, li.node);
 			
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
@@ -1421,21 +1468,7 @@ function buildSearchEngineContainer() {
 			document.removeEventListener('click', contextMenuClose);
 		});
 	}
-	
-	function closeContextMenus() {
-		for (let m of document.querySelectorAll('.contextMenu')) {
-			if (m && m.parentNode) m.parentNode.removeChild(m);
-		}
 		
-		closeSubMenus();
-	}
-	
-	function closeSubMenus() {
-		for (let m of document.querySelectorAll('.subMenu')) {
-			if (m && m.parentNode) m.parentNode.removeChild(m);
-		}
-	}
-	
 	function clearSelectedRows() {
 		table.querySelectorAll('.selected').forEach( row => row.classList.remove('selected') );
 		selectedRows = [];
@@ -1549,30 +1582,14 @@ function buildSearchEngineContainer() {
 	});
 
 	function addIconPickerListener(el, li) {
-		el.addEventListener('change', e => {
-			let file = e.target.files[0];
-			
-			var reader  = new FileReader();
-			
-			reader.addEventListener("load", function () {
-				
-				let img = new Image();
-				
-				img.onload = function() {
-					let form = el.closest('form');;
-					form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
-					li.querySelector("img").src = form.iconURL.value;
+		imageUploadHandler(el, img => {
+			let form = el.closest('form');;
+			form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
+			li.querySelector("img").src = form.iconURL.value;
 
-					form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
-					form.save.click();
-				}
-				img.src = reader.result;
-				
-			}, false);
-			
-			reader.readAsDataURL(file);
-			
-		});
+			form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
+			form.save.click();
+		})
 	}
 
 	let main_ec = $('#collapseAll');
@@ -1585,6 +1602,80 @@ function buildSearchEngineContainer() {
 			main_ec.expand = true;
 		}
 	}
+}
+
+async function removeNodesAndRows() {
+
+	let edit_form = document.getElementById('editSearchEngineForm');
+	selectedRows.forEach( row => {
+		if ( row.contains(edit_form)) {
+			edit_form.style.maxHeight = null;
+			document.body.appendChild(edit_form);
+		}
+	})
+
+	// remember OCSEs to append hidden
+	let ffses = [];
+	selectedRows.forEach( row => {					
+		ffses = ffses.concat(findNodes( row.node, n => n.type === "oneClickSearchEngine"));
+	});
+
+	// remove nodes and rows
+	selectedRows.forEach( row => {
+		if ( row.node.parent ) removeNode(row.node, row.node.parent);
+		if ( row.parentNode ) row.parentNode.removeChild(row);
+	});
+	
+	// remove nodeless searchEngines
+	let indexesToRemove = [];
+	userOptions.searchEngines.forEach( (se,index) => {
+		if ( !findNode(rootElement.node, node => node.id === se.id) ) {
+			indexesToRemove.push(index);
+		}
+	});
+
+	for ( let i=indexesToRemove.length -1; i>-1; i-- ) {
+		userOptions.searchEngines.splice(indexesToRemove[i], 1);
+	}
+
+	// append hidden OCSEs
+	ffses.forEach( n => {
+		n.parent = rootElement.node;
+		n.hidden = true;
+		rootElement.node.children.push(n);
+	});
+
+	updateNodeList();
+	closeContextMenus();
+}
+
+function closeContextMenus() {
+	for (let m of document.querySelectorAll('.contextMenu')) {
+		if (m && m.parentNode) m.parentNode.removeChild(m);
+	}
+	
+	closeSubMenus();
+}
+
+function closeSubMenus() {
+	for (let m of document.querySelectorAll('.subMenu')) {
+		if (m && m.parentNode) m.parentNode.removeChild(m);
+	}
+}
+
+function updateNodeList(forceSave) {
+	
+	forceSave = forceSave || false;
+	
+	let currentNodeTree = JSON.parse(JSON.stringify(rootElement.node));
+	
+//	if ( JSON.stringify(currentNodeTree) != JSON.stringify(userOptions.nodeTree) || forceSave) {
+		// console.log('nodeTrees unequal. Saving');
+		userOptions.nodeTree = currentNodeTree
+		saveOptions();
+//	} else {
+		// console.log('node trees are the same - skipping save');
+	//}
 }
 
 ['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
@@ -1650,10 +1741,17 @@ function createFormContainer(form) {
 	overdiv.style.opacity = 0;
 	document.body.appendChild(overdiv);
 
-	overdiv.onclick = function(e) {
+	// chrome fix for menu closing on text select events
+	overdiv.onmousedown = e => {
+		if ( overdiv !== e.target) return;
+		overdiv.mousedown = true;
+	}
+
+	overdiv.onclick = e => {
+		if ( !overdiv.mousedown ) return;
 		if ( overdiv !== e.target) return;
 		form.close.click();
-	};
+	}
 
 	let formContainer = document.createElement('div');
 	formContainer.id = "floatingEditFormContainer";
@@ -1692,6 +1790,16 @@ document.addEventListener('keydown', e => {
 		e.preventDefault();
 		$('#searchEnginesManagerSearch').focus();
 		$('#searchEnginesManagerSearch').scrollIntoView();
+	}
+});
+
+document.addEventListener('keydown', e => {
+	if ( e.key === 'Delete' && selectedRows.length ) {
+		e.preventDefault();
+
+		if ( confirm(`Delete ${selectedRows.length} nodes?`)) {
+			removeNodesAndRows();
+		}
 	}
 });
 
