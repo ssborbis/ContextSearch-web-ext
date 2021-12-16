@@ -359,7 +359,7 @@ async function buildContextMenu(searchTerms) {
 function contextMenuTitle(searchTerms, context) {
 
 	if (searchTerms.length > 18) 
-	searchTerms = searchTerms.substring(0,15) + "...";
+		searchTerms = searchTerms.substring(0,15) + "...";
 	
 	let hotkey = ''; 
 	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';		
@@ -367,7 +367,7 @@ function contextMenuTitle(searchTerms, context) {
 	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", searchTerms);
 	
 	if ( !searchTerms ) {
-		title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith"));
+		title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith")).replace("%1", "%s");
 	//	if ( context === 'selection')
 	//		title = (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchForWithVariable") );
 	}

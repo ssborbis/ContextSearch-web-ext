@@ -1009,7 +1009,7 @@ function executeOneClickSearch(info) {
 			
 			if ( tabId !== tab.id ) return;
 		
-			if ( changeInfo.status !== 'complete' || changeInfo.url === 'about:blank' ) return;
+			if ( changeInfo.status !== 'complete' || __tab.url === 'about:blank' ) return;
 
 			browser.tabs.onUpdated.removeListener(listener);
 			
@@ -1045,6 +1045,8 @@ function executeOneClickSearch(info) {
 			browser.tabs.onUpdated.removeListener(listener);
 
 			console.log('tab took', Date.now() - start );
+
+			await new Promise(r => setTimeout(r, 500));
 
 			searchAndHighlight(tab);
 		});
@@ -1382,7 +1384,7 @@ async function folderSearch(info, allowFolders) {
 	});
 
 	async function runPromisesInSequence(promises) {
-		for (let promise of promises) 
+		for (let promise of promises)
 			await promise();
 		
 		// if ( !keepMenuOpen(e, true))
@@ -2196,6 +2198,7 @@ function waitOnInjection(tabId) {
 						r(true);
 					}
 				} catch ( error ) {
+					// console.log(tabId, error);
 					clearInterval(ival);
 					clearTimeout(timeout);
 					r(false);
