@@ -1578,7 +1578,7 @@ function buildSearchEngineContainer() {
 		// updated the local UO
 		userOptions = w.userOptions;
 		await saveOptions();
-		location.href = "options.html#engines";
+		location.reload();
 	});
 
 	function addIconPickerListener(el, li) {
