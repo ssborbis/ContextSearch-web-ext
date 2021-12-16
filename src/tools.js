@@ -39,11 +39,7 @@ var QMtools = [
 						return;
 					}
 				}
-				let rawtext = await browser.runtime.sendMessage({action: "getRawSelectedText"});
-
-				rawtext = rawtext || sb.value;
-
-				browser.runtime.sendMessage({action:"copy", msg: rawtext });
+				let copy = await browser.runtime.sendMessage({action: "copyRaw"});
 
 				this.dataset.locked = true;
 

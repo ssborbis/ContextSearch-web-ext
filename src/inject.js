@@ -47,6 +47,11 @@ function isTextBox(element) {
 	);
 }
 
+function copyRaw() {
+	let rawText = getRawSelectedText(window.activeElement);
+	navigator.clipboard.writeText(rawText);
+}
+
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 

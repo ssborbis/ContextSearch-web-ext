@@ -248,7 +248,8 @@ async function notify(message, sender, sendResponse) {
 			window.searchTerms = message.searchTerms;
 			
 			if ( userOptions.autoCopy && message.searchTerms )
-				notify({action: "copy", msg: message.searchTerms});
+				notify({action: "copyRaw"});
+				//notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
@@ -508,9 +509,16 @@ async function notify(message, sender, sendResponse) {
 				
 				return true;
 			} catch (error) {
+				console.log(error);
 				return false;
 			}
 
+			break;
+
+		case "copyRaw":
+			return browser.tabs.executeScript(sender.tab.id, {
+				code: "copyRaw()"
+			});
 			break;
 			
 		case "hasBrowserSearch":
