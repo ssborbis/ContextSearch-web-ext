@@ -1000,7 +1000,7 @@ function executeOneClickSearch(info) {
 	async function searchAndHighlight(tab) {
 
 		// new tab requires a delay if the current page is options.html for some reason???
-		await new Promise(r => setTimeout(r, 50));
+		await new Promise(r => setTimeout(r, 500));
 
 		browser.search.search({
 			query: searchTerms,
