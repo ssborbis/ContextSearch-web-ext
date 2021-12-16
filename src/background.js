@@ -2085,9 +2085,11 @@ function openSearchXMLToSearchEngine(xml) {
 
 }
 
-function isAllowedURL(url) {
+function isAllowedURL(_url) {
+
+
 	try {
-		let url = new URL(url);
+		let url = new URL(_url);
 
 		// test for pure hostname
 		if ( userOptions.blockList.includes(url.hostname)) return false;
@@ -2120,7 +2122,7 @@ function isAllowedURL(url) {
 				continue;
 			} catch (err) {}
 		}
-	} catch (err) { console.log('bad url for tab', url)}
+	} catch (err) { console.log('bad url for tab', _url)}
 
 	return true;
 }
