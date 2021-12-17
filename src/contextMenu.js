@@ -52,7 +52,7 @@ async function buildContextMenu(searchTerms) {
 		}
 	}
 
-	function traverse(node, parentId) {
+	function traverse(node, parentId, context) {
 		
 		if (node.hidden) return;
 		
@@ -80,7 +80,7 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem({
 				parentId: parentId,
 				title: getTitleWithHotkey(node),
-				id: _id,	
+				id: context + "_" + _id,	
 				icons: {
 					"16": se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 				}
@@ -177,7 +177,7 @@ async function buildContextMenu(searchTerms) {
 			}
 			
 			for (let child of node.children) {
-				traverse(child, _id);
+				traverse(child, _id, context);
 			}
 		}
 		
@@ -271,16 +271,16 @@ async function buildContextMenu(searchTerms) {
 					
 				} 
 
-				traverse(folder, context);
+				traverse(folder, context, context);
 			}
 
 			// matching regex engines
 			 if ( userOptions.contextMenuRegexMatchedEngines ) {
 			 	let folder = matchingEnginesToFolder(searchTerms || "");
-			 	traverse(folder, context);
+			 	traverse(folder, context, context);
 			}
 
-			filteredNodeTree.children.forEach( child => traverse(child, context) );
+			filteredNodeTree.children.forEach( child => traverse(child, context, context) );
 		});
 	}
 
@@ -475,6 +475,18 @@ function updateMatchRegexFolder(s, context) {
 
 function contextMenuSearch(info, tab) {
 
+	// check for context prefix
+	let context = "";
+	for ( c of contexts ) {
+		if ( info.menuItemId.startsWith(c + "_") ) {
+			context = c;
+			info.menuItemId = info.menuItemId.replace(/^[a-zA-Z0-9]+_/, "");
+			break;
+		}
+	}
+
+	console.log(context, info.menuItemId);
+
 	// remove incremental menu ids
 	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
 	
@@ -530,6 +542,27 @@ function contextMenuSearch(info, tab) {
 			searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;		
 	} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
 		searchTerms = window.searchTerms.trim();
+
+	// if using contextual layout, set the search terms according to context
+	switch ( context ) {
+		case "selection":
+			searchTerms = info.selectionText.trim();
+			break;
+		case "link":
+			searchTerms = info.linkUrl;
+			break;
+		case "page":
+			searchTerms = tab.url;
+			break;
+		case "frame":
+			searchTerms = info.frameUrl;
+			break;
+		case "image":
+		case "video":
+		case "audio":
+			searchTerms = info.srcUrl;
+			break;
+	}
 
 	if ( !searchTerms ) return;
 
