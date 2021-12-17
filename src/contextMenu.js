@@ -53,6 +53,8 @@ async function buildContextMenu(searchTerms) {
 	}
 
 	function traverse(node, parentId, context) {
+
+		let context_prefix = ( context ) ? context + "_" : "";
 		
 		if (node.hidden) return;
 		
@@ -80,7 +82,7 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem({
 				parentId: parentId,
 				title: getTitleWithHotkey(node),
-				id: context + "_" + _id,	
+				id: context_prefix + _id,	
 				icons: {
 					"16": se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 				}
@@ -95,7 +97,7 @@ async function buildContextMenu(searchTerms) {
 					let pathId = '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(path);
 					
 					addMenuItem({
-						parentId: _id,
+						parentId: context_prefix + _id,
 						title: path,
 						id: pathId,
 						icons: {
@@ -567,6 +569,7 @@ function contextMenuSearch(info, tab) {
 	if ( !searchTerms ) return;
 
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
+
 		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(info.menuItemId);
 		info.menuItemId = groups[1];
 		info.domain = atob(groups[2]);	
@@ -591,7 +594,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	function onFound(tabs) {
 		let tab = tabs[0];
 		
-		if ( tab && tab.id && tabId === tab.id && changeInfo.url && changeInfo.url !== "about:blank" && tab.active)
+		if ( tab && tab.id && tabId === tab.id && tabInfo.url && tabInfo.url !== "about:blank" && tab.active)
 			buildContextMenu();
 	}
 	
