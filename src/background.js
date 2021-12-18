@@ -1754,6 +1754,8 @@ function updateUserOptionsVersion(uo) {
 				}
 				
 				arr[index].query_string = arr[index].template;
+
+				delete se.query_string;
 			}
 		});
 
