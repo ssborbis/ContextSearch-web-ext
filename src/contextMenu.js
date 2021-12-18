@@ -99,7 +99,7 @@ async function buildContextMenu(searchTerms) {
 					addMenuItem({
 						parentId: context_prefix + _id,
 						title: path,
-						id: pathId,
+						id: context_prefix + pathId,
 						icons: {
 							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 						}
