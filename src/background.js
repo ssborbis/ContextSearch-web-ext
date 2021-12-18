@@ -3,12 +3,10 @@
 window.contextMenuMatchRegexMenus = [];
 
 window.contextMenuSearchTerms = "";
-
-let debounceTimer;
  
-const debounce = (callback, time) => {
-  window.clearTimeout(debounceTimer);
-  debounceTimer = window.setTimeout(callback, time);
+const debounce = (callback, time, id) => {
+  window.clearTimeout(window[id]);
+  window[id] = window.setTimeout(callback, time);
 }
 
 async function notify(message, sender, sendResponse) {
@@ -52,7 +50,7 @@ async function notify(message, sender, sendResponse) {
 					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
 				}
 				buildContextMenu();
-			}, 1000);
+			}, 1000, "updateUserOptionsTimer");
 			break;
 			
 		case "openOptions":
