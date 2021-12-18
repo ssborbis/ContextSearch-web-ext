@@ -200,14 +200,21 @@ async function buildContextMenu(searchTerms) {
 	if (!userOptions.contextMenu) return false;
 
 	if (userOptions.contextMenuShowAddCustomSearch) {
-
-		addMenuItem({
+		let createProperties = {
 			id: "add_engine",
 			title: browser.i18n.getMessage("AddCustomSearch"),
 			contexts: ["editable"],
 			icons: { "16": browser.runtime.getURL('icons/logo_notext.svg') },
 			visible: false
-		});
+		}
+
+		// Waterfox Classic fix
+		try {
+			addMenuItem(createProperties);
+		} catch ( error ) {
+			delete createProperties.visible;
+			addMenuItem(createProperties);
+		}
 	}
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
