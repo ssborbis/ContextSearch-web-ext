@@ -4,6 +4,13 @@ window.contextMenuMatchRegexMenus = [];
 
 window.contextMenuSearchTerms = "";
 
+let debounceTimer;
+ 
+const debounce = (callback, time) => {
+  window.clearTimeout(debounceTimer);
+  debounceTimer = window.setTimeout(callback, time);
+}
+
 async function notify(message, sender, sendResponse) {
 
 	function sendMessageToTopFrame() {
@@ -37,11 +44,15 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateUserOptions":
-			let tabs = await getAllOpenTabs();
-			for (let tab of tabs) {
-				browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-			}
-			buildContextMenu();
+
+			debounce(async () => {
+				console.log('updateUserOptions');
+				let tabs = await getAllOpenTabs();
+				for (let tab of tabs) {
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+				}
+				buildContextMenu();
+			}, 1000);
 			break;
 			
 		case "openOptions":
