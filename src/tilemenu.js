@@ -1846,6 +1846,9 @@ dragCleanup = () => {
 	// remove indicator
 	let dummy = document.querySelector('.dummy');
 	if ( dummy ) dummy.parentNode.removeChild(dummy);
+
+	delete window.dragTile;
+	delete window.dragNode;
 }
 
 undraggable = el => {
@@ -1888,6 +1891,8 @@ makeMarker = () => {
 	});
 
 	document.addEventListener('drop', e => {
+
+		if ( window.dragTile ) return;
 
 		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
 

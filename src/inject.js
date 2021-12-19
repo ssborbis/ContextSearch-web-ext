@@ -52,6 +52,19 @@ function copyRaw() {
 	navigator.clipboard.writeText(rawText);
 }
 
+function getContexts(el) {
+	let contexts = [];
+
+	if ( el instanceof HTMLImageElement ) contexts.push('image');
+	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
+	if ( el instanceof HTMLVideoElement ) contexts.push('video');
+
+	if ( el && el.closest('a')) contexts.push('link');
+	if ( el && getSelectedText(el)) contexts.push('selection');
+
+	return contexts;
+}
+
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 

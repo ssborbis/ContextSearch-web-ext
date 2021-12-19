@@ -1,8 +1,11 @@
 // context menu entries need to be tracked to be updated
-// window.contextMenuSelectDomainMenus = [];
 window.contextMenuMatchRegexMenus = [];
-
 window.contextMenuSearchTerms = "";
+ 
+const debounce = (callback, time, id) => {
+  window.clearTimeout(window[id]);
+  window[id] = window.setTimeout(callback, time);
+}
 
 async function notify(message, sender, sendResponse) {
 
@@ -37,11 +40,15 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "updateUserOptions":
-			let tabs = await getAllOpenTabs();
-			for (let tab of tabs) {
-				browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-			}
-			buildContextMenu();
+
+			debounce(async () => {
+				console.log('updateUserOptions');
+				let tabs = await getAllOpenTabs();
+				for (let tab of tabs) {
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+				}
+				buildContextMenu();
+			}, 1000, "updateUserOptionsTimer");
 			break;
 			
 		case "openOptions":
@@ -1754,6 +1761,8 @@ function updateUserOptionsVersion(uo) {
 				}
 				
 				arr[index].query_string = arr[index].template;
+
+				delete se.query_string;
 			}
 		});
 

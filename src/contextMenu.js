@@ -52,7 +52,9 @@ async function buildContextMenu(searchTerms) {
 		}
 	}
 
-	function traverse(node, parentId) {
+	function traverse(node, parentId, context) {
+
+		let context_prefix = ( context ) ? context + "_" : "";
 		
 		if (node.hidden) return;
 		
@@ -80,7 +82,7 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem({
 				parentId: parentId,
 				title: getTitleWithHotkey(node),
-				id: _id,	
+				id: context_prefix + _id,	
 				icons: {
 					"16": se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 				}
@@ -95,9 +97,9 @@ async function buildContextMenu(searchTerms) {
 					let pathId = '__selectDomain__' + se.id + '_' + count++ + "_" + btoa(path);
 					
 					addMenuItem({
-						parentId: _id,
+						parentId: context_prefix + _id,
 						title: path,
-						id: pathId,
+						id: context_prefix + pathId,
 						icons: {
 							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
 						}
@@ -105,8 +107,7 @@ async function buildContextMenu(searchTerms) {
 					
 					pathIds.push(pathId);
 				});
-				
-				// window.contextMenuSelectDomainMenus.push( {id: _id, se: se, pathIds: pathIds} );
+
 			}
 			
 		}
@@ -177,7 +178,7 @@ async function buildContextMenu(searchTerms) {
 			}
 			
 			for (let child of node.children) {
-				traverse(child, _id);
+				traverse(child, _id, context);
 			}
 		}
 		
@@ -185,8 +186,6 @@ async function buildContextMenu(searchTerms) {
 
 	// catch android
 	if ( !browser.contextMenus ) return;
-
-	// window.contextMenuSelectDomainMenus = [];
 	
 	await browser.contextMenus.removeAll();
 	
@@ -198,14 +197,21 @@ async function buildContextMenu(searchTerms) {
 	if (!userOptions.contextMenu) return false;
 
 	if (userOptions.contextMenuShowAddCustomSearch) {
-
-		addMenuItem({
+		let createProperties = {
 			id: "add_engine",
 			title: browser.i18n.getMessage("AddCustomSearch"),
 			contexts: ["editable"],
 			icons: { "16": browser.runtime.getURL('icons/logo_notext.svg') },
 			visible: false
-		});
+		}
+
+		// Waterfox Classic fix
+		try {
+			addMenuItem(createProperties);
+		} catch ( error ) {
+			delete createProperties.visible;
+			addMenuItem(createProperties);
+		}
 	}
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
@@ -271,16 +277,16 @@ async function buildContextMenu(searchTerms) {
 					
 				} 
 
-				traverse(folder, context);
+				traverse(folder, context, context);
 			}
 
 			// matching regex engines
 			 if ( userOptions.contextMenuRegexMatchedEngines ) {
 			 	let folder = matchingEnginesToFolder(searchTerms || "");
-			 	traverse(folder, context);
+			 	traverse(folder, context, context);
 			}
 
-			filteredNodeTree.children.forEach( child => traverse(child, context) );
+			filteredNodeTree.children.forEach( child => traverse(child, context, context) );
 		});
 	}
 
@@ -315,13 +321,6 @@ async function buildContextMenu(searchTerms) {
 			id: ROOT_MENU,
 			title: contextMenuTitle(""),
 			contexts: contexts
-		}, () => {
-
-			// browser.contextMenus.update("add_engine", { parentId: ROOT_MENU}).then(() => {
-			// 	if (browser.runtime.lastError)
-			// 		console.log(browser.runtime.lastError);
-			// });
-
 		});
 
 		if ( userOptions.syncWithFirefoxSearch ) {
@@ -383,47 +382,6 @@ function contextMenuTitle(searchTerms, context) {
 
 }
 
-// function updateSelectDomainMenus(tab) {
-	
-// 	if (!window.contextMenuSelectDomainMenus ) return;
-	
-// 	window.contextMenuSelectDomainMenus = [...new Set(window.contextMenuSelectDomainMenus)];
-	
-// 	window.contextMenuSelectDomainMenus.forEach( menu => {
-		
-// 		menu.pathIds.forEach( pathId => browser.contextMenus.remove( pathId ) );
-		
-// 		menu.pathIds = [];
-		
-// 		// create a new unique iterator
-// 		let count = Date.now();
-				
-// 		getDomainPaths(tab.url).forEach( path => {
-			
-// 			let pathId = '__selectDomain__' + menu.se.id + '_' + count++ + "_" + btoa(path);
-			
-// 			menu.pathIds.push(pathId);
-			
-// 			let createOptions = {
-// 				parentId: menu.id,
-// 				title: path,
-// 				id: pathId,
-// 				icons: {
-// 					"16": tab.favIconUrl || menu.se.icon_base64String || menu.se.icon_url || "/icons/logo_notext.svg"
-// 				},
-// 				contexts: ["selection", "link", "image", "page"]
-// 			};
-
-// 			try {
-// 				browser.contextMenus.create( createOptions);
-// 			} catch (error) { // non-Firefox
-// 				delete createOptions.icons;
-// 				browser.contextMenus.create( createOptions);
-// 			}
-// 		});
-// 	});
-// }
-
 function updateMatchRegexFolders(s) {
 	console.log('updateMatchRegexFolders');
 
@@ -475,23 +433,23 @@ function updateMatchRegexFolder(s, context) {
 
 function contextMenuSearch(info, tab) {
 
+	// check for context prefix
+	let context = "";
+	for ( c of contexts ) {
+		if ( info.menuItemId.startsWith(c + "_") ) {
+			context = c;
+			info.menuItemId = info.menuItemId.replace(/^[a-zA-Z0-9]+_/, "");
+			break;
+		}
+	}
+
+	console.log(context, info.menuItemId);
+
 	// remove incremental menu ids
 	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
 	
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
-	
-	// if (info.menuItemId === 'showSuggestions') {
-	// 	userOptions.searchBarSuggestions = info.checked;
-	// 	notify({action: "saveOptions", userOptions:userOptions});
-	// 	return;
-	// }
-	
-	// if (info.menuItemId === 'clearHistory') {
-	// 	userOptions.searchBarHistory = [];
-	// 	notify({action: "saveOptions", userOptions:userOptions});
-	// 	return;
-	// }
-	
+		
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
 		browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
@@ -531,9 +489,31 @@ function contextMenuSearch(info, tab) {
 	} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
 		searchTerms = window.searchTerms.trim();
 
+	// if using contextual layout, set the search terms according to context
+	switch ( context ) {
+		case "selection":
+			searchTerms = info.selectionText.trim();
+			break;
+		case "link":
+			searchTerms = info.linkUrl;
+			break;
+		case "page":
+			searchTerms = tab.url;
+			break;
+		case "frame":
+			searchTerms = info.frameUrl;
+			break;
+		case "image":
+		case "video":
+		case "audio":
+			searchTerms = info.srcUrl;
+			break;
+	}
+
 	if ( !searchTerms ) return;
 
 	if (typeof info.menuItemId === 'string' && info.menuItemId.startsWith("__selectDomain__") ) {
+
 		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(info.menuItemId);
 		info.menuItemId = groups[1];
 		info.domain = atob(groups[2]);	
@@ -558,7 +538,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	function onFound(tabs) {
 		let tab = tabs[0];
 		
-		if ( tab && tab.id && tabId === tab.id && changeInfo.url && changeInfo.url !== "about:blank" && tab.active)
+		if ( tab && tab.id && tabId === tab.id && tabInfo.url && tabInfo.url !== "about:blank" && tab.active)
 			buildContextMenu();
 	}
 	

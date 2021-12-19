@@ -153,18 +153,23 @@ function repairNodeTree(tree) {
 }
 
 function getIconFromNode(node) {
+
+	let iconUrl = (() => {
 	
-	if ( node.type === "searchEngine" || node.type === "siteSearch" || node.type === "siteSearchFolder") {
-		let se = userOptions.searchEngines.find( se => se.id === node.id );
-		if ( !se ) return browser.runtime.getURL('icons/search.svg');
-		return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
-	} else if ( node.type === "bookmarklet" ) {
-		return node.icon || browser.runtime.getURL('icons/code.svg');
-	} else if ( node.type === "folder" ) {
-		return node.icon || browser.runtime.getURL('icons/folder-icon.svg');
-	} else {
-		return node.icon || null;
-	}
+		if ( node.type === "searchEngine" || node.type === "siteSearch" || node.type === "siteSearchFolder") {
+			let se = userOptions.searchEngines.find( se => se.id === node.id );
+			if ( !se ) return browser.runtime.getURL('icons/search.svg');
+			return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
+		} else if ( node.type === "bookmarklet" ) {
+			return node.icon || browser.runtime.getURL('icons/code.svg');
+		} else if ( node.type === "folder" ) {
+			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');
+		} else {
+			return node.icon || null;
+		}
+	})();
+
+	return iconUrl.replace(/http:\/\//, "https://");
 }
 
 function nodeCut(node) {
