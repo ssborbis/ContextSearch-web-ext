@@ -1,7 +1,5 @@
 // context menu entries need to be tracked to be updated
-// window.contextMenuSelectDomainMenus = [];
 window.contextMenuMatchRegexMenus = [];
-
 window.contextMenuSearchTerms = "";
  
 const debounce = (callback, time, id) => {
