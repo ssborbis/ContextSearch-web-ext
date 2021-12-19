@@ -575,7 +575,7 @@ GROUP.block > LABEL {
 	/*pointer-events: none;*/
 }
 
-GROUP.inline .tile {
+GROUP.inline .tile:not(HR) {
 	background-color: var(--group-color);
 }
 GROUP.inline.break {
