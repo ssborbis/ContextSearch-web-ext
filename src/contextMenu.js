@@ -166,15 +166,20 @@ async function buildContextMenu(searchTerms) {
 			
 			// add menu item to search entire folder
 			if ( userOptions.contextMenuShowFolderSearch && node.children.length ) {
+
+				// skip special folders
+				if ( node.id !== "___recent___") {
 				
-				addMenuItem({
-					parentId: _id,
-					id: node.id + "_" + id,
-					title: browser.i18n.getMessage("SearchAll"),
-					icons: {
-						"16": "icons/search.svg"
-					}
-				});
+					addMenuItem({
+						parentId: _id,
+						id: node.id + "_" + id,
+						title: browser.i18n.getMessage("SearchAll"),
+						icons: {
+							"16": "icons/search.svg"
+						}
+					});
+
+				}
 			}
 			
 			for (let child of node.children) {
@@ -297,12 +302,14 @@ async function buildContextMenu(searchTerms) {
 				let folder = recentlyUsedListToFolder();
 				
 				if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
-					
+					traverse(folder, context, context);
 				} else {
-					
-				} 
+				//	root.children.unshift({type: "separator"});
+					folder.children.forEach( c => c.title = "🕒 " + c.title);		
+					folder.children.forEach( c => traverse(c, context, context));
+				}
 
-				traverse(folder, context, context);
+				// traverse(folder, context, context);
 			}
 
 			// matching regex engines
@@ -392,7 +399,7 @@ function contextMenuTitle(searchTerms, context) {
 	let hotkey = ''; 
 	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';		
 
-	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", searchTerms);
+	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", "%s").replace("%s", searchTerms);
 	
 	if ( !searchTerms ) {
 		title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith")).replace("%1", "%s");
