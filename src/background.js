@@ -277,6 +277,7 @@ async function notify(message, sender, sendResponse) {
 			else {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
+
 				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
 					updateMatchRegexFolder(searchTerms);
 				});
@@ -1752,7 +1753,7 @@ function updateUserOptionsVersion(uo) {
 		// delete se.query_string in a future release
 		// if ( !_uo.searchEngines.find( se => se.query_string ) ) return _uo;
 
-		console.log("-> 1.27");
+		let flag = false;
 		
 		_uo.searchEngines.forEach( (se,index,arr) => {
 			if ( se.query_string ) {
@@ -1765,8 +1766,12 @@ function updateUserOptionsVersion(uo) {
 				arr[index].query_string = arr[index].template;
 
 				delete se.query_string;
+
+				flag = true;
 			}
 		});
+
+		if ( flag ) console.log("-> 1.27");
 
 		return _uo;	
 	}).then( _uo => {
@@ -1842,7 +1847,7 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
-		console.log('Done', Date.now() - start);
+		console.log('Done ->', _uo.version, Date.now() - start);
 		return _uo;
 	});
 }
@@ -2149,7 +2154,7 @@ async function injectContentScripts(tab, frameId) {
 	}
 
 	onFound = () => {}
-	onError = (err) => {console.log(err)}
+	onError = (err) => {console.log(err, tab.url)}
 
 	// inject into any frame
 	[
@@ -2182,40 +2187,42 @@ async function injectContentScripts(tab, frameId) {
 
 function waitOnInjection(tabId) {
 
-	let ival;
+	let interval;
 	let timeout;
+	let start = Date.now();
 
-	console.log('waitOnInjection', tabId);
+	return Promise.race([
 
-	return Promise.race([ 
+		// timeout
 		new Promise(r => {
 			timeout = setTimeout(() => {
-				clearInterval(ival);
+				clearInterval(interval);
 				clearTimeout(timeout);
-				console.log('waitOnInjection timeout', tabId);
 				r(false);
+				console.error('waitOnInjection timeout', tabId);
 			}, 15000);
-		}), 
-		new Promise( ( r, reject ) => {
-			ival = setInterval(async () => {
+		}),
+
+		// interval test
+		new Promise(r => {
+			interval = setInterval(async () => {
 				try {
-					let result = await browser.tabs.executeScript(tabId, {
-						code: "window.hasRun"
-					});
+					let result = await browser.tabs.executeScript(tabId, { code: "window.hasRun"} );
 
 					if ( result[0] ) {
-						clearInterval(ival);
+						clearInterval(interval);
 						clearTimeout(timeout);
+						console.log(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
 						r(true);
 					}
+
 				} catch ( error ) {
 					// console.log(tabId, error);
-					clearInterval(ival);
+					clearInterval(interval);
 					clearTimeout(timeout);
+					console.error('waitOnInjection failed', tabId);
 					r(false);
-				}
-
-				
+				}				
 			}, 500);
 		})
 	]);
