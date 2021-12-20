@@ -184,6 +184,31 @@ async function buildContextMenu(searchTerms) {
 		
 	}
 
+	function addOptions(context, root) {
+
+		context = context || "";
+		root = root || "";
+
+		let context_prefix = ( context ) ? context + "_" : "";
+
+		addMenuItem({
+			parentId: root,
+			title: browser.i18n.getMessage('settings'),
+			id: context_prefix + "___options___",
+			icons: {
+				"16": browser.runtime.getURL('icons/settings.svg')
+			}
+		});
+
+		addMenuItem({
+			title: "Contextual layout",
+			id: context_prefix + "contextMenuUseContextualLayout",
+			parentId: context_prefix + "___options___",
+			type: "checkbox",
+			checked: userOptions.contextMenuUseContextualLayout
+		});
+	}
+
 	// catch android
 	if ( !browser.contextMenus ) return;
 	
@@ -287,6 +312,8 @@ async function buildContextMenu(searchTerms) {
 			}
 
 			filteredNodeTree.children.forEach( child => traverse(child, context, context) );
+
+			addOptions(context, context);
 		});
 	}
 
@@ -345,6 +372,8 @@ async function buildContextMenu(searchTerms) {
 		}
 
 		root.children.forEach( child => traverse(child, ROOT_MENU) );
+
+		addOptions("", ROOT_MENU);
 
 	}
 
@@ -419,11 +448,11 @@ function updateMatchRegexFolder(s, context) {
 		};
 
 		try {
-			browser.contextMenus.create( createOptions);
+			browser.contextMenus.create(createOptions);
 		} catch (error) { // non-Firefox
 			delete createOptions.icons;
 			try {
-				browser.contextMenus.create( createOptions);
+				browser.contextMenus.create(createOptions);
 			} catch ( error ) { console.log(error)}
 		}
 
@@ -441,6 +470,13 @@ function contextMenuSearch(info, tab) {
 			info.menuItemId = info.menuItemId.replace(/^[a-zA-Z0-9]+_/, "");
 			break;
 		}
+	}
+
+	if ( info.menuItemId === 'contextMenuUseContextualLayout' ) {
+		userOptions.contextMenuUseContextualLayout = !userOptions.contextMenuUseContextualLayout;
+		notify({action: "saveUserOptions", userOptions: userOptions});
+		buildContextMenu();
+		return;
 	}
 
 	console.log(context, info.menuItemId);

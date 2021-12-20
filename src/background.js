@@ -272,14 +272,16 @@ async function notify(message, sender, sendResponse) {
 			
 			window.contextMenuSearchTerms = searchTerms;
 
-			updateMatchRegexFolders(searchTerms);
-
-			try {
+			if ( userOptions.contextMenuUseContextualLayout )
+				updateMatchRegexFolders(searchTerms);
+			else {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
-				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title});
-				updateMatchRegexFolder(searchTerms);
-			} catch (error) { console.log(error)}
+				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
+					updateMatchRegexFolder(searchTerms);
+				});
+				
+			} 
 
 			break;
 			
