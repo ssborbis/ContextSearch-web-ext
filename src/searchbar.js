@@ -388,7 +388,7 @@ document.getElementById('closeButton').addEventListener('click', e => {
 		window.close();
 });
 
-addChildDockingListeners(mb, "sideBar");
+addChildDockingListeners(mb, "sideBar", "minimizeButton");
 
 if ( window == top ) {
 	document.getElementById('minimizeButton').style.display = "none";
