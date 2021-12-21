@@ -5,3 +5,9 @@
 	margin-bottom:-8px;
 	padding-bottom:8px;
 }
+#info_msg {
+	max-width:320px;
+}
+.tablinks {
+	min-width:250px;
+}
