@@ -657,16 +657,26 @@ async function makeQuickMenu(options) {
 
 		// remove doubles
 		qm.querySelectorAll('br').forEach( el => {
+
+			// back-to-back BRs
 			if (el.previousSibling && el.previousSibling.nodeName === el.nodeName && el.previousSibling.className === el.className )
 				el.parentNode.removeChild(el);
-		});
-		// qm.querySelectorAll('br').forEach( lc => {
-		// 	console.log('break after', lc.previousSibling);
-		// })
 
-		// qm.querySelectorAll('GROUP.block .container:last-child').forEach( lc => {
-		// 	console.log(lc.nodeName);
-		// }
+			// groups
+			if ( el.previousSibling && el.previousSibling.nodeName === "GROUP" ) {
+				let g = el.previousSibling;
+
+				// inline groups
+				if ( g.lastChild && g.lastChild.nodeName === el.nodeName )
+					g.removeChild(g.lastChild);
+
+				// block groups
+				let lastBr = g.querySelector('br:last-of-type');
+				if ( lastBr && !lastBr.nextSibling )
+					lastBr.parentNode.removeChild(lastBr);
+			}
+
+		});
 
 		return qm.querySelectorAll('br').length;
 
