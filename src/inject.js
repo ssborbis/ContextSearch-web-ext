@@ -49,6 +49,9 @@ function isTextBox(element) {
 
 function copyRaw() {
 	let rawText = getRawSelectedText(window.activeElement);
+
+	if ( !rawText ) rawText = quickMenuObject.searchTerms;
+
 	navigator.clipboard.writeText(rawText);
 }
 
