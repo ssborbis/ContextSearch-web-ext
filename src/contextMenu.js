@@ -329,6 +329,8 @@ async function buildContextMenu(searchTerms) {
 
 		if ( userOptions.contextMenuOnImages) contexts.push("image");
 		if ( userOptions.contextMenuOnLinks) contexts.push("link");
+
+		if ( userOptions.contextMenuUseInnerText ) contexts.push("page");
 		
 		// recently used engines
 		if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
