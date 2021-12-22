@@ -1348,6 +1348,7 @@ function buildSearchEngineContainer() {
 					let newLi = traverse(_newNode, li.parentNode);
 					li.parentNode.insertBefore(newLi, li);
 					
+					updateNodeList(true);
 					closeContextMenus();
 				});
 				
@@ -1358,8 +1359,8 @@ function buildSearchEngineContainer() {
 				item2.addEventListener('click', _e => {
 					let _newNode = addNewEngine(li.node, true);
 					addNode(_newNode, li);
-					updateNodeList(true);
 					
+					updateNodeList(true);
 					closeContextMenus();
 				});
 				
