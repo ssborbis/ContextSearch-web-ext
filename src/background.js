@@ -1,6 +1,8 @@
 // context menu entries need to be tracked to be updated
 window.contextMenuMatchRegexMenus = [];
 window.contextMenuSearchTerms = "";
+
+const lazyUpdate = true;
  
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
@@ -41,14 +43,16 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateUserOptions":
 
-			debounce(async () => {
-				console.log('updateUserOptions');
-				let tabs = await getAllOpenTabs();
-				for (let tab of tabs) {
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-				}
-				buildContextMenu();
-			}, 1000, "updateUserOptionsTimer");
+			if ( !lazyUpdate ) {
+				debounce(async () => {
+					console.log('updateUserOptions');
+					let tabs = await getAllOpenTabs();
+					for (let tab of tabs) {
+						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+					}
+					buildContextMenu();
+				}, 1000, "updateUserOptionsTimer");
+			}
 			break;
 			
 		case "openOptions":
@@ -2227,3 +2231,10 @@ function waitOnInjection(tabId) {
 		})
 	]);
 }
+
+// lazy tab updates
+browser.tabs.onActivated.addListener( async tabInfo => {
+	if ( lazyUpdate ) 
+		browser.tabs.sendMessage(tabInfo.tabId, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+});
+
