@@ -1694,6 +1694,8 @@ document.addEventListener('dragover', e => {
 	if ( !window.dragNode ) return;
 	if ( tile.dataset.type === 'tool' ) return;
 
+	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
+
 	if ( undroppable(tile) ) return;
 
 	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
@@ -1771,6 +1773,10 @@ document.addEventListener('drop', e => {
 
 	if ( !tile ) return;
 	if ( !window.dragNode ) return;
+	if ( window.dragNode === tile.node ) return;
+	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
+
+	console.log(tile.node, window.dragNode);
 
 	if ( undroppable(tile) ) return console.log('undroppable');
 
