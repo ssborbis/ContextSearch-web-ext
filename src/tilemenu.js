@@ -1734,13 +1734,10 @@ document.addEventListener('dragover', e => {
 
 		if ( isTargetBeforeGroup(tile, dec) ) 
 			tile.classList.remove('groupHighlight');
-			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 		else if ( isTargetAfterGroup(tile, dec) ) 
 			tile.classList.remove('groupHighlight');
-			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 		else
 			tile.classList.add('groupHighlight');
-			//targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
 	}	
 
 });
@@ -1775,8 +1772,6 @@ document.addEventListener('drop', e => {
 	if ( !window.dragNode ) return;
 	if ( window.dragNode === tile.node ) return;
 	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
-
-	console.log(tile.node, window.dragNode);
 
 	if ( undroppable(tile) ) return console.log('undroppable');
 
