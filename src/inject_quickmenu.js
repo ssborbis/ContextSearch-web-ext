@@ -203,26 +203,26 @@ document.addEventListener('keyup', e => {
 });
 
 // Listen for HOLD quickMenuMouseButton
-document.addEventListener('mousedown', ev => {
+document.addEventListener('mousedown', e => {
 
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
-		ev.which !== userOptions.quickMenuMouseButton ||
-		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) ) ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs ) ||
-		!ev.isTrusted
+		e.which !== userOptions.quickMenuMouseButton ||
+		!hasSearchTerms(e) ||
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
+		!e.isTrusted
 	) return false;
 
-	if ( ev.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
+	if ( e.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
 		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > 500 ) {
-			document.addEventListener('contextmenu', e => {
-				e.preventDefault();
-				e.stopImmediatePropagation();
+			document.addEventListener('contextmenu', _e => {
+				_e.preventDefault();
+				_e.stopImmediatePropagation();
 			}, {once: true});
 		} else {
-			document.addEventListener('contextmenu', e => {
+			document.addEventListener('contextmenu', _e => {
 				clearTimeout(quickMenuObject.mouseDownTimer);
 				quickMenuObject.mouseDownTimer = null;
 			}, {once: true});	
@@ -231,47 +231,47 @@ document.addEventListener('mousedown', ev => {
 		quickMenuObject.mouseLastContextMenuTime = Date.now();
 	}
 	
-	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
+	quickMenuObject.mouseCoordsInit = {x: e.clientX, y: e.clientY};
 	
 	// timer for mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(() => {	
 
 		// prevent drag events when using search on mouseup
-		function preventDrag(e) { e.preventDefault() }
+		function preventDrag(_e) { _e.preventDefault() }
 		window.addEventListener('dragstart', preventDrag, {once: true});
 
 		// ignore select / drag events
-	//	if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > quickMenuObject.mouseDragDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > quickMenuObject.mouseDragDeadzone ) return false;
+		if (Math.abs(quickMenuObject.mouseCoords.x - quickMenuObject.mouseCoordsInit.x) > userOptions.quickMenuCancelDeadzone || Math.abs(quickMenuObject.mouseCoords.y - quickMenuObject.mouseCoordsInit.y) > userOptions.quickMenuCancelDeadzone ) return false;
 
 		// prevent losing text selection
-		document.addEventListener('mouseup', evv => {
-			if (evv.which !== ev.which) return;
-			evv.preventDefault();
+		document.addEventListener('mouseup', _e => {
+			if (_e.which !== e.which) return;
+			_e.preventDefault();
 			quickMenuObject.mouseLastClickTime = Date.now();
 			clearTimeout(quickMenuObject.mouseDownTimer);
 			quickMenuObject.mouseDownTimer = null;
 		}, {once: true});
 		
-		if (ev.which === 1) {
+		if (e.which === 1) {
 			// Disable click to prevent links from opening
-			ev.target.addEventListener('click', evv => {
-				if (evv.which !== 1) return;
-				evv.preventDefault();
+			e.target.addEventListener('click', _e => {
+				if (_e.which !== 1) return;
+				_e.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true});
 			
-		} else if (ev.which === 2) {
+		} else if (e.which === 2) {
 			// Disable click to prevent links from opening
-			ev.target.addEventListener('mousedown', evv => {
-				if (evv.which !== 2) return;
-				evv.preventDefault();
+			e.target.addEventListener('mousedown', _e => {
+				if (_e.which !== 2) return;
+				_e.preventDefault();
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true});
 			
-		} else if (ev.which === 3) {
+		} else if (e.which === 3) {
 			
 			// Disable the default context menu once
-			document.addEventListener('contextmenu', evv => {	
+			document.addEventListener('contextmenu', _e => {	
 
 
 				// don't disable if menu has been closed
@@ -279,17 +279,17 @@ document.addEventListener('mousedown', ev => {
 			//	if ( !getQM() ) return;
 
 				if ( !userOptions.quickMenuAllowContextMenuNew ) {
-					evv.preventDefault();
-					evv.stopImmediatePropagation();
+					_e.preventDefault();
+					_e.stopImmediatePropagation();
 				}
 				
-				//preventContextMenuHandler(evv);
+				//preventContextMenuHandler(_e);
 				quickMenuObject.mouseLastClickTime = Date.now();
 			}, {once: true});
 
 		}
 
-		openQuickMenu(ev);
+		openQuickMenu(e);
 
 		// remove listener to prevent next drag event not working
 		window.removeEventListener('dragstart', preventDrag);
@@ -373,31 +373,39 @@ document.addEventListener('mouseup', e => {
 	}, 50);
 });
 
-function preventContextMenuHandler(evv) {
+function preventContextMenuHandler(e) {
 	if ( !userOptions.quickMenuAllowContextMenuNew )
-		evv.preventDefault();
+		e.preventDefault();
+}
+
+const quickMenuUseInnerText = false;
+
+function hasSearchTerms(e) {
+	return getSelectedText(e.target) || 
+		linkOrImage(e.target, e) || 
+		( quickMenuUseInnerText && e.target.innerText );
 }
 
 // Listen for quickMenuOnClick
-document.addEventListener('mousedown', ev => {
+document.addEventListener('mousedown', e => {
 
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
-		ev.which !== userOptions.quickMenuMouseButton ||
-		( getSelectedText(ev.target) === "" && !linkOrImage(ev.target, ev) ) ||
-		( isTextBox(ev.target) && !userOptions.quickMenuAutoOnInputs)
+		e.which !== userOptions.quickMenuMouseButton ||
+		!hasSearchTerms(e) ||
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
-	quickMenuObject.mouseCoordsInit = {x: ev.clientX, y: ev.clientY};
+	quickMenuObject.mouseCoordsInit = {x: e.clientX, y: e.clientY};
 	
 	// middle-click often used to open links and requires some caveots
-	if ( ev.which === 2 && !getSelectedText(ev.target) ) return false;
-	if ( ev.which === 2 ) ev.preventDefault();
+	if ( e.which === 2 && !getSelectedText(e.target) ) return false;
+	if ( e.which === 2 ) e.preventDefault();
 
 	// context menu on mousedown fixes
-	if ( ev.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
+	if ( e.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
 
 		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < 500 ) {
 			closeQuickMenu();
@@ -426,7 +434,7 @@ document.addEventListener('mouseup', e => {
 		userOptions.quickMenuOnMouseMethod !== 'click' ||
 		e.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		( getSelectedText(e.target) === "" && !linkOrImage(e.target, e) )
+		!hasSearchTerms(e)
 	) return false;
 
 	quickMenuObject.mouseLastClickTime = Date.now();
