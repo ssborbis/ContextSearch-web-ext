@@ -1447,19 +1447,19 @@
 					<table id="advancedSettingsTable">
 					<tr>
 						<td data-i18n_tooltip="Transparency level of the quick menu when opened. Becomes opaque on hover">quickMenuOpeningOpacity</td>
-						<td><input type="number" id="n_quickMenuOpeningOpacity" min="0" max="1" step=".1"></td>
+						<td><input type="number" id="quickMenuOpeningOpacity" min="0" max="1" step=".1"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Maximum number of characters to be selected and still open the quick menu using the Auto method. Selecting more that the number will not open the menu. 0 = no limit ">quickMenuAutoMaxChars</td>
-						<td><input type="number" id="n_quickMenuAutoMaxChars" min="0" max="999" step="1" value="0"></td>
+						<td><input type="number" id="quickMenuAutoMaxChars" min="0" max="999" step="1" value="0"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Cancels opening the quick menu if pausing for a set number of milliseconds before releasing the mouse button. 0 = disabled">quickMenuAutoTimeout</td>
-						<td><input type="number" id="n_quickMenuAutoTimeout" min="0" max="9999" step="1" value="1000"></td>
+						<td><input type="number" id="quickMenuAutoTimeout" min="0" max="9999" step="1" value="1000"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Allows a search to be performed from the quick menu on mouseup without requiring a mousedown. Useful when opening the menu on Hold and releasing the mouse on a search tile to perform a search.">quickMenuSearchOnMouseUp</td>
-						<td><input type="checkbox" id="cb_quickMenuSearchOnMouseUp" /></td>
+						<td><input type="checkbox" id="quickMenuSearchOnMouseUp" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="The state of the lock tool will be remembered across sessions">quickMenuTools.lock.persist</td>
@@ -1470,158 +1470,162 @@
 						<td><input type="checkbox" id="cb_quickMenuToolsRepeatSearchPersist" /></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Maximum number of history entries to store">searchBar.historyLength</td>
-						<td><input type="number" id="n_searchBarHistoryLength" min="0" max="99999" step="1"></td>
+						<td data-i18n_tooltip="Maximum number of history entries to store">searchBarHstoryLength</td>
+						<td><input type="number" id="searchBarHistoryLength" min="0" max="99999" step="1"></td>
 					</tr>
 					<tr>
-						<td data-i18n_tooltip="Maximum number of Google suggestions to include">searchBar.suggestionsCount</td>
-						<td><input type="number" id="n_searchBarSuggestionsCount" min="0" max="999" step="1"></td>
+						<td data-i18n_tooltip="Maximum number of Google suggestions to include">searchBarSuggestionsCount</td>
+						<td><input type="number" id="searchBarSuggestionsCount" min="0" max="999" step="1"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Open menus to the last folder used">rememberLastOpenedFolder</td>
-						<td><input type="checkbox" id="cb_rememberLastOpenedFolder" /></td>
+						<td><input type="checkbox" id="rememberLastOpenedFolder" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Show the more / less icon for group folders inside the label tile vs using a separate tile">groupLabelMoreTile</td>
-						<td><input type="checkbox" id="cb_groupLabelMoreTile" /></td>
+						<td><input type="checkbox" id="groupLabelMoreTile" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Selected text is copied to the clipboard">autoCopy</td>
-						<td><input type="checkbox" id="cb_autoCopy" /></td>
+						<td><input type="checkbox" id="autoCopy" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Text in the clipboard is pasted to searchbars when search menus are opened">autoPasteFromClipboard</td>
-						<td><input type="checkbox" id="cb_autoPasteFromClipboard" /></td>
+						<td><input type="checkbox" id="autoPasteFromClipboard" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Time in millisections to hold a mouse button before opening the quick menu using HOLD">quickMenuHoldTimeout</td>
-						<td><input type="number" min="1" max="99999" step="1" id="n_quickMenuHoldTimeout" /></td>
+						<td><input type="number" min="1" max="99999" step="1" id="quickMenuHoldTimeout" /></td>
+					</tr>
+					<tr>
+						<td data-i18n_tooltip="How many pixels you can move the mouse before cancelling opening the quick menu using HOLD">quickMenuCancelDeadzone</td>
+						<td><input type="number" min="0" max="9999" step="1" id="quickMenuCancelDeadzone" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Exported configs are smaller by excluding icon data URIs. May cause custom icons to be lost">exportWithoutBase64Icons</td>
-						<td><input type="checkbox" id="cb_exportWithoutBase64Icons" /></td>
+						<td><input type="checkbox" id="exportWithoutBase64Icons" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Notice for Firefox users to add opensearch engines using the Firefox search bar">addSearchProviderHideNotification</td>
-						<td><input type="checkbox" id="cb_addSearchProviderHideNotification" /></td>
+						<td><input type="checkbox" id="addSearchProviderHideNotification" /></td>
 					</tr>
 					<tr style="display:none">
 						<td data-i18n_tooltip="Search menu tiles can be rearranged by drag & drop">quickMenuTilesDraggable</td>
-						<td><input type="checkbox" id="cb_quickMenuTilesDraggable" /></td>
+						<td><input type="checkbox" id="quickMenuTilesDraggable" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Enable to let the browser decide how to sort new search result tabs. Useful to prevent conflicts with tab managers">disableNewTabSorting</td>
-						<td><input type="checkbox" id="cb_disableNewTabSorting" /></td>
+						<td><input type="checkbox" id="disableNewTabSorting" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Remember the opened state of the sidebar">sideBar.rememberState</td>
-						<td><input type="checkbox" id="cb_sideBarRememberState" /></td>
+						<td><input type="checkbox" id="sideBar.rememberState" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Open the sidebar on search results tabs">sideBar.openOnResults</td>
-						<td><input type="checkbox" id="cb_sideBarOpenOnResults" /></td>
+						<td><input type="checkbox" id="sideBar.openOnResults" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Open the sidebar on search results tabs minimized">sideBar.openOnResultsMinimized</td>
-						<td><input type="checkbox" id="cb_sideBarOpenOnResultsMinimized" /></td>
+						<td><input type="checkbox" id="sideBar.openOnResultsMinimized" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Append hotkey to context menu items using (&A) format for quick access">contextMenuHotkeys</td>
-						<td><input type="checkbox" id="cb_contextMenuHotkeys" /></td>
+						<td><input type="checkbox" id="contextMenuHotkeys" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Prevent mouse events on the current webpage while the quick menu is open">quickMenuPreventPageClicks</td>
-						<td><input type="checkbox" id="cb_quickMenuPreventPageClicks" /></td>
+						<td><input type="checkbox" id="quickMenuPreventPageClicks" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Number of milliseconds to hover before opening a folder. 500 = default, 0 = disabled">openFoldersOnHoverTimeout</td>
-						<td><input type="number" id="n_openFoldersOnHoverTimeout" min="0" max="9999" step="1"></td>
+						<td><input type="number" id="openFoldersOnHoverTimeout" min="0" max="9999" step="1"></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Default to the most recent search engine used with the omnibox">omniboxDefaultToLastUsedEngine</td>
-						<td><input type="checkbox" id="cb_omniboxDefaultToLastUsedEngine" /></td>
+						<td><input type="checkbox" id="omniboxDefaultToLastUsedEngine" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">contextMenuUseInnerText</td>
-						<td><input type="checkbox" id="cb_contextMenuUseInnerText" /></td>
+						<td><input type="checkbox" id="contextMenuUseInnerText" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Use the inner text of an element as the search term when no text is selected">quickMenuSimpleClick.useInnerText</td>
-						<td><input type="checkbox" id="cb_quickMenuSimpleClickUseInnerText" /></td>
+						<td><input type="checkbox" id="quickMenuSimpleClick.useInnerText" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Sensitivity for detecting a shake. Lower = more sensitive">shakeSensitivity</td>
-						<td><input type="number" min="1" max="100" step="1" id="n_shakeSensitivity" /></td>
+						<td><input type="number" min="1" max="100" step="1" id="shakeSensitivity" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Show recently used engines at the top of the menu">quickMenuShowRecentlyUsed</td>
-						<td><input type="checkbox" id="cb_quickMenuShowRecentlyUsed"/></td>
+						<td><input type="checkbox" id="quickMenuShowRecentlyUsed"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Show regex matching engines at the top of the menu">contextMenuRegexMatchedEngines</td>
-						<td><input type="checkbox" id="cb_contextMenuRegexMatchedEngines"/></td>
+						<td><input type="checkbox" id="contextMenuRegexMatchedEngines"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Show regex matching engines at the top of the menu">quickMenuRegexMatchedEngines</td>
-						<td><input type="checkbox" id="cb_quickMenuRegexMatchedEngines"/></td>
+						<td><input type="checkbox" id="quickMenuRegexMatchedEngines"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Max width or height to resize icons for caching">cacheIconsMaxSize</td>
-						<td><input type="number" min="16" max="512" step="2" id="n_cacheIconsMaxSize" /></td>
+						<td><input type="number" min="16" max="512" step="2" id="cacheIconsMaxSize" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Show hotkeys with titles">quickMenuShowHotkeysInTitle</td>
-						<td><input type="checkbox" id="cb_quickMenuShowHotkeysInTitle"/></td>
+						<td><input type="checkbox" id="quickMenuShowHotkeysInTitle"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="set focus to the quick menu after opening">quickMenuFocusOnOpen</td>
-						<td><input type="checkbox" id="cb_quickMenuFocusOnOpen"/></td>
+						<td><input type="checkbox" id="quickMenuFocusOnOpen"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="hide separators when using the quick menu in grid view">quickMenuHideSeparatorsInGrid</td>
-						<td><input type="checkbox" id="cb_quickMenuHideSeparatorsInGrid"/></td>
+						<td><input type="checkbox" id="quickMenuHideSeparatorsInGrid"/></td>
 					</tr>
 					
 					<tr>
 						<td data-i18n_tooltip="force search results to appear in next tab">forceOpenResultsTabsAdjacent</td>
-						<td><input type="checkbox" id="cb_forceOpenReultsTabsAdjacent"/></td>
+						<td><input type="checkbox" id="forceOpenReultsTabsAdjacent"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix">quickMenuAllowContextMenuNew</td>
-						<td><input type="checkbox" id="cb_quickMenuAllowContextMenuNew"/></td>
+						<td><input type="checkbox" id="quickMenuAllowContextMenuNew"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Enable to show inline group folders as block elements">groupFolderRowBreaks</td>
-						<td><input type="checkbox" id="cb_groupFolderRowBreaks"/></td>
+						<td><input type="checkbox" id="groupFolderRowBreaks"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Display the context menu in subfolders according to the current context">contextMenuUseContextualLayout</td>
-						<td><input type="checkbox" id="cb_contextMenuUseContextualLayout"/></td>
+						<td><input type="checkbox" id="contextMenuUseContextualLayout"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Override context menu title. Use %s in place of searchTerms. blank = default">contextMenuTitle</td>
-						<td><input type="text" id="i_contextMenuTitle"/></td>
+						<td><input type="text" id="contextMenuTitle"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Override the quick menu layout using a comma-separated list of HTMLElement ids, i.e. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default">quickMenuDomLayout</td>
-						<td><input type="text" id="i_quickMenuDomLayout"/></td>
+						<td><input type="text" id="quickMenuDomLayout"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Always allow tiles to be rearranged in the menus">alwaysAllowTileRearranging</td>
-						<td><input type="checkbox" id="cb_alwaysAllowTileRearranging"/></td>
+						<td><input type="checkbox" id="alwaysAllowTileRearranging"/></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Remove subfolders and flatten menu if only n number of engines are to be shown. 0 = no limit">contextMenuContextualLayoutFlattenLimit</td>
-						<td><input type="number" min="0" max="999" step="1" id="n_contextMenuContextualLayoutFlattenLimit" /></td>
+						<td><input type="number" min="0" max="999" step="1" id="contextMenuContextualLayoutFlattenLimit" /></td>
 					</tr>
 
 					<tr>
 						<td data-i18n_tooltip="Maximum number of tool rows to display. 0 = no limit">quickMenuToolbarRows</td>
-						<td><input type="number" min="0" max="99" step="1" id="n_quickMenuToolbarRows" /></td>
+						<td><input type="number" min="0" max="99" step="1" id="quickMenuToolbarRows" /></td>
 					</tr>
 					<tr>
 						<td data-i18n_tooltip="Require a double-click to display the default context menu when using HOLD right mouse button to open the quick menu. Useful for preventing errant menus on systems that display the context menu on mouse down vs mouse up">rightClickMenuOnMouseDownFix</td>
-						<td><input type="checkbox" id="cb_rightClickMenuOnMouseDownFix"/></td>
+						<td><input type="checkbox" id="rightClickMenuOnMouseDownFix"/></td>
 					</tr>
 					<tr>
 						<td>&nbsp;</td>
@@ -1651,7 +1655,7 @@
 				<br>
 				<section>
 					<p class="header1" data-i18n="">Blocklist <span class="info" data-msg="URLs to disable ContextSearch with. Accepts hostnames www.example.com, wildcards  *.example.com and regex. ! or # prefix will disable an entry #example.com or !example.com" data-i18n_tooltip="">&#9432;</span></p>
-					<textarea id="t_blockList" style="height:200px;width:calc(100% - 16px);padding:2px 8px;resize:vertical"></textarea>
+					<textarea id="blockList" style="height:200px;width:calc(100% - 16px);padding:2px 8px;resize:vertical"></textarea>
 				</section>
 			</div>
 		
@@ -1662,7 +1666,7 @@
 				<section>
 				<p class="header1" data-i18n="Links">_</p>
 				<p>	
-					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_contextMenuSearchLinksAs">
+					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="contextMenuSearchLinksAs">
 						<option data-i18n="Text" value="text">_</option>
 						<option data-i18n="Url" value="url">_</option>
 					</select>
@@ -1675,7 +1679,7 @@
 				<p class="header1" data-i18n="EnableAnimations">_</p>
 				<div class="option">			
 					<label class="container" data-i18n="EnableAnimations">
-						<input type="checkbox" id="cb_enableAnimations" />
+						<input type="checkbox" id="enableAnimations" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableAnimationsTooltip">_</div>
@@ -1685,7 +1689,7 @@
 				<section>
 				<p class="header1" data-i18n="MenuTheme">_</p>
 				<div class="option">
-					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_quickMenuTheme">
+					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="quickMenuTheme">
 					</select>
 					<div class="description" data-i18n="ThemeTooltip">_</div>
 				</div>
@@ -1696,7 +1700,7 @@
 				<p class="header1" data-i18n="Suggestions">_</p>
 				<div class="option">
 					<label class="container" data-i18n="ShowSuggestions">
-						<input type="checkbox" id="cb_searchBarSuggestions" />
+						<input type="checkbox" id="searchBarSuggestions" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="ShowSuggestionsTooltip">_</div>
@@ -1706,14 +1710,14 @@
 				<p class="header1" data-i18n="History">_</p>
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_searchBarDisplayLastSearch" />
+						<input type="checkbox" id="searchBarDisplayLastSearch" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableDisplayPreviousSearchTooltip">_</div>
 				</div>
 				<div class="option">
 					<label class="container" data-i18n="EnableHistory">
-						<input type="checkbox" id="cb_searchBarEnableHistory" />
+						<input type="checkbox" id="searchBarEnableHistory" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableHistoryTooltip">_</div>
@@ -1730,14 +1734,14 @@
 				<p class="header1" data-i18n="UserStyles">_</p>
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_userStylesEnabled" />
+						<input type="checkbox" id="userStylesEnabled" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
 					<div class="description" data-i18n="UserStylesTooltip">_</div>
 				</div>
 
-				<textarea id="t_userStyles" class="inputNice" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px;font-size:9pt"></textarea>
+				<textarea id="userStyles" class="inputNice" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px;font-size:9pt"></textarea>
 				
 				</section>
 				<!-- <section>
@@ -1760,7 +1764,7 @@
 					<p class="header1" data-i18n="General">_</p>
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_contextMenu" />
+						<input type="checkbox" id="contextMenu" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
@@ -1769,7 +1773,7 @@
 
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_contextMenuOnLinks" />
+						<input type="checkbox" id="contextMenuOnLinks" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableOnLinks">_</div>
@@ -1777,7 +1781,7 @@
 				
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_contextMenuOnImages" />
+						<input type="checkbox" id="contextMenuOnImages" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableOnImages">_</div>
@@ -1785,7 +1789,7 @@
 				
 				<div class="option">
 					<label class="container" data-i18n="AddCustomSearchMenu">
-						<input type="checkbox" id="cb_contextMenuShowAddCustomSearch" />
+						<input type="checkbox" id="contextMenuShowAddCustomSearch" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
@@ -1794,7 +1798,7 @@
 				
 				<div class="option">
 					<label class="container" data-i18n="">
-						<input type="checkbox" id="cb_contextMenuShowFolderSearch" />
+						<input type="checkbox" id="contextMenuShowFolderSearch" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
@@ -1804,7 +1808,7 @@
 				<hr>
 
 				<p>
-					<button id="b_contextMenuKey" class="keyboardButton" style="min-width:calc(20px + 1em);min-height:calc(6px + 1em);padding: 3px 10px;">&nbsp;</button>
+					<button id="contextMenuKey" class="keyboardButton" style="min-width:calc(20px + 1em);min-height:calc(6px + 1em);padding: 3px 10px;">&nbsp;</button>
 					<span class="description" style="vertical-align:middle;" data-i18n="ContextMenuHotKeyTooltip">_</span>
 				</p>
 				
@@ -1814,7 +1818,7 @@
 				
 				<div class="option">
 					<label class="container" data-i18n="ContexMenuShowRecentlyUsed">
-						<input type="checkbox" id="cb_contextMenuShowRecentlyUsed" />
+						<input type="checkbox" id="contextMenuShowRecentlyUsed" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
@@ -1823,7 +1827,7 @@
 				
 				<div class="option">
 					<label class="container" data-i18n="ContexMenuShowRecentlyUsedAsFolder">
-						<input type="checkbox" id="cb_contextMenuShowRecentlyUsedAsFolder" />
+						<input type="checkbox" id="contextMenuShowRecentlyUsedAsFolder" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					
@@ -1831,7 +1835,7 @@
 				</div>
 				
 				<div class="option">
-					<input type="number" id="n_contextMenuRecentlyUsedLength" size="2" step="1" low="1" high="99" class="inputNice">
+					<input type="number" id="recentlyUsedLength" size="2" step="1" low="1" high="99" class="inputNice">
 					<span class="description" data-i18n="ContexMenuShowRecentlyUsedLengthTooltip">_</span>
 				</div>
 				
@@ -1851,7 +1855,7 @@
 					<span class="buttonLabel" data-i18n="LeftButton">_</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_contextMenuClick">
+					<select class="inputNice" id="contextMenuClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -1878,7 +1882,7 @@
 					<span class="buttonLabel" data-i18n="MiddleButton">_</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_contextMenuMiddleClick">
+					<select class="inputNice" id="contextMenuMiddleClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -1905,7 +1909,7 @@
 					<span class="buttonLabel" data-i18n="RightButton">_</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_contextMenuRightClick">
+					<select class="inputNice" id="contextMenuRightClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -1934,7 +1938,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_contextMenuShift">
+					<select class="inputNice" id="contextMenuShift">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -1964,7 +1968,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_contextMenuCtrl">
+					<select class="inputNice" id="contextMenuCtrl">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -1999,7 +2003,7 @@
 				<p class="header1" data-i18n="General">_</p>
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenu" />
+						<input type="checkbox" id="quickMenu" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="QuickMenuTooltip">_</div>
@@ -2007,7 +2011,7 @@
 
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuAutoOnInputs" />
+						<input type="checkbox" id="quickMenuAutoOnInputs" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableOnTextBoxesTooltip">_</div>
@@ -2015,7 +2019,7 @@
 				
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuOnLinks" />
+						<input type="checkbox" id="quickMenuOnLinks" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableOnLinks">_</div>
@@ -2023,7 +2027,7 @@
 				
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuOnImages" />
+						<input type="checkbox" id="quickMenuOnImages" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="EnableOnImages">_</div>
@@ -2043,17 +2047,17 @@
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 				<div class="option">
-					<input type="number" id="n_quickMenuColumns" size="2"  min="1" max="99" step="1" value="5" class="inputNice">
+					<input type="number" id="quickMenuColumns" size="2"  min="1" max="99" step="1" value="5" class="inputNice">
 					<span class="description" data-i18n="ColumnsTooltip">_</span>
 				</div>
 
 				<p class="header2" data-i18n="Rows">_</p>
 				<div class="option">
-					<input type="number" id="n_quickMenuRows" size="2" min="1" max="99" step="1" value="5" class="inputNice">
+					<input type="number" id="quickMenuRows" size="2" min="1" max="99" step="1" value="5" class="inputNice">
 					<span class="description" data-i18n="RowsTooltip">_</span>
 				</div>
 				<div class="option">
-					<input type="number" id="n_quickMenuRowsSingleColumn" size="2" min="1" max="99" step="1" value="10" class="inputNice">
+					<input type="number" id="quickMenuRowsSingleColumn" size="2" min="1" max="99" step="1" value="10" class="inputNice">
 					<span class="description" data-i18n="RowsSingleColumnTooltip">_</span>
 				</div>
 				</section>
@@ -2070,7 +2074,7 @@
 							<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
 						</td>
 						<td>
-							<input type="range" id="range_quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+							<input type="range" id="quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
 						</td>
 					</tr>
 					<tr>
@@ -2082,7 +2086,7 @@
 							<span class="info" data-msg="Scaled size of search engine icons. At 200%, icons fill their container entirely" data-i18n_tooltip="IconSize">&#9432;</span>
 						</td>
 						<td>
-							<input type="range" id="range_quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
+							<input type="range" id="quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
 						</td>
 					</tr>
 				</table>
@@ -2095,7 +2099,7 @@
 				<tr>
 					<td>
 						<label class="container" data-i18n="Auto">
-							<input type="checkbox" id="r_quickMenuAuto" />
+							<input type="checkbox" id="quickMenuAuto" />
 							<span class="checkmark checkmark2"></span>
 							<img src="/icons/auto.svg" style="height:30px;vertical-align:middle;margin:0 10px" />_
 						</label>
@@ -2106,7 +2110,7 @@
 					<td>
 						<div class="option" style="display:inline-block;">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuAutoAlt" />
+								<input type="checkbox" id="quickMenuAutoAlt" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Alt">_</span>
@@ -2114,7 +2118,7 @@
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuAutoCtrl" />
+								<input type="checkbox" id="quickMenuAutoCtrl" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Ctrl">_</span>
@@ -2122,7 +2126,7 @@
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuAutoShift" />
+								<input type="checkbox" id="quickMenuAutoShift" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Shift">_</span>
@@ -2143,7 +2147,7 @@
 				<tr>
 					<td>
 						<label class="container" data-i18n="Keyboard">
-							<input type="checkbox" id="r_quickMenuOnKey" />
+							<input type="checkbox" id="quickMenuOnKey" />
 							<span class="checkmark checkmark2"></span> 
 							<img src="/icons/keyboard.svg" style="height:30px;vertical-align:middle;margin:0 10px" />_
 						</label>
@@ -2151,14 +2155,14 @@
 						<span style="font-size:9pt" data-i18n="KeyboardTooltip">_</span>
 					</td>
 					<td>	
-						<button id="b_quickMenuKey" class="keyboardButton">_</button>
+						<button id="quickMenuKey" class="keyboardButton">_</button>
 						<span class="info" data-msg="Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key" data-i18n_tooltip="ChooseKey">&#9432;</span>
 					</td>
 				</tr>
 				<tr>
 					<td>
 						<label class="container" data-i18n="Mouse"> 
-							<input type="checkbox" id="cb_quickMenuOnMouse" />
+							<input type="checkbox" id="quickMenuOnMouse" />
 							<span class="checkmark checkmark2"></span>
 							<img src="/icons/mouse.svg" style="height:30px;vertical-align:middle;margin:0 10px" />_
 						</label>
@@ -2167,12 +2171,12 @@
 					</td>
 					<td>
 						<div class="option">
-							<select class="inputNice" style="width:auto;margin-right:10px;font-size:10pt;padding-right:10px" id="s_quickMenuOnMouseMethod">
+							<select class="inputNice" style="width:auto;margin-right:10px;font-size:10pt;padding-right:10px" id="quickMenuOnMouseMethod">
 								<option data-i18n="Click" value="click">_</option>
 								<option data-i18n="Hold" value="hold">_</option>
 							</select>
 							
-							<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_quickMenuMouseButton">
+							<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="quickMenuMouseButton">
 								<option data-i18n="LeftButton" value="1">_</option>
 								<option data-i18n="MiddleButton" value="2">_</option>
 								<option data-i18n="RightButton" value="3">_</option>
@@ -2197,7 +2201,7 @@
 				<tr>
 					<td>
 						<label class="container" data-i18n="SimpleClick"> 
-							<input type="checkbox" id="cb_quickMenuOnSimpleClick" />
+							<input type="checkbox" id="quickMenuOnSimpleClick.enabled" />
 							<span class="checkmark checkmark2"></span>
 							<img src="/icons/cursor.svg" style="height:24px;vertical-align:middle;margin:0 5px 0 10px" />_
 						</label>
@@ -2206,7 +2210,7 @@
 					</td>
 					<td>
 						<br />
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px;display:inline-block" id="s_quickMenuOnSimpleClickButton">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px;display:inline-block" id="quickMenuOnSimpleClick.button">
 							<option data-i18n="LeftButton" value="1">_</option>
 							<option data-i18n="MiddleButton" value="2">_</option>
 							<option data-i18n="RightButton" value="3">_</option>
@@ -2216,7 +2220,7 @@
 							
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuOnSimpleClickAlt" />
+								<input type="checkbox" id="quickMenuOnSimpleClick.alt" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Alt">_</span>
@@ -2224,7 +2228,7 @@
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuOnSimpleClickCtrl" />
+								<input type="checkbox" id="quickMenuOnSimpleClick.ctrl" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Ctrl">_</span>
@@ -2232,7 +2236,7 @@
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuOnSimpleClickShift" />
+								<input type="checkbox" id="quickMenuOnSimpleClick.shift" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Shift">_</span>
@@ -2243,7 +2247,7 @@
 				<tr>
 					<td>
 						<label class="container" data-i18n="Drag">
-							<input type="checkbox" id="cb_quickMenuOnDrag" />
+							<input type="checkbox" id="quickMenuOnDrag" />
 							<span class="checkmark checkmark2"></span> 
 							<img src="/icons/mouse.svg" style="height:30px;vertical-align:middle;margin:0 10px" />_
 						</label>
@@ -2253,7 +2257,7 @@
 					<td>
 						<div class="option" style="display:inline-block;">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuDragAlt" />
+								<input type="checkbox" id="quickMenuDragAlt" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Alt">_</span>
@@ -2261,7 +2265,7 @@
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuDragCtrl" />
+								<input type="checkbox" id="quickMenuDragCtrl" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Ctrl">_</span>
@@ -2269,7 +2273,7 @@
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
 							<label class="container">
-								<input type="checkbox" id="cb_quickMenuDragShift" />
+								<input type="checkbox" id="quickMenuDragShift" />
 								<span class="checkmark checkmark2"></span>
 							</label>
 							<span class="description" data-i18n="Shift">_</span>
@@ -2283,7 +2287,7 @@
 				<p class="header1" data-i18n="Closing">_</p>
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuCloseOnClick" />
+						<input type="checkbox" id="quickMenuCloseOnClick" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="CloseAfterSearchTooltip">_</div>
@@ -2291,7 +2295,7 @@
 				
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuCloseOnScroll" />
+						<input type="checkbox" id="quickMenuCloseOnScroll" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="CloseOnScrollTooltip">_</div>
@@ -2312,7 +2316,7 @@
 					<span class="buttonLabel" data-i18n="LeftButton">_</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuLeftClick">
+					<select class="inputNice" id="quickMenuLeftClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2324,7 +2328,7 @@
 					</select>
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuFolderLeftClick">
+					<select class="inputNice" id="quickMenuFolderLeftClick">
 						<option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
@@ -2339,7 +2343,7 @@
 					<span class="buttonLabel" data-i18n="MiddleButton">_</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuMiddleClick">
+					<select class="inputNice" id="quickMenuMiddleClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2351,7 +2355,7 @@
 					</select>
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuFolderMiddleClick">
+					<select class="inputNice" id="quickMenuFolderMiddleClick">
 						<option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
@@ -2366,7 +2370,7 @@
 					<span class="buttonLabel" data-i18n="RightButton">_</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuRightClick">
+					<select class="inputNice" id="quickMenuRightClick">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2378,7 +2382,7 @@
 					</select>
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuFolderRightClick">
+					<select class="inputNice" id="quickMenuFolderRightClick">
 						<option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
@@ -2395,7 +2399,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuShift">
+					<select class="inputNice" id="quickMenuShift">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2408,7 +2412,7 @@
 					</select>
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuFolderShift">
+					<select class="inputNice" id="quickMenuFolderShift">
 						<option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
@@ -2425,7 +2429,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuCtrl">
+					<select class="inputNice" id="quickMenuCtrl">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2438,7 +2442,7 @@
 					</select>
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuFolderCtrl">
+					<select class="inputNice" id="quickMenuFolderCtrl">
 						<option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
@@ -2455,7 +2459,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuAlt">
+					<select class="inputNice" id="quickMenuAlt">
 						<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 						<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2468,7 +2472,7 @@
 					</select>
 					</td>
 					<td>
-					<select class="inputNice" id="s_quickMenuFolderAlt">
+					<select class="inputNice" id="quickMenuFolderAlt">
 						<option value="openFolder" data-i18n="SearchActionsOpenFolder">_</option>
 						<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
 						<option value="openBackgroundTabKeepOpen" data-i18n="SearchActionsBackgroundTabKeepOpen">_</option>
@@ -2480,7 +2484,10 @@
 				</tr>
 			</table>
 
-				</section><section>
+			<table id="additionalSearchActionsTable"></table>
+
+			</section>
+			<section>
 <p class="header1" data-i18n="Position">_</p>
 				
 				<div>
@@ -2490,14 +2497,14 @@
 						<div class="position" data-position="bottom left"></div><div class="position" data-position="bottom center"></div><div class="position" data-position="bottom right"></div>
 					</div>
 					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
-						<input type="number" id="n_quickMenuOffsetX" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
+						<input type="number" id="quickMenuOffset.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
 						<span class="info" data-msg="Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left" data-i18n_tooltip="HorizontalOffset">&#9432;</span>
 						<br />
-						<input type="number" id="n_quickMenuOffsetY" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
+						<input type="number" id="quickMenuOffset.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
 						<span class="info" data-msg="Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up" data-i18n_tooltip="VerticalOffset">&#9432;</span>
 					</div>
 				</div>
-				<input id="h_position" type="hidden" />
+				<input id="quickMenuPosition" type="hidden" />
 				<div id="t_position" style="height:10pt;font-size:10pt;margin-left:2px" data-i18n="PositionDescription">_</div>
 				
 							
@@ -2506,7 +2513,7 @@
 				
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuToolsAsToolbar" />
+						<input type="checkbox" id="quickMenuToolsAsToolbar" />
 						<span class="checkmark checkmark2"></span>
 						<div class="description" data-i18n="ToolsAsToolbar">_</div>
 					</label>
@@ -2514,7 +2521,7 @@
 				<div>	
 					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the tools in the Quick Menu" data-i18n_tooltip="ToolsPosition">&#9432;</span>
 					
-					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="s_quickMenuToolsPosition">
+					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuToolsPosition">
 						<option data-i18n="top" value="top">Top</option>
 						<option data-i18n="bottom" value="bottom">_</option>
 						<option data-i18n="hidden" value="hidden">_</option>
@@ -2532,7 +2539,7 @@
 				<div>	
 					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the search bar in the Quick Menu" data-i18n_tooltip="SearchBar">&#9432;</span>
 					
-					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="s_quickMenuSearchBar">
+					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuSearchBar">
 						<option data-i18n="top" value="top">Top</option>
 						<option data-i18n="bottom" value="bottom">_</option>
 						<option data-i18n="hidden" value="hidden">_</option>
@@ -2542,7 +2549,7 @@
 				<br />
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuSearchBarFocus" />
+						<input type="checkbox" id="quickMenuSearchBarFocus" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="FocusTooltip">_</div>
@@ -2550,7 +2557,7 @@
 				
 				<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_quickMenuSearchBarSelect" />
+						<input type="checkbox" id="quickMenuSearchBarSelect" />
 						<span class="checkmark checkmark2"></span>
 					</label>
 					<div class="description" data-i18n="SelectTextTooltip">_</div>
@@ -2574,7 +2581,7 @@
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 				<div class="option">
-					<input type="number" id="n_searchBarColumns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
+					<input type="number" id="searchBarColumns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
 					<span class="description" data-i18n="ColumnsTooltip">_</span>
 				</div>
 				</section>
@@ -2582,7 +2589,7 @@
 				<p class="header1" data-i18n="Closing">_</p>
 				<div class="option">
 					<label class="container" data-i18n="CloseAfterSearch">
-						<input type="checkbox" id="cb_searchBarCloseAfterSearch" />
+						<input type="checkbox" id="searchBarCloseAfterSearch" />
 						<span class="checkmark checkmark2"></span>
 						<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
 					</label>
@@ -2633,7 +2640,7 @@
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 					<div class="option">
-						<input type="number" id="n_sideBarColumns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
+						<input type="number" id="sideBar.columns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
 						<span class="description" data-i18n="ColumnsTooltip">_</span>
 					</div>
 
@@ -2643,14 +2650,14 @@
 					<table>
 						<tr>
 							<td>
-								<input id="i_sideBarScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+								<input id="i_sideBar.scale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">_</label>
 								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
 							</td>
 							<td>
-								<input type="range" id="range_sideBarScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+								<input type="range" id="sideBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
 							</td>
 						</tr>
 					</table>
@@ -2658,7 +2665,7 @@
 					<section>
 					<p class="header1" data-i18n="Location">_</p>
 					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_sideBarWidgetPosition">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="sideBar.widget.position">
 							<option data-i18n="left" value="left">_</option>
 							<option data-i18n="right" value="right">_</option>
 						</select>
@@ -2682,14 +2689,14 @@
 					<p class="header1" data-i18n="Opening">_</p>
 					<div class="option">
 						<label class="container" data-i18n="SidebarWidgetEnable">
-							<input type="checkbox" id="cb_sideBarWidgetEnable" />
+							<input type="checkbox" id="sideBar.widget.enabled" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="SidebarWidgetEnableTooltip">_</div>
 					</div>
 					<div class="option">
 						<label class="container" data-i18n="SideBarStartOpen">
-							<input type="checkbox" id="cb_sideBarStartOpen" />
+							<input type="checkbox" id="sideBar.startOpen" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="SideBarStartOpenTooltip">_</span>
@@ -2699,7 +2706,7 @@
 					<p class="header1" data-i18n="Closing">_</p>
 				<div class="option">
 					<label class="container" data-i18n="CloseAfterSearch">
-						<input type="checkbox" id="cb_sideBarCloseAfterSearch" />
+						<input type="checkbox" id="sideBar.closeAfterSearch" />
 						<span class="checkmark checkmark2"></span>
 						<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
 					</label>
@@ -2719,7 +2726,7 @@
 					
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_pageTilesEnabled" />
+							<input type="checkbox" id="pageTiles.enabled" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="PageTilesEnabledTooltip">_</div>
@@ -2727,24 +2734,24 @@
 
 					<div class="option">
 						<div class="description" data-i18n="PageTilesSelectPalette" style="display:block;margin-left:0">_</div>
-						<select class="inputNice" style="width:auto;margin-right:20px" id="s_pageTilesPalette"></select>
+						<select class="inputNice" style="width:auto;margin-right:20px" id="pageTiles.paletteString"></select>
 						
 						<span id="pageTilesPaletteSample"></span>
 					</div>
 					<p class="header2" data-i18n="Rows">_</p>
 					<div class="option">
-						<input type="number" class="inputNice" id="n_pageTilesRows" min="2"/>
+						<input type="number" class="inputNice" id="pageTiles.rows" min="2"/>
 					</div>
 					<p class="header2" data-i18n="Columns">_</p>
 					<div class="option">
-						<input type="number" class="inputNice" id="n_pageTilesColumns" min="2" />
+						<input type="number" class="inputNice" id="pageTiles.columns" min="2" />
 					</div>
 
 					<br>
 
 					<div class="option">
 						<label class="container" data-i18n="ClosePageTilesOnShake">
-							<input type="checkbox" id="cb_pageTilesCloseOnShake" />
+							<input type="checkbox" id="pageTiles.closeOnShake" />
 							<span class="checkmark checkmark2"></span>
 							<div class="description" data-i18n="ClosePageTilesOnShake">_</div>
 						</label>
@@ -2763,7 +2770,7 @@
 						<span class="buttonLabel" data-i18n="Drop">_</span><img data-i18n="Drop" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 						</td>
 						<td>
-						<select class="inputNice" id="s_pageTilesOpenMethod">
+						<select class="inputNice" id="pageTiles.openMethod">
 							<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 							<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 							<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2816,7 +2823,7 @@
 						<td>
 						<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_allowHotkeysWithoutMenu" />
+						<input type="checkbox" id="allowHotkeysWithoutMenu" />
 						<span class="checkmark checkmark2"></span>
 						<div class="description" data-i18n="">Search Engine Hotkeys</div>
 					</label>
@@ -2830,7 +2837,7 @@
 						</span> -->
 						</td>
 						<td>
-						<select class="inputNice" id="s_quickMenuSearchHotkeys">
+						<select class="inputNice" id="quickMenuSearchHotkeys">
 							<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 							<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 							<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2842,7 +2849,7 @@
 						</select>
 						</td>
 						<td>
-						<select class="inputNice" id="s_quickMenuSearchHotkeysFolders">
+						<select class="inputNice" id="quickMenuSearchHotkeysFolders">
 							<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 							<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 							<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2869,7 +2876,7 @@
 					
 					<div class="option">
 					<label class="container">
-						<input type="checkbox" id="cb_allowHotkeysWithoutMenu" />
+						<input type="checkbox" id="allowHotkeysWithoutMenu" />
 						<span class="checkmark checkmark2"></span>
 						<div class="description" data-i18n="EnableHotkeysDescription">Enable hotkeys anytime except when editing content ( disable to allow hotkeys only when a ContextSearch menu is in focus )</div>
 					</label>
@@ -2892,7 +2899,7 @@
 						<span class="buttonLabel" data-i18n="Omnibox">_</span><img alt="i18n_text" title="i18n_text" src="icons/omnibox.svg" class="smallIcon" />
 						</td>
 						<td>
-						<select class="inputNice" id="s_omniboxSearch">
+						<select class="inputNice" id="omniboxSearch">
 							<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 							<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 							<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2904,7 +2911,7 @@
 						</select>
 						</td>
 						<td>
-						<!-- <select class="inputNice" id="s_omniboxSearchFolders">
+						<!-- <select class="inputNice" id="omniboxSearchFolders">
 							<option value="openCurrentTab" data-i18n="SearchActionsCurrentTab">_</option>
 							<option value="openNewTab" data-i18n="SearchActionsNewTab">_</option>
 							<option value="openBackgroundTab" data-i18n="SearchActionsBackgroundTab">_</option>
@@ -2924,7 +2931,7 @@
 <p class="header1" data-i18n="Style">_</p>
 					
 					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="s_highLightStyle">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="highLight.highlightStyle">
 							<option data-i18n="background" value="background">_</option>
 							<option data-i18n="underline" value="underline">_</option>
 						</select>
@@ -2999,7 +3006,7 @@
 
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_highLightFlashSelected" />
+							<input type="checkbox" id="highLight.flashSelected" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="HighlightFlashSelectedTooltip">_</div>
@@ -3014,21 +3021,21 @@
 					<p class="header1" data-i18n="General">_</p>
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_highLightEnabled" />
+							<input type="checkbox" id="highLight.enabled" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="HighlightTooltip">_</div>
 					</div>
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_highLightFollowDomain" />
+							<input type="checkbox" id="highLight.followDomain" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="HighlightFollowDomainTooltip">_</div>
 					</div>
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_highLightFollowExternalLinks" />
+							<input type="checkbox" id="highLight.followExternalLinks" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">_</div>
@@ -3036,14 +3043,14 @@
 					
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_highLightNavBarEnabled" />
+							<input type="checkbox" id="highLight.navBar.enabled" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="HighlightNavTooltip">_</div>
 					</div>
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_highLightShowFindBar" />
+							<input type="checkbox" id="highLight.showFindBar" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<div class="description" data-i18n="HighlightShowFindBarTooltip">_</div>
@@ -3056,7 +3063,7 @@
 							<!-- <td>Accuracy</td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_highLightMarkOptionsAccuracy">
+									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.markOptions.accuracy">
 										<option data-i18n="partially" value="partially">_</option>
 										<option data-i18n="exactly" value="exactly">_</option>
 									</select>
@@ -3073,7 +3080,7 @@
 							<td style='text-align:right'>
 								<div class="option">
 									<label class="container">
-										<input type="checkbox" id="cb_highLightMarkOptionsSeparateWordSearch" />
+										<input type="checkbox" id="highLight.markOptions.separateWordSearch" />
 										<span class="checkmark checkmark2"></span>
 									</label>
 								</div>
@@ -3090,7 +3097,7 @@
 							<td style='text-align:right'>
 								<div class="option">
 									<label class="container">
-										<input type="checkbox" id="cb_highLightMarkOptionsIgnorePunctuation" />
+										<input type="checkbox" id="highLight.markOptions.ignorePunctuation" />
 										<span class="checkmark checkmark2"></span>
 									</label>
 								</div>
@@ -3106,7 +3113,7 @@
 							<td style='text-align:right'>
 								<div class="option">
 									<label class="container">
-										<input type="checkbox" id="cb_highLightMarkOptionsCaseSensitive" />
+										<input type="checkbox" id="highLight.markOptions.caseSensitive" />
 										<span class="checkmark checkmark2"></span>
 									</label>
 									
@@ -3122,7 +3129,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<input type="number" min="0" max="9999" step="1" id="n_highLightMarkOptionsLimit" style="width:60px"/>
+									<input type="number" min="0" max="9999" step="1" id="highLight.markOptions.limit" style="width:60px"/>
 								</div>
 							</td>
 							<td>
@@ -3142,7 +3149,7 @@
 					
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_findBarStartOpen" />
+							<input type="checkbox" id="highLight.findBar.startOpen" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="FindBarStartOpen">_</span>
@@ -3150,7 +3157,7 @@
 					
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_findBarOpenInAllTabs" />
+							<input type="checkbox" id="highLight.findBar.openInAllTabs" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="FindBarOpenInAllTabs">_</span>
@@ -3159,7 +3166,7 @@
 					<div class="option">
 						<span style='margin-left:30px;margin-right:10px'>&rdca;</span>
 						<label class="container">
-							<input type="checkbox" id="cb_findBarSearchInAllTabs" />
+							<input type="checkbox" id="highLight.findBar.searchInAllTabs" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="FindBarSearchInAllTabs">_</span>
@@ -3172,14 +3179,14 @@
 					<table>
 						<tr>
 							<td>
-								<input id="i_findBarScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+								<input id="i_findBar.scale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">_</label>
 								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
 							</td>
 							<td>
-								<input type="range" id="range_findBarScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+								<input type="range" id="findBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
 							</td>
 						</tr>
 					</table>
@@ -3188,7 +3195,7 @@
 					<section>
 					<p class="header1" data-i18n="Location">_</p>
 					<p>	
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarPosition">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.findBar.position">
 							<option data-i18n="Top" value="top">_</option>
 							<option data-i18n="Bottom" value="bottom">_</option>
 						</select>
@@ -3200,7 +3207,7 @@
 					<section>
 					<p class="header1" data-i18n="Window">_</p>
 					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarWindowType">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.findBar.windowType">
 							<option data-i18n="undocked" value="undocked">_</option>
 							<option data-i18n="docked" value="docked">_</option>
 						</select>
@@ -3215,13 +3222,13 @@
 					
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_findBarShowNavBar" />
+							<input type="checkbox" id="highLight.findBar.showNavBar" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="HighlightNavTooltip">_</span>
 					</div>
 					
-					<input type="number" id="n_findBarTimeout" size="3" class="inputNice" min="0" max="1000" step="10">
+					<input type="number" id="highLight.findBar.keyboardTimeout" size="3" class="inputNice" min="0" max="1000" step="10">
 					<span class="description" data-i18n="findbarkeyboardtimeout">_</span>
 				</section>
 				
@@ -3232,7 +3239,7 @@
 							<!-- <td>Accuracy</td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_findBarMarkOptionsAccuracy">
+									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.findBar.markOptions.accuracy">
 										<option data-i18n="partially" value="partially">partially</option>
 										<option data-i18n="exactly" value="exactly">exactly</option>
 									</select>
@@ -3249,7 +3256,7 @@
 							<td style='text-align:right'>
 								<div class="option">
 									<label class="container">
-										<input type="checkbox" id="cb_findBarMarkOptionsSeparateWordSearch" />
+										<input type="checkbox" id="highLight.findBar.markOptions.separateWordSearch" />
 										<span class="checkmark checkmark2"></span>
 									</label>
 								</div>
@@ -3266,7 +3273,7 @@
 							<td style='text-align:right'>
 								<div class="option">
 									<label class="container">
-										<input type="checkbox" id="cb_findBarMarkOptionsIgnorePunctuation" />
+										<input type="checkbox" id="highLight.findBar.markOptions.ignorePunctuation" />
 										<span class="checkmark checkmark2"></span>
 									</label>
 								</div>
@@ -3282,7 +3289,7 @@
 							<td style='text-align:right'>
 								<div class="option">
 									<label class="container">
-										<input type="checkbox" id="cb_findBarMarkOptionsCaseSensitive" />
+										<input type="checkbox" id="highLight.findBar.markOptions.caseSensitive" />
 										<span class="checkmark checkmark2"></span>
 									</label>
 									
@@ -3298,7 +3305,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<input type="number" min="0" max="9999" step="1" id="n_findBarMarkOptionsLimit" style="width:60px"/>
+									<input type="number" min="0" max="9999" step="1" id="highLight.findBar.markOptions.limit" style="width:60px"/>
 								</div>
 							</td>
 							<td>
@@ -3525,7 +3532,7 @@
 					</p>
 					<div class="option">
 						<label class="container">
-							<input type="checkbox" id="cb_syncWithFirefoxSearch" />
+							<input type="checkbox" id="syncWithFirefoxSearch" />
 							<span class="checkmark checkmark2"></span>
 						</label>
 						<span class="description" data-i18n="SyncWithFirefoxSearch">_</span>
@@ -3588,7 +3595,7 @@
 			<div class="tabcontent" id="helpTab"></div>
 		</div>
 		</div>
-		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:16px;z-index:10000;background-color:white;border-radius:2px;border:1px solid white" />
+		<img id="nightmode" src="icons/theme.svg" style="position:fixed;top:8px;right:8px;height:24px;z-index:10000;background-color:white;border-radius:4px;border:1px solid transparent" title="i18n_text" data-i18n="theme">
 		
 		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>
@@ -3606,6 +3613,7 @@
 		<script src="iconUtils.js"></script>
 		<script src="utils.js"></script>
 		<script src="nodes.js"></script>
+		<script src="searchActions.js"></script>
 		<script src="options.js"></script>
 		<script src="searchEngineManager.js"></script>
 		<script src="tools.js"></script>

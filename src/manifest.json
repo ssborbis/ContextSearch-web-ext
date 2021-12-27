@@ -24,6 +24,7 @@
 			"bookmarks.js",
 			"defaultUserOptions.js",
 			"contextMenu.js",
+			"searchActions.js",
 			"background.js",
 			"omnibox.js",
 			"searchEngineUtils.js",

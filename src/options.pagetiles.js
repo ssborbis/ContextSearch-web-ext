@@ -8,8 +8,8 @@ function makeEmptyGridNode() {
 }
 
 function makePageTilesGrid() {
-	let rows = parseInt($('#n_pageTilesRows').value);
-	let cols = parseInt($('#n_pageTilesColumns').value);
+	let rows = parseInt($('pageTiles.rows').value);
+	let cols = parseInt($('pageTiles.columns').value);
 
 	let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine", "bookmarklet", "folder"].includes(n.type));
 	
@@ -111,7 +111,7 @@ function saveGrid() {
 }
 
 function makePageTilesPalette() {
-	let s = $('#s_pageTilesPalette');
+	let s = $('pageTiles.paletteString');
 	palettes.forEach( (p,index) => {
 		let o = document.createElement('option');
 		o.value = p.color;
@@ -124,7 +124,7 @@ function makePageTilesPalette() {
 
 function makePageTilesPaletteSample() {
 	let span = $('#pageTilesPaletteSample');
-	let s = $('#s_pageTilesPalette');
+	let s = $('pageTiles.paletteString');
 
 	span.innerHTML = null;
 
@@ -220,10 +220,10 @@ function makePageTilesFolderBrowser() {
 	ul.querySelector('ul').style.display = null;
 }
 
-$('#s_pageTilesPalette').addEventListener('change', makePageTilesPaletteSample);
-$('#s_pageTilesPalette').addEventListener('change', setPageTilesGridPalette);
+$('pageTiles.paletteString').addEventListener('change', makePageTilesPaletteSample);
+$('pageTiles.paletteString').addEventListener('change', setPageTilesGridPalette);
 
-$('#cb_pageTilesEnabled').addEventListener('change', e => {
+$('pageTiles.enabled').addEventListener('change', e => {
 	if ( !userOptions.pageTiles.grid.length )
 		saveGrid();
 });
@@ -237,7 +237,7 @@ document.addEventListener('userOptionsLoaded', () => {
 	
 });
 
-[$('#n_pageTilesRows'), $('#n_pageTilesColumns')].forEach(el => {
+[$('pageTiles.rows'), $('pageTiles.columns')].forEach(el => {
 	el.addEventListener('change', e => {
 		makePageTilesGrid();
 		saveOptions();

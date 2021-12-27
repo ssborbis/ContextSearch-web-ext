@@ -110,35 +110,54 @@ function mouseClickBack(e) {
 
 // get open method based on user preferences
 function getOpenMethod(e, isFolder) {
-	
+
 	isFolder = isFolder || false;
 
-	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
-	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
-	let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
-	let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
-	let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
-	let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
-	
-	let openMethod = "";
-	if (e.which === 3)
-		openMethod = right;
-	else if (e.which === 2)
-		openMethod = middle;
-	else if (e.which === 1) {
-		openMethod = left;
-		
-		// ignore methods that aren't opening methods
-		if (e.shiftKey && shift !== 'keepMenuOpen')
-			openMethod = shift;
-		if (e.ctrlKey && ctrl !== 'keepMenuOpen')
-			openMethod = ctrl;
-		if (e.altKey && alt !== 'keepMenuOpen')
-			openMethod = alt;
-	
+	if ( defaultSearchActions ) {
+		for ( let key in defaultSearchActions ) {
+			let sa = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
+			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+				console.log(key, sa.action);
+				return sa.action;
+			}
+		}
 	}
 
-	return openMethod;
+	for ( let sa of additionalSearchActions ) {
+		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+			console.log('additionalSearchAction', sa);
+			return sa.action;
+		}
+	}
+
+	console.log('no searchAction found')
+	
+	// let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
+	// let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
+	// let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
+	// let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
+	// let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
+	// let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
+	
+	// let openMethod = "";
+	// if (e.which === 3)
+	// 	openMethod = right;
+	// else if (e.which === 2)
+	// 	openMethod = middle;
+	// else if (e.which === 1) {
+	// 	openMethod = left;
+		
+	// 	// ignore methods that aren't opening methods
+	// 	if (e.shiftKey && shift !== 'keepMenuOpen')
+	// 		openMethod = shift;
+	// 	if (e.ctrlKey && ctrl !== 'keepMenuOpen')
+	// 		openMethod = ctrl;
+	// 	if (e.altKey && alt !== 'keepMenuOpen')
+	// 		openMethod = alt;
+	
+	// }
+
+	// return openMethod;
 }
 
 function keepMenuOpen(e, isFolder) {
@@ -467,11 +486,11 @@ async function makeQuickMenu(options) {
 	});
 
 	// prevent click events from propagating
-	[/*'mousedown',*/ 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
+	['mousedown', 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
 
 		qm.addEventListener(eventType, e => {
 
-			if ( e.target.closest('.tile')) return;
+			if ( e.target.closest('.tile, GROUP')) return;
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -774,29 +793,23 @@ async function makeQuickMenu(options) {
 		function isTool(e) {
 			return ( e.dataTransfer.getData("tool") === "true" );
 		}
-		
-		(() => { // addRecentlyUsedFolder()
-			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
-				let recentFolder = nodeToTile(recentlyUsedListToFolder());
-				recentFolder.classList.add('tile');
-				recentFolder.dataset.hasicon = 'true';
-				recentFolder.dataset.undraggable = true;
-				recentFolder.dataset.undroppable = true;
 
-				tileArray.unshift(recentFolder);
-				qm.insertBefore(recentFolder, qm.firstChild);
-			}
-		})();
+		(() => {
 
-		(() => { // matchingEnginesToFolder(s) 
-			if ( !qm.rootNode.parent && userOptions.quickMenuRegexMatchedEngines ) {
+			if ( qm.rootNode.parent ) return;
+			let specialFolderNodes = [];
 
-				let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+			if ( userOptions.quickMenuShowRecentlyUsed )
+				specialFolderNodes.push(recentlyUsedListToFolder());
 
-				// if ( !folder.children.length )
-				// 	return;// console.log('no regex matches for searchTerms');
+			if ( userOptions.quickMenuRegexMatchedEngines )
+				specialFolderNodes.push(matchingEnginesToFolder(quickMenuObject.searchTerms));
+
+			specialFolderNodes.forEach( folder => {
+				folder.displayType = qm.rootNode.displayType;
 
 				let _tile = nodeToTile( folder );
+				_tile.node.displayType = qm.rootNode.displayType;
 				_tile.classList.add('tile');
 				_tile.dataset.hasicon = 'true';
 				_tile.dataset.undraggable = true;
@@ -804,7 +817,7 @@ async function makeQuickMenu(options) {
 
 				tileArray.unshift(_tile);
 				qm.insertBefore(_tile, qm.firstChild);
-			}
+			});
 		})();
 
 		qm.setDisplay();

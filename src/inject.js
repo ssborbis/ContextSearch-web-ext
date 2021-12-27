@@ -4,7 +4,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
 });
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {	
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
 	if ( message.userOptions ) userOptions = message.userOptions;
 
 	switch (message.action) {
