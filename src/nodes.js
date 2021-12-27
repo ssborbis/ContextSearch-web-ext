@@ -165,7 +165,7 @@ function getIconFromNode(node) {
 		} else if ( node.type === "folder" ) {
 			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');
 		} else {
-			return node.icon || null;
+			return node.icon || "";
 		}
 	})();
 
