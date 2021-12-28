@@ -24,6 +24,10 @@ let defaultSearchActions = {
 	"quickMenuFolderAlt":{"altKey":true,"action":"noAction","folder":true}
 };
 
+for ( let key in defaultSearchActions ) {
+	defaultSearchActions[key] = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
+}
+
 function isSearchAction(g, e) {
 
 	return (
@@ -47,14 +51,6 @@ function isSearchAction(g, e) {
 // 		g.key === e.key
 // 	)
 // }
-
-const additionalSearchActions = [
-	Object.assign(Object.assign({}, defaultSearchAction), { button:3, altKey:true, action: "openNewWindow"}),
-	Object.assign(Object.assign({}, defaultSearchAction), { button:4, shiftKey:true, action: "openNewIncognitoWindow"}),
-	Object.assign(Object.assign({}, defaultSearchAction), { button:3, altKey:true, ctrlKey:true, action: "openNewWindow"}),
-
-];
-
 
 
 // setTimeout(() => {

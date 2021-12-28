@@ -385,8 +385,6 @@ document.addEventListener("DOMContentLoaded", async e => {
 	//initAdvancedOptions();
 	buildPositionWidget();
 	setVersion();
-	hideBrowserSpecificElements();
-	buildInfoBubbles();
 	buildImportExportButtons();
 	buildHelpTab();
 	buildClearSearchHistory();
@@ -394,6 +392,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 	hashChange();
 	buildUploadOnHash();
 	buildThemes();
+	buildSearchActions();
+	hideBrowserSpecificElements();
+	buildInfoBubbles();
 
 	// restore settings and set INPUT values
 	await restoreOptions();
@@ -1073,6 +1074,42 @@ function buildSaveButtons() {
 	document.querySelectorAll('BUTTON.saveOptions').forEach( button => {
 		button.onclick = saveOptions;
 	});
+}
+
+function buildSearchActions() {
+	document.querySelectorAll('[data-searchaction]').forEach( el => {
+		buildSearchActionsOptions(el, el.dataset.searchaction.split(","));
+	});
+}
+
+function buildSearchActionsOptions(el, keys) {
+
+	let actions = {
+		"openFolder": {i18n:"SearchActionsOpenFolder"},
+		"openCurrentTab": {i18n: "SearchActionsCurrentTab"},
+		"openNewTab": {i18n: "SearchActionsNewTab"},
+		"openBackgroundTab": {i18n: "SearchActionsBackgroundTab"},
+		"openBackgroundTabKeepOpen": {i18n: "SearchActionsBackgroundTabKeepOpen"},
+		"openNewWindow": {i18n: "SearchActionsNewWindow"},
+		"openNewIncognitoWindow": {i18n: "SearchActionsIncognitoWindow"},
+		"openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
+		"keepMenuOpen": {i18n: "KeepMenuOpen"},
+		"noAction": {i18n: "SearchActionsNoAction"}
+	};
+// "openFolder,openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,keepMenuOpen,noAction"
+	for ( let key in actions ) {
+
+		if ( !keys.includes(key) ) continue;
+
+		let o = document.createElement('option');
+		o.value = key;
+		o.innerText = browser.i18n.getMessage(actions[key].i18n);
+
+		for ( let data in actions[key]) 
+			o.dataset[data] = actions[key][data];
+
+		el.appendChild(o);
+	}
 }
 
 // generate new search.json.mozlz4 

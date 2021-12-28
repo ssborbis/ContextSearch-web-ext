@@ -242,5 +242,6 @@ const defaultUserOptions = {
 	alwaysAllowTileRearranging: false,
 	contextMenuUseContextualLayout: false,
 	contextMenuContextualLayoutFlattenLimit: 10,
-	quickMenuDomLayout: ""
+	quickMenuDomLayout: "",
+	customSearchActions: []
 };

@@ -112,24 +112,25 @@ function getOpenMethod(e, isFolder) {
 
 	isFolder = isFolder || false;
 
-	// if ( defaultSearchActions ) {
-	// 	for ( let key in defaultSearchActions ) {
-	// 		let sa = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
-	// 		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
-	// 			console.log(key, sa.action);
-	// 			return sa.action;
-	// 		}
-	// 	}
-	// }
+	if ( defaultSearchActions ) {
+		for ( let key in defaultSearchActions ) {
+			defaultSearchActions[key].action = userOptions[key];
+			let sa = defaultSearchActions[key];
+			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+				console.log(key, sa.action);
+				return sa.action;
+			}
+		}
+	}
 
-	// for ( let sa of additionalSearchActions ) {
-	// 	if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
-	// 		console.log('additionalSearchAction', sa);
-	// 		return sa.action;
-	// 	}
-	// }
+	for ( let sa of userOptions.customSearchActions ) {
+		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+			console.log('customSearchActions', sa);
+			return sa.action;
+		}
+	}
 
-	// console.log('no searchAction found')
+	console.error('no searchAction found', e);
 	
 	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
 	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
@@ -2042,9 +2043,7 @@ function nodeToTile( node ) {
 				userOptions.lastUsedId = quickMenuObject.lastUsed;
 				document.dispatchEvent(new CustomEvent('updateLastUsed'));
 
-				if ( !keepMenuOpen(e, true))
-					closeMenuRequest(e);
-
+				if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
 			}
 
 			break;
