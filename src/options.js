@@ -860,7 +860,6 @@ function buildImportExportButtons() {
 				// load icons to base64 if missing
 				let overDiv = document.createElement('div');
 				overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
-				// overDiv.innerText = "Fetching remote content";
 				let msgDiv = document.createElement('div');
 				msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
 				msgDiv.innerText = browser.i18n.getMessage("Fetchingremotecontent");
@@ -878,7 +877,7 @@ function buildImportExportButtons() {
 				if ( browser.search && browser.search.get ) {
 					let ocses = await browser.search.get();
 					findNodes(_uo.nodeTree, node => {
-						if ( node.type === "oneClickSearchEngine" && !node.icon ) {
+						if ( node.type === "oneClickSearchEngine" ) {
 							let ocse = ocses.find(_ocse => _ocse.name === node.title);	
 							if ( ocse ) node.icon = ocse.favIconUrl;
 						}
