@@ -384,6 +384,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	makeTabs();
 	buildPositionWidget();
 	setVersion();
+	buildAdvancedOptions();
 	buildImportExportButtons();
 	buildHelpTab();
 	buildClearSearchHistory();
@@ -1400,6 +1401,48 @@ function setToolBarIconOption(uri) {
 	$('#toolBarIconForm .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
 	$('#toolBarIcon_3').checked = true;
 	$('#toolBarIcon_3').value = uri;
+}
+
+function buildAdvancedOptions() {
+
+	function makeInput( key ) {
+
+			let value = key.split('.').reduce((a, b) => a[b], defaultUserOptions);
+
+			let type = typeof value;
+
+			let el = document.createElement('input');
+
+			el.id = key;
+
+			if ( type === 'boolean')
+				el.type = 'checkbox';
+
+			if ( type === 'string' )
+				el.type = 'input';
+			
+			if ( type === 'number' )
+				el.type = 'number';
+
+			return el;
+	}
+
+	advancedOptions.forEach( o => {
+	let tr = document.createElement('tr');
+	let td1 = document.createElement('td');
+	let td2 = document.createElement('td');
+
+	tr.appendChild(td1);
+	tr.appendChild(td2);
+
+	td1.innerText = o.id;
+	td1.dataset.i18n_tooltip = o.i18n;
+
+	td2.appendChild(makeInput(o.id));
+
+
+	$('advancedSettingsTable').appendChild(tr);
+})
 }
 
 function sortAdvancedOptions() {
