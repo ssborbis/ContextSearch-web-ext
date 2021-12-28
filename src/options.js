@@ -382,7 +382,6 @@ document.addEventListener("DOMContentLoaded", async e => {
 
 	// build the DOM
 	makeTabs();
-	//initAdvancedOptions();
 	buildPositionWidget();
 	setVersion();
 	buildImportExportButtons();
@@ -1077,39 +1076,40 @@ function buildSaveButtons() {
 }
 
 function buildSearchActions() {
-	document.querySelectorAll('[data-searchaction]').forEach( el => {
-		buildSearchActionsOptions(el, el.dataset.searchaction.split(","));
-	});
-}
 
-function buildSearchActionsOptions(el, keys) {
+	function addOption(el, keys) {
 
-	let actions = {
-		"openFolder": {i18n:"SearchActionsOpenFolder"},
-		"openCurrentTab": {i18n: "SearchActionsCurrentTab"},
-		"openNewTab": {i18n: "SearchActionsNewTab"},
-		"openBackgroundTab": {i18n: "SearchActionsBackgroundTab"},
-		"openBackgroundTabKeepOpen": {i18n: "SearchActionsBackgroundTabKeepOpen"},
-		"openNewWindow": {i18n: "SearchActionsNewWindow"},
-		"openNewIncognitoWindow": {i18n: "SearchActionsIncognitoWindow"},
-		"openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
-		"keepMenuOpen": {i18n: "KeepMenuOpen"},
-		"noAction": {i18n: "SearchActionsNoAction"}
-	};
-// "openFolder,openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,keepMenuOpen,noAction"
-	for ( let key in actions ) {
+		let actions = {
+			"openFolder": {i18n:"SearchActionsOpenFolder"},
+			"openCurrentTab": {i18n: "SearchActionsCurrentTab"},
+			"openNewTab": {i18n: "SearchActionsNewTab"},
+			"openBackgroundTab": {i18n: "SearchActionsBackgroundTab"},
+			"openBackgroundTabKeepOpen": {i18n: "SearchActionsBackgroundTabKeepOpen"},
+			"openNewWindow": {i18n: "SearchActionsNewWindow"},
+			"openNewIncognitoWindow": {i18n: "SearchActionsIncognitoWindow"},
+			"openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
+			"keepMenuOpen": {i18n: "KeepMenuOpen"},
+			"noAction": {i18n: "SearchActionsNoAction"}
+		};
 
-		if ( !keys.includes(key) ) continue;
+		for ( let key in actions ) {
 
-		let o = document.createElement('option');
-		o.value = key;
-		o.innerText = browser.i18n.getMessage(actions[key].i18n);
+			if ( !keys.includes(key) ) continue;
 
-		for ( let data in actions[key]) 
-			o.dataset[data] = actions[key][data];
+			let o = document.createElement('option');
+			o.value = key;
+			o.innerText = browser.i18n.getMessage(actions[key].i18n);
 
-		el.appendChild(o);
+			for ( let data in actions[key]) 
+				o.dataset[data] = actions[key][data];
+
+			el.appendChild(o);
+		}
 	}
+
+	document.querySelectorAll('[data-searchaction]').forEach( el => {
+		addOption(el, el.dataset.searchaction.split(","));
+	});
 }
 
 // generate new search.json.mozlz4 
