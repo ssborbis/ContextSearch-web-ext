@@ -6,7 +6,6 @@ var quickMenuObject = {
 	screenCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
 	mouseLastClickTime: 0,
-	mouseDragDeadzone: 4,
 	lastSelectTime: 0,
 	locked: false,
 	searchTerms: "",
@@ -75,15 +74,15 @@ function getFullElementSize(el) {
 	var paddingTop = parseFloat(style.paddingTop) || 0;
 	var paddingBottom = parseFloat(style.paddingBottom) || 0;
 
-	var borderLeft = parseFloat(style.borderLeftWidth) || 0;
-	var borderRight = parseFloat(style.borderRightWidth) || 0;
-	var borderTop = parseFloat(style.borderTopWidth) || 0;
-	var borderBottom = parseFloat(style.borderBottomWidth) || 0;
+	var borderLeftWidth = parseFloat(style.borderLeftWidth) || 0;
+	var borderRightWidth = parseFloat(style.borderRightWidth) || 0;
+	var borderTopWidth = parseFloat(style.borderTopWidth) || 0;
+	var borderBottomWidth = parseFloat(style.borderBottomWidth) || 0;
 
-	let fullWidth = rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeft + borderRight;
-	let fullHeight = rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTop + borderBottom;
+	let fullWidth = rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeftWidth + borderRightWidth;
+	let fullHeight = rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTopWidth + borderBottomWidth;
 
-	return {width: fullWidth, height: fullHeight, rectWidth: rect.width, rectHeight: rect.height, noBorderWidth: fullWidth - borderLeft - borderRight };
+	return {width: fullWidth, height: fullHeight, rectWidth: rect.width, rectHeight: rect.height, noBorderWidth: fullWidth - borderLeftWidth - borderRightWidth };
 }
 
 // generic search engine tile
@@ -113,51 +112,51 @@ function getOpenMethod(e, isFolder) {
 
 	isFolder = isFolder || false;
 
-	if ( defaultSearchActions ) {
-		for ( let key in defaultSearchActions ) {
-			let sa = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
-			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
-				console.log(key, sa.action);
-				return sa.action;
-			}
-		}
-	}
-
-	for ( let sa of additionalSearchActions ) {
-		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
-			console.log('additionalSearchAction', sa);
-			return sa.action;
-		}
-	}
-
-	console.log('no searchAction found')
-	
-	// let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
-	// let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
-	// let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
-	// let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
-	// let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
-	// let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
-	
-	// let openMethod = "";
-	// if (e.which === 3)
-	// 	openMethod = right;
-	// else if (e.which === 2)
-	// 	openMethod = middle;
-	// else if (e.which === 1) {
-	// 	openMethod = left;
-		
-	// 	// ignore methods that aren't opening methods
-	// 	if (e.shiftKey && shift !== 'keepMenuOpen')
-	// 		openMethod = shift;
-	// 	if (e.ctrlKey && ctrl !== 'keepMenuOpen')
-	// 		openMethod = ctrl;
-	// 	if (e.altKey && alt !== 'keepMenuOpen')
-	// 		openMethod = alt;
-	
+	// if ( defaultSearchActions ) {
+	// 	for ( let key in defaultSearchActions ) {
+	// 		let sa = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
+	// 		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+	// 			console.log(key, sa.action);
+	// 			return sa.action;
+	// 		}
+	// 	}
 	// }
 
-	// return openMethod;
+	// for ( let sa of additionalSearchActions ) {
+	// 	if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+	// 		console.log('additionalSearchAction', sa);
+	// 		return sa.action;
+	// 	}
+	// }
+
+	// console.log('no searchAction found')
+	
+	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
+	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
+	let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
+	let shift = isFolder ? userOptions.quickMenuFolderShift : userOptions.quickMenuShift;
+	let ctrl = isFolder ? userOptions.quickMenuFolderCtrl : userOptions.quickMenuCtrl;
+	let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
+	
+	let openMethod = "";
+	if (e.which === 3)
+		openMethod = right;
+	else if (e.which === 2)
+		openMethod = middle;
+	else if (e.which === 1) {
+		openMethod = left;
+		
+		// ignore methods that aren't opening methods
+		if (e.shiftKey && shift !== 'keepMenuOpen')
+			openMethod = shift;
+		if (e.ctrlKey && ctrl !== 'keepMenuOpen')
+			openMethod = ctrl;
+		if (e.altKey && alt !== 'keepMenuOpen')
+			openMethod = alt;
+	
+	}
+
+	return openMethod;
 }
 
 function keepMenuOpen(e, isFolder) {
@@ -2042,6 +2041,10 @@ function nodeToTile( node ) {
 				quickMenuObject.lastUsed = node.id
 				userOptions.lastUsedId = quickMenuObject.lastUsed;
 				document.dispatchEvent(new CustomEvent('updateLastUsed'));
+
+				if ( !keepMenuOpen(e, true))
+					closeMenuRequest(e);
+
 			}
 
 			break;
