@@ -91,7 +91,11 @@ Display search engines in the context (right-click) menu. The menu is a single e
 
 ### Usage
 * Select some text and right-click to bring up the context menu
-* Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48.png" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
+* Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
+
+Enabling the advanced option `contextMenuUseContextualLayout` allows for displaying only specific engines in the menu, depending on the context in which the menu was opened. These "contexts" can be set in the Edit Engine modal from the Search Engines Manager. 
+
+For example, if you have a reverse-image search engine, you may only want to use it when right-clicking an image. If you enabled the contextual layout and checked the `image` context for that search engine, you would only be shown that engine ( and any others with the `image` context ) when right-clicking an image. This option is helpful for getting to the engine you want quickly, especially if you have lots of engines.
 
 The search results can be displayed in a number of ways depending on the key held while clicking the menu.
 
