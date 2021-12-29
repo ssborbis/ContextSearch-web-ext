@@ -16,7 +16,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	let searchEngines = [];
 	let file = ev.target.files[0];
 	
-	if ( $('#cb_overwriteOnImport').checked && confirm("This will delete all custom search engines, folders, bookmarklets, separators, etc. Are you sure?") ) {
+	if ( $('#cb_overwriteOnImport').checked && confirm(browser.i18n.getMessage("ConfirmDeleteCustomSearchEngines")) ) {
 		userOptions.nodeTree.children = [];
 		userOptions.searchEngines = [];
 	}
@@ -915,6 +915,8 @@ function buildUploadOnHash() {
 	}
 }
 
+
+
 function buildHelpTab() {
 
 	function traverse(node) {
@@ -944,6 +946,12 @@ function buildHelpTab() {
 		}
 
 	}
+
+	// replace new-style titles
+	document.querySelectorAll('[title^="$"]').forEach( el => {
+		el.title = browser.i18n.getMessage(el.title.replace(/^\$/, "") );
+		el.style.cursor = "help";
+	});
 
 	// add locale-specific styling
 	var link = document.createElement( "link" );
@@ -1203,7 +1211,8 @@ function buildThemes() {
 	$('#quickMenuTheme').innerHTML = null;
 	themes.forEach( t => {
 		let option = document.createElement('option');
-		option.value = option.innerText = t.name;
+		option.value = t.name;
+		option.innerText = browser.i18n.getMessage(t.name.replace(" ","_")) || t.name;
 		$('#quickMenuTheme').appendChild(option);
 	});
 }
@@ -1269,7 +1278,7 @@ function buildShortcutTable() {
 		tr.shortcut = s;
 		tr.innerHTML = `
 			<td></td>
-			<td>${s.name || s.action}</td>
+			<td>${browser.i18n.getMessage(s.name) || s.name || s.action}</td>
 			<td><span style="cursor:pointer;user-select:none;" title="${browser.i18n.getMessage("ClickToSet")}" data-id="${s.id}">set</span></td>
 			`;
 		table.appendChild(tr);
@@ -1436,7 +1445,8 @@ function buildAdvancedOptions() {
 	tr.appendChild(td2);
 
 	td1.innerText = o.id;
-	td1.dataset.i18n_tooltip = o.i18n;
+	td1.title = browser.i18n.getMessage(o.id + "Tooltip") || o.i18n;
+	td1.style.cursor = 'help';
 
 	td2.appendChild(makeInput(o.id));
 

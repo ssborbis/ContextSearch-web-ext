@@ -1953,9 +1953,368 @@
     "description": ""
   },
 
+
+    // Misc - Messages *********************************************************************
+  "requestPermissionsMessage": {
+    "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous pour demander l’autorisation d’ajouter des données dans le presse-papiers.",
+    "description": "clipboardWrite permission"
+  },
+  "Request": {
+    "message": "Request",
+    "description": "clipboardWrite permission - request button label"
+  },
+  
+  "deleteNodesMessage": {
+    "message": "Delete $1 node(s)?"
+  },
+  
+  
+  //Options - Search Engine Manager Tab
+  "RegexTooltip": {
+    "message": "Modify the search terms using regex before submitting. Multiple replacements can be chained, one per line",
+    "description": "searchengine edit - search regex tooltip"
+  },
+  "MatchSearchTermsRegexTooltip": {
+    "message": "Display this engine in the Regex Matches folder if the search terms match the following regex",
+    "description": "searchengine edit - match regex tooltip"
+  },
+  "SearchCodeTooltip": {
+    "message": "Run some javascript after opening the template URL. Global variable 'searchTerms' represents the current search",
+    "description": "searchengine edit - searchcode tooltip"
+  },
+  
+  "ConfirmDeleteCustomSearchEngines": {
+    "message": "This will delete all custom search engines, folders, bookmarklets, separators, etc. Are you sure?",
+    "description": "remove searchengines - confirm message"
+  },
+  
+  
+  //Options - Toolbar Tab ********************************************************************************
+  "customIconTooltip": {
+    "message": "Utiliser une image sur l’ordinateur",
+    "description": "toolbar icon - custom icon tooltip"
+  },
+  
+  
+  //Options - Shortcuts Tab
+  "EnableHotkeysLabel": {
+    "message": "Search Engine Hotkeys",
+    "description": "label for Search Engine Hotkeys"
+  },
+  
+  "quickMenuOpen": {
+    "message": "quickMenuOpen",
+    "description": "keyboard shortcut label"
+  },
+  "findBarOpen": {
+    "message": "findBarOpen",
+    "description": "keyboard shortcut label"
+  },
+  "findBarNext": {
+    "message": "findBarNext",
+    "description": "keyboard shortcut label"
+  },
+  "findBarPrevious": {
+    "message": "findBarPrevious",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarOpen": {
+    "message": "sideBarOpen",
+    "description": "keyboard shortcut label"
+  },
+  "toggleDisplayMode": {
+    "message": "toggleDisplayMode",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuLock": {
+    "message": "quickMenuLock",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuEdit": {
+    "message": "quickMenuEdit",
+    "description": "keyboard shortcut label"
+  },
+  "optionsOpen": {
+    "message": "optionsOpen",
+    "description": "keyboard shortcut label"
+  },
+  "pageTilesOpen": {
+    "message": "pageTilesOpen",
+    "description": "keyboard shortcut label"
+  },
+  "themeNext": {
+    "message": "themeNext",
+    "description": "keyboard shortcut label"
+  },
+  "themePrevious": {
+    "message": "themePrevious",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarMinify": {
+    "message": "sideBarMinify",
+    "description": "keyboard shortcut label"
+  },
+  
+  
+  //Options - Omnibox Tab *******************************************************************
+  "OmniboxTooltip": {
+    "message": "Omnibox",
+    "description": "omnibox image title"
+  },
+  
+  
+  //Options - General Tab
+  "lite": {
+    "message": "like",
+    "description": "theme name"
+  },
+  "dark": {
+    "message": "dark",
+    "description": "theme name"
+  },
+  "modern": {
+    "message": "modern",
+    "description": "theme name"
+  },
+  "modern_dark": {
+    "message": "modern dark",
+    "description": "theme name"
+  },
+  "modern_purple": {
+    "message": "modern purple",
+    "description": "theme name"
+  },
+  "modern_sunset": {
+    "message": "modern sunset",
+    "description": "theme name"
+  },
+  "modern_glass": {
+    "message": "modern glass",
+    "description": "theme name"
+  },
+  
+  
+ //Options - Advanced Tab
+  "exportToFirefoxSearch": {
+    "message": "export to Firefox search",
+    "description": "advanced setting label"
+  },
+  "exportToFirefoxSearchTooltip": {
+    "message": "Browse to your profile folder and select your search.json.mozlz4 file. You will be prompted with two files: a new search.json.mozlz4 file and a backup of your original file. Save both files to your profile directory. Restart Firefox to see the changes.",
+    "description": "advanced setting tooltip"
+  },
+  "addSearchProviderHideNotificationTooltip": {
+    "message": "Notice for Firefox users to add opensearch engines using the Firefox search bar",
+    "description": "advanced setting tooltip"
+  },
+  "alwaysAllowTileRearrangingTooltip": {
+    "message": "Always allow tiles to be rearranged in the menus",
+    "description": "advanced setting tooltip"
+  },
+  "autoCopyTooltip": {
+    "message": "Selected text is copied to the clipboard",
+    "description": "advanced setting tooltip"
+  },
+  "autoPasteFromClipboardTooltip": {
+    "message": "Text in the clipboard is pasted to searchbars when search menus are opened",
+    "description": "advanced setting tooltip"
+  },
+  "cache": {
+    "message": "✓",
+    "description": "button cache label"
+  },
+  "cacheTooltip": {
+    "message": "cache search engine icons from their URLs",
+    "description": "advanced setting tooltip - button cache"
+  },
+  "uncache": {
+    "message": "✘",
+    "description": "button uncache label"
+  },
+  "uncacheTooltip": {
+    "message": "Delete search engine icon cache only for search engines containing icon URLs. Warning: URLs will not be checked for bad or invalid before removing cache",
+    "description": "advanced setting tooltip - button uncache"
+  },
+  "confirmUncache": {
+    "message": "Supprimer le cache de toutes les icônes ?",
+    "description": "uncache message confirm"
+  },
+  "warningCache": {
+    "message": "Certaines icônes n’ont pas pu être mises en cache.",
+    "description": "cache message warning"
+  },
+  "cacheIconsMaxSizeTooltip": {
+    "message": "Max width or height to resize icons for caching",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuContextualLayoutFlattenLimitTooltip": {
+    "message": "Remove subfolders and flatten menu if only n number of engines are to be shown. 0 = no limit",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuHotkeysTooltip": {
+    "message": "Append hotkey to context menu items using (&A) format for quick access",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuRegexMatchedEnginesTooltip": {
+    "message": "Show regex matching engines at the top of the menu",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuTitleTooltip": {
+    "message": "Override context menu title. Use %s in place of searchTerms. blank = default",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseContextualLayoutTooltip": {
+    "message": "Display the context menu in subfolders according to the current context",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseInnerTextTooltip": {
+    "message": "Use the inner text of an element as the search term when no text is selected",
+    "description": "advanced setting tooltip"
+  },
+  "disableNewTabSortingTooltip": {
+    "message": "Enable to let the browser decide how to sort new search result tabs. Useful to prevent conflicts with tab managers",
+    "description": "advanced setting tooltip"
+  },
+  "exportWithoutBase64IconsTooltip": {
+    "message": "Exported configs are smaller by excluding icon data URIs. May cause custom icons to be lost",
+    "description": "advanced setting tooltip"
+  },
+  "forceOpenResultsTabsAdjacentTooltip": {
+    "message": "Force search results to appear in next tab to the right",
+    "description": "advanced setting tooltip"
+  },
+  "groupFolderRowBreaksTooltip": {
+    "message": "Enable to show inline group folders as block elements",
+    "description": "advanced setting tooltip"
+  },
+  "groupLabelMoreTileTooltip": {
+    "message": "Show the more / less icon for group folders inside the label tile vs using a separate tile",
+    "description": "advanced setting tooltip"
+  },
+  "omniboxDefaultToLastUsedEngineTooltip": {
+    "message": "Default to the most recent search engine used with the omnibox",
+    "description": "advanced setting tooltip"
+  },
+  "openFoldersOnHoverTimeoutTooltip": {
+    "message": "Number of milliseconds to hover before opening a folder. 500 = default, 0 = disabled",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAllowContextMenuNewTooltip": {
+    "message": "Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoMaxCharsTooltip": {
+    "message": "Maximum number of characters to be selected and still open the quick menu using the Auto method. Selecting more that the number will not open the menu. 0 = no limit",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoTimeoutTooltip": {
+    "message": "Cancels opening the quick menu if pausing for a set number of milliseconds before releasing the mouse button. 0 = disabled",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuCancelDeadzoneTooltip": {
+    "message": "How many pixels you can move the mouse before cancelling opening the quick menu using HOLD",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuDomLayoutTooltip": {
+    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, i.e. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuFocusOnOpenTooltip": {
+    "message": "set focus to the quick menu after opening",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHideSeparatorsInGridTooltip": {
+    "message": "hide separators when using the quick menu in grid view",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHoldTimeoutTooltip": {
+    "message": "Time in millisections to hold a mouse button before opening the quick menu using HOLD",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOpeningOpacityTooltip": {
+    "message": "Transparency level of the quick menu when opened. Becomes opaque on hover",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuPreventPageClicksTooltip": {
+    "message": "Prevent mouse events on the current webpage while the quick menu is open",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuRegexMatchedEnginesTooltip": {
+    "message": "Show regex matching engines at the top of the menu",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuSearchOnMouseUpTooltip": {
+    "message": "Allows a search to be performed from the quick menu on mouseup without requiring a mousedown. Useful when opening the menu on Hold and releasing the mouse on a search tile to perform a search.",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowHotkeysInTitleTooltip": {
+    "message": "Show hotkeys with titles",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowRecentlyUsedTooltip": {
+    "message": "Show recently used engines at the top of the menu",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOnSimpleClick.useInnerTextTooltip": {
+    "message": "Use the inner text of an element as the search term when no text is selected",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolbarRowsTooltip": {
+    "message": "Maximum number of tool rows to display. 0 = no limit",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsLockPersistTooltip": {
+    "message": "he state of the lock tool will be remembered across sessions",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsRepeatSearchPersistTooltip": {
+    "message": "The state of the repeat search tool will be remembered across sessions",
+    "description": "advanced setting tooltip"
+  },
+  "rememberLastOpenedFolderTooltip": {
+    "message": "Open menus to the last folder used",
+    "description": "advanced setting tooltip"
+  },
+  "rightClickMenuOnMouseDownFixTooltip": {
+    "message": "Require a double-click to display the default context menu when using HOLD right mouse button to open the quick menu. Useful for preventing errant menus on systems that display the context menu on mouse down vs mouse up",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarHistoryLengthTooltip": {
+    "message": "Maximum number of history entries to store",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarSuggestionsCountTooltip": {
+    "message": "Maximum number of Google suggestions to include",
+    "description": "advanced setting tooltip"
+  },
+  "shakeSensitivityTooltip": {
+    "message": "Sensitivity for detecting a shake. Lower = more sensitive",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar.openOnResultsTooltip": {
+    "message": "Open the sidebar on search results tabs",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar.openOnResultsMinimizedTooltip": {
+    "message": "Open the sidebar on search results tabs minimized",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar.rememberStateTooltip": {
+    "message": "Remember the opened state of the sidebar",
+    "description": "advanced setting tooltip"
+  },  
+  "Blocklist": {
+    "message": "Blocklist",
+    "description": "blocklist label"
+  },
+  "BlocklistTooltip": {
+    "message": "URLs to disable ContextSearch with. Accepts hostnames www.example.com, wildcards  *.example.com and regex. ! or # prefix will disable an entry #example.com or !example.com",
+    "description": "blocklist tooltip"
+  },
+  
+  
   "___________": {
-    "message": "",
-    "description": ""
+    "message": ""
   }
 
 }

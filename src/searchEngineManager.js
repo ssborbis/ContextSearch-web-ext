@@ -1798,7 +1798,12 @@ document.addEventListener('keydown', e => {
 	if ( e.key === 'Delete' && selectedRows.length ) {
 		e.preventDefault();
 
-		if ( confirm(`Delete ${selectedRows.length} nodes?`)) {
+		let nodesToDelete = [];	
+		selectedRows.forEach( row => {
+			nodesToDelete = nodesToDelete.concat(findNodes(row.node, n => true));
+		});
+
+		if ( confirm(browser.i18n.getMessage("deleteNodesMessage", nodesToDelete.length)) ) {
 			removeNodesAndRows();
 		}
 	}

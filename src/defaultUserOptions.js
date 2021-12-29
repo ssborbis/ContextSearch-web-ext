@@ -203,7 +203,6 @@ const defaultUserOptions = {
 	exportWithoutBase64Icons: false,
 	addSearchProviderHideNotification: false,
 	syncWithFirefoxSearch: false,
-	quickMenuTilesDraggable: true,
 	contextMenuShowRecentlyUsed: false,
 	contextMenuShowRecentlyUsedAsFolder:true,
 	recentlyUsedList: [],
