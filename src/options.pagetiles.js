@@ -221,7 +221,10 @@ function makePageTilesFolderBrowser() {
 }
 
 $('pageTiles.paletteString').addEventListener('change', makePageTilesPaletteSample);
-$('pageTiles.paletteString').addEventListener('change', setPageTilesGridPalette);
+$('pageTiles.paletteString').addEventListener('change', () => {
+	userOptions.pageTiles.paletteString = $('pageTiles.paletteString').value;
+	setPageTilesGridPalette();
+});
 
 $('pageTiles.enabled').addEventListener('change', e => {
 	if ( !userOptions.pageTiles.grid.length )
