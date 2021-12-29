@@ -636,7 +636,7 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
+		let tiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( t => t.style.display !== 'none' );
 
 		let br = () => document.createElement('br');
 
@@ -1934,7 +1934,7 @@ function nodeToTile( node ) {
 
 	let tile = {};
 
-	if (node.hidden) return;
+//	if (node.hidden) return;
 
 	let getTitleWithHotkey = n => {
 		if ( userOptions.quickMenuShowHotkeysInTitle ) 
@@ -2075,6 +2075,10 @@ function nodeToTile( node ) {
 	}
 	
 	tile.node = node;
+
+	if ( node.hidden ) {
+		tile.style.display = 'none';
+	}
 	
 	return tile;
 }

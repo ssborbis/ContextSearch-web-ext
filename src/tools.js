@@ -403,15 +403,13 @@ var QMtools = [
 		action: function() {
 
 			browser.runtime.sendMessage({action: "editQuickMenu"});
-			window.tilesDraggable = !window.tilesDraggable;
 			
-		//	document.addEventListener('changeFolder', setDraggable);
-			setDraggable();
-
-			this.dataset.locked = window.tilesDraggable;
-
-		//	setOptionsBar();
-			resizeMenu();
+			if ( !userOptions.alwaysAllowTileRearranging ) {
+				window.tilesDraggable = !window.tilesDraggable;
+				setDraggable();
+				this.dataset.locked = window.tilesDraggable;
+				resizeMenu();
+			}
 
 			// special handler for when mouseup is disabled in addTileEventHandlers
 			// if ( window.tilesDraggable && this ) 
@@ -464,6 +462,34 @@ var QMtools = [
 			if (qm.rootNode.id === '___recent___') return;
 			
 			qm = await quickMenuElementFromNodeTree(recentlyUsedListToFolder());
+			
+			resizeMenu({openFolder: true});	
+		}
+	},
+	{
+		name: 'showhide', 
+		icon: "icons/hide.png",
+		title: browser.i18n.getMessage('showhide'),
+		context: ["quickmenu", "sidebar", "searchbar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			tile.dataset.locked = false;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			return tile;
+		}, 
+		action: async function() {
+
+			let on = this.dataset.locked = this.dataset.locked == 'true' ? false : true;
+
+			qm.querySelectorAll('.tile').forEach( t => {
+				if ( t.node.hidden )
+					t.style.display = on ? null : 'none';
+			})
 			
 			resizeMenu({openFolder: true});	
 		}

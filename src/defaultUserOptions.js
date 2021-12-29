@@ -71,6 +71,7 @@ const defaultUserOptions = {
 		{name: 'toggle_hotkeys',disabled: true},
 		{name: 'edit',			disabled: false},
 		{name: 'block',			disabled: true},
+		{name: 'showhide',		disabled: true},
 		{name: 'recentlyused',	disabled: true}
 	],
 	quickMenuToolsPosition: "top",
