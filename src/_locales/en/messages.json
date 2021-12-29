@@ -2255,7 +2255,7 @@
     "message": "Show recently used engines at the top of the menu",
     "description": "advanced setting tooltip"
   },
-  "quickMenuOnSimpleClick.useInnerTextTooltip": {
+  "quickMenuOnSimpleClick_useInnerTextTooltip": {
     "message": "Use the inner text of an element as the search term when no text is selected",
     "description": "advanced setting tooltip"
   },
@@ -2291,15 +2291,15 @@
     "message": "Sensitivity for detecting a shake. Lower = more sensitive",
     "description": "advanced setting tooltip"
   },
-  "sideBar.openOnResultsTooltip": {
+  "sideBar_openOnResultsTooltip": {
     "message": "Open the sidebar on search results tabs",
     "description": "advanced setting tooltip"
   },
-  "sideBar.openOnResultsMinimizedTooltip": {
+  "sideBar_openOnResultsMinimizedTooltip": {
     "message": "Open the sidebar on search results tabs minimized",
     "description": "advanced setting tooltip"
   },
-  "sideBar.rememberStateTooltip": {
+  "sideBar_rememberStateTooltip": {
     "message": "Remember the opened state of the sidebar",
     "description": "advanced setting tooltip"
   },  

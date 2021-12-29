@@ -1445,7 +1445,7 @@ function buildAdvancedOptions() {
 	tr.appendChild(td2);
 
 	td1.innerText = o.id;
-	td1.title = browser.i18n.getMessage(o.id + "Tooltip") || o.i18n;
+	td1.title = browser.i18n.getMessage(o.id.replace(".", "_") + "Tooltip") || o.i18n;
 	td1.style.cursor = 'help';
 
 	td2.appendChild(makeInput(o.id));

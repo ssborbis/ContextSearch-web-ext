@@ -2145,7 +2145,7 @@
     "message": "Afficher les derniers moteurs utilisés en tête de menu",
     "description": "advanced setting tooltip"
   },
-  "quickMenuOnSimpleClick.useInnerTextTooltip": {
+  "quickMenuOnSimpleClick_useInnerTextTooltip": {
     "message": "Utiliser le texte interne d’un élément comme terme de recherche lorsqu’aucun texte n’est sélectionné.",
     "description": "advanced setting tooltip"
   },
@@ -2181,15 +2181,15 @@
     "message": "Sensibilité de détection du bouger de la souris (plus faible = plus sensible)",
     "description": "advanced setting tooltip"
   },
-  "sideBar.openOnResultsTooltip": {
+  "sideBar_openOnResultsTooltip": {
     "message": "Ouvrir le panneau latéral dans les onglets des résultats de recherche.",
     "description": "advanced setting tooltip"
   },
-  "sideBar.openOnResultsMinimizedTooltip": {
+  "sideBar_openOnResultsMinimizedTooltip": {
     "message": "Ouvrir le panneau latéral réduit dans les onglets des résultats de recherche.",
     "description": "advanced setting tooltip"
   },
-  "sideBar.rememberStateTooltip": {
+  "sideBar_rememberStateTooltip": {
     "message": "Mémoriser l’état d’ouverture du panneau latéral.",
     "description": "advanced setting tooltip"
   },
