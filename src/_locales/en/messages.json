@@ -2264,7 +2264,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsLockPersistTooltip": {
-    "message": "he state of the lock tool will be remembered across sessions",
+    "message": "The state of the lock tool will be remembered across sessions",
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsRepeatSearchPersistTooltip": {

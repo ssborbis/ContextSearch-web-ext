@@ -12,7 +12,7 @@ const advancedOptions = [
   { "id": "contextMenuUseInnerText"},
   { "id": "disableNewTabSorting"},
   { "id": "exportWithoutBase64Icons"},
-  { "id": "forceOpenReultsTabsAdjacent"},
+  { "id": "forceOpenResultsTabsAdjacent"},
   { "id": "groupFolderRowBreaks"},
   { "id": "groupLabelMoreTile"},
   { "id": "omniboxDefaultToLastUsedEngine"},

@@ -231,7 +231,7 @@ const defaultUserOptions = {
 	version: "1",
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
-	forceOpenReultsTabsAdjacent: false,
+	forceOpenResultsTabsAdjacent: false,
 	rightClickMenuOnMouseDownFix: false,
 	contextMenuRegexMatchedEngines: false,
 	quickMenuRegexMatchedEngines: false,

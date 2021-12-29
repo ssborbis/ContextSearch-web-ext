@@ -932,7 +932,7 @@ function openWithMethod(o) {
 	} 
 	async function openNewTab(inBackground) {	// open in new tab
 
-		if ( userOptions.forceOpenReultsTabsAdjacent ) {
+		if ( userOptions.forceOpenResultsTabsAdjacent ) {
 			try {
 				let actives = await browser.tabs.query({currentWindow: true, active: true});
 				o.index = actives[0].index + 1;
@@ -1843,6 +1843,14 @@ function updateUserOptionsVersion(uo) {
 		// 1.32
 		if ( _uo.searchBarIcon.indexOf('icon48.png') )
 			_uo.searchBaricon = 'icons/icon.svg'
+		return _uo;
+
+	}).then( _uo => {
+
+		if ( _uo.forceOpenReultsTabsAdjacent ) {
+			_uo.forceOpenResultsTabsAdjacent = _uo.forceOpenReultsTabsAdjacent;
+			delete _uo.forceOpenReultsTabsAdjacent;
+		}
 		return _uo;
 
 	}).then( _uo => {
