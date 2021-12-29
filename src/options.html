@@ -1824,7 +1824,7 @@
 						</td>
 						<td>
 							<label style="margin-left:10px" data-i18n="MenuSize">_</label>
-							<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
+							<span class="info" title="$MenuSizeTooltip">&#9432;</span>
 						</td>
 						<td>
 							<input type="range" id="quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
@@ -1836,7 +1836,7 @@
 						</td>
 						<td>
 							<label style="margin-left:10px" data-i18n="IconSize">_</label>
-							<span class="info" data-msg="Scaled size of search engine icons. At 200%, icons fill their container entirely" data-i18n_tooltip="IconSize">&#9432;</span>
+							<span class="info" title="$IconSizeTooltip">&#9432;</span>
 						</td>
 						<td>
 							<input type="range" id="quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
@@ -1885,17 +1885,6 @@
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
 					</td>
-					<!-- <td> -->
-						<!-- <input type="number" id="n_quickMenuAutoMaxChars" size="3" class="inputNice" min="0" max="999"><label style="margin-left:10px" data-i18n="AutoMaxChars">Character Limit</label> -->
-						<!-- <span class="info" data-msg="Do not open Quick menu if selection is over (n) characters in length. 0 = no limit" data-i18n_tooltip="AutoMaxChars">?</span> -->
-						<!-- <br /><br /> -->
-						<!-- <input type="number" id="n_quickMenuOpeningOpacity" size="1" class="inputNice" min="0" max="1" step=".1"><label style="margin-left:10px" data-i18n="InitialOpacity">Initial Opacity</label> -->
-						<!-- <span class="info" data-msg="Quick menu opens with a lower opacity and becomes opaque on mouseover" data-i18n_tooltip="InitialOpacity">?</span> -->
-						<!-- <br /><br /> -->
-						<!-- <input type="number" id="n_quickMenuAutoTimeout" size="1" class="inputNice" min="0" max="9999" step="1"><label style="margin-left:10px" data-i18n="SelectTimeout">Selection Timeout</label> -->
-						<!-- <span class="info" data-msg="How much time (in milliseconds) to allow after the last selection to cancel the popup" data-i18n_tooltip="SelectTimeout">?</span> -->
-						<!-- <br /><br /> -->
-					<!-- </td> -->
 				</tr>
 				<tr>
 					<td>
@@ -1909,7 +1898,7 @@
 					</td>
 					<td>	
 						<button id="quickMenuKey" class="keyboardButton">_</button>
-						<span class="info" data-msg="Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key" data-i18n_tooltip="ChooseKey">&#9432;</span>
+						<span class="info" title="$ChooseKeyTooltip">&#9432;</span>
 					</td>
 				</tr>
 				<tr>
@@ -1935,7 +1924,7 @@
 								<option data-i18n="RightButton" value="3">_</option>
 							</select>
 
-							<span class="info" data-msg="Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix. " data-i18n_tooltip="">ⓘ</span>
+							<span class="info" title="$quickMenuAllowContextMenuNewTooltip">ⓘ</span>
 						
 							<div>
 								<!-- <img style="height:10px;vertical-align:middle" src="icons/alert.svg"> -->
@@ -2164,10 +2153,10 @@
 					</div>
 					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
 						<input type="number" id="quickMenuOffset.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
-						<span class="info" data-msg="Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left" data-i18n_tooltip="HorizontalOffset">&#9432;</span>
+						<span class="info" title="$HorizontalOffsetTooltip">&#9432;</span>
 						<br />
 						<input type="number" id="quickMenuOffset.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
-						<span class="info" data-msg="Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up" data-i18n_tooltip="VerticalOffset">&#9432;</span>
+						<span class="info" title="$VerticalOffsetTooltip">&#9432;</span>
 					</div>
 				</div>
 				<input id="quickMenuPosition" type="hidden" />
@@ -2185,7 +2174,7 @@
 					</label>
 				</div>
 				<div>	
-					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the tools in the Quick Menu" data-i18n_tooltip="ToolsPosition">&#9432;</span>
+					<span data-i18n="Position">_</span><span class="info" title="$ToolsPositionTooltip">&#9432;</span>
 					
 					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuToolsPosition">
 						<option data-i18n="top" value="top">Top</option>
@@ -2203,7 +2192,7 @@
 <p class="header1" data-i18n="SearchBar">_</p>
 				
 				<div>	
-					<span data-i18n="Position">_</span><span class="info" data-msg="Choose where to display the search bar in the Quick Menu" data-i18n_tooltip="SearchBar">&#9432;</span>
+					<span data-i18n="Position">_</span><span class="info" title="$SearchBarTooltip">&#9432;</span>
 					
 					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuSearchBar">
 						<option data-i18n="top" value="top">Top</option>
@@ -2320,7 +2309,7 @@
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">_</label>
-								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
+								<span class="info" title="$MenuSizeTooltip">&#9432;</span>
 							</td>
 							<td>
 								<input type="range" id="sideBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
@@ -2517,7 +2506,7 @@
 					</tr>
 					<tr>
 						<td>
-						<span class="buttonLabel" data-i18n="Omnibox">_</span><img alt="i18n_text" title="i18n_text" src="icons/omnibox.svg" class="smallIcon" />
+						<span class="buttonLabel" data-i18n="Omnibox">_</span><img title="$omnibox" src="icons/omnibox.svg" class="smallIcon" />
 						</td>
 						<td>
 						<select class="inputNice" id="omniboxSearch" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
@@ -2788,7 +2777,7 @@
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">_</label>
-								<span class="info" data-msg="Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)" data-i18n_tooltip="MenuSize">&#9432;</span>
+								<span class="info" title="$MenuSizeTooltip">&#9432;</span>
 							</td>
 							<td>
 								<input type="range" id="findBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />

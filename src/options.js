@@ -394,7 +394,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildThemes();
 	buildSearchActions();
 	hideBrowserSpecificElements();
-	buildInfoBubbles();
+	// buildInfoBubbles();
 
 	// restore settings and set INPUT values
 	await restoreOptions();
@@ -772,22 +772,22 @@ function showInfoMsg(el, msg) {
 }
 
 // set up info bubbles
-function buildInfoBubbles() {
+// function buildInfoBubbles() {
 	
-	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
+// 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
-	for (let el of i18n_tooltips) {
-		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
+// 	for (let el of i18n_tooltips) {
+// 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
 		
-		el.addEventListener('mouseenter', e => {
-			showInfoMsg(el, el.dataset.msg);
-		});
+// 		el.addEventListener('mouseenter', e => {
+// 			showInfoMsg(el, el.dataset.msg);
+// 		});
 		
-		el.addEventListener('mouseleave', e => {
-			$('#info_msg').style.display = 'none';
-		});
-	}
-}
+// 		el.addEventListener('mouseleave', e => {
+// 			$('#info_msg').style.display = 'none';
+// 		});
+// 	}
+// }
 
 // import/export buttons
 function buildImportExportButtons() {

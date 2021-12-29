@@ -1812,6 +1812,41 @@
     "message": "Récupération du contenu distant",
     "description": "Fetching remote content (options.js)"
   },
+
+  "audio": {
+    "message": "audio",
+    "description": ""
+  },
+
+  "frame": {
+    "message": "frame",
+    "description": ""
+  },
+
+  "image": {
+    "message": "image",
+    "description": ""
+  },
+
+  "link": {
+    "message": "link",
+    "description": ""
+  },
+
+  "page": {
+    "message": "page",
+    "description": ""
+  },
+
+  "selection": {
+    "message": "selection",
+    "description": ""
+  },
+
+  "video": {
+    "message": "video",
+    "description": ""
+  },
 	
     // Misc - Messages
   "requestPermissionsMessage": {
