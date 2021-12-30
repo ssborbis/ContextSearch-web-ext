@@ -468,7 +468,7 @@ var QMtools = [
 	},
 	{
 		name: 'showhide', 
-		icon: "icons/hide.png",
+		icon: "icons/hide.svg",
 		title: browser.i18n.getMessage('showhide'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
@@ -487,9 +487,11 @@ var QMtools = [
 			let on = this.dataset.locked = this.dataset.locked == 'true' ? false : true;
 
 			qm.querySelectorAll('.tile').forEach( t => {
+				if ( !t.node ) return;
+
 				if ( t.node.hidden )
 					t.style.display = on ? null : 'none';
-			})
+			});
 			
 			resizeMenu({more: true});	
 		}

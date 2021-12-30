@@ -463,6 +463,18 @@ function buildSearchEngineContainer() {
 			text.className = "label";
 			header.appendChild(text);
 		}
+
+		if (node.type === 'tool') {
+
+			let img = document.createElement('img');
+			img.src = getIconFromNode(node);
+			header.appendChild(img);
+
+			let text = document.createElement('span');
+			text.innerText = node.title;
+			text.className = "label";
+			header.appendChild(text);
+		}
 		
 		if (node.type === 'oneClickSearchEngine') {
 
@@ -1189,7 +1201,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let hide = createMenuItem(li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.png'));
+		let hide = createMenuItem(li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.svg'));
 		hide.addEventListener('click', () => {
 			if ( !selectedRows.length ) selectedRows.push(li);
 			
@@ -1417,8 +1429,54 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
+		let newTool = createMenuItem(browser.i18n.getMessage('NewTool'), browser.runtime.getURL('icons/add.svg'));	
+		newTool.onclick = function(e) {
+
+			closeSubMenus();
+			e.stopImmediatePropagation();
+			e.preventDefault();
+			
+			let _menu = document.createElement('div');
+			_menu.className = 'contextMenu subMenu';
+			
+			// position to the right of opening div
+			let rect = newTool.getBoundingClientRect();
+			_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+			_menu.style.top = rect.y + window.scrollY + "px";
+
+			QMtools.sort( (a,b) => a.title > b.title ).forEach( t => {
+				let m = createMenuItem(t.title, t.icon);
+				m.className = 'menuItem';
+
+				m.addEventListener('click', e => {
+					let newNode = {
+						type: "tool",
+						title: t.title,
+						tool:t.name,
+						icon:t.icon,
+						parent: li.node.parent,
+						toJSON: li.node.toJSON
+					}
+					
+					nodeInsertAfter(newNode, li.node);
+					
+					let newLi = traverse(newNode, li.parentNode);
+					li.parentNode.insertBefore(newLi, li.nextSibling);
+					newLi.scrollIntoView({block: "start", behavior:"smooth"});
+					
+					updateNodeList();
+					closeContextMenus();
+				})
+
+				_menu.appendChild(m);
+			});
+	
+			document.body.appendChild(_menu);
+			openMenu(_menu);
+		};
+
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, newTool, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);

@@ -2311,7 +2311,9 @@
     "message": "URLs to disable ContextSearch with. Accepts hostnames www.example.com, wildcards  *.example.com and regex. ! or # prefix will disable an entry #example.com or !example.com",
     "description": "blocklist tooltip"
   },
-  
+  "NewTool": {
+    "message": "New Tool"
+  },
   
   "___________": {
     "message": ""

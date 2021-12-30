@@ -489,14 +489,14 @@ async function makeQuickMenu(options) {
 	['mousedown', 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
 
 		document.addEventListener(eventType, e => {
-			if ( e.button && [1,3,4].includes(e.button) ) {
-				e.preventDefault();
-			}
+			if ( e.button && [1,3,4].includes(e.button) ) e.preventDefault();
 		});
 
 		qm.addEventListener(eventType, e => {
 
+			// move fix
 			if ( e.target.closest('.tile, GROUP')) return;
+
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -1456,9 +1456,6 @@ document.addEventListener('mousedown', e => {
 
 	tile.parentNode.lastMouseDownTile = tile;
 
-	// cancel scroll icon always
-	if ( e.button === 1 ) e.preventDefault();
-
 	// allow tile actions if override is set
 	if ( window.tilesDraggable ) return;
 
@@ -2078,13 +2075,20 @@ function nodeToTile( node ) {
 			tile.dataset.id = node.id || "";	
 			tile.dataset.title = node.title;			
 			break;
+
+		case "tool":
+			let tool = QMtools.find(t => t.name === node.tool )
+			tile = tool.init();
+			tile.dataset.type = 'tool';
+			tile.dataset.id = node.id;	
+			tile.dataset.title = node.title;
+			break;
 	}
 	
 	tile.node = node;
 
-	if ( node.hidden ) {
-		tile.style.display = 'none';
-	}
+	// build menu with hidden engines for show/hide tool
+	if ( node.hidden ) tile.style.display = 'none';
 	
 	return tile;
 }
