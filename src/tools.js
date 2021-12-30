@@ -491,7 +491,7 @@ var QMtools = [
 					t.style.display = on ? null : 'none';
 			})
 			
-			resizeMenu({openFolder: true});	
+			resizeMenu({more: true});	
 		}
 	}
 ];
