@@ -488,6 +488,12 @@ async function makeQuickMenu(options) {
 	// prevent click events from propagating
 	['mousedown', 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
 
+		document.addEventListener(eventType, e => {
+			if ( e.button && [1,3,4].includes(e.button) ) {
+				e.preventDefault();
+			}
+		});
+
 		qm.addEventListener(eventType, e => {
 
 			if ( e.target.closest('.tile, GROUP')) return;
