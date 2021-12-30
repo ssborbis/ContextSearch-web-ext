@@ -23,3 +23,7 @@ a, a:link, a:visited, a:active {
 #advancedSettingsTable TR:hover {
 	background-color:#444;
 }
+
+#nightmode {
+	filter:  invert(1);
+}
