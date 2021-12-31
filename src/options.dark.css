@@ -27,4 +27,9 @@ a, a:link, a:visited, a:active {
 #nightmode {
 	filter:  invert(1);
 }
-#contextMenu
+
+#t_manualEdit .string { color: darkseagreen; }
+#t_manualEdit .number { color: orange; }
+#t_manualEdit .boolean { color: lightcoral; }
+#t_manualEdit .null { color: lightcoral; }
+#t_manualEdit .key { color: #ddd; }

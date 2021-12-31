@@ -1391,6 +1391,17 @@
 				height: 8px;
 			}
 
+			#t_manualEdit {
+				overflow: scroll;
+				font-weight: normal;
+				font-size: 9pt;
+			}
+			#t_manualEdit .string { color: green; }
+			#t_manualEdit .number { color: darkorange; }
+			#t_manualEdit .boolean { color: blue; }
+			#t_manualEdit .null { color: magenta; }
+			#t_manualEdit .key { color: maroon; }
+
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
 	</head>
@@ -1444,6 +1455,7 @@
 				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.svg" />_</div>
 				<section>
 					<p class="header1" data-i18n="Settings">_</p>
+					<div style="text-align: right"><button id="b_manualSave" style="display:none">Save</button><button id="b_manualCancel" style="display:none">Cancel</button><button id="b_manualEdit" title="Manually edit settings"><div class="tool" style="height: 1em;vertical-align: middle;--mask-image: url(icons/edit.png)"></div></button></div>
 					<table id="advancedSettingsTable">
 					<tr>
 						<td title="$quickMenuToolsLockPersistTooltip">quickMenuTools.lock.persist</td>
@@ -1474,15 +1486,13 @@
 							<button id="b_uncacheIcons" data-i18n="uncache" title="$uncacheTooltip">_</button>
 						</td>
 					</tr>
+					<tr class="moveToEnd">
+						<td style="text-align: center;" colspan="2"><button class="saveOptions" data-i18n="save">_</button></td>
+					</tr>
 					</table>
+					<pre id="t_manualEdit" spellcheck="false" contenteditable="true" style="display:none;width:calc(100% - 20px);padding: 0 10px"></pre>
 				</section>
 
-				<div style="float:right"><button class="saveOptions" data-i18n="save">_</button></div>
-				<br>
-				<section>
-					<p class="header1" data-i18n="blocklist" title="$blocklistTooltip">_</p>
-					<textarea id="blockList" style="height:200px;width:calc(100% - 16px);padding:2px 8px;resize:vertical"></textarea>
-				</section>
 			</div>
 		
 			<div class="tabcontent" id="generalTab">
@@ -1569,6 +1579,11 @@
 
 				<textarea id="userStyles" class="inputNice" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px;font-size:9pt"></textarea>
 				
+				</section>
+
+				<section>
+					<p class="header1" data-i18n="blocklist" title="$blocklistTooltip">_</p>
+					<textarea id="blockList" style="height:200px;width:calc(100% - 16px);padding:2px 8px;resize:vertical"></textarea>
 				</section>
 				<!-- <section>
 <p class="header1" data-i18n="">Images</p> -->

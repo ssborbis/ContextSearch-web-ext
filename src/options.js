@@ -132,7 +132,9 @@ function statusMessage(status) {
 
 }
 
-async function restoreOptions() {
+async function restoreOptions(restoreUserOptions) {
+
+	if ( restoreUserOptions ) return onGot(restoreUserOptions);
 
 	function onGot(uo) {
 
@@ -1416,43 +1418,43 @@ function buildAdvancedOptions() {
 
 	function makeInput( key ) {
 
-			let value = key.split('.').reduce((a, b) => a[b], defaultUserOptions);
+		let value = key.split('.').reduce((a, b) => a[b], defaultUserOptions);
 
-			let type = typeof value;
+		let type = typeof value;
 
-			let el = document.createElement('input');
+		let el = document.createElement('input');
 
-			el.id = key;
+		el.id = key;
 
-			if ( type === 'boolean')
-				el.type = 'checkbox';
+		if ( type === 'boolean')
+			el.type = 'checkbox';
 
-			if ( type === 'string' )
-				el.type = 'input';
-			
-			if ( type === 'number' )
-				el.type = 'number';
+		if ( type === 'string' )
+			el.type = 'input';
+		
+		if ( type === 'number' )
+			el.type = 'number';
 
-			return el;
+		return el;
 	}
 
 	advancedOptions.forEach( o => {
-	let tr = document.createElement('tr');
-	let td1 = document.createElement('td');
-	let td2 = document.createElement('td');
+		let tr = document.createElement('tr');
+		let td1 = document.createElement('td');
+		let td2 = document.createElement('td');
 
-	tr.appendChild(td1);
-	tr.appendChild(td2);
+		tr.appendChild(td1);
+		tr.appendChild(td2);
 
-	td1.innerText = o.id;
-	td1.title = browser.i18n.getMessage(o.id.replace(".", "_") + "Tooltip") || o.i18n;
-	td1.style.cursor = 'help';
+		td1.innerText = o.id;
+		td1.title = browser.i18n.getMessage(o.id.replace(".", "_") + "Tooltip") || o.i18n;
+		td1.style.cursor = 'help';
 
-	td2.appendChild(makeInput(o.id));
+		td2.appendChild(makeInput(o.id));
 
 
-	$('advancedSettingsTable').appendChild(tr);
-})
+		$('advancedSettingsTable').appendChild(tr);
+	})
 }
 
 function sortAdvancedOptions() {
@@ -1465,6 +1467,32 @@ function sortAdvancedOptions() {
 	});
 	table.innerHTML = null;
 	trs.forEach( tr => table.appendChild(tr));
+
+	// move 
+	let save = table.querySelector('.moveToEnd');
+	table.appendChild(save);
+}
+
+function syntaxHighlight(json) {
+    if (typeof json != 'string') {
+         json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
 }
 
 // window.addEventListener('focus', async e => {
@@ -1475,23 +1503,53 @@ function sortAdvancedOptions() {
 // })
 
 // saveOptions on every change
-document.addEventListener('change', e => {
-	setTimeout(saveOptions, 250);
+document.addEventListener('change', e => setTimeout(saveOptions, 250));
+
+$('b_manualEdit').addEventListener('click', e => {
+
+	let on = $('advancedSettingsTable').style.display == 'none' ? true : false;
+
+	if ( !on ) {
+
+		if ( !confirm("Enabling direct editing of preferences. Be careful!")) return;
+
+		$('t_manualEdit').style.height = $('advancedSettingsTable').getBoundingClientRect().height + "px";
+		$('advancedSettingsTable').style.display = 'none';
+		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display=null );
+
+		let o = JSON.parse(JSON.stringify(userOptions));
+		delete o.searchEngines;
+		delete o.searchBarHistory;
+		delete o.nodeTree;
+
+		const ordered = Object.keys(o).sort().reduce(
+		  (obj, key) => { 
+		    obj[key] = o[key]; 
+		    return obj;
+		  }, 
+	  	{}
+		);
+
+		$('t_manualEdit').innerHTML = syntaxHighlight(JSON.stringify(ordered, null, 4))
+	} else {
+		 $('advancedSettingsTable').style.display = null;
+		 [$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );
+		 $('b_manualSave').classList.remove('changed');
+	}
 })
 
-// function buildAdditionalSearchActions() {
-// 	let t = $('#additionalSearchActionsTable');
+$('t_manualEdit').addEventListener('input', e => {
+	$('b_manualSave').classList.add('changed');
+});
 
-// 	additionalSearchActions.forEach( sa => {
-// 		let tr = document.createElement('tr');
-// 		for ( let key in sa ) {
-// 			let td = document.createElement('td');
-// 			td.innerText = sa[key];
-// 			tr.appendChild(td);
-// 		}
+$('b_manualSave').addEventListener('click', e => {
+	try {
+		let uo = JSON.parse($('t_manualEdit').innerText);
+		merge(uo, userOptions);
 
-// 		t.appendChild(tr);
-// 	})
-// }
+		restoreOptions(userOptions);
+		saveOptions();
 
-// setTimeout(buildAdditionalSearchActions, 2000);
+	} catch (err) { alert(err) }
+	
+});
