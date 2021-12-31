@@ -13,8 +13,9 @@ BODY {
 	opacity:0;
 }
 .pageTile {
+	border-collapse: collapse;
 	display:inline-block;
-	border:2px solid #e8e8e8;
+	/*border:2px solid #ef2ef2;*/
 	background-size:32px;
 	background-position:center center;
 	background-repeat:no-repeat;
@@ -27,8 +28,9 @@ BODY {
 	line-height:normal;
 	overflow:hidden;
 	font-family:Arial;
-	border-radius:10px;
+	border-radius:6px;
 	opacity:.95;
+	margin: 2px;
 }
 .pageTile.dragover {
 	filter:brightness(1.1);

@@ -1123,66 +1123,56 @@ function buildSearchEngineContainer() {
 			[...new Set(nodesToDelete)].forEach(n => incrementKey(objectsToDelete, n.type)); 
 			
 			if ( !selectedRows.length ) selectedRows.push(li);
-			
-		//	if ( selectedRows.length > 1 || li.node.children ) {
 				
-				let msgDiv = document.createElement('div');
-				let msgDivHead = document.createElement('div');
-				msgDivHead.innerText = browser.i18n.getMessage('confirm');
-				msgDiv.appendChild(msgDivHead);
-			//	msgDiv.appendChild(document.createElement('hr'));
-				let msgDivRow = document.createElement('div');
-				msgDiv.appendChild(msgDivRow);
-				
-				let nodeIcons = {
-					searchEngine: "settings.svg",
-					oneClickSearchEngine: "new.svg",
-					bookmarklet: "code.svg",
-					folder: "folder.svg",
-					separator: "separator.svg"
-				}
-				
-				// build delete message from objectsToDelete
-				for ( let key in objectsToDelete) {
-					if ( objectsToDelete.hasOwnProperty(key) ) {
-						let d = document.createElement('div');
-						let img = new Image();
-						img.style = "display:inline-block;height:16px;width:16px;vertical-align:middle";
-						img.src = browser.runtime.getURL('icons/' + nodeIcons[key]);
-						
-						msgDivRow.appendChild(d);
-						d.innerText = objectsToDelete[key];
-						d.insertBefore(img, d.firstChild);
-						
-						// let x = new Image();
-						// x.style = img.style;
-						// x.src = browser.runtime.getURL('icons/crossmark.svg');
-						// x.style+= "filter: grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8);";
-						
-						// d.insertBefore(x, d.firstChild);
-					}
-				}
-				
-				let _menu = document.createElement('div');
-				_menu.className = 'contextMenu subMenu';
-				
-				// position to the right of opening div
-				let rect = _delete.getBoundingClientRect();
-				_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
-				_menu.style.top = rect.y + window.scrollY + "px";
+			let msgDiv = document.createElement('div');
+			let msgDivHead = document.createElement('div');
+			msgDivHead.innerText = browser.i18n.getMessage('confirm');
+			msgDiv.appendChild(msgDivHead);
 
-				// add menu items
-				let item1 = document.createElement('div');
-				item1.className = 'menuItem';
-				item1.appendChild(msgDiv);
-				
-				item1.addEventListener('click', removeNodesAndRows);
-				
-				_menu.appendChild(item1);
-				document.body.appendChild(_menu);
-				openMenu(_menu);
-				
-		//	}
+			let msgDivRow = document.createElement('div');
+			msgDiv.appendChild(msgDivRow);
+			
+			let nodeIcons = {
+				searchEngine: "settings.svg",
+				oneClickSearchEngine: "new.svg",
+				bookmarklet: "code.svg",
+				folder: "folder.svg",
+				separator: "separator.svg",
+				tool: "add.svg"
+			}
+			
+			// build delete message from objectsToDelete
+			for ( let key in objectsToDelete) {
+				if ( objectsToDelete.hasOwnProperty(key) ) {
+					let d = document.createElement('div');
+					let img = new Image();
+					img.style = "display:inline-block;height:16px;width:16px;vertical-align:middle";
+					img.src = browser.runtime.getURL('icons/' + nodeIcons[key]);
+					
+					msgDivRow.appendChild(d);
+					d.innerText = objectsToDelete[key];
+					d.insertBefore(img, d.firstChild);
+				}
+			}
+			
+			let _menu = document.createElement('div');
+			_menu.className = 'contextMenu subMenu';
+			
+			// position to the right of opening div
+			let rect = _delete.getBoundingClientRect();
+			_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+			_menu.style.top = rect.y + window.scrollY + "px";
+
+			// add menu items
+			let item1 = document.createElement('div');
+			item1.className = 'menuItem';
+			item1.appendChild(msgDiv);
+			
+			item1.addEventListener('click', removeNodesAndRows);
+			
+			_menu.appendChild(item1);
+			document.body.appendChild(_menu);
+			openMenu(_menu);
 		}
 			
 		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
@@ -1236,7 +1226,6 @@ function buildSearchEngineContainer() {
 			
 			// required delay to work
 			setTimeout(() => {
-			//	newLi.dispatchEvent(new MouseEvent('dblclick'));
 				newLi.querySelector('.header .label').dispatchEvent(new MouseEvent('dblclick'));
 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			}, 100);
@@ -1465,18 +1454,70 @@ function buildSearchEngineContainer() {
 					newLi.scrollIntoView({block: "start", behavior:"smooth"});
 					
 					updateNodeList();
-					closeContextMenus();
+				//	closeContextMenus();
 				})
 
 				_menu.appendChild(m);
 			});
-	
+
+			// _menu.appendChild(document.createElement('br'));
+
+			// let m = createMenuItem("Regex", "icons/regex.svg");
+			// m.addEventListener('click', e => {
+			// 	let newNode = {
+			// 		type: "folder",
+			// 		title: "match regex",
+			// 		icon: "icons/regex.svg",
+			// 		id: "___matching___",
+			// 		children:[],
+			// 		parent: li.node.parent,
+			// 		toJSON: li.node.toJSON
+			// 	}
+				
+			// 	nodeInsertAfter(newNode, li.node);
+				
+			// 	let newLi = traverse(newNode, li.parentNode);
+			// 	li.parentNode.insertBefore(newLi, li.nextSibling);
+			// 	newLi.scrollIntoView({block: "start", behavior:"smooth"});
+				
+			// 	updateNodeList();
+			// //	closeContextMenus();
+			// });
+
+			// m.className = 'menuItem';
+			// _menu.appendChild(m);
+
+			// let m2 = createMenuItem("Recent", "icons/history.svg");
+			// m2.addEventListener('click', e => {
+			// 	let newNode = {
+			// 		type: "folder",
+			// 		title: "recent",
+			// 		icon: "icons/history.svg",
+			// 		id: "___recent___",
+			// 		children:[],
+			// 		parent: li.node.parent,
+			// 		toJSON: li.node.toJSON
+			// 	}
+				
+			// 	nodeInsertAfter(newNode, li.node);
+				
+			// 	let newLi = traverse(newNode, li.parentNode);
+			// 	li.parentNode.insertBefore(newLi, li.nextSibling);
+			// 	newLi.scrollIntoView({block: "start", behavior:"smooth"});
+				
+			// 	updateNodeList();
+			// //	closeContextMenus();
+			// });
+
+			// m2.className = 'menuItem';
+			// _menu.appendChild(m2);
+
 			document.body.appendChild(_menu);
 			openMenu(_menu);
 		};
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newSeparator, newBookmarklet, newTool, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newTool, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
