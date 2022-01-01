@@ -382,7 +382,7 @@ async function notify(message, sender, sendResponse) {
 		
 			let se = message.searchEngine;
 			
-			console.log(se);
+			console.log('addContextSearchEngine', se)
 			
 			let index = userOptions.searchEngines.findIndex( se2 => se.title === se2.title );
 			

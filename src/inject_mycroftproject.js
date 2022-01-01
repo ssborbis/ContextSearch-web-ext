@@ -1,30 +1,26 @@
 if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 
-	browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
-		userOptions = uo;
-
-		let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks", frame: true});
-
-		if ( !oses ) return;
+	browser.runtime.sendMessage({action: "getOpenSearchLinks", frame: true}).then( async oses => {
 
 		for ( ose of oses ) {
 
+			// skip default mycroftproject engine
 			if ( ose.href.endsWith('/opensearch.xml')) continue;
 
 			let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
 				return (!details) ? null : details.searchEngines[0];
 			});
 
-			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
+			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
 	});
 }
 
-window.addEventListener('load', function () {
+window.addEventListener('load', () => {
 
 	let links = document.querySelectorAll('a[href*="/install.html"]');
 
-	links.forEach( l => {
+	links.forEach( link => {
 		let img = new Image();
 		img.src = browser.runtime.getURL('icons/logo_notext.svg');
 		img.className = 'icon';
@@ -33,12 +29,11 @@ window.addEventListener('load', function () {
 
 		img.onclick = function(e) {
 			let iframe = document.createElement('iframe');
-			iframe.style = 'display:none;';
+			iframe.style.display = 'none';
 			document.body.appendChild(iframe);
-			iframe.src = l + "#addtocontextsearch";
+			iframe.src = link + "#addtocontextsearch";
 		}
 
-		l.parentNode.insertBefore(img, l);
+		link.parentNode.insertBefore(img, link);
 	});
-
 });
