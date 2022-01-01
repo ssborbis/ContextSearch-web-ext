@@ -20,7 +20,7 @@ if ( window != top ) {
 	});
 }
 
-setTimeout(() => {
+window.addEventListener('load', function () {
 
 	let links = document.querySelectorAll('a[href*="/install.html"]');
 
@@ -41,4 +41,4 @@ setTimeout(() => {
 		l.parentNode.insertBefore(img, l);
 	});
 
-}, 2000);
+});
