@@ -17,17 +17,14 @@ if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 }
 function showButtons() {
 
-	let src = browser.runtime.getURL('icons/logo_notext.svg');
-
-	if ( document.querySelector(`img[src="${src}"]`)) return;
-
 	let links = document.querySelectorAll('a[href*="/install.html"]');
 
 	links.forEach( link => {
 		let img = new Image();
-		img.src = src;
+		img.src = browser.runtime.getURL('icons/logo_notext.svg');
 		img.className = 'icon';
 		img.style.marginRight = '4px';
+		img.style.cursor = 'pointer';
 		img.title = browser.i18n.getMessage("AddCustomSearch");
 
 		img.onclick = function(e) {
@@ -41,5 +38,6 @@ function showButtons() {
 	});
 }
 
+if ( document.readyState === 'complete' ) showButtons();
+
 window.addEventListener('load', showButtons);
-setTimeout(showButtons, 5000);
