@@ -250,7 +250,8 @@ async function notify(message, sender, sendResponse) {
 					(() => {
 						let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
 						if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
-					})()`
+					})()`,
+				frameId: message.frame ? sender.frameId : 0
 			}).then(onFound, onError);
 
 			break;
