@@ -15,14 +15,17 @@ if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 		}
 	});
 }
+function showButtons() {
 
-window.addEventListener('load', () => {
+	let src = browser.runtime.getURL('icons/logo_notext.svg');
+
+	if ( document.querySelector(`img[src="${src}"]`)) return;
 
 	let links = document.querySelectorAll('a[href*="/install.html"]');
 
 	links.forEach( link => {
 		let img = new Image();
-		img.src = browser.runtime.getURL('icons/logo_notext.svg');
+		img.src = src;
 		img.className = 'icon';
 		img.style.marginRight = '4px';
 		img.title = browser.i18n.getMessage("AddCustomSearch");
@@ -36,4 +39,7 @@ window.addEventListener('load', () => {
 
 		link.parentNode.insertBefore(img, link);
 	});
-});
+}
+
+window.addEventListener('load', showButtons);
+setTimeout(showButtons, 5000);
