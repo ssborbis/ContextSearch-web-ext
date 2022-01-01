@@ -5,8 +5,6 @@ if ( window != top ) {
 
 		let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks", frame: true});
 
-		console.log(oses);
-
 		if ( !oses ) return;
 
 		for ( ose of oses ) {
