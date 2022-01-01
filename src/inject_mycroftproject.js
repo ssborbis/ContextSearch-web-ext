@@ -1,4 +1,4 @@
-if ( window != top ) {
+if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 
 	browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 		userOptions = uo;
@@ -35,7 +35,7 @@ window.addEventListener('load', function () {
 			let iframe = document.createElement('iframe');
 			iframe.style = 'display:none;';
 			document.body.appendChild(iframe);
-			iframe.src = l;
+			iframe.src = l + "#addtocontextsearch";
 		}
 
 		l.parentNode.insertBefore(img, l);
