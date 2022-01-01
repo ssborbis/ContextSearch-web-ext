@@ -15,10 +15,6 @@ if ( window != top ) {
 				return (!details) ? null : details.searchEngines[0];
 			});
 
-			if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
-				return console.log('already installed', xml_se.title);
-			}
-
 			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
 	});
