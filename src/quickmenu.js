@@ -1,5 +1,7 @@
 var userOptions = {};
 
+//const optionsPage = top.location.href.startsWith(browser.runtime.getURL('options.html'));
+
 async function makeFrameContents() {
 
 	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuUseOldStyle});
@@ -34,6 +36,8 @@ async function makeFrameContents() {
 	document.getElementById('closeButton').addEventListener('click', e => {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 	});
+
+	document.dispatchEvent(new CustomEvent('quickMenuIframePreLoaded'));
 	
 	await browser.runtime.sendMessage({
 		action: "quickMenuIframeLoaded", 
@@ -246,6 +250,8 @@ function toolsHandler(o) {
 	qm.insertBreaks(o.columns);
 
 	let rows = o.rows || ( qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows );
+
+	//if ( optionsPage ) rows = Number.MAX_SAFE_INTEGER;
 
 	let lastBreak = qm.getElementsByTagName('br').item(rows - 1);
 

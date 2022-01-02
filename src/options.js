@@ -1553,3 +1553,72 @@ $('b_manualSave').addEventListener('click', e => {
 	} catch (err) { alert(err) }
 	
 });
+
+function createEditMenu() {
+
+	let overdiv = document.createElement('div');
+	overdiv.className = 'overDiv';
+	overdiv.style.opacity = 0;
+	document.body.appendChild(overdiv);
+
+	// chrome fix for menu closing on text select events
+	overdiv.onmousedown = e => {
+		if ( overdiv !== e.target) return;
+		overdiv.mousedown = true;
+	}
+
+	overdiv.onclick = e => {
+		if ( !overdiv.mousedown ) return;
+		if ( overdiv !== e.target) return;
+	}
+
+	let formContainer = document.createElement('div');
+	formContainer.id = "floatingEditFormContainer";
+	formContainer.style = "width:90%;height:90%;";
+
+	let fb = document.createElement('ul');
+	fb.id = 'qm_browser';
+	fb.className = 'folderBrowser';
+
+	formContainer.appendChild(fb);
+	overdiv.appendChild(formContainer);
+
+	let g = new Grid({browserId: fb.id});
+
+	g.makeFolderBrowser();
+
+	let iframe = document.createElement('iframe');
+	formContainer.appendChild(iframe);
+
+	function setSize() {
+		let win = iframe.contentWindow
+		let doc = win.document;
+		let qm = win.qm;
+
+		qm.insertBreaks();
+		qm.style.width = null;
+		qm.style.height = null;
+
+		iframe.style.width = qm.getBoundingClientRect().width + "px";
+		iframe.style.height = doc.body.clientHeight + "px";
+	}
+
+	window.addEventListener('message', e => {
+		if ( e.data.action && e.data.action === "quickMenuResize") {
+			setSize();
+		}
+	})
+
+	iframe.onload = function() {
+		iframe.contentWindow.document.addEventListener('quickMenuIframePreLoaded', setSize);
+	}
+
+	iframe.src = browser.runtime.getURL('quickmenu.html');
+
+	overdiv.appendChild(formContainer);
+
+	$('#main').classList.add('blur');
+
+	overdiv.getBoundingClientRect();
+	overdiv.style.opacity = null;
+}
