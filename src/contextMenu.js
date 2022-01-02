@@ -190,6 +190,8 @@ async function buildContextMenu(searchTerms) {
 
 	function addOptions(context, root) {
 
+		if ( !userOptions.contextMenuShowSettingsFolder ) return;
+
 		context = context || "";
 		root = root || "";
 
