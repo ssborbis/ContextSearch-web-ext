@@ -602,6 +602,10 @@
   "SearchFor": {
     "message": "Search for \"%1\""
   },
+
+  "SearchForContext": {
+    "message": "Search for $1"
+  },
   
   "SearchForWithVariable": {
 	"message": "Search for \"%s\""

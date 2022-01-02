@@ -1,6 +1,5 @@
 const contexts = ["audio", "frame", "image", "link", "page", "selection", "video"];
 const contextCodes = [1,2,4,8,16,32,64];
-const contextsLabels = ["Search for AUDIO", "Search for FRAME", "Search for IMAGE", "Search for URL", "Search for PAGE", "Search for %s", "Search for VIDEO"];
 const ROOT_MENU = "root_menu";
 
 function hasContext(contextText, contextCode) {
@@ -298,7 +297,7 @@ async function buildContextMenu(searchTerms) {
 
 			browser.contextMenus.create({
 				id: context,
-				title: contextsLabels[index],
+				title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()),
 				contexts: [context]
 			});
 
