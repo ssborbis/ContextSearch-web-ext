@@ -1,4 +1,4 @@
-var QMtools = [
+const QMtools = [
 	{
 		name: 'close', 
 		icon: "icons/crossmark.svg",
@@ -390,7 +390,7 @@ var QMtools = [
 	},
 	{
 		name: 'edit', 
-		icon: "icons/edit.png", 
+		icon: "icons/edit.svg", 
 		title: browser.i18n.getMessage('edit'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);

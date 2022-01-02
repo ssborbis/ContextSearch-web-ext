@@ -1175,7 +1175,7 @@ function buildSearchEngineContainer() {
 			openMenu(_menu);
 		}
 			
-		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.png'));
+		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.svg'));
 		edit.addEventListener('click', e => {
 			e.stopPropagation();
 
