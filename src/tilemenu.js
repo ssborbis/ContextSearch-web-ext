@@ -117,7 +117,7 @@ function getOpenMethod(e, isFolder) {
 			defaultSearchActions[key].action = userOptions[key];
 			let sa = defaultSearchActions[key];
 			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
-				console.log(key, sa.action);
+				// console.log(key, sa.action);
 				return sa.action;
 			}
 		}
@@ -125,7 +125,7 @@ function getOpenMethod(e, isFolder) {
 
 	for ( let sa of userOptions.customSearchActions ) {
 		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
-			console.log('customSearchActions', sa);
+			// console.log('customSearchActions', sa);
 			return sa.action;
 		}
 	}

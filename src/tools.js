@@ -405,6 +405,23 @@ const QMtools = [
 		}, 
 		action: function() {
 
+			// (() => { // rearrange menu parts
+			// 	let names = ['menu', 'title', 'menu', 'tools', 'search', 'add engine'];
+
+			// 	[qm,tb,mb,toolBar,sbc,aeb ].forEach( (el, index) => {
+			// 		let div = document.createElement('div');
+			// 		div.style="border:1px dotted white;border-bottom:none;line-height:normal;font-size:9pt;background-color:var(--background);height:20px;display:block;text-align:center";
+			// 		div.innerText = names[index];
+
+			// 		if ( el !== qm ) el.style.display = 'block';
+
+			// 		el.insertBefore(div, el.firstChild);
+
+			// 	})
+
+			// 	setTimeout(() => resizeMenu({more: true}), 1000);
+			// })();
+
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			
 			if ( !userOptions.alwaysAllowTileRearranging ) {
