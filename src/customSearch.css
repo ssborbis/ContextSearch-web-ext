@@ -4,7 +4,6 @@ BODY {
 	overflow:hidden;
 	padding:0;
 	margin:0;
-	background-color:rgba(0,0,0,.85);
 	background-color:rgba(20, 90, 140, .85);
 }
 #CS_customSearchDialog {
