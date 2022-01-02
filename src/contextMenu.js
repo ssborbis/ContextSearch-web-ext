@@ -199,18 +199,24 @@ async function buildContextMenu(searchTerms) {
 		addMenuItem({
 			parentId: root,
 			title: browser.i18n.getMessage('settings'),
-			id: context_prefix + "___options___",
+			id: context_prefix + "___settings___",
 			icons: {
 				"16": browser.runtime.getURL('icons/settings.svg')
 			}
 		});
 
 		addMenuItem({
-			title: "Contextual layout",
+			title: "Contextual",
 			id: context_prefix + "contextMenuUseContextualLayout",
-			parentId: context_prefix + "___options___",
+			parentId: context_prefix + "___settings___",
 			type: "checkbox",
 			checked: userOptions.contextMenuUseContextualLayout
+		});
+
+		addMenuItem({
+			title: "Open Options",
+			id: context_prefix + "openOptions",
+			parentId: context_prefix + "___settings___"
 		});
 	}
 
@@ -484,8 +490,11 @@ function contextMenuSearch(info, tab) {
 	if ( info.menuItemId === 'contextMenuUseContextualLayout' ) {
 		userOptions.contextMenuUseContextualLayout = !userOptions.contextMenuUseContextualLayout;
 		notify({action: "saveUserOptions", userOptions: userOptions});
-		buildContextMenu();
-		return;
+		return buildContextMenu();
+	}
+
+	if ( info.menuItemId === 'openOptions' ) {
+		return notify({action: "openOptions", hashurl: "#contextMenu"});
 	}
 
 	console.log(context, info.menuItemId);
@@ -497,14 +506,12 @@ function contextMenuSearch(info, tab) {
 		
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
-		browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
-		return false;
+		return browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
 	}
 	
 	// if searchEngines is empty, open Options
 	if (userOptions.searchEngines.length === 0 && userOptions.nodeTree.children.length === 0 ) {	
-		browser.runtime.openOptionsPage();
-		return false;	
+		return browser.runtime.openOptionsPage();	
 	}
 	
 	// get modifier keys
