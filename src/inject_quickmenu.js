@@ -491,6 +491,8 @@ document.addEventListener('mousedown', e => {
 			// avoid close on document click with a short delay
 			setTimeout(() => openQuickMenu(e, e.target.innerText), 50);
 		}, {once: true});
+
+		if ( e.which === 3 && !userOptions.quickMenuAllowContextMenuNew ) document.addEventListener('contextmenu', _e => _e.preventDefault(), {once: true});
 		return;
 	}
 
