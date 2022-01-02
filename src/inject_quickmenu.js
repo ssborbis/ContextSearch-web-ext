@@ -499,6 +499,10 @@ document.addEventListener('mousedown', e => {
 	// Only split TEXT_NODEs
 	if ( word ) {		
 		e.preventDefault();
+
+		// back foward buttons
+		if ( [3,4].includes(e.button) )
+			e.stopPropagation();
 		
 		if ( e.shiftKey ) document.addEventListener('selectstart', _e => _e.preventDefault(), {once: true});
 

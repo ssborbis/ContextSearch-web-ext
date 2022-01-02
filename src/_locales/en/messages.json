@@ -2316,7 +2316,13 @@
     "description": "blocklist tooltip"
   },
   "NewTool": {
-    "message": "New Tool"
+    "message": "Add Tool"
+  },
+  "BackButton": {
+    "message": "Back Button"
+  },
+  "ForwardButton": {
+    "message": "Forward Button"
   },
   
   "___________": {
