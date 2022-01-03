@@ -111,6 +111,7 @@ const defaultUserOptions = {
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
 	searchBarIcon: "icons/logo.svg",
+	searchBarDomLayout: "",
 	sideBar: {
 		enabled: true,
 		columns: 6,
@@ -134,7 +135,8 @@ const defaultUserOptions = {
 		rememberState: false,
 		openOnResults: false,
 		openOnResultsMinimized: false,
-		scale:1.0
+		scale:1.0,
+		domLayout:""
 	},
 	highLight: {
 		enabled: true,

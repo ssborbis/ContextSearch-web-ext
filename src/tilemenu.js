@@ -251,10 +251,19 @@ async function makeQuickMenu(options) {
 	qm.addTitleBarTextHandler = div => {
 		
 		['mouseenter','dragenter'].forEach( ev => {
-			div.addEventListener(ev, () => tb.innerText = div.title || div.dataset.title)
+			div.addEventListener(ev, () => {
+
+				if ( tb.lastChild && tb.lastChild.nodeType === 3 )
+					tb.removeChild(tb.lastChild);
+
+				tb.appendChild(document.createTextNode( div.title || div.dataset.title ) );
+			});
 		});
 		
-		div.addEventListener('mouseleave', () => tb.innerText = '');
+		div.addEventListener('mouseleave', () => {
+			if ( tb.lastChild && tb.lastChild.nodeType === 3 )
+				tb.lastChild.textContent = "...";
+		});
 	}
 
 	// prevent context menu anywhere but the search bar
@@ -737,7 +746,7 @@ async function makeQuickMenu(options) {
 			
 			tile.classList.add('tile');
 
-			if (_singleColumn) tile.classList.add("singleColumn");
+			tile.classList.toggle("singleColumn", _singleColumn);
 			
 			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
 				
@@ -755,7 +764,7 @@ async function makeQuickMenu(options) {
 			let div = document.createElement('div');
 			div.className = "tile";
 			
-			if ( qm.singleColumn ) div.classList.add('singleColumn');
+			div.classList.toggle('singleColumn', qm.singleColumn );
 			qm.appendChild(div);
 
 			let size = getFullElementSize(div);
@@ -767,8 +776,8 @@ async function makeQuickMenu(options) {
 		
 		qm.setDisplay = () => {
 			qm.querySelectorAll('.tile').forEach( _tile => {
-				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
-				else _tile.classList.remove("singleColumn");
+				let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
+				_tile.classList.toggle("singleColumn", _sc);
 			});
 		}
 
@@ -1733,8 +1742,7 @@ document.addEventListener('dragover', e => {
 		dummy.style.display = 'none';
 	}
 
-	if ( tile.classList.contains('block') ) dummy.classList.add('wide');
-	else tile.classList.remove('wide');
+	tile.classList.toggle('wide', tile.classList.contains('block'));
 
 	tile.dataset.side = side;
 
@@ -1770,7 +1778,6 @@ document.addEventListener('dragleave', e => {
 	}
 
 	clearDragStyling(tile);
-
 });
 
 document.addEventListener('drop', e => {
@@ -1899,7 +1906,7 @@ makeMarker = () => {
 	let dummy = document.querySelector('.dummy') || document.createElement('dummy');
 	dummy.className = 'tool dummy';
 	dummy.style="--mask-image: url(icons/chevron-down.svg);";
-	if ( qm.singleColumn) dummy.classList.add('singleColumn');
+	dummy.classList.toggle('singleColumn', qm.singleColumn);
 	return dummy;
 }
 

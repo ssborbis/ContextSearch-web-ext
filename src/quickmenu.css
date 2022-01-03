@@ -186,7 +186,7 @@ BODY {
 	color:white;
 }
 #menuBar {
-	height:24px;
+	/*height:24px;*/
 	user-select: none; 
 	-moz-user-select: none;
 	text-align:right;
@@ -287,8 +287,9 @@ BODY {
 	vertical-align:middle;
 }
 #titleBar {
-	height:24px;
-	padding-left:10px;
+	min-height:24px;
+	text-align: center;
+	/*padding-left:10px;*/
 	overflow:hidden;
 	vertical-align:middle;
 	line-height:24px;
@@ -297,7 +298,7 @@ BODY {
 	font-size:11pt;
 	white-space:nowrap;
 	/*width:calc(100% - 10px);*/
-	width:calc(var(--iframe-body-width) - 20px);
+	width:var(--iframe-body-width, auto);
 	text-overflow: ellipsis;
 }
 .tile.singleColumn {
@@ -506,13 +507,13 @@ GROUP > LABEL {
 }*/
 #addEngineBar {
 	font-size:9pt;
-	border-top:2px solid var(--border);
-	padding:2px;
 	cursor:pointer;
 	overflow-x:hidden;
 	width:var(--iframe-body-width, auto);
 }
 #addEngineBar > DIV {
+	border-top:2px solid var(--border);
+	padding:2px;
 	transition: opacity .25s .5s, background-color .15s;
 	overflow: hidden;
 	opacity: 1;
@@ -625,4 +626,19 @@ HR.break {
 	padding: 0;
 	margin: 0;
 	visibility: hidden;
+}
+.edit_handle {
+	line-height: 16px;
+	font-size: 8pt;
+	height: 16px;
+	display: block;
+	text-align: center;
+	cursor: grab;
+	background-color: #d3d4dc;
+	color: #5e5e67;
+	border-radius: 15px 15px 0 0;
+	margin-top: 4px;
+}
+.edit_handle.hover {
+	background-color: #b3b4bc;
 }

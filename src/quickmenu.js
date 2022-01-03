@@ -228,7 +228,7 @@ function toolsHandler(o) {
 		createToolsBar(qm);
 	
 	if ( !userOptions.quickMenuToolsAsToolbar ) {
-		if ( qm.singleColumn ) qm.toolsArray.forEach( tool => tool.classList.add('singleColumn') );
+		qm.toolsArray.forEach( tool => tool.classList.toggle('singleColumn', qm.singleColumn) );
 	}
 
 	// unhide tiles hidden by more tile

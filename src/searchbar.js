@@ -42,6 +42,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 				document.body.appendChild(toolBar);
 		});
 
+	// override layout
+	setLayoutOrder( qm.dataset.menu === "sidebar" ? userOptions.sideBar.domLayout : userOptions.searchBarDomLayout );
+
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
@@ -223,7 +226,7 @@ async function sideBarResize(options) {
 
 	document.body.style.width = null;
 
-	document.documentElement.style.setProperty('--iframe-body-width', document.body.offsetWidth + "px");
+	document.documentElement.style.setProperty('--iframe-body-width', qm.offsetWidth + "px");
 
 	qm.removeBreaks();
 

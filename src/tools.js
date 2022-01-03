@@ -405,22 +405,67 @@ const QMtools = [
 		}, 
 		action: function() {
 
-			// (() => { // rearrange menu parts
-			// 	let names = ['menu', 'title', 'menu', 'tools', 'search', 'add engine'];
+			(() => { // rearrange menu parts
 
-			// 	[qm,tb,mb,toolBar,sbc,aeb ].forEach( (el, index) => {
-			// 		let div = document.createElement('div');
-			// 		div.style="border:1px dotted white;border-bottom:none;line-height:normal;font-size:9pt;background-color:var(--background);height:20px;display:block;text-align:center";
-			// 		div.innerText = names[index];
+				if ( !window.editMode ) {
 
-			// 		if ( el !== qm ) el.style.display = 'block';
+					window.editMode = true;
+					
+					[qm,tb,mb,toolBar,sbc /*, aeb */].forEach( (el, index) => {
+						let div = document.createElement('div');
+						div.classList.add('edit_handle');
+						div.draggable = true;
+						div.innerText = '#' + el.id;
+						div.dataset.parentId = el.id;
 
-			// 		el.insertBefore(div, el.firstChild);
+						div.addEventListener('dragstart', function(e) {
+							e.dataTransfer.setData("text/plain", "");
+							window.dragDiv = div;
+						});
 
-			// 	})
+						div.addEventListener('dragover', e =>	e.preventDefault());
+						div.addEventListener('dragenter', e => div.classList.add('hover'));
+						div.addEventListener('dragleave', e => div.classList.remove('hover'));
 
-			// 	setTimeout(() => resizeMenu({more: true}), 1000);
-			// })();
+						div.addEventListener('drop', function(e) {
+							e.preventDefault();
+
+							if ( window.dragDiv === div ) return false;
+
+							let el = window.dragDiv.nextSibling;
+
+							document.body.insertBefore(window.dragDiv, div);
+							document.body.insertBefore(el, div);
+
+							let order = [...document.querySelectorAll('.edit_handle')].map( el => el.dataset.parentId);
+
+							if ( qm.dataset.menu === "quickmenu" )
+								userOptions.quickMenuDomLayout = order.join(",");
+							else if ( qm.dataset.menu === "sidebar" )
+								userOptions.sideBar.domLayout = order.join(",");
+							else if ( qm.dataset.menu === "searchbar" )
+								userOptions.searchBarDomLayout = order.join(",");
+
+							saveUserOptions();
+
+						});
+
+						div.addEventListener('dragend', e => {
+							document.querySelectorAll('.edit_handle.hover').forEach( el => el.classList.remove('hover'));
+						})
+
+					//	if ( el !== qm ) el.style.display = 'block';
+
+						el.parentNode.insertBefore(div, el);
+
+					})
+				} else {
+					document.querySelectorAll('.edit_handle').forEach( el => el.parentNode.removeChild(el));
+					window.editMode = false;
+				}
+
+				setTimeout(() => resizeMenu({more: true}), 250);
+			})();
 
 			browser.runtime.sendMessage({action: "editQuickMenu"});
 			
@@ -431,10 +476,6 @@ const QMtools = [
 				setToolLockedState(this.tool || this, window.tilesDraggable);
 				resizeMenu();
 			}
-
-			// special handler for when mouseup is disabled in addTileEventHandlers
-			// if ( window.tilesDraggable && this ) 
-			// 	this.addEventListener('mouseup', e => this.action(), {once: true});
 		}
 	},
 	{

@@ -1199,9 +1199,7 @@ function buildSearchEngineContainer() {
 
 			selectedRows.forEach( row => {
 				row.node.hidden = hidden;
-				
-				if (hidden) row.classList.add('hidden');
-				else row.classList.remove('hidden');
+				row.classList.toggle('hidden', hidden);
 			});
 			
 			updateNodeList();
