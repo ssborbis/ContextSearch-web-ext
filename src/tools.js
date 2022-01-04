@@ -438,7 +438,9 @@ const QMtools = [
 						cb.type = 'checkbox';
 						cb.checked = ( window.getComputedStyle(el).display !== 'none' )
 						
-						if ( el !== qm ) div.appendChild(cb);
+						if ( el == qm ) cb.classList.add('hide');
+
+						div.appendChild(cb);
 
 						cb.addEventListener('change', e => {
 							el.classList.toggle('hide', !cb.checked);
