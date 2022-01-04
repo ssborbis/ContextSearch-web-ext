@@ -448,7 +448,6 @@ const QMtools = [
 							saveDomLayout();
 						})
 
-
 						div.addEventListener('dragstart', function(e) {
 							e.dataTransfer.setData("text/plain", "");
 							window.dragDiv = div;

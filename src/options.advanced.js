@@ -21,7 +21,6 @@ const advancedOptions = [
   { "id": "quickMenuAutoMaxChars"},
   { "id": "quickMenuAutoTimeout"},
   { "id": "quickMenuCancelDeadzone"},
-  { "id": "quickMenuDomLayout"},
   { "id": "quickMenuFocusOnOpen"},
   { "id": "quickMenuHideSeparatorsInGrid"},
   { "id": "quickMenuHoldTimeout"},
