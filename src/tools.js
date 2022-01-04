@@ -437,7 +437,8 @@ const QMtools = [
 						let cb = document.createElement('input');
 						cb.type = 'checkbox';
 						cb.checked = ( window.getComputedStyle(el).display !== 'none' )
-						div.appendChild(cb);
+						
+						if ( el !== qm ) div.appendChild(cb);
 
 						cb.addEventListener('change', e => {
 							el.classList.toggle('hide', !cb.checked);
@@ -472,8 +473,6 @@ const QMtools = [
 						div.addEventListener('dragend', e => {
 							document.querySelectorAll('.edit_handle.hover').forEach( el => el.classList.remove('hover'));
 						})
-
-					//	if ( el !== qm ) el.style.display = 'block';
 
 						el.parentNode.insertBefore(div, el);
 
