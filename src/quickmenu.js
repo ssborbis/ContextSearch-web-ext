@@ -30,11 +30,11 @@ async function makeFrameContents() {
 	// hide for qm
 	[tb, mb].forEach(el => el.classList.add('hide'));
 
-	// get proper sizing for opening position
-	setMenuSize();
-
 	// override layout
 	setLayoutOrder(userOptions.quickMenuDomLayout);
+
+	// get proper sizing for opening position
+	setMenuSize();
 
 	document.getElementById('closeButton').addEventListener('click', e => {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});

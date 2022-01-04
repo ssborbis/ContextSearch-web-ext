@@ -186,7 +186,7 @@ BODY {
 	color:white;
 }
 #menuBar {
-	/*height:24px;*/
+	height:24px;
 	user-select: none; 
 	-moz-user-select: none;
 	text-align:right;
@@ -287,7 +287,7 @@ BODY {
 	vertical-align:middle;
 }
 #titleBar {
-	min-height:24px;
+	height:24px;
 	text-align: center;
 	/*padding-left:10px;*/
 	overflow:hidden;
@@ -298,7 +298,8 @@ BODY {
 	font-size:11pt;
 	white-space:nowrap;
 	/*width:calc(100% - 10px);*/
-	width:var(--iframe-body-width, auto);
+	/*width:var(--iframe-body-width, auto);*/
+	width: 100%;
 	text-overflow: ellipsis;
 }
 .tile.singleColumn {
