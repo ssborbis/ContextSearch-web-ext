@@ -1959,7 +1959,7 @@ browser.runtime.onInstalled.addListener( details => {
 			details.reason === 'install'
 		) {
 			browser.tabs.create({
-				url: "/options.html#help"
+				url: "/options.html#engines"
 			}).then(_tab => {
 				browser.tabs.executeScript(_tab.id, {
 					code: `cacheAllIcons()`

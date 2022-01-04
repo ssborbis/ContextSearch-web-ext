@@ -1849,7 +1849,7 @@
   },
 	
     // Misc - Messages
-  "requestPermissionsMessage": {
+  "requestClipboardWritePermission": {
     "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous pour demander l’autorisation d’ajouter des données dans le presse-papiers.",
     "description": "clipboardWrite permission"
   },

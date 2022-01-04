@@ -2336,6 +2336,11 @@
   "EditMenu": {
     "message": "Layout editor"
   },
+
+  "requestClipboardWritePermission": {
+    "message": "clipboardWrite permission is required to interact with the clipboard. Click the button below to request the clipboardWrite permission. ",
+    "description": "permissions request"
+  },
   
   "___________": {
     "message": ""
