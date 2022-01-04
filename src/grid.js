@@ -6,6 +6,8 @@ class Grid {
 
 	saveGrid(o) {
 
+		if ( !o ) return;
+
 		let table = $(o.tableId);
 		let grid_array = [...table.querySelectorAll('img')].map(i => i.nodeid);
 

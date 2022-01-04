@@ -391,7 +391,7 @@ const QMtools = [
 	{
 		name: 'edit', 
 		icon: "icons/edit.svg", 
-		title: browser.i18n.getMessage('edit'),
+		title: browser.i18n.getMessage('editmenu'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
@@ -445,7 +445,8 @@ const QMtools = [
 
 						let cb = document.createElement('input');
 						cb.type = 'checkbox';
-						cb.checked = ( window.getComputedStyle(el).display !== 'none' )
+						cb.checked = ( window.getComputedStyle(el).display !== 'none' );
+						cb.title = browser.i18n.getMessage('showhide')
 						
 						if ( el == qm ) cb.classList.add('hide');
 
@@ -463,8 +464,14 @@ const QMtools = [
 						});
 
 						div.addEventListener('dragover', e =>	e.preventDefault());
-						div.addEventListener('dragenter', e => div.classList.add('hover'));
-						div.addEventListener('dragleave', e => div.classList.remove('hover'));
+						div.addEventListener('dragenter', e => {
+							if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
+								div.classList.add('hover');
+						});
+						div.addEventListener('dragleave', e => {
+							if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
+								div.classList.remove('hover');
+						});
 
 						div.addEventListener('drop', function(e) {
 							e.preventDefault();
