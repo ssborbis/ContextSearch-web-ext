@@ -27,6 +27,9 @@ async function makeFrameContents() {
 		sbc.style.height = '0';
 	}
 
+	// hide for qm
+	[tb, mb].forEach(el => el.classList.add('hide'));
+
 	// get proper sizing for opening position
 	setMenuSize();
 

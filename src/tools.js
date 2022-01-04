@@ -409,6 +409,22 @@ const QMtools = [
 
 				if ( !window.editMode ) {
 
+					function saveDomLayout() {
+
+						let order = [...document.querySelectorAll('.edit_handle')].map( el => {
+							return ((el.querySelector('input').checked) ? "" : "!" ) + el.dataset.parentId;
+						});
+
+						if ( qm.dataset.menu === "quickmenu" )
+							userOptions.quickMenuDomLayout = order.join(",");
+						else if ( qm.dataset.menu === "sidebar" )
+							userOptions.sideBar.domLayout = order.join(",");
+						else if ( qm.dataset.menu === "searchbar" )
+							userOptions.searchBarDomLayout = order.join(",");
+
+						saveUserOptions();
+					}
+
 					window.editMode = true;
 					
 					[qm,tb,mb,toolBar,sbc /*, aeb */].forEach( (el, index) => {
@@ -417,6 +433,18 @@ const QMtools = [
 						div.draggable = true;
 						div.innerText = '#' + el.id;
 						div.dataset.parentId = el.id;
+
+						let cb = document.createElement('input');
+						cb.type = 'checkbox';
+						cb.checked = ( window.getComputedStyle(el).display !== 'none' )
+						div.appendChild(cb);
+
+						cb.addEventListener('change', e => {
+							el.classList.toggle('hide', !cb.checked);
+							resizeMenu({more: true});
+							saveDomLayout();
+						})
+
 
 						div.addEventListener('dragstart', function(e) {
 							e.dataTransfer.setData("text/plain", "");
@@ -437,16 +465,7 @@ const QMtools = [
 							document.body.insertBefore(window.dragDiv, div);
 							document.body.insertBefore(el, div);
 
-							let order = [...document.querySelectorAll('.edit_handle')].map( el => el.dataset.parentId);
-
-							if ( qm.dataset.menu === "quickmenu" )
-								userOptions.quickMenuDomLayout = order.join(",");
-							else if ( qm.dataset.menu === "sidebar" )
-								userOptions.sideBar.domLayout = order.join(",");
-							else if ( qm.dataset.menu === "searchbar" )
-								userOptions.searchBarDomLayout = order.join(",");
-
-							saveUserOptions();
+							saveDomLayout();
 
 						});
 

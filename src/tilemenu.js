@@ -2451,15 +2451,19 @@ function setLayoutOrder(arr) {
 		arr = arr.split(",").map(id => id.trim());
 
 	arr.forEach(id => {
+
+		let hidden = false;
+		if ( id[0] === '!' ) {
+			hidden = true;
+			id = id.substring(1);
+		}
+
 		let el = document.getElementById(id);
-		if ( el ) document.body.appendChild(el);
-		else console.log('bad id', id);
+
+		if ( !el ) return console.log('bad id', id);
+		
+		el.classList.toggle('hide', hidden);
+		document.body.appendChild(el);
+
 	});
 }
-
-// setTimeout(() => {
-// 	try {
-// 		document.querySelector('[data-name="edit"]').action();
-// 		document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
-// 	} catch ( err ) { console.log(err)}
-// }, 500);

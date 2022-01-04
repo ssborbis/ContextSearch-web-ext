@@ -351,9 +351,6 @@ BODY {
 #toolBar .tile {
 	border:none;
 }
-[data-menu="quickmenu"] #titleBar, [data-menu="quickmenu"] #menuBar {
-	display:none;
-}
 [data-menu="quickmenu"].locked #titleBar, [data-menu="quickmenu"].locked #menuBar {
 	display:block;
 }
@@ -628,6 +625,7 @@ HR.break {
 	visibility: hidden;
 }
 .edit_handle {
+	position: relative;
 	line-height: 16px;
 	font-size: 8pt;
 	height: 16px;
@@ -641,4 +639,13 @@ HR.break {
 }
 .edit_handle.hover {
 	background-color: #b3b4bc;
+}
+.edit_handle INPUT {
+	height: 10px;
+	position: absolute;
+	right: 10px;
+	vertical-align: middle;
+}
+.hide {
+	display: none !important;
 }
