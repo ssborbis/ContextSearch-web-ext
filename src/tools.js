@@ -426,12 +426,21 @@ const QMtools = [
 					}
 
 					window.editMode = true;
+
+					let i18n_titles = {
+						"quickMenuElement": 	'quickmenu',
+						"toolBar": 				'tools',
+						"menuBar": 				'menubar',
+						"titleBar": 			'name',
+						"searchBarContainer": 	'search'
+					};
 					
-					[qm,tb,mb,toolBar,sbc /*, aeb */].forEach( (el, index) => {
+					[qm,tb,mb,toolBar,sbc].forEach( (el, index) => {
+
 						let div = document.createElement('div');
 						div.classList.add('edit_handle');
 						div.draggable = true;
-						div.innerText = '#' + el.id;
+						div.innerText = browser.i18n.getMessage(i18n_titles[el.id]);
 						div.dataset.parentId = el.id;
 
 						let cb = document.createElement('input');

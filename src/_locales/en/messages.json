@@ -2325,6 +2325,14 @@
     "message": "Forward Button"
   },
   
+  "Title": {
+    "message": "Title"
+  },
+  
+  "MenuBar": {
+    "message": "Menu Bar"
+  },
+  
   "___________": {
     "message": ""
   }

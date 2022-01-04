@@ -22,10 +22,8 @@ async function makeFrameContents() {
 	
 	makeSearchBar();
 
-	if ( userOptions.quickMenuSearchBar === 'hidden') {
-		sbc.style.display = 'none';
-		sbc.style.height = '0';
-	}
+	if ( userOptions.quickMenuSearchBar === 'hidden')
+		sbc.classList.add('hide');
 
 	// hide for qm
 	[tb, mb].forEach(el => el.classList.add('hide'));

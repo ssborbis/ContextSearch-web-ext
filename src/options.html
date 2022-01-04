@@ -2208,7 +2208,7 @@
 				</section><section>
 <p class="header1" data-i18n="SearchBar">_</p>
 				
-				<div>	
+				<div style="display:none">	
 					<span data-i18n="Position">_</span><span class="info" title="$SearchBarTooltip">&#9432;</span>
 					
 					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuSearchBar">
@@ -2238,10 +2238,9 @@
 				</div>
 				<div class="tabcontent" id="toolBarTab">
 				<div class="blobContainerHeader" data-i18n="Toolbar"><img src="icons/sidebar.svg" style="transform:rotate(90deg);"/>_</div>
-				
-				<!-- <div class="description" data-i18n="ToolbarTooltip">Open a search menu from the toolbar action button. Shares search actions with the Quick Menu</div> -->
 					
-				</section><section>
+				</section>
+				<section>
 				<p class="header1" data-i18n="Layout">_</p>
 				<p class="header2" data-i18n="DefaultView">_</p>
 				<div class="option">
@@ -2298,8 +2297,6 @@
 				<div class="tabcontent" id="sideBarTab">
 					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />_</div>
 
-					<!-- <div class="description" data-i18n="SidebarTooltip">Sidebar is an extension of the Toolbar with added function. Most settings are shared with the Toolbar</div> -->
-
 					<section>
 					<p class="header1" data-i18n="Layout">_</p>
 				<p class="header2" data-i18n="DefaultView">_</p>
@@ -2344,18 +2341,6 @@
 						<div class="description" data-i18n="SideBarPositionTooltip">_</div>
 					</div>
 
-					<!-- </section><section>
-<p class="header1" data-i18n="Window">Window</p> -->
-					<!-- <div class="option"> -->
-						<!-- <select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="s_sideBarType"> -->
-							<!-- <option data-i18n="overlay" value="overlay">overlay</option> -->
-							<!-- <option data-i18n="panel" value="panel">panel</option> -->
-						<!-- </select> -->
-						<!-- <div class="description" data-i18n="SidebarTypeTooltip">Choose how to display the side bar.  -->
-						<!-- Overlay creates a floating window over page content.  -->
-						<!-- Panel creates a sidebar the height of the window and pads the document to avoid covering page content</div> -->
-					<!-- </div> -->
-
 					</section>
 					<section>
 					<p class="header1" data-i18n="Opening">_</p>
@@ -2389,10 +2374,7 @@
 				
 				<div class="tabcontent" id="pageTilesTab">
 					<div class="blobContainerHeader" data-i18n="PageTiles"><img src="icons/page_tiles.svg" />_</div>
-					
-					<!-- <div class="description" data-i18n="pagetilesdescription">Drag and drop text to a full-page tiled menu of search engines ( experimental )</div>
-					<br /><br /> -->
-					
+										
 					<section style="min-width:720px">
 					<p class="header1" data-i18n="General">_</p>
 					
@@ -2944,15 +2926,6 @@
 			<div style="font-weight:normal;">
 			
 				<div class="blobContainerHeader" data-i18n="SearchEngines"><img src="icons/search.svg" />_</div>
-
-				<!-- <div class="description">
-					<span data-i18n="AddingSearchEnginesInfoMessage">
-						Search engines can be added manually here or automatically via the Context Menu. See the following link for more info - 
-					</span>
-					<a href="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_search.gif" target="_blank" data-i18n="AddingSearchEnginesLinkText">Adding search engines</a>
-				</div>
-				
-				<br /><br /> -->
 		
 				<section id="searchEnginesParentContainer">
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
