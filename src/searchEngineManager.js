@@ -234,7 +234,7 @@ function buildSearchEngineContainer() {
 
 				// set contexts
 				(() => {
-					let contexts = $('#contexts').querySelectorAll('INPUT');
+					let contexts = edit_form.querySelectorAll('.contexts INPUT');
 					contexts.forEach( cb => cb.checked = ((se.contexts & parseInt(cb.value)) == cb.value) );
 				})();
 								
@@ -355,7 +355,7 @@ function buildSearchEngineContainer() {
 						se.searchCode = edit_form.searchCode.value;
 
 						se.contexts = (() => {
-							let contexts = $('#contexts').querySelectorAll('INPUT:checked');
+							let contexts = edit_form.querySelectorAll('.contexts INPUT:checked');
 							let total = 0;
 							contexts.forEach( cb => {total+=parseInt(cb.value)});
 							return total;

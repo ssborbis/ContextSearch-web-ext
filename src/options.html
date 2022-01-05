@@ -1372,7 +1372,7 @@
 				background-color: #444;
 			}
 
-			#contexts LABEL {
+			.editForm .contexts LABEL {
 				display: inline;
 				border-radius: 4px;
 				padding: 2px 8px;
@@ -1382,7 +1382,7 @@
 				font-size: 7pt;
 			}
 
-			#contexts INPUT {
+			.editForm .contexts INPUT {
 				display: initial;
 				width: initial;
 				margin: initial;
@@ -2990,18 +2990,17 @@
 							</button>
 						</div>
 
-						<div id="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);padding:6px 0">
+						<div class="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);padding:6px 0">
 
-							
+							<label><input type="checkbox" class="inputNice" value="1"/><span data-i18n="audio">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="2"/><span data-i18n="frame">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="4"/><span data-i18n="image">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">_</span></label>
 
-							<label><input type="checkbox" class="inputNice" value="1" data-i18n="audio" />audio</label>
-							<label><input type="checkbox" class="inputNice" value="2" data-i18n="frame" />frame</label>
-							<label><input type="checkbox" class="inputNice" value="4" data-i18n="image" />image</label>
-							<label><input type="checkbox" class="inputNice" value="8" data-i18n="link" />link</label>
-							<label><input type="checkbox" class="inputNice" value="16" data-i18n="page" />page</label>
-							<label><input type="checkbox" class="inputNice" value="32" data-i18n="selection" />selection</label>
-							<label><input type="checkbox" class="inputNice" value="64" data-i18n="video" />video</label>
-
+							<br />
 							<label data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">_</label><textarea name="matchRegex" type="text" class="inputNice" style="width: calc(100% - 10px)" placeholder='e.g. "\\s","_"'></textarea>
 						</div>
 					</div>
@@ -3052,8 +3051,8 @@
 <span data-browser="firefox">					
 						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></div></button>
 </span>
-						<button type="button" name="test" style="margin-left:20px" data-i18n="Test" title="i18n_text">_</button>
-						<button type="button" name="save" style="margin-left:4px" data-i18n="Save" title="i18n_text">_</button>
+						<button type="button" name="test" style="margin-left:20px;width:auto" data-i18n="Test" title="i18n_text">_</button>
+						<button type="button" name="save" style="margin-left:4px;width:auto" data-i18n="Save" title="i18n_text">_</button>
 					</div>
 					
 					<span class="saveMessage"></span>
@@ -3120,7 +3119,7 @@
 						</tr>
 					</table>
 					
-					<button type="button" name="save" class="inputNice" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
+					<button type="button" name="save" style="float:right;margin:10px 5px;width:auto" data-i18n="Save">_</button>
 					<span class="saveMessage"></span>
 				</form>
 
@@ -3138,7 +3137,7 @@
 						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
 						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
 					</div>
-					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px" data-i18n="Save">_</button>
+					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px;width:auto" data-i18n="Save">_</button>
 					<span class="saveMessage"></span>
 				</form>
 				
