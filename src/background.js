@@ -647,14 +647,12 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "injectComplete":
-			onFound = () => {}
-			onError = () => {}
 
 			if ( userOptions.quickMenu ) {
 				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_quickmenu.js",
 					frameId: sender.frameId
-				}).then(onFound, onError);
+				});
 				
 				console.log("injected quickmenu");
 			}
@@ -663,9 +661,18 @@ async function notify(message, sender, sendResponse) {
 				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_pagetiles.js",
 					frameId: sender.frameId
-				}).then(onFound, onError);
+				});
 				
 				console.log("injected pagetiles");
+			}
+
+			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) {
+				await browser.tabs.executeScript(sender.tab.id, {
+					file: "/inject_mycroftproject.js",
+					frameId: sender.frameId
+				});
+				
+				console.log("injected mycroftproject");
 			}
 			
 			break;

@@ -246,5 +246,6 @@ const defaultUserOptions = {
 	contextMenuUseContextualLayout: false,
 	contextMenuContextualLayoutFlattenLimit: 10,
 	quickMenuDomLayout: "",
-	customSearchActions: []
+	customSearchActions: [],
+	modify_mycroftproject: true
 };

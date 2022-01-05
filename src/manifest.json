@@ -40,11 +40,6 @@
 			"matches": ["<all_urls>"],
 			"js": ["lib/browser-polyfill.min.js","lib/crossbrowser.js","init_content.js"],
 			"all_frames": true
-		},
-		{
-			"matches": ["*://mycroftproject.com/*"],
-			"js": ["inject_mycroftproject.js"],
-			"all_frames": true
 		}
 	],
 
