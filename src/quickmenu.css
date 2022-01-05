@@ -48,7 +48,7 @@ BODY {
 	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: background-color .25s ease-out, opacity .25s linear, width .2s ease-out, margin .25s;
+	transition: background-color .25s ease-out, opacity .25s linear, width .2s linear, margin .25s;
 	/*z-index:2;*/
 	position: relative;
 	/*float:left;*/
