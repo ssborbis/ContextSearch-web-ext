@@ -15,7 +15,7 @@ function filterContexts(root, context) {
 	let filteredNodeTree = JSON.parse(JSON.stringify(root));
 
 	traverseNodesDeep(filteredNodeTree, ( node, parent ) => {
-		if ( !['folder', 'searchEngine'].includes(node.type) )
+		if ( !['folder', 'searchEngine'].includes(node.type) && context !== "selection" )
 			removeNode( node, parent );
 
 		if ( node.type === 'searchEngine' ) {
