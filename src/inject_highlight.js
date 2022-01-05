@@ -439,7 +439,7 @@ function openFindBar(options) {
 			userOptions.highLight.findBar.offsets = o.lastOffsets;
 			userOptions.highLight.findBar.position = o.dockedPosition;
 			userOptions.highLight.findBar.windowType = o.windowType;
-			
+
 			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
 		}
 
@@ -647,7 +647,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "findBarUpdateOptions":
 			userOptions.highLight.findBar.markOptions = message.markOptions;
 		//	if ( userOptions.highLight.findBar.saveOptions )
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				if ( window == top ) browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			break;
 			
 		case "toggleNavBar":
