@@ -2,7 +2,7 @@
 window.contextMenuMatchRegexMenus = [];
 window.contextMenuSearchTerms = "";
 
-const lazyUpdate = true;
+const lazyUpdate = false;
  
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
