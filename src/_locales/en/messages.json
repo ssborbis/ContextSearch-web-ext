@@ -2342,6 +2342,14 @@
     "description": "permissions request"
   },
   
+  "manualedit": {
+    "message": "Modify preferences object manually"
+  },
+
+  "manualeditwarning": {
+    "message": "Manually editing preferences object may cause ContextSearch to stop working!"
+  },
+
   "___________": {
     "message": ""
   }

@@ -1511,7 +1511,7 @@ $('b_manualEdit').addEventListener('click', e => {
 
 	if ( !on ) {
 
-		if ( !confirm("Enabling direct editing of preferences. Be careful!")) return;
+		if ( !confirm(browser.i18n.getMessage("manualeditwarning"))) return;
 
 		$('t_manualEdit').style.height = $('advancedSettingsTable').getBoundingClientRect().height + "px";
 		$('advancedSettingsTable').style.display = 'none';
@@ -1549,6 +1549,8 @@ $('b_manualSave').addEventListener('click', e => {
 
 		restoreOptions(userOptions);
 		saveOptions();
+
+		$('b_manualSave').classList.remove('changed');
 
 	} catch (err) { alert(err) }
 	
