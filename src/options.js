@@ -1513,7 +1513,7 @@ $('b_manualEdit').addEventListener('click', e => {
 
 		if ( !confirm(browser.i18n.getMessage("manualeditwarning"))) return;
 
-		$('t_manualEdit').style.height = $('advancedSettingsTable').getBoundingClientRect().height + "px";
+		$('t_manualEdit').style.height = window.innerHeight - 120 + "px";//$('advancedSettingsTable').getBoundingClientRect().height + "px";
 		$('advancedSettingsTable').style.display = 'none';
 		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display=null );
 
