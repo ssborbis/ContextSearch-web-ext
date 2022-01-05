@@ -1,34 +1,4 @@
-const contexts = ["audio", "frame", "image", "link", "page", "selection", "video"];
-const contextCodes = [1,2,4,8,16,32,64];
 const ROOT_MENU = "root_menu";
-
-function hasContext(contextText, contextCode) {
-	let power = contexts.indexOf(contextText);
-	let code = Math.pow(2, power);
-
-	return ( (contextCode & code ) === code );
-}
-
-function filterContexts(root, context) {
-
-	let filteredNodeTree = JSON.parse(JSON.stringify(root));
-
-	traverseNodesDeep(filteredNodeTree, ( node, parent ) => {
-		if ( !['folder', 'searchEngine'].includes(node.type) )
-			removeNode( node, parent );
-
-		if ( node.type === 'searchEngine' ) {
-			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
-			if ( se && (!se.contexts || !hasContext(context, se.contexts)) )
-				removeNode( node, parent );
-		}
-
-		if ( node.type === 'folder' && node.children.length === 0 )
-			if ( parent ) removeNode( node, parent );
-	})
-
-	return filteredNodeTree;
-}
 
 async function buildContextMenu(searchTerms) {
 	

@@ -2350,6 +2350,10 @@
     "message": "Manually editing preferences object may cause ContextSearch to stop working!"
   },
 
+  "ContextAwareFilter": {
+    "message": "Filter search engines based on the target element ( link, image, selection, ... )"
+  },
+
   "___________": {
     "message": ""
   }

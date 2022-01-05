@@ -12,6 +12,7 @@ var quickMenuObject = {
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	mouseLastContextMenuTime:0,
+	contexts: []
 };
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
@@ -51,7 +52,8 @@ function openQuickMenu(e, searchTerms) {
 		mouseCoords: quickMenuObject.mouseCoords,
 		searchTerms: searchTerms || getSelectedText(e.target).trim() || linkOrImage(e.target, e),
 		quickMenuObject: quickMenuObject,
-		openingMethod: e.openingMethod || e.type || null
+		openingMethod: e.openingMethod || e.type || null,
+		contexts: getContexts(e.target)
 	});
 }
 
@@ -377,12 +379,8 @@ function preventContextMenuHandler(e) {
 		e.preventDefault();
 }
 
-const quickMenuUseInnerText = false;
-
 function hasSearchTerms(e) {
-	return getSelectedText(e.target) || 
-		linkOrImage(e.target, e) || 
-		( quickMenuUseInnerText && e.target.innerText );
+	return getSelectedText(e.target) || linkOrImage(e.target, e);
 }
 
 // Listen for quickMenuOnClick
@@ -673,6 +671,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				quickMenuObject.searchTerms = message.searchTerms;
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
+				quickMenuObject.contexts = message.contexts;
 
 				// keep old menu if locked
 				if ( quickMenuObject.locked && getQM() ) {

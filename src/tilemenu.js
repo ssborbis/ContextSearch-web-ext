@@ -1018,6 +1018,17 @@ async function makeQuickMenu(options) {
 
 	window.root = root;
 
+	// filter node tree for matching contexts
+	if ( userOptions.quickMenuUseContextualLayout && options.contexts && options.contexts.length ) {		
+		root = filterContexts(root, options.contexts);
+
+		// flatten
+		let seNodes = findNodes(root, n => n.type === 'searchEngine');
+		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
+			root.children = seNodes;
+		}
+	}
+
 	setParents(root);
 
 	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});

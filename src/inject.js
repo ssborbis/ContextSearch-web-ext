@@ -57,14 +57,18 @@ function copyRaw() {
 }
 
 function getContexts(el) {
-	let contexts = [];
+
+	if ( !el ) return [];
+
+	let contexts = ['page'];
 
 	if ( el instanceof HTMLImageElement ) contexts.push('image');
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 
-	if ( el && el.closest('a')) contexts.push('link');
-	if ( el && getSelectedText(el)) contexts.push('selection');
+	if ( el.closest('a')) contexts.push('link');
+	if ( getSelectedText(el)) contexts.push('selection');
+	if ( window != top ) contexts.push('iframe');
 
 	return contexts;
 }
