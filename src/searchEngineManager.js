@@ -42,7 +42,7 @@ function buildSearchEngineContainer() {
 		
 		li.appendChild(header);
 
-		if (node.type === 'searchEngine') {
+		if (node.type === 'searchEngine' || node.type === 'siteSearchFolder' ) {
 			
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
 			
@@ -252,7 +252,7 @@ function buildSearchEngineContainer() {
 						"searchCode": edit_form.searchCode.value
 					};
 
-					browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+					browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 				}
 				
 				edit_form.copy.onclick = function() {
