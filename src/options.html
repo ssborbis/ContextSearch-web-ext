@@ -1391,6 +1391,11 @@
 				height: 8px;
 			}
 
+			.contextIcon {
+				height: 1em;
+				margin: 2px 0;
+			}
+
 			#t_manualEdit {
 				overflow: scroll;
 				font-weight: normal;
@@ -3012,7 +3017,7 @@
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
 						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
-						<input type="file" accept="image/*" name='iconPicker' id="iconPicker" style="display:none">
+						<input type="file" accept="image/*" name='iconPicker' style="display:none">
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">_</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
@@ -3020,16 +3025,14 @@
 					<label data-i18n="SearchCode" title="$SearchCodeTooltip">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
 
 					<div style="display:inline-block">
-					<label data-i18n="Method">_</label>
-						<select name="_method" class="inputNice">
+					<label data-i18n="Method">_</label><select name="_method" class="inputNice">
 							<option value="GET">GET</option>
 							<option value="POST">POST</option>
 						</select>
 					</div>
 					
 					<div style="display:inline-block">
-					<label data-i18n="Encoding">_</label>
-					<select name="_encoding" class="inputNice">
+					<label data-i18n="Encoding">_</label><select name="_encoding" class="inputNice">
 						<option value="UTF-8">utf-8</option>
 						<option value="WINDOWS-1252">windows-1252</option>
 						<option value="SHIFT_JIS">shift_jis</option>
@@ -3054,24 +3057,11 @@
 						<button type="button" name="test" style="margin-left:20px;width:auto" data-i18n="Test" title="i18n_text">_</button>
 						<button type="button" name="save" style="margin-left:4px;width:auto" data-i18n="Save" title="i18n_text">_</button>
 					</div>
-					
+
 					<span class="saveMessage"></span>
 
 				</form>
 				<form id="editFolderForm" class="editForm" action="">
-					<div>
-						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
-						</button>
-					</div>
-					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
-					<label data-i18n="Icon">_</label>
-					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
-						<input type="file" accept="image/*" name='iconPicker' id="iconPickerFolder" style="display:none">
-					</div>
 					<table id="folderFormTable">
 						<tr>
 							<td data-i18n="display">_</td>
@@ -3118,28 +3108,10 @@
 							<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
 						</tr>
 					</table>
-					
-					<button type="button" name="save" style="float:right;margin:10px 5px;width:auto" data-i18n="Save">_</button>
-					<span class="saveMessage"></span>
 				</form>
 
-				<form id="editBookmarkletForm" class="editForm" action="">
-					<div>
-						<div class="faviconPickerBox" name="faviconBox"></div>
-						<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-							<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
-						</button>
-					</div>
-					<label data-i18n="Name">_</label><input name="shortName" type="text" class="inputNice" />
-					<label data-i18n="Icon">_</label>
-					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinderShort" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
-						<input type="file" accept="image/*" name='iconPicker' id="iconPickerBookmarklet" style="display:none">
-					</div>
-					<button type="button" name="save" class="inputNice _hover" style="float:right;margin:10px 5px;width:auto" data-i18n="Save">_</button>
-					<span class="saveMessage"></span>
-				</form>
+				<form id="editBookmarkletForm" class="editForm" action=""></form>
+				<form id="editOneClickSearchEnginesForm" class="editForm" action=""></form>
 				
 				<br />
 				
@@ -3229,6 +3201,7 @@
 		<script src="themes.js"></script>
 		<script src="defaultShortcuts.js"></script>
 		<script src="iconUtils.js"></script>
+		<script src="contexts.js"></script>
 		<script src="utils.js"></script>
 		<script src="nodes.js"></script>
 		<script src="searchActions.js"></script>

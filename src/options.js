@@ -1381,7 +1381,9 @@ function buildShortcutTable() {
 }
 
 function imageUploadHandler(el, callback) {
+
 	el.addEventListener('change', e => {
+
 		let file = e.target.files[0];
 		
 		var reader = new FileReader();
@@ -1503,7 +1505,13 @@ function syntaxHighlight(json) {
 // })
 
 // saveOptions on every change
-document.addEventListener('change', e => setTimeout(saveOptions, 250));
+document.addEventListener('change', e => {
+	
+	// skip modal forms
+	if ( e.target.closest('.editForm')) return;
+
+	setTimeout(saveOptions, 250)
+});
 
 $('b_manualEdit').addEventListener('click', e => {
 

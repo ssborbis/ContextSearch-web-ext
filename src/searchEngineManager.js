@@ -68,6 +68,8 @@ function buildSearchEngineContainer() {
 				edit_form.node = node;
 
 				e.stopPropagation();
+
+				addFormListeners(edit_form);
 				
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
 			
@@ -232,11 +234,7 @@ function buildSearchEngineContainer() {
 				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
 
-				// set contexts
-				(() => {
-					let contexts = edit_form.querySelectorAll('.contexts INPUT');
-					contexts.forEach( cb => cb.checked = ((se.contexts & parseInt(cb.value)) == cb.value) );
-				})();
+				setContexts(edit_form, se.contexts);
 								
 				edit_form.close.onclick = edit_form.closeForm;
 
@@ -354,12 +352,7 @@ function buildSearchEngineContainer() {
 						se.matchRegex = edit_form.matchRegex.value;
 						se.searchCode = edit_form.searchCode.value;
 
-						se.contexts = (() => {
-							let contexts = edit_form.querySelectorAll('.contexts INPUT:checked');
-							let total = 0;
-							contexts.forEach( cb => {total+=parseInt(cb.value)});
-							return total;
-						})();
+						se.contexts = getContexts(edit_form);
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);
@@ -385,6 +378,7 @@ function buildSearchEngineContainer() {
 
 				createFormContainer(edit_form);
 				addIconPickerListener(edit_form.iconPicker, li);
+				addFavIconFinderListener(edit_form.faviconFinder);
 
 				edit_form.addFaviconBox(getIconFromNode(node));
 
@@ -399,56 +393,54 @@ function buildSearchEngineContainer() {
 			img.src = getIconFromNode(node);
 			header.appendChild(img);
 			
-			li.addEventListener('dblclick', editBm);
+			li.addEventListener('dblclick', _edit);
 			
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
 			header.appendChild(text);
 			
-			function editBm() {
+			function _edit() {
 			
 				let _form = $('#editBookmarkletForm');
+
+				if ( !_form.node ) {
+					_form.innerHTML = $('editSearchEngineForm').cloneNode(true).innerHTML;
+
+					["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+						if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+						_form[name].parentNode.removeChild(_form[name]);
+					})
+					addFormListeners(_form);
+				}
 				
 				_form.node = node;
 								
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
+
+				setContexts(_form, node.contexts);
 				
 				_form.close.onclick = _form.closeForm;
 				
-				_form.save.onclick = function() {
+				_form.save.onclick = async function() {
 
-					let newIcon = new Image();
-					newIcon.onload = function() {
-						node.icon = imageToBase64(this, userOptions.cacheIconsMaxSize);
-						onloadend();
-						updateNodeList();
-					}
-					newIcon.onerror = function() {	
-						node.icon = _form.iconURL.value;
-						onloadend();
-						updateNodeList();
-					}
-
-					let onloadend = function () {
-						 _form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
-						 img.src = getIconFromNode(node);
-					}
+					node.icon = await getFormIcon(_form);
+					_form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
+					img.src = getIconFromNode(node);
 
 					node.title = _form.shortName.value.trim();
+					node.contexts = getContexts(_form);
 
 					text.innerText = node.title;
 
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
-					
-					newIcon.src = getIconSourceFromURL(_form.iconURL.value);
-					
-					setTimeout(() => { if (!newIcon.complete) newIcon.onerror()}, 5000);
+					updateNodeList();
 				}
 				
 				createFormContainer(_form);
 				addIconPickerListener(_form.iconPicker, li);
+				addFavIconFinderListener(_form.faviconFinder);
 				_form.addFaviconBox(getIconFromNode(node));
 				
 			}
@@ -495,9 +487,51 @@ function buildSearchEngineContainer() {
 
 			header.appendChild(ff);
 			
-			li.addEventListener('dblclick', e => {
-				alert( browser.i18n.getMessage('CannotEditOneClickEngines'));
-			});
+			li.addEventListener('dblclick', _edit);
+
+			function _edit() {
+			
+				let _form = $('#editOneClickSearchEnginesForm');
+
+				if ( !_form.node ) {
+					_form.innerHTML = $('editSearchEngineForm').cloneNode(true).innerHTML;
+
+					["shortName","description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+						if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+						_form[name].parentNode.removeChild(_form[name]);
+					})
+					addFormListeners(_form);
+				}
+				
+				_form.node = node;
+								
+				_form.iconURL.value = node.icon || "";
+			//	_form.shortName.value = node.title;
+				setContexts(_form, node.contexts);
+				
+				_form.close.onclick = _form.closeForm;
+				
+				_form.save.onclick = async function() {
+
+					node.icon = await getFormIcon(_form);
+					_form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
+					img.src = getIconFromNode(node);
+
+				//	node.title = _form.shortName.value.trim();
+					node.contexts = getContexts(_form);
+
+					text.innerText = node.title;
+
+					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					updateNodeList();
+				}
+				
+				createFormContainer(_form);
+				addIconPickerListener(_form.iconPicker, li);
+				addFavIconFinderListener(_form.faviconFinder);
+				_form.addFaviconBox(getIconFromNode(node));
+				
+			}
 		}
 		
 		if (node.type === 'folder') {
@@ -544,8 +578,23 @@ function buildSearchEngineContainer() {
 				e.stopPropagation();
 				
 				let _form = $('#editFolderForm');
+
+				if ( !_form.node ) {
+					_form.innerHTML = $('editSearchEngineForm').cloneNode(true).innerHTML + _form.innerHTML;
+
+					["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+						if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+						_form[name].parentNode.removeChild(_form[name]);
+					});
+
+					let c = _form.querySelector('.contexts');
+					c.parentNode.removeChild(c);
+
+					addFormListeners(_form);
+				}
+
 				_form.node = node;
-				
+
 				_form.closeForm = _form.closeForm;
 				
 				_form.close.onclick = _form.closeForm;
@@ -582,6 +631,7 @@ function buildSearchEngineContainer() {
 				
 				createFormContainer(_form);
 				addIconPickerListener(_form.iconPicker, li);
+				addFavIconFinderListener(_form);
 				_form.addFaviconBox(getIconFromNode(node));
 
 				_form.c_groupColor.value = _form.groupColor.value;
@@ -813,6 +863,25 @@ function buildSearchEngineContainer() {
 				tool.style.position = 'absolute';
 			}
 		}
+
+		// if ( node.contexts) {
+
+		// 	let div = document.createElement('div');
+		// 	div.style.display="inline-block";
+		// 	div.style.right = "164px";
+		// 	div.style.position = 'absolute';
+
+		// 	contexts.forEach(c => {
+
+		// 		let tool = document.createElement('div');
+		// 		tool.title = browser.i18n.getMessage(c);
+		// 		tool.className = 'tool contextIcon';
+		// 		tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL("icons/" + c + ".svg")})`);
+		// 		div.appendChild(tool);
+		// 	})
+
+		// 	header.appendChild(div);
+		// }
 
 		document.addEventListener('click', e => {			
 			if ( document.getElementById('managerContainer').contains(e.target) ) return;			
@@ -1683,10 +1752,10 @@ function buildSearchEngineContainer() {
 		imageUploadHandler(el, img => {
 			let form = el.closest('form');;
 			form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
-			li.querySelector("img").src = form.iconURL.value;
+		//	li.querySelector("img").src = form.iconURL.value;
 
 			form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
-			form.save.click();
+		//	form.save.click();
 		})
 	}
 
@@ -1776,9 +1845,7 @@ function updateNodeList(forceSave) {
 	//}
 }
 
-['editSearchEngineForm', 'editFolderForm', 'editBookmarkletForm'].forEach( id => {
-
-	let form = $('#' + id);
+function addFormListeners(form) {
 
 	form.addEventListener('input', e => form.save.classList.add('changed'));
 
@@ -1793,7 +1860,6 @@ function updateNodeList(forceSave) {
 		runAtTransitionEnd(formContainer, "opacity", () => {
 			form.style.display = null;
 			document.body.appendChild(form);
-			// formContainer.parentNode.removeChild(formContainer);
 			document.body.removeChild(formContainer.parentNode);
 		});
 	}
@@ -1806,6 +1872,8 @@ function updateNodeList(forceSave) {
 		box.appendChild(img);
 		box.classList.add('inputNice');
 		box.classList.add('upload');
+
+		form.iconPicker.id = form.id + 'IconPicker';
 
 		let forlabel = document.createElement('label');
 		forlabel.setAttribute('for', form.iconPicker.id);
@@ -1830,7 +1898,17 @@ function updateNodeList(forceSave) {
 	})
 
 	form.save.addEventListener('click', e => form.save.classList.remove('changed'));
-});
+}
+
+function setContexts(f, c) {
+	let contexts = f.querySelectorAll('.contexts INPUT');
+	contexts.forEach( cb => cb.checked = ((c & parseInt(cb.value)) == cb.value) );			
+}
+
+function getContexts(f) {
+	let contexts = f.querySelectorAll('.contexts INPUT:checked');
+	return [...contexts].map(c => parseInt(c.value)).reduce( (a,b) => a + b);
+}
 
 function createFormContainer(form) {
 
@@ -1848,6 +1926,10 @@ function createFormContainer(form) {
 	overdiv.onclick = e => {
 		if ( !overdiv.mousedown ) return;
 		if ( overdiv !== e.target) return;
+
+		if ( form.save.classList.contains('changed')) {
+			return;
+		}
 		form.close.click();
 	}
 
@@ -1864,6 +1946,24 @@ function createFormContainer(form) {
 	overdiv.style.opacity = null;
 
 	form.save.classList.remove('changed');
+}
+
+function getFormIcon(form) {
+
+	return new Promise(resolve => {
+
+		let newIcon = new Image();
+
+		newIcon.onload = function() {
+			resolve(imageToBase64(this, userOptions.cacheIconsMaxSize));
+		}
+		newIcon.onerror = function() {	
+			resolve(form.iconURL.value);
+		}
+		setTimeout(() => resolve(form.iconURL.value), 5000);
+
+		newIcon.src = getIconSourceFromURL(form.iconURL.value);
+	});
 }
 
 function getIconSourceFromURL(_url) {

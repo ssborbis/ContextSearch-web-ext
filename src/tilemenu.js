@@ -1023,7 +1023,7 @@ async function makeQuickMenu(options) {
 		root = filterContexts(root, options.contexts);
 
 		// flatten
-		let seNodes = findNodes(root, n => n.type === 'searchEngine');
+		let seNodes = findNodes(root, n => !['folder', 'separator'].includes(n.type) );
 		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
 			root.children = seNodes;
 		}
