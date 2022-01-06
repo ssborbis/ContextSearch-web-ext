@@ -379,7 +379,6 @@ function buildSearchEngineContainer() {
 				createFormContainer(edit_form);
 				addIconPickerListener(edit_form.iconPicker, li);
 				addFavIconFinderListener(edit_form.faviconFinder);
-
 				edit_form.addFaviconBox(getIconFromNode(node));
 
 				checkFormValues();
@@ -1583,8 +1582,31 @@ function buildSearchEngineContainer() {
 			openMenu(_menu);
 		};
 
+		let newMultisearch = createMenuItem(browser.i18n.getMessage('newMultiSearch'), browser.runtime.getURL('icons/repeatsearch.svg'));	
+		newMultisearch.addEventListener('click', e => {
+
+			e.stopImmediatePropagation();
+
+			console.log(selectedRows.map(r => r.node.title));
+
+			let templates = selectedRows.filter(r => !['siteSearchFolder', 'separator'].includes(r.node.type)).map( r => r.node.id);
+			let names = selectedRows.map( r => r.node.title);
+
+			let newNode = addNewEngine(li.node, false);
+			let newLi = addNode(newNode, li);
+
+			let se = userOptions.searchEngines.find(se => se.id === newNode.id);
+
+			se.template = JSON.stringify(templates);
+			updateNodeList(true);
+				
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
+			
+		});
+
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newTool, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newTool, newSeparator, newBookmarklet, newMultisearch, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
@@ -1596,6 +1618,10 @@ function buildSearchEngineContainer() {
 				el.disabled = true;
 				el.style.opacity = .5;
 			});
+		}
+
+		if ( selectedRows.length < 2 ) {
+			[newMultisearch].forEach( el => el.style.display = 'none')
 		}
 
 		// remove some options when using button

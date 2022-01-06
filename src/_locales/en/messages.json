@@ -2354,6 +2354,10 @@
     "message": "Filter search engines based on the target element ( link, image, selection, ... )"
   },
 
+  "NewMultiSearch": {
+    "message": "New Multi-Search"
+  },
+
   "___________": {
     "message": ""
   }
