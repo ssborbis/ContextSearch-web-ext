@@ -631,7 +631,7 @@ function buildSearchEngineContainer() {
 				
 				createFormContainer(_form);
 				addIconPickerListener(_form.iconPicker, li);
-				addFavIconFinderListener(_form);
+				addFavIconFinderListener(_form.faviconFinder);
 				_form.addFaviconBox(getIconFromNode(node));
 
 				_form.c_groupColor.value = _form.groupColor.value;
