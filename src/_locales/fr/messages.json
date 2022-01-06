@@ -1090,16 +1090,6 @@
     "description": ""
   },
 
-  "Lite": {
-    "message": "Clair",
-    "description": "label for lite theme"
-  },
-
-  "Dark": {
-    "message": "Sombre",
-    "description": "label for dark theme"
-  },
-
   "UserStyles": {
     "message": "Styles utilisateur",
     "description": "label for custom user styles"

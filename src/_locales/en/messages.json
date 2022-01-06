@@ -1090,17 +1090,7 @@
     "message": "Theme to use with Quick, Toolbar, and Sidebar menus",
     "description": ""
   },
-    
-  "Lite": {
-    "message": "lite",
-    "description": "label for lite theme"
-  },
-  
-  "Dark": {
-    "message": "dark",
-    "description": "label for dark theme"
-  },
-  
+      
   "UserStyles": {
     "message": "User Styles",
     "description": "label for custom user styles"
