@@ -854,24 +854,24 @@ function buildSearchEngineContainer() {
 		}
 
 		// add match icons for some node types
-		if ( ['searchEngine'].includes(node.type) ) {
+		// if ( ['searchEngine'].includes(node.type) ) {
 
-			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
+		// 	let se = userOptions.searchEngines.find( _se => _se.id === node.id );
 
-			if ( se && se.matchRegex ) {
-				let tool = document.createElement('div');
-				tool.title = browser.i18n.getMessage('matchsearchtermsregex');
-				tool.className = 'tool contextIcon';
-				tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL('icons/regex.svg')})`);
-				header.appendChild(tool);
-				tool.style.right = "104px";
-				tool.style.position = 'absolute';
-			}
-		}
+		// 	if ( se && se.matchRegex ) {
+		// 		let tool = document.createElement('div');
+		// 		tool.title = browser.i18n.getMessage('matchsearchtermsregex');
+		// 		tool.className = 'tool contextIcon';
+		// 		tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL('icons/regex.svg')})`);
+		// 		header.appendChild(tool);
+		// 		tool.style.right = "104px";
+		// 		tool.style.position = 'absolute';
+		// 	}
+		// }
 		
 		let div = document.createElement('div');
 		div.style.display="inline-block";
-		div.style.right = "144px";
+		div.style.right = "114px";
 		div.style.position = 'absolute';
 		div.className = 'contextIcons';
 		header.appendChild(div);
@@ -1600,6 +1600,8 @@ function buildSearchEngineContainer() {
 				
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
+
+			closeContextMenus();
 			
 		});
 
