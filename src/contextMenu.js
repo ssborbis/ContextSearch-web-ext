@@ -42,9 +42,6 @@ async function buildContextMenu(searchTerms) {
 				console.log('no search engine found for ' + node.id);
 				return;
 			}
-
-			if ( !se.hasOwnProperty('contexts') )
-				se.contexts = 32; // selection
 			
 			let _id = se.id + '_' + count++;
 

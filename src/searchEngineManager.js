@@ -61,6 +61,8 @@ function buildSearchEngineContainer() {
 			text.innerText = se.title;
 			header.appendChild(text);
 
+			node.contexts = node.contexts || se.contexts;
+
 			li.addEventListener('dblclick', e => {
 
 				let edit_form = document.getElementById('editSearchEngineForm');
@@ -234,7 +236,7 @@ function buildSearchEngineContainer() {
 				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
 
-				setContexts(edit_form, se.contexts);
+				setContexts(edit_form, node.contexts);
 								
 				edit_form.close.onclick = edit_form.closeForm;
 
@@ -353,6 +355,8 @@ function buildSearchEngineContainer() {
 						se.searchCode = edit_form.searchCode.value;
 
 						se.contexts = getContexts(edit_form);
+						node.contexts = se.contexts;
+						setRowContexts(li);
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);
@@ -430,6 +434,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.contexts = getContexts(_form);
+					setRowContexts(li);
 
 					text.innerText = node.title;
 
@@ -518,6 +523,7 @@ function buildSearchEngineContainer() {
 
 				//	node.title = _form.shortName.value.trim();
 					node.contexts = getContexts(_form);
+					setRowContexts(li);
 
 					text.innerText = node.title;
 
@@ -855,32 +861,24 @@ function buildSearchEngineContainer() {
 			if ( se && se.matchRegex ) {
 				let tool = document.createElement('div');
 				tool.title = browser.i18n.getMessage('matchsearchtermsregex');
-				tool.className = 'tool';
+				tool.className = 'tool contextIcon';
 				tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL('icons/regex.svg')})`);
 				header.appendChild(tool);
 				tool.style.right = "104px";
 				tool.style.position = 'absolute';
 			}
 		}
+		
+		let div = document.createElement('div');
+		div.style.display="inline-block";
+		div.style.right = "144px";
+		div.style.position = 'absolute';
+		div.className = 'contextIcons';
+		header.appendChild(div);
 
-		// if ( node.contexts) {
-
-		// 	let div = document.createElement('div');
-		// 	div.style.display="inline-block";
-		// 	div.style.right = "164px";
-		// 	div.style.position = 'absolute';
-
-		// 	contexts.forEach(c => {
-
-		// 		let tool = document.createElement('div');
-		// 		tool.title = browser.i18n.getMessage(c);
-		// 		tool.className = 'tool contextIcon';
-		// 		tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL("icons/" + c + ".svg")})`);
-		// 		div.appendChild(tool);
-		// 	})
-
-		// 	header.appendChild(div);
-		// }
+		if ( node.contexts && userOptions.searchEnginesManagerShowContexts) {
+			setRowContexts(li);
+		}
 
 		document.addEventListener('click', e => {			
 			if ( document.getElementById('managerContainer').contains(e.target) ) return;			
@@ -1935,6 +1933,44 @@ function getContexts(f) {
 
 	if ( !contexts || !contexts.length ) return [];
 	return [...contexts].map(c => parseInt(c.value)).reduce( (a,b) => a + b);
+}
+
+async function setRowContexts(row) {
+	try {
+		let node = row.node;
+
+		let cc = row.querySelector('.contextIcons');
+		cc.innerHTML = null;
+
+		contexts.forEach( async c => {
+
+			let tool = document.createElement('div');
+			tool.title = browser.i18n.getMessage(c);
+			tool.className = 'tool contextIcon';
+			tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL("icons/" + c + ".svg")})`);
+
+			if ( !hasContext(c, node.contexts))
+				tool.classList.add('disabled');
+
+			tool.onclick = function(e) {
+				e.stopPropagation();
+
+				let code = contextCodes[contexts.indexOf(c)];
+				let status = hasContext(c, node.contexts);
+
+				tool.classList.toggle('disabled', status);
+
+				if ( status ) node.contexts -= code;
+				else node.contexts += code;
+
+				updateNodeList();
+			}
+
+			cc.appendChild(tool);
+		});
+	} catch ( error ) {
+		console.log(error);
+	}
 }
 
 function createFormContainer(form) {

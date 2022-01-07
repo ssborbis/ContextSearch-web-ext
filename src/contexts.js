@@ -21,15 +21,16 @@ function filterContexts(root, context) {
 		if ( node.type === 'searchEngine' ) {
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
 			if ( se && (!se.contexts || !hasContext(context, se.contexts)) )
-				removeNode( node, parent );
+				return removeNode( node, parent );
 		}
 
-		if ( node.type === 'folder' && node.children.length === 0 )
-			if ( parent ) removeNode( node, parent );
-
 		if ( node.contexts && !hasContext(context, node.contexts))
-			removeNode(node, parent);
-	})
+			return removeNode(node, parent);
+
+		if ( node.type === 'folder' && node.children.length === 0 )
+			if ( parent ) return removeNode( node, parent );
+
+	});
 
 	return filteredNodeTree;
 }

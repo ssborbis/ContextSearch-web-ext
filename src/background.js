@@ -1867,6 +1867,16 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 
+		findNodes(_uo.nodeTree, n => {
+			if ( ['folder', 'separator', 'bookmark'].includes(n.type) ) return;
+
+			if ( !n.hasOwnProperty('contexts') )
+				n.contexts = 32; // selection)
+		})
+		return _uo;
+
+	}).then( _uo => {
+
 		_uo.version = browser.runtime.getManifest().version;
 		return _uo;
 

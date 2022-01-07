@@ -249,5 +249,6 @@ const defaultUserOptions = {
 	customSearchActions: [],
 	modify_mycroftproject: true,
 	quickMenuUseContextualLayout: false,
-	quickMenuContextualLayoutFlattenLimit: 10
+	quickMenuContextualLayoutFlattenLimit: 10,
+	searchEnginesManagerShowContexts: true
 };

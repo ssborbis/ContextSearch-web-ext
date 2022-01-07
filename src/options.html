@@ -1400,9 +1400,18 @@
 				height: 8px;
 			}
 
+			.editForm .contexts INPUT, .editForm .contexts LABEL {
+				/*display: none;*/
+			}
+
 			.contextIcon {
 				height: 1em;
-				margin: 2px 0;
+				margin: 0;
+				cursor: pointer;
+			}
+
+			.contextIcon.disabled {
+				opacity: .25;
 			}
 
 			#t_manualEdit {
