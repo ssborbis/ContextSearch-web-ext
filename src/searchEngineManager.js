@@ -1606,7 +1606,7 @@ function buildSearchEngineContainer() {
 		});
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newTool, newSeparator, newBookmarklet, newMultisearch, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
@@ -1903,7 +1903,6 @@ function addFormListeners(form) {
 
 		let forlabel = document.createElement('label');
 		forlabel.setAttribute('for', form.iconPicker.id);
-		forlabel.style = 'cursor:pointer;width:100%;height:100%;z-index:3;position:absolute;left:0;top:0';
 		forlabel.title = browser.i18n.getMessage('uploadfromlocal');
 		box.insertBefore(forlabel, box.firstChild);
 
@@ -1933,6 +1932,8 @@ function setContexts(f, c) {
 
 function getContexts(f) {
 	let contexts = f.querySelectorAll('.contexts INPUT:checked');
+
+	if ( !contexts || !contexts.length ) return [];
 	return [...contexts].map(c => parseInt(c.value)).reduce( (a,b) => a + b);
 }
 
