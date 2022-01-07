@@ -1171,11 +1171,11 @@ function openSearch(info) {
 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
 					delete _info.temporarySearchEngine;
 					_info.menuItemId = url;
+					_info.node = findNode(userOptions.nodeTree, n => n.id === url );
 				} else {
 					console.log('url invalid', url);
 					return;
 				}
-				
 				openSearch(_info);
 			});
 			
@@ -1186,10 +1186,9 @@ function openSearch(info) {
 		//	console.log(error);
 		}
 	}
-	
+		
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		console.log("oneClickSearchEngine");
-		if ( !info.node ) info.node = node;
 		executeOneClickSearch(info);
 		return false;
 	}
@@ -1197,7 +1196,6 @@ function openSearch(info) {
 	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
 	if ( node && node.type === "bookmarklet" ) {
 		console.log("bookmarklet");
-		if ( !info.node ) info.node = node;
 		executeBookmarklet(info);
 		return false;
 	}
