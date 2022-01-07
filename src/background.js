@@ -2263,8 +2263,8 @@ function waitOnInjection(tabId) {
 }
 
 // lazy tab updates
-browser.tabs.onActivated.addListener( async tabInfo => {
-	if ( lazyUpdate ) 
-		browser.tabs.sendMessage(tabInfo.tabId, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-});
+// browser.tabs.onActivated.addListener( async tabInfo => {
+// 	if ( lazyUpdate ) 
+// 		browser.tabs.sendMessage(tabInfo.tabId, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+// });
 
