@@ -2348,6 +2348,10 @@
     "message": "New Multi-Search"
   },
 
+  "ContextsTooltip": {
+    "message": "Display this engine when opening menus from the selected contexts. Works with Context and Quick menus when Advanced -> Filter Engines is enabled, otherwise ignored."
+  },
+
   "___________": {
     "message": ""
   }
