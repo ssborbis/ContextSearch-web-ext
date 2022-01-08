@@ -3023,10 +3023,10 @@
 							<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">_</span></label>
 							<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">_</span></label>
 							<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">_</span></label>
-							<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">_</span></label>
+							<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">_</span></label><span title="$contextsTooltip" style="font-size:8pt"> ⓘ</span>
 
 							<br />
-							<label data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">_</label><textarea name="matchRegex" type="text" class="inputNice" style="width: calc(100% - 10px)" placeholder='e.g. "\\s","_"'></textarea>
+							<label data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">_</label><textarea name="matchRegex" type="text" class="inputNice" style="width: calc(100% - 10px)" placeholder='e.g. /\d+/g'></textarea>
 						</div>
 					</div>
 
@@ -3130,9 +3130,6 @@
 					</table>
 				</form>
 
-				<form id="editBookmarkletForm" class="editForm" action=""></form>
-				<form id="editOneClickSearchEnginesForm" class="editForm" action=""></form>
-				
 				<br />
 				
 				<div data-browser="firefox">

@@ -1278,11 +1278,16 @@ function buildShortcutTable() {
 
 		let tr = document.createElement('tr');
 		tr.shortcut = s;
-		tr.innerHTML = `
-			<td></td>
-			<td>${browser.i18n.getMessage(s.name) || s.name || s.action}</td>
-			<td><span style="cursor:pointer;user-select:none;" title="${browser.i18n.getMessage("ClickToSet")}" data-id="${s.id}">set</span></td>
-			`;
+		tr.appendChild(document.createElement('td'));
+		tr.appendChild(document.createElement('td'))
+			.appendChild(document.createTextNode(browser.i18n.getMessage(s.name) || s.name || s.action));
+
+		let span = tr.appendChild(document.createElement('td').appendChild(document.createElement('span')));
+		span.title = browser.i18n.getMessage("ClickToSet");
+		span.dataset.id = s.id;
+		span.style = "cursor:pointer;user-select:none;";
+		span.innerText = 'set';
+
 		table.appendChild(tr);
 
 		let input = document.createElement('input');

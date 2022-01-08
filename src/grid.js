@@ -129,9 +129,13 @@ class Grid {
 			let _li = document.createElement('li');
 			_li.nodeid = node.id;
 			_li.title = node.title;
-			let icon = getIconFromNode(node);
 
-			_li.innerHTML = `<img src="${icon}" /> ${node.title}`;
+			let img = new Image();
+			img.src = getIconFromNode(node);
+			img.style.marginRight = '8px';
+			_li.appendChild(img);
+			_li.appendChild(document.createTextNode(node.title));
+
 			parentEl.appendChild(_li);
 
 			if ( node.hidden ) _li.style.opacity = .5;
