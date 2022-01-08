@@ -300,7 +300,7 @@ document.addEventListener('mousedown', e => {
 		
 	}, userOptions.quickMenuHoldTimeout);
 
-});
+}, {capture: true});
 
 // Listen for HOLD quickMenuMouseButton
 document.addEventListener('mouseup', e => {
@@ -314,7 +314,7 @@ document.addEventListener('mouseup', e => {
 		
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	quickMenuObject.mouseDownTimer = null;
-});
+}, {capture: true});
 
 // Listen for quickMenuAuto 
 document.addEventListener('mousedown', e => {
@@ -328,7 +328,7 @@ document.addEventListener('mousedown', e => {
 	) return false;
 	
 	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(e.target);
-});
+}, {capture: true});
 
 document.addEventListener('mouseup', e => {
 
@@ -372,7 +372,7 @@ document.addEventListener('mouseup', e => {
 			}
 		}
 	}, 50);
-});
+}, {capture: true});
 
 function preventContextMenuHandler(e) {
 	if ( !userOptions.quickMenuAllowContextMenuNew )
@@ -420,7 +420,7 @@ document.addEventListener('mousedown', e => {
 		clearTimeout(quickMenuObject.mouseDownTimer);
 		quickMenuObject.mouseDownTimer = null;
 	}, userOptions.quickMenuHoldTimeout);
-});
+}, {capture: true});
 		
 // Listen for quickMenuOnClick	
 document.addEventListener('mouseup', e => {	
@@ -440,7 +440,7 @@ document.addEventListener('mouseup', e => {
 	if ( e.which === 2 ) e.preventDefault();
 
 	openQuickMenu(e);	
-});
+}, {capture: true});
 
 // listen for simple click
 document.addEventListener('mousedown', e => {
@@ -537,7 +537,7 @@ document.addEventListener('mousedown', e => {
 
 		return str.substring(_start+1, _end);
 	}
-});
+}, {capture: true});
 
 document.addEventListener('dragstart', e => {
 	if (
@@ -563,7 +563,7 @@ document.addEventListener('dragstart', e => {
 
 	openQuickMenu(e);
 
-});
+}, {capture: true});
 
 function lockQuickMenu() {
 	var qmc = getQM();
@@ -600,7 +600,7 @@ document.addEventListener('closequickmenu', () => {
 		
 	if ( !userOptions.quickMenuTools.find( tool => tool.name === "lock" && tool.persist ) )
 		quickMenuObject.locked = false;
-});
+}, {capture: true});
 
 // close quickmenu when clicking anywhere on page
 document.addEventListener("click", e => {
@@ -614,19 +614,19 @@ document.addEventListener("click", e => {
 		e.preventDefault();
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
-});
+}, {capture: true});
 
 // track mouse position
 document.addEventListener("mousemove", e => {
 	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
 	quickMenuObject.screenCoords = {x: e.screenX, y: e.screenY};
-});
+}, {capture: true});
 
 // prevent quickmenu during drag events
 document.addEventListener("drag", e => {
 	clearTimeout(quickMenuObject.mouseDownTimer);
 	quickMenuObject.mouseDownTimer = null;
-});
+}, {capture: true});
 
 window.addEventListener('keydown', e => {
 	if (
