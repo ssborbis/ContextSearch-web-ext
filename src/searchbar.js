@@ -286,6 +286,7 @@ async function makeAddEngineBar() {
 		let img = new Image();
 		img.src = browser.runtime.getURL('icons/add.svg');
 		div.innerText = " ";
+		div.style.display = 'none';
 		div.insertBefore(img, div.firstChild);
 		div.title = browser.i18n.getMessage("AddCustomSearch");
 		aeb.appendChild(div);
@@ -295,44 +296,16 @@ async function makeAddEngineBar() {
 		});
 
 		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
-			div.parentNode.removeChild(div);
-			return;
+			return div.parentNode.removeChild(div);
 		} 
 
 		div.innerText = xml_se.title;
 		div.insertBefore(img, div.firstChild);
+		div.style.display = null;
 
 		div.onclick = async() => {
-
-			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
-			return;
-
-			// img.src = browser.runtime.getURL('icons/spinner.svg');
-			// let loadImages = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url:ose.href});
-			// let se = loadImages.searchEngines[0];
-
-			// if ( !se ) return;
-
-			// let node = await browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine:se});
-			// userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
-			
-			// div.addEventListener('transitionend', async e => {
-			// 	div.parentNode.removeChild(div);
-
-			// 	let tile = nodeToTile(node);
-
-			// 	let firstTile = qm.querySelector('DIV.tile');
-			// 	tile.className = firstTile.className;
-			// 	tile.style.width = firstTile.style.width;
-			// 	qm.appendChild(tile);
-			// 	tile.scrollIntoView({block: "start", behavior:"smooth"});
-			// });
-			// img.src = browser.runtime.getURL('icons/checkmark.svg');
-			// div.style.opacity = 0;
-
+			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
-		
-		
 	});
 
 	document.body.appendChild(aeb);
