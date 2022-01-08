@@ -65,7 +65,7 @@ function buildSearchEngineContainer() {
 
 			li.addEventListener('dblclick', e => {
 
-				let edit_form = document.getElementById('editSearchEngineForm');
+				let edit_form = $('editSearchEngineForm');
 
 				edit_form.node = node;
 
@@ -186,19 +186,27 @@ function buildSearchEngineContainer() {
 
 						// match regex
 						[edit_form.matchRegex].forEach( el => {
+							if ( !el.value ) return;
 
-							if (el.value) {
+							el.value.split(/\n/).forEach( line => {
+
+								try {					
+									let parts = JSON.parse('[' + line.trim() + ']');
+									let rgx = new RegExp(parts[0], parts[1] || 'g');
+
+									return;
+								} catch (error) {}
+
 								try {
-									let lines = el.value.split(/\n/);
-									lines.forEach( (line, index) => {
-								
-										let parts = JSON.parse('[' + line.trim() + ']');
-										let rgx = new RegExp(parts[0], parts[1] || 'g');
-									});
-								} catch (error) {
-									showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
-								}
-							}
+									let groups = /\/(.*)\/([gim])/.exec(line.trim());
+									let rgx = new RegExp(groups[1], groups[2]);
+
+									return;
+								} catch (error) {}
+
+								showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+
+							});
 						});
 						
 						if ( edit_form.iconURL.value.startsWith("resource:") ) {
@@ -405,17 +413,14 @@ function buildSearchEngineContainer() {
 			
 			function _edit() {
 			
-				let _form = $('#editBookmarkletForm');
+				let _form = $('editSearchEngineForm').cloneNode(true);
+				_form.id = null;
 
-				if ( !_form.node ) {
-					_form.innerHTML = $('editSearchEngineForm').cloneNode(true).innerHTML;
-
-					["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
-						if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-						_form[name].parentNode.removeChild(_form[name]);
-					})
-					addFormListeners(_form);
-				}
+				["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+					_form[name].parentNode.removeChild(_form[name]);
+				})
+				addFormListeners(_form);
 				
 				_form.node = node;
 								
@@ -495,17 +500,14 @@ function buildSearchEngineContainer() {
 
 			function _edit() {
 			
-				let _form = $('#editOneClickSearchEnginesForm');
+				let _form = $('editSearchEngineForm').cloneNode(true);
+				_form.id = null;
 
-				if ( !_form.node ) {
-					_form.innerHTML = $('editSearchEngineForm').cloneNode(true).innerHTML;
-
-					["shortName","description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
-						if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-						_form[name].parentNode.removeChild(_form[name]);
-					})
-					addFormListeners(_form);
-				}
+				["shortName","description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+					_form[name].parentNode.removeChild(_form[name]);
+				})
+				addFormListeners(_form);
 				
 				_form.node = node;
 								
@@ -582,21 +584,20 @@ function buildSearchEngineContainer() {
 				
 				e.stopPropagation();
 				
-				let _form = $('#editFolderForm');
+				let _form = $('editSearchEngineForm').cloneNode(true);
+				_form.id = null;
 
-				if ( !_form.node ) {
-					_form.innerHTML = $('editSearchEngineForm').cloneNode(true).innerHTML + _form.innerHTML;
+				["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+					_form[name].parentNode.removeChild(_form[name]);
+				});
 
-					["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
-						if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-						_form[name].parentNode.removeChild(_form[name]);
-					});
+				_form.insertBefore($('folderFormTable'), _form['save'].parentNode);
 
-					let c = _form.querySelector('.contexts');
-					c.parentNode.removeChild(c);
+				let c = _form.querySelector('.contexts');
+				c.parentNode.removeChild(c);
 
-					addFormListeners(_form);
-				}
+				addFormListeners(_form);
 
 				_form.node = node;
 
@@ -876,9 +877,7 @@ function buildSearchEngineContainer() {
 		div.className = 'contextIcons';
 		header.appendChild(div);
 
-		if ( node.contexts && userOptions.searchEnginesManagerShowContexts) {
-			setRowContexts(li);
-		}
+		setRowContexts(li);
 
 		document.addEventListener('click', e => {			
 			if ( document.getElementById('managerContainer').contains(e.target) ) return;			
@@ -1122,7 +1121,7 @@ function buildSearchEngineContainer() {
 	
 	function contextMenuHandler(e) {
 
-		if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
+		// if (document.getElementById('editSearchEngineForm').contains(e.target) ) return false;
 		e.preventDefault();
 		
 		let li = nearestParent('LI', e.target);
@@ -1799,13 +1798,13 @@ function buildSearchEngineContainer() {
 
 async function removeNodesAndRows() {
 
-	let edit_form = document.getElementById('editSearchEngineForm');
-	selectedRows.forEach( row => {
-		if ( row.contains(edit_form)) {
-			edit_form.style.maxHeight = null;
-			document.body.appendChild(edit_form);
-		}
-	})
+	// let edit_form = document.getElementById('editSearchEngineForm');
+	// selectedRows.forEach( row => {
+	// 	if ( row.contains(edit_form)) {
+	// 		edit_form.style.maxHeight = null;
+	// 		document.body.appendChild(edit_form);
+	// 	}
+	// })
 
 	// remember OCSEs to append hidden
 	let ffses = [];
@@ -1941,8 +1940,14 @@ async function setRowContexts(row) {
 	try {
 		let node = row.node;
 
+		if ( !node.contexts ) return;
+
 		let cc = row.querySelector('.contextIcons');
 		cc.innerHTML = null;
+
+		let show = ( ( userOptions.quickMenuUseContextualLayout || userOptions.contextMenuUseContextualLayout ) && userOptions.searchEnginesManagerShowContexts );
+
+		cc.style.display = show ? null : 'none';
 
 		contexts.forEach( async c => {
 

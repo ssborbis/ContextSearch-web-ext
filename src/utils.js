@@ -73,12 +73,20 @@ function matchingEnginesToFolder(s) {
 
 		for ( let line of lines ) {
 
-			try {
+			try {					
 				let parts = JSON.parse('[' + line.trim() + ']');
 				let rgx = new RegExp(parts[0], parts[1] || 'g');
 
 				if ( rgx.test(s) ) return true;
 			} catch (error) {}
+
+			try {
+				let groups = /\/(.*)\/([gim])/.exec(line.trim());
+				let rgx = new RegExp(groups[1], groups[2]);
+
+				if ( rgx.test(s) ) return true;
+			} catch (error) {}
+
 		}
 
 		return false;
