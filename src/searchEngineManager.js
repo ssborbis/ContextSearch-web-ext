@@ -1,6 +1,9 @@
 var selectedRows = [];
 var rootElement;
 
+isMenuOpen = () => $('.contextMenu') ? true : false;
+isModalOpen = () => $('.overDiv') ? true : false;
+
 function buildSearchEngineContainer() {
 	
 	let table = document.createElement('div');
@@ -10,7 +13,25 @@ function buildSearchEngineContainer() {
 	table.style.display = 'inline-block';
 	table.style.verticalAlign = 'top';
 	table.style.overflowY = 'scroll';
-	
+
+	// multisearch checkboxes
+	(() => {
+		['mouseup', 'dragstart'].forEach( eventType => {
+			document.addEventListener(eventType, e => clearTimeout(window.mouseDownTimer), {capture: true});
+		});
+
+		document.addEventListener('keydown', e => {
+			if ( e.key !== "Escape") return;
+
+			if ( isMenuOpen() || isModalOpen() ) return;
+
+			let cbs = document.querySelectorAll('.selectCheckbox:checked');
+
+			if ( cbs.length ) cbs.forEach( _cb => _cb.checked = false);
+			else $('managerContainer').classList.remove('showCheckboxes');	
+		})
+	})();
+
 	function traverse(node, parent) {	
 	
 		if ( !node ) {
@@ -42,6 +63,32 @@ function buildSearchEngineContainer() {
 		
 		li.appendChild(header);
 
+		// multisearch checkboxes
+		(() => {
+			let cb = document.createElement('input');
+			cb.type = 'checkbox';
+			cb.className = 'selectCheckbox';
+
+			cb.addEventListener('change', e => e.stopPropagation())
+
+			header.appendChild(cb);
+
+			header.addEventListener('mousedown', e => {
+				window.mouseDownTimer = setTimeout(() => {
+					// class bound to container to affect all boxes
+					$('managerContainer').classList.add('showCheckboxes');
+				}, 1000);
+			});
+
+			header.addEventListener('click', e => {
+
+				// check box if displayed
+				if ( $('managerContainer').classList.contains('showCheckboxes'))
+					cb.checked = !cb.checked;
+			})
+
+		})();
+
 		if (node.type === 'searchEngine' || node.type === 'siteSearchFolder' ) {
 			
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
@@ -65,7 +112,7 @@ function buildSearchEngineContainer() {
 
 			li.addEventListener('dblclick', e => {
 
-				let edit_form = $('editSearchEngineForm');
+				let edit_form = $('editSearchEngineForm').cloneNode(true);
 
 				edit_form.node = node;
 
@@ -288,8 +335,7 @@ function buildSearchEngineContainer() {
 						+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
 						+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 					
-					browser.runtime.sendMessage({action: "addSearchEngine", url:url});
-					
+					browser.runtime.sendMessage({action: "addSearchEngine", url:url});	
 				}
 				
 				edit_form.save.onclick = function() {
@@ -392,7 +438,6 @@ function buildSearchEngineContainer() {
 				addIconPickerListener(edit_form.iconPicker, li);
 				addFavIconFinderListener(edit_form.faviconFinder);
 				edit_form.addFaviconBox(getIconFromNode(node));
-
 				checkFormValues();
 			});
 
@@ -537,7 +582,7 @@ function buildSearchEngineContainer() {
 				addIconPickerListener(_form.iconPicker, li);
 				addFavIconFinderListener(_form.faviconFinder);
 				_form.addFaviconBox(getIconFromNode(node));
-				
+
 			}
 		}
 		
@@ -1135,7 +1180,7 @@ function buildSearchEngineContainer() {
 		closeContextMenus();
 
 		let menu = document.createElement('div');
-		menu.id = "contextMenu";
+		// menu.id = "contextMenu";
 		menu.className = "contextMenu";
 		
 		function createMenuItem(name, icon) {
@@ -1150,7 +1195,6 @@ function buildSearchEngineContainer() {
 			span.innerText = name;
 			
 			menuItem.appendChild(span);
-			
 			
 			menuItem.addEventListener('click', e => {
 				if ( menuItem.disabled ) {
@@ -1200,7 +1244,8 @@ function buildSearchEngineContainer() {
 				bookmarklet: "code.svg",
 				folder: "folder.svg",
 				separator: "separator.svg",
-				tool: "add.svg"
+				tool: "add.svg",
+				siteSearchFolder: "search.svg"
 			}
 			
 			// build delete message from objectsToDelete
@@ -1290,7 +1335,6 @@ function buildSearchEngineContainer() {
 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			}, 100);
 
-			
 			updateNodeList();
 			closeContextMenus();
 		});
@@ -1587,19 +1631,26 @@ function buildSearchEngineContainer() {
 			let names = selectedRows.map( r => r.node.title);
 
 			let newNode = addNewEngine(li.node, false);
-			let newLi = addNode(newNode, li);
 
-			let se = userOptions.searchEngines.find(se => se.id === newNode.id);
+			if ( newNode ) {
+				let newLi = addNode(newNode, li);
 
-			se.template = JSON.stringify(templates);
-			updateNodeList(true);
-				
-			newLi.scrollIntoView({block: "start", behavior:"smooth"});
-			newLi.dispatchEvent(new MouseEvent('dblclick'));
+				let se = userOptions.searchEngines.find(se => se.id === newNode.id);
+
+				se.template = JSON.stringify(templates);
+				updateNodeList(true);
+					
+				newLi.scrollIntoView({block: "start", behavior:"smooth"});
+				newLi.dispatchEvent(new MouseEvent('dblclick'));
+			}
 
 			closeContextMenus();
 			
 		});
+
+		let cbs = document.querySelectorAll('.selectCheckbox:checked');
+
+		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
 		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
@@ -2007,6 +2058,7 @@ function createFormContainer(form) {
 	formContainer.appendChild(form);
 
 	form.style.display = "block";
+
 	$('#main').classList.add('blur');
 
 	overdiv.getBoundingClientRect();
