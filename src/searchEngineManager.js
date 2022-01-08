@@ -871,9 +871,6 @@ function buildSearchEngineContainer() {
 		// }
 		
 		let div = document.createElement('div');
-		div.style.display="inline-block";
-		div.style.right = "114px";
-		div.style.position = 'absolute';
 		div.className = 'contextIcons';
 		header.appendChild(div);
 
