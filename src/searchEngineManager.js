@@ -14,7 +14,7 @@ function buildSearchEngineContainer() {
 	table.style.verticalAlign = 'top';
 	table.style.overflowY = 'scroll';
 
-	// multisearch checkboxes
+	// checkboxes
 	(() => {
 		['mouseup', 'dragstart'].forEach( eventType => {
 			document.addEventListener(eventType, e => clearTimeout(window.mouseDownTimer), {capture: true});
@@ -63,7 +63,7 @@ function buildSearchEngineContainer() {
 		
 		li.appendChild(header);
 
-		// multisearch checkboxes
+		// checkboxes
 		(() => {
 			let cb = document.createElement('input');
 			cb.type = 'checkbox';

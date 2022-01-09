@@ -1099,7 +1099,7 @@ function isValidHttpUrl(string) {
 
 	try {
 		url = new URL(string);
-	} catch (_) {
+	} catch () {
 		return false;  
 	}
 
@@ -1150,7 +1150,7 @@ function openSearch(info) {
 
 			arr.forEach( (url, index) => {
 
-				// make sure id != node id
+				// make sure not the same node
 				if ( url === node.id ) return;
 
 				let _info = Object.assign({noMultiURL: true}, info);
