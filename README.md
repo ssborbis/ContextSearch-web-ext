@@ -9,7 +9,7 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
 
 ###### *AMO and Chromestore will not be as up-to-date as the git
 
-
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/review.png" width="600px" />
 
 <a name="toc"/>
 
