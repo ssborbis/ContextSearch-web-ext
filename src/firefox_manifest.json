@@ -21,6 +21,7 @@
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",
+			"contexts.js",
 			"contextMenu.js",
 			"searchActions.js",
 			"background.js",

@@ -15,6 +15,7 @@
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",
+			"contexts.js",
 			"contextMenu.js",
 			"searchActions.js",
 			"background.js",
@@ -68,6 +69,7 @@
 		"icons/alert.svg",
 		"icons/spinner.svg",
 		"icons/code.svg",
+		"icons/logo_notext.svg",
 		"/pagetiles.html"
 	],
 	"browser_action": {

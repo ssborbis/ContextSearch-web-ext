@@ -1099,7 +1099,7 @@ function isValidHttpUrl(string) {
 
 	try {
 		url = new URL(string);
-	} catch () {
+	} catch(e) {
 		return false;  
 	}
 
