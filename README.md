@@ -1,7 +1,7 @@
 
 [![Promo video](media/promo.gif)](media/promo.gif)
 
-# <img src="src/icons/icon.svg" height="36px">&nbsp;ContextSearch web-ext
+# <img src="src/icons/logo_notext.svg" height="36px">&nbsp;ContextSearch web-ext
 
 Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser and search using a variety of menus and shortcuts. Originally written as a replacement for Ben Basson's Context Search. 
 
