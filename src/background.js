@@ -822,6 +822,11 @@ function updateUserOptionsObject(uo) {
 		for (let key in defaultobj) {
 			userobj[key] = (userobj[key] !== undefined && userobj[key] == userobj[key] ) ? userobj[key] : JSON.parse(JSON.stringify(defaultobj[key]));
 
+			if (typeof userobj[key] !== typeof defaultobj[key] ) {
+				console.error(key, "mismatched types");
+				userobj[key] = defaultobj[key];
+			}
+
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 				traverse(defaultobj[key], userobj[key]);
 
