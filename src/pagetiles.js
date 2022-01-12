@@ -80,14 +80,11 @@ function makePageTiles() {
 
 			if ( node.hidden ) return;
 
-			let searchTerms = e.dataTransfer ? e.dataTransfer.getData("text/plain") : null;
+			let message = await browser.runtime.sendMessage({action: "getLastSearch"});
 
-			if ( ! searchTerms ) {
-				let message = await browser.runtime.sendMessage({action: "getLastSearch"});
-				searchTerms = message.lastSearch;
+			searchTerms = message.lastSearch;
 
-				if ( !searchTerms ) return;
-			}
+			if ( !searchTerms ) return;
 
 			browser.runtime.sendMessage({
 				action: "quickMenuSearch", 
