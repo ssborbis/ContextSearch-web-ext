@@ -605,7 +605,9 @@ document.addEventListener('closequickmenu', () => {
 // close quickmenu when clicking anywhere on page
 document.addEventListener("click", e => {
 
-	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return false;
+	if ( getQM() && getQM().classList.contains('CS_resizing') ) return;
+
+	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return;
 	
 	if ( userOptions.quickMenuAllowContextMenuNew && e.which !== 1 ) return;
 	
