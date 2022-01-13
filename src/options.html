@@ -1353,29 +1353,28 @@
 			#shortcutTable TD > SPAN:hover {
 				background-color:#0001;
 			}
-			#toolBarIconForm {}
-			#toolBarIconForm IMG, #toolBarIconForm .toolBarIconCustom {
+			.iconForm IMG, .iconForm .iconCustom {
 				height: 32px;
 				width: 32px;
 				vertical-align: middle;
 				margin: 0 10px;
 				cursor: pointer;
 			}
-			#toolBarIconForm > DIV {
+			.iconForm > DIV {
 				display: inline-block;
 				background-color: var(--bg-color1);
 				padding: 10px 20px;
 				border-radius: 10px;
 				margin: 10px;
 			}
-			#toolBarIconForm .toolBarIconCustom {
+			.iconForm .iconCustom {
 				display: inline-block;
 				box-sizing: border-box;
 				border: 2px dashed var(--border-color2);
 				background-repeat: no-repeat;
 				background-position: center;
 			}
-			#toolBarIconForm .toolBarIconCustom:hover {
+			.iconForm .iconCustom:hover {
 				background-image: url(icons/upload.svg) !important;
 				background-size: 66%;
 				background-color: #444;
@@ -1979,6 +1978,95 @@
 				</tr>
 				<tr>
 					<td>
+						<label class="container" data-i18n="Drag">
+							<input type="checkbox" id="quickMenuOnDrag" />
+							<span class="checkmark checkmark2"></span> 
+							<div class="tool" style="--mask-image: url(icons/mouse.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+						</label>
+						<br />
+						<span style="font-size:9pt" data-i18n="OpenOnDragTooltip">_</span>
+					</td>
+					<td>
+						<div class="option" style="display:inline-block;">
+							<label class="container">
+								<input type="checkbox" id="quickMenuDragAlt" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Alt">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="quickMenuDragCtrl" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Ctrl">_</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<label class="container">
+								<input type="checkbox" id="quickMenuDragShift" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="Shift">_</span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<label class="container" data-i18n="OpenOnIcon">
+							<input type="checkbox" id="quickMenuIcon.enabled" />
+							<span class="checkmark checkmark2"></span> 
+							<div class="tool" style="--mask-image: url(icons/image.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+						</label>
+						<br />
+						<span style="font-size:9pt" data-i18n="OpenOnIconTooltip">_</span>
+					</td>
+					<td>
+						<form class="option iconForm" id="quickMenuIconForm" data-option="quickMenuIcon.url" style="transform: scale(.75);transform-origin: top left;" >
+							<div>
+								<input type="radio" name="icon" id="quickMenuIcon_1" value="icons/logo_notext.svg"/>
+								<label for="quickMenuIcon_1">
+									<img src="icons/logo_notext.svg" />
+								</label>
+							</div>
+							<div>
+								<input type="radio" name="icon" id="quickMenuIcon_2" value="icons/icon.svg"/>
+								<label for="quickMenuIcon_2">
+									<img src="icons/icon.svg" />
+								</label>
+							</div>
+							<div>
+								<input type="radio" name="icon" id="quickMenuIcon_3" value="" />
+								<input type="file" accept="image/*" name='iconPicker' id="quickMenuIconPicker" style="display:none">
+								
+								<label for="quickMenuIconPicker">
+									<div class="iconCustom"></div>
+								</label>			
+							</div>
+						</form>
+
+						<!-- <div class="option">
+							<input type="number" id="quickMenuIcon.scale" size="2" min="0" max="10" step=".1" class="inputNice">
+							<span class="description" data-i18n="IconSize">_</span>
+						</div>
+
+						<br /> -->
+
+						<div class="option" style="margin-left:10px">
+							<input type="number" id="quickMenuIcon.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;">
+							<span class="description" data-i18n="HorizontalOffset">_</span>
+							<span class="info" title="$HorizontalOffsetTooltip">&#9432;</span>
+							<br />
+							<input type="number" id="quickMenuIcon.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice">
+							<span data-i18n="VerticalOffset" class="description" >_</span>
+							<span class="info" title="$VerticalOffsetTooltip">&#9432;</span>
+						</div>
+						
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<label class="container" data-i18n="Keyboard">
 							<input type="checkbox" id="quickMenuOnKey" />
 							<span class="checkmark checkmark2"></span> 
@@ -2077,42 +2165,6 @@
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
 						
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<label class="container" data-i18n="Drag">
-							<input type="checkbox" id="quickMenuOnDrag" />
-							<span class="checkmark checkmark2"></span> 
-							<div class="tool" style="--mask-image: url(icons/mouse.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
-						</label>
-						<br />
-						<span style="font-size:9pt" data-i18n="OpenOnDragTooltip">_</span>
-					</td>
-					<td>
-						<div class="option" style="display:inline-block;">
-							<label class="container">
-								<input type="checkbox" id="quickMenuDragAlt" />
-								<span class="checkmark checkmark2"></span>
-							</label>
-							<span class="description" data-i18n="Alt">_</span>
-						</div>
-						
-						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuDragCtrl" />
-								<span class="checkmark checkmark2"></span>
-							</label>
-							<span class="description" data-i18n="Ctrl">_</span>
-						</div>
-						
-						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuDragShift" />
-								<span class="checkmark checkmark2"></span>
-							</label>
-							<span class="description" data-i18n="Shift">_</span>
-						</div>
 					</td>
 				</tr>
 				</table>
@@ -2345,7 +2397,7 @@
 				</section>
 				<section>
 				<p class="header1" data-i18n="Icon">_</p>
-				<form class="option" id="toolBarIconForm">
+				<form class="option iconForm" id="toolBarIconForm" data-option="toolBarIcon">
 					<div>
 						<input type="radio" name="toolBarIcon" id="toolBarIcon_1" value="icons/logo_notext.svg"/>
 						<label for="toolBarIcon_1">
@@ -2363,7 +2415,7 @@
 						<input type="file" accept="image/*" name='toolBarIconPicker' id="toolBarIconPicker" style="display:none">
 						
 						<label for="toolBarIconPicker">
-							<div class="toolBarIconCustom"></div>
+							<div class="iconCustom"></div>
 						</label>			
 					</div>
 				</form>
@@ -3056,7 +3108,7 @@
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
 					<label data-i18n="POSTparams">_</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
-					<label data-i18n="Regex" title="$RegexTooltip">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. "\\s","_"'></textarea>
+					<label data-i18n="Regex" title="$RegexTooltip">_</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
 					<label data-i18n="SearchCode" title="$SearchCodeTooltip">_</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
 
 					<div style="display:inline-block">

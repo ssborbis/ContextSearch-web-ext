@@ -207,15 +207,21 @@ async function restoreOptions(restoreUserOptions) {
 		})();
 
 		$('#blockList').value = uo.blockList.filter(el => el.trim()).join('\n');
-
-		// toolBar icon
+		
 		(() => {
-			let radios = document.querySelectorAll(`#toolBarIconForm input[type="radio"]`);
-			let radio = [...radios].find( r => r.value === uo.searchBarIcon );
-			if ( radio ) radio.checked = true;
-			else setToolBarIconOption(uo.searchBarIcon);
-		})();
+			[
+				{	id: "quickMenuIconForm", uri: uo.quickMenuIcon.url }, // quickMenu icon
+				{	id: "toolBarIconForm", uri: uo.searchBarIcon } // toolBar icon
+			].forEach( o => {
 
+				let f = $(o.id);
+
+				let radios = f.querySelectorAll(`input[type="radio"]`);
+				let radio = [...radios].find( r => r.value === o.uri );
+				if ( radio ) radio.checked = true;
+				else setIconOption(f, o.uri);
+			})
+		})();
 
 		// allow context menu on right-click
 		(() => {
@@ -287,6 +293,7 @@ function saveOptions(e) {
 
 	// restore settings with matching ids
 	traverse(userOptions, null);
+
 	
 	let uo = {
 
@@ -295,6 +302,9 @@ function saveOptions(e) {
 
 		searchBarHistory: userOptions.searchBarHistory,
 		searchBarIcon: $('#toolBarIconForm input[type="radio"]:checked').value,
+		quickMenuIcon: {
+			url: $('#quickMenuIconForm input[type="radio"]:checked').value
+		},
 		
 		sideBar: {
 			singleColumn:$('#s_sideBarDefaultView').value === "text",
@@ -1409,16 +1419,20 @@ function imageUploadHandler(el, callback) {
 	});
 }
 
-imageUploadHandler($('#toolBarIconPicker'), img => {
-	let uri = imageToBase64(img, 32);
-	setToolBarIconOption(uri);
-	saveOptions();
+[$('toolBarIconForm'), $('quickMenuIconForm')].forEach( el => {
+	imageUploadHandler(el, img => {
+		let uri = imageToBase64(img, 32);
+		setIconOption(el,  uri);
+		saveOptions();
+	});
 });
 
-function setToolBarIconOption(uri) {
-	$('#toolBarIconForm .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
-	$('#toolBarIcon_3').checked = true;
-	$('#toolBarIcon_3').value = uri;
+function setIconOption(el, uri) {
+	el.querySelector('.iconCustom').style.backgroundImage = `url(${uri})`;
+
+	let lastOpt = el.querySelector('input[type="radio"][id$="3"]');
+	lastOpt.checked = true;
+	lastOpt.value = uri;
 }
 
 function buildAdvancedOptions() {

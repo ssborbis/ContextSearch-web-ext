@@ -194,9 +194,6 @@ function resizeMenu(o) {
 		columns: qm.columns,
 		rows: rows
 	}, "*");
-
-//	qm.style.width = null;
-//	qm.style.height = null;
 }
 
 function closeMenuRequest(e) {

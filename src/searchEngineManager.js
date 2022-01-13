@@ -214,46 +214,12 @@ function buildSearchEngineContainer() {
 							// showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
 						// }
 
-						// replace regex
-						[edit_form.searchRegex].forEach( el => {
+						
+						[edit_form.searchRegex, edit_form.matchRegex].forEach( el => {
 
-							if (el.value) {
-								try {
-									let lines = el.value.split(/\n/);
-									lines.forEach( (line, index) => {
-								
-										let parts = JSON.parse('[' + line.trim() + ']');
-										let rgx = new RegExp(parts[0], parts[2] || 'g');
-									});
-								} catch (error) {
-									showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
-								}
-							}
-						});
-
-						// match regex
-						[edit_form.matchRegex].forEach( el => {
-							if ( !el.value ) return;
-
-							el.value.split(/\n/).forEach( line => {
-
-								try {					
-									let parts = JSON.parse('[' + line.trim() + ']');
-									let rgx = new RegExp(parts[0], parts[1] || 'g');
-
-									return;
-								} catch (error) {}
-
-								try {
-									let groups = /\/(.*)\/([gim])/.exec(line.trim());
-									let rgx = new RegExp(groups[1], groups[2]);
-
-									return;
-								} catch (error) {}
-
+							if ( !validateRegex(el.value) )
 								showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
 
-							});
 						});
 						
 						if ( edit_form.iconURL.value.startsWith("resource:") ) {
@@ -2010,7 +1976,7 @@ async function setRowContexts(row) {
 			tool.onclick = function(e) {
 				e.stopPropagation();
 
-				let code = contextCodes[contexts.indexOf(c)];
+				let code = getContextCode(c);
 				let status = hasContext(c, node.contexts);
 
 				tool.classList.toggle('disabled', status);

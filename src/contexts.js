@@ -1,12 +1,16 @@
 const contexts = ["audio", "frame", "image", "link", "page", "selection", "video"];
 const contextCodes = [1,2,4,8,16,32,64];
 
+function getContextCode(t) {
+	return contextCodes[contexts.indexOf(t)]
+}
+
 function hasContext(contextText, contextCode) {
 
 	if ( Array.isArray(contextText) ) 
 		return contextText.map(c => hasContext(c, contextCode)).reduce( (a,b) => a || b );
 
-	let code = contextCodes[contexts.indexOf(contextText)];
+	let code = getContextCode(contextText);
 	return ( (contextCode & code ) === code );			
 }
 

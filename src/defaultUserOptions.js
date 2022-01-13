@@ -230,7 +230,7 @@ const defaultUserOptions = {
 	cacheIconsMaxSize: 32,
 	cacheIcons: true,
 	userShortcuts: [],
-	shakeSensitivity: 3,
+	shakeSensitivity: 4,
 	blockList: ["moz-extension://*", "chrome://*"],
 	version: "1",
 	quickMenuShowRecentlyUsed: false,
@@ -250,5 +250,13 @@ const defaultUserOptions = {
 	modify_mycroftproject: true,
 	quickMenuUseContextualLayout: false,
 	quickMenuContextualLayoutFlattenLimit: 10,
-	searchEnginesManagerShowContexts: true
+	searchEnginesManagerShowContexts: true,
+	quickMenuIcon: {
+		enabled: false,
+		x:0,
+		y:0,
+		url:"icons/logo_notext.svg",
+		scale:1.0
+	},
+	checkContextMenuEventOrder: true
 };

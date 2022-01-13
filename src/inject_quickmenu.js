@@ -218,6 +218,8 @@ document.addEventListener('mousedown', e => {
 		!e.isTrusted
 	) return false;
 
+	checkContextMenuEventOrder(e);
+
 	if ( e.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
 		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > 500 ) {
 			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
@@ -279,6 +281,7 @@ document.addEventListener('mousedown', e => {
 		quickMenuObject.mouseLastClickTime = Date.now();
 
 		openQuickMenu(e);
+		document.dispatchEvent(new CustomEvent('checkcontextmenueventorder'));
 
 		// remove listener to prevent next drag event not working
 		window.removeEventListener('dragstart', preventDrag);
@@ -387,6 +390,8 @@ document.addEventListener('mousedown', e => {
 		!hasSearchTerms(e) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
+
+	checkContextMenuEventOrder(e);
 	
 	// middle-click often used to open links and requires some caveots
 	if ( e.which === 2 && !getSelectedText(e.target) ) return false;
@@ -432,7 +437,9 @@ document.addEventListener('mouseup', e => {
 	e.stopPropagation();
 	if ( e.which === 2 ) e.preventDefault();
 
-	openQuickMenu(e);	
+	openQuickMenu(e);
+	document.dispatchEvent(new CustomEvent('checkcontextmenueventorder'));
+
 }, {capture: true});
 
 // listen for simple click
@@ -1070,23 +1077,57 @@ function getQuickMenuOpeningPosition(o) {
 
 }
 
-function checkContextMenuEventOrder() {
-	document.addEventListener('mousedown', e => {
-		if ( e.which !== 3 ) return;
+function showIcon(searchTerms) {
 
-		let time = Date.now();
+	if ( !userOptions.quickMenuIcon.enabled ) return;
 
-		document.addEventListener('contextmenu', _e => {
-			if ( Date.now() - time < 10 ) {
-				console.log('context on mousedown')
-			} else {
-				
-			}
-		}, {once: true})
-	});
+	showIconHandler = e => {
+
+		let img = document.getElementById('CS_icon');
+		if ( img ) img.parentNode.removeChild(img);
+
+		let url = userOptions.quickMenuIcon.url.includes(":") ? userOptions.quickMenuIcon.url : browser.runtime.getURL(userOptions.quickMenuIcon.url);
+
+		img = new Image();
+		img.src = url || browser.runtime.getURL('icons/logo_notext.svg');
+		img.style.top = e.pageY + 4 + userOptions.quickMenuIcon.y + "px";
+		img.style.left = e.pageX + 4 + userOptions.quickMenuIcon.x + "px";
+		img.id = 'CS_icon';
+
+		img.title = 'ContextSearch web-ext';
+
+		img.onclick = openQuickMenu;
+
+		document.body.appendChild(img);
+
+		delete window.showIconListener;
+	}
+
+	if ( !window.showIconListener && searchTerms ) {
+		document.addEventListener('mouseup', showIconHandler, {once: true});
+		window.showIconListener = true;
+	}
+
+	if ( !searchTerms ) {
+		let img = document.getElementById('CS_icon');
+		if ( img ) img.parentNode.removeChild(img);
+	}
 }
 
-//checkContextMenuEventOrder();
+function checkContextMenuEventOrder(e) {
+	if ( e.which !== 3 ) return;
+	if ( userOptions.rightClickMenuOnMouseDownFix ) return;
+
+	let time = Date.now();
+
+	document.addEventListener('contextmenu', _e => {
+		if ( Date.now() - time < 10 ) {
+			document.addEventListener('checkcontextmenueventorder', e => {
+				window.top.checkContextMenuEventOrderNotification();
+			}, {once: true});
+		}
+	}, {once: true});
+}
 
 if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');

@@ -575,12 +575,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "showNotification":
-			onFound = () => {}
-			onError = () => {}
-
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: `showNotification("${message.msg}")`
-			}).then(onFound, onError);
+			return sendMessageToTopFrame();
 			break;
 			
 		case "getTabQuickMenuObject":
@@ -732,9 +727,9 @@ async function notify(message, sender, sendResponse) {
 			return;
 
 		case "openPageTiles":
-			await browser.tabs.executeScript(sender.tab.id, {
-				file: "/inject_pagetiles.js"
-			}).catch(e => {});
+			// await browser.tabs.executeScript(sender.tab.id, {
+			// 	file: "/inject_pagetiles.js"
+			// }).catch(e => {});
 
 			return sendMessageToTopFrame();
 			break;
@@ -1237,17 +1232,10 @@ function openSearch(info) {
 		
 		if (se.searchRegex && !openUrl) {
 			try {
-				let lines = se.searchRegex.split(/\n/);
-				lines.forEach( line => {
-					let parts = JSON.parse('[' + line.trim() + ']');
-					let _find = new RegExp(parts[0], parts[2] || 'g');
-					let _replace = parts[1];
-
-					let newSearchTerms = searchTerms.replace(_find, _replace);
-					
-					console.log("regex", searchTerms + " -> " + newSearchTerms);
-					searchTerms = newSearchTerms;
+				runReplaceRegex(se.searchRegex, (r, s) => {
+					searchTerms = searchTerms.replace(r, s);
 				});
+
 			} catch (error) {
 				console.error("regex replace failed");
 			}

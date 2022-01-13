@@ -2352,6 +2352,18 @@
     "message": "Display this engine when opening menus from the selected contexts. Works with Context and Quick menus when Advanced -> Filter Engines is enabled, otherwise ignored."
   },
 
+  "OpenOnIcon": {
+    "message": "Icon"
+  },
+
+  "OpenOnIconTooltip": {
+    "message": "Display an icon next to selected text. Click to open menu."
+  },
+
+  "checkContextMenuOrderNotification": {
+    "message": "Move the default context menu to double-click when opening the quick menu? See options for more info."
+  },
+
   "___________": {
     "message": ""
   }

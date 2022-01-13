@@ -504,7 +504,7 @@ async function makeQuickMenu(options) {
 		qm.addEventListener(eventType, e => {
 
 			// move fix
-			if ( e.target.closest('.tile, GROUP')) return;
+			if ( e.target.closest('.tile, GROUP, .quickMenuMore')) return;
 
 			e.preventDefault();
 			e.stopPropagation();
@@ -1296,7 +1296,7 @@ function makeSearchBar() {
 	// });
 	
 	// execute a keypress event to trigger some sb methods reserved for typing events
-	sb.addEventListener('keydown', (e) => {
+	sb.addEventListener('keydown', e => {
 		if ( [ "Backspace", "Delete" ].includes(e.key) )
 			sb.dispatchEvent(new KeyboardEvent('keypress'));
 	});
@@ -1305,6 +1305,15 @@ function makeSearchBar() {
 		await browser.runtime.sendMessage({action: "openOptions"});
 		if ( window == top ) window.close(); // close toolbar menu
 	}
+
+	sb.addEventListener('keydown', e => {
+		clearTimeout(sb.typeTimer2);
+	
+		sb.typeTimer2 = setTimeout(() => {
+			updateMatchRegexFolder(sb.value);
+			sb.typeTimer2 = null;
+		}, 500);
+	})
 }
 
 function createToolsBar(qm) {
@@ -1463,7 +1472,8 @@ document.addEventListener('click', e => {
 })
 
 document.addEventListener('mousedown', e => {
-	let tile = e.target.closest('.tile');
+
+	let tile = e.target.closest('.tile, .quickMenuMore');
 
 	if ( !tile ) return;
 
@@ -1471,8 +1481,6 @@ document.addEventListener('mousedown', e => {
 		console.log('no node or action', tile);
 		return;
 	}
-
-	// if (tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
 
 	tile.parentNode.lastMouseDownTile = tile;
 
@@ -1485,9 +1493,9 @@ document.addEventListener('mousedown', e => {
 // tools
 document.addEventListener('mouseup', e => {
 
-	if ( !e.target.closest ) return;
+//	if ( !e.target.closest ) return;
 
-	let tile = e.target.closest('.tile');
+	let tile = e.target.closest('.tile, .quickMenuMore');
 
 	if ( !tile || !tile.action ) return;
 
@@ -1497,7 +1505,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( mouseClickBack(e) ) return;
 
-//	if ( !clickChecker(tile) ) return;
+	if ( !clickChecker(tile) ) return;
 
 	e.stopImmediatePropagation();
 	e.preventDefault();
@@ -1506,6 +1514,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !keepMenuOpen(e) && !tile.keepOpen )
 		closeMenuRequest(e);
+
 });
 
 document.addEventListener('mouseup', e => {
@@ -2046,7 +2055,7 @@ function nodeToTile( node ) {
 
 				if (method === 'openFolder' || e.openFolder) { 
 				//	if ( !node.children.length ) return;
-					qm = await quickMenuElementFromNodeTree(node);
+					qm = await quickMenuElementFromNodeTree(tile.node);
 					setDraggable();	
 					return resizeMenu({openFolder: true});
 				}
@@ -2155,6 +2164,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 	moreTile.node = { parent: node };
 	moreTile.dataset.parentid = node.id;
 	moreTile.dataset.undraggable = true;
+	moreTile.keepOpen = true;
 	
 	function more() {
 		let hiddenEls = parentNode.querySelectorAll('[data-hidden="true"]');
@@ -2175,7 +2185,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 		});
 		
-		moreTile.onmouseup = less;	
+		moreTile.action = less;
 		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 		moreTile.dataset.type = "less";
 		resizeMenu({more: true});
@@ -2197,7 +2207,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 			//hideTile(_div);
 		});
 		
-		moreTile.onmouseup = more;
+		moreTile.action = more;
 		moreTile.dataset.title = moreTile.title = title;
 		moreTile.dataset.type = "more";
 		
@@ -2207,8 +2217,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 	moreTile.more = more;
 	moreTile.less = less;
-
-	moreTile.onmouseup = more;
+	moreTile.action = more;
 	
 	moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
 	
@@ -2352,7 +2361,7 @@ function makeGroupFolderFromTile(gf) {
 }
 
 function makeContainerMore(el, rows, columns) {
-	rows = rows || Math.MAX_SAFE_INTEGER;
+	rows = rows || Number.MAX_SAFE_INTEGER;
 
 	let elementsBeforeWrap = getElementCountBeforeOverflow(el, rows);
 
@@ -2446,8 +2455,9 @@ function setOptionsBar() {
 
 }
 
-function updateMatchRegexFolder() {
-	let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+function updateMatchRegexFolder(s) {
+
+	let folder = matchingEnginesToFolder(s || quickMenuObject.searchTerms);
 
 	qm.querySelectorAll(`[data-type="folder"]`).forEach(f => {
 		if ( f.node.id == folder.id ) f.node = folder;
