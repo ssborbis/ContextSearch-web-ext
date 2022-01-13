@@ -605,7 +605,10 @@ document.addEventListener('closequickmenu', () => {
 // close quickmenu when clicking anywhere on page
 document.addEventListener("click", e => {
 
-	if ( getQM() && getQM().classList.contains('CS_resizing') ) return;
+	if ( getQM() && getQM().classList.contains('CS_resizing') ) {
+		browser.runtime.sendMessage({action: "editQuickMenu"});
+		return;
+	}
 
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return;
 	
@@ -873,6 +876,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (qmc.resizeWidget) {
 					removeResizeWidget();
 					removeOverDiv();
+					qmc.contentWindow.postMessage({action: "editEnd"}, browser.runtime.getURL('/quickmenu.html'));
+
 					break;
 				}
 

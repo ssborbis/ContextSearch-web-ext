@@ -409,6 +409,10 @@ window.addEventListener('message', e => {
 
 			setLockToolStatus();
 			break;
+
+		case "editEnd":
+			QMtools.find(t => t.name === "edit").action({forceOff: true});
+			break;
 			
 	}
 });

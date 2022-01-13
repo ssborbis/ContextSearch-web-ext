@@ -403,11 +403,13 @@ const QMtools = [
 			tile.tool = this;
 			return tile;
 		}, 
-		action: function() {
+		action: function(o) {
+
+			o = o || {};
 
 			(() => { // rearrange menu parts
 
-				if ( !window.editMode ) {
+				if ( !window.editMode && !o.forceOff) {
 
 					function saveDomLayout() {
 
@@ -502,7 +504,8 @@ const QMtools = [
 				setTimeout(() => resizeMenu({more: true}), 250);
 			})();
 
-			browser.runtime.sendMessage({action: "editQuickMenu"});
+			if ( !o.forceOff )
+				browser.runtime.sendMessage({action: "editQuickMenu"});
 			
 			if ( !userOptions.alwaysAllowTileRearranging ) {
 				window.tilesDraggable = !window.tilesDraggable;
