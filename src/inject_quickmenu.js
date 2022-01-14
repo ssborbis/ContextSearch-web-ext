@@ -281,7 +281,6 @@ document.addEventListener('mousedown', e => {
 		quickMenuObject.mouseLastClickTime = Date.now();
 
 		openQuickMenu(e);
-		document.dispatchEvent(new CustomEvent('checkcontextmenueventorder'));
 
 		// remove listener to prevent next drag event not working
 		window.removeEventListener('dragstart', preventDrag);
@@ -438,7 +437,6 @@ document.addEventListener('mouseup', e => {
 	if ( e.which === 2 ) e.preventDefault();
 
 	openQuickMenu(e);
-	document.dispatchEvent(new CustomEvent('checkcontextmenueventorder'));
 
 }, {capture: true});
 
@@ -1088,6 +1086,11 @@ function showIcon(searchTerms) {
 
 	if ( !userOptions.quickMenuIcon.enabled ) return;
 
+	removeIcon = () => {
+		let img = document.getElementById('CS_icon');
+		if ( img ) img.parentNode.removeChild(img);
+	}
+
 	showIconHandler = e => {
 
 		let img = document.getElementById('CS_icon');
@@ -1115,21 +1118,21 @@ function showIcon(searchTerms) {
 		window.showIconListener = true;
 	}
 
-	if ( !searchTerms ) {
-		let img = document.getElementById('CS_icon');
-		if ( img ) img.parentNode.removeChild(img);
-	}
+	if ( !searchTerms ) removeIcon();
+
+	// if qm opened by other means, remove
+	document.addEventListener('quickMenuComplete', removeIcon, {once: true});
 }
 
 function checkContextMenuEventOrder(e) {
 	if ( e.which !== 3 ) return;
-	if ( userOptions.rightClickMenuOnMouseDownFix ) return;
+	if ( userOptions.rightClickMenuOnMouseDownFix || !userOptions.checkContextMenuEventOrder ) return;
 
 	let time = Date.now();
 
 	document.addEventListener('contextmenu', _e => {
 		if ( Date.now() - time < 10 ) {
-			document.addEventListener('checkcontextmenueventorder', e => {
+			document.addEventListener('quickMenuComplete', e => {
 				window.top.checkContextMenuEventOrderNotification();
 			}, {once: true});
 		}

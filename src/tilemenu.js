@@ -1493,7 +1493,7 @@ document.addEventListener('mousedown', e => {
 // tools
 document.addEventListener('mouseup', e => {
 
-//	if ( !e.target.closest ) return;
+	if ( !e.target.closest ) return;
 
 	let tile = e.target.closest('.tile, .quickMenuMore');
 
