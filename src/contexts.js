@@ -19,8 +19,6 @@ function filterContexts(root, context) {
 	let filteredNodeTree = JSON.parse(JSON.stringify(root));
 
 	traverseNodesDeep(filteredNodeTree, ( node, parent ) => {
-		// if ( !['folder', 'searchEngine'].includes(node.type) && !node.contexts && !context.includes("selection") )
-		// 	removeNode( node, parent );
 
 		if ( node.type === 'searchEngine' ) {
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
@@ -28,7 +26,7 @@ function filterContexts(root, context) {
 				return removeNode( node, parent );
 		}
 
-		if ( node.contexts && !hasContext(context, node.contexts))
+		if ( node.contexts && !node.type === 'tool' && !hasContext(context, node.contexts))
 			return removeNode(node, parent);
 
 		if ( node.type === 'folder' && node.children.length === 0 )
