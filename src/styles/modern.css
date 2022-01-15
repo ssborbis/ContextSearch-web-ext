@@ -94,3 +94,7 @@
 .tile[data-locked="true"] {
 	--tools-color: unset;
 }
+
+.tile[data-type="more"]:not(.singleColumn), .tile[data-type="less"]:not(.singleColumn) {
+    --tools-color: #777;
+}
