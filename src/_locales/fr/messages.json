@@ -2345,23 +2345,23 @@
   },
 
   "NewMultiSearch": {
-    "message": "New Multi-Search"
+    "message": "Nouvelle recherche multiple"
   },
 
   "ContextsTooltip": {
-    "message": "Display engine when opening menus from the selected contexts. Works with Context and Quick menus when Advanced -> Filter Engines is enabled, otherwise ignored."
+    "message": "Afficher le moteur à l’ouverture des menus en fonction des contextes sélectionnés. Fonctionne avec le menu contextuel et le menu rapide uniquement si l’option « Filtrer les moteurs… » (onglet « Menu contextuel », rubrique « Avancé ») est cochée."
   },
 
   "OpenOnIcon": {
-    "message": "Icon"
+    "message": "Icône"
   },
 
   "OpenOnIconTooltip": {
-    "message": "Display an icon next to selected text. Click to open menu."
+    "message": "Clic sur une icône apparaissant à côté du texte sélectionné"
   },
 
   "checkContextMenuOrderNotification": {
-    "message": "Move the default context menu to double-click when opening the quick menu? See options for more info."
+    "message": "Passer le menu contextuel standard en double-clic lors de l’ouverture du menu rapide ? Voir les options pour plus d’informations."
   },
 
   "___________": {
