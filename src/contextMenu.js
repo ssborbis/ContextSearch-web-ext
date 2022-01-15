@@ -1,35 +1,4 @@
-const contexts = ["audio", "frame", "image", "link", "page", "selection", "video"];
-const contextCodes = [1,2,4,8,16,32,64];
-const contextsLabels = ["Search for AUDIO", "Search for FRAME", "Search for IMAGE", "Search for URL", "Search for PAGE", "Search for %s", "Search for VIDEO"];
 const ROOT_MENU = "root_menu";
-
-function hasContext(contextText, contextCode) {
-	let power = contexts.indexOf(contextText);
-	let code = Math.pow(2, power);
-
-	return ( (contextCode & code ) === code );
-}
-
-function filterContexts(root, context) {
-
-	let filteredNodeTree = JSON.parse(JSON.stringify(root));
-
-	traverseNodesDeep(filteredNodeTree, ( node, parent ) => {
-		if ( !['folder', 'searchEngine'].includes(node.type) )
-			removeNode( node, parent );
-
-		if ( node.type === 'searchEngine' ) {
-			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
-			if ( se && (!se.contexts || !hasContext(context, se.contexts)) )
-				removeNode( node, parent );
-		}
-
-		if ( node.type === 'folder' && node.children.length === 0 )
-			if ( parent ) removeNode( node, parent );
-	})
-
-	return filteredNodeTree;
-}
 
 async function buildContextMenu(searchTerms) {
 	
@@ -73,9 +42,6 @@ async function buildContextMenu(searchTerms) {
 				console.log('no search engine found for ' + node.id);
 				return;
 			}
-
-			if ( !se.hasOwnProperty('contexts') )
-				se.contexts = 32; // selection
 			
 			let _id = se.id + '_' + count++;
 
@@ -166,15 +132,20 @@ async function buildContextMenu(searchTerms) {
 			
 			// add menu item to search entire folder
 			if ( userOptions.contextMenuShowFolderSearch && node.children.length ) {
+
+				// skip special folders
+				if ( node.id !== "___recent___") {
 				
-				addMenuItem({
-					parentId: _id,
-					id: node.id + "_" + id,
-					title: browser.i18n.getMessage("SearchAll"),
-					icons: {
-						"16": "icons/search.svg"
-					}
-				});
+					addMenuItem({
+						parentId: _id,
+						id: node.id + "_" + id,
+						title: browser.i18n.getMessage("SearchAll"),
+						icons: {
+							"16": "icons/search.svg"
+						}
+					});
+
+				}
 			}
 			
 			for (let child of node.children) {
@@ -182,6 +153,39 @@ async function buildContextMenu(searchTerms) {
 			}
 		}
 		
+	}
+
+	function addOptions(context, root) {
+
+		if ( !userOptions.contextMenuShowSettingsFolder ) return;
+
+		context = context || "";
+		root = root || "";
+
+		let context_prefix = ( context ) ? context + "_" : "";
+
+		addMenuItem({
+			parentId: root,
+			title: browser.i18n.getMessage('settings'),
+			id: context_prefix + "___settings___",
+			icons: {
+				"16": browser.runtime.getURL('icons/settings.svg')
+			}
+		});
+
+		addMenuItem({
+			title: "Contextual",
+			id: context_prefix + "contextMenuUseContextualLayout",
+			parentId: context_prefix + "___settings___",
+			type: "checkbox",
+			checked: userOptions.contextMenuUseContextualLayout
+		});
+
+		addMenuItem({
+			title: "Open Options",
+			id: context_prefix + "openOptions",
+			parentId: context_prefix + "___settings___"
+		});
 	}
 
 	// catch android
@@ -262,7 +266,7 @@ async function buildContextMenu(searchTerms) {
 
 			browser.contextMenus.create({
 				id: context,
-				title: contextsLabels[index],
+				title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()),
 				contexts: [context]
 			});
 
@@ -272,12 +276,14 @@ async function buildContextMenu(searchTerms) {
 				let folder = recentlyUsedListToFolder();
 				
 				if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
-					
+					traverse(folder, context, context);
 				} else {
-					
-				} 
+				//	root.children.unshift({type: "separator"});
+					folder.children.forEach( c => c.title = "🕒 " + c.title);		
+					folder.children.forEach( c => traverse(c, context, context));
+				}
 
-				traverse(folder, context, context);
+				// traverse(folder, context, context);
 			}
 
 			// matching regex engines
@@ -287,6 +293,8 @@ async function buildContextMenu(searchTerms) {
 			}
 
 			filteredNodeTree.children.forEach( child => traverse(child, context, context) );
+
+			addOptions(context, context);
 		});
 	}
 
@@ -295,6 +303,8 @@ async function buildContextMenu(searchTerms) {
 
 		if ( userOptions.contextMenuOnImages) contexts.push("image");
 		if ( userOptions.contextMenuOnLinks) contexts.push("link");
+
+		if ( userOptions.contextMenuUseInnerText ) contexts.push("page", "frame");
 		
 		// recently used engines
 		if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
@@ -346,6 +356,8 @@ async function buildContextMenu(searchTerms) {
 
 		root.children.forEach( child => traverse(child, ROOT_MENU) );
 
+		addOptions("", ROOT_MENU);
+
 	}
 
 	if ( userOptions.contextMenuUseContextualLayout )
@@ -363,7 +375,7 @@ function contextMenuTitle(searchTerms, context) {
 	let hotkey = ''; 
 	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';		
 
-	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", searchTerms);
+	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", "%s").replace("%s", searchTerms);
 	
 	if ( !searchTerms ) {
 		title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith")).replace("%1", "%s");
@@ -419,11 +431,11 @@ function updateMatchRegexFolder(s, context) {
 		};
 
 		try {
-			browser.contextMenus.create( createOptions);
+			browser.contextMenus.create(createOptions);
 		} catch (error) { // non-Firefox
 			delete createOptions.icons;
 			try {
-				browser.contextMenus.create( createOptions);
+				browser.contextMenus.create(createOptions);
 			} catch ( error ) { console.log(error)}
 		}
 
@@ -443,6 +455,16 @@ function contextMenuSearch(info, tab) {
 		}
 	}
 
+	if ( info.menuItemId === 'contextMenuUseContextualLayout' ) {
+		userOptions.contextMenuUseContextualLayout = !userOptions.contextMenuUseContextualLayout;
+		notify({action: "saveUserOptions", userOptions: userOptions});
+		return buildContextMenu();
+	}
+
+	if ( info.menuItemId === 'openOptions' ) {
+		return notify({action: "openOptions", hashurl: "#contextMenu"});
+	}
+
 	console.log(context, info.menuItemId);
 
 	// remove incremental menu ids
@@ -452,14 +474,12 @@ function contextMenuSearch(info, tab) {
 		
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {
-		browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
-		return false;
+		return browser.tabs.sendMessage(tab.id, {action: "openCustomSearch"}, {frameId: 0});		
 	}
 	
 	// if searchEngines is empty, open Options
 	if (userOptions.searchEngines.length === 0 && userOptions.nodeTree.children.length === 0 ) {	
-		browser.runtime.openOptionsPage();
-		return false;	
+		return browser.runtime.openOptionsPage();	
 	}
 	
 	// get modifier keys

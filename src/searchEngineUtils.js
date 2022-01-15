@@ -199,9 +199,10 @@ function loadRemoteIcon(options) {
 			var img = new Image();
 			img.favicon_urls = [];		
 			img.favicon_monogram = se.title.charAt(0).toUpperCase();
-
-			var url = new URL(se.template || se.searchForm || window.location.href);
-			
+			var url = "";
+			try {
+				url = new URL(se.template || se.searchForm || window.location.href);
+			} catch ( err ) {}
 			// security policy may mean only the favicon may be converted by canvas
 			img.favicon_urls = [
 				url.origin + "/favicon.ico",

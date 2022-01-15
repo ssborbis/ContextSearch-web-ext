@@ -1,6 +1,8 @@
 // context menu entries need to be tracked to be updated
 window.contextMenuMatchRegexMenus = [];
 window.contextMenuSearchTerms = "";
+
+const lazyUpdate = false;
  
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
@@ -41,14 +43,16 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateUserOptions":
 
-			debounce(async () => {
-				console.log('updateUserOptions');
-				let tabs = await getAllOpenTabs();
-				for (let tab of tabs) {
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-				}
-				buildContextMenu();
-			}, 1000, "updateUserOptionsTimer");
+			if ( !lazyUpdate ) {
+				debounce(async () => {
+					console.log('updateUserOptions');
+					let tabs = await getAllOpenTabs();
+					for (let tab of tabs) {
+						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+					}
+					buildContextMenu();
+				}, 1000, "updateUserOptionsTimer");
+			}
 			break;
 			
 		case "openOptions":
@@ -246,7 +250,8 @@ async function notify(message, sender, sendResponse) {
 					(() => {
 						let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
 						if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
-					})()`
+					})()`,
+				frameId: message.frame ? sender.frameId : 0
 			}).then(onFound, onError);
 
 			break;
@@ -272,14 +277,17 @@ async function notify(message, sender, sendResponse) {
 			
 			window.contextMenuSearchTerms = searchTerms;
 
-			updateMatchRegexFolders(searchTerms);
-
-			try {
+			if ( userOptions.contextMenuUseContextualLayout )
+				updateMatchRegexFolders(searchTerms);
+			else {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
-				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title});
-				updateMatchRegexFolder(searchTerms);
-			} catch (error) { console.log(error)}
+
+				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
+					updateMatchRegexFolder(searchTerms);
+				});
+				
+			} 
 
 			break;
 			
@@ -374,7 +382,7 @@ async function notify(message, sender, sendResponse) {
 		
 			let se = message.searchEngine;
 			
-			console.log(se);
+			console.log('addContextSearchEngine', se)
 			
 			let index = userOptions.searchEngines.findIndex( se2 => se.title === se2.title );
 			
@@ -424,7 +432,8 @@ async function notify(message, sender, sendResponse) {
 			openSearch({
 				searchTerms: message.searchTerms,
 				tab: sender.tab,
-				temporarySearchEngine: message.tempSearchEngine
+				temporarySearchEngine: message.tempSearchEngine,
+				openMethod: "openBackgroundTab"
 			});
 
 			break;
@@ -566,12 +575,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "showNotification":
-			onFound = () => {}
-			onError = () => {}
-
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: `showNotification("${message.msg}")`
-			}).then(onFound, onError);
+			return sendMessageToTopFrame();
 			break;
 			
 		case "getTabQuickMenuObject":
@@ -639,14 +643,12 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "injectComplete":
-			onFound = () => {}
-			onError = () => {}
 
 			if ( userOptions.quickMenu ) {
 				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_quickmenu.js",
 					frameId: sender.frameId
-				}).then(onFound, onError);
+				});
 				
 				console.log("injected quickmenu");
 			}
@@ -655,9 +657,18 @@ async function notify(message, sender, sendResponse) {
 				await browser.tabs.executeScript(sender.tab.id, {
 					file: "/inject_pagetiles.js",
 					frameId: sender.frameId
-				}).then(onFound, onError);
+				});
 				
 				console.log("injected pagetiles");
+			}
+
+			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) {
+				await browser.tabs.executeScript(sender.tab.id, {
+					file: "/inject_mycroftproject.js",
+					frameId: sender.frameId
+				});
+				
+				console.log("injected mycroftproject");
 			}
 			
 			break;
@@ -716,9 +727,9 @@ async function notify(message, sender, sendResponse) {
 			return;
 
 		case "openPageTiles":
-			await browser.tabs.executeScript(sender.tab.id, {
-				file: "/inject_pagetiles.js"
-			}).catch(e => {});
+			// await browser.tabs.executeScript(sender.tab.id, {
+			// 	file: "/inject_pagetiles.js"
+			// }).catch(e => {});
 
 			return sendMessageToTopFrame();
 			break;
@@ -805,6 +816,11 @@ function updateUserOptionsObject(uo) {
 	function traverse(defaultobj, userobj) {
 		for (let key in defaultobj) {
 			userobj[key] = (userobj[key] !== undefined && userobj[key] == userobj[key] ) ? userobj[key] : JSON.parse(JSON.stringify(defaultobj[key]));
+
+			if (typeof userobj[key] !== typeof defaultobj[key] ) {
+				console.error(key, "mismatched types");
+				userobj[key] = defaultobj[key];
+			}
 
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
 				traverse(defaultobj[key], userobj[key]);
@@ -925,7 +941,7 @@ function openWithMethod(o) {
 	} 
 	async function openNewTab(inBackground) {	// open in new tab
 
-		if ( userOptions.forceOpenReultsTabsAdjacent ) {
+		if ( userOptions.forceOpenResultsTabsAdjacent ) {
 			try {
 				let actives = await browser.tabs.query({currentWindow: true, active: true});
 				o.index = actives[0].index + 1;
@@ -1083,7 +1099,7 @@ function isValidHttpUrl(string) {
 
 	try {
 		url = new URL(string);
-	} catch (_) {
+	} catch(e) {
 		return false;  
 	}
 
@@ -1134,7 +1150,7 @@ function openSearch(info) {
 
 			arr.forEach( (url, index) => {
 
-				// make sure id != node id
+				// make sure not the same node
 				if ( url === node.id ) return;
 
 				let _info = Object.assign({noMultiURL: true}, info);
@@ -1153,12 +1169,13 @@ function openSearch(info) {
 						_info.temporarySearchEngine.queryCharset = matches[1];
 
 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
+					delete _info.temporarySearchEngine;
 					_info.menuItemId = url;
+					_info.node = findNode(userOptions.nodeTree, n => n.id === url );
 				} else {
 					console.log('url invalid', url);
 					return;
 				}
-				
 				openSearch(_info);
 			});
 			
@@ -1169,7 +1186,7 @@ function openSearch(info) {
 		//	console.log(error);
 		}
 	}
-	
+		
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		console.log("oneClickSearchEngine");
 		executeOneClickSearch(info);
@@ -1215,17 +1232,10 @@ function openSearch(info) {
 		
 		if (se.searchRegex && !openUrl) {
 			try {
-				let lines = se.searchRegex.split(/\n/);
-				lines.forEach( line => {
-					let parts = JSON.parse('[' + line.trim() + ']');
-					let _find = new RegExp(parts[0], parts[2] || 'g');
-					let _replace = parts[1];
-
-					let newSearchTerms = searchTerms.replace(_find, _replace);
-					
-					console.log("regex", searchTerms + " -> " + newSearchTerms);
-					searchTerms = newSearchTerms;
+				runReplaceRegex(se.searchRegex, (r, s) => {
+					searchTerms = searchTerms.replace(r, s);
 				});
+
 			} catch (error) {
 				console.error("regex replace failed");
 			}
@@ -1750,7 +1760,7 @@ function updateUserOptionsVersion(uo) {
 		// delete se.query_string in a future release
 		// if ( !_uo.searchEngines.find( se => se.query_string ) ) return _uo;
 
-		console.log("-> 1.27");
+		let flag = false;
 		
 		_uo.searchEngines.forEach( (se,index,arr) => {
 			if ( se.query_string ) {
@@ -1763,8 +1773,12 @@ function updateUserOptionsVersion(uo) {
 				arr[index].query_string = arr[index].template;
 
 				delete se.query_string;
+
+				flag = true;
 			}
 		});
+
+		if ( flag ) console.log("-> 1.27");
 
 		return _uo;	
 	}).then( _uo => {
@@ -1836,11 +1850,29 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 
+		if ( _uo.forceOpenReultsTabsAdjacent ) {
+			_uo.forceOpenResultsTabsAdjacent = _uo.forceOpenReultsTabsAdjacent;
+			delete _uo.forceOpenReultsTabsAdjacent;
+		}
+		return _uo;
+
+	}).then( _uo => {
+
+		findNodes(_uo.nodeTree, n => {
+			if ( ['folder', 'separator', 'bookmark'].includes(n.type) ) return;
+
+			if ( !n.hasOwnProperty('contexts') )
+				n.contexts = 32; // selection)
+		})
+		return _uo;
+
+	}).then( _uo => {
+
 		_uo.version = browser.runtime.getManifest().version;
 		return _uo;
 
 	}).then( _uo => {
-		console.log('Done', Date.now() - start);
+		console.log('Done ->', _uo.version, Date.now() - start);
 		return _uo;
 	});
 }
@@ -1939,7 +1971,7 @@ browser.runtime.onInstalled.addListener( details => {
 			details.reason === 'install'
 		) {
 			browser.tabs.create({
-				url: "/options.html#help"
+				url: "/options.html#engines"
 			}).then(_tab => {
 				browser.tabs.executeScript(_tab.id, {
 					code: `cacheAllIcons()`
@@ -2147,7 +2179,7 @@ async function injectContentScripts(tab, frameId) {
 	}
 
 	onFound = () => {}
-	onError = (err) => {console.log(err)}
+	onError = (err) => {console.log(err, tab.url)}
 
 	// inject into any frame
 	[
@@ -2180,41 +2212,50 @@ async function injectContentScripts(tab, frameId) {
 
 function waitOnInjection(tabId) {
 
-	let ival;
+	let interval;
 	let timeout;
+	let start = Date.now();
 
-	console.log('waitOnInjection', tabId);
+	return Promise.race([
 
-	return Promise.race([ 
+		// timeout
 		new Promise(r => {
 			timeout = setTimeout(() => {
-				clearInterval(ival);
+				clearInterval(interval);
 				clearTimeout(timeout);
-				console.log('waitOnInjection timeout', tabId);
 				r(false);
+				console.error('waitOnInjection timeout', tabId);
 			}, 15000);
-		}), 
-		new Promise( ( r, reject ) => {
-			ival = setInterval(async () => {
+		}),
+
+		// interval test
+		new Promise(r => {
+			interval = setInterval(async () => {
 				try {
-					let result = await browser.tabs.executeScript(tabId, {
-						code: "window.hasRun"
-					});
+					let result = await browser.tabs.executeScript(tabId, { code: "window.hasRun"} );
 
 					if ( result[0] ) {
-						clearInterval(ival);
+						clearInterval(interval);
 						clearTimeout(timeout);
+						console.log(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
 						r(true);
 					}
+
 				} catch ( error ) {
 					// console.log(tabId, error);
-					clearInterval(ival);
+					clearInterval(interval);
 					clearTimeout(timeout);
+					console.error('waitOnInjection failed', tabId);
 					r(false);
-				}
-
-				
+				}				
 			}, 500);
 		})
 	]);
 }
+
+// lazy tab updates
+// browser.tabs.onActivated.addListener( async tabInfo => {
+// 	if ( lazyUpdate ) 
+// 		browser.tabs.sendMessage(tabInfo.tabId, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+// });
+

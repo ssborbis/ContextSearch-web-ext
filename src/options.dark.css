@@ -23,3 +23,13 @@ a, a:link, a:visited, a:active {
 #advancedSettingsTable TR:hover {
 	background-color:#444;
 }
+
+#nightmode {
+	filter:  invert(1);
+}
+
+#t_manualEdit .string { color: darkseagreen; }
+#t_manualEdit .number { color: orange; }
+#t_manualEdit .boolean { color: #e27070; }
+#t_manualEdit .null { color: #e27070; }
+#t_manualEdit .key { color: #ddd; }

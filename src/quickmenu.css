@@ -48,7 +48,7 @@ BODY {
 	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: background-color .25s ease-out, opacity .25s linear, width .2s ease-out, margin .25s;
+	transition: background-color .25s ease-out, opacity .25s linear, width .2s linear, margin .25s;
 	/*z-index:2;*/
 	position: relative;
 	/*float:left;*/
@@ -288,7 +288,8 @@ BODY {
 }
 #titleBar {
 	height:24px;
-	padding-left:10px;
+	text-align: center;
+	/*padding-left:10px;*/
 	overflow:hidden;
 	vertical-align:middle;
 	line-height:24px;
@@ -297,7 +298,8 @@ BODY {
 	font-size:11pt;
 	white-space:nowrap;
 	/*width:calc(100% - 10px);*/
-	width:calc(var(--iframe-body-width) - 20px);
+	/*width:var(--iframe-body-width, auto);*/
+	width: 100%;
 	text-overflow: ellipsis;
 }
 .tile.singleColumn {
@@ -349,9 +351,6 @@ BODY {
 }
 #toolBar .tile {
 	border:none;
-}
-[data-menu="quickmenu"] #titleBar, [data-menu="quickmenu"] #menuBar {
-	display:none;
 }
 [data-menu="quickmenu"].locked #titleBar, [data-menu="quickmenu"].locked #menuBar {
 	display:block;
@@ -506,13 +505,13 @@ GROUP > LABEL {
 }*/
 #addEngineBar {
 	font-size:9pt;
-	border-top:2px solid var(--border);
-	padding:2px;
 	cursor:pointer;
 	overflow-x:hidden;
 	width:var(--iframe-body-width, auto);
 }
 #addEngineBar > DIV {
+	border-top:2px solid var(--border);
+	padding:2px;
 	transition: opacity .25s .5s, background-color .15s;
 	overflow: hidden;
 	opacity: 1;
@@ -575,7 +574,7 @@ GROUP.block > LABEL {
 	/*pointer-events: none;*/
 }
 
-GROUP.inline .tile {
+GROUP.inline .tile:not(HR) {
 	background-color: var(--group-color);
 }
 GROUP.inline.break {
@@ -625,4 +624,29 @@ HR.break {
 	padding: 0;
 	margin: 0;
 	visibility: hidden;
+}
+.edit_handle {
+	position: relative;
+	line-height: 16px;
+	font-size: 8pt;
+	height: 16px;
+	display: block;
+	text-align: center;
+	cursor: grab;
+	background-color: #d3d4dc;
+	color: #5e5e67;
+	border-radius: 15px 15px 0 0;
+	margin-top: 4px;
+}
+.edit_handle.hover {
+	background-color: #b3b4bc;
+}
+.edit_handle INPUT {
+	height: 10px;
+	position: absolute;
+	right: 10px;
+	vertical-align: middle;
+}
+.hide {
+	display: none !important;
 }

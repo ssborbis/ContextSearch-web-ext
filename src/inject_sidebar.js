@@ -339,10 +339,9 @@ document.addEventListener("fullscreenchange", e => {
 	let iframe = getIframe();
 	let ot = getOpeningTab();
 	
-	if ( document.fullscreen )	
-		[iframe, ot].forEach( el => { if ( el ) el.classList.add('CS_hide');});
-	else 		
-		[iframe, ot].forEach( el => { if ( el ) el.classList.remove('CS_hide');});
+	[iframe, ot].forEach( el => { 
+		if ( el ) el.classList.toggle('CS_hide', document.fullscreen);
+	});
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {

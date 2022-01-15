@@ -4,7 +4,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
 });
 
-browser.runtime.onMessage.addListener((message, sender, sendResponse) => {	
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
 	if ( message.userOptions ) userOptions = message.userOptions;
 
 	switch (message.action) {
@@ -19,6 +20,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
+			break;
+
+		case "showNotification":
+			showNotification(message);
 			break;
 	}
 });
@@ -49,18 +54,25 @@ function isTextBox(element) {
 
 function copyRaw() {
 	let rawText = getRawSelectedText(window.activeElement);
+
+	if ( !rawText ) rawText = quickMenuObject.searchTerms;
+
 	navigator.clipboard.writeText(rawText);
 }
 
 function getContexts(el) {
-	let contexts = [];
+
+	if ( !el ) return [];
+
+	let contexts = ['page'];
 
 	if ( el instanceof HTMLImageElement ) contexts.push('image');
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 
-	if ( el && el.closest('a')) contexts.push('link');
-	if ( el && getSelectedText(el)) contexts.push('selection');
+	if ( el.closest('a')) contexts.push('link');
+	if ( getSelectedText(el)) contexts.push('selection');
+	if ( window != top ) contexts.push('iframe');
 
 	return contexts;
 }
@@ -77,6 +89,9 @@ document.addEventListener("selectionchange", ev => {
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+
+	// display icon to open qm
+	if ( showIcon ) showIcon(searchTerms);
 });
 
 // selectionchange handler for input nodes
@@ -89,6 +104,9 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 		}
+
+		// display icon to open qm
+		if ( showIcon ) showIcon(searchTerms);
 	});
 }
 
@@ -118,7 +136,6 @@ function linkOrImage(el, e) {
 	
 	return false;	
 }
-
 
 // https://stackoverflow.com/a/1045012
 function offset(elem) {
@@ -261,38 +278,84 @@ function getImage(el, e) {
 	return backgroundImage.slice(4, -1).replace(/"/g, "")
 }
 
-function showNotification(msg) {
-	let CS_notification = document.createElement('div');
+function showNotification(message) {
+
+	let msg = message.msg;
+
+	let id = "CS_notification" + btoa(msg).substr(0,8);
+
+	let CS_notification = document.getElementById(id) || document.createElement('notification');
+	CS_notification.id = id;
 	CS_notification.className = 'CS_notification';
+	CS_notification.innerHTML = null;
 	
 	let img = new Image();
-	img.src = browser.runtime.getURL('icons/alert.svg');
+	img.src = browser.runtime.getURL('icons/logo_notext.svg');
 	
+	let cb = new Image();
+	cb.src = browser.runtime.getURL('icons/crossmark.svg');
+	cb.style = 'cursor:pointer;height:16px;position:absolute;right:10px;top: 50%;transform: translate(0, -50%);margin:0';
+	cb.onclick = close;
 	
 	let content = document.createElement('div');
 	content.className = 'content';
 	content.innerText = msg;
 	
-	[img, content].forEach(el => CS_notification.appendChild(el));
+	[img, content, cb].forEach(el => CS_notification.appendChild(el));
 
 	CS_notification.style.opacity = 0;
 	document.body.appendChild(CS_notification);
 	CS_notification.getBoundingClientRect();
 	CS_notification.style.opacity = 1;
 	CS_notification.getBoundingClientRect();
-	setTimeout(() => {
+
+	close = () => {
 		runAtTransitionEnd(CS_notification, ['opacity'], () => {
 			document.body.removeChild(CS_notification);
 			delete CS_notification;
 		});
 		
 		CS_notification.style.opacity = 0;
-	}, 3000);
+	}
+
+	if ( !message.sticky ) setTimeout(close, 3000);
 	
 	CS_notification.onclick = function() {
 		document.body.removeChild(CS_notification);
 		delete CS_notification;
 	}
+
+	return CS_notification;
+}
+
+function checkContextMenuEventOrderNotification() {
+	let n = showNotification({msg:"", sticky:true});
+
+	let yes = document.createElement('a');
+	yes.innerText = browser.i18n.getMessage('yes');
+	yes.href = "#";
+
+	let no = document.createElement('a');
+	no.innerText = browser.i18n.getMessage('no');
+	no.href="#";
+
+	let content = n.querySelector('.content');
+	content.innerText = browser.i18n.getMessage('checkContextMenuOrderNotification');
+	n.appendChild(yes);
+	n.appendChild(document.createTextNode(" / "));
+	n.appendChild(no);
+
+	no.onclick = function() {
+		userOptions.checkContextMenuEventOrder = false;
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+	}
+
+	yes.onclick = function() {
+		userOptions.checkContextMenuEventOrder = false;
+		userOptions.rightClickMenuOnMouseDownFix = true;
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+	}
+
 }
 
 // set zoom attribute to be used for scaling objects
@@ -303,7 +366,7 @@ function setZoomProperty() {
 document.addEventListener('zoom', setZoomProperty);
 setZoomProperty();
 
-// // apply global user styles for /^[\.|#]CS_/ matches in userStyles
+// apply global user styles for /^[\.|#]CS_/ matches in userStyles
 browser.runtime.sendMessage({action: "addUserStyles", global: true });
 
 // menuless hotkey

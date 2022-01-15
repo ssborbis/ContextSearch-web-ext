@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="#000" stroke="#000" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" width="64" height="64" viewBox="0 0 30 30">
+	<mask id="m">
+		<rect x="0" y="0" width="30" height="30" fill="#fff" />
+		<rect x="7" y="10" width="19" height="8" />
+		<rect x="8" y="6" width="2" height="1" />
+		<rect x="13" y="6" width="2" height="1" />
+		<rect x="18" y="6" width="2" height="1" />
+		<rect x="23" y="6" width="2" height="1" />
+
+		<rect x="8" y="21" width="2" height="1" />
+		<rect x="13" y="21" width="2" height="1" />
+		<rect x="18" y="21" width="2" height="1" />
+		<rect x="23" y="21" width="2" height="1" />
+	</mask>
+	<rect x="4" y="4" width="25" height="20" rx="2" mask="url(#m)" />
+	<path d="M14 11 14 17 20 14 14 11" />
+</svg>

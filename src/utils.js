@@ -69,19 +69,7 @@ function matchingEnginesToFolder(s) {
 
 		if ( !se.matchRegex ) return false;
 
-		let lines = se.matchRegex.split(/\n/);
-
-		for ( let line of lines ) {
-
-			try {
-				let parts = JSON.parse('[' + line.trim() + ']');
-				let rgx = new RegExp(parts[0], parts[1] || 'g');
-
-				if ( rgx.test(s) ) return true;
-			} catch (error) {}
-		}
-
-		return false;
+		return isMatchingRegex(se.matchRegex, s);
 
 	});
 
@@ -91,4 +79,83 @@ function matchingEnginesToFolder(s) {
 	});
 
 	return folder;
+}
+
+function runMatchRegex(s, callback) {
+	callback = callback || function() {};
+
+	let lines = s.trim().split(/\n/);
+
+	for ( let line of lines ) {
+
+		line = line.trim();
+
+		if ( !line ) continue;
+
+		try { // match regex				
+			let m = JSON.parse('[' + line.trim() + ']');
+			let rgx = new RegExp(m[0], m[1] || 'g');
+
+			callback( rgx );
+			continue;
+		} catch (error) {}
+
+		try { // match regex
+			let m = /^\/(.*)\/([a-z]+)$/.exec(line.trim());
+			let rgx = new RegExp(m[1], m[2] || 'g');
+
+			callback( rgx );
+			continue;
+		} catch (error) {}
+
+		return false;
+	}
+
+	return true;
+}
+
+function runReplaceRegex(s, callback) {
+
+	callback = callback || function() {};
+
+	let lines = s.trim().split(/\n/);
+
+	for ( let line of lines ) {
+
+		line = line.trim();
+
+		if ( !line ) continue;
+
+		try { // replace regex					
+			let m = JSON.parse('[' + line.trim() + ']');
+			let rgx = new RegExp(m[0], m[2] || 'g');
+
+			callback( rgx, m[1] );
+			continue;
+		} catch (error) {}
+
+		try { // replace regex
+			let m = /^\/(.*)\/(.*)\/([a-z]+)$/.exec(line.trim());
+			let rgx = new RegExp(m[1], m[3] || 'g');
+
+			callback( rgx, m[2] );
+			continue;
+		} catch (error) {}
+
+		return false;
+	}
+
+	return true;
+}
+
+validateRegex = s => ( runMatchRegex(s) || runReplaceRegex(s) );
+
+function isMatchingRegex(rgxStr, s) {
+	let results = false;
+
+	runMatchRegex(rgxStr, rgx => {
+		if (rgx.test(s)) results = true;
+	});
+
+	return results;
 }

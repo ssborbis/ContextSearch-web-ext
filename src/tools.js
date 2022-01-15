@@ -1,4 +1,4 @@
-var QMtools = [
+const QMtools = [
 	{
 		name: 'close', 
 		icon: "icons/crossmark.svg",
@@ -150,6 +150,7 @@ var QMtools = [
 			}
 
 			tile.action = this.action;
+			tile.tool = this;
 			
 			return tile;
 		},
@@ -167,10 +168,7 @@ var QMtools = [
 
 			if ( tool.persist )	saveUserOptions();
 
-			// let tile = document.querySelector(`[data-type="tool"][data-name="${this.name}"]`);
-			// if ( tile ) tile.dataset.locked = quickMenuObject.locked;
-
-			this.dataset.locked = quickMenuObject.locked;
+			setToolLockedState(this.tool || this, tool.on);
 		}
 	},
 	{
@@ -268,15 +266,16 @@ var QMtools = [
 			});
 			
 			tile.action = this.action;
+			tile.tool = this;
 			return tile;
 		},
 		action: function(e) {
 			tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
 
 			tool.on = !tool.on;
-			
-			this.dataset.locked = tool.on;
 
+			setToolLockedState(this.tool || this, tool.on);
+			
 			saveUserOptions();
 
 			browser.runtime.sendMessage({
@@ -377,19 +376,22 @@ var QMtools = [
 			tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
 			
 			tile.action = this.action;
+			tile.tool = this;
 			return tile;
 		},
 		action: function() {
 			userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
 			saveUserOptions();
 
-			this.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
+			setToolLockedState(this.tool || this, userOptions.allowHotkeysWithoutMenu);
+
+			
 		}
 	},
 	{
 		name: 'edit', 
-		icon: "icons/edit.png", 
-		title: browser.i18n.getMessage('edit'),
+		icon: "icons/edit.svg", 
+		title: browser.i18n.getMessage('editmenu'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
@@ -398,24 +400,120 @@ var QMtools = [
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
 			tile.action = this.action;
+			tile.tool = this;
 			return tile;
 		}, 
-		action: function() {
+		action: function(o) {
 
-			browser.runtime.sendMessage({action: "editQuickMenu"});
-			window.tilesDraggable = !window.tilesDraggable;
+			o = o || {};
+
+			(() => { // rearrange menu parts
+
+				if ( !window.editMode && !o.forceOff) {
+
+					function saveDomLayout() {
+
+						let order = [...document.querySelectorAll('.edit_handle')].map( el => {
+							return ((el.querySelector('input').checked) ? "" : "!" ) + el.dataset.parentId;
+						});
+
+						if ( qm.dataset.menu === "quickmenu" )
+							userOptions.quickMenuDomLayout = order.join(",");
+						else if ( qm.dataset.menu === "sidebar" )
+							userOptions.sideBar.domLayout = order.join(",");
+						else if ( qm.dataset.menu === "searchbar" )
+							userOptions.searchBarDomLayout = order.join(",");
+
+						saveUserOptions();
+					}
+
+					window.editMode = true;
+
+					let i18n_titles = {
+						"quickMenuElement": 	'quickmenu',
+						"toolBar": 				'tools',
+						"menuBar": 				'menubar',
+						"titleBar": 			'name',
+						"searchBarContainer": 	'search'
+					};
+					
+					[qm,tb,mb,toolBar,sbc].forEach( (el, index) => {
+
+						let div = document.createElement('div');
+						div.classList.add('edit_handle');
+						div.draggable = true;
+						div.innerText = browser.i18n.getMessage(i18n_titles[el.id]);
+						div.dataset.parentId = el.id;
+
+						let cb = document.createElement('input');
+						cb.type = 'checkbox';
+						cb.checked = ( window.getComputedStyle(el).display !== 'none' );
+						cb.title = browser.i18n.getMessage('showhide')
+						
+						if ( el == qm ) cb.classList.add('hide');
+
+						div.appendChild(cb);
+
+						cb.addEventListener('change', e => {
+							el.classList.toggle('hide', !cb.checked);
+							resizeMenu({more: true});
+							saveDomLayout();
+						})
+
+						div.addEventListener('dragstart', function(e) {
+							e.dataTransfer.setData("text/plain", "");
+							window.dragDiv = div;
+						});
+
+						div.addEventListener('dragover', e =>	e.preventDefault());
+						div.addEventListener('dragenter', e => {
+							if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
+								div.classList.add('hover');
+						});
+						div.addEventListener('dragleave', e => {
+							if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
+								div.classList.remove('hover');
+						});
+
+						div.addEventListener('drop', function(e) {
+							e.preventDefault();
+
+							if ( window.dragDiv === div ) return false;
+
+							let el = window.dragDiv.nextSibling;
+
+							document.body.insertBefore(window.dragDiv, div);
+							document.body.insertBefore(el, div);
+
+							saveDomLayout();
+
+						});
+
+						div.addEventListener('dragend', e => {
+							document.querySelectorAll('.edit_handle.hover').forEach( el => el.classList.remove('hover'));
+						})
+
+						el.parentNode.insertBefore(div, el);
+
+					})
+				} else {
+					document.querySelectorAll('.edit_handle').forEach( el => el.parentNode.removeChild(el));
+					window.editMode = false;
+				}
+
+				setTimeout(() => resizeMenu({more: true}), 250);
+			})();
+
+			if ( !o.forceOff )
+				browser.runtime.sendMessage({action: "editQuickMenu"});
 			
-		//	document.addEventListener('changeFolder', setDraggable);
-			setDraggable();
+			if ( !userOptions.alwaysAllowTileRearranging ) {
+				window.tilesDraggable = !window.tilesDraggable;
+				setDraggable();
 
-			this.dataset.locked = window.tilesDraggable;
-
-		//	setOptionsBar();
-			resizeMenu();
-
-			// special handler for when mouseup is disabled in addTileEventHandlers
-			// if ( window.tilesDraggable && this ) 
-			// 	this.addEventListener('mouseup', e => this.action(), {once: true});
+				setToolLockedState(this.tool || this, window.editMode);
+				resizeMenu();
+			}
 		}
 	},
 	{
@@ -467,11 +565,52 @@ var QMtools = [
 			
 			resizeMenu({openFolder: true});	
 		}
+	},
+	{
+		name: 'showhide', 
+		icon: "icons/hide.svg",
+		title: browser.i18n.getMessage('showhide'),
+		context: ["quickmenu", "sidebar", "searchbar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			tile.dataset.locked = false;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			tile.tool = this;
+			return tile;
+		}, 
+		action: async function() {
+
+			let on = this.dataset.locked = this.dataset.locked == 'true' ? false : true;
+
+			setToolLockedState(this.tool || this, on);
+
+			qm.querySelectorAll('.tile').forEach( t => {
+				if ( !t.node ) return;
+
+				if ( t.node.hidden )
+					t.style.display = on ? null : 'none';
+			});
+			
+			resizeMenu({more: true});	
+		}
 	}
 ];
 
 function getToolTile(name) {
 	return document.querySelector(`[data-type="tool"][data-name="${name}"]`);
+}
+
+function setToolLockedState(tool, status) {
+	document.querySelectorAll(`[data-type="tool"]`).forEach( t => {
+		if ( t.tool && t.tool.name === tool.name ) {
+			t.dataset.locked = status;
+		}
+	});
 }
 
 function makeMaskCanvas(url, color) {

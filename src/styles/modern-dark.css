@@ -22,3 +22,7 @@
 #searchBar {
 	background: #0005;
 }
+
+.tile[data-type="folder"]:not(.singleColumn) {
+    --tools-color: #444;
+}

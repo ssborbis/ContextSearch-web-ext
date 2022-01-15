@@ -5,9 +5,7 @@ window.browser = (function () {
 })();
 
 // not jQuery 
-var $ = s => {
-	return document.querySelector(s);
-}
+var $ = s => document.getElementById(s) || document.querySelector(s);
 
 // array for storage.local
 var userOptions = {};
@@ -18,7 +16,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	let searchEngines = [];
 	let file = ev.target.files[0];
 	
-	if ( $('#cb_overwriteOnImport').checked && confirm("This will delete all custom search engines, folders, bookmarklets, separators, etc. Are you sure?") ) {
+	if ( $('#cb_overwriteOnImport').checked && confirm(browser.i18n.getMessage("ConfirmDeleteCustomSearchEngines")) ) {
 		userOptions.nodeTree.children = [];
 		userOptions.searchEngines = [];
 	}
@@ -134,140 +132,56 @@ function statusMessage(status) {
 
 }
 
-async function restoreOptions() {
+async function restoreOptions(restoreUserOptions) {
+
+	if ( restoreUserOptions ) return onGot(restoreUserOptions);
 
 	function onGot(uo) {
 
 		userOptions = uo;
 
-		$('#cb_quickMenu').checked = uo.quickMenu;	
-		$('#n_quickMenuColumns').value = uo.quickMenuColumns;
-		$('#n_quickMenuRows').value = uo.quickMenuRows;
-		$('#n_quickMenuRowsSingleColumn').value = uo.quickMenuRowsSingleColumn;
+		function traverse(o, parentKey) {
+			for ( let key in o) {
+
+				let longKey = ( parentKey ) ? parentKey + "." + key : key;
+
+				let value = longKey.split('.').reduce((a, b) => a[b], defaultUserOptions);
+
+				let type = typeof value;
+
+				if ( type === 'object' && !Array.isArray(o[key]) )
+					traverse(o[key], longKey);
+
+				let el = document.getElementById(longKey);
+
+				if ( !el ) continue;
+
+				if ( type === 'boolean')
+					el.checked = o[key];
+
+				if ( type === 'string' || type === 'number' )
+					el.value = o[key];	
+			}
+		}
+
+		// restore settings with matching ids
+		traverse(uo, null);
 		
-		$('#b_quickMenuKey').value = uo.quickMenuKey;
-		$('#b_quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || browser.i18n.getMessage('ClickToSet');
-		
-		$('#b_contextMenuKey').value = uo.contextMenuKey;	
-		$('#b_contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || browser.i18n.getMessage('ClickToSet');
-		$('#s_contextMenuSearchLinksAs').value = uo.contextMenuSearchLinksAs;
-		$('#cb_contextMenuOnLinks').checked = uo.contextMenuOnLinks;
-		$('#cb_contextMenuOnImages').checked = uo.contextMenuOnImages;
-		$('#r_quickMenuOnKey').checked = uo.quickMenuOnKey;			
-		$('#cb_quickMenuOnMouse').checked = uo.quickMenuOnMouse;
-		$('#s_quickMenuOnMouseMethod').value = uo.quickMenuOnMouseMethod;
-		$('#cb_quickMenuSearchOnMouseUp').checked = uo.quickMenuSearchOnMouseUp;
-		$('#r_quickMenuAuto').checked = uo.quickMenuAuto;
-		$('#cb_quickMenuAutoAlt').checked = uo.quickMenuAutoAlt;
-		$('#cb_quickMenuAutoShift').checked = uo.quickMenuAutoShift;
-		$('#cb_quickMenuAutoCtrl').checked = uo.quickMenuAutoCtrl;
-		$('#cb_quickMenuAutoOnInputs').checked = uo.quickMenuAutoOnInputs;
-		$('#cb_quickMenuOnLinks').checked = uo.quickMenuOnLinks;
-		
-		$('#cb_quickMenuOnImages').checked = uo.quickMenuOnImages;
-		$('#cb_quickMenuCloseOnScroll').checked = uo.quickMenuCloseOnScroll;
-		$('#cb_quickMenuCloseOnClick').checked = uo.quickMenuCloseOnClick;
-		$('#s_quickMenuToolsPosition').value = uo.quickMenuToolsPosition;
-		$('#cb_quickMenuToolsAsToolbar').checked = uo.quickMenuToolsAsToolbar;
-		$('#s_quickMenuSearchBar').value = uo.quickMenuSearchBar;
-		$('#cb_quickMenuSearchBarFocus').checked = uo.quickMenuSearchBarFocus;
-		$('#cb_quickMenuSearchBarSelect').checked = uo.quickMenuSearchBarSelect;
-		$('#range_quickMenuScale').value = uo.quickMenuScale;
-		$('#range_quickMenuIconScale').value = uo.quickMenuIconScale;
-		// $('#i_quickMenuScale').value = (parseFloat(uo.quickMenuScale) * 100).toFixed(0) + "%";
-		// $('#i_quickMenuIconScale').value = (parseFloat(uo.quickMenuIconScale) * 100).toFixed(0) + "%";
-		$('#n_quickMenuOffsetX').value = uo.quickMenuOffset.x;
-		$('#n_quickMenuOffsetY').value = uo.quickMenuOffset.y;
-		
-		$('#cb_quickMenuOnSimpleClick').checked = uo.quickMenuOnSimpleClick.enabled;
-		$('#s_quickMenuOnSimpleClickButton').value = uo.quickMenuOnSimpleClick.button.toString();
-		$('#cb_quickMenuOnSimpleClickAlt').checked = uo.quickMenuOnSimpleClick.alt;
-		$('#cb_quickMenuOnSimpleClickCtrl').checked = uo.quickMenuOnSimpleClick.ctrl;
-		$('#cb_quickMenuOnSimpleClickShift').checked = uo.quickMenuOnSimpleClick.shift;
-		$('#cb_quickMenuSimpleClickUseInnerText').checked = uo.quickMenuOnSimpleClick.useInnerText;
-		$('#cb_quickMenuOnDrag').checked = uo.quickMenuOnDrag;
-		$('#cb_quickMenuDragAlt').checked = uo.quickMenuDragAlt;
-		$('#cb_quickMenuDragShift').checked = uo.quickMenuDragShift;
-		$('#cb_quickMenuDragCtrl').checked = uo.quickMenuDragCtrl;
-		
-		$('#s_quickMenuMouseButton').value = uo.quickMenuMouseButton.toString();
-		$('#cb_contextMenu').checked = uo.contextMenu;
-		$('#h_position').value = uo.quickMenuPosition;
+		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || browser.i18n.getMessage('ClickToSet');
+		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || browser.i18n.getMessage('ClickToSet');
 
 		for (let p of document.getElementsByClassName('position')) {
 			p.classList.remove('active')
 			if (p.dataset.position === uo.quickMenuPosition)
 				p.classList.add('active');
 		}
-				
-		$('#s_contextMenuClick').value = uo.contextMenuClick;
-		$('#s_contextMenuMiddleClick').value = uo.contextMenuMiddleClick;
-		$('#s_contextMenuRightClick').value = uo.contextMenuRightClick;
-		$('#s_contextMenuShift').value = uo.contextMenuShift;
-		$('#s_contextMenuCtrl').value = uo.contextMenuCtrl;
-		
-		$('#cb_contextMenuShowAddCustomSearch').checked = uo.contextMenuShowAddCustomSearch;
-		$('#cb_contextMenuShowRecentlyUsed').checked = uo.contextMenuShowRecentlyUsed;
-		$('#cb_contextMenuShowRecentlyUsedAsFolder').checked = uo.contextMenuShowRecentlyUsedAsFolder;
-		$('#n_contextMenuRecentlyUsedLength').value = uo.recentlyUsedListLength;
-		$('#cb_contextMenuShowFolderSearch').checked = uo.contextMenuShowFolderSearch;
-		$('#i_contextMenuTitle').value = uo.contextMenuTitle;
 
-		$('#cb_quickMenuShowRecentlyUsed').checked = uo.quickMenuShowRecentlyUsed;
-		
-		$('#s_quickMenuLeftClick').value = uo.quickMenuLeftClick;
-		$('#s_quickMenuRightClick').value = uo.quickMenuRightClick;
-		$('#s_quickMenuMiddleClick').value = uo.quickMenuMiddleClick;
-		$('#s_quickMenuShift').value = uo.quickMenuShift;
-		$('#s_quickMenuCtrl').value = uo.quickMenuCtrl;
-		$('#s_quickMenuAlt').value = uo.quickMenuAlt;
-		
-		$('#s_quickMenuFolderLeftClick').value = uo.quickMenuFolderLeftClick;
-		$('#s_quickMenuFolderRightClick').value = uo.quickMenuFolderRightClick;
-		$('#s_quickMenuFolderMiddleClick').value = uo.quickMenuFolderMiddleClick;
-		$('#s_quickMenuFolderShift').value = uo.quickMenuFolderShift;
-		$('#s_quickMenuFolderCtrl').value = uo.quickMenuFolderCtrl;
-		$('#s_quickMenuFolderAlt').value = uo.quickMenuFolderAlt;
-		$('#s_quickMenuSearchHotkeys').value = uo.quickMenuSearchHotkeys;
-		$('#s_quickMenuSearchHotkeysFolders').value = uo.quickMenuSearchHotkeysFolders;
-		
-		$('#cb_quickMenuShowHotkeysInTitle').checked = uo.quickMenuShowHotkeysInTitle;
-		
-		$('#n_quickMenuAutoMaxChars').value = uo.quickMenuAutoMaxChars;
-		$('#n_quickMenuOpeningOpacity').value = uo.quickMenuOpeningOpacity;
-		$('#n_quickMenuAutoTimeout').value = uo.quickMenuAutoTimeout;
-		$('#cb_quickMenuAllowContextMenuNew').checked = uo.quickMenuAllowContextMenuNew;
-		$('#cb_quickMenuFocusOnOpen').checked = uo.quickMenuFocusOnOpen;
-
-		$('#cb_searchBarSuggestions').checked = uo.searchBarSuggestions;
-		$('#cb_searchBarEnableHistory').checked = uo.searchBarEnableHistory;
-		$('#cb_searchBarDisplayLastSearch').checked = uo.searchBarDisplayLastSearch;
 		$('#s_searchBarDefaultView').value = uo.searchBarUseOldStyle ? "text" : "grid";
-		$('#cb_searchBarCloseAfterSearch').checked = uo.searchBarCloseAfterSearch;
 		$('#s_quickMenuDefaultView').value = uo.quickMenuUseOldStyle ? "text" : "grid";
-		$('#n_searchBarColumns').value = uo.searchBarColumns;
-		
-		$('#n_sideBarColumns').value = uo.sideBar.columns;
 		$('#s_sideBarDefaultView').checked = uo.sideBar.singleColumn ? "text" : "grid";
-		$('#s_sideBarWidgetPosition').value = uo.sideBar.widget.position;
-		$('#cb_sideBarWidgetEnable').checked = uo.sideBar.widget.enabled;
-		$('#cb_sideBarStartOpen').checked = uo.sideBar.startOpen;
-		$('#cb_sideBarCloseAfterSearch').checked = uo.sideBar.closeAfterSearch;
-		$('#range_sideBarScale').value = uo.sideBar.scale;
-		// $('#i_sideBarScale').value = (parseFloat(uo.sideBar.scale) * 100).toFixed(0) + "%";
 		
-		$('#t_userStyles').value = uo.userStyles;
-		$('#cb_userStylesEnabled').checked = uo.userStylesEnabled;
-		$('#t_userStyles').disabled = !uo.userStylesEnabled;
-		$('#cb_enableAnimations').checked = uo.enableAnimations;
-		$('#s_quickMenuTheme').value = uo.quickMenuTheme;
-		
-		$('#cb_highLightEnabled').checked = uo.highLight.enabled;
-		$('#cb_highLightFollowDomain').checked = uo.highLight.followDomain;
-		$('#cb_highLightFollowExternalLinks').checked = uo.highLight.followExternalLinks;
-		
-		$('#s_highLightStyle').value = uo.highLight.highlightStyle;
-		
+		$('#userStyles').disabled = !uo.userStylesEnabled;
+	
 		$('#c_highLightColor0').value = uo.highLight.styles[0].color;
 		$('#c_highLightBackground0').value = uo.highLight.styles[0].background;
 		$('#c_highLightColor1').value = uo.highLight.styles[1].color;
@@ -279,80 +193,6 @@ async function restoreOptions() {
 		$('#c_highLightColorActive').value = uo.highLight.activeStyle.color;
 		$('#c_highLightBackgroundActive').value = uo.highLight.activeStyle.background;
 		$('#s_highLightOpacity').value = uo.highLight.opacity;
-		
-		$('#cb_highLightFlashSelected').checked = uo.highLight.flashSelected;
-
-		$('#cb_highLightNavBarEnabled').checked = uo.highLight.navBar.enabled;
-		$('#cb_highLightShowFindBar').checked = uo.highLight.showFindBar;
-		
-		$('#cb_highLightMarkOptionsSeparateWordSearch').checked = uo.highLight.markOptions.separateWordSearch;
-		$('#cb_highLightMarkOptionsIgnorePunctuation').checked = uo.highLight.markOptions.ignorePunctuation;
-		$('#cb_highLightMarkOptionsCaseSensitive').checked = uo.highLight.markOptions.caseSensitive;
-		$('#s_highLightMarkOptionsAccuracy').value = uo.highLight.markOptions.accuracy;
-		$('#n_highLightMarkOptionsLimit').value = uo.highLight.markOptions.limit;
-
-		$('#cb_findBarMarkOptionsSeparateWordSearch').checked = uo.highLight.findBar.markOptions.separateWordSearch;
-		$('#cb_findBarMarkOptionsIgnorePunctuation').checked = uo.highLight.findBar.markOptions.ignorePunctuation;
-		$('#cb_findBarMarkOptionsCaseSensitive').checked = uo.highLight.findBar.markOptions.caseSensitive;
-		$('#s_findBarMarkOptionsAccuracy').value = uo.highLight.findBar.markOptions.accuracy;
-		$('#n_findBarMarkOptionsLimit').value = uo.highLight.findBar.markOptions.limit;
-		
-		$('#cb_findBarStartOpen').checked = uo.highLight.findBar.startOpen;
-		$('#cb_findBarOpenInAllTabs').checked = uo.highLight.findBar.openInAllTabs;
-		$('#cb_findBarSearchInAllTabs').checked = uo.highLight.findBar.searchInAllTabs;
-		$('#s_findBarPosition').value = uo.highLight.findBar.position;
-		$('#s_findBarWindowType').value = uo.highLight.findBar.windowType;
-		$('#cb_findBarShowNavBar').checked = uo.highLight.findBar.showNavBar;
-		$('#n_findBarTimeout').value = uo.highLight.findBar.keyboardTimeout;
-		$('#range_findBarScale').value = uo.highLight.findBar.scale;
-
-		$('#n_searchBarHistoryLength').value = uo.searchBarHistoryLength;
-		$('#n_searchBarSuggestionsCount').value = uo.searchBarSuggestionsCount;
-		$('#cb_groupLabelMoreTile').checked = uo.groupLabelMoreTile;
-		$('#cb_autoCopy').checked = uo.autoCopy;
-		$('#cb_rememberLastOpenedFolder').checked = uo.rememberLastOpenedFolder;
-		$('#cb_autoPasteFromClipboard').checked = uo.autoPasteFromClipboard;
-		$('#cb_allowHotkeysWithoutMenu').checked = uo.allowHotkeysWithoutMenu;
-		
-		$('#n_quickMenuHoldTimeout').value = uo.quickMenuHoldTimeout || 250;
-		$('#cb_exportWithoutBase64Icons').checked = uo.exportWithoutBase64Icons;
-		$('#cb_addSearchProviderHideNotification').checked = uo.addSearchProviderHideNotification;
-		$('#cb_syncWithFirefoxSearch').checked = uo.syncWithFirefoxSearch;
-		$('#cb_quickMenuTilesDraggable').checked = uo.quickMenuTilesDraggable; 
-		$('#cb_disableNewTabSorting').checked = uo.disableNewTabSorting; 
-		$('#cb_sideBarRememberState').checked = uo.sideBar.rememberState;
-		$('#cb_sideBarOpenOnResults').checked = uo.sideBar.openOnResults;
-		$('#cb_sideBarOpenOnResultsMinimized').checked = uo.sideBar.openOnResultsMinimized;
-		$('#cb_quickMenuPreventPageClicks').checked = uo.quickMenuPreventPageClicks;
-		$('#cb_omniboxDefaultToLastUsedEngine').checked = uo.omniboxDefaultToLastUsedEngine;
-		$('#s_omniboxSearch').value = uo.omniboxSearch;
-		$('#cb_contextMenuUseInnerText').checked = uo.contextMenuUseInnerText;
-		$('#n_cacheIconsMaxSize').value = uo.cacheIconsMaxSize;
-		$('#cb_forceOpenReultsTabsAdjacent').checked = uo.forceOpenReultsTabsAdjacent;
-
-		$('#n_quickMenuToolbarRows').value = uo.quickMenuToolbarRows;
-
-		$('#n_pageTilesRows').value = uo.pageTiles.rows;
-		$('#n_pageTilesColumns').value = uo.pageTiles.columns;
-		$('#cb_pageTilesEnabled').checked = uo.pageTiles.enabled;
-		$('#s_pageTilesOpenMethod').value = uo.pageTiles.openMethod;
-		$('#s_pageTilesPalette').value = uo.pageTiles.paletteString;
-		$('#cb_pageTilesCloseOnShake').checked = uo.pageTiles.closeOnShake;
-		
-		$('#cb_contextMenuHotkeys').checked = uo.contextMenuHotkeys;
-
-		$('#n_openFoldersOnHoverTimeout').value = uo.openFoldersOnHoverTimeout;
-		$('#n_shakeSensitivity').value = uo.shakeSensitivity;
-		$('#cb_rightClickMenuOnMouseDownFix').checked = uo.rightClickMenuOnMouseDownFix;
-		$('#cb_quickMenuHideSeparatorsInGrid').checked = uo.quickMenuHideSeparatorsInGrid;
-		$('#cb_groupFolderRowBreaks').checked = uo.groupFolderRowBreaks;
-		$('#cb_quickMenuRegexMatchedEngines').checked = uo.quickMenuRegexMatchedEngines;
-		$('#cb_contextMenuRegexMatchedEngines').checked = uo.contextMenuRegexMatchedEngines;
-		$('#cb_alwaysAllowTileRearranging').checked = uo.alwaysAllowTileRearranging;
-		$('#cb_contextMenuUseContextualLayout').checked = uo.contextMenuUseContextualLayout;	
-		$('#n_contextMenuContextualLayoutFlattenLimit').value = uo.contextMenuContextualLayoutFlattenLimit;
-		$('#i_quickMenuDomLayout').value = uo.quickMenuDomLayout;
-
 
 		$('#style_dark').disabled = !uo.nightMode;
 
@@ -366,30 +206,34 @@ async function restoreOptions() {
 			return (tool) ? tool.persist || false : false;
 		})();
 
-		$('#t_blockList').value = uo.blockList.filter(el => el.trim()).join('\n');
-
-		// toolBar icon
+		$('#blockList').value = uo.blockList.filter(el => el.trim()).join('\n');
+		
 		(() => {
-			let radios = document.querySelectorAll(`#toolBarIconForm input[type="radio"]`);
-			let radio = [...radios].find( r => r.value === uo.searchBarIcon );
-			if ( radio ) radio.checked = true;
-			else setToolBarIconOption(uo.searchBarIcon);
-		})();
+			[
+				{	id: "quickMenuIconForm", uri: uo.quickMenuIcon.url }, // quickMenu icon
+				{	id: "toolBarIconForm", uri: uo.searchBarIcon } // toolBar icon
+			].forEach( o => {
 
+				let f = $(o.id);
+
+				let radios = f.querySelectorAll(`input[type="radio"]`);
+				let radio = [...radios].find( r => r.value === o.uri );
+				if ( radio ) radio.checked = true;
+				else setIconOption(f, o.uri);
+			})
+		})();
 
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
-				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#s_quickMenuMouseButton').value === "3" && $('#s_quickMenuOnMouseMethod').value === "click" ) ? null : 'none';	
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#quickMenuMouseButton').value === "3" && $('#quickMenuOnMouseMethod').value === "click" ) ? null : 'none';	
 			}
 			
-			[$('#s_quickMenuMouseButton'), $('#s_quickMenuOnMouseMethod')].forEach( s => {
+			[$('#quickMenuMouseButton'), $('#quickMenuOnMouseMethod')].forEach( s => {
 				s.addEventListener('change', onChange);	
 				onChange();
 			});
 		})();
-
-		
 
 		document.dispatchEvent(new CustomEvent('userOptionsLoaded'));
 	}
@@ -417,136 +261,57 @@ function saveOptions(e) {
 	function onError(error) {
 		console.log(`Error: ${error}`);
 	}
-	
-	userOptions = {
-		searchEngines: userOptions.searchEngines,
-		nodeTree: userOptions.nodeTree,
-		lastUsedId: userOptions.lastUsedId,
-		quickMenu: $('#cb_quickMenu').checked,
-		quickMenuColumns: parseInt($('#n_quickMenuColumns').value),
-		quickMenuRows: parseInt($('#n_quickMenuRows').value),
-		quickMenuRowsSingleColumn: parseInt($('#n_quickMenuRowsSingleColumn').value),
-		defaultGroupColor: userOptions.defaultGroupColor,
-		defaultGroupColorText: userOptions.defaultGroupColorText,
 
-		quickMenuKey: parseInt($('#b_quickMenuKey').value),
-		contextMenuKey: parseInt($('#b_contextMenuKey').value),
-		
-		quickMenuOnKey: $('#r_quickMenuOnKey').checked,
-		quickMenuOnDrag: $('#cb_quickMenuOnDrag').checked,
-		quickMenuDragAlt: $('#cb_quickMenuDragAlt').checked,
-		quickMenuDragShift: $('#cb_quickMenuDragShift').checked,
-		quickMenuDragCtrl: $('#cb_quickMenuDragCtrl').checked,
-		quickMenuOnMouse: $('#cb_quickMenuOnMouse').checked,
-		quickMenuOnMouseMethod: $('#s_quickMenuOnMouseMethod').value,
-		quickMenuSearchOnMouseUp: $('#cb_quickMenuSearchOnMouseUp').checked,
-		quickMenuMouseButton: parseInt($("#s_quickMenuMouseButton").value),
-		quickMenuAuto: $('#r_quickMenuAuto').checked,
-		quickMenuAutoAlt: $('#cb_quickMenuAutoAlt').checked,
-		quickMenuAutoShift: $('#cb_quickMenuAutoShift').checked,
-		quickMenuAutoCtrl: $('#cb_quickMenuAutoCtrl').checked,
-		quickMenuAutoOnInputs: $('#cb_quickMenuAutoOnInputs').checked,
-		quickMenuOnLinks: $('#cb_quickMenuOnLinks').checked,
-		quickMenuOnImages: $('#cb_quickMenuOnImages').checked,
-		quickMenuScale: parseFloat($('#range_quickMenuScale').value),
-		quickMenuIconScale: parseFloat($('#range_quickMenuIconScale').value),
-		quickMenuOffset: {x: parseInt($('#n_quickMenuOffsetX').value), y: parseInt($('#n_quickMenuOffsetY').value)},
-		quickMenuCloseOnScroll: $('#cb_quickMenuCloseOnScroll').checked,
-		quickMenuCloseOnClick: $('#cb_quickMenuCloseOnClick').checked,
-		quickMenuPosition: $('#h_position').value,
-		contextMenuClick: $('#s_contextMenuClick').value,
-		contextMenuMiddleClick: $('#s_contextMenuMiddleClick').value,
-		contextMenuRightClick: $('#s_contextMenuRightClick').value,
-		contextMenuShift: $('#s_contextMenuShift').value,
-		contextMenuCtrl: $('#s_contextMenuCtrl').value,
-		contextMenuSearchLinksAs: $('#s_contextMenuSearchLinksAs').value,
-		contextMenuShowAddCustomSearch: $('#cb_contextMenuShowAddCustomSearch').checked,
-		contextMenuShowRecentlyUsed: $('#cb_contextMenuShowRecentlyUsed').checked,
-		contextMenuShowRecentlyUsedAsFolder: $('#cb_contextMenuShowRecentlyUsedAsFolder').checked,
-		contextMenuShowFolderSearch: $('#cb_contextMenuShowFolderSearch').checked,	
-		contextMenuTitle: $('#i_contextMenuTitle').value,
-		quickMenuLeftClick: $('#s_quickMenuLeftClick').value,
-		quickMenuRightClick: $('#s_quickMenuRightClick').value,
-		quickMenuMiddleClick: $('#s_quickMenuMiddleClick').value,
-		quickMenuShift: $('#s_quickMenuShift').value,
-		quickMenuCtrl: $('#s_quickMenuCtrl').value,
-		quickMenuAlt: $('#s_quickMenuAlt').value,		
-		quickMenuFolderLeftClick: $('#s_quickMenuFolderLeftClick').value,
-		quickMenuFolderRightClick: $('#s_quickMenuFolderRightClick').value,
-		quickMenuFolderMiddleClick: $('#s_quickMenuFolderMiddleClick').value,
-		quickMenuFolderShift: $('#s_quickMenuFolderShift').value,
-		quickMenuFolderCtrl: $('#s_quickMenuFolderCtrl').value,
-		quickMenuFolderAlt: $('#s_quickMenuFolderAlt').value,
-		quickMenuSearchHotkeys: $('#s_quickMenuSearchHotkeys').value,
-		quickMenuSearchHotkeysFolders: $('#s_quickMenuSearchHotkeysFolders').value,
-		quickMenuSearchBar: $('#s_quickMenuSearchBar').value,
-		quickMenuSearchBarFocus: $('#cb_quickMenuSearchBarFocus').checked,
-		quickMenuSearchBarSelect: $('#cb_quickMenuSearchBarSelect').checked,
-		quickMenuAutoMaxChars: parseInt($('#n_quickMenuAutoMaxChars').value) || 0,
-		quickMenuOpeningOpacity: parseFloat($('#n_quickMenuOpeningOpacity').value) || .3,
-		quickMenuAutoTimeout: parseInt($('#n_quickMenuAutoTimeout').value),
-		quickMenuAllowContextMenuNew: $('#cb_quickMenuAllowContextMenuNew').checked,
-		quickMenuShowHotkeysInTitle: $('#cb_quickMenuShowHotkeysInTitle').checked,
-		quickMenuFocusOnOpen: $('#cb_quickMenuFocusOnOpen').checked,
-		
-		quickMenuOnSimpleClick: {
-			enabled: $('#cb_quickMenuOnSimpleClick').checked,
-			button: parseInt($('#s_quickMenuOnSimpleClickButton').value),
-			alt: $('#cb_quickMenuOnSimpleClickAlt').checked,
-			ctrl: $('#cb_quickMenuOnSimpleClickCtrl').checked,
-			shift: $('#cb_quickMenuOnSimpleClickShift').checked,
-			useInnerText: $('#cb_quickMenuSimpleClickUseInnerText').checked
-		},
-		
-		contextMenu: $('#cb_contextMenu').checked,
-		contextMenuOnLinks: $('#cb_contextMenuOnLinks').checked,
-		contextMenuOnImages: $('#cb_contextMenuOnImages').checked,
-		
-		quickMenuToolsPosition: $('#s_quickMenuToolsPosition').value,
-		quickMenuToolsAsToolbar: $('#cb_quickMenuToolsAsToolbar').checked,
+	function traverse(o, parentKey) {
+		for ( let key in o) {
+
+			let longKey = ( parentKey ) ? parentKey + "." + key : key;
+
+			let type = typeof o[key];
+
+			if ( type === 'object' && !Array.isArray(o[key]) )
+				traverse(o[key], longKey);
+
+			let el = document.getElementById(longKey);
+
+			if ( !el ) continue;
+
+			if ( type === 'boolean')
+				o[key] = el.checked;
+
+			if ( type === 'string' )
+				o[key] = el.value;	
+
+			if ( type === 'number' ) {
+			 let i = parseInt(el.value);
+			 let f = parseFloat(el.value);
+
+			 o[key] = i == f ? i : f;
+			}
+		}
+	}
+
+	// restore settings with matching ids
+	traverse(userOptions, null);
+
+	
+	let uo = {
 
 		searchBarUseOldStyle: $('#s_searchBarDefaultView').value === "text",
-		searchBarColumns: parseInt($('#n_searchBarColumns').value),
-		searchBarCloseAfterSearch: $('#cb_searchBarCloseAfterSearch').checked,
-		
 		quickMenuUseOldStyle: $('#s_quickMenuDefaultView').value === "text",
-		
-		 // take directly from loaded userOptions
-		searchBarSuggestions: $('#cb_searchBarSuggestions').checked,
-		searchBarEnableHistory: $('#cb_searchBarEnableHistory').checked,
+
 		searchBarHistory: userOptions.searchBarHistory,
-		searchBarDisplayLastSearch: $('#cb_searchBarDisplayLastSearch').checked,
 		searchBarIcon: $('#toolBarIconForm input[type="radio"]:checked').value,
+		quickMenuIcon: {
+			url: $('#quickMenuIconForm input[type="radio"]:checked').value
+		},
 		
 		sideBar: {
-			enabled: userOptions.sideBar.enabled,
-			columns:parseInt($('#n_sideBarColumns').value),
 			singleColumn:$('#s_sideBarDefaultView').value === "text",
-			hotkey: [],
-			startOpen: $('#cb_sideBarStartOpen').checked,
-			widget: {
-				enabled: $('#cb_sideBarWidgetEnable').checked,
-				position: $('#s_sideBarWidgetPosition').value,
-				offset: userOptions.sideBar.widget.offset
-			},
-			windowType: userOptions.sideBar.windowType,
-			offsets: userOptions.sideBar.offsets,
-			position: userOptions.sideBar.position,
-			height: userOptions.sideBar.height,
-			closeAfterSearch: $('#cb_sideBarCloseAfterSearch').checked,
-			rememberState: $('#cb_sideBarRememberState').checked,
-			openOnResults: $('#cb_sideBarOpenOnResults').checked,
-			openOnResultsMinimized: $('#cb_sideBarOpenOnResultsMinimized').checked,
-			scale: parseFloat($('#range_sideBarScale').value),
+			hotkey: []
 		},
 		
 		highLight: {
-			enabled: $('#cb_highLightEnabled').checked,
-			followDomain: $('#cb_highLightFollowDomain').checked,
-			followExternalLinks: $('#cb_highLightFollowExternalLinks').checked,
-			showFindBar: $('#cb_highLightShowFindBar').checked,
-			flashSelected: $('#cb_highLightFlashSelected').checked,
-			highlightStyle: $('#s_highLightStyle').value,
 			opacity: parseFloat($('#s_highLightOpacity').value),
 			
 			styles: [
@@ -570,39 +335,10 @@ function saveOptions(e) {
 			activeStyle: {
 				color: $('#c_highLightColorActive').value,
 				background: $('#c_highLightBackgroundActive').value
-			},
-			navBar: {
-				enabled: $('#cb_highLightNavBarEnabled').checked
-			},
-			findBar: {
-				startOpen: $('#cb_findBarStartOpen').checked,
-				openInAllTabs: $('#cb_findBarOpenInAllTabs').checked,
-				searchInAllTabs: $('#cb_findBarSearchInAllTabs').checked,
-				showNavBar: $('#cb_findBarShowNavBar').checked,
-				position: $('#s_findBarPosition').value,
-				keyboardTimeout: parseInt($('#n_findBarTimeout').value),
-				windowType: $('#s_findBarWindowType').value,
-				offsets: userOptions.highLight.findBar.offsets,
-				markOptions: {
-					separateWordSearch: $('#cb_findBarMarkOptionsSeparateWordSearch').checked,
-					ignorePunctuation: $('#cb_findBarMarkOptionsIgnorePunctuation').checked,
-					caseSensitive: $('#cb_findBarMarkOptionsCaseSensitive').checked,
-					accuracy: $('#s_findBarMarkOptionsAccuracy').value,
-					limit: parseInt($('#n_findBarMarkOptionsLimit').value)
-				},
-				scale: parseFloat($('#range_findBarScale').value),
-			},
-			markOptions: {
-				separateWordSearch: $('#cb_highLightMarkOptionsSeparateWordSearch').checked,
-				ignorePunctuation: $('#cb_highLightMarkOptionsIgnorePunctuation').checked,
-				caseSensitive: $('#cb_highLightMarkOptionsCaseSensitive').checked,
-				accuracy: $('#s_highLightMarkOptionsAccuracy').value,
-				limit: parseInt($('#n_highLightMarkOptionsLimit').value)
 			}
+
 		},
-		
-		userStyles: $('#t_userStyles').value,
-		userStylesEnabled: $('#cb_userStylesEnabled').checked,
+
 		userStylesGlobal: (() => {
 			
 			let styleText = "";
@@ -611,7 +347,7 @@ function saveOptions(e) {
 
 			document.head.appendChild(styleEl);
 
-			styleEl.innerText = $('#t_userStyles').value;
+			styleEl.innerText = $('#userStyles').value;
 			styleEl.sheet.disabled = true;
 
 			let sheet = styleEl.sheet;
@@ -629,80 +365,38 @@ function saveOptions(e) {
 			
 			return styleText;
 		})(),
-	
-		enableAnimations: $('#cb_enableAnimations').checked,
-		quickMenuTheme: $('#s_quickMenuTheme').value,
-		
-		searchBarHistoryLength: parseInt($('#n_searchBarHistoryLength').value),
-		searchBarSuggestionsCount: parseInt($('#n_searchBarSuggestionsCount').value),
-		groupLabelMoreTile: $('#cb_groupLabelMoreTile').checked,
-		autoCopy: $('#cb_autoCopy').checked,
-		autoPasteFromClipboard: $('#cb_autoPasteFromClipboard').checked,
-		allowHotkeysWithoutMenu: $('#cb_allowHotkeysWithoutMenu').checked,
-		rememberLastOpenedFolder: $('#cb_rememberLastOpenedFolder').checked,
-		quickMenuHoldTimeout: parseInt($('#n_quickMenuHoldTimeout').value),
-		exportWithoutBase64Icons: $('#cb_exportWithoutBase64Icons').checked,
-		addSearchProviderHideNotification: $('#cb_addSearchProviderHideNotification').checked,
-		syncWithFirefoxSearch: $('#cb_syncWithFirefoxSearch').checked,
-		quickMenuTilesDraggable: $('#cb_quickMenuTilesDraggable').checked,
-		recentlyUsedList: userOptions.recentlyUsedList,
-		recentlyUsedListLength: parseInt($('#n_contextMenuRecentlyUsedLength').value),
-		quickMenuShowRecentlyUsed: $('#cb_quickMenuShowRecentlyUsed').checked,
-		disableNewTabSorting: $('#cb_disableNewTabSorting').checked,
-		contextMenuHotkeys: $('#cb_contextMenuHotkeys').checked,
-		quickMenuPreventPageClicks: $('#cb_quickMenuPreventPageClicks').checked,
-		openFoldersOnHoverTimeout: parseInt($('#n_openFoldersOnHoverTimeout').value),
-		omniboxDefaultToLastUsedEngine: $('#cb_omniboxDefaultToLastUsedEngine').checked,
-		omniboxLastUsedIds: userOptions.omniboxLastUsedIds,
-		omniboxSearch: $('#s_omniboxSearch').value,
-		contextMenuUseInnerText: $('#cb_contextMenuUseInnerText').checked,
-		cacheIconsMaxSize: parseInt($('#n_cacheIconsMaxSize').value),
-		nightMode: userOptions.nightMode,
-		userShortcuts: userOptions.userShortcuts,
-		shakeSensitivity: parseInt($('#n_shakeSensitivity').value),
-		forceOpenReultsTabsAdjacent: $('#cb_forceOpenReultsTabsAdjacent').checked,
-		rightClickMenuOnMouseDownFix: $('#cb_rightClickMenuOnMouseDownFix').checked,
-		quickMenuToolbarRows: parseInt($('#n_quickMenuToolbarRows').value),
-		quickMenuHideSeparatorsInGrid: $('#cb_quickMenuHideSeparatorsInGrid').checked,
-		groupFolderRowBreaks: $('#cb_groupFolderRowBreaks').checked,
-		quickMenuRegexMatchedEngines: $('#cb_quickMenuRegexMatchedEngines').checked,
-		contextMenuRegexMatchedEngines: $('#cb_contextMenuRegexMatchedEngines').checked,
-		alwaysAllowTileRearranging: $('#cb_alwaysAllowTileRearranging').checked,
-		contextMenuUseContextualLayout: $('#cb_contextMenuUseContextualLayout').checked,
-		contextMenuContextualLayoutFlattenLimit: parseInt($('#n_contextMenuContextualLayoutFlattenLimit').value),
-		quickMenuDomLayout: $('#i_quickMenuDomLayout').value,
 
-		pageTiles: {
-			enabled: $('#cb_pageTilesEnabled').checked,
-			rows: parseInt($('#n_pageTilesRows').value),
-			columns: parseInt($('#n_pageTilesColumns').value),
-			openMethod: $('#s_pageTilesOpenMethod').value,
-			grid: userOptions.pageTiles.grid,
-			paletteString: $('#s_pageTilesPalette').value,
-			closeOnShake: $('#cb_pageTilesCloseOnShake').checked
-		},
-
-		quickMenuTools: userOptions.quickMenuTools,
-		blockList: $('#t_blockList').value.split(/\r?\n/),
-		version: userOptions.version
+		blockList: $('#blockList').value.split(/\r?\n/),
 	};
 
-	// prevent DeadObjects
-//	userOptions = JSON.parse(JSON.stringify(userOptions));
+	merge(uo, userOptions);
 
+	// prevent DeadObjects
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
 	return setting.then(onSet, onError);
+}
+
+function merge(source, target) {
+  for (const [key, val] of Object.entries(source)) {
+    if (val !== null && typeof val === `object`) {
+      if (target[key] === undefined) {
+        target[key] = new val.__proto__.constructor();
+      }
+      merge(val, target[key]);
+    } else {
+      target[key] = val;
+    }
+  }
+  return target;
 }
 
 document.addEventListener("DOMContentLoaded", async e => {
 
 	// build the DOM
 	makeTabs();
-	//initAdvancedOptions();
 	buildPositionWidget();
 	setVersion();
-	hideBrowserSpecificElements();
-	buildInfoBubbles();
+	buildAdvancedOptions();
 	buildImportExportButtons();
 	buildHelpTab();
 	buildClearSearchHistory();
@@ -710,6 +404,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 	hashChange();
 	buildUploadOnHash();
 	buildThemes();
+	buildSearchActions();
+	hideBrowserSpecificElements();
+	// buildInfoBubbles();
 
 	// restore settings and set INPUT values
 	await restoreOptions();
@@ -727,7 +424,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 
 function addDOMListeners() {
 
-	$('#cb_autoPasteFromClipboard').addEventListener('change', async (e) => {
+	$('#autoPasteFromClipboard').addEventListener('change', async (e) => {
 		
 		if ( e.target.checked === true ) {
 			e.target.checked = await browser.permissions.request({permissions: ["clipboardRead"]});
@@ -735,29 +432,29 @@ function addDOMListeners() {
 		}
 	});
 
-	$('#cb_autoCopy').addEventListener('change', async (e) => {
+	$('#autoCopy').addEventListener('change', async (e) => {
 		if ( e.target.checked === true ) {
 			e.target.checked = await browser.permissions.request({permissions: ["clipboardWrite"]});
 			saveOptions();
 		}
 	});
 
-	["quickMenuScale", "sideBarScale", "findBarScale", "quickMenuIconScale"].forEach( id => {
-		$(`#range_${id}`).addEventListener('input', ev => {
-			$(`#i_${id}`).value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
+	["quickMenuScale", "sideBar.scale", "findBar.scale", "quickMenuIconScale"].forEach( id => {
+		$(id).addEventListener('input', ev => {
+			$(`i_${id}`).value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 		});
 
-		$(`#range_${id}`).dispatchEvent(new Event('input'));
+		$(id).dispatchEvent(new Event('input'));
 	});
 
-	$('#cb_userStylesEnabled').addEventListener('change', e => {
-		$('#t_userStyles').disabled = ! e.target.checked;
+	$('#userStylesEnabled').addEventListener('change', e => {
+		$('#userStyles').disabled = ! e.target.checked;
 	});
 
-	$('#b_quickMenuKey').addEventListener('click', keyButtonListener);
-	$('#b_contextMenuKey').addEventListener('click', keyButtonListener);
+	$('#quickMenuKey').addEventListener('click', keyButtonListener);
+	$('#contextMenuKey').addEventListener('click', keyButtonListener);
 
-	$('#cb_syncWithFirefoxSearch').addEventListener('change', e => {
+	$('#syncWithFirefoxSearch').addEventListener('change', e => {
 		$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
 	});
 
@@ -768,7 +465,7 @@ function addDOMListeners() {
 }
 
 document.addEventListener('userOptionsLoaded', e => {
-	$('#searchEnginesParentContainer').style.display = $('#cb_syncWithFirefoxSearch').checked ? "none" : null;
+	$('#searchEnginesParentContainer').style.display = $('#syncWithFirefoxSearch').checked ? "none" : null;
 });
 
 function keyButtonListener(e) {
@@ -1024,7 +721,7 @@ function buildPositionWidget() {
 			for (let _el of document.getElementsByClassName('position'))
 				_el.className = _el.className.replace(' active', '');
 			el.className+=' active';
-			$('#h_position').value = el.dataset.position;
+			$('#quickMenuPosition').value = el.dataset.position;
 			saveOptions();
 		});
 		
@@ -1087,22 +784,22 @@ function showInfoMsg(el, msg) {
 }
 
 // set up info bubbles
-function buildInfoBubbles() {
+// function buildInfoBubbles() {
 	
-	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
+// 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
-	for (let el of i18n_tooltips) {
-		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
+// 	for (let el of i18n_tooltips) {
+// 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
 		
-		el.addEventListener('mouseenter', e => {
-			showInfoMsg(el, el.dataset.msg);
-		});
+// 		el.addEventListener('mouseenter', e => {
+// 			showInfoMsg(el, el.dataset.msg);
+// 		});
 		
-		el.addEventListener('mouseleave', e => {
-			$('#info_msg').style.display = 'none';
-		});
-	}
-}
+// 		el.addEventListener('mouseleave', e => {
+// 			$('#info_msg').style.display = 'none';
+// 		});
+// 	}
+// }
 
 // import/export buttons
 function buildImportExportButtons() {
@@ -1176,7 +873,6 @@ function buildImportExportButtons() {
 				// load icons to base64 if missing
 				let overDiv = document.createElement('div');
 				overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
-				// overDiv.innerText = "Fetching remote content";
 				let msgDiv = document.createElement('div');
 				msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
 				msgDiv.innerText = browser.i18n.getMessage("Fetchingremotecontent");
@@ -1194,7 +890,7 @@ function buildImportExportButtons() {
 				if ( browser.search && browser.search.get ) {
 					let ocses = await browser.search.get();
 					findNodes(_uo.nodeTree, node => {
-						if ( node.type === "oneClickSearchEngine" && !node.icon ) {
+						if ( node.type === "oneClickSearchEngine" ) {
 							let ocse = ocses.find(_ocse => _ocse.name === node.title);	
 							if ( ocse ) node.icon = ocse.favIconUrl;
 						}
@@ -1231,6 +927,8 @@ function buildUploadOnHash() {
 	}
 }
 
+
+
 function buildHelpTab() {
 
 	function traverse(node) {
@@ -1260,6 +958,12 @@ function buildHelpTab() {
 		}
 
 	}
+
+	// replace new-style titles
+	document.querySelectorAll('[title^="$"]').forEach( el => {
+		el.title = browser.i18n.getMessage(el.title.replace(/^\$/, "") );
+		el.style.cursor = "help";
+	});
 
 	// add locale-specific styling
 	var link = document.createElement( "link" );
@@ -1392,6 +1096,43 @@ function buildSaveButtons() {
 	});
 }
 
+function buildSearchActions() {
+
+	function addOption(el, keys) {
+
+		let actions = {
+			"openFolder": {i18n:"SearchActionsOpenFolder"},
+			"openCurrentTab": {i18n: "SearchActionsCurrentTab"},
+			"openNewTab": {i18n: "SearchActionsNewTab"},
+			"openBackgroundTab": {i18n: "SearchActionsBackgroundTab"},
+			"openBackgroundTabKeepOpen": {i18n: "SearchActionsBackgroundTabKeepOpen"},
+			"openNewWindow": {i18n: "SearchActionsNewWindow"},
+			"openNewIncognitoWindow": {i18n: "SearchActionsIncognitoWindow"},
+			"openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
+			"keepMenuOpen": {i18n: "KeepMenuOpen"},
+			"noAction": {i18n: "SearchActionsNoAction"}
+		};
+
+		for ( let key in actions ) {
+
+			if ( !keys.includes(key) ) continue;
+
+			let o = document.createElement('option');
+			o.value = key;
+			o.innerText = browser.i18n.getMessage(actions[key].i18n);
+
+			for ( let data in actions[key]) 
+				o.dataset[data] = actions[key][data];
+
+			el.appendChild(o);
+		}
+	}
+
+	document.querySelectorAll('[data-searchaction]').forEach( el => {
+		addOption(el, el.dataset.searchaction.split(","));
+	});
+}
+
 // generate new search.json.mozlz4 
 $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 	
@@ -1479,11 +1220,12 @@ $('#nightmode').addEventListener('click', () => {
 });
 
 function buildThemes() {
-	$('#s_quickMenuTheme').innerHTML = null;
+	$('#quickMenuTheme').innerHTML = null;
 	themes.forEach( t => {
 		let option = document.createElement('option');
-		option.value = option.innerText = t.name;
-		$('#s_quickMenuTheme').appendChild(option);
+		option.value = t.name;
+		option.innerText = browser.i18n.getMessage(t.name.replace(" ","_")) || t.name;
+		$('#quickMenuTheme').appendChild(option);
 	});
 }
 
@@ -1546,11 +1288,16 @@ function buildShortcutTable() {
 
 		let tr = document.createElement('tr');
 		tr.shortcut = s;
-		tr.innerHTML = `
-			<td></td>
-			<td>${s.name || s.action}</td>
-			<td><span style="cursor:pointer;user-select:none;" title="${browser.i18n.getMessage("ClickToSet")}" data-id="${s.id}">set</span></td>
-			`;
+		tr.appendChild(document.createElement('td'));
+		tr.appendChild(document.createElement('td'))
+			.appendChild(document.createTextNode(browser.i18n.getMessage(s.name) || s.name || s.action));
+
+		let span = tr.appendChild(document.createElement('td').appendChild(document.createElement('span')));
+		span.title = browser.i18n.getMessage("ClickToSet");
+		span.dataset.id = s.id;
+		span.style = "cursor:pointer;user-select:none;";
+		span.innerText = 'set';
+
 		table.appendChild(tr);
 
 		let input = document.createElement('input');
@@ -1649,7 +1396,9 @@ function buildShortcutTable() {
 }
 
 function imageUploadHandler(el, callback) {
+
 	el.addEventListener('change', e => {
+
 		let file = e.target.files[0];
 		
 		var reader = new FileReader();
@@ -1670,16 +1419,63 @@ function imageUploadHandler(el, callback) {
 	});
 }
 
-imageUploadHandler($('#toolBarIconPicker'), img => {
-	let uri = imageToBase64(img, 32);
-	setToolBarIconOption(uri);
-	saveOptions();
+[$('toolBarIconForm'), $('quickMenuIconForm')].forEach( el => {
+	imageUploadHandler(el, img => {
+		let uri = imageToBase64(img, 32);
+		setIconOption(el,  uri);
+		saveOptions();
+	});
 });
 
-function setToolBarIconOption(uri) {
-	$('#toolBarIconForm .toolBarIconCustom').style.backgroundImage = `url(${uri})`;
-	$('#toolBarIcon_3').checked = true;
-	$('#toolBarIcon_3').value = uri;
+function setIconOption(el, uri) {
+	el.querySelector('.iconCustom').style.backgroundImage = `url(${uri})`;
+
+	let lastOpt = el.querySelector('input[type="radio"][id$="3"]');
+	lastOpt.checked = true;
+	lastOpt.value = uri;
+}
+
+function buildAdvancedOptions() {
+
+	function makeInput( key ) {
+
+		let value = key.split('.').reduce((a, b) => a[b], defaultUserOptions);
+
+		let type = typeof value;
+
+		let el = document.createElement('input');
+
+		el.id = key;
+
+		if ( type === 'boolean')
+			el.type = 'checkbox';
+
+		if ( type === 'string' )
+			el.type = 'input';
+		
+		if ( type === 'number' )
+			el.type = 'number';
+
+		return el;
+	}
+
+	advancedOptions.forEach( o => {
+		let tr = document.createElement('tr');
+		let td1 = document.createElement('td');
+		let td2 = document.createElement('td');
+
+		tr.appendChild(td1);
+		tr.appendChild(td2);
+
+		td1.innerText = o.id;
+		td1.title = browser.i18n.getMessage(o.id.replace(".", "_") + "Tooltip") || o.i18n;
+		td1.style.cursor = 'help';
+
+		td2.appendChild(makeInput(o.id));
+
+
+		$('advancedSettingsTable').appendChild(tr);
+	})
 }
 
 function sortAdvancedOptions() {
@@ -1692,6 +1488,32 @@ function sortAdvancedOptions() {
 	});
 	table.innerHTML = null;
 	trs.forEach( tr => table.appendChild(tr));
+
+	// move 
+	let save = table.querySelector('.moveToEnd');
+	table.appendChild(save);
+}
+
+function syntaxHighlight(json) {
+    if (typeof json != 'string') {
+         json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
 }
 
 // window.addEventListener('focus', async e => {
@@ -1703,5 +1525,129 @@ function sortAdvancedOptions() {
 
 // saveOptions on every change
 document.addEventListener('change', e => {
-	setTimeout(saveOptions, 250);
+	
+	// skip modal forms
+	if ( e.target.closest('.editForm')) return;
+
+	setTimeout(saveOptions, 250)
+});
+
+$('b_manualEdit').addEventListener('click', e => {
+
+	let on = $('advancedSettingsTable').style.display == 'none' ? true : false;
+
+	if ( !on ) {
+
+		if ( !confirm(browser.i18n.getMessage("manualeditwarning"))) return;
+
+		$('t_manualEdit').style.height = window.innerHeight - 120 + "px";//$('advancedSettingsTable').getBoundingClientRect().height + "px";
+		$('advancedSettingsTable').style.display = 'none';
+		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display=null );
+
+		let o = JSON.parse(JSON.stringify(userOptions));
+		delete o.searchEngines;
+		delete o.searchBarHistory;
+		delete o.nodeTree;
+
+		const ordered = Object.keys(o).sort().reduce(
+		  (obj, key) => { 
+		    obj[key] = o[key]; 
+		    return obj;
+		  }, 
+	  	{}
+		);
+
+		$('t_manualEdit').innerHTML = syntaxHighlight(JSON.stringify(ordered, null, 4))
+	} else {
+		 $('advancedSettingsTable').style.display = null;
+		 [$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );
+		 $('b_manualSave').classList.remove('changed');
+	}
 })
+
+$('t_manualEdit').addEventListener('input', e => {
+	$('b_manualSave').classList.add('changed');
+});
+
+$('b_manualSave').addEventListener('click', e => {
+	try {
+		let uo = JSON.parse($('t_manualEdit').innerText);
+		merge(uo, userOptions);
+
+		restoreOptions(userOptions);
+		saveOptions();
+
+		$('b_manualSave').classList.remove('changed');
+
+	} catch (err) { alert(err) }
+	
+});
+
+function createEditMenu() {
+
+	let overdiv = document.createElement('div');
+	overdiv.className = 'overDiv';
+	overdiv.style.opacity = 0;
+	document.body.appendChild(overdiv);
+
+	// chrome fix for menu closing on text select events
+	overdiv.onmousedown = e => {
+		if ( overdiv !== e.target) return;
+		overdiv.mousedown = true;
+	}
+
+	overdiv.onclick = e => {
+		if ( !overdiv.mousedown ) return;
+		if ( overdiv !== e.target) return;
+	}
+
+	let formContainer = document.createElement('div');
+	formContainer.id = "floatingEditFormContainer";
+	formContainer.style = "width:90%;height:90%;";
+
+	let fb = document.createElement('ul');
+	fb.id = 'qm_browser';
+	fb.className = 'folderBrowser';
+
+	formContainer.appendChild(fb);
+	overdiv.appendChild(formContainer);
+
+	let g = new Grid({browserId: fb.id});
+
+	g.makeFolderBrowser();
+
+	let iframe = document.createElement('iframe');
+	formContainer.appendChild(iframe);
+
+	function setSize() {
+		let win = iframe.contentWindow
+		let doc = win.document;
+		let qm = win.qm;
+
+		qm.insertBreaks();
+		qm.style.width = null;
+		qm.style.height = null;
+
+		iframe.style.width = qm.getBoundingClientRect().width + "px";
+		iframe.style.height = doc.body.clientHeight + "px";
+	}
+
+	window.addEventListener('message', e => {
+		if ( e.data.action && e.data.action === "quickMenuResize") {
+			setSize();
+		}
+	})
+
+	iframe.onload = function() {
+		iframe.contentWindow.document.addEventListener('quickMenuIframePreLoaded', setSize);
+	}
+
+	iframe.src = browser.runtime.getURL('quickmenu.html');
+
+	overdiv.appendChild(formContainer);
+
+	$('#main').classList.add('blur');
+
+	overdiv.getBoundingClientRect();
+	overdiv.style.opacity = null;
+}

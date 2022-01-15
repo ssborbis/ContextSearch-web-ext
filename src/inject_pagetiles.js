@@ -1,13 +1,4 @@
-function openPageTiles(e) {
-
-	let selectedText = getSelectedText(e.target);
-
-	if (!selectedText) return false;
-
-	if ( e.dataTransfer )
-		e.dataTransfer.setData("text/plain", selectedText);
-
-	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: selectedText});
+function openPageTiles() {
 
 	// chrome requires delay or the drag event is cancelled
 	setTimeout(() => {
@@ -41,13 +32,6 @@ function openPageTiles(e) {
 	}, 50);
 }
 
-document.addEventListener('dragstart', e => {
-
-	if ( !userOptions.pageTiles.enabled ) return;
-
-	openPageTiles(e);
-});
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (message.action && message.action === "closePageTiles")
@@ -59,6 +43,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
+document.addEventListener('dragstart', e => {
+
+	if ( !userOptions.pageTiles.enabled ) return;
+
+	let searchTerms = getSelectedText(e.target);
+
+	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: searchTerms})
+		.then( () => browser.runtime.sendMessage({action: "openPageTiles"}));
+});
+
 document.addEventListener('keydown', e => {
 	if ( e.key == "Escape" ) closePageTiles();
 });
@@ -66,7 +60,7 @@ document.addEventListener('keydown', e => {
 let getPageTilesIframe = () => document.getElementById('CS_pageTilesIframe');
 let getOverDiv = () => document.getElementById('CS_pageTilesOverDiv');
 
-let closePageTiles = (e) => {
+let closePageTiles = e => {
 
 	let iframe = getPageTilesIframe();
 	if ( iframe ) iframe.parentNode.removeChild(iframe);

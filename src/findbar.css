@@ -3,15 +3,17 @@ BODY, HTML {
 	padding:0;
 	background:var(--background);
 	text-align: left;
+	overflow-x: hidden;
+	white-space: nowrap;
 }
 
 #findbar {
-	padding-top:5px;
 	font-size:10pt;
 	font-family:Arial;
 	font-weight:600;
 	user-select:none;
-	height:36px;
+	height:31px;
+	padding-top: 5px;
 }
 #findbar > * {
 	display:inline-block;

@@ -35,8 +35,8 @@ const defaultUserOptions = {
 		shift: false,
 		useInnerText: false
 	},
-	quickMenuScale: 1,
-	quickMenuIconScale: 1,
+	quickMenuScale: 1.0,
+	quickMenuIconScale: 1.0,
 	quickMenuPosition: "top center",
 	quickMenuOffset: {x:0, y:-20},
 	quickMenuCloseOnScroll: false,
@@ -71,6 +71,7 @@ const defaultUserOptions = {
 		{name: 'toggle_hotkeys',disabled: true},
 		{name: 'edit',			disabled: false},
 		{name: 'block',			disabled: true},
+		{name: 'showhide',		disabled: true},
 		{name: 'recentlyused',	disabled: true}
 	],
 	quickMenuToolsPosition: "top",
@@ -82,6 +83,7 @@ const defaultUserOptions = {
 	contextMenuCtrl: "openBackgroundTab",
 	contextMenuSearchLinksAs: "text",
 	contextMenuUseInnerText: false,
+	contextMenuShowSettingsFolder: false,
 	contextMenuTitle:"",
 	quickMenuLeftClick: "openNewTab",
 	quickMenuRightClick: "openCurrentTab",
@@ -98,7 +100,7 @@ const defaultUserOptions = {
 	quickMenuSearchHotkeys: "noAction",
 	quickMenuSearchHotkeysFolders: "noAction",
 	quickMenuAutoMaxChars: 0,
-	quickMenuOpeningOpacity: 1,
+	quickMenuOpeningOpacity: 1.0,
 	quickMenuTheme: "modern",
 	quickMenuAlwaysShowMenuBar: false,
 	searchBarSuggestions: true,
@@ -109,6 +111,7 @@ const defaultUserOptions = {
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
 	searchBarIcon: "icons/logo.svg",
+	searchBarDomLayout: "",
 	sideBar: {
 		enabled: true,
 		columns: 6,
@@ -132,7 +135,9 @@ const defaultUserOptions = {
 		rememberState: false,
 		openOnResults: false,
 		openOnResultsMinimized: false,
-		scale:1
+		scale:1.0,
+		domLayout:"",
+		setMinWidth:true
 	},
 	highLight: {
 		enabled: true,
@@ -154,7 +159,7 @@ const defaultUserOptions = {
 			{color: '#ffffff',background:'#428bca'},
 			{color: '#000000',background:'#FFFF00'}		
 		],
-		opacity:1,
+		opacity:1.0,
 		activeStyle: {color:'#ffffff', background:'#65FF00'},
 		navBar: {
 			enabled: false
@@ -180,7 +185,7 @@ const defaultUserOptions = {
 				caseSensitive: false,
 				limit: 0
 			},
-			scale: 1
+			scale: 1.0
 		}
 	},
 	userStyles: 
@@ -199,10 +204,10 @@ const defaultUserOptions = {
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
 	quickMenuHoldTimeout: 250,
+	quickMenuCancelDeadzone:4,
 	exportWithoutBase64Icons: false,
 	addSearchProviderHideNotification: false,
 	syncWithFirefoxSearch: false,
-	quickMenuTilesDraggable: true,
 	contextMenuShowRecentlyUsed: false,
 	contextMenuShowRecentlyUsedAsFolder:true,
 	recentlyUsedList: [],
@@ -226,12 +231,12 @@ const defaultUserOptions = {
 	cacheIconsMaxSize: 32,
 	cacheIcons: true,
 	userShortcuts: [],
-	shakeSensitivity: 3,
+	shakeSensitivity: 4,
 	blockList: ["moz-extension://*", "chrome://*"],
 	version: "1",
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
-	forceOpenReultsTabsAdjacent: false,
+	forceOpenResultsTabsAdjacent: false,
 	rightClickMenuOnMouseDownFix: false,
 	contextMenuRegexMatchedEngines: false,
 	quickMenuRegexMatchedEngines: false,
@@ -241,5 +246,18 @@ const defaultUserOptions = {
 	alwaysAllowTileRearranging: false,
 	contextMenuUseContextualLayout: false,
 	contextMenuContextualLayoutFlattenLimit: 10,
-	quickMenuDomLayout: ""
+	quickMenuDomLayout: "",
+	customSearchActions: [],
+	modify_mycroftproject: true,
+	quickMenuUseContextualLayout: false,
+	quickMenuContextualLayoutFlattenLimit: 10,
+	searchEnginesManagerShowContexts: true,
+	quickMenuIcon: {
+		enabled: false,
+		x:0,
+		y:0,
+		url:"icons/logo_notext.svg",
+		scale:1.0
+	},
+	checkContextMenuEventOrder: true
 };

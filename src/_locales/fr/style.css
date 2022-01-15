@@ -2,6 +2,11 @@
 	width:auto;
 }
 #editSearchEngineForm INPUT, #editSearchEngineForm SELECT, #editSearchEngineForm TEXTAREA {
-	margin-bottom:-8px;
-	padding-bottom:8px;
+	margin-bottom:5px;
+}
+#info_msg {
+	max-width:320px;
+}
+.tablinks {
+	min-width:250px;
 }

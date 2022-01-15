@@ -1,8 +1,14 @@
 var userOptions = {};
 
+//const optionsPage = top.location.href.startsWith(browser.runtime.getURL('options.html'));
+
 async function makeFrameContents() {
 
-	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuUseOldStyle});
+	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
+
+	if ( qmo.length ) qmo = qmo.shift();
+
+	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuUseOldStyle, contexts:qmo.contexts});
 
 	let old_qme = document.getElementById('quickMenuElement');
 	
@@ -20,20 +26,23 @@ async function makeFrameContents() {
 	
 	makeSearchBar();
 
-	if ( userOptions.quickMenuSearchBar === 'hidden') {
-		sbc.style.display = 'none';
-		sbc.style.height = '0';
-	}
+	if ( userOptions.quickMenuSearchBar === 'hidden')
+		sbc.classList.add('hide');
 
-	// get proper sizing for opening position
-	setMenuSize();
+	// hide for qm
+	[tb, mb].forEach(el => el.classList.add('hide'));
 
 	// override layout
 	setLayoutOrder(userOptions.quickMenuDomLayout);
 
+	// get proper sizing for opening position
+	setMenuSize();
+
 	document.getElementById('closeButton').addEventListener('click', e => {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 	});
+
+	document.dispatchEvent(new CustomEvent('quickMenuIframePreLoaded'));
 	
 	await browser.runtime.sendMessage({
 		action: "quickMenuIframeLoaded", 
@@ -185,9 +194,6 @@ function resizeMenu(o) {
 		columns: qm.columns,
 		rows: rows
 	}, "*");
-
-//	qm.style.width = null;
-//	qm.style.height = null;
 }
 
 function closeMenuRequest(e) {
@@ -224,7 +230,7 @@ function toolsHandler(o) {
 		createToolsBar(qm);
 	
 	if ( !userOptions.quickMenuToolsAsToolbar ) {
-		if ( qm.singleColumn ) qm.toolsArray.forEach( tool => tool.classList.add('singleColumn') );
+		qm.toolsArray.forEach( tool => tool.classList.toggle('singleColumn', qm.singleColumn) );
 	}
 
 	// unhide tiles hidden by more tile
@@ -246,6 +252,8 @@ function toolsHandler(o) {
 	qm.insertBreaks(o.columns);
 
 	let rows = o.rows || ( qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows );
+
+	//if ( optionsPage ) rows = Number.MAX_SAFE_INTEGER;
 
 	let lastBreak = qm.getElementsByTagName('br').item(rows - 1);
 
@@ -400,6 +408,10 @@ window.addEventListener('message', e => {
 			quickMenuObject.locked = false;
 
 			setLockToolStatus();
+			break;
+
+		case "editEnd":
+			QMtools.find(t => t.name === "edit").action({forceOff: true});
 			break;
 			
 	}

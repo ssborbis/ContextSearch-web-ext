@@ -42,6 +42,9 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 				document.body.appendChild(toolBar);
 		});
 
+	// override layout
+	setLayoutOrder( qm.dataset.menu === "sidebar" ? userOptions.sideBar.domLayout : userOptions.searchBarDomLayout );
+
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
@@ -109,6 +112,7 @@ function toolBarResize(o) {
 	let maxWidth = 800;
 
 	qm.style.opacity = 0;
+	qm.style.height = null;
 
 	let tileSize = qm.getTileSize();
 
@@ -149,11 +153,14 @@ function toolBarResize(o) {
 
 	if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
-		let sumHeight = getAllOtherHeights();
+		let sumHeight = getAllOtherHeights(true);
+
 		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
 
 		// qm.style.width = `calc(100% - ${qm.offsetWidth - qm.scrollWidth}px)`;
 		qm.style.width = `calc(100%)`;
+	} else {
+		qm.style.height = qm.scrollHeight + "px";
 	}
 
 	document.dispatchEvent(new CustomEvent('resizeDone'));
@@ -176,9 +183,15 @@ async function sideBarResize(options) {
 
 	if ( window == top ) return;
 
+	// remove min-width for single columns
+	if (qm.singleColumn) qm.style.minWidth = null;
+
 	qm.insertBreaks();
 
-	document.body.style.width = screen.width + "px";
+//	document.body.style.width = screen.width + "px";
+	document.body.width = null;
+	document.body.getBoundingClientRect();
+	document.body.style.width = document.body.scrollWidth + "px";
 
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
@@ -206,7 +219,7 @@ async function sideBarResize(options) {
 
 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");	
 
-	let allOtherElsHeight = getAllOtherHeights();
+	let allOtherElsHeight = getAllOtherHeights(true);
 
 	qm.style.height = function() {
 		
@@ -223,7 +236,7 @@ async function sideBarResize(options) {
 
 	document.body.style.width = null;
 
-	document.documentElement.style.setProperty('--iframe-body-width', document.body.offsetWidth + "px");
+	document.documentElement.style.setProperty('--iframe-body-width', qm.offsetWidth + "px");
 
 	qm.removeBreaks();
 
@@ -232,6 +245,9 @@ async function sideBarResize(options) {
 	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
 
 	toolBar.style.width = qm.style.width;
+
+	// apply min-width for subfolders
+	if ( !qm.rootNode.parent && userOptions.sideBar.setMinWidth ) qm.setMinWidth();
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
@@ -283,6 +299,7 @@ async function makeAddEngineBar() {
 		let img = new Image();
 		img.src = browser.runtime.getURL('icons/add.svg');
 		div.innerText = " ";
+		div.style.display = 'none';
 		div.insertBefore(img, div.firstChild);
 		div.title = browser.i18n.getMessage("AddCustomSearch");
 		aeb.appendChild(div);
@@ -292,44 +309,16 @@ async function makeAddEngineBar() {
 		});
 
 		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
-			div.parentNode.removeChild(div);
-			return;
+			return div.parentNode.removeChild(div);
 		} 
 
 		div.innerText = xml_se.title;
 		div.insertBefore(img, div.firstChild);
+		div.style.display = null;
 
 		div.onclick = async() => {
-
-			browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
-			return;
-
-			// img.src = browser.runtime.getURL('icons/spinner.svg');
-			// let loadImages = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url:ose.href});
-			// let se = loadImages.searchEngines[0];
-
-			// if ( !se ) return;
-
-			// let node = await browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine:se});
-			// userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
-			
-			// div.addEventListener('transitionend', async e => {
-			// 	div.parentNode.removeChild(div);
-
-			// 	let tile = nodeToTile(node);
-
-			// 	let firstTile = qm.querySelector('DIV.tile');
-			// 	tile.className = firstTile.className;
-			// 	tile.style.width = firstTile.style.width;
-			// 	qm.appendChild(tile);
-			// 	tile.scrollIntoView({block: "start", behavior:"smooth"});
-			// });
-			// img.src = browser.runtime.getURL('icons/checkmark.svg');
-			// div.style.opacity = 0;
-
+			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
-		
-		
 	});
 
 	document.body.appendChild(aeb);
@@ -388,7 +377,7 @@ document.getElementById('closeButton').addEventListener('click', e => {
 		window.close();
 });
 
-addChildDockingListeners(mb, "sideBar");
+addChildDockingListeners(mb, "sideBar", "minimizeButton");
 
 if ( window == top ) {
 	document.getElementById('minimizeButton').style.display = "none";

@@ -165,14 +165,15 @@ function getIconFromNode(node) {
 		} else if ( node.type === "folder" ) {
 			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');
 		} else {
-			return node.icon || null;
+			return node.icon || "";
 		}
 	})();
 
 	return iconUrl.replace(/http:\/\//, "https://");
 }
 
-function nodeCut(node) {
+function nodeCut(node, parent) {
+	node.parent = node.parent || parent;
 	return node.parent.children.splice(node.parent.children.indexOf(node), 1).shift();
 }
 

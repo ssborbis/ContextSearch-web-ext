@@ -1,59 +1,67 @@
 
 let DragShake = function() {
 
-	var start = null;
+	const shakeInterval = 500;
+	const resetMinMaxInterval = 1000;
+
+	let origin;
 	let lastMovementX = 0;
 	let reversals = [];
-	const shake_threshold = 5;
-	let last_dir = 0;
-	let last_x = 0;
+	let statusDiv;
+	let minMaxTimer = 0;
+	let min = Number.MAX_SAFE_INTEGER;
+	let max = 0
+
+	this.onshake = () => {}
 
 	this.start = () => {
 		document.addEventListener('dragover', e => {
-		    start = {x: e.clientX, y: e.clientY}
+		    origin = {x: e.clientX, y: e.clientY}
 		}, {once: true});
 
-		document.addEventListener('dragover', dragHandler);
+		document.addEventListener('dragover', this.dragHandler);
+
+		statusDiv = document.createElement('status');
+		statusDiv.style = 'font-size:9pt;position:fixed;bottom:0;right:0;color:#aaa';
+		statusDiv.style.zIndex = Number.MAX_SAFE_INTEGER;
+		document.body.appendChild(statusDiv);
 	}
-	stop = () => document.removeEventListener('dragover', dragHandler);
+	this.stop = () => {
+		document.removeEventListener('dragover', this.dragHandler);
+		if ( statusDiv && statusDiv.parentNode ) statusDiv.parentNode.removeChild(statusDiv);
+	}
 
-	this.onshake = () => {}
-	shake = () => this.onshake();
-	this.stop = stop;
+	this.dragHandler = e => {
 
-	function dragHandler(e) {
-		let deltaX = e.clientX - start.x;
+		reversals = reversals.filter(r => Date.now() - r < shakeInterval );
 
-		if ( deltaX * lastMovementX < 0 )
+		// set min/max
+		min = e.clientX < min ? e.clientX : min;
+		max = e.clientX > max ? e.clientX : max;
+
+		let deltaX = e.clientX - origin.x;
+
+		if ( Math.abs(deltaX) > 25 && deltaX * lastMovementX < 0 )
 			reversals.push(Date.now());
 
-		if ( reversals.length > shake_threshold ) reversals.shift();
+		if ( reversals.length === userOptions.shakeSensitivity ) {
+			this.stop();
+			this.onshake();
+		}
 
 		lastMovementX = deltaX;
 
-		if ( reversals.length === shake_threshold && Date.now() - reversals[0] < 1000 ) {
-			stop();
-			shake();
-		}
-	}
+		statusDiv.innerText = `${reversals.length} / ${userOptions.shakeSensitivity} shakes`;
 
-	function dragHandler2(e) {
+		if ( Date.now() - minMaxTimer > resetMinMaxInterval ) {
+			minMaxTimer = Date.now();
 
-		let deltaX = last_x - e.clientX;
-		let dir = deltaX > 0 ? 1 : -1;
+			// reset origin
+			origin.x = min + ( max - min ) / 2;
 
-		if (Math.abs(deltaX) > userOptions.shakeSensitivity && dir != last_dir ) {
-			reversals.push(Date.now());
-		}
-
-		if ( reversals.length > shake_threshold ) reversals.shift();
-
-		last_dir = dir;
-		last_x = e.clientX;
-
-		if ( reversals.length === shake_threshold && Date.now() - reversals[0] < 1000 ) {
-			stop();
-			shake();
+			// reset local min/max
+			min = Number.MAX_SAFE_INTEGER;
+			max = 0;
 		}
 	}
 

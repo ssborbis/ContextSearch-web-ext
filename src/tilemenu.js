@@ -6,7 +6,6 @@ var quickMenuObject = {
 	screenCoords: {x:0, y:0},
 	mouseCoordsInit: {x:0, y:0},
 	mouseLastClickTime: 0,
-	mouseDragDeadzone: 4,
 	lastSelectTime: 0,
 	locked: false,
 	searchTerms: "",
@@ -75,15 +74,15 @@ function getFullElementSize(el) {
 	var paddingTop = parseFloat(style.paddingTop) || 0;
 	var paddingBottom = parseFloat(style.paddingBottom) || 0;
 
-	var borderLeft = parseFloat(style.borderLeftWidth) || 0;
-	var borderRight = parseFloat(style.borderRightWidth) || 0;
-	var borderTop = parseFloat(style.borderTopWidth) || 0;
-	var borderBottom = parseFloat(style.borderBottomWidth) || 0;
+	var borderLeftWidth = parseFloat(style.borderLeftWidth) || 0;
+	var borderRightWidth = parseFloat(style.borderRightWidth) || 0;
+	var borderTopWidth = parseFloat(style.borderTopWidth) || 0;
+	var borderBottomWidth = parseFloat(style.borderBottomWidth) || 0;
 
-	let fullWidth = rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeft + borderRight;
-	let fullHeight = rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTop + borderBottom;
+	let fullWidth = rect.width + marginLeft + marginRight - ( paddingLeft + paddingRight ) + borderLeftWidth + borderRightWidth;
+	let fullHeight = rect.height + marginTop + marginBottom - ( paddingTop + paddingBottom ) + borderTopWidth + borderBottomWidth;
 
-	return {width: fullWidth, height: fullHeight, rectWidth: rect.width, rectHeight: rect.height, noBorderWidth: fullWidth - borderLeft - borderRight };
+	return {width: fullWidth, height: fullHeight, rectWidth: rect.width, rectHeight: rect.height, noBorderWidth: fullWidth - borderLeftWidth - borderRightWidth };
 }
 
 // generic search engine tile
@@ -110,9 +109,29 @@ function mouseClickBack(e) {
 
 // get open method based on user preferences
 function getOpenMethod(e, isFolder) {
-	
+
 	isFolder = isFolder || false;
 
+	if ( defaultSearchActions ) {
+		for ( let key in defaultSearchActions ) {
+			defaultSearchActions[key].action = userOptions[key];
+			let sa = defaultSearchActions[key];
+			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+				// console.log(key, sa.action);
+				return sa.action;
+			}
+		}
+	}
+
+	for ( let sa of userOptions.customSearchActions ) {
+		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+			// console.log('customSearchActions', sa);
+			return sa.action;
+		}
+	}
+
+	console.error('no searchAction found', e);
+	
 	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
 	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
 	let middle = isFolder ? userOptions.quickMenuFolderMiddleClick : userOptions.quickMenuMiddleClick;
@@ -232,10 +251,19 @@ async function makeQuickMenu(options) {
 	qm.addTitleBarTextHandler = div => {
 		
 		['mouseenter','dragenter'].forEach( ev => {
-			div.addEventListener(ev, () => tb.innerText = div.title || div.dataset.title)
+			div.addEventListener(ev, () => {
+
+				if ( tb.lastChild && tb.lastChild.nodeType === 3 )
+					tb.removeChild(tb.lastChild);
+
+				tb.appendChild(document.createTextNode( div.title || div.dataset.title ) );
+			});
 		});
 		
-		div.addEventListener('mouseleave', () => tb.innerText = '');
+		div.addEventListener('mouseleave', () => {
+			if ( tb.lastChild && tb.lastChild.nodeType === 3 )
+				tb.lastChild.textContent = "...";
+		});
 	}
 
 	// prevent context menu anywhere but the search bar
@@ -467,11 +495,17 @@ async function makeQuickMenu(options) {
 	});
 
 	// prevent click events from propagating
-	[/*'mousedown',*/ 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
+	['mousedown', 'mouseup', 'click', 'contextmenu'].forEach( eventType => {
+
+		document.addEventListener(eventType, e => {
+			if ( e.button && [1,3,4].includes(e.button) ) e.preventDefault();
+		});
 
 		qm.addEventListener(eventType, e => {
 
-			if ( e.target.closest('.tile')) return;
+			// move fix
+			if ( e.target.closest('.tile, GROUP, .quickMenuMore')) return;
+
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -617,7 +651,7 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		let tiles = qm.querySelectorAll('.tile:not([data-hidden="true"])');
+		let tiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( t => t.style.display !== 'none' );
 
 		let br = () => document.createElement('br');
 
@@ -657,16 +691,26 @@ async function makeQuickMenu(options) {
 
 		// remove doubles
 		qm.querySelectorAll('br').forEach( el => {
+
+			// back-to-back BRs
 			if (el.previousSibling && el.previousSibling.nodeName === el.nodeName && el.previousSibling.className === el.className )
 				el.parentNode.removeChild(el);
-		});
-		// qm.querySelectorAll('br').forEach( lc => {
-		// 	console.log('break after', lc.previousSibling);
-		// })
 
-		// qm.querySelectorAll('GROUP.block .container:last-child').forEach( lc => {
-		// 	console.log(lc.nodeName);
-		// }
+			// groups
+			if ( el.previousSibling && el.previousSibling.nodeName === "GROUP" ) {
+				let g = el.previousSibling;
+
+				// inline groups
+				if ( g.lastChild && g.lastChild.nodeName === el.nodeName )
+					g.removeChild(g.lastChild);
+
+				// block groups
+				let lastBr = g.querySelector('br:last-of-type');
+				if ( lastBr && !lastBr.nextSibling )
+					lastBr.parentNode.removeChild(lastBr);
+			}
+
+		});
 
 		return qm.querySelectorAll('br').length;
 
@@ -702,7 +746,7 @@ async function makeQuickMenu(options) {
 			
 			tile.classList.add('tile');
 
-			if (_singleColumn) tile.classList.add("singleColumn");
+			tile.classList.toggle("singleColumn", _singleColumn);
 			
 			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
 				
@@ -720,7 +764,7 @@ async function makeQuickMenu(options) {
 			let div = document.createElement('div');
 			div.className = "tile";
 			
-			if ( qm.singleColumn ) div.classList.add('singleColumn');
+			div.classList.toggle('singleColumn', qm.singleColumn );
 			qm.appendChild(div);
 
 			let size = getFullElementSize(div);
@@ -732,8 +776,8 @@ async function makeQuickMenu(options) {
 		
 		qm.setDisplay = () => {
 			qm.querySelectorAll('.tile').forEach( _tile => {
-				if (qm.singleColumn || qm.rootNode.displayType === "text" ) _tile.classList.add("singleColumn");
-				else _tile.classList.remove("singleColumn");
+				let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
+				_tile.classList.toggle("singleColumn", _sc);
 			});
 		}
 
@@ -764,29 +808,23 @@ async function makeQuickMenu(options) {
 		function isTool(e) {
 			return ( e.dataTransfer.getData("tool") === "true" );
 		}
-		
-		(() => { // addRecentlyUsedFolder()
-			if ( !qm.rootNode.parent && userOptions.quickMenuShowRecentlyUsed ) {
-				let recentFolder = nodeToTile(recentlyUsedListToFolder());
-				recentFolder.classList.add('tile');
-				recentFolder.dataset.hasicon = 'true';
-				recentFolder.dataset.undraggable = true;
-				recentFolder.dataset.undroppable = true;
 
-				tileArray.unshift(recentFolder);
-				qm.insertBefore(recentFolder, qm.firstChild);
-			}
-		})();
+		(() => {
 
-		(() => { // matchingEnginesToFolder(s) 
-			if ( !qm.rootNode.parent && userOptions.quickMenuRegexMatchedEngines ) {
+			if ( qm.rootNode.parent ) return;
+			let specialFolderNodes = [];
 
-				let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+			if ( userOptions.quickMenuShowRecentlyUsed )
+				specialFolderNodes.push(recentlyUsedListToFolder());
 
-				// if ( !folder.children.length )
-				// 	return;// console.log('no regex matches for searchTerms');
+			if ( userOptions.quickMenuRegexMatchedEngines )
+				specialFolderNodes.push(matchingEnginesToFolder(quickMenuObject.searchTerms));
+
+			specialFolderNodes.forEach( folder => {
+				folder.displayType = qm.rootNode.displayType;
 
 				let _tile = nodeToTile( folder );
+				_tile.node.displayType = qm.rootNode.displayType;
 				_tile.classList.add('tile');
 				_tile.dataset.hasicon = 'true';
 				_tile.dataset.undraggable = true;
@@ -794,7 +832,7 @@ async function makeQuickMenu(options) {
 
 				tileArray.unshift(_tile);
 				qm.insertBefore(_tile, qm.firstChild);
-			}
+			});
 		})();
 
 		qm.setDisplay();
@@ -979,6 +1017,17 @@ async function makeQuickMenu(options) {
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 	window.root = root;
+
+	// filter node tree for matching contexts
+	if ( userOptions.quickMenuUseContextualLayout && options.contexts && options.contexts.length ) {		
+		root = filterContexts(root, options.contexts);
+
+		// flatten
+		let seNodes = findNodes(root, n => !['folder', 'separator'].includes(n.type) );
+		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
+			root.children = seNodes;
+		}
+	}
 
 	setParents(root);
 
@@ -1247,7 +1296,7 @@ function makeSearchBar() {
 	// });
 	
 	// execute a keypress event to trigger some sb methods reserved for typing events
-	sb.addEventListener('keydown', (e) => {
+	sb.addEventListener('keydown', e => {
 		if ( [ "Backspace", "Delete" ].includes(e.key) )
 			sb.dispatchEvent(new KeyboardEvent('keypress'));
 	});
@@ -1256,6 +1305,15 @@ function makeSearchBar() {
 		await browser.runtime.sendMessage({action: "openOptions"});
 		if ( window == top ) window.close(); // close toolbar menu
 	}
+
+	sb.addEventListener('keydown', e => {
+		clearTimeout(sb.typeTimer2);
+	
+		sb.typeTimer2 = setTimeout(() => {
+			updateMatchRegexFolder(sb.value);
+			sb.typeTimer2 = null;
+		}, 500);
+	})
 }
 
 function createToolsBar(qm) {
@@ -1388,7 +1446,10 @@ function checkForNodeHotkeys(e) {
 
 }
 
-getAllOtherHeights = () => {
+getAllOtherHeights = (_new) => {
+
+	if ( _new ) return document.body.getBoundingClientRect().height - qm.getBoundingClientRect().height;
+	
 	let height = 0;
 	[sbc,tb,mb,toolBar,aeb].forEach( el => height += getFullElementSize(el).height );
 	return height;
@@ -1414,7 +1475,8 @@ document.addEventListener('click', e => {
 })
 
 document.addEventListener('mousedown', e => {
-	let tile = e.target.closest('.tile');
+
+	let tile = e.target.closest('.tile, .quickMenuMore');
 
 	if ( !tile ) return;
 
@@ -1423,12 +1485,7 @@ document.addEventListener('mousedown', e => {
 		return;
 	}
 
-	// if (tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
-
 	tile.parentNode.lastMouseDownTile = tile;
-
-	// cancel scroll icon always
-	if ( e.button === 1 ) e.preventDefault();
 
 	// allow tile actions if override is set
 	if ( window.tilesDraggable ) return;
@@ -1441,7 +1498,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !e.target.closest ) return;
 
-	let tile = e.target.closest('.tile');
+	let tile = e.target.closest('.tile, .quickMenuMore');
 
 	if ( !tile || !tile.action ) return;
 
@@ -1451,7 +1508,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( mouseClickBack(e) ) return;
 
-//	if ( !clickChecker(tile) ) return;
+	if ( !clickChecker(tile) ) return;
 
 	e.stopImmediatePropagation();
 	e.preventDefault();
@@ -1460,6 +1517,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !keepMenuOpen(e) && !tile.keepOpen )
 		closeMenuRequest(e);
+
 });
 
 document.addEventListener('mouseup', e => {
@@ -1684,6 +1742,8 @@ document.addEventListener('dragover', e => {
 	if ( !window.dragNode ) return;
 	if ( tile.dataset.type === 'tool' ) return;
 
+	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
+
 	if ( undroppable(tile) ) return;
 
 	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
@@ -1705,8 +1765,7 @@ document.addEventListener('dragover', e => {
 		dummy.style.display = 'none';
 	}
 
-	if ( tile.classList.contains('block') ) dummy.classList.add('wide');
-	else tile.classList.remove('wide');
+	tile.classList.toggle('wide', tile.classList.contains('block'));
 
 	tile.dataset.side = side;
 
@@ -1722,13 +1781,10 @@ document.addEventListener('dragover', e => {
 
 		if ( isTargetBeforeGroup(tile, dec) ) 
 			tile.classList.remove('groupHighlight');
-			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 		else if ( isTargetAfterGroup(tile, dec) ) 
 			tile.classList.remove('groupHighlight');
-			//targetGroupDivs.forEach( el => el.classList.remove("groupHighlight") );
 		else
 			tile.classList.add('groupHighlight');
-			//targetGroupDivs.forEach( el => el.classList.add("groupHighlight") );
 	}	
 
 });
@@ -1745,7 +1801,6 @@ document.addEventListener('dragleave', e => {
 	}
 
 	clearDragStyling(tile);
-
 });
 
 document.addEventListener('drop', e => {
@@ -1761,6 +1816,8 @@ document.addEventListener('drop', e => {
 
 	if ( !tile ) return;
 	if ( !window.dragNode ) return;
+	if ( window.dragNode === tile.node ) return;
+	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
 
 	if ( undroppable(tile) ) return console.log('undroppable');
 
@@ -1872,7 +1929,7 @@ makeMarker = () => {
 	let dummy = document.querySelector('.dummy') || document.createElement('dummy');
 	dummy.className = 'tool dummy';
 	dummy.style="--mask-image: url(icons/chevron-down.svg);";
-	if ( qm.singleColumn) dummy.classList.add('singleColumn');
+	dummy.classList.toggle('singleColumn', qm.singleColumn);
 	return dummy;
 }
 
@@ -1910,7 +1967,7 @@ function nodeToTile( node ) {
 
 	let tile = {};
 
-	if (node.hidden) return;
+//	if (node.hidden) return;
 
 	let getTitleWithHotkey = n => {
 		if ( userOptions.quickMenuShowHotkeysInTitle ) 
@@ -2001,7 +2058,7 @@ function nodeToTile( node ) {
 
 				if (method === 'openFolder' || e.openFolder) { 
 				//	if ( !node.children.length ) return;
-					qm = await quickMenuElementFromNodeTree(node);
+					qm = await quickMenuElementFromNodeTree(tile.node);
 					setDraggable();	
 					return resizeMenu({openFolder: true});
 				}
@@ -2018,6 +2075,8 @@ function nodeToTile( node ) {
 				quickMenuObject.lastUsed = node.id
 				userOptions.lastUsedId = quickMenuObject.lastUsed;
 				document.dispatchEvent(new CustomEvent('updateLastUsed'));
+
+				if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
 			}
 
 			break;
@@ -2046,9 +2105,20 @@ function nodeToTile( node ) {
 			tile.dataset.id = node.id || "";	
 			tile.dataset.title = node.title;			
 			break;
+
+		case "tool":
+			let tool = QMtools.find(t => t.name === node.tool )
+			tile = tool.init();
+			tile.dataset.type = 'tool';
+			tile.dataset.id = node.id;	
+			tile.dataset.title = node.title;
+			break;
 	}
 	
 	tile.node = node;
+
+	// build menu with hidden engines for show/hide tool
+	if ( node.hidden ) tile.style.display = 'none';
 	
 	return tile;
 }
@@ -2097,6 +2167,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 	moreTile.node = { parent: node };
 	moreTile.dataset.parentid = node.id;
 	moreTile.dataset.undraggable = true;
+	moreTile.keepOpen = true;
 	
 	function more() {
 		let hiddenEls = parentNode.querySelectorAll('[data-hidden="true"]');
@@ -2117,7 +2188,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 		});
 		
-		moreTile.onmouseup = less;	
+		moreTile.action = less;
 		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
 		moreTile.dataset.type = "less";
 		resizeMenu({more: true});
@@ -2139,7 +2210,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 			//hideTile(_div);
 		});
 		
-		moreTile.onmouseup = more;
+		moreTile.action = more;
 		moreTile.dataset.title = moreTile.title = title;
 		moreTile.dataset.type = "more";
 		
@@ -2149,8 +2220,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 	moreTile.more = more;
 	moreTile.less = less;
-
-	moreTile.onmouseup = more;
+	moreTile.action = more;
 	
 	moreTile.expandTimerStart = () => { moreTile.expandTimer = setTimeout( moreTile.dataset.type === "more" ? more : less, dragFolderTimeout )};	
 	
@@ -2294,7 +2364,7 @@ function makeGroupFolderFromTile(gf) {
 }
 
 function makeContainerMore(el, rows, columns) {
-	rows = rows || Math.MAX_SAFE_INTEGER;
+	rows = rows || Number.MAX_SAFE_INTEGER;
 
 	let elementsBeforeWrap = getElementCountBeforeOverflow(el, rows);
 
@@ -2388,8 +2458,9 @@ function setOptionsBar() {
 
 }
 
-function updateMatchRegexFolder() {
-	let folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+function updateMatchRegexFolder(s) {
+
+	let folder = matchingEnginesToFolder(s || quickMenuObject.searchTerms);
 
 	qm.querySelectorAll(`[data-type="folder"]`).forEach(f => {
 		if ( f.node.id == folder.id ) f.node = folder;
@@ -2404,15 +2475,19 @@ function setLayoutOrder(arr) {
 		arr = arr.split(",").map(id => id.trim());
 
 	arr.forEach(id => {
+
+		let hidden = false;
+		if ( id[0] === '!' ) {
+			hidden = true;
+			id = id.substring(1);
+		}
+
 		let el = document.getElementById(id);
-		if ( el ) document.body.appendChild(el);
-		else console.log('bad id', id);
+
+		if ( !el ) return console.log('bad id', id);
+		
+		el.classList.toggle('hide', hidden);
+		document.body.appendChild(el);
+
 	});
 }
-
-// setTimeout(() => {
-// 	try {
-// 		document.querySelector('[data-name="edit"]').action();
-// 		document.querySelector('.quickMenuMore').dispatchEvent(new MouseEvent('mouseup'))
-// 	} catch ( err ) { console.log(err)}
-// }, 500);

@@ -142,7 +142,7 @@ async function findFavicons(url) {
 }
 
 // options.html
-document.querySelectorAll('[name="faviconFinder"').forEach( finder => {
+function addFavIconFinderListener(finder) {
 	finder.onclick = async function(e) {
 
 		let overdiv = document.createElement('div');
@@ -169,6 +169,11 @@ document.querySelectorAll('[name="faviconFinder"').forEach( finder => {
 
 		} catch( error ) {
 			console.log("error fetching favicons");
+		}
+
+		if ( form.node && form.node.type === 'oneClickSearchEngine' ) {
+			let defaultIcon = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: form.node.title}).then( en => en.favIconUrl);
+			if ( defaultIcon ) urls.push( defaultIcon );
 		}
 
 		function getCustomIconUrls() {
@@ -277,4 +282,4 @@ document.querySelectorAll('[name="faviconFinder"').forEach( finder => {
 		makeFaviconPickerBoxes(urls);
 		showMoreButton();
 	}
-});
+}
