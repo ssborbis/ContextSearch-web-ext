@@ -172,7 +172,8 @@ function getIconFromNode(node) {
 	return iconUrl.replace(/http:\/\//, "https://");
 }
 
-function nodeCut(node) {
+function nodeCut(node, parent) {
+	node.parent = node.parent || parent;
 	return node.parent.children.splice(node.parent.children.indexOf(node), 1).shift();
 }
 

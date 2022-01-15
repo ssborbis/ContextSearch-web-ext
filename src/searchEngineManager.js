@@ -975,6 +975,14 @@ function buildSearchEngineContainer() {
 		table.appendChild(rootElement);
 
 		updateNodeList();
+
+		let lastLI = document.createElement('LI');
+		rootElement.appendChild(lastLI);
+
+		lastLI.style = 'height:16px;';
+		lastLI.addEventListener('dragover', e => e.preventDefault());
+		lastLI.addEventListener('drop', drop_handler);
+		lastLI.id = "lastLI";
 		
 		document.getElementById('managerContainer').innerHTML = null;
 		document.getElementById('managerContainer').appendChild(table);
@@ -1066,10 +1074,18 @@ function buildSearchEngineContainer() {
 		let dragNode = window.dragRow.node;
 		let targetElement = nearestParent('LI', ev.target);
 		let targetNode = targetElement.node;
-		let position = dragover_position(targetElement, ev);
 
 		if ( targetNode === dragNode )
 			return false;
+
+		let forceAppend = false;
+		if ( targetElement === $('lastLI') ) {
+			targetElement = $('lastLI').previousSibling;
+			targetNode = targetElement.node;
+			forceAppend = true;
+		}
+
+		let position = dragover_position(targetElement, ev);
 		
 		// clear drag styling
 		targetElement.style = '';
@@ -1078,6 +1094,9 @@ function buildSearchEngineContainer() {
 		// sort with hierarchy
 		let sortedRows = [ ...$('#managerContainer').querySelectorAll('LI')].filter( row => selectedRows.indexOf(row) !== -1 ).reverse();
 	
+		// remove children of folders nodes to prevent flattening
+		sortedRows = sortedRows.filter( r => !sortedRows.find(_r => _r.node === r.node.parent ));
+		
 		sortedRows.forEach( row => {
 			
 			let _node = row.node;
@@ -1088,6 +1107,8 @@ function buildSearchEngineContainer() {
 			// if target is bottom of populated folder, proceed as if drop on folder
 			if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
 				position = 'middle';
+
+			if ( forceAppend ) position = 'bottom';
 			
 			if ( position === 'top' ) {
 				nodeInsertBefore(slicedNode, targetNode);
