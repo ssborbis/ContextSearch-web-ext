@@ -57,7 +57,7 @@
 	position:fixed;
 	user-select:none;
 	-moz-user-select:none;
-	z-index:2147483646;
+	z-index:2147483645;
 	transition: var(--user-transition, left .15s ease-in-out, top .15s ease-in-out, opacity .1s );
 }
 .CS_resizeWidget:hover {
