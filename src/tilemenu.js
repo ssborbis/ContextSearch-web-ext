@@ -1446,7 +1446,10 @@ function checkForNodeHotkeys(e) {
 
 }
 
-getAllOtherHeights = () => {
+getAllOtherHeights = (_new) => {
+
+	if ( _new ) return document.body.getBoundingClientRect().height - qm.getBoundingClientRect().height;
+	
 	let height = 0;
 	[sbc,tb,mb,toolBar,aeb].forEach( el => height += getFullElementSize(el).height );
 	return height;
