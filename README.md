@@ -9,7 +9,7 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
 
 ###### *AMO and Chromestore will not be as up-to-date as the git
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/review.png" width="600px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/review.png" width="600px" />
 
 <a name="toc"/>
 
@@ -91,7 +91,7 @@ Display search engines in the context (right-click) menu. The menu is a single e
 
 ### Usage
 * Select some text and right-click to bring up the context menu
-* Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon.svg" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
+* Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/src/icons/icon.svg" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
 
 Enabling the advanced option `contextMenuUseContextualLayout` allows for displaying only specific engines in the menu, depending on the context in which the menu was opened. These "contexts" can be set in the Edit Engine modal from the Search Engines Manager. 
 
@@ -500,7 +500,7 @@ Several important colors and values are given variable names under the :root sty
 
 A few examples...
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/gradient_menu.png" width="200px" />
 
 sunset gradient background and white tools ( newer code )
 ```css
@@ -510,7 +510,7 @@ sunset gradient background and white tools ( newer code )
 }
 ```
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu_blue.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/gradient_menu_blue.png" width="200px" />
 
 blue gradient background no tile borders and off-white tools for the quick menu only ( older code )
 ```css
@@ -527,7 +527,7 @@ gradient background and white tools for all menus ( older code )
 ```
 ---
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/image_menu_green.png" width="200px" />
 
 image background semi-transparent border white text and olive tools for all menus ( newer code )
 ```css
@@ -539,7 +539,7 @@ image background semi-transparent border white text and olive tools for all menu
 }
 ```
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_border_radius.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/image_menu_border_radius.png" width="200px" />
 
 image background with tile modifications borders tools and text 
 ```css
