@@ -511,7 +511,7 @@ const QMtools = [
 				window.tilesDraggable = !window.tilesDraggable;
 				setDraggable();
 
-				setToolLockedState(this.tool || this, window.tilesDraggable);
+				setToolLockedState(this.tool || this, window.editMode);
 				resizeMenu();
 			}
 		}
