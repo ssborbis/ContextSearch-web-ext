@@ -1096,6 +1096,7 @@ function showIcon(searchTerms) {
 		let img = document.getElementById('CS_icon');
 		if ( img ) img.parentNode.removeChild(img);
 
+		// convert relative urls to extension urls
 		let url = userOptions.quickMenuIcon.url.includes(":") ? userOptions.quickMenuIcon.url : browser.runtime.getURL(userOptions.quickMenuIcon.url);
 
 		img = new Image();
