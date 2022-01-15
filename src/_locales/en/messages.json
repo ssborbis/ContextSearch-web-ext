@@ -1947,8 +1947,6 @@
     "description": ""
   },
 
-
-    // Misc - Messages *********************************************************************
   "requestPermissionsMessage": {
     "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous pour demander l’autorisation d’ajouter des données dans le presse-papiers.",
     "description": "clipboardWrite permission"
@@ -1962,8 +1960,6 @@
     "message": "Delete $1 node(s)?"
   },
   
-  
-  //Options - Search Engine Manager Tab
   "RegexTooltip": {
     "message": "Modify the search terms using regex before submitting. Multiple replacements can be chained, one per line",
     "description": "searchengine edit - search regex tooltip"
@@ -1983,15 +1979,13 @@
   },
   
   
-  //Options - Toolbar Tab ********************************************************************************
-  "customIconTooltip": {
+ "customIconTooltip": {
     "message": "Utiliser une image sur l’ordinateur",
     "description": "toolbar icon - custom icon tooltip"
   },
   
   
-  //Options - Shortcuts Tab
-  "EnableHotkeysLabel": {
+ "EnableHotkeysLabel": {
     "message": "Search Engine Hotkeys",
     "description": "label for Search Engine Hotkeys"
   },
@@ -2049,15 +2043,11 @@
     "description": "keyboard shortcut label"
   },
   
-  
-  //Options - Omnibox Tab *******************************************************************
   "OmniboxTooltip": {
     "message": "Omnibox",
     "description": "omnibox image title"
   },
   
-  
-  //Options - General Tab
   "lite": {
     "message": "like",
     "description": "theme name"
@@ -2087,8 +2077,6 @@
     "description": "theme name"
   },
   
-  
- //Options - Advanced Tab
   "exportToFirefoxSearch": {
     "message": "export to Firefox search",
     "description": "advanced setting label"
