@@ -1,7 +1,8 @@
 
+
 [![Promo video](media/promo.gif)](media/promo.gif)
 
-# <img src="src/icons/icon.svg" height="36px">&nbsp;ContextSearch web-ext
+# <img src="src/icons/logo_notext.svg" height="36px">&nbsp;ContextSearch web-ext
 
 Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser and search using a variety of menus and shortcuts. Originally written as a replacement for Ben Basson's Context Search. 
 
@@ -9,7 +10,7 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
 
 ###### *AMO and Chromestore will not be as up-to-date as the git
 
-
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/review.png" width="600px" />
 
 <a name="toc"/>
 
@@ -91,7 +92,11 @@ Display search engines in the context (right-click) menu. The menu is a single e
 
 ### Usage
 * Select some text and right-click to bring up the context menu
-* Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/src/icons/icon48.png" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
+* Expand the menu item <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/src/icons/icon.svg" height="12pt">` Search for ... `and click the desired search engine from the list that appears.
+
+Enabling the advanced option `contextMenuUseContextualLayout` allows for displaying only specific engines in the menu, depending on the context in which the menu was opened. These "contexts" can be set in the Edit Engine modal from the Search Engines Manager. 
+
+For example, if you have a reverse-image search engine, you may only want to use it when right-clicking an image. If you enabled the contextual layout and checked the `image` context for that search engine, you would only be shown that engine ( and any others with the `image` context ) when right-clicking an image. This option is helpful for getting to the engine you want quickly, especially if you have lots of engines.
 
 The search results can be displayed in a number of ways depending on the key held while clicking the menu.
 
@@ -181,6 +186,7 @@ Pick what actions open the menu. You can use more than one
 |`Mouse`|Select text and click or hold a mouse button. Using the right-click / hold can get a bit weird and conflict with the default context menu on some browsers / OS's, mostly Linux-based. The timeout for opening on Hold can be set in Advanced|
 |`Simple Click`|Forget selecting text and just click a word. Probably best to set a modifier key (Alt, Ctrl, Shift) with it to avoid opening the menu all the time. Clicking between words will get you both.
 |`Drag`|Select text and drag to open the menu. The tiles respond to drag & drop ( Mozilla ) so you can drag to open, drop to search. |
+| Icon | Display an icon adjacent to the current selection. Click to open the menu. |
 
 #### Closing
 Optionally close the menu after clicking a search tile or by scrolling the mouse wheel
@@ -227,9 +233,12 @@ Show tools on the top or bottom of the quick menu, or hide them altogether
 |`Grid / List`|Toggle the menu display
 |`Options`|Open the options page
 |`Next Theme`|Cycle through some build-in themes for the menus. Find something you like.
-|`Edit`|Put the menu into 'edit' mode to resize the layout or rearrange tiles. When editing, tiles can be dragged & dropped to re-order, and the lower-right corner of the menu can be dragged to resize and change the columns / rows count.
+|`Layout Editor`|Put the menu into 'edit' mode to resize the layout or rearrange tiles. When editing, tiles can be dragged & dropped to re-order, and the lower-right corner of the menu can be dragged to resize and change the columns / rows count. The vertical order of elements like the search bar, title bar, menu bar, etc can be enable/disabled and rearranged while editing.
 |`Toggle Hotkeys`|This one might get removed. Right now, it toggles whether search engine hotkeys can work when the quick menu does not have focus. Basically, turns on or off the ability to type a letter and perform a search. See [Hotkeys](#hotkeys) for more info.
 |`Instant Search / Repeat Search`|Enabling this tool allows you to use whatever opening methods are enabled for the quick menu to perform a search using the last search engine used. <br>Confused?<br>Essentially, it can work like this. Say you're on a website and you're going look up many words / urls / images / whatever on the page using a particular search engine. Well, you could open the quick menu, lock it, perform a search using the engine you want, then turn on the Instant Search. Lets say you also enabled the quick menu opening method 'Simple Click'. Now you can just start clicking words in the webpage and get a bunch of search results in background tabs. If you do a LOT of searches on a particular page, this tool will save you time.|
+| Add to Blocklist | Add the current page URL to a list of sites to not inject ContextSearch content scripts |
+| Show / Hide | Toggle display of all engines marked as hidden in current menu |
+
 
 #### Search Bar
 You can optionally show a search bar in the quick menu. Search bars include a suggestions drop-down box that displays search history and Google suggestions ( optionally, see [General](#general) for more info)
@@ -394,6 +403,17 @@ You can edit your engines by double-clicking the row or Right-click menu -> Edit
 
 When editing engines, folders and bookmarklets, you can change the name or icon using either the favicon finder or clicking the current icon and uploading an image from your computer. Search engine icons  will be resized according to `cacheIconsMaxSize` under Advanced, and cached. The default size is 32x32, but if you are wanting higher-res images used with some custom user styles, raise this number.
 
+Tools and separators can also be added from the custom context menu.
+
+### Contextual Aware Layouts
+
+Engines can be assigned one or more *contexts* so they only display in certain circumstances. 
+
+`"audio", "frame", "image", "link", "page", "selection", "video"`
+
+You'll need to enable either `contextMenuUseContextualLayout` or `quickMenuUseContextualLayout` from `[ menu ] -> Advanced` to filter engines based on context.
+
+
 ### Additional Options for Firefox
 
 Firefox comes with it's own searchbar, but those engines can be used by ContextSearch. These engines are added automatically to your search engine list, and are distinguishable by the orange (FF) tag. While they can be used by ContextSearch, they cannot be edited without first importing them. ( see below )
@@ -429,6 +449,7 @@ ___
 |`{subdomain}`|on `http://www.example.com/this/path/`<br>replaced with <br>`www.example.com`|
 |`{selectdomain}`|Engine becomes a folder with all subdomains and paths listed separately<br><br>on `http://www.example.com/this/path/`<br>replaced with <br>`example.com`<br>`www.example.com`<br> `www.example.com/this`<br>`www.example.com/this/path`|
 |`["url1", "url2", ...]`|Array of templates can be used in place of a single template to search multiple sites at once<br><br>example: `["https://google.com/search?q={searchTerms}", "https://bing.com/search?q={searchTerms}"]`<br><br>Use a well-formed, JSON.stringify-able array<br><br>If search engines require a different encoding, add `{encoding=...}` to specify, i.e. `https://example.com/search?q={searchTerms}{encoding=gbk}` or `https://example.com/search?q={searchTerms}{encoding=shift_js}`|
+|`["id1", "id2", ...]` | Array of ContextSearch node ids. Best achieved by selecting multiple engines using Shift or Ctrl + click, and choosing `Add Multi-Search` from the context menu. This will allow a single search engine to call multiple engines, similar to performing a folder search.<br><br>Use a well-formed, JSON.stringify-able array |
 
 ___
 
@@ -496,7 +517,7 @@ Several important colors and values are given variable names under the :root sty
 
 A few examples...
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/gradient_menu.png" width="200px" />
 
 sunset gradient background and white tools ( newer code )
 ```css
@@ -506,7 +527,7 @@ sunset gradient background and white tools ( newer code )
 }
 ```
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/gradient_menu_blue.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/gradient_menu_blue.png" width="200px" />
 
 blue gradient background no tile borders and off-white tools for the quick menu only ( older code )
 ```css
@@ -523,7 +544,7 @@ gradient background and white tools for all menus ( older code )
 ```
 ---
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_green.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/image_menu_green.png" width="200px" />
 
 image background semi-transparent border white text and olive tools for all menus ( newer code )
 ```css
@@ -535,7 +556,7 @@ image background semi-transparent border white text and olive tools for all menu
 }
 ```
 
-<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/image_menu_border_radius.png" width="200px" />
+<img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/image_menu_border_radius.png" width="200px" />
 
 image background with tile modifications borders tools and text 
 ```css
@@ -574,6 +595,8 @@ ___
 ## [9. Advanced Options](#toc)
 
 A number of settings that don't appear in the main options tabs can be set here. Some of them are really quite useful and probably belong with their respective settings menus, but for simplicity were moved here. This is also where a lot of fixes and user-requested changes show up. Take note, unlike most other settings, these do not always force the config to save when changed. There is a save button you can mash to make extra sure changes are written.
+
+There is also a built-in manual JSON editor to adjust more obscure values.
 ___
 
 <a name="security"/>
