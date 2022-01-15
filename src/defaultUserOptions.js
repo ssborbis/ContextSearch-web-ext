@@ -136,7 +136,8 @@ const defaultUserOptions = {
 		openOnResults: false,
 		openOnResultsMinimized: false,
 		scale:1.0,
-		domLayout:""
+		domLayout:"",
+		setMinWidth:true
 	},
 	highLight: {
 		enabled: true,

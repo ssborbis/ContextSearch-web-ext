@@ -112,6 +112,7 @@ function toolBarResize(o) {
 	let maxWidth = 800;
 
 	qm.style.opacity = 0;
+	qm.style.height = null;
 
 	let tileSize = qm.getTileSize();
 
@@ -152,11 +153,14 @@ function toolBarResize(o) {
 
 	if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
-		let sumHeight = getAllOtherHeights();
+		let sumHeight = getAllOtherHeights(true);
+
 		qm.style.height = sumHeight + qm.scrollHeight > maxHeight ? maxHeight - sumHeight + "px": null;
 
 		// qm.style.width = `calc(100% - ${qm.offsetWidth - qm.scrollWidth}px)`;
 		qm.style.width = `calc(100%)`;
+	} else {
+		qm.style.height = qm.scrollHeight + "px";
 	}
 
 	document.dispatchEvent(new CustomEvent('resizeDone'));
@@ -179,9 +183,15 @@ async function sideBarResize(options) {
 
 	if ( window == top ) return;
 
+	// remove min-width for single columns
+	if (qm.singleColumn) qm.style.minWidth = null;
+
 	qm.insertBreaks();
 
-	document.body.style.width = screen.width + "px";
+//	document.body.style.width = screen.width + "px";
+	document.body.width = null;
+	document.body.getBoundingClientRect();
+	document.body.style.width = document.body.scrollWidth + "px";
 
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
@@ -209,7 +219,7 @@ async function sideBarResize(options) {
 
 	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");	
 
-	let allOtherElsHeight = getAllOtherHeights();
+	let allOtherElsHeight = getAllOtherHeights(true);
 
 	qm.style.height = function() {
 		
@@ -235,6 +245,9 @@ async function sideBarResize(options) {
 	qm.style.width = qm.getBoundingClientRect().width + scrollbarWidth + "px";
 
 	toolBar.style.width = qm.style.width;
+
+	// apply min-width for subfolders
+	if ( !qm.rootNode.parent && userOptions.sideBar.setMinWidth ) qm.setMinWidth();
 
 	window.parent.postMessage({
 		action:"resizeSideBarIframe", 
