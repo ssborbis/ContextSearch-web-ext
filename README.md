@@ -70,7 +70,7 @@ The easiest way to build your own package is to install [web-ext](https://www.np
 Replace `manifest.json` with `chrome_manifest.json` or `firefox_manifest.json` depending on which browser you are using. Some browser forks may require modifications to the manifest to work. Waterfox Classic, for instance, requires the explicit `web_accessible_resources` section found in the generic manifest.json and `strict_min_version` to `"56.0"`
 
 #### Mozilla
-If you build your own package, it will no be "verified". Not all versions of Firefox will allow you to install an unverified addon. If your browser does allow it, you will likely need to set `xpinstall.signatures.required = false` in about:config.
+If you build your own package, it will not be "verified". Not all versions of Firefox will allow you to install an unverified addon. If your browser does allow it, you will likely need to set `xpinstall.signatures.required = false` in about:config.
 
 You can install as a "temporary addon" from about:debugging -> This Firefox -> Load Temporary addon and browse to src/manifest.json in the unzipped source code. Temporary addons will be removed when you close Firefox, but good for testing. DO NOT use the `Remove` button or risk losing your ContextSearch config. Simply restart Firefox instead.
 
