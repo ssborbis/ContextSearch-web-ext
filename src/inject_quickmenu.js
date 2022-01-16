@@ -48,6 +48,11 @@ function openQuickMenu(e, searchTerms) {
 			e.target.blur();
 	}
 
+	let _contexts = getContexts(e.target);
+	if ( e.openingMethod && e.openingMethod === 'simple' && _contexts.length === 1 && _contexts[0] === 'page') {
+		_contexts.push('selection');
+	}
+
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: quickMenuObject.screenCoords,
@@ -55,7 +60,7 @@ function openQuickMenu(e, searchTerms) {
 		searchTerms: searchTerms || getSelectedText(e.target).trim() || linkOrImage(e.target, e),
 		quickMenuObject: quickMenuObject,
 		openingMethod: e.openingMethod || e.type || null,
-		contexts: getContexts(e.target)
+		contexts: _contexts
 	});
 }
 
@@ -512,6 +517,8 @@ document.addEventListener('mousedown', e => {
 			if ( _e.which !== e.which ) return;
 			
 			_e.preventDefault();
+
+			e.openingMethod = 'simple';
 		
 			// avoid close on document click with a short delay
 			setTimeout(() => openQuickMenu(e, word), 50);

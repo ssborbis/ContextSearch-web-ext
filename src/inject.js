@@ -70,7 +70,8 @@ function getContexts(el) {
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 
-	if ( el.closest('a')) contexts.push('link');
+	if ( el.closest && el.closest('a')) contexts.push('link');
+
 	if ( getSelectedText(el)) contexts.push('selection');
 	if ( window != top ) contexts.push('iframe');
 
