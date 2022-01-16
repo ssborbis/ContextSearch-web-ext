@@ -1,5 +1,6 @@
 
 
+
 [![Promo video](media/promo.gif)](media/promo.gif)
 
 # <img src="src/icons/logo_notext.svg" height="36px">&nbsp;ContextSearch web-ext
@@ -26,7 +27,8 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
   3.6 [Omnibox](#omnibox)  
   3.7 [Hotkeys](#hotkeys)  
 4. [Highlighting Results](#highlighting)  
-5. [Adding Engines](#addingengines)  
+5. [Adding Engines](#addingengines)
+  5.1 [Mycroft Project](#mycroftproject)
 6. Editing Engines   
   6.1 [Search Engines Manager](#searchenginesmanager)  
   6.2 [Modifying Terms](#modifyingterms)  
@@ -351,6 +353,8 @@ Clicking `Advanced` will show more options.
 * Link to MycroftProject to browse opensearch xml files for the current domain
 * Open a Create Custom Engine form to customize and test the engine before installing. You can also change it after installing from the [Search Engines Manager](#searchenginesmanager)
 
+## [5.1 MycroftProject](#toc)
+Engines found at http://mycroftproject.com can be easily installed by clicking the <img src="src/icons/logo_notext.svg" height="1em"> icon placed next to the OpenSearch link.
 ___
 
 <a name="highlighting"/>
