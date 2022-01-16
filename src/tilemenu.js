@@ -490,6 +490,8 @@ async function makeQuickMenu(options) {
 	});
 
 	document.addEventListener('updatesearchterms', e => {
+
+	//	quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
 		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
 		updateMatchRegexFolder();
 	});
