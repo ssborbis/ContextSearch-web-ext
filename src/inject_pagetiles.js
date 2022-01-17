@@ -50,8 +50,11 @@ document.addEventListener('dragstart', e => {
 
 	if ( !userOptions.pageTiles.enabled ) return;
 
+	if ( !e.isTrusted ) return;
+
 	let dragOverHandler = e => {
-		if ( !userOptions.pageTiles.enabled ) return;
+
+		if ( !e.isTrusted ) return;
 
 		if ( Math.abs(startCoords.x - e.clientX) < userOptions.pageTiles.deadzone && Math.abs(startCoords.y - e.clientY) < userOptions.pageTiles.deadzone ) return;
 
