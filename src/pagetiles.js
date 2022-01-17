@@ -99,8 +99,9 @@ function makePageTiles() {
 		
 		div.addEventListener('dragend', close);
 		div.addEventListener('click', close);
+		div.addEventListener('drop', close);
 		
-		// // clear events for empty tiles
+		// clear events for empty tiles
 		if ( !node.id || node.hidden ) div.classList.add('empty');
 
 		mainDiv.appendChild(div);
