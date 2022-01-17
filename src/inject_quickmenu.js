@@ -199,7 +199,9 @@ document.addEventListener('keyup', e => {
 		e.which !== userOptions.quickMenuKey ||
 		e.repeat ||
 		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnKey
+		!userOptions.quickMenuOnKey ||
+		// check for typing in text box
+		( isTextBox(e.target) && !getSelectedText(e.target))
 	) return false;
 
 	if ( e.ctrlKey || e.shiftKey || e.altKey || e.metaKey ) return false;
@@ -207,7 +209,7 @@ document.addEventListener('keyup', e => {
 	if (Date.now() - quickMenuObject.keyDownTimer < 250)
 		openQuickMenu(e);
 	
-	quickMenuObject.keyDownTimer = 0;	
+	quickMenuObject.keyDownTimer = 0;
 });
 
 // Listen for HOLD quickMenuMouseButton
