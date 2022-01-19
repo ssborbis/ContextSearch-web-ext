@@ -260,5 +260,9 @@ const defaultUserOptions = {
 		url:"icons/logo_notext.svg",
 		scale:1.0
 	},
-	checkContextMenuEventOrder: true
+	checkContextMenuEventOrder: true,
+	preventDuplicateSearchTabs: false,
+	quickMenuPreventPageClicks: false,
+	quickMenuDeselectTextOnSearch: false
+
 };
