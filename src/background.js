@@ -1,8 +1,7 @@
 // context menu entries need to be tracked to be updated
 window.contextMenuMatchRegexMenus = [];
 window.contextMenuSearchTerms = "";
-
-const lazyUpdate = false;
+window.tabTerms = [];
  
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
@@ -43,16 +42,14 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateUserOptions":
 
-			if ( !lazyUpdate ) {
-				debounce(async () => {
-					console.log('updateUserOptions');
-					let tabs = await getAllOpenTabs();
-					for (let tab of tabs) {
-						browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-					}
-					buildContextMenu();
-				}, 1000, "updateUserOptionsTimer");
-			}
+			debounce(async () => {
+				console.log('updateUserOptions');
+				let tabs = await getAllOpenTabs();
+				for (let tab of tabs) {
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+				}
+				buildContextMenu();
+			}, 1000, "updateUserOptionsTimer");
 			break;
 			
 		case "openOptions":
@@ -993,8 +990,6 @@ function executeBookmarklet(info) {
 			return false;
 		}
 		
-		// console.log(window.searchTerms, info.selectionText);
-
 		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
 			
@@ -1035,7 +1030,7 @@ function executeOneClickSearch(info) {
 			if ( changeInfo.status !== 'complete' || __tab.url === 'about:blank' ) return;
 
 			browser.tabs.onUpdated.removeListener(listener);
-			
+
 			waitOnInjection(tabId).then(value => {
 				highlightSearchTermsInTab(__tab, searchTerms);
 			});
@@ -1067,8 +1062,11 @@ function executeOneClickSearch(info) {
 
 			browser.tabs.onUpdated.removeListener(listener);
 
+			// addTabTerms(info.menuItemId, __tab.id, searchTerms);
+
 			console.log('tab took', Date.now() - start );
 
+			// .search.get() requires some delay
 			await new Promise(r => setTimeout(r, 500));
 
 			searchAndHighlight(tab);
@@ -1094,11 +1092,11 @@ function lastSearchHandler(id) {
 	notify({action: "saveUserOptions", userOptions: userOptions});
 }
 
-function isValidHttpUrl(string) {
+function isValidHttpUrl(str) {
 	let url;
 
 	try {
-		url = new URL(string);
+		url = new URL(str);
 	} catch(e) {
 		return false;  
 	}
@@ -1106,49 +1104,111 @@ function isValidHttpUrl(string) {
 	return url.protocol === "http:" || url.protocol === "https:";
 }
 
+// function getMultiSearchArray( NODE ) {
+
+// 	let recursionCheck = 0;
+// 	let arr = [];
+
+// 	getArrayFromTemplate = ( template ) => {
+// 		try {
+// 			let parsed = JSON.parse(template);
+
+// 			if ( Array.isArray(parsed) ) return parsed;
+// 			else return null;
+// 		} catch(error) {
+// 			return null;
+// 		}
+// 	}
+
+// 	traverse = ( node ) => {
+
+// 			if ( node.type !== 'searchEngine' ) return;
+
+// 			let se = userOptions.searchEngines.find(_se => _se.id === node.id );
+
+// 			if ( !se ) return;
+
+// 			let templates = getArrayFromTemplate(se.template);
+
+// 			if ( !templates || !templates.length ) return;
+
+// 			for ( let url of templates ) {
+
+// 				// if url and not ID
+// 				if ( isValidHttpUrl(url) ) {
+					
+// 					let _se = Object.assign({}, se);
+// 					_se.template = url;
+
+// 					// parse encoding for multi-URLs
+// 					let matches = /{encoding=(.*?)}/.exec(url);
+		
+// 					if ( matches && matches[1] )
+// 						_se.queryCharset = matches[1];
+
+// 					arr.push(_se);
+
+// 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
+// 					let n = findNode(userOptions.nodeTree, n => n.id === url );
+// 					traverse(n);
+// 					arr.push(n);
+// 				} else {
+// 					return;
+// 				}
+
+// 				recursionCheck++;
+// 			}
+
+// 		return arr;
+// }
+
 function quickMenuSearch(info) {
-	
-	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
-	
-	info.node = node;
+		
+	info.node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	info.searchTerms = info.selectionText;
 	
-	if ( node && node.type === "folder" ) return folderSearch(info);
-
-// -	node: node,
-// -	searchEngineId: info.menuItemId, 
-// -	searchTerms: info.selectionText,
-// -	openMethod: info.openMethod, 
-// -	tab: tab,
-// -	openUrl: info.openUrl || null,
-// -	folder: info.folder,
-// -	domain: info.domain,
-// -	temporarySearchEngine: info.temporarySearchEngine || null
+	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
 	return openSearch(info);
 }
 
-function openSearch(info) {
+async function openSearch(info) {
+
+	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
+	var searchEngineId = info.searchEngineId || info.menuItemId || null;
+	var openMethod = info.openMethod || "openNewTab";
+	var tab = info.tab || null;
+	var openUrl = info.openUrl || false;
+	var temporarySearchEngine = info.temporarySearchEngine || null; // unused now | intended to remove temp engine
+	var domain = info.domain || null;
+	var node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	
 	if (!info.folder) delete window.folderWindowId;
 	
 	if ( !info.temporarySearchEngine && !info.folder && !info.openUrl) 
 		lastSearchHandler(info.menuItemId);
+
+	if ( node && node.type === "oneClickSearchEngine" ) {
+		console.log("oneClickSearchEngine");
+		return executeOneClickSearch(info);
+	}
+	
+	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
+	if ( node && node.type === "bookmarklet" ) {
+		console.log("bookmarklet");
+		return executeBookmarklet(info);
+	}
+
+	var se = info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id );
+
+	if ( !se ) return false;
 	
 	// check for multiple engines (v1.27+)
-	let node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
-	if ( 
-		( node && node.type === "searchEngine" ) ||
-		( info.temporarySearchEngine && !info.noMultiURL ) // allow temporary, but not subsequent multiurl templates
-	 ) {
-		let se = info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id );
-		if (!se) return;
+	if ( !info.noMultiURL ) {
 		
 		// check for arrays
-		try { 		
-			let arr = JSON.parse(se.template);
-
-			arr.forEach( (url, index) => {
+		try {
+			JSON.parse(se.template).forEach( (url, index) => {
 
 				// make sure not the same node
 				if ( url === node.id ) return;
@@ -1179,58 +1239,38 @@ function openSearch(info) {
 				openSearch(_info);
 			});
 			
-			notify({action: "addToHistory", searchTerms: info.searchTerms});
+			notify({action: "addToHistory", searchTerms: searchTerms});
 			return;
 			
 		} catch (error) {
 		//	console.log(error);
 		}
 	}
-		
-	if ( node && node.type === "oneClickSearchEngine" ) {
-		console.log("oneClickSearchEngine");
-		executeOneClickSearch(info);
-		return false;
-	}
-	
-	//if (browser.bookmarks !== undefined && !userOptions.searchEngines.find( se => se.id === info.menuItemId ) && !info.openUrl ) {
-	if ( node && node.type === "bookmarklet" ) {
-		console.log("bookmarklet");
-		executeBookmarklet(info);
-		return false;
-	}
 
-	var searchEngineId = info.searchEngineId || info.menuItemId || null;
-	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
-	var openMethod = info.openMethod || "openNewTab";
-	var tab = info.tab || null;
-	var openUrl = info.openUrl || false;
-	var temporarySearchEngine = info.temporarySearchEngine || null; // unused now | intended to remove temp engine
-	var domain = info.domain || null;
-
-	if ( !temporarySearchEngine && searchEngineId === null ) return false;
+	// if ( userOptions.preventDuplicateSearchTabs ) {
+	// 	try {
+	// 		await getTabTerms(node.id, searchTerms);
+	// 		console.log('tab with same engine and terms exists');
+	// 		return false;
+	// 	} catch ( error ) {}
+	// }
 	
 	if (!tab) tab = {url:"", id:0}
 	
 	var openerTabId = userOptions.disableNewTabSorting ? null : tab.id;
 	
-	var se;
-	
-	if ( !openUrl && !temporarySearchEngine )
+	if ( !openUrl && !temporarySearchEngine && !info.noMultiURL )
 		notify({action: "addToHistory", searchTerms: searchTerms});
 
 	if (!openUrl) {
 
-		// if temp engine exists, use that
-		se = temporarySearchEngine || userOptions.searchEngines.find(se => se.id === searchEngineId);
-
 		// must be invalid
-		if ( !se || !se.template) return false;
+		if ( !se.template) return false;
 
 		// legacy fix
 		se.queryCharset = se.queryCharset || "UTF-8";
 		
-		if (se.searchRegex && !openUrl) {
+		if ( se.searchRegex ) {
 			try {
 				runReplaceRegex(se.searchRegex, (r, s) => {
 					searchTerms = searchTerms.replace(r, s);
@@ -1259,10 +1299,8 @@ function openSearch(info) {
 			}
 			
 		}
-	}
-	
-	// if using Open As Link from quick menu
-	if (openUrl) {
+	} else {	
+		// if using Open As Link from quick menu
 		q = searchTerms;
 		if (searchTerms.match(/^.*:\/\//) === null)
 			q = "http://" + searchTerms;
@@ -1308,6 +1346,8 @@ function openSearch(info) {
 				if ( changeInfo.status !== 'complete' ) return;
 
 				browser.tabs.onUpdated.removeListener(listener);
+
+				// addTabTerms(node.id, __tab.id, searchTerms);
 				
 				waitOnInjection(tabId).then(value => {
 					highlightSearchTermsInTab(__tab, searchTerms);
@@ -1327,11 +1367,9 @@ function openSearch(info) {
 			
 			await Promise.all(promises);
 			
-			let _se = temporarySearchEngine || userOptions.searchEngines.find(__se => __se.id === searchEngineId )
-				
 			browser.tabs.executeScript(_tab.id, {
 				code: `
-					let se = ${JSON.stringify(_se)};
+					let se = ${JSON.stringify(se)};
 					let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
 					post(se.template, se.params);
 					`,
@@ -1345,6 +1383,8 @@ function openSearch(info) {
 
 				if ( _tabInfo.status !== 'complete' ) return;
 				browser.tabs.onUpdated.removeListener(_listener);
+
+				// addTabTerms(node.id, _tabInfo.id, searchTerms);
 				
 				waitOnInjection(tabId).then(value => {
 					highlightSearchTermsInTab(_tabInfo, searchTerms);
@@ -1358,6 +1398,22 @@ function openSearch(info) {
 		console.log(`Error: ${error}`);
 	}
 
+}
+
+function addTabTerms(nodeId, tabId, s) {
+
+	let o = {id: nodeId, tabId: tabId, searchTerms: s};
+	let i = window.tabTerms.findIndex(_t => _t.id === nodeId && _t.searchTerms === s);
+
+	if ( i > -1 )
+		window.tabTerms[i] = o;
+	else
+		window.tabTerms.unshift(o);
+}
+
+function getTabTerms(id, s) {
+	let t = window.tabTerms.find(_t => _t.id === id && _t.searchTerms === s);
+	return browser.tabs.get(t.tabId);
 }
 
 async function folderSearch(info, allowFolders) {
@@ -1473,7 +1529,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
 	
 	if ( highlightInfo ) {
-		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');	
+		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
 
 		waitOnInjection(tabId).then(value => {
 			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
@@ -1483,6 +1539,9 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
 	notify({action: "removeTabHighlighting", tabId: tabId});
+
+	// window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
+
 });
 
 function getAllOpenTabs() {
