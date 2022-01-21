@@ -1928,7 +1928,7 @@ function updateUserOptionsVersion(uo) {
 	}).then( _uo => {
 
 		if ( _uo.rightClickMenuOnMouseDownFix )
-			_uo.quickMenuMoveContextMenuMethod === "dblclick";
+			_uo.quickMenuMoveContextMenuMethod = "dblclick";
 
 		delete _uo.rightClickMenuOnMouseDownFix;
 		return _uo;
