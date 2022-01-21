@@ -12,6 +12,9 @@ const defaultUserOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnMouse: true,
+	quickMenuOnMouseCtrl: false,
+	quickMenuOnMouseAlt: false,
+	quickMenuOnMouseShift: false,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
 	quickMenuOnDrag: false,
@@ -238,7 +241,6 @@ const defaultUserOptions = {
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
 	forceOpenResultsTabsAdjacent: false,
-	rightClickMenuOnMouseDownFix: false,
 	contextMenuRegexMatchedEngines: false,
 	quickMenuRegexMatchedEngines: false,
 	quickMenuToolbarRows: 1,
@@ -263,6 +265,7 @@ const defaultUserOptions = {
 	checkContextMenuEventOrder: true,
 	preventDuplicateSearchTabs: false,
 	quickMenuPreventPageClicks: false,
-	quickMenuDeselectTextOnSearch: false
+	quickMenuDeselectTextOnSearch: false,
+	quickMenuMoveContextMenuMethod:""
 
 };

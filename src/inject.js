@@ -353,7 +353,7 @@ function checkContextMenuEventOrderNotification() {
 
 	yes.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
-		userOptions.rightClickMenuOnMouseDownFix = true;
+		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	}
 

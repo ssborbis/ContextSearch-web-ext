@@ -827,6 +827,7 @@ async function makeQuickMenu(options) {
 
 				let _tile = nodeToTile( folder );
 				_tile.node.displayType = qm.rootNode.displayType;
+				// _tile.node.groupFolder = 'block';
 				_tile.classList.add('tile');
 				_tile.dataset.hasicon = 'true';
 				_tile.dataset.undraggable = true;

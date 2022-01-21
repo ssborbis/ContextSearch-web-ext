@@ -1927,6 +1927,13 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 
+		if ( _uo.rightClickMenuOnMouseDownFix )
+			_uo.quickMenuMoveContextMenuMethod === "dblclick";
+
+		delete _uo.rightClickMenuOnMouseDownFix;
+		return _uo;
+	}).then( _uo => {
+
 		_uo.version = browser.runtime.getManifest().version;
 		return _uo;
 
@@ -2311,10 +2318,3 @@ function waitOnInjection(tabId) {
 		})
 	]);
 }
-
-// lazy tab updates
-// browser.tabs.onActivated.addListener( async tabInfo => {
-// 	if ( lazyUpdate ) 
-// 		browser.tabs.sendMessage(tabInfo.tabId, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
-// });
-

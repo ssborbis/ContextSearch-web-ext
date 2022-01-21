@@ -212,6 +212,64 @@ document.addEventListener('keyup', e => {
 	quickMenuObject.keyDownTimer = 0;
 });
 
+// Listen for quickMenuAuto 
+document.addEventListener('mousedown', e => {
+	
+	if (
+		!userOptions.quickMenu ||
+		!userOptions.quickMenuAuto || 
+		e.which !== 1 ||
+		e.target.id === 'quickMenuElement' ||
+		e.target.parentNode.id === 'quickMenuElement'
+	) return false;
+	
+	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(e.target);
+}, {capture: true});
+
+document.addEventListener('mouseup', e => {
+
+	if (
+		!userOptions.quickMenu ||
+		!userOptions.quickMenuAuto || 
+		e.which !== 1 ||
+		e.target.id === 'quickMenuElement' ||
+		e.target.parentNode.id === 'quickMenuElement' ||
+		getSelectedText(e.target).trim() === "" ||
+		( userOptions.quickMenuAutoMaxChars && getSelectedText(e.target).length > userOptions.quickMenuAutoMaxChars ) ||
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
+		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
+		
+	) return false;
+
+	// check for modifier keys
+	if ( 
+		e.shiftKey !== userOptions.quickMenuAutoShift ||
+		e.altKey !== userOptions.quickMenuAutoAlt ||
+		e.ctrlKey !== userOptions.quickMenuAutoCtrl
+	) return false;
+
+	e.openingMethod = "auto";
+
+	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
+	
+	quickMenuObject.mouseLastClickTime = Date.now();
+	clearTimeout(quickMenuObject.mouseDownTimer);
+	quickMenuObject.mouseDownTimer = null;
+
+	// // skip erroneous short selections
+	let searchTerms = getSelectedText(e.target);
+	setTimeout(() => {
+
+		if ( searchTerms === getSelectedText(e.target) ) {
+			 openQuickMenu(e);
+			 
+			if ( userOptions.quickMenuCloseOnEdit && isTextBox(e.target) ) {
+				e.target.addEventListener('input', e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+			}
+		}
+	}, 50);
+}, {capture: true});
+
 // Listen for HOLD quickMenuMouseButton
 document.addEventListener('mousedown', e => {
 
@@ -225,20 +283,39 @@ document.addEventListener('mousedown', e => {
 		!e.isTrusted
 	) return false;
 
-	checkContextMenuEventOrder(e);
+	// check for modifier keys
+	if ( 
+		e.shiftKey !== userOptions.quickMenuOnMouseShift ||
+		e.altKey !== userOptions.quickMenuOnMouseAlt ||
+		e.ctrlKey !== userOptions.quickMenuOnMouseCtrl
+	) return false;
 
-	if ( e.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
-		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > 500 ) {
-			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+	// if a non-default method is set, suppress the dcm
+	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod ) {
+
+		if ( 
+			e.altKey && userOptions.quickMenuMoveContextMenuMethod === 'alt' ||
+			e.ctrlKey && userOptions.quickMenuMoveContextMenuMethod === 'ctrl' ||
+			e.shiftKey && userOptions.quickMenuMoveContextMenuMethod === 'shift'
+		) return;
+
+		if ( userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
+			if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > 500 ) {
+				document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+			} else {
+				document.addEventListener('contextmenu', _e => {
+					clearTimeout(quickMenuObject.mouseDownTimer);
+					quickMenuObject.mouseDownTimer = null;
+				}, {once: true});	
+			}
+
+			quickMenuObject.mouseLastContextMenuTime = Date.now();
 		} else {
-			document.addEventListener('contextmenu', _e => {
-				clearTimeout(quickMenuObject.mouseDownTimer);
-				quickMenuObject.mouseDownTimer = null;
-			}, {once: true});	
-		}
-
-		quickMenuObject.mouseLastContextMenuTime = Date.now();
+			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+		} 
 	}
+
+	checkContextMenuEventOrder(e);
 
 	let coords = Object.assign({}, screenCoords);
 		
@@ -313,64 +390,6 @@ document.addEventListener('mouseup', e => {
 	quickMenuObject.mouseDownTimer = null;
 }, {capture: true});
 
-// Listen for quickMenuAuto 
-document.addEventListener('mousedown', e => {
-	
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuAuto || 
-		e.which !== 1 ||
-		e.target.id === 'quickMenuElement' ||
-		e.target.parentNode.id === 'quickMenuElement'
-	) return false;
-	
-	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(e.target);
-}, {capture: true});
-
-document.addEventListener('mouseup', e => {
-
-	if (
-		!userOptions.quickMenu ||
-		!userOptions.quickMenuAuto || 
-		e.which !== 1 ||
-		e.target.id === 'quickMenuElement' ||
-		e.target.parentNode.id === 'quickMenuElement' ||
-		getSelectedText(e.target).trim() === "" ||
-		( userOptions.quickMenuAutoMaxChars && getSelectedText(e.target).length > userOptions.quickMenuAutoMaxChars ) ||
-		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
-		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
-		
-	) return false;
-
-	// check for modifier keys
-	if ( 
-		e.shiftKey !== userOptions.quickMenuAutoShift ||
-		e.altKey !== userOptions.quickMenuAutoAlt ||
-		e.ctrlKey !== userOptions.quickMenuAutoCtrl
-	) return false;
-
-	e.openingMethod = "auto";
-
-	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
-	
-	quickMenuObject.mouseLastClickTime = Date.now();
-	clearTimeout(quickMenuObject.mouseDownTimer);
-	quickMenuObject.mouseDownTimer = null;
-
-	// // skip erroneous short selections
-	let searchTerms = getSelectedText(e.target);
-	setTimeout(() => {
-
-		if ( searchTerms === getSelectedText(e.target) ) {
-			 openQuickMenu(e);
-			 
-			if ( userOptions.quickMenuCloseOnEdit && isTextBox(e.target) ) {
-				e.target.addEventListener('input', e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
-			}
-		}
-	}, 50);
-}, {capture: true});
-
 function preventContextMenuHandler(e) {
 	if ( !userOptions.quickMenuAllowContextMenuNew ) {
 		e.preventDefault();
@@ -397,6 +416,26 @@ document.addEventListener('mousedown', e => {
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
+	// check for modifier keys
+	if ( 
+		e.shiftKey !== userOptions.quickMenuOnMouseShift ||
+		e.altKey !== userOptions.quickMenuOnMouseAlt ||
+		e.ctrlKey !== userOptions.quickMenuOnMouseCtrl
+	) return false;
+
+	if ( e.which === 3 ) {
+
+		if ( 
+			e.altKey && userOptions.quickMenuMoveContextMenuMethod === 'alt' ||
+			e.ctrlKey && userOptions.quickMenuMoveContextMenuMethod === 'ctrl' ||
+			e.shiftKey && userOptions.quickMenuMoveContextMenuMethod === 'shift'
+		) return;
+
+		// if a non-default method is set, suppress the dcm
+		if ( userOptions.quickMenuMoveContextMenuMethod )
+			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+	}
+
 	checkContextMenuEventOrder(e);
 	
 	// middle-click often used to open links and requires some caveots
@@ -404,7 +443,7 @@ document.addEventListener('mousedown', e => {
 	if ( e.which === 2 ) e.preventDefault();
 
 	// context menu on mousedown fixes
-	if ( e.which === 3 && userOptions.rightClickMenuOnMouseDownFix ) {
+	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
 
 		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < 500 ) {
 			closeQuickMenu();
@@ -1136,7 +1175,7 @@ function showIcon(searchTerms) {
 
 function checkContextMenuEventOrder(e) {
 	if ( e.which !== 3 ) return;
-	if ( userOptions.rightClickMenuOnMouseDownFix || !userOptions.checkContextMenuEventOrder ) return;
+	if ( userOptions.quickMenuMoveContextMenuMethod || !userOptions.checkContextMenuEventOrder ) return;
 
 	let time = Date.now();
 
