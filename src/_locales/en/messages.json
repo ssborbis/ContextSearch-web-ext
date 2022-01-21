@@ -220,7 +220,7 @@
   },
   
   "MouseHelp": {
-    "message": "Linux and MacOS X environments where the default context menu is opened on mousedown vs mouseup can set 'ui.context_menus.after_mouseup = true' in about:config ( Firefox ) for mouse actions to work properly and prevent unwanted menus. Chrome users can enable 'rightClickMenuOnMouseDownFix' under Advanced options to hide the default context menu on single-click and display on double-click "
+    "message": "Linux and MacOS X environments where the default context menu is opened on mousedown vs mouseup can set 'ui.context_menus.after_mouseup = true' in about:config ( Firefox ) for mouse actions to work properly and prevent unwanted menus. Chrome users can select an option to change the way the default context menu is opened, either holding atl, ctrl, or shift, or by double-clicking the right mouse button "
   },
 
   "Position": {
@@ -1145,8 +1145,13 @@
     "message": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting",
     "description": ""
   },
-  
+
   "Text": {
+    "message": "Text",
+    "description": ""
+  },
+  
+  "List": {
     "message": "List",
     "description": ""
   },
@@ -2182,7 +2187,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuAllowContextMenuNewTooltip": {
-    "message": "Systems that display the context menu on mousedown vs mouseup may need to enable the advanced option rightClickMenuOnMouseDownFix",
+    "message": "Systems that display the context menu on mousedown vs mouseup may need to select an alternative opening method, or modify the way the context menu is opened.",
     "description": "advanced setting tooltip"
   },
   "quickMenuAutoMaxCharsTooltip": {
@@ -2350,6 +2355,14 @@
 
   "checkContextMenuOrderNotification": {
     "message": "Move the default context menu to double-click when opening the quick menu? See options for more info."
+  },
+
+   "Default": {
+    "message": "Default"
+  },
+
+  "DoubleClick": {
+    "message": "Double-Click"
   },
 
   "___________": {
