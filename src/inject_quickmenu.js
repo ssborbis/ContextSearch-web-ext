@@ -290,6 +290,8 @@ document.addEventListener('mousedown', e => {
 		e.ctrlKey !== userOptions.quickMenuOnMouseCtrl
 	) return false;
 
+	checkContextMenuEventOrder(e);
+
 	// if a non-default method is set, suppress the dcm
 	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod ) {
 
@@ -314,8 +316,6 @@ document.addEventListener('mousedown', e => {
 			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 		} 
 	}
-
-	checkContextMenuEventOrder(e);
 
 	let coords = Object.assign({}, screenCoords);
 		
@@ -423,6 +423,8 @@ document.addEventListener('mousedown', e => {
 		e.ctrlKey !== userOptions.quickMenuOnMouseCtrl
 	) return false;
 
+	checkContextMenuEventOrder(e);
+
 	if ( e.which === 3 ) {
 
 		if ( 
@@ -435,8 +437,6 @@ document.addEventListener('mousedown', e => {
 		if ( userOptions.quickMenuMoveContextMenuMethod )
 			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 	}
-
-	checkContextMenuEventOrder(e);
 	
 	// middle-click often used to open links and requires some caveots
 	if ( e.which === 2 && !getSelectedText(e.target) ) return false;
@@ -1182,7 +1182,8 @@ function checkContextMenuEventOrder(e) {
 	document.addEventListener('contextmenu', _e => {
 		if ( Date.now() - time < 10 ) {
 			document.addEventListener('quickMenuComplete', e => {
-				window.top.checkContextMenuEventOrderNotification();
+				if ( window == top ) checkContextMenuEventOrderNotification();
+				else window.top.checkContextMenuEventOrderNotification();
 			}, {once: true});
 		}
 	}, {once: true});
