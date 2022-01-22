@@ -1113,15 +1113,26 @@ function makeSearchBar() {
 
 		if ( qmo && qmo.searchTerms) sb.value = qmo.searchTerms;
 		else displayLastSearchTerms();
+	}, () => {
+		displayLastSearchTerms();
 	});
 
 	function displayLastSearchTerms() {
 		browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
 			
 			if ( userOptions.autoPasteFromClipboard ) {
-				sb.select();
-				document.execCommand("paste");
-				sb.select();
+				// sb.select();
+				// document.execCommand("paste");
+				// sb.select();
+
+				let paste = () => {
+					try {
+						navigator.clipboard.readText().then(clipText => sb.value = clipText);
+					} catch ( error ) { console.error(error) }
+				}
+				if ( window == top ) paste();
+				else window.addEventListener('focus', paste, {once: true});
+				
 				return;
 			}
 			
