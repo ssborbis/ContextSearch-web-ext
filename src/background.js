@@ -2,6 +2,106 @@
 window.contextMenuMatchRegexMenus = [];
 window.contextMenuSearchTerms = "";
 window.tabTerms = [];
+
+var userOptions = {};
+var highlightTabs = [];
+var isAndroid = false;;
+
+(async() => {
+	let info = await browser.runtime.getPlatformInfo();
+	if ( info && info.os === "android")
+		isAndroid = true;
+})();
+
+// init
+(async () => {
+	await loadUserOptions();
+	console.log("userOptions loaded. Updating objects");
+	userOptions = await updateUserOptionsVersion(userOptions);
+	await browser.storage.local.set({"userOptions": userOptions});
+	await checkForOneClickEngines();
+	await buildContextMenu();
+	resetPersist();
+	setIcon();
+	document.dispatchEvent(new CustomEvent("loadUserOptions"));
+})();
+
+// listeners
+if ( browser.contextMenus ) // catch android
+	browser.contextMenus.onClicked.addListener(contextMenuSearch);
+
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+
+	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
+
+	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
+		
+	let url = new URL(tab.url);
+
+	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
+	
+	if ( highlightInfo ) {
+		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
+
+		waitOnInjection(tabId).then(value => {
+			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
+		});
+	}
+});
+
+browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
+	notify({action: "removeTabHighlighting", tabId: tabId});
+	// window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
+});
+
+browser.runtime.onMessage.addListener(notify);
+
+browser.runtime.onInstalled.addListener( details => {
+ 
+	// details.reason = 'install';
+	// Show new features page
+	
+	document.addEventListener('loadUserOptions', () => {
+
+	/*
+		if (
+			details.reason === 'update' 
+			&& details.previousVersion < "1.9.4"
+		) {
+			browser.tabs.create({
+				url: browser.runtime.getURL("/options.html#highLight"),
+				active: false
+				
+			}).then(_tab => {
+				browser.tabs.executeScript(_tab.id, {
+					file: browser.runtime.getURL("/update/update.js")
+				});
+			});
+		}
+		
+	//	Show install page
+*/	if ( details.reason === 'install' ) {
+			browser.tabs.create({
+				url: "/options.html#engines"
+			}).then(_tab => {
+				browser.tabs.executeScript(_tab.id, {
+					code: `cacheAllIcons()`
+				});
+			});
+		}
+	});
+});
+
+// trigger zoom event
+try {
+	browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
+		browser.tabs.executeScript( zoomChangeInfo.tabId, {
+			code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+		});
+	});
+} catch(e) {
+	console.error(e);
+}
  
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
@@ -877,16 +977,7 @@ function loadUserOptions() {
 	return getting.then(onGot, onError);
 }
 
-var isAndroid;
 
-(async() => {
-	let info = await browser.runtime.getPlatformInfo();
-	if ( info && info.os === "android")
-		isAndroid = true;
-})();
-
-if ( browser.contextMenus ) // catch android
-	browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
 function openWithMethod(o) {
 	if ( !o.url ) return;
@@ -1107,16 +1198,16 @@ function isValidHttpUrl(str) {
 // function getMultiSearchArray( NODE ) {
 
 // 	let recursionCheck = 0;
-// 	let arr = [];
+// 	let nodes = [];
 
 // 	getArrayFromTemplate = ( template ) => {
 // 		try {
 // 			let parsed = JSON.parse(template);
 
 // 			if ( Array.isArray(parsed) ) return parsed;
-// 			else return null;
+// 			else return [];
 // 		} catch(error) {
-// 			return null;
+// 			return [];
 // 		}
 // 	}
 
@@ -1129,8 +1220,6 @@ function isValidHttpUrl(str) {
 // 			if ( !se ) return;
 
 // 			let templates = getArrayFromTemplate(se.template);
-
-// 			if ( !templates || !templates.length ) return;
 
 // 			for ( let url of templates ) {
 
@@ -1146,12 +1235,12 @@ function isValidHttpUrl(str) {
 // 					if ( matches && matches[1] )
 // 						_se.queryCharset = matches[1];
 
-// 					arr.push(_se);
+// 					nodes.push(_se);
 
 // 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
 // 					let n = findNode(userOptions.nodeTree, n => n.id === url );
 // 					traverse(n);
-// 					arr.push(n);
+// 					nodes.push(n);
 // 				} else {
 // 					return;
 // 				}
@@ -1159,7 +1248,7 @@ function isValidHttpUrl(str) {
 // 				recursionCheck++;
 // 			}
 
-// 		return arr;
+// 		return nodes;
 // }
 
 function quickMenuSearch(info) {
@@ -1474,8 +1563,6 @@ function escapeDoubleQuotes(str) {
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
 }
 
-var highlightTabs = [];
-
 async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( !tab ) return;
@@ -1515,34 +1602,6 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 			highlightTabs.push(obj);
 	}
 }
-
-browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-
-	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
-
-	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
-	
-	// console.log(highlightTabs);
-	
-	let url = new URL(tab.url);
-
-	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
-	
-	if ( highlightInfo ) {
-		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
-
-		waitOnInjection(tabId).then(value => {
-			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
-		});
-	}
-});
-
-browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
-	notify({action: "removeTabHighlighting", tabId: tabId});
-
-	// window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
-
-});
 
 function getAllOpenTabs() {
 	
@@ -1943,20 +2002,6 @@ function updateUserOptionsVersion(uo) {
 	});
 }
 
-var userOptions = {};
-
-(async () => {
-	await loadUserOptions();
-	console.log("userOptions loaded. Updating objects");
-	userOptions = await updateUserOptionsVersion(userOptions);
-	await browser.storage.local.set({"userOptions": userOptions});
-	await checkForOneClickEngines();
-	await buildContextMenu();
-	resetPersist();
-	setIcon();
-	document.dispatchEvent(new CustomEvent("loadUserOptions"));
-})();
-
 function resetPersist() {
 // turn off if persist = false 
 	userOptions.quickMenuTools.forEach( (tool,index) => { 
@@ -2004,62 +2049,6 @@ async function checkForOneClickEngines() {
 	});
 	
 	return newEngineCount;
-}
-
-browser.runtime.onMessage.addListener(notify);
-
-browser.runtime.onInstalled.addListener( details => {
-
-	 
-		// details.reason = 'install';
-	// Show new features page
-	
-	document.addEventListener('loadUserOptions', () => {
-
-	/*
-		if (
-			details.reason === 'update' 
-			&& details.previousVersion < "1.9.4"
-		) {
-			browser.tabs.create({
-				url: browser.runtime.getURL("/options.html#highLight"),
-				active: false
-				
-			}).then(_tab => {
-				browser.tabs.executeScript(_tab.id, {
-					file: browser.runtime.getURL("/update/update.js")
-				});
-			});
-		}
-		
-	//	Show install page
-*/			if ( 
-			details.reason === 'install'
-		) {
-			browser.tabs.create({
-				url: "/options.html#engines"
-			}).then(_tab => {
-				browser.tabs.executeScript(_tab.id, {
-					code: `cacheAllIcons()`
-				});
-			});
-		}
-	});
-});
-
-// trigger zoom event
-try {
-	browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
-
-		onFound = () => {}
-		onError = () => {}
-
-		browser.tabs.executeScript( zoomChangeInfo.tabId, {
-			code: 'document.dispatchEvent(new CustomEvent("zoom"));'
-		}).then(onFound, onError);
-	});
-} catch(e) {
-	console.log(e);
 }
 
 // note: returns a promise to loadRemoteIcons
