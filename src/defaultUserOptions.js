@@ -266,6 +266,7 @@ const defaultUserOptions = {
 	preventDuplicateSearchTabs: false,
 	quickMenuPreventPageClicks: false,
 	quickMenuDeselectTextOnSearch: false,
-	quickMenuMoveContextMenuMethod:""
+	quickMenuMoveContextMenuMethod:"",
+	incognitoTabsForgetHistory: true
 
 };

@@ -102,11 +102,6 @@ try {
 } catch(e) {
 	console.error(e);
 }
- 
-const debounce = (callback, time, id) => {
-  window.clearTimeout(window[id]);
-  window[id] = window.setTimeout(callback, time);
-}
 
 async function notify(message, sender, sendResponse) {
 
@@ -683,6 +678,8 @@ async function notify(message, sender, sendResponse) {
 			break;
 		
 		case "addToHistory":
+
+			if ( sender.tab.incognito && userOptions.incognitoTabsForgetHistory ) return console.log('incognito - do not add to history')
 	
 			let terms = message.searchTerms.trim();
 			
