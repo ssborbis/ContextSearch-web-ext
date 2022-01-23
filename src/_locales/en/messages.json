@@ -2364,6 +2364,10 @@
   "DoubleClick": {
     "message": "Double-Click"
   },
+  
+  "ShowDefaultMenuModifierMessage": {
+    "message": "To show the default context menu"
+  },
 
   "___________": {
     "message": ""

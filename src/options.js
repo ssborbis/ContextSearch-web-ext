@@ -226,7 +226,8 @@ async function restoreOptions(restoreUserOptions) {
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
-				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#quickMenuMouseButton').value === "3" && $('#quickMenuOnMouseMethod').value === "click" ) ? null : 'none';	
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#quickMenuMouseButton').value === "3" && $('#quickMenuOnMouseMethod').value === "click" ) ? null : 'none';
+				$('quickMenuMoveContextMenuMethod').parentNode.style.display = $('quickMenuMouseButton').value === "3" ? null : 'none';
 			}
 			
 			[$('#quickMenuMouseButton'), $('#quickMenuOnMouseMethod')].forEach( s => {
