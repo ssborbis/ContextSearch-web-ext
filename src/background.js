@@ -686,24 +686,24 @@ async function notify(message, sender, sendResponse) {
 			if ( !terms ) return;
 
 			// send last search to backgroundPage for session storage
-			// browser.runtime.sendMessage({action: "setLastSearch", lastSearch: terms});
 			notify({action: "setLastSearch", lastSearch: terms});
 			
 			// return if history is disabled
 			if ( ! userOptions.searchBarEnableHistory ) return;
-			
-			// if (userOptions.searchBarHistory.includes(terms)) return;
-			
+
 			// remove first entry if over limit
 			if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength)
 				userOptions.searchBarHistory.shift();
+
+			(() => { // ignore duplicates
+				let index = userOptions.searchBarHistory.indexOf(terms);
+				if ( index !== -1 )
+					userOptions.searchBarHistory.splice(index, 1);
+			})();
 			
 			// add new term
 			userOptions.searchBarHistory.push(terms);
-			
-			// ignore duplicates
-			userOptions.searchBarHistory = [...new Set([...userOptions.searchBarHistory].reverse())].reverse();
-			
+
 			// update prefs
 			notify({action: "saveUserOptions", "userOptions": userOptions});
 			
@@ -1988,8 +1988,12 @@ function updateUserOptionsVersion(uo) {
 
 		delete _uo.rightClickMenuOnMouseDownFix;
 		return _uo;
-	}).then( _uo => {
+	}).then( _uo => { // final cleanup
 
+		// remove duplicates
+		_uo.searchBarHistory = [...new Set([..._uo.searchBarHistory].reverse())].reverse();
+
+		// set version
 		_uo.version = browser.runtime.getManifest().version;
 		return _uo;
 
