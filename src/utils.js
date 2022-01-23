@@ -1,3 +1,8 @@
+const debounce = (callback, time, id) => {
+  window.clearTimeout(window[id]);
+  window[id] = window.setTimeout(callback, time);
+}
+
 function runAtTransitionEnd(el, prop, callback, ms) {
 
 	ms = ms || 25;

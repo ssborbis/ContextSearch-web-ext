@@ -664,17 +664,6 @@ function makeToolMask(tool) {
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
 
-function copyToClip(str) {
-  function listener(e) {
-    e.clipboardData.setData("text/html", str);
-    e.clipboardData.setData("text/plain", str);
-    e.preventDefault();
-  }
-  document.addEventListener("copy", listener);
-  document.execCommand("copy");
-  document.removeEventListener("copy", listener);
-}
-
 function getBrightness(el) {
 
 	let rgbCSS = window.getComputedStyle(el, null).getPropertyValue('background-color');

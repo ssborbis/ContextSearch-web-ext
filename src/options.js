@@ -251,6 +251,10 @@ async function restoreOptions(restoreUserOptions) {
 }
 
 function saveOptions(e) {
+	debounce(_saveOptions, 250, "saveOptionsDebouncer");
+}
+
+function _saveOptions(e) {
 	
 	function onSet() {
 		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
@@ -1529,7 +1533,7 @@ document.addEventListener('change', e => {
 	// skip modal forms
 	if ( e.target.closest('.editForm')) return;
 
-	setTimeout(saveOptions, 250)
+	saveOptions();
 });
 
 $('b_manualEdit').addEventListener('click', e => {
