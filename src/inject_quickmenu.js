@@ -285,9 +285,9 @@ document.addEventListener('mousedown', e => {
 
 	// check for modifier keys
 	if ( 
-		e.shiftKey !== userOptions.quickMenuOnMouseShift ||
-		e.altKey !== userOptions.quickMenuOnMouseAlt ||
-		e.ctrlKey !== userOptions.quickMenuOnMouseCtrl
+		(userOptions.quickMenuOnMouseShift && !e.shiftKey)  ||
+		(userOptions.quickMenuOnMouseAlt && !e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl && !e.ctrlKey)
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -416,11 +416,13 @@ document.addEventListener('mousedown', e => {
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
+	let requiresModKey = userOptions.quickMenuOnMouseShift & userOptions.quickMenuOnMouseAlt & userOptions.quickMenuOnMouseCtrl;
+
 	// check for modifier keys
 	if ( 
-		e.shiftKey !== userOptions.quickMenuOnMouseShift ||
-		e.altKey !== userOptions.quickMenuOnMouseAlt ||
-		e.ctrlKey !== userOptions.quickMenuOnMouseCtrl
+		(userOptions.quickMenuOnMouseShift && !e.shiftKey)  ||
+		(userOptions.quickMenuOnMouseAlt && !e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl && !e.ctrlKey)
 	) return false;
 
 	checkContextMenuEventOrder(e);
