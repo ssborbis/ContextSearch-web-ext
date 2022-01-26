@@ -333,8 +333,8 @@ function buildSearchEngineContainer() {
 							se.title = li.node.title = node.title = edit_form.shortName.value;
 							
 							// change name on all labels
-							[].forEach.call( table.getElementsByTagName('li'), _li => {
-								if ( _li.node.id === node.id )
+							table.querySelectorAll('li').forEach(_li => {
+								if ( _li.node && _li.node.id === node.id )
 									_li.querySelector('.label').innerText = _li.node.title = se.title;
 
 							});
