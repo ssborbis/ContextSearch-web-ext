@@ -226,7 +226,8 @@ async function restoreOptions(restoreUserOptions) {
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
-				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#quickMenuMouseButton').value === "3" && $('#quickMenuOnMouseMethod').value === "click" ) ? null : 'none';	
+				document.querySelector('[data-i18n="HoldForContextMenu"]').style.display = ( $('#quickMenuMouseButton').value === "3" && $('#quickMenuOnMouseMethod').value === "click" ) ? null : 'none';
+				$('quickMenuMoveContextMenuMethod').parentNode.style.display = $('quickMenuMouseButton').value === "3" ? null : 'none';
 			}
 			
 			[$('#quickMenuMouseButton'), $('#quickMenuOnMouseMethod')].forEach( s => {
@@ -251,6 +252,10 @@ async function restoreOptions(restoreUserOptions) {
 }
 
 function saveOptions(e) {
+	debounce(_saveOptions, 250, "saveOptionsDebouncer");
+}
+
+function _saveOptions(e) {
 	
 	function onSet() {
 		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
@@ -1529,7 +1534,7 @@ document.addEventListener('change', e => {
 	// skip modal forms
 	if ( e.target.closest('.editForm')) return;
 
-	setTimeout(saveOptions, 250)
+	saveOptions();
 });
 
 $('b_manualEdit').addEventListener('click', e => {

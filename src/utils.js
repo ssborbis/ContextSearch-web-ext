@@ -1,3 +1,8 @@
+const debounce = (callback, time, id) => {
+  window.clearTimeout(window[id]);
+  window[id] = window.setTimeout(callback, time);
+}
+
 function runAtTransitionEnd(el, prop, callback, ms) {
 
 	ms = ms || 25;
@@ -148,7 +153,7 @@ function runReplaceRegex(s, callback) {
 	return true;
 }
 
-validateRegex = s => ( runMatchRegex(s) || runReplaceRegex(s) );
+const validateRegex = s => ( runMatchRegex(s) || runReplaceRegex(s) );
 
 function isMatchingRegex(rgxStr, s) {
 	let results = false;

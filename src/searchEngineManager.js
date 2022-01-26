@@ -333,8 +333,8 @@ function buildSearchEngineContainer() {
 							se.title = li.node.title = node.title = edit_form.shortName.value;
 							
 							// change name on all labels
-							[].forEach.call( table.getElementsByTagName('li'), _li => {
-								if ( _li.node.id === node.id )
+							table.querySelectorAll('li').forEach(_li => {
+								if ( _li.node && _li.node.id === node.id )
 									_li.querySelector('.label').innerText = _li.node.title = se.title;
 
 							});
@@ -1158,10 +1158,8 @@ function buildSearchEngineContainer() {
 		// flag if opened from button vs context menu
 		let buttonAdd = e.target === document.querySelector('#b_addSearchEngine') ? true : false;
 		if ( buttonAdd && !li ) {
-			// if ( selectedRows && selectedRows.length === 1)
-			// 	li = selectedRows[0];
-			// else
-				li = document.querySelector('#managerContainer ul').lastChild;
+			// second-to-last row. Last row is blank
+			li = document.querySelector('#managerContainer ul').lastChild.previousSibling;
 		}
 		
 		closeContextMenus();
@@ -1285,7 +1283,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let hide = createMenuItem(li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.svg'));
+		let hide = createMenuItem( li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.svg'));
 		hide.addEventListener('click', () => {
 			if ( !selectedRows.length ) selectedRows.push(li);
 			
@@ -2005,7 +2003,7 @@ async function setRowContexts(row) {
 				if ( status ) node.contexts -= code;
 				else node.contexts += code;
 
-				updateNodeList();
+				updateNodeList(true);
 			}
 
 			cc.appendChild(tool);

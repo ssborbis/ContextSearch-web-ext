@@ -490,6 +490,8 @@ async function makeQuickMenu(options) {
 	});
 
 	document.addEventListener('updatesearchterms', e => {
+
+	//	quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
 		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
 		updateMatchRegexFolder();
 	});
@@ -825,6 +827,7 @@ async function makeQuickMenu(options) {
 
 				let _tile = nodeToTile( folder );
 				_tile.node.displayType = qm.rootNode.displayType;
+				// _tile.node.groupFolder = 'block';
 				_tile.classList.add('tile');
 				_tile.dataset.hasicon = 'true';
 				_tile.dataset.undraggable = true;
@@ -1071,6 +1074,11 @@ function makeSearchBar() {
 	const suggestionsDisplayCount = 5;
 	
 	let si = document.getElementById('searchIcon');
+
+	sb.placeholder = browser.i18n.getMessage('Search');		
+	sb.dataset.position = userOptions.quickMenuSearchBar;
+
+	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
 	
 	si.onclick = function() {
 		
@@ -1101,24 +1109,27 @@ function makeSearchBar() {
 		displaySuggestions(history);
 	}
 	
-	sb.placeholder = browser.i18n.getMessage('Search');
-			
-	sb.dataset.position = userOptions.quickMenuSearchBar;
-
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
 		let qmo = message[0];
 
 		if ( qmo && qmo.searchTerms) sb.value = qmo.searchTerms;
 		else displayLastSearchTerms();
+	}, () => {
+		displayLastSearchTerms();
 	});
 
 	function displayLastSearchTerms() {
 		browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
 			
 			if ( userOptions.autoPasteFromClipboard ) {
-				sb.select();
-				document.execCommand("paste");
-				sb.select();
+				let paste = () => {
+					try {
+						navigator.clipboard.readText().then(clipText => sb.value = clipText);
+					} catch ( error ) { console.error(error) }
+				}
+				if ( window == top ) paste(); // toolbar menu
+				else window.addEventListener('focus', paste, {once: true}); // qm, sb
+				
 				return;
 			}
 			
@@ -1139,8 +1150,6 @@ function makeSearchBar() {
 
 		});
 	}
-
-	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
 	
 	function displaySuggestions(suggestions) {
 		
@@ -1190,11 +1199,57 @@ function makeSearchBar() {
 		sg.style.maxHeight = Math.min(sg_height * suggestionsDisplayCount, suggestions.length * sg_height) + "px";
 
 	}
-	
-	var saveDebounce = null;
-	
+
+	async function updateSuggestions() {
+			
+		if (sb.value.trim() === "") {
+			sg.style.maxHeight = null;
+			return;
+		}
+
+		sg.style.minHeight = sg.getBoundingClientRect().height + "px";
+		sg.innerHTML = null;
+		
+		let history = [];
+		let lc_searchTerms = sb.value.toLowerCase();
+		for (let h of userOptions.searchBarHistory) {
+			if (h.toLowerCase().indexOf(lc_searchTerms) === 0)
+				history.push({searchTerms: h, type: 0});
+			
+			if (history.length === suggestionsCount) break;
+		}
+
+		if (userOptions.searchBarSuggestions) {
+			let xml = await getSuggestions(sb.value);
+				
+			let suggestions = [];
+			for (let s of xml.getElementsByTagName('suggestion')) {
+				let searchTerms = s.getAttribute('data');
+				
+				let found = false;
+				for (let h of history) {
+					if (h.searchTerms.toLowerCase() === searchTerms.toLowerCase()) {
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+					suggestions.push({searchTerms: searchTerms, type: 1});
+			}
+
+			suggestions = history.concat(suggestions);
+			
+			displaySuggestions(suggestions);
+				
+		} else if ( userOptions.searchBarEnableHistory )
+			displaySuggestions(history);
+		
+		sg.style.minHeight = null;
+		
+	}
+		
 	// listen for and delete history
-	document.addEventListener('keydown', (e) => {
+	document.addEventListener('keydown', e => {
 
 		if ( e.key === "Delete" && document.activeElement === sg && sg.querySelector('.selectedFocus') ) {
 			
@@ -1218,82 +1273,16 @@ function makeSearchBar() {
 			selected.parentNode.removeChild(selected);
 
 			userOptions.searchBarHistory.splice(i,1);
-			
-			// clear old timers
-			if ( saveDebounce !== null ) {
-				clearTimeout(saveDebounce);
-				console.log('debouncing save');
-			}
-				
-			saveDebounce = setTimeout(() => {
-				saveUserOptions();
-				saveDebounce = null;
-				console.log('executing save');
-			}, 200);	
+
+			debounce(saveUserOptions, 500, "saveDebounce")
 		}
 	});
-		
-	sb.typeTimer = null;
+	
 	sb.onkeypress = function(e) {
 
 		if ( sg.userOpen ) return;
-		
-		clearTimeout(sb.typeTimer);
-		
-		sb.typeTimer = setTimeout(async () => {
-			
-			if (sb.value.trim() === "") {
-				sg.style.maxHeight = null;
-				return;
-			}
-
-			sg.style.minHeight = sg.getBoundingClientRect().height + "px";
-			sg.innerHTML = null;
-			
-			let history = [];
-			let lc_searchTerms = sb.value.toLowerCase();
-			for (let h of userOptions.searchBarHistory) {
-				if (h.toLowerCase().indexOf(lc_searchTerms) === 0)
-					history.push({searchTerms: h, type: 0});
-				
-				if (history.length === suggestionsCount) break;
-			}
-
-			if (userOptions.searchBarSuggestions) {
-				let xml = await getSuggestions(sb.value);
-					
-				let suggestions = [];
-				for (let s of xml.getElementsByTagName('suggestion')) {
-					let searchTerms = s.getAttribute('data');
-					
-					let found = false;
-					for (let h of history) {
-						if (h.searchTerms.toLowerCase() === searchTerms.toLowerCase()) {
-							found = true;
-							break;
-						}
-					}
-					if (!found)
-						suggestions.push({searchTerms: searchTerms, type: 1});
-				}
-
-				suggestions = history.concat(suggestions);
-				
-				displaySuggestions(suggestions);
-					
-			} else if ( userOptions.searchBarEnableHistory )
-				displaySuggestions(history);
-			
-			sg.style.minHeight = null;
-			
-		}, 500);
+		debounce(updateSuggestions, 500, "typeTimer");
 	}
-	
-	// sb.addEventListener('keydown', (e) => {
-	// 	if (e.key === "Enter" && userOptions.searchBarCloseAfterSearch) {
-	// 		setTimeout(window.close, 100);
-	// 	}
-	// });
 	
 	// execute a keypress event to trigger some sb methods reserved for typing events
 	sb.addEventListener('keydown', e => {
@@ -1307,12 +1296,7 @@ function makeSearchBar() {
 	}
 
 	sb.addEventListener('keydown', e => {
-		clearTimeout(sb.typeTimer2);
-	
-		sb.typeTimer2 = setTimeout(() => {
-			updateMatchRegexFolder(sb.value);
-			sb.typeTimer2 = null;
-		}, 500);
+		debounce(() => updateMatchRegexFolder(sb.value), 500, "typeTimer2");
 	})
 }
 

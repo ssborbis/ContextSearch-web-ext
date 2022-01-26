@@ -111,6 +111,8 @@ function openSideBar(options) {
 	iframe.style.opacity = 0;
 	iframe.style.width = "0px";
 
+	iframe.setAttribute('allow', "clipboard-read; clipboard-write");
+
 	iframe.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
 
 	iframe.allowTransparency = true;

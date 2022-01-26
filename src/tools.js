@@ -287,7 +287,7 @@ const QMtools = [
 	{
 		name: 'toggleview', 
 		icon: "icons/list.svg", 
-		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('text'),
+		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('list'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
@@ -663,17 +663,6 @@ function makeToolMask(tool) {
 }
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
-
-function copyToClip(str) {
-  function listener(e) {
-    e.clipboardData.setData("text/html", str);
-    e.clipboardData.setData("text/plain", str);
-    e.preventDefault();
-  }
-  document.addEventListener("copy", listener);
-  document.execCommand("copy");
-  document.removeEventListener("copy", listener);
-}
 
 function getBrightness(el) {
 

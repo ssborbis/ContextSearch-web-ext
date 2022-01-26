@@ -1,3 +1,6 @@
+let startCoords;
+let searchTerms;
+
 function openPageTiles() {
 
 	// chrome requires delay or the drag event is cancelled
@@ -47,15 +50,31 @@ document.addEventListener('dragstart', e => {
 
 	if ( !userOptions.pageTiles.enabled ) return;
 
-	let searchTerms = getSelectedText(e.target);
+	if ( !e.isTrusted ) return;
 
-	browser.runtime.sendMessage({action: "setLastSearch", lastSearch: searchTerms})
-		.then( () => browser.runtime.sendMessage({action: "openPageTiles"}));
+	let dragOverHandler = e => {
+
+		if ( !e.isTrusted ) return;
+
+		if ( Math.abs(startCoords.x - e.clientX) < userOptions.pageTiles.deadzone && Math.abs(startCoords.y - e.clientY) < userOptions.pageTiles.deadzone ) return;
+
+		browser.runtime.sendMessage({action: "setLastSearch", lastSearch: searchTerms})
+			.then( () => browser.runtime.sendMessage({action: "openPageTiles"}));
+
+		document.removeEventListener('dragover', dragOverHandler);
+	}
+
+	startCoords = {x: e.clientX, y: e.clientY};
+	searchTerms = getSelectedText(e.target);
+
+	document.addEventListener('dragover', dragOverHandler);
+	document.addEventListener('dragend', e => document.removeEventListener('dragover', dragOverHandler));
 });
 
 document.addEventListener('keydown', e => {
 	if ( e.key == "Escape" ) closePageTiles();
 });
+
 
 let getPageTilesIframe = () => document.getElementById('CS_pageTilesIframe');
 let getOverDiv = () => document.getElementById('CS_pageTilesOverDiv');

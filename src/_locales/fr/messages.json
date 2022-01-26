@@ -1947,9 +1947,7 @@
     "description": ""
   },
 
-
-    // Misc - Messages
-  "requestPermissionsMessage": {
+"requestPermissionsMessage": {
     "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous pour demander l’autorisation d’ajouter des données dans le presse-papiers.",
     "description": "clipboardWrite permission"
   },
@@ -1962,9 +1960,7 @@
     "message": "Supprimer $1 nœuds ?"
   },
   
-  
-  //Options - Search Engine Manager Tab
-  "RegexTooltip": {
+ "RegexTooltip": {
     "message": "Modifier les termes de la recherche à l’aide d’une expression rationnelle avant de les soumettre. Plusieurs remplacements peuvent être enchaînés à raison d’un par ligne.",
     "description": "searchengine edit - search regex tooltip"
   },
@@ -1982,16 +1978,12 @@
     "description": "remove searchengines - confirm message"
   },
   
-  
-  //Options - Toolbar Tab
-  "customIconTooltip": {
+"customIconTooltip": {
     "message": "Utiliser une image sur l’ordinateur",
     "description": "toolbar icon - custom icon tooltip"
   },
   
-  
-  //Options - Shortcuts Tab
-  "EnableHotkeysLabel": {
+ "EnableHotkeysLabel": {
     "message": "Touches de raccourci",
     "description": "label for Search Engine Hotkeys"
   },
@@ -2049,16 +2041,12 @@
     "description": "keyboard shortcut label"
   },
   
-  
-  //Options - Omnibox Tab
-  "OmniboxTooltip": {
+ "OmniboxTooltip": {
     "message": "Omnibox",
     "description": "omnibox image title"
   },
   
-  
-  //Options - General Tab
-  "lite": {
+ "lite": {
     "message": "Clair",
     "description": "theme name"
   },
@@ -2087,9 +2075,7 @@
     "description": "theme name"
   },
   
-  
- //Options - Advanced Tab
-  "exportToFirefoxSearch": {
+"exportToFirefoxSearch": {
     "message": "Exporter vers la recherche Firefox",
     "description": "advanced setting label"
   },

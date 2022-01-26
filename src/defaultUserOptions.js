@@ -12,6 +12,9 @@ const defaultUserOptions = {
 	quickMenuKey: 0,
 	quickMenuOnKey: false,
 	quickMenuOnMouse: true,
+	quickMenuOnMouseCtrl: false,
+	quickMenuOnMouseAlt: false,
+	quickMenuOnMouseShift: false,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
 	quickMenuOnDrag: false,
@@ -204,6 +207,7 @@ const defaultUserOptions = {
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
 	quickMenuHoldTimeout: 250,
+	quickMenuRightClickTimeout: 500,
 	quickMenuCancelDeadzone:4,
 	exportWithoutBase64Icons: false,
 	addSearchProviderHideNotification: false,
@@ -221,7 +225,8 @@ const defaultUserOptions = {
 		grid: [],
 		openMethod: "openBackgroundTab",
 		paletteString: "eff0f1",
-		closeOnShake: false
+		closeOnShake: false,
+		deadzone: 4
 	},
 	openFoldersOnHoverTimeout: 0,
 	nightMode: false,
@@ -237,7 +242,6 @@ const defaultUserOptions = {
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
 	forceOpenResultsTabsAdjacent: false,
-	rightClickMenuOnMouseDownFix: false,
 	contextMenuRegexMatchedEngines: false,
 	quickMenuRegexMatchedEngines: false,
 	quickMenuToolbarRows: 1,
@@ -259,5 +263,12 @@ const defaultUserOptions = {
 		url:"icons/logo_notext.svg",
 		scale:1.0
 	},
-	checkContextMenuEventOrder: true
+	checkContextMenuEventOrder: true,
+	preventDuplicateSearchTabs: false,
+	quickMenuPreventPageClicks: false,
+	quickMenuDeselectTextOnSearch: false,
+	quickMenuMoveContextMenuMethod:"",
+	incognitoTabsForgetHistory: true,
+	waitOnInjectionTimeout: 15000
+
 };

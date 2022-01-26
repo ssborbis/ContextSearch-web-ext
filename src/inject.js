@@ -70,7 +70,8 @@ function getContexts(el) {
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 
-	if ( el.closest('a')) contexts.push('link');
+	if ( el.closest && el.closest('a')) contexts.push('link');
+
 	if ( getSelectedText(el)) contexts.push('selection');
 	if ( window != top ) contexts.push('iframe');
 
@@ -352,7 +353,7 @@ function checkContextMenuEventOrderNotification() {
 
 	yes.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
-		userOptions.rightClickMenuOnMouseDownFix = true;
+		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	}
 
@@ -391,81 +392,6 @@ function checkForNodeHotkeys(e) {
 		}
 	});
 }
-
-(() => {
-
-	var gestures = [
-		{
-			event: 'dblclick',
-			button: 1,
-			altKey:false,
-			ctrlKey:false,
-			metaKey:false,
-			shiftKey:false,
-			targetTypes: ['*'],
-			textSelected: true,
-			action: "test1"
-		},
-		{
-			event: 'keydown',
-			key: 'F1',
-			altKey:false,
-			ctrlKey:false,
-			metaKey:false,
-			shiftKey:false,
-			targetTypes: ['*'],
-			action: "test2",
-			textSelected: true
-		}
-	];
-
-	gestures.forEach( g => {
-		document.addEventListener(g.event, e => {
-
-			console.log(e);
-			if ( !isGesture(g,e) ) return;
-
-			console.log(g.action);
-		})
-	})
-
-	document.addEventListener('contextmenu', e => {
-
-		if ( window.contextMenuTimer ) {
-			e.preventDefault();
-			return document.dispatchEvent(new MouseEvent('dblclick', e));	
-		}
-
-		window.contextMenuTimer = setTimeout(() => {
-			clearTimeout(window.contextMenuTimer);
-			delete window.contextMenuTimer;
-		}, 250);
-	});
-
-	// trigger dblclick event for other buttons
-	let dblClickHandler = e => {
-		if ( e.detail === 2 && e.button !== 0 ) {
-			console.log(e);
-			document.dispatchEvent(new MouseEvent('dblclick', e));
-		}
-	}
-	document.addEventListener('mousedown', dblClickHandler);
-
-	function isGesture(g, e) {
-		return (
-			e.altKey === g.altKey &&
-			e.ctrlKey === g.ctrlKey &&
-			e.shiftKey === g.shiftKey &&
-			e.metaKey === g.metaKey &&
-
-			( 
-				g.button && g.button === e.button ||
-				g.key && g.key === e.key
-			)
-		)
-	}
-
-});
 
 window.hasRun = true;
 
