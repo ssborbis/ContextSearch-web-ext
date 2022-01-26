@@ -2270,18 +2270,22 @@ function waitOnInjection(tabId) {
 
 	let interval;
 	let timeout;
-	let start = Date.now();
+	const start = Date.now();
+
+	const cleanup = () => {
+		clearInterval(interval);
+		clearTimeout(timeout);
+	}
 
 	return Promise.race([
 
 		// timeout
 		new Promise(r => {
 			timeout = setTimeout(() => {
-				clearInterval(interval);
-				clearTimeout(timeout);
-				r(false);
+				cleanup();
 				console.error('waitOnInjection timeout', tabId);
-			}, 15000);
+				r(false);
+			}, userOptions.waitOnInjectionTimeout);
 		}),
 
 		// interval test
@@ -2291,16 +2295,13 @@ function waitOnInjection(tabId) {
 					let result = await browser.tabs.executeScript(tabId, { code: "window.hasRun"} );
 
 					if ( result[0] ) {
-						clearInterval(interval);
-						clearTimeout(timeout);
+						cleanup();
 						console.log(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
 						r(true);
 					}
 
 				} catch ( error ) {
-					// console.log(tabId, error);
-					clearInterval(interval);
-					clearTimeout(timeout);
+					cleanup();
 					console.error('waitOnInjection failed', tabId);
 					r(false);
 				}				

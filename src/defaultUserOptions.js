@@ -207,6 +207,7 @@ const defaultUserOptions = {
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
 	quickMenuHoldTimeout: 250,
+	quickMenuRightClickTimeout: 500,
 	quickMenuCancelDeadzone:4,
 	exportWithoutBase64Icons: false,
 	addSearchProviderHideNotification: false,
@@ -267,6 +268,7 @@ const defaultUserOptions = {
 	quickMenuPreventPageClicks: false,
 	quickMenuDeselectTextOnSearch: false,
 	quickMenuMoveContextMenuMethod:"",
-	incognitoTabsForgetHistory: true
+	incognitoTabsForgetHistory: true,
+	waitOnInjectionTimeout: 15000
 
 };

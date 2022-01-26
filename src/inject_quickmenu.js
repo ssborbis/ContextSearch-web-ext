@@ -302,16 +302,17 @@ document.addEventListener('mousedown', e => {
 		) return;
 
 		if ( userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
-			if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > 500 ) {
+			if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > userOptions.quickMenuRightClickTimeout ) {
 				document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+				quickMenuObject.mouseLastContextMenuTime = Date.now();
 			} else {
 				document.addEventListener('contextmenu', _e => {
 					clearTimeout(quickMenuObject.mouseDownTimer);
 					quickMenuObject.mouseDownTimer = null;
-				}, {once: true});	
-			}
+				}, {once: true});
 
-			quickMenuObject.mouseLastContextMenuTime = Date.now();
+				return;
+			}
 		} else {
 			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 		} 
@@ -416,7 +417,7 @@ document.addEventListener('mousedown', e => {
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
-	let requiresModKey = userOptions.quickMenuOnMouseShift & userOptions.quickMenuOnMouseAlt & userOptions.quickMenuOnMouseCtrl;
+	// let requiresModKey = userOptions.quickMenuOnMouseShift & userOptions.quickMenuOnMouseAlt & userOptions.quickMenuOnMouseCtrl;
 
 	// check for modifier keys
 	if ( 
@@ -447,7 +448,7 @@ document.addEventListener('mousedown', e => {
 	// context menu on mousedown fixes
 	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
 
-		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < 500 ) {
+		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < userOptions.quickMenuRightClickTimeout ) {
 			closeQuickMenu();
 			removePreventContextMenuHandler('quickMenuOnClick mousedown');
 			return;
@@ -829,11 +830,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
+				let borderWidth = parseFloat(window.getComputedStyle(qmc, null).getPropertyValue('border-width'));
+
 				let initialOffsets = getQuickMenuOpeningPosition({
 					width: message.size.width,
 					height: message.size.height,
 					x: qmc.openingCoords.x,
-					y: qmc.openingCoords.y
+					y: qmc.openingCoords.y,
+					borderWidth: borderWidth
 				});
 
 				makeDockable(qmc, {
@@ -1122,7 +1126,7 @@ function getQuickMenuOpeningPosition(o) {
 		}
 	}
 	
-	const borderOffset = 0;
+	const borderOffset = (o.borderWidth || 0) / window.devicePixelRatio;
 
 	let initialOffsetX = Math.max(0, Math.min(o.x - borderOffset + (userOptions.quickMenuOffset.x / window.devicePixelRatio) + leftOffset, window.innerWidth - o.width * userOptions.quickMenuScale / window.devicePixelRatio - getScrollBarWidth()));
 	

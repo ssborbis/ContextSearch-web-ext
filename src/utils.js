@@ -153,7 +153,7 @@ function runReplaceRegex(s, callback) {
 	return true;
 }
 
-validateRegex = s => ( runMatchRegex(s) || runReplaceRegex(s) );
+const validateRegex = s => ( runMatchRegex(s) || runReplaceRegex(s) );
 
 function isMatchingRegex(rgxStr, s) {
 	let results = false;
