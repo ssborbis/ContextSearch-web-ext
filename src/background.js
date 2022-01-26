@@ -93,17 +93,20 @@ browser.runtime.onInstalled.addListener( details => {
 });
 
 // trigger zoom event
-try {
-	browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
-		browser.tabs.executeScript( zoomChangeInfo.tabId, {
-			code: 'document.dispatchEvent(new CustomEvent("zoom"));'
-		});
-	});
-} catch(e) {
-	console.error(e);
-}
+browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
+
+	let tab = await browser.tabs.get(zoomChangeInfo.tabId);
+
+	if ( !isValidHttpUrl(tab.url) ) return;
+
+	browser.tabs.executeScript( zoomChangeInfo.tabId, {
+		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+	}).then(() => {}, err => console.log(err));
+});
 
 async function notify(message, sender, sendResponse) {
+
+	console.log(message);
 
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
