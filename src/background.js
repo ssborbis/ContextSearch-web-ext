@@ -93,17 +93,20 @@ browser.runtime.onInstalled.addListener( details => {
 });
 
 // trigger zoom event
-try {
-	browser.tabs.onZoomChange.addListener( zoomChangeInfo => {
-		browser.tabs.executeScript( zoomChangeInfo.tabId, {
-			code: 'document.dispatchEvent(new CustomEvent("zoom"));'
-		});
-	});
-} catch(e) {
-	console.error(e);
-}
+browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
+
+	let tab = await browser.tabs.get(zoomChangeInfo.tabId);
+
+	if ( !isValidHttpUrl(tab.url) ) return;
+
+	browser.tabs.executeScript( zoomChangeInfo.tabId, {
+		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+	}).then(() => {}, err => console.log(err));
+});
 
 async function notify(message, sender, sendResponse) {
+
+	// console.log(message);
 
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
@@ -1285,12 +1288,12 @@ async function openSearch(info) {
 		return executeBookmarklet(info);
 	}
 
-	var se = info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id );
+	var se = (node && node.id ) ? info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : null;
 
-	if ( !se ) return false;
+	if ( !se && !openUrl) return false;
 	
 	// check for multiple engines (v1.27+)
-	if ( !info.noMultiURL ) {
+	if ( se && !info.noMultiURL ) {
 		
 		// check for arrays
 		try {
