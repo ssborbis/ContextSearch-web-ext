@@ -106,7 +106,7 @@ browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 
 async function notify(message, sender, sendResponse) {
 
-	console.log(message);
+	// console.log(message);
 
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
@@ -1288,12 +1288,12 @@ async function openSearch(info) {
 		return executeBookmarklet(info);
 	}
 
-	var se = info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id );
+	var se = (node && node.id ) ? info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : null;
 
-	if ( !se ) return false;
+	if ( !se && !openUrl) return false;
 	
 	// check for multiple engines (v1.27+)
-	if ( !info.noMultiURL ) {
+	if ( se && !info.noMultiURL ) {
 		
 		// check for arrays
 		try {
