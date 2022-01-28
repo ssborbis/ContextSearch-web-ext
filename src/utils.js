@@ -140,10 +140,10 @@ function runReplaceRegex(s, callback) {
 		} catch (error) {}
 
 		try { // replace regex
-			let m = /^\/(.*)\/(.*)\/([a-z]+)$/.exec(line.trim());
+			let m = /^\/(.*)(?<!\\)\/(.*)(?<!\\)\/([a-z]+)$/.exec(line.trim());
 			let rgx = new RegExp(m[1], m[3] || 'g');
 
-			callback( rgx, m[2] );
+			callback( rgx, m[2].replaceAll("\\/", "/") );
 			continue;
 		} catch (error) {}
 
