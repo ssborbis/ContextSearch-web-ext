@@ -49,9 +49,13 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	}
 });
 
-browser.tabs.onRemoved.addListener((tabId, removeInfo) => {
+browser.tabs.onRemoved.addListener(tabId => {
 	notify({action: "removeTabHighlighting", tabId: tabId});
-	// window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
+	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
+});
+
+browser.tabs.onActivated.addListener(tabId => {
+	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
 });
 
 browser.runtime.onMessage.addListener(notify);
@@ -883,6 +887,10 @@ async function notify(message, sender, sendResponse) {
 		case "hasPermission":
 			return browser.permissions.contains({permissions: [message.permission]});
 			break;
+
+		case "closeTab":
+			return browser.tabs.remove(message.tabId || sender.tab.id )
+			break;
 	}
 }
 
@@ -976,8 +984,6 @@ function loadUserOptions() {
 	var getting = browser.storage.local.get("userOptions");
 	return getting.then(onGot, onError);
 }
-
-
 
 function openWithMethod(o) {
 	if ( !o.url ) return;
