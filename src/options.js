@@ -411,7 +411,6 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildThemes();
 	buildSearchActions();
 	hideBrowserSpecificElements();
-	// buildInfoBubbles();
 
 	// restore settings and set INPUT values
 	await restoreOptions();
