@@ -1,4 +1,4 @@
-{
+{{
     
   "extensionDescription": {
     "message": "Permet d’ajouter facilement des moteurs de recherche et d’effectuer des recherches par l’intermédiaire du menu contextuel ou d’un panneau pratique."
@@ -220,7 +220,7 @@
   },
 
   "MouseHelp": {
-    "message": "Les utilisateurs de Linux ou MacOS X basculeront l’option « ui.context_menus.after_mouseup » sur « true » dans « about:config » pour que les actions à la souris fonctionnent correctement et pour éviter les menus indésirables. Les utilisateurs de Chrome activeront l’option avancée « rightClickMenuOnMouseDownFix » pour masquer le menu contextuel standard avec un clic simple et l’afficher avec un clic double."
+    "message": "Les utilisateurs de Linux ou MacOS X basculeront l’option « ui.context_menus.after_mouseup » sur « true » dans « about:config » pour que les actions à la souris fonctionnent correctement et pour éviter les menus indésirables. Les autres peuvent choisir le mode d’ouverture du menu contextuel standard : maintien de la touche Alt, Ctrl ou Maj, ou double-clic droit. Toutes les options ne fonctionnent pas sous toutes les plateformes."
   },
 
   "Position": {
@@ -1146,6 +1146,11 @@
   },
 
   "Text": {
+    "message": "Texte",
+    "description": ""
+  },
+
+  "List": {
     "message": "Liste",
     "description": ""
   },
@@ -1550,7 +1555,7 @@
   },
 
   "HoldForContextMenu": {
-	"message": "Prolonger le clic droit (environ 1 s) pour le menu contextuel normal."
+	"message": "Prolonger le clic droit (environ 1 s) pour ouvrir le menu contextuel standard."
   },
 
   "tools_repeatsearch": {
@@ -2180,7 +2185,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuAllowContextMenuNewTooltip": {
-    "message": "Les systèmes qui affichent le menu contextuel sur clic peuvent nécessiter l’activation de l’option avancée rightClickMenuOnMouseDownFix.",
+    "message": "Pour les systèmes qui affichent le menu contextuel sur clic, il peut être nécessaire de choisir une autre méthode d’ouverture ou de modifier le mode d’ouverture du menu contextuel standard.",
     "description": "advanced setting tooltip"
   },
   "quickMenuAutoMaxCharsTooltip": {
@@ -2331,7 +2336,7 @@
   },
 
   "NewMultiSearch": {
-    "message": "Nouvelle recherche multiple"
+    "message": "Nouveau multimoteur"
   },
 
   "ContextsTooltip": {
@@ -2347,9 +2352,17 @@
   },
 
   "checkContextMenuOrderNotification": {
-    "message": "Passer le menu contextuel standard en double-clic lors de l’ouverture du menu rapide ? Voir les options pour plus d’informations."
+    "message": "Passer le menu contextuel standard en mode double-clic lors de l’ouverture du menu rapide ? Voir les options pour plus d’informations."
   },
 
+  "DoubleClick": {
+    "message": "Double-clic"
+  },
+  
+  "ShowDefaultMenuModifierMessage": {
+    "message": "Mode d’ouverture du menu contextuel standard"
+  },
+  
   "___________": {
     "message": ""
   }
