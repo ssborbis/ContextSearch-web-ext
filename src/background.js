@@ -51,12 +51,10 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 browser.tabs.onRemoved.addListener(tabId => {
 	notify({action: "removeTabHighlighting", tabId: tabId});
-	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
 });
 
-browser.tabs.onActivated.addListener(tabId => {
-	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
-});
+browser.tabs.onRemoved.addListener(tabId => removeTabTerms(tabId));
+browser.tabs.onActivated.addListener(tabId => removeTabTerms(tabId));
 
 browser.runtime.onMessage.addListener(notify);
 
@@ -1152,14 +1150,14 @@ function executeOneClickSearch(info) {
 
 		let start = Date.now();
 
+		addTabTerms(info.menuItemId, tab.id, searchTerms);
+
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			if ( tabId !== tab.id ) return;
 		
 			if ( changeInfo.status !== 'complete' ) return;
 
 			browser.tabs.onUpdated.removeListener(listener);
-
-			// addTabTerms(info.menuItemId, __tab.id, searchTerms);
 
 			console.log('tab took', Date.now() - start );
 
@@ -1283,6 +1281,14 @@ async function openSearch(info) {
 	if ( !info.temporarySearchEngine && !info.folder && !info.openUrl) 
 		lastSearchHandler(info.menuItemId);
 
+	if ( userOptions.preventDuplicateSearchTabs ) {
+		try {
+			let oldTab = await getTabTerms(node.id, searchTerms);
+			console.log('tab with same engine and terms exists');
+			return false;
+		} catch ( error ) {}
+	}
+
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		console.log("oneClickSearchEngine");
 		return executeOneClickSearch(info);
@@ -1341,14 +1347,6 @@ async function openSearch(info) {
 		//	console.log(error);
 		}
 	}
-
-	// if ( userOptions.preventDuplicateSearchTabs ) {
-	// 	try {
-	// 		await getTabTerms(node.id, searchTerms);
-	// 		console.log('tab with same engine and terms exists');
-	// 		return false;
-	// 	} catch ( error ) {}
-	// }
 	
 	if (!tab) tab = {url:"", id:0}
 	
@@ -1426,6 +1424,8 @@ async function openSearch(info) {
 			console.log('window created');
 		}
 
+		addTabTerms(node.id, _tab.id, searchTerms);
+
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
 			if ( tabId !== _tab.id ) return;
@@ -1441,8 +1441,6 @@ async function openSearch(info) {
 				if ( changeInfo.status !== 'complete' ) return;
 
 				browser.tabs.onUpdated.removeListener(listener);
-
-				// addTabTerms(node.id, __tab.id, searchTerms);
 				
 				waitOnInjection(tabId).then(value => {
 					highlightSearchTermsInTab(__tab, searchTerms);
@@ -1478,8 +1476,6 @@ async function openSearch(info) {
 
 				if ( _tabInfo.status !== 'complete' ) return;
 				browser.tabs.onUpdated.removeListener(_listener);
-
-				// addTabTerms(node.id, _tabInfo.id, searchTerms);
 				
 				waitOnInjection(tabId).then(value => {
 					highlightSearchTermsInTab(_tabInfo, searchTerms);
@@ -1496,14 +1492,11 @@ async function openSearch(info) {
 }
 
 function addTabTerms(nodeId, tabId, s) {
+	window.tabTerms.unshift({id: nodeId, tabId: tabId, searchTerms: s});
+}
 
-	let o = {id: nodeId, tabId: tabId, searchTerms: s};
-	let i = window.tabTerms.findIndex(_t => _t.id === nodeId && _t.searchTerms === s);
-
-	if ( i > -1 )
-		window.tabTerms[i] = o;
-	else
-		window.tabTerms.unshift(o);
+function removeTabTerms(tabId) {
+	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
 }
 
 function getTabTerms(id, s) {
@@ -2194,7 +2187,6 @@ function openSearchXMLToSearchEngine(xml) {
 }
 
 function isAllowedURL(_url) {
-
 
 	try {
 		let url = new URL(_url);
