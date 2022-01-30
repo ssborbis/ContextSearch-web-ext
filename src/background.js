@@ -1300,7 +1300,7 @@ async function openSearch(info) {
 		return executeBookmarklet(info);
 	}
 
-	var se = (node && node.id ) ? info.temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : null;
+	var se = (node && node.id ) ? temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
 
 	if ( !se && !openUrl) return false;
 	
