@@ -800,7 +800,8 @@ async function notify(message, sender, sendResponse) {
 
 			return browser.tabs.insertCSS( sender.tab.id, {
 				code: style,
-				frameId: message.global ? null : sender.frameId
+				frameId: message.global ? null : sender.frameId,
+				cssOrigin: "user"
 			});
 			
 			break;
@@ -812,7 +813,8 @@ async function notify(message, sender, sendResponse) {
 		case "addStyles":
 			return browser.tabs.insertCSS( sender.tab.id, {
 				file: message.file,
-				frameId: sender.frameId
+				frameId: sender.frameId,
+				cssOrigin: "user"
 			});
 			break;
 
@@ -2249,7 +2251,7 @@ async function injectContentScripts(tab, frameId) {
 		"/defaultShortcuts.js",
 		"/dragshake.js"
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
-	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
+	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user", runAt: "document_end"}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
 		[
@@ -2262,7 +2264,7 @@ async function injectContentScripts(tab, frameId) {
 			"/inject_customSearch.js",
 			"/resizeWidget.js"
 		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
-		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
+		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user", runAt: "document_end"}).then(onFound, onError);
 	}
 
 }
