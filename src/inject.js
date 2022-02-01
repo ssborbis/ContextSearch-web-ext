@@ -106,6 +106,7 @@ document.addEventListener("selectionchange", ev => {
 	if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
 
 	quickMenuObject.lastSelectTime = Date.now();
+	if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
