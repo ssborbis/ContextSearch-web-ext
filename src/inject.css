@@ -76,6 +76,7 @@
 }
 
 #CS_highLightNavBar {
+	all:unset;
 	top:0;
 	bottom:0;
 	right:0;
@@ -133,6 +134,7 @@
 	animation: CS_flash_underline linear .5s infinite;
 }
 #CS_findBarIframe {
+	all:unset;
 	position:fixed;
 	display:inline-block !important;
 	z-index:2147483647;
@@ -237,6 +239,7 @@
 	transition:opacity .5s, background-color .5s;
 }
 #CS_pageTilesIframe {
+	all:unset;
 	width:100%;
 	height:100%;
 	border:none;
@@ -258,18 +261,18 @@
 }
 #CS_icon {
 	all: unset;
-	height: 24px;
-	z-index: 2147483646;
-	position: absolute;
-	opacity: .4;
-	transition: opacity .25s;
-	cursor: pointer;
+	height: 24px !important;;
+	z-index: 2147483646 !important;;
+	position: absolute !important;;
+	opacity: .4 !important;;
+	transition: opacity .25s !important;;
+	cursor: pointer !important;;
 	/*border: 1px solid #444;*/
 	/*border-radius: 25%;*/
-	transform: scale( calc( 1 / var(--cs-zoom, 1) * var(--cs-icon-scale,1)));
+	transform: scale( calc( 1 / var(--cs-zoom, 1) * var(--cs-icon-scale,1))) !important;;
 	/*transform-origin: top center;*/
 
 }
 #CS_icon:hover {
-	opacity: 1;
+	opacity: 1 !important;;
 }
