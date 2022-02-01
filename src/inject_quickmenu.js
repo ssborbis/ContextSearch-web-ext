@@ -15,7 +15,9 @@ function openQuickMenu(e, searchTerms) {
 
 	e = e || new Event('click');
 
-	// if ( getQM() ) closeQuickMenu();
+	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
+
+	if ( !searchTerms ) console.log('empty search terms', 'openQuickMenu');
 
 	window.lastActiveElement = document.activeElement;
 		
@@ -36,8 +38,7 @@ function openQuickMenu(e, searchTerms) {
 		_contexts.push('selection');
 	}
 
-	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
-
+	// console.log('lastSelectTime', Date.now() - quickMenuObject.lastSelectTime);
 	// if ( !searchTerms && Date.now() - quickMenuObject.lastSelectTime < 100 ) {
 	// 	searchTerms = quickMenuObject.lastSelectText;
 	// }
@@ -1132,14 +1133,12 @@ function showIcon(searchTerms) {
 		img.style.top = e.pageY + 4 + userOptions.quickMenuIcon.y + "px";
 		img.style.left = e.pageX + 4 + userOptions.quickMenuIcon.x + "px";
 		img.id = 'CS_icon';
-
 		img.title = 'ContextSearch web-ext';
 
-		img.addEventListener('click', e => {
-			e.preventDefault();
-			e.stopImmediatePropagation();
+		img.onclick = function(e) {
+			if ( !getSelectedText() ) console.log('empty search terms', 'CS_icon.onclick');
 			openQuickMenu(e);
-		});
+		}
 
 		document.body.appendChild(img);
 
