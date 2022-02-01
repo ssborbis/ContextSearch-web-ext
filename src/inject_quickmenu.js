@@ -1,20 +1,3 @@
-// unique object to reference globally
-var quickMenuObject = { 
-	keyDownTimer: 0,
-	mouseDownTimer: null,
-	mouseCoords: {x:0, y:0},
-	screenCoords: {x:0, y:0},
-	mouseCoordsInit: {x:0, y:0},
-	mouseLastClickTime: 0,
-	lastSelectTime: 0,
-	locked: false,
-	searchTerms: "",
-	disabled: false,
-	mouseDownTargetIsTextBox: false,
-	mouseLastContextMenuTime:0,
-	contexts: []
-};
-
 var screenCoords = {x:0, y:0};
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
@@ -53,11 +36,17 @@ function openQuickMenu(e, searchTerms) {
 		_contexts.push('selection');
 	}
 
+	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
+
+	// if ( !searchTerms && Date.now() - quickMenuObject.lastSelectTime < 100 ) {
+	// 	searchTerms = quickMenuObject.lastSelectText;
+	// }
+
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: quickMenuObject.screenCoords,
 		mouseCoords: quickMenuObject.mouseCoords,
-		searchTerms: searchTerms || getSelectedText(e.target).trim() || linkOrImage(e.target, e),
+		searchTerms: searchTerms,
 		quickMenuObject: quickMenuObject,
 		openingMethod: e.openingMethod || e.type || null,
 		contexts: _contexts
@@ -771,22 +760,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				break;
 			
-			case "updateSearchTerms":
-
-				// only update if quickmenu is opened and locked
-				// if (quickMenuObject.locked || getQM()) {
-				// 	quickMenuObject.searchTerms = message.searchTerms;
-
-				// 	// send event to OpenAsLink tile to enable/disable
-				// 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
-
-				// 	browser.runtime.sendMessage({
-				// 		action: "updateQuickMenuObject", 
-				// 		quickMenuObject: quickMenuObject
-				// 	});
-				// } 
-				break;
-			
 			case "updateQuickMenuObject":
 
 				quickMenuObject = { 
@@ -797,6 +770,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
 					mouseLastClickTime: Math.max(message.quickMenuObject.mouseLastClickTime, quickMenuObject.mouseLastClickTime),
 					lastSelectTime: Math.max(message.quickMenuObject.lastSelectTime, quickMenuObject.lastSelectTime),
+					lastSelectText: message.quickMenuObject.lastSelectText,
 					locked: message.quickMenuObject.locked,
 					searchTerms: message.quickMenuObject.searchTerms,
 					disabled: message.quickMenuObject.disabled,
@@ -1161,7 +1135,11 @@ function showIcon(searchTerms) {
 
 		img.title = 'ContextSearch web-ext';
 
-		img.onclick = openQuickMenu;
+		img.addEventListener('click', e => {
+			e.preventDefault();
+			e.stopImmediatePropagation();
+			openQuickMenu(e);
+		});
 
 		document.body.appendChild(img);
 

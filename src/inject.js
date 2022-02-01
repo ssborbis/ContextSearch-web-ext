@@ -1,8 +1,24 @@
+// unique object to reference globally
+var quickMenuObject = { 
+	keyDownTimer: 0,
+	mouseDownTimer: null,
+	mouseCoords: {x:0, y:0},
+	screenCoords: {x:0, y:0},
+	mouseCoordsInit: {x:0, y:0},
+	mouseLastClickTime: 0,
+	lastSelectTime: 0,
+	lastSelectText:"",
+	locked: false,
+	searchTerms: "",
+	disabled: false,
+	mouseDownTargetIsTextBox: false,
+	mouseLastContextMenuTime:0,
+	contexts: []
+};
+
 var userOptions = {};
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-	userOptions = uo;
-});
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -12,6 +28,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "updateSearchTerms":
 
 			quickMenuObject.searchTerms = message.searchTerms;
+
+			// track the last selection with value
+			quickMenuObject.lastSelectText = message.searchTerms || quickMenuObject.lastSelectText
 
 			// send event to OpenAsLink tile to enable/disable
 			document.dispatchEvent(new CustomEvent('updatesearchterms'));
@@ -86,7 +105,7 @@ document.addEventListener("selectionchange", ev => {
 	// if an opener method timer is running, skip
 	if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
 
-	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
+	quickMenuObject.lastSelectTime = Date.now();
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
@@ -100,7 +119,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 	el.addEventListener('mouseup', e => {
 		if ( !isTextBox(e.target) ) return false;
 		
-		let searchTerms = getSelectedText(e.target)
+		let searchTerms = getSelectedText(e.target);
 		if (searchTerms) {
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});

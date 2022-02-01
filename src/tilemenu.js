@@ -7,6 +7,7 @@ var quickMenuObject = {
 	mouseCoordsInit: {x:0, y:0},
 	mouseLastClickTime: 0,
 	lastSelectTime: 0,
+	lastSelectText: "",
 	locked: false,
 	searchTerms: "",
 	disabled: false,
