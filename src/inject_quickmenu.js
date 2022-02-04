@@ -17,9 +17,6 @@ function openQuickMenu(e, searchTerms) {
 
 	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
 
-	// if ( !searchTerms ) 
-	// 	browser.runtime.sendMessage({action: "showNotification", msg: 'empty search terms - openQuickMenu'});		
-
 	window.lastActiveElement = document.activeElement;
 		
 	// links need to be blurred before focus can be applied to search bar (why?)
@@ -38,11 +35,6 @@ function openQuickMenu(e, searchTerms) {
 	if ( e.openingMethod && e.openingMethod === 'simple' && _contexts.length === 1 && _contexts[0] === 'page') {
 		_contexts.push('selection');
 	}
-
-	// console.log('lastSelectTime', Date.now() - quickMenuObject.lastSelectTime);
-	// if ( !searchTerms && Date.now() - quickMenuObject.lastSelectTime < 100 ) {
-	// 	searchTerms = quickMenuObject.lastSelectText;
-	// }
 
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
@@ -653,6 +645,8 @@ document.addEventListener("click", e => {
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return;
 	
 	if ( userOptions.quickMenuAllowContextMenuNew && e.which !== 1 ) return;
+
+	if ( getQM() && e.target.id === "CS_icon") return;
 	
 	// prevent links from opening
 	if ( getQM() && !quickMenuObject.locked)
@@ -1136,13 +1130,10 @@ function showIcon(searchTerms) {
 		img.id = 'CS_icon';
 		img.title = 'ContextSearch web-ext';
 
+		let searchTerms = getSelectedText(e.target).trim();
+
 		img.addEventListener('click', e => {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-		//	window.getSelection().removeAllRanges();
-			// if ( !getSelectedText() ) 
-			// 	browser.runtime.sendMessage({action: "showNotification", msg: 'empty search terms - CS_icon.onclick'});
-			openQuickMenu(e);
+			openQuickMenu(e, searchTerms);
 		});
 
 		document.body.appendChild(img);
