@@ -11,7 +11,7 @@
 			"lib/crossbrowser.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
-			"lib/encoding.js",
+			"lib/encoding.min.js",
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",

@@ -305,10 +305,10 @@ function showNotification(message) {
 
 	let id = "CS_notification" + btoa(msg).substr(0,8);
 
-	let CS_notification = document.getElementById(id) || document.createElement('notification');
-	CS_notification.id = id;
-	CS_notification.className = 'CS_notification';
-	CS_notification.innerHTML = null;
+	let n = document.getElementById(id) || document.createElement('notification');
+	n.id = id;
+	n.className = 'CS_notification';
+	n.innerHTML = null;
 	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/logo_notext.svg');
@@ -322,31 +322,31 @@ function showNotification(message) {
 	content.className = 'content';
 	content.innerText = msg;
 	
-	[img, content, cb].forEach(el => CS_notification.appendChild(el));
+	[img, content, cb].forEach(el => n.appendChild(el));
 
-	CS_notification.style.opacity = 0;
-	document.body.appendChild(CS_notification);
-	CS_notification.getBoundingClientRect();
-	CS_notification.style.opacity = 1;
-	CS_notification.getBoundingClientRect();
+	n.style.opacity = 0;
+	document.body.appendChild(n);
+	n.getBoundingClientRect();
+	n.style.opacity = 1;
+	n.getBoundingClientRect();
 
 	close = () => {
-		runAtTransitionEnd(CS_notification, ['opacity'], () => {
-			document.body.removeChild(CS_notification);
-			delete CS_notification;
+		runAtTransitionEnd(n, ['opacity'], () => {
+			document.body.removeChild(n);
+			delete n;
 		});
 		
-		CS_notification.style.opacity = 0;
+		n.style.opacity = 0;
 	}
 
 	if ( !message.sticky ) setTimeout(close, 3000);
 	
-	CS_notification.onclick = function() {
-		document.body.removeChild(CS_notification);
-		delete CS_notification;
+	n.onclick = function() {
+		document.body.removeChild(n);
+		delete n;
 	}
 
-	return CS_notification;
+	return n;
 }
 
 function checkContextMenuEventOrderNotification() {
