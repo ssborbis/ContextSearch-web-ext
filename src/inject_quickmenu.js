@@ -1,20 +1,3 @@
-// unique object to reference globally
-var quickMenuObject = { 
-	keyDownTimer: 0,
-	mouseDownTimer: null,
-	mouseCoords: {x:0, y:0},
-	screenCoords: {x:0, y:0},
-	mouseCoordsInit: {x:0, y:0},
-	mouseLastClickTime: 0,
-	lastSelectTime: 0,
-	locked: false,
-	searchTerms: "",
-	disabled: false,
-	mouseDownTargetIsTextBox: false,
-	mouseLastContextMenuTime:0,
-	contexts: []
-};
-
 var screenCoords = {x:0, y:0};
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
@@ -30,9 +13,9 @@ function deselectAllText(e) {
 
 function openQuickMenu(e, searchTerms) {
 
-	e = e || new Event('click');
+	e = e || new MouseEvent('click');
 
-	// if ( getQM() ) closeQuickMenu();
+	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
 
 	window.lastActiveElement = document.activeElement;
 		
@@ -57,7 +40,7 @@ function openQuickMenu(e, searchTerms) {
 		action: "openQuickMenu", 
 		screenCoords: quickMenuObject.screenCoords,
 		mouseCoords: quickMenuObject.mouseCoords,
-		searchTerms: searchTerms || getSelectedText(e.target).trim() || linkOrImage(e.target, e),
+		searchTerms: searchTerms,
 		quickMenuObject: quickMenuObject,
 		openingMethod: e.openingMethod || e.type || null,
 		contexts: _contexts
@@ -662,6 +645,8 @@ document.addEventListener("click", e => {
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return;
 	
 	if ( userOptions.quickMenuAllowContextMenuNew && e.which !== 1 ) return;
+
+	if ( getQM() && e.target.id === "CS_icon") return;
 	
 	// prevent links from opening
 	if ( getQM() && !quickMenuObject.locked)
@@ -771,22 +756,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				break;
 			
-			case "updateSearchTerms":
-
-				// only update if quickmenu is opened and locked
-				// if (quickMenuObject.locked || getQM()) {
-				// 	quickMenuObject.searchTerms = message.searchTerms;
-
-				// 	// send event to OpenAsLink tile to enable/disable
-				// 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
-
-				// 	browser.runtime.sendMessage({
-				// 		action: "updateQuickMenuObject", 
-				// 		quickMenuObject: quickMenuObject
-				// 	});
-				// } 
-				break;
-			
 			case "updateQuickMenuObject":
 
 				quickMenuObject = { 
@@ -797,6 +766,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
 					mouseLastClickTime: Math.max(message.quickMenuObject.mouseLastClickTime, quickMenuObject.mouseLastClickTime),
 					lastSelectTime: Math.max(message.quickMenuObject.lastSelectTime, quickMenuObject.lastSelectTime),
+					lastSelectText: message.quickMenuObject.lastSelectText,
 					locked: message.quickMenuObject.locked,
 					searchTerms: message.quickMenuObject.searchTerms,
 					disabled: message.quickMenuObject.disabled,
@@ -1158,10 +1128,13 @@ function showIcon(searchTerms) {
 		img.style.top = e.pageY + 4 + userOptions.quickMenuIcon.y + "px";
 		img.style.left = e.pageX + 4 + userOptions.quickMenuIcon.x + "px";
 		img.id = 'CS_icon';
-
 		img.title = 'ContextSearch web-ext';
 
-		img.onclick = openQuickMenu;
+		let searchTerms = getSelectedText(e.target).trim();
+
+		img.addEventListener('click', e => {
+			openQuickMenu(e, searchTerms);
+		});
 
 		document.body.appendChild(img);
 

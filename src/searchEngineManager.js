@@ -769,7 +769,7 @@ function buildSearchEngineContainer() {
 						
 						// set hotkey for all copies
 						for (let _hk of rootElement.querySelectorAll('li')) {
-							if (_hk.node.id === node.id)
+							if (_hk.node && _hk.node.id === node.id)
 								_hk.querySelector('.hotkey').innerText = "";
 						}
 	
@@ -788,7 +788,7 @@ function buildSearchEngineContainer() {
 
 					// set hotkey for all copies
 					for (let _hk of rootElement.querySelectorAll('li')) {
-						if (_hk.node.id === node.id)
+						if (_hk.node && _hk.node.id === node.id)
 							_hk.querySelector('.hotkey').innerText = keyTable[evv.which];
 					}
 					
@@ -2112,28 +2112,31 @@ document.addEventListener('keydown', e => {
 
 $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 
-	let labels = document.querySelectorAll('.label');
+	debounce(() => {
 
-	if ( e.key === "Escape" ) {
-		labels.forEach( label => {
+		let labels = document.querySelectorAll('.label');
+
+		if ( e.key === "Escape" ) {
+			labels.forEach( label => {
+				let li = label.closest('li');
+				li.style.display = null;
+				label.parentNode.style.display = null;
+			});
+
+			e.target.value = null;
+
+			return;
+		}
+
+		for ( let label of labels ) {
 			let li = label.closest('li');
 			li.style.display = null;
 			label.parentNode.style.display = null;
-		});
-
-		e.target.value = null;
-
-		return;
-	}
-
-	for ( let label of labels ) {
-		let li = label.closest('li');
-		li.style.display = null;
-		label.parentNode.style.display = null;
-		if ( !e.target.value ) continue;
-		if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
-			if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
-			else li.style.display = 'none';
+			if ( !e.target.value ) continue;
+			if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
+				if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
+				else li.style.display = 'none';
+			}
 		}
-	}
+	}, 500, "searchEnginesManagerSearchTimer");
 })

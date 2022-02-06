@@ -1,8 +1,24 @@
+// unique object to reference globally
+var quickMenuObject = { 
+	keyDownTimer: 0,
+	mouseDownTimer: null,
+	mouseCoords: {x:0, y:0},
+	screenCoords: {x:0, y:0},
+	mouseCoordsInit: {x:0, y:0},
+	mouseLastClickTime: 0,
+	lastSelectTime: 0,
+	lastSelectText:"",
+	locked: false,
+	searchTerms: "",
+	disabled: false,
+	mouseDownTargetIsTextBox: false,
+	mouseLastContextMenuTime:0,
+	contexts: []
+};
+
 var userOptions = {};
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-	userOptions = uo;
-});
+browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -12,6 +28,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "updateSearchTerms":
 
 			quickMenuObject.searchTerms = message.searchTerms;
+
+			// track the last selection with value
+			quickMenuObject.lastSelectText = message.searchTerms || quickMenuObject.lastSelectText
 
 			// send event to OpenAsLink tile to enable/disable
 			document.dispatchEvent(new CustomEvent('updatesearchterms'));
@@ -86,7 +105,8 @@ document.addEventListener("selectionchange", ev => {
 	// if an opener method timer is running, skip
 	if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
 
-	if ( quickMenuObject ) quickMenuObject.lastSelectTime = Date.now();
+	quickMenuObject.lastSelectTime = Date.now();
+	if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
@@ -100,7 +120,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 	el.addEventListener('mouseup', e => {
 		if ( !isTextBox(e.target) ) return false;
 		
-		let searchTerms = getSelectedText(e.target)
+		let searchTerms = getSelectedText(e.target);
 		if (searchTerms) {
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
@@ -285,10 +305,10 @@ function showNotification(message) {
 
 	let id = "CS_notification" + btoa(msg).substr(0,8);
 
-	let CS_notification = document.getElementById(id) || document.createElement('notification');
-	CS_notification.id = id;
-	CS_notification.className = 'CS_notification';
-	CS_notification.innerHTML = null;
+	let n = document.getElementById(id) || document.createElement('notification');
+	n.id = id;
+	n.className = 'CS_notification';
+	n.innerHTML = null;
 	
 	let img = new Image();
 	img.src = browser.runtime.getURL('icons/logo_notext.svg');
@@ -302,31 +322,31 @@ function showNotification(message) {
 	content.className = 'content';
 	content.innerText = msg;
 	
-	[img, content, cb].forEach(el => CS_notification.appendChild(el));
+	[img, content, cb].forEach(el => n.appendChild(el));
 
-	CS_notification.style.opacity = 0;
-	document.body.appendChild(CS_notification);
-	CS_notification.getBoundingClientRect();
-	CS_notification.style.opacity = 1;
-	CS_notification.getBoundingClientRect();
+	n.style.opacity = 0;
+	document.body.appendChild(n);
+	n.getBoundingClientRect();
+	n.style.opacity = 1;
+	n.getBoundingClientRect();
 
 	close = () => {
-		runAtTransitionEnd(CS_notification, ['opacity'], () => {
-			document.body.removeChild(CS_notification);
-			delete CS_notification;
+		runAtTransitionEnd(n, ['opacity'], () => {
+			document.body.removeChild(n);
+			delete n;
 		});
 		
-		CS_notification.style.opacity = 0;
+		n.style.opacity = 0;
 	}
 
 	if ( !message.sticky ) setTimeout(close, 3000);
 	
-	CS_notification.onclick = function() {
-		document.body.removeChild(CS_notification);
-		delete CS_notification;
+	n.onclick = function() {
+		document.body.removeChild(n);
+		delete n;
 	}
 
-	return CS_notification;
+	return n;
 }
 
 function checkContextMenuEventOrderNotification() {
