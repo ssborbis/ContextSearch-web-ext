@@ -769,7 +769,7 @@ function buildSearchEngineContainer() {
 						
 						// set hotkey for all copies
 						for (let _hk of rootElement.querySelectorAll('li')) {
-							if (_hk.node.id === node.id)
+							if (_hk.node && _hk.node.id === node.id)
 								_hk.querySelector('.hotkey').innerText = "";
 						}
 	
@@ -788,7 +788,7 @@ function buildSearchEngineContainer() {
 
 					// set hotkey for all copies
 					for (let _hk of rootElement.querySelectorAll('li')) {
-						if (_hk.node.id === node.id)
+						if (_hk.node && _hk.node.id === node.id)
 							_hk.querySelector('.hotkey').innerText = keyTable[evv.which];
 					}
 					
