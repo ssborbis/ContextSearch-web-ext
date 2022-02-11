@@ -377,7 +377,7 @@ function setLockToolStatus() {
 }
 
 // listen for messages from parent window
-window.addEventListener('message', e => {
+window.addEventListener('message', async e => {
 
 	switch (e.data.action) {
 		case "rebuildQuickMenu":
@@ -413,7 +413,11 @@ window.addEventListener('message', e => {
 		case "editEnd":
 			QMtools.find(t => t.name === "edit").action({forceOff: true});
 			break;
-			
+
+		case "openFolder":
+			qm = await quickMenuElementFromNodeTree(e.data.folder || userOptions.nodeTree);
+			resizeMenu({openFolder: true});
+			break;		
 	}
 });
 

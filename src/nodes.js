@@ -163,7 +163,9 @@ function getIconFromNode(node) {
 		} else if ( node.type === "bookmarklet" ) {
 			return node.icon || browser.runtime.getURL('icons/code.svg');
 		} else if ( node.type === "folder" ) {
-			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');
+			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');	
+		} else if ( node.type === "externalProgram" ) {
+			return node.icon || browser.runtime.getURL('icons/settings.svg');
 		} else {
 			return node.icon || "";
 		}

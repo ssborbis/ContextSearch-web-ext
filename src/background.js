@@ -1293,6 +1293,13 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
+	if ( node && node.type === "externalProgram" ) {
+		console.log("externalProgram");
+		let path = node.path.replace("{searchTerms}", searchTerms);
+		console.log(path);
+		return browser.runtime.sendNativeMessage("ContextSearch", path);
+	}
+
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		console.log("oneClickSearchEngine");
 		return executeOneClickSearch(info);

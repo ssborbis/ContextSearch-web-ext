@@ -152,6 +152,17 @@ async function buildContextMenu(searchTerms) {
 				traverse(child, _id, context);
 			}
 		}
+
+		if (node.type === 'externalProgram') {
+			addMenuItem({
+				parentId: parentId,
+				title: getTitleWithHotkey(node),
+				id: node.id + '_' + count++,	
+				icons: {
+					"16": getIconFromNode(node)
+				}
+			});
+		}
 		
 	}
 

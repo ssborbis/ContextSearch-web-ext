@@ -487,6 +487,67 @@ function buildSearchEngineContainer() {
 			text.className = "label";
 			header.appendChild(text);
 		}
+
+		if (node.type === 'externalProgram') {
+
+			let img = document.createElement('img');
+			img.src = getIconFromNode(node);
+			header.appendChild(img);
+
+			let text = document.createElement('span');
+			text.innerText = node.title;
+			text.className = "label";
+			header.appendChild(text);
+
+			li.addEventListener('dblclick', _edit);
+
+			function _edit() {
+			
+				let _form = $('editSearchEngineForm').cloneNode(true);
+				_form.id = null;
+
+				["description", "searchform", "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+					_form[name].parentNode.removeChild(_form[name]);
+				})
+				addFormListeners(_form);
+				
+				_form.node = node;
+								
+				_form.iconURL.value = node.icon || "";
+				_form.shortName.value = node.title;
+				_form.template.value = node.path;
+
+				let l = _form.querySelector('label[data-i18n="Template"]');
+				l.innerText = "Path";
+				setContexts(_form, node.contexts);
+				
+				_form.close.onclick = _form.closeForm;
+				
+				_form.save.onclick = async function() {
+
+					node.icon = await getFormIcon(_form);
+					_form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
+					img.src = getIconFromNode(node);
+
+					node.title = _form.shortName.value.trim();
+					node.path = _form.template.value.trim();
+					node.contexts = getContexts(_form);
+					setRowContexts(li);
+
+					text.innerText = node.title;
+
+					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					updateNodeList();
+				}
+				
+				createFormContainer(_form);
+				addIconPickerListener(_form.iconPicker, li);
+				addFavIconFinderListener(_form.faviconFinder);
+				_form.addFaviconBox(getIconFromNode(node));
+
+			}
+		}
 		
 		if (node.type === 'oneClickSearchEngine') {
 
@@ -1507,6 +1568,26 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
+		let newExternalProgram = createMenuItem(browser.i18n.getMessage('NewExternalProgram'), browser.runtime.getURL('icons/settings.svg'));	
+		newExternalProgram.addEventListener('click', () => {
+			let newNode = {
+				type: "externalProgram",
+				title:"New External App",
+				id: gen(),
+				path:"firefox \"{searchTerms}\"",
+				parent: li.node.parent,
+				toJSON: li.node.toJSON
+			}
+			
+			nodeInsertAfter(newNode, li.node);
+			
+			let newLi = traverse(newNode, li.parentNode);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			
+			updateNodeList();
+		});
+
 		let newTool = createMenuItem(browser.i18n.getMessage('NewTool'), browser.runtime.getURL('icons/add.svg'));	
 		newTool.onclick = function(e) {
 
@@ -1638,7 +1719,7 @@ function buildSearchEngineContainer() {
 		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);

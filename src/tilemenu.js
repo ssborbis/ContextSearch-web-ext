@@ -1514,7 +1514,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !tile || !tile.node ) return;
 
-	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
+	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder', 'externalProgram'].includes(tile.node.type)) return;
 
 	if ( tile.disabled ) return;
 
@@ -1646,6 +1646,18 @@ document.addEventListener('mouseup', e => {
 					action: "quickMenuSearch", 
 					info: {
 						menuItemId: tile.node.id,
+						openMethod: getOpenMethod(e),
+					}
+				});
+
+				break;
+
+			case 'externalProgram':
+				return browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id,
+						selectionText: sb.value,
 						openMethod: getOpenMethod(e),
 					}
 				});
@@ -2096,6 +2108,12 @@ function nodeToTile( node ) {
 			tile = tool.init();
 			tile.dataset.type = 'tool';
 			tile.dataset.id = node.id;	
+			tile.dataset.title = node.title;
+			break;
+
+		case "externalProgram":
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'externalProgram';	
 			tile.dataset.title = node.title;
 			break;
 	}

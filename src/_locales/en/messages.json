@@ -2365,6 +2365,10 @@
     "message": "To show the default context menu"
   },
 
+  "NewExternalProgram": {
+    "message": "New External App"
+  },
+
   "___________": {
     "message": ""
   }
