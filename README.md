@@ -36,9 +36,10 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
   6.4 [Javascript and Form-Based Engines](#javascriptengines)  
   6.5 [Engines With Logins and Tokens](#loginsandtokens)  
 7. [Bookmarklets](#bookmarklets)  
-8. [Styling](#styling)  
-9. [Advanced Options](#advanced)  
-10. [Security](#security)
+8. [Launching External Applications](#externalApplications)
+9. [Styling](#styling)  
+10. [Advanced Options](#advanced)  
+11. [Security](#security)
 
 ___
 
@@ -409,6 +410,25 @@ When editing engines, folders and bookmarklets, you can change the name or icon 
 
 Tools and separators can also be added from the custom context menu.
 
+### Engine Types
+* Search Engines
+  * Generally conforming to the [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/OpenSearch) standard. These are your basic search engines. Each must have a unique name so as to not conflict with built-in browser search engines.
+* Search Engine Shortcuts
+  * References to Search Engines that can be placed throughout separate folders in the Search Engines Manager. Useful if the same engine is used for different folder searches. Editing a shortcut will change the original engine, and all shortcuts referencing that engine will be updated.
+* Multi-search Engines
+  * Search engines where the template is an array of either template URLs or engine IDs. Behaves like a folder search, but in a single search engine tile.
+* One-Click Search Engines
+  * Engines from the built-in browser search bar, accessible through the [search API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/search), currently only available on Firefox. These engines are added automatically to the Search Engines Manager. They cannot be deleted, but can be moved and/or hidden.
+* Bookmarklets
+  * References to browser bookmarks where the URL begins with `javascript:`. Clicking a bookmarklet tile will execute the bookmarlet code in the currently active browser tab via [tabs.executeScript](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/executeScript)
+* Folders
+  * Containers for groups of search engines. Every engine in the top tier of a folder can be searched at once. Engines in subfolders are ignored.
+* App Launcher
+  * Uses the [Native Messaging API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging) to send search terms to a native app. 
+* Separator
+  * a horizontal rule for visually separating groups of tiles
+* Tool
+  * A built-in widget for performing common ContextSearch web-ext tasks
 ### Contextual Aware Layouts
 
 Engines can be assigned one or more *contexts* so they only display in certain circumstances. 
@@ -509,9 +529,39 @@ The variable `userOptions.allowHotkeysWithoutMenu` is toggled for the current ta
 
 ___
 
+<a name="externalApplications"/>
+
+## [8. Launching External Applications](#toc)
+
+External apps can be launched from ContextSearch web-ext.
+
+You must install the [Native Messaging](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging) script found [here](https://github.com/ssborbis/ContextSearch-Native-App) to use.
+
+Add a new launcher from the Search Engines manager and enter the full command line in the `Path` field. The string `{searchTerms}` will be replaced with the current active selection, or url.
+
+Some examples:
+
+Open image with GIMP
+`gimp -n -a  "{searchTerms}"`
+
+Download mp3 from YouTube using yt-dlp
+`/home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"`
+
+Open link in Chromium
+`chromium "{searchTerms}"`
+
+Open link in Firefox
+`firefox "{searchTerms}"`
+
+In many cases, you will need to use the full path of the executable.
+
+Modify the search terms before being passed to the command line via `{searchTerms}` using the `Search Regex` field.
+
+___
+
 <a name="styling"/>
 
-## [8. Menu Styling](#toc)
+## [9. Menu Styling](#toc)
 
 Set the menu theme in CS Options > General. You can also use the `Next Theme` tool or the keyboard shortcut ( if enabled ).
 
@@ -596,7 +646,7 @@ ___
 
 <a name="advanced"/>
 
-## [9. Advanced Options](#toc)
+## [10. Advanced Options](#toc)
 
 A number of settings that don't appear in the main options tabs can be set here. Some of them are really quite useful and probably belong with their respective settings menus, but for simplicity were moved here. This is also where a lot of fixes and user-requested changes show up. Take note, unlike most other settings, these do not always force the config to save when changed. There is a save button you can mash to make extra sure changes are written.
 
@@ -605,7 +655,7 @@ ___
 
 <a name="security"/>
 
-## [10. Security](#toc)
+## [11. Security](#toc)
 
 This addon does not use any tracking or analytics. No information is collected, sold, etc. How you use it is your business. There are, however, a few things to note.
 
