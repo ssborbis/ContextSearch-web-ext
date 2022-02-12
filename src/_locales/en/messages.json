@@ -2369,6 +2369,14 @@
     "message": "New External App"
   },
 
+  "searchIconFinder": {
+    "message": "Search IconFinder.com  🔍"
+  },
+
+  "RefineSearch": {
+    "message": "Refine search"
+  },
+
   "___________": {
     "message": ""
   }

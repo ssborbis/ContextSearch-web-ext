@@ -893,6 +893,19 @@ async function notify(message, sender, sendResponse) {
 		case "closeTab":
 			return browser.tabs.remove(message.tabId || sender.tab.id )
 			break;
+
+		case "getIconsFromIconFinder":
+			return browser.tabs.create({
+				url: "https://www.iconfinder.com/search?q=" + message.searchTerms,
+				active:false
+			}).then(async tab => {
+				await new Promise(r => setTimeout(r, 1000));
+				urls = await browser.tabs.executeScript(tab.id, {
+					code: `[...document.querySelectorAll(".icon-grid IMG")].map(img => img.src);`
+				});
+				browser.tabs.remove(tab.id);
+				return urls.shift();
+			});
 	}
 }
 

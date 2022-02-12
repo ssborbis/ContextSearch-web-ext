@@ -268,15 +268,32 @@ function addFavIconFinderListener(finder) {
 
 		function showMoreButton() {
 			let more = document.createElement('div');
-			more.innerText = browser.i18n.getMessage('more');
+			more.innerText = browser.i18n.getMessage('searchIconFinder');
 			more.style = "position:absolute;bottom:0;right:10px;cursor:pointer;user-select:none"
 			div.appendChild(more);
 
-			more.onclick = e => {
+			more.addEventListener('click', async e => {
+				more.style.display = 'none';
 				e.stopPropagation();
 				div.querySelectorAll('.faviconPickerBox').forEach( f => f.parentNode.removeChild(f));
-				makeFaviconPickerBoxes(getCustomIconUrls());
-			}
+
+				let searchTerms = form.shortName.value.trim();
+
+				let iconUrls = [];
+
+				while ( !iconUrls.length ) {
+					searchTerms = window.prompt(browser.i18n.getMessage("RefineSearch"), searchTerms);
+
+					if ( !searchTerms ) {
+						makeFaviconPickerBoxes(getCustomIconUrls());
+						break;
+					}
+
+					iconUrls = await browser.runtime.sendMessage({action:"getIconsFromIconFinder", searchTerms:searchTerms});
+				}	
+
+				makeFaviconPickerBoxes(iconUrls);			
+			});
 		}
 
 		makeFaviconPickerBoxes(urls);
