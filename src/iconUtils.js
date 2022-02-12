@@ -277,7 +277,7 @@ function addFavIconFinderListener(finder) {
 				e.stopPropagation();
 				div.querySelectorAll('.faviconPickerBox').forEach( f => f.parentNode.removeChild(f));
 
-				let searchTerms = form.shortName.value.trim();
+				let searchTerms = ( form.shortName ) ? form.shortName.value.trim() : form.node.title;
 
 				let iconUrls = [];
 
