@@ -517,6 +517,7 @@ function buildSearchEngineContainer() {
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
 				_form.template.value = node.path;
+				_form.searchRegex = node.searchRegex;
 
 				let l = _form.querySelector('label[data-i18n="Template"]');
 				l.innerText = "Path";
@@ -532,6 +533,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.path = _form.template.value.trim();
+					node.searchRegex = _form.searchRegex.value.trim();
 					node.contexts = getContexts(_form);
 					setRowContexts(li);
 
@@ -1525,6 +1527,7 @@ function buildSearchEngineContainer() {
 
 			} else {
 				newNode = Object.assign({}, li.node);
+				newNode.id = gen();
 			}
 			
 			if (!newNode) return;
@@ -1575,6 +1578,7 @@ function buildSearchEngineContainer() {
 				title:"New External App",
 				id: gen(),
 				path:"firefox \"{searchTerms}\"",
+				searchRegex:"",
 				parent: li.node.parent,
 				toJSON: li.node.toJSON
 			}

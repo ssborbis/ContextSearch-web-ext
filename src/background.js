@@ -1308,9 +1308,16 @@ async function openSearch(info) {
 
 	if ( node && node.type === "externalProgram" ) {
 		console.log("externalProgram");
+		if ( node.searchRegex ) {
+			try {
+				runReplaceRegex(node.searchRegex, (r, s) => searchTerms = searchTerms.replace(r, s));
+			} catch (error) {
+				console.error("regex replace failed");
+			}
+		}
 		let path = node.path.replace("{searchTerms}", searchTerms);
 		console.log(path);
-		return browser.runtime.sendNativeMessage("ContextSearch", path);
+		return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path});
 	}
 
 	if ( node && node.type === "oneClickSearchEngine" ) {
