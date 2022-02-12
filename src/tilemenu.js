@@ -1676,7 +1676,7 @@ document.addEventListener('mouseup', e => {
 		if ( !keepMenuOpen(e) && !tile.keepOpen )
 			closeMenuRequest(e);
 	}, err => { 
-		//console.log(err)
+		console.log(err)
 	});
 
 	return false;
@@ -2115,6 +2115,7 @@ function nodeToTile( node ) {
 			tile = buildSearchIcon(getIconFromNode(node), node.title);
 			tile.dataset.type = 'externalProgram';	
 			tile.dataset.title = node.title;
+			tile.dataset.id = node.id;
 			break;
 	}
 	
