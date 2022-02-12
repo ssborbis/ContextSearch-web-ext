@@ -55,14 +55,14 @@
 		"contextMenus",
 		"storage",
 		"tabs",
-		"nativeMessaging",
 		"search"
 	],
 	
 	"optional_permissions": [
 		"bookmarks",
 		"clipboardWrite",
-		"clipboardRead"
+		"clipboardRead",
+		"nativeMessaging"
 	],
 	
 	"icons": {
