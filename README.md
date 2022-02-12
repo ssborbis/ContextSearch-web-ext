@@ -543,16 +543,24 @@ Add a new launcher from the Search Engines manager and enter the full command li
 Some examples:
 
 Open image with GIMP
-```gimp -n -a  "{searchTerms}"```
+```
+gimp -n -a  "{searchTerms}"
+```
 
 Download mp3 from YouTube using yt-dlp
-```/home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"```
+```
+/home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"
+```
 
 Open link in Chromium
-```chromium "{searchTerms}"```
+```
+chromium "{searchTerms}"
+```
 
 Open link in Firefox
-```firefox "{searchTerms}"```
+```
+firefox "{searchTerms}"
+```
 
 In many cases, you will need to use the full path of the executable.
 
