@@ -1957,7 +1957,7 @@
     "description": "clipboardWrite permission"
   },
   "Request": {
-    "message": "Request",
+    "message": "Request Permission",
     "description": "clipboardWrite permission - request button label"
   },
   

@@ -161,7 +161,7 @@ async function notify(message, sender, sendResponse) {
 			if ( optionsPage ) {
 				browser.windows.update(optionsPage.windowId, {focused: true})
 				browser.tabs.update(optionsPage.id, { active: true, url: browser.runtime.getURL("/options.html" + (message.hashurl || ""))});
-				browser.tabs.reload(optionsPage.id);
+			//	browser.tabs.reload(optionsPage.id);
 				return;
 
 			}
@@ -1317,6 +1317,11 @@ async function openSearch(info) {
 		}
 		let path = node.path.replace("{searchTerms}", searchTerms);
 		console.log(path);
+
+		if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
+			return notify({action: "openOptions", hashurl:"?permission=nativeMessaging#requestPermissions"});	
+		}
+
 		return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path});
 	}
 
