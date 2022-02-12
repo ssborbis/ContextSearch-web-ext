@@ -26,8 +26,9 @@ function filterContexts(root, context) {
 				return removeNode( node, parent );
 		}
 
-		if ( node.contexts && !node.type === 'tool' && !hasContext(context, node.contexts))
+		if ( node.contexts && node.type !== 'tool' && !hasContext(context, node.contexts)) {
 			return removeNode(node, parent);
+		}
 
 		if ( node.type === 'folder' && node.children.length === 0 )
 			if ( parent ) return removeNode( node, parent );
