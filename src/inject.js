@@ -155,8 +155,9 @@ function linkOrImage(el, e) {
 	
 	if ( link && userOptions.quickMenuOnLinks ) return link;
 
-	if ( el instanceof HTMLAudioElement ) return el.src || false;
-	if ( el instanceof HTMLVideoElement ) return el.src || false;
+	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) {
+		return el.currentSrc || el.src;
+	}
 	
 	return false;	
 }
