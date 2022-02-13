@@ -2370,13 +2370,16 @@
   },
 
   "searchIconFinder": {
-    "message": "Search IconFinder.com  🔍"
+    "message": "🔍 Search IconFinder.com"
   },
 
   "RefineSearch": {
     "message": "Refine search"
   },
 
+  "NativeAppMissing": {
+    "message": "Native messaging app is not connected. See support site for more details."
+  },
   "___________": {
     "message": ""
   }

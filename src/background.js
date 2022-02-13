@@ -160,12 +160,12 @@ async function notify(message, sender, sendResponse) {
 
 			if ( optionsPage ) {
 				browser.windows.update(optionsPage.windowId, {focused: true})
-				browser.tabs.update(optionsPage.id, { active: true, url: browser.runtime.getURL("/options.html" + (message.hashurl || ""))});
+				browser.tabs.update(optionsPage.id, { active: true, url: browser.runtime.getURL("/options.html" + (message.hashurl || "")), openerTabId: sender.tab.id});
 			//	browser.tabs.reload(optionsPage.id);
-				return;
+				return optionsPage;
 
 			}
-			browser.tabs.create({
+			return browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
 			break;
@@ -1188,6 +1188,41 @@ function executeOneClickSearch(info) {
 
 }
 
+async function executeExternalProgram(info) {
+
+	let node = info.node;
+	let searchTerms = info.searchTerms;
+
+	if ( node.searchRegex ) {
+		try {
+			runReplaceRegex(node.searchRegex, (r, s) => searchTerms = searchTerms.replace(r, s));
+		} catch (error) {
+			console.error("regex replace failed");
+		}
+	}
+
+	let path = node.path.replace("{searchTerms}", searchTerms);
+
+	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
+		let tab = await browser.tabs.query({active:true}); 
+		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=nativeMessaging#requestPermissions"});
+		browser.tabs.onRemoved.addListener( function handleRemoved(tabId, removeInfo) {
+			browser.tabs.onRemoved.removeListener(handleRemoved);
+			setTimeout(() => browser.tabs.update(tab.id, {active: true}), 50);
+		});
+	}
+
+	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) return;
+
+	try {
+		await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
+	} catch (error) {
+		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
+	}
+
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path});
+}
+
 function lastSearchHandler(id) {
 
 	let node = findNode(userOptions.nodeTree, n => n.id === id );
@@ -1306,25 +1341,6 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( node && node.type === "externalProgram" ) {
-		console.log("externalProgram");
-		if ( node.searchRegex ) {
-			try {
-				runReplaceRegex(node.searchRegex, (r, s) => searchTerms = searchTerms.replace(r, s));
-			} catch (error) {
-				console.error("regex replace failed");
-			}
-		}
-		let path = node.path.replace("{searchTerms}", searchTerms);
-		console.log(path);
-
-		if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
-			return notify({action: "openOptions", hashurl:"?permission=nativeMessaging#requestPermissions"});	
-		}
-
-		return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path});
-	}
-
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		console.log("oneClickSearchEngine");
 		return executeOneClickSearch(info);
@@ -1334,6 +1350,11 @@ async function openSearch(info) {
 	if ( node && node.type === "bookmarklet" ) {
 		console.log("bookmarklet");
 		return executeBookmarklet(info);
+	}
+
+	if ( node && node.type === "externalProgram" ) {
+		console.log("externalProgram");
+		return executeExternalProgram(info);
 	}
 
 	var se = (node && node.id ) ? temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
