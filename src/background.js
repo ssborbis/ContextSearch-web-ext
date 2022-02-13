@@ -1204,7 +1204,8 @@ async function executeExternalProgram(info) {
 	let path = node.path.replace("{searchTerms}", searchTerms);
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
-		let tab = await browser.tabs.query({active:true}); 
+		let tabs = await browser.tabs.query({active:true});
+		let tab = tabs[0];
 		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=nativeMessaging#requestPermissions"});
 		browser.tabs.onRemoved.addListener( function handleRemoved(tabId, removeInfo) {
 			browser.tabs.onRemoved.removeListener(handleRemoved);
