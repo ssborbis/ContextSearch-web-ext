@@ -1653,7 +1653,7 @@ document.addEventListener('mouseup', e => {
 				break;
 
 			case 'externalProgram':
-				return browser.runtime.sendMessage({
+				browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
 						menuItemId: tile.node.id,
@@ -1662,6 +1662,7 @@ document.addEventListener('mouseup', e => {
 					}
 				});
 
+				return Promise.resolve(true);
 				break;
 
 			default:
@@ -1672,8 +1673,11 @@ document.addEventListener('mouseup', e => {
 	})();
 
 	searchPromise.then(() => {
+
 		// check for locked / Keep Menu Open 
-		if ( !keepMenuOpen(e) && !tile.keepOpen )
+		let keepOpen = tile.keepOpen ? tile.keepOpen : false;
+		
+		if ( !keepMenuOpen(e) && !keepOpen )
 			closeMenuRequest(e);
 	}, err => { 
 		console.log(err)
@@ -2117,6 +2121,9 @@ function nodeToTile( node ) {
 			tile.dataset.title = node.title;
 			tile.dataset.id = node.id;
 			break;
+
+		default:
+			return null;
 	}
 	
 	tile.node = node;
@@ -2128,7 +2135,6 @@ function nodeToTile( node ) {
 }
 
 function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
-
 
 	noFolder = noFolder || false;
 
