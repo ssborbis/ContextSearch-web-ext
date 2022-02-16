@@ -1577,7 +1577,7 @@ function buildSearchEngineContainer() {
 				type: "externalProgram",
 				title:"New External App",
 				id: gen(),
-				path:"firefox \"{searchTerms}\"",
+				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
 				parent: li.node.parent,
 				toJSON: li.node.toJSON
@@ -1588,6 +1588,7 @@ function buildSearchEngineContainer() {
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
 			
 			updateNodeList();
 		});
