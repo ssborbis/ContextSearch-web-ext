@@ -542,9 +542,15 @@ Add a new launcher from the Search Engines manager and enter the full command li
 
 Some examples:
 
-Open image with GIMP
+Open image with GIMP 
+
+(linux)
 ```
 gimp -n -a  "{searchTerms}"
+```
+(windows)
+```
+"C:\\Program Files\\GIMP 2\\bin\\gimp-2.10.exe" -n -a "{searchTerms}"
 ```
 
 Download mp3 from YouTube using yt-dlp
@@ -562,7 +568,15 @@ Open link in Firefox
 firefox "{searchTerms}"
 ```
 
-In many cases, you will need to use the full path of the executable.
+You may need to use the full path of the executable. You may also need double-quotes around arguments with spaces. 
+
+Windows paths will require either double-backslash or single forward-slash.
+
+Sometimes it is useful to see the terminal output while an application runs
+```
+gnome-terminal -- /home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"
+```
+replace `gnome-terminal --` with your terminal command
 
 Modify the search terms before being passed to the command line via `{searchTerms}` using the `Search Regex` field.
 
