@@ -226,10 +226,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "deselectAllText":
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: "deselectAllText()",
-				allFrames: true
-			});
+			return sendMessageToAllFrames();
 			break;
 
 		case "toggleLockQuickMenu":

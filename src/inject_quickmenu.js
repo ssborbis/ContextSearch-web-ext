@@ -91,8 +91,6 @@ function closeQuickMenu(eventType) {
 	
 	if ( ( userOptions.quickMenuDeselectTextOnSearch ) && eventType === 'click_quickmenutile' ) {
 		browser.runtime.sendMessage({action: "deselectAllText"});
-
-		console.log('text should deselect');
 	}
 }
 
@@ -910,6 +908,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				document.addEventListener('closequickmenu', removeOverDiv, {once: true});
 				installResizeWidget();
 
+				break;
+
+			case "deselectAllText":
+				deselectAllText();
 				break;
 
 		}
