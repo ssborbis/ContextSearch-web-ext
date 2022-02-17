@@ -1084,9 +1084,9 @@ function executeBookmarklet(info) {
 	// run as script
 	if ( info.node.searchCode ) {
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-			await browser.tabs.executeScript(tabs[0].id, {
+			browser.tabs.executeScript(tabs[0].id, {
 				code: `CS_searchTerms = searchTerms = "${searchTerms}"
-				${info.node.searchCode}`		
+					${info.node.searchCode}`		
 			});
 		});
 	}
@@ -1114,7 +1114,7 @@ function executeBookmarklet(info) {
 		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
 			
-			await browser.tabs.executeScript(tabs[0].id, {
+			browser.tabs.executeScript(tabs[0].id, {
 				code: `CS_searchTerms = searchTerms = "${searchTerms}"
 					${code}`
 			});
@@ -1316,7 +1316,7 @@ function isValidHttpUrl(str) {
 
 function quickMenuSearch(info) {
 		
-	info.node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
+	info.node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	info.searchTerms = info.selectionText;
 	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
@@ -1327,7 +1327,6 @@ function quickMenuSearch(info) {
 async function openSearch(info) {
 
 	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
-	var searchEngineId = info.searchEngineId || info.menuItemId || null;
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
