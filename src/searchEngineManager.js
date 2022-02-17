@@ -447,13 +447,16 @@ function buildSearchEngineContainer() {
 				let default_o = document.createElement('option');
 				default_o.innerText = browser.i18n.getMessage("SearchBookmarklets");
 				default_o.value = "";
+
 				s_bookmarklets.appendChild(default_o);
 
 				s_bookmarklets.onclick = async function() {
 
 					if ( s_bookmarklets.value ) return;
 
-					s_bookmarklets.innerHTML = null;
+					if ( s_bookmarklets.clicked ) return;
+
+				//	s_bookmarklets.innerHTML = null;
 
 					CSBookmarks.getAllBookmarklets().then( results => {
 
@@ -478,6 +481,8 @@ function buildSearchEngineContainer() {
 							_form.searchCode.value = bm.url;
 						});
 					})
+
+					s_bookmarklets.clicked = true;
 				}
 
 				// _form.appendChild(b_bookmarklets);
