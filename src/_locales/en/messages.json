@@ -2378,7 +2378,7 @@
   },
 
   "NativeAppMissing": {
-    "message": "Native messaging app is not connected. See support site for more details."
+    "message": "Native messaging app is not connected."
   },
   "SearchBookmarklets": {
     "message": "🔍 Search Bookmarlets"

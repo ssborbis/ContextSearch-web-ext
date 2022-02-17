@@ -1317,7 +1317,7 @@ function isValidHttpUrl(str) {
 function quickMenuSearch(info) {
 		
 	info.node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
-	info.searchTerms = info.selectionText;
+	info.searchTerms = info.searchTerms || info.selectionText;
 	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
