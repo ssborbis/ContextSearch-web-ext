@@ -1079,11 +1079,6 @@ function openWithMethod(o) {
 
 function executeBookmarklet(info) {
 	
-	if (!browser.bookmarks) {
-		console.error('No bookmarks permission');
-		return;
-	}
-
 	let searchTerms = window.searchTerms || escapeDoubleQuotes(info.selectionText);
 
 	// run as script
@@ -1097,6 +1092,11 @@ function executeBookmarklet(info) {
 				code: info.node.searchCode
 			});
 		});
+	}
+
+	if (!browser.bookmarks) {
+		console.error('No bookmarks permission');
+		return;
 	}
 
 	// run as bookmarklet
