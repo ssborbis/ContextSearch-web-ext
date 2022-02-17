@@ -206,6 +206,8 @@ const defaultUserOptions = {
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
+	allowHotkeysOnLinks: false,
+	allowHotkeysOnImages: false,
 	quickMenuHoldTimeout: 250,
 	quickMenuRightClickTimeout: 500,
 	quickMenuCancelDeadzone:4,

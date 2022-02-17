@@ -2622,7 +2622,7 @@
 					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />_</div>
 										
 					<section style="min-width:720px">
-					<p class="header1" data-i18n="SearchActionsHeader">_</p>
+					<p class="header1" data-i18n="Hotkeys">_</p>
 
 					
 						
@@ -2635,30 +2635,40 @@
 					<tr>
 						<td>
 						<div class="option">
-					<label class="container">
-						<input type="checkbox" id="allowHotkeysWithoutMenu" />
-						<span class="checkmark checkmark2"></span>
-						<div class="description" data-i18n="EnableHotkeysLabel">_</div>
-					</label>
-					</div>
-<!-- 						<span class="buttonLabel" data-i18n="Hotkey">
-							_
-						</span> -->
-						
-<!-- 						<span class="keyboardButton" style="min-width:16px">
-							&nbsp;
-						</span> -->
+							<label class="container">
+								<input type="checkbox" id="allowHotkeysWithoutMenu" />
+								<span class="checkmark checkmark2"></span>
+								<div class="description" data-i18n="EnableHotkeysLabel">_</div>
+							</label>
+						</div>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="allowHotkeysOnLinks" />
+								<span class="checkmark checkmark2"></span>
+								<div class="description" data-i18n="EnableOnLinks">_</div>
+							</label>
+						</div>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="allowHotkeysOnImages" />
+								<span class="checkmark checkmark2"></span>
+								<div class="description" data-i18n="EnableOnImages">_</div>
+							</label>
+						</div>
+
 						</td>
-						<td>
+						<td style="vertical-align: top;">
 						<select class="inputNice" id="quickMenuSearchHotkeys" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
 						</select>
 						</td>
-						<td>
+						<td style="vertical-align: top;">
 						<select class="inputNice" id="quickMenuSearchHotkeysFolders" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
 						</select>
 						</td>
 					</tr>
 					</table>
+
+					
 					</section>
 
 					<section>
