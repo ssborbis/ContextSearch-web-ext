@@ -1085,11 +1085,8 @@ function executeBookmarklet(info) {
 	if ( info.node.searchCode ) {
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			await browser.tabs.executeScript(tabs[0].id, {
-				code: `CS_searchTerms = searchTerms = "${searchTerms}"`		
-			});
-
-			await browser.tabs.executeScript(tabs[0].id, {
-				code: info.node.searchCode
+				code: `CS_searchTerms = searchTerms = "${searchTerms}"
+				${info.node.searchCode}`		
 			});
 		});
 	}
@@ -1118,11 +1115,8 @@ function executeBookmarklet(info) {
 			let code = decodeURI(bookmark.url);
 			
 			await browser.tabs.executeScript(tabs[0].id, {
-				code: `CS_searchTerms = searchTerms = ${searchTerms}`	
-			});
-			
-			await browser.tabs.executeScript(tabs[0].id, {
-				code: code
+				code: `CS_searchTerms = searchTerms = "${searchTerms}"
+					${code}`
 			});
 		});
 
