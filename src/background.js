@@ -1083,6 +1083,22 @@ function executeBookmarklet(info) {
 		console.error('No bookmarks permission');
 		return;
 	}
+
+	let searchTerms = window.searchTerms || escapeDoubleQuotes(info.selectionText);
+
+	// run as script
+	if ( info.node.searchCode ) {
+		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
+			await browser.tabs.executeScript(tabs[0].id, {
+				code: `CS_searchTerms = "${searchTerms}"`		
+			});
+
+			await browser.tabs.executeScript(tabs[0].id, {
+				code: info.node.searchCode
+			});
+		});
+	}
+
 	// run as bookmarklet
 	browser.bookmarks.get(info.menuItemId).then( bookmark => {
 		bookmark = bookmark.shift();
@@ -1094,8 +1110,7 @@ function executeBookmarklet(info) {
 				url: bookmark.url,
 				openerTabId: userOptions.disableNewTabSorting ? null : info.tab.id
 			});
-				
-		//	console.error('bookmark not a bookmarklet');
+
 			return false;
 		}
 		
@@ -1103,7 +1118,7 @@ function executeBookmarklet(info) {
 			let code = decodeURI(bookmark.url);
 			
 			await browser.tabs.executeScript(tabs[0].id, {
-				code: 'CS_searchTerms = `' + ( window.searchTerms || escapeDoubleQuotes(info.selectionText) ) + '`;'
+				code: `CS_searchTerms = ${searchTerms}`	
 			});
 			
 			await browser.tabs.executeScript(tabs[0].id, {

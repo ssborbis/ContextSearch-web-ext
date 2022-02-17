@@ -2380,6 +2380,12 @@
   "NativeAppMissing": {
     "message": "Native messaging app is not connected. See support site for more details."
   },
+  "SearchBookmarklets": {
+    "message": "🔍 Search Bookmarlets"
+  },
+  "NewScript": {
+    "message": "New Script"
+  },
   "___________": {
     "message": ""
   }

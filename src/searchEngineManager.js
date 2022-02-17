@@ -427,7 +427,7 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+				["description", "template", "searchform", "post_params", "searchRegex", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
 				})
@@ -437,6 +437,51 @@ function buildSearchEngineContainer() {
 								
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
+				_form.searchCode.value = node.searchCode || "";
+
+				_form.searchCode.style.height = '12em';
+
+				let s_bookmarklets = document.createElement('select');
+				s_bookmarklets.style.width = 'auto';
+				// b_bookmarklets.innerText = "Find Bookmarlets";
+				let default_o = document.createElement('option');
+				default_o.innerText = browser.i18n.getMessage("SearchBookmarklets");
+				default_o.value = "";
+				s_bookmarklets.appendChild(default_o);
+
+				s_bookmarklets.onclick = async function() {
+
+					if ( s_bookmarklets.value ) return;
+
+					s_bookmarklets.innerHTML = null;
+
+					CSBookmarks.getAllBookmarklets().then( results => {
+
+						if (results.length === 0) return;
+							
+						for (let bm of results) {
+							let o = document.createElement('option');
+							o.innerText = bm.title;
+							o.value = bm.id;
+														
+							s_bookmarklets.appendChild(o);
+						}
+					});
+
+					s_bookmarklets.addEventListener('change', async e => {
+						e.preventDefault();
+						e.stopPropagation();
+
+						browser.bookmarks.get(s_bookmarklets.value).then( bm => {
+							bm = bm.shift();
+							_form.shortName.value = bm.title;
+							_form.searchCode.value = bm.url;
+						});
+					})
+				}
+
+				// _form.appendChild(b_bookmarklets);
+				_form.appendChild(s_bookmarklets);
 
 				setContexts(_form, node.contexts);
 				
@@ -450,6 +495,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.contexts = getContexts(_form);
+					node.searchCode = _form.searchCode.value;
 					setRowContexts(li);
 
 					text.innerText = node.title;
@@ -1470,6 +1516,32 @@ function buildSearchEngineContainer() {
 			});
 
 		});
+
+		let newScript = createMenuItem(browser.i18n.getMessage('NewScript'), browser.runtime.getURL('icons/code.svg'));		
+		newScript.addEventListener('click', e => {
+			closeSubMenus();
+			e.stopImmediatePropagation();
+			e.preventDefault();
+
+			let newBm = {
+				type: "bookmarklet",
+				id: gen(),
+				title: "new script",
+				parent: li.node.parent,
+				toJSON: li.node.toJSON
+			}
+				
+			nodeInsertAfter(newBm, li.node);
+
+			let newLi = traverse(newBm, li.parentNode);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
+	
+			updateNodeList();
+			
+			closeContextMenus();
+		});
 		
 		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/copy.svg'));	
 		copy.addEventListener('click', e => {
@@ -1724,7 +1796,7 @@ function buildSearchEngineContainer() {
 		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
