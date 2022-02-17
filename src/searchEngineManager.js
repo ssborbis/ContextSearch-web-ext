@@ -552,7 +552,7 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				["description", "searchform", "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+				["description", "searchform", "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
 				})
@@ -587,6 +587,26 @@ function buildSearchEngineContainer() {
 
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 					updateNodeList();
+				}
+
+				_form.test.onclick = async function() {
+
+					try {
+  						await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
+  					} catch (error) {
+ 						return alert(browser.i18n.getMessage('NativeAppMissing'));
+ 					}
+
+					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
+	
+					browser.runtime.sendMessage({
+						action:"quickMenuSearch",
+						info: {
+							node: JSON.parse(JSON.stringify(node)),
+							openMethod: "openNewTab",
+							selectionText: searchTerms
+						}
+					})
 				}
 				
 				createFormContainer(_form);
