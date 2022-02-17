@@ -849,7 +849,7 @@ function buildSearchEngineContainer() {
 		}
 		
 		// add hotkeys for some node types
-		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder'].includes(node.type) ) {
+		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {
 			
 			let hotkey = document.createElement('span');
 			hotkey.title = browser.i18n.getMessage('Hotkey');
