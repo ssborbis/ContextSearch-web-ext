@@ -427,7 +427,7 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				["description", "template", "searchform", "post_params", "searchRegex", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+				["template", "searchform", "post_params", "searchRegex", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
 				})
@@ -438,6 +438,7 @@ function buildSearchEngineContainer() {
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
 				_form.searchCode.value = node.searchCode || "";
+				_form.description.value = node.description || "";
 
 				_form.searchCode.style.height = '12em';
 
@@ -455,8 +456,6 @@ function buildSearchEngineContainer() {
 					if ( s_bookmarklets.value ) return;
 
 					if ( s_bookmarklets.clicked ) return;
-
-				//	s_bookmarklets.innerHTML = null;
 
 					CSBookmarks.getAllBookmarklets().then( results => {
 
@@ -501,6 +500,7 @@ function buildSearchEngineContainer() {
 					node.title = _form.shortName.value.trim();
 					node.contexts = getContexts(_form);
 					node.searchCode = _form.searchCode.value;
+					node.description = _form.description.value.trim();
 					setRowContexts(li);
 
 					text.innerText = node.title;
@@ -557,7 +557,7 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				["description", "searchform", "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
+				[ "searchform", "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
 				})
@@ -569,6 +569,7 @@ function buildSearchEngineContainer() {
 				_form.shortName.value = node.title;
 				_form.template.value = node.path;
 				_form.searchRegex = node.searchRegex;
+				_form.description.value = node.description || "";
 
 				let l = _form.querySelector('label[data-i18n="Template"]');
 				l.innerText = "Path";
@@ -585,6 +586,7 @@ function buildSearchEngineContainer() {
 					node.title = _form.shortName.value.trim();
 					node.path = _form.template.value.trim();
 					node.searchRegex = _form.searchRegex.value.trim();
+					node.description = _form.description.value.trim();
 					node.contexts = getContexts(_form);
 					setRowContexts(li);
 
