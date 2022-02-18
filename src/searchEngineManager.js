@@ -606,11 +606,14 @@ function buildSearchEngineContainer() {
  					}
 
 					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
-	
+					
+					let tempNode = Object.assign({}, JSON.parse(JSON.stringify(node)));
+					tempNode.path = _form.template.value.trim();
+					
 					browser.runtime.sendMessage({
 						action:"quickMenuSearch",
 						info: {
-							node: JSON.parse(JSON.stringify(node)),
+							node: tempNode,
 							openMethod: "openNewTab",
 							selectionText: searchTerms
 						}
