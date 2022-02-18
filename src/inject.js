@@ -407,6 +407,9 @@ function checkForNodeHotkeys(e) {
 	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
 	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
 
+	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
+		link = el.currentSrc || el.src;
+
 	let searchTerms = getSelectedText(e.target) || img || link || "";
 
 	if ( !searchTerms ) return false;
