@@ -1227,7 +1227,7 @@ async function executeExternalProgram(info) {
 		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
 	}
 
-	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:cwd});
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd});
 }
 
 function lastSearchHandler(id) {
