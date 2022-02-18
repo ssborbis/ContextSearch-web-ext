@@ -599,6 +599,7 @@ function buildSearchEngineContainer() {
 				_form.test.onclick = async function() {
 
 					try {
+						await browser.permissions.request({permissions: ['nativeMessaging']});
   						await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
   					} catch (error) {
  						return alert(browser.i18n.getMessage('NativeAppMissing'));
