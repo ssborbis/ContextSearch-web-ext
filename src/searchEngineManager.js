@@ -557,10 +557,11 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				[ "searchform", "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
+				[ "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
-				})
+				});
+
 				addFormListeners(_form);
 				
 				_form.node = node;
@@ -570,9 +571,17 @@ function buildSearchEngineContainer() {
 				_form.template.value = node.path;
 				_form.searchRegex = node.searchRegex;
 				_form.description.value = node.description || "";
+				_form.searchform.value = node.cwd || "";
 
-				let l = _form.querySelector('label[data-i18n="Template"]');
-				l.innerText = "Path";
+				let cmd = _form.querySelector('label[data-i18n="Template"]');
+				cmd.innerText = browser.i18n.getMessage("Command");
+
+				let cwd = _form.querySelector('label[data-i18n="FormPath"]');
+				cwd.innerText = browser.i18n.getMessage("WorkingDirectory");
+
+				_form.insertBefore(cwd, _form.template.nextSibling);
+				_form.insertBefore(_form.searchform, cwd.nextSibling);
+
 				setContexts(_form, node.contexts);
 				
 				_form.close.onclick = _form.closeForm;
@@ -587,6 +596,7 @@ function buildSearchEngineContainer() {
 					node.path = _form.template.value.trim();
 					node.searchRegex = _form.searchRegex.value.trim();
 					node.description = _form.description.value.trim();
+					node.cwd = _form.searchform.value.trim();
 					node.contexts = getContexts(_form);
 					setRowContexts(li);
 

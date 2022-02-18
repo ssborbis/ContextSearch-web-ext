@@ -2386,6 +2386,15 @@
   "NewScript": {
     "message": "New Script"
   },
+  "Permissions": {
+    "message": "Permissions"
+  },
+  "Command": {
+    "message": "Command"
+  },
+  "WorkingDirectory": {
+    "message": "Working Directory"
+  },
   "___________": {
     "message": ""
   }
