@@ -161,11 +161,11 @@ function getIconFromNode(node) {
 			if ( !se ) return browser.runtime.getURL('icons/search.svg');
 			return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
 		} else if ( node.type === "bookmarklet" ) {
-			return node.icon || browser.runtime.getURL('icons/code.svg');
+			return node.icon || browser.runtime.getURL('icons/code_color.svg');
 		} else if ( node.type === "folder" ) {
 			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');	
 		} else if ( node.type === "externalProgram" ) {
-			return node.icon || browser.runtime.getURL('icons/settings.svg');
+			return node.icon || browser.runtime.getURL('icons/terminal_color.svg');
 		} else {
 			return node.icon || "";
 		}

@@ -1684,7 +1684,7 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newExternalProgram = createMenuItem(browser.i18n.getMessage('NewExternalProgram'), browser.runtime.getURL('icons/settings.svg'));	
+		let newExternalProgram = createMenuItem(browser.i18n.getMessage('NewExternalProgram'), browser.runtime.getURL('icons/terminal.svg'));	
 		newExternalProgram.addEventListener('click', () => {
 			let newNode = {
 				type: "externalProgram",
