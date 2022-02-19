@@ -1678,3 +1678,11 @@ function createEditMenu() {
 	overdiv.getBoundingClientRect();
 	overdiv.style.opacity = null;
 }
+
+function createMaskIcon(src) {
+	let tool = document.createElement('div');
+	tool.className = 'tool';
+	tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL(src)})`);
+
+	return tool;
+}

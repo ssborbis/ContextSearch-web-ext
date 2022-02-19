@@ -440,6 +440,8 @@ function buildSearchEngineContainer() {
 				_form.searchCode.value = node.searchCode || "";
 				_form.description.value = node.description || "";
 
+				_form.querySelector('label[data-i18n="SearchCode"]').innerText = browser.i18n.getMessage("Script");
+
 				_form.searchCode.style.height = '12em';
 
 				let s_bookmarklets = document.createElement('select');
@@ -1321,9 +1323,8 @@ function buildSearchEngineContainer() {
 		function createMenuItem(name, icon) {
 			let menuItem = document.createElement('div');
 
-			let img = document.createElement('img');
-			img.src = icon;
-			
+			let img = createMaskIcon(icon);
+			img.classList.add('menuIcon')
 			menuItem.appendChild(img);
 			
 			let span = document.createElement('span');
@@ -1474,89 +1475,89 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
-		newBookmarklet.addEventListener('click', e => {
-			closeSubMenus();
-			e.stopImmediatePropagation();
-			e.preventDefault();
+		// let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
+		// newBookmarklet.addEventListener('click', e => {
+		// 	closeSubMenus();
+		// 	e.stopImmediatePropagation();
+		// 	e.preventDefault();
 
-			if (!browser.bookmarks) {
-				CSBookmarks.requestPermissions();
-				return;
-			}
+		// 	if (!browser.bookmarks) {
+		// 		CSBookmarks.requestPermissions();
+		// 		return;
+		// 	}
 			
-			let bmContainer = document.createElement('div');
+		// 	let bmContainer = document.createElement('div');
 
-			bmContainer.className = 'contextMenu subMenu';
+		// 	bmContainer.className = 'contextMenu subMenu';
 			
-			let rect = newBookmarklet.getBoundingClientRect();
+		// 	let rect = newBookmarklet.getBoundingClientRect();
 
-			bmContainer.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
-			bmContainer.style.top = rect.y + window.scrollY + "px";
+		// 	bmContainer.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+		// 	bmContainer.style.top = rect.y + window.scrollY + "px";
 			
-			let item1 = document.createElement('div');
-			item1.className = 'menuItem';
+		// 	let item1 = document.createElement('div');
+		// 	item1.className = 'menuItem';
 			
-			let _img = new Image(20);
-			_img.src = browser.runtime.getURL('icons/spinner.svg');
-			item1.appendChild(_img);
-			bmContainer.appendChild(item1);
+		// 	let _img = new Image(20);
+		// 	_img.src = browser.runtime.getURL('icons/spinner.svg');
+		// 	item1.appendChild(_img);
+		// 	bmContainer.appendChild(item1);
 			
-			document.body.appendChild(bmContainer);
-			openMenu(bmContainer);
+		// 	document.body.appendChild(bmContainer);
+		// 	openMenu(bmContainer);
 
-			CSBookmarks.getAllBookmarklets().then( results => {
+		// 	CSBookmarks.getAllBookmarklets().then( results => {
 
-				if (results.length === 0) {
-					item1.innerHTML = "<i>none found</i>";
-					item1.addEventListener('click', () => {
-						closeContextMenus();
-					});
-					return;
-				}
+		// 		if (results.length === 0) {
+		// 			item1.innerHTML = "<i>none found</i>";
+		// 			item1.addEventListener('click', () => {
+		// 				closeContextMenus();
+		// 			});
+		// 			return;
+		// 		}
 				
-				bmContainer.removeChild(item1);
+		// 		bmContainer.removeChild(item1);
 				
-				for (let bm of results) {
-					let bmDiv = document.createElement('div');
-					bmDiv.className = 'menuItem';
-					bmDiv.innerText = bm.title;
+		// 		for (let bm of results) {
+		// 			let bmDiv = document.createElement('div');
+		// 			bmDiv.className = 'menuItem';
+		// 			bmDiv.innerText = bm.title;
 					
-					bmDiv.addEventListener('click', e => {
+		// 			bmDiv.addEventListener('click', e => {
 						
-						let newBm = {
-							type: "bookmarklet",
-							id: bm.id,
-							title: bm.title,
-							parent: li.node.parent,
-							toJSON: li.node.toJSON
-						}
+		// 				let newBm = {
+		// 					type: "bookmarklet",
+		// 					id: bm.id,
+		// 					title: bm.title,
+		// 					parent: li.node.parent,
+		// 					toJSON: li.node.toJSON
+		// 				}
 						
-						nodeInsertAfter(newBm, li.node);
+		// 				nodeInsertAfter(newBm, li.node);
 
-						let newLi = traverse(newBm, li.parentNode);
-						li.parentNode.insertBefore(newLi, li.nextSibling);
-						newLi.scrollIntoView({block: "start", behavior:"smooth"});
-						newLi.dispatchEvent(new MouseEvent('dblclick'));
+		// 				let newLi = traverse(newBm, li.parentNode);
+		// 				li.parentNode.insertBefore(newLi, li.nextSibling);
+		// 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
+		// 				newLi.dispatchEvent(new MouseEvent('dblclick'));
 				
-						updateNodeList();
+		// 				updateNodeList();
 						
-						closeContextMenus();
+		// 				closeContextMenus();
 
 
-					});
+		// 			});
 					
-					bmContainer.appendChild(bmDiv);
+		// 			bmContainer.appendChild(bmDiv);
 
-				}
+		// 		}
 				
-				bmContainer.style.maxWidth = '200px';
-				bmContainer.style.maxHeight = '400px';
-				bmContainer.style.overflowY = 'auto';
+		// 		bmContainer.style.maxWidth = '200px';
+		// 		bmContainer.style.maxHeight = '400px';
+		// 		bmContainer.style.overflowY = 'auto';
 
-			});
+		// 	});
 
-		});
+		// });
 
 		let newScript = createMenuItem(browser.i18n.getMessage('NewScript'), browser.runtime.getURL('icons/code.svg'));		
 		newScript.addEventListener('click', e => {
@@ -2183,10 +2184,9 @@ async function setRowContexts(row) {
 
 		contexts.forEach( async c => {
 
-			let tool = document.createElement('div');
+			let tool = createMaskIcon("icons/" + c + ".svg");
+			tool.classList.add('contextIcon');
 			tool.title = browser.i18n.getMessage(c);
-			tool.className = 'tool contextIcon';
-			tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL("icons/" + c + ".svg")})`);
 
 			if ( !hasContext(c, node.contexts))
 				tool.classList.add('disabled');
