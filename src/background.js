@@ -1227,7 +1227,12 @@ async function executeExternalProgram(info) {
 		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
 	}
 
-	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd});
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_output: ( node.postScript ? true : false )}).then( async result => {
+		if ( node.postScript ) {
+			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
+			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
+		}
+	});
 }
 
 function lastSearchHandler(id) {
@@ -1623,6 +1628,11 @@ async function folderSearch(info, allowFolders) {
 function escapeDoubleQuotes(str) {
 	if ( !str ) return str;
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
+}
+
+function escapeBackticks(str) {
+	if ( !str ) return str;
+	return str.replace(/\\([\s\S])|(`)/g,"\\$1$2");
 }
 
 async function highlightSearchTermsInTab(tab, searchTerms) {

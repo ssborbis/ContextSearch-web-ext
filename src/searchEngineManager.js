@@ -559,7 +559,7 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				[ "post_params", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
+				[ "post_params", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
 				});
@@ -574,6 +574,7 @@ function buildSearchEngineContainer() {
 				_form.searchRegex = node.searchRegex;
 				_form.description.value = node.description || "";
 				_form.searchform.value = node.cwd || "";
+				_form.searchCode.value = node.postScript || "";
 
 				let cmd = _form.querySelector('label[data-i18n="Template"]');
 				cmd.innerText = browser.i18n.getMessage("Command");
@@ -599,6 +600,7 @@ function buildSearchEngineContainer() {
 					node.searchRegex = _form.searchRegex.value.trim();
 					node.description = _form.description.value.trim();
 					node.cwd = _form.searchform.value.trim();
+					node.postScript = _form.searchCode.value;
 					node.contexts = getContexts(_form);
 					setRowContexts(li);
 
