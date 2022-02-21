@@ -1383,7 +1383,8 @@ function buildSearchEngineContainer() {
 				folder: "folder.svg",
 				separator: "separator.svg",
 				tool: "add.svg",
-				siteSearchFolder: "search.svg"
+				siteSearchFolder: "search.svg",
+				externalProgram: "terminal.svg"
 			}
 			
 			// build delete message from objectsToDelete
@@ -1691,7 +1692,7 @@ function buildSearchEngineContainer() {
 		newExternalProgram.addEventListener('click', () => {
 			let newNode = {
 				type: "externalProgram",
-				title:"New External App",
+				title:browser.i18n.getMessage("NewExternalProgram"),
 				id: gen(),
 				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
@@ -1848,7 +1849,7 @@ function buildSearchEngineContainer() {
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
-			[edit, newFolder, newEngine, newSeparator, newBookmarklet, copy].forEach( el => {
+			[edit, newFolder, newEngine, newSeparator, newScript, copy, newMultisearch, newExternalProgram,newTool].forEach( el => {
 				el.disabled = true;
 				el.style.opacity = .5;
 			});
