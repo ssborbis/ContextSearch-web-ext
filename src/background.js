@@ -1227,7 +1227,7 @@ async function executeExternalProgram(info) {
 		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
 	}
 
-	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_output: ( node.postScript ? true : false )}).then( async result => {
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false )}).then( async result => {
 		if ( node.postScript ) {
 			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
 			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
