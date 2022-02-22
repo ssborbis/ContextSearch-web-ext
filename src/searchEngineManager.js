@@ -1391,9 +1391,8 @@ function buildSearchEngineContainer() {
 			for ( let key in objectsToDelete) {
 				if ( objectsToDelete.hasOwnProperty(key) ) {
 					let d = document.createElement('div');
-					let img = new Image();
-					img.style = "display:inline-block;height:16px;width:16px;vertical-align:middle";
-					img.src = browser.runtime.getURL('icons/' + nodeIcons[key]);
+					let img = createMaskIcon('icons/' + nodeIcons[key]);
+					img.classList.add('menuIcon');
 					
 					msgDivRow.appendChild(d);
 					d.innerText = objectsToDelete[key];
