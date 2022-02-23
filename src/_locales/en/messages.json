@@ -2377,11 +2377,15 @@
     "message": "Refine search"
   },
 
+  "NativeApp": {
+    "message": "Messenger app"
+  },
+
   "NativeAppMissing": {
-    "message": "Native messaging app is not connected."
+    "message": "Messenger app is not connected."
   },
   "SearchBookmarklets": {
-    "message": "🔍 Search Bookmarlets"
+    "message": "🔍 Search Bookmarklets"
   },
   "NewScript": {
     "message": "New Script"
@@ -2398,8 +2402,8 @@
   "Script": {
     "message": "Script"
   },
-  "___________": {
-    "message": ""
+  "MessengerOfflineTooltip": {
+    "message": "An additional plugin is required to launch apps from ContextSearch web-ext. Click the link for more details."
   }
 
 }
