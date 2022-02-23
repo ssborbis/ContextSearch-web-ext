@@ -584,6 +584,10 @@ function buildSearchEngineContainer() {
 				let cwd = _form.querySelector('label[data-i18n="FormPath"]');
 				cwd.innerText = browser.i18n.getMessage("WorkingDirectory");
 
+				let pas = _form.querySelector('label[data-i18n="SearchCode"]');
+				pas.innerText = browser.i18n.getMessage("PostAppScript");
+				pas.title = browser.i18n.getMessage("PostAppScriptTooltip");
+
 				_form.insertBefore(cwd, _form.template.nextSibling);
 				_form.insertBefore(_form.searchform, cwd.nextSibling);
 
