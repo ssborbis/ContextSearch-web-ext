@@ -1686,3 +1686,16 @@ function createMaskIcon(src) {
 
 	return tool;
 }
+
+function checkAndUpdateNativeApp() {
+	if ( !browser.runtime.sendNativeMessage ) return false;
+
+	browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true}).then( newVersion => {
+		if ( newVersion ) {
+			if (confirm("Update native app script to version " + newVersion + "?"))
+				browser.runtime.sendNativeMessage("contextsearch_webext", {update:true});
+		} else {
+			console.log('up to date');
+		}
+	});
+}

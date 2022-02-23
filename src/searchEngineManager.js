@@ -555,6 +555,8 @@ function buildSearchEngineContainer() {
 			li.addEventListener('dblclick', _edit);
 
 			function _edit() {
+
+				browser.permissions.request({permissions: ['nativeMessaging']});
 			
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
@@ -584,6 +586,40 @@ function buildSearchEngineContainer() {
 
 				_form.insertBefore(cwd, _form.template.nextSibling);
 				_form.insertBefore(_form.searchform, cwd.nextSibling);
+
+				(() => {
+					let div = document.createElement('div');
+					_form.appendChild(div);
+
+					let img = createMaskIcon("/icons/settings.svg");
+					img.style.height = '24px';
+					img.style.verticalAlign = 'middle';
+					img.style.marginRight = '10px';
+					img.title = browser.i18n.getMessage('NativeApp');
+
+					div.appendChild(img);
+					let span = document.createElement('span');
+					div.appendChild(span);
+
+					checkStatus = async() => {
+
+						let version = await browser.runtime.sendNativeMessage("contextsearch_webext", {version: true}).then( r => r, r => false);
+
+						if ( version ) {
+							span.innerText = 'v' + version;
+						} else {
+							span.innerHTML = `<a target="_blank" title="${browser.i18n.getMessage("MessengerOfflineTooltip")}" style="color:unset" href="https://github.com/ssborbis/ContextSearch-Native-App">${browser.i18n.getMessage('NativeAppMissing')}</a>`;
+						}
+					}
+
+					let checkStatusInterval = setInterval(() => {
+						if ( !_form.isConnected ) 
+							clearInterval(checkStatusInterval);
+						else 
+							checkStatus();
+					}, 2500);
+					
+				})();
 
 				setContexts(_form, node.contexts);
 				
@@ -2118,8 +2154,8 @@ function addFormListeners(form) {
 		formContainer.parentNode.style.opacity = 0;
 		$('#main').classList.remove('blur');
 		runAtTransitionEnd(formContainer, "opacity", () => {
-			form.style.display = null;
-			document.body.appendChild(form);
+		//	form.style.display = null;
+		//	document.body.appendChild(form);
 			document.body.removeChild(formContainer.parentNode);
 		});
 	}
