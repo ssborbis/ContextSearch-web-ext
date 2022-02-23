@@ -663,6 +663,8 @@ function buildSearchEngineContainer() {
 					
 					let tempNode = Object.assign({}, JSON.parse(JSON.stringify(node)));
 					tempNode.path = _form.template.value.trim();
+					tempNode.cwd = _form.searchform.value.trim();
+					tempNode.postScript = _form.searchCode.value.trim();
 					
 					browser.runtime.sendMessage({
 						action:"quickMenuSearch",
