@@ -896,12 +896,27 @@ async function makeQuickMenu(options) {
 
 		qm.expandMoreTiles();
 
-		//setOptionsBar();
-
 		return qm;
 	}
 
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+
+		// filter node tree for matching contexts
+		if ( userOptions.quickMenuUseContextualLayout && quickMenuObject.contexts && quickMenuObject.contexts.length ) {		
+
+			let tempRoot = filterContexts(rootNode, options.contexts);
+
+			// flatten
+			let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
+			if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
+				tempRoot.children = seNodes;
+			}
+
+			setParents(tempRoot);
+			
+			tempRoot.parent = rootNode.parent;
+			rootNode = tempRoot;
+		}
 
 		let debug = rootNode.title === "empty";
 
@@ -1018,20 +1033,10 @@ async function makeQuickMenu(options) {
 	
 	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
-	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+	let root = userOptions.nodeTree;
 
 	window.root = root;
-
-	// filter node tree for matching contexts
-	if ( userOptions.quickMenuUseContextualLayout && options.contexts && options.contexts.length ) {		
-		root = filterContexts(root, options.contexts);
-
-		// flatten
-		let seNodes = findNodes(root, n => !['folder', 'separator'].includes(n.type) );
-		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
-			root.children = seNodes;
-		}
-	}
+	quickMenuObject.contexts = options.contexts || [];
 
 	setParents(root);
 
@@ -1824,7 +1829,7 @@ document.addEventListener('drop', e => {
 
 	let side = getSide(tile, e);
 
-	let old_node_count = findNodes(root, n => true).length;
+	let old_node_count = findNodes(userOptions.nodeTree, n => true).length;
 
 	// cut the node from the children array
 	let slicedNode = nodeCut(window.dragNode);
