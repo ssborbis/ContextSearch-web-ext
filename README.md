@@ -8,7 +8,7 @@
 
 Add any search engine to your [Web Extensions](https://developer.chrome.com/docs/extensions/reference/)-compatible browser and search using a variety of menus and shortcuts. Originally written as a replacement for Ben Basson's Context Search. 
 
-[Download @ Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/contextsearch-web-ext/) <br>[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
+[Download @ Mozilla Add-ons](https://addons.mozilla.org/firefox/addon/contextsearch-web-ext/) <br>[Download @ Chrome Store](https://chrome.google.com/webstore/detail/contextsearch-web-ext/ddippghibegbgpjcaaijbacfhjjeafjh)
 
 ###### *AMO and Chromestore will not be as up-to-date as the git
 
@@ -27,9 +27,9 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
   3.5 [Page Tiles](#pagetiles)  
   3.6 [Omnibox](#omnibox)  
   3.7 [Hotkeys](#hotkeys)  
-4. [Highlighting Results](#highlighting)  
-5. [Adding Engines](#addingengines)
-  5.1 [Mycroft Project](#mycroftproject)
+4. [Adding Engines](#addingengines)<br>
+  4.1 [Mycroft Project](#mycroftproject)
+5. [Highlighting Results](#highlighting)  
 6. Editing Engines   
   6.1 [Search Engines Manager](#searchenginesmanager)  
   6.2 [Modifying Terms](#modifyingterms)  
@@ -41,6 +41,7 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
 9. [Styling](#styling)  
 10. [Advanced Options](#advanced)  
 11. [Security](#security)
+12. [Libraries](#libraries)
 
 ___
 
@@ -355,7 +356,9 @@ Clicking `Advanced` will show more options.
 * Link to MycroftProject to browse opensearch xml files for the current domain
 * Open a Create Custom Engine form to customize and test the engine before installing. You can also change it after installing from the [Search Engines Manager](#searchenginesmanager)
 
-## [5.1 MycroftProject](#toc)
+<a name="mycroftproject"/>
+
+## [4.1 MycroftProject](#toc)
 Engines found at http://mycroftproject.com can be easily installed by clicking the <img src="src/icons/logo_notext.svg" height="1em"> icon placed next to the OpenSearch link.
 ___
 
@@ -682,9 +685,21 @@ ___
 
 This addon does not use any tracking or analytics. No information is collected, sold, etc. How you use it is your business. There are, however, a few things to note.
 
-1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy). Like other addons, there is the possibility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
+1. Most ContextSearch menus work by injecting [content scripts](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/Content_scripts) into the current website. For security, all content containing user preferences or any identifying or trackable data are placed in iframes, unreachable by potentially malicious websites through [same-origin policy](https://developer.mozilla.org/docs/Web/Security/Same-origin_policy). Like other addons, there is the possibility of some limited UUID tracking when using injected content. See more about [web accessible resources](https://developer.mozilla.org/docs/Mozilla/Add-ons/WebExtensions/manifest.json/web_accessible_resources)
 
 2. Search suggestions are fetched from Google when typing in any ContextSearch searchbar unless disabled in CS Options -> General -> Suggestions.
+
+___
+
+<a name="libraries"/>
+
+## [12. Libraries](#toc)
+
+[webextension-polyfill](https://github.com/mozilla/webextension-polyfill)
+
+[text-encoding](https://github.com/inexorabletash/text-encoding)
+
+[mark.js](https://markjs.io/)
 
 ___
 
