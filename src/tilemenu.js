@@ -11,7 +11,8 @@ var quickMenuObject = {
 	locked: false,
 	searchTerms: "",
 	disabled: false,
-	mouseDownTargetIsTextBox: false
+	mouseDownTargetIsTextBox: false,
+	contexts:[]
 };
 
 var dragFolderTimeout = 1500;
@@ -901,10 +902,12 @@ async function makeQuickMenu(options) {
 
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
-		// filter node tree for matching contexts
-		if ( userOptions.quickMenuUseContextualLayout && quickMenuObject.contexts && quickMenuObject.contexts.length ) {		
+		qm.contexts = quickMenuObject.contexts;
 
-			let tempRoot = filterContexts(rootNode, options.contexts);
+		// filter node tree for matching contexts
+		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
+
+			let tempRoot = filterContexts(rootNode, qm.contexts);
 
 			// flatten
 			let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
@@ -913,7 +916,7 @@ async function makeQuickMenu(options) {
 			}
 
 			setParents(tempRoot);
-			
+
 			tempRoot.parent = rootNode.parent;
 			rootNode = tempRoot;
 		}

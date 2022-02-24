@@ -349,7 +349,19 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
 			case "updateQuickMenuObject":
+
 				quickMenuObject = message.quickMenuObject;
+
+				lazyCompare = (a1, a2) => { return a1.length === a2.length && a1.reduce((a, b) => a && a2.includes(b), true) }
+
+				if ( !lazyCompare(quickMenuObject.contexts, qm.contexts)) {
+
+					console.log('lazyCompare update');
+					(async() => {
+						qm = await quickMenuElementFromNodeTree(window.root);
+						resizeMenu({openFolder: true});
+					})();
+				}
 				
 				// quickMenuObject can update before userOptions. Grab the lastUsed
 				userOptions.lastUsedId = quickMenuObject.lastUsed || userOptions.lastUsedId;
