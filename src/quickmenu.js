@@ -354,9 +354,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				lazyCompare = (a1, a2) => { return a1.length === a2.length && a1.reduce((a, b) => a && a2.includes(b), true) }
 
-				if ( !lazyCompare(quickMenuObject.contexts, qm.contexts)) {
-
-					console.log('lazyCompare update');
+				if ( qm && qm.isConnected && !lazyCompare(quickMenuObject.contexts, qm.contexts) ) {
 					(async() => {
 						qm = await quickMenuElementFromNodeTree(window.root);
 						resizeMenu({openFolder: true});
