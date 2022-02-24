@@ -427,7 +427,7 @@ function buildSearchEngineContainer() {
 				let _form = $('editSearchEngineForm').cloneNode(true);
 				_form.id = null;
 
-				["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
+				["template", "searchform", "post_params", "searchRegex", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
 					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
 					_form[name].parentNode.removeChild(_form[name]);
 				})
@@ -437,6 +437,57 @@ function buildSearchEngineContainer() {
 								
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
+				_form.searchCode.value = node.searchCode || "";
+				_form.description.value = node.description || "";
+
+				_form.querySelector('label[data-i18n="SearchCode"]').innerText = browser.i18n.getMessage("Script");
+
+				_form.searchCode.style.height = '12em';
+
+				let s_bookmarklets = document.createElement('select');
+				s_bookmarklets.style.width = 'auto';
+				// b_bookmarklets.innerText = "Find Bookmarlets";
+				let default_o = document.createElement('option');
+				default_o.innerText = browser.i18n.getMessage("SearchBookmarklets");
+				default_o.value = "";
+
+				s_bookmarklets.appendChild(default_o);
+
+				s_bookmarklets.onclick = async function() {
+
+					if ( s_bookmarklets.value ) return;
+
+					if ( s_bookmarklets.clicked ) return;
+
+					CSBookmarks.getAllBookmarklets().then( results => {
+
+						if (results.length === 0) return;
+							
+						for (let bm of results) {
+							let o = document.createElement('option');
+							o.innerText = bm.title;
+							o.value = bm.id;
+														
+							s_bookmarklets.appendChild(o);
+						}
+					});
+
+					s_bookmarklets.addEventListener('change', async e => {
+						e.preventDefault();
+						e.stopPropagation();
+
+						browser.bookmarks.get(s_bookmarklets.value).then( bm => {
+							bm = bm.shift();
+							_form.shortName.value = bm.title;
+							_form.searchCode.value = bm.url;
+						});
+					})
+
+					s_bookmarklets.clicked = true;
+				}
+
+				// _form.appendChild(b_bookmarklets);
+				_form.appendChild(s_bookmarklets);
 
 				setContexts(_form, node.contexts);
 				
@@ -450,6 +501,8 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.contexts = getContexts(_form);
+					node.searchCode = _form.searchCode.value;
+					node.description = _form.description.value.trim();
 					setRowContexts(li);
 
 					text.innerText = node.title;
@@ -486,6 +539,153 @@ function buildSearchEngineContainer() {
 			text.innerText = node.title;
 			text.className = "label";
 			header.appendChild(text);
+		}
+
+		if (node.type === 'externalProgram') {
+
+			let img = document.createElement('img');
+			img.src = getIconFromNode(node);
+			header.appendChild(img);
+
+			let text = document.createElement('span');
+			text.innerText = node.title;
+			text.className = "label";
+			header.appendChild(text);
+
+			li.addEventListener('dblclick', _edit);
+
+			function _edit() {
+
+				browser.permissions.request({permissions: ['nativeMessaging']});
+			
+				let _form = $('editSearchEngineForm').cloneNode(true);
+				_form.id = null;
+
+				[ "post_params", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
+					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+					_form[name].parentNode.removeChild(_form[name]);
+				});
+
+				addFormListeners(_form);
+				
+				_form.node = node;
+								
+				_form.iconURL.value = node.icon || "";
+				_form.shortName.value = node.title;
+				_form.template.value = node.path;
+				_form.searchRegex = node.searchRegex;
+				_form.description.value = node.description || "";
+				_form.searchform.value = node.cwd || "";
+				_form.searchCode.value = node.postScript || "";
+
+				let cmd = _form.querySelector('label[data-i18n="Template"]');
+				cmd.innerText = browser.i18n.getMessage("Command");
+
+				let cwd = _form.querySelector('label[data-i18n="FormPath"]');
+				cwd.innerText = browser.i18n.getMessage("WorkingDirectory");
+
+				let pas = _form.querySelector('label[data-i18n="SearchCode"]');
+				pas.innerText = browser.i18n.getMessage("PostAppScript");
+				pas.title = browser.i18n.getMessage("PostAppScriptTooltip");
+
+				_form.insertBefore(cwd, _form.template.nextSibling);
+				_form.insertBefore(_form.searchform, cwd.nextSibling);
+
+				(() => {
+					let div = document.createElement('div');
+					_form.appendChild(div);
+
+					let img = createMaskIcon("/icons/settings.svg");
+					img.style.height = '24px';
+					img.style.verticalAlign = 'middle';
+					img.style.marginRight = '10px';
+					img.title = browser.i18n.getMessage('NativeApp');
+
+					div.appendChild(img);
+					let span = document.createElement('span');
+					div.appendChild(span);
+
+					checkStatus = async() => {
+
+						let version = false;
+
+						try {
+							version = await browser.runtime.sendNativeMessage("contextsearch_webext", {version: true}).then( r => r, r => false);
+						} catch (error) {}
+
+						if ( version ) {
+							span.innerText = 'v' + version;
+						} else {
+							span.innerHTML = `<a target="_blank" title="${browser.i18n.getMessage("MessengerOfflineTooltip")}" style="color:unset" href="https://github.com/ssborbis/ContextSearch-Native-App">${browser.i18n.getMessage('NativeAppMissing')}</a>`;
+						}
+					}
+
+					let checkStatusInterval = setInterval(() => {
+						if ( !_form.isConnected ) 
+							clearInterval(checkStatusInterval);
+						else 
+							checkStatus();
+					}, 2500);
+					
+				})();
+
+				setContexts(_form, node.contexts);
+				
+				_form.close.onclick = _form.closeForm;
+				
+				_form.save.onclick = async function() {
+
+					node.icon = await getFormIcon(_form);
+					_form.querySelector('[name="faviconBox"] img').src = getIconFromNode(node);
+					img.src = getIconFromNode(node);
+
+					node.title = _form.shortName.value.trim();
+					node.path = _form.template.value.trim();
+					node.searchRegex = _form.searchRegex.value.trim();
+					node.description = _form.description.value.trim();
+					node.cwd = _form.searchform.value.trim();
+					node.postScript = _form.searchCode.value;
+					node.contexts = getContexts(_form);
+					setRowContexts(li);
+
+					text.innerText = node.title;
+
+					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					updateNodeList();
+				}
+
+				_form.test.onclick = async function() {
+
+					try {
+						await browser.permissions.request({permissions: ['nativeMessaging']});
+  						await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
+  					} catch (error) {
+ 						return alert(browser.i18n.getMessage('NativeAppMissing'));
+ 					}
+
+					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
+					
+					let tempNode = Object.assign({}, JSON.parse(JSON.stringify(node)));
+					tempNode.path = _form.template.value.trim();
+					tempNode.cwd = _form.searchform.value.trim();
+					tempNode.postScript = _form.searchCode.value.trim();
+					
+					browser.runtime.sendMessage({
+						action:"quickMenuSearch",
+						info: {
+							node: tempNode,
+							openMethod: "openNewTab",
+							selectionText: searchTerms
+						}
+					})
+				}
+				
+				createFormContainer(_form);
+				addIconPickerListener(_form.iconPicker, li);
+				addFavIconFinderListener(_form.faviconFinder);
+				_form.addFaviconBox(getIconFromNode(node));
+
+			}
 		}
 		
 		if (node.type === 'oneClickSearchEngine') {
@@ -740,7 +940,7 @@ function buildSearchEngineContainer() {
 		}
 		
 		// add hotkeys for some node types
-		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder'].includes(node.type) ) {
+		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {
 			
 			let hotkey = document.createElement('span');
 			hotkey.title = browser.i18n.getMessage('Hotkey');
@@ -1171,9 +1371,8 @@ function buildSearchEngineContainer() {
 		function createMenuItem(name, icon) {
 			let menuItem = document.createElement('div');
 
-			let img = document.createElement('img');
-			img.src = icon;
-			
+			let img = createMaskIcon(icon);
+			img.classList.add('menuIcon')
 			menuItem.appendChild(img);
 			
 			let span = document.createElement('span');
@@ -1230,16 +1429,16 @@ function buildSearchEngineContainer() {
 				folder: "folder.svg",
 				separator: "separator.svg",
 				tool: "add.svg",
-				siteSearchFolder: "search.svg"
+				siteSearchFolder: "search.svg",
+				externalProgram: "terminal.svg"
 			}
 			
 			// build delete message from objectsToDelete
 			for ( let key in objectsToDelete) {
 				if ( objectsToDelete.hasOwnProperty(key) ) {
 					let d = document.createElement('div');
-					let img = new Image();
-					img.style = "display:inline-block;height:16px;width:16px;vertical-align:middle";
-					img.src = browser.runtime.getURL('icons/' + nodeIcons[key]);
+					let img = createMaskIcon('icons/' + nodeIcons[key]);
+					img.classList.add('menuIcon');
 					
 					msgDivRow.appendChild(d);
 					d.innerText = objectsToDelete[key];
@@ -1324,88 +1523,114 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
-		newBookmarklet.addEventListener('click', e => {
+		// let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
+		// newBookmarklet.addEventListener('click', e => {
+		// 	closeSubMenus();
+		// 	e.stopImmediatePropagation();
+		// 	e.preventDefault();
+
+		// 	if (!browser.bookmarks) {
+		// 		CSBookmarks.requestPermissions();
+		// 		return;
+		// 	}
+			
+		// 	let bmContainer = document.createElement('div');
+
+		// 	bmContainer.className = 'contextMenu subMenu';
+			
+		// 	let rect = newBookmarklet.getBoundingClientRect();
+
+		// 	bmContainer.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+		// 	bmContainer.style.top = rect.y + window.scrollY + "px";
+			
+		// 	let item1 = document.createElement('div');
+		// 	item1.className = 'menuItem';
+			
+		// 	let _img = new Image(20);
+		// 	_img.src = browser.runtime.getURL('icons/spinner.svg');
+		// 	item1.appendChild(_img);
+		// 	bmContainer.appendChild(item1);
+			
+		// 	document.body.appendChild(bmContainer);
+		// 	openMenu(bmContainer);
+
+		// 	CSBookmarks.getAllBookmarklets().then( results => {
+
+		// 		if (results.length === 0) {
+		// 			item1.innerHTML = "<i>none found</i>";
+		// 			item1.addEventListener('click', () => {
+		// 				closeContextMenus();
+		// 			});
+		// 			return;
+		// 		}
+				
+		// 		bmContainer.removeChild(item1);
+				
+		// 		for (let bm of results) {
+		// 			let bmDiv = document.createElement('div');
+		// 			bmDiv.className = 'menuItem';
+		// 			bmDiv.innerText = bm.title;
+					
+		// 			bmDiv.addEventListener('click', e => {
+						
+		// 				let newBm = {
+		// 					type: "bookmarklet",
+		// 					id: bm.id,
+		// 					title: bm.title,
+		// 					parent: li.node.parent,
+		// 					toJSON: li.node.toJSON
+		// 				}
+						
+		// 				nodeInsertAfter(newBm, li.node);
+
+		// 				let newLi = traverse(newBm, li.parentNode);
+		// 				li.parentNode.insertBefore(newLi, li.nextSibling);
+		// 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
+		// 				newLi.dispatchEvent(new MouseEvent('dblclick'));
+				
+		// 				updateNodeList();
+						
+		// 				closeContextMenus();
+
+
+		// 			});
+					
+		// 			bmContainer.appendChild(bmDiv);
+
+		// 		}
+				
+		// 		bmContainer.style.maxWidth = '200px';
+		// 		bmContainer.style.maxHeight = '400px';
+		// 		bmContainer.style.overflowY = 'auto';
+
+		// 	});
+
+		// });
+
+		let newScript = createMenuItem(browser.i18n.getMessage('NewScript'), browser.runtime.getURL('icons/code.svg'));		
+		newScript.addEventListener('click', e => {
 			closeSubMenus();
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
-			if (!browser.bookmarks) {
-				CSBookmarks.requestPermissions();
-				return;
+			let newBm = {
+				type: "bookmarklet",
+				id: gen(),
+				title: "new script",
+				parent: li.node.parent,
+				toJSON: li.node.toJSON
 			}
-			
-			let bmContainer = document.createElement('div');
-
-			bmContainer.className = 'contextMenu subMenu';
-			
-			let rect = newBookmarklet.getBoundingClientRect();
-
-			bmContainer.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
-			bmContainer.style.top = rect.y + window.scrollY + "px";
-			
-			let item1 = document.createElement('div');
-			item1.className = 'menuItem';
-			
-			let _img = new Image(20);
-			_img.src = browser.runtime.getURL('icons/spinner.svg');
-			item1.appendChild(_img);
-			bmContainer.appendChild(item1);
-			
-			document.body.appendChild(bmContainer);
-			openMenu(bmContainer);
-
-			CSBookmarks.getAllBookmarklets().then( results => {
-
-				if (results.length === 0) {
-					item1.innerHTML = "<i>none found</i>";
-					item1.addEventListener('click', () => {
-						closeContextMenus();
-					});
-					return;
-				}
 				
-				bmContainer.removeChild(item1);
-				
-				for (let bm of results) {
-					let bmDiv = document.createElement('div');
-					bmDiv.className = 'menuItem';
-					bmDiv.innerText = bm.title;
-					
-					bmDiv.addEventListener('click', e => {
-						
-						let newBm = {
-							type: "bookmarklet",
-							id: bm.id,
-							title: bm.title,
-							parent: li.node.parent,
-							toJSON: li.node.toJSON
-						}
-						
-						nodeInsertAfter(newBm, li.node);
+			nodeInsertAfter(newBm, li.node);
 
-						let newLi = traverse(newBm, li.parentNode);
-						li.parentNode.insertBefore(newLi, li.nextSibling);
-						newLi.scrollIntoView({block: "start", behavior:"smooth"});
-						newLi.dispatchEvent(new MouseEvent('dblclick'));
-				
-						updateNodeList();
-						
-						closeContextMenus();
-
-
-					});
-					
-					bmContainer.appendChild(bmDiv);
-
-				}
-				
-				bmContainer.style.maxWidth = '200px';
-				bmContainer.style.maxHeight = '400px';
-				bmContainer.style.overflowY = 'auto';
-
-			});
-
+			let newLi = traverse(newBm, li.parentNode);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
+	
+			updateNodeList();
+			
+			closeContextMenus();
 		});
 		
 		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/copy.svg'));	
@@ -1464,6 +1689,7 @@ function buildSearchEngineContainer() {
 
 			} else {
 				newNode = Object.assign({}, li.node);
+				newNode.id = gen();
 			}
 			
 			if (!newNode) return;
@@ -1503,6 +1729,28 @@ function buildSearchEngineContainer() {
 			let newLi = traverse(newNode, li.parentNode);
 			li.parentNode.insertBefore(newLi, li.nextSibling);
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			
+			updateNodeList();
+		});
+
+		let newExternalProgram = createMenuItem(browser.i18n.getMessage('NewExternalProgram'), browser.runtime.getURL('icons/terminal.svg'));	
+		newExternalProgram.addEventListener('click', () => {
+			let newNode = {
+				type: "externalProgram",
+				title:browser.i18n.getMessage("NewExternalProgram"),
+				id: gen(),
+				path:"/path/to/your/app \"{searchTerms}\"",
+				searchRegex:"",
+				parent: li.node.parent,
+				toJSON: li.node.toJSON
+			}
+			
+			nodeInsertAfter(newNode, li.node);
+			
+			let newLi = traverse(newNode, li.parentNode);
+			li.parentNode.insertBefore(newLi, li.nextSibling);
+			newLi.scrollIntoView({block: "start", behavior:"smooth"});
+			newLi.dispatchEvent(new MouseEvent('dblclick'));
 			
 			updateNodeList();
 		});
@@ -1638,7 +1886,7 @@ function buildSearchEngineContainer() {
 		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newSeparator, newBookmarklet, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
@@ -1646,7 +1894,7 @@ function buildSearchEngineContainer() {
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
-			[edit, newFolder, newEngine, newSeparator, newBookmarklet, copy].forEach( el => {
+			[edit, newFolder, newEngine, newSeparator, newScript, copy, newMultisearch, newExternalProgram,newTool].forEach( el => {
 				el.disabled = true;
 				el.style.opacity = .5;
 			});
@@ -1916,8 +2164,8 @@ function addFormListeners(form) {
 		formContainer.parentNode.style.opacity = 0;
 		$('#main').classList.remove('blur');
 		runAtTransitionEnd(formContainer, "opacity", () => {
-			form.style.display = null;
-			document.body.appendChild(form);
+		//	form.style.display = null;
+		//	document.body.appendChild(form);
 			document.body.removeChild(formContainer.parentNode);
 		});
 	}
@@ -1984,10 +2232,9 @@ async function setRowContexts(row) {
 
 		contexts.forEach( async c => {
 
-			let tool = document.createElement('div');
+			let tool = createMaskIcon("icons/" + c + ".svg");
+			tool.classList.add('contextIcon');
 			tool.title = browser.i18n.getMessage(c);
-			tool.className = 'tool contextIcon';
-			tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL("icons/" + c + ".svg")})`);
 
 			if ( !hasContext(c, node.contexts))
 				tool.classList.add('disabled');

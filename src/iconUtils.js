@@ -212,6 +212,9 @@ function addFavIconFinderListener(finder) {
 
 		function makeFaviconPickerBoxes(urls) {
 
+			// clear old icons
+			div.querySelectorAll('.faviconPickerBox').forEach( f => f.parentNode.removeChild(f));
+
 			urls = [...new Set(urls)];
 			urls.forEach( _url => {
 
@@ -245,6 +248,10 @@ function addFavIconFinderListener(finder) {
 				div.appendChild(box);
 
 				box.onclick = function() {
+				
+					// don't use loading progress images
+					if ( img.src === browser.runtime.getURL('icons/spinner.svg')) return;
+
 					form.iconURL.value = img.src;
 					// update the favicon when the user picks an icon
 					form.iconURL.dispatchEvent(new Event('change'));
@@ -268,15 +275,32 @@ function addFavIconFinderListener(finder) {
 
 		function showMoreButton() {
 			let more = document.createElement('div');
-			more.innerText = browser.i18n.getMessage('more');
+			more.innerText = browser.i18n.getMessage('searchIconFinder');
 			more.style = "position:absolute;bottom:0;right:10px;cursor:pointer;user-select:none"
 			div.appendChild(more);
 
-			more.onclick = e => {
+			more.addEventListener('click', async e => {
+				more.style.display = 'none';
 				e.stopPropagation();
-				div.querySelectorAll('.faviconPickerBox').forEach( f => f.parentNode.removeChild(f));
-				makeFaviconPickerBoxes(getCustomIconUrls());
-			}
+				makeFaviconPickerBoxes([browser.runtime.getURL('icons/spinner.svg')]);
+
+				let searchTerms = ( form.shortName ) ? form.shortName.value.trim() : form.node.title;
+
+				let iconUrls = [];
+
+				while ( !iconUrls.length ) {
+					searchTerms = window.prompt(browser.i18n.getMessage("RefineSearch"), searchTerms);
+
+					if ( !searchTerms ) { // prompt is cancelled, use generated
+						makeFaviconPickerBoxes(getCustomIconUrls());
+						break;
+					}
+
+					iconUrls = await browser.runtime.sendMessage({action:"getIconsFromIconFinder", searchTerms:searchTerms});
+				}	
+
+				makeFaviconPickerBoxes(iconUrls);			
+			});
 		}
 
 		makeFaviconPickerBoxes(urls);

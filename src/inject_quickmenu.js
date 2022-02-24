@@ -91,8 +91,6 @@ function closeQuickMenu(eventType) {
 	
 	if ( ( userOptions.quickMenuDeselectTextOnSearch ) && eventType === 'click_quickmenutile' ) {
 		browser.runtime.sendMessage({action: "deselectAllText"});
-
-		console.log('text should deselect');
 	}
 }
 
@@ -726,32 +724,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					break;
 				}
 
-				// if ( true && getQM() ) {
-				// 	let qmc = getQM();
-
-				// 	qmc.style.display = null;
-
-				// 	let rect = qmc.getBoundingClientRect();
-				// 	qmc.style.opacity = 1;
-
-
-				// 	let coords = getQuickMenuOpeningPosition({
-				// 		width: rect.width,
-				// 		height: rect.height,
-				// 		x: quickMenuObject.mouseCoords.x,
-				// 		y: quickMenuObject.mouseCoords.y
-				// 	})
-
-				// 	qmc.openingCoords = quickMenuObject.mouseCoords;
-
-				// 	qmc.style.left = coords.x + "px";
-				// 	qmc.style.top = coords.y + "px";
-
-				// 	browser.runtime.sendMessage({action: "quickMenuIframeLoaded", size: {width:rect.width, height:rect.height}});
-
-				// 	break;
-				// }
-
 				makeQuickMenuContainer({'x': x,'y': y});
 				
 				break;
@@ -910,6 +882,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				document.addEventListener('closequickmenu', removeOverDiv, {once: true});
 				installResizeWidget();
 
+				break;
+
+			case "deselectAllText":
+				deselectAllText();
 				break;
 
 		}

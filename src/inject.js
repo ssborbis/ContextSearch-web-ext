@@ -154,6 +154,10 @@ function linkOrImage(el, e) {
 	if ( img && userOptions.quickMenuOnImages ) return img;
 	
 	if ( link && userOptions.quickMenuOnLinks ) return link;
+
+	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) {
+		return el.currentSrc || el.src;
+	}
 	
 	return false;	
 }
@@ -392,12 +396,23 @@ browser.runtime.sendMessage({action: "addUserStyles", global: true });
 
 // menuless hotkey
 function checkForNodeHotkeys(e) {
+
 	if ( 
 		!userOptions.allowHotkeysWithoutMenu ||
 		isTextBox(e.target) ||
-		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey ||
-		!getSelectedText(e.target)
+		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey
 	) return false;
+
+	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
+	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
+	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
+
+	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
+		link = el.currentSrc || el.src;
+
+	let searchTerms = getSelectedText(e.target) || img || link || "";
+
+	if ( !searchTerms ) return false;
 
 	let node = findNode( userOptions.nodeTree, n => n.hotkey === e.keyCode );
 
@@ -407,7 +422,7 @@ function checkForNodeHotkeys(e) {
 		action: "quickMenuSearch", 
 		info: {
 			menuItemId: node.id,
-			selectionText: getSelectedText(e.target),
+			selectionText: searchTerms,
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
 	});

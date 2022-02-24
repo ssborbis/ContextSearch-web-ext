@@ -1952,10 +1952,11 @@
     "description": ""
   },
 
-"requestPermissionsMessage": {
-    "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous pour demander l’autorisation d’ajouter des données dans le presse-papiers.",
-    "description": "clipboardWrite permission"
+  "requestPermissionsMessage": {
+    "message": "An optional permission is required. Click the request button below.",
+    "description": "generic permission"
   },
+  
   "Request": {
     "message": "Demander",
     "description": "clipboardWrite permission - request button label"
@@ -2362,7 +2363,19 @@
   "ShowDefaultMenuModifierMessage": {
     "message": "Mode d’ouverture du menu contextuel standard"
   },
-  
+
+  "NewExternalProgram": {
+    "message": "New App Launcher"
+  },
+
+  "searchIconFinder": {
+    "message": "Search IconFinder.com  🔍"
+  },
+
+  "RefineSearch": {
+    "message": "Refine search"
+  },
+
   "___________": {
     "message": ""
   }

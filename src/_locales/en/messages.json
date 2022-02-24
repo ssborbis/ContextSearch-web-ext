@@ -400,7 +400,7 @@
   },
   
   "TemplateTooltip": {
-    "message": "The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (i.e. http://example.com/?q={searchTerms})"
+    "message": "The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (e.g. http://example.com/?q={searchTerms})"
   },
   
   "FormPath": {
@@ -416,7 +416,7 @@
   },
   
   "POSTparamsTooltip": {
-    "message": "List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method"
+    "message": "List of POST parameters and values separated by ampersands (e.g. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method"
   },
   
   "Icon": {
@@ -1953,11 +1953,11 @@
   },
 
   "requestPermissionsMessage": {
-    "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous pour demander l’autorisation d’ajouter des données dans le presse-papiers.",
-    "description": "clipboardWrite permission"
+    "message": "An optional permission is required. Click the request button below.",
+    "description": "generic permission"
   },
   "Request": {
-    "message": "Request",
+    "message": "Request Permission",
     "description": "clipboardWrite permission - request button label"
   },
   
@@ -2203,7 +2203,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, i.e. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
+    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, e.g. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {
@@ -2365,8 +2365,51 @@
     "message": "To show the default context menu"
   },
 
-  "___________": {
-    "message": ""
+  "NewExternalProgram": {
+    "message": "New App Launcher"
+  },
+
+  "searchIconFinder": {
+    "message": "🔍 Search IconFinder.com"
+  },
+
+  "RefineSearch": {
+    "message": "Refine search"
+  },
+
+  "NativeApp": {
+    "message": "Messenger app"
+  },
+
+  "NativeAppMissing": {
+    "message": "Messenger app is not connected."
+  },
+  "SearchBookmarklets": {
+    "message": "🔍 Search Bookmarklets"
+  },
+  "NewScript": {
+    "message": "New Script"
+  },
+  "Permissions": {
+    "message": "Permissions"
+  },
+  "Command": {
+    "message": "Command"
+  },
+  "WorkingDirectory": {
+    "message": "Working Directory"
+  },
+  "Script": {
+    "message": "Script"
+  },
+  "PostAppScript": {
+    "message": "Post-App Script"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Javascript to execute in the current tab after the app completes. Stdout is captured to the variable 'result', e.g. alert(result)."
+  },
+  "MessengerOfflineTooltip": {
+    "message": "An additional plugin is required to launch apps from ContextSearch web-ext. Click the link for more details."
   }
 
 }

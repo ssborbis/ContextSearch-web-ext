@@ -406,8 +406,6 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildHelpTab();
 	buildClearSearchHistory();
 	buildSaveButtons();
-	hashChange();
-	buildUploadOnHash();
 	buildThemes();
 	buildSearchActions();
 	hideBrowserSpecificElements();
@@ -421,8 +419,12 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildToolIcons();
 	sortAdvancedOptions();
 
-	document.body.style.opacity = 1;
 	addDOMListeners();
+
+	hashChange();
+	buildUploadOnHash();
+
+	document.body.style.opacity = 1;
 
 });
 
@@ -462,9 +464,30 @@ function addDOMListeners() {
 		$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
 	});
 
-	$('#b_requestClipboardPermissions').addEventListener('click', async () => {
+	$('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
 		await browser.permissions.request({permissions: ['clipboardWrite']});
 		window.close();
+	})
+
+	$('#b_requestClipboardReadPermissions').addEventListener('click', async () => {
+		await browser.permissions.request({permissions: ['clipboardRead']});
+		window.close();
+	})
+
+	$('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
+		await browser.permissions.request({permissions: ['nativeMessaging']});
+		window.close();
+	})
+
+	// hide other request buttons
+	$('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
+		const urlParams = new URLSearchParams(window.location.search);
+		if ( urlParams.get("permission")) {
+			document.querySelectorAll('[data-permission]').forEach( div => {
+				if ( div.dataset.permission !== urlParams.get("permission"))
+					div.style.display = 'none';
+			})
+		}
 	})
 }
 
@@ -1654,4 +1677,25 @@ function createEditMenu() {
 
 	overdiv.getBoundingClientRect();
 	overdiv.style.opacity = null;
+}
+
+function createMaskIcon(src) {
+	let tool = document.createElement('div');
+	tool.className = 'tool';
+	tool.style.setProperty('--mask-image', `url(${src})`);
+
+	return tool;
+}
+
+function checkAndUpdateNativeApp() {
+	if ( !browser.runtime.sendNativeMessage ) return false;
+
+	browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true}).then( newVersion => {
+		if ( newVersion ) {
+			if (confirm("Update native app script to version " + newVersion + "?"))
+				browser.runtime.sendNativeMessage("contextsearch_webext", {update:true});
+		} else {
+			console.log('up to date');
+		}
+	});
 }

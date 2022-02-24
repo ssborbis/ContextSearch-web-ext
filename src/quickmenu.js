@@ -197,6 +197,7 @@ function resizeMenu(o) {
 }
 
 function closeMenuRequest(e) {
+
 	if ( e.key === "Escape" || userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
 
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
@@ -348,7 +349,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if (typeof message.action !== 'undefined') {
 		switch (message.action) {
 			case "updateQuickMenuObject":
+
 				quickMenuObject = message.quickMenuObject;
+
+				lazyCompare = (a1, a2) => { return a1.length === a2.length && a1.reduce((a, b) => a && a2.includes(b), true) }
+
+				if ( qm && qm.isConnected && !lazyCompare(quickMenuObject.contexts, qm.contexts) ) {
+					(async() => {
+						qm = await quickMenuElementFromNodeTree(window.root);
+						resizeMenu({openFolder: true});
+					})();
+				}
 				
 				// quickMenuObject can update before userOptions. Grab the lastUsed
 				userOptions.lastUsedId = quickMenuObject.lastUsed || userOptions.lastUsedId;
@@ -377,7 +388,7 @@ function setLockToolStatus() {
 }
 
 // listen for messages from parent window
-window.addEventListener('message', e => {
+window.addEventListener('message', async e => {
 
 	switch (e.data.action) {
 		case "rebuildQuickMenu":
@@ -413,7 +424,11 @@ window.addEventListener('message', e => {
 		case "editEnd":
 			QMtools.find(t => t.name === "edit").action({forceOff: true});
 			break;
-			
+
+		case "openFolder":
+			qm = await quickMenuElementFromNodeTree(e.data.folder || userOptions.nodeTree);
+			resizeMenu({openFolder: true});
+			break;		
 	}
 });
 

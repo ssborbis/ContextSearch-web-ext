@@ -35,7 +35,7 @@ const QMtools = [
 					try {
 						await browser.permissions.request({permissions: ['clipboardWrite']});
 					} catch (err) {
-						browser.runtime.sendMessage({action: "openOptions", hashurl:"#requestPermissions"});
+						browser.runtime.sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
 						return;
 					}
 				}

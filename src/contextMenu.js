@@ -93,7 +93,7 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem({
 				parentId: parentId,
 				title: getTitleWithHotkey(node),
-				id: node.id + '_' + count++,
+				id: context_prefix + node.id + '_' + count++,
 				icons: {
 					"16": node.icon
 				}
@@ -151,6 +151,17 @@ async function buildContextMenu(searchTerms) {
 			for (let child of node.children) {
 				traverse(child, _id, context);
 			}
+		}
+
+		if (node.type === 'externalProgram') {
+			addMenuItem({
+				parentId: parentId,
+				title: getTitleWithHotkey(node),
+				id: context_prefix + node.id + '_' + count++,	
+				icons: {
+					"16": getIconFromNode(node)
+				}
+			});
 		}
 		
 	}
@@ -259,7 +270,7 @@ async function buildContextMenu(searchTerms) {
 			if ( !filteredNodeTree.children.length ) return;
 
 			// flatten
-			let seNodes = findNodes(filteredNodeTree, n => n.type === 'searchEngine');
+			let seNodes = findNodes(filteredNodeTree, n => ['searchEngine', 'externalProgram', 'oneClickSearchEngine'].includes(n.type) );
 			if ( seNodes.length < userOptions.contextMenuContextualLayoutFlattenLimit ) {
 				filteredNodeTree.children = seNodes;
 			}

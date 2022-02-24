@@ -160,12 +160,12 @@ async function notify(message, sender, sendResponse) {
 
 			if ( optionsPage ) {
 				browser.windows.update(optionsPage.windowId, {focused: true})
-				browser.tabs.update(optionsPage.id, { active: true, url: browser.runtime.getURL("/options.html" + (message.hashurl || ""))});
-				browser.tabs.reload(optionsPage.id);
-				return;
+				browser.tabs.update(optionsPage.id, { active: true, url: browser.runtime.getURL("/options.html" + (message.hashurl || "")), openerTabId: sender.tab.id});
+			//	browser.tabs.reload(optionsPage.id);
+				return optionsPage;
 
 			}
-			browser.tabs.create({
+			return browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
 			break;
@@ -226,10 +226,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "deselectAllText":
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: "deselectAllText()",
-				allFrames: true
-			});
+			return sendMessageToAllFrames();
 			break;
 
 		case "toggleLockQuickMenu":
@@ -893,6 +890,19 @@ async function notify(message, sender, sendResponse) {
 		case "closeTab":
 			return browser.tabs.remove(message.tabId || sender.tab.id )
 			break;
+
+		case "getIconsFromIconFinder":
+			return browser.tabs.create({
+				url: "https://www.iconfinder.com/search?q=" + message.searchTerms,
+				active:false
+			}).then(async tab => {
+				await new Promise(r => setTimeout(r, 1000));
+				urls = await browser.tabs.executeScript(tab.id, {
+					code: `[...document.querySelectorAll(".icon-grid IMG")].map(img => img.src);`
+				});
+				browser.tabs.remove(tab.id);
+				return urls.shift();
+			});
 	}
 }
 
@@ -1069,10 +1079,23 @@ function openWithMethod(o) {
 
 function executeBookmarklet(info) {
 	
+	let searchTerms = window.searchTerms || escapeDoubleQuotes(info.selectionText);
+
+	// run as script
+	if ( info.node.searchCode ) {
+		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
+			browser.tabs.executeScript(tabs[0].id, {
+				code: `CS_searchTerms = searchTerms = "${searchTerms}"
+					${info.node.searchCode}`		
+			});
+		});
+	}
+
 	if (!browser.bookmarks) {
 		console.error('No bookmarks permission');
 		return;
 	}
+
 	// run as bookmarklet
 	browser.bookmarks.get(info.menuItemId).then( bookmark => {
 		bookmark = bookmark.shift();
@@ -1084,20 +1107,16 @@ function executeBookmarklet(info) {
 				url: bookmark.url,
 				openerTabId: userOptions.disableNewTabSorting ? null : info.tab.id
 			});
-				
-		//	console.error('bookmark not a bookmarklet');
+
 			return false;
 		}
 		
 		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
 			
-			await browser.tabs.executeScript(tabs[0].id, {
-				code: 'CS_searchTerms = `' + ( window.searchTerms || escapeDoubleQuotes(info.selectionText) ) + '`;'
-			});
-			
-			await browser.tabs.executeScript(tabs[0].id, {
-				code: code
+			browser.tabs.executeScript(tabs[0].id, {
+				code: `CS_searchTerms = searchTerms = "${searchTerms}"
+					${code}`
 			});
 		});
 
@@ -1173,6 +1192,47 @@ function executeOneClickSearch(info) {
 
 	}, onError);
 
+}
+
+async function executeExternalProgram(info) {
+
+	let node = info.node;
+	let searchTerms = info.searchTerms;
+
+	if ( node.searchRegex ) {
+		try {
+			runReplaceRegex(node.searchRegex, (r, s) => searchTerms = searchTerms.replace(r, s));
+		} catch (error) {
+			console.error("regex replace failed");
+		}
+	}
+
+	let path = node.path.replace("{searchTerms}", searchTerms);
+
+	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
+		let tabs = await browser.tabs.query({active:true});
+		let tab = tabs[0];
+		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=nativeMessaging#requestPermissions"});
+		browser.tabs.onRemoved.addListener( function handleRemoved(tabId, removeInfo) {
+			browser.tabs.onRemoved.removeListener(handleRemoved);
+			setTimeout(() => browser.tabs.update(tab.id, {active: true}), 50);
+		});
+	}
+
+	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) return;
+
+	try {
+		await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
+	} catch (error) {
+		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
+	}
+
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false )}).then( async result => {
+		if ( node.postScript ) {
+			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
+			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
+		}
+	});
 }
 
 function lastSearchHandler(id) {
@@ -1261,8 +1321,8 @@ function isValidHttpUrl(str) {
 
 function quickMenuSearch(info) {
 		
-	info.node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
-	info.searchTerms = info.selectionText;
+	info.node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
+	info.searchTerms = info.searchTerms || info.selectionText;
 	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
@@ -1272,7 +1332,6 @@ function quickMenuSearch(info) {
 async function openSearch(info) {
 
 	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
-	var searchEngineId = info.searchEngineId || info.menuItemId || null;
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
@@ -1302,6 +1361,11 @@ async function openSearch(info) {
 	if ( node && node.type === "bookmarklet" ) {
 		console.log("bookmarklet");
 		return executeBookmarklet(info);
+	}
+
+	if ( node && node.type === "externalProgram" ) {
+		console.log("externalProgram");
+		return executeExternalProgram(info);
 	}
 
 	var se = (node && node.id ) ? temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
@@ -1564,6 +1628,11 @@ async function folderSearch(info, allowFolders) {
 function escapeDoubleQuotes(str) {
 	if ( !str ) return str;
 	return str.replace(/\\([\s\S])|(")/g,"\\$1$2");
+}
+
+function escapeBackticks(str) {
+	if ( !str ) return str;
+	return str.replace(/\\([\s\S])|(`)/g,"\\$1$2");
 }
 
 async function highlightSearchTermsInTab(tab, searchTerms) {

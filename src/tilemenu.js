@@ -11,7 +11,8 @@ var quickMenuObject = {
 	locked: false,
 	searchTerms: "",
 	disabled: false,
-	mouseDownTargetIsTextBox: false
+	mouseDownTargetIsTextBox: false,
+	contexts:[]
 };
 
 var dragFolderTimeout = 1500;
@@ -896,12 +897,29 @@ async function makeQuickMenu(options) {
 
 		qm.expandMoreTiles();
 
-		//setOptionsBar();
-
 		return qm;
 	}
 
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+
+		qm.contexts = quickMenuObject.contexts;
+
+		// filter node tree for matching contexts
+		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
+
+			let tempRoot = filterContexts(rootNode, qm.contexts);
+
+			// flatten
+			let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
+			if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
+				tempRoot.children = seNodes;
+			}
+
+			setParents(tempRoot);
+
+			tempRoot.parent = rootNode.parent;
+			rootNode = tempRoot;
+		}
 
 		let debug = rootNode.title === "empty";
 
@@ -1018,20 +1036,10 @@ async function makeQuickMenu(options) {
 	
 	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
-	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+	let root = userOptions.nodeTree;
 
 	window.root = root;
-
-	// filter node tree for matching contexts
-	if ( userOptions.quickMenuUseContextualLayout && options.contexts && options.contexts.length ) {		
-		root = filterContexts(root, options.contexts);
-
-		// flatten
-		let seNodes = findNodes(root, n => !['folder', 'separator'].includes(n.type) );
-		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
-			root.children = seNodes;
-		}
-	}
+	quickMenuObject.contexts = options.contexts || [];
 
 	setParents(root);
 
@@ -1514,7 +1522,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !tile || !tile.node ) return;
 
-	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder'].includes(tile.node.type)) return;
+	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder', 'externalProgram'].includes(tile.node.type)) return;
 
 	if ( tile.disabled ) return;
 
@@ -1652,6 +1660,19 @@ document.addEventListener('mouseup', e => {
 
 				break;
 
+			case 'externalProgram':
+				browser.runtime.sendMessage({
+					action: "quickMenuSearch", 
+					info: {
+						menuItemId: tile.node.id,
+						selectionText: sb.value,
+						openMethod: getOpenMethod(e),
+					}
+				});
+
+				return Promise.resolve(true);
+				break;
+
 			default:
 				return Promise.reject('unknown node type', node.type);
 				break;
@@ -1660,11 +1681,14 @@ document.addEventListener('mouseup', e => {
 	})();
 
 	searchPromise.then(() => {
+
 		// check for locked / Keep Menu Open 
-		if ( !keepMenuOpen(e) && !tile.keepOpen )
+		let keepOpen = tile.keepOpen ? tile.keepOpen : false;
+		
+		if ( !keepMenuOpen(e) && !keepOpen )
 			closeMenuRequest(e);
 	}, err => { 
-		//console.log(err)
+		console.log(err)
 	});
 
 	return false;
@@ -1808,7 +1832,7 @@ document.addEventListener('drop', e => {
 
 	let side = getSide(tile, e);
 
-	let old_node_count = findNodes(root, n => true).length;
+	let old_node_count = findNodes(userOptions.nodeTree, n => true).length;
 
 	// cut the node from the children array
 	let slicedNode = nodeCut(window.dragNode);
@@ -2098,6 +2122,16 @@ function nodeToTile( node ) {
 			tile.dataset.id = node.id;	
 			tile.dataset.title = node.title;
 			break;
+
+		case "externalProgram":
+			tile = buildSearchIcon(getIconFromNode(node), node.title);
+			tile.dataset.type = 'externalProgram';	
+			tile.dataset.title = node.title;
+			tile.dataset.id = node.id;
+			break;
+
+		default:
+			return null;
 	}
 	
 	tile.node = node;
@@ -2109,7 +2143,6 @@ function nodeToTile( node ) {
 }
 
 function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
-
 
 	noFolder = noFolder || false;
 
