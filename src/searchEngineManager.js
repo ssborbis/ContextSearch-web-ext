@@ -607,7 +607,11 @@ function buildSearchEngineContainer() {
 
 					checkStatus = async() => {
 
-						let version = await browser.runtime.sendNativeMessage("contextsearch_webext", {version: true}).then( r => r, r => false);
+						let version = false;
+
+						try {
+							version = await browser.runtime.sendNativeMessage("contextsearch_webext", {version: true}).then( r => r, r => false);
+						} catch (error) {}
 
 						if ( version ) {
 							span.innerText = 'v' + version;

@@ -1682,7 +1682,7 @@ function createEditMenu() {
 function createMaskIcon(src) {
 	let tool = document.createElement('div');
 	tool.className = 'tool';
-	tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL(src)})`);
+	tool.style.setProperty('--mask-image', `url(${src})`);
 
 	return tool;
 }
