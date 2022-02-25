@@ -803,7 +803,8 @@ function buildSearchEngineContainer() {
 					_form[name].parentNode.removeChild(_form[name]);
 				});
 
-				_form.insertBefore($('folderFormTable'), _form['save'].parentNode);
+
+				_form.insertBefore($('folderFormTable').cloneNode(true), _form['save'].parentNode);
 
 				let c = _form.querySelector('.contexts');
 				c.parentNode.removeChild(c);
