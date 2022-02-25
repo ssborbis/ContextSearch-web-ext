@@ -85,7 +85,7 @@ function getContexts(el) {
 
 	let contexts = ['page'];
 
-	if ( el instanceof HTMLImageElement ) contexts.push('image');
+	if ( el instanceof HTMLImageElement || getImage(el) ) contexts.push('image');
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 
