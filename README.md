@@ -591,6 +591,19 @@ replace `gnome-terminal --` with your terminal command
 
 Modify the search terms before being passed to the command line via `{searchTerms}` using the `Search Regex` field.
 
+App launchers will return the stdout of applications as the variable `result` to be used in Post-App Scripts.
+
+A simple example ( Post-App Script )
+
+Command: `ls ~`
+
+Script:
+```javascript
+alert(result);
+```
+
+This would run the command `ls ~` and alert the stdout of the command
+
 ___
 
 <a name="styling"/>
