@@ -36,7 +36,7 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
   6.3 [Template Parameters](#templateparameters)  
   6.4 [Javascript and Form-Based Engines](#javascriptengines)  
   6.5 [Engines With Logins and Tokens](#loginsandtokens)  
-7. [Bookmarklets](#bookmarklets)  
+7. [User Scripts and Bookmarklets](#bookmarklets)  
 8. [Launching External Applications](#externalApplications)
 9. [Styling](#styling)  
 10. [Advanced Options](#advanced)  
@@ -515,15 +515,23 @@ ___
 
 <a name="bookmarklets"/>
 
-## [7. Bookmarklets](#toc)
-Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Bookmarklet. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add.
+## [7. User Scripts and Bookmarklets](#toc)
+Javascript can be run in the active tab by adding a Script. The global variables `CS_searchTerms` and `searchTerms` are accessable from Scripts, and contain the current search terms as seen by ContextSearch.
 
-Bookmarklets have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
+A simple example:
+```
+alert(searchTerms);
+```
 
-You could, for instance, create a search engine tile that toggles the 'menuless search via hotkey' option using the following bookmarklet code:
+Scripts can copy contents from local bookmarklets from a dropdown box in the Edit Script modal in CS options.
+Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Script -> Search Bookmarklets. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add, and the contents will be copied to your Script.
+
+Scripts have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
+
+You could, for instance, create a search engine tile that toggles the 'menuless search via hotkey' option using the following code:
 
 ```javascript
-javascript:(async () => {
+(async () => {
   userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
   browser.runtime.sendMessage({action: "showNotification", msg: "hotkeys are " + (userOptions.allowHotkeysWithoutMenu ? "on" : "off")});
 })();
