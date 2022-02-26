@@ -589,6 +589,18 @@ const QMtools = [
 
 			setToolLockedState(this.tool || this, on);
 
+			// show / hide based on context
+			if ( on && qm.contexts.length ) {
+				this.tool.contexts = qm.contexts;
+				quickMenuObject.contexts = [];
+				let node = findNode(window.root, n => n.id === qm.rootNode.id);
+				qm = await quickMenuElementFromNodeTree(node);
+			} else if ( !on && this.tool.contexts.length ) {
+				quickMenuObject.contexts = this.tool.contexts;
+				let node = findNode(window.root, n => n.id === qm.rootNode.id);
+				qm = await quickMenuElementFromNodeTree(node);
+			}
+
 			qm.querySelectorAll('.tile').forEach( t => {
 				if ( !t.node ) return;
 
