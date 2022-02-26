@@ -54,7 +54,7 @@ const QMtools = [
 	},
 	{
 		name: 'link', 
-		icon: "icons/link.svg", 
+		icon: "icons/external_link.svg", 
 		title: browser.i18n.getMessage('tools_OpenAsLink'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
