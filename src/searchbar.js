@@ -68,7 +68,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		let results = await browser.runtime.sendMessage({action: "getSelectedText"});
 		let text = results ? results.shift() : null;
 	
-		if ( text ) sb.value = text;
+		if ( text ) sb.set(text);
 
 		if ( focusSearchBar ) sb.select();
 	})();

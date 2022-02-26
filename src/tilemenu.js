@@ -210,6 +210,8 @@ async function makeQuickMenu(options) {
 
 	sb.onclick = e => e.stopPropagation();
 	sb.onmouseup = e => e.stopPropagation();
+
+	sb.set = text => sb.value = sb.title = text;
 		
 	// replace / append dragged text based on timer
 	sb.addEventListener('dragenter', e => {
@@ -221,7 +223,7 @@ async function makeQuickMenu(options) {
 	});
 	sb.addEventListener('drop', e => {
 		if (sb.hoverTimer) {
-			sb.value = "";	
+			sb.set("");	
 			clearTimeout(sb.hoverTimer);
 		}
 	});
@@ -230,7 +232,7 @@ async function makeQuickMenu(options) {
 
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = function() { 
-		sb.value = null;
+		sb.set("");
 		sb.focus();
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
@@ -495,7 +497,7 @@ async function makeQuickMenu(options) {
 	document.addEventListener('updatesearchterms', e => {
 
 	//	quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
-		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
+		sb.set(quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " "));
 		updateMatchRegexFolder();
 	});
 
@@ -556,7 +558,7 @@ async function makeQuickMenu(options) {
 				let text = e.dataTransfer.getData("text");
 				if ( !text ) return;
 
-				sb.value = text;
+				sb.set(text);
 				tool.dispatchEvent(new MouseEvent('mousedown'));
 				tool.dispatchEvent(new MouseEvent('mouseup'));
 			});
@@ -1122,7 +1124,7 @@ function makeSearchBar() {
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
 		let qmo = message[0];
 
-		if ( qmo && qmo.searchTerms) sb.value = qmo.searchTerms;
+		if ( qmo && qmo.searchTerms) sb.set(qmo.searchTerms);
 		else displayLastSearchTerms();
 	}, () => {
 		displayLastSearchTerms();
@@ -1134,7 +1136,7 @@ function makeSearchBar() {
 			if ( userOptions.autoPasteFromClipboard ) {
 				let paste = () => {
 					try {
-						navigator.clipboard.readText().then(clipText => sb.value = clipText);
+						navigator.clipboard.readText().then(clipText => sb.set(clipText));
 					} catch ( error ) { console.error(error) }
 				}
 				if ( window == top ) paste(); // toolbar menu
@@ -1146,7 +1148,7 @@ function makeSearchBar() {
 			// skip empty 
 			if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 			
-			sb.value = message.lastSearch;
+			sb.set(message.lastSearch);
 			sb.select();
 
 			// workaround for linux 
@@ -1179,7 +1181,7 @@ function makeSearchBar() {
 				let selected = sg.querySelector('.selectedFocus');
 				if (selected) selected.classList.remove('selectedFocus');
 				this.classList.add('selectedFocus');
-				sb.value = this.innerText;
+				sb.set(this.innerText);
 			}
 			
 			div.ondblclick = () => {

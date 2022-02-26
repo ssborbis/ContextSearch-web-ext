@@ -649,7 +649,7 @@ const QMtools = [
 
 			this.tool.searchTermsContext = newKey;
 
-			sb.value = sto[newKey];
+			sb.set(sto[newKey]);
 
 		// //	showContext(newKey);
 		// 	setTimeout(() => {
