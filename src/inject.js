@@ -111,7 +111,7 @@ document.addEventListener("selectionchange", ev => {
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 
 	// display icon to open qm
-	if ( showIcon ) showIcon(searchTerms);
+	if ( showIcon ) showIcon(searchTerms, ev);
 });
 
 // selectionchange handler for input nodes
@@ -126,7 +126,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		}
 
 		// display icon to open qm
-		if ( showIcon ) showIcon(searchTerms);
+		if ( showIcon ) showIcon(searchTerms, e);
 	});
 }
 
@@ -275,6 +275,7 @@ function repositionOffscreenElement( element, padding ) {
 }
 
 function getLinkText(el) {
+	
 	let a = el.closest('a');
 	
 	if ( !a ) return "";
