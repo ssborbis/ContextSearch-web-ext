@@ -10,6 +10,7 @@ var quickMenuObject = {
 	lastSelectText: "",
 	locked: false,
 	searchTerms: "",
+	searchTermsObject:{},
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	contexts:[]

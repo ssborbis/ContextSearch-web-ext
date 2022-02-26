@@ -610,6 +610,52 @@ const QMtools = [
 			
 			resizeMenu({more: true});	
 		}
+	},
+	{
+		name: 'toggleSearchTerms', 
+		icon: "icons/selection.svg",
+		title: browser.i18n.getMessage('toggleSearchTerms'),
+		context: ["quickmenu"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			tile.dataset.locked = false;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			tile.tool = this;
+
+			return tile;
+		}, 
+		action: async function() {
+
+			showContext = c => this.querySelector('.tool').style.setProperty("--mask-image",`url(icons/${c}.svg)`);
+
+			let sto = quickMenuObject.searchTermsObject;
+			let keys = ["selection", "link", "image", "page"].filter( key => sto[key]);
+
+			if ( !this.tool.searchTermsContext ) {
+				for ( key in sto ) {
+					if ( sto[key] == quickMenuObject.searchTerms ) {
+						this.tool.searchTermsContext = key;
+						break;
+					}
+				}
+			}
+
+			let newKey = keys[( keys.indexOf(this.tool.searchTermsContext) + 1 ) % keys.length];
+
+			this.tool.searchTermsContext = newKey;
+
+			sb.value = sto[newKey];
+
+		// //	showContext(newKey);
+		// 	setTimeout(() => {
+		// 		showContext("selection");
+		// 	}, 1000);
+		}
 	}
 ];
 

@@ -15,7 +15,19 @@ function openQuickMenu(e, searchTerms) {
 
 	e = e || new MouseEvent('click');
 
-	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
+	let selection = getSelectedText(e.target).trim();
+
+	let searchTermsObject = {
+		selection: selection || getLinkText(e.target),
+		image: e.target.id !== 'CS_icon' ? getImage(e.target) : null,
+		link: getLink(e.target),
+		page: window.location.href
+	}
+
+	searchTerms = searchTerms || selection || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
+	
+	// for context toggle
+	quickMenuObject.searchTerms = searchTerms;
 
 	window.lastActiveElement = document.activeElement;
 		
@@ -43,7 +55,8 @@ function openQuickMenu(e, searchTerms) {
 		searchTerms: searchTerms,
 		quickMenuObject: quickMenuObject,
 		openingMethod: e.openingMethod || e.type || null,
-		contexts: _contexts
+		contexts: _contexts,
+		searchTermsObject: searchTermsObject
 	});
 }
 
@@ -711,6 +724,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				quickMenuObject.searchTerms = message.searchTerms;
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
 				quickMenuObject.contexts = message.contexts;
+				quickMenuObject.searchTermsObject = message.searchTermsObject;
 
 				// keep old menu if locked
 				if ( quickMenuObject.locked && getQM() ) {
@@ -741,6 +755,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					lastSelectText: message.quickMenuObject.lastSelectText,
 					locked: message.quickMenuObject.locked,
 					searchTerms: message.quickMenuObject.searchTerms,
+					searchTermsObject: message.quickMenuObject.searchTermsObject,
 					disabled: message.quickMenuObject.disabled,
 					mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
 					mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
