@@ -906,6 +906,7 @@ async function makeQuickMenu(options) {
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
 		qm.contexts = quickMenuObject.contexts;
+		qm.contextualLayout = false;
 
 		// filter node tree for matching contexts
 		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
@@ -922,6 +923,8 @@ async function makeQuickMenu(options) {
 
 			tempRoot.parent = rootNode.parent;
 			rootNode = tempRoot;
+
+			qm.contextualLayout = true;
 		}
 
 		let debug = rootNode.title === "empty";
@@ -1039,7 +1042,7 @@ async function makeQuickMenu(options) {
 	
 	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
-	let root = userOptions.nodeTree;
+	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 	window.root = root;
 	quickMenuObject.contexts = options.contexts || [];
@@ -1708,6 +1711,11 @@ document.addEventListener('dragstart', e => {
 
 	if ( undraggable(tile) ) return;
 
+	if ( qm.contextualLayout ) {
+		console.warn('Tiles cannot be rearranged when using contextual layout');
+		return;
+	}
+
 	// required by ff for dragend
 	e.dataTransfer.setData("text", "");
 
@@ -1881,6 +1889,8 @@ document.addEventListener('drop', e => {
 	function dragSave() {
 
 		let new_node_count = findNodes(root, n => true).length;
+
+		// console.log(old_node_count, "->", new_node_count);
 
 		if ( old_node_count === new_node_count ) {
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
