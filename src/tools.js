@@ -608,7 +608,7 @@ const QMtools = [
 					t.style.display = on ? null : 'none';
 			});
 			
-			resizeMenu({more: true});	
+			resizeMenu({openFolder: true});	
 		}
 	},
 	{
