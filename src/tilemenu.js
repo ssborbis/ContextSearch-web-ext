@@ -1712,7 +1712,7 @@ document.addEventListener('dragstart', e => {
 	if ( undraggable(tile) ) return;
 
 	if ( qm.contextualLayout ) {
-		console.warn('Tiles cannot be rearranged when using contextual layout');
+		console.warn('Tiles cannot be rearranged when using contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
 		return;
 	}
 
@@ -2183,7 +2183,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 		if ( tile ) node = tile.node.parent;
 	}
 
-	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+	if ( !node.id ) node.id = parentNode.id || (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 
 	if ( limit >= _tiles.length ) return _tiles;
 

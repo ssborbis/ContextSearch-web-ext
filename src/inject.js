@@ -275,7 +275,7 @@ function repositionOffscreenElement( element, padding ) {
 }
 
 function getLinkText(el) {
-	
+
 	let a = el.closest('a');
 	
 	if ( !a ) return "";
