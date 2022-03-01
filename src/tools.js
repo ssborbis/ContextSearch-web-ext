@@ -613,7 +613,7 @@ const QMtools = [
 		}
 	},
 	{
-		name: 'toggleSearchTerms', 
+		name: 'toggle_searchterms', 
 		icon: "icons/selection.svg",
 		title: browser.i18n.getMessage('toggleSearchTerms'),
 		context: ["quickmenu"],
