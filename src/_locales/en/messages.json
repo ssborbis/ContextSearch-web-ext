@@ -2410,6 +2410,9 @@
   },
   "MessengerOfflineTooltip": {
     "message": "An additional plugin is required to launch apps from ContextSearch web-ext. Click the link for more details."
+  },
+  "ToggleSearchTerms": {
+    "message": "Next Search Term"
   }
 
 }

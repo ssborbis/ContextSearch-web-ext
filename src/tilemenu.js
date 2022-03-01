@@ -10,6 +10,7 @@ var quickMenuObject = {
 	lastSelectText: "",
 	locked: false,
 	searchTerms: "",
+	searchTermsObject:{},
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	contexts:[]
@@ -209,6 +210,8 @@ async function makeQuickMenu(options) {
 
 	sb.onclick = e => e.stopPropagation();
 	sb.onmouseup = e => e.stopPropagation();
+
+	sb.set = text => sb.value = sb.title = text;
 		
 	// replace / append dragged text based on timer
 	sb.addEventListener('dragenter', e => {
@@ -220,7 +223,7 @@ async function makeQuickMenu(options) {
 	});
 	sb.addEventListener('drop', e => {
 		if (sb.hoverTimer) {
-			sb.value = "";	
+			sb.set("");	
 			clearTimeout(sb.hoverTimer);
 		}
 	});
@@ -229,7 +232,7 @@ async function makeQuickMenu(options) {
 
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = function() { 
-		sb.value = null;
+		sb.set("");
 		sb.focus();
 	};
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
@@ -494,7 +497,7 @@ async function makeQuickMenu(options) {
 	document.addEventListener('updatesearchterms', e => {
 
 	//	quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
-		sb.value = quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " ");
+		sb.set(quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " "));
 		updateMatchRegexFolder();
 	});
 
@@ -555,7 +558,7 @@ async function makeQuickMenu(options) {
 				let text = e.dataTransfer.getData("text");
 				if ( !text ) return;
 
-				sb.value = text;
+				sb.set(text);
 				tool.dispatchEvent(new MouseEvent('mousedown'));
 				tool.dispatchEvent(new MouseEvent('mouseup'));
 			});
@@ -903,6 +906,7 @@ async function makeQuickMenu(options) {
 	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
 		qm.contexts = quickMenuObject.contexts;
+		qm.contextualLayout = false;
 
 		// filter node tree for matching contexts
 		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
@@ -919,6 +923,8 @@ async function makeQuickMenu(options) {
 
 			tempRoot.parent = rootNode.parent;
 			rootNode = tempRoot;
+
+			qm.contextualLayout = true;
 		}
 
 		let debug = rootNode.title === "empty";
@@ -1036,7 +1042,7 @@ async function makeQuickMenu(options) {
 	
 	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
 
-	let root = userOptions.nodeTree;
+	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 	window.root = root;
 	quickMenuObject.contexts = options.contexts || [];
@@ -1121,7 +1127,7 @@ function makeSearchBar() {
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
 		let qmo = message[0];
 
-		if ( qmo && qmo.searchTerms) sb.value = qmo.searchTerms;
+		if ( qmo && qmo.searchTerms) sb.set(qmo.searchTerms);
 		else displayLastSearchTerms();
 	}, () => {
 		displayLastSearchTerms();
@@ -1133,7 +1139,7 @@ function makeSearchBar() {
 			if ( userOptions.autoPasteFromClipboard ) {
 				let paste = () => {
 					try {
-						navigator.clipboard.readText().then(clipText => sb.value = clipText);
+						navigator.clipboard.readText().then(clipText => sb.set(clipText));
 					} catch ( error ) { console.error(error) }
 				}
 				if ( window == top ) paste(); // toolbar menu
@@ -1145,7 +1151,7 @@ function makeSearchBar() {
 			// skip empty 
 			if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 			
-			sb.value = message.lastSearch;
+			sb.set(message.lastSearch);
 			sb.select();
 
 			// workaround for linux 
@@ -1178,7 +1184,7 @@ function makeSearchBar() {
 				let selected = sg.querySelector('.selectedFocus');
 				if (selected) selected.classList.remove('selectedFocus');
 				this.classList.add('selectedFocus');
-				sb.value = this.innerText;
+				sb.set(this.innerText);
 			}
 			
 			div.ondblclick = () => {
@@ -1705,6 +1711,11 @@ document.addEventListener('dragstart', e => {
 
 	if ( undraggable(tile) ) return;
 
+	if ( qm.contextualLayout ) {
+		console.warn('Tiles cannot be rearranged when using contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
+		return;
+	}
+
 	// required by ff for dragend
 	e.dataTransfer.setData("text", "");
 
@@ -1878,6 +1889,8 @@ document.addEventListener('drop', e => {
 	function dragSave() {
 
 		let new_node_count = findNodes(root, n => true).length;
+
+		// console.log(old_node_count, "->", new_node_count);
 
 		if ( old_node_count === new_node_count ) {
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
@@ -2170,7 +2183,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 		if ( tile ) node = tile.node.parent;
 	}
 
-	if ( !node.id ) node.id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+	if ( !node.id ) node.id = parentNode.id || (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 
 	if ( limit >= _tiles.length ) return _tiles;
 

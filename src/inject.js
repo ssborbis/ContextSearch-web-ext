@@ -10,6 +10,7 @@ var quickMenuObject = {
 	lastSelectText:"",
 	locked: false,
 	searchTerms: "",
+	searchTermsObject:{},
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	mouseLastContextMenuTime:0,
@@ -85,12 +86,10 @@ function getContexts(el) {
 
 	let contexts = ['page'];
 
-	if ( el instanceof HTMLImageElement ) contexts.push('image');
+	if ( el instanceof HTMLImageElement || getImage(el) ) contexts.push('image');
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
-
 	if ( el.closest && el.closest('a')) contexts.push('link');
-
 	if ( getSelectedText(el)) contexts.push('selection');
 	if ( window != top ) contexts.push('iframe');
 
@@ -112,7 +111,7 @@ document.addEventListener("selectionchange", ev => {
 	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 
 	// display icon to open qm
-	if ( showIcon ) showIcon(searchTerms);
+	if ( showIcon ) showIcon(searchTerms, ev);
 });
 
 // selectionchange handler for input nodes
@@ -127,7 +126,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		}
 
 		// display icon to open qm
-		if ( showIcon ) showIcon(searchTerms);
+		if ( showIcon ) showIcon(searchTerms, e);
 	});
 }
 
@@ -273,6 +272,15 @@ function repositionOffscreenElement( element, padding ) {
 	// if (rect.x + rect.width > window.innerWidth) 
 		// element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
 
+}
+
+function getLinkText(el) {
+
+	let a = el.closest('a');
+	
+	if ( !a ) return "";
+
+	return a.innerText;
 }
 
 function getLink(el, e) {

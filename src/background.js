@@ -1207,7 +1207,8 @@ async function executeExternalProgram(info) {
 		}
 	}
 
-	let path = node.path.replace("{searchTerms}", searchTerms);
+	let path = node.path.replace("{searchTerms}", searchTerms)
+		.replace("{url}", info.tab.url);
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});

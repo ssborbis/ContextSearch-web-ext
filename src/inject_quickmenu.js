@@ -15,7 +15,26 @@ function openQuickMenu(e, searchTerms) {
 
 	e = e || new MouseEvent('click');
 
-	searchTerms = searchTerms || getSelectedText(e.target).trim() || ( e.target.id !== 'CS_icon' ? linkOrImage(e.target, e) : null );
+	let target = e.target;
+
+	// open on icon causes inputs to blur, workaround
+	if ( target == document )
+		target = document.body;
+
+
+	let selection = searchTerms || getSelectedText(target).trim();
+
+	let searchTermsObject = {
+		selection: selection || getLinkText(target),
+		image: getImage(target),
+		link: getLink(target),
+		page: window.location.href
+	}
+
+	searchTerms = searchTerms || selection || linkOrImage(target, e) || null;
+	
+	// for context toggle
+	quickMenuObject.searchTerms = searchTerms;
 
 	window.lastActiveElement = document.activeElement;
 		
@@ -23,15 +42,15 @@ function openQuickMenu(e, searchTerms) {
 	if ( userOptions.quickMenuSearchBarFocus /* && ev.target.nodeName === 'A' */) {
 		
 		// restore selection to text boxes
-		if (e.target && e.target.selectionStart)  // is a text box
-			document.addEventListener('closequickmenu', e => e.target.focus(), {once: true});
+		if (target && target.selectionStart)  // is a text box
+			document.addEventListener('closequickmenu', e => target.focus(), {once: true});
 		
 		// don't blur on drag
-		if ( e.target && !e.dataTransfer )
-			e.target.blur();
+		if ( target && !e.dataTransfer )
+			target.blur();
 	}
 
-	let _contexts = getContexts(e.target);
+	let _contexts = getContexts(target);
 	if ( e.openingMethod && e.openingMethod === 'simple' && _contexts.length === 1 && _contexts[0] === 'page') {
 		_contexts.push('selection');
 	}
@@ -43,7 +62,8 @@ function openQuickMenu(e, searchTerms) {
 		searchTerms: searchTerms,
 		quickMenuObject: quickMenuObject,
 		openingMethod: e.openingMethod || e.type || null,
-		contexts: _contexts
+		contexts: _contexts,
+		searchTermsObject: searchTermsObject
 	});
 }
 
@@ -711,6 +731,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				quickMenuObject.searchTerms = message.searchTerms;
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
 				quickMenuObject.contexts = message.contexts;
+				quickMenuObject.searchTermsObject = message.searchTermsObject;
 
 				// keep old menu if locked
 				if ( quickMenuObject.locked && getQM() ) {
@@ -741,6 +762,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					lastSelectText: message.quickMenuObject.lastSelectText,
 					locked: message.quickMenuObject.locked,
 					searchTerms: message.quickMenuObject.searchTerms,
+					searchTermsObject: message.quickMenuObject.searchTermsObject,
 					disabled: message.quickMenuObject.disabled,
 					mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
 					mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
@@ -1082,7 +1104,7 @@ function getQuickMenuOpeningPosition(o) {
 
 }
 
-function showIcon(searchTerms) {
+function showIcon(searchTerms, event) {
 
 	if ( !userOptions.quickMenuIcon.enabled ) return;
 
@@ -1109,7 +1131,8 @@ function showIcon(searchTerms) {
 		let searchTerms = getSelectedText(e.target).trim();
 
 		img.addEventListener('click', e => {
-			openQuickMenu(e, searchTerms);
+
+			openQuickMenu(event, searchTerms);
 		});
 
 		document.body.appendChild(img);

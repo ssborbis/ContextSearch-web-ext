@@ -54,7 +54,7 @@ const QMtools = [
 	},
 	{
 		name: 'link', 
-		icon: "icons/link.svg", 
+		icon: "icons/external_link.svg", 
 		title: browser.i18n.getMessage('tools_OpenAsLink'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
@@ -589,6 +589,18 @@ const QMtools = [
 
 			setToolLockedState(this.tool || this, on);
 
+			// show / hide based on context
+			if ( on && qm.contexts.length ) {
+				this.tool.contexts = qm.contexts;
+				quickMenuObject.contexts = [];
+				let node = findNode(window.root, n => n.id === qm.rootNode.id);
+				qm = await quickMenuElementFromNodeTree(node);
+			} else if ( !on && this.tool.contexts.length ) {
+				quickMenuObject.contexts = this.tool.contexts;
+				let node = findNode(window.root, n => n.id === qm.rootNode.id);
+				qm = await quickMenuElementFromNodeTree(node);
+			}
+
 			qm.querySelectorAll('.tile').forEach( t => {
 				if ( !t.node ) return;
 
@@ -596,7 +608,54 @@ const QMtools = [
 					t.style.display = on ? null : 'none';
 			});
 			
-			resizeMenu({more: true});	
+			resizeMenu({openFolder: true});
+			qm.expandMoreTiles();
+		}
+	},
+	{
+		name: 'toggle_searchterms', 
+		icon: "icons/selection.svg",
+		title: browser.i18n.getMessage('toggleSearchTerms'),
+		context: ["quickmenu"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true;
+			tile.dataset.locked = false;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			tile.tool = this;
+
+			return tile;
+		}, 
+		action: async function() {
+
+			showContext = c => this.querySelector('.tool').style.setProperty("--mask-image",`url(icons/${c}.svg)`);
+
+			let sto = quickMenuObject.searchTermsObject;
+			let keys = ["selection", "link", "image", "page"].filter( key => sto[key]);
+
+			if ( !this.tool.searchTermsContext ) {
+				for ( key in sto ) {
+					if ( sto[key] == quickMenuObject.searchTerms ) {
+						this.tool.searchTermsContext = key;
+						break;
+					}
+				}
+			}
+
+			let newKey = keys[( keys.indexOf(this.tool.searchTermsContext) + 1 ) % keys.length];
+
+			this.tool.searchTermsContext = newKey;
+
+			sb.set(sto[newKey]);
+
+		// //	showContext(newKey);
+		// 	setTimeout(() => {
+		// 		showContext("selection");
+		// 	}, 1000);
 		}
 	}
 ];
