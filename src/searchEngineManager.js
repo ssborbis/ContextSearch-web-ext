@@ -1895,7 +1895,7 @@ function buildSearchEngineContainer() {
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
-			[edit, newFolder, newEngine, newSeparator, newScript, copy, newMultisearch, newExternalProgram,newTool].forEach( el => {
+			[edit, newFolder, newEngine, newSeparator, newScript, copy, newExternalProgram,newTool].forEach( el => {
 				el.disabled = true;
 				el.style.opacity = .5;
 			});
