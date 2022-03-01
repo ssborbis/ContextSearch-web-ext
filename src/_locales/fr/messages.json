@@ -1952,7 +1952,7 @@
   },
 
   "requestPermissionsMessage": {
-    "message": "An optional permission is required. Click the request button below.",
+    "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous.",
     "description": "generic permission"
   },
   
@@ -2364,19 +2364,50 @@
   },
 
   "NewExternalProgram": {
-    "message": "New App Launcher"
+    "message": "Nouveau lanceur d’application"
   },
 
   "searchIconFinder": {
-    "message": "Search IconFinder.com  🔍"
+    "message": "🔍 Rechercher sur IconFinder.com"
   },
 
   "RefineSearch": {
-    "message": "Refine search"
+    "message": "Préciser la recherche :"
   },
 
-  "___________": {
-    "message": ""
+  "NativeApp": {
+    "message": "Application communicante"
+  },
+
+  "NativeAppMissing": {
+    "message": "L’application communicante n’est pas connectée."
+  },
+  "SearchBookmarklets": {
+    "message": "🔍 Rechercher des marque-pages scriptés"
+  },
+  "NewScript": {
+    "message": "Nouveau script"
+  },
+  "Permissions": {
+    "message": "Permissions"
+  },
+  "Command": {
+    "message": "Commande"
+  },
+  "WorkingDirectory": {
+    "message": "Dossier de travail"
+  },
+  "Script": {
+    "message": "Script"
+  },
+  "PostAppScript": {
+    "message": "Script post-application"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Javascript à exécuter dans l’onglet courant quand l’application a terminé. La sortie standard est capturée dans la variable « result », par exemple « alert(result) »."
+  },
+  "MessengerOfflineTooltip": {
+    "message": "Une application supplémentaire est nécessaire pour lancer des programmes depuis ContextSearch web-ext. Cliquer sur le lien pour plus de détails."
   }
 
 }
