@@ -831,17 +831,26 @@ function showInfoMsg(el, msg) {
 // import/export buttons
 function buildImportExportButtons() {
 	
-	function download(filename, text) {
-		var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-		element.setAttribute('download', filename);
+	function download(filename, json) {
 
-		element.style.display = 'none';
-		document.body.appendChild(element);
+		var blob = new Blob([json], {type: "application/json"});
+		var url  = URL.createObjectURL(blob);
 
-		element.click();
+		var a = document.createElement('a');
+		a.href        = url;
+		a.download    = filename;
 
-		document.body.removeChild(element);
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+
+		// var element = document.createElement('a');
+		// element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+		// element.setAttribute('download', filename);
+		// element.style.display = 'none';
+		// document.body.appendChild(element);
+		// element.click();
+		// document.body.removeChild(element);
 	}
 	
 	let b_export = $('#b_exportSettings');
