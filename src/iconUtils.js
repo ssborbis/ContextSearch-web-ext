@@ -47,10 +47,10 @@ function cacheIcons() {
 			let isDataURI = se.icon_url.startsWith("data:");
 			let hasURL = se.icon_url.startsWith("http");
 
-			if ( isDataURI ) {
-				onError(se, "DATA_URI");
-				continue;
-			}
+			// if ( isDataURI ) {
+			// 	onError(se, "DATA_URI");
+			// 	continue;
+			// }
 
 			if ( !se.icon_url ) {
 				onError(se, "NO_URL");
@@ -64,6 +64,14 @@ function cacheIcons() {
 			},10000);
 
 			img.onload = async function() {
+
+				if ( isDataURI && ( img.naturalHeight <= userOptions.cacheIconsMaxSize && img.naturalWidth <= userOptions.cacheIconsMaxSize)) {
+					clearTimeout(timeout);
+					result.last_message = se.title;
+					result.count++;
+					onloadend();
+					return;
+				}
 				let data = await imageToBase64(img, userOptions.cacheIconsMaxSize); 
 
 				if ( data != "" ) {
