@@ -843,14 +843,6 @@ function buildImportExportButtons() {
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
-
-		// var element = document.createElement('a');
-		// element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-		// element.setAttribute('download', filename);
-		// element.style.display = 'none';
-		// document.body.appendChild(element);
-		// element.click();
-		// document.body.removeChild(element);
 	}
 	
 	let b_export = $('#b_exportSettings');

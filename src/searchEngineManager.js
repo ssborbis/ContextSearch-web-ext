@@ -2241,6 +2241,7 @@ async function setRowContexts(row) {
 				tool.classList.add('disabled');
 
 			tool.onclick = function(e) {
+
 				e.stopPropagation();
 
 				let code = getContextCode(c);
