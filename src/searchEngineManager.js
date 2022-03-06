@@ -573,7 +573,7 @@ function buildSearchEngineContainer() {
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
 				_form.template.value = node.path;
-				_form.searchRegex = node.searchRegex;
+				_form.searchRegex.value = node.searchRegex;
 				_form.description.value = node.description || "";
 				_form.searchform.value = node.cwd || "";
 				_form.searchCode.value = node.postScript || "";
