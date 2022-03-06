@@ -2222,7 +2222,7 @@ async function setRowContexts(row) {
 	try {
 		let node = row.node;
 
-		if ( !node.contexts ) return;
+		if ( !("contexts" in node ) ) return;
 
 		let cc = row.querySelector('.contextIcons');
 		cc.innerHTML = null;
