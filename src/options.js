@@ -260,6 +260,7 @@ function _saveOptions(e) {
 	function onSet() {
 		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
+		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);
 	}
 	
@@ -1260,7 +1261,10 @@ function buildThemes() {
 $('#b_cacheIcons').addEventListener('click', cacheAllIcons);
 
 $('#b_uncacheIcons').addEventListener('click', e => {
-	if ( confirm('remove all icon cache?'))	uncacheIcons();
+	if ( confirm('remove all icon cache?'))	{
+		uncacheIcons();
+		saveOptions();
+	}
 });
 
 function cacheAllIcons(e) {
@@ -1281,7 +1285,9 @@ function cacheAllIcons(e) {
 		else
 			msg.innerText = "done";
 
-		setTimeout(() => msg.parentNode.removeChild(msg), 5000);
+		setTimeout(() => {
+			if (msg && msg.parentNode ) msg.parentNode.removeChild(msg);
+		}, 5000);
 
 		saveOptions();
 	}
@@ -1517,9 +1523,9 @@ function sortAdvancedOptions() {
 	table.innerHTML = null;
 	trs.forEach( tr => table.appendChild(tr));
 
-	// move 
-	let save = table.querySelector('.moveToEnd');
-	table.appendChild(save);
+	// // move 
+	// let save = table.querySelector('.moveToEnd');
+	// table.appendChild(save);
 }
 
 function syntaxHighlight(json) {
