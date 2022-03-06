@@ -55,7 +55,8 @@
 		"contextMenus",
 		"storage",
 		"tabs",
-		"search"
+		"search",
+		"unlimitedStorage"
 	],
 	
 	"optional_permissions": [
