@@ -22,7 +22,8 @@ function filterContexts(root, context) {
 
 		if ( node.type === 'searchEngine' ) {
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
-			if ( se && (!se.contexts || !hasContext(context, se.contexts)) )
+			let _contexts = node.contexts || se.contexts;
+			if ( se && (!_contexts || !hasContext(context, _contexts)) )
 				return removeNode( node, parent );
 		}
 

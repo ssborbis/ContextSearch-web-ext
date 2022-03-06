@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.36",
+	"version": "1.37",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"background": {
@@ -49,7 +49,8 @@
 		"activeTab",
 		"contextMenus",
 		"storage",
-		"tabs"
+		"tabs",
+		"unlimitedStorage"
 	],
 	"optional_permissions": [
 		"bookmarks",

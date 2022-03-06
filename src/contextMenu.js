@@ -34,7 +34,7 @@ async function buildContextMenu(searchTerms) {
 				return n.title;
 		}
 
-		if ( node.type === 'searchEngine' ) {
+		if ( node.type === 'searchEngine' || node.type === "siteSearchFolder" ) {
 
 			let se = userOptions.searchEngines.find(se => se.id === node.id);
 			

@@ -260,6 +260,7 @@ function _saveOptions(e) {
 	function onSet() {
 		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
+		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);
 	}
 	
@@ -831,17 +832,18 @@ function showInfoMsg(el, msg) {
 // import/export buttons
 function buildImportExportButtons() {
 	
-	function download(filename, text) {
-		var element = document.createElement('a');
-		element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-		element.setAttribute('download', filename);
+	function download(filename, json) {
 
-		element.style.display = 'none';
-		document.body.appendChild(element);
+		var blob = new Blob([json], {type: "application/json"});
+		var url  = URL.createObjectURL(blob);
 
-		element.click();
+		var a = document.createElement('a');
+		a.href        = url;
+		a.download    = filename;
 
-		document.body.removeChild(element);
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
 	}
 	
 	let b_export = $('#b_exportSettings');
@@ -1259,7 +1261,10 @@ function buildThemes() {
 $('#b_cacheIcons').addEventListener('click', cacheAllIcons);
 
 $('#b_uncacheIcons').addEventListener('click', e => {
-	if ( confirm('remove all icon cache?'))	uncacheIcons();
+	if ( confirm('remove all icon cache?'))	{
+		uncacheIcons();
+		saveOptions();
+	}
 });
 
 function cacheAllIcons(e) {
@@ -1280,7 +1285,9 @@ function cacheAllIcons(e) {
 		else
 			msg.innerText = "done";
 
-		setTimeout(() => msg.parentNode.removeChild(msg), 5000);
+		setTimeout(() => {
+			if (msg && msg.parentNode ) msg.parentNode.removeChild(msg);
+		}, 5000);
 
 		saveOptions();
 	}
@@ -1516,9 +1523,9 @@ function sortAdvancedOptions() {
 	table.innerHTML = null;
 	trs.forEach( tr => table.appendChild(tr));
 
-	// move 
-	let save = table.querySelector('.moveToEnd');
-	table.appendChild(save);
+	// // move 
+	// let save = table.querySelector('.moveToEnd');
+	// table.appendChild(save);
 }
 
 function syntaxHighlight(json) {
