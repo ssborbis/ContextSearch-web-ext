@@ -189,9 +189,9 @@ function addSearchEnginePopup(data) {
 					let url = buildOpenSearchAPIUrl();
 
 					// if using OpenSearch engine and name has not changed, use url to OpenSearch.xml
-					if (useOpenSearch && shortname === ose.title)
-						url = openSearchUrl;
-					
+					// if (useOpenSearch && shortname === ose.title)
+					// 	url = openSearchUrl;
+
 					simpleImportHandler(url, true);
 				}
 				showMenu('simple_import');
