@@ -1353,6 +1353,26 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
+	if ( userOptions.splitMultilineSearches && searchTerms.split('\n').length > 1 ) {
+		let terms = searchTerms.split('\n');
+		let ps = [];
+
+		terms.forEach((t, i) => {
+			t = t.trim();
+
+			if ( !t ) return;
+			
+			let _info = Object.assign({}, info);
+			_info.searchTerms = t;
+			_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
+
+			ps.push(openSearch(_info));
+		})
+
+		Promise.all(ps);
+		return;
+	}
+
 	if ( node && node.type === "oneClickSearchEngine" ) {
 		console.log("oneClickSearchEngine");
 		return executeOneClickSearch(info);

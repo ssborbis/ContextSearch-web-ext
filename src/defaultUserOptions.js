@@ -271,6 +271,7 @@ const defaultUserOptions = {
 	quickMenuDeselectTextOnSearch: false,
 	quickMenuMoveContextMenuMethod:"",
 	incognitoTabsForgetHistory: true,
-	waitOnInjectionTimeout: 15000
+	waitOnInjectionTimeout: 15000,
+	multilinesAsSeparateSearches: false
 
 };
