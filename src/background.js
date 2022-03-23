@@ -1353,7 +1353,7 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( userOptions.splitMultilineSearches && searchTerms.split('\n').length > 1 ) {
+	if ( userOptions.multilinesAsSeparateSearches && searchTerms.split('\n').length > 1 ) {
 		let terms = searchTerms.split('\n');
 		let ps = [];
 
@@ -1361,7 +1361,7 @@ async function openSearch(info) {
 			t = t.trim();
 
 			if ( !t ) return;
-			
+
 			let _info = Object.assign({}, info);
 			_info.searchTerms = t;
 			_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
