@@ -1229,7 +1229,7 @@ async function executeExternalProgram(info) {
 	}
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false )}).then( async result => {
-		if ( node.postScript ) {
+		if ( node.postScript.trim() ) {
 			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
 			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
 		}
