@@ -276,6 +276,8 @@ function repositionOffscreenElement( element, padding ) {
 
 function getLinkText(el) {
 
+	if ( !el.closest ) return false;
+
 	let a = el.closest('a');
 	
 	if ( !a ) return "";
@@ -284,6 +286,8 @@ function getLinkText(el) {
 }
 
 function getLink(el, e) {
+
+	if ( !el.closest ) return false;
 
 	let a = el.closest('a');
 	
@@ -297,6 +301,8 @@ function getLink(el, e) {
 }
 
 function getImage(el, e) {
+
+	if ( !el.closest ) return false;
 	
 	if ( el.innerText ) return false;
 	

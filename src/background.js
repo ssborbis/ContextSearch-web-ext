@@ -1207,8 +1207,8 @@ async function executeExternalProgram(info) {
 		}
 	}
 
-	let path = node.path.replace("{searchTerms}", searchTerms)
-		.replace("{url}", info.tab.url);
+	let path = node.path.replace(/{searchTerms}/g, searchTerms)
+		.replace(/{url}/g, info.tab.url);
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});
@@ -1229,7 +1229,7 @@ async function executeExternalProgram(info) {
 	}
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false )}).then( async result => {
-		if ( node.postScript ) {
+		if ( node.postScript.trim() ) {
 			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
 			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
 		}
@@ -1351,6 +1351,26 @@ async function openSearch(info) {
 			console.log('tab with same engine and terms exists');
 			return false;
 		} catch ( error ) {}
+	}
+
+	if ( userOptions.splitMultilineSearches && searchTerms.split('\n').length > 1 ) {
+		let terms = searchTerms.split('\n');
+		let ps = [];
+
+		terms.forEach((t, i) => {
+			t = t.trim();
+
+			if ( !t ) return;
+			
+			let _info = Object.assign({}, info);
+			_info.searchTerms = t;
+			_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
+
+			ps.push(openSearch(_info));
+		})
+
+		Promise.all(ps);
+		return;
 	}
 
 	if ( node && node.type === "oneClickSearchEngine" ) {
