@@ -1,7 +1,7 @@
 {
     
   "extensionDescription": {
-    "message": "Enostavno dodajajte iskalnike in iščite iz vsebinskega in priročnega pojavnega menija"
+    "message": "Enostavno dodajajte iskalnike in iščite iz vsebinskega in priročnega pojavnega menija."
   },
     
   "Settings": {
@@ -48,7 +48,7 @@
   },
   
    "QuickMenuNote": {
-    "message": "Onemogočeno na addons.mozilla.org"
+    "message": "Onemogočeno na addons.mozilla.org."
   },
   
    "SearchActionsHeader": {
@@ -96,7 +96,7 @@
   },
   
    "LookLayoutHeader": {
-    "message": "Izgled in razporeditev"
+    "message": "Videz in razporeditev"
   },
   
    "Columns": {
@@ -116,7 +116,7 @@
   },
   
    "MenuSizeTooltip": {
-    "message": "Umerjena velikost pojavnega menija.  Vrednosti, večje od 100 % bodo povečale celoten meni (primerno za visokoločljivostne zaslone)"
+    "message": "Umerjena velikost pojavnega menija.  Vrednosti, večje od 100 % bodo povečale celoten meni (primerno za visokoločljivostne zaslone)."
   },
   
   "IconSize": {
@@ -124,7 +124,7 @@
   },
   
   "IconSizeTooltip": {
-    "message": "Umerjena velikost ikon iskalnikov. Pri 200 % bodo ikone popolnoma zapolnile vsebnike"
+    "message": "Umerjena velikost ikon iskalnikov. Pri 200 % bodo ikone popolnoma zapolnile vsebnike."
   },
   
   "OpeningClosingHeader": {
@@ -132,7 +132,7 @@
   },
   
   "OpeningClosingDescription": {
-    "message": "Izberite način odpiranja hitrega menija"
+    "message": "Izberite način odpiranja hitrega menija."
   },
   
    "Auto": {
@@ -156,11 +156,11 @@
   },
   
      "MouseTooltip": {
-    "message": "Odpri z klikom na gumb miške ob izbiri besedila"
+    "message": "Odpri z klikom na gumb miške ob izbiri besedila."
   },
   
   "MouseDescription": {
-    "message": "Izberite priljubljen način in gumb"
+    "message": "Izberite priljubljen način in gumb."
   },
   
    "Hold": {
@@ -168,7 +168,7 @@
   },
   
     "HoldTooltip": {
-    "message": "Meni se bo odprl potem, ko boste izbran gumb na miški pridržali za ~0,25 sekunde"
+    "message": "Meni se bo odprl potem, ko boste izbran gumb na miški pridržali za ~0,25 sekunde."
   },
   
    "SearchOnMouseup": {
@@ -176,7 +176,7 @@
   },
   
    "SearchOnMouseupTooltip": {
-    "message": "Išči s hitrega menija ob spustitvi gumba na miški napram kliku, t.j. pridržite za odpiranje menija, spustite za iskanje"
+    "message": "Išči s hitrega menija ob spustitvi gumba na miški napram kliku, t.j. pridržite za odpiranje menija, spustite za iskanje."
   },
   
    "Click": {
@@ -184,7 +184,7 @@
   },
   
   "ClickTooltip": {
-    "message": "Pojavni meni se bo odprl ob desnem kilku.  Pridržite gumb za privzeti vsebinski meni"
+    "message": "Pojavni meni se bo odprl ob desnem kilku.  Pridržite gumb za privzeti vsebinski meni."
   },
   
    "Keyboard": {
@@ -200,7 +200,7 @@
   },
   
   "ChooseKeyTooltip": {
-    "message": "izberite besedilo in pritisnite tipko, da odprete pojavni meni.  Kliknite sosednji gumb in pritisnite priljubljeno tipko"
+    "message": "Izberite besedilo in pritisnite tipko, da odprete pojavni meni.  Kliknite sosednji gumb in pritisnite priljubljeno tipko."
   },
   
    "CloseAfterSearch": {
@@ -228,7 +228,7 @@
   },
   
   "PositionDescription": {
-    "message": "izberite, kje naj se pojavi meni"
+    "message": "Izberite, kje naj se pojavi meni."
   },
   
    "HorizontalOffset": {
@@ -236,7 +236,7 @@
   },
   
   "HorizontalOffsetTooltip": {
-    "message": "Število sl. točk za vodoravni zamik pojavnega menija.  Števila, večja od 0 zamaknejo desno, manjša od 0 levo"
+    "message": "Število sl. točk vodoravnega zamika pojavnega menija.  Števila, večja od 0 zamaknejo desno, manjša od 0 levo."
   },
 
   "VerticalOffset": {
@@ -244,7 +244,7 @@
   },
   
   "VerticalOffsetTooltip": {
-    "message": "Število sl. točk za navpični zamik pojavnega menija.  Števila, večja od 0 zamaknejo dol, manjša od 0 gor"
+    "message": "Število sl. točk navpičnega zamika pojavnega menija.  Števila, večja od 0 zamaknejo dol, manjša od 0 gor."
   },
 
   "Tools": {
@@ -252,11 +252,11 @@
   },
   
   "ToolsPositionTooltip": {
-    "message": "Izberite mesto prikaza orodij v hitrem meniju"
+    "message": "Izberite mesto prikaza orodij v hitrem meniju."
   },
   
   "ToolsHelp": {
-    "message": "kliknite, da onemogočite | povlecite, da preuredite"
+    "message": "Kliknite, da onemogočite | povlecite, da preuredite."
   },
 
   "tools_Close": {
@@ -312,15 +312,15 @@
   },
   
   "SearchEnginesManagerHelp": {
-    "message": "Povlecite in spustite za preureditev, uporabite desni klik za dodajanje/izbris/spremembo"
+    "message": "Povlecite in spustite za preureditev, uporabite desni klik za dodajanje/izbris/spremembo."
   },
   
   "ImportHeader": {
-    "message": "Uvozi iskalnike za namestitev z enim klikom"
+    "message": "Uvozi iskalnike"
   },
   
   "ImportDescription": {
-    "message": "Prebrskajte do mape s profilom in izberite datoteko search.json.mozlz4"
+    "message": "Prebrskajte do mape s profilom in izberite datoteko search.json.mozlz4."
   },
   
   "ImportSelectFile": {
@@ -336,7 +336,7 @@
   },
   
   "EnableAutoImportTooltip": {
-    "message": "Samodejno uvozi nove odprte iskalnike v vsebinski meni.  Uporabno samo ob uvozu odprtih iskalnikov, ki so bili nameščeni s Firefoxovim API-jem za iskalnike za namestitev z enim klikom.  Zahteva ločen program.  Za več podrobnosti glejte 'Pomoč'"
+    "message": "Samodejno uvozi nove odprte iskalnike v vsebinski meni.  Uporabno samo ob uvozu odprtih iskalnikov, ki so bili nameščeni s Firefoxovim API-jem za iskalnike.  Zahteva ločen program.  Za več podrobnosti glejte 'Pomoč'."
   },
   
   "ProfilePath": {
@@ -384,7 +384,7 @@
   },
   
   "NameTooltip": {
-    "message": "Edinstveno ime za ta iskalnik"
+    "message": "Edinstveno ime iskalnika."
   },
   
   "Description": {
@@ -392,7 +392,7 @@
   },
   
   "DescriptionTooltip": {
-    "message": "Kratek opis iskalnika.  Največ 1024 znakov"
+    "message": "Kratek opis iskalnika.  Največ 1024 znakov."
   },
   
   "Template": {
@@ -400,7 +400,7 @@
   },
   
   "TemplateTooltip": {
-    "message": "URL funkcije za pošiljanje obrazca.  Če je to pogon GET, se mora v URL-ju pojaviti {searchTerms} (npr. http://example.com/?q={searchTerms})"
+    "message": "URL funkcije za pošiljanje obrazca.  Če je to pogon GET, se mora v URL-ju pojaviti {searchTerms} (npr. http://example.com/?q={searchTerms})."
   },
   
   "FormPath": {
@@ -408,7 +408,7 @@
   },
   
   "FormPathTooltip": {
-    "message": "Običajno domača stran spletnega mesta ali URL strani z obrazcem"
+    "message": "Običajno domača stran spletnega mesta ali URL strani z obrazcem."
   },
   
   "POSTparams": {
@@ -416,7 +416,7 @@
   },
   
   "POSTparamsTooltip": {
-    "message": "Seznam parametrov in vrednosti POST, ločenih z znakom & (npr. q={searchTerms}&lang=en&maxresults=100).  Velja samo pri uporabi metode POST"
+    "message": "Seznam parametrov in vrednosti POST, ločenih z znakom & (npr. q={searchTerms}&lang=en&maxresults=100).  Velja samo pri uporabi metode POST."
   },
   
   "Icon": {
@@ -424,7 +424,7 @@
   },
   
   "IconTooltip": {
-    "message": "URI ikone, ki naj se uporabi.  Slike morajo biti manj kot 64x64 sl. točk in manj kot 10 kb"
+    "message": "URI ikone, ki naj se uporabi.  Slike morajo biti manj kot 64x64 sl. točk in manj kot 10 kb."
   },
   
   "Method": {
@@ -440,7 +440,7 @@
   },
   
   "EncodingTooltip": {
-    "message": "Kodiranje znakov, ki ga zahteva iskalni obrazec.  Običajno UTF-8"
+    "message": "Kodiranje znakov, ki ga zahteva iskalni obrazec.  Običajno je to UTF-8."
   },
   
   "Test": {
@@ -448,18 +448,19 @@
   },
   
   "NewEngineAdded": {
-    "message": "Nov iskalnik je bil dodan v ContextSearch"
+    "message": "Nov iskalnik je bil dodan v ContextSearch."
   },
   
   "NewEngineAddedTooltip": {
-    "message": "Namesti ta iskalnik v Firefoxovo iskalno vrstico z uporabo odprtega API-ja po meri"
+    "message": "Namesti ta iskalnik v Firefoxovo iskalno vrstico z uporabo odprtega API-ja po meri."
+  },
   
   "AlsoAdd": {
     "message": "Dodaj tudi med iskalnike za namestitev z enim klikom?"
   },
   
   "CannotCreate": {
-    "message": "Iz tega vnosa ni mogoče ustvariti iskalnika"
+    "message": "Iz tega vnosa ni mogoče ustvariti iskalnika."
   },
   
   "OpenAdvanced": {
@@ -471,7 +472,7 @@
   },
   
   "RemovingEngine": {
-    "message": "Odstranjevanje iskalnika"
+    "message": "Odstranjevanje iskalnika."
   },
   
   "CreateCustomSearch": {
@@ -487,27 +488,27 @@
   },
   
   "NewEngineImported": {
-    "message": "V ContextSearch je bilo dodanih $1 iskalnikov"
+    "message": "V ContextSearch je bilo dodanih $1 iskalnikov."
   },
   
   "InstallOfficialTooltip": {
-    "message": "Namesti uraden odprti iskalnik trenutne strani"
+    "message": "Namesti uraden odprti iskalnik trenutne strani."
   },
   
   "FindMycroftTooltip": {
-    "message": "Najdi odprte iskalnike na strani MycroftProject"
+    "message": "Najdi odprte iskalnike na strani MycroftProject."
   },
   
   "CreateCustomTooltip": {
-    "message": "Ustvari odprti iskalnik po meri"
+    "message": "Ustvari odprti iskalnik po meri."
   },
   
   "LoadingRemoteContent": {
-    "message": "Nalaganje oddaljene vsebine"
+    "message": "Nalaganje oddaljene vsebine."
   },
   
   "LoadingRemoteContentFail": {
-    "message": "Nalaganje %1-ih ikon je spodletelo.  To se lahko zgodi, kadar je omogočena zašita proti sledenju"
+    "message": "Nalaganje %1-ih ikon je spodletelo.  To se lahko zgodi, kadar je omogočena zašita proti sledenju."
   },
   
   "LoadingRemoteContentTimeout": {
@@ -519,7 +520,7 @@
   },
   
   "EnterUniqueName": {
-    "message": "Vnesite edinstveno ime tega iskalnika"
+    "message": "Vnesite edinstveno ime tega iskalnika."
   },
   
   "EngineExists": {
@@ -527,47 +528,47 @@
   },
   
   "TemplateMissingeMessage": {
-    "message": "Predloge za ta iskalni obrazec ni mogoče najti.  Lahko poizkusite iskati in nastali URL kopirati sem, iskalane izraze pa nadomestiti s {searchTerms}"
+    "message": "Predloge za ta iskalni obrazec ni mogoče najti.  Lahko poizkusite iskati in nastali URL kopirati sem, iskalane izraze pa nadomestiti s {searchTerms}."
   },
   
   "TemplateIncludeError": {
-    "message": "Predloga mora vsebovati {searchTerms}"
+    "message": "Predloga mora vsebovati {searchTerms}."
   },
 
   "TemplateURLError": {
-    "message": "Predloga mora biti URL"
+    "message": "Predloga mora biti URL."
   },
 
   "DescriptionEmptyError": {
-    "message": "Predloga mora imeti opis"
+    "message": "Predloga mora imeti opis."
   },
 
   "DescriptionSizeError": {
-    "message": "Opis mora imeti največ 1024 znakov"
+    "message": "Opis mora imeti največ 1024 znakov."
   },
   
   "FormPathURLError": {
-    "message": "Pot obrazca mora biti URL"
+    "message": "Pot obrazca mora biti URL."
   },
   
   "POSTIncludeError": {
-    "message": "Parametri POST morajo vljučevati {searchTerms}"
+    "message": "Parametri POST morajo vljučevati {searchTerms}."
   },
   
   "IconURLError": {
-    "message": "Ikona mora biti URL"
+    "message": "Ikona mora biti URL."
   },
   
   "IconLoadError": {
-    "message": "Nalaganje ikone je spodletelo"
+    "message": "Nalaganje ikone je spodletelo."
   },
   
   "EnterSearchTerms": {
-    "message": "Vnesite iskalne izraze"
+    "message": "Vnesite iskalne izraze."
   },
   
   "BookmarksPermissionMessage": {
-    "message": "Ko zaprete ta poziv, boste prejeli poziv za sprejetje novega dovoljenja za \"Zaznamke\".\n\nNjegovo sprejetje bo med zaznamke v mapo \"Drugi zaznamki\" dodalo novo mapo \"Meni ContextSearch\" z vašimi trenutnimi iskalniki.  Tam lahko boste lahko dodajali ločila in združevali zaznamke v podmape.\n\nNe preimenuje zaznamkov iskalnikov, ker potem no bodo več delovali.  Izbrisani zaznamki bodo ponovno dodani v možnostih ContextSearch -> Iskalniki.  Klik na ikono zaznamka na seznamu iskalnikov lahko doda ali odstrani zaznamek."
+    "message": "Ko zaprete ta poziv, boste prejeli poziv za sprejetje novega dovoljenja za \"Zaznamke\".\n\nNjegovo sprejetje bo med zaznamke v mapo \"Drugi zaznamki\" dodalo novo mapo \"Meni ContextSearch\" z vašimi trenutnimi iskalniki.  Tam lahko boste lahko dodajali ločila in združevali zaznamke v podmape.\n\nNe preimenuje zaznamkov iskalnikov, ker potem no bodo več delovali.  Izbrisani zaznamki bodo ponovno dodani v možnosti ContextSearch -> Iskalniki.  Klik na ikono zaznamka na seznamu iskalnikov lahko doda ali odstrani zaznamek."
   },
   
   "NativeAppImportError": {
@@ -579,11 +580,11 @@
   },
   
   "InvalidJSONAlert": {
-    "message": "datoteka ni veljaven JSON"
+    "message": "Datoteka ni veljaven JSON."
   },
   
   "ImportSuccessful": {
-    "message": "Uvoz je bil uspešen"
+    "message": "Uvoz je bil uspešen."
   },
   
   "WhereAreMyEngines": {
@@ -591,7 +592,7 @@
   },
   
   "ErrorParsing": {
-    "message": "Napaka pri razčlenjevanju %1\nČe še naprej dobivate to napako, je vzrok verjetno v nastavitvah pravilnika za varnost vsebine"
+    "message": "Napaka pri razčlenjevanju %1\nČe še naprej dobivate to napako, je vzrok verjetno v nastavitvah pravilnika za varnost vsebine."
   },
   
   "AddCustomSearch": {
@@ -651,21 +652,21 @@
   },
   
   "NameExists": {
-    "message": "Ime že obstaja",
+    "message": "Ime že obstaja.",
     "description": "short message for duplicate engine names"
   },
   
   "NameInvalid": {
-    "message": "Ime je neveljavno",
+    "message": "Ime je neveljavno.",
     "description": "short error for bad engine name"
   },
   
   "ImportedEngines": {
-    "message": "Uvoženih je bilo %1 iskalnikov (%2 novih)"
+    "message": "Uvoženih je bilo %1 iskalnikov (%2 novih)."
   },
   
   "ClickToEdit": {
-    "message": "Kliknite za urejanje"
+    "message": "Kliknite za urejanje."
   },
   
   "BackspaceKey": {
@@ -677,7 +678,7 @@
   },
   
   "ShiftKey": {
-    "message": "Zamikalka"
+    "message": "Zamik."
   },
   
   "PauseBreakKey": {
@@ -792,7 +793,7 @@
   },
   
   "HotkeyTooltip": {
-    "message": "Kadarkoli odpri hitri meni z hitro tipko",
+    "message": "Kadarkoli odpri hitri meni z hitro tipko.",
     "description": "description for Hotkey option"
   },
   
@@ -821,7 +822,7 @@
   },
   
   "PressKey": {
-    "message": "Pritisnite tipko",
+    "message": "Pritisnite tipko.",
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
   
@@ -836,7 +837,7 @@
   },
   
   "ClearSearchHistoryTooltip": {
-    "message": "Počisti zgodovino iskanja iz iskalne vrstice",
+    "message": "Počisti zgodovino iskanja iz iskalne vrstice.",
     "description": "description for clearing search history"
   },
 
@@ -856,7 +857,7 @@
   },
   
   "SearchBarUseOldStyleTooltip": {
-    "message": "Prikaži iskalnike v enem stolpcu z oznakami.  Preglasi nastavitev stolpcev"
+    "message": "Prikaži iskalnike v enem stolpcu z oznakami.  Preglasi nastavitev stolpcev."
   },
   
   "ToolbarSearch": {
@@ -869,17 +870,17 @@
   },
   
   "PerformASearchHeader": {
-    "message": "Predloga manjka",
+    "message": "Predloga manjka.",
     "description": "header message for the msgbox requesting the user perform a search"
   },
   
   "PerformASearch": {
-    "message": "Kliknite \'V redu\' in ponovno iščite z obrazcem, ki ga poizkušate dodati",
+    "message": "Kliknite 'V redu' in ponovno iščite z obrazcem, ki ga poizkušate dodati.",
     "description": "message for the msgbox requesting the user perform a search"
   },
   
   "PerformASearchTooltip": {
-    "message": "Obrazec ne vsebuje podatke, ki so potrebni za izgradnjo iskalnika.  Opravite preprosto iskanje, da ContextSearch poišče veljavno iskalno predlogo.  Najbolje je uporabiti besede, ki se običajno ne pojavijo v iskalnem URL-ju.  Ne uporabite \"iskanje\", \"http\" ali drugih besed, ki jih pogosto najdemo v URL-ju, ali ime spletne strani"
+    "message": "Obrazec ne vsebuje podatkov, ki so potrebni za izgradnjo iskalnika.  Opravite preprosto iskanje, da ContextSearch poišče veljavno iskalno predlogo.  Najbolje je uporabiti besede, ki se običajno ne pojavijo v iskalnem URL-ju.  Ne uporabite \"iskanje\", \"http\" ali drugih besed, ki jih pogosto najdemo v URL-ju, ali imena spletne strani."
   },
   
   "OK": {
@@ -888,7 +889,7 @@
   },
   
   "Back": {
-    "message": "nazaj",
+    "message": "Nazaj",
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
   
@@ -902,7 +903,7 @@
   },
   
   "DisabledByHotkeys": {
-    "message": "onemogočeno. ko so hitre tipke omogočene",
+    "message": "Onemogočeno, ko so hitre tipke omogočene",
     "description": "message for search bar focus option when hotkeys are enabled"
   },
   
@@ -927,7 +928,7 @@
   },
   
   "ShortcutKey_tooltip": {
-    "message": "Tipka za razširitev menija \"Išči s/z …\" v vsebinskem meniju",
+    "message": "Tipka za razširitev menija \"Išči s/z …\" v vsebinskem meniju.",
     "description": "context menu hotkey tooltip"
   },
   
@@ -962,7 +963,7 @@
   },
   
   "AddBookmarklet": {
-    "message": "Add dejavni zaznamek",
+    "message": "Dodaj dejavni zaznamek",
     "description": "Manager menu item"
   },
   
@@ -998,12 +999,12 @@
   },
   
   "RowsTooltip": {
-    "message": "Najveje število vrstic, ki naj se prikažejo ov odpiranju (mrežni pogled)",
+    "message": "Največje število vrstic, ki naj se prikažejo ob odpiranju (mrežni pogled)",
     "description": "Quick menu rows tooltip"
   },
   
   "RowsSingleColumnTooltip": {
-    "message": "Najveje število vrstic, ki naj se prikažejo ov odpiranju (besedilni pogled)",
+    "message": "Največje število vrstic, ki naj se prikažejo ob odpiranju (besedilni pogled)",
     "description": "Quick menu rows tooltip"
   },
   
@@ -1031,7 +1032,7 @@
   },
   
   "SideBarTooltip": {
-	"message": "Stranska vrstica je podaljšek orodne vrstice z dodanimi funkcijami, prikazanimi v oknu brskalnika.  Tako meni kot pripomoček za odpiranje lahko uporabljate za vlečenje in spuščanje besedila (razen v Chromeu).  Večino nastavitev najdete tudi v orodni vrstici"
+	"message": "Stranska vrstica je podaljšek orodne vrstice z dodanimi funkcijami, prikazanimi v oknu brskalnika.  Tako meni kot pripomoček za odpiranje lahko uporabljate za vlečenje in spuščanje besedila (razen v Chromeu).  Večino nastavitev najdete tudi v orodni vrstici."
   },
   
   "SideBarPositionTooltip": {
@@ -1049,7 +1050,7 @@
   },
 
   "SideBarHotkeyTooltip": {
-    "message": "Odpri stransko vrstico kadarkoli s hitro tipko"
+    "message": "Odpri stransko vrstico kadarkoli s hitro tipko."
   },
   
   "InitialOpacity": {
@@ -1058,7 +1059,7 @@
   },
   
   "InitialOpacityTooltip": {
-    "message": "Hitri meni se odpre z nižjo motnostjo in postane neprozoren ob prehodu kazalca miške"
+    "message": "Hitri meni se odpre z nižjo motnostjo in postane neprozoren ob prehodu kazalca miške."
   },
   
   "AutoMaxChars": {
@@ -1067,7 +1068,7 @@
   },
   
   "AutoMaxCharsTooltip": {
-    "message": "Ne odpri hitrega menija, če je izbira daljša od (n) znakov.  0 = brez omejitve"
+    "message": "Ne odpri hitrega menija, če je izbira daljša od (n) znakov.  0 = brez omejitve."
   },
   
   "EnableAnimations": {
@@ -1116,7 +1117,7 @@
   },
 
   "OCSEDeleteWarning": {
-    "message": "Firefoxove iskalnike ni mogoče izbrisati.  Skrijte, da onemogočite",
+    "message": "Firefoxovih iskalnikov ni mogoče izbrisati.  Skrijte, da onemogočite.",
     "description": "alert message when attempting to delete a ocse from the manager"
   },
   
@@ -1146,7 +1147,7 @@
   },
 
   "Text": {
-    "message": "besedilo",
+    "message": "Besedilo",
     "description": ""
   },
   
@@ -1191,7 +1192,7 @@
   },
   
   "SidebarTypeTooltip": {
-    "message": "Izberite način prikaza stranske vrstice.  Prekrivna plast ustvari lebdeče okno preko vsebine strani.  Plošča ustvari stransko vrstico višine okna in obrobi dokument, da se izogne prekrivanju vsebine strani",
+    "message": "Izberite način prikaza stranske vrstice.  Prekrivna plast ustvari lebdeče okno preko vsebine strani.  Plošča ustvari stransko vrstico višine okna in obrobi dokument, da se izogne prekrivanju vsebine strani.",
     "description": ""
   },
   
@@ -1261,17 +1262,17 @@
   },
   
   "Overlay": {
-    "message": "prekrivna plast",
+    "message": "Prekrivna plast",
     "description": ""
   },
   
   "Panel": {
-    "message": "plošča",
+    "message": "Plošča",
     "description": ""
   },
   
   "ToolbarTooltip": {
-    "message": "Odpri iskalni meni z gumbom orodne vrstice.  Deli dejanja iskanja s hitrim menijem",
+    "message": "Odpri iskalni meni z gumbom orodne vrstice.  Deli dejanja iskanja s hitrim menijem.",
     "description": ""
   },
   
@@ -1316,12 +1317,12 @@
   },
   
   "SelectTimeoutTooltip": {
-    "message": "Čas (v milisekundah) do preklica pojavnega menija po izbiri. 0 = brez omejtev",
+    "message": "Čas (v milisekundah) do preklica pojavnega menija po izbiri. 0 = brez omejtev.",
     "description": ""
   },
   
   "highlightfollowdomaintooltip": {
-    "message": "Nadaljuj poudarjanje strani na spleti strani isklanih rezultatov",
+    "message": "Nadaljuj poudarjanje strani na spleti strani iskalnih rezultatov",
     "description": ""
   },
   
@@ -1351,12 +1352,12 @@
   },
   
   "FindBarEnableHotkey": {
-    "message": "Odpri iskalno vrstico s hitro tipko.  Izbrano besedilo bo takoj poudarjeno, če je najdeno",
+    "message": "Odpri iskalno vrstico s hitro tipko.  Izbrano besedilo bo takoj poudarjeno, če je najdeno.",
     "description": ""
   },
   
   "FindBarNavMessage": {
-    "message": "$1 od $2 ujemanj",
+    "message": "$1 od $2 zadetkov",
     "description": ""
   },
   
@@ -1391,12 +1392,12 @@
   },
   
   "sidebarhidefullscreentooltip": {
-    "message": "Skrij stransko vrstico v celozaslonskem načinu",
+    "message": "Skrij stransko vrstico v celozaslonskem načinu.",
     "description": ""
   },
   
   "highlightignorepunctuationtooltip": {
-    "message": "Prezri ločila - nastavitev te možnosti bi ujemalo WORLDS, WORLD'S in WO'RLDS.  En ali ve opuščajev med črkami bi še vedno ujemalo (npr. W'O''R'L'D'S)",
+    "message": "Prezri ločila - nastavitev te možnosti bi ujemalo WORLDS, WORLD'S in WO'RLDS.  En ali več opuščajev med črkami bi še vedno ujemalo (npr. W'O''R'L'D'S)",
     "description": ""
   },
   
@@ -1406,12 +1407,12 @@
   },
   
   "background": {
-    "message": "ozadje",
+    "message": "Ozadje",
     "description": ""
   },
   
   "underline": {
-    "message": "podčrtaj",
+    "message": "Podčrtaj",
     "description": ""
   },
   
@@ -1421,17 +1422,17 @@
   },
   
   "casesensitive": {
-    "message": "občutljivo na velikost črk",
+    "message": "Občutljivo na velikost črk",
     "description": ""
   },
   
   "ignorepunctuation": {
-    "message": "prezri ločila",
+    "message": "Prezri ločila",
     "description": ""
   },
   
   "separateWordSearch": {
-    "message": "išči ločeno po besedah",
+    "message": "Išči ločeno po besedah",
     "description": ""
   },
   
@@ -1451,12 +1452,12 @@
   },
   
   "findbarwindowtypetooltip": {
-    "message": "Izberite način prikaza iskalne vrstice.  Slog okna iskalne vrstice lahko preklapljate z dvoklikom na ikono usidraj/odsidraj/premakni ali z vlečenjem",
+    "message": "Izberite način prikaza iskalne vrstice.  Slog okna iskalne vrstice lahko preklopite z dvoklikom na ikono usidraj/odsidraj/premakni ali z vlečenjem",
     "description": ""
   },
   
   "findbarkeyboardtimeout": {
-    "message": "Išči po n milisekundah, ko končate s tipkanjem.  Prenizke vrednosti lahko povzročijo težave z zmogjivostjo. 0 = onemogočeno",
+    "message": "Išči po n milisekundah, ko končam s tipkanjem.  Prenizke vrednosti lahko povzročijo težave z zmogjivostjo. 0 = onemogočeno",
     "description": ""
   },
   
@@ -1466,7 +1467,7 @@
   },
 
   "movedockundock": {
-    "message": "premakni/usidraj/odsidraj",
+    "message": "Premakni/Usidraj/Odsidraj",
     "description": ""
   },
 
@@ -1486,7 +1487,7 @@
   },
   
   "resize": {
-    "message": "spremeni velikost",
+    "message": "Spremeni velikost",
     "description": ""
   },
   
@@ -1516,7 +1517,7 @@
   },
   
   "NotificationOpenSidebar": {
-    "message": "odpri stransko vrstico za ogled iskalnih rezultatov",
+    "message": "Odpri stransko vrstico za ogled iskalnih rezultatov",
     "description": ""
   },
   
@@ -1551,11 +1552,11 @@
   },
 
   "HideContextMenu": {
-    "message": "Skrij privzeti vsebinski meni on odpiranju hitrega menija z desnim klikom"
+    "message": "Skrij privzeti vsebinski meni ob odpiranju hitrega menija z desnim klikom"
   },
 
   "HoldForContextMenu": {
-    "message": "Pridrži desni gumb ~1s in spusti za privzeti vsebinski meni"
+    "message": "Pridrži desni gumb ~1 s in spusti za privzeti vsebinski meni"
   },
   
   "tools_repeatsearch": {
@@ -1596,7 +1597,7 @@
   },
 
   "default": {
-    "message": "privzeto",
+    "message": "Privzeto",
     "description": ""
   },
 
@@ -1606,7 +1607,7 @@
   },
 
   "grouplayoutmessage": {
-    "message": "opomba: samo mape najvišje stopnje",
+    "message": "Opomba: samo mape najvišje stopnje.",
     "description": ""
   },
 
@@ -1651,12 +1652,12 @@
   },
   
   "invalidregex": {
-    "message": "Neveljaven regularni izraz",
+    "message": "Neveljaven regularni izraz.",
     "description": ""
   },
   
   "AddUsingFirefoxSearchBar": {
-	"message": "Uporabniki Firefoxa 78+ - Dodajte iskalnik s Firefoxovo iskalno vrstico"
+	"message": "Uporabniki Firefoxa 78+ - dodajte iskalnik s Firefoxovo iskalno vrstico"
   },
   
   "SyncWithFirefoxSearchHeader": {
@@ -1669,7 +1670,7 @@
   },
   
   "FFEngineExists": {
-    "message": "$1 je že nameščen v Firefoxovo iskalno vrstico",
+    "message": "$1 je že nameščen v Firefoxovo iskalno vrstico.",
     "description": ""
   },
   
@@ -1734,7 +1735,7 @@
   },
   
   "CannotEditOneClickEngines": {
-    "message": "Pred spremembami morate uvoziti Firefoxove iskalnike",
+    "message": "Pred spremembami morate uvoziti Firefoxove iskalnike.",
     "description": ""
   },
   
@@ -1759,7 +1760,7 @@
   },
   
   "hotkeystooltip": {
-    "message": "Izberite besedilo in pritisnite tipko, da poiščete.  Hitre tipke lahko nastavite v zavihku Iskalniki",
+    "message": "Izberite besedilo in pritisnite tipko, da poiščete.  Hitre tipke lahko nastavite v zavihku Iskalniki.",
     "description": ""
   },
   
@@ -1769,7 +1770,7 @@
   },
   
   "EnableHotkeysDescription": {
-    "message": "Kadarkoli omogoči hitre tipke razen ob urejanju vsebine (onemogočite, da hitre tipke dovolite samo, ko je meni ContextSearch v žarišču)",
+    "message": "Kadarkoli omogoči hitre tipke razen ob urejanju vsebine (onemogočite, da hitre tipke dovolite samo, ko je meni ContextSearch v žarišču).",
     "description": ""
   },
 
@@ -1842,7 +1843,7 @@
   },
   
   "fetchingRemoteContent": {
-    "message": "Pridobivanje oddaljene vsebine",
+    "message": "Pridobivanje oddaljene vsebine.",
     "description": "Fetching remote content (options.js)"
   },
 
@@ -1882,7 +1883,7 @@
   },
 
   "Omnibox": {
-    "message": "Večfunkcijsko polje",
+    "message": "Večfunkc. polje",
     "description": ""
   },
 
@@ -1897,7 +1898,7 @@
   },
 
   "HighlightLimitTooltip": {
-    "message": "Omeji število poudarjenih ujemanj.  Nižja omejitev lahko prepreči upočasnjeno poudarjanje. 0 = brez omejitev",
+    "message": "Omeji število poudarjenih zadetkov.  Nižja omejitev lahko prepreči upočasnjeno poudarjanje. 0 = brez omejitev",
     "description": ""
   },
 
@@ -1952,7 +1953,7 @@
   },
 
   "requestPermissionsMessage": {
-    "message": "Zahtvano je izbirno dovoljenje.  Kliknte na spodnji gumb za zahtevo.",
+    "message": "Zahtvano je izbirno dovoljenje.  Kliknte na spodnji gumb, da ga zahtevate.",
     "description": "generic permission"
   },
   "Request": {
@@ -1965,15 +1966,15 @@
   },
   
   "RegexTooltip": {
-    "message": "Spremeni iskalne izraze z regularnim izrazom pred oddajo.  Povežete lahko več nadomestkov v eni vrstici",
+    "message": "Spremeni iskalne izraze z regularnim izrazom pred oddajo.  Povežete lahko več nadomestkov v eni vrstici.",
     "description": "searchengine edit - search regex tooltip"
   },
   "MatchSearchTermsRegexTooltip": {
-    "message": "Prikaži ta iskalnik v mapi z ujemanji regularnih izrazov, če se iskalni izrazi ujemajo z naslednjim regularnim izrazom",
+    "message": "Prikaži ta iskalnik v mapi z ujemanji regularnih izrazov, če se iskalni izrazi ujemajo z naslednjim regularnim izrazom.",
     "description": "searchengine edit - match regex tooltip"
   },
   "SearchCodeTooltip": {
-    "message": "Po odprtju predloge URL-ja zaženi javascript.  Splošna spremenljivka 'searchTerms' predstavlja trenutno iskanje",
+    "message": "Po odprtju predloge URL-ja zaženi javascript.  Splošna spremenljivka 'searchTerms' predstavlja trenutno iskanje.",
     "description": "searchengine edit - searchcode tooltip"
   },
   
@@ -2082,7 +2083,7 @@
   },
   
   "exportToFirefoxSearch": {
-    "message": "izvozi v Firefoxovo iskanje",
+    "message": "Izvozi v Firefoxovo iskanje",
     "description": "advanced setting label"
   },
   "exportToFirefoxSearchTooltip": {
@@ -2090,19 +2091,19 @@
     "description": "advanced setting tooltip"
   },
   "addSearchProviderHideNotificationTooltip": {
-    "message": "Obvestilo Firefoxovim uporabnikom, naj odprte iskalnike dodajo s Firefoxovo iskalno vrstico",
+    "message": "Obvestilo Firefoxovim uporabnikom, naj odprte iskalnike dodajo s Firefoxovo iskalno vrstico.",
     "description": "advanced setting tooltip"
   },
   "alwaysAllowTileRearrangingTooltip": {
-    "message": "Ploščicam vedno dovoli preureditev v menijih",
+    "message": "Ploščicam vedno dovoli preureditev v menijih.",
     "description": "advanced setting tooltip"
   },
   "autoCopyTooltip": {
-    "message": "Izbrano besedilo je kopirano na odložišče",
+    "message": "Izbrano besedilo je kopirano na odložišče.",
     "description": "advanced setting tooltip"
   },
   "autoPasteFromClipboardTooltip": {
-    "message": "Besedilo z odložišča bo prilepljeno v iskalne vrstice, ko se iskalni meniji odprejo",
+    "message": "Besedilo z odložišča bo prilepljeno v iskalne vrstice, ko se iskalni meniji odprejo.",
     "description": "advanced setting tooltip"
   },
   "cache": {
@@ -2110,7 +2111,7 @@
     "description": "button cache label"
   },
   "cacheTooltip": {
-    "message": "predpomni ikone iskalnikov iz njihovih URL-jev",
+    "message": "Predpomni ikone iskalnikov iz njihovih URL-jev.",
     "description": "advanced setting tooltip - button cache"
   },
   "uncache": {
@@ -2118,7 +2119,7 @@
     "description": "button uncache label"
   },
   "uncacheTooltip": {
-    "message": "Izbriši predpomnilnik ikon iskalnikov samo za iskalnike, ki vsbujejo URL-je ikon. Warning: URLs will not be checked for bad or invalid before removing cache",
+    "message": "Izbriši predpomnilnik ikon iskalnikov samo za iskalnike, ki vsbujejo URL-je ikon.  Opozorilo: URL-ji pred odstranitvijo predpomnilnika ne bodo preverjeni, če so slabi ali neveljavni.",
     "description": "advanced setting tooltip - button uncache"
   },
   "confirmUncache": {
@@ -2130,7 +2131,7 @@
     "description": "cache message warning"
   },
   "cacheIconsMaxSizeTooltip": {
-    "message": "Največja širina in višina ikon za predpomnenje",
+    "message": "Največja širina in višina ikon za predpomnenje.",
     "description": "advanced setting tooltip"
   },
   "contextMenuContextualLayoutFlattenLimitTooltip": {
@@ -2138,51 +2139,51 @@
     "description": "advanced setting tooltip"
   },
   "contextMenuHotkeysTooltip": {
-    "message": "Pripni hitro tipko k predmetom vsebinskega menija z uporabo oblike (&A) za hiter dostop",
+    "message": "Pripni hitro tipko k predmetom vsebinskega menija z uporabo oblike (&A) za hiter dostop.",
     "description": "advanced setting tooltip"
   },
   "contextMenuRegexMatchedEnginesTooltip": {
-    "message": "Prikaži iskalnike, ki se ujemajo z regularnim izrazom, na vrhu menija",
+    "message": "Prikaži iskalnike, ki se ujemajo z regularnim izrazom, na vrhu menija.",
     "description": "advanced setting tooltip"
   },
   "contextMenuTitleTooltip": {
-    "message": "Preglasi naziv vsebinskega menija.  Uporabite %s namesto searchTerms.  prazno = privzeto",
+    "message": "Preglasi naziv vsebinskega menija.  Uporabite %s namesto searchTerms.  prazno = privzeto.",
     "description": "advanced setting tooltip"
   },
   "contextMenuUseContextualLayoutTooltip": {
-    "message": "Prikaži vsebinski meni v podmapah glede na trenutno vsebino",
+    "message": "Prikaži vsebinski meni v podmapah glede na trenutno vsebino.",
     "description": "advanced setting tooltip"
   },
   "contextMenuUseInnerTextTooltip": {
-    "message": "Uporabi notranje besedilo elementa kot iskalni izraz, kadar ni izbrano nobeno besedilo",
+    "message": "Uporabi notranje besedilo elementa kot iskalni izraz, kadar ni izbrano nobeno besedilo.",
     "description": "advanced setting tooltip"
   },
   "disableNewTabSortingTooltip": {
-    "message": "Omogočite, da brskalniku dovolite odločiti, kako naj razvrsti nove zavihke z rezultati iskanja.  Uporabno za preprečitev sporov z upravitelji zavihkov",
+    "message": "Omogočite, da brskalniku dovolite odločiti, kako naj razvrsti nove zavihke z rezultati iskanja.  Uporabno za preprečitev sporov z upravitelji zavihkov.",
     "description": "advanced setting tooltip"
   },
   "exportWithoutBase64IconsTooltip": {
-    "message": "Izvožene nastavitve so manjše, če izključite podatkovne URI-je ikon.  Ikone po meri se lahko pri tem izgubijo",
+    "message": "Izvožene nastavitve so manjše, če izključite podatkovne URI-je ikon.  Ikone po meri se lahko pri tem izgubijo.",
     "description": "advanced setting tooltip"
   },
   "forceOpenResultsTabsAdjacentTooltip": {
-    "message": "Vsili, da se iskalni rezultati pojavijo v naslednjem zavihku na desni",
+    "message": "Vsili, da se iskalni rezultati pojavijo v naslednjem zavihku na desni.",
     "description": "advanced setting tooltip"
   },
   "groupFolderRowBreaksTooltip": {
-    "message": "Omogočite, da skupinske mape znotraj vrstice prikažete kot bločne elemente",
+    "message": "Omogoči, da skupinske mape znotraj vrstice prikažete kot bločne elemente.",
     "description": "advanced setting tooltip"
   },
   "groupLabelMoreTileTooltip": {
-    "message": "Prikaži ikono več/manj za skupinske mape na ploščici z oznako (ne uporabi ločene ploščice)",
+    "message": "Prikaži ikono več/manj za skupinske mape na ploščici z oznako (ne uporabi ločene ploščice).",
     "description": "advanced setting tooltip"
   },
   "omniboxDefaultToLastUsedEngineTooltip": {
-    "message": "Privzeto izberi zadnji iskalnik, ki je bil uporabljen za večfuncijsko polje",
+    "message": "Privzeto izberi zadnji iskalnik, ki je bil uporabljen za večfuncijsko polje.",
     "description": "advanced setting tooltip"
   },
   "openFoldersOnHoverTimeoutTooltip": {
-    "message": "Število milisekund ob prehodu kazalca miške, po katerem naj se odpre mapa. 500 = privzeto, 0 = onemogočeno",
+    "message": "Število milisekund ob prehodu kazalca miške, po katerem naj se odpre mapa. 500 = privzeto, 0 = onemogočeno.",
     "description": "advanced setting tooltip"
   },
   "quickMenuAllowContextMenuNewTooltip": {
@@ -2190,103 +2191,103 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuAutoMaxCharsTooltip": {
-    "message": "Navečje število znakov pri izbiri, po kateri naj se odpre hitri meni na samodejni način.  Izbira več znakov ne bo odprla menija. 0 = brez omejitev",
+    "message": "Navečje število znakov pri izbiri, po kateri naj se odpre hitri meni na samodejni način.  Izbira več znakov ne bo odprla menija. 0 = brez omejitev.",
     "description": "advanced setting tooltip"
   },
   "quickMenuAutoTimeoutTooltip": {
-    "message": "Prekliče odpiranje hitrega menija, če počakate nastavljeno število milisekund, preden spustite gumb na miški. 0 = onemogočeno",
+    "message": "Prekliče odpiranje hitrega menija, če počakate nastavljeno število milisekund, preden spustite gumb na miški. 0 = onemogočeno.",
     "description": "advanced setting tooltip"
   },
   "quickMenuCancelDeadzoneTooltip": {
-    "message": "Število sl. točk, za katere lahko premaknete kazalec, preden se prekliče odpiranje hitrega menija s pridržanjem",
+    "message": "Število sl. točk, za katere lahko premaknete kazalec, preden se prekliče odpiranje hitrega menija s pridržanjem.",
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Preglasi razporeditev hitrga menija s seznamom ID-jev elementov HTML, ločenih z vejico, npr. (menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar).  Ni treba uporabiti vseh ID-jev.  Vsak, ki je na seznamu, bo premaknjen na konec drevesa DOM.  prazno = privzeto",
+    "message": "Preglasi razporeditev hitrga menija s seznamom ID-jev elementov HTML, ločenih z vejico, npr. (menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar).  Ni treba uporabiti vseh ID-jev.  Vsak, ki je na seznamu, bo premaknjen na konec drevesa DOM.  prazno = privzeto.",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {
-    "message": "nastavi žarišče na hitri meni po odpiranju",
+    "message": "Nastavi žarišče na hitri meni po odpiranju.",
     "description": "advanced setting tooltip"
   },
   "quickMenuHideSeparatorsInGridTooltip": {
-    "message": "skrij ločila pri uporabi hitrega menija v mrežnem pogledu",
+    "message": "Skrij ločila pri uporabi hitrega menija v mrežnem pogledu.",
     "description": "advanced setting tooltip"
   },
   "quickMenuHoldTimeoutTooltip": {
-    "message": "Čas v milisekundah za pridržanje gumba na miški pred odpiranjem hitrega menija s pridržanjem",
+    "message": "Čas v milisekundah za pridržanje gumba na miški pred odpiranjem hitrega menija s pridržanjem.",
     "description": "advanced setting tooltip"
   },
   "quickMenuOpeningOpacityTooltip": {
-    "message": "Raven prosojnosti hitrega menija, ko je odprt.  Postane moten ob prehodu miške",
+    "message": "Raven prosojnosti hitrega menija, ko je odprt.  Postane moten ob prehodu miške.",
     "description": "advanced setting tooltip"
   },
   "quickMenuPreventPageClicksTooltip": {
-    "message": "Prepreči dogodke miške na trenutni spletni stani, ko je hitri meni odprt",
+    "message": "Prepreči dogodke miške na trenutni spletni stani, ko je hitri meni odprt.",
     "description": "advanced setting tooltip"
   },
   "quickMenuRegexMatchedEnginesTooltip": {
-    "message": "Prikaži iskalnike, ki se ujemajo z regularnim izrazom, na vrhu menija",
+    "message": "Prikaži iskalnike, ki se ujemajo z regularnim izrazom, na vrhu menija.",
     "description": "advanced setting tooltip"
   },
   "quickMenuSearchOnMouseUpTooltip": {
-    "message": "Omogoča iskanje iz hitrega menija ob spustitvi gumba na miški brez pritiska gumba.  Uporabo, ko odpirate meni s pridržanjem in spustite gumb na ploščici za iskanje.",
+    "message": "Omogoča iskanje iz hitrega menija ob spustitvi gumba na miški brez pritiska gumba.  Uporabno, ko odpirate meni s pridržanjem in spustite gumb na ploščici za iskanje.",
     "description": "advanced setting tooltip"
   },
   "quickMenuShowHotkeysInTitleTooltip": {
-    "message": "Prikaži hitre tipke s ploščicami",
+    "message": "Prikaži hitre tipke s ploščicami.",
     "description": "advanced setting tooltip"
   },
   "quickMenuShowRecentlyUsedTooltip": {
-    "message": "Prikaži nedavno uporabljene iskalnike na vrhu menija",
+    "message": "Prikaži nedavno uporabljene iskalnike na vrhu menija.",
     "description": "advanced setting tooltip"
   },
   "quickMenuOnSimpleClick_useInnerTextTooltip": {
-    "message": "Uporabi notranje besedilo elementa kot iskalni izraz, kadar besedilo ni izbrano",
+    "message": "Uporabi notranje besedilo elementa kot iskalni izraz, kadar besedilo ni izbrano.",
     "description": "advanced setting tooltip"
   },
   "quickMenuToolbarRowsTooltip": {
-    "message": "Največje število vrstic orodja za prikaz. 0 = brez omejitev",
+    "message": "Največje število vrstic orodja za prikaz. 0 = brez omejitev.",
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsLockPersistTooltip": {
-    "message": "Stanje orodja zaklepanja bo ohranjeno med sejami",
+    "message": "Stanje orodja zaklepanja bo ohranjeno med sejami.",
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsRepeatSearchPersistTooltip": {
-    "message": "Stanje orodja za ponovitev iskanja bo ohranjeno med sejami",
+    "message": "Stanje orodja za ponovitev iskanja bo ohranjeno med sejami.",
     "description": "advanced setting tooltip"
   },
   "rememberLastOpenedFolderTooltip": {
-    "message": "Odpri menije v nazadnje uporabljeni mapi",
+    "message": "Odpri menije v nazadnje uporabljeni mapi.",
     "description": "advanced setting tooltip"
   },
   "rightClickMenuOnMouseDownFixTooltip": {
-    "message": "Zahtevaj dvoklik za prikaz privzetega vsebinskega menija, kadar uporabljate pridržanje desnega gumba na miški za odpiranje hitrega menija.  Uporabni za preprečevanje pomešanih menijev na sistemih, ki vsebinski meni prikazujejo ob kliku in ne ob spustitvi",
+    "message": "Zahtevaj dvoklik za prikaz privzetega vsebinskega menija, kadar uporabljate pridržanje desnega gumba na miški za odpiranje hitrega menija.  Uporabno za preprečevanje pomešanih menijev na sistemih, ki vsebinski meni prikazujejo ob kliku in ne ob spustitvi.",
     "description": "advanced setting tooltip"
   },
   "searchBarHistoryLengthTooltip": {
-    "message": "Največje število vnosov zgodovine, ki naj se shranijo",
+    "message": "Največje število vnosov zgodovine, ki naj se shranijo.",
     "description": "advanced setting tooltip"
   },
   "searchBarSuggestionsCountTooltip": {
-    "message": "Najveje število vključenih predlogov Google",
+    "message": "Največje število vključenih predlogov Google.",
     "description": "advanced setting tooltip"
   },
   "shakeSensitivityTooltip": {
-    "message": "Občutljivost zaznavanja tresenja.  nižje = bolj obutljivo",
+    "message": "Občutljivost zaznavanja tresenja.  nižje = bolj obutljivo.",
     "description": "advanced setting tooltip"
   },
   "sideBar_openOnResultsTooltip": {
-    "message": "Odpri stransko vrstico v zavihkih z iskalnimi rezultati",
+    "message": "Odpri stransko vrstico v zavihkih z iskalnimi rezultati.",
     "description": "advanced setting tooltip"
   },
   "sideBar_openOnResultsMinimizedTooltip": {
-    "message": "Odpri stransko vrstico v zavihkih z iskalnimi rezultati skrčeno",
+    "message": "Odpri stransko vrstico v zavihkih z iskalnimi rezultati skrčeno.",
     "description": "advanced setting tooltip"
   },
   "sideBar_rememberStateTooltip": {
-    "message": "Zapomni si stanje odprtosti stranske vrstice",
+    "message": "Zapomni si stanje odprtosti stranske vrstice.",
     "description": "advanced setting tooltip"
   },  
   "Blocklist": {
@@ -2294,14 +2295,14 @@
     "description": "blocklist label"
   },
   "BlocklistTooltip": {
-    "message": "URL-ji, na katerih naj se ContextSearch onemogoči.  Sprejema gostiteljska imena www.example.com, nadomestne znake *.example.com in regularne izraze.  Predpona ! ali # bo onemogočila vnos #example.com ali !example.com",
+    "message": "URL-ji, na katerih naj se ContextSearch onemogoči.  Sprejema gostiteljska imena www.example.com, nadomestne znake *.example.com in regularne izraze.  Predpona ! ali # bo onemogočila vnos #example.com ali !example.com.",
     "description": "blocklist tooltip"
   },
   "NewTool": {
     "message": "Dodaj orodje"
   },
   "BackButton": {
-    "message": "Gumn Nazaj"
+    "message": "Gumb Nazaj"
   },
   "ForwardButton": {
     "message": "Gumb Naprej"
@@ -2341,7 +2342,7 @@
   },
 
   "ContextsTooltip": {
-    "message": "Prikaži ta iskalnik, ko odpirate menije iz izbranih vsebin.  Deluje z vsebinskim in hitrim menijem, ko je 'Napredno' -> 'Filtriraj iskalnike' omogočeno, v nasprotnem primeru pa prezrto."
+    "message": "Prikaži ta iskalnik, ko odpiram menije iz izbranih vsebin.  Deluje z vsebinskim in hitrim menijem, ko je 'Napredno' -> 'Filtriraj iskalnike' omogočeno, v nasprotnem primeru je prezrto."
   },
 
   "OpenOnIcon": {
@@ -2349,7 +2350,7 @@
   },
 
   "OpenOnIconTooltip": {
-    "message": "Prikaži ikono poleg izbranega besedila.  Kliknte, da odprete meni."
+    "message": "Prikaži ikono poleg izbranega besedila.  Kliknite, da odprete meni"
   },
 
   "checkContextMenuOrderNotification": {
@@ -2365,7 +2366,7 @@
   },
 
   "NewExternalProgram": {
-    "message": "Nov zaganjalnik programovr"
+    "message": "Nov zaganjalnik programov"
   },
 
   "searchIconFinder": {
@@ -2405,7 +2406,7 @@
     "message": "Poprogramski skript"
   },
   "PostAppScriptTooltip": {
-    "message": "Javascript, ki naj se izvede v trenutnem zavihku, ko program konča z delom.  Stnadardni izhod se zajame v spremenjivko 'result', npr. alert(result)."
+    "message": "Javascript, ki naj se izvede v trenutnem zavihku, ko program konča z delom.  Standardni izhod se zajame v spremenjivko 'result', npr. alert(result)."
   },
   "MessengerOfflineTooltip": {
     "message": "Za zagon programov iz razširitve ContextSearch je zahtevan dodaten vtičnik.  Za več podrobnosti kliknite na povezavo."
