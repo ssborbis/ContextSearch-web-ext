@@ -209,8 +209,6 @@ async function buildContextMenu(searchTerms) {
 
 	let domainPaths = getDomainPaths(tab.url);
 
-	if (!userOptions.contextMenu) return false;
-
 	if (userOptions.contextMenuShowAddCustomSearch) {
 		let createProperties = {
 			id: "add_engine",
@@ -228,6 +226,8 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem(createProperties);
 		}
 	}
+
+	if (!userOptions.contextMenu) return false;
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
