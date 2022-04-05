@@ -1362,13 +1362,14 @@ async function openSearch(info) {
 
 			// try to inject confirm dialog
 			try {
-				let vaild = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
+				let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
 				if ( valid ) {
 					let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
 					
 					if ( !_confirm ) return;
 				}
 			} catch ( err ) { // can't inject a confirm dialog
+				console.log(err);
 				return;
 			}
 		}
