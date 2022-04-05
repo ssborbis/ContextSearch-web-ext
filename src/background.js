@@ -1354,8 +1354,24 @@ async function openSearch(info) {
 	}
 
 	if ( userOptions.multilinesAsSeparateSearches && searchTerms.split('\n').length > 1 ) {
+
 		let terms = searchTerms.split('\n');
 		let ps = [];
+
+		if ( terms.length > userOptions.multilinesAsSeparateSearchesLimit ) {
+
+			// try to inject confirm dialog
+			try {
+				let vaild = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
+				if ( valid ) {
+					let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
+					
+					if ( !_confirm ) return;
+				}
+			} catch ( err ) { // can't inject a confirm dialog
+				return;
+			}
+		}
 
 		terms.forEach((t, i) => {
 			t = t.trim();
