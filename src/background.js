@@ -1332,7 +1332,13 @@ function quickMenuSearch(info) {
 
 async function openSearch(info) {
 
+	console.log(info.quickMenuObject || null);
+
 	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
+
+	if ( userOptions.multilinesAsSeparateSearches && info.quickMenuObject ) {
+		searchTerms = info.quickMenuObject.searchTermsObject.selection.trim();
+	}
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
@@ -1382,6 +1388,7 @@ async function openSearch(info) {
 			let _info = Object.assign({}, info);
 			_info.searchTerms = t;
 			_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
+			delete _info.quickMenuObject;
 
 			ps.push(openSearch(_info));
 		})
