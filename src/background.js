@@ -1339,9 +1339,9 @@ async function openSearch(info) {
 	if ( userOptions.multilinesAsSeparateSearches ) {
 		try {
 			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim();
-		catch (err) {}
+		} catch (err) {}
 	}
-	
+
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
