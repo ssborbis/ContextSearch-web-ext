@@ -1375,7 +1375,7 @@ async function openSearch(info) {
 				if ( valid ) {
 					let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
 					
-					if ( !_confirm ) return;
+					if ( !_confirm[0] ) return;
 				}
 			} catch ( err ) { // can't inject a confirm dialog
 				console.log(err);
