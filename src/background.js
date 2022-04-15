@@ -1332,7 +1332,16 @@ function quickMenuSearch(info) {
 
 async function openSearch(info) {
 
+	console.log(info.quickMenuObject || null);
+
 	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
+
+	if ( userOptions.multilinesAsSeparateSearches ) {
+		try {
+			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim();
+		} catch (err) {}
+	}
+
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
@@ -1353,18 +1362,36 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( userOptions.splitMultilineSearches && searchTerms.split('\n').length > 1 ) {
+	if ( userOptions.multilinesAsSeparateSearches && searchTerms.split('\n').length > 1 ) {
+
 		let terms = searchTerms.split('\n');
 		let ps = [];
+
+		if ( terms.length > userOptions.multilinesAsSeparateSearchesLimit ) {
+
+			// try to inject confirm dialog
+			try {
+				let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
+				if ( valid ) {
+					let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
+					
+					if ( !_confirm ) return;
+				}
+			} catch ( err ) { // can't inject a confirm dialog
+				console.log(err);
+				return;
+			}
+		}
 
 		terms.forEach((t, i) => {
 			t = t.trim();
 
 			if ( !t ) return;
-			
+
 			let _info = Object.assign({}, info);
 			_info.searchTerms = t;
 			_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
+			delete _info.quickMenuObject;
 
 			ps.push(openSearch(_info));
 		})
@@ -1513,7 +1540,7 @@ async function openSearch(info) {
 			console.log('window created');
 		}
 
-		addTabTerms(node.id, _tab.id, searchTerms);
+		if ( node.id ) addTabTerms(node.id, _tab.id, searchTerms);
 
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
@@ -1522,7 +1549,7 @@ async function openSearch(info) {
 			let landing_url = new URL(q);
 			let current_url = new URL(__tab.url);
 			
-			if (current_url.hostname !== landing_url.hostname) return;
+			if (current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
 
 			// non-POST should wait to complete
 			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
@@ -1585,7 +1612,7 @@ function addTabTerms(nodeId, tabId, s) {
 }
 
 function removeTabTerms(tabId) {
-	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
+	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabId);
 }
 
 function getTabTerms(id, s) {

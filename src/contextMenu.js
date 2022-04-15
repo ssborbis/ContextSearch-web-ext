@@ -207,9 +207,11 @@ async function buildContextMenu(searchTerms) {
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
 
-	let domainPaths = getDomainPaths(tab.url);
+	if ( !tab.url ) {
+		console.log("Error reading active tab", tab);
+	}
 
-	if (!userOptions.contextMenu) return false;
+	let domainPaths = getDomainPaths(tab.url);
 
 	if (userOptions.contextMenuShowAddCustomSearch) {
 		let createProperties = {
@@ -228,6 +230,8 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem(createProperties);
 		}
 	}
+
+	if (!userOptions.contextMenu) return false;
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 

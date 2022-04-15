@@ -227,8 +227,10 @@ async function makeQuickMenu(options) {
 			clearTimeout(sb.hoverTimer);
 		}
 	});
-	
-	sb.addEventListener('change', e => browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value}));
+
+	sb.addEventListener('change', e => {
+		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value})
+	});
 
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = function() { 
@@ -1434,6 +1436,7 @@ function checkForNodeHotkeys(e) {
 		info: {
 			menuItemId: hotkeyNode.id,
 			selectionText: sb.value,
+			quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
 	}).then(() => {
@@ -1560,6 +1563,7 @@ document.addEventListener('mouseup', e => {
 	});
 
 	let node = tile.node;
+	let qmo = JSON.parse(JSON.stringify(quickMenuObject));
 
 	let searchPromise = (async () => {
 
@@ -1571,6 +1575,7 @@ document.addEventListener('mouseup', e => {
 					info: {
 						menuItemId: tile.node.id,
 						selectionText: sb.value,
+						quickMenuObject: qmo,
 						openMethod: getOpenMethod(e)
 					}
 				});
@@ -1582,6 +1587,7 @@ document.addEventListener('mouseup', e => {
 					info: {
 						menuItemId: tile.node.id, // needs work
 						selectionText: sb.value,
+						quickMenuObject: qmo,
 						openMethod: getOpenMethod(e)
 					}
 				});
@@ -1593,6 +1599,7 @@ document.addEventListener('mouseup', e => {
 					info: {
 						menuItemId: tile.node.id, // needs work
 						selectionText: sb.value,
+						quickMenuObject: qmo,
 						openMethod: getOpenMethod(e)
 					}
 				});
@@ -1648,6 +1655,7 @@ document.addEventListener('mouseup', e => {
 					info: {
 						menuItemId: tile.node.id, // needs work
 						selectionText: sb.value,
+						quickMenuObject: qmo,
 						openMethod: getOpenMethod(e),
 						domain: tile.node.title
 					}
@@ -1672,6 +1680,7 @@ document.addEventListener('mouseup', e => {
 					info: {
 						menuItemId: tile.node.id,
 						selectionText: sb.value,
+						quickMenuObject: qmo,
 						openMethod: getOpenMethod(e),
 					}
 				});
@@ -2090,6 +2099,7 @@ function nodeToTile( node ) {
 					info: {
 						menuItemId: node.id,
 						selectionText: sb.value,
+						quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
 						openMethod: method
 					}
 				});

@@ -77,7 +77,27 @@ function copyRaw() {
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
 
-	navigator.clipboard.writeText(rawText);
+	try {
+		navigator.clipboard.writeText(rawText);
+	} catch (err) {
+		var t = document.createElement("textarea");
+		t.value = rawText;
+
+		// Avoid scrolling to bottom
+		t.style.top = "-1000";
+		t.style.left = "-1000";
+		t.style.position = "fixed";
+
+		document.body.appendChild(t);
+		t.focus();
+		t.select();
+
+		try {
+			document.execCommand('copy');
+		} catch (_err) {}
+
+		document.body.removeChild(t);
+	}
 }
 
 function getContexts(el) {

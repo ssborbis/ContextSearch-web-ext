@@ -99,6 +99,9 @@ function buildSearchEngineContainer() {
 				return;
 			}
 
+			// force typecast as search engine
+			se.type = 'searchEngine';
+
 			let icon = document.createElement('img');
 			icon.src = getIconFromNode(node);
 			header.appendChild(icon);
