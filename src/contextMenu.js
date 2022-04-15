@@ -207,6 +207,10 @@ async function buildContextMenu(searchTerms) {
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
 
+	if ( !tab.url ) {
+		console.log("Error reading active tab", tab);
+	}
+
 	let domainPaths = getDomainPaths(tab.url);
 
 	if (userOptions.contextMenuShowAddCustomSearch) {

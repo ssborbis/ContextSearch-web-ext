@@ -1540,7 +1540,7 @@ async function openSearch(info) {
 			console.log('window created');
 		}
 
-		addTabTerms(node.id, _tab.id, searchTerms);
+		if ( node.id ) addTabTerms(node.id, _tab.id, searchTerms);
 
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
@@ -1549,7 +1549,7 @@ async function openSearch(info) {
 			let landing_url = new URL(q);
 			let current_url = new URL(__tab.url);
 			
-			if (current_url.hostname !== landing_url.hostname) return;
+			if (current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
 
 			// non-POST should wait to complete
 			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
@@ -1612,7 +1612,7 @@ function addTabTerms(nodeId, tabId, s) {
 }
 
 function removeTabTerms(tabId) {
-	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabid);
+	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabId);
 }
 
 function getTabTerms(id, s) {
