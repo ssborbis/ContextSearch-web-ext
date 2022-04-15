@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.38",
+	"version": "1.39",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"background": {
@@ -18,13 +18,13 @@
 			"contexts.js",
 			"contextMenu.js",
 			"searchActions.js",
-			"background.js",
+			"nodes.js",
 			"omnibox.js",
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",
-			"nodes.js",
-			"utils.js"
+			"utils.js",
+			"background.js"
 		]
 	},
 	"content_scripts": [
