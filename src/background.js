@@ -1540,7 +1540,9 @@ async function openSearch(info) {
 			console.log('window created');
 		}
 
-		if ( node.id ) addTabTerms(node.id, _tab.id, searchTerms);
+		try {
+			addTabTerms(node.id, _tab.id, searchTerms);
+		} catch (err) {}
 
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
