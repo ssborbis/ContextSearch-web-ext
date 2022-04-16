@@ -216,6 +216,7 @@ const defaultUserOptions = {
 	syncWithFirefoxSearch: false,
 	contextMenuShowRecentlyUsed: false,
 	contextMenuShowRecentlyUsedAsFolder:true,
+	contextMenuShowRecentlyUsedIcon: true,
 	recentlyUsedList: [],
 	recentlyUsedListLength: 10,	
 	disableNewTabSorting: false,

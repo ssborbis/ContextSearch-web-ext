@@ -294,7 +294,10 @@ async function buildContextMenu(searchTerms) {
 					traverse(folder, context, context);
 				} else {
 				//	root.children.unshift({type: "separator"});
-					folder.children.forEach( c => c.title = "🕒 " + c.title);		
+
+					if ( userOptions.contextMenuShowRecentlyUsedIcon ) 
+						folder.children.forEach( c => c.title = "🕒 " + c.title);
+							
 					folder.children.forEach( c => traverse(c, context, context));
 				}
 
