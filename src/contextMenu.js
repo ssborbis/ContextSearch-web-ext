@@ -17,7 +17,11 @@ async function buildContextMenu(searchTerms) {
 			browser.contextMenus.create( createOptions, onCreated);
 		} catch (error) { // non-Firefox
 			delete createOptions.icons;
-			browser.contextMenus.create( createOptions, onCreated);
+			try {
+				browser.contextMenus.create( createOptions, onCreated);
+			} catch( _error) {
+				console.log(_error);
+			}
 		}
 	}
 
@@ -101,7 +105,7 @@ async function buildContextMenu(searchTerms) {
 		}
 		
 		if (node.type === 'separator') {
-			browser.contextMenus.create({
+			addMenuItem({
 				parentId: parentId,
 				type: "separator",
 				contexts: ["all"]
@@ -203,7 +207,11 @@ async function buildContextMenu(searchTerms) {
 	// catch android
 	if ( !browser.contextMenus ) return;
 	
-	await browser.contextMenus.removeAll();
+	try {
+		await browser.contextMenus.removeAll();
+	} catch (error) {
+		console.log(error);
+	}
 	
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
@@ -280,11 +288,16 @@ async function buildContextMenu(searchTerms) {
 				filteredNodeTree.children = seNodes;
 			}
 
-			browser.contextMenus.create({
-				id: context,
-				title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()),
-				contexts: [context]
-			});
+			try {
+
+				browser.contextMenus.create({
+					id: context,
+					title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()),
+					contexts: [context]
+				}, onCreated);
+			} catch (error) {
+				console.log(error);
+			}
 
 			// recently used engines
 			if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
@@ -347,11 +360,15 @@ async function buildContextMenu(searchTerms) {
 		 	root.children.unshift(folder);
 		}
 
-		browser.contextMenus.create({
-			id: ROOT_MENU,
-			title: contextMenuTitle(""),
-			contexts: contexts
-		});
+		try {
+			browser.contextMenus.create({
+				id: ROOT_MENU,
+				title: contextMenuTitle(""),
+				contexts: contexts
+			}, onCreated);
+		} catch (error) {
+			console.log(error);
+		}
 
 		if ( userOptions.syncWithFirefoxSearch ) {
 			let ses = await browser.search.get();
@@ -417,12 +434,24 @@ function contextMenuTitle(searchTerms, context) {
 function updateMatchRegexFolders(s) {
 	console.log('updateMatchRegexFolders');
 
-	window.contextMenuMatchRegexMenus.forEach( menu => browser.contextMenus.remove( menu ));
+	window.contextMenuMatchRegexMenus.forEach( menu => {
+		try {
+			browser.contextMenus.remove( menu );
+		} catch (error) {
+			console.log(error);
+		}
+	});
 	window.contextMenuMatchRegexMenus = [];
 	contexts.forEach( context => updateMatchRegexFolder(s, context));
 }
 
 function updateMatchRegexFolder(s, context) {
+
+	onCreated = () => {
+		if (browser.runtime.lastError) {
+			if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) console.log(browser.runtime.lastError);
+		}
+	}
 
 	context = context || "";
 
@@ -430,7 +459,11 @@ function updateMatchRegexFolder(s, context) {
 	
 	// only remove if non-contextual
 	if ( ! context ) {
-		window.contextMenuMatchRegexMenus.forEach( menu => browser.contextMenus.remove( menu ));
+		window.contextMenuMatchRegexMenus.forEach( menu => {
+			try {
+				browser.contextMenus.remove( menu, onCreated );
+			} catch(err) {console.log(err)}
+		});
 		window.contextMenuMatchRegexMenus = [];
 	}
 			
@@ -451,11 +484,11 @@ function updateMatchRegexFolder(s, context) {
 		};
 
 		try {
-			browser.contextMenus.create(createOptions);
+			browser.contextMenus.create(createOptions, onCreated);
 		} catch (error) { // non-Firefox
 			delete createOptions.icons;
 			try {
-				browser.contextMenus.create(createOptions);
+				browser.contextMenus.create(createOptions, onCreated);
 			} catch ( error ) { console.log(error)}
 		}
 

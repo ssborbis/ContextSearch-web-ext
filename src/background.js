@@ -377,10 +377,14 @@ async function notify(message, sender, sendResponse) {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
 
-				browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
-					updateMatchRegexFolder(searchTerms);
-				});
-				
+				try {
+					browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
+						updateMatchRegexFolder(searchTerms);
+					});
+
+				} catch (err) {
+					console.log(err);
+				}
 			} 
 
 			break;
@@ -536,19 +540,27 @@ async function notify(message, sender, sendResponse) {
 
 			if (!userOptions.contextMenuShowAddCustomSearch) return;
 
-			browser.contextMenus.update("add_engine", { visible: true }).then(() => {
-				if (browser.runtime.lastError)
-					console.log(browser.runtime.lastError);
-			});
+			try {
+				browser.contextMenus.update("add_engine", { visible: true }).then(() => {
+					if (browser.runtime.lastError)
+						console.log(browser.runtime.lastError);
+				});
+			} catch (err) {
+				console.log(err);
+			}
 
 			break;
 		
 		case "disableAddCustomSearchMenu":
 			
-			browser.contextMenus.update("add_engine", { visible: false }).then(() => {
-				if (browser.runtime.lastError)
-					console.log(browser.runtime.lastError);
-			});
+			try {
+				browser.contextMenus.update("add_engine", { visible: false }).then(() => {
+					if (browser.runtime.lastError)
+						console.log(browser.runtime.lastError);
+				});
+			} catch (err) {
+				console.log(err);
+			}
 			break;
 
 		case "log":
