@@ -100,10 +100,11 @@ async function buildContextMenu(searchTerms) {
 			});
 		}
 		
-		if (node.type === 'separator' /* firefox */) {
+		if (node.type === 'separator') {
 			browser.contextMenus.create({
 				parentId: parentId,
-				type: "separator"
+				type: "separator",
+				contexts: ["all"]
 			});
 		}
 		
@@ -333,7 +334,8 @@ async function buildContextMenu(searchTerms) {
 				root.children.unshift(folder);
 			} else {
 				root.children.unshift({type: "separator"});
-				folder.children.forEach( c => c.title = "🕒 " + c.title);		
+				if ( userOptions.contextMenuShowRecentlyUsedIcon ) 
+					folder.children.forEach( c => c.title = "🕒 " + c.title);		
 				root.children = folder.children.concat(root.children);
 			}
 		}

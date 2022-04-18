@@ -34,6 +34,10 @@ function filterContexts(root, context) {
 		if ( node.type === 'folder' && node.children.length === 0 )
 			if ( parent ) return removeNode( node, parent );
 
+		// remove folders with only separators
+		if ( node.type === 'folder' && node.children.length === node.children.filter(n => n.type === "separator").length )
+			if ( parent ) return removeNode( node, parent );
+
 	});
 
 	return filteredNodeTree;
