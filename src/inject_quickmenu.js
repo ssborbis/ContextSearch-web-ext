@@ -178,6 +178,13 @@ function scrollEventListener(e) {
 window.addEventListener(window.hasOwnProperty('onmousewheel') ? 'mousewheel' : 'wheel', scrollEventListener);
 window.addEventListener('scroll', scrollEventListener);
 
+window.addEventListener(window.hasOwnProperty('onmousewheel') ? 'mousewheel' : 'wheel', e => {
+	if ( userOptions.quickMenuCancelOnMousewheel) {
+		clearTimeout(quickMenuObject.mouseDownTimer);
+		quickMenuObject.mouseDownTimer = null;
+	}
+});
+
 // Listen for quickMenuKey
 document.addEventListener('keydown', e => {
 	
