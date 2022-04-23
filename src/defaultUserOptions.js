@@ -30,6 +30,8 @@ const defaultUserOptions = {
 	quickMenuAutoOnInputs: false,
 	quickMenuOnLinks: true,
 	quickMenuOnImages: true,
+	quickMenuOnVideos: true,
+	quickMenuOnAudios: true,
 	quickMenuOnSimpleClick: {
 		enabled: false,
 		button: 1,
@@ -58,6 +60,8 @@ const defaultUserOptions = {
 	contextMenuBookmarks: false,
 	contextMenuOnLinks: true,
 	contextMenuOnImages: true,
+	contextMenuOnVideos: true,
+	contextMenuOnAudios: true,
 	quickMenuBookmarks: false,
 	quickMenuTools: [
 		{name: 'lastused', 		disabled: false},

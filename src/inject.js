@@ -174,7 +174,10 @@ function linkOrImage(el, e) {
 	
 	if ( link && userOptions.quickMenuOnLinks ) return link;
 
-	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) {
+	if ( el instanceof HTMLVideoElement && userOptions.quickMenuOnVideos )
+		return el.currentSrc || el.src;
+
+	if ( el instanceof HTMLAudioElement && userOptions.quickMenuOnAudios ) {
 		return el.currentSrc || el.src;
 	}
 	

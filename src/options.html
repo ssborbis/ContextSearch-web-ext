@@ -1471,6 +1471,15 @@
 			#requestPermissions DIV[data-permission] {
 				 margin-top:4px;
 			}
+			#quickMenuContexts .option {
+				display: inline-block;
+				border-radius: 10px;
+				vertical-align: middle;
+				text-align: center;
+				margin: 4px;
+				padding: 4px 12px 0 12px;
+				background-color: var(--bg-color1);
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -1870,29 +1879,49 @@
 					<div class="description" data-i18n="QuickMenuTooltip">_</div>
 				</div>
 
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuAutoOnInputs" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnTextBoxesTooltip">_</div>
-				</div>
+				<hr>
 				
-				<div class="option">
-					<label class="container">
+				<div data-i18n="EnableOn">_</div>
+				<br>
+				<div id="quickMenuContexts">
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuAutoOnInputs" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="input">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
 						<input type="checkbox" id="quickMenuOnLinks" />
 						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnLinks">_</div>
+						</label>
+						<div class="description" data-i18n="Link">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuOnImages" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Image">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuOnAudios" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Audio">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuOnVideos" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Video">_</div>
+					</div>
 				</div>
-				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuOnImages" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnImages">_</div>
-				</div>
+
+
 				</section>
 
 				<section>

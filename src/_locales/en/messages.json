@@ -2413,6 +2413,12 @@
   },
   "ToggleSearchTerms": {
     "message": "Next Search Term"
+  },
+  "EnableOn": {
+    "message": "Enable on"
+  },
+  "Input": {
+    "message": "input"
   }
 
 }
