@@ -2,6 +2,11 @@ var screenCoords = {x:0, y:0};
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
 
+var clearMouseDownTimer = () => {
+	clearTimeout(quickMenuObject.mouseDownTimer);
+	quickMenuObject.mouseDownTimer = null;
+}
+
 function deselectAllText(e) {
 	window.getSelection().removeAllRanges();
 
@@ -419,7 +424,7 @@ document.addEventListener('mousedown', e => {
 	if (
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
-		userOptions.quickMenuOnMouseMethod !== 'click' ||
+		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
 		!hasSearchTerms(e) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
@@ -482,11 +487,20 @@ document.addEventListener('mouseup', e => {
 	if (
 		!userOptions.quickMenu || 
 		!userOptions.quickMenuOnMouse ||
-		userOptions.quickMenuOnMouseMethod !== 'click' ||
+		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
 		!hasSearchTerms(e)
 	) return false;
+
+	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
+
+		// too much time between click, do nothing
+		if ( Date.now() - quickMenuObject.mouseLastClickTime > 500 ) {
+			quickMenuObject.mouseLastClickTime = Date.now();
+			return;
+		}
+	}
 
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
@@ -915,6 +929,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 			case "deselectAllText":
 				deselectAllText();
+				break;
+
+			case "clearMouseDownTimer":
+				clearMouseDownTimer();
 				break;
 
 		}

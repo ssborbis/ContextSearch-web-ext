@@ -110,8 +110,7 @@ function mouseClickBack(e) {
 	return false;
 }
 
-// get open method based on user preferences
-function getOpenMethod(e, isFolder) {
+function getSearchAction(e, isFolder) {
 
 	isFolder = isFolder || false;
 
@@ -121,7 +120,7 @@ function getOpenMethod(e, isFolder) {
 			let sa = defaultSearchActions[key];
 			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
 				// console.log(key, sa.action);
-				return sa.action;
+				return sa;
 			}
 		}
 	}
@@ -129,9 +128,36 @@ function getOpenMethod(e, isFolder) {
 	for ( let sa of userOptions.customSearchActions ) {
 		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
 			// console.log('customSearchActions', sa);
-			return sa.action;
+			return sa;
 		}
 	}
+}
+
+// get open method based on user preferences
+function getOpenMethod(e, isFolder) {
+
+	isFolder = isFolder || false;
+
+	// if ( defaultSearchActions ) {
+	// 	for ( let key in defaultSearchActions ) {
+	// 		defaultSearchActions[key].action = userOptions[key];
+	// 		let sa = defaultSearchActions[key];
+	// 		if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+	// 			// console.log(key, sa.action);
+	// 			return sa.action;
+	// 		}
+	// 	}
+	// }
+
+	// for ( let sa of userOptions.customSearchActions ) {
+	// 	if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
+	// 		// console.log('customSearchActions', sa);
+	// 		return sa.action;
+	// 	}
+	// }
+
+	let sa = getSearchAction(e, isFolder);
+	if ( sa ) return sa.action;
 
 	console.error('no searchAction found', e);
 	
@@ -1544,6 +1570,10 @@ document.addEventListener('mouseup', e => {
 
 	e.stopImmediatePropagation();
 	e.preventDefault();
+
+	// let sa = getSearchAction(e);
+
+	// if ( sa && sa.event === "dblclick" && quickMenuObject.mouseLastClickTime = Date.now();)
 
 	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
 

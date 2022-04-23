@@ -1,12 +1,12 @@
 const defaultSearchAction = {
-		event:"mouseup",
-		button:0,
-		altKey:false,
-		ctrlKey:false,
-		metaKey:false,
-		shiftKey:false,
-		action: "",
-		folder:false
+		"event":"mouseup",
+		"button":0,
+		"altKey":false,
+		"ctrlKey":false,
+		"metaKey":false,
+		"shiftKey":false,
+		"action": "",
+		"folder":false
 	};
 
 let defaultSearchActions = {
@@ -37,6 +37,10 @@ function isSearchAction(g, e) {
 		e.metaKey === g.metaKey &&
 		g.button === e.button
 	)
+}
+
+function getAllSearchActions() {
+	return [...defaultSearchActions].concat(userOptions.customSearchActions)
 }
 
 // function isSearchAction(g, e) {
