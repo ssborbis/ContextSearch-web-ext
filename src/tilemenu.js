@@ -1597,6 +1597,8 @@ document.addEventListener('mouseup', e => {
 
 	if ( !clickChecker(tile) ) return;
 
+	if ( !e.isTrusted ) return mouseupHandler(e);
+
 	// if a double-click is set to the same meta + button, delay exe until dblclick timeout
 	let sa = getSearchAction(e);
 
