@@ -1,10 +1,13 @@
 var screenCoords = {x:0, y:0};
+var cancelRequest = 0;
 
 var getQM = () => document.getElementById('CS_quickMenuIframe');
 
-var clearMouseDownTimer = () => {
+function clearMouseDownTimer() {
 	clearTimeout(quickMenuObject.mouseDownTimer);
+	clearTimeout(quickMenuObject.mouseDownHoldTimer);
 	quickMenuObject.mouseDownTimer = null;
+	quickMenuObject.mouseDownHoldTimer = null;
 }
 
 function deselectAllText(e) {
@@ -185,8 +188,7 @@ window.addEventListener('scroll', scrollEventListener);
 
 window.addEventListener(window.hasOwnProperty('onmousewheel') ? 'mousewheel' : 'wheel', e => {
 	if ( userOptions.quickMenuCancelOnMousewheel) {
-		clearTimeout(quickMenuObject.mouseDownTimer);
-		quickMenuObject.mouseDownTimer = null;
+		clearMouseDownTimer();
 	}
 });
 
@@ -266,8 +268,7 @@ document.addEventListener('mouseup', e => {
 	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
-	clearTimeout(quickMenuObject.mouseDownTimer);
-	quickMenuObject.mouseDownTimer = null;
+	clearMouseDownTimer();
 
 	// // skip erroneous short selections
 	let searchTerms = getSelectedText(e.target);
@@ -320,8 +321,7 @@ document.addEventListener('mousedown', e => {
 				quickMenuObject.mouseLastContextMenuTime = Date.now();
 			} else {
 				document.addEventListener('contextmenu', _e => {
-					clearTimeout(quickMenuObject.mouseDownTimer);
-					quickMenuObject.mouseDownTimer = null;
+					clearMouseDownTimer();
 				}, {once: true});
 
 				return;
@@ -334,7 +334,7 @@ document.addEventListener('mousedown', e => {
 	let coords = Object.assign({}, screenCoords);
 		
 	// timer for mouse down
-	quickMenuObject.mouseDownTimer = setTimeout(() => {	
+	quickMenuObject.mouseDownHoldTimer = setTimeout(() => {	
 
 		// prevent drag events when using search on mouseup
 		function preventDrag(_e) { _e.preventDefault() }
@@ -347,8 +347,7 @@ document.addEventListener('mousedown', e => {
 			if (_e.which !== e.which) return;
 			_e.preventDefault();
 			quickMenuObject.mouseLastClickTime = Date.now();
-			clearTimeout(quickMenuObject.mouseDownTimer);
-			quickMenuObject.mouseDownTimer = null;
+			clearMouseDownTimer();
 
 		}, {once: true});
 		
@@ -383,8 +382,7 @@ document.addEventListener('mousedown', e => {
 		// remove listener to prevent next drag event not working
 		window.removeEventListener('dragstart', preventDrag);
 
-		clearTimeout(quickMenuObject.mouseDownTimer);
-		quickMenuObject.mouseDownTimer = null;
+		clearMouseDownTimer();
 		
 	}, userOptions.quickMenuHoldTimeout);
 
@@ -400,8 +398,7 @@ document.addEventListener('mouseup', e => {
 		e.which !== userOptions.quickMenuMouseButton
 	) return false;
 		
-	clearTimeout(quickMenuObject.mouseDownTimer);
-	quickMenuObject.mouseDownTimer = null;
+	clearMouseDownTimer();
 }, {capture: true});
 
 function preventContextMenuHandler(e) {
@@ -476,8 +473,7 @@ document.addEventListener('mousedown', e => {
 	// timer for right mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
 		removePreventContextMenuHandler('quickMenuOnClick mousedown 2');
-		clearTimeout(quickMenuObject.mouseDownTimer);
-		quickMenuObject.mouseDownTimer = null;
+		clearMouseDownTimer();
 	}, userOptions.quickMenuHoldTimeout);
 }, {capture: true});
 		
@@ -704,8 +700,7 @@ document.addEventListener("mousemove", e => {
 
 // prevent quickmenu during drag events
 document.addEventListener("drag", e => {
-	clearTimeout(quickMenuObject.mouseDownTimer);
-	quickMenuObject.mouseDownTimer = null;
+	clearMouseDownTimer();
 }, {capture: true});
 
 window.addEventListener('keydown', e => {
@@ -775,6 +770,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				quickMenuObject = { 
 					keyDownTimer: quickMenuObject.keyDownTimer,
 					mouseDownTimer: quickMenuObject.mouseDownTimer,
+					mouseDownHoldTimer: quickMenuObject.mouseDownHoldTimer,
 					mouseCoords: quickMenuObject.mouseCoords,
 					screenCoords: quickMenuObject.screenCoords,
 					mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
@@ -803,6 +799,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;			
 				
 			case "quickMenuIframeLoaded":
+
+				if ( Date.now() - cancelRequest < 1000) {
+					return closeQuickMenu();
+				}
 
 				browser.runtime.sendMessage({
 					action: "updateQuickMenuObject", 
@@ -931,8 +931,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				deselectAllText();
 				break;
 
-			case "clearMouseDownTimer":
+			case "cancelQuickMenuRequest":
 				clearMouseDownTimer();
+				cancelRequest = Date.now();
 				break;
 
 		}
