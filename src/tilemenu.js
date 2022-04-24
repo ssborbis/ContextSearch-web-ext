@@ -1609,14 +1609,15 @@ document.addEventListener('mouseup', e => {
 	// single-clicks go to a timeout
 	if ( sa.event !== 'dblclick' ) {
 
-		if ( getSearchActions(e, false, true).find(_sa => _sa.event === 'dblclick'))
+		if ( getSearchActions(e, false, true).find(_sa => _sa.event === 'dblclick')) {
 			window.mouseupHandlerTimeout = setTimeout(() => {
-				mouseupHandler(e);
 				console.log('has double-click event also');
+				mouseupHandler(e);		
 			}, 500);
-		else
+		} else {
 			console.log('no double-click event, trigger immediately');
 			mouseupHandler(e);
+		}
 
 	//double-clicks are handle immediately
 	} else {
