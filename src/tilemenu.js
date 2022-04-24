@@ -133,6 +133,35 @@ function getSearchAction(e, isFolder) {
 	}
 }
 
+function getSearchActions(e, isFolder, allEvents) {
+
+	allEvents = allEvents || false;
+
+	let sas = [];
+
+	isFolder = isFolder || false;
+
+	if ( defaultSearchActions ) {
+		for ( let key in defaultSearchActions ) {
+			defaultSearchActions[key].action = userOptions[key];
+			let sa = defaultSearchActions[key];
+			if ( isSearchAction(sa, e, allEvents) && isFolder === sa.folder ) {
+				// console.log(key, sa.action);
+				sas.push(sa);;
+			}
+		}
+	}
+
+	for ( let sa of userOptions.customSearchActions ) {
+		if ( isSearchAction(sa, e, allEvents) && isFolder === sa.folder ) {
+			// console.log('customSearchActions', sa);
+			sas.push(sa);
+		}
+	}
+
+	return sas;
+}
+
 // get open method based on user preferences
 function getOpenMethod(e, isFolder) {
 
@@ -1568,12 +1597,41 @@ document.addEventListener('mouseup', e => {
 
 	if ( !clickChecker(tile) ) return;
 
+	// if a double-click is set to the same meta + button, delay exe until dblclick timeout
+	let sa = getSearchAction(e);
+
+	// catch unbound double-clicks
+	if ( !sa ) {
+		clearTimeout(window.mouseupHandlerTimeout);
+		return;
+	}
+
+	// single-clicks go to a timeout
+	if ( sa.event !== 'dblclick' ) {
+
+		if ( getSearchActions(e, false, true).find(_sa => _sa.event === 'dblclick'))
+			window.mouseupHandlerTimeout = setTimeout(() => {
+				mouseupHandler(e);
+				console.log('has double-click event also');
+			}, 500);
+		else
+			console.log('no double-click event, trigger immediately');
+			mouseupHandler(e);
+
+	//double-clicks are handle immediately
+	} else {
+		clearTimeout(window.mouseupHandlerTimeout);
+		console.log('double-click, trigger immediately')
+		mouseupHandler(e);
+	}
+});
+
+function mouseupHandler(e) {
+
 	e.stopImmediatePropagation();
 	e.preventDefault();
 
-	// let sa = getSearchAction(e);
-
-	// if ( sa && sa.event === "dblclick" && quickMenuObject.mouseLastClickTime = Date.now();)
+	let tile = e.target.closest('.tile');
 
 	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
 
@@ -1738,7 +1796,7 @@ document.addEventListener('mouseup', e => {
 
 	return false;
 
-});
+}
 
 document.addEventListener('dragstart', e => {
 

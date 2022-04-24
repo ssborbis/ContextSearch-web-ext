@@ -28,19 +28,23 @@ for ( let key in defaultSearchActions ) {
 	defaultSearchActions[key] = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
 }
 
-function isSearchAction(g, e) {
+function isSearchAction(g, e, allEvents) {
+
+	allEvents = allEvents || false;
 
 	return (
 		e.altKey === g.altKey &&
 		e.ctrlKey === g.ctrlKey &&
 		e.shiftKey === g.shiftKey &&
 		e.metaKey === g.metaKey &&
-		g.button === e.button
+		g.button === e.button &&
+		(
+			!allEvents ? (
+				(e.detail === 1 && g.event !== 'dblclick') ||
+				(e.detail === 2 && g.event === 'dblclick')
+			) : true
+		)
 	)
-}
-
-function getAllSearchActions() {
-	return [...defaultSearchActions].concat(userOptions.customSearchActions)
 }
 
 // function isSearchAction(g, e) {
