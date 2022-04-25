@@ -283,9 +283,18 @@ async function makeQuickMenu(options) {
 		}
 	});
 
-	sb.addEventListener('change', e => {
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value})
+	sb.addEventListener('input', e => {
+		quickMenuObject.searchTerms = sb.value;
+		quickMenuObject.searchTermsObject.selection = sb.value;
+	//	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
 	});
+
+	sb.addEventListener('keydown', e => {
+		if ( e.key !== "Enter") return;
+
+		quickMenuObject.searchTerms = sb.value;
+		quickMenuObject.searchTermsObject.selection = sb.value;
+	})
 
 	let csb = document.getElementById('clearSearchBarButton');
 	csb.onclick = function() { 
@@ -347,6 +356,7 @@ async function makeQuickMenu(options) {
 			if (!div) return;
 			
 			div.parentNode.lastMouseDownTile = div;
+			
 			div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
 		}
 
@@ -1597,6 +1607,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !clickChecker(tile) ) return;
 
+	// skip click tests on dispatchEvents
 	if ( !e.isTrusted ) return mouseupHandler(e);
 
 	// if a double-click is set to the same meta + button, delay exe until dblclick timeout
@@ -1654,7 +1665,7 @@ function mouseupHandler(e) {
 	});
 
 	let node = tile.node;
-	let qmo = JSON.parse(JSON.stringify(quickMenuObject));
+	let qmo = quickMenuObject;
 
 	let searchPromise = (async () => {
 
@@ -1784,6 +1795,7 @@ function mouseupHandler(e) {
 				break;
 
 		}
+
 	})();
 
 	searchPromise.then(() => {
