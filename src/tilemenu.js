@@ -266,7 +266,10 @@ async function makeQuickMenu(options) {
 	sb.onclick = e => e.stopPropagation();
 	sb.onmouseup = e => e.stopPropagation();
 
-	sb.set = text => sb.value = sb.title = text;
+	sb.set = text => {
+		sb.value = text;
+		sb.title = text;
+	}
 		
 	// replace / append dragged text based on timer
 	sb.addEventListener('dragenter', e => {
@@ -1194,7 +1197,8 @@ function makeSearchBar() {
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
 		let qmo = message[0];
 
-		if ( qmo && qmo.searchTerms) sb.set(qmo.searchTerms);
+		if ( qmo && qmo.searchTerms)
+			setTimeout(() => sb.set(qmo.searchTerms), 10);
 		else displayLastSearchTerms();
 	}, () => {
 		displayLastSearchTerms();
