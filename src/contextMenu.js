@@ -1,6 +1,8 @@
 const ROOT_MENU = "root_menu";
 
 async function buildContextMenu(searchTerms) {
+
+	console.log("buildContextMenu");
 	
 	function onCreated() {
 
@@ -510,7 +512,7 @@ function contextMenuSearch(info, tab) {
 
 	if ( info.menuItemId === 'contextMenuUseContextualLayout' ) {
 		userOptions.contextMenuUseContextualLayout = !userOptions.contextMenuUseContextualLayout;
-		notify({action: "saveUserOptions", userOptions: userOptions});
+		notify({action: "saveUserOptions", userOptions: userOptions, source: "contextMenuSearch"});
 		return buildContextMenu();
 	}
 
@@ -604,15 +606,18 @@ function contextMenuSearch(info, tab) {
 }
 
 // rebuild menu every time a tab is activated to updated selectdomain info
-browser.tabs.onActivated.addListener( async tabInfo => buildContextMenu());
+browser.tabs.onActivated.addListener( async tabInfo => {
+	debounce(buildContextMenu, 250, "buildContextMenuDebouncer");
+});
 
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 	
 	function onFound(tabs) {
 		let tab = tabs[0];
 		
-		if ( tab && tab.id && tabId === tab.id && tabInfo.url && tabInfo.url !== "about:blank" && tab.active)
-			buildContextMenu();
+		if ( tab && tab.id && tabId === tab.id && tabInfo.url && tabInfo.url !== "about:blank" && tab.active) {
+			debounce(buildContextMenu, 250, "buildContextMenuDebouncer");
+		}
 	}
 	
 	function onError(err) { console.error(err) }

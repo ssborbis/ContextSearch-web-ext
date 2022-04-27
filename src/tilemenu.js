@@ -51,7 +51,7 @@ function getSelectedText(el) {
 }
 
 function saveUserOptions() {
-	return browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+	return browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "tilemenu.js"});
 }
 
 function clickChecker(el) {

@@ -440,7 +440,7 @@ function openFindBar(options) {
 			userOptions.highLight.findBar.position = o.dockedPosition;
 			userOptions.highLight.findBar.windowType = o.windowType;
 
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveFindBarOptions"});
 		}
 
 		makeDockable(fb, {
@@ -453,7 +453,8 @@ function openFindBar(options) {
 			dockedPosition: userOptions.highLight.findBar.position
 		});
 
-		addParentDockingListeners('CS_findBarIframe', 'findBar');
+		if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
+			addParentDockingListeners('CS_findBarIframe', 'findBar');
 	});
 }
 
@@ -647,7 +648,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "findBarUpdateOptions":
 			userOptions.highLight.findBar.markOptions = message.markOptions;
 		//	if ( userOptions.highLight.findBar.saveOptions )
-				if ( window == top ) browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+				if ( window == top ) browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "findBarUpdateOptions"});
 			break;
 			
 		case "toggleNavBar":

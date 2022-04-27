@@ -141,6 +141,8 @@ async function notify(message, sender, sendResponse) {
 		case "saveUserOptions":
 			userOptions = message.userOptions;
 
+			console.log("saveUserOptions", message.source || "", sender.tab.url);
+
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions"});
 			});
@@ -725,7 +727,7 @@ async function notify(message, sender, sendResponse) {
 			userOptions.searchBarHistory.push(terms);
 
 			// update prefs
-			notify({action: "saveUserOptions", "userOptions": userOptions});
+			notify({action: "saveUserOptions", "userOptions": userOptions, source: "addToHistory" });
 			
 			console.info('adding to history', terms);
 			return Promise.resolve(userOptions);
@@ -1267,7 +1269,7 @@ function lastSearchHandler(id) {
 		userOptions.recentlyUsedList = [...new Set(userOptions.recentlyUsedList)].slice(0, userOptions.recentlyUsedListLength);
 	}
 	
-	notify({action: "saveUserOptions", userOptions: userOptions});
+	notify({action: "saveUserOptions", userOptions: userOptions, source: "lastSearchHandler"});
 }
 
 function isValidHttpUrl(str) {

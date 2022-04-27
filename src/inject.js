@@ -409,13 +409,13 @@ function checkContextMenuEventOrderNotification() {
 
 	no.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
 	}
 
 	yes.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
 		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
 	}
 
 }

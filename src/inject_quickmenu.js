@@ -1001,7 +1001,7 @@ function installResizeWidget() {
 			});
 				
 			// save prefs
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+			browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "inject_quickmenu ondrop"});
 		}
 	});
 

@@ -110,5 +110,5 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	// save last used engine(s)
 	userOptions.omniboxLastUsedIds = nodes.map(n => n.id);
-	notify({action: "saveUserOptions", "userOptions": userOptions});	
+	notify({action: "saveUserOptions", "userOptions": userOptions, source: "omnibox"});	
 });

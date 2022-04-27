@@ -1471,7 +1471,7 @@
 			#requestPermissions DIV[data-permission] {
 				 margin-top:4px;
 			}
-			#quickMenuContexts .option {
+			#menuContexts .option {
 				display: inline-block;
 				border-radius: 10px;
 				vertical-align: middle;
@@ -1479,6 +1479,9 @@
 				margin: 4px;
 				padding: 4px 12px 0 12px;
 				background-color: var(--bg-color1);
+			}
+			#additionalSearchActionsTable .template {
+				display: none;
 			}
 
 		</style>
@@ -1697,6 +1700,38 @@
 					<div class="description" data-i18n="ContextMenuTooltip">_</div>
 				</div>
 
+				<!-- <div id="menuContexts">
+					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">_</div>
+					<div class="option">
+						<label class="container">
+						<input type="checkbox" id="contextMenuOnLinks" />
+						<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Link">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnImages" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Image">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnAudios" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Audio">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnVideos" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Video">_</div>
+					</div>
+				</div> -->
+
 				<div class="option">
 					<label class="container">
 						<input type="checkbox" id="contextMenuOnLinks" />
@@ -1879,11 +1914,9 @@
 					<div class="description" data-i18n="QuickMenuTooltip">_</div>
 				</div>
 
-				<hr>
-				
-				<div data-i18n="EnableOn">_</div>
-				<br>
-				<div id="quickMenuContexts">
+
+				<div id="menuContexts">
+					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">_</div>
 					<div class="option">
 						<label class="container">
 							<input type="checkbox" id="quickMenuAutoOnInputs" />
@@ -2377,7 +2410,28 @@
 				</tr>
 			</table>
 
-			<table id="additionalSearchActionsTable"></table>
+			<table id="additionalSearchActionsTable">
+				<tr class="template">
+					<td>
+						<select class="event">
+							<option value="mouseup">click</option>
+							<option value="dblclick">double click</option>
+						</select>
+					</td>
+					<td>
+						<select class="button">
+							<option value="0">left</option>
+							<option value="1">middle</option>
+							<option value="2">right</option>
+							<option value="3">forward</option>
+							<option value="4">back</option>
+						</select>
+					<td><input class="altKey" type="checkbox" value="altKey"/><span>Alt</span></td>
+					<td><input class="ctrlKey" type="checkbox" value="ctrlKey" /><span>Ctrl</span></td>
+					<td><input class="metaKey" type="checkbox" value="metaKey" /><span>Meta</span></td>
+					<td><input class="shiftKey" type="checkbox" value="shiftKey" /><span>Shift</span></td>
+				</tr>
+			</table>
 
 			</section>
 			<section>

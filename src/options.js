@@ -419,6 +419,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSearchEngineContainer();
 	buildToolIcons();
 	sortAdvancedOptions();
+//	buildAdditionalSearchActionsTable();
 
 	addDOMListeners();
 
@@ -1549,6 +1550,34 @@ function syntaxHighlight(json) {
         return '<span class="' + cls + '">' + match + '</span>';
     });
 }
+
+function buildAdditionalSearchActionsTable() {
+	let table = $("additionalSearchActionsTable");
+
+	table.querySelectorAll("TR:not(.template)").forEach( tr => tr.parentNode.removeChild(tr));
+	userOptions.customSearchActions.forEach( (sa,index) => {
+		let row = table.querySelector(".template").cloneNode(true);
+		row.className = null;
+
+		table.appendChild(row);
+
+		row.querySelector('.event').value = sa.event;
+		row.querySelector('.button').value = sa.button;
+		row.querySelector('.altKey').value = sa.altKey;
+		row.querySelector('.ctrlKey').value = sa.ctrlKey;
+		row.querySelector('.metaKey').value = sa.metaKey;
+		row.querySelector('.shiftKey').value = sa.shiftKey;
+	});
+}
+
+// "event":"mouseup",
+// 		"button":0,
+// 		"altKey":false,
+// 		"ctrlKey":false,
+// 		"metaKey":false,
+// 		"shiftKey":false,
+// 		"action": "",
+// 		"folder":false
 
 // window.addEventListener('focus', async e => {
 // 	let uo = await browser.runtime.sendMessage({action: 'getUserOptions'});
