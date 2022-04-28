@@ -18,6 +18,7 @@ var quickMenuObject = {
 };
 
 var userOptions = {};
+window.suspendSelectionChange = false;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
 
@@ -80,6 +81,36 @@ function copyRaw() {
 	try {
 		navigator.clipboard.writeText(rawText);
 	} catch (err) {
+
+		let active = document.activeElement;
+
+		const save = function () {
+
+			if ( active && typeof active.selectionStart !== 'undefined' ) {
+				return {start: active.selectionStart, end: active.selectionEnd};
+			}
+		    const selection = window.getSelection();
+		    return selection.rangeCount === 0 ? null : selection.getRangeAt(0);
+		};
+
+		// Restore the selection
+		// `range` is a `Range` object
+		const restore = function (range) {
+			if ( active && typeof active.selectionStart !== 'undefined' ) {
+				active.selectionStart = range.start;
+				active.selectionEnd = range.end;
+				active.focus();
+				return;
+			}
+		    const selection = window.getSelection();
+		    selection.removeAllRanges();
+		    selection.addRange(range);
+		};
+
+		window.suspendSelectionChange = true;
+
+		let activeRange = save();
+		
 		var t = document.createElement("textarea");
 		t.value = rawText;
 
@@ -94,9 +125,17 @@ function copyRaw() {
 
 		try {
 			document.execCommand('copy');
-		} catch (_err) {}
+		} catch (_err) {
+			console.log(_err);
+		}
 
 		document.body.removeChild(t);
+
+		restore(activeRange);
+
+		// delay required in Waterfox
+		setTimeout(() => window.suspendSelectionChange = false, 10);
+
 	}
 }
 
@@ -119,24 +158,34 @@ function getContexts(el) {
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 
-	let searchTerms = window.getSelection().toString().trim();
+	if ( window.suspendSelectionChange ) return;
 
-	// if an opener method timer is running, skip
-	if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
+	debounce(() => {
 
-	quickMenuObject.lastSelectTime = Date.now();
-	if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
-	
-	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+		if ( window.suspendSelectionChange ) return;
 
-	// display icon to open qm
-	if ( showIcon ) showIcon(searchTerms, ev);
+		console.log('selectionchange');
+
+		let searchTerms = window.getSelection().toString().trim();
+
+		// if an opener method timer is running, skip
+		if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
+
+		quickMenuObject.lastSelectTime = Date.now();
+		if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
+		
+		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+
+		// display icon to open qm
+		if ( showIcon ) showIcon(searchTerms, ev);
+	}, 250, "selectionchangedebouncer");
 });
 
 // selectionchange handler for input nodes
 for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', e => {
+
 		if ( !isTextBox(e.target) ) return false;
 		
 		let searchTerms = getSelectedText(e.target);
