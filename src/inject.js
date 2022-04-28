@@ -133,6 +133,8 @@ function copyRaw() {
 
 		restore(activeRange);
 
+		console.log('autoCopy');
+
 		// delay required in Waterfox
 		setTimeout(() => window.suspendSelectionChange = false, 10);
 
