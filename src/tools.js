@@ -23,6 +23,8 @@ const QMtools = [
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
+
+			tile.keepOpen = true; // prevent close on click
 			
 			tile.action = this.action;
 			return tile;
@@ -49,6 +51,8 @@ const QMtools = [
 					this.dataset.locked = false;
 					this.style.backgroundImage = null;
 					this.querySelector('.tool').style.opacity = null;
+
+					
 				}, 500);
 		}
 	},

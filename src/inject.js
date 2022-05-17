@@ -93,25 +93,9 @@ function imageToBlob(imageURL) {
 }
 
 async function copyImage(imageURL){
-  const blob = await imageToBlob(imageURL)
+  const blob = await imageToBlob(imageURL);
   const item = new ClipboardItem({ "image/png": blob });
   navigator.clipboard.write([item]);
-}
-
-async function writeClipImg(imgURL) {
-  try {
-    const data = await fetch(imgURL);
-    const blob = await data.blob();
-
-    await navigator.clipboard.write([
-      new ClipboardItem({
-        [blob.type]: blob
-      })
-    ]);
-    console.log('Fetched image copied.');
-  } catch(err) {
-    console.error(err.name, err.message);
-  }
 }
 
 function copyRaw() {
