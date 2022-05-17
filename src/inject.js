@@ -73,7 +73,53 @@ function isTextBox(element) {
 	);
 }
 
+function imageToBlob(imageURL) {
+  const img = new Image;
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob((blob) => {
+        // here the image is a blob
+        resolve(blob)
+      }, "image/png", 0.75);
+    };
+  })
+}
+
+async function copyImage(imageURL){
+  const blob = await imageToBlob(imageURL)
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+async function writeClipImg(imgURL) {
+  try {
+    const data = await fetch(imgURL);
+    const blob = await data.blob();
+
+    await navigator.clipboard.write([
+      new ClipboardItem({
+        [blob.type]: blob
+      })
+    ]);
+    console.log('Fetched image copied.');
+  } catch(err) {
+    console.error(err.name, err.message);
+  }
+}
+
 function copyRaw() {
+
+	if ( quickMenuObject.searchTermsObject.image ) {
+		console.log('attempting to copy image')
+		return copyImage(quickMenuObject.searchTermsObject.image);
+	}
 	let rawText = getRawSelectedText(window.activeElement);
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
@@ -84,7 +130,7 @@ function copyRaw() {
 
 		let active = document.activeElement;
 
-		const save = function () {
+		save = () => {
 
 			if ( active && typeof active.selectionStart !== 'undefined' ) {
 				return {start: active.selectionStart, end: active.selectionEnd};
@@ -94,8 +140,7 @@ function copyRaw() {
 		};
 
 		// Restore the selection
-		// `range` is a `Range` object
-		const restore = function (range) {
+		restore = (range) => {
 			if ( active && typeof active.selectionStart !== 'undefined' ) {
 				active.selectionStart = range.start;
 				active.selectionEnd = range.end;
