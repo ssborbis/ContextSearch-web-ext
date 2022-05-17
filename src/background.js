@@ -114,7 +114,9 @@ browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 
 async function notify(message, sender, sendResponse) {
 
-	// console.log(message);
+	try {
+		console.log(sender.tab.id, sender.tab.url, message.action);
+	} catch (error) {}
 
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
