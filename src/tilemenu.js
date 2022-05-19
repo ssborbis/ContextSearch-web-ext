@@ -1565,7 +1565,7 @@ document.addEventListener('mousedown', e => {
 });
 
 // tools
-document.addEventListener('mouseup', e => {
+document.addEventListener('mouseup', async e => {
 
 	if ( !e.target.closest ) return;
 
@@ -1584,7 +1584,7 @@ document.addEventListener('mouseup', e => {
 	e.stopImmediatePropagation();
 	e.preventDefault();
 
-	tile.action(e);
+	await tile.action(e);
 
 	if ( !keepMenuOpen(e) && !tile.keepOpen )
 		closeMenuRequest(e);

@@ -189,6 +189,20 @@ async function notify(message, sender, sendResponse) {
 			userOptions.contextMenu = true;
 			buildContextMenu();
 			break;
+
+		case "fetchURI":
+			return new Promise(r => {
+				let start = Date.now();
+				let img = new Image();
+				img.onload = async function() {
+					let dataURI = await imageToBase64(img);
+					r(dataURI);
+					console.log("URI encode took", Date.now() - start);
+				}
+				img.src = message.url;
+			
+			});
+			break;
 			
 		case "getUserOptions":
 			return userOptions;
@@ -365,7 +379,7 @@ async function notify(message, sender, sendResponse) {
 			
 			if ( userOptions.autoCopy && message.searchTerms )
 				notify({action: "copyRaw"});
-				//notify({action: "copy", msg: message.searchTerms});
+			//	notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 			break;
@@ -648,9 +662,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "copyRaw":
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: "copyRaw()"
-			});
+
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.tab.frameId});
+			// return browser.tabs.executeScript(sender.tab.id, {
+			// 	code: "copyRaw()"
+			// });
 			break;
 			
 		case "hasBrowserSearch":

@@ -24,36 +24,36 @@ const QMtools = [
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(makeToolMask(this));
 
-			tile.keepOpen = true; // prevent close on click
+		//	tile.keepOpen = true; // prevent close on click
 			
 			tile.action = this.action;
 			return tile;
 		}, 
 		action: async function(e) {
 
-				let hasPermission = await browser.runtime.sendMessage({action: "hasPermission", permission: "clipboardWrite"});
+			let hasPermission = await browser.runtime.sendMessage({action: "hasPermission", permission: "clipboardWrite"});
 
-				if ( !hasPermission ) {
-					try {
-						await browser.permissions.request({permissions: ['clipboardWrite']});
-					} catch (err) {
-						browser.runtime.sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
-						return;
-					}
+			if ( !hasPermission ) {
+				try {
+					await browser.permissions.request({permissions: ['clipboardWrite']});
+				} catch (err) {
+					browser.runtime.sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
+					return;
 				}
-				let copy = await browser.runtime.sendMessage({action: "copyRaw"});
+			}
 
-				this.dataset.locked = true;
+			this.dataset.locked = true;
+			this.querySelector('.tool').style.opacity = 0;
+			this.style.backgroundImage = 'url(icons/spinner.svg)';
 
-				this.style.backgroundImage = 'url(icons/checkmark.svg)';
-				this.querySelector('.tool').style.opacity = 0;
-				setTimeout(() => {
-					this.dataset.locked = false;
-					this.style.backgroundImage = null;
-					this.querySelector('.tool').style.opacity = null;
+			let copy = await browser.runtime.sendMessage({action: "copyRaw"});
 
-					
-				}, 500);
+		//	this.style.backgroundImage = 'url(icons/checkmark.svg)';
+			
+			this.dataset.locked = false;
+			this.style.backgroundImage = null;
+			this.querySelector('.tool').style.opacity = null;
+
 		}
 	},
 	{
