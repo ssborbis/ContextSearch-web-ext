@@ -661,7 +661,50 @@ const QMtools = [
 		// 		showContext("selection");
 		// 	}, 1000);
 		}
-	}
+	},
+	{
+		name: 'open_image', 
+		icon: "icons/image.svg", 
+		title: browser.i18n.getMessage('tools_OpenImage'),
+		context: ["quickmenu", "sidebar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			// enable/disable link button on very basic 'is it a link' rules
+			// function setDisabled() {
+			// 	if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
+			// 		tile.disabled = true;
+			// 		tile.dataset.disabled = true;
+			// 	} else {
+			// 		delete tile.disabled;
+			// 		tile.dataset.disabled = false;
+			// 	}
+			// }
+			
+			// set initial disabled state
+			// setDisabled();
+			
+			// when new search terms are set while locked, enable/disable link
+			// document.addEventListener('updatesearchterms', e => {
+			// 	setDisabled();
+			// });
+
+			tile.action = this.action;
+						
+			return tile;
+		},
+		action: function(e) {
+
+		//	if (this.dataset.disabled === "true") return;
+
+			browser.runtime.sendMessage({
+				action: "openTab", 
+				openMethod: getOpenMethod(e),
+				url:sb.value
+			});
+		}
+	},
 ];
 
 function getToolTile(name) {

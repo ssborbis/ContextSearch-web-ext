@@ -925,6 +925,10 @@ async function notify(message, sender, sendResponse) {
 			return browser.permissions.contains({permissions: [message.permission]});
 			break;
 
+		case "openTab":
+			return openWithMethod(message);
+			break;
+
 		case "closeTab":
 			return browser.tabs.remove(message.tabId || sender.tab.id )
 			break;
