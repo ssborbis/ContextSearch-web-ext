@@ -707,7 +707,7 @@ const QMtools = [
 	},
 	{
 		name: 'download', 
-		icon: "icons/upload.svg", 
+		icon: "icons/download.svg", 
 		title: browser.i18n.getMessage('tools_Download'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
