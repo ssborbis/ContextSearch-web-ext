@@ -2419,6 +2419,12 @@
   },
   "Input": {
     "message": "input"
+  },
+  "tools_OpenImage": {
+    "message": "Open Image"
+  },
+  "tools_Download": {
+    "message": "Download"
   }
 
 }

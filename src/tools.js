@@ -664,7 +664,7 @@ const QMtools = [
 	},
 	{
 		name: 'open_image', 
-		icon: "icons/image.svg", 
+		icon: "icons/image_open.svg", 
 		title: browser.i18n.getMessage('tools_OpenImage'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
