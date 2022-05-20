@@ -951,6 +951,15 @@ async function notify(message, sender, sendResponse) {
      	case "closeQuickMenuRequest":
      		sendMessageToTopFrame();
      		break;
+
+     	case "download":
+     		if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+     			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
+     			return;
+     		}
+
+     		return browser.downloads.download({url: message.url, saveAs: true});
+     		break;
 	}
 }
 

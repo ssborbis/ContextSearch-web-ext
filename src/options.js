@@ -476,6 +476,11 @@ function addDOMListeners() {
 		window.close();
 	})
 
+	$('#b_requestDownloadsPermissions').addEventListener('click', async () => {
+		await browser.permissions.request({permissions: ['downloads']});
+		window.close();
+	})
+
 	$('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
 		await browser.permissions.request({permissions: ['nativeMessaging']});
 		window.close();

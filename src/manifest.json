@@ -63,7 +63,8 @@
 		"bookmarks",
 		"clipboardWrite",
 		"clipboardRead",
-		"nativeMessaging"
+		"nativeMessaging",
+		"downloads"
 	],
 	
 	"icons": {

@@ -705,6 +705,27 @@ const QMtools = [
 			});
 		}
 	},
+	{
+		name: 'download', 
+		icon: "icons/upload.svg", 
+		title: browser.i18n.getMessage('tools_Download'),
+		context: ["quickmenu", "sidebar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(makeToolMask(this));
+
+			tile.action = this.action;
+						
+			return tile;
+		},
+		action: function(e) {
+
+			browser.runtime.sendMessage({
+				action: "download",
+				url:sb.value
+			});
+		}
+	}
 ];
 
 function getToolTile(name) {
