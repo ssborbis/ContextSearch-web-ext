@@ -941,6 +941,12 @@ async function notify(message, sender, sendResponse) {
 				browser.tabs.remove(tab.id);
 				return urls.shift();
 			});
+			break;
+
+		case "cancelQuickMenuRequest":
+     	case "closeQuickMenuRequest":
+     		sendMessageToTopFrame();
+     		break;
 	}
 }
 

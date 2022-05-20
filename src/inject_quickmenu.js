@@ -29,7 +29,6 @@ function openQuickMenu(e, searchTerms) {
 	if ( target == document )
 		target = document.body;
 
-
 	let selection = searchTerms || getSelectedText(target).trim();
 
 	let searchTermsObject = {
@@ -423,7 +422,7 @@ document.addEventListener('mousedown', e => {
 		!userOptions.quickMenuOnMouse ||
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
-		!hasSearchTerms(e) ||
+		(!hasSearchTerms(e) && e.target.id !== 'CS_underDiv') ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
@@ -459,7 +458,12 @@ document.addEventListener('mousedown', e => {
 	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
 
 		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < userOptions.quickMenuRightClickTimeout ) {
-			closeQuickMenu();
+			// clearMouseDownTimer();
+			// cancelRequest = Date.now();
+			// closeQuickMenu();
+
+			browser.runtime.sendMessage({action: "cancelQuickMenuRequest"});
+     		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 			removePreventContextMenuHandler('quickMenuOnClick mousedown');
 			return;
 		}
@@ -468,6 +472,10 @@ document.addEventListener('mousedown', e => {
 	if ( e.which === 3 ) {
 		quickMenuObject.mouseLastContextMenuTime = Date.now();
 		document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+		
+		// update parent with mouseLastContextMenuTime for double-click check + cancel
+		if ( window !== top )
+			browser.runtime.sendMessage({action:"updateQuickMenuObject", quickMenuObject: quickMenuObject});
 	}
 	
 	// timer for right mouse down
@@ -488,6 +496,7 @@ document.addEventListener('mouseup', e => {
 		!quickMenuObject.mouseDownTimer ||
 		!hasSearchTerms(e)
 	) return false;
+
 
 	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
 
