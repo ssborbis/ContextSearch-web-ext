@@ -128,12 +128,16 @@ async function copyRaw() {
 		let activeRange = save();
 		
 		var t = document.createElement("textarea");
-		t.value = rawText;
 
 		// Avoid scrolling to bottom
-		t.style.top = "-1000";
-		t.style.left = "-1000";
+		t.style.top = "-1000px";
+		t.style.left = "-1000px";
 		t.style.position = "fixed";
+		t.style.width = 0;
+		t.style.height = 0;
+		t.style.display = "none";
+
+		t.value = rawText;
 
 		document.body.appendChild(t);
 		t.focus();
@@ -148,6 +152,7 @@ async function copyRaw() {
 		document.body.removeChild(t);
 
 		restore(activeRange);
+		active.focus();
 
 		console.log('autoCopy');
 
@@ -181,8 +186,6 @@ document.addEventListener("selectionchange", ev => {
 	debounce(() => {
 
 		if ( window.suspendSelectionChange ) return;
-
-		console.log('selectionchange');
 
 		let searchTerms = window.getSelection().toString().trim();
 
