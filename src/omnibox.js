@@ -70,7 +70,10 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	let input = parseOmniboxInput(text);
-	
+
+	if ( userOptions.omniboxPseudoDisabled )
+		input.searchTerms = 'cs ' + input.searchTerms;
+
 	if ( !input ) return;
 	
 	let nodes = getNodesFromHotkeys(input.hotkeys);

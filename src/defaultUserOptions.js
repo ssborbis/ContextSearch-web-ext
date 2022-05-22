@@ -241,6 +241,7 @@ const defaultUserOptions = {
 	omniboxDefaultToLastUsedEngine: false,
 	omniboxLastUsedIds: [],
 	omniboxSearch: "openBackgroundTab",
+	omniboxPseudoDisabled: false,
 	cacheIconsMaxSize: 32,
 	cacheIcons: true,
 	userShortcuts: [],
