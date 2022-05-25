@@ -548,12 +548,15 @@ function createShadowRoot() {
 createShadowRoot();
 function getShadowRoot() {
 
-	if ( typeof document.body.shadowRoot === 'undefined' ) return;
+	if ( typeof document.body.shadowRoot === 'undefined' ) {
+		document.body.getElementById = (id) => document.querySelector('#' + id);
+		return document.body;
+	}
 
 	let div = document.querySelector('#CS_shadowRootDiv');
 
 	if ( div && div.shadowRoot ) return div.shadowRoot;
-	else return false;
+//	else return document.body;
 }
 
 window.hasRun = true;
