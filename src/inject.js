@@ -194,12 +194,12 @@ document.addEventListener("selectionchange", ev => {
 
 		quickMenuObject.lastSelectTime = Date.now();
 		if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
+
+		quickMenuObject.searchTerms = searchTerms;
 		
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 
-		// display icon to open qm
-		if ( showIcon ) showIcon(searchTerms, ev);
 	}, 250, "selectionchangedebouncer");
 });
 
@@ -211,12 +211,11 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		
 		let searchTerms = getSelectedText(e.target);
 		if (searchTerms) {
+			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 		}
 
-		// display icon to open qm
-		if ( showIcon ) showIcon(searchTerms, e);
 	});
 }
 
@@ -533,6 +532,28 @@ function checkForNodeHotkeys(e) {
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
 	});
+}
+
+function createShadowRoot() {
+
+	if ( typeof document.body.shadowRoot === 'undefined' ) return;
+
+	if ( document.querySelector('#CS_shadowRootDiv')) return;
+
+	let div = document.createElement('div');
+	div.id = 'CS_shadowRootDiv';
+	document.body.appendChild(div);
+	let shadow = div.attachShadow({mode: 'open'});
+}
+createShadowRoot();
+function getShadowRoot() {
+
+	if ( typeof document.body.shadowRoot === 'undefined' ) return;
+
+	let div = document.querySelector('#CS_shadowRootDiv');
+
+	if ( div && div.shadowRoot ) return div.shadowRoot;
+	else return false;
 }
 
 window.hasRun = true;

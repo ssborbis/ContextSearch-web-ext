@@ -111,8 +111,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // init marker.js object
 var CS_MARK_instance = null;
 
-var getFindBar = () => document.getElementById('CS_findBarIframe');
-var getNavBar = () => document.getElementById('CS_highLightNavBar');
+var getFindBar = () => getShadowRoot().getElementById('CS_findBarIframe');
+var getNavBar = () => getShadowRoot().getElementById('CS_highLightNavBar');
 
 // listen for execute_script call from background for search highlighting
 document.addEventListener('CS_markEvent', e => {
@@ -333,7 +333,7 @@ function openNavBar() {
 		}, {once:true});
 	});
 
-	document.body.appendChild(div);
+	getShadowRoot().appendChild(div);
 
 	let n_width = parseFloat(window.getComputedStyle(div).getPropertyValue('width')) / window.devicePixelRatio;
 	
@@ -425,7 +425,7 @@ function openFindBar(options) {
 		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
 
 
-		document.body.appendChild(fb);
+		getShadowRoot().appendChild(fb);
 		
 		fb.onload = function() {
 	//		fb.style.maxHeight = null;		

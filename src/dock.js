@@ -443,7 +443,7 @@ function makeDockable(el, options) {
 			// disable transitions during move
 			el.style.transition = "none";
 			
-			document.body.appendChild(o.overDiv);
+			getShadowRoot().appendChild(o.overDiv);
 			el.moving = true;
 			el.classList.add('CS_moving');	
 
@@ -569,7 +569,7 @@ function addParentDockingListeners(id, target_id) {
 
 		if ( e.data.target !== target_id ) return;
 
-		let el = document.getElementById(id);
+		let el = getShadowRoot().getElementById(id);
 
 		if ( !el ) return;
 		
@@ -598,6 +598,6 @@ function addParentDockingListeners(id, target_id) {
 	// docking event listeners for iframe
 	window.addEventListener('message', parentDockingListener);
 
-	let el = document.getElementById(id);
+	let el = getShadowRoot().getElementById(id);
 	if ( el ) el.parentDockingListener = parentDockingListener;
 }

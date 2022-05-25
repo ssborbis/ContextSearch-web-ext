@@ -1,5 +1,5 @@
-function getIframe() { return document.getElementById('CS_sbIframe') }
-function getOpeningTab() { return document.getElementById('CS_sbOpeningTab') }
+function getIframe() { return getShadowRoot().getElementById('CS_sbIframe') }
+function getOpeningTab() { return getShadowRoot().getElementById('CS_sbOpeningTab') }
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
@@ -116,8 +116,10 @@ function openSideBar(options) {
 	iframe.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
 
 	iframe.allowTransparency = true;
+
+	getShadowRoot().appendChild(iframe);
 	
-	document.body.appendChild(iframe);
+//	document.body.appendChild(iframe);
 
 	function saveSideBarOptions(o) {
 		userOptions.sideBar.offsets = o.lastOffsets;
@@ -304,7 +306,9 @@ function makeOpeningTab() {
 		e.stopImmediatePropagation();
 	});
 	
-	document.body.appendChild(openingTab);
+//	document.body.appendChild(openingTab);
+
+	getShadowRoot().appendChild(openingTab);
 
 	makeDockable(openingTab, {
 		windowType: "undocked",

@@ -1,6 +1,6 @@
 #CS_quickMenuIframe {
 	all:unset;
-	position:fixed;
+	position:fixed !important;
 	cursor: pointer;
 	opacity: 0;
 	padding: 0;

@@ -1,3 +1,4 @@
+window.getShadowRoot = window.getShadowRoot || function() { return document.body };
 
 let DragShake = function() {
 
@@ -24,7 +25,7 @@ let DragShake = function() {
 		statusDiv = document.createElement('status');
 		statusDiv.style = 'font-size:9pt;position:fixed;bottom:0;right:0;color:#aaa';
 		statusDiv.style.zIndex = Number.MAX_SAFE_INTEGER;
-		document.body.appendChild(statusDiv);
+		getShadowRoot().appendChild(statusDiv);
 	}
 	this.stop = () => {
 		document.removeEventListener('dragover', this.dragHandler);
@@ -90,7 +91,7 @@ function dragOverIframeDiv(el) {
 
 	div.style.border="1px dashed #6ec17988"
 
-	document.body.appendChild(div);
+	getShadowRoot().appendChild(div);
 
 	div.addEventListener('dragover', e => e.preventDefault())
 
