@@ -1180,7 +1180,7 @@ function showIcon(searchTerms, e) {
 }
 
 document.addEventListener('mouseup', e => {
-	let searchTerms = window.getSelection().toString().trim();
+	let searchTerms = getSelectedText(e.target);
 	showIcon(searchTerms, e);
 });
 
