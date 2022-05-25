@@ -536,7 +536,10 @@ function checkForNodeHotkeys(e) {
 
 function createShadowRoot() {
 
-	if ( typeof document.body.shadowRoot === 'undefined' ) return;
+	if ( typeof document.body.shadowRoot === 'undefined' ) {
+		document.body.getElementById = (id) => document.querySelector('#' + id);
+		return;
+	}
 
 	if ( document.querySelector('#CS_shadowRootDiv')) return;
 
@@ -545,19 +548,16 @@ function createShadowRoot() {
 	document.body.appendChild(div);
 	let shadow = div.attachShadow({mode: 'open'});
 }
-createShadowRoot();
-function getShadowRoot() {
 
-	if ( typeof document.body.shadowRoot === 'undefined' ) {
-		document.body.getElementById = (id) => document.querySelector('#' + id);
-		return document.body;
-	}
+function getShadowRoot() {
 
 	let div = document.querySelector('#CS_shadowRootDiv');
 
 	if ( div && div.shadowRoot ) return div.shadowRoot;
-//	else return document.body;
+	else return document.body;
 }
+
+createShadowRoot();
 
 window.hasRun = true;
 
