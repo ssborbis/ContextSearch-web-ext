@@ -1644,12 +1644,15 @@ document.addEventListener('mouseup', e => {
 	}
 });
 
-function mouseupHandler(e) {
+async function mouseupHandler(e) {
 
 	e.stopImmediatePropagation();
 	e.preventDefault();
 
 	let tile = e.target.closest('.tile');
+
+	// give sb changes time to update
+	await new Promise(r => setTimeout(r, 25));
 
 	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
 
