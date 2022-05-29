@@ -29,6 +29,9 @@ function getNodesFromHotkeys(hotkeys) {
 
 function parseOmniboxInput(input) {
 
+	if ( userOptions.omniboxPseudoDisabled )
+		return {hotkeys: null, searchTerms:input}
+
 	let partial_match = /(\w+)$/.exec(input);
 	let full_match = /(\w+)\s+(.*)/.exec(input);
 	
@@ -77,6 +80,9 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 	if ( !input ) return;
 	
 	let nodes = getNodesFromHotkeys(input.hotkeys);
+
+	if ( userOptions.omniboxPseudoDisabled )
+		nodes = [findNode(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine"].includes(n.type))]
 
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 
