@@ -2122,6 +2122,8 @@ function nodeToTile( node ) {
 		case "searchEngine":
 
 			let se = userOptions.searchEngines.find(se => se.id === node.id);
+
+			if ( se.description && !node.description ) node.description = se.description;
 			
 			if (!se) {
 				console.log('no search engine found for ' + node.id);
@@ -2134,10 +2136,11 @@ function nodeToTile( node ) {
 
 			tile = buildSearchIcon(getIconFromNode(node), getTitleWithHotkey(node));
 			tile.dataset.title = getTitleWithHotkey(node);
+		//	tile.dataset.description = se.description || node.description || "";
 				
 			tile.dataset.id = node.id;
 			tile.dataset.type = 'searchEngine';
-			
+
 			break;
 	
 		case "bookmarklet":
@@ -2268,6 +2271,9 @@ function nodeToTile( node ) {
 	}
 	
 	tile.node = node;
+
+	if ( userOptions.showDescriptionsInTooltips && node.description )
+		tile.title += ' - ' + node.description;
 
 	// build menu with hidden engines for show/hide tool
 	if ( node.hidden ) tile.style.display = 'none';

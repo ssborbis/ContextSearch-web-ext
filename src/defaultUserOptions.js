@@ -281,6 +281,7 @@ const defaultUserOptions = {
 	waitOnInjectionTimeout: 15000,
 	multilinesAsSeparateSearches: false,
 	multilinesAsSeparateSearchesLimit: 10,
-	quickMenuCancelOnMousewheel: true
+	quickMenuCancelOnMousewheel: true,
+	showDescriptionsInTooltips: false
 
 };
