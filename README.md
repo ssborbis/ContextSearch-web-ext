@@ -564,9 +564,21 @@ gimp -n -a  "{searchTerms}"
 "C:\\Program Files\\GIMP 2\\bin\\gimp-2.10.exe" -n -a "{searchTerms}"
 ```
 
-Download mp3 from YouTube using yt-dlp
+Download mp3 from YouTube using yt-dlp 
+
+( linux )
 ```
 /home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"
+```
+
+( linux show terminal )
+```
+gnome-terminal -- /home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"
+```
+
+( macOS )
+```
+osascript -e 'tell app "Terminal" to do script "/Users/mclovin/Downloads/yt-dlp -P $HOME/Desktop --no-playlist \"{searchTerms}\""'
 ```
 
 Open link in Chromium
@@ -603,6 +615,28 @@ alert(result);
 ```
 
 This would run the command `ls ~` and alert the stdout of the command
+
+Sometimes it's useful to download a link target before launching an external app, because not all applications can handle URLs directly. In these cases, you can use a small script calling cURL to download the remote file, then open the local copy in your app.
+
+Linux / macOS
+
+```sh
+#!/bin/sh
+
+TMP="/tmp"
+
+if [ "$OSTYPE" = 'darwin'* ]; then TMP=$TMPDIR; fi
+cd $TMP
+FILENAME=`curl -OJs -w "%{filename_effective}" $2`
+$1 $TMP/$FILENAME
+```
+
+If you named your script `download.sh` your app launcher command could then look like this:
+
+[script] [app] [url]
+```
+~/download.sh "firefox" "{searchTerms}"
+```
 
 ___
 
