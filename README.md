@@ -634,10 +634,17 @@ $1 $TMP/$FILENAME
 If you named your script `download.sh` your app launcher command could then look like this:
 
 [script] [app] [url]
+
+Linux
 ```
 ~/download.sh "firefox" "{searchTerms}"
 ```
 
+macOS
+
+```
+~/download.sh "open -a 'Firefox'" "{searchTerms}"
+```
 ___
 
 <a name="styling"/>
