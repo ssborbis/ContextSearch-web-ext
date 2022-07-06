@@ -491,11 +491,11 @@ function checkContextMenuEventOrderNotification() {
 
 // set zoom attribute to be used for scaling objects
 function setZoomProperty() {
-	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
+//	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
+	getShadowRoot().host.style.setProperty('--cs-zoom', window.devicePixelRatio);
 }
 
 document.addEventListener('zoom', setZoomProperty);
-setZoomProperty();
 
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
 browser.runtime.sendMessage({action: "addUserStyles", global: true });
@@ -558,6 +558,7 @@ function getShadowRoot() {
 }
 
 createShadowRoot();
+setZoomProperty();
 
 window.hasRun = true;
 
