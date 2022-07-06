@@ -1255,6 +1255,7 @@ async function executeExternalProgram(info) {
 
 	let node = info.node;
 	let searchTerms = info.searchTerms;
+	let downloadURL = null;
 
 	if ( node.searchRegex ) {
 		try {
@@ -1266,6 +1267,9 @@ async function executeExternalProgram(info) {
 
 	let path = node.path.replace(/{searchTerms}/g, searchTerms)
 		.replace(/{url}/g, info.tab.url);
+
+	// {download_url} is a link to be downloaded by python and replaced by the file path
+	if ( /{download_url}/.test(path)) downloadURL = searchTerms;
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});
