@@ -1651,6 +1651,17 @@ $('b_manualSave').addEventListener('click', e => {
 	
 });
 
+$("#b_resetUserOptions").addEventListener('click', e => {
+	if ( confirm(browser.i18n.getMessage("resetUserOptionsConfirm")) ) {
+		newUserOptions = JSON.parse(JSON.stringify(defaultUserOptions));
+		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
+		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions})
+			.then(() => location.reload());
+	}
+});
+
 function createEditMenu() {
 
 	let overdiv = document.createElement('div');
