@@ -650,3 +650,18 @@ HR.break {
 .hide {
 	display: none !important;
 }
+#deleteEngineDiv {
+	display:block;
+	text-align: center;
+}
+#deleteEngineDiv IMG {
+	height: 20px;
+	padding: 4px 20px;
+	border: 1px solid var(--selected);
+	border-radius: 16px;
+	opacity: .2;
+	pointer-events: none;
+}
+#deleteEngineDiv IMG.hover {
+	opacity: 1;
+}

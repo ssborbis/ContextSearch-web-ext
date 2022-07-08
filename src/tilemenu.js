@@ -1836,7 +1836,7 @@ document.addEventListener('dragstart', e => {
 	}
 
 	// required by ff for dragend
-	e.dataTransfer.setData("text", "");
+	e.dataTransfer.setData("text", tile.node.id || "");
 
 	tile.classList.add('drag');
 
@@ -2023,6 +2023,13 @@ document.addEventListener('drop', e => {
 			userOptions.enableAnimations = false;
 			qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
 			userOptions.enableAnimations = orig;
+
+			// drag & drop only allowed when all tiles are shown
+			// restore show all
+			let sh = QMtools.find(t => t.name === 'showhide');
+			let sh_tile = sh.init();
+			await sh_tile.action();
+
 			setDraggable();
 			resizeMenu({tileDrop: true});
 		})();
@@ -2062,8 +2069,7 @@ clearDragStyling = el => {
 }
 
 setDraggable = e => {
-	if ( window.tilesDraggable )
-		document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
+	document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
 }
 
 makeMarker = () => {

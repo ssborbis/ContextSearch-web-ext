@@ -407,116 +407,190 @@ const QMtools = [
 			tile.tool = this;
 			return tile;
 		}, 
-		action: function(o) {
+		action: async function(o) {
 
 			o = o || {};
+			
+			// enable edit mode
+			async function on() {
 
-			(() => { // rearrange menu parts
+				console.log("edit layout on");
 
-				if ( !window.editMode && !o.forceOff) {
+				function saveDomLayout() {
 
-					function saveDomLayout() {
+					let order = [...document.querySelectorAll('.edit_handle')].map( el => {
+						return ((el.querySelector('input').checked) ? "" : "!" ) + el.dataset.parentId;
+					});
 
-						let order = [...document.querySelectorAll('.edit_handle')].map( el => {
-							return ((el.querySelector('input').checked) ? "" : "!" ) + el.dataset.parentId;
-						});
+					if ( qm.dataset.menu === "quickmenu" )
+						userOptions.quickMenuDomLayout = order.join(",");
+					else if ( qm.dataset.menu === "sidebar" )
+						userOptions.sideBar.domLayout = order.join(",");
+					else if ( qm.dataset.menu === "searchbar" )
+						userOptions.searchBarDomLayout = order.join(",");
 
-						if ( qm.dataset.menu === "quickmenu" )
-							userOptions.quickMenuDomLayout = order.join(",");
-						else if ( qm.dataset.menu === "sidebar" )
-							userOptions.sideBar.domLayout = order.join(",");
-						else if ( qm.dataset.menu === "searchbar" )
-							userOptions.searchBarDomLayout = order.join(",");
-
-						saveUserOptions();
-					}
-
-					window.editMode = true;
-
-					let i18n_titles = {
-						"quickMenuElement": 	'quickmenu',
-						"toolBar": 				'tools',
-						"menuBar": 				'menubar',
-						"titleBar": 			'name',
-						"searchBarContainer": 	'search'
-					};
-					
-					[qm,tb,mb,toolBar,sbc].forEach( (el, index) => {
-
-						let div = document.createElement('div');
-						div.classList.add('edit_handle');
-						div.draggable = true;
-						div.innerText = browser.i18n.getMessage(i18n_titles[el.id]);
-						div.dataset.parentId = el.id;
-
-						let cb = document.createElement('input');
-						cb.type = 'checkbox';
-						cb.checked = ( window.getComputedStyle(el).display !== 'none' );
-						cb.title = browser.i18n.getMessage('showhide')
-						
-						if ( el == qm ) cb.classList.add('hide');
-
-						div.appendChild(cb);
-
-						cb.addEventListener('change', e => {
-							el.classList.toggle('hide', !cb.checked);
-							resizeMenu({more: true});
-							saveDomLayout();
-						})
-
-						div.addEventListener('dragstart', function(e) {
-							e.dataTransfer.setData("text/plain", "");
-							window.dragDiv = div;
-						});
-
-						div.addEventListener('dragover', e =>	e.preventDefault());
-						div.addEventListener('dragenter', e => {
-							if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
-								div.classList.add('hover');
-						});
-						div.addEventListener('dragleave', e => {
-							if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
-								div.classList.remove('hover');
-						});
-
-						div.addEventListener('drop', function(e) {
-							e.preventDefault();
-
-							if ( window.dragDiv === div ) return false;
-
-							let el = window.dragDiv.nextSibling;
-
-							document.body.insertBefore(window.dragDiv, div);
-							document.body.insertBefore(el, div);
-
-							saveDomLayout();
-
-						});
-
-						div.addEventListener('dragend', e => {
-							document.querySelectorAll('.edit_handle.hover').forEach( el => el.classList.remove('hover'));
-						})
-
-						el.parentNode.insertBefore(div, el);
-
-					})
-				} else {
-					document.querySelectorAll('.edit_handle').forEach( el => el.parentNode.removeChild(el));
-					window.editMode = false;
+					saveUserOptions();
 				}
 
-				setTimeout(() => resizeMenu({more: true}), 250);
-			})();
+				window.editMode = true;
+				window.tilesDraggable = true;
 
-			if ( !o.forceOff )
-				browser.runtime.sendMessage({action: "editQuickMenu"});
+				let i18n_titles = {
+					"quickMenuElement": 	'quickmenu',
+					"toolBar": 				'tools',
+					"menuBar": 				'menubar',
+					"titleBar": 			'name',
+					"searchBarContainer": 	'search'
+				};
+
+				// show all engines for editing
+				if ( qm.contexts.length ) {
+
+					let sh = QMtools.find(t => t.name === 'showhide');
+					let sh_tile = sh.init();
+					await sh_tile.action();
+				}
+				
+				[qm,tb,mb,toolBar,sbc].forEach( (el, index) => {
+
+					let div = document.createElement('div');
+					div.classList.add('edit_handle');
+					div.draggable = true;
+					div.innerText = browser.i18n.getMessage(i18n_titles[el.id]);
+					div.dataset.parentId = el.id;
+
+					let cb = document.createElement('input');
+					cb.type = 'checkbox';
+					cb.checked = ( window.getComputedStyle(el).display !== 'none' );
+					cb.title = browser.i18n.getMessage('showhide')
+					
+					if ( el == qm ) cb.classList.add('hide');
+
+					div.appendChild(cb);
+
+					cb.addEventListener('change', e => {
+						el.classList.toggle('hide', !cb.checked);
+						resizeMenu({more: true});
+						saveDomLayout();
+					})
+
+					div.addEventListener('dragstart', function(e) {
+						e.dataTransfer.setData("text/plain", "");
+						window.dragDiv = div;
+					});
+
+					div.addEventListener('dragover', e =>	e.preventDefault());
+					div.addEventListener('dragenter', e => {
+						if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
+							div.classList.add('hover');
+					});
+					div.addEventListener('dragleave', e => {
+						if ( window.dragDiv && window.dragDiv.classList.contains('edit_handle'))
+							div.classList.remove('hover');
+					});
+
+					div.addEventListener('drop', function(e) {
+						e.preventDefault();
+
+						if ( window.dragDiv === div ) return false;
+
+						let el = window.dragDiv.nextSibling;
+
+						document.body.insertBefore(window.dragDiv, div);
+						document.body.insertBefore(el, div);
+
+						saveDomLayout();
+
+					});
+
+					div.addEventListener('dragend', e => {
+						document.querySelectorAll('.edit_handle.hover').forEach( el => el.classList.remove('hover'));
+					})
+
+					el.parentNode.insertBefore(div, el);
+
+				});
+
+				// delete icon
+				if ( userOptions.allowDeleteEnginesFromTileMenu ) {
+
+					let dDiv = document.createElement('div');
+					dDiv.id = 'deleteEngineDiv';
+
+					let img = new Image();
+					img.src = "icons/delete.svg";
+					dDiv.appendChild(img);
+					document.body.appendChild(dDiv);
+
+					dDiv.addEventListener('dragstart', e => {});
+
+					dDiv.addEventListener('dragenter', e => img.classList.add("hover"));
+					dDiv.addEventListener('dragleave', e => img.classList.remove("hover"));
+					dDiv.addEventListener('dragend', e => img.classList.remove("hover"));
+					dDiv.addEventListener('drop', e => img.classList.remove("hover"));
+					dDiv.addEventListener('dragover', e => {
+						e.preventDefault();
+					    e.stopPropagation();
+					});
+
+					dDiv.addEventListener('drop', async e => {
+					//	e.preventDefault();
+					//	e.stopImmediatePropagation();
+
+						// window.dragNode is deleted on drop events in tilemenu.js
+						let deleteNode = window.dragNode;
+
+						if ( confirm("Premanently delete?\n" + window.dragNode.title)) {
+							console.log('deleting node', deleteNode);
+
+							nodeCut(deleteNode, deleteNode.parent);
+							await saveUserOptions();
+
+							qm = await quickMenuElementFromNodeTree(qm.rootNode);
+							setDraggable();
+
+							// show all regardless of context or hidden
+							let sh = QMtools.find(t => t.name === 'showhide');
+							let sh_tile = sh.init();
+							await sh_tile.action();
+
+						}
+					});
+				}
+
+			} 
+
+			async function off() {
+
+				console.log("edit layout off");
+
+				// disable edit mode
+
+				let dDiv = document.getElementById('deleteEngineDiv');
+				if ( dDiv ) dDiv.parentNode.removeChild(dDiv);
+
+				document.querySelectorAll('.edit_handle').forEach( el => el.parentNode.removeChild(el));
+				window.editMode = false;
+				window.tilesDraggable = false;
+			}
+
+			if ( o.forceOn || ( !window.editMode && !o.forceOff )) 
+				await on();
+			else 
+				await off();
+
+			setDraggable();
+
+			setToolLockedState(this.tool || this, window.editMode);
+			resizeMenu();
+
+			setTimeout(() => resizeMenu({more: true}), 250);
+
+			if ( !o.forceOff && !o.forceOn ) browser.runtime.sendMessage({action: "editQuickMenu"});
 			
-			if ( !userOptions.alwaysAllowTileRearranging ) {
-				window.tilesDraggable = !window.tilesDraggable;
+			if ( userOptions.alwaysAllowTileRearranging ) {
+				window.tilesDraggable = true;
 				setDraggable();
-
-				setToolLockedState(this.tool || this, window.editMode);
-				resizeMenu();
 			}
 		}
 	},
