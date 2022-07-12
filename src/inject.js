@@ -491,8 +491,8 @@ function checkContextMenuEventOrderNotification() {
 
 // set zoom attribute to be used for scaling objects
 function setZoomProperty() {
-//	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
-	getShadowRoot().host.style.setProperty('--cs-zoom', window.devicePixelRatio);
+	let el = getShadowRoot().host || document.documentElement;
+	el.style.setProperty('--cs-zoom', window.devicePixelRatio);
 }
 
 document.addEventListener('zoom', setZoomProperty);
@@ -536,22 +536,25 @@ function checkForNodeHotkeys(e) {
 
 function createShadowRoot() {
 
-	if ( typeof document.body.shadowRoot === 'undefined' ) {
+	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {
 		document.body.getElementById = (id) => document.querySelector('#' + id);
 		return;
 	}
 
-	if ( document.querySelector('#CS_shadowRootDiv')) return;
+	if ( document.querySelector('contextsearch-widgets')) return;
 
-	let div = document.createElement('div');
-	div.id = 'CS_shadowRootDiv';
-	document.body.appendChild(div);
-	let shadow = div.attachShadow({mode: 'open'});
+	let div = document.createElement('contextsearch-widgets');
+	document.documentElement.appendChild(div);
+	let shadow = div.attachShadow({mode: 'open'})
+		.innerHTML = `
+      <style>
+        :host { all: initial; }
+      </style>`;
 }
 
 function getShadowRoot() {
 
-	let div = document.querySelector('#CS_shadowRootDiv');
+	let div = document.querySelector('contextsearch-widgets');
 
 	if ( div && div.shadowRoot ) return div.shadowRoot;
 	else return document.body;
