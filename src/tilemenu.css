@@ -62,6 +62,10 @@ BODY {
 .tile[data-locked="true"] {
 	--tools-color: var(--selected);
 }
+.tile.hidden {
+	filter: saturate(50%);
+	opacity: .5;
+}
 #quickMenuElement, .tile {
 	display:inline-block;
 	font-size:0;
@@ -664,4 +668,15 @@ HR.break {
 }
 #deleteEngineDiv IMG.hover {
 	opacity: 1;
+}
+#contextsBar {
+	overflow-x:hidden;
+	width:var(--iframe-body-width, auto);
+	text-align: center;
+}
+#contextsBar .tool {
+	margin: 2px;
+}
+#contextsBar .on {
+	--tools-color: var(--selected);
 }

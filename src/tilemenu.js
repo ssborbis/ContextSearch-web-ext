@@ -27,6 +27,7 @@ var mb = document.getElementById('menuBar');
 var toolBar = document.getElementById('toolBar');
 var sbc = document.getElementById('searchBarContainer');
 var aeb = document.getElementById('addEngineBar');
+var ctb = document.getElementById('contextsBar');
 
 var type;
 
@@ -978,6 +979,8 @@ async function makeQuickMenu(options) {
 		qm.contexts = quickMenuObject.contexts;
 		qm.contextualLayout = false;
 
+		ctb.innerHTML = null;
+
 		// filter node tree for matching contexts
 		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
 
@@ -995,6 +998,26 @@ async function makeQuickMenu(options) {
 			rootNode = tempRoot;
 
 			qm.contextualLayout = true;
+
+			// set the context bar to display current contexts
+			
+			contexts.forEach(c => {
+				let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
+				icon.title = browser.i18n.getMessage(c);
+				ctb.appendChild(icon);
+
+				if ( qm.contexts.includes(c) ) {
+					icon.classList.add("on");
+				} else {
+					icon.style.opacity = .5;
+				}
+
+				icon.onclick = async function() {
+					quickMenuObject.contexts = [c];
+					qm = await quickMenuElementFromNodeTree( window.root );
+					//resizeMenu();
+				}
+			})
 		}
 
 		let debug = rootNode.title === "empty";
@@ -1522,7 +1545,7 @@ getAllOtherHeights = (_new) => {
 	if ( _new ) return document.body.getBoundingClientRect().height - qm.getBoundingClientRect().height;
 	
 	let height = 0;
-	[sbc,tb,mb,toolBar,aeb].forEach( el => height += getFullElementSize(el).height );
+	[sbc,tb,mb,toolBar,aeb,ctb].forEach( el => height += getFullElementSize(el).height );
 	return height;
 }
 

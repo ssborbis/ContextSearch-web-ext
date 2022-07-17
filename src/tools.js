@@ -857,9 +857,13 @@ function makeMaskCanvas(url, color) {
 }
 
 function makeToolMask(tool) {
+	return makeMask(tool.icon);
+}
+
+function makeMask(img_url) {
 	let icon = document.createElement('div');
 	icon.className = "tool";
-	icon.style.setProperty('--mask-image', `url(${tool.icon})`);
+	icon.style.setProperty('--mask-image', `url(${img_url})`);
 	return icon;
 }
 
