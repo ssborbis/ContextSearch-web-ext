@@ -87,10 +87,10 @@ async function copyImage(imageURL){
 
 async function copyRaw() {
 
-	if ( quickMenuObject.searchTermsObject.image ) {
-		console.log('attempting to copy image');
-		return copyImage(quickMenuObject.searchTermsObject.image);
-	}
+	// if ( userOptions.autoCopyImages && quickMenuObject.searchTermsObject.image ) {
+	// 	console.log('attempting to copy image to clipboard');
+	// 	return copyImage(quickMenuObject.searchTermsObject.image);
+	// }
 	let rawText = getRawSelectedText(window.activeElement);
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
