@@ -963,6 +963,8 @@ function buildSearchEngineContainer() {
 
 				e.target.appendChild(img);
 
+				window.listeningForHotkey = true;
+
 				window.addEventListener('keydown', function keyPressListener(evv) {
 					evv.preventDefault();
 					
@@ -978,6 +980,7 @@ function buildSearchEngineContainer() {
 						}
 	
 						window.removeEventListener('keydown', keyPressListener);
+						window.listeningForHotkey = false;
 						updateNodeList();
 						return;
 					}
@@ -1002,6 +1005,7 @@ function buildSearchEngineContainer() {
 					});
 
 					window.removeEventListener('keydown', keyPressListener);
+					window.listeningForHotkey = false;
 					updateNodeList();
 				}); 
 			}
@@ -2348,6 +2352,10 @@ document.addEventListener('keydown', e => {
 });
 
 document.addEventListener('keydown', e => {
+
+	if ( document.activeElement && document.activeElement.nodeName === 'INPUT' ) return;
+	if ( window.listeningForHotkey ) return;
+
 	if ( e.key === 'Delete' && selectedRows.length ) {
 		e.preventDefault();
 
