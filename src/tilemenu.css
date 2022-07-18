@@ -674,9 +674,16 @@ HR.break {
 	width:var(--iframe-body-width, auto);
 	text-align: center;
 }
-#contextsBar .tool {
+#contextsBar > DIV {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
 	margin: 2px;
+}
+#contextsBar .tool {
+	opacity: .5;
 }
 #contextsBar .on {
 	--tools-color: var(--selected);
+	opacity: 1;
 }

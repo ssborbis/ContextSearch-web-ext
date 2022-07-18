@@ -440,7 +440,8 @@ const QMtools = [
 					"toolBar": 				'tools',
 					"menuBar": 				'menubar',
 					"titleBar": 			'name',
-					"searchBarContainer": 	'search'
+					"searchBarContainer": 	'search',
+					"contextsBar": 			'contexts'
 				};
 
 				// show all engines for editing
@@ -449,9 +450,11 @@ const QMtools = [
 					let sh = QMtools.find(t => t.name === 'showhide');
 					let sh_tile = sh.init();
 					await sh_tile.action();
+
+				//	window.showHideTile = sh_tile;
 				}
 				
-				[qm,tb,mb,toolBar,sbc].forEach( (el, index) => {
+				[qm,tb,mb,toolBar,sbc,ctb].forEach( (el, index) => {
 
 					let div = document.createElement('div');
 					div.classList.add('edit_handle');

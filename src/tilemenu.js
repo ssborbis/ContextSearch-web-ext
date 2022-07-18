@@ -1002,17 +1002,15 @@ async function makeQuickMenu(options) {
 			// set the context bar to display current contexts
 			
 			contexts.forEach(c => {
+				let div = document.createElement('div');
 				let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
 				icon.title = browser.i18n.getMessage(c);
-				ctb.appendChild(icon);
+				div.appendChild(icon);
+				ctb.appendChild(div);
 
-				if ( qm.contexts.includes(c) ) {
-					icon.classList.add("on");
-				} else {
-					icon.style.opacity = .5;
-				}
+				if ( qm.contexts.includes(c) ) icon.classList.add("on");
 
-				icon.onclick = async function() {
+				div.onclick = async function() {
 					quickMenuObject.contexts = [c];
 					qm = await quickMenuElementFromNodeTree( window.root );
 					//resizeMenu();

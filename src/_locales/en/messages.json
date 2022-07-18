@@ -2428,6 +2428,9 @@
   },
   "resetUserOptionsConfirm": {
     "message": "Reset all preferences to default settings? ( Search Engines will not be effected )"
+  },
+  "contexts": {
+    "message":"Contexts"
   }
 
 }
