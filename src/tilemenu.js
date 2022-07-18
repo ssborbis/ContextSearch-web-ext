@@ -2237,6 +2237,7 @@ function nodeToTile( node ) {
 				browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
+						node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
 						menuItemId: node.id,
 						selectionText: sb.value,
 						quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
