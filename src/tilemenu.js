@@ -971,6 +971,14 @@ async function makeQuickMenu(options) {
 
 		qm.expandMoreTiles();
 
+		// enable tools on folder change
+		(() => {
+			for ( ts in toolStatuses ) {
+				if ( toolStatuses[ts] ) 
+					QMtools.find(t => t.name == ts ).init();
+			}
+		})();
+
 		return qm;
 	}
 

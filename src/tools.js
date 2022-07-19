@@ -810,12 +810,16 @@ function getToolTile(name) {
 }
 
 function setToolLockedState(tool, status) {
+
+	toolStatuses[tool.name] = status;
 	document.querySelectorAll(`[data-type="tool"]`).forEach( t => {
 		if ( t.tool && t.tool.name === tool.name ) {
 			t.dataset.locked = status;
 		}
 	});
 }
+
+var toolStatuses = {};
 
 function makeMaskCanvas(url, color) {
 
@@ -883,4 +887,3 @@ function getBrightness(el) {
                       (parseInt(rgb[1]) * 587) +
                       (parseInt(rgb[2]) * 114)) / 1000);
 }
-

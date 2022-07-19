@@ -1,7 +1,6 @@
 const advancedOptions = [
   { "id": "addSearchProviderHideNotification"},
   { "id": "alwaysAllowTileRearranging"},
-  { "id": "autoCopy"},
   { "id": "autoPasteFromClipboard"},
   { "id": "cacheIconsMaxSize"},
   { "id": "contextMenuHotkeys"},
