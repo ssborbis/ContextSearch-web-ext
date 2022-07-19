@@ -9,7 +9,7 @@ function replaceOpenSearchParams(options) {
 	let domains = getDomains(url);
 	
 	return template
-		.replace(/{searchTerms}/g, searchterms)
+		.replace(/{searchTerms}|%s/g, searchterms)
 		.replace(/{count[\?]?}/g, "50")
 		.replace(/{startIndex[\?]?}/g, "1")
 		.replace(/{startPage[\?]?}/g, "1")
