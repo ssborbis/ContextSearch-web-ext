@@ -208,6 +208,7 @@ const defaultUserOptions = {
 	searchBarSuggestionsCount: 20,
 	groupLabelMoreTile: false,
 	autoCopy: false,
+	autoCopyOnInputs:false,
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,

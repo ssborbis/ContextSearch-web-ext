@@ -375,10 +375,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "updateSearchTerms":
+
 			window.searchTerms = message.searchTerms;
 			
-			if ( userOptions.autoCopy && message.searchTerms )
-				notify({action: "copyRaw"});
+			if ( userOptions.autoCopy && message.searchTerms && ( userOptions.autoCopyOnInputs || !message.input))
+				notify({action: "copyRaw", autoCopy:true});
 			//	notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});

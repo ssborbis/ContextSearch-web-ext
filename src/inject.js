@@ -48,7 +48,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 
 		case "copyRaw":
-			return copyRaw();
+			return copyRaw(message.autoCopy);
 			break;
 	}
 });
@@ -68,13 +68,14 @@ function getSelectedText(el) {
 }
 
 function isTextBox(element) {
-	return ( element.nodeType == 1 && 
+
+	return ( element && element.nodeType == 1 && 
 		(
 			element.nodeName == "TEXTAREA" ||
 			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
 			element.isContentEditable
 		)
-	);
+	) ? true : false;
 }
 
 async function copyImage(imageURL){
@@ -85,15 +86,18 @@ async function copyImage(imageURL){
 	navigator.clipboard.write([item]);
 }
 
-async function copyRaw() {
+async function copyRaw(autoCopy) {
 
 	// if ( userOptions.autoCopyImages && quickMenuObject.searchTermsObject.image ) {
 	// 	console.log('attempting to copy image to clipboard');
 	// 	return copyImage(quickMenuObject.searchTermsObject.image);
 	// }
-	let rawText = getRawSelectedText(window.activeElement);
+
+	let rawText = getRawSelectedText(document.activeElement);
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
+
+	console.log('autoCopy', rawText);
 
 	try {
 		navigator.clipboard.writeText(rawText);
@@ -212,7 +216,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		let searchTerms = getSelectedText(e.target);
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
-			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 		}
 

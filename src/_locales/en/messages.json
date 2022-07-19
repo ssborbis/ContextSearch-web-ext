@@ -2098,12 +2098,19 @@
     "message": "Always allow tiles to be rearranged in the menus",
     "description": "advanced setting tooltip"
   },
+  "autoCopy": {
+    "message": "Auto Copy"
+  },
   "autoCopyTooltip": {
     "message": "Selected text is copied to the clipboard",
     "description": "advanced setting tooltip"
   },
   "autoPasteFromClipboardTooltip": {
     "message": "Text in the clipboard is pasted to searchbars when search menus are opened",
+    "description": "advanced setting tooltip"
+  },
+   "autoCopyOnInputsTooltip": {
+    "message": "Enable for inputs and textareas",
     "description": "advanced setting tooltip"
   },
   "cache": {
