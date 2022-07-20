@@ -2396,6 +2396,9 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 			if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
 				if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
 				else li.style.display = 'none';
+			} else {
+				// show folder hierarchy
+				li.closest("UL").parentNode.querySelector('.header').style.display = null;
 			}
 		}
 	}, 500, "searchEnginesManagerSearchTimer");
