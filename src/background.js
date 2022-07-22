@@ -30,6 +30,7 @@ var isAndroid = false;;
 if ( browser.contextMenus ) // catch android
 	browser.contextMenus.onClicked.addListener(contextMenuSearch);
 
+// domain follower highlighting
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
 	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
@@ -1137,7 +1138,8 @@ function openWithMethod(o) {
 
 function executeBookmarklet(info) {
 	
-	let searchTerms = window.searchTerms || escapeDoubleQuotes(info.selectionText);
+	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
+	let searchTerms = escapeDoubleQuotes(info.searchTerms || window.searchTerms || info.selectionText);
 
 	// run as script
 	if ( info.node.searchCode ) {
