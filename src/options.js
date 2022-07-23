@@ -486,6 +486,8 @@ function addDOMListeners() {
 		window.close();
 	})
 
+	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
+
 	// hide other request buttons
 	$('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
 		const urlParams = new URLSearchParams(window.location.search);
@@ -1739,15 +1741,21 @@ function createMaskIcon(src) {
 	return tool;
 }
 
-function checkAndUpdateNativeApp() {
-	if ( !browser.runtime.sendNativeMessage ) return false;
+async function checkAndUpdateNativeApp() {
+	if ( !browser.runtime.sendNativeMessage ) return alert('Native app not connected!');
 
 	browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true}).then( newVersion => {
 		if ( newVersion ) {
 			if (confirm("Update native app script to version " + newVersion + "?"))
 				browser.runtime.sendNativeMessage("contextsearch_webext", {update:true});
 		} else {
-			console.log('up to date');
+			alert('Latest version already installed');
 		}
 	});
+}
+
+async function checkForNativeAppUpdate() {
+	if ( !browser.runtime.sendNativeMessage ) return false;
+
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true});
 }

@@ -602,7 +602,10 @@ function buildSearchEngineContainer() {
 					img.style.height = '24px';
 					img.style.verticalAlign = 'middle';
 					img.style.marginRight = '10px';
-					img.title = browser.i18n.getMessage('NativeApp');
+					img.style.cursor = 'pointer';
+					img.title = browser.i18n.getMessage('NativeApp') + " ( click to check for updates )";
+
+					img.onclick = function() { checkAndUpdateNativeApp() }
 
 					div.appendChild(img);
 					let span = document.createElement('span');
