@@ -538,6 +538,21 @@ function checkForNodeHotkeys(e) {
 	});
 }
 
+function getSearchTermsForHotkeys(e) {
+	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
+	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
+	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
+
+	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
+		link = el.currentSrc || el.src;
+
+	let searchTerms = getSelectedText(e.target) || img || link || "";
+
+	if ( !searchTerms ) return false;
+
+	return searchTerms;
+}
+
 function createShadowRoot() {
 
 	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {

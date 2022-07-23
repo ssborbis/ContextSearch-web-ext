@@ -219,6 +219,9 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
+
+			let searchTerms = ( typeof sb === 'undefined') ? quickMenuObject.searchTerms : sb.value;
+
 			if ( !userOptions.lastUsedId ) return;
 				
 			let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
@@ -227,8 +230,8 @@ const QMtools = [
 				action: "quickMenuSearch", 
 				info: {
 					menuItemId: node.id,
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e)
+					selectionText: searchTerms,
+					openMethod: (typeof getOpenMethod === 'undefined' ) ? userOptions.quickMenuLeftClick : getOpenMethod(e)
 				}
 			});
 		}
@@ -579,8 +582,11 @@ const QMtools = [
 
 			if ( o.forceOn || ( !window.editMode && !o.forceOff )) 
 				await on();
-			else 
+			else {
 				await off();
+			//	if ( window.showHideStatus )
+
+			}
 
 			setDraggable();
 
@@ -685,8 +691,10 @@ const QMtools = [
 			qm.querySelectorAll('.tile').forEach( t => {
 				if ( !t.node ) return;
 
-				if ( t.node.hidden )
+				if ( t.node.hidden ) {
 					t.style.display = on ? null : 'none';
+					// t.classList.toggle("hidden", on);
+				}
 			});
 			
 			resizeMenu({openFolder: true});

@@ -130,6 +130,23 @@ const defaultShortcuts = [
 		shift:true,
 		meta:false,
 		id: 13
+	},{
+		name:"tools_lastused",
+		action:(e) => {
+			let searchTerms = getSearchTermsForHotkeys(e);
+
+			if ( !searchTerms ) return;
+
+			quickMenuObject.searchTerms = searchTerms;
+
+			QMtools.find(t => t.name === "lastused").action(e);
+		},
+		key: "l",
+		ctrl: true,
+		alt: true,
+		shift:false,
+		meta:false,
+		id: 14
 	}
 ];
 
