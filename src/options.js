@@ -428,6 +428,35 @@ document.addEventListener("DOMContentLoaded", async e => {
 
 	document.body.style.opacity = 1;
 
+	// testing moving tools to SEM
+	(() => {
+
+		let ts = userOptions.quickMenuTools;
+
+		let folder = {
+			type:"folder",
+			title:"Tools Menu",
+			children:[],
+			hidden:false,
+			id:"tools_menu"
+		}
+
+		ts.forEach(t => {
+
+			let tool = QMtools.find( _t => _t.name === t.name);
+
+			folder.children.push({
+				type: "tool",
+				hidden: t.disabled,
+				title: tool.title,
+				icon: tool.icon,
+				tool: tool.name
+			})
+		})
+
+		console.log(folder);
+	});
+
 });
 
 function addDOMListeners() {
