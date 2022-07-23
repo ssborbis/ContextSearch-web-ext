@@ -2460,7 +2460,8 @@ async function injectContentScripts(tab, frameId) {
 		"/inject_highlight.js",
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
-		"/dragshake.js"
+		"/dragshake.js",
+		"/tools.js" // for shortcuts
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 
@@ -2473,7 +2474,8 @@ async function injectContentScripts(tab, frameId) {
 			"/dock.js",
 			"/inject_sidebar.js",
 			"/inject_customSearch.js",
-			"/resizeWidget.js"
+			"/resizeWidget.js"/*,
+			"/inject_speedDial.js"*/
 		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
 		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
 	}
