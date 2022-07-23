@@ -730,6 +730,11 @@ window.addEventListener('keydown', e => {
 	browser.runtime.sendMessage({action: "focusSearchBar"});
 });
 
+// document.addEventListener('keydown', e => {
+// 	if ( userOptions.quickMenuCloseOnKeydown )
+// 		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "keydown"});
+// });
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if (typeof message.action !== 'undefined') {

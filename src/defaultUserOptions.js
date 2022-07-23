@@ -48,6 +48,7 @@ const defaultUserOptions = {
 	quickMenuCloseOnClick: true,
 	quickMenuCloseOnEdit: false,
 	quickMenuCloseOnTabChange: false,
+	//quickMenuCloseOnKeydown: false,
 	quickMenuTrackingProtection: true,
 	quickMenuSearchBar: "hidden",
 	quickMenuSearchBarFocus: false,
