@@ -813,7 +813,7 @@ const QMtools = [
 	}
 ];
 
-function newMenuFromBookmarks() {
+async function newMenuFromBookmarks() {
 	let nodes = await browser.runtime.sendMessage({action: "getBookmarksAsNodeTree"});
 	console.log(nodes);
 	qm = await quickMenuElementFromNodeTree(nodes);
