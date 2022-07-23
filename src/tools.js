@@ -805,6 +805,12 @@ const QMtools = [
 	}
 ];
 
+function newMenuFromBookmarks() {
+	let nodes = await browser.runtime.sendMessage({action: "getBookmarksAsNodeTree"});
+	console.log(nodes);
+	qm = await quickMenuElementFromNodeTree(nodes);
+}
+
 function getToolTile(name) {
 	return document.querySelector(`[data-type="tool"][data-name="${name}"]`);
 }
