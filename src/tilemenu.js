@@ -1711,6 +1711,7 @@ async function mouseupHandler(e) {
 				return browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
+						node: JSON.parse(JSON.stringify(node)),
 						menuItemId: tile.node.id,
 						selectionText: sb.value,
 						quickMenuObject: qmo,
@@ -1723,6 +1724,7 @@ async function mouseupHandler(e) {
 				return browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
+						node: JSON.parse(JSON.stringify(node)),
 						menuItemId: tile.node.id, // needs work
 						selectionText: sb.value,
 						quickMenuObject: qmo,
@@ -1735,6 +1737,7 @@ async function mouseupHandler(e) {
 				return browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
+						node: JSON.parse(JSON.stringify(node)),
 						menuItemId: tile.node.id, // needs work
 						selectionText: sb.value,
 						quickMenuObject: qmo,
@@ -1805,6 +1808,7 @@ async function mouseupHandler(e) {
 				return browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
+						node: JSON.parse(JSON.stringify(node)),
 						menuItemId: tile.node.id,
 						openMethod: getOpenMethod(e),
 					}
@@ -1816,6 +1820,7 @@ async function mouseupHandler(e) {
 				browser.runtime.sendMessage({
 					action: "quickMenuSearch", 
 					info: {
+						node: JSON.parse(JSON.stringify(node)),
 						menuItemId: tile.node.id,
 						selectionText: sb.value,
 						quickMenuObject: qmo,

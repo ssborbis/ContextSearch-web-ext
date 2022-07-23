@@ -55,7 +55,7 @@ browser.tabs.onRemoved.addListener(tabId => {
 });
 
 browser.tabs.onRemoved.addListener(tabId => removeTabTerms(tabId));
-browser.tabs.onActivated.addListener(info => removeTabTerms(info.tabId));
+browser.tabs.onActivated.addListener(info => deactivateTabTerms(info.tabId));
 browser.tabs.onActivated.addListener(info => {
 	if ( userOptions.quickMenuCloseOnTabChange ) {
 		browser.tabs.sendMessage(info.previousTabId, {action: "cancelQuickMenuRequest", allFrames:true}).then(() => {}, () => {});
@@ -962,6 +962,14 @@ async function notify(message, sender, sendResponse) {
 
      		return browser.downloads.download({url: message.url, saveAs: true});
      		break;
+
+     	case "getBookmarksAsNodeTree":
+     		return await CSBookmarks.treeToFolders(message.id || "root________");
+     		break;
+
+     	case "getTabTerms":
+     		return window.tabTerms.find(t => t.tabId === sender.tab.id);
+     		break;
 	}
 }
 
@@ -1191,7 +1199,8 @@ function executeOneClickSearch(info) {
 	let openMethod = info.openMethod;
 	let openerTabId = userOptions.disableNewTabSorting ? null : info.tab.id;
 	
-	notify({action: "addToHistory", searchTerms: searchTerms});
+	if ( !info.multiURL )
+		notify({action: "addToHistory", searchTerms: searchTerms});
 
 	async function searchAndHighlight(tab) {
 
@@ -1233,7 +1242,8 @@ function executeOneClickSearch(info) {
 
 		let start = Date.now();
 
-		addTabTerms(info.menuItemId, tab.id, searchTerms);
+		if ( !info.multiURL )
+			addTabTerms(info.node, tab.id, searchTerms);
 
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			if ( tabId !== tab.id ) return;
@@ -1292,7 +1302,10 @@ async function executeExternalProgram(info) {
 		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
 	}
 
-	return browser.runtime.sendNativeMessage("contextsearch_webext", {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false )}).then( async result => {
+	let msg = {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false ), downloadURL: downloadURL };
+	console.log("native app message ->", msg);
+
+	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
 		if ( node.postScript.trim() ) {
 			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
 			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
@@ -1396,7 +1409,7 @@ function quickMenuSearch(info) {
 
 async function openSearch(info) {
 
-	console.log(info.quickMenuObject || null);
+	console.log(info);
 
 	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
 
@@ -1420,7 +1433,7 @@ async function openSearch(info) {
 
 	if ( userOptions.preventDuplicateSearchTabs ) {
 		try {
-			let oldTab = await getTabTerms(node.id, searchTerms);
+			let oldTab = await getTabTermsTab(node.id, searchTerms);
 			console.log('tab with same engine and terms exists');
 			return false;
 		} catch ( error ) {}
@@ -1485,7 +1498,7 @@ async function openSearch(info) {
 	if ( !se && !openUrl) return false;
 	
 	// check for multiple engines (v1.27+)
-	if ( se && !info.noMultiURL ) {
+	if ( se && !info.multiURL ) {
 		
 		// check for arrays
 		try {
@@ -1494,7 +1507,7 @@ async function openSearch(info) {
 				// make sure not the same node
 				if ( url === node.id ) return;
 
-				let _info = Object.assign({noMultiURL: true}, info);
+				let _info = Object.assign({multiURL: true}, info);
 				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 				
 				// if url and not ID
@@ -1532,7 +1545,7 @@ async function openSearch(info) {
 	
 	var openerTabId = userOptions.disableNewTabSorting ? null : tab.id;
 	
-	if ( !openUrl && !temporarySearchEngine && !info.noMultiURL )
+	if ( !openUrl && !temporarySearchEngine && !info.multiURL ) 
 		notify({action: "addToHistory", searchTerms: searchTerms});
 
 	if (!openUrl) {
@@ -1605,8 +1618,11 @@ async function openSearch(info) {
 		}
 
 		try {
-			addTabTerms(node.id, _tab.id, searchTerms);
-		} catch (err) {}
+			if ( !info.multiURL )
+				addTabTerms(node, _tab.id, searchTerms);
+		} catch (err) {
+			console.log(err);
+		}
 
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
@@ -1673,16 +1689,26 @@ async function openSearch(info) {
 
 }
 
-function addTabTerms(nodeId, tabId, s) {
-	window.tabTerms.unshift({id: nodeId, tabId: tabId, searchTerms: s});
+function addTabTerms(node, tabId, s) {
+	console.log('tabTerms add', node.title);
+	window.tabTerms.unshift({id: node.id, folderId: node.parentId, tabId: tabId, searchTerms: s});
 }
 
 function removeTabTerms(tabId) {
 	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabId);
 }
 
-function getTabTerms(id, s) {
-	let t = window.tabTerms.find(_t => _t.id === id && _t.searchTerms === s);
+function deactivateTabTerms(tabId) {
+	
+	for ( tt in window.tabTerms) {
+		if ( tt.tabId === tabId ) {
+			tt.deactivated = true;
+		}
+	}
+}
+
+function getTabTermsTab(id, s) {
+	let t = window.tabTerms.find(_t => _t.id === id && _t.searchTerms === s && !_t.deactivated );
 	return browser.tabs.get(t.tabId);
 }
 
@@ -2496,4 +2522,57 @@ function waitOnInjection(tabId) {
 			}, 500);
 		})
 	]);
+}
+
+async function scrapeBookmarkIcons() {
+	let bms = await CSBookmarks.treeToFolders("root________");
+	findNode(bms, n => {
+		if ( n.type !== 'bookmark') return false;
+		browser.bookmarks.get(n.id).then( bm => {
+			bm = bm.shift();
+			console.log(bm);
+			fetchFavicon(bm.url);
+		})
+		
+	});
+
+	async function fetchFavicon(_url) {
+
+		console.log(_url);
+
+		try {
+
+			let url = new URL(_url);
+			console.log('fetching', url.origin);
+			var response = await fetch(url.origin + "/favicon.ico");
+		    switch (response.status) {
+		        // status "OK"
+				case 200:
+					console.log(url.origin + "/favicon.ico found!");
+					// var template = await response.text();
+
+					// console.log(template);
+					break;
+				// status "Not Found"
+				case 404:
+					console.log('Not Found');
+					break;
+		    }
+		} catch ( error ) {}
+	} 
+
+
+    // var response = await fetch('https://google.com ');
+    // switch (response.status) {
+    //     // status "OK"
+    //     case 200:
+    //         var template = await response.text();
+
+    //         console.log(template);
+    //         break;
+    //     // status "Not Found"
+    //     case 404:
+    //         console.log('Not Found');
+    //         break;
+    // }
 }

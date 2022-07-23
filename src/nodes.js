@@ -62,6 +62,7 @@ function setParents(tree) {
 			// skip parent property
 			Object.keys(this).forEach( key => {
 				if (key !== "parent") o[key] = this[key];
+				else if ( this[key]) o.parentId = this[key].id;
 			}, this);
 
 			return o;
