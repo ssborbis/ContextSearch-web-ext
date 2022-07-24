@@ -187,6 +187,9 @@ document.addEventListener("selectionchange", ev => {
 
 	if ( window.suspendSelectionChange ) return;
 
+	// reset before the debounce
+	quickMenuObject.lastSelectTime = Date.now();
+
 	debounce(() => {
 
 		if ( window.suspendSelectionChange ) return;
@@ -196,7 +199,7 @@ document.addEventListener("selectionchange", ev => {
 		// if an opener method timer is running, skip
 		if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
 
-		quickMenuObject.lastSelectTime = Date.now();
+	//	quickMenuObject.lastSelectTime = Date.now();
 		if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
 
 		quickMenuObject.searchTerms = searchTerms;
