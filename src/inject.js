@@ -532,7 +532,7 @@ function checkForNodeHotkeys(e) {
 	if ( !node ) return false;
 
 	browser.runtime.sendMessage({
-		action: "quickMenuSearch", 
+		action: "search", 
 		info: {
 			menuItemId: node.id,
 			selectionText: searchTerms,

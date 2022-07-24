@@ -182,8 +182,9 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "quickMenuSearch":
+		case "search":
 			message.info.tab = sender.tab;
-			return quickMenuSearch(message.info);
+			return openSearch(message.info);
 			break;
 			
 		case "enableContextMenu":
@@ -1195,7 +1196,7 @@ function executeBookmarklet(info) {
 
 function executeOneClickSearch(info) {
 
-	let searchTerms = info.searchTerms;
+	let searchTerms = info.searchTerms || info.selectionText;
 	let openMethod = info.openMethod;
 	let openerTabId = userOptions.disableNewTabSorting ? null : info.tab.id;
 	
@@ -1267,7 +1268,7 @@ function executeOneClickSearch(info) {
 async function executeExternalProgram(info) {
 
 	let node = info.node;
-	let searchTerms = info.searchTerms;
+	let searchTerms = info.searchTerms || info.selectionText;
 	let downloadURL = null;
 
 	if ( node.searchRegex ) {
@@ -1397,21 +1398,13 @@ function isValidHttpUrl(str) {
 // 		return nodes;
 // }
 
-function quickMenuSearch(info) {
-		
-	info.node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
-	info.searchTerms = info.searchTerms || info.selectionText;
-	
-	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
-
-	return openSearch(info);
-}
-
 async function openSearch(info) {
+
+	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
 	console.log(info);
 
-	var searchTerms = (info.searchTerms) ? info.searchTerms.trim() : "";
+	var searchTerms = (info.searchTerms || info.selectionText || "").trim();
 
 	if ( userOptions.multilinesAsSeparateSearches ) {
 		try {

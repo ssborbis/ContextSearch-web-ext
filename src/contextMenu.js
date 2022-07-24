@@ -599,8 +599,6 @@ function contextMenuSearch(info, tab) {
 	info.tab = tab;
 	info.node = node;
 	
-	if ( node && node.type === "folder" ) return folderSearch(info);
-
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
 }

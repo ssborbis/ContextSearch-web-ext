@@ -1530,7 +1530,7 @@ function checkForNodeHotkeys(e) {
 	e.stopPropagation();
 	
 	browser.runtime.sendMessage({
-		action: "quickMenuSearch", 
+		action: "search", 
 		info: {
 			menuItemId: hotkeyNode.id,
 			selectionText: sb.value,
@@ -1673,6 +1673,20 @@ document.addEventListener('mouseup', e => {
 	}
 });
 
+function search(o) {
+	return browser.runtime.sendMessage({
+		action: "search", 
+		info: {
+			node: JSON.parse(JSON.stringify(o.node)),
+			menuItemId: o.menuItemId || o.node.id,
+			selectionText: o.searchTerms || sb.value || "",
+			quickMenuObject: o.quickMenuObject || quickMenuObject || {},
+			openMethod: o.openMethod || "openNewTab",
+			domain: o.domain
+		}
+	});
+}
+
 async function mouseupHandler(e) {
 
 	e.stopImmediatePropagation();
@@ -1706,44 +1720,20 @@ async function mouseupHandler(e) {
 	let searchPromise = (async () => {
 
 		switch ( node.type ) {
-		
 			case 'searchEngine':
-				return browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)),
-						menuItemId: tile.node.id,
-						selectionText: sb.value,
-						quickMenuObject: qmo,
-						openMethod: getOpenMethod(e)
-					}
-				});
-				break;
-
 			case 'bookmarklet':
-				return browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)),
-						menuItemId: tile.node.id, // needs work
-						selectionText: sb.value,
-						quickMenuObject: qmo,
-						openMethod: getOpenMethod(e)
-					}
-				});
+			case 'oneClickSearchEngine':
+			case 'bookmark':
+				return search({node:node, openMethod: getOpenMethod(e)});
 				break;
 
-			case 'oneClickSearchEngine':
-				return browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)),
-						menuItemId: tile.node.id, // needs work
-						selectionText: sb.value,
-						quickMenuObject: qmo,
-						openMethod: getOpenMethod(e)
-					}
-				});
+			case 'siteSearch':
+				return search({node:node, openMethod: getOpenMethod(e), domain: node.title});
+				break;
+
+			case 'externalProgram':
+				search({node:node, openMethod: getOpenMethod(e)});
+				return Promise.resolve(true); // app launcher can resolve immediately
 				break;
 
 			case 'siteSearchFolder':
@@ -1787,48 +1777,6 @@ async function mouseupHandler(e) {
 				}
 
 				return openFolder(e);
-
-				break;
-
-			case 'siteSearch':
-				return browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						menuItemId: tile.node.id, // needs work
-						selectionText: sb.value,
-						quickMenuObject: qmo,
-						openMethod: getOpenMethod(e),
-						domain: tile.node.title
-					}
-				});
-
-				break;
-
-			case 'bookmark':
-				return browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)),
-						menuItemId: tile.node.id,
-						openMethod: getOpenMethod(e),
-					}
-				});
-
-				break;
-
-			case 'externalProgram':
-				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)),
-						menuItemId: tile.node.id,
-						selectionText: sb.value,
-						quickMenuObject: qmo,
-						openMethod: getOpenMethod(e),
-					}
-				});
-
-				return Promise.resolve(true);
 				break;
 
 			default:
@@ -2248,7 +2196,7 @@ function nodeToTile( node ) {
 				}
 				
 				browser.runtime.sendMessage({
-					action: "quickMenuSearch", 
+					action: "search", 
 					info: {
 						node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
 						menuItemId: node.id,

@@ -93,7 +93,7 @@ const QMtools = [
 			if (this.dataset.disabled === "true") return;
 
 			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
+				action: "search", 
 				info: {
 					menuItemId: "openAsLink",
 					selectionText: sb.value,
@@ -227,7 +227,7 @@ const QMtools = [
 			let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
 
 			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
+				action: "search", 
 				info: {
 					menuItemId: node.id,
 					selectionText: searchTerms,
@@ -261,7 +261,7 @@ const QMtools = [
 					
 					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
 					browser.runtime.sendMessage({
-						action: "quickMenuSearch", 
+						action: "search", 
 						info: {
 							menuItemId:_id,
 							selectionText: quickMenuObject.searchTerms,

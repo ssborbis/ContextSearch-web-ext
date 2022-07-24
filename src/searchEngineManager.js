@@ -677,7 +677,7 @@ function buildSearchEngineContainer() {
 					tempNode.postScript = _form.searchCode.value.trim();
 					
 					browser.runtime.sendMessage({
-						action:"quickMenuSearch",
+						action:"search",
 						info: {
 							node: tempNode,
 							openMethod: "openNewTab",
