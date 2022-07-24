@@ -106,7 +106,7 @@ function dragOverIframeDiv(el) {
 			offsetX:e.offsetX,
 			offsetY:e.offsetY,
 			screenX:e.screenX,
-			screenY:e.screen
+			screenY:e.screenY
 		}, el.src);
 
 	});
@@ -118,3 +118,4 @@ function dragOverIframeDiv(el) {
 	return div;
 }
 
+undefined; // prevents unclonable error in FF
