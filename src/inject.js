@@ -534,6 +534,7 @@ function checkForNodeHotkeys(e) {
 	browser.runtime.sendMessage({
 		action: "search", 
 		info: {
+			node: node,
 			menuItemId: node.id,
 			selectionText: searchTerms,
 			openMethod: userOptions.quickMenuSearchHotkeys

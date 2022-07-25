@@ -1418,6 +1418,7 @@ async function openSearch(info) {
 	var temporarySearchEngine = info.temporarySearchEngine || null; // unused now | intended to remove temp engine
 	var domain = info.domain || null;
 	var node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
+	info.node = info.node || node; // in case it wasn't sent
 	
 	if (!info.folder) delete window.folderWindowId;
 	
