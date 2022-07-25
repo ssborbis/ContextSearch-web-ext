@@ -223,7 +223,7 @@ BODY {
 #searchBarContainer > #clearSearchBarButton {
 	right: 2px;
 	opacity: .4;
-	height: 14px;
+	height: 12px;
 	margin-top: 6px;
 }
 #searchBarContainer > #searchIcon {
