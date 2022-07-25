@@ -6,8 +6,6 @@ async function makeFrameContents() {
 
 	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
 
-	if ( qmo.length ) qmo = qmo.shift();
-
 	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuUseOldStyle, contexts:qmo.contexts});
 
 	let old_qme = document.getElementById('quickMenuElement');

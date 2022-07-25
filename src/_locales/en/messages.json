@@ -1937,6 +1937,11 @@
     "description": ""
   },
 
+  "linkText": {
+    "message": "link text",
+    "description": ""
+  },
+
   "page": {
     "message": "page",
     "description": ""

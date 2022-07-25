@@ -32,9 +32,10 @@ function openQuickMenu(e, searchTerms) {
 	let selection = searchTerms || getSelectedText(target).trim();
 
 	let searchTermsObject = {
-		selection: selection || getLinkText(target),
+		selection: selection,
 		image: getImage(target),
 		link: getLink(target),
+		linkText: getLinkText(target),
 		page: window.location.href
 	}
 

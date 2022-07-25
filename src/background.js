@@ -715,9 +715,9 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getTabQuickMenuObject":
 
-			return browser.tabs.executeScript(sender.tab.id, {
+			return (await browser.tabs.executeScript(sender.tab.id, {
 				code: `quickMenuObject;`
-			});
+			})).shift();
 			break;
 		
 		case "addToHistory":

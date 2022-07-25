@@ -701,52 +701,52 @@ const QMtools = [
 			qm.expandMoreTiles();
 		}
 	},
-	{
-		name: 'toggle_searchterms', 
-		icon: "icons/selection.svg",
-		title: browser.i18n.getMessage('toggleSearchTerms'),
-		context: ["quickmenu"],
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+	// {
+	// 	name: 'toggle_searchterms', 
+	// 	icon: "icons/selection.svg",
+	// 	title: browser.i18n.getMessage('toggleSearchTerms'),
+	// 	context: ["quickmenu"],
+	// 	init: function() {
+	// 		let tile = buildSearchIcon(null, this.title);
+	// 		tile.appendChild(makeToolMask(this));
 
-			tile.keepOpen = true;
-			tile.dataset.locked = false;
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+	// 		tile.keepOpen = true;
+	// 		tile.dataset.locked = false;
+	// 		let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 
-			tile.action = this.action;
-			tile.tool = this;
+	// 		tile.action = this.action;
+	// 		tile.tool = this;
 
-			return tile;
-		}, 
-		action: async function() {
+	// 		return tile;
+	// 	}, 
+	// 	action: async function() {
 
-			showContext = c => this.querySelector('.tool').style.setProperty("--mask-image",`url(icons/${c}.svg)`);
+	// 		showContext = c => this.querySelector('.tool').style.setProperty("--mask-image",`url(icons/${c}.svg)`);
 
-			let sto = quickMenuObject.searchTermsObject;
-			let keys = ["selection", "link", "image", "page"].filter( key => sto[key]);
+	// 		let sto = quickMenuObject.searchTermsObject;
+	// 		let keys = ["selection", "link", "image", "page"].filter( key => sto[key]);
 
-			if ( !this.tool.searchTermsContext ) {
-				for ( key in sto ) {
-					if ( sto[key] == quickMenuObject.searchTerms ) {
-						this.tool.searchTermsContext = key;
-						break;
-					}
-				}
-			}
+	// 		if ( !this.tool.searchTermsContext ) {
+	// 			for ( key in sto ) {
+	// 				if ( sto[key] == quickMenuObject.searchTerms ) {
+	// 					this.tool.searchTermsContext = key;
+	// 					break;
+	// 				}
+	// 			}
+	// 		}
 
-			let newKey = keys[( keys.indexOf(this.tool.searchTermsContext) + 1 ) % keys.length];
+	// 		let newKey = keys[( keys.indexOf(this.tool.searchTermsContext) + 1 ) % keys.length];
 
-			this.tool.searchTermsContext = newKey;
+	// 		this.tool.searchTermsContext = newKey;
 
-			sb.set(sto[newKey]);
+	// 		sb.set(sto[newKey]);
 
-		// //	showContext(newKey);
-		// 	setTimeout(() => {
-		// 		showContext("selection");
-		// 	}, 1000);
-		}
-	},
+	// 	// //	showContext(newKey);
+	// 	// 	setTimeout(() => {
+	// 	// 		showContext("selection");
+	// 	// 	}, 1000);
+	// 	}
+	// },
 	{
 		name: 'open_image', 
 		icon: "icons/image_open.svg", 

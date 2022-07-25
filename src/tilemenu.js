@@ -1125,8 +1125,7 @@ async function makeQuickMenu(options) {
 		});
 
 		try { // fails on restricted pages
-			await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
-				let qmo = message[0];
+			await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
 				if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
 			});
@@ -1223,8 +1222,7 @@ function makeSearchBar() {
 		displaySuggestions(history);
 	}
 	
-	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then((message) => {
-		let qmo = message[0];
+	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
 		if ( qmo && qmo.searchTerms)
 			setTimeout(() => sb.set(qmo.searchTerms), 10);
@@ -1412,7 +1410,40 @@ function makeSearchBar() {
 
 	sb.addEventListener('keydown', e => {
 		debounce(() => updateMatchRegexFolder(sb.value), 500, "typeTimer2");
-	})
+	});
+
+	// cycle through searchTermsObject terms
+	(async() => {
+		let div = sbc.querySelector('#moreSearchTermsIndicator');
+
+		let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
+		let sto = qmo.searchTermsObject;
+
+		let keys = ["selection", "link", "linkText", "image"/*, "page"*/].filter( key => sto[key]);
+
+		if ( keys.length < 2 )
+			return div.style.display = 'none';
+
+		div.innerText = keys.length;
+		div.title = keys.map( k => browser.i18n.getMessage(k)).join(", ");
+
+		div.onclick = function() {
+
+			if ( !div.searchTermsContext ) {
+				for ( key in sto ) {
+					if ( sto[key] == quickMenuObject.searchTerms ) {
+						div.searchTermsContext = key;
+						break;
+					}
+				}
+			}
+
+			let newKey = keys[( keys.indexOf(div.searchTermsContext) + 1 ) % keys.length];
+			div.searchTermsContext = newKey;
+			sb.set(sto[newKey]);
+		}
+
+	})();
 }
 
 function createToolsBar(qm) {

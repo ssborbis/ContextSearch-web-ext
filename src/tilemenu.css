@@ -687,3 +687,17 @@ HR.break {
 	--tools-color: var(--selected);
 	opacity: 1;
 }
+
+#moreSearchTermsIndicator {
+	display: inline-block;
+	position: absolute;
+	background-color: #b5acac;
+	right: 30px;
+	padding: 1px 6px;
+	border-radius: 6px;
+	color: white;
+	font-weight: bold;
+	font-size: 8pt;
+	margin-top: 6px;
+	cursor: pointer;
+}
