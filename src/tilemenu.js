@@ -1224,8 +1224,8 @@ function makeSearchBar() {
 	
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
-		if ( qmo && qmo.searchTerms)
-			setTimeout(() => sb.set(qmo.searchTerms), 10);
+		if ( qmo && (qmo.searchTerms || qmo.searchTermsObject.selection ))
+			setTimeout(() => sb.set(qmo.searchTerms || qmo.searchTermsObject.selection), 10);
 		else displayLastSearchTerms();
 	}, () => {
 		displayLastSearchTerms();

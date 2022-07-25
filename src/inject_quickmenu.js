@@ -36,13 +36,15 @@ function openQuickMenu(e, searchTerms) {
 		image: getImage(target),
 		link: getLink(target),
 		linkText: getLinkText(target),
-		page: window.location.href
+		page: window.location.href,
+		frame: window != top ? window.location.href : null
 	}
 
 	searchTerms = searchTerms || selection || linkOrImage(target, e) || null;
 	
 	// for context toggle
 	quickMenuObject.searchTerms = searchTerms;
+	quickMenuObject.searchTermsObject = searchTermsObject;
 
 	window.lastActiveElement = document.activeElement;
 		
