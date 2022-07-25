@@ -1419,7 +1419,7 @@ function makeSearchBar() {
 		let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
 		let sto = qmo.searchTermsObject;
 
-		let keys = ["selection", "link", "linkText", "image"/*, "page"*/].filter( key => sto[key]);
+		let keys = ["selection", "link", "linkText", "image", "frame"/*, "page"*/].filter( key => sto[key]);
 
 		if ( keys.length < 2 )
 			return div.style.display = 'none';
