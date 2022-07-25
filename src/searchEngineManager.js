@@ -495,6 +495,11 @@ function buildSearchEngineContainer() {
 				setContexts(_form, node.contexts);
 				
 				_form.close.onclick = _form.closeForm;
+
+				// _form.test.onclick = function() {
+				// 	let searchTerms = window.prompt(browser.i18n.getMessage("EnterURL"),"ContextSearch web-ext");
+				// 	browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+				// }
 				
 				_form.save.onclick = async function() {
 
