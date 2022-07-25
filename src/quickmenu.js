@@ -196,9 +196,8 @@ function resizeMenu(o) {
 
 function closeMenuRequest(e) {
 
-	if ( e.key === "Escape" || userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
-
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+	if ( userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: (e.key === "Escape" ? "esc" : "click_quickmenutile") });
 	}
 }
 
