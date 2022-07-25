@@ -2443,6 +2443,9 @@
   },
   "contexts": {
     "message":"Contexts"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Close menu when typing. ( Requires the search bar *NOT* have focus - see 'Search Bar' )"
   }
 
 }
