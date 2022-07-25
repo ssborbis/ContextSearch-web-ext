@@ -1634,6 +1634,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				title: "new script",
 				parent: li.node.parent,
+				contexts:[32],
 				toJSON: li.node.toJSON
 			}
 				
@@ -1757,6 +1758,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
+				contexts:[32],
 				parent: li.node.parent,
 				toJSON: li.node.toJSON
 			}
@@ -2033,6 +2035,7 @@ function buildSearchEngineContainer() {
 			parent: node.parent,
 			hidden: false,
 			id: se.id,
+			contexts:[32],
 			toJSON: node.toJSON
 		}
 	}
