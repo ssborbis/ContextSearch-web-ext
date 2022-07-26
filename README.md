@@ -616,35 +616,13 @@ alert(result);
 
 This would run the command `ls ~` and alert the stdout of the command
 
-Sometimes it's useful to download a link target before launching an external app, because not all applications can handle URLs directly. In these cases, you can use a small script calling cURL to download the remote file, then open the local copy in your app.
-
-Linux / macOS
+Sometimes it's useful to download a link target before launching an external app, because not all applications can handle URLs directly. In these cases, you can replace the parameter `{searchTerms}` with `{download_url}`. This will direct the python app to download the file located at the URL searched for within this addon, and place the file in the default TEMP folder for your particular OS, and finally replace `{download_url}` in the command line with the absolute path of the newly downloaded file. For example:
 
 ```sh
-#!/bin/sh
-
-TMP="/tmp"
-
-if [ "$OSTYPE" = 'darwin'* ]; then TMP=$TMPDIR; fi
-cd $TMP
-FILENAME=`curl -OJs -w "%{filename_effective}" $2`
-$1 $TMP/$FILENAME
+"C:/Windows/SysWOW64/mspaint.exe" "{download_url}"
 ```
 
-If you named your script `download.sh` your app launcher command could then look like this:
-
-[script] [app] [url]
-
-Linux
-```
-~/download.sh "firefox" "{searchTerms}"
-```
-
-macOS
-
-```
-~/download.sh "open -a 'Firefox'" "{searchTerms}"
-```
+This command would download the file at the URL searched for ( lets say, http://example.com/hello_world.jpg ) to the local file C:\Users\AppData\Local\Temp\hello_world.jpg, and finally run the command `"C:/Windows/SysWOW64/mspaint.exe" "C:\Users\AppData\Local\Temp\hello_world.jpg"`
 ___
 
 <a name="styling"/>
