@@ -60,6 +60,7 @@ function buildSearchEngineContainer() {
 		
 		let header = document.createElement('div');
 		header.className = "header";
+		header.title = node.description || node.title;
 		
 		li.appendChild(header);
 

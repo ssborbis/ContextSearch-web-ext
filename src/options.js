@@ -817,7 +817,7 @@ function hideBrowserSpecificElements() {
 		browser.runtime.getBrowserInfo().then( info => {
 			let version = info.version;
 			document.querySelectorAll('[data-browser="firefox"][data-minversion]').forEach( el => {
-				if ( el.dataset.minversion > info.version )
+				if ( parseFloat(el.dataset.minversion) > parseFloat(info.version) )
 					el.style.display = 'none';
 			});	
 		});
