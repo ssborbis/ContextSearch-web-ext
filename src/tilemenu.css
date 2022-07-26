@@ -692,7 +692,7 @@ HR.break {
 	display: inline-block;
 	position: absolute;
 	background-color: #b5acac;
-	right: 30px;
+	right: 26px;
 	padding: 1px 6px;
 	border-radius: 6px;
 	color: white;
@@ -700,4 +700,5 @@ HR.break {
 	font-size: 8pt;
 	margin-top: 6px;
 	cursor: pointer;
+	user-select: none;
 }
