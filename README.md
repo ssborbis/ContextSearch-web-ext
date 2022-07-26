@@ -622,7 +622,7 @@ Sometimes it's useful to download a link target before launching an external app
 "C:/Windows/SysWOW64/mspaint.exe" "{download_url}"
 ```
 
-This command would download the file at the URL searched for ( lets say, http://example.com/hello_world.jpg ) to the local file C:\Users\AppData\Local\Temp\hello_world.jpg, and finally run the command `"C:/Windows/SysWOW64/mspaint.exe" "C:\Users\AppData\Local\Temp\hello_world.jpg"`
+This command would download the file at the URL searched for ( lets say, https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg ) to the local file `C:\Users\AppData\Local\Temp\Example.jpg`, and finally run the command `"C:/Windows/SysWOW64/mspaint.exe" "C:\Users\AppData\Local\Temp\Example.jpg"`
 ___
 
 <a name="styling"/>
