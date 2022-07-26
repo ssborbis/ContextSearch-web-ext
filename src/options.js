@@ -419,6 +419,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSearchEngineContainer();
 	buildToolIcons();
 	sortAdvancedOptions();
+//	buildAdditionalSearchActionsTable();
 
 	addDOMListeners();
 
@@ -426,6 +427,35 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildUploadOnHash();
 
 	document.body.style.opacity = 1;
+
+	// testing moving tools to SEM
+	(() => {
+
+		let ts = userOptions.quickMenuTools;
+
+		let folder = {
+			type:"folder",
+			title:"Tools Menu",
+			children:[],
+			hidden:false,
+			id:"tools_menu"
+		}
+
+		ts.forEach(t => {
+
+			let tool = QMtools.find( _t => _t.name === t.name);
+
+			folder.children.push({
+				type: "tool",
+				hidden: t.disabled,
+				title: tool.title,
+				icon: tool.icon,
+				tool: tool.name
+			})
+		})
+
+		console.log(folder);
+	});
 
 });
 
@@ -475,10 +505,17 @@ function addDOMListeners() {
 		window.close();
 	})
 
+	$('#b_requestDownloadsPermissions').addEventListener('click', async () => {
+		await browser.permissions.request({permissions: ['downloads']});
+		window.close();
+	})
+
 	$('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
 		await browser.permissions.request({permissions: ['nativeMessaging']});
 		window.close();
 	})
+
+	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
 
 	// hide other request buttons
 	$('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
@@ -1550,6 +1587,34 @@ function syntaxHighlight(json) {
     });
 }
 
+function buildAdditionalSearchActionsTable() {
+	let table = $("additionalSearchActionsTable");
+
+	table.querySelectorAll("TR:not(.template)").forEach( tr => tr.parentNode.removeChild(tr));
+	userOptions.customSearchActions.forEach( (sa,index) => {
+		let row = table.querySelector(".template").cloneNode(true);
+		row.className = null;
+
+		table.appendChild(row);
+
+		row.querySelector('.event').value = sa.event;
+		row.querySelector('.button').value = sa.button;
+		row.querySelector('.altKey').value = sa.altKey;
+		row.querySelector('.ctrlKey').value = sa.ctrlKey;
+		row.querySelector('.metaKey').value = sa.metaKey;
+		row.querySelector('.shiftKey').value = sa.shiftKey;
+	});
+}
+
+// "event":"mouseup",
+// 		"button":0,
+// 		"altKey":false,
+// 		"ctrlKey":false,
+// 		"metaKey":false,
+// 		"shiftKey":false,
+// 		"action": "",
+// 		"folder":false
+
 // window.addEventListener('focus', async e => {
 // 	let uo = await browser.runtime.sendMessage({action: 'getUserOptions'});
 
@@ -1615,6 +1680,17 @@ $('b_manualSave').addEventListener('click', e => {
 
 	} catch (err) { alert(err) }
 	
+});
+
+$("#b_resetUserOptions").addEventListener('click', e => {
+	if ( confirm(browser.i18n.getMessage("resetUserOptionsConfirm")) ) {
+		newUserOptions = JSON.parse(JSON.stringify(defaultUserOptions));
+		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
+		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions})
+			.then(() => location.reload());
+	}
 });
 
 function createEditMenu() {
@@ -1694,15 +1770,21 @@ function createMaskIcon(src) {
 	return tool;
 }
 
-function checkAndUpdateNativeApp() {
-	if ( !browser.runtime.sendNativeMessage ) return false;
+async function checkAndUpdateNativeApp() {
+	if ( !browser.runtime.sendNativeMessage ) return alert('Native app not connected!');
 
 	browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true}).then( newVersion => {
 		if ( newVersion ) {
 			if (confirm("Update native app script to version " + newVersion + "?"))
 				browser.runtime.sendNativeMessage("contextsearch_webext", {update:true});
 		} else {
-			console.log('up to date');
+			alert('Latest version already installed');
 		}
 	});
+}
+
+async function checkForNativeAppUpdate() {
+	if ( !browser.runtime.sendNativeMessage ) return false;
+
+	return browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true});
 }

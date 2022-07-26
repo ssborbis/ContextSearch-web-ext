@@ -37,7 +37,7 @@ function addResizeWidget(el, options) {
 		resizeWidget.className = 'CS_resizeWidget';
 		resizeWidget.title = browser.i18n.getMessage('resize');
 
-		document.body.appendChild(resizeWidget);
+		getShadowRoot().appendChild(resizeWidget);
 
 		resizeWidget.options = o;
 		resizeWidget.setPosition = positionResizeWidget;

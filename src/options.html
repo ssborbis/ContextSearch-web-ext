@@ -1471,6 +1471,18 @@
 			#requestPermissions DIV[data-permission] {
 				 margin-top:4px;
 			}
+			#menuContexts .option {
+				display: inline-block;
+				border-radius: 10px;
+				vertical-align: middle;
+				text-align: center;
+				margin: 4px;
+				padding: 4px 12px 0 12px;
+				background-color: var(--bg-color1);
+			}
+			#additionalSearchActionsTable .template {
+				display: none;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -1561,6 +1573,12 @@
 							<button id="b_uncacheIcons" data-i18n="uncache" title="$uncacheTooltip">_</button>
 						</td>
 					</tr>
+					<tr>
+						<td >updateNativeApp</td>
+						<td>
+							<button class="updateNativeApp">⟳</button>
+						</td>
+					</tr>
 					<tr class="moveToEnd">
 						<td style="text-align: center;" colspan="2"><button class="saveOptions" data-i18n="save">_</button></td>
 					</tr>
@@ -1568,6 +1586,10 @@
 					<pre id="t_manualEdit" spellcheck="false" contenteditable="true" style="display:none;width:calc(100% - 20px);padding: 0 10px"></pre>
 					<div id="configSize" style="font-weight:normal;font-size:9pt;text-align: right">&nbsp;</div>
 				</section>
+
+				<div style="text-align: center">
+					<button id="b_resetUserOptions" data-i18n="ResetDefaults" title="$resetUserOptionsTooltip">_</button>
+				</div>
 
 			</div>
 		
@@ -1641,6 +1663,25 @@
 				</div>
 				
 				</section>
+
+				<section>
+				<p class="header1" data-i18n="AutoCopy">_</p>
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="autoCopy" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="AutoCopyTooltip">_</div>
+				</div>
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="autoCopyOnInputs" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="AutoCopyOnInputsTooltip">_</div>
+				</div>
+
+				</section>
 				
 				<section>
 				<p class="header1" data-i18n="UserStyles">_</p>
@@ -1687,6 +1728,38 @@
 					
 					<div class="description" data-i18n="ContextMenuTooltip">_</div>
 				</div>
+
+				<!-- <div id="menuContexts">
+					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">_</div>
+					<div class="option">
+						<label class="container">
+						<input type="checkbox" id="contextMenuOnLinks" />
+						<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Link">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnImages" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Image">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnAudios" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Audio">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnVideos" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Video">_</div>
+					</div>
+				</div> -->
 
 				<div class="option">
 					<label class="container">
@@ -1870,29 +1943,47 @@
 					<div class="description" data-i18n="QuickMenuTooltip">_</div>
 				</div>
 
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuAutoOnInputs" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnTextBoxesTooltip">_</div>
-				</div>
-				
-				<div class="option">
-					<label class="container">
+
+				<div id="menuContexts">
+					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">_</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuAutoOnInputs" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="input">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
 						<input type="checkbox" id="quickMenuOnLinks" />
 						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnLinks">_</div>
+						</label>
+						<div class="description" data-i18n="Link">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuOnImages" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Image">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuOnAudios" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Audio">_</div>
+					</div>
+					<div class="option">
+						<label class="container">
+							<input type="checkbox" id="quickMenuOnVideos" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Video">_</div>
+					</div>
 				</div>
-				
-				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuOnImages" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					<div class="description" data-i18n="EnableOnImages">_</div>
-				</div>
+
+
 				</section>
 
 				<section>
@@ -2010,7 +2101,18 @@
 							</label>
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
+
+						<br>
+						
+						<div class="option" style="display:inline-block;">
+							<label class="container">
+								<input type="checkbox" id="quickMenuCloseOnEdit" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="quickMenuCloseOnEdit">_</span>
+						</div>
 					</td>
+
 				</tr>
 				<tr>
 					<td>
@@ -2348,7 +2450,28 @@
 				</tr>
 			</table>
 
-			<table id="additionalSearchActionsTable"></table>
+			<table id="additionalSearchActionsTable">
+				<tr class="template">
+					<td>
+						<select class="event">
+							<option value="mouseup">click</option>
+							<option value="dblclick">double click</option>
+						</select>
+					</td>
+					<td>
+						<select class="button">
+							<option value="0">left</option>
+							<option value="1">middle</option>
+							<option value="2">right</option>
+							<option value="3">forward</option>
+							<option value="4">back</option>
+						</select>
+					<td><input class="altKey" type="checkbox" value="altKey"/><span>Alt</span></td>
+					<td><input class="ctrlKey" type="checkbox" value="ctrlKey" /><span>Ctrl</span></td>
+					<td><input class="metaKey" type="checkbox" value="metaKey" /><span>Meta</span></td>
+					<td><input class="shiftKey" type="checkbox" value="shiftKey" /><span>Shift</span></td>
+				</tr>
+			</table>
 
 			</section>
 			<section>
@@ -3122,6 +3245,7 @@
 				<div style="text-align: left;display: inline-block;margin-top:20px">
 					<div style="margin-top:4px;" data-permission="clipboardRead"><button id="b_requestClipboardReadPermissions" class="changed" data-i18n="request" >_</button><label style="margin-left:20px;width:200px;">clipboardRead</label></div>
 					<div style="margin-top:4px;" data-permission="clipboardWrite"><button id="b_requestClipboardWritePermissions" class="changed" data-i18n="request" >_</button><label style="margin-left:20px;width:200px;">clipboardWrite</label></div>
+					<div style="margin-top:4px;" data-permission="downloads"><button id="b_requestDownloadsPermissions" class="changed" data-i18n="request" >_</button><label style="margin-left:20px;width:200px;">downloads</label></div>
 					<div style="margin-top:4px;" data-permission="nativeMessaging"><button id="b_requestNativeMessagingPermissions" class="changed" data-i18n="request" >_</button><label style="margin-left:20px;width:200px;">nativeMessaging</label></div>
 				</div>
 			</section>

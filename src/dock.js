@@ -152,8 +152,8 @@ function makeDockable(el, options) {
 		el.style.transition = 'none';
 		el.getBoundingClientRect();
 
-		if ( o.windowType === 'docked' ) dock();
-		else undock();
+		if ( o.windowType === 'docked' ) dock(true);
+		else undock(true);
 		
 		runAtTransitionEnd(el, ["width","height","max-width","max-height","left","right","top","bottom"], () => {
 			el.style.transition = null;
@@ -292,7 +292,7 @@ function makeDockable(el, options) {
 		el.style.bottom = o.dockedPosition === 'bottom' ? '0' : null;
 	}
 	
-	function dock() {
+	function dock(init) {
 		
 		let pos = getPositions(o.lastOffsets);
 		
@@ -319,12 +319,14 @@ function makeDockable(el, options) {
 		doOffset();
 
 		runAtTransitionEnd(el, [pos.h, pos.v, "width", "height", "max-width","max-height"], () => {
+			o.init = init;
 			o.onDock(o);
+			o.init = false
 		});
 		// o.onDock(o);
 	}
 	
-	function undock() {
+	function undock(init) {
 
 		let origTransition = el.style.transition || null;
 		
@@ -341,7 +343,9 @@ function makeDockable(el, options) {
 		el.style.transition = origTransition;
 
 		runAtTransitionEnd(el, [pos.h, pos.v, "width", "height", "max-width","max-height"], () => {
+			o.init = init;
 			o.onUndock(o);
+			o.init = false;
 		});
 		
 		let fixedLastOffsets = {};
@@ -439,7 +443,7 @@ function makeDockable(el, options) {
 			// disable transitions during move
 			el.style.transition = "none";
 			
-			document.body.appendChild(o.overDiv);
+			getShadowRoot().appendChild(o.overDiv);
 			el.moving = true;
 			el.classList.add('CS_moving');	
 
@@ -565,7 +569,7 @@ function addParentDockingListeners(id, target_id) {
 
 		if ( e.data.target !== target_id ) return;
 
-		let el = document.getElementById(id);
+		let el = getShadowRoot().getElementById(id);
 
 		if ( !el ) return;
 		
@@ -594,6 +598,6 @@ function addParentDockingListeners(id, target_id) {
 	// docking event listeners for iframe
 	window.addEventListener('message', parentDockingListener);
 
-	let el = document.getElementById(id);
+	let el = getShadowRoot().getElementById(id);
 	if ( el ) el.parentDockingListener = parentDockingListener;
 }

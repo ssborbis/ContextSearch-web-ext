@@ -1937,6 +1937,11 @@
     "description": ""
   },
 
+  "linkText": {
+    "message": "link text",
+    "description": ""
+  },
+
   "page": {
     "message": "page",
     "description": ""
@@ -2054,7 +2059,7 @@
   },
   
   "lite": {
-    "message": "like",
+    "message": "lite",
     "description": "theme name"
   },
   "dark": {
@@ -2098,12 +2103,19 @@
     "message": "Always allow tiles to be rearranged in the menus",
     "description": "advanced setting tooltip"
   },
+  "autoCopy": {
+    "message": "Auto Copy"
+  },
   "autoCopyTooltip": {
     "message": "Selected text is copied to the clipboard",
     "description": "advanced setting tooltip"
   },
   "autoPasteFromClipboardTooltip": {
     "message": "Text in the clipboard is pasted to searchbars when search menus are opened",
+    "description": "advanced setting tooltip"
+  },
+   "autoCopyOnInputsTooltip": {
+    "message": "Enable for inputs and textareas",
     "description": "advanced setting tooltip"
   },
   "cache": {
@@ -2413,6 +2425,27 @@
   },
   "ToggleSearchTerms": {
     "message": "Next Search Term"
+  },
+  "EnableOn": {
+    "message": "Enable on"
+  },
+  "Input": {
+    "message": "input"
+  },
+  "tools_OpenImage": {
+    "message": "Open Image"
+  },
+  "tools_Download": {
+    "message": "Download"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Reset all preferences to default settings? ( Search Engines will not be effected )"
+  },
+  "contexts": {
+    "message":"Contexts"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Close menu when typing. ( Requires the search bar *NOT* have focus - see 'Search Bar' )"
   }
 
 }

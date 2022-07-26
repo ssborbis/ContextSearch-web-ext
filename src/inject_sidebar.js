@@ -1,11 +1,11 @@
-function getIframe() { return document.getElementById('CS_sbIframe') }
-function getOpeningTab() { return document.getElementById('CS_sbOpeningTab') }
+function getIframe() { return getShadowRoot().getElementById('CS_sbIframe') }
+function getOpeningTab() { return getShadowRoot().getElementById('CS_sbOpeningTab') }
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
 
 	if ( userOptions.sideBar.widget.enabled )	
-		makeOpeningTab();
+		makeOpeningTab(true);
 
 	if ( userOptions.sideBar.startOpen )
 		openSideBar();
@@ -116,8 +116,10 @@ function openSideBar(options) {
 	iframe.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
 
 	iframe.allowTransparency = true;
+
+	getShadowRoot().appendChild(iframe);
 	
-	document.body.appendChild(iframe);
+//	document.body.appendChild(iframe);
 
 	function saveSideBarOptions(o) {
 		userOptions.sideBar.offsets = o.lastOffsets;
@@ -127,7 +129,7 @@ function openSideBar(options) {
 			userOptions.sideBar.windowType = o.windowType;
 		}
 
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveSideBarOptions"});
 	}
 
 	iframe.onload = function() {
@@ -216,7 +218,7 @@ function openSideBar(options) {
 					if ( resizeWidget.options.allowHorizontal )
 						userOptions.sideBar.columns = o.columns;
 
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions}).then(() => {
+					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "sideBar onDrop"}).then(() => {
 
 						// reset the fixed quadrant
 						iframe.style.transition = 'none';
@@ -274,7 +276,7 @@ function closeSideBar(minimize) {
 function saveState(state) {
 	if ( userOptions.sideBar.rememberState ) {
 		userOptions.sideBar.startOpen = state;
-		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions, source: "sideBar saveState"});
 	}
 }
 
@@ -304,7 +306,9 @@ function makeOpeningTab() {
 		e.stopImmediatePropagation();
 	});
 	
-	document.body.appendChild(openingTab);
+//	document.body.appendChild(openingTab);
+
+	getShadowRoot().appendChild(openingTab);
 
 	makeDockable(openingTab, {
 		windowType: "undocked",
@@ -313,7 +317,9 @@ function makeOpeningTab() {
 		lastOffsets: userOptions.sideBar.offsets,
 		onUndock: o => {
 			userOptions.sideBar.offsets = o.lastOffsets;
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions});
+
+			if (!o.init)
+				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "openingTab onUndock"});
 			
 			// match sbContainer position with openingTab
 			if ( getIframe() && getIframe().docking ) getIframe().docking.options.lastOffsets = o.lastOffsets;
@@ -325,7 +331,8 @@ function makeOpeningTab() {
 	return openingTab;
 }
 
-addParentDockingListeners('CS_sbIframe', 'sideBar');
+if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
+	addParentDockingListeners('CS_sbIframe', 'sideBar');
 
 window.addEventListener('message', e => {
 	if ( e.data.action === "closeSideBarRequest" ) 

@@ -30,6 +30,8 @@ const defaultUserOptions = {
 	quickMenuAutoOnInputs: false,
 	quickMenuOnLinks: true,
 	quickMenuOnImages: true,
+	quickMenuOnVideos: true,
+	quickMenuOnAudios: true,
 	quickMenuOnSimpleClick: {
 		enabled: false,
 		button: 1,
@@ -45,6 +47,8 @@ const defaultUserOptions = {
 	quickMenuCloseOnScroll: false,
 	quickMenuCloseOnClick: true,
 	quickMenuCloseOnEdit: false,
+	quickMenuCloseOnTabChange: false,
+	//quickMenuCloseOnKeydown: false,
 	quickMenuTrackingProtection: true,
 	quickMenuSearchBar: "hidden",
 	quickMenuSearchBarFocus: false,
@@ -58,6 +62,8 @@ const defaultUserOptions = {
 	contextMenuBookmarks: false,
 	contextMenuOnLinks: true,
 	contextMenuOnImages: true,
+	contextMenuOnVideos: true,
+	contextMenuOnAudios: true,
 	quickMenuBookmarks: false,
 	quickMenuTools: [
 		{name: 'lastused', 		disabled: false},
@@ -203,6 +209,7 @@ const defaultUserOptions = {
 	searchBarSuggestionsCount: 20,
 	groupLabelMoreTile: false,
 	autoCopy: false,
+	autoCopyOnInputs:false,
 	rememberLastOpenedFolder: false,
 	autoPasteFromClipboard: false,
 	allowHotkeysWithoutMenu: false,
@@ -216,6 +223,7 @@ const defaultUserOptions = {
 	syncWithFirefoxSearch: false,
 	contextMenuShowRecentlyUsed: false,
 	contextMenuShowRecentlyUsedAsFolder:true,
+	contextMenuShowRecentlyUsedIcon: true,
 	recentlyUsedList: [],
 	recentlyUsedListLength: 10,	
 	disableNewTabSorting: false,
@@ -235,6 +243,7 @@ const defaultUserOptions = {
 	omniboxDefaultToLastUsedEngine: false,
 	omniboxLastUsedIds: [],
 	omniboxSearch: "openBackgroundTab",
+	omniboxPseudoDisabled: false,
 	cacheIconsMaxSize: 32,
 	cacheIcons: true,
 	userShortcuts: [],
@@ -273,6 +282,9 @@ const defaultUserOptions = {
 	incognitoTabsForgetHistory: true,
 	waitOnInjectionTimeout: 15000,
 	multilinesAsSeparateSearches: false,
-	multilinesAsSeparateSearchesLimit: 10
+	multilinesAsSeparateSearchesLimit: 10,
+	quickMenuCancelOnMousewheel: true,
+	showDescriptionsInTooltips: false,
+	allowDeleteEnginesFromTileMenu: false
 
 };

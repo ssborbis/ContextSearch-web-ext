@@ -495,6 +495,11 @@ function buildSearchEngineContainer() {
 				setContexts(_form, node.contexts);
 				
 				_form.close.onclick = _form.closeForm;
+
+				// _form.test.onclick = function() {
+				// 	let searchTerms = window.prompt(browser.i18n.getMessage("EnterURL"),"ContextSearch web-ext");
+				// 	browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+				// }
 				
 				_form.save.onclick = async function() {
 
@@ -602,7 +607,10 @@ function buildSearchEngineContainer() {
 					img.style.height = '24px';
 					img.style.verticalAlign = 'middle';
 					img.style.marginRight = '10px';
-					img.title = browser.i18n.getMessage('NativeApp');
+					img.style.cursor = 'pointer';
+					img.title = browser.i18n.getMessage('NativeApp') + " ( click to check for updates )";
+
+					img.onclick = function() { checkAndUpdateNativeApp() }
 
 					div.appendChild(img);
 					let span = document.createElement('span');
@@ -674,7 +682,7 @@ function buildSearchEngineContainer() {
 					tempNode.postScript = _form.searchCode.value.trim();
 					
 					browser.runtime.sendMessage({
-						action:"quickMenuSearch",
+						action:"search",
 						info: {
 							node: tempNode,
 							openMethod: "openNewTab",
@@ -963,6 +971,8 @@ function buildSearchEngineContainer() {
 
 				e.target.appendChild(img);
 
+				window.listeningForHotkey = true;
+
 				window.addEventListener('keydown', function keyPressListener(evv) {
 					evv.preventDefault();
 					
@@ -978,6 +988,7 @@ function buildSearchEngineContainer() {
 						}
 	
 						window.removeEventListener('keydown', keyPressListener);
+						window.listeningForHotkey = false;
 						updateNodeList();
 						return;
 					}
@@ -1002,6 +1013,7 @@ function buildSearchEngineContainer() {
 					});
 
 					window.removeEventListener('keydown', keyPressListener);
+					window.listeningForHotkey = false;
 					updateNodeList();
 				}); 
 			}
@@ -1622,6 +1634,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				title: "new script",
 				parent: li.node.parent,
+				contexts:[32],
 				toJSON: li.node.toJSON
 			}
 				
@@ -1745,6 +1758,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
+				contexts:[32],
 				parent: li.node.parent,
 				toJSON: li.node.toJSON
 			}
@@ -2021,6 +2035,7 @@ function buildSearchEngineContainer() {
 			parent: node.parent,
 			hidden: false,
 			id: se.id,
+			contexts:[32],
 			toJSON: node.toJSON
 		}
 	}
@@ -2348,6 +2363,10 @@ document.addEventListener('keydown', e => {
 });
 
 document.addEventListener('keydown', e => {
+
+	if ( document.activeElement && document.activeElement.nodeName === 'INPUT' ) return;
+	if ( window.listeningForHotkey ) return;
+
 	if ( e.key === 'Delete' && selectedRows.length ) {
 		e.preventDefault();
 
@@ -2388,6 +2407,9 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 			if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
 				if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
 				else li.style.display = 'none';
+			} else {
+				// show folder hierarchy
+				li.closest("UL").parentNode.querySelector('.header').style.display = null;
 			}
 		}
 	}, 500, "searchEnginesManagerSearchTimer");

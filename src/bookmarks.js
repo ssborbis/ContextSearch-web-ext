@@ -13,9 +13,17 @@ class CSBookmarks {
 		return "";
 	}
 
-	static get() {
+	static get(id) {
 		
 		if (browser.bookmarks === undefined) return Promise.resolve(false);
+
+		if ( id ) {
+			return browser.bookmarks.get(id).then( bookmarks => {
+
+				if (bookmarks.length === 0) return false;
+				return bookmarks[0];
+			});
+		}
 		
 		return browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")}).then( bookmarks => {
 
@@ -24,11 +32,11 @@ class CSBookmarks {
 		});
 	}
 	
-	static getAll() {
+	static getAll(id) {
 		
 		if (browser.bookmarks === undefined) return Promise.resolve(false);
 		
-		return this.get().then( bookmark => {
+		return this.get(id).then( bookmark => {
 
 			if (!bookmark) return false;
 			
@@ -59,7 +67,7 @@ class CSBookmarks {
 		
 		let root = {};
 		
-		return this.getAll().then( tree => {
+		return this.getAll(id).then( tree => {
 			
 			if (!tree) return [];
 
@@ -74,6 +82,16 @@ class CSBookmarks {
 			function traverse(node, target) {
 
 				if ( CSBookmarks.getType(node) === 'bookmark' ) {
+
+					if ( id ) {
+						target.children.push({
+							type: "bookmark",
+							title: node.title,
+							id: node.id
+						});
+
+						return;
+					}
 					
 					let index = userOptions.searchEngines.findIndex( se => se.title === node.title);
 					

@@ -29,6 +29,9 @@ function getNodesFromHotkeys(hotkeys) {
 
 function parseOmniboxInput(input) {
 
+	if ( userOptions.omniboxPseudoDisabled )
+		return {hotkeys: null, searchTerms:input}
+
 	let partial_match = /(\w+)$/.exec(input);
 	let full_match = /(\w+)\s+(.*)/.exec(input);
 	
@@ -70,10 +73,16 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	let input = parseOmniboxInput(text);
-	
+
+	if ( userOptions.omniboxPseudoDisabled )
+		input.searchTerms = 'cs ' + input.searchTerms;
+
 	if ( !input ) return;
 	
 	let nodes = getNodesFromHotkeys(input.hotkeys);
+
+	if ( userOptions.omniboxPseudoDisabled )
+		nodes = [findNode(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine"].includes(n.type))]
 
 	let tab = await browser.tabs.query({currentWindow: true, active: true});
 
@@ -110,5 +119,5 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	// save last used engine(s)
 	userOptions.omniboxLastUsedIds = nodes.map(n => n.id);
-	notify({action: "saveUserOptions", "userOptions": userOptions});	
+	notify({action: "saveUserOptions", "userOptions": userOptions, source: "omnibox"});	
 });

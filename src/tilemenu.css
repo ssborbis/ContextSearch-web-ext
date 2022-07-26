@@ -62,6 +62,10 @@ BODY {
 .tile[data-locked="true"] {
 	--tools-color: var(--selected);
 }
+.tile.hidden {
+	filter: saturate(50%);
+	opacity: .5;
+}
 #quickMenuElement, .tile {
 	display:inline-block;
 	font-size:0;
@@ -219,7 +223,7 @@ BODY {
 #searchBarContainer > #clearSearchBarButton {
 	right: 2px;
 	opacity: .4;
-	height: 14px;
+	height: 12px;
 	margin-top: 6px;
 }
 #searchBarContainer > #searchIcon {
@@ -649,4 +653,52 @@ HR.break {
 }
 .hide {
 	display: none !important;
+}
+#deleteEngineDiv {
+	display:block;
+	text-align: center;
+}
+#deleteEngineDiv IMG {
+	height: 20px;
+	padding: 4px 20px;
+	border: 1px solid var(--selected);
+	border-radius: 16px;
+	opacity: .2;
+	pointer-events: none;
+}
+#deleteEngineDiv IMG.hover {
+	opacity: 1;
+}
+#contextsBar {
+	overflow-x:hidden;
+	width:var(--iframe-body-width, auto);
+	text-align: center;
+}
+#contextsBar > DIV {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 2px;
+}
+#contextsBar .tool {
+	opacity: .5;
+}
+#contextsBar .on {
+	--tools-color: var(--selected);
+	opacity: 1;
+}
+
+#moreSearchTermsIndicator {
+	display: inline-block;
+	position: absolute;
+	background-color: #b5acac;
+	right: 26px;
+	padding: 1px 6px;
+	border-radius: 6px;
+	color: white;
+	font-weight: bold;
+	font-size: 8pt;
+	margin-top: 6px;
+	cursor: pointer;
+	user-select: none;
 }

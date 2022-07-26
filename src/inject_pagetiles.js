@@ -9,7 +9,7 @@ function openPageTiles() {
 		let iframe = document.createElement('iframe');
 		iframe.id = "CS_pageTilesIframe";
 		iframe.setAttribute("allowtransparency", "true");
-		document.body.appendChild(iframe);
+		getShadowRoot().appendChild(iframe);
 
 		// add listener after iframe is loaded to avoid closing on chrome
 		// chrome fires dragend when over iframe
@@ -76,8 +76,8 @@ document.addEventListener('keydown', e => {
 });
 
 
-let getPageTilesIframe = () => document.getElementById('CS_pageTilesIframe');
-let getOverDiv = () => document.getElementById('CS_pageTilesOverDiv');
+let getPageTilesIframe = () => getShadowRoot().getElementById('CS_pageTilesIframe');
+let getOverDiv = () => getShadowRoot().getElementById('CS_pageTilesOverDiv');
 
 let closePageTiles = e => {
 

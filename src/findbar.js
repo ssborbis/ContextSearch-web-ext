@@ -176,7 +176,7 @@ document.querySelector('#toggle_searchalltabs').addEventListener('change', e => 
 	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 		userOptions.highLight.findBar.searchInAllTabs = e.target.checked;
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "findbar.js searchalltabs"});
 		
 		// search all tabs if button enabled and searchbar has text
 		if ( userOptions.highLight.findBar.searchInAllTabs && getSearchBar().value )

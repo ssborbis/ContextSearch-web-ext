@@ -6,8 +6,6 @@ async function makeFrameContents() {
 
 	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
 
-	if ( qmo.length ) qmo = qmo.shift();
-
 	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuUseOldStyle, contexts:qmo.contexts});
 
 	let old_qme = document.getElementById('quickMenuElement');
@@ -198,9 +196,8 @@ function resizeMenu(o) {
 
 function closeMenuRequest(e) {
 
-	if ( e.key === "Escape" || userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
-
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_quickmenutile"});
+	if ( userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
+		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: (e.key === "Escape" ? "esc" : "click_quickmenutile") });
 	}
 }
 

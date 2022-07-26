@@ -1,12 +1,12 @@
 const defaultSearchAction = {
-		event:"mouseup",
-		button:0,
-		altKey:false,
-		ctrlKey:false,
-		metaKey:false,
-		shiftKey:false,
-		action: "",
-		folder:false
+		"event":"mouseup",
+		"button":0,
+		"altKey":false,
+		"ctrlKey":false,
+		"metaKey":false,
+		"shiftKey":false,
+		"action": "",
+		"folder":false
 	};
 
 let defaultSearchActions = {
@@ -28,14 +28,22 @@ for ( let key in defaultSearchActions ) {
 	defaultSearchActions[key] = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
 }
 
-function isSearchAction(g, e) {
+function isSearchAction(g, e, allEvents) {
+
+	allEvents = allEvents || false;
 
 	return (
 		e.altKey === g.altKey &&
 		e.ctrlKey === g.ctrlKey &&
 		e.shiftKey === g.shiftKey &&
 		e.metaKey === g.metaKey &&
-		g.button === e.button
+		g.button === e.button &&
+		(
+			!allEvents ? (
+				(e.detail === 1 && g.event !== 'dblclick') ||
+				(e.detail === 2 && g.event === 'dblclick')
+			) : true
+		)
 	)
 }
 

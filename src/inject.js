@@ -18,6 +18,7 @@ var quickMenuObject = {
 };
 
 var userOptions = {};
+window.suspendSelectionChange = false;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
 
@@ -45,6 +46,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "showNotification":
 			showNotification(message);
 			break;
+
+		case "copyRaw":
+			return copyRaw(message.autoCopy);
+			break;
 	}
 });
 
@@ -63,30 +68,80 @@ function getSelectedText(el) {
 }
 
 function isTextBox(element) {
-	return ( element.nodeType == 1 && 
+
+	return ( element && element.nodeType == 1 && 
 		(
 			element.nodeName == "TEXTAREA" ||
 			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
 			element.isContentEditable
 		)
-	);
+	) ? true : false;
 }
 
-function copyRaw() {
-	let rawText = getRawSelectedText(window.activeElement);
+async function copyImage(imageURL){
+
+	const dataURI = await browser.runtime.sendMessage({action: "fetchURI", url: imageURL});
+	const blob = await (await fetch(dataURI)).blob();
+	const item = new ClipboardItem({ [blob.type]: blob });
+	navigator.clipboard.write([item]);
+}
+
+async function copyRaw(autoCopy) {
+
+	// if ( userOptions.autoCopyImages && quickMenuObject.searchTermsObject.image ) {
+	// 	console.log('attempting to copy image to clipboard');
+	// 	return copyImage(quickMenuObject.searchTermsObject.image);
+	// }
+
+	let rawText = getRawSelectedText(document.activeElement);
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
+
+	console.log('autoCopy', rawText);
 
 	try {
 		navigator.clipboard.writeText(rawText);
 	} catch (err) {
+
+		let active = document.activeElement;
+
+		save = () => {
+
+			if ( active && typeof active.selectionStart !== 'undefined' ) {
+				return {start: active.selectionStart, end: active.selectionEnd};
+			}
+		    const selection = window.getSelection();
+		    return selection.rangeCount === 0 ? null : selection.getRangeAt(0);
+		};
+
+		// Restore the selection
+		restore = (range) => {
+			if ( active && typeof active.selectionStart !== 'undefined' ) {
+				active.selectionStart = range.start;
+				active.selectionEnd = range.end;
+				active.focus();
+				return;
+			}
+		    const selection = window.getSelection();
+		    selection.removeAllRanges();
+		    selection.addRange(range);
+		};
+
+		window.suspendSelectionChange = true;
+
+		let activeRange = save();
+		
 		var t = document.createElement("textarea");
-		t.value = rawText;
 
 		// Avoid scrolling to bottom
-		t.style.top = "-1000";
-		t.style.left = "-1000";
+		t.style.top = "-1000px";
+		t.style.left = "-1000px";
 		t.style.position = "fixed";
+		t.style.width = 0;
+		t.style.height = 0;
+		t.style.display = "none";
+
+		t.value = rawText;
 
 		document.body.appendChild(t);
 		t.focus();
@@ -94,9 +149,20 @@ function copyRaw() {
 
 		try {
 			document.execCommand('copy');
-		} catch (_err) {}
+		} catch (_err) {
+			console.log(_err);
+		}
 
 		document.body.removeChild(t);
+
+		restore(activeRange);
+		active.focus();
+
+		console.log('autoCopy');
+
+		// delay required in Waterfox
+		setTimeout(() => window.suspendSelectionChange = false, 10);
+
 	}
 }
 
@@ -119,34 +185,44 @@ function getContexts(el) {
 // update searchTerms when selecting text and quickMenuObject.locked = true
 document.addEventListener("selectionchange", ev => {
 
-	let searchTerms = window.getSelection().toString().trim();
+	if ( window.suspendSelectionChange ) return;
 
-	// if an opener method timer is running, skip
-	if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
-
+	// reset before the debounce
 	quickMenuObject.lastSelectTime = Date.now();
-	if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
-	
-	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 
-	// display icon to open qm
-	if ( showIcon ) showIcon(searchTerms, ev);
+	debounce(() => {
+
+		if ( window.suspendSelectionChange ) return;
+
+		let searchTerms = window.getSelection().toString().trim();
+
+		// if an opener method timer is running, skip
+		if ( quickMenuObject.mouseDownTimer && !searchTerms ) return;
+
+	//	quickMenuObject.lastSelectTime = Date.now();
+		if ( searchTerms ) quickMenuObject.lastSelectText = searchTerms;
+
+		quickMenuObject.searchTerms = searchTerms;
+		
+		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+
+	}, 250, "selectionchangedebouncer");
 });
 
 // selectionchange handler for input nodes
 for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', e => {
+
 		if ( !isTextBox(e.target) ) return false;
 		
 		let searchTerms = getSelectedText(e.target);
 		if (searchTerms) {
-			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
+			quickMenuObject.searchTerms = searchTerms;
+			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
 		}
 
-		// display icon to open qm
-		if ( showIcon ) showIcon(searchTerms, e);
 	});
 }
 
@@ -174,7 +250,10 @@ function linkOrImage(el, e) {
 	
 	if ( link && userOptions.quickMenuOnLinks ) return link;
 
-	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) {
+	if ( el instanceof HTMLVideoElement && userOptions.quickMenuOnVideos )
+		return el.currentSrc || el.src;
+
+	if ( el instanceof HTMLAudioElement && userOptions.quickMenuOnAudios ) {
 		return el.currentSrc || el.src;
 	}
 	
@@ -406,24 +485,24 @@ function checkContextMenuEventOrderNotification() {
 
 	no.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
 	}
 
 	yes.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
 		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
 	}
 
 }
 
 // set zoom attribute to be used for scaling objects
 function setZoomProperty() {
-	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
+	let el = getShadowRoot().host || document.documentElement;
+	el.style.setProperty('--cs-zoom', window.devicePixelRatio);
 }
 
 document.addEventListener('zoom', setZoomProperty);
-setZoomProperty();
 
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
 browser.runtime.sendMessage({action: "addUserStyles", global: true });
@@ -453,14 +532,59 @@ function checkForNodeHotkeys(e) {
 	if ( !node ) return false;
 
 	browser.runtime.sendMessage({
-		action: "quickMenuSearch", 
+		action: "search", 
 		info: {
+			node: node,
 			menuItemId: node.id,
 			selectionText: searchTerms,
 			openMethod: userOptions.quickMenuSearchHotkeys
 		}
 	});
 }
+
+function getSearchTermsForHotkeys(e) {
+	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
+	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
+	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
+
+	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
+		link = el.currentSrc || el.src;
+
+	let searchTerms = getSelectedText(e.target) || img || link || "";
+
+	if ( !searchTerms ) return false;
+
+	return searchTerms;
+}
+
+function createShadowRoot() {
+
+	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {
+		document.body.getElementById = (id) => document.querySelector('#' + id);
+		return;
+	}
+
+	if ( document.querySelector('contextsearch-widgets')) return;
+
+	let div = document.createElement('contextsearch-widgets');
+	document.documentElement.appendChild(div);
+	let shadow = div.attachShadow({mode: 'open'})
+		.innerHTML = `
+      <style>
+        :host { all: initial; }
+      </style>`;
+}
+
+function getShadowRoot() {
+
+	let div = document.querySelector('contextsearch-widgets');
+
+	if ( div && div.shadowRoot ) return div.shadowRoot;
+	else return document.body;
+}
+
+createShadowRoot();
+setZoomProperty();
 
 window.hasRun = true;
 

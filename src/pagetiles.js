@@ -86,7 +86,7 @@ function makePageTiles() {
 			if ( !searchTerms ) return;
 
 			browser.runtime.sendMessage({
-				action: "quickMenuSearch", 
+				action: "search", 
 				info: {
 					menuItemId: node.id,
 					selectionText: searchTerms,
