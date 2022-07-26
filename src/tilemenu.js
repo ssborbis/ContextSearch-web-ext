@@ -1705,6 +1705,7 @@ document.addEventListener('mouseup', e => {
 });
 
 function search(o) {
+	delete o.node.parent; // caused cyclic error
 	return browser.runtime.sendMessage({
 		action: "search", 
 		info: {
