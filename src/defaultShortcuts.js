@@ -143,8 +143,8 @@ const defaultShortcuts = [
 		},
 		key: "l",
 		ctrl: true,
-		alt: true,
-		shift:false,
+		alt: false,
+		shift:true,
 		meta:false,
 		id: 14
 	}
