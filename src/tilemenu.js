@@ -974,8 +974,10 @@ async function makeQuickMenu(options) {
 		// enable tools on folder change
 		(() => {
 			for ( ts in toolStatuses ) {
-				if ( toolStatuses[ts] ) 
-					QMtools.find(t => t.name == ts ).init();
+				if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
+					let _tile = QMtools.find(t => t.name == ts ).init();
+					_tile.action();
+				}
 			}
 		})();
 
