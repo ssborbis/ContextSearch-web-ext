@@ -1737,8 +1737,8 @@ async function mouseupHandler(e) {
 
 	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
 
-	if ( tile.dataset.id && quickMenuObject.lastUsed !== tile.dataset.id ) {
-		// // store the last used id
+	if ( tile.dataset.id && quickMenuObject.lastUsed !== tile.dataset.id && findNode(userOptions.nodeTree, n => n.id === tile.dataset.id)) {
+		// store the last used id
 		userOptions.lastUsedId = quickMenuObject.lastUsed = tile.dataset.id || null;
 		
 		document.dispatchEvent(new CustomEvent('updateLastUsed'));
