@@ -567,7 +567,9 @@ async function makeQuickMenu(options) {
 
 	document.addEventListener('updatesearchterms', e => {
 
-	//	quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
+		// avoid replace error on null object
+		quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
+
 		sb.set(quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " "));
 		updateMatchRegexFolder();
 	});
@@ -1417,6 +1419,8 @@ function makeSearchBar() {
 	// cycle through searchTermsObject terms
 	(async() => {
 		let div = sbc.querySelector('#moreSearchTermsIndicator');
+
+		if ( !div ) return;
 
 		let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
 		let sto = qmo.searchTermsObject;
