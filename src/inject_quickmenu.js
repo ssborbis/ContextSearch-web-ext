@@ -269,20 +269,21 @@ document.addEventListener('mouseup', e => {
 
 	e.openingMethod = "auto";
 
-	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
+	//if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(e.target) ) return false;
+	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !quickMenuObject.mouseDownTargetIsTextBox ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	clearMouseDownTimer();
 
-	// // skip erroneous short selections
+	// skip erroneous short selections
 	let searchTerms = getSelectedText(e.target);
 	setTimeout(() => {
 
 		if ( searchTerms === getSelectedText(e.target) ) {
 			 openQuickMenu(e);
 			 
-			if ( userOptions.quickMenuCloseOnEdit && isTextBox(e.target) ) {
-				e.target.addEventListener('input', e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+			if ( userOptions.quickMenuCloseOnEdit && quickMenuObject.mouseDownTargetIsTextBox ) {
+				e.target.addEventListener('input', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
 			}
 		}
 	}, 50);
