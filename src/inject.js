@@ -177,8 +177,8 @@ function getContexts(el) {
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 	if ( el.closest && el.closest('a')) contexts.push('link');
 	if ( getSelectedText(el)) contexts.push('selection');
-	if ( window != top ) contexts.push('iframe');
-
+	if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
+	
 	return contexts;
 }
 

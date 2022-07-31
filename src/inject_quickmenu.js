@@ -37,7 +37,7 @@ function openQuickMenu(e, searchTerms) {
 		link: getLink(target),
 		linkText: getLinkText(target),
 		page: window.location.href,
-		frame: window != top ? window.location.href : null
+		frame: target.ownerDocument.defaultView != top ? target.ownerDocument.defaultView.location.href : null
 	}
 
 	searchTerms = searchTerms || selection || linkOrImage(target, e) || null;
