@@ -296,7 +296,7 @@ document.addEventListener('mousedown', e => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		e.which !== userOptions.quickMenuMouseButton ||
-		!hasSearchTerms(e) ||
+		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
 		!e.isTrusted
 	) return false;
@@ -427,7 +427,10 @@ document.addEventListener('mousedown', e => {
 		!userOptions.quickMenuOnMouse ||
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
-		(!hasSearchTerms(e) && e.target.id !== 'CS_underDiv') ||
+		(
+			(!hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) && 
+			e.target.id !== 'CS_underDiv'
+		) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
@@ -499,7 +502,7 @@ document.addEventListener('mouseup', e => {
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		!hasSearchTerms(e)
+		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection )
 	) return false;
 
 

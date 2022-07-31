@@ -17,6 +17,7 @@ const defaultUserOptions = {
 	quickMenuOnMouseShift: false,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
+	quickMenuOnMouseOpenWithoutSelection: false,
 	quickMenuOnDrag: false,
 	quickMenuDragAlt: false,
 	quickMenuDragShift: false,
@@ -286,5 +287,4 @@ const defaultUserOptions = {
 	quickMenuCancelOnMousewheel: true,
 	showDescriptionsInTooltips: false,
 	allowDeleteEnginesFromTileMenu: false
-
 };
