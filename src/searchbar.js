@@ -73,6 +73,8 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 		if ( focusSearchBar ) sb.select();
 	})();
 
+	tileSlideInAnimation(.3, .15, .375);
+
 });
 
 function toolsHandler() {

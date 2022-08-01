@@ -2675,3 +2675,33 @@ function setLayoutOrder(arr) {
 
 	});
 }
+
+function tileSlideInAnimation() {
+
+	let side = Math.random() > .5 ? "left" : "top";
+	let both = Math.random() > .5;
+
+	let ts = document.querySelectorAll(".tile");
+
+	ts.forEach(t => {
+		t.style.transition = 'none';
+		t.style[side] = null;
+
+		if ( Math.random() > .5 && both ) {
+			t.style[side] = Math.random() * 50 + "px";
+		} else {
+			t.style[side] = Math.random() * -50 + "px";
+		}
+
+		t.style.opacity = 0;
+
+		t.offsetWidth;
+
+		t.style.transition = `opacity .3s ease-out, ${side} .15s ease-out`;
+		t.style.transitionDelay = (Math.random() * .375) + "s";
+		t.offsetWidth;
+		t.style[side] = '0px';
+		t.style.opacity = 1;
+
+	});
+}
