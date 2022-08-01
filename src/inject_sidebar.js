@@ -119,8 +119,6 @@ function openSideBar(options) {
 
 	getShadowRoot().appendChild(iframe);
 	
-//	document.body.appendChild(iframe);
-
 	function saveSideBarOptions(o) {
 		userOptions.sideBar.offsets = o.lastOffsets;
 
@@ -179,7 +177,7 @@ function openSideBar(options) {
 
 		runAtTransitionEnd(iframe, ["height", "width"], () => { 
 
-			iframe.style.opacity = 1;
+			iframe.style.opacity = null;
 			iframe.dataset.opened = true;
 			
 			// add resize widget	
