@@ -12,6 +12,21 @@ BODY {
 	transition: opacity .15s;
 	opacity:0;
 }
+.pageTilesContainer.speedDial {
+	right: initial;
+	bottom: initial;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.pageTilesContainer.speedDial .pageTile {
+	width: 100px;
+	height: 100px;
+}
+.pageTilesContainer.speedDial .pageTile.empty {
+	opacity: 1;
+	background-color: red;
+}
 .pageTile {
 	border-collapse: collapse;
 	display:inline-block;

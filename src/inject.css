@@ -276,3 +276,6 @@
 #CS_icon:hover {
 	opacity: 1 !important;;
 }
+.CS_blur {
+	filter: blur(4px);
+}

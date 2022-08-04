@@ -1,24 +1,45 @@
 var userOptions;
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-	userOptions = uo;
+function init(nodes) {
+	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+		userOptions = uo;
 
-	setUserStyles();
-	makePageTiles();
-	
-	if ( userOptions.pageTiles.closeOnShake ) {
-		let ds = new DragShake();
-		ds.onshake = () => close();
-		ds.start();
-	}
-})
+		setUserStyles();
+		makePageTiles(nodes);
+		
+		if ( userOptions.pageTiles.closeOnShake ) {
+			let ds = new DragShake();
+			ds.onshake = () => close();
+			ds.start();
+		}
+	})
+}
 
 // document.addEventListener('mouseup', e => console.info('iframe captured mouseup'));
 // document.addEventListener('drop', e => console.info('iframe captured drop'))
 
 var colors;
 
-function makePageTiles() {
+function createSVG(title) {
+
+	// targeting the svg itself
+	const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+	// make a simple rectangle
+	let textPath = document.createElementNS(svg, "text");
+
+	textPath.setAttribute("x", "0");
+	textPath.setAttribute("y", "0");
+	textPath.setAttribute("fill", "#5cceee");
+	textPath.innerText = title;
+
+	// append the new rectangle to the svg
+	svg.appendChild(textPath);
+
+	return svg;
+}
+
+function makePageTiles(forceNodes) {
 
 	var mainDiv = document.createElement('div');
 	mainDiv.className = "pageTilesContainer";
@@ -26,18 +47,31 @@ function makePageTiles() {
 	let rows = userOptions.pageTiles.rows;
 	let cols = userOptions.pageTiles.columns;
 
-	mainDiv.style.setProperty("--cs-pagetilerows", rows);
-	mainDiv.style.setProperty("--cs-pagetilecols", cols);
-
 	colors = userOptions.pageTiles.paletteString.split('-');
 
 	let nodes = findNodes(userOptions.nodeTree, n => true);
 
 	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) || {id: null, type: "bookmarklet", title: "", icon: browser.runtime.getURL('/icons/empty.svg')} );
 
+	// speedDial replace
+	if ( forceNodes ) {
+		gridNodes = [...forceNodes];
+		rows = 3;
+		cols = 3;
+
+		while ( gridNodes.length < rows * cols ) {
+			gridNodes.push({id: null, type: "bookmarklet", title: "", icon: browser.runtime.getURL('/icons/empty.svg')})
+		}
+
+		mainDiv.classList.add("speedDial");
+	}
+
 	gridNodes = gridNodes.slice(0, rows * cols);
 
-	gridNodes.forEach( node => {
+	mainDiv.style.setProperty("--cs-pagetilerows", rows);
+	mainDiv.style.setProperty("--cs-pagetilecols", cols);
+
+	gridNodes.forEach( (node, index) => {
 
 		let div = document.createElement('div');
 		div.className = 'pageTile';
@@ -45,6 +79,8 @@ function makePageTiles() {
 		let header = document.createElement('div');
 		header.innerText = node.title;
 		div.appendChild(header);
+		// let text = createSVG(node.title);
+		// div.appendChild(text);
 		
 		node.icon = getIconFromNode(node);
 
@@ -105,6 +141,10 @@ function makePageTiles() {
 		if ( !node.id || node.hidden ) div.classList.add('empty');
 
 		mainDiv.appendChild(div);
+
+		// add breaks
+		if ( index + 1 >= cols && (index + 1) % cols === 0 )
+			mainDiv.appendChild(document.createElement('br'));
 	});
 
 	document.body.appendChild(mainDiv);
@@ -115,6 +155,10 @@ function makePageTiles() {
 document.addEventListener('keydown', e => {
 	if ( e.key == "Escape" ) close();
 });
+
+document.addEventListener('click', e => {
+	close();
+})
 
 let close = () => browser.runtime.sendMessage({action: "closePageTiles"});
 
@@ -139,9 +183,15 @@ function getLuma(hexcolor) {
 
 // drag overdiv listener
 window.addEventListener("message", e => {
-	if ( !e.data.drop ) return;
-	let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
-	if ( el === document.body ) close();
 
-	el.ondrop(new DragEvent('drop'));
+	if ( e.data.drop ) {
+		let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+		if ( el === document.body ) close();
+
+		return el.ondrop(new DragEvent('drop'));
+	}
+
+	if ( e.data.init ) {
+		return init(e.data.nodes);
+	}
 });
