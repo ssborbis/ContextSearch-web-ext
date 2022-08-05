@@ -1439,55 +1439,55 @@ function buildShortcutTable() {
 
 		saveOptions();
 	}
+}
 
-	function shortcutListener(hk, options) {
+function shortcutListener(hk, options) {
 
-		options = options || {};
+	options = options || {};
 
-		return new Promise(resolve => {
-				
-			preventDefaults = e => {
-				e.preventDefault();
-				e.stopPropagation();
-			}
-
-			document.addEventListener('keydown', preventDefaults);
-			document.addEventListener('keypress', preventDefaults);
+	return new Promise(resolve => {
 			
-			hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
-			hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
-					
-			document.addEventListener('keyup', e => {
-				
-				e.preventDefault();
-				e.stopPropagation();
-				
-				if ( e.key === "Escape" ) {
-					hk.innerHTML = null;
-					hk.appendChild(keyArrayToButtons(options.defaultKeys || []));
-					resolve(null);
-					return;
-				}
-				
-				let key = {
-					alt: e.altKey,
-					ctrl: e.ctrlKey,
-					meta: e.metaKey,
-					shift: e.shiftKey,
-					key: e.key
-				}
-				
-				hk.innerHTML = null;
-				hk.appendChild(keyArrayToButtons(key));
-									
-				document.removeEventListener('keydown', preventDefaults);
-				document.removeEventListener('keypress', preventDefaults);
+		preventDefaults = e => {
+			e.preventDefault();
+			e.stopPropagation();
+		}
 
-				resolve(key);
+		document.addEventListener('keydown', preventDefaults);
+		document.addEventListener('keypress', preventDefaults);
+		
+		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
+		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
 				
-			}, {once: true});
-		});	
-	}
+		document.addEventListener('keyup', e => {
+			
+			e.preventDefault();
+			e.stopPropagation();
+			
+			if ( e.key === "Escape" ) {
+				hk.innerHTML = null;
+				hk.appendChild(keyArrayToButtons(options.defaultKeys || []));
+				resolve(null);
+				return;
+			}
+			
+			let key = {
+				alt: e.altKey,
+				ctrl: e.ctrlKey,
+				meta: e.metaKey,
+				shift: e.shiftKey,
+				key: e.key
+			}
+			
+			hk.innerHTML = null;
+			hk.appendChild(keyArrayToButtons(key));
+								
+			document.removeEventListener('keydown', preventDefaults);
+			document.removeEventListener('keypress', preventDefaults);
+
+			resolve(key);
+			
+		}, {once: true});
+	});	
 }
 
 function imageUploadHandler(el, callback) {
