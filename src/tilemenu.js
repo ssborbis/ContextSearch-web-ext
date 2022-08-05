@@ -1237,37 +1237,40 @@ function makeSearchBar() {
 		displayLastSearchTerms();
 	});
 
-	function displayLastSearchTerms() {
-		browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
+	async function displayLastSearchTerms() {
+
+		if ( userOptions.autoPasteFromClipboard ) {
+
+			let clipText = null;
+			try {
+				clipText = await navigator.clipboard.readText();
+			} catch ( error ) { console.error(error) }
+
+			if ( clipText ) {
+
+				if ( window == top ) sb.set(clipText); // toolbar menu
+				else window.addEventListener('focus', () => sb.set(clipText), {once: true}); // qm, sb
 			
-			if ( userOptions.autoPasteFromClipboard ) {
-				let paste = () => {
-					try {
-						navigator.clipboard.readText().then(clipText => sb.set(clipText));
-					} catch ( error ) { console.error(error) }
-				}
-				if ( window == top ) paste(); // toolbar menu
-				else window.addEventListener('focus', paste, {once: true}); // qm, sb
-				
 				return;
 			}
-			
-			// skip empty 
-			if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-			
-			sb.set(message.lastSearch);
-			sb.select();
+		}
 
-			// workaround for linux 
-			var selectInterval = setInterval( () => {
+		let message = await browser.runtime.sendMessage({action: "getLastSearch"});	
+		
+		// skip empty 
+		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
+		
+		sb.set(message.lastSearch);
+		sb.select();
 
-				if (getSelectedText(sb) == sb.value)
-					clearInterval(selectInterval);
-				else
-					sb.select();
-			}, 50);
+		// workaround for linux 
+		var selectInterval = setInterval( () => {
 
-		});
+			if (getSelectedText(sb) == sb.value)
+				clearInterval(selectInterval);
+			else
+				sb.select();
+		}, 50);
 	}
 	
 	function displaySuggestions(suggestions) {
