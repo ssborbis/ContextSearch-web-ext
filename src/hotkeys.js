@@ -11,6 +11,10 @@ document.addEventListener('keydown', e => {
 			e.metaKey === s.meta 
 		) {
 
+			let sc = defaultShortcuts.find(d => d.id === s.id);
+
+			if ( !sc ) return;
+
 			e.preventDefault();
 			e.stopPropagation();
 
@@ -21,7 +25,7 @@ document.addEventListener('keydown', e => {
 				_e.stopImmediatePropagation();
 			}, {once: true, capture: true});
 
-			let action = defaultShortcuts.find(d => d.id === s.id).action;
+			let action = sc.action;
 
 			if ( typeof action === 'string')
 				browser.runtime.sendMessage({action: action});

@@ -38,6 +38,7 @@ async function setTheme(theme) {
 
 	let link = await addStylesheet(theme.path);
 	link.className = "theme";
+
 	return link;
 }
 

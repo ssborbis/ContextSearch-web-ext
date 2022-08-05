@@ -21,7 +21,6 @@ HTML, BODY {
 	width:auto;
 	/*height:100%;*/
 	height:auto;
-
 }
 HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
 	display:none;
