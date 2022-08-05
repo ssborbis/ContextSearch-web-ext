@@ -583,6 +583,8 @@ async function makeQuickMenu(options) {
 
 		qm.addEventListener(eventType, e => {
 
+			window.focus();
+
 			// move fix
 			if ( e.target.closest('.tile, GROUP, .quickMenuMore')) return;
 
