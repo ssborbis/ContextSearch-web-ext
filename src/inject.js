@@ -507,14 +507,7 @@ function checkForNodeHotkeys(e) {
 		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey
 	) return false;
 
-	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
-	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
-	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
-
-	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
-		link = el.currentSrc || el.src;
-
-	let searchTerms = getSelectedText(e.target) || img || link || "";
+	let searchTerms = getSearchTermsForHotkeys(e);
 
 	if ( !searchTerms ) return false;
 
@@ -541,11 +534,7 @@ function getSearchTermsForHotkeys(e) {
 	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
 		link = el.currentSrc || el.src;
 
-	let searchTerms = getSelectedText(e.target) || img || link || "";
-
-	if ( !searchTerms ) return false;
-
-	return searchTerms;
+	return getSelectedText(e.target) || img || link || "";
 }
 
 function createShadowRoot() {
