@@ -205,7 +205,7 @@ const defaultUserOptions = {
 	userStylesGlobal: "",
 	userStylesEnabled: false,
 	enableAnimations: true,
-	enableAnimationsTileSlider: true,
+	enableAnimationsTileSlider: false,
 	
 	searchBarHistoryLength: 1024,
 	searchBarSuggestionsCount: 20,
