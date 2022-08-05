@@ -1483,6 +1483,20 @@
 			#additionalSearchActionsTable .template {
 				display: none;
 			}
+			#contextualLayoutIcons {
+				background-color: var(--bg-color3);
+				border: 1px solid var(--border-color1);
+				border-radius: 10px;
+				display: inline-block;
+				padding: 2px 10px;
+				margin-left: 10px;
+				pointer-events: none;
+				vertical-align: middle;
+			}
+			#contextualLayoutIcons .tool {
+				height: 16px;
+				vertical-align: middle;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -2007,6 +2021,23 @@
 				<div class="option">
 					<input type="number" id="quickMenuContextualLayoutFlattenLimit" size="2" step="1" low="0" high="99" class="inputNice">
 					<span class="description" data-i18n="contextMenuContextualLayoutFlattenLimitTooltip">_</span>
+				</div>
+
+				<div class="option">
+					<label class="container">
+						<input type="checkbox" id="quickMenuContextualLayoutToolbar" />
+						<span class="checkmark checkmark2"></span>
+					</label>
+					<div class="description" data-i18n="quickMenuContextualLayoutToolbarTooltip" style="vertical-align: middle !important;">_</div>
+					<div id="contextualLayoutIcons">
+						<div class="tool" style="--mask-image: url(icons/audio.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/frame.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/image.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/link.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/selection.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/page.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/video.svg)"></div>
+					</div>
 				</div>
 				
 				</section>

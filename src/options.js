@@ -223,6 +223,30 @@ async function restoreOptions(restoreUserOptions) {
 			})
 		})();
 
+		function toggleDomElement(dom_str, el_str, on) {
+			let els = dom_str.split(",");
+			let i_on = els.indexOf(el_str);
+			let i_off = els.indexOf("!" + el_str);
+
+			let index = i_on !== -1 ? i_on : i_off;
+
+			if ( index === -1 ) 
+				els.push( on ? el_str : "!" + el_str);
+			else
+				els[index] = on ? el_str : "!" + el_str;
+
+			return els.join(",");
+		}
+
+		// set up layout toggles
+		(() => {
+			let els = uo.quickMenuDomLayout.split(",");
+			$("#quickMenuContextualLayoutToolbar").checked = els.includes("contextsBar") || !els.includes("!contextsBar");
+			$("#quickMenuContextualLayoutToolbar").addEventListener('change', e => {
+				userOptions.quickMenuDomLayout = toggleDomElement(userOptions.quickMenuDomLayout, "contextsBar", e.target.checked);
+			})
+		})();
+
 		// allow context menu on right-click
 		(() => {
 			function onChange(e) {
