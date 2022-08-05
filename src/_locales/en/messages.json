@@ -1080,6 +1080,16 @@
     "message": "Enable resize, slide-in, opacity animations for all menus. Disable for faster interface with no eye candy",
     "description": ""
   },
+
+    "EnableAnimationsTileSlider": {
+    "message": "Slide-in Animations",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Tile menu slide-in animation",
+    "description": ""
+  },
   
   "Theme": {
     "message": "Theme",
