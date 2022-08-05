@@ -67,17 +67,6 @@ function getSelectedText(el) {
 	return getRawSelectedText(el).trim();
 }
 
-function isTextBox(element) {
-
-	return ( element && element.nodeType == 1 && 
-		(
-			element.nodeName == "TEXTAREA" ||
-			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
-			element.isContentEditable
-		)
-	) ? true : false;
-}
-
 async function copyImage(imageURL){
 
 	const dataURI = await browser.runtime.sendMessage({action: "fetchURI", url: imageURL});

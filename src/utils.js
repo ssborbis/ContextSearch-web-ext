@@ -164,3 +164,14 @@ function isMatchingRegex(rgxStr, s) {
 
 	return results;
 }
+
+function isTextBox(element) {
+
+	return ( element && element.nodeType == 1 && 
+		(
+			element.nodeName == "TEXTAREA" ||
+			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
+			element.isContentEditable
+		)
+	) ? true : false;
+}
