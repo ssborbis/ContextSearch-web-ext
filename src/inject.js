@@ -97,6 +97,8 @@ async function copyRaw(autoCopy) {
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
 
+	if ( !rawText ) return;
+
 	console.log('autoCopy', rawText);
 
 	try {
