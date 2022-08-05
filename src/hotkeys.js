@@ -1,5 +1,8 @@
 document.addEventListener('keydown', e => {
 
+	// skip text boxes
+	if ( e.key && !e.ctrlKey && !e.altKey && !e.metaKey && isTextBox(e.target) ) return;
+
 	for ( let s of userOptions.userShortcuts ) {
 		if (
 			s.enabled &&
