@@ -2683,6 +2683,8 @@ function setLayoutOrder(arr) {
 
 function tileSlideInAnimation() {
 
+	if ( !userOptions.enableAnimations || !userOptions.enableAnimationsTileSlider ) return;
+
 	let side = Math.random() > .5 ? "left" : "top";
 	let both = Math.random() > .5;
 
