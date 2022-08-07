@@ -69,7 +69,7 @@ const defaultShortcuts = [
 		id: 6
 	},{
 		name:"quickMenuLock",
-		action: () => QMtools.find(t => t.name === "lock").action(),
+		action: () => qm && QMtools.find(t => t.name === "lock").action(),
 		key: "l",
 		ctrl: true,
 		alt: false,
@@ -78,7 +78,7 @@ const defaultShortcuts = [
 		id: 7
 	},{
 		name:"quickMenuEdit",
-		action:() => QMtools.find(t => t.name === "edit").action(),
+		action:() => qm && QMtools.find(t => t.name === "edit").action(),
 		key: "e",
 		ctrl: true,
 		alt: true,
@@ -143,8 +143,8 @@ const defaultShortcuts = [
 		},
 		key: "l",
 		ctrl: true,
-		alt: true,
-		shift:false,
+		alt: false,
+		shift:true,
 		meta:false,
 		id: 14
 	}

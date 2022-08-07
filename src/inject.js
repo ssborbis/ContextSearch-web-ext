@@ -67,17 +67,6 @@ function getSelectedText(el) {
 	return getRawSelectedText(el).trim();
 }
 
-function isTextBox(element) {
-
-	return ( element && element.nodeType == 1 && 
-		(
-			element.nodeName == "TEXTAREA" ||
-			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
-			element.isContentEditable
-		)
-	) ? true : false;
-}
-
 async function copyImage(imageURL){
 
 	const dataURI = await browser.runtime.sendMessage({action: "fetchURI", url: imageURL});
@@ -96,6 +85,8 @@ async function copyRaw(autoCopy) {
 	let rawText = getRawSelectedText(document.activeElement);
 
 	if ( !rawText ) rawText = quickMenuObject.searchTerms;
+
+	if ( !rawText ) return;
 
 	console.log('autoCopy', rawText);
 
@@ -177,8 +168,8 @@ function getContexts(el) {
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 	if ( el.closest && el.closest('a')) contexts.push('link');
 	if ( getSelectedText(el)) contexts.push('selection');
-	if ( window != top ) contexts.push('iframe');
-
+	if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
+	
 	return contexts;
 }
 
@@ -516,14 +507,7 @@ function checkForNodeHotkeys(e) {
 		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey
 	) return false;
 
-	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
-	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
-	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
-
-	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
-		link = el.currentSrc || el.src;
-
-	let searchTerms = getSelectedText(e.target) || img || link || "";
+	let searchTerms = getSearchTermsForHotkeys(e);
 
 	if ( !searchTerms ) return false;
 
@@ -550,11 +534,7 @@ function getSearchTermsForHotkeys(e) {
 	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
 		link = el.currentSrc || el.src;
 
-	let searchTerms = getSelectedText(e.target) || img || link || "";
-
-	if ( !searchTerms ) return false;
-
-	return searchTerms;
+	return getSelectedText(e.target) || img || link || "";
 }
 
 function createShadowRoot() {

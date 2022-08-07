@@ -100,6 +100,9 @@ function buildSearchEngineContainer() {
 				return;
 			}
 
+			// se stores descriptions vs node ( sometimes / needs work )
+			header.title = node.description || se.description || node.title;
+
 			// force typecast as search engine
 			se.type = 'searchEngine';
 

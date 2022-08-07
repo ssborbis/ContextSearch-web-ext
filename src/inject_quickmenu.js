@@ -37,10 +37,12 @@ function openQuickMenu(e, searchTerms) {
 		link: getLink(target),
 		linkText: getLinkText(target),
 		page: window.location.href,
-		frame: window != top ? window.location.href : null
+		frame: target.ownerDocument.defaultView != top ? target.ownerDocument.defaultView.location.href : null
 	}
 
-	searchTerms = searchTerms || selection || linkOrImage(target, e) || null;
+	searchTerms = searchTerms || selection || linkOrImage(target, e) || searchTermsObject.frame || searchTermsObject.page || null;
+
+	let _contexts = getContexts(target);
 	
 	// for context toggle
 	quickMenuObject.searchTerms = searchTerms;
@@ -60,7 +62,7 @@ function openQuickMenu(e, searchTerms) {
 			target.blur();
 	}
 
-	let _contexts = getContexts(target);
+	
 	if ( e.openingMethod && e.openingMethod === 'simple' && _contexts.length === 1 && _contexts[0] === 'page') {
 		_contexts.push('selection');
 	}
@@ -269,20 +271,21 @@ document.addEventListener('mouseup', e => {
 
 	e.openingMethod = "auto";
 
-	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(ev.target) ) return false;
+	//if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !isTextBox(e.target) ) return false;
+	if ( Date.now() - quickMenuObject.lastSelectTime > ( userOptions.quickMenuAutoTimeout || Number.MAX_VALUE ) && !quickMenuObject.mouseDownTargetIsTextBox ) return false;
 	
 	quickMenuObject.mouseLastClickTime = Date.now();
 	clearMouseDownTimer();
 
-	// // skip erroneous short selections
+	// skip erroneous short selections
 	let searchTerms = getSelectedText(e.target);
 	setTimeout(() => {
 
 		if ( searchTerms === getSelectedText(e.target) ) {
 			 openQuickMenu(e);
 			 
-			if ( userOptions.quickMenuCloseOnEdit && isTextBox(e.target) ) {
-				e.target.addEventListener('input', e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+			if ( userOptions.quickMenuCloseOnEdit && quickMenuObject.mouseDownTargetIsTextBox ) {
+				e.target.addEventListener('input', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
 			}
 		}
 	}, 50);
@@ -296,7 +299,7 @@ document.addEventListener('mousedown', e => {
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		e.which !== userOptions.quickMenuMouseButton ||
-		!hasSearchTerms(e) ||
+		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
 		!e.isTrusted
 	) return false;
@@ -427,7 +430,10 @@ document.addEventListener('mousedown', e => {
 		!userOptions.quickMenuOnMouse ||
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
-		(!hasSearchTerms(e) && e.target.id !== 'CS_underDiv') ||
+		(
+			(!hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) && 
+			e.target.id !== 'CS_underDiv'
+		) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
 	) return false;
 
@@ -499,7 +505,7 @@ document.addEventListener('mouseup', e => {
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		!hasSearchTerms(e)
+		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection )
 	) return false;
 
 

@@ -17,6 +17,7 @@ const defaultUserOptions = {
 	quickMenuOnMouseShift: false,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
+	quickMenuOnMouseOpenWithoutSelection: false,
 	quickMenuOnDrag: false,
 	quickMenuDragAlt: false,
 	quickMenuDragShift: false,
@@ -204,6 +205,7 @@ const defaultUserOptions = {
 	userStylesGlobal: "",
 	userStylesEnabled: false,
 	enableAnimations: true,
+	enableAnimationsTileSlider: false,
 	
 	searchBarHistoryLength: 1024,
 	searchBarSuggestionsCount: 20,
@@ -286,5 +288,4 @@ const defaultUserOptions = {
 	quickMenuCancelOnMousewheel: true,
 	showDescriptionsInTooltips: false,
 	allowDeleteEnginesFromTileMenu: false
-
 };

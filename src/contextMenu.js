@@ -294,7 +294,7 @@ async function buildContextMenu(searchTerms) {
 
 				browser.contextMenus.create({
 					id: context,
-					title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()),
+					title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()) + getMenuHotkey(),
 					contexts: [context]
 				}, onCreated);
 			} catch (error) {
@@ -405,19 +405,17 @@ async function buildContextMenu(searchTerms) {
 		buildLegacy();
 }
 
-
 function contextMenuTitle(searchTerms, context) {
 
 	if (searchTerms.length > 18) 
 		searchTerms = searchTerms.substring(0,15) + "...";
 	
-	let hotkey = ''; 
-	if (userOptions.contextMenuKey) hotkey = '(&' + keyTable[userOptions.contextMenuKey].toUpperCase() + ') ';		
+	let hotkey = getMenuHotkey();; 
 
-	let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", "%s").replace("%s", searchTerms);
+	let title = (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", "%s").replace("%s", searchTerms) + hotkey;
 	
 	if ( !searchTerms ) {
-		title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith")).replace("%1", "%s");
+		title = (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith")).replace("%1", "%s") + hotkey;
 	//	if ( context === 'selection')
 	//		title = (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchForWithVariable") );
 	}
@@ -431,6 +429,10 @@ function contextMenuTitle(searchTerms, context) {
 
 	return title;
 
+}
+
+function getMenuHotkey() {
+	return userOptions.contextMenuKey ? ` (&${keyTable[userOptions.contextMenuKey].toUpperCase()})` : "";
 }
 
 function updateMatchRegexFolders(s) {

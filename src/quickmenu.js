@@ -71,6 +71,8 @@ async function makeFrameContents() {
 	
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
+	tileSlideInAnimation(.3, .15, .5);
+
 }
 
 var maxHeight = Number.MAX_SAFE_INTEGER;

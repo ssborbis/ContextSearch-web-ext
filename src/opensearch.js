@@ -21,6 +21,7 @@ function replaceOpenSearchParams(options) {
 		.replace(/{selectdomain}/g, userdomain || "")
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
+		.replace(/{url}/g, url)
 		.replace(/{.+?}/g, ""); // all others
 }
 

@@ -1,7 +1,7 @@
 let startCoords;
 let searchTerms;
 
-function openPageTiles() {
+function openPageTiles(nodes) {
 
 	// chrome requires delay or the drag event is cancelled
 	setTimeout(() => {
@@ -14,7 +14,9 @@ function openPageTiles() {
 		// add listener after iframe is loaded to avoid closing on chrome
 		// chrome fires dragend when over iframe
 		iframe.onload = () => {
+			iframe.contentWindow.postMessage({init:true, nodes: nodes}, browser.runtime.getURL('/pagetiles.html'));
 		//	document.addEventListener('dragend', closePageTiles, {once: true});
+			document.body.classList.add('CS_blur');
 		}
 
 		iframe.src = browser.runtime.getURL('/pagetiles.html');
@@ -42,7 +44,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if ( message.action && message.action === "openPageTiles" ) {
 		if ( getPageTilesIframe() ) closePageTiles();
-		else openPageTiles({});
+		else openPageTiles(message.nodes);
 	}
 });
 
@@ -73,6 +75,9 @@ document.addEventListener('dragstart', e => {
 
 document.addEventListener('keydown', e => {
 	if ( e.key == "Escape" ) closePageTiles();
+
+	// else if ( e.key === 'ArrowLeft' && !getPageTilesIframe()) 
+	// 	openPageTiles(findNode(userOptions.nodeTree, n => n.title === 'Tracking').children)
 });
 
 
@@ -86,6 +91,8 @@ let closePageTiles = e => {
 
 	let overDiv = getOverDiv();
 	if ( overDiv ) overDiv.parentNode.removeChild(overDiv);
+
+	document.body.classList.remove('CS_blur');
 
 	document.dispatchEvent(new CustomEvent('closePageTiles'));
 }

@@ -567,7 +567,9 @@ async function makeQuickMenu(options) {
 
 	document.addEventListener('updatesearchterms', e => {
 
-	//	quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
+		// avoid replace error on null object
+		quickMenuObject.searchTerms = quickMenuObject.searchTerms || "";
+
 		sb.set(quickMenuObject.searchTerms.replace(/[\r|\n]+/g, " "));
 		updateMatchRegexFolder();
 	});
@@ -580,6 +582,8 @@ async function makeQuickMenu(options) {
 		});
 
 		qm.addEventListener(eventType, e => {
+
+			window.focus();
 
 			// move fix
 			if ( e.target.closest('.tile, GROUP, .quickMenuMore')) return;
@@ -974,8 +978,10 @@ async function makeQuickMenu(options) {
 		// enable tools on folder change
 		(() => {
 			for ( ts in toolStatuses ) {
-				if ( toolStatuses[ts] ) 
-					QMtools.find(t => t.name == ts ).init();
+				if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
+					let _tile = QMtools.find(t => t.name == ts ).init();
+					_tile.action();
+				}
 			}
 		})();
 
@@ -1231,37 +1237,40 @@ function makeSearchBar() {
 		displayLastSearchTerms();
 	});
 
-	function displayLastSearchTerms() {
-		browser.runtime.sendMessage({action: "getLastSearch"}).then((message) => {
+	async function displayLastSearchTerms() {
+
+		if ( userOptions.autoPasteFromClipboard ) {
+
+			let clipText = null;
+			try {
+				clipText = await navigator.clipboard.readText();
+			} catch ( error ) { console.error(error) }
+
+			if ( clipText ) {
+
+				if ( window == top ) sb.set(clipText); // toolbar menu
+				else window.addEventListener('focus', () => sb.set(clipText), {once: true}); // qm, sb
 			
-			if ( userOptions.autoPasteFromClipboard ) {
-				let paste = () => {
-					try {
-						navigator.clipboard.readText().then(clipText => sb.set(clipText));
-					} catch ( error ) { console.error(error) }
-				}
-				if ( window == top ) paste(); // toolbar menu
-				else window.addEventListener('focus', paste, {once: true}); // qm, sb
-				
 				return;
 			}
-			
-			// skip empty 
-			if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-			
-			sb.set(message.lastSearch);
-			sb.select();
+		}
 
-			// workaround for linux 
-			var selectInterval = setInterval( () => {
+		let message = await browser.runtime.sendMessage({action: "getLastSearch"});	
+		
+		// skip empty 
+		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
+		
+		sb.set(message.lastSearch);
+		sb.select();
 
-				if (getSelectedText(sb) == sb.value)
-					clearInterval(selectInterval);
-				else
-					sb.select();
-			}, 50);
+		// workaround for linux 
+		var selectInterval = setInterval( () => {
 
-		});
+			if (getSelectedText(sb) == sb.value)
+				clearInterval(selectInterval);
+			else
+				sb.select();
+		}, 50);
 	}
 	
 	function displaySuggestions(suggestions) {
@@ -1415,6 +1424,8 @@ function makeSearchBar() {
 	// cycle through searchTermsObject terms
 	(async() => {
 		let div = sbc.querySelector('#moreSearchTermsIndicator');
+
+		if ( !div ) return;
 
 		let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
 		let sto = qmo.searchTermsObject;
@@ -1731,8 +1742,8 @@ async function mouseupHandler(e) {
 
 	window.addEventListener('click', e => e.stopPropagation(), {once:true, capture:true});
 
-	if ( tile.dataset.id && quickMenuObject.lastUsed !== tile.dataset.id ) {
-		// // store the last used id
+	if ( tile.dataset.id && quickMenuObject.lastUsed !== tile.dataset.id && findNode(userOptions.nodeTree, n => n.id === tile.dataset.id)) {
+		// store the last used id
 		userOptions.lastUsedId = quickMenuObject.lastUsed = tile.dataset.id || null;
 		
 		document.dispatchEvent(new CustomEvent('updateLastUsed'));
@@ -2666,6 +2677,38 @@ function setLayoutOrder(arr) {
 		
 		el.classList.toggle('hide', hidden);
 		document.body.appendChild(el);
+
+	});
+}
+
+function tileSlideInAnimation() {
+
+	if ( !userOptions.enableAnimations || !userOptions.enableAnimationsTileSlider ) return;
+
+	let side = Math.random() > .5 ? "left" : "top";
+	let both = Math.random() > .5;
+
+	let ts = document.querySelectorAll(".tile");
+
+	ts.forEach(t => {
+		t.style.transition = 'none';
+		t.style[side] = null;
+
+		if ( Math.random() > .5 && both ) {
+			t.style[side] = Math.random() * 50 + "px";
+		} else {
+			t.style[side] = Math.random() * -50 + "px";
+		}
+
+		t.style.opacity = 0;
+
+		t.offsetWidth;
+
+		t.style.transition = `opacity .3s ease-out, ${side} .15s ease-out`;
+		t.style.transitionDelay = (Math.random() * .375) + "s";
+		t.offsetWidth;
+		t.style[side] = '0px';
+		t.style.opacity = 1;
 
 	});
 }
