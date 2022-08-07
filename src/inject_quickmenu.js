@@ -40,7 +40,9 @@ function openQuickMenu(e, searchTerms) {
 		frame: target.ownerDocument.defaultView != top ? target.ownerDocument.defaultView.location.href : null
 	}
 
-	searchTerms = searchTerms || selection || linkOrImage(target, e) || null;
+	searchTerms = searchTerms || selection || linkOrImage(target, e) || searchTermsObject.frame || searchTermsObject.page || null;
+
+	let _contexts = getContexts(target);
 	
 	// for context toggle
 	quickMenuObject.searchTerms = searchTerms;
@@ -60,7 +62,7 @@ function openQuickMenu(e, searchTerms) {
 			target.blur();
 	}
 
-	let _contexts = getContexts(target);
+	
 	if ( e.openingMethod && e.openingMethod === 'simple' && _contexts.length === 1 && _contexts[0] === 'page') {
 		_contexts.push('selection');
 	}
