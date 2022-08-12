@@ -657,7 +657,7 @@ HR.break {
 	display:block;
 	text-align: center;
 }
-#deleteEngineDiv IMG {
+#deleteEngineDiv > DIV {
 	height: 20px;
 	padding: 4px 20px;
 	border: 1px solid var(--selected);
@@ -665,7 +665,7 @@ HR.break {
 	opacity: .2;
 	pointer-events: none;
 }
-#deleteEngineDiv IMG.hover {
+#deleteEngineDiv > DIV.hover {
 	opacity: 1;
 }
 #contextsBar {

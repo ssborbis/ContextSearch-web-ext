@@ -227,7 +227,7 @@ async function buildContextMenu(searchTerms) {
 	if (userOptions.contextMenuShowAddCustomSearch) {
 		let createProperties = {
 			id: "add_engine",
-			title: browser.i18n.getMessage("AddCustomSearch"),
+			title: browser.i18n.getMessage("AddCustomSearch") + getMenuHotkey(),
 			contexts: ["editable"],
 			icons: { "16": browser.runtime.getURL('icons/logo_notext.svg') },
 			visible: false

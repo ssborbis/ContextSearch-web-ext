@@ -523,8 +523,9 @@ const QMtools = [
 					let dDiv = document.createElement('div');
 					dDiv.id = 'deleteEngineDiv';
 
-					let img = new Image();
-					img.src = "icons/delete.svg";
+					let img = document.createElement('div');;
+					img.className = 'tool';
+					img.style.setProperty('--mask-image', 'url(icons/delete.svg)');
 					dDiv.appendChild(img);
 					document.body.appendChild(dDiv);
 
