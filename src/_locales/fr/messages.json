@@ -1081,6 +1081,16 @@
     "description": ""
   },
 
+  "EnableAnimationsTileSlider": {
+    "message": "Effets de glissement",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Animer le glissement des cases",
+    "description": ""
+  },
+
   "Theme": {
     "message": "Thème",
     "description": ""
@@ -2446,6 +2456,9 @@
   },
   "quickMenuCloseOnEdit": {
     "message":"Fermer le menu lors de la saisie (La barre de recherche ne doit *PAS* avoir le focus, voir « Barre de recherche ».)"
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Afficher la barre des contextes"
   }
 
 }
