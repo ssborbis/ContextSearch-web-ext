@@ -1,4 +1,5 @@
 {
+
   "extensionDescription": {
     "message": "Permet d’ajouter facilement des moteurs de recherche et d’effectuer des recherches par l’intermédiaire du menu contextuel ou d’un panneau pratique."
   },
@@ -984,6 +985,7 @@
   "AsShortcut": {
     "message": "en tant que raccourci",
     "description": "Manager menu item"
+    
   },
 
   "AsNewEngine": {
@@ -1076,6 +1078,16 @@
 
   "EnableAnimationsTooltip": {
     "message": "Ajouter des effets de transparence, redimensionnement, glissement aux menus (ne pas cocher pour disposer d’une interface sans fioriture et plus rapide)",
+    "description": ""
+  },
+
+  "EnableAnimationsTileSlider": {
+    "message": "Effets de glissement",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Animer le glissement des cases",
     "description": ""
   },
 
@@ -1584,7 +1596,6 @@
     "message": "Couleur du groupe",
     "description": ""
   },
-
   "groupcolortext": {
     "message": "Couleur du texte",
     "description": ""
@@ -1936,6 +1947,11 @@
     "description": ""
   },
 
+  "linkText": {
+    "message": "texte du lien",
+    "description": ""
+  },
+
   "page": {
     "message": "page",
     "description": ""
@@ -1952,10 +1968,9 @@
   },
 
   "requestPermissionsMessage": {
-    "message": "An optional permission is required. Click the request button below.",
+    "message": "Une permission supplémentaire est nécessaire. Cliquer sur le bouton ci-dessous.",
     "description": "generic permission"
   },
-  
   "Request": {
     "message": "Demander",
     "description": "clipboardWrite permission - request button label"
@@ -1982,11 +1997,13 @@
     "message": "Votre personnalisation (moteurs de recherche, dossiers, marque-pages scriptés, séparateurs, etc.) va être supprimée. Êtes-vous certain ?",
     "description": "remove searchengines - confirm message"
   },
-  
+
+
 "customIconTooltip": {
     "message": "Utiliser une image sur l’ordinateur",
     "description": "toolbar icon - custom icon tooltip"
   },
+  
   
  "EnableHotkeysLabel": {
     "message": "Touches de raccourci",
@@ -2096,12 +2113,19 @@
     "message": "Toujours permettre la réorganisation des cases dans les menus.",
     "description": "advanced setting tooltip"
   },
+  "autoCopy": {
+    "message": "Copie automatique"
+  },
   "autoCopyTooltip": {
     "message": "Copier automatiquement le texte sélectionné dans le presse-papiers.",
     "description": "advanced setting tooltip"
   },
   "autoPasteFromClipboardTooltip": {
     "message": "Coller automatiquement le contenu du presse-papiers dans la barre de recherche à l’ouverture des menus.",
+    "description": "advanced setting tooltip"
+  },
+  "autoCopyOnInputsTooltip": {
+    "message": "Activer sur les champs de saisie et les zones de texte",
     "description": "advanced setting tooltip"
   },
   "cache": {
@@ -2364,19 +2388,77 @@
   },
 
   "NewExternalProgram": {
-    "message": "New App Launcher"
+    "message": "Nouveau lanceur d’application"
   },
 
   "searchIconFinder": {
-    "message": "Search IconFinder.com  🔍"
+    "message": "🔍 Rechercher sur IconFinder.com"
   },
 
   "RefineSearch": {
-    "message": "Refine search"
+    "message": "Préciser la recherche."
   },
 
-  "___________": {
-    "message": ""
+  "NativeApp": {
+    "message": "Application communicante"
+  },
+
+  "NativeAppMissing": {
+    "message": "L’application communicante n’est pas connectée."
+  },
+  "SearchBookmarklets": {
+    "message": "🔍 Rechercher des marque-pages scriptés"
+  },
+  "NewScript": {
+    "message": "Nouveau script"
+  },
+  "Permissions": {
+    "message": "Permissions"
+  },
+  "Command": {
+    "message": "Commande"
+  },
+  "WorkingDirectory": {
+    "message": "Dossier de travail"
+  },
+  "Script": {
+    "message": "Script"
+  },
+  "PostAppScript": {
+    "message": "Script post-application"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Javascript à exécuter dans l’onglet courant quand l’application a terminé. La sortie standard est capturée dans la variable « result », par exemple « alert(result) »."
+  },
+  "MessengerOfflineTooltip": {
+    "message": "Une application supplémentaire est nécessaire pour lancer des programmes depuis Recherche+. Cliquer sur le lien pour plus de détails."
+  },
+  "ToggleSearchTerms": {
+    "message": "Terme de recherche suivant"
+  },
+  "EnableOn": {
+    "message": "Activer sur"
+  },
+  "Input": {
+    "message": "champ de saisie"
+  },
+  "tools_OpenImage": {
+    "message": "Ouvrir l’image"
+  },
+  "tools_Download": {
+    "message": "Télécharger"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Remettre toutes les options à leurs valeurs par défaut ? (Les moteurs de recherche ne sont pas concernés.)"
+  },
+  "contexts": {
+    "message":"Contextes"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Fermer le menu lors de la saisie (La barre de recherche ne doit *PAS* avoir le focus, voir « Barre de recherche ».)"
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Afficher la barre des contextes"
   }
 
 }
