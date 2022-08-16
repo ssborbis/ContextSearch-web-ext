@@ -2436,7 +2436,7 @@ function isAllowedURL(_url) {
 
 async function injectContentScripts(tab, frameId) {
 
-	let contentType = await browser.tabs.executeScript(tab.id, { code: "document.contentType", matchAboutBlank:false, frameId: frameId });
+	//let contentType = await browser.tabs.executeScript(tab.id, { code: "document.contentType", matchAboutBlank:false, frameId: frameId });
 
 	// filter documents that can't attach menus
 	let isHTML = await browser.tabs.executeScript(tab.id, { code: "document.querySelector('html') ? true : false", matchAboutBlank:false, frameId: frameId });
