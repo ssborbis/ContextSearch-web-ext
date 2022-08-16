@@ -560,7 +560,7 @@ function getShadowRoot() {
 	let div = document.querySelector('contextsearch-widgets');
 
 	if ( div && div.shadowRoot ) return div.shadowRoot;
-	else return document.body;
+	else return document.body || null;
 }
 
 createShadowRoot();

@@ -2436,6 +2436,12 @@ function isAllowedURL(_url) {
 
 async function injectContentScripts(tab, frameId) {
 
+	let contentType = await browser.tabs.executeScript(tab.id, { code: "document.contentType", matchAboutBlank:false, frameId: frameId });
+
+	// filter documents that can't attach menus
+	let isHTML = await browser.tabs.executeScript(tab.id, { code: "document.querySelector('html') ? true : false", matchAboutBlank:false, frameId: frameId });
+	if ( !isHTML.shift() ) return;
+
 	let check = await browser.tabs.executeScript(tab.id, { code: "window.hasRun", matchAboutBlank:false, frameId: frameId });
 	if ( check[0] && check[0] === true ) {
 		console.log('already injected', tab.url, frameId);
