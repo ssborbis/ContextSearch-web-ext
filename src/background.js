@@ -1406,12 +1406,6 @@ async function openSearch(info) {
 
 	var searchTerms = (info.searchTerms || info.selectionText || "").trim();
 
-	if ( userOptions.multilinesAsSeparateSearches ) {
-		try {
-			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim();
-		} catch (err) {}
-	}
-
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
@@ -1433,9 +1427,16 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( userOptions.multilinesAsSeparateSearches && searchTerms.split('\n').length > 1 ) {
+	if ( userOptions.multilinesAsSeparateSearches ) {
+
+		try {
+			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim() || searchTerms;
+		} catch (err) {}
 
 		let terms = searchTerms.split('\n');
+
+		if ( terms.length < 2 ) return;
+		
 		let ps = [];
 
 		if ( terms.length > userOptions.multilinesAsSeparateSearchesLimit ) {
