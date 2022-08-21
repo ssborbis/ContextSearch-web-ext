@@ -70,7 +70,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	
 		if ( text ) sb.set(text);
 
-		if ( focusSearchBar ) sb.select();
+		if ( focusSearchBar && userOptions.quickMenuSearchBarSelect ) sb.select();
 	})();
 
 	tileSlideInAnimation(.3, .15, .375);

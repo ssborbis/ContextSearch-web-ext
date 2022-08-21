@@ -1261,16 +1261,19 @@ function makeSearchBar() {
 		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
 		
 		sb.set(message.lastSearch);
-		sb.select();
+
+		if ( userOptions.quickMenuSearchBarSelect )
+			window.addEventListener('focus', e => sb.select(), {once: true});
+		//sb.select();
 
 		// workaround for linux 
-		var selectInterval = setInterval( () => {
+		// var selectInterval = setInterval( () => {
 
-			if (getSelectedText(sb) == sb.value)
-				clearInterval(selectInterval);
-			else
-				sb.select();
-		}, 50);
+		// 	if (getSelectedText(sb) == sb.value)
+		// 		clearInterval(selectInterval);
+		// 	else
+		// 		sb.select();
+		// }, 50);
 	}
 	
 	function displaySuggestions(suggestions) {
