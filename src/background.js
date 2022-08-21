@@ -390,6 +390,7 @@ async function notify(message, sender, sendResponse) {
 		case "updateContextMenu":
 		
 			var searchTerms = message.searchTerms;
+			currentContextMenuContexts = message.currentContexts;
 
 			if ( window.contextMenuSearchTerms === searchTerms ) {
 				console.log('same search terms');
@@ -1739,7 +1740,7 @@ async function folderSearch(info, allowFolders) {
 		_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 		_info.folder = index++ ? true : false;
 		_info.menuItemId = _node.id;
-		_info.searchTerms = info.selectionText;
+		_info.searchTerms = info.selectionText || info.searchTerms; // contextMenu uses both, be careful
 		_info.node = _node;
 
 		if ( _node.type === "folder" && allowFolders )

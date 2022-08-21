@@ -1,4 +1,5 @@
 const ROOT_MENU = "root_menu";
+var currentContextMenuContexts = [];
 
 async function buildContextMenu(searchTerms) {
 
@@ -522,8 +523,6 @@ function contextMenuSearch(info, tab) {
 		return notify({action: "openOptions", hashurl: "#contextMenu"});
 	}
 
-	console.log(context, info.menuItemId);
-
 	// remove incremental menu ids
 	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
 	
@@ -600,6 +599,10 @@ function contextMenuSearch(info, tab) {
 	info.openMethod = openMethod;
 	info.tab = tab;
 	info.node = node;
+
+	// filter searchAll children by context
+	if ( userOptions.contextMenuUseContextualLayout && node.type === "folder" )
+		info.node = filterContexts(node, currentContextMenuContexts);
 	
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname

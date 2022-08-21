@@ -196,7 +196,7 @@ document.addEventListener("selectionchange", ev => {
 		quickMenuObject.searchTerms = searchTerms;
 		
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -211,7 +211,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
 		}
 
 	});
@@ -229,7 +229,7 @@ window.addEventListener('mousedown', e => {
 	}
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
 });
 
 function linkOrImage(el, e) {
