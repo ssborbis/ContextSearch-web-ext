@@ -1149,7 +1149,7 @@ function openWithMethod(o) {
 function executeBookmarklet(info) {
 	
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
-	let searchTerms = escapeDoubleQuotes(info.searchTerms || window.searchTerms || info.selectionText);
+	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
 
 	// run as script
 	if ( info.node.searchCode ) {
