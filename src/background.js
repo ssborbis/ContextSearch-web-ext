@@ -390,6 +390,7 @@ async function notify(message, sender, sendResponse) {
 		case "updateContextMenu":
 		
 			var searchTerms = message.searchTerms;
+			currentContextMenuContexts = message.currentContexts;
 
 			if ( window.contextMenuSearchTerms === searchTerms ) {
 				console.log('same search terms');
@@ -1148,7 +1149,7 @@ function openWithMethod(o) {
 function executeBookmarklet(info) {
 	
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
-	let searchTerms = escapeDoubleQuotes(info.searchTerms || window.searchTerms || info.selectionText);
+	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
 
 	// run as script
 	if ( info.node.searchCode ) {
@@ -1406,12 +1407,6 @@ async function openSearch(info) {
 
 	var searchTerms = (info.searchTerms || info.selectionText || "").trim();
 
-	if ( userOptions.multilinesAsSeparateSearches ) {
-		try {
-			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim();
-		} catch (err) {}
-	}
-
 	var openMethod = info.openMethod || "openNewTab";
 	var tab = info.tab || null;
 	var openUrl = info.openUrl || false;
@@ -1433,42 +1428,50 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( userOptions.multilinesAsSeparateSearches && searchTerms.split('\n').length > 1 ) {
+	if ( userOptions.multilinesAsSeparateSearches ) {
+
+		try {
+			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim() || searchTerms;
+		} catch (err) {}
 
 		let terms = searchTerms.split('\n');
-		let ps = [];
 
-		if ( terms.length > userOptions.multilinesAsSeparateSearchesLimit ) {
+		if ( terms.length > 1 ) {
 
-			// try to inject confirm dialog
-			try {
-				let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
-				if ( valid ) {
-					let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
-					
-					if ( !_confirm[0] ) return;
+			let ps = [];
+
+			if ( terms.length > userOptions.multilinesAsSeparateSearchesLimit ) {
+
+				// try to inject confirm dialog
+				try {
+					let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
+					if ( valid ) {
+						let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
+						
+						if ( !_confirm[0] ) return;
+					}
+				} catch ( err ) { // can't inject a confirm dialog
+					console.log(err);
+					return;
 				}
-			} catch ( err ) { // can't inject a confirm dialog
-				console.log(err);
-				return;
 			}
+
+			terms.forEach((t, i) => {
+				t = t.trim();
+
+				if ( !t ) return;
+
+				let _info = Object.assign({}, info);
+				_info.searchTerms = t;
+				_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
+				delete _info.quickMenuObject;
+
+				ps.push(openSearch(_info));
+			})
+
+			Promise.all(ps);
+			return;
 		}
-
-		terms.forEach((t, i) => {
-			t = t.trim();
-
-			if ( !t ) return;
-
-			let _info = Object.assign({}, info);
-			_info.searchTerms = t;
-			_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
-			delete _info.quickMenuObject;
-
-			ps.push(openSearch(_info));
-		})
-
-		Promise.all(ps);
-		return;
 	}
 
 	if ( node && node.type === "oneClickSearchEngine" ) {
@@ -1737,7 +1740,7 @@ async function folderSearch(info, allowFolders) {
 		_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 		_info.folder = index++ ? true : false;
 		_info.menuItemId = _node.id;
-		_info.searchTerms = info.selectionText;
+		_info.searchTerms = info.selectionText || info.searchTerms; // contextMenu uses both, be careful
 		_info.node = _node;
 
 		if ( _node.type === "folder" && allowFolders )
@@ -2435,6 +2438,12 @@ function isAllowedURL(_url) {
 }
 
 async function injectContentScripts(tab, frameId) {
+
+	//let contentType = await browser.tabs.executeScript(tab.id, { code: "document.contentType", matchAboutBlank:false, frameId: frameId });
+
+	// filter documents that can't attach menus
+	let isHTML = await browser.tabs.executeScript(tab.id, { code: "document.querySelector('html') ? true : false", matchAboutBlank:false, frameId: frameId });
+	if ( !isHTML.shift() ) return;
 
 	let check = await browser.tabs.executeScript(tab.id, { code: "window.hasRun", matchAboutBlank:false, frameId: frameId });
 	if ( check[0] && check[0] === true ) {

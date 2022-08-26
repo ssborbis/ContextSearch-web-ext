@@ -95,6 +95,7 @@ const defaultUserOptions = {
 	contextMenuUseInnerText: false,
 	contextMenuShowSettingsFolder: false,
 	contextMenuTitle:"",
+	contextMenuShowFolderSearch: false,
 	quickMenuLeftClick: "openNewTab",
 	quickMenuRightClick: "openCurrentTab",
 	quickMenuMiddleClick: "openBackgroundTab",

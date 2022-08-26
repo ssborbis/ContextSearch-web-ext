@@ -67,6 +67,8 @@ function openQuickMenu(e, searchTerms) {
 		_contexts.push('selection');
 	}
 
+	quickMenuObject.contexts = _contexts;
+
 	browser.runtime.sendMessage({
 		action: "openQuickMenu", 
 		screenCoords: quickMenuObject.screenCoords,
@@ -808,6 +810,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					disabled: message.quickMenuObject.disabled,
 					mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
 					mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
+					contexts:quickMenuObject.contexts
 				};
 
 				// iframe needs to disable here

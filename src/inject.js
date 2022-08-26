@@ -196,7 +196,7 @@ document.addEventListener("selectionchange", ev => {
 		quickMenuObject.searchTerms = searchTerms;
 		
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -211,7 +211,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
 		}
 
 	});
@@ -229,7 +229,7 @@ window.addEventListener('mousedown', e => {
 	}
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
 });
 
 function linkOrImage(el, e) {
@@ -560,7 +560,7 @@ function getShadowRoot() {
 	let div = document.querySelector('contextsearch-widgets');
 
 	if ( div && div.shadowRoot ) return div.shadowRoot;
-	else return document.body;
+	else return document.body || null;
 }
 
 createShadowRoot();

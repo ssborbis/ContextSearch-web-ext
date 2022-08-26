@@ -2417,4 +2417,9 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 			}
 		}
 	}, 500, "searchEnginesManagerSearchTimer");
+});
+
+$('#searchEnginesManagerSearchClearButton').addEventListener('click', e => {
+	$('#searchEnginesManagerSearch').value = "";
+	$('#searchEnginesManagerSearch').dispatchEvent(new KeyboardEvent('keyup'))
 })
