@@ -288,5 +288,6 @@ const defaultUserOptions = {
 	multilinesAsSeparateSearchesLimit: 10,
 	quickMenuCancelOnMousewheel: true,
 	showDescriptionsInTooltips: false,
-	allowDeleteEnginesFromTileMenu: false
+	allowDeleteEnginesFromTileMenu: false,
+	saveMenuDisplayMode: true
 };
