@@ -1401,6 +1401,11 @@ function isValidHttpUrl(str) {
 
 async function openSearch(info) {
 
+	if ( info.openMethod === "openSideBarAction" ) {
+		console.log('open Firefox sidebar');
+		browser.sidebarAction.open();
+	}
+	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
 	console.log(info);
