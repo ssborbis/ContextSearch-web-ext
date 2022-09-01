@@ -2469,13 +2469,14 @@ async function injectContentScripts(tab, frameId) {
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js",
-		"/tools.js" // for shortcuts
+		"/tools.js", // for shortcuts
+		"/utils.js" // for isTextBox
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
 		[
-			"/utils.js",
+			
 			"/nodes.js",
 			"/opensearch.js",
 			"/searchEngineUtils.js",
