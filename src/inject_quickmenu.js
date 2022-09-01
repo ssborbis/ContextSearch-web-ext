@@ -42,7 +42,7 @@ function openQuickMenu(e, searchTerms) {
 
 	searchTerms = searchTerms || selection || linkOrImage(target, e) || searchTermsObject.frame || searchTermsObject.page || null;
 
-	let _contexts = getContexts(target);
+	let _contexts = getContexts(target, e);
 	
 	// for context toggle
 	quickMenuObject.searchTerms = searchTerms;

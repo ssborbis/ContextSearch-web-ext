@@ -157,18 +157,26 @@ async function copyRaw(autoCopy) {
 	}
 }
 
-function getContexts(el) {
+function getContexts(el, e) {
 
 	if ( !el ) return [];
 
-	let contexts = ['page'];
+	let contexts = [];
 
 	if ( el instanceof HTMLImageElement || getImage(el) ) contexts.push('image');
 	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
 	if ( el instanceof HTMLVideoElement ) contexts.push('video');
 	if ( el.closest && el.closest('a')) contexts.push('link');
 	if ( getSelectedText(el)) contexts.push('selection');
-	if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
+
+	if ( e && contexts.includes("link") && getLinkMethod(e) === 'text')
+		contexts.push("selection");
+
+	if ( !contexts.length )
+		if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
+	
+	if ( !contexts.length )
+		contexts.push('page');
 	
 	return contexts;
 }
@@ -375,6 +383,13 @@ function getLinkText(el) {
 	return a.innerText;
 }
 
+function getLinkMethod(e) {
+	let method = userOptions.contextMenuSearchLinksAs;
+	
+	if ( e && e.ctrlKey ) return method === 'url' ? 'text' : 'url';
+	else return method;
+}
+
 function getLink(el, e) {
 
 	if ( !el.closest ) return false;
@@ -383,11 +398,7 @@ function getLink(el, e) {
 	
 	if ( !a ) return "";
 	
-	let method = userOptions.contextMenuSearchLinksAs;
-	
-	if ( e && e.ctrlKey ) method = method === 'url' ? 'text' : 'url';
-
-	return method === 'url' ? a.href || a.innerText : a.innerText || a.href;
+	return getLinkMethod(e) === 'url' ? a.href || a.innerText : a.innerText || a.href;
 }
 
 function getImage(el, e) {
