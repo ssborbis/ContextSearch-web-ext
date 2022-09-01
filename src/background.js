@@ -399,7 +399,7 @@ async function notify(message, sender, sendResponse) {
 			
 			window.contextMenuSearchTerms = searchTerms;
 
-			if ( userOptions.contextMenuUseContextualLayout )
+			if ( userOptions.contextMenuUseContextualLayout ) {
 				updateMatchRegexFolders(searchTerms);
 
 				try {
@@ -409,18 +409,15 @@ async function notify(message, sender, sendResponse) {
 					let ccs = message.currentContexts
 
 				 	if ( !ccs.includes("page") )
-						await browser.contextMenus.update("page", {visible: false });
+						browser.contextMenus.update("page", {visible: false });
 					if ( !ccs.includes("frame") )
-						await browser.contextMenus.update("frame", {visible: false });
-					
+						browser.contextMenus.update("frame", {visible: false });
+
 				} catch ( error ) {
 					console.error(error);
 				}
 
-				if ( message.currentContexts ) {
-
-				}
-			else {
+			} else {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
 
