@@ -174,7 +174,7 @@ function getContexts(el, e) {
 
 	if ( !contexts.length )
 		if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
-	
+
 	if ( !contexts.length )
 		contexts.push('page');
 	
@@ -204,7 +204,7 @@ document.addEventListener("selectionchange", ev => {
 		quickMenuObject.searchTerms = searchTerms;
 		
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e)});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -219,7 +219,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e)});
 		}
 
 	});

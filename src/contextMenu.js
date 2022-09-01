@@ -279,6 +279,7 @@ async function buildContextMenu(searchTerms) {
 
 		contexts.forEach( ( context, index ) => {
 
+
 			// create node tree for context
 			let filteredNodeTree = filterContexts(root, context);
 
@@ -572,6 +573,12 @@ function contextMenuSearch(info, tab) {
 			break;
 		case "link":
 			searchTerms = info.linkUrl;
+	
+			if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {
+				let method = userOptions.contextMenuSearchLinksAs;
+				method = method === 'url' ? 'text' : 'url';
+				if ( method === 'text') searchTerms = info.linkText;
+			} 
 			break;
 		case "page":
 			searchTerms = tab.url;

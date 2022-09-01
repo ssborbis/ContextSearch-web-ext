@@ -401,6 +401,25 @@ async function notify(message, sender, sendResponse) {
 
 			if ( userOptions.contextMenuUseContextualLayout )
 				updateMatchRegexFolders(searchTerms);
+
+				try {
+					for ( let i in contexts )
+						await browser.contextMenus.update(contexts[i], {visible: true });
+
+					let ccs = message.currentContexts
+
+				 	if ( !ccs.includes("page") )
+						await browser.contextMenus.update("page", {visible: false });
+					if ( !ccs.includes("frame") )
+						await browser.contextMenus.update("frame", {visible: false });
+					
+				} catch ( error ) {
+					console.error(error);
+				}
+
+				if ( message.currentContexts ) {
+
+				}
 			else {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
