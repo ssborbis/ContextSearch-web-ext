@@ -308,9 +308,9 @@ document.addEventListener('mousedown', e => {
 
 	// check for modifier keys
 	if ( 
-		(userOptions.quickMenuOnMouseShift && !e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt && !e.altKey)  ||
-		(userOptions.quickMenuOnMouseCtrl && !e.ctrlKey)
+		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
+		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -443,9 +443,9 @@ document.addEventListener('mousedown', e => {
 
 	// check for modifier keys
 	if ( 
-		(userOptions.quickMenuOnMouseShift && !e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt && !e.altKey)  ||
-		(userOptions.quickMenuOnMouseCtrl && !e.ctrlKey)
+		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
+		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -509,7 +509,6 @@ document.addEventListener('mouseup', e => {
 		!quickMenuObject.mouseDownTimer ||
 		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection )
 	) return false;
-
 
 	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
 
