@@ -146,7 +146,7 @@ async function buildContextMenu(searchTerms) {
 				
 					addMenuItem({
 						parentId: _id,
-						id: node.id + "_" + id,
+						id: context_prefix + node.id + "_" + id,
 						title: browser.i18n.getMessage("SearchAll"),
 						icons: {
 							"16": "icons/search.svg"
