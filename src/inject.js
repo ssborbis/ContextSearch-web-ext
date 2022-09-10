@@ -574,6 +574,17 @@ function getShadowRoot() {
 	else return document.body || null;
 }
 
+document.addEventListener('keydown', e => {
+	if ( e.key === "Esc" ) {
+		let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+
+		if ( tool && tool.on ) {
+			tool.on === false;
+			saveUserOptions();
+		}
+	}
+});
+
 createShadowRoot();
 setZoomProperty();
 
