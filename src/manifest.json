@@ -93,6 +93,12 @@
 		},
 		"default_popup": "/searchbar.html"
 	},
+
+	"page_action": {
+	  "default_icon": "/icons/repeatsearch.svg",
+	  "default_title": "test",
+	  "default_popup": "blank.html"
+	},
 	
 	"sidebar_action": {
 		"default_icon": {

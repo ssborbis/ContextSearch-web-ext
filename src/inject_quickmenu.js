@@ -19,6 +19,12 @@ function deselectAllText(e) {
 	});
 }
 
+function checkToolStatus(name) {
+	let tool = userOptions.quickMenuTools.find( _tool => _tool.name === name );
+	if ( !tool ) return false;
+	return tool.on ? true : false;
+}
+
 function openQuickMenu(e, searchTerms) {
 
 	e = e || new MouseEvent('click');
@@ -137,6 +143,23 @@ function getOffsets() {
 
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {
+
+	// skip opening menu if using instant search
+	if ( checkToolStatus("repeatsearch")) {
+
+		let _id = userOptions.lastUsedId;
+
+		browser.runtime.sendMessage({
+			action: "search", 
+			info: {
+				menuItemId:_id,
+				selectionText: quickMenuObject.searchTerms,
+				openMethod: userOptions.lastUsedMethod || userOptions.quickMenuLeftClick
+			}
+		});
+
+		return;
+	}
 
 	let qmc = getQM();
 
