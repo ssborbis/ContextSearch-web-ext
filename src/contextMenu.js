@@ -279,7 +279,6 @@ async function buildContextMenu(searchTerms) {
 
 		contexts.forEach( ( context, index ) => {
 
-
 			// create node tree for context
 			let filteredNodeTree = filterContexts(root, context);
 
