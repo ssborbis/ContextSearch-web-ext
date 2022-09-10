@@ -2364,7 +2364,7 @@
   },
 
   "ContextsTooltip": {
-    "message": "Display this engine when opening menus from the selected contexts. Works with Context and Quick menus when Advanced -> Filter Engines is enabled, otherwise ignored."
+    "message": "Display this engine when opening menus from the selected contexts. Works with Context and Quick menus when [Context Menu / Quick Menu] -> Advanced -> Filter Engines is enabled, otherwise ignored."
   },
 
   "OpenOnIcon": {
@@ -2459,6 +2459,12 @@
   },
   "quickMenuContextualLayoutToolbarTooltip": {
     "message": "Show the Contexts Toolbar"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Anywhere"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Open menu on any element including empty areas in documents and frames"
   }
 
 }
