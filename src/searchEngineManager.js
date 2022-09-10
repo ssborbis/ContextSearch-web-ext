@@ -1893,6 +1893,7 @@ function buildSearchEngineContainer() {
 				let se = userOptions.searchEngines.find(se => se.id === newNode.id);
 
 				se.template = JSON.stringify(templates);
+				se.description = JSON.stringify(names);
 				updateNodeList(true);
 					
 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
