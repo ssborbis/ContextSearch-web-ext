@@ -832,7 +832,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "setLastUsed":
-			lastSearchHandler(message.id);
+			lastSearchHandler(message.id, message.method || null);
 			break;
 			
 		case "getSelectedText":
@@ -1331,13 +1331,14 @@ async function executeExternalProgram(info) {
 	});
 }
 
-function lastSearchHandler(id) {
+function lastSearchHandler(id, method) {
 
 	let node = findNode(userOptions.nodeTree, n => n.id === id );
 	
 	if ( !node ) return;
 	
 	userOptions.lastUsedId = id;
+	userOptions.lastUsedMethod = method;
 	
 	if ( node.type !== "folder" ) {
 		userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
@@ -1439,7 +1440,7 @@ async function openSearch(info) {
 	if (!info.folder) delete window.folderWindowId;
 	
 	if ( !info.temporarySearchEngine && !info.folder && !info.openUrl) 
-		lastSearchHandler(info.menuItemId);
+		lastSearchHandler(info.menuItemId, info.openMethod);
 
 	if ( userOptions.preventDuplicateSearchTabs ) {
 		try {
