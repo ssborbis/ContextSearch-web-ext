@@ -230,7 +230,7 @@
 "message": "在菜单顶部显示最近使用的引擎"
 },
 "ContextAwareFilter": {
-"message": "根据目标元素（链接、图片、选择内容...）过滤搜索引擎"
+"message": "根据目标元素（链接、图片、选中内容...）过滤搜索引擎"
 },
 "ContextMenu": {
 "message": "右键菜单"
@@ -1867,7 +1867,7 @@
 },
 "selection": {
 "description": "",
-"message": "选择内容"
+"message": "选中内容"
 },
 "separateWordSearch": {
 "description": "",
