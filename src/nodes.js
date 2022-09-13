@@ -122,6 +122,12 @@ function repairNodeTree(tree) {
 			console.log('removing dead search engine node ' + node.title);
 			return true;	
 		}
+
+		if ( node.type === 'siteSearchFolder') {
+			node.parent = parent;
+			console.log('removing siteSearchFolder ' + node.title);
+			return true;
+		}
 	});
 	
 	if ( nodesToRemove.length ) repaired = true;

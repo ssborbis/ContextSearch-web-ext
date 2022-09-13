@@ -1,0 +1,1998 @@
+{
+"Add": {
+"message": "添加"
+},
+"AddBookmarklet": {
+"description": "Manager menu item",
+"message": "添加书签"
+},
+"AddCustomSearch": {
+"message": "添加到ContextSearch"
+},
+"AddCustomSearchMenu": {
+"message": "显示“添加到ContextSearch ”"
+},
+"AddCustomSearchMenuTooltip": {
+"message": "在输入框上启用右键菜单项“添加自定义搜索”。在某些情况下禁用以防止分层菜单"
+},
+"AddOpenSearchEngine": {
+"description": "label for edit form button to install the current search engine as a One-Click Search Engine",
+"message": "安装到 Firefox 一键式搜索引擎"
+},
+"AddSearchEngines": {
+"description": "title in context menu when no search engines installed",
+"message": "+ 添加搜索引擎"
+},
+"AddToBlockList": {
+"description": "",
+"message": "添加到阻止列表"
+},
+"AddToBlockListConfirm": {
+"description": "",
+"message": "将 \"$1\" 添加到阻止列表？"
+},
+"AddUsingFirefoxSearchBar": {
+"message": "Firefox 78+ 用户 - 使用 Firefox 搜索栏添加您的引擎"
+},
+"AddingSearchEnginesInfoMessage": {
+"description": "",
+"message": "搜索引擎可以在这里手动添加，也可以通过右键菜单自动添加。有关更多信息，请参阅以下链接 -"
+},
+"AddingSearchEnginesLinkText": {
+"description": "",
+"message": "添加搜索引擎"
+},
+"Advanced": {
+"message": "高级"
+},
+"AlsoAdd": {
+"message": "还添加到一键式搜索引擎？"
+},
+"Animations": {
+"description": "",
+"message": "动画"
+},
+"AnimationsTooltip": {
+"description": "",
+"message": ""
+},
+"Appearance": {
+"description": "",
+"message": "外貌"
+},
+"AsNewEngine": {
+"description": "Manager menu item",
+"message": "作为新引擎"
+},
+"AsShortcut": {
+"description": "Manager menu item",
+"message": "作为快捷方式"
+},
+"Auto": {
+"message": "自动"
+},
+"AutoImportHeader": {
+"message": "自动导入"
+},
+"AutoMaxChars": {
+"description": "label for setting maximum selected characters for auto open",
+"message": "字数限制"
+},
+"AutoMaxCharsTooltip": {
+"message": "如果选择的长度超过 (n) 个字符，请勿打开快捷菜单。 0 = 无限制"
+},
+"AutoTooltip": {
+"message": "选择文本并自动打开"
+},
+"Back": {
+"description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc",
+"message": "背部"
+},
+"BackButton": {
+"message": "返回键"
+},
+"BackgroundColor": {
+"description": "",
+"message": "背景颜色"
+},
+"BackspaceKey": {
+"message": "退格"
+},
+"Blocklist": {
+"description": "blocklist label",
+"message": "黑名单"
+},
+"BlocklistTooltip": {
+"description": "blocklist tooltip",
+"message": "用于禁用ContextSearch的 URL。接受主机名 www.example.com、通配符 *.example.com和正则表达式。 ！或 # 前缀将禁用条目 #example.com 或 !example.com"
+},
+"Bookmark": {
+"message": "书签"
+},
+"BookmarksPermissionMessage": {
+"message": "关闭此提示后，您将收到接受 \"Bookmarks\" 新权限的提示。\n\nAccepting将在 \"Other Bookmarks\" 下的书签中添加一个新文件夹 \" ContextSearch Menu\"，其中包含您当前的搜索引擎“ 文件夹。在那里，您可以将分隔符和组书签添加到子文件夹中。\n\n不要重命名搜索引擎书签，因为这会导致它们停止工作。可以从ContextSearch Options->Search Engines 再次添加已删除的书签。单击搜索引擎列表中的书签图标可以添加或删除书签。"
+},
+"Cancel": {
+"message": "取消"
+},
+"CannotCreate": {
+"message": "无法从此输入创建搜索引擎"
+},
+"CannotEditOneClickEngines": {
+"description": "",
+"message": "更改前必须先导入 Firefox 引擎"
+},
+"CapsLockKey": {
+"message": "大写锁定"
+},
+"ChooseKey": {
+"message": "选择键"
+},
+"ChooseKeyTooltip": {
+"message": "选择文本并按一个键打开弹出菜单。单击相邻的按钮，然后按您喜欢的键"
+},
+"ClearHighlighting": {
+"description": "",
+"message": "清除高亮"
+},
+"ClearSearchHistory": {
+"description": "Options label / context menu entry for clearing search history",
+"message": "清除搜索历史"
+},
+"ClearSearchHistoryTooltip": {
+"description": "description for clearing search history",
+"message": "从搜索工具栏中清除搜索历史"
+},
+"ClearSearchList": {
+"description": "",
+"message": "清除搜索引擎列表并与Firefox 搜索栏同步"
+},
+"Click": {
+"message": "点击"
+},
+"ClickToEdit": {
+"message": "点击编辑"
+},
+"ClickToSet": {
+"description": "",
+"message": "点击设置"
+},
+"ClickTooltip": {
+"message": "右键单击将打开弹出菜单。默认右键菜单的按住按钮"
+},
+"CloseAfterSearch": {
+"message": "搜索后关闭"
+},
+"CloseAfterSearchTooltip": {
+"message": "执行搜索后关闭菜单。如果您经常使用多个引擎进行搜索或喜欢手动关闭菜单，请禁用此选项。可以被搜索操作下的“保持菜单打开”替代"
+},
+"CloseOnScroll": {
+"message": "滚动/鼠标滚轮关闭"
+},
+"CloseOnScrollTooltip": {
+"message": "通过滚动或使用鼠标滚轮关闭菜单"
+},
+"ClosePageTilesOnShake": {
+"description": "",
+"message": "摇动鼠标关闭页面磁贴"
+},
+"Closing": {
+"description": "",
+"message": "关闭"
+},
+"Columns": {
+"message": "列"
+},
+"ColumnsTooltip": {
+"message": "每行搜索引擎图标的最大数量（网格视图）"
+},
+"Command": {
+"message": "命令"
+},
+"Confirm": {
+"description": "Manager menu item",
+"message": "确认"
+},
+"ConfirmDeleteCustomSearchEngines": {
+"description": "remove searchengines - confirm message",
+"message": "这将删除所有自定义搜索引擎、文件夹、书签、分隔符等。您确定吗？"
+},
+"ConfirmResetAllSearchEngines": {
+"description": "",
+"message": "这将删除所有自定义搜索引擎、文件夹、书签、分隔符并恢复默认引擎列表。\r\n\r\n您确定吗？"
+},
+"ContexMenuShowLastUsed": {
+"description": "",
+"message": "显示上次使用的引擎"
+},
+"ContexMenuShowLastUsedToolTip": {
+"description": "",
+"message": "在菜单顶部显示上次使用的搜索引擎"
+},
+"ContexMenuShowRecentlyUsed": {
+"description": "",
+"message": "显示最近使用的引擎"
+},
+"ContexMenuShowRecentlyUsedAsFolder": {
+"description": "",
+"message": ""
+},
+"ContexMenuShowRecentlyUsedAsFolderTooltip": {
+"description": "",
+"message": "显示为文件夹"
+},
+"ContexMenuShowRecentlyUsedLengthTooltip": {
+"description": "",
+"message": "显示最后使用的搜索"
+},
+"ContexMenuShowRecentlyUsedToolTip": {
+"description": "",
+"message": "在菜单顶部显示最近使用的引擎"
+},
+"ContextAwareFilter": {
+"message": "根据目标元素（链接、图片、选中内容...）过滤搜索引擎"
+},
+"ContextMenu": {
+"message": "右键菜单"
+},
+"ContextMenuHotKey": {
+"description": "Label for Context Menu shortcut key",
+"message": "快捷键"
+},
+"ContextMenuHotKeyTooltip": {
+"description": "Description for Context Menu shortcut key",
+"message": "ContextSearch子菜单的访问键"
+},
+"ContextMenuTooltip": {
+"description": "",
+"message": "通过右键菜单启用搜索"
+},
+"ContextSearchMenu": {
+"description": "root folder name for bookmarks",
+"message": "上下文搜索菜单"
+},
+"ContextsTooltip": {
+"message": "从选定上下文打开菜单时显示此引擎。启用 Advanced -> Filter Engines 时使用上下文和快捷菜单，否则忽略。"
+},
+"Copy": {
+"description": "button to duplicate a search engine from the manager",
+"message": "复制"
+},
+"Create": {
+"message": "创造"
+},
+"CreateCustomSearch": {
+"message": "创建自定义搜索"
+},
+"CreateCustomTooltip": {
+"message": "创建自定义 OpenSearch 引擎"
+},
+"DefaultView": {
+"description": "",
+"message": "默认视图"
+},
+"DefaultViewToolTip": {
+"description": "",
+"message": "设置菜单的默认显示模式。可以使用网格/列表工具或通过在搜索引擎管理器中编辑文件夹来单独设置每个文件夹视图"
+},
+"DelKey": {
+"message": "德尔"
+},
+"Delete": {
+"message": "删除"
+},
+"DeleteEngines": {
+"description": "Manager menu item",
+"message": "删除 $1 引擎"
+},
+"Description": {
+"message": "描述"
+},
+"DescriptionEmptyError": {
+"message": "必须有描述"
+},
+"DescriptionSizeError": {
+"message": "描述不得超过 1024 个字符"
+},
+"DescriptionTooltip": {
+"message": "搜索引擎的简短描述。最多 1024 个字符"
+},
+"DidEngineInstall": {
+"message": "发动机安装正确吗？"
+},
+"DisabledByHotkeys": {
+"description": "message for search bar focus option when hotkeys are enabled",
+"message": "启用快捷键时禁用"
+},
+"DoubleClick": {
+"message": "双击"
+},
+"DownArrowKey": {
+"message": "向下箭头"
+},
+"Drag": {
+"description": "",
+"message": "拖曳"
+},
+"Edit": {
+"description": "Manager menu item",
+"message": "编辑"
+},
+"EditMenu": {
+"message": "布局编辑器"
+},
+"EnableAnimations": {
+"description": "",
+"message": "动画"
+},
+"EnableAnimationsTileSlider": {
+"description": "",
+"message": "滑入式动画"
+},
+"EnableAnimationsTileSliderTooltip": {
+"description": "",
+"message": "磁贴菜单滑入动画"
+},
+"EnableAnimationsTooltip": {
+"description": "",
+"message": "为所有菜单启用调整大小、滑入、不透明动画。禁用能获得更快速度"
+},
+"EnableAutoImport": {
+"message": "启用自动导入（需要应用程序）"
+},
+"EnableAutoImportTooltip": {
+"message": "将新的 OpenSearch 引擎导入ContextSearch 。仅在导入通过 Firefox 的一键式搜索引擎 API 安装的 OpenSearch 引擎时有用。需要单独的应用程序。有关详细信息，请参阅“帮助”"
+},
+"EnableHistory": {
+"description": "",
+"message": "记住搜索历史"
+},
+"EnableHistoryTooltip": {
+"message": "记住搜索词并将其与搜索建议一起显示"
+},
+"EnableHotkeysDescription": {
+"description": "",
+"message": "随时启用快捷键，编辑内容时除外（禁用以仅在ContextSearch菜单处于焦点时才允许快捷键）"
+},
+"EnableHotkeysLabel": {
+"description": "label for Search Engine Hotkeys",
+"message": "搜索引擎快捷键"
+},
+"EnableOn": {
+"message": "启用"
+},
+"EnableOnImages": {
+"description": "",
+"message": "在图片上启用"
+},
+"EnableOnLinks": {
+"description": "",
+"message": "在链接上启用"
+},
+"EnableOnTextBoxes": {
+"message": "在文本框上启用"
+},
+"EnableOnTextBoxesTooltip": {
+"message": "textarea和 input 元素上启用"
+},
+"Encoding": {
+"message": "编码"
+},
+"EncodingTooltip": {
+"message": "搜索表单所需的字符编码。通常为 UTF-8"
+},
+"EndKey": {
+"message": "结尾"
+},
+"EngineExists": {
+"message": "%1 存在。"
+},
+"EnterKey": {
+"message": "进入"
+},
+"EnterSearchTerms": {
+"message": "输入搜索词"
+},
+"EnterUniqueName": {
+"message": "输入此搜索引擎的唯一名称"
+},
+"ErrorParsing": {
+"message": "解析 %1 时出错\n如果您继续收到此错误，可能是您的内容安全策略设置"
+},
+"EscKey": {
+"message": "Esc键"
+},
+"Export": {
+"message": "导出"
+},
+"FFEngineExists": {
+"description": "",
+"message": "$1 已安装到 Firefox 搜索栏"
+},
+"FailedToLoad": {
+"description": "Failed to load search engines (options.js)",
+"message": "无法加载搜索引擎:("
+},
+"Find": {
+"message": "寻找"
+},
+"FindBarEnableHotkey": {
+"description": "",
+"message": "使用快捷键打开查找栏。如果找到选定的文本将立即高亮"
+},
+"FindBarNavMessage": {
+"description": "",
+"message": "2 美元的比赛中的 1 美元"
+},
+"FindBarOpenInAllTabs": {
+"description": "",
+"message": "在所有标签页中打开和关闭查找栏"
+},
+"FindMycroftTooltip": {
+"message": "MycroftProject中查找 OpenSearch 引擎"
+},
+"Focus": {
+"description": "label for auto focus on search bar",
+"message": "打开时聚焦"
+},
+"FocusTooltip": {
+"description": "description for focus",
+"message": "打开快捷菜单时将焦点设置到搜索栏"
+},
+"Folders": {
+"message": "文件夹"
+},
+"FormPath": {
+"message": "表单路径"
+},
+"FormPathTooltip": {
+"message": "通常是网站主页或表单出现的 URL"
+},
+"FormPathURLError": {
+"message": "表单路径必须是 URL"
+},
+"ForwardButton": {
+"message": "前进键"
+},
+"General": {
+"description": "",
+"message": "常规"
+},
+"Help": {
+"description": "help tab label",
+"message": "帮助"
+},
+"Hide": {
+"description": "Manager menu item",
+"message": "隐藏"
+},
+"HideContextMenu": {
+"message": "使用右键单击打开快捷菜单时隐藏默认右键菜单"
+},
+"Highlight": {
+"description": "",
+"message": "高亮"
+},
+"HighlightLimitTooltip": {
+"description": "",
+"message": "限制要高亮的匹配数。较低的限制可防止高亮时降低速度。 0 = 无限制"
+},
+"HighlightNavTooltip": {
+"description": "",
+"message": "高亮时显示导航栏"
+},
+"HighlightSeparateWordsTooltip": {
+"description": "",
+"message": "每个单词分别匹配高亮。禁用将短语视为单个搜索词"
+},
+"HighlightTooltip": {
+"description": "",
+"message": "在搜索结果页面中高亮搜索词"
+},
+"History": {
+"description": "label for History icon",
+"message": "历史"
+},
+"Hold": {
+"message": "按住"
+},
+"HoldForContextMenu": {
+"message": "按住右键 ~1s 并释放默认右键菜单"
+},
+"HoldTooltip": {
+"message": "按住选定的鼠标按钮约 0.25 秒后，菜单将打开"
+},
+"HomeKey": {
+"message": "家"
+},
+"HorizontalOffset": {
+"message": "水平偏移"
+},
+"HorizontalOffsetTooltip": {
+"message": "水平偏移弹出菜单的像素数。大于零的数字向右移动，小于零的数字向左移动"
+},
+"Hotkey": {
+"description": "label for Hotkey option",
+"message": "快捷键"
+},
+"HotkeyTooltip": {
+"description": "description for Hotkey option",
+"message": "随时使用快捷键打开快捷菜单"
+},
+"Icon": {
+"message": "图标 URI"
+},
+"IconLoadError": {
+"message": "图标加载失败"
+},
+"IconSize": {
+"message": "图标大小"
+},
+"IconSizeTooltip": {
+"message": "搜索引擎图标的缩放大小。 200% 时，图标完全填满其容器"
+},
+"IconTooltip": {
+"message": "要使用的图标的 URI。图片应小于 64x64 像素且必须小于 10kb"
+},
+"IconURLError": {
+"message": "图标必须是 URL"
+},
+"Import": {
+"message": "导入"
+},
+"ImportDescription": {
+"message": "浏览到您的个人资料文件夹并选择您的search.json .mozlz4 文件"
+},
+"ImportExportSettings": {
+"message": "导入/导出设置"
+},
+"ImportHeader": {
+"message": "导入一键式搜索引擎"
+},
+"ImportSelectFile": {
+"message": "选择文件 ..."
+},
+"ImportSettingsNotFoundAlert": {
+"message": "找不到上下文搜索设置！"
+},
+"ImportSuccessful": {
+"message": "导入成功"
+},
+"ImportedEngines": {
+"message": "已导入 %1 个引擎（%2 个新引擎）"
+},
+"InitialOpacity": {
+"description": "label for setting Quick menu opening opacity",
+"message": "初始不透明度"
+},
+"InitialOpacityTooltip": {
+"message": "快捷菜单以较低的不透明度打开，并在鼠标悬停时变得不透明"
+},
+"Input": {
+"message": "输入"
+},
+"InsertKey": {
+"message": "插入"
+},
+"InstallOfficialTooltip": {
+"message": "为当前网站安装官方 OpenSearch 引擎"
+},
+"InvalidJSONAlert": {
+"message": "文件不是有效的 JSON"
+},
+"Items": {
+"message": "项目"
+},
+"KeepMenuOpen": {
+"message": "保持菜单打开"
+},
+"Keyboard": {
+"message": "键盘"
+},
+"KeyboardTooltip": {
+"message": "选择文本并使用键盘打开"
+},
+"Layout": {
+"description": "",
+"message": "布局"
+},
+"LeftArrowKey": {
+"message": "左箭头"
+},
+"LeftButton": {
+"message": "左键"
+},
+"LeftWindowKey": {
+"message": "左窗口键"
+},
+"Links": {
+"description": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting",
+"message": "链接"
+},
+"LinksTooltip": {
+"description": "",
+"message": "链接可以作为显示的文本或它们引用的url进行搜索。按住 CTRL 可从默认设置切换"
+},
+"List": {
+"description": "",
+"message": "列表"
+},
+"LoadingRemoteContent": {
+"message": "加载远程内容"
+},
+"LoadingRemoteContentFail": {
+"message": "未能加载 %1 个图标。启用跟踪保护时可能会发生这种情况"
+},
+"LoadingRemoteContentTimeout": {
+"message": "获取远程图标超时。某些图标未加载。"
+},
+"Location": {
+"description": "",
+"message": "位置"
+},
+"LookLayoutHeader": {
+"message": "外观和布局"
+},
+"MatchSearchTermsRegex": {
+"description": "",
+"message": "匹配项正则表达式"
+},
+"MatchSearchTermsRegexTooltip": {
+"description": "searchengine edit - match regex tooltip",
+"message": "如果搜索词与以下正则表达式匹配，则在 Regex Matches 文件夹中显示此引擎"
+},
+"MenuBar": {
+"message": "菜单栏"
+},
+"MenuSize": {
+"message": "菜单大小"
+},
+"MenuSizeTooltip": {
+"message": "弹出菜单的缩放大小。大于 100% 的值将放大整个菜单（适用于高分辨率显示器）"
+},
+"MenuTheme": {
+"description": "",
+"message": "菜单主题"
+},
+"Menus": {
+"description": "menus tab label",
+"message": "菜单"
+},
+"MessengerOfflineTooltip": {
+"message": "ContextSearch web-ext启动应用程序需要一个额外的插件。点击链接了解更多详情。"
+},
+"Method": {
+"message": "方法"
+},
+"MethodTooltip": {
+"message": "表格方法"
+},
+"MiddleButton": {
+"message": "中键"
+},
+"More": {
+"description": "",
+"message": "更多的"
+},
+"MoreInfo": {
+"message": "更多信息"
+},
+"Mouse": {
+"message": "鼠标"
+},
+"MouseDescription": {
+"message": "选择您喜欢的方法和按钮"
+},
+"MouseHelp": {
+"message": "在Linux和MacOS X环境下，默认的右键菜单是在mousedown与mouseup时打开的，可以在about:config（Firefox）中设置'ui.context_menus.after_mouseup = true'，使鼠标动作正常工作，防止不需要的菜单。其他用户可以选择一个选项来改变默认右键菜单的打开方式，可以按住atl、ctrl或shift，或者通过双击鼠标右键。并非所有的选项都能适用于所有的平台。"
+},
+"MouseTooltip": {
+"message": "选择文本并使用鼠标按钮打开"
+},
+"MustImport": {
+"message": "安装了 OpenSearch 引擎，您必须使用导入文件浏览器将其导入ContextSearch 。"
+},
+"Name": {
+"message": "名称"
+},
+"NameChangeWarning": {
+"description": "warn user about potential problems when changing search engine names",
+"message": "使用手动或自动导入从 Firefox 导入一键式搜索引擎时，重命名搜索引擎可能会导致重复条目。这可以通过从 Firefox 选项->搜索->一键搜索引擎中删除具有旧名称的引擎来解决，或者简单地隐藏不需要的引擎。您确定要重命名吗？"
+},
+"NameExists": {
+"description": "short message for duplicate engine names",
+"message": "名称存在"
+},
+"NameInvalid": {
+"description": "short error for bad engine name",
+"message": "名称无效"
+},
+"NameTooltip": {
+"message": "此搜索引擎的唯一名称"
+},
+"NativeApp": {
+"message": "信使应用"
+},
+"NativeAppImportError": {
+"message": "加载文件失败 (%1) 是否安装了应用程序？"
+},
+"NativeAppMissing": {
+"message": "Messenger 应用程序未连接。"
+},
+"NewEngine": {
+"description": "Manager menu item",
+"message": "新建搜索"
+},
+"NewEngineAdded": {
+"message": "新的搜索引擎添加到ContextSearch"
+},
+"NewEngineAddedTooltip": {
+"message": "使用自定义 OpenSearch API 将此搜索引擎安装到 Firefox 搜索工具栏"
+},
+"NewEngineImported": {
+"message": "ContextSearch添加了 $1 引擎"
+},
+"NewExternalProgram": {
+"message": "新建应用启动器"
+},
+"NewFolder": {
+"description": "Manager menu item",
+"message": "新建文件夹"
+},
+"NewMultiSearch": {
+"message": "新的多重搜索"
+},
+"NewScript": {
+"message": "新建脚本"
+},
+"NewSeparator": {
+"description": "Manager menu item",
+"message": "新建分隔符"
+},
+"NewTool": {
+"message": "添加工具"
+},
+"No": {
+"message": "不"
+},
+"NotificationOpenSidebar": {
+"description": "",
+"message": "打开侧边栏查看搜索结果"
+},
+"NumLockKey": {
+"message": "数字键盘（的第一个键"
+},
+"OCSEDeleteWarning": {
+"description": "alert message when attempting to delete a ocse from the manager",
+"message": "Firefox 一键式搜索引擎无法删除。隐藏以禁用"
+},
+"OK": {
+"description": "",
+"message": "好的"
+},
+"Omnibox": {
+"description": "",
+"message": "多功能框"
+},
+"OmniboxTooltip": {
+"description": "omnibox image title",
+"message": "多功能框"
+},
+"OpenAdvanced": {
+"message": "打开高级选项？"
+},
+"OpenOnDragTooltip": {
+"description": "",
+"message": "拖动文本/链接/图片打开"
+},
+"OpenOnIcon": {
+"message": "图标"
+},
+"OpenOnIconTooltip": {
+"message": "在所选文本旁边显示一个图标。点击打开菜单。"
+},
+"Opening": {
+"description": "",
+"message": "打开"
+},
+"OpeningClosingDescription": {
+"message": "选择如何打开快捷菜单"
+},
+"OpeningClosingHeader": {
+"message": "打开和关闭"
+},
+"Overlay": {
+"description": "",
+"message": "覆盖"
+},
+"POSTIncludeError": {
+"message": "POST 参数必须包含 { searchTerms }"
+},
+"POSTparams": {
+"message": "POST参数"
+},
+"POSTparamsTooltip": {
+"message": "以 & 符号分隔的 POST 参数和值列表（例如q={ searchTerms }&lang= en&maxresults =100）仅在使用 POST 方法时适用"
+},
+"Panel": {
+"description": "",
+"message": "控制板"
+},
+"PauseBreakKey": {
+"message": "暂停休息"
+},
+"PerformASearch": {
+"description": "message for the msgbox requesting the user perform a search",
+"message": "单击确定并使用您尝试添加的表单执行新搜索"
+},
+"PerformASearchHeader": {
+"description": "header message for the msgbox requesting the user perform a search",
+"message": "模板缺失"
+},
+"PerformASearchTooltip": {
+"message": "该表单不包含构建搜索引擎所需的信息。执行简单搜索以让ContextSearch查找有效的搜索模板。最好使用通常不会出现在搜索url中的词。不要使用\"search\"、\"http\"、其他常见的url词或网站名称"
+},
+"Permissions": {
+"message": "权限"
+},
+"PgDnKey": {
+"message": "PgDn"
+},
+"PgUpKey": {
+"message": "上页"
+},
+"Position": {
+"message": "位置"
+},
+"PositionDescription": {
+"message": "选择菜单出现的位置"
+},
+"PositionRelativeToCursor": {
+"description": "quick menu opening position relative to the mouse cursor. %1 is top|bottom, %2 is left|center|right",
+"message": "%1 %2 游标"
+},
+"PostAppScript": {
+"message": "Post-App Script"
+},
+"PostAppScriptTooltip": {
+"message": "应用程序完成后在当前标签页中执行的Javascript 。标准输出被捕获到变量“结果”，例如警报（结果）。"
+},
+"PressKey": {
+"description": "short message to display when waiting for user to set a hotkey for opening the quick menu ",
+"message": "按一个键"
+},
+"ProfilePath": {
+"message": "配置文件路径"
+},
+"QuickMenu": {
+"message": "快捷菜单"
+},
+"QuickMenuNote": {
+"message": "在 addons.mozilla.org 上禁用"
+},
+"QuickMenuTooltip": {
+"description": "",
+"message": "通过弹出菜单启用搜索"
+},
+"Recent": {
+"description": "",
+"message": "最近的"
+},
+"RecentlyUsed": {
+"description": "",
+"message": "最近使用"
+},
+"RefineSearch": {
+"message": "优化搜索"
+},
+"Regex": {
+"description": "",
+"message": "Modify Terms Regex"
+},
+"RegexTooltip": {
+"description": "searchengine edit - search regex tooltip",
+"message": "提交前使用正则表达式修改搜索词。可以链接多个替换，每行一个"
+},
+"RemoveAll": {
+"message": "移除所有"
+},
+"RemoveAllEnginesPrompt": {
+"message": "删除所有搜索引擎？"
+},
+"RemoveNode": {
+"description": "Manager menu item",
+"message": "删除节点"
+},
+"RemovingEngine": {
+"message": "删除搜索引擎"
+},
+"Request": {
+"description": "clipboardWrite permission - request button label",
+"message": "请求许可"
+},
+"ResetDefaults": {
+"description": "",
+"message": "恢复默认值"
+},
+"RightArrowKey": {
+"message": "右箭头"
+},
+"RightButton": {
+"message": "右键"
+},
+"RightWindowKey": {
+"message": "右窗口键"
+},
+"Rows": {
+"description": "Quick menu rows label",
+"message": "行"
+},
+"RowsSingleColumnTooltip": {
+"description": "Quick menu rows tooltip",
+"message": "打开时显示的最大行数（文本视图）"
+},
+"RowsTooltip": {
+"description": "Quick menu rows tooltip",
+"message": "打开时显示的最大行数（网格视图）"
+},
+"Save": {
+"message": "保存"
+},
+"Saved": {
+"description": "",
+"message": "已保存"
+},
+"Script": {
+"message": "脚本"
+},
+"ScrollLockKey": {
+"message": "滚动锁定"
+},
+"Search": {
+"description": "placeholder in search bar input",
+"message": "搜索"
+},
+"SearchActionsBackgroundTab": {
+"message": "在后台标签页中打开"
+},
+"SearchActionsBackgroundTabKeepOpen": {
+"message": "在后台标签页中打开（保持菜单打开）"
+},
+"SearchActionsCurrentTab": {
+"message": "在当前标签页中打开"
+},
+"SearchActionsHeader": {
+"message": "搜索操作"
+},
+"SearchActionsIncognitoWindow": {
+"message": "在隐身窗口中打开"
+},
+"SearchActionsNewTab": {
+"message": "在新标签页中打开"
+},
+"SearchActionsNewWindow": {
+"message": "在新窗口中打开"
+},
+"SearchActionsNoAction": {
+"message": "无动作"
+},
+"SearchActionsOpenFolder": {
+"description": "SELECT option label for opening quick menu folder",
+"message": "浏览文件夹"
+},
+"SearchAll": {
+"description": "",
+"message": "« 搜索所有 »"
+},
+"SearchBar": {
+"message": "搜索栏"
+},
+"SearchBarCloseAterSearchTooltip": {
+"message": "执行搜索后关闭菜单"
+},
+"SearchBarTooltip": {
+"message": "选择在快捷菜单中显示搜索栏的位置"
+},
+"SearchBarUseOldStyle": {
+"description": "Options label for using the old Firefox style of search bar",
+"message": "带标签的单列"
+},
+"SearchBarUseOldStyleTooltip": {
+"message": "在带有标签的单列中显示搜索引擎。覆盖列设置"
+},
+"SearchBookmarklets": {
+"message": "🔍搜索书签"
+},
+"SearchCode": {
+"description": "",
+"message": "Post-Search Script"
+},
+"SearchCodeTooltip": {
+"description": "searchengine edit - searchcode tooltip",
+"message": "打开模板 URL 后运行一些javascript 。全局变量“ searchTerms ”代表当前搜索"
+},
+"SearchEngines": {
+"description": "search engines tab label",
+"message": "搜索引擎"
+},
+"SearchEnginesManagerHelp": {
+"message": "拖放重新排序，右键菜单添加/删除/修改"
+},
+"SearchFor": {
+"message": "搜索“%1”"
+},
+"SearchForContext": {
+"message": "搜索 $1"
+},
+"SearchForWithVariable": {
+"message": "搜索“%s”"
+},
+"SearchOnMouseup": {
+"message": "鼠标上搜索"
+},
+"SearchOnMouseupTooltip": {
+"message": "在mouseup上从QuickMenu执行搜索vs 单击即按住以打开菜单，松开以进行搜索"
+},
+"SearchWith": {
+"description": "title in context menu when searching",
+"message": "搜索"
+},
+"SelectKey": {
+"message": "选择键"
+},
+"SelectText": {
+"message": "焦点上的文本"
+},
+"SelectTextTooltip": {
+"description": "description for select text in search bar",
+"message": "获得焦点时选择搜索栏中的所有文本"
+},
+"SelectTimeout": {
+"description": "",
+"message": "选择超时"
+},
+"SelectTimeoutTooltip": {
+"description": "",
+"message": "在最后一次选择后允许取消弹出窗口的时间（以毫秒为单位）。 0 = 无限制"
+},
+"Settings": {
+"message": "设置"
+},
+"ShiftKey": {
+"message": "Shift"
+},
+"Shortcut": {
+"description": "",
+"message": "捷径"
+},
+"ShortcutKey": {
+"description": "Label for context menu hotkey",
+"message": "快捷键"
+},
+"ShortcutKey_tooltip": {
+"description": "context menu hotkey tooltip",
+"message": "在右键菜单中展开“搜索方式...”菜单的键"
+},
+"Shortcuts": {
+"description": "keyboard shortcuts",
+"message": "快捷键"
+},
+"Show": {
+"description": "Manager menu item",
+"message": "显示"
+},
+"ShowDefaultMenuModifierMessage": {
+"message": "显示默认右键菜单"
+},
+"ShowFolderSearch": {
+"description": "",
+"message": "在菜单顶部显示搜索整个文件夹的选项"
+},
+"ShowHide": {
+"message": "显示/隐藏"
+},
+"ShowSuggestions": {
+"description": "Options label / context menu entry for toggling suggestions for the toolbar",
+"message": "显示建议"
+},
+"ShowSuggestionsTooltip": {
+"description": "description for Show Suggestions",
+"message": "从 Google 获取搜索建议并在搜索工具栏中显示搜索历史记录"
+},
+"SideBar": {
+"message": "侧边栏"
+},
+"SideBarHotkeyTooltip": {
+"message": "随时使用快捷键打开侧边栏"
+},
+"SideBarPositionTooltip": {
+"message": "选择显示侧边栏的位置"
+},
+"SideBarStartOpen": {
+"description": "label for opening the sidebar when the page loads",
+"message": "加载时打开"
+},
+"SideBarStartOpenTooltip": {
+"description": "",
+"message": "页面加载时自动打开侧边栏"
+},
+"SideBarTooltip": {
+"message": "边栏是工具栏的扩展，在浏览器窗口中显示了附加功能。菜单和打开小部件都响应文本拖放（ Chrome 除外）。大多数设置都与工具栏共享"
+},
+"SideBarWidgetEnable": {
+"description": "label for displaying the sidebar icon",
+"message": "显示小部件"
+},
+"SideBarWidgetEnableTooltip": {
+"description": "description for displaying the sidebar icon",
+"message": "叠加打开的侧边栏图标"
+},
+"SidebarTypeTooltip": {
+"description": "",
+"message": "选择如何显示侧栏。覆盖在页面内容上创建一个浮动窗口。 Panel 创建窗口高度的侧边栏并填充文档以避免覆盖页面内容"
+},
+"Simple": {
+"message": "简单的"
+},
+"Size": {
+"description": "",
+"message": "大小"
+},
+"Source": {
+"message": "源代码"
+},
+"SpaceKey": {
+"message": "空间"
+},
+"Style": {
+"description": "",
+"message": "风格"
+},
+"Suggestions": {
+"description": "",
+"message": "建议"
+},
+"Support": {
+"message": "支持"
+},
+"SyncWithFirefoxSearch": {
+"description": "",
+"message": "禁用所有ContextSearch引擎、子文件夹、书签等，仅显示安装到 Firefox 搜索栏的搜索引擎"
+},
+"SyncWithFirefoxSearchHeader": {
+"message": "与 Firefox 搜索同步（基本模式）"
+},
+"Template": {
+"message": "模板"
+},
+"TemplateIncludeError": {
+"message": "模板应包含 { searchTerms }"
+},
+"TemplateMissingeMessage": {
+"message": "找不到此搜索表单的模板。您可以尝试在此处进行搜索并复制生成的 URL，将搜索词替换为 { searchTerms }"
+},
+"TemplateTooltip": {
+"message": "表单提交函数的 URL。如果这是一个 GET 引擎，则必须出现{ searchTerms }（例如http://example.com/?q={searchTerms}）"
+},
+"TemplateURLError": {
+"message": "模板必须是 URL"
+},
+"Test": {
+"message": "测试"
+},
+"Text": {
+"description": "",
+"message": "文本"
+},
+"TextColor": {
+"description": "",
+"message": "文字颜色"
+},
+"Theme": {
+"description": "",
+"message": "主题"
+},
+"ThemeTooltip": {
+"description": "",
+"message": "用于快捷菜单、工具栏和侧边栏"
+},
+"Title": {
+"message": "标题"
+},
+"ToggleHotkeys": {
+"description": "",
+"message": "快捷键开/关"
+},
+"ToggleSearchTerms": {
+"message": "下一个搜索词"
+},
+"ToggleTheme": {
+"description": "",
+"message": "下一个主题"
+},
+"Toolbar": {
+"description": "",
+"message": "工具栏"
+},
+"ToolbarSearch": {
+"description": "Section label for the browser action search bar",
+"message": "工具栏搜索"
+},
+"ToolbarTooltip": {
+"description": "",
+"message": "从工具栏操作按钮打开搜索菜单。与快捷菜单共享搜索操作"
+},
+"Tools": {
+"message": "工具"
+},
+"ToolsAsToolbar": {
+"description": "",
+"message": "在单独的工具栏中显示工具"
+},
+"ToolsHelp": {
+"message": "点击禁用 |拖动重新排序"
+},
+"ToolsPositionTooltip": {
+"message": "选择在快捷菜单中显示工具的位置"
+},
+"UpArrowKey": {
+"message": "向上箭头"
+},
+"Url": {
+"description": "",
+"message": "网址"
+},
+"UserStyles": {
+"description": "label for custom user styles",
+"message": "用户风格"
+},
+"UserStylesTooltip": {
+"description": "",
+"message": "将自定义 CSS 样式应用于菜单"
+},
+"Validating": {
+"message": "证实 ..."
+},
+"Verify": {
+"message": "验证和导入"
+},
+"VerticalOffset": {
+"message": "垂直偏移"
+},
+"VerticalOffsetTooltip": {
+"message": "垂直偏移弹出菜单的像素数。大于零的数字向下移动，小于零的数字向上移动"
+},
+"WhereAreMyEngines": {
+"message": "我的搜索引擎在哪里？"
+},
+"Window": {
+"description": "",
+"message": "窗户"
+},
+"WorkingDirectory": {
+"message": "工作目录"
+},
+"Yes": {
+"message": "是的"
+},
+"accuracy": {
+"description": "",
+"message": "精确度"
+},
+"addSearchProviderHideNotificationTooltip": {
+"description": "advanced setting tooltip",
+"message": "火狐用户使用火狐搜索栏添加opensearch引擎的通知"
+},
+"alphabetPalette": {
+"description": "alphabet (palettes.js) - optional",
+"message": "字母"
+},
+"alt": {
+"description": "",
+"message": "Alt"
+},
+"alwaysAllowTileRearrangingTooltip": {
+"description": "advanced setting tooltip",
+"message": "始终允许在菜单中重新排列图块"
+},
+"audio": {
+"description": "",
+"message": "音频"
+},
+"autoCopy": {
+"message": "自动复制"
+},
+"autoCopyOnInputsTooltip": {
+"description": "advanced setting tooltip",
+"message": "启用输入和文本区域"
+},
+"autoCopyTooltip": {
+"description": "advanced setting tooltip",
+"message": "所选文本复制到剪贴板"
+},
+"autoPasteFromClipboardTooltip": {
+"description": "advanced setting tooltip",
+"message": "打开搜索菜单时，剪贴板中的文本将粘贴到搜索栏"
+},
+"background": {
+"description": "",
+"message": "背景"
+},
+"bottom": {
+"message": "底部"
+},
+"bouquetPalette": {
+"description": "bouquet (palettes.js) - optional",
+"message": "花束"
+},
+"browseForImage": {
+"description": "",
+"message": "浏览本地图片"
+},
+"cache": {
+"description": "button cache label",
+"message": "✓"
+},
+"cacheIconsMaxSizeTooltip": {
+"description": "advanced setting tooltip",
+"message": "调整缓存图标大小的最大宽度或高度"
+},
+"cacheTooltip": {
+"description": "advanced setting tooltip - button cache",
+"message": "从其 URL 中缓存搜索引擎图标"
+},
+"casesensitive": {
+"description": "",
+"message": "区分大小写"
+},
+"center": {
+"message": "中央"
+},
+"checkContextMenuOrderNotification": {
+"message": "打开快捷菜单时将默认右键菜单移动到双击？有关更多信息，请参阅选项。"
+},
+"close": {
+"description": "",
+"message": "关"
+},
+"confirmUncache": {
+"description": "uncache message confirm",
+"message": "Supprimer le cache de toutes les icônes ?"
+},
+"contextMenuContextualLayoutFlattenLimitTooltip": {
+"description": "advanced setting tooltip",
+"message": "如果只显示 n 个引擎，则删除子文件夹并展平菜单。 0 = 无限制"
+},
+"contextMenuHotkeysTooltip": {
+"description": "advanced setting tooltip",
+"message": "使用 (&A) 格式将快捷键附加到右键菜单项以便快速访问"
+},
+"contextMenuRegexMatchedEnginesTooltip": {
+"description": "advanced setting tooltip",
+"message": "在菜单顶部显示正则表达式匹配引擎"
+},
+"contextMenuTitleTooltip": {
+"description": "advanced setting tooltip",
+"message": "覆盖右键菜单标题。使用 %s 代替searchTerms 。空白 = 默认"
+},
+"contextMenuUseContextualLayoutTooltip": {
+"description": "advanced setting tooltip",
+"message": "根据当前上下文在子文件夹中显示右键菜单"
+},
+"contextMenuUseInnerTextTooltip": {
+"description": "advanced setting tooltip",
+"message": "未选择文本时，使用元素的内部文本作为搜索词"
+},
+"contexts": {
+"message": "上下文"
+},
+"ctrl": {
+"description": "",
+"message": "Ctrl"
+},
+"customIconTooltip": {
+"description": "toolbar icon - custom icon tooltip",
+"message": "使用者 une image sur l'ordinateur"
+},
+"dark": {
+"description": "theme name",
+"message": "黑暗的"
+},
+"dayglowPalette": {
+"description": "dayglow (palettes.js) - optional",
+"message": "日光"
+},
+"default": {
+"description": "",
+"message": "默认"
+},
+"deleteNodesMessage": {
+"message": "删除 $1 个节点？"
+},
+"disableNewTabSortingTooltip": {
+"description": "advanced setting tooltip",
+"message": "启用以让浏览器决定如何对新的搜索结果标签页进行排序。有助于防止与标签页管理器发生冲突"
+},
+"display": {
+"description": "",
+"message": "展示"
+},
+"docked": {
+"description": "",
+"message": "停靠"
+},
+"drop": {
+"description": "",
+"message": "降低"
+},
+"easterPalette": {
+"description": "easter (palettes.js) - optional",
+"message": "复活节"
+},
+"enabledisplayprevioussearchtooltip": {
+"description": "",
+"message": "在搜索框中显示上次使用的搜索词"
+},
+"exactly": {
+"description": "",
+"message": "完全"
+},
+"exportToFirefoxSearch": {
+"description": "advanced setting label",
+"message": "导出到 Firefox 搜索"
+},
+"exportToFirefoxSearchTooltip": {
+"description": "advanced setting tooltip",
+"message": "浏览到您的配置文件文件夹并选择您的search.json .mozlz4 文件。系统将提示您输入两个文件：一个新的search.json .mozlz4 文件和一个原始文件的备份。将这两个文件保存到您的配置文件目录。重新启动 Firefox 以查看更改。"
+},
+"exportWithoutBase64IconsTooltip": {
+"description": "advanced setting tooltip",
+"message": "通过排除图标数据 URI，导出的配置更小。可能会导致自定义图标丢失"
+},
+"extensionDescription": {
+"message": "轻松添加搜索引擎并从右键菜单和方便的弹出窗口中搜索"
+},
+"faviconFinder": {
+"description": "",
+"message": "通过检查主机站点查找网站图标（打开背景标签页）"
+},
+"faviconFinderShort": {
+"description": "",
+"message": "查找网站图标"
+},
+"fetchingRemoteContent": {
+"description": "Fetching remote content (options.js)",
+"message": "获取远程内容"
+},
+"findBarNext": {
+"description": "keyboard shortcut label",
+"message": "下一查找项"
+},
+"findBarOpen": {
+"description": "keyboard shortcut label",
+"message": "打开查找栏"
+},
+"findBarPrevious": {
+"description": "keyboard shortcut label",
+"message": "上一查找项"
+},
+"findbar": {
+"description": "",
+"message": "查找栏"
+},
+"findbarkeyboardtimeout": {
+"description": "",
+"message": "在输入停止 n 毫秒后执行搜索。值太低会导致性能问题。 0 = 禁用"
+},
+"findbarpositiontooltip": {
+"description": "",
+"message": "选择显示查找栏的位置"
+},
+"findbarsearchinalltabs": {
+"description": "",
+"message": "查找栏时搜索所有标签页 （注意：类型计时器将被禁用）"
+},
+"findbarstartopen": {
+"description": "",
+"message": "页面加载时自动打开查找栏"
+},
+"findbarwindowtypetooltip": {
+"description": "",
+"message": "选择如何显示查找栏。查找栏的窗口风格可以通过双击停靠/取消停靠/移动图标或拖动来切换"
+},
+"findinpage": {
+"description": "",
+"message": "在页面中查找"
+},
+"forceOpenResultsTabsAdjacentTooltip": {
+"description": "advanced setting tooltip",
+"message": "强制搜索结果显示在右侧的下一个标签页中"
+},
+"frame": {
+"description": "",
+"message": "框架"
+},
+"grid": {
+"description": "",
+"message": "网格"
+},
+"groupFolderRowBreaksTooltip": {
+"description": "advanced setting tooltip",
+"message": "启用将内联组文件夹显示为块元素"
+},
+"groupLabelMoreTileTooltip": {
+"description": "advanced setting tooltip",
+"message": "显示标签磁贴内的组文件夹的更多/更少图标与使用单独的磁贴"
+},
+"groupcolor": {
+"description": "",
+"message": "组颜色"
+},
+"groupcolortext": {
+"description": "",
+"message": "文字颜色"
+},
+"grouphidemoretile": {
+"description": "",
+"message": "隐藏“更多”图块"
+},
+"grouplayout": {
+"description": "",
+"message": "组布局"
+},
+"grouplayoutmessage": {
+"description": "",
+"message": "注意：仅限顶级文件夹"
+},
+"grouplimit": {
+"description": "",
+"message": "组限制"
+},
+"hidden": {
+"message": "隐藏"
+},
+"highlightaccuracytooltip": {
+"description": "",
+"message": "搜索“lor”部分时能匹配“lorem”，完全时仅有“lor”会高亮。"
+},
+"highlightcasesensitivetooltip": {
+"description": "",
+"message": "区分大小写"
+},
+"highlightflashselectedtooltip": {
+"description": "",
+"message": "闪烁当前活跃的搜索词"
+},
+"highlightfollowdomaintooltip": {
+"description": "",
+"message": "继续高亮搜索结果网站上的页面"
+},
+"highlightfollowexternallinkstooltip": {
+"description": "",
+"message": "继续高亮从搜索结果页面链接的外部网站"
+},
+"highlightignorepunctuationtooltip": {
+"description": "",
+"message": "忽略标点符号 - 设置此选项将匹配 WORLDS、WORLD'S 和 WO'RLDS。字母之间的一个或多个撇号不影响匹配（例如W'O''R'L'D'S）"
+},
+"highlightopacitytooltip": {
+"description": "",
+"message": "背景颜色的不透明度"
+},
+"highlightshowfindbartooltip": {
+"description": "",
+"message": "高亮时显示查找栏"
+},
+"highlightstyletooltip": {
+"description": "",
+"message": "使用背景/前景色或下划线设置高亮的样式。选择“下划线”将忽略文本颜色值"
+},
+"hotkeys": {
+"description": "",
+"message": "快捷键"
+},
+"hotkeystooltip": {
+"description": "",
+"message": "选择文本并按一个键进行搜索。可以在“搜索引擎”标签页中设置快捷键"
+},
+"ignorepunctuation": {
+"description": "",
+"message": "忽略标点符号"
+},
+"image": {
+"description": "",
+"message": "图片"
+},
+"invalidregex": {
+"description": "",
+"message": "无效的正则表达式"
+},
+"keyword": {
+"message": "多功能框关键字"
+},
+"lavenderPalette": {
+"description": "lavender (palettes.js) - optional",
+"message": "薰衣草"
+},
+"left": {
+"message": "左"
+},
+"less": {
+"description": "",
+"message": "较少的"
+},
+"link": {
+"description": "",
+"message": "链接"
+},
+"linkText": {
+"description": "",
+"message": "链接文本"
+},
+"lite": {
+"description": "theme name",
+"message": "精简版"
+},
+"manualedit": {
+"message": "手工编辑首选项"
+},
+"manualeditwarning": {
+"message": "手动编辑首选项对象可能会导致ContextSearch停止工作！"
+},
+"metalPalette": {
+"description": "metal (palettes.js) - optional",
+"message": "金属"
+},
+"modern": {
+"description": "theme name",
+"message": "现代的"
+},
+"modern_dark": {
+"description": "theme name",
+"message": "现代黑暗"
+},
+"modern_glass": {
+"description": "theme name",
+"message": "现代玻璃"
+},
+"modern_purple": {
+"description": "theme name",
+"message": "现代紫色"
+},
+"modern_sunset": {
+"description": "theme name",
+"message": "现代日落"
+},
+"movedockundock": {
+"description": "",
+"message": "移动/停靠/取消停靠"
+},
+"navbar": {
+"description": "",
+"message": "导航栏"
+},
+"nonePalette": {
+"description": "none (palettes.js)",
+"message": "无"
+},
+"nurseryPalette": {
+"description": "nursery (palettes.js) - optional",
+"message": "苗圃"
+},
+"omniboxDefaultToLastUsedEngineTooltip": {
+"description": "advanced setting tooltip",
+"message": "默认为与多功能框一起使用的最新搜索引擎"
+},
+"openFoldersOnHoverTimeoutTooltip": {
+"description": "advanced setting tooltip",
+"message": "打开文件夹之前悬停的毫秒数。 500 = 默认，0 = 禁用"
+},
+"optionsOpen": {
+"description": "keyboard shortcut label",
+"message": "打开选项"
+},
+"page": {
+"description": "",
+"message": "页面"
+},
+"pageTilesOpen": {
+"description": "keyboard shortcut label",
+"message": "打开页面磁贴"
+},
+"pagetiles": {
+"description": "",
+"message": "页面磁贴"
+},
+"pagetilesdescription": {
+"description": "",
+"message": "将文本拖放到搜索引擎的整页平铺菜单（实验性）"
+},
+"pagetilesenabledtooltip": {
+"description": "",
+"message": "启用页面磁贴"
+},
+"pagetilesselectpalette": {
+"message": "调色板"
+},
+"partially": {
+"description": "",
+"message": "部分"
+},
+"quickMenuAllowContextMenuNewTooltip": {
+"description": "advanced setting tooltip",
+"message": "mousedown与mouseup上显示右键菜单的系统可能需要选择另一种打开方法，或修改右键菜单的打开方式。"
+},
+"quickMenuAutoMaxCharsTooltip": {
+"description": "advanced setting tooltip",
+"message": "使用自动方法选择并仍打开快捷菜单的最大字符数。选择更多的数字将不会打开菜单。 0 = 无限制"
+},
+"quickMenuAutoTimeoutTooltip": {
+"description": "advanced setting tooltip",
+"message": "如果在释放鼠标按钮之前暂停一定的毫秒数，则取消打开快捷菜单。 0 = 禁用"
+},
+"quickMenuCancelDeadzoneTooltip": {
+"description": "advanced setting tooltip",
+"message": "在取消使用 HOLD 打开快捷菜单之前，您可以移动多少像素"
+},
+"quickMenuCloseOnEdit": {
+"message": "输入时关闭菜单。 （需要搜索栏*没*有焦点 - 请参阅“搜索栏”）"
+},
+"quickMenuContextualLayoutToolbarTooltip": {
+"message": "显示上下文工具栏"
+},
+"quickMenuDomLayoutTooltip": {
+"description": "advanced setting tooltip",
+"message": "使用逗号分隔的HTMLElement id 列表覆盖快捷菜单布局，例如（ menuBar 、 searchBarContainer 、 optionsBar 、 quickMenuElement 、 addEngineBar 、 titleBar 、 toolBar ）。并非所有 ID 都需要使用。列出的任何内容都将移至 DOM 树的末尾。空白 = 默认"
+},
+"quickMenuEdit": {
+"description": "keyboard shortcut label",
+"message": "编辑快捷菜单"
+},
+"quickMenuFocusOnOpenTooltip": {
+"description": "advanced setting tooltip",
+"message": "打开后将焦点设置到快捷菜单"
+},
+"quickMenuHideSeparatorsInGridTooltip": {
+"description": "advanced setting tooltip",
+"message": "在网格视图中使用快捷菜单时隐藏分隔符"
+},
+"quickMenuHoldTimeoutTooltip": {
+"description": "advanced setting tooltip",
+"message": "使用 HOLD 打开快捷菜单之前按住鼠标按钮的时间（以毫秒为单位）"
+},
+"quickMenuLock": {
+"description": "keyboard shortcut label",
+"message": "锁定快捷菜单"
+},
+"quickMenuOnSimpleClick_useInnerTextTooltip": {
+"description": "advanced setting tooltip",
+"message": "未选择文本时，使用元素的内部文本作为搜索词"
+},
+"quickMenuOpen": {
+"description": "keyboard shortcut label",
+"message": "打开快捷菜单"
+},
+"quickMenuOpeningOpacityTooltip": {
+"description": "advanced setting tooltip",
+"message": "打开时快捷菜单的透明度级别。悬停时变得不透明"
+},
+"quickMenuPreventPageClicksTooltip": {
+"description": "advanced setting tooltip",
+"message": "在快捷菜单打开时阻止当前网页上的鼠标事件"
+},
+"quickMenuRegexMatchedEnginesTooltip": {
+"description": "advanced setting tooltip",
+"message": "在菜单顶部显示正则表达式匹配引擎"
+},
+"quickMenuSearchOnMouseUpTooltip": {
+"description": "advanced setting tooltip",
+"message": "mouseup上的快捷菜单执行搜索，而无需mousedown 。在保持打开菜单并在搜索图块上释放鼠标以执行搜索时很有用。"
+},
+"quickMenuShowHotkeysInTitleTooltip": {
+"description": "advanced setting tooltip",
+"message": "显示带有标题的快捷键"
+},
+"quickMenuShowRecentlyUsedTooltip": {
+"description": "advanced setting tooltip",
+"message": "在菜单顶部显示最近使用的引擎"
+},
+"quickMenuToolbarRowsTooltip": {
+"description": "advanced setting tooltip",
+"message": "要显示的最大工具行数。 0 = 无限制"
+},
+"quickMenuToolsLockPersistTooltip": {
+"description": "advanced setting tooltip",
+"message": "锁定工具的状态将在会话中被记住"
+},
+"quickMenuToolsRepeatSearchPersistTooltip": {
+"description": "advanced setting tooltip",
+"message": "重复搜索工具的状态将在会话中被记住"
+},
+"regexmatches": {
+"description": "",
+"message": "正则表达式匹配"
+},
+"rememberLastOpenedFolderTooltip": {
+"description": "advanced setting tooltip",
+"message": "打开菜单到最后使用的文件夹"
+},
+"requestClipboardWritePermission": {
+"description": "permissions request",
+"message": "与剪贴板交互需要clipboardWrite权限。单击下面的按钮以请求剪贴板写入权限。"
+},
+"requestPermissionsMessage": {
+"description": "generic permission",
+"message": "需要可选权限。点击下方的请求按钮。"
+},
+"resetUserOptionsConfirm": {
+"message": "将所有首选项重置为默认设置？ （搜索引擎将不受影响）"
+},
+"resize": {
+"description": "",
+"message": "调整大小"
+},
+"right": {
+"message": "右"
+},
+"rightClickMenuOnMouseDownFixTooltip": {
+"description": "advanced setting tooltip",
+"message": "使用 HOLD 鼠标右键打开快捷菜单时，需要双击显示默认右键菜单。有助于防止在鼠标按下和鼠标按下时显示右键菜单的系统上出现错误菜单"
+},
+"searchBarHistoryLengthTooltip": {
+"description": "advanced setting tooltip",
+"message": "要存储的最大历史条目数"
+},
+"searchBarSuggestionsCountTooltip": {
+"description": "advanced setting tooltip",
+"message": "要包含的 Google 建议的最大数量"
+},
+"searchIconFinder": {
+"message": "🔍搜索 IconFinder.com"
+},
+"searchactionssidebaraction": {
+"description": "",
+"message": "在侧边栏中打开"
+},
+"searchalltabs": {
+"description": "",
+"message": "搜索所有标签"
+},
+"searchenginesmanager": {
+"description": "",
+"message": "搜索引擎管理"
+},
+"searchresults": {
+"description": "",
+"message": "搜索结果"
+},
+"selection": {
+"description": "",
+"message": "选中内容"
+},
+"separateWordSearch": {
+"description": "",
+"message": "单独的词搜索"
+},
+"shakeSensitivityTooltip": {
+"description": "advanced setting tooltip",
+"message": "检测抖动的灵敏度。较低 = 更敏感"
+},
+"shift": {
+"description": "",
+"message": "Shift"
+},
+"sideBarMinify": {
+"description": "keyboard shortcut label",
+"message": "缩小缩小侧边栏"
+},
+"sideBarOpen": {
+"description": "keyboard shortcut label",
+"message": "打开侧边栏"
+},
+"sideBar_openOnResultsMinimizedTooltip": {
+"description": "advanced setting tooltip",
+"message": "在最小化的搜索结果标签页上打开侧边栏"
+},
+"sideBar_openOnResultsTooltip": {
+"description": "advanced setting tooltip",
+"message": "打开搜索结果标签页上的侧边栏"
+},
+"sideBar_rememberStateTooltip": {
+"description": "advanced setting tooltip",
+"message": "记住侧边栏的打开状态"
+},
+"sidebarhidefullscreentooltip": {
+"description": "",
+"message": "全屏时隐藏侧边栏"
+},
+"simpleclick": {
+"description": "",
+"message": "单击"
+},
+"simpleclicktooltip": {
+"description": "",
+"message": "单击一个单词以打开菜单。无需选择"
+},
+"socialPalette": {
+"description": "social (palettes.js) - optional",
+"message": "社会"
+},
+"themeNext": {
+"description": "keyboard shortcut label",
+"message": "下一个主题"
+},
+"themePrevious": {
+"description": "keyboard shortcut label",
+"message": "上一个主题"
+},
+"toggleDisplayMode": {
+"description": "keyboard shortcut label",
+"message": "切换显示模式"
+},
+"toggleview": {
+"description": "",
+"message": ""
+},
+"tools_Close": {
+"message": "关闭菜单"
+},
+"tools_Copy": {
+"message": "复制到剪贴板"
+},
+"tools_Disable": {
+"message": "禁用菜单"
+},
+"tools_Download": {
+"message": "下载"
+},
+"tools_Lock": {
+"message": "锁定菜单打开"
+},
+"tools_OpenAsLink": {
+"message": "作为链接打开"
+},
+"tools_OpenImage": {
+"message": "打开图片"
+},
+"tools_lastused": {
+"message": "上次使用的搜索引擎"
+},
+"tools_repeatsearch": {
+"message": "即时搜索"
+},
+"top": {
+"message": "顶部"
+},
+"uncache": {
+"description": "button uncache label",
+"message": "✘"
+},
+"uncacheTooltip": {
+"description": "advanced setting tooltip - button uncache",
+"message": "仅为包含图标 URL 的搜索引擎删除搜索引擎图标缓存。警告：在删除缓存之前，不会检查 URL 是否错误或无效"
+},
+"underline": {
+"description": "",
+"message": "下划线"
+},
+"undocked": {
+"description": "",
+"message": "不停靠"
+},
+"uploadfromlocal": {
+"description": "",
+"message": "使用计算机中的图片"
+},
+"video": {
+"description": "",
+"message": "视频"
+},
+"warningCache": {
+"description": "cache message warning",
+"message": "确定 图标 n'ont pas pu être mises en缓存。"
+},
+"waterPalette": {
+"description": "water (palettes.js) - optional",
+"message": "水"
+}
+}

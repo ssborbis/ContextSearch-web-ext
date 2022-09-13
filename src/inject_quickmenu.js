@@ -19,6 +19,12 @@ function deselectAllText(e) {
 	});
 }
 
+function checkToolStatus(name) {
+	let tool = userOptions.quickMenuTools.find( _tool => _tool.name === name );
+	if ( !tool ) return false;
+	return tool.on ? true : false;
+}
+
 function openQuickMenu(e, searchTerms) {
 
 	e = e || new MouseEvent('click');
@@ -42,7 +48,7 @@ function openQuickMenu(e, searchTerms) {
 
 	searchTerms = searchTerms || selection || linkOrImage(target, e) || searchTermsObject.frame || searchTermsObject.page || null;
 
-	let _contexts = getContexts(target);
+	let _contexts = getContexts(target, e);
 	
 	// for context toggle
 	quickMenuObject.searchTerms = searchTerms;
@@ -137,6 +143,23 @@ function getOffsets() {
 
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(coords) {
+
+	// skip opening menu if using instant search
+	// if ( checkToolStatus("repeatsearch") ) {
+
+	// 	let _id = userOptions.lastUsedId;
+
+	// 	browser.runtime.sendMessage({
+	// 		action: "search", 
+	// 		info: {
+	// 			menuItemId:_id,
+	// 			selectionText: quickMenuObject.searchTerms,
+	// 			openMethod: userOptions.lastUsedMethod || userOptions.quickMenuLeftClick
+	// 		}
+	// 	});
+
+	// 	return;
+	// }
 
 	let qmc = getQM();
 
@@ -308,9 +331,9 @@ document.addEventListener('mousedown', e => {
 
 	// check for modifier keys
 	if ( 
-		(userOptions.quickMenuOnMouseShift && !e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt && !e.altKey)  ||
-		(userOptions.quickMenuOnMouseCtrl && !e.ctrlKey)
+		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
+		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -443,9 +466,9 @@ document.addEventListener('mousedown', e => {
 
 	// check for modifier keys
 	if ( 
-		(userOptions.quickMenuOnMouseShift && !e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt && !e.altKey)  ||
-		(userOptions.quickMenuOnMouseCtrl && !e.ctrlKey)
+		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
+		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -509,7 +532,6 @@ document.addEventListener('mouseup', e => {
 		!quickMenuObject.mouseDownTimer ||
 		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection )
 	) return false;
-
 
 	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
 

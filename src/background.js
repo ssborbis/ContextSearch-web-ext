@@ -399,9 +399,25 @@ async function notify(message, sender, sendResponse) {
 			
 			window.contextMenuSearchTerms = searchTerms;
 
-			if ( userOptions.contextMenuUseContextualLayout )
+			if ( userOptions.contextMenuUseContextualLayout ) {
 				updateMatchRegexFolders(searchTerms);
-			else {
+
+				try {
+					for ( let i in contexts )
+						await browser.contextMenus.update(contexts[i], {visible: true });
+
+					let ccs = message.currentContexts
+
+				 	if ( !ccs.includes("page") )
+						browser.contextMenus.update("page", {visible: false });
+					if ( !ccs.includes("frame") )
+						browser.contextMenus.update("frame", {visible: false });
+
+				} catch ( error ) {
+					console.error(error);
+				}
+
+			} else {
 				// legacy menus
 				let title = contextMenuTitle(searchTerms);
 
@@ -816,7 +832,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "setLastUsed":
-			lastSearchHandler(message.id);
+			lastSearchHandler(message.id, message.method || null);
 			break;
 			
 		case "getSelectedText":
@@ -1315,13 +1331,14 @@ async function executeExternalProgram(info) {
 	});
 }
 
-function lastSearchHandler(id) {
+function lastSearchHandler(id, method) {
 
 	let node = findNode(userOptions.nodeTree, n => n.id === id );
 	
 	if ( !node ) return;
 	
 	userOptions.lastUsedId = id;
+	userOptions.lastUsedMethod = method;
 	
 	if ( node.type !== "folder" ) {
 		userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
@@ -1401,6 +1418,11 @@ function isValidHttpUrl(str) {
 
 async function openSearch(info) {
 
+	if ( info.openMethod === "openSideBarAction" ) {
+		console.log('open Firefox sidebar');
+		browser.sidebarAction.open();
+	}
+	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
 	console.log(info);
@@ -1418,7 +1440,7 @@ async function openSearch(info) {
 	if (!info.folder) delete window.folderWindowId;
 	
 	if ( !info.temporarySearchEngine && !info.folder && !info.openUrl) 
-		lastSearchHandler(info.menuItemId);
+		lastSearchHandler(info.menuItemId, info.openMethod);
 
 	if ( userOptions.preventDuplicateSearchTabs ) {
 		try {
@@ -1786,14 +1808,14 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	if ( !userOptions.highLight.enabled ) return;
 	
 	// show the page_action for highlighting
-	if ( browser.pageAction ) {
-		browser.pageAction.show(tab.id);
-		browser.pageAction.onClicked.addListener( tab => {
-			notify({action: "unmark"});
-			notify({action: "removeTabHighlighting", tabId: tab.id});
-			browser.pageAction.hide(tab.id);
-		});
-	}
+	// if ( browser.pageAction ) {
+	// 	browser.pageAction.show(tab.id);
+	// 	browser.pageAction.onClicked.addListener( tab => {
+	// 		notify({action: "unmark"});
+	// 		notify({action: "removeTabHighlighting", tabId: tab.id});
+	// 		browser.pageAction.hide(tab.id);
+	// 	});
+	// }
 
 	await browser.tabs.executeScript(tab.id, {
 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
@@ -2177,7 +2199,7 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 
-		if ( _uo.forceOpenReultsTabsAdjacent ) {
+		if ( _uo.hasOwnProperty("forceOpenReultsTabsAdjacent") ) {
 			_uo.forceOpenResultsTabsAdjacent = _uo.forceOpenReultsTabsAdjacent;
 			delete _uo.forceOpenReultsTabsAdjacent;
 		}
@@ -2464,13 +2486,14 @@ async function injectContentScripts(tab, frameId) {
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js",
-		"/tools.js" // for shortcuts
+		"/tools.js", // for shortcuts
+		"/utils.js" // for isTextBox
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
 		[
-			"/utils.js",
+			
 			"/nodes.js",
 			"/opensearch.js",
 			"/searchEngineUtils.js",

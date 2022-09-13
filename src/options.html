@@ -1497,6 +1497,33 @@
 				height: 16px;
 				vertical-align: middle;
 			}
+			#quickMenuLayoutEditor {
+				display: inline-block;
+				width: 200px;
+				height: 300px;
+				border-radius: 10px;
+				background-color: var(--bg-color1);
+			}
+			#quickMenuLayoutEditor > DIV {
+				background-color: var(--bg-color3);
+				border: 1px solid var(--border-color1);
+				/*border-radius: 10px;*/
+				/*display: inline-block;*/
+				padding: 2px 10px;
+				pointer-events: none;
+				vertical-align: middle;
+				height: 16px;
+			}
+
+			#importModal {
+				background-color: red;
+				position: fixed;
+				left: 50%;
+				top: 50%;
+			}
+			#importModal.hide {
+				display: none;
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -1535,7 +1562,7 @@
 			<div style="font-size:10pt;cursor:default">
 				<label for="importSettings">
 					<button id="b_importSettings" data-i18n="Import">_</button>
-					<input style="display:none" name="importSettings" id="importSettings" type="file" accept="*" />
+					<input style="display:none" name="importSettings" id="importSettings" type="file" accept="*" class="nosave" />
 				</label>
 				<button id="b_exportSettings" data-i18n="Export">_</button>
 			</div>
@@ -2068,6 +2095,22 @@
 					<input type="number" id="quickMenuRowsSingleColumn" size="2" min="1" max="99" step="1" value="10" class="inputNice">
 					<span class="description" data-i18n="RowsSingleColumnTooltip">_</span>
 				</div>
+
+				<!-- <div id="quickMenuLayoutEditor">
+					<div class=".searchBar"></div>
+					<div class=".toolsBar"></div>
+					<div class=".titleBar"></div>
+					<div id="contextualLayoutIcons">
+						<div class="tool" style="--mask-image: url(icons/audio.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/frame.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/image.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/link.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/selection.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/page.svg)"></div>
+						<div class="tool" style="--mask-image: url(icons/video.svg)"></div>
+					</div>
+					<div class=".quickMenu"></div>
+				</div> -->
 				</section>
 				
 				<section>
@@ -2280,6 +2323,13 @@
 							</select>
 
 							<span class="info" title="$quickMenuAllowContextMenuNewTooltip">ⓘ</span>
+
+							<label class="container" style="margin-left:10px">
+								<input type="checkbox" id="quickMenuOnMouseOpenWithoutSelection" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<span class="description" data-i18n="quickMenuOnMouseOpenWithoutSelection">_</span>
+							<span class="info" title="$quickMenuOnMouseOpenWithoutSelectionTooltip">ⓘ</span>
 						</div>						
 						<div class="option" style="display:inline-block">
 							<label class="container">
@@ -2320,7 +2370,7 @@
 								<option data-i18n="shift" value="shift">_</option>
 								<option data-i18n="doubleclick" value="dblclick">_</option>
 							</select>
-						</div>
+						</div>						
 					</td>
 				</tr>
 				<tr>
@@ -3510,6 +3560,13 @@
 		</div>
 			<div class="tabcontent" id="helpTab"></div>
 		</div>
+		</div>
+		<div id="importModal" class="hide">
+			<input type="checkbox" name="settings" class="nosave" /> Settings
+			<input type="checkbox" name="engines" class="nosave" /> Search Engines
+			<input type="checkbox" name="history" class="nosave" /> History
+			<button class="ok">OK</button>
+			<button class="cancel">Cancel</button>
 		</div>
 		<img id="nightmode" src="icons/brightness.svg" style="position:fixed;top:4px;right:4px;height:24px;z-index:10000;" title="$toggletheme">
 		

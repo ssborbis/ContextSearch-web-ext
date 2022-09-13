@@ -948,6 +948,22 @@ function buildImportExportButtons() {
 					alert(browser.i18n.getMessage("ImportSettingsNotFoundAlert"));
 					return;
 				}
+
+				// let result = await new Promise( res => {
+				// 	$('#importModal').classList.remove('hide');
+
+				// 	$('#importModal .ok').addEventListener('click', e => res(true));
+				// 	$('#importModal .cancel').addEventListener('click', e => res(false));
+				// });
+
+				// $('#importModal').classList.add('hide');
+
+				// if ( !result ) return;
+
+				// else {
+				// 	alert($('#importModal [name="settings"]').checked + "\t" +  $('#importModal [name="engines"]').checked + "\t" +  $('#importModal [name="history"]').checked);
+				// 	return;
+				// }
 				
 				// update imported options
 				let _uo = await browser.runtime.sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
@@ -1651,6 +1667,9 @@ document.addEventListener('change', e => {
 	
 	// skip modal forms
 	if ( e.target.closest('.editForm')) return;
+
+	// skip nosave tagged elements
+	if ( e.target.classList.contains("nosave") ) return;
 
 	saveOptions();
 });

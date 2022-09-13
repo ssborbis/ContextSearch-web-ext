@@ -146,7 +146,7 @@ async function buildContextMenu(searchTerms) {
 				
 					addMenuItem({
 						parentId: _id,
-						id: node.id + "_" + id,
+						id: context_prefix + node.id + "_" + id,
 						title: browser.i18n.getMessage("SearchAll"),
 						icons: {
 							"16": "icons/search.svg"
@@ -572,6 +572,12 @@ function contextMenuSearch(info, tab) {
 			break;
 		case "link":
 			searchTerms = info.linkUrl;
+	
+			if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {
+				let method = userOptions.contextMenuSearchLinksAs;
+				method = method === 'url' ? 'text' : 'url';
+				if ( method === 'text') searchTerms = info.linkText;
+			} 
 			break;
 		case "page":
 			searchTerms = tab.url;

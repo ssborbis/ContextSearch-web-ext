@@ -240,7 +240,7 @@ const QMtools = [
 		name: 'repeatsearch',
 		icon: "icons/repeatsearch.svg",
 		title: browser.i18n.getMessage('tools_repeatsearch'),
-		context: ["quickmenu"],
+		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 
 			let tile = buildSearchIcon(null, this.title);

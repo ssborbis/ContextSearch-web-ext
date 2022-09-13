@@ -314,8 +314,10 @@ async function makeQuickMenu(options) {
 			return "";
 		}();
 		
-		userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
-		saveUserOptions();
+		if ( userOptions.saveMenuDisplayMode ) {
+			userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
+			saveUserOptions();
+		}
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
 		setDraggable();	
