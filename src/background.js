@@ -1808,14 +1808,14 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	if ( !userOptions.highLight.enabled ) return;
 	
 	// show the page_action for highlighting
-	if ( browser.pageAction ) {
-		browser.pageAction.show(tab.id);
-		browser.pageAction.onClicked.addListener( tab => {
-			notify({action: "unmark"});
-			notify({action: "removeTabHighlighting", tabId: tab.id});
-			browser.pageAction.hide(tab.id);
-		});
-	}
+	// if ( browser.pageAction ) {
+	// 	browser.pageAction.show(tab.id);
+	// 	browser.pageAction.onClicked.addListener( tab => {
+	// 		notify({action: "unmark"});
+	// 		notify({action: "removeTabHighlighting", tabId: tab.id});
+	// 		browser.pageAction.hide(tab.id);
+	// 	});
+	// }
 
 	await browser.tabs.executeScript(tab.id, {
 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,

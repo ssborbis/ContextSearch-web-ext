@@ -145,21 +145,21 @@ function getOffsets() {
 function makeQuickMenuContainer(coords) {
 
 	// skip opening menu if using instant search
-	if ( checkToolStatus("repeatsearch")) {
+	// if ( checkToolStatus("repeatsearch") ) {
 
-		let _id = userOptions.lastUsedId;
+	// 	let _id = userOptions.lastUsedId;
 
-		browser.runtime.sendMessage({
-			action: "search", 
-			info: {
-				menuItemId:_id,
-				selectionText: quickMenuObject.searchTerms,
-				openMethod: userOptions.lastUsedMethod || userOptions.quickMenuLeftClick
-			}
-		});
+	// 	browser.runtime.sendMessage({
+	// 		action: "search", 
+	// 		info: {
+	// 			menuItemId:_id,
+	// 			selectionText: quickMenuObject.searchTerms,
+	// 			openMethod: userOptions.lastUsedMethod || userOptions.quickMenuLeftClick
+	// 		}
+	// 	});
 
-		return;
-	}
+	// 	return;
+	// }
 
 	let qmc = getQM();
 
