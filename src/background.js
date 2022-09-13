@@ -2199,7 +2199,7 @@ function updateUserOptionsVersion(uo) {
 
 	}).then( _uo => {
 
-		if ( _uo.forceOpenReultsTabsAdjacent ) {
+		if ( _uo.hasOwnProperty("forceOpenReultsTabsAdjacent") ) {
 			_uo.forceOpenResultsTabsAdjacent = _uo.forceOpenReultsTabsAdjacent;
 			delete _uo.forceOpenReultsTabsAdjacent;
 		}
