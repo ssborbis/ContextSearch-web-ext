@@ -13,7 +13,7 @@
 "message": "显示“添加到ContextSearch ”"
 },
 "AddCustomSearchMenuTooltip": {
-"message": "在输入框上启用上下文菜单项“添加自定义搜索”。在某些情况下禁用以防止分层菜单"
+"message": "在输入框上启用右键菜单项“添加自定义搜索”。在某些情况下禁用以防止分层菜单"
 },
 "AddOpenSearchEngine": {
 "description": "label for edit form button to install the current search engine as a One-Click Search Engine",
@@ -36,7 +36,7 @@
 },
 "AddingSearchEnginesInfoMessage": {
 "description": "",
-"message": "搜索引擎可以在这里手动添加，也可以通过上下文菜单自动添加。有关更多信息，请参阅以下链接 -"
+"message": "搜索引擎可以在这里手动添加，也可以通过右键菜单自动添加。有关更多信息，请参阅以下链接 -"
 },
 "AddingSearchEnginesLinkText": {
 "description": "",
@@ -158,7 +158,7 @@
 "message": "点击设置"
 },
 "ClickTooltip": {
-"message": "右键单击将打开弹出菜单。默认上下文菜单的按住按钮"
+"message": "右键单击将打开弹出菜单。默认右键菜单的按住按钮"
 },
 "CloseAfterSearch": {
 "message": "搜索后关闭"
@@ -230,10 +230,10 @@
 "message": "在菜单顶部显示最近使用的引擎"
 },
 "ContextAwareFilter": {
-"message": "根据目标元素（链接、图片、选择内容...）过滤搜索引擎"
+"message": "根据目标元素（链接、图片、选中内容...）过滤搜索引擎"
 },
 "ContextMenu": {
-"message": "上下文菜单"
+"message": "右键菜单"
 },
 "ContextMenuHotKey": {
 "description": "Label for Context Menu shortcut key",
@@ -245,7 +245,7 @@
 },
 "ContextMenuTooltip": {
 "description": "",
-"message": "通过上下文菜单启用搜索"
+"message": "通过右键菜单启用搜索"
 },
 "ContextSearchMenu": {
 "description": "root folder name for bookmarks",
@@ -467,7 +467,7 @@
 "message": "隐藏"
 },
 "HideContextMenu": {
-"message": "使用右键单击打开快捷菜单时隐藏默认上下文菜单"
+"message": "使用右键单击打开快捷菜单时隐藏默认右键菜单"
 },
 "Highlight": {
 "description": "",
@@ -497,7 +497,7 @@
 "message": "按住"
 },
 "HoldForContextMenu": {
-"message": "按住右键 ~1s 并释放默认上下文菜单"
+"message": "按住右键 ~1s 并释放默认右键菜单"
 },
 "HoldTooltip": {
 "message": "按住选定的鼠标按钮约 0.25 秒后，菜单将打开"
@@ -684,7 +684,7 @@
 "message": "选择您喜欢的方法和按钮"
 },
 "MouseHelp": {
-"message": "在Linux和MacOS X环境下，默认的上下文菜单是在mousedown与mouseup时打开的，可以在about:config（Firefox）中设置'ui.context_menus.after_mouseup = true'，使鼠标动作正常工作，防止不需要的菜单。其他用户可以选择一个选项来改变默认上下文菜单的打开方式，可以按住atl、ctrl或shift，或者通过双击鼠标右键。并非所有的选项都能适用于所有的平台。"
+"message": "在Linux和MacOS X环境下，默认的右键菜单是在mousedown与mouseup时打开的，可以在about:config（Firefox）中设置'ui.context_menus.after_mouseup = true'，使鼠标动作正常工作，防止不需要的菜单。其他用户可以选择一个选项来改变默认右键菜单的打开方式，可以按住atl、ctrl或shift，或者通过双击鼠标右键。并非所有的选项都能适用于所有的平台。"
 },
 "MouseTooltip": {
 "message": "选择文本并使用鼠标按钮打开"
@@ -1071,7 +1071,7 @@
 },
 "ShortcutKey_tooltip": {
 "description": "context menu hotkey tooltip",
-"message": "在上下文菜单中展开“搜索方式...”菜单的键"
+"message": "在右键菜单中展开“搜索方式...”菜单的键"
 },
 "Shortcuts": {
 "description": "keyboard shortcuts",
@@ -1082,7 +1082,7 @@
 "message": "显示"
 },
 "ShowDefaultMenuModifierMessage": {
-"message": "显示默认上下文菜单"
+"message": "显示默认右键菜单"
 },
 "ShowFolderSearch": {
 "description": "",
@@ -1349,7 +1349,7 @@
 "message": "中央"
 },
 "checkContextMenuOrderNotification": {
-"message": "打开快捷菜单时将默认上下文菜单移动到双击？有关更多信息，请参阅选项。"
+"message": "打开快捷菜单时将默认右键菜单移动到双击？有关更多信息，请参阅选项。"
 },
 "close": {
 "description": "",
@@ -1365,7 +1365,7 @@
 },
 "contextMenuHotkeysTooltip": {
 "description": "advanced setting tooltip",
-"message": "使用 (&A) 格式将快捷键附加到上下文菜单项以便快速访问"
+"message": "使用 (&A) 格式将快捷键附加到右键菜单项以便快速访问"
 },
 "contextMenuRegexMatchedEnginesTooltip": {
 "description": "advanced setting tooltip",
@@ -1373,11 +1373,11 @@
 },
 "contextMenuTitleTooltip": {
 "description": "advanced setting tooltip",
-"message": "覆盖上下文菜单标题。使用 %s 代替searchTerms 。空白 = 默认"
+"message": "覆盖右键菜单标题。使用 %s 代替searchTerms 。空白 = 默认"
 },
 "contextMenuUseContextualLayoutTooltip": {
 "description": "advanced setting tooltip",
-"message": "根据当前上下文在子文件夹中显示上下文菜单"
+"message": "根据当前上下文在子文件夹中显示右键菜单"
 },
 "contextMenuUseInnerTextTooltip": {
 "description": "advanced setting tooltip",
@@ -1450,7 +1450,7 @@
 "message": "通过排除图标数据 URI，导出的配置更小。可能会导致自定义图标丢失"
 },
 "extensionDescription": {
-"message": "轻松添加搜索引擎并从上下文菜单和方便的弹出窗口中搜索"
+"message": "轻松添加搜索引擎并从右键菜单和方便的弹出窗口中搜索"
 },
 "faviconFinder": {
 "description": "",
@@ -1720,7 +1720,7 @@
 },
 "quickMenuAllowContextMenuNewTooltip": {
 "description": "advanced setting tooltip",
-"message": "mousedown与mouseup上显示上下文菜单的系统可能需要选择另一种打开方法，或修改上下文菜单的打开方式。"
+"message": "mousedown与mouseup上显示右键菜单的系统可能需要选择另一种打开方法，或修改右键菜单的打开方式。"
 },
 "quickMenuAutoMaxCharsTooltip": {
 "description": "advanced setting tooltip",
@@ -1836,7 +1836,7 @@
 },
 "rightClickMenuOnMouseDownFixTooltip": {
 "description": "advanced setting tooltip",
-"message": "使用 HOLD 鼠标右键打开快捷菜单时，需要双击显示默认上下文菜单。有助于防止在鼠标按下和鼠标按下时显示上下文菜单的系统上出现错误菜单"
+"message": "使用 HOLD 鼠标右键打开快捷菜单时，需要双击显示默认右键菜单。有助于防止在鼠标按下和鼠标按下时显示右键菜单的系统上出现错误菜单"
 },
 "searchBarHistoryLengthTooltip": {
 "description": "advanced setting tooltip",
@@ -1867,7 +1867,7 @@
 },
 "selection": {
 "description": "",
-"message": "选择内容"
+"message": "选中内容"
 },
 "separateWordSearch": {
 "description": "",
