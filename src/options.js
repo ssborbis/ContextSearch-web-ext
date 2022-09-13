@@ -1652,6 +1652,9 @@ document.addEventListener('change', e => {
 	// skip modal forms
 	if ( e.target.closest('.editForm')) return;
 
+	// skip nosave tagged elements
+	if ( e.target.classList.contains("nosave") ) return;
+
 	saveOptions();
 });
 
