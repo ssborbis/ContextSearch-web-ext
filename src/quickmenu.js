@@ -2,6 +2,8 @@ var userOptions = {};
 
 //const optionsPage = top.location.href.startsWith(browser.runtime.getURL('options.html'));
 
+const getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"])');
+
 async function makeFrameContents() {
 
 	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
@@ -83,6 +85,8 @@ function setMenuSize(o) {
 	maxHeight = o.maxHeight || maxHeight;
 
 	let tileSize = qm.getTileSize();
+
+//	qm.style.minWidth = ( getVisibleTiles(qm).length < 3 ) ? 3 * tileSize.width + "px" : null;
 
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
@@ -214,8 +218,6 @@ function toolsHandler(o) {
 			}
 		})
 	}
-
-	let getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"])');
 
 	let moreTileID = userOptions.nodeTree.id;
 	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
