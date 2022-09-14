@@ -186,6 +186,9 @@ document.addEventListener("selectionchange", ev => {
 
 	if ( window.suspendSelectionChange ) return;
 
+	// debouncer is causing issues on double-click selection with qm ( empty terms )
+	if ( isTextBox(ev.target) ) return false;
+
 	// reset before the debounce
 	quickMenuObject.lastSelectTime = Date.now();
 
@@ -216,6 +219,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		if ( !isTextBox(e.target) ) return false;
 		
 		let searchTerms = getSelectedText(e.target);
+
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});

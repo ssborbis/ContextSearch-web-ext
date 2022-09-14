@@ -573,11 +573,12 @@ function contextMenuSearch(info, tab) {
 		case "link":
 			searchTerms = info.linkUrl;
 	
-			if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {
-				let method = userOptions.contextMenuSearchLinksAs;
-				method = method === 'url' ? 'text' : 'url';
-				if ( method === 'text') searchTerms = info.linkText;
-			} 
+			// fails in chrome
+			// if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {
+			// 	let method = userOptions.contextMenuSearchLinksAs;
+			// 	method = method === 'url' ? 'text' : 'url';
+			// 	if ( method === 'text') searchTerms = info.linkText;
+			// } 
 			break;
 		case "page":
 			searchTerms = tab.url;
