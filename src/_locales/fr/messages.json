@@ -2364,7 +2364,7 @@
   },
 
   "ContextsTooltip": {
-    "message": "Afficher le moteur à l’ouverture des menus en fonction des contextes sélectionnés. Fonctionne avec le menu contextuel et le menu rapide uniquement si l’option « Filtrer les moteurs… » (onglet « Menu contextuel », rubrique « Avancé ») est cochée."
+    "message": "Afficher le moteur à l’ouverture des menus en fonction des contextes sélectionnés. Fonctionne avec le menu contextuel et le menu rapide uniquement si l’option « Filtrer les moteurs… » (onglet « Menu contextuel » ou « Menu rapide », rubrique « Avancé ») est cochée."
   },
 
   "OpenOnIcon": {
@@ -2459,6 +2459,12 @@
   },
   "quickMenuContextualLayoutToolbarTooltip": {
     "message": "Afficher la barre des contextes"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Partout"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Ouvrir le menu sur n’importe quel élément, y compris les zones vides des documents et des cadres."
   }
 
 }
