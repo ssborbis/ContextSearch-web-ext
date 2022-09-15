@@ -429,6 +429,8 @@ document.addEventListener('mouseup', e => {
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		e.which !== userOptions.quickMenuMouseButton
 	) return false;
+
+	removePreventContextMenuHandler(e);
 		
 	clearMouseDownTimer();
 }, {capture: true});
