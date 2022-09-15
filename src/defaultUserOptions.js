@@ -57,7 +57,7 @@ const defaultUserOptions = {
 	quickMenuAllowContextMenuNew: false,
 	quickMenuFocusOnOpen: true,
 	contextMenu: true,
-	contextMenuKey: 0,
+	contextMenuKey: 90,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
 	contextMenuOnLinks: true,
