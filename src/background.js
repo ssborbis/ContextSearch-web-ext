@@ -402,6 +402,18 @@ async function notify(message, sender, sendResponse) {
 			if ( userOptions.contextMenuUseContextualLayout ) {
 				updateMatchRegexFolders(searchTerms);
 
+				// relabel link based on linkMethod
+				try {
+
+					let title = browser.i18n.getMessage("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? browser.i18n.getMessage("LINKTEXT") : browser.i18n.getMessage("LINK")).toUpperCase()) + getMenuHotkey();
+
+					await browser.contextMenus.update("link", {
+						title: title
+					});
+				} catch ( error ) {
+					console.error(error);
+				}
+
 				try {
 					for ( let i in contexts )
 						await browser.contextMenus.update(contexts[i], {visible: true });
