@@ -543,7 +543,8 @@ async function notify(message, sender, sendResponse) {
 				type: "searchEngine",
 				title: se.title,
 				id: se.id,
-				hidden: false
+				hidden: false,
+				contexts:[32]
 			}
 			parentNode.children.push(node);
 
