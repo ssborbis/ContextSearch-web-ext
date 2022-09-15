@@ -995,8 +995,6 @@ async function makeQuickMenu(options) {
 		qm.contexts = quickMenuObject.contexts;
 		qm.contextualLayout = false;
 
-		ctb.innerHTML = null;
-
 		// filter node tree for matching contexts
 		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
 
@@ -1014,24 +1012,6 @@ async function makeQuickMenu(options) {
 			rootNode = tempRoot;
 
 			qm.contextualLayout = true;
-
-			// set the context bar to display current contexts
-			
-			contexts.forEach(c => {
-				let div = document.createElement('div');
-				let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
-				icon.title = browser.i18n.getMessage(c);
-				div.appendChild(icon);
-				ctb.appendChild(div);
-
-				if ( qm.contexts.includes(c) ) icon.classList.add("on");
-
-				div.onclick = async function() {
-					quickMenuObject.contexts = [c];
-					qm = await quickMenuElementFromNodeTree( window.root );
-					//resizeMenu();
-				}
-			})
 		}
 
 		let debug = rootNode.title === "empty";
@@ -1142,6 +1122,8 @@ async function makeQuickMenu(options) {
 		}
 
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
+
+		makeContextsBar();
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
@@ -2684,6 +2666,28 @@ function setLayoutOrder(arr) {
 		document.body.appendChild(el);
 
 	});
+}
+
+function makeContextsBar() {
+	ctb.innerHTML = null;
+	// set the context bar to display current contexts	
+	contexts.forEach(c => {
+		let div = document.createElement('div');
+		let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
+		icon.title = browser.i18n.getMessage(c);
+		div.appendChild(icon);
+		ctb.appendChild(div);
+
+		if ( qm.contexts.includes(c) ) icon.classList.add("on");
+
+		div.onclick = async function() {
+			quickMenuObject.contexts = [c];
+			qm = await quickMenuElementFromNodeTree( window.root );
+			resizeMenu({more:true});
+		}
+	})
+
+//	makeContainerMore(ctb, 1);
 }
 
 function tileSlideInAnimation() {
