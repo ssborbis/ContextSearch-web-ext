@@ -86,7 +86,8 @@
 		"open_at_install": false
 	},
 	"commands": {
-		"_execute_browser_action": {}
+		"_execute_browser_action": {},
+		"_execute_sidebar_action": {}
 	},
 	"omnibox": {
 		"keyword": "cs"
