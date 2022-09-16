@@ -67,7 +67,7 @@ document.addEventListener('dragstart', e => {
 	}
 
 	startCoords = {x: e.clientX, y: e.clientY};
-	searchTerms = getSelectedText(e.target);
+	searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
 
 	document.addEventListener('dragover', dragOverHandler);
 	document.addEventListener('dragend', e => document.removeEventListener('dragover', dragOverHandler));
