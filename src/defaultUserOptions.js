@@ -113,6 +113,7 @@ const defaultUserOptions = {
 	quickMenuOpeningOpacity: 1.0,
 	quickMenuTheme: "modern",
 	quickMenuAlwaysShowMenuBar: false,
+	quickMenuColumnsMinimum: 4,
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
