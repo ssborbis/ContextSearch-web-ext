@@ -21,7 +21,7 @@ function openPageTiles(message) {
 
 		iframe.src = browser.runtime.getURL('/pagetiles.html');
 
-		if ( window.chrome ) {
+		if ( window.chrome && !message.hotkey ) {
 			let od = dragOverIframeDiv(iframe);
 			od.id = "CS_pageTilesOverDiv";
 

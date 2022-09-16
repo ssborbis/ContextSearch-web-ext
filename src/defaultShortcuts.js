@@ -98,7 +98,7 @@ const defaultShortcuts = [
 		name:"pageTilesOpen",
 		action: e => {
 			if ( !getSearchTermsForHotkeys ) return;
-			browser.runtime.sendMessage({action: "openPageTiles", searchTerms:getSearchTermsForHotkeys(e)});
+			browser.runtime.sendMessage({action: "openPageTiles", searchTerms:getSearchTermsForHotkeys(e), hotkey: true});
 		},
 		key: ",",
 		ctrl: true,

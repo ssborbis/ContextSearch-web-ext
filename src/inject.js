@@ -173,7 +173,7 @@ function getContexts(el, e) {
 		contexts.push("selection");
 
 	if ( !contexts.length )
-		if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
+		if ( el.nodeName === 'IFRAME' || ( el.ownerDocument && el.ownerDocument.defaultView != top ) ) contexts.push('frame');
 
 	if ( !contexts.length )
 		contexts.push('page');
@@ -182,12 +182,12 @@ function getContexts(el, e) {
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
-document.addEventListener("selectionchange", ev => {
+document.addEventListener("selectionchange", e => {
 
 	if ( window.suspendSelectionChange ) return;
 
 	// debouncer is causing issues on double-click selection with qm ( empty terms )
-	if ( isTextBox(ev.target) ) return false;
+	if ( isTextBox(e.target) ) return false;
 
 	// reset before the debounce
 	quickMenuObject.lastSelectTime = Date.now();
@@ -582,6 +582,14 @@ function getShadowRoot() {
 	if ( div && div.shadowRoot ) return div.shadowRoot;
 	else return document.body || null;
 }
+
+// track mouse position
+document.addEventListener("mousemove", e => {
+	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
+	quickMenuObject.screenCoords = {x: e.screenX, y: e.screenY};
+
+	screenCoords = {x: e.screenX, y: e.screenY};
+}, {capture: true});
 
 document.addEventListener('keydown', e => {
 	if ( e.key === "Esc" ) {

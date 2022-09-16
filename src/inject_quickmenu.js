@@ -736,14 +736,6 @@ document.addEventListener("click", e => {
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
 }, {capture: true});
 
-// track mouse position
-document.addEventListener("mousemove", e => {
-	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
-	quickMenuObject.screenCoords = {x: e.screenX, y: e.screenY};
-
-	screenCoords = {x: e.screenX, y: e.screenY};
-}, {capture: true});
-
 // prevent quickmenu during drag events
 document.addEventListener("drag", e => {
 	clearMouseDownTimer();
