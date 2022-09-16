@@ -672,6 +672,8 @@ HR.break {
 	overflow-x:hidden;
 	width:var(--iframe-body-width, auto);
 	text-align: center;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 #contextsBar > DIV {
 	display: inline-block;

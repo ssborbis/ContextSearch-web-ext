@@ -2683,9 +2683,14 @@ function makeContextsBar() {
 		div.onclick = async function() {
 			quickMenuObject.contexts = [c];
 			qm = await quickMenuElementFromNodeTree( window.root );
-			resizeMenu({more:true});
+			resizeMenu({openFolder:true});
 		}
-	})
+	});
+
+	ctb.addEventListener('wheel', e => {
+		e.preventDefault();
+		ctb.scrollLeft += e.deltaY;
+	});
 
 //	makeContainerMore(ctb, 1);
 }
