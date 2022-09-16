@@ -546,13 +546,15 @@ function checkForNodeHotkeys(e) {
 
 function getSearchTermsForHotkeys(e) {
 	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
+
 	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
 	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
+	let page = userOptions.allowHotkeysOnPage ? window.location.href : null;
 
 	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
 		link = el.currentSrc || el.src;
 
-	return getSelectedText(e.target) || img || link || "";
+	return getSelectedText(e.target) || img || link || page || "";
 }
 
 function createShadowRoot() {

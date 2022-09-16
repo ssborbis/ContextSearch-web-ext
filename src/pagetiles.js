@@ -1,11 +1,11 @@
 var userOptions;
 
-function init(nodes) {
+function init(message) {
 	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 
 		setUserStyles();
-		makePageTiles(nodes);
+		makePageTiles(message);
 		
 		if ( userOptions.pageTiles.closeOnShake ) {
 			let ds = new DragShake();
@@ -39,7 +39,7 @@ function createSVG(title) {
 	return svg;
 }
 
-function makePageTiles(forceNodes) {
+function makePageTiles(message) {
 
 	var mainDiv = document.createElement('div');
 	mainDiv.className = "pageTilesContainer";
@@ -54,8 +54,8 @@ function makePageTiles(forceNodes) {
 	let gridNodes = userOptions.pageTiles.grid.map( id => nodes.find( n => n.id === id) || {id: null, type: "bookmarklet", title: "", icon: browser.runtime.getURL('/icons/empty.svg')} );
 
 	// speedDial replace
-	if ( forceNodes ) {
-		gridNodes = [...forceNodes];
+	if ( message.nodes ) {
+		gridNodes = [...message.nodes];
 		rows = 3;
 		cols = 3;
 
@@ -115,9 +115,7 @@ function makePageTiles(forceNodes) {
 
 			if ( node.hidden ) return;
 
-			let message = await browser.runtime.sendMessage({action: "getLastSearch"});
-
-			searchTerms = message.lastSearch;
+			searchTerms = message.searchTerms;
 
 			if ( !searchTerms ) return;
 
@@ -126,7 +124,7 @@ function makePageTiles(forceNodes) {
 				info: {
 					menuItemId: node.id,
 					selectionText: searchTerms,
-					openMethod: userOptions.pageTiles.openMethod
+					openMethod: e.type === "mouseup" ? getOpenMethod(e) : userOptions.pageTiles.openMethod
 				}
 			});
 			
@@ -158,7 +156,9 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener('click', e => {
 	close();
-})
+});
+
+document.addEventListener('contextmenu', e => e.preventDefault())
 
 let close = () => browser.runtime.sendMessage({action: "closePageTiles"});
 
@@ -192,6 +192,6 @@ window.addEventListener("message", e => {
 	}
 
 	if ( e.data.init ) {
-		return init(e.data.nodes);
+		return init(e.data);
 	}
 });

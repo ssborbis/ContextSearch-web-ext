@@ -1,7 +1,7 @@
 let startCoords;
 let searchTerms;
 
-function openPageTiles(nodes) {
+function openPageTiles(message) {
 
 	// chrome requires delay or the drag event is cancelled
 	setTimeout(() => {
@@ -14,7 +14,7 @@ function openPageTiles(nodes) {
 		// add listener after iframe is loaded to avoid closing on chrome
 		// chrome fires dragend when over iframe
 		iframe.onload = () => {
-			iframe.contentWindow.postMessage({init:true, nodes: nodes}, browser.runtime.getURL('/pagetiles.html'));
+			iframe.contentWindow.postMessage({init:true, nodes: message.nodes, searchTerms: message.searchTerms}, browser.runtime.getURL('/pagetiles.html'));
 		//	document.addEventListener('dragend', closePageTiles, {once: true});
 			document.body.classList.add('CS_blur');
 		}
@@ -44,7 +44,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if ( message.action && message.action === "openPageTiles" ) {
 		if ( getPageTilesIframe() ) closePageTiles();
-		else openPageTiles(message.nodes);
+		else openPageTiles(message);
 	}
 });
 
@@ -60,8 +60,7 @@ document.addEventListener('dragstart', e => {
 
 		if ( Math.abs(startCoords.x - e.clientX) < userOptions.pageTiles.deadzone && Math.abs(startCoords.y - e.clientY) < userOptions.pageTiles.deadzone ) return;
 
-		browser.runtime.sendMessage({action: "setLastSearch", lastSearch: searchTerms})
-			.then( () => browser.runtime.sendMessage({action: "openPageTiles"}));
+		browser.runtime.sendMessage({action: "openPageTiles", searchTerms: searchTerms});
 
 		document.removeEventListener('dragover', dragOverHandler);
 	}
