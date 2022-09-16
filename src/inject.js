@@ -216,6 +216,9 @@ document.addEventListener("selectionchange", ev => {
 for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', e => {
 
+		// left-button only
+		if ( e.button !== 0 ) return;
+
 		if ( !isTextBox(e.target) ) return false;
 		
 		let searchTerms = getSelectedText(e.target);
@@ -230,9 +233,9 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 }
 
 // Relabel context menu root on mousedown to fire before oncontextmenu
-window.addEventListener('mousedown', e => {
+window.addEventListener('mousedown', async e => {
 
-	if ( e.which !== 3 ) return false;
+	if ( e.button !== 2 ) return false;
 
 	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
 
