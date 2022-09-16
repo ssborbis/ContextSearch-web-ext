@@ -430,9 +430,9 @@ document.addEventListener('mouseup', e => {
 		e.which !== userOptions.quickMenuMouseButton
 	) return false;
 
-	removePreventContextMenuHandler(e);
-		
 	clearMouseDownTimer();
+//	removePreventContextMenuHandler(e);
+		
 }, {capture: true});
 
 function preventContextMenuHandler(e) {
