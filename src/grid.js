@@ -6,6 +6,8 @@ class Grid {
 
 	saveGrid(o) {
 
+		o = o || this.o;
+
 		if ( !o ) return;
 
 		let table = $(o.tableId);
@@ -33,7 +35,7 @@ class Grid {
 
 		let saveGrid = this.saveGrid;
 
-		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine", "bookmarklet", "folder"].includes(n.type));
+		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine", "bookmarklet", "folder"].includes(n.type) && n !== userOptions.nodeTree );
 		
 		let gridNodes = [];
 		
