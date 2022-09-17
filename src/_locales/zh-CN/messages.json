@@ -1506,7 +1506,7 @@
 },
 "forceOpenResultsTabsAdjacentTooltip": {
 "description": "advanced setting tooltip",
-"message": "强制搜索结果显示在右侧的下一个标签页中"
+"message": "强制搜索结果在当前标签页右侧打开"
 },
 "frame": {
 "description": "",
