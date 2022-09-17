@@ -46,7 +46,7 @@
 "message": "高级"
 },
 "AlsoAdd": {
-"message": "还添加到一键式搜索引擎？"
+"message": "添加到一键式搜索引擎？"
 },
 "Animations": {
 "description": "",
@@ -1443,7 +1443,7 @@
 },
 "exportToFirefoxSearchTooltip": {
 "description": "advanced setting tooltip",
-"message": "浏览到您的配置文件文件夹并选择您的search.json .mozlz4 文件。系统将提示您输入两个文件：一个新的search.json .mozlz4 文件和一个原始文件的备份。将这两个文件保存到您的配置文件目录。重新启动 Firefox 以查看更改。"
+"message": "打开Firefox配置文件夹并选择search.json.mozlz4文件，将会提示有2个文件：一个新的search.json.mozlz4文件和一个原来文件的备份文件。把它们都保存到配置目录中。重启Firefox生效。"
 },
 "exportWithoutBase64IconsTooltip": {
 "description": "advanced setting tooltip",
@@ -1506,7 +1506,7 @@
 },
 "forceOpenResultsTabsAdjacentTooltip": {
 "description": "advanced setting tooltip",
-"message": "强制搜索结果显示在右侧的下一个标签页中"
+"message": "强制搜索结果在当前标签页右侧打开"
 },
 "frame": {
 "description": "",
