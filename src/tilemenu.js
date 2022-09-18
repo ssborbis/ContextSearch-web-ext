@@ -1577,7 +1577,7 @@ function checkForNodeHotkeys(e) {
 
 getAllOtherHeights = (_new) => {
 
-	if ( _new ) return document.body.getBoundingClientRect().height - qm.getBoundingClientRect().height;
+	if ( _new ) return document.body.scrollHeight - qm.scrollHeight;
 	
 	let height = 0;
 	[sbc,tb,mb,toolBar,aeb,ctb].forEach( el => height += getFullElementSize(el).height );
