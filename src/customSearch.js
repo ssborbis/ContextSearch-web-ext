@@ -194,7 +194,10 @@ function addSearchEnginePopup(data) {
 
 					simpleImportHandler(url, true);
 				}
-				showMenu('simple_import');
+				if ( userOptions.askToAddNewEngineToFirefox )
+					showMenu('simple_import');
+				else
+					closeCustomSearchIframe();
 			})();
 		} else {
 			closeCustomSearchIframe();
@@ -274,6 +277,12 @@ function addSearchEnginePopup(data) {
 	document.getElementById('b_simple_error_no').onclick = function() {
 		closeCustomSearchIframe();
 	}
+
+	document.getElementById('askToAddNewEngineToFirefox').addEventListener('change', e => {
+		userOptions.askToAddNewEngineToFirefox = !e.target.checked;
+		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		alert(!e.target.checked);
+	});
 	
 	let form = document.getElementById('customForm');
 	
@@ -685,3 +694,11 @@ window.addEventListener("message", async e => {
 document.addEventListener('DOMContentLoaded', () => {
 	window.parent.postMessage({status: "complete"}, "*");
 });
+
+// set zoom attribute to be used for scaling objects
+function setZoomProperty() {
+	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
+}
+
+setZoomProperty();
+document.addEventListener('zoom', setZoomProperty);

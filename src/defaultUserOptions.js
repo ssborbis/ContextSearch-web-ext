@@ -113,7 +113,7 @@ const defaultUserOptions = {
 	quickMenuOpeningOpacity: 1.0,
 	quickMenuTheme: "modern",
 	quickMenuAlwaysShowMenuBar: false,
-	quickMenuColumnsMinimum: 4,
+	quickMenuColumnsMinimum: 6,
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
@@ -289,5 +289,6 @@ const defaultUserOptions = {
 	quickMenuCancelOnMousewheel: true,
 	showDescriptionsInTooltips: false,
 	allowDeleteEnginesFromTileMenu: false,
-	saveMenuDisplayMode: true
+	saveMenuDisplayMode: true,
+	askToAddNewEngineToFirefox: true
 };
