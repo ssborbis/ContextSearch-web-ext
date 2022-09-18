@@ -290,5 +290,6 @@ const defaultUserOptions = {
 	showDescriptionsInTooltips: false,
 	allowDeleteEnginesFromTileMenu: false,
 	saveMenuDisplayMode: true,
-	askToAddNewEngineToFirefox: true
+	askToAddNewEngineToFirefox: true,
+	ignoreSearchRedirects: true
 };

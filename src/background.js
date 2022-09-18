@@ -1663,10 +1663,10 @@ async function openSearch(info) {
 
 			// prevent redirects - needs testing
 			
-			// let landing_url = new URL(q);
-			// let current_url = new URL(__tab.url);
+			let landing_url = new URL(q);
+			let current_url = new URL(__tab.url);
 				
-			// if (current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
+			if ( userOptions.ignoreSearchRedirects && current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
 
 			// non-POST should wait to complete
 			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
