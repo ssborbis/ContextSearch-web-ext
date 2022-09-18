@@ -1053,7 +1053,10 @@ async function makeQuickMenu(options) {
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 
 			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
-			tile.appendChild(makeToolMask({icon: 'icons/back.svg'}));
+			let backIcon = makeToolMask({icon: 'icons/back.svg'});
+			backIcon.style.position = "absolute";
+
+			tile.appendChild(backIcon);
 
 			tile.dataset.type = "folder";
 			tile.node = rootNode.parent;
