@@ -90,7 +90,7 @@ function setMenuSize(o) {
 	
 	// prevent the menu from shriking below minimum columns width
 	if ( !qm.singleColumn )
-		qm.style.minWidth = tileSize.width * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns) + "px";
+		qm.style.minWidth = tileSize.width * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) + "px";
 
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
