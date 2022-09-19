@@ -2248,6 +2248,14 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
+		let els = _uo.quickMenuDomLayout.split(",");
+
+		if ( !els.includes("contextsBar") && !els.includes("!contextsBar") ) {
+			els.push("!contextsBar");
+			_uo.quickMenuDomLayout = els.join(",");
+		}
+		return _uo;
+	}).then( _uo => {
 		console.log('Done ->', _uo.version, Date.now() - start);
 		return _uo;
 	});
