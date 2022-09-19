@@ -65,7 +65,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (document.getElementById(iframe.id)) return;
 				
 				iframe.src = browser.runtime.getURL('/customSearch.html');
-				document.body.appendChild(iframe);
+				
+				getShadowRoot().appendChild(iframe);
+
+				// blur the background
+				document.body.classList.add('CS_blur');
 				
 				// reflow trick
 				iframe.getBoundingClientRect();
@@ -144,8 +148,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 			
 			case "closeCustomSearch":
-				var iframe = document.getElementById("CS_customSearchIframe");
+				var iframe = getShadowRoot().getElementById("CS_customSearchIframe");
 				iframe.style.opacity = 0;
+
+				document.body.classList.remove('CS_blur');
 				
 				// remove after transition effect completes
 				setTimeout(() => iframe.parentNode.removeChild(iframe), 250);

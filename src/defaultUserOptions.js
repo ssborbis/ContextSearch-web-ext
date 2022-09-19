@@ -57,7 +57,7 @@ const defaultUserOptions = {
 	quickMenuAllowContextMenuNew: false,
 	quickMenuFocusOnOpen: true,
 	contextMenu: true,
-	contextMenuKey: 0,
+	contextMenuKey: 90,
 	contextMenuShowAddCustomSearch: true,
 	contextMenuBookmarks: false,
 	contextMenuOnLinks: true,
@@ -113,6 +113,7 @@ const defaultUserOptions = {
 	quickMenuOpeningOpacity: 1.0,
 	quickMenuTheme: "modern",
 	quickMenuAlwaysShowMenuBar: false,
+	quickMenuColumnsMinimum: 6,
 	searchBarSuggestions: true,
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
@@ -288,5 +289,7 @@ const defaultUserOptions = {
 	quickMenuCancelOnMousewheel: true,
 	showDescriptionsInTooltips: false,
 	allowDeleteEnginesFromTileMenu: false,
-	saveMenuDisplayMode: true
+	saveMenuDisplayMode: true,
+	askToAddNewEngineToFirefox: true,
+	ignoreSearchRedirects: true
 };

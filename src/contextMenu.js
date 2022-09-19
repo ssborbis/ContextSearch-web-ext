@@ -571,7 +571,7 @@ function contextMenuSearch(info, tab) {
 			searchTerms = info.selectionText.trim();
 			break;
 		case "link":
-			searchTerms = info.linkUrl;
+			//searchTerms = info.linkUrl;
 	
 			// fails in chrome
 			// if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {

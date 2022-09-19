@@ -86,7 +86,11 @@ function setMenuSize(o) {
 
 	let tileSize = qm.getTileSize();
 
-//	qm.style.minWidth = ( getVisibleTiles(qm).length < 3 ) ? 3 * tileSize.width + "px" : null;
+	qm.style.minWidth = null;
+	
+	// prevent the menu from shriking below minimum columns width
+	if ( !qm.singleColumn )
+		qm.style.minWidth = tileSize.width * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) + "px";
 
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
@@ -100,7 +104,7 @@ function setMenuSize(o) {
 	document.body.style.width = '9999px';
 	document.body.style.height = maxHeight + "px";
 
-	document.documentElement.style.setProperty('--iframe-body-width', qm.getBoundingClientRect().width + "px");
+	document.documentElement.style.setProperty('--iframe-body-width',  qm.getBoundingClientRect().width + "px");
 	
 	if ( !o.more && !o.move ) {
 		let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');

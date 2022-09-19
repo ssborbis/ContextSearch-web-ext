@@ -2,8 +2,8 @@ const defaultShortcuts = [
 	{
 		name:"quickMenuOpen",
 		action: e => {
-			let searchTerms = getSelectedText().trim() || "";
-			browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:searchTerms});
+			if ( !getSearchTermsForHotkeys ) return;
+			browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:getSearchTermsForHotkeys(e)});
 		},
 		key: "x",
 		ctrl: true,
@@ -96,7 +96,10 @@ const defaultShortcuts = [
 		id: 9
 	},{
 		name:"pageTilesOpen",
-		action:"openPageTiles",
+		action: e => {
+			if ( !getSearchTermsForHotkeys ) return;
+			browser.runtime.sendMessage({action: "openPageTiles", searchTerms:getSearchTermsForHotkeys(e), hotkey: true});
+		},
 		key: ",",
 		ctrl: true,
 		alt: false,

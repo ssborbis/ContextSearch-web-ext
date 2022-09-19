@@ -192,6 +192,7 @@ async function sideBarResize(options) {
 
 //	document.body.style.width = screen.width + "px";
 	document.body.width = null;
+	document.body.height = null;
 	document.body.getBoundingClientRect();
 	document.body.style.width = document.body.scrollWidth + "px";
 

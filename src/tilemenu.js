@@ -995,8 +995,6 @@ async function makeQuickMenu(options) {
 		qm.contexts = quickMenuObject.contexts;
 		qm.contextualLayout = false;
 
-		ctb.innerHTML = null;
-
 		// filter node tree for matching contexts
 		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
 
@@ -1014,24 +1012,6 @@ async function makeQuickMenu(options) {
 			rootNode = tempRoot;
 
 			qm.contextualLayout = true;
-
-			// set the context bar to display current contexts
-			
-			contexts.forEach(c => {
-				let div = document.createElement('div');
-				let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
-				icon.title = browser.i18n.getMessage(c);
-				div.appendChild(icon);
-				ctb.appendChild(div);
-
-				if ( qm.contexts.includes(c) ) icon.classList.add("on");
-
-				div.onclick = async function() {
-					quickMenuObject.contexts = [c];
-					qm = await quickMenuElementFromNodeTree( window.root );
-					//resizeMenu();
-				}
-			})
 		}
 
 		let debug = rootNode.title === "empty";
@@ -1073,7 +1053,10 @@ async function makeQuickMenu(options) {
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 
 			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
-			tile.appendChild(makeToolMask({icon: 'icons/back.svg'}));
+			let backIcon = makeToolMask({icon: 'icons/back.svg'});
+			backIcon.style.position = "absolute";
+
+			tile.appendChild(backIcon);
 
 			tile.dataset.type = "folder";
 			tile.node = rootNode.parent;
@@ -1142,6 +1125,8 @@ async function makeQuickMenu(options) {
 		}
 
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
+
+		makeContextsBar();
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
@@ -1595,7 +1580,7 @@ function checkForNodeHotkeys(e) {
 
 getAllOtherHeights = (_new) => {
 
-	if ( _new ) return document.body.getBoundingClientRect().height - qm.getBoundingClientRect().height;
+	if ( _new ) return document.body.scrollHeight - qm.scrollHeight;
 	
 	let height = 0;
 	[sbc,tb,mb,toolBar,aeb,ctb].forEach( el => height += getFullElementSize(el).height );
@@ -2684,6 +2669,33 @@ function setLayoutOrder(arr) {
 		document.body.appendChild(el);
 
 	});
+}
+
+function makeContextsBar() {
+	ctb.innerHTML = null;
+	// set the context bar to display current contexts	
+	contexts.forEach(c => {
+		let div = document.createElement('div');
+		let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
+		icon.title = browser.i18n.getMessage(c);
+		div.appendChild(icon);
+		ctb.appendChild(div);
+
+		if ( qm.contexts.includes(c) ) icon.classList.add("on");
+
+		div.onclick = async function() {
+			quickMenuObject.contexts = [c];
+			qm = await quickMenuElementFromNodeTree( window.root );
+			resizeMenu({openFolder:true});
+		}
+	});
+
+	ctb.addEventListener('wheel', e => {
+		e.preventDefault();
+		ctb.scrollLeft += e.deltaY;
+	});
+
+//	makeContainerMore(ctb, 1);
 }
 
 function tileSlideInAnimation() {

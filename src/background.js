@@ -402,6 +402,18 @@ async function notify(message, sender, sendResponse) {
 			if ( userOptions.contextMenuUseContextualLayout ) {
 				updateMatchRegexFolders(searchTerms);
 
+				// relabel link based on linkMethod
+				try {
+
+					let title = browser.i18n.getMessage("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? browser.i18n.getMessage("LINKTEXT") : browser.i18n.getMessage("LINK")).toUpperCase()) + getMenuHotkey();
+
+					await browser.contextMenus.update("link", {
+						title: title
+					});
+				} catch ( error ) {
+					console.error(error);
+				}
+
 				try {
 					for ( let i in contexts )
 						await browser.contextMenus.update(contexts[i], {visible: true });
@@ -543,7 +555,8 @@ async function notify(message, sender, sendResponse) {
 				type: "searchEngine",
 				title: se.title,
 				id: se.id,
-				hidden: false
+				hidden: false,
+				contexts:[32]
 			}
 			parentNode.children.push(node);
 
@@ -575,7 +588,7 @@ async function notify(message, sender, sendResponse) {
 				searchTerms: message.searchTerms,
 				tab: sender.tab,
 				temporarySearchEngine: message.tempSearchEngine,
-				openMethod: "openBackgroundTab"
+				openMethod: message.openMethod || "openBackgroundTab"
 			});
 
 			break;
@@ -1169,6 +1182,7 @@ function executeBookmarklet(info) {
 
 	// run as script
 	if ( info.node.searchCode ) {
+
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			browser.tabs.executeScript(tabs[0].id, {
 				code: `CS_searchTerms = searchTerms = "${searchTerms}";
@@ -1646,11 +1660,13 @@ async function openSearch(info) {
 		browser.tabs.onUpdated.addListener(async function listener(tabId, changeInfo, __tab) {
 			
 			if ( tabId !== _tab.id ) return;
-	
+
+			// prevent redirects - needs testing
+			
 			let landing_url = new URL(q);
 			let current_url = new URL(__tab.url);
-			
-			if (current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
+				
+			if ( userOptions.ignoreSearchRedirects && current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
 
 			// non-POST should wait to complete
 			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {

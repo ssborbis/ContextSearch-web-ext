@@ -173,7 +173,7 @@ function getContexts(el, e) {
 		contexts.push("selection");
 
 	if ( !contexts.length )
-		if ( el.nodeName === 'IFRAME' || el.ownerDocument.defaultView != top ) contexts.push('frame');
+		if ( el.nodeName === 'IFRAME' || ( el.ownerDocument && el.ownerDocument.defaultView != top ) ) contexts.push('frame');
 
 	if ( !contexts.length )
 		contexts.push('page');
@@ -182,12 +182,12 @@ function getContexts(el, e) {
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
-document.addEventListener("selectionchange", ev => {
+document.addEventListener("selectionchange", e => {
 
 	if ( window.suspendSelectionChange ) return;
 
 	// debouncer is causing issues on double-click selection with qm ( empty terms )
-	if ( isTextBox(ev.target) ) return false;
+	if ( isTextBox(e.target) ) return false;
 
 	// reset before the debounce
 	quickMenuObject.lastSelectTime = Date.now();
@@ -216,6 +216,9 @@ document.addEventListener("selectionchange", ev => {
 for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
 	el.addEventListener('mouseup', e => {
 
+		// left-button only
+		if ( e.button !== 0 ) return;
+
 		if ( !isTextBox(e.target) ) return false;
 		
 		let searchTerms = getSelectedText(e.target);
@@ -230,9 +233,9 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 }
 
 // Relabel context menu root on mousedown to fire before oncontextmenu
-window.addEventListener('mousedown', e => {
+window.addEventListener('mousedown', async e => {
 
-	if ( e.which !== 3 ) return false;
+	if ( e.button !== 2 ) return false;
 
 	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
 
@@ -241,7 +244,7 @@ window.addEventListener('mousedown', e => {
 	}
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target)});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e)});
 });
 
 function linkOrImage(el, e) {
@@ -543,13 +546,15 @@ function checkForNodeHotkeys(e) {
 
 function getSearchTermsForHotkeys(e) {
 	let el = document.elementFromPoint(quickMenuObject.mouseCoords.x, quickMenuObject.mouseCoords.y);
+
 	let img =  userOptions.allowHotkeysOnImages ? getImage(el) : null;
 	let link = userOptions.allowHotkeysOnLinks ? getLink(el) : null;
+	let page = userOptions.allowHotkeysOnPage ? window.location.href : null;
 
 	if ( el instanceof HTMLAudioElement || el instanceof HTMLVideoElement ) 
 		link = el.currentSrc || el.src;
 
-	return getSelectedText(e.target) || img || link || "";
+	return getSelectedText(e.target) || img || link || page || "";
 }
 
 function createShadowRoot() {
@@ -577,6 +582,14 @@ function getShadowRoot() {
 	if ( div && div.shadowRoot ) return div.shadowRoot;
 	else return document.body || null;
 }
+
+// track mouse position
+document.addEventListener("mousemove", e => {
+	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
+	quickMenuObject.screenCoords = {x: e.screenX, y: e.screenY};
+
+	screenCoords = {x: e.screenX, y: e.screenY};
+}, {capture: true});
 
 document.addEventListener('keydown', e => {
 	if ( e.key === "Esc" ) {

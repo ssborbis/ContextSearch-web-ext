@@ -54,6 +54,7 @@ BODY {
 }
 .pageTile DIV {
 	padding: 10px 0 10px 0;
+	pointer-events: none;
 }
 .pageTile.dragover DIV {
 	pointer-events: none;

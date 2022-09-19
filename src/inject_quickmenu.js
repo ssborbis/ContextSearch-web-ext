@@ -429,8 +429,10 @@ document.addEventListener('mouseup', e => {
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		e.which !== userOptions.quickMenuMouseButton
 	) return false;
-		
+
 	clearMouseDownTimer();
+//	removePreventContextMenuHandler(e);
+		
 }, {capture: true});
 
 function preventContextMenuHandler(e) {
@@ -732,14 +734,6 @@ document.addEventListener("click", e => {
 		e.preventDefault();
 
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_window"});
-}, {capture: true});
-
-// track mouse position
-document.addEventListener("mousemove", e => {
-	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
-	quickMenuObject.screenCoords = {x: e.screenX, y: e.screenY};
-
-	screenCoords = {x: e.screenX, y: e.screenY};
 }, {capture: true});
 
 // prevent quickmenu during drag events

@@ -106,6 +106,10 @@
   "ColumnsTooltip": {
     "message": "Maximum number of search engine icons per row (grid view)"
   },
+
+  "ColumnsMinimumTooltip": {
+    "message": "Minimum number of search engine icons per row (grid view)"
+  },
   
   "Items": {
     "message": "Items"
