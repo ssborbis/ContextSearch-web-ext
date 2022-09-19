@@ -115,6 +115,23 @@ function buildSearchEngineContainer() {
 			text.innerText = se.title;
 			header.appendChild(text);
 
+			// check for multisearch
+			try {
+				let arr = JSON.parse(se.template);
+
+				if ( Array.isArray(arr) ) {
+
+					let nodes = arr.map( id => findNode(userOptions.nodeTree, n => n.id === id));
+
+					nodes.forEach( n => {
+						let _icon = document.createElement('img');
+						_icon.src = getIconFromNode(n);
+						_icon.title = n.title;
+						header.appendChild(_icon);
+					})
+				}
+			} catch (error) {}
+
 			node.contexts = node.contexts || se.contexts;
 
 			li.addEventListener('dblclick', e => {
