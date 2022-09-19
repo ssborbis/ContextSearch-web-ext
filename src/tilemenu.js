@@ -2673,6 +2673,7 @@ function setLayoutOrder(arr) {
 
 function makeContextsBar() {
 	ctb.innerHTML = null;
+
 	// set the context bar to display current contexts	
 	contexts.forEach(c => {
 		let div = document.createElement('div');
