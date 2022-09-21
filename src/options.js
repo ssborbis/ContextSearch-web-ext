@@ -324,7 +324,6 @@ function _saveOptions(e) {
 	// restore settings with matching ids
 	traverse(userOptions, null);
 
-	
 	let uo = {
 
 		searchBarUseOldStyle: $('#s_searchBarDefaultView').value === "text",
@@ -394,12 +393,12 @@ function _saveOptions(e) {
 			styleEl.parentNode.removeChild(styleEl);
 			
 			return styleText;
-		})(),
-
-		blockList: $('#blockList').value.split(/\r?\n/),
+		})()
 	};
 
 	merge(uo, userOptions);
+
+	userOptions.blockList = $('#blockList').value.split(/\r?\n/);
 
 	// prevent DeadObjects
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
