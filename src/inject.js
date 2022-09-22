@@ -169,7 +169,7 @@ function getContexts(el, e) {
 	if ( el.closest && el.closest('a')) contexts.push('link');
 	if ( getSelectedText(el)) contexts.push('selection');
 
-	if ( e && contexts.includes("link") && getLinkMethod(e) === 'text')
+	if ( e && contexts.includes("link") && getLinkMethod(e) === 'text' && el.closest && el.closest('a') && el.closest('a').innerText )
 		contexts.push("selection");
 
 	if ( !contexts.length )
@@ -178,7 +178,7 @@ function getContexts(el, e) {
 	if ( !contexts.length )
 		contexts.push('page');
 	
-	return contexts;
+	return [...new Set(contexts)];
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
