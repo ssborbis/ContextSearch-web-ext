@@ -696,7 +696,7 @@ async function notify(message, sender, sendResponse) {
 
 		case "copyRaw":
 
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.tab.frameId});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.frameId});
 			// return browser.tabs.executeScript(sender.tab.id, {
 			// 	code: "copyRaw()"
 			// });
