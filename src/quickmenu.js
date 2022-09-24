@@ -144,10 +144,6 @@ function setMenuSize(o) {
 	let tileSize = qm.getTileSize();
 
 	qm.style.minWidth = null;
-	
-	// prevent the menu from shriking below minimum columns width
-	if ( !qm.singleColumn && qm.columns < userOptions.quickMenuColumnsMinimum)
-		qm.style.minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) - (tileSize.width - tileSize.rectWidth) / 2 + "px";
 
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
@@ -163,6 +159,14 @@ function setMenuSize(o) {
 
 	document.documentElement.style.setProperty('--iframe-body-width',  qm.getBoundingClientRect().width + "px");
 	
+	// prevent the menu from shriking below minimum columns width
+	if ( !qm.singleColumn /*&& qm.columns < userOptions.quickMenuColumnsMinimum*/) {
+		let minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) - (tileSize.width - tileSize.rectWidth) / 2;
+		
+		if ( qm.getBoundingClientRect().width < minWidth )
+			qm.style.minWidth = minWidth + "px";
+	}
+
 	if ( !o.more && !o.move ) {
 		let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
 		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
@@ -180,6 +184,8 @@ function setMenuSize(o) {
 		// 	if ( c ) makeContainerMore(c, 1);
 		// })
 	}
+
+
 
 	//if ( !o.more ) makeContainerMore(toolBar, 1, false);
 
