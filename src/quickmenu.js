@@ -75,6 +75,66 @@ async function makeFrameContents() {
 
 	tileSlideInAnimation(.3, .15, .5);
 
+	document.addEventListener('click', e => alert('click'));
+
+}
+
+async function makeFolderContents(node) {
+	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
+
+	window.toolsHandler = () => null;
+
+	await makeQuickMenu({type: "quickmenu", contexts:qmo.contexts});
+
+	node.parent = true;
+	
+	qm = await quickMenuElementFromNodeTree(node, true);
+
+	// remove back button
+	qm.removeChild(qm.firstChild);
+
+	// fix layout
+	qm.removeBreaks();
+	qm.insertBreaks();
+
+	// remove everything 
+	document.querySelectorAll('BODY > DIV').forEach(el => el.parentNode.removeChild(el));
+
+	qm.querySelectorAll(".tile").forEach( tile => tile.style.minWidth = 0 );
+
+	document.body.appendChild(qm);
+
+	document.documentElement.addEventListener('mouseleave', e => {
+		browser.runtime.sendMessage({
+			action: "closeFolderWindow", 
+			sendMessageToTopFrame: true,
+			id: node.id
+		});
+	});
+
+	document.body.style.width = '9999px';
+	document.body.style.height = '9999px';
+
+	await browser.runtime.sendMessage({
+		action: "quickMenuIframeFolderLoaded", 
+		size: {
+			width: qm.getBoundingClientRect().width,
+			height: qm.getBoundingClientRect().height
+		},
+		resizeOnly: false,
+		tileSize: qm.getTileSize(),
+		tileCount: qm.querySelectorAll('.tile:not([data-hidden])').length,
+		columns: qm.columns,
+		singleColumn: qm.singleColumn,
+		sendMessageToTopFrame: true,
+		folder:JSON.parse(JSON.stringify(node))
+	});
+
+	document.body.style.width = null;
+	document.body.style.height = null;
+
+	document.body.style.height = '100vh';
+	document.body.style.overflowY = 'auto';
 }
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
@@ -89,8 +149,8 @@ function setMenuSize(o) {
 	qm.style.minWidth = null;
 	
 	// prevent the menu from shriking below minimum columns width
-	if ( !qm.singleColumn )
-		qm.style.minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) + "px";
+	if ( !qm.singleColumn && qm.columns < userOptions.quickMenuColumnsMinimum)
+		qm.style.minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) - (tileSize.width - tileSize.rectWidth) / 2 + "px";
 
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
@@ -331,6 +391,8 @@ function toolsHandler(o) {
 	
 document.addEventListener("DOMContentLoaded", async () => {
 
+	if ( window.location.hash === '#folder' ) return;
+
 	userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
 		
 	setTheme()
@@ -433,7 +495,16 @@ window.addEventListener('message', async e => {
 		case "openFolder":
 			qm = await quickMenuElementFromNodeTree(e.data.folder || userOptions.nodeTree);
 			resizeMenu({openFolder: true});
-			break;		
+			break;
+
+		case "openFolderNew":
+
+			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+
+			setTheme()
+				.then(setUserStyles)
+				.then(() => makeFolderContents(e.data.folder));
+			break;
 	}
 });
 

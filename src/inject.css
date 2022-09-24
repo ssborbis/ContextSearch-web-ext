@@ -1,4 +1,4 @@
-#CS_quickMenuIframe {
+.CS_quickMenuIframe {
 	all:unset;
 	position:fixed !important;
 	cursor: pointer;
@@ -6,7 +6,7 @@
 	padding: 0;
 	margin: 0;
 	border:1px solid #9abad2;
-	border-radius:10px; 
+	border-radius:10px;
 	font-weight:bold;
 	text-align:left;
 	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
@@ -20,13 +20,16 @@
 	background-color:transparent;
 	box-sizing: border-box;
 }
+.CS_quickMenuIframe {
+
+}
 #CS_quickMenuIframe[style*="--opening-opacity"] {
 	opacity:var(--opening-opacity);
 }
 #CS_quickMenuIframe:hover {
 	opacity:1;
 }
-#CS_quickMenuIframe.webkitBorderRadiusFix {
+.CS_quickMenuIframe.webkitBorderRadiusFix {
 	-webkit-mask-image: -webkit-radial-gradient(white, black);	
 	-webkit-backface-visibility: hidden;
 }

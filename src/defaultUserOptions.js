@@ -291,5 +291,6 @@ const defaultUserOptions = {
 	allowDeleteEnginesFromTileMenu: false,
 	saveMenuDisplayMode: true,
 	askToAddNewEngineToFirefox: true,
-	ignoreSearchRedirects: true
+	ignoreSearchRedirects: true,
+	quickMenuUseCascadingFolders: false
 };

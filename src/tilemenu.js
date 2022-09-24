@@ -2223,7 +2223,17 @@ function nodeToTile( node ) {
 
 				if (method === 'openFolder' || e.openFolder) { 
 				//	if ( !node.children.length ) return;
-					qm = await quickMenuElementFromNodeTree(tile.node);
+
+					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders) {
+						browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:"", searchTermsObject:{}, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+						// tile.addEventListener('mouseleave', e => {
+						// 	setTimeout(() => {
+						// 		window.parent.postMessage({action:"leaveOpenFolderTile"});
+						// 	}, 500);
+						// }, {once: true})
+					}
+					else
+						qm = await quickMenuElementFromNodeTree(tile.node);
 					setDraggable();	
 					return resizeMenu({openFolder: true});
 				}
