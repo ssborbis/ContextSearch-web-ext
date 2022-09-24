@@ -303,8 +303,7 @@ function repositionOffscreenElement( element, padding ) {
 	
 	// element.style.display = originalDisplay;
 
-
-	element.style.transition = 'all .15s';
+	// element.style.transition = 'all .15s';
 	
 	let rect = element.getBoundingClientRect();
 	
