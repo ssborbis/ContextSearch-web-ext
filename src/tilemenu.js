@@ -189,7 +189,7 @@ function getOpenMethod(e, isFolder) {
 	let sa = getSearchAction(e, isFolder);
 	if ( sa ) return sa.action;
 
-	console.error('no searchAction found', e);
+	//console.error('no searchAction found', e);
 	
 	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
 	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
@@ -1217,7 +1217,7 @@ function makeSearchBar() {
 	
 	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
-		if ( qmo && (qmo.searchTerms || qmo.searchTermsObject.selection ))
+		if ( qmo && (qmo.searchTerms || ( qmo.searchTermsObject && qmo.searchTermsObject.selection ) ))
 			setTimeout(() => sb.set(qmo.searchTerms || qmo.searchTermsObject.selection), 10);
 		else displayLastSearchTerms();
 	}, () => {
@@ -2664,6 +2664,8 @@ function setLayoutOrder(arr) {
 		arr = arr.split(",").map(id => id.trim());
 
 	arr.forEach(id => {
+
+		if ( !id ) return;
 
 		let hidden = false;
 		if ( id[0] === '!' ) {
