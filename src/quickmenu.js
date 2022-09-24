@@ -74,9 +74,6 @@ async function makeFrameContents() {
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	tileSlideInAnimation(.3, .15, .5);
-
-	document.addEventListener('click', e => alert('click'));
-
 }
 
 async function makeFolderContents(node) {
