@@ -2213,7 +2213,8 @@ function nodeToTile( node ) {
 
 			tile.addEventListener('openFolder', openFolder);
 
-			addOpenFolderOnHover(tile);
+			// delay to prevent newly opened menus triggering
+			setTimeout(() => addOpenFolderOnHover(tile), 250);
 				
 			async function openFolder(e) {
 
