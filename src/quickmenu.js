@@ -189,7 +189,7 @@ function setMenuSize(o) {
 
 	//if ( !o.more ) makeContainerMore(toolBar, 1, false);
 
-	let allOtherElsHeight = getAllOtherHeights();
+	let allOtherElsHeight = getAllOtherHeights(true);
 
 	if ( o.lockResize )
 		qm.style.height = currentHeight;
@@ -391,17 +391,6 @@ function toolsHandler(o) {
 		unhideTile(moreTile);
 	}
 }
-	
-document.addEventListener("DOMContentLoaded", async () => {
-
-	if ( window.location.hash === '#folder' ) return;
-
-	userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
-		
-	setTheme()
-		.then(setUserStyles)
-		.then(makeFrameContents);
-});
 
 // prevent context menu when using right-hold
 function preventContextMenu(e) { if ( e.which === 3 ) e.preventDefault(); }		
@@ -507,6 +496,14 @@ window.addEventListener('message', async e => {
 			setTheme()
 				.then(setUserStyles)
 				.then(() => makeFolderContents(e.data.folder));
+			break;
+
+		case "openMenu":
+			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+		
+			setTheme()
+				.then(setUserStyles)
+				.then(makeFrameContents);
 			break;
 	}
 });

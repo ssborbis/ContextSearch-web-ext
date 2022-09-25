@@ -184,6 +184,10 @@ function makeQuickMenuContainer(coords) {
 	
 	getShadowRoot().appendChild(qmc);
 
+	qmc.onload = function() {
+		qmc.contentWindow.postMessage({action: "openMenu", windowSize: {width: window.innerWidth, height:window.innerHeight}}, browser.runtime.getURL('/quickmenu.html'));
+	}
+
 	qmc.src = browser.runtime.getURL('quickmenu.html');
 
 	// Check if quickmenu fails to display
@@ -197,6 +201,8 @@ function makeQuickMenuContainer(coords) {
 
 	addUnderDiv();
 }
+
+const getBorderWidth = (iframe) => parseFloat(window.getComputedStyle(iframe, null).getPropertyValue('border-width'));
 
 function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
 
@@ -219,10 +225,10 @@ function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
 	getShadowRoot().appendChild(qmc);
 
 	qmc.onload = function() {
-		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder}, browser.runtime.getURL('/quickmenu.html'));
+		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder, windowSize: {width: window.innerWidth, height:window.innerHeight}}, browser.runtime.getURL('/quickmenu.html'));
 	}
 
-	qmc.src = browser.runtime.getURL('quickmenu.html#folder');
+	qmc.src = browser.runtime.getURL('quickmenu.html');
 }
 
 // Listen for ESC and close Quick Menu
@@ -861,7 +867,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 					if ( parentFrame ) {
 						y = parentFrame.getBoundingClientRect().top + message.top / window.devicePixelRatio * userOptions.quickMenuScale;
-						x = parentFrame.getBoundingClientRect().right;				
+						x = parentFrame.getBoundingClientRect().right;		
 					}
 
 					// close other open child frames of parentId
@@ -920,10 +926,20 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					qmc.style.top = qmc.openingCoords.y + "px";
 					qmc.style.opacity = 1;
 
-					let borderWidth = parseFloat(window.getComputedStyle(qmc, null).getPropertyValue('border-width'));
+					let borderWidth = getBorderWidth(qmc);
 
 					qmc.style.width = message.size.width + borderWidth*2 + "px";
 					qmc.style.height = Math.min(message.size.height + borderWidth * 2, window.innerHeight * window.devicePixelRatio / userOptions.quickMenuScale) + "px";
+
+					let parentFrame = getShadowRoot().getElementById(qmc.getAttribute("parentFrameId")) || getQM();
+
+					let pfr = parentFrame.getBoundingClientRect();
+					let qmr = qmc.getBoundingClientRect();
+
+					if ( parentFrame && window.innerWidth - pfr.right < qmr.width ) {
+						qmc.style.left = pfr.left - qmr.width + "px";
+
+					}
 
 					setTimeout(() => repositionOffscreenElement(qmc), 2);
 
@@ -947,7 +963,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
-				let borderWidth = parseFloat(window.getComputedStyle(qmc, null).getPropertyValue('border-width'));
+				let borderWidth = getBorderWidth(qmc);
 
 				let initialOffsets = getQuickMenuOpeningPosition({
 					width: message.size.width,
