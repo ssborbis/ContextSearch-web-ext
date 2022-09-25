@@ -107,6 +107,10 @@
     "message": "Nombre maximum d’icônes par ligne (vue grille)"
   },
 
+  "ColumnsMinimumTooltip": {
+    "message": "Nombre minimum d’icônes par ligne (vue grille))"
+  },
+  
   "Items": {
     "message": "Éléments"
   },
