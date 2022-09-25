@@ -859,6 +859,8 @@ async function makeQuickMenu(options) {
 		};
 		
 		qm.setDisplay = () => {
+			qm.classList.toggle("singleColumn", qm.singleColumn);
+			qm.style.setProperty('--single-column-width', "300px");
 			qm.querySelectorAll('.tile').forEach( _tile => {
 				let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
 				_tile.classList.toggle("singleColumn", _sc);
