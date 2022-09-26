@@ -592,9 +592,9 @@ const QMtools = [
 			setDraggable();
 
 			setToolLockedState(this.tool || this, window.editMode);
-			resizeMenu();
+			resizeMenu({openFolder: true});
 
-			setTimeout(() => resizeMenu({more: true}), 250);
+		//	setTimeout(() => resizeMenu({more: true}), 250);
 
 			if ( !o.forceOff && !o.forceOn ) browser.runtime.sendMessage({action: "editQuickMenu"});
 			

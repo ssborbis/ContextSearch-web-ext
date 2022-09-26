@@ -30,6 +30,7 @@ var aeb = document.getElementById('addEngineBar');
 var ctb = document.getElementById('contextsBar');
 
 var type;
+var singleColumn;
 
 // track if tiles can be moved
 window.tilesDraggable = false;
@@ -235,20 +236,142 @@ function keepMenuOpen(e, isFolder) {
 		return true;
 }
 
+function getColumns() {
+	if (type === 'searchbar') return userOptions.searchBarColumns;
+	if (type === 'sidebar') return userOptions.sideBar.columns;
+	if (type === 'quickmenu') return userOptions.quickMenuColumns;
+}
+
+function createToolsArray() {
+	
+	let toolsArray = [];
+
+	// iterate over tools
+	userOptions.quickMenuTools.forEach( tool => {
+
+		// skip disabled tools
+		if (tool.disabled) return;
+		
+		let _tool = QMtools.find( t => t.name === tool.name );
+		if ( _tool ) {
+			
+			toolsArray.push(_tool.init());
+		
+			toolsArray[toolsArray.length - 1].context = _tool.context;
+			toolsArray[toolsArray.length - 1].tool = _tool;
+		}
+
+	});
+
+	toolsArray.forEach( tool => {
+		tool.dataset.type = 'tool';
+		tool.dataset.title = tool.title;
+		tool.dataset.name = tool.tool.name;
+		tool.classList.add('tile');
+
+		if ( tool.context && !tool.context.includes(type) ) {
+			tool.disabled = true;
+			tool.dataset.disabled = true;
+		}
+	});
+
+	// add drop text handler
+	toolsArray.forEach( tool => {
+		tool.addEventListener('drop', e => {
+			let text = e.dataTransfer.getData("text");
+			if ( !text ) return;
+
+			sb.set(text);
+			tool.dispatchEvent(new MouseEvent('mousedown'));
+			tool.dispatchEvent(new MouseEvent('mouseup'));
+		});
+	});
+
+	let getDragDiv = () => {return document.getElementById('dragDiv')};
+	let isTool = e => e.dataTransfer.getData("tool") === "true";
+	
+	toolsArray.forEach( tool => {
+		
+		tool.setAttribute('draggable', window.tilesDraggable);
+
+		tool.addEventListener('dragstart', e => {
+
+			if ( !window.tilesDraggable ) return false;
+
+			e.dataTransfer.setData("tool", "true");
+			let img = new Image();
+			img.src = browser.runtime.getURL('icons/transparent.gif');
+			e.dataTransfer.setDragImage(img, 0, 0);
+			tool.id = 'dragDiv';
+			
+			qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
+		});
+		tool.addEventListener('dragenter', e => {
+			e.preventDefault();
+			if ( !isTool(e) ) return;
+		});
+		tool.addEventListener('dragover', e => {
+			e.preventDefault();
+			
+			if ( !isTool(e) ) return;
+		});
+		tool.addEventListener('dragend', e => {
+			qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
+			if ( getDragDiv() ) getDragDiv().id = null;
+		});
+		tool.addEventListener('drop', async e => {	
+			e.preventDefault();
+			
+			if ( !isTool(e) ) return;
+			
+			let side = getSide(tool, e);
+			
+			let qmt = userOptions.quickMenuTools;
+			
+			dragName = getDragDiv().tool.name;
+			targetName = e.target.tool.name;
+			
+			dragIndex = qmt.findIndex( t => t.name === dragName );
+			targetIndex = qmt.findIndex( t => t.name === targetName );
+
+			if ( side === "before" ) {
+				qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
+				e.target.parentNode.insertBefore(getDragDiv(), e.target);
+			}
+			else {
+				qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
+				e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
+			}
+			
+			saveUserOptions();
+		
+			// rebuild menu
+			// toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
+			// qm.toolsArray = createToolsArray();
+		//	toolsHandler();
+
+		//	qm.expandMoreTiles();
+
+		//	resizeMenu({tileDrop: true});
+
+		//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
+
+		});
+	});
+	
+	toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
+
+	return toolsArray;
+}
+
 async function makeQuickMenu(options) {
 
 	type = options.type;
 
-	let singleColumn = options.singleColumn;
+	singleColumn = options.singleColumn;
 	
 	let columns = singleColumn ? 1 : getColumns();
-	
-	function getColumns() {
-		if (type === 'searchbar') return userOptions.searchBarColumns;
-		if (type === 'sidebar') return userOptions.sideBar.columns;
-		if (type === 'quickmenu') return userOptions.quickMenuColumns;
-	}
-	
+		
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
 
@@ -291,6 +414,7 @@ async function makeQuickMenu(options) {
 		quickMenuObject.searchTerms = sb.value;
 		quickMenuObject.searchTermsObject.selection = sb.value;
 	//	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+	//	browser.runtime.sendMessage({action: "updateQuickMenuObject", quickMenuObject: quickMenuObject});
 	});
 
 	sb.addEventListener('keydown', e => {
@@ -308,13 +432,29 @@ async function makeQuickMenu(options) {
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 	
 	qm.toggleDisplayMode = async() => {
+		// qm.rootNode.displayType = function() {
+		// 	if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
+		// 	if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
+		// 	return "";
+		// }();
+
 		qm.rootNode.displayType = function() {
 			if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
 			if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
 			return "";
 		}();
+
+		if ( qm.rootNode.id === userOptions.nodeTree.id ) {	
+	
+			if ( qm.type === "quickmenu")
+				userOptions.quickMenuUseOldStyle = qm.rootNode.displayType === "text";
+
+			if ( qm.type === "searchbar")
+				userOptions.searchBarUseOldStyle = qm.rootNode.displayType === "text";
+		}
 		
 		if ( userOptions.saveMenuDisplayMode ) {
+
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
 			saveUserOptions();
 		}
@@ -595,128 +735,6 @@ async function makeQuickMenu(options) {
 			return false;
 		});
 	});
-
-	function createToolsArray() {
-	
-		let toolsArray = [];
-
-		// iterate over tools
-		userOptions.quickMenuTools.forEach( tool => {
-
-			// skip disabled tools
-			if (tool.disabled) return;
-			
-			let _tool = QMtools.find( t => t.name === tool.name );
-			if ( _tool ) {
-				
-				toolsArray.push(_tool.init());
-			
-				toolsArray[toolsArray.length - 1].context = _tool.context;
-				toolsArray[toolsArray.length - 1].tool = _tool;
-			}
-
-		});
-
-		toolsArray.forEach( tool => {
-			tool.dataset.type = 'tool';
-			tool.dataset.title = tool.title;
-			tool.dataset.name = tool.tool.name;
-			tool.classList.add('tile');
-
-			if ( tool.context && !tool.context.includes(type) ) {
-				tool.disabled = true;
-				tool.dataset.disabled = true;
-			}
-		});
-
-		// add drop text handler
-		toolsArray.forEach( tool => {
-			tool.addEventListener('drop', e => {
-				let text = e.dataTransfer.getData("text");
-				if ( !text ) return;
-
-				sb.set(text);
-				tool.dispatchEvent(new MouseEvent('mousedown'));
-				tool.dispatchEvent(new MouseEvent('mouseup'));
-			});
-		});
-
-		let getDragDiv = () => {return document.getElementById('dragDiv')};
-		let isTool = e => e.dataTransfer.getData("tool") === "true";
-		
-		toolsArray.forEach( tool => {
-			
-			tool.setAttribute('draggable', window.tilesDraggable);
-
-			tool.addEventListener('dragstart', e => {
-
-				if ( !window.tilesDraggable ) return false;
-
-				e.dataTransfer.setData("tool", "true");
-				let img = new Image();
-				img.src = browser.runtime.getURL('icons/transparent.gif');
-				e.dataTransfer.setDragImage(img, 0, 0);
-				tool.id = 'dragDiv';
-				
-				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
-			});
-			tool.addEventListener('dragenter', e => {
-				e.preventDefault();
-				if ( !isTool(e) ) return;
-			});
-			tool.addEventListener('dragover', e => {
-				e.preventDefault();
-				
-				if ( !isTool(e) ) return;
-			});
-			tool.addEventListener('dragend', e => {
-				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
-				if ( getDragDiv() ) getDragDiv().id = null;
-			});
-			tool.addEventListener('drop', async e => {	
-				e.preventDefault();
-				
-				if ( !isTool(e) ) return;
-				
-				let side = getSide(tool, e);
-				
-				let qmt = userOptions.quickMenuTools;
-				
-				dragName = getDragDiv().tool.name;
-				targetName = e.target.tool.name;
-				
-				dragIndex = qmt.findIndex( t => t.name === dragName );
-				targetIndex = qmt.findIndex( t => t.name === targetName );
-
-				if ( side === "before" ) {
-					qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
-					e.target.parentNode.insertBefore(getDragDiv(), e.target);
-				}
-				else {
-					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
-					e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
-				}
-				
-				saveUserOptions();
-			
-				// rebuild menu
-				// toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
-				// qm.toolsArray = createToolsArray();
-			//	toolsHandler();
-
-			//	qm.expandMoreTiles();
-
-			//	resizeMenu({tileDrop: true});
-
-			//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
-
-			});
-		});
-		
-		toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
-
-		return toolsArray;
-	}
 	
 	qm.toolsArray = createToolsArray();
 
@@ -799,200 +817,231 @@ async function makeQuickMenu(options) {
 		return qm.querySelectorAll('br').length;
 
 	}
+
+	let root = JSON.parse(JSON.stringify(options.node || userOptions.nodeTree));
+
+	window.root = root;
+	quickMenuObject.contexts = options.contexts || [];
+
+	setParents(root);
+
+	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
-	function buildQuickMenuElement(options) {
+	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
+		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
 		
-		let _singleColumn = options.forceSingleColumn || options.node.displayType === "text" || singleColumn;
-		
-		if ( options.node.displayType === "grid" ) _singleColumn = false;
-		
-		let _columns = _singleColumn ? 1 : getColumns();
-	
-		let tileArray = options.tileArray;
-
-		qm.innerHTML = null;
-
-		// initialize slide-in animation
-		qm.style.position = 'relative';
-		qm.style.visibility = 'hidden';
-		qm.style.transition = 'none';
-		qm.style.pointerEvents = 'none';
-		
-		qm.columns = _columns;
-	
-		// remove separators if using grid
-		if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
-	
-		qm.singleColumn = _singleColumn;
-			
-		// make rows / columns
-		tileArray.forEach( tile => {
-			
-			tile.classList.add('tile');
-
-			tile.classList.toggle("singleColumn", _singleColumn);
-			
-			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
-				
-				if ( tile.node.icon )
-					tile.dataset.hasicon = 'true'; // removes pseudo element label set by content:attr(data-title) in tilemenu.css 
-				else
-					tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
-			}
-
-			qm.appendChild(tile);
-		});
-
-		qm.getTileSize = () => { 
-
-			let div = document.createElement('div');
-			div.className = "tile";
-			
-			div.classList.toggle('singleColumn', qm.singleColumn );
-			qm.appendChild(div);
-
-			let size = getFullElementSize(div);
-			
-			qm.removeChild(div);
-
-			return size;
-		};
-		
-		qm.setDisplay = () => {
-			qm.classList.toggle("singleColumn", qm.singleColumn);
-			qm.style.setProperty('--single-column-width', "300px");
-			qm.querySelectorAll('.tile').forEach( _tile => {
-				let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
-				_tile.classList.toggle("singleColumn", _sc);
-			});
-		}
-
-		// check if any search engines exist and link to Options if none
-		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
-			var div = document.createElement('div');
-			div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-			div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
-			div.onclick = function() {
-				browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
-			}	
-			qm.appendChild(div);
-		}
-
-		// set min-width to prevent menu shrinking with smaller folders
-		qm.setMinWidth = () => qm.style.minWidth = qm.columns * qm.getTileSize().noBorderWidth + "px";
-		
-		// slide-in animation
-		if ( !userOptions.enableAnimations ) qm.style.setProperty('--user-transition', 'none');
-		qm.style.left = qm.getBoundingClientRect().width * ( options.reverse ? -1 : 1 ) + "px";
-		void( qm.offsetHeight );
-		qm.style.transition = null;
-		qm.style.visibility = null;
-		qm.style.left = '0px';
-
-		runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
-				
-		function isTool(e) {
-			return ( e.dataTransfer.getData("tool") === "true" );
-		}
-
-		(() => {
-
-			if ( qm.rootNode.parent ) return;
-			let specialFolderNodes = [];
-
-			if ( userOptions.quickMenuShowRecentlyUsed )
-				specialFolderNodes.push(recentlyUsedListToFolder());
-
-			if ( userOptions.quickMenuRegexMatchedEngines )
-				specialFolderNodes.push(matchingEnginesToFolder(quickMenuObject.searchTerms));
-
-			specialFolderNodes.forEach( folder => {
-				folder.displayType = qm.rootNode.displayType;
-
-				let _tile = nodeToTile( folder );
-				_tile.node.displayType = qm.rootNode.displayType;
-				// _tile.node.groupFolder = 'block';
-				_tile.classList.add('tile');
-				_tile.dataset.hasicon = 'true';
-				_tile.dataset.undraggable = true;
-				_tile.dataset.undroppable = true;
-
-				tileArray.unshift(_tile);
-				qm.insertBefore(_tile, qm.firstChild);
-			});
-		})();
-
-		qm.setDisplay();
-
-		(() => { //formatGroupFolders()
-
-			let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' && t.node.parent === qm.rootNode );
-
-			groupFolders.forEach( gf => {
-
-				let g = makeGroupFolderFromTile(gf);
-				if ( !g ) return;
-
-				// make GROUP draggable
-				g.draggable = true;
-
-				qm.insertBefore(g, gf);
-				if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
-				else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
-
-				// bubbles the drag event for the inline root folder to the GROUP
-				gf.dataset.undraggable = true;
-
-				let footer = g.querySelector('.footer');
-
-				// display groups limited to a row count and change more tile style
-				if ( gf.node.groupFolder === "block") {
-
-					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit || Number.MAX_SAFE_INTEGER, qm.columns);
-					let moreTile = g.querySelector('[data-type="more"]');
-
-					if (moreTile) {
-						moreTile.parentNode.removeChild(moreTile);
-
-						footer.appendChild(moreTile);
-
-						moreTile.className = "groupMoreTile";
-					} else {
-						footer.parentNode.removeChild(footer);	
-					}
-				}
-			});
-		})();
-
-		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
-
-		qm.expandMoreTiles = () => {
-			let moreTiles = [...document.querySelectorAll('[data-type="more"], [data-type="less"]')];
-
-			moreLessStatus.forEach( id => {
-				let moreTile = moreTiles.find( div => div.dataset.parentid === id );				
-				if ( moreTile ) moreTile.more();
-			});
-		}
-		
-		toolsHandler();
-
-		qm.expandMoreTiles();
-
-		// enable tools on folder change
-		(() => {
-			for ( ts in toolStatuses ) {
-				if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
-					let _tile = QMtools.find(t => t.name == ts ).init();
-					_tile.action();
-				}
-			}
-		})();
-
-		return qm;
+		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
 	}
 
-	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+	return Promise.resolve(quickMenuElementFromNodeTree(root));
+	
+}
+
+function buildQuickMenuElement(options) {
+		
+	let _singleColumn = options.forceSingleColumn || options.node.displayType === "text" || singleColumn;
+	
+	if ( options.node.displayType === "grid" ) _singleColumn = false;
+	
+	let _columns = _singleColumn ? 1 : getColumns();
+
+	let tileArray = options.tileArray;
+
+	qm.innerHTML = null;
+
+	// initialize slide-in animation
+	qm.style.position = 'relative';
+	qm.style.visibility = 'hidden';
+	qm.style.transition = 'none';
+	qm.style.pointerEvents = 'none';
+	
+	qm.columns = _columns;
+
+	// remove separators if using grid
+	if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
+
+	qm.singleColumn = _singleColumn;
+		
+	// make rows / columns
+	tileArray.forEach( tile => {
+		
+		tile.classList.add('tile');
+
+		tile.classList.toggle("singleColumn", _singleColumn);
+		
+		if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
+			
+			if ( tile.node.icon )
+				tile.dataset.hasicon = 'true'; // removes pseudo element label set by content:attr(data-title) in tilemenu.css 
+			else
+				tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
+		}
+
+		qm.appendChild(tile);
+	});
+
+	qm.getTileSize = () => { 
+
+		let div = document.createElement('div');
+		div.className = "tile";
+		
+		div.classList.toggle('singleColumn', qm.singleColumn );
+		qm.appendChild(div);
+
+		let size = getFullElementSize(div);
+		
+		qm.removeChild(div);
+
+		return size;
+	};
+	
+	qm.setDisplay = () => {
+
+		// if ( qm.rootNode.id === userOptions.nodeTree.id ) {
+
+		// 	if ( qm.type === "quickmenu")
+		// 		qm.singleColumn = userOptions.quickMenuUseOldStyle;
+
+		// 	if ( qm.type === "searchbar")
+		// 		qm.singleColumn = userOptions.searchBarUseOldStyle;
+
+		// 	qm.rootNode.displayType = qm.singleColumn ? "text" : "grid";
+		// }
+
+		qm.classList.toggle("singleColumn", qm.singleColumn);
+		qm.style.setProperty('--single-column-width', "300px");
+		qm.querySelectorAll('.tile').forEach( _tile => {
+			let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
+			_tile.classList.toggle("singleColumn", _sc);
+		});
+	}
+
+	// check if any search engines exist and link to Options if none
+	if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
+		var div = document.createElement('div');
+		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
+		div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
+		div.onclick = function() {
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
+		}	
+		qm.appendChild(div);
+	}
+
+	// set min-width to prevent menu shrinking with smaller folders
+	qm.setMinWidth = () => qm.style.minWidth = qm.columns * qm.getTileSize().noBorderWidth + "px";
+	
+	// slide-in animation
+	if ( !userOptions.enableAnimations ) qm.style.setProperty('--user-transition', 'none');
+	qm.style.left = qm.getBoundingClientRect().width * ( options.reverse ? -1 : 1 ) + "px";
+	void( qm.offsetHeight );
+	qm.style.transition = null;
+	qm.style.visibility = null;
+	qm.style.left = '0px';
+
+	runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
+			
+	function isTool(e) {
+		return ( e.dataTransfer.getData("tool") === "true" );
+	}
+
+	(() => {
+
+		if ( qm.rootNode.parent ) return;
+		let specialFolderNodes = [];
+
+		if ( userOptions.quickMenuShowRecentlyUsed )
+			specialFolderNodes.push(recentlyUsedListToFolder());
+
+		if ( userOptions.quickMenuRegexMatchedEngines )
+			specialFolderNodes.push(matchingEnginesToFolder(quickMenuObject.searchTerms));
+
+		specialFolderNodes.forEach( folder => {
+			folder.displayType = qm.rootNode.displayType;
+
+			let _tile = nodeToTile( folder );
+			_tile.node.displayType = qm.rootNode.displayType;
+			// _tile.node.groupFolder = 'block';
+			_tile.classList.add('tile');
+			_tile.dataset.hasicon = 'true';
+			_tile.dataset.undraggable = true;
+			_tile.dataset.undroppable = true;
+
+			tileArray.unshift(_tile);
+			qm.insertBefore(_tile, qm.firstChild);
+		});
+	})();
+
+	qm.setDisplay();
+
+	(() => { //formatGroupFolders()
+
+		let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' && t.node.parent === qm.rootNode );
+
+		groupFolders.forEach( gf => {
+
+			let g = makeGroupFolderFromTile(gf);
+			if ( !g ) return;
+
+			// make GROUP draggable
+			g.draggable = true;
+
+			qm.insertBefore(g, gf);
+			if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
+			else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
+
+			// bubbles the drag event for the inline root folder to the GROUP
+			gf.dataset.undraggable = true;
+
+			let footer = g.querySelector('.footer');
+
+			// display groups limited to a row count and change more tile style
+			if ( gf.node.groupFolder === "block") {
+
+				makeContainerMore(g.querySelector('.container'), gf.node.groupLimit || Number.MAX_SAFE_INTEGER, qm.columns);
+				let moreTile = g.querySelector('[data-type="more"]');
+
+				if (moreTile) {
+					moreTile.parentNode.removeChild(moreTile);
+
+					footer.appendChild(moreTile);
+
+					moreTile.className = "groupMoreTile";
+				} else {
+					footer.parentNode.removeChild(footer);	
+				}
+			}
+		});
+	})();
+
+	qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
+
+	qm.expandMoreTiles = () => {
+		let moreTiles = [...document.querySelectorAll('[data-type="more"], [data-type="less"]')];
+
+		moreLessStatus.forEach( id => {
+			let moreTile = moreTiles.find( div => div.dataset.parentid === id );				
+			if ( moreTile ) moreTile.more();
+		});
+	}
+	
+	toolsHandler();
+
+	qm.expandMoreTiles();
+
+	// enable tools on folder change
+	(() => {
+		for ( ts in toolStatuses ) {
+			if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
+				let _tile = QMtools.find(t => t.name == ts ).init();
+				_tile.action();
+			}
+		}
+	})();
+
+	return qm;
+}
+
+async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
 		qm.contexts = quickMenuObject.contexts;
 		qm.contextualLayout = false;
@@ -1132,27 +1181,6 @@ async function makeQuickMenu(options) {
 
 		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
 	}
-	
-	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
-
-	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
-
-	window.root = root;
-	quickMenuObject.contexts = options.contexts || [];
-
-	setParents(root);
-
-	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
-	
-	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
-		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
-		
-		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
-	}
-
-	return Promise.resolve(quickMenuElementFromNodeTree(root));
-	
-}
 
 async function getSuggestions(terms) {
 
@@ -2048,7 +2076,8 @@ document.addEventListener('drop', e => {
 			await sh_tile.action();
 
 			setDraggable();
-			resizeMenu({tileDrop: true});
+			resizeMenu({tileDrop: true, openFolder: true});
+
 		})();
 	}
 
@@ -2228,7 +2257,7 @@ function nodeToTile( node ) {
 				//	if ( !node.children.length ) return;
 
 					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders) {
-						browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:"", searchTermsObject:{}, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+						browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
 						// tile.addEventListener('mouseleave', e => {
 						// 	setTimeout(() => {
 						// 		window.parent.postMessage({action:"leaveOpenFolderTile"});
