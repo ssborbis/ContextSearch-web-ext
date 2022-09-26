@@ -1564,7 +1564,11 @@ function openFolderTimer(el, ms) {
 
 function addOpenFolderOnHover(_tile, ms) {
 
-	if ( !userOptions.openFoldersOnHoverTimeout && !ms) return;
+	// force hover when cascading
+	if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders )
+		ms = 50;
+
+	if ( !userOptions.openFoldersOnHoverTimeout && !ms ) return;
 
 	_tile.addEventListener('mouseenter', e => _tile.mouseOverFolderTimer = openFolderTimer(_tile, ms));
 
@@ -2258,11 +2262,6 @@ function nodeToTile( node ) {
 
 					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders) {
 						browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
-						// tile.addEventListener('mouseleave', e => {
-						// 	setTimeout(() => {
-						// 		window.parent.postMessage({action:"leaveOpenFolderTile"});
-						// 	}, 500);
-						// }, {once: true})
 					}
 					else
 						qm = await quickMenuElementFromNodeTree(tile.node);
