@@ -79,9 +79,16 @@ async function makeFrameContents() {
 async function makeFolderContents(node) {
 	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
 
+	quickMenuObject = qmo;
+
 	window.toolsHandler = () => null;
 
-	await makeQuickMenu({type: "quickmenu", contexts:qmo.contexts});
+	let _singleColumn = node.displayType === "text" || userOptions.quickMenuUseOldStyle;
+
+	await makeQuickMenu({type: "quickmenu", contexts:qmo.contexts, singleColumn: _singleColumn, node: node});
+
+	// remove everything
+	document.querySelectorAll('BODY > DIV').forEach(el => el.parentNode.removeChild(el));
 
 	node.parent = true;
 	
@@ -94,12 +101,9 @@ async function makeFolderContents(node) {
 	qm.removeBreaks();
 	qm.insertBreaks();
 
-	// remove everything 
-	document.querySelectorAll('BODY > DIV').forEach(el => el.parentNode.removeChild(el));
-
-	qm.querySelectorAll(".tile").forEach( tile => tile.style.minWidth = 0 );
-
 	document.body.appendChild(qm);
+
+	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
 	document.documentElement.addEventListener('mouseleave', e => {
 		browser.runtime.sendMessage({
