@@ -2524,8 +2524,7 @@ async function injectContentScripts(tab, frameId) {
 			"/dock.js",
 			"/inject_sidebar.js",
 			"/inject_customSearch.js",
-			"/resizeWidget.js"/*,
-			"/inject_speedDial.js"*/
+			"/resizeWidget.js"
 		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
 		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
 	}
