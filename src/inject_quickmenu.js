@@ -931,14 +931,13 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					qmc.style.width = message.size.width + borderWidth*2 + "px";
 					qmc.style.height = Math.min(message.size.height + borderWidth * 2, window.innerHeight * window.devicePixelRatio / userOptions.quickMenuScale) + "px";
 
+					// check for room to open the menu
 					let parentFrame = getShadowRoot().getElementById(qmc.getAttribute("parentFrameId")) || getQM();
-
 					let pfr = parentFrame.getBoundingClientRect();
 					let qmr = qmc.getBoundingClientRect();
 
-					if ( parentFrame && window.innerWidth - pfr.right < qmr.width ) {
+					if ( parentFrame && pfr.left > window.innerWidth - pfr.right && window.innerWidth - pfr.right < qmr.width ) {
 						qmc.style.left = pfr.left - qmr.width + "px";
-
 					}
 
 					setTimeout(() => repositionOffscreenElement(qmc), 2);
