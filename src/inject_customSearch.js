@@ -62,7 +62,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				var iframe = document.createElement('iframe');
 				iframe.id = "CS_customSearchIframe";
 				
-				if (document.getElementById(iframe.id)) return;
+				if (getShadowRoot().getElementById(iframe.id)) return;
 				
 				iframe.src = browser.runtime.getURL('/customSearch.html');
 				
