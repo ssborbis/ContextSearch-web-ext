@@ -109,14 +109,14 @@ async function makeFolderContents(node) {
 		});
 	});
 
-	document.body.style.width = '9999px';
-	document.body.style.height = '9999px';
+	document.body.style.width = 'auto';
+	document.body.style.height = 'auto';
 
 	await browser.runtime.sendMessage({
 		action: "quickMenuIframeFolderLoaded", 
 		size: {
 			width: qm.getBoundingClientRect().width,
-			height: qm.getBoundingClientRect().height
+			height: document.body.getBoundingClientRect().height,//qm.getBoundingClientRect().height
 		},
 		resizeOnly: false,
 		tileSize: qm.getTileSize(),
@@ -143,18 +143,17 @@ function setMenuSize(o) {
 
 	let tileSize = qm.getTileSize();
 
-	qm.style.minWidth = null;
-
 	qm.style.transition = 'none';
 	document.body.style.transition = 'none';
 	let rows = qm.insertBreaks();
 
 	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
 
+	qm.style.minWidth = null;
 	qm.style.height = null;
 	qm.style.overflow = null;
 	qm.style.width = null;
-	document.body.style.width = '9999px';
+	document.body.style.width = 'auto';
 	document.body.style.height = maxHeight + "px";
 
 	document.documentElement.style.setProperty('--iframe-body-width',  qm.getBoundingClientRect().width + "px");
@@ -184,8 +183,6 @@ function setMenuSize(o) {
 		// 	if ( c ) makeContainerMore(c, 1);
 		// })
 	}
-
-
 
 	//if ( !o.more ) makeContainerMore(toolBar, 1, false);
 
@@ -425,6 +422,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				// send event to OpenAsLink tile to enable/disable
 				document.dispatchEvent(new CustomEvent('updatesearchterms'));
+
 				break;
 				
 			case "focusSearchBar":

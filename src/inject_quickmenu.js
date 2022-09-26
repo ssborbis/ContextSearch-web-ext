@@ -754,10 +754,9 @@ document.addEventListener('closequickmenu', () => {
 // close quickmenu when clicking anywhere on page
 document.addEventListener("click", e => {
 
-	if ( getQM() && getQM().classList.contains('CS_resizing') ) {
-		browser.runtime.sendMessage({action: "editQuickMenu"});
+	// do nothing if editing
+	if ( getShadowRoot().querySelector(".CS_overDiv.editQuickMenu") )
 		return;
-	}
 
 	if (Date.now() - quickMenuObject.mouseLastClickTime < 100) return;
 	
@@ -835,10 +834,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;				
 				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
 
-				quickMenuObject.searchTerms = message.searchTerms;
+				quickMenuObject.searchTerms = message.searchTerms || "";
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
-				quickMenuObject.contexts = message.contexts;
-				quickMenuObject.searchTermsObject = message.searchTermsObject;
+				quickMenuObject.contexts = message.contexts || [];
+				quickMenuObject.searchTermsObject = message.searchTermsObject || {};
 
 				// keep old menu if locked
 				if ( quickMenuObject.locked && getQM() ) {
@@ -983,6 +982,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						bottom: Number.MAX_SAFE_INTEGER 
 					},
 					onUndock: o => {
+
 						if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 						
 						qmc.contentWindow.postMessage({action: "resizeMenu", options: {move: true, maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
@@ -1069,6 +1069,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				overDiv.className = "CS_overDiv editQuickMenu";
 				getShadowRoot().appendChild(overDiv);
 
+				overDiv.addEventListener('click', e => {
+					browser.runtime.sendMessage({action: "editQuickMenu"});
+				})
+
 				document.addEventListener('closequickmenu', removeOverDiv, {once: true});
 				installResizeWidget();
 
@@ -1103,8 +1107,16 @@ function installResizeWidget() {
 		onDragStart: o => {
 			iframe.docking.translatePosition('top', 'left');
 			originalRect = iframe.getBoundingClientRect();
+
+			document.addEventListener('click', e => {
+				e.preventDefault();
+				e.stopPropagation();
+			}, {once: true})
+
 		},
 		onDrag: o => {
+
+			iframe.classList.add('CS_resizing');
 
 			resizeWidget.style.visibility = 'hidden';
 
@@ -1126,10 +1138,12 @@ function installResizeWidget() {
 					userOptions.quickMenuRowsSingleColumn = o.rows;
 			}
 
-			// // rebuild menu with new dimensions
+			// rebuild menu with new dimensions
 			iframe.contentWindow.postMessage({action: "rebuildQuickMenu", userOptions: userOptions, columns:o.columns, rows:o.rows, rect: iframe.getBoundingClientRect(), devicePixelRatio: window.devicePixelRatio}, browser.runtime.getURL('/quickmenu.html'));
 		},
 		onDrop: o => {
+
+			iframe.classList.remove('CS_resizing');
 
 			resizeWidget.style.visibility = null;
 			
@@ -1137,7 +1151,7 @@ function installResizeWidget() {
 			iframe.docking.options.lastOffsets = iframe.docking.getOffsets();
 
 			// resize the menu again to shrink empty rows					
-			iframe.contentWindow.postMessage({action: "resizeMenu", options: {maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
+			iframe.contentWindow.postMessage({action: "resizeMenu", options: {openFolder:true, maxHeight: getMaxIframeHeight(), rebuildTools: true}}, browser.runtime.getURL('/quickmenu.html'));
 			
 			// reset the fixed quadrant
 			runAtTransitionEnd(iframe, ["height", "width"], () => {
@@ -1153,7 +1167,7 @@ function installResizeWidget() {
 	});
 
 //	resizeWidget.style.opacity = 1;
-	iframe.classList.add('CS_resizing');
+	
 	resizeWidget.classList.add("editQuickMenu");
 	
 	// hide the widget until the menu is done transitioning
@@ -1176,7 +1190,7 @@ function removeResizeWidget() {
 
 	if (qmc.resizeWidget) {
 		qmc.resizeWidget.parentNode.removeChild(qmc.resizeWidget);
-		qmc.classList.remove('CS_resizing');
+//		qmc.classList.remove('CS_resizing');
 		delete qmc.resizeWidget;
 	}
 }

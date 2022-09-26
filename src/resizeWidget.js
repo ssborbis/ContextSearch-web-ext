@@ -125,6 +125,10 @@ function addResizeWidget(el, options) {
 				el.style.zIndex = null;
 				
 				resizeWidget.style.transition = null;
+
+				if ( o.columns < 1 ) {
+					o.columns = Math.floor(el.getBoundingClientRect() * window.devicePixelRatio / o.tileSize.width);
+				}
 				
 				o.onDrop(o);
 				
