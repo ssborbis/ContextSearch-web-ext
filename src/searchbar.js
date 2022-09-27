@@ -30,7 +30,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	makeSearchBar();
 	makeAddEngineBar();
 
-	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
+	let singleColumn = window == top ? userOptions.searchBarDefaultView === 'text' : userOptions.sideBar.singleColumn;
 
 	await setTheme();
 	await setUserStyles();

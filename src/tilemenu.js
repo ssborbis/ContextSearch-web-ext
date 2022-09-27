@@ -432,28 +432,16 @@ async function makeQuickMenu(options) {
 	csb.title = browser.i18n.getMessage('delete').toLowerCase();
 	
 	qm.toggleDisplayMode = async() => {
-		// qm.rootNode.displayType = function() {
-		// 	if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
-		// 	if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
-		// 	return "";
-		// }();
 
-		qm.rootNode.displayType = function() {
-			if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
-			if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
-			return "";
-		}();
-
-		if ( qm.rootNode.id === userOptions.nodeTree.id ) {	
-	
-			if ( qm.type === "quickmenu")
-				userOptions.quickMenuUseOldStyle = qm.rootNode.displayType === "text";
-
-			if ( qm.type === "searchbar")
-				userOptions.searchBarUseOldStyle = qm.rootNode.displayType === "text";
-		}
+		qm.rootNode.displayType = qm.singleColumn ? "grid" : "text";
 		
 		if ( userOptions.saveMenuDisplayMode ) {
+
+			if ( type === "quickmenu" && userOptions.nodeTree.id === qm.rootNode.id )
+				userOptions.quickMenuDefaultView = qm.rootNode.displayType || "grid";
+
+			if ( type === "searchbar" && userOptions.nodeTree.id === qm.rootNode.id)
+				userOptions.searchBarDefaultView = qm.rootNode.displayType || "grid";
 
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
 			saveUserOptions();
@@ -825,6 +813,12 @@ async function makeQuickMenu(options) {
 
 	setParents(root);
 
+	// reset the view based on menu
+	if ( type === 'quickmenu' )
+		root.displayType = userOptions.quickMenuDefaultView;
+	if ( type === 'searchbar' )
+		root.displayType = userOptions.searchBarDefaultView;
+
 	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
 	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
@@ -867,7 +861,7 @@ function buildQuickMenuElement(options) {
 		
 		tile.classList.add('tile');
 
-		tile.classList.toggle("singleColumn", _singleColumn);
+	//	tile.classList.toggle("singleColumn", _singleColumn);
 		
 		if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
 			
@@ -897,22 +891,13 @@ function buildQuickMenuElement(options) {
 	
 	qm.setDisplay = () => {
 
-		// if ( qm.rootNode.id === userOptions.nodeTree.id ) {
-
-		// 	if ( qm.type === "quickmenu")
-		// 		qm.singleColumn = userOptions.quickMenuUseOldStyle;
-
-		// 	if ( qm.type === "searchbar")
-		// 		qm.singleColumn = userOptions.searchBarUseOldStyle;
-
-		// 	qm.rootNode.displayType = qm.singleColumn ? "text" : "grid";
-		// }
-
 		qm.classList.toggle("singleColumn", qm.singleColumn);
-		qm.style.setProperty('--single-column-width', "300px");
+		document.documentElement.style.setProperty('--single-column-width', "300px");
 		qm.querySelectorAll('.tile').forEach( _tile => {
-			let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
-			_tile.classList.toggle("singleColumn", _sc);
+			// let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
+			// _tile.classList.toggle("singleColumn", _sc);
+			_tile.classList.toggle("singleColumn", qm.singleColumn);
+
 		});
 	}
 
@@ -940,11 +925,10 @@ function buildQuickMenuElement(options) {
 
 	runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
 			
-	function isTool(e) {
-		return ( e.dataTransfer.getData("tool") === "true" );
-	}
+	const isTool = e => e.dataTransfer.getData("tool") === "true";
+	
 
-	(() => {
+	(() => { // set up special folders ( recent / regex )
 
 		if ( qm.rootNode.parent ) return;
 		let specialFolderNodes = [];
@@ -1121,12 +1105,15 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 			qm.back = _back;
 			
 			async function _back(e) {
-
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
+				
 				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
 				setDraggable();	
 				qm.expandMoreTiles();
-				resizeMenu({openFolder: true});
+
+				resizeMenu({openFolder: true})
+
+				runAtTransitionEnd(qm, "left", () => resizeMenu({openFolder: true}), 100);
 			}
 						
 			delete sb.selectedIndex;
@@ -1214,7 +1201,7 @@ function makeSearchBar() {
 	sb.placeholder = browser.i18n.getMessage('Search');		
 	sb.dataset.position = userOptions.quickMenuSearchBar;
 
-	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
+	columns = (userOptions.searchBarDefaultView === 'text') ? 1 : userOptions.searchBarColumns;
 	
 	si.onclick = function() {
 		

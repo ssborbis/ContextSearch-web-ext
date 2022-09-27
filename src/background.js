@@ -2256,6 +2256,18 @@ function updateUserOptionsVersion(uo) {
 		}
 		return _uo;
 	}).then( _uo => {
+		if ( _uo.quickMenuUseOldStyle ) {
+			_uo.quickMenuDefaultView = _uo.quickMenuUseOldStyle ? 'text' : 'grid';
+		//	delete _uo.quickMenuUseOldStyle;
+		}
+
+		if ( _uo.searchBarUseOldStyle ) {
+			_uo.searchBarDefaultView = _uo.searchBarUseOldStyle ? 'text' : 'grid';
+		//	delete _uo.searchBarUseOldStyle;
+		}
+
+		return _uo;
+	}).then( _uo => {
 		console.log('Done ->', _uo.version, Date.now() - start);
 		return _uo;
 	});

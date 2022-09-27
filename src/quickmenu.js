@@ -8,7 +8,7 @@ async function makeFrameContents() {
 
 	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
 
-	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuUseOldStyle, contexts:qmo.contexts});
+	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text', contexts:qmo.contexts});
 
 	let old_qme = document.getElementById('quickMenuElement');
 	
@@ -83,7 +83,7 @@ async function makeFolderContents(node) {
 
 	window.toolsHandler = () => null;
 
-	let _singleColumn = node.displayType === "text" || userOptions.quickMenuUseOldStyle;
+	let _singleColumn = node.displayType === "text" || userOptions.quickMenuDefaultView === "text";
 
 	await makeQuickMenu({type: "quickmenu", contexts:qmo.contexts, singleColumn: _singleColumn, node: node});
 
@@ -160,8 +160,6 @@ function setMenuSize(o) {
 	document.body.style.width = 'auto';
 	document.body.style.height = maxHeight + "px";
 
-	document.documentElement.style.setProperty('--iframe-body-width',  qm.getBoundingClientRect().width + "px");
-	
 	// prevent the menu from shriking below minimum columns width
 	if ( !qm.singleColumn /*&& qm.columns < userOptions.quickMenuColumnsMinimum*/) {
 		let minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) - (tileSize.width - tileSize.rectWidth) / 2;
@@ -170,6 +168,8 @@ function setMenuSize(o) {
 			qm.style.minWidth = minWidth + "px";
 	}
 
+	document.documentElement.style.setProperty('--iframe-body-width',  qm.getBoundingClientRect().width + "px");
+	
 	if ( !o.more && !o.move ) {
 		let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
 		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
@@ -264,7 +264,8 @@ function resizeMenu(o) {
 		tileSize: tileSize,
 		tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length,
 		columns: qm.columns,
-		rows: rows
+		rows: rows,
+		windowId: qm.rootNode.id
 	}, "*");
 }
 

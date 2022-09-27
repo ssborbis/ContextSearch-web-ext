@@ -53,7 +53,6 @@ const defaultUserOptions = {
 	quickMenuSearchBar: "hidden",
 	quickMenuSearchBarFocus: false,
 	quickMenuSearchBarSelect: true,
-	quickMenuUseOldStyle: false,
 	quickMenuAllowContextMenuNew: false,
 	quickMenuFocusOnOpen: true,
 	contextMenu: true,
@@ -118,7 +117,6 @@ const defaultUserOptions = {
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
 	searchBarDisplayLastSearch: true,
-	searchBarUseOldStyle: false,
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
 	searchBarIcon: "icons/logo.svg",
@@ -292,5 +290,9 @@ const defaultUserOptions = {
 	saveMenuDisplayMode: true,
 	askToAddNewEngineToFirefox: true,
 	ignoreSearchRedirects: true,
-	quickMenuUseCascadingFolders: false
+	quickMenuUseCascadingFolders: false,
+	quickMenuDefaultView: "grid",
+	searchBarDefaultView: "grid",
+	quickMenuUseOldStyle: false, // remove
+	searchBarUseOldStyle: false // remove
 };
