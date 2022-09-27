@@ -185,7 +185,7 @@ function makeQuickMenuContainer(coords) {
 	getShadowRoot().appendChild(qmc);
 
 	qmc.onload = function() {
-		qmc.contentWindow.postMessage({action: "openMenu", windowSize: {width: window.innerWidth, height:window.innerHeight}}, browser.runtime.getURL('/quickmenu.html'));
+		qmc.contentWindow.postMessage({action: "openMenu", windowSize: {width: window.innerWidth, height:window.innerHeight}}, qmc.src);
 	}
 
 	qmc.src = browser.runtime.getURL('quickmenu.html');
@@ -202,7 +202,9 @@ function makeQuickMenuContainer(coords) {
 	addUnderDiv();
 }
 
-const getBorderWidth = (iframe) => parseFloat(window.getComputedStyle(iframe, null).getPropertyValue('border-width'));
+const getStyleProperty = (el, p) => parseFloat((window.getComputedStyle(el, null).getPropertyValue(p)));
+const getBorderWidth = (el) => parseFloat(getStyleProperty(el, 'border-left-width')) + parseFloat(getStyleProperty(el, 'border-right-width'));
+const getBorderHeight = (el) => parseFloat(getStyleProperty(el, 'border-top-width')) + parseFloat(getStyleProperty(el, 'border-bottom-width'));
 
 function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
 
@@ -225,10 +227,10 @@ function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
 	getShadowRoot().appendChild(qmc);
 
 	qmc.onload = function() {
-		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder, windowSize: {width: window.innerWidth, height:window.innerHeight}}, browser.runtime.getURL('/quickmenu.html'));
+		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder, windowSize: {width: window.innerWidth, height:window.innerHeight}}, qmc.src);
 	}
 
-	qmc.src = browser.runtime.getURL('quickmenu.html');
+	qmc.src = browser.runtime.getURL('quickmenu.html#' + qmc.id);
 }
 
 // Listen for ESC and close Quick Menu
@@ -926,9 +928,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					qmc.style.opacity = 1;
 
 					let borderWidth = getBorderWidth(qmc);
+					let borderHeight = getBorderHeight(qmc);
 
-					qmc.style.width = message.size.width + borderWidth*2 + "px";
-					qmc.style.height = Math.min(message.size.height + borderWidth * 2, window.innerHeight * window.devicePixelRatio / userOptions.quickMenuScale) + "px";
+					qmc.style.width = message.size.width + borderWidth + "px";
+					qmc.style.height = Math.min(message.size.height + borderHeight, window.innerHeight * window.devicePixelRatio / userOptions.quickMenuScale) + "px";
 
 					// check for room to open the menu
 					let parentFrame = getShadowRoot().getElementById(qmc.getAttribute("parentFrameId")) || getQM();
@@ -940,7 +943,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					}
 
 					setTimeout(() => repositionOffscreenElement(qmc), 2);
-
 				})();
 				break;
 				
@@ -962,6 +964,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
 				let borderWidth = getBorderWidth(qmc);
+				let borderHeight = getBorderHeight(qmc);
 
 				let initialOffsets = getQuickMenuOpeningPosition({
 					width: message.size.width,
