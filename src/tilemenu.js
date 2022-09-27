@@ -930,7 +930,7 @@ function buildQuickMenuElement(options) {
 
 	(() => { // set up special folders ( recent / regex )
 
-		if ( qm.rootNode.parent ) return;
+		if ( qm.rootNode.id !== userOptions.nodeTree.id ) return;
 		let specialFolderNodes = [];
 
 		if ( userOptions.quickMenuShowRecentlyUsed )
@@ -1785,52 +1785,12 @@ async function mouseupHandler(e) {
 				return search({node:node, openMethod: getOpenMethod(e), domain: node.title});
 				break;
 
+			case "siteSearchFolder":
+				return;
+
 			case 'externalProgram':
 				search({node:node, openMethod: getOpenMethod(e)});
 				return Promise.resolve(true); // app launcher can resolve immediately
-				break;
-
-			case 'siteSearchFolder':
-
-				tile.keepOpen = true;
-
-				async function openFolder(e) {
-					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-					let siteSearchNode = {
-						type:"folder",
-						parent:node.parent,
-						children:[],
-						id:node.id,
-						forceSingleColumn:true
-					}
-					
-					let url = new URL(tab.url);
-
-					getDomainPaths(url).forEach( path => {
-						siteSearchNode.children.push({
-							type: "siteSearch",
-							title: path,
-							parent:node,
-							id: node.id,
-							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-						});	
-					});
-					
-					qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-					for ( let _tile of qm.querySelectorAll('.tile') ) {
-						if ( _tile.node.title === url.hostname ) {
-							_tile.classList.add('selectedFocus');
-							_tile.dataset.selectfirst = "true";
-							break;
-						}
-					}
-
-					resizeMenu({openFolder: true});
-				}
-
-				return openFolder(e);
 				break;
 
 			default:
@@ -2213,78 +2173,126 @@ function nodeToTile( node ) {
 	
 		case "folder":
 
-			tile = buildSearchIcon( getIconFromNode(node), node.title);
+			(() => {
+				tile = buildSearchIcon( getIconFromNode(node), node.title);
 
-			tile.dataset.type = 'folder';
-			tile.dataset.title = node.title;
-			
-			// prevent scroll icon
-			tile.addEventListener('mousedown', e => {
-
-				tile.parentNode.lastMouseDownTile = tile;
+				tile.dataset.type = 'folder';
+				tile.dataset.title = node.title;
 				
-				// skip for dnd events
-				if ( e.which === 1 ) return;
-				e.preventDefault();
-				e.stopPropagation();
-			});
+				// prevent scroll icon
+				tile.addEventListener('mousedown', e => {
 
-			tile.addEventListener('mouseup', e => {
-				if ( clickChecker(tile) ) openFolder(e);
-			});
-
-			tile.addEventListener('openFolder', openFolder);
-
-			// delay to prevent newly opened menus triggering
-			setTimeout(() => addOpenFolderOnHover(tile), 500);
-				
-			async function openFolder(e) {
-
-				let method = getOpenMethod(e, true);
-
-				if (method === 'noAction') return;
-
-				if (method === 'openFolder' || e.openFolder) { 
-				//	if ( !node.children.length ) return;
-
-					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders) {
-						browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
-					}
-					else
-						qm = await quickMenuElementFromNodeTree(tile.node);
-					setDraggable();	
-					return resizeMenu({openFolder: true});
-				}
-				
-				browser.runtime.sendMessage({
-					action: "search", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
-						menuItemId: node.id,
-						selectionText: sb.value,
-						quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
-						openMethod: method
-					}
+					tile.parentNode.lastMouseDownTile = tile;
+					
+					// skip for dnd events
+					if ( e.which === 1 ) return;
+					e.preventDefault();
+					e.stopPropagation();
 				});
-				
-				quickMenuObject.lastUsed = node.id
-				userOptions.lastUsedId = quickMenuObject.lastUsed;
-				document.dispatchEvent(new CustomEvent('updateLastUsed'));
 
-				if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
-			}
+				tile.addEventListener('mouseup', e => {
+					if ( clickChecker(tile) ) openFolder(e);
+				});
+
+				tile.addEventListener('openFolder', openFolder);
+
+				// delay to prevent newly opened menus triggering
+				setTimeout(() => addOpenFolderOnHover(tile), 500);
+					
+				async function openFolder(e) {
+
+					let method = getOpenMethod(e, true);
+
+					if (method === 'noAction') return;
+
+					if (method === 'openFolder' || e.openFolder) { 
+					//	if ( !node.children.length ) return;
+
+						if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
+							return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+						
+						qm = await quickMenuElementFromNodeTree(tile.node);
+						
+						setDraggable();	
+						return resizeMenu({openFolder: true});
+					}
+					
+					browser.runtime.sendMessage({
+						action: "search", 
+						info: {
+							node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
+							menuItemId: node.id,
+							selectionText: sb.value,
+							quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
+							openMethod: method
+						}
+					});
+					
+					quickMenuObject.lastUsed = node.id
+					userOptions.lastUsedId = quickMenuObject.lastUsed;
+					document.dispatchEvent(new CustomEvent('updateLastUsed'));
+
+					if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
+				}
+			})();
 
 			break;
 			
 		case "siteSearchFolder":
+			(() => {
 
-			tile = buildSearchIcon(getIconFromNode(node), node.title);
-			tile.dataset.type = 'siteSearchFolder';
-			tile.dataset.id = node.id || "";	
-			tile.dataset.title = node.title;
+				tile = buildSearchIcon(getIconFromNode(node), node.title);
+				tile.dataset.type = 'siteSearchFolder';
+				tile.dataset.id = node.id || "";	
+				tile.dataset.title = node.title;
 
-			tile.dataset.type = 'folder';
-			tile.dataset.subtype = 'sitesearch';
+				tile.keepOpen = true;
+
+				tile.dataset.type = 'folder';
+				tile.dataset.subtype = 'sitesearch';
+
+				addOpenFolderOnHover(tile);
+				tile.addEventListener('openFolder', openFolder);
+
+				async function openFolder(e) {
+					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+					let siteSearchNode = {
+						type:"folder",
+						parent:node.parent,
+						children:[],
+						id:node.id,
+						forceSingleColumn:true
+					}
+					
+					let url = new URL(tab.url);
+
+					getDomainPaths(url).forEach( path => {
+						siteSearchNode.children.push({
+							type: "siteSearch",
+							title: path,
+							parent:node,
+							id: node.id,
+							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+						});	
+					});
+
+					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
+						return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(siteSearchNode)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+					
+					qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+					for ( let _tile of qm.querySelectorAll('.tile') ) {
+						if ( _tile.node.title === url.hostname ) {
+							_tile.classList.add('selectedFocus');
+							_tile.dataset.selectfirst = "true";
+							break;
+						}
+					}
+
+					resizeMenu({openFolder: true});
+				}
+			})();
 
 			break;
 
