@@ -683,12 +683,13 @@ HR.break {
 }
 #contextsBar > DIV {
 	display: inline-block;
-	width: 20px;
-	height: 20px;
 	margin: 2px;
+
 }
 #contextsBar .tool {
 	opacity: .5;
+	width: 16px;
+	height: 16px;
 }
 #contextsBar .on {
 	--tools-color: var(--selected);
