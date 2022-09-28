@@ -2469,6 +2469,9 @@
   },
   "quickMenuOnMouseOpenWithoutSelectionTooltip": {
     "message": "Open menu on any element including empty areas in documents and frames"
+  },
+  "saveclose": {
+    "message": "Save and Close"
   }
 
 }

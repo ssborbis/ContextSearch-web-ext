@@ -416,6 +416,11 @@ function buildSearchEngineContainer() {
 						else showSaveMessage("cannot save", "red", edit_form.querySelector('.saveMessage'));
 					});
 				}
+
+				edit_form.saveclose.onclick = function() {
+					edit_form.save.onclick();
+					setTimeout(() => edit_form.close.onclick(), 500);
+				}
 				
 				// clear error formatting on focus
 				for (let element of edit_form.getElementsByTagName('input')) {
@@ -538,6 +543,11 @@ function buildSearchEngineContainer() {
 
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 					updateNodeList();
+				}
+
+				_form.saveclose.onclick = function() {
+					_form.save.onclick();
+					setTimeout(() => _form.close.onclick(), 500);
 				}
 				
 				createFormContainer(_form);
@@ -684,6 +694,11 @@ function buildSearchEngineContainer() {
 
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 					updateNodeList();
+				}
+
+				_form.saveclose.onclick = function() {
+					_form.save.onclick();
+					setTimeout(() => _form.close.onclick(), 500);
 				}
 
 				_form.test.onclick = async function() {
@@ -863,6 +878,11 @@ function buildSearchEngineContainer() {
 					updateNodeList();
 
 					text.innerText = node.title;
+				}
+
+				_form.saveclose.onclick = function() {
+					_form.save.onclick();
+					setTimeout(() => _form.close.onclick(), 500);
 				}
 
 				_form.iconURL.addEventListener('change', () => {
@@ -2194,7 +2214,10 @@ function updateNodeList(forceSave) {
 
 function addFormListeners(form) {
 
-	form.addEventListener('input', e => form.save.classList.add('changed'));
+	form.addEventListener('input', e => {
+		form.save.classList.add('changed');
+		form.saveclose.classList.add('changed');
+	});
 
 	form.closeForm = () => {
 		
@@ -2243,7 +2266,10 @@ function addFormListeners(form) {
 		img.src = form.iconURL.value || defaultIcon;
 	})
 
-	form.save.addEventListener('click', e => form.save.classList.remove('changed'));
+	form.save.addEventListener('click', e => {
+		form.save.classList.remove('changed');
+		form.saveclose.classList.remove('changed');
+	});
 }
 
 function setContexts(f, c) {
@@ -2339,6 +2365,7 @@ function createFormContainer(form) {
 	overdiv.style.opacity = null;
 
 	form.save.classList.remove('changed');
+	form.saveclose.classList.remove('changed');
 }
 
 function getFormIcon(form) {
