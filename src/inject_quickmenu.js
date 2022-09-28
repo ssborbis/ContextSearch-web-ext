@@ -923,7 +923,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
 					qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
 
-					qmc.style.left = qmc.openingCoords.x + "px";
+					qmc.style.left = qmc.openingCoords.x - 4 + "px";
 					qmc.style.top = qmc.openingCoords.y + "px";
 					qmc.style.opacity = 1;
 
@@ -939,7 +939,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					let qmr = qmc.getBoundingClientRect();
 
 					if ( parentFrame && pfr.left > window.innerWidth - pfr.right && window.innerWidth - pfr.right < qmr.width ) {
-						qmc.style.left = pfr.left - qmr.width + "px";
+						qmc.style.left = pfr.left - qmr.width + 4 + "px";
 					}
 
 					setTimeout(() => repositionOffscreenElement(qmc), 2);
