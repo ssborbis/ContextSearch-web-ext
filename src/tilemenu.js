@@ -448,9 +448,11 @@ async function makeQuickMenu(options) {
 		}
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
-		setDraggable();	
-		
-		resizeMenu({toggleSingleColumn: true});
+		setDraggable();
+
+		resizeMenu({toggleSingleColumn: true})
+
+//		runAtTransitionEnd(qm, "height", () => resizeMenu({toggleSingleColumn: true}), 100);
 	}
 	
 	qm.addTitleBarTextHandler = div => {
@@ -1215,7 +1217,7 @@ function makeSearchBar() {
 
 			si.style.transform = null;
 
-			runAtTransitionEnd(sg, "height", resizeMenu)
+		//	runAtTransitionEnd(sg, "height", resizeMenu)
 
 			return;
 		}
@@ -2715,6 +2717,7 @@ function makeContextsBar() {
 	// set the context bar to display current contexts	
 	contexts.forEach(c => {
 		let div = document.createElement('div');
+		// div.className = 'tile';
 		let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
 		icon.title = browser.i18n.getMessage(c);
 		div.appendChild(icon);
@@ -2734,7 +2737,7 @@ function makeContextsBar() {
 		ctb.scrollLeft += e.deltaY;
 	});
 
-//	makeContainerMore(ctb, 1);
+//	makeContainerMore(ctb, 1, 1);
 }
 
 function tileSlideInAnimation() {

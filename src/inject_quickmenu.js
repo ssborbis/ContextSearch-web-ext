@@ -988,7 +988,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 						if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 						
-						qmc.contentWindow.postMessage({action: "resizeMenu", options: {move: true, maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
+						qmc.contentWindow.postMessage({action: "resizeMenu", options: {move: true, openFolder:true, maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
 						
 						window.quickMenuLastOffsets = o.lastOffsets;
 						

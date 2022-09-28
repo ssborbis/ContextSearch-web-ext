@@ -147,8 +147,7 @@ function setMenuSize(o) {
 
 	let tileSize = qm.getTileSize();
 
-	qm.style.transition = 'none';
-	document.body.style.transition = 'none';
+	document.body.style.setProperty("--user-transition", "none");
 	let rows = qm.insertBreaks();
 
 	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
@@ -219,8 +218,7 @@ function setMenuSize(o) {
 
 	qm.removeBreaks();
 
-	qm.style.transition = null;
-	document.body.style.transition = null;
+	document.body.style.setProperty("--user-transition", null);
 
 	return rows;
 }
