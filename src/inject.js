@@ -601,6 +601,27 @@ document.addEventListener('keydown', e => {
 	}
 });
 
+(() => {
+
+	document.addEventListener('keydown', e => {
+		if ( e.key === "q" ) {
+			let f = document.createElement('iframe');
+			f.setAttribute('allowtransparency', true);
+			f.style="position:fixed;width:100vw;height:100vh;z-index:999;top:0;bottom:0;left:0;right:0";
+			f.src = browser.runtime.getURL('/speedDial.html');
+
+			getShadowRoot().appendChild(f);
+		}
+	});
+
+	document.addEventListener('keydown', e => {
+		if ( e.key === "r" ) {
+			let node = findNode(userOptions.nodeTree, n => n.type === 'folder' && n !== userOptions.nodeTree);
+			browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:"", searchTermsObject:{}, folder: node})
+		}
+	});
+});
+
 createShadowRoot();
 setZoomProperty();
 
