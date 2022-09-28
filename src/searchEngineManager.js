@@ -1256,52 +1256,59 @@ function buildSearchEngineContainer() {
 
 		ev.preventDefault();
 
-		let overNode = nearestParent('LI', ev.target);
+		let targetElement = nearestParent('LI', ev.target);
 
-		if ( selectedRows.includes(overNode) ) {
-			overNode.querySelectorAll('.header').forEach( row => row.classList.add('error') );
-			return;
+		if ( selectedRows.includes(targetElement) ) {
+			targetElement.querySelectorAll('.header').forEach( row => row.classList.add('error') );
+			return false;
+		}
+
+		for ( let row of selectedRows ) {
+			if ( row.contains(targetElement) ) {
+				targetElement.querySelectorAll('.header').forEach( row => row.classList.add('error') );
+				return false;
+			}
 		}
 		
-		let position = dragover_position(overNode, ev);
+		let position = dragover_position(targetElement, ev);
 		
-		if ( overNode.node.type === 'folder' && overNode.node.children.length && position === 'bottom' )
+		if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
 			position = 'middle';
 
 		// skip repeat events
-		if ( overNode.position && overNode.position === position) return;
+		if ( targetElement.position && targetElement.position === position) return;
 
-		overNode.position = position;
+		targetElement.position = position;
 		
-		overNode.style = '';
+		targetElement.style = '';
 
 		if ( position === 'top' ) {
-			overNode.style.borderTop = '1px solid var(--selected)';
+			targetElement.style.borderTop = '1px solid var(--selected)';
 		} else if ( position === 'bottom' ) {
-			overNode.style.borderBottom = '1px solid var(--selected)';
+			targetElement.style.borderBottom = '1px solid var(--selected)';
 		} else {
-			overNode.querySelector('.header').classList.add('selected');
+			targetElement.querySelector('.header').classList.add('selected');
 		}	
 	}
 
 	function dragenter_handler(ev) {
 		// clear positioning
-		let overNode = nearestParent('LI', ev.target);
-		overNode.position = null;
+		let targetElement = nearestParent('LI', ev.target);
+		targetElement.position = null;
 		ev.preventDefault();
 	}
 
 	function dragleave_handler(ev) {
-		let overNode = nearestParent('LI', ev.target);
+		let targetElement = nearestParent('LI', ev.target);
 
 		window.dragRow.style = '';
-		overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
+		targetElement.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 		
 		// clear folder styling
-		if ( overNode.node.type === "folder" && !selectedRows.includes(overNode) ) // only remove if not originally selected
-			overNode.querySelector('.header').classList.remove('selected');
+		if ( targetElement.node.type === "folder" && !selectedRows.includes(targetElement) ) // only remove if not originally selected
+			targetElement.querySelector('.header').classList.remove('selected');
 
-		overNode.style = '';
+		targetElement.style = '';
 	}
 	
 	function drop_handler(ev) {
@@ -1322,6 +1329,13 @@ function buildSearchEngineContainer() {
 			forceAppend = true;
 		}
 
+		if ( selectedRows.includes(targetElement) )
+			return false;
+
+		for ( let row of selectedRows ) {
+			if ( row.contains(targetElement) ) return false;
+		}
+
 		let position = dragover_position(targetElement, ev);
 		
 		// clear drag styling
@@ -1334,44 +1348,51 @@ function buildSearchEngineContainer() {
 		// remove children of folders nodes to prevent flattening
 		sortedRows = sortedRows.filter( r => !sortedRows.find(_r => _r.node === r.node.parent ));
 		
-		sortedRows.forEach( row => {
-			
-			let _node = row.node;
+		try {
 
-			// cut the node from the children array
-			let slicedNode = nodeCut(_node);
-
-			// if target is bottom of populated folder, proceed as if drop on folder
-			if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
-				position = 'middle';
-
-			if ( forceAppend ) position = 'bottom';
-			
-			if ( position === 'top' ) {
-				nodeInsertBefore(slicedNode, targetNode);
-				targetElement.parentNode.insertBefore(row, targetElement);
+			for ( let row of sortedRows) {
 				
-			} else if ( position === 'bottom' ) {
-				nodeInsertAfter(slicedNode, targetNode);
-				targetElement.parentNode.insertBefore(row, targetElement.nextSibling);
-					
-			} else if ( position === 'middle' ) { // drop into folder
-					
-				// set new parent
-				slicedNode.parent = targetNode;
+				let _node = row.node;
 
-				// add to children above target
-				targetNode.children.unshift(slicedNode);
+				// cut the node from the children array
+				let slicedNode = nodeCut(_node);
 
-				// append element to children (ul)
-				let ul = targetElement.querySelector('ul');			
-				ul.insertBefore(row, ul.firstChild);
+				// if target is bottom of populated folder, proceed as if drop on folder
+				if ( targetElement.node.type === 'folder' && targetElement.node.children.length && position === 'bottom' )
+					position = 'middle';
+
+				if ( forceAppend ) position = 'bottom';
+				
+				if ( position === 'top' ) {
+					nodeInsertBefore(slicedNode, targetNode);
+					targetElement.parentNode.insertBefore(row, targetElement);
+					
+				} else if ( position === 'bottom' ) {
+					nodeInsertAfter(slicedNode, targetNode);
+					targetElement.parentNode.insertBefore(row, targetElement.nextSibling);
+						
+				} else if ( position === 'middle' ) { // drop into folder
+						
+					// set new parent
+					slicedNode.parent = targetNode;
+
+					// add to children above target
+					targetNode.children.unshift(slicedNode);
+
+					// append element to children (ul)
+					let ul = targetElement.querySelector('ul');			
+					ul.insertBefore(row, ul.firstChild);
+				}
 			}
-		});
+		} catch ( error ) {
+			console.log(error);
+			return false;
+		}
+
+		updateNodeList();
 	}
 	
 	function dragend_handler(ev) {
-		updateNodeList();
 
 		 let overNode = nearestParent('LI', ev.target);
 		 overNode.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
