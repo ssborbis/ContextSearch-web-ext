@@ -304,8 +304,12 @@ function _saveOptions(e) {
 
 			if ( !el ) continue;
 
-			if ( type === 'boolean')
-				o[key] = el.checked;
+			if ( type === 'boolean') {
+				if ( el.nodeName === "SELECT")
+					o[key] = el.value.toLowerCase() === 'true';
+				else
+					o[key] = el.checked;
+			}
 
 			if ( type === 'string' )
 				o[key] = el.value;	
