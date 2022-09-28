@@ -176,9 +176,7 @@ async function restoreOptions(restoreUserOptions) {
 				p.classList.add('active');
 		}
 
-		$('#s_searchBarDefaultView').value = uo.searchBarDefaultView;
-		$('#s_quickMenuDefaultView').value = uo.quickMenuDefaultView;
-		$('#s_sideBarDefaultView').checked = uo.sideBar.singleColumn ? "text" : "grid";
+		$('#s_sideBarDefaultView').value = uo.sideBar.singleColumn ? "text" : "grid";
 		
 		$('#userStyles').disabled = !uo.userStylesEnabled;
 	
@@ -325,9 +323,6 @@ function _saveOptions(e) {
 	traverse(userOptions, null);
 
 	let uo = {
-
-		searchBarDefaultView: $('#s_searchBarDefaultView').value,
-		quickMenuDefaultViewe: $('#s_quickMenuDefaultView').value,
 
 		searchBarHistory: userOptions.searchBarHistory,
 		searchBarIcon: $('#toolBarIconForm input[type="radio"]:checked').value,

@@ -820,6 +820,8 @@ async function makeQuickMenu(options) {
 		root.displayType = userOptions.quickMenuDefaultView;
 	if ( type === 'searchbar' )
 		root.displayType = userOptions.searchBarDefaultView;
+	if ( type === 'sidebar')
+		root.displayType = userOptions.sideBar.singleColumn ? "text" : "grid";
 
 	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
