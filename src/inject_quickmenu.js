@@ -227,7 +227,7 @@ function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
 	getShadowRoot().appendChild(qmc);
 
 	qmc.onload = function() {
-		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder, windowSize: {width: window.innerWidth, height:window.innerHeight}}, qmc.src);
+		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder, contexts: quickMenuObject.contexts, windowSize: {width: window.innerWidth, height:window.innerHeight}}, qmc.src);
 	}
 
 	qmc.src = browser.runtime.getURL('quickmenu.html#' + qmc.id);
