@@ -265,7 +265,7 @@ const QMtools = [
 						info: {
 							menuItemId:_id,
 							selectionText: quickMenuObject.searchTerms,
-							openMethod: userOptions.quickMenuLeftClick
+							openMethod: userOptions.lastOpeningMethod || userOptions.quickMenuLeftClick
 						}
 					});
 				}

@@ -1352,7 +1352,7 @@ function lastSearchHandler(id, method) {
 	if ( !node ) return;
 	
 	userOptions.lastUsedId = id;
-	userOptions.lastUsedMethod = method;
+	userOptions.lastOpeningMethod = method;
 	
 	if ( node.type !== "folder" ) {
 		userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
