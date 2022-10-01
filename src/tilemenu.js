@@ -450,7 +450,7 @@ async function makeQuickMenu(options) {
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
 		setDraggable();
 
-		resizeMenu({toggleSingleColumn: true})
+		resizeMenu({toggleSingleColumn: true, openFolder:true})
 
 //		runAtTransitionEnd(qm, "height", () => resizeMenu({toggleSingleColumn: true}), 100);
 	}
