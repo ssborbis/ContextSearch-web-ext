@@ -156,8 +156,12 @@ async function restoreOptions(restoreUserOptions) {
 
 				if ( !el ) continue;
 
-				if ( type === 'boolean')
-					el.checked = o[key];
+				if ( type === 'boolean') {
+					if ( el.nodeName === "SELECT" )
+						el.value = o[key];
+					else
+						el.checked = o[key];
+				}
 
 				if ( type === 'string' || type === 'number' )
 					el.value = o[key];	
