@@ -881,32 +881,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				makeQuickMenuContainer({'x': x,'y': y});
 				
 				break;
-			
-			case "updateQuickMenuObject":
-
-				quickMenuObject = { 
-					keyDownTimer: quickMenuObject.keyDownTimer,
-					mouseDownTimer: quickMenuObject.mouseDownTimer,
-					mouseDownHoldTimer: quickMenuObject.mouseDownHoldTimer,
-					mouseCoords: quickMenuObject.mouseCoords,
-					screenCoords: quickMenuObject.screenCoords,
-					mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
-					mouseLastClickTime: Math.max(message.quickMenuObject.mouseLastClickTime, quickMenuObject.mouseLastClickTime),
-					lastSelectTime: Math.max(message.quickMenuObject.lastSelectTime, quickMenuObject.lastSelectTime),
-					lastSelectText: message.quickMenuObject.lastSelectText,
-					locked: message.quickMenuObject.locked,
-					searchTerms: message.quickMenuObject.searchTerms,
-					searchTermsObject: message.quickMenuObject.searchTermsObject,
-					disabled: message.quickMenuObject.disabled,
-					mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
-					mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
-					contexts:quickMenuObject.contexts
-				};
-
-				// iframe needs to disable here
-				if (quickMenuObject.disabled) userOptions.quickMenu = false;
-				
-				break;
 				
 			case "lockQuickMenu":				
 				lockQuickMenu();

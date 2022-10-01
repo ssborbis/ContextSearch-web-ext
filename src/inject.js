@@ -43,6 +43,32 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			});
 			break;
 
+		case "updateQuickMenuObject":
+
+			quickMenuObject = { 
+				keyDownTimer: quickMenuObject.keyDownTimer,
+				mouseDownTimer: quickMenuObject.mouseDownTimer,
+				mouseDownHoldTimer: quickMenuObject.mouseDownHoldTimer,
+				mouseCoords: quickMenuObject.mouseCoords,
+				screenCoords: quickMenuObject.screenCoords,
+				mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
+				mouseLastClickTime: Math.max(message.quickMenuObject.mouseLastClickTime, quickMenuObject.mouseLastClickTime),
+				lastSelectTime: Math.max(message.quickMenuObject.lastSelectTime, quickMenuObject.lastSelectTime),
+				lastSelectText: message.quickMenuObject.lastSelectText,
+				locked: message.quickMenuObject.locked,
+				searchTerms: message.quickMenuObject.searchTerms,
+				searchTermsObject: message.quickMenuObject.searchTermsObject,
+				disabled: message.quickMenuObject.disabled,
+				mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
+				mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
+				contexts:message.quickMenuObject.contexts
+			};
+
+			// iframe needs to disable here
+			if (quickMenuObject.disabled) userOptions.quickMenu = false;
+			
+			break;
+
 		case "showNotification":
 			showNotification(message);
 			break;
@@ -611,13 +637,6 @@ document.addEventListener('keydown', e => {
 			f.src = browser.runtime.getURL('/speedDial.html');
 
 			getShadowRoot().appendChild(f);
-		}
-	});
-
-	document.addEventListener('keydown', e => {
-		if ( e.key === "r" ) {
-			let node = findNode(userOptions.nodeTree, n => n.type === 'folder' && n !== userOptions.nodeTree);
-			browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:"", searchTermsObject:{}, folder: node})
 		}
 	});
 });
