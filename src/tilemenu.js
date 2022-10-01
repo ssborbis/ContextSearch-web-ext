@@ -2215,7 +2215,7 @@ function nodeToTile( node ) {
 					//	if ( !node.children.length ) return;
 
 						if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
-							return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+							return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, contexts: qm.contexts, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
 						
 						qm = await quickMenuElementFromNodeTree(tile.node);
 						
