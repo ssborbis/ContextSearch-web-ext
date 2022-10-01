@@ -1172,6 +1172,8 @@ function openWithMethod(o) {
 			
 		if ( !await browser.sidebarAction.isOpen({}) )
 			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
+
+		return {};
 	}
 }
 
