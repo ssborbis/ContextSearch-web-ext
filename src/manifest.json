@@ -100,7 +100,8 @@
 		},
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",
-		"open_at_install": false
+		"open_at_install": false,
+		"browser_style": false
 	},
 	
 	"commands": {
