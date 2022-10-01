@@ -1463,6 +1463,8 @@ function makeSearchBar() {
 			let newKey = keys[( keys.indexOf(div.searchTermsContext) + 1 ) % keys.length];
 			div.searchTermsContext = newKey;
 			sb.set(sto[newKey]);
+
+			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
 		}
 
 	})();
