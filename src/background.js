@@ -1150,8 +1150,9 @@ function openWithMethod(o) {
 				let tabs = await browser.tabs.query({currentWindow: true});
 				let active = tabs.find(t => t.active === true );
 				let tabChildren = tabs.filter(t => t.openerTabId === active.id);
-				let indexes = tabChildren.map(t => t.index);				
-				o.index = Math.max(...indexes) + 1;
+				let indexes = tabChildren.map(t => t.index);
+				o.index = Math.max(...indexes, active.index) + 1;
+
 			} catch (err) {
 				console.log(err);
 			}
