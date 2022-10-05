@@ -1147,9 +1147,14 @@ function openWithMethod(o) {
 
 		if ( userOptions.forceOpenResultsTabsAdjacent ) {
 			try {
-				let actives = await browser.tabs.query({currentWindow: true, active: true});
-				o.index = actives[0].index + 1;
-			} catch (err) {}
+				let tabs = await browser.tabs.query({currentWindow: true});
+				let active = tabs.find(t => t.active === true );
+				let tabChildren = tabs.filter(t => t.openerTabId === active.id);
+				let indexes = tabChildren.map(t => t.index);				
+				o.index = Math.max(...indexes) + 1;
+			} catch (err) {
+				console.log(err);
+			}
 		}
 
 		return browser.tabs.create(filterOptions({
