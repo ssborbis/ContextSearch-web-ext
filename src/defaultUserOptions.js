@@ -294,5 +294,7 @@ const defaultUserOptions = {
 	quickMenuDefaultView: "grid",
 	searchBarDefaultView: "grid",
 	quickMenuUseOldStyle: false, // remove
-	searchBarUseOldStyle: false // remove
+	searchBarUseOldStyle: false, // remove
+	nativeAppDownloadFolder: "",
+	showStatusBar: false
 };

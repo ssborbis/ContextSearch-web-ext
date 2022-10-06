@@ -290,27 +290,32 @@
 #CS_statusBar {
 	z-index: 2147483647;
 	position: fixed;
-	bottom: 4px;
-	right: 4px;
+	bottom: 10px;
+	right: -8px;
 	display: inline-block;
-	width: auto;
-	height: auto;
+	max-width: 30px;
 	transform: scale(calc( 1 / var(--cs-zoom, 1))) !important;
 	transform-origin: bottom right;
-	opacity: .2;
-	transition: opacity .25s;
+	transition: max-width .5s ease-out, opacity .25s;
+	overflow: hidden;
+	text-align: right;
+	white-space:nowrap;
+	background-color: #ddd;
+	border-radius: 16px;
+	border: 1px solid #444;
+	padding: 4px 16px 4px 4px;
+	/*opacity: .3;*/
+
 }
 #CS_statusBar:hover {
 	opacity: 1;
+	max-width: 200px;
 }
 .CS_statusButton {
-	width: 24px;
-	height: 24px;
-	background-color: #ddd;
+	/*width: 24px;
+	height: 24px;*/
 	display: inline-block;
-	border-radius: 4px;
-	margin: 2px;
-	border: 1px solid #444;
+	margin: 0 6px;
 	text-align: center;
 	cursor: pointer;
 }

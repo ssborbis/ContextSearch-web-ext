@@ -1364,5 +1364,71 @@ function checkContextMenuEventOrder(e) {
 	}, {once: true});
 }
 
+function createStatusBar() {
+	if ( window != top ) return;
+	let div = document.createElement('div');
+	div.id = 'CS_statusBar';
+	getShadowRoot().appendChild(div);
+	createStatusButton(browser.runtime.getURL("/icons/logo_notext.svg"));
+}
+
+function createStatusButton(icon, callback) {
+	let div = document.createElement('div');
+	div.className = 'CS_statusButton';
+	let sb = getShadowRoot().querySelector('#CS_statusBar');
+	//sb.insertBefore(div, sb.firstChild);
+	sb.appendChild(div);
+
+	let img = new Image();
+	img.src = icon;
+	div.appendChild(img);
+	img.onclick = callback;
+
+	return div;
+}
+
+// function createStatusButton(icon, action) {
+// 	let frame = document.createElement('iframe');
+// 	frame.className = 'CS_statusButtonFrame';
+// 	frame.setAttribute('allowtransparency', true);
+// 	getShadowRoot().querySelector('#CS_statusBar').appendChild(frame);
+
+// 	frame.onload = function() {
+
+// 		//let doc = frame.contentDocument || frame.contentWindow.document;
+
+// 		// let link = doc.createElement('link');
+// 		// link.rel = "stylesheet";
+// 		// link.href = "/tilemenu.css";
+// 		// doc.head.appendChild(link);
+
+// 		// let img = doc.createElement('div');;
+//   // 		img.className = 'tool';
+//   // 		img.style.setProperty('--mask-image', `url(${icon})`);
+//   // 		img.style.setProperty('--tools-color', 'black');
+// 		// doc.body.appendChild(img);
+
+// 		// doc.body.style.background = "linear-gradient(135deg, #fefcea 0%, #666 100%)";
+
+// 		// img.onclick = action;
+// 	}
+// 	frame.src = browser.runtime.getURL('blank.html');
+
+// }
+
+createStatusBar();
+
+if ( window == top && userOptions.showStatusBar ) {
+//	&& checkToolStatus("repeatsearch")
+	createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
+		alert('yep');
+	});
+	let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {
+		QMtools.find(t => t.name === "disable").action();
+		div.title = `${browser.i18n.getMessage("quickmenu")} ${(quickMenuObject.disabled ? "off" : "on")}`;
+	});
+	div.title = `${browser.i18n.getMessage("quickmenu")} ${(quickMenuObject.disabled ? "off" : "on")}`;
+}
+
 if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
