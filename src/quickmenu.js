@@ -140,8 +140,7 @@ async function makeFolderContents(node) {
 	});
 
 	document.body.style.width = null;
-	document.body.style.height = null;
-
+	// document.body.style.height = null;
 	document.body.style.height = '100vh';
 	document.body.style.overflowY = 'auto';
 }
