@@ -46,6 +46,7 @@
 	opacity:0;
 	transition: opacity .5s ease-in-out;
 	border:none;
+	background-color: rgba(0,0,0,.2);
 }
 .CS_resizeWidget {
 	cursor:nwse-resize;
@@ -282,4 +283,39 @@
 }
 .CS_blur {
 	filter: blur(4px);
+}
+.CS_editing {
+	border-color: red;
+}
+#CS_statusBar {
+	z-index: 2147483647;
+	position: fixed;
+	bottom: 4px;
+	right: 4px;
+	display: inline-block;
+	width: auto;
+	height: auto;
+	transform: scale(calc( 1 / var(--cs-zoom, 1))) !important;
+	transform-origin: bottom right;
+	opacity: .2;
+	transition: opacity .25s;
+}
+#CS_statusBar:hover {
+	opacity: 1;
+}
+.CS_statusButton {
+	width: 24px;
+	height: 24px;
+	background-color: #ddd;
+	display: inline-block;
+	border-radius: 4px;
+	margin: 2px;
+	border: 1px solid #444;
+	text-align: center;
+	cursor: pointer;
+}
+.CS_statusButton IMG {
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
 }
