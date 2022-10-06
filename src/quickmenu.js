@@ -73,6 +73,10 @@ async function makeFrameContents() {
 	
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
+	document.addEventListener('document_click', e => {
+		browser.runtime.sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
+	});
+
 	tileSlideInAnimation(.3, .15, .5);
 }
 
@@ -81,7 +85,9 @@ async function makeFolderContents(node) {
 
 	quickMenuObject = qmo;
 
+	// disable some unused handlers 
 	window.toolsHandler = () => null;
+	window.createToolsArray = () => [];
 
 	let _singleColumn = node.displayType === "text" || userOptions.quickMenuDefaultView === "text";
 
