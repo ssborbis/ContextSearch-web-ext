@@ -28,7 +28,6 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	userOptions = uo;
 	
 	makeSearchBar();
-	makeAddEngineBar();
 
 	let singleColumn = window == top ? userOptions.searchBarDefaultView === 'text' : userOptions.sideBar.singleColumn;
 
@@ -45,10 +44,14 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	// override layout
 	setLayoutOrder( qm.dataset.menu === "sidebar" ? userOptions.sideBar.domLayout : userOptions.searchBarDomLayout );
 
+	
+
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
 	if ( sideBarOpenedOnSearchResults ) focusSearchBar = false;
+
+	makeAddEngineBar();
 
 });
 
@@ -61,7 +64,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	if ( focusSearchBar ) sb.focus();
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
-	resizeMenu();
+	resizeMenu({openFolder: true});
 	
 	// replace text with selection
 	(async () => {
@@ -74,7 +77,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	})();
 
 	tileSlideInAnimation(.3, .15, .375);
-
 });
 
 function toolsHandler() {
@@ -292,11 +294,13 @@ function closeMenuRequest() {
 
 async function makeAddEngineBar() {
 
+	// place at the end again after qm loads
+
 	let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks"});
 
 	if ( !oses ) return;
 
-	oses.forEach( async ose => {
+	for ( ose of oses ) {
 
 		let div = document.createElement('div');
 		let img = new Image();
@@ -322,12 +326,10 @@ async function makeAddEngineBar() {
 		div.onclick = async() => {
 			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
-	});
+	}
 
 	document.body.appendChild(aeb);
-
-	// place at the end again after qm loads
-	document.addEventListener('quickMenuIframeLoaded', e => document.body.appendChild(aeb), {once: true})
+	resizeMenu();
 }
 
 window.addEventListener('message', e => {
