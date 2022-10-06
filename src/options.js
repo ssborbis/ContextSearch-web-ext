@@ -10,6 +10,14 @@ var $ = s => document.getElementById(s) || document.querySelector(s);
 // array for storage.local
 var userOptions = {};
 
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	switch (message.action) {
+		case "updateUserOptions":
+			console.log(message, sender);
+			break;
+		}
+});
+
 // Browse button for manual import
 $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	

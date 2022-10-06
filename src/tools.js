@@ -110,16 +110,12 @@ const QMtools = [
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			console.log('on tool create, qmo says disabled = ', quickMenuObject.disabled);
-			
+			tile.appendChild(createMaskIcon(this.icon));			
 			tile.dataset.locked = quickMenuObject.disabled ? "false" : "true";
 			tile.keepOpen = true; // prevent close on click
 			tile.action = this.action;
 			tile.tool = this;
 
-			console.log('disable init', tile.dataset.locked)
 			return tile;
 		},
 		action: function(e) {
