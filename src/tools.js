@@ -442,7 +442,7 @@ const QMtools = [
 					"quickMenuElement": 	'quickmenu',
 					"toolBar": 				'tools',
 					"menuBar": 				'menubar',
-					"titleBar": 			'name',
+					"titleBar": 			'title',
 					"searchBarContainer": 	'search',
 					"contextsBar": 			'contexts'
 				};
