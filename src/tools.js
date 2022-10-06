@@ -581,27 +581,28 @@ const QMtools = [
 				window.tilesDraggable = false;
 			}
 
-			if ( o.forceOn || ( !window.editMode && !o.forceOff )) 
+			let _on = ( o.forceOn || ( !window.editMode && !o.forceOff ));
+
+			if ( _on && !window.editMode ) 
 				await on();
-			else {
+			else if ( window.editMode ) {
 				await off();
 			//	if ( window.showHideStatus )
-
+			} else {
+				return;
 			}
+
+			browser.runtime.sendMessage({action: "editQuickMenu", on: _on });
 
 			setDraggable();
 
-			setToolLockedState(this.tool || this, window.editMode);
+			setToolLockedState(this.tool || this, _on);
 			resizeMenu({openFolder: true});
 
-		//	setTimeout(() => resizeMenu({more: true}), 250);
-
-			if ( !o.forceOff && !o.forceOn ) browser.runtime.sendMessage({action: "editQuickMenu"});
-			
-			if ( userOptions.alwaysAllowTileRearranging ) {
-				window.tilesDraggable = true;
-				setDraggable();
-			}
+			// if ( userOptions.alwaysAllowTileRearranging ) {
+			// 	window.tilesDraggable = true;
+			// 	setDraggable();
+			// }
 		}
 	},
 	{

@@ -233,13 +233,13 @@
 	top:0;
 	bottom:0;
 	position:fixed;
-	z-index:2147483645;
+	z-index:2147483643;
 	/* background-color:rgba(255,0,0,.5); */
 }
 .CS_overDiv.editQuickMenu {
 	opacity:.5;
 	background-color:#888;
-	z-index:2147483645;
+	z-index:2147483644;
 
 	transition:opacity .5s, background-color .5s;
 }
