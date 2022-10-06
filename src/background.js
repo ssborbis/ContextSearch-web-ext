@@ -1001,6 +1001,10 @@ async function notify(message, sender, sendResponse) {
      	case "getTabTerms":
      		return window.tabTerms.find(t => t.tabId === sender.tab.id);
      		break;
+
+     	case "isSidebar":
+     		return sender.hasOwnProperty("frameId");
+     		break;
 	}
 }
 
