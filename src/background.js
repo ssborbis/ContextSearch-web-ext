@@ -621,7 +621,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "log":
-			console.log(message.msg);
+			console.log(message, sender);
 			break;
 			
 		case "focusSearchBar":
