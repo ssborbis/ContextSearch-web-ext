@@ -1420,9 +1420,9 @@ createStatusBar();
 
 if ( window == top && userOptions.showStatusBar ) {
 //	&& checkToolStatus("repeatsearch")
-	createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
-		alert('yep');
-	});
+	// createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
+	// 	alert('yep');
+	// });
 	let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {
 		QMtools.find(t => t.name === "disable").action();
 		div.title = `${browser.i18n.getMessage("quickmenu")} ${(quickMenuObject.disabled ? "off" : "on")}`;
