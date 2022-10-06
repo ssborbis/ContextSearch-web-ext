@@ -105,13 +105,15 @@ async function makeFolderContents(node) {
 
 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-	document.documentElement.addEventListener('mouseleave', e => {
-		browser.runtime.sendMessage({
-			action: "closeFolderWindow", 
-			sendMessageToTopFrame: true,
-			id: node.id
+	if ( false ) {
+		document.documentElement.addEventListener('mouseleave', e => {
+			browser.runtime.sendMessage({
+				action: "closeFolder", 
+				sendMessageToTopFrame: true,
+				id: node.id
+			});
 		});
-	});
+	}
 
 	document.body.style.width = 'auto';
 	document.body.style.height = 'auto';
