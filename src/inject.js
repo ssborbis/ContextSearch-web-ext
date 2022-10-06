@@ -45,7 +45,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		case "updateQuickMenuObject":
 
-			quickMenuObject = { 
+			quickMenuObject = Object.assign(quickMenuObject, { 
 				keyDownTimer: quickMenuObject.keyDownTimer,
 				mouseDownTimer: quickMenuObject.mouseDownTimer,
 				mouseDownHoldTimer: quickMenuObject.mouseDownHoldTimer,
@@ -62,7 +62,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
 				mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
 				contexts:message.quickMenuObject.contexts
-			};
+			});
 
 			// iframe needs to disable here
 			if (quickMenuObject.disabled) userOptions.quickMenu = false;
