@@ -6,7 +6,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('tools_Close'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 			
 			tile.action = this.action;
 			return tile;
@@ -22,7 +22,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 		//	tile.keepOpen = true; // prevent close on click
 			
@@ -63,7 +63,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			// enable/disable link button on very basic 'is it a link' rules
 			function setDisabled() {
@@ -105,26 +105,39 @@ const QMtools = [
 	},
 	{
 		name: 'disable', 
-		icon: "icons/power.svg", 
-		title: browser.i18n.getMessage('tools_Disable'),
-		context: ["quickmenu"],
+		icon: "icons/qm.svg", 
+		title: browser.i18n.getMessage('quickmenu'),
+		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
+
+			console.log('on tool create, qmo says disabled = ', quickMenuObject.disabled);
 			
+			tile.dataset.locked = quickMenuObject.disabled ? "false" : "true";
+			tile.keepOpen = true; // prevent close on click
 			tile.action = this.action;
+			tile.tool = this;
+
+			console.log('disable init', tile.dataset.locked)
 			return tile;
 		},
 		action: function(e) {
-			userOptions.quickMenu = false;
-			quickMenuObject.disabled = true;
+			quickMenuObject.disabled = !quickMenuObject.disabled;
+
+			tool = userOptions.quickMenuTools.find( _tool => _tool.name === "disable" );
+
+			tool.on = !quickMenuObject.disabled;
+
+			setToolLockedState(this.tool || this, tool.on);
 
 			browser.runtime.sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
 			
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
+			if ( quickMenuObject.disabled )
+				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
 
 		}
 	},
@@ -135,7 +148,7 @@ const QMtools = [
 		context: ["quickmenu"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 			
 			tile.keepOpen = true; // prevent close on click
 			
@@ -182,7 +195,7 @@ const QMtools = [
 		init: function() {
 
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 			tile.dataset.nocolorinvert = true;
 			
 			function updateIcon() {
@@ -244,7 +257,7 @@ const QMtools = [
 		init: function() {
 
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 			
 			tile.keepOpen = true; // prevent close on click
 			
@@ -297,7 +310,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('list'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.keepOpen = true; // prevent close on click
 
@@ -327,7 +340,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('findinpage'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
 						
@@ -344,7 +357,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('settings'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.action = this.action;
 			return tile;
@@ -359,7 +372,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('ToggleTheme'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 			tile.keepOpen = true;
 			
 			tile.action = this.action;
@@ -375,7 +388,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('toggleHotkeys'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 			tile.keepOpen = true;
 
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
@@ -401,7 +414,7 @@ const QMtools = [
 		title: browser.i18n.getMessage('editmenu'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
@@ -523,9 +536,7 @@ const QMtools = [
 					let dDiv = document.createElement('div');
 					dDiv.id = 'deleteEngineDiv';
 
-					let img = document.createElement('div');;
-					img.className = 'tool';
-					img.style.setProperty('--mask-image', 'url(icons/delete.svg)');
+					let img = createMaskIcon("icons/delete.svg");
 					dDiv.appendChild(img);
 					document.body.appendChild(dDiv);
 
@@ -612,7 +623,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
@@ -638,7 +649,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.keepOpen = true;
 			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
@@ -662,7 +673,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.keepOpen = true;
 			tile.dataset.locked = false;
@@ -710,7 +721,7 @@ const QMtools = [
 	// 	context: ["quickmenu"],
 	// 	init: function() {
 	// 		let tile = buildSearchIcon(null, this.title);
-	// 		tile.appendChild(makeToolMask(this));
+	// 		tile.appendChild(createMaskIcon(this.icon));
 
 	// 		tile.keepOpen = true;
 	// 		tile.dataset.locked = false;
@@ -756,7 +767,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			// enable/disable link button on very basic 'is it a link' rules
 			// function setDisabled() {
@@ -799,7 +810,7 @@ const QMtools = [
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(makeToolMask(this));
+			tile.appendChild(createMaskIcon(this.icon));
 
 			tile.action = this.action;
 						
@@ -837,7 +848,7 @@ function setToolLockedState(tool, status) {
 
 var toolStatuses = {};
 
-function makeMaskCanvas(url, color) {
+function makeMaskCanvas(url, color) { // depreciated
 
 	return new Promise( (resolve, reject) => {
 
@@ -877,17 +888,6 @@ function makeMaskCanvas(url, color) {
 		img.src = url;
 
 	});
-}
-
-function makeToolMask(tool) {
-	return makeMask(tool.icon);
-}
-
-function makeMask(img_url) {
-	let icon = document.createElement('div');
-	icon.className = "tool";
-	icon.style.setProperty('--mask-image', `url(${img_url})`);
-	return icon;
 }
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';

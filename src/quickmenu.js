@@ -6,9 +6,7 @@ const getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"
 
 async function makeFrameContents() {
 
-	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
-
-	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text', contexts:qmo.contexts});
+	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text'});
 
 	let old_qme = document.getElementById('quickMenuElement');
 	
@@ -81,9 +79,6 @@ async function makeFrameContents() {
 }
 
 async function makeFolderContents(node) {
-	let qmo = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
-
-	quickMenuObject = qmo;
 
 	// disable some unused handlers 
 	window.toolsHandler = () => null;
@@ -91,7 +86,7 @@ async function makeFolderContents(node) {
 
 	let _singleColumn = node.displayType === "text" || userOptions.quickMenuDefaultView === "text";
 
-	await makeQuickMenu({type: "quickmenu", contexts:qmo.contexts, singleColumn: _singleColumn, node: node});
+	await makeQuickMenu({type: "quickmenu", singleColumn: _singleColumn, node: node});
 
 	// remove everything
 	document.querySelectorAll('BODY > DIV').forEach(el => el.parentNode.removeChild(el));

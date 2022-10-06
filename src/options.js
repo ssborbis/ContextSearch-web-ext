@@ -770,16 +770,14 @@ function buildToolIcons() {
 	});
 
 	for (let icon of toolIcons) {
-		let img = document.createElement('div');
+
+		let img = createMaskIcon(icon.src);
 		img.disabled = icon.disabled;
 		img.style.opacity = (img.disabled) ? .4 : 1;
-		img.className = 'toolIcon';
+		img.classList.add('toolIcon');
 		img.setAttribute('draggable', true);
-		img.src = icon.src;
 		img.setAttribute('data-title',icon.title);
 		img.name = icon.name;
-		img.classList.add('tool');
-		img.style.setProperty('--mask-image', `url(${icon.src})`);
 
 		img.addEventListener('dragstart',dragstart_handler);
 		img.addEventListener('dragend',dragend_handler);
@@ -1805,14 +1803,6 @@ function createEditMenu() {
 
 	overdiv.getBoundingClientRect();
 	overdiv.style.opacity = null;
-}
-
-function createMaskIcon(src) {
-	let tool = document.createElement('div');
-	tool.className = 'tool';
-	tool.style.setProperty('--mask-image', `url(${src})`);
-
-	return tool;
 }
 
 async function checkAndUpdateNativeApp() {

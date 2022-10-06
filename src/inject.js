@@ -64,9 +64,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				contexts:message.quickMenuObject.contexts
 			});
 
-			// iframe needs to disable here
-			if (quickMenuObject.disabled) userOptions.quickMenu = false;
-			
 			break;
 
 		case "showNotification":

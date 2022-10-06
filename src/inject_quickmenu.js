@@ -259,7 +259,8 @@ document.addEventListener('keydown', e => {
 	if (
 		e.key !== "Escape" ||
 		e.repeat ||
-		!userOptions.quickMenu		
+		!userOptions.quickMenu ||
+		quickMenuObject.disabled
 	) return false;
 	
 	browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "esc"});	
@@ -290,7 +291,8 @@ document.addEventListener('keydown', e => {
 		!userOptions.quickMenuOnKey ||
 		!userOptions.quickMenu ||
 		getSelectedText(e.target) === "" ||
-		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs) ||
+		quickMenuObject.disabled
 	) return false;
 
 	quickMenuObject.keyDownTimer = Date.now();	
@@ -305,7 +307,8 @@ document.addEventListener('keyup', e => {
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnKey ||
 		// check for typing in text box
-		( isTextBox(e.target) && !getSelectedText(e.target))
+		( isTextBox(e.target) && !getSelectedText(e.target)) ||
+		quickMenuObject.disabled
 	) return false;
 
 	if ( e.ctrlKey || e.shiftKey || e.altKey || e.metaKey ) return false;
@@ -324,7 +327,8 @@ document.addEventListener('mousedown', e => {
 		!userOptions.quickMenuAuto || 
 		e.which !== 1 ||
 		e.target.id === 'quickMenuElement' ||
-		e.target.parentNode.id === 'quickMenuElement'
+		e.target.parentNode.id === 'quickMenuElement' ||
+		quickMenuObject.disabled
 	) return false;
 	
 	quickMenuObject.mouseDownTargetIsTextBox = isTextBox(e.target);
@@ -341,7 +345,8 @@ document.addEventListener('mouseup', e => {
 		getSelectedText(e.target).trim() === "" ||
 		( userOptions.quickMenuAutoMaxChars && getSelectedText(e.target).length > userOptions.quickMenuAutoMaxChars ) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
-		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs )
+		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs ) ||
+		quickMenuObject.disabled
 		
 	) return false;
 
@@ -384,6 +389,7 @@ document.addEventListener('mousedown', e => {
 		e.which !== userOptions.quickMenuMouseButton ||
 		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
+		quickMenuObject.disabled ||
 		!e.isTrusted
 	) return false;
 
@@ -485,7 +491,8 @@ document.addEventListener('mouseup', e => {
 		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
-		e.which !== userOptions.quickMenuMouseButton
+		e.which !== userOptions.quickMenuMouseButton ||
+		quickMenuObject.disabled
 	) return false;
 
 	clearMouseDownTimer();
@@ -519,7 +526,8 @@ document.addEventListener('mousedown', e => {
 			(!hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) && 
 			e.target.id !== 'CS_underDiv'
 		) ||
-		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs)
+		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs) ||
+		quickMenuObject.disabled
 	) return false;
 
 	// let requiresModKey = userOptions.quickMenuOnMouseShift & userOptions.quickMenuOnMouseAlt & userOptions.quickMenuOnMouseCtrl;
@@ -590,7 +598,8 @@ document.addEventListener('mouseup', e => {
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
 		!quickMenuObject.mouseDownTimer ||
-		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection )
+		( !hasSearchTerms(e) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) ||
+		quickMenuObject.disabled
 	) return false;
 
 	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
@@ -621,7 +630,8 @@ document.addEventListener('mousedown', e => {
 		!e.altKey && userOptions.quickMenuOnSimpleClick.alt ||
 		!e.ctrlKey && userOptions.quickMenuOnSimpleClick.ctrl ||
 		!e.shiftKey && userOptions.quickMenuOnSimpleClick.shift ||
-		getSelectedText(e.target)
+		getSelectedText(e.target) ||
+		quickMenuObject.disabled
 	) return;
 
 	let range, textNode, offset, word;
@@ -713,7 +723,8 @@ document.addEventListener('mousedown', e => {
 document.addEventListener('dragstart', e => {
 	if (
 		!userOptions.quickMenu ||
-		!userOptions.quickMenuOnDrag
+		!userOptions.quickMenuOnDrag ||
+		quickMenuObject.disabled
 	) return;
 
 	// check for modifier keys

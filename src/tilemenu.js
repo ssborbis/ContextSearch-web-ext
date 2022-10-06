@@ -366,6 +366,8 @@ function createToolsArray() {
 
 async function makeQuickMenu(options) {
 
+	quickMenuObject = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
+
 	type = options.type;
 
 	singleColumn = options.singleColumn;
@@ -1096,7 +1098,7 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 
 			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
-			let backIcon = makeToolMask({icon: 'icons/back.svg'});
+			let backIcon = createMaskIcon('icons/back.svg');
 			backIcon.style.position = "absolute";
 
 			tile.appendChild(backIcon);
@@ -1161,14 +1163,14 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
 		});
 
-		try { // fails on restricted pages
-			await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+		// try { // fails on restricted pages
+		// 	await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
-				if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
-			});
-		} catch (error) {
+		// 		if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
+		// 	});
+		// } catch (error) {
 
-		}
+		// }
 
 		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
@@ -1240,14 +1242,16 @@ function makeSearchBar() {
 		displaySuggestions(history);
 	}
 	
-	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+	//browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+
+		let qmo = quickMenuObject;
 
 		if ( qmo && (qmo.searchTerms || ( qmo.searchTermsObject && qmo.searchTermsObject.selection ) ))
 			setTimeout(() => sb.set(qmo.searchTerms || qmo.searchTermsObject.selection), 10);
 		else displayLastSearchTerms();
-	}, () => {
-		displayLastSearchTerms();
-	});
+//	}, () => {
+//		displayLastSearchTerms();
+	//});
 
 	async function displayLastSearchTerms() {
 
@@ -1314,10 +1318,8 @@ function makeSearchBar() {
 				sb.dispatchEvent(e);
 			}
 			
-			let img = document.createElement("div");
-			img.style.setProperty("--mask-image", "url(/icons/history.svg)");
+			let img = createMaskIcon("/icons/history.svg)");
 			img.title = browser.i18n.getMessage('History') || "history";
-			img.classList.add('tool');
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
@@ -1442,7 +1444,8 @@ function makeSearchBar() {
 
 		if ( !div ) return;
 
-		let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
+	//	let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
+		let qmo = quickMenuObject;
 		let sto = qmo.searchTermsObject;
 
 		let keys = ["selection", "link", "linkText", "image", "frame"/*, "page"*/].filter( key => sto[key]);
@@ -2382,7 +2385,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 	if ( limit >= _tiles.length ) return _tiles;
 
 	let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
-	moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
+	moreTile.appendChild(createMaskIcon("icons/chevron-down.svg"));
 
 	moreTile.style.textAlign='center';
 	moreTile.dataset.type = "more";
@@ -2729,7 +2732,7 @@ function makeContextsBar() {
 	contexts.forEach(c => {
 		let div = document.createElement('div');
 		// div.className = 'tile';
-		let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
+		let icon = createMaskIcon(browser.runtime.getURL(`/icons/${c}.svg`));
 		icon.title = browser.i18n.getMessage(c);
 		div.appendChild(icon);
 		ctb.appendChild(div);
