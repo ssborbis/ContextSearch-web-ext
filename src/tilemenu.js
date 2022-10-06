@@ -2722,6 +2722,9 @@ function setLayoutOrder(arr) {
 function makeContextsBar() {
 	ctb.innerHTML = null;
 
+	// do nothing if not using contextual layout
+	if ( !userOptions.quickMenuUseContextualLayout ) return;
+
 	// set the context bar to display current contexts	
 	contexts.forEach(c => {
 		let div = document.createElement('div');
