@@ -9,6 +9,8 @@ function replaceOpenSearchParams(options) {
 	let domains = getDomains(url);
 	
 	return template
+		.replace(/%sl/g, s => searchterms.toLowerCase())
+		.replace(/%su/g, s => searchterms.toUpperCase())
 		.replace(/{searchTerms}|%s/g, searchterms)
 		.replace(/{count[\?]?}/g, "50")
 		.replace(/{startIndex[\?]?}/g, "1")
