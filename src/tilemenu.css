@@ -293,7 +293,6 @@ BODY {
 #titleBar {
 	height:24px;
 	text-align: center;
-	/*padding-left:10px;*/
 	overflow:hidden;
 	vertical-align:middle;
 	line-height:24px;
@@ -301,10 +300,10 @@ BODY {
 	font-family:Arial;
 	font-size:11pt;
 	white-space:nowrap;
-	/*width:calc(100% - 10px);*/
 	/*width:var(--iframe-body-width, auto);*/
-	width: 100%;
+	width: calc(100% - 8px);
 	text-overflow: ellipsis;
+	padding: 0 4px;
 }
 #quickMenuElement.singleColumn {
 	min-width: var(--single-column-width);
