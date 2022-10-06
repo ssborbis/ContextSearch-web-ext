@@ -2656,7 +2656,7 @@ function initOptionsBar() {
 		let fo = document.querySelector('#folderOptionsDiv');
 
 		fo.style.maxHeight = fo.style.maxHeight ? null : fo.scrollHeight + "px";
-		runAtTransitionEnd(fo, "max-height", resizeMenu);
+		runAtTransitionEnd(fo, "max-height", () => resizeMenu({openFolder: true}));
 	}
 }
 
@@ -2781,4 +2781,15 @@ function tileSlideInAnimation() {
 		t.style.opacity = 1;
 
 	});
+}
+
+function toolsBarMorify(rows) {
+	let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
+	toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
+		unhideTile(t);
+	});
+
+	if ( toolBarMore ) toolBar.removeChild(toolBarMore);
+
+	makeContainerMore(toolBar, rows || userOptions.quickMenuToolbarRows);
 }

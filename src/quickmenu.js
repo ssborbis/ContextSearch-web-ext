@@ -178,14 +178,7 @@ function setMenuSize(o) {
 	document.documentElement.style.setProperty('--iframe-body-width',  qm.getBoundingClientRect().width + "px");
 	
 	if ( !o.more && !o.move ) {
-		let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
-		toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
-			unhideTile(t);
-		});
-
-		if ( toolBarMore ) toolBar.removeChild(toolBarMore);
-
-		makeContainerMore(toolBar, userOptions.quickMenuToolbarRows);
+		toolsBarMorify();
 
 		// qm.querySelectorAll('group').forEach( g => {
 		// 	if ( g.style.display != 'block') return;
