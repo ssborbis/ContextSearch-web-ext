@@ -592,6 +592,7 @@ function createShadowRoot() {
 	if ( document.querySelector('contextsearch-widgets')) return;
 
 	let div = document.createElement('contextsearch-widgets');
+	div.id = "contextsearch-widgets";
 	document.documentElement.appendChild(div);
 	let shadow = div.attachShadow({mode: 'open'})
 		.innerHTML = `

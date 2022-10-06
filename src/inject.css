@@ -216,8 +216,8 @@
 	width: calc(100% - 150px) !important;
 }
 @media print {
-	#CS_findBarIframe, #CS_sbIframe, #CS_quickMenuIframe, #CS_sbOpeningTab , #CS_icon {
-		display:none;
+	#contextsearch-widgets {
+		display:none !important;
 	}
 }
 
