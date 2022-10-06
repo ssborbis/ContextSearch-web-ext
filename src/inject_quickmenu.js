@@ -26,7 +26,7 @@ function checkToolStatus(name) {
 }
 
 function openQuickMenu(e, searchTerms) {
-
+	
 	e = e || new MouseEvent('click');
 
 	let target = e.target;
@@ -101,6 +101,12 @@ function removeUnderDiv() {
 	if ( getUnderDiv() ) getUnderDiv().parentNode.removeChild(getUnderDiv() );
 }
 
+function closeAllFolders() {
+	getShadowRoot().querySelectorAll('.CS_quickMenuIframe').forEach( el => {	
+		if ( el !== getQM() ) el.parentNode.removeChild(el);
+	});
+}
+
 function closeQuickMenu(eventType) {
 
 	eventType = eventType || null;
@@ -116,9 +122,7 @@ function closeQuickMenu(eventType) {
 	) return false;
 
 	// remove qm child windows
-	getShadowRoot().querySelectorAll('.CS_quickMenuIframe').forEach( el => {
-		el.parentNode.removeChild(el);
-	})
+	closeAllFolders();
 	
 	var qmc = getQM();
 
@@ -231,6 +235,22 @@ function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
 	}
 
 	qmc.src = browser.runtime.getURL('quickmenu.html#' + qmc.id);
+}
+
+const closeFolder = id => {
+	let f = getShadowRoot().getElementById(id);
+
+	if ( !f ) return;
+
+	let child = getShadowRoot().querySelector('iframe[parentFrameId="' + id + '"]');
+	// don't close if window has a child window
+	if ( child ) return;
+	f.parentNode.removeChild(f);
+}
+
+const closeChildFolders = id => {
+	let fs = getShadowRoot().querySelectorAll('iframe[parentFrameId="' + id + '"]');
+	fs.forEach(f => f.parentNode.removeChild(f));
 }
 
 // Listen for ESC and close Quick Menu
@@ -817,15 +837,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				break;
 
-			case "closeFolderWindow":
-				let f = getShadowRoot().getElementById(message.id);
+			case "closeFolder":
+				closeFolder(message.id);
+				break;
 
-				if ( !f ) break;
-
-				let child = getShadowRoot().querySelector('iframe[parentFrameId="' + message.id + '"]');
-				// don't close if window has a child window
-				if ( child ) break;
-				f.parentNode.removeChild(f);
+			case "closeAllFolders":
+				closeAllFolders();
 				break;
 
 			case "openQuickMenu":
