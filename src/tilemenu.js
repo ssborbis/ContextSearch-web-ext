@@ -715,6 +715,10 @@ async function makeQuickMenu(options) {
 
 		qm.addEventListener(eventType, e => {
 
+			// dispatch a custom event to replace standard events
+			document.dispatchEvent(new CustomEvent('document_' + eventType));
+
+
 			window.focus();
 
 			// move fix
