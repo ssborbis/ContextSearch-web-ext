@@ -1318,7 +1318,7 @@ function makeSearchBar() {
 				sb.dispatchEvent(e);
 			}
 			
-			let img = createMaskIcon("/icons/history.svg)");
+			let img = createMaskIcon("/icons/history.svg");
 			img.title = browser.i18n.getMessage('History') || "history";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
