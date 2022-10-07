@@ -1369,7 +1369,8 @@ function createStatusBar() {
 	let div = document.createElement('div');
 	div.id = 'CS_statusBar';
 	getShadowRoot().appendChild(div);
-	createStatusButton(browser.runtime.getURL("/icons/logo_notext.svg"));
+	let b = createStatusButton(browser.runtime.getURL("/icons/logo_notext.svg"));
+	b.title = browser.runtime.getManifest().name;
 }
 
 function createStatusButton(icon, callback) {
