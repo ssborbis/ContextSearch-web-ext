@@ -366,7 +366,7 @@ function createToolsArray() {
 
 async function makeQuickMenu(options) {
 
-	quickMenuObject = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"});
+	quickMenuObject = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}) || quickMenuObject;
 
 	type = options.type;
 
