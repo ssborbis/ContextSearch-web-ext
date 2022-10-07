@@ -1387,38 +1387,8 @@ function createStatusButton(icon, callback) {
 	return div;
 }
 
-// function createStatusButton(icon, action) {
-// 	let frame = document.createElement('iframe');
-// 	frame.className = 'CS_statusButtonFrame';
-// 	frame.setAttribute('allowtransparency', true);
-// 	getShadowRoot().querySelector('#CS_statusBar').appendChild(frame);
-
-// 	frame.onload = function() {
-
-// 		//let doc = frame.contentDocument || frame.contentWindow.document;
-
-// 		// let link = doc.createElement('link');
-// 		// link.rel = "stylesheet";
-// 		// link.href = "/tilemenu.css";
-// 		// doc.head.appendChild(link);
-
-// 		// let img = doc.createElement('div');;
-//   // 		img.className = 'tool';
-//   // 		img.style.setProperty('--mask-image', `url(${icon})`);
-//   // 		img.style.setProperty('--tools-color', 'black');
-// 		// doc.body.appendChild(img);
-
-// 		// doc.body.style.background = "linear-gradient(135deg, #fefcea 0%, #666 100%)";
-
-// 		// img.onclick = action;
-// 	}
-// 	frame.src = browser.runtime.getURL('blank.html');
-
-// }
-
-createStatusBar();
-
 if ( window == top && userOptions.showStatusBar ) {
+	createStatusBar();
 //	&& checkToolStatus("repeatsearch")
 	// createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
 	// 	alert('yep');
