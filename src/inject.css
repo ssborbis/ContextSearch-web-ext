@@ -303,7 +303,7 @@
 	background-color: #ddd;
 	border-radius: 16px;
 	border: 1px solid #444;
-	padding: 4px 16px 4px 4px;
+	padding: 2px 12px 2px 2px;
 	/*opacity: .3;*/
 
 }
@@ -315,9 +315,14 @@
 	/*width: 24px;
 	height: 24px;*/
 	display: inline-block;
-	margin: 0 6px;
+	margin: 0 4px;
 	text-align: center;
 	cursor: pointer;
+	border-radius: 4px;
+	padding: 3px;
+}
+.CS_statusButton:hover {
+	background-color: #bbb;
 }
 .CS_statusButton IMG {
 	width: 20px;
