@@ -296,5 +296,6 @@ const defaultUserOptions = {
 	quickMenuUseOldStyle: false, // remove
 	searchBarUseOldStyle: false, // remove
 	nativeAppDownloadFolder: "",
-	showStatusBar: false
+	showStatusBar: false,
+	quickMenuDisabledInNewTabs: false
 };

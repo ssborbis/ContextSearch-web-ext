@@ -1,6 +1,9 @@
 var screenCoords = {x:0, y:0};
 var cancelRequest = 0;
 
+// set the initial value on page load
+quickMenuObject.disabled = userOptions.quickMenuDisabledInNewTabs;
+
 var getQM = () => getShadowRoot().getElementById('CS_quickMenuIframe');
 
 function clearMouseDownTimer() {
@@ -259,7 +262,6 @@ document.addEventListener('keydown', e => {
 	if (
 		e.key !== "Escape" ||
 		e.repeat ||
-		!userOptions.quickMenu ||
 		quickMenuObject.disabled
 	) return false;
 	
@@ -289,7 +291,6 @@ document.addEventListener('keydown', e => {
 		e.which !== userOptions.quickMenuKey ||
 		e.repeat ||
 		!userOptions.quickMenuOnKey ||
-		!userOptions.quickMenu ||
 		getSelectedText(e.target) === "" ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs) ||
 		quickMenuObject.disabled
@@ -304,7 +305,6 @@ document.addEventListener('keyup', e => {
 	if (
 		e.which !== userOptions.quickMenuKey ||
 		e.repeat ||
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnKey ||
 		// check for typing in text box
 		( isTextBox(e.target) && !getSelectedText(e.target)) ||
@@ -323,7 +323,6 @@ document.addEventListener('keyup', e => {
 document.addEventListener('mousedown', e => {
 	
 	if (
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuAuto || 
 		e.which !== 1 ||
 		e.target.id === 'quickMenuElement' ||
@@ -337,7 +336,6 @@ document.addEventListener('mousedown', e => {
 document.addEventListener('mouseup', e => {
 
 	if (
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuAuto || 
 		e.which !== 1 ||
 		e.target.id === 'quickMenuElement' ||
@@ -383,7 +381,6 @@ document.addEventListener('mouseup', e => {
 document.addEventListener('mousedown', e => {
 
 	if (
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		e.which !== userOptions.quickMenuMouseButton ||
@@ -488,7 +485,6 @@ document.addEventListener('mousedown', e => {
 document.addEventListener('mouseup', e => {
 
 	if (
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		userOptions.quickMenuOnMouseMethod !== 'hold' ||
 		e.which !== userOptions.quickMenuMouseButton ||
@@ -518,7 +514,6 @@ function hasSearchTerms(e) {
 document.addEventListener('mousedown', e => {
 
 	if (
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnMouse ||
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
@@ -592,8 +587,7 @@ document.addEventListener('mousedown', e => {
 // Listen for quickMenuOnClick	
 document.addEventListener('mouseup', e => {	
 
-	if (
-		!userOptions.quickMenu || 
+	if ( 
 		!userOptions.quickMenuOnMouse ||
 		!['click', 'dblclick'].includes(userOptions.quickMenuOnMouseMethod) ||
 		e.which !== userOptions.quickMenuMouseButton ||
@@ -624,7 +618,6 @@ document.addEventListener('mouseup', e => {
 document.addEventListener('mousedown', e => {
 
 	if ( 
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnSimpleClick.enabled ||
 		userOptions.quickMenuOnSimpleClick.button !== e.which ||
 		!e.altKey && userOptions.quickMenuOnSimpleClick.alt ||
@@ -722,7 +715,6 @@ document.addEventListener('mousedown', e => {
 
 document.addEventListener('dragstart', e => {
 	if (
-		!userOptions.quickMenu ||
 		!userOptions.quickMenuOnDrag ||
 		quickMenuObject.disabled
 	) return;
@@ -1377,7 +1369,6 @@ function createStatusButton(icon, callback) {
 	let div = document.createElement('div');
 	div.className = 'CS_statusButton';
 	let sb = getShadowRoot().querySelector('#CS_statusBar');
-	//sb.insertBefore(div, sb.firstChild);
 	sb.appendChild(div);
 
 	let img = new Image();
