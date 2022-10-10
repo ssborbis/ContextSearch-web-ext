@@ -1385,11 +1385,15 @@ if ( window == top && userOptions.showStatusBar ) {
 	// createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
 	// 	alert('yep');
 	// });
+	const setStatus = (el, on) => {
+		el.title = `${browser.i18n.getMessage("quickmenu")} ${(on ? "on" : "off")}`;
+		el.classList.toggle("on", on);
+	}
 	let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {
 		QMtools.find(t => t.name === "disable").action();
-		div.title = `${browser.i18n.getMessage("quickmenu")} ${(quickMenuObject.disabled ? "off" : "on")}`;
+		setStatus(div, !quickMenuObject.disabled);
 	});
-	div.title = `${browser.i18n.getMessage("quickmenu")} ${(quickMenuObject.disabled ? "off" : "on")}`;
+	setStatus(div, !quickMenuObject.disabled);
 }
 
 if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')

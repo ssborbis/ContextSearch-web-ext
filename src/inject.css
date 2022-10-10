@@ -312,17 +312,19 @@
 	max-width: 200px;
 }
 .CS_statusButton {
-	/*width: 24px;
-	height: 24px;*/
 	display: inline-block;
 	margin: 0 4px;
 	text-align: center;
 	cursor: pointer;
 	border-radius: 4px;
-	padding: 3px;
+	padding: 2px;
+	border: 2px inset transparent;
 }
 .CS_statusButton:hover {
 	background-color: #bbb;
+}
+.CS_statusButton.on {
+	background: linear-gradient(340deg, rgba(232,232,232,1) 0%, rgba(119,119,136,1) 100%);
 }
 .CS_statusButton IMG {
 	width: 20px;
