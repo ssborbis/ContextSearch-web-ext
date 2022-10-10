@@ -2002,12 +2002,10 @@
     "description": "remove searchengines - confirm message"
   },
   
-  
  "customIconTooltip": {
-    "message": "Utiliser une image sur l’ordinateur",
+    "message": "Use a custom icon",
     "description": "toolbar icon - custom icon tooltip"
   },
-  
   
  "EnableHotkeysLabel": {
     "message": "Search Engine Hotkeys",
@@ -2149,11 +2147,11 @@
     "description": "advanced setting tooltip - button uncache"
   },
   "confirmUncache": {
-    "message": "Supprimer le cache de toutes les icônes ?",
+    "message": "remove all icon cache?",
     "description": "uncache message confirm"
   },
   "warningCache": {
-    "message": "Certaines icônes n’ont pas pu être mises en cache.",
+    "message": "some icons could not be cached",
     "description": "cache message warning"
   },
   "cacheIconsMaxSizeTooltip": {

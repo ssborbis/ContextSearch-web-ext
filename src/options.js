@@ -1346,7 +1346,7 @@ function buildThemes() {
 $('#b_cacheIcons').addEventListener('click', cacheAllIcons);
 
 $('#b_uncacheIcons').addEventListener('click', e => {
-	if ( confirm('remove all icon cache?'))	{
+	if ( confirm(browser.i18n.getMessage("confirmUncache")))	{
 		uncacheIcons();
 		saveOptions();
 	}
@@ -1366,7 +1366,7 @@ function cacheAllIcons(e) {
 	result.oncomplete = function() {
 		clearInterval(interval);
 		if ( result.bad.length )
-			msg.innerText = "some icons could not be cached";
+			msg.innerText = browser.i18n.getMessage("warningCache");
 		else
 			msg.innerText = "done";
 
