@@ -1351,7 +1351,14 @@ async function executeExternalProgram(info) {
 		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
 	}
 
-	let msg = {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false ), downloadURL: downloadURL };
+	let msg = {
+		path: path, 
+		cwd:node.cwd, 
+		return_stdout: ( node.postScript ? true : false ), 
+		downloadURL: downloadURL, 
+		downloadFolder: userOptions.nativeAppDownloadFolder || null 
+	};
+
 	console.log("native app message ->", msg);
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
