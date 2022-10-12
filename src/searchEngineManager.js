@@ -193,13 +193,13 @@ function buildSearchEngineContainer() {
 					return new Promise( (resolve, reject) => {
 					
 						if ( !edit_form.shortName.value.trim() ) {
-							showError(edit_form.shortName,browser.i18n.getMessage('NameInvalid'));
+							showError(edit_form.shortName,i18n('NameInvalid'));
 							resolve(false);
 						}
 						if (edit_form.shortName.value != li.node.title) {
 							
 							if (userOptions.searchEngines.find( _se => _se.title == edit_form.shortName.value) ) {
-								showError(edit_form.shortName,browser.i18n.getMessage('NameExists'));
+								showError(edit_form.shortName,i18n('NameExists'));
 								resolve(false);
 							}
 						}
@@ -212,7 +212,7 @@ function buildSearchEngineContainer() {
 								// edit_form.template.value = edit_form.template.value.replace(/^/, "CS://");
 						// }
 						// if (edit_form.template.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'GET' && edit_form.searchCode.value.trim() === "") {
-							// showError(edit_form.template,browser.i18n.getMessage("TemplateIncludeError"));
+							// showError(edit_form.template,i18n("TemplateIncludeError"));
 						// }
 						try {
 							let _url = new URL(edit_form.template.value);
@@ -220,7 +220,7 @@ function buildSearchEngineContainer() {
 							try {
 								JSON.parse(edit_form.template.value);
 							} catch (error2) {
-								showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+								showError(edit_form.template,i18n("TemplateURLError"));
 							}
 						}
 						try {
@@ -231,18 +231,18 @@ function buildSearchEngineContainer() {
 								edit_form.searchform.value = _url.origin;
 							} catch (_error) {}
 						}
-							// showError(edit_form.template,browser.i18n.getMessage("TemplateURLError"));
+							// showError(edit_form.template,i18n("TemplateURLError"));
 						//	return;
 
 						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
-							// showError(edit_form.post_params, browser.i18n.getMessage("POSTIncludeError"));
+							// showError(edit_form.post_params, i18n("POSTIncludeError"));
 						// }
 
 						
 						[edit_form.searchRegex, edit_form.matchRegex].forEach( el => {
 
 							if ( !validateRegex(el.value) )
-								showError(el, browser.i18n.getMessage("InvalidRegex") || "Invalid Regex");
+								showError(el, i18n("InvalidRegex") || "Invalid Regex");
 
 						});
 						
@@ -258,7 +258,7 @@ function buildSearchEngineContainer() {
 				
 				// clear error formatting
 				for (let label of edit_form.getElementsByTagName('label')) {
-					if (label.dataset.i18n) label.innerText = browser.i18n.getMessage(label.dataset.i18n);
+					if (label.dataset.i18n) label.innerText = i18n(label.dataset.i18n);
 					label.style.color = null;
 					clearError(label.nextSibling)
 				}
@@ -286,7 +286,7 @@ function buildSearchEngineContainer() {
 				edit_form.close.onclick = edit_form.closeForm;
 
 				edit_form.test.onclick = function() {
-					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
+					let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
 	
 					let tempSearchEngine = {
 						"searchForm": edit_form.searchform.value,
@@ -332,7 +332,7 @@ function buildSearchEngineContainer() {
 					
 					// clear error formatting
 					for (let label of edit_form.getElementsByTagName('label')) {
-						if (label.dataset.i18n) label.innerText = browser.i18n.getMessage(label.dataset.i18n);
+						if (label.dataset.i18n) label.innerText = i18n(label.dataset.i18n);
 						label.style.color = null;
 						clearError(label.nextSibling)
 					}
@@ -350,7 +350,7 @@ function buildSearchEngineContainer() {
 							
 								let ocse = ocses.find( _ocse => _ocse.name == edit_form.shortName.value );
 								
-								if ( ocse && !confirm(browser.i18n.getMessage('NameChangeWarning')))
+								if ( ocse && !confirm(i18n('NameChangeWarning')))
 									return;
 							}
 
@@ -469,7 +469,7 @@ function buildSearchEngineContainer() {
 				_form.searchCode.value = node.searchCode || "";
 				_form.description.value = node.description || "";
 
-				_form.querySelector('label[data-i18n="SearchCode"]').innerText = browser.i18n.getMessage("Script");
+				_form.querySelector('label[data-i18n="SearchCode"]').innerText = i18n("Script");
 
 				_form.searchCode.style.height = '12em';
 
@@ -477,7 +477,7 @@ function buildSearchEngineContainer() {
 				s_bookmarklets.style.width = 'auto';
 				// b_bookmarklets.innerText = "Find Bookmarlets";
 				let default_o = document.createElement('option');
-				default_o.innerText = browser.i18n.getMessage("SearchBookmarklets");
+				default_o.innerText = i18n("SearchBookmarklets");
 				default_o.value = "";
 
 				s_bookmarklets.appendChild(default_o);
@@ -523,7 +523,7 @@ function buildSearchEngineContainer() {
 				_form.close.onclick = _form.closeForm;
 
 				// _form.test.onclick = function() {
-				// 	let searchTerms = window.prompt(browser.i18n.getMessage("EnterURL"),"ContextSearch web-ext");
+				// 	let searchTerms = window.prompt(i18n("EnterURL"),"ContextSearch web-ext");
 				// 	browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 				// }
 				
@@ -618,14 +618,14 @@ function buildSearchEngineContainer() {
 				_form.searchCode.value = node.postScript || "";
 
 				let cmd = _form.querySelector('label[data-i18n="Template"]');
-				cmd.innerText = browser.i18n.getMessage("Command");
+				cmd.innerText = i18n("Command");
 
 				let cwd = _form.querySelector('label[data-i18n="FormPath"]');
-				cwd.innerText = browser.i18n.getMessage("WorkingDirectory");
+				cwd.innerText = i18n("WorkingDirectory");
 
 				let pas = _form.querySelector('label[data-i18n="SearchCode"]');
-				pas.innerText = browser.i18n.getMessage("PostAppScript");
-				pas.title = browser.i18n.getMessage("PostAppScriptTooltip");
+				pas.innerText = i18n("PostAppScript");
+				pas.title = i18n("PostAppScriptTooltip");
 
 				_form.insertBefore(cwd, _form.template.nextSibling);
 				_form.insertBefore(_form.searchform, cwd.nextSibling);
@@ -639,7 +639,7 @@ function buildSearchEngineContainer() {
 					img.style.verticalAlign = 'middle';
 					img.style.marginRight = '10px';
 					img.style.cursor = 'pointer';
-					img.title = browser.i18n.getMessage('NativeApp') + " ( click to check for updates )";
+					img.title = `${i18n('NativeApp')} ( ${i18n('CheckForUpdates')} )`;
 
 					img.onclick = function() { checkAndUpdateNativeApp() }
 
@@ -658,7 +658,7 @@ function buildSearchEngineContainer() {
 						if ( version ) {
 							span.innerText = 'v' + version;
 						} else {
-							span.innerHTML = `<a target="_blank" title="${browser.i18n.getMessage("MessengerOfflineTooltip")}" style="color:unset" href="https://github.com/ssborbis/ContextSearch-Native-App">${browser.i18n.getMessage('NativeAppMissing')}</a>`;
+							span.innerHTML = `<a target="_blank" title="${i18n("MessengerOfflineTooltip")}" style="color:unset" href="https://github.com/ssborbis/ContextSearch-Native-App">${i18n('NativeAppMissing')}</a>`;
 						}
 					}
 
@@ -707,10 +707,10 @@ function buildSearchEngineContainer() {
 						await browser.permissions.request({permissions: ['nativeMessaging']});
   						await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
   					} catch (error) {
- 						return alert(browser.i18n.getMessage('NativeAppMissing'));
+ 						return alert(i18n('NativeAppMissing'));
  					}
 
-					let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
+					let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
 					
 					let tempNode = Object.assign({}, JSON.parse(JSON.stringify(node)));
 					tempNode.path = _form.template.value.trim();
@@ -996,7 +996,7 @@ function buildSearchEngineContainer() {
 		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {
 			
 			let hotkey = document.createElement('span');
-			hotkey.title = browser.i18n.getMessage('Hotkey');
+			hotkey.title = i18n('Hotkey');
 			hotkey.className = 'hotkey';
 			hotkey.style.right = "4px";
 
@@ -1060,7 +1060,7 @@ function buildSearchEngineContainer() {
 			}
 
 			let keyword = document.createElement('input');
-			keyword.title = browser.i18n.getMessage('Keyword');
+			keyword.title = i18n('Keyword');
 			keyword.className = "inputNice hotkey keyword";
 
 
@@ -1129,7 +1129,7 @@ function buildSearchEngineContainer() {
 
 		// 	if ( se && se.matchRegex ) {
 		// 		let tool = document.createElement('div');
-		// 		tool.title = browser.i18n.getMessage('matchsearchtermsregex');
+		// 		tool.title = i18n('matchsearchtermsregex');
 		// 		tool.className = 'tool contextIcon';
 		// 		tool.style.setProperty('--mask-image', `url(${browser.runtime.getURL('icons/regex.svg')})`);
 		// 		header.appendChild(tool);
@@ -1469,7 +1469,7 @@ function buildSearchEngineContainer() {
 			return menuItem;
 		}
 
-		let _delete = createMenuItem(browser.i18n.getMessage('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
+		let _delete = createMenuItem(i18n('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
 		
 		_delete.onclick = function(e) {
 			closeSubMenus();
@@ -1494,7 +1494,7 @@ function buildSearchEngineContainer() {
 				
 			let msgDiv = document.createElement('div');
 			let msgDivHead = document.createElement('div');
-			msgDivHead.innerText = browser.i18n.getMessage('confirm');
+			msgDivHead.innerText = i18n('confirm');
 			msgDiv.appendChild(msgDivHead);
 
 			let msgDivRow = document.createElement('div');
@@ -1544,7 +1544,7 @@ function buildSearchEngineContainer() {
 			openMenu(_menu);
 		}
 			
-		let edit = createMenuItem(browser.i18n.getMessage('Edit'), browser.runtime.getURL('icons/edit.svg'));
+		let edit = createMenuItem(i18n('Edit'), browser.runtime.getURL('icons/edit.svg'));
 		edit.addEventListener('click', e => {
 			e.stopPropagation();
 
@@ -1560,7 +1560,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let hide = createMenuItem( li.node.hidden ? browser.i18n.getMessage('Show') : browser.i18n.getMessage('Hide'), browser.runtime.getURL('icons/hide.svg'));
+		let hide = createMenuItem( li.node.hidden ? i18n('Show') : i18n('Hide'), browser.runtime.getURL('icons/hide.svg'));
 		hide.addEventListener('click', () => {
 			if ( !selectedRows.length ) selectedRows.push(li);
 			
@@ -1575,13 +1575,13 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newFolder = createMenuItem(browser.i18n.getMessage('NewFolder'), browser.runtime.getURL('icons/folder.svg'));		
+		let newFolder = createMenuItem(i18n('NewFolder'), browser.runtime.getURL('icons/folder.svg'));		
 		newFolder.addEventListener('click', () => {
 			let newFolder = {
 				type: "folder",
 				parent: li.node.parent,
 				children: [],
-				title: browser.i18n.getMessage('NewFolder'),
+				title: i18n('NewFolder'),
 				id: gen(),
 				toJSON: li.node.toJSON
 			}
@@ -1601,7 +1601,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		// let newBookmarklet = createMenuItem(browser.i18n.getMessage('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
+		// let newBookmarklet = createMenuItem(i18n('AddBookmarklet'), browser.runtime.getURL('icons/code.svg'));		
 		// newBookmarklet.addEventListener('click', e => {
 		// 	closeSubMenus();
 		// 	e.stopImmediatePropagation();
@@ -1685,7 +1685,7 @@ function buildSearchEngineContainer() {
 
 		// });
 
-		let newScript = createMenuItem(browser.i18n.getMessage('NewScript'), browser.runtime.getURL('icons/code.svg'));		
+		let newScript = createMenuItem(i18n('NewScript'), browser.runtime.getURL('icons/code.svg'));		
 		newScript.addEventListener('click', e => {
 			closeSubMenus();
 			e.stopImmediatePropagation();
@@ -1712,7 +1712,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let copy = createMenuItem(browser.i18n.getMessage('Copy'), browser.runtime.getURL('icons/copy.svg'));	
+		let copy = createMenuItem(i18n('Copy'), browser.runtime.getURL('icons/copy.svg'));	
 		copy.addEventListener('click', e => {
 			
 			let newNode;
@@ -1733,7 +1733,7 @@ function buildSearchEngineContainer() {
 				// add menu items
 				let item1 = document.createElement('div');
 				item1.className = 'menuItem';
-				item1.innerText = browser.i18n.getMessage('AsShortcut');
+				item1.innerText = i18n('AsShortcut');
 				
 				item1.addEventListener('click', _e => {
 					let _newNode = Object.assign({}, li.node);
@@ -1748,7 +1748,7 @@ function buildSearchEngineContainer() {
 				
 				let item2 = document.createElement('div');
 				item2.className = 'menuItem';
-				item2.innerText = browser.i18n.getMessage('AsNewEngine');
+				item2.innerText = i18n('AsNewEngine');
 				
 				item2.addEventListener('click', _e => {
 					let _newNode = addNewEngine(li.node, true);
@@ -1782,7 +1782,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newEngine = createMenuItem(browser.i18n.getMessage('NewEngine'), browser.runtime.getURL('icons/new.svg'));	
+		let newEngine = createMenuItem(i18n('NewEngine'), browser.runtime.getURL('icons/new.svg'));	
 		newEngine.addEventListener('click', () => {
 			
 			let newNode = addNewEngine(li.node, false);		
@@ -1795,7 +1795,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newSeparator = createMenuItem(browser.i18n.getMessage('NewSeparator'), browser.runtime.getURL('icons/separator.svg'));	
+		let newSeparator = createMenuItem(i18n('NewSeparator'), browser.runtime.getURL('icons/separator.svg'));	
 		newSeparator.addEventListener('click', () => {
 			let newNode = {
 				type: "separator",
@@ -1812,11 +1812,11 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newExternalProgram = createMenuItem(browser.i18n.getMessage('NewExternalProgram'), browser.runtime.getURL('icons/terminal.svg'));	
+		let newExternalProgram = createMenuItem(i18n('NewExternalProgram'), browser.runtime.getURL('icons/terminal.svg'));	
 		newExternalProgram.addEventListener('click', () => {
 			let newNode = {
 				type: "externalProgram",
-				title:browser.i18n.getMessage("NewExternalProgram"),
+				title:i18n("NewExternalProgram"),
 				id: gen(),
 				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
@@ -1835,7 +1835,7 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newTool = createMenuItem(browser.i18n.getMessage('NewTool'), browser.runtime.getURL('icons/add.svg'));	
+		let newTool = createMenuItem(i18n('NewTool'), browser.runtime.getURL('icons/add.svg'));	
 		newTool.onclick = function(e) {
 
 			closeSubMenus();
@@ -1933,7 +1933,7 @@ function buildSearchEngineContainer() {
 			openMenu(_menu);
 		};
 
-		let newMultisearch = createMenuItem(browser.i18n.getMessage('newMultiSearch'), browser.runtime.getURL('icons/repeatsearch.svg'));	
+		let newMultisearch = createMenuItem(i18n('newMultiSearch'), browser.runtime.getURL('icons/repeatsearch.svg'));	
 		newMultisearch.addEventListener('click', e => {
 
 			e.stopImmediatePropagation();
@@ -2050,7 +2050,7 @@ function buildSearchEngineContainer() {
 		let se = (copy) ? Object.assign({},userOptions.searchEngines.find( _se => _se.id === node.id )) : false;
 		let default_value = (copy) ? se.title + " copy" : "";
 		
-		let msg = browser.i18n.getMessage("EnterUniqueName");
+		let msg = i18n("EnterUniqueName");
 		let shortName = "";
 
 		while(true) {
@@ -2061,7 +2061,7 @@ function buildSearchEngineContainer() {
 			for (let engine of userOptions.searchEngines) {
 				if (engine.title == shortName) {
 					console.log(engine.title + "\t" + shortName);
-					msg = browser.i18n.getMessage("EngineExists").replace("%1",engine.title) + " " + browser.i18n.getMessage("EnterUniqueName");
+					msg = i18n("EngineExists").replace("%1",engine.title) + " " + i18n("EnterUniqueName");
 					found = true;
 					break;
 				}
@@ -2110,7 +2110,7 @@ function buildSearchEngineContainer() {
 	
 	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {
 		
-		if ( !confirm(browser.i18n.getMessage("ConfirmResetAllSearchEngines")) ) return;
+		if ( !confirm(i18n("ConfirmResetAllSearchEngines")) ) return;
 		
 		let w = await browser.runtime.getBackgroundPage();
 		userOptions.nodeTree.children = [];	
@@ -2268,7 +2268,7 @@ function addFormListeners(form) {
 
 		let forlabel = document.createElement('label');
 		forlabel.setAttribute('for', form.iconPicker.id);
-		forlabel.title = browser.i18n.getMessage('uploadfromlocal');
+		forlabel.title = i18n('uploadfromlocal');
 		box.insertBefore(forlabel, box.firstChild);
 
 		img.onload = () => {
@@ -2322,7 +2322,7 @@ async function setRowContexts(row) {
 
 			let tool = createMaskIcon("icons/" + c + ".svg");
 			tool.classList.add('contextIcon');
-			tool.title = browser.i18n.getMessage(c);
+			tool.title = i18n(c);
 
 			if ( !hasContext(c, node.contexts))
 				tool.classList.add('disabled');
@@ -2445,7 +2445,7 @@ document.addEventListener('keydown', e => {
 			nodesToDelete = nodesToDelete.concat(findNodes(row.node, n => true));
 		});
 
-		if ( confirm(browser.i18n.getMessage("deleteNodesMessage", nodesToDelete.length)) ) {
+		if ( confirm(i18n("deleteNodesMessage", nodesToDelete.length)) ) {
 			removeNodesAndRows();
 		}
 	}

@@ -896,6 +896,10 @@
     "message": "back",
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
+
+  "Folder": {
+    "message": "Folder"
+  },
   
   "Folders": {
     "message": "Folders"
@@ -2479,6 +2483,26 @@
   },
   "CascadingFoldersToolTip": {
     "message": "Browse folders in a single menu or separate cascading menus"
+  },
+  "DontShowAgain": {
+    "message": "Don't show this again"
+  },
+  "Icon": {
+    "message": "icon"
+  },
+  "Inline": {
+    "message": "inline"
+  },
+  "Block": {
+    "message": "block"
+  },
+  "CheckForUpdates": {
+    "message": "check for updates"
+  },
+  "UpdateToVersion": {
+    "message": "Update native app script to version $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "Latest version already installed"
   }
-
 }

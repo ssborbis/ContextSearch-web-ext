@@ -3,7 +3,7 @@ const QMtools = [
 		name: 'close', 
 		icon: "icons/crossmark.svg",
 		context: ["quickmenu"],
-		title: browser.i18n.getMessage('tools_Close'),
+		title: i18n('tools_Close'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -18,7 +18,7 @@ const QMtools = [
 	{
 		name: 'copy', 
 		icon: "icons/copy.svg", 
-		title: browser.i18n.getMessage('tools_Copy'),
+		title: i18n('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -59,7 +59,7 @@ const QMtools = [
 	{
 		name: 'link', 
 		icon: "icons/external_link.svg", 
-		title: browser.i18n.getMessage('tools_OpenAsLink'),
+		title: i18n('tools_OpenAsLink'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -106,7 +106,7 @@ const QMtools = [
 	{
 		name: 'disable', 
 		icon: "icons/qm.svg", 
-		title: browser.i18n.getMessage('quickmenu'),
+		title: i18n('quickmenu'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -140,7 +140,7 @@ const QMtools = [
 	{
 		name: 'lock', 
 		icon: "icons/lock.svg", 
-		title: browser.i18n.getMessage('tools_Lock'),
+		title: i18n('tools_Lock'),
 		context: ["quickmenu"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -187,7 +187,7 @@ const QMtools = [
 	{
 		name: 'lastused', 
 		icon: "icons/history_one.svg", 
-		title: browser.i18n.getMessage('tools_lastused'),		
+		title: i18n('tools_lastused'),		
 		init: function() {
 
 			let tile = buildSearchIcon(null, this.title);
@@ -248,7 +248,7 @@ const QMtools = [
 	{
 		name: 'repeatsearch',
 		icon: "icons/repeatsearch.svg",
-		title: browser.i18n.getMessage('tools_repeatsearch'),
+		title: i18n('tools_repeatsearch'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 
@@ -303,7 +303,7 @@ const QMtools = [
 	{
 		name: 'toggleview', 
 		icon: "icons/list.svg", 
-		title: browser.i18n.getMessage('grid') + " / " + browser.i18n.getMessage('list'),
+		title: i18n('grid') + " / " + i18n('list'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -333,7 +333,7 @@ const QMtools = [
 	{
 		name: 'findinpage', 
 		icon: "icons/highlight.svg", 
-		title: browser.i18n.getMessage('findinpage'),
+		title: i18n('findinpage'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -350,7 +350,7 @@ const QMtools = [
 	{
 		name: 'openoptions', 
 		icon: "icons/settings.svg", 
-		title: browser.i18n.getMessage('settings'),
+		title: i18n('settings'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -365,7 +365,7 @@ const QMtools = [
 	{
 		name: 'toggle_theme', 
 		icon: "icons/theme.svg", 
-		title: browser.i18n.getMessage('ToggleTheme'),
+		title: i18n('ToggleTheme'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -381,7 +381,7 @@ const QMtools = [
 	{
 		name: 'toggle_hotkeys', 
 		icon: "icons/keyboard.svg", 
-		title: browser.i18n.getMessage('toggleHotkeys'),
+		title: i18n('toggleHotkeys'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -407,7 +407,7 @@ const QMtools = [
 	{
 		name: 'edit', 
 		icon: "icons/edit.svg", 
-		title: browser.i18n.getMessage('editmenu'),
+		title: i18n('editmenu'),
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
 			tile.appendChild(createMaskIcon(this.icon));
@@ -471,13 +471,13 @@ const QMtools = [
 					let div = document.createElement('div');
 					div.classList.add('edit_handle');
 					div.draggable = true;
-					div.innerText = browser.i18n.getMessage(i18n_titles[el.id]);
+					div.innerText = i18n(i18n_titles[el.id]);
 					div.dataset.parentId = el.id;
 
 					let cb = document.createElement('input');
 					cb.type = 'checkbox';
 					cb.checked = ( window.getComputedStyle(el).display !== 'none' );
-					cb.title = browser.i18n.getMessage('showhide')
+					cb.title = i18n('showhide')
 					
 					if ( el == qm ) cb.classList.add('hide');
 
@@ -615,7 +615,7 @@ const QMtools = [
 	{
 		name: 'block', 
 		icon: "icons/block.svg",
-		title: browser.i18n.getMessage('addtoblocklist'),
+		title: i18n('addtoblocklist'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -631,7 +631,7 @@ const QMtools = [
 			let tabInfo = await browser.runtime.sendMessage({action:"getCurrentTabInfo"});
 			let url = new URL(tabInfo.url);
 
-			if ( !userOptions.blockList.includes(url.hostname) && confirm(browser.i18n.getMessage('addtoblocklistconfirm', url.hostname))) {
+			if ( !userOptions.blockList.includes(url.hostname) && confirm(i18n('addtoblocklistconfirm', url.hostname))) {
 				console.log('adding to blocklist', url.hostname);
 				userOptions.blockList.push(url.hostname);
 				saveUserOptions();
@@ -641,7 +641,7 @@ const QMtools = [
 	{
 		name: 'recentlyused', 
 		icon: "icons/history.svg",
-		title: browser.i18n.getMessage('recentlyused'),
+		title: i18n('recentlyused'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -665,7 +665,7 @@ const QMtools = [
 	{
 		name: 'showhide', 
 		icon: "icons/hide.svg",
-		title: browser.i18n.getMessage('showhide'),
+		title: i18n('showhide'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -713,7 +713,7 @@ const QMtools = [
 	// {
 	// 	name: 'toggle_searchterms', 
 	// 	icon: "icons/selection.svg",
-	// 	title: browser.i18n.getMessage('toggleSearchTerms'),
+	// 	title: i18n('toggleSearchTerms'),
 	// 	context: ["quickmenu"],
 	// 	init: function() {
 	// 		let tile = buildSearchIcon(null, this.title);
@@ -759,7 +759,7 @@ const QMtools = [
 	{
 		name: 'open_image', 
 		icon: "icons/image_open.svg", 
-		title: browser.i18n.getMessage('tools_OpenImage'),
+		title: i18n('tools_OpenImage'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);
@@ -802,7 +802,7 @@ const QMtools = [
 	{
 		name: 'download', 
 		icon: "icons/download.svg", 
-		title: browser.i18n.getMessage('tools_Download'),
+		title: i18n('tools_Download'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
 			let tile = buildSearchIcon(null, this.title);

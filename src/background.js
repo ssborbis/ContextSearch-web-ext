@@ -405,7 +405,7 @@ async function notify(message, sender, sendResponse) {
 				// relabel link based on linkMethod
 				try {
 
-					let title = browser.i18n.getMessage("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? browser.i18n.getMessage("LINKTEXT") : browser.i18n.getMessage("LINK")).toUpperCase()) + getMenuHotkey();
+					let title = i18n("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? i18n("LINKTEXT") : i18n("LINK")).toUpperCase()) + getMenuHotkey();
 
 					await browser.contextMenus.update("link", {
 						title: title
@@ -470,7 +470,7 @@ async function notify(message, sender, sendResponse) {
 				
 				if ( engines.find(e => e.name === title) ) {
 					await browser.tabs.executeScript(sender.tab.id, {
-						code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+						code: `alert(i18n("FFEngineExists", "${title}"));`
 					});
 					return;
 				}
@@ -1186,7 +1186,7 @@ function openWithMethod(o) {
 		await browser.sidebarAction.setPanel( {panel: url} );
 			
 		if ( !await browser.sidebarAction.isOpen({}) )
-			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
+			notify({action: "showNotification", msg: i18n('NotificationOpenSidebar')}, {});
 
 		return {};
 	}
@@ -1348,7 +1348,7 @@ async function executeExternalProgram(info) {
 	try {
 		await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
 	} catch (error) {
-		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
+		return notify({action: "showNotification", msg: i18n('NativeAppMissing')})
 	}
 
 	let msg = {
@@ -1971,7 +1971,7 @@ function updateUserOptionsVersion(uo) {
 		
 		if (browser.bookmarks === undefined) return _uo;
 
-		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return _uo;
+		if (i18n("ContextSearchMenu") === "ContextSearch Menu") return _uo;
 		
 		console.log("-> 1.6.0");
 		
@@ -1980,7 +1980,7 @@ function updateUserOptionsVersion(uo) {
 			if (bookmarks.length === 0) return _uo;
 
 			console.log('New locale string for bookmark name. Attempting to rename');
-			return browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(() => {
+			return browser.bookmarks.update(bookmarks[0].id, {title: i18n("ContextSearchMenu")}).then(() => {
 				console.log(bookmarks[0]);
 			}, error => {
 				console.log(`An error: ${error}`);
@@ -2540,14 +2540,14 @@ async function injectContentScripts(tab, frameId) {
 	[
 		"/lib/browser-polyfill.min.js",
 		"/lib/crossbrowser.js",
+		"/utils.js", // for isTextBox
 		"/inject.js",
 		"/lib/mark.es6.min.js",
 		"/inject_highlight.js",
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js",
-		"/tools.js", // for shortcuts
-		"/utils.js" // for isTextBox
+		"/tools.js" // for shortcuts
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 

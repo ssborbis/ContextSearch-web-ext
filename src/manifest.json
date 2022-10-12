@@ -17,6 +17,7 @@
 		"scripts": [
 			"lib/browser-polyfill.min.js",
 			"lib/crossbrowser.js",
+			"utils.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
 			"lib/encoding.min.js",
@@ -31,7 +32,6 @@
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",
-			"utils.js",
 			"background.js"
 		]
 	},

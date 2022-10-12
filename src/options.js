@@ -24,7 +24,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	let searchEngines = [];
 	let file = ev.target.files[0];
 	
-	if ( $('#cb_overwriteOnImport').checked && confirm(browser.i18n.getMessage("ConfirmDeleteCustomSearchEngines")) ) {
+	if ( $('#cb_overwriteOnImport').checked && confirm(i18n("ConfirmDeleteCustomSearchEngines")) ) {
 		userOptions.nodeTree.children = [];
 		userOptions.searchEngines = [];
 	}
@@ -38,7 +38,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		$('#status_div').style.display='inline-block';
 		statusMessage({
 			img: browser.runtime.getURL("icons/spinner.svg"),
-			msg: browser.i18n.getMessage("LoadingRemoteContent"),
+			msg: i18n("LoadingRemoteContent"),
 			color: "transparent",
 			invert: false
 		});
@@ -92,21 +92,21 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 			if (details.hasFailedCount) {
 				statusMessage({
 					img: "icons/alert.svg",
-					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount),
+					msg: i18n("LoadingRemoteContentFail").replace("%1", details.hasFailedCount),
 					color: "transparent",
 					invert: false
 				});
 			} else if (details.hasTimedOut) {
 				statusMessage({
 					img: "icons/alert.svg",
-					msg: browser.i18n.getMessage("LoadingRemoteContentTimeout"),
+					msg: i18n("LoadingRemoteContentTimeout"),
 					color: "transparent",
 					invert: false
 				});
 			} else {
 				statusMessage({
 					img: "icons/checkmark.svg",
-					msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length),
+					msg: i18n("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length),
 					color: "#41ad49",
 					invert: true
 				});
@@ -120,7 +120,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		// print status message to Options page
 		statusMessage({
 			img: "icons/crossmark.svg",
-			msg: browser.i18n.getMessage("FailedToLoad"),
+			msg: i18n("FailedToLoad"),
 			color: "red",
 			invert: true
 		});
@@ -179,8 +179,8 @@ async function restoreOptions(restoreUserOptions) {
 		// restore settings with matching ids
 		traverse(uo, null);
 		
-		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || browser.i18n.getMessage('ClickToSet');
-		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || browser.i18n.getMessage('ClickToSet');
+		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || i18n('ClickToSet');
+		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || i18n('ClickToSet');
 
 		for (let p of document.getElementsByClassName('position')) {
 			p.classList.remove('active')
@@ -293,7 +293,7 @@ function _saveOptions(e) {
 	
 	function onSet() {
 		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
-		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
+		showSaveMessage(i18n("saved"), null, document.getElementById('saveNoticeDiv'));
 		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);
 	}
@@ -575,7 +575,7 @@ function keyButtonListener(e) {
 	e.target.addEventListener('keydown', function(evv) {
 	
 		if ( evv.key === "Escape" ) {
-			e.target.innerText = browser.i18n.getMessage('ClickToSet');
+			e.target.innerText = i18n('ClickToSet');
 			e.target.value = 0;
 		} else {
 			e.target.innerText = keyCodeToString(evv.which);
@@ -630,7 +630,7 @@ function keyArrayToButtons(arr, options) {
 	if ( Array.isArray(arr) ) {
 	
 		if (arr.length === 0) {
-			div.innerText = 'text' in options ? options.text : browser.i18n.getMessage('ClickToSet') || "Click to set";
+			div.innerText = 'text' in options ? options.text : i18n('ClickToSet') || "Click to set";
 		}
 		
 		for (let i=0;i<arr.length;i++) {
@@ -805,7 +805,7 @@ function buildToolIcons() {
 		});
 		
 		img.addEventListener('mouseout', e => {
-			t_toolIcons.innerText = browser.i18n.getMessage(t_toolIcons.dataset.i18n);
+			t_toolIcons.innerText = i18n(t_toolIcons.dataset.i18n);
 		});
 
 		$('#toolIcons').appendChild(img);
@@ -825,11 +825,11 @@ function buildPositionWidget() {
 		let t_position = $('#t_position');
 		el.addEventListener('mouseover', e => {
 			let parts = e.target.dataset.position.split(" ");
-			t_position.innerText = browser.i18n.getMessage("PositionRelativeToCursor").replace("%1", browser.i18n.getMessage(parts[0])).replace("%2",browser.i18n.getMessage(parts[1]));
+			t_position.innerText = i18n("PositionRelativeToCursor").replace("%1", i18n(parts[0])).replace("%2",i18n(parts[1]));
 		});
 		
 		el.addEventListener('mouseout', e => {
-			t_position.innerText = browser.i18n.getMessage(t_position.dataset.i18n);
+			t_position.innerText = i18n(t_position.dataset.i18n);
 		});
 		
 	}
@@ -886,7 +886,7 @@ function showInfoMsg(el, msg) {
 // 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
 // 	for (let el of i18n_tooltips) {
-// 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
+// 		el.dataset.msg = i18n(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
 		
 // 		el.addEventListener('mouseenter', e => {
 // 			showInfoMsg(el, el.dataset.msg);
@@ -953,7 +953,7 @@ function buildImportExportButtons() {
 					|| !newUserOptions.searchEngines
 					
 				) {
-					alert(browser.i18n.getMessage("ImportSettingsNotFoundAlert"));
+					alert(i18n("ImportSettingsNotFoundAlert"));
 					return;
 				}
 
@@ -989,7 +989,7 @@ function buildImportExportButtons() {
 				overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
 				let msgDiv = document.createElement('div');
 				msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
-				msgDiv.innerText = browser.i18n.getMessage("Fetchingremotecontent");
+				msgDiv.innerText = i18n("Fetchingremotecontent");
 				overDiv.appendChild(msgDiv);
 				document.body.appendChild(overDiv);
 				let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
@@ -1022,7 +1022,7 @@ function buildImportExportButtons() {
 
 			} catch(err) {
 				console.log(err);
-				alert(browser.i18n.getMessage("InvalidJSONAlert"));
+				alert(i18n("InvalidJSONAlert"));
 			}
 		}
 
@@ -1058,24 +1058,24 @@ function buildHelpTab() {
 		return false;
 	}
 	
-	let i18n = document.querySelectorAll('[data-i18n]');
+	let i18ns = document.querySelectorAll('[data-i18n]');
 	
-	for (let el of i18n) {
+	for (let el of i18ns) {
 
 		let textNode = traverse(el);
 		
-		if (browser.i18n.getMessage(el.dataset.i18n)) {
-			textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+		if (i18n(el.dataset.i18n)) {
+			textNode.nodeValue = i18n(el.dataset.i18n);
 			
 			if (el.title === "i18n_text")
-				el.title = browser.i18n.getMessage(el.dataset.i18n);
+				el.title = i18n(el.dataset.i18n);
 		}
 
 	}
 
 	// replace new-style titles
 	document.querySelectorAll('[title^="$"]').forEach( el => {
-		el.title = browser.i18n.getMessage(el.title.replace(/^\$/, "") );
+		el.title = i18n(el.title.replace(/^\$/, "") );
 		el.style.cursor = "help";
 	});
 
@@ -1233,7 +1233,7 @@ function buildSearchActions() {
 
 			let o = document.createElement('option');
 			o.value = key;
-			o.innerText = browser.i18n.getMessage(actions[key].i18n);
+			o.innerText = i18n(actions[key].i18n);
 
 			for ( let data in actions[key]) 
 				o.dataset[data] = actions[key][data];
@@ -1338,7 +1338,7 @@ function buildThemes() {
 	themes.forEach( t => {
 		let option = document.createElement('option');
 		option.value = t.name;
-		option.innerText = browser.i18n.getMessage(t.name.replace(" ","_")) || t.name;
+		option.innerText = i18n(t.name.replace(" ","_")) || t.name;
 		$('#quickMenuTheme').appendChild(option);
 	});
 }
@@ -1346,7 +1346,7 @@ function buildThemes() {
 $('#b_cacheIcons').addEventListener('click', cacheAllIcons);
 
 $('#b_uncacheIcons').addEventListener('click', e => {
-	if ( confirm(browser.i18n.getMessage("confirmUncache")))	{
+	if ( confirm(i18n("confirmUncache")))	{
 		uncacheIcons();
 		saveOptions();
 	}
@@ -1366,7 +1366,7 @@ function cacheAllIcons(e) {
 	result.oncomplete = function() {
 		clearInterval(interval);
 		if ( result.bad.length )
-			msg.innerText = browser.i18n.getMessage("warningCache");
+			msg.innerText = i18n("warningCache");
 		else
 			msg.innerText = "done";
 
@@ -1409,10 +1409,10 @@ function buildShortcutTable() {
 		tr.shortcut = s;
 		tr.appendChild(document.createElement('td'));
 		tr.appendChild(document.createElement('td'))
-			.appendChild(document.createTextNode(browser.i18n.getMessage(s.name) || s.name || s.action));
+			.appendChild(document.createTextNode(i18n(s.name) || s.name || s.action));
 
 		let span = tr.appendChild(document.createElement('td').appendChild(document.createElement('span')));
-		span.title = browser.i18n.getMessage("ClickToSet");
+		span.title = i18n("ClickToSet");
 		span.dataset.id = s.id;
 		span.style = "cursor:pointer;user-select:none;";
 		span.innerText = 'set';
@@ -1480,7 +1480,7 @@ function shortcutListener(hk, options) {
 		document.addEventListener('keypress', preventDefaults);
 		
 		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
-		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
+		hk.appendChild(document.createTextNode(i18n('PressKey')));
 				
 		document.addEventListener('keyup', e => {
 			
@@ -1587,7 +1587,7 @@ function buildAdvancedOptions() {
 		tr.appendChild(td2);
 
 		td1.innerText = o.id;
-		td1.title = browser.i18n.getMessage(o.id.replace(".", "_") + "Tooltip") || o.i18n;
+		td1.title = i18n(o.id.replace(".", "_") + "Tooltip") || o.i18n;
 		td1.style.cursor = 'help';
 
 		td2.appendChild(makeInput(o.id));
@@ -1688,7 +1688,7 @@ $('b_manualEdit').addEventListener('click', e => {
 
 	if ( !on ) {
 
-		if ( !confirm(browser.i18n.getMessage("manualeditwarning"))) return;
+		if ( !confirm(i18n("manualeditwarning"))) return;
 
 		$('t_manualEdit').style.height = window.innerHeight - 120 + "px";//$('advancedSettingsTable').getBoundingClientRect().height + "px";
 		$('advancedSettingsTable').style.display = 'none';
@@ -1734,7 +1734,7 @@ $('b_manualSave').addEventListener('click', e => {
 });
 
 $("#b_resetUserOptions").addEventListener('click', e => {
-	if ( confirm(browser.i18n.getMessage("resetUserOptionsConfirm")) ) {
+	if ( confirm(i18n("resetUserOptionsConfirm")) ) {
 		newUserOptions = JSON.parse(JSON.stringify(defaultUserOptions));
 		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
 		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
@@ -1814,14 +1814,14 @@ function createEditMenu() {
 }
 
 async function checkAndUpdateNativeApp() {
-	if ( !browser.runtime.sendNativeMessage ) return alert('Native app not connected!');
+	if ( !browser.runtime.sendNativeMessage ) return alert(i18n('NativeAppMissing'));
 
 	browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true}).then( newVersion => {
 		if ( newVersion ) {
-			if (confirm("Update native app script to version " + newVersion + "?"))
+			if (confirm(i18n("UpdateToVersion", newVersion)))
 				browser.runtime.sendNativeMessage("contextsearch_webext", {update:true});
 		} else {
-			alert('Latest version already installed');
+			alert(i18n("LatestVersionAlreadyInstalled"));
 		}
 	});
 }

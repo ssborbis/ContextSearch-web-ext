@@ -308,7 +308,7 @@ async function makeAddEngineBar() {
 		div.innerText = " ";
 		div.style.display = 'none';
 		div.insertBefore(img, div.firstChild);
-		div.title = browser.i18n.getMessage("AddCustomSearch");
+		div.title = i18n("AddCustomSearch");
 		aeb.appendChild(div);
 
 		let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {

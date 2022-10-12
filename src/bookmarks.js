@@ -25,7 +25,7 @@ class CSBookmarks {
 			});
 		}
 		
-		return browser.bookmarks.search({title: browser.i18n.getMessage("ContextSearchMenu")}).then( bookmarks => {
+		return browser.bookmarks.search({title: i18n("ContextSearchMenu")}).then( bookmarks => {
 
 			if (bookmarks.length === 0) return false;
 			return bookmarks[0];

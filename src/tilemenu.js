@@ -431,7 +431,7 @@ async function makeQuickMenu(options) {
 		sb.set("");
 		sb.focus();
 	};
-	csb.title = browser.i18n.getMessage('delete').toLowerCase();
+	csb.title = i18n('delete').toLowerCase();
 	
 	qm.toggleDisplayMode = async() => {
 
@@ -915,7 +915,7 @@ function buildQuickMenuElement(options) {
 	if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
 		var div = document.createElement('div');
 		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-		div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
+		div.innerText = i18n("WhereAreMyEngines");
 		div.onclick = function() {
 			browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
 		}	
@@ -1097,7 +1097,7 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 		
 		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
 
-			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
+			let tile = buildSearchIcon(null, i18n('back'));
 			let backIcon = createMaskIcon('icons/back.svg');
 			backIcon.style.position = "absolute";
 
@@ -1208,7 +1208,7 @@ function makeSearchBar() {
 	
 	let si = document.getElementById('searchIcon');
 
-	sb.placeholder = browser.i18n.getMessage('Search');		
+	sb.placeholder = i18n('Search');		
 	sb.dataset.position = userOptions.quickMenuSearchBar;
 
 	columns = (userOptions.searchBarDefaultView === 'text') ? 1 : userOptions.searchBarColumns;
@@ -1319,7 +1319,7 @@ function makeSearchBar() {
 			}
 			
 			let img = createMaskIcon("/icons/history.svg");
-			img.title = browser.i18n.getMessage('History') || "history";
+			img.title = i18n('History') || "history";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
@@ -1454,7 +1454,7 @@ function makeSearchBar() {
 			return div.style.display = 'none';
 
 		div.innerText = keys.length;
-		div.title = keys.map( k => browser.i18n.getMessage(k)).join(", ");
+		div.title = keys.map( k => i18n(k)).join(", ");
 
 		div.onclick = function() {
 
@@ -2360,7 +2360,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 	let hidden_count = _tiles.length - limit;
 	if ( hidden_count < 0 ) hidden_count = 0;
-	let title = hidden_count + " " + browser.i18n.getMessage("more");
+	let title = hidden_count + " " + i18n("more");
 
 	parentNode = parentNode || qm;
 	node = node || parentNode.node || {}
@@ -2384,7 +2384,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 	if ( limit >= _tiles.length ) return _tiles;
 
-	let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
+	let moreTile = buildSearchIcon(null, i18n('more'));
 	moreTile.appendChild(createMaskIcon("icons/chevron-down.svg"));
 
 	moreTile.style.textAlign='center';
@@ -2417,7 +2417,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 		});
 		
 		moreTile.action = less;
-		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
+		moreTile.dataset.title = moreTile.title = i18n("less");
 		moreTile.dataset.type = "less";
 		resizeMenu({more: true});
 
@@ -2733,7 +2733,7 @@ function makeContextsBar() {
 		let div = document.createElement('div');
 		// div.className = 'tile';
 		let icon = createMaskIcon(browser.runtime.getURL(`/icons/${c}.svg`));
-		icon.title = browser.i18n.getMessage(c);
+		icon.title = i18n(c);
 		div.appendChild(icon);
 		ctb.appendChild(div);
 

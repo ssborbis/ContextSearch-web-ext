@@ -1386,7 +1386,7 @@ if ( window == top && userOptions.showStatusBar ) {
 	// 	alert('yep');
 	// });
 	const setStatus = (el, on) => {
-		el.title = `${browser.i18n.getMessage("quickmenu")} ${(on ? "on" : "off")}`;
+		el.title = `${i18n("quickmenu")} ${(on ? "on" : "off")}`;
 		el.classList.toggle("on", on);
 	}
 	let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {

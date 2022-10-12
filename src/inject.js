@@ -501,15 +501,15 @@ function checkContextMenuEventOrderNotification() {
 	let n = showNotification({msg:"", sticky:true});
 
 	let yes = document.createElement('a');
-	yes.innerText = browser.i18n.getMessage('yes');
+	yes.innerText = i18n('yes');
 	yes.href = "#";
 
 	let no = document.createElement('a');
-	no.innerText = browser.i18n.getMessage('no');
+	no.innerText = i18n('no');
 	no.href="#";
 
 	let content = n.querySelector('.content');
-	content.innerText = browser.i18n.getMessage('checkContextMenuOrderNotification');
+	content.innerText = i18n('checkContextMenuOrderNotification');
 	n.appendChild(yes);
 	n.appendChild(document.createTextNode(" / "));
 	n.appendChild(no);

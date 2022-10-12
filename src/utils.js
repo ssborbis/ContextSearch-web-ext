@@ -40,7 +40,7 @@ function recentlyUsedListToFolder() {
 	let folder = {
 		type: "folder",
 		id: "___recent___",
-		title: browser.i18n.getMessage('Recent'),
+		title: i18n('Recent'),
 		children: [],
 		parent: (window.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/history.svg')
@@ -62,7 +62,7 @@ function matchingEnginesToFolder(s) {
 	let folder = {
 		type: "folder",
 		id: "___matching___",
-		title: browser.i18n.getMessage('regexmatches'),
+		title: i18n('regexmatches'),
 		children: [],
 		parent: (window.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/regex.svg'),
@@ -184,3 +184,5 @@ function createMaskIcon(src) {
 	return tool;
 }
 
+const i18n = browser.i18n.getMessage;
+const sendMessage = browser.runtime.sendMessage;
