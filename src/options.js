@@ -1066,6 +1066,13 @@ function buildHelpTab() {
 		
 		if (i18n(el.dataset.i18n)) {
 			textNode.nodeValue = i18n(el.dataset.i18n);
+
+			if ( userOptions.developerMode ) {
+				el.addEventListener('click', e => {
+					console.log(el.dataset.i18n);
+					navigator.clipboard.writeText(el.dataset.i18n);
+				})
+			}
 			
 			if (el.title === "i18n_text")
 				el.title = i18n(el.dataset.i18n);
