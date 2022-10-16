@@ -1,0 +1,2508 @@
+{
+    
+  "extensionDescription": {
+    "message": "Aggiungi con facilità i motori di ricerca ed effettua le ricerche tramite il menu contestuale o un comodo menu rapido a comparsa"
+  },
+    
+  "Settings": {
+    "message": "Impostazioni"
+  },
+  
+  "Support": {
+    "message": "Supporto"
+  },
+  
+   "Source": {
+    "message": "Codice sorgente"
+  },
+  
+   "Menus": {
+    "message": "Menu",
+    "description": "menus tab label"
+  },
+  
+   "SearchEngines": {
+    "message": "Motori di ricerca",
+    "description": "search engines tab label"
+  },
+  
+   "Help": {
+    "message": "Aiuto",
+    "description": "help tab label"
+  },
+  
+   "ContextMenu": {
+    "message": "Menu contestuale"
+  },
+  
+   "AddCustomSearchMenu": {
+    "message": "Mostra 'Aggiungi a ContextSearch'"
+  },
+  
+  "AddCustomSearchMenuTooltip": {
+    "message": "Attiva la voce nel menu contestuale 'Aggiungi a ContextSearch' nei campi di input (deseleziona se, in alcuni casi, compaiono più livelli quando si espande il menu)"
+  },
+
+   "QuickMenu": {
+    "message": "Menu rapido"
+  },
+  
+   "QuickMenuNote": {
+    "message": "Il menu rapido è disabilitato su addons.mozilla.org"
+  },
+  
+   "SearchActionsHeader": {
+    "message": "Azioni di ricerca"
+  },
+  
+   "SearchActionsCurrentTab": {
+    "message": "Apri nella scheda corrente"
+  },
+  
+   "SearchActionsNewTab": {
+    "message": "Apri in una nuova scheda"
+  },
+  
+   "SearchActionsBackgroundTab": {
+    "message": "Apri in una scheda in secondo piano"
+  },
+  
+   "SearchActionsBackgroundTabKeepOpen": {
+    "message": "Apri in una scheda in secondo piano e mantieni il menu aperto"
+  },
+  
+   "SearchActionsNewWindow": {
+    "message": "Apri in una nuova finestra"
+  },
+  
+   "SearchActionsIncognitoWindow": {
+    "message": "Apri in una finestra anonima"
+  },
+  
+   "SearchActionsNoAction": {
+    "message": "Nessuna azione"
+  },
+  
+   "LeftButton": {
+    "message": "Clic sinistro"
+  },
+  
+   "MiddleButton": {
+    "message": "Clic centrale"
+  },
+  
+   "RightButton": {
+    "message": "Clic destro"
+  },
+  
+   "LookLayoutHeader": {
+    "message": "Aspetto e disposizione"
+  },
+  
+   "Columns": {
+    "message": "Colonne"
+  },
+  
+  "ColumnsTooltip": {
+    "message": "Numero massimo di icone dei motori di ricerca per riga (vista a griglia)"
+  },
+
+  "ColumnsMinimumTooltip": {
+    "message": "Numero minimo di icone dei motori di ricerca per riga (vista a griglia)"
+  },
+  
+  "Items": {
+    "message": "Elementi"
+  },
+
+  "MenuSize": {
+    "message": "Dimensione del menu"
+  },
+  
+   "MenuSizeTooltip": {
+    "message": "Dimensioni in scala del menu rapido. Valori superiori al 100% ingrandiscono l'intero menu (ottimo per display ad alta risoluzione)"
+  },
+  
+  "IconSize": {
+    "message": "Dimensione delle icone"
+  },
+  
+  "IconSizeTooltip": {
+    "message": "Dimensioni in scala delle icone dei motori di ricerca. Al valore 200% le icone si adattano per intero al loro contenitore"
+  },
+  
+  "OpeningClosingHeader": {
+    "message": "Apertura e chiusura"
+  },
+  
+  "OpeningClosingDescription": {
+    "message": "Scegli come aprire il menu rapido"
+  },
+  
+   "Auto": {
+    "message": "Automatica"
+  },
+  
+  "AutoTooltip": {
+    "message": "Seleziona il testo e apri automaticamente"
+  },
+  
+   "EnableOnTextBoxes": {
+    "message": "Abilita nelle caselle di testo"
+  },
+  
+  "EnableOnTextBoxesTooltip": {
+    "message": "Abilita nelle caselle di testo e nei campi di input"
+  },
+  
+   "Mouse": {
+    "message": "Mouse"
+  },
+  
+     "MouseTooltip": {
+    "message": "Seleziona il testo e apri con il pulsante del mouse"
+  },
+  
+  "MouseDescription": {
+    "message": "Seleziona il metodo preferito ed il pulsante"
+  },
+  
+   "Hold": {
+    "message": "Tieni premuto"
+  },
+  
+   "HoldTooltip": {
+    "message": "Il menu si aprirà tenendo premuto il pulsante selezionato del mouse per circa 0.25 secondi"
+  },
+  
+   "SearchOnMouseup": {
+    "message": "Cerca al rilascio del pulsante del mouse"
+  },
+  
+   "SearchOnMouseupTooltip": {
+    "message": "Avvia una ricerca dal menu rapido quando il pulsante del mouse viene rilasciato senza dovere fare clic"
+  },
+  
+   "Click": {
+    "message": "Clic normale"
+  },
+  
+  "ClickTooltip": {
+    "message": "Il menu rapido si apre immediatamente con il clic destro. Tieni premuto il pulsante per aprire il menu contestuale"
+  },
+  
+   "Keyboard": {
+    "message": "Tastiera"
+  },
+  
+  "KeyboardTooltip": {
+    "message": "Seleziona il testo e apri usando la tastiera"
+  },
+  
+   "ChooseKey": {
+    "message": "Imposta il tasto chiave"
+  },
+  
+  "ChooseKeyTooltip": {
+    "message": "Seleziona il testo e premi il tasto chiave per aprire il menu rapido. Clicca sul pulsante adiacente per selezionare il tasto prescelto"
+  },
+  
+   "CloseAfterSearch": {
+    "message": "Chiudi il menu dopo l'avvio di una ricerca"
+  },
+  
+  "CloseAfterSearchTooltip": {
+    "message": "Chiudi il menu dopo avere effettuato una ricerca. Deseleziona in caso di ricerche frequenti con più motori di ricerca o se si preferisce chiudere il menu manualmente. Si può sostituire con '...mantieni il menu aperto' in 'Azioni di ricerca'"
+  },
+  
+   "CloseOnScroll": {
+    "message": "Chiudi tramite lo scorrimento o la rotellina del mouse"
+  },
+  
+   "CloseOnScrollTooltip": {
+    "message": "Chiudi il menu tramite lo scorrimento o la rotellina del mouse"
+  },
+  
+  "MouseHelp": {
+    "message": "In ambienti Linux o MacOS X, in base al comportamento predefinito di apertura del menu contestuale tramite gli eventi del mouse, gli utenti possono impostare 'ui.context_menus.after_mouseup = true' in about:config su Firefox per far funzionare correttamente le azioni del mouse ed evitare menu indesiderati. Altri utenti possono cambiare la modalità predefinita di apertura tenendo premuto Alt, Ctrl o Maiusc, oppure con doppio clic destro del mouse. Non tutte le opzioni funzionano per data piattaforma"
+  },
+
+  "Position": {
+    "message": "Posizione"
+  },
+  
+  "PositionDescription": {
+    "message": "Scegli la posizione per visualizzare il menu rapido"
+  },
+  
+   "HorizontalOffset": {
+    "message": "Spostamento orizzontale"
+  },
+  
+  "HorizontalOffsetTooltip": {
+    "message": "Allineamento in orizzontale (offset) del menu in pixel. Un valore positivo lo sposta a destra, un valore negativo a sinistra"
+  },
+
+  "VerticalOffset": {
+    "message": "Spostamento verticale"
+  },
+  
+  "VerticalOffsetTooltip": {
+    "message": "Allineamento in verticale (offset) del menu in pixel. Un valore positivo lo sposta verso il basso, un valore negativo verso l'alto"
+  },
+
+  "Tools": {
+    "message": "Strumenti"
+  },
+  
+  "ToolsPositionTooltip": {
+    "message": "Scegli dove visualizzare gli strumenti nei menu"
+  },
+  
+  "ToolsHelp": {
+    "message": "Clic per disattivare | Trascinare per riordinare"
+  },
+
+  "tools_Close": {
+    "message": "Chiudi il menu"
+  },
+  
+  "tools_Disable": {
+    "message": "Disabilita il menu"
+  },
+
+  "tools_Copy": {
+    "message": "Copia negli appunti"
+  },
+  
+  "tools_OpenAsLink": {
+    "message": "Apri come collegamento"
+  },
+
+  "tools_Lock": {
+    "message": "Blocca il menu aperto"
+  },
+  
+  "ImportExportSettings": {
+    "message": "Impostazioni di importazione/esportazione"
+  },
+  
+  "Import": {
+    "message": "Importa"
+  },
+  
+  "Export": {
+    "message": "Esporta"
+  },
+  
+  "Add": {
+    "message": "Aggiungi"
+  },
+  
+  "RemoveAll": {
+    "message": "Rimuovi tutto"
+  },
+  
+  "ShowHide": {
+    "message": "Mostra / Nascondi"
+  },
+  
+  "Bookmark": {
+    "message": "Preferiti"
+  },
+  
+  "Delete": {
+    "message": "Elimina"
+  },
+  
+  "SearchEnginesManagerHelp": {
+    "message": "Trascina la selezione per riordinare, clic destro per aggiungere/eliminare/editare"
+  },
+  
+  "ImportHeader": {
+    "message": "Importa i motori di ricerca 1-Clic di Firefox"
+  },
+  
+  "ImportDescription": {
+    "message": "Seleziona il file search.json.mozlz4 localizzato nella cartella del profilo di Firefox"
+  },
+  
+  "ImportSelectFile": {
+    "message": "Seleziona il file..."
+  },
+  
+  "AutoImportHeader": {
+    "message": "Importazione automatica"
+  },
+  
+  "EnableAutoImport": {
+    "message": "Abilita l'importazione automatica"
+  },
+  
+  "EnableAutoImportTooltip": {
+    "message": "Importa automaticamente nuovi motori di ricerca OpenSearch. Funzione circoscritta ai motori installati tramite l'API di ricerca di Firefox e richiede l'installazione di un'applicazione. Consulta la sezione 'Aiuto' per maggiori dettagli"
+  },
+  
+  "ProfilePath": {
+    "message": "Percorso del profilo"
+  },
+  
+  "Verify": {
+    "message": "Verifica e importa"
+  },
+  
+  "Find": {
+    "message": "Trova"
+  },
+  
+  "Create": {
+    "message": "Crea"
+  },
+  
+  "Simple": {
+    "message": "Base"
+  },
+  
+  "Advanced": {
+    "message": "Avanzate"
+  },
+  
+  "Yes": {
+    "message": "Sì"
+  },
+  
+  "No": {
+    "message": "No"
+  },
+  
+  "Cancel": {
+    "message": "Annulla"
+  },
+  
+  "Save": {
+    "message": "Salva"
+  },
+
+  "Name": {
+    "message": "Nome"
+  },
+  
+  "NameTooltip": {
+    "message": "Nome univoco per questo motore di ricerca"
+  },
+  
+  "Description": {
+    "message": "Descrizione"
+  },
+  
+  "DescriptionTooltip": {
+    "message": "Breve descrizione del motore di ricerca (massimo 1024 caratteri)"
+  },
+  
+  "Template": {
+    "message": "Modello"
+  },
+  
+  "TemplateTooltip": {
+    "message": "URL di invio del modulo di ricerca. Se il motore usa il metodo GET bisogna includere {searchTerms}, ad esempio « http://example.com/?q={searchTerms} »"
+  },
+  
+  "FormPath": {
+    "message": "Indirizzo del modulo"
+  },
+  
+  "FormPathTooltip": {
+    "message": "In genere è la pagina iniziale del sito web relativa al motore di ricerca. Se lasciato vuoto, durante il salvataggio viene automaticamente impostato il nome di dominio dell'URL indicato nel 'Modello'"
+  },
+  
+  "POSTparams": {
+    "message": "Parametri POST"
+  },
+  
+  "POSTparamsTooltip": {
+    "message": "Elenco di parametri e valori POST separati da '&'; si applica solo quando si utilizza il metodo POST. Esempio: « q={searchTerms}&lang=en&maxresults=100 »"
+  },
+  
+  "Icon": {
+    "message": "URI icona"
+  },
+  
+  "IconTooltip": {
+    "message": "URI dell'icona selezionata da utilizzare. Sono consigliati valori minori di 64x64 pixel e non maggiori di 10kb"
+  },
+  
+  "Method": {
+    "message": "Metodo"
+  },
+  
+  "MethodTooltip": {
+    "message": "Metodi di richiesta GET o POST del modulo di ricerca"
+  },
+  
+  "Encoding": {
+    "message": "Codifica"
+  },
+  
+  "EncodingTooltip": {
+    "message": "Codifica dei caratteri richiesta dal modulo di ricerca (di solito UTF-8)"
+  },
+  
+  "Test": {
+    "message": "Prova"
+  },
+  
+  "NewEngineAdded": {
+    "message": "Nuovo motore di ricerca aggiunto a ContextSearch"
+  },
+  
+  "NewEngineAddedTooltip": {
+    "message": "Installa questo motore nella barra di ricerca di Firefox utilizzando un'API OpenSearch dedicata"
+  },
+  
+  "AlsoAdd": {
+    "message": "Aggiungerlo anche ai motori di ricerca di Firefox?"
+  },
+  
+  "CannotCreate": {
+    "message": "Non è possibile creare un motore di ricerca a partire da queste informazioni"
+  },
+  
+  "OpenAdvanced": {
+    "message": "Aprire la modalità avanzata?"
+  },
+  
+  "DidEngineInstall": {
+    "message": "Il motore di ricerca è stato installato correttamente?"
+  },
+  
+  "RemovingEngine": {
+    "message": "Eliminazione del motore di ricerca"
+  },
+  
+  "CreateCustomSearch": {
+    "message": "Crea ricerca personalizzata"
+  },
+  
+  "MustImport": {
+    "message": "Se è stato installato un motore OpenSearch, è necessario importarlo in ContextSearch tramite l'importazione da file"
+  },
+  
+  "MoreInfo": {
+    "message": "Ulteriori informazioni"
+  },
+  
+  "NewEngineImported": {
+    "message": "$1 motori di ricerca sono stati aggiunti a ContextSearch"
+  },
+  
+  "InstallOfficialTooltip": {
+    "message": "Installa il motore OpenSearch ufficiale per questo sito web"
+  },
+  
+  "FindMycroftTooltip": {
+    "message": "Trova un motore di ricerca su MycroftProject"
+  },
+  
+  "CreateCustomTooltip": {
+    "message": "Crea un motore OpenSearch personalizzato"
+  },
+  
+  "LoadingRemoteContent": {
+    "message": "Caricamento contenuto remoto"
+  },
+  
+  "LoadingRemoteContentFail": {
+    "message": "Il caricamento delle icone %1 non è riuscito. Questo può accadere quando la protezione antitracciamento è attiva"
+  },
+  
+  "LoadingRemoteContentTimeout": {
+    "message": "Il recupero delle icone in remoto è stato interrotto. Alcune icone non sono state caricate"
+  },
+  
+  "RemoveAllEnginesPrompt": {
+    "message": "Rimuovere tutti i motori di ricerca?"
+  },
+  
+  "EnterUniqueName": {
+    "message": "Assegna un nome univoco a questo motore di ricerca"
+  },
+  
+  "EngineExists": {
+    "message": "Il motore di ricerca %1 è già esistente."
+  },
+  
+  "TemplateMissingeMessage": {
+    "message": "Non è stato possibile trovare un modello per questo modulo di ricerca. Prova ad effettuare una ricerca e immetti qui l'URL risultante sostituendo il termine cercato con {searchTerms}"
+  },
+  
+  "TemplateIncludeError": {
+    "message": "{searchTerms} deve essere incluso nel modello di ricerca"
+  },
+
+  "TemplateURLError": {
+    "message": "Il modello deve contenere un URL valido"
+  },
+
+  "DescriptionEmptyError": {
+    "message": "È necessario fornire una descrizione"
+  },
+
+  "DescriptionSizeError": {
+    "message": "La descrizione può contenere al massimo 1024 caratteri"
+  },
+  
+  "FormPathURLError": {
+    "message": "L'indirizzo del modulo deve essere un URL"
+  },
+  
+  "POSTIncludeError": {
+    "message": "{searchTerms} deve essere incluso nei parametri POST"
+  },
+  
+  "IconURLError": {
+    "message": "L'icona deve avere un URL valido"
+  },
+  
+  "IconLoadError": {
+    "message": "Il caricamento dell'icona non è riuscito"
+  },
+  
+  "EnterSearchTerms": {
+    "message": "Inserisci i termini di ricerca"
+  },
+  
+  "BookmarksPermissionMessage": {
+    "message": "Dopo avere chiuso questo avviso, verrà chiesto un permesso per accedere ai segnalibri. \n\nIn caso di accettazione, una nuova cartella 'Menu di ContextSearch' contenente i motori di ricerca correnti sarà aggiunta alla cartella 'Altri segnalibri', dove sarà possibile aggiungere separatori o raggruppare in sottocartelle.\n\nNon rinominare i segnalibri corrispondenti ai motori di ricerca altrimenti smetteranno di funzionare. I segnalibri eliminati possono essere reinseriti dalle opzioni di ContextSearch nella sezione 'Motori di ricerca'. Cliccando con il pulsante destro del mouse sulla rispettiva icona nell'elenco è possibile rimuovere o aggiungere i segnalibri"
+  },
+  
+  "NativeAppImportError": {
+    "message": "Il caricamento del file non è riuscito (%1). L'app nativa è installata?"
+  },
+  
+  "ImportSettingsNotFoundAlert": {
+    "message": "Impostazioni di ContextSearch non trovate!"
+  },
+  
+  "InvalidJSONAlert": {
+    "message": "File JSON non valido"
+  },
+  
+  "ImportSuccessful": {
+    "message": "Importazione riuscita"
+  },
+  
+  "WhereAreMyEngines": {
+    "message": "Dove sono i miei motori di ricerca?"
+  },
+  
+  "ErrorParsing": {
+    "message": "Errore durante l'elaborazione %1\nSe persiste, la causa potrebbe risiedere nei criteri di blocco dei contenuti"
+  },
+  
+  "AddCustomSearch": {
+    "message": "Aggiungi a ContextSearch"
+  },
+  
+  "SearchFor": {
+    "message": "Cerca \"%1\" con..."
+  },
+
+  "SearchForContext": {
+    "message": "Cerca $1"
+  },
+  
+  "SearchForWithVariable": {
+	"message": "Cerca \"%s\" con..."
+  },
+  
+  "SearchWith": {
+    "message": "Cerca con",
+    "description": "title in context menu when searching"
+  },
+  
+  "AddSearchEngines": {
+    "message": "+ Aggiungi motori di ricerca",
+    "description": "title in context menu when no search engines installed"
+  },
+  
+  "ContextSearchMenu": {
+    "message": "Menu di ContextSearch",
+    "description": "root folder name for bookmarks"
+  },
+  
+  "PositionRelativeToCursor": {
+    "message": "%1 %2 del puntatore del mouse",
+    "description": "quick menu opening position relative to the mouse cursor. %1 is top|bottom, %2 is left|center|right"
+  },
+  
+  "top": {
+    "message": "In alto"
+  },
+  
+  "bottom": {
+    "message": "In basso"
+  },
+  
+  "left": {
+    "message": "A sinistra"
+  },
+  
+  "center": {
+    "message": "Al centro"
+  },
+  
+  "right": {
+    "message": "A destra"
+  },
+  
+  "NameExists": {
+    "message": "Nome già esistente",
+    "description": "short message for duplicate engine names"
+  },
+  
+  "NameInvalid": {
+    "message": "Nome non valido",
+    "description": "short error for bad engine name"
+  },
+  
+  "ImportedEngines": {
+    "message": "Importato/i %1 motore/i (%2 nuovo/i)"
+  },
+  
+  "ClickToEdit": {
+    "message": "Clicca per editare"
+  },
+  
+  "BackspaceKey": {
+    "message": "Backspace"
+  },
+  
+  "EnterKey": {
+    "message": "Invio"
+  },
+  
+  "ShiftKey": {
+    "message": "Maiusc"
+  },
+  
+  "PauseBreakKey": {
+    "message": "Pausa/Interr"
+  },
+  
+  "CapsLockKey": {
+    "message": "Bloc Maiusc"
+  },
+  
+  "EscKey": {
+    "message": "Esc"
+  },
+  
+  "SpaceKey": {
+    "message": "Spazio"
+  },
+  
+  "PgUpKey": {
+    "message": "PagSu"
+  },
+  
+  "PgDnKey": {
+    "message": "PagGiù"
+  },
+  
+  "EndKey": {
+    "message": "Fine"
+  },
+  
+  "HomeKey": {
+    "message": "Inizio"
+  },
+  
+  "LeftArrowKey": {
+    "message": "Freccia sinistra"
+  },
+  
+  "UpArrowKey": {
+    "message": "Freccia su"
+  },
+  
+  "RightArrowKey": {
+    "message": "Freccia destra"
+  },
+  
+  "DownArrowKey": {
+    "message": "Freccia giù"
+  },
+  
+  "InsertKey": {
+    "message": "Ins"
+  },
+  
+  "DelKey": {
+    "message": "Canc"
+  },
+  
+  "LeftWindowKey": {
+    "message": "Tasto Windows sinistro"
+  },
+  
+  "RightWindowKey": {
+    "message": "Tasto Windows destro"
+  },
+  
+  "SelectKey": {
+    "message": "Seleziona il tasto"
+  },
+  
+  "NumLockKey": {
+    "message": "Num Lock"
+  },
+  
+  "ScrollLockKey": {
+    "message": "Bloc Scorr"
+  },
+  
+  "Validating": {
+    "message": "Convalida in corso..."
+  },
+  
+  "SearchBar": {
+    "message": "Barra di ricerca"
+  },
+  
+  "SearchBarTooltip": {
+    "message": "Scegli la posizione della barra di ricerca nel menu rapido"
+  },
+  
+  "hidden": {
+    "message": "Nascondi"
+  },
+  
+  "KeepMenuOpen": {
+    "message": "Mantieni il menu aperto"
+  },
+  
+  "Search": {
+    "message": "Cerca",
+    "description": "placeholder in search bar input"
+  },
+  
+  "Copy": {
+    "message": "Copia",
+    "description": "button to duplicate a search engine from the manager"
+  },
+
+  "Hotkey": {
+    "message": "Tasto di scelta rapida",
+    "description": "label for Hotkey option"
+  },
+  
+  "HotkeyTooltip": {
+    "message": "Apri il menu rapido in qualsiasi momento utilizzando un tasto di scelta rapida",
+    "description": "description for Hotkey option"
+  },
+  
+  "Focus": {
+    "message": "Focalizza all'apertura",
+    "description": "label for auto focus on search bar"
+  },
+  
+  "FocusTooltip": {
+    "message": "Focalizza sulla barra di ricerca quando il menu viene aperto",
+    "description": "description for focus"
+  },
+  
+  "SelectText": {
+    "message": "Evidenzia il testo quando si focalizza"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Evidenzia tutto il testo nella barra di ricerca quando si focalizza",
+    "description": "description for select text in search bar"
+  },
+  
+  "NameChangeWarning": {
+    "message": "Rinominare i motori di ricerca può causare duplicati durante l'importazione manuale o automatica dei motori da Firefox. Si può risolvere eliminando o nascondendo i motori con il vecchio nome dalle impostazioni di ricerca di Firefox. Sei sicuro che vuoi rinominare questo motore?",
+    "description": "warn user about potential problems when changing search engine names"
+  },
+  
+  "PressKey": {
+    "message": "Premi una combinazione di tasti",
+    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu"
+  },
+  
+  "History": {
+	"message": "Cronologia",
+	"description": "label for History icon"
+  },
+
+  "ClearSearchHistory": {
+    "message": "Cancella la cronologia delle ricerche",
+    "description": "Options label / context menu entry for clearing search history"
+  },
+  
+  "ClearSearchHistoryTooltip": {
+    "message": "Elimina la cronologia delle ricerche della barra degli strumenti di ricerca",
+    "description": "description for clearing search history"
+  },
+
+  "ShowSuggestions": {
+    "message": "Mostra suggerimenti",
+    "description": "Options label / context menu entry for toggling suggestions for the toolbar"
+  },
+  
+  "ShowSuggestionsTooltip": {
+    "message": "Recupera i suggerimenti di ricerca da Google e visualizzali con la cronologia nella barra di ricerca",
+    "description": "description for Show Suggestions"
+  },
+  
+  "SearchBarUseOldStyle": {
+    "message": "Colonna singola con etichette",
+    "description": "Options label for using the old Firefox style of search bar"
+  },
+  
+  "SearchBarUseOldStyleTooltip": {
+    "message": "Visualizza i motori di ricerca in un'unica colonna con le etichette. Questo sovrascrive l'impostazione delle colonne"
+  },
+  
+  "ToolbarSearch": {
+    "message": "Cerca sulla barra degli strumenti",
+	"description": "Section label for the browser action search bar"
+  },
+  
+  "SearchBarCloseAterSearchTooltip": {
+    "message": "Chiudi il menu dopo l'avvio di una  ricerca"
+  },
+  
+  "PerformASearchHeader": {
+    "message": "Modello mancante",
+    "description": "header message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearch": {
+    "message": "Clicca su OK ed effettua una nuova ricerca utilizzando il modulo che intendi aggiungere",
+    "description": "message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearchTooltip": {
+    "message": "Il modulo non contiene le informazioni necessarie per creare un motore di ricerca. Esegui una ricerca per permettere a ContextSearch di esplorare un modello di ricerca valido. E' consigliabile non usare termini che normalmente sono contenuti in un URL di ricerca, ad esempio 'cerca', 'http', il nome del sito o altre parole comuni che si possono trovare in un indirizzo web"
+  },
+  
+  "OK": {
+    "message": "OK",
+    "description": ""
+  },
+  
+  "Back": {
+    "message": "Precedente",
+    "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
+  },
+
+  "Folder": {
+    "message": "Cartella"
+  },
+  
+  "Folders": {
+    "message": "Cartelle"
+  },
+  
+  "SearchActionsOpenFolder": {
+    "message": "Esplora la cartella",
+	"description": "SELECT option label for opening quick menu folder"
+  },
+  
+  "DisabledByHotkeys": {
+    "message": "Disabilitato se i tasti di scelta rapida sono attivi",
+    "description": "message for search bar focus option when hotkeys are enabled"
+  },
+  
+  "AddOpenSearchEngine": {
+    "message": "Installa questo motore nella barra di ricerca di Firefox",
+    "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
+  },
+  
+  "Regex": {
+    "message": "Modifica le espressioni regolari",
+    "description": ""
+  },
+
+  "MatchSearchTermsRegex": {
+    "message": "Espressione regolare corrispondente",
+    "description": ""
+  },
+  
+  "ShortcutKey": {
+    "message": "Tasto di scelta rapida",
+    "description": "Label for context menu hotkey"
+  },
+  
+  "ShortcutKey_tooltip": {
+    "message": "Tasto chiave per espandere la voce 'Cerca con...' del menu contestuale",
+    "description": "context menu hotkey tooltip"
+  },
+  
+  "Edit": {
+    "message": "Edita",
+    "description": "Manager menu item"
+  },
+  
+  "Hide": {
+    "message": "Nascondi",
+    "description": "Manager menu item"
+  },
+  
+  "Show": {
+    "message": "Mostra",
+    "description": "Manager menu item"
+  },
+  
+  "NewFolder": {
+    "message": "Nuova cartella",
+    "description": "Manager menu item"
+  },
+  
+  "NewEngine": {
+    "message": "Nuovo motore di ricerca",
+    "description": "Manager menu item"
+  },
+  
+  "NewSeparator": {
+    "message": "Nuovo separatore",
+    "description": "Manager menu item"
+  },
+  
+  "AddBookmarklet": {
+    "message": "Aggiungi bookmarklet",
+    "description": "Manager menu item"
+  },
+  
+  "RemoveNode": {
+    "message": "Rimuovi il nodo",
+    "description": "Manager menu item"
+  },
+  
+  "DeleteEngines": {
+    "message": "Elimina $1 motore/i",
+    "description": "Manager menu item"
+  },
+  
+  "Confirm": {
+    "message": "Conferma",
+    "description": "Manager menu item"
+  },
+  
+  "AsShortcut": {
+    "message": "Come scorciatoia",
+    "description": "Manager menu item"
+    
+  },
+  
+  "AsNewEngine": {
+    "message": "Come nuovo motore",
+    "description": "Manager menu item"
+  },
+  
+  "Rows": {
+    "message": "Righe",
+    "description": "Quick menu rows label"
+  },
+  
+  "RowsTooltip": {
+    "message": "Numero massimo di righe da visualizzare all'apertura (vista a griglia)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "RowsSingleColumnTooltip": {
+    "message": "Numero massimo di righe da visualizzare all'apertura (vista testo)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "ContextMenuHotKey": {
+    "message": "Tasto di scelta rapida",
+    "description": "Label for Context Menu shortcut key"
+  },
+  
+  "ContextMenuHotKeyTooltip": {
+    "message": "Tasto chiave per accedere al sottomenu di ContextSearch",
+    "description": "Description for Context Menu shortcut key"
+  },
+  
+  "EnableHistory": {
+    "message": "Ricorda la cronologia delle ricerche",
+    "description": ""
+  },
+  
+  "EnableHistoryTooltip": {
+    "message": "Memorizza i termini delle ricerche e mostrali assieme ai suggerimenti di ricerca"
+  },
+  
+  "SideBar": {
+	"message": "Pannello laterale"
+  },
+  
+  "SideBarTooltip": {
+	"message": "Il pannello laterale è un'estensione della barra degli strumenti (la maggior parte delle impostazioni sono condivise) con funzionalità aggiuntive di visualizzazione all'interno della finestra del browser. Ad eccezione del browser Chrome, è possibile il trascinamento della selezione sul menu o l'icona interattiva"
+  },
+  
+  "SideBarPositionTooltip": {
+	"message": "Scegli dove visualizzare il pannello laterale"
+  },
+
+  "SideBarWidgetEnable": {
+    "message": "Mostra l'icona interattiva",
+    "description": "label for displaying the sidebar icon"
+  },
+  
+  "SideBarWidgetEnableTooltip": {
+    "message": "Mostra l'icona interattiva per aprire il pannello laterale",
+    "description": "description for displaying the sidebar icon"
+  },
+
+  "SideBarHotkeyTooltip": {
+    "message": "Apri il pannello laterale tramite scorciatoie di tastiera"
+  },
+  
+  "InitialOpacity": {
+    "message": "Opacità iniziale",
+    "description": "label for setting Quick menu opening opacity"
+  },
+  
+  "InitialOpacityTooltip": {
+    "message": "Il menu rapido si apre con un livello di opacità basso e diventa opaco al passaggio del mouse"
+  },
+  
+  "AutoMaxChars": {
+    "message": "Numero massimo di caratteri",
+    "description": "label for setting maximum selected characters for auto open"
+  },
+  
+  "AutoMaxCharsTooltip": {
+    "message": "Non aprire il menu rapido se la selezione supera (n) caratteri di lunghezza (0 = nessun limite)"
+  },
+  
+  "EnableAnimations": {
+    "message": "Animazioni",
+    "description": ""
+  },
+  
+  "EnableAnimationsTooltip": {
+    "message": "Aggiungi effetti di trasparenza, ridimensionamento e scorrimento nei menu. Disabilita per un'interfaccia più veloce e pratica",
+    "description": ""
+  },
+
+    "EnableAnimationsTileSlider": {
+    "message": "Effetti di scorrimento",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Usa effetti di scorrimento per le icone nei menu",
+    "description": ""
+  },
+  
+  "Theme": {
+    "message": "Tema",
+    "description": ""
+  },
+  
+  "ThemeTooltip": {
+    "message": "Tema da utilizzare per il menu rapido, la barra degli strumenti ed il pannello laterale",
+    "description": ""
+  },
+      
+  "UserStyles": {
+    "message": "Stili utente",
+    "description": "label for custom user styles"
+  },
+  
+  "SideBarStartOpen": {
+    "message": "Apri al caricamento",
+    "description": "label for opening the sidebar when the page loads"
+  },
+  
+  "SideBarStartOpenTooltip": {
+    "message": "Apri automaticamente il pannello laterale al caricamento della pagina",
+    "description": ""
+  },
+  
+  "More": {
+    "message": "in più",
+    "description": ""
+  },
+  
+  "less": {
+    "message": "Meno",
+    "description": ""
+  },
+
+  "OCSEDeleteWarning": {
+    "message": "I motori di ricerca 1-Clic di Firefox non possono essere eliminati. Si possono nascondere per disabilitarli",
+    "description": "alert message when attempting to delete a ocse from the manager"
+  },
+  
+  "Highlight": {
+    "message": "Evidenziatore",
+    "description": ""
+  },
+  
+  "Appearance": {
+    "message": "Aspetto",
+    "description": ""
+  },
+  
+  "General": {
+    "message": "Generali",
+    "description": ""
+  },
+  
+  "Links": {
+    "message": "Collegamenti",
+    "description": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting"
+  },
+  
+  "LinksTooltip": {
+    "message": "La ricerca dei collegamenti può essere effettuata in base al testo visualizzato o all'URL associato. Tenere premuto Ctrl per utilizzare la modalità non predefinita",
+    "description": ""
+  },
+
+  "Text": {
+    "message": "Testo",
+    "description": ""
+  },
+  
+  "List": {
+    "message": "Testo",
+    "description": ""
+  },
+  
+  "Url": {
+    "message": "URL",
+    "description": ""
+  },
+  
+  "ContextMenuTooltip": {
+    "message": "Abilita la ricerca tramite il menu contestuale",
+    "description": ""
+  },
+  
+  "QuickMenuTooltip": {
+    "message": "Abilita la ricerca tramite il menu rapido",
+    "description": ""
+  },
+  
+  "Opening": {
+    "message": "Apertura",
+    "description": ""
+  },
+  
+  "Closing": {
+    "message": "Chiusura",
+    "description": ""
+  },
+  
+  "Location": {
+    "message": "Posizione",
+    "description": ""
+  },
+  
+  "Window": {
+    "message": "Finestra",
+    "description": ""
+  },
+  
+  "SidebarTypeTooltip": {
+    "message": "Scegli come visualizzare il pannello laterale. Finestra mobile sul contenuto della pagina o pannello inquadrato all'altezza della pagina con il contenuto sfalsato per evitare sovrapposizioni",
+    "description": ""
+  },
+  
+  "HighlightTooltip": {
+    "message": "Evidenzia i termini delle ricerche nella pagina dei risultati di ricerca",
+    "description": ""
+  },
+  
+  "HighlightSeparateWordsTooltip": {
+    "message": "Evidenzia le parole in una frase separatamente. Deseleziona per trattare le frasi come un unico termine di ricerca",
+    "description": ""
+  },
+  
+  "HighlightNavTooltip": {
+    "message": "Mostra la barra di navigazione verticale dei termini evidenziati",
+    "description": ""
+  },
+  
+  "Style": {
+    "message": "Stile",
+    "description": ""
+  },
+  
+  "TextColor": {
+    "message": "Colore del testo",
+    "description": ""
+  },
+  
+  "BackgroundColor": {
+    "message": "Colore di sfondo",
+    "description": ""
+  },
+  
+  "Animations": {
+    "message": "Animazioni",
+    "description": ""
+  },
+  
+  "AnimationsTooltip": {
+    "message": "",
+    "description": ""
+  },
+  
+  "MenuTheme": {
+    "message": "Temi",
+    "description": ""
+  },
+  
+  "UserStylesTooltip": {
+    "message": "Personalizza lo stile dei menu tramite CSS",
+    "description": ""
+  },
+  
+  "Toolbar": {
+    "message": "Barra degli strumenti",
+    "description": ""
+  },
+  
+  "Shortcut": {
+    "message": "Scorciatoie da tastiera",
+    "description": ""
+  },
+  
+  "Suggestions": {
+    "message": "Suggerimenti",
+    "description": ""
+  },
+  
+  "Overlay": {
+    "message": "Finestra mobile",
+    "description": ""
+  },
+  
+  "Panel": {
+    "message": "Pannello allineato",
+    "description": ""
+  },
+  
+  "ToolbarTooltip": {
+    "message": "L'icona della barra degli strumenti apre un menu ricerca. Condivide le azioni di ricerca con il menu rapido",
+    "description": ""
+  },
+  
+  "Size": {
+    "message": "Dimensioni",
+    "description": ""
+  },
+  
+  "ConfirmResetAllSearchEngines": {
+    "message": "Tutte le personalizzazioni (motori di ricerca, cartelle, bookmarklet, separatori, ecc) saranno rimosse ripristinando l'elenco predefinito dei motori di ricerca.\r\n\r\nSei sicuro?",
+    "description": ""
+  },
+  
+  "ResetDefaults": {
+    "message": "Ripristina predefiniti",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesInfoMessage": {
+    "message": "E' possibile aggiungere i motori di ricerca manualmente in questa sezione o automaticamente tramite il menu contestuale. Per approfondire consulta il seguente collegamento",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesLinkText": {
+    "message": "Aggiungi motori di ricerca",
+    "description": ""
+  },
+  
+  "EnableOnLinks": {
+    "message": "Attiva sui collegamenti",
+    "description": ""
+  },
+  
+  "EnableOnImages": {
+    "message": "Attiva sulle immagini",
+    "description": ""
+  },
+  
+  "SelectTimeout": {
+    "message": "Seleziona ritardo",
+    "description": ""
+  },
+  
+  "SelectTimeoutTooltip": {
+    "message": "Ritardo (in millisecondi) per annullare l'apertura del menu rapido dopo l'ultima selezione (0 = nessun limite)",
+    "description": ""
+  },
+  
+  "highlightfollowdomaintooltip": {
+    "message": "Continua a evidenziare le pagine sul dominio dei risultati di ricerca",
+    "description": ""
+  },
+  
+  "highlightfollowexternallinkstooltip": {
+    "message": "Continua a evidenziare le pagine sui collegamenti esterni al sito web dei risultati di ricerca",
+    "description": ""
+  },
+  
+  "findbar": {
+    "message": "Barra 'Trova...'",
+    "description": ""
+  },
+  
+  "findbarpositiontooltip": {
+    "message": "Scegli dove posizionare la barra",
+    "description": ""
+  },
+  
+  "ClickToSet": {
+    "message": "Imposta",
+    "description": ""
+  },
+  
+  "highlightshowfindbartooltip": {
+    "message": "Mostra la barra 'Trova...' quando si evidenzia",
+    "description": ""
+  },
+  
+  "FindBarEnableHotkey": {
+    "message": "Apri la barra tramite scorciatoie da tastiera. Il testo sarà evidenziato immediatamente se presente",
+    "description": ""
+  },
+  
+  "FindBarNavMessage": {
+    "message": "Corrispondenza $1 di $2",
+    "description": ""
+  },
+  
+  "highlightflashselectedtooltip": {
+    "message": "Termine di ricerca attivo lampeggiante",
+    "description": ""
+  },
+  
+  "findbarstartopen": {
+    "message": "Apri automaticamente la barra al caricamento della pagina",
+    "description": ""
+  },
+  
+  "accuracy": {
+    "message": "Precisione",
+    "description": ""
+  },
+  
+  "partially": {
+    "message": "Parziale",
+    "description": ""
+  },
+  
+  "exactly": {
+    "message": "Esatta",
+    "description": ""
+  },
+  
+  "highlightaccuracytooltip": {
+    "message": "Corrispondenza parole: parziale (ricercando 'LOR' il termine corrisponderà e verrà evidenziato all'interno di 'LOREM') o esatta (solo la parola intera 'LOR' sarà evidenziata)",
+    "description": ""
+  },
+  
+  "sidebarhidefullscreentooltip": {
+    "message": "Nascondi il pannello laterale a schermo intero",
+    "description": ""
+  },
+  
+  "highlightignorepunctuationtooltip": {
+    "message": "Ignora la punteggiatura. Impostando questa opzione si otterrebbe una corrispondenza tra WORLDS, WORLD'S and WO'RLDS. Uno o più apostrofi tra le lettere produrrebbero comunque una corrispondenza (ad esempio, W'O''R'L'D'S)",
+    "description": ""
+  },
+  
+  "highlightcasesensitivetooltip": {
+    "message": "Distinzione tra maiuscole e minuscole",
+    "description": ""
+  },
+  
+  "background": {
+    "message": "Sfondo",
+    "description": ""
+  },
+  
+  "underline": {
+    "message": "Sottolineatura",
+    "description": ""
+  },
+  
+  "highlightstyletooltip": {
+    "message": "Stile per evidenziare i termini delle ricerche. E' possibile scegliere i colori per il testo e lo sfondo o la sottolineatura. Scegliendo la seconda opzione i valori sul colore del testo saranno ignorati",
+    "description": ""
+  },
+  
+  "casesensitive": {
+    "message": "Distinzione tra maiuscole e minuscole",
+    "description": ""
+  },
+  
+  "ignorepunctuation": {
+    "message": "Ignora la punteggiatura",
+    "description": ""
+  },
+  
+  "separateWordSearch": {
+    "message": "Ricerca parole separatamente",
+    "description": ""
+  },
+  
+  "highlightopacitytooltip": {
+    "message": "Opacità del colore di sfondo",
+    "description": ""
+  },
+  
+  "docked": {
+    "message": "Ancorata",
+    "description": ""
+  },
+  
+  "undocked": {
+    "message": "Libera",
+    "description": ""
+  },
+  
+  "findbarwindowtypetooltip": {
+    "message": "Scegli la modalità di visualizzazione. Con doppio clic del mouse sulla barra o tramite trascinamento è possibile alternare lo stato ancorato o libero",
+    "description": ""
+  },
+  
+  "findbarkeyboardtimeout": {
+    "message": "Ritardo (in millisecondi) nell'avvio della ricerca dopo la digitazione (0 = disabilitato; con valori troppo bassi si possono riscontrare problemi nelle prestazioni)",
+    "description": ""
+  },
+  
+  "close": {
+    "message": "Chiudi",
+    "description": ""
+  },
+
+  "movedockundock": {
+    "message": "Sposta / Ancora / Libera",
+    "description": ""
+  },
+
+  "navbar": {
+    "message": "Barra di navigazione verticale dei termini evidenziati",
+    "description": ""
+  },
+
+  "browseForImage": {
+    "message": "Sfoglia un'immagine sul disco",
+    "description": ""
+  },
+  
+  "enabledisplayprevioussearchtooltip": {
+    "message": "Visualizza i termini cercati di recente nella barra di ricerca",
+    "description": ""
+  },
+  
+  "resize": {
+    "message": "Ridimensiona",
+    "description": ""
+  },
+  
+  "searchresults": {
+    "message": "Risultati ricerche",
+    "description": ""
+  },
+  
+  "FindBarOpenInAllTabs": {
+    "message": "Apri e chiudi la barra in tutte le schede",
+    "description": ""
+  },
+  
+  "ToolsAsToolbar": {
+    "message": "Mostra gli strumenti in una barra separata",
+    "description": ""
+  },
+  
+  "searchactionssidebaraction": {
+    "message": "Apri nel pannello laterale",
+    "description": ""
+  },
+  
+  "findbarsearchinalltabs": {
+    "message": "Cerca in tutte le schede utilizzando la barra (nota: l'opzione di ritardo nell'avvio della ricerca sarà disabilitata)",
+    "description": ""
+  },
+  
+  "NotificationOpenSidebar": {
+    "message": "Apri il pannello laterale per visualizzare i risultati di ricerca",
+    "description": ""
+  },
+  
+  "searchalltabs": {
+    "message": "Cerca in tutte le schede",
+    "description": ""
+  },
+  
+  "simpleclick": {
+    "message": "Clic singolo",
+    "description": ""
+  },
+  
+  "simpleclicktooltip": {
+    "message": "Clicca su una parola per aprire il menu. La selezione non è richiesta",
+    "description": ""
+  },
+  
+  "alt": {
+    "message": "Alt",
+    "description": ""
+  },
+  
+  "ctrl": {
+    "message": "Ctrl",
+    "description": ""
+  },
+  
+  "shift": {
+    "message": "Maiusc",
+    "description": ""
+  },
+
+  "HideContextMenu": {
+	"message": "Nascondi l'apertura predefinita del menu contestuale quando si apre il menu rapido con il pulsante destro del mouse"
+  },
+
+  "HoldForContextMenu": {
+	"message": "Tieni premuto il pulsante destro del mouse (circa un secondo) per aprire il menu contestuale"
+  },
+  
+  "tools_repeatsearch": {
+    "message": "Ricerca istantanea"
+  },
+  
+   "tools_lastused": {
+    "message": "Ultimo motore di ricerca utilizzato"
+  },
+  
+  "ClearHighlighting": {
+    "message": "Pulisci i termini evidenziati",
+    "description": ""
+  },
+  
+  "display": {
+    "message": "Visualizzazione",
+    "description": ""
+  },
+  
+  "grouplayout": {
+    "message": "Disposizione gruppo",
+    "description": ""
+  },
+  
+  "groupcolor": {
+    "message": "Colore gruppo",
+    "description": ""
+  },
+   "groupcolortext": {
+    "message": "Colore testo",
+    "description": ""
+  },
+  
+  "grouplimit": {
+    "message": "Limite icone gruppo",
+    "description": ""
+  },
+
+  "default": {
+    "message": "Predefinita",
+    "description": ""
+  },
+
+  "grid": {
+    "message": "Griglia",
+    "description": ""
+  },
+
+  "grouplayoutmessage": {
+    "message": "Nota: solo cartelle di primo livello",
+    "description": ""
+  },
+
+  "toggleview": {
+    "message": "",
+    "description": ""
+  },
+
+  "DefaultViewToolTip": {
+    "message": "Scegli la modalità per visualizzare il menu. Ogni vista delle cartelle può essere impostata separatamente utilizzando lo strumento 'Griglia / Testo' o editando la cartella in 'Gestione dei motori di ricerca'",
+    "description": ""
+  },
+  
+  "grouphidemoretile": {
+    "message": "Nascondi le 'altre' icone",
+    "description": ""
+  },
+  
+  "findinpage": {
+    "message": "Trova nella pagina",
+    "description": ""
+  },
+  
+  "SearchCode": {
+    "message": "Script post-ricerca",
+    "description": ""
+  },
+  
+  "Layout": {
+    "message": "Disposizione",
+    "description": ""
+  },
+  
+  "DefaultView": {
+    "message": "Predefinita",
+    "description": ""
+  },
+  
+  "Saved": {
+    "message": "Salvato",
+    "description": ""
+  },
+  
+  "invalidregex": {
+    "message": "Espressione regolare non valida",
+    "description": ""
+  },
+  
+  "AddUsingFirefoxSearchBar": {
+	"message": "Aggiungi il tuo motore utilizzando la barra di ricerca del browser (Firefox 78+)"
+  },
+  
+  "SyncWithFirefoxSearchHeader": {
+    "message": "Sincronizza con la ricerca di Firefox (modalità semplice)"
+  },
+  
+  "SyncWithFirefoxSearch": {
+    "message": "Disabilita tutti i motori di ContextSearch, le sottocartelle, i bookmarklet, ecc. Visualizza solo i motori di ricerca installati nella barra di ricerca di Firefox",
+    "description": ""
+  },
+  
+  "FFEngineExists": {
+    "message": "$1 è già installato nella barra di ricerca di Firefox",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsed": {
+    "message": "Mostra l'ultimo motore di ricerca utilizzato",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsedToolTip": {
+    "message": "Visualizza l'ultimo motore utilizzato nella parte superiore del menu",
+    "description": ""
+  },
+  
+  "ToggleTheme": {
+    "message": "Tema successivo",
+    "description": ""
+  },
+  
+  "ToggleHotkeys": {
+    "message": "Tasti di scelta rapida attivi/inattivi",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsed": {
+    "message": "Mostra i motori di ricerca usati di recente",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedToolTip": {
+    "message": "Visualizza i motori di ricerca recenti nella parte superiore del menu",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolder": {
+    "message": "",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+    "message": "Visualizza i motori di ricerca recenti all'interno di una cartella",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedLengthTooltip": {
+    "message": "Numero di motori recenti da visualizzare",
+    "description": ""
+  },
+  
+  "RecentlyUsed": {
+    "message": "Usati di recente",
+    "description": ""
+  },
+    
+  "Recent": {
+    "message": "Recenti",
+    "description": ""
+  },
+    
+  "ClearSearchList": {
+    "message": "Cancella l'elenco dei motori e sincronizza con la barra di ricerca di Firefox",
+    "description": ""
+  },
+  
+  "CannotEditOneClickEngines": {
+    "message": "I motori di ricerca di Firefox devono essere importati prima di apportare modifiche",
+    "description": ""
+  },
+  
+  "hotkeys": {
+    "message": "Tasti di scelta rapida",
+    "description": ""
+  },
+  
+  "pagetiles": {
+    "message": "Pagina a riquadri",
+    "description": ""
+  },
+  
+  "pagetilesenabledtooltip": {
+    "message": "Abilita la pagina a riquadri",
+    "description": ""
+  },
+  
+  "drop": {
+    "message": "Trascina e rilascia",
+    "description": ""
+  },
+  
+  "hotkeystooltip": {
+    "message": "Selezionare il testo e premere un tasto per effettuare la ricerca. I tasti di scelta rapida dei motori possono essere impostati in 'Gestione dei motori di ricerca'",
+    "description": ""
+  },
+  
+  "pagetilesdescription": {
+    "message": "Trascina la selezione per aprire una pagina intera a riquadri e rilasciala sul motore di ricerca desiderato per effettuare la ricerca",
+    "description": ""
+  },
+  
+  "EnableHotkeysDescription": {
+    "message": "Abilita sempre le scorciatoie da tastiera tranne quando si editano contenuti (disabilita per utilizzarle solo quando sono attivi i menu di ContextSearch)",
+    "description": ""
+  },
+
+  "SearchAll": {
+    "message": "« Cerca tutti »",
+    "description": ""
+  },
+
+  "pagetilesselectpalette": {
+    "message": "Tavolozza colori"
+  },
+  
+  "nonePalette": {
+    "message": "Nessuna",
+    "description": "none (palettes.js)"
+  },
+  
+  "alphabetPalette": {
+    "message": "Alfabeto",
+    "description": "alphabet (palettes.js) - optional"
+  },
+  
+  "bouquetPalette": {
+    "message": "Fiorito",
+    "description": "bouquet (palettes.js) - optional"
+  },
+  
+  "dayglowPalette": {
+    "message": "Solare",
+    "description": "dayglow (palettes.js) - optional"
+  },
+  
+  "easterPalette": {
+    "message": "Primavera",
+    "description": "easter (palettes.js) - optional"
+  },
+  
+  "lavenderPalette": {
+    "message": "Lavanda",
+    "description": "lavender (palettes.js) - optional"
+  },
+  
+  "metalPalette": {
+    "message": "Metallo",
+    "description": "metal (palettes.js) - optional"
+  },
+  
+  "nurseryPalette": {
+    "message": "Infanzia",
+    "description": "nursery (palettes.js) - optional"
+  },
+  
+  "socialPalette": {
+    "message": "Social",
+    "description": "social (palettes.js) - optional"
+  },
+  
+  "waterPalette": {
+    "message": "Acqua",
+    "description": "water (palettes.js) - optional"
+  },
+
+  "keyword": {
+    "message": "Parola chiave per Omnibox"
+  },
+
+  "FailedToLoad": {
+    "message": "Il caricamento dei motori di ricerca non è riuscito :(",
+    "description": "Failed to load search engines (options.js)"
+  },
+  
+  "fetchingRemoteContent": {
+    "message": "Recupero del contenuto remoto",
+    "description": "Fetching remote content (options.js)"
+  },
+
+  "searchenginesmanager": {
+    "message": "Gestione dei motori di ricerca",
+    "description": ""
+  },
+
+  "faviconFinder": {
+    "message": "Trova la favicon associata al sito immesso nel campo 'Indirizzo del modulo' o dell'applicazione avviata dal lanciatore di app (viene aperta temporaneamente una scheda in secondo piano). E' possibile effettuare una ricerca anche su IconFinder.com",
+    "description": ""
+  },
+
+  "faviconFinderShort": {
+    "message": "Trova la favicon",
+    "description": ""
+  },
+
+  "uploadfromlocal": {
+    "message": "Sfoglia un'immagine dal disco",
+    "description": ""
+  },
+
+  "Shortcuts": {
+    "message": "Scorciatoie da tastiera",
+    "description": "keyboard shortcuts"
+  },
+
+  "ClosePageTilesOnShake": {
+    "message": "Chiudi la pagina a riquadri scuotendo il mouse",
+    "description": ""
+  },
+
+  "ShowFolderSearch": {
+    "message": "Mostra un'opzione in cima al menu di ogni cartella per effettuare una ricerca con tutti i motori inclusi",
+    "description": ""
+  },
+
+  "Omnibox": {
+    "message": "Omnibox",
+    "description": ""
+  },
+
+  "OpenOnDragTooltip": {
+    "message": "Trascina il testo, collegamenti o immagini",
+    "description": ""
+  },
+
+  "Drag": {
+    "message": "Trascinamento",
+    "description": ""
+  },
+
+  "HighlightLimitTooltip": {
+    "message": "Limita il numero di corrispondenze trovate da evidenziare. Un valore basso può prevenire eventuali rallentamenti (0 = nessun limite)",
+    "description": ""
+  },
+
+  "AddToBlockList": {
+    "message": "Aggiungi alla lista delle esclusioni",
+    "description": ""
+  },
+
+  "AddToBlockListConfirm": {
+    "message": "Aggiungi \"$1\" alla lista delle esclusioni?",
+    "description": ""
+  },
+
+  "regexmatches": {
+    "message": "Corrispondenze regex",
+    "description": ""
+  },
+
+  "audio": {
+    "message": "Audio",
+    "description": ""
+  },
+
+  "frame": {
+    "message": "Frame",
+    "description": ""
+  },
+
+  "image": {
+    "message": "Immagine",
+    "description": ""
+  },
+
+  "link": {
+    "message": "Collegamento",
+    "description": ""
+  },
+
+  "linkText": {
+    "message": "Testo del collegamento",
+    "description": ""
+  },
+
+  "page": {
+    "message": "Pagina",
+    "description": ""
+  },
+
+  "selection": {
+    "message": "Selezione",
+    "description": ""
+  },
+
+  "video": {
+    "message": "Video",
+    "description": ""
+  },
+
+  "requestPermissionsMessage": {
+    "message": "E' richiesto un permesso aggiuntivo. Clicca sul pulsante sottostante",
+    "description": "generic permission"
+  },
+  "Request": {
+    "message": "Richiedi permesso",
+    "description": "clipboardWrite permission - request button label"
+  },
+  
+  "deleteNodesMessage": {
+    "message": "Elimina $1 nodo/i?"
+  },
+  
+  "RegexTooltip": {
+    "message": "Modificare i termini di ricerca con un'espressione regolare prima dell'invio. È possibile concatenare più sostituzioni, una per riga",
+    "description": "searchengine edit - search regex tooltip"
+  },
+  "MatchSearchTermsRegexTooltip": {
+    "message": "Visualizza questo motore nella cartella 'Corrispondenze regex' se i termini di ricerca corrispondono a questa espressione regolare",
+    "description": "searchengine edit - match regex tooltip"
+  },
+  "SearchCodeTooltip": {
+    "message": "Esegui javascript dopo aver aperto l'URL del modello. La variabile globale 'searchTerms' rappresenta la ricerca corrente",
+    "description": "searchengine edit - searchcode tooltip"
+  },
+  
+  "ConfirmDeleteCustomSearchEngines": {
+    "message": "Tutte le personalizzazioni (motori di ricerca, cartelle, bookmarklet, separatori, ecc) saranno rimosse. Sei Sicuro?",
+    "description": "remove searchengines - confirm message"
+  },
+  
+ "customIconTooltip": {
+    "message": "Sfoglia un'immagine sul disco",
+    "description": "toolbar icon - custom icon tooltip"
+  },
+  
+ "EnableHotkeysLabel": {
+    "message": "Abilita i tasti di scelta rapida",
+    "description": "label for Search Engine Hotkeys"
+  },
+  
+  "quickMenuOpen": {
+    "message": "Apri il menu rapido",
+    "description": "keyboard shortcut label"
+  },
+  "findBarOpen": {
+    "message": "Apri la barra 'Trova...'",
+    "description": "keyboard shortcut label"
+  },
+  "findBarNext": {
+    "message": "Corrispondenza successiva",
+    "description": "keyboard shortcut label"
+  },
+  "findBarPrevious": {
+    "message": "Corrispondenza precedente",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarOpen": {
+    "message": "Apri il pannello laterale",
+    "description": "keyboard shortcut label"
+  },
+  "toggleDisplayMode": {
+    "message": "Alterna la modalità di visualizzazione",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuLock": {
+    "message": "Blocca il menu rapido",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuEdit": {
+    "message": "Modifica il menu rapido",
+    "description": "keyboard shortcut label"
+  },
+  "optionsOpen": {
+    "message": "Mostra le impostazioni",
+    "description": "keyboard shortcut label"
+  },
+  "pageTilesOpen": {
+    "message": "Apri la pagina a riquadri",
+    "description": "keyboard shortcut label"
+  },
+  "themeNext": {
+    "message": "Tema successivo",
+    "description": "keyboard shortcut label"
+  },
+  "themePrevious": {
+    "message": "Tema precedente",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarMinify": {
+    "message": "Riduci il pannello laterale",
+    "description": "keyboard shortcut label"
+  },
+  
+  "OmniboxTooltip": {
+    "message": "Omnibox",
+    "description": "omnibox image title"
+  },
+  
+  "lite": {
+    "message": "Chiaro",
+    "description": "theme name"
+  },
+  "dark": {
+    "message": "Scuro",
+    "description": "theme name"
+  },
+  "modern": {
+    "message": "Moderno",
+    "description": "theme name"
+  },
+  "modern_dark": {
+    "message": "Moderno scuro",
+    "description": "theme name"
+  },
+  "modern_purple": {
+    "message": "Moderno porpora",
+    "description": "theme name"
+  },
+  "modern_sunset": {
+    "message": "Moderno tramonto",
+    "description": "theme name"
+  },
+  "modern_glass": {
+    "message": "Moderno vetro",
+    "description": "theme name"
+  },
+  
+  "exportToFirefoxSearch": {
+    "message": "Esporta nella ricerca di Firefox",
+    "description": "advanced setting label"
+  },
+  "exportToFirefoxSearchTooltip": {
+    "message": "Naviga nella cartella del profilo di Firefox e seleziona il file search.json.mozlz4. Nella cartella predefinita di download saranno salvati 2 files: un nuovo file search.json.mozlz4 ed un backup dell'originale. Sposta entrambi nella cartella del profilo di Firefox e riavvia il browser per vedere le modifiche",
+    "description": "advanced setting tooltip"
+  },
+  "addSearchProviderHideNotificationTooltip": {
+    "message": "Nascondi la notifica per gli utenti di Firefox relativa all'aggiunta di un motore tramite la barra di ricerca del browser",
+    "description": "advanced setting tooltip"
+  },
+  "alwaysAllowTileRearrangingTooltip": {
+    "message": "Consenti sempre la riorganizzazione dei riquadri nei menu",
+    "description": "advanced setting tooltip"
+  },
+  "autoCopy": {
+    "message": "Copia automatica"
+  },
+  "autoCopyTooltip": {
+    "message": "Copia automaticamente il testo selezionato negli appunti",
+    "description": "advanced setting tooltip"
+  },
+  "autoPasteFromClipboardTooltip": {
+    "message": "Incolla automaticamente il contenuto degli appunti nella barra di ricerca all'apertura dei menu",
+    "description": "advanced setting tooltip"
+  },
+   "autoCopyOnInputsTooltip": {
+    "message": "Abilita nelle caselle di testo e nei campi di input",
+    "description": "advanced setting tooltip"
+  },
+  "cache": {
+    "message": "✓",
+    "description": "button cache label"
+  },
+  "cacheTooltip": {
+    "message": "Cache delle icone dei motori di ricerca in base all'URL associato",
+    "description": "advanced setting tooltip - button cache"
+  },
+  "uncache": {
+    "message": "✘",
+    "description": "button uncache label"
+  },
+  "uncacheTooltip": {
+    "message": "Elimina la cache dei motori di ricerca con l'icona associata all'URL. Avvertenza: non viene eseguito alcuna verifica sulla validità dell'URL prima dell'eliminazione",
+    "description": "advanced setting tooltip - button uncache"
+  },
+  "confirmUncache": {
+    "message": "Eliminare la cache di tutte le icone?",
+    "description": "uncache message confirm"
+  },
+  "warningCache": {
+    "message": "Non è stato possibile memorizzare nella cache alcune icone. Questo può essere causato da un riferimento non valido",
+    "description": "cache message warning"
+  },
+  "cacheIconsMaxSizeTooltip": {
+    "message": "Larghezza o altezza massima di ridimensionamento delle icone da memorizzare nella cache. Nota: quando si importa un'icona dal disco, se le dimensioni dell'immagine di partenza sono superiori, si applica il ridimensionamento al valore inserito",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuContextualLayoutFlattenLimitTooltip": {
+    "message": "Numero al di sotto del quale i motori corrispondenti ai filtri verranno visualizzati nel menu principale senza le sottocartelle (0 = nessun limite)",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuHotkeysTooltip": {
+    "message": "Aggiungi alle voci del menu contestuale i tasti di scelta rapida in formato (&A) per un rapido accesso",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuRegexMatchedEnginesTooltip": {
+    "message": "Visualizza i motori corrispondenti all'espressione regolare nella parte superiore del menu contestuale",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuTitleTooltip": {
+    "message": "Sovrascrivi la voce del menu contestuale con un titolo a scelta seguito da %s al posto di searchTerms (valore vuoto = predefinito)",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseContextualLayoutTooltip": {
+    "message": "Visualizza il menu contestuale in sottocartelle in base all'elemento di destinazione selezionato (contesto di ricerca). Quando questa opzione è attiva, in 'Gestione dei motori di ricerca' viene resa disponibile una selezione rapida dei contesti di ricerca per ogni motore",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseInnerTextTooltip": {
+    "message": "Usa il testo interno di un elemento come termine di ricerca quando non è selezionato alcun testo",
+    "description": "advanced setting tooltip"
+  },
+  "disableNewTabSortingTooltip": {
+    "message": "Lascia che sia il browser a decidere come ordinare le nuove schede dei risultati di ricerca. Utile per evitare conflitti con i gestori di schede",
+    "description": "advanced setting tooltip"
+  },
+  "exportWithoutBase64IconsTooltip": {
+    "message": "Esporta le impostazioni in un file di dimensioni minore escludendo gli URI delle icone. Può causare la perdita delle icone personalizzate",
+    "description": "advanced setting tooltip"
+  },
+  "forceOpenResultsTabsAdjacentTooltip": {
+    "message": "Forza la visualizzazione dei risultati di ricerca nella scheda successiva a destra",
+    "description": "advanced setting tooltip"
+  },
+  "groupFolderRowBreaksTooltip": {
+    "message": "Abilita per visualizzare le cartelle con disposizione di gruppo 'Sulla riga' come elementi in blocco",
+    "description": "advanced setting tooltip"
+  },
+  "groupLabelMoreTileTooltip": {
+    "message": "Mostra la casella 'in più' / 'meno' nel titolo delle cartelle di gruppo invece di visualizzarla in una casella separata",
+    "description": "advanced setting tooltip"
+  },
+  "omniboxDefaultToLastUsedEngineTooltip": {
+    "message": "Imposta Omnibox sull'ultimo motore di ricerca utilizzato",
+    "description": "advanced setting tooltip"
+  },
+  "openFoldersOnHoverTimeoutTooltip": {
+    "message": "Ritardo (in millisecondi) dal passaggio del mouse prima di aprire una cartella (500 = predefinito, 0 = disabilitato)",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAllowContextMenuNewTooltip": {
+    "message": "In ambienti che visualizzano il menu contestuale al clic del mouse, potrebbe essere necessario scegliere un metodo di apertura alternativo o modificare il modo predefinito in cui viene aperto il menu contestuale",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoMaxCharsTooltip": {
+    "message": "Numero massimo di caratteri da selezionare per aprire il menu rapido in modalità automatica. Una selezione maggiore non comporterà l'apertura del menu (0 = nessun limite)",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoTimeoutTooltip": {
+    "message": "Ritardo (in millisecondi) per il rilascio del pulsante del mouse prima di annullare l'apertura del menu rapido (0 = nessun limite)",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuCancelDeadzoneTooltip": {
+    "message": "Numero massimo di pixel che il mouse può percorrere con il pulsante premuto prima di annullare l'apertura del menu rapido in modalità 'Tieni premuto'",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuDomLayoutTooltip": {
+    "message": "Sovrascrivi la disposizione del menu rapido usando identificatori di elementi HTLM separati da virgola (menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Non è necessario utilizzarli tutti. Quelli elencati saranno collocati alla fine dell'albero DOM. Lasciare vuoto per la disposizione predefinita",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuFocusOnOpenTooltip": {
+    "message": "Focalizza sul menu rapido dopo l'apertura",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHideSeparatorsInGridTooltip": {
+    "message": "Nascondi i separatori nella vista a griglia del menu rapido",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHoldTimeoutTooltip": {
+    "message": "Tempo (in millisecondi) per tenere premuto il pulsante del mouse prima dell'apertura del menu rapido in modalità 'Tieni premuto'",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOpeningOpacityTooltip": {
+    "message": "Livello di trasparenza del menu rapido quando viene aperto. Al passaggio del mouse diventa opaco",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuPreventPageClicksTooltip": {
+    "message": "Impedisci gli eventi del mouse sulla pagina web attiva quando il menu rapido è aperto",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuRegexMatchedEnginesTooltip": {
+    "message": "Visualizza i motori corrispondenti all'espressione regolare nella parte superiore del menu rapido",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuSearchOnMouseUpTooltip": {
+    "message": "Consenti di effettuare una ricerca con il menu rapido al rilascio del pulsante del mouse senza bisogno del clic. Pratico. Tenere quindi premuto il pulsante del mouse per l'apertura rilasciando successivamente su un motore per eseguire la ricerca",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowHotkeysInTitleTooltip": {
+    "message": "Mostra tasti di scelta rapida con i titoli",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowRecentlyUsedTooltip": {
+    "message": "Visualizza gli ultimi motori utilizzati nella parte superiore del menu",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOnSimpleClick_useInnerTextTooltip": {
+    "message": "Usa il testo interno di un elemento come termine di ricerca quando non è selezionato alcun testo",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolbarRowsTooltip": {
+    "message": "Numero massimo di righe su cui disporre gli strumenti (0 = nessun limite)",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsLockPersistTooltip": {
+    "message": "Ricorda lo stato dello strumento 'Blocca il menu aperto' tra le varie sessioni",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsRepeatSearchPersistTooltip": {
+    "message": "Ricorda lo stato dello strumento 'Ricerca istantanea' tra le varie sessioni",
+    "description": "advanced setting tooltip"
+  },
+  "rememberLastOpenedFolderTooltip": {
+    "message": "Apri i menu nell'ultima cartella utilizzata",
+    "description": "advanced setting tooltip"
+  },
+  "rightClickMenuOnMouseDownFixTooltip": {
+    "message": "Richiedi un doppio clic per visualizzare il menu contestuale quando si apre il menu rapido tenendo premuto il pulsante destro del mouse. Utile per evitare menu errati su ambienti che visualizzano il menu contestuale al clic del mouse",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarHistoryLengthTooltip": {
+    "message": "Numero massimo di voci da memorizzare nella cronologia",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarSuggestionsCountTooltip": {
+    "message": "Numero massimo di suggerimenti di Google da includere",
+    "description": "advanced setting tooltip"
+  },
+  "shakeSensitivityTooltip": {
+    "message": "Sensibilità nel rilevare lo scuotimento del mouse (più basso = più sensibile)",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_openOnResultsTooltip": {
+    "message": "Apri il pannello laterale nelle schede dei risultati di ricerca",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_openOnResultsMinimizedTooltip": {
+    "message": "Apri il pannello laterale ridotto a icona nelle schede dei risultati di ricerca",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_rememberStateTooltip": {
+    "message": "Ricorda lo stato di apertura del pannello laterale",
+    "description": "advanced setting tooltip"
+  },  
+  "Blocklist": {
+    "message": "Lista delle esclusioni",
+    "description": "blocklist label"
+  },
+  "BlocklistTooltip": {
+    "message": "URL in cui ContextSearch è disabilitato. E' possibile inserire indirizzi host (www.example.com), caratteri jolly (*.example.com) ed espressioni regolari. Usare i prefissi '!' o '#' per disabilitare le voci (#example.com o !example.com)",
+    "description": "blocklist tooltip"
+  },
+  "NewTool": {
+    "message": "Aggiungi strumento"
+  },
+  "BackButton": {
+    "message": "Pulsante avanti"
+  },
+  "ForwardButton": {
+    "message": "Pulsante indietro"
+  },
+  
+  "Title": {
+    "message": "Titolo"
+  },
+  
+  "MenuBar": {
+    "message": "Barra dei menu"
+  },
+  
+  "EditMenu": {
+    "message": "Edita la disposizione"
+  },
+
+  "requestClipboardWritePermission": {
+    "message": "Il permesso 'Salvare dati negli appunti' è richiesto per interagire con gli appunti. Clicca sul pulsante sottostante per richiedere l'autorizzazione",
+    "description": "permissions request"
+  },
+  
+  "manualedit": {
+    "message": "Modifica manuale delle impostazioni avanzate"
+  },
+
+  "manualeditwarning": {
+    "message": "Attenzione! La modifica manuale delle impostazioni avanzate può causare malfunzionamenti in ContextSearch!"
+  },
+
+  "ContextAwareFilter": {
+    "message": "Filtra i motori di ricerca in base al contesto di ricerca (collegamento, immagine, selezione, ...)"
+  },
+
+  "NewMultiSearch": {
+    "message": "Nuova ricerca multipla"
+  },
+
+  "ContextsTooltip": {
+    "message": "Visualizza i motori di ricerca in base ai contesti selezionati all'apertura dei menu. Funziona con il menu contestuale e il menu rapido solo se l'opzione 'Filtra i motori di ricerca in base al contesto di ricerca' è selezionata"
+  },
+
+  "OpenOnIcon": {
+    "message": "Icona"
+  },
+
+  "OpenOnIconTooltip": {
+    "message": "Visualizza un'icona accanto al testo selezionato su cui cliccare per aprire il menu"
+  },
+
+  "checkContextMenuOrderNotification": {
+    "message": "Passare dalla modalità predefinita a quella doppio clic per il menu contestuale quando si apre il menu rapido? Per ulteriori informazioni, consultare le impostazioni"
+  },
+
+  "DoubleClick": {
+    "message": "Doppio clic"
+  },
+  
+  "ShowDefaultMenuModifierMessage": {
+    "message": "Mostrare il menu contestuale predefinito"
+  },
+
+  "NewExternalProgram": {
+    "message": "Nuovo lanciatore di app"
+  },
+
+  "searchIconFinder": {
+    "message": "🔍 Cerca su IconFinder.com"
+  },
+
+  "RefineSearch": {
+    "message": "Affina la ricerca"
+  },
+
+  "NativeApp": {
+    "message": "App nativa di ContextSearch"
+  },
+
+  "NativeAppMissing": {
+    "message": "L'app nativa di ContextSearch non è connessa"
+  },
+  "SearchBookmarklets": {
+    "message": "🔍 Ricerca bookmarklets"
+  },
+  "NewScript": {
+    "message": "Nuovo script"
+  },
+  "Permissions": {
+    "message": "Permessi"
+  },
+  "Command": {
+    "message": "Comando"
+  },
+  "WorkingDirectory": {
+    "message": "Cartella di lavoro"
+  },
+  "Script": {
+    "message": "Script"
+  },
+  "PostAppScript": {
+    "message": "Script post-applicazione"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Esegui javascript nella scheda corrente al termine dell'applicazione avviata. L'output standard viene acquisito nella variabile 'result', ad esempio alert(result)"
+  },
+  "MessengerOfflineTooltip": {
+    "message": "Per avviare le applicazioni da ContextSearch è necessario installare l'app nativa. Fare clic sul link per maggiori dettagli"
+  },
+  "ToggleSearchTerms": {
+    "message": "Termine di ricerca successivo"
+  },
+  "EnableOn": {
+    "message": "Attiva su"
+  },
+  "Input": {
+    "message": "Campo di input"
+  },
+  "tools_OpenImage": {
+    "message": "Apri immagine"
+  },
+  "tools_Download": {
+    "message": "Scarica"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Resettare tutte le preferenze ai valori predefiniti? I motori di ricerca non verranno modificati"
+  },
+  "contexts": {
+    "message":"Contesti di ricerca"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Chiudi il menu durante la digitazione. La focalizzazione sulla barra di ricerca non deve essere attiva (controlla le opzioni della barra di ricerca in fondo a questa sezione)"
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Mostra la barra dei contesti di ricerca"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Ovunque"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Apri il menu su ogni elemento inclusi frame e aree vuote dei documenti"
+  },
+  "saveclose": {
+    "message": "Salva e chiudi"
+  },
+  "singlewindow": {
+    "message": "Menu singolo"
+  },
+  "cascadingwindow": {
+    "message": "Menu a cascata"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Sfoglia le cartelle in un unico menu o con menu separati a cascata"
+  },
+  "DontShowAgain": {
+    "message": "Non mostrare più questa notifica"
+  },
+  "Icon": {
+    "message": "Icona"
+  },
+  "Inline": {
+    "message": "Sulla riga"
+  },
+  "Block": {
+    "message": "In blocco"
+  },
+  "CheckForUpdates": {
+    "message": "Controlla gli aggiornamenti"
+  },
+  "UpdateToVersion": {
+    "message": "Aggiornare lo script dell'app nativa alla versione $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "L'ultima versione è già installata"
+  }
+}
