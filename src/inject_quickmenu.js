@@ -848,6 +848,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				closeAllFolders();
 				break;
 
+			case "resizeAll":
+				getShadowRoot().querySelectorAll('.CS_quickMenuIframe').forEach( el => {	
+					el.contentWindow.postMessage({action: "resizeMenu", options: message.options || {}}, browser.runtime.getURL('/quickmenu.html'));		
+				});
+				break;
+
 			case "openQuickMenu":
 
 				// opened by shortcut
@@ -1046,36 +1052,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				break;
 
 			case "editQuickMenu":
-
-				isEditing = el => {
-					return el.classList.contains("CS_editing");
-				}
-
-				removeOverDiv = () => {
-					let overDiv = getShadowRoot().querySelector(".CS_overDiv.editQuickMenu");
-					if (overDiv) overDiv.parentNode.removeChild(overDiv);
-				}
-
-				addOverDiv = () => {
-					let overDiv = document.createElement('div');
-					overDiv.className = "CS_overDiv editQuickMenu";
-					getShadowRoot().appendChild(overDiv);
-					overDiv.addEventListener('click', e => browser.runtime.sendMessage({action: "editQuickMenu", on:false}));
-				}
-
-				editOff = el => {
-					removeResizeWidget();
-					removeOverDiv();
-					el.classList.remove('CS_editing');
-					el.contentWindow.postMessage({action: "editEnd"}, browser.runtime.getURL('/quickmenu.html'));
-				}
-
-				editOn = el => {
-					installResizeWidget();
-					addOverDiv();
-					el.classList.add('CS_editing');
-					document.addEventListener('closequickmenu', removeOverDiv, {once: true});
-				}
 
 				var qmc = getQM();
 
@@ -1377,6 +1353,36 @@ function createStatusButton(icon, callback) {
 	img.onclick = callback;
 
 	return div;
+}
+
+const isEditing = el => {
+	return el.classList.contains("CS_editing");
+}
+
+const editRemoveOverDiv = () => {
+	let overDiv = getShadowRoot().querySelector(".CS_overDiv.editQuickMenu");
+	if (overDiv) overDiv.parentNode.removeChild(overDiv);
+}
+
+const editAddOverDiv = () => {
+	let overDiv = document.createElement('div');
+	overDiv.className = "CS_overDiv editQuickMenu";
+	getShadowRoot().appendChild(overDiv);
+	overDiv.addEventListener('click', e => browser.runtime.sendMessage({action: "editQuickMenu", on:false}));
+}
+
+const editOff = el => {
+	removeResizeWidget();
+	editRemoveOverDiv();
+	el.classList.remove('CS_editing');
+	el.contentWindow.postMessage({action: "editEnd"}, browser.runtime.getURL('/quickmenu.html'));
+}
+
+const editOn = el => {
+	installResizeWidget();
+	editAddOverDiv();
+	el.classList.add('CS_editing');
+	document.addEventListener('closequickmenu', editRemoveOverDiv, {once: true});
 }
 
 if ( window == top && userOptions.showStatusBar ) {
