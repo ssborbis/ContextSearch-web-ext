@@ -89,17 +89,16 @@ async function makeFolderContents(node) {
 
 	let _singleColumn = node.displayType === "text" || userOptions.quickMenuDefaultView === "text";
 
-	await makeQuickMenu({type: "quickmenu", singleColumn: _singleColumn, node: node});
+	await makeQuickMenu({type: "quickmenu", singleColumn: _singleColumn});
 
 	// remove everything
 	document.querySelectorAll('BODY > DIV').forEach(el => el.parentNode.removeChild(el));
 
-	node.parent = true;
-	
-	qm = await quickMenuElementFromNodeTree(node, true);
+	setParents(node);
 
-	// remove back button
-	qm.removeChild(qm.firstChild);
+	let nodeRef = findNode(root, n => n.id === node.id) || node;
+	
+	qm = await quickMenuElementFromNodeTree(nodeRef, true);
 
 	// fix layout
 	qm.removeBreaks();
@@ -109,15 +108,15 @@ async function makeFolderContents(node) {
 
 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-	if ( false ) {
-		document.documentElement.addEventListener('mouseleave', e => {
-			browser.runtime.sendMessage({
-				action: "closeFolder", 
-				sendMessageToTopFrame: true,
-				id: node.id
-			});
-		});
-	}
+	// if ( false ) {
+	// 	document.documentElement.addEventListener('mouseleave', e => {
+	// 		browser.runtime.sendMessage({
+	// 			action: "closeFolder", 
+	// 			sendMessageToTopFrame: true,
+	// 			id: node.id
+	// 		});
+	// 	});
+	// }
 
 	document.body.style.width = 'auto';
 	document.body.style.height = 'auto';
