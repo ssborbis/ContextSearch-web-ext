@@ -2,7 +2,7 @@ var selectedRows = [];
 var rootElement;
 
 isMenuOpen = () => $('.contextMenu') ? true : false;
-isModalOpen = () => $('.overDiv') ? true : false;
+isModalOpen = () => $('.overDiv') ? true : false; 
 
 function buildSearchEngineContainer() {
 	
@@ -1212,12 +1212,40 @@ function buildSearchEngineContainer() {
 		
 		return li;
 	}
+
+	const buildSpecialFolders = () => {
+		if ( !findNode(userOptions.nodeTree, n => n.id === "___tools___")) {
+
+			let tools = {
+				type: "folder",
+				children: [],
+				title: i18n('Tools'),
+				id: "___tools___"
+			};
+			userOptions.quickMenuTools.forEach(t => {
+				let tool = QMtools.find(_t => _t.name === t.name);
+				if ( tool )
+					tools.children.push(
+						{
+							type: "tool",
+							title: tool.title,
+							tool:tool.name,
+							icon:tool.icon
+						}
+					)
+			});
+
+			root.children.unshift(tools);
+		}
+	}
 		
 	// high-scope veriable to access node tree
 	rootElement = document.createElement('ul');
 	rootElement.style.position = 'relative';
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+//	buildSpecialFolders();
 
 	setParents(root);
 
