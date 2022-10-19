@@ -35,14 +35,6 @@ var singleColumn;
 // track if tiles can be moved
 window.tilesDraggable = false;
 
-document.addEventListener('quickMenuIframeLoaded', e => {
-	if ( !userOptions.alwaysAllowTileRearranging ) return;
-
-	window.tilesDraggable = true;
-	setDraggable();
-}, {once: true});
-
-
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
 
@@ -242,6 +234,9 @@ function getColumns() {
 	if (type === 'quickmenu') return userOptions.quickMenuColumns;
 }
 
+const getDragDiv = () => document.getElementById('dragDiv');
+const isTool = e => e.dataTransfer.getData("tool") === "true";
+
 function createToolsArray() {
 	
 	let toolsArray = [];
@@ -287,26 +282,26 @@ function createToolsArray() {
 		});
 	});
 
-	let getDragDiv = () => {return document.getElementById('dragDiv')};
-	let isTool = e => e.dataTransfer.getData("tool") === "true";
 	
 	toolsArray.forEach( tool => {
 		
-		tool.setAttribute('draggable', window.tilesDraggable);
+	//	tool.setAttribute('draggable', window.tilesDraggable);
 
 		tool.addEventListener('dragstart', e => {
 
-			if ( !window.tilesDraggable ) return false;
+	//		console.log(e);
+
+	//		if ( !window.tilesDraggable ) return false;
 
 			e.dataTransfer.setData("tool", "true");
-			let img = new Image();
-			img.src = browser.runtime.getURL('icons/transparent.gif');
-			e.dataTransfer.setDragImage(img, 0, 0);
+			// let img = new Image();
+			// img.src = browser.runtime.getURL('icons/transparent.gif');
+			// e.dataTransfer.setDragImage(img, 0, 0);
 			tool.id = 'dragDiv';
 			
-			qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
+			// qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
 		});
-		tool.addEventListener('dragenter', e => {
+	/*	tool.addEventListener('dragenter', e => {
 			e.preventDefault();
 			if ( !isTool(e) ) return;
 		});
@@ -357,7 +352,7 @@ function createToolsArray() {
 		//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
 
 		});
-	});
+*/	});
 	
 	toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
 
@@ -450,7 +445,6 @@ async function makeQuickMenu(options) {
 		}
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
-		setDraggable();
 
 		resizeMenu({toggleSingleColumn: true, openFolder:true})
 
@@ -1032,6 +1026,12 @@ function buildQuickMenuElement(options) {
 		}
 	})();
 
+	// set drag & drop init state
+	if ( userOptions.alwaysAllowTileRearranging )
+		window.tilesDraggable = true;
+	
+	setDraggable();
+
 	return qm;
 }
 
@@ -1063,7 +1063,7 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 
 		reverse = reverse || false; // for slide-in animation direction
 		
-		let nodes = rootNode.children;
+		let nodes = rootNode.children || [];
 		let tileArray = [];
 		
 		// update the qm object with the current node
@@ -1095,7 +1095,9 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 		// set the lastOpenedFolder object
 		browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
 		
-		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
+		// if parentId was sent, assume subfolder and add 'back' button
+		// unless href has hash ( cascading menu )
+		if (rootNode.parent && !window.location.hash) { 
 
 			let tile = buildSearchIcon(null, i18n('back'));
 			let backIcon = createMaskIcon('icons/back.svg');
@@ -1118,7 +1120,7 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 				
 				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
-				setDraggable();	
+
 				qm.expandMoreTiles();
 
 				resizeMenu({openFolder: true})
@@ -1829,7 +1831,7 @@ async function mouseupHandler(e) {
 
 }
 
-document.addEventListener('dragstart', e => {
+document.addEventListener('dragstart', async e => {
 
 	if ( !window.tilesDraggable ) return;
 
@@ -1840,12 +1842,16 @@ document.addEventListener('dragstart', e => {
 	if ( undraggable(tile) ) return;
 
 	if ( qm.contextualLayout ) {
+		quickMenuObject.contexts = [];
+		qm = await quickMenuElementFromNodeTree(findNode(root, n => n.id === qm.rootNode.id));
+		resizeMenu({openFolder:true});
 		console.warn('Tiles cannot be rearranged when using contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
+		e.preventDefault();
 		return;
 	}
 
 	// required by ff for dragend
-	e.dataTransfer.setData("text", tile.node.id || "");
+	e.dataTransfer.setData("text", JSON.stringify(tile.node) || "");
 
 	tile.classList.add('drag');
 
@@ -1856,6 +1862,8 @@ document.addEventListener('dragstart', e => {
 
 	// apply style to inline groups
 	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
+
+//	console.log('dragstart parent folder is', tile.node.parent.title);
 
 });
 
@@ -1877,15 +1885,11 @@ document.addEventListener('dragenter', e => {
 
 document.addEventListener('dragover', e => {
 
-	e.preventDefault();
-    e.stopPropagation();
-
 	let tile = e.target.closest('.tile') || e.target.closest('group');
 
 	if ( e.target === document.querySelector('.dummy') )
 		tile = e.target.nextSibling;
 
-//	if ( !tile ) { console.log('no tile', e.target); return; }
 	if ( !tile ) return;
 	if ( !window.dragNode ) return;
 	if ( tile.dataset.type === 'tool' ) return;
@@ -1895,6 +1899,9 @@ document.addEventListener('dragover', e => {
 	if ( undroppable(tile) ) return;
 
 	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
+
+	e.preventDefault();
+    e.stopPropagation();
 
 	tile.lastDragOver = Date.now();
 
@@ -1951,7 +1958,7 @@ document.addEventListener('dragleave', e => {
 	clearDragStyling(tile);
 });
 
-document.addEventListener('drop', e => {
+document.addEventListener('drop', async e => {
 
 	e.preventDefault();
 
@@ -1962,6 +1969,42 @@ document.addEventListener('drop', e => {
 	if ( e.target === dummy || e.target === qm )
 		tile = dummy.nextSibling;
 
+	if ( !window.dragNode ) {
+		try {
+			let transfer_node = getNodeFromDataTransfer(e);
+			let node = findNode(root, n => n.id === transfer_node.id);
+			if ( node ) {
+				window.dragNode = node;
+			}
+		} catch (error) {}
+	}
+
+	if ( isTool(e)) {
+		let side = getSide(tile, e);
+
+		let qmt = userOptions.quickMenuTools;
+		
+		dragName = getDragDiv().tool.name;
+		targetName = e.target.tool.name;
+		
+		dragIndex = qmt.findIndex( t => t.name === dragName );
+		targetIndex = qmt.findIndex( t => t.name === targetName );
+
+		if ( side === "before" ) {
+			qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
+			e.target.parentNode.insertBefore(getDragDiv(), e.target);
+		}
+		else {
+			qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
+			e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
+		}
+
+		qm.toolsArray = createToolsArray();
+		await saveUserOptions();
+
+		return;
+	}
+
 	if ( !tile ) return;
 	if ( !window.dragNode ) return;
 	if ( window.dragNode === tile.node ) return;
@@ -1971,12 +2014,12 @@ document.addEventListener('drop', e => {
 
 	let side = getSide(tile, e);
 
-	let old_node_count = findNodes(userOptions.nodeTree, n => true).length;
+	let old_node_count = findNodes(root, n => true).length;
 
 	// cut the node from the children array
 	let slicedNode = nodeCut(window.dragNode);
 
-	let dragTile = document.querySelector('.drag') || window.dragTile;
+	//let dragTile = document.querySelector('.drag') || window.dragTile;
 	let targetNode = tile.node || tile.parentNode.node;
 
 	// special handler for inline groups
@@ -2012,9 +2055,12 @@ document.addEventListener('drop', e => {
 		nodeAppendChild(slicedNode, tile.node);
 	
 	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
-	dragSave();
 
-	function dragSave() {
+	console.log('drop parent folder is', window.dragNode.parent.title);
+
+	await dragSave();
+
+	async function dragSave() {
 
 		let new_node_count = findNodes(root, n => true).length;
 
@@ -2022,34 +2068,42 @@ document.addEventListener('drop', e => {
 
 		if ( old_node_count === new_node_count ) {
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-			saveUserOptions();
+			await saveUserOptions();
 		} else {
 			console.error('a node has been lost. aborting', old_node_count, new_node_count);
 		}
+		
+		let orig = userOptions.enableAnimations;
+		userOptions.enableAnimations = false;
+		qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
+		userOptions.enableAnimations = orig;
 
-		(async () => {
-			let orig = userOptions.enableAnimations;
-			userOptions.enableAnimations = false;
-			qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
-			userOptions.enableAnimations = orig;
+		// drag & drop only allowed when all tiles are shown
+		// restore show all
+		// let sh = QMtools.find(t => t.name === 'showhide');
+		// let sh_tile = sh.init();
+		// await sh_tile.action();
 
-			// drag & drop only allowed when all tiles are shown
-			// restore show all
-			let sh = QMtools.find(t => t.name === 'showhide');
-			let sh_tile = sh.init();
-			await sh_tile.action();
+		resizeMenu({tileDrop: true, openFolder: true});
 
-			setDraggable();
-			resizeMenu({tileDrop: true, openFolder: true});
-
-		})();
+		
 	}
+
+	dragCleanup();
+	clearTimeout(qm.textDragOverFolderTimer);
 
 });
 
-document.addEventListener('dragend', e => {
+document.addEventListener('dragend', async e => {
 	dragCleanup();
 	clearTimeout(qm.textDragOverFolderTimer);
+
+	userOptions = await browser.runtime.sendMessage({action:"getUserOptions"});
+
+	window.root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+	setParents(window.root);
+	qm = await quickMenuElementFromNodeTree(findNode(root, n => n.id === qm.rootNode.id, false));
+	resizeMenu({tileDrop: true, openFolder: true});
 });
 
 dragCleanup = () => {
@@ -2078,8 +2132,9 @@ clearDragStyling = el => {
 	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover', 'groupHighlight');
 }
 
-setDraggable = e => {
-	document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
+setDraggable = el => {
+	el = el || document.body;
+	el.querySelectorAll('.tile:not([data-undraggable])').forEach( tile => tile.setAttribute('draggable', window.tilesDraggable));
 }
 
 makeMarker = () => {
@@ -2090,9 +2145,19 @@ makeMarker = () => {
 	return dummy;
 }
 
+getNodeFromDataTransfer = e => {
+	let node = JSON.parse(e.dataTransfer.getData("text") || "{}");
+	if ( node && node.id) 
+		return node;
+	else 
+		return null;
+}
+
 (() => { // text, image, url drag & drop
 	document.addEventListener('dragover', e => {
 		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
+
+		if ( window.dragNode ) return;
 
 		e.preventDefault();
 
@@ -2106,7 +2171,17 @@ makeMarker = () => {
 
 	document.addEventListener('drop', e => {
 
-		if ( window.dragTile ) return;
+		if ( getNodeFromDataTransfer(e) ) {
+			console.log('data appears to be a node. Cancelling search');
+			return;
+		}
+
+		if ( e.dataTransfer.getData("tool") ) {
+			console.log('data appears to be a tool. Cancelling search');
+			return;
+		}
+
+		if ( window.dragNode ) return;
 
 		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
 
@@ -2226,7 +2301,6 @@ function nodeToTile( node ) {
 						
 						qm = await quickMenuElementFromNodeTree(tile.node);
 						
-						setDraggable();	
 						return resizeMenu({openFolder: true});
 					}
 					
