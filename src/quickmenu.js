@@ -72,6 +72,9 @@ async function makeFrameContents() {
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	document.addEventListener('document_click', e => {
+		
+		if ( e.target.closest('.tile') ) return;
+		
 		browser.runtime.sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
 	});
 
