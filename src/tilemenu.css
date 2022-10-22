@@ -152,39 +152,6 @@ BODY {
 	border-bottom:1px solid var(--selected);
 	/*box-sizing: border-box;*/
 }
-#arrow {
-	pointer-events:none;
-	position:absolute;
-	top:0;
-	width: 0; 
-	height: 0; 
-	border-left: 12px solid transparent;
-	border-right: 12px solid transparent; 
-	border-top: 12px solid var(--cs-green);
-	z-index:2;
-	opacity:.5;
-	border-top-color:var(--selected);
-}
-#arrow[data-side="before"] {
-	left: calc( var(--target-left) - 12px);
-}
-#arrow[data-side="after"] {
-	left: calc( var(--target-left) + var(--target-width) - 12px);
-}
-#arrow[data-side="before"].singleColumn {
-	top: calc( var(--target-top) - 6px);
-}
-#arrow[data-side="after"].singleColumn {
-	top: calc( var(--target-top) + var(--target-height) - 6px);
-}
-#arrow[data-side="middle"] {
-	display:none;
-}
-#arrow.singleColumn {
-	transform: rotate(-90deg);
-	left:-6px;
-	border-top-color:var(--selected);
-}
 .tile[data-type="folder"][data-side="middle"].dragHover {
 	background-color:var(--selected) !important;
 	color:white;
@@ -601,7 +568,7 @@ GROUP.inline.break {
 	--tools-color:var(--selected);
 	position: absolute;
 	z-index: 3;
-	pointer-events: none;
+	/*pointer-events: none;*/
 }
 
 .dummy.singleColumn {
@@ -614,6 +581,9 @@ GROUP.inline.break {
 .dummy.wide {
 	width: 100%;
 }
+
+.tile.before {}
+.tile.after {}
 
 #optionsBar {
 	display: none;

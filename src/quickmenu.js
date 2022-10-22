@@ -73,7 +73,7 @@ async function makeFrameContents() {
 
 	document.addEventListener('document_click', e => {
 		
-		if ( e.target.closest('.tile') ) return;
+		if ( e.target.closest && e.target.closest('.tile') ) return;
 		
 		browser.runtime.sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
 	});
@@ -140,6 +140,8 @@ async function makeFolderContents(node) {
 	// document.body.style.height = null;
 	document.body.style.height = '100vh';
 	document.body.style.overflowY = 'auto';
+
+	setDraggable();
 }
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
@@ -167,7 +169,7 @@ function setMenuSize(o) {
 	if ( !qm.singleColumn /*&& qm.columns < userOptions.quickMenuColumnsMinimum*/) {
 		let minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) - (tileSize.width - tileSize.rectWidth) / 2;
 		
-		if ( qm.getBoundingClientRect().width < minWidth )
+		if ( qm.getBoundingClientRect().width < minWidth && !isChildWindow() )
 			qm.style.minWidth = minWidth + "px";
 	}
 

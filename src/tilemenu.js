@@ -1097,7 +1097,7 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 		
 		// if parentId was sent, assume subfolder and add 'back' button
 		// unless href has hash ( cascading menu )
-		if (rootNode.parent && !window.location.hash) { 
+		if (rootNode.parent && !isChildWindow()) { 
 
 			let tile = buildSearchIcon(null, i18n('back'));
 			let backIcon = createMaskIcon('icons/back.svg');
@@ -1880,6 +1880,9 @@ document.addEventListener('dragenter', e => {
 		return;
 	}
 
+	if ( !window.dragNode ) 
+		window.dragNode = getNodeFromDataTransfer(e);
+
 	if ( !window.dragNode ) return;
 });
 
@@ -1891,17 +1894,20 @@ document.addEventListener('dragover', e => {
 		tile = e.target.nextSibling;
 
 	if ( !tile ) return;
+
+	if ( undroppable(tile) ) return;
+
 	if ( !window.dragNode ) return;
+
 	if ( tile.dataset.type === 'tool' ) return;
 
 	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
 
-	if ( undroppable(tile) ) return;
-
-	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
-
 	e.preventDefault();
     e.stopPropagation();
+
+    // throttler
+    if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
 
 	tile.lastDragOver = Date.now();
 
@@ -1919,6 +1925,8 @@ document.addEventListener('dragover', e => {
 		document.body.appendChild(dummy);
 		dummy.style.display = 'none';
 	}
+
+	tile.classList.add(side);
 
 	tile.classList.toggle('wide', tile.classList.contains('block'));
 
@@ -1969,15 +1977,8 @@ document.addEventListener('drop', async e => {
 	if ( e.target === dummy || e.target === qm )
 		tile = dummy.nextSibling;
 
-	if ( !window.dragNode ) {
-		try {
-			let transfer_node = getNodeFromDataTransfer(e);
-			let node = findNode(root, n => n.id === transfer_node.id);
-			if ( node ) {
-				window.dragNode = node;
-			}
-		} catch (error) {}
-	}
+	if ( !window.dragNode ) 
+		window.dragNode = getNodeFromDataTransfer(e);
 
 	if ( isTool(e)) {
 		let side = getSide(tile, e);
@@ -2055,8 +2056,6 @@ document.addEventListener('drop', async e => {
 		nodeAppendChild(slicedNode, tile.node);
 	
 	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
-
-	console.log('drop parent folder is', window.dragNode.parent.title);
 
 	await dragSave();
 
@@ -2146,11 +2145,14 @@ makeMarker = () => {
 }
 
 getNodeFromDataTransfer = e => {
-	let node = JSON.parse(e.dataTransfer.getData("text") || "{}");
-	if ( node && node.id) 
+
+	try {
+		let transfer_node = JSON.parse(e.dataTransfer.getData("text") || "{}");
+		let node = findNode(root, n => n.id === transfer_node.id);
 		return node;
-	else 
+	} catch (error) {
 		return null;
+	}
 }
 
 (() => { // text, image, url drag & drop
@@ -2870,3 +2872,5 @@ function toolsBarMorify(rows) {
 
 	makeContainerMore(toolBar, rows || userOptions.quickMenuToolbarRows);
 }
+
+const isChildWindow = () => window.location.hash ? true : false;
