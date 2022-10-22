@@ -517,7 +517,7 @@ document.body.addEventListener('dblclick', e => {
 });
 
 // addChildDockingListeners(mb, "quickMenu");
-addChildDockingListeners(document.body, "quickMenu", "#searchBarContainer > *");
+addChildDockingListeners(mb, "quickMenu", "#searchBarContainer > *");
 
 // drag overdiv listener for chrome
 window.addEventListener("message", e => {

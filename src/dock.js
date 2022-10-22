@@ -518,7 +518,7 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 
 		if ( ignoreTarget(e) ) return false;
 
-		if ( window.tilesDraggable ) return false;
+	//	if ( window.tilesDraggable ) return false;
 
 		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
 	});
