@@ -184,5 +184,11 @@ function createMaskIcon(src) {
 	return tool;
 }
 
+const log = console.log;
+const debug = (...args) => {
+	if ( userOptions && userOptions.developerMode )
+		console.log(...args)
+}
 const i18n = browser.i18n.getMessage;
 const sendMessage = browser.runtime.sendMessage;
+
