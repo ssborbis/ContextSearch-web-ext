@@ -984,7 +984,7 @@ function buildImportExportButtons() {
 							right_browser.innerHTML = null;
 
 							let copy = Object.assign({}, newUserOptions);
-							findNodes(copy.nodeTree, (n,p) => {
+							traverseNodesDeep(copy.nodeTree, (n,p) => {
 
 								// remove OCSE from non-FF browsers
 								if ( n.type === "oneClickSearchEngine" && !browser.search )
