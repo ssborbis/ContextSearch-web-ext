@@ -298,5 +298,6 @@ const defaultUserOptions = {
 	nativeAppDownloadFolder: "",
 	showStatusBar: false,
 	quickMenuDisabledInNewTabs: false,
-	developerMode: false
+	developerMode: false,
+	advancedImport: false
 };
