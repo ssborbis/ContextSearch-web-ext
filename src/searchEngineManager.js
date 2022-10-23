@@ -747,9 +747,7 @@ function buildSearchEngineContainer() {
 			header.appendChild(text);
 			
 			// indicate as a firefox one-click
-			let ff = document.createElement('span');
-			ff.innerText = "FF";
-			ff.style = 'background-color:rgb(234, 172, 92);color:white;border-radius:4px;font-size:7pt;font-weight:bold;margin-left:5px;padding:1px 5px;vertical-align:middle';
+			let ff = document.createElement('firefox-icon');
 			ff.title = 'Firefox One-Click Search Engine';
 
 			header.appendChild(ff);

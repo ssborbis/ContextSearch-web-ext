@@ -957,21 +957,142 @@ function buildImportExportButtons() {
 					return;
 				}
 
-				// let result = await new Promise( res => {
-				// 	$('#importModal').classList.remove('hide');
+				if ( userOptions.advancedImport ) {
 
-				// 	$('#importModal .ok').addEventListener('click', e => res(true));
-				// 	$('#importModal .cancel').addEventListener('click', e => res(false));
-				// });
+					$('#main').classList.add('blur');
 
-				// $('#importModal').classList.add('hide');
+					let choice1 = await new Promise( res => {
+						$('#importModal').classList.remove('hide');
 
-				// if ( !result ) return;
+						$('#importModal .replace').addEventListener('click', e => res("replace"));
+						$('#importModal .merge').addEventListener('click', e => res("merge"));
+						$('#importModal .cancel').addEventListener('click', e => res("cancel"));
+					});
+					$('#importModal').classList.add('hide');
 
-				// else {
-				// 	alert($('#importModal [name="settings"]').checked + "\t" +  $('#importModal [name="engines"]').checked + "\t" +  $('#importModal [name="history"]').checked);
-				// 	return;
-				// }
+					if ( choice1 === "cancel" ) return;
+					if ( choice1 === "merge" ) {
+						await new Promise( res => {
+							$('#importModalCustom').classList.remove('hide');
+							$('#importModalCustom .ok').addEventListener('click', e => res("replace"));
+							$('#importModalCustom .cancel').addEventListener('click', e => res("cancel"));
+
+							let left_browser = $('#importModalCustom [name="nodes_left"]');
+							let right_browser = $('#importModalCustom [name="nodes_right"]');
+
+							left_browser.innerHTML = null;
+							right_browser.innerHTML = null;
+
+							let copy = Object.assign({}, newUserOptions);
+							findNodes(copy.nodeTree, (n,p) => {
+
+								// remove OCSE from non-FF browsers
+								if ( n.type === "oneClickSearchEngine" && !browser.search )
+									removeNode(n,p);
+								// remove duplicate nodes
+								else if ( findNode(userOptions.nodeTree, _n => _n.id === n.id && JSON.stringify(_n) === JSON.stringify(n)) )
+									removeNode(n,p);
+								// remove missing engines
+								else if ( n.type === "searchEngine" && !copy.searchEngines.find(se => se.id === n.id ) )
+									removeNode(n,p);
+								// remove empty folders
+								else if ( n.type === "folder" && !n.children.length && p)
+									removeNode(n,p);
+
+							})
+
+							left_browser.appendChild(makeFolderBrowser(copy.nodeTree));
+							right_browser.appendChild(makeFolderBrowser({type: "folder", title:"/", id: gen(), children: []}));
+
+							left_browser.querySelectorAll('li').forEach( li => {
+								li.classList.add('new');
+								li.addEventListener('click', e => {
+									if ( e.target !== li ) return;
+
+									let parent = li.closest('.folderBrowser');
+									let notParent = [left_browser, right_browser].find( b => !b.contains(parent));
+
+									if ( left_browser.contains(parent) ) {
+										let div = document.createElement('div');
+										div.dataset.id = li.node.id;
+										li.parentNode.insertBefore(div, li);
+										notParent.querySelector('li[title="/"] > UL').appendChild(li);
+									} else {
+										let placeholder = left_browser.querySelector(`div[data-id="${li.node.id}"]`);
+
+										if ( placeholder)  {
+											placeholder.parentNode.insertBefore(li, placeholder);
+											placeholder.parentNode.removeChild(placeholder);
+										}
+									}
+								})
+							});
+						}).then( async result => {
+
+							if ( result === "cancel" ) {
+								newUserOptions = null;
+								return;
+							}
+
+							let _settings = $('#importModalCustom [name="settings"]').checked;
+							let _history = $('#importModalCustom [name="history"]').checked;
+
+							if ( !_history )
+								newUserOptions.searchBarHistory = JSON.parse(JSON.stringify(userOptions.searchBarHistory));
+
+							if ( !_settings ) {
+								for ( key in userOptions ) {
+									if ( !["nodeTree", "searchEngines", "searchBarHistory"].includes(key) )
+										newUserOptions[key] = JSON.parse(JSON.stringify(userOptions[key]));
+								}
+							}
+
+							let tree = listToNodeTree($('#importModalCustom [name="nodes_right"] .folderBrowser li[title="/"] > UL'));
+							let ids = findNodes(tree, n => n.type === "searchEngine").map(n => n.id);
+
+							let duplicates = ids.map( id => findNode(userOptions.nodeTree, n => n.id === id ));
+
+							// loop over duplicates to replace, skip, cancel
+
+							for ( dupe of duplicates ) {
+								await new Promise( res => {
+									$('#importModalDuplicates').classList.remove('hide');
+									$('#importModalDuplicates [name="message"]').innerText = dupe.title;
+									$('#importModalDuplicates [name="replace"]').addEventListener('click', e => res("replace"));
+									$('#importModalDuplicates [name="skip"]').addEventListener('click', e => res("skip"));
+									$('#importModalDuplicates [name="cancel"]').addEventListener('click', e => res("cancel"));
+								}).then(result => {
+									if ( result === "skip" )
+										removeNodesById(tree, dupe.id);
+								});
+							}
+
+							if ( duplicates.length ) {
+								alert("dupes");
+								console.error(duplicates);
+							}
+
+							// append searchEngines
+							let ses = userOptions.searchEngines.filter(se => ids.includes(se.id));
+							newUserOptions.searchEngines = userOptions.searchEngines.concat(ses);
+							
+							// append tree to newUserOptions
+							tree.title = "Imported";
+							newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+							if ( tree.children.length )
+								newUserOptions.nodeTree.children.push(JSON.parse(JSON.stringify(tree)));
+
+						});
+
+						$('#importModalCustom').classList.add('hide');
+					}
+
+					$('#main').classList.remove('blur');
+				}
+
+				// check for cancel
+				if ( !newUserOptions ) return;
 				
 				// update imported options
 				let _uo = await browser.runtime.sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
@@ -1041,7 +1162,27 @@ function buildUploadOnHash() {
 	}
 }
 
+function listToNodeTree(ul) {
+	let tree = {
+		type:"folder",
+		id: gen()
+	};
+	function traverse(el, folder) {
 
+		if ( el.nodeName === 'LI') {
+			folder.push(JSON.parse(JSON.stringify(el.node)));
+		}
+
+		if ( el.nodeName === 'UL' ) {
+			folder.children = [];
+			el.childNodes.forEach(c => traverse(c, folder.children));
+		}
+	}
+		
+	traverse(ul, tree);
+
+	return tree;
+}
 
 function buildHelpTab() {
 
@@ -1838,4 +1979,81 @@ async function checkForNativeAppUpdate() {
 	if ( !browser.runtime.sendNativeMessage ) return false;
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true});
+}
+
+function makeFolderBrowser(tree) {
+
+	// let div = document.createElement('ul');
+	// div.classList.add('folderBrowser')
+
+	let ul = document.createElement('ul');
+	ul.classList.add('folderBrowser')
+
+	traverse(tree, ul);
+
+	function traverse(node, parentEl) {
+
+		if ( !node.id ) return;
+		
+		let _li = document.createElement('li');
+		_li.nodeid = node.id;
+		_li.title = node.title;
+		_li.node = node;
+
+		let img = new Image();
+		img.src = getIconFromNode(node);
+		img.style.marginRight = '8px';
+		_li.appendChild(img);
+		_li.appendChild(document.createTextNode(node.title));
+
+		if (_li.node.type === "oneClickSearchEngine") {
+			_li.appendChild(document.createElement('firefox-icon'));
+		}
+
+
+		parentEl.appendChild(_li);
+
+		if ( node.hidden ) _li.style.opacity = .5;
+
+		if ( node.children ) {
+			let _ul = document.createElement('ul');
+			_li.appendChild(_ul);
+
+			_ul.node = node;
+
+			let collapse = document.createElement('span');
+			collapse.innerText = '+';
+			_li.insertBefore(collapse,_li.firstChild);
+			_ul.style.display = 'none';
+
+			collapse.onclick = function() {	
+				_ul.style.display = _ul.style.display ? null : 'none';
+				collapse.innerText = _ul.style.display ? "+" : "-";
+			}
+
+			node.children.forEach( child => traverse(child, _ul) );
+		}
+	}
+
+	ul.querySelectorAll('li').forEach( li => {
+
+		li.setAttribute("draggable", "true");
+
+		li.ondragstart = function(e) {
+			e.stopPropagation();
+
+			e.dataTransfer.setData("text/plain", li.nodeid);
+			e.effectAllowed = "copyMove";
+			// e.preventDefault();
+			window.dragSource = li;
+		}
+
+		li.ondragend = function(e) {e.preventDefault();}
+	});
+
+	ul.querySelector('ul').style.display = null;
+
+	// div.appendChild(ul);
+	// return div;
+	return ul;
 }

@@ -3,53 +3,51 @@ function findNodes(tree, callback) {
 	let results = [];
 	
 	function _traverse(node, parent) {
-		
-		if ( callback(node, parent) ) results.push(node);
-		
+				
 		if (node && node.children) {
-			for (let child of node.children) {
-				_traverse(child, node);
+
+		//	for (let child of node.children) {
+			for ( let i=node.children.length-1;i>=0;i--) {
+				_traverse(node.children[i], node);
 			}
 		}
+
+		if ( callback(node, parent) ) results.push(node);
 	}
 	
 	_traverse(tree, null);
 	 
-	return results;
+	return results.reverse();
 }
 
 function findNode(tree, callback) {
 	
 	function _traverse(node, parent) {
-		
-		if ( callback(node, parent) ) return node;
-		
+
 		if (node && node.children) {
-			for (let child of node.children) {
-				let found = _traverse(child, node);
+
+		//	for (let child of node.children) {
+			for ( let i=node.children.length-1;i>=0;i--) {
+				let found = _traverse(node.children[i], node);
 				if ( found ) return found;
 			}
 		}
+
+		if ( callback(node, parent) ) return node;
+		
+		// if ( callback(node, parent) ) return node;
+		
+		// if (node && node.children) {
+		// 	for (let child of node.children) {
+		// 		let found = _traverse(child, node);
+		// 		if ( found ) return found;
+		// 	}
+		// }
 		
 		return null;
 	}
 	
 	return _traverse(tree, null);
-}
-
-function traverseNodesDeep(tree, callback) {
-			
-	function _traverse(node, parent) {
-				
-		if (node && node.children) {
-			for ( let i=node.children.length-1;i>=0;i--)
-				_traverse(node.children[i], node);
-		}
-
-		callback(node, parent);
-	}
-	
-	_traverse(tree, null);
 }
 
 function setParents(tree) {
@@ -182,7 +180,7 @@ function getIconFromNode(node) {
 }
 
 function nodeCut(node, parent) {
-	node.parent = node.parent || parent;
+	node.parent = parent || node.parent;
 	return node.parent.children.splice(node.parent.children.indexOf(node), 1).shift();
 }
 

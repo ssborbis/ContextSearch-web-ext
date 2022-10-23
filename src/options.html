@@ -1141,26 +1141,27 @@
 				user-select: none;
 				display:inline-block;
 				vertical-align:middle;
-				margin-right:30px;
-				margin-bottom:30px;
+		/*		margin-right:30px;
+				margin-bottom:30px;*/
 				list-style-type:none;
 				font-size:12px;
 				font-weight:initial;
 				height:300px;
-				width:300px;
+				width:200px;
 				overflow-y:scroll;
 				overflow-x:hidden;
 				resize:both;
 				padding:16px;
 				background-color:var(--bg-color2);
 				border-radius:10px;
+				white-space: nowrap;
 			}
 			.folderBrowser LI, .folderBrowser UI {
 				list-style-type:none;
 				position:relative;
 			}
 			.folderBrowser UL {
-				padding-left:24px;
+				padding-left:16px;
 			}
 			.folderBrowser LI {
 				padding:1px;
@@ -1518,14 +1519,39 @@
 				height: 16px;
 			}
 
-			#importModal {
-				background-color: red;
+			.modal {
+				background-color: var(--bg-color1);
+				border-radius: 10px;
+				padding: 20px;
 				position: fixed;
 				left: 50%;
 				top: 50%;
+				transform: translate(-50%, -50%);
+				box-shadow:4px 4px 20px #0005;
+				border: 1px solid var(--border-color1);
+				text-align: center;
 			}
-			#importModal.hide {
+			.modal.hide {
 				display: none;
+			}
+			.modal BUTTON {
+				width: 100px;
+			}
+
+			.modal [name^="nodes"] {
+				display: inline-block;
+			}
+
+			FIREFOX-ICON::before {
+				content: "FF";
+				background-color:rgb(234, 172, 92);
+				color:white;
+				border-radius:4px;
+				font-size:7pt;
+				font-weight:bold;
+				margin-left:5px;
+				padding:1px 5px;
+				vertical-align:middle;
 			}
 
 		</style>
@@ -3578,13 +3604,33 @@
 			<div class="tabcontent" id="helpTab"></div>
 		</div>
 		</div>
-		<div id="importModal" class="hide">
-			<input type="checkbox" name="settings" class="nosave" /> Settings
-			<input type="checkbox" name="engines" class="nosave" /> Search Engines
-			<input type="checkbox" name="history" class="nosave" /> History
+		<div id="importModal" class="modal hide">
+			<div style="font-size:14pt;margin-bottom:20px">Import</div>
+			<button class="replace">Restore</button><br>
+			<button class="merge">Merge</button><br>
+			<button class="cancel">Cancel</button><br>
+		</div>
+		<div id="importModalCustom" class="modal hide">
+			<div style="font-size:14pt">Import</div>
+			<div style="text-align: initial;">
+				<input type="checkbox" name="settings" class="nosave" checked /> Settings <br>
+				<input type="checkbox" name="history" class="nosave" checked /> History <br>
+				<div name="nodes_left"></div>
+				<div style="display:inline-block"> &rarr; </div>
+				<div name="nodes_right"></div>
+			</div>
 			<button class="ok">OK</button>
 			<button class="cancel">Cancel</button>
 		</div>
+
+		<div id="importModalDuplicates" class="modal hide">
+			<div style="font-size:14pt;margin-bottom:20px">Import</div>
+			<div name="message"></div>
+			<button name="replace">Replace</button>
+			<button name="skip">Skip</button>
+			<button name="cancel">Cancel</button>
+		</div>
+
 		<img id="nightmode" src="icons/brightness.svg" style="position:fixed;top:4px;right:4px;height:24px;z-index:10000;" title="$toggletheme">
 		
 		<div id="saveNoticeDiv"></div>
