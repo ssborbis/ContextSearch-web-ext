@@ -1553,6 +1553,14 @@
 				padding:1px 5px;
 				vertical-align:middle;
 			}
+			BETA::before {
+				background-image: url('/icons/alert.svg');
+				background-size: 1em;
+				display: inline-block;
+				width:  1em;
+				height: 1em;
+				content:"";
+			}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
@@ -2117,6 +2125,7 @@
 						<option value="true" data-i18n="cascadingwindow">_</option>
 					</select>
 					<span class="description" data-i18n="CascadingFoldersToolTip">_</span>
+					<beta title="$beta"></beta>
 				</div>
 				<p class="header2" data-i18n="Columns">_</p>
 				<div class="option">

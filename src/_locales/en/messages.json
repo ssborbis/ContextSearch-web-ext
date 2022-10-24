@@ -2504,5 +2504,8 @@
   },
   "LatestVersionAlreadyInstalled": {
     "message": "Latest version already installed"
+  },
+  "beta": {
+    "message": "beta testing"
   }
 }
