@@ -423,7 +423,7 @@
     "message": "Liste der POST-Parameter und Werte getrennt durch & (Ampersands); nur anwendbar bei Verwendung der POST-Methode. Beispiel: q={searchTerms}&lang=de&maxresults=100."
   },
   
-  "Icon": {
+  "IconURI": {
     "message": "Symbol-URI"
   },
   

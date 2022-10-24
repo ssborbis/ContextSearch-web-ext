@@ -519,7 +519,7 @@
 "description": "description for Hotkey option",
 "message": "随时使用快捷键打开快捷菜单"
 },
-"Icon": {
+"IconURI": {
 "message": "图标 URI"
 },
 "IconLoadError": {

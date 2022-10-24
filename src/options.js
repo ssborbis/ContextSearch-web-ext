@@ -1290,7 +1290,7 @@ function buildHelpTab() {
 	}
 	
 	setTimeout(() => {
-		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
+		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale.replace("-", "_") + '/help.html';
 	}, 250);
 	
 	iframe.src = '/_locales/' + browser.i18n.getUILanguage() + '/help.html';

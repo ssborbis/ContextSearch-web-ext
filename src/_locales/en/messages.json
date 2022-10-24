@@ -423,7 +423,7 @@
     "message": "List of POST parameters and values separated by ampersands (e.g. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method"
   },
   
-  "Icon": {
+  "IconURI": {
     "message": "Icon URI"
   },
   
