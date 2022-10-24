@@ -423,7 +423,7 @@
     "message": "Elenco di parametri e valori POST separati da '&'; si applica solo quando si utilizza il metodo POST. Esempio: « q={searchTerms}&lang=en&maxresults=100 »"
   },
   
-  "Icon": {
+  "IconURI": {
     "message": "URI icona"
   },
   
