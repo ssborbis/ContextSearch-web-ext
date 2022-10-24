@@ -1036,6 +1036,7 @@ function buildQuickMenuElement(options) {
 }
 
 async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+		qm.flattened = false;
 
 		qm.contexts = quickMenuObject.contexts;
 		qm.contextualLayout = false;
@@ -1049,6 +1050,7 @@ async function quickMenuElementFromNodeTree( rootNode, reverse ) {
 			let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
 			if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
 				tempRoot.children = seNodes;
+				qm.flattened = true;
 			}
 
 			setParents(tempRoot);
@@ -1841,11 +1843,11 @@ document.addEventListener('dragstart', async e => {
 
 	if ( undraggable(tile) ) return;
 
-	if ( qm.contextualLayout ) {
+	if ( qm.contextualLayout && qm.flattened ) {
 		quickMenuObject.contexts = [];
 		qm = await quickMenuElementFromNodeTree(findNode(root, n => n.id === qm.rootNode.id));
 		resizeMenu({openFolder:true});
-		console.warn('Tiles cannot be rearranged when using contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
+		console.warn('Tiles cannot be rearranged when using a flattened contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
 		e.preventDefault();
 		return;
 	}
@@ -1862,8 +1864,6 @@ document.addEventListener('dragstart', async e => {
 
 	// apply style to inline groups
 	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
-
-//	console.log('dragstart parent folder is', tile.node.parent.title);
 
 });
 
@@ -2018,10 +2018,14 @@ document.addEventListener('drop', async e => {
 	let old_node_count = findNodes(root, n => true).length;
 
 	// cut the node from the children array
-	let slicedNode = nodeCut(window.dragNode);
+	// get node reference from root in case qm.rootNode != window.root ( contextual )
+	let slicedNode = nodeCut(findNode(root, n => n.id === window.dragNode.id));
 
 	//let dragTile = document.querySelector('.drag') || window.dragTile;
 	let targetNode = tile.node || tile.parentNode.node;
+
+	// get node reference from root in case qm.rootNode != window.root ( contextual )
+	targetNode = findNode(root, n => n.id === targetNode.id);
 
 	// special handler for inline groups
 	if ( tile.classList.contains("groupFolder") ) {
@@ -2029,41 +2033,39 @@ document.addEventListener('drop', async e => {
 		let dec = getSideDecimal(tile, e);
 		
 		if ( isTargetBeforeGroup(tile, dec) ) {
-			console.log('moving before group');
+			debug('moving before group');
 			nodeInsertBefore(slicedNode, targetNode.parent);
 		} else if ( isTargetAfterGroup(tile, dec) ) {
-			console.log('moving after group');
+			debug('moving after group');
 			nodeInsertAfter(slicedNode, targetNode.parent);
 		} else if ( tile.dataset.type && ['more','less'].includes(tile.dataset.type) ) {
-			console.log('drop to more / less tile ... appending tile to group');
+			debug('drop to more / less tile ... appending tile to group');
 			nodeAppendChild(slicedNode, targetNode.parent);			
 		} else {
 			return;
 		}
 
-		console.log('moving', slicedNode.title, 'to', targetNode.parent.title);
+		debug('moving', slicedNode.title, 'to', targetNode.parent.title);
 		dragSave();
 		return;
 	}
 
 	if ( side === 'before' ) 
-		nodeInsertBefore(slicedNode, tile.node);
+		nodeInsertBefore(slicedNode, targetNode);
 	
 	if ( side === 'after' )
-		nodeInsertAfter(slicedNode, tile.node);
+		nodeInsertAfter(slicedNode, targetNode);
 	
-	if ( side === 'middle' && tile.node.type === "folder" )
-		nodeAppendChild(slicedNode, tile.node);
+	if ( side === 'middle' && targetNode.type === "folder" )
+		nodeAppendChild(slicedNode, targetNode);
 	
-	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
+	debug('moving', slicedNode.title, 'to', slicedNode.parent.title);
 
 	await dragSave();
 
 	async function dragSave() {
 
 		let new_node_count = findNodes(root, n => true).length;
-
-		// console.log(old_node_count, "->", new_node_count);
 
 		if ( old_node_count === new_node_count ) {
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
@@ -2077,15 +2079,7 @@ document.addEventListener('drop', async e => {
 		qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
 		userOptions.enableAnimations = orig;
 
-		// drag & drop only allowed when all tiles are shown
-		// restore show all
-		// let sh = QMtools.find(t => t.name === 'showhide');
-		// let sh_tile = sh.init();
-		// await sh_tile.action();
-
-		resizeMenu({tileDrop: true, openFolder: true});
-
-		
+		resizeMenu({tileDrop: true, openFolder: true});		
 	}
 
 	dragCleanup();
