@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body style='padding:0;margin:0'>	
+	
+	<div style='font-weight:normal'>
+	
+		<div class="blobContainerHeader"><img alt="" src="/icons/help.svg" />Help</div>
+		
+		<div class="header1" >Dodajanje iskalnikov</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_search.gif"></div>
+		<div class="description">
+			Z desnim gumbom na miški klinite na iskalno vrstico na katerikoli spletni strani in izberite <code>Dodaj iskanje po meri</code>.  Nove iskalnike lahko dodajate tudi ročno v upravitelju iskalnikov.
+		</div>
+		<br /><br />
+		
+		<div class="header1" id='help_contextmenu'>Vsebinski meni</div>
+		
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/cm.gif"></div>
+		<div class="description">
+			<div class="header1 help">Odpiranje</div>
+			Izberite besedo in z desnim klikom odprite vsebinski meni.  Razširite meni ContextSearch z oznakom <code>Poišči "…"</code> in izberte iskalnik, s katerim želite iskati.
+		</div>
+		<br /><br />
+		<div class="header1" id='help_quickmenu'>Hitri meni</div>
+
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/qm.gif"></div>
+		<div class="description">
+			<div class="header1 help">Opening</div>
+			Izberite besedo in pridržite desni gumb na miški, da se pojavi hitri meni.  Izbirate lahko med več možnostmi za način odpiranja hitrega menija.
+		</div>
+		<br /><br />
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/resize.gif"></div>
+		<div class="description">
+			<div class="header1 help">Spreminjanje velikosti in preurejanje</div>
+			Velikost hitrega menija lahko spremenite s spreminjanjem nastavitev <code>Stolpci</code> in <code>Vrstice</code> ali z vlečenjem ikone za spreminjanje velikosti v spodnjem desnem kotu menija.
+		
+			Iskalnike lahko preuredite z vlečenjem in spuščanjem.
+		</div>
+		
+		<br /><br />
+		
+		<div class="header1" id='help_quickmenu'>Orodna vrstica</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/toolbar.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Odpiranje</div>
+			Dostop do iskalnikov je omogočen z gumom na orodni vrstici.
+		</div>
+		<br /><br />
+		
+		<div class="header1" id='help_quickmenu'>Upravitelj iskalnikov</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/add_folder.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Dodajanje map</div>
+			Iskalnike lahko uredite v mape in podmape. 
+			<br />
+			<br />1. Odprite meni z desnim klkom in izberite <code>Nova mapa</code>.
+			<br />2. Izberite edinstveno ime za mapo.
+			<br />3. Povlecite in spustite iskalnike v mapo.
+		</div>
+		<br /><br />
+		
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/native-app-support/media/edit_icon.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Urejanje ikon</div>
+			Za iskalnike lahko uporabite ikone po meri.
+			<br />
+			<br />1. Odprite meni z dvoklikom ali desnim klikom na iskalnik in izberite <code>Uredi</code>.
+			<br />2. Uredite polje <code>URI ikone</code> z URL-jem nove ikone in kliknite <code>Shrani</code>.
+		</div>
+		<br /><br />
+
+		<div class="header1" id='help_importing'>Uvažanje Firefoxovih iskalnikov</div>
+		<div class="description">
+		Od Firefoxa 63 naprej se Firefoxovi iskalniki samodejno uvozijo v ContextSearch.  Vendar jih ne morete spreminjati, razen če jih uvozite z brskalnikom datotek.
+		<br /><br />
+		Če bi jih želeli spremeniti, jih lahko uvozite s klikom na gumb v 'Uvozi Firefoxove iskalnike' v zavihku 'Iskalniki'.  Prebrskajte do mape profila in izberite datoteko <code>search.json.mozlz4</code>.
+		
+		Pot do mape profila lahko najdete tako, da v naslovni vrstici odprete <code style='-moz-user-select:text'>about:profiles</code>.  Običajna mesta:
+
+		<div style='margin-left:0px'>
+			<p><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+			<p><b>&nbsp;&nbsp;Mac OS X</b></p>
+			<p class='code'>Users/<i>&lt;username&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+			<p><b>&nbsp;&nbsp;Linux</b></p>
+			<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+		</div>	
+		</div>
+</body>
+</html>

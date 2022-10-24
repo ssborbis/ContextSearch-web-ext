@@ -36,7 +36,7 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
   6.3 [Template Parameters](#templateparameters)  
   6.4 [Javascript and Form-Based Engines](#javascriptengines)  
   6.5 [Engines With Logins and Tokens](#loginsandtokens)  
-7. [Bookmarklets](#bookmarklets)  
+7. [User Scripts and Bookmarklets](#bookmarklets)  
 8. [Launching External Applications](#externalApplications)
 9. [Styling](#styling)  
 10. [Advanced Options](#advanced)  
@@ -235,7 +235,7 @@ Show tools on the top or bottom of the quick menu, or hide them altogether
 |`Lock`|Keep the menu open after performing a search and it stays in the same place. You can reposition it by dragging the menu bar.|
 |`Open As Link`|If the selected text is thought to be an URL, this tool will become enabled. Click to navigate to the URL|
 |`Find In Page`|Use the built-in Find bar to highlight words in the current page. See the [Highlighting](#highlighting) section for more info.|
-|`Grid / List`|Toggle the menu display
+|`Grid / List`|Toggle the menu display between a grid layout and a list with text labels
 |`Options`|Open the options page
 |`Next Theme`|Cycle through some build-in themes for the menus. Find something you like.
 |`Layout Editor`|Put the menu into 'edit' mode to resize the layout or rearrange tiles. When editing, tiles can be dragged & dropped to re-order, and the lower-right corner of the menu can be dragged to resize and change the columns / rows count. The vertical order of elements like the search bar, title bar, menu bar, etc can be enable/disabled and rearranged while editing.
@@ -359,7 +359,7 @@ Clicking `Advanced` will show more options.
 <a name="mycroftproject"/>
 
 ## [4.1 MycroftProject](#toc)
-Engines found at http://mycroftproject.com can be easily installed by clicking the <img src="src/icons/logo_notext.svg" height="1em"> icon placed next to the OpenSearch link.
+Engines found at http://mycroftproject.com can be easily installed by clicking the <img src="/src/icons/logo_notext.svg" height="16px"> icon placed next to the OpenSearch link.
 ___
 
 <a name="highlighting"/>
@@ -515,15 +515,23 @@ ___
 
 <a name="bookmarklets"/>
 
-## [7. Bookmarklets](#toc)
-Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Bookmarklet. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add.
+## [7. User Scripts and Bookmarklets](#toc)
+Javascript can be run in the active tab by adding a Script. The global variables `CS_searchTerms` and `searchTerms` are accessable from Scripts, and contain the current search terms as seen by ContextSearch.
 
-Bookmarklets have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
+A simple example:
+```
+alert(searchTerms);
+```
 
-You could, for instance, create a search engine tile that toggles the 'menuless search via hotkey' option using the following bookmarklet code:
+Scripts can copy contents from local bookmarklets from a dropdown box in the Edit Script modal in CS options.
+Most browsers can run custom javascript from bookmarks using [bookmarklets](https://en.wikipedia.org/wiki/Bookmarklet) formatting. You can add bookmarklets to CS menus through CS Options -> Search Engines -> right click menu -> Add Script -> Search Bookmarklets. This opens a list of all bookmarklets found in your Bookmarks. Simply click the name of the bookmarlet you want to add, and the contents will be copied to your Script.
+
+Scripts have access to the [Content Script API](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Content_scripts#WebExtension_APIs) (useful for messaging the background page and accessing CS functions)
+
+You could, for instance, create a search engine tile that toggles the 'menuless search via hotkey' option using the following code:
 
 ```javascript
-javascript:(async () => {
+(async () => {
   userOptions.allowHotkeysWithoutMenu = !userOptions.allowHotkeysWithoutMenu;
   browser.runtime.sendMessage({action: "showNotification", msg: "hotkeys are " + (userOptions.allowHotkeysWithoutMenu ? "on" : "off")});
 })();
@@ -556,9 +564,21 @@ gimp -n -a  "{searchTerms}"
 "C:\\Program Files\\GIMP 2\\bin\\gimp-2.10.exe" -n -a "{searchTerms}"
 ```
 
-Download mp3 from YouTube using yt-dlp
+Download mp3 from YouTube using yt-dlp 
+
+( linux )
 ```
 /home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"
+```
+
+( linux show terminal )
+```
+gnome-terminal -- /home/mclovin/bin/yt-dlp -P ~/Desktop -x --audio-format mp3 --no-playlist "{searchTerms}"
+```
+
+( macOS )
+```
+osascript -e 'tell app "Terminal" to do script "/Users/mclovin/Downloads/yt-dlp -P $HOME/Desktop --no-playlist \"{searchTerms}\""'
 ```
 
 Open link in Chromium
@@ -583,6 +603,26 @@ replace `gnome-terminal --` with your terminal command
 
 Modify the search terms before being passed to the command line via `{searchTerms}` using the `Search Regex` field.
 
+App launchers will return the stdout of applications as the variable `result` to be used in Post-App Scripts.
+
+A simple example ( Post-App Script )
+
+Command: `ls ~`
+
+Script:
+```javascript
+alert(result);
+```
+
+This would run the command `ls ~` and alert the stdout of the command
+
+Sometimes it's useful to download a link target before launching an external app, because not all applications can handle URLs directly. In these cases, you can replace the parameter `{searchTerms}` with `{download_url}`. This will direct the python app to download the file located at the URL searched for within this addon, and place the file in the default TEMP folder for your particular OS, and finally replace `{download_url}` in the command line with the absolute path of the newly downloaded file. For example:
+
+```sh
+"C:/Windows/SysWOW64/mspaint.exe" "{download_url}"
+```
+
+This command would download the file at the URL searched for ( lets say, https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg ) to the local file `C:\Users\AppData\Local\Temp\Example.jpg`, and finally run the command `"C:/Windows/SysWOW64/mspaint.exe" "C:\Users\AppData\Local\Temp\Example.jpg"`
 ___
 
 <a name="styling"/>
