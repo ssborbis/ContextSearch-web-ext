@@ -642,11 +642,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	for (let el of i18n_tooltips) {
 		el.dataset.msg = i18n(el.dataset.i18n_tooltip + 'Tooltip');
 	}
-	
-//	console.log(browser.i18n.getUILanguage());
-	
+		
 	var link = document.createElement( "link" );
-	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
+	link.href = browser.runtime.getURL('/_locales/' + i18n("LOCALE_FOLDER") + '/style.css');
 	link.type = "text/css";
 	link.rel = "stylesheet";
 	document.getElementsByTagName( "head" )[0].appendChild( link );
