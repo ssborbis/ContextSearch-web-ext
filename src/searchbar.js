@@ -155,6 +155,8 @@ function toolBarResize(o) {
 		});
 	}
 
+	if ( !o.more ) toolsBarMorify(userOptions.searchBarToolbarRows);
+
 	if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
 		let sumHeight = getAllOtherHeights(true);
@@ -181,11 +183,14 @@ function unminifySideBar() {
 	sideBarResize();
 }
 
-async function sideBarResize(options) {
+async function sideBarResize(o) {
 	
-	options = options || {};
+	o = o || {};
 
 	if ( window == top ) return;
+
+	// prevent errors before qm loaded
+	if ( !qm.rootNode ) return;
 
 	// remove min-width for single columns
 	if (qm.singleColumn) qm.style.minWidth = null;
@@ -211,11 +216,13 @@ async function sideBarResize(options) {
 	// throwing sidebar errors
 	if ( !qm ) return;
 
+	if ( !o.more ) toolsBarMorify(userOptions.sideBarToolbarRows);
+
 	let maxWindowHeight = screen.height;
 
 	let qm_height = qm.style.height;
 
-	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : maxWindowHeight );
+	let iframeHeight = o.iframeHeight || ( !docked ? userOptions.sideBar.height : maxWindowHeight );
 	
 	document.body.style.height = docked ? "100vh" : 'auto';//document.body.style.height;
 	
@@ -230,9 +237,9 @@ async function sideBarResize(options) {
 		
 		if ( docked ) return `calc(100% - ${allOtherElsHeight}px)`;
 
-		if ( options.suggestionsResize ) return qm_height;
+		if ( o.suggestionsResize ) return qm_height;
 				
-		// if ( options.more ) return qm.getBoundingClientRect().height + "px";
+		// if ( o.more ) return qm.getBoundingClientRect().height + "px";
 		
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
