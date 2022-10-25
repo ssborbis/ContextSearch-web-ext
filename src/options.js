@@ -1230,7 +1230,7 @@ function buildHelpTab() {
 
 	// add locale-specific styling
 	var link = document.createElement( "link" );
-	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
+	link.href = browser.runtime.getURL('/_locales/' + i18n("LOCALE_FOLDER") + '/style.css');
 	link.type = "text/css";
 	link.rel = "stylesheet";
 	document.getElementsByTagName( "head" )[0].appendChild( link );
@@ -1290,10 +1290,10 @@ function buildHelpTab() {
 	}
 	
 	setTimeout(() => {
-		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale.replace("-", "_") + '/help.html';
+		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
 	}, 250);
 	
-	iframe.src = '/_locales/' + browser.i18n.getUILanguage() + '/help.html';
+	iframe.src = '/_locales/' + i18n("LOCALE_FOLDER") + '/help.html';
 	
 	help.appendChild(iframe);
 
@@ -2009,7 +2009,6 @@ function makeFolderBrowser(tree) {
 		if (_li.node.type === "oneClickSearchEngine") {
 			_li.appendChild(document.createElement('firefox-icon'));
 		}
-
 
 		parentEl.appendChild(_li);
 

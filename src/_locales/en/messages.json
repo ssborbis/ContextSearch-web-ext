@@ -1,4 +1,7 @@
 {
+  "LOCALE_FOLDER": {
+    "message": "en"
+  },
     
   "extensionDescription": {
     "message": "Add search engines easily and search from the context menu and convenient popup"

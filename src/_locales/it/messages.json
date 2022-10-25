@@ -1,4 +1,7 @@
 {
+  "LOCALE_FOLDER": {
+    "message": "it"
+  },
     
   "extensionDescription": {
     "message": "Aggiungi con facilità i motori di ricerca ed effettua le ricerche tramite il menu contestuale o un comodo menu rapido a comparsa"
