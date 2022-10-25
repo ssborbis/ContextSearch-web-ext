@@ -627,9 +627,9 @@ document.addEventListener('DOMContentLoaded', () => {
 		return false;
 	}
 	
-	let i18n = document.querySelectorAll('[data-i18n]');
+	let i18ns = document.querySelectorAll('[data-i18n]');
 	
-	for (let el of i18n) {
+	for (let el of i18ns) {
 
 		let textNode = traverse(el);
 		
