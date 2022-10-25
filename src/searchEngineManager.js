@@ -658,7 +658,13 @@ function buildSearchEngineContainer() {
 						if ( version ) {
 							span.innerText = 'v' + version;
 						} else {
-							span.innerHTML = `<a target="_blank" title="${i18n("MessengerOfflineTooltip")}" style="color:unset" href="https://github.com/ssborbis/ContextSearch-Native-App">${i18n('NativeAppMissing')}</a>`;
+							let a = document.createElement("a");
+							a.target = "_blank";
+							a.title = i18n("MessengerOfflineTooltip");
+							a.style = "color:unset";
+							a.href = "https://github.com/ssborbis/ContextSearch-Native-App";
+							a.innerText = i18n('NativeAppMissing');
+							span.appendChild(a);
 						}
 					}
 
