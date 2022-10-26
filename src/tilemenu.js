@@ -712,8 +712,7 @@ async function makeQuickMenu(options) {
 		qm.addEventListener(eventType, e => {
 
 			// dispatch a custom event to replace standard events
-			document.dispatchEvent(new CustomEvent('document_' + eventType));
-
+			e.target.dispatchEvent(new CustomEvent('document_' + eventType, {bubbles:true}));
 
 			window.focus();
 
@@ -1569,8 +1568,8 @@ function openFolderTimer(el, ms) {
 function addOpenFolderOnHover(_tile, ms) {
 
 	// force hover when cascading
-	if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders )
-		ms = 50;
+	if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders && userOptions.quickMenuCascadingFoldersHoverTimeout)
+		ms = userOptions.quickMenuCascadingFoldersHoverTimeout;
 
 	if ( !userOptions.openFoldersOnHoverTimeout && !ms ) return;
 

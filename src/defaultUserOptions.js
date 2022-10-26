@@ -293,6 +293,7 @@ const defaultUserOptions = {
 	askToAddNewEngineToFirefox: true,
 	ignoreSearchRedirects: true,
 	quickMenuUseCascadingFolders: false,
+	quickMenuCascadingFoldersHoverTimeout: 50,
 	quickMenuDefaultView: "grid",
 	searchBarDefaultView: "grid",
 	quickMenuUseOldStyle: false, // remove

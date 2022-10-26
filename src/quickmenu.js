@@ -71,6 +71,7 @@ async function makeFrameContents() {
 	
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
+	// cascading folders
 	document.addEventListener('document_click', e => {
 		
 		if ( e.target.closest && e.target.closest('.tile') ) return;
