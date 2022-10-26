@@ -1057,11 +1057,14 @@ function buildImportExportButtons() {
 							let tree = listToNodeTree($('#importModalCustom [name="nodes_right"] .folderBrowser li[title="/"] > UL'));
 							let ids = findNodes(tree, n => n.type === "searchEngine").map(n => n.id);
 
-							let duplicates = ids.map( id => findNode(userOptions.nodeTree, n => n.id === id ));
+							let duplicates = [];
+							ids.forEach( id => {
+								let node = findNode(userOptions.nodeTree, n => n.id === id );
+								if ( node ) duplicates.push(n);
+							});
 
 							// loop over duplicates to replace, skip, cancel
-
-							for ( dupe of duplicates ) {
+							for ( let dupe of duplicates ) {
 								await new Promise( res => {
 									$('#importModalDuplicates').classList.remove('hide');
 									$('#importModalDuplicates [name="message"]').innerText = dupe.title;
@@ -1074,10 +1077,7 @@ function buildImportExportButtons() {
 								});
 							}
 
-							if ( duplicates.length ) {
-								alert("dupes");
-								console.error(duplicates);
-							}
+							if ( duplicates.length ) console.error(duplicates);
 
 							// append searchEngines
 							let ses = userOptions.searchEngines.filter(se => ids.includes(se.id));
