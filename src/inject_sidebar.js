@@ -325,6 +325,7 @@ function makeOpeningTab() {
 	});
 
 	openingTab.docking.init();
+	setTimeout(() => repositionOffscreenElement(openingTab), 100);
 	
 	return openingTab;
 }
