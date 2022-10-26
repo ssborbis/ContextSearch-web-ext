@@ -2232,7 +2232,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Liste d’identifiants d’éléments HTML séparés par des virgules changeant la disposition du menu rapide (menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar). Il n’est pas nécessaire de les utiliser tous. Ceux figurant dans la liste seront placés en fin d’arborescence DOM. Laisser vide pour la disposition par défaut.",
+    "message": "Liste d’identifiants d’éléments HTML séparés par des virgules changeant la disposition du menu rapide (menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar). Il n’est pas nécessaire de les utiliser tous. Ceux figurant dans la liste seront placés en fin d’arborescence DOM. Laisser vide pour la disposition par défaut.",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {

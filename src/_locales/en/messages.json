@@ -2234,7 +2234,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, e.g. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
+    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, e.g. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {

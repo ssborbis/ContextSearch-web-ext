@@ -2234,7 +2234,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Sovrascrivi la disposizione del menu rapido usando identificatori di elementi HTLM separati da virgola (menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Non è necessario utilizzarli tutti. Quelli elencati saranno collocati alla fine dell'albero DOM. Lasciare vuoto per la disposizione predefinita",
+    "message": "Sovrascrivi la disposizione del menu rapido usando identificatori di elementi HTLM separati da virgola (menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar ). Non è necessario utilizzarli tutti. Quelli elencati saranno collocati alla fine dell'albero DOM. Lasciare vuoto per la disposizione predefinita",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {
