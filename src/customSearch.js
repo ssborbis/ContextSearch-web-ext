@@ -281,7 +281,6 @@ function addSearchEnginePopup(data) {
 	document.getElementById('askToAddNewEngineToFirefox').addEventListener('change', e => {
 		userOptions.askToAddNewEngineToFirefox = !e.target.checked;
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-		alert(!e.target.checked);
 	});
 	
 	let form = document.getElementById('customForm');
