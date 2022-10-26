@@ -390,20 +390,28 @@ async function notify(message, sender, sendResponse) {
 		case "updateContextMenu":
 		
 			var searchTerms = message.searchTerms;
-			currentContextMenuContexts = message.currentContexts;
 
 			if ( window.contextMenuSearchTerms === searchTerms ) {
-				console.log('same search terms');
-				return;
+		//		console.log('same search terms');
+		//		return;
 			}
 			
 			window.contextMenuSearchTerms = searchTerms;
 
 			if ( userOptions.contextMenuUseContextualLayout ) {
+
+				let ccs = [...message.currentContexts];
+
+				if ( ccs.includes("image") && ccs.includes("link") ) {
+					ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
+				}
+
 				updateMatchRegexFolders(searchTerms);
 
 				// relabel link based on linkMethod
-				try {
+				test: try {
+
+					if ( message.currentContexts.includes("image")) break test;
 
 					let title = i18n("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? i18n("LINKTEXT") : i18n("LINK")).toUpperCase()) + getMenuHotkey();
 
@@ -418,12 +426,10 @@ async function notify(message, sender, sendResponse) {
 					for ( let i in contexts )
 						await browser.contextMenus.update(contexts[i], {visible: true });
 
-					let ccs = message.currentContexts
-
-				 	if ( !ccs.includes("page") )
-						browser.contextMenus.update("page", {visible: false });
-					if ( !ccs.includes("frame") )
-						browser.contextMenus.update("frame", {visible: false });
+					contexts.forEach(c => {
+						if ( !ccs.includes(c) )
+							browser.contextMenus.update(c, {visible: false });
+					})
 
 				} catch ( error ) {
 					console.error(error);

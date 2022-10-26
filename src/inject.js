@@ -182,26 +182,43 @@ async function copyRaw(autoCopy) {
 
 function getContexts(el, e) {
 
-	if ( !el ) return [];
+	let co = getContextsObject(el, e);
 
-	let contexts = [];
+	let c = [];
+	for ( let key in co ) {
+		if ( co[key] ) c.push(key);
+	}
 
-	if ( el instanceof HTMLImageElement || getImage(el) ) contexts.push('image');
-	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
-	if ( el instanceof HTMLVideoElement ) contexts.push('video');
-	if ( el.closest && el.closest('a')) contexts.push('link');
-	if ( getSelectedText(el)) contexts.push('selection');
+	if ( co.linkText && getLinkMethod(e) === 'text' && !c.includes("selection") ) c.push("selection");
 
-	if ( e && contexts.includes("link") && getLinkMethod(e) === 'text' && el.closest && el.closest('a') && el.closest('a').innerText )
-		contexts.push("selection");
+	if ( c.length > 2) c = c.filter(_c => _c !== "frame" );
+	if ( c.length > 1) c = c.filter(_c => _c !== "page" );
 
-	if ( !contexts.length )
-		if ( el.nodeName === 'IFRAME' || ( el.ownerDocument && el.ownerDocument.defaultView != top ) ) contexts.push('frame');
+	return c;
+}
 
-	if ( !contexts.length )
-		contexts.push('page');
+function getContextsObject(el, e) {
+	let o = {};
+	["audio", "frame", "image", "link", "page", "selection", "video"].forEach(c => o[c] = null);
+
+	if ( !el ) return o;
+
+	o['image'] = getImage(el);
+	if ( el instanceof HTMLAudioElement ) o['audio'] = el.src;
+	if ( el instanceof HTMLVideoElement ) o['video'] = el.src;
+
+	if ( el.closest && el.closest('a')) {
+		o['link'] = el.closest('a').href;
+		o['linkText'] = el.closest('a').innerText;
+	}
 	
-	return [...new Set(contexts)];
+	o['selection'] = getSelectedText(el);
+
+	if ( el.nodeName === 'IFRAME' || ( el.ownerDocument && el.ownerDocument.defaultView != top ) ) o['frame'] = window.location.href;
+
+	o['page'] = window.location.href;
+	
+	return o;
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
@@ -230,7 +247,7 @@ document.addEventListener("selectionchange", e => {
 		quickMenuObject.searchTerms = searchTerms;
 		
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e)});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -249,7 +266,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e)});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 		}
 
 	});
@@ -267,7 +284,7 @@ window.addEventListener('mousedown', async e => {
 	}
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e)});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e), ctrlKey:e.ctrlKey});
 });
 
 function linkOrImage(el, e) {
