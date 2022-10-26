@@ -147,7 +147,7 @@ async function notify(message, sender, sendResponse) {
 			console.log("saveUserOptions", message.source || "", sender.tab.url);
 
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				notify({action: "updateUserOptions"});
+				notify({action: "updateUserOptions", source: sender});
 			});
 			break;
 			
@@ -157,7 +157,7 @@ async function notify(message, sender, sendResponse) {
 				console.log('updateUserOptions');
 				let tabs = await getAllOpenTabs();
 				for (let tab of tabs) {
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions, source: message.source}).catch( error => {/*console.log(error)*/});	
 				}
 				buildContextMenu();
 			}, 1000, "updateUserOptionsTimer");
