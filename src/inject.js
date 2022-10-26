@@ -632,7 +632,7 @@ document.addEventListener("mousemove", e => {
 }, {capture: true});
 
 document.addEventListener('keydown', e => {
-	if ( e.key === "Esc" ) {
+	if ( e.key === "Escape" ) {
 		let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
 
 		if ( tool && tool.on ) {
