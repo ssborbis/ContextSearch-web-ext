@@ -26,7 +26,7 @@ var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 var toolBar = document.getElementById('toolBar');
 var sbc = document.getElementById('searchBarContainer');
-var aeb = document.getElementById('addEngineBar');
+var aeb = document.getElementById('opensearchBar');
 var ctb = document.getElementById('contextsBar');
 
 var type;
@@ -1228,10 +1228,14 @@ function makeSearchBar() {
 
 			si.style.transform = null;
 
+			aeb.style = null;
+
 		//	runAtTransitionEnd(sg, "height", resizeMenu)
 
 			return;
 		}
+
+		aeb.style.display = 'block';
 
 		si.style.transform = 'rotate(-180deg)';
 		
@@ -1620,7 +1624,7 @@ getAllOtherHeights = (_new) => {
 	if ( _new ) return document.body.scrollHeight - qm.scrollHeight;
 	
 	let height = 0;
-	[sbc,tb,mb,toolBar,aeb,ctb].forEach( el => height += getFullElementSize(el).height );
+	[sbc,tb,mb,toolBar,ctb].forEach( el => height += getFullElementSize(el).height );
 	return height;
 }
 

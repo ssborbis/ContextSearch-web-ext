@@ -27,8 +27,6 @@ function getSelectedText(el) {
 browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	userOptions = uo;
 	
-	makeSearchBar();
-
 	let singleColumn = window == top ? userOptions.searchBarDefaultView === 'text' : userOptions.sideBar.singleColumn;
 
 	await setTheme();
@@ -44,7 +42,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	// override layout
 	setLayoutOrder( qm.dataset.menu === "sidebar" ? userOptions.sideBar.domLayout : userOptions.searchBarDomLayout );
 
-	
+	makeSearchBar();
 
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
@@ -311,7 +309,6 @@ async function makeAddEngineBar() {
 
 		let div = document.createElement('div');
 		let img = new Image();
-		img.src = browser.runtime.getURL('icons/add.svg');
 		div.innerText = " ";
 		div.style.display = 'none';
 		div.insertBefore(img, div.firstChild);
@@ -324,18 +321,35 @@ async function makeAddEngineBar() {
 
 		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
 			return div.parentNode.removeChild(div);
-		} 
+		}
+
+		img.src = xml_se.icon_url || browser.runtime.getURL('icons/transparent.gif');
 
 		div.innerText = xml_se.title;
+
 		div.insertBefore(img, div.firstChild);
+
+		let osi = new Image();
+		osi.src = 'icons/opensearch.svg';
+		div.insertBefore(osi, div.firstChild);
+
 		div.style.display = null;
 
 		div.onclick = async() => {
 			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
+
+		// has openSearch icon
+		(() => {
+			let img = new Image();
+			img.src = 'icons/opensearch.svg';
+			img.className = 'opensearchIcon';
+			let si = document.getElementById('searchIcon');
+			si.parentNode.insertBefore(img, si.nextSibling);
+
+		})();
 	}
 
-	document.body.appendChild(aeb);
 	resizeMenu();
 }
 

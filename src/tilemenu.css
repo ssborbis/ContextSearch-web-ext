@@ -178,6 +178,7 @@ BODY {
 }
 #searchBarContainer {
 	white-space:nowrap;
+	position: relative;
 }
 #searchBarContainer > .tool {
 	height:16px;
@@ -195,6 +196,16 @@ BODY {
 }
 #searchBarContainer > #searchIcon {
 	transition: transform .25s;
+	z-index: 2;
+}
+#searchBarContainer .opensearchIcon {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	z-index: 1;
+	left: 0px;
+	top: 0px;
+	vertical-align: top;
 }
 #searchBar {
 	font-size:11pt;
@@ -479,13 +490,14 @@ GROUP > LABEL {
 .tile.less .tool {
 	transform: rotate(-180deg);
 }*/
-#addEngineBar {
+#opensearchBar {
 	font-size:9pt;
 	cursor:pointer;
 	overflow-x:hidden;
 	width:var(--iframe-body-width, auto);
+	display: none;
 }
-#addEngineBar > DIV {
+#opensearchBar > DIV {
 	border-top:2px solid var(--border);
 	padding:2px;
 	transition: opacity .25s .5s, background-color .15s;
@@ -495,10 +507,10 @@ GROUP > LABEL {
 	padding:2px;
 	white-space: nowrap;
 }
-#addEngineBar > DIV:hover {
+#opensearchBar > DIV:hover {
 	background-color:#0002;
 }
-#addEngineBar IMG {
+#opensearchBar IMG {
 	height:1em;
 	margin-right:6px;
 	vertical-align: middle;
