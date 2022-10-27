@@ -2018,16 +2018,20 @@ function buildSearchEngineContainer() {
 
 			let filename = prompt("Choose a filename");
 
-			if ( !/.json$/i.filename )
-				filename += ".json";
+			if ( filename ) {
 
-			var a = document.createElement('a');
-			a.href        = url;
-			a.download    = filename;
+				if ( !/.json$/i.filename )
+					filename += ".json";
 
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
+				var a = document.createElement('a');
+				a.href        = url;
+				a.download    = filename;
+
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+			}
+			
 		 	closeContextMenus();
 			
 		});
