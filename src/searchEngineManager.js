@@ -2264,11 +2264,11 @@ async function removeNodesAndRows() {
 	}
 
 	// append hidden OCSEs
-	ffses.forEach( n => {
-		n.parent = rootElement.node;
-		n.hidden = true;
-		rootElement.node.children.push(n);
-	});
+	// ffses.forEach( n => {
+	// 	n.parent = rootElement.node;
+	// 	n.hidden = true;
+	// 	rootElement.node.children.push(n);
+	// });
 
 	updateNodeList();
 	closeContextMenus();
