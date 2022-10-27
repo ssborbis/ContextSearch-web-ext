@@ -1597,6 +1597,10 @@ async function openSearch(info) {
 			});
 			
 			notify({action: "addToHistory", searchTerms: searchTerms});
+
+			// overwrite last multi-child
+			lastSearchHandler(info.menuItemId, info.openMethod);
+
 			return;
 			
 		} catch (error) {
