@@ -1970,7 +1970,7 @@ function buildSearchEngineContainer() {
 
 			e.stopImmediatePropagation();
 
-			console.log(selectedRows.map(r => r.node.title));
+			//console.log(selectedRows.map(r => r.node.title));
 
 			let templates = selectedRows.filter(r => !['siteSearchFolder', 'separator'].includes(r.node.type)).map( r => r.node.id);
 			let names = selectedRows.map( r => r.node.title);
@@ -1994,12 +1994,50 @@ function buildSearchEngineContainer() {
 			
 		});
 
+		let exportNodes = createMenuItem(i18n('export'), browser.runtime.getURL('icons/download.svg'));	
+		exportNodes.addEventListener('click', e => {
+
+			e.stopImmediatePropagation();
+
+			// filter child rows if parent is selected
+			selectedRows = selectedRows.filter( r => !selectedRows.find(_r => _r !== r && _r.contains(r)));
+
+			let nodes = selectedRows.map( r => JSON.parse(JSON.stringify(r.node)));
+
+			nodes.forEach( node => {
+				findNodes(node, n => {
+					if ( n.type === 'searchEngine' ) {
+						n.searchEngine = userOptions.searchEngines.find(se => se.id === n.id);
+					}
+				})
+			});
+
+			let json = JSON.stringify({exportedNodes: nodes});
+			var blob = new Blob([json], {type: "application/json"});
+			var url  = URL.createObjectURL(blob);
+
+			let filename = prompt("Choose a filename");
+
+			if ( !/.json$/i.filename )
+				filename += ".json";
+
+			var a = document.createElement('a');
+			a.href        = url;
+			a.download    = filename;
+
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+		 	closeContextMenus();
+			
+		});
+
 		let cbs = document.querySelectorAll('.selectCheckbox:checked');
 
 		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete].forEach( el => {
+		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete, exportNodes].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);

@@ -950,6 +950,73 @@ function buildImportExportButtons() {
 
 		// Closure to capture the file information.
 		reader.onload = async () => {
+
+			// check for exported nodes
+			importNodes: try {
+				let json = JSON.parse(reader.result);
+				if ( !json.exportedNodes ) break importNodes;
+
+				let uo = JSON.parse(JSON.stringify(userOptions));
+
+				let folder = {
+					type:"folder",
+					children: json.exportedNodes,
+					id:gen(),
+					title: "Imported"
+				}
+
+				// flatten
+				folder.children = findNodesDeep(folder, n => n.type !== 'folder' );
+
+				// get nodes with duplicate ids in userOptions.nodeTree
+				let dupes = findNodesDeep(folder, n => findNode(uo.nodeTree, _n => _n.id === n.id));
+
+				for ( let dupe of dupes ) {
+					let result = await new Promise( res => {
+						$('#importModalDuplicates').classList.remove('hide');
+						$('#importModalDuplicates [name="message"]').innerText = dupe.title || dupe.type;
+
+						$('#importModalDuplicates').querySelectorAll('BUTTON[name]').forEach( el => {
+							el.addEventListener('click', e => res(el.name));
+						})
+					});
+
+					if ( result === "skip" )
+						removeNodesById(folder, dupe.id);
+
+					if ( result === "cancel" )
+						return;
+
+					// if ( result === "replace" ) {
+					// 	findNode(userOptions.nodeTree, n => );
+					// }
+
+					if ( result === "merge" ) {
+
+						// replace id 
+						dupe.id = gen();
+
+						// push to searchEngines array
+						if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
+							dupe.searchEngine.id = dupe.id;
+
+							uo.searchEngines.push(dupe.searchEngine);
+							delete dupe.searchEngine;
+						}
+					}
+						
+					$('#importModalDuplicates').classList.add('hide');
+
+				}
+
+				uo.nodeTree.children.push(folder);
+
+				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: uo});
+				location.reload();
+
+				return;
+
+			} catch (error) { console.error(error)}
 			try {
 				let newUserOptions = JSON.parse(reader.result);
 				
@@ -964,7 +1031,7 @@ function buildImportExportButtons() {
 					return;
 				}
 
-				if ( userOptions.advancedImport ) {
+				if ( false && userOptions.advancedImport ) {
 
 					$('#main').classList.add('blur');
 
@@ -1074,6 +1141,8 @@ function buildImportExportButtons() {
 								}).then(result => {
 									if ( result === "skip" )
 										removeNodesById(tree, dupe.id);
+
+									$('#importModalDuplicates').classList.add('hide');
 								});
 							}
 
