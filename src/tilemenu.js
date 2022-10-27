@@ -285,74 +285,17 @@ function createToolsArray() {
 	
 	toolsArray.forEach( tool => {
 		
-	//	tool.setAttribute('draggable', window.tilesDraggable);
-
 		tool.addEventListener('dragstart', e => {
 
-	//		console.log(e);
-
-	//		if ( !window.tilesDraggable ) return false;
-
 			e.dataTransfer.setData("tool", "true");
-			// let img = new Image();
-			// img.src = browser.runtime.getURL('icons/transparent.gif');
-			// e.dataTransfer.setDragImage(img, 0, 0);
+			let img = new Image();
+			img.src = browser.runtime.getURL('icons/transparent.gif');
+			e.dataTransfer.setDragImage(img, 0, 0);
 			tool.id = 'dragDiv';
 			
-			// qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
+			//qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
 		});
-	/*	tool.addEventListener('dragenter', e => {
-			e.preventDefault();
-			if ( !isTool(e) ) return;
-		});
-		tool.addEventListener('dragover', e => {
-			e.preventDefault();
-			
-			if ( !isTool(e) ) return;
-		});
-		tool.addEventListener('dragend', e => {
-			qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
-			if ( getDragDiv() ) getDragDiv().id = null;
-		});
-		tool.addEventListener('drop', async e => {	
-			e.preventDefault();
-			
-			if ( !isTool(e) ) return;
-			
-			let side = getSide(tool, e);
-			
-			let qmt = userOptions.quickMenuTools;
-			
-			dragName = getDragDiv().tool.name;
-			targetName = e.target.tool.name;
-			
-			dragIndex = qmt.findIndex( t => t.name === dragName );
-			targetIndex = qmt.findIndex( t => t.name === targetName );
-
-			if ( side === "before" ) {
-				qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
-				e.target.parentNode.insertBefore(getDragDiv(), e.target);
-			}
-			else {
-				qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
-				e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
-			}
-			
-			saveUserOptions();
-		
-			// rebuild menu
-			// toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
-			// qm.toolsArray = createToolsArray();
-		//	toolsHandler();
-
-		//	qm.expandMoreTiles();
-
-		//	resizeMenu({tileDrop: true});
-
-		//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
-
-		});
-*/	});
+	});
 	
 	toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
 
@@ -1902,7 +1845,12 @@ document.addEventListener('dragover', e => {
 
 	if ( !window.dragNode ) return;
 
-	if ( tile.dataset.type === 'tool' ) return;
+	if ( isTool(e)) {
+		e.preventDefault();
+		return;
+	}
+
+	//if ( tile.dataset.type === 'tool' ) return;
 
 	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
 
@@ -1984,6 +1932,9 @@ document.addEventListener('drop', async e => {
 		window.dragNode = getNodeFromDataTransfer(e);
 
 	if ( isTool(e)) {
+
+		if ( !e.target.tool ) return;
+
 		let side = getSide(tile, e);
 
 		let qmt = userOptions.quickMenuTools;
