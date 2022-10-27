@@ -51,6 +51,8 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 
 	makeAddEngineBar();
 
+	setDraggable();
+
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {
