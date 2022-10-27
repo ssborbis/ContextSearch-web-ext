@@ -1025,10 +1025,9 @@ function buildImportExportButtons() {
 					if ( n.searchEngine ) uo.searchEngines.push(n.searchEngine);
 				})
 
-				if ( folder.childen.length ) uo.nodeTree.children.push(folder);
+				if ( folder.children.length ) uo.nodeTree.children.push(folder);
 
 				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: uo});
-				//return;
 				location.reload();
 
 				return;
