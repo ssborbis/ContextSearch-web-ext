@@ -984,12 +984,24 @@ function buildImportExportButtons() {
 					if ( result === "skip" )
 						removeNodesById(folder, dupe.id);
 
-					if ( result === "cancel" )
+					if ( result === "cancel" ) {
+						$('#importModalDuplicates').classList.add('hide');
 						return;
+					}
 
-					// if ( result === "replace" ) {
-					// 	findNode(userOptions.nodeTree, n => );
-					// }
+					if ( result === "replace" ) {
+						let oldNode = findNode(uo.nodeTree, n => n.id === dupe.id );
+						oldNode = JSON.parse(JSON.stringify(dupe));
+
+						if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
+							let i = uo.searchEngines.findIndex( _se => _se.id === dupe.id );
+							if ( i > -1 ) uo.searchEngines[i] = JSON.parse(JSON.stringify(dupe.searchEngine));
+
+							delete dupe.searchEngine;
+						}
+
+						removeNodesById(folder, dupe.id);
+					}
 
 					if ( result === "merge" ) {
 
@@ -1009,9 +1021,14 @@ function buildImportExportButtons() {
 
 				}
 
-				uo.nodeTree.children.push(folder);
+				findNodes(folder, n => n.type === "searchEngine").forEach( n => {
+					if ( n.searchEngine ) uo.searchEngines.push(n.searchEngine);
+				})
+
+				if ( folder.childen.length ) uo.nodeTree.children.push(folder);
 
 				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: uo});
+				//return;
 				location.reload();
 
 				return;
