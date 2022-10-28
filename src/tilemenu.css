@@ -506,13 +506,14 @@ GROUP > LABEL {
 	text-overflow:ellipsis;
 	padding:2px;
 	white-space: nowrap;
+	line-height: 1em;
 }
 #opensearchBar > DIV:hover {
 	background-color:#0002;
 }
 #opensearchBar IMG {
 	height:1em;
-	margin-right:6px;
+	margin-right:4px;
 	vertical-align: middle;
 }
 
