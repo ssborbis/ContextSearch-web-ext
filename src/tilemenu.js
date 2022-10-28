@@ -2096,7 +2096,7 @@ getNodeFromDataTransfer = e => {
 
 	try {
 		let transfer_node = JSON.parse(e.dataTransfer.getData("text") || "{}");
-		let node = findNode(root, n => n.id === transfer_node.id);
+		let node = findNode(root, n => n.id && n.id === transfer_node.id);
 		return node;
 	} catch (error) {
 		return null;
