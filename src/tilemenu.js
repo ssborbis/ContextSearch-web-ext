@@ -310,7 +310,7 @@ async function makeQuickMenu(options) {
 
 	singleColumn = options.singleColumn;
 	
-	let columns = singleColumn ? 1 : getColumns();
+	let columns = singleColumn ? 1 : ( options.columns || getColumns() );
 		
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
@@ -750,10 +750,13 @@ async function makeQuickMenu(options) {
 
 	}
 
+	// options override
 	let root = JSON.parse(JSON.stringify(options.node || userOptions.nodeTree));
 
 	window.root = root;
-	quickMenuObject.contexts = options.contexts || [];
+
+	// options override
+	quickMenuObject.contexts = options.contexts || quickMenuObject.contexts || [];
 
 	setParents(root);
 
@@ -765,6 +768,9 @@ async function makeQuickMenu(options) {
 	if ( type === 'sidebar')
 		root.displayType = userOptions.sideBar.singleColumn ? "text" : "grid";
 
+	// options override
+	root.displayType = options.displayType || root.displayType;
+
 	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
 	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
@@ -773,7 +779,7 @@ async function makeQuickMenu(options) {
 		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
 	}
 
-	return Promise.resolve(quickMenuElementFromNodeTree(root));
+	return _quickMenuElementFromNodeTree({node: root, columns:options.columns});
 	
 }
 
@@ -783,7 +789,7 @@ function buildQuickMenuElement(options) {
 	
 	if ( options.node.displayType === "grid" ) _singleColumn = false;
 	
-	let _columns = _singleColumn ? 1 : getColumns();
+	qm.columns = _singleColumn ? 1 : ( options.columns || getColumns() );
 
 	let tileArray = options.tileArray;
 
@@ -795,8 +801,6 @@ function buildQuickMenuElement(options) {
 	qm.style.transition = 'none';
 	qm.style.pointerEvents = 'none';
 	
-	qm.columns = _columns;
-
 	// remove separators if using grid
 	if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
 
@@ -806,8 +810,6 @@ function buildQuickMenuElement(options) {
 	tileArray.forEach( tile => {
 		
 		tile.classList.add('tile');
-
-	//	tile.classList.toggle("singleColumn", _singleColumn);
 		
 		if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
 			
@@ -838,7 +840,7 @@ function buildQuickMenuElement(options) {
 	qm.setDisplay = () => {
 
 		qm.classList.toggle("singleColumn", qm.singleColumn);
-		document.documentElement.style.setProperty('--single-column-width', "300px");
+	//	document.documentElement.style.setProperty('--single-column-width', "300px");
 		qm.querySelectorAll('.tile').forEach( _tile => {
 			// let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
 			// _tile.classList.toggle("singleColumn", _sc);
@@ -871,9 +873,8 @@ function buildQuickMenuElement(options) {
 
 	runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
 			
-	const isTool = e => e.dataTransfer.getData("tool") === "true";
+	// const isTool = e => e.dataTransfer.getData("tool") === "true";
 	
-
 	(() => { // set up special folders ( recent / regex )
 
 		if ( qm.rootNode.id !== userOptions.nodeTree.id ) return;
@@ -978,152 +979,156 @@ function buildQuickMenuElement(options) {
 }
 
 async function quickMenuElementFromNodeTree( rootNode, reverse ) {
-		qm.flattened = false;
+	return _quickMenuElementFromNodeTree({node: rootNode, reverse: reverse})
+}
 
-		qm.contexts = quickMenuObject.contexts;
-		qm.contextualLayout = false;
+async function _quickMenuElementFromNodeTree( o ) {
 
-		// filter node tree for matching contexts
-		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
+	let rootNode = o.node || {}
+	let reverse = o.reverse || false;
+	qm.flattened = false;
+	qm.contexts = quickMenuObject.contexts;
+	qm.contextualLayout = false;
 
-			let tempRoot = filterContexts(rootNode, qm.contexts);
+	// filter node tree for matching contexts
+	if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
 
-			// flatten
-			let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
-			if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
-				tempRoot.children = seNodes;
-				qm.flattened = true;
-			}
+		let tempRoot = filterContexts(rootNode, qm.contexts);
 
-			setParents(tempRoot);
-
-			tempRoot.parent = rootNode.parent;
-			rootNode = tempRoot;
-
-			qm.contextualLayout = true;
+		// flatten
+		let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
+		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
+			tempRoot.children = seNodes;
+			qm.flattened = true;
 		}
 
-		let debug = rootNode.title === "empty";
+		setParents(tempRoot);
 
-		reverse = reverse || false; // for slide-in animation direction
-		
-		let nodes = rootNode.children || [];
-		let tileArray = [];
-		
-		// update the qm object with the current node
-		qm.rootNode = rootNode;
-		
-		if ( userOptions.syncWithFirefoxSearch ) {	
-			nodes = [];
-			qm.rootNode = Object.assign({}, qm.rootNode);
-			let ffses = await browser.runtime.sendMessage({action: "getFirefoxSearchEngines"});
-			
-			ffses.forEach( ffse => {
-				let node = findNode( userOptions.nodeTree, n => n.title === ffse.name );
-				
-				if ( !node ) {
-					console.log("couldn't find node for " + ffse.name);
-					return;
-				}
-				
-				node.parent = qm.rootNode;
-				
-				nodes.push(node);
-			});
-			
-			qm.rootNode.children = nodes;
-			
-			rootNode = qm.rootNode;
-		}
-		
-		// set the lastOpenedFolder object
-		browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
-		
-		// if parentId was sent, assume subfolder and add 'back' button
-		// unless href has hash ( cascading menu )
-		if (rootNode.parent && !isChildWindow()) { 
+		tempRoot.parent = rootNode.parent;
+		rootNode = tempRoot;
 
-			let tile = buildSearchIcon(null, i18n('back'));
-			let backIcon = createMaskIcon('icons/back.svg');
-			backIcon.style.position = "absolute";
-
-			tile.appendChild(backIcon);
-
-			tile.dataset.type = "folder";
-			tile.node = rootNode.parent;
-			tile.dataset.undraggable = true;
-	
-			tile.addEventListener('mouseup', _back);
-			tile.addEventListener('openFolder', _back);
-
-			addOpenFolderOnHover(tile);
-			
-			qm.back = _back;
-			
-			async function _back(e) {
-				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
-				
-				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
-
-				qm.expandMoreTiles();
-
-				resizeMenu({openFolder: true})
-
-				runAtTransitionEnd(qm, "left", () => resizeMenu({openFolder: true}), 100);
-			}
-						
-			delete sb.selectedIndex;
-			tileArray.push(tile);
-		}
-			
-		function makeGroupTilesFromNode( node ) {
-			let tiles = [];
-			
-			node.children.forEach( _node => {
-				let _tile = nodeToTile(_node);
-				
-				if ( !_tile ) return;
-
-				_tile.title = node.title + " / " + _tile.title;
-
-				if ( _tile ) tiles.push( _tile );
-			});
-			
-			return tiles;
-		}
-
-		nodes.forEach( node => {
-
-			let tile = nodeToTile(node);
-			
-			if ( tile ) tileArray.push( tile );
-			else return;
-						
-		//	if ( node.groupFolder && !node.parent.parent) { // only top-level folders
-
-			if ( node.groupFolder && node.parent === qm.rootNode ) { 
-				let groupTiles = makeGroupTilesFromNode( node );
-
-				tileArray = tileArray.concat(groupTiles);
-			}
-
-		});
-
-		// try { // fails on restricted pages
-		// 	await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
-
-		// 		if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
-		// 	});
-		// } catch (error) {
-
-		// }
-
-		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
-
-		makeContextsBar();
-
-		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
+		qm.contextualLayout = true;
 	}
+
+	let debug = rootNode.title === "empty";
+	
+	let nodes = rootNode.children || [];
+	let tileArray = [];
+	
+	// update the qm object with the current node
+	qm.rootNode = rootNode;
+	
+	if ( userOptions.syncWithFirefoxSearch ) {	
+		nodes = [];
+		qm.rootNode = Object.assign({}, qm.rootNode);
+		let ffses = await browser.runtime.sendMessage({action: "getFirefoxSearchEngines"});
+		
+		ffses.forEach( ffse => {
+			let node = findNode( userOptions.nodeTree, n => n.title === ffse.name );
+			
+			if ( !node ) {
+				console.log("couldn't find node for " + ffse.name);
+				return;
+			}
+			
+			node.parent = qm.rootNode;
+			
+			nodes.push(node);
+		});
+		
+		qm.rootNode.children = nodes;
+		
+		rootNode = qm.rootNode;
+	}
+	
+	// set the lastOpenedFolder object
+	browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
+	
+	// if parentId was sent, assume subfolder and add 'back' button
+	// unless href has hash ( cascading menu )
+	if (rootNode.parent && !isChildWindow()) { 
+
+		let tile = buildSearchIcon(null, i18n('back'));
+		let backIcon = createMaskIcon('icons/back.svg');
+		backIcon.style.position = "absolute";
+
+		tile.appendChild(backIcon);
+
+		tile.dataset.type = "folder";
+		tile.node = rootNode.parent;
+		tile.dataset.undraggable = true;
+
+		tile.addEventListener('mouseup', _back);
+		tile.addEventListener('openFolder', _back);
+
+		addOpenFolderOnHover(tile);
+		
+		qm.back = _back;
+		
+		async function _back(e) {
+			// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
+			
+			qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
+
+			qm.expandMoreTiles();
+
+			resizeMenu({openFolder: true})
+
+			runAtTransitionEnd(qm, "left", () => resizeMenu({openFolder: true}), 100);
+		}
+					
+		delete sb.selectedIndex;
+		tileArray.push(tile);
+	}
+		
+	function makeGroupTilesFromNode( node ) {
+		let tiles = [];
+		
+		node.children.forEach( _node => {
+			let _tile = nodeToTile(_node);
+			
+			if ( !_tile ) return;
+
+			_tile.title = node.title + " / " + _tile.title;
+
+			if ( _tile ) tiles.push( _tile );
+		});
+		
+		return tiles;
+	}
+
+	nodes.forEach( node => {
+
+		let tile = nodeToTile(node);
+		
+		if ( tile ) tileArray.push( tile );
+		else return;
+					
+	//	if ( node.groupFolder && !node.parent.parent) { // only top-level folders
+
+		if ( node.groupFolder && node.parent === qm.rootNode ) { 
+			let groupTiles = makeGroupTilesFromNode( node );
+
+			tileArray = tileArray.concat(groupTiles);
+		}
+
+	});
+
+	// try { // fails on restricted pages
+	// 	await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+
+	// 		if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
+	// 	});
+	// } catch (error) {
+
+	// }
+
+	qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
+
+	makeContextsBar();
+
+	return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode, columns: o.columns});
+}
 
 async function getSuggestions(terms) {
 

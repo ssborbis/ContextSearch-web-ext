@@ -12,6 +12,7 @@
 	--folder-border-color:#c2c2c2;
 	--group-label-color: #444;
 	color: #4a4a4a;
+	--single-column-width:  300px;
 }
 
 HTML, BODY {

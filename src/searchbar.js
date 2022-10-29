@@ -31,7 +31,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 
 	await setTheme();
 	await setUserStyles();
-	await makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn})
+	await makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn, contexts:[]})
 		.then( qme => {
 			document.body.appendChild(qme);
 			
@@ -52,7 +52,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	makeAddEngineBar();
 
 	setDraggable();
-
+	
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {

@@ -28,6 +28,10 @@ function checkToolStatus(name) {
 	return tool.on ? true : false;
 }
 
+const getStyleProperty = (el, p) => parseFloat((window.getComputedStyle(el, null).getPropertyValue(p)));
+const getBorderWidth = (el) => parseFloat(getStyleProperty(el, 'border-left-width')) + parseFloat(getStyleProperty(el, 'border-right-width'));
+const getBorderHeight = (el) => parseFloat(getStyleProperty(el, 'border-top-width')) + parseFloat(getStyleProperty(el, 'border-bottom-width'));
+
 function openQuickMenu(e, searchTerms) {
 	
 	e = e || new MouseEvent('click');
@@ -152,8 +156,30 @@ function getOffsets() {
 	return {x: xOffset, y: yOffset};
 }
 
+function makeMenuWindow(o) {
+	let qmc = document.createElement('iframe');
+
+	qmc.id = o.id;
+	qmc.className = "CS_quickMenuIframe";
+	
+	qmc.style.opacity = 0;
+	qmc.style.width = 0;
+	qmc.style.height = 0;
+
+	qmc.allowTransparency = true;
+	
+	qmc.openingCoords = o.coords;
+	
+	getShadowRoot().appendChild(qmc);
+
+	qmc.onload = o.onload;
+	qmc.src = o.src;
+
+	return qmc;
+}
+
 // build the floating container for the quickmenu
-function makeQuickMenuContainer(coords) {
+function makeQuickMenuContainer(o) {
 
 	// skip opening menu if using instant search
 	if ( checkToolStatus("repeatsearch") && userOptions.quickMenuRepeatSearchHideMenu ) {
@@ -175,27 +201,15 @@ function makeQuickMenuContainer(coords) {
 	let qmc = getQM();
 
 	if (qmc) qmc.parentNode.removeChild(qmc);
-	
-	qmc = document.createElement('iframe');
 
-	qmc.id = "CS_quickMenuIframe";
-	qmc.className = qmc.id;
-	
-	qmc.style.opacity = 0;
-	qmc.style.width = 0;
-	qmc.style.height = 0;
-
-	qmc.allowTransparency = true;
-	
-	qmc.openingCoords = coords;
-	
-	getShadowRoot().appendChild(qmc);
-
-	qmc.onload = function() {
-		qmc.contentWindow.postMessage({action: "openMenu", windowSize: {width: window.innerWidth, height:window.innerHeight}}, qmc.src);
-	}
-
-	qmc.src = browser.runtime.getURL('quickmenu.html');
+	qmc = makeMenuWindow({
+		coords: o.coords,
+		id: "CS_quickMenuIframe",
+		onload: function() {
+			this.contentWindow.postMessage(Object.assign({action: "openMenu", windowSize: {width: window.innerWidth, height:window.innerHeight}}, o), this.src);
+		},
+		src: browser.runtime.getURL('quickmenu.html')
+	})
 
 	// Check if quickmenu fails to display
 	setTimeout(() => {
@@ -209,35 +223,19 @@ function makeQuickMenuContainer(coords) {
 	addUnderDiv();
 }
 
-const getStyleProperty = (el, p) => parseFloat((window.getComputedStyle(el, null).getPropertyValue(p)));
-const getBorderWidth = (el) => parseFloat(getStyleProperty(el, 'border-left-width')) + parseFloat(getStyleProperty(el, 'border-right-width'));
-const getBorderHeight = (el) => parseFloat(getStyleProperty(el, 'border-top-width')) + parseFloat(getStyleProperty(el, 'border-bottom-width'));
+function makeQuickMenuElementContainer(o) {
 
-function makeQuickMenuElementContainer(coords, folder, parentFrameId) {
+	let qmc = makeMenuWindow({
+		coords: o.coords,
+		id: o.folder.id,
+		onload: function() {
+			this.contentWindow.postMessage({action: "openFolderNew", folder:o.folder, contexts: quickMenuObject.contexts, windowSize: {width: window.innerWidth, height:window.innerHeight}}, this.src);
+		},
+		src: browser.runtime.getURL('quickmenu.html#' + o.folder.id)
+	})
 
-	let qmc = document.createElement('iframe');
-
-	qmc.className = "CS_quickMenuIframe";
-	
-	qmc.style.opacity = 0;
-	qmc.style.width = 0;
-	qmc.style.height = 0;
-
-	qmc.allowTransparency = true;
-	
-	qmc.openingCoords = coords;
-	qmc.id = folder.id;
-	qmc.setAttribute('parentFrameId', parentFrameId );
-
+	qmc.setAttribute('parentFrameId', o.parentFrameId );
 	qmc.style.transition = 'none';
-	
-	getShadowRoot().appendChild(qmc);
-
-	qmc.onload = function() {
-		qmc.contentWindow.postMessage({action: "openFolderNew", folder:folder, contexts: quickMenuObject.contexts, windowSize: {width: window.innerWidth, height:window.innerHeight}}, qmc.src);
-	}
-
-	qmc.src = browser.runtime.getURL('quickmenu.html#' + qmc.id);
 }
 
 const closeFolder = id => {
@@ -900,11 +898,17 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					// close other open child frames of parentId
 					removeChildren(message.parentId);
 
-					makeQuickMenuElementContainer({'x': x,'y': y}, message.folder, message.parentId);
+					makeQuickMenuElementContainer({
+						coords: {x:x, y:y}, 
+						folder: message.folder, 
+						parentFrameId: message.parentId
+					});
 					break;
 				}
 
-				makeQuickMenuContainer({'x': x,'y': y});
+				makeQuickMenuContainer({
+					coords: {x:x, y:y}
+				});
 				
 				break;
 				

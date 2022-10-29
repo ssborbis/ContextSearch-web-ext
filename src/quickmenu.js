@@ -1,21 +1,21 @@
 var userOptions = {};
 
-//const optionsPage = top.location.href.startsWith(browser.runtime.getURL('options.html'));
+var noMinimumWidth = false;
 
 const getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"]):not([data-morehidden="true"])');
 
-async function makeFrameContents() {
+async function makeFrameContents(o) {
 
-	let qme = await makeQuickMenu({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text'});
+	if ( o.node ) noMinimumWidth = true;
+
+	let qm = await makeQuickMenu(Object.assign({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text'}, o));
 
 	let old_qme = document.getElementById('quickMenuElement');
 	
 	if (old_qme) old_qme.parentNode.removeChild(old_qme);
 
-	document.body.appendChild(qme);
+	document.body.appendChild(qm);
 	
-	qm = qme;
-
 	if ( userOptions.quickMenuToolsPosition === 'bottom' && userOptions.quickMenuToolsAsToolbar )	
 		document.body.appendChild(toolBar);
 	
@@ -31,7 +31,7 @@ async function makeFrameContents() {
 	[tb, mb].forEach(el => el.classList.add('hide'));
 
 	// override layout
-	setLayoutOrder(userOptions.quickMenuDomLayout);
+	setLayoutOrder(o.layout || userOptions.quickMenuDomLayout);
 
 	// get proper sizing for opening position
 	setMenuSize();
@@ -41,7 +41,7 @@ async function makeFrameContents() {
 	});
 
 	document.dispatchEvent(new CustomEvent('quickMenuIframePreLoaded'));
-	
+
 	await browser.runtime.sendMessage({
 		action: "quickMenuIframeLoaded", 
 		size: {
@@ -88,6 +88,8 @@ async function makeFolderContents(node) {
 	window.toolsHandler = () => null;
 	window.createToolsArray = () => [];
 
+	noMinimumWidth = true;
+
 	let _singleColumn = node.displayType === "text" || userOptions.quickMenuDefaultView === "text";
 
 	await makeQuickMenu({type: "quickmenu", singleColumn: _singleColumn});
@@ -109,19 +111,6 @@ async function makeFolderContents(node) {
 
 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-	// if ( false ) {
-	// 	document.documentElement.addEventListener('mouseleave', e => {
-	// 		browser.runtime.sendMessage({
-	// 			action: "closeFolder", 
-	// 			sendMessageToTopFrame: true,
-	// 			id: node.id
-	// 		});
-	// 	});
-	// }
-
-	document.body.style.width = 'auto';
-	document.body.style.height = 'auto';
-
 	await browser.runtime.sendMessage({
 		action: "quickMenuIframeFolderLoaded", 
 		size: {
@@ -136,11 +125,6 @@ async function makeFolderContents(node) {
 		sendMessageToTopFrame: true,
 		folder:JSON.parse(JSON.stringify(node))
 	});
-
-	document.body.style.width = null;
-	// document.body.style.height = null;
-	document.body.style.height = '100vh';
-	document.body.style.overflowY = 'auto';
 
 	setDraggable();
 }
@@ -167,7 +151,7 @@ function setMenuSize(o) {
 	document.body.style.height = maxHeight + "px";
 
 	// prevent the menu from shriking below minimum columns width
-	if ( !qm.singleColumn /*&& qm.columns < userOptions.quickMenuColumnsMinimum*/) {
+	if ( !qm.singleColumn /*&& qm.columns < userOptions.quickMenuColumnsMinimum*/ && !noMinimumWidth) {
 		let minWidth = tileSize.rectWidth * (Math.min(userOptions.quickMenuColumnsMinimum, userOptions.quickMenuColumns)) - (tileSize.width - tileSize.rectWidth) / 2;
 		
 		if ( qm.getBoundingClientRect().width < minWidth && !isChildWindow() )
@@ -504,7 +488,7 @@ window.addEventListener('message', async e => {
 		
 			setTheme()
 				.then(setUserStyles)
-				.then(makeFrameContents);
+				.then(() => makeFrameContents(e.data));
 			break;
 	}
 });
