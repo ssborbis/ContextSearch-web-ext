@@ -2557,13 +2557,13 @@ async function injectContentScripts(tab, frameId) {
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js",
+		"/contexts.js",
 		"/tools.js" // for shortcuts
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
 		[
-			
 			"/nodes.js",
 			"/opensearch.js",
 			"/searchEngineUtils.js",
@@ -2574,7 +2574,6 @@ async function injectContentScripts(tab, frameId) {
 		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
 		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
 	}
-
 }
 
 function waitOnInjection(tabId) {
