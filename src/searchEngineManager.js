@@ -1110,7 +1110,7 @@ function buildSearchEngineContainer() {
 
 				// set keyword for all copies
 				for (let _li of rootElement.querySelectorAll('li')) {
-					if (_li.node.id === node.id) {
+					if (_li.node && _li.node.id === node.id) {
 						_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
 						_li.querySelector('.keyword').style.backgroundColor = null;
 					}
