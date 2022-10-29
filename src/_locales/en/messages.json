@@ -2510,5 +2510,8 @@
   },
   "beta": {
     "message": "beta testing"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - search terms\n%su - search terms UPPERCASE\n%sl - search terms lowercase\n%d - domain\n%ds - subdomain\n%du - user-selected domain\n%u - tab URL"
   }
 }
