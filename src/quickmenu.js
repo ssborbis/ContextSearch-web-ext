@@ -306,8 +306,6 @@ function toolsHandler(o) {
 
 	let rows = o.rows || ( qm.singleColumn ? userOptions.quickMenuRowsSingleColumn : userOptions.quickMenuRows );
 
-	//if ( optionsPage ) rows = Number.MAX_SAFE_INTEGER;
-
 	let lastBreak = qm.getElementsByTagName('br').item(rows - 1);
 
 	if ( lastBreak ) {
