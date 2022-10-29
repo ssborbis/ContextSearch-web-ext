@@ -115,22 +115,7 @@ function buildSearchEngineContainer() {
 			text.innerText = se.title;
 			header.appendChild(text);
 
-			// check for multisearch
-			try {
-				let arr = JSON.parse(se.template);
-
-				if ( Array.isArray(arr) ) {
-
-					let nodes = arr.map( id => findNode(userOptions.nodeTree, n => n.id === id));
-
-					nodes.forEach( n => {
-						let _icon = document.createElement('img');
-						_icon.src = getIconFromNode(n);
-						_icon.title = n.title;
-						header.appendChild(_icon);
-					})
-				}
-			} catch (error) {}
+			addMultisearchIcons(se, header);
 
 			node.contexts = node.contexts || se.contexts;
 
@@ -1988,9 +1973,12 @@ function buildSearchEngineContainer() {
 					
 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
 				newLi.dispatchEvent(new MouseEvent('dblclick'));
+
+				addMultisearchIcons(se, newLi.querySelector(".header"));
 			}
 
 			closeContextMenus();
+			clearSelectedRows();
 			
 		});
 
@@ -2496,6 +2484,25 @@ function getIconSourceFromURL(_url) {
 	} else {
 		return _url;
 	}
+}
+
+function addMultisearchIcons(se, header) {
+	// check for multisearch
+	try {
+		let arr = JSON.parse(se.template);
+
+		if ( Array.isArray(arr) ) {
+
+			let nodes = arr.map( id => findNode(userOptions.nodeTree, n => n.id === id));
+
+			nodes.forEach( n => {
+				let _icon = document.createElement('img');
+				_icon.src = getIconFromNode(n);
+				_icon.title = n.title;
+				header.appendChild(_icon);
+			})
+		}
+	} catch (error) {}
 }
 
 document.addEventListener('keydown', e => {
