@@ -49,9 +49,10 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 	let input = parseOmniboxInput(text);
 	
 	let parsedNodes = getNodesFromHotkeys(input.hotkeys);
-	let nodes = findNodes(userOptions.nodeTree, n => n.hotkey);
 
-	let defaultDescriptions = nodes.map( n => n.title );
+	let nodes = findNodes(userOptions.nodeTree, n => n.hotkey || n.keyword );
+
+	let defaultDescriptions = parsedNodes.map( n => n.title );
 
 	browser.omnibox.setDefaultSuggestion({
 		description: defaultDescriptions.join(" | ")
