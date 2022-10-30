@@ -412,11 +412,32 @@ function _saveOptions(e) {
 			
 			return styleText;
 		})()
+
 	};
 
 	merge(uo, userOptions);
 
+	// set prefs that don't merge properly
 	userOptions.blockList = $('#blockList').value.split(/\r?\n/);
+	userOptions.customSearchActions = (() => {
+		let cas = [];
+
+		$("additionalSearchActionsTable").querySelectorAll("TR:not(.template):not(.header)").forEach( tr => {
+			
+			cas.push({
+				event:tr.querySelector('[name="event"]').value,
+				button:parseInt(tr.querySelector('[name="button"]').value),
+				altKey:tr.querySelector('[name="altKey"]').checked,
+				ctrlKey:tr.querySelector('[name="ctrlKey"]').checked,
+				metaKey:tr.querySelector('[name="metaKey"]').checked,
+				shiftKey:tr.querySelector('[name="shiftKey"]').checked,
+				action:tr.querySelector('[name="action"]').value,
+				folder:false
+			})
+		});
+
+		return cas;
+	})();
 
 	// prevent DeadObjects
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
@@ -460,7 +481,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSearchEngineContainer();
 	buildToolIcons();
 	sortAdvancedOptions();
-//	buildAdditionalSearchActionsTable();
+	buildAdditionalSearchActionsTable();
 
 	addDOMListeners();
 
@@ -1317,7 +1338,7 @@ function buildHelpTab() {
 	// replace new-style titles
 	document.querySelectorAll('[title^="$"]').forEach( el => {
 		el.title = i18n(el.title.replace(/^\$/, "") );
-		el.style.cursor = "help";
+	//	el.style.cursor = "help";
 	});
 
 	// add locale-specific styling
@@ -1485,6 +1506,7 @@ function buildSearchActions() {
 
 	document.querySelectorAll('[data-searchaction]').forEach( el => {
 		addOption(el, el.dataset.searchaction.split(","));
+		el.querySelector('option').selected = true;
 	});
 }
 
@@ -1879,30 +1901,48 @@ function syntaxHighlight(json) {
 function buildAdditionalSearchActionsTable() {
 	let table = $("additionalSearchActionsTable");
 
-	table.querySelectorAll("TR:not(.template)").forEach( tr => tr.parentNode.removeChild(tr));
-	userOptions.customSearchActions.forEach( (sa,index) => {
+
+	const makeNewRow = sa => {
 		let row = table.querySelector(".template").cloneNode(true);
 		row.className = null;
 
 		table.appendChild(row);
 
-		row.querySelector('.event').value = sa.event;
-		row.querySelector('.button').value = sa.button;
-		row.querySelector('.altKey').value = sa.altKey;
-		row.querySelector('.ctrlKey').value = sa.ctrlKey;
-		row.querySelector('.metaKey').value = sa.metaKey;
-		row.querySelector('.shiftKey').value = sa.shiftKey;
-	});
+		row.querySelector('[name="event"]').value = sa.event;
+		row.querySelector('[name="button"]').value = sa.button;
+		row.querySelector('[name="action"]').value = sa.action;
+		row.querySelector('[name="altKey"]').checked = sa.altKey;
+		row.querySelector('[name="ctrlKey"]').checked = sa.ctrlKey;
+		row.querySelector('[name="metaKey"]').checked = sa.metaKey;
+		row.querySelector('[name="shiftKey"]').checked = sa.shiftKey;
+		
+		row.querySelector('[name="delete"]').onclick = function() {
+			row.parentNode.removeChild(row);
+			saveOptions();
+		}
+	}
+
+	table.querySelectorAll("TR:not(.template):not(.header)").forEach( tr => tr.parentNode.removeChild(tr));
+	userOptions.customSearchActions.forEach( sa => makeNewRow(sa));
+
+	$('newSearchAction').onclick = function(e) {
+		
+		let sa = {
+			"event":"mouseup",
+			"button":0,
+			"altKey":false,
+			"ctrlKey":false,
+			"metaKey":false,
+			"shiftKey":false,
+			"action": "openNewTab",
+			"folder":false
+		}
+
+		makeNewRow(sa);
+		saveOptions();
+	}
 }
 
-// "event":"mouseup",
-// 		"button":0,
-// 		"altKey":false,
-// 		"ctrlKey":false,
-// 		"metaKey":false,
-// 		"shiftKey":false,
-// 		"action": "",
-// 		"folder":false
 
 // window.addEventListener('focus', async e => {
 // 	let uo = await browser.runtime.sendMessage({action: 'getUserOptions'});
@@ -2075,9 +2115,6 @@ async function checkForNativeAppUpdate() {
 
 function makeFolderBrowser(tree) {
 
-	// let div = document.createElement('ul');
-	// div.classList.add('folderBrowser')
-
 	let ul = document.createElement('ul');
 	ul.classList.add('folderBrowser')
 
@@ -2144,7 +2181,5 @@ function makeFolderBrowser(tree) {
 
 	ul.querySelector('ul').style.display = null;
 
-	// div.appendChild(ul);
-	// return div;
 	return ul;
 }

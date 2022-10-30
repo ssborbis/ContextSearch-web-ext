@@ -1487,6 +1487,13 @@
 			#additionalSearchActionsTable .template {
 				display: none;
 			}
+			#additionalSearchActionsTable TD {
+				padding: 4px 4px;
+				font-size: 9pt;
+			}
+			#additionalSearchActionsTable INPUT, #additionalSearchActionsTable SELECT {
+				width: auto;
+			}
 			#contextualLayoutIcons {
 				background-color: var(--bg-color3);
 				border: 1px solid var(--border-color1);
@@ -2147,6 +2154,20 @@
 					<input type="number" id="quickMenuRowsSingleColumn" size="2" min="1" max="99" step="1" value="10" class="inputNice">
 					<span class="description" data-i18n="RowsSingleColumnTooltip">_</span>
 				</div>
+				<br>
+
+<!-- 				<div style="height:130px">
+					
+					<div style="display: inline-block;height:100%;">
+						<input type="number" size="2" min="1" max="99" step="1" value="10" class="inputNice">
+					</div>
+
+					<div style="display:inline-block;text-align:center;">
+						<input type="number" size="2" min="1" max="99" step="1" value="10" class="inputNice" style="width: 40px"><br>
+						<div style="width:100px;height:100px;background-color: #ccc;"></div>
+					</div>
+
+				</div> -->
 
 				<!-- <div id="quickMenuLayoutEditor">
 					<div class=".searchBar"></div>
@@ -2590,26 +2611,45 @@
 				</tr>
 			</table>
 
+			<hr>
+
 			<table id="additionalSearchActionsTable">
+				<tr class="header">
+					<td><button id="newSearchAction" title="$add">+</button></td>
+					<td>Event</td>
+					<td>Button</td>
+					<td>Action</td>
+					<td>Alt</td>
+					<td>Ctrl</td>
+					<td style="display:none">Meta</td>
+					<td>Shift</td>
+				</tr>
 				<tr class="template">
+					<td></td>
 					<td>
-						<select class="event">
+						<select name="event" class="inputNice">
 							<option value="mouseup">click</option>
 							<option value="dblclick">double click</option>
 						</select>
 					</td>
 					<td>
-						<select class="button">
+						<select name="button" class="inputNice">
 							<option value="0">left</option>
 							<option value="1">middle</option>
 							<option value="2">right</option>
 							<option value="3">forward</option>
 							<option value="4">back</option>
 						</select>
-					<td><input class="altKey" type="checkbox" value="altKey"/><span>Alt</span></td>
-					<td><input class="ctrlKey" type="checkbox" value="ctrlKey" /><span>Ctrl</span></td>
-					<td><input class="metaKey" type="checkbox" value="metaKey" /><span>Meta</span></td>
-					<td><input class="shiftKey" type="checkbox" value="shiftKey" /><span>Shift</span></td>
+					</td>
+					<td>
+						<select class="inputNice" name="action" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+						</select>
+					</td>
+					<td><input name="altKey" type="checkbox" value="altKey"/></td>
+					<td><input name="ctrlKey" type="checkbox" value="ctrlKey" /></td>
+					<td style="display:none"><input name="metaKey" type="checkbox" value="metaKey" /></td>
+					<td><input name="shiftKey" type="checkbox" value="shiftKey" /></td>
+					<td><button name="delete" title="$delete">X</button></td>
 				</tr>
 			</table>
 
