@@ -1730,6 +1730,7 @@ async function mouseupHandler(e) {
 
 	quickMenuObject.mouseLastClickTime = Date.now();
 	quickMenuObject.searchTerms = sb.value;
+	quickMenuObject.searchTermsObject.selection = sb.value;
 
 	browser.runtime.sendMessage({
 		action: "updateQuickMenuObject", 
