@@ -1408,3 +1408,23 @@ if ( window == top && userOptions.showStatusBar ) {
 
 if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
+
+(() => {
+	document.addEventListener('keydown', e => {
+		if ( e.key === 'x' ) {
+
+			let folder = {
+				type:"folder",
+				children: findNodes(userOptions.nodeTree, n => n.contexts && hasContext("link", n.contexts)),
+				id:gen()
+			}
+
+			makeQuickMenuContainer({
+				coords: {x:0,y:0}, 
+				node:folder,
+				layout: "!menuBar,!searchBarContainer,!titleBar,quickMenuElement,!toolBar,!contextsBar",
+				columns:1
+			});
+		}
+	});
+});

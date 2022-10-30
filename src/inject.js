@@ -111,7 +111,7 @@ async function copyRaw(autoCopy) {
 
 	if ( !rawText ) return;
 
-	console.log('autoCopy', rawText);
+	console.log('autoCopy:', rawText);
 
 	try {
 		navigator.clipboard.writeText(rawText);
@@ -645,13 +645,22 @@ document.addEventListener('keydown', e => {
 (() => {
 
 	document.addEventListener('keydown', e => {
-		if ( e.key === "q" ) {
+
+		if ( !userOptions.developerMode ) return;
+		
+		if ( e.key === "s" && e.ctrlKey && e.altKey) {
 			let f = document.createElement('iframe');
 			f.setAttribute('allowtransparency', true);
-			f.style="position:fixed;width:100vw;height:100vh;z-index:999;top:0;bottom:0;left:0;right:0";
-			f.src = browser.runtime.getURL('/speedDial.html');
+			f.style="border:none;position:fixed;width:100vw;height:100vh;z-index:999;top:0;bottom:0;left:0;right:0;transform:scale(calc(1.5/var(--cs-zoom)))";
+			f.src = browser.runtime.getURL('/speedDial.html?id=');
 
 			getShadowRoot().appendChild(f);
+
+			window.addEventListener('message', e => {
+				if ( e.data.action && e.data.action === "close") {
+					f.parentNode.removeChild(f);
+				}
+			});
 		}
 	});
 });
