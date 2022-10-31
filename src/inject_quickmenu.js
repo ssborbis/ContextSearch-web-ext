@@ -391,8 +391,8 @@ document.addEventListener('mousedown', e => {
 	// check for modifier keys
 	if ( 
 		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
-		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)
+		(userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey) */ // leave for link / linkText
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -523,13 +523,11 @@ document.addEventListener('mousedown', e => {
 		quickMenuObject.disabled
 	) return false;
 
-	// let requiresModKey = userOptions.quickMenuOnMouseShift & userOptions.quickMenuOnMouseAlt & userOptions.quickMenuOnMouseCtrl;
-
 	// check for modifier keys
 	if ( 
 		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
-		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)
+		 (userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
+		 (userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)*/ // leave ctrlKey for link / linkText
 	) return false;
 
 	checkContextMenuEventOrder(e);
