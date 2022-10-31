@@ -447,15 +447,6 @@ const QMtools = [
 				window.editMode = true;
 				window.tilesDraggable = true;
 
-				let i18n_titles = {
-					"quickMenuElement": 	'quickmenu',
-					"toolBar": 				'tools',
-					"menuBar": 				'menubar',
-					"titleBar": 			'title',
-					"searchBarContainer": 	'search',
-					"contextsBar": 			'contexts'
-				};
-
 				// show all engines for editing
 				if ( qm.contexts.length ) {
 
@@ -471,7 +462,7 @@ const QMtools = [
 					let div = document.createElement('div');
 					div.classList.add('edit_handle');
 					div.draggable = true;
-					div.innerText = i18n(i18n_titles[el.id]);
+					div.innerText = i18n(i18n_layout_titles[el.id] || "");
 					div.dataset.parentId = el.id;
 
 					let cb = document.createElement('input');

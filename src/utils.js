@@ -184,6 +184,15 @@ function createMaskIcon(src) {
 	return tool;
 }
 
+const i18n_layout_titles = {
+	"quickMenuElement": 	'quickmenu',
+	"toolBar": 				'tools',
+	"menuBar": 				'menubar',
+	"titleBar": 			'title',
+	"searchBarContainer": 	'search',
+	"contextsBar": 			'contexts'
+};
+
 const log = console.log;
 const debug = (...args) => {
 	if ( userOptions && userOptions.developerMode )

@@ -471,6 +471,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSaveButtons();
 	buildThemes();
 	buildSearchActions();
+	buildCheckboxes();
+	buildToolMasks();
+	//buildLayoutEditors();
 	hideBrowserSpecificElements();
 
 	// restore settings and set INPUT values
@@ -479,7 +482,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	// build DOM objects requiring prefs restored
 	buildShortcutTable();
 	buildSearchEngineContainer();
-	buildToolIcons();
+	buildToolsBarIcons();
 	sortAdvancedOptions();
 	buildAdditionalSearchActionsTable();
 
@@ -737,7 +740,7 @@ function makeTabs() {
 	}
 }
 
-function buildToolIcons() {
+function buildToolsBarIcons() {
 
 	function getToolIconIndex(element) {
 		return [].indexOf.call(document.querySelectorAll('.toolIcon'), element);
@@ -1510,6 +1513,52 @@ function buildSearchActions() {
 	});
 }
 
+function buildCheckbox(id) {
+	let label = document.createElement('label');
+	let input = document.createElement('input');
+	let span = document.createElement('span');
+
+	label.className = 'container';
+	input.type = 'checkbox';
+	input.id = id;
+	span.className = "checkmark checkmark2";
+
+	label.appendChild(input);
+	label.appendChild(span);
+
+	return label;
+}
+function buildCheckboxes() {
+	document.querySelectorAll('checkbox').forEach(el => {
+		let cb = buildCheckbox(el.dataset.id);
+		el.parentNode.insertBefore(cb,el);
+		el.parentNode.removeChild(el);
+	});
+}
+
+function buildToolMasks() {
+	document.querySelectorAll('tool').forEach( el => {
+		let t = document.createElement('div');
+		t.className = 'tool';
+		t.setAttribute("style", el.getAttribute("style"));
+		t.style.setProperty('--mask-image', `url(icons/${el.dataset.icon})`);
+
+		el.parentNode.insertBefore(t,el);
+		el.parentNode.removeChild(el);
+	})
+}
+
+function buildLayoutEditors() {
+	let le = $("quickMenuLayoutEditor");
+	"menuBar,searchBarContainer,quickMenuElement,titleBar,toolBar".split(",").forEach(id => {
+		let div = document.createElement('div');
+		div.dataset.id = id;
+		div.innerText = i18n(i18n_layout_titles[id] || "");
+
+		le.appendChild(div);
+	})
+}
+
 // generate new search.json.mozlz4 
 $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 	
@@ -1900,7 +1949,6 @@ function syntaxHighlight(json) {
 
 function buildAdditionalSearchActionsTable() {
 	let table = $("additionalSearchActionsTable");
-
 
 	const makeNewRow = sa => {
 		let row = table.querySelector(".template").cloneNode(true);

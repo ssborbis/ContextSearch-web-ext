@@ -72,17 +72,6 @@ function makePageTilesGrid() {
 	pageTilesGrid.makeFolderBrowser();
 }
 
-$('pageTiles.paletteString').addEventListener('change', makePageTilesPaletteSample);
-$('pageTiles.paletteString').addEventListener('change', () => {
-	userOptions.pageTiles.paletteString = $('pageTiles.paletteString').value;
-	setPageTilesGridPalette();
-});
-
-$('pageTiles.enabled').addEventListener('change', e => {
-	if ( !userOptions.pageTiles.grid.length )
-		pageTilesGrid.saveGrid();
-});
-
 document.addEventListener('userOptionsLoaded', () => {	
 	makePageTilesGrid();
 	makePageTilesPalette();
@@ -90,11 +79,22 @@ document.addEventListener('userOptionsLoaded', () => {
 
 	if ( !userOptions.pageTiles.grid.length )
 		pageTilesGrid.saveGrid();
-});
 
-[$('pageTiles.rows'), $('pageTiles.columns')].forEach(el => {
-	el.addEventListener('change', e => {
-		makePageTilesGrid();
-		saveOptions();
+	$('pageTiles.paletteString').addEventListener('change', makePageTilesPaletteSample);
+	$('pageTiles.paletteString').addEventListener('change', () => {
+		userOptions.pageTiles.paletteString = $('pageTiles.paletteString').value;
+		setPageTilesGridPalette();
+	});
+
+	$('pageTiles.enabled').addEventListener('change', e => {
+		if ( !userOptions.pageTiles.grid.length )
+			pageTilesGrid.saveGrid();
+	});
+
+	[$('pageTiles.rows'), $('pageTiles.columns')].forEach(el => {
+		el.addEventListener('change', e => {
+			makePageTilesGrid();
+			saveOptions();
+		});
 	});
 });

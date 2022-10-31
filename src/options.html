@@ -161,7 +161,7 @@
 			}
 			.smallIcon {
 				vertical-align:middle;
-				height:30px;
+				height:24px;
 			}
 			.slider_label {
 				display:inline-block;
@@ -169,7 +169,7 @@
 			}
 			.slider {
 				-webkit-appearance: none;
-				height: 12px;
+				height: 10px;
 				border-radius: 5px;  
 				background: #E9ECEF;
 				outline: none;
@@ -179,8 +179,8 @@
 				background-color:var(--border-color2);
 			}
 			.slider::-moz-range-thumb {
-				width: 16px;
-				height: 16px;
+				width: 12px;
+				height: 12px;
 				border-radius: 50%;
 				background: var(--cs-green);
 				cursor: pointer;
@@ -190,7 +190,7 @@
 				font-size:inherit;
 				border-radius:4px;
 				border:1px solid var(--border-color3);
-				padding:2px;
+				padding:1px 4px;
 				background-color:var(--bg-color1);
 				color:var(--color);
 			}
@@ -306,8 +306,8 @@
 
 			/* Create a custom radio button */
 			.checkmark {
-				height: 16px;
-				width: 16px;
+				height: 12px;
+				width: 12px;
 				background-color: #eee;
 				border-radius: 50%;
 				border:1px solid grey;
@@ -343,14 +343,15 @@
 			}
 
 			/* Style the checkmark/indicator */
-			.container .checkmark2:after {
-				left: 5px;
-				width: 4px;
-				height: 8px;
+			.container .checkmark2::after {
+				left: 3px;
+				width: 3px;
+				height: 6px;
 				border: solid white;
 				border-width: 0 3px 3px 0;
 				transform: rotate(45deg);
-				position:relative;
+				position: relative;
+				top: -2px;
 			}
 			.checkboxImage {
 				height:0;
@@ -550,8 +551,8 @@
 			
 			.position {
 				display:inline-block;
-				width:26px;
-				height:26px;
+				width:16px;
+				height:16px;
 				background-color:var(--border-color1);
 				border:1px solid var(--border-color2);
 			}
@@ -1488,13 +1489,13 @@
 				display: none;
 			}
 			#additionalSearchActionsTable TD {
-				padding: 4px 4px;
+				padding: 0 2px;
 				font-size: 9pt;
 			}
 			#additionalSearchActionsTable INPUT, #additionalSearchActionsTable SELECT {
 				width: auto;
 			}
-			#contextualLayoutIcons {
+			.contextualLayoutIcons {
 				background-color: var(--bg-color3);
 				border: 1px solid var(--border-color1);
 				border-radius: 10px;
@@ -1504,16 +1505,15 @@
 				pointer-events: none;
 				vertical-align: middle;
 			}
-			#contextualLayoutIcons .tool {
+			.contextualLayoutIcons .tool {
 				height: 16px;
 				vertical-align: middle;
 			}
 			#quickMenuLayoutEditor {
 				display: inline-block;
-				width: 200px;
-				height: 300px;
+				width: 150px;
 				border-radius: 10px;
-				background-color: var(--bg-color1);
+				background-color: var(--bg-color3);
 			}
 			#quickMenuLayoutEditor > DIV {
 				background-color: var(--bg-color3);
@@ -1524,6 +1524,13 @@
 				pointer-events: none;
 				vertical-align: middle;
 				height: 16px;
+				text-align: center;
+			}
+			#quickMenuLayoutEditor .tool {
+				height: 12px;
+				width: 12px;
+				margin: 0;
+				vertical-align: middle;
 			}
 
 			.modal {
@@ -1586,22 +1593,22 @@
 			</div>
 						
 			<div class="tab">
-				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><div class="tool" style="--mask-image: url(icons/search.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><div class="tool" style="--mask-image: url(icons/context_menu.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><div class="tool" style="--mask-image: url(icons/qm.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:rotate(90deg)"></div>_</button>
-				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><div class="tool" style="--mask-image: url(icons/sidebar.svg);transform:scaleX(-1)"></div>_</button>
-				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="shortcuts"><div class="tool" style="--mask-image: url(icons/keyboard.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><div class="tool" style="--mask-image: url(icons/omnibox.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><div class="tool" style="--mask-image: url(icons/highlight.svg)"></div>_</button>
+				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><tool data-icon="search.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><tool data-icon="context_menu.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><tool data-icon="qm.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><tool data-icon="sidebar.svg" style="transform:rotate(90deg)"></tool>_</button>
+				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><tool data-icon="sidebar.svg" style="transform:scaleX(-1)"></tool>_</button>
+				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="shortcuts"><tool data-icon="keyboard.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><tool data-icon="omnibox.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><tool data-icon="highlight.svg"></tool>_</button>
 				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />_</button>
 				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />_</button>
-				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><div class="tool" style="--mask-image: url(icons/page_tiles.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><div class="tool" style="--mask-image: url(icons/settings.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><div class="tool" style="--mask-image: url(icons/auto.svg)"></div>_</button>
-				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><div class="tool" style="--mask-image: url(icons/help.svg)"></div>_</button>
+				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><tool data-icon="page_tiles.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><tool data-icon="settings.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><tool data-icon="auto.svg"></tool>_</button>
+				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><tool data-icon="help.svg"></tool>_</button>
 
-				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n=""><div class="tool" style="--mask-image: url(icons/help.svg)"></div>_</button>
+				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n=""><tool data-icon="help.svg"></tool>_</button>
 			</div>
 			<div style="font-size:10pt;cursor:default">
 				<label for="importSettings">
@@ -1612,8 +1619,8 @@
 			</div>
 			</p>
 			<div id="info" style="margin-top:20px">
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">_<div class="tool" style="--mask-image: url(icons/external_link.svg);margin-left:4px;height:.8em"></div></a><br />
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">_<div class="tool" style="--mask-image: url(icons/external_link.svg);margin-left:4px;height:.8em"></div></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">_<tool data-icon="external_link.svg" style="margin-left:4px;height:.8em"></tool></a><br />
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">_<tool data-icon="external_link.svg" style="margin-left:4px;height:.8em"></tool></a><br />
 			</div>
 			
 		</div>
@@ -1626,7 +1633,7 @@
 					<div style="text-align: right">
 						<!-- <button class="saveOptions" data-i18n="save">_</button> -->
 						<button id="b_manualSave" style="display:none" data-i18n="save">_</button>
-						<button id="b_manualCancel" style="display:none" data-i18n="cancel">_</button><button id="b_manualEdit" title="$Manualedit"><div class="tool" style="height: 1em;vertical-align: middle;--mask-image: url(icons/edit.svg)"></div></button>
+						<button id="b_manualCancel" style="display:none" data-i18n="cancel">_</button><button id="b_manualEdit" title="$Manualedit"><tool data-icon="edit.svg" style="height: 1em;vertical-align: middle"></tool></button>
 					</div>
 					<table id="advancedSettingsTable">
 					<tr>
@@ -1696,18 +1703,12 @@
 				
 				<section>
 				<p class="header1" data-i18n="EnableAnimations">_</p>
-				<div class="option">			
-					<label class="container" data-i18n="EnableAnimations">
-						<input type="checkbox" id="enableAnimations" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+				<div class="option">
+					<checkbox data-id="enableAnimations" data-i18n="EnableAnimations"></checkbox>
 					<div class="description" data-i18n="EnableAnimationsTooltip">_</div>
 				</div>
-				<div class="option">			
-					<label class="container" data-i18n="EnableAnimationsTileSlider">
-						<input type="checkbox" id="enableAnimationsTileSlider" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+				<div class="option">
+					<checkbox data-id="enableAnimationsTileSlider" data-i18n="EnableAnimationsTileSlider"></checkbox>
 					<div class="description" data-i18n="EnableAnimationsTileSliderTooltip">_</div>
 				</div>				
 				</section>
@@ -1725,32 +1726,23 @@
 				<section>
 				<p class="header1" data-i18n="Suggestions">_</p>
 				<div class="option">
-					<label class="container" data-i18n="ShowSuggestions">
-						<input type="checkbox" id="searchBarSuggestions" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="searchBarSuggestions" data-i18n="ShowSuggestions"></checkbox>
 					<div class="description" data-i18n="ShowSuggestionsTooltip">_</div>
 				</div>
 				
 				</section><section>
 				<p class="header1" data-i18n="History">_</p>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="searchBarDisplayLastSearch" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="searchBarDisplayLastSearch"></checkbox>
 					<div class="description" data-i18n="EnableDisplayPreviousSearchTooltip">_</div>
 				</div>
 				<div class="option">
-					<label class="container" data-i18n="EnableHistory">
-						<input type="checkbox" id="searchBarEnableHistory" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="searchBarEnableHistory" data-i18n="EnableHistory"></checkbox>
 					<div class="description" data-i18n="EnableHistoryTooltip">_</div>
 				</div>
 				
 				<div class="option">
-					<div id="d_clearSearchHistory"><div class="tool" style="--mask-image: url(icons/delete.svg);height:20px;width:20px;vertical-align: middle;"></div><span class="description" data-i18n="ClearSearchHistory">_</span>
+					<div id="d_clearSearchHistory"><tool data-icon="delete.svg" style="height:20px;width:20px;vertical-align: middle;"></tool><span class="description" data-i18n="ClearSearchHistory">_</span>
 					</div>
 				</div>
 				
@@ -1759,17 +1751,11 @@
 				<section>
 				<p class="header1" data-i18n="AutoCopy">_</p>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="autoCopy" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="autoCopy" data-i18n=""></checkbox>
 					<div class="description" data-i18n="AutoCopyTooltip">_</div>
 				</div>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="autoCopyOnInputs" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="autoCopyOnInputs" data-i18n=""></checkbox>
 					<div class="description" data-i18n="AutoCopyOnInputsTooltip">_</div>
 				</div>
 
@@ -1778,11 +1764,7 @@
 				<section>
 				<p class="header1" data-i18n="UserStyles">_</p>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="userStylesEnabled" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
+					<checkbox data-id="userStylesEnabled" data-i18n=""></checkbox>				
 					<div class="description" data-i18n="UserStylesTooltip">_</div>
 				</div>
 
@@ -1797,6 +1779,7 @@
 				<!-- <section>
 <p class="header1" data-i18n="">Images</p> -->
 				<!-- <div class="option"> -->
+					<!-- <checkbox data-id="" data-i18n=""></checkbox>
 					<!-- <label class="container" data-i18n=""> -->
 						<!-- <input type="checkbox" id="cb_images____" /> -->
 						<!-- <span class="checkmark checkmark2"></span> -->
@@ -1813,17 +1796,14 @@
 				<section>
 					<p class="header1" data-i18n="General">_</p>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="contextMenu" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
+					<checkbox data-id="contextMenu" data-i18n=""></checkbox>					
 					<div class="description" data-i18n="ContextMenuTooltip">_</div>
 				</div>
 
 				<!-- <div id="menuContexts">
 					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">_</div>
 					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
 						<label class="container">
 						<input type="checkbox" id="contextMenuOnLinks" />
 						<span class="checkmark checkmark2"></span>
@@ -1831,6 +1811,7 @@
 						<div class="description" data-i18n="Link">_</div>
 					</div>
 					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
 						<label class="container">
 							<input type="checkbox" id="contextMenuOnImages" />
 							<span class="checkmark checkmark2"></span>
@@ -1838,6 +1819,7 @@
 						<div class="description" data-i18n="Image">_</div>
 					</div>
 					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
 						<label class="container">
 							<input type="checkbox" id="contextMenuOnAudios" />
 							<span class="checkmark checkmark2"></span>
@@ -1845,6 +1827,7 @@
 						<div class="description" data-i18n="Audio">_</div>
 					</div>
 					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
 						<label class="container">
 							<input type="checkbox" id="contextMenuOnVideos" />
 							<span class="checkmark checkmark2"></span>
@@ -1854,36 +1837,22 @@
 				</div> -->
 
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="contextMenuOnLinks" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="contextMenuOnLinks" data-i18n=""></checkbox>
 					<div class="description" data-i18n="EnableOnLinks">_</div>
 				</div>
 				
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="contextMenuOnImages" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="contextMenuOnImages" data-i18n=""></checkbox>
 					<div class="description" data-i18n="EnableOnImages">_</div>
 				</div>
 				
 				<div class="option">
-					<label class="container" data-i18n="AddCustomSearchMenu">
-						<input type="checkbox" id="contextMenuShowAddCustomSearch" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
+					<checkbox data-id="contextMenuShowAddCustomSearch" data-i18n="AddCustomSearchMenu"></checkbox>					
 					<div class="description" data-i18n="AddCustomSearchMenuTooltip">_</div>
 				</div>
 				
 				<div class="option">
-					<label class="container" data-i18n="">
-						<input type="checkbox" id="contextMenuShowFolderSearch" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
+					<checkbox data-id="contextMenuShowFolderSearch" data-i18n=""></checkbox>
 					<div class="description" data-i18n="ShowFolderSearch">_</div>
 				</div>
 
@@ -1899,10 +1868,7 @@
 					<p class="header1" data-i18n="Advanced">_</p>
 
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="contextMenuUseContextualLayout" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="contextMenuUseContextualLayout" data-i18n=""></checkbox>
 					<div class="description" data-i18n="ContextAwareFilter" title="$contextMenuUseContextualLayoutTooltip">_</div>
 				</div>
 
@@ -1916,20 +1882,12 @@
 				<p class="header1" data-i18n="RecentlyUsed">_</p>
 				
 				<div class="option">
-					<label class="container" data-i18n="ContexMenuShowRecentlyUsed">
-						<input type="checkbox" id="contextMenuShowRecentlyUsed" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
+					<checkbox data-id="contextMenuShowRecentlyUsed" data-i18n="ContexMenuShowRecentlyUsed"></checkbox>					
 					<div class="description" data-i18n="ContexMenuShowRecentlyUsedTooltip">_</div>
 				</div>
 				
 				<div class="option">
-					<label class="container" data-i18n="ContexMenuShowRecentlyUsedAsFolder">
-						<input type="checkbox" id="contextMenuShowRecentlyUsedAsFolder" />
-						<span class="checkmark checkmark2"></span>
-					</label>
-					
+					<checkbox data-id="contextMenuShowRecentlyUsedAsFolder" data-i18n="ContexMenuShowRecentlyUsedAsFolder"></checkbox>			
 					<div class="description" data-i18n="ContexMenuShowRecentlyUsedAsFolderTooltip">_</div>
 				</div>
 				
@@ -2028,10 +1986,7 @@
 				<section>
 				<p class="header1" data-i18n="General">_</p>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenu" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenu" data-i18n=""></checkbox>
 					<div class="description" data-i18n="QuickMenuTooltip">_</div>
 				</div>
 
@@ -2039,38 +1994,23 @@
 				<div id="menuContexts">
 					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">_</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="quickMenuAutoOnInputs" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="quickMenuAutoOnInputs" data-i18n=""></checkbox>
 						<div class="description" data-i18n="input">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-						<input type="checkbox" id="quickMenuOnLinks" />
-						<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="quickMenuOnLinks" data-i18n=""></checkbox>
 						<div class="description" data-i18n="Link">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="quickMenuOnImages" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="quickMenuOnImages" data-i18n=""></checkbox>
 						<div class="description" data-i18n="Image">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="quickMenuOnAudios" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="quickMenuOnAudios" data-i18n=""></checkbox>
 						<div class="description" data-i18n="Audio">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="quickMenuOnVideos" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="quickMenuOnVideos" data-i18n=""></checkbox>
 						<div class="description" data-i18n="Video">_</div>
 					</div>
 				</div>
@@ -2082,10 +2022,7 @@
 					<p class="header1" data-i18n="Advanced">_</p>
 
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuUseContextualLayout" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenuUseContextualLayout" data-i18n=""></checkbox>
 					<div class="description" data-i18n="ContextAwareFilter">_</div>
 				</div>
 
@@ -2095,19 +2032,16 @@
 				</div>
 
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuContextualLayoutToolbar" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenuContextualLayoutToolbar" data-i18n=""></checkbox>
 					<div class="description" data-i18n="quickMenuContextualLayoutToolbarTooltip" style="vertical-align: middle !important;">_</div>
-					<div id="contextualLayoutIcons">
-						<div class="tool" style="--mask-image: url(icons/audio.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/frame.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/image.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/link.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/selection.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/page.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/video.svg)"></div>
+					<div class="contextualLayoutIcons">
+						<tool data-icon="audio.svg"></tool>
+						<tool data-icon="frame.svg"></tool>
+						<tool data-icon="image.svg"></tool>
+						<tool data-icon="link.svg"></tool>
+						<tool data-icon="selection.svg"></tool>
+						<tool data-icon="page.svg"></tool>
+						<tool data-icon="video.svg"></tool>
 					</div>
 				</div>
 
@@ -2169,21 +2103,34 @@
 
 				</div> -->
 
-				<!-- <div id="quickMenuLayoutEditor">
-					<div class=".searchBar"></div>
-					<div class=".toolsBar"></div>
-					<div class=".titleBar"></div>
-					<div id="contextualLayoutIcons">
-						<div class="tool" style="--mask-image: url(icons/audio.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/frame.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/image.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/link.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/selection.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/page.svg)"></div>
-						<div class="tool" style="--mask-image: url(icons/video.svg)"></div>
+				<div id="quickMenuLayoutEditor">
+					<div class=".menuBar" style="text-align: right;">
+						<tool data-icon="minimize.svg"></tool>
+						<tool data-icon="crossmark.svg"></tool>
 					</div>
-					<div class=".quickMenu"></div>
-				</div> -->
+					<div class=".searchBar" style="text-align: left;">
+						<div style="border-radius:10px;height: 12px;background-color:var(--bg-color2);border:1px solid var(--border-color3)">
+							<tool data-icon="search.svg" style="height: 10px;margin-left:6px"></tool>
+						</div>
+					</div>
+					<div class=".toolsBar">
+						<tool data-icon="history_one.svg"></tool>
+						<tool data-icon="theme.svg"></tool>
+					</div>
+					<div class=".titleBar">
+						...
+					</div>
+					<div class=".quickMenu" style="height:50px"></div>
+					<div class=".contextsBar">
+						<tool data-icon="audio.svg"></tool>
+						<tool data-icon="frame.svg"></tool>
+						<tool data-icon="image.svg"></tool>
+						<tool data-icon="link.svg"></tool>
+						<tool data-icon="selection.svg"></tool>
+						<tool data-icon="page.svg"></tool>
+						<tool data-icon="video.svg"></tool>
+					</div>
+				</div>
 				</section>
 				
 				<section>
@@ -2222,10 +2169,11 @@
 				<table class="openingTable">
 				<tr>
 					<td>
+						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
 						<label class="container" data-i18n="Auto">
 							<input type="checkbox" id="quickMenuAuto" />
 							<span class="checkmark checkmark2"></span>
-							<div class="tool" style="--mask-image: url(icons/auto.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+							<tool data-icon="auto.svg" style="height:24px;width:24px;vertical-align: middle;margin:0 10px"></tool>_
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="AutoTooltip">_</span>
@@ -2233,36 +2181,24 @@
 
 					<td>
 						<div class="option" style="display:inline-block;">
-							<label class="container">
-								<input type="checkbox" id="quickMenuAutoAlt" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuAutoAlt" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Alt">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuAutoCtrl" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuAutoCtrl" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Ctrl">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuAutoShift" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuAutoShift" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
 
 						<br>
 						
 						<div class="option" style="display:inline-block;">
-							<label class="container">
-								<input type="checkbox" id="quickMenuCloseOnEdit" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuCloseOnEdit" data-i18n=""></checkbox>
 							<span class="description" data-i18n="quickMenuCloseOnEdit">_</span>
 						</div>
 					</td>
@@ -2270,46 +2206,39 @@
 				</tr>
 				<tr>
 					<td>
+						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
 						<label class="container" data-i18n="Drag">
 							<input type="checkbox" id="quickMenuOnDrag" />
 							<span class="checkmark checkmark2"></span> 
-							<div class="tool" style="--mask-image: url(icons/mouse.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+							<tool data-icon="mouse.svg" style="height:24px;width:24px;vertical-align: middle;margin:0 10px"></tool>_
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="OpenOnDragTooltip">_</span>
 					</td>
 					<td>
 						<div class="option" style="display:inline-block;">
-							<label class="container">
-								<input type="checkbox" id="quickMenuDragAlt" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuDragAlt" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Alt">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuDragCtrl" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuDragCtrl" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Ctrl">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuDragShift" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuDragShift" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td>
+						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
 						<label class="container" data-i18n="OpenOnIcon">
 							<input type="checkbox" id="quickMenuIcon.enabled" />
 							<span class="checkmark checkmark2"></span> 
-							<div class="tool" style="--mask-image: url(icons/image.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+							<tool data-icon="image.svg" style="height:24px;width:24px;vertical-align: middle;margin:0 10px"></tool>_
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="OpenOnIconTooltip">_</span>
@@ -2359,10 +2288,11 @@
 				</tr>
 				<tr>
 					<td>
+						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
 						<label class="container" data-i18n="Keyboard">
 							<input type="checkbox" id="quickMenuOnKey" />
-							<span class="checkmark checkmark2"></span> 
-							<div class="tool" style="--mask-image: url(icons/keyboard.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+							<span class="checkmark checkmark2"></span>
+							<tool data-icon="keyboard.svg" style="height:24px;width:24px;vertical-align: middle;;margin:0 10px"></tool>_
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="KeyboardTooltip">_</span>
@@ -2374,10 +2304,11 @@
 				</tr>
 				<tr>
 					<td>
+						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
 						<label class="container" data-i18n="Mouse"> 
 							<input type="checkbox" id="quickMenuOnMouse" />
 							<span class="checkmark checkmark2"></span>
-							<div class="tool" style="--mask-image: url(icons/mouse.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+							<tool data-icon="mouse.svg" style="height:24px;width:24px;vertical-align: middle;;margin:0 10px"></tool>_
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="MouseTooltip">_</span>
@@ -2397,34 +2328,22 @@
 
 							<span class="info" title="$quickMenuAllowContextMenuNewTooltip">ⓘ</span>
 
-							<label class="container" style="margin-left:10px">
-								<input type="checkbox" id="quickMenuOnMouseOpenWithoutSelection" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnMouseOpenWithoutSelection" data-i18n=""></checkbox>
 							<span class="description" data-i18n="quickMenuOnMouseOpenWithoutSelection">_</span>
 							<span class="info" title="$quickMenuOnMouseOpenWithoutSelectionTooltip">ⓘ</span>
 						</div>						
 						<div class="option" style="display:inline-block">
-							<label class="container">
-								<input type="checkbox" id="quickMenuOnMouseAlt" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnMouseAlt" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Alt">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuOnMouseCtrl" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnMouseCtrl" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Ctrl">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuOnMouseShift" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnMouseShift" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
 						<div>
@@ -2448,10 +2367,11 @@
 				</tr>
 				<tr>
 					<td>
+						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
 						<label class="container" data-i18n="SimpleClick"> 
 							<input type="checkbox" id="quickMenuOnSimpleClick.enabled" />
 							<span class="checkmark checkmark2"></span>
-							<div class="tool" style="--mask-image: url(icons/cursor.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>_
+							<tool data-icon="cursor.svg" style="height:24px;width:24px;vertical-align: middle;;margin:0 10px"></tool>_
 						</label>
 						<br />
 						<span style="font-size:9pt" data-i18n="SimpleClickTooltip">_</span>
@@ -2469,26 +2389,17 @@
 						<span style="margin-left:10px">+</span>
 							
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuOnSimpleClick.alt" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnSimpleClick.alt" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Alt">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuOnSimpleClick.ctrl" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnSimpleClick.ctrl" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Ctrl">_</span>
 						</div>
 						
 						<div class="option" style="display:inline-block;margin-left:20px">
-							<label class="container">
-								<input type="checkbox" id="quickMenuOnSimpleClick.shift" />
-								<span class="checkmark checkmark2"></span>
-							</label>
+							<checkbox data-id="quickMenuOnSimpleClick.shift" data-i18n=""></checkbox>
 							<span class="description" data-i18n="Shift">_</span>
 						</div>
 						
@@ -2500,18 +2411,12 @@
 				<section>
 				<p class="header1" data-i18n="Closing">_</p>
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuCloseOnClick" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenuCloseOnClick" data-i18n=""></checkbox>
 					<div class="description" data-i18n="CloseAfterSearchTooltip">_</div>
 				</div>
 				
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuCloseOnScroll" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenuCloseOnScroll" data-i18n=""></checkbox>
 					<div class="description" data-i18n="CloseOnScrollTooltip">_</div>
 				</div>
 
@@ -2645,10 +2550,10 @@
 						<select class="inputNice" name="action" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
 						</select>
 					</td>
-					<td><input name="altKey" type="checkbox" value="altKey"/></td>
-					<td><input name="ctrlKey" type="checkbox" value="ctrlKey" /></td>
-					<td style="display:none"><input name="metaKey" type="checkbox" value="metaKey" /></td>
-					<td><input name="shiftKey" type="checkbox" value="shiftKey" /></td>
+					<td><input name="altKey" type="checkbox" /></td>
+					<td><input name="ctrlKey" type="checkbox" /></td>
+					<td style="display:none"><input name="metaKey" type="checkbox" /></td>
+					<td><input name="shiftKey" type="checkbox" /></td>
 					<td><button name="delete" title="$delete">x</button></td>
 				</tr>
 			</table>
@@ -2679,11 +2584,8 @@
 <p class="header1" data-i18n="Tools">_</p>
 				
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuToolsAsToolbar" />
-						<span class="checkmark checkmark2"></span>
-						<div class="description" data-i18n="ToolsAsToolbar">_</div>
-					</label>
+					<checkbox data-id="quickMenuToolsAsToolbar" data-i18n=""></checkbox>
+					<div class="description" data-i18n="ToolsAsToolbar">_</div>
 				</div>
 				<div>	
 					<span data-i18n="Position">_</span><span class="info" title="$ToolsPositionTooltip">&#9432;</span>
@@ -2715,18 +2617,12 @@
 				
 				<br />
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuSearchBarFocus" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenuSearchBarFocus" data-i18n=""></checkbox>
 					<div class="description" data-i18n="FocusTooltip">_</div>
 				</div>
 				
 				<div class="option">
-					<label class="container">
-						<input type="checkbox" id="quickMenuSearchBarSelect" />
-						<span class="checkmark checkmark2"></span>
-					</label>
+					<checkbox data-id="quickMenuSearchBarSelect" data-i18n=""></checkbox>
 					<div class="description" data-i18n="SelectTextTooltip">_</div>
 				</div>	
 
@@ -2754,11 +2650,8 @@
 				<section>
 				<p class="header1" data-i18n="Closing">_</p>
 				<div class="option">
-					<label class="container" data-i18n="CloseAfterSearch">
-						<input type="checkbox" id="searchBarCloseAfterSearch" />
-						<span class="checkmark checkmark2"></span>
-						<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
-					</label>
+					<checkbox data-id="searchBarCloseAfterSearch" data-i18n=""></checkbox>
+					<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
 				</div>
 				
 				</section>
@@ -2840,28 +2733,19 @@
 					<section>
 					<p class="header1" data-i18n="Opening">_</p>
 					<div class="option">
-						<label class="container" data-i18n="SidebarWidgetEnable">
-							<input type="checkbox" id="sideBar.widget.enabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="sideBar.widget.enabled" data-i18n="SidebarWidgetEnable"></checkbox>
 						<div class="description" data-i18n="SidebarWidgetEnableTooltip">_</div>
 					</div>
 					<div class="option">
-						<label class="container" data-i18n="SideBarStartOpen">
-							<input type="checkbox" id="sideBar.startOpen" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="sideBar.startOpen" data-i18n="SideBarStartOpen"></checkbox>
 						<span class="description" data-i18n="SideBarStartOpenTooltip">_</span>
 					</div>
 					</section>
 					<section>
 					<p class="header1" data-i18n="Closing">_</p>
 				<div class="option">
-					<label class="container" data-i18n="CloseAfterSearch">
-						<input type="checkbox" id="sideBar.closeAfterSearch" />
-						<span class="checkmark checkmark2"></span>
-						<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
-					</label>
+					<checkbox data-id="sideBar.closeAfterSearch" data-i18n="CloseAfterSearch"></checkbox>
+					<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
 				</div>
 				
 				</section>
@@ -2874,10 +2758,7 @@
 					<p class="header1" data-i18n="General">_</p>
 					
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="pageTiles.enabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="pageTiles.enabled" data-i18n=""></checkbox>
 						<div class="description" data-i18n="PageTilesEnabledTooltip">_</div>
 					</div>
 
@@ -2899,11 +2780,8 @@
 					<br>
 
 					<div class="option">
-						<label class="container" data-i18n="ClosePageTilesOnShake">
-							<input type="checkbox" id="pageTiles.closeOnShake" />
-							<span class="checkmark checkmark2"></span>
-							<div class="description" data-i18n="ClosePageTilesOnShake">_</div>
-						</label>
+						<checkbox data-id="pageTiles.closeOnShake" data-i18n="ClosePageTilesOnShake"></checkbox>
+						<div class="description" data-i18n="ClosePageTilesOnShake">_</div>
 					</div>
 					</section>
 					<section style="min-width:720px">
@@ -2953,25 +2831,16 @@
 					<tr>
 						<td>
 						<div class="option">
-							<label class="container">
-								<input type="checkbox" id="allowHotkeysWithoutMenu" />
-								<span class="checkmark checkmark2"></span>
-								<div class="description" data-i18n="EnableHotkeysLabel">_</div>
-							</label>
+							<checkbox data-id="allowHotkeysWithoutMenu" data-i18n=""></checkbox>
+							<div class="description" data-i18n="EnableHotkeysLabel">_</div>
 						</div>
 						<div class="option">
-							<label class="container">
-								<input type="checkbox" id="allowHotkeysOnLinks" />
-								<span class="checkmark checkmark2"></span>
-								<div class="description" data-i18n="EnableOnLinks">_</div>
-							</label>
+							<checkbox data-id="allowHotkeysOnLinks" data-i18n=""></checkbox>
+							<div class="description" data-i18n="EnableOnLinks">_</div>
 						</div>
 						<div class="option">
-							<label class="container">
-								<input type="checkbox" id="allowHotkeysOnImages" />
-								<span class="checkmark checkmark2"></span>
-								<div class="description" data-i18n="EnableOnImages">_</div>
-							</label>
+							<checkbox data-id="allowHotkeysOnImages" data-i18n=""></checkbox>
+							<div class="description" data-i18n="EnableOnImages">_</div>
 						</div>
 
 						</td>
@@ -2985,7 +2854,6 @@
 						</td>
 					</tr>
 					</table>
-
 					
 					</section>
 
@@ -3010,7 +2878,7 @@
 					</tr>
 					<tr>
 						<td>
-						<span class="buttonLabel" data-i18n="Omnibox">_</span><div class="tool" style="--mask-image: url(icons/omnibox.svg);height:30px;width:30px;vertical-align: middle;;margin:0 10px"></div>
+						<span class="buttonLabel" data-i18n="Omnibox">_</span><tool data-icon="omnibox.svg" style="height:30px;width:30px;vertical-align: middle;;margin:0 10px"></tool>
 						</td>
 						<td>
 						<select class="inputNice" id="omniboxSearch" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
@@ -3103,10 +2971,7 @@
 					</table>
 
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.flashSelected" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.flashSelected" data-i18n=""></checkbox>
 						<div class="description" data-i18n="HighlightFlashSelectedTooltip">_</div>
 					</div>
 					
@@ -3118,39 +2983,24 @@
 					<section>
 					<p class="header1" data-i18n="General">_</p>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.enabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.enabled" data-i18n=""></checkbox>
 						<div class="description" data-i18n="HighlightTooltip">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.followDomain" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.followDomain" data-i18n=""></checkbox>
 						<div class="description" data-i18n="HighlightFollowDomainTooltip">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.followExternalLinks" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.followExternalLinks" data-i18n=""></checkbox>
 						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">_</div>
 					</div>
 					
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.navBar.enabled" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.navBar.enabled" data-i18n=""></checkbox>
 						<div class="description" data-i18n="HighlightNavTooltip">_</div>
 					</div>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.showFindBar" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.showFindBar" data-i18n=""></checkbox>
 						<div class="description" data-i18n="HighlightShowFindBarTooltip">_</div>
 					</div>
 					
@@ -3177,10 +3027,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<label class="container">
-										<input type="checkbox" id="highLight.markOptions.separateWordSearch" />
-										<span class="checkmark checkmark2"></span>
-									</label>
+									<checkbox data-id="highLight.markOptions.separateWordSearch" data-i18n=""></checkbox>
 								</div>
 							</td>
 							<td>
@@ -3194,10 +3041,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<label class="container">
-										<input type="checkbox" id="highLight.markOptions.ignorePunctuation" />
-										<span class="checkmark checkmark2"></span>
-									</label>
+									<checkbox data-id="highLight.markOptions.ignorePunctuation" data-i18n=""></checkbox>
 								</div>
 							</td>
 							<td>
@@ -3210,11 +3054,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<label class="container">
-										<input type="checkbox" id="highLight.markOptions.caseSensitive" />
-										<span class="checkmark checkmark2"></span>
-									</label>
-									
+									<checkbox data-id="highLight.markOptions.caseSensitive" data-i18n=""></checkbox>									
 								</div>
 							</td>
 							<td>
@@ -3246,27 +3086,18 @@
 					<p class="header1" data-i18n="opening">_</p>
 					
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.findBar.startOpen" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.findBar.startOpen" data-i18n=""></checkbox>
 						<span class="description" data-i18n="FindBarStartOpen">_</span>
 					</div>
 					
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.findBar.openInAllTabs" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.findBar.openInAllTabs" data-i18n=""></checkbox>
 						<span class="description" data-i18n="FindBarOpenInAllTabs">_</span>
 					</div>
 					
 					<div class="option">
 						<span style='margin-left:30px;margin-right:10px'>&rdca;</span>
-						<label class="container">
-							<input type="checkbox" id="highLight.findBar.searchInAllTabs" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.findBar.searchInAllTabs" data-i18n=""></checkbox>
 						<span class="description" data-i18n="FindBarSearchInAllTabs">_</span>
 					</div>
 				
@@ -3319,10 +3150,7 @@
 					<p class="header1" data-i18n="General">_</p>
 					
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="highLight.findBar.showNavBar" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="highLight.findBar.showNavBar" data-i18n=""></checkbox>
 						<span class="description" data-i18n="HighlightNavTooltip">_</span>
 					</div>
 					
@@ -3353,10 +3181,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<label class="container">
-										<input type="checkbox" id="highLight.findBar.markOptions.separateWordSearch" />
-										<span class="checkmark checkmark2"></span>
-									</label>
+									<checkbox data-id="highLight.findBar.markOptions.separateWordSearch" data-i18n=""></checkbox>
 								</div>
 							</td>
 							<td>
@@ -3370,10 +3195,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<label class="container">
-										<input type="checkbox" id="highLight.findBar.markOptions.ignorePunctuation" />
-										<span class="checkmark checkmark2"></span>
-									</label>
+									<checkbox data-id="highLight.findBar.markOptions.ignorePunctuation" data-i18n=""></checkbox>
 								</div>
 							</td>
 							<td>
@@ -3386,11 +3208,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<label class="container">
-										<input type="checkbox" id="highLight.findBar.markOptions.caseSensitive" />
-										<span class="checkmark checkmark2"></span>
-									</label>
-									
+									<checkbox data-id="highLight.findBar.markOptions.caseSensitive" data-i18n=""></checkbox>									
 								</div>
 							</td>
 							<td>
@@ -3462,7 +3280,7 @@
 						<div style="display:inline-block">
 							<div class="faviconPickerBox" name="faviconBox"></div>
 							<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-								<div class="tool" style="--mask-image: url(icons/crossmark.svg);height:100%"></div>
+								<tool data-icon="crossmark.svg" style="height:100%"></tool>
 							</button>
 						</div>
 
@@ -3487,7 +3305,7 @@
 					<label data-i18n="IconURI">_</label>
 					<div>
 						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><div class="tool" style="--mask-image: url(icons/search.svg);width:20px;vertical-align:middle;margin:0 4px;"></div></button>
+						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 4px;"></tool></button>
 						<input type="file" accept="image/*" name='iconPicker' style="display:none">
 					</div>
 					<label data-i18n="FormPath">_</label><input name="searchform" type="text" class="inputNice" />
@@ -3521,9 +3339,9 @@
 					</div>
 
 					<div style="float:right;margin:16px">
-						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><div class="tool" style="--mask-image: url(icons/copy.svg);height:1em;vertical-align: middle"></div></button>
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><tool data-icon="copy.svg" style="height:1em;vertical-align: middle"></tool></button>
 <span data-browser="firefox">					
-						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><div class="tool" style="--mask-image: url(icons/add.svg);height:1em;vertical-align: middle"></div></button>
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
 </span>
 						<button type="button" name="test" style="margin-left:20px;width:auto" data-i18n="Test" title="i18n_text">_</button>
 						<button type="button" name="save" style="margin-left:4px;width:auto;border-right: none;border-radius:4px 0 0 4px" data-i18n="Save" title="i18n_text">_</button><button type="button" name="saveclose" title="$saveclose" style="margin-left:0px;width:auto;border-left: none;border-radius:0 4px 4px 0;cursor:default">X</button>
@@ -3589,10 +3407,7 @@
 						_
 					</p>
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="syncWithFirefoxSearch" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
 						<span class="description" data-i18n="SyncWithFirefoxSearch">_</span>
 					</div>
 				</section>
@@ -3615,10 +3430,7 @@
 					</label>
 					
 					<div class="option">
-						<label class="container">
-							<input type="checkbox" id="cb_overwriteOnImport" />
-							<span class="checkmark checkmark2"></span>
-						</label>
+						<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
 						<span class="description" data-i18n="ClearSearchList">_</span>
 					</div>
 					
