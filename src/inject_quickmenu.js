@@ -4,7 +4,7 @@ var cancelRequest = 0;
 // set the initial value on page load
 quickMenuObject.disabled = userOptions.quickMenuDisabledInNewTabs;
 
-var getQM = () => getShadowRoot().getElementById('CS_quickMenuIframe');
+const getQM = () => getShadowRoot().getElementById('CS_quickMenuIframe');
 
 function clearMouseDownTimer() {
 	clearTimeout(quickMenuObject.mouseDownTimer);
@@ -366,8 +366,8 @@ document.addEventListener('mouseup', e => {
 	setTimeout(() => {
 
 		if ( searchTerms === getSelectedText(e.target) ) {
-			 openQuickMenu(e);
-			 
+			openQuickMenu(e);
+
 			if ( userOptions.quickMenuCloseOnEdit && quickMenuObject.mouseDownTargetIsTextBox ) {
 				e.target.addEventListener('input', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
 			}
@@ -526,8 +526,8 @@ document.addEventListener('mousedown', e => {
 	// check for modifier keys
 	if ( 
 		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
-		 (userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
-		 (userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)*/ // leave ctrlKey for link / linkText
+		(userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)*/ // leave ctrlKey for link / linkText
 	) return false;
 
 	checkContextMenuEventOrder(e);
@@ -558,7 +558,7 @@ document.addEventListener('mousedown', e => {
 			// closeQuickMenu();
 
 			browser.runtime.sendMessage({action: "cancelQuickMenuRequest"});
-     		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
+			browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
 			removePreventContextMenuHandler('quickMenuOnClick mousedown');
 			return;
 		}
@@ -850,7 +850,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				break;
 
-			case "openQuickMenu":
+			case "openQuickMenu": {
 
 				// opened by shortcut
 				if ( !message.screenCoords) message.screenCoords = quickMenuObject.screenCoords;
@@ -877,7 +877,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				if ( message.folder ) {
 
-					function removeChildren(id) {
+					const removeChildren = (id) => {
 						let child = getShadowRoot().querySelector('iframe[parentFrameId="' + id + '"]');
 
 						if ( child ) {
@@ -909,6 +909,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				});
 				
 				break;
+			}
 				
 			case "lockQuickMenu":				
 				lockQuickMenu();
@@ -918,37 +919,37 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				unlockQuickMenu();
 				break;	
 
-			case "quickMenuIframeFolderLoaded":
-				(() => {
-					var qmc = getShadowRoot().getElementById(message.folder.id);
-
-					qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-					qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
-
-					qmc.style.left = qmc.openingCoords.x - 4 + "px";
-					qmc.style.top = qmc.openingCoords.y + "px";
-					qmc.style.opacity = 1;
-
-					let borderWidth = getBorderWidth(qmc);
-					let borderHeight = getBorderHeight(qmc);
-
-					qmc.style.width = message.size.width + borderWidth + "px";
-					qmc.style.height = Math.min(message.size.height + borderHeight, window.innerHeight * window.devicePixelRatio / userOptions.quickMenuScale) + "px";
-
-					// check for room to open the menu
-					let parentFrame = getShadowRoot().getElementById(qmc.getAttribute("parentFrameId")) || getQM();
-					let pfr = parentFrame.getBoundingClientRect();
-					let qmr = qmc.getBoundingClientRect();
-
-					if ( parentFrame && pfr.left > window.innerWidth - pfr.right && window.innerWidth - pfr.right < qmr.width ) {
-						qmc.style.left = pfr.left - qmr.width + 4 + "px";
-					}
-
-					setTimeout(() => repositionOffscreenElement(qmc), 2);
-				})();
-				break;
+			case "quickMenuIframeFolderLoaded": {
 				
-			case "quickMenuIframeLoaded":
+				var qmc = getShadowRoot().getElementById(message.folder.id);
+
+				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
+				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
+
+				qmc.style.left = qmc.openingCoords.x - 4 + "px";
+				qmc.style.top = qmc.openingCoords.y + "px";
+				qmc.style.opacity = 1;
+
+				let borderWidth = getBorderWidth(qmc);
+				let borderHeight = getBorderHeight(qmc);
+
+				qmc.style.width = message.size.width + borderWidth + "px";
+				qmc.style.height = Math.min(message.size.height + borderHeight, window.innerHeight * window.devicePixelRatio / userOptions.quickMenuScale) + "px";
+
+				// check for room to open the menu
+				let parentFrame = getShadowRoot().getElementById(qmc.getAttribute("parentFrameId")) || getQM();
+				let pfr = parentFrame.getBoundingClientRect();
+				let qmr = qmc.getBoundingClientRect();
+
+				if ( parentFrame && pfr.left > window.innerWidth - pfr.right && window.innerWidth - pfr.right < qmr.width ) {
+					qmc.style.left = pfr.left - qmr.width + 4 + "px";
+				}
+
+				setTimeout(() => repositionOffscreenElement(qmc), 2);
+				break;
+			}
+				
+			case "quickMenuIframeLoaded": {
 
 				if ( Date.now() - cancelRequest < 1000) {
 					return closeQuickMenu();
@@ -959,7 +960,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					quickMenuObject: quickMenuObject
 				});
 				
-				var qmc = getQM();
+				let qmc = getQM();
 				
 				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
 				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
@@ -1052,14 +1053,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				}, 50);
 
 				break;
+			}
 
-			case "editQuickMenu":
+			case "editQuickMenu": {
 
-				var qmc = getQM();
+				let qmc = getQM();
 
 				( message.on ) ? editOn(qmc) : editOff(qmc);
 
 				break;
+			}
 
 			case "deselectAllText":
 				deselectAllText();
@@ -1227,9 +1230,9 @@ function quickMenuResize(e) {
 window.addEventListener('message', e => {
 
 	switch ( e.data.action ) {
-		case "quickMenuResize":
+		case "quickMenuResize": {
 
-			let url = new URL(browser.runtime.getURL(''));
+			url = new URL(browser.runtime.getURL(''));
 
 			if ( e.origin !== url.origin ) return;
 			
@@ -1237,6 +1240,7 @@ window.addEventListener('message', e => {
 
 			quickMenuResize(e);
 			break;
+		}
 	}
 });
 
@@ -1404,25 +1408,25 @@ if ( window == top && userOptions.showStatusBar ) {
 	setStatus(div, !quickMenuObject.disabled);
 }
 
-if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
+if ( window == top && typeof addParentDockingListeners !== 'undefined' && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
 
-(() => {
-	document.addEventListener('keydown', e => {
-		if ( e.key === 'x' ) {
+// (() => {
+// 	document.addEventListener('keydown', e => {
+// 		if ( e.key === 'x' ) {
 
-			let folder = {
-				type:"folder",
-				children: findNodes(userOptions.nodeTree, n => n.contexts && hasContext("link", n.contexts)),
-				id:gen()
-			}
+// 			let folder = {
+// 				type:"folder",
+// 				children: findNodes(userOptions.nodeTree, n => n.contexts && hasContext("link", n.contexts)),
+// 				id:gen()
+// 			}
 
-			makeQuickMenuContainer({
-				coords: {x:0,y:0}, 
-				node:folder,
-				layout: "!menuBar,!searchBarContainer,!titleBar,quickMenuElement,!toolBar,!contextsBar",
-				columns:1
-			});
-		}
-	});
-});
+// 			makeQuickMenuContainer({
+// 				coords: {x:0,y:0}, 
+// 				node:folder,
+// 				layout: "!menuBar,!searchBarContainer,!titleBar,quickMenuElement,!toolBar,!contextsBar",
+// 				columns:1
+// 			});
+// 		}
+// 	});
+// });

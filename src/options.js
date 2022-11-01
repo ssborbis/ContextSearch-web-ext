@@ -334,10 +334,10 @@ function _saveOptions(e) {
 				o[key] = el.value;	
 
 			if ( type === 'number' ) {
-			 let i = parseInt(el.value);
-			 let f = parseFloat(el.value);
+				let i = parseInt(el.value);
+				let f = parseFloat(el.value);
 
-			 o[key] = i == f ? i : f;
+				o[key] = i == f ? i : f;
 			}
 		}
 	}
@@ -2029,18 +2029,18 @@ $('b_manualEdit').addEventListener('click', e => {
 		delete o.nodeTree;
 
 		const ordered = Object.keys(o).sort().reduce(
-		  (obj, key) => { 
-		    obj[key] = o[key]; 
-		    return obj;
-		  }, 
-	  	{}
+			(obj, key) => { 
+			obj[key] = o[key]; 
+			return obj;
+		}, 
+		{}
 		);
 
 		$('t_manualEdit').innerHTML = syntaxHighlight(JSON.stringify(ordered, null, 4))
 	} else {
-		 $('advancedSettingsTable').style.display = null;
-		 [$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );
-		 $('b_manualSave').classList.remove('changed');
+		$('advancedSettingsTable').style.display = null;
+		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );
+		$('b_manualSave').classList.remove('changed');
 	}
 })
 
