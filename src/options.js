@@ -8,16 +8,9 @@ var userOptionsHasUpdated = false;
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if ( message.userOptions && message.source && message.source.url != browser.runtime.getURL(window.location.href)) {
-		//userOptionsHasUpdated = true;
-		//window.location.reload();
 		userOptions = message.userOptions;
 	}
 });
-
-//window.addEventListener('focus', e => {
-//	if ( userOptionsHasUpdated ) alert('Config has been updated from another tab');
-//	userOptionsHasUpdated = false;
-//})
 
 // Browse button for manual import
 $("#selectMozlz4FileButton").addEventListener('change', ev => {
@@ -1984,14 +1977,6 @@ function buildAdditionalSearchActionsTable() {
 		saveOptions();
 	}
 }
-
-
-// window.addEventListener('focus', async e => {
-// 	let uo = await browser.runtime.sendMessage({action: 'getUserOptions'});
-
-// 	if ( JSON.stringify(uo) !== JSON.stringify(userOptions))
-// 		console.log('changed');
-// })
 
 // saveOptions on every change
 document.addEventListener('change', e => {

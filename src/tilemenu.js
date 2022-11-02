@@ -141,7 +141,7 @@ function getSearchActions(e, isFolder, allEvents) {
 			let sa = defaultSearchActions[key];
 			if ( isSearchAction(sa, e, allEvents) && isFolder === sa.folder ) {
 				// console.log(key, sa.action);
-				sas.push(sa);;
+				sas.push(sa);
 			}
 		}
 	}
@@ -1065,7 +1065,7 @@ async function _quickMenuElementFromNodeTree( o ) {
 		
 		qm.back = _back;
 		
-		async function _back(e) {
+		const _back = async(e) => {
 			// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
 			
 			qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
@@ -1748,11 +1748,9 @@ async function mouseupHandler(e) {
 			case 'oneClickSearchEngine':
 			case 'bookmark':
 				return search({node:node, openMethod: getOpenMethod(e)});
-				break;
 
 			case 'siteSearch':
 				return search({node:node, openMethod: getOpenMethod(e), domain: node.title});
-				break;
 
 			case "siteSearchFolder":
 				return;
@@ -1760,11 +1758,9 @@ async function mouseupHandler(e) {
 			case 'externalProgram':
 				search({node:node, openMethod: getOpenMethod(e)});
 				return Promise.resolve(true); // app launcher can resolve immediately
-				break;
 
 			default:
 				return Promise.reject('unknown node type', node.type);
-				break;
 
 		}
 
@@ -2166,7 +2162,7 @@ function nodeToTile( node ) {
 	
 	switch ( node.type ) {
 
-		case "searchEngine":
+		case "searchEngine": {
 
 			let se = userOptions.searchEngines.find(se => se.id === node.id);
 
@@ -2189,6 +2185,7 @@ function nodeToTile( node ) {
 			tile.dataset.type = 'searchEngine';
 
 			break;
+		}
 	
 		case "bookmarklet":
 
@@ -2352,13 +2349,14 @@ function nodeToTile( node ) {
 			tile.dataset.title = node.title;			
 			break;
 
-		case "tool":
+		case "tool": {
 			let tool = QMtools.find(t => t.name === node.tool )
 			tile = tool.init();
 			tile.dataset.type = 'tool';
 			tile.dataset.id = node.id;	
 			tile.dataset.title = node.title;
 			break;
+		}
 
 		case "externalProgram":
 			tile = buildSearchIcon(getIconFromNode(node), node.title);

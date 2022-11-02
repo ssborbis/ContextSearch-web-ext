@@ -433,7 +433,7 @@ function setLockToolStatus() {
 window.addEventListener('message', async e => {
 
 	switch (e.data.action) {
-		case "rebuildQuickMenu":
+		case "rebuildQuickMenu": {
 			userOptions = e.data.userOptions;	
 			qm.columns = qm.singleColumn ? 1 : e.data.columns;
 
@@ -442,6 +442,7 @@ window.addEventListener('message', async e => {
 			toolsHandler(o);
 			resizeMenu(o);
 			break;
+		}
 			
 		case "resizeMenu":
 			resizeMenu(e.data.options);
