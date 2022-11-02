@@ -1408,7 +1408,7 @@ if ( window == top && userOptions.showStatusBar ) {
 	setStatus(div, !quickMenuObject.disabled);
 }
 
-if ( window == top && typeof addParentDockingListeners !== 'undefined' && typeof addParentDockingListeners === 'function')
+if ( window == top && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
 
 // (() => {
