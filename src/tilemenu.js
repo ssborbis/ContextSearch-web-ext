@@ -774,7 +774,19 @@ async function makeQuickMenu(options) {
 	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
 	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
-		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
+
+		let folder = null;
+
+		if ( lastFolderId === "___recent___") {
+			folder = recentlyUsedListToFolder();
+			folder.parent = root;
+		}
+		else if ( lastFolderId === "___matching___") {
+			folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+			folder.parent = root;
+		}
+		else
+			folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
 		
 		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
 	}
