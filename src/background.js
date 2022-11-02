@@ -1324,6 +1324,7 @@ async function executeExternalProgram(info) {
 	let node = info.node;
 	let searchTerms = info.searchTerms || info.selectionText;
 	let downloadURL = null;
+	let downloadPath = null;
 
 	if ( node.searchRegex ) {
 		try {
@@ -1337,7 +1338,24 @@ async function executeExternalProgram(info) {
 		.replace(/{url}/g, info.tab.url);
 
 	// {download_url} is a link to be downloaded by python and replaced by the file path
-	if ( /{download_url}/.test(path)) downloadURL = searchTerms;
+	let matches = path.match(/{download_url(?:=(.+))?}/);
+	if ( matches ) {
+		downloadURL = searchTerms;
+		downloadPath = matches[1] || null;
+	}
+
+	if ( downloadPath === "ASK") {
+		let id = await browser.downloads.download({
+			url:downloadURL,
+			saveAs:true
+		})
+
+		let dl = await browser.downloads.search({id}).then( dls => {
+			return dls[0];
+		});
+
+		console.log(dl);
+	}
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});
@@ -1362,7 +1380,7 @@ async function executeExternalProgram(info) {
 		cwd:node.cwd, 
 		return_stdout: ( node.postScript ? true : false ), 
 		downloadURL: downloadURL, 
-		downloadFolder: userOptions.nativeAppDownloadFolder || null 
+		downloadFolder: downloadPath || userOptions.nativeAppDownloadFolder || null 
 	};
 
 	console.log("native app message ->", msg);
