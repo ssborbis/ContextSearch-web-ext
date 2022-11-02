@@ -1,9 +1,3 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
-
 // not jQuery 
 var $ = s => document.getElementById(s) || document.querySelector(s);
 

@@ -8,7 +8,6 @@
 	"background": {
 		"scripts": [
 			"lib/browser-polyfill.min.js",
-			"lib/crossbrowser.js",
 			"utils.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
