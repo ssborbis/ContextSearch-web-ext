@@ -411,7 +411,7 @@ function contextMenuTitle(searchTerms, context) {
 	if (searchTerms.length > 18) 
 		searchTerms = searchTerms.substring(0,15) + "...";
 	
-	let hotkey = getMenuHotkey();; 
+	let hotkey = getMenuHotkey(); 
 
 	let title = (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", searchTerms) + hotkey;
 	

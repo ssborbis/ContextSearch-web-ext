@@ -5,7 +5,7 @@ window.tabTerms = [];
 
 var userOptions = {};
 var highlightTabs = [];
-var isAndroid = false;;
+var isAndroid = false;
 
 (async() => {
 	let info = await browser.runtime.getPlatformInfo();
@@ -149,7 +149,6 @@ async function notify(message, sender, sendResponse) {
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions", source: sender});
 			});
-			break;
 			
 		case "updateUserOptions":
 
@@ -163,7 +162,7 @@ async function notify(message, sender, sendResponse) {
 			}, 1000, "updateUserOptionsTimer");
 			break;
 			
-		case "openOptions":
+		case "openOptions": {
 			let optionsPageURL = browser.runtime.getURL("/options.html");
 			let optionsPage = await browser.tabs.query({url: optionsPageURL + "*"});
 
@@ -179,18 +178,16 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
-			break;
+		}
 			
 		case "quickMenuSearch":
 		case "search":
 			message.info.tab = sender.tab;
 			return openSearch(message.info);
-			break;
 			
 		case "enableContextMenu":
 			userOptions.contextMenu = true;
-			buildContextMenu();
-			break;
+			return buildContextMenu();
 
 		case "fetchURI":
 			return new Promise(r => {
@@ -204,56 +201,44 @@ async function notify(message, sender, sendResponse) {
 				img.src = message.url;
 			
 			});
-			break;
 			
 		case "getUserOptions":
 			return userOptions;
-			break;
 			
 		case "getDefaultUserOptions":
 			return defaultUserOptions;
-			break;
 
 		case "getSearchEngineById":
 			if ( !message.id) return;
 
 			return {"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)};
-			break;
 			
 		case "dispatchEvent":
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
 				allFrames: true
 			});
-			break;
 
 		case "openQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "closeQuickMenuRequest":
 			return sendMessageToAllFrames();
-			break;
 		
 		case "quickMenuIframeLoaded":
 			return sendMessageToTopFrame();
-			break;
 		
 		case "updateQuickMenuObject":
 			return sendMessageToAllFrames();
-			break;
 			
 		case "lockQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "unlockQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 
 		case "deselectAllText":
 			return sendMessageToAllFrames();
-			break;
 
 		case "toggleLockQuickMenu":
 			onFound = () => {}
@@ -263,19 +248,15 @@ async function notify(message, sender, sendResponse) {
 				code: 'if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
 				allFrames:false
 			}).then(onFound, onError);
-			break;
 			
 		case "rebuildQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "closeWindowRequest":
 			return browser.windows.remove(sender.tab.windowId);
-			break;
 		
 		case "closeCustomSearch":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "openFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
@@ -291,7 +272,6 @@ async function notify(message, sender, sendResponse) {
 				
 			} else
 				return sendMessageToTopFrame();
-			break;
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
@@ -303,19 +283,15 @@ async function notify(message, sender, sendResponse) {
 				
 			} else
 				return sendMessageToTopFrame();
-			break;
 			
 		case "updateFindBar":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "findBarNext":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "findBarPrevious":
 			return sendMessageToTopFrame();
-			break;
 		
 		case "getFindBarOpenStatus":
 			onFound = result => result
@@ -323,7 +299,6 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getFindBar() ? true : false;"
 			}).then(onFound, onError);
-			break;
 
 		case "mark":
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
@@ -333,32 +308,25 @@ async function notify(message, sender, sendResponse) {
 				return sendMessageToAllFrames();
 			}
 
-			break;
 			
 		case "unmark":
 			return sendMessageToAllFrames();
-			break;
 		
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
-			break;
 
 		case "markDone":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "toggleNavBar":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "closeSideBar":
 			return sendMessageToTopFrame();
-			break;
 		
 		case "openSideBar":
 		case "sideBarHotkey":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "getOpenSearchLinks":
 
@@ -374,8 +342,6 @@ async function notify(message, sender, sendResponse) {
 				frameId: message.frame ? sender.frameId : 0
 			}).then(onFound, onError);
 
-			break;
-
 		case "updateSearchTerms":
 
 			window.searchTerms = message.searchTerms;
@@ -385,7 +351,6 @@ async function notify(message, sender, sendResponse) {
 			//	notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
-			break;
 			
 		case "updateContextMenu":
 		
@@ -451,13 +416,13 @@ async function notify(message, sender, sendResponse) {
 
 			break;
 			
-		case "getFirefoxSearchEngineByName":
+		case "getFirefoxSearchEngineByName": {
 			if ( !browser.search || !browser.search.get ) return [];
 			let engines = await browser.search.get();
 			return engines.find(e => e.name === message.name);
-			break;
+		}
 			
-		case "addSearchEngine":
+		case "addSearchEngine": {
 			let url = message.url;
 
 			if ( browser.runtime.getBrowserInfo && browser.search && browser.search.get ) {
@@ -537,8 +502,9 @@ async function notify(message, sender, sendResponse) {
 			
 			window.external.AddSearchProvider(url);
 			break;
+		}
 		
-		case "addContextSearchEngine":
+		case "addContextSearchEngine": {
 		
 			let se = message.searchEngine;
 			
@@ -569,7 +535,7 @@ async function notify(message, sender, sendResponse) {
 			notify({action: "saveOptions", userOptions:userOptions});
 			return node;
 			
-			break;
+		}
 			
 		case "removeContextSearchEngine":
 
@@ -640,7 +606,6 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getLastSearch":
 			return {lastSearch: sessionStorage.getItem("lastSearch")};
-			break;
 			
 		case "getCurrentTheme":
 			browser.theme.getCurrent().then( theme => {
@@ -648,12 +613,12 @@ async function notify(message, sender, sendResponse) {
 			});
 			break;
 			
-		case "executeTestSearch":
+		case "executeTestSearch": {
 
-			var searchTerms = encodeURIComponent(message.searchTerms);
-			var searchRegex = new RegExp(searchTerms + "|" + searchTerms.replace(/%20/g,"\\+") + "|" + searchTerms.replace(/%20/g,"_"), 'g');
+			let searchTerms = encodeURIComponent(message.searchTerms);
+			let searchRegex = new RegExp(searchTerms + "|" + searchTerms.replace(/%20/g,"\\+") + "|" + searchTerms.replace(/%20/g,"_"), 'g');
 			
-			var timeout = Date.now();
+			let timeout = Date.now();
 
 			let urlCheckInterval = setInterval( () => {
 				browser.tabs.get(sender.tab.id).then( tabInfo => {
@@ -686,7 +651,7 @@ async function notify(message, sender, sendResponse) {
 			
 			return true;
 			
-			break;
+		}
 			
 		case "copy":
 			try {
@@ -698,29 +663,19 @@ async function notify(message, sender, sendResponse) {
 				return false;
 			}
 
-			break;
-
 		case "copyRaw":
-
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.frameId});
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: "copyRaw()"
-			// });
-			break;
 			
 		case "hasBrowserSearch":
 			return typeof browser.search !== 'undefined' && typeof browser.search.get !== 'undefined';
-			break;
 			
 		case "checkForOneClickEngines":	
 			return checkForOneClickEngines();
-			break;
 			
 		case "getCurrentTabInfo": 
 			return Promise.resolve(sender.tab);
-			break;
 		
-		case "removeTabHighlighting":
+		case "removeTabHighlighting": {
 		
 			let tabId = message.tabId || sender.tab.id;
 			highlightTabs.findIndex( (hl, i) => {
@@ -732,10 +687,10 @@ async function notify(message, sender, sendResponse) {
 			});
 
 			break;
+		}
 			
 		case "dataToSearchEngine":
 			return dataToSearchEngine(message.formdata);
-			break;
 			
 		case "openSearchUrlToSearchEngine":
 			return readOpenSearchUrl(message.url).then( xml => {
@@ -743,11 +698,9 @@ async function notify(message, sender, sendResponse) {
 				
 				return openSearchXMLToSearchEngine(xml);
 			});
-			break;
 		
 		case "showNotification":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "getTabQuickMenuObject":
 
@@ -758,10 +711,8 @@ async function notify(message, sender, sendResponse) {
 			} catch (error) {
 				return null;
 			}
-
-			break;
 		
-		case "addToHistory":
+		case "addToHistory": {
 
 			if ( sender.tab.incognito && userOptions.incognitoTabsForgetHistory ) return console.log('incognito - do not add to history')
 	
@@ -793,23 +744,20 @@ async function notify(message, sender, sendResponse) {
 			
 			console.info('adding to history', terms);
 			return Promise.resolve(userOptions);
-			break;
+		}
 			
 		case "setLastOpenedFolder":
 			window.lastOpenedFolder = message.folderId;
 			return true;
-			break;
 			
 		case "getLastOpenedFolder":
 			return window.lastOpenedFolder || null;
-			break;
 
 		case "executeScript": 
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: message.code,
 				frameId: 0
 			});
-			break;
 
 		case "injectContentScripts":
 
@@ -866,9 +814,8 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getSelectedText(document.activeElement);"
 			}).then(onFound, onError);	
-			break;
 
-		case "addUserStyles":
+		case "addUserStyles": {
 			if ( !userOptions.userStylesEnabled ) return false;
 
 			console.log('adding user styles');
@@ -884,8 +831,7 @@ async function notify(message, sender, sendResponse) {
 				frameId: message.global ? 0 : sender.frameId,
 				cssOrigin: "user"
 			});
-			
-			break;
+		}
 
 		case "editQuickMenu":
 			sendMessageToTopFrame();
@@ -897,11 +843,9 @@ async function notify(message, sender, sendResponse) {
 				frameId: sender.frameId,
 				cssOrigin: "user"
 			});
-			break;
 
 		case "closePageTiles":
 			return sendMessageToTopFrame();
-			break;
 
 		case "openBrowserAction":
 			console.log('openBrowserAction')
@@ -914,16 +858,13 @@ async function notify(message, sender, sendResponse) {
 			// }).catch(e => {});
 
 			return sendMessageToTopFrame();
-			break;
 
 		case "minifySideBar":
 			console.log('bg');
 			return sendMessageToTopFrame();
-			break;
 
 		case "getZoom":
 			return browser.tabs.getZoom(sender.tab.id);
-			break;
 
 		case "sideBarOpenedOnSearchResults":
 
@@ -938,8 +879,6 @@ async function notify(message, sender, sendResponse) {
 				})();`
 			}).then( onFound, onError);
 
-			break;
-
 		case "openCustomSearch":
 			sendMessageToTopFrame();
 			break;
@@ -951,31 +890,24 @@ async function notify(message, sender, sendResponse) {
 			return await browser.tabs.executeScript(sender.tab.id, {
 				code: `getRawSelectedText(document.activeElement)`
 			}).then( onFound, onError);
-			break;
 
 		case "updateUserOptionsObject":
 			return updateUserOptionsObject(message.userOptions);
-			break;
 
 		case "updateUserOptionsVersion":
 			return updateUserOptionsVersion(message.userOptions);
-			break;
 
 		case "requestPermission":
 			return browser.permissions.request({permissions: [message.permission]});
-			break;
 
 		case "hasPermission":
 			return browser.permissions.contains({permissions: [message.permission]});
-			break;
 
 		case "openTab":
 			return openWithMethod(message);
-			break;
 
 		case "closeTab":
 			return browser.tabs.remove(message.tabId || sender.tab.id )
-			break;
 
 		case "getIconsFromIconFinder":
 			return browser.tabs.create({
@@ -989,40 +921,34 @@ async function notify(message, sender, sendResponse) {
 				browser.tabs.remove(tab.id);
 				return urls.shift();
 			});
-			break;
 
 		case "cancelQuickMenuRequest":
-     	case "closeQuickMenuRequest":
-     		sendMessageToTopFrame();
-     		break;
+			sendMessageToTopFrame();
+			break;
 
-     	case "download":
-     		if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
-     			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
-     			return;
-     		}
+		case "download":
+			if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+				let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
+				return;
+			}
 
-     		return browser.downloads.download({url: message.url, saveAs: true});
-     		break;
+			return browser.downloads.download({url: message.url, saveAs: true});
 
-     	case "getBookmarksAsNodeTree":
-     		return await CSBookmarks.treeToFolders(message.id || "root________");
-     		break;
+		case "getBookmarksAsNodeTree":
+			return await CSBookmarks.treeToFolders(message.id || "root________");
 
-     	case "getTabTerms":
-     		return window.tabTerms.find(t => t.tabId === sender.tab.id);
-     		break;
+		case "getTabTerms":
+			return window.tabTerms.find(t => t.tabId === sender.tab.id);
 
-     	case "isSidebar":
-     		return sender.hasOwnProperty("frameId");
-     		break;
+		case "isSidebar":
+			return sender.hasOwnProperty("frameId");
 	}
 }
 
 function checkUserOptionsValueTypes(repair) {
 	const traverse  = (obj, obj2) => {
-	    Object.keys(obj).forEach(key => {
-	      
+		Object.keys(obj).forEach(key => {
+
 			if ( typeof obj[key] !== typeof obj2[key]) {
 				console.error('mismatched object types', key, typeof obj[key], typeof obj2[key], obj[key], obj2[key]);
 
@@ -1032,10 +958,10 @@ function checkUserOptionsValueTypes(repair) {
 				}
 			}
 
-	    	if (typeof obj[key] === 'object' && obj[key] instanceof Object ) {
-	            traverse(obj[key], obj2[key])
-	        }
-	    })
+			if (typeof obj[key] === 'object' && obj[key] instanceof Object ) {
+				traverse(obj[key], obj2[key])
+			}
+		})
 	}
 
 	traverse(defaultUserOptions, userOptions);
@@ -1057,14 +983,14 @@ function updateUserOptionsObject(uo) {
 
 			// fix broken object arrays but skip searchEngines
 			if ( defaultobj[key] instanceof Array && defaultobj[key][0] && defaultobj[key][0] instanceof Object && key !== "searchEngines" ) {
-			 	
-			 	if ( userobj[key].includes( undefined ) ) {
-			 		console.error(key, "Found broken settings array in config. Restoring defaults")
-			 		userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
-			 	}
+				
+				if ( userobj[key].includes( undefined ) ) {
+					console.error(key, "Found broken settings array in config. Restoring defaults")
+					userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
+				}
 
-		 		for(let i=userobj[key].length-1;i>-1;i--) {
-				 	try {
+				for(let i=userobj[key].length-1;i>-1;i--) {
+					try {
 						String(userobj[key][i]);
 					} catch (e) {
 						console.error('Dead objects found. Replacing with defaults');
@@ -1125,23 +1051,22 @@ function openWithMethod(o) {
 	switch (o.openMethod) {
 		case "openCurrentTab":
 			return openCurrentTab();
-			break;
+
 		case "openNewTab":
 			return openNewTab(false);
-			break;
+
 		case "openNewWindow":
 			return openNewWindow(false);
-			break;
+
 		case "openNewIncognitoWindow":
 			return openNewWindow(true);
-			break;
+
 		case "openBackgroundTab":
 		case "openBackgroundTabKeepOpen":
 			return openNewTab(true);
-			break;
+
 		case "openSideBarAction":
 			return openSideBarAction(o.url);
-			break;
 	}
 	
 	function openCurrentTab() {
@@ -2567,7 +2492,6 @@ async function injectContentScripts(tab, frameId) {
 	// inject into any frame
 	[
 		"/lib/browser-polyfill.min.js",
-		"/lib/crossbrowser.js",
 		"/utils.js", // for isTextBox
 		"/inject.js",
 		"/lib/mark.es6.min.js",
@@ -2659,8 +2583,8 @@ async function scrapeBookmarkIcons() {
 			let url = new URL(_url);
 			console.log('fetching', url.origin);
 			var response = await fetch(url.origin + "/favicon.ico");
-		    switch (response.status) {
-		        // status "OK"
+			switch (response.status) {
+				// status "OK"
 				case 200:
 					console.log(url.origin + "/favicon.ico found!");
 					// var template = await response.text();
@@ -2671,7 +2595,7 @@ async function scrapeBookmarkIcons() {
 				case 404:
 					console.log('Not Found');
 					break;
-		    }
+			}
 		} catch ( error ) {}
 	} 
 
