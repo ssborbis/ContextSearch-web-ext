@@ -450,10 +450,9 @@ function openFindBar(options) {
 			onUndock: o => saveFindBarOptions(o),
 			windowType: userOptions.highLight.findBar.windowType,
 			lastOffsets: userOptions.highLight.findBar.offsets,
-			dockedPosition: userOptions.highLight.findBar.position
 		});
 
-		if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
+		if ( window == top && typeof addParentDockingListeners === 'function')
 			addParentDockingListeners('CS_findBarIframe', 'findBar');
 	});
 }
@@ -494,6 +493,7 @@ function nextPrevious(dir) {
 
 function getMarks() {
 	let marks = [...document.querySelectorAll('.CS_mark')];
+
 	document.querySelectorAll('iframe').forEach( iframe => {
 
 		if ( ! iframe.contentDocument ) return;
@@ -528,8 +528,15 @@ function jumpTo(index) {
 		
 		iframe.contentDocument.querySelectorAll('.CS_mark_selected').forEach( _div => _div.classList.remove('CS_mark_selected', 'CS_mark_flash') );
 	});
+
+	let selected = [...document.querySelectorAll('.CS_mark_selected')];
+
+	if ( document.body !== getShadowRoot() ) {
+		let shadowSelected = [...getShadowRoot().querySelectorAll('.CS_mark_selected')];
+		selected = selected.concat(shadowSelected);
+	}
 	
-	document.querySelectorAll('.CS_mark_selected').forEach( _div => {
+	selected.forEach( _div => {
 		_div.classList.remove('CS_mark_selected', 'CS_mark_flash');
 		
 		if ( _div.classList.contains('marker') )
