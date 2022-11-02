@@ -551,8 +551,8 @@
 			
 			.position {
 				display:inline-block;
-				width:16px;
-				height:16px;
+				width:20px;
+				height:20px;
 				background-color:var(--border-color1);
 				border:1px solid var(--border-color2);
 			}
@@ -2406,6 +2406,27 @@
 					</td>
 				</tr>
 				</table>
+
+				<hr>
+
+				<p class="header2" data-i18n="Position">_</p>
+				
+				<div>
+					<div style="font-size:0;line-height:0;display:inline-block;">
+						<div class="position" data-position="top left"></div><div class="position" data-position="top center"></div><div class="position" data-position="top right"></div><br />
+						<div class="position" data-position="middle left"></div><div class="position" data-position="middle center"></div><div class="position" data-position="middle right"></div><br />
+						<div class="position" data-position="bottom left"></div><div class="position" data-position="bottom center"></div><div class="position" data-position="bottom right"></div>
+					</div>
+					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
+						<input type="number" id="quickMenuOffset.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
+						<span class="info" title="$HorizontalOffsetTooltip">&#9432;</span>
+						<br />
+						<input type="number" id="quickMenuOffset.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
+						<span class="info" title="$VerticalOffsetTooltip">&#9432;</span>
+					</div>
+				</div>
+				<input id="quickMenuPosition" type="hidden" />
+				<div id="t_position" style="height:10pt;font-size:10pt;margin-left:2px" data-i18n="PositionDescription">_</div>
 				</section>
 				
 				<section>
@@ -2518,6 +2539,7 @@
 
 			<hr>
 
+			<span class="header2" data-i18n="AdditionalSearchActions" style="margin-left:36px">_</span>
 			<table id="additionalSearchActionsTable">
 				<tr class="header">
 					<td><button id="newSearchAction" title="$add">+</button></td>
@@ -2560,27 +2582,6 @@
 
 			</section>
 			<section>
-<p class="header1" data-i18n="Position">_</p>
-				
-				<div>
-					<div style="font-size:0;line-height:0;display:inline-block;">
-						<div class="position" data-position="top left"></div><div class="position" data-position="top center"></div><div class="position" data-position="top right"></div><br />
-						<div class="position" data-position="middle left"></div><div class="position" data-position="middle center"></div><div class="position" data-position="middle right"></div><br />
-						<div class="position" data-position="bottom left"></div><div class="position" data-position="bottom center"></div><div class="position" data-position="bottom right"></div>
-					</div>
-					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
-						<input type="number" id="quickMenuOffset.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">_</span>
-						<span class="info" title="$HorizontalOffsetTooltip">&#9432;</span>
-						<br />
-						<input type="number" id="quickMenuOffset.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">_</span>
-						<span class="info" title="$VerticalOffsetTooltip">&#9432;</span>
-					</div>
-				</div>
-				<input id="quickMenuPosition" type="hidden" />
-				<div id="t_position" style="height:10pt;font-size:10pt;margin-left:2px" data-i18n="PositionDescription">_</div>
-				
-							
-				</section><section>
 <p class="header1" data-i18n="Tools">_</p>
 				
 				<div class="option">
@@ -2687,15 +2688,15 @@
 
 					<section>
 					<p class="header1" data-i18n="Layout">_</p>
-				<p class="header2" data-i18n="DefaultView">_</p>
-				<div class="option">
-					<select class="inputNice" style="width:auto" id="s_sideBarDefaultView">
-						<option value="grid" data-i18n="grid">_</option>
-						<option value="text" data-i18n="text">_</option>
-					</select>
-					<span class="description" data-i18n="DefaultViewToolTip">_</span>
-				</div>
-				<p class="header2" data-i18n="Columns">_</p>
+					<p class="header2" data-i18n="DefaultView">_</p>
+					<div class="option">
+						<select class="inputNice" style="width:auto" id="s_sideBarDefaultView">
+							<option value="grid" data-i18n="grid">_</option>
+							<option value="text" data-i18n="text">_</option>
+						</select>
+						<span class="description" data-i18n="DefaultViewToolTip">_</span>
+					</div>
+					<p class="header2" data-i18n="Columns">_</p>
 					<div class="option">
 						<input type="number" id="sideBar.columns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
 						<span class="description" data-i18n="ColumnsTooltip">_</span>
@@ -2743,10 +2744,10 @@
 					</section>
 					<section>
 					<p class="header1" data-i18n="Closing">_</p>
-				<div class="option">
-					<checkbox data-id="sideBar.closeAfterSearch" data-i18n="CloseAfterSearch"></checkbox>
-					<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
-				</div>
+					<div class="option">
+						<checkbox data-id="sideBar.closeAfterSearch" data-i18n="CloseAfterSearch"></checkbox>
+						<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">_</div>
+					</div>
 				
 				</section>
 				</div>
