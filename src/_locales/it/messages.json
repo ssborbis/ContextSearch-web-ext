@@ -219,7 +219,7 @@
   },
   
    "CloseOnScroll": {
-    "message": "Chiudi tramite lo scorrimento o la rotellina del mouse"
+    "message": "Utilizza l'azione di scorrimento o la rotellina del mouse per chiudere il menu rapido"
   },
   
    "CloseOnScrollTooltip": {
@@ -263,7 +263,7 @@
   },
   
   "ToolsHelp": {
-    "message": "Clic per disattivare | Trascinare per riordinare"
+    "message": "Clicca per attivare/disattivare | Trascina per riordinare"
   },
 
   "tools_Close": {
@@ -1638,7 +1638,7 @@
   },
 
   "DefaultViewToolTip": {
-    "message": "Scegli la modalità per visualizzare il menu. Ogni vista delle cartelle può essere impostata separatamente utilizzando lo strumento 'Griglia / Testo' o editando la cartella in 'Gestione dei motori di ricerca'",
+    "message": "Scegli la modalità per visualizzare il menu. Ogni vista delle cartelle può essere impostata separatamente utilizzando lo strumento 'Griglia / Testo' o editando la cartella in 'Gestione motori di ricerca'",
     "description": ""
   },
   
@@ -1781,7 +1781,7 @@
   },
   
   "hotkeystooltip": {
-    "message": "Selezionare il testo e premere un tasto per effettuare la ricerca. I tasti di scelta rapida dei motori possono essere impostati in 'Gestione dei motori di ricerca'",
+    "message": "Selezionare il testo e premere un tasto per effettuare la ricerca. I tasti di scelta rapida dei motori possono essere impostati in 'Gestione motori di ricerca'",
     "description": ""
   },
   
@@ -1869,12 +1869,12 @@
   },
 
   "searchenginesmanager": {
-    "message": "Gestione dei motori di ricerca",
+    "message": "Gestione motori di ricerca",
     "description": ""
   },
 
   "faviconFinder": {
-    "message": "Trova la favicon associata al sito immesso nel campo 'Indirizzo del modulo' o dell'applicazione avviata dal lanciatore di app (viene aperta temporaneamente una scheda in secondo piano). E' possibile effettuare una ricerca anche su IconFinder.com",
+    "message": "Trova la favicon del motore associata al sito immesso nel campo 'Indirizzo del modulo' (viene aperta temporaneamente una scheda in secondo piano), dell'applicazione avviata dal lanciatore di app  o di uno script. E' anche possibile effettuare una ricerca su IconFinder.com",
     "description": ""
   },
 
@@ -2052,7 +2052,7 @@
     "description": "keyboard shortcut label"
   },
   "optionsOpen": {
-    "message": "Mostra le impostazioni",
+    "message": "Apri le impostazioni",
     "description": "keyboard shortcut label"
   },
   "pageTilesOpen": {
@@ -2150,7 +2150,7 @@
     "description": "button uncache label"
   },
   "uncacheTooltip": {
-    "message": "Elimina la cache dei motori di ricerca con l'icona associata all'URL. Avvertenza: non viene eseguito alcuna verifica sulla validità dell'URL prima dell'eliminazione",
+    "message": "Elimina la cache dei motori di ricerca con l'icona associata all'URL. Avvertenza: non viene eseguita alcuna verifica sulla validità dell'URL prima dell'eliminazione",
     "description": "advanced setting tooltip - button uncache"
   },
   "confirmUncache": {
@@ -2182,7 +2182,7 @@
     "description": "advanced setting tooltip"
   },
   "contextMenuUseContextualLayoutTooltip": {
-    "message": "Visualizza il menu contestuale in sottocartelle in base all'elemento di destinazione selezionato (contesto di ricerca). Quando questa opzione è attiva, in 'Gestione dei motori di ricerca' viene resa disponibile una selezione rapida dei contesti di ricerca per ogni motore",
+    "message": "Visualizza il menu contestuale in sottocartelle in base all'elemento di destinazione selezionato (contesto di ricerca). Quando questa opzione è attiva, in 'Gestione motori di ricerca' viene resa disponibile una selezione rapida dei contesti di ricerca per ogni motore",
     "description": "advanced setting tooltip"
   },
   "contextMenuUseInnerTextTooltip": {
@@ -2234,7 +2234,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Sovrascrivi la disposizione del menu rapido usando identificatori di elementi HTLM separati da virgola (menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar ). Non è necessario utilizzarli tutti. Quelli elencati saranno collocati alla fine dell'albero DOM. Lasciare vuoto per la disposizione predefinita",
+    "message": "Sovrascrivi la disposizione del menu rapido usando identificatori di elementi HTLM separati da virgola (menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar). Non è necessario utilizzarli tutti. Quelli elencati saranno collocati alla fine dell'albero DOM. Lasciare vuoto per la disposizione predefinita",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {
@@ -2262,7 +2262,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuSearchOnMouseUpTooltip": {
-    "message": "Consenti di effettuare una ricerca con il menu rapido al rilascio del pulsante del mouse senza bisogno del clic. Pratico. Tenere quindi premuto il pulsante del mouse per l'apertura rilasciando successivamente su un motore per eseguire la ricerca",
+    "message": "Consente di effettuare una ricerca con il menu rapido al rilascio del pulsante del mouse senza bisogno del clic. Pratico. Tenere quindi premuto il pulsante del mouse per l'apertura rilasciando successivamente su un motore per eseguire la ricerca",
     "description": "advanced setting tooltip"
   },
   "quickMenuShowHotkeysInTitleTooltip": {
@@ -2290,7 +2290,7 @@
     "description": "advanced setting tooltip"
   },
   "rememberLastOpenedFolderTooltip": {
-    "message": "Apri i menu nell'ultima cartella utilizzata",
+    "message": "Apri i menu sull'ultima cartella utilizzata",
     "description": "advanced setting tooltip"
   },
   "rightClickMenuOnMouseDownFixTooltip": {
@@ -2365,7 +2365,7 @@
   },
 
   "ContextAwareFilter": {
-    "message": "Filtra i motori di ricerca in base al contesto di ricerca (collegamento, immagine, selezione, ...)"
+    "message": "Filtra i motori in base al contesto di ricerca (collegamento, immagine, selezione, ...)"
   },
 
   "NewMultiSearch": {
@@ -2464,7 +2464,7 @@
     "message":"Contesti di ricerca"
   },
   "quickMenuCloseOnEdit": {
-    "message":"Chiudi il menu durante la digitazione. La focalizzazione sulla barra di ricerca non deve essere attiva (controlla le opzioni della barra di ricerca in fondo a questa sezione)"
+    "message":"Chiudi il menu quando si digita. La focalizzazione sulla barra di ricerca non deve essere attiva (controlla le opzioni della barra di ricerca in fondo a questa sezione)"
   },
   "quickMenuContextualLayoutToolbarTooltip": {
     "message": "Mostra la barra dei contesti di ricerca"
@@ -2507,5 +2507,11 @@
   },
   "LatestVersionAlreadyInstalled": {
     "message": "L'ultima versione è già installata"
+  },
+  "beta": {
+    "message": "Versione beta da testare"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - termini di ricerca\n%su - termini di ricerca maiuscoli\n%sl - termini di ricerca minuscoli\n%d - dominio\n%ds - subdominio\n%du - dominio definito dall'utente\n%u - URL scheda"
   }
 }
