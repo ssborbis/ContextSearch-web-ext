@@ -1048,6 +1048,18 @@ async function _quickMenuElementFromNodeTree( o ) {
 	// unless href has hash ( cascading menu )
 	if (rootNode.parent && !isChildWindow()) { 
 
+		const _back = async(e) => {
+			// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
+			
+			qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
+
+			qm.expandMoreTiles();
+
+			resizeMenu({openFolder: true})
+
+			runAtTransitionEnd(qm, "left", () => resizeMenu({openFolder: true}), 100);
+		}
+
 		let tile = buildSearchIcon(null, i18n('back'));
 		let backIcon = createMaskIcon('icons/back.svg');
 		backIcon.style.position = "absolute";
@@ -1064,18 +1076,6 @@ async function _quickMenuElementFromNodeTree( o ) {
 		addOpenFolderOnHover(tile);
 		
 		qm.back = _back;
-		
-		const _back = async(e) => {
-			// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
-			
-			qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
-
-			qm.expandMoreTiles();
-
-			resizeMenu({openFolder: true})
-
-			runAtTransitionEnd(qm, "left", () => resizeMenu({openFolder: true}), 100);
-		}
 					
 		delete sb.selectedIndex;
 		tileArray.push(tile);
