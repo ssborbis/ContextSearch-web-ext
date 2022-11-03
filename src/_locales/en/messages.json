@@ -2516,5 +2516,20 @@
   },
   "AdditionalSearchActions": {
     "message": "Additional Actions"
+  },
+  "Event": {
+    "message": "Event"
+  },
+  "Button": {
+    "message": "Button"
+  },
+  "SearchAction": {
+    "message": "Search Action"
+  },
+  "middle": {
+    "message": "middle"
+  },
+  "forward": {
+    "message": "forward"
   }
 }
