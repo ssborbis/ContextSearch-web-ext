@@ -1825,6 +1825,10 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 		if ( ! highlightTabs.find( ht => JSON.stringify(obj) === JSON.stringify(ht) ) )
 			highlightTabs.push(obj);
 	}
+
+	browser.tabs.executeScript(tab.id, {
+		file: "inject_resultsEngineNavigator.js"
+	});
 }
 
 function getAllOpenTabs() {

@@ -150,6 +150,24 @@ const defaultShortcuts = [
 		shift:true,
 		meta:false,
 		id: 14
+	},{
+		name:"resultsEngineNext",
+		action:() => nextResultsEngine(),
+		key: "ArrowRight",
+		ctrl: false,
+		alt: false,
+		shift:false,
+		meta:false,
+		id: 15
+	},{
+		name:"resultsEnginePrevious",
+		action:() => previousResultsEngine(),
+		key: "ArrowLeft",
+		ctrl: false,
+		alt: false,
+		shift:false,
+		meta:false,
+		id: 16
 	}
 ];
 
