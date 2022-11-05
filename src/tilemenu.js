@@ -884,9 +884,7 @@ function buildQuickMenuElement(options) {
 	qm.style.left = '0px';
 
 	runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
-			
-	// const isTool = e => e.dataTransfer.getData("tool") === "true";
-	
+				
 	(() => { // set up special folders ( recent / regex )
 
 		if ( qm.rootNode.id !== userOptions.nodeTree.id ) return;
@@ -2082,12 +2080,18 @@ dragCleanup = () => {
 	delete window.dragNode;
 }
 
+const specialFolderIds = ["___recent___", "___matching___"];
+
+isSpecialFolderChild = el => {
+	return el.node && el.node.parent && specialFolderIds.includes(el.node.parent.id);
+}
+
 undraggable = el => {
-	return el.dataset.undraggable === "true";
+	return el.dataset.undraggable === "true" || isSpecialFolderChild(el);
 }
 
 undroppable = el => {
-	return el.dataset.undroppable === "true";
+	return el.dataset.undroppable === "true" || isSpecialFolderChild(el);;
 }
 
 clearDragStyling = el => {
@@ -2136,12 +2140,14 @@ getNodeFromDataTransfer = e => {
 
 	document.addEventListener('drop', e => {
 
+		if ( !e.dataTransfer.types.length ) return; // prevent special tile dnd triggering search
+
 		if ( getNodeFromDataTransfer(e) ) {
 			console.log('data appears to be a node. Cancelling search');
 			return;
 		}
 
-		if ( e.dataTransfer.getData("tool") ) {
+		if ( isTool(e) ) {
 			console.log('data appears to be a tool. Cancelling search');
 			return;
 		}
