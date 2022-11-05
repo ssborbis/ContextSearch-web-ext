@@ -139,6 +139,10 @@ async function notify(message, sender, sendResponse) {
 		return sendMessageToTopFrame();
 	}
 
+	if ( message.sendMessageToAllFrames ) {
+		return sendMessageToAllFrames();
+	}
+
 	switch(message.action) {
 
 		case "saveUserOptions":
