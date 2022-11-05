@@ -18,6 +18,7 @@ var quickMenuObject = {
 };
 
 var userOptions = {};
+var killswitch = false; // global switch for disabling injected functions on the fly
 window.suspendSelectionChange = false;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
@@ -633,12 +634,18 @@ document.addEventListener("mousemove", e => {
 
 document.addEventListener('keydown', e => {
 	if ( e.key === "Escape" ) {
-		let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
 
-		if ( tool && tool.on ) {
-			tool.on === false;
-			saveUserOptions();
-		}
+		killswitch = true;
+
+		// disable repeatsearch
+		(() => {
+			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+
+			if ( tool && tool.on ) {
+				tool.on === false;
+				saveUserOptions();
+			}
+		})();
 	}
 });
 

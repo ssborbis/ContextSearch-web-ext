@@ -1,8 +1,8 @@
-console.log('inject_speedDial.js');
-
-var current, previous, next, terms;
+let current, previous, next, terms;
 
 const nextResultsEngine = () => {
+	if ( killswitch ) return;
+
 	browser.runtime.sendMessage({
 		action: "search", 
 		info: {
@@ -14,6 +14,8 @@ const nextResultsEngine = () => {
 }
 
 const previousResultsEngine = () => {
+	if ( killswitch ) return;
+	
 	browser.runtime.sendMessage({
 		action: "search", 
 		info: {
