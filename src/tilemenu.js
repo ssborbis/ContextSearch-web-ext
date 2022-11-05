@@ -2038,16 +2038,15 @@ document.addEventListener('drop', async e => {
 		if ( old_node_count === new_node_count ) {
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
 			await saveUserOptions();
+
+			if ( type === "quickmenu")
+				browser.runtime.sendMessage({action: "rebuildMenus", sendMessageToAllFrames: true});		
+			else
+				rebuildMenu();
+
 		} else {
 			console.error('a node has been lost. aborting', old_node_count, new_node_count);
 		}
-		
-		let orig = userOptions.enableAnimations;
-		userOptions.enableAnimations = false;
-		qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
-		userOptions.enableAnimations = orig;
-
-		resizeMenu({tileDrop: true, openFolder: true});		
 	}
 
 	dragCleanup();
@@ -2058,14 +2057,16 @@ document.addEventListener('drop', async e => {
 document.addEventListener('dragend', async e => {
 	dragCleanup();
 	clearTimeout(qm.textDragOverFolderTimer);
+});
 
+rebuildMenu = async() => {
 	userOptions = await browser.runtime.sendMessage({action:"getUserOptions"});
 
 	window.root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 	setParents(window.root);
 	qm = await quickMenuElementFromNodeTree(findNode(root, n => n.id === qm.rootNode.id, false));
 	resizeMenu({tileDrop: true, openFolder: true});
-});
+}
 
 dragCleanup = () => {
 	// clear group styling

@@ -420,6 +420,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				sb.focus();
 
 				break;
+
+			case "rebuildMenus":
+				rebuildMenu();
+				break;
 		}
 	}
 });
