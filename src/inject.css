@@ -21,7 +21,6 @@
 	box-sizing: border-box;
 }
 .CS_quickMenuIframe {
-
 }
 #CS_quickMenuIframe[style*="--opening-opacity"] {
 	opacity:var(--opening-opacity);

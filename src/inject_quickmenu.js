@@ -1072,7 +1072,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				clearMouseDownTimer();
 				cancelRequest = Date.now();
 				break;
-
 		}
 	}
 });
