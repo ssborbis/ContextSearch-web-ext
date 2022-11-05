@@ -983,7 +983,8 @@ function buildQuickMenuElement(options) {
 	if ( userOptions.alwaysAllowTileRearranging )
 		window.tilesDraggable = true;
 	
-	setDraggable();
+	setDraggable(); // body, tools
+	setDraggable(qm); // qm
 
 	return qm;
 }
@@ -1822,7 +1823,6 @@ document.addEventListener('dragstart', async e => {
 
 	// apply style to inline groups
 	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
-
 });
 
 document.addEventListener('dragenter', e => {
