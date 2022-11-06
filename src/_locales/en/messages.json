@@ -1,4 +1,7 @@
 {
+  "LOCALE_FOLDER": {
+    "message": "en"
+  },
     
   "extensionDescription": {
     "message": "Add search engines easily and search from the context menu and convenient popup"
@@ -423,7 +426,7 @@
     "message": "List of POST parameters and values separated by ampersands (e.g. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method"
   },
   
-  "Icon": {
+  "IconURI": {
     "message": "Icon URI"
   },
   
@@ -895,6 +898,10 @@
   "Back": {
     "message": "back",
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
+  },
+
+  "Folder": {
+    "message": "Folder"
   },
   
   "Folders": {
@@ -2002,12 +2009,10 @@
     "description": "remove searchengines - confirm message"
   },
   
-  
  "customIconTooltip": {
-    "message": "Utiliser une image sur l’ordinateur",
+    "message": "Use a custom icon",
     "description": "toolbar icon - custom icon tooltip"
   },
-  
   
  "EnableHotkeysLabel": {
     "message": "Search Engine Hotkeys",
@@ -2149,11 +2154,11 @@
     "description": "advanced setting tooltip - button uncache"
   },
   "confirmUncache": {
-    "message": "Supprimer le cache de toutes les icônes ?",
+    "message": "remove all icon cache?",
     "description": "uncache message confirm"
   },
   "warningCache": {
-    "message": "Certaines icônes n’ont pas pu être mises en cache.",
+    "message": "some icons could not be cached",
     "description": "cache message warning"
   },
   "cacheIconsMaxSizeTooltip": {
@@ -2229,7 +2234,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, e.g. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
+    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, e.g. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {
@@ -2469,6 +2474,62 @@
   },
   "quickMenuOnMouseOpenWithoutSelectionTooltip": {
     "message": "Open menu on any element including empty areas in documents and frames"
+  },
+  "saveclose": {
+    "message": "Save and Close"
+  },
+  "singlewindow": {
+    "message": "Single"
+  },
+  "cascadingwindow": {
+    "message": "Cascading"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Browse folders in a single menu or separate cascading menus"
+  },
+  "DontShowAgain": {
+    "message": "Don't show this again"
+  },
+  "Icon": {
+    "message": "icon"
+  },
+  "Inline": {
+    "message": "inline"
+  },
+  "Block": {
+    "message": "block"
+  },
+  "CheckForUpdates": {
+    "message": "check for updates"
+  },
+  "UpdateToVersion": {
+    "message": "Update native app script to version $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "Latest version already installed"
+  },
+  "beta": {
+    "message": "beta testing"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - search terms\n%su - search terms UPPERCASE\n%sl - search terms lowercase\n%d - domain\n%ds - subdomain\n%du - user-selected domain\n%u - tab URL"
+  },
+  "AdditionalSearchActions": {
+    "message": "Additional Actions"
+  },
+  "Event": {
+    "message": "Event"
+  },
+  "Button": {
+    "message": "Button"
+  },
+  "SearchAction": {
+    "message": "Search Action"
+  },
+  "middle": {
+    "message": "middle"
+  },
+  "forward": {
+    "message": "forward"
   }
-
 }

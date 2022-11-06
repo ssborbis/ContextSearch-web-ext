@@ -53,7 +53,6 @@ const defaultUserOptions = {
 	quickMenuSearchBar: "hidden",
 	quickMenuSearchBarFocus: false,
 	quickMenuSearchBarSelect: true,
-	quickMenuUseOldStyle: false,
 	quickMenuAllowContextMenuNew: false,
 	quickMenuFocusOnOpen: true,
 	contextMenu: true,
@@ -118,7 +117,6 @@ const defaultUserOptions = {
 	searchBarEnableHistory: true,
 	searchBarHistory: [],
 	searchBarDisplayLastSearch: true,
-	searchBarUseOldStyle: false,
 	searchBarColumns: 6,
 	searchBarCloseAfterSearch: true,
 	searchBarIcon: "icons/logo.svg",
@@ -259,6 +257,8 @@ const defaultUserOptions = {
 	contextMenuRegexMatchedEngines: false,
 	quickMenuRegexMatchedEngines: false,
 	quickMenuToolbarRows: 1,
+	searchBarToolbarRows: 1,
+	sideBarToolbarRows: 1,
 	groupFolderRowBreaks: false,
 	quickMenuHideSeparatorsInGrid: false,
 	alwaysAllowTileRearranging: false,
@@ -291,5 +291,16 @@ const defaultUserOptions = {
 	allowDeleteEnginesFromTileMenu: false,
 	saveMenuDisplayMode: true,
 	askToAddNewEngineToFirefox: true,
-	ignoreSearchRedirects: true
+	ignoreSearchRedirects: true,
+	quickMenuUseCascadingFolders: false,
+	quickMenuCascadingFoldersHoverTimeout: 50,
+	quickMenuDefaultView: "grid",
+	searchBarDefaultView: "grid",
+	quickMenuUseOldStyle: false, // remove
+	searchBarUseOldStyle: false, // remove
+	nativeAppDownloadFolder: "",
+	showStatusBar: false,
+	quickMenuDisabledInNewTabs: false,
+	developerMode: false,
+	advancedImport: false
 };

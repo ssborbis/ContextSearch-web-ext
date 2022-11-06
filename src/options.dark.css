@@ -33,3 +33,7 @@ a, a:link, a:visited, a:active {
 #t_manualEdit .boolean { color: #e27070; }
 #t_manualEdit .null { color: #e27070; }
 #t_manualEdit .key { color: #ddd; }
+
+#helpTab .header1.help {
+	color: #bbb;
+}

@@ -325,11 +325,12 @@ function makeOpeningTab() {
 	});
 
 	openingTab.docking.init();
+	setTimeout(() => repositionOffscreenElement(openingTab), 100);
 	
 	return openingTab;
 }
 
-if ( window == top && addParentDockingListeners && typeof addParentDockingListeners === 'function')
+if ( window == top && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_sbIframe', 'sideBar');
 
 window.addEventListener('message', e => {

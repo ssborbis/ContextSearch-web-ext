@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.45.4",
+	"version": "1.46b4",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"applications": {
@@ -14,7 +14,7 @@
 	"background": {
 		"scripts": [
 			"lib/browser-polyfill.min.js",
-			"lib/crossbrowser.js",
+			"utils.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
 			"lib/encoding.min.js",
@@ -29,7 +29,6 @@
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",
-			"utils.js",
 			"background.js"
 		]
 	},
@@ -40,7 +39,6 @@
 			],
 			"js": [
 				"lib/browser-polyfill.min.js",
-				"lib/crossbrowser.js",
 				"init_content.js"
 			],
 			"all_frames": true
@@ -83,7 +81,8 @@
 		},
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",
-		"open_at_install": false
+		"open_at_install": false,
+		"browser_style": false
 	},
 	"commands": {
 		"_execute_browser_action": {},

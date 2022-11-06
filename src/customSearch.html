@@ -38,7 +38,7 @@
 					</div>
 
 					<div style="text-align: right;margin-top:20px;font-size:9pt">
-						<input id="askToAddNewEngineToFirefox" type="checkbox" /><label>Don't show this window again</label>
+						<input id="askToAddNewEngineToFirefox" type="checkbox" /><label data-i18n='DontShowAgain'>Don't show this again</label>
 					</div>
 
 					<br />
@@ -116,7 +116,7 @@
 				<input name="searchform" type="text" />
 				<div class='H2'data-i18n='POSTparams'>POST params <span class='CS_info' data-msg='List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method' data-i18n_tooltip='Postparams'>?</span></div>
 				<textarea name="post_params"></textarea>
-				<div class='H2'data-i18n='Icon'>Icon <span class='CS_info' data-msg='URL of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb' data-i18n_tooltip='Icon'>?</span></div>
+				<div class='H2'data-i18n='IconURI'>Icon <span class='CS_info' data-msg='URL of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb' data-i18n_tooltip='IconURI'>?</span></div>
 				<input name="iconURL" type="text" style="width:calc(100% - 60px)" /><img name="icon" style="width:24px;height:24px;border:1px solid #ececec;border-radius:4px;vertical-align:top;display:inline;padding:3px;margin-top:-8px" />
 				<div style='display:inline-block'>
 					<div class='H2'data-i18n='Method'>Method <span class='CS_info' data-msg='Form method' data-i18n_tooltip='Method'>?</span></div>
@@ -197,7 +197,7 @@
 			</div>
 		</div>
 		<script src='/lib/browser-polyfill.min.js'></script>
-		<script src='/lib/crossbrowser.js'></script>
+		<script src='/utils.js'></script>
 		<script src='/searchEngineUtils.js'></script>
 		<script src='/customSearch.js'></script>
 		<script src='/opensearch.js'></script>

@@ -35,7 +35,7 @@ function addResizeWidget(el, options) {
 		
 		resizeWidget = document.createElement('div');
 		resizeWidget.className = 'CS_resizeWidget';
-		resizeWidget.title = browser.i18n.getMessage('resize');
+		resizeWidget.title = i18n('resize');
 
 		getShadowRoot().appendChild(resizeWidget);
 
@@ -125,6 +125,10 @@ function addResizeWidget(el, options) {
 				el.style.zIndex = null;
 				
 				resizeWidget.style.transition = null;
+
+				if ( o.columns < 1 ) {
+					o.columns = Math.floor(el.getBoundingClientRect() * window.devicePixelRatio / o.tileSize.width);
+				}
 				
 				o.onDrop(o);
 				

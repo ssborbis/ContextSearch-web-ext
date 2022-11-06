@@ -375,11 +375,11 @@ function makeDockable(el, options) {
 	// timer for better mousemove handling
 	let mouseDownStart = null;
 	
-	function moveStart(e) {
+	async function moveStart(e) {
 
 		// only iframes need zoom adjustment. Why?
-		if ( el.tagName === "IFRAME")
-			browser.runtime.sendMessage({action: "getZoom"}).then(z => o.zoom = z);
+	//	if ( el.tagName === "IFRAME")
+	//		await browser.runtime.sendMessage({action: "getZoom"}).then(z => o.zoom = z);
 
 		mouseDownStart = Date.now();
 
@@ -458,11 +458,11 @@ function makeDockable(el, options) {
 		
 		let rect = el.getBoundingClientRect();
 
-		let _top = el.offsetTop - ( el.Y - e.y ) / o.zoom;
+		let _top = el.offsetTop - ( el.Y - e.y ) ;// o.zoom * 1.62;
 		if ( _top < 0 ) _top = 0;
 		if ( _top + rect.height > window.innerHeight - getScrollBarHeight() ) _top = window.innerHeight - rect.height;
 
-		let _left = el.offsetLeft - ( el.X - e.x ) / o.zoom;
+		let _left = el.offsetLeft - ( el.X - e.x ) ;// o.zoom* 1.62;
 		if ( _left < 0 ) _left = 0;
 		if ( _left + rect.width > window.innerWidth - getScrollBarWidth() ) _left = window.innerWidth - rect.width - getScrollBarWidth();
 
@@ -518,7 +518,7 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 
 		if ( ignoreTarget(e) ) return false;
 
-		if ( window.tilesDraggable ) return false;
+	//	if ( window.tilesDraggable ) return false;
 
 		handle.lastMouseDownCoords = {x: e.screenX, y:e.screenY}
 	});

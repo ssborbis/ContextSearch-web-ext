@@ -40,7 +40,7 @@ function recentlyUsedListToFolder() {
 	let folder = {
 		type: "folder",
 		id: "___recent___",
-		title: browser.i18n.getMessage('Recent'),
+		title: i18n('Recent'),
 		children: [],
 		parent: (window.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/history.svg')
@@ -62,7 +62,7 @@ function matchingEnginesToFolder(s) {
 	let folder = {
 		type: "folder",
 		id: "___matching___",
-		title: browser.i18n.getMessage('regexmatches'),
+		title: i18n('regexmatches'),
 		children: [],
 		parent: (window.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/regex.svg'),
@@ -175,3 +175,29 @@ function isTextBox(element) {
 		)
 	) ? true : false;
 }
+
+function createMaskIcon(src) {
+	let tool = document.createElement('div');
+	tool.className = 'tool';
+	tool.style.setProperty('--mask-image', `url(${src})`);
+
+	return tool;
+}
+
+const i18n_layout_titles = {
+	"quickMenuElement": 	'quickmenu',
+	"toolBar": 				'tools',
+	"menuBar": 				'menubar',
+	"titleBar": 			'title',
+	"searchBarContainer": 	'search',
+	"contextsBar": 			'contexts'
+};
+
+const log = console.log;
+const debug = (...args) => {
+	if ( userOptions && userOptions.developerMode )
+		console.log(...args)
+}
+const i18n = browser.i18n.getMessage;
+const sendMessage = browser.runtime.sendMessage;
+

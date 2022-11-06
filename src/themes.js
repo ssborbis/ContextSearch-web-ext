@@ -78,7 +78,7 @@ async function changeTheme(i) {
 	await setTheme(theme);
 
 	runAtTransitionEnd(document.body, ["width", "height"], () => {
-		resizeMenu();
+		resizeMenu({openFolder:true});
 	}, 150);
 
 	userOptions.quickMenuTheme = theme.name;

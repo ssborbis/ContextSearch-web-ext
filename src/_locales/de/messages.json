@@ -1,4 +1,7 @@
 {
+  "LOCALE_FOLDER": {
+    "message": "de"
+  },
     
   "extensionDescription": {
     "message": "Laden Sie Ihre aktuellen Suchmaschinen in ein Kontextmenü, um einfach nach dem markierten Text zu suchen. Kompatibel zu FF 57+. Entwickelt als einfacher Ersatz für Ben Basson's Context Search"
@@ -423,7 +426,7 @@
     "message": "Liste der POST-Parameter und Werte getrennt durch & (Ampersands); nur anwendbar bei Verwendung der POST-Methode. Beispiel: q={searchTerms}&lang=de&maxresults=100."
   },
   
-  "Icon": {
+  "IconURI": {
     "message": "Symbol-URI"
   },
   

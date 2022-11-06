@@ -120,63 +120,8 @@ class Grid {
 	}
 
 	makeFolderBrowser() {
-		let ul = $(this.o.browserId);
-
-		traverse(userOptions.nodeTree, ul);
-
-		function traverse(node, parentEl) {
-
-			if ( !node.id ) return;
-			
-			let _li = document.createElement('li');
-			_li.nodeid = node.id;
-			_li.title = node.title;
-
-			let img = new Image();
-			img.src = getIconFromNode(node);
-			img.style.marginRight = '8px';
-			_li.appendChild(img);
-			_li.appendChild(document.createTextNode(node.title));
-
-			parentEl.appendChild(_li);
-
-			if ( node.hidden ) _li.style.opacity = .5;
-
-			if ( node.children ) {
-				let _ul = document.createElement('ul');
-				_li.appendChild(_ul);
-
-				let collapse = document.createElement('span');
-				collapse.innerText = '+';
-				_li.insertBefore(collapse,_li.firstChild);
-				_ul.style.display = 'none';
-
-				collapse.onclick = function() {	
-					_ul.style.display = _ul.style.display ? null : 'none';
-					collapse.innerText = _ul.style.display ? "+" : "-";
-				}
-
-				node.children.forEach( child => traverse(child, _ul) );
-			}
-		}
-
-		ul.querySelectorAll('li').forEach( li => {
-
-			li.setAttribute("draggable", "true");
-
-			li.ondragstart = function(e) {
-				e.stopPropagation();
-
-				e.dataTransfer.setData("text/plain", li.nodeid);
-				e.effectAllowed = "copyMove";
-				// e.preventDefault();
-				window.dragSource = li;
-			}
-
-			li.ondragend = function(e) {e.preventDefault();}
-		});
-
-		ul.querySelector('ul').style.display = null;
+		let ul = makeFolderBrowser(userOptions.nodeTree);
+		$(this.o.browserId).parentNode.insertBefore(ul, $(this.o.browserId));
+		$(this.o.browserId).parentNode.removeChild($(this.o.browserId));
 	}
-
 }

@@ -54,6 +54,8 @@ document.addEventListener('dragstart', e => {
 
 	if ( !e.isTrusted ) return;
 
+	let dropped = false;
+
 	let dragOverHandler = e => {
 
 		if ( !e.isTrusted ) return;
@@ -70,6 +72,12 @@ document.addEventListener('dragstart', e => {
 
 	document.addEventListener('dragover', dragOverHandler);
 	document.addEventListener('dragend', e => document.removeEventListener('dragover', dragOverHandler));
+	
+	// close if drop is offscreen
+	document.addEventListener('drop', e => dropped = true);
+	document.addEventListener('dragend', e => {
+		if ( !dropped ) closePageTiles();
+	});
 });
 
 document.addEventListener('keydown', e => {

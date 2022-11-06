@@ -25,7 +25,7 @@ function showButtons() {
 		img.className = 'icon';
 		img.style.marginRight = '4px';
 		img.style.cursor = 'pointer';
-		img.title = browser.i18n.getMessage("AddCustomSearch");
+		img.title = i18n("AddCustomSearch");
 
 		img.onclick = function(e) {
 			let iframe = document.createElement('iframe');

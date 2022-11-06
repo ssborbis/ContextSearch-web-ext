@@ -48,11 +48,11 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 
 	let input = parseOmniboxInput(text);
 	
-	if ( !input ) return;
-	
-	let nodes = getNodesFromHotkeys(input.hotkeys);
+	let parsedNodes = getNodesFromHotkeys(input.hotkeys);
 
-	let defaultDescriptions = nodes.map( n => n.title );
+	let nodes = findNodes(userOptions.nodeTree, n => n.hotkey || n.keyword );
+
+	let defaultDescriptions = parsedNodes.map( n => n.title );
 
 	browser.omnibox.setDefaultSuggestion({
 		description: defaultDescriptions.join(" | ")
@@ -60,7 +60,7 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 
 	let suggestions = [];
 
-	nodes.forEach(n => {
+	[...new Set(parsedNodes.concat(nodes))].forEach(n => {
 		suggestions.push({
 			content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + input.searchTerms,
 			description: n.title
@@ -68,6 +68,7 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 	});
 
 	suggest(suggestions);
+
 });
 
 browser.omnibox.onInputEntered.addListener( async(text, disposition) => {

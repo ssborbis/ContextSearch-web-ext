@@ -1,4 +1,7 @@
 {
+  "LOCALE_FOLDER": {
+    "message": "zh_CN"
+  },
 "Add": {
 "message": "添加"
 },
@@ -519,7 +522,7 @@
 "description": "description for Hotkey option",
 "message": "随时使用快捷键打开快捷菜单"
 },
-"Icon": {
+"IconURI": {
 "message": "图标 URI"
 },
 "IconLoadError": {

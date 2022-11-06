@@ -283,7 +283,7 @@ function addFavIconFinderListener(finder) {
 
 		function showMoreButton() {
 			let more = document.createElement('div');
-			more.innerText = browser.i18n.getMessage('searchIconFinder');
+			more.innerText = i18n('searchIconFinder');
 			more.style = "position:absolute;bottom:0;right:10px;cursor:pointer;user-select:none"
 			div.appendChild(more);
 
@@ -297,7 +297,7 @@ function addFavIconFinderListener(finder) {
 				let iconUrls = [];
 
 				while ( !iconUrls.length ) {
-					searchTerms = window.prompt(browser.i18n.getMessage("RefineSearch"), searchTerms);
+					searchTerms = window.prompt(i18n("RefineSearch"), searchTerms);
 
 					if ( !searchTerms ) { // prompt is cancelled, use generated
 						makeFaviconPickerBoxes(getCustomIconUrls());

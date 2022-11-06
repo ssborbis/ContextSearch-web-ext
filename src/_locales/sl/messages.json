@@ -1,4 +1,7 @@
 {
+  "LOCALE_FOLDER": {
+    "message": "sl"
+  },
     
   "extensionDescription": {
     "message": "Enostavno dodajajte iskalnike in iščite iz vsebinskega in priročnega pojavnega menija."
@@ -2203,7 +2206,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuDomLayoutTooltip": {
-    "message": "Preglasi razporeditev hitrga menija s seznamom ID-jev elementov HTML, ločenih z vejico, npr. (menuBar, searchBarContainer, optionsBar, quickMenuElement, addEngineBar, titleBar, toolBar).  Ni treba uporabiti vseh ID-jev.  Vsak, ki je na seznamu, bo premaknjen na konec drevesa DOM.  prazno = privzeto.",
+    "message": "Preglasi razporeditev hitrga menija s seznamom ID-jev elementov HTML, ločenih z vejico, npr. (menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar).  Ni treba uporabiti vseh ID-jev.  Vsak, ki je na seznamu, bo premaknjen na konec drevesa DOM.  prazno = privzeto.",
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {

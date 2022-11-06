@@ -27,14 +27,11 @@ function getSelectedText(el) {
 browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	userOptions = uo;
 	
-	makeSearchBar();
-	makeAddEngineBar();
-
-	let singleColumn = window == top ? userOptions.searchBarUseOldStyle : userOptions.sideBar.singleColumn;
+	let singleColumn = window == top ? userOptions.searchBarDefaultView === 'text' : userOptions.sideBar.singleColumn;
 
 	await setTheme();
 	await setUserStyles();
-	await makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn})
+	await makeQuickMenu({type: window == top ? "searchbar" : "sidebar", singleColumn: singleColumn, contexts:[]})
 		.then( qme => {
 			document.body.appendChild(qme);
 			
@@ -45,11 +42,17 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	// override layout
 	setLayoutOrder( qm.dataset.menu === "sidebar" ? userOptions.sideBar.domLayout : userOptions.searchBarDomLayout );
 
+	makeSearchBar();
+
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
 	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
 	if ( sideBarOpenedOnSearchResults ) focusSearchBar = false;
 
+	makeAddEngineBar();
+
+	setDraggable();
+	
 });
 
 document.addEventListener('quickMenuIframeLoaded', () => {
@@ -61,7 +64,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	if ( focusSearchBar ) sb.focus();
 
 	// trigger resize for sidebar. Resize triggers on load in the browser_action
-	resizeMenu();
+	resizeMenu({openFolder: true});
 	
 	// replace text with selection
 	(async () => {
@@ -74,7 +77,6 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	})();
 
 	tileSlideInAnimation(.3, .15, .375);
-
 });
 
 function toolsHandler() {
@@ -153,6 +155,8 @@ function toolBarResize(o) {
 		});
 	}
 
+	if ( !o.more ) toolsBarMorify(userOptions.searchBarToolbarRows);
+
 	if ( window.innerHeight < document.documentElement.scrollHeight ) {
 
 		let sumHeight = getAllOtherHeights(true);
@@ -179,11 +183,14 @@ function unminifySideBar() {
 	sideBarResize();
 }
 
-async function sideBarResize(options) {
+async function sideBarResize(o) {
 	
-	options = options || {};
+	o = o || {};
 
 	if ( window == top ) return;
+
+	// prevent errors before qm loaded
+	if ( !qm.rootNode ) return;
 
 	// remove min-width for single columns
 	if (qm.singleColumn) qm.style.minWidth = null;
@@ -209,11 +216,13 @@ async function sideBarResize(options) {
 	// throwing sidebar errors
 	if ( !qm ) return;
 
+	if ( !o.more ) toolsBarMorify(userOptions.sideBarToolbarRows);
+
 	let maxWindowHeight = screen.height;
 
 	let qm_height = qm.style.height;
 
-	let iframeHeight = options.iframeHeight || ( !docked ? userOptions.sideBar.height : maxWindowHeight );
+	let iframeHeight = o.iframeHeight || ( !docked ? userOptions.sideBar.height : maxWindowHeight );
 	
 	document.body.style.height = docked ? "100vh" : 'auto';//document.body.style.height;
 	
@@ -228,9 +237,9 @@ async function sideBarResize(options) {
 		
 		if ( docked ) return `calc(100% - ${allOtherElsHeight}px)`;
 
-		if ( options.suggestionsResize ) return qm_height;
+		if ( o.suggestionsResize ) return qm_height;
 				
-		// if ( options.more ) return qm.getBoundingClientRect().height + "px";
+		// if ( o.more ) return qm.getBoundingClientRect().height + "px";
 		
 		return Math.min(iframeHeight - allOtherElsHeight, qm.getBoundingClientRect().height) + "px";
 	}();
@@ -292,19 +301,20 @@ function closeMenuRequest() {
 
 async function makeAddEngineBar() {
 
+	// place at the end again after qm loads
+
 	let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks"});
 
 	if ( !oses ) return;
 
-	oses.forEach( async ose => {
+	for ( ose of oses ) {
 
 		let div = document.createElement('div');
 		let img = new Image();
-		img.src = browser.runtime.getURL('icons/add.svg');
 		div.innerText = " ";
 		div.style.display = 'none';
 		div.insertBefore(img, div.firstChild);
-		div.title = browser.i18n.getMessage("AddCustomSearch");
+		div.title = i18n("AddCustomSearch");
 		aeb.appendChild(div);
 
 		let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
@@ -313,21 +323,36 @@ async function makeAddEngineBar() {
 
 		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
 			return div.parentNode.removeChild(div);
-		} 
+		}
+
+		img.src = xml_se.icon_url || browser.runtime.getURL('icons/transparent.gif');
 
 		div.innerText = xml_se.title;
+
 		div.insertBefore(img, div.firstChild);
+
+		let osi = new Image();
+		osi.src = 'icons/opensearch.svg';
+		div.insertBefore(osi, div.firstChild);
+
 		div.style.display = null;
 
 		div.onclick = async() => {
 			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
 		}
-	});
 
-	document.body.appendChild(aeb);
+		// has openSearch icon
+		(() => {
+			let img = new Image();
+			img.src = 'icons/opensearch.svg';
+			img.className = 'opensearchIcon';
+			let si = document.getElementById('searchIcon');
+			si.parentNode.insertBefore(img, si.nextSibling);
 
-	// place at the end again after qm loads
-	document.addEventListener('quickMenuIframeLoaded', e => document.body.appendChild(aeb), {once: true})
+		})();
+	}
+
+	resizeMenu();
 }
 
 window.addEventListener('message', e => {

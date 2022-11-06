@@ -1,7 +1,3 @@
-
-
-
-
 [![Promo video](media/promo.gif)](media/promo.gif)
 
 # <img src="src/icons/logo_notext.svg" height="36px">&nbsp;ContextSearch web-ext
@@ -60,7 +56,7 @@ ___
 * Site search support
 * Reverse image search support
 * International character coding for non-UTF-8 engines
-* Built-in tools
+* Built-in tools ( Copy, Open Image, Open Link, Downloads, Auto-copy, ... )
 * Easily add new engines from website search forms
 
 ___
@@ -126,7 +122,7 @@ Each folder will display `<<Search All>>` as the first entry at the top of the f
 Display the most recently-used search engines at the top of the main folder. Optionally display them as a folder. Set the number / limit to display
 
 #### Search Actions
-Choose how different buttons / button + key combos will display the search results. FYI, Mozilla-based browsers recognize more buttons and actions when interacting with the context menu than chromium-based 
+Choose how different buttons / button + key combos will display the search results. Mozilla-based browsers recognize more buttons and actions when interacting with the context menu than chromium-based browsers
 
 ```
   Current Tab
@@ -136,7 +132,7 @@ Choose how different buttons / button + key combos will display the search resul
   New Incognito Window
   Sidebar (Mozilla)
 ```
-#### Shortcut
+#### Access Key
 Some OS's allow a key to be used to jump to a particular context menu entry. If you use a keyboard to quickly navigate the context menu, this may be useful to set.
 
 ___
@@ -205,6 +201,11 @@ Note: If you open folders in a new window, only one new window will be created. 
 Folders also have the choice `Browse Folder`. Normally this would be left-click, but you can set it to anything you want.
 
 If a button ( say middle-click ) is set to `Browse Folder` under the folder column and `No Action` under the search engines column, clicking that button ( middle-click ) anywhere in the menu will close the folder and go back to the original menu.
+
+##### Additional Actions
+
+Search actions can be bound to additional mouse keys, and to double-clicks. Click the + button to add a new entry and set the perferred mouse / action / modifier keys / ...
+
 
 ```
   Current Tab

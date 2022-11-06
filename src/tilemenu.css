@@ -12,6 +12,7 @@
 	--folder-border-color:#c2c2c2;
 	--group-label-color: #444;
 	color: #4a4a4a;
+	--single-column-width:  300px;
 }
 
 HTML, BODY {
@@ -47,7 +48,8 @@ BODY {
 	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: background-color .25s ease-out, opacity .25s linear, width .2s linear, margin .25s;
+	transition: var(--user-transition, background-color .25s ease-out, opacity .25s linear, width .2s linear, margin .25s);
+
 	/*z-index:2;*/
 	position: relative;
 	/*float:left;*/
@@ -151,39 +153,6 @@ BODY {
 	border-bottom:1px solid var(--selected);
 	/*box-sizing: border-box;*/
 }
-#arrow {
-	pointer-events:none;
-	position:absolute;
-	top:0;
-	width: 0; 
-	height: 0; 
-	border-left: 12px solid transparent;
-	border-right: 12px solid transparent; 
-	border-top: 12px solid var(--cs-green);
-	z-index:2;
-	opacity:.5;
-	border-top-color:var(--selected);
-}
-#arrow[data-side="before"] {
-	left: calc( var(--target-left) - 12px);
-}
-#arrow[data-side="after"] {
-	left: calc( var(--target-left) + var(--target-width) - 12px);
-}
-#arrow[data-side="before"].singleColumn {
-	top: calc( var(--target-top) - 6px);
-}
-#arrow[data-side="after"].singleColumn {
-	top: calc( var(--target-top) + var(--target-height) - 6px);
-}
-#arrow[data-side="middle"] {
-	display:none;
-}
-#arrow.singleColumn {
-	transform: rotate(-90deg);
-	left:-6px;
-	border-top-color:var(--selected);
-}
 .tile[data-type="folder"][data-side="middle"].dragHover {
 	background-color:var(--selected) !important;
 	color:white;
@@ -210,6 +179,7 @@ BODY {
 }
 #searchBarContainer {
 	white-space:nowrap;
+	position: relative;
 }
 #searchBarContainer > .tool {
 	height:16px;
@@ -227,6 +197,16 @@ BODY {
 }
 #searchBarContainer > #searchIcon {
 	transition: transform .25s;
+	z-index: 2;
+}
+#searchBarContainer .opensearchIcon {
+	position: absolute;
+	width: 10px;
+	height: 10px;
+	z-index: 1;
+	left: 0px;
+	top: 0px;
+	vertical-align: top;
 }
 #searchBar {
 	font-size:11pt;
@@ -292,7 +272,6 @@ BODY {
 #titleBar {
 	height:24px;
 	text-align: center;
-	/*padding-left:10px;*/
 	overflow:hidden;
 	vertical-align:middle;
 	line-height:24px;
@@ -300,15 +279,19 @@ BODY {
 	font-family:Arial;
 	font-size:11pt;
 	white-space:nowrap;
-	/*width:calc(100% - 10px);*/
 	/*width:var(--iframe-body-width, auto);*/
-	width: 100%;
+	width: calc(100% - 8px);
 	text-overflow: ellipsis;
+	padding: 0 4px;
+}
+#quickMenuElement.singleColumn {
+	min-width: var(--single-column-width);
+	max-width: var(--single-column-width);
 }
 .tile.singleColumn {
 	width:100%;
-	max-width:300px;
-	min-width:300px;
+	/*max-width:300px;
+	min-width:300px;*/
 	height:20px;
 	font-size:11pt;
 	border:none;
@@ -320,6 +303,8 @@ BODY {
 	display:block;
 	border:1px solid transparent;
 	text-align:left;
+	text-overflow: ellipsis;
+	padding-right: 6px;
 }
 .tile.singleColumn::before {
 	content: attr(data-title);
@@ -506,13 +491,14 @@ GROUP > LABEL {
 .tile.less .tool {
 	transform: rotate(-180deg);
 }*/
-#addEngineBar {
+#opensearchBar {
 	font-size:9pt;
 	cursor:pointer;
 	overflow-x:hidden;
 	width:var(--iframe-body-width, auto);
+	display: none;
 }
-#addEngineBar > DIV {
+#opensearchBar > DIV {
 	border-top:2px solid var(--border);
 	padding:2px;
 	transition: opacity .25s .5s, background-color .15s;
@@ -521,13 +507,14 @@ GROUP > LABEL {
 	text-overflow:ellipsis;
 	padding:2px;
 	white-space: nowrap;
+	line-height: 1em;
 }
-#addEngineBar > DIV:hover {
+#opensearchBar > DIV:hover {
 	background-color:#0002;
 }
-#addEngineBar IMG {
+#opensearchBar IMG {
 	height:1em;
-	margin-right:6px;
+	margin-right:4px;
 	vertical-align: middle;
 }
 
@@ -595,7 +582,7 @@ GROUP.inline.break {
 	--tools-color:var(--selected);
 	position: absolute;
 	z-index: 3;
-	pointer-events: none;
+	/*pointer-events: none;*/
 }
 
 .dummy.singleColumn {
@@ -608,6 +595,9 @@ GROUP.inline.break {
 .dummy.wide {
 	width: 100%;
 }
+
+.tile.before {}
+.tile.after {}
 
 #optionsBar {
 	display: none;
@@ -677,12 +667,13 @@ HR.break {
 }
 #contextsBar > DIV {
 	display: inline-block;
-	width: 20px;
-	height: 20px;
 	margin: 2px;
+
 }
 #contextsBar .tool {
 	opacity: .5;
+	width: 16px;
+	height: 16px;
 }
 #contextsBar .on {
 	--tools-color: var(--selected);

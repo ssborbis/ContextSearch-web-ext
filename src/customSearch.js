@@ -155,14 +155,14 @@ function addSearchEnginePopup(data) {
 		
 		// check if name exists and alert
 		if (hasDuplicateName(shortname)) {
-			el.querySelector('label').firstChild.textContent = browser.i18n.getMessage("NameExists");
+			el.querySelector('label').firstChild.textContent = i18n("NameExists");
 			el.querySelector('label').style.color = 'red';
 			input.style.borderColor = 'pink';
 			return;
 		}
 		
 		if (!shortname.trim()) {
-			el.querySelector('label').firstChild.textContent = browser.i18n.getMessage("NameInvalid");
+			el.querySelector('label').firstChild.textContent = i18n("NameInvalid");
 			el.querySelector('label').style.color = 'red';
 			input.style.borderColor = 'pink';
 			return;
@@ -281,7 +281,6 @@ function addSearchEnginePopup(data) {
 	document.getElementById('askToAddNewEngineToFirefox').addEventListener('change', e => {
 		userOptions.askToAddNewEngineToFirefox = !e.target.checked;
 		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
-		alert(!e.target.checked);
 	});
 	
 	let form = document.getElementById('customForm');
@@ -303,7 +302,7 @@ function addSearchEnginePopup(data) {
 	
 	if (form._method.value === "GET") {
 		
-		if (!template) form.template.innerText = browser.i18n.getMessage("TemplateMissingeMessage");
+		if (!template) form.template.innerText = i18n("TemplateMissingeMessage");
 		
 		form.template.innerText = se.template;
 
@@ -376,12 +375,12 @@ function addSearchEnginePopup(data) {
 		div.onclick = function() {
 			
 			if (!ose) {
-				alert(browser.i18n.getMessage("ErrorParsing").replace("%1", openSearchUrl));
+				alert(i18n("ErrorParsing").replace("%1", openSearchUrl));
 				return;
 			}
 			
 			if (hasDuplicateName(ose.title)) {
-				alert(browser.i18n.getMessage("EngineExists").replace("%1", ose.title));
+				alert(i18n("EngineExists").replace("%1", ose.title));
 				return;
 			}
 
@@ -436,49 +435,49 @@ function addSearchEnginePopup(data) {
 		
 		// Check bad form values
 		if (form.shortname.value.trim() == "") {
-			alert(browser.i18n.getMessage("NameInvalid"));
+			alert(i18n("NameInvalid"));
 			return;
 		}
 		for (let se of userOptions.searchEngines) {
 			if (se.title == form.shortname.value) {
-				alert(browser.i18n.getMessage("EngineExists").replace("%1",se.title) + " " + browser.i18n.getMessage("EnterUniqueName"));
+				alert(i18n("EngineExists").replace("%1",se.title) + " " + i18n("EnterUniqueName"));
 				return;
 			}
 		}
 		if (form.description.value.trim() == "") {
 			console.log('no description ... using title');
 			form.description.value = "no description for " + form.shortname.value;
-			//alert(browser.i18n.getMessage("DescriptionEmptyError"));
+			//alert(i18n("DescriptionEmptyError"));
 			//return;
 		}
 		if (form.description.value.length > 1024 ) {
-			alert(browser.i18n.getMessage("DescriptionSizeError"));
+			alert(i18n("DescriptionSizeError"));
 			return;
 		}
 		if (form.post_params.value.indexOf('{searchTerms}') === -1 && form.template.value.indexOf('{searchTerms}') === -1) {
-			if ( !confirm(browser.i18n.getMessage("TemplateIncludeError")))
+			if ( !confirm(i18n("TemplateIncludeError")))
 				return;
 		}
 		try {
 			let _url = new URL(form.template.value);
 		} catch (error) {
-			if ( !confirm(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)') )
+			if ( !confirm(i18n("TemplateURLError") + ' (' + _location.origin + '...)') )
 				return;
 		}
 		// if (form.template.value.match(/^http/i) === null) {
-			// alert(browser.i18n.getMessage("TemplateURLError") + ' (' + _location.origin + '...)');
+			// alert(i18n("TemplateURLError") + ' (' + _location.origin + '...)');
 			// return;
 		// }
 		if (!/^http/i.test(form.searchform.value)) {
-			if ( !confirm(browser.i18n.getMessage("FormPathURLError") + ' (' + _location.origin + ')') )
+			if ( !confirm(i18n("FormPathURLError") + ' (' + _location.origin + ')') )
 				return;
 		}
 		if (!/^http/i.test(form.iconURL.value) || form.iconURL.value == "") {
-			if ( !confirm(browser.i18n.getMessage("IconURLError") + ' (' + _location.origin + '/favicon.ico)') )
+			if ( !confirm(i18n("IconURLError") + ' (' + _location.origin + '/favicon.ico)') )
 				return;
 		}
 		if (typeof form.icon.naturalWidth != "undefined" && form.icon.naturalWidth == 0) {
-			if ( !confirm(browser.i18n.getMessage("IconLoadError") + ' (' + form.iconURL.value + ')') )
+			if ( !confirm(i18n("IconLoadError") + ' (' + form.iconURL.value + ')') )
 				return;
 		}
 
@@ -534,7 +533,7 @@ function testOpenSearch(form) {
 		"queryCharset": form._encoding.value
 	};
 
-	let searchTerms = window.prompt(browser.i18n.getMessage("EnterSearchTerms"),"ContextSearch web-ext");
+	let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
 	
 	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 	
@@ -575,7 +574,7 @@ async function listenForFocusAndPromptToImport() {
 
 		let text = document.querySelector('[data-i18n="NewEngineImported"]');
 		
-		text.innerText = browser.i18n.getMessage("NewEngineImported", newEngineCount);
+		text.innerText = i18n("NewEngineImported", newEngineCount);
 			
 		// close iframe after x milliseconds
 		setTimeout(closeCustomSearchIframe, 2000);
@@ -627,26 +626,24 @@ document.addEventListener('DOMContentLoaded', () => {
 		return false;
 	}
 	
-	let i18n = document.querySelectorAll('[data-i18n]');
+	let i18ns = document.querySelectorAll('[data-i18n]');
 	
-	for (let el of i18n) {
+	for (let el of i18ns) {
 
 		let textNode = traverse(el);
 		
-		if (browser.i18n.getMessage(el.dataset.i18n))
-			textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+		if (i18n(el.dataset.i18n))
+			textNode.nodeValue = i18n(el.dataset.i18n);
 	}
 	
 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
 	for (let el of i18n_tooltips) {
-		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip');
+		el.dataset.msg = i18n(el.dataset.i18n_tooltip + 'Tooltip');
 	}
-	
-//	console.log(browser.i18n.getUILanguage());
-	
+		
 	var link = document.createElement( "link" );
-	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
+	link.href = browser.runtime.getURL('/_locales/' + i18n("LOCALE_FOLDER") + '/style.css');
 	link.type = "text/css";
 	link.rel = "stylesheet";
 	document.getElementsByTagName( "head" )[0].appendChild( link );

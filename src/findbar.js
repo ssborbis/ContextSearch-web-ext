@@ -44,7 +44,7 @@ window.addEventListener("message", e => {
 
 	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
 	
-	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [e.data.index + 1, e.data.total]);
+	document.getElementById('mark_counter').innerText = i18n("FindBarNavMessage", [e.data.index + 1, e.data.total]);
 	
 	document.querySelectorAll('INPUT[type="checkbox"]').forEach( el => {
 		el.disabled = false;
@@ -88,7 +88,7 @@ getSearchBar().addEventListener('change', e => {
 	}
 	else {
 		browser.runtime.sendMessage({action: "unmark", clearFindBarLastSearchTerms: true});
-		document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
+		document.getElementById('mark_counter').innerText = i18n("FindBarNavMessage", [0, 0]);
 	}
 });
 
@@ -141,15 +141,15 @@ document.getElementById('close').addEventListener('click', e => {
 });
 
 document.addEventListener('DOMContentLoaded', e => {
-	document.getElementById('mark_counter').innerText = browser.i18n.getMessage("FindBarNavMessage", [0, 0]);
-	document.querySelector('#accuracy + LABEL').title = browser.i18n.getMessage('accuracy') || "Accuracy";
-	document.querySelector('#caseSensitive + LABEL').title = browser.i18n.getMessage('casesensitive') || "Case Sensitive";
-	document.querySelector('#ignorePunctuation + LABEL').title = browser.i18n.getMessage('ignorepunctuation') || "Ignore Punctuation";
-	document.querySelector('#separateWordSearch + LABEL').title = browser.i18n.getMessage('separateWordSearch') || "Separate Word Search";
-	document.querySelector('#toggle_navbar + LABEL').title = browser.i18n.getMessage('Navbar');
-	document.querySelector('#toggle_marks + LABEL').title = browser.i18n.getMessage('highlight');
-	document.querySelector('#toggle_searchalltabs + LABEL').title = browser.i18n.getMessage('searchalltabs') || "Search all tabs";
-	document.querySelector('#clearSearchBarButton').title = browser.i18n.getMessage('delete') || "delete";
+	document.getElementById('mark_counter').innerText = i18n("FindBarNavMessage", [0, 0]);
+	document.querySelector('#accuracy + LABEL').title = i18n('accuracy') || "Accuracy";
+	document.querySelector('#caseSensitive + LABEL').title = i18n('casesensitive') || "Case Sensitive";
+	document.querySelector('#ignorePunctuation + LABEL').title = i18n('ignorepunctuation') || "Ignore Punctuation";
+	document.querySelector('#separateWordSearch + LABEL').title = i18n('separateWordSearch') || "Separate Word Search";
+	document.querySelector('#toggle_navbar + LABEL').title = i18n('Navbar');
+	document.querySelector('#toggle_marks + LABEL').title = i18n('highlight');
+	document.querySelector('#toggle_searchalltabs + LABEL').title = i18n('searchalltabs') || "Search all tabs";
+	document.querySelector('#clearSearchBarButton').title = i18n('delete') || "delete";
 });
 
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {

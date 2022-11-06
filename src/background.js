@@ -5,7 +5,7 @@ window.tabTerms = [];
 
 var userOptions = {};
 var highlightTabs = [];
-var isAndroid = false;;
+var isAndroid = false;
 
 (async() => {
 	let info = await browser.runtime.getPlatformInfo();
@@ -139,6 +139,10 @@ async function notify(message, sender, sendResponse) {
 		return sendMessageToTopFrame();
 	}
 
+	if ( message.sendMessageToAllFrames ) {
+		return sendMessageToAllFrames();
+	}
+
 	switch(message.action) {
 
 		case "saveUserOptions":
@@ -147,9 +151,8 @@ async function notify(message, sender, sendResponse) {
 			console.log("saveUserOptions", message.source || "", sender.tab.url);
 
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				notify({action: "updateUserOptions"});
+				notify({action: "updateUserOptions", source: sender});
 			});
-			break;
 			
 		case "updateUserOptions":
 
@@ -157,13 +160,13 @@ async function notify(message, sender, sendResponse) {
 				console.log('updateUserOptions');
 				let tabs = await getAllOpenTabs();
 				for (let tab of tabs) {
-					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions}).catch( error => {/*console.log(error)*/});	
+					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions, source: message.source}).catch( error => {/*console.log(error)*/});	
 				}
 				buildContextMenu();
 			}, 1000, "updateUserOptionsTimer");
 			break;
 			
-		case "openOptions":
+		case "openOptions": {
 			let optionsPageURL = browser.runtime.getURL("/options.html");
 			let optionsPage = await browser.tabs.query({url: optionsPageURL + "*"});
 
@@ -179,18 +182,16 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.create({
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});
-			break;
+		}
 			
 		case "quickMenuSearch":
 		case "search":
 			message.info.tab = sender.tab;
 			return openSearch(message.info);
-			break;
 			
 		case "enableContextMenu":
 			userOptions.contextMenu = true;
-			buildContextMenu();
-			break;
+			return buildContextMenu();
 
 		case "fetchURI":
 			return new Promise(r => {
@@ -204,56 +205,44 @@ async function notify(message, sender, sendResponse) {
 				img.src = message.url;
 			
 			});
-			break;
 			
 		case "getUserOptions":
 			return userOptions;
-			break;
 			
 		case "getDefaultUserOptions":
 			return defaultUserOptions;
-			break;
 
 		case "getSearchEngineById":
 			if ( !message.id) return;
 
 			return {"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)};
-			break;
 			
 		case "dispatchEvent":
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
 				allFrames: true
 			});
-			break;
 
 		case "openQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "closeQuickMenuRequest":
 			return sendMessageToAllFrames();
-			break;
 		
 		case "quickMenuIframeLoaded":
 			return sendMessageToTopFrame();
-			break;
 		
 		case "updateQuickMenuObject":
 			return sendMessageToAllFrames();
-			break;
 			
 		case "lockQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "unlockQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 
 		case "deselectAllText":
 			return sendMessageToAllFrames();
-			break;
 
 		case "toggleLockQuickMenu":
 			onFound = () => {}
@@ -263,19 +252,15 @@ async function notify(message, sender, sendResponse) {
 				code: 'if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
 				allFrames:false
 			}).then(onFound, onError);
-			break;
 			
 		case "rebuildQuickMenu":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "closeWindowRequest":
 			return browser.windows.remove(sender.tab.windowId);
-			break;
 		
 		case "closeCustomSearch":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "openFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
@@ -291,7 +276,6 @@ async function notify(message, sender, sendResponse) {
 				
 			} else
 				return sendMessageToTopFrame();
-			break;
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
@@ -303,19 +287,15 @@ async function notify(message, sender, sendResponse) {
 				
 			} else
 				return sendMessageToTopFrame();
-			break;
 			
 		case "updateFindBar":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "findBarNext":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "findBarPrevious":
 			return sendMessageToTopFrame();
-			break;
 		
 		case "getFindBarOpenStatus":
 			onFound = result => result
@@ -323,7 +303,6 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getFindBar() ? true : false;"
 			}).then(onFound, onError);
-			break;
 
 		case "mark":
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
@@ -333,32 +312,25 @@ async function notify(message, sender, sendResponse) {
 				return sendMessageToAllFrames();
 			}
 
-			break;
 			
 		case "unmark":
 			return sendMessageToAllFrames();
-			break;
 		
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
-			break;
 
 		case "markDone":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "toggleNavBar":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "closeSideBar":
 			return sendMessageToTopFrame();
-			break;
 		
 		case "openSideBar":
 		case "sideBarHotkey":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "getOpenSearchLinks":
 
@@ -374,8 +346,6 @@ async function notify(message, sender, sendResponse) {
 				frameId: message.frame ? sender.frameId : 0
 			}).then(onFound, onError);
 
-			break;
-
 		case "updateSearchTerms":
 
 			window.searchTerms = message.searchTerms;
@@ -385,27 +355,34 @@ async function notify(message, sender, sendResponse) {
 			//	notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
-			break;
 			
 		case "updateContextMenu":
 		
 			var searchTerms = message.searchTerms;
-			currentContextMenuContexts = message.currentContexts;
 
 			if ( window.contextMenuSearchTerms === searchTerms ) {
-				console.log('same search terms');
-				return;
+		//		console.log('same search terms');
+		//		return;
 			}
 			
 			window.contextMenuSearchTerms = searchTerms;
 
 			if ( userOptions.contextMenuUseContextualLayout ) {
+
+				let ccs = [...message.currentContexts];
+
+				if ( ccs.includes("image") && ccs.includes("link") ) {
+					ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
+				}
+
 				updateMatchRegexFolders(searchTerms);
 
 				// relabel link based on linkMethod
-				try {
+				test: try {
 
-					let title = browser.i18n.getMessage("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? browser.i18n.getMessage("LINKTEXT") : browser.i18n.getMessage("LINK")).toUpperCase()) + getMenuHotkey();
+					if ( message.currentContexts.includes("image")) break test;
+
+					let title = i18n("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? i18n("LINKTEXT") : i18n("LINK")).toUpperCase()) + getMenuHotkey();
 
 					await browser.contextMenus.update("link", {
 						title: title
@@ -418,12 +395,10 @@ async function notify(message, sender, sendResponse) {
 					for ( let i in contexts )
 						await browser.contextMenus.update(contexts[i], {visible: true });
 
-					let ccs = message.currentContexts
-
-				 	if ( !ccs.includes("page") )
-						browser.contextMenus.update("page", {visible: false });
-					if ( !ccs.includes("frame") )
-						browser.contextMenus.update("frame", {visible: false });
+					contexts.forEach(c => {
+						if ( !ccs.includes(c) )
+							browser.contextMenus.update(c, {visible: false });
+					})
 
 				} catch ( error ) {
 					console.error(error);
@@ -445,13 +420,13 @@ async function notify(message, sender, sendResponse) {
 
 			break;
 			
-		case "getFirefoxSearchEngineByName":
+		case "getFirefoxSearchEngineByName": {
 			if ( !browser.search || !browser.search.get ) return [];
 			let engines = await browser.search.get();
 			return engines.find(e => e.name === message.name);
-			break;
+		}
 			
-		case "addSearchEngine":
+		case "addSearchEngine": {
 			let url = message.url;
 
 			if ( browser.runtime.getBrowserInfo && browser.search && browser.search.get ) {
@@ -470,7 +445,7 @@ async function notify(message, sender, sendResponse) {
 				
 				if ( engines.find(e => e.name === title) ) {
 					await browser.tabs.executeScript(sender.tab.id, {
-						code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+						code: `alert(i18n("FFEngineExists", "${title}"));`
 					});
 					return;
 				}
@@ -531,8 +506,9 @@ async function notify(message, sender, sendResponse) {
 			
 			window.external.AddSearchProvider(url);
 			break;
+		}
 		
-		case "addContextSearchEngine":
+		case "addContextSearchEngine": {
 		
 			let se = message.searchEngine;
 			
@@ -563,7 +539,7 @@ async function notify(message, sender, sendResponse) {
 			notify({action: "saveOptions", userOptions:userOptions});
 			return node;
 			
-			break;
+		}
 			
 		case "removeContextSearchEngine":
 
@@ -621,7 +597,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "log":
-			console.log(message.msg);
+			console.log(message, sender);
 			break;
 			
 		case "focusSearchBar":
@@ -634,7 +610,6 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getLastSearch":
 			return {lastSearch: sessionStorage.getItem("lastSearch")};
-			break;
 			
 		case "getCurrentTheme":
 			browser.theme.getCurrent().then( theme => {
@@ -642,12 +617,12 @@ async function notify(message, sender, sendResponse) {
 			});
 			break;
 			
-		case "executeTestSearch":
+		case "executeTestSearch": {
 
-			var searchTerms = encodeURIComponent(message.searchTerms);
-			var searchRegex = new RegExp(searchTerms + "|" + searchTerms.replace(/%20/g,"\\+") + "|" + searchTerms.replace(/%20/g,"_"), 'g');
+			let searchTerms = encodeURIComponent(message.searchTerms);
+			let searchRegex = new RegExp(searchTerms + "|" + searchTerms.replace(/%20/g,"\\+") + "|" + searchTerms.replace(/%20/g,"_"), 'g');
 			
-			var timeout = Date.now();
+			let timeout = Date.now();
 
 			let urlCheckInterval = setInterval( () => {
 				browser.tabs.get(sender.tab.id).then( tabInfo => {
@@ -680,7 +655,7 @@ async function notify(message, sender, sendResponse) {
 			
 			return true;
 			
-			break;
+		}
 			
 		case "copy":
 			try {
@@ -692,29 +667,19 @@ async function notify(message, sender, sendResponse) {
 				return false;
 			}
 
-			break;
-
 		case "copyRaw":
-
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.tab.frameId});
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: "copyRaw()"
-			// });
-			break;
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.frameId});
 			
 		case "hasBrowserSearch":
 			return typeof browser.search !== 'undefined' && typeof browser.search.get !== 'undefined';
-			break;
 			
 		case "checkForOneClickEngines":	
 			return checkForOneClickEngines();
-			break;
 			
 		case "getCurrentTabInfo": 
 			return Promise.resolve(sender.tab);
-			break;
 		
-		case "removeTabHighlighting":
+		case "removeTabHighlighting": {
 		
 			let tabId = message.tabId || sender.tab.id;
 			highlightTabs.findIndex( (hl, i) => {
@@ -726,10 +691,10 @@ async function notify(message, sender, sendResponse) {
 			});
 
 			break;
+		}
 			
 		case "dataToSearchEngine":
 			return dataToSearchEngine(message.formdata);
-			break;
 			
 		case "openSearchUrlToSearchEngine":
 			return readOpenSearchUrl(message.url).then( xml => {
@@ -737,20 +702,21 @@ async function notify(message, sender, sendResponse) {
 				
 				return openSearchXMLToSearchEngine(xml);
 			});
-			break;
 		
 		case "showNotification":
 			return sendMessageToTopFrame();
-			break;
 			
 		case "getTabQuickMenuObject":
 
-			return (await browser.tabs.executeScript(sender.tab.id, {
-				code: `quickMenuObject;`
-			})).shift();
-			break;
+			try {
+				return (await browser.tabs.executeScript(sender.tab.id, {
+					code: `quickMenuObject;`
+				})).shift();
+			} catch (error) {
+				return null;
+			}
 		
-		case "addToHistory":
+		case "addToHistory": {
 
 			if ( sender.tab.incognito && userOptions.incognitoTabsForgetHistory ) return console.log('incognito - do not add to history')
 	
@@ -782,23 +748,20 @@ async function notify(message, sender, sendResponse) {
 			
 			console.info('adding to history', terms);
 			return Promise.resolve(userOptions);
-			break;
+		}
 			
 		case "setLastOpenedFolder":
 			window.lastOpenedFolder = message.folderId;
 			return true;
-			break;
 			
 		case "getLastOpenedFolder":
 			return window.lastOpenedFolder || null;
-			break;
 
 		case "executeScript": 
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: message.code,
 				frameId: 0
 			});
-			break;
 
 		case "injectContentScripts":
 
@@ -855,9 +818,8 @@ async function notify(message, sender, sendResponse) {
 			return browser.tabs.executeScript(sender.tab.id, {
 				code: "getSelectedText(document.activeElement);"
 			}).then(onFound, onError);	
-			break;
 
-		case "addUserStyles":
+		case "addUserStyles": {
 			if ( !userOptions.userStylesEnabled ) return false;
 
 			console.log('adding user styles');
@@ -873,8 +835,7 @@ async function notify(message, sender, sendResponse) {
 				frameId: message.global ? 0 : sender.frameId,
 				cssOrigin: "user"
 			});
-			
-			break;
+		}
 
 		case "editQuickMenu":
 			sendMessageToTopFrame();
@@ -886,11 +847,9 @@ async function notify(message, sender, sendResponse) {
 				frameId: sender.frameId,
 				cssOrigin: "user"
 			});
-			break;
 
 		case "closePageTiles":
 			return sendMessageToTopFrame();
-			break;
 
 		case "openBrowserAction":
 			console.log('openBrowserAction')
@@ -903,16 +862,13 @@ async function notify(message, sender, sendResponse) {
 			// }).catch(e => {});
 
 			return sendMessageToTopFrame();
-			break;
 
 		case "minifySideBar":
 			console.log('bg');
 			return sendMessageToTopFrame();
-			break;
 
 		case "getZoom":
 			return browser.tabs.getZoom(sender.tab.id);
-			break;
 
 		case "sideBarOpenedOnSearchResults":
 
@@ -927,8 +883,6 @@ async function notify(message, sender, sendResponse) {
 				})();`
 			}).then( onFound, onError);
 
-			break;
-
 		case "openCustomSearch":
 			sendMessageToTopFrame();
 			break;
@@ -940,31 +894,24 @@ async function notify(message, sender, sendResponse) {
 			return await browser.tabs.executeScript(sender.tab.id, {
 				code: `getRawSelectedText(document.activeElement)`
 			}).then( onFound, onError);
-			break;
 
 		case "updateUserOptionsObject":
 			return updateUserOptionsObject(message.userOptions);
-			break;
 
 		case "updateUserOptionsVersion":
 			return updateUserOptionsVersion(message.userOptions);
-			break;
 
 		case "requestPermission":
 			return browser.permissions.request({permissions: [message.permission]});
-			break;
 
 		case "hasPermission":
 			return browser.permissions.contains({permissions: [message.permission]});
-			break;
 
 		case "openTab":
 			return openWithMethod(message);
-			break;
 
 		case "closeTab":
 			return browser.tabs.remove(message.tabId || sender.tab.id )
-			break;
 
 		case "getIconsFromIconFinder":
 			return browser.tabs.create({
@@ -978,36 +925,34 @@ async function notify(message, sender, sendResponse) {
 				browser.tabs.remove(tab.id);
 				return urls.shift();
 			});
-			break;
 
 		case "cancelQuickMenuRequest":
-     	case "closeQuickMenuRequest":
-     		sendMessageToTopFrame();
-     		break;
+			sendMessageToTopFrame();
+			break;
 
-     	case "download":
-     		if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
-     			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
-     			return;
-     		}
+		case "download":
+			if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+				let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
+				return;
+			}
 
-     		return browser.downloads.download({url: message.url, saveAs: true});
-     		break;
+			return browser.downloads.download({url: message.url, saveAs: true});
 
-     	case "getBookmarksAsNodeTree":
-     		return await CSBookmarks.treeToFolders(message.id || "root________");
-     		break;
+		case "getBookmarksAsNodeTree":
+			return await CSBookmarks.treeToFolders(message.id || "root________");
 
-     	case "getTabTerms":
-     		return window.tabTerms.find(t => t.tabId === sender.tab.id);
-     		break;
+		case "getTabTerms":
+			return window.tabTerms.find(t => t.tabId === sender.tab.id);
+
+		case "isSidebar":
+			return sender.hasOwnProperty("frameId");
 	}
 }
 
 function checkUserOptionsValueTypes(repair) {
 	const traverse  = (obj, obj2) => {
-	    Object.keys(obj).forEach(key => {
-	      
+		Object.keys(obj).forEach(key => {
+
 			if ( typeof obj[key] !== typeof obj2[key]) {
 				console.error('mismatched object types', key, typeof obj[key], typeof obj2[key], obj[key], obj2[key]);
 
@@ -1017,10 +962,10 @@ function checkUserOptionsValueTypes(repair) {
 				}
 			}
 
-	    	if (typeof obj[key] === 'object' && obj[key] instanceof Object ) {
-	            traverse(obj[key], obj2[key])
-	        }
-	    })
+			if (typeof obj[key] === 'object' && obj[key] instanceof Object ) {
+				traverse(obj[key], obj2[key])
+			}
+		})
 	}
 
 	traverse(defaultUserOptions, userOptions);
@@ -1042,14 +987,14 @@ function updateUserOptionsObject(uo) {
 
 			// fix broken object arrays but skip searchEngines
 			if ( defaultobj[key] instanceof Array && defaultobj[key][0] && defaultobj[key][0] instanceof Object && key !== "searchEngines" ) {
-			 	
-			 	if ( userobj[key].includes( undefined ) ) {
-			 		console.error(key, "Found broken settings array in config. Restoring defaults")
-			 		userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
-			 	}
+				
+				if ( userobj[key].includes( undefined ) ) {
+					console.error(key, "Found broken settings array in config. Restoring defaults")
+					userobj[key] = JSON.parse(JSON.stringify(defaultobj[key]));
+				}
 
-		 		for(let i=userobj[key].length-1;i>-1;i--) {
-				 	try {
+				for(let i=userobj[key].length-1;i>-1;i--) {
+					try {
 						String(userobj[key][i]);
 					} catch (e) {
 						console.error('Dead objects found. Replacing with defaults');
@@ -1110,23 +1055,22 @@ function openWithMethod(o) {
 	switch (o.openMethod) {
 		case "openCurrentTab":
 			return openCurrentTab();
-			break;
+
 		case "openNewTab":
 			return openNewTab(false);
-			break;
+
 		case "openNewWindow":
 			return openNewWindow(false);
-			break;
+
 		case "openNewIncognitoWindow":
 			return openNewWindow(true);
-			break;
+
 		case "openBackgroundTab":
 		case "openBackgroundTabKeepOpen":
 			return openNewTab(true);
-			break;
+
 		case "openSideBarAction":
 			return openSideBarAction(o.url);
-			break;
 	}
 	
 	function openCurrentTab() {
@@ -1147,9 +1091,15 @@ function openWithMethod(o) {
 
 		if ( userOptions.forceOpenResultsTabsAdjacent ) {
 			try {
-				let actives = await browser.tabs.query({currentWindow: true, active: true});
-				o.index = actives[0].index + 1;
-			} catch (err) {}
+				let tabs = await browser.tabs.query({currentWindow: true});
+				let active = tabs.find(t => t.active === true );
+				let tabChildren = tabs.filter(t => t.openerTabId === active.id);
+				let indexes = tabChildren.map(t => t.index);
+				o.index = Math.max(...indexes, active.index) + 1;
+
+			} catch (err) {
+				console.log(err);
+			}
 		}
 
 		return browser.tabs.create(filterOptions({
@@ -1171,7 +1121,9 @@ function openWithMethod(o) {
 		await browser.sidebarAction.setPanel( {panel: url} );
 			
 		if ( !await browser.sidebarAction.isOpen({}) )
-			notify({action: "showNotification", msg: browser.i18n.getMessage('NotificationOpenSidebar')}, {});
+			notify({action: "showNotification", msg: i18n('NotificationOpenSidebar')}, {});
+
+		return {};
 	}
 }
 
@@ -1301,6 +1253,7 @@ async function executeExternalProgram(info) {
 	let node = info.node;
 	let searchTerms = info.searchTerms || info.selectionText;
 	let downloadURL = null;
+	let downloadPath = null;
 
 	if ( node.searchRegex ) {
 		try {
@@ -1314,7 +1267,24 @@ async function executeExternalProgram(info) {
 		.replace(/{url}/g, info.tab.url);
 
 	// {download_url} is a link to be downloaded by python and replaced by the file path
-	if ( /{download_url}/.test(path)) downloadURL = searchTerms;
+	let matches = path.match(/{download_url(?:=(.+))?}/);
+	if ( matches ) {
+		downloadURL = searchTerms;
+		downloadPath = matches[1] || null;
+	}
+
+	if ( downloadPath === "ASK") {
+		let id = await browser.downloads.download({
+			url:downloadURL,
+			saveAs:true
+		})
+
+		let dl = await browser.downloads.search({id}).then( dls => {
+			return dls[0];
+		});
+
+		console.log(dl);
+	}
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});
@@ -1331,10 +1301,17 @@ async function executeExternalProgram(info) {
 	try {
 		await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
 	} catch (error) {
-		return notify({action: "showNotification", msg: browser.i18n.getMessage('NativeAppMissing')})
+		return notify({action: "showNotification", msg: i18n('NativeAppMissing')})
 	}
 
-	let msg = {path: path, cwd:node.cwd, return_stdout: ( node.postScript ? true : false ), downloadURL: downloadURL };
+	let msg = {
+		path: path, 
+		cwd:node.cwd, 
+		return_stdout: ( node.postScript ? true : false ), 
+		downloadURL: downloadURL, 
+		downloadFolder: downloadPath || userOptions.nativeAppDownloadFolder || null 
+	};
+
 	console.log("native app message ->", msg);
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
@@ -1352,7 +1329,7 @@ function lastSearchHandler(id, method) {
 	if ( !node ) return;
 	
 	userOptions.lastUsedId = id;
-	userOptions.lastUsedMethod = method;
+	userOptions.lastOpeningMethod = method;
 	
 	if ( node.type !== "folder" ) {
 		userOptions.recentlyUsedList.unshift(userOptions.lastUsedId);
@@ -1567,6 +1544,10 @@ async function openSearch(info) {
 			});
 			
 			notify({action: "addToHistory", searchTerms: searchTerms});
+
+			// overwrite last multi-child
+			lastSearchHandler(info.menuItemId, info.openMethod);
+
 			return;
 			
 		} catch (error) {
@@ -1848,6 +1829,10 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 		if ( ! highlightTabs.find( ht => JSON.stringify(obj) === JSON.stringify(ht) ) )
 			highlightTabs.push(obj);
 	}
+
+	browser.tabs.executeScript(tab.id, {
+		file: "inject_resultsEngineNavigator.js"
+	});
 }
 
 function getAllOpenTabs() {
@@ -1947,7 +1932,7 @@ function updateUserOptionsVersion(uo) {
 		
 		if (browser.bookmarks === undefined) return _uo;
 
-		if (browser.i18n.getMessage("ContextSearchMenu") === "ContextSearch Menu") return _uo;
+		if (i18n("ContextSearchMenu") === "ContextSearch Menu") return _uo;
 		
 		console.log("-> 1.6.0");
 		
@@ -1956,7 +1941,7 @@ function updateUserOptionsVersion(uo) {
 			if (bookmarks.length === 0) return _uo;
 
 			console.log('New locale string for bookmark name. Attempting to rename');
-			return browser.bookmarks.update(bookmarks[0].id, {title: browser.i18n.getMessage("ContextSearchMenu")}).then(() => {
+			return browser.bookmarks.update(bookmarks[0].id, {title: i18n("ContextSearchMenu")}).then(() => {
 				console.log(bookmarks[0]);
 			}, error => {
 				console.log(`An error: ${error}`);
@@ -2248,6 +2233,26 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
+		let els = _uo.quickMenuDomLayout.split(",");
+
+		if ( !els.includes("contextsBar") && !els.includes("!contextsBar") ) {
+			els.push("!contextsBar");
+			_uo.quickMenuDomLayout = els.join(",");
+		}
+		return _uo;
+	}).then( _uo => {
+		if ( _uo.quickMenuUseOldStyle ) {
+			_uo.quickMenuDefaultView = _uo.quickMenuUseOldStyle ? 'text' : 'grid';
+		//	delete _uo.quickMenuUseOldStyle;
+		}
+
+		if ( _uo.searchBarUseOldStyle ) {
+			_uo.searchBarDefaultView = _uo.searchBarUseOldStyle ? 'text' : 'grid';
+		//	delete _uo.searchBarUseOldStyle;
+		}
+
+		return _uo;
+	}).then( _uo => {
 		console.log('Done ->', _uo.version, Date.now() - start);
 		return _uo;
 	});
@@ -2495,33 +2500,30 @@ async function injectContentScripts(tab, frameId) {
 	// inject into any frame
 	[
 		"/lib/browser-polyfill.min.js",
-		"/lib/crossbrowser.js",
+		"/utils.js", // for isTextBox
 		"/inject.js",
 		"/lib/mark.es6.min.js",
 		"/inject_highlight.js",
 		"/hotkeys.js",
 		"/defaultShortcuts.js",
 		"/dragshake.js",
-		"/tools.js", // for shortcuts
-		"/utils.js" // for isTextBox
+		"/contexts.js",
+		"/tools.js" // for shortcuts
 	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
 		[
-			
 			"/nodes.js",
 			"/opensearch.js",
 			"/searchEngineUtils.js",
 			"/dock.js",
 			"/inject_sidebar.js",
 			"/inject_customSearch.js",
-			"/resizeWidget.js"/*,
-			"/inject_speedDial.js"*/
+			"/resizeWidget.js"
 		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
 		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
 	}
-
 }
 
 function waitOnInjection(tabId) {
@@ -2589,8 +2591,8 @@ async function scrapeBookmarkIcons() {
 			let url = new URL(_url);
 			console.log('fetching', url.origin);
 			var response = await fetch(url.origin + "/favicon.ico");
-		    switch (response.status) {
-		        // status "OK"
+			switch (response.status) {
+				// status "OK"
 				case 200:
 					console.log(url.origin + "/favicon.ico found!");
 					// var template = await response.text();
@@ -2601,7 +2603,7 @@ async function scrapeBookmarkIcons() {
 				case 404:
 					console.log('Not Found');
 					break;
-		    }
+			}
 		} catch ( error ) {}
 	} 
 

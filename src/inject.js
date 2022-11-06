@@ -18,6 +18,7 @@ var quickMenuObject = {
 };
 
 var userOptions = {};
+var killswitch = false; // global switch for disabling injected functions on the fly
 window.suspendSelectionChange = false;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
@@ -41,6 +42,29 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
+			break;
+
+		case "updateQuickMenuObject":
+
+			quickMenuObject = Object.assign(quickMenuObject, { 
+				keyDownTimer: quickMenuObject.keyDownTimer,
+				mouseDownTimer: quickMenuObject.mouseDownTimer,
+				mouseDownHoldTimer: quickMenuObject.mouseDownHoldTimer,
+				mouseCoords: quickMenuObject.mouseCoords,
+				screenCoords: quickMenuObject.screenCoords,
+				mouseCoordsInit: message.quickMenuObject.mouseCoordsInit,
+				mouseLastClickTime: Math.max(message.quickMenuObject.mouseLastClickTime, quickMenuObject.mouseLastClickTime),
+				lastSelectTime: Math.max(message.quickMenuObject.lastSelectTime, quickMenuObject.lastSelectTime),
+				lastSelectText: message.quickMenuObject.lastSelectText,
+				locked: message.quickMenuObject.locked,
+				searchTerms: message.quickMenuObject.searchTerms,
+				searchTermsObject: message.quickMenuObject.searchTermsObject,
+				disabled: message.quickMenuObject.disabled,
+				mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
+				mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
+				contexts:message.quickMenuObject.contexts
+			});
+
 			break;
 
 		case "showNotification":
@@ -88,7 +112,7 @@ async function copyRaw(autoCopy) {
 
 	if ( !rawText ) return;
 
-	console.log('autoCopy', rawText);
+	console.log('autoCopy:', rawText);
 
 	try {
 		navigator.clipboard.writeText(rawText);
@@ -159,26 +183,43 @@ async function copyRaw(autoCopy) {
 
 function getContexts(el, e) {
 
-	if ( !el ) return [];
+	let co = getContextsObject(el, e);
 
-	let contexts = [];
+	let c = [];
+	for ( let key in co ) {
+		if ( co[key] ) c.push(key);
+	}
 
-	if ( el instanceof HTMLImageElement || getImage(el) ) contexts.push('image');
-	if ( el instanceof HTMLAudioElement ) contexts.push('audio');
-	if ( el instanceof HTMLVideoElement ) contexts.push('video');
-	if ( el.closest && el.closest('a')) contexts.push('link');
-	if ( getSelectedText(el)) contexts.push('selection');
+	if ( co.linkText && getLinkMethod(e) === 'text' && !c.includes("selection") ) c.push("selection");
 
-	if ( e && contexts.includes("link") && getLinkMethod(e) === 'text')
-		contexts.push("selection");
+	if ( c.length > 2) c = c.filter(_c => _c !== "frame" );
+	if ( c.length > 1) c = c.filter(_c => _c !== "page" );
 
-	if ( !contexts.length )
-		if ( el.nodeName === 'IFRAME' || ( el.ownerDocument && el.ownerDocument.defaultView != top ) ) contexts.push('frame');
+	return c;
+}
 
-	if ( !contexts.length )
-		contexts.push('page');
+function getContextsObject(el, e) {
+	let o = {};
+	["audio", "frame", "image", "link", "page", "selection", "video"].forEach(c => o[c] = null);
+
+	if ( !el ) return o;
+
+	o['image'] = getImage(el);
+	if ( el instanceof HTMLAudioElement ) o['audio'] = el.src;
+	if ( el instanceof HTMLVideoElement ) o['video'] = el.src;
+
+	if ( el.closest && el.closest('a')) {
+		o['link'] = el.closest('a').href;
+		o['linkText'] = el.closest('a').innerText;
+	}
 	
-	return contexts;
+	o['selection'] = getSelectedText(el);
+
+	if ( el.nodeName === 'IFRAME' || ( el.ownerDocument && el.ownerDocument.defaultView != top ) ) o['frame'] = window.location.href;
+
+	o['page'] = window.location.href;
+	
+	return o;
 }
 
 // update searchTerms when selecting text and quickMenuObject.locked = true
@@ -207,7 +248,7 @@ document.addEventListener("selectionchange", e => {
 		quickMenuObject.searchTerms = searchTerms;
 		
 		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e)});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -226,7 +267,7 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e)});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 		}
 
 	});
@@ -244,7 +285,7 @@ window.addEventListener('mousedown', async e => {
 	}
 	
 	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e)});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e), ctrlKey:e.ctrlKey});
 });
 
 function linkOrImage(el, e) {
@@ -303,8 +344,7 @@ function repositionOffscreenElement( element, padding ) {
 	
 	// element.style.display = originalDisplay;
 
-
-	element.style.transition = 'all .15s';
+	// element.style.transition = 'all .15s';
 	
 	let rect = element.getBoundingClientRect();
 	
@@ -479,15 +519,15 @@ function checkContextMenuEventOrderNotification() {
 	let n = showNotification({msg:"", sticky:true});
 
 	let yes = document.createElement('a');
-	yes.innerText = browser.i18n.getMessage('yes');
+	yes.innerText = i18n('yes');
 	yes.href = "#";
 
 	let no = document.createElement('a');
-	no.innerText = browser.i18n.getMessage('no');
+	no.innerText = i18n('no');
 	no.href="#";
 
 	let content = n.querySelector('.content');
-	content.innerText = browser.i18n.getMessage('checkContextMenuOrderNotification');
+	content.innerText = i18n('checkContextMenuOrderNotification');
 	n.appendChild(yes);
 	n.appendChild(document.createTextNode(" / "));
 	n.appendChild(no);
@@ -567,6 +607,7 @@ function createShadowRoot() {
 	if ( document.querySelector('contextsearch-widgets')) return;
 
 	let div = document.createElement('contextsearch-widgets');
+	div.id = "contextsearch-widgets";
 	document.documentElement.appendChild(div);
 	let shadow = div.attachShadow({mode: 'open'})
 		.innerHTML = `
@@ -592,14 +633,43 @@ document.addEventListener("mousemove", e => {
 }, {capture: true});
 
 document.addEventListener('keydown', e => {
-	if ( e.key === "Esc" ) {
-		let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+	if ( e.key === "Escape" ) {
 
-		if ( tool && tool.on ) {
-			tool.on === false;
-			saveUserOptions();
-		}
+		killswitch = true;
+
+		// disable repeatsearch
+		(() => {
+			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+
+			if ( tool && tool.on ) {
+				tool.on === false;
+				saveUserOptions();
+			}
+		})();
 	}
+});
+
+(() => {
+
+	document.addEventListener('keydown', e => {
+
+		if ( !userOptions.developerMode ) return;
+		
+		if ( e.key === "s" && e.ctrlKey && e.altKey) {
+			let f = document.createElement('iframe');
+			f.setAttribute('allowtransparency', true);
+			f.style="border:none;position:fixed;width:100vw;height:100vh;z-index:999;top:0;bottom:0;left:0;right:0;transform:scale(calc(1.5/var(--cs-zoom)))";
+			f.src = browser.runtime.getURL('/speedDial.html?id=');
+
+			getShadowRoot().appendChild(f);
+
+			window.addEventListener('message', e => {
+				if ( e.data.action && e.data.action === "close") {
+					f.parentNode.removeChild(f);
+				}
+			});
+		}
+	});
 });
 
 createShadowRoot();

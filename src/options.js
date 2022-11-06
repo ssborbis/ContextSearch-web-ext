@@ -1,14 +1,16 @@
-window.browser = (function () {
-  return window.msBrowser ||
-    window.browser ||
-    window.chrome;
-})();
-
 // not jQuery 
 var $ = s => document.getElementById(s) || document.querySelector(s);
 
 // array for storage.local
 var userOptions = {};
+
+var userOptionsHasUpdated = false;
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	if ( message.userOptions && message.source && message.source.url != browser.runtime.getURL(window.location.href)) {
+		userOptions = message.userOptions;
+	}
+});
 
 // Browse button for manual import
 $("#selectMozlz4FileButton").addEventListener('change', ev => {
@@ -16,7 +18,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	let searchEngines = [];
 	let file = ev.target.files[0];
 	
-	if ( $('#cb_overwriteOnImport').checked && confirm(browser.i18n.getMessage("ConfirmDeleteCustomSearchEngines")) ) {
+	if ( $('#cb_overwriteOnImport').checked && confirm(i18n("ConfirmDeleteCustomSearchEngines")) ) {
 		userOptions.nodeTree.children = [];
 		userOptions.searchEngines = [];
 	}
@@ -30,7 +32,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		$('#status_div').style.display='inline-block';
 		statusMessage({
 			img: browser.runtime.getURL("icons/spinner.svg"),
-			msg: browser.i18n.getMessage("LoadingRemoteContent"),
+			msg: i18n("LoadingRemoteContent"),
 			color: "transparent",
 			invert: false
 		});
@@ -84,21 +86,21 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 			if (details.hasFailedCount) {
 				statusMessage({
 					img: "icons/alert.svg",
-					msg: browser.i18n.getMessage("LoadingRemoteContentFail").replace("%1", details.hasFailedCount),
+					msg: i18n("LoadingRemoteContentFail").replace("%1", details.hasFailedCount),
 					color: "transparent",
 					invert: false
 				});
 			} else if (details.hasTimedOut) {
 				statusMessage({
 					img: "icons/alert.svg",
-					msg: browser.i18n.getMessage("LoadingRemoteContentTimeout"),
+					msg: i18n("LoadingRemoteContentTimeout"),
 					color: "transparent",
 					invert: false
 				});
 			} else {
 				statusMessage({
 					img: "icons/checkmark.svg",
-					msg: browser.i18n.getMessage("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length),
+					msg: i18n("ImportedEngines").replace("%1", searchEngines.length).replace("%2", details.searchEngines.length),
 					color: "#41ad49",
 					invert: true
 				});
@@ -112,7 +114,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		// print status message to Options page
 		statusMessage({
 			img: "icons/crossmark.svg",
-			msg: browser.i18n.getMessage("FailedToLoad"),
+			msg: i18n("FailedToLoad"),
 			color: "red",
 			invert: true
 		});
@@ -156,8 +158,12 @@ async function restoreOptions(restoreUserOptions) {
 
 				if ( !el ) continue;
 
-				if ( type === 'boolean')
-					el.checked = o[key];
+				if ( type === 'boolean') {
+					if ( el.nodeName === "SELECT" )
+						el.value = o[key];
+					else
+						el.checked = o[key];
+				}
 
 				if ( type === 'string' || type === 'number' )
 					el.value = o[key];	
@@ -167,8 +173,8 @@ async function restoreOptions(restoreUserOptions) {
 		// restore settings with matching ids
 		traverse(uo, null);
 		
-		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || browser.i18n.getMessage('ClickToSet');
-		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || browser.i18n.getMessage('ClickToSet');
+		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || i18n('ClickToSet');
+		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || i18n('ClickToSet');
 
 		for (let p of document.getElementsByClassName('position')) {
 			p.classList.remove('active')
@@ -176,9 +182,7 @@ async function restoreOptions(restoreUserOptions) {
 				p.classList.add('active');
 		}
 
-		$('#s_searchBarDefaultView').value = uo.searchBarUseOldStyle ? "text" : "grid";
-		$('#s_quickMenuDefaultView').value = uo.quickMenuUseOldStyle ? "text" : "grid";
-		$('#s_sideBarDefaultView').checked = uo.sideBar.singleColumn ? "text" : "grid";
+		$('#s_sideBarDefaultView').value = uo.sideBar.singleColumn ? "text" : "grid";
 		
 		$('#userStyles').disabled = !uo.userStylesEnabled;
 	
@@ -283,7 +287,7 @@ function _saveOptions(e) {
 	
 	function onSet() {
 		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
-		showSaveMessage(browser.i18n.getMessage("saved"), null, document.getElementById('saveNoticeDiv'));
+		showSaveMessage(i18n("saved"), null, document.getElementById('saveNoticeDiv'));
 		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);
 	}
@@ -306,17 +310,21 @@ function _saveOptions(e) {
 
 			if ( !el ) continue;
 
-			if ( type === 'boolean')
-				o[key] = el.checked;
+			if ( type === 'boolean') {
+				if ( el.nodeName === "SELECT")
+					o[key] = el.value.toLowerCase() === 'true';
+				else
+					o[key] = el.checked;
+			}
 
 			if ( type === 'string' )
 				o[key] = el.value;	
 
 			if ( type === 'number' ) {
-			 let i = parseInt(el.value);
-			 let f = parseFloat(el.value);
+				let i = parseInt(el.value);
+				let f = parseFloat(el.value);
 
-			 o[key] = i == f ? i : f;
+				o[key] = i == f ? i : f;
 			}
 		}
 	}
@@ -324,11 +332,7 @@ function _saveOptions(e) {
 	// restore settings with matching ids
 	traverse(userOptions, null);
 
-	
 	let uo = {
-
-		searchBarUseOldStyle: $('#s_searchBarDefaultView').value === "text",
-		quickMenuUseOldStyle: $('#s_quickMenuDefaultView').value === "text",
 
 		searchBarHistory: userOptions.searchBarHistory,
 		searchBarIcon: $('#toolBarIconForm input[type="radio"]:checked').value,
@@ -394,12 +398,33 @@ function _saveOptions(e) {
 			styleEl.parentNode.removeChild(styleEl);
 			
 			return styleText;
-		})(),
+		})()
 
-		blockList: $('#blockList').value.split(/\r?\n/),
 	};
 
 	merge(uo, userOptions);
+
+	// set prefs that don't merge properly
+	userOptions.blockList = $('#blockList').value.split(/\r?\n/);
+	userOptions.customSearchActions = (() => {
+		let cas = [];
+
+		$("additionalSearchActionsTable").querySelectorAll("TR:not(.template):not(.header)").forEach( tr => {
+			
+			cas.push({
+				event:tr.querySelector('[name="event"]').value,
+				button:parseInt(tr.querySelector('[name="button"]').value),
+				altKey:tr.querySelector('[name="altKey"]').checked,
+				ctrlKey:tr.querySelector('[name="ctrlKey"]').checked,
+				metaKey:tr.querySelector('[name="metaKey"]').checked,
+				shiftKey:tr.querySelector('[name="shiftKey"]').checked,
+				action:tr.querySelector('[name="action"]').value,
+				folder:false
+			})
+		});
+
+		return cas;
+	})();
 
 	// prevent DeadObjects
 	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
@@ -433,6 +458,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSaveButtons();
 	buildThemes();
 	buildSearchActions();
+	buildCheckboxes();
+	buildToolMasks();
+	//buildLayoutEditors();
 	hideBrowserSpecificElements();
 
 	// restore settings and set INPUT values
@@ -441,9 +469,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 	// build DOM objects requiring prefs restored
 	buildShortcutTable();
 	buildSearchEngineContainer();
-	buildToolIcons();
+	buildToolsBarIcons();
 	sortAdvancedOptions();
-//	buildAdditionalSearchActionsTable();
+	buildAdditionalSearchActionsTable();
 
 	addDOMListeners();
 
@@ -565,7 +593,7 @@ function keyButtonListener(e) {
 	e.target.addEventListener('keydown', function(evv) {
 	
 		if ( evv.key === "Escape" ) {
-			e.target.innerText = browser.i18n.getMessage('ClickToSet');
+			e.target.innerText = i18n('ClickToSet');
 			e.target.value = 0;
 		} else {
 			e.target.innerText = keyCodeToString(evv.which);
@@ -620,7 +648,7 @@ function keyArrayToButtons(arr, options) {
 	if ( Array.isArray(arr) ) {
 	
 		if (arr.length === 0) {
-			div.innerText = 'text' in options ? options.text : browser.i18n.getMessage('ClickToSet') || "Click to set";
+			div.innerText = 'text' in options ? options.text : i18n('ClickToSet') || "Click to set";
 		}
 		
 		for (let i=0;i<arr.length;i++) {
@@ -699,7 +727,7 @@ function makeTabs() {
 	}
 }
 
-function buildToolIcons() {
+function buildToolsBarIcons() {
 
 	function getToolIconIndex(element) {
 		return [].indexOf.call(document.querySelectorAll('.toolIcon'), element);
@@ -768,16 +796,14 @@ function buildToolIcons() {
 	});
 
 	for (let icon of toolIcons) {
-		let img = document.createElement('div');
+
+		let img = createMaskIcon(icon.src);
 		img.disabled = icon.disabled;
 		img.style.opacity = (img.disabled) ? .4 : 1;
-		img.className = 'toolIcon';
+		img.classList.add('toolIcon');
 		img.setAttribute('draggable', true);
-		img.src = icon.src;
 		img.setAttribute('data-title',icon.title);
 		img.name = icon.name;
-		img.classList.add('tool');
-		img.style.setProperty('--mask-image', `url(${icon.src})`);
 
 		img.addEventListener('dragstart',dragstart_handler);
 		img.addEventListener('dragend',dragend_handler);
@@ -797,7 +823,7 @@ function buildToolIcons() {
 		});
 		
 		img.addEventListener('mouseout', e => {
-			t_toolIcons.innerText = browser.i18n.getMessage(t_toolIcons.dataset.i18n);
+			t_toolIcons.innerText = i18n(t_toolIcons.dataset.i18n);
 		});
 
 		$('#toolIcons').appendChild(img);
@@ -817,11 +843,11 @@ function buildPositionWidget() {
 		let t_position = $('#t_position');
 		el.addEventListener('mouseover', e => {
 			let parts = e.target.dataset.position.split(" ");
-			t_position.innerText = browser.i18n.getMessage("PositionRelativeToCursor").replace("%1", browser.i18n.getMessage(parts[0])).replace("%2",browser.i18n.getMessage(parts[1]));
+			t_position.innerText = i18n("PositionRelativeToCursor").replace("%1", i18n(parts[0])).replace("%2",i18n(parts[1]));
 		});
 		
 		el.addEventListener('mouseout', e => {
-			t_position.innerText = browser.i18n.getMessage(t_position.dataset.i18n);
+			t_position.innerText = i18n(t_position.dataset.i18n);
 		});
 		
 	}
@@ -878,7 +904,7 @@ function showInfoMsg(el, msg) {
 // 	let i18n_tooltips = document.querySelectorAll('[data-i18n_tooltip]');
 	
 // 	for (let el of i18n_tooltips) {
-// 		el.dataset.msg = browser.i18n.getMessage(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
+// 		el.dataset.msg = i18n(el.dataset.i18n_tooltip + 'Tooltip') || el.dataset.msg || el.dataset.i18n_tooltip;
 		
 // 		el.addEventListener('mouseenter', e => {
 // 			showInfoMsg(el, el.dataset.msg);
@@ -935,6 +961,89 @@ function buildImportExportButtons() {
 
 		// Closure to capture the file information.
 		reader.onload = async () => {
+
+			// check for exported nodes
+			importNodes: try {
+				let json = JSON.parse(reader.result);
+				if ( !json.exportedNodes ) break importNodes;
+
+				let uo = JSON.parse(JSON.stringify(userOptions));
+
+				let folder = {
+					type:"folder",
+					children: json.exportedNodes,
+					id:gen(),
+					title: "Imported"
+				}
+
+				// flatten
+				folder.children = findNodesDeep(folder, n => n.type !== 'folder' );
+
+				// get nodes with duplicate ids in userOptions.nodeTree
+				let dupes = findNodesDeep(folder, n => findNode(uo.nodeTree, _n => _n.id === n.id));
+
+				for ( let dupe of dupes ) {
+					let result = await new Promise( res => {
+						$('#importModalDuplicates').classList.remove('hide');
+						$('#importModalDuplicates [name="message"]').innerText = dupe.title || dupe.type;
+
+						$('#importModalDuplicates').querySelectorAll('BUTTON[name]').forEach( el => {
+							el.addEventListener('click', e => res(el.name));
+						})
+					});
+
+					if ( result === "skip" )
+						removeNodesById(folder, dupe.id);
+
+					if ( result === "cancel" ) {
+						$('#importModalDuplicates').classList.add('hide');
+						return;
+					}
+
+					if ( result === "replace" ) {
+						let oldNode = findNode(uo.nodeTree, n => n.id === dupe.id );
+						oldNode = JSON.parse(JSON.stringify(dupe));
+
+						if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
+							let i = uo.searchEngines.findIndex( _se => _se.id === dupe.id );
+							if ( i > -1 ) uo.searchEngines[i] = JSON.parse(JSON.stringify(dupe.searchEngine));
+
+							delete dupe.searchEngine;
+						}
+
+						removeNodesById(folder, dupe.id);
+					}
+
+					if ( result === "merge" ) {
+
+						// replace id 
+						dupe.id = gen();
+
+						// push to searchEngines array
+						if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
+							dupe.searchEngine.id = dupe.id;
+
+							uo.searchEngines.push(dupe.searchEngine);
+							delete dupe.searchEngine;
+						}
+					}
+						
+					$('#importModalDuplicates').classList.add('hide');
+
+				}
+
+				findNodes(folder, n => n.type === "searchEngine").forEach( n => {
+					if ( n.searchEngine ) uo.searchEngines.push(n.searchEngine);
+				})
+
+				if ( folder.children.length ) uo.nodeTree.children.push(folder);
+
+				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: uo});
+				location.reload();
+
+				return;
+
+			} catch (error) { console.error(error)}
 			try {
 				let newUserOptions = JSON.parse(reader.result);
 				
@@ -945,25 +1054,148 @@ function buildImportExportButtons() {
 					|| !newUserOptions.searchEngines
 					
 				) {
-					alert(browser.i18n.getMessage("ImportSettingsNotFoundAlert"));
+					alert(i18n("ImportSettingsNotFoundAlert"));
 					return;
 				}
 
-				// let result = await new Promise( res => {
-				// 	$('#importModal').classList.remove('hide');
+				if ( false && userOptions.advancedImport ) {
 
-				// 	$('#importModal .ok').addEventListener('click', e => res(true));
-				// 	$('#importModal .cancel').addEventListener('click', e => res(false));
-				// });
+					$('#main').classList.add('blur');
 
-				// $('#importModal').classList.add('hide');
+					let choice1 = await new Promise( res => {
+						$('#importModal').classList.remove('hide');
 
-				// if ( !result ) return;
+						$('#importModal .replace').addEventListener('click', e => res("replace"));
+						$('#importModal .merge').addEventListener('click', e => res("merge"));
+						$('#importModal .cancel').addEventListener('click', e => res("cancel"));
+					});
+					$('#importModal').classList.add('hide');
 
-				// else {
-				// 	alert($('#importModal [name="settings"]').checked + "\t" +  $('#importModal [name="engines"]').checked + "\t" +  $('#importModal [name="history"]').checked);
-				// 	return;
-				// }
+					if ( choice1 === "cancel" ) return;
+					if ( choice1 === "merge" ) {
+						await new Promise( res => {
+							$('#importModalCustom').classList.remove('hide');
+							$('#importModalCustom .ok').addEventListener('click', e => res("replace"));
+							$('#importModalCustom .cancel').addEventListener('click', e => res("cancel"));
+
+							let left_browser = $('#importModalCustom [name="nodes_left"]');
+							let right_browser = $('#importModalCustom [name="nodes_right"]');
+
+							left_browser.innerHTML = null;
+							right_browser.innerHTML = null;
+
+							let copy = Object.assign({}, newUserOptions);
+							traverseNodesDeep(copy.nodeTree, (n,p) => {
+
+								// remove OCSE from non-FF browsers
+								if ( n.type === "oneClickSearchEngine" && !browser.search )
+									removeNode(n,p);
+								// remove duplicate nodes
+								else if ( findNode(userOptions.nodeTree, _n => _n.id === n.id && JSON.stringify(_n) === JSON.stringify(n)) )
+									removeNode(n,p);
+								// remove missing engines
+								else if ( n.type === "searchEngine" && !copy.searchEngines.find(se => se.id === n.id ) )
+									removeNode(n,p);
+								// remove empty folders
+								else if ( n.type === "folder" && !n.children.length && p)
+									removeNode(n,p);
+
+							})
+
+							left_browser.appendChild(makeFolderBrowser(copy.nodeTree));
+							right_browser.appendChild(makeFolderBrowser({type: "folder", title:"/", id: gen(), children: []}));
+
+							left_browser.querySelectorAll('li').forEach( li => {
+								li.classList.add('new');
+								li.addEventListener('click', e => {
+									if ( e.target !== li ) return;
+
+									let parent = li.closest('.folderBrowser');
+									let notParent = [left_browser, right_browser].find( b => !b.contains(parent));
+
+									if ( left_browser.contains(parent) ) {
+										let div = document.createElement('div');
+										div.dataset.id = li.node.id;
+										li.parentNode.insertBefore(div, li);
+										notParent.querySelector('li[title="/"] > UL').appendChild(li);
+									} else {
+										let placeholder = left_browser.querySelector(`div[data-id="${li.node.id}"]`);
+
+										if ( placeholder)  {
+											placeholder.parentNode.insertBefore(li, placeholder);
+											placeholder.parentNode.removeChild(placeholder);
+										}
+									}
+								})
+							});
+						}).then( async result => {
+
+							if ( result === "cancel" ) {
+								newUserOptions = null;
+								return;
+							}
+
+							let _settings = $('#importModalCustom [name="settings"]').checked;
+							let _history = $('#importModalCustom [name="history"]').checked;
+
+							if ( !_history )
+								newUserOptions.searchBarHistory = JSON.parse(JSON.stringify(userOptions.searchBarHistory));
+
+							if ( !_settings ) {
+								for ( key in userOptions ) {
+									if ( !["nodeTree", "searchEngines", "searchBarHistory"].includes(key) )
+										newUserOptions[key] = JSON.parse(JSON.stringify(userOptions[key]));
+								}
+							}
+
+							let tree = listToNodeTree($('#importModalCustom [name="nodes_right"] .folderBrowser li[title="/"] > UL'));
+							let ids = findNodes(tree, n => n.type === "searchEngine").map(n => n.id);
+
+							let duplicates = [];
+							ids.forEach( id => {
+								let node = findNode(userOptions.nodeTree, n => n.id === id );
+								if ( node ) duplicates.push(n);
+							});
+
+							// loop over duplicates to replace, skip, cancel
+							for ( let dupe of duplicates ) {
+								await new Promise( res => {
+									$('#importModalDuplicates').classList.remove('hide');
+									$('#importModalDuplicates [name="message"]').innerText = dupe.title;
+									$('#importModalDuplicates [name="replace"]').addEventListener('click', e => res("replace"));
+									$('#importModalDuplicates [name="skip"]').addEventListener('click', e => res("skip"));
+									$('#importModalDuplicates [name="cancel"]').addEventListener('click', e => res("cancel"));
+								}).then(result => {
+									if ( result === "skip" )
+										removeNodesById(tree, dupe.id);
+
+									$('#importModalDuplicates').classList.add('hide');
+								});
+							}
+
+							if ( duplicates.length ) console.error(duplicates);
+
+							// append searchEngines
+							let ses = userOptions.searchEngines.filter(se => ids.includes(se.id));
+							newUserOptions.searchEngines = userOptions.searchEngines.concat(ses);
+							
+							// append tree to newUserOptions
+							tree.title = "Imported";
+							newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
+
+							if ( tree.children.length )
+								newUserOptions.nodeTree.children.push(JSON.parse(JSON.stringify(tree)));
+
+						});
+
+						$('#importModalCustom').classList.add('hide');
+					}
+
+					$('#main').classList.remove('blur');
+				}
+
+				// check for cancel
+				if ( !newUserOptions ) return;
 				
 				// update imported options
 				let _uo = await browser.runtime.sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
@@ -981,7 +1213,7 @@ function buildImportExportButtons() {
 				overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
 				let msgDiv = document.createElement('div');
 				msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
-				msgDiv.innerText = browser.i18n.getMessage("Fetchingremotecontent");
+				msgDiv.innerText = i18n("Fetchingremotecontent");
 				overDiv.appendChild(msgDiv);
 				document.body.appendChild(overDiv);
 				let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
@@ -1014,7 +1246,7 @@ function buildImportExportButtons() {
 
 			} catch(err) {
 				console.log(err);
-				alert(browser.i18n.getMessage("InvalidJSONAlert"));
+				alert(i18n("InvalidJSONAlert"));
 			}
 		}
 
@@ -1033,7 +1265,27 @@ function buildUploadOnHash() {
 	}
 }
 
+function listToNodeTree(ul) {
+	let tree = {
+		type:"folder",
+		id: gen()
+	};
+	function traverse(el, folder) {
 
+		if ( el.nodeName === 'LI') {
+			folder.push(JSON.parse(JSON.stringify(el.node)));
+		}
+
+		if ( el.nodeName === 'UL' ) {
+			folder.children = [];
+			el.childNodes.forEach(c => traverse(c, folder.children));
+		}
+	}
+		
+	traverse(ul, tree);
+
+	return tree;
+}
 
 function buildHelpTab() {
 
@@ -1050,30 +1302,38 @@ function buildHelpTab() {
 		return false;
 	}
 	
-	let i18n = document.querySelectorAll('[data-i18n]');
+	let i18ns = document.querySelectorAll('[data-i18n]');
 	
-	for (let el of i18n) {
+	for (let el of i18ns) {
 
 		let textNode = traverse(el);
 		
-		if (browser.i18n.getMessage(el.dataset.i18n)) {
-			textNode.nodeValue = browser.i18n.getMessage(el.dataset.i18n);
+		if (i18n(el.dataset.i18n)) {
+			textNode.nodeValue = i18n(el.dataset.i18n);
+
+				el.addEventListener('click', e => {
+					if ( userOptions.developerMode ) {
+						el.style.backgroundColor = "rgba(0,0,255,.1)";
+						setTimeout(() => el.style.backgroundColor = null, 150);
+						console.log(el.dataset.i18n);
+						navigator.clipboard.writeText(el.dataset.i18n);
+					}
+				})
 			
 			if (el.title === "i18n_text")
-				el.title = browser.i18n.getMessage(el.dataset.i18n);
+				el.title = i18n(el.dataset.i18n);
 		}
-
 	}
 
 	// replace new-style titles
 	document.querySelectorAll('[title^="$"]').forEach( el => {
-		el.title = browser.i18n.getMessage(el.title.replace(/^\$/, "") );
-		el.style.cursor = "help";
+		el.title = i18n(el.title.replace(/^\$/, "") );
+	//	el.style.cursor = "help";
 	});
 
 	// add locale-specific styling
 	var link = document.createElement( "link" );
-	link.href = browser.runtime.getURL('/_locales/' + browser.i18n.getUILanguage() + '/style.css');
+	link.href = browser.runtime.getURL('/_locales/' + i18n("LOCALE_FOLDER") + '/style.css');
 	link.type = "text/css";
 	link.rel = "stylesheet";
 	document.getElementsByTagName( "head" )[0].appendChild( link );
@@ -1136,7 +1396,7 @@ function buildHelpTab() {
 		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
 	}, 250);
 	
-	iframe.src = '/_locales/' + browser.i18n.getUILanguage() + '/help.html';
+	iframe.src = '/_locales/' + i18n("LOCALE_FOLDER") + '/help.html';
 	
 	help.appendChild(iframe);
 
@@ -1225,7 +1485,7 @@ function buildSearchActions() {
 
 			let o = document.createElement('option');
 			o.value = key;
-			o.innerText = browser.i18n.getMessage(actions[key].i18n);
+			o.innerText = i18n(actions[key].i18n);
 
 			for ( let data in actions[key]) 
 				o.dataset[data] = actions[key][data];
@@ -1236,7 +1496,54 @@ function buildSearchActions() {
 
 	document.querySelectorAll('[data-searchaction]').forEach( el => {
 		addOption(el, el.dataset.searchaction.split(","));
+		el.querySelector('option').selected = true;
 	});
+}
+
+function buildCheckbox(id) {
+	let label = document.createElement('label');
+	let input = document.createElement('input');
+	let span = document.createElement('span');
+
+	label.className = 'container';
+	input.type = 'checkbox';
+	input.id = id;
+	span.className = "checkmark checkmark2";
+
+	label.appendChild(input);
+	label.appendChild(span);
+
+	return label;
+}
+function buildCheckboxes() {
+	document.querySelectorAll('checkbox').forEach(el => {
+		let cb = buildCheckbox(el.dataset.id);
+		el.parentNode.insertBefore(cb,el);
+		el.parentNode.removeChild(el);
+	});
+}
+
+function buildToolMasks() {
+	document.querySelectorAll('tool').forEach( el => {
+		let t = document.createElement('div');
+		t.className = 'tool';
+		t.setAttribute("style", el.getAttribute("style"));
+		t.style.setProperty('--mask-image', `url(icons/${el.dataset.icon})`);
+
+		el.parentNode.insertBefore(t,el);
+		el.parentNode.removeChild(el);
+	})
+}
+
+function buildLayoutEditors() {
+	let le = $("quickMenuLayoutEditor");
+	"menuBar,searchBarContainer,quickMenuElement,titleBar,toolBar".split(",").forEach(id => {
+		let div = document.createElement('div');
+		div.dataset.id = id;
+		div.innerText = i18n(i18n_layout_titles[id] || "");
+
+		le.appendChild(div);
+	})
 }
 
 // generate new search.json.mozlz4 
@@ -1330,7 +1637,7 @@ function buildThemes() {
 	themes.forEach( t => {
 		let option = document.createElement('option');
 		option.value = t.name;
-		option.innerText = browser.i18n.getMessage(t.name.replace(" ","_")) || t.name;
+		option.innerText = i18n(t.name.replace(" ","_")) || t.name;
 		$('#quickMenuTheme').appendChild(option);
 	});
 }
@@ -1338,7 +1645,7 @@ function buildThemes() {
 $('#b_cacheIcons').addEventListener('click', cacheAllIcons);
 
 $('#b_uncacheIcons').addEventListener('click', e => {
-	if ( confirm('remove all icon cache?'))	{
+	if ( confirm(i18n("confirmUncache")))	{
 		uncacheIcons();
 		saveOptions();
 	}
@@ -1358,7 +1665,7 @@ function cacheAllIcons(e) {
 	result.oncomplete = function() {
 		clearInterval(interval);
 		if ( result.bad.length )
-			msg.innerText = "some icons could not be cached";
+			msg.innerText = i18n("warningCache");
 		else
 			msg.innerText = "done";
 
@@ -1401,10 +1708,10 @@ function buildShortcutTable() {
 		tr.shortcut = s;
 		tr.appendChild(document.createElement('td'));
 		tr.appendChild(document.createElement('td'))
-			.appendChild(document.createTextNode(browser.i18n.getMessage(s.name) || s.name || s.action));
+			.appendChild(document.createTextNode(i18n(s.name) || s.name || s.action));
 
 		let span = tr.appendChild(document.createElement('td').appendChild(document.createElement('span')));
-		span.title = browser.i18n.getMessage("ClickToSet");
+		span.title = i18n("ClickToSet");
 		span.dataset.id = s.id;
 		span.style = "cursor:pointer;user-select:none;";
 		span.innerText = 'set';
@@ -1472,7 +1779,7 @@ function shortcutListener(hk, options) {
 		document.addEventListener('keypress', preventDefaults);
 		
 		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
-		hk.appendChild(document.createTextNode(browser.i18n.getMessage('PressKey')));
+		hk.appendChild(document.createTextNode(i18n('PressKey')));
 				
 		document.addEventListener('keyup', e => {
 			
@@ -1579,7 +1886,7 @@ function buildAdvancedOptions() {
 		tr.appendChild(td2);
 
 		td1.innerText = o.id;
-		td1.title = browser.i18n.getMessage(o.id.replace(".", "_") + "Tooltip") || o.i18n;
+		td1.title = i18n(o.id.replace(".", "_") + "Tooltip") || o.i18n;
 		td1.style.cursor = 'help';
 
 		td2.appendChild(makeInput(o.id));
@@ -1630,37 +1937,46 @@ function syntaxHighlight(json) {
 function buildAdditionalSearchActionsTable() {
 	let table = $("additionalSearchActionsTable");
 
-	table.querySelectorAll("TR:not(.template)").forEach( tr => tr.parentNode.removeChild(tr));
-	userOptions.customSearchActions.forEach( (sa,index) => {
+	const makeNewRow = sa => {
 		let row = table.querySelector(".template").cloneNode(true);
 		row.className = null;
 
 		table.appendChild(row);
 
-		row.querySelector('.event').value = sa.event;
-		row.querySelector('.button').value = sa.button;
-		row.querySelector('.altKey').value = sa.altKey;
-		row.querySelector('.ctrlKey').value = sa.ctrlKey;
-		row.querySelector('.metaKey').value = sa.metaKey;
-		row.querySelector('.shiftKey').value = sa.shiftKey;
-	});
+		row.querySelector('[name="event"]').value = sa.event;
+		row.querySelector('[name="button"]').value = sa.button;
+		row.querySelector('[name="action"]').value = sa.action;
+		row.querySelector('[name="altKey"]').checked = sa.altKey;
+		row.querySelector('[name="ctrlKey"]').checked = sa.ctrlKey;
+		row.querySelector('[name="metaKey"]').checked = sa.metaKey;
+		row.querySelector('[name="shiftKey"]').checked = sa.shiftKey;
+		
+		row.querySelector('[name="delete"]').onclick = function() {
+			row.parentNode.removeChild(row);
+			saveOptions();
+		}
+	}
+
+	table.querySelectorAll("TR:not(.template):not(.header)").forEach( tr => tr.parentNode.removeChild(tr));
+	userOptions.customSearchActions.forEach( sa => makeNewRow(sa));
+
+	$('newSearchAction').onclick = function(e) {
+		
+		let sa = {
+			"event":"mouseup",
+			"button":0,
+			"altKey":false,
+			"ctrlKey":false,
+			"metaKey":false,
+			"shiftKey":false,
+			"action": "openNewTab",
+			"folder":false
+		}
+
+		makeNewRow(sa);
+		saveOptions();
+	}
 }
-
-// "event":"mouseup",
-// 		"button":0,
-// 		"altKey":false,
-// 		"ctrlKey":false,
-// 		"metaKey":false,
-// 		"shiftKey":false,
-// 		"action": "",
-// 		"folder":false
-
-// window.addEventListener('focus', async e => {
-// 	let uo = await browser.runtime.sendMessage({action: 'getUserOptions'});
-
-// 	if ( JSON.stringify(uo) !== JSON.stringify(userOptions))
-// 		console.log('changed');
-// })
 
 // saveOptions on every change
 document.addEventListener('change', e => {
@@ -1680,7 +1996,7 @@ $('b_manualEdit').addEventListener('click', e => {
 
 	if ( !on ) {
 
-		if ( !confirm(browser.i18n.getMessage("manualeditwarning"))) return;
+		if ( !confirm(i18n("manualeditwarning"))) return;
 
 		$('t_manualEdit').style.height = window.innerHeight - 120 + "px";//$('advancedSettingsTable').getBoundingClientRect().height + "px";
 		$('advancedSettingsTable').style.display = 'none';
@@ -1692,18 +2008,18 @@ $('b_manualEdit').addEventListener('click', e => {
 		delete o.nodeTree;
 
 		const ordered = Object.keys(o).sort().reduce(
-		  (obj, key) => { 
-		    obj[key] = o[key]; 
-		    return obj;
-		  }, 
-	  	{}
+			(obj, key) => { 
+			obj[key] = o[key]; 
+			return obj;
+		}, 
+		{}
 		);
 
 		$('t_manualEdit').innerHTML = syntaxHighlight(JSON.stringify(ordered, null, 4))
 	} else {
-		 $('advancedSettingsTable').style.display = null;
-		 [$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );
-		 $('b_manualSave').classList.remove('changed');
+		$('advancedSettingsTable').style.display = null;
+		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );
+		$('b_manualSave').classList.remove('changed');
 	}
 })
 
@@ -1726,7 +2042,7 @@ $('b_manualSave').addEventListener('click', e => {
 });
 
 $("#b_resetUserOptions").addEventListener('click', e => {
-	if ( confirm(browser.i18n.getMessage("resetUserOptionsConfirm")) ) {
+	if ( confirm(i18n("resetUserOptionsConfirm")) ) {
 		newUserOptions = JSON.parse(JSON.stringify(defaultUserOptions));
 		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
 		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
@@ -1805,23 +2121,15 @@ function createEditMenu() {
 	overdiv.style.opacity = null;
 }
 
-function createMaskIcon(src) {
-	let tool = document.createElement('div');
-	tool.className = 'tool';
-	tool.style.setProperty('--mask-image', `url(${src})`);
-
-	return tool;
-}
-
 async function checkAndUpdateNativeApp() {
-	if ( !browser.runtime.sendNativeMessage ) return alert('Native app not connected!');
+	if ( !browser.runtime.sendNativeMessage ) return alert(i18n('NativeAppMissing'));
 
 	browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true}).then( newVersion => {
 		if ( newVersion ) {
-			if (confirm("Update native app script to version " + newVersion + "?"))
+			if (confirm(i18n("UpdateToVersion", newVersion)))
 				browser.runtime.sendNativeMessage("contextsearch_webext", {update:true});
 		} else {
-			alert('Latest version already installed');
+			alert(i18n("LatestVersionAlreadyInstalled"));
 		}
 	});
 }
@@ -1830,4 +2138,75 @@ async function checkForNativeAppUpdate() {
 	if ( !browser.runtime.sendNativeMessage ) return false;
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", {checkForUpdate:true});
+}
+
+function makeFolderBrowser(tree) {
+
+	let ul = document.createElement('ul');
+	ul.classList.add('folderBrowser')
+
+	traverse(tree, ul);
+
+	function traverse(node, parentEl) {
+
+		if ( !node.id ) return;
+		
+		let _li = document.createElement('li');
+		_li.nodeid = node.id;
+		_li.title = node.title;
+		_li.node = node;
+
+		let img = new Image();
+		img.src = getIconFromNode(node);
+		img.style.marginRight = '8px';
+		_li.appendChild(img);
+		_li.appendChild(document.createTextNode(node.title));
+
+		if (_li.node.type === "oneClickSearchEngine") {
+			_li.appendChild(document.createElement('firefox-icon'));
+		}
+
+		parentEl.appendChild(_li);
+
+		if ( node.hidden ) _li.style.opacity = .5;
+
+		if ( node.children ) {
+			let _ul = document.createElement('ul');
+			_li.appendChild(_ul);
+
+			_ul.node = node;
+
+			let collapse = document.createElement('span');
+			collapse.innerText = '+';
+			_li.insertBefore(collapse,_li.firstChild);
+			_ul.style.display = 'none';
+
+			collapse.onclick = function() {	
+				_ul.style.display = _ul.style.display ? null : 'none';
+				collapse.innerText = _ul.style.display ? "+" : "-";
+			}
+
+			node.children.forEach( child => traverse(child, _ul) );
+		}
+	}
+
+	ul.querySelectorAll('li').forEach( li => {
+
+		li.setAttribute("draggable", "true");
+
+		li.ondragstart = function(e) {
+			e.stopPropagation();
+
+			e.dataTransfer.setData("text/plain", li.nodeid);
+			e.effectAllowed = "copyMove";
+			// e.preventDefault();
+			window.dragSource = li;
+		}
+
+		li.ondragend = function(e) {e.preventDefault();}
+	});
+
+	ul.querySelector('ul').style.display = null;
+
+	return ul;
 }

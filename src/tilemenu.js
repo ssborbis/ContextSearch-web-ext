@@ -26,21 +26,14 @@ var ob = document.getElementById('optionsButton');
 var mb = document.getElementById('menuBar');
 var toolBar = document.getElementById('toolBar');
 var sbc = document.getElementById('searchBarContainer');
-var aeb = document.getElementById('addEngineBar');
+var aeb = document.getElementById('opensearchBar');
 var ctb = document.getElementById('contextsBar');
 
 var type;
+var singleColumn;
 
 // track if tiles can be moved
 window.tilesDraggable = false;
-
-document.addEventListener('quickMenuIframeLoaded', e => {
-	if ( !userOptions.alwaysAllowTileRearranging ) return;
-
-	window.tilesDraggable = true;
-	setDraggable();
-}, {once: true});
-
 
 //#Source https://bit.ly/2neWfJ2 
 const every_nth = (arr, nth) => arr.filter((e, i) => i % nth === nth - 1);
@@ -148,7 +141,7 @@ function getSearchActions(e, isFolder, allEvents) {
 			let sa = defaultSearchActions[key];
 			if ( isSearchAction(sa, e, allEvents) && isFolder === sa.folder ) {
 				// console.log(key, sa.action);
-				sas.push(sa);;
+				sas.push(sa);
 			}
 		}
 	}
@@ -189,7 +182,7 @@ function getOpenMethod(e, isFolder) {
 	let sa = getSearchAction(e, isFolder);
 	if ( sa ) return sa.action;
 
-	console.error('no searchAction found', e);
+	//console.error('no searchAction found', e);
 	
 	let left = isFolder ? userOptions.quickMenuFolderLeftClick : userOptions.quickMenuLeftClick;
 	let right = isFolder ? userOptions.quickMenuFolderRightClick : userOptions.quickMenuRightClick;
@@ -235,20 +228,90 @@ function keepMenuOpen(e, isFolder) {
 		return true;
 }
 
+function getColumns() {
+	if (type === 'searchbar') return userOptions.searchBarColumns;
+	if (type === 'sidebar') return userOptions.sideBar.columns;
+	if (type === 'quickmenu') return userOptions.quickMenuColumns;
+}
+
+const getDragDiv = () => document.getElementById('dragDiv');
+const isTool = e => e.dataTransfer.getData("tool") === "true";
+
+function createToolsArray() {
+	
+	let toolsArray = [];
+
+	// iterate over tools
+	userOptions.quickMenuTools.forEach( tool => {
+
+		// skip disabled tools
+		if (tool.disabled) return;
+		
+		let _tool = QMtools.find( t => t.name === tool.name );
+		if ( _tool ) {
+			
+			toolsArray.push(_tool.init());
+		
+			toolsArray[toolsArray.length - 1].context = _tool.context;
+			toolsArray[toolsArray.length - 1].tool = _tool;
+		}
+
+	});
+
+	toolsArray.forEach( tool => {
+		tool.dataset.type = 'tool';
+		tool.dataset.title = tool.title;
+		tool.dataset.name = tool.tool.name;
+		tool.classList.add('tile');
+
+		if ( tool.context && !tool.context.includes(type) ) {
+			tool.disabled = true;
+			tool.dataset.disabled = true;
+		}
+	});
+
+	// add drop text handler
+	toolsArray.forEach( tool => {
+		tool.addEventListener('drop', e => {
+			let text = e.dataTransfer.getData("text");
+			if ( !text ) return;
+
+			sb.set(text);
+			tool.dispatchEvent(new MouseEvent('mousedown'));
+			tool.dispatchEvent(new MouseEvent('mouseup'));
+		});
+	});
+
+	
+	toolsArray.forEach( tool => {
+		
+		tool.addEventListener('dragstart', e => {
+
+			e.dataTransfer.setData("tool", "true");
+			let img = new Image();
+			img.src = browser.runtime.getURL('icons/transparent.gif');
+			e.dataTransfer.setDragImage(img, 0, 0);
+			tool.id = 'dragDiv';
+			
+			//qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
+		});
+	});
+	
+	toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
+
+	return toolsArray;
+}
+
 async function makeQuickMenu(options) {
+
+	quickMenuObject = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}) || quickMenuObject;
 
 	type = options.type;
 
-	let singleColumn = options.singleColumn;
+	singleColumn = options.singleColumn;
 	
-	let columns = singleColumn ? 1 : getColumns();
-	
-	function getColumns() {
-		if (type === 'searchbar') return userOptions.searchBarColumns;
-		if (type === 'sidebar') return userOptions.sideBar.columns;
-		if (type === 'quickmenu') return userOptions.quickMenuColumns;
-	}
-	
+	let columns = singleColumn ? 1 : ( options.columns || getColumns() );
+		
 	// unlock the menu in case it was opened while another quickmenu was open and locked
 	quickMenuObject.locked = false;
 
@@ -291,6 +354,7 @@ async function makeQuickMenu(options) {
 		quickMenuObject.searchTerms = sb.value;
 		quickMenuObject.searchTermsObject.selection = sb.value;
 	//	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+	//	browser.runtime.sendMessage({action: "updateQuickMenuObject", quickMenuObject: quickMenuObject});
 	});
 
 	sb.addEventListener('keydown', e => {
@@ -305,24 +369,29 @@ async function makeQuickMenu(options) {
 		sb.set("");
 		sb.focus();
 	};
-	csb.title = browser.i18n.getMessage('delete').toLowerCase();
+	csb.title = i18n('delete').toLowerCase();
 	
 	qm.toggleDisplayMode = async() => {
-		qm.rootNode.displayType = function() {
-			if ( qm.singleColumn && !qm.rootNode.displayType ) return "grid";
-			if ( !qm.singleColumn && !qm.rootNode.displayType ) return "text";
-			return "";
-		}();
+
+		qm.rootNode.displayType = qm.singleColumn ? "grid" : "text";
 		
 		if ( userOptions.saveMenuDisplayMode ) {
+
+			if ( type === "quickmenu" && userOptions.nodeTree.id === qm.rootNode.id )
+				userOptions.quickMenuDefaultView = qm.rootNode.displayType || "grid";
+
+			if ( type === "searchbar" && userOptions.nodeTree.id === qm.rootNode.id)
+				userOptions.searchBarDefaultView = qm.rootNode.displayType || "grid";
+
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));		
 			saveUserOptions();
 		}
 		
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
-		setDraggable();	
-		
-		resizeMenu({toggleSingleColumn: true});
+
+		resizeMenu({toggleSingleColumn: true, openFolder:true})
+
+//		runAtTransitionEnd(qm, "height", () => resizeMenu({toggleSingleColumn: true}), 100);
 	}
 	
 	qm.addTitleBarTextHandler = div => {
@@ -585,6 +654,9 @@ async function makeQuickMenu(options) {
 
 		qm.addEventListener(eventType, e => {
 
+			// dispatch a custom event to replace standard events
+			e.target.dispatchEvent(new CustomEvent('document_' + eventType, {bubbles:true}));
+
 			window.focus();
 
 			// move fix
@@ -595,128 +667,6 @@ async function makeQuickMenu(options) {
 			return false;
 		});
 	});
-
-	function createToolsArray() {
-	
-		let toolsArray = [];
-
-		// iterate over tools
-		userOptions.quickMenuTools.forEach( tool => {
-
-			// skip disabled tools
-			if (tool.disabled) return;
-			
-			let _tool = QMtools.find( t => t.name === tool.name );
-			if ( _tool ) {
-				
-				toolsArray.push(_tool.init());
-			
-				toolsArray[toolsArray.length - 1].context = _tool.context;
-				toolsArray[toolsArray.length - 1].tool = _tool;
-			}
-
-		});
-
-		toolsArray.forEach( tool => {
-			tool.dataset.type = 'tool';
-			tool.dataset.title = tool.title;
-			tool.dataset.name = tool.tool.name;
-			tool.classList.add('tile');
-
-			if ( tool.context && !tool.context.includes(type) ) {
-				tool.disabled = true;
-				tool.dataset.disabled = true;
-			}
-		});
-
-		// add drop text handler
-		toolsArray.forEach( tool => {
-			tool.addEventListener('drop', e => {
-				let text = e.dataTransfer.getData("text");
-				if ( !text ) return;
-
-				sb.set(text);
-				tool.dispatchEvent(new MouseEvent('mousedown'));
-				tool.dispatchEvent(new MouseEvent('mouseup'));
-			});
-		});
-
-		let getDragDiv = () => {return document.getElementById('dragDiv')};
-		let isTool = e => e.dataTransfer.getData("tool") === "true";
-		
-		toolsArray.forEach( tool => {
-			
-			tool.setAttribute('draggable', window.tilesDraggable);
-
-			tool.addEventListener('dragstart', e => {
-
-				if ( !window.tilesDraggable ) return false;
-
-				e.dataTransfer.setData("tool", "true");
-				let img = new Image();
-				img.src = browser.runtime.getURL('icons/transparent.gif');
-				e.dataTransfer.setDragImage(img, 0, 0);
-				tool.id = 'dragDiv';
-				
-				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.add('dragDisabled') );
-			});
-			tool.addEventListener('dragenter', e => {
-				e.preventDefault();
-				if ( !isTool(e) ) return;
-			});
-			tool.addEventListener('dragover', e => {
-				e.preventDefault();
-				
-				if ( !isTool(e) ) return;
-			});
-			tool.addEventListener('dragend', e => {
-				qm.querySelectorAll('.tile:not([data-type="tool"])').forEach( _tile => _tile.classList.remove('dragDisabled') );				
-				if ( getDragDiv() ) getDragDiv().id = null;
-			});
-			tool.addEventListener('drop', async e => {	
-				e.preventDefault();
-				
-				if ( !isTool(e) ) return;
-				
-				let side = getSide(tool, e);
-				
-				let qmt = userOptions.quickMenuTools;
-				
-				dragName = getDragDiv().tool.name;
-				targetName = e.target.tool.name;
-				
-				dragIndex = qmt.findIndex( t => t.name === dragName );
-				targetIndex = qmt.findIndex( t => t.name === targetName );
-
-				if ( side === "before" ) {
-					qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
-					e.target.parentNode.insertBefore(getDragDiv(), e.target);
-				}
-				else {
-					qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
-					e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
-				}
-				
-				saveUserOptions();
-			
-				// rebuild menu
-				// toolsArray.forEach( _tool => _tool.parentNode.removeChild(_tool) );
-				// qm.toolsArray = createToolsArray();
-			//	toolsHandler();
-
-			//	qm.expandMoreTiles();
-
-			//	resizeMenu({tileDrop: true});
-
-			//	qm = await quickMenuElementFromNodeTree(qm.rootNode);
-
-			});
-		});
-		
-		toolsArray.forEach( div => qm.addTitleBarTextHandler(div));
-
-		return toolsArray;
-	}
 	
 	qm.toolsArray = createToolsArray();
 
@@ -799,357 +749,396 @@ async function makeQuickMenu(options) {
 		return qm.querySelectorAll('br').length;
 
 	}
-	
-	function buildQuickMenuElement(options) {
-		
-		let _singleColumn = options.forceSingleColumn || options.node.displayType === "text" || singleColumn;
-		
-		if ( options.node.displayType === "grid" ) _singleColumn = false;
-		
-		let _columns = _singleColumn ? 1 : getColumns();
-	
-		let tileArray = options.tileArray;
 
-		qm.innerHTML = null;
-
-		// initialize slide-in animation
-		qm.style.position = 'relative';
-		qm.style.visibility = 'hidden';
-		qm.style.transition = 'none';
-		qm.style.pointerEvents = 'none';
-		
-		qm.columns = _columns;
-	
-		// remove separators if using grid
-		if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
-	
-		qm.singleColumn = _singleColumn;
-			
-		// make rows / columns
-		tileArray.forEach( tile => {
-			
-			tile.classList.add('tile');
-
-			tile.classList.toggle("singleColumn", _singleColumn);
-			
-			if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
-				
-				if ( tile.node.icon )
-					tile.dataset.hasicon = 'true'; // removes pseudo element label set by content:attr(data-title) in tilemenu.css 
-				else
-					tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
-			}
-
-			qm.appendChild(tile);
-		});
-
-		qm.getTileSize = () => { 
-
-			let div = document.createElement('div');
-			div.className = "tile";
-			
-			div.classList.toggle('singleColumn', qm.singleColumn );
-			qm.appendChild(div);
-
-			let size = getFullElementSize(div);
-			
-			qm.removeChild(div);
-
-			return size;
-		};
-		
-		qm.setDisplay = () => {
-			qm.querySelectorAll('.tile').forEach( _tile => {
-				let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
-				_tile.classList.toggle("singleColumn", _sc);
-			});
-		}
-
-		// check if any search engines exist and link to Options if none
-		if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
-			var div = document.createElement('div');
-			div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
-			div.innerText = browser.i18n.getMessage("WhereAreMyEngines");
-			div.onclick = function() {
-				browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
-			}	
-			qm.appendChild(div);
-		}
-
-		// set min-width to prevent menu shrinking with smaller folders
-		qm.setMinWidth = () => qm.style.minWidth = qm.columns * qm.getTileSize().noBorderWidth + "px";
-		
-		// slide-in animation
-		if ( !userOptions.enableAnimations ) qm.style.setProperty('--user-transition', 'none');
-		qm.style.left = qm.getBoundingClientRect().width * ( options.reverse ? -1 : 1 ) + "px";
-		void( qm.offsetHeight );
-		qm.style.transition = null;
-		qm.style.visibility = null;
-		qm.style.left = '0px';
-
-		runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
-				
-		function isTool(e) {
-			return ( e.dataTransfer.getData("tool") === "true" );
-		}
-
-		(() => {
-
-			if ( qm.rootNode.parent ) return;
-			let specialFolderNodes = [];
-
-			if ( userOptions.quickMenuShowRecentlyUsed )
-				specialFolderNodes.push(recentlyUsedListToFolder());
-
-			if ( userOptions.quickMenuRegexMatchedEngines )
-				specialFolderNodes.push(matchingEnginesToFolder(quickMenuObject.searchTerms));
-
-			specialFolderNodes.forEach( folder => {
-				folder.displayType = qm.rootNode.displayType;
-
-				let _tile = nodeToTile( folder );
-				_tile.node.displayType = qm.rootNode.displayType;
-				// _tile.node.groupFolder = 'block';
-				_tile.classList.add('tile');
-				_tile.dataset.hasicon = 'true';
-				_tile.dataset.undraggable = true;
-				_tile.dataset.undroppable = true;
-
-				tileArray.unshift(_tile);
-				qm.insertBefore(_tile, qm.firstChild);
-			});
-		})();
-
-		qm.setDisplay();
-
-		(() => { //formatGroupFolders()
-
-			let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' && t.node.parent === qm.rootNode );
-
-			groupFolders.forEach( gf => {
-
-				let g = makeGroupFolderFromTile(gf);
-				if ( !g ) return;
-
-				// make GROUP draggable
-				g.draggable = true;
-
-				qm.insertBefore(g, gf);
-				if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
-				else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
-
-				// bubbles the drag event for the inline root folder to the GROUP
-				gf.dataset.undraggable = true;
-
-				let footer = g.querySelector('.footer');
-
-				// display groups limited to a row count and change more tile style
-				if ( gf.node.groupFolder === "block") {
-
-					makeContainerMore(g.querySelector('.container'), gf.node.groupLimit || Number.MAX_SAFE_INTEGER, qm.columns);
-					let moreTile = g.querySelector('[data-type="more"]');
-
-					if (moreTile) {
-						moreTile.parentNode.removeChild(moreTile);
-
-						footer.appendChild(moreTile);
-
-						moreTile.className = "groupMoreTile";
-					} else {
-						footer.parentNode.removeChild(footer);	
-					}
-				}
-			});
-		})();
-
-		qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
-
-		qm.expandMoreTiles = () => {
-			let moreTiles = [...document.querySelectorAll('[data-type="more"], [data-type="less"]')];
-
-			moreLessStatus.forEach( id => {
-				let moreTile = moreTiles.find( div => div.dataset.parentid === id );				
-				if ( moreTile ) moreTile.more();
-			});
-		}
-		
-		toolsHandler();
-
-		qm.expandMoreTiles();
-
-		// enable tools on folder change
-		(() => {
-			for ( ts in toolStatuses ) {
-				if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
-					let _tile = QMtools.find(t => t.name == ts ).init();
-					_tile.action();
-				}
-			}
-		})();
-
-		return qm;
-	}
-
-	async function quickMenuElementFromNodeTree( rootNode, reverse ) {
-
-		qm.contexts = quickMenuObject.contexts;
-		qm.contextualLayout = false;
-
-		// filter node tree for matching contexts
-		if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
-
-			let tempRoot = filterContexts(rootNode, qm.contexts);
-
-			// flatten
-			let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
-			if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
-				tempRoot.children = seNodes;
-			}
-
-			setParents(tempRoot);
-
-			tempRoot.parent = rootNode.parent;
-			rootNode = tempRoot;
-
-			qm.contextualLayout = true;
-		}
-
-		let debug = rootNode.title === "empty";
-
-		reverse = reverse || false; // for slide-in animation direction
-		
-		let nodes = rootNode.children;
-		let tileArray = [];
-		
-		// update the qm object with the current node
-		qm.rootNode = rootNode;
-		
-		if ( userOptions.syncWithFirefoxSearch ) {	
-			nodes = [];
-			qm.rootNode = Object.assign({}, qm.rootNode);
-			let ffses = await browser.runtime.sendMessage({action: "getFirefoxSearchEngines"});
-			
-			ffses.forEach( ffse => {
-				let node = findNode( userOptions.nodeTree, n => n.title === ffse.name );
-				
-				if ( !node ) {
-					console.log("couldn't find node for " + ffse.name);
-					return;
-				}
-				
-				node.parent = qm.rootNode;
-				
-				nodes.push(node);
-			});
-			
-			qm.rootNode.children = nodes;
-			
-			rootNode = qm.rootNode;
-		}
-		
-		// set the lastOpenedFolder object
-		browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
-		
-		if (rootNode.parent) { // if parentId was sent, assume subfolder and add 'back' button
-
-			let tile = buildSearchIcon(null, browser.i18n.getMessage('back'));
-			let backIcon = makeToolMask({icon: 'icons/back.svg'});
-			backIcon.style.position = "absolute";
-
-			tile.appendChild(backIcon);
-
-			tile.dataset.type = "folder";
-			tile.node = rootNode.parent;
-			tile.dataset.undraggable = true;
-	
-			tile.addEventListener('mouseup', _back);
-			tile.addEventListener('openFolder', _back);
-
-			addOpenFolderOnHover(tile);
-			
-			qm.back = _back;
-			
-			async function _back(e) {
-
-				// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
-				qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
-				setDraggable();	
-				qm.expandMoreTiles();
-				resizeMenu({openFolder: true});
-			}
-						
-			delete sb.selectedIndex;
-			tileArray.push(tile);
-		}
-			
-		function makeGroupTilesFromNode( node ) {
-			let tiles = [];
-			
-			node.children.forEach( _node => {
-				let _tile = nodeToTile(_node);
-				
-				if ( !_tile ) return;
-
-				_tile.title = node.title + " / " + _tile.title;
-
-				if ( _tile ) tiles.push( _tile );
-			});
-			
-			return tiles;
-		}
-
-		nodes.forEach( node => {
-
-			let tile = nodeToTile(node);
-			
-			if ( tile ) tileArray.push( tile );
-			else return;
-						
-		//	if ( node.groupFolder && !node.parent.parent) { // only top-level folders
-
-			if ( node.groupFolder && node.parent === qm.rootNode ) { 
-				let groupTiles = makeGroupTilesFromNode( node );
-
-				tileArray = tileArray.concat(groupTiles);
-			}
-
-		});
-
-		try { // fails on restricted pages
-			await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
-
-				if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
-			});
-		} catch (error) {
-
-		}
-
-		qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
-
-		makeContextsBar();
-
-		return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode});
-	}
-	
-	window.quickMenuElementFromNodeTree = quickMenuElementFromNodeTree;
-
-	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+	// options override
+	let root = JSON.parse(JSON.stringify(options.node || userOptions.nodeTree));
 
 	window.root = root;
-	quickMenuObject.contexts = options.contexts || [];
+
+	// options override
+	quickMenuObject.contexts = options.contexts || quickMenuObject.contexts || [];
 
 	setParents(root);
+
+	// reset the view based on menu
+	if ( type === 'quickmenu' )
+		root.displayType = userOptions.quickMenuDefaultView;
+	if ( type === 'searchbar' )
+		root.displayType = userOptions.searchBarDefaultView;
+	if ( type === 'sidebar')
+		root.displayType = userOptions.sideBar.singleColumn ? "text" : "grid";
+
+	// options override
+	root.displayType = options.displayType || root.displayType;
 
 	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
 	
 	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
-		let folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
+
+		let folder = null;
+
+		if ( lastFolderId === "___recent___") {
+			folder = recentlyUsedListToFolder();
+			folder.parent = root;
+		}
+		else if ( lastFolderId === "___matching___") {
+			folder = matchingEnginesToFolder(quickMenuObject.searchTerms);
+			folder.parent = root;
+		}
+		else
+			folder = findNodes( root, node => node.id == lastFolderId )[0] || null;
 		
 		if ( folder && folder.type === "folder" ) return Promise.resolve(quickMenuElementFromNodeTree(folder));
 	}
 
-	return Promise.resolve(quickMenuElementFromNodeTree(root));
+	return _quickMenuElementFromNodeTree({node: root, columns:options.columns});
 	
+}
+
+function buildQuickMenuElement(options) {
+		
+	let _singleColumn = options.forceSingleColumn || options.node.displayType === "text" || singleColumn;
+	
+	if ( options.node.displayType === "grid" ) _singleColumn = false;
+	
+	qm.columns = _singleColumn ? 1 : ( options.columns || getColumns() );
+
+	let tileArray = options.tileArray;
+
+	qm.innerHTML = null;
+
+	// initialize slide-in animation
+	qm.style.position = 'relative';
+	qm.style.visibility = 'hidden';
+	qm.style.transition = 'none';
+	qm.style.pointerEvents = 'none';
+	
+	// remove separators if using grid
+	if (!_singleColumn && userOptions.quickMenuHideSeparatorsInGrid) tileArray = tileArray.filter( tile => tile.dataset.type !== 'separator' );
+
+	qm.singleColumn = _singleColumn;
+		
+	// make rows / columns
+	tileArray.forEach( tile => {
+		
+		tile.classList.add('tile');
+		
+		if ( !_singleColumn && tile.node && tile.node.type === 'folder' && tile.dataset.type === 'folder' ) {
+			
+			if ( tile.node.icon )
+				tile.dataset.hasicon = 'true'; // removes pseudo element label set by content:attr(data-title) in tilemenu.css 
+			else
+				tile.style.backgroundImage = 'url(' + browser.runtime.getURL('icons/transparent.gif') + ')';
+		}
+
+		qm.appendChild(tile);
+	});
+
+	qm.getTileSize = () => { 
+
+		let div = document.createElement('div');
+		div.className = "tile";
+		
+		div.classList.toggle('singleColumn', qm.singleColumn );
+		qm.appendChild(div);
+
+		let size = getFullElementSize(div);
+		
+		qm.removeChild(div);
+
+		return size;
+	};
+	
+	qm.setDisplay = () => {
+
+		qm.classList.toggle("singleColumn", qm.singleColumn);
+	//	document.documentElement.style.setProperty('--single-column-width', "300px");
+		qm.querySelectorAll('.tile').forEach( _tile => {
+			// let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
+			// _tile.classList.toggle("singleColumn", _sc);
+			_tile.classList.toggle("singleColumn", qm.singleColumn);
+
+		});
+	}
+
+	// check if any search engines exist and link to Options if none
+	if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
+		var div = document.createElement('div');
+		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
+		div.innerText = i18n("WhereAreMyEngines");
+		div.onclick = function() {
+			browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
+		}	
+		qm.appendChild(div);
+	}
+
+	// set min-width to prevent menu shrinking with smaller folders
+	qm.setMinWidth = () => qm.style.minWidth = qm.columns * qm.getTileSize().noBorderWidth + "px";
+	
+	// slide-in animation
+	if ( !userOptions.enableAnimations ) qm.style.setProperty('--user-transition', 'none');
+	qm.style.left = qm.getBoundingClientRect().width * ( options.reverse ? -1 : 1 ) + "px";
+	void( qm.offsetHeight );
+	qm.style.transition = null;
+	qm.style.visibility = null;
+	qm.style.left = '0px';
+
+	runAtTransitionEnd(qm, "left", () => qm.style.pointerEvents = null, 100);
+				
+	(() => { // set up special folders ( recent / regex )
+
+		if ( qm.rootNode.id !== userOptions.nodeTree.id ) return;
+		let specialFolderNodes = [];
+
+		if ( userOptions.quickMenuShowRecentlyUsed )
+			specialFolderNodes.push(recentlyUsedListToFolder());
+
+		if ( userOptions.quickMenuRegexMatchedEngines )
+			specialFolderNodes.push(matchingEnginesToFolder(quickMenuObject.searchTerms));
+
+		specialFolderNodes.forEach( folder => {
+			folder.displayType = qm.rootNode.displayType;
+
+			let _tile = nodeToTile( folder );
+			_tile.node.displayType = qm.rootNode.displayType;
+			// _tile.node.groupFolder = 'block';
+			_tile.classList.add('tile');
+			_tile.dataset.hasicon = 'true';
+			_tile.dataset.undraggable = true;
+			_tile.dataset.undroppable = true;
+
+			tileArray.unshift(_tile);
+			qm.insertBefore(_tile, qm.firstChild);
+		});
+	})();
+
+	qm.setDisplay();
+
+	(() => { //formatGroupFolders()
+
+		let groupFolders = tileArray.filter( t => t.node && t.node.groupFolder && t.dataset.type !== 'tool' && t.node.parent === qm.rootNode );
+
+		groupFolders.forEach( gf => {
+
+			let g = makeGroupFolderFromTile(gf);
+			if ( !g ) return;
+
+			// make GROUP draggable
+			g.draggable = true;
+
+			qm.insertBefore(g, gf);
+			if ( gf.parentNode && g.classList.contains('block') ) gf.parentNode.removeChild(gf);
+			else g.insertBefore(gf, g.querySelector('.tile') || g.lastChild);
+
+			// bubbles the drag event for the inline root folder to the GROUP
+			gf.dataset.undraggable = true;
+
+			let footer = g.querySelector('.footer');
+
+			// display groups limited to a row count and change more tile style
+			if ( gf.node.groupFolder === "block") {
+
+				makeContainerMore(g.querySelector('.container'), gf.node.groupLimit || Number.MAX_SAFE_INTEGER, qm.columns);
+				let moreTile = g.querySelector('[data-type="more"]');
+
+				if (moreTile) {
+					moreTile.parentNode.removeChild(moreTile);
+
+					footer.appendChild(moreTile);
+
+					moreTile.className = "groupMoreTile";
+				} else {
+					footer.parentNode.removeChild(footer);	
+				}
+			}
+		});
+	})();
+
+	qm.querySelectorAll('.tile').forEach( div => qm.addTitleBarTextHandler(div));
+
+	qm.expandMoreTiles = () => {
+		let moreTiles = [...document.querySelectorAll('[data-type="more"], [data-type="less"]')];
+
+		moreLessStatus.forEach( id => {
+			let moreTile = moreTiles.find( div => div.dataset.parentid === id );				
+			if ( moreTile ) moreTile.more();
+		});
+	}
+	
+	toolsHandler();
+
+	qm.expandMoreTiles();
+
+	// enable tools on folder change
+	(() => {
+		for ( ts in toolStatuses ) {
+			if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
+				let _tile = QMtools.find(t => t.name == ts ).init();
+				_tile.action();
+			}
+		}
+	})();
+
+	// set drag & drop init state
+	if ( userOptions.alwaysAllowTileRearranging )
+		window.tilesDraggable = true;
+	
+	setDraggable(); // body, tools
+	setDraggable(qm); // qm
+
+	return qm;
+}
+
+async function quickMenuElementFromNodeTree( rootNode, reverse ) {
+	return _quickMenuElementFromNodeTree({node: rootNode, reverse: reverse})
+}
+
+async function _quickMenuElementFromNodeTree( o ) {
+
+	let rootNode = o.node || {}
+	let reverse = o.reverse || false;
+	qm.flattened = false;
+	qm.contexts = quickMenuObject.contexts;
+	qm.contextualLayout = false;
+
+	// filter node tree for matching contexts
+	if ( userOptions.quickMenuUseContextualLayout && qm.contexts && qm.contexts.length ) {		
+
+		let tempRoot = filterContexts(rootNode, qm.contexts);
+
+		// flatten
+		let seNodes = findNodes(tempRoot, n => !['folder', 'separator'].includes(n.type) );
+		if ( seNodes.length < userOptions.quickMenuContextualLayoutFlattenLimit ) {
+			tempRoot.children = seNodes;
+			qm.flattened = true;
+		}
+
+		setParents(tempRoot);
+
+		tempRoot.parent = rootNode.parent;
+		rootNode = tempRoot;
+
+		qm.contextualLayout = true;
+	}
+
+	let debug = rootNode.title === "empty";
+	
+	let nodes = rootNode.children || [];
+	let tileArray = [];
+	
+	// update the qm object with the current node
+	qm.rootNode = rootNode;
+	
+	if ( userOptions.syncWithFirefoxSearch ) {	
+		nodes = [];
+		qm.rootNode = Object.assign({}, qm.rootNode);
+		let ffses = await browser.runtime.sendMessage({action: "getFirefoxSearchEngines"});
+		
+		ffses.forEach( ffse => {
+			let node = findNode( userOptions.nodeTree, n => n.title === ffse.name );
+			
+			if ( !node ) {
+				console.log("couldn't find node for " + ffse.name);
+				return;
+			}
+			
+			node.parent = qm.rootNode;
+			
+			nodes.push(node);
+		});
+		
+		qm.rootNode.children = nodes;
+		
+		rootNode = qm.rootNode;
+	}
+	
+	// set the lastOpenedFolder object
+	browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
+	
+	// if parentId was sent, assume subfolder and add 'back' button
+	// unless href has hash ( cascading menu )
+	if (rootNode.parent && !isChildWindow()) { 
+
+		const _back = async(e) => {
+			// back button rebuilds the menu using the parent folder ( or parent->parent for groupFolders )
+			
+			qm = await quickMenuElementFromNodeTree(( rootNode.parent.groupFolder ) ? rootNode.parent.parent : rootNode.parent, true);
+
+			qm.expandMoreTiles();
+
+			resizeMenu({openFolder: true})
+
+			runAtTransitionEnd(qm, "left", () => resizeMenu({openFolder: true}), 100);
+		}
+
+		let tile = buildSearchIcon(null, i18n('back'));
+		let backIcon = createMaskIcon('icons/back.svg');
+		backIcon.style.position = "absolute";
+
+		tile.appendChild(backIcon);
+
+		tile.dataset.type = "folder";
+		tile.node = rootNode.parent;
+		tile.dataset.undraggable = true;
+
+		tile.addEventListener('mouseup', _back);
+		tile.addEventListener('openFolder', _back);
+
+		addOpenFolderOnHover(tile);
+		
+		qm.back = _back;
+					
+		delete sb.selectedIndex;
+		tileArray.push(tile);
+	}
+		
+	function makeGroupTilesFromNode( node ) {
+		let tiles = [];
+		
+		node.children.forEach( _node => {
+			let _tile = nodeToTile(_node);
+			
+			if ( !_tile ) return;
+
+			_tile.title = node.title + " / " + _tile.title;
+
+			if ( _tile ) tiles.push( _tile );
+		});
+		
+		return tiles;
+	}
+
+	nodes.forEach( node => {
+
+		let tile = nodeToTile(node);
+		
+		if ( tile ) tileArray.push( tile );
+		else return;
+					
+	//	if ( node.groupFolder && !node.parent.parent) { // only top-level folders
+
+		if ( node.groupFolder && node.parent === qm.rootNode ) { 
+			let groupTiles = makeGroupTilesFromNode( node );
+
+			tileArray = tileArray.concat(groupTiles);
+		}
+
+	});
+
+	// try { // fails on restricted pages
+	// 	await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+
+	// 		if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
+	// 	});
+	// } catch (error) {
+
+	// }
+
+	qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
+
+	makeContextsBar();
+
+	return buildQuickMenuElement({tileArray:tileArray, reverse: reverse, parentId: rootNode.parent, forceSingleColumn: rootNode.forceSingleColumn, node: rootNode, columns: o.columns});
 }
 
 async function getSuggestions(terms) {
@@ -1181,10 +1170,10 @@ function makeSearchBar() {
 	
 	let si = document.getElementById('searchIcon');
 
-	sb.placeholder = browser.i18n.getMessage('Search');		
+	sb.placeholder = i18n('Search');		
 	sb.dataset.position = userOptions.quickMenuSearchBar;
 
-	columns = (userOptions.searchBarUseOldStyle) ? 1 : userOptions.searchBarColumns;
+	columns = (userOptions.searchBarDefaultView === 'text') ? 1 : userOptions.searchBarColumns;
 	
 	si.onclick = function() {
 		
@@ -1198,10 +1187,14 @@ function makeSearchBar() {
 
 			si.style.transform = null;
 
-			runAtTransitionEnd(sg, "height", resizeMenu)
+			aeb.style = null;
+
+		//	runAtTransitionEnd(sg, "height", resizeMenu)
 
 			return;
 		}
+
+		aeb.style.display = 'block';
 
 		si.style.transform = 'rotate(-180deg)';
 		
@@ -1215,14 +1208,16 @@ function makeSearchBar() {
 		displaySuggestions(history);
 	}
 	
-	browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+	//browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
-		if ( qmo && (qmo.searchTerms || qmo.searchTermsObject.selection ))
+		let qmo = quickMenuObject;
+
+		if ( qmo && (qmo.searchTerms || ( qmo.searchTermsObject && qmo.searchTermsObject.selection ) ))
 			setTimeout(() => sb.set(qmo.searchTerms || qmo.searchTermsObject.selection), 10);
 		else displayLastSearchTerms();
-	}, () => {
-		displayLastSearchTerms();
-	});
+//	}, () => {
+//		displayLastSearchTerms();
+	//});
 
 	async function displayLastSearchTerms() {
 
@@ -1289,10 +1284,8 @@ function makeSearchBar() {
 				sb.dispatchEvent(e);
 			}
 			
-			let img = document.createElement("div");
-			img.style.setProperty("--mask-image", "url(/icons/history.svg)");
-			img.title = browser.i18n.getMessage('History') || "history";
-			img.classList.add('tool');
+			let img = createMaskIcon("/icons/history.svg");
+			img.title = i18n('History') || "history";
 			
 			if (s.type === 1) img.style.visibility = 'hidden';
 			div.appendChild(img);
@@ -1417,7 +1410,8 @@ function makeSearchBar() {
 
 		if ( !div ) return;
 
-		let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
+	//	let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
+		let qmo = quickMenuObject;
 		let sto = qmo.searchTermsObject;
 
 		let keys = ["selection", "link", "linkText", "image", "frame"/*, "page"*/].filter( key => sto[key]);
@@ -1426,7 +1420,7 @@ function makeSearchBar() {
 			return div.style.display = 'none';
 
 		div.innerText = keys.length;
-		div.title = keys.map( k => browser.i18n.getMessage(k)).join(", ");
+		div.title = keys.map( k => i18n(k)).join(", ");
 
 		div.onclick = function() {
 
@@ -1442,6 +1436,8 @@ function makeSearchBar() {
 			let newKey = keys[( keys.indexOf(div.searchTermsContext) + 1 ) % keys.length];
 			div.searchTermsContext = newKey;
 			sb.set(sto[newKey]);
+
+			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
 		}
 
 	})();
@@ -1534,7 +1530,11 @@ function openFolderTimer(el, ms) {
 
 function addOpenFolderOnHover(_tile, ms) {
 
-	if ( !userOptions.openFoldersOnHoverTimeout && !ms) return;
+	// force hover when cascading
+	if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders && userOptions.quickMenuCascadingFoldersHoverTimeout)
+		ms = userOptions.quickMenuCascadingFoldersHoverTimeout;
+
+	if ( !userOptions.openFoldersOnHoverTimeout && !ms ) return;
 
 	_tile.addEventListener('mouseenter', e => _tile.mouseOverFolderTimer = openFolderTimer(_tile, ms));
 
@@ -1583,7 +1583,7 @@ getAllOtherHeights = (_new) => {
 	if ( _new ) return document.body.scrollHeight - qm.scrollHeight;
 	
 	let height = 0;
-	[sbc,tb,mb,toolBar,aeb,ctb].forEach( el => height += getFullElementSize(el).height );
+	[sbc,tb,mb,toolBar,ctb].forEach( el => height += getFullElementSize(el).height );
 	return height;
 }
 
@@ -1741,6 +1741,7 @@ async function mouseupHandler(e) {
 
 	quickMenuObject.mouseLastClickTime = Date.now();
 	quickMenuObject.searchTerms = sb.value;
+	quickMenuObject.searchTermsObject.selection = sb.value;
 
 	browser.runtime.sendMessage({
 		action: "updateQuickMenuObject", 
@@ -1758,63 +1759,19 @@ async function mouseupHandler(e) {
 			case 'oneClickSearchEngine':
 			case 'bookmark':
 				return search({node:node, openMethod: getOpenMethod(e)});
-				break;
 
 			case 'siteSearch':
 				return search({node:node, openMethod: getOpenMethod(e), domain: node.title});
-				break;
+
+			case "siteSearchFolder":
+				return;
 
 			case 'externalProgram':
 				search({node:node, openMethod: getOpenMethod(e)});
 				return Promise.resolve(true); // app launcher can resolve immediately
-				break;
-
-			case 'siteSearchFolder':
-
-				tile.keepOpen = true;
-
-				async function openFolder(e) {
-					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
-
-					let siteSearchNode = {
-						type:"folder",
-						parent:node.parent,
-						children:[],
-						id:node.id,
-						forceSingleColumn:true
-					}
-					
-					let url = new URL(tab.url);
-
-					getDomainPaths(url).forEach( path => {
-						siteSearchNode.children.push({
-							type: "siteSearch",
-							title: path,
-							parent:node,
-							id: node.id,
-							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
-						});	
-					});
-					
-					qm = await quickMenuElementFromNodeTree(siteSearchNode);
-
-					for ( let _tile of qm.querySelectorAll('.tile') ) {
-						if ( _tile.node.title === url.hostname ) {
-							_tile.classList.add('selectedFocus');
-							_tile.dataset.selectfirst = "true";
-							break;
-						}
-					}
-
-					resizeMenu({openFolder: true});
-				}
-
-				return openFolder(e);
-				break;
 
 			default:
 				return Promise.reject('unknown node type', node.type);
-				break;
 
 		}
 
@@ -1835,7 +1792,7 @@ async function mouseupHandler(e) {
 
 }
 
-document.addEventListener('dragstart', e => {
+document.addEventListener('dragstart', async e => {
 
 	if ( !window.tilesDraggable ) return;
 
@@ -1845,13 +1802,17 @@ document.addEventListener('dragstart', e => {
 
 	if ( undraggable(tile) ) return;
 
-	if ( qm.contextualLayout ) {
-		console.warn('Tiles cannot be rearranged when using contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
+	if ( qm.contextualLayout && qm.flattened ) {
+		quickMenuObject.contexts = [];
+		qm = await quickMenuElementFromNodeTree(findNode(root, n => n.id === qm.rootNode.id));
+		resizeMenu({openFolder:true});
+		console.warn('Tiles cannot be rearranged when using a flattened contextual layout. Use the Show / Hide tool to switch between normal and contextual.');
+		e.preventDefault();
 		return;
 	}
 
 	// required by ff for dragend
-	e.dataTransfer.setData("text", tile.node.id || "");
+	e.dataTransfer.setData("text", JSON.stringify(tile.node) || "");
 
 	tile.classList.add('drag');
 
@@ -1862,7 +1823,6 @@ document.addEventListener('dragstart', e => {
 
 	// apply style to inline groups
 	if ( tile.nodeName === "GROUP" && tile.classList.contains('inline') ) tile.classList.add('groupMove');
-
 });
 
 document.addEventListener('dragenter', e => {
@@ -1878,29 +1838,39 @@ document.addEventListener('dragenter', e => {
 		return;
 	}
 
+	if ( !window.dragNode ) 
+		window.dragNode = getNodeFromDataTransfer(e);
+
 	if ( !window.dragNode ) return;
 });
 
 document.addEventListener('dragover', e => {
-
-	e.preventDefault();
-    e.stopPropagation();
 
 	let tile = e.target.closest('.tile') || e.target.closest('group');
 
 	if ( e.target === document.querySelector('.dummy') )
 		tile = e.target.nextSibling;
 
-//	if ( !tile ) { console.log('no tile', e.target); return; }
 	if ( !tile ) return;
-	if ( !window.dragNode ) return;
-	if ( tile.dataset.type === 'tool' ) return;
-
-	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
 
 	if ( undroppable(tile) ) return;
 
-	if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
+	if ( !window.dragNode ) return;
+
+	if ( isTool(e)) {
+		e.preventDefault();
+		return;
+	}
+
+	//if ( tile.dataset.type === 'tool' ) return;
+
+	if ( tile.node && tile.node.parent && window.dragNode === tile.node.parent ) return;
+
+	e.preventDefault();
+    e.stopPropagation();
+
+    // throttler
+    if ( tile.lastDragOver && Date.now() - tile.lastDragOver < 100 ) return;
 
 	tile.lastDragOver = Date.now();
 
@@ -1918,6 +1888,8 @@ document.addEventListener('dragover', e => {
 		document.body.appendChild(dummy);
 		dummy.style.display = 'none';
 	}
+
+	tile.classList.add(side);
 
 	tile.classList.toggle('wide', tile.classList.contains('block'));
 
@@ -1957,7 +1929,7 @@ document.addEventListener('dragleave', e => {
 	clearDragStyling(tile);
 });
 
-document.addEventListener('drop', e => {
+document.addEventListener('drop', async e => {
 
 	e.preventDefault();
 
@@ -1968,6 +1940,38 @@ document.addEventListener('drop', e => {
 	if ( e.target === dummy || e.target === qm )
 		tile = dummy.nextSibling;
 
+	if ( !window.dragNode ) 
+		window.dragNode = getNodeFromDataTransfer(e);
+
+	if ( isTool(e)) {
+
+		if ( !e.target.tool ) return;
+
+		let side = getSide(tile, e);
+
+		let qmt = userOptions.quickMenuTools;
+		
+		dragName = getDragDiv().tool.name;
+		targetName = e.target.tool.name;
+		
+		dragIndex = qmt.findIndex( t => t.name === dragName );
+		targetIndex = qmt.findIndex( t => t.name === targetName );
+
+		if ( side === "before" ) {
+			qmt.splice( targetIndex, 0, qmt.splice(dragIndex, 1)[0] );
+			e.target.parentNode.insertBefore(getDragDiv(), e.target);
+		}
+		else {
+			qmt.splice( targetIndex + 1, 0, qmt.splice(dragIndex, 1)[0] );
+			e.target.parentNode.insertBefore(getDragDiv(), e.target.nextSibling);
+		}
+
+		qm.toolsArray = createToolsArray();
+		await saveUserOptions();
+
+		return;
+	}
+
 	if ( !tile ) return;
 	if ( !window.dragNode ) return;
 	if ( window.dragNode === tile.node ) return;
@@ -1977,13 +1981,17 @@ document.addEventListener('drop', e => {
 
 	let side = getSide(tile, e);
 
-	let old_node_count = findNodes(userOptions.nodeTree, n => true).length;
+	let old_node_count = findNodes(root, n => true).length;
 
 	// cut the node from the children array
-	let slicedNode = nodeCut(window.dragNode);
+	// get node reference from root in case qm.rootNode != window.root ( contextual )
+	let slicedNode = nodeCut(findNode(root, n => n.id === window.dragNode.id));
 
-	let dragTile = document.querySelector('.drag') || window.dragTile;
+	//let dragTile = document.querySelector('.drag') || window.dragTile;
 	let targetNode = tile.node || tile.parentNode.node;
+
+	// get node reference from root in case qm.rootNode != window.root ( contextual )
+	targetNode = findNode(root, n => n.id === targetNode.id);
 
 	// special handler for inline groups
 	if ( tile.classList.contains("groupFolder") ) {
@@ -1991,71 +1999,72 @@ document.addEventListener('drop', e => {
 		let dec = getSideDecimal(tile, e);
 		
 		if ( isTargetBeforeGroup(tile, dec) ) {
-			console.log('moving before group');
+			debug('moving before group');
 			nodeInsertBefore(slicedNode, targetNode.parent);
 		} else if ( isTargetAfterGroup(tile, dec) ) {
-			console.log('moving after group');
+			debug('moving after group');
 			nodeInsertAfter(slicedNode, targetNode.parent);
 		} else if ( tile.dataset.type && ['more','less'].includes(tile.dataset.type) ) {
-			console.log('drop to more / less tile ... appending tile to group');
+			debug('drop to more / less tile ... appending tile to group');
 			nodeAppendChild(slicedNode, targetNode.parent);			
 		} else {
 			return;
 		}
 
-		console.log('moving', slicedNode.title, 'to', targetNode.parent.title);
+		debug('moving', slicedNode.title, 'to', targetNode.parent.title);
 		dragSave();
 		return;
 	}
 
 	if ( side === 'before' ) 
-		nodeInsertBefore(slicedNode, tile.node);
+		nodeInsertBefore(slicedNode, targetNode);
 	
 	if ( side === 'after' )
-		nodeInsertAfter(slicedNode, tile.node);
+		nodeInsertAfter(slicedNode, targetNode);
 	
-	if ( side === 'middle' && tile.node.type === "folder" )
-		nodeAppendChild(slicedNode, tile.node);
+	if ( side === 'middle' && targetNode.type === "folder" )
+		nodeAppendChild(slicedNode, targetNode);
 	
-	console.log('moving', slicedNode.title, 'to', slicedNode.parent.title);
-	dragSave();
+	debug('moving', slicedNode.title, 'to', slicedNode.parent.title);
 
-	function dragSave() {
+	await dragSave();
+
+	async function dragSave() {
 
 		let new_node_count = findNodes(root, n => true).length;
 
-		// console.log(old_node_count, "->", new_node_count);
-
 		if ( old_node_count === new_node_count ) {
 			userOptions.nodeTree = JSON.parse(JSON.stringify(root));
-			saveUserOptions();
+			await saveUserOptions();
+
+			if ( type === "quickmenu")
+				browser.runtime.sendMessage({action: "rebuildMenus", sendMessageToAllFrames: true});		
+			else
+				rebuildMenu();
+
 		} else {
 			console.error('a node has been lost. aborting', old_node_count, new_node_count);
 		}
-
-		(async () => {
-			let orig = userOptions.enableAnimations;
-			userOptions.enableAnimations = false;
-			qm = await quickMenuElementFromNodeTree(qm.rootNode, false);
-			userOptions.enableAnimations = orig;
-
-			// drag & drop only allowed when all tiles are shown
-			// restore show all
-			let sh = QMtools.find(t => t.name === 'showhide');
-			let sh_tile = sh.init();
-			await sh_tile.action();
-
-			setDraggable();
-			resizeMenu({tileDrop: true});
-		})();
 	}
+
+	dragCleanup();
+	clearTimeout(qm.textDragOverFolderTimer);
 
 });
 
-document.addEventListener('dragend', e => {
+document.addEventListener('dragend', async e => {
 	dragCleanup();
 	clearTimeout(qm.textDragOverFolderTimer);
 });
+
+rebuildMenu = async() => {
+	userOptions = await browser.runtime.sendMessage({action:"getUserOptions"});
+
+	window.root = JSON.parse(JSON.stringify(userOptions.nodeTree));
+	setParents(window.root);
+	qm = await quickMenuElementFromNodeTree(findNode(root, n => n.id === qm.rootNode.id, false));
+	resizeMenu({tileDrop: true, openFolder: true});
+}
 
 dragCleanup = () => {
 	// clear group styling
@@ -2071,20 +2080,27 @@ dragCleanup = () => {
 	delete window.dragNode;
 }
 
+const specialFolderIds = ["___recent___", "___matching___"];
+
+isSpecialFolderChild = el => {
+	return el.node && el.node.parent && specialFolderIds.includes(el.node.parent.id);
+}
+
 undraggable = el => {
-	return el.dataset.undraggable === "true";
+	return el.dataset.undraggable === "true" || isSpecialFolderChild(el);
 }
 
 undroppable = el => {
-	return el.dataset.undroppable === "true";
+	return el.dataset.undroppable === "true" || isSpecialFolderChild(el);;
 }
 
 clearDragStyling = el => {
 	el.classList.remove('dragOver', 'before', 'after', 'middle', 'dragHover', 'groupHighlight');
 }
 
-setDraggable = e => {
-	document.querySelectorAll('.tile:not([data-undraggable])').forEach( el => el.setAttribute('draggable', window.tilesDraggable));
+setDraggable = el => {
+	el = el || document.body;
+	el.querySelectorAll('.tile:not([data-undraggable])').forEach( tile => tile.setAttribute('draggable', window.tilesDraggable));
 }
 
 makeMarker = () => {
@@ -2095,9 +2111,22 @@ makeMarker = () => {
 	return dummy;
 }
 
+getNodeFromDataTransfer = e => {
+
+	try {
+		let transfer_node = JSON.parse(e.dataTransfer.getData("text") || "{}");
+		let node = findNode(root, n => n.id && n.id === transfer_node.id);
+		return node;
+	} catch (error) {
+		return null;
+	}
+}
+
 (() => { // text, image, url drag & drop
 	document.addEventListener('dragover', e => {
 		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
+
+		if ( window.dragNode ) return;
 
 		e.preventDefault();
 
@@ -2111,7 +2140,19 @@ makeMarker = () => {
 
 	document.addEventListener('drop', e => {
 
-		if ( window.dragTile ) return;
+		if ( !e.dataTransfer.types.length ) return; // prevent special tile dnd triggering search
+
+		if ( getNodeFromDataTransfer(e) ) {
+			console.log('data appears to be a node. Cancelling search');
+			return;
+		}
+
+		if ( isTool(e) ) {
+			console.log('data appears to be a tool. Cancelling search');
+			return;
+		}
+
+		if ( window.dragNode ) return;
 
 		if ( window.tilesDraggable && !userOptions.alwaysAllowTileRearranging ) return;
 
@@ -2140,7 +2181,7 @@ function nodeToTile( node ) {
 	
 	switch ( node.type ) {
 
-		case "searchEngine":
+		case "searchEngine": {
 
 			let se = userOptions.searchEngines.find(se => se.id === node.id);
 
@@ -2163,6 +2204,7 @@ function nodeToTile( node ) {
 			tile.dataset.type = 'searchEngine';
 
 			break;
+		}
 	
 		case "bookmarklet":
 
@@ -2191,72 +2233,125 @@ function nodeToTile( node ) {
 	
 		case "folder":
 
-			tile = buildSearchIcon( getIconFromNode(node), node.title);
+			(() => {
+				tile = buildSearchIcon( getIconFromNode(node), node.title);
 
-			tile.dataset.type = 'folder';
-			tile.dataset.title = node.title;
-			
-			// prevent scroll icon
-			tile.addEventListener('mousedown', e => {
-
-				tile.parentNode.lastMouseDownTile = tile;
+				tile.dataset.type = 'folder';
+				tile.dataset.title = node.title;
 				
-				// skip for dnd events
-				if ( e.which === 1 ) return;
-				e.preventDefault();
-				e.stopPropagation();
-			});
+				// prevent scroll icon
+				tile.addEventListener('mousedown', e => {
 
-			tile.addEventListener('mouseup', e => {
-				if ( clickChecker(tile) ) openFolder(e);
-			});
-
-			tile.addEventListener('openFolder', openFolder);
-
-			addOpenFolderOnHover(tile);
-				
-			async function openFolder(e) {
-
-				let method = getOpenMethod(e, true);
-
-				if (method === 'noAction') return;
-
-				if (method === 'openFolder' || e.openFolder) { 
-				//	if ( !node.children.length ) return;
-					qm = await quickMenuElementFromNodeTree(tile.node);
-					setDraggable();	
-					return resizeMenu({openFolder: true});
-				}
-				
-				browser.runtime.sendMessage({
-					action: "search", 
-					info: {
-						node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
-						menuItemId: node.id,
-						selectionText: sb.value,
-						quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
-						openMethod: method
-					}
+					tile.parentNode.lastMouseDownTile = tile;
+					
+					// skip for dnd events
+					if ( e.which === 1 ) return;
+					e.preventDefault();
+					e.stopPropagation();
 				});
-				
-				quickMenuObject.lastUsed = node.id
-				userOptions.lastUsedId = quickMenuObject.lastUsed;
-				document.dispatchEvent(new CustomEvent('updateLastUsed'));
 
-				if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
-			}
+				tile.addEventListener('mouseup', e => {
+					if ( clickChecker(tile) ) openFolder(e);
+				});
+
+				tile.addEventListener('openFolder', openFolder);
+
+				// delay to prevent newly opened menus triggering
+				setTimeout(() => addOpenFolderOnHover(tile), 500);
+					
+				async function openFolder(e) {
+
+					let method = getOpenMethod(e, true);
+
+					if (method === 'noAction') return;
+
+					if (method === 'openFolder' || e.openFolder) { 
+					//	if ( !node.children.length ) return;
+
+						if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
+							return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, contexts: qm.contexts, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+						
+						qm = await quickMenuElementFromNodeTree(tile.node);
+						
+						return resizeMenu({openFolder: true});
+					}
+					
+					browser.runtime.sendMessage({
+						action: "search", 
+						info: {
+							node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
+							menuItemId: node.id,
+							selectionText: sb.value,
+							quickMenuObject: JSON.parse(JSON.stringify(quickMenuObject)),
+							openMethod: method
+						}
+					});
+					
+					quickMenuObject.lastUsed = node.id
+					userOptions.lastUsedId = quickMenuObject.lastUsed;
+					document.dispatchEvent(new CustomEvent('updateLastUsed'));
+
+					if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
+				}
+			})();
 
 			break;
 			
 		case "siteSearchFolder":
+			(() => {
 
-			tile = buildSearchIcon(getIconFromNode(node), node.title);
-			tile.dataset.type = 'siteSearchFolder';
-			tile.dataset.id = node.id || "";	
-			tile.dataset.title = node.title;
+				tile = buildSearchIcon(getIconFromNode(node), node.title);
+				tile.dataset.type = 'siteSearchFolder';
+				tile.dataset.id = node.id || "";	
+				tile.dataset.title = node.title;
 
-			tile.dataset.type = 'folder';
-			tile.dataset.subtype = 'sitesearch';
+				tile.keepOpen = true;
+
+				tile.dataset.type = 'folder';
+				tile.dataset.subtype = 'sitesearch';
+
+				addOpenFolderOnHover(tile);
+				tile.addEventListener('openFolder', openFolder);
+
+				async function openFolder(e) {
+					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+
+					let siteSearchNode = {
+						type:"folder",
+						parent:node.parent,
+						children:[],
+						id:node.id,
+						forceSingleColumn:true
+					}
+					
+					let url = new URL(tab.url);
+
+					getDomainPaths(url).forEach( path => {
+						siteSearchNode.children.push({
+							type: "siteSearch",
+							title: path,
+							parent:node,
+							id: node.id,
+							icon: tab.favIconUrl || browser.runtime.getURL('/icons/search.svg')
+						});	
+					});
+
+					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
+						return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(siteSearchNode)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+					
+					qm = await quickMenuElementFromNodeTree(siteSearchNode);
+
+					for ( let _tile of qm.querySelectorAll('.tile') ) {
+						if ( _tile.node.title === url.hostname ) {
+							_tile.classList.add('selectedFocus');
+							_tile.dataset.selectfirst = "true";
+							break;
+						}
+					}
+
+					resizeMenu({openFolder: true});
+				}
+			})();
 
 			break;
 
@@ -2273,13 +2368,14 @@ function nodeToTile( node ) {
 			tile.dataset.title = node.title;			
 			break;
 
-		case "tool":
+		case "tool": {
 			let tool = QMtools.find(t => t.name === node.tool )
 			tile = tool.init();
 			tile.dataset.type = 'tool';
 			tile.dataset.id = node.id;	
 			tile.dataset.title = node.title;
 			break;
+		}
 
 		case "externalProgram":
 			tile = buildSearchIcon(getIconFromNode(node), node.title);
@@ -2311,7 +2407,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 	let hidden_count = _tiles.length - limit;
 	if ( hidden_count < 0 ) hidden_count = 0;
-	let title = hidden_count + " " + browser.i18n.getMessage("more");
+	let title = hidden_count + " " + i18n("more");
 
 	parentNode = parentNode || qm;
 	node = node || parentNode.node || {}
@@ -2335,8 +2431,8 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 
 	if ( limit >= _tiles.length ) return _tiles;
 
-	let moreTile = buildSearchIcon(null, browser.i18n.getMessage('more'));
-	moreTile.appendChild(makeToolMask({icon: "icons/chevron-down.svg"}));
+	let moreTile = buildSearchIcon(null, i18n('more'));
+	moreTile.appendChild(createMaskIcon("icons/chevron-down.svg"));
 
 	moreTile.style.textAlign='center';
 	moreTile.dataset.type = "more";
@@ -2368,7 +2464,7 @@ function makeMoreLessFromTiles( _tiles, limit, noFolder, parentNode, node ) {
 		});
 		
 		moreTile.action = less;
-		moreTile.dataset.title = moreTile.title = browser.i18n.getMessage("less");
+		moreTile.dataset.title = moreTile.title = i18n("less");
 		moreTile.dataset.type = "less";
 		resizeMenu({more: true});
 
@@ -2610,7 +2706,7 @@ function initOptionsBar() {
 		let fo = document.querySelector('#folderOptionsDiv');
 
 		fo.style.maxHeight = fo.style.maxHeight ? null : fo.scrollHeight + "px";
-		runAtTransitionEnd(fo, "max-height", resizeMenu);
+		runAtTransitionEnd(fo, "max-height", () => resizeMenu({openFolder: true}));
 	}
 }
 
@@ -2655,6 +2751,8 @@ function setLayoutOrder(arr) {
 
 	arr.forEach(id => {
 
+		if ( !id ) return;
+
 		let hidden = false;
 		if ( id[0] === '!' ) {
 			hidden = true;
@@ -2673,11 +2771,16 @@ function setLayoutOrder(arr) {
 
 function makeContextsBar() {
 	ctb.innerHTML = null;
+
+	// do nothing if not using contextual layout
+	if ( !userOptions.quickMenuUseContextualLayout ) return;
+
 	// set the context bar to display current contexts	
 	contexts.forEach(c => {
 		let div = document.createElement('div');
-		let icon = makeMask(browser.runtime.getURL(`/icons/${c}.svg`));
-		icon.title = browser.i18n.getMessage(c);
+		// div.className = 'tile';
+		let icon = createMaskIcon(browser.runtime.getURL(`/icons/${c}.svg`));
+		icon.title = i18n(c);
 		div.appendChild(icon);
 		ctb.appendChild(div);
 
@@ -2695,7 +2798,7 @@ function makeContextsBar() {
 		ctb.scrollLeft += e.deltaY;
 	});
 
-//	makeContainerMore(ctb, 1);
+//	makeContainerMore(ctb, 1, 1);
 }
 
 function tileSlideInAnimation() {
@@ -2729,3 +2832,16 @@ function tileSlideInAnimation() {
 
 	});
 }
+
+function toolsBarMorify(rows) {
+	let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
+	toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
+		unhideTile(t);
+	});
+
+	if ( toolBarMore ) toolBar.removeChild(toolBarMore);
+
+	makeContainerMore(toolBar, rows || userOptions.quickMenuToolbarRows);
+}
+
+const isChildWindow = () => window.location.hash ? true : false;

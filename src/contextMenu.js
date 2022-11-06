@@ -147,7 +147,7 @@ async function buildContextMenu(searchTerms) {
 					addMenuItem({
 						parentId: _id,
 						id: context_prefix + node.id + "_" + id,
-						title: browser.i18n.getMessage("SearchAll"),
+						title: i18n("SearchAll"),
 						icons: {
 							"16": "icons/search.svg"
 						}
@@ -185,7 +185,7 @@ async function buildContextMenu(searchTerms) {
 
 		addMenuItem({
 			parentId: root,
-			title: browser.i18n.getMessage('settings'),
+			title: i18n('settings'),
 			id: context_prefix + "___settings___",
 			icons: {
 				"16": browser.runtime.getURL('icons/settings.svg')
@@ -228,7 +228,7 @@ async function buildContextMenu(searchTerms) {
 	if (userOptions.contextMenuShowAddCustomSearch) {
 		let createProperties = {
 			id: "add_engine",
-			title: browser.i18n.getMessage("AddCustomSearch") + getMenuHotkey(),
+			title: i18n("AddCustomSearch") + getMenuHotkey(),
 			contexts: ["editable"],
 			icons: { "16": browser.runtime.getURL('icons/logo_notext.svg') },
 			visible: false
@@ -295,7 +295,7 @@ async function buildContextMenu(searchTerms) {
 
 				browser.contextMenus.create({
 					id: context,
-					title: browser.i18n.getMessage("SearchForContext", browser.i18n.getMessage(context).toUpperCase()) + getMenuHotkey(),
+					title: i18n("SearchForContext", i18n(context).toUpperCase()) + getMenuHotkey(),
 					contexts: [context]
 				}, onCreated);
 			} catch (error) {
@@ -411,14 +411,14 @@ function contextMenuTitle(searchTerms, context) {
 	if (searchTerms.length > 18) 
 		searchTerms = searchTerms.substring(0,15) + "...";
 	
-	let hotkey = getMenuHotkey();; 
+	let hotkey = getMenuHotkey(); 
 
-	let title = (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", "%s").replace("%s", searchTerms) + hotkey;
+	let title = (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", searchTerms) + hotkey;
 	
 	if ( !searchTerms ) {
-		title = (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchWith")).replace("%1", "%s") + hotkey;
+		title = (userOptions.contextMenuTitle || i18n("SearchWith")).replace("%1", "%s") + hotkey;
 	//	if ( context === 'selection')
-	//		title = (userOptions.searchEngines.length === 0) ? browser.i18n.getMessage("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || browser.i18n.getMessage("SearchForWithVariable") );
+	//		title = (userOptions.searchEngines.length === 0) ? i18n("AddSearchEngines") : hotkey + ( userOptions.contextMenuMessage || i18n("SearchForWithVariable") );
 	}
 
 	// if ( context === 'link' ) 
@@ -426,7 +426,7 @@ function contextMenuTitle(searchTerms, context) {
 	// else if ( context === 'image')
 	// 	title = 'Search for IMAGE';
 
-	//let title = hotkey + (userOptions.contextMenuTitle || browser.i18n.getMessage("SearchFor")).replace("%1", searchTerms);
+	//let title = hotkey + (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", searchTerms);
 
 	return title;
 
