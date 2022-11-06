@@ -2143,12 +2143,12 @@ getNodeFromDataTransfer = e => {
 		if ( !e.dataTransfer.types.length ) return; // prevent special tile dnd triggering search
 
 		if ( getNodeFromDataTransfer(e) ) {
-			console.log('data appears to be a node. Cancelling search');
+			debug('data appears to be a node. Cancelling search');
 			return;
 		}
 
 		if ( isTool(e) ) {
-			console.log('data appears to be a tool. Cancelling search');
+			debug('data appears to be a tool. Cancelling search');
 			return;
 		}
 
