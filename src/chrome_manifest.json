@@ -33,7 +33,6 @@
 			],
 			"js": [
 				"lib/browser-polyfill.min.js",
-				"lib/crossbrowser.js",
 				"init_content.js"
 			],
 			"all_frames": true
@@ -73,7 +72,10 @@
 		"icons/code.svg",
 		"icons/logo_notext.svg",
 		"icons/icon.svg",
-		"/pagetiles.html"
+		"icons/repeatsearch.svg",
+		"icons/qm.svg",
+		"/pagetiles.html",
+		"/blank.html"
 	],
 	"browser_action": {
 		"default_title": "ContextSearch",
