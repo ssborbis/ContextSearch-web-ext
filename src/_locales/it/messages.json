@@ -187,7 +187,7 @@
   },
   
    "Click": {
-    "message": "Clic normale"
+    "message": "Clic singolo"
   },
   
   "ClickTooltip": {
@@ -1548,7 +1548,7 @@
   },
   
   "simpleclick": {
-    "message": "Clic singolo",
+    "message": "Semplice clic",
     "description": ""
   },
   
@@ -2513,5 +2513,23 @@
   },
   "TemplateCheatSheet": {
     "message": "%s - termini di ricerca\n%su - termini di ricerca maiuscoli\n%sl - termini di ricerca minuscoli\n%d - dominio\n%ds - subdominio\n%du - dominio definito dall'utente\n%u - URL scheda"
+  },
+  "AdditionalSearchActions": {
+    "message": "Azioni aggiuntive"
+  },
+  "Event": {
+    "message": "Evento"
+  },
+  "Button": {
+    "message": "Pulsante"
+  },
+  "SearchAction": {
+    "message": "Azione di ricerca"
+  },
+  "middle": {
+    "message": "Centrale"
+  },
+  "forward": {
+    "message": "Successivo"
   }
 }
