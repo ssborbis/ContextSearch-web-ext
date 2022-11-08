@@ -2313,7 +2313,12 @@ function nodeToTile( node ) {
 				addOpenFolderOnHover(tile);
 				tile.addEventListener('openFolder', openFolder);
 
+				tile.addEventListener('mouseup', e => {
+					if ( clickChecker(tile) ) openFolder(e);
+				});
+
 				async function openFolder(e) {
+
 					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
 
 					let siteSearchNode = {
