@@ -144,8 +144,10 @@ function repairNodeTree(tree) {
 
 		if ( node.type === 'siteSearchFolder') {
 			node.parent = parent;
-			console.log('removing siteSearchFolder ' + node.title);
-			return true;
+			delete node.children;
+			node.type = "searchEngine";
+			console.log('repairing siteSearchFolder ' + node.title);
+			return false;
 		}
 	});
 	

@@ -668,7 +668,7 @@ async function notify(message, sender, sendResponse) {
 			}
 
 		case "copyRaw":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: sender.frameId});
+			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0 /*sender.frameId*/});
 			
 		case "hasBrowserSearch":
 			return typeof browser.search !== 'undefined' && typeof browser.search.get !== 'undefined';
