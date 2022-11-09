@@ -373,9 +373,7 @@ async function notify(message, sender, sendResponse) {
 
 				if ( ccs.includes("image") && ccs.includes("link") ) {
 					ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
-				}
-
-				if ( message.linkMethod && message.linkMethod === "text") {
+				} else if ( message.linkMethod && message.linkMethod === "text") {
 					ccs = ccs.filter(c => c != "link");
 					if ( !ccs.includes("selection") )
 						ccs.push("selection");
