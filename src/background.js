@@ -373,20 +373,32 @@ async function notify(message, sender, sendResponse) {
 
 				if ( ccs.includes("image") && ccs.includes("link") ) {
 					ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
+				} else if ( message.linkMethod && message.linkMethod === "text") {
+					ccs = ccs.filter(c => c != "link");
+					if ( !ccs.includes("selection") )
+						ccs.push("selection");
 				}
 
 				updateMatchRegexFolders(searchTerms);
 
-				// relabel link based on linkMethod
+				// relabel selection based on linkMethod
 				test: try {
 
 					if ( message.currentContexts.includes("image")) break test;
 
 					let title = i18n("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? i18n("LINKTEXT") : i18n("LINK")).toUpperCase()) + getMenuHotkey();
 
-					await browser.contextMenus.update("link", {
-						title: title
-					});
+					if ( message.linkMethod && message.linkMethod === "text" ) {
+						await browser.contextMenus.update("selection", {
+							title: title,
+							contexts:["link", "selection"]
+						});
+					} else {
+						await browser.contextMenus.update("selection", {
+							title: i18n("SearchForContext", i18n("selection").toUpperCase()) + getMenuHotkey(),
+							contexts:["selection"]
+						});
+					}
 				} catch ( error ) {
 					console.error(error);
 				}
