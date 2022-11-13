@@ -191,7 +191,7 @@
   },
   
   "ClickTooltip": {
-    "message": "Il menu rapido si apre immediatamente con il clic destro. Tieni premuto il pulsante per aprire il menu contestuale"
+    "message": "Il menu rapido si apre immediatamente con il clic destro. Tieni premuto il pulsante per aprire il menu contestuale standard"
   },
   
    "Keyboard": {
@@ -227,7 +227,7 @@
   },
   
   "MouseHelp": {
-    "message": "In ambienti Linux o MacOS X, in base al comportamento predefinito di apertura del menu contestuale tramite gli eventi del mouse, gli utenti possono impostare 'ui.context_menus.after_mouseup = true' in about:config su Firefox per far funzionare correttamente le azioni del mouse ed evitare menu indesiderati. Altri utenti possono cambiare la modalità predefinita di apertura tenendo premuto Alt, Ctrl o Maiusc, oppure con doppio clic destro del mouse. Non tutte le opzioni funzionano per data piattaforma"
+    "message": "In ambienti Linux o MacOS X, in base all'apertura del menu contestuale standard tramite gli eventi del mouse, gli utenti possono impostare 'ui.context_menus.after_mouseup = true' in about:config su Firefox per evitare menu indesiderati. Altri utenti possono cambiare la modalità di apertura tenendo premuto Alt, Ctrl o Maiusc, oppure con doppio clic destro del mouse. Non tutte le opzioni funzionano per data piattaforma"
   },
 
   "Position": {
@@ -896,7 +896,7 @@
   },
   
   "Back": {
-    "message": "Precedente",
+    "message": "Indietro",
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
 
@@ -994,13 +994,13 @@
   },
   
   "AsShortcut": {
-    "message": "Come scorciatoia",
+    "message": "come collegamento",
     "description": "Manager menu item"
     
   },
   
   "AsNewEngine": {
-    "message": "Come nuovo motore",
+    "message": "come nuovo motore",
     "description": "Manager menu item"
   },
   
@@ -1573,11 +1573,11 @@
   },
 
   "HideContextMenu": {
-	"message": "Nascondi l'apertura predefinita del menu contestuale quando si apre il menu rapido con il pulsante destro del mouse"
+	"message": "Nascondi l'apertura del menu contestuale standard quando si apre il menu rapido con il pulsante destro del mouse"
   },
 
   "HoldForContextMenu": {
-	"message": "Tieni premuto il pulsante destro del mouse (circa un secondo) per aprire il menu contestuale"
+	"message": "Tieni premuto il pulsante destro del mouse (circa un secondo) e rilascia per aprire il menu contestuale standard"
   },
   
   "tools_repeatsearch": {
@@ -2218,7 +2218,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuAllowContextMenuNewTooltip": {
-    "message": "In ambienti che visualizzano il menu contestuale al clic del mouse, potrebbe essere necessario scegliere un metodo di apertura alternativo o modificare il modo predefinito in cui viene aperto il menu contestuale",
+    "message": "In ambienti che visualizzano il menu contestuale standard al clic del mouse, potrebbe essere necessario scegliere un'opzione alternativa per aprire il menu rapido o modificare la modalità di apertura del menu contestuale",
     "description": "advanced setting tooltip"
   },
   "quickMenuAutoMaxCharsTooltip": {
@@ -2294,7 +2294,7 @@
     "description": "advanced setting tooltip"
   },
   "rightClickMenuOnMouseDownFixTooltip": {
-    "message": "Richiedi un doppio clic per visualizzare il menu contestuale quando si apre il menu rapido tenendo premuto il pulsante destro del mouse. Utile per evitare menu errati su ambienti che visualizzano il menu contestuale al clic del mouse",
+    "message": "Richiedi un doppio clic per visualizzare il menu contestuale standard quando si apre il menu rapido tenendo premuto il pulsante destro del mouse. Utile per evitare menu indesiderati in ambienti che visualizzano il menu contestuale al clic del mouse",
     "description": "advanced setting tooltip"
   },
   "searchBarHistoryLengthTooltip": {
@@ -2385,7 +2385,7 @@
   },
 
   "checkContextMenuOrderNotification": {
-    "message": "Passare dalla modalità predefinita a quella doppio clic per il menu contestuale quando si apre il menu rapido? Per ulteriori informazioni, consultare le impostazioni"
+    "message": "Passare dalla modalità predefinita a quella doppio clic per il menu contestuale standard quando si apre il menu rapido? Controlla le opzioni per ulteriori informazioni"
   },
 
   "DoubleClick": {
@@ -2393,7 +2393,7 @@
   },
   
   "ShowDefaultMenuModifierMessage": {
-    "message": "Mostrare il menu contestuale predefinito"
+    "message": "Modalità di apertura del menu contestuale standard"
   },
 
   "NewExternalProgram": {
@@ -2530,6 +2530,9 @@
     "message": "Centrale"
   },
   "forward": {
-    "message": "Successivo"
+    "message": "Avanti"
+  },
+  "searchActionConflict": {
+    "message": "Questa impostazione è in conflitto con un'altra"
   }
 }
