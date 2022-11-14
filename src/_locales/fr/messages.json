@@ -87,15 +87,15 @@
   },
 
    "LeftButton": {
-    "message": "Clic gauche"
+    "message": "Bouton gauche"
   },
 
   "MiddleButton": {
-    "message": "Clic central"
+    "message": "Bouton du milieu"
   },
 
   "RightButton": {
-    "message": "Clic droit"
+    "message": "Bouton droit"
   },
 
   "LookLayoutHeader": {
@@ -171,7 +171,7 @@
   },
 
   "Hold": {
-    "message": "Maintenir"
+    "message": "Maintien"
   },
 
   "HoldTooltip": {
@@ -187,7 +187,7 @@
   },
 
   "Click": {
-    "message": "Cliquer"
+    "message": "Clic"
   },
 
   "ClickTooltip": {
@@ -426,7 +426,7 @@
     "message": "Liste des paramètres et valeurs POST séparés par des esperluettes (par exemple « q={searchTerms}&lang=fr&maxresults=100 »). Ne s’applique que si la méthode POST est utilisée."
   },
 
-  "Icon": {
+  "IconURI": {
     "message": "Icône"
   },
 
@@ -639,23 +639,23 @@
   },
 
   "top": {
-    "message": "En haut"
+    "message": "Haut"
   },
 
   "bottom": {
-    "message": "En bas"
+    "message": "Bas"
   },
 
   "left": {
-    "message": "À gauche"
+    "message": "Gauche"
   },
 
   "center": {
-    "message": "Au niveau"
+    "message": "Centre"
   },
 
   "right": {
-    "message": "À droite"
+    "message": "Droit"
   },
 
   "NameExists": {
@@ -896,10 +896,14 @@
   },
 
   "Back": {
-    "message": "Retour",
+    "message": "Précédent",
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
 
+  "Folder": {
+    "message": "Dossier"
+  },
+  
   "Folders": {
     "message": "Dossiers"
   },
@@ -2005,12 +2009,10 @@
     "description": "remove searchengines - confirm message"
   },
 
-
 "customIconTooltip": {
-    "message": "Utiliser une image sur l’ordinateur",
+    "message": "Utiliser une icône personnelle",
     "description": "toolbar icon - custom icon tooltip"
   },
-  
   
  "EnableHotkeysLabel": {
     "message": "Touches de raccourci",
@@ -2331,10 +2333,10 @@
     "message": "Ajouter un outil"
   },
   "BackButton": {
-    "message": "Bouton de recul"
+    "message": "Bouton Précédent"
   },
   "ForwardButton": {
-    "message": "Bouton d’avance"
+    "message": "Bouton Suivant"
   },
   
   "Title": {
@@ -2472,6 +2474,62 @@
   },
   "quickMenuOnMouseOpenWithoutSelectionTooltip": {
     "message": "Ouvrir le menu sur n’importe quel élément, y compris les zones vides des documents et des cadres."
+  },
+  "saveclose": {
+    "message": "Enregistrer et fermer"
+  },
+  "singlewindow": {
+    "message": "Unique"
+  },
+  "cascadingwindow": {
+    "message": "Cascade"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Parcours des dossiers par un menu unique ou par des menus en cascade séparés"
+  },
+  "DontShowAgain": {
+    "message": "Ne plus afficher cette fenêtre"
+  },
+  "Icon": {
+    "message": "Icône"
+  },
+  "Inline": {
+    "message": "Ligne"
+  },
+  "Block": {
+    "message": "Bloc"
+  },
+  "CheckForUpdates": {
+    "message": "vérifier la présence d’une mise à jour"
+  },
+  "UpdateToVersion": {
+    "message": "Mettre à jour le script de l’application native à la version $1 ?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "La dernière version est déjà installée."
+  },
+  "beta": {
+    "message": "En test bêta"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - termes de recherche\n%su - termes de recherche en MAJUSCULES\n%sl - termes de recherche en minuscules\n%d - domaine\n%ds - sous-domaine\n%du - domaine choisi par l’utilisateur\n%u - URL de l’onglet"
+  },
+  "AdditionalSearchActions": {
+    "message": "Actions supplémentaires"
+  },
+  "Event": {
+    "message": "Événement"
+  },
+  "Button": {
+    "message": "Bouton"
+  },
+  "SearchAction": {
+    "message": "Action de recherche"
+  },
+  "middle": {
+    "message": "Milieu"
+  },
+  "forward": {
+    "message": "Suivant"
   }
-
 }
