@@ -333,13 +333,17 @@ document.addEventListener('mousedown', e => {
 
 document.addEventListener('mouseup', e => {
 
+	let searchTerms = getSelectedText(e.target);
+
 	if (
 		!userOptions.quickMenuAuto || 
 		e.which !== 1 ||
 		e.target.id === 'quickMenuElement' ||
 		e.target.parentNode.id === 'quickMenuElement' ||
-		getSelectedText(e.target).trim() === "" ||
-		( userOptions.quickMenuAutoMaxChars && getSelectedText(e.target).length > userOptions.quickMenuAutoMaxChars ) ||
+		searchTerms.trim() === "" ||
+		( userOptions.quickMenuAutoMaxChars && searchTerms.length > userOptions.quickMenuAutoMaxChars ) ||
+		searchTerms.length < userOptions.quickMenuAutoMinChars ||
+		( !userOptions.quickMenuAutoOnDoubleClick && e.detail > 1 ) ||
 		( isTextBox(e.target) && !userOptions.quickMenuAutoOnInputs ) ||
 		( quickMenuObject.mouseDownTargetIsTextBox && !userOptions.quickMenuAutoOnInputs ) ||
 		quickMenuObject.disabled
@@ -362,7 +366,7 @@ document.addEventListener('mouseup', e => {
 	clearMouseDownTimer();
 
 	// skip erroneous short selections
-	let searchTerms = getSelectedText(e.target);
+
 	setTimeout(() => {
 
 		if ( searchTerms === getSelectedText(e.target) ) {

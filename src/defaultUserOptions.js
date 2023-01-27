@@ -109,6 +109,8 @@ const defaultUserOptions = {
 	quickMenuSearchHotkeys: "noAction",
 	quickMenuSearchHotkeysFolders: "noAction",
 	quickMenuAutoMaxChars: 0,
+	quickMenuAutoMinChars: 0,
+	quickMenuAutoOnDoubleClick: true,
 	quickMenuOpeningOpacity: 1.0,
 	quickMenuTheme: "modern",
 	quickMenuAlwaysShowMenuBar: false,
