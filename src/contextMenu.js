@@ -609,7 +609,7 @@ function contextMenuSearch(info, tab) {
 
 	// filter searchAll children by context
 	if ( userOptions.contextMenuUseContextualLayout && node.type === "folder" )
-		info.node = filterContexts(node, currentContextMenuContexts);
+		info.node = filterContexts(node, context);
 	
 	openSearch(info);
 	// domain: info.domain || new URL(tab.url).hostname
