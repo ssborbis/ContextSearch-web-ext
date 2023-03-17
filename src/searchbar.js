@@ -421,3 +421,9 @@ document.addEventListener('keydown', e => {
 			window.parent.postMessage({action: "minimizeSideBarRequest"}, "*");
 	}
 });
+
+// prevent page clicks when menu is open
+if ( window == top ) {
+	window.addEventListener('load', e => sendMessage({action:"disablePageClicks"}));
+	window.addEventListener('unload', e => sendMessage({action:"enablePageClicks"}));
+}
