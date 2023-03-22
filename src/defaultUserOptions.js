@@ -302,5 +302,6 @@ const defaultUserOptions = {
 	showStatusBar: false,
 	quickMenuDisabledInNewTabs: false,
 	developerMode: false,
-	advancedImport: false
+	advancedImport: false,
+	quickMenuPreventLinksOnMiddleButton: false
 };

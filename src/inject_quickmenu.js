@@ -544,10 +544,18 @@ document.addEventListener('mousedown', e => {
 		if ( userOptions.quickMenuMoveContextMenuMethod )
 			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
 	}
+
+	if ( e.which === 2 ) {
+		if ( true || userOptions.quickMenuPreventLinksOnMiddleButton ) {
+			e.target.addEventListener('auxclick', _e => _e.preventDefault())
+		} else if ( !getSelectedText(e.target) ) return false;
+
+		e.preventDefault();
+	}
 	
 	// middle-click often used to open links and requires some caveots
-	if ( e.which === 2 && !getSelectedText(e.target) ) return false;
-	if ( e.which === 2 ) e.preventDefault();
+	// if ( e.which === 2 && !getSelectedText(e.target) ) return false;
+	// if ( e.which === 2 ) e.preventDefault();
 
 	// context menu on mousedown fixes
 	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
