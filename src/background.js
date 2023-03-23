@@ -2235,15 +2235,6 @@ function updateUserOptionsVersion(uo) {
 
 		delete _uo.rightClickMenuOnMouseDownFix;
 		return _uo;
-	}).then( _uo => { // final cleanup
-
-		// remove duplicates
-		_uo.searchBarHistory = [...new Set([..._uo.searchBarHistory].reverse())].reverse();
-
-		// set version
-		_uo.version = browser.runtime.getManifest().version;
-		return _uo;
-
 	}).then( _uo => {
 		let els = _uo.quickMenuDomLayout.split(",");
 
@@ -2263,6 +2254,31 @@ function updateUserOptionsVersion(uo) {
 		//	delete _uo.searchBarUseOldStyle;
 		}
 
+		return _uo;
+	}).then( _uo => { // final cleanup
+
+		// remove duplicates
+		_uo.searchBarHistory = [...new Set([..._uo.searchBarHistory].reverse())].reverse();
+
+		// set version
+		_uo.version = browser.runtime.getManifest().version;
+		return _uo;
+
+	}).then( _uo => {
+		if ( _uo.version < "1.47" ) {
+
+			// test for unified node tree
+			if ( _uo.searchEngines.length === 0 && findNode(_uo.nodeTree, n => n.type === 'searchEngine') ) {
+				console.log('repairing searchEngines array');
+
+				findNodes(_uo.nodeTree, n => n.type === 'searchEngine').forEach(n => {
+					let se = JSON.parse(JSON.stringify(n));
+					se.icon_url = n.icon;
+					se.icon_base64String = n.iconCache;
+					_uo.searchEngines.push(se);
+				})
+			}
+		}
 		return _uo;
 	}).then( _uo => {
 		console.log('Done ->', _uo.version, Date.now() - start);
