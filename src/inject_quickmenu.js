@@ -546,7 +546,7 @@ document.addEventListener('mousedown', e => {
 	}
 
 	if ( e.which === 2 ) {
-		if ( true || userOptions.quickMenuPreventLinksOnMiddleButton ) {
+		if ( userOptions.quickMenuPreventLinksOnMiddleButton ) {
 			e.target.addEventListener('auxclick', _e => _e.preventDefault())
 		} else if ( !getSelectedText(e.target) ) return false;
 
