@@ -1755,6 +1755,9 @@ async function folderSearch(info, allowFolders) {
 		
 		info.tab = win.tabs[0];
 		info.openMethod = "openCurrentTab";	
+
+		// delay required in FF, else blank page
+		await new Promise(r => setTimeout(r, 500));
 	}
 
 	// track index outside forEach to avoid incrementing on skipped nodes
