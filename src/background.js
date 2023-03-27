@@ -960,6 +960,7 @@ async function notify(message, sender, sendResponse) {
 			return sender.hasOwnProperty("frameId");
 
 		case "disablePageClicks":
+			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 			return browser.tabs.insertCSS( sender.tab.id, {
 				code:"BODY{pointer-events:none;}",
 				cssOrigin: "user",
@@ -967,6 +968,7 @@ async function notify(message, sender, sendResponse) {
 			});
 
 		case "enablePageClicks":
+			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 			return browser.tabs.removeCSS( sender.tab.id, {
 				code:"BODY{pointer-events:none;}",
 				cssOrigin: "user",
