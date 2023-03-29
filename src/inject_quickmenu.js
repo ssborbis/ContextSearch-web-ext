@@ -422,6 +422,11 @@ document.addEventListener('mousedown', e => {
 		} 
 	}
 
+	if ( e.which === 2 && userOptions.quickMenuPreventScrollOnMiddleButton ) {
+		e.preventDefault();
+		e.stopPropagation();
+	}
+
 	let coords = Object.assign({}, screenCoords);
 		
 	// timer for mouse down
@@ -449,13 +454,8 @@ document.addEventListener('mousedown', e => {
 				_e.preventDefault();
 			}, {once: true});
 			
-		} else if (e.which === 2) {
-			// Disable click to prevent links from opening
-			e.target.addEventListener('mousedown', _e => {
-				if (_e.which !== 2) return;
-				_e.preventDefault();
-			}, {once: true});
-			
+		} else if (e.which === 2 && userOptions.quickMenuPreventLinksOnMiddleButton ) {
+			document.addEventListener('auxclick', _e => _e.preventDefault());			
 		} else if (e.which === 3) {
 			// Disable the default context menu once
 			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
@@ -464,6 +464,13 @@ document.addEventListener('mousedown', e => {
 			document.addEventListener('mouseup', () => {
 				setTimeout(() => document.removeEventListener('contextmenu', preventContextMenuHandler), 50);
 			}, {once: true});
+		}
+
+		if ( e.which === 2 && userOptions.quickMenuPreventLinksOnMiddleButton ) {
+			e.target.addEventListener('auxclick', _e => {
+				_e.preventDefault();
+				_e.stopPropagation();
+			})
 		}
 
 		quickMenuObject.mouseLastClickTime = Date.now();
@@ -508,6 +515,51 @@ function hasSearchTerms(e) {
 	return getSelectedText(e.target) || linkOrImage(e.target, e);
 }
 
+// track event listeners for suppressing scroll, links, context menus
+function disableDefaultHandler(e) {
+	e.preventDefault();
+	e.stopPropagation();
+}
+function disableLinks(el) {
+
+	if ( !userOptions.quickMenuPreventLinksOnMiddleButton ) return;
+
+	el.addEventListener('auxclick', disableDefaultHandler, {once: true});
+	el.dataset.csDisableLinks = true;
+}
+function enableLinks() {
+	document.querySelectorAll('[data-cs-disable-links]').forEach(el => {
+		el.removeEventListener('auxclick', disableDefaultHandler);
+		delete el.dataset.csDisableLinks;
+	});
+}
+function disableScroll(el) {
+
+	if ( !userOptions.quickMenuPreventScrollOnMiddleButton ) return;
+
+	el.addEventListener('mousedown', disableDefaultHandler, {once:true});
+	el.dataset.csDisableScroll = true;
+}
+function enableScroll() {
+	document.querySelectorAll('[data-cs-disable-scroll]').forEach(el => {
+		el.removeEventListener('auxclick', disableDefaultHandler);
+		delete el.dataset.csDisableScroll;
+	});
+}
+function disableContextMenu(el) {
+
+//	if ( userOptions.quickMenuAllowContextMenuNew ) return;
+
+	el.addEventListener('contextmenu', disableDefaultHandler, {once:true});
+	el.dataset.csDisableContextMenu = true;
+}
+function enableContextMenu() {
+	document.querySelectorAll('[data-cs-disable-context-menu]').forEach(el => {
+		console.log(el);
+		el.removeEventListener('contextmenu', disableDefaultHandler);
+		delete el.dataset.csDisableContextMenu;
+	});
+}
 // Listen for quickMenuOnClick
 document.addEventListener('mousedown', e => {
 
@@ -542,15 +594,14 @@ document.addEventListener('mousedown', e => {
 
 		// if a non-default method is set, suppress the dcm
 		if ( userOptions.quickMenuMoveContextMenuMethod )
-			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+			disableContextMenu(e.target);
 	}
 
 	if ( e.which === 2 ) {
-		if ( userOptions.quickMenuPreventLinksOnMiddleButton ) {
-			e.target.addEventListener('auxclick', _e => _e.preventDefault())
-		} else if ( !getSelectedText(e.target) ) return false;
+		disableLinks(e.target);
+		disableScroll(e.target);
 
-		e.preventDefault();
+	//	if ( !getSelectedText(e.target) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) return false;
 	}
 	
 	// middle-click often used to open links and requires some caveots
@@ -561,29 +612,27 @@ document.addEventListener('mousedown', e => {
 	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
 
 		if ( Date.now() - quickMenuObject.mouseLastContextMenuTime < userOptions.quickMenuRightClickTimeout ) {
-			// clearMouseDownTimer();
-			// cancelRequest = Date.now();
-			// closeQuickMenu();
-
 			browser.runtime.sendMessage({action: "cancelQuickMenuRequest"});
 			browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
-			removePreventContextMenuHandler('quickMenuOnClick mousedown');
+			enableContextMenu();
 			return;
 		}
 	}
 
 	if ( e.which === 3 ) {
 		quickMenuObject.mouseLastContextMenuTime = Date.now();
-		document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+		
 		
 		// update parent with mouseLastContextMenuTime for double-click check + cancel
 		if ( window !== top )
 			browser.runtime.sendMessage({action:"updateQuickMenuObject", quickMenuObject: quickMenuObject});
 	}
 	
-	// timer for right mouse down
+	// timer for clearing event listeners set on mouse down
 	quickMenuObject.mouseDownTimer = setTimeout(() => {
-		removePreventContextMenuHandler('quickMenuOnClick mousedown 2');
+		enableLinks();
+		enableScroll();
+		enableContextMenu();
 		clearMouseDownTimer();
 	}, userOptions.quickMenuHoldTimeout);
 }, {capture: true});
@@ -612,8 +661,6 @@ document.addEventListener('mouseup', e => {
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	e.stopPropagation();
-	if ( e.which === 2 ) e.preventDefault();
-
 	openQuickMenu(e);
 
 }, {capture: true});
