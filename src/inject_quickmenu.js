@@ -548,14 +548,13 @@ function enableScroll() {
 }
 function disableContextMenu(el) {
 
-//	if ( userOptions.quickMenuAllowContextMenuNew ) return;
+	if ( userOptions.quickMenuAllowContextMenuNew ) return;
 
 	el.addEventListener('contextmenu', disableDefaultHandler, {once:true});
 	el.dataset.csDisableContextMenu = true;
 }
 function enableContextMenu() {
 	document.querySelectorAll('[data-cs-disable-context-menu]').forEach(el => {
-		console.log(el);
 		el.removeEventListener('contextmenu', disableDefaultHandler);
 		delete el.dataset.csDisableContextMenu;
 	});
@@ -603,10 +602,6 @@ document.addEventListener('mousedown', e => {
 
 	//	if ( !getSelectedText(e.target) && !userOptions.quickMenuOnMouseOpenWithoutSelection ) return false;
 	}
-	
-	// middle-click often used to open links and requires some caveots
-	// if ( e.which === 2 && !getSelectedText(e.target) ) return false;
-	// if ( e.which === 2 ) e.preventDefault();
 
 	// context menu on mousedown fixes
 	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
@@ -621,7 +616,6 @@ document.addEventListener('mousedown', e => {
 
 	if ( e.which === 3 ) {
 		quickMenuObject.mouseLastContextMenuTime = Date.now();
-		
 		
 		// update parent with mouseLastContextMenuTime for double-click check + cancel
 		if ( window !== top )
