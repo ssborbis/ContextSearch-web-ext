@@ -303,7 +303,7 @@ const defaultUserOptions = {
 	quickMenuDisabledInNewTabs: false,
 	developerMode: false,
 	advancedImport: false,
-	quickMenuPreventLinksOnMiddleButton: false,
+	quickMenuPreventLinksOnMiddleButton: true,
 	quickMenuPreventScrollOnMiddleButton: false,
 	toolBarMenuDisablePageClicks:false
 };
