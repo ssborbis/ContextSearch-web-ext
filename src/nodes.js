@@ -222,3 +222,18 @@ function nodeAppendChild(node, parent) {
 	node.parent.children.push(node);
 }
 
+const isFolder = n => n.type === 'folder';
+const isSearchEngine = n => n.type === 'searchEngine';
+const isOneClickSearchEngine = n => n.type === 'oneClickSearchEngine';
+const isMultiSearchEngine = n => {
+
+	if ( !isSearchEngine(n) ) return false;
+	
+	try {
+		let ts = JSON.parse(n.template);
+		return true;
+	} catch (error) {}
+
+	return false;
+}
+	
