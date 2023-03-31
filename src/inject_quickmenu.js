@@ -408,7 +408,7 @@ document.addEventListener('mousedown', e => {
 
 		if ( userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
 			if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > userOptions.quickMenuRightClickTimeout ) {
-				document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+				disableContextMenu(e.target);
 				quickMenuObject.mouseLastContextMenuTime = Date.now();
 			} else {
 				document.addEventListener('contextmenu', _e => {
@@ -418,13 +418,13 @@ document.addEventListener('mousedown', e => {
 				return;
 			}
 		} else {
-			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+			disableContextMenu(e.target);
 		} 
 	}
 
-	if ( e.which === 2 && userOptions.quickMenuPreventScrollOnMiddleButton ) {
-		e.preventDefault();
-		e.stopPropagation();
+	if ( e.which === 2 ) {
+		disableLinks(e.target);
+		disableScroll(e.target);
 	}
 
 	let coords = Object.assign({}, screenCoords);
@@ -452,25 +452,13 @@ document.addEventListener('mousedown', e => {
 			e.target.addEventListener('click', _e => {
 				if (_e.which !== 1) return;
 				_e.preventDefault();
-			}, {once: true});
-			
-		} else if (e.which === 2 && userOptions.quickMenuPreventLinksOnMiddleButton ) {
-			document.addEventListener('auxclick', _e => _e.preventDefault());			
+			}, {once: true});		
 		} else if (e.which === 3) {
 			// Disable the default context menu once
-			document.addEventListener('contextmenu', preventContextMenuHandler, {once: true});
+			disableContextMenu(e.target);
 
-			// remove the listener after mouseup
-			document.addEventListener('mouseup', () => {
-				setTimeout(() => document.removeEventListener('contextmenu', preventContextMenuHandler), 50);
-			}, {once: true});
-		}
-
-		if ( e.which === 2 && userOptions.quickMenuPreventLinksOnMiddleButton ) {
-			e.target.addEventListener('auxclick', _e => {
-				_e.preventDefault();
-				_e.stopPropagation();
-			})
+			// remove the listener after timeout or 1s
+		//	document.addEventListener('mouseup', () => setTimeout(enableContextMenu, userOptions.quickMenuHoldTimeout || 1000 ), {once: true});
 		}
 
 		quickMenuObject.mouseLastClickTime = Date.now();
@@ -497,19 +485,16 @@ document.addEventListener('mouseup', e => {
 	) return false;
 
 	clearMouseDownTimer();
-//	removePreventContextMenuHandler(e);
+	
+	// slight delay to prevent context menu
+	setTimeout(() => {
+		enableContextMenu();
+		enableLinks();
+		enableScroll();
+	}, 50);
+	
 		
 }, {capture: true});
-
-function preventContextMenuHandler(e) {
-	if ( !userOptions.quickMenuAllowContextMenuNew ) {
-		e.preventDefault();
-	}
-}
-
-function removePreventContextMenuHandler(e) {
-	document.removeEventListener('contextmenu', preventContextMenuHandler);
-}
 
 function hasSearchTerms(e) {
 	return getSelectedText(e.target) || linkOrImage(e.target, e);
@@ -550,14 +535,10 @@ function disableContextMenu(el) {
 
 	if ( userOptions.quickMenuAllowContextMenuNew ) return;
 
-	el.addEventListener('contextmenu', disableDefaultHandler, {once:true});
-	el.dataset.csDisableContextMenu = true;
+	document.addEventListener('contextmenu', disableDefaultHandler, {once:true});
 }
 function enableContextMenu() {
-	document.querySelectorAll('[data-cs-disable-context-menu]').forEach(el => {
-		el.removeEventListener('contextmenu', disableDefaultHandler);
-		delete el.dataset.csDisableContextMenu;
-	});
+	document.removeEventListener('contextmenu', disableDefaultHandler);
 }
 // Listen for quickMenuOnClick
 document.addEventListener('mousedown', e => {
@@ -654,6 +635,7 @@ document.addEventListener('mouseup', e => {
 
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
+	e.preventDefault();
 	e.stopPropagation();
 	openQuickMenu(e);
 
