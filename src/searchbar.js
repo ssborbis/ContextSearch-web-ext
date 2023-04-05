@@ -291,9 +291,13 @@ function resizeMenu(o) {
 	sg.scrollTop = sgScrollTop;
 }
 
-function closeMenuRequest() {
+function closeMenuRequest(e) {
+
 	if ( window == top ) {
-		if ( userOptions.searchBarCloseAfterSearch ) window.close();
+		if ( 
+			userOptions.searchBarCloseAfterSearch ||
+			( userOptions.searchBarCloseAfterNewTab && e.openMethod && e.openMethod === 'openNewTab' )
+		) window.close();
 	} else if ( userOptions.sideBar.closeAfterSearch ) {
 		window.parent.postMessage({action: "closeSideBarRequest"}, "*");
 	}

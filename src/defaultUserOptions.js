@@ -1,7 +1,16 @@
 const defaultUserOptions = {
-	searchEngines: defaultEngines || [],
-	nodeTree: {},
+	searchEngines: [],
+	nodeTree: {
+		title: "/",
+		type: "folder",
+		children: [
+			
+		],
+		hidden: false,
+		id: "___root___"
+	},
 	lastUsedId: "",
+	lastUsedMethod: "",
 	hiddenEngines: "",
 	defaultGroupColor: "#CED7FF",
 	defaultGroupColorText: "#444444",
@@ -146,6 +155,7 @@ const defaultUserOptions = {
 		rememberState: false,
 		openOnResults: false,
 		openOnResultsMinimized: false,
+		openOnResultsLastOpenedFolder: false,
 		scale:1.0,
 		domLayout:"",
 		setMinWidth:true
@@ -253,6 +263,7 @@ const defaultUserOptions = {
 	shakeSensitivity: 4,
 	blockList: ["moz-extension://*", "chrome://*"],
 	version: "1",
+	lastUpdated: 0,
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
 	forceOpenResultsTabsAdjacent: false,
@@ -305,7 +316,9 @@ const defaultUserOptions = {
 	quickMenuDisabledInNewTabs: false,
 	developerMode: false,
 	advancedImport: false,
-	quickMenuPreventLinksOnMiddleButton: true,
+	dockingMoveFixedElements: false,
+	quickMenuPreventLinksOnMiddleButton: false,
 	quickMenuPreventScrollOnMiddleButton: false,
-	toolBarMenuDisablePageClicks:false
+	toolBarMenuDisablePageClicks:false,
+	searchBarCloseAfterNewTab:false
 };

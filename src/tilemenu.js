@@ -217,6 +217,11 @@ function keepMenuOpen(e, isFolder) {
 	isFolder = isFolder || false;
 	
 	if ( /KeepOpen$/.test(getOpenMethod(e, isFolder)) ) return true;
+
+	// special rules for searchBar & newTabs
+	if ( window == top && getOpenMethod(e, isFolder) === 'openNewTab' && true ) {
+		return false;
+	}
 	
 	if (
 		!(e.shiftKey && userOptions.quickMenuShift === "keepMenuOpen") &&
@@ -1647,6 +1652,8 @@ document.addEventListener('mouseup', async e => {
 
 	await tile.action(e);
 
+	e.openMethod = getOpenMethod(e);
+
 	if ( !keepMenuOpen(e) && !tile.keepOpen )
 		closeMenuRequest(e);
 
@@ -1776,6 +1783,8 @@ async function mouseupHandler(e) {
 		}
 
 	})();
+
+	e.openMethod = getOpenMethod(e);
 
 	searchPromise.then(() => {
 
@@ -2290,6 +2299,8 @@ function nodeToTile( node ) {
 					quickMenuObject.lastUsed = node.id
 					userOptions.lastUsedId = quickMenuObject.lastUsed;
 					document.dispatchEvent(new CustomEvent('updateLastUsed'));
+
+					e.openMethod = getOpenMethod(e);
 
 					if ( !keepMenuOpen(e, true)) closeMenuRequest(e);
 				}
