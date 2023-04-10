@@ -6,6 +6,11 @@ const getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"
 
 async function makeFrameContents(o) {
 
+	document.body.style.transition = 'none';
+	document.body.style.opacity = 0;
+	document.body.offsetWidth;
+	document.body.style.transition = null;
+
 	if ( o.node ) noMinimumWidth = true;
 
 	let qm = await makeQuickMenu(Object.assign({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text'}, o));
@@ -80,6 +85,7 @@ async function makeFrameContents(o) {
 	});
 
 	tileSlideInAnimation(.3, .15, .5);
+	document.body.style.opacity = null;
 }
 
 async function makeFolderContents(node) {
@@ -144,10 +150,10 @@ function setMenuSize(o) {
 	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
 
 	qm.style.minWidth = null;
-	qm.style.height = null;
+	qm.style.height = 'auto';
 	qm.style.overflow = null;
 	qm.style.width = null;
-	document.body.style.width = 'auto';
+	document.body.style.width = window.outerWidth + "px";
 	document.body.style.height = maxHeight + "px";
 
 	// prevent the menu from shriking below minimum columns width
@@ -175,21 +181,21 @@ function setMenuSize(o) {
 
 	let allOtherElsHeight = getAllOtherHeights(true);
 
-	if ( o.lockResize )
-		qm.style.height = currentHeight;
-	else if ( o.suggestionsResize ) 
-		qm.style.height = qm.getBoundingClientRect().height + "px";
-	else if ( o.openFolder || o.toggleSingleColumn ) 
-		qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
-	else if ( o.more ) 
-		qm.style.height = qm.getBoundingClientRect().height + "px";	
-	else if ( o.widgetResize ) {
-		qm.style.height = tileSize.height * o.rows + "px";
-		// qm.style.width = tileSize.width * o.columns + "px";
-	}
-	else
-		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
-	
+	// if ( o.lockResize )
+	// 	qm.style.height = currentHeight;
+	// else if ( o.suggestionsResize ) 
+	// 	qm.style.height = qm.getBoundingClientRect().height + "px";
+	// else if ( o.openFolder || o.toggleSingleColumn ) 
+	// 	qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
+	// else if ( o.more ) 
+	// 	qm.style.height = qm.getBoundingClientRect().height + "px";	
+	// else if ( o.widgetResize ) {
+	// 	qm.style.height = tileSize.height * o.rows + "px";
+	// 	// qm.style.width = tileSize.width * o.columns + "px";
+	// }
+	// else
+	// 	qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
+
 	if ( qm.getBoundingClientRect().height > maxHeight - allOtherElsHeight )
 		qm.style.height = Math.ceil(maxHeight - allOtherElsHeight) + "px";
 
