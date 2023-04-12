@@ -27,7 +27,14 @@ function addStylesheet(href) {
 }
 
 async function setTheme(theme) {
-	theme = theme || themes.find( t => t.name === userOptions.quickMenuTheme ) || themes[0];
+
+	let themeName = userOptions.quickMenuTheme;
+
+	if ( userOptions.autoTheme ) {
+		themeName = isDarkMode() ? userOptions.autoThemeDark : userOptions.autoThemeLite;
+	}
+
+	theme = theme || themes.find( t => t.name === themeName ) || themes[0];
 
 	if ( theme.requires ) {
 		for ( let l of theme.requires ) {

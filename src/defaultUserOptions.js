@@ -320,5 +320,8 @@ const defaultUserOptions = {
 	quickMenuPreventLinksOnMiddleButton: false,
 	quickMenuPreventScrollOnMiddleButton: false,
 	toolBarMenuDisablePageClicks:false,
-	searchBarCloseAfterNewTab:false
+	searchBarCloseAfterNewTab:false,
+	autoTheme:false,
+	autoThemeLite:"modern",
+	autoThemeDark:"modern dark"
 };
