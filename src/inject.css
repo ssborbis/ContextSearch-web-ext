@@ -179,6 +179,8 @@
 }
 .CS_hide {
 	display:none !important;
+	visibility: none !important;
+	opacity:0 !important;
 }
 .CS_notification {
 	all: unset;

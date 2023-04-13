@@ -672,6 +672,23 @@ document.addEventListener('keydown', e => {
 	});
 });
 
+document.addEventListener("fullscreenchange", e => {
+	let div = document.querySelector('contextsearch-widgets');
+	if ( div ) div.style.display = document.fullscreen ? 'none' : null;
+	else {
+
+		let iframe = getIframe ? getIframe() : null;
+		let ot = getOpeningTab ? getOpeningTab() : null;
+		let navbar = getNavBar ? getNavBar() : null;
+		let fb = getFindBar ? getFindBar() : null;
+
+		[iframe, ot, navbar, fb].forEach( el => { 
+	  		if ( el ) el.classList.toggle('CS_hide', document.fullscreen);
+	  	});
+
+	}
+});
+
 createShadowRoot();
 setZoomProperty();
 

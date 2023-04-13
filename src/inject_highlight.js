@@ -665,33 +665,3 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			
 	}
 });
-
-document.addEventListener("fullscreenchange", e => {
-	
-	let fb = getFindBar();
-	let navbar = getNavBar();
-
-	if ( document.fullscreen ) {
-		if (fb) {
-			fb.style.display = 'none';
-			
-			if ( fb.dataset.windowtype === 'docked' ) {
-				fb.lastWindowType = 'docked';
-				fb.undock();
-			}
-		}
-		if (navbar) navbar.style.display = 'none';		
-		
-	} else {			
-		if (fb) {
-			fb.style.display = null;
-			
-			if ( fb.lastWindowType === 'docked')
-				fb.docking.dock();
-			
-			delete fb.lastWindowType;
-		}
-		if (navbar) navbar.style.display = null;
-	}
-});
-
