@@ -676,7 +676,7 @@ document.addEventListener("fullscreenchange", e => {
 	let div = document.querySelector('contextsearch-widgets');
 	if ( div ) div.style.display = document.fullscreen ? 'none' : null;
 	else {
-		let sb = getIframe ? getIframe() : null;
+		let sb = getSideBar ? getSideBar() : null;
 		let ot = getOpeningTab ? getOpeningTab() : null;
 		let nb = getNavBar ? getNavBar() : null;
 		let fb = getFindBar ? getFindBar() : null;

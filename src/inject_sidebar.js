@@ -1,4 +1,4 @@
-function getIframe() { return getShadowRoot().getElementById('CS_sbIframe') }
+function getSideBar() { return getShadowRoot().getElementById('CS_sbIframe') }
 function getOpeningTab() { return getShadowRoot().getElementById('CS_sbOpeningTab') }
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
@@ -26,7 +26,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 				
 				if ( !e.data.size ) return;
 
-				let iframe = getIframe();
+				let iframe = getSideBar();
 				if ( !iframe ) return;
 
 				if ( !userOptions.enableAnimations ) 
@@ -82,7 +82,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 		case "openSideBar":
 		case "sideBarHotkey":
-			if ( getIframe() )
+			if ( getSideBar() )
 				closeSideBar();
 			else
 				openSideBar();
@@ -249,7 +249,7 @@ function openSideBar(options) {
 
 function closeSideBar(minimize) {
 	
-	let iframe = getIframe();
+	let iframe = getSideBar();
 	let openingTab = getOpeningTab();
 
 	if ( openingTab || minimize) { 
@@ -295,7 +295,7 @@ function makeOpeningTab() {
 	//open sidebar if dragging text over
 	openingTab.addEventListener('dragenter', e => {
 		openingTab.dispatchEvent(new MouseEvent('click'));
-		getIframe().focus();
+		getSideBar().focus();
 	});
 	
 	// prevent docking on double-click
@@ -320,7 +320,7 @@ function makeOpeningTab() {
 				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "openingTab onUndock"});
 			
 			// match sbContainer position with openingTab
-			if ( getIframe() && getIframe().docking ) getIframe().docking.options.lastOffsets = o.lastOffsets;
+			if ( getSideBar() && getSideBar().docking ) getSideBar().docking.options.lastOffsets = o.lastOffsets;
 		}
 	});
 
@@ -339,13 +339,13 @@ window.addEventListener('message', e => {
 	if ( e.data.action === "minimizeSideBarRequest" )
 		closeSideBar(true);
 	if ( e.data.action === "undock")
-		getIframe().docking.undock();
+		getSideBar().docking.undock();
 });
 
 document.addEventListener('click', e => {
 	if (e.target.closest("contextsearch-widgets")) return;
-	if ( !getIframe() ) return;
-	getIframe().contentWindow.postMessage({action: "editEnd"}, browser.runtime.getURL('/searchbar.html'));
+	if ( !getSideBar() ) return;
+	getSideBar().contentWindow.postMessage({action: "editEnd"}, browser.runtime.getURL('/searchbar.html'));
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -360,8 +360,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function minifySideBar() {
-	getIframe().docking.undock();
-	runAtTransitionEnd(getIframe(), ["height", "width", "left", "top"], () => {
-		getIframe().contentWindow.postMessage({action: "minifySideBar"}, browser.runtime.getURL('/searchbar.html'));
+	getSideBar().docking.undock();
+	runAtTransitionEnd(getSideBar(), ["height", "width", "left", "top"], () => {
+		getSideBar().contentWindow.postMessage({action: "minifySideBar"}, browser.runtime.getURL('/searchbar.html'));
 	});
 }
