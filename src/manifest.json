@@ -19,7 +19,7 @@
 			"utils.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
-			"lib/encoding.min.js",
+			"lib/encoding.js",
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",

@@ -1,3 +1,5 @@
+window.TextEncoder = window.TextDecoder = null;
+
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
   window[id] = window.setTimeout(callback, time);
