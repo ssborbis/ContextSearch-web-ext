@@ -193,6 +193,10 @@ const i18n_layout_titles = {
 	"contextsBar": 			'contexts'
 };
 
+function isDarkMode() {
+	return window.matchMedia && !!window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
 const log = console.log;
 const debug = (...args) => {
 	if ( userOptions && userOptions.developerMode )
