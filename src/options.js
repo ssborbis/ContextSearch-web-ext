@@ -1641,12 +1641,15 @@ function setAutoDarkMode() {
 }
 
 function buildThemes() {
-	$('#quickMenuTheme').innerHTML = null;
-	themes.forEach( t => {
-		let option = document.createElement('option');
-		option.value = t.name;
-		option.innerText = i18n(t.name.replace(" ","_")) || t.name;
-		$('#quickMenuTheme').appendChild(option);
+
+	document.querySelectorAll('.themeSelector').forEach( s => {
+		s.innerHTML = null;
+		themes.forEach( t => {
+			let option = document.createElement('option');
+			option.value = t.name;
+			option.innerText = i18n(t.name.replace(" ","_")) || t.name;
+			s.appendChild(option);
+		});
 	});
 }
 
