@@ -395,8 +395,8 @@ document.addEventListener('mousedown', e => {
 	// check for modifier keys
 	if ( 
 		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
-		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey) */ // leave for link / linkText
+		(userOptions.quickMenuOnMouseAlt !== e.altKey)  ||
+		(userOptions.quickMenuOnMouseCtrl && userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)  // leave for link / linkText
 	) return false;
 
 	checkContextMenuEventOrder(e);
