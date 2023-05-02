@@ -2289,7 +2289,7 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
-		if ( _uo.version < "2.00" ) { // version to compare should be the unified nodeTree release
+		if ( _uo.version < "1.47" ) { // version to compare should be the unified nodeTree release
 
 			// test for unified node tree
 			if ( _uo.searchEngines.length === 0 && findNode(_uo.nodeTree, n => n.type === 'searchEngine') ) {
