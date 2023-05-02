@@ -102,7 +102,7 @@ function removeNode(node, parent) {
 	parent.children.splice(parent.children.indexOf(node), 1);
 }
 
-function repairNodeTree(tree) {
+function repairNodeTree(tree, hide) {
 	
 	let repaired = false;
 	
@@ -122,7 +122,7 @@ function repairNodeTree(tree) {
 			tree.children.push({
 				id: se.id,
 				type: "searchEngine",
-				hidden: true,
+				hidden: hide,
 				title: se.title
 			});
 		}

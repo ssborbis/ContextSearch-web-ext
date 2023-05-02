@@ -19,6 +19,7 @@ var isAndroid = false;
 	console.log("userOptions loaded. Updating objects");
 	userOptions = await updateUserOptionsVersion(userOptions);
 	await browser.storage.local.set({"userOptions": userOptions});
+	await repairNodeTree(userOptions.nodeTree, false);
 	await checkForOneClickEngines();
 	await buildContextMenu();
 	resetPersist();
@@ -2288,7 +2289,7 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 
 	}).then( _uo => {
-		if ( _uo.version < "1.47" ) {
+		if ( _uo.version < "2.00" ) { // version to compare should be the unified nodeTree release
 
 			// test for unified node tree
 			if ( _uo.searchEngines.length === 0 && findNode(_uo.nodeTree, n => n.type === 'searchEngine') ) {
@@ -2300,6 +2301,15 @@ function updateUserOptionsVersion(uo) {
 					se.icon_base64String = n.iconCache;
 					_uo.searchEngines.push(se);
 				})
+			}
+
+			if ( browser.search && browser.search.get ) {
+				browser.search.get().then(ffses => {
+					findNodes(_uo.nodeTree, n => n.type === 'oneClickSearchEngine' && !n.icon ).forEach(n => {
+						let ffse = ffses.find(ffs => ffs.name === n.title);
+						if ( ffse ) n.icon = ffse.favIconUrl;
+					});
+				});
 			}
 		}
 		return _uo;

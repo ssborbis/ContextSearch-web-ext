@@ -1239,7 +1239,7 @@ function buildSearchEngineContainer() {
 	setParents(root);
 
 	// clear any dead nodes
-	repairNodeTree(root).then( result => {
+	repairNodeTree(root, true).then( result => {
 
 		rootElement.node = root;
 		
@@ -2181,7 +2181,7 @@ function buildSearchEngineContainer() {
 		userOptions.searchEngines = w.defaultEngines;
 		
 		// build nodes with default engines
-		repairNodeTree(userOptions.nodeTree);
+		repairNodeTree(userOptions.nodeTree, true);
 		
 		// unhide all default engines
 		findNodes( userOptions.nodeTree, node => node.hidden = false );
