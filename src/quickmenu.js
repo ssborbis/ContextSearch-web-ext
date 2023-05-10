@@ -106,6 +106,11 @@ async function makeFolderContents(node) {
 	setParents(node);
 
 	let nodeRef = findNode(root, n => n.id === node.id) || node;
+
+	// check for siteSearch folders
+	if ( node.type === "folder" && (nodeRef.type === "siteSearchFolder" || nodeRef.type === 'searchEngine' ) ) {
+		nodeRef = node;
+	}
 	
 	qm = await quickMenuElementFromNodeTree(nodeRef, true);
 

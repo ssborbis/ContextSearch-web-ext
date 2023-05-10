@@ -1668,7 +1668,7 @@ document.addEventListener('mouseup', e => {
 
 	if ( !tile || !tile.node ) return;
 
-	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'siteSearchFolder', 'externalProgram'].includes(tile.node.type)) return;
+	if (tile.node && tile.node.type && !['searchEngine', 'bookmarklet', 'oneClickSearchEngine', 'siteSearch', 'externalProgram'].includes(tile.node.type)) return;
 
 	if ( tile.disabled ) return;
 
