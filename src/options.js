@@ -8,7 +8,15 @@ var userOptionsHasUpdated = false;
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	if ( message.userOptions && message.source && message.source.url != browser.runtime.getURL(window.location.href)) {
+	
+		if ( // only prompt and reload if the nodeTree has changed
+			JSON.stringify(message.userOptions.nodeTree) != JSON.stringify(userOptions.nodeTree) &&
+			confirm("Options have been updated by another tab. Reload? ")
+		) return window.location.reload();
+
+		console.log('updating userOptions');
 		userOptions = message.userOptions;
+		restoreOptions(userOptions);
 	}
 });
 
@@ -1263,6 +1271,17 @@ function buildUploadOnHash() {
 	if (params.has('click')) {
 		document.getElementById(params.get('click')).click();
 		history.pushState("", document.title, window.location.pathname);
+	}
+
+	// open search manager to node
+	if (params.has('id') && location.hash == "#engines") {
+	
+		setTimeout(() => {
+			let id = params.get('id');
+			let li = document.querySelector(`LI[data-nodeid="${id}"]`);
+
+			if ( li ) li.dispatchEvent(new MouseEvent('dblclick'));
+		}, 500);
 	}
 }
 

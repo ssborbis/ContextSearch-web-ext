@@ -57,6 +57,8 @@ function buildSearchEngineContainer() {
 		li.addEventListener('dragover',dragover_handler);
 		li.addEventListener('dragenter',dragenter_handler);
 		li.addEventListener('dragleave',dragleave_handler);
+
+		li.addEventListener('dblclick', () => setURLSearchParams(li));
 		
 		let header = document.createElement('div');
 		header.className = "header";
@@ -2503,6 +2505,12 @@ function addMultisearchIcons(se, header) {
 			})
 		}
 	} catch (error) {}
+}
+
+function setURLSearchParams(li) {
+	if ( li.node && li.node.id ) {
+		window.history.replaceState(null, null, "?id=" + li.node.id);
+	}
 }
 
 document.addEventListener('keydown', e => {
