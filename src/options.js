@@ -7,8 +7,8 @@ var userOptions = {};
 var userOptionsHasUpdated = false;
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	if ( message.userOptions && message.source && message.source.url != browser.runtime.getURL(window.location.href)) {
-	
+	if ( message.userOptions && message.source && message.source.url != window.location.href) {
+
 		if ( // only prompt and reload if the nodeTree has changed
 			JSON.stringify(message.userOptions.nodeTree) != JSON.stringify(userOptions.nodeTree) &&
 			confirm("Options have been updated by another tab. Reload? ")
