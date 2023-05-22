@@ -612,7 +612,7 @@ function createShadowRoot() {
 	let shadow = div.attachShadow({mode: 'open'})
 		.innerHTML = `
       <style>
-        :host { all: initial; }
+        :host { all: initial !important; }
       </style>`;
 }
 
