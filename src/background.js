@@ -1481,6 +1481,17 @@ async function openSearch(info) {
 
 		try {
 			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim() || searchTerms;
+
+			// use quickMenuObject.lastSelectText if the terms are unchanged to keep newlines
+			if ( info.quickMenuObject && info.quickMenuObject.lastSelectText ) {
+			
+				let str1 = info.quickMenuObject.lastSelectText.replace(/(\r\n|\r|\n)/g, " ").trim();
+				let str2 = info.quickMenuObject.searchTermsObject.selection.trim();
+
+				if ( str1 == str2 )
+					searchTerms = info.quickMenuObject.lastSelectText;
+			}
+
 		} catch (err) {}
 
 		let terms = searchTerms.split('\n');
