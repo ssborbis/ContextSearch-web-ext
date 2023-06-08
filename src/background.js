@@ -1480,7 +1480,7 @@ async function openSearch(info) {
 	if ( userOptions.multilinesAsSeparateSearches ) {
 
 		try {
-			
+
 			if ( info.quickMenuObject && isSameStringMinusLineBreaks(info.quickMenuObject.lastSelectText, info.quickMenuObject.searchTermsObject.selection) ) {
 				searchTerms = info.quickMenuObject.lastSelectText;
 				debug('multiline search', 'DOM menu');
@@ -1506,7 +1506,7 @@ async function openSearch(info) {
 				try {
 					let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
 					if ( valid ) {
-						let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
+						let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${i18n("ConfirmMultiLineSearch", terms.length.toString())}');` });
 						
 						if ( !_confirm[0] ) return;
 					}

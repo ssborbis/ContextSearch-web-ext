@@ -2540,5 +2540,8 @@
   },
   "AutoThemeDarkTooltip": {
     "message": "Dark Theme"
+  },
+  "ConfirmMultiLineSearch": {
+    "message": "This will open $1 search tabs. Continue?"
   }
 }
