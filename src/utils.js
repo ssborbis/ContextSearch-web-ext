@@ -199,6 +199,10 @@ function isDarkMode() {
 	return window.matchMedia && !!window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
+function isSameStringMinusLineBreaks(str1, str2) {
+	return str1.replace(/(\r\n|\r|\n|\s+)/g, "").trim() == str2.replace(/(\r\n|\r|\n|\s+)/g, "").trim();
+}
+
 const log = console.log;
 const debug = (...args) => {
 	if ( userOptions && userOptions.developerMode )
