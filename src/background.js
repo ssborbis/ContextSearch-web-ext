@@ -1452,8 +1452,6 @@ async function openSearch(info) {
 	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
-	console.log(info);
-
 	var searchTerms = (info.searchTerms || info.selectionText || "").trim();
 
 	var openMethod = info.openMethod || "openNewTab";
@@ -1477,7 +1475,7 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( userOptions.multilinesAsSeparateSearches ) {
+	if ( userOptions.multilinesAsSeparateSearches && !info.multilines ) {
 
 		try {
 
@@ -1494,7 +1492,8 @@ async function openSearch(info) {
 			console.error(err);
 		}
 
-		let terms = searchTerms.split('\n');
+		// filter empty lines
+		let terms = searchTerms.trim().split('\n').filter(l => l);
 
 		if ( terms.length > 1 ) {
 
@@ -1506,7 +1505,8 @@ async function openSearch(info) {
 				try {
 					let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
 					if ( valid ) {
-						let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${i18n("ConfirmMultiLineSearch", terms.length.toString())}');` });
+						let _confirm_str = i18n("ConfirmMultiLineSearch", terms.length.toString());
+						let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` });
 						
 						if ( !_confirm[0] ) return;
 					}
@@ -1523,6 +1523,7 @@ async function openSearch(info) {
 
 				let _info = Object.assign({}, info);
 				_info.searchTerms = t;
+				_info.multilines = true;
 				_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
 				delete _info.quickMenuObject;
 
