@@ -2531,5 +2531,17 @@
   },
   "forward": {
     "message": "Suivant"
+  },
+  "AutoThemeTooltip": {
+    "message": "Changer automatiquement le thème du menu en mode sombre"
+  },
+  "AutoThemeLiteTooltip": {
+    "message": "Thème clair"
+  },
+  "AutoThemeDarkTooltip": {
+    "message": "Thème sombre"
+  },
+  "ConfirmMultiLineSearch": {
+    "message": "Cela ouvrira $1 onglets de recherche. Continuer ?"
   }
 }
