@@ -549,7 +549,7 @@ async function notify(message, sender, sendResponse) {
 			}
 			parentNode.children.push(node);
 
-			notify({action: "saveOptions", userOptions:userOptions});
+			notify({action: "saveUserOptions", userOptions:userOptions});
 			return node;
 			
 		}
@@ -567,7 +567,7 @@ async function notify(message, sender, sendResponse) {
 			
 			userOptions.searchEngines.splice(index, 1);
 	
-			notify({action: "saveOptions", userOptions:userOptions});
+			notify({action: "saveUserOptions", userOptions:userOptions});
 			
 			break;
 			

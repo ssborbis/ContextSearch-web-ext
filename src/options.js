@@ -7,6 +7,7 @@ var userOptions = {};
 var userOptionsHasUpdated = false;
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+
 	if ( message.userOptions && message.source && message.source.url != window.location.href) {
 
 		if ( // only prompt and reload if the nodeTree has changed
