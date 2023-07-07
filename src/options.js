@@ -12,7 +12,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		if ( // only prompt and reload if the nodeTree has changed
 			JSON.stringify(message.userOptions.nodeTree) != JSON.stringify(userOptions.nodeTree) &&
-			confirm("Options have been updated by another tab. Reload? ")
+		//	confirm("Options have been updated by another tab. Reload? ")
 		) return window.location.reload();
 
 		console.log('updating userOptions');
