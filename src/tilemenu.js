@@ -1238,6 +1238,9 @@ function makeSearchBar() {
 				if ( window == top ) sb.set(clipText); // toolbar menu
 				else window.addEventListener('focus', () => sb.set(clipText), {once: true}); // qm, sb
 			
+				// set raw data
+				quickMenuObject.lastSelectText = clipText;
+				console.log(quickMenuObject);
 				return;
 			}
 		}
