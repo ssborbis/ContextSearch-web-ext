@@ -21,6 +21,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
+// show instructions
+$("#selectMozlz4FileButton").addEventListener('click', async ev => {
+	if ( !confirm(i18n("ImportDescription"))) ev.preventDefault();
+});
+
 // Browse button for manual import
 $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	
