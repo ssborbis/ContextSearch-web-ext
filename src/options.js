@@ -1917,7 +1917,7 @@ function buildAdvancedOptions() {
 		tr.appendChild(td2);
 
 		td1.innerText = o.id;
-		td1.title = i18n(o.id.replace(".", "_") + "Tooltip") || o.i18n;
+		td1.title = i18n(o.i18n || "") || i18n(o.id.replace(".", "_") + "Tooltip");
 		td1.style.cursor = 'help';
 
 		td2.appendChild(makeInput(o.id));
