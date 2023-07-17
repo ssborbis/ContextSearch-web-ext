@@ -582,7 +582,17 @@ function parseSelectDomainMenuId(id) {
 	return null;
 }
 
-function contextMenuSearch(info, tab) {
+async function contextMenuSearch(info, tab) {
+
+	// if chrome && get raw text if available
+    try {
+    	let result = await chrome.tabs.executeScript( {
+    		code: "window.getSelection().toString();"
+    	});
+
+    	let selection = result[0];
+    	if ( selection ) info.selectionText = selection;
+    } catch (error) {}
 
 	// check for context prefix
 	let context = "";
