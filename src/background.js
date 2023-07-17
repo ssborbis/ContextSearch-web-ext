@@ -5,12 +5,10 @@ window.tabTerms = [];
 
 var userOptions = {};
 var highlightTabs = [];
-var isAndroid = false;
+var platformInfo = null;
 
 (async() => {
-	let info = await browser.runtime.getPlatformInfo();
-	if ( info && info.os === "android")
-		isAndroid = true;
+	platformInfo = await browser.runtime.getPlatformInfo();
 })();
 
 // init
@@ -1083,7 +1081,7 @@ function openWithMethod(o) {
 	o.index = o.index || null;
 
 	function filterOptions(_o) {
-		if ( isAndroid) delete _o.openerTabId;
+		if ( platformInfo && platformInfo.os === "android") delete _o.openerTabId;
 
 		return _o;
 	}
