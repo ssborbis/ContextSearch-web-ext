@@ -1653,7 +1653,7 @@
 						<td>
 							<label for="replaceMozlz4FileButton" class="fileUpload" style="font-size:8pt" data-i18n="ImportSelectFile">
 							<img src="/icons/import.svg" style="height:10px" />
-							Select file...
+							_
 							<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
 						</label>
 						</td>
@@ -3288,6 +3288,8 @@
 					<div class="blurb" data-i18n="SearchEnginesManagerHelp">
 						_
 					</div>
+
+
 					
 				</section>
 
@@ -3418,45 +3420,49 @@
 				<br />
 				
 				<div data-browser="firefox">
-				<section>
-					<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
-						_
-					</p>
-					<div class="option">
-						<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
-						<span class="description" data-i18n="SyncWithFirefoxSearch">$</span>
-					</div>
-				</section>
-				<br />
 
 					<section>
-<p class="header1" style="margin-top:0" data-i18n="ImportHeader">
-						_
-					</p>
-					<span data-i18n="ImportDescription">
-						_
-					</span>
-					
-					<br /><br />
-					
-					<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
-						<img src="/icons/import.svg" style="margin-right:10px" />
-						Select file...
-						<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
-					</label>
-					
-					<div class="option">
-						<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
-						<span class="description" data-i18n="ClearSearchList">$</span>
-					</div>
-					
-					<div id="status_div" style="display:none;">
-						<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
-							<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+						<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
+							_
+						</p>
+						<div class="option">
+							<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
+							<span class="description" data-i18n="SyncWithFirefoxSearch">$</span>
 						</div>
-						<div id="status" style='display:inline-block'>&nbsp;</div>
-					</div>
+					</section>
 
+					<br>
+
+					<section>
+						<p class="header1" style="margin-top:0" data-i18n="Advanced">_</p>
+
+						<div class="option">
+							<checkbox data-id="autoImportFirefoxEngines" data-i18n=""></checkbox>
+							<span class="description" data-i18n="autoImportFirefoxEnginesTooltip">Always check for Firefox engines</span>
+						</div>
+
+						<hr>
+
+						<span data-i18n="ImportHeader">_</span><br>
+						
+						<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
+							<img src="/icons/import.svg" style="height:10px" />
+							_
+							<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
+						</label>
+						<!-- <span style="font-size:8pt" data-i18n="ImportDescription">_</span> -->
+						
+						<div class="option" style="display: inline-block;margin-left:10px">
+							<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
+							<span class="description" data-i18n="ClearSearchList">$</span>
+						</div>
+						
+						<div id="status_div" style="display:none;">
+							<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
+								<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+							</div>
+							<div id="status" style='display:inline-block'>&nbsp;</div>
+						</div>
 					</section>
 					
 					<!-- <section>

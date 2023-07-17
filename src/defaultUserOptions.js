@@ -323,5 +323,6 @@ const defaultUserOptions = {
 	searchBarCloseAfterNewTab:false,
 	autoTheme:false,
 	autoThemeLite:"modern",
-	autoThemeDark:"modern dark"
+	autoThemeDark:"modern dark",
+	autoImportFirefoxEngines: true
 };

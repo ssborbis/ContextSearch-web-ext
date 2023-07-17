@@ -559,22 +559,24 @@ async function listenForFocusAndPromptToImport() {
 		return;
 	}
 
+	let oldEngineCount = await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
+
 	window.addEventListener('focus', async() => {
 
 		// look for new one-click engines
 		let newEngineCount = await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
 			
-		console.log('found ' + newEngineCount + ' new engines');
+		console.log('found ' + newEngineCount - oldEngineCount + ' new engine(s)');
 		
 		// do nothing if no engines added
-		if ( !newEngineCount ) return;
+		if ( !newEngineCount || newEngineCount <= oldEngineCount ) return;
 		
 		// show auto notification
 		showMenu('CS_notifyAutomaticUpdated');
 
 		let text = document.querySelector('[data-i18n="NewEngineImported"]');
 		
-		text.innerText = i18n("NewEngineImported", newEngineCount);
+		text.innerText = i18n("NewEngineImported", newEngineCount - oldEngineCount);
 			
 		// close iframe after x milliseconds
 		setTimeout(closeCustomSearchIframe, 2000);

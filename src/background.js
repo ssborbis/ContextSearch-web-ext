@@ -2360,16 +2360,19 @@ async function checkForOneClickEngines() {
 		
 		if ( found ) return;
 
-		let node = {
-			type: "oneClickSearchEngine",
-			title: engine.name,
-			icon: engine.favIconUrl || browser.runtime.getURL('icons/search.svg'),
-			hidden: false,
-			id: gen()
-		}
+		if ( userOptions.autoImportFirefoxEngines ) {
 
-		console.log('adding One-Click engine ' + engine.name);
-		userOptions.nodeTree.children.push(node);
+			let node = {
+				type: "oneClickSearchEngine",
+				title: engine.name,
+				icon: engine.favIconUrl || browser.runtime.getURL('icons/search.svg'),
+				hidden: false,
+				id: gen()
+			}
+
+			console.log('adding One-Click engine ' + engine.name);
+			userOptions.nodeTree.children.push(node);
+		}
 		
 		newEngineCount++;
 		
