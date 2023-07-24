@@ -2280,12 +2280,12 @@ function updateUserOptionsVersion(uo) {
 	}).then( _uo => {
 		if ( _uo.quickMenuUseOldStyle ) {
 			_uo.quickMenuDefaultView = _uo.quickMenuUseOldStyle ? 'text' : 'grid';
-		//	delete _uo.quickMenuUseOldStyle;
+			delete _uo.quickMenuUseOldStyle;
 		}
 
 		if ( _uo.searchBarUseOldStyle ) {
 			_uo.searchBarDefaultView = _uo.searchBarUseOldStyle ? 'text' : 'grid';
-		//	delete _uo.searchBarUseOldStyle;
+			delete _uo.searchBarUseOldStyle;
 		}
 
 		return _uo;
