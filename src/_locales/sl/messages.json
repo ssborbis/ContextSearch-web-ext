@@ -109,6 +109,10 @@
   "ColumnsTooltip": {
     "message": "Največje število ikon iskalnikov na vrstico (mrežni pogled)"
   },
+
+  "ColumnsMinimumTooltip": {
+    "message": "Najmanjše število ikon iskalnikov na vrstico (mrežni pogled)"
+  },
   
   "Items": {
     "message": "Predmeti"
@@ -895,6 +899,10 @@
     "message": "Nazaj",
     "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
   },
+
+  "Folder": {
+    "message": "Mapa"
+  },
   
   "Folders": {
     "message": "Mape"
@@ -1081,6 +1089,16 @@
   
   "EnableAnimationsTooltip": {
     "message": "Omogoči spreminjanje velikosti, pomik in animacije motnosti za vse menije.  Onemogočite za hitrejši vmesnik brez olepšav",
+    "description": ""
+  },
+
+   "EnableAnimationsTileSlider": {
+    "message": "Animacije vstavljanja",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Animacija vstavljanja menija s ploščicami",
     "description": ""
   },
   
@@ -1921,37 +1939,42 @@
   },
 
   "audio": {
-    "message": "zvok",
+    "message": "zvoku",
     "description": ""
   },
 
   "frame": {
-    "message": "sličica",
+    "message": "sličicah",
     "description": ""
   },
 
   "image": {
-    "message": "slika",
+    "message": "slikah",
     "description": ""
   },
 
   "link": {
-    "message": "povezava",
+    "message": "povezavah",
+    "description": ""
+  },
+
+  "linkText": {
+    "message": "besedilu povezav",
     "description": ""
   },
 
   "page": {
-    "message": "stran",
+    "message": "straneh",
     "description": ""
   },
 
   "selection": {
-    "message": "izbira",
+    "message": "izbirah",
     "description": ""
   },
 
   "video": {
-    "message": "videoposnetek",
+    "message": "videoposnetkih",
     "description": ""
   },
 
@@ -1986,12 +2009,10 @@
     "description": "remove searchengines - confirm message"
   },
   
-  
  "customIconTooltip": {
     "message": "Uporabi sliko iz računalnika",
     "description": "toolbar icon - custom icon tooltip"
   },
-  
   
  "EnableHotkeysLabel": {
     "message": "Hitre tipke iskalnika",
@@ -2101,12 +2122,20 @@
     "message": "Ploščicam vedno dovoli preureditev v menijih.",
     "description": "advanced setting tooltip"
   },
+  "autoCopy": {
+    "message": "Samodejno kopiraj"
+  },
   "autoCopyTooltip": {
     "message": "Izbrano besedilo je kopirano na odložišče.",
     "description": "advanced setting tooltip"
   },
   "autoPasteFromClipboardTooltip": {
     "message": "Besedilo z odložišča bo prilepljeno v iskalne vrstice, ko se iskalni meniji odprejo.",
+	 
+    "description": "advanced setting tooltip"
+  },
+  "autoCopyOnInputsTooltip": {
+    "message": "Omogočite za vnose in besedilna polja",
     "description": "advanced setting tooltip"
   },
   "cache": {
@@ -2416,6 +2445,104 @@
   },
   "ToggleSearchTerms": {
     "message": "Naslednji iskalni izraz"
+  },
+  "EnableOn": {
+    "message": "Omogoči na"
+  },
+  "Input": {
+    "message": "vnosih"
+  },
+  "tools_OpenImage": {
+    "message": "Odpri sliko"
+  },
+  "tools_Download": {
+    "message": "Prejmi"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Ponastavi vse možnosti na privzete nastavitve (to ne vliva na iskalnike)?"
+  },
+  "contexts": {
+    "message":"Vsebine"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Zapri meni med tipkanjem (zahteva, da iskalna vrstica NIMA žarišča - glejte 'Iskalna vrstica')"
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Prikaži orodno vrstico vsebin"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Kjerkoli"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Odpri meni na kateremkoli elementu, vključno s praznimi področji v dokumentih in okvirjih"
+  },
+  "saveclose": {
+    "message": "Shrani in zapri"
+  },
+  "singlewindow": {
+    "message": "En meni"
+  },
+  "cascadingwindow": {
+    "message": "Padajoče"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Brskaj po mapah v enem meniju ali v ločenih padajočih menijih"
+  },
+  "DontShowAgain": {
+    "message": "Tega na prikaži več"
+  },
+  "Icon": {
+    "message": "ikona"
+  },
+  "Inline": {
+    "message": "v vrstici"
+  },
+  "Block": {
+    "message": "blok"
+  },
+  "CheckForUpdates": {
+    "message": "preveri za posodobitve"
+  },
+  "UpdateToVersion": {
+    "message": "Posodobi izvorni skript programa na različico $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "Najnovejša različica je že nameščena."
+  },
+  "beta": {
+    "message": "preizkušanje beta"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - iskalni izrazi\n%su - iskalni izrazi z VELIKIMI ČRKAMI\n%sl - iskalni izrazi z malimi črkami\n%d - domena\n%ds - poddomena\n%du - uporabniško izbrana domena\n%u - URL zavihka"
+  },
+  "AdditionalSearchActions": {
+    "message": "Dodatna dejanja"
+  },
+  "Event": {
+    "message": "Dogodek"
+  },
+  "Button": {
+    "message": "Gumb"
+  },
+  "SearchAction": {
+    "message": "Dejanje iskanja"
+  },
+  "middle": {
+    "message": "srednji"
+  },
+  "forward": {
+    "message": "naprej"
+  },
+  "AutoThemeTooltip": {
+    "message": "Samodejno spremeni temo menijev ob preklopu na temni način"
+  },
+  "AutoThemeLiteTooltip": {
+    "message": "Svetla tema"
+  },
+  "AutoThemeDarkTooltip": {
+    "message": "Temna tema"
+  },
+  "ConfirmMultiLineSearch": {
+    "message": "To bo odprlo $1 iskalnih zavihkov. Nadaljuj?"
   }
-
 }
