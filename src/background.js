@@ -2278,12 +2278,12 @@ function updateUserOptionsVersion(uo) {
 		}
 		return _uo;
 	}).then( _uo => {
-		if ( _uo.quickMenuUseOldStyle ) {
+		if ( _uo.hasOwnProperty("quickMenuUseOldStyle") ) {
 			_uo.quickMenuDefaultView = _uo.quickMenuUseOldStyle ? 'text' : 'grid';
 			delete _uo.quickMenuUseOldStyle;
 		}
 
-		if ( _uo.searchBarUseOldStyle ) {
+		if ( _uo.hasOwnProperty("_uo.searchBarUseOldStyle") ) {
 			_uo.searchBarDefaultView = _uo.searchBarUseOldStyle ? 'text' : 'grid';
 			delete _uo.searchBarUseOldStyle;
 		}

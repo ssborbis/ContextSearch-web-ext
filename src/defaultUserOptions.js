@@ -309,8 +309,6 @@ const defaultUserOptions = {
 	quickMenuCascadingFoldersHoverTimeout: 50,
 	quickMenuDefaultView: "grid",
 	searchBarDefaultView: "grid",
-	quickMenuUseOldStyle: false, // remove
-	searchBarUseOldStyle: false, // remove
 	nativeAppDownloadFolder: "",
 	showStatusBar: false,
 	quickMenuDisabledInNewTabs: false,
