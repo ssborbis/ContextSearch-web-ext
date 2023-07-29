@@ -1240,7 +1240,6 @@ function makeSearchBar() {
 			
 				// set raw data
 				quickMenuObject.lastSelectText = clipText;
-				console.log(quickMenuObject);
 				return;
 			}
 		}
