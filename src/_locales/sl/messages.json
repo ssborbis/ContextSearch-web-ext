@@ -426,10 +426,6 @@
     "message": "Seznam parametrov in vrednosti POST, ločenih z znakom & (npr. q={searchTerms}&lang=en&maxresults=100).  Velja samo pri uporabi metode POST."
   },
   
-  "Icon": {
-    "message": "URI ikone"
-  },
-  
   "IconTooltip": {
     "message": "URI ikone, ki naj se uporabi.  Slike morajo biti manj kot 64x64 sl. točk in manj kot 10 kb."
   },
