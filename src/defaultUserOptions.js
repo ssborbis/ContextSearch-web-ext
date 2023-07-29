@@ -322,5 +322,6 @@ const defaultUserOptions = {
 	autoTheme:false,
 	autoThemeLite:"modern",
 	autoThemeDark:"modern dark",
-	autoImportFirefoxEngines: true
+	autoImportFirefoxEngines: true,
+	quickMenuOnlyOpenIfOverSelection: false
 };

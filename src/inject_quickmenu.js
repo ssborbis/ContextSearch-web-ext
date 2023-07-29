@@ -399,6 +399,9 @@ document.addEventListener('mousedown', e => {
 		(userOptions.quickMenuOnMouseCtrl && userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)  // leave for link / linkText
 	) return false;
 
+	// check for pointer over selection
+	if ( getSelectedText(e.target) && userOptions.quickMenuOnlyOpenIfOverSelection && !isEventOnSelectedText(e) ) return false;
+
 	checkContextMenuEventOrder(e);
 
 	// if a non-default method is set, suppress the dcm
@@ -565,6 +568,9 @@ document.addEventListener('mousedown', e => {
 		(userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
 		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)*/ // leave ctrlKey for link / linkText
 	) return false;
+
+		// check for pointer over selection
+	if ( getSelectedText(e.target) && userOptions.quickMenuOnlyOpenIfOverSelection && !isEventOnSelectedText(e) ) return false;
 
 	checkContextMenuEventOrder(e);
 
@@ -1396,6 +1402,20 @@ function createStatusButton(icon, callback) {
 	img.onclick = callback;
 
 	return div;
+}
+
+function isEventOnSelectedText(e) {
+
+	const isInside = (point, rect) => point.x > rect.left && point.x < rect.right && point.y > rect.top && point.y < rect.bottom;
+
+	var selection = window.getSelection();
+	var range = selection.getRangeAt(0); 
+
+	for ( let rect of range.getClientRects() ) {
+		if ( isInside(e,rect) ) return true;
+	}
+
+	return false;
 }
 
 const isEditing = el => {
