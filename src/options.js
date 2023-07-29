@@ -559,7 +559,7 @@ function addDOMListeners() {
 	$('#contextMenuKey').addEventListener('click', keyButtonListener);
 
 	$('#syncWithFirefoxSearch').addEventListener('change', e => {
-		$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
+		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = e.target.checked ? "none" : null);
 	});
 
 	$('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
@@ -597,7 +597,7 @@ function addDOMListeners() {
 }
 
 document.addEventListener('userOptionsLoaded', e => {
-	$('#searchEnginesParentContainer').style.display = $('#syncWithFirefoxSearch').checked ? "none" : null;
+		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = $('#syncWithFirefoxSearch').checked ? "none" : null);
 });
 
 function keyButtonListener(e) {
