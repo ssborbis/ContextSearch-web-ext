@@ -14,8 +14,8 @@
 	overflow:hidden;
 	display:inline-block !important;
 	z-index: 2147483647; /* max 32-bit integer */
-	transition: var(--user-transition, width .15s ease-in-out, height .15s ease-in-out, opacity .1s );
-	transform:scale( calc( 1 / var(--cs-zoom, 1) * var(--cs-scale,1))) !important;
+	transition: var(--user-transition, width .2s ease .1s, height .1s ease, opacity .35s ease-in-out, scale .2s ease );
+	transform:scale( var(--cs-scale,1)) !important;
 	transform-origin: top left;
 	background-color:transparent;
 	box-sizing: border-box;
@@ -56,7 +56,7 @@
 	border: 8px dashed #3293d4;
 	border-width:0 8px 8px 0;
 
-	transform: scale(calc( 1 / var(--cs-zoom, 1))) !important;
+	transform: scale(var(--cs-scale)) !important;
 	opacity:0;
 	position:fixed;
 	user-select:none;
@@ -89,7 +89,7 @@
 	z-index:2147483647;
 	opacity:.5;
 	transform-origin:top right;
-	transform:scaleX( calc( 1 / var(--cs-zoom, 1))) !important;
+	transform:scaleX( var(--cs-scale)) !important;
 }
 #CS_highLightNavBar:hover {
 	opacity:.5;
@@ -97,7 +97,7 @@
 #CS_highLightNavBar > IMG {
 	height:16px;
 	transform-origin:top right;
-	transform:scaleY( calc( 1 / var(--cs-zoom, 1))) !important;
+	transform:scaleY( var(--cs-scale)) !important;
 }
 #CS_highLightNavBar > DIV {
 	position:absolute;
@@ -149,7 +149,7 @@
 	opacity:1;
 	height:36px;
 	white-space:nowrap;
-	transform:scale( calc( var(--cs-dpi) / var(--cs-zoom, 1))) !important;
+	transform:scale( var(--cs-scale)) !important;
 	border:none; 
 	padding:0;
 	margin:0;
@@ -158,7 +158,7 @@
 #CS_findBarIframe[data-windowtype="docked"] {
 	left:0;
 	right:0;
-	width: calc(var(--cs-zoom, 100) * 100%);
+	width: calc(100% / var(--cs-scale));
 }
 #CS_findBarIframe[data-windowtype="undocked"] {
 	width:870px !important;	
@@ -275,7 +275,7 @@
 	cursor: pointer !important;;
 	/*border: 1px solid #444;*/
 	/*border-radius: 25%;*/
-	transform: scale( calc( 1 / var(--cs-zoom, 1) * var(--cs-icon-scale,1))) !important;;
+	transform: scale( var(--cs-scale)) !important;;
 	/*transform-origin: top center;*/
 
 }
@@ -295,7 +295,7 @@
 	right: -8px;
 	display: inline-block;
 	max-width: 30px;
-	transform: scale(calc( 1 / var(--cs-zoom, 1))) !important;
+	transform: scale(var(--cs-scale)) !important;
 	transform-origin: bottom right;
 	transition: max-width .5s ease-out, opacity .25s;
 	overflow: hidden;

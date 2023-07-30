@@ -113,7 +113,7 @@ function openSideBar(options) {
 
 	iframe.setAttribute('allow', "clipboard-read; clipboard-write");
 
-	iframe.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
+	iframe.style.setProperty('--cs-custom-scale', userOptions.sideBar.scale);
 
 	iframe.allowTransparency = true;
 
@@ -285,7 +285,7 @@ function makeOpeningTab() {
 	openingTab.id = 'CS_sbOpeningTab';
 	openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
 	openingTab.classList.add('CS_handle');
-	openingTab.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
+	openingTab.style.setProperty('--cs-custom-scale', userOptions.sideBar.scale);
 	
 	openingTab.addEventListener('click', () => {
 		if ( openingTab.moving ) return false;	

@@ -968,7 +968,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				var qmc = getShadowRoot().getElementById(message.folder.id);
 
 				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
+				qmc.style.setProperty('--cs-custom-scale', userOptions.quickMenuScale);
 
 				qmc.style.left = qmc.openingCoords.x - 4 + "px";
 				qmc.style.top = qmc.openingCoords.y + "px";
@@ -1007,7 +1007,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				let qmc = getQM();
 				
 				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
-				qmc.style.setProperty('--cs-scale', userOptions.quickMenuScale);
+				qmc.style.setProperty('--cs-custom-scale', userOptions.quickMenuScale);
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
 				let borderWidth = getBorderWidth(qmc);

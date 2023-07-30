@@ -549,6 +549,7 @@ function checkContextMenuEventOrderNotification() {
 function setZoomProperty() {
 	let el = getShadowRoot().host || document.documentElement;
 	el.style.setProperty('--cs-zoom', window.devicePixelRatio);
+	el.style.setProperty('--cs-scale', 'calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1))');
 }
 
 document.addEventListener('zoom', setZoomProperty);

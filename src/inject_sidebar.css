@@ -7,7 +7,7 @@
 	white-space: nowrap;
 	transition: var(--user-transition, all 0.15s);
 	line-height:0;
-	transform:scale( calc( var(--cs-dpi,1) / var(--cs-zoom, 1))) !important;
+	transform:scale( calc( var(--cs-scale,1) * var(--cs-custom-scale,1))) !important;
 }
 #CS_sbIframe {
 	border:1px solid #9abad2;
