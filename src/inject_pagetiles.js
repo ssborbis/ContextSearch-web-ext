@@ -104,3 +104,6 @@ let closePageTiles = e => {
 	document.dispatchEvent(new CustomEvent('closePageTiles'));
 }
 
+// when pageTiles does not cover entire page
+document.addEventListener('click', closePageTiles);
+

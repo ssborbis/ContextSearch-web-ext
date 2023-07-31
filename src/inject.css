@@ -246,15 +246,15 @@
 }
 #CS_pageTilesIframe {
 	all:unset;
-	width:100%;
-	height:100%;
+	width:calc(var(--cs-pagetiles-container-width, 50% )/ var(--cs-scale));
+	height:calc(var(--cs-pagetiles-container-height, 50% ) / var(--cs-scale));
+	left: 50%;
+	top:50%;
+    transform: translate(-50%, -50%) scale(var(--cs-scale));
+
 	border:none;
 	background-color:transparent;
 	position:fixed;
-	left:0;
-	right:0;
-	top:0;
-	bottom:0;
 	z-index:2147483646;
 }
 .CS_highlightTextBlock {

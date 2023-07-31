@@ -1,16 +1,20 @@
 BODY {
 	background-color:transparent;
+/*	--cs-pagetile-height:calc(100% / var(--cs-pagetilerows) - 4px);
+	--cs-pagetile-width:calc(100% / var(--cs-pagetilecols) - 4px);*/
 }
+
 .pageTilesContainer {
-	position:fixed;
+/*	position:fixed;
 	left:0;
 	top:0;
 	right:0;
-	bottom:0;
+	bottom:0;*/
 	line-height:0;
 	direction: ltr;
 	transition: opacity .15s;
 	opacity:0;
+	background: var(--background, #eff0f1);
 }
 .pageTilesContainer.speedDial {
 	right: initial;
@@ -31,37 +35,64 @@ BODY {
 	border-collapse: collapse;
 	display:inline-block;
 	/*border:2px solid #ef2ef2;*/
-	background-size:32px;
+/*	background-size:min(64px, calc(100% - 20px)) min(64px, calc(100% - 20px)), contain;
 	background-position:center center;
-	background-repeat:no-repeat;
-	background-color: #eff0f1;
-	color:#444;
+	background-repeat:no-repeat;*/
+/*	color:#444;*/
 	font-size:18pt;
 	text-align:center;
-	width: calc(100% / var(--cs-pagetilecols) - 4px);
-	height: calc(100% / var(--cs-pagetilerows) - 4px);
+	width: calc(100vw / var(--cs-pagetilecols));
+	height: calc(100vh / var(--cs-pagetilerows));
 	line-height:normal;
 	overflow:hidden;
 	font-family:Arial;
-	border-radius:6px;
+/*	border-radius:6px;*/
 	opacity:.95;
-	margin: 2px;
+/*	margin: 2px;*/
+	position: relative;
 }
-.pageTile.dragover {
-	filter:brightness(1.1);
-	transition: var(--user-transition, filter.1s);
-	background-color:#ccdbe8;
+.pageTile.dragover:not(.empty) {
+/*	filter:brightness(1.1);*/
+	transition: var(--user-transition, filter .1s, background-color .5s);
+	background-color:var(--hover);
+}
+.pageTile IMG {
+	display:inline-block;
+	/* margin-top: 10%; */
+	width: min(64px, calc(100% - 20px));
+	max-width: min(64px, calc(100% - 20px));
+
+	/* height: min(64px, calc(100% - 20px)); */
+	/* vertical-align: middle; */
+	top: 50%;
+	transform: translate(-50%,-50%);
+	position: absolute;
+	left: 50%;
+	pointer-events: none;
 }
 .pageTile DIV {
-	padding: 10px 0 10px 0;
+	padding: 0 10px;
+	width: calc(100% - 20px);
+	pointer-events: none;
+	border-collapse: collapse;
+	font-size: calc(100vw / var(--cs-pagetilecols) / 10); /* set font size based on width */
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow-x: hidden;
+	position: absolute;
+	bottom:8px;
+/*	background-color: var(--border);*/
 	pointer-events: none;
 }
 .pageTile.dragover DIV {
 	pointer-events: none;
 	background-color:inherit;
-	filter:brightness(1.05);
-	transition: var(--user-transition, filter .1s);
+/*	filter:brightness(1.05);*/
+	transition: var(--user-transition, filter .1s, background-color .5s);
 }
 .pageTile.empty {
-	opacity:0;
+/*	opacity:0;*/
+}
+.pageTile.empty IMG {
+	display:none;
 }

@@ -4,6 +4,7 @@ function init(message) {
 	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 
+		setTheme();
 		setUserStyles();
 		makePageTiles(message);
 		
@@ -75,6 +76,11 @@ function makePageTiles(message) {
 
 		let div = document.createElement('div');
 		div.className = 'pageTile';
+		div.title = node.title + (node.description ? " - " + node.description : "");
+
+		let img = new Image();
+		img.src = getIconFromNode(node);
+		div.appendChild(img);
 
 		let header = document.createElement('div');
 		header.innerText = node.title;
@@ -92,7 +98,7 @@ function makePageTiles(message) {
 			div.style.filter = 'none';
 		}
 
-		div.style.backgroundImage = `url(${node.icon})`;
+		// div.style.backgroundImage = `url(${node.icon})`;
 
 		div.ondragenter = function(e) { 
 			e.preventDefault();
@@ -136,7 +142,7 @@ function makePageTiles(message) {
 		div.addEventListener('drop', close);
 		
 		// clear events for empty tiles
-		if ( !node.id || node.hidden ) div.classList.add('empty');
+		if ( !node.id ) div.classList.add('empty');
 
 		mainDiv.appendChild(div);
 
