@@ -246,8 +246,8 @@
 }
 #CS_pageTilesIframe {
 	all:unset;
-	width:calc(var(--cs-pagetiles-container-width, 50% )/ var(--cs-scale));
-	height:calc(var(--cs-pagetiles-container-height, 50% ) / var(--cs-scale));
+	width:calc(var(--cs-pagetiles-container-width, 95% )/ var(--cs-scale));
+	height:calc(var(--cs-pagetiles-container-height, 95% ) / var(--cs-scale));
 	left: 50%;
 	top:50%;
     transform: translate(-50%, -50%) scale(var(--cs-scale));

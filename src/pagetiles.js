@@ -92,7 +92,8 @@ function makePageTiles(message) {
 
 		if ( colors.length !== 1 ) {
 			let bgcolor = '#' + colorFromString(node.id || node.type);
-			div.style.backgroundColor = bgcolor;
+			div.style.setProperty("--tile-color", bgcolor);
+			// div.style.backgroundColor = bgcolor;
 			if ( getLuma(bgcolor) < 140) div.style.color = '#ccc ';
 		} else {
 			div.style.filter = 'none';
@@ -163,6 +164,10 @@ document.addEventListener('keydown', e => {
 document.addEventListener('click', e => {
 	close();
 });
+
+window.addEventListener('dragleave', e => {
+	console.log(e);
+})
 
 document.addEventListener('contextmenu', e => e.preventDefault())
 
