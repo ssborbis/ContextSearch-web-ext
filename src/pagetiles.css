@@ -5,6 +5,7 @@ BODY {
 	background-color:transparent;
 /*	--cs-pagetile-height:calc(100% / var(--cs-pagetilerows) - 4px);
 	--cs-pagetile-width:calc(100% / var(--cs-pagetilecols) - 4px);*/
+	transform: scale(.95);
 }
 
 .pageTilesContainer {
@@ -49,7 +50,7 @@ BODY {
 /*	background: var(--tile-color);*/
 }
 .pageTile.empty {
-	opacity:.25;
+	opacity:.1;
 	background: var(--tile-color);
 }
 .pageTile.dragover:not(.empty) {

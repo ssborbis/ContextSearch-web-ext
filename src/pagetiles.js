@@ -155,6 +155,12 @@ function makePageTiles(message) {
 	document.body.appendChild(mainDiv);
 	mainDiv.getBoundingClientRect();
 	mainDiv.style.opacity = 1;
+
+	// close when dragging over "border"
+	window.addEventListener('dragover', e => {
+		if ( e.target === document.documentElement ) close();		
+	});
+
 }
 
 document.addEventListener('keydown', e => {
@@ -164,10 +170,6 @@ document.addEventListener('keydown', e => {
 document.addEventListener('click', e => {
 	close();
 });
-
-window.addEventListener('dragleave', e => {
-	console.log(e);
-})
 
 document.addEventListener('contextmenu', e => e.preventDefault())
 
@@ -197,6 +199,7 @@ window.addEventListener("message", e => {
 
 	if ( e.data.drop ) {
 		let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+
 		if ( el === document.body ) close();
 
 		return el.ondrop(new DragEvent('drop'));
