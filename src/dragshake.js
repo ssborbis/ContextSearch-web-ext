@@ -87,22 +87,22 @@ function dragOverIframeDiv(el) {
 
 	getShadowRoot().appendChild(div);
 
-	div.addEventListener('dragover', e => e.preventDefault())
+	div.addEventListener('dragover', e => e.preventDefault());
 
-	div.addEventListener('drop', e => {
-
-		el.contentWindow.postMessage({
-			drop: true,
-			pageX:e.pageX, 
-			pageY:e.pageY,
-			clientX:e.clientX,
-			clientY:e.clientY,
-			offsetX:e.offsetX,
-			offsetY:e.offsetY,
-			screenX:e.screenX,
-			screenY:e.screenY
-		}, el.src);
-
+	['drop'].forEach( eventType => {
+		div.addEventListener(eventType, e => {
+			el.contentWindow.postMessage({
+				eventType: eventType,
+				pageX:e.pageX, 
+				pageY:e.pageY,
+				clientX:e.clientX,
+				clientY:e.clientY,
+				offsetX:e.offsetX,
+				offsetY:e.offsetY,
+				screenX:e.screenX,
+				screenY:e.screenY
+			}, el.src);
+		});
 	});
 
 	document.addEventListener('dragend', e => {

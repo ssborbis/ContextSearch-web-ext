@@ -523,14 +523,15 @@ addChildDockingListeners(mb, "quickMenu", "#searchBarContainer > *");
 
 // drag overdiv listener for chrome
 window.addEventListener("message", e => {
-	if ( !e.data.drop ) return;
-	let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+	if ( e.data.eventType && e.data.eventType === 'drop' ) {
+		let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
 
-	// dispatch both to fool timer
-	el.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
-	el.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+		// dispatch both to fool timer
+		['mousedown', 'mouseup'].forEach( eventType => {
+			el.dispatchEvent(new MouseEvent(eventType, {bubbles: true}));
+		})
+	}
 });
-
 
 function resizeMutationObserver() {
 

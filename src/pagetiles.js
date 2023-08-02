@@ -197,7 +197,7 @@ function getLuma(hexcolor) {
 // drag overdiv listener
 window.addEventListener("message", e => {
 
-	if ( e.data.drop ) {
+	if ( e.data.eventType && e.data.eventType === 'drop' ) {
 		let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
 
 		if ( el === document.body ) close();

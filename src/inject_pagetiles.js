@@ -32,7 +32,6 @@ function openPageTiles(message) {
 
 				document.addEventListener('closePageTiles', e => ds.stop(), {once: true});
 			}
-
 		}
 	}, 50);
 }
