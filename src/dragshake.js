@@ -89,7 +89,7 @@ function dragOverIframeDiv(el) {
 
 	div.addEventListener('dragover', e => e.preventDefault());
 
-	['drop'].forEach( eventType => {
+	['drop','dragover'].forEach( eventType => {
 		div.addEventListener(eventType, e => {
 			el.contentWindow.postMessage({
 				eventType: eventType,

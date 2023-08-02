@@ -1,11 +1,15 @@
 :root {
 	--pagetile-icon-max-size: 64px;
+	--pagetile-edge-width: 20px;
+}
+HTML {
+		padding:var(--pagetile-edge-width);
 }
 BODY {
 	background-color:transparent;
 /*	--cs-pagetile-height:calc(100% / var(--cs-pagetilerows) - 4px);
 	--cs-pagetile-width:calc(100% / var(--cs-pagetilecols) - 4px);*/
-	transform: scale(.95);
+/*	transform: scale(.95);*/
 }
 
 .pageTilesContainer {
@@ -13,6 +17,8 @@ BODY {
 	direction: ltr;
 	transition: opacity .15s;
 	opacity:0;
+	width:calc(100vw - var(--pagetile-edge-width) * 2);
+	height:calc(100vh - var(--pagetile-edge-width) * 2);
 }
 .pageTilesContainer.speedDial {
 	right: initial;
@@ -34,8 +40,8 @@ BODY {
 	display:inline-block;
 	font-size:18pt;
 	text-align:center;
-	width: calc(100vw / var(--cs-pagetilecols) - 2px);
-	height: calc(100vh / var(--cs-pagetilerows) - 2px);
+	width: calc(100% / var(--cs-pagetilecols) - 2px);
+	height: calc(100% / var(--cs-pagetilerows) - 2px);
 	line-height:normal;
 	overflow:hidden;
 	font-family:Arial;

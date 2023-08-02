@@ -161,6 +161,13 @@ function makePageTiles(message) {
 		if ( e.target === document.documentElement ) close();		
 	});
 
+	// chrome edge close
+	window.addEventListener("message", e => {
+		if ( window.chrome && e.data.eventType && e.data.eventType === 'dragover' ) {			
+			let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+			if ( el && el === document.documentElement ) close();
+		}
+	});
 }
 
 document.addEventListener('keydown', e => {
@@ -205,7 +212,5 @@ window.addEventListener("message", e => {
 		return el.ondrop(new DragEvent('drop'));
 	}
 
-	if ( e.data.init ) {
-		return init(e.data);
-	}
+	if ( e.data.init ) return init(e.data);
 });
