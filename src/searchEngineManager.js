@@ -2197,7 +2197,9 @@ function buildSearchEngineContainer() {
 		// updated the local UO
 		userOptions = w.userOptions;
 		await saveOptions();
-		location.reload();
+
+		// delay to prevent dead objects
+		setTimeout(() => location.reload(), 500);
 	});
 
 	function addIconPickerListener(el, li) {
