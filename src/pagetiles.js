@@ -90,7 +90,7 @@ function makePageTiles(message) {
 		
 		node.icon = getIconFromNode(node);
 
-		if ( colors.length !== 1 ) {
+		if ( colors.length !== 0 ) {
 			let bgcolor = '#' + colorFromString(node.id || node.type);
 			div.style.setProperty("--tile-color", bgcolor);
 			// div.style.backgroundColor = bgcolor;
