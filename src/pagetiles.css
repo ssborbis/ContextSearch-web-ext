@@ -40,24 +40,26 @@ BODY {
 	display:inline-block;
 	font-size:18pt;
 	text-align:center;
-	width: calc(100% / var(--cs-pagetilecols) - 2px);
-	height: calc(100% / var(--cs-pagetilerows) - 2px);
+	width: calc(100% / var(--cs-pagetilecols) - 4px);
+	height: calc(100% / var(--cs-pagetilerows) - 4px);
 	line-height:normal;
 	overflow:hidden;
 	font-family:Arial;
 	opacity:.95;
 	position: relative;
-	margin:1px;
+	margin:2px;
 	background-color:var(--tile-color);
 	background: linear-gradient(160deg, var(--tile-color), gray);
+	border-radius:2px;
 }
 .pageTile:hover {
 	opacity:1;
 /*	background: var(--tile-color);*/
 }
 .pageTile.empty {
-	opacity:.1;
+	opacity:.05;
 	background: var(--tile-color);
+/*	background:transparent;*/
 }
 .pageTile.dragover:not(.empty) {
 /*	transition: var(--user-transition, background-color .5s);*/
