@@ -249,7 +249,8 @@ const defaultUserOptions = {
 		openMethod: "openBackgroundTab",
 		paletteString: "eff0f1",
 		closeOnShake: false,
-		deadzone: 4
+		deadzone: 4,
+		closeOnBorder: true
 	},
 	openFoldersOnHoverTimeout: 0,
 	nightMode: false,

@@ -1897,6 +1897,10 @@
     "message": "Close Page Tiles by shaking the mouse",
     "description": ""
   },
+  "ClosePageTilesOnBorder": {
+    "message": "Close Page Tiles when dragging outside the main window",
+    "description": ""
+  },
 
   "ShowFolderSearch": {
     "message": "Show an option to search the entire folder at the top of the menu",

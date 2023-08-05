@@ -158,12 +158,12 @@ function makePageTiles(message) {
 
 	// close when dragging over "border"
 	window.addEventListener('dragover', e => {
-		if ( e.target === document.documentElement ) close();		
+		if ( userOptions.pageTiles.closeOnBorder && e.target === document.documentElement ) close();		
 	});
 
-	// chrome edge close
+	// chrome border close
 	window.addEventListener("message", e => {
-		if ( window.chrome && e.data.eventType && e.data.eventType === 'dragover' ) {			
+		if ( userOptions.pageTiles.closeOnBorder && window.chrome && e.data.eventType && e.data.eventType === 'dragover' ) {			
 			let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
 			if ( el && el === document.documentElement ) close();
 		}
