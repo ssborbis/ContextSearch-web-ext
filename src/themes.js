@@ -88,7 +88,12 @@ async function changeTheme(i) {
 		resizeMenu({openFolder:true});
 	}, 150);
 
-	userOptions.quickMenuTheme = theme.name;
+	if ( userOptions.autoTheme ) {
+		if ( isDarkMode() )	userOptions.autoThemeDark = theme.name;
+		else userOptions.autoThemeLite = theme.name;
+	} else {
+		userOptions.quickMenuTheme = theme.name;
+	}
 
 	saveUserOptions();
 }
