@@ -323,5 +323,6 @@ const defaultUserOptions = {
 	autoThemeLite:"modern",
 	autoThemeDark:"modern dark",
 	autoImportFirefoxEngines: true,
-	quickMenuOnlyOpenIfOverSelection: false
+	quickMenuOnlyOpenIfOverSelection: false,
+	removeConsecutiveSeparators: true
 };

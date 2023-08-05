@@ -222,6 +222,18 @@ function nodeAppendChild(node, parent) {
 	node.parent.children.push(node);
 }
 
+function removeConsecutiveSeparators(tree) {
+	// remove consecutive separators
+	traverseNodesDeep(tree, (n,p) => {
+		if ( !p ) return;
+
+		let index = p.children.indexOf(n);
+		if ( n.type === 'separator' && index && p.children[index - 1].type === 'separator' )
+			removeNode(n, p);
+	});
+
+	return tree;
+}
 const isFolder = n => n.type === 'folder';
 const isSearchEngine = n => n.type === 'searchEngine';
 const isOneClickSearchEngine = n => n.type === 'oneClickSearchEngine';
