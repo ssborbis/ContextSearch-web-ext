@@ -19,6 +19,8 @@
 	transform-origin: top left;
 	background-color:transparent;
 	box-sizing: border-box;
+	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
+
 }
 .CS_quickMenuIframe {
 }
@@ -63,6 +65,7 @@
 	-moz-user-select:none;
 	z-index:2147483645;
 	transition: var(--user-transition, left .15s ease-in-out, top .15s ease-in-out, opacity .1s );
+	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 }
 .CS_resizeWidget:hover {
 	opacity:1;
@@ -90,6 +93,7 @@
 	opacity:.5;
 	transform-origin:top right;
 	transform:scaleX( var(--cs-scale)) !important;
+	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 }
 #CS_highLightNavBar:hover {
 	opacity:.5;
@@ -150,6 +154,7 @@
 	height:36px;
 	white-space:nowrap;
 	transform:scale( var(--cs-scale)) !important;
+	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 	border:none; 
 	padding:0;
 	margin:0;
@@ -251,6 +256,7 @@
 	left: 50%;
 	top:50%;
     transform: translate(-50%, -50%) scale(var(--cs-scale));
+    --cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 
 	border:none;
 	background-color:transparent;
@@ -275,7 +281,8 @@
 	cursor: pointer !important;;
 	/*border: 1px solid #444;*/
 	/*border-radius: 25%;*/
-	transform: scale( var(--cs-scale)) !important;;
+	transform: scale( var(--cs-scale)) !important;
+	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 	/*transform-origin: top center;*/
 
 }
@@ -296,6 +303,7 @@
 	display: inline-block;
 	max-width: 30px;
 	transform: scale(var(--cs-scale)) !important;
+	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 	transform-origin: bottom right;
 	transition: max-width .5s ease-out, opacity .25s;
 	overflow: hidden;

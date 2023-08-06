@@ -543,7 +543,7 @@ function addDOMListeners() {
 		}
 	});
 
-	["quickMenuScale", "sideBar.scale", "findBar.scale", "quickMenuIconScale"].forEach( id => {
+	["quickMenuScale", "sideBar.scale", "highLight.findBar.scale", "quickMenuIconScale"].forEach( id => {
 		$(id).addEventListener('input', ev => {
 			$(`i_${id}`).value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 		});

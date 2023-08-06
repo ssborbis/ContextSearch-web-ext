@@ -1008,6 +1008,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				qmc.style.cssText += ";--opening-opacity: " + userOptions.quickMenuOpeningOpacity;
 				qmc.style.setProperty('--cs-custom-scale', userOptions.quickMenuScale);
+
 				if ( !userOptions.enableAnimations ) qmc.style.setProperty('--user-transition', 'none');
 
 				let borderWidth = getBorderWidth(qmc);
