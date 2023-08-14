@@ -296,12 +296,17 @@ window.addEventListener('mousedown', async e => {
 
 function linkOrImage(el, e) {
 	
-	let link = getLink(el, e);
-	let img = getImage(el, e);
+	let link = userOptions.quickMenuOnLinks ? getLink(el, e) : "";
+	let img = userOptions.quickMenuOnImages ? getImage(el, e) : "";
 
-	if ( img && userOptions.quickMenuOnImages ) return img;
+	if ( e && e.ctrlKey && link && img /* && userOptions.toggleLinksAndImagesWithCtrl */) {
+		console.log('found link and image - using link ( CTRL )');
+		return link;
+	}
+
+	if ( img ) return img;
 	
-	if ( link && userOptions.quickMenuOnLinks ) return link;
+	if ( link ) return link;
 
 	if ( el instanceof HTMLVideoElement && userOptions.quickMenuOnVideos )
 		return el.currentSrc || el.src;
