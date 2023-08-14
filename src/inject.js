@@ -212,6 +212,12 @@ function getContextsObject(el, e) {
 		o['link'] = el.closest('a').href;
 		o['linkText'] = el.closest('a').innerText;
 	}
+
+	// replace thumbnails with source
+	if ( false && o['link'] && isURLImage(o['link']) ) {
+		console.log('thumbnail found');
+		o['image'] = o['link'];
+	}
 	
 	o['selection'] = getSelectedText(el);
 

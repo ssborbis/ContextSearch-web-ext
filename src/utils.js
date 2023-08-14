@@ -203,6 +203,12 @@ function isSameStringMinusLineBreaks(str1, str2) {
 	return str1.replace(/(\r\n|\r|\n|\s+)/g, "").trim() == str2.replace(/(\r\n|\r|\n|\s+)/g, "").trim();
 }
 
+async function isURLImage(url) {   
+	let res = await fetch(url,{method:'HEAD'});
+	let buff = await res.blob();
+	return buff.type.startsWith('image/')
+}
+
 const log = console.log;
 const debug = (...args) => {
 	if ( userOptions && userOptions.developerMode )
