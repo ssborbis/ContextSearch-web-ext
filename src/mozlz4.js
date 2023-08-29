@@ -300,7 +300,7 @@ function decompress(data) {
 
 	output = output.slice(0, uncompressedSize); // remove excess bytes
 
-	let decodedText = new TextDecoder().decode(output);
+	let decodedText = new TextDecoderDefault().decode(output);
 	
 	return decodedText;
 }

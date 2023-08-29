@@ -1,4 +1,9 @@
-window.TextEncoder = window.TextDecoder = null;
+// prevent issues on options page
+// mozlz4 utils use default
+window.TextEncoderDefault = window.TextEncoder;
+window.TextDecoderDefault = window.TextDecoder;
+window.TextEncoder = null;
+window.TextDecoder = null;
 
 const debounce = (callback, time, id) => {
   window.clearTimeout(window[id]);
