@@ -174,7 +174,7 @@ function buildSearchEngineContainer() {
 	
 					// correct for case
 					[edit_form.template, edit_form.post_params].forEach( el => {
-						el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
+					//	el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
 					});
 					
 					return new Promise( (resolve, reject) => {
