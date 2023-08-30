@@ -1897,6 +1897,10 @@
     "message": "Fermer la mosaïque en bougeant la souris",
     "description": ""
   },
+  "ClosePageTilesOnBorder": {
+    "message": "Fermer la mosaïque par glissement hors de la fenêtre principale",
+    "description": ""
+  },
 
   "ShowFolderSearch": {
     "message": "Ajouter en tête de menu une option de recherche avec tous les moteurs d’un dossier",
