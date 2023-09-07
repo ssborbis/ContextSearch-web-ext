@@ -1481,7 +1481,7 @@ async function openSearch(info) {
 				searchTerms = info.quickMenuObject.lastSelectText;
 				debug('multiline search', 'DOM menu');
 			}
-			else if ( isSameStringMinusLineBreaks(info.selectionText, window.searchTerms)){
+			else if ( info.selectionText && isSameStringMinusLineBreaks(info.selectionText, window.searchTerms)){
 				searchTerms = window.searchTerms;
 				debug('multiline search', 'context menu');
 			}
