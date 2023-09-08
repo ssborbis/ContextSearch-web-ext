@@ -411,6 +411,16 @@ async function buildContextMenu(searchTerms) {
 		buildContextually();
 	else
 		buildLegacy();
+
+	// add options to browser_action menu 
+	addMenuItem({
+		title: i18n("settings"),	
+		icons: {
+			"16": "icons/settings.svg"
+		},
+		contexts: ["browser_action"],
+		id: "ba_openOptions"
+	});
 }
 
 function contextMenuTitle(searchTerms, context) {
@@ -612,6 +622,10 @@ async function contextMenuSearch(info, tab) {
 
 	if ( info.menuItemId === 'openOptions' ) {
 		return notify({action: "openOptions", hashurl: "#contextMenu"});
+	}
+
+		if ( info.menuItemId.endsWith('openOptions') ) {
+		return notify({action: "openOptions", hashurl: "#engines"});
 	}
 
 	// remove incremental menu ids
