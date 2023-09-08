@@ -658,44 +658,59 @@ async function contextMenuSearch(info, tab) {
 		openMethod = userOptions.contextMenuClick;
 
 	var searchTerms;
-	if ( info.selectionText )
-		searchTerms = info.selectionText.trim();
-	else if ( info.srcUrl )
-		searchTerms = info.srcUrl;
-	else if ( info.linkUrl ) {
-		if ( [info.linkUrl, info.linkText].includes(window.searchTerms) ) // if content_script updated the window.searchTerms var properly, use that
-			searchTerms = window.searchTerms;
-		else
-			searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;		
-	} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
-		searchTerms = window.searchTerms.trim();
 
-	// if using contextual layout, set the search terms according to context
-	switch ( context ) {
-		case "selection":
+
+	// if content scripts have run, use window.searchTerms
+	// else use fallback code ( not accurate with modifiers )
+
+	let result = await browser.tabs.executeScript(tab.id, { code: "window.hasRun" });
+	if ( result[0] ) {
+		debug('content scripts have run', tab);
+		searchTerms = window.searchTerms;
+	} else {
+
+		console.error('content scripts have not run in this tab');
+
+		if ( info.selectionText )
 			searchTerms = info.selectionText.trim();
-			break;
-		case "link":
-			//searchTerms = info.linkUrl;
-	
-			// fails in chrome
-			// if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {
-			// 	let method = userOptions.contextMenuSearchLinksAs;
-			// 	method = method === 'url' ? 'text' : 'url';
-			// 	if ( method === 'text') searchTerms = info.linkText;
-			// } 
-			break;
-		case "page":
-			searchTerms = tab.url;
-			break;
-		case "frame":
-			searchTerms = info.frameUrl;
-			break;
-		case "image":
-		case "video":
-		case "audio":
+		else if ( info.srcUrl )
 			searchTerms = info.srcUrl;
-			break;
+		else if ( info.linkUrl ) {
+			if ( [info.linkUrl, info.linkText].includes(window.searchTerms) ) // if content_script updated the window.searchTerms var properly, use that
+				searchTerms = window.searchTerms;
+			else
+				searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;		
+		} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
+			searchTerms = window.searchTerms.trim();
+	
+
+		// if using contextual layout, set the search terms according to context
+		switch ( context ) {
+			case "selection":
+				searchTerms = info.selectionText.trim();
+				break;
+			case "link":
+				searchTerms = info.linkUrl;
+		
+				// fails in chrome
+				// if ( info.modifiers.includes("Ctrl") && info.modifiers.length == 1) {
+				// 	let method = userOptions.contextMenuSearchLinksAs;
+				// 	method = method === 'url' ? 'text' : 'url';
+				// 	if ( method === 'text') searchTerms = info.linkText;
+				// } 
+				break;
+			case "page":
+				searchTerms = tab.url;
+				break;
+			case "frame":
+				searchTerms = info.frameUrl;
+				break;
+			case "image":
+			case "video":
+			case "audio":
+				searchTerms = info.srcUrl;
+				break;
+		}
 	}
 
 	if ( !searchTerms ) return;

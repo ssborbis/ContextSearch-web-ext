@@ -2,6 +2,7 @@
 window.contextMenuMatchRegexMenus = [];
 window.contextMenuSearchTerms = "";
 window.tabTerms = [];
+window.searchTerms = "";
 
 var userOptions = {};
 var highlightTabs = [];
