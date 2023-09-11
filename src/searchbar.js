@@ -200,8 +200,8 @@ async function sideBarResize(o) {
 //	document.body.style.width = screen.width + "px";
 	document.body.width = null;
 	document.body.height = null;
-	document.body.getBoundingClientRect();
-	document.body.style.width = document.body.scrollWidth + "px";
+	//document.body.getBoundingClientRect();
+	document.body.style.width = Math.floor(document.body.getBoundingClientRect().width) + "px";
 
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
