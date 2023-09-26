@@ -201,7 +201,7 @@ const i18n_layout_titles = {
 };
 
 function isDarkMode() {
-	return window.matchMedia && !!window.matchMedia('(prefers-color-scheme: dark)').matches;
+	return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 }
 
 function isSameStringMinusLineBreaks(str1, str2) {
