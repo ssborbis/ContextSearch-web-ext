@@ -212,7 +212,7 @@ async function restoreOptions(restoreUserOptions) {
 		$('#c_highLightBackgroundActive').value = uo.highLight.activeStyle.background;
 		$('#s_highLightOpacity').value = uo.highLight.opacity;
 
-		$('#style_dark').disabled = !uo.nightMode;
+	//	$('#style_dark').disabled = !uo.nightMode;
 
 		$('#cb_quickMenuToolsLockPersist').checked = (() => {
 			let tool = uo.quickMenuTools.find( t => t.name === "lock"); 
@@ -1653,8 +1653,7 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 
 $('#nightmode').addEventListener('click', () => {
 	userOptions.nightMode = !userOptions.nightMode;
-
-	$('#style_dark').disabled = !userOptions.nightMode;
+	setAutoDarkMode();
 	saveOptions();
 });
 
@@ -1662,6 +1661,8 @@ function setAutoDarkMode() {
 	if ( userOptions.autoTheme ) {
 		$('#style_dark').disabled = !isDarkMode();
 		$('#nightmode').style.display = 'none';
+	} else {
+			$('#style_dark').disabled = !userOptions.nightMode;
 	}
 }
 
