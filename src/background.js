@@ -1301,12 +1301,34 @@ async function executeExternalProgram(info) {
 	let path = node.path.replace(/{searchTerms}/g, searchTerms)
 		.replace(/{url}/g, info.tab.url);
 
+
+	/* check for prompts */
+	const rx = /(?:\{prompt(?:=(.+?))\})/g;
+	var match;
+	let new_path = path;
+	while ((match = rx.exec(path)) != null) {
+
+		let str = await promptCurrentTab(match[1]);
+
+		// check for cancel
+		if (str === null) return;
+		new_path = new_path.replace(match[0], str);
+	}
+
+	path = new_path;
+	/* end check for prompts */
+
+	// confirm the path is correct
+	if ( !await confirmCurrentTab(`"${escapeDoubleQuotes(path)}"`) ) return;
+	
 	// {download_url} is a link to be downloaded by python and replaced by the file path
 	let matches = path.match(/{download_url(?:=(.+))?}/);
 	if ( matches ) {
 		downloadURL = searchTerms;
 		downloadPath = matches[1] || null;
 	}
+
+	/* download using browser UI */
 
 	if ( /ask/i.test(downloadPath) ) {
 
@@ -1348,6 +1370,8 @@ async function executeExternalProgram(info) {
 		else
 			return console.error("download failed");
 	}
+
+	/* end download using browser UI */
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});
@@ -2725,3 +2749,24 @@ async function scrapeBookmarkIcons() {
     //         break;
     // }
 }
+
+function userInputCurrentTab(func, str) {
+	browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
+		browser.tabs.executeScript(tabs[0].id, {
+			code: `(() => {
+				let str = ${func}(${str});
+				browser.runtime.sendMessage({output:str});
+			})();`
+		});
+	});
+
+	return new Promise(resolve => {
+		browser.runtime.onMessage.addListener(function listener(result) {
+  			browser.runtime.onMessage.removeListener(listener);
+  			resolve(result.output);
+		});
+	});
+}
+
+promptCurrentTab = (str) => userInputCurrentTab("prompt", str);
+confirmCurrentTab = (str) => userInputCurrentTab("confirm", str);
