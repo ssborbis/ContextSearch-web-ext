@@ -1308,17 +1308,45 @@ async function executeExternalProgram(info) {
 		downloadPath = matches[1] || null;
 	}
 
-	if ( downloadPath === "ASK") {
+	if ( /ask/i.test(downloadPath) ) {
+
 		let id = await browser.downloads.download({
 			url:downloadURL,
 			saveAs:true
-		})
-
-		let dl = await browser.downloads.search({id}).then( dls => {
-			return dls[0];
 		});
 
-		console.log(dl);
+		// chrome does not wait on file naming
+		// use interval to check download status
+
+		if ( chrome ) {
+			let status = "";
+
+			browser.downloads.onChanged.addListener(info => {
+
+				if ( info.error ) status = "error";
+				if ( info.endTime) status = "complete";
+			});
+
+			await new Promise(r => {
+				let ival = setInterval( () => {
+					if ( status ) {
+						clearInterval(ival);
+						r();
+					}
+				}, 1000);
+			});
+
+			if ( status === "error" ) {
+				return console.error("download failed");
+			}
+		}
+
+		let dl = await browser.downloads.search({id: id});
+
+		if ( dl.length )
+			path = path.replace(/{download_url(?:=(.+))?}/, dl[0].filename);
+		else
+			return console.error("download failed");
 	}
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
