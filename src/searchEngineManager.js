@@ -85,6 +85,9 @@ function buildSearchEngineContainer() {
 
 			header.addEventListener('click', e => {
 
+				// prevents double action / no change
+				if ( e.target === cb ) return;
+
 				// check box if displayed
 				if ( $('managerContainer').classList.contains('showCheckboxes'))
 					cb.checked = !cb.checked;
