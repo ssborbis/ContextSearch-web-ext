@@ -2697,6 +2697,8 @@ function waitOnInjection(tabId) {
 	]);
 }
 
+
+// test code
 async function scrapeBookmarkIcons() {
 	let bms = await CSBookmarks.treeToFolders("root________");
 	findNode(bms, n => {
@@ -2751,6 +2753,7 @@ async function scrapeBookmarkIcons() {
 }
 
 function userInputCurrentTab(func, str) {
+
 	browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 		browser.tabs.executeScript(tabs[0].id, {
 			code: `(() => {
@@ -2761,7 +2764,7 @@ function userInputCurrentTab(func, str) {
 	});
 
 	return new Promise(resolve => {
-		browser.runtime.onMessage.addListener(function listener(result) {
+		browser.runtime.onMessage.addListener(function listener(result, sender) {
   			browser.runtime.onMessage.removeListener(listener);
   			resolve(result.output);
 		});
