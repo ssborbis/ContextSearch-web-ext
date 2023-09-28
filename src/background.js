@@ -1319,7 +1319,7 @@ async function executeExternalProgram(info) {
 	/* end check for prompts */
 
 	// confirm the path is correct
-	if ( !await confirmCurrentTab(`"${escapeDoubleQuotes(path)}"`) ) return;
+	//if ( !await confirmCurrentTab(`"${escapeDoubleQuotes(path)}"`) ) return;
 	
 	// {download_url} is a link to be downloaded by python and replaced by the file path
 	let matches = path.match(/{download_url(?:=(.+))?}/);
