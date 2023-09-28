@@ -1330,12 +1330,9 @@ async function executeExternalProgram(info) {
 
 	/* download using browser UI */
 
-	if ( /ask/i.test(downloadPath) ) {
+	if ( /^ask$/i.test(downloadPath) ) {
 
-		let id = await browser.downloads.download({
-			url:downloadURL,
-			saveAs:true
-		});
+		let id = await browserSaveAs(downloadURL);
 
 		// chrome does not wait on file naming
 		// use interval to check download status
@@ -2765,6 +2762,8 @@ function userInputCurrentTab(func, str) {
 
 	return new Promise(resolve => {
 		browser.runtime.onMessage.addListener(function listener(result, sender) {
+
+			if ( !result.output ) return;
   			browser.runtime.onMessage.removeListener(listener);
   			resolve(result.output);
 		});
@@ -2773,3 +2772,12 @@ function userInputCurrentTab(func, str) {
 
 promptCurrentTab = (str) => userInputCurrentTab("prompt", str);
 confirmCurrentTab = (str) => userInputCurrentTab("confirm", str);
+
+async function browserSaveAs(url) {
+	if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
+		return;
+	}
+
+	return browser.downloads.download({url: url, saveAs: true});
+}
