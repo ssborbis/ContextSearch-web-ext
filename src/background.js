@@ -384,33 +384,31 @@ async function notify(message, sender, sendResponse) {
 				// relabel selection based on linkMethod
 				test: try {
 
+					// reset selection label
+					browser.contextMenus.update("selection", {
+						title: i18n("SearchForContext", i18n("selection").toUpperCase()) + getMenuHotkey(),
+						contexts:["selection"]
+					});
+
 					if ( message.currentContexts.includes("image")) break test;
 
-					let title = i18n("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? i18n("LINKTEXT") : i18n("LINK")).toUpperCase()) + getMenuHotkey();
+					if ( ccs.includes("linkText") && message.linkMethod && message.linkMethod === "text" ) {
 
-					if ( message.linkMethod && message.linkMethod === "text" ) {
-						await browser.contextMenus.update("selection", {
-							title: title,
-							contexts:["link", "selection"]
-						});
-					} else {
-						await browser.contextMenus.update("selection", {
-							title: i18n("SearchForContext", i18n("selection").toUpperCase()) + getMenuHotkey(),
-							contexts:["selection"]
+						ccs = ccs.filter(c => c != "linkText" && c != "link" );
+						browser.contextMenus.update("selection", {
+							title: i18n("SearchForContext", i18n("LINKTEXT").toUpperCase()) + getMenuHotkey(),
+							contexts:["link"]
 						});
 					}
+	
 				} catch ( error ) {
 					console.error(error);
 				}
 
 				try {
-					for ( let i in contexts )
-						await browser.contextMenus.update(contexts[i], {visible: true });
-
-					contexts.forEach(c => {
-						if ( !ccs.includes(c) )
-							browser.contextMenus.update(c, {visible: false });
-					})
+					for ( let i in contexts ) {
+						browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) });
+					}
 
 				} catch ( error ) {
 					console.error(error);
