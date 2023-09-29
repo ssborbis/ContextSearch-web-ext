@@ -2751,11 +2751,22 @@ async function scrapeBookmarkIcons() {
 
 function userInputCurrentTab(func, str) {
 
+	let id = gen();
+
 	browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-		browser.tabs.executeScript(tabs[0].id, {
+
+		let tab = tabs[0];
+
+		if ( ! await isTabScriptable(tab.id) ) {
+			tab = await browser.tabs.create({
+				url: browser.runtime.getURL("blank.html")
+			});
+		}
+
+		browser.tabs.executeScript(tab.id, {
 			code: `(() => {
 				let str = ${func}(${str});
-				browser.runtime.sendMessage({output:str});
+				browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
 			})();`
 		});
 	});
@@ -2763,11 +2774,30 @@ function userInputCurrentTab(func, str) {
 	return new Promise(resolve => {
 		browser.runtime.onMessage.addListener(function listener(result, sender) {
 
-			if ( !result.output ) return;
-  			browser.runtime.onMessage.removeListener(listener);
+			if ( !result.id || result.id !== id ) return;
+
+			browser.runtime.onMessage.removeListener(listener);
+
+			if ( result.tabId !== -1 ) {
+				browser.tabs.update(result.tabId, {active: false}).then(() => {
+					browser.tabs.remove(result.tabId);
+				});				
+			}
+
   			resolve(result.output);
 		});
 	});
+}
+
+async function isTabScriptable(tabId) {
+	try {
+		await browser.tabs.executeScript(tabId, {
+			code: `(() => {})();`
+		});
+		return true;
+	} catch ( error ) {
+		return false;
+	}
 }
 
 promptCurrentTab = (str) => userInputCurrentTab("prompt", str);
