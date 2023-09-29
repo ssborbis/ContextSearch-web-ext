@@ -1,8 +1,8 @@
 // context menu entries need to be tracked to be updated
 window.contextMenuMatchRegexMenus = [];
-window.contextMenuSearchTerms = "";
 window.tabTerms = [];
 window.searchTerms = "";
+window.ctrlKey = false; // track on updateContextMenu for text/url
 
 var userOptions = {};
 var highlightTabs = [];
@@ -360,13 +360,9 @@ async function notify(message, sender, sendResponse) {
 		
 			var searchTerms = message.searchTerms;
 
-			if ( window.contextMenuSearchTerms === searchTerms ) {
-		//		console.log('same search terms');
-		//		return;
-			}
-			
-			window.contextMenuSearchTerms = searchTerms;
-
+			if ( searchTerms && message.hasOwnProperty("ctrlKey"))
+				window.ctrlKey = message.ctrlKey;
+		
 			if ( userOptions.contextMenuUseContextualLayout ) {
 
 				let ccs = [...message.currentContexts];

@@ -664,7 +664,7 @@ async function contextMenuSearch(info, tab) {
 	// else use fallback code ( not accurate with modifiers )
 
 	let result = await browser.tabs.executeScript(tab.id, { code: "window.hasRun" });
-	if ( result[0] ) {
+	if ( result[0] && window.searchTerms ) {
 		debug('content scripts have run', tab);
 		searchTerms = window.searchTerms;
 	} else {
@@ -679,7 +679,7 @@ async function contextMenuSearch(info, tab) {
 			if ( [info.linkUrl, info.linkText].includes(window.searchTerms) ) // if content_script updated the window.searchTerms var properly, use that
 				searchTerms = window.searchTerms;
 			else
-				searchTerms = userOptions.contextMenuSearchLinksAs === 'url' ? info.linkUrl : info.linkText || window.searchTerms;		
+				searchTerms = ( userOptions.contextMenuSearchLinksAs === 'url' && !window.ctrlKey ) ? info.linkUrl : info.linkText || window.searchTerms;		
 		} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
 			searchTerms = window.searchTerms.trim();
 	
@@ -687,7 +687,7 @@ async function contextMenuSearch(info, tab) {
 		// if using contextual layout, set the search terms according to context
 		switch ( context ) {
 			case "selection":
-				searchTerms = info.selectionText.trim();
+				searchTerms = info.selectionText || info.linkText || "";
 				break;
 			case "link":
 				searchTerms = info.linkUrl;
