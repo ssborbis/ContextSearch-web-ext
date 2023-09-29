@@ -1734,6 +1734,7 @@ function buildSearchEngineContainer() {
 			li.parentNode.insertBefore(newLi, li.nextSibling);
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
+			selectNameField();
 	
 			updateNodeList();
 			
@@ -1819,7 +1820,7 @@ function buildSearchEngineContainer() {
 				
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
-			
+
 			closeContextMenus();
 		});
 		
@@ -1859,6 +1860,7 @@ function buildSearchEngineContainer() {
 			li.parentNode.insertBefore(newLi, li.nextSibling);
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
+			selectNameField();
 			
 			updateNodeList();
 		});
@@ -1984,6 +1986,7 @@ function buildSearchEngineContainer() {
 					
 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
 				newLi.dispatchEvent(new MouseEvent('dblclick'));
+				selectNameField();
 
 				addMultisearchIcons(se, newLi.querySelector(".header"));
 			}
@@ -2522,6 +2525,15 @@ function setURLSearchParams(li) {
 	if ( li.node && li.node.id ) {
 		window.history.replaceState(null, null, "?id=" + li.node.id);
 	}
+}
+
+function selectNameField() {
+	// select text in the name
+	setTimeout(() => {
+		let input = document.querySelector('#floatingEditFormContainer input[name="shortName"]');
+
+		if ( input ) input.select();
+	}, 500);
 }
 
 document.addEventListener('keydown', e => {
