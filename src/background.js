@@ -544,7 +544,7 @@ async function notify(message, sender, sendResponse) {
 				title: se.title,
 				id: se.id,
 				hidden: false,
-				contexts:[32]
+				contexts:32
 			}
 			parentNode.children.push(node);
 

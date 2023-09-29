@@ -394,6 +394,9 @@ function buildSearchEngineContainer() {
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);
+
+						// reference not updating on first save fix
+						Object.assign(userOptions.searchEngines.find(_se => se.id === _se.id), se);
 						
 						if ( edit_form.querySelector('.error') )
 							showSaveMessage('saved with errors', 'red', edit_form.querySelector('.saveMessage'));
@@ -402,6 +405,7 @@ function buildSearchEngineContainer() {
 					}
 					
 					checkFormValues().then( result => {
+
 						if ( result ) saveForm();
 						else showSaveMessage("cannot save", "red", edit_form.querySelector('.saveMessage'));
 					});
@@ -648,12 +652,14 @@ function buildSearchEngineContainer() {
 						if ( version ) {
 							span.innerText = 'v' + version;
 						} else {
+							span.innerHTML = null;
 							let a = document.createElement("a");
 							a.target = "_blank";
 							a.title = i18n("MessengerOfflineTooltip");
 							a.style = "color:unset";
 							a.href = "https://github.com/ssborbis/ContextSearch-Native-App";
 							a.innerText = i18n('NativeAppMissing');
+
 							span.appendChild(a);
 						}
 					}
@@ -1718,7 +1724,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				title: "new script",
 				parent: li.node.parent,
-				contexts:[32],
+				contexts:32,
 				toJSON: li.node.toJSON
 			}
 				
@@ -1842,7 +1848,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
-				contexts:[32],
+				contexts:32,
 				parent: li.node.parent,
 				toJSON: li.node.toJSON
 			}
@@ -2165,7 +2171,7 @@ function buildSearchEngineContainer() {
 			parent: node.parent,
 			hidden: false,
 			id: se.id,
-			contexts:[32],
+			contexts:32,
 			toJSON: node.toJSON
 		}
 	}
