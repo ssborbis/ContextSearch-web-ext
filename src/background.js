@@ -2759,9 +2759,12 @@ function userInputCurrentTab(func, str) {
 
 		browser.tabs.executeScript(tab.id, {
 			code: `(() => {
-				let str = ${func}(${str});
-				browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
-			})();`
+				setTimeout(() => {
+					let str = ${func}(${str});
+					browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
+				}, 100);
+			})();`,
+			runAt: "document_idle"
 		});
 	});
 
