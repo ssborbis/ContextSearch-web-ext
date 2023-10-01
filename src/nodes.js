@@ -143,7 +143,7 @@ function repairNodeTree(tree, hide) {
 		}
 
 		if ( node.type === 'siteSearchFolder') {
-			node.parent = parent;
+		//	node.parent = parent; // causes cyclic object
 			delete node.children;
 			node.type = "searchEngine";
 			console.log('repairing siteSearchFolder ' + node.title);
