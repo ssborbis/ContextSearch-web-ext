@@ -1671,9 +1671,9 @@ async function openSearch(info) {
 			}
 		}
 
-		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
+		var encodedSearchTerms = encodeCharset(searchTerms, se.queryCharset);
 		
-		var q = replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
+		var q = replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
 
 		// set landing page for POST engines
 		if ( 
