@@ -1337,7 +1337,7 @@ function buildHelpTab() {
 		if (i18n(el.dataset.i18n)) {
 			textNode.nodeValue = i18n(el.dataset.i18n);
 
-				el.addEventListener('click', e => {
+				el.addEventListener('dblclick', e => {
 					if ( userOptions.developerMode ) {
 						el.style.backgroundColor = "rgba(0,0,255,.1)";
 						setTimeout(() => el.style.backgroundColor = null, 150);
