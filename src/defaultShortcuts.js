@@ -1,6 +1,6 @@
 const defaultShortcuts = [
 	{
-		name:"quickMenuOpen",
+		name:"Menu → Quick → Open",
 		action: e => {
 			if ( !getSearchTermsForHotkeys ) return;
 			browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:getSearchTermsForHotkeys(e)});
@@ -13,7 +13,7 @@ const defaultShortcuts = [
 		id: 0
 	},
 	{
-		name:"findBarOpen",
+		name:"Findbar → Open",
 		action: async (e) => {
 			let isOpen = await browser.runtime.sendMessage({action: "getFindBarOpenStatus"});
 			isOpen = isOpen.shift();
@@ -32,7 +32,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 1
 	},{
-		name:"findBarNext",
+		name:"Findbar → Find Next",
 		action: "findBarNext",
 		key: "F3",
 		ctrl: false,
@@ -41,7 +41,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 2
 	},{
-		name:"findBarPrevious",
+		name:"Findbar → Find Previous",
 		action: "findBarPrevious",
 		key: "F3",
 		ctrl: false,
@@ -50,7 +50,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 3
 	},{
-		name:"sideBarOpen",
+		name:"Menu → Sidebar → Open",
 		action: "openSideBar",
 		key: "z",
 		ctrl: true,
@@ -59,7 +59,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 4
 	},{
-		name:"toggleDisplayMode",
+		name:"Menu → [All] → Toggle Grid / List",
 		action: () => qm.toggleDisplayMode(),
 		key: ".",
 		ctrl: true,
@@ -68,7 +68,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 6
 	},{
-		name:"quickMenuLock",
+		name:"Menu → Quick → Lock",
 		action: () => qm && QMtools.find(t => t.name === "lock").action(),
 		key: "l",
 		ctrl: true,
@@ -77,7 +77,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 7
 	},{
-		name:"quickMenuEdit",
+		name:"Menu → [All] → Edit Layout",
 		action:() => qm && QMtools.find(t => t.name === "edit").action(),
 		key: "e",
 		ctrl: true,
@@ -86,7 +86,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 8
 	},{
-		name:"optionsOpen",
+		name:"Options → Open",
 		action:"openOptions",
 		key: "O",
 		ctrl: true,
@@ -95,7 +95,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 9
 	},{
-		name:"pageTilesOpen",
+		name:"Menu → Page Tiles → Open",
 		action: e => {
 			if ( !getSearchTermsForHotkeys ) return;
 			browser.runtime.sendMessage({action: "openPageTiles", searchTerms:getSearchTermsForHotkeys(e), hotkey: true});
@@ -107,7 +107,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 10
 	},{
-		name:"themeNext",
+		name:"Menu → [All] → Theme → Next",
 		action:() => nextTheme(),
 		key: "ArrowRight",
 		ctrl: true,
@@ -116,7 +116,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 11
 	},{
-		name:"themePrevious",
+		name:"Menu → [All] → Theme → Previous",
 		action:() => previousTheme(),
 		key: "ArrowLeft",
 		ctrl: true,
@@ -125,7 +125,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 12
 	},{
-		name:"sideBarMinify",
+		name:"Menu → Sidebar → Minify",
 		action:"minifySideBar",
 		key: "M",
 		ctrl: true,
@@ -134,7 +134,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 13
 	},{
-		name:"tools_lastused",
+		name:"Last Used Search Engine",
 		action:(e) => {
 			let searchTerms = getSearchTermsForHotkeys(e);
 
@@ -151,7 +151,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 14
 	},{
-		name:"resultsEngineNext",
+		name:"Search Results → Next Engine",
 		action:() => nextResultsEngine(),
 		key: "ArrowRight",
 		ctrl: false,
@@ -160,7 +160,7 @@ const defaultShortcuts = [
 		meta:false,
 		id: 15
 	},{
-		name:"resultsEnginePrevious",
+		name:"Search Results → Previous Engine",
 		action:() => previousResultsEngine(),
 		key: "ArrowLeft",
 		ctrl: false,
