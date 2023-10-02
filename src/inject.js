@@ -253,8 +253,8 @@ document.addEventListener("selectionchange", e => {
 
 		quickMenuObject.searchTerms = searchTerms;
 		
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, contextsObject: getContextsObject(e.target, e), currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e)});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -272,8 +272,8 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 
 		if (searchTerms) {
 			quickMenuObject.searchTerms = searchTerms;
-			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, contextsObject: getContextsObject(e.target, e), currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
+			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 		}
 
 	});
@@ -294,8 +294,8 @@ window.addEventListener('mousedown', async e => {
 		searchTerms = e.target.innerText.trim();
 	}
 	
-	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, contextsObject: getContextsObject(e.target, e), currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e), ctrlKey:e.ctrlKey});
+	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e)});
+	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e), ctrlKey:e.ctrlKey});
 });
 
 function linkOrImage(el, e) {

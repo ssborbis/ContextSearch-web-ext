@@ -24,6 +24,14 @@ function replaceOpenSearchParams(options) {
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
 		.replace(/%u|{url}/g, url)
+		.replace(/{page}/g, window.searchTermsObject.page || "")
+		.replace(/{frame}/g, window.searchTermsObject.frame || "")
+		.replace(/{audio}/g, window.searchTermsObject.audio || "")
+		.replace(/{selection}/g, window.searchTermsObject.selection || "")
+		.replace(/{image}/g, window.searchTermsObject.image || "")
+		.replace(/{link}/g, window.searchTermsObject.link || "")
+		.replace(/{linkText}/g, window.searchTermsObject.linkText || "")
+		.replace(/{video}/g, window.searchTermsObject.video || "")
 		.replace(/{.+?}/g, ""); // all others
 }
 

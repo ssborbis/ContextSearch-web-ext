@@ -2,6 +2,7 @@
 window.contextMenuMatchRegexMenus = [];
 window.tabTerms = [];
 window.searchTerms = "";
+window.searchTermsObject = {};
 window.ctrlKey = false; // track on updateContextMenu for text/url
 
 var userOptions = {};
@@ -349,6 +350,7 @@ async function notify(message, sender, sendResponse) {
 		case "updateSearchTerms":
 
 			window.searchTerms = message.searchTerms;
+			window.searchTermsObject = message.searchTermsObject;
 			
 			if ( userOptions.autoCopy && message.searchTerms && ( userOptions.autoCopyOnInputs || !message.input))
 				notify({action: "copyRaw", autoCopy:true});
