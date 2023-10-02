@@ -42,18 +42,21 @@ function openQuickMenu(e, searchTerms) {
 	if ( target == document )
 		target = document.body;
 
-	let selection = searchTerms || getSelectedText(target).trim();
+	// let selection = searchTerms || getSelectedText(target).trim();
 
-	let searchTermsObject = {
-		selection: selection,
-		image: getImage(target),
-		link: getLink(target),
-		linkText: getLinkText(target),
-		page: window.location.href,
-		frame: target.ownerDocument.defaultView != top ? target.ownerDocument.defaultView.location.href : null
-	}
+	// let searchTermsObject = {
+	// 	selection: selection,
+	// 	image: getImage(target),
+	// 	link: getLink(target),
+	// 	linkText: getLinkText(target),
+	// 	page: window.location.href,
+	// 	frame: target.ownerDocument.defaultView != top ? target.ownerDocument.defaultView.location.href : null
+	// }
 
-	searchTerms = searchTerms || selection || linkOrImage(target, e) || searchTermsObject.frame || searchTermsObject.page || null;
+	let searchTermsObject = getContextsObject(e.target, e);
+
+	// set searchTerms by priority
+	searchTerms = searchTerms || searchTermsObject.selection || linkOrImage(target, e) || searchTermsObject.frame || searchTermsObject.page || null;
 
 	let _contexts = getContexts(target, e);
 	
