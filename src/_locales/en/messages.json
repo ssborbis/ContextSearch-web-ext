@@ -2547,5 +2547,8 @@
   },
   "ConfirmMultiLineSearch": {
     "message": "This will open $1 search tabs. Continue?"
+  },
+  "MatchOptions": {
+    "message": "Match Options"
   }
 }
