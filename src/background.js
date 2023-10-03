@@ -1339,7 +1339,7 @@ async function executeExternalProgram(info) {
 			browser.downloads.onChanged.addListener(info => {
 
 				if ( info.error ) status = "error";
-				if ( info.endTime) status = "complete";
+				if ( info.state && info.state.current === 'complete' ) status = "complete";
 			});
 
 			await new Promise(r => {
@@ -1359,7 +1359,7 @@ async function executeExternalProgram(info) {
 		let dl = await browser.downloads.search({id: id});
 
 		if ( dl.length )
-			path = path.replace(/{download_url(?:=(.+))?}/, dl[0].filename);
+			path = path.replace(/{download_url=ask}/i, dl[0].filename);
 		else
 			return console.error("download failed");
 	}
