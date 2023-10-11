@@ -216,8 +216,13 @@ async function isURLImage(url) {
 
 const log = console.log;
 const debug = (...args) => {
-	if ( userOptions && userOptions.developerMode )
-		console.log(...args)
+	if ( userOptions && userOptions.developerMode ) {
+		try {
+			let e = new Error();
+			let stack = e.stack.trim().split('\n').pop();
+			console.log(...args, stack.replace(/.*\/(.*$:?)/, "$1"));
+		} catch (error) {}
+	}
 }
 const i18n = browser.i18n.getMessage;
 const sendMessage = browser.runtime.sendMessage;
