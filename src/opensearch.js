@@ -7,6 +7,40 @@ function replaceOpenSearchParams(options) {
 	userdomain 	= options.domain || ""
 	
 	let domains = getDomains(url);
+
+	let sto = window.searchTermsObject || {};
+
+	// replace searchTermObject elements containing OR
+
+	// {((?:audio|linkText|frame|page|video|link|image|selection).*?)}
+
+// 	(() => {
+//   let obj = {
+//     link: "",
+//     linkText: "link text",
+//     image: "image.png",
+//     selection: "highlighted text"
+//   }
+ 
+//  let template = "{link|image|linkText} blah blah {image}";
+//  let rx = /{((?:audio|linkText|frame|page|video|link|image|selection).*?)}/g;
+//  var match;
+//  while ((match = rx.exec(template)) != null) {
+   
+//    console.log(match[1])
+   
+//    loop1: for ( let c of match[1].split('|') ) {
+//      if ( obj[c] ) { 
+//        template = template.replace(match[0], obj[c]);
+//        break loop1;
+//      }
+//    }
+   
+// }
+   
+//    console.log(template);
+ 
+// })();
 	
 	return template
 		.replace(/%sl|{searchterms}/g, s => searchterms.toLowerCase())
@@ -24,15 +58,15 @@ function replaceOpenSearchParams(options) {
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
 		.replace(/%u|{url}/g, url)
-		.replace(/{page}/g, window.searchTermsObject.page || "")
-		.replace(/{frame}/g, window.searchTermsObject.frame || "")
-		.replace(/{audio}/g, window.searchTermsObject.audio || "")
-		.replace(/{selection}/g, window.searchTermsObject.selection || "")
-		.replace(/{image}/g, window.searchTermsObject.image || "")
-		.replace(/{link}/g, window.searchTermsObject.link || "")
-		.replace(/{linkText}/g, window.searchTermsObject.linkText || "")
-		.replace(/{video}/g, window.searchTermsObject.video || "")
-		.replace(/{.+?}/g, ""); // all others
+		.replace(/{page}/g, sto.page || "")
+		.replace(/{frame}/g, sto.frame || "")
+		.replace(/{audio}/g, sto.audio || "")
+		.replace(/{selection}/g, sto.selection || "")
+		.replace(/{image}/g, sto.image || "")
+		.replace(/{link}/g, sto.link || "")
+		.replace(/{linkText}/g, sto.linkText || "")
+		.replace(/{video}/g, sto.video || "")
+//		.replace(/{.+?}/g, ""); // all others
 }
 
 function nameValueArrayToParamString(arr) {
