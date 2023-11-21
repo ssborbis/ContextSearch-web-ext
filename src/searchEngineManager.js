@@ -133,6 +133,13 @@ function buildSearchEngineContainer() {
 				e.stopPropagation();
 
 				addFormListeners(edit_form);
+
+				edit_form.querySelectorAll('input, textarea').forEach(el => {
+					el.addEventListener('change', () => {
+						clearErrors();
+						checkFormValues();
+					});
+				});
 				
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
 			
@@ -245,12 +252,15 @@ function buildSearchEngineContainer() {
 					});
 
 				}
+
+				function clearErrors() {
 				
-				// clear error formatting
-				for (let label of edit_form.getElementsByTagName('label')) {
-					if (label.dataset.i18n) label.innerText = i18n(label.dataset.i18n);
-					label.style.color = null;
-					clearError(label.nextSibling)
+					// clear error formatting
+					for (let label of edit_form.getElementsByTagName('label')) {
+						if (label.dataset.i18n) label.innerText = i18n(label.dataset.i18n);
+						label.style.color = null;
+						clearError(label.nextSibling)
+					}
 				}
 
 				edit_form.shortName.value = se.title;
