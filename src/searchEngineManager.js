@@ -226,6 +226,13 @@ function buildSearchEngineContainer() {
 							try {
 								let _url = new URL(edit_form.template.value);
 								edit_form.searchform.value = _url.origin;
+
+								// blank icons try to fetch favicon
+								if ( edit_form.iconURL.value == "" ) {
+									edit_form.iconURL.value = edit_form.searchform.value + "/favicon.ico";
+									icon.src = edit_form.iconURL.value;
+									edit_form.querySelector('[name="faviconBox"] img').src = icon.src;
+								}
 							} catch (_error) {}
 						}
 							// showError(edit_form.template,i18n("TemplateURLError"));
