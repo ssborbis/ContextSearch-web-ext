@@ -85,6 +85,11 @@
    "SearchActionsNoAction": {
     "message": "No Action"
   },
+
+  "SearchActionsPopup": {
+    "message": "Open in Popup Window"
+  },
+  
   
    "LeftButton": {
     "message": "Left Button"

@@ -1102,6 +1102,9 @@ function openWithMethod(o) {
 
 		case "openSideBarAction":
 			return openSideBarAction(o.url);
+
+		case "openPopup":
+			return openPopup();
 	}
 	
 	function openCurrentTab() {
@@ -1155,6 +1158,16 @@ function openWithMethod(o) {
 			notify({action: "showNotification", msg: i18n('NotificationOpenSidebar')}, {});
 
 		return {};
+	}
+
+	async function openPopup() {
+		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
+			let qmo = await notify({action: "getTabQuickMenuObject"});
+			console.log(qmo);
+			browser.tabs.executeScript(tabs[0].id, {
+				code: `window.open("${o.url}", "CS_POPUP_${gen()}", "popup,location=0,menubar=0,left=${qmo.screenCoords.x},top=${qmo.screenCoords.y},width=400,height=300");`
+			});
+		});
 	}
 }
 
@@ -2607,6 +2620,10 @@ async function injectContentScripts(tab, frameId) {
 	// filter documents that can't attach menus
 	let isHTML = await browser.tabs.executeScript(tab.id, { code: "document.querySelector('html') ? true : false", matchAboutBlank:false, frameId: frameId });
 	if ( !isHTML.shift() ) return;
+
+	// filter popup windows 
+	let isPopup = await browser.tabs.executeScript(tab.id, { code: "window.name && window.name.startsWith('CS_POPUP') ? true : false", matchAboutBlank:false});
+	if ( isPopup.shift() ) return;
 
 	let check = await browser.tabs.executeScript(tab.id, { code: "window.hasRun", matchAboutBlank:false, frameId: frameId });
 	if ( check[0] && check[0] === true ) {
