@@ -112,8 +112,6 @@ async function copyRaw(autoCopy) {
 
 	if ( !rawText ) return;
 
-	console.log('autoCopy:', rawText);
-
 	try {
 		navigator.clipboard.writeText(rawText);
 	} catch (err) {
@@ -126,6 +124,7 @@ async function copyRaw(autoCopy) {
 				return {start: active.selectionStart, end: active.selectionEnd};
 			}
 		    const selection = window.getSelection();
+
 		    return selection.rangeCount === 0 ? null : selection.getRangeAt(0);
 		};
 
@@ -138,8 +137,11 @@ async function copyRaw(autoCopy) {
 				return;
 			}
 		    const selection = window.getSelection();
-		    selection.removeAllRanges();
-		    selection.addRange(range);
+
+		    if ( range ) {
+		    	selection.removeAllRanges();
+		   		selection.addRange(range);
+		   	}
 		};
 
 		window.suspendSelectionChange = true;
@@ -154,7 +156,9 @@ async function copyRaw(autoCopy) {
 		t.style.position = "fixed";
 		t.style.width = 0;
 		t.style.height = 0;
-		t.style.display = "none";
+
+		// execCommand('copy') will not work with hidden inputs
+		// t.style.display = "none";
 
 		t.value = rawText;
 
@@ -173,7 +177,7 @@ async function copyRaw(autoCopy) {
 		restore(activeRange);
 		active.focus();
 
-		console.log('autoCopy');
+		//console.log('autoCopy:', rawText);
 
 		// delay required in Waterfox
 		setTimeout(() => window.suspendSelectionChange = false, 10);
