@@ -1085,6 +1085,7 @@ function openWithMethod(o) {
 	
 	switch (o.openMethod) {
 		case "openCurrentTab":
+			o.openerTabId = null; // Cannot set a tab's opener to itself
 			return openCurrentTab();
 
 		case "openNewTab":
