@@ -326,5 +326,6 @@ const defaultUserOptions = {
 	autoImportFirefoxEngines: true,
 	quickMenuOnlyOpenIfOverSelection: false,
 	removeConsecutiveSeparators: true,
-	scriptsUseBlobs: false
+	scriptsUseBlobs: false,
+	copyUseDepreciatedExecCommand: false
 };

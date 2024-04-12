@@ -113,7 +113,16 @@ async function copyRaw(autoCopy) {
 	if ( !rawText ) return;
 
 	try {
+		if ( userOptions.copyUseDepreciatedExecCommand ) {
+			if ( window.getSelection() && window.getSelection().toString() ) {
+				return document.execCommand('copy');
+			} else {
+				throw new Error("copyUseDepreciatedExecCommand");
+			}
+		}
+
 		navigator.clipboard.writeText(rawText);
+		
 	} catch (err) {
 
 		let active = document.activeElement;
@@ -176,8 +185,6 @@ async function copyRaw(autoCopy) {
 
 		restore(activeRange);
 		active.focus();
-
-		//console.log('autoCopy:', rawText);
 
 		// delay required in Waterfox
 		setTimeout(() => window.suspendSelectionChange = false, 10);
