@@ -325,5 +325,6 @@ const defaultUserOptions = {
 	autoThemeDark:"modern dark",
 	autoImportFirefoxEngines: true,
 	quickMenuOnlyOpenIfOverSelection: false,
-	removeConsecutiveSeparators: true
+	removeConsecutiveSeparators: true,
+	scriptsUseBlobs: false
 };

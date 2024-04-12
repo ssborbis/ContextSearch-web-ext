@@ -1173,6 +1173,27 @@ function openWithMethod(o) {
 }
 
 function executeBookmarklet(info) {
+
+	const blobCode = (c, s) => {
+		return `CS_searchTerms = searchTerms = "${s}";
+			(() => {
+			  const blob = new Blob([\`${c}\`], {
+			    type: "text/javascript",
+			  });
+			  var script = document.createElement('script');
+			  script.src = URL.createObjectURL(blob);
+			  script.type = 'text/javascript';
+
+			  document.getElementsByTagName('head')[0].appendChild(script);
+			})();
+		`
+	}
+
+	const vanillaCode = (c, s) => {
+		return `CS_searchTerms = searchTerms = "${s}";
+		${c}`;
+	}
+
 	
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
@@ -1180,11 +1201,14 @@ function executeBookmarklet(info) {
 	// run as script
 	if ( info.node.searchCode ) {
 
+		const code = info.node.searchCode;
+
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			browser.tabs.executeScript(tabs[0].id, {
-				code: `CS_searchTerms = searchTerms = "${searchTerms}";
-					${info.node.searchCode}`		
-			})
+				code: userOptions.scriptsUseBlobs 
+					? blobCode(code, searchTerms) 
+					: vanillaCode(code, searchTerms)
+			});
 		});
 	}
 
@@ -1212,8 +1236,9 @@ function executeBookmarklet(info) {
 			let code = decodeURI(bookmark.url);
 			
 			browser.tabs.executeScript(tabs[0].id, {
-				code: `CS_searchTerms = searchTerms = "${searchTerms}";
-					${code}`
+				code: userOptions.scriptsUseBlobs 
+					? blobCode(code, searchTerms) 
+					: vanillaCode(code, searchTerms)
 			});
 		});
 
