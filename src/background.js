@@ -1175,9 +1175,9 @@ function openWithMethod(o) {
 function executeBookmarklet(info) {
 
 	const blobCode = (c, s) => {
-		return `CS_searchTerms = searchTerms = "${s}";
+		return `
 			(() => {
-			  const blob = new Blob([\`${c}\`], {
+			  const blob = new Blob([\`CS_searchTerms = searchTerms = "${s}";\n\n${c}\`], {
 			    type: "text/javascript",
 			  });
 			  var script = document.createElement('script');
