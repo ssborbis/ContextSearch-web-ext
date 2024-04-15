@@ -96,7 +96,7 @@ async function buildContextMenu(searchTerms) {
 			addMenuItem({
 				parentId: parentId,
 				title: getTitleWithHotkey(node),
-				id: node.id + '_' + count++,	
+				id: context_prefix + node.id + '_' + count++,	
 				icons: {
 					"16": node.icon || browser.runtime.getURL("/icons/code.svg")
 				}
@@ -672,9 +672,9 @@ async function contextMenuSearch(info, tab) {
 		console.log(error);
 	}
 	
-	if ( result[0] && window.searchTerms ) {
+	if ( result[0] ) {
 		debug('content scripts have run', tab);
-		searchTerms = window.searchTerms;
+		searchTerms = window.searchTermsObject[context];
 	} else {
 
 		console.error('content scripts have not run in this tab');
