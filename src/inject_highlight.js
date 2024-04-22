@@ -188,6 +188,9 @@ function mark(options) {
 		limit: options.limit || 0
 	}
 
+	let startTime = Date.now();
+	let timedOut = false;
+
 	words.forEach( (word, i) => {
 		
 		let markMethod = CS_MARK_instance.mark;
@@ -211,7 +214,8 @@ function mark(options) {
 			each: el => {
 				
 				// add class to hidden makers for removal later
-				if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
+				//if ( el.getBoundingClientRect().height === 0 || window.getComputedStyle(el, null).display === "none" )
+				if ( el.offsetParent === null )
 					el.classList.add('CS_unmark');
 				
 				// add class to hits contained in other hits for removal later
@@ -244,7 +248,12 @@ function mark(options) {
 			},
 
 			// limit
-			filter: (node, range, term, index) => { return index < _markOptions.limit || _markOptions.limit === 0}
+			filter: (node, range, term, index) => { 
+				if ( timedOut || Date.now() - startTime > userOptions.highLight.markOptions.timeout ) {
+					timedOut = true;
+					return false;
+				}
+				return index < _markOptions.limit || _markOptions.limit === 0}
 
 		}, _markOptions));
 	});
@@ -257,6 +266,10 @@ function mark(options) {
 		// recursive loop fix
 		delete options.action;
 		delete options.searchTerms;
+
+		if ( timedOut ) {
+			console.error("word search timed out before completing");
+		}
 
 		browser.runtime.sendMessage(Object.assign({
 			action: "markDone", 

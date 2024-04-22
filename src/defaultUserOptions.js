@@ -171,7 +171,8 @@ const defaultUserOptions = {
 			accuracy: "exactly",
 			ignorePunctuation: true,
 			caseSensitive: false,
-			limit: 0
+			limit: 0,
+			timeout:5000
 		},
 		highlightStyle: 'underline',
 		styles: [
