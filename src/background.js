@@ -1197,7 +1197,7 @@ function executeBookmarklet(info) {
 			  const blob = new Blob([\`CS_searchTerms = searchTerms = "${s}";\n\n${c}\`], {
 			    type: "text/javascript",
 			  });
-			  var script = document.createElement('script');
+			  let script = document.createElement('script');
 			  script.src = URL.createObjectURL(blob);
 			  script.type = 'text/javascript';
 
@@ -1211,7 +1211,6 @@ function executeBookmarklet(info) {
 		${c}`;
 	}
 
-	
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
 
@@ -1770,6 +1769,8 @@ async function openSearch(info) {
 	}
 	
 	function onCreate(_tab) {
+
+		if ( !_tab ) return;
 
 		// if new window
 		if (_tab.tabs) {
@@ -2689,7 +2690,7 @@ async function injectContentScripts(tab, frameId) {
 		"/dragshake.js",
 		"/contexts.js",
 		"/tools.js" // for shortcuts
-	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
+	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError));
 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
 
 	if ( frameId === 0 ) { /* top frames only */
