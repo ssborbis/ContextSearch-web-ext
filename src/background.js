@@ -4,6 +4,7 @@ window.tabTerms = [];
 window.searchTerms = "";
 window.searchTermsObject = {};
 window.ctrlKey = false; // track on updateContextMenu for text/url
+window.popupWindows = [];
 
 var userOptions = {};
 var highlightTabs = [];
@@ -1162,13 +1163,29 @@ function openWithMethod(o) {
 	}
 
 	async function openPopup() {
-		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-			let qmo = await notify({action: "getTabQuickMenuObject"});
-			console.log(qmo);
-			browser.tabs.executeScript(tabs[0].id, {
-				code: `window.open("${o.url}", "CS_POPUP_${gen()}", "popup,location=0,menubar=0,left=${qmo.screenCoords.x},top=${qmo.screenCoords.y},width=400,height=300");`
-			});
-		});
+		const getDimension = (d,dname=null,tab=null) => {
+			if ( /\d+$/g.test(d) || /\d+px$/g.test(d) ) {
+				return parseInt(d);
+			}
+
+			if ( /d+%/g.test(d) ) {
+				
+			}
+		}
+
+		let tabs = await browser.tabs.query({currentWindow: true, active: true});
+		let tab = tabs[0];
+		let zoom = await browser.tabs.getZoom(tab.id);
+
+		let qmo = await notify({action: "getTabQuickMenuObject"});
+		return browser.windows.create({
+			url:o.url,
+			height:getDimension(userOptions.popupWindow.height),
+			width: getDimension(userOptions.popupWindow.width),
+			top: parseInt(qmo.screenCoords.y * zoom),
+			left: parseInt(qmo.screenCoords.x * zoom),
+			type: "panel"
+		}).then(w => window.popupWindows.push(w.id));
 	}
 }
 

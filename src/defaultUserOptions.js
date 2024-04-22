@@ -328,5 +328,10 @@ const defaultUserOptions = {
 	quickMenuOnlyOpenIfOverSelection: false,
 	removeConsecutiveSeparators: true,
 	scriptsUseBlobs: false,
-	copyUseDepreciatedExecCommand: false
+	copyUseDepreciatedExecCommand: false,
+	popupWindow: {
+		width:"300px",
+		height:"400px",
+		position:""
+	}
 };
