@@ -672,7 +672,7 @@ async function contextMenuSearch(info, tab) {
 	
 	if ( result[0] ) {
 		debug('content scripts have run', tab);
-		searchTerms = window.searchTermsObject[context];
+		searchTerms = window.searchTermsObject[context] || window.searchTerms;
 	} else {
 
 		console.error('content scripts have not run in this tab');
