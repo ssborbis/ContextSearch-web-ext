@@ -1756,7 +1756,7 @@ async function openSearch(info) {
 	openWithMethod({
 		openMethod: openMethod, 
 		url: q, 
-		openerTabId: openerTabId
+		openerTabId: openerTabId == -1 ? null : openerTabId // chrome pdf reader gives tab.id of -1
 	}).then(onCreate, onError);
 	
 	function executeSearchCode(tabId) {

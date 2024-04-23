@@ -663,8 +663,6 @@ async function contextMenuSearch(info, tab) {
 	// if content scripts have run, use window.searchTerms
 	// else use fallback code ( not accurate with modifiers )
 
-
-
 	let result = [];
 	try {
 		result = await browser.tabs.executeScript(tab.id, { code: "window.hasRun" });
