@@ -902,8 +902,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				// opened by shortcut
 				if ( !message.screenCoords) message.screenCoords = quickMenuObject.screenCoords;
 
-				let x = (message.screenCoords.x - (quickMenuObject.screenCoords.x - quickMenuObject.mouseCoords.x * window.devicePixelRatio)) / window.devicePixelRatio;				
-				let y = (message.screenCoords.y - (quickMenuObject.screenCoords.y - quickMenuObject.mouseCoords.y * window.devicePixelRatio)) / window.devicePixelRatio;
+				let x = quickMenuObject.mouseCoords.x;
+				let y = quickMenuObject.mouseCoords.y;
+
+				// recalculate for iframes
+				if ( document.activeElement.nodeName === "IFRAME" ) {
+					let rect = document.activeElement.getBoundingClientRect();
+					x = message.mouseCoords.x + rect.left;
+					y = message.mouseCoords.y + rect.top;
+				}
 
 				quickMenuObject.searchTerms = message.searchTerms || "";
 				quickMenuObject.lastOpeningMethod = message.openingMethod || null;
