@@ -350,6 +350,8 @@ async function notify(message, sender, sendResponse) {
 
 		case "updateSearchTerms":
 
+			debug(window.searchTermsObject);
+
 			window.searchTerms = message.searchTerms;
 			window.searchTermsObject = message.searchTermsObject;
 			
@@ -391,13 +393,20 @@ async function notify(message, sender, sendResponse) {
 
 					if ( message.currentContexts.includes("image")) break test;
 
-					if ( ccs.includes("linkText") && message.linkMethod && message.linkMethod === "text" ) {
+					// replace LINK menu label with linkText
+					if ( ccs.includes("linkText") ) {
+						if ( message.linkMethod && message.linkMethod === "text" ) {
+							ccs = ccs.filter(c => c != "linkText" && c != "link" );
+							browser.contextMenus.update("selection", {
+								title: i18n("SearchForContext", i18n("LINKTEXT").toUpperCase()) + getMenuHotkey(),
+								contexts:["link"]
+							});
 
-						ccs = ccs.filter(c => c != "linkText" && c != "link" );
-						browser.contextMenus.update("selection", {
-							title: i18n("SearchForContext", i18n("LINKTEXT").toUpperCase()) + getMenuHotkey(),
-							contexts:["link"]
-						});
+							if ( ccs.length === 0 ) ccs.push("selection");
+
+						} else {
+							ccs = ccs.filter(c => c != "linkText" );
+						}
 					}
 	
 				} catch ( error ) {
@@ -405,8 +414,16 @@ async function notify(message, sender, sendResponse) {
 				}
 
 				try {
+
 					for ( let i in contexts ) {
 						browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) });
+					}
+
+					// if just one context, relabel with searchTerms
+					if ( ccs.length === 1 && window.searchTerms ) {
+						browser.contextMenus.update(ccs[0], {
+							title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", window.searchTerms) + getMenuHotkey()
+						});
 					}
 
 				} catch ( error ) {
