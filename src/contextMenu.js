@@ -659,7 +659,6 @@ async function contextMenuSearch(info, tab) {
 
 	var searchTerms;
 
-
 	// if content scripts have run, use window.searchTerms
 	// else use fallback code ( not accurate with modifiers )
 
@@ -672,7 +671,7 @@ async function contextMenuSearch(info, tab) {
 	
 	if ( result[0] ) {
 		debug('content scripts have run', tab);
-		searchTerms = window.searchTermsObject[context] || window.searchTerms;
+		searchTerms = (context ? window.searchTermsObject[context] : window.searchTerms) || window.searchTerms;;
 	} else {
 
 		console.error('content scripts have not run in this tab');
@@ -745,9 +744,8 @@ async function contextMenuSearch(info, tab) {
 	// domain: info.domain || new URL(tab.url).hostname
 }
 
-// rebuild menu every time a tab is activated to updated selectdomain info
+// update selectdomain info every time a tab is activated to updated
 browser.tabs.onActivated.addListener( async tabInfo => {
-	//debounce(buildContextMenu, 250, "buildContextMenuDebouncer");
 	debounce(updateSelectDomains, 250, "updateSelectDomainsDebouncer");
 });
 
