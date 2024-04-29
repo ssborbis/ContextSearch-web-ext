@@ -954,7 +954,7 @@ function buildImportExportButtons() {
 		let date = new Date().toISOString().replace(/:|\..*/g,"").replace("T", "_");
 		
 		if ( userOptions.exportWithoutBase64Icons ) {
-			let uoCopy = Object.assign({}, userOptions);
+			let uoCopy = JSON.parse(JSON.stringify(userOptions));
 			uoCopy.searchEngines.forEach( se => se.icon_base64String = "");
 			findNodes(uoCopy.nodeTree, node => {
 				if ( node.type === "oneClickSearchEngine" )
