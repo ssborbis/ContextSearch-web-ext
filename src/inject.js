@@ -293,11 +293,11 @@ for (let el of document.querySelectorAll("input, textarea, [contenteditable='tru
 // Relabel context menu root on mousedown to fire before oncontextmenu
 window.addEventListener('mousedown', async e => {
 
+	if ( e.button !== 2 ) return false;
+
 	// check for widgets and cancel
 	let csw = document.getElementById("contextsearch-widgets");
 	if ( csw && csw.contains(e.target) ) return;
-
-	if ( e.button !== 2 ) return false;
 
 	let searchTerms = getSelectedText(e.target) || linkOrImage(e.target, e) || "";
 
