@@ -307,8 +307,23 @@ async function notify(message, sender, sendResponse) {
 			}).then(onFound, onError);
 
 		case "mark":
+
+			const injectAllFrames = async tab => {
+				let frames = await browser.webNavigation.getAllFrames({tabId: tab.id});
+
+				for ( let frame of frames ) {
+					if ( frame.frameId == 0 ) continue;
+					await injectContentScripts(tab, frame.frameId);
+				}
+			}
+
+			await injectAllFrames(sender.tab);
+
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
 				let tabs = await getAllOpenTabs();
+
+				for ( let tab of tabs )	await injectAllFrames(tab);
+
 				return Promise.all(tabs.map( tab => browser.tabs.sendMessage(tab.id, message)));
 			} else {
 				return sendMessageToAllFrames();
@@ -801,31 +816,16 @@ async function notify(message, sender, sendResponse) {
 		case "injectComplete":
 
 			if ( userOptions.quickMenu ) {
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/inject_quickmenu.js",
-					frameId: sender.frameId
-				});
-				
-				console.log("injected quickmenu");
-			}
+				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
+			}	await executeScripts(sender.tab.id, {files: ["/dragshake.js"], frameId: 0}, true);
 			
 			if ( userOptions.pageTiles.enabled ) {
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/inject_pagetiles.js",
-					frameId: sender.frameId
-				});
-				
-				console.log("injected pagetiles");
+				await executeScripts(sender.tab.id, {files: ["/inject_pagetiles.js"], frameId: sender.frameId}, true);
+				await executeScripts(sender.tab.id, {files: ["/dragshake.js"], frameId: 0}, true);
 			}
-
-			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) {
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/inject_mycroftproject.js",
-					frameId: sender.frameId
-				});
-				
-				console.log("injected mycroftproject");
-			}
+			
+			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) 
+				await executeScripts(sender.tab.id, {files: ["/inject_mycroftproject.js"], frameId: sender.frameId});
 			
 			break;
 			
@@ -2674,53 +2674,71 @@ function isAllowedURL(_url) {
 	return true;
 }
 
-async function injectContentScripts(tab, frameId) {
+async function executeScripts(tabId, options, checkHasRun) {
 
-	//let contentType = await browser.tabs.executeScript(tab.id, { code: "document.contentType", matchAboutBlank:false, frameId: frameId });
+	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
 	// filter documents that can't attach menus
-	let isHTML = await browser.tabs.executeScript(tab.id, { code: "document.querySelector('html') ? true : false", matchAboutBlank:false, frameId: frameId });
-	if ( !isHTML.shift() ) return;
+	let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
+	if ( !isHTML.shift() ) return false;
 
 	// filter popup windows 
-	let isPopup = await browser.tabs.executeScript(tab.id, { code: "window.name && window.name.startsWith('CS_POPUP') ? true : false", matchAboutBlank:false});
-	if ( isPopup.shift() ) return;
-
-	let check = await browser.tabs.executeScript(tab.id, { code: "window.hasRun", matchAboutBlank:false, frameId: frameId });
-	if ( check[0] && check[0] === true ) {
-		console.log('already injected', tab.url, frameId);
-		return;
-	}
+	let isPopup = await browser.tabs.executeScript(tabId, { code: "window && window.name && window.name.startsWith('CS_POPUP') ? true : false"});
+	if ( isPopup.shift() ) return false;
 
 	onFound = () => {}
-	onError = (err) => {console.log(err, tab.url)}
+	onError = err => {console.log(err)}
+
+	const files = options.files;
+	delete options.files;
+
+	for ( const file of files ) {
+
+		if ( checkHasRun ) {
+			let check = await browser.tabs.executeScript(tabId, { code: `window.CS_HASRUN && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
+			if ( check[0] && check[0] === true ) {
+				debug('already injected', file, tabId, options.frameId || 0);
+				continue;
+			}
+		}
+
+		await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
+		debug("injected", file);
+		if ( checkHasRun ) await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+	}
+}
+
+async function injectContentScripts(tab, frameId) {
 
 	// inject into any frame
-	[
-		"/lib/browser-polyfill.min.js",
-		"/utils.js", // for isTextBox
-		"/inject.js",
-		"/lib/mark.es6.min.js",
-		"/inject_highlight.js",
-		"/hotkeys.js",
-		"/defaultShortcuts.js",
-		"/dragshake.js",
-		"/contexts.js",
-		"/tools.js" // for shortcuts
-	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError));
-	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
+	await executeScripts(tab.id, {
+		files: [
+			"/lib/browser-polyfill.min.js",
+			"/utils.js", // for isTextBox
+			"/inject.js",
+			"/lib/mark.es6.min.js",
+			"/inject_highlight.js",
+			"/hotkeys.js",
+			"/defaultShortcuts.js",
+			"/contexts.js",
+			"/tools.js" // for shortcuts
+		], frameId: frameId, runAt: "document_end"
+	}, true);
+	browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
 
 	if ( frameId === 0 ) { /* top frames only */
-		[
-			"/nodes.js",
-			"/opensearch.js",
-			"/searchEngineUtils.js",
-			"/dock.js",
-			"/inject_sidebar.js",
-			"/inject_customSearch.js",
-			"/resizeWidget.js"
-		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
-		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
+		await executeScripts(tab.id, {
+			files: [
+				"/nodes.js",
+				"/opensearch.js",
+				"/searchEngineUtils.js",
+				"/dock.js",
+				"/inject_sidebar.js",
+				"/inject_customSearch.js",
+				"/resizeWidget.js"
+			], runAt: "document_end"
+		}, true);
+		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", cssOrigin: "user"});
 	}
 }
 
@@ -2866,10 +2884,11 @@ function userInputCurrentTab(func, str) {
 	});
 }
 
-async function isTabScriptable(tabId) {
+async function isTabScriptable(tabId, frameId = 0) {
 	try {
 		await browser.tabs.executeScript(tabId, {
-			code: `(() => {})();`
+			code: `(() => {})();`,
+			frameId: frameId
 		});
 		return true;
 	} catch ( error ) {

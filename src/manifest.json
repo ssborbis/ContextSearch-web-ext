@@ -55,7 +55,8 @@
 		"storage",
 		"tabs",
 		"search",
-		"unlimitedStorage"
+		"unlimitedStorage",
+		"webNavigation"
 	],
 	
 	"optional_permissions": [
