@@ -214,13 +214,12 @@ async function isURLImage(url) {
 	return buff.type.startsWith('image/')
 }
 
-const log = console.log;
 const debug = (...args) => {
 	if ( userOptions && userOptions.developerMode ) {
 		try {
 			let e = new Error();
 			let stack = e.stack.trim().split('\n').pop();
-			console.log(...args, stack.replace(/.*\/(.*$:?)/, "$1"));
+			console.debug(...args, stack.replace(/.*\/(.*$:?)/, "$1"));
 		} catch (error) {}
 	}
 }

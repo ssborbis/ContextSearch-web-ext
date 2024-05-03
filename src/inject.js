@@ -225,10 +225,10 @@ function getContextsObject(el, e) {
 	}
 
 	// replace thumbnails with source
-	if ( false && o['link'] && isURLImage(o['link']) ) {
-		console.log('thumbnail found');
-		o['image'] = o['link'];
-	}
+	// if ( false && o['link'] && isURLImage(o['link']) ) {
+	// 	console.log('thumbnail found');
+	// 	o['image'] = o['link'];
+	// }
 	
 	o['selection'] = getSelectedText(el);
 

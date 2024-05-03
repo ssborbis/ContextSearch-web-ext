@@ -474,7 +474,7 @@ function updateMatchRegexFolder(s, context) {
 
 	onCreated = () => {
 		if (browser.runtime.lastError) {
-			if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) console.log(browser.runtime.lastError);
+			if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) debug(browser.runtime.lastError);
 		}
 	}
 
