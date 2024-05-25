@@ -26,6 +26,8 @@ function getSelectedText(el) {
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 	userOptions = uo;
+
+	if ( checkForQuery() ) return;
 	
 	let singleColumn = window == top ? userOptions.searchBarDefaultView === 'text' : userOptions.sideBar.singleColumn;
 
@@ -301,6 +303,29 @@ function closeMenuRequest(e) {
 	} else if ( userOptions.sideBar.closeAfterSearch ) {
 		window.parent.postMessage({action: "closeSideBarRequest"}, "*");
 	}
+}
+
+// see if the url contains a search
+function checkForQuery() {
+	let params = new URLSearchParams(window.location.search);
+	
+	if (params.has('q')) {
+
+		let n = findNode(userOptions.nodeTree, n => n.type && n.type !== "folder")
+		let str = params.get('q');
+		browser.runtime.sendMessage({
+			action: "search", 
+			info: {
+				menuItemId: n.id,
+				selectionText: str,
+				openMethod: "openCurrentTab"
+			}
+		});
+
+		return true;
+	}
+
+	return false;
 }
 
 async function makeAddEngineBar() {
