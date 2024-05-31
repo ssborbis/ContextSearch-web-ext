@@ -951,6 +951,8 @@ function buildImportExportButtons() {
 	let b_export = $('#b_exportSettings');
 	b_export.onclick = function() {
 
+		let pretty = userOptions.exportJsonPretty ? "\t" : null;
+
 		let date = new Date().toISOString().replace(/:|\..*/g,"").replace("T", "_");
 		
 		if ( userOptions.exportWithoutBase64Icons ) {
@@ -960,9 +962,9 @@ function buildImportExportButtons() {
 				if ( node.type === "oneClickSearchEngine" )
 					node.icon = "";
 			});
-			download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy));
+			download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy, null, pretty));
 		} else {
-			download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions));
+			download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions, null, pretty));
 		}
 	}
 	

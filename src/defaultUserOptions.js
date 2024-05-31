@@ -333,5 +333,6 @@ const defaultUserOptions = {
 		width:"300px",
 		height:"400px",
 		position:""
-	}
+	},
+	exportJsonPretty: false
 };
