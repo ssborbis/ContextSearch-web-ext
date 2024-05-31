@@ -311,7 +311,7 @@ function checkForQuery() {
 	
 	if (params.has('q')) {
 
-		let n = findNode(userOptions.nodeTree, n => n.type && n.type !== "folder")
+		let n = findNode(userOptions.nodeTree, n => n.id && n.type && n.type !== "folder")
 		let str = params.get('q');
 		browser.runtime.sendMessage({
 			action: "search", 
