@@ -1392,29 +1392,6 @@ function checkContextMenuEventOrder(e) {
 	}, {once: true});
 }
 
-function createStatusBar() {
-	if ( window != top ) return;
-	let div = document.createElement('div');
-	div.id = 'CS_statusBar';
-	getShadowRoot().appendChild(div);
-	let b = createStatusButton(browser.runtime.getURL("/icons/logo_notext.svg"));
-	b.title = browser.runtime.getManifest().name;
-}
-
-function createStatusButton(icon, callback) {
-	let div = document.createElement('div');
-	div.className = 'CS_statusButton';
-	let sb = getShadowRoot().querySelector('#CS_statusBar');
-	sb.appendChild(div);
-
-	let img = new Image();
-	img.src = icon;
-	div.appendChild(img);
-	img.onclick = callback;
-
-	return div;
-}
-
 function isEventOnSelectedText(e) {
 
 	const isInside = (point, rect) => point.x > rect.left && point.x < rect.right && point.y > rect.top && point.y < rect.bottom;
@@ -1459,22 +1436,58 @@ const editOn = el => {
 	document.addEventListener('closequickmenu', editRemoveOverDiv, {once: true});
 }
 
-if ( window == top && userOptions.showStatusBar ) {
-	createStatusBar();
-//	&& checkToolStatus("repeatsearch")
-	// createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
-	// 	alert('yep');
-	// });
-	const setStatus = (el, on) => {
-		el.title = `${i18n("quickmenu")} ${(on ? "on" : "off")}`;
-		el.classList.toggle("on", on);
+function StatusBar() {
+
+	this.createStatusButton = createStatusButton;
+
+	function createStatusBar() {
+		if ( window != top ) return;
+		let div = document.createElement('div');
+		div.id = 'CS_statusBar';
+		getShadowRoot().appendChild(div);
+		let b = createStatusButton(browser.runtime.getURL("/icons/logo_notext.svg"));
+		b.title = browser.runtime.getManifest().name;
 	}
-	let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {
-		QMtools.find(t => t.name === "disable").action();
-		setStatus(div, !quickMenuObject.disabled);
-	});
-	setStatus(div, !quickMenuObject.disabled);
+
+	function createStatusButton(icon, callback) {
+		let div = document.createElement('div');
+		div.className = 'CS_statusButton';
+
+		let img = new Image();
+		img.src = icon;
+		div.appendChild(img);
+		img.onclick = callback;
+
+		let sb = getShadowRoot().querySelector('#CS_statusBar');
+		sb.appendChild(div);
+
+		return div;
+	}
+
+	this.init = () => {
+
+		if ( window == top && userOptions.showStatusBar ) {
+			createStatusBar();
+		//	&& checkToolStatus("repeatsearch")
+			// createStatusButton(browser.runtime.getURL("/icons/repeatsearch.svg"), () => {
+			// 	alert('yep');
+			// });
+			const setStatus = (el, on) => {
+				el.title = `${i18n("quickmenu")} ${(on ? "on" : "off")}`;
+				el.classList.toggle("on", on);
+			}
+			let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {
+				QMtools.find(t => t.name === "disable").action();
+				setStatus(div, !quickMenuObject.disabled);
+			});
+
+			setStatus(div, !quickMenuObject.disabled);
+		}
+	}
 }
+
+// prevents huge icons
+setTimeout(() => new StatusBar().init(), 1000);
 
 if ( window == top && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
