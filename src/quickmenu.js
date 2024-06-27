@@ -599,3 +599,5 @@ function resizeMutationObserver() {
 //resizeMutationObserver();
 
 // initOptionsBar();
+
+Shortcut.addShortcutListener();
