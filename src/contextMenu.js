@@ -286,6 +286,12 @@ async function buildContextMenu(searchTerms) {
 
 		contexts.forEach( ( context, index ) => {
 
+			// remove disabled contexts
+			if ( 
+				context === "image" && !userOptions.contextMenuOnImages 
+				|| context === "link" && !userOptions.contextMenuOnLinks
+			) return;
+
 			// create node tree for context
 			let filteredNodeTree = filterContexts(root, context);
 
@@ -312,8 +318,8 @@ async function buildContextMenu(searchTerms) {
 			// recently used engines
 			if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
 
-				let folder = recentlyUsedListToFolder();
-				
+				let folder = recentlyUsedListToFolder(context);
+
 				if ( userOptions.contextMenuShowRecentlyUsedAsFolder ) {		
 					traverse(folder, context, context);
 				} else {

@@ -42,7 +42,7 @@ function runAtTransitionEnd(el, prop, callback, ms) {
 	}, ms);
 }
 
-function recentlyUsedListToFolder() {
+function recentlyUsedListToFolder(context) {
 
 	let folder = {
 		type: "folder",
@@ -59,6 +59,11 @@ function recentlyUsedListToFolder() {
 
 		// filter missing nodes
 		if ( lse ) folder.children.push(Object.assign({}, lse));
+
+		// filter contexts 
+		if ( context && filterContexts ) {
+			filterContexts(folder, contexts);
+		}
 	});
 
 	return folder;

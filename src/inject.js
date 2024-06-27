@@ -19,6 +19,7 @@ var quickMenuObject = {
 
 var userOptions = {};
 var killswitch = false; // global switch for disabling injected functions on the fly
+
 window.suspendSelectionChange = false;
 
 browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
@@ -588,16 +589,14 @@ function checkForNodeHotkeys(e) {
 
 	if ( 
 		!userOptions.allowHotkeysWithoutMenu ||
-		isTextBox(e.target) ||
-		e.shiftKey || e.ctrlKey || e.altKey || e.metaKey
+		isTextBox(e.target)
 	) return false;
 
 	let searchTerms = getSearchTermsForHotkeys(e);
 
 	if ( !searchTerms ) return false;
-
-	let node = findNode( userOptions.nodeTree, n => n.hotkey === e.keyCode );
-
+	
+	let node = Shortcut.getNodeFromEvent(e);
 	if ( !node ) return false;
 
 	browser.runtime.sendMessage({
@@ -717,8 +716,6 @@ document.addEventListener("fullscreenchange", e => {
 
 createShadowRoot();
 setZoomProperty();
-
-window.hasRun = true;
 Shortcut.addShortcutListener();
 
 browser.runtime.sendMessage({action: "injectComplete"});
