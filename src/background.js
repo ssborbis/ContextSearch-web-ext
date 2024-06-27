@@ -68,7 +68,22 @@ browser.tabs.onActivated.addListener(info => {
 		browser.tabs.sendMessage(info.previousTabId, {action: "cancelQuickMenuRequest"}).then(() => {}, () => {});
 		browser.tabs.sendMessage(info.previousTabId, {action: "closeQuickMenuRequest"}).then(() => {}, () => {});
 	}
-})
+});
+
+browser.windows.onFocusChanged.addListener(async id => {
+
+	// not a CS popup window
+	if ( !window.popupWindows.includes(id) ) return;
+
+	let w = await browser.windows.get(id);
+	userOptions.popupWindow.height = w.height;
+	userOptions.popupWindow.width = w.width;
+	notify({action: "saveUserOptions", userOptions:userOptions});
+
+});
+browser.windows.onRemoved.addListener(id => {
+	window.popupWindows = window.popupWindows.filter(_id => _id !== id );
+});
 
 browser.runtime.onMessage.addListener(notify);
 
