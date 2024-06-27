@@ -14,7 +14,7 @@
 	overflow:hidden;
 	display:inline-block !important;
 	z-index: 2147483647; /* max 32-bit integer */
-	transition: var(--user-transition, width .2s ease .1s, height .1s ease, opacity .35s ease-in-out, scale .2s ease );
+	transition: var(--user-transition, width .1s ease, height .1s ease, opacity .075s ease-in-out, scale .2s ease );
 	transform:scale( var(--cs-scale,1)) !important;
 	transform-origin: top left;
 	background-color:transparent;
@@ -302,7 +302,7 @@
 	right: -8px;
 	display: inline-block;
 	max-width: 30px;
-	transform: scale(var(--cs-scale)) !important;
+	transform: scale(var(--cs-scale,1)) !important;
 	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
 	transform-origin: bottom right;
 	transition: max-width .5s ease-out, opacity .25s;
@@ -314,7 +314,6 @@
 	border: 1px solid #444;
 	padding: 2px 12px 2px 2px;
 	/*opacity: .3;*/
-
 }
 #CS_statusBar:hover {
 	opacity: 1;
