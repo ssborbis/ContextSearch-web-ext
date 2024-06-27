@@ -463,7 +463,7 @@ function updateMatchRegexFolders(s) {
 		try {
 			browser.contextMenus.remove( menu );
 		} catch (error) {
-			console.log(error);
+			debug(error);
 		}
 	});
 	window.contextMenuMatchRegexMenus = [];

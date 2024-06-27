@@ -51,9 +51,9 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	if ( highlightInfo ) {
 		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
 
-		waitOnInjection(tabId).then(value => {
+	//	waitOnInjection(tabId).then(value => {
 			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
-		});
+	//	});
 	}
 });
 
@@ -1351,7 +1351,7 @@ function executeOneClickSearch(info) {
 
 			browser.tabs.onUpdated.removeListener(listener);
 
-			console.log('tab took', Date.now() - start );
+			debug('tab took', Date.now() - start );
 
 			// .search.get() requires some delay
 			await new Promise(r => setTimeout(r, 500));
@@ -1476,7 +1476,7 @@ async function executeExternalProgram(info) {
 		downloadFolder: downloadPath || userOptions.nativeAppDownloadFolder || null 
 	};
 
-	console.log("native app message ->", msg);
+	debug("native app message ->", msg);
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
 		if ( node.postScript.trim() ) {
@@ -1843,15 +1843,8 @@ async function openSearch(info) {
 			
 			browser.tabs.onUpdated.removeListener(listener);
 
-			let promises = ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js'].map( async (file) => {
-				await browser.tabs.executeScript(_tab.id, {
-					file: file,
-					runAt: 'document_start'
-				});
-			});
-			
-			await Promise.all(promises);
-			
+			await executeScripts(_tab.id, {files: ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js']}, true);
+
 			browser.tabs.executeScript(_tab.id, {
 				code: `
 					let se = ${JSON.stringify(se)};
@@ -2008,9 +2001,7 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 			highlightTabs.push(obj);
 	}
 
-	browser.tabs.executeScript(tab.id, {
-		file: "inject_resultsEngineNavigator.js"
-	});
+	executeScripts(tab.id, {files: ["inject_resultsEngineNavigator.js"]}, true);
 }
 
 function getAllOpenTabs() {
