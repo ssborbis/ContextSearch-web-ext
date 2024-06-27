@@ -33,14 +33,16 @@ function buildSearchEngineContainer() {
 	})();
 
 	function traverse(node, parent) {	
-	
+
 		if ( !node ) {
 			console.log('null node found');
 			return;
 		}
 
 		let li = document.createElement('li');
+
 		parent.appendChild(li);
+
 		li.node = node;
 		li.dataset.nodeid = node.id;
 		
@@ -273,6 +275,7 @@ function buildSearchEngineContainer() {
 				edit_form.shortName.value = se.title;
 				edit_form.description.value = se.description || "";
 				edit_form.template.value = se.template;
+				edit_form.keyword.value = node.keyword || "";
 				edit_form.iconURL.value = se.icon_url || se.icon_base64String;
 				edit_form._method.value = se.method || "GET";
 				edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
@@ -394,6 +397,7 @@ function buildSearchEngineContainer() {
 
 						se.icon_base64String = iconBase64;  //icon.src;
 						se.description = edit_form.description.value;
+						node.keyword = edit_form.keyword.value.trim();
 						se.template = edit_form.template.value;
 						se.searchForm = edit_form.searchform.value;
 						se.icon_url = edit_form.iconURL.value;
@@ -479,6 +483,8 @@ function buildSearchEngineContainer() {
 				_form.shortName.value = node.title;
 				_form.searchCode.value = node.searchCode || "";
 				_form.description.value = node.description || "";
+				_form.keyword.value = node.keyword || "";
+
 
 				_form.querySelector('label[data-i18n="SearchCode"]').innerText = i18n("Script");
 
@@ -545,6 +551,7 @@ function buildSearchEngineContainer() {
 					img.src = getIconFromNode(node);
 
 					node.title = _form.shortName.value.trim();
+					node.keyword = _form.keyword.value.trim();
 					node.contexts = getContexts(_form);
 					node.searchCode = _form.searchCode.value;
 					node.description = _form.description.value.trim();
@@ -622,6 +629,7 @@ function buildSearchEngineContainer() {
 								
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
+				_form.keyword.value = node.keyword || "";
 				_form.template.value = node.path;
 				_form.searchRegex.value = node.searchRegex;
 				_form.description.value = node.description || "";
@@ -702,6 +710,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.path = _form.template.value.trim();
+					node.keyword = _form.keyword.value.trim();
 					node.searchRegex = _form.searchRegex.value.trim();
 					node.description = _form.description.value.trim();
 					node.cwd = _form.searchform.value.trim();
@@ -885,6 +894,7 @@ function buildSearchEngineContainer() {
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 
 					node.title = _form.shortName.value.trim();
+					node.keyword = _form.keyword.value.trim();
 					node.groupColor = _form.groupColor.value;
 					node.groupColorText = _form.groupColorText.value;
 					node.groupFolder = _form.groupFolder.value || false;
@@ -1317,6 +1327,9 @@ function buildSearchEngineContainer() {
 		
 		for (let child of root.children)
 			traverse(child, rootElement);
+
+		// traverse(root, rootElement);
+
 		
 		table.appendChild(rootElement);
 

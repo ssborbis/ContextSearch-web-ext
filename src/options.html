@@ -934,21 +934,23 @@
 			}
 			.hotkey {
 				background-color: var(--bg-color4);
-				border-radius:2px;
-			/*	border:1px solid #c4c4c4;*/
-				right:30px;
+				border-radius:4px;
+				border:1px solid var(--border-color3);
 				display:inline-block;
-				min-width:1em;
-				padding:0px 10px;
-				height:16px;
+				min-width:.5em;
+				min-height:.5em;
+				height:auto;
+				padding:2px 2px;
 				text-align:center;
 				vertical-align:middle;
 				font-weight:bold;
 				transition: background-color .25s;
-				font-size:9pt;
+				font-size:8pt;
+				line-height: 8pt;
 				margin:1px 0;
 				color:var(--color2);
-				border:none;
+				position: unset;
+				transition: background-color .25s;
 			}
 			.hotkey:hover {
 				background-color:var(--hover1);
@@ -959,11 +961,15 @@
 				right:40px;
 				width:40px;
 			}
-			 .treeNode .header:not(.selected):hover {
+			.treeNode .header {
+				display: flex;
+				align-items: center;
+			}
+			.treeNode .header:not(.selected):hover {
 				background-color:var(--hover2);
 			}
 			.treeNode .header .label {
-				margin-right: 20px;
+				margin-right: 8px;
 			}
 			.hidden {
 				opacity: .5;
@@ -3279,8 +3285,8 @@
 					<div id="collapseAll" class="collapse" style="position:relative;top:0;left:0;width:20px;height:1em;display:inline-block;z-index:2;cursor:pointer;user-select:none">
 						<sup>+</sup>&#8260;-
 					</div>
-					<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;width:90%;margin-bottom: 10px;margin-left:30px"/>
-					<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;"></div>
+					<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;width:90%;"/>
+					<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;margin:0;"></div>
 					<div id="managerContainer">
 					</div>
 					<div></div>
@@ -3321,7 +3327,14 @@
 						</div>
 					</div>
 
-					<label data-i18n="Name">$</label><input name="shortName" type="text" class="inputNice" />
+					<div style="display:flex">
+						<div style="display:inline-block;width:75%">
+							<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
+						</div>
+						<div style="display:inline-block;width:25%">
+							<label data-i18n="Keyword" class="formLabel">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center"/>
+						</div>
+					</div>
 					<label data-i18n="Description">$</label><textarea name="description" type="text" class="inputNice"></textarea>
 					<label data-i18n="Template" title="$templateCheatSheet">$</label><textarea name="template" type="text" class="inputNice"></textarea>
 					<label data-i18n="IconURI">$</label>
