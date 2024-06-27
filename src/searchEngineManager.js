@@ -1015,122 +1015,166 @@ function buildSearchEngineContainer() {
 			let hotkey = document.createElement('span');
 			hotkey.title = i18n('Hotkey');
 			hotkey.className = 'hotkey';
-			hotkey.style.right = "4px";
+
+			setHotkeyText = (button, _node) => {
+				button.innerText = Shortcut.getShortcutStringFromKey(_node.shortcut ? _node.shortcut : _node.hotkey );
+				button.title = button.innerText || i18n("hotkey");
+
+				// if ( !button.title ) {
+				// 	button.style.borderRadius = "50%";
+				// 	button.style.minWidth = "0";
+				// 	button.style.minHeight = "0";
+				// 	button.style.width = "8px";
+				// 	button.style.height = "8px";
+				// 	button.style.padding = 0;
+				// 	button.title = i18n("hotkey");
+				// }
+			}
+
+			let showError = async (msg) => {
+				return new Promise(r => {
+					let origMsg = hotkey.innerText;
+					hotkey.style.backgroundColor = 'red';
+					hotkey.style.color = "white";
+					hotkey.innerText = msg;
+					setTimeout(() => {
+						hotkey.style.backgroundColor = null;
+						hotkey.style.color = null;
+						hotkey.innerText = origMsg;
+						r();
+					}, 1000);
+				});
+			}
 
 			header.appendChild(hotkey);
-			hotkey.innerText = keyTable[node.hotkey] || "";
+
+			setHotkeyText(hotkey, node);
 			
-			hotkey.onclick = function(e) {
-				e.stopPropagation();			
-				e.target.innerText = null;
+			hotkey.onclick = async function(e) {
+				e.stopPropagation();
 
-				let img = document.createElement('img');
-				img.src = 'icons/spinner.svg';
+				let key = {};			
 
-				e.target.appendChild(img);
+				// new code start
+				while (true) {
+					key = await Shortcut.buttonListener(e.target);
 
-				window.listeningForHotkey = true;
-
-				window.addEventListener('keydown', function keyPressListener(evv) {
-					evv.preventDefault();
-					
-					if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
-
-					if (evv.key === "Escape") {
+					// ESC 
+					if ( !key ) {
 						node.hotkey = null;
+						node.shortcut = null;
 						
 						// set hotkey for all copies
 						for (let _hk of rootElement.querySelectorAll('li')) {
 							if (_hk.node && _hk.node.id === node.id)
 								_hk.querySelector('.hotkey').innerText = "";
 						}
-	
-						window.removeEventListener('keydown', keyPressListener);
-						window.listeningForHotkey = false;
-						updateNodeList();
-						return;
+
+						return updateNodeList();
 					}
 					
-					node.hotkey = evv.which;
-
-					if ( findNode(rootElement.node, _node => _node.hotkey === evv.which && _node.id !== node.id) ) {						
-						hotkey.style.backgroundColor = 'pink';
-						setTimeout(() => hotkey.style.backgroundColor = null, 250);
-						return;
+					// check for duplicate keys in nodes
+					let duplicateNode = findNode(rootElement.node, _node => Shortcut.matches(_node.shortcut, key));
+					if ( duplicateNode && duplicateNode !== node ) {
+						await showError("IN_USE: " + duplicateNode.title);
+						continue;
 					}
 
-					// set hotkey for all copies
-					for (let _hk of rootElement.querySelectorAll('li')) {
-						if (_hk.node && _hk.node.id === node.id)
-							_hk.querySelector('.hotkey').innerText = keyTable[evv.which];
+					// check for invalid keys				
+					if ( ["Enter","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(key.key) ) {
+						await showError("INVALID_KEY: " + key.key);
+						continue;
 					}
-					
-					findNodes(rootElement.node, _node => {
-						if ( _node.type === node.type && _node.id === node.id )
-							_node.hotkey = node.hotkey;
-					});
 
-					window.removeEventListener('keydown', keyPressListener);
-					window.listeningForHotkey = false;
-					updateNodeList();
-				}); 
-			}
+					let userShortcut = userOptions.userShortcuts.find(us => Shortcut.matches(us,key));
+					if ( userShortcut ) {
+						let defaultShortcut = Shortcut.getDefaultShortcutById(userShortcut.id);
+						await showError("IN_USE: " + defaultShortcut.name);
+						setHotkeyText(hotkey, node);
+						continue;
+					}
 
-			let keyword = document.createElement('input');
-			keyword.title = i18n('Keyword');
-			keyword.className = "inputNice hotkey keyword";
-
-
-			header.appendChild(keyword);
-			keyword.value = node.keyword || "";
-
-			keyword.onclick = e => e.stopPropagation();
-			keyword.ondblclick = e => e.stopPropagation();
-			keyword.addEventListener('dragstart', (e) => {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			});
-			keyword.addEventListener('mousedown', () => li.setAttribute("draggable", false));
-			keyword.addEventListener('mouseup', () => li.setAttribute("draggable", true));
-			keyword.setAttribute('draggable', false);
-
-			keyword.addEventListener('keydown', e => {
-				if ( e.key === "Enter") {
-					keyword.dispatchEvent(new Event('change'));
-					keyword.blur();
-				}
-			});
-
-			keyword.addEventListener('keydown', e => {
-				if ( e.key === "Escape") {
-					keyword.value = "";
-					keyword.dispatchEvent(new Event('change'));
-					keyword.blur();
-				}
-			});
-
-			keyword.addEventListener('change', e => {
-				keyword.value = keyword.value.trim();
-
-				// check for duplicates
-				if ( keyword.value && findNode(rootElement.node, _node => _node.keyword === keyword.value && _node.id !== node.id) ) {
-
-					keyword.style.backgroundColor = 'pink';
-					return;
+					break;
 				}
 
-				node.keyword = keyword.value;
+				node.hotkey = key.keyCode;
+				node.shortcut = key;
 
-				// set keyword for all copies
-				for (let _li of rootElement.querySelectorAll('li')) {
-					if (_li.node && _li.node.id === node.id) {
-						_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
-						_li.querySelector('.keyword').style.backgroundColor = null;
+				setHotkeyText(hotkey, node);
+
+				// set hotkey for all copies
+				for (let li of rootElement.querySelectorAll('li')) {
+					if (li.node && li.node.id === node.id) {
+						let hk = li.querySelector('.hotkey');
+						setHotkeyText(hk, node);
 					}
 				}
 				
+				findNodes(rootElement.node, _node => {
+					if ( _node.type === node.type && _node.id === node.id ) {
+						_node.hotkey = key.keyCode;
+						_node.shortcut = key;
+					}
+				});
+
 				updateNodeList();
-			});
+				// new code end
+			}
+
+			// let keyword = document.createElement('input');
+			// keyword.title = i18n('Keyword');
+			// keyword.className = "inputNice hotkey keyword";
+
+			// header.appendChild(keyword);
+			// keyword.value = node.keyword || "";
+
+			// keyword.onclick = e => e.stopPropagation();
+			// keyword.ondblclick = e => e.stopPropagation();
+			// keyword.addEventListener('dragstart', (e) => {
+			// 	e.preventDefault();
+			// 	e.stopImmediatePropagation();
+			// });
+			// keyword.addEventListener('mousedown', () => li.setAttribute("draggable", false));
+			// keyword.addEventListener('mouseup', () => li.setAttribute("draggable", true));
+			// keyword.setAttribute('draggable', false);
+
+			// keyword.addEventListener('keydown', e => {
+			// 	if ( e.key === "Enter") {
+			// 		keyword.dispatchEvent(new Event('change'));
+			// 		keyword.blur();
+			// 	}
+			// });
+
+			// keyword.addEventListener('keydown', e => {
+			// 	if ( e.key === "Escape") {
+			// 		keyword.value = "";
+			// 		keyword.dispatchEvent(new Event('change'));
+			// 		keyword.blur();
+			// 	}
+			// });
+
+			// keyword.addEventListener('change', e => {
+			// 	keyword.value = keyword.value.trim();
+
+			// 	// check for duplicates
+			// 	if ( keyword.value && findNode(rootElement.node, _node => _node.keyword === keyword.value && _node.id !== node.id) ) {
+
+			// 		keyword.style.backgroundColor = 'pink';
+			// 		return;
+			// 	}
+
+			// 	node.keyword = keyword.value;
+
+			// 	// set keyword for all copies
+			// 	for (let _li of rootElement.querySelectorAll('li')) {
+			// 		if (_li.node && _li.node.id === node.id) {
+			// 			_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
+			// 			_li.querySelector('.keyword').style.backgroundColor = null;
+			// 		}
+			// 	}
+				
+			// 	updateNodeList();
+			// });
 
 			// let edit = new Image();
 			// edit.className = "editIcon";
@@ -2400,6 +2444,31 @@ function getContexts(f) {
 	return [...contexts].map(c => parseInt(c.value)).reduce( (a,b) => a + b);
 }
 
+// function contextBarEventHandler(e) {
+// 	e.stopPropagation();
+
+// 	let code = getContextCode(c);
+// 	let status = hasContext(c, tool.node.contexts);
+
+// 	tool.classList.toggle('disabled', status);
+
+// 	if ( status ) tool.node.contexts -= code;
+// 	else tool.node.contexts += code;
+
+// 	updateNodeList(true);
+// }
+// {
+
+// 	window.contextsBar = document.createElement('div');
+// 	contexts.forEach( async c => {
+// 		let tool = createMaskIcon("icons/" + c + ".svg");
+// 		tool.classList.add('contextIcon');
+// 		tool.title = i18n(c);
+
+// 		window.contextsBar.appendChild(tool);
+// 	});
+// }
+
 async function setRowContexts(row) {
 	try {
 		let node = row.node;
@@ -2564,7 +2633,6 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keydown', e => {
 
 	if ( document.activeElement && document.activeElement.nodeName === 'INPUT' ) return;
-	if ( window.listeningForHotkey ) return;
 
 	if ( e.key === 'Delete' && selectedRows.length ) {
 		e.preventDefault();

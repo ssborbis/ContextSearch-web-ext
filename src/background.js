@@ -2716,13 +2716,12 @@ async function injectContentScripts(tab, frameId) {
 	// inject into any frame
 	await executeScripts(tab.id, {
 		files: [
-			"/lib/browser-polyfill.min.js",
+			// "/lib/browser-polyfill.min.js",
 			"/utils.js", // for isTextBox
+			"/Shortcuts.js",
 			"/inject.js",
 			"/lib/mark.es6.min.js",
 			"/inject_highlight.js",
-			"/hotkeys.js",
-			"/defaultShortcuts.js",
 			"/contexts.js",
 			"/tools.js" // for shortcuts
 		], frameId: frameId, runAt: "document_end"

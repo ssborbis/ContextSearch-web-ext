@@ -32,6 +32,7 @@
 			"mozlz4.js",
 			"keyTable.js",
 			"TabHighlighter.js",
+			"Shortcuts.js",
 			"background.js"
 		]
 	},

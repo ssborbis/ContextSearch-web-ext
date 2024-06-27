@@ -456,3 +456,5 @@ if ( window == top ) {
 	window.addEventListener('load', e => sendMessage({action:"disablePageClicks"}));
 	window.addEventListener('unload', e => sendMessage({action:"enablePageClicks"}));
 }
+
+Shortcut.addShortcutListener();

@@ -1562,11 +1562,10 @@ function checkForNodeHotkeys(e) {
 	// ignore hotkeys when the search bar is being edited
 	if (document.activeElement === sb) return;
 
-	let hotkeyNode = findNode(userOptions.nodeTree, node => node.hotkey === e.which);
-
-	if (!hotkeyNode) return;
-
 	if ( e.ctrlKey || e.altKey || e.shiftKey || e.metaKey ) return;
+
+	let hotkeyNode = Shortcut.getNodeFromEvent(e);
+	if (!hotkeyNode) return;
 
 	e.preventDefault();
 	e.stopPropagation();

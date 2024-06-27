@@ -187,8 +187,8 @@ async function restoreOptions(restoreUserOptions) {
 		// restore settings with matching ids
 		traverse(uo, null);
 		
-		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || i18n('ClickToSet');
-		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || i18n('ClickToSet');
+		$('#quickMenuKey').innerText = Shortcut.keyCodeToString(uo.quickMenuKey) || i18n('ClickToSet');
+		$('#contextMenuKey').innerText = Shortcut.keyCodeToString(uo.contextMenuKey) || i18n('ClickToSet');
 
 		for (let p of document.getElementsByClassName('position')) {
 			p.classList.remove('active')
@@ -292,6 +292,26 @@ async function restoreOptions(restoreUserOptions) {
 		resolve();
 	});	
 }
+
+// function objectToKeyStrings(obj, callback) {
+// 	function traverse(o, parentKey) {
+// 		for ( let key in o) {
+
+// 			let longKey = ( parentKey ) ? parentKey + "." + key : key;
+
+// 			let type = typeof o[key];
+
+// 			if ( type === 'object' && !Array.isArray(o[key]) )
+// 				traverse(o[key], longKey);
+// 			else callback(o[key]);
+// 		}
+// 	}
+
+// 	// restore settings with matching ids
+// 	traverse(obj, null);
+// }
+
+// function 
 
 function saveOptions(e) {
 	debounce(_saveOptions, 250, "saveOptionsDebouncer");
@@ -611,7 +631,7 @@ function keyButtonListener(e) {
 			e.target.innerText = i18n('ClickToSet');
 			e.target.value = 0;
 		} else {
-			e.target.innerText = keyCodeToString(evv.which);
+			e.target.innerText = Shortcut.keyCodeToString(evv.which);
 			e.target.value = evv.which;
 		}
 		
@@ -627,23 +647,6 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (!el.value.isInteger) el.value = Math.floor(el.value);
 	if (el.value > _max) el.value = _max;
 	if (el.value < _min) el.value = _min;
-}
-
-function getKeyString(keys) {
-	if ( Array.isArray(keys) ) {
-		keys.forEach((key, index) => {
-			keys[index] = keyCodeToString(key);
-		});
-		
-		console.log(keys);
-	} else {
-	}
-}
-
-function keyCodeToString(code) {
-	if ( code === 0 ) return null;
-	
-	return keyTable[code] /*|| String.fromCharCode(code)*/ || code.toString();
 }
 
 function keyArrayToButtons(arr, options) {
@@ -669,7 +672,7 @@ function keyArrayToButtons(arr, options) {
 		for (let i=0;i<arr.length;i++) {
 
 			let hk = arr[i]
-			let key = keyCodeToString(hk);
+			let key = Shortcut.keyCodeToString(hk);
 			if (key.length === 1) key = key.toUpperCase();
 			
 			div.appendChild(makeButton(key));
@@ -679,8 +682,10 @@ function keyArrayToButtons(arr, options) {
 		if ( arr.ctrl ) div.appendChild(makeButton("Ctrl"));
 		if ( arr.meta ) div.appendChild(makeButton("Meta"));
 		if ( arr.shift ) div.appendChild(makeButton("Shift"));
+
+		let button = makeButton(arr.key);
 		
-		div.appendChild(makeButton(arr.key));
+		div.appendChild(button);
 	} else {
 		console.error('keyCodeToString error')
 		return;
@@ -1723,8 +1728,8 @@ function buildShortcutTable() {
 	let table = $('#shortcutTable');
 
 	setButtons = (el, key) => {
-		el.innerText = null;
-		el.appendChild(keyArrayToButtons(key));
+		el.innerText = Shortcut.getShortcutStringFromKey(key);
+	//	el.appendChild();//keyArrayToButtons(key));
 	}
 
 	defaultToUser = key => {
@@ -1739,7 +1744,7 @@ function buildShortcutTable() {
 		}
 	}
 
-	defaultShortcuts.sort((a,b) => a.name > b.name).forEach( s => {
+	Shortcut.defaultShortcuts.sort((a,b) => a.name > b.name).forEach( s => {
 
 		const us = userOptions.userShortcuts.find(_s => _s.id == s.id);
 		const ds = defaultToUser(s);
@@ -1802,55 +1807,6 @@ function buildShortcutTable() {
 
 		saveOptions();
 	}
-}
-
-function shortcutListener(hk, options) {
-
-	options = options || {};
-
-	return new Promise(resolve => {
-			
-		preventDefaults = e => {
-			e.preventDefault();
-			e.stopPropagation();
-		}
-
-		document.addEventListener('keydown', preventDefaults);
-		document.addEventListener('keypress', preventDefaults);
-		
-		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
-		hk.appendChild(document.createTextNode(i18n('PressKey')));
-				
-		document.addEventListener('keyup', e => {
-			
-			e.preventDefault();
-			e.stopPropagation();
-			
-			if ( e.key === "Escape" ) {
-				hk.innerHTML = null;
-				hk.appendChild(keyArrayToButtons(options.defaultKeys || []));
-				resolve(null);
-				return;
-			}
-			
-			let key = {
-				alt: e.altKey,
-				ctrl: e.ctrlKey,
-				meta: e.metaKey,
-				shift: e.shiftKey,
-				key: e.key
-			}
-			
-			hk.innerHTML = null;
-			hk.appendChild(keyArrayToButtons(key));
-								
-			document.removeEventListener('keydown', preventDefaults);
-			document.removeEventListener('keypress', preventDefaults);
-
-			resolve(key);
-			
-		}, {once: true});
-	});	
 }
 
 function imageUploadHandler(el, callback) {

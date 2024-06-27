@@ -43,7 +43,7 @@ async function buildContextMenu(searchTerms) {
 		
 		let getTitleWithHotkey = (n) => {
 			if ( userOptions.contextMenuHotkeys ) 
-				return n.title + (n.hotkey ? ` (&${keyTable[n.hotkey].toUpperCase()})` : "");
+				return n.title + (Shortcut.getHotkeyFromNode(n) ? ` (&${Shortcut.getHotkeyFromNode(n).toUpperCase()})` : "");
 			else 
 				return n.title;
 		}

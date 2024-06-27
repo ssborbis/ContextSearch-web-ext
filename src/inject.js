@@ -676,28 +676,28 @@ document.addEventListener('keydown', e => {
 	}
 });
 
-(() => {
+// {
 
-	document.addEventListener('keydown', e => {
+// 	document.addEventListener('keydown', e => {
 
-		if ( !userOptions.developerMode ) return;
+// 		if ( !userOptions.developerMode ) return;
 		
-		if ( e.key === "s" && e.ctrlKey && e.altKey) {
-			let f = document.createElement('iframe');
-			f.setAttribute('allowtransparency', true);
-			f.style="border:none;position:fixed;width:100vw;height:100vh;z-index:999;top:0;bottom:0;left:0;right:0;transform:scale(calc(1.5/var(--cs-zoom)))";
-			f.src = browser.runtime.getURL('/speedDial.html?id=');
+// 		if ( e.key === "s" && e.ctrlKey && e.altKey) {
+// 			let f = document.createElement('iframe');
+// 			f.setAttribute('allowtransparency', true);
+// 			f.style="border:none;position:fixed;width:100vw;height:100vh;z-index:999;top:0;bottom:0;left:0;right:0;transform:scale(calc(1.5/var(--cs-zoom)))";
+// 			f.src = browser.runtime.getURL('/speedDial.html?id=');
 
-			getShadowRoot().appendChild(f);
+// 			getShadowRoot().appendChild(f);
 
-			window.addEventListener('message', e => {
-				if ( e.data.action && e.data.action === "close") {
-					f.parentNode.removeChild(f);
-				}
-			});
-		}
-	});
-});
+// 			window.addEventListener('message', e => {
+// 				if ( e.data.action && e.data.action === "close") {
+// 					f.parentNode.removeChild(f);
+// 				}
+// 			});
+// 		}
+// 	});
+// }
 
 document.addEventListener("fullscreenchange", e => {
 	let div = document.querySelector('contextsearch-widgets');
@@ -719,5 +719,6 @@ createShadowRoot();
 setZoomProperty();
 
 window.hasRun = true;
+Shortcut.addShortcutListener();
 
 browser.runtime.sendMessage({action: "injectComplete"});
