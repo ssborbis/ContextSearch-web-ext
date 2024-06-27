@@ -188,6 +188,9 @@ function mark(options) {
 		limit: options.limit || 0
 	}
 
+	if ( getFindBar() )
+		updateFindBar(userOptions.highLight.markOptions);
+
 	let startTime = Date.now();
 	let timedOut = false;
 
@@ -225,7 +228,7 @@ function mark(options) {
 				el.dataset.flashstyle = userOptions.highLight.highlightStyle;
 			},
 			
-			done: () => {
+			done: (n) => {
 
 				// only perform when done with all words
 				if ( i !== words.length - 1 ) return;
@@ -244,7 +247,7 @@ function mark(options) {
 					el.dataset.style = index > 3 ? index % 4 : index;	
 				});
 
-				done();
+				done(n);
 			},
 
 			// limit
@@ -259,9 +262,9 @@ function mark(options) {
 	});
 	
 	if ( words.length === 0 ) 
-		done();
+		done(0);
 	
-	function done() {
+	function done(n) {
 		
 		// recursive loop fix
 		delete options.action;
@@ -274,7 +277,8 @@ function mark(options) {
 		browser.runtime.sendMessage(Object.assign({
 			action: "markDone", 
 			searchTerms:searchTerms, 
-			words: words, 
+			words: words,
+			count: n
 		}, options));
 	}
 }
