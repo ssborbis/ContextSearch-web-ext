@@ -59,7 +59,13 @@ class Shortcut {
 
 	static getNodeFromEvent = e => {
 		let key = Shortcut.keyFromEvent(e);
-		return findNode( userOptions.nodeTree, n => n.shortcut && this.matches(n.shortcut,key));
+		let node = findNode( userOptions.nodeTree, n => n.shortcut && this.matches(n.shortcut,key));
+
+		if ( !node )
+			node = findNode(userOptions.nodeTree, n => n.hotkey && !n.shortcut && n.hotkey === e.keyCode && !this.hasModifiers(e));
+
+		return node;
+
 	}
 
 	static listen = () => {
@@ -355,3 +361,4 @@ class Shortcut {
 		}
 	];
 }
+
