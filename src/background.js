@@ -10,6 +10,11 @@ var userOptions = {};
 var highlightTabs = [];
 var platformInfo = null;
 
+// tracks tabs by index that have findbar search results when searching all tabs
+// var markedTabs = [];
+
+var tabHighlighter = new TabHighlighter();
+
 (async() => {
 	platformInfo = await browser.runtime.getPlatformInfo();
 })();
@@ -308,6 +313,9 @@ async function notify(message, sender, sendResponse) {
 
 		case "mark":
 
+			// clear highlighted tabs on new markings
+			tabHighlighter.clear();
+
 			const injectAllFrames = async tab => {
 				let frames = await browser.webNavigation.getAllFrames({tabId: tab.id});
 
@@ -331,12 +339,16 @@ async function notify(message, sender, sendResponse) {
 
 			
 		case "unmark":
+			tabHighlighter.clear();
 			return sendMessageToAllFrames();
 		
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
 
 		case "markDone":
+			if ( message.count )
+				tabHighlighter.add(sender.tab.index);
+			
 			return sendMessageToTopFrame();
 			
 		case "toggleNavBar":
