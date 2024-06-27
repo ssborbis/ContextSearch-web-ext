@@ -85,8 +85,12 @@
   "SearchActionsNoAction": {
     "message": "Aucune action"
   },
+	
+  "SearchActionsPopup": {
+    "message": "Ouvrir dans une fenêtre contextuelle"
+  },
 
-   "LeftButton": {
+  "LeftButton": {
     "message": "Bouton gauche"
   },
 
