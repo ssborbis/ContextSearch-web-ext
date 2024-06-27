@@ -2697,21 +2697,30 @@ async function executeScripts(tabId, options, checkHasRun) {
 
 	for ( const file of files ) {
 
-		if ( checkHasRun ) {
-			let check = await browser.tabs.executeScript(tabId, { code: `window.CS_HASRUN && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
-			if ( check[0] && check[0] === true ) {
-				debug('already injected', file, tabId, options.frameId || 0);
-				continue;
-			}
-		}
+		try {
 
-		await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
-		debug("injected", file);
-		if ( checkHasRun ) await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+			if ( checkHasRun ) {
+				let check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
+				if ( check.shift() ) {
+					debug('already injected', file, tabId, options.frameId || 0);
+					continue;
+				}
+			}
+
+			await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
+			debug("injected", file);
+			if ( checkHasRun ) await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+		} catch (error) {
+			debug(tabId, error);
+		}
 	}
 }
 
 async function injectContentScripts(tab, frameId) {
+
+	// skip frames without host permissions
+	// checked again in executeScripts() but also skips CSS injection
+	if ( !await isTabScriptable(tab.id, frameId || 0) ) return false;
 
 	// inject into any frame
 	await executeScripts(tab.id, {
@@ -2770,7 +2779,7 @@ function waitOnInjection(tabId) {
 		new Promise(r => {
 			interval = setInterval(async () => {
 				try {
-					let result = await browser.tabs.executeScript(tabId, { code: "window.hasRun"} );
+					let result = await browser.tabs.executeScript(tabId, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']"} );
 
 					if ( result[0] ) {
 						cleanup();
@@ -2782,8 +2791,8 @@ function waitOnInjection(tabId) {
 					cleanup();
 					console.error('waitOnInjection failed', tabId);
 					r(false);
-				}				
-			}, 500);
+				}
+			}, 250);
 		})
 	]);
 }

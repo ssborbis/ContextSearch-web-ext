@@ -664,7 +664,7 @@ async function contextMenuSearch(info, tab) {
 
 	let result = [];
 	try {
-		result = await browser.tabs.executeScript(tab.id, { code: "window.hasRun" });
+		result = await browser.tabs.executeScript(tab.id, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']" });
 	} catch (error) {
 		console.log(error);
 	}

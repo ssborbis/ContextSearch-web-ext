@@ -1,5 +1,3 @@
-window.CS_HASRUN = window.CS_HASRUN || [];
-
 if ( window && window !== window.top ) {
 	window.addEventListener('mousedown', e => {
 		console.log('iframe received focus');
