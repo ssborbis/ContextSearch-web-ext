@@ -246,7 +246,7 @@ document.addEventListener("selectionchange", e => {
 	if ( window.suspendSelectionChange ) return;
 
 	// debouncer is causing issues on double-click selection with qm ( empty terms )
-	if ( isTextBox(e.target) ) return false;
+	if ( isTextBox(document.activeElement) ) return false;
 
 	// reset before the debounce
 	quickMenuObject.lastSelectTime = Date.now();
@@ -271,25 +271,40 @@ document.addEventListener("selectionchange", e => {
 	}, 250, "selectionchangedebouncer");
 });
 
+document.addEventListener('mouseup', e => {
+	// left-button only
+	if ( e.button !== 0 ) return;
+
+	if ( !isTextBox(document.activeElement) ) return false;
+	
+	let searchTerms = getSelectedText(e.target);
+
+	if (searchTerms) {
+		quickMenuObject.searchTerms = searchTerms;
+		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
+		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+	}
+
+})
 // selectionchange handler for input nodes
-for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
-	el.addEventListener('mouseup', e => {
+// for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
+// 	el.addEventListener('mouseup', e => {
 
-		// left-button only
-		if ( e.button !== 0 ) return;
+// 		// left-button only
+// 		if ( e.button !== 0 ) return;
 
-		if ( !isTextBox(e.target) ) return false;
+// 		if ( !isTextBox(e.target) ) return false;
 		
-		let searchTerms = getSelectedText(e.target);
+// 		let searchTerms = getSelectedText(e.target);
 
-		if (searchTerms) {
-			quickMenuObject.searchTerms = searchTerms;
-			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
-			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
-		}
+// 		if (searchTerms) {
+// 			quickMenuObject.searchTerms = searchTerms;
+// 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
+// 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+// 		}
 
-	});
-}
+// 	});
+// }
 
 // Relabel context menu root on mousedown to fire before oncontextmenu
 window.addEventListener('mousedown', async e => {
