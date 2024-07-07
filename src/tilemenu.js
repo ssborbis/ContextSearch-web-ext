@@ -2855,6 +2855,8 @@ function tileSlideInAnimation() {
 
 function toolsBarMorify(rows) {
 	let toolBarMore = toolBar.querySelector('[data-type="more"], [data-type="less"]');
+
+	const open = toolBarMore && toolBarMore.dataset.type && toolBarMore.dataset.type === "less";
 	toolBar.querySelectorAll('[data-hidden="true"]').forEach( t => {
 		unhideTile(t);
 	});
@@ -2862,6 +2864,9 @@ function toolsBarMorify(rows) {
 	if ( toolBarMore ) toolBar.removeChild(toolBarMore);
 
 	makeContainerMore(toolBar, rows || userOptions.quickMenuToolbarRows);
+
+	if ( open )
+		toolBar.querySelector('[data-type="more"], [data-type="less"]').more();
 }
 
 const isChildWindow = () => window.location.hash ? true : false;
