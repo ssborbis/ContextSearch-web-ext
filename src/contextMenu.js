@@ -42,9 +42,10 @@ async function buildContextMenu(searchTerms) {
 		if (node.hidden) return;
 		
 		let getTitleWithHotkey = (n) => {
-			if ( userOptions.contextMenuHotkeys ) 
-				return n.title + (Shortcut.getHotkeyFromNode(n) ? ` (&${Shortcut.getHotkeyFromNode(n).toUpperCase()})` : "");
-			else 
+			if ( userOptions.contextMenuHotkeys ) {
+				let hk = Shortcut.getHotkeyCharFromNode(n);
+				return n.title + (hk ? ` (&${hk.toUpperCase()})` : "");
+			} else 
 				return n.title;
 		}
 

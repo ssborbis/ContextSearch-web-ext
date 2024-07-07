@@ -14,8 +14,12 @@ class Shortcut {
 
 	static keyCodeToString = keyCode => {
 		if ( keyCode === 0 ) return null;
-	
 		return this.getCharFromKeyCode(keyCode) /*|| String.fromCharCode(code)*/ || keyCode.toString();
+	}
+
+	static getHotkeyCharFromNode = n => {
+		let key = this.getHotkeyFromNode(n);
+		return key && key.length === 1 ? key : null;
 	}
 
 	static hasModifiers = e => {
@@ -23,9 +27,9 @@ class Shortcut {
 	}
 
 	static getHotkeyFromNode = node => {
-		if ( !node.shortcut ) 
+		if ( !node.shortcut && node.hotkey) 
 			return this.getCharFromKeyCode(node.hotkey);
-		else if ( !this.hasModifiers(node.shortcut) ) 
+		else if ( node.shortcut && !this.hasModifiers(node.shortcut) ) 
 			return node.shortcut.key;
 		else
 			return null;
