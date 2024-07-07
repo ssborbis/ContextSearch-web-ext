@@ -193,6 +193,7 @@ const defaultUserOptions = {
 			windowType: 'docked',
 			openInAllTabs: false,
 			searchInAllTabs: false,
+			highlightAllTab: false,
 			offsets: {
 				top:0,
 				left:0,

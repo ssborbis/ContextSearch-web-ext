@@ -329,7 +329,9 @@ async function notify(message, sender, sendResponse) {
 		case "mark":
 
 			// clear highlighted tabs on new markings
-			tabHighlighter.clear();
+
+			if ( userOptions.findBar.highlightAllTabs )
+				tabHighlighter.clear();
 
 			const injectAllFrames = async tab => {
 				let frames = await browser.webNavigation.getAllFrames({tabId: tab.id});
@@ -354,14 +356,15 @@ async function notify(message, sender, sendResponse) {
 
 			
 		case "unmark":
-			tabHighlighter.clear();
+			if ( userOptions.findBar.highlightAllTabs )
+				tabHighlighter.clear();
 			return sendMessageToAllFrames();
 		
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
 
 		case "markDone":
-			if ( message.count )
+			if ( message.count && userOptions.findBar.highlightAllTabs )
 				tabHighlighter.add(sender.tab.index);
 			
 			return sendMessageToTopFrame();
