@@ -2186,8 +2186,10 @@ function nodeToTile( node ) {
 //	if (node.hidden) return;
 
 	let getTitleWithHotkey = n => {
-		if ( userOptions.quickMenuShowHotkeysInTitle ) 
-			return n.title + (n.hotkey ? ` (${keyTable[n.hotkey]})` : "");
+		if ( userOptions.quickMenuShowHotkeysInTitle ) {
+			let hk = Shortcut.getHotkeyCharFromNode(n);
+			return n.title + (hk ? ` (${hk})` : "");
+		}
 		else
 			return n.title;
 	}
