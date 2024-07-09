@@ -335,5 +335,6 @@ const defaultUserOptions = {
 		height:"400px",
 		position:""
 	},
-	exportJsonPretty: false
+	exportJsonPretty: false,
+	quickMenuCloseOnEditKeydown: false
 };

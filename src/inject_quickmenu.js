@@ -376,7 +376,11 @@ document.addEventListener('mouseup', e => {
 			openQuickMenu(e);
 
 			if ( userOptions.quickMenuCloseOnEdit && quickMenuObject.mouseDownTargetIsTextBox ) {
-				e.target.addEventListener('input', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+				
+				if ( userOptions.quickMenuCloseOnEditKeydown )
+					e.target.addEventListener('keydown', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+				else
+					e.target.addEventListener('input', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
 			}
 		}
 	}, 50);
