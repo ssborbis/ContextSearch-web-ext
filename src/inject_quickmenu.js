@@ -376,11 +376,14 @@ document.addEventListener('mouseup', e => {
 			openQuickMenu(e);
 
 			if ( userOptions.quickMenuCloseOnEdit && quickMenuObject.mouseDownTargetIsTextBox ) {
+
+				let handler = () => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"});
 				
-				if ( userOptions.quickMenuCloseOnEditKeydown )
-					e.target.addEventListener('keydown', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
-				else
-					e.target.addEventListener('input', _e => browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "input"}), {once: true});
+				const handlerType = userOptions.quickMenuCloseOnEditKeydown ? "keydown" : "input";
+				e.target.addEventListener(handlerType, handler, {once: true});
+
+				// remove listener if menu is closed
+				document.addEventListener('closequickmenu', () => e.target.removeEventListener(handlerType, handler), {once:true});	
 			}
 		}
 	}, 50);
