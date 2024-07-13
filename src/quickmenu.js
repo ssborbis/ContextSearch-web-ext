@@ -39,7 +39,7 @@ async function makeFrameContents(o) {
 	setLayoutOrder(o.layout || userOptions.quickMenuDomLayout);
 
 	// get proper sizing for opening position
-	setMenuSize();
+	setMenuSize(o);
 
 	document.getElementById('closeButton').addEventListener('click', e => {
 		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
@@ -142,8 +142,9 @@ async function makeFolderContents(node) {
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
 
-function setMenuSize(o) {
-	o = o || {};
+function setMenuSize(o = {}) {
+
+	debug(o);
 
 	maxHeight = o.maxHeight || maxHeight;
 
@@ -218,9 +219,9 @@ function setMenuSize(o) {
 	return rows;
 }
 
-function resizeMenu(o) {
+function resizeMenu(o = {}) {
 
-	o = o || {};
+	debug('resizeMenu');
 
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
@@ -252,7 +253,7 @@ function resizeMenu(o) {
 		action: "quickMenuResize",
 		size: {
 			width: qm.getBoundingClientRect().width, 
-			height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
+			height: document.body.scrollHeight//Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
 		},
 		singleColumn: qm.singleColumn,
 		tileSize: tileSize,
@@ -533,6 +534,7 @@ window.addEventListener("message", e => {
 	}
 });
 
+// testing
 function resizeMutationObserver() {
 
 	var frameHeight = 0;
@@ -543,6 +545,9 @@ function resizeMutationObserver() {
 
 	// Callback function to execute when mutations are observed
 	const callback = (mutationList, observer) => {
+
+	if ( !qm ) return;
+
 	  for (const mutation of mutationList) {
 	     if (mutation.type === 'attributes' && mutation.attributeName === 'style' ) {
 
@@ -556,7 +561,7 @@ function resizeMutationObserver() {
 	      ) {
 
 	      	try {
-	    		setMenuSize();
+	    		setMenuSize({MutationObserver: true});
 	    	} catch (error) {}
 
 	    	qm.insertBreaks();

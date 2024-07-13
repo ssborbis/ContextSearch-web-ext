@@ -569,9 +569,6 @@ async function makeQuickMenu(options) {
 			}
 
 		});
-
-		// works for open and close
-		sg.addEventListener('transitionend', e => resizeMenu({suggestionsResize: true}));
 	}
 	
 	qm.addEventListener('keydown', e => {
@@ -2870,5 +2867,29 @@ function toolsBarMorify(rows) {
 	if ( open )
 		toolBar.querySelector('[data-type="more"], [data-type="less"]').more();
 }
+
+function addTransitionResizeListeners(action) {
+	window.addEventListener('transitionstart', e => {
+
+		if ( !/height/i.test(e.propertyName) ) return;
+		let intv = setInterval(() => {
+				window.parent.postMessage({
+					action: action || "quickMenuResize",
+					size: {
+						width: qm.getBoundingClientRect().width, 
+						height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
+					},
+					windowId: qm.rootNode.id,
+					quick: true
+				}, "*");
+		}, 1);
+
+		window.addEventListener('transitionend', () => {
+			clearInterval(intv);
+		});
+	})
+}
+
+addTransitionResizeListeners();
 
 const isChildWindow = () => window.location.hash ? true : false;

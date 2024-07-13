@@ -209,7 +209,7 @@ function makeQuickMenuContainer(o) {
 		coords: o.coords,
 		id: "CS_quickMenuIframe",
 		onload: function() {
-			this.contentWindow.postMessage(Object.assign({action: "openMenu", windowSize: {width: window.innerWidth, height:window.innerHeight}}, o), this.src);
+			this.contentWindow.postMessage(Object.assign({action: "openMenu", frameBorder: {width: this.offsetWidth, height: this.offsetHeight}, windowSize: {width: window.innerWidth, height:window.innerHeight}}, o), this.src);
 		},
 		src: browser.runtime.getURL('quickmenu.html')
 	})
@@ -1051,9 +1051,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					},
 					onUndock: o => {
 
+
 						if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 						
-						qmc.contentWindow.postMessage({action: "resizeMenu", options: {move: true, openFolder:true, maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
+						// don't resize initially
+						if ( !o ) {
+							qmc.contentWindow.postMessage({action: "resizeMenu", options: {move: true, openFolder:true, maxHeight: getMaxIframeHeight()}}, browser.runtime.getURL('/quickmenu.html'));
+							
+						}
 						
 						window.quickMenuLastOffsets = o.lastOffsets;
 						
@@ -1077,6 +1082,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				qmc.getBoundingClientRect();
 				qmc.style.opacity = null;
+				qmc.style.transition = null;
+
+				qmc.style.width = message.size.width + "px";
+				qmc.style.height = message.size.height + "px";
 				
 				if ( !message.resizeOnly )
 					browser.runtime.sendMessage({action: "dispatchEvent", e: "quickMenuComplete"});

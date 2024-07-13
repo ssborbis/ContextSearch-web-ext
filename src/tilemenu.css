@@ -30,6 +30,7 @@ BODY {
 	background: var(--background);
 	position:relative;
 /*	transition: opacity .5s ease .25s;*/
+	transition: width .15s, height .15s;
 }
 .selectedFocus {
 	background-color: var(--selected) !important;
@@ -54,6 +55,7 @@ BODY {
 	/*z-index:2;*/
 	position: relative;
 	/*float:left;*/
+	box-sizing: border-box;
 }
 .tile[data-hidden="true"], GROUP[data-hidden="true"] {
 	display: none !important;
