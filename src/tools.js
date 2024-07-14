@@ -701,6 +701,69 @@ const QMtools = [
 			qm.expandMoreTiles();
 		}
 	},
+	{
+		name: 'context', 
+		icon: "icons/selection.svg",
+		title: i18n('context'),
+		context: ["quickmenu", "sidebar", "searchbar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(createMaskIcon(this.icon));
+
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			tile.tool = this;
+
+			// let s = document.createElement('select');
+
+			// contexts.forEach( c => {
+			// 	let o = document.createElement('option');
+			// 	o.value = c;
+			// 	o.innerText = c;
+
+			// 	s.appendChild(o);
+			// });
+
+			// s.id = 'contexts_select';
+			// s.style.position = 'absolute';
+			// s.style.top = 0;
+			// s.style.left = 0;
+			// s.style.visibility = 'hidden';
+			// s.style.width = '100%';
+			// s.style.height = '100%';
+			// s.style.backgroundColor = 'transparent';
+			// s.style.border = 'none';
+			// s.style.color = 'var(--color)';
+			// s.onfocus = function() {
+			// 	s.style.backgroundColor = 'var(--bg-color)';
+			// }
+
+			// tile.appendChild(s);
+
+			// tile.addEventListener('mouseover', e => {
+			// 	s.style.visibility = null;
+			// });
+
+			// s.addEventListener('change', e => {
+			// 	s.style.visibility = 'hidden';
+				
+			// 	quickMenuObject.contexts = [s.value];
+			// 	quickMenuElementFromNodeTree( window.root ).then( _qm => {
+			// 		qm = _qm;
+			// 		resizeMenu({openFolder:true});
+			// 	});
+				
+			// });
+
+			return tile;
+		}, 
+		action: async function() {
+			contextsBar.classList.toggle("hide");
+			resizeMenu({openFolder:true});
+		}
+	},
 	// {
 	// 	name: 'toggle_searchterms', 
 	// 	icon: "icons/selection.svg",
