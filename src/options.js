@@ -180,7 +180,7 @@ async function restoreOptions(restoreUserOptions) {
 				}
 
 				if ( type === 'string' || type === 'number' )
-					el.value = o[key];	
+					el.value = o[key];
 			}
 		}
 
@@ -508,6 +508,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildAdditionalSearchActionsTable();
 	setAutoDarkMode();
 
+	console.log(document.getElementById("autoPasteFromClipboard"));
 	addDOMListeners();
 
 	hashChange();
@@ -1858,37 +1859,61 @@ function buildAdvancedOptions() {
 		let type = typeof value;
 
 		let el = document.createElement('input');
-
-		el.id = key;
-
-		if ( type === 'boolean')
-			el.type = 'checkbox';
-
-		if ( type === 'string' )
-			el.type = 'input';
+	
+		el.dataset.id = key;
 		
-		if ( type === 'number' )
-			el.type = 'number';
+		switch (type) {
+			case 'boolean':
+				el.type = 'checkbox';
+				break;
+
+			case 'string':
+				el.type = 'input';
+				break;
+			
+			case 'number':
+				el.type = 'number';
+				break;
+
+			default: 
+				return;
+		}
 
 		return el;
 	}
 
+	// get all top tier settings
+	for ( const key in defaultUserOptions )
+		advancedOptions.push({id: key});
+
 	advancedOptions.forEach( o => {
+
+		// only list options not already in use
+		if ( document.getElementById(o.id) || document.querySelector('[data-id="' + o.id + '"]') ) return;
+
+		let el = makeInput(o.id);
+		if ( !el ) {
+			return debug("Bad -> " + o.id);
+		}
+
+		el.id = o.id;
+
 		let tr = document.createElement('tr');
 		let td1 = document.createElement('td');
 		let td2 = document.createElement('td');
+		let reset = document.createElement('td');
 
 		tr.appendChild(td1);
 		tr.appendChild(td2);
+		tr.appendChild(reset);
 
 		td1.innerText = o.id;
 		td1.title = i18n(o.i18n || "") || i18n(o.id.replace(".", "_") + "Tooltip");
 		td1.style.cursor = 'help';
 
-		td2.appendChild(makeInput(o.id));
+		td2.appendChild(el);
 
-
-		$('advancedSettingsTable').appendChild(tr);
+		$('#advancedSettingsTable').appendChild(tr);
 	})
 }
 
