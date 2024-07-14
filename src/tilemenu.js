@@ -1194,8 +1194,6 @@ function makeSearchBar() {
 
 			aeb.style = null;
 
-		//	runAtTransitionEnd(sg, "height", resizeMenu)
-
 			return;
 		}
 
