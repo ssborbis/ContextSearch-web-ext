@@ -141,12 +141,14 @@ async function makeFolderContents(node) {
 }
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
+var menuScale = 1;
 
 function setMenuSize(o = {}) {
 
 	debug(o);
 
 	maxHeight = o.maxHeight || maxHeight;
+	menuScale = o.menuScale || menuScale;
 
 	let tileSize = qm.getTileSize();
 
@@ -202,8 +204,9 @@ function setMenuSize(o = {}) {
 	// else
 	// 	qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
 
-	if ( qm.getBoundingClientRect().height > maxHeight - allOtherElsHeight )
+	if ( qm.getBoundingClientRect().height + allOtherElsHeight > maxHeight ) {
 		qm.style.height = Math.ceil(maxHeight - allOtherElsHeight) + "px";
+	}
 
 	let scrollbarWidth = qm.offsetWidth - qm.clientWidth; // account for fractions
 

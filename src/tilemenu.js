@@ -1307,7 +1307,6 @@ function makeSearchBar() {
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;
 		
 		sg.style.maxHeight = Math.min(sg_height * suggestionsDisplayCount, suggestions.length * sg_height) + "px";
-
 	}
 
 	async function updateSuggestions() {
@@ -2870,6 +2869,7 @@ function addTransitionResizeListeners(action) {
 	window.addEventListener('transitionstart', e => {
 
 		if ( !/height/i.test(e.propertyName) ) return;
+
 		let intv = setInterval(() => {
 				window.parent.postMessage({
 					action: action || "quickMenuResize",

@@ -14,7 +14,8 @@
 	overflow:hidden;
 	display:inline-block !important;
 	z-index: 2147483647; /* max 32-bit integer */
-	transition: var(--user-transition, width .1s ease, height .1s ease, opacity .075s ease-in-out, scale .2s ease );
+/*	transition: var(--user-transition, width .1s ease, height .1s ease, opacity .075s ease-in-out, scale .2s ease );*/
+	transition: var(--user-transition, opacity .075s ease-in-out, scale .2s ease );
 	transform:scale( var(--cs-scale,1)) !important;
 	transform-origin: top left;
 	background-color:transparent;

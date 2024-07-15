@@ -209,7 +209,7 @@ function makeQuickMenuContainer(o) {
 		coords: o.coords,
 		id: "CS_quickMenuIframe",
 		onload: function() {
-			this.contentWindow.postMessage(Object.assign({action: "openMenu", frameBorder: {width: this.offsetWidth, height: this.offsetHeight}, windowSize: {width: window.innerWidth, height:window.innerHeight}}, o), this.src);
+			this.contentWindow.postMessage(Object.assign({action: "openMenu", frameBorder: {width: this.offsetWidth, height: this.offsetHeight}, windowSize: {width: window.innerWidth, height:window.innerHeight}, menuScale: this.getBoundingClientRect().width / this.offsetWidth, maxHeight: getMaxIframeHeight()}, o), this.src);
 		},
 		src: browser.runtime.getURL('quickmenu.html')
 	})
