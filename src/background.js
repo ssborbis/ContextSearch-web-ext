@@ -330,7 +330,7 @@ async function notify(message, sender, sendResponse) {
 
 			// clear highlighted tabs on new markings
 
-			if ( userOptions.findBar.highlightAllTabs )
+			if ( userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.clear();
 
 			const injectAllFrames = async tab => {
@@ -356,7 +356,7 @@ async function notify(message, sender, sendResponse) {
 
 			
 		case "unmark":
-			if ( userOptions.findBar.highlightAllTabs )
+			if ( userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.clear();
 			return sendMessageToAllFrames();
 		
@@ -364,7 +364,7 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 
 		case "markDone":
-			if ( message.count && userOptions.findBar.highlightAllTabs )
+			if ( message.count && userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.add(sender.tab.index);
 			
 			return sendMessageToTopFrame();
