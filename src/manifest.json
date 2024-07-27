@@ -17,6 +17,7 @@
 		"scripts": [
 			"lib/browser-polyfill.min.js",
 			"utils.js",
+			"useroptions.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
 			"defaultEngines.js",
