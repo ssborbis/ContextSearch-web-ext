@@ -209,15 +209,7 @@ class Shortcut {
 		{
 			name:"Findbar → Open",
 			action: async (e) => {
-				let isOpen = await browser.runtime.sendMessage({action: "getFindBarOpenStatus"});
-				isOpen = isOpen.shift();
-
-				let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
-				
-				if (!isOpen || ( isOpen && searchTerms) )
-					browser.runtime.sendMessage({action: "openFindBar", searchTerms: searchTerms});
-				else
-					browser.runtime.sendMessage({action: "closeFindBar"});
+				browser.runtime.sendMessage({action: "toggleFindBar"});
 			},
 			key: "f",
 			ctrl: true,

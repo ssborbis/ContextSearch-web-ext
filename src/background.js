@@ -317,6 +317,24 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateFindBar":
 			return sendMessageToTopFrame();
+
+		case "toggleFindBar":
+			let isOpen = await notify({action: "getFindBarOpenStatus"});
+			isOpen = isOpen.shift();
+
+			//let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
+
+			let s = await browser.tabs.executeScript(sender.tab.id, {
+				code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
+			});
+
+			s = s.shift();
+
+			if (!isOpen || ( isOpen && s) )
+				notify({action: "openFindBar", searchTerms: s});
+			else
+				notify({action: "closeFindBar"});
+			break;
 			
 		case "findBarNext":
 			return sendMessageToTopFrame();
