@@ -206,6 +206,9 @@ function isSameStringMinusLineBreaks(str1, str2) {
 	return str1.replace(/(\r\n|\r|\n|\s+)/g, "").trim() == str2.replace(/(\r\n|\r|\n|\s+)/g, "").trim();
 }
 
+function gen() {
+	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+}
 async function isURLImage(url) {   
 	let res = await fetch(url,{method:'HEAD'});
 	let buff = await res.blob();
