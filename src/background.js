@@ -9,6 +9,11 @@ window.popupWindows = [];
 var userOptions = {};
 var highlightTabs = [];
 var platformInfo = null;
+var Encoding = null;
+
+(async () => {
+	Encoding = await import("/lib/encoding.min.js");
+})();
 
 // tracks tabs by index that have findbar search results when searching all tabs
 // var markedTabs = [];
@@ -2041,7 +2046,7 @@ function encodeCharset(string, encoding) {
 		if (encoding.toLowerCase() === 'utf-8') 
 			return {ascii: string, uri: encodeURIComponent(string)};
 		
-		let uint8array = new TextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true }).encode(string);
+		let uint8array = new Encoding.TextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true }).encode(string);
 		let uri_string = "", ascii_string = "";
 		
 		for (let uint8 of uint8array) {
