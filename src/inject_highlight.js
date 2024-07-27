@@ -1,15 +1,3 @@
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-		
-	userOptions = uo;
-
-	// open findbar on pageload if set
-	if ( window == top && userOptions.highLight.findBar.startOpen && !getFindBar()) {
-		markOptions = userOptions.highLight.findBar.markOptions;
-		updateFindBar(Object.assign(markOptions));
-	}
-
-});
-
 // https://stackoverflow.com/a/11508164
 function hexToRgb(hex) {
 	hex = hex.replace("#", "");

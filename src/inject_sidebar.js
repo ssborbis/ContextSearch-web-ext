@@ -1,78 +1,68 @@
 function getSideBar() { return getShadowRoot().getElementById('CS_sbIframe') }
 function getOpeningTab() { return getShadowRoot().getElementById('CS_sbOpeningTab') }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-	userOptions = uo;
-
-	if ( userOptions.sideBar.widget.enabled )	
-		makeOpeningTab(true);
-
-	if ( userOptions.sideBar.startOpen )
-		openSideBar();
-
-	window.addEventListener('message', e => {
-		
-		switch ( e.data.action ) {
-			case "closeSideBar":
-				closeSideBar();
-				return;
-				break;
-				
-			case "resizeSideBarIframe":
-
-				let url = new URL(browser.runtime.getURL(''));
-
-				if ( e.origin !== url.origin ) return;
-				
-				if ( !e.data.size ) return;
-
-				let iframe = getSideBar();
-				if ( !iframe ) return;
-
-				if ( !userOptions.enableAnimations ) 
-					iframe.style.setProperty('--user-transition', 'none');
-
-				if ( iframe.resizeWidget && e.data.tileSize) {
-					iframe.resizeWidget.options.tileSize = {
-						width: e.data.tileSize.width,
-						height: e.data.tileSize.height
-					};
-				}
-				
-				if ( iframe.resizeWidget && e.data.singleColumn !== undefined )
-					iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
-
-				if ( e.data.size.height && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing) {
-
-					if ( iframe.docking.options.windowType === 'undocked' )
-						iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale) + "px";
-					else
-						iframe.style.height = window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale + 'px';
-				}
-
-				if ( e.data.size.width && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing )						
-					iframe.style.width = e.data.size.width + "px";
-
-				runAtTransitionEnd(iframe, ["width", "height"], () => {
-					
-					iframe.contentWindow.postMessage({action: "resizeDone"}, browser.runtime.getURL('/searchbar.html'));
-
-					if ( iframe.docking.options.windowType === 'undocked' )
-						repositionOffscreenElement(iframe);
-					
-					if ( iframe.docking.options.windowType === 'docked' )
-						iframe.docking.offset();
-					
-					if ( iframe.resizeWidget )
-						iframe.resizeWidget.setPosition();
-				});
-				
-				break;
-
-		}
-	});
+window.addEventListener('message', e => {
 	
+	switch ( e.data.action ) {
+		case "closeSideBar":
+			closeSideBar();
+			return;
+			break;
+			
+		case "resizeSideBarIframe":
+
+			let url = new URL(browser.runtime.getURL(''));
+
+			if ( e.origin !== url.origin ) return;
+			
+			if ( !e.data.size ) return;
+
+			let iframe = getSideBar();
+			if ( !iframe ) return;
+
+			if ( !userOptions.enableAnimations ) 
+				iframe.style.setProperty('--user-transition', 'none');
+
+			if ( iframe.resizeWidget && e.data.tileSize) {
+				iframe.resizeWidget.options.tileSize = {
+					width: e.data.tileSize.width,
+					height: e.data.tileSize.height
+				};
+			}
+			
+			if ( iframe.resizeWidget && e.data.singleColumn !== undefined )
+				iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
+
+			if ( e.data.size.height && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing) {
+
+				if ( iframe.docking.options.windowType === 'undocked' )
+					iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale) + "px";
+				else
+					iframe.style.height = window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale + 'px';
+			}
+
+			if ( e.data.size.width && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing )						
+				iframe.style.width = e.data.size.width + "px";
+
+			runAtTransitionEnd(iframe, ["width", "height"], () => {
+				
+				iframe.contentWindow.postMessage({action: "resizeDone"}, browser.runtime.getURL('/searchbar.html'));
+
+				if ( iframe.docking.options.windowType === 'undocked' )
+					repositionOffscreenElement(iframe);
+				
+				if ( iframe.docking.options.windowType === 'docked' )
+					iframe.docking.offset();
+				
+				if ( iframe.resizeWidget )
+					iframe.resizeWidget.setPosition();
+			});
+			
+			break;
+
+	}
 });
+	
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
