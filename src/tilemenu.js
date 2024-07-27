@@ -395,8 +395,6 @@ async function makeQuickMenu(options) {
 		qm = await quickMenuElementFromNodeTree( qm.rootNode, false );
 
 		resizeMenu({toggleSingleColumn: true, openFolder:true})
-
-//		runAtTransitionEnd(qm, "height", () => resizeMenu({toggleSingleColumn: true}), 100);
 	}
 	
 	qm.addTitleBarTextHandler = div => {
@@ -2865,29 +2863,29 @@ function toolsBarMorify(rows) {
 		toolBar.querySelector('[data-type="more"], [data-type="less"]').more();
 }
 
-function addTransitionResizeListeners(action) {
-	window.addEventListener('transitionstart', e => {
+function addResizeObserver() {
+	const resizeObserver = new ResizeObserver((entries) => {
 
-		if ( !/height/i.test(e.propertyName) ) return;
+		if (!qm ) return;
 
-		let intv = setInterval(() => {
-				window.parent.postMessage({
-					action: action || "quickMenuResize",
-					size: {
-						width: qm.getBoundingClientRect().width, 
-						height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
-					},
-					windowId: qm.rootNode.id,
-					quick: true
-				}, "*");
-		}, 1);
+	  for (const entry of entries) {
 
-		window.addEventListener('transitionend', () => {
-			clearInterval(intv);
-		});
-	})
+	    window.parent.postMessage({
+			action: "quickMenuResize",
+			size: {
+				width: qm.getBoundingClientRect().width, 
+				height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
+			},
+			windowId: qm.rootNode.id,
+			quick: true
+		}, "*");
+	  }
+	});
+
+	resizeObserver.observe(document.body);
+
 }
 
-addTransitionResizeListeners();
+addResizeObserver();
 
 const isChildWindow = () => window.location.hash ? true : false;

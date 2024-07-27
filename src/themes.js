@@ -84,9 +84,7 @@ async function changeTheme(i) {
 
 	await setTheme(theme);
 
-	runAtTransitionEnd(document.body, ["width", "height"], () => {
-		resizeMenu({openFolder:true});
-	}, 150);
+	resizeMenu({openFolder:true});
 
 	if ( userOptions.autoTheme ) {
 		if ( isDarkMode() )	userOptions.autoThemeDark = theme.name;
