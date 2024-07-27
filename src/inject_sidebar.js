@@ -77,6 +77,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			else
 				openSideBar();
 			break;
+
+		case "makeOpeningTab":
+			makeOpeningTab(true);
+			break;
 	}
 });
 	
