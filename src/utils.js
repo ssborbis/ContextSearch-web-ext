@@ -177,6 +177,7 @@ function isTextBox(element) {
 			element.nodeName == "TEXTAREA" ||
 			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
 			element.isContentEditable
+			|| element.closest("[contenteditable='true']")
 		)
 	) ? true : false;
 }
@@ -209,6 +210,7 @@ function isSameStringMinusLineBreaks(str1, str2) {
 function gen() {
 	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 }
+
 async function isURLImage(url) {   
 	let res = await fetch(url,{method:'HEAD'});
 	let buff = await res.blob();
