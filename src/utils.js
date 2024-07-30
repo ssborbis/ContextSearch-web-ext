@@ -211,12 +211,6 @@ function gen() {
 	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
 }
 
-async function isURLImage(url) {   
-	let res = await fetch(url,{method:'HEAD'});
-	let buff = await res.blob();
-	return buff.type.startsWith('image/')
-}
-
 const debug = (...args) => {
 	if ( userOptions && userOptions.developerMode ) {
 		try {

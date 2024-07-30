@@ -876,16 +876,6 @@ const QMtools = [
 	}
 ];
 
-async function newMenuFromBookmarks() {
-	let nodes = await browser.runtime.sendMessage({action: "getBookmarksAsNodeTree"});
-	console.log(nodes);
-	qm = await quickMenuElementFromNodeTree(nodes);
-}
-
-function getToolTile(name) {
-	return document.querySelector(`[data-type="tool"][data-name="${name}"]`);
-}
-
 function setToolLockedState(tool, status) {
 
 	toolStatuses[tool.name] = status;
@@ -898,58 +888,6 @@ function setToolLockedState(tool, status) {
 
 var toolStatuses = {};
 
-function makeMaskCanvas(url, color) { // depreciated
 
-	return new Promise( (resolve, reject) => {
-
-		let img = new Image();
-
-		img.onload = () => {
-
-			var canvas=document.createElement("canvas");
-			var ctx=canvas.getContext("2d");
-			ctx.canvas.width = img.width;
-			ctx.canvas.height = img.height;
-			ctx.save();
-			
-			// draw the shape we want to use for clipping
-			ctx.drawImage(img, 0, 0);
-
-			// change composite mode to use that shape
-			ctx.globalCompositeOperation = 'source-in';
-
-			// draw the image to be clipped
-			// ctx.drawImage(img, 0, 0);
-
-			ctx.beginPath();
-			ctx.rect(0, 0, img.width, img.height);
-			ctx.fillStyle = color;
-			ctx.fill();
-			ctx.restore();
-			
-			let data = canvas.toDataURL("image/png");
-
-			if (data.length < 10) reject("BadDataURL");
-			else resolve(data);
-		}
-
-		img.onerror = function(err) { reject(err) }
-		
-		img.src = url;
-
-	});
-}
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
-
-function getBrightness(el) {
-
-	let rgbCSS = window.getComputedStyle(el, null).getPropertyValue('background-color');
-
-	let sep = rgbCSS.indexOf(",") > -1 ? "," : " ";
-  rgb = rgbCSS.substr(4).split(")")[0].split(sep);
-
- 	return Math.round(((parseInt(rgb[0]) * 299) +
-                      (parseInt(rgb[1]) * 587) +
-                      (parseInt(rgb[2]) * 114)) / 1000);
-}
