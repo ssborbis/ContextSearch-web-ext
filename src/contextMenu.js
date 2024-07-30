@@ -494,7 +494,7 @@ function updateMatchRegexFolder(s, context) {
 		window.contextMenuMatchRegexMenus.forEach( menu => {
 			try {
 				browser.contextMenus.remove( menu, onCreated );
-			} catch(err) {console.log(err)}
+			} catch(err) {debug(err)}
 		});
 		window.contextMenuMatchRegexMenus = [];
 	}
@@ -521,7 +521,7 @@ function updateMatchRegexFolder(s, context) {
 			delete createOptions.icons;
 			try {
 				browser.contextMenus.create(createOptions, onCreated);
-			} catch ( error ) { console.log(error)}
+			} catch ( error ) { debug(error)}
 		}
 
 		window.contextMenuMatchRegexMenus.push(id);

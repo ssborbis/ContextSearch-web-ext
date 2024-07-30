@@ -30,7 +30,7 @@ var tabHighlighter = new TabHighlighter();
 (async () => {
 	await loadUserOptions();
 
-	console.log("userOptions loaded. Updating objects");
+	debug("userOptions loaded. Updating objects");
 	userOptions = await updateUserOptionsVersion(userOptions);
 
 	await browser.storage.local.set({"userOptions": userOptions});
