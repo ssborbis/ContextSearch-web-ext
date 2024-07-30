@@ -1156,7 +1156,7 @@ function installResizeWidget() {
 	let tileSize = iframe.tileSize;
 	let originalRect;
 
-	let resizeWidget = addResizeWidget(iframe, {
+	let resizeWidget = ResizeWidget(iframe, {
 		tileSize: tileSize,
 		columns: columns,
 		rows: Math.ceil(tileCount / columns ),
@@ -1300,11 +1300,15 @@ function quickMenuResize(e) {
 window.addEventListener('message', e => {
 
 	switch ( e.data.action ) {
-		case "quickMenuResize": {
+		case "resizeIframe":{
 
 			url = new URL(browser.runtime.getURL(''));
 
 			if ( e.origin !== url.origin ) return;
+
+			if ( !getQM()) return;
+
+			if ( e.source != getQM().contentWindow ) return;
 			
 			if ( !e.data.size ) return;
 

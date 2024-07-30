@@ -253,7 +253,7 @@ function resizeMenu(o = {}) {
 	sg.scrollTop = sgScrollTop;
 
 	window.parent.postMessage({
-		action: "quickMenuResize",
+		action: "resizeIframe",
 		size: {
 			width: qm.getBoundingClientRect().width, 
 			height: document.body.scrollHeight//Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
@@ -536,75 +536,6 @@ window.addEventListener("message", e => {
 		})
 	}
 });
-
-// testing
-function resizeMutationObserver() {
-
-	var frameHeight = 0;
-	var frameWidth = 0;
-
-	var qmHeight = 0;
-	var qmWidth = 0;
-
-	// Callback function to execute when mutations are observed
-	const callback = (mutationList, observer) => {
-
-	if ( !qm ) return;
-
-	  for (const mutation of mutationList) {
-	     if (mutation.type === 'attributes' && mutation.attributeName === 'style' ) {
-
-	  //   	if ( ![document.body, qm].includes(mutation.target) ) return;
-	 //     console.log(`The ${mutation.attributeName} attribute was modified.`);
-
-	      if ( 
-	      	frameHeight !== document.body.scrollHeight || 
-	      	frameWidth !== qm.scrollWidth ||
-	      	qmHeight !== qm.scrollHeight
-	      ) {
-
-	      	try {
-	    		setMenuSize({MutationObserver: true});
-	    	} catch (error) {}
-
-	    	qm.insertBreaks();
-	    	qm.style.overflow = 'none';
-
-	      	frameHeight = document.body.scrollHeight;
-	      	frameWidth =  qm.scrollWidth;
-	      	qmHeight = qm.scrollHeight;
-
-	    	console.log(frameHeight, qmHeight);
-
-	      	window.parent.postMessage({
-				action: "quickMenuResize",
-				size: {
-					width: qm.getBoundingClientRect().width, 
-					height: document.body.scrollHeight//Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
-				}/*,
-				singleColumn: qm.singleColumn,
-				tileSize: tileSize,
-				tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length,
-				columns: qm.columns,
-				rows: rows,
-				windowId: qm.rootNode.id */
-			}, "*");
-	      }
-	    }
-	  }
-	};
-
-	// Create an observer instance linked to the callback function
-	const observer_body = new MutationObserver(callback);
-	const observer_qm = new MutationObserver(callback);
-
-	// Start observing the target node for configured mutations
-	observer_body.observe(document.body, { attributes: true, childList: false, subtree: true });
-	//observer_qm.observe(qm, { attributes: true, childList: false, subtree: true });
-
-}
-
-//resizeMutationObserver();
 
 // initOptionsBar();
 

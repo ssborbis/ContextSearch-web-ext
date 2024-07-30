@@ -1,4 +1,4 @@
-function addResizeWidget(el, options) {
+function ResizeWidget(el, options) {
 	
 	let o = {
 		tileSize: {},

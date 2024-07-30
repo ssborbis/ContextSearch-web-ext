@@ -208,7 +208,7 @@ async function sideBarResize(o) {
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
 		return window.parent.postMessage({
-			action:"resizeSideBarIframe", 
+			action:"resizeIframe", 
 			size: {width: sbc.getBoundingClientRect().width, height: sbc.getBoundingClientRect().height + mb.getBoundingClientRect().height}, 
 			singleColumn: qm.singleColumn,
 			tileSize: qm.getTileSize()
@@ -264,7 +264,7 @@ async function sideBarResize(o) {
 	if ( !qm.rootNode.parent && userOptions.sideBar.setMinWidth ) qm.setMinWidth();
 
 	window.parent.postMessage({
-		action:"resizeSideBarIframe", 
+		action:"resizeIframe", 
 		size: {width: qm.getBoundingClientRect().width, height: document.body.offsetHeight}, 
 		singleColumn: qm.singleColumn,
 		tileSize: qm.getTileSize()
@@ -412,7 +412,7 @@ window.addEventListener('message', e => {
 
 			// send size to parent window for sidebar widget
 			window.parent.postMessage({
-				action:"resizeSideBarIframe", 
+				action:"resizeIframe", 
 				size: {width: rect_qm.width, height: rect.height}, 
 				tileSize: qm.getTileSize(), 
 				singleColumn: qm.singleColumn
@@ -422,6 +422,10 @@ window.addEventListener('message', e => {
 
 		case "minifySideBar":
 			minifySideBar();
+			break;
+
+		case "resizeIframe": // this case works because window == window.parent for the toolbar menu
+			toolBarResize();
 			break;
 	}
 });

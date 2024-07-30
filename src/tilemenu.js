@@ -2868,19 +2868,18 @@ function addResizeObserver() {
 
 		if (!qm ) return;
 
-	  for (const entry of entries) {
-
-	    window.parent.postMessage({
-			action: "quickMenuResize",
-			size: {
-				width: qm.getBoundingClientRect().width, 
-				height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
-			},
-			windowId: qm.rootNode.id,
-			quick: true
-		}, "*");
-	  }
-	});
+	  	for (const entry of entries) {
+		    window.parent.postMessage({
+				action: "resizeIframe",
+				size: {
+					width: qm.getBoundingClientRect().width, 
+					height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
+				},
+				windowId: qm.rootNode.id,
+				quick: true
+			}, "*");
+		  }
+		});
 
 	resizeObserver.observe(document.body);
 

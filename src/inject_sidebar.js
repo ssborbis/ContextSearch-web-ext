@@ -8,8 +8,7 @@ window.addEventListener('message', e => {
 			closeSideBar();
 			return;
 			break;
-			
-		case "resizeSideBarIframe":
+		case "resizeIframe":
 
 			let url = new URL(browser.runtime.getURL(''));
 
@@ -18,7 +17,10 @@ window.addEventListener('message', e => {
 			if ( !e.data.size ) return;
 
 			let iframe = getSideBar();
+
 			if ( !iframe ) return;
+
+			if (e.source != iframe.contentWindow) return;
 
 			if ( !userOptions.enableAnimations ) 
 				iframe.style.setProperty('--user-transition', 'none');
@@ -175,7 +177,7 @@ function openSideBar(options) {
 			iframe.dataset.opened = true;
 			
 			// add resize widget	
-			let resizeWidget = addResizeWidget(iframe, {
+			let resizeWidget = ResizeWidget(iframe, {
 				tileSize: {width:32, height:32}, // snap size - should update on resizeSidebar message
 				columns: userOptions.sideBar.columns,
 				rows: 100, // arbitrary init value
