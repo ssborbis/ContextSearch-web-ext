@@ -1057,6 +1057,10 @@ async function notify(message, sender, sendResponse) {
 			}
 
 			return browser.tabs.query({ currentWindow: true }).then(logTabs);
+
+		// bypasses Firefox resistFingerprinting
+		case "getDevicePixelRatio":
+			return window.devicePixelRatio;
 	}
 }
 
