@@ -70,8 +70,8 @@ function removeStyling() {
 // ESC to clear markers and navbar and findbar
 document.addEventListener('keydown', async e => {
 	if ( e.key === "Escape" ) {
-		await browser.runtime.sendMessage({action: "unmark"});
-		await browser.runtime.sendMessage({action: "closeFindBar"});
+		await sendMessage({action: "unmark"});
+		await sendMessage({action: "closeFindBar"});
 	}
 });
 
@@ -87,7 +87,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		if ( !searchTerms ) 
 			searchTerms = window.findBarLastSearchTerms || "";
 
-		browser.runtime.sendMessage(Object.assign({
+		sendMessage(Object.assign({
 			action: "mark",
 			searchTerms: searchTerms, 
 			findBarSearch:true,	
@@ -262,7 +262,7 @@ function mark(options) {
 			console.error("word search timed out before completing");
 		}
 
-		browser.runtime.sendMessage(Object.assign({
+		sendMessage(Object.assign({
 			action: "markDone", 
 			searchTerms:searchTerms, 
 			words: words,
@@ -280,7 +280,7 @@ function unmark(saveTabHighlighting) {
 	removeStyling();
 	
 	if ( !saveTabHighlighting )
-		browser.runtime.sendMessage({action: "removeTabHighlighting"});
+		sendMessage({action: "removeTabHighlighting"});
 }
 
 function openNavBar() {
@@ -308,7 +308,7 @@ function openNavBar() {
 		e.stopImmediatePropagation();
 	})
 	img.addEventListener('mouseup', e => {	
-		browser.runtime.sendMessage({action: "unmark"});
+		sendMessage({action: "unmark"});
 		closeNavBar();
 	});
 	
@@ -445,7 +445,7 @@ function openFindBar(options) {
 			userOptions.highLight.findBar.position = o.dockedPosition;
 			userOptions.highLight.findBar.windowType = o.windowType;
 
-			browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveFindBarOptions"});
+			sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveFindBarOptions"});
 		}
 
 		makeDockable(fb, {
@@ -660,7 +660,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		case "findBarUpdateOptions":
 			userOptions.highLight.findBar.markOptions = message.markOptions;
 		//	if ( userOptions.highLight.findBar.saveOptions )
-				if ( window == top ) browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "findBarUpdateOptions"});
+				if ( window == top ) sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "findBarUpdateOptions"});
 			break;
 			
 		case "toggleNavBar":

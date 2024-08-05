@@ -309,7 +309,7 @@ function buildSearchEngineContainer() {
 						"searchCode": edit_form.searchCode.value
 					};
 
-					browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+					sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 				}
 				
 				edit_form.copy.onclick = function() {
@@ -335,7 +335,7 @@ function buildSearchEngineContainer() {
 						+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
 						+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 					
-					browser.runtime.sendMessage({action: "addSearchEngine", url:url});	
+					sendMessage({action: "addSearchEngine", url:url});	
 				}
 				
 				edit_form.save.onclick = function() {
@@ -541,7 +541,7 @@ function buildSearchEngineContainer() {
 
 				// _form.test.onclick = function() {
 				// 	let searchTerms = window.prompt(i18n("EnterURL"),"ContextSearch web-ext");
-				// 	browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+				// 	sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 				// }
 				
 				_form.save.onclick = async function() {
@@ -745,7 +745,7 @@ function buildSearchEngineContainer() {
 					tempNode.cwd = _form.searchform.value.trim();
 					tempNode.postScript = _form.searchCode.value.trim();
 					
-					browser.runtime.sendMessage({
+					sendMessage({
 						action:"search",
 						info: {
 							node: tempNode,

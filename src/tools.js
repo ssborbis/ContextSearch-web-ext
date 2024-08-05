@@ -12,7 +12,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
+			sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 		}
 	},
 	{
@@ -31,13 +31,13 @@ const QMtools = [
 		}, 
 		action: async function(e) {
 
-			let hasPermission = await browser.runtime.sendMessage({action: "hasPermission", permission: "clipboardWrite"});
+			let hasPermission = await sendMessage({action: "hasPermission", permission: "clipboardWrite"});
 
 			if ( !hasPermission ) {
 				try {
 					await browser.permissions.request({permissions: ['clipboardWrite']});
 				} catch (err) {
-					browser.runtime.sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
+					sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
 					return;
 				}
 			}
@@ -46,7 +46,7 @@ const QMtools = [
 			this.querySelector('.tool').style.opacity = 0;
 			this.style.backgroundImage = 'url(icons/spinner.svg)';
 
-			let copy = await browser.runtime.sendMessage({action: "copyRaw"});
+			let copy = await sendMessage({action: "copyRaw"});
 
 		//	this.style.backgroundImage = 'url(icons/checkmark.svg)';
 			
@@ -92,7 +92,7 @@ const QMtools = [
 
 			if (this.dataset.disabled === "true") return;
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "search", 
 				info: {
 					menuItemId: "openAsLink",
@@ -127,13 +127,13 @@ const QMtools = [
 
 			setToolLockedState(this.tool || this, tool.on);
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
 			
 			if ( quickMenuObject.disabled )
-				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
+				sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
 
 		}
 	},
@@ -158,7 +158,7 @@ const QMtools = [
 				// wait for first resize event to lock menu
 				document.addEventListener('resizeDone', () => {
 					tile.dataset.locked = quickMenuObject.locked = true;
-					browser.runtime.sendMessage({action: "lockQuickMenu"});
+					sendMessage({action: "lockQuickMenu"});
 				}, {once: true});
 			}
 
@@ -173,9 +173,9 @@ const QMtools = [
 			quickMenuObject.locked = !quickMenuObject.locked;
 
 			if ( quickMenuObject.locked )
-				browser.runtime.sendMessage({action: "lockQuickMenu"});
+				sendMessage({action: "lockQuickMenu"});
 			else
-				browser.runtime.sendMessage({action: "unlockQuickMenu"});
+				sendMessage({action: "unlockQuickMenu"});
 
 			tool.on = quickMenuObject.locked;
 
@@ -235,7 +235,7 @@ const QMtools = [
 				
 			let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "search", 
 				info: {
 					menuItemId: node.id,
@@ -269,7 +269,7 @@ const QMtools = [
 				if ( tool.on ) {
 					
 					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
-					browser.runtime.sendMessage({
+					sendMessage({
 						action: "search", 
 						info: {
 							menuItemId:_id,
@@ -294,7 +294,7 @@ const QMtools = [
 			
 			saveUserOptions();
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
@@ -344,7 +344,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			browser.runtime.sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
+			sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
 		}
 	},
 	{
@@ -359,7 +359,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "#quickMenu"});
+			sendMessage({action: "openOptions", hashurl: "#quickMenu"});
 		}
 	},
 	{
@@ -590,7 +590,7 @@ const QMtools = [
 				return;
 			}
 
-			browser.runtime.sendMessage({action: "editQuickMenu", on: _on });
+			sendMessage({action: "editQuickMenu", on: _on });
 
 			setDraggable();
 
@@ -619,7 +619,7 @@ const QMtools = [
 			return tile;
 		}, 
 		action: async function() {
-			let tabInfo = await browser.runtime.sendMessage({action:"getCurrentTabInfo"});
+			let tabInfo = await sendMessage({action:"getCurrentTabInfo"});
 			let url = new URL(tabInfo.url);
 
 			if ( !userOptions.blockList.includes(url.hostname) && confirm(i18n('addtoblocklistconfirm', url.hostname))) {
@@ -846,7 +846,7 @@ const QMtools = [
 
 		//	if (this.dataset.disabled === "true") return;
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "openTab", 
 				openMethod: getOpenMethod(e),
 				url:sb.value
@@ -868,7 +868,7 @@ const QMtools = [
 		},
 		action: function(e) {
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "download",
 				url:sb.value
 			});

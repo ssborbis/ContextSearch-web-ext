@@ -3,12 +3,12 @@ var getSearchBar = () => document.getElementById('searchBar');
 var userOptions = {};
 var typeTimer = null;
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
 
 	setTheme().then(() => {
 		// unhide the findbar after theme is set to prevent flashing
-		browser.runtime.sendMessage({action: "executeScript", code: "showFindBar();"});
+		sendMessage({action: "executeScript", code: "showFindBar();"});
 	});
 	
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;
@@ -42,7 +42,7 @@ window.addEventListener("message", e => {
 	if ( typeof e.data.navbar !== "undefined" ) document.querySelector('#toggle_navbar').checked = e.data.navbar;
 	if ( typeof e.data.total !== "undefined" ) document.querySelector('#toggle_marks').checked = ( e.data.total > 0 );
 
-	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
+	sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	
 	
 	document.getElementById('mark_counter').innerText = i18n("FindBarNavMessage", [e.data.index + 1, e.data.total]);
 	
@@ -62,11 +62,11 @@ window.addEventListener("message", e => {
 });
 
 document.getElementById('next').addEventListener('click', e => {
-	browser.runtime.sendMessage({action: "findBarNext", searchTerms: e.target.value});
+	sendMessage({action: "findBarNext", searchTerms: e.target.value});
 });
 
 document.getElementById('previous').addEventListener('click', e => {
-	browser.runtime.sendMessage({action: "findBarPrevious"});
+	sendMessage({action: "findBarPrevious"});
 });
 
 getSearchBar().addEventListener('change', e => {
@@ -76,7 +76,7 @@ getSearchBar().addEventListener('change', e => {
 	document.querySelector("#searchIcon").src = browser.runtime.getURL('icons/spinner.svg');
 
 	if ( e.target.value ) {
-		browser.runtime.sendMessage(Object.assign({
+		sendMessage(Object.assign({
 			action: "mark", 
 			searchTerms: e.target.value, 
 			findBarSearch: e.detail ? false : true // detail = true - skip jump to first match
@@ -87,7 +87,7 @@ getSearchBar().addEventListener('change', e => {
 		});
 	}
 	else {
-		browser.runtime.sendMessage({action: "unmark", clearFindBarLastSearchTerms: true});
+		sendMessage({action: "unmark", clearFindBarLastSearchTerms: true});
 		document.getElementById('mark_counter').innerText = i18n("FindBarNavMessage", [0, 0]);
 	}
 });
@@ -95,16 +95,16 @@ getSearchBar().addEventListener('change', e => {
 window.addEventListener('keydown', async e => {
 	
 	if ( e.key === "Escape" ) {
-		await browser.runtime.sendMessage({action: "unmark"});
-		await browser.runtime.sendMessage({action: "closeFindBar"});
+		await sendMessage({action: "unmark"});
+		await sendMessage({action: "closeFindBar"});
 		return;
 	}
 	
 	if ( e.key === "ArrowDown" ) {
-		browser.runtime.sendMessage({action: "findBarNext"});
+		sendMessage({action: "findBarNext"});
 		return;
 	} else if ( e.key === "ArrowUp" ) {
-		browser.runtime.sendMessage({action: "findBarPrevious"});
+		sendMessage({action: "findBarPrevious"});
 		return;
 	}
 	
@@ -121,7 +121,7 @@ getSearchBar().addEventListener('keypress', e => {
 		if ( e.target.value !== e.target.oldValue )
 			getSearchBar().dispatchEvent(new Event('change'));
 		else
-			browser.runtime.sendMessage({action: "findBarNext"});
+			sendMessage({action: "findBarNext"});
 		return;
 	}
 
@@ -136,8 +136,8 @@ getSearchBar().addEventListener('keypress', e => {
 });
 
 document.getElementById('close').addEventListener('click', e => {
-	browser.runtime.sendMessage({action: "closeFindBar"});
-	browser.runtime.sendMessage({action: "unmark"});
+	sendMessage({action: "closeFindBar"});
+	sendMessage({action: "unmark"});
 });
 
 document.addEventListener('DOMContentLoaded', e => {
@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', e => {
 document.querySelectorAll('#accuracy,#caseSensitive,#ignorePunctuation,#separateWordSearch').forEach( el => {
 	el.addEventListener('click', e => {
 		getSearchBar().dispatchEvent(new Event('change'));
-	//	browser.runtime.sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	// infinite loop 100% cpu
+	//	sendMessage({action: "findBarUpdateOptions", markOptions: buildMarkOptions()});	// infinite loop 100% cpu
 	});
 });
 
@@ -163,20 +163,20 @@ document.querySelector('#toggle_marks').addEventListener('change', e => {
 	if ( e.target.checked )
 		getSearchBar().dispatchEvent(new CustomEvent('change', {detail: true})); // detail = true means set findBarSearch = false to skip jump to first match
 	else
-		browser.runtime.sendMessage({action: "unmark", saveTabHighlighting: true});
+		sendMessage({action: "unmark", saveTabHighlighting: true});
 });
 
 document.querySelector('#toggle_navbar').addEventListener('change', e => {
-	browser.runtime.sendMessage({action: "toggleNavBar", state: e.target.checked});
+	sendMessage({action: "toggleNavBar", state: e.target.checked});
 });
 
 document.querySelector('#toggle_searchalltabs').addEventListener('change', e => {
 	
 	// update the object before saving - this frame does not update userOptions automatically
-	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 		userOptions.highLight.findBar.searchInAllTabs = e.target.checked;
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "findbar.js searchalltabs"});
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "findbar.js searchalltabs"});
 		
 		// search all tabs if button enabled and searchbar has text
 		if ( userOptions.highLight.findBar.searchInAllTabs && getSearchBar().value )

@@ -1,7 +1,7 @@
 var userOptions;
 
 function init(message) {
-	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 
 		setTheme();
@@ -126,7 +126,7 @@ function makePageTiles(message) {
 
 			if ( !searchTerms ) return;
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "search", 
 				info: {
 					menuItemId: node.id,
@@ -180,7 +180,7 @@ document.addEventListener('click', e => {
 
 document.addEventListener('contextmenu', e => e.preventDefault())
 
-let close = () => browser.runtime.sendMessage({action: "closePageTiles"});
+let close = () => sendMessage({action: "closePageTiles"});
 
 function colorFromString(str) {
 	let num = 0;

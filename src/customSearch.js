@@ -110,7 +110,7 @@ function addSearchEnginePopup(data) {
 	} else {
 		if (openSearchUrl) {
 
-			browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: openSearchUrl}).then( details => {
+			sendMessage({action: "openSearchUrlToSearchEngine", url: openSearchUrl}).then( details => {
 
 				if (!details) {
 					console.log('Cannot build search engine from xml. Missing values');
@@ -171,11 +171,11 @@ function addSearchEnginePopup(data) {
 		document.getElementById('customForm').shortname.value = shortname;
 		let folder = simple.querySelector('[name="folder"]');
 
-		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine(), folderId: folder.value});
+		sendMessage({action: "addContextSearchEngine", searchEngine: formToSearchEngine(), folderId: folder.value});
 
 		if ( isFirefox /* firefox */) {
 			(async() => {
-				let exists = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: shortname});
+				let exists = await sendMessage({action: "getFirefoxSearchEngineByName", name: shortname});
 				
 				if ( exists ) {
 					closeCustomSearchIframe();
@@ -226,7 +226,7 @@ function addSearchEnginePopup(data) {
 		
 		let el = document.getElementById('simple_import');
 		
-		browser.runtime.sendMessage({action: "addSearchEngine", url:url});
+		sendMessage({action: "addSearchEngine", url:url});
 
 		el.style.pointerEvents = 'none';
 		el.querySelector('[name="yes"]').querySelector('img').src = '/icons/spinner.svg';
@@ -245,7 +245,7 @@ function addSearchEnginePopup(data) {
 				simple_confirm.querySelector('[name="no"]').onclick = function() {
 					
 					// remove the new engine
-					browser.runtime.sendMessage({action: "removeContextSearchEngine", id: userOptions.searchEngines[userOptions.searchEngines.length - 1].id});
+					sendMessage({action: "removeContextSearchEngine", id: userOptions.searchEngines[userOptions.searchEngines.length - 1].id});
 					
 					showMenu('simple_remove');
 					setTimeout(() => showMenu('customForm'), 1000);
@@ -280,7 +280,7 @@ function addSearchEnginePopup(data) {
 
 	document.getElementById('askToAddNewEngineToFirefox').addEventListener('change', e => {
 		userOptions.askToAddNewEngineToFirefox = !e.target.checked;
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions});
+		sendMessage({action: "saveUserOptions", userOptions: userOptions});
 	});
 	
 	let form = document.getElementById('customForm');
@@ -384,7 +384,7 @@ function addSearchEnginePopup(data) {
 				return;
 			}
 
-			browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: ose}).then( response => {
+			sendMessage({action: "addContextSearchEngine", searchEngine: ose}).then( response => {
 				console.log(response);
 			});
 			
@@ -483,7 +483,7 @@ function addSearchEnginePopup(data) {
 
 		let se = formToSearchEngine();
 
-		browser.runtime.sendMessage({action: "addContextSearchEngine", searchEngine: se, folderId: form.folder.value}).then( response => {
+		sendMessage({action: "addContextSearchEngine", searchEngine: se, folderId: form.folder.value}).then( response => {
 	//		console.log(response);
 		});
 		
@@ -494,7 +494,7 @@ function addSearchEnginePopup(data) {
 				simpleImportHandler(url, true);
 			}
 
-			let exists = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: form.shortname.value});
+			let exists = await sendMessage({action: "getFirefoxSearchEngineByName", name: form.shortname.value});
 			
 			if ( exists )
 				closeCustomSearchIframe();
@@ -535,7 +535,7 @@ function testOpenSearch(form) {
 
 	let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
 	
-	browser.runtime.sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+	sendMessage({"action": "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 	
 }
 
@@ -544,12 +544,12 @@ function closeCustomSearchIframe() {
 	for (let el of document.getElementsByClassName('CS_menuItem')) {
 		el.style.maxHeight = '0px';
 	}
-	setTimeout(() => browser.runtime.sendMessage({action: "closeCustomSearch"}), 250);
+	setTimeout(() => sendMessage({action: "closeCustomSearch"}), 250);
 }
 
 async function listenForFocusAndPromptToImport() {
 
-	let hasBrowserSearch = await browser.runtime.sendMessage({action: "hasBrowserSearch"});
+	let hasBrowserSearch = await sendMessage({action: "hasBrowserSearch"});
 	
 	if (!hasBrowserSearch) {
 		console.error("This feature requires Firefox version 63+");
@@ -559,12 +559,12 @@ async function listenForFocusAndPromptToImport() {
 		return;
 	}
 
-	let oldEngineCount = await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
+	let oldEngineCount = await sendMessage({action: "checkForOneClickEngines"});
 
 	window.addEventListener('focus', async() => {
 
 		// look for new one-click engines
-		let newEngineCount = await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
+		let newEngineCount = await sendMessage({action: "checkForOneClickEngines"});
 			
 		console.log('found ' + newEngineCount - oldEngineCount + ' new engine(s)');
 		
@@ -652,7 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	
 });
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+sendMessage({action: "getUserOptions"}).then( uo => {
 	userOptions = uo;
 });
 
@@ -676,13 +676,13 @@ window.addEventListener("message", async e => {
 
 	// in case message is early
 	if ( !userOptions.nodeTree )
-		userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+		userOptions = await sendMessage({action: "getUserOptions"});
 
 	if (e.data.action && e.data.action === "promptToSearch") {
 		let ok = document.getElementById('b_simple_search_ok');
 
 		ok.onclick = function() {
-			browser.runtime.sendMessage({action: "closeCustomSearch"});
+			sendMessage({action: "closeCustomSearch"});
 		}
 		showMenu('simple_search');
 	 } else

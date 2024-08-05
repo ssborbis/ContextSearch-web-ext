@@ -24,7 +24,7 @@ function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
+sendMessage({action: "getUserOptions"}).then( async uo => {
 	userOptions = uo;
 
 	if ( checkForQuery() ) return;
@@ -48,7 +48,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
-	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
+	let sideBarOpenedOnSearchResults = await sendMessage({action: 'sideBarOpenedOnSearchResults'});
 	if ( sideBarOpenedOnSearchResults ) focusSearchBar = false;
 
 	makeAddEngineBar();
@@ -70,7 +70,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	// replace text with selection
 	(async () => {
-		let results = await browser.runtime.sendMessage({action: "getSelectedText"});
+		let results = await sendMessage({action: "getSelectedText"});
 		let text = results ? results.shift() : null;
 	
 		if ( text ) sb.set(text);
@@ -313,7 +313,7 @@ function checkForQuery() {
 
 		let n = findNode(userOptions.nodeTree, n => n.id && n.type && n.type !== "folder")
 		let str = params.get('q');
-		browser.runtime.sendMessage({
+		sendMessage({
 			action: "search", 
 			info: {
 				menuItemId: n.id,
@@ -332,7 +332,7 @@ async function makeAddEngineBar() {
 
 	// place at the end again after qm loads
 
-	let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks"});
+	let oses = await sendMessage({action: "getOpenSearchLinks"});
 
 	if ( !oses ) return;
 
@@ -346,7 +346,7 @@ async function makeAddEngineBar() {
 		div.title = i18n("AddCustomSearch");
 		aeb.appendChild(div);
 
-		let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
+		let xml_se = await sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
 			return (!details) ? null : details.searchEngines[0];
 		});
 
@@ -367,7 +367,7 @@ async function makeAddEngineBar() {
 		div.style.display = null;
 
 		div.onclick = async() => {
-			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
+			return sendMessage({action: "openCustomSearch", se: xml_se});
 		}
 
 		// has openSearch icon

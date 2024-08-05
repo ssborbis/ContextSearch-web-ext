@@ -476,7 +476,7 @@ function makeDockable(el, options) {
 
 		// only iframes need zoom adjustment. Why?
 	//	if ( el.tagName === "IFRAME")
-	//		await browser.runtime.sendMessage({action: "getZoom"}).then(z => o.zoom = z);
+	//		await sendMessage({action: "getZoom"}).then(z => o.zoom = z);
 
 		mouseDownStart = Date.now();
 

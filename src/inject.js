@@ -22,7 +22,7 @@ var killswitch = false; // global switch for disabling injected functions on the
 
 window.suspendSelectionChange = false;
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
+sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -39,7 +39,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			// send event to OpenAsLink tile to enable/disable
 			document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
@@ -164,8 +164,8 @@ document.addEventListener("selectionchange", e => {
 
 		quickMenuObject.searchTerms = searchTerms;
 		
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e)});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+		sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e)});
+		sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 
 	}, 250, "selectionchangedebouncer");
 });
@@ -180,8 +180,8 @@ document.addEventListener('mouseup', e => {
 
 	if (searchTerms) {
 		quickMenuObject.searchTerms = searchTerms;
-		browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
-		browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+		sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
+		sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 	}
 
 })
@@ -198,8 +198,8 @@ document.addEventListener('mouseup', e => {
 
 // 		if (searchTerms) {
 // 			quickMenuObject.searchTerms = searchTerms;
-// 			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
-// 			browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
+// 			sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e), input:true});
+// 			sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 // 		}
 
 // 	});
@@ -220,8 +220,8 @@ window.addEventListener('mousedown', async e => {
 		searchTerms = e.target.innerText.trim();
 	}
 	
-	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e)});
-	browser.runtime.sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e), ctrlKey:e.ctrlKey});
+	sendMessage({action: "updateSearchTerms", searchTerms: searchTerms, searchTermsObject: getContextsObject(e.target, e)});
+	sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target), linkMethod:getLinkMethod(e), ctrlKey:e.ctrlKey});
 });
 
 function linkOrImage(el, e) {
@@ -378,13 +378,13 @@ function checkContextMenuEventOrderNotification() {
 
 	no.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
 	}
 
 	yes.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
 		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
 	}
 
 }
@@ -400,7 +400,7 @@ function setZoomProperty() {
 document.addEventListener('zoom', setZoomProperty);
 
 // apply global user styles for /^[\.|#]CS_/ matches in userStyles
-browser.runtime.sendMessage({action: "addUserStyles", global: true });
+sendMessage({action: "addUserStyles", global: true });
 
 // menuless hotkey
 function checkForNodeHotkeys(e) {
@@ -417,7 +417,7 @@ function checkForNodeHotkeys(e) {
 	let node = Shortcut.getNodeFromEvent(e);
 	if ( !node ) return false;
 
-	browser.runtime.sendMessage({
+	sendMessage({
 		action: "search", 
 		info: {
 			node: node,
@@ -536,4 +536,4 @@ createShadowRoot();
 setZoomProperty();
 Shortcut.addShortcutListener();
 
-browser.runtime.sendMessage({action: "injectComplete"});
+sendMessage({action: "injectComplete"});

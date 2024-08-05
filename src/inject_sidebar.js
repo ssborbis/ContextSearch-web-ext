@@ -123,7 +123,7 @@ function openSideBar(options) {
 			userOptions.sideBar.windowType = o.windowType;
 		}
 
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveSideBarOptions"});
+		sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveSideBarOptions"});
 	}
 
 	iframe.onload = function() {
@@ -212,7 +212,7 @@ function openSideBar(options) {
 					if ( resizeWidget.options.allowHorizontal )
 						userOptions.sideBar.columns = o.columns;
 
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "sideBar onDrop"}).then(() => {
+					sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "sideBar onDrop"}).then(() => {
 
 						// reset the fixed quadrant
 						iframe.style.transition = 'none';
@@ -270,7 +270,7 @@ function closeSideBar(minimize) {
 function saveState(state) {
 	if ( userOptions.sideBar.rememberState ) {
 		userOptions.sideBar.startOpen = state;
-		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions, source: "sideBar saveState"});
+		sendMessage({action: "saveUserOptions", "userOptions": userOptions, source: "sideBar saveState"});
 	}
 }
 
@@ -313,7 +313,7 @@ function makeOpeningTab() {
 			userOptions.sideBar.offsets = o.lastOffsets;
 
 			if (!o.init)
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "openingTab onUndock"});
+				sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "openingTab onUndock"});
 			
 			// match sbContainer position with openingTab
 			if ( getSideBar() && getSideBar().docking ) getSideBar().docking.options.lastOffsets = o.lastOffsets;

@@ -61,7 +61,7 @@ document.addEventListener('dragstart', e => {
 
 		if ( Math.abs(startCoords.x - e.clientX) < userOptions.pageTiles.deadzone && Math.abs(startCoords.y - e.clientY) < userOptions.pageTiles.deadzone ) return;
 
-		browser.runtime.sendMessage({action: "openPageTiles", searchTerms: searchTerms});
+		sendMessage({action: "openPageTiles", searchTerms: searchTerms});
 
 		document.removeEventListener('dragover', dragOverHandler);
 	}

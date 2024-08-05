@@ -1,6 +1,6 @@
 async function copyImage(imageURL){
 
-	const dataURI = await browser.runtime.sendMessage({action: "fetchURI", url: imageURL});
+	const dataURI = await sendMessage({action: "fetchURI", url: imageURL});
 	const blob = await (await fetch(dataURI)).blob();
 	const item = new ClipboardItem({ [blob.type]: blob });
 	navigator.clipboard.write([item]);

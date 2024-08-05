@@ -7,10 +7,10 @@ document.addEventListener('mousedown', ev => {
 		|| ev.target.ownerDocument.defaultView != top
 		|| !isTextBox(ev.target)
 	) {
-		return browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
+		return sendMessage({action: "disableAddCustomSearchMenu"});
 	}
 
-	browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
+	sendMessage({action: "enableAddCustomSearchMenu"});
 
 });
 
@@ -63,7 +63,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					
 					if (message.useOpenSearch) { // openCustomSearch called by page_action
 
-						browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: os_href}).then( details => {
+						sendMessage({action: "openSearchUrlToSearchEngine", url: os_href}).then( details => {
 
 							if (!details) {
 								console.log('Cannot build search engine from xml. Missing values');
@@ -78,7 +78,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 						let formdata = getFormData();
 
-						browser.runtime.sendMessage({action: "dataToSearchEngine", formdata: formdata}).then( result => {
+						sendMessage({action: "dataToSearchEngine", formdata: formdata}).then( result => {
 							
 							// use supplied search engine or get from focused form
 							let se = message.searchEngine || result.searchEngines[0];
@@ -89,7 +89,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 								
 								function inputHandler() {
 									if (!input.value) return;
-									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
+									sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								}
 
 								// capture ENTER event in case form executes before 'change' event
@@ -100,7 +100,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 									// remove the change handler to prevent duplicate test search
 									input.removeEventListener('change', inputHandler);
 									
-									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
+									sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								});
 								
 								// input change likely means search performed

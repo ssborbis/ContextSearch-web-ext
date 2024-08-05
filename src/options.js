@@ -286,8 +286,8 @@ async function restoreOptions(restoreUserOptions) {
 	}
 
 	return new Promise( async (resolve, reject) => {
-		await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
-		let uo = await browser.runtime.sendMessage({action: "getUserOptions"});
+		await sendMessage({action: "checkForOneClickEngines"});
+		let uo = await sendMessage({action: "getUserOptions"});
 		onGot(uo);
 		resolve();
 	});	
@@ -461,7 +461,7 @@ function _saveOptions(e) {
 	})();
 
 	// prevent DeadObjects
-	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
+	var setting = sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
 	return setting.then(onSet, onError);
 }
 
@@ -1061,7 +1061,7 @@ function buildImportExportButtons() {
 
 				if ( folder.children.length ) uo.nodeTree.children.push(folder);
 
-				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: uo});
+				await sendMessage({action: "saveUserOptions", userOptions: uo});
 				location.reload();
 
 				return;
@@ -1221,10 +1221,10 @@ function buildImportExportButtons() {
 				if ( !newUserOptions ) return;
 				
 				// update imported options
-				let _uo = await browser.runtime.sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
+				let _uo = await sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
 				
 				try {
-					_uo = await browser.runtime.sendMessage({action: "updateUserOptionsVersion", userOptions: _uo})		
+					_uo = await sendMessage({action: "updateUserOptionsVersion", userOptions: _uo})		
 				} catch ( error ) {
 					console.log(error);
 					if ( !confirm("Failed to update config. This may cause some features to not work. Install anyway?"))
@@ -1263,7 +1263,7 @@ function buildImportExportButtons() {
 				}
 
 				userOptions = _uo;
-				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
+				await sendMessage({action: "saveUserOptions", userOptions: _uo});
 				location.reload();
 				
 
@@ -2068,7 +2068,7 @@ $("#b_resetUserOptions").addEventListener('click', e => {
 		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
 		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions})
+		sendMessage({action: "saveUserOptions", userOptions: newUserOptions})
 			.then(() => location.reload());
 	}
 });

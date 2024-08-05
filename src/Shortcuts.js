@@ -179,7 +179,7 @@ class Shortcut {
 				let action = sc.action;
 
 				if ( typeof action === 'string')
-					browser.runtime.sendMessage({action: action});
+					sendMessage({action: action});
 				else if ( typeof action === 'function' ) action(e);
 				
 				return false;
@@ -197,7 +197,7 @@ class Shortcut {
 			name:"Menu → Quick → Open",
 			action: e => {
 				if ( !getSearchTermsForHotkeys ) return;
-				browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:getSearchTermsForHotkeys(e)});
+				sendMessage({action: "openQuickMenu", searchTerms:getSearchTermsForHotkeys(e)});
 			},
 			key: "x",
 			ctrl: true,
@@ -209,7 +209,7 @@ class Shortcut {
 		{
 			name:"Findbar → Open",
 			action: async (e) => {
-				browser.runtime.sendMessage({action: "toggleFindBar"});
+				sendMessage({action: "toggleFindBar"});
 			},
 			key: "f",
 			ctrl: true,
@@ -284,7 +284,7 @@ class Shortcut {
 			name:"Menu → Page Tiles → Open",
 			action: e => {
 				if ( !getSearchTermsForHotkeys ) return;
-				browser.runtime.sendMessage({action: "openPageTiles", searchTerms:getSearchTermsForHotkeys(e), hotkey: true});
+				sendMessage({action: "openPageTiles", searchTerms:getSearchTermsForHotkeys(e), hotkey: true});
 			},
 			key: ",",
 			ctrl: true,

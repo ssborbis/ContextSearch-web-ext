@@ -42,12 +42,12 @@ async function makeFrameContents(o) {
 	setMenuSize(o);
 
 	document.getElementById('closeButton').addEventListener('click', e => {
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
+		sendMessage({action: "closeQuickMenuRequest"});
 	});
 
 	document.dispatchEvent(new CustomEvent('quickMenuIframePreLoaded'));
 
-	await browser.runtime.sendMessage({
+	await sendMessage({
 		action: "quickMenuIframeLoaded", 
 		size: {
 			width: qm.getBoundingClientRect().width,
@@ -81,7 +81,7 @@ async function makeFrameContents(o) {
 		
 		if ( e.target.closest && e.target.closest('.tile') ) return;
 		
-		browser.runtime.sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
+		sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
 	});
 
 	tileSlideInAnimation(.3, .15, .5);
@@ -122,7 +122,7 @@ async function makeFolderContents(node) {
 
 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-	await browser.runtime.sendMessage({
+	await sendMessage({
 		action: "quickMenuIframeFolderLoaded", 
 		size: {
 			width: qm.getBoundingClientRect().width,
@@ -270,7 +270,7 @@ function resizeMenu(o = {}) {
 function closeMenuRequest(e) {
 
 	if ( userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: (e.key === "Escape" ? "esc" : "click_quickmenutile") });
+		sendMessage({action: "closeQuickMenuRequest", eventType: (e.key === "Escape" ? "esc" : "click_quickmenutile") });
 	}
 }
 
@@ -495,7 +495,7 @@ window.addEventListener('message', async e => {
 
 		case "openFolderNew":
 
-			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+			userOptions = await sendMessage({action: "getUserOptions"});
 
 			setTheme()
 				.then(setUserStyles)
@@ -503,7 +503,7 @@ window.addEventListener('message', async e => {
 			break;
 
 		case "openMenu":
-			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+			userOptions = await sendMessage({action: "getUserOptions"});
 		
 			setTheme()
 				.then(setUserStyles)

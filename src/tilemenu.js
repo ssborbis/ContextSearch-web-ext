@@ -45,7 +45,7 @@ function getSelectedText(el) {
 }
 
 function saveUserOptions() {
-	return browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "tilemenu.js"});
+	return sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "tilemenu.js"});
 }
 
 function clickChecker(el) {
@@ -309,7 +309,7 @@ function createToolsArray() {
 
 async function makeQuickMenu(options) {
 
-	quickMenuObject = await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}) || quickMenuObject;
+	quickMenuObject = await sendMessage({action: "getTabQuickMenuObject"}) || quickMenuObject;
 
 	type = options.type;
 
@@ -358,8 +358,8 @@ async function makeQuickMenu(options) {
 	sb.addEventListener('input', e => {
 		quickMenuObject.searchTerms = sb.value;
 		quickMenuObject.searchTermsObject.selection = sb.value;
-	//	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
-	//	browser.runtime.sendMessage({action: "updateQuickMenuObject", quickMenuObject: quickMenuObject});
+	//	sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+	//	sendMessage({action: "updateQuickMenuObject", quickMenuObject: quickMenuObject});
 	});
 
 	sb.addEventListener('keydown', e => {
@@ -771,7 +771,7 @@ async function makeQuickMenu(options) {
 	// options override
 	root.displayType = options.displayType || root.displayType;
 
-	let lastFolderId = await browser.runtime.sendMessage({action: "getLastOpenedFolder"});
+	let lastFolderId = await sendMessage({action: "getLastOpenedFolder"});
 	
 	if ( userOptions.rememberLastOpenedFolder && lastFolderId ) {
 
@@ -867,7 +867,7 @@ function buildQuickMenuElement(options) {
 		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 		div.innerText = i18n("WhereAreMyEngines");
 		div.onclick = function() {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "#engines"});
+			sendMessage({action: "openOptions", hashurl: "#engines"});
 		}	
 		qm.appendChild(div);
 	}
@@ -1032,7 +1032,7 @@ async function _quickMenuElementFromNodeTree( o ) {
 	if ( userOptions.syncWithFirefoxSearch ) {	
 		nodes = [];
 		qm.rootNode = Object.assign({}, qm.rootNode);
-		let ffses = await browser.runtime.sendMessage({action: "getFirefoxSearchEngines"});
+		let ffses = await sendMessage({action: "getFirefoxSearchEngines"});
 		
 		ffses.forEach( ffse => {
 			let node = findNode( userOptions.nodeTree, n => n.title === ffse.name );
@@ -1053,7 +1053,7 @@ async function _quickMenuElementFromNodeTree( o ) {
 	}
 	
 	// set the lastOpenedFolder object
-	browser.runtime.sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
+	sendMessage({action: "setLastOpenedFolder", folderId: rootNode.id});
 	
 	// if parentId was sent, assume subfolder and add 'back' button
 	// unless href has hash ( cascading menu )
@@ -1129,7 +1129,7 @@ async function _quickMenuElementFromNodeTree( o ) {
 	});
 
 	// try { // fails on restricted pages
-	// 	await browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+	// 	await sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
 	// 		if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
 	// 	});
@@ -1209,7 +1209,7 @@ function makeSearchBar() {
 		displaySuggestions(history);
 	}
 	
-	//browser.runtime.sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+	//sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
 
 		let qmo = quickMenuObject;
 
@@ -1240,7 +1240,7 @@ function makeSearchBar() {
 			}
 		}
 
-		let message = await browser.runtime.sendMessage({action: "getLastSearch"});	
+		let message = await sendMessage({action: "getLastSearch"});	
 		
 		// skip empty 
 		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
@@ -1264,7 +1264,7 @@ function makeSearchBar() {
 	function displaySuggestions(suggestions) {
 		
 		// losing keystrokes. Why was this used?
-	//	browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+	//	sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
 				
 		suggestions = suggestions.sort(function(a,b) {
 			return a.searchTerms - b.searchTerms;
@@ -1398,7 +1398,7 @@ function makeSearchBar() {
 	});
 
 	ob.onclick = async function() {
-		await browser.runtime.sendMessage({action: "openOptions"});
+		await sendMessage({action: "openOptions"});
 		if ( window == top ) window.close(); // close toolbar menu
 	}
 
@@ -1412,7 +1412,7 @@ function makeSearchBar() {
 
 		if ( !div ) return;
 
-	//	let qmo = await browser.runtime.sendMessage({action:"getTabQuickMenuObject"});
+	//	let qmo = await sendMessage({action:"getTabQuickMenuObject"});
 		let qmo = quickMenuObject;
 		let sto = qmo.searchTermsObject;
 
@@ -1439,7 +1439,7 @@ function makeSearchBar() {
 			div.searchTermsContext = newKey;
 			sb.set(sto[newKey]);
 
-			browser.runtime.sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
+			sendMessage({action: "updateSearchTerms", searchTerms: sb.value});
 		}
 
 	})();
@@ -1562,7 +1562,7 @@ function checkForNodeHotkeys(e) {
 	e.preventDefault();
 	e.stopPropagation();
 	
-	browser.runtime.sendMessage({
+	sendMessage({
 		action: "search", 
 		info: {
 			menuItemId: hotkeyNode.id,
@@ -1572,7 +1572,7 @@ function checkForNodeHotkeys(e) {
 		}
 	}).then(() => {
 		if ( !keepMenuOpen(e) )
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
+			sendMessage({action: "closeQuickMenuRequest", eventType: "hotkey"});
 
 		if (type === 'searchbar' && userOptions.searchBarCloseAfterSearch) window.close();
 	});
@@ -1710,7 +1710,7 @@ document.addEventListener('mouseup', e => {
 
 function search(o) {
 	delete o.node.parent; // caused cyclic error
-	return browser.runtime.sendMessage({
+	return sendMessage({
 		action: "search", 
 		info: {
 			node: JSON.parse(JSON.stringify(o.node)),
@@ -1746,7 +1746,7 @@ async function mouseupHandler(e) {
 	quickMenuObject.searchTerms = sb.value;
 	quickMenuObject.searchTermsObject.selection = sb.value;
 
-	browser.runtime.sendMessage({
+	sendMessage({
 		action: "updateQuickMenuObject", 
 		quickMenuObject: quickMenuObject
 	});
@@ -2043,7 +2043,7 @@ document.addEventListener('drop', async e => {
 			await saveUserOptions();
 
 			if ( type === "quickmenu")
-				browser.runtime.sendMessage({action: "rebuildMenus", sendMessageToAllFrames: true});		
+				sendMessage({action: "rebuildMenus", sendMessageToAllFrames: true});		
 			else
 				rebuildMenu();
 
@@ -2063,7 +2063,7 @@ document.addEventListener('dragend', async e => {
 });
 
 rebuildMenu = async() => {
-	userOptions = await browser.runtime.sendMessage({action:"getUserOptions"});
+	userOptions = await sendMessage({action:"getUserOptions"});
 
 	window.root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 	setParents(window.root);
@@ -2276,14 +2276,14 @@ function nodeToTile( node ) {
 					//	if ( !node.children.length ) return;
 
 						if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
-							return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, contexts: qm.contexts, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+							return sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, contexts: qm.contexts, folder: JSON.parse(JSON.stringify(tile.node)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
 						
 						qm = await quickMenuElementFromNodeTree(tile.node);
 						
 						return resizeMenu({openFolder: true});
 					}
 					
-					browser.runtime.sendMessage({
+					sendMessage({
 						action: "search", 
 						info: {
 							node: JSON.parse(JSON.stringify(node)), // allows folder search of recently used and regex
@@ -2328,7 +2328,7 @@ function nodeToTile( node ) {
 
 				async function openFolder(e) {
 
-					let tab = await browser.runtime.sendMessage({action: 'getCurrentTabInfo'});
+					let tab = await sendMessage({action: 'getCurrentTabInfo'});
 
 					let siteSearchNode = {
 						type:"folder",
@@ -2351,7 +2351,7 @@ function nodeToTile( node ) {
 					});
 
 					if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders)
-						return browser.runtime.sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(siteSearchNode)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
+						return sendMessage({action: "openQuickMenu", searchTerms:quickMenuObject.searchTerms, searchTermsObject:quickMenuObject.searchTermsObject, folder: JSON.parse(JSON.stringify(siteSearchNode)), parentId:qm.rootNode.id, top: tile.getBoundingClientRect().top})
 					
 					qm = await quickMenuElementFromNodeTree(siteSearchNode);
 
