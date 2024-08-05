@@ -696,9 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // set zoom attribute to be used for scaling objects
 function setZoomProperty() {
-	sendMessage({action: "getDevicePixelRatio"}).then( result => {
-		document.documentElement.style.setProperty('--cs-zoom', result);
-	});
+	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
 }
 
 setZoomProperty();
