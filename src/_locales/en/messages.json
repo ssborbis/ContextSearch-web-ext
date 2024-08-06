@@ -85,6 +85,11 @@
    "SearchActionsNoAction": {
     "message": "No Action"
   },
+
+  "SearchActionsPopup": {
+    "message": "Open in Popup Window"
+  },
+  
   
    "LeftButton": {
     "message": "Left Button"
@@ -1897,6 +1902,10 @@
     "message": "Close Page Tiles by shaking the mouse",
     "description": ""
   },
+  "ClosePageTilesOnBorder": {
+    "message": "Close Page Tiles when dragging outside the main window",
+    "description": ""
+  },
 
   "ShowFolderSearch": {
     "message": "Show an option to search the entire folder at the top of the menu",
@@ -2531,5 +2540,23 @@
   },
   "forward": {
     "message": "forward"
+  },
+  "AutoThemeTooltip": {
+    "message": "Automatically change the menu theme when using dark mode"
+  },
+  "AutoThemeLiteTooltip": {
+    "message": "Lite Theme"
+  },
+  "AutoThemeDarkTooltip": {
+    "message": "Dark Theme"
+  },
+  "ConfirmMultiLineSearch": {
+    "message": "This will open $1 search tabs. Continue?"
+  },
+  "MatchOptions": {
+    "message": "Match Options"
+  },
+  "autoImportFirefoxEnginesTooltip": {
+   "message": "Always check for Firefox engines"
   }
 }
