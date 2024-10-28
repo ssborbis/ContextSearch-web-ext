@@ -586,9 +586,15 @@ async function updateSelectDomains() {
 }
 
 function parseSelectDomainMenuId(id) {
+
 	try {
 		let groups = /(?:(.*)_:?)__selectDomain__(.*?)_\d+_(.*)$/.exec(id);
 		return {context: groups[1], id: groups[2], domain: atob(groups[3])}
+	} catch {}
+
+	try {
+		let groups = /__selectDomain__(.*?)_\d+_(.*)$/.exec(id);
+		return {context: null, id: groups[1], domain: atob(groups[2])}
 	} catch {}
 
 	try {
