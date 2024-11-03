@@ -1,4 +1,4 @@
-function replaceOpenSearchParams(options) {
+async function replaceOpenSearchParams(options) {
 	
 	// replace OpenSearch params
 	template 	= options.template || "";
@@ -66,6 +66,7 @@ function replaceOpenSearchParams(options) {
 		.replace(/{link}/g, sto.link || "")
 		.replace(/{linkText}/g, sto.linkText || "")
 		.replace(/{video}/g, sto.video || "")
+		.replace(/{clipboard}/g, await navigator.clipboard.readText())
 //		.replace(/{.+?}/g, ""); // all others
 }
 

@@ -1,18 +1,18 @@
-function post(path, params) {
+async function post(path, params) {
 
 	let url = new URL(path);
 	url.protocol = window.location.protocol;
 		
 	var form = document.createElement("form");
 	form.setAttribute("method", "POST");
-	form.setAttribute("action", replaceOpenSearchParams({template: url.href, searchterms: _SEARCHTERMS, url:url.href}));
+	form.setAttribute("action", await replaceOpenSearchParams({template: url.href, searchterms: _SEARCHTERMS, url:url.href}));
 
 	for (let param of params) {
 		var hiddenField = document.createElement("input");
 		
 		hiddenField.setAttribute("type", "hidden");
 		hiddenField.setAttribute("name", param.name);
-		hiddenField.setAttribute("value", replaceOpenSearchParams({template: param.value, searchterms: _SEARCHTERMS, url:url.href}));
+		hiddenField.setAttribute("value", await replaceOpenSearchParams({template: param.value, searchterms: _SEARCHTERMS, url:url.href}));
 
 		form.appendChild(hiddenField);
 	}

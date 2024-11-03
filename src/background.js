@@ -1813,7 +1813,7 @@ async function openSearch(info) {
 
 		var encodedSearchTerms = encodeCharset(searchTerms, se.queryCharset);
 		
-		var q = replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
+		var q = await replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
 
 		// set landing page for POST engines
 		if ( 
