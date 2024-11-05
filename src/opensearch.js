@@ -70,10 +70,20 @@ async function replaceOpenSearchParams(options) {
 	;
 
 	try {
-		document.focus();
-		template = template.replace(/{clipboard}/g, await navigator.clipboard.readText())
-	} catch (e) {
-		debug(e);
+
+		// firefox
+		template = template.replace(/{clipboard}/g, await navigator.clipboard.readText());
+	} catch (error) {
+
+		// chrome
+		let div = document.createElement("div");
+	    div.contentEditable = true;
+	    var actElem = document.activeElement.appendChild(div).parentNode;
+	    div.focus();
+	    document.execCommand("Paste", null, null);
+	    var paste = div.innerText;
+	    actElem.removeChild(div);   
+	   	template = template.replace(/{clipboard}/g, paste);
 	}
 
 	return template;
