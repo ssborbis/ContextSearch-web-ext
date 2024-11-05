@@ -89,8 +89,7 @@
   "SearchActionsPopup": {
     "message": "Open in Popup Window"
   },
-  
-  
+
    "LeftButton": {
     "message": "Left Button"
   },
@@ -2555,5 +2554,8 @@
   },
   "MatchOptions": {
     "message": "Match Options"
+  },
+  "autoImportFirefoxEnginesTooltip": {
+   "message": "Always check for Firefox engines"
   }
 }
