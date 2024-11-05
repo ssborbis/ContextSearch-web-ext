@@ -42,7 +42,7 @@ async function replaceOpenSearchParams(options) {
  
 // })();
 	
-	return template
+	template = template
 		.replace(/%sl|{searchterms}/g, s => searchterms.toLowerCase())
 		.replace(/%su|{SEARCHTERMS}/g, s => searchterms.toUpperCase())
 		.replace(/%s|{searchTerms}/g, searchterms)
@@ -66,8 +66,17 @@ async function replaceOpenSearchParams(options) {
 		.replace(/{link}/g, sto.link || "")
 		.replace(/{linkText}/g, sto.linkText || "")
 		.replace(/{video}/g, sto.video || "")
-		.replace(/{clipboard}/g, await navigator.clipboard.readText())
 //		.replace(/{.+?}/g, ""); // all others
+	;
+
+	try {
+		document.focus();
+		template = template.replace(/{clipboard}/g, await navigator.clipboard.readText())
+	} catch (e) {
+		debug(e);
+	}
+
+	return template;
 }
 
 function nameValueArrayToParamString(arr) {
