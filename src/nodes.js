@@ -102,7 +102,7 @@ function removeNode(node, parent) {
 	parent.children.splice(parent.children.indexOf(node), 1);
 }
 
-function repairNodeTree(tree) {
+function repairNodeTree(tree, hide) {
 	
 	let repaired = false;
 	
@@ -122,7 +122,7 @@ function repairNodeTree(tree) {
 			tree.children.push({
 				id: se.id,
 				type: "searchEngine",
-				hidden: true,
+				hidden: hide,
 				title: se.title
 			});
 		}
@@ -143,7 +143,7 @@ function repairNodeTree(tree) {
 		}
 
 		if ( node.type === 'siteSearchFolder') {
-			node.parent = parent;
+		//	node.parent = parent; // causes cyclic object
 			delete node.children;
 			node.type = "searchEngine";
 			console.log('repairing siteSearchFolder ' + node.title);
@@ -222,3 +222,30 @@ function nodeAppendChild(node, parent) {
 	node.parent.children.push(node);
 }
 
+function removeConsecutiveSeparators(tree) {
+	// remove consecutive separators
+	traverseNodesDeep(tree, (n,p) => {
+		if ( !p ) return;
+
+		let index = p.children.indexOf(n);
+		if ( n.type === 'separator' && index && p.children[index - 1].type === 'separator' )
+			removeNode(n, p);
+	});
+
+	return tree;
+}
+const isFolder = n => n.type === 'folder';
+const isSearchEngine = n => n.type === 'searchEngine';
+const isOneClickSearchEngine = n => n.type === 'oneClickSearchEngine';
+const isMultiSearchEngine = n => {
+
+	if ( !isSearchEngine(n) ) return false;
+	
+	try {
+		let ts = JSON.parse(n.template);
+		return true;
+	} catch (error) {}
+
+	return false;
+}
+	

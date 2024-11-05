@@ -3,7 +3,7 @@ let current, previous, next, terms;
 const nextResultsEngine = () => {
 	if ( killswitch ) return;
 
-	browser.runtime.sendMessage({
+	sendMessage({
 		action: "search", 
 		info: {
 			menuItemId: next.id,
@@ -16,7 +16,7 @@ const nextResultsEngine = () => {
 const previousResultsEngine = () => {
 	if ( killswitch ) return;
 	
-	browser.runtime.sendMessage({
+	sendMessage({
 		action: "search", 
 		info: {
 			menuItemId: previous.id,
@@ -28,7 +28,7 @@ const previousResultsEngine = () => {
 
 (async () => {
 
-	let tt = await browser.runtime.sendMessage({action: "getTabTerms"});
+	let tt = await sendMessage({action: "getTabTerms"});
 
 	if ( !tt ) return;
 

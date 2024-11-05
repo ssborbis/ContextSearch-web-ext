@@ -29,6 +29,8 @@ HTML::-webkit-scrollbar, BODY::-webkit-scrollbar {
 BODY {
 	background: var(--background);
 	position:relative;
+/*	transition: opacity .5s ease .25s;*/
+	transition: width .15s, height .15s;
 }
 .selectedFocus {
 	background-color: var(--selected) !important;
@@ -48,11 +50,16 @@ BODY {
 	background-size: var(--tile-background-size, 16px);
 	background-position: center;
 	background-repeat: no-repeat;
-	transition: var(--user-transition, background-color .25s ease-out, opacity .25s linear, width .2s linear, margin .25s);
+	transition: var(--user-transition, background-color .25s ease-out, opacity .25s ease, width .2s linear, margin .25s, height:2s ease);
 
 	/*z-index:2;*/
 	position: relative;
 	/*float:left;*/
+	box-sizing: border-box;
+}
+.tile[data-hidden="true"], GROUP[data-hidden="true"] {
+	display: none !important;
+	height:0;
 }
 .tile[data-disabled="true"] {
 	opacity:.1;
@@ -158,23 +165,26 @@ BODY {
 	color:white;
 }
 #menuBar {
-	height:24px;
+	/*height:24px;*/
 	user-select: none; 
 	-moz-user-select: none;
 	text-align:right;
 	cursor:grab;
+	overflow: hidden;
+	/*white-space: nowrap;*/
+	padding: 4px;
 }
 [data-menu="searchbar"] #menuBar {
 	cursor:default;
 }
 
 #menuBar > .tool {
-	background-size:20px;
-	height:20px;
-	width:20px;
+	background-size:16px;
+	height:16px;
+	width:16px;
 	display:inline-block;
-	vertical-align:top;
-	margin-top:4px;
+	vertical-align:middle;
+	/*margin-top:4px;*/
 	cursor:default;
 }
 #searchBarContainer {
@@ -279,7 +289,6 @@ BODY {
 	font-family:Arial;
 	font-size:11pt;
 	white-space:nowrap;
-	/*width:var(--iframe-body-width, auto);*/
 	width: calc(100% - 8px);
 	text-overflow: ellipsis;
 	padding: 0 4px;
@@ -290,8 +299,6 @@ BODY {
 }
 .tile.singleColumn {
 	width:100%;
-	/*max-width:300px;
-	min-width:300px;*/
 	height:20px;
 	font-size:11pt;
 	border:none;
@@ -455,6 +462,7 @@ GROUP > LABEL {
 	display:block;
 	padding: 2px 0px;
 	border-radius:2px;
+	text-overflow: ellipsis;
 	/*display:none;*/
 }
 
@@ -558,10 +566,12 @@ GROUP.inline {
 }
 GROUP.block {
 	display: block;
+	max-width: var(--iframe-body-width);
 }
 
 GROUP.block > LABEL {
 	/*pointer-events: none;*/
+	/*display: none;*/
 }
 
 GROUP.inline .tile:not(HR) {
@@ -642,6 +652,7 @@ HR.break {
 }
 .hide {
 	display: none !important;
+	height:0;
 }
 #deleteEngineDiv {
 	display:block;
@@ -663,7 +674,7 @@ HR.break {
 	width:var(--iframe-body-width, auto);
 	text-align: center;
 	white-space: nowrap;
-	text-overflow: ellipsis;
+	/*text-overflow: ellipsis;*/
 }
 #contextsBar > DIV {
 	display: inline-block;

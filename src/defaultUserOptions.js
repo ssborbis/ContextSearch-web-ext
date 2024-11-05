@@ -1,7 +1,16 @@
 const defaultUserOptions = {
-	searchEngines: defaultEngines || [],
-	nodeTree: {},
+	searchEngines: defaultEngines,
+	nodeTree: {
+		title: "/",
+		type: "folder",
+		children: [
+			
+		],
+		hidden: false,
+		id: "___root___"
+	},
 	lastUsedId: "",
+	lastUsedMethod: "",
 	hiddenEngines: "",
 	defaultGroupColor: "#CED7FF",
 	defaultGroupColorText: "#444444",
@@ -109,6 +118,8 @@ const defaultUserOptions = {
 	quickMenuSearchHotkeys: "noAction",
 	quickMenuSearchHotkeysFolders: "noAction",
 	quickMenuAutoMaxChars: 0,
+	quickMenuAutoMinChars: 0,
+	quickMenuAutoOnDoubleClick: true,
 	quickMenuOpeningOpacity: 1.0,
 	quickMenuTheme: "modern",
 	quickMenuAlwaysShowMenuBar: false,
@@ -144,6 +155,7 @@ const defaultUserOptions = {
 		rememberState: false,
 		openOnResults: false,
 		openOnResultsMinimized: false,
+		openOnResultsLastOpenedFolder: false,
 		scale:1.0,
 		domLayout:"",
 		setMinWidth:true
@@ -159,7 +171,8 @@ const defaultUserOptions = {
 			accuracy: "exactly",
 			ignorePunctuation: true,
 			caseSensitive: false,
-			limit: 0
+			limit: 0,
+			timeout:5000
 		},
 		highlightStyle: 'underline',
 		styles: [
@@ -180,6 +193,7 @@ const defaultUserOptions = {
 			windowType: 'docked',
 			openInAllTabs: false,
 			searchInAllTabs: false,
+			highlightAllTab: false,
 			offsets: {
 				top:0,
 				left:0,
@@ -237,7 +251,8 @@ const defaultUserOptions = {
 		openMethod: "openBackgroundTab",
 		paletteString: "eff0f1",
 		closeOnShake: false,
-		deadzone: 4
+		deadzone: 4,
+		closeOnBorder: true
 	},
 	openFoldersOnHoverTimeout: 0,
 	nightMode: false,
@@ -251,6 +266,7 @@ const defaultUserOptions = {
 	shakeSensitivity: 4,
 	blockList: ["moz-extension://*", "chrome://*"],
 	version: "1",
+	lastUpdated: 0,
 	quickMenuShowRecentlyUsed: false,
 	quickMenuShowHotkeysInTitle: false,
 	forceOpenResultsTabsAdjacent: false,
@@ -296,11 +312,29 @@ const defaultUserOptions = {
 	quickMenuCascadingFoldersHoverTimeout: 50,
 	quickMenuDefaultView: "grid",
 	searchBarDefaultView: "grid",
-	quickMenuUseOldStyle: false, // remove
-	searchBarUseOldStyle: false, // remove
 	nativeAppDownloadFolder: "",
 	showStatusBar: false,
 	quickMenuDisabledInNewTabs: false,
 	developerMode: false,
-	advancedImport: false
+	advancedImport: false,
+	dockingMoveFixedElements: false,
+	quickMenuPreventLinksOnMiddleButton: false,
+	quickMenuPreventScrollOnMiddleButton: false,
+	toolBarMenuDisablePageClicks:false,
+	searchBarCloseAfterNewTab:false,
+	autoTheme:false,
+	autoThemeLite:"modern",
+	autoThemeDark:"modern dark",
+	autoImportFirefoxEngines: true,
+	quickMenuOnlyOpenIfOverSelection: false,
+	removeConsecutiveSeparators: true,
+	scriptsUseBlobs: false,
+	copyUseDepreciatedExecCommand: false,
+	popupWindow: {
+		width:"300px",
+		height:"400px",
+		position:""
+	},
+	exportJsonPretty: false,
+	quickMenuCloseOnEditKeydown: false
 };

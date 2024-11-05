@@ -1,46 +1,18 @@
 // listen for right-mousedown and enable Add Custom Search menu item if no text is selected
-function inputAddCustomSearchHandler(input) {
-	
-	// input.addEventListener('focus', e => {
-	// 	browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
-	// });
-	
-	input.addEventListener('mousedown', ev => {
+document.addEventListener('mousedown', ev => {
 
-		if (
-			ev.which !== 3
-			|| getSelectedText(input)
-			|| input.ownerDocument.defaultView != top
-		) {
-			browser.runtime.sendMessage({action: "disableAddCustomSearchMenu"});
-			return;
-		}
+	if (
+		ev.which !== 3
+		|| getSelectedText(ev.target)
+		|| ev.target.ownerDocument.defaultView != top
+		|| !isTextBox(ev.target)
+	) {
+		return sendMessage({action: "disableAddCustomSearchMenu"});
+	}
 
-		browser.runtime.sendMessage({action: "enableAddCustomSearchMenu"});
+	sendMessage({action: "enableAddCustomSearchMenu"});
 
-	});
-}
-
-// Add Custom Search listener
-document.querySelectorAll('input,textarea').forEach( input => inputAddCustomSearchHandler(input) );
-
-// Add listener for dynamically added inputs
-var CS_observer = new MutationObserver( mutationsList => {
-	for(var mutation of mutationsList) {
-        if (mutation.type == 'childList') {
-			for (let node of mutation.addedNodes) {
-
-				if (node.nodeName === "INPUT")
-					inputAddCustomSearchHandler(node);
-				else if ( node.nodeType === 1 )
-					node.querySelectorAll('input').forEach( _node => inputAddCustomSearchHandler(_node) );
-
-			}
-        }
-    }
 });
-
-CS_observer.observe(document.body, {childList: true, subtree: true});
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -54,7 +26,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 				}
 			
-				if ( !message.se && !window.document.querySelector("input:focus,textarea:focus") && !message.searchEngine ) {
+				if ( !message.se && !window.document.querySelector("input:focus, textarea:focus, [contenteditable='true']:focus") && !message.searchEngine ) {
 					console.log("no focused input found");
 					return;
 				}
@@ -91,7 +63,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					
 					if (message.useOpenSearch) { // openCustomSearch called by page_action
 
-						browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: os_href}).then( details => {
+						sendMessage({action: "openSearchUrlToSearchEngine", url: os_href}).then( details => {
 
 							if (!details) {
 								console.log('Cannot build search engine from xml. Missing values');
@@ -106,7 +78,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	
 						let formdata = getFormData();
 
-						browser.runtime.sendMessage({action: "dataToSearchEngine", formdata: formdata}).then( result => {
+						sendMessage({action: "dataToSearchEngine", formdata: formdata}).then( result => {
 							
 							// use supplied search engine or get from focused form
 							let se = message.searchEngine || result.searchEngines[0];
@@ -117,7 +89,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 								
 								function inputHandler() {
 									if (!input.value) return;
-									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
+									sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								}
 
 								// capture ENTER event in case form executes before 'change' event
@@ -128,7 +100,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 									// remove the change handler to prevent duplicate test search
 									input.removeEventListener('change', inputHandler);
 									
-									browser.runtime.sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
+									sendMessage({action: "executeTestSearch", searchTerms: input.value, badSearchEngine: se});
 								});
 								
 								// input change likely means search performed
@@ -192,7 +164,7 @@ function getFormData() {
 
 	S.href = window.location.href;
 
-	var E = window.document.querySelector("input:focus");
+	var E = window.document.querySelector("input:focus, textarea:focus, [contenteditable='true']:focus");
 
 	// query parameter has name & form? ...
 	if ( E && E.name && E.form ) {

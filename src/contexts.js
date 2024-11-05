@@ -40,5 +40,8 @@ function filterContexts(root, context) {
 
 	});
 
+	if ( userOptions.removeConsecutiveSeparators )
+		removeConsecutiveSeparators(filteredNodeTree);
+
 	return filteredNodeTree;
 }

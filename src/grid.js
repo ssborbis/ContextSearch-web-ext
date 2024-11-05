@@ -121,7 +121,11 @@ class Grid {
 
 	makeFolderBrowser() {
 		let ul = makeFolderBrowser(userOptions.nodeTree);
+
 		$(this.o.browserId).parentNode.insertBefore(ul, $(this.o.browserId));
 		$(this.o.browserId).parentNode.removeChild($(this.o.browserId));
+
+		// id can be lost when restoring options again
+		ul.id = ul.id || this.o.browserId;
 	}
 }

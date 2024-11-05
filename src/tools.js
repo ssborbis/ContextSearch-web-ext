@@ -12,7 +12,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
+			sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 		}
 	},
 	{
@@ -31,13 +31,13 @@ const QMtools = [
 		}, 
 		action: async function(e) {
 
-			let hasPermission = await browser.runtime.sendMessage({action: "hasPermission", permission: "clipboardWrite"});
+			let hasPermission = await sendMessage({action: "hasPermission", permission: "clipboardWrite"});
 
 			if ( !hasPermission ) {
 				try {
 					await browser.permissions.request({permissions: ['clipboardWrite']});
 				} catch (err) {
-					browser.runtime.sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
+					sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
 					return;
 				}
 			}
@@ -46,7 +46,7 @@ const QMtools = [
 			this.querySelector('.tool').style.opacity = 0;
 			this.style.backgroundImage = 'url(icons/spinner.svg)';
 
-			let copy = await browser.runtime.sendMessage({action: "copyRaw"});
+			let copy = await sendMessage({action: "copyRaw"});
 
 		//	this.style.backgroundImage = 'url(icons/checkmark.svg)';
 			
@@ -92,7 +92,7 @@ const QMtools = [
 
 			if (this.dataset.disabled === "true") return;
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "search", 
 				info: {
 					menuItemId: "openAsLink",
@@ -127,13 +127,13 @@ const QMtools = [
 
 			setToolLockedState(this.tool || this, tool.on);
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
 			
 			if ( quickMenuObject.disabled )
-				browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
+				sendMessage({action: "closeQuickMenuRequest", eventType: "click_disable_icon"});
 
 		}
 	},
@@ -158,7 +158,7 @@ const QMtools = [
 				// wait for first resize event to lock menu
 				document.addEventListener('resizeDone', () => {
 					tile.dataset.locked = quickMenuObject.locked = true;
-					browser.runtime.sendMessage({action: "lockQuickMenu"});
+					sendMessage({action: "lockQuickMenu"});
 				}, {once: true});
 			}
 
@@ -173,9 +173,9 @@ const QMtools = [
 			quickMenuObject.locked = !quickMenuObject.locked;
 
 			if ( quickMenuObject.locked )
-				browser.runtime.sendMessage({action: "lockQuickMenu"});
+				sendMessage({action: "lockQuickMenu"});
 			else
-				browser.runtime.sendMessage({action: "unlockQuickMenu"});
+				sendMessage({action: "unlockQuickMenu"});
 
 			tool.on = quickMenuObject.locked;
 
@@ -235,7 +235,7 @@ const QMtools = [
 				
 			let node = findNode(userOptions.nodeTree, _node => _node.id === userOptions.lastUsedId);
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "search", 
 				info: {
 					menuItemId: node.id,
@@ -269,7 +269,7 @@ const QMtools = [
 				if ( tool.on ) {
 					
 					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
-					browser.runtime.sendMessage({
+					sendMessage({
 						action: "search", 
 						info: {
 							menuItemId:_id,
@@ -294,7 +294,7 @@ const QMtools = [
 			
 			saveUserOptions();
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
 			});
@@ -344,7 +344,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			browser.runtime.sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
+			sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
 		}
 	},
 	{
@@ -359,7 +359,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			browser.runtime.sendMessage({action: "openOptions", hashurl: "#quickMenu"});
+			sendMessage({action: "openOptions", hashurl: "#quickMenu"});
 		}
 	},
 	{
@@ -590,7 +590,7 @@ const QMtools = [
 				return;
 			}
 
-			browser.runtime.sendMessage({action: "editQuickMenu", on: _on });
+			sendMessage({action: "editQuickMenu", on: _on });
 
 			setDraggable();
 
@@ -619,7 +619,7 @@ const QMtools = [
 			return tile;
 		}, 
 		action: async function() {
-			let tabInfo = await browser.runtime.sendMessage({action:"getCurrentTabInfo"});
+			let tabInfo = await sendMessage({action:"getCurrentTabInfo"});
 			let url = new URL(tabInfo.url);
 
 			if ( !userOptions.blockList.includes(url.hostname) && confirm(i18n('addtoblocklistconfirm', url.hostname))) {
@@ -699,6 +699,69 @@ const QMtools = [
 			
 			resizeMenu({openFolder: true});
 			qm.expandMoreTiles();
+		}
+	},
+	{
+		name: 'context', 
+		icon: "icons/selection.svg",
+		title: i18n('context'),
+		context: ["quickmenu", "sidebar", "searchbar"],
+		init: function() {
+			let tile = buildSearchIcon(null, this.title);
+			tile.appendChild(createMaskIcon(this.icon));
+
+			tile.keepOpen = true;
+			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
+
+			tile.action = this.action;
+			tile.tool = this;
+
+			// let s = document.createElement('select');
+
+			// contexts.forEach( c => {
+			// 	let o = document.createElement('option');
+			// 	o.value = c;
+			// 	o.innerText = c;
+
+			// 	s.appendChild(o);
+			// });
+
+			// s.id = 'contexts_select';
+			// s.style.position = 'absolute';
+			// s.style.top = 0;
+			// s.style.left = 0;
+			// s.style.visibility = 'hidden';
+			// s.style.width = '100%';
+			// s.style.height = '100%';
+			// s.style.backgroundColor = 'transparent';
+			// s.style.border = 'none';
+			// s.style.color = 'var(--color)';
+			// s.onfocus = function() {
+			// 	s.style.backgroundColor = 'var(--bg-color)';
+			// }
+
+			// tile.appendChild(s);
+
+			// tile.addEventListener('mouseover', e => {
+			// 	s.style.visibility = null;
+			// });
+
+			// s.addEventListener('change', e => {
+			// 	s.style.visibility = 'hidden';
+				
+			// 	quickMenuObject.contexts = [s.value];
+			// 	quickMenuElementFromNodeTree( window.root ).then( _qm => {
+			// 		qm = _qm;
+			// 		resizeMenu({openFolder:true});
+			// 	});
+				
+			// });
+
+			return tile;
+		}, 
+		action: async function() {
+			contextsBar.classList.toggle("hide");
+			resizeMenu({openFolder:true});
 		}
 	},
 	// {
@@ -783,7 +846,7 @@ const QMtools = [
 
 		//	if (this.dataset.disabled === "true") return;
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "openTab", 
 				openMethod: getOpenMethod(e),
 				url:sb.value
@@ -805,23 +868,13 @@ const QMtools = [
 		},
 		action: function(e) {
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "download",
 				url:sb.value
 			});
 		}
 	}
 ];
-
-async function newMenuFromBookmarks() {
-	let nodes = await browser.runtime.sendMessage({action: "getBookmarksAsNodeTree"});
-	console.log(nodes);
-	qm = await quickMenuElementFromNodeTree(nodes);
-}
-
-function getToolTile(name) {
-	return document.querySelector(`[data-type="tool"][data-name="${name}"]`);
-}
 
 function setToolLockedState(tool, status) {
 
@@ -835,58 +888,6 @@ function setToolLockedState(tool, status) {
 
 var toolStatuses = {};
 
-function makeMaskCanvas(url, color) { // depreciated
 
-	return new Promise( (resolve, reject) => {
-
-		let img = new Image();
-
-		img.onload = () => {
-
-			var canvas=document.createElement("canvas");
-			var ctx=canvas.getContext("2d");
-			ctx.canvas.width = img.width;
-			ctx.canvas.height = img.height;
-			ctx.save();
-			
-			// draw the shape we want to use for clipping
-			ctx.drawImage(img, 0, 0);
-
-			// change composite mode to use that shape
-			ctx.globalCompositeOperation = 'source-in';
-
-			// draw the image to be clipped
-			// ctx.drawImage(img, 0, 0);
-
-			ctx.beginPath();
-			ctx.rect(0, 0, img.width, img.height);
-			ctx.fillStyle = color;
-			ctx.fill();
-			ctx.restore();
-			
-			let data = canvas.toDataURL("image/png");
-
-			if (data.length < 10) reject("BadDataURL");
-			else resolve(data);
-		}
-
-		img.onerror = function(err) { reject(err) }
-		
-		img.src = url;
-
-	});
-}
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
-
-function getBrightness(el) {
-
-	let rgbCSS = window.getComputedStyle(el, null).getPropertyValue('background-color');
-
-	let sep = rgbCSS.indexOf(",") > -1 ? "," : " ";
-  rgb = rgbCSS.substr(4).split(")")[0].split(sep);
-
- 	return Math.round(((parseInt(rgb[0]) * 299) +
-                      (parseInt(rgb[1]) * 587) +
-                      (parseInt(rgb[2]) * 114)) / 1000);
-}

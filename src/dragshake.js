@@ -69,46 +69,40 @@ let DragShake = function() {
 	return this;
 }
 
+function copyNodeStyle(sourceNode, targetNode) {
+  const computedStyle = window.getComputedStyle(sourceNode);
+  Array.from(computedStyle).forEach(key => targetNode.style.setProperty(key, computedStyle.getPropertyValue(key), computedStyle.getPropertyPriority(key)))
+}
+
 function dragOverIframeDiv(el) {
 	var rect = el.getBoundingClientRect();
 
-	var style = window.getComputedStyle ? getComputedStyle(el, null) : el.currentStyle;
-
-	if ( !style.position || style.position !== "fixed" ) {
-		console.warn('NotFixedPosition', el);
-		return;
-	}
-
 	let div = document.createElement('div');
-	div.style.display = 'inline-block';
-	div.style.position = 'fixed';
-	div.id = 'CS_' + gen();
-	div.style.left = style.left;
-	div.style.top = style.top;
-	div.style.width = rect.width + "px";
-	div.style.height = rect.height + "px";
-	div.style.zIndex = style.zIndex ? style.zIndex + 1 : 2;
 
-	div.style.border="1px dashed #6ec17988"
+	copyNodeStyle(el, div);
+
+	div.id = 'CS_' + gen();
+	div.style.zIndex = div.style.zIndex ? div.style.zIndex + 1 : 2;
+	div.style.opacity = 0;
 
 	getShadowRoot().appendChild(div);
 
-	div.addEventListener('dragover', e => e.preventDefault())
+	div.addEventListener('dragover', e => e.preventDefault());
 
-	div.addEventListener('drop', e => {
-
-		el.contentWindow.postMessage({
-			drop: true,
-			pageX:e.pageX, 
-			pageY:e.pageY,
-			clientX:e.clientX,
-			clientY:e.clientY,
-			offsetX:e.offsetX,
-			offsetY:e.offsetY,
-			screenX:e.screenX,
-			screenY:e.screenY
-		}, el.src);
-
+	['drop','dragover'].forEach( eventType => {
+		div.addEventListener(eventType, e => {
+			el.contentWindow.postMessage({
+				eventType: eventType,
+				pageX:e.pageX, 
+				pageY:e.pageY,
+				clientX:e.clientX,
+				clientY:e.clientY,
+				offsetX:e.offsetX,
+				offsetY:e.offsetY,
+				screenX:e.screenX,
+				screenY:e.screenY
+			}, el.src);
+		});
 	});
 
 	document.addEventListener('dragend', e => {

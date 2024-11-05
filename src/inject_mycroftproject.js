@@ -1,17 +1,17 @@
 if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 
-	browser.runtime.sendMessage({action: "getOpenSearchLinks", frame: true}).then( async oses => {
+	sendMessage({action: "getOpenSearchLinks", frame: true}).then( async oses => {
 
 		for ( ose of oses ) {
 
 			// skip default mycroftproject engine
 			if ( ose.href.endsWith('/opensearch.xml')) continue;
 
-			let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
+			let xml_se = await sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
 				return (!details) ? null : details.searchEngines[0];
 			});
 
-			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
+			return sendMessage({action: "openCustomSearch", se: xml_se});
 		}
 	});
 }

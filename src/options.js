@@ -7,9 +7,23 @@ var userOptions = {};
 var userOptionsHasUpdated = false;
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
-	if ( message.userOptions && message.source && message.source.url != browser.runtime.getURL(window.location.href)) {
+
+	if ( message.userOptions && message.source && message.source.url != window.location.href) {
+
+		if ( // only prompt and reload if the nodeTree has changed
+			JSON.stringify(message.userOptions.nodeTree) != JSON.stringify(userOptions.nodeTree)
+		//	confirm("Options have been updated by another tab. Reload? ")
+		) return window.location.reload();
+
+		console.log('updating userOptions');
 		userOptions = message.userOptions;
+		restoreOptions(userOptions);
 	}
+});
+
+// show instructions
+$("#selectMozlz4FileButton").addEventListener('click', async ev => {
+	if ( !confirm(i18n("ImportDescription"))) ev.preventDefault();
 });
 
 // Browse button for manual import
@@ -166,15 +180,15 @@ async function restoreOptions(restoreUserOptions) {
 				}
 
 				if ( type === 'string' || type === 'number' )
-					el.value = o[key];	
+					el.value = o[key];
 			}
 		}
 
 		// restore settings with matching ids
 		traverse(uo, null);
 		
-		$('#quickMenuKey').innerText = keyCodeToString(uo.quickMenuKey) || i18n('ClickToSet');
-		$('#contextMenuKey').innerText = keyCodeToString(uo.contextMenuKey) || i18n('ClickToSet');
+		$('#quickMenuKey').innerText = Shortcut.keyCodeToString(uo.quickMenuKey) || i18n('ClickToSet');
+		$('#contextMenuKey').innerText = Shortcut.keyCodeToString(uo.contextMenuKey) || i18n('ClickToSet');
 
 		for (let p of document.getElementsByClassName('position')) {
 			p.classList.remove('active')
@@ -198,7 +212,7 @@ async function restoreOptions(restoreUserOptions) {
 		$('#c_highLightBackgroundActive').value = uo.highLight.activeStyle.background;
 		$('#s_highLightOpacity').value = uo.highLight.opacity;
 
-		$('#style_dark').disabled = !uo.nightMode;
+	//	$('#style_dark').disabled = !uo.nightMode;
 
 		$('#cb_quickMenuToolsLockPersist').checked = (() => {
 			let tool = uo.quickMenuTools.find( t => t.name === "lock"); 
@@ -272,12 +286,32 @@ async function restoreOptions(restoreUserOptions) {
 	}
 
 	return new Promise( async (resolve, reject) => {
-		await browser.runtime.sendMessage({action: "checkForOneClickEngines"});
-		let uo = await browser.runtime.sendMessage({action: "getUserOptions"});
+		await sendMessage({action: "checkForOneClickEngines"});
+		let uo = await sendMessage({action: "getUserOptions"});
 		onGot(uo);
 		resolve();
 	});	
 }
+
+// function objectToKeyStrings(obj, callback) {
+// 	function traverse(o, parentKey) {
+// 		for ( let key in o) {
+
+// 			let longKey = ( parentKey ) ? parentKey + "." + key : key;
+
+// 			let type = typeof o[key];
+
+// 			if ( type === 'object' && !Array.isArray(o[key]) )
+// 				traverse(o[key], longKey);
+// 			else callback(o[key]);
+// 		}
+// 	}
+
+// 	// restore settings with matching ids
+// 	traverse(obj, null);
+// }
+
+// function 
 
 function saveOptions(e) {
 	debounce(_saveOptions, 250, "saveOptionsDebouncer");
@@ -427,7 +461,7 @@ function _saveOptions(e) {
 	})();
 
 	// prevent DeadObjects
-	var setting = browser.runtime.sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
+	var setting = sendMessage({action: "saveUserOptions", userOptions: JSON.parse(JSON.stringify(userOptions))});
 	return setting.then(onSet, onError);
 }
 
@@ -472,7 +506,9 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildToolsBarIcons();
 	sortAdvancedOptions();
 	buildAdditionalSearchActionsTable();
+	setAutoDarkMode();
 
+	console.log(document.getElementById("autoPasteFromClipboard"));
 	addDOMListeners();
 
 	hashChange();
@@ -528,7 +564,7 @@ function addDOMListeners() {
 		}
 	});
 
-	["quickMenuScale", "sideBar.scale", "findBar.scale", "quickMenuIconScale"].forEach( id => {
+	["quickMenuScale", "sideBar.scale", "highLight.findBar.scale", "quickMenuIconScale"].forEach( id => {
 		$(id).addEventListener('input', ev => {
 			$(`i_${id}`).value = (parseFloat(ev.target.value) * 100).toFixed(0) + "%";
 		});
@@ -544,7 +580,7 @@ function addDOMListeners() {
 	$('#contextMenuKey').addEventListener('click', keyButtonListener);
 
 	$('#syncWithFirefoxSearch').addEventListener('change', e => {
-		$('#searchEnginesParentContainer').style.display = e.target.checked ? "none" : null;
+		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = e.target.checked ? "none" : null);
 	});
 
 	$('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
@@ -582,7 +618,7 @@ function addDOMListeners() {
 }
 
 document.addEventListener('userOptionsLoaded', e => {
-	$('#searchEnginesParentContainer').style.display = $('#syncWithFirefoxSearch').checked ? "none" : null;
+		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = $('#syncWithFirefoxSearch').checked ? "none" : null);
 });
 
 function keyButtonListener(e) {
@@ -596,7 +632,7 @@ function keyButtonListener(e) {
 			e.target.innerText = i18n('ClickToSet');
 			e.target.value = 0;
 		} else {
-			e.target.innerText = keyCodeToString(evv.which);
+			e.target.innerText = Shortcut.keyCodeToString(evv.which);
 			e.target.value = evv.which;
 		}
 		
@@ -612,23 +648,6 @@ function fixNumberInput(el, _default, _min, _max) {
 	if (!el.value.isInteger) el.value = Math.floor(el.value);
 	if (el.value > _max) el.value = _max;
 	if (el.value < _min) el.value = _min;
-}
-
-function getKeyString(keys) {
-	if ( Array.isArray(keys) ) {
-		keys.forEach((key, index) => {
-			keys[index] = keyCodeToString(key);
-		});
-		
-		console.log(keys);
-	} else {
-	}
-}
-
-function keyCodeToString(code) {
-	if ( code === 0 ) return null;
-	
-	return keyTable[code] /*|| String.fromCharCode(code)*/ || code.toString();
 }
 
 function keyArrayToButtons(arr, options) {
@@ -654,7 +673,7 @@ function keyArrayToButtons(arr, options) {
 		for (let i=0;i<arr.length;i++) {
 
 			let hk = arr[i]
-			let key = keyCodeToString(hk);
+			let key = Shortcut.keyCodeToString(hk);
 			if (key.length === 1) key = key.toUpperCase();
 			
 			div.appendChild(makeButton(key));
@@ -664,8 +683,10 @@ function keyArrayToButtons(arr, options) {
 		if ( arr.ctrl ) div.appendChild(makeButton("Ctrl"));
 		if ( arr.meta ) div.appendChild(makeButton("Meta"));
 		if ( arr.shift ) div.appendChild(makeButton("Shift"));
+
+		let button = makeButton(arr.key);
 		
-		div.appendChild(makeButton(arr.key));
+		div.appendChild(button);
 	} else {
 		console.error('keyCodeToString error')
 		return;
@@ -936,18 +957,20 @@ function buildImportExportButtons() {
 	let b_export = $('#b_exportSettings');
 	b_export.onclick = function() {
 
+		let pretty = userOptions.exportJsonPretty ? "\t" : null;
+
 		let date = new Date().toISOString().replace(/:|\..*/g,"").replace("T", "_");
 		
 		if ( userOptions.exportWithoutBase64Icons ) {
-			let uoCopy = Object.assign({}, userOptions);
+			let uoCopy = JSON.parse(JSON.stringify(userOptions));
 			uoCopy.searchEngines.forEach( se => se.icon_base64String = "");
 			findNodes(uoCopy.nodeTree, node => {
 				if ( node.type === "oneClickSearchEngine" )
 					node.icon = "";
 			});
-			download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy));
+			download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy, null, pretty));
 		} else {
-			download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions));
+			download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions, null, pretty));
 		}
 	}
 	
@@ -1038,7 +1061,7 @@ function buildImportExportButtons() {
 
 				if ( folder.children.length ) uo.nodeTree.children.push(folder);
 
-				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: uo});
+				await sendMessage({action: "saveUserOptions", userOptions: uo});
 				location.reload();
 
 				return;
@@ -1198,10 +1221,10 @@ function buildImportExportButtons() {
 				if ( !newUserOptions ) return;
 				
 				// update imported options
-				let _uo = await browser.runtime.sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
+				let _uo = await sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
 				
 				try {
-					_uo = await browser.runtime.sendMessage({action: "updateUserOptionsVersion", userOptions: _uo})		
+					_uo = await sendMessage({action: "updateUserOptionsVersion", userOptions: _uo})		
 				} catch ( error ) {
 					console.log(error);
 					if ( !confirm("Failed to update config. This may cause some features to not work. Install anyway?"))
@@ -1240,7 +1263,7 @@ function buildImportExportButtons() {
 				}
 
 				userOptions = _uo;
-				await browser.runtime.sendMessage({action: "saveUserOptions", userOptions: _uo});
+				await sendMessage({action: "saveUserOptions", userOptions: _uo});
 				location.reload();
 				
 
@@ -1262,6 +1285,17 @@ function buildUploadOnHash() {
 	if (params.has('click')) {
 		document.getElementById(params.get('click')).click();
 		history.pushState("", document.title, window.location.pathname);
+	}
+
+	// open search manager to node
+	if (params.has('id') && location.hash == "#engines") {
+	
+		setTimeout(() => {
+			let id = params.get('id');
+			let li = document.querySelector(`LI[data-nodeid="${id}"]`);
+
+			if ( li ) li.dispatchEvent(new MouseEvent('dblclick'));
+		}, 500);
 	}
 }
 
@@ -1311,7 +1345,7 @@ function buildHelpTab() {
 		if (i18n(el.dataset.i18n)) {
 			textNode.nodeValue = i18n(el.dataset.i18n);
 
-				el.addEventListener('click', e => {
+				el.addEventListener('dblclick', e => {
 					if ( userOptions.developerMode ) {
 						el.style.backgroundColor = "rgba(0,0,255,.1)";
 						setTimeout(() => el.style.backgroundColor = null, 150);
@@ -1475,6 +1509,7 @@ function buildSearchActions() {
 			"openNewWindow": {i18n: "SearchActionsNewWindow"},
 			"openNewIncognitoWindow": {i18n: "SearchActionsIncognitoWindow"},
 			"openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
+			"openPopup": {i18n: "SearchActionsPopup"},
 			"keepMenuOpen": {i18n: "KeepMenuOpen"},
 			"noAction": {i18n: "SearchActionsNoAction"}
 		};
@@ -1627,18 +1662,29 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 
 $('#nightmode').addEventListener('click', () => {
 	userOptions.nightMode = !userOptions.nightMode;
-
-	$('#style_dark').disabled = !userOptions.nightMode;
+	setAutoDarkMode();
 	saveOptions();
 });
 
+function setAutoDarkMode() {
+	if ( userOptions.autoTheme ) {
+		$('#style_dark').disabled = !isDarkMode();
+		$('#nightmode').style.display = 'none';
+	} else {
+			$('#style_dark').disabled = !userOptions.nightMode;
+	}
+}
+
 function buildThemes() {
-	$('#quickMenuTheme').innerHTML = null;
-	themes.forEach( t => {
-		let option = document.createElement('option');
-		option.value = t.name;
-		option.innerText = i18n(t.name.replace(" ","_")) || t.name;
-		$('#quickMenuTheme').appendChild(option);
+
+	document.querySelectorAll('.themeSelector').forEach( s => {
+		s.innerHTML = null;
+		themes.forEach( t => {
+			let option = document.createElement('option');
+			option.value = t.name;
+			option.innerText = i18n(t.name.replace(" ","_")) || t.name;
+			s.appendChild(option);
+		});
 	});
 }
 
@@ -1683,8 +1729,8 @@ function buildShortcutTable() {
 	let table = $('#shortcutTable');
 
 	setButtons = (el, key) => {
-		el.innerText = null;
-		el.appendChild(keyArrayToButtons(key));
+		el.innerText = Shortcut.getShortcutStringFromKey(key);
+	//	el.appendChild();//keyArrayToButtons(key));
 	}
 
 	defaultToUser = key => {
@@ -1699,7 +1745,7 @@ function buildShortcutTable() {
 		}
 	}
 
-	defaultShortcuts.sort((a,b) => a.name > b.name).forEach( s => {
+	Shortcut.defaultShortcuts.sort((a,b) => a.name > b.name).forEach( s => {
 
 		const us = userOptions.userShortcuts.find(_s => _s.id == s.id);
 		const ds = defaultToUser(s);
@@ -1764,55 +1810,6 @@ function buildShortcutTable() {
 	}
 }
 
-function shortcutListener(hk, options) {
-
-	options = options || {};
-
-	return new Promise(resolve => {
-			
-		preventDefaults = e => {
-			e.preventDefault();
-			e.stopPropagation();
-		}
-
-		document.addEventListener('keydown', preventDefaults);
-		document.addEventListener('keypress', preventDefaults);
-		
-		hk.innerHTML = '<img src="/icons/spinner.svg" style="height:1em;margin-right:10px;vertical-align:middle" /> ';
-		hk.appendChild(document.createTextNode(i18n('PressKey')));
-				
-		document.addEventListener('keyup', e => {
-			
-			e.preventDefault();
-			e.stopPropagation();
-			
-			if ( e.key === "Escape" ) {
-				hk.innerHTML = null;
-				hk.appendChild(keyArrayToButtons(options.defaultKeys || []));
-				resolve(null);
-				return;
-			}
-			
-			let key = {
-				alt: e.altKey,
-				ctrl: e.ctrlKey,
-				meta: e.metaKey,
-				shift: e.shiftKey,
-				key: e.key
-			}
-			
-			hk.innerHTML = null;
-			hk.appendChild(keyArrayToButtons(key));
-								
-			document.removeEventListener('keydown', preventDefaults);
-			document.removeEventListener('keypress', preventDefaults);
-
-			resolve(key);
-			
-		}, {once: true});
-	});	
-}
-
 function imageUploadHandler(el, callback) {
 
 	el.addEventListener('change', e => {
@@ -1862,37 +1859,61 @@ function buildAdvancedOptions() {
 		let type = typeof value;
 
 		let el = document.createElement('input');
-
-		el.id = key;
-
-		if ( type === 'boolean')
-			el.type = 'checkbox';
-
-		if ( type === 'string' )
-			el.type = 'input';
+	
+		el.dataset.id = key;
 		
-		if ( type === 'number' )
-			el.type = 'number';
+		switch (type) {
+			case 'boolean':
+				el.type = 'checkbox';
+				break;
+
+			case 'string':
+				el.type = 'input';
+				break;
+			
+			case 'number':
+				el.type = 'number';
+				break;
+
+			default: 
+				return;
+		}
 
 		return el;
 	}
 
+	// get all top tier settings
+	for ( const key in defaultUserOptions )
+		advancedOptions.push({id: key});
+
 	advancedOptions.forEach( o => {
+
+		// only list options not already in use
+		if ( document.getElementById(o.id) || document.querySelector('[data-id="' + o.id + '"]') ) return;
+
+		let el = makeInput(o.id);
+		if ( !el ) {
+			return debug("Bad -> " + o.id);
+		}
+
+		el.id = o.id;
+
 		let tr = document.createElement('tr');
 		let td1 = document.createElement('td');
 		let td2 = document.createElement('td');
+		let reset = document.createElement('td');
 
 		tr.appendChild(td1);
 		tr.appendChild(td2);
+		tr.appendChild(reset);
 
 		td1.innerText = o.id;
-		td1.title = i18n(o.id.replace(".", "_") + "Tooltip") || o.i18n;
+		td1.title = i18n(o.i18n || "") || i18n(o.id.replace(".", "_") + "Tooltip");
 		td1.style.cursor = 'help';
 
-		td2.appendChild(makeInput(o.id));
+		td2.appendChild(el);
 
-
-		$('advancedSettingsTable').appendChild(tr);
+		$('#advancedSettingsTable').appendChild(tr);
 	})
 }
 
@@ -2047,7 +2068,7 @@ $("#b_resetUserOptions").addEventListener('click', e => {
 		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
 		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions: newUserOptions})
+		sendMessage({action: "saveUserOptions", userOptions: newUserOptions})
 			.then(() => location.reload());
 	}
 });

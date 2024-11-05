@@ -35,7 +35,7 @@ function runAtTransitionEnd(el, prop, callback, ms) {
 	}, ms);
 }
 
-function recentlyUsedListToFolder() {
+function recentlyUsedListToFolder(context) {
 
 	let folder = {
 		type: "folder",
@@ -52,6 +52,11 @@ function recentlyUsedListToFolder() {
 
 		// filter missing nodes
 		if ( lse ) folder.children.push(Object.assign({}, lse));
+
+		// filter contexts 
+		if ( context && filterContexts ) {
+			filterContexts(folder, contexts);
+		}
 	});
 
 	return folder;
@@ -172,6 +177,7 @@ function isTextBox(element) {
 			element.nodeName == "TEXTAREA" ||
 			(element.nodeName == "INPUT" && /^(?:text|email|number|search|tel|url|password)$/i.test(element.type)) ||
 			element.isContentEditable
+			|| element.closest("[contenteditable='true']")
 		)
 	) ? true : false;
 }
@@ -193,11 +199,26 @@ const i18n_layout_titles = {
 	"contextsBar": 			'contexts'
 };
 
-const log = console.log;
+function isDarkMode() {
+	return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+function isSameStringMinusLineBreaks(str1, str2) {
+	return str1.replace(/(\r\n|\r|\n|\s+)/g, "").trim() == str2.replace(/(\r\n|\r|\n|\s+)/g, "").trim();
+}
+
+function gen() {
+	return (Date.now().toString(36) + Math.random().toString(36).substr(2, 5)).toUpperCase();
+}
+
 const debug = (...args) => {
-	if ( userOptions && userOptions.developerMode )
-		console.log(...args)
+	if ( userOptions && userOptions.developerMode ) {
+		try {
+			let e = new Error();
+			let stack = e.stack.trim().split('\n').pop();
+			console.debug(...args, stack.replace(/.*\/(.*$:?)/, "$1"));
+		} catch (error) {}
+	}
 }
 const i18n = browser.i18n.getMessage;
 const sendMessage = browser.runtime.sendMessage;
-

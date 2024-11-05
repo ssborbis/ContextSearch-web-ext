@@ -1,4 +1,4 @@
-function replaceOpenSearchParams(options) {
+async function replaceOpenSearchParams(options) {
 	
 	// replace OpenSearch params
 	template 	= options.template || "";
@@ -7,8 +7,42 @@ function replaceOpenSearchParams(options) {
 	userdomain 	= options.domain || ""
 	
 	let domains = getDomains(url);
+
+	let sto = window.searchTermsObject || {};
+
+	// replace searchTermObject elements containing OR
+
+	// {((?:audio|linkText|frame|page|video|link|image|selection).*?)}
+
+// 	(() => {
+//   let obj = {
+//     link: "",
+//     linkText: "link text",
+//     image: "image.png",
+//     selection: "highlighted text"
+//   }
+ 
+//  let template = "{link|image|linkText} blah blah {image}";
+//  let rx = /{((?:audio|linkText|frame|page|video|link|image|selection).*?)}/g;
+//  var match;
+//  while ((match = rx.exec(template)) != null) {
+   
+//    console.log(match[1])
+   
+//    loop1: for ( let c of match[1].split('|') ) {
+//      if ( obj[c] ) { 
+//        template = template.replace(match[0], obj[c]);
+//        break loop1;
+//      }
+//    }
+   
+// }
+   
+//    console.log(template);
+ 
+// })();
 	
-	return template
+	template = template
 		.replace(/%sl|{searchterms}/g, s => searchterms.toLowerCase())
 		.replace(/%su|{SEARCHTERMS}/g, s => searchterms.toUpperCase())
 		.replace(/%s|{searchTerms}/g, searchterms)
@@ -24,7 +58,35 @@ function replaceOpenSearchParams(options) {
 		.replace(/{.+?\?}/g,"") // optionals
 		.replace(/{moz:.+?}/g, "") // moz specific
 		.replace(/%u|{url}/g, url)
-		.replace(/{.+?}/g, ""); // all others
+		.replace(/{page}/g, sto.page || "")
+		.replace(/{frame}/g, sto.frame || "")
+		.replace(/{audio}/g, sto.audio || "")
+		.replace(/{selection}/g, sto.selection || "")
+		.replace(/{image}/g, sto.image || "")
+		.replace(/{link}/g, sto.link || "")
+		.replace(/{linkText}/g, sto.linkText || "")
+		.replace(/{video}/g, sto.video || "")
+//		.replace(/{.+?}/g, ""); // all others
+	;
+
+	try {
+
+		// firefox
+		template = template.replace(/{clipboard}/g, await navigator.clipboard.readText());
+	} catch (error) {
+
+		// chrome
+		let div = document.createElement("div");
+	    div.contentEditable = true;
+	    var actElem = document.activeElement.appendChild(div).parentNode;
+	    div.focus();
+	    document.execCommand("Paste", null, null);
+	    var paste = div.innerText;
+	    actElem.removeChild(div);   
+	   	template = template.replace(/{clipboard}/g, paste);
+	}
+
+	return template;
 }
 
 function nameValueArrayToParamString(arr) {

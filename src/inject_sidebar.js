@@ -1,78 +1,70 @@
-function getIframe() { return getShadowRoot().getElementById('CS_sbIframe') }
+function getSideBar() { return getShadowRoot().getElementById('CS_sbIframe') }
 function getOpeningTab() { return getShadowRoot().getElementById('CS_sbOpeningTab') }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-	userOptions = uo;
-
-	if ( userOptions.sideBar.widget.enabled )	
-		makeOpeningTab(true);
-
-	if ( userOptions.sideBar.startOpen )
-		openSideBar();
-
-	window.addEventListener('message', e => {
-		
-		switch ( e.data.action ) {
-			case "closeSideBar":
-				closeSideBar();
-				return;
-				break;
-				
-			case "resizeSideBarIframe":
-
-				let url = new URL(browser.runtime.getURL(''));
-
-				if ( e.origin !== url.origin ) return;
-				
-				if ( !e.data.size ) return;
-
-				let iframe = getIframe();
-				if ( !iframe ) return;
-
-				if ( !userOptions.enableAnimations ) 
-					iframe.style.setProperty('--user-transition', 'none');
-
-				if ( iframe.resizeWidget && e.data.tileSize) {
-					iframe.resizeWidget.options.tileSize = {
-						width: e.data.tileSize.width,
-						height: e.data.tileSize.height
-					};
-				}
-				
-				if ( iframe.resizeWidget && e.data.singleColumn !== undefined )
-					iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
-
-				if ( e.data.size.height && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing) {
-
-					if ( iframe.docking.options.windowType === 'undocked' )
-						iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale) + "px";
-					else
-						iframe.style.height = window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale + 'px';
-				}
-
-				if ( e.data.size.width && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing )						
-					iframe.style.width = e.data.size.width + "px";
-
-				runAtTransitionEnd(iframe, ["width", "height"], () => {
-					
-					iframe.contentWindow.postMessage({action: "resizeDone"}, browser.runtime.getURL('/searchbar.html'));
-
-					if ( iframe.docking.options.windowType === 'undocked' )
-						repositionOffscreenElement(iframe);
-					
-					if ( iframe.docking.options.windowType === 'docked' )
-						iframe.docking.offset();
-					
-					if ( iframe.resizeWidget )
-						iframe.resizeWidget.setPosition();
-				});
-				
-				break;
-
-		}
-	});
+window.addEventListener('message', e => {
 	
+	switch ( e.data.action ) {
+		case "closeSideBar":
+			closeSideBar();
+			return;
+			break;
+		case "resizeIframe":
+
+			let url = new URL(browser.runtime.getURL(''));
+
+			if ( e.origin !== url.origin ) return;
+			
+			if ( !e.data.size ) return;
+
+			let iframe = getSideBar();
+
+			if ( !iframe ) return;
+
+			if (e.source != iframe.contentWindow) return;
+
+			if ( !userOptions.enableAnimations ) 
+				iframe.style.setProperty('--user-transition', 'none');
+
+			if ( iframe.resizeWidget && e.data.tileSize) {
+				iframe.resizeWidget.options.tileSize = {
+					width: e.data.tileSize.width,
+					height: e.data.tileSize.height
+				};
+			}
+			
+			if ( iframe.resizeWidget && e.data.singleColumn !== undefined )
+				iframe.resizeWidget.options.allowHorizontal = !e.data.singleColumn;
+
+			if ( e.data.size.height && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing) {
+
+				if ( iframe.docking.options.windowType === 'undocked' )
+					iframe.style.height = Math.min(e.data.size.height, window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale) + "px";
+				else
+					iframe.style.height = window.innerHeight * window.devicePixelRatio / userOptions.sideBar.scale + 'px';
+			}
+
+			if ( e.data.size.width && iframe.resizeWidget && !iframe.resizeWidget.options.isResizing )						
+				iframe.style.width = e.data.size.width + "px";
+
+			runAtTransitionEnd(iframe, ["width", "height"], () => {
+				
+				iframe.contentWindow.postMessage({action: "resizeDone"}, browser.runtime.getURL('/searchbar.html'));
+
+				if ( iframe.docking.options.windowType === 'undocked' )
+					repositionOffscreenElement(iframe);
+				
+				if ( iframe.docking.options.windowType === 'docked' )
+					iframe.docking.offset();
+				
+				if ( iframe.resizeWidget )
+					iframe.resizeWidget.setPosition();
+			});
+			
+			break;
+
+	}
 });
+	
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
@@ -82,10 +74,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 		case "openSideBar":
 		case "sideBarHotkey":
-			if ( getIframe() )
+			if ( getSideBar() )
 				closeSideBar();
 			else
 				openSideBar();
+			break;
+
+		case "makeOpeningTab":
+			makeOpeningTab(true);
 			break;
 	}
 });
@@ -113,7 +109,7 @@ function openSideBar(options) {
 
 	iframe.setAttribute('allow', "clipboard-read; clipboard-write");
 
-	iframe.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
+	iframe.style.setProperty('--cs-custom-scale', userOptions.sideBar.scale);
 
 	iframe.allowTransparency = true;
 
@@ -127,7 +123,7 @@ function openSideBar(options) {
 			userOptions.sideBar.windowType = o.windowType;
 		}
 
-		browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveSideBarOptions"});
+		sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "saveSideBarOptions"});
 	}
 
 	iframe.onload = function() {
@@ -181,7 +177,7 @@ function openSideBar(options) {
 			iframe.dataset.opened = true;
 			
 			// add resize widget	
-			let resizeWidget = addResizeWidget(iframe, {
+			let resizeWidget = ResizeWidget(iframe, {
 				tileSize: {width:32, height:32}, // snap size - should update on resizeSidebar message
 				columns: userOptions.sideBar.columns,
 				rows: 100, // arbitrary init value
@@ -216,7 +212,7 @@ function openSideBar(options) {
 					if ( resizeWidget.options.allowHorizontal )
 						userOptions.sideBar.columns = o.columns;
 
-					browser.runtime.sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "sideBar onDrop"}).then(() => {
+					sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "sideBar onDrop"}).then(() => {
 
 						// reset the fixed quadrant
 						iframe.style.transition = 'none';
@@ -249,7 +245,7 @@ function openSideBar(options) {
 
 function closeSideBar(minimize) {
 	
-	let iframe = getIframe();
+	let iframe = getSideBar();
 	let openingTab = getOpeningTab();
 
 	if ( openingTab || minimize) { 
@@ -274,7 +270,7 @@ function closeSideBar(minimize) {
 function saveState(state) {
 	if ( userOptions.sideBar.rememberState ) {
 		userOptions.sideBar.startOpen = state;
-		browser.runtime.sendMessage({action: "saveUserOptions", "userOptions": userOptions, source: "sideBar saveState"});
+		sendMessage({action: "saveUserOptions", "userOptions": userOptions, source: "sideBar saveState"});
 	}
 }
 
@@ -285,7 +281,7 @@ function makeOpeningTab() {
 	openingTab.id = 'CS_sbOpeningTab';
 	openingTab.style.setProperty("--opening-icon", 'url(' + browser.runtime.getURL("/icons/search.svg") + ')');
 	openingTab.classList.add('CS_handle');
-	openingTab.style.setProperty('--cs-dpi', userOptions.sideBar.scale);
+	openingTab.style.setProperty('--cs-custom-scale', userOptions.sideBar.scale);
 	
 	openingTab.addEventListener('click', () => {
 		if ( openingTab.moving ) return false;	
@@ -295,7 +291,7 @@ function makeOpeningTab() {
 	//open sidebar if dragging text over
 	openingTab.addEventListener('dragenter', e => {
 		openingTab.dispatchEvent(new MouseEvent('click'));
-		getIframe().focus();
+		getSideBar().focus();
 	});
 	
 	// prevent docking on double-click
@@ -317,10 +313,10 @@ function makeOpeningTab() {
 			userOptions.sideBar.offsets = o.lastOffsets;
 
 			if (!o.init)
-				browser.runtime.sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "openingTab onUndock"});
+				sendMessage({action: "saveUserOptions", userOptions:userOptions, source: "openingTab onUndock"});
 			
 			// match sbContainer position with openingTab
-			if ( getIframe() && getIframe().docking ) getIframe().docking.options.lastOffsets = o.lastOffsets;
+			if ( getSideBar() && getSideBar().docking ) getSideBar().docking.options.lastOffsets = o.lastOffsets;
 		}
 	});
 
@@ -339,17 +335,13 @@ window.addEventListener('message', e => {
 	if ( e.data.action === "minimizeSideBarRequest" )
 		closeSideBar(true);
 	if ( e.data.action === "undock")
-		getIframe().docking.undock();
+		getSideBar().docking.undock();
 });
 
-document.addEventListener("fullscreenchange", e => {
-	
-	let iframe = getIframe();
-	let ot = getOpeningTab();
-	
-	[iframe, ot].forEach( el => { 
-		if ( el ) el.classList.toggle('CS_hide', document.fullscreen);
-	});
+document.addEventListener('click', e => {
+	if (e.target.closest("contextsearch-widgets")) return;
+	if ( !getSideBar() ) return;
+	getSideBar().contentWindow.postMessage({action: "editEnd"}, browser.runtime.getURL('/searchbar.html'));
 });
 
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -364,8 +356,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 function minifySideBar() {
-	getIframe().docking.undock();
-	runAtTransitionEnd(getIframe(), ["height", "width", "left", "top"], () => {
-		getIframe().contentWindow.postMessage({action: "minifySideBar"}, browser.runtime.getURL('/searchbar.html'));
+	getSideBar().docking.undock();
+	runAtTransitionEnd(getSideBar(), ["height", "width", "left", "top"], () => {
+		getSideBar().contentWindow.postMessage({action: "minifySideBar"}, browser.runtime.getURL('/searchbar.html'));
 	});
 }

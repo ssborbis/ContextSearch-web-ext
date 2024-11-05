@@ -32,7 +32,6 @@ function openPageTiles(message) {
 
 				document.addEventListener('closePageTiles', e => ds.stop(), {once: true});
 			}
-
 		}
 	}, 50);
 }
@@ -62,7 +61,7 @@ document.addEventListener('dragstart', e => {
 
 		if ( Math.abs(startCoords.x - e.clientX) < userOptions.pageTiles.deadzone && Math.abs(startCoords.y - e.clientY) < userOptions.pageTiles.deadzone ) return;
 
-		browser.runtime.sendMessage({action: "openPageTiles", searchTerms: searchTerms});
+		sendMessage({action: "openPageTiles", searchTerms: searchTerms});
 
 		document.removeEventListener('dragover', dragOverHandler);
 	}
@@ -103,4 +102,7 @@ let closePageTiles = e => {
 
 	document.dispatchEvent(new CustomEvent('closePageTiles'));
 }
+
+// when pageTiles does not cover entire page
+document.addEventListener('click', closePageTiles);
 

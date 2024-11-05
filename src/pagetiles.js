@@ -1,9 +1,10 @@
 var userOptions;
 
 function init(message) {
-	browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+	sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 
+		setTheme();
 		setUserStyles();
 		makePageTiles(message);
 		
@@ -75,6 +76,11 @@ function makePageTiles(message) {
 
 		let div = document.createElement('div');
 		div.className = 'pageTile';
+		div.title = node.title + (node.description ? " - " + node.description : "");
+
+		let img = new Image();
+		img.src = getIconFromNode(node);
+		div.appendChild(img);
 
 		let header = document.createElement('div');
 		header.innerText = node.title;
@@ -84,15 +90,16 @@ function makePageTiles(message) {
 		
 		node.icon = getIconFromNode(node);
 
-		if ( colors.length !== 1 ) {
+		if ( colors.length !== 0 ) {
 			let bgcolor = '#' + colorFromString(node.id || node.type);
-			div.style.backgroundColor = bgcolor;
+			div.style.setProperty("--tile-color", bgcolor);
+			// div.style.backgroundColor = bgcolor;
 			if ( getLuma(bgcolor) < 140) div.style.color = '#ccc ';
 		} else {
 			div.style.filter = 'none';
 		}
 
-		div.style.backgroundImage = `url(${node.icon})`;
+		// div.style.backgroundImage = `url(${node.icon})`;
 
 		div.ondragenter = function(e) { 
 			e.preventDefault();
@@ -119,7 +126,7 @@ function makePageTiles(message) {
 
 			if ( !searchTerms ) return;
 
-			browser.runtime.sendMessage({
+			sendMessage({
 				action: "search", 
 				info: {
 					menuItemId: node.id,
@@ -136,7 +143,7 @@ function makePageTiles(message) {
 		div.addEventListener('drop', close);
 		
 		// clear events for empty tiles
-		if ( !node.id || node.hidden ) div.classList.add('empty');
+		if ( !node.id ) div.classList.add('empty');
 
 		mainDiv.appendChild(div);
 
@@ -148,6 +155,19 @@ function makePageTiles(message) {
 	document.body.appendChild(mainDiv);
 	mainDiv.getBoundingClientRect();
 	mainDiv.style.opacity = 1;
+
+	// close when dragging over "border"
+	window.addEventListener('dragover', e => {
+		if ( userOptions.pageTiles.closeOnBorder && e.target === document.documentElement ) close();		
+	});
+
+	// chrome border close
+	window.addEventListener("message", e => {
+		if ( userOptions.pageTiles.closeOnBorder && window.chrome && e.data.eventType && e.data.eventType === 'dragover' ) {			
+			let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+			if ( el && el === document.documentElement ) close();
+		}
+	});
 }
 
 document.addEventListener('keydown', e => {
@@ -160,7 +180,7 @@ document.addEventListener('click', e => {
 
 document.addEventListener('contextmenu', e => e.preventDefault())
 
-let close = () => browser.runtime.sendMessage({action: "closePageTiles"});
+let close = () => sendMessage({action: "closePageTiles"});
 
 function colorFromString(str) {
 	let num = 0;
@@ -184,14 +204,13 @@ function getLuma(hexcolor) {
 // drag overdiv listener
 window.addEventListener("message", e => {
 
-	if ( e.data.drop ) {
+	if ( e.data.eventType && e.data.eventType === 'drop' ) {
 		let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+
 		if ( el === document.body ) close();
 
 		return el.ondrop(new DragEvent('drop'));
 	}
 
-	if ( e.data.init ) {
-		return init(e.data);
-	}
+	if ( e.data.init ) return init(e.data);
 });

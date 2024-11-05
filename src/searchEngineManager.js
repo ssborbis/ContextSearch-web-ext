@@ -33,14 +33,16 @@ function buildSearchEngineContainer() {
 	})();
 
 	function traverse(node, parent) {	
-	
+
 		if ( !node ) {
 			console.log('null node found');
 			return;
 		}
 
 		let li = document.createElement('li');
+
 		parent.appendChild(li);
+
 		li.node = node;
 		li.dataset.nodeid = node.id;
 		
@@ -57,6 +59,8 @@ function buildSearchEngineContainer() {
 		li.addEventListener('dragover',dragover_handler);
 		li.addEventListener('dragenter',dragenter_handler);
 		li.addEventListener('dragleave',dragleave_handler);
+
+		li.addEventListener('dblclick', () => setURLSearchParams(li));
 		
 		let header = document.createElement('div');
 		header.className = "header";
@@ -82,6 +86,9 @@ function buildSearchEngineContainer() {
 			});
 
 			header.addEventListener('click', e => {
+
+				// prevents double action / no change
+				if ( e.target === cb ) return;
 
 				// check box if displayed
 				if ( $('managerContainer').classList.contains('showCheckboxes'))
@@ -128,6 +135,13 @@ function buildSearchEngineContainer() {
 				e.stopPropagation();
 
 				addFormListeners(edit_form);
+
+				edit_form.querySelectorAll('input, textarea').forEach(el => {
+					el.addEventListener('change', () => {
+						clearErrors();
+						checkFormValues();
+					});
+				});
 				
 				let se = userOptions.searchEngines.find( se => se.id === node.id );
 			
@@ -172,7 +186,7 @@ function buildSearchEngineContainer() {
 	
 					// correct for case
 					[edit_form.template, edit_form.post_params].forEach( el => {
-						el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
+					//	el.value = el.value.replace(/{searchterms}/i, "{searchTerms}");
 					});
 					
 					return new Promise( (resolve, reject) => {
@@ -214,6 +228,13 @@ function buildSearchEngineContainer() {
 							try {
 								let _url = new URL(edit_form.template.value);
 								edit_form.searchform.value = _url.origin;
+
+								// blank icons try to fetch favicon
+								if ( edit_form.iconURL.value == "" ) {
+									edit_form.iconURL.value = edit_form.searchform.value + "/favicon.ico";
+									icon.src = edit_form.iconURL.value;
+									edit_form.querySelector('[name="faviconBox"] img').src = icon.src;
+								}
 							} catch (_error) {}
 						}
 							// showError(edit_form.template,i18n("TemplateURLError"));
@@ -240,17 +261,21 @@ function buildSearchEngineContainer() {
 					});
 
 				}
+
+				function clearErrors() {
 				
-				// clear error formatting
-				for (let label of edit_form.getElementsByTagName('label')) {
-					if (label.dataset.i18n) label.innerText = i18n(label.dataset.i18n);
-					label.style.color = null;
-					clearError(label.nextSibling)
+					// clear error formatting
+					for (let label of edit_form.getElementsByTagName('label')) {
+						if (label.dataset.i18n) label.innerText = i18n(label.dataset.i18n);
+						label.style.color = null;
+						clearError(label.nextSibling)
+					}
 				}
 
 				edit_form.shortName.value = se.title;
 				edit_form.description.value = se.description || "";
 				edit_form.template.value = se.template;
+				edit_form.keyword.value = node.keyword || "";
 				edit_form.iconURL.value = se.icon_url || se.icon_base64String;
 				edit_form._method.value = se.method || "GET";
 				edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
@@ -284,7 +309,7 @@ function buildSearchEngineContainer() {
 						"searchCode": edit_form.searchCode.value
 					};
 
-					browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+					sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 				}
 				
 				edit_form.copy.onclick = function() {
@@ -310,7 +335,7 @@ function buildSearchEngineContainer() {
 						+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
 						+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 					
-					browser.runtime.sendMessage({action: "addSearchEngine", url:url});	
+					sendMessage({action: "addSearchEngine", url:url});	
 				}
 				
 				edit_form.save.onclick = function() {
@@ -372,6 +397,7 @@ function buildSearchEngineContainer() {
 
 						se.icon_base64String = iconBase64;  //icon.src;
 						se.description = edit_form.description.value;
+						node.keyword = edit_form.keyword.value.trim();
 						se.template = edit_form.template.value;
 						se.searchForm = edit_form.searchform.value;
 						se.icon_url = edit_form.iconURL.value;
@@ -389,6 +415,9 @@ function buildSearchEngineContainer() {
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);
+
+						// reference not updating on first save fix
+						Object.assign(userOptions.searchEngines.find(_se => se.id === _se.id), se);
 						
 						if ( edit_form.querySelector('.error') )
 							showSaveMessage('saved with errors', 'red', edit_form.querySelector('.saveMessage'));
@@ -397,6 +426,7 @@ function buildSearchEngineContainer() {
 					}
 					
 					checkFormValues().then( result => {
+
 						if ( result ) saveForm();
 						else showSaveMessage("cannot save", "red", edit_form.querySelector('.saveMessage'));
 					});
@@ -453,6 +483,8 @@ function buildSearchEngineContainer() {
 				_form.shortName.value = node.title;
 				_form.searchCode.value = node.searchCode || "";
 				_form.description.value = node.description || "";
+				_form.keyword.value = node.keyword || "";
+
 
 				_form.querySelector('label[data-i18n="SearchCode"]').innerText = i18n("Script");
 
@@ -509,7 +541,7 @@ function buildSearchEngineContainer() {
 
 				// _form.test.onclick = function() {
 				// 	let searchTerms = window.prompt(i18n("EnterURL"),"ContextSearch web-ext");
-				// 	browser.runtime.sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
+				// 	sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
 				// }
 				
 				_form.save.onclick = async function() {
@@ -519,6 +551,7 @@ function buildSearchEngineContainer() {
 					img.src = getIconFromNode(node);
 
 					node.title = _form.shortName.value.trim();
+					node.keyword = _form.keyword.value.trim();
 					node.contexts = getContexts(_form);
 					node.searchCode = _form.searchCode.value;
 					node.description = _form.description.value.trim();
@@ -596,6 +629,7 @@ function buildSearchEngineContainer() {
 								
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
+				_form.keyword.value = node.keyword || "";
 				_form.template.value = node.path;
 				_form.searchRegex.value = node.searchRegex;
 				_form.description.value = node.description || "";
@@ -643,12 +677,14 @@ function buildSearchEngineContainer() {
 						if ( version ) {
 							span.innerText = 'v' + version;
 						} else {
+							span.innerHTML = null;
 							let a = document.createElement("a");
 							a.target = "_blank";
 							a.title = i18n("MessengerOfflineTooltip");
 							a.style = "color:unset";
 							a.href = "https://github.com/ssborbis/ContextSearch-Native-App";
 							a.innerText = i18n('NativeAppMissing');
+
 							span.appendChild(a);
 						}
 					}
@@ -674,6 +710,7 @@ function buildSearchEngineContainer() {
 
 					node.title = _form.shortName.value.trim();
 					node.path = _form.template.value.trim();
+					node.keyword = _form.keyword.value.trim();
 					node.searchRegex = _form.searchRegex.value.trim();
 					node.description = _form.description.value.trim();
 					node.cwd = _form.searchform.value.trim();
@@ -708,7 +745,7 @@ function buildSearchEngineContainer() {
 					tempNode.cwd = _form.searchform.value.trim();
 					tempNode.postScript = _form.searchCode.value.trim();
 					
-					browser.runtime.sendMessage({
+					sendMessage({
 						action:"search",
 						info: {
 							node: tempNode,
@@ -857,6 +894,7 @@ function buildSearchEngineContainer() {
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 
 					node.title = _form.shortName.value.trim();
+					node.keyword = _form.keyword.value.trim();
 					node.groupColor = _form.groupColor.value;
 					node.groupColorText = _form.groupColorText.value;
 					node.groupFolder = _form.groupFolder.value || false;
@@ -987,122 +1025,166 @@ function buildSearchEngineContainer() {
 			let hotkey = document.createElement('span');
 			hotkey.title = i18n('Hotkey');
 			hotkey.className = 'hotkey';
-			hotkey.style.right = "4px";
+
+			setHotkeyText = (button, _node) => {
+				button.innerText = Shortcut.getShortcutStringFromKey(_node.shortcut ? _node.shortcut : _node.hotkey );
+				button.title = button.innerText || i18n("hotkey");
+
+				// if ( !button.title ) {
+				// 	button.style.borderRadius = "50%";
+				// 	button.style.minWidth = "0";
+				// 	button.style.minHeight = "0";
+				// 	button.style.width = "8px";
+				// 	button.style.height = "8px";
+				// 	button.style.padding = 0;
+				// 	button.title = i18n("hotkey");
+				// }
+			}
+
+			let showError = async (msg) => {
+				return new Promise(r => {
+					let origMsg = hotkey.innerText;
+					hotkey.style.backgroundColor = 'red';
+					hotkey.style.color = "white";
+					hotkey.innerText = msg;
+					setTimeout(() => {
+						hotkey.style.backgroundColor = null;
+						hotkey.style.color = null;
+						hotkey.innerText = origMsg;
+						r();
+					}, 1000);
+				});
+			}
 
 			header.appendChild(hotkey);
-			hotkey.innerText = keyTable[node.hotkey] || "";
+
+			setHotkeyText(hotkey, node);
 			
-			hotkey.onclick = function(e) {
-				e.stopPropagation();			
-				e.target.innerText = null;
+			hotkey.onclick = async function(e) {
+				e.stopPropagation();
 
-				let img = document.createElement('img');
-				img.src = 'icons/spinner.svg';
+				let key = {};			
 
-				e.target.appendChild(img);
+				// new code start
+				while (true) {
+					key = await Shortcut.buttonListener(e.target);
 
-				window.listeningForHotkey = true;
-
-				window.addEventListener('keydown', function keyPressListener(evv) {
-					evv.preventDefault();
-					
-					if ( /* invalid keys */ [9,37,38,39,40].includes(evv.which) ) return;
-
-					if (evv.key === "Escape") {
+					// ESC 
+					if ( !key ) {
 						node.hotkey = null;
+						node.shortcut = null;
 						
 						// set hotkey for all copies
 						for (let _hk of rootElement.querySelectorAll('li')) {
 							if (_hk.node && _hk.node.id === node.id)
 								_hk.querySelector('.hotkey').innerText = "";
 						}
-	
-						window.removeEventListener('keydown', keyPressListener);
-						window.listeningForHotkey = false;
-						updateNodeList();
-						return;
+
+						return updateNodeList();
 					}
 					
-					node.hotkey = evv.which;
-
-					if ( findNode(rootElement.node, _node => _node.hotkey === evv.which && _node.id !== node.id) ) {						
-						hotkey.style.backgroundColor = 'pink';
-						setTimeout(() => hotkey.style.backgroundColor = null, 250);
-						return;
+					// check for duplicate keys in nodes
+					let duplicateNode = findNode(rootElement.node, _node => Shortcut.matches(_node.shortcut, key));
+					if ( duplicateNode && duplicateNode !== node ) {
+						await showError("IN_USE: " + duplicateNode.title);
+						continue;
 					}
 
-					// set hotkey for all copies
-					for (let _hk of rootElement.querySelectorAll('li')) {
-						if (_hk.node && _hk.node.id === node.id)
-							_hk.querySelector('.hotkey').innerText = keyTable[evv.which];
+					// check for invalid keys				
+					if ( ["Enter","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(key.key) ) {
+						await showError("INVALID_KEY: " + key.key);
+						continue;
 					}
-					
-					findNodes(rootElement.node, _node => {
-						if ( _node.type === node.type && _node.id === node.id )
-							_node.hotkey = node.hotkey;
-					});
 
-					window.removeEventListener('keydown', keyPressListener);
-					window.listeningForHotkey = false;
-					updateNodeList();
-				}); 
-			}
+					let userShortcut = userOptions.userShortcuts.find(us => Shortcut.matches(us,key));
+					if ( userShortcut ) {
+						let defaultShortcut = Shortcut.getDefaultShortcutById(userShortcut.id);
+						await showError("IN_USE: " + defaultShortcut.name);
+						setHotkeyText(hotkey, node);
+						continue;
+					}
 
-			let keyword = document.createElement('input');
-			keyword.title = i18n('Keyword');
-			keyword.className = "inputNice hotkey keyword";
-
-
-			header.appendChild(keyword);
-			keyword.value = node.keyword || "";
-
-			keyword.onclick = e => e.stopPropagation();
-			keyword.ondblclick = e => e.stopPropagation();
-			keyword.addEventListener('dragstart', (e) => {
-				e.preventDefault();
-				e.stopImmediatePropagation();
-			});
-			keyword.addEventListener('mousedown', () => li.setAttribute("draggable", false));
-			keyword.addEventListener('mouseup', () => li.setAttribute("draggable", true));
-			keyword.setAttribute('draggable', false);
-
-			keyword.addEventListener('keydown', e => {
-				if ( e.key === "Enter") {
-					keyword.dispatchEvent(new Event('change'));
-					keyword.blur();
-				}
-			});
-
-			keyword.addEventListener('keydown', e => {
-				if ( e.key === "Escape") {
-					keyword.value = "";
-					keyword.dispatchEvent(new Event('change'));
-					keyword.blur();
-				}
-			});
-
-			keyword.addEventListener('change', e => {
-				keyword.value = keyword.value.trim();
-
-				// check for duplicates
-				if ( keyword.value && findNode(rootElement.node, _node => _node.keyword === keyword.value && _node.id !== node.id) ) {
-
-					keyword.style.backgroundColor = 'pink';
-					return;
+					break;
 				}
 
-				node.keyword = keyword.value;
+				node.hotkey = key.keyCode;
+				node.shortcut = key;
 
-				// set keyword for all copies
-				for (let _li of rootElement.querySelectorAll('li')) {
-					if (_li.node && _li.node.id === node.id) {
-						_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
-						_li.querySelector('.keyword').style.backgroundColor = null;
+				setHotkeyText(hotkey, node);
+
+				// set hotkey for all copies
+				for (let li of rootElement.querySelectorAll('li')) {
+					if (li.node && li.node.id === node.id) {
+						let hk = li.querySelector('.hotkey');
+						setHotkeyText(hk, node);
 					}
 				}
 				
+				findNodes(rootElement.node, _node => {
+					if ( _node.type === node.type && _node.id === node.id ) {
+						_node.hotkey = key.keyCode;
+						_node.shortcut = key;
+					}
+				});
+
 				updateNodeList();
-			});
+				// new code end
+			}
+
+			// let keyword = document.createElement('input');
+			// keyword.title = i18n('Keyword');
+			// keyword.className = "inputNice hotkey keyword";
+
+			// header.appendChild(keyword);
+			// keyword.value = node.keyword || "";
+
+			// keyword.onclick = e => e.stopPropagation();
+			// keyword.ondblclick = e => e.stopPropagation();
+			// keyword.addEventListener('dragstart', (e) => {
+			// 	e.preventDefault();
+			// 	e.stopImmediatePropagation();
+			// });
+			// keyword.addEventListener('mousedown', () => li.setAttribute("draggable", false));
+			// keyword.addEventListener('mouseup', () => li.setAttribute("draggable", true));
+			// keyword.setAttribute('draggable', false);
+
+			// keyword.addEventListener('keydown', e => {
+			// 	if ( e.key === "Enter") {
+			// 		keyword.dispatchEvent(new Event('change'));
+			// 		keyword.blur();
+			// 	}
+			// });
+
+			// keyword.addEventListener('keydown', e => {
+			// 	if ( e.key === "Escape") {
+			// 		keyword.value = "";
+			// 		keyword.dispatchEvent(new Event('change'));
+			// 		keyword.blur();
+			// 	}
+			// });
+
+			// keyword.addEventListener('change', e => {
+			// 	keyword.value = keyword.value.trim();
+
+			// 	// check for duplicates
+			// 	if ( keyword.value && findNode(rootElement.node, _node => _node.keyword === keyword.value && _node.id !== node.id) ) {
+
+			// 		keyword.style.backgroundColor = 'pink';
+			// 		return;
+			// 	}
+
+			// 	node.keyword = keyword.value;
+
+			// 	// set keyword for all copies
+			// 	for (let _li of rootElement.querySelectorAll('li')) {
+			// 		if (_li.node && _li.node.id === node.id) {
+			// 			_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
+			// 			_li.querySelector('.keyword').style.backgroundColor = null;
+			// 		}
+			// 	}
+				
+			// 	updateNodeList();
+			// });
 
 			// let edit = new Image();
 			// edit.className = "editIcon";
@@ -1239,12 +1321,15 @@ function buildSearchEngineContainer() {
 	setParents(root);
 
 	// clear any dead nodes
-	repairNodeTree(root).then( result => {
+	repairNodeTree(root, true).then( result => {
 
 		rootElement.node = root;
 		
 		for (let child of root.children)
 			traverse(child, rootElement);
+
+		// traverse(root, rootElement);
+
 		
 		table.appendChild(rootElement);
 
@@ -1713,7 +1798,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				title: "new script",
 				parent: li.node.parent,
-				contexts:[32],
+				contexts:32,
 				toJSON: li.node.toJSON
 			}
 				
@@ -1723,6 +1808,7 @@ function buildSearchEngineContainer() {
 			li.parentNode.insertBefore(newLi, li.nextSibling);
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
+			selectNameField();
 	
 			updateNodeList();
 			
@@ -1808,7 +1894,7 @@ function buildSearchEngineContainer() {
 				
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
-			
+
 			closeContextMenus();
 		});
 		
@@ -1837,7 +1923,7 @@ function buildSearchEngineContainer() {
 				id: gen(),
 				path:"/path/to/your/app \"{searchTerms}\"",
 				searchRegex:"",
-				contexts:[32],
+				contexts:32,
 				parent: li.node.parent,
 				toJSON: li.node.toJSON
 			}
@@ -1848,6 +1934,7 @@ function buildSearchEngineContainer() {
 			li.parentNode.insertBefore(newLi, li.nextSibling);
 			newLi.scrollIntoView({block: "start", behavior:"smooth"});
 			newLi.dispatchEvent(new MouseEvent('dblclick'));
+			selectNameField();
 			
 			updateNodeList();
 		});
@@ -1973,6 +2060,7 @@ function buildSearchEngineContainer() {
 					
 				newLi.scrollIntoView({block: "start", behavior:"smooth"});
 				newLi.dispatchEvent(new MouseEvent('dblclick'));
+				selectNameField();
 
 				addMultisearchIcons(se, newLi.querySelector(".header"));
 			}
@@ -2160,7 +2248,7 @@ function buildSearchEngineContainer() {
 			parent: node.parent,
 			hidden: false,
 			id: se.id,
-			contexts:[32],
+			contexts:32,
 			toJSON: node.toJSON
 		}
 	}
@@ -2181,7 +2269,7 @@ function buildSearchEngineContainer() {
 		userOptions.searchEngines = w.defaultEngines;
 		
 		// build nodes with default engines
-		repairNodeTree(userOptions.nodeTree);
+		repairNodeTree(userOptions.nodeTree, true);
 		
 		// unhide all default engines
 		findNodes( userOptions.nodeTree, node => node.hidden = false );
@@ -2195,7 +2283,9 @@ function buildSearchEngineContainer() {
 		// updated the local UO
 		userOptions = w.userOptions;
 		await saveOptions();
-		location.reload();
+
+		// delay to prevent dead objects
+		setTimeout(() => location.reload(), 500);
 	});
 
 	function addIconPickerListener(el, li) {
@@ -2367,6 +2457,31 @@ function getContexts(f) {
 	return [...contexts].map(c => parseInt(c.value)).reduce( (a,b) => a + b);
 }
 
+// function contextBarEventHandler(e) {
+// 	e.stopPropagation();
+
+// 	let code = getContextCode(c);
+// 	let status = hasContext(c, tool.node.contexts);
+
+// 	tool.classList.toggle('disabled', status);
+
+// 	if ( status ) tool.node.contexts -= code;
+// 	else tool.node.contexts += code;
+
+// 	updateNodeList(true);
+// }
+// {
+
+// 	window.contextsBar = document.createElement('div');
+// 	contexts.forEach( async c => {
+// 		let tool = createMaskIcon("icons/" + c + ".svg");
+// 		tool.classList.add('contextIcon');
+// 		tool.title = i18n(c);
+
+// 		window.contextsBar.appendChild(tool);
+// 	});
+// }
+
 async function setRowContexts(row) {
 	try {
 		let node = row.node;
@@ -2505,6 +2620,21 @@ function addMultisearchIcons(se, header) {
 	} catch (error) {}
 }
 
+function setURLSearchParams(li) {
+	if ( li.node && li.node.id ) {
+		window.history.replaceState(null, null, "?id=" + li.node.id);
+	}
+}
+
+function selectNameField() {
+	// select text in the name
+	setTimeout(() => {
+		let input = document.querySelector('#floatingEditFormContainer input[name="shortName"]');
+
+		if ( input ) input.select();
+	}, 500);
+}
+
 document.addEventListener('keydown', e => {
 	if ( e.key === 'f' && e.ctrlKey ) {
 		e.preventDefault();
@@ -2516,7 +2646,6 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keydown', e => {
 
 	if ( document.activeElement && document.activeElement.nodeName === 'INPUT' ) return;
-	if ( window.listeningForHotkey ) return;
 
 	if ( e.key === 'Delete' && selectedRows.length ) {
 		e.preventDefault();

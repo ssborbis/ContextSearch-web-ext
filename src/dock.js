@@ -25,6 +25,103 @@ function unOffsetElement(el, prop, name) {
 	el.style.setProperty('--cs-'+name+'-'+prop, null);
 }
 
+function repositionOffscreenElement( element, padding ) {
+
+	padding = padding || { top:0, bottom:0, left:0, right:0 };
+
+	let fixed = window.getComputedStyle( element, null ).getPropertyValue('position') === 'fixed' ? true : false;
+	
+	let originalTransition = element.style.transition || null;
+	// let originalDisplay = element.style.display || null;
+	// element.style.transition = 'none';
+
+//	element.style.display = 'none';
+
+	element.style.maxHeight = element.style.maxWidth = 0;
+
+	// move if offscreen
+	let scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+	let scrollbarHeight = window.innerHeight - document.documentElement.clientHeight;
+	
+	element.style.maxHeight = element.style.maxWidth = null;
+	
+	// element.style.display = originalDisplay;
+
+	// element.style.transition = 'all .15s';
+	
+	let rect = element.getBoundingClientRect();
+	
+	if ( ! fixed ) {
+		
+		let maxWidth = Math.min(window.innerWidth, document.body.getBoundingClientRect().right);
+		let maxHeight = Math.min(window.innerHeight, document.body.getBoundingClientRect().bottom);
+		
+		if (rect.y < 0) 
+			element.style.top = Math.max(parseFloat(element.style.top) - rect.y, 0) + padding.top + "px";
+		
+		if (rect.bottom > window.innerHeight) 
+			element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight - padding.bottom + "px";
+		
+		if (rect.x < 0) 
+			element.style.left = Math.max(parseFloat(element.style.left) - rect.x, 0) + padding.left + "px";
+		
+		if (rect.right > maxWidth ) 
+			element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - maxWidth) - padding.right + "px";
+
+		return;
+	}
+	
+	if ( rect.bottom > window.innerHeight - scrollbarHeight ) {
+		if ( element.style.bottom )
+			element.style.bottom = "0";
+		else 
+			element.style.top = (window.innerHeight - scrollbarHeight - rect.height) + "px";
+		
+		// console.log('bottom overflow');
+	}
+
+	if (rect.top < 0) {
+		if ( element.style.bottom ) 
+			element.style.bottom = (window.innerHeight - rect.height) + "px";
+		else
+			element.style.top = "0";
+		
+		// console.log('top overflow');
+	}
+	
+	if ( rect.right > window.innerWidth - scrollbarWidth ) {
+		if ( element.style.right )
+			element.style.right = "0";
+		else 
+			element.style.left = (window.innerWidth - scrollbarWidth - rect.width) + "px";
+		
+		// console.log('right overflow');
+	}
+	
+	if ( rect.left < 0 ) {
+		if ( element.style.right ) 
+			element.style.right = (window.innerWidth - rect.width) + "px";
+		else
+			element.style.left = "0";
+		
+		// console.log('left overflow');
+	}
+
+	runAtTransitionEnd(element, ["top", "bottom", "left", "right"], () => {
+		element.style.transition = originalTransition;
+	})
+	
+	// if (rect.y + rect.height > window.innerHeight) 
+		// element.style.top = parseFloat(element.style.top) - ((rect.y + rect.height) - window.innerHeight) - scrollbarHeight + "px";
+	
+	// if (rect.left < 0) 
+		// element.style.left = (parseFloat(element.style.left) - rect.x) + "px";
+	
+	// if (rect.x + rect.width > window.innerWidth) 
+		// element.style.left = parseFloat(element.style.left) - ((rect.x + rect.width) - window.innerWidth) - scrollbarWidth + "px";
+
+}
+
 function resetStyleProperty(el, name) {
 	
 	let props = [];
@@ -379,7 +476,7 @@ function makeDockable(el, options) {
 
 		// only iframes need zoom adjustment. Why?
 	//	if ( el.tagName === "IFRAME")
-	//		await browser.runtime.sendMessage({action: "getZoom"}).then(z => o.zoom = z);
+	//		await sendMessage({action: "getZoom"}).then(z => o.zoom = z);
 
 		mouseDownStart = Date.now();
 

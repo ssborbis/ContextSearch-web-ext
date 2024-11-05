@@ -934,21 +934,23 @@
 			}
 			.hotkey {
 				background-color: var(--bg-color4);
-				border-radius:2px;
-			/*	border:1px solid #c4c4c4;*/
-				right:30px;
+				border-radius:4px;
+				border:1px solid var(--border-color3);
 				display:inline-block;
-				min-width:1em;
-				padding:0px 10px;
-				height:16px;
+				min-width:.5em;
+				min-height:.5em;
+				height:auto;
+				padding:2px 2px;
 				text-align:center;
 				vertical-align:middle;
 				font-weight:bold;
 				transition: background-color .25s;
-				font-size:9pt;
+				font-size:8pt;
+				line-height: 8pt;
 				margin:1px 0;
 				color:var(--color2);
-				border:none;
+				position: unset;
+				transition: background-color .25s;
 			}
 			.hotkey:hover {
 				background-color:var(--hover1);
@@ -959,11 +961,15 @@
 				right:40px;
 				width:40px;
 			}
-			 .treeNode .header:not(.selected):hover {
+			.treeNode .header {
+				display: flex;
+				align-items: center;
+			}
+			.treeNode .header:not(.selected):hover {
 				background-color:var(--hover2);
 			}
 			.treeNode .header .label {
-				margin-right: 20px;
+				margin-right: 8px;
 			}
 			.hidden {
 				opacity: .5;
@@ -1577,7 +1583,7 @@
 			}
 
 		</style>
-		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled="disabled"/>
+		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
 	</head>
 	<body>
 		<div id="console"></div>
@@ -1653,7 +1659,7 @@
 						<td>
 							<label for="replaceMozlz4FileButton" class="fileUpload" style="font-size:8pt" data-i18n="ImportSelectFile">
 							<img src="/icons/import.svg" style="height:10px" />
-							Select file...
+							_
 							<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
 						</label>
 						</td>
@@ -1716,11 +1722,26 @@
 				<section>
 				<p class="header1" data-i18n="MenuTheme">$</p>
 				<div class="option">
-					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="quickMenuTheme">
+					<select class="inputNice themeSelector" style="width:auto;font-size:10pt;padding-right:10px" id="quickMenuTheme">
 					</select>
 					<div class="description" data-i18n="ThemeTooltip">$</div>
 				</div>
+				<p style="margin:20px"> – or – </p>
+				<div class="option">
+					<checkbox data-id="autoTheme"></checkbox>
+					<div class="description" data-i18n="autoThemeTooltip">$</div>
+				</div>
+				<div class="option">
+					<select class="inputNice themeSelector" style="width:auto;font-size:10pt;padding-right:10px" id="autoThemeLite">
+					</select>
+					<div class="description" data-i18n="autoThemeLiteTooltip">$</div>
+				</div>
 
+				<div class="option">
+					<select class="inputNice themeSelector" style="width:auto;font-size:10pt;padding-right:10px" id="autoThemeDark">
+					</select>
+					<div class="description" data-i18n="autoThemeDarkTooltip">$</div>
+				</div>
 				</section>
 				
 				<section>
@@ -1912,7 +1933,7 @@
 					<span class="buttonLabel" data-i18n="LeftButton">$</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="contextMenuClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="contextMenuClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -1924,7 +1945,7 @@
 					<span class="buttonLabel" data-i18n="MiddleButton">$</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="contextMenuMiddleClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="contextMenuMiddleClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -1937,7 +1958,7 @@
 					<span class="buttonLabel" data-i18n="RightButton">$</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="contextMenuRightClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="contextMenuRightClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -1952,7 +1973,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="contextMenuShift" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="contextMenuShift" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -1967,7 +1988,7 @@
 					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="contextMenuCtrl" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="contextMenuCtrl" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -2456,7 +2477,7 @@
 					<span class="buttonLabel" data-i18n="LeftButton">$</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 					</td>
 					<td>
-					<select class="inputNice" id="quickMenuLeftClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="quickMenuLeftClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -2469,7 +2490,7 @@
 					<span class="buttonLabel" data-i18n="MiddleButton">$</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="quickMenuMiddleClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="quickMenuMiddleClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -2482,7 +2503,7 @@
 					<span class="buttonLabel" data-i18n="RightButton">$</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
 					</td>
 					<td>
-					<select class="inputNice" id="quickMenuRightClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+					<select class="inputNice" id="quickMenuRightClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 					</select>
 					</td>
 					<td>
@@ -2569,7 +2590,7 @@
 						</select>
 					</td>
 					<td>
-						<select class="inputNice" name="action" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+						<select class="inputNice" name="action" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 						</select>
 					</td>
 					<td><input name="altKey" type="checkbox" /></td>
@@ -2784,6 +2805,10 @@
 						<checkbox data-id="pageTiles.closeOnShake" data-i18n="ClosePageTilesOnShake"></checkbox>
 						<div class="description" data-i18n="ClosePageTilesOnShake">$</div>
 					</div>
+					<div class="option">
+						<checkbox data-id="pageTiles.closeOnBorder" data-i18n="ClosePageTilesOnBorder"></checkbox>
+						<div class="description" data-i18n="ClosePageTilesOnBorder">$</div>
+					</div>
 					</section>
 					<section style="min-width:720px">
 					<p class="header1" data-i18n="SearchActionsHeader">$</p>
@@ -2798,7 +2823,7 @@
 								<span class="buttonLabel" data-i18n="Drop">$</span><img data-i18n="Drop" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
 							</td>
 							<td>
-								<select class="inputNice" id="pageTiles.openMethod" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+								<select class="inputNice" id="pageTiles.openMethod" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 								</select>
 							</td>
 						</tr>
@@ -2846,7 +2871,7 @@
 
 						</td>
 						<td style="vertical-align: top;">
-						<select class="inputNice" id="quickMenuSearchHotkeys" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+						<select class="inputNice" id="quickMenuSearchHotkeys" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 						</select>
 						</td>
 						<td style="vertical-align: top;">
@@ -2882,7 +2907,7 @@
 						<span class="buttonLabel" data-i18n="Omnibox">$</span><tool data-icon="omnibox.svg" style="height:30px;width:30px;vertical-align: middle;;margin:0 10px"></tool>
 						</td>
 						<td>
-						<select class="inputNice" id="omniboxSearch" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,noAction">
+						<select class="inputNice" id="omniboxSearch" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
 						</select>
 						</td>
 						<td>
@@ -3006,7 +3031,7 @@
 					</div>
 					
 					</section><section>
-<p class="header1" data-i18n="Accuracy">$</p>
+<p class="header1" data-i18n="MatchOptions">$</p>
 					<table>
 						<tr>
 							<!-- <td>Accuracy</td> -->
@@ -3109,14 +3134,14 @@
 					<table>
 						<tr>
 							<td>
-								<input id="i_findBar.scale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+								<input id="i_highLight.findBar.scale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
 							</td>
 							<td>
 								<label style="margin-left:10px" data-i18n="MenuSize">$</label>
 								<span class="info" title="$MenuSizeTooltip">&#9432;</span>
 							</td>
 							<td>
-								<input type="range" id="findBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+								<input type="range" id="highLight.findBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
 							</td>
 						</tr>
 					</table>
@@ -3160,7 +3185,7 @@
 				</section>
 				
 					<section>
-					<p class="header1" data-i18n="Accuracy">$</p>
+					<p class="header1" data-i18n="MatchOptions">$</p>
 					<table>
 						<tr>
 							<!-- <td>Accuracy</td> -->
@@ -3255,13 +3280,13 @@
 			
 				<div class="blobContainerHeader" data-i18n="SearchEngines"><img src="icons/search.svg" />$</div>
 		
-				<section id="searchEnginesParentContainer">
+				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
 					<div id="collapseAll" class="collapse" style="position:relative;top:0;left:0;width:20px;height:1em;display:inline-block;z-index:2;cursor:pointer;user-select:none">
 						<sup>+</sup>&#8260;-
 					</div>
-					<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;width:90%;margin-bottom: 10px;margin-left:30px"/>
-					<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;"></div>
+					<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;width:90%;"/>
+					<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;margin:0;"></div>
 					<div id="managerContainer">
 					</div>
 					<div></div>
@@ -3273,6 +3298,8 @@
 					<div class="blurb" data-i18n="SearchEnginesManagerHelp">
 						_
 					</div>
+
+
 					
 				</section>
 
@@ -3300,7 +3327,14 @@
 						</div>
 					</div>
 
-					<label data-i18n="Name">$</label><input name="shortName" type="text" class="inputNice" />
+					<div style="display:flex">
+						<div style="display:inline-block;width:75%">
+							<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
+						</div>
+						<div style="display:inline-block;width:25%">
+							<label data-i18n="Keyword" class="formLabel">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center"/>
+						</div>
+					</div>
 					<label data-i18n="Description">$</label><textarea name="description" type="text" class="inputNice"></textarea>
 					<label data-i18n="Template" title="$templateCheatSheet">$</label><textarea name="template" type="text" class="inputNice"></textarea>
 					<label data-i18n="IconURI">$</label>
@@ -3403,45 +3437,49 @@
 				<br />
 				
 				<div data-browser="firefox">
-				<section>
-					<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
-						_
-					</p>
-					<div class="option">
-						<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
-						<span class="description" data-i18n="SyncWithFirefoxSearch">$</span>
-					</div>
-				</section>
-				<br />
 
 					<section>
-<p class="header1" style="margin-top:0" data-i18n="ImportHeader">
-						_
-					</p>
-					<span data-i18n="ImportDescription">
-						_
-					</span>
-					
-					<br /><br />
-					
-					<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
-						<img src="/icons/import.svg" style="margin-right:10px" />
-						Select file...
-						<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
-					</label>
-					
-					<div class="option">
-						<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
-						<span class="description" data-i18n="ClearSearchList">$</span>
-					</div>
-					
-					<div id="status_div" style="display:none;">
-						<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
-							<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+						<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
+							_
+						</p>
+						<div class="option">
+							<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
+							<span class="description" data-i18n="SyncWithFirefoxSearch">$</span>
 						</div>
-						<div id="status" style='display:inline-block'>&nbsp;</div>
-					</div>
+					</section>
 
+					<br>
+
+					<section data-hide-on-sync-with-firefox>
+						<p class="header1" style="margin-top:0" data-i18n="Advanced">_</p>
+
+						<div class="option">
+							<checkbox data-id="autoImportFirefoxEngines" data-i18n=""></checkbox>
+							<span class="description" data-i18n="autoImportFirefoxEnginesTooltip">Always check for Firefox engines</span>
+						</div>
+
+						<hr>
+
+						<span data-i18n="ImportHeader">_</span><br>
+						
+						<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
+							<img src="/icons/import.svg" style="height:10px" />
+							_
+							<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
+						</label>
+						<!-- <span style="font-size:8pt" data-i18n="ImportDescription">_</span> -->
+						
+						<div class="option" style="display: inline-block;margin-left:10px">
+							<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
+							<span class="description" data-i18n="ClearSearchList">$</span>
+						</div>
+						
+						<div id="status_div" style="display:none;">
+							<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
+								<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+							</div>
+							<div id="status" style='display:inline-block'>&nbsp;</div>
+						</div>
 					</section>
 					
 					<!-- <section>
@@ -3505,12 +3543,12 @@
 		<script src="mozlz4.js"></script>
 		<script src="searchEngineUtils.js"></script>
 		<script src="keyTable.js"></script>
+		<script src="Shortcuts.js"></script>
 		<script src="opensearch.js"></script>
 		<script src="bookmarks.js"></script>
 		<script src="defaultEngines.js"></script>
 		<script src="defaultUserOptions.js"></script>
 		<script src="themes.js"></script>
-		<script src="defaultShortcuts.js"></script>
 		<script src="iconUtils.js"></script>
 		<script src="contexts.js"></script>
 		<script src="nodes.js"></script>

@@ -27,7 +27,14 @@ function addStylesheet(href) {
 }
 
 async function setTheme(theme) {
-	theme = theme || themes.find( t => t.name === userOptions.quickMenuTheme ) || themes[0];
+
+	let themeName = userOptions.quickMenuTheme;
+
+	if ( userOptions.autoTheme ) {
+		themeName = isDarkMode() ? userOptions.autoThemeDark : userOptions.autoThemeLite;
+	}
+
+	theme = theme || themes.find( t => t.name === themeName ) || themes[0];
 
 	if ( theme.requires ) {
 		for ( let l of theme.requires ) {
@@ -77,11 +84,14 @@ async function changeTheme(i) {
 
 	await setTheme(theme);
 
-	runAtTransitionEnd(document.body, ["width", "height"], () => {
-		resizeMenu({openFolder:true});
-	}, 150);
+	resizeMenu({openFolder:true});
 
-	userOptions.quickMenuTheme = theme.name;
+	if ( userOptions.autoTheme ) {
+		if ( isDarkMode() )	userOptions.autoThemeDark = theme.name;
+		else userOptions.autoThemeLite = theme.name;
+	} else {
+		userOptions.quickMenuTheme = theme.name;
+	}
 
 	saveUserOptions();
 }

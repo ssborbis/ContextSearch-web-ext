@@ -6,6 +6,11 @@ const getVisibleTiles = el => el.querySelectorAll('.tile:not([data-hidden="true"
 
 async function makeFrameContents(o) {
 
+	document.body.style.transition = 'none';
+	document.body.style.opacity = 0;
+	document.body.offsetWidth;
+	document.body.style.transition = null;
+
 	if ( o.node ) noMinimumWidth = true;
 
 	let qm = await makeQuickMenu(Object.assign({type: "quickmenu", singleColumn: userOptions.quickMenuDefaultView === 'text'}, o));
@@ -34,15 +39,15 @@ async function makeFrameContents(o) {
 	setLayoutOrder(o.layout || userOptions.quickMenuDomLayout);
 
 	// get proper sizing for opening position
-	setMenuSize();
+	setMenuSize(o);
 
 	document.getElementById('closeButton').addEventListener('click', e => {
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest"});
+		sendMessage({action: "closeQuickMenuRequest"});
 	});
 
 	document.dispatchEvent(new CustomEvent('quickMenuIframePreLoaded'));
 
-	await browser.runtime.sendMessage({
+	await sendMessage({
 		action: "quickMenuIframeLoaded", 
 		size: {
 			width: qm.getBoundingClientRect().width,
@@ -76,10 +81,11 @@ async function makeFrameContents(o) {
 		
 		if ( e.target.closest && e.target.closest('.tile') ) return;
 		
-		browser.runtime.sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
+		sendMessage({ action: "closeAllFolders", sendMessageToTopFrame: true});
 	});
 
 	tileSlideInAnimation(.3, .15, .5);
+	document.body.style.opacity = null;
 }
 
 async function makeFolderContents(node) {
@@ -100,6 +106,11 @@ async function makeFolderContents(node) {
 	setParents(node);
 
 	let nodeRef = findNode(root, n => n.id === node.id) || node;
+
+	// check for siteSearch folders
+	if ( node.type === "folder" && (nodeRef.type === "siteSearchFolder" || nodeRef.type === 'searchEngine' ) ) {
+		nodeRef = node;
+	}
 	
 	qm = await quickMenuElementFromNodeTree(nodeRef, true);
 
@@ -111,7 +122,7 @@ async function makeFolderContents(node) {
 
 	document.dispatchEvent(new CustomEvent('updatesearchterms'));
 
-	await browser.runtime.sendMessage({
+	await sendMessage({
 		action: "quickMenuIframeFolderLoaded", 
 		size: {
 			width: qm.getBoundingClientRect().width,
@@ -130,11 +141,14 @@ async function makeFolderContents(node) {
 }
 
 var maxHeight = Number.MAX_SAFE_INTEGER;
+var menuScale = 1;
 
-function setMenuSize(o) {
-	o = o || {};
+function setMenuSize(o = {}) {
+
+	debug(o);
 
 	maxHeight = o.maxHeight || maxHeight;
+	menuScale = o.menuScale || menuScale;
 
 	let tileSize = qm.getTileSize();
 
@@ -144,10 +158,10 @@ function setMenuSize(o) {
 	let currentHeight = qm.style.height || qm.getBoundingClientRect().height + "px" || 0;
 
 	qm.style.minWidth = null;
-	qm.style.height = null;
+	qm.style.height = 'auto';
 	qm.style.overflow = null;
 	qm.style.width = null;
-	document.body.style.width = 'auto';
+	document.body.style.width = window.outerWidth + "px";
 	document.body.style.height = maxHeight + "px";
 
 	// prevent the menu from shriking below minimum columns width
@@ -175,23 +189,24 @@ function setMenuSize(o) {
 
 	let allOtherElsHeight = getAllOtherHeights(true);
 
-	if ( o.lockResize )
-		qm.style.height = currentHeight;
-	else if ( o.suggestionsResize ) 
-		qm.style.height = qm.getBoundingClientRect().height + "px";
-	else if ( o.openFolder || o.toggleSingleColumn ) 
-		qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
-	else if ( o.more ) 
-		qm.style.height = qm.getBoundingClientRect().height + "px";	
-	else if ( o.widgetResize ) {
-		qm.style.height = tileSize.height * o.rows + "px";
-		// qm.style.width = tileSize.width * o.columns + "px";
-	}
-	else
-		qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
-	
-	if ( qm.getBoundingClientRect().height > maxHeight - allOtherElsHeight )
+	// if ( o.lockResize )
+	// 	qm.style.height = currentHeight;
+	// else if ( o.suggestionsResize ) 
+	// 	qm.style.height = qm.getBoundingClientRect().height + "px";
+	// else if ( o.openFolder || o.toggleSingleColumn ) 
+	// 	qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
+	// else if ( o.more ) 
+	// 	qm.style.height = qm.getBoundingClientRect().height + "px";	
+	// else if ( o.widgetResize ) {
+	// 	qm.style.height = tileSize.height * o.rows + "px";
+	// 	// qm.style.width = tileSize.width * o.columns + "px";
+	// }
+	// else
+	// 	qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
+
+	if ( qm.getBoundingClientRect().height + allOtherElsHeight > maxHeight ) {
 		qm.style.height = Math.ceil(maxHeight - allOtherElsHeight) + "px";
+	}
 
 	let scrollbarWidth = qm.offsetWidth - qm.clientWidth; // account for fractions
 
@@ -207,9 +222,9 @@ function setMenuSize(o) {
 	return rows;
 }
 
-function resizeMenu(o) {
+function resizeMenu(o = {}) {
 
-	o = o || {};
+	debug('resizeMenu');
 
 	let scrollTop = qm.scrollTop;
 	let sgScrollTop = sg.scrollTop;
@@ -238,10 +253,10 @@ function resizeMenu(o) {
 	sg.scrollTop = sgScrollTop;
 
 	window.parent.postMessage({
-		action: "quickMenuResize",
+		action: "resizeIframe",
 		size: {
 			width: qm.getBoundingClientRect().width, 
-			height: Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
+			height: document.body.scrollHeight//Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
 		},
 		singleColumn: qm.singleColumn,
 		tileSize: tileSize,
@@ -255,7 +270,7 @@ function resizeMenu(o) {
 function closeMenuRequest(e) {
 
 	if ( userOptions.quickMenuCloseOnClick && !quickMenuObject.locked ) {
-		browser.runtime.sendMessage({action: "closeQuickMenuRequest", eventType: (e.key === "Escape" ? "esc" : "click_quickmenutile") });
+		sendMessage({action: "closeQuickMenuRequest", eventType: (e.key === "Escape" ? "esc" : "click_quickmenutile") });
 	}
 }
 
@@ -480,7 +495,7 @@ window.addEventListener('message', async e => {
 
 		case "openFolderNew":
 
-			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+			userOptions = await sendMessage({action: "getUserOptions"});
 
 			setTheme()
 				.then(setUserStyles)
@@ -488,7 +503,7 @@ window.addEventListener('message', async e => {
 			break;
 
 		case "openMenu":
-			userOptions = await browser.runtime.sendMessage({action: "getUserOptions"});
+			userOptions = await sendMessage({action: "getUserOptions"});
 		
 			setTheme()
 				.then(setUserStyles)
@@ -512,78 +527,16 @@ addChildDockingListeners(mb, "quickMenu", "#searchBarContainer > *");
 
 // drag overdiv listener for chrome
 window.addEventListener("message", e => {
-	if ( !e.data.drop ) return;
-	let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
+	if ( e.data.eventType && e.data.eventType === 'drop' ) {
+		let el = document.elementFromPoint(e.data.offsetX, e.data.offsetY);
 
-	// dispatch both to fool timer
-	el.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
-	el.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+		// dispatch both to fool timer
+		['mousedown', 'mouseup'].forEach( eventType => {
+			el.dispatchEvent(new MouseEvent(eventType, {bubbles: true}));
+		})
+	}
 });
 
-
-function resizeMutationObserver() {
-
-	var frameHeight = 0;
-	var frameWidth = 0;
-
-	var qmHeight = 0;
-	var qmWidth = 0;
-
-	// Callback function to execute when mutations are observed
-	const callback = (mutationList, observer) => {
-	  for (const mutation of mutationList) {
-	     if (mutation.type === 'attributes' && mutation.attributeName === 'style' ) {
-
-	  //   	if ( ![document.body, qm].includes(mutation.target) ) return;
-	 //     console.log(`The ${mutation.attributeName} attribute was modified.`);
-
-	      if ( 
-	      	frameHeight !== document.body.scrollHeight || 
-	      	frameWidth !== qm.scrollWidth ||
-	      	qmHeight !== qm.scrollHeight
-	      ) {
-
-	      	try {
-	    		setMenuSize();
-	    	} catch (error) {}
-
-	    	qm.insertBreaks();
-	    	qm.style.overflow = 'none';
-
-	      	frameHeight = document.body.scrollHeight;
-	      	frameWidth =  qm.scrollWidth;
-	      	qmHeight = qm.scrollHeight;
-
-	    	console.log(frameHeight, qmHeight);
-
-	      	window.parent.postMessage({
-				action: "quickMenuResize",
-				size: {
-					width: qm.getBoundingClientRect().width, 
-					height: document.body.scrollHeight//Math.ceil(document.body.getBoundingClientRect().height) // account for fractions
-				}/*,
-				singleColumn: qm.singleColumn,
-				tileSize: tileSize,
-				tileCount: qm.querySelectorAll('.tile:not([data-hidden="true"])').length,
-				columns: qm.columns,
-				rows: rows,
-				windowId: qm.rootNode.id */
-			}, "*");
-	      }
-	    }
-	  }
-	};
-
-	// Create an observer instance linked to the callback function
-	const observer_body = new MutationObserver(callback);
-	const observer_qm = new MutationObserver(callback);
-
-	// Start observing the target node for configured mutations
-	observer_body.observe(document.body, { attributes: true, childList: false, subtree: true });
-	//observer_qm.observe(qm, { attributes: true, childList: false, subtree: true });
-
-}
-
-//resizeMutationObserver();
-
 // initOptionsBar();
+
+Shortcut.addShortcutListener();

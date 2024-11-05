@@ -2,6 +2,7 @@ let pageTilesGrid = null;
 
 function makePageTilesPalette() {
 	let s = $('pageTiles.paletteString');
+	s.innerHTML = null;
 	palettes.forEach( (p,index) => {
 		let o = document.createElement('option');
 		o.value = p.color;

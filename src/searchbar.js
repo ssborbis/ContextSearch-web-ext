@@ -24,8 +24,10 @@ function getSelectedText(el) {
 	return el.value.substring(el.selectionStart, el.selectionEnd);
 }
 
-browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
+sendMessage({action: "getUserOptions"}).then( async uo => {
 	userOptions = uo;
+
+	if ( checkForQuery() ) return;
 	
 	let singleColumn = window == top ? userOptions.searchBarDefaultView === 'text' : userOptions.sideBar.singleColumn;
 
@@ -46,7 +48,7 @@ browser.runtime.sendMessage({action: "getUserOptions"}).then( async uo => {
 
 	document.dispatchEvent(new CustomEvent('quickMenuIframeLoaded'));
 
-	let sideBarOpenedOnSearchResults = await browser.runtime.sendMessage({action: 'sideBarOpenedOnSearchResults'});
+	let sideBarOpenedOnSearchResults = await sendMessage({action: 'sideBarOpenedOnSearchResults'});
 	if ( sideBarOpenedOnSearchResults ) focusSearchBar = false;
 
 	makeAddEngineBar();
@@ -68,7 +70,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	
 	// replace text with selection
 	(async () => {
-		let results = await browser.runtime.sendMessage({action: "getSelectedText"});
+		let results = await sendMessage({action: "getSelectedText"});
 		let text = results ? results.shift() : null;
 	
 		if ( text ) sb.set(text);
@@ -200,13 +202,13 @@ async function sideBarResize(o) {
 //	document.body.style.width = screen.width + "px";
 	document.body.width = null;
 	document.body.height = null;
-	document.body.getBoundingClientRect();
-	document.body.style.width = document.body.scrollWidth + "px";
+	//document.body.getBoundingClientRect();
+	document.body.style.width = Math.floor(document.body.getBoundingClientRect().width) + "px";
 
 	// simple resize when mini
 	if ( document.body.classList.contains('mini') ) {
 		return window.parent.postMessage({
-			action:"resizeSideBarIframe", 
+			action:"resizeIframe", 
 			size: {width: sbc.getBoundingClientRect().width, height: sbc.getBoundingClientRect().height + mb.getBoundingClientRect().height}, 
 			singleColumn: qm.singleColumn,
 			tileSize: qm.getTileSize()
@@ -262,7 +264,7 @@ async function sideBarResize(o) {
 	if ( !qm.rootNode.parent && userOptions.sideBar.setMinWidth ) qm.setMinWidth();
 
 	window.parent.postMessage({
-		action:"resizeSideBarIframe", 
+		action:"resizeIframe", 
 		size: {width: qm.getBoundingClientRect().width, height: document.body.offsetHeight}, 
 		singleColumn: qm.singleColumn,
 		tileSize: qm.getTileSize()
@@ -291,19 +293,46 @@ function resizeMenu(o) {
 	sg.scrollTop = sgScrollTop;
 }
 
-function closeMenuRequest() {
+function closeMenuRequest(e) {
+
 	if ( window == top ) {
-		if ( userOptions.searchBarCloseAfterSearch ) window.close();
+		if ( 
+			userOptions.searchBarCloseAfterSearch ||
+			( userOptions.searchBarCloseAfterNewTab && e.openMethod && e.openMethod === 'openNewTab' )
+		) window.close();
 	} else if ( userOptions.sideBar.closeAfterSearch ) {
 		window.parent.postMessage({action: "closeSideBarRequest"}, "*");
 	}
+}
+
+// see if the url contains a search
+function checkForQuery() {
+	let params = new URLSearchParams(window.location.search);
+	
+	if (params.has('q')) {
+
+		let n = findNode(userOptions.nodeTree, n => n.id && n.type && n.type !== "folder")
+		let str = params.get('q');
+		sendMessage({
+			action: "search", 
+			info: {
+				menuItemId: n.id,
+				selectionText: str,
+				openMethod: "openCurrentTab"
+			}
+		});
+
+		return true;
+	}
+
+	return false;
 }
 
 async function makeAddEngineBar() {
 
 	// place at the end again after qm loads
 
-	let oses = await browser.runtime.sendMessage({action: "getOpenSearchLinks"});
+	let oses = await sendMessage({action: "getOpenSearchLinks"});
 
 	if ( !oses ) return;
 
@@ -317,7 +346,7 @@ async function makeAddEngineBar() {
 		div.title = i18n("AddCustomSearch");
 		aeb.appendChild(div);
 
-		let xml_se = await browser.runtime.sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
+		let xml_se = await sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
 			return (!details) ? null : details.searchEngines[0];
 		});
 
@@ -338,7 +367,7 @@ async function makeAddEngineBar() {
 		div.style.display = null;
 
 		div.onclick = async() => {
-			return browser.runtime.sendMessage({action: "openCustomSearch", se: xml_se});
+			return sendMessage({action: "openCustomSearch", se: xml_se});
 		}
 
 		// has openSearch icon
@@ -383,7 +412,7 @@ window.addEventListener('message', e => {
 
 			// send size to parent window for sidebar widget
 			window.parent.postMessage({
-				action:"resizeSideBarIframe", 
+				action:"resizeIframe", 
 				size: {width: rect_qm.width, height: rect.height}, 
 				tileSize: qm.getTileSize(), 
 				singleColumn: qm.singleColumn
@@ -393,6 +422,10 @@ window.addEventListener('message', e => {
 
 		case "minifySideBar":
 			minifySideBar();
+			break;
+
+		case "resizeIframe": // this case works because window == window.parent for the toolbar menu
+			toolBarResize();
 			break;
 	}
 });
@@ -421,3 +454,11 @@ document.addEventListener('keydown', e => {
 			window.parent.postMessage({action: "minimizeSideBarRequest"}, "*");
 	}
 });
+
+// prevent page clicks when menu is open
+if ( window == top ) {
+	window.addEventListener('load', e => sendMessage({action:"disablePageClicks"}));
+	window.addEventListener('unload', e => sendMessage({action:"enablePageClicks"}));
+}
+
+Shortcut.addShortcutListener();

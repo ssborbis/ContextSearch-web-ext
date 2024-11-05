@@ -20,7 +20,8 @@ function getNodesFromHotkeys(hotkeys) {
 	if ( keywordNode ) return [keywordNode];
 
 	hotkeys.forEach( k => {
-		let node = findNode(userOptions.nodeTree, n => k.toLowerCase() == String.fromCharCode(n.hotkey).toLowerCase());
+		//let node = findNode(userOptions.nodeTree, n => k.toLowerCase() == String.fromCharCode(n.hotkey).toLowerCase());
+		let node = findNode(userOptions.nodeTree, n => k.toLowerCase() == Shortcut.getHotkeyCharFromNode(n));
 		if ( node ) nodes.push(node);
 	});
 	
@@ -61,8 +62,14 @@ browser.omnibox.onInputChanged.addListener((text, suggest) => {
 	let suggestions = [];
 
 	[...new Set(parsedNodes.concat(nodes))].forEach(n => {
+
+		// filter modifier hotkeys
+		let hk = Shortcut.getHotkeyCharFromNode(n);
+		if (!n.keyword && !hk) return;
+
 		suggestions.push({
-			content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + input.searchTerms,
+			//content: (n.keyword || String.fromCharCode(n.hotkey).toLowerCase() ) + " " + input.searchTerms,
+			content: (n.keyword || hk) + " " + input.searchTerms,
 			description: n.title
 		});
 	});

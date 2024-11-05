@@ -1,24 +1,40 @@
+
+
 // context menu entries need to be tracked to be updated
 window.contextMenuMatchRegexMenus = [];
-window.contextMenuSearchTerms = "";
 window.tabTerms = [];
+window.searchTerms = "";
+window.searchTermsObject = {};
+window.ctrlKey = false; // track on updateContextMenu for text/url
+window.popupWindows = [];
 
 var userOptions = {};
 var highlightTabs = [];
-var isAndroid = false;
+var platformInfo = null;
+var Encoding = null;
+
+(async () => {
+	Encoding = await import("/lib/encoding.min.js");
+})();
+
+// tracks tabs by index that have findbar search results when searching all tabs
+// var markedTabs = [];
+
+var tabHighlighter = new TabHighlighter();
 
 (async() => {
-	let info = await browser.runtime.getPlatformInfo();
-	if ( info && info.os === "android")
-		isAndroid = true;
+	platformInfo = await browser.runtime.getPlatformInfo();
 })();
 
 // init
 (async () => {
 	await loadUserOptions();
-	console.log("userOptions loaded. Updating objects");
+
+	debug("userOptions loaded. Updating objects");
 	userOptions = await updateUserOptionsVersion(userOptions);
+
 	await browser.storage.local.set({"userOptions": userOptions});
+	await repairNodeTree(userOptions.nodeTree, false);
 	await checkForOneClickEngines();
 	await buildContextMenu();
 	resetPersist();
@@ -44,9 +60,9 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	if ( highlightInfo ) {
 		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
 
-		waitOnInjection(tabId).then(value => {
+	//	waitOnInjection(tabId).then(value => {
 			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
-		});
+	//	});
 	}
 });
 
@@ -57,11 +73,26 @@ browser.tabs.onRemoved.addListener(tabId => {
 browser.tabs.onRemoved.addListener(tabId => removeTabTerms(tabId));
 browser.tabs.onActivated.addListener(info => deactivateTabTerms(info.tabId));
 browser.tabs.onActivated.addListener(info => {
-	if ( userOptions.quickMenuCloseOnTabChange ) {
-		browser.tabs.sendMessage(info.previousTabId, {action: "cancelQuickMenuRequest", allFrames:true}).then(() => {}, () => {});
+	if ( userOptions.quickMenuCloseOnTabChange && typeof info.previousTabId !== 'undefined' ) {
+		browser.tabs.sendMessage(info.previousTabId, {action: "cancelQuickMenuRequest"}).then(() => {}, () => {});
 		browser.tabs.sendMessage(info.previousTabId, {action: "closeQuickMenuRequest"}).then(() => {}, () => {});
 	}
-})
+});
+
+browser.windows.onFocusChanged.addListener(async id => {
+
+	// not a CS popup window
+	if ( !window.popupWindows.includes(id) ) return;
+
+	let w = await browser.windows.get(id);
+	userOptions.popupWindow.height = w.height;
+	userOptions.popupWindow.width = w.width;
+	notify({action: "saveUserOptions", userOptions:userOptions});
+
+});
+browser.windows.onRemoved.addListener(id => {
+	window.popupWindows = window.popupWindows.filter(_id => _id !== id );
+});
 
 browser.runtime.onMessage.addListener(notify);
 
@@ -115,10 +146,6 @@ browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 
 async function notify(message, sender, sendResponse) {
 
-	try {
-		console.log(sender.tab.id, sender.tab.url, message.action);
-	} catch (error) {}
-
 	function sendMessageToTopFrame() {
 		return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
 	}
@@ -134,6 +161,10 @@ async function notify(message, sender, sendResponse) {
 		
 		await browser.tabs.query({currentWindow: true, active: true}).then(onFound, onError);
 	}
+
+	try {
+		//console.log(sender.tab.id, sender.tab.url, message.action);
+	} catch (error) {}
 
 	if ( message.sendMessageToTopFrame ) {
 		return sendMessageToTopFrame();
@@ -270,12 +301,18 @@ async function notify(message, sender, sendResponse) {
 					_message.searchTerms = "";
 				
 				let tabs = await getAllOpenTabs();
-				return Promise.all(tabs.map( tab => {
+
+				return Promise.all(tabs.map( async tab => {
+					await waitOnInjection(tab.id);
+					await executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
 					return browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
 				}));
 				
-			} else
+			} else {
+				await waitOnInjection(tab.id);
+				await executeScripts(sender.tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
 				return sendMessageToTopFrame();
+			}
 			
 		case "closeFindBar":
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
@@ -290,6 +327,24 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateFindBar":
 			return sendMessageToTopFrame();
+
+		case "toggleFindBar":
+			let isOpen = await notify({action: "getFindBarOpenStatus"});
+			isOpen = isOpen.shift();
+
+			//let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
+
+			let s = await browser.tabs.executeScript(sender.tab.id, {
+				code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
+			});
+
+			s = s.shift();
+
+			if (!isOpen || ( isOpen && s) )
+				notify({action: "openFindBar", searchTerms: s});
+			else
+				notify({action: "closeFindBar"});
+			break;
 			
 		case "findBarNext":
 			return sendMessageToTopFrame();
@@ -301,12 +356,32 @@ async function notify(message, sender, sendResponse) {
 			onFound = result => result
 			onError = () => {}
 			return browser.tabs.executeScript(sender.tab.id, {
-				code: "getFindBar() ? true : false;"
+				code: "(typeof getFindBar !== 'undefined' && getFindBar()) ? true : false;"
 			}).then(onFound, onError);
 
 		case "mark":
+
+			// clear highlighted tabs on new markings
+
+			if ( userOptions.highLight.findBar.highlightAllTabs )
+				tabHighlighter.clear();
+
+			const injectAllFrames = async tab => {
+				let frames = await browser.webNavigation.getAllFrames({tabId: tab.id});
+
+				for ( let frame of frames ) {
+					if ( frame.frameId == 0 ) continue;
+					await injectContentScripts(tab, frame.frameId);
+				}
+			}
+
+			await injectAllFrames(sender.tab);
+
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
 				let tabs = await getAllOpenTabs();
+
+				for ( let tab of tabs )	await injectAllFrames(tab);
+
 				return Promise.all(tabs.map( tab => browser.tabs.sendMessage(tab.id, message)));
 			} else {
 				return sendMessageToAllFrames();
@@ -314,12 +389,17 @@ async function notify(message, sender, sendResponse) {
 
 			
 		case "unmark":
+			if ( userOptions.highLight.findBar.highlightAllTabs )
+				tabHighlighter.clear();
 			return sendMessageToAllFrames();
 		
 		case "findBarUpdateOptions":
 			return sendMessageToTopFrame();
 
 		case "markDone":
+			if ( message.count && userOptions.highLight.findBar.highlightAllTabs )
+				tabHighlighter.add(sender.tab.index);
+			
 			return sendMessageToTopFrame();
 			
 		case "toggleNavBar":
@@ -330,6 +410,9 @@ async function notify(message, sender, sendResponse) {
 		
 		case "openSideBar":
 		case "sideBarHotkey":
+			return sendMessageToTopFrame();
+
+		case "makeOpeningTab":
 			return sendMessageToTopFrame();
 			
 		case "getOpenSearchLinks":
@@ -348,7 +431,10 @@ async function notify(message, sender, sendResponse) {
 
 		case "updateSearchTerms":
 
+			debug(window.searchTermsObject);
+
 			window.searchTerms = message.searchTerms;
+			window.searchTermsObject = message.searchTermsObject;
 			
 			if ( userOptions.autoCopy && message.searchTerms && ( userOptions.autoCopyOnInputs || !message.input))
 				notify({action: "copyRaw", autoCopy:true});
@@ -360,45 +446,66 @@ async function notify(message, sender, sendResponse) {
 		
 			var searchTerms = message.searchTerms;
 
-			if ( window.contextMenuSearchTerms === searchTerms ) {
-		//		console.log('same search terms');
-		//		return;
-			}
-			
-			window.contextMenuSearchTerms = searchTerms;
-
+			if ( searchTerms && message.hasOwnProperty("ctrlKey"))
+				window.ctrlKey = message.ctrlKey;
+		
 			if ( userOptions.contextMenuUseContextualLayout ) {
 
 				let ccs = [...message.currentContexts];
 
 				if ( ccs.includes("image") && ccs.includes("link") ) {
 					ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
+				} else if ( message.linkMethod && message.linkMethod === "text") {
+					ccs = ccs.filter(c => c != "link");
+					if ( !ccs.includes("selection") )
+						ccs.push("selection");
 				}
 
 				updateMatchRegexFolders(searchTerms);
 
-				// relabel link based on linkMethod
+				// relabel selection based on linkMethod
 				test: try {
+
+					// reset selection label
+					browser.contextMenus.update("selection", {
+						title: i18n("SearchForContext", i18n("selection").toUpperCase()) + getMenuHotkey(),
+						contexts:["selection"]
+					});
 
 					if ( message.currentContexts.includes("image")) break test;
 
-					let title = i18n("SearchForContext", (message.linkMethod && message.linkMethod === "text" ? i18n("LINKTEXT") : i18n("LINK")).toUpperCase()) + getMenuHotkey();
+					// replace LINK menu label with linkText
+					if ( ccs.includes("linkText") ) {
+						if ( message.linkMethod && message.linkMethod === "text" ) {
+							ccs = ccs.filter(c => c != "linkText" && c != "link" );
+							browser.contextMenus.update("selection", {
+								title: i18n("SearchForContext", i18n("LINKTEXT").toUpperCase()) + getMenuHotkey(),
+								contexts:["link"]
+							});
 
-					await browser.contextMenus.update("link", {
-						title: title
-					});
+							if ( ccs.length === 0 ) ccs.push("selection");
+
+						} else {
+							ccs = ccs.filter(c => c != "linkText" );
+						}
+					}
+	
 				} catch ( error ) {
 					console.error(error);
 				}
 
 				try {
-					for ( let i in contexts )
-						await browser.contextMenus.update(contexts[i], {visible: true });
 
-					contexts.forEach(c => {
-						if ( !ccs.includes(c) )
-							browser.contextMenus.update(c, {visible: false });
-					})
+					for ( let i in contexts ) {
+						browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) });
+					}
+
+					// if just one context, relabel with searchTerms
+					if ( ccs.length === 1 && window.searchTerms ) {
+						browser.contextMenus.update(ccs[0], {
+							title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", window.searchTerms) + getMenuHotkey()
+						});
+					}
 
 				} catch ( error ) {
 					console.error(error);
@@ -445,7 +552,7 @@ async function notify(message, sender, sendResponse) {
 				
 				if ( engines.find(e => e.name === title) ) {
 					await browser.tabs.executeScript(sender.tab.id, {
-						code: `alert(i18n("FFEngineExists", "${title}"));`
+						code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
 					});
 					return;
 				}
@@ -532,11 +639,11 @@ async function notify(message, sender, sendResponse) {
 				title: se.title,
 				id: se.id,
 				hidden: false,
-				contexts:[32]
+				contexts:32
 			}
 			parentNode.children.push(node);
 
-			notify({action: "saveOptions", userOptions:userOptions});
+			notify({action: "saveUserOptions", userOptions:userOptions});
 			return node;
 			
 		}
@@ -554,7 +661,7 @@ async function notify(message, sender, sendResponse) {
 			
 			userOptions.searchEngines.splice(index, 1);
 	
-			notify({action: "saveOptions", userOptions:userOptions});
+			notify({action: "saveUserOptions", userOptions:userOptions});
 			
 			break;
 			
@@ -775,31 +882,16 @@ async function notify(message, sender, sendResponse) {
 		case "injectComplete":
 
 			if ( userOptions.quickMenu ) {
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/inject_quickmenu.js",
-					frameId: sender.frameId
-				});
-				
-				console.log("injected quickmenu");
-			}
+				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
+			}	await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
 			
 			if ( userOptions.pageTiles.enabled ) {
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/inject_pagetiles.js",
-					frameId: sender.frameId
-				});
-				
-				console.log("injected pagetiles");
+				await executeScripts(sender.tab.id, {files: ["/inject_pagetiles.js"], frameId: sender.frameId}, true);
+				await executeScripts(sender.tab.id, {files: ["/dragshake.js"], frameId: 0}, true);
 			}
-
-			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) {
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/inject_mycroftproject.js",
-					frameId: sender.frameId
-				});
-				
-				console.log("injected mycroftproject");
-			}
+			
+			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) 
+				await executeScripts(sender.tab.id, {files: ["/inject_mycroftproject.js"], frameId: sender.frameId});
 			
 			break;
 			
@@ -857,10 +949,6 @@ async function notify(message, sender, sendResponse) {
 			return;
 
 		case "openPageTiles":
-			// await browser.tabs.executeScript(sender.tab.id, {
-			// 	file: "/inject_pagetiles.js"
-			// }).catch(e => {});
-
 			return sendMessageToTopFrame();
 
 		case "minifySideBar":
@@ -946,6 +1034,33 @@ async function notify(message, sender, sendResponse) {
 
 		case "isSidebar":
 			return sender.hasOwnProperty("frameId");
+
+		case "disablePageClicks":
+			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
+			return browser.tabs.insertCSS( sender.tab.id, {
+				code:"HTML{pointer-events:none;}",
+				cssOrigin: "user",
+				allFrames:true
+			});
+
+		case "enablePageClicks":
+			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
+
+			function logTabs(tabs) {
+			  for (const tab of tabs) {
+				    browser.tabs.removeCSS( tab.id, {
+					code:"HTML{pointer-events:none;}",
+					cssOrigin: "user",
+					allFrames:true
+				});
+			  }
+			}
+
+			return browser.tabs.query({ currentWindow: true }).then(logTabs);
+
+		// bypasses Firefox resistFingerprinting
+		case "getDevicePixelRatio":
+			return window.devicePixelRatio;
 	}
 }
 
@@ -1047,13 +1162,14 @@ function openWithMethod(o) {
 	o.index = o.index || null;
 
 	function filterOptions(_o) {
-		if ( isAndroid) delete _o.openerTabId;
+		if ( platformInfo && platformInfo.os === "android") delete _o.openerTabId;
 
 		return _o;
 	}
 	
 	switch (o.openMethod) {
 		case "openCurrentTab":
+			o.openerTabId = null; // Cannot set a tab's opener to itself
 			return openCurrentTab();
 
 		case "openNewTab":
@@ -1071,6 +1187,9 @@ function openWithMethod(o) {
 
 		case "openSideBarAction":
 			return openSideBarAction(o.url);
+
+		case "openPopup":
+			return openPopup();
 	}
 	
 	function openCurrentTab() {
@@ -1125,21 +1244,70 @@ function openWithMethod(o) {
 
 		return {};
 	}
+
+	async function openPopup() {
+		const getDimension = (d,dname=null,tab=null) => {
+			if ( /\d+$/g.test(d) || /\d+px$/g.test(d) ) {
+				return parseInt(d);
+			}
+
+			if ( /d+%/g.test(d) ) {
+				
+			}
+		}
+
+		let tabs = await browser.tabs.query({currentWindow: true, active: true});
+		let tab = tabs[0];
+		let zoom = await browser.tabs.getZoom(tab.id);
+
+		let qmo = await notify({action: "getTabQuickMenuObject"});
+		return browser.windows.create({
+			url:o.url,
+			height:getDimension(userOptions.popupWindow.height),
+			width: getDimension(userOptions.popupWindow.width),
+			top: parseInt(qmo.screenCoords.y * zoom),
+			left: parseInt(qmo.screenCoords.x * zoom),
+			type: "panel"
+		}).then(w => window.popupWindows.push(w.id));
+	}
 }
 
 function executeBookmarklet(info) {
-	
+
+	const blobCode = (c, s) => {
+		return `
+			(() => {
+			  const blob = new Blob([\`CS_searchTerms = searchTerms = "${s}";\n\n${c}\`], {
+			    type: "text/javascript",
+			  });
+			  let script = document.createElement('script');
+			  script.src = URL.createObjectURL(blob);
+			  script.type = 'text/javascript';
+
+			  document.getElementsByTagName('head')[0].appendChild(script);
+			})();
+		`
+	}
+
+	const vanillaCode = (c, s) => {
+		return `CS_searchTerms = searchTerms = "${s}";
+		${c}`;
+	}
+
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
 
 	// run as script
 	if ( info.node.searchCode ) {
 
+		const code = info.node.searchCode;
+
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			browser.tabs.executeScript(tabs[0].id, {
-				code: `CS_searchTerms = searchTerms = "${searchTerms}";
-					${info.node.searchCode}`		
-			})
+				code: userOptions.scriptsUseBlobs 
+					? blobCode(code, searchTerms) 
+					: vanillaCode(code, searchTerms)
+			});
 		});
 	}
 
@@ -1167,8 +1335,9 @@ function executeBookmarklet(info) {
 			let code = decodeURI(bookmark.url);
 			
 			browser.tabs.executeScript(tabs[0].id, {
-				code: `CS_searchTerms = searchTerms = "${searchTerms}";
-					${code}`
+				code: userOptions.scriptsUseBlobs 
+					? blobCode(code, searchTerms) 
+					: vanillaCode(code, searchTerms)
 			});
 		});
 
@@ -1202,9 +1371,9 @@ function executeOneClickSearch(info) {
 
 			browser.tabs.onUpdated.removeListener(listener);
 
-			waitOnInjection(tabId).then(value => {
+		//	waitOnInjection(tabId).then(value => {
 				highlightSearchTermsInTab(__tab, searchTerms);
-			});
+		//	});
 		});
 	}
 	
@@ -1236,7 +1405,7 @@ function executeOneClickSearch(info) {
 
 			browser.tabs.onUpdated.removeListener(listener);
 
-			console.log('tab took', Date.now() - start );
+			debug('tab took', Date.now() - start );
 
 			// .search.get() requires some delay
 			await new Promise(r => setTimeout(r, 500));
@@ -1266,6 +1435,26 @@ async function executeExternalProgram(info) {
 	let path = node.path.replace(/{searchTerms}/g, searchTerms)
 		.replace(/{url}/g, info.tab.url);
 
+
+	/* check for prompts */
+	const rx = /(?:\{prompt(?:=(.+?))\})/g;
+	var match;
+	let new_path = path;
+	while ((match = rx.exec(path)) != null) {
+
+		let str = await promptCurrentTab(match[1]);
+
+		// check for cancel
+		if (str === null) return;
+		new_path = new_path.replace(match[0], str);
+	}
+
+	path = new_path;
+	/* end check for prompts */
+
+	// confirm the path is correct
+	//if ( !await confirmCurrentTab(`"${escapeDoubleQuotes(path)}"`) ) return;
+	
 	// {download_url} is a link to be downloaded by python and replaced by the file path
 	let matches = path.match(/{download_url(?:=(.+))?}/);
 	if ( matches ) {
@@ -1273,18 +1462,47 @@ async function executeExternalProgram(info) {
 		downloadPath = matches[1] || null;
 	}
 
-	if ( downloadPath === "ASK") {
-		let id = await browser.downloads.download({
-			url:downloadURL,
-			saveAs:true
-		})
+	/* download using browser UI */
 
-		let dl = await browser.downloads.search({id}).then( dls => {
-			return dls[0];
-		});
+	if ( /^ask$/i.test(downloadPath) ) {
 
-		console.log(dl);
+		let id = await browserSaveAs(downloadURL);
+
+		// chrome does not wait on file naming
+		// use interval to check download status
+
+		if ( chrome ) {
+			let status = "";
+
+			browser.downloads.onChanged.addListener(info => {
+
+				if ( info.error ) status = "error";
+				if ( info.state && info.state.current === 'complete' ) status = "complete";
+			});
+
+			await new Promise(r => {
+				let ival = setInterval( () => {
+					if ( status ) {
+						clearInterval(ival);
+						r();
+					}
+				}, 1000);
+			});
+
+			if ( status === "error" ) {
+				return console.error("download failed");
+			}
+		}
+
+		let dl = await browser.downloads.search({id: id});
+
+		if ( dl.length )
+			path = path.replace(/{download_url=ask}/i, dl[0].filename);
+		else
+			return console.error("download failed");
 	}
+
+	/* end download using browser UI */
 
 	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
 		let tabs = await browser.tabs.query({active:true});
@@ -1312,7 +1530,7 @@ async function executeExternalProgram(info) {
 		downloadFolder: downloadPath || userOptions.nativeAppDownloadFolder || null 
 	};
 
-	console.log("native app message ->", msg);
+	debug("native app message ->", msg);
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
 		if ( node.postScript.trim() ) {
@@ -1416,8 +1634,6 @@ async function openSearch(info) {
 	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 
-	console.log(info);
-
 	var searchTerms = (info.searchTerms || info.selectionText || "").trim();
 
 	var openMethod = info.openMethod || "openNewTab";
@@ -1441,13 +1657,25 @@ async function openSearch(info) {
 		} catch ( error ) {}
 	}
 
-	if ( userOptions.multilinesAsSeparateSearches ) {
+	if ( userOptions.multilinesAsSeparateSearches && !info.multilines ) {
 
 		try {
-			searchTerms = info.quickMenuObject.searchTermsObject.selection.trim() || searchTerms;
-		} catch (err) {}
 
-		let terms = searchTerms.split('\n');
+			if ( info.quickMenuObject && isSameStringMinusLineBreaks(info.quickMenuObject.lastSelectText, info.quickMenuObject.searchTermsObject.selection) ) {
+				searchTerms = info.quickMenuObject.lastSelectText;
+				debug('multiline search', 'DOM menu');
+			}
+			else if ( info.selectionText && isSameStringMinusLineBreaks(info.selectionText, window.searchTerms)){
+				searchTerms = window.searchTerms;
+				debug('multiline search', 'context menu');
+			}
+
+		} catch (err) {
+			console.error(err);
+		}
+
+		// filter empty lines
+		let terms = searchTerms.trim().split('\n').filter(l => l);
 
 		if ( terms.length > 1 ) {
 
@@ -1459,7 +1687,8 @@ async function openSearch(info) {
 				try {
 					let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
 					if ( valid ) {
-						let _confirm = await browser.tabs.executeScript(info.tab.id, {	code:`confirm('Exceeds terms limit. Continue?');` });
+						let _confirm_str = i18n("ConfirmMultiLineSearch", terms.length.toString());
+						let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` });
 						
 						if ( !_confirm[0] ) return;
 					}
@@ -1476,6 +1705,7 @@ async function openSearch(info) {
 
 				let _info = Object.assign({}, info);
 				_info.searchTerms = t;
+				_info.multilines = true;
 				_info.openMethod = i ? "openBackgroundTab" : _info.openMethod;
 				delete _info.quickMenuObject;
 
@@ -1581,9 +1811,9 @@ async function openSearch(info) {
 			}
 		}
 
-		var encodedSearchTermsObject = encodeCharset(searchTerms, se.queryCharset);
+		var encodedSearchTerms = encodeCharset(searchTerms, se.queryCharset);
 		
-		var q = replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTermsObject.uri, url: tab.url, domain: domain});
+		var q = await replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
 
 		// set landing page for POST engines
 		if ( 
@@ -1609,7 +1839,7 @@ async function openSearch(info) {
 	openWithMethod({
 		openMethod: openMethod, 
 		url: q, 
-		openerTabId: openerTabId
+		openerTabId: openerTabId == -1 ? null : openerTabId // chrome pdf reader gives tab.id of -1
 	}).then(onCreate, onError);
 	
 	function executeSearchCode(tabId) {
@@ -1622,6 +1852,8 @@ async function openSearch(info) {
 	}
 	
 	function onCreate(_tab) {
+
+		if ( !_tab ) return;
 
 		// if new window
 		if (_tab.tabs) {
@@ -1656,24 +1888,17 @@ async function openSearch(info) {
 
 				browser.tabs.onUpdated.removeListener(listener);
 				
-				waitOnInjection(tabId).then(value => {
+			//	waitOnInjection(tabId).then(value => {
 					highlightSearchTermsInTab(__tab, searchTerms);
 					executeSearchCode(_tab.id);
-				});
+			//	});
 				return;
 			}
 			
 			browser.tabs.onUpdated.removeListener(listener);
 
-			let promises = ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js'].map( async (file) => {
-				await browser.tabs.executeScript(_tab.id, {
-					file: file,
-					runAt: 'document_start'
-				});
-			});
-			
-			await Promise.all(promises);
-			
+			await executeScripts(_tab.id, {files: ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js']}, true);
+
 			browser.tabs.executeScript(_tab.id, {
 				code: `
 					let se = ${JSON.stringify(se)};
@@ -1691,10 +1916,10 @@ async function openSearch(info) {
 				if ( _tabInfo.status !== 'complete' ) return;
 				browser.tabs.onUpdated.removeListener(_listener);
 				
-				waitOnInjection(tabId).then(value => {
+			//	waitOnInjection(tabId).then(value => {
 					highlightSearchTermsInTab(_tabInfo, searchTerms);
 					executeSearchCode(_tabId);
-				});
+			//	});
 			});
 		});
 	}
@@ -1743,6 +1968,9 @@ async function folderSearch(info, allowFolders) {
 		
 		info.tab = win.tabs[0];
 		info.openMethod = "openCurrentTab";	
+
+		// delay required in FF, else blank page
+		await new Promise(r => setTimeout(r, 500));
 	}
 
 	// track index outside forEach to avoid incrementing on skipped nodes
@@ -1772,9 +2000,6 @@ async function folderSearch(info, allowFolders) {
 		for (let promise of promises)
 			await promise();
 		
-		// if ( !keepMenuOpen(e, true))
-			// closeMenuRequest();
-		
 		lastSearchHandler(node.id);
 	}
 
@@ -1794,6 +2019,12 @@ function escapeBackticks(str) {
 async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( !tab ) return;
+
+	// wait on /inject.js 
+	await waitOnInjection(tab.id);
+
+	// inject highlighting
+	await executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
 
 	if ( userOptions.sideBar.openOnResults ) {
 		await browser.tabs.executeScript(tab.id, {
@@ -1830,9 +2061,7 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 			highlightTabs.push(obj);
 	}
 
-	browser.tabs.executeScript(tab.id, {
-		file: "inject_resultsEngineNavigator.js"
-	});
+	executeScripts(tab.id, {files: ["inject_resultsEngineNavigator.js"]}, true);
 }
 
 function getAllOpenTabs() {
@@ -1845,6 +2074,32 @@ function getAllOpenTabs() {
 }
 
 function encodeCharset(string, encoding) {
+
+	try {
+		
+		if ( encoding.toLowerCase() === "none" )
+			return {ascii: string, uri: string};
+		
+		if (encoding.toLowerCase() === 'utf-8') 
+			return {ascii: string, uri: encodeURIComponent(string)};
+		
+		let uint8array = new Encoding.TextEncoder(encoding, { NONSTANDARD_allowLegacyEncoding: true }).encode(string);
+		let uri_string = "", ascii_string = "";
+		
+		for (let uint8 of uint8array) {
+			let c = String.fromCharCode(uint8);
+			ascii_string += c;
+			uri_string += (c.match(/[a-zA-Z0-9\-_.!~*'()]/) !== null) ? c : "%" + uint8.toString(16).toUpperCase();
+		}
+
+		return {ascii: ascii_string, uri: uri_string};
+	} catch (error) {
+		console.log(error.message);
+		return {ascii: string, uri: string};
+	}
+}
+
+function encodeCharsetBrowser(string, encoding) {
 
 	try {
 		
@@ -1868,394 +2123,6 @@ function encodeCharset(string, encoding) {
 		console.log(error.message);
 		return {ascii: string, uri: string};
 	}
-}
-
-function updateUserOptionsVersion(uo) {
-
-	let start = Date.now();
-
-	// v1.1.0 to v 1.2.0
-	return browser.storage.local.get("searchEngines").then( result => {
-		if (typeof result.searchEngines !== 'undefined') {
-			console.log("-> 1.2.0");
-			uo.searchEngines = result.searchEngines || uo.searchEngines;
-			browser.storage.local.remove("searchEngines");
-		}
-		
-		return uo;
-	}).then( _uo => {
-	
-		// v1.2.4 to v1.2.5
-		if (_uo.backgroundTabs !== undefined && _uo.swapKeys !== undefined) {
-			
-			console.log("-> 1.2.5");
-			
-			if (_uo.backgroundTabs) {
-				_uo.contextMenuClick = "openBackgroundTab";
-				_uo.quickMenuLeftClick = "openBackgroundTab";
-			}
-			
-			if (_uo.swapKeys) {
-				_uo.contextShift = [_uo.contextCtrl, _uo.contextCtrl = _uo.contextShift][0];
-				_uo.quickMenuShift = [_uo.quickMenuCtrl, _uo.quickMenuCtrl = _uo.quickMenuShift][0];
-			}
-			
-			delete _uo.backgroundTabs;
-			delete _uo.swapKeys;
-			
-		}
-		
-		return _uo;
-		
-	}).then( _uo => {
-	
-		//v1.5.8
-		if (_uo.quickMenuOnClick !== undefined) {
-			
-			console.log("-> 1.5.8");
-			
-			if (_uo.quickMenuOnClick)
-				_uo.quickMenuOnMouseMethod = 'click';
-			
-			if (_uo.quickMenuOnMouse)
-				_uo.quickMenuOnMouseMethod = 'hold';
-			
-			if (_uo.quickMenuOnClick || _uo.quickMenuOnMouse)
-				_uo.quickMenuOnMouse = true;
-			
-			delete _uo.quickMenuOnClick;
-		}
-		
-		return _uo;
-
-	}).then( _uo => {
-		
-		if (browser.bookmarks === undefined) return _uo;
-
-		if (i18n("ContextSearchMenu") === "ContextSearch Menu") return _uo;
-		
-		console.log("-> 1.6.0");
-		
-		browser.bookmarks.search({title: "ContextSearch Menu"}).then( bookmarks => {
-
-			if (bookmarks.length === 0) return _uo;
-
-			console.log('New locale string for bookmark name. Attempting to rename');
-			return browser.bookmarks.update(bookmarks[0].id, {title: i18n("ContextSearchMenu")}).then(() => {
-				console.log(bookmarks[0]);
-			}, error => {
-				console.log(`An error: ${error}`);
-			});
-
-		});
-		
-		return _uo;
-	}).then( _uo => {
-
-		// version met
-		if (_uo.nodeTree.children) return _uo;
-	
-		console.log("-> 1.8.0");
-	
-		function buildTreeFromSearchEngines() {
-			let root = {
-				title: "/",
-				type: "folder",
-				children: [],
-				hidden: false
-			}
-
-			for (let se of _uo.searchEngines) {
-				root.children.push({
-					type: "searchEngine",
-					title: se.title,
-					hidden: se.hidden || false,
-					id: se.id
-				});
-			}
-			
-			return root;
-		}
-
-		// generate unique id for each search engine
-		for (let se of _uo.searchEngines)
-			se.id = gen();
-
-		// neither menu uses bookmarks, build from search engine list
-		if (!_uo.quickMenuBookmarks && !_uo.contextMenuBookmarks) {
-			let root = buildTreeFromSearchEngines();
-			_uo.nodeTree = root;
-			return _uo;
-		}  	
-		
-		// both menus use bookmarks, build from bookmarks
-		else if (_uo.quickMenuBookmarks && _uo.contextMenuBookmarks) {
-			return CSBookmarks.treeToFolders().then( root => {
-				_uo.nodeTree = root;
-				return _uo;
-			});
-		}
-
-		else {
-
-			return CSBookmarks.treeToFolders().then( (bmTree) => {
-				let seTree = buildTreeFromSearchEngines();
-
-				if (_uo.quickMenuBookmarks) {
-					console.log("BM tree + SE tree");
-					bmTree.children = bmTree.children.concat({type:"separator"}, seTree.children);
-
-					_uo.nodeTree = bmTree;
-					
-				} else {
-					console.log("SE tree + BM tree");
-					seTree.children = seTree.children.concat({type:"separator"}, bmTree.children);
-
-					_uo.nodeTree = seTree;
-				}
-				
-				return _uo;
-
-			});
-				
-		}
-
-	}).then( _uo => {
-		
-		if ( _uo.quickMenuItems == undefined ) return _uo;
-		
-		// fix for 1.8.1 users
-		if ( _uo.quickMenuItems != undefined && _uo.quickMenuRows != undefined) {
-			console.log('deleting quickMenuItems for 1.8.1 user');
-			delete _uo.quickMenuItems;
-			return _uo;
-		}
-		// convert items to rows
-		let toolCount = _uo.quickMenuTools.filter( tool => !tool.disabled ).length;
-		
-		// any position but top is safe to ignore
-		if (_uo.quickMenuToolsPosition === 'hidden')
-			toolCount = 0;
-		
-		let totalTiles = toolCount + _uo.quickMenuItems;
-		
-		let rows = Math.ceil(totalTiles / _uo.quickMenuColumns);
-		
-		if ( _uo.quickMenuUseOldStyle )
-			rows = totalTiles;
-
-		_uo.quickMenuRows = rows;
-		
-		return _uo;
-	}).then( _uo => {
-		
-		if (!_uo.searchEngines.find(se => se.hotkey) ) return _uo;
-		
-		console.log("-> 1.8.2");
-		
-		_uo.searchEngines.forEach( se => {
-			if (se.hotkey) {
-				let nodes = findNodes(_uo.nodeTree, node => node.id === se.id);
-				nodes.forEach(node => {
-					node.hotkey = se.hotkey;
-				});
-				
-				delete se.hotkey;
-			}
-		});
-		
-		return _uo;
-		
-	}).then( _uo => {
-		
-		if ( !_uo.sideBar.type ) return _uo;
-		
-		console.log("-> 1.9.7");
-		
-		_uo.sideBar.windowType = _uo.sideBar.type === 'overlay' ? 'undocked' : 'docked';
-		delete _uo.sideBar.type;
-		
-		_uo.sideBar.offsets.top = _uo.sideBar.widget.offset;
-
-		return _uo;
-		
-	}).then( _uo => {
-		
-		// remove campaign ID from ebay template ( mozilla request )
-		
-		let index = _uo.searchEngines.findIndex( se => se.query_string === "https://rover.ebay.com/rover/1/711-53200-19255-0/1?ff3=4&toolid=20004&campid=5338192028&customid=&mpre=https://www.ebay.com/sch/{searchTerms}" );
-		
-		if ( index === -1 ) return _uo;
-
-		console.log("-> 1.14");
-		
-		_uo.searchEngines[index].query_string = "https://www.ebay.com/sch/i.html?_nkw={searchTerms}";
-
-		return _uo;	
-		
-	}).then( _uo => {
-		
-		if ( _uo.nodeTree.id ) return _uo;
-		
-		console.log("-> 1.19");
-		
-		findNodes(_uo.nodeTree, node => {
-			if ( node.type === "folder" && !node.id )
-				node.id = gen();
-		});
-
-		return _uo;	
-	}).then( _uo => {
-		
-		// delete se.query_string in a future release
-		// if ( !_uo.searchEngines.find( se => se.query_string ) ) return _uo;
-
-		let flag = false;
-		
-		_uo.searchEngines.forEach( (se,index,arr) => {
-			if ( se.query_string ) {
-				
-				if ( se.query_string.length > se.template.length) {
-					console.log("replacing template with query_string", se.template, se.query_string);
-					arr[index].template = arr[index].query_string;
-				}
-				
-				arr[index].query_string = arr[index].template;
-
-				delete se.query_string;
-
-				flag = true;
-			}
-		});
-
-		if ( flag ) console.log("-> 1.27");
-
-		return _uo;	
-	}).then( _uo => {
-
-		// replace hotkeys for sidebar ( quickMenuHotkey ) and findbar
-		if ( 'quickMenuHotkey' in _uo ) {
-			let enabled = _uo.quickMenuOnHotkey;
-			let key = _uo.quickMenuHotkey;
-
-			if ( 'key' in key ) {
-				key.id = 4;
-				key.enabled = enabled;
-
-				console.log('userShortcuts', _uo.userShortcuts);
-
-				let us_index = _uo.userShortcuts.findIndex(s => s.id === 4 );
-				if ( us_index !== -1 ) _uo.userShortcuts[us_index] = key;
-				else _uo.userShortcuts.push(key);
-			}
-
-		}
-
-		if ( 'hotKey' in _uo.highLight.findBar ) {
-			let enabled = _uo.highLight.findBar.enabled;
-			let key = _uo.highLight.findBar.hotKey;
-
-			if ( 'key' in key ) {
-				key.id = 1;
-				key.enabled = enabled;
-
-				let us = _uo.userShortcuts.find(s => s.id === 1 );
-				if ( us ) _uo.userShortcuts[_uo.userShortcuts.indexOf(us)] = key;
-				else _uo.userShortcuts.push(key);
-			}
-			console.log("-> 1.29");
-		}
-
-		if ( !_uo.highLight.styles.find(s => s.background !== "#000000" && s.color !== "#000000") ) {
-			console.log('resetting highLight.styles');
-			_uo.highLight.styles = defaultUserOptions.highLight.styles; 
-			_uo.highLight.activeStyle = defaultUserOptions.highLight.activeStyle; 
-		}
-
-		return _uo;
-
-	}).then( _uo => {
-
-		// groupFolder object changed from true/false to false/inline/block
-		findNodes(_uo.nodeTree, n => {
-
-			if ( !n.groupFolder ) return;
-
-			if ( n.groupFolder === true ) {
-				n.groupFolder = "inline";
-				console.log(n.title, "groupFolder changed to inline");
-			} else if ( n.groupFolder === "none" ) {
-				n.groupFolder = false;
-				console.log(n.title, "groupFolder changed to false");
-			}
-		});
-
-		return _uo;
-	}).then( _uo => {
-
-		// 1.32
-		if ( _uo.searchBarIcon.indexOf('icon48.png') )
-			_uo.searchBaricon = 'icons/icon.svg'
-		return _uo;
-
-	}).then( _uo => {
-
-		if ( _uo.hasOwnProperty("forceOpenReultsTabsAdjacent") ) {
-			_uo.forceOpenResultsTabsAdjacent = _uo.forceOpenReultsTabsAdjacent;
-			delete _uo.forceOpenReultsTabsAdjacent;
-		}
-		return _uo;
-
-	}).then( _uo => {
-
-		findNodes(_uo.nodeTree, n => {
-			if ( ['folder', 'separator', 'bookmark'].includes(n.type) ) return;
-
-			if ( !n.hasOwnProperty('contexts') )
-				n.contexts = 32; // selection)
-		})
-		return _uo;
-
-	}).then( _uo => {
-
-		if ( _uo.rightClickMenuOnMouseDownFix )
-			_uo.quickMenuMoveContextMenuMethod = "dblclick";
-
-		delete _uo.rightClickMenuOnMouseDownFix;
-		return _uo;
-	}).then( _uo => { // final cleanup
-
-		// remove duplicates
-		_uo.searchBarHistory = [...new Set([..._uo.searchBarHistory].reverse())].reverse();
-
-		// set version
-		_uo.version = browser.runtime.getManifest().version;
-		return _uo;
-
-	}).then( _uo => {
-		let els = _uo.quickMenuDomLayout.split(",");
-
-		if ( !els.includes("contextsBar") && !els.includes("!contextsBar") ) {
-			els.push("!contextsBar");
-			_uo.quickMenuDomLayout = els.join(",");
-		}
-		return _uo;
-	}).then( _uo => {
-		if ( _uo.quickMenuUseOldStyle ) {
-			_uo.quickMenuDefaultView = _uo.quickMenuUseOldStyle ? 'text' : 'grid';
-		//	delete _uo.quickMenuUseOldStyle;
-		}
-
-		if ( _uo.searchBarUseOldStyle ) {
-			_uo.searchBarDefaultView = _uo.searchBarUseOldStyle ? 'text' : 'grid';
-		//	delete _uo.searchBarUseOldStyle;
-		}
-
-		return _uo;
-	}).then( _uo => {
-		console.log('Done ->', _uo.version, Date.now() - start);
-		return _uo;
-	});
 }
 
 function resetPersist() {
@@ -2289,16 +2156,19 @@ async function checkForOneClickEngines() {
 		
 		if ( found ) return;
 
-		let node = {
-			type: "oneClickSearchEngine",
-			title: engine.name,
-			icon: engine.favIconUrl || browser.runtime.getURL('icons/search.svg'),
-			hidden: false,
-			id: gen()
-		}
+		if ( userOptions.autoImportFirefoxEngines ) {
 
-		console.log('adding One-Click engine ' + engine.name);
-		userOptions.nodeTree.children.push(node);
+			let node = {
+				type: "oneClickSearchEngine",
+				title: engine.name,
+				icon: engine.favIconUrl || browser.runtime.getURL('icons/search.svg'),
+				hidden: false,
+				id: gen()
+			}
+
+			console.log('adding One-Click engine ' + engine.name);
+			userOptions.nodeTree.children.push(node);
+		}
 		
 		newEngineCount++;
 		
@@ -2480,50 +2350,117 @@ function isAllowedURL(_url) {
 	return true;
 }
 
-async function injectContentScripts(tab, frameId) {
+async function executeScripts(tabId, options = {}, checkHasRun) {
 
-	//let contentType = await browser.tabs.executeScript(tab.id, { code: "document.contentType", matchAboutBlank:false, frameId: frameId });
+	if ( options.allFrames ) {
+
+		delete options.allFrames;
+
+		return new Promise(async r => {
+			let frames = await browser.webNavigation.getAllFrames({tabId: tabId});
+
+			for ( let frame of frames ) {
+				await executeScripts(tabId, Object.assign({}, options, {frameId: frame.frameId}), checkHasRun);
+			}
+
+			r();
+		});
+	}
+
+	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
 	// filter documents that can't attach menus
-	let isHTML = await browser.tabs.executeScript(tab.id, { code: "document.querySelector('html') ? true : false", matchAboutBlank:false, frameId: frameId });
-	if ( !isHTML.shift() ) return;
+	let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
+	if ( !isHTML.shift() ) return false;
 
-	let check = await browser.tabs.executeScript(tab.id, { code: "window.hasRun", matchAboutBlank:false, frameId: frameId });
-	if ( check[0] && check[0] === true ) {
-		console.log('already injected', tab.url, frameId);
-		return;
-	}
+	// filter popup windows 
+	let isPopup = await browser.tabs.executeScript(tabId, { code: "window && window.name && window.name.startsWith('CS_POPUP') ? true : false"});
+	if ( isPopup.shift() ) return false;
 
 	onFound = () => {}
-	onError = (err) => {console.log(err, tab.url)}
+	onError = err => {console.log(err)}
+
+	const files = options.files;
+	delete options.files;
+
+	for ( const file of files ) {
+
+		try {
+
+			if ( checkHasRun ) {
+				let check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
+				if ( check.shift() ) {
+					debug('already injected', file, tabId, options.frameId || 0);
+					continue;
+				}
+			}
+
+			await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
+			debug("injected", file);
+			if ( checkHasRun ) await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+		} catch (error) {
+			debug(tabId, error);
+		}
+	}
+}
+
+async function injectContentScripts(tab, frameId) {
+
+	// skip frames without host permissions
+	// checked again in executeScripts() but also skips CSS injection
+	if ( !await isTabScriptable(tab.id, frameId || 0) ) return false;
 
 	// inject into any frame
-	[
-		"/lib/browser-polyfill.min.js",
-		"/utils.js", // for isTextBox
-		"/inject.js",
-		"/lib/mark.es6.min.js",
-		"/inject_highlight.js",
-		"/hotkeys.js",
-		"/defaultShortcuts.js",
-		"/dragshake.js",
-		"/contexts.js",
-		"/tools.js" // for shortcuts
-	].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, frameId: frameId, runAt: "document_end"}).then(onFound, onError))
-	browser.tabs.insertCSS(tab.id, {file: "/inject.css", matchAboutBlank:false, frameId: frameId, cssOrigin: "user"}).then(onFound, onError);
+	// used with init_content.js to only inject when window receives focus
+	await executeScripts(tab.id, {
+		files: [
+			"/utils.js", // for isTextBox
+			"/Shortcuts.js",
+			"/inject.js",
+			"/clipboard.js",
+			"/contexts.js",
+			"/tools.js" // for shortcuts
+		], frameId: frameId, runAt: "document_end"
+	}, true);
+	browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
 
 	if ( frameId === 0 ) { /* top frames only */
-		[
-			"/nodes.js",
-			"/opensearch.js",
-			"/searchEngineUtils.js",
-			"/dock.js",
-			"/inject_sidebar.js",
-			"/inject_customSearch.js",
-			"/resizeWidget.js"
-		].forEach(js => browser.tabs.executeScript(tab.id, { file: js, matchAboutBlank:false, runAt: "document_end"}).then(onFound, onError))
-		browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", matchAboutBlank:false, cssOrigin: "user"}).then(onFound, onError);
+		await executeScripts(tab.id, {
+			files: [
+				"/nodes.js",
+				// "/opensearch.js",
+				// "/searchEngineUtils.js",
+				"/inject_customSearch.js"
+			], runAt: "document_end"
+		}, true);
 	}
+
+	(async() => {
+
+		// open findbar on pageload if set
+		if ( frameId === 0 && userOptions.highLight.findBar.startOpen) {
+			await executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
+			let isOpen = await notify({action: "getFindBarOpenStatus"});
+			if ( isOpen.shift() ) return;
+
+			notify({action: "updateFindBar", options: userOptions.highLight.findBar.markOptions}, tab);
+		}
+
+		// open sidebar on pageload if set
+		if ( frameId === 0 && ( userOptions.sideBar.startOpen || userOptions.sideBar.widget.enabled )) {
+			await executeScripts(tab.id, {files: ["/dock.js", "resizeWidget.js", "/inject_sidebar.js"]}, true);
+			browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", cssOrigin: "user"});
+
+			if ( userOptions.sideBar.widget.enabled )
+				notify({action: "makeOpeningTab"}, tab);
+
+			if ( userOptions.sideBar.startOpen )
+				notify({action: "openSideBar"}, tab);
+
+		}
+
+	})();
+	
 }
 
 function waitOnInjection(tabId) {
@@ -2552,7 +2489,7 @@ function waitOnInjection(tabId) {
 		new Promise(r => {
 			interval = setInterval(async () => {
 				try {
-					let result = await browser.tabs.executeScript(tabId, { code: "window.hasRun"} );
+					let result = await browser.tabs.executeScript(tabId, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']"} );
 
 					if ( result[0] ) {
 						cleanup();
@@ -2564,12 +2501,14 @@ function waitOnInjection(tabId) {
 					cleanup();
 					console.error('waitOnInjection failed', tabId);
 					r(false);
-				}				
-			}, 500);
+				}
+			}, 250);
 		})
 	]);
 }
 
+
+// test code
 async function scrapeBookmarkIcons() {
 	let bms = await CSBookmarks.treeToFolders("root________");
 	findNode(bms, n => {
@@ -2621,4 +2560,71 @@ async function scrapeBookmarkIcons() {
     //         console.log('Not Found');
     //         break;
     // }
+}
+
+function userInputCurrentTab(func, str) {
+
+	let id = gen();
+
+	browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
+
+		let tab = tabs[0];
+
+		if ( ! await isTabScriptable(tab.id) ) {
+			tab = await browser.tabs.create({
+				url: browser.runtime.getURL("blank.html")
+			});
+		}
+
+		browser.tabs.executeScript(tab.id, {
+			code: `(() => {
+				setTimeout(() => {
+					let str = ${func}(${str});
+					browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
+				}, 100);
+			})();`,
+			runAt: "document_idle"
+		});
+	});
+
+	return new Promise(resolve => {
+		browser.runtime.onMessage.addListener(function listener(result, sender) {
+
+			if ( !result.id || result.id !== id ) return;
+
+			browser.runtime.onMessage.removeListener(listener);
+
+			if ( result.tabId !== -1 ) {
+				browser.tabs.update(result.tabId, {active: false}).then(() => {
+					browser.tabs.remove(result.tabId);
+				});				
+			}
+
+  			resolve(result.output);
+		});
+	});
+}
+
+async function isTabScriptable(tabId, frameId = 0) {
+	try {
+		await browser.tabs.executeScript(tabId, {
+			code: `(() => {})();`,
+			frameId: frameId
+		});
+		return true;
+	} catch ( error ) {
+		return false;
+	}
+}
+
+promptCurrentTab = (str) => userInputCurrentTab("prompt", str);
+confirmCurrentTab = (str) => userInputCurrentTab("confirm", str);
+
+async function browserSaveAs(url) {
+	if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
+		return;
+	}
+
+	return browser.downloads.download({url: url, saveAs: true});
 }

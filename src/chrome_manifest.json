@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.46.3",
+	"version": "1.46.27",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"background": {
@@ -23,6 +23,8 @@
 			"searchEngineUtils.js",
 			"mozlz4.js",
 			"keyTable.js",
+			"TabHighlighter.js",
+			"Shortcuts.js",
 			"background.js"
 		]
 	},
@@ -48,7 +50,8 @@
 		"contextMenus",
 		"storage",
 		"tabs",
-		"unlimitedStorage"
+		"unlimitedStorage",
+		"webNavigation"
 	],
 	"optional_permissions": [
 		"bookmarks",
