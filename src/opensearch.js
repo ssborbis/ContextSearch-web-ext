@@ -70,11 +70,11 @@ async function replaceOpenSearchParams(options) {
 	;
 
 
-	if ( /{clipboard|%c}/.test(template)) {
+	if ( /{clipboard}|%c/.test(template)) {
 		try {
 
 			// firefox
-			template = template.replace(/{clipboard|%c}/g, await navigator.clipboard.readText());
+			template = template.replace(/{clipboard}|%c/g, await navigator.clipboard.readText());
 		} catch (error) {
 
 			// chrome
@@ -85,7 +85,7 @@ async function replaceOpenSearchParams(options) {
 		    document.execCommand("Paste", null, null);
 		    var paste = div.innerText;
 		    actElem.removeChild(div);   
-		   	template = template.replace(/{clipboard|%c}/g, paste);
+		   	template = template.replace(/{clipboard}|%c/g, paste);
 		}
 	}
 
