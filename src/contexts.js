@@ -18,7 +18,7 @@ function filterContexts(root, context) {
 
 	let filteredNodeTree = JSON.parse(JSON.stringify(root));
 
-	traverseNodesDeep(filteredNodeTree, ( node, parent ) => {
+	traverseNodes(filteredNodeTree, ( node, parent ) => {
 
 		if ( node.type === 'searchEngine' ) {
 			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
