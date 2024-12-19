@@ -28,6 +28,33 @@ async function buildContextMenu(searchTerms) {
 
 	debug("buildContextMenu");
 
+
+	if ( false ) { // testing add tools to context menu
+		try {
+			await browser.contextMenus.removeAll();
+		} catch (error) {
+			console.log(error);
+		}
+
+		let pattern = await browser.runtime.getURL("") + "*";
+
+		for ( let t of QMtools ) {
+
+			try {
+				browser.contextMenus.create( {
+					documentUrlPatterns: [pattern],
+					title: t.title,	
+					icons: {"16": t.icon},
+					id: "tools_" + t.name
+				});
+			} catch (error) {
+				console.log(error);
+			}
+		}
+
+		return;
+	}
+
 	// track selectDomain menus to update later
 	window.contextMenuSelectDomainRoots = [];
 	window.contextMenuSelectDomainChildren = [];

@@ -32,6 +32,7 @@
 			"keyTable.js",
 			"TabHighlighter.js",
 			"Shortcuts.js",
+			"tools.js",
 			"background.js"
 		]
 	},
