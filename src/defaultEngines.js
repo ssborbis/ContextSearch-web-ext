@@ -34,7 +34,7 @@ var defaultEngines = [
 	},
 	{
 		"searchForm": "http://www.youtube.com",
-		"template": "http://www.youtube.com/results?search_type=search_videos&search_query={searchTerms}&search_sort=relevance&search_category=0&page={startPage?}",
+		"template": "http://www.youtube.com/results?search_query={searchTerms}",
 		"icon_url": "http://youtube.com/favicon.ico",
 		"title": "YouTube",
 		"icon_base64String": "",
