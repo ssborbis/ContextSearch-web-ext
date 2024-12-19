@@ -1,23 +1,3 @@
-function findNodes(tree, callback) {
-		
-	let results = [];
-	
-	function _traverse(node, parent) {
-		
-		if ( callback(node, parent) ) results.push(node);
-		
-		if (node && node.children) {
-			for (let child of node.children) {
-				_traverse(child, node);
-			}
-		}
-	}
-	
-	_traverse(tree, null);
-	 
-	return results;
-}
-
 function findNode(tree, callback) {
 	
 	function _traverse(node, parent) {
@@ -37,7 +17,7 @@ function findNode(tree, callback) {
 	return _traverse(tree, null);
 }
 
-function findNodesDeep(tree, callback) {
+function findNodes(tree, callback) {
 		
 	let results = [];
 	
@@ -56,7 +36,7 @@ function findNodesDeep(tree, callback) {
 	return results;
 }
 
-function traverseNodesDeep(tree, callback) {
+function traverseNodes(tree, callback) {
 			
 	function _traverse(node, parent) {
 				
@@ -100,6 +80,36 @@ function removeNodesById(tree, id) {
 
 function removeNode(node, parent) {
 	parent.children.splice(parent.children.indexOf(node), 1);
+}
+
+function sortNode(node, options = {}) {
+	let nodeCopy = JSON.parse(JSON.stringify(node));
+
+	const sortChildren = n => {
+
+		if ( !n.children ) return;
+
+		n.children.sort((a,b) => (a.title || "").localeCompare( (b.title || ""), undefined, {sensitivity: "base"}));
+
+		if ( options.sortFoldersTop ) {
+			n.children.sort((a,b) => {
+				if (a.type === 'folder' && b.type !== 'folder') return -1;
+				else if (a.type !== 'folder' && b.type === 'folder' ) return 1;
+				else return 0;
+			});
+		}
+
+	}
+
+	if ( options.sortSubfolders ) {
+		traverseNodes(nodeCopy, n => {
+			sortChildren(n);
+		});
+	} else {
+		sortChildren(nodeCopy);
+	}
+
+	return nodeCopy;
 }
 
 function repairNodeTree(tree, hide) {
@@ -224,7 +234,7 @@ function nodeAppendChild(node, parent) {
 
 function removeConsecutiveSeparators(tree) {
 	// remove consecutive separators
-	traverseNodesDeep(tree, (n,p) => {
+	traverseNodes(tree, (n,p) => {
 		if ( !p ) return;
 
 		let index = p.children.indexOf(n);
