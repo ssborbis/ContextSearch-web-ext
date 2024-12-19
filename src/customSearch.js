@@ -695,9 +695,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // set zoom attribute to be used for scaling objects
-function setZoomProperty() {
-	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
-}
+// function setZoomProperty() {
+// 	document.documentElement.style.setProperty('--cs-zoom', window.devicePixelRatio);
+// }
 
-setZoomProperty();
-document.addEventListener('zoom', setZoomProperty);
+//setZoomProperty();
+//document.addEventListener('zoom', setZoomProperty);
