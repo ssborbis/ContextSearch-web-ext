@@ -184,7 +184,7 @@ document.addEventListener('mouseup', e => {
 		sendMessage({action: 'updateContextMenu', searchTerms: searchTerms, currentContexts: getContexts(e.target, e), ctrlKey:e.ctrlKey});
 	}
 
-})
+});
 // selectionchange handler for input nodes
 // for (let el of document.querySelectorAll("input, textarea, [contenteditable='true']")) {
 // 	el.addEventListener('mouseup', e => {
