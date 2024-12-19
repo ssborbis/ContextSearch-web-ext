@@ -1,16 +1,23 @@
+const toolInit = (tool) => {
+	let tile = buildSearchIcon(null, tool.title);
+	tile.appendChild(createMaskIcon(tool.icon));		
+	tile.action = tool.action;
+	tile.keepOpen = tool.keepOpen || false;
+
+	// set tile.tool to userOptions.quickMenuTools[tool] if exists
+	let config = userOptions.quickMenuTools.find( t => t.name === tool.name );
+	if ( config ) tile.tool = config;
+
+	return tile;
+}
+
 const QMtools = [
 	{
 		name: 'close', 
 		icon: "icons/crossmark.svg",
 		context: ["quickmenu"],
 		title: i18n('tools_Close'),
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-			
-			tile.action = this.action;
-			return tile;
-		},
+		init: function() { return toolInit(this); },
 		action: function(e) {
 			sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 		}
@@ -20,15 +27,8 @@ const QMtools = [
 		icon: "icons/copy.svg", 
 		title: i18n('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-		//	tile.keepOpen = true; // prevent close on click
-			
-			tile.action = this.action;
-			return tile;
-		}, 
+		keepOpen: true,
+		init: function() { return toolInit(this); },
 		action: async function(e) {
 
 			let hasPermission = await sendMessage({action: "hasPermission", permission: "clipboardWrite"});
@@ -62,8 +62,7 @@ const QMtools = [
 		title: i18n('tools_OpenAsLink'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
+			let tile = toolInit(this);
 
 			// enable/disable link button on very basic 'is it a link' rules
 			function setDisabled() {
@@ -83,8 +82,6 @@ const QMtools = [
 			document.addEventListener('updatesearchterms', e => {
 				setDisabled();
 			});
-
-			tile.action = this.action;
 						
 			return tile;
 		},
@@ -108,14 +105,10 @@ const QMtools = [
 		icon: "icons/qm.svg", 
 		title: i18n('quickmenu'),
 		context: ["quickmenu", "sidebar", "searchbar"],
+		keepOpen:true,
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));			
+			let tile = toolInit(this)			
 			tile.dataset.locked = quickMenuObject.disabled ? "false" : "true";
-			tile.keepOpen = true; // prevent close on click
-			tile.action = this.action;
-			tile.tool = this;
-
 			return tile;
 		},
 		action: function(e) {
@@ -142,16 +135,10 @@ const QMtools = [
 		icon: "icons/lock.svg", 
 		title: i18n('tools_Lock'),
 		context: ["quickmenu"],
+		keepOpen:true,
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-			
-			tile.keepOpen = true; // prevent close on click
-			
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-			
-			let on = ( tool.persist && tool.on ) ? true : false;
-
+			let tile = toolInit(this);
+			let on = ( tile.tool.persist && tile.tool.on ) ? true : false;
 			tile.dataset.locked = quickMenuObject.locked = on;
 			
 			if ( on ) {
@@ -162,7 +149,6 @@ const QMtools = [
 				}, {once: true});
 			}
 
-			tile.action = this.action;
 			tile.tool = this;
 			
 			return tile;
@@ -190,8 +176,7 @@ const QMtools = [
 		title: i18n('tools_lastused'),		
 		init: function() {
 
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
+			let tile = toolInit(this);
 			tile.dataset.nocolorinvert = true;
 			
 			function updateIcon() {
@@ -224,7 +209,6 @@ const QMtools = [
 			document.addEventListener('updatesearchterms', updateIcon); // fires when a search executes, piggybacking for icon update	
 			document.addEventListener('updateLastUsed', updateIcon);
 
-			tile.action = this.action;
 			return tile;
 		},
 		action: function(e) {
@@ -250,23 +234,18 @@ const QMtools = [
 		icon: "icons/repeatsearch.svg",
 		title: i18n('tools_repeatsearch'),
 		context: ["quickmenu", "sidebar", "searchbar"],
+		keepOpen:true,
 		init: function() {
 
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-			
-			tile.keepOpen = true; // prevent close on click
-			
-			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === this.name );
-
-			tile.dataset.locked = tool.on;
+			let tile = toolInit(this);
+			tile.dataset.locked = tile.tool.on;
 
 			document.addEventListener('quickMenuComplete', () => {
 				
 				if ( !this.context.includes(type) ) return;
 
 				// bypass displaying the menu and execute a search immedately if using repeatsearch
-				if ( tool.on ) {
+				if ( tile.tool.on ) {
 					
 					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
 					sendMessage({
@@ -280,8 +259,7 @@ const QMtools = [
 				}
 				
 			});
-			
-			tile.action = this.action;
+
 			tile.tool = this;
 			return tile;
 		},
@@ -304,14 +282,9 @@ const QMtools = [
 		name: 'toggleview', 
 		icon: "icons/list.svg", 
 		title: i18n('grid') + " / " + i18n('list'),
+		keepOpen:true,
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.keepOpen = true; // prevent close on click
-
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-			
+			let tile = toolInit(this);
 			let timer;
 			tile.addEventListener('dragenter', e => {
 				
@@ -322,8 +295,7 @@ const QMtools = [
 				timer = setTimeout(qm.toggleDisplayMode, 1000);
 				tile.addEventListener('dragleave', e => clearTimeout(timer), {once: true});
 			});
-				
-			tile.action = this.action;
+	
 			return tile;
 		},
 		action: function(e) {
@@ -334,15 +306,7 @@ const QMtools = [
 		name: 'findinpage', 
 		icon: "icons/highlight.svg", 
 		title: i18n('findinpage'),
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-						
-			tile.action = this.action;
-			return tile;
-		},
+		init: function() { return toolInit(this); },
 		action: function(e) {
 			sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
 		}
@@ -351,13 +315,7 @@ const QMtools = [
 		name: 'openoptions', 
 		icon: "icons/settings.svg", 
 		title: i18n('settings'),
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.action = this.action;
-			return tile;
-		},
+		init: function() { return toolInit(this); },
 		action: function(e) {
 			sendMessage({action: "openOptions", hashurl: "#quickMenu"});
 		}
@@ -366,14 +324,8 @@ const QMtools = [
 		name: 'toggle_theme', 
 		icon: "icons/theme.svg", 
 		title: i18n('ToggleTheme'),
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-			tile.keepOpen = true;
-			
-			tile.action = this.action;
-			return tile;
-		},
+		keepOpen:true,
+		init: function() { return toolInit(this); },
 		action: function() {
 			nextTheme();
 		}
@@ -383,15 +335,8 @@ const QMtools = [
 		icon: "icons/keyboard.svg", 
 		title: i18n('toggleHotkeys'),
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-			tile.keepOpen = true;
-
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-			
+			let tile = toolInit(this);
 			tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
-			
-			tile.action = this.action;
 			tile.tool = this;
 			return tile;
 		},
@@ -409,13 +354,7 @@ const QMtools = [
 		icon: "icons/edit.svg", 
 		title: i18n('editmenu'),
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.keepOpen = true;
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-
-			tile.action = this.action;
+			let tile = toolInit(this);
 			tile.tool = this;
 			return tile;
 		}, 
@@ -608,16 +547,8 @@ const QMtools = [
 		icon: "icons/block.svg",
 		title: i18n('addtoblocklist'),
 		context: ["quickmenu", "sidebar"],
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.keepOpen = true;
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-
-			tile.action = this.action;			
-			return tile;
-		}, 
+		keepOpen:true,
+		init: function() { return toolInit(this); },
 		action: async function() {
 			let tabInfo = await sendMessage({action:"getCurrentTabInfo"});
 			let url = new URL(tabInfo.url);
@@ -634,16 +565,8 @@ const QMtools = [
 		icon: "icons/history.svg",
 		title: i18n('recentlyused'),
 		context: ["quickmenu", "sidebar", "searchbar"],
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.keepOpen = true;
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-
-			tile.action = this.action;
-			return tile;
-		}, 
+		keepOpen: true,
+		init: function() { return toolInit(this); },
 		action: async function() {
 
 			if (qm.rootNode.id === '___recent___') return;
@@ -659,14 +582,8 @@ const QMtools = [
 		title: i18n('showhide'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.keepOpen = true;
+			let tile = toolInit(this);
 			tile.dataset.locked = false;
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-
-			tile.action = this.action;
 			tile.tool = this;
 			return tile;
 		}, 
@@ -707,13 +624,7 @@ const QMtools = [
 		title: i18n('context'),
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.keepOpen = true;
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === this.name );
-
-			tile.action = this.action;
+			let tile = toolInit(this);
 			tile.tool = this;
 
 			// let s = document.createElement('select');
@@ -816,8 +727,7 @@ const QMtools = [
 		title: i18n('tools_OpenImage'),
 		context: ["quickmenu", "sidebar"],
 		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
+			let tile = toolInit(this);
 
 			// enable/disable link button on very basic 'is it a link' rules
 			// function setDisabled() {
@@ -837,8 +747,6 @@ const QMtools = [
 			// document.addEventListener('updatesearchterms', e => {
 			// 	setDisabled();
 			// });
-
-			tile.action = this.action;
 						
 			return tile;
 		},
@@ -858,20 +766,47 @@ const QMtools = [
 		icon: "icons/download.svg", 
 		title: i18n('tools_Download'),
 		context: ["quickmenu", "sidebar"],
-		init: function() {
-			let tile = buildSearchIcon(null, this.title);
-			tile.appendChild(createMaskIcon(this.icon));
-
-			tile.action = this.action;
-						
-			return tile;
-		},
+		init: function() { return toolInit(this); },
 		action: function(e) {
 
 			sendMessage({
 				action: "download",
 				url:sb.value
 			});
+		}
+	},
+	{
+		name: 'sort', 
+		icon: "icons/sort.svg", 
+		title: i18n('tools_Sort') || "Sort",
+		context: ["quickmenu", "sidebar", "toolbar"],
+		keepOpen:true,
+		init: function() { return toolInit(this); },
+		action: async function(e) {
+			if ( qm.unsortedNode ) {
+				qm = await quickMenuElementFromNodeTree(qm.unsortedNode);
+				delete qm.unsortedNode;
+				window.tilesDraggable = window.tilesDraggableOld;
+				delete window.tilesDraggableOld;
+				setDraggable(qm);
+			} else {
+				window.tilesDraggableOld = window.tilesDraggable;
+
+				let unsortedNode = JSON.parse(JSON.stringify(qm.rootNode));
+				let sortedNode = sortNode(qm.rootNode, {sortSubfolders: true, sortFoldersTop:true});
+
+				traverseNodes( sortedNode, (node, parent) => {
+					if (node.type == 'separator') removeNode(node, parent);
+				});
+
+				qm = await quickMenuElementFromNodeTree(sortedNode);
+				qm.unsortedNode = unsortedNode;
+				window.tilesDraggable = false;
+				setDraggable(qm);
+
+			}
+			resizeMenu({openFolder: true});
+			qm.expandMoreTiles();
 		}
 	}
 ];
