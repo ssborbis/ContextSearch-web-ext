@@ -1000,10 +1000,10 @@ function buildImportExportButtons() {
 				}
 
 				// flatten
-				folder.children = findNodesDeep(folder, n => n.type !== 'folder' );
+				folder.children = findNodes(folder, n => n.type !== 'folder' ); // findNodesDeep
 
 				// get nodes with duplicate ids in userOptions.nodeTree
-				let dupes = findNodesDeep(folder, n => findNode(uo.nodeTree, _n => _n.id === n.id));
+				let dupes = findNodes(folder, n => findNode(uo.nodeTree, _n => _n.id === n.id)); //findNodesDeep
 
 				for ( let dupe of dupes ) {
 					let result = await new Promise( res => {
@@ -1108,7 +1108,7 @@ function buildImportExportButtons() {
 							right_browser.innerHTML = null;
 
 							let copy = Object.assign({}, newUserOptions);
-							traverseNodesDeep(copy.nodeTree, (n,p) => {
+							traverseNodes(copy.nodeTree, (n,p) => {
 
 								// remove OCSE from non-FF browsers
 								if ( n.type === "oneClickSearchEngine" && !browser.search )
