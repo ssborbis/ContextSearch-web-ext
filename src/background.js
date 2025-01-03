@@ -816,9 +816,13 @@ async function notify(message, sender, sendResponse) {
 		case "getTabQuickMenuObject":
 
 			try {
-				return (await browser.tabs.executeScript(sender.tab.id, {
-					code: `quickMenuObject;`
-				})).shift();
+				return Promise.race([
+					browser.tabs.executeScript(sender.tab.id, {
+					code: `quickMenuObject;`,
+					runAt: "document_end"
+				}),
+				new Promise(r => setTimeout(r, 250))])
+					.then( result => result ? result.shift() : null );
 			} catch (error) {
 				return null;
 			}
