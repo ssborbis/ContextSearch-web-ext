@@ -2557,5 +2557,8 @@
   },
   "autoImportFirefoxEnginesTooltip": {
    "message": "Always check for Firefox engines"
+  },
+  "context": {
+   "message": "context"
   }
 }
