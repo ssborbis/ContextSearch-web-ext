@@ -623,6 +623,7 @@ const QMtools = [
 		icon: "icons/selection.svg",
 		title: i18n('context'),
 		context: ["quickmenu", "sidebar", "searchbar"],
+		keepOpen:true,
 		init: function() {
 			let tile = toolInit(this);
 			tile.tool = this;
@@ -642,13 +643,20 @@ const QMtools = [
 			// s.style.top = 0;
 			// s.style.left = 0;
 			// s.style.visibility = 'hidden';
-			// s.style.width = '100%';
-			// s.style.height = '100%';
-			// s.style.backgroundColor = 'transparent';
+			// s.style.width = 'auto';
+
+			// s.style.height = "100%";
+			// s.style.paddingLeft = '32px'; // hide text
+			
+			// if ( window != top )
+			// 	s.style.height = '100vh';
+
+			// s.style.backgroundColor = 'red';
 			// s.style.border = 'none';
 			// s.style.color = 'var(--color)';
 			// s.onfocus = function() {
-			// 	s.style.backgroundColor = 'var(--bg-color)';
+			// //	s.style.backgroundColor = 'var(--bg-color)';
+
 			// }
 
 			// tile.appendChild(s);
