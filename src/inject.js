@@ -518,7 +518,7 @@ document.addEventListener('keydown', e => {
 
 document.addEventListener("fullscreenchange", e => {
 	let div = document.querySelector('contextsearch-widgets');
-	if ( div ) div.style.display = document.fullscreen ? 'none' : null;
+	if ( div ) div.classList.toggle('CS_hide', document.fullscreen);
 	else {
 		let sb = getSideBar ? getSideBar() : null;
 		let ot = getOpeningTab ? getOpeningTab() : null;
