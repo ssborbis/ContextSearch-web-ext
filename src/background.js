@@ -814,18 +814,17 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			
 		case "getTabQuickMenuObject":
-
-			try {
 				return Promise.race([
-					browser.tabs.executeScript(sender.tab.id, {
-					code: `quickMenuObject;`,
-					runAt: "document_end"
-				}),
-				new Promise(r => setTimeout(r, 250))])
+					new Promise(r => {
+						try {
+							return browser.tabs.executeScript(sender.tab.id, {
+								code: `quickMenuObject;`,
+								runAt: "document_end"
+							});
+					} catch (error) { return null; }}),
+					new Promise(r => setTimeout(r, 250))
+				])
 					.then( result => result ? result.shift() : null );
-			} catch (error) {
-				return null;
-			}
 		
 		case "addToHistory": {
 
