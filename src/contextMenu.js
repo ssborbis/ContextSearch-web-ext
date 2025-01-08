@@ -636,7 +636,7 @@ async function contextMenuSearch(info, tab) {
 
 	// if chrome && get raw text if available
     try {
-    	let result = await chrome.tabs.executeScript( {
+    	let result = await chrome.tabs.executeScript( tab.id, {
     		code: "window.getSelection().toString();"
     	});
 
