@@ -209,7 +209,7 @@ function loadRemoteIcon(options) {
 				"https://plus.google.com/_/favicon?domain=" + url.hostname,				
 			];
 
-			if (se.icon_url.startsWith("resource") || se.icon_url == "") 
+			if (se.icon_url && se.icon_url.startsWith("resource") || se.icon_url == "") 
 				img.src = img.favicon_urls.shift();
 			else 
 				img.src = se.icon_url;
