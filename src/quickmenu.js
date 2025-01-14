@@ -50,7 +50,7 @@ async function makeFrameContents(o) {
 	await sendMessage({
 		action: "quickMenuIframeLoaded", 
 		size: {
-			width: qm.getBoundingClientRect().width,
+			width: Math.ceil(qm.getBoundingClientRect().width), // chrome had scrollbars
 			height: document.body.getBoundingClientRect().height
 		},
 		resizeOnly: false,
