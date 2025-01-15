@@ -309,7 +309,7 @@ async function notify(message, sender, sendResponse) {
 				}));
 				
 			} else {
-				await waitOnInjection(tab.id);
+				await waitOnInjection(sender.tab.id);
 				await executeScripts(sender.tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
 				return sendMessageToTopFrame();
 			}
