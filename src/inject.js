@@ -486,8 +486,8 @@ document.addEventListener('keydown', e => {
 			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
 
 			if ( tool && tool.on ) {
-				tool.on === false;
-				saveUserOptions();
+				tool.on = false;
+				sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			}
 		})();
 	}
