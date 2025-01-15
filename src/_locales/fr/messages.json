@@ -2469,10 +2469,10 @@
     "message": "Remettre toutes les options à leurs valeurs par défaut ? (Les moteurs de recherche ne sont pas concernés.)"
   },
   "contexts": {
-    "message":"Contextes"
+    "message": "Contextes"
   },
   "quickMenuCloseOnEdit": {
-    "message":"Fermer le menu lors de la saisie (La barre de recherche ne doit *PAS* avoir le focus, voir « Barre de recherche ».)"
+    "message": "Fermer le menu lors de la saisie (La barre de recherche ne doit *PAS* avoir le focus, voir « Barre de recherche ».)"
   },
   "quickMenuContextualLayoutToolbarTooltip": {
     "message": "Afficher la barre des contextes"
@@ -2554,5 +2554,14 @@
   },
   "MatchOptions": {
     "message": "Options de correspondance"
+  },
+  "autoImportFirefoxEnginesTooltip": {
+    "message": "Toujours rechercher les moteurs de Firefox"
+  },
+  "context": {
+    "message": "Contexte"
+  },
+  "tools_Sort": {
+    "message": "Trier"
   }
 }
