@@ -245,7 +245,10 @@ const QMtools = [
 				if ( !this.context.includes(type) ) return;
 
 				// bypass displaying the menu and execute a search immedately if using repeatsearch
-				if ( tile.tool.on ) {
+				if ( tile.dataset.locked == 'true' ) {
+
+					//sendMessage({action: "cancelQuickMenuRequest"});
+   					//sendMessage({action: "closeQuickMenuRequest"});
 					
 					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
 					sendMessage({
@@ -260,7 +263,7 @@ const QMtools = [
 				
 			});
 
-			tile.tool = this;
+			//tile.tool = this;
 			return tile;
 		},
 		action: function(e) {
@@ -353,6 +356,7 @@ const QMtools = [
 		name: 'edit', 
 		icon: "icons/edit.svg", 
 		title: i18n('editmenu'),
+		keepOpen:true,
 		init: function() {
 			let tile = toolInit(this);
 			tile.tool = this;
