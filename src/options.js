@@ -1781,7 +1781,7 @@ function buildShortcutTable() {
 
 		b.onclick = async () => {
 
-			let key = await shortcutListener(b);
+			let key = await Shortcut.buttonListener(b);
 
 			if ( !key )
 				setUserShortcut(ds);
