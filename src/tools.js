@@ -246,9 +246,6 @@ const QMtools = [
 
 				// bypass displaying the menu and execute a search immedately if using repeatsearch
 				if ( tile.dataset.locked == 'true' ) {
-
-					//sendMessage({action: "cancelQuickMenuRequest"});
-   					//sendMessage({action: "closeQuickMenuRequest"});
 					
 					let _id = userOptions.lastUsedId || quickMenuElement.querySelector('[data-type="searchEngine"]').node.id || null;
 					sendMessage({

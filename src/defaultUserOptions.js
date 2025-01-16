@@ -336,5 +336,6 @@ const defaultUserOptions = {
 		position:""
 	},
 	exportJsonPretty: false,
-	quickMenuCloseOnEditKeydown: false
+	quickMenuCloseOnEditKeydown: false,
+	quickMenuRepeatSearchHideMenu: false
 };
