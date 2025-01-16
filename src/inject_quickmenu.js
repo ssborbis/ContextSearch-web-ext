@@ -141,7 +141,15 @@ function closeQuickMenu(eventType) {
 		document.dispatchEvent(new CustomEvent('closequickmenu'));
 		
 		setTimeout(() => {
-			if (qmc && qmc.parentNode) qmc.parentNode.removeChild(qmc);
+
+			// hide vs display
+			if ( userOptions.quickMenuReuseVsClose && qmc ) {
+				qmc.style.display = 'none';
+				qmc.style.left = '-9999px';
+			}
+
+			// remove
+			else if (qmc && qmc.parentNode) qmc.parentNode.removeChild(qmc);
 		}, 100);
 	}
 	
@@ -183,23 +191,6 @@ function makeMenuWindow(o) {
 
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(o) {
-
-	// skip opening menu if using instant search
-	if ( checkToolStatus("repeatsearch") && userOptions.quickMenuRepeatSearchHideMenu ) {
-
-		let _id = userOptions.lastUsedId;
-
-		sendMessage({
-			action: "search", 
-			info: {
-				menuItemId:_id,
-				selectionText: quickMenuObject.searchTerms,
-				openMethod: userOptions.lastOpeningMethod || userOptions.quickMenuLeftClick
-			}
-		});
-
-		return;
-	}
 
 	let qmc = getQM();
 
@@ -962,6 +953,45 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						folder: message.folder, 
 						parentFrameId: message.parentId
 					});
+					break;
+				}
+
+				// skip opening menu if using instant search
+				if ( checkToolStatus("repeatsearch") && userOptions.quickMenuRepeatSearchHideMenu ) {
+
+					let _id = userOptions.lastUsedId;
+
+					sendMessage({
+						action: "search", 
+						info: {
+							menuItemId:_id,
+							selectionText: quickMenuObject.searchTerms,
+							openMethod: userOptions.lastOpeningMethod || userOptions.quickMenuLeftClick
+						}
+					});
+
+					break;
+				}
+
+				// if the menu is open, reuse it
+				if ( userOptions.quickMenuReuseVsClose && getQM() ) {
+					let qmc = getQM();
+
+					let borderWidth = getBorderWidth(qmc);
+					let borderHeight = getBorderHeight(qmc);
+
+					let initialOffsets = getQuickMenuOpeningPosition({
+						width: parseFloat(qmc.style.width),
+						height: parseFloat(qmc.style.height),
+						x: x,
+						y: y,
+						borderWidth: borderWidth
+					});
+
+					qmc.style.left = initialOffsets.x + "px";
+					qmc.style.top = initialOffsets.y + "px";
+					qmc.style.display = null;
+					qmc.style.opacity = 1;
 					break;
 				}
 
