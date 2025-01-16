@@ -482,14 +482,15 @@ document.addEventListener('keydown', e => {
 		killswitch = true;
 
 		// disable repeatsearch
-		(() => {
+		if ( userOptions.quickMenuRepeatSearchDisableOnEscape ) {
 			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
 
 			if ( tool && tool.on ) {
 				tool.on = false;
+				debug("repeatsearch disabled");
 				sendMessage({action: "saveUserOptions", userOptions: userOptions});
 			}
-		})();
+		}
 	}
 });
 

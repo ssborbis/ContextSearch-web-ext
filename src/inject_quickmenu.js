@@ -192,6 +192,22 @@ function makeMenuWindow(o) {
 // build the floating container for the quickmenu
 function makeQuickMenuContainer(o) {
 
+	if ( checkToolStatus("repeatsearch") ) {
+
+		let _id = userOptions.lastUsedId;
+
+		sendMessage({
+			action: "search", 
+			info: {
+				menuItemId:_id,
+				selectionText: quickMenuObject.searchTerms,
+				openMethod: userOptions.lastOpeningMethod || userOptions.quickMenuLeftClick
+			}
+		});
+
+		return;
+	}
+
 	let qmc = getQM();
 
 	if (qmc) qmc.parentNode.removeChild(qmc);
