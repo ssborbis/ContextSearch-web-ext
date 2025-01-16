@@ -337,6 +337,7 @@ const QMtools = [
 		name: 'toggle_hotkeys', 
 		icon: "icons/keyboard.svg", 
 		title: i18n('toggleHotkeys'),
+		keepOpen:true,
 		init: function() {
 			let tile = toolInit(this);
 			tile.dataset.locked = userOptions.allowHotkeysWithoutMenu ? "true" : "false";
@@ -550,7 +551,7 @@ const QMtools = [
 		name: 'block', 
 		icon: "icons/block.svg",
 		title: i18n('addtoblocklist'),
-		context: ["quickmenu", "sidebar"],
+		context: ["quickmenu", "sidebar", "searchbar"],
 		keepOpen:true,
 		init: function() { return toolInit(this); },
 		action: async function() {
@@ -791,7 +792,7 @@ const QMtools = [
 		name: 'sort', 
 		icon: "icons/sort.svg", 
 		title: i18n('tools_Sort') || "Sort",
-		context: ["quickmenu", "sidebar", "toolbar"],
+		context: ["quickmenu", "sidebar", "searchbar"],
 		keepOpen:true,
 		init: function() { return toolInit(this); },
 		action: async function(e) {
