@@ -2418,6 +2418,7 @@ async function injectContentScripts(tab, frameId) {
 	await executeScripts(tab.id, {
 		files: [
 			"/utils.js", // for isTextBox
+			"/nodes.js", // for shortcuts
 			"/Shortcuts.js",
 			"/inject.js",
 			"/clipboard.js",
