@@ -2418,6 +2418,7 @@ async function injectContentScripts(tab, frameId) {
 	await executeScripts(tab.id, {
 		files: [
 			"/utils.js", // for isTextBox
+			"/nodes.js", // for shortcuts
 			"/Shortcuts.js",
 			"/inject.js",
 			"/clipboard.js",
@@ -2430,7 +2431,6 @@ async function injectContentScripts(tab, frameId) {
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
 			files: [
-				"/nodes.js",
 				// "/opensearch.js",
 				// "/searchEngineUtils.js",
 				"/inject_customSearch.js"
