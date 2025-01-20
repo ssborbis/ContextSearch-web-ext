@@ -1530,7 +1530,7 @@ function openFolderTimer(el, ms) {
 	return setTimeout(() => dispatchOpenFolderEvent(el), ms);
 }
 
-function addOpenFolderOnHover(_tile, ms) {
+function addOpenFolderOnHover(_tile, ms=0) {
 
 	// force hover when cascading
 	if ( type === 'quickmenu' && userOptions.quickMenuUseCascadingFolders && userOptions.quickMenuCascadingFoldersHoverTimeout)
@@ -1836,10 +1836,10 @@ document.addEventListener('dragenter', e => {
 
 	if ( !tile ) return;
 
-	if ( tile.dataset.type === 'folder' && !undroppable(tile) ) {
-
+	if ( tile.dataset.type === 'folder' && !window.dragNode /*!undroppable(tile)*/ ) {
 		// open folders on dragover - bind to qm instead of tile
-		qm.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout);
+		// use timeout to fire after dragleave from other tiles / groups may cancel textDragOverFolderTimer
+		setTimeout(() => qm.textDragOverFolderTimer = openFolderTimer(tile, dragFolderTimeout), 10);
 		return;
 	}
 
