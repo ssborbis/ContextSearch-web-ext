@@ -99,6 +99,7 @@ function openQuickMenu(e, searchTerms) {
 var getUnderDiv = () => getShadowRoot().querySelector('#CS_underDiv');
 
 function addUnderDiv() {
+
 	if ( !userOptions.quickMenuPreventPageClicks ) return;
 	
 	let ud = getUnderDiv() || document.createElement('div');
@@ -230,7 +231,8 @@ function makeQuickMenuContainer(o) {
 		}
 	}, 1000);
 
-	addUnderDiv();
+	// moved to qm open
+	// addUnderDiv();
 }
 
 function makeQuickMenuElementContainer(o) {
@@ -482,7 +484,9 @@ document.addEventListener('mousedown', e => {
 			disableContextMenu(e.target);
 
 			// remove the listener after timeout or 1s
+			setTimeout(enableContextMenu, userOptions.quickMenuHoldTimeout || 1000 );
 		//	document.addEventListener('mouseup', () => setTimeout(enableContextMenu, userOptions.quickMenuHoldTimeout || 1000 ), {once: true});
+
 		}
 
 		quickMenuObject.mouseLastClickTime = Date.now();
@@ -1169,6 +1173,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 						sendMessage({action: "focusSearchBar"});
 				}, 50);
 
+				addUnderDiv();
+
 				break;
 			}
 
@@ -1440,6 +1446,22 @@ function showIcon(searchTerms, e) {
 document.addEventListener('mouseup', e => {
 	let searchTerms = getSelectedText(e.target);
 	showIcon(searchTerms, e);
+});
+
+document.addEventListener('mousedown', e => {
+	if ( quickMenuObject.contextMenuOnMouseDown !== null || e.which !== 3 ) return;
+
+	let time = Date.now();
+
+	document.addEventListener('contextmenu', _e => {
+		if ( Date.now() - time < 10 )
+			quickMenuObject.contextMenuOnMouseDown = true;
+		else
+			quickMenuObject.contextMenuOnMouseDown = false;
+
+		debug("quickMenuObject.contextMenuOnMouseDown = " + quickMenuObject.contextMenuOnMouseDown);
+	}, {once: true})
+
 });
 
 function checkContextMenuEventOrder(e) {

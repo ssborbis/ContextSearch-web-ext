@@ -14,7 +14,8 @@ var quickMenuObject = {
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	mouseLastContextMenuTime:0,
-	contexts: []
+	contexts: [],
+	contextMenuOnMouseDown: null
 };
 
 var userOptions = {};
