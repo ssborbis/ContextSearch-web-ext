@@ -523,7 +523,7 @@ async function notify(message, sender, sendResponse) {
 				} catch (err) {
 					console.log(err);
 				}
-			} 
+			}
 
 			break;
 			

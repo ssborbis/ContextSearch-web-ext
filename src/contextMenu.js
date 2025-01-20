@@ -28,7 +28,6 @@ async function buildContextMenu(searchTerms) {
 
 	debug("buildContextMenu");
 
-
 	if ( false ) { // testing add tools to context menu
 		try {
 			await browser.contextMenus.removeAll();
@@ -491,7 +490,7 @@ function getMenuHotkey() {
 }
 
 function updateMatchRegexFolders(s) {
-	console.log('updateMatchRegexFolders');
+	debug('updateMatchRegexFolders');
 
 	window.contextMenuMatchRegexMenus.forEach( menu => {
 		try {
@@ -519,9 +518,20 @@ function updateMatchRegexFolder(s, context) {
 	// only remove if non-contextual
 	if ( ! context ) {
 		window.contextMenuMatchRegexMenus.forEach( menu => {
+
+			// old < Chrome < 123
 			try {
 				browser.contextMenus.remove( menu, onCreated );
-			} catch(err) {debug(err)}
+			} catch(err) {
+				debug(err);
+			}
+
+			// new
+			try {
+				browser.contextMenus.remove( menu );
+			} catch(err) {
+				debug(err);
+			}
 		});
 		window.contextMenuMatchRegexMenus = [];
 	}
