@@ -27,7 +27,6 @@ const QMtools = [
 		icon: "icons/copy.svg", 
 		title: i18n('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
-		keepOpen: true,
 		init: function() { return toolInit(this); },
 		action: async function(e) {
 
@@ -105,7 +104,6 @@ const QMtools = [
 		icon: "icons/qm.svg", 
 		title: i18n('quickmenu'),
 		context: ["quickmenu", "sidebar", "searchbar"],
-		keepOpen:true,
 		init: function() {
 			let tile = toolInit(this)			
 			tile.dataset.locked = quickMenuObject.disabled ? "false" : "true";
@@ -583,6 +581,7 @@ const QMtools = [
 		icon: "icons/hide.svg",
 		title: i18n('showhide'),
 		context: ["quickmenu", "sidebar", "searchbar"],
+		keepOpen: true,
 		init: function() {
 			let tile = toolInit(this);
 			tile.dataset.locked = false;
