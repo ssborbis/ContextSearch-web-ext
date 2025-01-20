@@ -817,11 +817,11 @@ async function notify(message, sender, sendResponse) {
 				return Promise.race([
 					new Promise(r => {
 						try {
-							return browser.tabs.executeScript(sender.tab.id, {
+							r(browser.tabs.executeScript(sender.tab.id, {
 								code: `quickMenuObject;`,
 								runAt: "document_end"
-							});
-					} catch (error) { return null; }}),
+							}));
+					} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
 					.then( result => result ? result.shift() : null );
