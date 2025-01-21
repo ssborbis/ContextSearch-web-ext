@@ -1040,22 +1040,30 @@ async function notify(message, sender, sendResponse) {
 
 		case "disablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
-			return browser.tabs.insertCSS( sender.tab.id, {
-				code:"HTML{pointer-events:none;}",
-				cssOrigin: "user",
-				allFrames:true
-			});
+			try {
+				browser.tabs.insertCSS( sender.tab.id, {
+					code:"HTML{pointer-events:none;}",
+					cssOrigin: "user",
+					allFrames:true
+				});
+			} catch (error) {
+				debug(error);
+			}
 
 		case "enablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 
 			function logTabs(tabs) {
 			  for (const tab of tabs) {
+			  	try {
 				    browser.tabs.removeCSS( tab.id, {
-					code:"HTML{pointer-events:none;}",
-					cssOrigin: "user",
-					allFrames:true
-				});
+						code:"HTML{pointer-events:none;}",
+						cssOrigin: "user",
+						allFrames:true
+					});
+				} catch(error) {
+					debug(error);
+				}
 			  }
 			}
 
