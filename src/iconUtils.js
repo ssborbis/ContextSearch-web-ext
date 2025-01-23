@@ -103,6 +103,15 @@ function cacheIcons() {
 	return result;
 }
 
+function getHeaderFavicons() {
+	var hrefs = [];
+	document.querySelectorAll('link[rel^="apple-touch-icon"]').forEach( l => hrefs.push(l.href));
+	document.querySelectorAll('link[rel="shortcut icon"]').forEach( l => hrefs.push(l.href));
+	document.querySelectorAll('link[rel="icon"]').forEach( l => hrefs.push(l.href));
+	//document.querySelectorAll('meta[property="og:image"]').forEach( m => hrefs.push(m.content));
+	return hrefs;
+}
+
 async function findFavicons(url) {
 	let tab;
 	let hrefs = [];
@@ -121,12 +130,7 @@ async function findFavicons(url) {
 		await new Promise(r => setTimeout(r, 500));
 
 		let promise3 = browser.tabs.executeScript(tab.id, {
-			code: `
-			    var hrefs = [];
-				document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"],link[rel^="apple-touch-icon"]').forEach( l => hrefs.push(l.href));
-				document.querySelectorAll('meta[property="og:image"]').forEach( m => hrefs.push(m.content));
-				hrefs;
-			`
+			code: getHeaderFavicons.toString() + "; getHeaderFavicons();"
 		});
 
 		let promise4 = new Promise(resolve => setTimeout(resolve,5000));

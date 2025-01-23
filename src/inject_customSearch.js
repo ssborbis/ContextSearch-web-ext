@@ -155,12 +155,9 @@ function getFormData() {
 	if (osLink !== null) S.openSearchHref = osLink.href || "";
 
 	// Look for favicons
-	let favicon_link = document.querySelector('link[rel="icon"]') 
-		|| document.querySelector('link[rel="shortcut icon"]') 
-		|| document.querySelector('link[rel="apple-touch-icon"]');
-		
-	S.favicon_href = "";	
-	if (favicon_link !== null) S.favicon_href = favicon_link.href || "";
+	let favicon_links = getHeaderFavicons();
+
+	S.favicon_href = favicon_links.length ? favicon_links[0] : "";
 
 	S.href = window.location.href;
 
