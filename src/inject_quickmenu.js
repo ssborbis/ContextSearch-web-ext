@@ -1101,7 +1101,6 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					},
 					onUndock: o => {
 
-
 						if ( qmc.resizeWidget ) qmc.resizeWidget.setPosition();
 						
 						// don't resize initially
