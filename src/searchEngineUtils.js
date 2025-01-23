@@ -112,49 +112,12 @@ function imageToBase64(image, maxSize) {
 }
 
 function createCustomIcon(options) {
-	// https://www.scriptol.com/html5/canvas/rounded-rectangle.php
-	function roundRect(x, y, w, h, radius) {
-		var r = x + w;
-		var b = y + h;
-		ctx.beginPath();
-		ctx.strokeStyle="green";
-		ctx.lineWidth="4";
-		ctx.moveTo(x+radius, y);
-		ctx.lineTo(r-radius, y);
-		ctx.quadraticCurveTo(r, y, r, y+radius);
-		ctx.lineTo(r, y+h-radius);
-		ctx.quadraticCurveTo(r, b, r-radius, b);
-		ctx.lineTo(x+radius, b);
-		ctx.quadraticCurveTo(x, b, x, b-radius);
-		ctx.lineTo(x, y+radius);
-		ctx.quadraticCurveTo(x, y, x+radius, y);
-		ctx.closePath();
-		ctx.fill();
-	}
+	let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+    <rect x="1" y="1" width="21" height="21" rx="2" ry="2" fill="${options.backgroundColor || '#6ec179'}" stroke="${options.textColor || '#FFFFFF'}" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+	<text x="50%" y="16" class="text" text-anchor="middle" fill="${options.textColor || '#FFFFFF'}" style="font-family: ${options.fontFamily || 'Georgia'};font-size:${options.fontSize || '12px'}">${options.text || ""}</text>
+	</svg>`;
 
-	var c = document.createElement('canvas');
-	var ctx = c.getContext('2d');
-	ctx.canvas.width = options.width || userOptions.cacheIconsMaxSize || 32;
-	ctx.canvas.height = options.height || userOptions.cacheIconsMaxSize || 32;
-	ctx.fillStyle = options.backgroundColor || '#6ec179';
-	//ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-	roundRect(0, 0, ctx.canvas.width, ctx.canvas.height, ctx.canvas.width / 3);
-
-	if ( options.image ) {
-		
-		let img = new Image();
-		img.src = options.image;
-		
-		ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height);
-	}
-
-	ctx.font = (options.fontSize || ctx.canvas.height *.8 + "px") + " " + (options.fontFamily || "Georgia");
-	ctx.textAlign = 'center';
-	ctx.textBaseline="middle"; 
-	ctx.fillStyle = options.textColor || "#FFFFFF";
-	ctx.fillText(options.text || "",ctx.canvas.width/2,ctx.canvas.height/2);
-	
-	return c.toDataURL();
+	return 'data:image/svg+xml;base64,' + btoa(svg);
 }
 
 async function promptForImage() {
