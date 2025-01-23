@@ -810,10 +810,13 @@ const QMtools = [
 
 				qm = await quickMenuElementFromNodeTree(sortedNode);
 				qm.unsortedNode = unsortedNode;
-				window.tilesDraggable = false;
-				setDraggable(qm);
-
+				
+				if ( !window.editMode ) {
+					window.tilesDraggable = false;
+					setDraggable(qm);
+				}
 			}
+
 			resizeMenu({openFolder: true});
 			qm.expandMoreTiles();
 		}
