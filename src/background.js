@@ -304,13 +304,13 @@ async function notify(message, sender, sendResponse) {
 
 				return Promise.all(tabs.map( async tab => {
 					await waitOnInjection(tab.id);
-					await executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
+					await highlightInjectScripts(tab);
 					return browser.tabs.sendMessage(tab.id, ( tab.id !== sender.tab.id ) ? _message : message, {frameId: 0});
 				}));
 				
 			} else {
 				await waitOnInjection(sender.tab.id);
-				await executeScripts(sender.tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
+				await highlightInjectScripts(sender.tab);
 				return sendMessageToTopFrame();
 			}
 			
@@ -362,7 +362,6 @@ async function notify(message, sender, sendResponse) {
 		case "mark":
 
 			// clear highlighted tabs on new markings
-
 			if ( userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.clear();
 
@@ -372,6 +371,7 @@ async function notify(message, sender, sendResponse) {
 				for ( let frame of frames ) {
 					if ( frame.frameId == 0 ) continue;
 					await injectContentScripts(tab, frame.frameId);
+					await highlightInjectScripts(tab);
 				}
 			}
 
@@ -380,7 +380,10 @@ async function notify(message, sender, sendResponse) {
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
 				let tabs = await getAllOpenTabs();
 
-				for ( let tab of tabs )	await injectAllFrames(tab);
+				for ( let tab of tabs )	{
+					await injectAllFrames(tab);
+					await highlightInjectScripts(tab);
+				}
 
 				return Promise.all(tabs.map( tab => browser.tabs.sendMessage(tab.id, message)));
 			} else {
@@ -2027,6 +2030,10 @@ function escapeBackticks(str) {
 	return str.replace(/\\([\s\S])|(`)/g,"\\$1$2");
 }
 
+async function highlightInjectScripts(tab) {
+	return executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
+}
+
 async function highlightSearchTermsInTab(tab, searchTerms) {
 	
 	if ( !tab ) return;
@@ -2035,7 +2042,7 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	await waitOnInjection(tab.id);
 
 	// inject highlighting
-	await executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
+	await highlightInjectScripts(tab);
 
 	if ( userOptions.sideBar.openOnResults ) {
 		await browser.tabs.executeScript(tab.id, {
@@ -2407,7 +2414,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 			}
 
 			await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
-			debug("injected", file);
+			debug('injected', file, tabId, options.frameId || 0);
 			if ( checkHasRun ) await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
 		} catch (error) {
 			debug(tabId, error);
@@ -2441,7 +2448,8 @@ async function injectContentScripts(tab, frameId) {
 			files: [
 				// "/opensearch.js",
 				// "/searchEngineUtils.js",
-				"/inject_customSearch.js"
+				"/inject_customSearch.js",
+				"/iconUtils.js"
 			], runAt: "document_end"
 		}, true);
 	}
@@ -2450,7 +2458,7 @@ async function injectContentScripts(tab, frameId) {
 
 		// open findbar on pageload if set
 		if ( frameId === 0 && userOptions.highLight.findBar.startOpen) {
-			await executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
+			await highlightInjectScripts(tab);
 			let isOpen = await notify({action: "getFindBarOpenStatus"});
 			if ( isOpen.shift() ) return;
 
