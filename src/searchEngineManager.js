@@ -2257,6 +2257,15 @@ function buildSearchEngineContainer() {
 		e.stopPropagation();
 		contextMenuHandler(e);
 	});
+
+	document.getElementById('b_sort').addEventListener('click', e => {
+		if ( confirm("Sort all engines and folders alphabetically?") ) {
+			e.stopPropagation();
+			rootElement.node = sortNode(rootElement.node, {sortSubfolders: true, sortFoldersTop:true});
+			updateNodeList();
+			buildSearchEngineContainer();
+		}
+	});
 	
 	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {
 		
