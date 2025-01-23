@@ -2560,5 +2560,11 @@
   },
   "context": {
    "message": "context"
+  },
+  "sort": {
+    "message": "Sort"
+  },
+  "SortWarning": {
+    "message": "Sort all engines and folders alphabetically?"
   }
 }

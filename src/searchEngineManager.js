@@ -2259,7 +2259,7 @@ function buildSearchEngineContainer() {
 	});
 
 	document.getElementById('b_sort').addEventListener('click', e => {
-		if ( confirm("Sort all engines and folders alphabetically?") ) {
+		if ( confirm(i18n("SortWarning")) ) {
 			e.stopPropagation();
 			rootElement.node = sortNode(rootElement.node, {sortSubfolders: true, sortFoldersTop:true});
 			updateNodeList();
