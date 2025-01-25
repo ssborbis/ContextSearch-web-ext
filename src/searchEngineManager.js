@@ -1030,15 +1030,9 @@ function buildSearchEngineContainer() {
 				button.innerText = Shortcut.getShortcutStringFromKey(_node.shortcut ? _node.shortcut : _node.hotkey );
 				button.title = button.innerText || i18n("hotkey");
 
-				// if ( !button.title ) {
-				// 	button.style.borderRadius = "50%";
-				// 	button.style.minWidth = "0";
-				// 	button.style.minHeight = "0";
-				// 	button.style.width = "8px";
-				// 	button.style.height = "8px";
-				// 	button.style.padding = 0;
-				// 	button.title = i18n("hotkey");
-				// }
+				// hide buttons that aren't set. They are shown on hover
+				button.classList.toggle("hide", button.innerText ? false : true);
+				button.classList.toggle("shift", button.innerText ? false : true);
 			}
 
 			let showError = async (msg) => {
@@ -1062,6 +1056,7 @@ function buildSearchEngineContainer() {
 			
 			hotkey.onclick = async function(e) {
 				e.stopPropagation();
+				hotkey.classList.remove("hide");
 
 				let key = {};			
 
@@ -1077,7 +1072,7 @@ function buildSearchEngineContainer() {
 						// set hotkey for all copies
 						for (let _hk of rootElement.querySelectorAll('li')) {
 							if (_hk.node && _hk.node.id === node.id)
-								_hk.querySelector('.hotkey').innerText = "";
+								setHotkeyText(_hk.querySelector('.hotkey'), "");
 						}
 
 						return updateNodeList();
@@ -1215,11 +1210,6 @@ function buildSearchEngineContainer() {
 
 		setRowContexts(li);
 
-		document.addEventListener('click', e => {			
-			if ( document.getElementById('managerContainer').contains(e.target) ) return;			
-			clearSelectedRows();
-		});
-
 		li.querySelector('.header').addEventListener('click', e => {
 			closeContextMenus();
 		//	e.stopPropagation();
@@ -1313,6 +1303,7 @@ function buildSearchEngineContainer() {
 	// high-scope veriable to access node tree
 	rootElement = document.createElement('ul');
 	rootElement.style.position = 'relative';
+	rootElement.style.marginTop = 0;
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
@@ -1343,7 +1334,9 @@ function buildSearchEngineContainer() {
 		lastLI.addEventListener('drop', drop_handler);
 		lastLI.id = "lastLI";
 		
-		document.getElementById('managerContainer').innerHTML = null;
+		let rootUL = document.getElementById('managerContainer').querySelector('ul');
+		if ( rootUL ) document.getElementById('managerContainer').removeChild(rootUL);
+
 		document.getElementById('managerContainer').appendChild(table);
 	});
 
@@ -2313,11 +2306,18 @@ function buildSearchEngineContainer() {
 		if ( main_ec.expand ) {
 			table.querySelectorAll('UL .collapse').forEach(c => c.expand());
 			main_ec.expand = false;
+			main_ec.innerText = '-';
 		} else {
 			table.querySelectorAll('UL .collapse').forEach(c => c.collapse());
 			main_ec.expand = true;
+			main_ec.innerText = '+';
 		}
 	}
+
+	document.addEventListener('click', e => {			
+		if ( document.getElementById('managerContainer').contains(e.target) ) return;			
+		clearSelectedRows();
+	});
 }
 
 async function removeNodesAndRows() {

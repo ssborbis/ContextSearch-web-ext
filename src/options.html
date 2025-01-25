@@ -133,19 +133,16 @@
 				margin:10px 16px 20px 0;
 			}
 			.keyboardButton {
-				font-family: Arial;
 				font-weight:bold;
 				border-radius:5px;
-				background-color:#ddd;/*var(--border-color2);*/
-				border:1px outset #ccc; /*var(--border-color1);*/
 				font-size:9pt;
-				color:#666;
 				padding:3px 4px;
 				min-width:50px;
 				min-height:12px;
 				display:inline-block;
 				text-align:center;
-				box-shadow:1px 1px 4px #444, inset -2px -2px 4px #ccc, inset 2px 2px 4px #aaa;
+				user-select: none;
+
 			}
 			.keyboardButton IMG {
 				height: 1em;
@@ -581,6 +578,7 @@
 				border-radius:32px;
 				border-width: 1px 0 0 0;
 			}
+
 			.header2 {
 				text-align:left;
 				font-size:10pt;
@@ -935,7 +933,7 @@
 			.hotkey {
 				background-color: var(--bg-color4);
 				border-radius:4px;
-				border:1px solid var(--border-color3);
+				border:1px solid var(--border-color1);
 				display:inline-block;
 				min-width:.5em;
 				min-height:.5em;
@@ -950,7 +948,7 @@
 				margin:1px 0;
 				color:var(--color2);
 				position: unset;
-				transition: background-color .25s;
+				transition: background-color .25s, opacity.15s;
 			}
 			.hotkey:hover {
 				background-color:var(--hover1);
@@ -970,6 +968,16 @@
 			}
 			.treeNode .header .label {
 				margin-right: 8px;
+			}
+			.treeNode .header .hotkey.hide {
+				opacity:0;
+			}
+			.treeNode .header .hotkey.shift {
+				right:8px;
+				position: absolute;
+			}
+			.treeNode .header:hover .hotkey {
+				opacity:1;
 			}
 			.hidden {
 				opacity: .5;
@@ -1194,6 +1202,7 @@
 				color:var(--color);
 				background-color:var(--bg-color1);
 				top:2.5px;
+				user-select: none;
 			}
 			.promptForImage {
 				display:inline-block;
@@ -1589,6 +1598,13 @@
 				border-radius:2px;
 				background-color:var(--color);
 			}
+
+			#searchEnginesManagerSearch:focus {
+				border-color: unset !important;
+        		box-shadow: unset !important;
+        	}
+
+        	:focus {outline: none;}
 
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
@@ -3290,12 +3306,13 @@
 		
 				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
-					<div id="collapseAll" class="collapse" style="position:relative;top:0;left:0;width:20px;height:1em;display:inline-block;z-index:2;cursor:pointer;user-select:none">
-						<sup>+</sup>&#8260;-
+					<div style="display:flex;flex-direction:row;margin-left:40px;background-color:var(--bg-color1);">
+						<div class="tool" style="--mask-image: url(icons/filter.svg);height:12px;vertical-align: middle;margin:0;"></div>
+						<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;flex-grow:2;border:none;" placeholder="filter" />
+						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;margin:0;cursor:pointer;"></div>
 					</div>
-					<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;width:90%;"/>
-					<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;margin:0;"></div>
 					<div id="managerContainer">
+						<span class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</span>
 					</div>
 					<div></div>
 					<br />
@@ -3541,8 +3558,9 @@
 			<button name="cancel">Cancel</button>
 			<!-- <input type="checkbox" name="doall" class="nosave" />Do For All <br> -->
 		</div>
-
-		<img id="nightmode" src="icons/brightness.svg" style="position:fixed;top:4px;right:4px;height:24px;z-index:10000;" title="$toggletheme">
+		<label for="nightMode">
+			<img id="nightmode" src="icons/brightness.svg" style="position:fixed;top:4px;right:4px;height:24px;z-index:10000;" title="$toggletheme">
+		</label>
 		
 		<div id="saveNoticeDiv"></div>
 		<div id="info_msg"></div>

@@ -212,8 +212,6 @@ async function restoreOptions(restoreUserOptions) {
 		$('#c_highLightBackgroundActive').value = uo.highLight.activeStyle.background;
 		$('#s_highLightOpacity').value = uo.highLight.opacity;
 
-	//	$('#style_dark').disabled = !uo.nightMode;
-
 		$('#cb_quickMenuToolsLockPersist').checked = (() => {
 			let tool = uo.quickMenuTools.find( t => t.name === "lock"); 
 			return (tool) ? tool.persist || false : false;
@@ -570,6 +568,10 @@ function addDOMListeners() {
 		});
 
 		$(id).dispatchEvent(new Event('input'));
+	});
+
+	$('#nightMode').addEventListener('change', () => {
+		setAutoDarkMode(!userOptions.nightMode);
 	});
 
 	$('#userStylesEnabled').addEventListener('change', e => {
@@ -1660,18 +1662,12 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 	}
 });
 
-$('#nightmode').addEventListener('click', () => {
-	userOptions.nightMode = !userOptions.nightMode;
-	setAutoDarkMode();
-	saveOptions();
-});
-
-function setAutoDarkMode() {
+function setAutoDarkMode(forceOn) {
 	if ( userOptions.autoTheme ) {
 		$('#style_dark').disabled = !isDarkMode();
 		$('#nightmode').style.display = 'none';
 	} else {
-			$('#style_dark').disabled = !userOptions.nightMode;
+		$('#style_dark').disabled = ( typeof forceOn === "boolean" ) ? !forceOn : !userOptions.nightMode;
 	}
 }
 

@@ -2566,5 +2566,8 @@
   },
   "SortWarning": {
     "message": "Sort all engines and folders alphabetically?"
+  },
+  "ExpandCollapse": {
+    "message": "Expand All / Collapse All"
   }
 }
