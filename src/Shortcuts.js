@@ -94,8 +94,8 @@ class Shortcut {
 				
 				let key = this.keyFromEvent(e);
 									
-				document.removeEventListener('keydown', preventDefaults);
-				document.removeEventListener('keypress', preventDefaults);
+				document.removeEventListener('keydown', preventDefaults, {capture:true});
+				document.removeEventListener('keypress', preventDefaults, {capture:true});
 
 				document.body.style.pointerEvents = null;
 
