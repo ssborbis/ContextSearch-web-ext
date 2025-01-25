@@ -580,7 +580,7 @@ function buildSearchEngineContainer() {
 
 			let text = document.createElement('span');
 			let div = document.createElement('div');
-			div.style = 'display:inline-block;width:200px;height:4px;background-color:#aaa';
+			div.className = 'separator';
 			text.appendChild(div);
 			text.className = "label";
 			header.appendChild(text);
