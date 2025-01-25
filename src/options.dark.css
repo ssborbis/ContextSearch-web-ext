@@ -24,7 +24,7 @@ a, a:link, a:visited, a:active {
 	background-color:#444;
 }
 
-#nightmode {
+#b_nightMode {
 	filter:  invert(1);
 }
 

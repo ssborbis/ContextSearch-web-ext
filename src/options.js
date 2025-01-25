@@ -1665,7 +1665,7 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 function setAutoDarkMode(forceOn) {
 	if ( userOptions.autoTheme ) {
 		$('#style_dark').disabled = !isDarkMode();
-		$('#nightmode').style.display = 'none';
+		$('#b_nightMode').style.display = 'none';
 	} else {
 		$('#style_dark').disabled = ( typeof forceOn === "boolean" ) ? !forceOn : !userOptions.nightMode;
 	}

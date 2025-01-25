@@ -1606,6 +1606,24 @@
 
         	:focus {outline: none;}
 
+        	#b_nightMode {
+        		position:fixed;
+        		top:4px;
+        		right:4px;
+        		height:24px;
+        		z-index:10000;
+        		opacity: .3;
+        		transition: opacity .25s;
+        	}
+
+        	#b_nightMode:hover {
+        		opacity:1;
+        	}
+
+			INPUT::placeholder {
+				font-style:italic;
+			}
+
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
 	</head>
@@ -3306,10 +3324,10 @@
 		
 				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
-					<div style="display:flex;flex-direction:row;margin-left:40px;background-color:var(--bg-color1);">
-						<div class="tool" style="--mask-image: url(icons/filter.svg);height:12px;vertical-align: middle;margin:0;"></div>
+					<div style="display:flex;flex-direction:row;margin-left:40px;background-color:var(--bg-color1);border:1px solid var(--border-color1);padding:2px;vertical-align: middle;">
+						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6"></div>
 						<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;flex-grow:2;border:none;" placeholder="filter" />
-						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:12px;vertical-align: middle;margin:0;cursor:pointer;"></div>
+						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:1em;margin:0;cursor:pointer;opacity:.6"></div>
 					</div>
 					<div id="managerContainer">
 						<span class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</span>
@@ -3559,7 +3577,7 @@
 			<!-- <input type="checkbox" name="doall" class="nosave" />Do For All <br> -->
 		</div>
 		<label for="nightMode">
-			<img id="nightmode" src="icons/brightness.svg" style="position:fixed;top:4px;right:4px;height:24px;z-index:10000;" title="$toggletheme">
+			<img id="b_nightMode" src="icons/brightness.svg" title="$toggletheme">
 		</label>
 		
 		<div id="saveNoticeDiv"></div>
