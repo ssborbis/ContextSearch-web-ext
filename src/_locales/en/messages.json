@@ -2146,7 +2146,7 @@
     "description": "advanced setting tooltip"
   },
   "cache": {
-    "message": "✓",
+    "message": "+",
     "description": "button cache label"
   },
   "cacheTooltip": {
@@ -2154,7 +2154,7 @@
     "description": "advanced setting tooltip - button cache"
   },
   "uncache": {
-    "message": "✘",
+    "message": "-",
     "description": "button uncache label"
   },
   "uncacheTooltip": {

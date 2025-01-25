@@ -2129,7 +2129,7 @@ function buildSearchEngineContainer() {
 		}
 
 		// remove some options when using button
-		if ( buttonAdd ) [edit, hide, copy, _delete].forEach( el => el.parentNode.removeChild(el));
+		if ( buttonAdd ) [edit, hide, copy, _delete, exportNodes].forEach( el => el.parentNode.removeChild(el));
 
 		menu.style.left = e.pageX + "px";
 		menu.style.top = e.pageY + "px";
