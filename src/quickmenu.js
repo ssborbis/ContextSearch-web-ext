@@ -217,6 +217,9 @@ function setMenuSize(o = {}) {
 
 	qm.removeBreaks();
 
+	// chrome showing scrollbars unless overflow is disabled when first shown
+	if ( !scrollbarWidth ) qm.style.overflow = 'hidden';
+
 	document.body.style.setProperty("--user-transition", null);
 
 	return rows;
