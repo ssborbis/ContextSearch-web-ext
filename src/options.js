@@ -506,7 +506,6 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildAdditionalSearchActionsTable();
 	setAutoDarkMode();
 
-	console.log(document.getElementById("autoPasteFromClipboard"));
 	addDOMListeners();
 
 	hashChange();

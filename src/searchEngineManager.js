@@ -2245,6 +2245,23 @@ function buildSearchEngineContainer() {
 			toJSON: node.toJSON
 		}
 	}
+
+	// navigate to the next selected row
+	// document.addEventListener('keydown', e=> {
+	// 	if ( e.key === 'ArrowDown' && selectedRows.length != 0 ) {
+	// 		if ( e.shiftKey ) {
+
+	// 		} else {
+	// 			let lastLI = selectedRows.pop();
+	// 			clearSelectedRows();
+	// 			let nextLI = lastLI.closest("li").next("li");
+	// 			console.log(lastLI, nextLI);
+	// 			nextLI.classList.add("selected");
+	// 			selectedRows = [nextLI];
+	// 		}
+
+	// 	}
+	// });
 	
 	document.getElementById('b_addSearchEngine').addEventListener('click', e => {
 		e.stopPropagation();
@@ -2707,4 +2724,5 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 $('#searchEnginesManagerSearchClearButton').addEventListener('click', e => {
 	$('#searchEnginesManagerSearch').value = "";
 	$('#searchEnginesManagerSearch').dispatchEvent(new KeyboardEvent('keyup'))
-})
+});
+
