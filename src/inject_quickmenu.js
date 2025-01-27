@@ -563,7 +563,7 @@ function disableContextMenu(el) {
 
 	if ( userOptions.quickMenuAllowContextMenuNew ) return;
 
-	document.addEventListener('contextmenu', disableDefaultHandler, {once:true});
+	document.addEventListener('contextmenu', disableDefaultHandler, {once:true, capture: true});
 }
 function enableContextMenu() {
 	document.removeEventListener('contextmenu', disableDefaultHandler);
