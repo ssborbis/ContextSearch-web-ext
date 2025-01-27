@@ -185,24 +185,7 @@ function setMenuSize(o = {}) {
 		// })
 	}
 
-	//if ( !o.more ) makeContainerMore(toolBar, 1, false);
-
 	let allOtherElsHeight = getAllOtherHeights(true);
-
-	// if ( o.lockResize )
-	// 	qm.style.height = currentHeight;
-	// else if ( o.suggestionsResize ) 
-	// 	qm.style.height = qm.getBoundingClientRect().height + "px";
-	// else if ( o.openFolder || o.toggleSingleColumn ) 
-	// 	qm.style.height = Math.min( qm.getBoundingClientRect().height, maxHeight - allOtherElsHeight ) + "px"; // site search flex
-	// else if ( o.more ) 
-	// 	qm.style.height = qm.getBoundingClientRect().height + "px";	
-	// else if ( o.widgetResize ) {
-	// 	qm.style.height = tileSize.height * o.rows + "px";
-	// 	// qm.style.width = tileSize.width * o.columns + "px";
-	// }
-	// else
-	// 	qm.style.height = Math.max( tileSize.height, Math.min(qm.getBoundingClientRect().height, (window.innerHeight || maxHeight) - allOtherElsHeight) ) + "px";
 
 	if ( qm.getBoundingClientRect().height + allOtherElsHeight > maxHeight ) {
 		qm.style.height = Math.ceil(maxHeight - allOtherElsHeight) + "px";
@@ -218,7 +201,10 @@ function setMenuSize(o = {}) {
 	qm.removeBreaks();
 
 	// chrome showing scrollbars unless overflow is disabled when first shown
-	if ( !scrollbarWidth ) qm.style.overflow = 'hidden';
+	if ( !scrollbarWidth ) {
+		qm.style.overflow = 'hidden';
+		setTimeout(() => qm.style.overflow = null, 1);
+	}
 
 	document.body.style.setProperty("--user-transition", null);
 
