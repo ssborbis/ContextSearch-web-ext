@@ -365,23 +365,23 @@ function checkContextMenuEventOrderNotification() {
 		<h3><img id="img_logo" />ContextSearch web-ext</h3>
 		<hr>
 		<div>
-			You opened the Quick menu by using the right mouse button and it appears your browser wants to open the default context menu too.<br><br>
+			You opened the Quick menu by using the right mouse button and it appears your browser wants to open the default context menu<br><br>
 			Choose from the following options:
 		</div>
 		<br>
 		<div>
 			<button id="keepBoth">Option 1</button>
-			Both the ContextSeach menu and the browser context menu will be opened
+			Keep the default settings (both menus may open)
 		</div>
 		<br>
 		<div>
 			<button id="doubleClick">Option 2</button>
-			The browser context menu will open by double-clicking the right button
+			Move the browser context menu to open on double-click
 		</div>
 		<br>
 		<div>
 			<button id="openSettings">Option 3</button>
-			Open settings for more options
+			Open settings for more menu options
 		</div>
 		<br>
 		<hr>
@@ -410,7 +410,7 @@ function checkContextMenuEventOrderNotification() {
 
 	keepBoth.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
-		userOptions.quickMenuAllowContextMenuNew = true;
+		userOptions.quickMenuMoveContextMenuMethod = "";
 		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
 		close();
 	}
