@@ -2115,7 +2115,7 @@
   },
   
 "exportToFirefoxSearch": {
-    "message": "Exporter vers la recherche Firefox",
+    "message": "exporter vers la recherche Firefox",
     "description": "advanced setting label"
   },
   "exportToFirefoxSearchTooltip": {
@@ -2123,22 +2123,22 @@
     "description": "advanced setting tooltip"
   },
   "addSearchProviderHideNotificationTooltip": {
-    "message": "Masquer la notification Firefox d’ajout d’un moteur par la barre de recherche du navigateur.",
+    "message": "Masquer la notification Firefox d’ajout d’un moteur par la barre de recherche du navigateur",
     "description": "advanced setting tooltip"
   },
   "alwaysAllowTileRearrangingTooltip": {
-    "message": "Toujours permettre la réorganisation des cases dans les menus.",
+    "message": "Toujours permettre la réorganisation des cases dans les menus",
     "description": "advanced setting tooltip"
   },
   "autoCopy": {
     "message": "Copie automatique"
   },
   "autoCopyTooltip": {
-    "message": "Copier automatiquement le texte sélectionné dans le presse-papiers.",
+    "message": "Copier automatiquement le texte sélectionné dans le presse-papiers",
     "description": "advanced setting tooltip"
   },
   "autoPasteFromClipboardTooltip": {
-    "message": "Coller automatiquement le contenu du presse-papiers dans la barre de recherche à l’ouverture des menus.",
+    "message": "Coller automatiquement le contenu du presse-papiers dans la barre de recherche à l’ouverture des menus",
     "description": "advanced setting tooltip"
   },
   "autoCopyOnInputsTooltip": {
@@ -2146,19 +2146,19 @@
     "description": "advanced setting tooltip"
   },
   "cache": {
-    "message": "✓",
+    "message": "+",
     "description": "button cache label"
   },
   "cacheTooltip": {
-    "message": "Mettre en cache les icônes des moteurs de recherche à partir de leur URL.",
+    "message": "Mettre en cache les icônes des moteurs de recherche à partir de leur URL",
     "description": "advanced setting tooltip - button cache"
   },
   "uncache": {
-    "message": "✘",
+    "message": "-",
     "description": "button uncache label"
   },
   "uncacheTooltip": {
-    "message": "Supprimer le cache des icônes des moteurs de recherche contenant l’URL de l’icône uniquement. Attention, aucune vérification de validité des URL n’est effectuée avant la suppression.",
+    "message": "Supprimer le cache des icônes des moteurs de recherche contenant l’URL de l’icône uniquement (Attention, aucune vérification de validité des URL n’est effectuée avant la suppression.)",
     "description": "advanced setting tooltip - button uncache"
   },
   "confirmUncache": {
@@ -2178,11 +2178,11 @@
     "description": "advanced setting tooltip"
   },
   "contextMenuHotkeysTooltip": {
-    "message": "Ajouter aux éléments du menu contextuel les touches de raccourci sous la forme (&A) pour un accès rapide.",
+    "message": "Ajouter aux éléments du menu contextuel les touches de raccourci sous la forme (&A) pour un accès rapide",
     "description": "advanced setting tooltip"
   },
   "contextMenuRegexMatchedEnginesTooltip": {
-    "message": "Afficher les moteurs correspondants à l’expression rationnelle en tête de menu.",
+    "message": "Afficher les moteurs correspondants à l’expression rationnelle en tête de menu",
     "description": "advanced setting tooltip"
   },
   "contextMenuTitleTooltip": {
@@ -2190,35 +2190,35 @@
     "description": "advanced setting tooltip"
   },
   "contextMenuUseContextualLayoutTooltip": {
-    "message": "Afficher le menu contextuel dans les sous-dossiers en fonction du contexte courant.",
+    "message": "Afficher le menu contextuel dans les sous-dossiers en fonction du contexte courant",
     "description": "advanced setting tooltip"
   },
   "contextMenuUseInnerTextTooltip": {
-    "message": "Utiliser le texte interne d’un élément comme terme de recherche lorsqu’aucun texte n’est sélectionné.",
+    "message": "Utiliser le texte interne d’un élément comme terme de recherche si aucun texte n’est sélectionné",
     "description": "advanced setting tooltip"
   },
   "disableNewTabSortingTooltip": {
-    "message": "Laisser le navigateur décider de la façon d’organiser les onglets des résultats de recherche. Cela permet d’éviter des conflits avec le gestionnaire des onglets.",
+    "message": "Laisser le navigateur décider de la façon d’organiser les onglets des résultats de recherche (évite des conflits avec le gestionnaire des onglets)",
     "description": "advanced setting tooltip"
   },
   "exportWithoutBase64IconsTooltip": {
-    "message": "Exclure les « Data URI » des icônes des configurations exportées pour les alléger. Cela peut conduire à la perte des icônes personnalisées.",
+    "message": "Exclure les « Data URI » des icônes des configurations exportées pour les alléger (peut conduire à la perte des icônes personnalisées)",
     "description": "advanced setting tooltip"
   },
   "forceOpenResultsTabsAdjacentTooltip": {
-    "message": "Forcer les résultats de recherche à apparaître dans l’onglet suivant.",
+    "message": "Forcer les résultats de recherche à apparaître dans l’onglet suivant à droite",
     "description": "advanced setting tooltip"
   },
   "groupFolderRowBreaksTooltip": {
-    "message": "Permettre d’afficher en bloc les dossiers en ligne.",
+    "message": "Permettre d’afficher en bloc les dossiers en ligne",
     "description": "advanced setting tooltip"
   },
   "groupLabelMoreTileTooltip": {
-    "message": "Intégrer la case « Plus » au titre des dossiers plutôt que l’afficher dans une case séparée.",
+    "message": "Intégrer la case « Plus » au titre des dossiers plutôt que l’afficher dans une case séparée",
     "description": "advanced setting tooltip"
   },
   "omniboxDefaultToLastUsedEngineTooltip": {
-    "message": "Prendre par défaut pour l’omnibox le dernier moteur de recherche utilisé.",
+    "message": "Prendre par défaut pour l’omnibox le dernier moteur de recherche utilisé",
     "description": "advanced setting tooltip"
   },
   "openFoldersOnHoverTimeoutTooltip": {
@@ -2246,11 +2246,11 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuFocusOnOpenTooltip": {
-    "message": "Mettre le focus sur le menu rapide après son ouverture.",
+    "message": "Mettre le focus sur le menu rapide après son ouverture",
     "description": "advanced setting tooltip"
   },
   "quickMenuHideSeparatorsInGridTooltip": {
-    "message": "Masquer les séparateurs lorsque le menu rapide est en vue grille.",
+    "message": "Masquer les séparateurs dans le menu rapide en vue grille",
     "description": "advanced setting tooltip"
   },
   "quickMenuHoldTimeoutTooltip": {
@@ -2262,11 +2262,11 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuPreventPageClicksTooltip": {
-    "message": "Empêcher les événements souris sur la page web active quand le menu rapide est ouvert.",
+    "message": "Empêcher les événements souris sur la page web active quand le menu rapide est ouvert",
     "description": "advanced setting tooltip"
   },
   "quickMenuRegexMatchedEnginesTooltip": {
-    "message": "Afficher les moteurs correspondants à l’expression rationnelle en tête de menu.",
+    "message": "Afficher les moteurs correspondants à l’expression rationnelle en tête de menu",
     "description": "advanced setting tooltip"
   },
   "quickMenuSearchOnMouseUpTooltip": {
@@ -2274,15 +2274,15 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuShowHotkeysInTitleTooltip": {
-    "message": "Afficher les touches de raccourci avec les titres.",
+    "message": "Afficher les touches de raccourci avec les titres",
     "description": "advanced setting tooltip"
   },
   "quickMenuShowRecentlyUsedToolTip": {
-    "message": "Afficher les derniers moteurs utilisés en tête de menu.",
+    "message": "Afficher les derniers moteurs utilisés en tête de menu",
     "description": "advanced setting tooltip"
   },
   "quickMenuOnSimpleClick_useInnerTextTooltip": {
-    "message": "Utiliser le texte interne d’un élément comme terme de recherche lorsqu’aucun texte n’est sélectionné.",
+    "message": "Utiliser le texte interne d’un élément comme terme de recherche si aucun texte n’est sélectionné",
     "description": "advanced setting tooltip"
   },
   "quickMenuToolbarRowsTooltip": {
@@ -2290,15 +2290,15 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsLockPersistTooltip": {
-    "message": "Se souvenir de l’état de l’outil « Verrouiller le menu en position ouverte » d’une session à l’autre.",
+    "message": "Se souvenir de l’état de l’outil « Verrouiller le menu en position ouverte » d’une session à l’autre",
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsRepeatSearchPersistTooltip": {
-    "message": "Se souvenir de l’état de l’outil « Recherche instantanée » d’une session à l’autre.",
+    "message": "Se souvenir de l’état de l’outil « Recherche instantanée » d’une session à l’autre",
     "description": "advanced setting tooltip"
   },
   "rememberLastOpenedFolderTooltip": {
-    "message": "Ouvrir les menus au niveau du dernier dossier utilisé.",
+    "message": "Ouvrir les menus au niveau du dernier dossier utilisé",
     "description": "advanced setting tooltip"
   },
   "rightClickMenuOnMouseDownFixTooltip": {
@@ -2318,15 +2318,15 @@
     "description": "advanced setting tooltip"
   },
   "sideBar_openOnResultsTooltip": {
-    "message": "Ouvrir le panneau latéral dans les onglets des résultats de recherche.",
+    "message": "Ouvrir le panneau latéral dans les onglets des résultats de recherche",
     "description": "advanced setting tooltip"
   },
   "sideBar_openOnResultsMinimizedTooltip": {
-    "message": "Ouvrir le panneau latéral réduit dans les onglets des résultats de recherche.",
+    "message": "Ouvrir le panneau latéral réduit dans les onglets des résultats de recherche",
     "description": "advanced setting tooltip"
   },
   "sideBar_rememberStateTooltip": {
-    "message": "Mémoriser l’état d’ouverture du panneau latéral.",
+    "message": "Mémoriser l’état d’ouverture du panneau latéral",
     "description": "advanced setting tooltip"
   },
   "Blocklist": {
@@ -2563,5 +2563,14 @@
   },
   "tools_Sort": {
     "message": "Trier"
+  },
+  "sort": {
+    "message": "Trier"
+  },
+  "SortWarning": {
+    "message": "Trier tous les moteurs et dossiers par ordre alphabétique ?"
+  },
+  "ExpandCollapse": {
+    "message": "Développer tout / Réduire tout"
   }
 }
