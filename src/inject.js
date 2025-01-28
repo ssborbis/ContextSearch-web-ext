@@ -14,8 +14,7 @@ var quickMenuObject = {
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	mouseLastContextMenuTime:0,
-	contexts: [],
-	contextMenuOnMouseDown: null
+	contexts: []
 };
 
 var userOptions = {};
@@ -401,6 +400,8 @@ function checkContextMenuEventOrderNotification() {
 	let doubleClick = dialog.querySelector('#doubleClick');
 	let openSettings = dialog.querySelector('#openSettings');
 	dialog.querySelector('#img_logo').src = browser.runtime.getURL("icons/logo_notext.svg");
+
+	userOptions.contextMenuOnMouseDown = true;
 
 	const close = () => {
 		dialog.close();

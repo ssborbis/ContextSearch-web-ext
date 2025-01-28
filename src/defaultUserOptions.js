@@ -339,5 +339,6 @@ const defaultUserOptions = {
 	quickMenuCloseOnEditKeydown: false,
 	quickMenuRepeatSearchHideMenu: false,
 	quickMenuRepeatSearchDisableOnEscape: true,
-	quickMenuReuseVsClose: false
+	quickMenuReuseVsClose: false,
+	contextMenuOnMouseDown: null
 };

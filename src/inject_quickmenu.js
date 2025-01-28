@@ -485,7 +485,7 @@ document.addEventListener('mousedown', e => {
 				if (_e.which !== 1) return;
 				_e.preventDefault();
 			}, {once: true});		
-		} else if (e.which === 3 && quickMenuObject.contextMenuOnMouseDown === false ) {
+		} else if (e.which === 3 && userOptions.contextMenuOnMouseDown === false ) {
 			// Disable the default context menu once if using context-menu-on-mouseup
 			disableContextMenu();
 		}
@@ -669,7 +669,7 @@ function quickMenuOnClickHandler(e) {
 	) return false;
 
 	// do nothing on mouseup for systems where context menu is shown on mousedown
-	if ( e.type === 'mouseup' && e.button === 2 && quickMenuObject.contextMenuOnMouseDown )
+	if ( e.type === 'mouseup' && e.button === 2 && userOptions.contextMenuOnMouseDown )
 		return;
 
 	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
@@ -681,7 +681,7 @@ function quickMenuOnClickHandler(e) {
 		}
 	}
 
-	if ( Date.now() - quickMenuObject.mouseLastClickTime < 500 && e.type === 'contextmenu' ) {
+	if ( Date.now() - quickMenuObject.mouseLastClickTime < 500 && e.type === 'contextmenu' && userOptions.contextMenuOnMouseDown !== false ) {
 		enableContextMenu();
 		quickMenuObject.mouseLastClickTime = Date.now();
 		return true;
@@ -1470,17 +1470,18 @@ document.addEventListener('mouseup', e => {
 });
 
 document.addEventListener('mousedown', e => {
-	if ( quickMenuObject.contextMenuOnMouseDown !== null || e.which !== 3 ) return;
+	if ( userOptions.contextMenuOnMouseDown !== null || e.which !== 3 ) return;
 
 	let time = Date.now();
 
 	document.addEventListener('contextmenu', _e => {
-		if ( Date.now() - time < 25 )
-			quickMenuObject.contextMenuOnMouseDown = true;
-		else
-			quickMenuObject.contextMenuOnMouseDown = false;
-
-		debug("quickMenuObject.contextMenuOnMouseDown = " + quickMenuObject.contextMenuOnMouseDown);
+		if ( Date.now() - time < 25 ) {
+			userOptions.contextMenuOnMouseDown = true;
+		}
+		else {
+			userOptions.contextMenuOnMouseDown = false;
+		}
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
 	}, {once: true})
 
 });
