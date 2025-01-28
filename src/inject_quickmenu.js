@@ -418,45 +418,40 @@ document.addEventListener('mousedown', e => {
 		(userOptions.quickMenuOnMouseCtrl && userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)  // leave for link / linkText
 	) return false;
 
-	// let start = Date.now();
-	// document.addEventListener('contextmenu', e => {
-	// 	if ( Date.now() - start < 10 ) {
-
-	// 	} else {
-	// 		disableContextMenu
-	// 	}
-	// });
-
 	// check for pointer over selection
 	if ( getSelectedText(e.target) && userOptions.quickMenuOnlyOpenIfOverSelection && !isEventOnSelectedText(e) ) return false;
 
 	checkContextMenuEventOrder(e);
 
 	// if a non-default method is set, suppress the dcm
-	if ( e.which === 3 && userOptions.quickMenuMoveContextMenuMethod ) {
+	if ( e.which === 3 ) {
 
-		if ( 
-			e.altKey && userOptions.quickMenuMoveContextMenuMethod === 'alt' ||
-			e.ctrlKey && userOptions.quickMenuMoveContextMenuMethod === 'ctrl' ||
-			e.shiftKey && userOptions.quickMenuMoveContextMenuMethod === 'shift'
-		) return;
+		if ( userOptions.quickMenuMoveContextMenuMethod ) {
 
-		if ( userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
-			if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > userOptions.quickMenuRightClickTimeout ) {
-				disableContextMenu(e.target);
-				quickMenuObject.mouseLastContextMenuTime = Date.now();
+			if ( 
+				e.altKey && userOptions.quickMenuMoveContextMenuMethod === 'alt' ||
+				e.ctrlKey && userOptions.quickMenuMoveContextMenuMethod === 'ctrl' ||
+				e.shiftKey && userOptions.quickMenuMoveContextMenuMethod === 'shift'
+			) return;
+
+			if ( userOptions.quickMenuMoveContextMenuMethod === 'dblclick' ) {
+				if ( Date.now() - quickMenuObject.mouseLastContextMenuTime > userOptions.quickMenuRightClickTimeout ) {
+					disableContextMenu();
+					quickMenuObject.mouseLastContextMenuTime = Date.now();
+				} else {
+					document.addEventListener('contextmenu', _e => {
+						clearMouseDownTimer();
+					}, {once: true});
+
+					return;
+				}
 			} else {
-				document.addEventListener('contextmenu', _e => {
-					clearMouseDownTimer();
-				}, {once: true});
-
-				return;
+				disableContextMenu();
 			}
-		} else {
-			disableContextMenu(e.target);
-		} 
-	} else {
-		disableContextMenu(e.target);
+
+			disableContextMenu();
+		}
+			
 	}
 
 	if ( e.which === 2 ) {
@@ -490,9 +485,9 @@ document.addEventListener('mousedown', e => {
 				if (_e.which !== 1) return;
 				_e.preventDefault();
 			}, {once: true});		
-		} else if (e.which === 3) {
-			// Disable the default context menu once
-			disableContextMenu(e.target);
+		} else if (e.which === 3 && quickMenuObject.contextMenuOnMouseDown === false ) {
+			// Disable the default context menu once if using context-menu-on-mouseup
+			disableContextMenu();
 		}
 
 		quickMenuObject.mouseLastClickTime = Date.now();
@@ -574,9 +569,12 @@ function disableContextMenu(el) {
 	if ( userOptions.quickMenuAllowContextMenuNew ) return;
 
 	document.addEventListener('contextmenu', disableDefaultHandler, {once:true});
+	debug("disable context menu");
 }
 
 function enableContextMenu() {
+
+	debug("enable context menu");
 	document.removeEventListener('contextmenu', disableDefaultHandler, {once:true});
 }
 // Listen for quickMenuOnClick
@@ -652,10 +650,14 @@ document.addEventListener('mousedown', e => {
 		enableContextMenu();
 		clearMouseDownTimer();
 	}, userOptions.quickMenuHoldTimeout);
+
 }, {capture: true});
 		
 // Listen for quickMenuOnClick	
-document.addEventListener('mouseup', e => {	
+document.addEventListener('contextmenu', quickMenuOnClickHandler);
+document.addEventListener('mouseup', quickMenuOnClickHandler , {capture: true});
+
+function quickMenuOnClickHandler(e) {	
 
 	if ( 
 		!userOptions.quickMenuOnMouse ||
@@ -666,6 +668,10 @@ document.addEventListener('mouseup', e => {
 		quickMenuObject.disabled
 	) return false;
 
+	// do nothing on mouseup for systems where context menu is shown on mousedown
+	if ( e.type === 'mouseup' && e.button === 2 && quickMenuObject.contextMenuOnMouseDown )
+		return;
+
 	if ( userOptions.quickMenuOnMouseMethod === 'dblclick' ) {
 
 		// too much time between click, do nothing
@@ -675,13 +681,18 @@ document.addEventListener('mouseup', e => {
 		}
 	}
 
+	if ( Date.now() - quickMenuObject.mouseLastClickTime < 500 && e.type === 'contextmenu' ) {
+		enableContextMenu();
+		quickMenuObject.mouseLastClickTime = Date.now();
+		return true;
+	}
+
 	quickMenuObject.mouseLastClickTime = Date.now();
 	
 	e.preventDefault();
 	e.stopPropagation();
 	openQuickMenu(e);
-
-}, {capture: true});
+}
 
 // listen for simple click
 document.addEventListener('mousedown', e => {
@@ -1464,7 +1475,7 @@ document.addEventListener('mousedown', e => {
 	let time = Date.now();
 
 	document.addEventListener('contextmenu', _e => {
-		if ( Date.now() - time < 10 )
+		if ( Date.now() - time < 25 )
 			quickMenuObject.contextMenuOnMouseDown = true;
 		else
 			quickMenuObject.contextMenuOnMouseDown = false;
@@ -1481,7 +1492,7 @@ function checkContextMenuEventOrder(e) {
 	let time = Date.now();
 
 	document.addEventListener('contextmenu', _e => {
-		if ( Date.now() - time < 10 ) {
+		if ( Date.now() - time < 25 ) {
 			document.addEventListener('quickMenuComplete', e => {
 				if ( window == top ) checkContextMenuEventOrderNotification();
 				else window.top.checkContextMenuEventOrderNotification();
