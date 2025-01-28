@@ -340,3 +340,23 @@
 	height: 20px;
 	vertical-align: middle;
 }
+dialog {
+	max-width:600px;
+	border:none;
+	border-radius:6px;
+	background-color: #3a3a3a;
+	color:#aaa;
+	font-famity: Garamond, serif;
+	font-size:9pt;
+	padding:24px;
+}
+
+dialog #img_logo {
+	height:32px;
+	margin-right:16px;
+	vertical-align: middle;
+}
+
+dialog button {
+	margin-right:16px;
+}

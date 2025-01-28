@@ -361,32 +361,74 @@ function showNotification(message) {
 }
 
 function checkContextMenuEventOrderNotification() {
-	let n = showNotification({msg:"", sticky:true});
 
-	let yes = document.createElement('a');
-	yes.innerText = i18n('yes');
-	yes.href = "#";
+	let html = `
+		<h3><img id="img_logo" />ContextSearch web-ext</h3>
+		<hr>
+		<div>
+			You opened the Quick menu by using the right mouse button and it appears your browser wants to open the default context menu too.<br><br>
+			Choose from the following options:
+		</div>
+		<br>
+		<div>
+			<button id="keepBoth">Option 1</button>
+			Both the ContextSeach menu and the browser context menu will be opened
+		</div>
+		<br>
+		<div>
+			<button id="doubleClick">Option 2</button>
+			The browser context menu will open by double-clicking the right button
+		</div>
+		<br>
+		<div>
+			<button id="openSettings">Option 3</button>
+			Open settings for more options
+		</div>
+		<br>
+		<hr>
+		<br>
+		You can change this setting any time or see more options by going to the Quick Menu options
+	`;
 
-	let no = document.createElement('a');
-	no.innerText = i18n('no');
-	no.href="#";
+	let dialog = document.createElement('dialog');
+	getShadowRoot().appendChild(dialog);
+	dialog.innerHTML = html;
+	let content = document.createElement('div');
+	content.className = "content";
+	dialog.appendChild(content);
 
-	let content = n.querySelector('.content');
-	content.innerText = i18n('checkContextMenuOrderNotification');
-	n.appendChild(yes);
-	n.appendChild(document.createTextNode(" / "));
-	n.appendChild(no);
+	let keepBoth = dialog.querySelector('#keepBoth');
+	let doubleClick = dialog.querySelector('#doubleClick');
+	let openSettings = dialog.querySelector('#openSettings');
+	dialog.querySelector('#img_logo').src = browser.runtime.getURL("icons/logo_notext.svg");
 
-	no.onclick = function() {
-		userOptions.checkContextMenuEventOrder = false;
-		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
+	const close = () => {
+		dialog.close();
+		dialog.parentNode.removeChild(dialog);
 	}
 
-	yes.onclick = function() {
+	keepBoth.onclick = function() {
+		userOptions.checkContextMenuEventOrder = false;
+		userOptions.quickMenuAllowContextMenuNew = true;
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderNo"});
+		close();
+	}
+
+	doubleClick.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
 		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
 		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
+		close();
 	}
+
+	openSettings.onclick = function() {
+		userOptions.checkContextMenuEventOrder = false;
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
+		sendMessage({action: "openOptions", hashurl: "#quickMenu"});
+		close();
+	}
+	
+	dialog.showModal();
 
 }
 
