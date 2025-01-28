@@ -418,6 +418,15 @@ document.addEventListener('mousedown', e => {
 		(userOptions.quickMenuOnMouseCtrl && userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)  // leave for link / linkText
 	) return false;
 
+	// let start = Date.now();
+	// document.addEventListener('contextmenu', e => {
+	// 	if ( Date.now() - start < 10 ) {
+
+	// 	} else {
+	// 		disableContextMenu
+	// 	}
+	// });
+
 	// check for pointer over selection
 	if ( getSelectedText(e.target) && userOptions.quickMenuOnlyOpenIfOverSelection && !isEventOnSelectedText(e) ) return false;
 
@@ -446,6 +455,8 @@ document.addEventListener('mousedown', e => {
 		} else {
 			disableContextMenu(e.target);
 		} 
+	} else {
+		disableContextMenu(e.target);
 	}
 
 	if ( e.which === 2 ) {
@@ -482,11 +493,6 @@ document.addEventListener('mousedown', e => {
 		} else if (e.which === 3) {
 			// Disable the default context menu once
 			disableContextMenu(e.target);
-
-			// remove the listener after timeout or 1s
-			setTimeout(enableContextMenu, userOptions.quickMenuHoldTimeout || 1000 );
-		//	document.addEventListener('mouseup', () => setTimeout(enableContextMenu, userOptions.quickMenuHoldTimeout || 1000 ), {once: true});
-
 		}
 
 		quickMenuObject.mouseLastClickTime = Date.now();
@@ -511,6 +517,10 @@ document.addEventListener('mouseup', e => {
 		e.which !== userOptions.quickMenuMouseButton ||
 		quickMenuObject.disabled
 	) return false;
+
+	// mouseup before timer expires, re-enable the context menu
+	if ( quickMenuObject.mouseDownHoldTimer )
+		enableContextMenu();
 
 	clearMouseDownTimer();
 	
@@ -563,10 +573,11 @@ function disableContextMenu(el) {
 
 	if ( userOptions.quickMenuAllowContextMenuNew ) return;
 
-	document.addEventListener('contextmenu', disableDefaultHandler, {once:true, capture: true});
+	document.addEventListener('contextmenu', disableDefaultHandler, {once:true});
 }
+
 function enableContextMenu() {
-	document.removeEventListener('contextmenu', disableDefaultHandler);
+	document.removeEventListener('contextmenu', disableDefaultHandler, {once:true});
 }
 // Listen for quickMenuOnClick
 document.addEventListener('mousedown', e => {
@@ -1578,23 +1589,3 @@ setTimeout(() => new StatusBar().init(), 1000);
 
 if ( window == top && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
-
-// (() => {
-// 	document.addEventListener('keydown', e => {
-// 		if ( e.key === 'x' ) {
-
-// 			let folder = {
-// 				type:"folder",
-// 				children: findNodes(userOptions.nodeTree, n => n.contexts && hasContext("link", n.contexts)),
-// 				id:gen()
-// 			}
-
-// 			makeQuickMenuContainer({
-// 				coords: {x:0,y:0}, 
-// 				node:folder,
-// 				layout: "!menuBar,!searchBarContainer,!titleBar,quickMenuElement,!toolBar,!contextsBar",
-// 				columns:1
-// 			});
-// 		}
-// 	});
-// });
