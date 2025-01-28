@@ -26,7 +26,7 @@ const defaultUserOptions = {
 	quickMenuOnMouseShift: false,
 	quickMenuSearchOnMouseUp: false,
 	quickMenuOnMouseMethod: "hold",
-	quickMenuOnMouseOpenWithoutSelection: true,
+	quickMenuOnMouseOpenWithoutSelection: false,
 	quickMenuOnDrag: false,
 	quickMenuDragAlt: false,
 	quickMenuDragShift: false,
