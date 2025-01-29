@@ -431,7 +431,6 @@ function checkContextMenuEventOrderNotification() {
 	}
 	
 	dialog.showModal();
-
 }
 
 // set zoom attribute to be used for scaling objects
