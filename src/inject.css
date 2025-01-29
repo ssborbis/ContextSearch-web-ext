@@ -340,7 +340,7 @@
 	height: 20px;
 	vertical-align: middle;
 }
-dialog {
+.CS_dialog {
 	max-width:600px;
 	border:none;
 	border-radius:6px;
@@ -351,12 +351,12 @@ dialog {
 	padding:24px;
 }
 
-dialog #img_logo {
+.CS_dialog #img_logo {
 	height:32px;
 	margin-right:16px;
 	vertical-align: middle;
 }
 
-dialog button {
+.CS_dialog button {
 	margin-right:16px;
 }
