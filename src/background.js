@@ -2370,6 +2370,8 @@ function isAllowedURL(_url) {
 
 async function executeScripts(tabId, options = {}, checkHasRun) {
 
+	let blacklist = [];
+
 	if ( options.allFrames ) {
 
 		delete options.allFrames;
@@ -2392,8 +2394,9 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	if ( !isHTML.shift() ) return false;
 
 	// filter popup windows 
-	let isPopup = await browser.tabs.executeScript(tabId, { code: "window && window.name && window.name.startsWith('CS_POPUP') ? true : false"});
-	if ( isPopup.shift() ) return false;
+	let tab = await browser.tabs.get(tabId);
+	if ( window.popupWindows.includes(tab.windowId))
+		blacklist = ['/inject_sidebar.js'];
 
 	onFound = () => {}
 	onError = err => {console.log(err)}
@@ -2402,6 +2405,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	delete options.files;
 
 	for ( const file of files ) {
+
+		if ( blacklist.includes(file) ) continue;
 
 		try {
 
@@ -2647,3 +2652,5 @@ async function browserSaveAs(url) {
 
 	return browser.downloads.download({url: url, saveAs: true});
 }
+
+
