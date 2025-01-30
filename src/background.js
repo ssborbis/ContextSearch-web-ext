@@ -2370,7 +2370,7 @@ function isAllowedURL(_url) {
 
 async function executeScripts(tabId, options = {}, checkHasRun) {
 
-	let blacklist = [];
+	let blacklist = options.blacklist || [];
 
 	if ( options.allFrames ) {
 
