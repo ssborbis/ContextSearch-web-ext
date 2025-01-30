@@ -85,8 +85,8 @@ browser.windows.onFocusChanged.addListener(async id => {
 	if ( !window.popupWindows.includes(id) ) return;
 
 	let w = await browser.windows.get(id);
-	userOptions.popupWindow.height = w.height;
-	userOptions.popupWindow.width = w.width;
+	userOptions.popupWindow.height = w.height + "px";
+	userOptions.popupWindow.width = w.width + "px";
 	notify({action: "saveUserOptions", userOptions:userOptions});
 
 });
@@ -1274,7 +1274,17 @@ function openWithMethod(o) {
 		let tab = tabs[0];
 		let zoom = await browser.tabs.getZoom(tab.id);
 
+		// reuse the first tab in the current window
+		if ( userOptions.popupWindow.reuse && window.popupWindows.length ) {
+			await browser.tabs.query({windowId: window.popupWindows[0]}).then(_tabs => {
+				browser.tabs.update(_tabs[0].id, {url: o.url})
+			});
+			return;
+		}
+
 		let qmo = await notify({action: "getTabQuickMenuObject"});
+
+		qmo = qmo || { screenCoords: {x: 0, y: 0}};
 		return browser.windows.create({
 			url:o.url,
 			height:getDimension(userOptions.popupWindow.height),

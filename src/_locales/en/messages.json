@@ -2569,5 +2569,11 @@
   },
   "ExpandCollapse": {
     "message": "Expand All / Collapse All"
+  },
+  "PopupWindow": {
+    "message": "Popup Window"
+  },
+  "PopupWindowReuseTooltip": {
+    "message": "Enable to reuse a single window for all search results\nDisable for a new window for each search"
   }
 }

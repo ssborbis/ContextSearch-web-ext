@@ -333,7 +333,8 @@ const defaultUserOptions = {
 	popupWindow: {
 		width:"300px",
 		height:"400px",
-		position:""
+		position:"",
+		reuse: false
 	},
 	exportJsonPretty: false,
 	quickMenuCloseOnEditKeydown: false,
