@@ -51,10 +51,14 @@
 			#main {
 				padding:0;
 				margin:0;
+				max-width: 1200px;
 				transition: filter .1s;
+				margin:0 auto;
+				height:100vh;
 			}
 			#left_div {
-				width:250px;
+				box-sizing:border-box;
+				width:270px;
 				font-size:16pt;
 				font-weight:bold;
 				text-align:right;
@@ -64,17 +68,18 @@
 				display:inline-block;
 				background-color:var(--bg-color2);
 				position:fixed;
-				height:calc(100% - 40px);
+				height:100%;
 				overflow-y:auto;
 				z-index:2;
 			}
 			#right_div {
+				box-sizing:border-box;
 				display:inline-block;
-				width:calc(100% - 330px);
-				/*max-width:750px;*/
+				width:calc(100% - 270px);
 				text-align:left;
-				margin-left:300px;
-				margin-bottom:16px;
+				margin-left:270px;
+				padding:0 16px;
+				height:100%;
 			}
 			#left_div #info {
 				font-size:12pt;
