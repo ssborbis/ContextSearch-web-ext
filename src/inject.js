@@ -73,7 +73,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 
 		case "copyRaw":
-			return copyRaw(message.autoCopy);
+			return copyRaw();
 			break;
 	}
 });

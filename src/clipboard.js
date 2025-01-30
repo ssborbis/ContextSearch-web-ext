@@ -6,7 +6,40 @@ async function copyImage(imageURL){
 	navigator.clipboard.write([item]);
 }
 
-async function copyRaw(autoCopy) {
+// Function to copy the selected rich text (HTML) to the clipboard
+async function copyRichText() {
+
+	let active = document.activeElement;
+
+    const selection = document.getSelection();
+    let range = selection.getRangeAt(0);  // Get the selected range
+
+    if (!selection.rangeCount) return; // Exit if no text is selected
+
+    // Get the HTML content of the selection
+    const htmlContent = selection.toString();
+    const selectedHtml = range.cloneContents(); // Get the selected HTML (including tags, images, etc.)
+
+    // Create a temporary div to hold the HTML content
+    const tempDiv = document.createElement('div');
+    tempDiv.appendChild(selectedHtml);  // Append the selected content to the div
+
+    // Copy the content to the clipboard using the Clipboard API
+    navigator.clipboard.write([
+        new ClipboardItem({
+        	"text/plain": new Blob([tempDiv.innerText], { type: "text/plain" }),
+            "text/html": new Blob([tempDiv.innerHTML], { type: "text/html" })
+        })
+    ])
+    .then(() => {
+        console.log('Rich text copied to clipboard successfully!');
+    })
+    .catch(err => {
+        console.error('Error copying rich text: ', err);
+    });
+}
+
+async function copyRaw() {
 
 	if ( userOptions.autoCopyImages && quickMenuObject.searchTermsObject.image ) {
 		console.log('attempting to copy image to clipboard');
@@ -28,7 +61,8 @@ async function copyRaw(autoCopy) {
 			}
 		}
 
-		navigator.clipboard.writeText(rawText);
+		//navigator.clipboard.writeText(rawText);
+		copyRichText();
 		
 	} catch (err) {
 
