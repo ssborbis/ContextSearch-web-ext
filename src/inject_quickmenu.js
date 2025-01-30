@@ -1424,11 +1424,16 @@ function getQuickMenuOpeningPosition(o) {
 
 function showIcon(searchTerms, e) {
 
-	removeIcon = () => {
+	const removeIcon = () => {
 		let img = getShadowRoot().getElementById('CS_icon');
 
 		// delay required for click / mouseup order weirdness
 		if ( img ) setTimeout(() => img.parentNode.removeChild(img), 25);
+	}
+
+	const moveIcon = (_img) => {
+		_img.style.top = e.pageY + 4 + userOptions.quickMenuIcon.y + "px";
+		_img.style.left = e.pageX + 4 + userOptions.quickMenuIcon.x + "px";
 	}
 
 	if ( !userOptions.quickMenuIcon.enabled ) return;
@@ -1437,21 +1442,21 @@ function showIcon(searchTerms, e) {
 
 	let img = getShadowRoot().getElementById('CS_icon');
 
-	if ( e.target === img ) return;
-
-	if ( img ) return removeIcon();
+	if ( img ) return moveIcon(img);
 
 	// convert relative urls to extension urls
 	let url = userOptions.quickMenuIcon.url.includes(":") ? userOptions.quickMenuIcon.url : browser.runtime.getURL(userOptions.quickMenuIcon.url);
 
 	img = new Image();
 	img.src = url || browser.runtime.getURL('icons/logo_notext.svg');
-	img.style.top = e.pageY + 4 + userOptions.quickMenuIcon.y + "px";
-	img.style.left = e.pageX + 4 + userOptions.quickMenuIcon.x + "px";
 	img.id = 'CS_icon';
 	img.title = 'ContextSearch web-ext';
+	moveIcon(img);
 
-	img.addEventListener('click', () => openQuickMenu(e, searchTerms));
+	img.addEventListener('click', () => {
+		removeIcon();
+		openQuickMenu(e, searchTerms);
+	});
 
 	getShadowRoot().appendChild(img);
 
