@@ -136,10 +136,10 @@ function addSearchEnginePopup(data) {
 	//setup buttons
 	document.getElementById('a_simple_moreOptions').onclick = function() {
 
-		if (isFirefox /* firefox */ )
+	//	if (isFirefox /* firefox */ )
 			showMenu('CS_customSearchDialogOptions');
-		else
-			showMenu('customForm');
+	//	else
+	//		showMenu('customForm');
 
 	}
 	
@@ -406,7 +406,7 @@ function addSearchEnginePopup(data) {
 	
 	}
 	
-	if (isFirefox) {
+//	if (isFirefox) {
 		// Find Plugin listener
 		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
 			listenForFocusAndPromptToImport();
@@ -414,7 +414,7 @@ function addSearchEnginePopup(data) {
 		}
 		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').style.display = 'inline-block';
 		
-	}
+//	}
 	
 	// Form test
 	form.test.onclick = function() {
@@ -424,10 +424,10 @@ function addSearchEnginePopup(data) {
 	// Form cancel
 	form.cancel.onclick = function() {
 		
-		if ( isFirefox /* firefox */ )
+	//	if ( isFirefox /* firefox */ )
 			showMenu('CS_customSearchDialogOptions');
-		else
-			showMenu('simple');
+	//	else
+	//		showMenu('simple');
 	}
 
 	// Form submit
