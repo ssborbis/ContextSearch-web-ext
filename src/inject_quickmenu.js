@@ -1491,11 +1491,19 @@ function checkContextMenuEventOrder(e) {
 
 	document.addEventListener('contextmenu', _e => {
 		if ( Date.now() - time < 25 ) {
+
+			userOptions.contextMenuOnMouseDown = true;
+
 			document.addEventListener('quickMenuComplete', e => {
 				if ( window == top ) checkContextMenuEventOrderNotification();
 				else window.top.checkContextMenuEventOrderNotification();
 			}, {once: true});
+		} else {
+			userOptions.contextMenuOnMouseDown = false;
 		}
+
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
+
 	}, {once: true});
 }
 
