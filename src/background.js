@@ -2461,8 +2461,6 @@ async function injectContentScripts(tab, frameId) {
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
 			files: [
-				// "/opensearch.js",
-				// "/searchEngineUtils.js",
 				"/inject_customSearch.js",
 				"/iconUtils.js"
 			], runAt: "document_end"
@@ -2483,7 +2481,6 @@ async function injectContentScripts(tab, frameId) {
 		// open sidebar on pageload if set
 		if ( frameId === 0 && ( userOptions.sideBar.startOpen || userOptions.sideBar.widget.enabled )) {
 			await executeScripts(tab.id, {files: ["/dock.js", "resizeWidget.js", "/inject_sidebar.js"]}, true);
-			browser.tabs.insertCSS(tab.id, {file: "/inject_sidebar.css", cssOrigin: "user"});
 
 			if ( userOptions.sideBar.widget.enabled )
 				notify({action: "makeOpeningTab"}, tab);
