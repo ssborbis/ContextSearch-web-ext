@@ -31,6 +31,12 @@ function showButtons() {
 			let iframe = document.createElement('iframe');
 			iframe.style.display = 'none';
 			document.body.appendChild(iframe);
+
+			// injection into iframes needs triggering
+			iframe.onload = function() {
+				iframe.contentDocument.body.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
+			}
+
 			iframe.src = link + "#addtocontextsearch";
 		}
 
