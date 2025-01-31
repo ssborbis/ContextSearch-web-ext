@@ -46,9 +46,7 @@ async function copyRaw() {
 		return copyImage(quickMenuObject.searchTermsObject.image);
 	}
 
-	let rawText = getRawSelectedText(document.activeElement);
-
-	if ( !rawText ) rawText = quickMenuObject.searchTerms;
+	let rawText = getRawSelectedText(document.activeElement) || quickMenuObject.searchTerms;
 
 	if ( !rawText ) return;
 
