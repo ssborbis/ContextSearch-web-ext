@@ -1422,13 +1422,11 @@ function getQuickMenuOpeningPosition(o) {
 
 }
 
-function showIcon(searchTerms, e) {
+function showIcon(e) {
 
 	const removeIcon = () => {
 		let img = getShadowRoot().getElementById('CS_icon');
-
-		// delay required for click / mouseup order weirdness
-		if ( img ) setTimeout(() => img.parentNode.removeChild(img), 25);
+		if (img) img.parentNode.removeChild(img);
 	}
 
 	const moveIcon = (_img) => {
@@ -1438,7 +1436,7 @@ function showIcon(searchTerms, e) {
 
 	if ( !userOptions.quickMenuIcon.enabled ) return;
 
-	if ( !searchTerms ) return removeIcon();
+	if ( !getSelectedText(e.target) ) return removeIcon();
 
 	let img = getShadowRoot().getElementById('CS_icon');
 
@@ -1455,37 +1453,35 @@ function showIcon(searchTerms, e) {
 
 	img.addEventListener('click', () => {
 		removeIcon();
-		openQuickMenu(e, searchTerms);
+		openQuickMenu(e, quickMenuObject.searchTerms);
 	});
 
 	getShadowRoot().appendChild(img);
 
 	// if qm opened by other means, remove
 	document.addEventListener('quickMenuComplete', removeIcon, {once: true});
-	
 }
 
 document.addEventListener('mouseup', e => {
-	let searchTerms = getSelectedText(e.target);
-	showIcon(searchTerms, e);
+	setTimeout(() => showIcon(e), 25);
 });
 
-document.addEventListener('mousedown', e => {
-	if ( userOptions.contextMenuOnMouseDown !== null || e.which !== 3 ) return;
+// document.addEventListener('mousedown', e => {
+// 	if ( !userOptions.checkContextMenuEventOrder || e.which !== 3 ) return;
 
-	let time = Date.now();
+// 	let time = Date.now();
 
-	document.addEventListener('contextmenu', _e => {
-		if ( Date.now() - time < 25 ) {
-			userOptions.contextMenuOnMouseDown = true;
-		}
-		else {
-			userOptions.contextMenuOnMouseDown = false;
-		}
-		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
-	}, {once: true})
+// 	document.addEventListener('contextmenu', _e => {
+// 		if ( Date.now() - time < 25 ) {
+// 			userOptions.contextMenuOnMouseDown = true;
+// 		}
+// 		else {
+// 			userOptions.contextMenuOnMouseDown = false;
+// 		}
+// 		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
+// 	}, {once: true})
 
-});
+// });
 
 function checkContextMenuEventOrder(e) {
 	if ( e.which !== 3 ) return;
