@@ -487,8 +487,21 @@ function getSearchTermsForHotkeys(e) {
 
 function createShadowRoot() {
 
+	const addStyling = el => {
+
+		const cssFiles = ["/inject_widgets.css", "/inject_sidebar.css" ];
+		
+		cssFiles.forEach( css => {
+			let link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = browser.runtime.getURL(css);
+			el.appendChild(link);
+		});
+	}
+
 	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {
 		document.body.getElementById = (id) => document.querySelector('#' + id);
+		addStyling(document.head);
 		return;
 	}
 
@@ -497,11 +510,13 @@ function createShadowRoot() {
 	let div = document.createElement('contextsearch-widgets');
 	div.id = "contextsearch-widgets";
 	document.documentElement.appendChild(div);
-	let shadow = div.attachShadow({mode: 'open'})
-		.innerHTML = `
+	div.attachShadow({mode: 'open'});
+	div.shadowRoot.innerHTML = `
       <style>
         :host { all: initial !important; }
       </style>`;
+
+	addStyling(div.shadowRoot);
 }
 
 function getShadowRoot() {
