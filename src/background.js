@@ -413,6 +413,7 @@ async function notify(message, sender, sendResponse) {
 		
 		case "openSideBar":
 		case "sideBarHotkey":
+			await executeScripts(sender.tab.id, {files: ["/dock.js", "resizeWidget.js", "/inject_sidebar.js"]}, true);
 			return sendMessageToTopFrame();
 
 		case "makeOpeningTab":
