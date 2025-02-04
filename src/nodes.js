@@ -244,6 +244,9 @@ function removeConsecutiveSeparators(tree) {
 
 	return tree;
 }
+
+const getSearchEngineById = id => userOptions.searchEngines.find(se => se.id === id);
+const getSearchEngineByNode = n => getSearchEngineById(n.id);
 const isFolder = n => n.type === 'folder';
 const isSearchEngine = n => n.type === 'searchEngine';
 const isOneClickSearchEngine = n => n.type === 'oneClickSearchEngine';
@@ -252,8 +255,15 @@ const isMultiSearchEngine = n => {
 	if ( !isSearchEngine(n) ) return false;
 	
 	try {
-		let ts = JSON.parse(n.template);
-		return true;
+
+		if ( !n.template ) {
+			let se = userOptions.searchEngines.find( _se => _se.id == n.id );
+			let ts = JSON.parse(se.template);
+			return Array.isArray(ts);
+		} else {
+			let ts = JSON.parse(n.template);
+			return Array.isArray(ts);
+		}
 	} catch (error) {}
 
 	return false;

@@ -1340,7 +1340,7 @@ function buildSearchEngineContainer() {
 		document.getElementById('managerContainer').appendChild(table);
 	});
 
-	function dragover_position(el, ev) {
+	function dragover_position(el, ev, onlyTopOrBottom=false) {
 		let rect = el.getBoundingClientRect();
 
 		let rowHeight = 22;// + (el.position !== 'middle') ? 20 : 0;
@@ -1348,7 +1348,9 @@ function buildSearchEngineContainer() {
 
 		if ( ev.offsetY < rowHeight / 2 ) position = 'top';
 
-		if ( el.node.type === 'folder' && ev.offsetY > rowHeight / 3 && ev.offsetY < rowHeight / 3 * 2 )
+		if ( onlyTopOrBottom ) return position;
+
+		if ( /*el.node.type === 'folder' && */ev.offsetY > rowHeight / 3 && ev.offsetY < rowHeight / 3 * 2 )
 			position = 'middle';
 		
 		return position;
@@ -1401,9 +1403,9 @@ function buildSearchEngineContainer() {
 			targetElement.style.borderTop = '1px solid var(--selected)';
 		} else if ( position === 'bottom' ) {
 			targetElement.style.borderBottom = '1px solid var(--selected)';
-		} else {
+		} else if ( position === 'middle' && ( isFolder(targetElement.node) || isMultiSearchEngine(targetElement.node) ) ) {
 			targetElement.querySelector('.header').classList.add('selected');
-		}	
+		}
 	}
 
 	function dragenter_handler(ev) {
@@ -1420,7 +1422,7 @@ function buildSearchEngineContainer() {
 		targetElement.querySelectorAll('.header').forEach( row => row.classList.remove('error') );
 		
 		// clear folder styling
-		if ( targetElement.node.type === "folder" && !selectedRows.includes(targetElement) ) // only remove if not originally selected
+		if ( /*targetElement.node.type === "folder" && */!selectedRows.includes(targetElement) ) // only remove if not originally selected
 			targetElement.querySelector('.header').classList.remove('selected');
 
 		targetElement.style = '';
@@ -1456,6 +1458,30 @@ function buildSearchEngineContainer() {
 		// clear drag styling
 		targetElement.style = '';
 		window.dragRow.style = '';
+
+		// drop to multisearch
+		if ( position === 'middle' && isMultiSearchEngine(targetNode)) {
+			try {
+				let se = getSearchEngineByNode(targetNode);
+				let templates = JSON.parse(se.template);
+				let descriptions = JSON.parse(se.description);
+
+				templates.push(dragNode.id);
+				descriptions.push(dragNode.title);
+
+				se.template = JSON.stringify(templates);
+				se.description = JSON.stringify(descriptions);
+
+				let _icon = document.createElement('img');
+				_icon.src = getIconFromNode(dragNode);
+				_icon.title = dragNode.title;
+				targetElement.querySelector('.header').appendChild(_icon);
+			} catch (error) {
+				console.error(error);
+			}
+			updateNodeList();
+			return;
+		}
 
 		// sort with hierarchy
 		let sortedRows = [ ...$('#managerContainer').querySelectorAll('LI')].filter( row => selectedRows.indexOf(row) !== -1 ).reverse();
