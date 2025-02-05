@@ -1451,7 +1451,10 @@ function showIcon(e) {
 	img.title = 'ContextSearch web-ext';
 	moveIcon(img);
 
-	img.addEventListener('click', () => {
+	// use mousedown to catch click -> mouseup events
+	img.addEventListener('mousedown', _e => {
+		_e.preventDefault();
+
 		removeIcon();
 		openQuickMenu(e, quickMenuObject.searchTerms);
 	});
