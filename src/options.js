@@ -2031,7 +2031,11 @@ $('b_manualEdit').addEventListener('click', e => {
 		{}
 		);
 
-		$('t_manualEdit').innerHTML = syntaxHighlight(JSON.stringify(ordered, null, 4))
+		// unsafe innerHTML fix
+		const html = syntaxHighlight(JSON.stringify(ordered, null, 4));
+		appendSanitizedHTML(html, $('t_manualEdit')) 
+
+		//$('t_manualEdit').innerHTML = syntaxHighlight(JSON.stringify(ordered, null, 4))
 	} else {
 		$('advancedSettingsTable').style.display = null;
 		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display='none' );

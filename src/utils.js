@@ -222,3 +222,12 @@ const debug = (...args) => {
 }
 const i18n = browser.i18n.getMessage;
 const sendMessage = browser.runtime.sendMessage;
+
+function appendSanitizedHTML(html_str, el) {
+		const parser = new DOMParser();
+		const parsed = parser.parseFromString(html_str, `text/html`);
+		const tags = parsed.body.childNodes;
+		for (let i=0; i<tags.length;i++) {
+			el.append(tags[i].cloneNode(true));
+		}
+}

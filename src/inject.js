@@ -392,7 +392,10 @@ function checkContextMenuEventOrderNotification() {
 	let dialog = document.createElement('dialog');
 	dialog.className = "CS_dialog";
 	getShadowRoot().appendChild(dialog);
-	dialog.innerHTML = html;
+
+	// unsafe innerHTML fix
+	appendSanitizedHTML(html, dialog);
+
 	let content = document.createElement('div');
 	content.className = "content";
 	dialog.appendChild(content);
