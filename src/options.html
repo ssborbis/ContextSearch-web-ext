@@ -3326,10 +3326,10 @@
 		
 				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
-					<div style="display:flex;flex-direction:row;margin-left:40px;background-color:var(--bg-color1);border:1px solid var(--border-color1);padding:2px;vertical-align: middle;">
-						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6"></div>
-						<input id="searchEnginesManagerSearch"  class="inputNice nosave" style="font-size:8pt;flex-grow:2;border:none;" placeholder="filter" />
-						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:1em;margin:0;cursor:pointer;opacity:.6"></div>
+					<div style="display:flex;flex-direction:row;justify-content:flex-end;margin-left:40px;overflow:hidden;">
+						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6;"></div>
+						<input id="searchEnginesManagerSearch" class="inputNice nosave" style="font-size:8pt;flex-grow:2;border:none;padding:2px;width:auto" placeholder="filter" />
+						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:1em;margin:0;cursor:pointer;opacity:.6;position:relative;right:18px;"></div>
 					</div>
 					<div id="managerContainer">
 						<span class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</span>
@@ -3337,16 +3337,21 @@
 					<div></div>
 					<br />
 
-					<button id="b_addSearchEngine" data-i18n="Add">$</button>
-					<button id="b_sort" data-i18n="Sort">$</button>
-					<button id="b_resetAllSearchEngines" style="float:right;clear:both" data-i18n="ResetDefaults">$</button>
+					<button id="b_addSearchEngine" title="$add">
+						<div class="tool" style="--mask-image: url(icons/add.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+					<button id="b_sort" title="$Sort">
+						<div class="tool" style="--mask-image: url(icons/sort.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+					<button id="b_mycroftproject" title="$FindMycroftTooltip">
+						<div class="tool" style="--mask-image: url(icons/search.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+					<button id="b_resetAllSearchEngines" style="float:right;clear:both" title="$ResetDefaults">
+						<div class="tool" style="--mask-image: url(icons/power.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
 
-					<div class="blurb" data-i18n="SearchEnginesManagerHelp">
-						_
-					</div>
+					<!-- <span class="info" title="$SearchEnginesManagerHelp">ⓘ</span>	 -->
 
-
-					
 				</section>
 
 				<form id="editSearchEngineForm" class="editForm" action="">

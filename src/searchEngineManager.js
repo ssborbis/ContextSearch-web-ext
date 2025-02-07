@@ -2314,6 +2314,11 @@ function buildSearchEngineContainer() {
 			buildSearchEngineContainer();
 		}
 	});
+
+	document.getElementById('b_mycroftproject').addEventListener('click', e => {
+		e.stopPropagation();
+		window.open('https://mycroftproject.com/search-engines.html','_blank');
+	});
 	
 	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {
 		
