@@ -1470,23 +1470,6 @@ document.addEventListener('click', e => {
 	setTimeout(() => showIcon(e), 25);
 });
 
-// document.addEventListener('mousedown', e => {
-// 	if ( !userOptions.checkContextMenuEventOrder || e.which !== 3 ) return;
-
-// 	let time = Date.now();
-
-// 	document.addEventListener('contextmenu', _e => {
-// 		if ( Date.now() - time < 25 ) {
-// 			userOptions.contextMenuOnMouseDown = true;
-// 		}
-// 		else {
-// 			userOptions.contextMenuOnMouseDown = false;
-// 		}
-// 		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
-// 	}, {once: true})
-
-// });
-
 function checkContextMenuEventOrder(e) {
 	if ( e.which !== 3 ) return;
 	if ( userOptions.quickMenuMoveContextMenuMethod || !userOptions.checkContextMenuEventOrder ) return;
