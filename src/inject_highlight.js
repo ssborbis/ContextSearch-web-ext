@@ -109,7 +109,7 @@ document.addEventListener('CS_markEvent', e => {
 	
 	// Chrome markings happened before loading userOptions
 	let optionsCheck = setInterval( () => {
-		if ( !Object.keys(userOptions).length ) return;
+		if ( typeof userOptions === 'undefined' || !Object.keys(userOptions).length ) return;
 		
 		clearInterval(optionsCheck);
 		
