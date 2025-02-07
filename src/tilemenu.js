@@ -1609,7 +1609,7 @@ document.addEventListener('click', e => {
 
 document.addEventListener('mousedown', e => {
 
-	let tile = e.target.closest('.tile, .quickMenuMore');
+	let tile = e.target.closest('.tile, .quickMenuMore, .groupMoreTile');
 
 	if ( !tile ) return;
 
@@ -1631,7 +1631,7 @@ document.addEventListener('mouseup', async e => {
 
 	if ( !e.target.closest ) return;
 
-	let tile = e.target.closest('.tile, .quickMenuMore');
+	let tile = e.target.closest('.tile, .quickMenuMore, .groupMoreTile');
 
 	if ( !tile || !tile.action ) return;
 
