@@ -2463,6 +2463,9 @@ function addFormListeners(form) {
 		//	document.body.appendChild(form);
 			document.body.removeChild(formContainer.parentNode);
 		});
+
+		// reset the params so the engine doesn't display on reload
+		setURLSearchParams(null);
 	}
 
 	form.addFaviconBox = (url) => {
@@ -2686,8 +2689,10 @@ function addMultisearchIcons(se, header) {
 }
 
 function setURLSearchParams(li) {
-	if ( li.node && li.node.id ) {
+	if ( li && li.node && li.node.id ) {
 		window.history.replaceState(null, null, "?id=" + li.node.id);
+	} else {
+		window.history.replaceState(null, null, window.location.pathname);
 	}
 }
 
