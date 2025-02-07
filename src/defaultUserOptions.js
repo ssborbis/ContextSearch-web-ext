@@ -341,5 +341,6 @@ const defaultUserOptions = {
 	quickMenuRepeatSearchHideMenu: false,
 	quickMenuRepeatSearchDisableOnEscape: true,
 	quickMenuReuseVsClose: false,
-	contextMenuOnMouseDown: false
+	contextMenuOnMouseDown: false,
+	resultsNavigatorSkipMenu: false
 };

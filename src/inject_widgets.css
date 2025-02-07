@@ -318,3 +318,25 @@
 .CS_dialog button {
 	margin-right:16px;
 }
+
+#CS_resultsEngineIconDialog {
+	width:64px;
+	height:64px;
+	position: relative;
+	text-align:center;
+	overflow: hidden;
+}
+#CS_resultsEngineIconDialog img {
+	height:64px;
+	max-height:64px;
+	max-width:64px;
+    margin: auto;
+    display:block;
+}
+#CS_resultsEngineIconDialog div {
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	font-size: 10px;
+	margin-top:2px;
+}

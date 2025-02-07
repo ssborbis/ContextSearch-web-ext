@@ -1,40 +1,43 @@
-let current, previous, next, terms;
+let folder, current, previous, next, terms;
 
-const nextResultsEngine = () => {
-	if ( killswitch ) return;
-
+const resultsSearch = node => {
 	sendMessage({
 		action: "search", 
 		info: {
-			menuItemId: next.id,
+			menuItemId: node.id,
 			selectionText: terms,
 			openMethod: "openCurrentTab"
 		}
 	});
 }
 
-const previousResultsEngine = () => {
+const nextResultsEngine = async () => {
 	if ( killswitch ) return;
-	
-	sendMessage({
-		action: "search", 
-		info: {
-			menuItemId: previous.id,
-			selectionText: terms,
-			openMethod: "openCurrentTab"
-		}
-	});
+
+	if ( !terms ) await init();
+
+	if ( userOptions.resultsNavigatorSkipMenu )
+		return resultsSearch(next);
+
+	resetCarousel(folder, next);
+	showNextEngine(current); 
+	return;
 }
 
-(async () => {
+const previousResultsEngine = async () => {
+	if ( killswitch ) return;
 
-	let tt = await sendMessage({action: "getTabTerms"});
+	if ( !terms ) await init();
 
-	if ( !tt ) return;
+	if ( userOptions.resultsNavigatorSkipMenu )
+		return resultsSearch(previous);
 
-	let folder = findNode(userOptions.nodeTree, n => n.id === tt.folderId);
-	let node = findNode(folder, n => n.id === tt.id);
+	resetCarousel(folder, previous);
+	showNextEngine(current); 
+	return;
+}
 
+const resetCarousel = (folder, node) => {
 	let array = [...new Set(folder.children.filter(c => {
 		
 		if ( !["searchEngine", "oneClickSearchEngine"/*, "bookmarklet", "externalProgram"*/].includes(c.type) ) return false;
@@ -55,7 +58,47 @@ const previousResultsEngine = () => {
 	current = array[i];
 	previous = array[(i+len-1)%len];
 	next = array[(i+1)%len];
+}
+
+const showNextEngine = node => {
+
+	let icon = getIconFromNode(node);
+	let img = new Image();
+	img.src = icon;
+
+	let id = "CS_resultsEngineIconDialog";
+	let dialog = getShadowRoot().getElementById(id);
+	
+	if ( !dialog ) {
+		dialog = document.createElement('dialog');
+		dialog.id = id;
+		getShadowRoot().appendChild(dialog);
+		dialog.showModal();
+	}
+
+	dialog.innerHTML = null
+	dialog.appendChild(img);
+
+	let label = document.createElement('div');
+	label.innerText = node.title;
+	dialog.appendChild(label);
+
+	dialog.addEventListener('keypress', e => {
+		if ( e.key === "Enter") resultsSearch(node);
+	});
+}
+
+const init = async () => {
+
+	let tt = await sendMessage({action: "getTabTerms"});
+
+	if ( !tt ) return;
+
+	folder = findNode(userOptions.nodeTree, n => n.id === tt.folderId);
+	let node = findNode(folder, n => n.id === tt.id);
+
+	resetCarousel(folder, node);
 
 	terms = tt.searchTerms;
-})();
+}
 
