@@ -1403,7 +1403,9 @@ function buildSearchEngineContainer() {
 
 		targetElement.position = position;
 		
+		// clear stling
 		targetElement.style = '';
+		targetElement.querySelector('.header').classList.remove('selected')
 
 		if ( position === 'top' ) {
 			targetElement.style.borderTop = '1px solid var(--selected)';
@@ -1485,6 +1487,10 @@ function buildSearchEngineContainer() {
 			} catch (error) {
 				console.error(error);
 			}
+
+			// remove drag styling
+			[ window.dragRow, targetElement ].forEach(el => el.querySelector('.header').classList.remove('selected'));
+
 			updateNodeList();
 			return;
 		}
