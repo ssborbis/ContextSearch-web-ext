@@ -377,23 +377,29 @@ function buildSearchEngineContainer() {
 						}
 
 						let iconBase64 = await new Promise( resolve => {
-							let img = new Image();
-							img.onload = () => resolve(imageToBase64(img, userOptions.cacheIconsMaxSize));
-							img.onerror = () => resolve("");
 
-							setTimeout(() => resolve(""), 2500);
+							// return empty string if caching is disabled
+							if ( !userOptions.cacheIcons ) resolve("");
 
 							let src = getIconSourceFromURL(edit_form.iconURL.value);
 
+							// if working with a data URI, return URI
 							if ( src.startsWith('data:')) {
 								resolve(src);
 								return;
 							}
 
+							let img = new Image();
+							img.onload = () => resolve(imageToBase64(img, userOptions.cacheIconsMaxSize));
+							img.onerror = () => resolve("");
+
+							// return empty string if timeout
+							setTimeout(() => resolve(""), 2500);
+
 							img.src = src;
 						});
 
-						icon.src = iconBase64 || "icons/search.svg";
+						icon.src = edit_form.iconURL.value || iconBase64 || "icons/search.svg";
 
 						se.icon_base64String = iconBase64;  //icon.src;
 						se.description = edit_form.description.value;
@@ -2462,8 +2468,8 @@ function addFormListeners(form) {
 	form.addFaviconBox = (url) => {
 		let box = form.querySelector('[name="faviconBox"]');
 		box.innerHTML = null;
+		
 		let img = new Image();
-		img.src = url;
 		box.appendChild(img);
 		box.classList.add('inputNice');
 		box.classList.add('upload');
@@ -2475,21 +2481,28 @@ function addFormListeners(form) {
 		forlabel.title = i18n('uploadfromlocal');
 		box.insertBefore(forlabel, box.firstChild);
 
+		let sizeLabel = document.createElement('div');
+		sizeLabel.className = "sizeLabel";
+		box.appendChild(sizeLabel);
+
+		form.setIcon(url);
+	}
+
+	form.setIcon = (url) => {
+		let defaultIcon = getIconFromNode({type:form.node.type});
+		let img = form.querySelector('[name="faviconBox"] img');
+
+		// show size on load
 		img.onload = () => {
-			let label = document.createElement('div');
+			let label = form.querySelector('[name="faviconBox"] .sizeLabel');
 			label.innerText = img.naturalHeight + " x " + img.naturalWidth;
-			box.appendChild(label);
 		}
+
+		img.src = url || form.iconURL.value || defaultIcon;
 	}
 
 	// update the favicon when the user changes the url
-	form.iconURL.addEventListener('change', e => {
-
-		let defaultIcon = getIconFromNode({type:form.node.type});
-
-		let img = form.querySelector('[name="faviconBox"] img');
-		img.src = form.iconURL.value || defaultIcon;
-	})
+	form.iconURL.addEventListener('change', () => form.setIcon());
 
 	form.save.addEventListener('click', e => {
 		form.save.classList.remove('changed');

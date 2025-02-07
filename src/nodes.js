@@ -197,7 +197,8 @@ function getIconFromNode(node) {
 		if ( node.type === "searchEngine" || node.type === "siteSearch" || node.type === "siteSearchFolder") {
 			let se = userOptions.searchEngines.find( se => se.id === node.id );
 			if ( !se ) return browser.runtime.getURL('icons/search.svg');
-			return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
+			if ( userOptions.cacheIcons ) return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
+			else return se.icon_url || browser.runtime.getURL('icons/search.svg');
 		} else if ( node.type === "bookmarklet" ) {
 			return node.icon || browser.runtime.getURL('icons/code_color.svg');
 		} else if ( node.type === "folder" ) {
