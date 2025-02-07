@@ -1043,7 +1043,7 @@
   },
   
   "SideBar": {
-	"message": "Sidebar"
+	"message": "Sidebar Menu"
   },
   
   "SideBarTooltip": {
@@ -1272,7 +1272,7 @@
   },
   
   "Toolbar": {
-    "message": "Toolbar",
+    "message": "Toolbar Menu",
     "description": ""
   },
   
