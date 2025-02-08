@@ -2055,8 +2055,11 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	// inject highlighting
 	await highlightInjectScripts(tab);
 
+	// inject results navigation
+	executeScripts(tab.id, {files: ["inject_resultsEngineNavigator.js"]}, true);
+
 	if ( userOptions.sideBar.openOnResults ) {
-		await browser.tabs.executeScript(tab.id, {
+		browser.tabs.executeScript(tab.id, {
 			code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}, openedOnSearchResults: true})`,
 			runAt: 'document_idle'
 		});
@@ -2089,8 +2092,6 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 		if ( ! highlightTabs.find( ht => JSON.stringify(obj) === JSON.stringify(ht) ) )
 			highlightTabs.push(obj);
 	}
-
-	executeScripts(tab.id, {files: ["inject_resultsEngineNavigator.js"]}, true);
 }
 
 function getAllOpenTabs() {
