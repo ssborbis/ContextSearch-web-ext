@@ -65,6 +65,8 @@ function imageToBase64(image, maxSize) {
 
 	// return svg as-is
 	if (image.src.startsWith("data:image/svg+xml")) return image.src;
+
+	if (image.src.toLowerCase().endsWith("svg")) return image.src;
 	
 	function isCanvasBlank(canvas) {
 		var blank = document.createElement('canvas');

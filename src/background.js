@@ -225,16 +225,18 @@ async function notify(message, sender, sendResponse) {
 			return buildContextMenu();
 
 		case "fetchURI":
-			return new Promise(r => {
-				let start = Date.now();
-				let img = new Image();
-				img.onload = async function() {
-					let dataURI = await imageToBase64(img);
-					r(dataURI);
-					console.log("URI encode took", Date.now() - start);
-				}
-				img.src = message.url;
-			
+			return new Promise((resolve, reject) => {
+				fetch(message.url)
+					.then(response => response.blob())
+					.then(blob => {
+						let reader = new FileReader();
+						reader.onloadend = () => {
+							resolve(reader.result);
+						};
+						reader.onerror = reject;
+						reader.readAsDataURL(blob);
+					})
+					.catch(reject);
 			});
 			
 		case "getUserOptions":

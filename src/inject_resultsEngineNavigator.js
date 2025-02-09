@@ -60,9 +60,15 @@ const resetCarousel = (folder, node) => {
 	next = array[(i+1)%len];
 }
 
-const showNextEngine = node => {
+const showNextEngine = async node => {
 
 	let icon = getIconFromNode(node);
+
+	// defaultEngines icons are not web accessible
+	if (icon.startsWith("/defaultEnginesIcons")) {
+		icon = await sendMessage({action: "fetchURI", url: icon});
+	}
+	
 	let img = new Image();
 	img.src = icon;
 
