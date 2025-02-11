@@ -604,6 +604,10 @@ function addDOMListeners() {
 		window.close();
 	})
 
+	$('#filterBarContainer > .tool').addEventListener('click', e => {
+		$('#filterBarContainer').classList.toggle('hide');
+	});
+
 	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
 
 	// hide other request buttons

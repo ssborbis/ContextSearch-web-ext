@@ -7,7 +7,7 @@
 		<style>
 			:root {
 				--bg-color1:#fafafa;
-				--bg-color2:#F0F0F0;
+				--bg-color2:#efefef;
 				--bg-color3:#eee;
 				--bg-color4:#E4E4E4;
 
@@ -1626,7 +1626,36 @@
 			INPUT::placeholder {
 				font-style:italic;
 			}
+			#filterBarContainer {
+				display:flex;
+				flex-direction:row;
+				/* justify-content:flex-end; */
+				margin-left:22px;
+				overflow:hidden;
+				position:absolute;
+				width:calc(100% - 40px);
+			}
 
+			#searchEnginesManagerSearch {
+				font-size:8pt;
+				/* flex-grow:2; */
+				border:none;
+				padding:2px;
+				/* width:auto */
+				width:100%;
+				transition: width .15s;
+			}
+
+			#filterBarContainer.hide > #searchEnginesManagerSearch {
+				width:0;
+				padding:0;
+			}
+
+			#filterBarContainer.hide > #searchEnginesManagerSearchClearButton {
+				display:none;
+			}
+
+			
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
 	</head>
@@ -3327,9 +3356,9 @@
 		
 				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
-					<div style="display:flex;flex-direction:row;justify-content:flex-end;margin-left:40px;overflow:hidden;">
+					<div id="filterBarContainer" class="hide" title="$filter">
 						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6;"></div>
-						<input id="searchEnginesManagerSearch" class="inputNice nosave" style="font-size:8pt;flex-grow:2;border:none;padding:2px;width:auto" placeholder="filter" />
+						<input id="searchEnginesManagerSearch" class="inputNice nosave" placeholder="filter" />
 						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:1em;margin:0;cursor:pointer;opacity:.6;position:relative;right:18px;"></div>
 					</div>
 					<div id="managerContainer">
