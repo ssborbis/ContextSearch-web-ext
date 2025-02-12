@@ -79,20 +79,26 @@ browser.tabs.onActivated.addListener(info => {
 	}
 });
 
-browser.windows.onFocusChanged.addListener(async id => {
+{	// popup window listeners
+	let handler = async (id) => {
+		// not a CS popup window
+		if ( !window.popupWindows.includes(id) ) return;
 
-	// not a CS popup window
-	if ( !window.popupWindows.includes(id) ) return;
+		let w = await browser.windows.get(id);
+		userOptions.popupWindow.height = w.height + "px";
+		userOptions.popupWindow.width = w.width + "px";
+		userOptions.popupWindow.left = w.left + "px";
+		userOptions.popupWindow.top = w.top + "px";
+		notify({action: "saveUserOptions", userOptions:userOptions});
+	}
 
-	let w = await browser.windows.get(id);
-	userOptions.popupWindow.height = w.height + "px";
-	userOptions.popupWindow.width = w.width + "px";
-	notify({action: "saveUserOptions", userOptions:userOptions});
+	browser.windows.onFocusChanged.addListener(async id => handler(id));
 
-});
-browser.windows.onRemoved.addListener(id => {
-	window.popupWindows = window.popupWindows.filter(_id => _id !== id );
-});
+	browser.windows.onRemoved.addListener(id => {
+		window.popupWindows = window.popupWindows.filter(_id => _id !== id );
+		//handler(id);
+	});
+}
 
 browser.runtime.onMessage.addListener(notify);
 
@@ -1279,23 +1285,28 @@ function openWithMethod(o) {
 
 		// reuse the first tab in the current window
 		if ( userOptions.popupWindow.reuse && window.popupWindows.length ) {
-			await browser.tabs.query({windowId: window.popupWindows[0]}).then(_tabs => {
-				browser.tabs.update(_tabs[0].id, {url: o.url})
-			});
-			return;
+			let _tabs = await browser.tabs.query({windowId: window.popupWindows[0]});
+			return browser.tabs.update(_tabs[0].id, {url: o.url});
 		}
 
 		let qmo = await notify({action: "getTabQuickMenuObject"});
 
 		qmo = qmo || { screenCoords: {x: 0, y: 0}};
-		return browser.windows.create({
+		let w = await browser.windows.create({
 			url:o.url,
 			height:getDimension(userOptions.popupWindow.height),
 			width: getDimension(userOptions.popupWindow.width),
-			top: parseInt(qmo.screenCoords.y * zoom),
-			left: parseInt(qmo.screenCoords.x * zoom),
+			top: userOptions.popupWindow.rememberPosition ? 
+				getDimension(userOptions.popupWindow.top) :
+				parseInt(qmo.screenCoords.y * zoom),
+			left: userOptions.popupWindow.rememberPosition ? 
+				getDimension(userOptions.popupWindow.left) :
+				parseInt(qmo.screenCoords.x * zoom),
 			type: "panel"
-		}).then(w => window.popupWindows.push(w.id));
+		});
+		
+		window.popupWindows.push(w.id);
+		return w;
 	}
 }
 
