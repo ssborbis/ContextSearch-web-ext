@@ -652,8 +652,8 @@ function buildSearchEngineContainer() {
 				pas.innerText = i18n("PostAppScript");
 				pas.title = i18n("PostAppScriptTooltip");
 
-				_form.insertBefore(cwd, _form.template.nextSibling);
-				_form.insertBefore(_form.searchform, cwd.nextSibling);
+				_form.template.parentNode.insertBefore(cwd, _form.template.nextSibling);
+				_form.searchform.parentNode.insertBefore(_form.searchform, cwd.nextSibling);
 
 				(() => {
 					let div = document.createElement('div');
