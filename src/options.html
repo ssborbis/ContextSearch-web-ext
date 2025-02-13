@@ -1317,7 +1317,7 @@
 				top: 50%;
 				left: 50%;
 				transform: translate(-50%, -50%);
-				width: 600px;
+				width: 500px;
 				height: auto;
 				box-shadow:4px 4px 20px #0005;
 				padding: 20px;
@@ -3385,85 +3385,117 @@
 				</section>
 
 				<form id="editSearchEngineForm" class="editForm" action="">
-					<div>
+					<div style="display:flex;">
+						<div style="min-width: 80px; margin-right:20px">
+							<div style="display:inline-block">
+								<div class="faviconPickerBox" name="faviconBox"></div>
+								<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
+									<tool data-icon="crossmark.svg" style="height:100%"></tool>
+								</button>
+							</div>
+
+							<div class="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);padding:6px 0;display:none">
+
+								<label><input type="checkbox" class="inputNice" value="1"/><span data-i18n="audio">$</span></label>
+								<label><input type="checkbox" class="inputNice" value="2"/><span data-i18n="frame">$</span></label>
+								<label><input type="checkbox" class="inputNice" value="4"/><span data-i18n="image">$</span></label>
+								<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">$</span></label>
+								<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">$</span></label>
+								<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">$</span></label>
+								<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">$</span></label><span title="$contextsTooltip" style="font-size:8pt"> ⓘ</span>
+
+								<br />
+								<label data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">$</label><textarea name="matchRegex" type="text" class="inputNice" style="width: calc(100% - 10px)" placeholder='e.g. /\d+/g'></textarea>
+							</div>
+							<br>
+							
+							
+			
+							<dialog id="iconURI">
+								<label data-i18n="IconURI" class="formLabel">$</label><input name="iconURL" type="text" class="inputNice" />
+								<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 4px;"></tool></button>
+							<input type="file" accept="image/*" name='iconPicker' style="display:none">
+							</dialog>
+							
+		
+						</div>
+						<div style="flex-grow:2">
+
+							<div>
+								<button>
+									<tool data-icon="edit.svg" style="height:30px"></tool>
+								</button>
+								<button>
+									<tool data-icon="filter.svg" style="height:30px"></tool>
+								</button>
+								<button>
+									<tool data-icon="regex.svg" style="height:30px"></tool>
+								</button>
+								<button>
+									<tool data-icon="code.svg" style="height:30px"></tool>
+								</button>
+							</div>
+
+						<div style="display:flex">
+							<div style="display:inline-block;width:75%">
+								<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
+							</div>
+							<div style="display:inline-block;width:25%">
+								<label data-i18n="KeywordShort" class="formLabel">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center"/>
+							</div>
+							<!-- <div style="display:inline-block;width:15%">
+								<label data-i18n="Hotkey" class="formLabel">$</label><input name="hotkey" type="text" class="inputNice" style="text-align:center"/>
+							</div> -->
+						</div>
+			
+						<label data-i18n="Description" class="formLabel">$</label><textarea name="description" type="text" class="inputNice"></textarea>
+						<label data-i18n="Template" title="$templateCheatSheet" class="formLabel">$</label><textarea name="template" type="text" class="inputNice"></textarea>
+						
+						<label data-i18n="FormPath" class="formLabel">$</label><input name="searchform" type="text" class="inputNice" />
+						<label data-i18n="POSTparams" class="formLabel">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
+						
+						<div style="display: none;">
+							<label data-i18n="Regex" title="$RegexTooltip" class="formLabel">$</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
+							<label data-i18n="SearchCode" title="$SearchCodeTooltip" class="formLabel">$</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
+						</div>
+
 						<div style="display:inline-block">
-							<div class="faviconPickerBox" name="faviconBox"></div>
-							<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-								<tool data-icon="crossmark.svg" style="height:100%"></tool>
-							</button>
+						<label data-i18n="Method" class="formLabel">$</label><select name="_method" class="inputNice">
+								<option value="GET">GET</option>
+								<option value="POST">POST</option>
+							</select>
 						</div>
-
-						<div class="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);padding:6px 0">
-
-							<label><input type="checkbox" class="inputNice" value="1"/><span data-i18n="audio">$</span></label>
-							<label><input type="checkbox" class="inputNice" value="2"/><span data-i18n="frame">$</span></label>
-							<label><input type="checkbox" class="inputNice" value="4"/><span data-i18n="image">$</span></label>
-							<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">$</span></label>
-							<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">$</span></label>
-							<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">$</span></label>
-							<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">$</span></label><span title="$contextsTooltip" style="font-size:8pt"> ⓘ</span>
-
-							<br />
-							<label data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">$</label><textarea name="matchRegex" type="text" class="inputNice" style="width: calc(100% - 10px)" placeholder='e.g. /\d+/g'></textarea>
-						</div>
-					</div>
-
-					<div style="display:flex">
-						<div style="display:inline-block;width:75%">
-							<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
-						</div>
-						<div style="display:inline-block;width:25%">
-							<label data-i18n="Keyword" class="formLabel">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center"/>
-						</div>
-					</div>
-					<label data-i18n="Description">$</label><textarea name="description" type="text" class="inputNice"></textarea>
-					<label data-i18n="Template" title="$templateCheatSheet">$</label><textarea name="template" type="text" class="inputNice"></textarea>
-					<label data-i18n="IconURI">$</label>
-					<div>
-						<input name="iconURL" type="text" class="inputNice" style="display:inline-block;width:calc(100% - 65px)"/>
-						<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 4px;"></tool></button>
-						<input type="file" accept="image/*" name='iconPicker' style="display:none">
-					</div>
-					<label data-i18n="FormPath">$</label><input name="searchform" type="text" class="inputNice" />
-					<label data-i18n="POSTparams">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
-					<label data-i18n="Regex" title="$RegexTooltip">$</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
-					<label data-i18n="SearchCode" title="$SearchCodeTooltip">$</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
-
-					<div style="display:inline-block">
-					<label data-i18n="Method">$</label><select name="_method" class="inputNice">
-							<option value="GET">GET</option>
-							<option value="POST">POST</option>
+						
+						<div style="display:inline-block">
+						<label data-i18n="Encoding" class="formLabel">$</label><select name="_encoding" class="inputNice">
+							<option value="UTF-8">utf-8</option>
+							<option value="WINDOWS-1252">windows-1252</option>
+							<option value="SHIFT_JIS">shift_jis</option>
+							<option value="ISO-2022-JP">iso-2022-jp</option>
+							<option value="EUC-JP">euc-jp</option>
+							<option value="WINDOWS-1250">windows-1250</option>
+							<option value="WINDOWS-1251">windows-1251</option>
+							<option value="WINDOWS-850">windows-850</option>
+							<option value="MACINTOSH">macintosh</option>
+							<option value="ISO-8859-5">iso-8859-5</option>
+							<option value="ISO-8859-2">iso-8859-2</option>
+							<option value="GBK">gbk</option>
+							<option value="none">no encoding</option>
 						</select>
+						</div>
 					</div>
-					
-					<div style="display:inline-block">
-					<label data-i18n="Encoding">$</label><select name="_encoding" class="inputNice">
-						<option value="UTF-8">utf-8</option>
-						<option value="WINDOWS-1252">windows-1252</option>
-						<option value="SHIFT_JIS">shift_jis</option>
-						<option value="ISO-2022-JP">iso-2022-jp</option>
-						<option value="EUC-JP">euc-jp</option>
-						<option value="WINDOWS-1250">windows-1250</option>
-						<option value="WINDOWS-1251">windows-1251</option>
-						<option value="WINDOWS-850">windows-850</option>
-						<option value="MACINTOSH">macintosh</option>
-						<option value="ISO-8859-5">iso-8859-5</option>
-						<option value="ISO-8859-2">iso-8859-2</option>
-						<option value="GBK">gbk</option>
-						<option value="none">no encoding</option>
-					</select>
-					</div>
+				</div>
 
-					<div style="float:right;margin:16px">
-						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><tool data-icon="copy.svg" style="height:1em;vertical-align: middle"></tool></button>
-<span data-browser="firefox">					
-						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
-</span>
-						<button type="button" name="test" style="margin-left:20px;width:auto" data-i18n="Test" title="i18n_text">$</button>
-						<button type="button" name="save" style="margin-left:4px;width:auto;border-right: none;border-radius:4px 0 0 4px" data-i18n="Save" title="i18n_text">$</button><button type="button" name="saveclose" title="$saveclose" style="margin-left:0px;width:auto;border-left: none;border-radius:0 4px 4px 0;cursor:default">X</button>
-					</div>
+				<div style="float:right;margin:16px">
+							<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><tool data-icon="copy.svg" style="height:1em;vertical-align: middle"></tool></button>
+	<span data-browser="firefox">					
+							<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
+	</span>
+							<button type="button" name="test" style="margin-left:20px;width:auto" data-i18n="Test" title="i18n_text">$</button>
+							<button type="button" name="save" style="margin-left:4px;width:auto;border-right: none;border-radius:4px 0 0 4px" data-i18n="Save" title="i18n_text">$</button><button type="button" name="saveclose" title="$saveclose" style="margin-left:0px;width:auto;border-left: none;border-radius:0 4px 4px 0;cursor:default">X</button>
+						</div>
 
-					<span class="saveMessage"></span>
+						<span class="saveMessage"></span>
 
 				</form>
 				<form id="editFolderForm" class="editForm" action="">
