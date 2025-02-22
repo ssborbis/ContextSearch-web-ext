@@ -714,7 +714,7 @@ function hashChange(e) {
 
 	let hash = location.hash.split("#");
 	
-	let buttons = document.querySelectorAll('.tablinks');
+	let buttons = document.querySelectorAll('.tab .tablinks');
 	
 	// no hash, click first button
 	if ( !hash || !hash[1] ) {
@@ -732,25 +732,37 @@ function hashChange(e) {
 
 function makeTabs() {
 	
-	let tabs = document.getElementsByClassName("tablinks");
-	for (let tab of tabs) {
-		tab.addEventListener('click', e => {
+	document.addEventListener('click', e => {
 
-			document.querySelectorAll('.tabcontent').forEach( el => {
-				el.style.display = "none";
-			});
-				
-			// Get all elements with class="tablinks" and remove the class "active"
-			for (let tablink of document.getElementsByClassName("tablinks"))
-				tablink.classList.remove('active');
+		let tab = e.target.closest("button");
 
-			// Show the current tab, and add an "active" class to the button that opened the tab
-			document.getElementById(e.target.dataset.tabid).style.display = "block";
-			e.currentTarget.classList.add('active');
-			
-			location.hash = e.target.dataset.tabid.toLowerCase().replace(/tab$/,"");
+		if ( !tab || !tab.classList.contains("tablinks")) return;
+
+		// for tablinks, tabgroup is attached to the parent node only
+		const tabgroup = tab.parentNode.dataset.tabgroup;
+		const tabid = tab.dataset.tabid;
+
+		document.querySelectorAll(`.tabcontent[data-tabgroup="${tabgroup}"]`).forEach( el => {
+			el.style.display = "none";
 		});
-	}
+		
+		// Get all elements with class="tablinks" and remove the class "active"
+		document.querySelectorAll(`[data-tabgroup="${tabgroup}"] > .tablinks.active`).forEach( el => {
+			el.classList.remove('active');
+		});
+
+		let contentTabs = document.querySelectorAll(`.tabcontent#${tabid}, .tabcontent[data-tabid="${tabid}"]`);
+
+		for ( const content of contentTabs ) {
+			// Show the current tab, and add an "active" class to the button that opened the tab
+			content.style.display = "block";
+			tab.classList.add('active');
+		}
+		
+		// set hash for main nav only
+		if ( tabgroup === 'main_nav')
+			location.hash = tabid.toLowerCase().replace(/tab$/,"");
+	});
 }
 
 function buildToolsBarIcons() {

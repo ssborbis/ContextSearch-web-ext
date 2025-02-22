@@ -521,7 +521,7 @@
 				from {opacity: 0;}
 				to {opacity: 1;}
 			}
-			.tablinks .tool {
+			.tab .tablinks .tool {
 				position:absolute;
 				height:1em;
 				left:16px;
@@ -763,6 +763,7 @@
 				background-color:var(--bg-color1);
 				color:var(--color1);
 				font-family:inherit;
+				margin-bottom:4px;
 			}
 			.editForm TEXTAREA {
 				line-height: 20px;
@@ -791,7 +792,8 @@
 				z-index:2;
 				left:20px;
 				padding:0px 4px;
-				color:var(--color2);	
+				color:var(--color2);
+				font-weight:normal;	
 			}
 			.fileUpload input[type="file"] {
 				display: none;
@@ -1283,16 +1285,20 @@
 			.faviconPickerBox.current {
 				border-color:var(--selected);
 			}
-			.faviconPickerBox.upload:hover {
+			/*.faviconPickerBox.upload:hover {
 				background:#555 url(icons/upload.svg) no-repeat center;
 				background-size: 50%;
+			}*/
+			.faviconPickerBox.upload:hover {
+/*				filter:blur(1px);*/
+				background: #444;
 			}
-			.faviconPickerBox.upload:hover IMG {
+			/*.faviconPickerBox.upload:hover IMG {
 				opacity:0;
 			}
 			.faviconPickerBox.upload:hover DIV {
 				opacity:0;
-			}
+			}*/
 			[name="faviconBox"] LABEL {
 				cursor:pointer;
 				width:100%;
@@ -1320,7 +1326,6 @@
 				width: 500px;
 				height: auto;
 				box-shadow:4px 4px 20px #0005;
-				padding: 20px;
 				z-index: 2;
 				background-color: var(--bg-color2);
 				border-radius: 10px;
@@ -1417,6 +1422,14 @@
 				background-color: #444;
 			}
 
+			.editForm .contexts {
+				display: flex;
+				flex-flow:column;
+				padding:6px 0;
+/*				width:fit-content;*/
+				width: calc(100% - 10px);
+			}
+
 			.editForm .contexts LABEL {
 				display: inline;
 				border-radius: 4px;
@@ -1425,6 +1438,8 @@
 				margin: 2px;
 				display: inline-block;
 				font-size: 7pt;
+				white-space: nowrap;
+				flex-grow:1;
 			}
 
 			.editForm .contexts INPUT {
@@ -1655,6 +1670,62 @@
 				display:none;
 			}
 
+			.editForm .tabcontent {
+				font-weight:normal;
+			}
+
+			.formNavBar {
+				margin-bottom:20px;
+				background-color: var(--bg-color3);
+				font-size:0;
+				display:flex;
+				text-align: right;
+			}
+
+			.formNavBar button {
+				border:none;
+				flex-grow:1;
+				border-radius:0;
+				padding:4px 16px;
+				letter-spacing: .075em;
+				margin:0;
+				/*border-left: 1px solid var(--border-color1);
+				border-right: 1px solid var(--border-color1);*/
+			}
+
+			.formNavBar .active {
+				background-color:var(--cs-green);
+				color:white;
+			}
+
+			.formFooter {
+/*				display: flex;*/
+				text-align:right;
+				background-color: var(--bg-color3);
+				font-size:0;
+				margin-top:8px;
+				position:fixed;
+				bottom:0;
+				width:100%;
+			}
+
+			.formFooter button {
+/*				flex-grow:1;*/
+				border-radius:0;
+				border:none;
+				padding:6px 8px;
+				letter-spacing: .125em;
+				font-size:8pt;
+			}
+
+			.editForm {
+				padding-bottom:24px;
+			}
+
+			.editForm .hotkey {
+				font-size:bigger;
+				padding:4px 8px;
+			}
 			
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
@@ -1672,7 +1743,7 @@
 				<div id="version" style="font-size:11pt;text-align:left">&nbsp;</div>
 			</div>
 						
-			<div class="tab">
+			<div class="tab" data-tabgroup="main_nav">
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><tool data-icon="search.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><tool data-icon="context_menu.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><tool data-icon="qm.svg"></tool>$</button>
@@ -1705,7 +1776,7 @@
 			
 		</div>
 		<div id="right_div">
-			<div class="tabcontent" id="advancedTab" >
+			<div class="tabcontent" data-tabgroup="main_nav" id="advancedTab" >
 				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.svg" />$</div>
 				<section>
 					<p class="header1" data-i18n="Settings">$</p>
@@ -1765,7 +1836,7 @@
 
 			</div>
 		
-			<div class="tabcontent" id="generalTab">
+			<div class="tabcontent" data-tabgroup="main_nav" id="generalTab">
 			
 				<div class="blobContainerHeader" data-i18n="General"><img src="icons/settings.svg" />$</div>
 			
@@ -1885,7 +1956,7 @@
 			</div>
 
 		
-			<div class="tabcontent" id="contextMenuTab">
+			<div class="tabcontent" data-tabgroup="main_nav" id="contextMenuTab">
 
 				<div class="blobContainerHeader" data-i18n="ContextMenu"><img src="icons/context_menu.svg" />$</div>
 				<section>
@@ -2075,7 +2146,7 @@
 				</section>
 			</div>
 			
-			<div class="tabcontent" id="quickMenuTab">
+			<div class="tabcontent" data-tabgroup="main_nav" id="quickMenuTab">
 				<div class="blobContainerHeader" data-i18n="QuickMenu"><img src="icons/qm.svg" />$</div>
 				
 				<section>
@@ -2723,7 +2794,7 @@
 				</div>	
 
 				</div>
-				<div class="tabcontent" id="toolBarTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="toolBarTab">
 				<div class="blobContainerHeader" data-i18n="Toolbar"><img src="icons/sidebar.svg" style="transform:rotate(90deg);"/>$</div>
 					
 				</section>
@@ -2778,7 +2849,7 @@
 				
 				</section>
 				</div>
-				<div class="tabcontent" id="sideBarTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="sideBarTab">
 					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />$</div>
 
 					<section>
@@ -2847,7 +2918,7 @@
 				</section>
 				</div>
 				
-				<div class="tabcontent" id="pageTilesTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="pageTilesTab">
 					<div class="blobContainerHeader" data-i18n="PageTiles"><img src="icons/page_tiles.svg" />$</div>
 										
 					<section style="min-width:720px">
@@ -2914,7 +2985,7 @@
 					</section>				
 					
 				</div>
-				<div class="tabcontent" id="hotkeysTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="hotkeysTab">
 					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />$</div>
 										
 					<section style="min-width:720px">
@@ -2962,7 +3033,7 @@
 						<table style="width:100%;font-weight:normal" id="shortcutTable"></table>
 					</section>
 				</div>
-				<div class="tabcontent" id="omniboxTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="omniboxTab">
 					<div class="blobContainerHeader" data-i18n="Omnibox"><img src="icons/omnibox.svg" />$</div>
 									
 					<section style="min-width:720px">
@@ -2990,7 +3061,7 @@
 					</tr>
 					</table>
 				</div>
-				<div class="tabcontent" id="highLightTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="highLightTab">
 					<div class="blobContainerHeader" data-i18n="Highlight"><img src="icons/highlight.svg" />$</div>
 
 					<section>
@@ -3077,7 +3148,7 @@
 					
 					<br /><br />
 				</div>
-				<div class="tabcontent" id="highLightSearchResultsTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="highLightSearchResultsTab">
 					<div class="blobContainerHeader" data-i18n="SearchResults"><img src="icons/highlight.svg" />$</div>
 					
 					<section>
@@ -3177,7 +3248,7 @@
 					</table>
 					
 				</div>
-				<div class="tabcontent" id="highLightFindBarTab">
+				<div class="tabcontent" data-tabgroup="main_nav" id="highLightFindBarTab">
 					<div class="blobContainerHeader" data-i18n="FindBar"><img src="icons/highlight.svg" />$</div>
 					
 					</section>
@@ -3333,7 +3404,7 @@
 					</section>
 				</div>
 
-		<div class="tabcontent" id="requestPermissionsTab">
+		<div class="tabcontent" data-tabgroup="main_nav" id="requestPermissionsTab">
 					
 			<section id="requestPermissions" style="font-weight:normal;text-align:center">
 				<div style="text-align: center;margin-bottom:20px">
@@ -3349,7 +3420,7 @@
 			</section>
 		</div>
 
-		<div class="tabcontent" id="enginesTab">
+		<div class="tabcontent" data-tabgroup="main_nav" id="enginesTab">
 			<div style="font-weight:normal;">
 			
 				<div class="blobContainerHeader" data-i18n="SearchEngines"><img src="icons/search.svg" />$</div>
@@ -3386,32 +3457,18 @@
 
 				<form id="editSearchEngineForm" class="editForm" action="">
 					<div style="display:flex;">
-						<div style="min-width: 80px; margin-right:20px">
-							<div style="display:inline-block">
-								<div class="faviconPickerBox" name="faviconBox"></div>
-								<button type="button" name="close" style="height:24px;position:absolute;top:4px;right:4px;border:none;background:none;cursor:pointer">
-									<tool data-icon="crossmark.svg" style="height:100%"></tool>
-								</button>
+						<div style="min-width: 80px; padding:16px 16px 0 16px">
+		
+							<div class="faviconPickerBox" name="faviconBox"></div>
+							<br><br>
+							<div style="text-align: center;">
+								<label data-i18n="KeywordShort" class="formLabel" style="left:0;font-size:smaller">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center;width:80px;font-size:9pt"/>
+								<br>
+								<label data-i18n="Hotkey" class="formLabel" style="left:0">$</label>
+								<div name="hotkey" style="text-align:center;font-size:smaller"></div>
 							</div>
 
-							<div class="contexts" style="display:inline-block;vertical-align:bottom;width:calc(100% - 94px);padding:6px 0;display:none">
-
-								<label><input type="checkbox" class="inputNice" value="1"/><span data-i18n="audio">$</span></label>
-								<label><input type="checkbox" class="inputNice" value="2"/><span data-i18n="frame">$</span></label>
-								<label><input type="checkbox" class="inputNice" value="4"/><span data-i18n="image">$</span></label>
-								<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">$</span></label>
-								<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">$</span></label>
-								<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">$</span></label>
-								<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">$</span></label><span title="$contextsTooltip" style="font-size:8pt"> ⓘ</span>
-
-								<br />
-								<label data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">$</label><textarea name="matchRegex" type="text" class="inputNice" style="width: calc(100% - 10px)" placeholder='e.g. /\d+/g'></textarea>
-							</div>
-							<br>
-							
-							
-			
-							<dialog id="iconURI">
+							<dialog id="iconURI" style="background-color:var(--bg-color1)">
 								<label data-i18n="IconURI" class="formLabel">$</label><input name="iconURL" type="text" class="inputNice" />
 								<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 4px;"></tool></button>
 							<input type="file" accept="image/*" name='iconPicker' style="display:none">
@@ -3421,81 +3478,90 @@
 						</div>
 						<div style="flex-grow:2">
 
-							<div>
-								<button>
-									<tool data-icon="edit.svg" style="height:30px"></tool>
-								</button>
-								<button>
-									<tool data-icon="filter.svg" style="height:30px"></tool>
-								</button>
-								<button>
-									<tool data-icon="regex.svg" style="height:30px"></tool>
-								</button>
-								<button>
-									<tool data-icon="code.svg" style="height:30px"></tool>
-								</button>
+							<div data-tabgroup="formtabs" class="formNavBar">
+								<button class="tablinks active" type="button" data-tabid="formTabMain">Main</button>
+								<button class="tablinks" type="button" data-tabid="formTabFilter">Filter</button>
+								<button class="tablinks" type="button" data-tabid="formTabScript">Script</button>
+								<button type="button" name="close" style="flex-grow:0;margin-left:auto"><tool data-icon="crossmark.svg" style="height:100%"></tool></button>
 							</div>
 
-						<div style="display:flex">
-							<div style="display:inline-block;width:75%">
-								<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
+							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabFilter">
+								<div class="contexts">
+									<div>
+										<span data-i18n="Contexts">$</span>
+										<span title="$contextsTooltip" style="font-size:8pt"> ⓘ</span>
+									</div>
+									<label><input type="checkbox" class="inputNice" value="1"/><span data-i18n="audio">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="2"/><span data-i18n="frame">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="4"/><span data-i18n="image">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">$</span></label>
+								</div>
+
+								<br>
+
+								<label class="formLabel" data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">$</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. /\d+/g'></textarea>
 							</div>
-							<div style="display:inline-block;width:25%">
-								<label data-i18n="KeywordShort" class="formLabel">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center"/>
+							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabRegex">
+								
 							</div>
-							<!-- <div style="display:inline-block;width:15%">
-								<label data-i18n="Hotkey" class="formLabel">$</label><input name="hotkey" type="text" class="inputNice" style="text-align:center"/>
-							</div> -->
-						</div>
-			
-						<label data-i18n="Description" class="formLabel">$</label><textarea name="description" type="text" class="inputNice"></textarea>
-						<label data-i18n="Template" title="$templateCheatSheet" class="formLabel">$</label><textarea name="template" type="text" class="inputNice"></textarea>
-						
-						<label data-i18n="FormPath" class="formLabel">$</label><input name="searchform" type="text" class="inputNice" />
-						<label data-i18n="POSTparams" class="formLabel">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
-						
-						<div style="display: none;">
+
+							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabScript">
+								<label data-i18n="SearchCode" title="$SearchCodeTooltip" class="formLabel">$</label><textarea name="searchCode" type="text" class="inputNice" style="height:200px"></textarea>
+							</div>
+
+						<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabMain" style="display:block">
+							
+							<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
+							<label data-i18n="Description" class="formLabel">$</label><textarea name="description" type="text" class="inputNice"></textarea>
+							<label data-i18n="Template" title="$templateCheatSheet" class="formLabel">$</label><textarea name="template" type="text" class="inputNice"></textarea>
 							<label data-i18n="Regex" title="$RegexTooltip" class="formLabel">$</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
-							<label data-i18n="SearchCode" title="$SearchCodeTooltip" class="formLabel">$</label><textarea name="searchCode" type="text" class="inputNice"></textarea>
-						</div>
+							
+							<label data-i18n="FormPath" class="formLabel">$</label><input name="searchform" type="text" class="inputNice" />
+							<label data-i18n="POSTparams" class="formLabel">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
 
-						<div style="display:inline-block">
-						<label data-i18n="Method" class="formLabel">$</label><select name="_method" class="inputNice">
-								<option value="GET">GET</option>
-								<option value="POST">POST</option>
+							<div style="display:inline-block">
+							<label data-i18n="Method" class="formLabel">$</label><select name="_method" class="inputNice">
+									<option value="GET">GET</option>
+									<option value="POST">POST</option>
+								</select>
+							</div>
+							
+							<div style="display:inline-block">
+							<label data-i18n="Encoding" class="formLabel">$</label><select name="_encoding" class="inputNice">
+								<option value="UTF-8">utf-8</option>
+								<option value="WINDOWS-1252">windows-1252</option>
+								<option value="SHIFT_JIS">shift_jis</option>
+								<option value="ISO-2022-JP">iso-2022-jp</option>
+								<option value="EUC-JP">euc-jp</option>
+								<option value="WINDOWS-1250">windows-1250</option>
+								<option value="WINDOWS-1251">windows-1251</option>
+								<option value="WINDOWS-850">windows-850</option>
+								<option value="MACINTOSH">macintosh</option>
+								<option value="ISO-8859-5">iso-8859-5</option>
+								<option value="ISO-8859-2">iso-8859-2</option>
+								<option value="GBK">gbk</option>
+								<option value="none">no encoding</option>
 							</select>
-						</div>
-						
-						<div style="display:inline-block">
-						<label data-i18n="Encoding" class="formLabel">$</label><select name="_encoding" class="inputNice">
-							<option value="UTF-8">utf-8</option>
-							<option value="WINDOWS-1252">windows-1252</option>
-							<option value="SHIFT_JIS">shift_jis</option>
-							<option value="ISO-2022-JP">iso-2022-jp</option>
-							<option value="EUC-JP">euc-jp</option>
-							<option value="WINDOWS-1250">windows-1250</option>
-							<option value="WINDOWS-1251">windows-1251</option>
-							<option value="WINDOWS-850">windows-850</option>
-							<option value="MACINTOSH">macintosh</option>
-							<option value="ISO-8859-5">iso-8859-5</option>
-							<option value="ISO-8859-2">iso-8859-2</option>
-							<option value="GBK">gbk</option>
-							<option value="none">no encoding</option>
-						</select>
+							</div>
 						</div>
 					</div>
 				</div>
 
-				<div style="float:right;margin:16px">
-							<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><tool data-icon="copy.svg" style="height:1em;vertical-align: middle"></tool></button>
-	<span data-browser="firefox">					
-							<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
-	</span>
-							<button type="button" name="test" style="margin-left:20px;width:auto" data-i18n="Test" title="i18n_text">$</button>
-							<button type="button" name="save" style="margin-left:4px;width:auto;border-right: none;border-radius:4px 0 0 4px" data-i18n="Save" title="i18n_text">$</button><button type="button" name="saveclose" title="$saveclose" style="margin-left:0px;width:auto;border-left: none;border-radius:0 4px 4px 0;cursor:default">X</button>
-						</div>
+				<div class="formFooter">
+					<div style="float:left">
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><tool data-icon="copy.svg" style="height:1em;vertical-align: middle"></tool></button>
+<span data-browser="firefox">					
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
+</span>
+						<button type="button" name="test" style="margin-left:4px" data-i18n="Test" title="i18n_text"><tool data-icon="checkmark.svg" style="height:1em;vertical-align: middle;"></tool></button>
+					</div>
+						<button type="button" name="save" style="margin-left:4px;width:auto;" data-i18n="Save" title="i18n_text">$</button><button type="button" name="saveclose" title="$saveclose" style="border-left:1px solid var(--border-color1);margin-left:0px;width:auto;cursor:default">Save & Close</button>
+					</div>
 
-						<span class="saveMessage"></span>
+					<span class="saveMessage"></span>
 
 				</form>
 				<form id="editFolderForm" class="editForm" action="">
@@ -3525,14 +3591,14 @@
 						<tr>
 							<td data-i18n="groupcolor">$</td>
 							<td>
-								<input type="text" class="inputNice" style="width:150px;font-size:9pt;" name="groupColor" />
+								<input type="hidden" class="inputNice" style="width:150px;font-size:9pt" name="groupColor" />
 								<input name="c_groupColor" type="color" class="inputNice" style="width:30px;"/>
 							</td>
 						</tr>
 						<tr>
 							<td data-i18n="groupcolortext">$</td>
 							<td>
-								<input type="text" class="inputNice" style="width:150px;font-size:9pt;" name="groupColorText" />
+								<input type="hidden" class="inputNice" style="width:150px;font-size:9pt" name="groupColorText" />
 								<input name="c_groupColorText" type="color" class="inputNice" style="width:30px;"/>
 							</td>
 						</tr>
@@ -3614,7 +3680,7 @@
 				</div>
 			</div>
 		</div>
-			<div class="tabcontent" id="helpTab"></div>
+			<div class="tabcontent" data-tabgroup="main_nav" id="helpTab"></div>
 		</div>
 		</div>
 		<div id="importModal" class="modal hide">

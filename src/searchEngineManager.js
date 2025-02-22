@@ -126,15 +126,15 @@ function buildSearchEngineContainer() {
 
 			node.contexts = node.contexts || se.contexts;
 
-			li.addEventListener('dblclick', e => {
+			li.addEventListener('dblclick', _edit);
 
-				let edit_form = $('editSearchEngineForm').cloneNode(true);
+			function _edit() {
 
-				edit_form.node = node;
-
-				e.stopPropagation();
-
-				addFormListeners(edit_form);
+				let edit_form = createEditForm({
+					cloneOf: "editSearchEngineForm",
+					removeElements: [],
+					node: node
+				});
 
 				edit_form.querySelectorAll('input, textarea').forEach(el => {
 					el.addEventListener('change', () => {
@@ -291,9 +291,9 @@ function buildSearchEngineContainer() {
 				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
 
-				setContexts(edit_form, node.contexts);
+				// setContexts(edit_form, node.contexts);
 								
-				edit_form.close.onclick = edit_form.closeForm;
+				// edit_form.close.onclick = edit_form.closeForm;
 
 				edit_form.test.onclick = function() {
 					let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
@@ -437,11 +437,6 @@ function buildSearchEngineContainer() {
 						else showSaveMessage("cannot save", "red", edit_form.querySelector('.saveMessage'));
 					});
 				}
-
-				edit_form.saveclose.onclick = function() {
-					edit_form.save.onclick();
-					setTimeout(() => edit_form.close.onclick(), 500);
-				}
 				
 				// clear error formatting on focus
 				for (let element of edit_form.getElementsByTagName('input')) {
@@ -450,12 +445,8 @@ function buildSearchEngineContainer() {
 					});
 				}
 
-				createFormContainer(edit_form);
-				addIconPickerListener(edit_form.iconPicker, li);
-				addFavIconFinderListener(edit_form.faviconFinder);
-				edit_form.addFaviconBox(getIconFromNode(node));
 				checkFormValues();
-			});
+			}
 
 		}
 		
@@ -464,40 +455,48 @@ function buildSearchEngineContainer() {
 			let img = document.createElement('img');
 			img.src = getIconFromNode(node);
 			header.appendChild(img);
-			
-			li.addEventListener('dblclick', _edit);
-			
+
 			let text = document.createElement('span');
 			text.innerText = node.title;
 			text.className = "label";
 			header.appendChild(text);
+
+			li.addEventListener('dblclick', _edit);
 			
 			function _edit() {
-			
-				let _form = $('editSearchEngineForm').cloneNode(true);
-				_form.id = null;
 
-				["template", "searchform", "post_params", "searchRegex", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
-					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-					_form[name].parentNode.removeChild(_form[name]);
-				})
-				addFormListeners(_form);
-				
-				_form.node = node;
-								
+				let _form = createEditForm({
+					cloneOf: "editSearchEngineForm",
+					removeElements: ["template", "searchform", "post_params", "searchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"],
+					node: node
+				});
+					
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
 				_form.searchCode.value = node.searchCode || "";
 				_form.description.value = node.description || "";
 				_form.keyword.value = node.keyword || "";
 
-
+				// relabel script input
 				_form.querySelector('label[data-i18n="SearchCode"]').innerText = i18n("Script");
+
+				// move script input to main tab
+				_form.shortName.parentNode.appendChild(_form.querySelector('label[data-i18n="SearchCode"]'));
+				_form.shortName.parentNode.appendChild(_form.searchCode);
+
+				// remove script tablinks
+				_form.querySelector(".tablinks[data-tabid='formTabScript']").style.visibility = 'hidden';
+				_form.querySelector(".tablinks[data-tabid='formTabScript']").style.pointerEvents = 'none';
 
 				_form.searchCode.style.height = '12em';
 
 				let s_bookmarklets = document.createElement('select');
 				s_bookmarklets.style.width = 'auto';
+				s_bookmarklets.style.margin = 0;
+				s_bookmarklets.style.padding = 0;
+				s_bookmarklets.style.display = 'inline-block';
+				s_bookmarklets.style.float = 'left';
+
 				// b_bookmarklets.innerText = "Find Bookmarlets";
 				let default_o = document.createElement('option');
 				default_o.innerText = i18n("SearchBookmarklets");
@@ -538,18 +537,6 @@ function buildSearchEngineContainer() {
 					s_bookmarklets.clicked = true;
 				}
 
-				// _form.appendChild(b_bookmarklets);
-				_form.appendChild(s_bookmarklets);
-
-				setContexts(_form, node.contexts);
-				
-				_form.close.onclick = _form.closeForm;
-
-				// _form.test.onclick = function() {
-				// 	let searchTerms = window.prompt(i18n("EnterURL"),"ContextSearch web-ext");
-				// 	sendMessage({action: "testSearchEngine", "tempSearchEngine": tempSearchEngine, "searchTerms": searchTerms});
-				// }
-				
 				_form.save.onclick = async function() {
 
 					node.icon = await getFormIcon(_form);
@@ -568,17 +555,6 @@ function buildSearchEngineContainer() {
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 					updateNodeList();
 				}
-
-				_form.saveclose.onclick = function() {
-					_form.save.onclick();
-					setTimeout(() => _form.close.onclick(), 500);
-				}
-				
-				createFormContainer(_form);
-				addIconPickerListener(_form.iconPicker, li);
-				addFavIconFinderListener(_form.faviconFinder);
-				_form.addFaviconBox(getIconFromNode(node));
-				
 			}
 		}
 		
@@ -619,20 +595,12 @@ function buildSearchEngineContainer() {
 
 			function _edit() {
 
-				browser.permissions.request({permissions: ['nativeMessaging']});
-			
-				let _form = $('editSearchEngineForm').cloneNode(true);
-				_form.id = null;
-
-				[ "post_params", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"].forEach(name => {
-					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-					_form[name].parentNode.removeChild(_form[name]);
+				let _form = createEditForm({
+					cloneOf: "editSearchEngineForm",
+					removeElements: ["post_params", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine"],
+					node: node
 				});
 
-				addFormListeners(_form);
-				
-				_form.node = node;
-								
 				_form.iconURL.value = node.icon || "";
 				_form.shortName.value = node.title;
 				_form.keyword.value = node.keyword || "";
@@ -657,7 +625,7 @@ function buildSearchEngineContainer() {
 
 				(() => {
 					let div = document.createElement('div');
-					_form.appendChild(div);
+					_form.insertBefore(div, _form.querySelector(".formFooter"));
 
 					let img = createMaskIcon("/icons/settings.svg");
 					img.style.height = '24px';
@@ -704,10 +672,6 @@ function buildSearchEngineContainer() {
 					
 				})();
 
-				setContexts(_form, node.contexts);
-				
-				_form.close.onclick = _form.closeForm;
-				
 				_form.save.onclick = async function() {
 
 					node.icon = await getFormIcon(_form);
@@ -730,19 +694,14 @@ function buildSearchEngineContainer() {
 					updateNodeList();
 				}
 
-				_form.saveclose.onclick = function() {
-					_form.save.onclick();
-					setTimeout(() => _form.close.onclick(), 500);
-				}
-
 				_form.test.onclick = async function() {
 
 					try {
 						await browser.permissions.request({permissions: ['nativeMessaging']});
-  						await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
-  					} catch (error) {
- 						return alert(i18n('NativeAppMissing'));
- 					}
+							await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
+						} catch (error) {
+							return alert(i18n('NativeAppMissing'));
+						}
 
 					let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
 					
@@ -760,12 +719,6 @@ function buildSearchEngineContainer() {
 						}
 					})
 				}
-				
-				createFormContainer(_form);
-				addIconPickerListener(_form.iconPicker, li);
-				addFavIconFinderListener(_form.faviconFinder);
-				_form.addFaviconBox(getIconFromNode(node));
-
 			}
 		}
 		
@@ -789,23 +742,14 @@ function buildSearchEngineContainer() {
 			li.addEventListener('dblclick', _edit);
 
 			function _edit() {
-			
-				let _form = $('editSearchEngineForm').cloneNode(true);
-				_form.id = null;
 
-				["shortName","description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
-					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-					_form[name].parentNode.removeChild(_form[name]);
+				let _form = createEditForm({
+					cloneOf: "editSearchEngineForm",
+					removeElements: ["shortName","description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"],
+					node: node
 				})
-				addFormListeners(_form);
-				
-				_form.node = node;
 								
 				_form.iconURL.value = node.icon || "";
-			//	_form.shortName.value = node.title;
-				setContexts(_form, node.contexts);
-				
-				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = async function() {
 
@@ -822,12 +766,6 @@ function buildSearchEngineContainer() {
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
 					updateNodeList();
 				}
-				
-				createFormContainer(_form);
-				addIconPickerListener(_form.iconPicker, li);
-				addFavIconFinderListener(_form.faviconFinder);
-				_form.addFaviconBox(getIconFromNode(node));
-
 			}
 		}
 		
@@ -867,34 +805,27 @@ function buildSearchEngineContainer() {
 			}
 			
 			node.children.forEach( _node => traverse(_node, ul) );
-			
-			li.addEventListener('dblclick', e => {
+
+			li.addEventListener('dblclick', _edit);
+
+			function _edit(e) {
 				
 				if ( e.target !== li && e.target !== img && e.target !== header ) return;
+
+				let _form = createEditForm({
+					cloneOf: "editSearchEngineForm",
+					removeElements: ["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"],
+					node: node
+				})
 				
 				e.stopPropagation();
-				
-				let _form = $('editSearchEngineForm').cloneNode(true);
-				_form.id = null;
 
-				["description", "template", "searchform", "post_params", "searchRegex", "searchCode", "matchRegex", "_method", "_encoding", "copy", "addOpenSearchEngine", "test"].forEach(name => {
-					if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
-					_form[name].parentNode.removeChild(_form[name]);
-				});
+				_form.querySelectorAll(".tablinks[data-tabid]").forEach(el => el.parentNode.removeChild(el));
 
-
-				_form.insertBefore($('folderFormTable').cloneNode(true), _form['save'].parentNode);
+				_form.shortName.parentNode.appendChild($('folderFormTable').cloneNode(true));
 
 				let c = _form.querySelector('.contexts');
 				c.parentNode.removeChild(c);
-
-				addFormListeners(_form);
-
-				_form.node = node;
-
-				_form.closeForm = _form.closeForm;
-				
-				_form.close.onclick = _form.closeForm;
 				
 				_form.save.onclick = function() {
 					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
@@ -913,11 +844,6 @@ function buildSearchEngineContainer() {
 					text.innerText = node.title;
 				}
 
-				_form.saveclose.onclick = function() {
-					_form.save.onclick();
-					setTimeout(() => _form.close.onclick(), 500);
-				}
-
 				_form.iconURL.addEventListener('change', () => {
 					let img = li.querySelector('.header IMG');
 					img.src = _form.iconURL.value || browser.runtime.getURL('icons/folder-icon.svg');
@@ -931,11 +857,6 @@ function buildSearchEngineContainer() {
 				_form.displayType.value = node.displayType || "";
 				_form.groupHideMoreTile.checked = node.groupHideMoreTile || false;
 				_form.iconURL.value = node.icon || "";
-				
-				createFormContainer(_form);
-				addIconPickerListener(_form.iconPicker, li);
-				addFavIconFinderListener(_form.faviconFinder);
-				_form.addFaviconBox(getIconFromNode(node));
 
 				_form.c_groupColor.value = _form.groupColor.value;
 				_form.c_groupColor.onchange = (e) => {
@@ -968,230 +889,66 @@ function buildSearchEngineContainer() {
 
 				_form.groupFolder.addEventListener('change', showHideGroupSettings);
 				showHideGroupSettings();
-			});	
+			}
 			
-			text.addEventListener('dblclick', e => {
+			// text.addEventListener('dblclick', e => {
 				
-				e.stopPropagation();
+			// 	e.stopPropagation();
 
-				// the label
-				let input = document.createElement('input');
-				input.value = node.title;
-				input.setAttribute('draggable', false);
+			// 	// the label
+			// 	let input = document.createElement('input');
+			// 	input.value = node.title;
+			// 	input.setAttribute('draggable', false);
 				
-				// prevent dragging
-				input.addEventListener('mousedown', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', false);
-				});
+			// 	// prevent dragging
+			// 	input.addEventListener('mousedown', () => {
+			// 		for (let _li of rootElement.getElementsByTagName('li'))
+			// 			_li.setAttribute('draggable', false);
+			// 	});
 				
-				input.addEventListener('mouseup', () => {
-					for (let _li of rootElement.getElementsByTagName('li'))
-						_li.setAttribute('draggable', true);
-				});
+			// 	input.addEventListener('mouseup', () => {
+			// 		for (let _li of rootElement.getElementsByTagName('li'))
+			// 			_li.setAttribute('draggable', true);
+			// 	});
 				
-				input.addEventListener('keypress', ev => {
-					if (ev.key === "Enter")
-						saveTitleChange(ev);
-				});
+			// 	input.addEventListener('keypress', ev => {
+			// 		if (ev.key === "Enter")
+			// 			saveTitleChange(ev);
+			// 	});
 				
-				input.addEventListener('keydown', e => {
-					if (e.key === "Escape") {
-						text.removeChild(input);
-						text.innerText = node.title;
-					}
-				});
+			// 	input.addEventListener('keydown', e => {
+			// 		if (e.key === "Escape") {
+			// 			text.removeChild(input);
+			// 			text.innerText = node.title;
+			// 		}
+			// 	});
 				
-				document.addEventListener('click', saveTitleChange, false);
+			// 	document.addEventListener('click', saveTitleChange, false);
 
-				text.innerHTML = null;
-				text.appendChild(input);
-				input.select();
+			// 	text.innerHTML = null;
+			// 	text.appendChild(input);
+			// 	input.select();
 				
-				function saveTitleChange(e) {
+			// 	function saveTitleChange(e) {
 
-					if ( text.contains(e.target) && e.type !== 'keypress') return false;
+			// 		if ( text.contains(e.target) && e.type !== 'keypress') return false;
 
-					let newTitle = input.value;
-					text.removeChild(input);
-					text.innerText = newTitle;
+			// 		let newTitle = input.value;
+			// 		text.removeChild(input);
+			// 		text.innerText = newTitle;
 					
-					node.title = newTitle;
+			// 		node.title = newTitle;
 					
-					updateNodeList();
-					document.removeEventListener('click', saveTitleChange);
-				}
+			// 		updateNodeList();
+			// 		document.removeEventListener('click', saveTitleChange);
+			// 	}
 
-			});
+			// });
 		}
 		
 		// add hotkeys for some node types
-		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {
-			
-			let hotkey = document.createElement('span');
-			hotkey.title = i18n('Hotkey');
-			hotkey.className = 'hotkey';
-
-			setHotkeyText = (button, _node) => {
-				button.innerText = Shortcut.getShortcutStringFromKey(_node.shortcut ? _node.shortcut : _node.hotkey );
-				button.title = button.innerText || i18n("hotkey");
-
-				// hide buttons that aren't set. They are shown on hover
-				button.classList.toggle("hide", button.innerText ? false : true);
-				button.classList.toggle("shift", button.innerText ? false : true);
-			}
-
-			let showError = async (msg) => {
-				return new Promise(r => {
-					let origMsg = hotkey.innerText;
-					hotkey.style.backgroundColor = 'red';
-					hotkey.style.color = "white";
-					hotkey.innerText = msg;
-					setTimeout(() => {
-						hotkey.style.backgroundColor = null;
-						hotkey.style.color = null;
-						hotkey.innerText = origMsg;
-						r();
-					}, 1000);
-				});
-			}
-
-			header.appendChild(hotkey);
-
-			setHotkeyText(hotkey, node);
-			
-			hotkey.onclick = async function(e) {
-				e.stopPropagation();
-				hotkey.classList.remove("hide");
-
-				let key = {};			
-
-				// new code start
-				while (true) {
-					key = await Shortcut.buttonListener(e.target);
-
-					// ESC 
-					if ( !key ) {
-						node.hotkey = null;
-						node.shortcut = null;
-						
-						// set hotkey for all copies
-						for (let _hk of rootElement.querySelectorAll('li')) {
-							if (_hk.node && _hk.node.id === node.id)
-								setHotkeyText(_hk.querySelector('.hotkey'), "");
-						}
-
-						return updateNodeList();
-					}
-					
-					// check for duplicate keys in nodes
-					let duplicateNode = findNode(rootElement.node, _node => Shortcut.matches(_node.shortcut, key));
-					if ( duplicateNode && duplicateNode !== node ) {
-						await showError("IN_USE: " + duplicateNode.title);
-						continue;
-					}
-
-					// check for invalid keys				
-					if ( ["Enter","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(key.key) ) {
-						await showError("INVALID_KEY: " + key.key);
-						continue;
-					}
-
-					let userShortcut = userOptions.userShortcuts.find(us => Shortcut.matches(us,key));
-					if ( userShortcut ) {
-						let defaultShortcut = Shortcut.getDefaultShortcutById(userShortcut.id);
-						await showError("IN_USE: " + defaultShortcut.name);
-						setHotkeyText(hotkey, node);
-						continue;
-					}
-
-					break;
-				}
-
-				node.hotkey = key.keyCode;
-				node.shortcut = key;
-
-				setHotkeyText(hotkey, node);
-
-				// set hotkey for all copies
-				for (let li of rootElement.querySelectorAll('li')) {
-					if (li.node && li.node.id === node.id) {
-						let hk = li.querySelector('.hotkey');
-						setHotkeyText(hk, node);
-					}
-				}
-				
-				findNodes(rootElement.node, _node => {
-					if ( _node.type === node.type && _node.id === node.id ) {
-						_node.hotkey = key.keyCode;
-						_node.shortcut = key;
-					}
-				});
-
-				updateNodeList();
-				// new code end
-			}
-
-			// let keyword = document.createElement('input');
-			// keyword.title = i18n('Keyword');
-			// keyword.className = "inputNice hotkey keyword";
-
-			// header.appendChild(keyword);
-			// keyword.value = node.keyword || "";
-
-			// keyword.onclick = e => e.stopPropagation();
-			// keyword.ondblclick = e => e.stopPropagation();
-			// keyword.addEventListener('dragstart', (e) => {
-			// 	e.preventDefault();
-			// 	e.stopImmediatePropagation();
-			// });
-			// keyword.addEventListener('mousedown', () => li.setAttribute("draggable", false));
-			// keyword.addEventListener('mouseup', () => li.setAttribute("draggable", true));
-			// keyword.setAttribute('draggable', false);
-
-			// keyword.addEventListener('keydown', e => {
-			// 	if ( e.key === "Enter") {
-			// 		keyword.dispatchEvent(new Event('change'));
-			// 		keyword.blur();
-			// 	}
-			// });
-
-			// keyword.addEventListener('keydown', e => {
-			// 	if ( e.key === "Escape") {
-			// 		keyword.value = "";
-			// 		keyword.dispatchEvent(new Event('change'));
-			// 		keyword.blur();
-			// 	}
-			// });
-
-			// keyword.addEventListener('change', e => {
-			// 	keyword.value = keyword.value.trim();
-
-			// 	// check for duplicates
-			// 	if ( keyword.value && findNode(rootElement.node, _node => _node.keyword === keyword.value && _node.id !== node.id) ) {
-
-			// 		keyword.style.backgroundColor = 'pink';
-			// 		return;
-			// 	}
-
-			// 	node.keyword = keyword.value;
-
-			// 	// set keyword for all copies
-			// 	for (let _li of rootElement.querySelectorAll('li')) {
-			// 		if (_li.node && _li.node.id === node.id) {
-			// 			_li.querySelector('.keyword').value = _li.node.keyword = node.keyword;
-			// 			_li.querySelector('.keyword').style.backgroundColor = null;
-			// 		}
-			// 	}
-				
-			// 	updateNodeList();
-			// });
-
-			// let edit = new Image();
-			// edit.className = "editIcon";
-			// edit.src = 'icons/settings.svg';
-			// header.appendChild(edit);
-
+		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {		
+			header.appendChild(createHotkeyButton(node, rootElement));
 		}
 
 		// add match icons for some node types
@@ -1218,7 +975,6 @@ function buildSearchEngineContainer() {
 
 		li.querySelector('.header').addEventListener('click', e => {
 			closeContextMenus();
-		//	e.stopPropagation();
 
 			if (!selectedRows.length) {
 				li.querySelector('.header').classList.add('selected');
@@ -1235,7 +991,6 @@ function buildSearchEngineContainer() {
 			}
 			
 			if (selectedRows.length && e.shiftKey) {
-			//	let startNode = selectedRows[0].node;
 				let startRow = selectedRows.slice(-1)[0]
 				let startNode = startRow.node
 				let endNode = li.node;
@@ -1248,7 +1003,6 @@ function buildSearchEngineContainer() {
 				let slicedNodes = startNode.parent.children.slice(startIndex, endIndex + 1);
 				
 				let lis = [...table.querySelectorAll('li')];
-			//	let start = lis.indexOf(selectedRows[0]);
 				let start = lis.indexOf(startRow);
 				let end = lis.indexOf(li);
 				
@@ -2350,17 +2104,6 @@ function buildSearchEngineContainer() {
 		setTimeout(() => location.reload(), 500);
 	});
 
-	function addIconPickerListener(el, li) {
-		imageUploadHandler(el, img => {
-			let form = el.closest('form');;
-			form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
-		//	li.querySelector("img").src = form.iconURL.value;
-
-			form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
-		//	form.save.click();
-		})
-	}
-
 	let main_ec = $('#collapseAll');
 	main_ec.onclick = function() {
 		if ( main_ec.expand ) {
@@ -2454,76 +2197,6 @@ function updateNodeList(forceSave) {
 	//}
 }
 
-function addFormListeners(form) {
-
-	form.addEventListener('input', e => {
-		form.save.classList.add('changed');
-		form.saveclose.classList.add('changed');
-	});
-
-	form.closeForm = () => {
-		
-		let formContainer = $('#floatingEditFormContainer');
-
-		if ( !formContainer ) return;
-		
-		formContainer.parentNode.style.opacity = 0;
-		$('#main').classList.remove('blur');
-		runAtTransitionEnd(formContainer, "opacity", () => {
-		//	form.style.display = null;
-		//	document.body.appendChild(form);
-			document.body.removeChild(formContainer.parentNode);
-		});
-
-		// reset the params so the engine doesn't display on reload
-		setURLSearchParams(null);
-	}
-
-	form.addFaviconBox = (url) => {
-		let box = form.querySelector('[name="faviconBox"]');
-		box.innerHTML = null;
-		
-		let img = new Image();
-		box.appendChild(img);
-		box.classList.add('inputNice');
-		box.classList.add('upload');
-
-		form.iconPicker.id = form.id + 'IconPicker';
-
-		let forlabel = document.createElement('label');
-		forlabel.setAttribute('for', form.iconPicker.id);
-		forlabel.title = i18n('uploadfromlocal');
-		box.insertBefore(forlabel, box.firstChild);
-
-		let sizeLabel = document.createElement('div');
-		sizeLabel.className = "sizeLabel";
-		box.appendChild(sizeLabel);
-
-		form.setIcon(url);
-	}
-
-	form.setIcon = (url) => {
-		let defaultIcon = getIconFromNode({type:form.node.type});
-		let img = form.querySelector('[name="faviconBox"] img');
-
-		// show size on load
-		img.onload = () => {
-			let label = form.querySelector('[name="faviconBox"] .sizeLabel');
-			label.innerText = img.naturalHeight + " x " + img.naturalWidth;
-		}
-
-		img.src = url || form.iconURL.value || defaultIcon;
-	}
-
-	// update the favicon when the user changes the url
-	form.iconURL.addEventListener('change', () => form.setIcon());
-
-	form.save.addEventListener('click', e => {
-		form.save.classList.remove('changed');
-		form.saveclose.classList.remove('changed');
-	});
-}
-
 function setContexts(f, c) {
 	let contexts = f.querySelectorAll('.contexts INPUT');
 	contexts.forEach( cb => cb.checked = ((c & parseInt(cb.value)) == cb.value) );			
@@ -2603,46 +2276,6 @@ async function setRowContexts(row) {
 	} catch ( error ) {
 		console.log(error);
 	}
-}
-
-function createFormContainer(form) {
-
-	let overdiv = document.createElement('div');
-	overdiv.className = 'overDiv';
-	overdiv.style.opacity = 0;
-	document.body.appendChild(overdiv);
-
-	// chrome fix for menu closing on text select events
-	overdiv.onmousedown = e => {
-		if ( overdiv !== e.target) return;
-		overdiv.mousedown = true;
-	}
-
-	overdiv.onclick = e => {
-		if ( !overdiv.mousedown ) return;
-		if ( overdiv !== e.target) return;
-
-		if ( form.save.classList.contains('changed')) {
-			return;
-		}
-		form.close.click();
-	}
-
-	let formContainer = document.createElement('div');
-	formContainer.id = "floatingEditFormContainer";
-
-	overdiv.appendChild(formContainer);
-	formContainer.appendChild(form);
-
-	form.style.display = "block";
-
-	$('#main').classList.add('blur');
-
-	overdiv.getBoundingClientRect();
-	overdiv.style.opacity = null;
-
-	form.save.classList.remove('changed');
-	form.saveclose.classList.remove('changed');
 }
 
 function getFormIcon(form) {
@@ -2781,3 +2414,440 @@ $('#searchEnginesManagerSearchClearButton').addEventListener('click', e => {
 	$('#searchEnginesManagerSearch').dispatchEvent(new KeyboardEvent('keyup'))
 });
 
+function createHotkeyButton(node, rootElement) {
+	let hotkey = document.createElement('span');
+	hotkey.title = i18n('Hotkey');
+	hotkey.className = 'hotkey';
+
+	setHotkeyText = (button, _node) => {
+		button.innerText = Shortcut.getShortcutStringFromKey(_node.shortcut ? _node.shortcut : _node.hotkey );
+		button.title = button.innerText || i18n("hotkey");
+
+		// hide buttons that aren't set. They are shown on hover
+		button.classList.toggle("hide", button.innerText ? false : true);
+		button.classList.toggle("shift", button.innerText ? false : true);
+	}
+
+	let showError = async (msg) => {
+		return new Promise(r => {
+			let origMsg = hotkey.innerText;
+			hotkey.style.backgroundColor = 'red';
+			hotkey.style.color = "white";
+			hotkey.innerText = msg;
+			setTimeout(() => {
+				hotkey.style.backgroundColor = null;
+				hotkey.style.color = null;
+				hotkey.innerText = origMsg;
+				r();
+			}, 1000);
+		});
+	}
+
+	setHotkeyText(hotkey, node);
+	
+	hotkey.onclick = async function(e) {
+		e.stopPropagation();
+		hotkey.classList.remove("hide");
+
+		let key = {};			
+
+		// new code start
+		while (true) {
+			key = await Shortcut.buttonListener(e.target);
+
+			// ESC 
+			if ( !key ) {
+				node.hotkey = null;
+				node.shortcut = null;
+				
+				// set hotkey for all copies
+				for (let _hk of rootElement.querySelectorAll('li')) {
+					if (_hk.node && _hk.node.id === node.id)
+						setHotkeyText(_hk.querySelector('.hotkey'), "");
+				}
+
+				return updateNodeList();
+			}
+			
+			// check for duplicate keys in nodes
+			let duplicateNode = findNode(rootElement.node, _node => Shortcut.matches(_node.shortcut, key));
+			if ( duplicateNode && duplicateNode !== node ) {
+				await showError("IN_USE: " + duplicateNode.title);
+				continue;
+			}
+
+			// check for invalid keys				
+			if ( ["Enter","ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(key.key) ) {
+				await showError("INVALID_KEY: " + key.key);
+				continue;
+			}
+
+			let userShortcut = userOptions.userShortcuts.find(us => Shortcut.matches(us,key));
+			if ( userShortcut ) {
+				let defaultShortcut = Shortcut.getDefaultShortcutById(userShortcut.id);
+				await showError("IN_USE: " + defaultShortcut.name);
+				setHotkeyText(hotkey, node);
+				continue;
+			}
+
+			break;
+		}
+
+		node.hotkey = key.keyCode;
+		node.shortcut = key;
+
+		setHotkeyText(hotkey, node);
+
+		// set hotkey for all copies
+		for (let li of rootElement.querySelectorAll('li')) {
+			if (li.node && li.node.id === node.id) {
+				let hk = li.querySelector('.hotkey');
+				setHotkeyText(hk, node);
+			}
+		}
+		
+		findNodes(rootElement.node, _node => {
+			if ( _node.type === node.type && _node.id === node.id ) {
+				_node.hotkey = key.keyCode;
+				_node.shortcut = key;
+			}
+		});
+
+		updateNodeList();
+		// new code end
+	}
+
+	return hotkey;
+}
+
+function createEditForm(o) {
+
+	function addFormListeners(form) {
+
+		form.addEventListener('input', e => {
+			form.save.classList.add('changed');
+			form.saveclose.classList.add('changed');
+		});
+
+		form.closeForm = () => {
+			
+			let formContainer = $('#floatingEditFormContainer');
+
+			if ( !formContainer ) return;
+			
+			formContainer.parentNode.style.opacity = 0;
+			$('#main').classList.remove('blur');
+			runAtTransitionEnd(formContainer, "opacity", () => {
+			//	form.style.display = null;
+			//	document.body.appendChild(form);
+				document.body.removeChild(formContainer.parentNode);
+			});
+
+			// reset the params so the engine doesn't display on reload
+			setURLSearchParams(null);
+		}
+
+		form.addFaviconBox = (url) => {
+			let box = form.querySelector('[name="faviconBox"]');
+			box.innerHTML = null;
+			
+			let img = new Image();
+			box.appendChild(img);
+			box.classList.add('inputNice');
+			box.classList.add('upload');
+
+			form.iconPicker.id = form.id + 'IconPicker';
+
+			// let forlabel = document.createElement('label');
+			// forlabel.setAttribute('for', form.iconPicker.id);
+			// forlabel.title = i18n('uploadfromlocal');
+			// box.insertBefore(forlabel, box.firstChild);
+
+			box.addEventListener('click', e => {
+				let dialog = form.querySelector('#iconURI');
+				//form.classList.add("blur");
+				dialog.showModal();
+
+			})
+
+			let sizeLabel = document.createElement('div');
+			sizeLabel.className = "sizeLabel";
+			box.appendChild(sizeLabel);
+
+			form.setIcon(url);
+		}
+
+		form.setIcon = (url) => {
+			let defaultIcon = getIconFromNode({type:form.node.type});
+			let img = form.querySelector('[name="faviconBox"] img');
+
+			// show size on load
+			img.onload = () => {
+				let label = form.querySelector('[name="faviconBox"] .sizeLabel');
+				label.innerText = img.naturalHeight + " x " + img.naturalWidth;
+			}
+
+			img.src = url || form.iconURL.value || defaultIcon;
+		}
+
+		// update the favicon when the user changes the url
+		form.iconURL.addEventListener('change', () => form.setIcon());
+
+		form.save.addEventListener('click', e => {
+			form.save.classList.remove('changed');
+			form.saveclose.classList.remove('changed');
+		});
+	}
+
+	function addIconPickerListener(el) {
+		imageUploadHandler(el, img => {
+			let form = el.closest('form');;
+			form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
+
+			form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
+		})
+	}
+
+	function addFavIconFinderListener(finder) {
+		finder.onclick = async function(e) {
+
+			let overdiv = document.createElement('div');
+			overdiv.className = 'overDiv';
+			document.body.appendChild(overdiv);
+
+			let spinner = new Image();
+			spinner.src = 'icons/spinner.svg';
+			spinner.style = 'height:64px;width:64px;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000';
+			overdiv.appendChild(spinner);
+
+			let form = finder.closest("form");
+			form.parentNode.classList.add('blur');
+
+			let url;
+			let urls = [];
+			try {
+				url = new URL(form.searchform.value || form.template.value);
+				urls = await findFavicons(url.origin);
+
+				// include the current icon URI in the picker
+				if ( form.iconURL.value && !urls.includes(form.iconURL.value))
+					urls.push(form.iconURL.value);
+
+			} catch( error ) {
+				console.log("error fetching favicons");
+			}
+
+			if ( form.node && form.node.type === 'oneClickSearchEngine' ) {
+				let defaultIcon = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: form.node.title}).then( en => en.favIconUrl);
+				if ( defaultIcon ) urls.push( defaultIcon );
+			}
+
+			function getCustomIconUrls() {
+
+				let fonts = "Arial,Verdana,Helvetica,Tahoma,Trebuchet MS,Times New Roman,Georgia,Garamond,Courier New,Brush Script MT".split(",");
+
+				let _urls = [];
+				let palette = palettes.map(p => p.color).join("-");
+				let colors = palette.split('-');
+
+				let randomColors = [];
+				for ( let i=0;i<10;i++) {
+					randomColors.push(colors.splice([Math.floor(Math.random()*colors.length)],1));
+				}
+
+				randomColors.forEach( c => {
+					_urls.push(createCustomIcon({
+						text: form.node.title.charAt(0).toUpperCase(), 
+						backgroundColor: '#' + c,
+						fontFamily: fonts[Math.floor(Math.random()*fonts.length)]
+					}));
+				});
+
+				return _urls;
+			}
+
+			spinner.parentNode.removeChild(spinner);
+
+			let div = document.createElement('div');
+			div.id = "faviconPickerContainer";
+			overdiv.style.opacity = 0;
+			overdiv.appendChild(div);
+
+			overdiv.offsetWidth;
+			overdiv.style.opacity = 1;
+
+			function makeFaviconPickerBoxes(urls) {
+
+				// clear old icons
+				div.querySelectorAll('.faviconPickerBox').forEach( f => f.parentNode.removeChild(f));
+
+				urls = [...new Set(urls)];
+				urls.forEach( _url => {
+
+					let box = document.createElement('div');
+					box.className = "faviconPickerBox";
+
+					if ( urls.length > 15 ) box.classList.add("small");
+
+					let img = new Image();
+
+					img.onload = function() {
+						let label = box.querySelector('div') || document.createElement('div');
+						label.innerText = this.naturalWidth + " x " + this.naturalHeight;
+						box.appendChild(label);
+
+						if ( _url === form.iconURL.value ) {
+							let currentLabel = document.createElement('div');
+							box.classList.add('current');
+						}
+					}
+
+					img.onerror = function() {
+						box.parentNode.removeChild(box);
+						if ( !div.querySelector('.faviconPickerBox') )
+							makeFaviconPickerBoxes(getCustomIconUrls());
+					}
+
+					img.src = _url;
+
+					box.appendChild(img);
+					div.appendChild(box);
+
+					box.onclick = function() {
+					
+						// don't use loading progress images
+						if ( img.src === browser.runtime.getURL('icons/spinner.svg')) return;
+
+						form.iconURL.value = img.src;
+						// update the favicon when the user picks an icon
+						form.iconURL.dispatchEvent(new Event('change'));
+						form.save.click();
+					}
+				});
+			}
+
+			close = e => {
+				overdiv.style.opacity = 0;
+				form.parentNode.classList.remove('blur');
+				runAtTransitionEnd(overdiv, "opacity", () => {
+					overdiv.innerHTML = null;
+					overdiv.parentNode.removeChild(overdiv);
+				});
+			}
+
+			overdiv.onclick = close;
+
+			if ( !urls.length ) urls = getCustomIconUrls();
+
+			function showMoreButton() {
+				let more = document.createElement('div');
+				more.innerText = i18n('searchIconFinder');
+				more.style = "position:absolute;bottom:0;right:10px;cursor:pointer;user-select:none"
+				div.appendChild(more);
+
+				more.addEventListener('click', async e => {
+					more.style.display = 'none';
+					e.stopPropagation();
+					makeFaviconPickerBoxes([browser.runtime.getURL('icons/spinner.svg')]);
+
+					let searchTerms = ( form.shortName ) ? form.shortName.value.trim() : form.node.title;
+
+					let iconUrls = [];
+
+					while ( !iconUrls.length ) {
+						searchTerms = window.prompt(i18n("RefineSearch"), searchTerms);
+
+						if ( !searchTerms ) { // prompt is cancelled, use generated
+							makeFaviconPickerBoxes(getCustomIconUrls());
+							break;
+						}
+
+						iconUrls = await browser.runtime.sendMessage({action:"getIconsFromIconFinder", searchTerms:searchTerms});
+					}	
+
+					makeFaviconPickerBoxes(iconUrls);			
+				});
+			}
+
+			makeFaviconPickerBoxes(urls);
+			showMoreButton();
+		}
+	}
+
+	function createFormContainer(form) {
+
+		let overdiv = document.createElement('div');
+		overdiv.className = 'overDiv';
+		overdiv.style.opacity = 0;
+		document.body.appendChild(overdiv);
+
+		// chrome fix for menu closing on text select events
+		overdiv.onmousedown = e => {
+			if ( overdiv !== e.target) return;
+			overdiv.mousedown = true;
+		}
+
+		overdiv.onclick = e => {
+			if ( !overdiv.mousedown ) return;
+			if ( overdiv !== e.target) return;
+
+			if ( form.save.classList.contains('changed')) {
+				return;
+			}
+			form.close.click();
+		}
+
+		let formContainer = document.createElement('div');
+		formContainer.id = "floatingEditFormContainer";
+
+		overdiv.appendChild(formContainer);
+		formContainer.appendChild(form);
+
+		form.style.display = "block";
+
+		$('#main').classList.add('blur');
+
+		overdiv.getBoundingClientRect();
+		overdiv.style.opacity = null;
+
+		form.save.classList.remove('changed');
+		form.saveclose.classList.remove('changed');
+	}
+
+	let _form = $(o.cloneOf).cloneNode(true);
+	_form.id = null;
+
+	// remove unwanted elements
+	o.removeElements.forEach(name => {
+		if ( _form[name].previousSibling && _form[name].previousSibling.nodeName === "LABEL" ) _form[name].parentNode.removeChild(_form[name].previousSibling);
+		_form[name].parentNode.removeChild(_form[name]);
+	});
+	
+	addFormListeners(_form);
+	_form.node = o.node;
+	setContexts(_form, o.node.contexts);
+				
+	_form.close.onclick = _form.closeForm;
+
+	_form.saveclose.onclick = function() {
+		_form.save.onclick();
+		setTimeout(() => _form.close.onclick(), 500);
+	}
+	
+	createFormContainer(_form);
+	addIconPickerListener(_form.iconPicker);
+	addFavIconFinderListener(_form.faviconFinder);
+	_form.addFaviconBox(getIconFromNode(o.node));
+
+	let hkb = createHotkeyButton(o.node, rootElement);
+	_form.querySelector("[name='hotkey']").appendChild(hkb);
+
+	if ( !hkb.innerText )
+		hkb.innerText = 'none';
+
+	// activate the first tab
+	let firstTab = _form.querySelector(".tablinks");
+	if ( firstTab ) firstTab.click();
+
+	return _form;
+}
