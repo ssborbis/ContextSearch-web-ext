@@ -298,6 +298,9 @@ function buildSearchEngineContainer() {
 				edit_form.test.onclick = function() {
 					let searchTerms = window.prompt(i18n("EnterSearchTerms"),"ContextSearch web-ext");
 	
+					// pressed cancel
+					if ( searchTerms === null ) return;
+
 					let tempSearchEngine = {
 						"searchForm": edit_form.searchform.value,
 						"method": edit_form._method.value, 
