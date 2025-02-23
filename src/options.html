@@ -1725,6 +1725,8 @@
 			.editForm .hotkey {
 				font-size:bigger;
 				padding:4px 8px;
+				background-color: var(--bg-color1);
+				user-select: none;
 			}
 			
 		</style>
@@ -3462,10 +3464,12 @@
 							<div class="faviconPickerBox" name="faviconBox"></div>
 							<br><br>
 							<div style="text-align: center;">
-								<label data-i18n="KeywordShort" class="formLabel" style="left:0;font-size:smaller">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center;width:80px;font-size:9pt"/>
-								<br>
 								<label data-i18n="Hotkey" class="formLabel" style="left:0">$</label>
 								<div name="hotkey" style="text-align:center;font-size:smaller"></div>
+								<br>
+								<label data-i18n="KeywordShort" class="formLabel" style="left:0;font-size:smaller">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center;width:80px;font-size:9pt"/>
+								<br>
+								
 							</div>
 
 							<dialog id="iconURI" style="background-color:var(--bg-color1)">
@@ -3474,7 +3478,6 @@
 							<input type="file" accept="image/*" name='iconPicker' style="display:none">
 							</dialog>
 							
-		
 						</div>
 						<div style="flex-grow:2">
 
