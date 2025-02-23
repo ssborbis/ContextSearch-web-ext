@@ -1725,7 +1725,21 @@
 				background-color: var(--bg-color1);
 				user-select: none;
 			}
+
+			#iconURI button {
+				padding:8px;
+				cursor:pointer;
+				width:100px;
+				height:100px;
+/*				border:2px dashed var(--border-color1);*/
+			}
 			
+			#iconURI button tool {
+				width:20px;
+				vertical-align:middle;
+				margin:0 16px;
+			}
+
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
 	</head>
@@ -3474,9 +3488,9 @@
 						<div style="flex-grow:2">
 
 							<div data-tabgroup="formtabs" class="formNavBar">
-								<button class="tablinks active" type="button" data-tabid="formTabMain">Main</button>
-								<button class="tablinks" type="button" data-tabid="formTabFilter">Filter</button>
-								<button class="tablinks" type="button" data-tabid="formTabScript">Script</button>
+								<button class="tablinks active" type="button" data-tabid="formTabMain" data-i18n="main">$</button>
+								<button class="tablinks" type="button" data-tabid="formTabFilter" data-i18n="filter">$</button>
+								<button class="tablinks" type="button" data-tabid="formTabScript" data-i18n="script">$</button>
 								<button type="button" name="close" style="flex-grow:0;margin-left:auto"><tool data-icon="crossmark.svg" style="height:100%"></tool></button>
 								<button type="button" class="tablinks" data-tabid="formTabIcon" style="display:none"></button>
 							</div>
@@ -3549,10 +3563,10 @@
 							<hr style="background-color: var(--border-color1)">
 
 							<div style="display:flex;justify-content: space-evenly;">
-								<button type="button" name="faviconFinder" title="$faviconFinder" style="padding:8px;cursor:pointer;width:100px;height:100px;border:2px dashed var(--border-color1)"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 16px;"></tool><br><br>Web</button>
+								<button type="button" name="faviconFinder" title="$faviconFinder" data-i18n="web"><tool data-icon="search.svg"></tool><br><br>$</button>
 
 								<span style="display:flex; align-items:center">- or -</span>
-								<button type="button" name="b_iconPicker" title="$uploadfromlocal" style="padding:8px;cursor:pointer;width:100px;height:100px;border:2px dashed var(--border-color1)"><label for="iconPicker"><tool data-icon="upload.svg" style="width:20px;vertical-align:middle;margin:0 16px;"></tool><br><br>Local</label></button>
+								<button type="button" name="b_iconPicker" title="$uploadfromlocal" data-i18n="local"><label for="iconPicker"><tool data-icon="upload.svg" ></tool><br><br>$</label></button>
 								<input type="file" accept="image/*" name='iconPicker' style="display:none">
 							</div>
 						</div>

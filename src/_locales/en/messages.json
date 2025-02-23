@@ -2578,5 +2578,17 @@
   },
   "KeywordShort": {
     "message": "Keyword"
+  },
+  "Filter": {
+    "message": "Filter"
+  },
+  "Main": {
+    "message": "Main"
+  },
+  "Web": {
+    "message": "Web"
+  },
+  "Local": {
+    "message": "Local"
   }
 }
