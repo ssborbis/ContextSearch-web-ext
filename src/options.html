@@ -1261,16 +1261,10 @@
 			#faviconPickerContainer {
 				padding:20px;
 				text-align:center;
-				box-shadow:4px 4px 20px #0005;
-				position:fixed;
-				top:50%;
-				left:50%;
-				transform:translate(-50%, -50%);
 				background-color:var(--bg-color2);
 				max-width:430px;
 				min-width: 200px;
 				min-height: 100px;
-				border-radius: 10px;
 				max-height: 80%;
 				overflow-y: auto;
 			}
@@ -1315,15 +1309,14 @@
 					-.5px .5px 0 #000,
 					.5px .5px 0 #000;
 			}
-			#floatingEditFormContainer {
+			.formModal {
 				overflow-y: auto;
 				max-height: calc(100% - 90px);
 				resize: both;
 				position: absolute;
 				top: 50%;
 				left: 50%;
-				transform: translate(-50%, -50%);
-				width: 500px;
+				transform: translate(-50%, -50%);	
 				height: auto;
 				box-shadow:4px 4px 20px #0005;
 				z-index: 2;
@@ -1333,6 +1326,10 @@
 				transition: blur .5s;
 				border:2px solid var(--border-color2);
 			}
+			#floatingEditFormContainer {
+				width: 500px;
+			}
+			
 			.blur {
 				filter:blur(1px);
 				pointer-events: none;
@@ -3469,15 +3466,10 @@
 								<br>
 								<label data-i18n="KeywordShort" class="formLabel" style="left:0;font-size:smaller">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center;width:80px;font-size:9pt"/>
 								<br>
+								<br>
+								<br>
 								
 							</div>
-
-							<dialog id="iconURI" style="background-color:var(--bg-color1)">
-								<label data-i18n="IconURI" class="formLabel">$</label><input name="iconURL" type="text" class="inputNice" />
-								<button type="button" name="faviconFinder" title="i18n_text" data-i18n="faviconFinder" style="padding:4px 5px;position: relative;top:-3px;cursor:pointer"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 4px;"></tool></button>
-							<input type="file" accept="image/*" name='iconPicker' style="display:none">
-							</dialog>
-							
 						</div>
 						<div style="flex-grow:2">
 
@@ -3486,6 +3478,7 @@
 								<button class="tablinks" type="button" data-tabid="formTabFilter">Filter</button>
 								<button class="tablinks" type="button" data-tabid="formTabScript">Script</button>
 								<button type="button" name="close" style="flex-grow:0;margin-left:auto"><tool data-icon="crossmark.svg" style="height:100%"></tool></button>
+								<button type="button" class="tablinks" data-tabid="formTabIcon" style="display:none"></button>
 							</div>
 
 							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabFilter">
@@ -3550,7 +3543,21 @@
 							</select>
 							</div>
 						</div>
+						<div data-tabgroup="formtabs" id="iconURI" class="tabcontent" data-tabid="formTabIcon">
+							<label data-i18n="IconURI" class="formLabel">$</label><input name="iconURL" type="text" class="inputNice" />
+
+							<hr style="background-color: var(--border-color1)">
+
+							<div style="display:flex;justify-content: space-evenly;">
+								<button type="button" name="faviconFinder" title="$faviconFinder" style="padding:8px;cursor:pointer;width:100px;height:100px;border:2px dashed var(--border-color1)"><tool data-icon="search.svg" style="width:20px;vertical-align:middle;margin:0 16px;"></tool><br><br>Web</button>
+
+								<span style="display:flex; align-items:center">- or -</span>
+								<button type="button" name="b_iconPicker" title="$uploadfromlocal" style="padding:8px;cursor:pointer;width:100px;height:100px;border:2px dashed var(--border-color1)"><label for="iconPicker"><tool data-icon="upload.svg" style="width:20px;vertical-align:middle;margin:0 16px;"></tool><br><br>Local</label></button>
+								<input type="file" accept="image/*" name='iconPicker' style="display:none">
+							</div>
+						</div>
 					</div>
+
 				</div>
 
 				<div class="formFooter">

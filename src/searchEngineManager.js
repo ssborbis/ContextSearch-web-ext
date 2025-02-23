@@ -2561,16 +2561,14 @@ function createEditForm(o) {
 
 			form.iconPicker.id = form.id + 'IconPicker';
 
-			// let forlabel = document.createElement('label');
-			// forlabel.setAttribute('for', form.iconPicker.id);
+			let forlabel = form.querySelector("label[for='iconPicker']");
+			forlabel.setAttribute('for', form.iconPicker.id);
 			// forlabel.title = i18n('uploadfromlocal');
 			// box.insertBefore(forlabel, box.firstChild);
 
 			box.addEventListener('click', e => {
 				let dialog = form.querySelector('#iconURI');
-				//form.classList.add("blur");
-				dialog.showModal();
-
+				form.querySelector('.tablinks[data-tabid="formTabIcon"]').click();
 			})
 
 			let sizeLabel = document.createElement('div');
@@ -2594,7 +2592,11 @@ function createEditForm(o) {
 		}
 
 		// update the favicon when the user changes the url
-		form.iconURL.addEventListener('change', () => form.setIcon());
+		form.iconURL.addEventListener('change', () => {
+			form.setIcon();
+			form.save.classList.add('changed');
+			form.saveclose.classList.add('changed');
+		});
 
 		form.save.addEventListener('click', e => {
 			form.save.classList.remove('changed');
@@ -2673,6 +2675,7 @@ function createEditForm(o) {
 
 			let div = document.createElement('div');
 			div.id = "faviconPickerContainer";
+			div.classList.add("formModal");
 			overdiv.style.opacity = 0;
 			overdiv.appendChild(div);
 
@@ -2724,7 +2727,7 @@ function createEditForm(o) {
 						form.iconURL.value = img.src;
 						// update the favicon when the user picks an icon
 						form.iconURL.dispatchEvent(new Event('change'));
-						form.save.click();
+						//form.save.click();
 					}
 				});
 			}
@@ -2802,6 +2805,7 @@ function createEditForm(o) {
 
 		let formContainer = document.createElement('div');
 		formContainer.id = "floatingEditFormContainer";
+		formContainer.classList.add("formModal");
 
 		overdiv.appendChild(formContainer);
 		formContainer.appendChild(form);
@@ -2818,7 +2822,7 @@ function createEditForm(o) {
 	}
 
 	let _form = $(o.cloneOf).cloneNode(true);
-	_form.id = null;
+	_form.id = o.cloneOf;
 
 	// remove unwanted elements
 	o.removeElements.forEach(name => {
