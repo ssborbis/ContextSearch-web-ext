@@ -1731,7 +1731,7 @@
 				user-select: none;
 			}
 
-			#iconURI [type="button"] {
+			#iconURI .big {
 				padding:8px;
 				cursor:pointer;
 				width:100px;
@@ -1742,14 +1742,14 @@
 				transition:background-color .25s;
 			}
 			
-			#iconURI [type="button"] tool {
+			#iconURI .big tool {
 				width:20px;
 				vertical-align:middle;
 				margin:0 16px;
 				pointer-events: none;
 			}
 
-			#iconURI [type="button"]:hover {
+			#iconURI .big:hover {
 				background-color:var(--hover1);
 			}
 
@@ -3572,14 +3572,20 @@
 							</div>
 						</div>
 						<div data-tabgroup="formtabs" id="iconURI" class="tabcontent" data-tabid="formTabIcon">
-							<label data-i18n="IconURI" class="formLabel">$</label><input name="iconURL" type="text" class="inputNice" />
+							
+							<div>
+								<label data-i18n="IconURI" class="formLabel">$</label><div style="display:flex;margin-right:16px">
+									<input name="iconURL" type="text" class="inputNice" style="flex-grow:2" />
+									<button type="button" style="width:auto;height:30px;margin-top:-8px;margin-left:4px"><tool data-icon="back.svg" style="height:16px;vertical-align: middle;"></tool></button>
+								</div>
+							</div>
 
 							<hr style="background-color: var(--border-color1)">
 
 							<div style="display:flex;justify-content: space-evenly;align-items: center;">
-								<button type="button" name="faviconFinder" title="$faviconFinder" data-i18n="web"><tool data-icon="search.svg"></tool><br><br>$</button>
+								<button type="button" class="big" name="faviconFinder" title="$faviconFinder" data-i18n="web"><tool data-icon="search.svg"></tool><br><br>$</button>
 								<span style="display:flex; align-items:center">- or -</span>
-								<button type="button">
+								<button type="button" class="big">
 									<label for="iconPicker" data-i18n="local" title="$uploadfromlocal" style="display:inline-block;width:100%;cursor:pointer"><tool data-icon="folder.svg"></tool><br><br>$</label>
 									<input type="file" accept="image/*" name='iconPicker' style="display:none">
 								</button>
