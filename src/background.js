@@ -2414,6 +2414,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 
 	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
+	let tab = await browser.tabs.get(tabId);
+
 	// do not run on extension pages
 	if ( tab.url.startsWith(await browser.extension.getURL("")) ) return false;
 
@@ -2422,7 +2424,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	if ( !isHTML.shift() ) return false;
 
 	// filter popup windows 
-	let tab = await browser.tabs.get(tabId);
+	
 	if ( window.popupWindows.includes(tab.windowId))
 		blacklist = ['/inject_sidebar.js'];
 
