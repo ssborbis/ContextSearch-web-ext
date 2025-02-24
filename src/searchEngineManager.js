@@ -2843,7 +2843,7 @@ function createEditForm(o) {
 	
 	createFormContainer(_form);
 	addIconPickerListener(_form.iconPicker);
-	addFavIconFinderListener(_form.faviconFinder);
+	addFavIconFinderListener(_form.querySelector("[name='faviconFinder']"));
 	_form.addFaviconBox(getIconFromNode(o.node));
 
 	let hkb = createHotkeyButton(o.node, rootElement);

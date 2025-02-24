@@ -1285,7 +1285,7 @@
 			}*/
 			.faviconPickerBox.upload:hover {
 /*				filter:blur(1px);*/
-				background: #444;
+				background: var(--hover1);
 			}
 			/*.faviconPickerBox.upload:hover IMG {
 				opacity:0;
@@ -1726,18 +1726,26 @@
 				user-select: none;
 			}
 
-			#iconURI button {
+			#iconURI [type="button"] {
 				padding:8px;
 				cursor:pointer;
 				width:100px;
 				height:100px;
 /*				border:2px dashed var(--border-color1);*/
+				background-color: var(--bg-color1);
+				border-radius:4px;
+				transition:background-color .25s;
 			}
 			
-			#iconURI button tool {
+			#iconURI [type="button"] tool {
 				width:20px;
 				vertical-align:middle;
 				margin:0 16px;
+				pointer-events: none;
+			}
+
+			#iconURI [type="button"]:hover {
+				background-color:var(--hover1);
 			}
 
 		</style>
@@ -3451,15 +3459,16 @@
 					<div></div>
 					<br />
 
+					<button id="b_mycroftproject" title="$FindMycroftTooltip">
+						<div class="tool" style="--mask-image: url(icons/search.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
 					<button id="b_addSearchEngine" title="$add">
 						<div class="tool" style="--mask-image: url(icons/add.svg);height:1.25em;pointer-events: none;"></div>
 					</button>
 					<button id="b_sort" title="$Sort">
 						<div class="tool" style="--mask-image: url(icons/sort.svg);height:1.25em;pointer-events: none;"></div>
 					</button>
-					<button id="b_mycroftproject" title="$FindMycroftTooltip">
-						<div class="tool" style="--mask-image: url(icons/search.svg);height:1.25em;pointer-events: none;"></div>
-					</button>
+					
 					<button id="b_resetAllSearchEngines" style="float:right;clear:both" title="$ResetDefaults">
 						<div class="tool" style="--mask-image: url(icons/power.svg);height:1.25em;pointer-events: none;"></div>
 					</button>
@@ -3562,12 +3571,13 @@
 
 							<hr style="background-color: var(--border-color1)">
 
-							<div style="display:flex;justify-content: space-evenly;">
+							<div style="display:flex;justify-content: space-evenly;align-items: center;">
 								<button type="button" name="faviconFinder" title="$faviconFinder" data-i18n="web"><tool data-icon="search.svg"></tool><br><br>$</button>
-
 								<span style="display:flex; align-items:center">- or -</span>
-								<button type="button" name="b_iconPicker" title="$uploadfromlocal" data-i18n="local"><label for="iconPicker"><tool data-icon="upload.svg" ></tool><br><br>$</label></button>
-								<input type="file" accept="image/*" name='iconPicker' style="display:none">
+								<button type="button">
+									<label for="iconPicker" data-i18n="local" title="$uploadfromlocal" style="display:inline-block;width:100%;cursor:pointer"><tool data-icon="folder.svg"></tool><br><br>$</label>
+									<input type="file" accept="image/*" name='iconPicker' style="display:none">
+								</button>
 							</div>
 						</div>
 					</div>
