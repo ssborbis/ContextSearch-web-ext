@@ -488,8 +488,7 @@ function buildSearchEngineContainer() {
 				_form.shortName.parentNode.appendChild(_form.searchCode);
 
 				// remove script tablinks
-				_form.querySelector(".tablinks[data-tabid='formTabScript']").style.visibility = 'hidden';
-				_form.querySelector(".tablinks[data-tabid='formTabScript']").style.pointerEvents = 'none';
+				_form.querySelectorAll(".tablinks[data-tabid='formTabScript'], .tablinks[data-tabid='formTabScript']").forEach( el => el.classList.add("hide"));
 
 				_form.searchCode.style.height = '12em';
 
@@ -823,7 +822,8 @@ function buildSearchEngineContainer() {
 				
 				e.stopPropagation();
 
-				_form.querySelectorAll(".tablinks[data-tabid]").forEach(el => el.parentNode.removeChild(el));
+				// hide the navbar links
+				_form.querySelectorAll(".tablinks[data-tabid='formTabFilter'], .tablinks[data-tabid='formTabScript']").forEach(el => el.classList.add("hide"));
 
 				_form.shortName.parentNode.appendChild($('folderFormTable').cloneNode(true));
 
@@ -2849,8 +2849,8 @@ function createEditForm(o) {
 	let hkb = createHotkeyButton(o.node, rootElement);
 	_form.querySelector("[name='hotkey']").appendChild(hkb);
 
-	if ( !hkb.innerText )
-		hkb.innerText = 'none';
+	// if ( !hkb.innerText )
+	// 	hkb.innerText = ' ';
 
 	// activate the first tab
 	let firstTab = _form.querySelector(".tablinks");
