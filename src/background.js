@@ -2415,7 +2415,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
 	// do not run on extension pages
-	if ( tab.url.startsWith(await browser.extension.getURL("")) ) return false;
+	//if ( tab.url.startsWith(await browser.extension.getURL("")) ) return false;
 
 	// filter documents that can't attach menus
 	let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
