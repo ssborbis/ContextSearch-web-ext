@@ -269,4 +269,10 @@ const isMultiSearchEngine = n => {
 
 	return false;
 }
+
+const specialFolderIds = ["___recent___", "___matching___", "___tools___"];
+
+const isSpecialFolderChild = el => {
+	return el.node && el.node.parent && specialFolderIds.includes(el.node.parent.id);
+}
 	

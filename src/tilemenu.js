@@ -2085,12 +2085,6 @@ dragCleanup = () => {
 	delete window.dragNode;
 }
 
-const specialFolderIds = ["___recent___", "___matching___"];
-
-isSpecialFolderChild = el => {
-	return el.node && el.node.parent && specialFolderIds.includes(el.node.parent.id);
-}
-
 undraggable = el => {
 	return el.dataset.undraggable === "true" || isSpecialFolderChild(el);
 }

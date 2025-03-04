@@ -1039,17 +1039,20 @@ function buildSearchEngineContainer() {
 	}
 
 	const buildSpecialFolders = () => {
-		if ( !findNode(userOptions.nodeTree, n => n.id === "___tools___")) {
+
+		const toolsFolderId = "___tools___";
+
+		if ( !findNode(userOptions.nodeTree, n => n.id === toolsFolderId)) {
 
 			let tools = {
 				type: "folder",
 				children: [],
 				title: i18n('Tools'),
-				id: "___tools___"
+				id: toolsFolderId
 			};
 			userOptions.quickMenuTools.forEach(t => {
 				let tool = QMtools.find(_t => _t.name === t.name);
-				if ( tool )
+				if ( tool && t.disabled === false )
 					tools.children.push(
 						{
 							type: "tool",
@@ -1071,7 +1074,7 @@ function buildSearchEngineContainer() {
 
 	let root = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
-//	buildSpecialFolders();
+	//buildSpecialFolders();
 
 	setParents(root);
 
@@ -1082,9 +1085,6 @@ function buildSearchEngineContainer() {
 		
 		for (let child of root.children)
 			traverse(child, rootElement);
-
-		// traverse(root, rootElement);
-
 		
 		table.appendChild(rootElement);
 
