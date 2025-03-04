@@ -574,6 +574,7 @@ function buildSearchEngineContainer() {
 
 			let img = document.createElement('img');
 			img.src = getIconFromNode(node);
+			img.classList.add("tool");
 			header.appendChild(img);
 
 			let text = document.createElement('span');
