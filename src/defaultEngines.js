@@ -110,17 +110,6 @@ var defaultEngines = [
 		"hidden": false
 	},
 	{
-		"searchForm": "https://images.google.com/",
-		"template": "https://www.google.com/searchbyimage?site=search&image_url={searchTerms}",
-		"icon_url": "/defaultEnginesIcons/google_reverse.svg",
-		"title": "Google Reverse Image Search",
-		"icon_base64String": "",
-		"method": "GET",
-		"params": [],
-		"queryCharset": "UTF-8",
-		"hidden": false
-	},
-	{
 		"searchForm": "https://www.google.com",
 		"template": "https://www.google.com/search?q=site%3A{selectdomain}+{searchTerms}",
 		"icon_url": "/defaultEnginesIcons/google_site.svg",
