@@ -199,15 +199,13 @@ async function restoreOptions(restoreUserOptions) {
 		$('#s_sideBarDefaultView').value = uo.sideBar.singleColumn ? "text" : "grid";
 		
 		$('#userStyles').disabled = !uo.userStylesEnabled;
-	
-		$('#c_highLightColor0').value = uo.highLight.styles[0].color;
-		$('#c_highLightBackground0').value = uo.highLight.styles[0].background;
-		$('#c_highLightColor1').value = uo.highLight.styles[1].color;
-		$('#c_highLightBackground1').value = uo.highLight.styles[1].background;
-		$('#c_highLightColor2').value = uo.highLight.styles[2].color;
-		$('#c_highLightBackground2').value = uo.highLight.styles[2].background;
-		$('#c_highLightColor3').value = uo.highLight.styles[3].color;
-		$('#c_highLightBackground3').value = uo.highLight.styles[3].background;
+
+		// color pickers for results
+		for ( let i=0;i<4;i++) {
+			$('#c_highLightColor' + i).value = uo.highLight.styles[i].color;
+			$('#c_highLightBackground' + i).value = uo.highLight.styles[i].background;
+		}
+
 		$('#c_highLightColorActive').value = uo.highLight.activeStyle.color;
 		$('#c_highLightBackgroundActive').value = uo.highLight.activeStyle.background;
 		$('#s_highLightOpacity').value = uo.highLight.opacity;
@@ -620,6 +618,13 @@ function addDOMListeners() {
 			})
 		}
 	})
+
+	// color pickers for results
+	document.querySelectorAll('.colorPickerTable input[type="color"]').forEach(el => {
+		const handler = e => el.parentNode.querySelector('label').style.backgroundColor = el.value;
+		el.addEventListener('change', handler);
+		handler();
+	});
 }
 
 document.addEventListener('userOptionsLoaded', e => {

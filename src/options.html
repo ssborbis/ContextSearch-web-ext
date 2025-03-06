@@ -263,6 +263,10 @@
 			/*  box-shadow:2px 2px 2px #666, inset 2px 2px 4px #fff; */
 			}
 
+			input[type="color"] {
+
+			}
+
 			/* Rounded sliders */
 			.toggleSlider.round {
 			  border-radius: 24px;
@@ -1761,6 +1765,17 @@
 				height:12px;
 			}
 
+			.colorPickerTable input {
+				display:none;
+			}
+
+			.colorPickerTable label[for] {
+				height:20px;
+				width:20px;
+				display:inline-block;
+				background-color:red;
+			}
+
 		</style>
 		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
 	</head>
@@ -1787,8 +1802,7 @@
 				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="shortcuts"><tool data-icon="keyboard.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><tool data-icon="omnibox.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><tool data-icon="highlight.svg"></tool>$</button>
-				<button class="tablinks sublink" data-tabid="highLightSearchResultsTab" data-i18n="SearchResults"><img src="icons/transparent.gif" />$</button>
-				<button class="tablinks sublink" data-tabid="highLightFindBarTab" data-i18n="FindBar"><img src="icons/transparent.gif" />$</button>
+				<button class="tablinks" data-tabid="highLightFindBarTab" data-i18n="FindBar"><tool data-icon="search.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><tool data-icon="settings.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><tool data-icon="auto.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><tool data-icon="help.svg"></tool>$</button>
@@ -3102,94 +3116,8 @@
 				<div class="tabcontent" data-tabgroup="main_nav" id="highLightTab">
 					<div class="blobContainerHeader" data-i18n="Highlight"><img src="icons/highlight.svg" />$</div>
 
-					<section>
-<p class="header1" data-i18n="Style">$</p>
-					
-					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="highLight.highlightStyle">
-							<option data-i18n="background" value="background">$</option>
-							<option data-i18n="underline" value="underline">$</option>
-						</select>
-						<div class="description" data-i18n="HighLightStyleToolTip">$</div>
-					</div>
-					
-					<div class="option">
-						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:6px" id="s_highLightOpacity">
-							<option value="1">100%</option>
-							<option value="0.95">95%</option>
-							<option value="0.9">90%</option>
-							<option value="0.85">85%</option>
-							<option value="0.8">80%</option>
-							<option value="0.75">75%</option>
-							<option value="0.7">70%</option>
-							<option value="0.65">65%</option>
-							<option value="0.6">60%</option>
-							<option value="0.55">55%</option>
-							<option value="0.5">50%</option>
-							<option value="0.45">45%</option>
-							<option value="0.4">40%</option>
-							<option value="0.35">35%</option>
-							<option value="0.3">30%</option>
-							<option value="0.25">25%</option>
-							<option value="0.2">20%</option>
-							<option value="0.15">15%</option>
-							<option value="0.1">10%</option>
-							<option value="0.05">5%</option>							
-						</select>
-						<div class="description" data-i18n="HighLightOpacityToolTip">$</div>
-					</div>
-
-					<br /><br />
-					<table style="text-align:center">
-						<tr>
-							<td></td>
-							<td><div class="description" data-i18n="BackgroundColor">$</div></td>
-							<td><div class="description" data-i18n="TextColor">$</div></td>
-						</tr>
-						<tr>
-							<td>1</td>
-							<td><input type="color" id="c_highLightBackground0" /></td>
-							<td><input type="color" id="c_highLightColor0" /></td>
-							
-						</tr>
-						<tr>
-							<td>2</td>
-							<td><input type="color" id="c_highLightBackground1" /></td>
-							<td><input type="color" id="c_highLightColor1" /></td>
-							
-						</tr>
-						<tr>
-							<td>3</td>
-							<td><input type="color" id="c_highLightBackground2" /></td>
-							<td><input type="color" id="c_highLightColor2" /></td>
-						</tr>
-						<tr>
-							<td>4</td>
-							<td><input type="color" id="c_highLightBackground3" /></td>
-							<td><input type="color" id="c_highLightColor3" /></td>
-						</tr>
-						<tr>
-							<td colspan="3"><hr /></td>
-						</tr>
-						<tr>
-							<td>Active</td>
-							<td><input type="color" id="c_highLightBackgroundActive" /></td>
-							<td><input type="color" id="c_highLightColorActive" /></td>
-							
-						</tr>
-					</table>
-
-					<div class="option">
-						<checkbox data-id="highLight.flashSelected" data-i18n=""></checkbox>
-						<div class="description" data-i18n="HighlightFlashSelectedTooltip">$</div>
-					</div>
-					
-					<br /><br />
-				</div>
-				<div class="tabcontent" data-tabgroup="main_nav" id="highLightSearchResultsTab">
-					<div class="blobContainerHeader" data-i18n="SearchResults"><img src="icons/highlight.svg" />$</div>
-					
-					<section>
+										
+				<section>
 					<p class="header1" data-i18n="General">$</p>
 					<div class="option">
 						<checkbox data-id="highLight.enabled" data-i18n=""></checkbox>
@@ -3213,7 +3141,8 @@
 						<div class="description" data-i18n="HighlightShowFindBarTooltip">$</div>
 					</div>
 					
-					</section><section>
+					</section>
+					<section>
 <p class="header1" data-i18n="MatchOptions">$</p>
 					<table>
 						<tr>
@@ -3276,7 +3205,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<input type="number" min="0" max="9999" step="1" id="highLight.markOptions.limit" style="width:60px"/>
+									<input type="number" min="0" max="9999" step="1" id="highLight.markOptions.limit" class="inputNice" style="width:60px"/>
 								</div>
 							</td>
 							<td>
@@ -3284,12 +3213,125 @@
 							</td>
 						</tr>
 					</table>
+				</section>
+				<section>
+				<p class="header1" data-i18n="Style">$</p>
 					
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="highLight.highlightStyle">
+							<option data-i18n="background" value="background">$</option>
+							<option data-i18n="underline" value="underline">$</option>
+						</select>
+						<div class="description" data-i18n="HighLightStyleToolTip">$</div>
+					</div>
+					
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:6px" id="s_highLightOpacity">
+							<option value="1">100%</option>
+							<option value="0.95">95%</option>
+							<option value="0.9">90%</option>
+							<option value="0.85">85%</option>
+							<option value="0.8">80%</option>
+							<option value="0.75">75%</option>
+							<option value="0.7">70%</option>
+							<option value="0.65">65%</option>
+							<option value="0.6">60%</option>
+							<option value="0.55">55%</option>
+							<option value="0.5">50%</option>
+							<option value="0.45">45%</option>
+							<option value="0.4">40%</option>
+							<option value="0.35">35%</option>
+							<option value="0.3">30%</option>
+							<option value="0.25">25%</option>
+							<option value="0.2">20%</option>
+							<option value="0.15">15%</option>
+							<option value="0.1">10%</option>
+							<option value="0.05">5%</option>							
+						</select>
+						<div class="description" data-i18n="HighLightOpacityToolTip">$</div>
+					</div>
+
+					<br />
+					<table style="text-align:center" class="colorPickerTable">
+						<tr>
+							<td></td>
+							<td><div class="description">Aa</div></td>
+							<td><div class="description">&#9744;</div></td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>
+								<input type="color" id="c_highLightBackground0" />
+								<label for="c_highLightBackground0"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor0" />
+								<label for="c_highLightColor0"></label>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>
+								<input type="color" id="c_highLightBackground1" />
+								<label for="c_highLightBackground1"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor1" />
+								<label for="c_highLightColor1"></label>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>
+								<input type="color" id="c_highLightBackground2" />
+								<label for="c_highLightBackground2"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor2" />
+								<label for="c_highLightColor2"></label>
+							</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>
+								<input type="color" id="c_highLightBackground3" />
+								<label for="c_highLightBackground3"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor3" />
+								<label for="c_highLightColor3"></label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3"><hr /></td>
+						</tr>
+						<tr>
+							<td>Active</td>
+							<td>
+								<input type="color" id="c_highLightBackgroundActive" />
+								<label for="c_highLightBackgroundActive"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColorActive" />
+								<label for="c_highLightColorActive"></label>
+							</td>
+							<td style="vertical-align: middle;">
+								<div style="margin-left: 20px">
+									<checkbox data-id="highLight.flashSelected" data-i18n=""></checkbox>
+									<div class="description" data-i18n="HighlightFlashSelectedTooltip">$</div>
+								</div>
+							</td>
+							
+						</tr>
+					</table>
+				</section>	
 				</div>
+
 				<div class="tabcontent" data-tabgroup="main_nav" id="highLightFindBarTab">
 					<div class="blobContainerHeader" data-i18n="FindBar"><img src="icons/highlight.svg" />$</div>
 					
-					</section>
 
 					<section>
 					<p class="header1" data-i18n="opening">$</p>
@@ -3430,7 +3472,7 @@
 							<!-- </td> -->
 							<td style='text-align:right'>
 								<div class="option">
-									<input type="number" min="0" max="9999" step="1" id="highLight.findBar.markOptions.limit" style="width:60px"/>
+									<input type="number" min="0" max="9999" step="1" id="highLight.findBar.markOptions.limit" class="inputNice" style="width:60px"/>
 								</div>
 							</td>
 							<td>
