@@ -71,7 +71,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// replace text with selection
 	(async () => {
 		let results = await sendMessage({action: "getSelectedText"});
-		let text = results ? results.shift() : null;
+		let text = results || null;
 	
 		if ( text ) sb.set(text);
 

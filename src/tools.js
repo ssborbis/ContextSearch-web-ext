@@ -65,7 +65,7 @@ const QMtools = [
 
 			// enable/disable link button on very basic 'is it a link' rules
 			function setDisabled() {
-				if (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1) {
+				if (quickMenuObject && quickMenuObject.searchTerms && (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1)) {
 					tile.disabled = true;
 					tile.dataset.disabled = true;
 				} else {

@@ -130,9 +130,15 @@ browser.runtime.onInstalled.addListener( details => {
 			browser.tabs.create({
 				url: "/options.html#engines"
 			}).then(_tab => {
-				browser.tabs.executeScript(_tab.id, {
-					code: `cacheAllIcons()`
+				browser.scripting.executeScript({
+					target: {
+						tabId: tab.id,
+					},
+					func: () => cacheAllIcons(),
 				});
+				// browser.tabs.executeScript(_tab.id, {
+				// 	code: `cacheAllIcons()`
+				// });
 			});
 		}
 	});
@@ -145,9 +151,16 @@ browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 
 	if ( !isValidHttpUrl(tab.url) ) return;
 
-	browser.tabs.executeScript( zoomChangeInfo.tabId, {
-		code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+	browser.scripting.executeScript({
+		target: {
+			tabId: zoomChangeInfo.tabId,
+		},
+		func: () => document.dispatchEvent(new CustomEvent("zoom")),
 	}).then(() => {}, err => console.log(err));
+
+	// browser.tabs.executeScript( zoomChangeInfo.tabId, {
+	// 	code: 'document.dispatchEvent(new CustomEvent("zoom"));'
+	// }).then(() => {}, err => console.log(err));
 });
 
 async function notify(message, sender, sendResponse) {
@@ -257,10 +270,19 @@ async function notify(message, sender, sendResponse) {
 			return {"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)};
 			
 		case "dispatchEvent":
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
-				allFrames: true
+			return browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id,
+					allFrames: true
+				},
+				func: (evt) => document.dispatchEvent(new CustomEvent(evt)),
+				args: [message.e]
 			});
+
+			// return browser.tabs.executeScript(sender.tab.id, {
+			// 	code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
+			// 	allFrames: true
+			// });
 
 		case "openQuickMenu":
 			return sendMessageToTopFrame();
@@ -287,10 +309,20 @@ async function notify(message, sender, sendResponse) {
 			onFound = () => {}
 			onError = () => {}
 
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: 'if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
-				allFrames:false
+			return browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id,
+					allFrames: true
+				},
+				func: () => {
+					if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();
+				}
 			}).then(onFound, onError);
+
+			// return browser.tabs.executeScript(sender.tab.id, {
+			// 	code: 'if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
+			// 	allFrames:false
+			// }).then(onFound, onError);
 			
 		case "rebuildQuickMenu":
 			return sendMessageToTopFrame();
@@ -333,20 +365,35 @@ async function notify(message, sender, sendResponse) {
 			} else
 				return sendMessageToTopFrame();
 			
+		case "showFindBar": 
+			return browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id
+				},
+				func: () => showFindBar()
+			});
+
 		case "updateFindBar":
 			return sendMessageToTopFrame();
 
 		case "toggleFindBar":
 			let isOpen = await notify({action: "getFindBarOpenStatus"});
-			isOpen = isOpen.shift();
+			isOpen = isOpen.shift().result;
 
 			//let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
 
-			let s = await browser.tabs.executeScript(sender.tab.id, {
-				code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
+			let s = await browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id
+				},
+				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : ""
 			});
 
-			s = s.shift();
+			// let s = await browser.tabs.executeScript(sender.tab.id, {
+			// 	code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
+			// });
+
+			s = s.shift().result;
 
 			if (!isOpen || ( isOpen && s) )
 				notify({action: "openFindBar", searchTerms: s});
@@ -361,11 +408,19 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 		
 		case "getFindBarOpenStatus":
-			onFound = result => result
+			onFound = result => result;
 			onError = () => {}
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: "(typeof getFindBar !== 'undefined' && getFindBar()) ? true : false;"
+
+			return browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id
+				},
+				func: () => (typeof getFindBar !== 'undefined' && getFindBar()) ? true : false
 			}).then(onFound, onError);
+
+			// return browser.tabs.executeScript(sender.tab.id, {
+			// 	code: "(typeof getFindBar !== 'undefined' && getFindBar()) ? true : false;"
+			// }).then(onFound, onError);
 
 		case "mark":
 
@@ -429,17 +484,28 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getOpenSearchLinks":
 
-			onFound = results => results.shift();
+			onFound = results => results.shift().result;
 			onError = results => null;
-		
-			return await browser.tabs.executeScript( sender.tab.id, {
-				code: `
-					(() => {
-						let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
-						if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
-					})()`,
-				frameId: message.frame ? sender.frameId : 0
+
+			return await browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id,
+					frameIds: [message.frame ? sender.frameId : 0]
+				},
+				func: () => {
+					let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
+					if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }});
+				}
 			}).then(onFound, onError);
+		
+			// return await browser.tabs.executeScript( sender.tab.id, {
+			// 	code: `
+			// 		(() => {
+			// 			let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
+			// 			if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
+			// 		})()`,
+			// 	frameId: message.frame ? sender.frameId : 0
+			// }).then(onFound, onError);
 
 		case "updateSearchTerms":
 
@@ -563,22 +629,46 @@ async function notify(message, sender, sendResponse) {
 				let engines = await browser.search.get();
 				
 				if ( engines.find(e => e.name === title) ) {
-					await browser.tabs.executeScript(sender.tab.id, {
-						code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+
+					return await browser.scripting.executeScript({
+						target: {
+							tabId: sender.tab.id
+						},
+						func: (title) => alert(browser.i18n.getMessage("FFEngineExists", title)),
+						args: [title]
 					});
-					return;
+
+					// await browser.tabs.executeScript(sender.tab.id, {
+					// 	code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+					// });
+					// return;
 				}
 
-				await browser.tabs.executeScript(sender.tab.id, {
-					file: "/addSearchProvider.js"
-				});
-				
-				// check for existing opensearch engine of the same name					
-				let exists = await browser.tabs.executeScript(sender.tab.id, {
-					code: `getSearchProviderUrlByTitle("${title}")`
+				await browser.scripting.executeScript({
+					target: {
+						tabId: sender.tab.id
+					},
+					files: ["/addSearchProvider.js"]
 				});
 
-				exists = exists.shift();
+				// await browser.tabs.executeScript(sender.tab.id, {
+				// 	file: "/addSearchProvider.js"
+				// });
+				
+				// check for existing opensearch engine of the same name
+				let exists = await browser.scripting.executeScript({
+					target: {
+						tabId: sender.tab.id
+					},
+					func: (title) => getSearchProviderUrlByTitle(title),
+					args: [title]
+				});
+
+				// let exists = await browser.tabs.executeScript(sender.tab.id, {
+				// 	code: `getSearchProviderUrlByTitle("${title}")`
+				// });
+
+				exists = exists.shift().result;
 
 				if ( exists ) {
 					console.log('OpenSearch engine with name ' + title + ' already exists on page');
@@ -598,16 +688,32 @@ async function notify(message, sender, sendResponse) {
 							url: browser.runtime.getURL('addSearchProvider.html')
 						});
 
-						await browser.tabs.executeScript(tab.id, {
-							code: `
+						await browser.scripting.executeScript({
+							target: {
+								tabId: tab.id
+							},
+							func: (favicon) => {
 								var userOptions = {};
 
 								browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
 									userOptions = uo;
 								});
 								
-								setFavIconUrl("${favicon}");`
+								setFavIconUrl(favicon);
+							},
+							args: [favicon]
 						});
+
+						// await browser.tabs.executeScript(tab.id, {
+						// 	code: `
+						// 		var userOptions = {};
+
+						// 		browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+						// 			userOptions = uo;
+						// 		});
+								
+						// 		setFavIconUrl("${favicon}");`
+						// });
 						
 						// some delay needed
 						await new Promise(r => setTimeout(r, 500));
@@ -616,10 +722,18 @@ async function notify(message, sender, sendResponse) {
 						return;
 					}
 				}
-				
-				await browser.tabs.executeScript(sender.tab.id, {
-					code: `addSearchProvider("${url}");`
+
+				await browser.scripting.executeScript({
+					target: {
+						tabId: sender.tab.id
+					},
+					func: (url) => addSearchProvider(url),
+					args: [url]
 				});
+				
+				// await browser.tabs.executeScript(sender.tab.id, {
+				// 	code: `addSearchProvider("${url}");`
+				// });
 					
 			}
 			
@@ -829,14 +943,23 @@ async function notify(message, sender, sendResponse) {
 				return Promise.race([
 					new Promise(r => {
 						try {
-							browser.tabs.executeScript(sender.tab.id, {
-								code: `quickMenuObject;`,
-								runAt: "document_end"
+
+							browser.scripting.executeScript({
+								target: {
+									tabId: sender.tab.id
+								},
+								func: () => quickMenuObject
 							}).then(result => r(result));
+
+							// browser.tabs.executeScript(sender.tab.id, {
+							// 	code: `quickMenuObject;`,
+							// 	runAt: "document_end"
+							// }).then(result => r(result));
+
 					} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
-					.then( result => result ? result.shift() : null );
+					.then( result => result ? result.shift().result : null );
 		
 		case "addToHistory": {
 
@@ -879,11 +1002,19 @@ async function notify(message, sender, sendResponse) {
 		case "getLastOpenedFolder":
 			return window.lastOpenedFolder || null;
 
-		case "executeScript": 
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: message.code,
-				frameId: 0
+		case "executeScript": //UserScript
+			return browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id,
+					frameIds: [0]
+				},
+				func: () => message.code
 			});
+
+			// return browser.tabs.executeScript(sender.tab.id, {
+			// 	code: message.code,
+			// 	frameId: 0
+			// });
 
 		case "injectContentScripts":
 
@@ -895,6 +1026,8 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "injectComplete":
+
+			console.log('here');
 
 			if ( userOptions.quickMenu ) {
 				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
@@ -919,12 +1052,19 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getSelectedText":
-			onFound = () => {}
+			onFound = (result) => result.shift().result;
 			onError = () => {}
 
-			return browser.tabs.executeScript(sender.tab.id, {
-				code: "getSelectedText(document.activeElement);"
-			}).then(onFound, onError);	
+			return browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id
+				},
+				func: () => getSelectedText(document.activeElement)
+			}).then(onFound, onError);
+
+			// return browser.tabs.executeScript(sender.tab.id, {
+			// 	code: "getSelectedText(document.activeElement);"
+			// }).then(onFound, onError);	
 
 		case "addUserStyles": {
 			if ( !userOptions.userStylesEnabled ) return false;
@@ -937,11 +1077,21 @@ async function notify(message, sender, sendResponse) {
 
 			// console.log(message.global, style);
 
-			return browser.tabs.insertCSS( sender.tab.id, {
-				code: style,
-				frameId: message.global ? 0 : sender.frameId,
-				cssOrigin: "user"
+			return browser.scripting.insertCSS({
+				target: {
+					tabId: sender.tab.id,
+					frameIds: [message.global ? 0 : sender.frameId]
+				},
+				css: style,
+				origin: "USER"
 			});
+
+
+			// return browser.tabs.insertCSS( sender.tab.id, {
+			// 	code: style,
+			// 	frameId: message.global ? 0 : sender.frameId,
+			// 	cssOrigin: "user"
+			// });
 		}
 
 		case "editQuickMenu":
@@ -949,18 +1099,27 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "addStyles":
-			return browser.tabs.insertCSS( sender.tab.id, {
-				file: message.file,
-				frameId: sender.frameId,
-				cssOrigin: "user"
+			return browser.scripting.insertCSS({
+				target: {
+					tabId: sender.tab.id,
+					frameIds: [sender.frameId]
+				},
+				files: [message.file],
+				origin: "USER"
 			});
+
+			// return browser.tabs.insertCSS( sender.tab.id, {
+			// 	file: message.file,
+			// 	frameId: sender.frameId,
+			// 	cssOrigin: "user"
+			// });
 
 		case "closePageTiles":
 			return sendMessageToTopFrame();
 
 		case "openBrowserAction":
 			console.log('openBrowserAction')
-			browser.browserAction.openPopup();
+			browser.action.openPopup();
 			return;
 
 		case "openPageTiles":
@@ -975,28 +1134,48 @@ async function notify(message, sender, sendResponse) {
 
 		case "sideBarOpenedOnSearchResults":
 
-			onFound = results => results;
+			onFound = results => results[0].result;
 			onError = results => null;
-			
-			return await browser.tabs.executeScript(sender.tab.id, {
-				code: `(() => {
-					let result = window.openedOnSearchResults;
-					delete window.openedOnSearchResults;
-					return result;
-				})();`
+
+			return await browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id
+				},
+				func: () => {
+					(() => {
+						let result = window.openedOnSearchResults;
+						delete window.openedOnSearchResults;
+						return result;
+					})();
+				}
 			}).then( onFound, onError);
+			
+			// return await browser.tabs.executeScript(sender.tab.id, {
+			// 	code: `(() => {
+			// 		let result = window.openedOnSearchResults;
+			// 		delete window.openedOnSearchResults;
+			// 		return result;
+			// 	})();`
+			// }).then( onFound, onError);
 
 		case "openCustomSearch":
 			sendMessageToTopFrame();
 			break;
 
 		case "getRawSelectedText":
-			onFound = results => results[0];
+			onFound = results => results[0].result;
 			onError = results => null;
-			
-			return await browser.tabs.executeScript(sender.tab.id, {
-				code: `getRawSelectedText(document.activeElement)`
+
+			return await browser.scripting.executeScript({
+				target: {
+					tabId: sender.tab.id
+				},
+				func: () => getRawSelectedText(document.activeElement)
 			}).then( onFound, onError);
+			
+			// return await browser.tabs.executeScript(sender.tab.id, {
+			// 	code: `getRawSelectedText(document.activeElement)`
+			// }).then( onFound, onError);
 
 		case "updateUserOptionsObject":
 			return updateUserOptionsObject(message.userOptions);
@@ -1022,11 +1201,20 @@ async function notify(message, sender, sendResponse) {
 				active:false
 			}).then(async tab => {
 				await new Promise(r => setTimeout(r, 1000));
-				urls = await browser.tabs.executeScript(tab.id, {
-					code: `[...document.querySelectorAll(".icon-grid IMG")].map(img => img.src);`
+
+				urls = await browser.scripting.executeScript({
+					target: {
+						tabId: sender.tab.id
+					},
+					func: () => [...document.querySelectorAll(".icon-grid IMG")].map(img => img.src)
 				});
+
+				// urls = await browser.tabs.executeScript(tab.id, {
+				// 	code: `[...document.querySelectorAll(".icon-grid IMG")].map(img => img.src);`
+				// });
+
 				browser.tabs.remove(tab.id);
-				return urls.shift();
+				return urls.shift().result;
 			});
 
 		case "cancelQuickMenuRequest":
@@ -1053,11 +1241,20 @@ async function notify(message, sender, sendResponse) {
 		case "disablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 			try {
-				browser.tabs.insertCSS( sender.tab.id, {
-					code:"HTML{pointer-events:none;}",
-					cssOrigin: "user",
-					allFrames:true
+				browser.scripting.insertCSS({
+					target: {
+						tabId: sender.tab.id,
+						allFrames: true
+					},
+					css: "HTML{pointer-events:none;}",
+					origin: "USER"
 				});
+
+				// browser.tabs.insertCSS( sender.tab.id, {
+				// 	code:"HTML{pointer-events:none;}",
+				// 	cssOrigin: "user",
+				// 	allFrames:true
+				// });
 			} catch (error) {
 				debug(error);
 			}
@@ -1068,11 +1265,19 @@ async function notify(message, sender, sendResponse) {
 			function logTabs(tabs) {
 			  for (const tab of tabs) {
 			  	try {
-				    browser.tabs.removeCSS( tab.id, {
-						code:"HTML{pointer-events:none;}",
-						cssOrigin: "user",
-						allFrames:true
+			  		browser.scripting.removeCSS({
+						target: {
+							tabId: sender.tab.id,
+							allFrames: true
+						},
+						css: "HTML{pointer-events:none;}",
+						origin: "USER"
 					});
+				    // browser.tabs.removeCSS( tab.id, {
+					// 	code:"HTML{pointer-events:none;}",
+					// 	cssOrigin: "user",
+					// 	allFrames:true
+					// });
 				} catch(error) {
 					debug(error);
 				}
@@ -1312,19 +1517,33 @@ function openWithMethod(o) {
 
 function executeBookmarklet(info) {
 
-	const blobCode = (c, s) => {
-		return `
-			(() => {
-			  const blob = new Blob([\`CS_searchTerms = searchTerms = "${s}";\n\n${c}\`], {
-			    type: "text/javascript",
-			  });
-			  let script = document.createElement('script');
-			  script.src = URL.createObjectURL(blob);
-			  script.type = 'text/javascript';
+	function blobCode(c, s) {
 
-			  document.getElementsByTagName('head')[0].appendChild(script);
-			})();
-		`
+		const str = `CS_searchTerms = searchTerms = "${s}";\n\n${c}`
+		const blob = new Blob([str], {
+			type: "text/javascript",
+		});
+
+		console.log(str, blob, URL.createObjectURL(blob));
+
+		let script = document.createElement('script');
+		script.src = URL.createObjectURL(blob);
+		script.type = 'text/javascript';
+
+		document.getElementsByTagName('head')[0].appendChild(script);
+
+		// return `
+		// 	(() => {
+		// 	  const blob = new Blob([\`CS_searchTerms = searchTerms = "${s}";\n\n${c}\`], {
+		// 	    type: "text/javascript",
+		// 	  });
+		// 	  let script = document.createElement('script');
+		// 	  script.src = URL.createObjectURL(blob);
+		// 	  script.type = 'text/javascript';
+
+		// 	  document.getElementsByTagName('head')[0].appendChild(script);
+		// 	})();
+		// `
 	}
 
 	const vanillaCode = (c, s) => {
@@ -1341,11 +1560,42 @@ function executeBookmarklet(info) {
 		const code = info.node.searchCode;
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-			browser.tabs.executeScript(tabs[0].id, {
-				code: userOptions.scriptsUseBlobs 
-					? blobCode(code, searchTerms) 
-					: vanillaCode(code, searchTerms)
+
+
+			// await browser.userScripts.register([
+			//   {
+			//     js: [{ code: vanillaCode(code, searchTerms) }],
+			//     matches: [tabs[0].url],
+			//   }
+			// ]);
+
+			const str = `CS_searchTerms = searchTerms = "${code}";\n\n${searchTerms}`
+			const blob = new Blob([str], {
+				type: "text/javascript",
 			});
+
+			browser.scripting.executeScript({
+				target: {
+					tabId: tabs[0].id,
+				},
+				files: [URL.createObjectURL(blob)]
+			});
+
+			// browser.scripting.executeScript({
+			// 	target: {
+			// 		tabId: tabs[0].id,
+			// 	},
+			// 	func: blobCode,
+			// 	args: [code, searchTerms]
+			// });
+
+			// UserScript
+
+			// browser.tabs.executeScript(tabs[0].id, {
+			// 	code: userOptions.scriptsUseBlobs 
+			// 		? blobCode(code, searchTerms) 
+			// 		: vanillaCode(code, searchTerms)
+			// });
 		});
 	}
 
@@ -1371,12 +1621,22 @@ function executeBookmarklet(info) {
 		
 		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
-			
-			browser.tabs.executeScript(tabs[0].id, {
-				code: userOptions.scriptsUseBlobs 
-					? blobCode(code, searchTerms) 
-					: vanillaCode(code, searchTerms)
+
+			browser.scripting.executeScript({
+				target: {
+					tabId: tabs[0].id,
+				},
+				func: blobCode,
+				args: [code, searchTerms]
 			});
+
+			// UserScript
+			
+			// browser.tabs.executeScript(tabs[0].id, {
+			// 	code: userOptions.scriptsUseBlobs 
+			// 		? blobCode(code, searchTerms) 
+			// 		: vanillaCode(code, searchTerms)
+			// });
 		});
 
 	}, error => {
@@ -1572,8 +1832,9 @@ async function executeExternalProgram(info) {
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
 		if ( node.postScript.trim() ) {
-			await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
-			await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
+			// UserScript
+			// await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
+			// await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
 		}
 	});
 }
@@ -1723,12 +1984,30 @@ async function openSearch(info) {
 
 				// try to inject confirm dialog
 				try {
-					let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
-					if ( valid ) {
+
+					let valid = await browser.scripting.executeScript({
+						target: {
+							tabId: info.tab.id
+						},
+						func: () => hasRun
+					});
+
+					//let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
+					
+					if ( valid[0].result ) {
 						let _confirm_str = i18n("ConfirmMultiLineSearch", terms.length.toString());
-						let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` });
 						
-						if ( !_confirm[0] ) return;
+						let _confirm = await browser.scripting.executeScript({
+							target: {
+								tabId: info.tab.id
+							},
+							func: (_confirm_str) => confirm(_confirm_str),
+							args: [ _confirm_str]
+						});
+
+						//let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` });
+						
+						if ( !_confirm[0].result ) return;
 					}
 				} catch ( err ) { // can't inject a confirm dialog
 					console.log(err);
@@ -1883,10 +2162,12 @@ async function openSearch(info) {
 	function executeSearchCode(tabId) {
 		if ( !se.searchCode ) return;
 		
-		browser.tabs.executeScript(tabId, {
-			code: `searchTerms = "${escapeDoubleQuotes(searchTerms)}"; ${se.searchCode}`,
-			runAt: 'document_idle'
-		});
+		// UserScript
+
+		// browser.tabs.executeScript(tabId, {
+		// 	code: `searchTerms = "${escapeDoubleQuotes(searchTerms)}"; ${se.searchCode}`,
+		// 	runAt: 'document_idle'
+		// });
 	}
 	
 	function onCreate(_tab) {
@@ -1937,14 +2218,25 @@ async function openSearch(info) {
 
 			await executeScripts(_tab.id, {files: ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js']}, true);
 
-			browser.tabs.executeScript(_tab.id, {
-				code: `
-					let se = ${JSON.stringify(se)};
-					let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
+			browser.scripting.executeScript({
+				target: {
+					tabId: _tab.id
+				},
+				func: (se, s) => {
+					let _SEARCHTERMS = s;
 					post(se.template, se.params);
-					`,
-				runAt: 'document_start'
+				},
+				args: [JSON.stringify(se), escapeDoubleQuotes(searchTerms)]
 			});
+
+			// browser.tabs.executeScript(_tab.id, {
+			// 	code: `
+			// 		let se = ${JSON.stringify(se)};
+			// 		let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
+			// 		post(se.template, se.params);
+			// 		`,
+			// 	runAt: 'document_start'
+			// });
 	
 			// listen for the results to complete
 			browser.tabs.onUpdated.addListener(async function _listener(_tabId, _changeInfo, _tabInfo) {
@@ -2072,10 +2364,17 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	executeScripts(tab.id, {files: ["inject_resultsEngineNavigator.js"]}, true);
 
 	if ( userOptions.sideBar.openOnResults ) {
-		browser.tabs.executeScript(tab.id, {
-			code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}, openedOnSearchResults: true})`,
-			runAt: 'document_idle'
+		browser.scripting.executeScript({
+			target: {
+				tabId: tab.id
+			},
+			func: () => openSideBar({noSave: true, minimized: userOptions.sideBar.openOnResultsMinimized, openedOnSearchResults: true})
 		});
+
+		// browser.tabs.executeScript(tab.id, {
+		// 	code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}, openedOnSearchResults: true})`,
+		// 	runAt: 'document_idle'
+		// });
 	}
 
 	if ( !userOptions.highLight.enabled ) return;
@@ -2090,11 +2389,20 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	// 	});
 	// }
 
-	await browser.tabs.executeScript(tab.id, {
-		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
-		runAt: 'document_idle',
-		allFrames: true
+	await browser.scripting.executeScript({
+		target: {
+			tabId: tab.id,
+			allFrames: true
+		},
+		func: (s) => document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: s}})),
+		args: [escapeDoubleQuotes(searchTerms)]
 	});
+
+	// await browser.tabs.executeScript(tab.id, {
+	// 	code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
+	// 	runAt: 'document_idle',
+	// 	allFrames: true
+	// });
 
 	if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
 		
@@ -2177,7 +2485,7 @@ function resetPersist() {
 }
 
 function setIcon() {
-	browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+	browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 }
 
 async function checkForOneClickEngines() {
@@ -2395,6 +2703,12 @@ function isAllowedURL(_url) {
 
 async function executeScripts(tabId, options = {}, checkHasRun) {
 
+	const c = () => {
+		if ( options.files && options.files.includes("/inject_quickmenu.js")) {
+			console.log(1);
+		}
+	}
+
 	let blacklist = options.blacklist || [];
 
 	if ( options.allFrames ) {
@@ -2412,19 +2726,30 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 		});
 	}
 
+	c();
+
 	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
 	let tab = await browser.tabs.get(tabId);
 
 	// do not run on extension pages
-	if ( tab.url.startsWith(await browser.extension.getURL("")) ) return false;
+	if ( tab.url.startsWith(await browser.runtime.getURL("")) ) return false;
 
 	// filter documents that can't attach menus
-	let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
-	if ( !isHTML.shift() ) return false;
+	let isHTML = await browser.scripting.executeScript({
+		target: {
+			tabId: tabId,
+			frameIds: [options.frameId || 0 ]
+		},
+		func: () => document && document.querySelector('html') ? true : false
+	});
+
+	//let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
+	
+	if ( !isHTML.shift().result ) return false;
 
 	// filter popup windows 
-	
+	c();
 	if ( window.popupWindows.includes(tab.windowId))
 		blacklist = ['/inject_sidebar.js'];
 
@@ -2441,16 +2766,51 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 		try {
 
 			if ( checkHasRun ) {
-				let check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
-				if ( check.shift() ) {
+
+				let check = await browser.scripting.executeScript({
+					target: {
+						tabId: tabId,
+						frameIds: [options.frameId || 0 ]
+					},
+					func: (file) => {
+						return typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file];
+					},
+					args: [file]
+				});
+
+				console.log(file, check, tab.url);
+				//let check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
+				
+				if ( check[0].result ) {
 					debug('already injected', file, tabId, options.frameId || 0);
 					continue;
 				}
 			}
 
-			await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
+			await browser.scripting.executeScript({
+				target: {
+					tabId: tabId,
+					frameIds: [options.frameId || 0 ]
+				},
+				files: [file]
+			});
+
+			// await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
 			debug('injected', file, tabId, options.frameId || 0);
-			if ( checkHasRun ) await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+			if ( checkHasRun ) {
+				await browser.scripting.executeScript({
+					target: {
+						tabId: tabId,
+						frameIds: [options.frameId || 0 ]
+					},
+					func: (file) => {
+						window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN[file] = true;
+					},
+					args: [file]
+				});
+
+				//await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+			}
 		} catch (error) {
 			debug(tabId, error);
 		}
@@ -2476,7 +2836,17 @@ async function injectContentScripts(tab, frameId) {
 			"/tools.js" // for shortcuts
 		], frameId: frameId, runAt: "document_end"
 	}, true);
-	browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
+
+	browser.scripting.insertCSS({
+		target: {
+			tabId: tab.id,
+			frameIds: [frameId]
+		},
+		files: ["/inject.css"],
+		origin: "USER"
+	});
+	
+	//browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
 
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
@@ -2540,9 +2910,17 @@ function waitOnInjection(tabId) {
 		new Promise(r => {
 			interval = setInterval(async () => {
 				try {
-					let result = await browser.tabs.executeScript(tabId, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']"} );
 
-					if ( result[0] ) {
+					let result = await browser.scripting.executeScript({
+						target: {
+							tabId: tabId
+						},
+						func: () => window.CS_HASRUN && window.CS_HASRUN['/inject.js']
+					});
+
+					//let result = await browser.tabs.executeScript(tabId, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']"} );
+
+					if ( result[0].result ) {
 						cleanup();
 						console.log(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
 						r(true);
@@ -2627,15 +3005,29 @@ function userInputCurrentTab(func, str) {
 			});
 		}
 
-		browser.tabs.executeScript(tab.id, {
-			code: `(() => {
+		// UserScript
+		browser.scripting.executeScript({
+			target: {
+				tabId: tab.id
+			},
+			func: (func, str, id, tabId) => {
 				setTimeout(() => {
-					let str = ${func}(${str});
-					browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
+					let str = func(str);
+					browser.runtime.sendMessage({output:str, id: id, tabId: tabId});
 				}, 100);
-			})();`,
-			runAt: "document_idle"
+			},
+			args: [func, str, id, tabs[0] !== tab ? tab.id : -1 ]
 		});
+
+		// browser.tabs.executeScript(tab.id, {
+		// 	code: `(() => {
+		// 		setTimeout(() => {
+		// 			let str = ${func}(${str});
+		// 			browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
+		// 		}, 100);
+		// 	})();`,
+		// 	runAt: "document_idle"
+		// });
 	});
 
 	return new Promise(resolve => {
@@ -2658,10 +3050,20 @@ function userInputCurrentTab(func, str) {
 
 async function isTabScriptable(tabId, frameId = 0) {
 	try {
-		await browser.tabs.executeScript(tabId, {
-			code: `(() => {})();`,
-			frameId: frameId
+
+		await browser.scripting.executeScript({
+			target: {
+				tabId: tabId,
+				frameIds: [frameId]
+			},
+			func: () => (() => {})()
 		});
+
+		// await browser.tabs.executeScript(tabId, {
+		// 	code: `(() => {})();`,
+		// 	frameId: frameId
+		// });
+
 		return true;
 	} catch ( error ) {
 		return false;

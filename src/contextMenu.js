@@ -451,7 +451,7 @@ async function buildContextMenu(searchTerms) {
 		icons: {
 			"16": "icons/settings.svg"
 		},
-		contexts: ["browser_action"],
+		contexts: ["action"],
 		id: "ba_openOptions"
 	});
 }
@@ -646,11 +646,19 @@ async function contextMenuSearch(info, tab) {
 
 	// if chrome && get raw text if available
     try {
-    	let result = await chrome.tabs.executeScript( tab.id, {
-    		code: "window.getSelection().toString();"
-    	});
+    	let result = await browser.scripting.executeScript({
+			target: {
+				tabId: tab.id,
+			},
+			func: () => window.getSelection().toString(),
+		});
 
-    	let selection = result[0];
+
+    	// let result = await chrome.tabs.executeScript( tab.id, {
+    	// 	code: "window.getSelection().toString();"
+    	// });
+
+    	let selection = result[0].result;
     	if ( selection ) info.selectionText = selection;
     } catch (error) {}
 
@@ -714,12 +722,18 @@ async function contextMenuSearch(info, tab) {
 
 	let result = [];
 	try {
-		result = await browser.tabs.executeScript(tab.id, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']" });
+		result = await browser.scripting.executeScript({
+			target: {
+				tabId: tab.id,
+			},
+			func: () => window.CS_HASRUN && window.CS_HASRUN['/inject.js'],
+		});
+		//result = await browser.tabs.executeScript(tab.id, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']" });
 	} catch (error) {
 		console.log(error);
 	}
 	
-	if ( result[0] ) {
+	if ( result[0].result ) {
 		debug('content scripts have run', tab);
 		searchTerms = (context ? window.searchTermsObject[context] : window.searchTerms) || window.searchTerms;;
 	} else {

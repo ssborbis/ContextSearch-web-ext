@@ -316,7 +316,7 @@ function saveOptions(e) {
 function _saveOptions(e) {
 	
 	function onSet() {
-		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 		showSaveMessage(i18n("saved"), null, document.getElementById('saveNoticeDiv'));
 		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);

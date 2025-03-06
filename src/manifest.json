@@ -1,12 +1,12 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
 	"version": "1.47.11",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	
-	"applications": {
+	"browser_specific_settings": {
 		"gecko": {
 			"id": "{5dd73bb9-e728-4d1e-990b-c77d8e03670f}",
 			"strict_min_version": "58.0"
@@ -51,14 +51,14 @@
 	},
 		
 	"permissions": [
-		"<all_urls>",
 		"activeTab",
 		"contextMenus",
 		"storage",
 		"tabs",
 		"search",
 		"unlimitedStorage",
-		"webNavigation"
+		"webNavigation",
+		"scripting"
 	],
 	
 	"optional_permissions": [
@@ -68,32 +68,41 @@
 		"nativeMessaging",
 		"downloads"
 	],
-	
+
+	"host_permissions": [
+	  "<all_urls>"
+	],
+		
 	"icons": {
 		"48": "/icons/logo_notext.png"
 	},
 	
 	"web_accessible_resources": [
-		"/quickmenu.html",
-		"/customSearch.html",
-		"/searchbar.html",
-		"/findbar.html",
-		"icons/search.svg",
-		"icons/crossmark.svg",
-		"icons/alert.svg",
-		"icons/spinner.svg",
-		"icons/code.svg",
-		"icons/logo_notext.svg",
-		"icons/icon.svg",
-		"icons/repeatsearch.svg",
-		"icons/qm.svg",
-		"/pagetiles.html",
-		"/blank.html",
-		"/inject_widgets.css",
-		"/inject_sidebar.css"
+		{
+			"resources": [
+				"/quickmenu.html",
+				"/customSearch.html",
+				"/searchbar.html",
+				"/findbar.html",
+				"icons/search.svg",
+				"icons/crossmark.svg",
+				"icons/alert.svg",
+				"icons/spinner.svg",
+				"icons/code.svg",
+				"icons/logo_notext.svg",
+				"icons/icon.svg",
+				"icons/repeatsearch.svg",
+				"icons/qm.svg",
+				"/pagetiles.html",
+				"/blank.html",
+				"/inject_widgets.css",
+				"/inject_sidebar.css"
+			],
+			"matches": ["<all_urls>"]
+		}
 	],
 
-	"browser_action": {
+	"action": {
 		"default_title": "ContextSearch",
 		"default_icon": {
 			"48": "/icons/logo_notext.png"
