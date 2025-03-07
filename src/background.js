@@ -1027,8 +1027,6 @@ async function notify(message, sender, sendResponse) {
 			
 		case "injectComplete":
 
-			console.log('here');
-
 			if ( userOptions.quickMenu ) {
 				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
 			}	await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
@@ -1561,6 +1559,7 @@ function executeBookmarklet(info) {
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 
+			executeUserScript(tabs[0].id, info.node)
 
 			// await browser.userScripts.register([
 			//   {
@@ -1569,17 +1568,17 @@ function executeBookmarklet(info) {
 			//   }
 			// ]);
 
-			const str = `CS_searchTerms = searchTerms = "${code}";\n\n${searchTerms}`
-			const blob = new Blob([str], {
-				type: "text/javascript",
-			});
+			// const str = `CS_searchTerms = searchTerms = "${code}";\n\n${searchTerms}`
+			// const blob = new Blob([str], {
+			// 	type: "text/javascript",
+			// });
 
-			browser.scripting.executeScript({
-				target: {
-					tabId: tabs[0].id,
-				},
-				files: [URL.createObjectURL(blob)]
-			});
+			// browser.scripting.executeScript({
+			// 	target: {
+			// 		tabId: tabs[0].id,
+			// 	},
+			// 	files: [URL.createObjectURL(blob)]
+			// });
 
 			// browser.scripting.executeScript({
 			// 	target: {
@@ -2703,12 +2702,6 @@ function isAllowedURL(_url) {
 
 async function executeScripts(tabId, options = {}, checkHasRun) {
 
-	const c = () => {
-		if ( options.files && options.files.includes("/inject_quickmenu.js")) {
-			console.log(1);
-		}
-	}
-
 	let blacklist = options.blacklist || [];
 
 	if ( options.allFrames ) {
@@ -2725,8 +2718,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 			r();
 		});
 	}
-
-	c();
 
 	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
@@ -2749,7 +2740,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	if ( !isHTML.shift().result ) return false;
 
 	// filter popup windows 
-	c();
 	if ( window.popupWindows.includes(tab.windowId))
 		blacklist = ['/inject_sidebar.js'];
 
@@ -2778,7 +2768,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 					args: [file]
 				});
 
-				console.log(file, check, tab.url);
 				//let check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
 				
 				if ( check[0].result ) {
@@ -3005,14 +2994,19 @@ function userInputCurrentTab(func, str) {
 			});
 		}
 
-		// UserScript
 		browser.scripting.executeScript({
 			target: {
 				tabId: tab.id
 			},
-			func: (func, str, id, tabId) => {
+			func: (func, message, id, tabId) => {
 				setTimeout(() => {
-					let str = func(str);
+					let str = "";
+
+					if ( func === "prompt")
+						str = prompt(message);
+					if ( func === "confirm")
+						str = confirm(message);
+
 					browser.runtime.sendMessage({output:str, id: id, tabId: tabId});
 				}, 100);
 			},
@@ -3081,5 +3075,41 @@ async function browserSaveAs(url) {
 
 	return browser.downloads.download({url: url, saveAs: true});
 }
+
+
+function registerAllUserScripts() {
+
+	let nodes = findNodes(userOptions.nodeTree, n => n.type === "bookmarklet");
+
+	nodes = new Set(nodes);
+
+	nodes.forEach(n => {
+		let code = 'function ' + n.id + '() { ' + n.searchCode + '}';
+		browser.userScripts.register([
+		{
+			world: "MAIN",
+			id: n.id,
+			js: [{code: code}],
+			matches: ["*://localhost/*"],
+		},
+		]);
+	})
+}
+
+function executeUserScript(tabId, node) {
+	return browser.scripting.executeScript({
+	  target: {
+	    tabId: tabId
+	  },
+		func: (id) => window[id](),
+		args: [node.id],
+		world: "MAIN"
+	});
+}
+
+setTimeout(registerAllUserScripts, 2000);
+
+
+
 
 
