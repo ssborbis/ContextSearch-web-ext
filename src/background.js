@@ -3087,13 +3087,22 @@ function registerAllUserScripts() {
 		let code = 'function ' + n.id + '() { ' + n.searchCode + '}';
 		browser.userScripts.register([
 		{
-			world: "MAIN",
+			world: "USER_SCRIPT",
 			id: n.id,
 			js: [{code: code}],
 			matches: ["*://localhost/*"],
 		},
 		]);
-	})
+
+
+		//const str = `CS_searchTerms = searchTerms = "${s}";\n\n${c}`
+		// const blob = new Blob([code], {
+		// 	type: "text/javascript",
+		// });
+
+		// const url = URL.createObjectURL(blob);
+
+	});
 }
 
 function executeUserScript(tabId, node) {
