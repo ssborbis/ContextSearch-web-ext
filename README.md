@@ -550,7 +550,7 @@ External apps can be launched from ContextSearch web-ext.
 
 You must install the [Native Messaging](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging) script found [here](https://github.com/ssborbis/ContextSearch-Native-App) to use.
 
-Add a new launcher from the Search Engines manager and enter the full command line in the `Path` field. The string `{searchTerms}` will be replaced with the current active selection, or url.
+Add a new launcher from the Search Engines manager and enter the full command line in the `Path` field. The string `{searchTerms}` will be replaced with the current active selection or selected link URL. The string `{url}` will be replaced with the current tab's URL
 
 Some examples:
 
