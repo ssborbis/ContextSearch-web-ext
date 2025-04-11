@@ -2572,5 +2572,26 @@
   },
   "ExpandCollapse": {
     "message": "Développer tout / Réduire tout"
+  },
+  "PopupWindow": {
+    "message": "Fenêtre contextuelle"
+  },
+  "PopupWindowReuseTooltip": {
+    "message": "Activer pour réutiliser la même fenêtre pour tous les résultats de la recherche. \nDésactiver pour créer une nouvelle fenêtre pour chaque recherche."
+  },
+  "KeywordShort": {
+    "message": "Mot-clé"
+  },
+  "Filter": {
+    "message": "Filtre"
+  },
+  "Main": {
+    "message": "Principal"
+  },
+  "Web": {
+    "message": "Web"
+  },
+  "Local": {
+    "message": "Local"
   }
 }
