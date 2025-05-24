@@ -2058,6 +2058,12 @@ async function openSearch(info) {
 		
 		// check for arrays
 		try {
+
+			let folder = {
+				type: "folder",
+				children: []
+			}
+
 			JSON.parse(se.template).forEach( (url, index) => {
 
 				// make sure not the same node
@@ -2078,21 +2084,33 @@ async function openSearch(info) {
 					if ( matches && matches[1] )
 						_info.temporarySearchEngine.queryCharset = matches[1];
 
+					folder.children.push(_info.temporarySearchEngine);
+
 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
 					delete _info.temporarySearchEngine;
 					_info.menuItemId = url;
 					_info.node = findNode(userOptions.nodeTree, n => n.id === url );
+
+					folder.children.push(_info.node);
 				} else {
 					console.log('url invalid', url);
 					return;
 				}
-				openSearch(_info);
+			//	openSearch(_info);
 			});
 			
 			notify({action: "addToHistory", searchTerms: searchTerms});
 
 			// overwrite last multi-child
 			lastSearchHandler(info.menuItemId, info.openMethod);
+
+			console.log(folder);
+
+			console.log(info);
+
+			info.node = folder;
+
+			folderSearch(info, false);
 
 			return;
 			
