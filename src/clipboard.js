@@ -9,12 +9,18 @@ async function copyImage(imageURL){
 // Function to copy the selected rich text (HTML) to the clipboard
 async function copyRichText() {
 
-	let active = document.activeElement;
-
     const selection = document.getSelection();
-    let range = selection.getRangeAt(0);  // Get the selected range
 
-    if (!selection.rangeCount) return; // Exit if no text is selected
+    // no selection. just get the searchTerms
+    if (!selection.rangeCount) {
+    	return navigator.clipboard.write([
+	        new ClipboardItem({
+	        	"text/plain": new Blob([quickMenuObject.searchTerms], { type: "text/plain" }),
+	        })
+	    ]);
+    } 
+
+    let range = selection.getRangeAt(0);  // Get the selected range
 
     // Get the HTML content of the selection
     const htmlContent = selection.toString();
@@ -33,9 +39,11 @@ async function copyRichText() {
     ])
     .then(() => {
         console.log('Rich text copied to clipboard successfully!');
+        return true;
     })
     .catch(err => {
         console.error('Error copying rich text: ', err);
+        return false;
     });
 }
 
