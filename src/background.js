@@ -343,8 +343,11 @@ async function notify(message, sender, sendResponse) {
 			//let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
 
 			let s = await browser.tabs.executeScript(sender.tab.id, {
-				code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
+				//code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
+				code: `quickMenuObject.searchTerms;`
 			});
+
+			console.log("Search terms -> " +s);
 
 			s = s.shift();
 
