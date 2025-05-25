@@ -4,7 +4,7 @@
   },
     
   "extensionDescription": {
-    "message": "Laden Sie Ihre aktuellen Suchmaschinen in ein KontextmenÃ¼, um einfach nach dem markierten Text zu suchen. Kompatibel zu FF 57+. Entwickelt als einfacher Ersatz fÃ¼r Ben Basson's Context Search"
+    "message": "Laden Sie Ihre aktuellen Suchmaschinen in ein Kontextmenü, um einfach nach dem markierten Text zu suchen. Kompatibel zu FF 57+. Entwickelt als einfacher Ersatz für Ben Basson's Context Search"
   },
     
   "Settings": {
@@ -20,8 +20,8 @@
   },
   
    "Menus": {
-    "message": "MenÃ¼s",
-    "description": "Reiterbeschriftung MenÃ¼s"
+    "message": "Menüs",
+    "description": "Reiterbeschriftung Menüs"
   },
   
    "SearchEngines": {
@@ -35,23 +35,23 @@
   },
   
    "ContextMenu": {
-    "message": "KontextmenÃ¼"
+    "message": "Kontextmenü"
   },
   
    "AddCustomSearchMenu": {
-    "message": "Benutzerdefinierte Suche hinzufÃ¼gen aktivieren"
+    "message": "Benutzerdefinierte Suche hinzufügen aktivieren"
   },
   
   "AddCustomSearchMenuTooltip": {
-    "message": "Aktiviert den KontextmenÃ¼punkt \"Benutzerdefinierte Suche hinzufÃ¼gen\" auf INPUT-Elementen. FÃ¼r den seltenen Fall eines versetztes MenÃ¼ kann der Eintrag deaktiviert werden."
+    "message": "Aktiviert den Kontextmenüpunkt \"Benutzerdefinierte Suche hinzufügen\" auf INPUT-Elementen. Für den seltenen Fall eines versetztes Menü kann der Eintrag deaktiviert werden."
   },
 
    "QuickMenu": {
-    "message": "SchnellmenÃ¼"
+    "message": "Schnellmenü"
   },
   
    "QuickMenuNote": {
-    "message": "Das SchnellmenÃ¼ ist auf addons.mozilla.org deaktiviert. Stattdessen wird das KontextmenÃ¼ aktiviert, wenn das SchnellmenÃ¼ nicht geÃ¶ffnet werden kann."
+    "message": "Das Schnellmenü ist auf addons.mozilla.org deaktiviert. Stattdessen wird das Kontextmenü aktiviert, wenn das Schnellmenü nicht geöffnet werden kann."
   },
   
    "SearchActionsHeader": {
@@ -59,27 +59,27 @@
   },
   
    "SearchActionsCurrentTab": {
-    "message": "In aktuellem Tab Ã¶ffnen"
+    "message": "In aktuellem Tab öffnen"
   },
   
    "SearchActionsNewTab": {
-    "message": "In neuem Tab Ã¶ffnen"
+    "message": "In neuem Tab öffnen"
   },
   
    "SearchActionsBackgroundTab": {
-    "message": "In neuem Tab Ã¶ffnen (Hintergrund)"
+    "message": "In neuem Tab öffnen (Hintergrund)"
   },
   
    "SearchActionsBackgroundTabKeepOpen": {
-    "message": "In neuem Tab Ã¶ffnen (Hintergrund) - Menü geöffnet lassen"
+    "message": "In neuem Tab öffnen (Hintergrund) - Menü geöffnet lassen"
   },
   
    "SearchActionsNewWindow": {
-    "message": "In neuem Fenster Ã¶ffnen"
+    "message": "In neuem Fenster öffnen"
   },
   
    "SearchActionsIncognitoWindow": {
-    "message": "In privatem Fenster Ã¶ffnen"
+    "message": "In privatem Fenster öffnen"
   },
   
    "SearchActionsNoAction": {
@@ -115,31 +115,31 @@
   },
   
   "Items": {
-    "message": "EintrÃ¤ge"
+    "message": "Einträge"
   },
 
   "MenuSize": {
-    "message": "MenÃ¼grÃ¶ÃŸe"
+    "message": "Menügröße"
   },
   
    "MenuSizeTooltip": {
-    "message": "Skalierte GrÃ¶ÃŸe des SchnellmenÃ¼s. Werte grÃ¶ÃŸer als 100% vergrÃ¶ÃŸern das gesamte MenÃ¼ (gut fÃ¼r hochauflÃ¶sende Displays)"
+    "message": "Skalierte Größe des Schnellmenüs. Werte größer als 100% vergrößern das gesamte Menü (gut für hochauflösende Displays)"
   },
   
   "IconSize": {
-    "message": "SymbolgrÃ¶ÃŸe"
+    "message": "Symbolgröße"
   },
   
   "IconSizeTooltip": {
-    "message": "Skalierte GrÃ¶ÃŸe der Suchmaschinensymbole. Bei 200% fÃ¼llen die Symbole ihren Container vollstÃ¤ndig."
+    "message": "Skalierte Größe der Suchmaschinensymbole. Bei 200% füllen die Symbole ihren Container vollständig."
   },
   
   "OpeningClosingHeader": {
-    "message": "Ã–ffnen & SchlieÃŸen"
+    "message": "Öffnen & Schließen"
   },
   
   "OpeningClosingDescription": {
-    "message": "Methode zum Ã–ffnen des SchnellmenÃ¼s"
+    "message": "Methode zum Öffnen des Schnellmenüs"
   },
   
    "Auto": {
@@ -147,15 +147,15 @@
   },
   
   "AutoTooltip": {
-    "message": "Bei Textmarkierung automatisch Ã¶ffnen"
+    "message": "Bei Textmarkierung automatisch öffnen"
   },
   
    "EnableOnTextBoxes": {
-    "message": "FÃ¼r Eingabefelder aktivieren"
+    "message": "Für Eingabefelder aktivieren"
   },
   
   "EnableOnTextBoxesTooltip": {
-    "message": "SchnellmenÃ¼ auf TEXTAREA- und INPUT-Elementen aktivieren. Deaktivieren, um unerwÃ¼nschte Einblendungen zu verhindern."
+    "message": "Schnellmenü auf TEXTAREA- und INPUT-Elementen aktivieren. Deaktivieren, um unerwünschte Einblendungen zu verhindern."
   },
   
    "Mouse": {
@@ -163,7 +163,7 @@
   },
   
   "MouseTooltip": {
-    "message": "Text markieren und dann MenÃ¼ per Mausklick Ã¶ffnen"
+    "message": "Text markieren und dann Menü per Mausklick öffnen"
   },
   
   "MouseDescription": {
@@ -175,7 +175,7 @@
   },
   
     "HoldTooltip": {
-    "message": "Das SchnellmenÃ¼ wird geÃ¶ffnet, wenn die ausgewÃ¤hlte Maustaste fÃ¼r ca. 0,25 Sekunden gedrÃ¼ckt wurde."
+    "message": "Das Schnellmenü wird geöffnet, wenn die ausgewählte Maustaste für ca. 0,25 Sekunden gedrückt wurde."
   },
   
    "SearchOnMouseup": {
@@ -183,7 +183,7 @@
   },
   
    "SearchOnMouseupTooltip": {
-    "message": "FÃ¼hrt eine Suche aus dem SchnellmenÃ¼ durch Loslassen statt eines Klicks mit der Maus durch. Beispiel: Mausbutton zum Ã–ffnen des MenÃ¼s geklickt halten und Ã¼ber Suchmaschine loslassen zum Suchen."
+    "message": "Führt eine Suche aus dem Schnellmenü durch Loslassen statt eines Klicks mit der Maus durch. Beispiel: Mausbutton zum Öffnen des Menüs geklickt halten und über Suchmaschine loslassen zum Suchen."
   },
   
    "Click": {
@@ -191,7 +191,7 @@
   },
   
   "ClickTooltip": {
-    "message": "Das SchnellmenÃ¼ Ã¶ffnet sich sofort bei einem Rechtsklick. FÃ¼r das KontextmenÃ¼ muss die Rechte Maustaste dann lange gedrÃ¼ckt werden."
+    "message": "Das Schnellmenü öffnet sich sofort bei einem Rechtsklick. Für das Kontextmenü muss die Rechte Maustaste dann lange gedrückt werden."
   },
   
    "Keyboard": {
@@ -199,35 +199,35 @@
   },
   
   "KeyboardTooltip": {
-    "message": "Text markieren und dann MenÃ¼ per Funktionstaste Ã¶ffnen"
+    "message": "Text markieren und dann Menü per Funktionstaste öffnen"
   },
   
    "ChooseKey": {
-    "message": "Taste wÃ¤hlen"
+    "message": "Taste wählen"
   },
   
   "ChooseKeyTooltip": {
-    "message": "Text markieren und erst nach DrÃ¼cken einer Taste das SchnellmenÃ¼ Ã¶ffnen. Klicken Sie auf die nebenstehende SchaltflÃ¤che und wÃ¤hlen Sie die gewÃ¼nschte Taste."
+    "message": "Text markieren und erst nach Drücken einer Taste das Schnellmenü öffnen. Klicken Sie auf die nebenstehende Schaltfläche und wählen Sie die gewünschte Taste."
   },
   
    "CloseAfterSearch": {
-    "message": "Nach Suche schlieÃŸen"
+    "message": "Nach Suche schließen"
   },
   
   "CloseAfterSearchTooltip": {
-    "message": "Das SchnellmenÃ¼ wird nach einem Klick auf ein Suchsymbol geschlossen. Deaktivieren Sie diese Option, wenn Sie hÃ¤ufig mit mehreren Suchmaschinen suchen oder das MenÃ¼ manuell schlieÃŸen mÃ¶chten. Kann durch 'MenÃ¼ offen halten' unter Suchaktionen aufgehoben werden."
+    "message": "Das Schnellmenü wird nach einem Klick auf ein Suchsymbol geschlossen. Deaktivieren Sie diese Option, wenn Sie häufig mit mehreren Suchmaschinen suchen oder das Menü manuell schließen möchten. Kann durch 'Menü offen halten' unter Suchaktionen aufgehoben werden."
   },
   
    "CloseOnScroll": {
-    "message": "Mittels Scrollen / Mausrad schlieÃŸen"
+    "message": "Mittels Scrollen / Mausrad schließen"
   },
   
    "CloseOnScrollTooltip": {
-    "message": "Das SchnellmenÃ¼ wird beim Scrollen mit den Scrollbalken oder dem Mausrad geschlossen."
+    "message": "Das Schnellmenü wird beim Scrollen mit den Scrollbalken oder dem Mausrad geschlossen."
   },
   
   "MouseHelp": {
-    "message": "Linux- und MacOS X-Anwender mÃ¼ssen mÃ¶glicherweise ui.context_menus.after_mouseup = true in about:config setzen, damit Mausaktionen korrekt funktionieren."
+    "message": "Linux- und MacOS X-Anwender müssen möglicherweise ui.context_menus.after_mouseup = true in about:config setzen, damit Mausaktionen korrekt funktionieren."
   },
 
   "Position": {
@@ -235,7 +235,7 @@
   },
   
   "PositionDescription": {
-    "message": "Festlegen wo das SchnellmenÃ¼ erscheint"
+    "message": "Festlegen wo das Schnellmenü erscheint"
   },
   
    "HorizontalOffset": {
@@ -243,7 +243,7 @@
   },
   
   "HorizontalOffsetTooltip": {
-    "message": "Anzahl der Pixel, um das SchnellmenÃ¼ horizontal zu verschieben. Zahlen grÃ¶ÃŸer als Null bewegen es nach rechts, kleiner als Null nach links."
+    "message": "Anzahl der Pixel, um das Schnellmenü horizontal zu verschieben. Zahlen größer als Null bewegen es nach rechts, kleiner als Null nach links."
   },
 
   "VerticalOffset": {
@@ -251,7 +251,7 @@
   },
   
   "VerticalOffsetTooltip": {
-    "message": "Anzahl der Pixel, um das SchnellmenÃ¼ vertikal zu verschieben. Zahlen grÃ¶ÃŸer als Null bewegen es nach unten, kleiner als Null nach oben."
+    "message": "Anzahl der Pixel, um das Schnellmenü vertikal zu verschieben. Zahlen größer als Null bewegen es nach unten, kleiner als Null nach oben."
   },
 
   "Tools": {
@@ -267,11 +267,11 @@
   },
 
   "tools_Close": {
-    "message": "SchnellmenÃ¼ schlieÃŸen"
+    "message": "Schnellmenü schließen"
   },
   
   "tools_Disable": {
-    "message": "SchnellmenÃ¼ deaktivieren"
+    "message": "Schnellmenü deaktivieren"
   },
 
   "tools_Copy": {
@@ -279,11 +279,11 @@
   },
   
   "tools_OpenAsLink": {
-    "message": "Als Link Ã¶ffnen"
+    "message": "Als Link öffnen"
   },
 
   "tools_Lock": {
-    "message": "SchnellmenÃ¼ offen halten (Mehrfachsuche)"
+    "message": "Schnellmenü offen halten (Mehrfachsuche)"
   },
   
   "ImportExportSettings": {
@@ -299,7 +299,7 @@
   },
   
   "Add": {
-    "message": "HinzufÃ¼gen"
+    "message": "Hinzufügen"
   },
   
   "RemoveAll": {
@@ -315,7 +315,7 @@
   },
   
   "Delete": {
-    "message": "LÃ¶schen"
+    "message": "Löschen"
   },
   
   "SearchEnginesManagerHelp": {
@@ -327,11 +327,11 @@
   },
   
   "ImportDescription": {
-    "message": "Die search.json.mozlz4-Datei aus Ihrem Profilordner wÃ¤hlen."
+    "message": "Die search.json.mozlz4-Datei aus Ihrem Profilordner wählen."
   },
   
   "ImportSelectFile": {
-    "message": "Datei auswÃ¤hlen ..."
+    "message": "Datei auswählen ..."
   },
   
   "AutoImportHeader": {
@@ -343,7 +343,7 @@
   },
   
   "EnableAutoImportTooltip": {
-    "message": "Neue OpenSearch-Engines automatisch in ContextSearch importieren. Nur mÃ¶glich beim Import von OpenSearch-Engines, die Ã¼ber die Ein-Klick-Suchmaschinen-API von Firefox installiert wurden. BenÃ¶tigt eine separate App. Siehe 'Hilfe' fÃ¼r weitere Details"
+    "message": "Neue OpenSearch-Engines automatisch in ContextSearch importieren. Nur möglich beim Import von OpenSearch-Engines, die über die Ein-Klick-Suchmaschinen-API von Firefox installiert wurden. Benötigt eine separate App. Siehe 'Hilfe' für weitere Details"
   },
   
   "ProfilePath": {
@@ -351,7 +351,7 @@
   },
   
   "Verify": {
-    "message": "PrÃ¼fen und Importieren"
+    "message": "Prüfen und Importieren"
   },
   
   "Find": {
@@ -391,7 +391,7 @@
   },
   
   "NameTooltip": {
-    "message": "Eindeutiger Name fÃ¼r diese Suchmaschine"
+    "message": "Eindeutiger Name für diese Suchmaschine"
   },
   
   "Description": {
@@ -431,7 +431,7 @@
   },
   
   "IconTooltip": {
-    "message": "URI des zu verwendenden Symbols. Bilder sollten weniger als 64x64 Pixel und weniger als 10kb groÃŸ sein."
+    "message": "URI des zu verwendenden Symbols. Bilder sollten weniger als 64x64 Pixel und weniger als 10kb groß sein."
   },
   
   "Method": {
@@ -447,7 +447,7 @@
   },
   
   "EncodingTooltip": {
-    "message": "Zeichenkodierung, die fÃ¼r das Suchformular erforderlich ist. Ãœblicherweise UTF-8."
+    "message": "Zeichenkodierung, die für das Suchformular erforderlich ist. Öœblicherweise UTF-8."
   },
   
   "Test": {
@@ -455,15 +455,15 @@
   },
   
   "NewEngineAdded": {
-    "message": "Neue Suchmaschine zu ContextSearch hinzugefÃ¼gt"
+    "message": "Neue Suchmaschine zu ContextSearch hinzugefügt"
   },
   
   "NewEngineAddedTooltip": {
-    "message": "Installieren Sie diese Suchmaschine Ã¼ber eine benutzerdefinierte OpenSearch-API in der Firefox-Suchleiste."
+    "message": "Installieren Sie diese Suchmaschine über eine benutzerdefinierte OpenSearch-API in der Firefox-Suchleiste."
   },
   
   "AlsoAdd": {
-    "message": "Auch als Ein-Klick Suchmaschine hinzufÃ¼gen?"
+    "message": "Auch als Ein-Klick Suchmaschine hinzufügen?"
   },
   
   "CannotCreate": {
@@ -471,7 +471,7 @@
   },
   
   "OpenAdvanced": {
-    "message": "Erweiterte Einstellungen Ã¶ffnen?"
+    "message": "Erweiterte Einstellungen öffnen?"
   },
   
   "DidEngineInstall": {
@@ -487,7 +487,7 @@
   },
   
   "MustImport": {
-    "message": "Wurde eine OpenSearch-Engine installiert, muss diese Ã¼ber den Dateibrowser-Import in ContextSearch importieren werden."
+    "message": "Wurde eine OpenSearch-Engine installiert, muss diese über den Dateibrowser-Import in ContextSearch importieren werden."
   },
   
   "MoreInfo": {
@@ -499,7 +499,7 @@
   },
   
   "InstallOfficialTooltip": {
-    "message": "Installieren Sie die offizielle OpenSearch-Engine fÃ¼r die aktuelle Website."
+    "message": "Installieren Sie die offizielle OpenSearch-Engine für die aktuelle Website."
   },
   
   "FindMycroftTooltip": {
@@ -515,7 +515,7 @@
   },
   
   "LoadingRemoteContentFail": {
-    "message": "Fehler beim Laden von %1 Symbol(en). Dies kann passieren, wenn der Schutz vor AktivitÃ¤tenverfolgung aktiviert ist."
+    "message": "Fehler beim Laden von %1 Symbol(en). Dies kann passieren, wenn der Schutz vor Aktivitätenverfolgung aktiviert ist."
   },
   
   "LoadingRemoteContentTimeout": {
@@ -527,7 +527,7 @@
   },
   
   "EnterUniqueName": {
-    "message": "Geben Sie einen eindeutigen Namen fÃ¼r diese Suchmaschine ein."
+    "message": "Geben Sie einen eindeutigen Namen für diese Suchmaschine ein."
   },
   
   "EngineExists": {
@@ -535,7 +535,7 @@
   },
   
   "TemplateMissingeMessage": {
-    "message": "Eine Vorlage fÃ¼r dieses Suchformular konnte nicht gefunden werden. Sie kÃ¶nnen versuchen, eine Suche durchzufÃ¼hren und den resultierenden URL hierhin zu kopieren, wobei Sie Ihre Suchbegriffe durch {searchTerms} ersetzen."
+    "message": "Eine Vorlage für dieses Suchformular konnte nicht gefunden werden. Sie können versuchen, eine Suche durchzuführen und den resultierenden URL hierhin zu kopieren, wobei Sie Ihre Suchbegriffe durch {searchTerms} ersetzen."
   },
   
   "TemplateIncludeError": {
@@ -543,7 +543,7 @@
   },
 
   "TemplateURLError": {
-    "message": "Vorlage muss ein gÃ¼ltiger URL sein."
+    "message": "Vorlage muss ein gültiger URL sein."
   },
 
   "DescriptionEmptyError": {
@@ -563,7 +563,7 @@
   },
   
   "IconURLError": {
-    "message": "Symbol muss ein gÃ¼ltiger URL sein."
+    "message": "Symbol muss ein gültiger URL sein."
   },
   
   "IconLoadError": {
@@ -575,7 +575,7 @@
   },
   
   "BookmarksPermissionMessage": {
-    "message": "Nach dem SchlieÃŸen dieser Aufforderung erhalten Sie eine Aufforderung, eine neue Erlaubnis fÃ¼r \"Lesezeichen\" zu akzeptieren.\n\nDurch das Akzeptieren wird unter dem \"Andere Lesezeichen\" Ordner ein neuer Ordner \"ContextSearch Menu\" hinzugefÃ¼gt, der Ihre aktuellen Suchmaschinen als Lesezeichen enthÃ¤lt. Dort kÃ¶nnen Sie Trennzeichen und Unterordner zur Gruppierung der Lesezeichen einfÃ¼gen.\n\nBenennen Sie die Suchmaschinen-Lesezeichen nicht um, da sie ansonsten nicht mehr funktionieren. GelÃ¶schte Lesezeichen kÃ¶nnen Ã¼ber die ContextSearch-Optionen unter Suchmaschinen wieder hinzugefÃ¼gt werden. Durch Anklicken der Lesezeichensymbole in der Suchmaschinenliste kÃ¶nnen Sie Lesezeichen hinzufÃ¼gen oder entfernen."
+    "message": "Nach dem Schließen dieser Aufforderung erhalten Sie eine Aufforderung, eine neue Erlaubnis für \"Lesezeichen\" zu akzeptieren.\n\nDurch das Akzeptieren wird unter dem \"Andere Lesezeichen\" Ordner ein neuer Ordner \"ContextSearch Menu\" hinzugefügt, der Ihre aktuellen Suchmaschinen als Lesezeichen enthält. Dort können Sie Trennzeichen und Unterordner zur Gruppierung der Lesezeichen einfügen.\n\nBenennen Sie die Suchmaschinen-Lesezeichen nicht um, da sie ansonsten nicht mehr funktionieren. Gelöschte Lesezeichen können über die ContextSearch-Optionen unter Suchmaschinen wieder hinzugefügt werden. Durch Anklicken der Lesezeichensymbole in der Suchmaschinenliste können Sie Lesezeichen hinzufügen oder entfernen."
   },
   
   "NativeAppImportError": {
@@ -587,7 +587,7 @@
   },
   
   "InvalidJSONAlert": {
-    "message": "Keine gÃ¼ltige JSON-Datei."
+    "message": "Keine gültige JSON-Datei."
   },
   
   "ImportSuccessful": {
@@ -599,11 +599,11 @@
   },
   
   "ErrorParsing": {
-    "message": "Verarbeitungsfehler fÃ¼r %1"
+    "message": "Verarbeitungsfehler für %1"
   },
   
   "AddCustomSearch": {
-    "message": "Benutzerdefinierte Suche hinzufÃ¼gen"
+    "message": "Benutzerdefinierte Suche hinzufügen"
   },
   
   "SearchFor": {
@@ -624,7 +624,7 @@
   },
   
   "AddSearchEngines": {
-    "message": "+ Suchmaschinen hinzufÃ¼gen",
+    "message": "+ Suchmaschinen hinzufügen",
     "description": "title in context menu when no search engines installed"
   },
   
@@ -635,7 +635,7 @@
   
   "PositionRelativeToCursor": {
     "message": "%1 %2 vom Mauszeiger",
-    "description": "Die Position des SchnellmenÃ¼s relativ zum Mauszeiger. %1 ist oben|unten, %2 is links|mitte|rechts"
+    "description": "Die Position des Schnellmenüs relativ zum Mauszeiger. %1 ist oben|unten, %2 is links|mitte|rechts"
   },
   
   "top": {
@@ -664,7 +664,7 @@
   },
   
   "NameInvalid": {
-    "message": "Name ungÃ¼ltig",
+    "message": "Name ungültig",
     "description": "short error for bad engine name"
   },
   
@@ -677,7 +677,7 @@
   },
   
   "BackspaceKey": {
-    "message": "RÃ¼ck"
+    "message": "Rück"
   },
   
   "EnterKey": {
@@ -753,7 +753,7 @@
   },
   
   "SelectKey": {
-    "message": "Taste wÃ¤hlen"
+    "message": "Taste wählen"
   },
   
   "NumLockKey": {
@@ -765,7 +765,7 @@
   },
   
   "Validating": {
-    "message": "ÃœberprÃ¼fe ..."
+    "message": "Überprüfe ..."
   },
 
   "SearchBar": {
@@ -773,7 +773,7 @@
   },
   
   "SearchBarTooltip": {
-    "message": "Festlegen, wo die Suchleiste im SchnellmenÃ¼ angezeigt werden soll."
+    "message": "Festlegen, wo die Suchleiste im Schnellmenü angezeigt werden soll."
   },
   
   "hidden": {
@@ -781,7 +781,7 @@
   },
   
   "KeepMenuOpen": {
-    "message": "SchnellmenÃ¼ offen halten"
+    "message": "Schnellmenü offen halten"
   },  
   
   "Search": {
@@ -800,7 +800,7 @@
   },
   
   "HotkeyTooltip": {
-    "message": "Ã–ffnet das SchnellmenÃ¼ jederzeit per Tastenkombination.",
+    "message": "Öffnet das Schnellmenü jederzeit per Tastenkombination.",
     "description": "description for Hotkey option"
   },
   
@@ -810,7 +810,7 @@
   },
   
   "FocusTooltip": {
-    "message": "Fokus auf Suchleiste setzen, wenn das SchnellmenÃ¼ geÃ¶ffnet wird (kopieren via STRG+C ist dann nur mÃ¶glich, wenn \"Text in Suchleiste markieren\" auch aktiviert wird).",
+    "message": "Fokus auf Suchleiste setzen, wenn das Schnellmenü geöffnet wird (kopieren via STRG+C ist dann nur möglich, wenn \"Text in Suchleiste markieren\" auch aktiviert wird).",
     "description": "description for focus"
   },
   
@@ -819,7 +819,7 @@
   },
   
   "SelectTextTooltip": {
-    "message": "Markiert den gesamten Text in der Suchleiste, wenn diese den Fokus erhÃ¤lt.",
+    "message": "Markiert den gesamten Text in der Suchleiste, wenn diese den Fokus erhält.",
     "description": "description for select text in search bar"
   },
   
