@@ -2049,6 +2049,11 @@ async function openSearch(info) {
 		return executeExternalProgram(info);
 	}
 
+	// from multisearch folderSearch()
+	if ( node && node.type === "temporarySearchEngine" ) {
+		temporarySearchEngine = node;
+	}
+
 	var se = (node && node.id ) ? temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
 
 	if ( !se && !openUrl) return false;
@@ -2068,35 +2073,34 @@ async function openSearch(info) {
 
 				// make sure not the same node
 				if ( url === node.id ) return;
-
-				let _info = Object.assign({multiURL: true}, info);
-				_info.openMethod = index ? "openBackgroundTab" : _info.openMethod;
 				
 				// if url and not ID
 				if ( isValidHttpUrl(url) ) {
-					
-					_info.temporarySearchEngine = Object.assign({}, se);
-					_info.temporarySearchEngine.template = url;
+
+					let tmp = {
+						template: url,
+						type: "temporarySearchEngine",
+						title: "multisearch (" + index + ")",
+						method: se.method,
+						id: gen()
+					}
 
 					// parse encoding for multi-URLs
 					let matches = /{encoding=(.*?)}/.exec(url);
 		
 					if ( matches && matches[1] )
-						_info.temporarySearchEngine.queryCharset = matches[1];
+						tmp.queryCharset = matches[1];
 
-					folder.children.push(_info.temporarySearchEngine);
+					folder.children.push(tmp);
 
 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
-					delete _info.temporarySearchEngine;
-					_info.menuItemId = url;
-					_info.node = findNode(userOptions.nodeTree, n => n.id === url );
 
-					folder.children.push(_info.node);
+					let n = findNode(userOptions.nodeTree, n => n.id === url );
+					folder.children.push(n);
 				} else {
 					console.log('url invalid', url);
 					return;
 				}
-			//	openSearch(_info);
 			});
 			
 			notify({action: "addToHistory", searchTerms: searchTerms});
@@ -2105,8 +2109,6 @@ async function openSearch(info) {
 			lastSearchHandler(info.menuItemId, info.openMethod);
 
 			console.log(folder);
-
-			console.log(info);
 
 			info.node = folder;
 
