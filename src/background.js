@@ -2094,8 +2094,14 @@ async function openSearch(info) {
 					folder.children.push(tmp);
 
 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
+					
+					// copy nodes to prevent overwriting hidden attribute
+					let n = JSON.parse(JSON.stringify(findNode(userOptions.nodeTree, n => n.id === url )));
+					
+					// include hidden engines in the multisearch
+					if (userOptions.multisearchIncludeHidden )
+						n.hidden = false;
 
-					let n = findNode(userOptions.nodeTree, n => n.id === url );
 					folder.children.push(n);
 				} else {
 					console.log('url invalid', url);
