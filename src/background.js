@@ -829,17 +829,20 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			
 		case "getTabQuickMenuObject":
-				return Promise.race([
-					new Promise(r => {
-						try {
-							browser.tabs.executeScript(sender.tab.id, {
-								code: `quickMenuObject;`,
-								runAt: "document_end"
-							}).then(result => r(result));
-					} catch (error) { r(null); }}),
-					new Promise(r => setTimeout(r, 250))
-				])
-					.then( result => result ? result.shift() : null );
+
+			if ( !await isTabScriptable(sender.tab.id) ) return null;
+
+			return Promise.race([
+				new Promise(r => {
+					try {
+						browser.tabs.executeScript(sender.tab.id, {
+							code: `quickMenuObject;`,
+							runAt: "document_end"
+						}).then(result => r(result));
+				} catch (error) { r(null); }}),
+				new Promise(r => setTimeout(r, 250))
+			])
+				.then( result => result ? result.shift() : null );
 		
 		case "addToHistory": {
 
@@ -2686,12 +2689,16 @@ function userInputCurrentTab(func, str) {
 }
 
 async function isTabScriptable(tabId, frameId = 0) {
+
+	//let tab = await browser.tabs.get(tabId);
 	try {
-		await browser.tabs.executeScript(tabId, {
-			code: `(() => {})();`,
+		let result = await browser.tabs.executeScript(tabId, {
+			code: `(() => true)();`,
 			frameId: frameId
-		});
-		return true;
+		}).then(r => r.shift());
+
+		if ( result === true ) return true;
+		else return false;
 	} catch ( error ) {
 		return false;
 	}
