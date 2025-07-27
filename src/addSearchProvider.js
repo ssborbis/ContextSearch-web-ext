@@ -37,7 +37,8 @@ function addSearchProvider(url) {
 	img.style.width = "200px";
 	div.appendChild(img);
 	div.appendChild(document.createElement('hr'));
-	div.appendChild(document.createTextNode(i18n("addusingfirefoxsearchbar")));
+
+	div.appendChild(document.createTextNode(browser.i18n.getMessage("addusingfirefoxsearchbar")));
 	
 	let cb = document.createElement('input');
 	cb.type = "checkbox";
@@ -48,7 +49,7 @@ function addSearchProvider(url) {
 	div.appendChild(document.createElement('br'));
 	div.appendChild(document.createElement('br'));
 	div.appendChild(cb);
-	div.appendChild(document.createTextNode(i18n("dontShowAgain")));
+	div.appendChild(document.createTextNode(browser.i18n.getMessage("dontShowAgain")));
 	
 	document.body.appendChild(div);
 	div.onclick = () => {
