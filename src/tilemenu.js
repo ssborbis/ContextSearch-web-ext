@@ -112,6 +112,7 @@ function getSearchAction(e, isFolder) {
 		for ( let key in defaultSearchActions ) {
 			defaultSearchActions[key].action = userOptions[key];
 			let sa = defaultSearchActions[key];
+
 			if ( isSearchAction(sa, e) && isFolder === sa.folder ) {
 				// console.log(key, sa.action);
 				return sa;
@@ -125,6 +126,9 @@ function getSearchAction(e, isFolder) {
 			return sa;
 		}
 	}
+
+	console.error("no search action associated with this button combination")
+	return null;
 }
 
 function getSearchActions(e, isFolder, allEvents) {
