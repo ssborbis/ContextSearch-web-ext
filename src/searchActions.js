@@ -28,9 +28,9 @@ for ( let key in defaultSearchActions ) {
 	defaultSearchActions[key] = Object.assign(Object.assign({}, defaultSearchAction), defaultSearchActions[key]);
 }
 
-function isSearchAction(g, e, allEvents) {
+function isSearchAction(g, e, allEvents = false) {
 
-	allEvents = allEvents || false;
+	//allEvents = allEvents || false;
 
 	return (
 		e.altKey === g.altKey &&
@@ -40,6 +40,7 @@ function isSearchAction(g, e, allEvents) {
 		g.button === e.button &&
 		(
 			!allEvents ? (
+				(e.detail === 0 && userOptions.quickMenuSearchOnMouseUp ) ||
 				(e.detail === 1 && g.event !== 'dblclick') ||
 				(e.detail === 2 && g.event === 'dblclick')
 			) : true
