@@ -49,6 +49,9 @@ if ( browser.contextMenus ) // catch android
 // domain follower highlighting
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
+	// skip data URIs
+	if ( tab.url.startsWith("data:")) return;
+
 	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
 
 	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
@@ -1857,6 +1860,9 @@ function lastSearchHandler(id, method) {
 
 function isValidHttpUrl(str) {
 	let url;
+
+	// skip data URIs
+	if ( str.startsWith("data:")) return false;
 
 	try {
 		url = new URL(str);

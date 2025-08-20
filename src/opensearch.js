@@ -158,6 +158,10 @@ function getDomainPaths(_url) {
 	let url;
 	
 	if ( typeof _url === 'string' ) {
+
+		// skip data URIs
+		if ( _url.startsWith("data:")) return [];
+		
 		try {
 			url = new URL(_url);
 		} catch (error) {
