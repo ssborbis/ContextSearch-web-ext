@@ -2590,5 +2590,8 @@
   },
   "Local": {
     "message": "Local"
+  },
+  "SetAsDefault": {
+    "message": "Set As Default"
   }
 }

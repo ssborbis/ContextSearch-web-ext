@@ -428,18 +428,43 @@ async function makeQuickMenu(options) {
 	qm.addEventListener("mouseup", e => {
 		if ( qm === e.target ) mouseClickBack(e);
 	});
+
+	qm.getSelectedTile = () => {
+		//|| qm.querySelector('div[data-id]') 
+		return qm.querySelector('div.selectedFocus') || qm.querySelector('div.selectedNoFocus') || null;	
+	}
+
+	qm.getDefaultTile = () => {
+		// tile with defaultEngine or first tile with id
+		return qm.querySelector(`div[data-id="${userOptions.defaultEngine}"]`) || qm.querySelector('div[data-id]');
+	}
+
+	qm.getDefaultNode = () => {
+		if ( !userOptions.defaultEngine || userOptions.defaultEngine === "" ) return null;
+		return findNode(qm.rootNode, n => n.id === userOptions.defaultEngine);
+	}
 	
 	// enter key invokes search
 	document.addEventListener('keydown', e => {
 		if ("Enter" === e.key || ( " " === e.key && e.target === qm ) ) {
 
-			let div = qm.querySelector('div.selectedFocus') || qm.querySelector('div.selectedNoFocus') || qm.querySelector('div[data-id]');
+			let div = qm.getSelectedTile() || qm.getDefaultTile();
 			
-			if (!div) return;
-			
-			div.parentNode.lastMouseDownTile = div;
-			
-			div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+			if (div) {
+				div.parentNode.lastMouseDownTile = div;
+				div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+			} else {
+				let node = qm.getDefaultNode();
+
+				if ( node ) {
+					search({
+						node: node,
+						openMethod: userOptions.quickMenuLeftClick
+					});
+				} else {
+					console.log("no default engine found");
+				}
+			}
 		}
 
 		// backspace triggers Back event
@@ -450,12 +475,13 @@ async function makeQuickMenu(options) {
 
 	// tab and arrow keys move selected search engine
 	sb.addEventListener('focus', () => {
-		
 		let div = qm.querySelector('.selectedFocus');
 		if (div) div.classList.remove('selectedFocus');
 		
 		delete sb.selectedIndex;
 		
+		// opening a subfolder selects the data-selectfirst element ( as set in openFolder )
+		// otherwise, set to the default engine
 		div = qm.querySelector('div[data-selectfirst]') || qm.querySelector('div[data-id]');
 		if (div) {
 			sb.selectedIndex = [].indexOf.call(qm.querySelectorAll('div[data-id]'), div);
@@ -2407,6 +2433,11 @@ function nodeToTile( node ) {
 
 	// build menu with hidden engines for show/hide tool
 	if ( node.hidden ) tile.style.display = 'none';
+
+	// flag the default engine for sb focus
+	if ( node.id == userOptions.defaultEngine )
+		tile.dataset.selectfirst = "true";
+
 	
 	return tile;
 }
