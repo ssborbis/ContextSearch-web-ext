@@ -346,5 +346,6 @@ const defaultUserOptions = {
 	quickMenuReuseVsClose: false,
 	contextMenuOnMouseDown: false,
 	resultsNavigatorSkipMenu: false,
-	multisearchIncludeHidden: false
+	multisearchIncludeHidden: false,
+	defaultEngine: ""
 };

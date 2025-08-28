@@ -32,6 +32,8 @@ function buildSearchEngineContainer() {
 		})
 	})();
 
+
+
 	function traverse(node, parent) {	
 
 		if ( !node ) {
@@ -129,6 +131,8 @@ function buildSearchEngineContainer() {
 			li.addEventListener('dblclick', _edit);
 
 			function _edit() {
+
+				debug(node.id);
 
 				let edit_form = createEditForm({
 					cloneOf: "editSearchEngineForm",
@@ -949,6 +953,8 @@ function buildSearchEngineContainer() {
 
 			// });
 		}
+
+		markAsDefault(li);
 		
 		// add hotkeys for some node types
 		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {		
@@ -1901,12 +1907,23 @@ function buildSearchEngineContainer() {
 			
 		});
 
+		let setAsDefault = createMenuItem(i18n('SetAsDefault'), browser.runtime.getURL('icons/star.svg'));	
+		setAsDefault.addEventListener('click', () => {
+			
+			userOptions.defaultEngine = li.node.id;
+			$('#defaultEngine').value = userOptions.defaultEngine;
+			saveOptions();
+			markAsDefault(li);
+			closeContextMenus();
+			
+		});
+
 		let cbs = document.querySelectorAll('.selectCheckbox:checked');
 
 		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete, exportNodes].forEach( el => {
+		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete, exportNodes, setAsDefault].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
@@ -1914,7 +1931,7 @@ function buildSearchEngineContainer() {
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
-			[edit, newFolder, newEngine, newSeparator, newScript, copy, newExternalProgram, newTool].forEach( el => {
+			[edit, newFolder, newEngine, newSeparator, newScript, copy, newExternalProgram, newTool, setAsDefault].forEach( el => {
 				el.disabled = true;
 				el.style.opacity = .5;
 			});
@@ -2858,4 +2875,20 @@ function createEditForm(o) {
 	if ( firstTab ) firstTab.click();
 
 	return _form;
+}
+
+function markAsDefault(li) {
+	if ( li.node.id === userOptions.defaultEngine ) {
+
+		let marker = document.querySelector('.defaultEngineMarker');
+		if ( marker ) marker.parentNode.removeChild(marker);
+
+		let s = document.createElement("span");
+		s.textContent = "★";
+		s.className = "defaultEngineMarker";
+		//s.title = "default engine";
+
+		let label = li.querySelector('.label');
+		label.parentNode.insertBefore(s, label.nextSibling);
+	}
 }
