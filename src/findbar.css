@@ -14,19 +14,22 @@ BODY, HTML {
 	user-select:none;
 	height:31px;
 	padding-top: 5px;
+	display:flex;
 }
 #findbar > * {
 	display:inline-block;
 }
+
 #searchBar {
 	width: 275px;
 	border:1px solid #888;
 	height:24px;
 	padding:0 24px 0 24px;
-	margin-left:4px;
+	margin:0 4px;
 	user-select:text;
 	border-radius:2px 0 0 2px;
 	vertical-align:middle;
+	flex-grow:1;
 }
 #close {
 	vertical-align:middle;
@@ -76,8 +79,8 @@ INPUT:checked + .optionLabel {
 #searchIcon, #clearSearchBarButton {
 	position:absolute;
 	z-index:2;
-	left:60px;
-	top:12px;
+	/*left:60px;*/
+	top:6px;
 	height:14px;
 	width:14px;
 	vertical-align:middle;
@@ -88,8 +91,9 @@ INPUT:checked + .optionLabel {
 	display:none;
 }
 #clearSearchBarButton {
-	left:360px;
+	right:24px;
 	opacity:.5;
+	position:relative;
 }
 LABEL .tool {
 	width:20px;
