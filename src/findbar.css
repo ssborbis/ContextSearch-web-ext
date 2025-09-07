@@ -12,14 +12,17 @@ BODY, HTML {
 	font-family:Arial;
 	font-weight:600;
 	user-select:none;
-	height:31px;
-	padding-top: 5px;
+	height:32px;
+	padding: 2px;
 	display:flex;
+	align-items:center;
 }
 #findbar > * {
 	display:inline-block;
 }
-
+#findbar #handle {
+	top:0;
+}
 #searchBar {
 	width: 275px;
 	border:1px solid #888;
@@ -46,7 +49,6 @@ BODY, HTML {
 	padding:0 6px;
 }
 #previous, #next {
-	vertical-align:middle;
 	margin-left:-1px;
 }
 #next {
@@ -79,11 +81,8 @@ INPUT:checked + .optionLabel {
 #searchIcon, #clearSearchBarButton {
 	position:absolute;
 	z-index:2;
-	/*left:60px;*/
-	top:6px;
 	height:14px;
 	width:14px;
-	vertical-align:middle;
 	opacity:.5;
 }
 #searchIcon {
