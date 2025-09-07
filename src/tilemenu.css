@@ -31,6 +31,8 @@ BODY {
 	position:relative;
 /*	transition: opacity .5s ease .25s;*/
 	transition: width .15s, height .15s;
+	border:1px solid #9abad2;
+	border-radius:10px;
 	overflow: hidden;
 }
 .selectedFocus {
