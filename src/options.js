@@ -1107,17 +1107,19 @@ function buildImportExportButtons() {
 
 					$('#main').classList.add('blur');
 
-					let choice1 = await new Promise( res => {
-						$('#importModal').classList.remove('hide');
+					// let choice1 = await new Promise( res => {
+					// 	$('#importModal').classList.remove('hide');
 
-						$('#importModal .replace').addEventListener('click', e => res("replace"));
-						$('#importModal .merge').addEventListener('click', e => res("merge"));
-						$('#importModal .cancel').addEventListener('click', e => res("cancel"));
-					});
-					$('#importModal').classList.add('hide');
+					// 	$('#importModal .replace').addEventListener('click', e => res("replace"));
+					// 	$('#importModal .merge').addEventListener('click', e => res("merge"));
+					// 	$('#importModal .cancel').addEventListener('click', e => res("cancel"));
+					// });
 
-					if ( choice1 === "cancel" ) return;
-					if ( choice1 === "merge" ) {
+					// $('#importModal').classList.add('hide');
+
+					// if ( choice1 === "cancel" ) return;
+					// if ( choice1 === "merge" ) {
+					{
 						await new Promise( res => {
 							$('#importModalCustom').classList.remove('hide');
 							$('#importModalCustom .ok').addEventListener('click', e => res("replace"));
@@ -1147,12 +1149,45 @@ function buildImportExportButtons() {
 
 							})
 
-							left_browser.appendChild(makeFolderBrowser(copy.nodeTree));
+							//left_browser.appendChild(makeFolderBrowser(copy.nodeTree));
+							left_browser.appendChild(makeFolderBrowser(userOptions.nodeTree));
 							right_browser.appendChild(makeFolderBrowser({type: "folder", title:"/", id: gen(), children: []}));
 
 							left_browser.querySelectorAll('li').forEach( li => {
 								li.classList.add('new');
+
+								// checkboxes
+								{
+									let cb = document.createElement('input');
+									cb.type = 'checkbox';
+									cb.classList.add('selectCheckbox', 'showCheckboxes');
+
+									cb.addEventListener('change', e => e.stopPropagation())
+
+									li.insertBefore(cb, li.firstChild);
+
+									// header.addEventListener('mousedown', e => {
+									// 	window.mouseDownTimer = setTimeout(() => {
+									// 		// class bound to container to affect all boxes
+									// 		$('managerContainer').classList.add('showCheckboxes');
+									// 	}, 1000);
+									// });
+
+									// header.addEventListener('click', e => {
+
+									// 	// prevents double action / no change
+									// 	if ( e.target === cb ) return;
+
+									// 	// check box if displayed
+									// 	if ( $('managerContainer').classList.contains('showCheckboxes'))
+									// 		cb.checked = !cb.checked;
+									// })
+
+								}
+
 								li.addEventListener('click', e => {
+
+									return;
 									if ( e.target !== li ) return;
 
 									let parent = li.closest('.folderBrowser');
