@@ -314,7 +314,7 @@
 				background-color: #eee;
 				border-radius: 50%;
 				border:1px solid grey;
-				display:inline-block;
+				display:flex;
 
 			}
 			
@@ -354,7 +354,6 @@
 				border-width: 0 3px 3px 0;
 				transform: rotate(45deg);
 				position: relative;
-				top: -2px;
 			}
 			.checkboxImage {
 				height:0;
@@ -3045,11 +3044,11 @@
 				<div class="tabcontent" data-tabgroup="main_nav" id="hotkeysTab">
 					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />$</div>
 										
-					<section style="min-width:720px">
-					<p class="header1" data-i18n="Hotkeys">$</p>
+					<section>
+						<p class="header1" data-i18n="Shortcuts">$</p>
 
+					<p class="header2" data-i18n="SearchEngines">$</p>
 					
-						
 					<table class="searchActions">
 					<tr>
 						<td></td>
@@ -3083,10 +3082,8 @@
 					</tr>
 					</table>
 					
-					</section>
-
-					<section>
-						<p class="header1" data-i18n="Shortcuts">$</p>
+					<p class="header2" data-i18n="General">$</p>
+					
 						<table style="width:100%;font-weight:normal" id="shortcutTable"></table>
 					</section>
 				</div>
