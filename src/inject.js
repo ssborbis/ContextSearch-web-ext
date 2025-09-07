@@ -490,6 +490,9 @@ function getSearchTermsForHotkeys(e) {
 
 function createShadowRoot() {
 
+	let sr = document.querySelector('contextsearch-widgets')?.shadowRoot;
+	if ( sr ) return sr;
+
 	const addStyling = el => {
 
 		const cssFiles = ["/inject_widgets.css", "/inject_sidebar.css" ];
@@ -505,21 +508,22 @@ function createShadowRoot() {
 	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {
 		document.body.getElementById = (id) => document.querySelector('#' + id);
 		addStyling(document.head);
-		return;
+		return document.body;
 	}
 
-	if ( document.querySelector('contextsearch-widgets')) return;
+	if ( !document.querySelector('contextsearch-widgets')) {
+		let div = document.createElement('contextsearch-widgets');
+		div.id = "contextsearch-widgets";
+		document.documentElement.appendChild(div);
+		div.attachShadow({mode: 'open'});
+		div.shadowRoot.innerHTML = `
+	      <style>
+	        :host { all: initial !important; }
+	      </style>`;
 
-	let div = document.createElement('contextsearch-widgets');
-	div.id = "contextsearch-widgets";
-	document.documentElement.appendChild(div);
-	div.attachShadow({mode: 'open'});
-	div.shadowRoot.innerHTML = `
-      <style>
-        :host { all: initial !important; }
-      </style>`;
-
-	addStyling(div.shadowRoot);
+		addStyling(div.shadowRoot);
+		return div.shadowRoot;
+	} 
 }
 
 function getShadowRoot() {
@@ -527,7 +531,7 @@ function getShadowRoot() {
 	let div = document.querySelector('contextsearch-widgets');
 
 	if ( div && div.shadowRoot ) return div.shadowRoot;
-	else return document.body || null;
+	else return createShadowRoot();
 }
 
 // track mouse position
@@ -598,5 +602,4 @@ document.addEventListener("fullscreenchange", e => {
 createShadowRoot();
 setZoomProperty();
 Shortcut.addShortcutListener();
-
 sendMessage({action: "injectComplete"});
