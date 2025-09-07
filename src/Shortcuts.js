@@ -276,8 +276,8 @@ class Shortcut {
 			action:"openOptions",
 			key: "O",
 			ctrl: true,
-			alt: false,
-			shift:true,
+			alt: true,
+			shift:false,
 			meta:false,
 			id: 9
 		},{
@@ -310,16 +310,18 @@ class Shortcut {
 			shift:false,
 			meta:false,
 			id: 12
-		},{
-			name:"Menu → Sidebar → Minify",
-			action:"minifySideBar",
-			key: "M",
-			ctrl: true,
-			alt: false,
-			shift:true,
-			meta:false,
-			id: 13
-		},{
+		},
+		// ,{
+		// 	name:"Menu → Sidebar → Minify",
+		// 	action:"minifySideBar",
+		// 	key: "M",
+		// 	ctrl: true,
+		// 	alt: false,
+		// 	shift:true,
+		// 	meta:false,
+		// 	id: 13
+		// },
+		{
 			name:"Last Used Search Engine",
 			action:(e) => {
 				let searchTerms = getSearchTermsForHotkeys(e);
