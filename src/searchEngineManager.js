@@ -742,7 +742,7 @@ function buildSearchEngineContainer() {
 			
 			// indicate as a firefox one-click
 			let ff = document.createElement('firefox-icon');
-			ff.title = 'Firefox One-Click Search Engine';
+			ff.title = 'Firefox Search Engine';
 
 			header.appendChild(ff);
 			

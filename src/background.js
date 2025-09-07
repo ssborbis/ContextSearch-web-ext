@@ -1,5 +1,4 @@
 
-
 // context menu entries need to be tracked to be updated
 window.contextMenuMatchRegexMenus = [];
 window.tabTerms = [];
@@ -12,6 +11,8 @@ var userOptions = {};
 var highlightTabs = [];
 var platformInfo = null;
 var Encoding = null;
+
+var isLoadingUserOptions = false;
 
 (async () => {
 	Encoding = await import("/lib/encoding.min.js");
@@ -28,18 +29,18 @@ var tabHighlighter = new TabHighlighter();
 
 // init
 (async () => {
+	isLoadingUserOptions = true;
 	await loadUserOptions();
-
 	debug("userOptions loaded. Updating objects");
 	userOptions = await updateUserOptionsVersion(userOptions);
-
-	await browser.storage.local.set({"userOptions": userOptions});
 	await repairNodeTree(userOptions.nodeTree, false);
+	await browser.storage.local.set({"userOptions": userOptions});
 	await checkForOneClickEngines();
 	await buildContextMenu();
 	resetPersist();
 	setIcon();
 	document.dispatchEvent(new CustomEvent("loadUserOptions"));
+	isLoadingUserOptions = false;
 })();
 
 // listeners
@@ -1021,6 +1022,9 @@ async function notify(message, sender, sendResponse) {
 
 		case "injectContentScripts":
 
+			while ( isLoadingUserOptions )
+				await new Promise(r => setTimeout(r, 50));
+
 			if ( isAllowedURL(sender.tab.url)) {
 				injectContentScripts(sender.tab, sender.frameId);
 			} else {
@@ -1032,8 +1036,9 @@ async function notify(message, sender, sendResponse) {
 
 			if ( userOptions.quickMenu ) {
 				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
-			}	await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
-			
+				await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
+			}
+
 			if ( userOptions.pageTiles.enabled ) {
 				await executeScripts(sender.tab.id, {files: ["/inject_pagetiles.js"], frameId: sender.frameId}, true);
 				await executeScripts(sender.tab.id, {files: ["/dragshake.js"], frameId: 0}, true);
@@ -2545,6 +2550,7 @@ async function checkForOneClickEngines() {
 				title: engine.name,
 				icon: engine.favIconUrl || browser.runtime.getURL('icons/search.svg'),
 				hidden: false,
+				contexts: 32,
 				id: gen()
 			}
 
@@ -2727,7 +2733,7 @@ function isAllowedURL(_url) {
 				continue;
 			} catch (err) {}
 		}
-	} catch (err) { console.log('bad url for tab', _url)}
+	} catch (err) { console.log('bad url for tab', _url, err)}
 
 	return true;
 }
