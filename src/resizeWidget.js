@@ -37,7 +37,7 @@ function ResizeWidget(el, options) {
 		resizeWidget.className = 'CS_resizeWidget';
 		resizeWidget.title = i18n('resize');
 
-		getShadowRoot().appendChild(resizeWidget);
+		getShadowRoot().insertBefore(resizeWidget, getShadowRoot().firstChild);
 
 		resizeWidget.options = o;
 		resizeWidget.setPosition = positionResizeWidget;
@@ -49,7 +49,7 @@ function ResizeWidget(el, options) {
 
 			let startSize = {columns: o.columns, rows: o.rows};
 			
-			document.body.appendChild(overDiv);
+			getShadowRoot().appendChild(overDiv);
 
 			el.style.transition = 'none';
 			el.style.borderWidth = '2px';
@@ -58,7 +58,7 @@ function ResizeWidget(el, options) {
 			resizeWidget.style.transition = 'none';
 
 			// lower the quick menu in case zIndex = MAX
-			el.style.zIndex = window.getComputedStyle(el).zIndex - 1;
+			el.style.zIndex = window.getComputedStyle(overDiv).zIndex - 1;
 
 			// match grid to tile size after scaling
 			let stepX = el.getBoundingClientRect().width / el.offsetWidth * o.tileSize.width;

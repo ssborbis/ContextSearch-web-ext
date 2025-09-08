@@ -1381,6 +1381,8 @@ window.addEventListener('message', e => {
 			
 			if ( !e.data.size ) return;
 
+			if ( getQM().classList.contains("CS_resizing")) return;
+
 			quickMenuResize(e);
 			break;
 		}
