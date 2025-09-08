@@ -987,16 +987,13 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 
 			if (!selectedRows.length) {
-				li.querySelector('.header').classList.add('selected');
-				selectedRows.push(li);
+				selectRow(li);
 				return;
 			}
 			
 			if (selectedRows.length && !e.shiftKey && !e.ctrlKey) {
 				clearSelectedRows();
-
-				li.querySelector('.header').classList.add('selected');
-				selectedRows.push(li);
+				selectRow(li);
 				return;
 			}
 			
@@ -1020,23 +1017,17 @@ function buildSearchEngineContainer() {
 				liEndIndex = Math.max(start, end);
 				
 				for (let i=liStartIndex;i<liEndIndex + 1;i++) {
-					lis[i].querySelector('.header').classList.add('selected');
-					selectedRows.push(lis[i]);
+					selectRow(lis[i]);
 				}
 
 				selectedRows = [...new Set(selectedRows)];
 			} else if ( selectedRows.length && e.ctrlKey ) {	
 
 				if ( li.querySelector('.header').classList.contains('selected') ) {
-					let i = selectedRows.indexOf(li);
-					selectedRows.splice(i,1);
-					console.log('removing selected row', i, selectedRows);
+					deselectRow(li);
 				} else {
-					selectedRows.push(li);
-					console.log('pushing selected row', selectedRows);
+					selectRow(li);
 				}
-				
-				li.querySelector('.header').classList.toggle('selected');
 			}
 			
 		});
@@ -1134,8 +1125,7 @@ function buildSearchEngineContainer() {
 		// if dragrow is not selected
 		if ( !selectedRows.includes(window.dragRow) ) {
 			clearSelectedRows();
-			window.dragRow.querySelector('.header').classList.add('selected');
-			selectedRows.push(window.dragRow);
+			selectRow(window.dragRow);
 		}
 	}
 	
@@ -1195,7 +1185,7 @@ function buildSearchEngineContainer() {
 		
 		// clear folder styling
 		if ( /*targetElement.node.type === "folder" && */!selectedRows.includes(targetElement) ) // only remove if not originally selected
-			targetElement.querySelector('.header').classList.remove('selected');
+			deselectRow(targetElement);
 
 		targetElement.style = '';
 	}
@@ -1330,6 +1320,16 @@ function buildSearchEngineContainer() {
 		
 		let li = nearestParent('LI', e.target);
 
+		if ( !selectedRows.length ) {
+			selectRow(li);
+		}
+
+		// prevent errant, invisible selections
+		if ( selectedRows.length && !selectedRows.includes(li) ) {
+			clearSelectedRows();
+			selectRow(li);
+		}
+
 		// flag if opened from button vs context menu
 		let buttonAdd = e.target === document.querySelector('#b_addSearchEngine') ? true : false;
 		if ( buttonAdd && !li ) {
@@ -1387,7 +1387,7 @@ function buildSearchEngineContainer() {
 			let objectsToDelete = {};	
 			[...new Set(nodesToDelete)].forEach(n => incrementKey(objectsToDelete, n.type)); 
 			
-			if ( !selectedRows.length ) selectedRows.push(li);
+			if ( !selectedRows.length ) selectRow(li);
 				
 			let msgDiv = document.createElement('div');
 			let msgDivHead = document.createElement('div');
@@ -1459,7 +1459,7 @@ function buildSearchEngineContainer() {
 		
 		let hide = createMenuItem( li.node.hidden ? i18n('Show') : i18n('Hide'), browser.runtime.getURL('icons/hide.svg'));
 		hide.addEventListener('click', () => {
-			if ( !selectedRows.length ) selectedRows.push(li);
+			if ( !selectedRows.length ) select(li);
 			
 			let hidden = !li.node.hidden;
 
@@ -2875,6 +2875,21 @@ function createEditForm(o) {
 	if ( firstTab ) firstTab.click();
 
 	return _form;
+}
+
+function selectRow(li) {
+	li.querySelector('.header').classList.add('selected');
+	
+	if ( !selectedRows.includes(li))
+		selectedRows.push(li);
+}
+
+function deselectRow(li) {
+	li.querySelector('.header').classList.remove('selected');
+	
+	let i = selectedRows.indexOf(li);
+
+	if ( i > -1 ) selectedRows.splice(i,1);
 }
 
 function markAsDefault(li) {
