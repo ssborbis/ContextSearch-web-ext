@@ -1078,6 +1078,12 @@ function buildSearchEngineContainer() {
 	// clear any dead nodes
 	repairNodeTree(root, true).then( result => {
 
+		// needs checking, what was this for?
+		let rootUL = document.getElementById('managerContainer').querySelector('ul');
+		if ( rootUL ) {
+			rootUL.parentNode.removeChild(rootUL);
+		} 
+
 		rootElement.node = root;
 		
 		for (let child of root.children)
@@ -1094,9 +1100,6 @@ function buildSearchEngineContainer() {
 		lastLI.addEventListener('dragover', e => e.preventDefault());
 		lastLI.addEventListener('drop', drop_handler);
 		lastLI.id = "lastLI";
-		
-		let rootUL = document.getElementById('managerContainer').querySelector('ul');
-		if ( rootUL ) document.getElementById('managerContainer').removeChild(rootUL);
 
 		document.getElementById('managerContainer').appendChild(table);
 	});
