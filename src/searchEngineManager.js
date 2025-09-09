@@ -1686,7 +1686,11 @@ function buildSearchEngineContainer() {
 		let newEngine = createMenuItem(i18n('NewEngine'), browser.runtime.getURL('icons/new.svg'));	
 		newEngine.addEventListener('click', () => {
 			
-			let newNode = addNewEngine(li.node, false);		
+			let newNode = addNewEngine(li.node, false);	
+
+			// canceled
+			if ( !newNode ) return;
+
 			let newLi = addNode(newNode, li);
 			updateNodeList(true);
 				
