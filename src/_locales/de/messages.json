@@ -1,0 +1,2595 @@
+{
+  "LOCALE_FOLDER": {
+    "message": "de"
+  },
+    
+  "extensionDescription": {
+    "message": "Laden Sie Ihre aktuellen Suchmaschinen in ein Kontextmenü, um einfach nach dem markierten Text zu suchen. Kompatibel zu FF 57+. Entwickelt als einfacher Ersatz für Ben Basson's Context Search"
+  },
+    
+  "Settings": {
+    "message": "Einstellungen"
+  },
+  
+  "Support": {
+    "message": "Support"
+  },
+  
+   "Source": {
+    "message": "Source"
+  },
+  
+   "Menus": {
+    "message": "Menüs",
+    "description": "Reiterbeschriftung Menüs"
+  },
+  
+   "SearchEngines": {
+    "message": "Suchmaschinen",
+    "description": "Reiterbeschriftung Suchmaschinen"
+  },
+  
+   "Help": {
+    "message": "Hilfe",
+    "description": "Reiterbeschriftung Hilfe"
+  },
+  
+   "ContextMenu": {
+    "message": "Kontextmenü"
+  },
+  
+   "AddCustomSearchMenu": {
+    "message": "Benutzerdefinierte Suche hinzufügen aktivieren"
+  },
+  
+  "AddCustomSearchMenuTooltip": {
+    "message": "Aktiviert den Kontextmenüpunkt \"Benutzerdefinierte Suche hinzufügen\" auf INPUT-Elementen. Für den seltenen Fall eines versetztes Menü kann der Eintrag deaktiviert werden."
+  },
+
+   "QuickMenu": {
+    "message": "Schnellmenü"
+  },
+  
+   "QuickMenuNote": {
+    "message": "Das Schnellmenü ist auf addons.mozilla.org deaktiviert. Stattdessen wird das Kontextmenü aktiviert, wenn das Schnellmenü nicht geöffnet werden kann."
+  },
+  
+   "SearchActionsHeader": {
+    "message": "Suchaktionen"
+  },
+  
+   "SearchActionsCurrentTab": {
+    "message": "In aktuellem Tab öffnen"
+  },
+  
+   "SearchActionsNewTab": {
+    "message": "In neuem Tab öffnen"
+  },
+  
+   "SearchActionsBackgroundTab": {
+    "message": "In neuem Tab öffnen (Hintergrund)"
+  },
+  
+   "SearchActionsBackgroundTabKeepOpen": {
+    "message": "In neuem Tab öffnen (Hintergrund) - Menü geöffnet lassen"
+  },
+  
+   "SearchActionsNewWindow": {
+    "message": "In neuem Fenster öffnen"
+  },
+  
+   "SearchActionsIncognitoWindow": {
+    "message": "In privatem Fenster öffnen"
+  },
+  
+   "SearchActionsNoAction": {
+    "message": "Keine Aktion"
+  },
+  
+   "LeftButton": {
+    "message": "Linksklick"
+  },
+  
+   "MiddleButton": {
+    "message": "Mittelklick"
+  },
+  
+   "RightButton": {
+    "message": "Rechtsklick"
+  },
+  
+   "LookLayoutHeader": {
+    "message": "Aussehen & Darstellung"
+  },
+  
+   "Columns": {
+    "message": "Spalten"
+  },
+  
+  "ColumnsTooltip": {
+    "message": "Maximale Anzahl von Suchmaschinensymbolen pro Zeile"
+  },
+
+  "ColumnsMinimumTooltip": {
+    "message": "Minimale Anzahl von Suchmaschinensymbolen pro Zeile"
+  },
+  
+  "Items": {
+    "message": "Einträge"
+  },
+
+  "MenuSize": {
+    "message": "Menügröße"
+  },
+  
+   "MenuSizeTooltip": {
+    "message": "Skalierte Größe des Schnellmenüs. Werte größer als 100% vergrößern das gesamte Menü (gut für hochauflösende Displays)"
+  },
+  
+  "IconSize": {
+    "message": "Symbolgröße"
+  },
+  
+  "IconSizeTooltip": {
+    "message": "Skalierte Größe der Suchmaschinensymbole. Bei 200% füllen die Symbole ihren Container vollständig."
+  },
+  
+  "OpeningClosingHeader": {
+    "message": "Öffnen & Schließen"
+  },
+  
+  "OpeningClosingDescription": {
+    "message": "Methode zum Öffnen des Schnellmenüs"
+  },
+  
+   "Auto": {
+    "message": "Auto"
+  },
+  
+  "AutoTooltip": {
+    "message": "Bei Textmarkierung automatisch öffnen"
+  },
+  
+   "EnableOnTextBoxes": {
+    "message": "Für Eingabefelder aktivieren"
+  },
+  
+  "EnableOnTextBoxesTooltip": {
+    "message": "Schnellmenü auf TEXTAREA- und INPUT-Elementen aktivieren. Deaktivieren, um unerwünschte Einblendungen zu verhindern."
+  },
+  
+   "Mouse": {
+    "message": "Maus"
+  },
+  
+  "MouseTooltip": {
+    "message": "Text markieren und dann Menü per Mausklick öffnen"
+  },
+  
+  "MouseDescription": {
+    "message": "Bevorzugte Methode und Mausbutton festlegen"
+  },
+  
+   "Hold": {
+    "message": "Halten"
+  },
+  
+    "HoldTooltip": {
+    "message": "Das Schnellmenü wird geöffnet, wenn die ausgewählte Maustaste für ca. 0,25 Sekunden gedrückt wurde."
+  },
+  
+   "SearchOnMouseup": {
+    "message": "Suche nach Loslassen"
+  },
+  
+   "SearchOnMouseupTooltip": {
+    "message": "Führt eine Suche aus dem Schnellmenü durch Loslassen statt eines Klicks mit der Maus durch. Beispiel: Mausbutton zum Öffnen des Menüs geklickt halten und über Suchmaschine loslassen zum Suchen."
+  },
+  
+   "Click": {
+    "message": "Klick"
+  },
+  
+  "ClickTooltip": {
+    "message": "Das Schnellmenü öffnet sich sofort bei einem Rechtsklick. Für das Kontextmenü muss die Rechte Maustaste dann lange gedrückt werden."
+  },
+  
+   "Keyboard": {
+    "message": "Tastatur"
+  },
+  
+  "KeyboardTooltip": {
+    "message": "Text markieren und dann Menü per Funktionstaste öffnen"
+  },
+  
+   "ChooseKey": {
+    "message": "Taste wählen"
+  },
+  
+  "ChooseKeyTooltip": {
+    "message": "Text markieren und erst nach Drücken einer Taste das Schnellmenü öffnen. Klicken Sie auf die nebenstehende Schaltfläche und wählen Sie die gewünschte Taste."
+  },
+  
+   "CloseAfterSearch": {
+    "message": "Nach Suche schließen"
+  },
+  
+  "CloseAfterSearchTooltip": {
+    "message": "Das Schnellmenü wird nach einem Klick auf ein Suchsymbol geschlossen. Deaktivieren Sie diese Option, wenn Sie häufig mit mehreren Suchmaschinen suchen oder das Menü manuell schließen möchten. Kann durch 'Menü offen halten' unter Suchaktionen aufgehoben werden."
+  },
+  
+   "CloseOnScroll": {
+    "message": "Mittels Scrollen / Mausrad schließen"
+  },
+  
+   "CloseOnScrollTooltip": {
+    "message": "Das Schnellmenü wird beim Scrollen mit den Scrollbalken oder dem Mausrad geschlossen."
+  },
+  
+  "MouseHelp": {
+    "message": "Linux- und MacOS X-Anwender müssen möglicherweise ui.context_menus.after_mouseup = true in about:config setzen, damit Mausaktionen korrekt funktionieren."
+  },
+
+  "Position": {
+    "message": "Position"
+  },
+  
+  "PositionDescription": {
+    "message": "Festlegen wo das Schnellmenü erscheint"
+  },
+  
+   "HorizontalOffset": {
+    "message": "Horizontaler Versatz"
+  },
+  
+  "HorizontalOffsetTooltip": {
+    "message": "Anzahl der Pixel, um das Schnellmenü horizontal zu verschieben. Zahlen größer als Null bewegen es nach rechts, kleiner als Null nach links."
+  },
+
+  "VerticalOffset": {
+    "message": "Vertikaler Versatz"
+  },
+  
+  "VerticalOffsetTooltip": {
+    "message": "Anzahl der Pixel, um das Schnellmenü vertikal zu verschieben. Zahlen größer als Null bewegen es nach unten, kleiner als Null nach oben."
+  },
+
+  "Tools": {
+    "message": "Werkzeuge"
+  },
+  
+  "ToolsPositionTooltip": {
+    "message": "Auswählen wo die Werkzeuge im Schnellmenü angezeigt werden"
+  },
+  
+  "ToolsHelp": {
+    "message": "Klicken zum Deaktivieren | Ziehen zum Anordnen"
+  },
+
+  "tools_Close": {
+    "message": "Schnellmenü schließen"
+  },
+  
+  "tools_Disable": {
+    "message": "Schnellmenü deaktivieren"
+  },
+
+  "tools_Copy": {
+    "message": "In Zwischenablage kopieren"
+  },
+  
+  "tools_OpenAsLink": {
+    "message": "Als Link öffnen"
+  },
+
+  "tools_Lock": {
+    "message": "Schnellmenü offen halten (Mehrfachsuche)"
+  },
+  
+  "ImportExportSettings": {
+    "message": "Einstellungen importieren / exportieren"
+  },
+  
+   "Import": {
+    "message": "Importieren"
+  },
+  
+   "Export": {
+    "message": "Exportieren"
+  },
+  
+  "Add": {
+    "message": "Hinzufügen"
+  },
+  
+  "RemoveAll": {
+    "message": "Alle entfernen"
+  },
+  
+  "ShowHide": {
+    "message": "Anzeigen / Verbergen"
+  },
+  
+  "Bookmark": {
+    "message": "Lesezeichen"
+  },
+  
+  "Delete": {
+    "message": "Löschen"
+  },
+  
+  "SearchEnginesManagerHelp": {
+    "message": "Ziehen & Loslassen zum Neuordnen, Klicken zum Bearbeiten"
+  },
+  
+  "ImportHeader": {
+    "message": "Ein-Klick Suchmaschinen importieren"
+  },
+  
+  "ImportDescription": {
+    "message": "Die search.json.mozlz4-Datei aus Ihrem Profilordner wählen."
+  },
+  
+  "ImportSelectFile": {
+    "message": "Datei auswählen ..."
+  },
+  
+  "AutoImportHeader": {
+    "message": "Automatischer Import"
+  },
+  
+  "EnableAutoImport": {
+    "message": "Automatischen Import aktivieren (erfordert App)"
+  },
+  
+  "EnableAutoImportTooltip": {
+    "message": "Neue OpenSearch-Engines automatisch in ContextSearch importieren. Nur möglich beim Import von OpenSearch-Engines, die über die Ein-Klick-Suchmaschinen-API von Firefox installiert wurden. Benötigt eine separate App. Siehe 'Hilfe' für weitere Details"
+  },
+  
+  "ProfilePath": {
+    "message": "Profilpfad"
+  },
+  
+  "Verify": {
+    "message": "Prüfen und Importieren"
+  },
+  
+  "Find": {
+    "message": "Finden"
+  },
+  
+  "Create": {
+    "message": "Erstellen"
+  },
+  
+  "Simple": {
+    "message": "Einfach"
+  },
+  
+  "Advanced": {
+    "message": "Erweitert"
+  },
+  
+  "Yes": {
+    "message": "Ja"
+  },
+  
+  "No": {
+    "message": "Nein"
+  },
+  
+  "Cancel": {
+    "message": "Abbrechen"
+  },
+  
+  "Save": {
+    "message": "Speichern"
+  },
+
+  "Name": {
+    "message": "Name"
+  },
+  
+  "NameTooltip": {
+    "message": "Eindeutiger Name für diese Suchmaschine"
+  },
+  
+  "Description": {
+    "message": "Beschreibung"
+  },
+  
+  "DescriptionTooltip": {
+    "message": "Kurze Beschreibung der Suchmaschine. Maximal 1024 Zeichen"
+  },
+  
+  "Template": {
+    "message": "Vorlage"
+  },
+  
+  "TemplateTooltip": {
+    "message": "Der URL der Absendefunktion des Formulars. Falls die Suchmaschine mit GET arbeitet, dann den Platzhalter {searchTerms} verwenden. Beispiel: http://example.com/?q={searchTerms}"
+  },
+  
+  "FormPath": {
+    "message": "Formularziel"
+  },
+  
+  "FormPathTooltip": {
+    "message": "Typischerweise die Website oder der URL, auf der das Formular erscheint."
+  },
+  
+  "POSTparams": {
+    "message": "POST parameter"
+  },
+  
+  "POSTparamsTooltip": {
+    "message": "Liste der POST-Parameter und Werte getrennt durch & (Ampersands); nur anwendbar bei Verwendung der POST-Methode. Beispiel: q={searchTerms}&lang=de&maxresults=100."
+  },
+  
+  "IconURI": {
+    "message": "Symbol-URI"
+  },
+  
+  "IconTooltip": {
+    "message": "URI des zu verwendenden Symbols. Bilder sollten weniger als 64x64 Pixel und weniger als 10kb groß sein."
+  },
+  
+  "Method": {
+    "message": "Methode"
+  },
+  
+  "MethodTooltip": {
+    "message": "Formular-Methode"
+  },
+  
+  "Encoding": {
+    "message": "Zeichenkodierung"
+  },
+  
+  "EncodingTooltip": {
+    "message": "Zeichenkodierung, die für das Suchformular erforderlich ist. Öœblicherweise UTF-8."
+  },
+  
+  "Test": {
+    "message": "Test"
+  },
+  
+  "NewEngineAdded": {
+    "message": "Neue Suchmaschine zu ContextSearch hinzugefügt"
+  },
+  
+  "NewEngineAddedTooltip": {
+    "message": "Installieren Sie diese Suchmaschine über eine benutzerdefinierte OpenSearch-API in der Firefox-Suchleiste."
+  },
+  
+  "AlsoAdd": {
+    "message": "Auch als Ein-Klick Suchmaschine hinzufügen?"
+  },
+  
+  "CannotCreate": {
+    "message": "Es kann keine Suchmaschine aus diesen Angaben erstellt werden."
+  },
+  
+  "OpenAdvanced": {
+    "message": "Erweiterte Einstellungen öffnen?"
+  },
+  
+  "DidEngineInstall": {
+    "message": "Wurde die Suchmaschine korrekt installiert?"
+  },
+  
+  "RemovingEngine": {
+    "message": "Entferne Suchmaschine"
+  },
+  
+  "CreateCustomSearch": {
+    "message": "Benutzerdefinierte Suche erstellen"
+  },
+  
+  "MustImport": {
+    "message": "Wurde eine OpenSearch-Engine installiert, muss diese über den Dateibrowser-Import in ContextSearch importieren werden."
+  },
+  
+  "MoreInfo": {
+    "message": "mehr Informationen"
+  },
+  
+  "NewEngineImported": {
+    "message": "Eine neue Suchmaschine wurde automatisch in ContextSearch importiert."
+  },
+  
+  "InstallOfficialTooltip": {
+    "message": "Installieren Sie die offizielle OpenSearch-Engine für die aktuelle Website."
+  },
+  
+  "FindMycroftTooltip": {
+    "message": "OpenSearch-Suchmaschinen auf MycroftProject finden"
+  },
+  
+  "CreateCustomTooltip": {
+    "message": "Erstellen einer benutzerdefinierten OpenSearch-Engine"
+  },
+  
+  "LoadingRemoteContent": {
+    "message": "Laden von Remote-Inhalten"
+  },
+  
+  "LoadingRemoteContentFail": {
+    "message": "Fehler beim Laden von %1 Symbol(en). Dies kann passieren, wenn der Schutz vor Aktivitätenverfolgung aktiviert ist."
+  },
+  
+  "LoadingRemoteContentTimeout": {
+    "message": "Abrufen von Remote-Symbolen mit Timeout. Einige Symbole wurden nicht geladen."
+  },
+  
+  "RemoveAllEnginesPrompt": {
+    "message": "Alle Suchmaschinen entfernen?"
+  },
+  
+  "EnterUniqueName": {
+    "message": "Geben Sie einen eindeutigen Namen für diese Suchmaschine ein."
+  },
+  
+  "EngineExists": {
+    "message": "%1 vorhanden."
+  },
+  
+  "TemplateMissingeMessage": {
+    "message": "Eine Vorlage für dieses Suchformular konnte nicht gefunden werden. Sie können versuchen, eine Suche durchzuführen und den resultierenden URL hierhin zu kopieren, wobei Sie Ihre Suchbegriffe durch {searchTerms} ersetzen."
+  },
+  
+  "TemplateIncludeError": {
+    "message": "Vorlage muss {searchTerms} enthalten"
+  },
+
+  "TemplateURLError": {
+    "message": "Vorlage muss ein gültiger URL sein."
+  },
+
+  "DescriptionEmptyError": {
+    "message": "Eine Beschreibung ist erforderlich"
+  },
+
+  "DescriptionSizeError": {
+    "message": "Die Beschreibung muss 1024 oder weniger Zeichen lang sein."
+  },
+  
+  "FormPathURLError": {
+    "message": "Formularpfad muss ein URL sein"
+  },
+  
+  "POSTIncludeError": {
+    "message": "POST-Parameter muss {searchTerms} enthalten"
+  },
+  
+  "IconURLError": {
+    "message": "Symbol muss ein gültiger URL sein."
+  },
+  
+  "IconLoadError": {
+    "message": "Symbol konnte nicht geladen werden"
+  },
+  
+  "EnterSearchTerms": {
+    "message": "Suchbegriffe eingeben"
+  },
+  
+  "BookmarksPermissionMessage": {
+    "message": "Nach dem Schließen dieser Aufforderung erhalten Sie eine Aufforderung, eine neue Erlaubnis für \"Lesezeichen\" zu akzeptieren.\n\nDurch das Akzeptieren wird unter dem \"Andere Lesezeichen\" Ordner ein neuer Ordner \"ContextSearch Menu\" hinzugefügt, der Ihre aktuellen Suchmaschinen als Lesezeichen enthält. Dort können Sie Trennzeichen und Unterordner zur Gruppierung der Lesezeichen einfügen.\n\nBenennen Sie die Suchmaschinen-Lesezeichen nicht um, da sie ansonsten nicht mehr funktionieren. Gelöschte Lesezeichen können über die ContextSearch-Optionen unter Suchmaschinen wieder hinzugefügt werden. Durch Anklicken der Lesezeichensymbole in der Suchmaschinenliste können Sie Lesezeichen hinzufügen oder entfernen."
+  },
+  
+  "NativeAppImportError": {
+    "message": "Datei (%1) konnte nicht geladen werden. Ist die Anwendung installiert?"
+  },
+  
+  "ImportSettingsNotFoundAlert": {
+    "message": "ContextSearch-Einstellungen nicht gefunden!"
+  },
+  
+  "InvalidJSONAlert": {
+    "message": "Keine gültige JSON-Datei."
+  },
+  
+  "ImportSuccessful": {
+    "message": "Import erfolgreich"
+  },
+  
+  "WhereAreMyEngines": {
+    "message": "Wo sind meine Suchmaschinen?"
+  },
+  
+  "ErrorParsing": {
+    "message": "Verarbeitungsfehler für %1"
+  },
+  
+  "AddCustomSearch": {
+    "message": "Benutzerdefinierte Suche hinzufügen"
+  },
+  
+  "SearchFor": {
+    "message": "Nach \"%1\" suchen"
+  },
+
+  "SearchForContext": {
+    "message": "Nach $1 suchen"
+  },
+  
+  "SearchForWithVariable": {
+	"message": "Nach \"%s\" suchen"
+  },
+  
+  "SearchWith": {
+    "message": "Suche mit",
+    "description": "title in context menu when searching"
+  },
+  
+  "AddSearchEngines": {
+    "message": "+ Suchmaschinen hinzufügen",
+    "description": "title in context menu when no search engines installed"
+  },
+  
+  "ContextSearchMenu": {
+    "message": "ContextSearch Menu",
+    "description": "root folder name for bookmarks"
+  },
+  
+  "PositionRelativeToCursor": {
+    "message": "%1 %2 vom Mauszeiger",
+    "description": "Die Position des Schnellmenüs relativ zum Mauszeiger. %1 ist oben|unten, %2 is links|mitte|rechts"
+  },
+  
+  "top": {
+    "message": "Oben"
+  },
+  
+  "bottom": {
+    "message": "Unten"
+  },
+  
+  "left": {
+    "message": "links"
+  },
+  
+  "center": {
+    "message": "mitte"
+  },
+  
+  "right": {
+    "message": "rechts"
+  },
+  
+  "NameExists": {
+    "message": "Name bereits vorhanden",
+    "description": "short message for duplicate engine names"
+  },
+  
+  "NameInvalid": {
+    "message": "Name ungültig",
+    "description": "short error for bad engine name"
+  },
+  
+  "ImportedEngines": {
+    "message": "Import von %1 Suchmaschine(n) (%2 neu)"
+  },
+  
+  "ClickToEdit": {
+    "message": "Klicken zum Bearbeiten"
+  },
+  
+  "BackspaceKey": {
+    "message": "Rück"
+  },
+  
+  "EnterKey": {
+    "message": "Eingabe"
+  },
+  
+  "ShiftKey": {
+    "message": "Shift"
+  },
+  
+  "PauseBreakKey": {
+    "message": "Pause/Untbr"
+  },
+  
+  "CapsLockKey": {
+    "message": "Feststell"
+  },
+  
+  "EscKey": {
+    "message": "Esc"
+  },
+  
+  "SpaceKey": {
+    "message": "Leertaste"
+  },
+  
+  "PgUpKey": {
+    "message": "Bild hoch"
+  },
+  
+  "PgDnKey": {
+    "message": "Bild runter"
+  },
+  
+  "EndKey": {
+    "message": "Ende"
+  },
+  
+  "HomeKey": {
+    "message": "Pos1"
+  },
+  
+  "LeftArrowKey": {
+    "message": "Pfeil links"
+  },
+  
+  "UpArrowKey": {
+    "message": "Pfeil hoch"
+  },
+  
+  "RightArrowKey": {
+    "message": "Pfeil rechts"
+  },
+  
+  "DownArrowKey": {
+    "message": "Pfeil runter"
+  },
+  
+  "InsertKey": {
+    "message": "Einfg"
+  },
+  
+  "DelKey": {
+    "message": "Entf"
+  },
+  
+  "LeftWindowKey": {
+    "message": "Linke Windows-Taste"
+  },
+  
+  "RightWindowKey": {
+    "message": "Rechte Windows-Taste"
+  },
+  
+  "SelectKey": {
+    "message": "Taste wählen"
+  },
+  
+  "NumLockKey": {
+    "message": "Num"
+  },
+  
+  "ScrollLockKey": {
+    "message": "Rollen"
+  },
+  
+  "Validating": {
+    "message": "Überprüfe ..."
+  },
+
+  "SearchBar": {
+    "message": "Suchleiste"
+  },
+  
+  "SearchBarTooltip": {
+    "message": "Festlegen, wo die Suchleiste im Schnellmenü angezeigt werden soll."
+  },
+  
+  "hidden": {
+    "message": "Ausgeblendet"
+  },
+  
+  "KeepMenuOpen": {
+    "message": "Schnellmenü offen halten"
+  },  
+  
+  "Search": {
+    "message": "Suchen",
+    "description": "placeholder in search bar input"
+  },
+   
+  "Copy": {
+    "message": "Kopieren",
+    "description": "button to duplicate a search engine from the manager"
+  },
+
+  "Hotkey": {
+    "message": "Hotkey",
+    "description": "label for Hotkey option"
+  },
+  
+  "HotkeyTooltip": {
+    "message": "Öffnet das Schnellmenü jederzeit per Tastenkombination.",
+    "description": "description for Hotkey option"
+  },
+  
+  "Focus": {
+    "message": "Fokus in Suchleiste setzen",
+    "description": "label for auto focus on search bar"
+  },
+  
+  "FocusTooltip": {
+    "message": "Fokus auf Suchleiste setzen, wenn das Schnellmenü geöffnet wird (kopieren via STRG+C ist dann nur möglich, wenn \"Text in Suchleiste markieren\" auch aktiviert wird).",
+    "description": "description for focus"
+  },
+  
+  "SelectText": {
+    "message": "Text in Suchleiste markieren"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Markiert den gesamten Text in der Suchleiste, wenn diese den Fokus erhält.",
+    "description": "description for select text in search bar"
+  },
+  
+  "NameChangeWarning": {
+    "message": "Die Umbenennung von Suchmaschinen kann zu doppelten Einträgen führen, wenn Firefox-Suchmaschinen aus Firefox manuell oder automatisch importiert werden. Dies kann behoben werden, indem Suchmaschinen mit dem alten Namen aus den Firefox \"Einstellungen-> Suche-> Suchmaschinen\" oder einfach die ungewünschte Suchmaschine verstecken. Sind Sie sicher, dass Sie umbenennen möchten?",
+    "description": "warn user about potential problems when changing search engine names"
+  },
+  
+  "PressKey": {
+    "message": "Drücke eine Taste",
+    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
+  },
+  
+  "History": {
+	"message": "Suchverlauf",
+	"description": "label for History icon"
+  },
+
+  "ClearSearchHistory": {
+    "message": "Suchverlauf löschen",
+    "description": "Options label / context menu entry for clearing search history"
+  },
+  
+  "ClearSearchHistoryTooltip": {
+    "message": "Lösche Suchverlauf der Suchleiste",
+    "description": "description for clearing search history"
+  },
+
+  "ShowSuggestions": {
+    "message": "Zeige Vorschläge",
+    "description": "Options label / context menu entry for toggling suggestions for the toolbar"
+  },
+  
+  "ShowSuggestionsTooltip": {
+    "message": "Such-Vorschläge von Google abrufen und mit dem Suchverlauf in der Suchleiste anzeigen",
+    "description": "description for Show Suggestions"
+  },
+  
+  "SearchBarUseOldStyle": {
+    "message": "Einzelne Spalte mit Labeln",
+    "description": "Options label for using the old Firefox style of search bar"
+  },
+  
+  "SearchBarUseOldStyleTooltip": {
+    "message": "Zeige Suchmaschinen in einer einzelnen Spalte mit Labeln an. Überschreibt Spalten-Einstellung"
+  },
+  
+  "ToolbarSearch": {
+    "message": "Symbolleisten-Suche",
+	"description": "Section label for the browser action search bar"
+  },
+  
+  "SearchBarCloseAterSearchTooltip": {
+    "message": "Schliesse das Menü nach dem Suchen"
+  },
+  
+  "PerformASearchHeader": {
+    "message": "Vorlage fehlt",
+    "description": "header message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearch": {
+    "message": "Klicken Sie auf OK und führen Sie eine neue Suche mit dem Formular durch, das Sie hinzufügen möchten",
+    "description": "message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearchTooltip": {
+    "message": "Das Formular enthält nicht die notwendigen Informationen, um eine Suchmaschine zu erstellen. Führen Sie eine einfache Suche durch, damit ContextSearch nach einer gültigen Suchvorlage sucht. Verwenden Sie am besten Wörter, die normalerweise nicht in einer Such-URL erscheinen würden. Verwenden Sie nicht \"search\", \"http\", andere übliche URL-Wörter oder den Namen der Website."
+  },
+  
+  "OK": {
+    "message": "OK",
+    "description": ""
+  },
+  
+  "Back": {
+    "message": "Zurück",
+    "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
+  },
+
+  "Folder": {
+    "message": "Ordner"
+  },
+  
+  "Folders": {
+    "message": "Ordner"
+  },
+  
+  "SearchActionsOpenFolder": {
+    "message": "Ordner durchsuchen",
+	"description": "SELECT option label for opening quick menu folder"
+  },
+  
+  "DisabledByHotkeys": {
+    "message": "Deaktiviert, wenn Hotkeys aktiviert sind",
+    "description": "message for search bar focus option when hotkeys are enabled"
+  },
+  
+  "AddOpenSearchEngine": {
+    "message": "Auf Firefox-Suchmaschinen installieren",
+    "description": "label for edit form button to install the current search engine as a Firefox Search Engine"
+  },
+  
+  "Regex": {
+    "message": "Begriffe ändern Regex",
+    "description": ""
+  },
+
+  "MatchSearchTermsRegex": {
+    "message": "Begriffe vergleichen Regex",
+    "description": ""
+  },
+  
+  "ShortcutKey": {
+    "message": "Tastenkombination",
+    "description": "Label for context menu hotkey"
+  },
+  
+  "ShortcutKey_tooltip": {
+    "message": "Taste zum Erweitern des Menüs \"Suchen mit...\" im Kontextmenü",
+    "description": "context menu hotkey tooltip"
+  },
+  
+  "Edit": {
+    "message": "Editieren",
+    "description": "Manager menu item"
+  },
+  
+  "Hide": {
+    "message": "Verstecken",
+    "description": "Manager menu item"
+  },
+  
+  "Show": {
+    "message": "Zeigen",
+    "description": "Manager menu item"
+  },
+  
+  "NewFolder": {
+    "message": "Neuer Ordner",
+    "description": "Manager menu item"
+  },
+  
+  "NewEngine": {
+    "message": "Neue Suchmaschine",
+    "description": "Manager menu item"
+  },
+  
+  "NewSeparator": {
+    "message": "Neues Trennzeichen",
+    "description": "Manager menu item"
+  },
+  
+  "AddBookmarklet": {
+    "message": "Bookmarklet hinzufügen",
+    "description": "Manager menu item"
+  },
+  
+  "RemoveNode": {
+    "message": "Knoten entfernen",
+    "description": "Manager menu item"
+  },
+  
+  "DeleteEngines": {
+    "message": "$1 Suchmaschine(n) entfernen",
+    "description": "Manager menu item"
+  },
+  
+  "Confirm": {
+    "message": "Bestätigen",
+    "description": "Manager menu item"
+  },
+  
+  "AsShortcut": {
+    "message": "Als Tastenkombination",
+    "description": "Manager menu item"
+    
+  },
+  
+  "AsNewEngine": {
+    "message": "Als neue Suchmaschine",
+    "description": "Manager menu item"
+  },
+  
+  "Rows": {
+    "message": "Zeilen",
+    "description": "Quick menu rows label"
+  },
+  
+  "RowsTooltip": {
+    "message": "Maximale Anzahl der Zeilen, die beim Öffnen angezeigt werden (Gitteransicht)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "RowsSingleColumnTooltip": {
+    "message": "Maximale Anzahl von Zeilen, die beim Öffnen angezeigt werden (Textansicht)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "ContextMenuHotKey": {
+    "message": "Tastenkombination-Taste",
+    "description": "Label for Context Menu shortcut key"
+  },
+  
+  "ContextMenuHotKeyTooltip": {
+    "message": "Zugriffstaste für das ContextSearch-Untermenü",
+    "description": "Description for Context Menu shortcut key"
+  },
+  
+  "EnableHistory": {
+    "message": "Suchverlauf speichern",
+    "description": ""
+  },
+  
+  "EnableHistoryTooltip": {
+    "message": "Suchbegriffe merken und mit Suchvorschlägen anzeigen"
+  },
+  
+  "SideBar": {
+	"message": "Seitenleiste"
+  },
+  
+  "SideBarTooltip": {
+	"message": "Die Seitenleiste ist eine Erweiterung der Symbolleiste mit zusätzlichen Funktionen, die innerhalb des Browserfensters angezeigt werden. Sowohl das Menü als auch das sich öffnende Widget reagieren auf Text-Drag & Drop (außer Chrome). Die meisten Einstellungen sind mit der Symbolleiste identisch"
+  },
+  
+  "SideBarPositionTooltip": {
+	"message": "Wählen, wo die Seitenleiste angezeigt werden soll"
+  },
+
+  "SideBarWidgetEnable": {
+    "message": "Widget anzeigen",
+    "description": "label for displaying the sidebar icon"
+  },
+  
+  "SideBarWidgetEnableTooltip": {
+    "message": "Überlagerung eines Symbols zum Öffnen der Seitenleiste",
+    "description": "description for displaying the sidebar icon"
+  },
+
+  "SideBarHotkeyTooltip": {
+    "message": "Öffnen Sie die Sidebar jederzeit mit einem Hotkey"
+  },
+  
+  "InitialOpacity": {
+    "message": "Ursprüngliche Deckkraft",
+    "description": "label for setting Quick menu opening opacity"
+  },
+  
+  "InitialOpacityTooltip": {
+    "message": "Das Schnellmenü wird mit einer geringeren Deckkraft geöffnet und wird beim Überfahren mit der Maus undurchsichtig"
+  },
+  
+  "AutoMaxChars": {
+    "message": "Zeichenbegrenzung",
+    "description": "label for setting maximum selected characters for auto open"
+  },
+  
+  "AutoMaxCharsTooltip": {
+    "message": "Schnellmenü nicht öffnen, wenn die Auswahl mehr als (n) Zeichen lang ist. 0 = keine Begrenzung"
+  },
+  
+  "EnableAnimations": {
+    "message": "Animationen",
+    "description": ""
+  },
+  
+  "EnableAnimationsTooltip": {
+    "message": "Aktivieren Sie Animationen zur Größenänderung, zum Einblenden und zur Deckkraft für alle Menüs. Deaktivieren für schnelleres Interface ohne Eye Candy",
+    "description": ""
+  },
+
+    "EnableAnimationsTileSlider": {
+    "message": "Slide-in-Animationen",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Kachelmenü Slide-in-Animationen",
+    "description": ""
+  },
+  
+  "Theme": {
+    "message": "Theme",
+    "description": ""
+  },
+  
+  "ThemeTooltip": {
+    "message": "Theme zur Verwendung mit Quick-, Symbolleiste- und Sidebar-Menüs",
+    "description": ""
+  },
+      
+  "UserStyles": {
+    "message": "User Styles",
+    "description": "label for custom user styles"
+  },
+  
+  "SideBarStartOpen": {
+    "message": "Öffnen beim Laden",
+    "description": "label for opening the sidebar when the page loads"
+  },
+  
+  "SideBarStartOpenTooltip": {
+    "message": "Öffnen Sie die Seitenleiste automatisch beim Laden der Seite",
+    "description": ""
+  },
+  
+  "More": {
+    "message": "Mehr",
+    "description": ""
+  },
+  
+  "less": {
+    "message": "Weniger",
+    "description": ""
+  },
+
+  "OCSEDeleteWarning": {
+    "message": "Firefox-Suchmaschinen können nicht gelöscht werden. Ausblenden zum Deaktivieren",
+    "description": "alert message when attempting to delete a ocse from the manager"
+  },
+  
+  "Highlight": {
+    "message": "Hervorheben",
+    "description": ""
+  },
+  
+  "Appearance": {
+    "message": "Aussehen",
+    "description": ""
+  },
+  
+  "General": {
+    "message": "Generell",
+    "description": ""
+  },
+  
+  "Links": {
+    "message": "Links",
+    "description": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting"
+  },
+  
+  "LinksTooltip": {
+    "message": "Links können nach dem angezeigten Text oder der URL, auf die sie verweisen, durchsucht werden. Halten Sie die STRG-Taste gedrückt, um von der Standardeinstellung umzuschalten",
+    "description": ""
+  },
+
+  "Text": {
+    "message": "Text",
+    "description": ""
+  },
+  
+  "List": {
+    "message": "Liste",
+    "description": ""
+  },
+  
+  "Url": {
+    "message": "URL",
+    "description": ""
+  },
+  
+  "ContextMenuTooltip": {
+    "message": "Aktivieren der Suche über das Kontextmenü",
+    "description": ""
+  },
+  
+  "QuickMenuTooltip": {
+    "message": "Suche über Popup-Menü aktivieren",
+    "description": ""
+  },
+  
+  "Opening": {
+    "message": "Öffnen",
+    "description": ""
+  },
+  
+  "Closing": {
+    "message": "Schliessen",
+    "description": ""
+  },
+  
+  "Location": {
+    "message": "Ort",
+    "description": ""
+  },
+  
+  "Window": {
+    "message": "Fenster",
+    "description": ""
+  },
+  
+  "SidebarTypeTooltip": {
+    "message": "Wählen Sie, wie die Seitenleiste angezeigt werden soll. Überlagern erzeugt ein schwebendes Fenster über dem Seiteninhalt. Panel erstellt eine Seitenleiste in der Höhe des Fensters und füllt das Dokument aus, um den Seiteninhalt nicht zu verdecken.",
+    "description": ""
+  },
+  
+  "HighlightTooltip": {
+    "message": "Suchbegriffe auf der Suchergebnisseite hervorheben",
+    "description": ""
+  },
+  
+  "HighlightSeparateWordsTooltip": {
+    "message": "Jedes Wort in einer Mehrwortsuche separat hervorheben. Deaktivieren, um Phrasen als einen einzigen Suchbegriff zu behandeln",
+    "description": ""
+  },
+  
+  "HighlightNavTooltip": {
+    "message": "Navigationsleiste beim Hervorheben anzeigen",
+    "description": ""
+  },
+  
+  "Style": {
+    "message": "Style",
+    "description": ""
+  },
+  
+  "TextColor": {
+    "message": "Text-Farbe",
+    "description": ""
+  },
+  
+  "BackgroundColor": {
+    "message": "Hintergrund-Farbe",
+    "description": ""
+  },
+  
+  "Animations": {
+    "message": "Animationen",
+    "description": ""
+  },
+  
+  "AnimationsTooltip": {
+    "message": "",
+    "description": ""
+  },
+  
+  "MenuTheme": {
+    "message": "Menü-Theme",
+    "description": ""
+  },
+  
+  "UserStylesTooltip": {
+    "message": "Benutzerdefiniertes CSS-Styling auf Menüs anwenden",
+    "description": ""
+  },
+  
+  "Toolbar": {
+    "message": "Symbolleiste",
+    "description": ""
+  },
+  
+  "Shortcut": {
+    "message": "Tastenkombination",
+    "description": ""
+  },
+  
+  "Suggestions": {
+    "message": "Vorschläge",
+    "description": ""
+  },
+  
+  "Overlay": {
+    "message": "Überlagerung",
+    "description": ""
+  },
+  
+  "Panel": {
+    "message": "Panel",
+    "description": ""
+  },
+  
+  "ToolbarTooltip": {
+    "message": "Öffnen Sie ein Suchmenü über die Aktionsschaltfläche der Symbolleiste. Gemeinsame Nutzung von Suchaktionen mit dem Schnellmenü",
+    "description": ""
+  },
+  
+  "Size": {
+    "message": "Größe",
+    "description": ""
+  },
+  
+  "ConfirmResetAllSearchEngines": {
+    "message": "Dadurch werden alle benutzerdefinierten Suchmaschinen, Ordner, Lesezeichen und Trennzeichen entfernt und die Standard-Suchmaschinenliste wiederhergestellt.\r\n\r\nSind Sie sicher?",
+    "description": ""
+  },
+  
+  "ResetDefaults": {
+    "message": "Standardeinstellungen wiederherstellen",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesInfoMessage": {
+    "message": "Suchmaschinen können hier manuell oder automatisch über das Kontextmenü hinzugefügt werden. Siehe den folgenden Link für weitere Informationen - ",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesLinkText": {
+    "message": "Hinzufügen von Suchmaschinen",
+    "description": ""
+  },
+  
+  "EnableOnLinks": {
+    "message": "Aktivieren bei Links",
+    "description": ""
+  },
+  
+  "EnableOnImages": {
+    "message": "Aktivieren bei Bildern",
+    "description": ""
+  },
+  
+  "SelectTimeout": {
+    "message": "Auswahl Timeout",
+    "description": ""
+  },
+  
+  "SelectTimeoutTooltip": {
+    "message": "Zeit (in Millisekunden), die nach der letzten Auswahl verstreichen soll, um das Popup abzubrechen. 0 = keine Begrenzung",
+    "description": ""
+  },
+  
+  "highlightfollowdomaintooltip": {
+    "message": "Weitere Hervorhebung von Seiten auf der Website mit Suchergebnissen",
+    "description": ""
+  },
+  
+  "highlightfollowexternallinkstooltip": {
+    "message": "Weitere Hervorhebung auf externen Websites, die von der Suchergebnisseite aus verlinkt sind",
+    "description": ""
+  },
+  
+  "findbar": {
+    "message": "Suchleiste",
+    "description": ""
+  },
+  
+  "findbarpositiontooltip": {
+    "message": "Wählen Sie, wo die Suchleiste angezeigt werden soll",
+    "description": ""
+  },
+  
+  "ClickToSet": {
+    "message": "Setzen",
+    "description": ""
+  },
+  
+  "highlightshowfindbartooltip": {
+    "message": "Suchleiste beim Markieren anzeigen",
+    "description": ""
+  },
+  
+  "FindBarEnableHotkey": {
+    "message": "Öffnen Sie die Suchleiste mit einer Tastenkombination. Der ausgewählte Text wird sofort hervorgehoben, wenn er gefunden wurde",
+    "description": ""
+  },
+  
+  "FindBarNavMessage": {
+    "message": "1 $ von 2 $ Übereinstimmungen",
+    "description": ""
+  },
+  
+  "highlightflashselectedtooltip": {
+    "message": "Blinken des aktiven Suchbegriffs",
+    "description": ""
+  },
+  
+  "findbarstartopen": {
+    "message": "Automatisches öffnen der Suchleiste beim Laden der Seite",
+    "description": ""
+  },
+  
+  "accuracy": {
+    "message": "Genauigkeit",
+    "description": ""
+  },
+  
+  "partially": {
+    "message": "Teilweise",
+    "description": ""
+  },
+  
+  "exactly": {
+    "message": "Genau",
+    "description": ""
+  },
+  
+  "highlightaccuracytooltip": {
+    "message": "Wörter können teilweise übereinstimmen, wobei die Suche nach \"lor\" mit \"lorem\" übereinstimmen würde, oder genau, wobei nur das vollständige Wort \"lor\" hervorgehoben wird",
+    "description": ""
+  },
+  
+  "sidebarhidefullscreentooltip": {
+    "message": "Ausblenden der Seitenleiste im Vollbildmodus",
+    "description": ""
+  },
+  
+  "highlightignorepunctuationtooltip": {
+    "message": "Interpunktion ignorieren - Wenn Sie diese Option wählen, werden WORLDS, WORLD'S und WO'RLDS gefunden. Ein oder mehrere Apostrophe zwischen den Buchstaben würden trotzdem eine Übereinstimmung ergeben (z. B. W'O''R'L'D'S)",
+    "description": ""
+  },
+  
+  "highlightcasesensitivetooltip": {
+    "message": "Groß- und Kleinschreibung",
+    "description": ""
+  },
+  
+  "background": {
+    "message": "Hintergrund",
+    "description": ""
+  },
+  
+  "underline": {
+    "message": "Unterstreichen",
+    "description": ""
+  },
+  
+  "highlightstyletooltip": {
+    "message": "Gestalten Sie die Hervorhebung mit Hintergrund-/Vordergrundfarben oder Unterstreichungen. Bei der Auswahl von \"Unterstreichen\" werden die Textfarbwerte ignoriert",
+    "description": ""
+  },
+  
+  "casesensitive": {
+    "message": "Groß- und Kleinschreibung",
+    "description": ""
+  },
+  
+  "ignorepunctuation": {
+    "message": "Interpunktion ignorieren",
+    "description": ""
+  },
+  
+  "separateWordSearch": {
+    "message": "Separate Wortsuche",
+    "description": ""
+  },
+  
+  "highlightopacitytooltip": {
+    "message": "Deckkraft der Hintergrundfarbe",
+    "description": ""
+  },
+  
+  "docked": {
+    "message": "angedockt",
+    "description": ""
+  },
+  
+  "undocked": {
+    "message": "abgedockt",
+    "description": ""
+  },
+  
+  "findbarwindowtypetooltip": {
+    "message": "Wählen Sie, wie die Suchleiste angezeigt werden soll. Der Stil des Fensters der Suchleiste kann durch einen Doppelklick auf das Symbol zum Andocken / Abdocken / Verschieben oder durch Ziehen umgeschaltet werden",
+    "description": ""
+  },
+  
+  "findbarkeyboardtimeout": {
+    "message": "Suche durchführen, nachdem n Millisekunden lang nicht mehr getippt wurde. Zu niedrige Werte können zu Leistungsproblemen führen. 0 = deaktiviert",
+    "description": ""
+  },
+  
+  "close": {
+    "message": "Schließen",
+    "description": ""
+  },
+
+  "movedockundock": {
+    "message": "Verschieben / andocken / abdocken",
+    "description": ""
+  },
+
+  "navbar": {
+    "message": "Navigationsleiste",
+    "description": ""
+  },
+
+  "browseForImage": {
+    "message": "Nach lokalem Bild suchen",
+    "description": ""
+  },
+  
+  "enabledisplayprevioussearchtooltip": {
+    "message": "Anzeige der zuletzt verwendeten Suchbegriffe im Suchfeld",
+    "description": ""
+  },
+  
+  "resize": {
+    "message": "Größe ändern",
+    "description": ""
+  },
+  
+  "searchresults": {
+    "message": "Suchergebnisse",
+    "description": ""
+  },
+  
+  "FindBarOpenInAllTabs": {
+    "message": "Öffnen und Schließen der Suchleiste aller Tabs",
+    "description": ""
+  },
+  
+  "ToolsAsToolbar": {
+    "message": "Werkzeuge in einer separaten Symbolleiste anzeigen",
+    "description": ""
+  },
+  
+  "searchactionssidebaraction": {
+    "message": "In der Seitenleiste öffnen",
+    "description": ""
+  },
+  
+  "findbarsearchinalltabs": {
+    "message": "Durchsuchen aller Tabs, wenn die Suchleiste verwendet wird (Hinweis: Der Tipptimer wird deaktiviert)",
+    "description": ""
+  },
+  
+  "NotificationOpenSidebar": {
+    "message": "Seitenleiste öffnen, um Suchergebnisse zu sehen",
+    "description": ""
+  },
+  
+  "searchalltabs": {
+    "message": "Alle Tabs durchsuchen",
+    "description": ""
+  },
+  
+  "simpleclick": {
+    "message": "Einfacher Klick",
+    "description": ""
+  },
+  
+  "simpleclicktooltip": {
+    "message": "Klicken Sie auf ein Wort, um das Menü zu öffnen. Keine Auswahl erforderlich",
+    "description": ""
+  },
+  
+  "alt": {
+    "message": "Alt",
+    "description": ""
+  },
+  
+  "ctrl": {
+    "message": "Strg",
+    "description": ""
+  },
+  
+  "shift": {
+    "message": "Shift",
+    "description": ""
+  },
+
+  "HideContextMenu": {
+	"message": "Ausblenden des Standard-Kontextmenüs beim Öffnen des Schnellmenüs mit der rechten Maustaste"
+  },
+
+  "HoldForContextMenu": {
+	"message": "Rechte Taste ~1s halten und loslassen für Standard-Kontextmenü"
+  },
+  
+  "tools_repeatsearch": {
+    "message": "Sofortige Suche"
+  },
+  
+   "tools_lastused": {
+    "message": "Zuletzt verwendete Suchmaschine"
+  },
+  
+  "ClearHighlighting": {
+    "message": "Lösche Hervorhebung",
+    "description": ""
+  },
+  
+  "display": {
+    "message": "Anzeige",
+    "description": ""
+  },
+  
+  "grouplayout": {
+    "message": "Layout gruppieren",
+    "description": ""
+  },
+  
+  "groupcolor": {
+    "message": "Farbe gruppieren",
+    "description": ""
+  },
+   "groupcolortext": {
+    "message": "Text-Farbe",
+    "description": ""
+  },
+  
+  "grouplimit": {
+    "message": "Limit gruppieren",
+    "description": ""
+  },
+
+  "default": {
+    "message": "Standard",
+    "description": ""
+  },
+
+  "grid": {
+    "message": "Raster",
+    "description": ""
+  },
+
+  "grouplayoutmessage": {
+    "message": "Hinweis: Nur hochrangige Ordner",
+    "description": ""
+  },
+
+  "toggleview": {
+    "message": "",
+    "description": ""
+  },
+
+  "DefaultViewToolTip": {
+    "message": "Legen Sie den Standardanzeigemodus für das Menü fest. Jede Ordneransicht kann separat mit dem Raster-/Listenwerkzeug oder durch Bearbeiten des Ordners im Suchmaschinenmanager eingestellt werden",
+    "description": ""
+  },
+  
+  "grouphidemoretile": {
+    "message": "Ausblenden \"Mehr\" Kachel",
+    "description": ""
+  },
+  
+  "findinpage": {
+    "message": "In der Seite finden",
+    "description": ""
+  },
+  
+  "SearchCode": {
+    "message": "Ergebnisseiten-Skript",
+    "description": ""
+  },
+  
+  "Layout": {
+    "message": "Layout",
+    "description": ""
+  },
+  
+  "DefaultView": {
+    "message": "Standardansicht",
+    "description": ""
+  },
+  
+  "Saved": {
+    "message": "Gespeichert",
+    "description": ""
+  },
+  
+  "invalidregex": {
+    "message": "Ungültiges Regex",
+    "description": ""
+  },
+  
+  "AddUsingFirefoxSearchBar": {
+	"message": "Firefox 78+ Benutzer - Fügen Sie Ihre Suchmaschine über die Firefox-Suchleiste hinzu"
+  },
+  
+  "SyncWithFirefoxSearchHeader": {
+    "message": "Mit Firefox-Suche synchronisieren (Basismodus)"
+  },
+  
+  "SyncWithFirefoxSearch": {
+    "message": "Deaktivieren Sie alle ContextSearch-Maschinen, Unterordner, Bookmarklets usw. und zeigen Sie nur die in der Firefox-Suchleiste installierten Suchmaschinen an.",
+    "description": ""
+  },
+  
+  "FFEngineExists": {
+    "message": "$1 bereits in der Firefox-Suchleiste installiert",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsed": {
+    "message": "Zuletzt verwendeten Suchmaschine anzeigen",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsedToolTip": {
+    "message": "Die zuletzt benutzte Suchmaschine oben im Menü anzeigen",
+    "description": ""
+  },
+  
+  "ToggleTheme": {
+    "message": "Nächstes Theme",
+    "description": ""
+  },
+  
+  "ToggleHotkeys": {
+    "message": "Tastenkombinationen ein / aus",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsed": {
+    "message": "Kürzlich verwendete Suchmaschinen anzeigen",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedToolTip": {
+    "message": "Zuletzt verwendete Suchmaschinen oben im Menü anzeigen",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolder": {
+    "message": "",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+    "message": "Als Ordner anzeigen",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedLengthTooltip": {
+    "message": "Aktuelle Suchmaschinen zeigen",
+    "description": ""
+  },
+  
+  "RecentlyUsed": {
+    "message": "Kürzlich verwendet",
+    "description": ""
+  },
+    
+  "Recent": {
+    "message": "Neueste",
+    "description": ""
+  },
+    
+  "ClearSearchList": {
+    "message": "Suchmaschinenliste löschen und mit der Firefox-Suchleiste synchronisieren",
+    "description": ""
+  },
+  
+  "CannotEditOneClickEngines": {
+    "message": "Firefox-Suchmaschinen müssen importiert werden, bevor Änderungen vorgenommen werden",
+    "description": ""
+  },
+  
+  "hotkeys": {
+    "message": "Tastenkombination",
+    "description": ""
+  },
+  
+  "pagetiles": {
+    "message": "Seitenkacheln",
+    "description": ""
+  },
+  
+  "pagetilesenabledtooltip": {
+    "message": "Aktiviere Seitenkacheln",
+    "description": ""
+  },
+  
+  "drop": {
+    "message": "Ablegen",
+    "description": ""
+  },
+  
+  "hotkeystooltip": {
+    "message": "Markieren Sie Text und drücken Sie eine Taste, um zu suchen. Tastenkombination können im Suchmaschinen-Tab festgelegt werden",
+    "description": ""
+  },
+  
+  "pagetilesdescription": {
+    "message": "Ziehen und Ablegen von Text auf ein ganzseitiges, gekacheltes Menü von Suchmaschinen ( experimentell )",
+    "description": ""
+  },
+  
+  "EnableHotkeysDescription": {
+    "message": "Tastenkombination jederzeit aktivieren, außer beim Bearbeiten von Inhalten (deaktivieren, um Tastenkombination nur zuzulassen, wenn ein ContextSearch-Menü im Fokus ist)",
+    "description": ""
+  },
+
+  "SearchAll": {
+    "message": "Suche alle",
+    "description": ""
+  },
+
+  "pagetilesselectpalette": {
+    "message": "Farbpalette"
+  },
+  
+  "nonePalette": {
+    "message": "Keine",
+    "description": "none (palettes.js)"
+  },
+  
+  "alphabetPalette": {
+    "message": "Alphabet",
+    "description": "alphabet (palettes.js) - optional"
+  },
+  
+  "bouquetPalette": {
+    "message": "Bouquet",
+    "description": "bouquet (palettes.js) - optional"
+  },
+  
+  "dayglowPalette": {
+    "message": "Dayglow",
+    "description": "dayglow (palettes.js) - optional"
+  },
+  
+  "easterPalette": {
+    "message": "Easter",
+    "description": "easter (palettes.js) - optional"
+  },
+  
+  "lavenderPalette": {
+    "message": "Lavender",
+    "description": "lavender (palettes.js) - optional"
+  },
+  
+  "metalPalette": {
+    "message": "Metal",
+    "description": "metal (palettes.js) - optional"
+  },
+  
+  "nurseryPalette": {
+    "message": "Nursery",
+    "description": "nursery (palettes.js) - optional"
+  },
+  
+  "socialPalette": {
+    "message": "Social",
+    "description": "social (palettes.js) - optional"
+  },
+  
+  "waterPalette": {
+    "message": "Water",
+    "description": "water (palettes.js) - optional"
+  },
+
+  "keyword": {
+    "message": "Schlüsselwort Omnibox"
+  },
+
+  "FailedToLoad": {
+    "message": "Suchmaschinen konnten nicht geladen werden :(",
+    "description": "Failed to load search engines (options.js)"
+  },
+  
+  "fetchingRemoteContent": {
+    "message": "Abruf von Ferninhalten",
+    "description": "Fetching remote content (options.js)"
+  },
+
+  "searchenginesmanager": {
+    "message": "Suchmaschinen-Manager",
+    "description": ""
+  },
+
+  "faviconFinder": {
+    "message": "Finden Sie Favicons, indem Sie die Host-Site überprüfen ( öffnet einen Hintergrund-Tab )",
+    "description": ""
+  },
+
+  "faviconFinderShort": {
+    "message": "Favicons finden",
+    "description": ""
+  },
+
+  "uploadfromlocal": {
+    "message": "Verwenden Sie ein Bild von Ihrem Computer",
+    "description": ""
+  },
+
+  "Shortcuts": {
+    "message": "Abkürzungen",
+    "description": "keyboard shortcuts"
+  },
+
+  "ClosePageTilesOnShake": {
+    "message": "Schließen der Seitenkacheln durch Schütteln der Maus",
+    "description": ""
+  },
+
+  "ShowFolderSearch": {
+    "message": "Anzeige einer Option zum Durchsuchen des gesamten Ordners oben im Menü",
+    "description": ""
+  },
+
+  "Omnibox": {
+    "message": "Omnibox",
+    "description": ""
+  },
+
+  "OpenOnDragTooltip": {
+    "message": "Text / Links / Bilder zum Öffnen ziehen",
+    "description": ""
+  },
+
+  "Drag": {
+    "message": "Ziehen",
+    "description": ""
+  },
+
+  "HighlightLimitTooltip": {
+    "message": "Begrenzen Sie die Anzahl der zu markierenden Treffer. Eine Untergrenze kann eine Verlangsamung der Markierung verhindern. 0 = keine Begrenzung",
+    "description": ""
+  },
+
+  "AddToBlockList": {
+    "message": "Zur Blockliste hinzufügen",
+    "description": ""
+  },
+
+  "AddToBlockListConfirm": {
+    "message": "\"$1\" zur Blockliste hinzufügen?",
+    "description": ""
+  },
+
+  "regexmatches": {
+    "message": "Regex-Übereinstimmungen",
+    "description": ""
+  },
+
+  "audio": {
+    "message": "Audio",
+    "description": ""
+  },
+
+  "frame": {
+    "message": "Frame",
+    "description": ""
+  },
+
+  "image": {
+    "message": "Bild",
+    "description": ""
+  },
+
+  "link": {
+    "message": "Link",
+    "description": ""
+  },
+
+  "linkText": {
+    "message": "Link-Text",
+    "description": ""
+  },
+
+  "page": {
+    "message": "Seite",
+    "description": ""
+  },
+
+  "selection": {
+    "message": "Auswahl",
+    "description": ""
+  },
+
+  "video": {
+    "message": "Video",
+    "description": ""
+  },
+
+  "requestPermissionsMessage": {
+    "message": "Eine optionale Genehmigung ist erforderlich. Klicken Sie unten auf die Schaltfläche.",
+    "description": "generic permission"
+  },
+  "Request": {
+    "message": "Erlaubnis beantragen",
+    "description": "clipboardWrite permission - request button label"
+  },
+  
+  "deleteNodesMessage": {
+    "message": "$1-Knotenpunkt(e) löschen?"
+  },
+  
+  "RegexTooltip": {
+    "message": "Ändern Sie die Suchbegriffe vor dem Absenden mit Regex. Mehrere Ersetzungen können verkettet werden, eine pro Zeile",
+    "description": "searchengine edit - search regex tooltip"
+  },
+  "MatchSearchTermsRegexTooltip": {
+    "message": "Diese Suchmaschine im Ordner „Regex Matches“ anzeigen, wenn die Suchbegriffe mit dem folgenden Regex übereinstimmen",
+    "description": "searchengine edit - match regex tooltip"
+  },
+  "SearchCodeTooltip": {
+    "message": "Führen Sie nach dem Öffnen der URL-Vorlage ein Javascript aus. Die globale Variable \"searchTerms\" repräsentiert die aktuelle Suche",
+    "description": "searchengine edit - searchcode tooltip"
+  },
+  
+  "ConfirmDeleteCustomSearchEngines": {
+    "message": "Dadurch werden alle benutzerdefinierten Suchmaschinen, Ordner, Bookmarklets, Trennlinien usw. gelöscht. Sind Sie sicher?",
+    "description": "remove searchengines - confirm message"
+  },
+  
+ "customIconTooltip": {
+    "message": "Ein benutzerdefiniertes Symbol verwenden",
+    "description": "toolbar icon - custom icon tooltip"
+  },
+  
+ "EnableHotkeysLabel": {
+    "message": "Tastenkombination der Suchmaschine",
+    "description": "label for Search Engine Hotkeys"
+  },
+  
+  "quickMenuOpen": {
+    "message": "quickMenuOpen",
+    "description": "keyboard shortcut label"
+  },
+  "findBarOpen": {
+    "message": "findBarOpen",
+    "description": "keyboard shortcut label"
+  },
+  "findBarNext": {
+    "message": "findBarNext",
+    "description": "keyboard shortcut label"
+  },
+  "findBarPrevious": {
+    "message": "findBarPrevious",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarOpen": {
+    "message": "sideBarOpen",
+    "description": "keyboard shortcut label"
+  },
+  "toggleDisplayMode": {
+    "message": "toggleDisplayMode",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuLock": {
+    "message": "quickMenuLock",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuEdit": {
+    "message": "quickMenuEdit",
+    "description": "keyboard shortcut label"
+  },
+  "optionsOpen": {
+    "message": "optionsOpen",
+    "description": "keyboard shortcut label"
+  },
+  "pageTilesOpen": {
+    "message": "pageTilesOpen",
+    "description": "keyboard shortcut label"
+  },
+  "themeNext": {
+    "message": "themeNext",
+    "description": "keyboard shortcut label"
+  },
+  "themePrevious": {
+    "message": "themePrevious",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarMinify": {
+    "message": "sideBarMinify",
+    "description": "keyboard shortcut label"
+  },
+  
+  "OmniboxTooltip": {
+    "message": "Omnibox",
+    "description": "omnibox image title"
+  },
+  
+  "lite": {
+    "message": "lite",
+    "description": "theme name"
+  },
+  "dark": {
+    "message": "dark",
+    "description": "theme name"
+  },
+  "modern": {
+    "message": "modern",
+    "description": "theme name"
+  },
+  "modern_dark": {
+    "message": "modern dark",
+    "description": "theme name"
+  },
+  "modern_purple": {
+    "message": "modern purple",
+    "description": "theme name"
+  },
+  "modern_sunset": {
+    "message": "modern sunset",
+    "description": "theme name"
+  },
+  "modern_glass": {
+    "message": "modern glass",
+    "description": "theme name"
+  },
+  
+  "exportToFirefoxSearch": {
+    "message": "Export in Firefox-Suche",
+    "description": "advanced setting label"
+  },
+  "exportToFirefoxSearchTooltip": {
+    "message": "Navigieren Sie zu Ihrem Profilordner und wählen Sie Ihre Datei \"search.json.mozlz4\". Es werden zwei Dateien angezeigt: eine neue \"search.json.mozlz4\"-Datei und eine Sicherungskopie Ihrer Originaldatei. Speichern Sie beide Dateien in Ihrem Profilverzeichnis. Starten Sie Firefox neu, um die Änderungen zu sehen.",
+    "description": "advanced setting tooltip"
+  },
+  "addSearchProviderHideNotificationTooltip": {
+    "message": "Hinweis für Firefox-Benutzer zum Hinzufügen von offenen Suchmaschinen über die Firefox-Suchleiste",
+    "description": "advanced setting tooltip"
+  },
+  "alwaysAllowTileRearrangingTooltip": {
+    "message": "Die Kacheln können in den Menüs immer neu angeordnet werden.",
+    "description": "advanced setting tooltip"
+  },
+  "autoCopy": {
+    "message": "Automatisch kopieren"
+  },
+  "autoCopyTooltip": {
+    "message": "Ausgewählter Text wird in die Zwischenablage kopiert",
+    "description": "advanced setting tooltip"
+  },
+  "autoPasteFromClipboardTooltip": {
+    "message": "Text in der Zwischenablage wird in Suchleisten eingefügt, wenn Suchmenüs geöffnet werden",
+    "description": "advanced setting tooltip"
+  },
+   "autoCopyOnInputsTooltip": {
+    "message": "Freigabe für Eingaben und Textbereiche",
+    "description": "advanced setting tooltip"
+  },
+  "cache": {
+    "message": "âœ“",
+    "description": "button cache label"
+  },
+  "cacheTooltip": {
+    "message": "Suchmaschinensymbole aus ihren URLs zwischenspeichern",
+    "description": "advanced setting tooltip - button cache"
+  },
+  "uncache": {
+    "message": "âœ˜",
+    "description": "button uncache label"
+  },
+  "uncacheTooltip": {
+    "message": "Löschen Sie den Suchmaschinen-Symbol-Cache nur für Suchmaschinen, die Symbol-URLs enthalten. Warnung: Die URLs werden vor dem Löschen des Caches nicht auf Fehler oder Ungültigkeit geprüft.",
+    "description": "advanced setting tooltip - button uncache"
+  },
+  "confirmUncache": {
+    "message": "Den gesamten Icon-Cache entfernen?",
+    "description": "uncache message confirm"
+  },
+  "warningCache": {
+    "message": "Einige Icons konnten nicht zwischengespeichert werden",
+    "description": "cache message warning"
+  },
+  "cacheIconsMaxSizeTooltip": {
+    "message": "Maximale Breite oder Höhe für die Größenänderung von Symbolen für die Zwischenspeicherung",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuContextualLayoutFlattenLimitTooltip": {
+    "message": "Entfernen Sie Unterordner und reduzieren Sie das Menü, wenn nur n Suchmaschinen angezeigt werden sollen. 0 = keine Begrenzung",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuHotkeysTooltip": {
+    "message": "Anhängen von Tastenkombination an Kontextmenüeinträge im Format (&A) für schnellen Zugriff",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuRegexMatchedEnginesTooltip": {
+    "message": "Übereinstimmende Regex-Suchmaschinen oben im Menü anzeigen",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuTitleTooltip": {
+    "message": "Überschreiben Sie den Titel des Kontextmenüs. Verwenden Sie %s anstelle von Suchbegriffen. blank = Standard",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseContextualLayoutTooltip": {
+    "message": "Anzeige des Kontextmenüs in Unterordnern entsprechend dem aktuellen Kontext",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseInnerTextTooltip": {
+    "message": "Verwendung des inneren Textes eines Elements als Suchbegriff, wenn kein Text ausgewählt ist",
+    "description": "advanced setting tooltip"
+  },
+  "disableNewTabSortingTooltip": {
+    "message": "Aktivieren Sie diese Option, um den Browser entscheiden zu lassen, wie neue Tabs mit Suchergebnissen sortiert werden sollen. Nützlich, um Konflikte mit Tab-Managern zu vermeiden",
+    "description": "advanced setting tooltip"
+  },
+  "exportWithoutBase64IconsTooltip": {
+    "message": "Exportierte Konfigurationen sind kleiner, da die URIs der Symboldaten ausgeschlossen sind.Kann dazu führen, dass benutzerdefinierte Icons verloren gehen",
+    "description": "advanced setting tooltip"
+  },
+  "forceOpenResultsTabsAdjacentTooltip": {
+    "message": "Erzwingen, dass die Suchergebnisse im nächsten Tab auf der rechten Seite erscheinen",
+    "description": "advanced setting tooltip"
+  },
+  "groupFolderRowBreaksTooltip": {
+    "message": "Aktivieren der Anzeige von Inline-Gruppenordnern als Blockelemente",
+    "description": "advanced setting tooltip"
+  },
+  "groupLabelMoreTileTooltip": {
+    "message": "Anzeige des mehr/weniger-Symbols für Gruppenordner innerhalb der Label-Kachel im Gegensatz zu einer separaten Kachel",
+    "description": "advanced setting tooltip"
+  },
+  "omniboxDefaultToLastUsedEngineTooltip": {
+    "message": "Standardmäßig wird die zuletzt mit der Omnibox verwendete Suchmaschine verwendet",
+    "description": "advanced setting tooltip"
+  },
+  "openFoldersOnHoverTimeoutTooltip": {
+    "message": "Anzahl der Millisekunden, die der Mauszeiger verweilt, bevor ein Ordner geöffnet wird. 500 = Standard, 0 = deaktiviert",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAllowContextMenuNewTooltip": {
+    "message": "Bei Systemen, die das Kontextmenü beim Herunterziehen oder beim Hochziehen der Maus anzeigen, müssen Sie möglicherweise eine alternative Öffnungsmethode wählen oder die Art und Weise, wie das Kontextmenü geöffnet wird, ändern.",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoMaxCharsTooltip": {
+    "message": "Maximale Anzahl von Zeichen, die ausgewählt werden können, ohne dass das Schnellmenü mit der Auto-Methode geöffnet wird. Wenn Sie mehr als diese Zahl auswählen, wird das Menü nicht geöffnet. 0 = keine Begrenzung",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoTimeoutTooltip": {
+    "message": "Bricht das Öffnen des Schnellmenüs ab, wenn vor dem Loslassen der Maustaste eine bestimmte Anzahl von Millisekunden verstrichen ist. 0 = deaktiviert",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuCancelDeadzoneTooltip": {
+    "message": "Wie viele Pixel die Maus bewegen werden können, bevor das Öffnen des Schnellmenüs mit HOLD abgebrochen wird",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuDomLayoutTooltip": {
+    "message": "Überschreiben Sie das Layout des Schnellmenüs mit einer durch Komma getrennten Liste von HTMLElement-Ids, z. B. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, Symbolleiste ). Es müssen nicht alle ids verwendet werden. Alle aufgeführten werden an das Ende des DOM-Baums verschoben. blank = default",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuFocusOnOpenTooltip": {
+    "message": "Fokus nach dem Öffnen auf das Schnellmenü setzen",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHideSeparatorsInGridTooltip": {
+    "message": "Ausblenden von Trennlinien bei Verwendung des Schnellmenüs in der Gitteransicht",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHoldTimeoutTooltip": {
+    "message": "Zeit in Millisekunden zum Halten einer Maustaste, bevor das Schnellmenü mit HOLD geöffnet wird",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOpeningOpacityTooltip": {
+    "message": "Transparenzgrad des Schnellmenüs beim Öffnen. Wird beim Hovern undurchsichtig",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuPreventPageClicksTooltip": {
+    "message": "Verhindern von Mausereignissen auf der aktuellen Webseite, während das Schnellmenü geöffnet ist",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuRegexMatchedEnginesTooltip": {
+    "message": "Regex-übereinstimmende Suchmaschinen am Anfang des Menüs anzeigen",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuSearchOnMouseUpTooltip": {
+    "message": "Ermöglicht die Durchführung einer Suche aus dem Schnellmenü beim Hochziehen der Maus, ohne dass ein Mousedown erforderlich ist. Nützlich beim Öffnen des Menüs bei Halten und Loslassen der Maus auf einer Suchkachel, um eine Suche durchzuführen.",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowHotkeysInTitleTooltip": {
+    "message": "Tastenkombination mit Titel anzeigen",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowRecentlyUsedTooltip": {
+    "message": "Zuletzt verwendete Suchmaschinen oben im Menü anzeigen",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOnSimpleClick_useInnerTextTooltip": {
+    "message": "Verwendung des inneren Textes eines Elements als Suchbegriff, wenn kein Text ausgewählt ist",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolbarRowsTooltip": {
+    "message": "Maximale Anzahl der anzuzeigenden Werkzeugzeilen. 0 = keine Begrenzung",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsLockPersistTooltip": {
+    "message": "Der Status des Sperrwerkzeugs wird über mehrere Sitzungen hinweg gespeichert",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsRepeatSearchPersistTooltip": {
+    "message": "Der Status des Wiederholungssuchwerkzeugs wird über mehrere Sitzungen hinweg gespeichert",
+    "description": "advanced setting tooltip"
+  },
+  "rememberLastOpenedFolderTooltip": {
+    "message": "Menüs zum zuletzt verwendeten Ordner öffnen",
+    "description": "advanced setting tooltip"
+  },
+  "rightClickMenuOnMouseDownFixTooltip": {
+    "message": "Erfordert einen Doppelklick, um das Standard-Kontextmenü anzuzeigen, wenn die rechte Maustaste zum Öffnen des Schnellmenüs gedrückt gehalten wird. Nützlich, um fehlerhafte Menüs auf Systemen zu verhindern, die das Kontextmenü bei gedrückter und nicht bei geöffneter Maustaste anzeigen.",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarHistoryLengthTooltip": {
+    "message": "Maximale Anzahl der zu speichernden Historieneinträge",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarSuggestionsCountTooltip": {
+    "message": "Maximale Anzahl der einzubeziehenden Google-Vorschläge",
+    "description": "advanced setting tooltip"
+  },
+  "shakeSensitivityTooltip": {
+    "message": "Empfindlichkeit für die Erkennung einer Erschütterung. Niedriger = empfindlicher",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_openOnResultsTooltip": {
+    "message": "Öffnen Sie die Seitenleiste auf den Tabs der Suchergebnisse",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_openOnResultsMinimizedTooltip": {
+    "message": "Öffnen Sie die Seitenleiste auf minimierten Suchergebnissen",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_rememberStateTooltip": {
+    "message": "Merke den geöffneten Zustand der Seitenleiste",
+    "description": "advanced setting tooltip"
+  },  
+  "Blocklist": {
+    "message": "Blocklist",
+    "description": "blocklist label"
+  },
+  "BlocklistTooltip": {
+    "message": "URLs, mit denen ContextSearch deaktiviert werden soll. Akzeptiert Hostnamen www.example.com, Wildcards *.example.com und Regex. ! oder # Präfix deaktiviert einen Eintrag #example.com oder !example.com",
+    "description": "blocklist tooltip"
+  },
+  "NewTool": {
+    "message": "New Tool"
+  },
+  "BackButton": {
+    "message": "Back Button"
+  },
+  "ForwardButton": {
+    "message": "Forward Button"
+  },
+  
+  "Title": {
+    "message": "Title"
+  },
+  
+  "MenuBar": {
+    "message": "Menu Bar"
+  },
+  
+  "EditMenu": {
+    "message": "Layout editor"
+  },
+
+  "requestClipboardWritePermission": {
+    "message": "Die Berechtigung \"clipboardWrite\" ist für die Interaktion mit der Zwischenablage erforderlich. Klicken Sie auf die Schaltfläche unten, um die Berechtigung \"clipboardWrite\" anzufordern. ",
+    "description": "permissions request"
+  },
+  
+  "manualedit": {
+    "message": "Manuelles Ändern von Einstellungsobjekten"
+  },
+
+  "manualeditwarning": {
+    "message": "Das manuelle Bearbeiten von Einstellungsobjekten kann dazu führen, dass ContextSearch nicht mehr funktioniert!"
+  },
+
+  "ContextAwareFilter": {
+    "message": "Filtern von Suchmaschinen auf der Grundlage des Zielelements ( Link, Bild, Auswahl, ... )"
+  },
+
+  "NewMultiSearch": {
+    "message": "Neue Multi-Suche"
+  },
+
+  "ContextsTooltip": {
+    "message": "Diese Suchmaschine wird beim Öffnen von Menüs aus den ausgewählten Kontexten angezeigt. Funktioniert mit Kontext- und Schnellmenüs, wenn [Kontextmenü / Schnellmenü] -> Erweitert -> Filter Suchmaschine aktiviert ist, ansonsten ignoriert."
+  },
+
+  "OpenOnIcon": {
+    "message": "Icon"
+  },
+
+  "OpenOnIconTooltip": {
+    "message": "Zeigt ein Symbol neben dem ausgewählten Text an. Klicken Sie, um das Menü zu öffnen."
+  },
+
+  "checkContextMenuOrderNotification": {
+    "message": "Das Standard-Kontextmenü beim Öffnen des Schnellmenüs auf Doppelklick umstellen? Siehe Optionen für weitere Informationen."
+  },
+
+  "DoubleClick": {
+    "message": "Doppelklick"
+  },
+  
+  "ShowDefaultMenuModifierMessage": {
+    "message": "So zeigen Sie das Standardkontextmenü an"
+  },
+
+  "NewExternalProgram": {
+    "message": "Neuer App Launcher"
+  },
+
+  "searchIconFinder": {
+    "message": "ðŸ“ Suche bei IconFinder.com"
+  },
+
+  "RefineSearch": {
+    "message": "Suche verfeinern"
+  },
+
+  "NativeApp": {
+    "message": "Messenger-App"
+  },
+
+  "NativeAppMissing": {
+    "message": "Die Messenger-App ist nicht verbunden."
+  },
+  "SearchBookmarklets": {
+    "message": "ðŸ“ Bookmarklets suchen"
+  },
+  "NewScript": {
+    "message": "Neues Skript"
+  },
+  "Permissions": {
+    "message": "Berechtigungen"
+  },
+  "Command": {
+    "message": "Befehl"
+  },
+  "WorkingDirectory": {
+    "message": "Arbeitsverzeichnis"
+  },
+  "Script": {
+    "message": "Skript"
+  },
+  "PostAppScript": {
+    "message": "Post-App Skript"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Javascript, das nach Beendigung der Anwendung im aktuellen Tab ausgeführt wird. Stdout wird in der Variablen \"result\" erfasst, z. B. alert(result)."
+  },
+  "MessengerOfflineTooltip": {
+    "message": "Ein zusätzliches Plugin ist erforderlich, um Anwendungen von ContextSearch web-ext aus zu starten. Klicken Sie auf den Link für weitere Details."
+  },
+  "ToggleSearchTerms": {
+    "message": "Nächster Suchbegriff"
+  },
+  "EnableOn": {
+    "message": "Aktivieren an"
+  },
+  "Input": {
+    "message": "Eingabe"
+  },
+  "tools_OpenImage": {
+    "message": "Bild öffnen"
+  },
+  "tools_Download": {
+    "message": "Download"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Alle Einstellungen auf die Standardeinstellungen zurücksetzen? ( Suchmaschinen sind davon nicht betroffen )"
+  },
+  "contexts": {
+    "message":"Kontexte"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Menü beim Tippen schließen. ( Erfordert, dass die Suchleiste *NICHT* den Fokus hat - siehe \"Suchleiste\" )"
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Die Kontexte-Symbolleiste anzeigen"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Überall"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Menü auf einem beliebigen Element öffnen, einschließlich leerer Bereiche in Dokumenten und Rahmen"
+  },
+  "saveclose": {
+    "message": "Speichern und schließen"
+  },
+  "singlewindow": {
+    "message": "Einzeln"
+  },
+  "cascadingwindow": {
+    "message": "Kaskadierung"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Durchsuchen von Ordnern in einem einzigen Menü oder in separaten kaskadierenden Menüs"
+  },
+  "DontShowAgain": {
+    "message": "Zeige das nicht mehr"
+  },
+  "Icon": {
+    "message": "Icon"
+  },
+  "Inline": {
+    "message": "Inline"
+  },
+  "Block": {
+    "message": "Blockieren"
+  },
+  "CheckForUpdates": {
+    "message": "Nach Aktualisierungen suchen"
+  },
+  "UpdateToVersion": {
+    "message": "Aktualisierung des Skripts der nativen Anwendung auf Version $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "Neueste Version bereits installiert"
+  },
+  "beta": {
+    "message": "Betatest"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - Suchbegriffe\n%su - Suchbegriffe in Großbuchstaben\n%sl - Suchbegriffe in Kleinbuchstaben\n%d - Domäne\n%ds - Subdomäne\n%du - vom Benutzer gewählte Domäne\n%u - Tab URL"
+  },
+  "AdditionalSearchActions": {
+    "message": "Zusätzliche Aktionen"
+  },
+  "Event": {
+    "message": "Ereignis"
+  },
+  "Button": {
+    "message": "Button"
+  },
+  "SearchAction": {
+    "message": "Suche Aktion"
+  },
+  "middle": {
+    "message": "Mittel"
+  },
+  "forward": {
+    "message": "Vorwärts"
+  },
+  "searchActionConflict": {
+    "message": "Diese Einstellung steht im Widerspruch zu einer anderen"
+  },
+  "NewShortcut": {
+    "message": "Neue Tastenkombination"
+  },
+  "Cut": {
+    "message": "Ausschneiden"
+  },
+  "Paste": {
+    "message": "Einfügen"
+  },
+  "New": {
+    "message": "Neu"
+  },
+  "confirmRestoreOldConfig": {
+    "message": "Es gab ein Problem beim Laden der aktuellen Einstellungen. Versuchen Sie, eine frühere Version zu laden?"
+  },
+  "SessionBackup": {
+    "message": "Vorherige Sitzung"
+  },
+  "VersionBackup": {
+    "message": "Vorherige Sitzung"
+  },
+  "RestoreBackup": {
+    "message": "Backup wiederherstellen"
+  },
+  "Backup": {
+    "message": "Backup"
+  },
+  "Restore": {
+    "message": "Wiederherstellen"
+  },
+  "BackupAndRestore": {
+    "message": "Sichern und Wiederherstellen"
+  },
+  "File": {
+    "message": "Datei"
+  },
+  "Merge": {
+    "message": "Zusammenführen"
+  },
+  "Replace": {
+    "message": "Ersetzen"
+  },
+  "ConfirmReplaceConfig": {
+    "message": "Die aktuelle Konfiguration ersetzen?"
+  },
+  "SearchBarEngines": {
+    "message": "SearchBar-Suchmaschinen"
+  },
+  "ContextFiltering": {
+    "message": "Kontext-Filterung"
+  },
+  "RegexFiltering": {
+    "message": "Regex-Filterung"
+  },
+  "ChooseImage": {
+    "message": "Bild auswählen"
+  }
+}

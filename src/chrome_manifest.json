@@ -1,0 +1,98 @@
+{
+	"manifest_version": 2,
+	"name": "ContextSearch web-ext",
+	"description": "__MSG_extensionDescription__",
+	"version": "1.47.15",
+	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
+	"default_locale": "en",
+	"background": {
+		"scripts": [
+			"lib/browser-polyfill.min.js",
+			"utils.js",
+			"update_useroptions.js",
+			"opensearch.js",
+			"lib/encoding-indexes.js",
+			"defaultEngines.js",
+			"bookmarks.js",
+			"defaultUserOptions.js",
+			"contexts.js",
+			"contextMenu.js",
+			"searchActions.js",
+			"nodes.js",
+			"omnibox.js",
+			"searchEngineUtils.js",
+			"keyTable.js",
+			"TabHighlighter.js",
+			"Shortcuts.js",
+			"tools.js",
+			"background.js"
+		]
+	},
+	"content_scripts": [
+		{
+			"matches": [
+				"<all_urls>"
+			],
+			"js": [
+				"lib/browser-polyfill.min.js",
+				"init_content.js"
+			],
+			"all_frames": true
+		}
+	],
+	"options_ui": {
+		"page": "options.html",
+		"open_in_tab": true
+	},
+	"permissions": [
+		"<all_urls>",
+		"activeTab",
+		"contextMenus",
+		"storage",
+		"tabs",
+		"unlimitedStorage",
+		"webNavigation"
+	],
+	"optional_permissions": [
+		"bookmarks",
+		"clipboardWrite",
+		"clipboardRead",
+		"nativeMessaging",
+		"downloads"
+	],
+	"icons": {
+		"48": "/icons/logo_notext.png"
+	},
+	"web_accessible_resources": [
+		"/quickmenu.html",
+		"/customSearch.html",
+		"/searchbar.html",
+		"/findbar.html",
+		"icons/search.svg",
+		"icons/crossmark.svg",
+		"icons/alert.svg",
+		"icons/spinner.svg",
+		"icons/code.svg",
+		"icons/logo_notext.svg",
+		"icons/icon.svg",
+		"icons/repeatsearch.svg",
+		"icons/qm.svg",
+		"/pagetiles.html",
+		"/blank.html",
+		"/inject_widgets.css",
+		"/inject_sidebar.css"
+	],
+	"browser_action": {
+		"default_title": "ContextSearch",
+		"default_icon": {
+			"48": "/icons/logo_notext.png"
+		},
+		"default_popup": "/searchbar.html"
+	},
+	"commands": {
+		"_execute_browser_action": {}
+	},
+	"omnibox": {
+		"keyword": "cs"
+	}
+}

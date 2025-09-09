@@ -1,0 +1,39 @@
+:root {
+	--bg-color1:#3a3a3a;
+	--bg-color2:#353535;
+	--bg-color3:#454545;
+	--bg-color4:#454545;
+	--color:#aaa;
+	--color2:#aaa;
+	--border-color1:#333;
+	--border-color2:#222;
+	--border-color3:#333;
+	--hover1:#666;
+	--hover2:#3d3d3d;
+	--selected:#537a58;
+
+	--tree-row-border: 1px solid #444;
+
+	--tools-color: #aaa;
+}
+
+a, a:link, a:visited, a:active {
+	color: var(--selected);
+}
+#advancedSettingsTable TR:hover {
+	background-color:#444;
+}
+
+#b_nightMode {
+	filter:  invert(1);
+}
+
+#t_manualEdit .string { color: darkseagreen; }
+#t_manualEdit .number { color: orange; }
+#t_manualEdit .boolean { color: #e27070; }
+#t_manualEdit .null { color: #e27070; }
+#t_manualEdit .key { color: #ddd; }
+
+#helpTab .header1.help {
+	color: #bbb;
+}

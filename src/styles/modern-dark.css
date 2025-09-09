@@ -1,0 +1,28 @@
+:root { 
+	--background: linear-gradient(to bottom, #666, #111);
+	--tools-color: #ddd; 
+	color: white;
+	--border: rgba(255,255,255,.2);
+	--hover: rgba(2,0,36,.2);
+	--separator: #fff4;
+	--folder-color:#FBFACE;/*#fff3;*/
+	--folder-label-color: white;
+	--folder-label-color-singlecolumn: white;
+	--group-label-color: #fff;
+}
+
+#findbar {
+	background: linear-gradient(to right, #666, #111);
+}
+
+#suggestions {
+	background:#fff1;
+}
+
+#searchBar {
+	background: #0005;
+}
+
+.tile[data-type="folder"]:not(.singleColumn) {
+    --tools-color: #444;
+}

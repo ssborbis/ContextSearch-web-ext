@@ -1,0 +1,100 @@
+BODY, HTML {
+	margin:0;
+	padding:0;
+	background:var(--background);
+	text-align: left;
+	overflow-x: hidden;
+	white-space: nowrap;
+}
+
+#findbar {
+	font-size:10pt;
+	font-family:Arial;
+	font-weight:600;
+	user-select:none;
+	height:32px;
+	padding: 2px;
+	display:flex;
+	align-items:center;
+}
+#findbar > * {
+	display:inline-block;
+}
+#findbar #handle {
+	top:0;
+}
+#searchBar {
+	width: 275px;
+	border:1px solid #888;
+	height:24px;
+	padding:0 24px 0 24px;
+	margin:0 4px;
+	user-select:text;
+	border-radius:2px 0 0 2px;
+	vertical-align:middle;
+	flex-grow:1;
+}
+#close {
+	vertical-align:middle;
+	width:20px;
+	height:20px;
+}
+.button {
+	border:1px solid #888;
+	text-align:center;
+	height:24px;
+	width:32px;
+	display:inline-block;
+	vertical-align:top;
+	padding:0 6px;
+}
+#previous, #next {
+	margin-left:-1px;
+}
+#next {
+	border-radius:0 2px 2px 0;
+}
+#mark_counter {
+	margin:0 16px;
+}
+.optionLabel {
+	text-align:center;
+	height:22px;
+	width:22px;
+	padding: 0 4px;
+	vertical-align:middle;
+	margin:0 2px;
+	border:2px solid transparent;
+	border-radius:2px;
+	line-height:20px;
+}
+INPUT:checked + .optionLabel {
+	border:2px solid #888;
+	background:var(--hover);
+}
+.option {
+	position:absolute;
+	z-index:-1;
+	display:none;
+	opacity:0;
+}
+#searchIcon, #clearSearchBarButton {
+	position:absolute;
+	z-index:2;
+	height:14px;
+	width:14px;
+	opacity:.5;
+}
+#searchIcon {
+	left:60px;
+	display:none;
+}
+#clearSearchBarButton {
+	right:24px;
+	opacity:.5;
+	position:relative;
+}
+LABEL .tool {
+	width:20px;
+	height:20px;
+}

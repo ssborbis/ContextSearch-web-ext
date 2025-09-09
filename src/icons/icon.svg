@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 64 64" fill="none" stroke="url('#main')" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+	<defs>
+		<linearGradient id="main" gradientTransform="rotate(45)">
+			<stop offset="5%"  stop-color="#3e4782" />
+			<stop offset="95%" stop-color="#57585a" />
+		</linearGradient>
+		<linearGradient id="glass" gradientTransform="rotate(45)">
+			<stop offset="65%"  stop-color="#fff" />
+			<stop offset="85%" stop-color="#c4d1ea" />
+		</linearGradient>
+	</defs>
+	
+	<path d="M 60 16 L 60 48 C 60 56 56 60 48 60 L 16 60 C 8 60 4 56 4 48 L 4 16 C 4 8 8 4 16 4 L 48 4 C 56 4 60 8 60 16" fill="#fff" />
+	<circle cx="27" cy="27" r="15" fill="url('#glass')" />
+	<line x1="39" y1="39" x2="50" y2="50" stroke-width="8" stroke="#57585a" />
+	<path d="M 20 26 C 21 23 23 21 26 20" stroke-width="4" />
+</svg>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>CustomSearch</title>
+		<link rel="stylesheet" href="/customSearch.css">
+	</head>
+	<body>
+		<div id="CS_customSearchDialog">
+			<div id='simple' class='CS_menuItem'>
+				<div style='padding:20px;text-align:left'>
+					<div style='display:inline-block;width:225px'>
+						<label class='H2' data-i18n='Name'>Name <span class='CS_info' data-msg='Unique name for this search engine' data-i18n_tooltip='Name' >?</span></label>
+						<input type='text' name='shortname' />
+						<label class='H2' data-i18n='folder'>Folder</label>
+						<div style="display:inline-block;width:calc(100% - 20px);font-size:8pt">
+							<img src="icons/folder-icon.svg" style="height:16px;vertical-align: middle;" /><select name="folder" style="font-size:8pt;padding:2px;width:auto;max-width:200px"></select>
+						</div>
+					</div>
+					<div id='b_simple_add' class='iconButton' style='background-color:#6ec179;position:relative;bottom:8px;' data-i18n='Add'>
+						<img src='/icons/add.svg' /> Add
+					</div>
+					<br />
+					<a style='font-size:8pt;cursor:pointer' id='a_simple_moreOptions'>&#9658; <span data-i18n='Advanced'>Advanced</span></a>
+				</div>
+			</div>
+			<div id='simple_import' class='CS_menuItem'>
+				<div style='padding:20px;text-align:center'>
+					<span data-i18n='NewEngineAdded'>New search engine added to ContextSearch</span><br /><br /><span data-i18n='AlsoAdd'>Also add to One-Click Search Engines?</span> <span class='CS_info' data-msg='Install this search engine to the Firefox search toolbar using a custom OpenSearch API' data-i18n_tooltip='NewEngineAdded'>?</span><br /><br />
+					
+					<div id='b_simple_import_yes' name='yes' class='iconButton' style='background-color:#6ec179' data-i18n='Yes'>
+						<img src='/icons/checkmark.svg' /> Yes
+					</div>
+					
+					<div id='b_simple_import_no' name='no' class='iconButton' style='background-color:grey' data-i18n='No'>
+						<img src='/icons/crossmark.svg' /> No
+					</div>
+
+					<div style="text-align: right;margin-top:20px;font-size:9pt">
+						<input id="askToAddNewEngineToFirefox" type="checkbox" /><label data-i18n='DontShowAgain'>Don't show this again</label>
+					</div>
+
+					<br />
+				</div>
+			</div>
+			<div id='simple_error' class='CS_menuItem'>
+				<div style='padding:20px;text-align:center'>
+					<span data-i18n='CannotCreate'>Cannot create a search engine from this input</span><br /><br /><span data-i18n='OpenAdvanced'>Open Advanced options?</span><br /><br />
+					<div id='b_simple_error_yes' class='iconButton' style='background-color:#6ec179;' data-i18n='Yes'>
+						<img src='/icons/checkmark.svg' /> Yes
+					</div>
+					
+					<div id='b_simple_error_no' class='iconButton' style='background-color:grey' data-i18n='No'>
+						<img src='/icons/crossmark.svg' /> No
+					</div>
+					<br />
+				</div>
+			</div>
+			<div id='simple_search' class='CS_menuItem'>
+				<div class='header' style='font-size:11pt;font-weight:normal;text-align:center;background-color:#112738;color:white'>
+					<span data-i18n='PerformASearchHeader'>Template Missing</span>
+				</div>
+				<div style='padding:20px;text-align:center'>
+					<span data-i18n='PerformASearch'>Click OK and perform a new search</span>
+					<span class='CS_info' data-msg='The form does not contain all the information necessary to build a search engine. Perform a simple search to look for a valid search template. It is best to use words that would not normally appear in a search url. Do not use "search", "http", other common url words or the website name' data-i18n_tooltip='PerformASearch'>?</span><br /><br />
+					<div id='b_simple_search_ok' class='iconButton' style='background-color:#6ec179;' data-i18n='OK'>
+						<img src='/icons/checkmark.svg' /> OK
+					</div>
+					<br />
+				</div>
+			</div>
+			<div id='simple_confirm' class='CS_menuItem'>
+				<div style='padding:20px;text-align:center'>
+					<div name='question' data-i18n='DidEngineInstall'>Did the engine install correctly?</div>
+					 <br /><br />
+					
+					<div name='yes' class='iconButton' style='background-color:#6ec179' data-i18n='Yes'>
+						<img src='/icons/checkmark.svg' /> Yes
+					</div>
+					
+					<div name='no' class='iconButton' style='background-color:grey' data-i18n='No'>
+						<img src='/icons/crossmark.svg' /> No
+					</div>
+
+					<br />
+				</div>
+			</div>
+			<div id='simple_remove' class='CS_menuItem'>
+				<div style='padding:20px;text-align:center'>
+					<div name='question' data-i18n='RemovingEngine'>Removing search engine</div>
+				</div>
+			</div>
+			<div id='CS_customSearchDialogOptions' class='CS_menuItem'>
+				<!--<div class='header'>&nbsp;</div>-->
+				<p class='CS_optionDescription'></p>
+				<div class='iconButton' style='display:none;background-color:#6ec179;' id="CS_optionInstallOfficialEngine" data-msg="Install the official OpenSearch engine for the current website" data-i18n='Add' data-i18n_tooltip='InstallOfficial'><img src="/icons/add.svg" />Add</div>
+				<div id="CS_customSearchDialog_d_mycroftSearchEngine" class='iconButton' style='display:none;background-color:#ffa659' data-msg="Find OpenSearch engines at MycroftProject" data-i18n='Find' data-i18n_tooltip='FindMycroft' ><img src="/icons/search.svg" />Find</div>
+				<div id="CS_customSearchDialog_d_custom" class='iconButton' style='background-color:#5bb2fc' data-msg="Create a custom OpenSearch engine" data-i18n='Create' data-i18n_tooltip='CreateCustom' ><img src="/icons/edit.svg" />Create</div>
+				<div style='text-align:left;padding:20px'><a style='font-size:8pt;cursor:pointer;' id='a_simple_fewerOptions'>&#9658; <span data-i18n='Simple'>Simple</span></a></div>
+			</div>
+
+			<form id='customForm'>
+				<div style='background-color:#5bb2fc;width:100%;padding:10px;margin-bottom:10px'>
+					<img style='height:50px;width:50px;vertical-align:middle;display:inline;filter: brightness(0) invert(1);' src="/icons/edit.svg" />
+					<span style='font-size:12pt;font-weight:700;color:white' data-i18n='CreateCustomSearch'>Create Custom Search</span>
+				</div>
+
+				<div class='H2' data-i18n='Name'>Name <span class='CS_info' data-msg='Unique name for this search engine' data-i18n_tooltip='Name'>?</span></div>
+				<input name="shortname" type="text" />
+				<div class='H2' data-i18n='Description'>Description <span class='CS_info' data-msg='Short description of the search engine. 1024 characters max' data-i18n_tooltip='Description'>?</span></div>
+				<textarea name="description"></textarea>
+				<div class='H2' data-i18n='Template'>Template <span class='CS_info' data-msg='The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (i.e. http://example.com/?q={searchTerms})' data-i18n_tooltip='Template'>?</span></div>
+				<textarea name="template"></textarea>
+				<div class='H2'data-i18n='FormPath'>Form Path <span class='CS_info' data-msg='Typically the website homepage or the URL the form appears on'  data-i18n_tooltip='FormPath'>?</span></div>
+				<input name="searchform" type="text" />
+				<div class='H2'data-i18n='POSTparams'>POST params <span class='CS_info' data-msg='List of POST parameters and values separated by ampersands (i.e. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method' data-i18n_tooltip='Postparams'>?</span></div>
+				<textarea name="post_params"></textarea>
+				<div class='H2'data-i18n='IconURI'>Icon <span class='CS_info' data-msg='URL of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb' data-i18n_tooltip='IconURI'>?</span></div>
+				<input name="iconURL" type="text" style="width:calc(100% - 60px)" /><img name="icon" style="width:24px;height:24px;border:1px solid #ececec;border-radius:4px;vertical-align:top;display:inline;padding:3px;margin-top:-8px" />
+				<div style='display:inline-block'>
+					<div class='H2'data-i18n='Method'>Method <span class='CS_info' data-msg='Form method' data-i18n_tooltip='Method'>?</span></div>
+					<select name="_method" style='display:block'>
+					<option value="GET">GET</option>
+					<option value="POST">POST</option>
+					</select>
+				</div>
+				<div style='display:inline-block'>
+					<div class='H2'data-i18n='Encoding'>Encoding <span class='CS_info' data-msg='Character encoding required by the search form. Typically UTF-8' data-i18n_tooltip='Encoding'>?</span></div> 
+					<select name="_encoding" style='display:block'>
+					<option value="UTF-8">utf-8</option>
+					<option value="WINDOWS-1252">windows-1252</option>
+					<option value="SHIFT_JIS">shift_jis</option>
+					<option value="ISO-2022-JP">iso-2022-jp</option>
+					<option value="EUC-JP">euc-jp</option>
+					<option value="WINDOWS-1250">windows-1250</option>
+					<option value="WINDOWS-1251">windows-1251</option>
+					<option value="WINDOWS-850">windows-850</option>
+					<option value="MACINTOSH">macintosh</option>
+					<option value="ISO-8859-5">iso-8859-5</option>
+					<option value="ISO-8859-2">iso-8859-2</option>
+					<option value="GBK">gbk</option>
+					<option value="none">no encoding</option>
+					</select>
+				</div>
+				<div style="display:inline;float:right;text-align:right">
+					<button type="button" class="_hover _hover_small" name="test" data-i18n='Test'>Test</button>
+					<button type="button" class="_hover _hover_small" name="add" data-i18n='Add'>Add</button>
+					<button type="button" class="_hover _hover_small" name="cancel" data-i18n='Cancel'>Cancel</button>
+				</div>
+				<div style="text-align:right">
+					<img src="icons/folder-icon.svg" style="margin-left:20px;height:16px;vertical-align: middle;" /><select name="folder" style="font-size:8pt;padding:2px;width:auto;max-width:200px"></select>
+				</div>
+
+				<!-- <div class="contexts" style="display:inline-block;vertical-align:bottom;padding:6px 0">
+					<input id="i_audio" type="checkbox" /><label for="i_audio"><div class="tool" style="--mask-image: url(icons/audio.svg);" title="audio"></div></label>
+					<input id="i_frame" type="checkbox" /><label for="i_frame"><div class="tool" style="--mask-image: url(icons/frame.svg);" title="frame"></div></label>
+					<input id="i_image" type="checkbox" /><label for="i_image"><div class="tool" style="--mask-image: url(icons/image.svg);" title="image"></div></label>
+					<input id="i_link" type="checkbox" /><label for="i_link"><div class="tool" style="--mask-image: url(icons/link.svg);" title="link"></div></label>
+					<input id="i_page" type="checkbox" /><label for="i_page"><div class="tool" style="--mask-image: url(icons/page.svg);" title="page"></div></label>
+					<input id="i_selection" type="checkbox" /><label for="i_selection"><div class="tool" style="--mask-image: url(icons/selection.svg);" title="selection"></div></label>
+					<input id="i_video" type="checkbox" /><label for="i_video"><div class="tool" style="--mask-image: url(/icons/video.svg);" title="video"></div></label>
+				</div> -->
+
+				<div style='clear:both;background-color:#5bb2fc;width:100%;padding:10px;margin-top:10px'></div>
+
+			</form>
+			
+			<div id='CS_postSearchEngineInstall' class='CS_menuItem' style='padding-top:0'>
+				<!--<div class='header'>Import New Engine</div>-->
+				<div class='header' style='font-size:11pt;font-weight:normal;text-align:center;background-color:#112738;color:white'>
+					<!--<img src='/icons/import.svg' style='height:64px;filter: brightness(0) invert(1);' /><br />-->
+					<div style='text-align:left;padding:20px'>
+						<div style='display:inline-block;width:80px;vertical-align:top'>
+							<img src='/icons/alert.svg' style='fill:none;height:64px;filter: brightness(0) invert(1);' /></div>
+							<div style='display:inline-block;width:250px;font-size:10pt' data-i18n='MustImport'>If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser. <br /><br />
+							<a name='moreInfo' style='float:right;cursor:pointer'>&#9658; <span data-i18n='MoreInfo'>more info</span></a>
+						</div>
+					</div>
+				</div>
+				<div class='iconButton' style='background-color:#2198dd' name='import' data-i18n='Import'>
+					<img src="/icons/checkmark.svg" />Import
+				</div>
+				<div class='iconButton' style='background-color:#e94c3b;background-color:grey;' name='cancel' data-i18n='Cancel'>
+					<img src="/icons/crossmark.svg" />Cancel
+				</div>
+				
+				<br /><br />
+			</div>
+
+			<div id='CS_notifyAutomaticUpdated' class='CS_menuItem'>
+				<div class='header' style='font-size:11pt;font-weight:normal;text-align:center;background-color:#112738;color:white'>
+				Success</div>
+				<div style='display:inline-block;width:80px;vertical-align:top'>
+				<img src='/icons/icon.svg' style='height:64px;' /></div>
+				<p style='font-size:11pt;margin-bottom:8px;padding:10px' data-i18n='NewEngineImported'>Added %1 engine(s) to ContextSearch</p>
+			</div>
+		</div>
+		<script src='/lib/browser-polyfill.min.js'></script>
+		<script src='/utils.js'></script>
+		<script src='/searchEngineUtils.js'></script>
+		<script src='/customSearch.js'></script>
+		<script src='/opensearch.js'></script>
+		<script src='/nodes.js'></script>
+	</body>
+</html>

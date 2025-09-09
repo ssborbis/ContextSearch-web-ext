@@ -1,0 +1,100 @@
+:root { 
+	--background: linear-gradient(135deg, rgba(2,0,36,1) 0%, rgba(120,120,255,1) 35%, rgba(0,212,255,1) 100%); 
+
+	--background: #eee;
+	--tools-color: #555; 
+	color: #555;
+	--border: #ccc;
+	--hover: rgba(2,0,36,.2);
+	--separator: #0004;
+	--folder-color:#FBFACE;/*#fff3;*/
+	--folder-label-color: white;
+	--folder-label-color-singlecolumn: #555;
+	--group-label-color: #555;
+}
+
+#quickMenuElement {
+	/*padding:6px;*/
+}
+
+.tile {
+    border-radius:10px;
+    margin:4px;
+    background-color:#fff1;
+    background-size:contain;
+}
+
+#toolBar .tile {
+	transform:scale(.75);
+	margin:2px;
+}
+
+#searchBar {
+	background: #fff;
+}
+#searchBar:focus {
+	border:1px solid transparent;
+}
+
+#searchIcon {
+	opacity:1;
+}
+
+#clearSearchBarButton {
+	opacity:1;
+}
+
+.tile[data-locked="true"] {
+	background-color:var(--cs-green) !important;
+	box-shadow:initial;
+	--tools-color:white !important;
+	color:white;
+}
+
+.tile.singleColumn {
+	border-radius:0;
+	margin:.5px 4px;
+}
+
+.tile.singleColumn[data-type="folder"] {
+	background-color:#fff3;
+}
+
+.tile.singleColumn[data-type="folder"]:hover {
+	background-color:var(--hover);
+}
+
+#suggestions {
+	background:#fff;
+	border:none;
+	margin-top:1px;
+}
+
+.tile.groupFolder.singleColumn {
+	background-color:#fff3;
+	/*border-left:12px solid var(--group-color);*/
+	border-right:6px solid var(--group-color);
+	box-sizing: border-box;
+}
+
+.tile.groupFolder.singleColumn:hover {
+	background-color:var(--hover);
+}
+
+.tile[data-type="folder"]::after {
+	content:"";
+    text-shadow:
+   -.5px -.5px 0 #000,  
+    .5px -.5px 0 #000,
+    -.5px .5px 0 #000,
+     .5px .5px 0 #000;
+     padding:4px 1px !important;
+}
+
+.tile[data-locked="true"] {
+	--tools-color: unset;
+}
+
+#quickMenuElement .tile[data-type="more"]:not(.singleColumn), #quickMenuElement .tile[data-type="less"]:not(.singleColumn) {
+    --tools-color: #777;
+}

@@ -1,0 +1,3865 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>ContextSearch Options</title>	
+		<style>
+			:root {
+				--bg-color2:#fafafa;
+				--bg-color1:#e8e8e8;
+				--bg-color3:#eee;
+				--bg-color4:#E4E4E4;
+
+				--border-color1:#ccc;
+				--border-color2:#ddd;
+				--border-color3:#858585;
+
+				--color:#4A4A4A;
+				--color2:#555;
+
+				--hover1:#ddd;
+				--hover2:#eee;
+
+				--cs-green: #6ec179;
+				--selected: #0078d7;
+
+				--tree-row-border: 1px solid #fff;
+				--tools-color:#000;
+			}
+			HTML, BODY {
+				height:100%;
+				padding:0;
+				margin:0;
+			}
+			BODY {
+				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; 
+				background-color:var(--bg-color1);
+				color: var(--color);
+				text-align:left;
+				font-size:11pt;
+				opacity:0;
+				transition:.2s opacity;
+			}
+			TEXTAREA {
+				color: var(--color);
+				background-color:var(--bg-color1);
+			}
+			#main {
+				padding:0;
+				margin:0;
+				max-width: 1200px;
+				transition: filter .1s;
+				margin:0 auto;
+				height:100vh;
+			}
+			#left_div {
+				box-sizing:border-box;
+				width:250px;
+				font-size:16pt;
+				font-weight:bold;
+				text-align:right;
+				padding:16px;
+				margin-right:10px;
+				vertical-align:top;
+				display:inline-block;
+				background-color:var(--bg-color2);
+				position:fixed;
+				height:100%;
+				overflow-y:auto;
+				z-index:2;
+			}
+			#right_div {
+				box-sizing:border-box;
+				display:inline-block;
+				width:calc(100% - 250px);
+				text-align:left;
+				margin-left:250px;
+				padding:0 16px;
+				height:100%;
+			}
+			#left_div #info {
+				font-size:10pt;
+				margin-top:50px;
+				font-weight:normal;
+			}
+			#left_div #info IMG {
+				height:1rem;
+				margin-left:10pt;
+			}
+			#left_div #info A,#left_div #info A:visited, #left_div #info A:link {
+				color:inherit;
+				text-decoration: none;
+			}
+			.code {
+				font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
+				font-weight: normal;
+				user-select: text;
+				-moz-user-select: text;
+				color:blue;
+				background-color:#FBFACE;
+				padding:5px;
+			}
+			HR {
+				display: block;
+				height: 1px;
+				border: 0;
+				border-top: 3px solid var(--border-color1); /*#E9ECEF;*/
+				margin: 1em 0;
+				padding: 0; 
+			}
+			BUTTON {
+				background-color:var(--bg-color3);
+				border-radius:4px;
+				color:var(--color1);
+				border:1px solid var(--border-color1);
+				padding:2px 8px;
+			}
+			BUTTON:hover {
+				background-color:var(--hover1);
+			}
+			.header_hr {
+				width:calc(100% + 40px);
+				margin-left:-20px;
+				border-top:4px solid var(--cs-green);
+			}
+			.blobContainerHeader {
+				font-size:24pt;
+				font-weight:300;
+				text-align:left;
+				margin:10px 0 20px -20px;
+				display:none;
+			}
+			.blobContainerHeader IMG {
+				height:1em;
+				vertical-align:middle;
+				margin:10px 16px 20px 0;
+			}
+			.keyboardButton {
+				font-weight:bold;
+				border-radius:5px;
+				font-size:9pt;
+				padding:3px 4px;
+				min-width:50px;
+				min-height:12px;
+				display:inline-block;
+				text-align:center;
+				user-select: none;
+
+			}
+			.keyboardButton IMG {
+				height: 1em;
+			}
+			.keyboardButton SELECT {
+				width:auto;
+				border:none;
+				font:inherit;
+				height:auto;
+				padding:0;
+				background-color:transparent;
+				color:inherit;
+			}
+			.smallIcon {
+				vertical-align:middle;
+				height:24px;
+			}
+			.slider_label {
+				display:inline-block;
+				width:175px;
+			}
+			.slider {
+				-webkit-appearance: none;
+				height: 10px;
+				border-radius: 5px;  
+				background: #E9ECEF;
+				outline: none;
+				-webkit-transition: .2s;
+				transition: opacity .2s;
+				max-width: 200px;
+				background-color:var(--border-color2);
+			}
+			.slider::-moz-range-thumb {
+				width: 12px;
+				height: 12px;
+				border-radius: 50%;
+				background: var(--cs-green);
+				cursor: pointer;
+			}
+			.inputNice {
+				width:55px;
+				font-size:inherit;
+				border-radius:4px;
+				border:1px solid var(--border-color3);
+				padding:1px 4px;
+				background-color:var(--bg-color1);
+				color:var(--color);
+			}
+
+			 /* The switch - the box around the slider */
+			.switch {
+				position: relative;
+				display: inline-block;
+				width: 52px;
+				height: 20px;
+			}
+
+			/* Hide default HTML checkbox */
+			.switch input {display:none;}
+
+			/* The slider */
+			.toggleSlider {
+			  position: absolute;
+			  cursor: pointer;
+			  top: 0;
+			  left: 0;
+			  right: 0;
+			  bottom: 0;
+			  height:20px;
+			  width:52px;
+			  background-color: #ddd;
+			  box-shadow: inset 1px 1px 5px rgba(0, 0, 0, 0.2);
+			  transition: .4s;
+			  
+			}
+
+			.toggleSlider:before {
+			  position: absolute;
+			  content: "";
+			  height: 19px;
+			  width: 19px;
+			  left: 0px;
+			  bottom: 0px;
+			  background-image: linear-gradient(to bottom, white 40%, #f0f0f0);
+			  transition: .4s;
+			  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.2);
+			}
+
+			input:checked + .toggleSlider {
+			  background-color: var(--cs-green);
+			}
+			
+			.toggleSlider.round::after {
+			  text-align:right;
+			  font-size:9pt;
+			  content: "OFF";
+			  width:48px;
+			  color:white;
+			  display:inline-block;
+			}
+			
+			input:checked + .toggleSlider.round::after {
+				text-align:left;
+				padding-left:5px;
+				content: "ON";
+			}
+
+			input:focus + .toggleSlider {
+			  box-shadow: 0 0 1px #c0e2c5;
+			}
+
+			input:checked + .toggleSlider:before {
+			  transform: translateX(32px);
+			  background-color:var(--cs-green);
+			  background-image: linear-gradient(to bottom, white 40%, #f0f0f0);
+			/*  box-shadow:2px 2px 2px #666, inset 2px 2px 4px #fff; */
+			}
+
+			input[type="color"] {
+
+			}
+
+			/* Rounded sliders */
+			.toggleSlider.round {
+			  border-radius: 24px;
+			  border:1px solid grey;
+			  box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.4);
+			}
+
+			.toggleSlider.round:before {
+			  border-radius: 50%;
+			  border:1px solid grey;
+			}
+			
+			.optionDiv {
+				display:table;
+				padding:4px;
+			}
+			.optionDiv .label {
+				padding-left:20px;
+				position:relative;
+				top:-9px;
+			}
+			.container {
+				display: inline-block;
+				position: relative;
+				/*margin-bottom: 8px;*/
+				cursor: pointer;
+				user-select: none;
+				vertical-align:top;
+			}
+
+			/* Hide the browser's default radio button */
+			.container input {
+				position: absolute;
+				opacity: 0;
+				cursor: pointer;
+				width:0;
+				height:0;
+				z-index:-1;
+			}
+
+			/* Create a custom radio button */
+			.checkmark {
+				height: 12px;
+				width: 12px;
+				background-color: #eee;
+				border-radius: 50%;
+				border:1px solid grey;
+				display:flex;
+
+			}
+			
+			/* On mouse-over, add a grey background color */
+			.container:hover input ~ .checkmark {
+				background-color: #ccc;
+			}
+
+			/* When the radio button is checked, add a blue background */
+			.container input:checked ~ .checkmark {
+				background-color: var(--cs-green);
+			}
+
+			/* Create the indicator (the dot/circle - hidden when not checked) */
+			.checkmark:after {
+				content: "";
+				visibility:hidden;
+			}
+
+			/* Show the indicator (dot/circle) when checked */
+			.container input:checked ~ .checkmark:after {
+				display: inline-block;
+				visibility:visible;
+			}
+
+			.container .checkmark2 {
+				border-radius:4px;
+				background-color:var(--bg-color1);
+			}
+
+			/* Style the checkmark/indicator */
+			.container .checkmark2::after {
+				left: 3px;
+				width: 3px;
+				height: 6px;
+				border: solid white;
+				border-width: 0 3px 3px 0;
+				transform: rotate(45deg);
+				position: relative;
+			}
+			.checkboxImage {
+				height:0;
+				display:block;
+			}
+			.checkboxImage input {
+				display:none;
+			}
+			.checkboxImage input + label
+			{
+			   height: 24px;
+			   display:inline-block;
+			   padding: 0;
+			}
+			.checkboxImage input + label > IMG
+			{
+				height:100%;
+				opacity:.3;
+			}
+			
+			.checkboxImage input:checked + label > IMG
+			{
+				opacity:1;
+			}
+			
+			.checkboxOpeningChoice {
+				display:inline-block;
+				width:100%;
+			}
+			.checkboxOpeningChoice input {
+				display:none;
+			}
+			.checkboxOpeningChoice LABEL {
+				user-select:none;
+				-moz-user-select: none;
+			}
+			.checkboxOpeningChoice input + label {
+				color: #888;
+				padding:5px 10px;
+				display:inline-block;
+				text-align:left;
+				width:calc(100% - 20px);
+			}
+			.checkboxOpeningChoice input + label:hover {
+				background-color:#f3f3f3;
+			}
+			.checkboxOpeningChoice input + label > IMG {
+				height:20px;
+				margin-right:10px;
+				vertical-align:bottom;
+				opacity:.5;
+			}
+			.checkboxOpeningChoice input:checked + label {
+				color:white;
+				background-color: var(--cs-green);
+			}
+			.checkboxOpeningChoice input:checked + label > IMG {
+				opacity:1;
+				filter: brightness(0) invert(1);
+			}
+			
+			.info {
+				font-size:7pt;
+				border-radius:2px;
+				padding: 2px;
+				background-color:var(--bg-color1);
+				vertical-align:top;
+				cursor:default;
+			}
+			
+			#info_msg {
+				display:none;
+				position:absolute;
+				top:0;
+				left:0;
+				z-index:2147483647;
+				padding:5px;
+				border-radius:5px;
+				max-width:200px;
+				width:auto;
+				font-size:10pt;
+				background-color:var(--bg-color1);
+				border:1px solid var(--selected);
+				box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
+				text-align:left;
+			}
+
+			#info_msg .point {
+				background-color:inherit;
+				z-index:-1;
+				display:inline-block;
+				width:16px;
+				height:16px;
+				transform:rotate(45deg);
+				position:absolute;
+				top:-8.5px;
+				left:10px;
+				border:inherit;
+				border-width:1px 0px 0px 1px;
+			}
+
+			#b_importSettings, #b_exportSettings {
+				width:49%;
+				padding:4px 0;
+			}
+			
+			 /* Style the tab */
+			.tab {
+				overflow: hidden;
+				display:inline-block;
+				margin:0;
+				padding:0;
+				position:relative;
+
+			}
+
+			/* Style the buttons that are used to open the tab content */
+			.tab .tablinks {
+				/*border: 1px solid var(--border-color1); */
+				border:none;
+				background-color: var(--bg-color2);
+				outline: none;
+				cursor: pointer;
+				padding: 6px 16px;
+				font-size:11pt;
+				text-align:left;
+				margin:0;
+				color:var(--color2);
+				/*border-radius:8px 0 0 8px;*/
+				width:100%;
+				padding-left:40px;
+				position:relative;
+			}
+			
+			.tab .tablinks.sublink {
+				border-radius:0;
+				width:95%;
+				font-size:10pt;
+				padding:4px 16px;
+				margin:0;
+				border:none;
+				border-left: 4px solid var(--border-color2);
+				background-color:transparent;
+			}
+
+			/* Change background color of buttons on hover */
+			.tab .tablinks:hover {
+				background-color: var(--hover1);
+			}
+
+			/* Create an active/current tablink class */
+			.tab .tablinks.active {
+				background-color: var(--cs-green);
+				color:white;
+				font-weight:600;
+				--tools-color:white;
+			}
+
+			.tab .tablinks[data-tabid="enginesTab"] {
+			}
+
+			/* Style the tab content */
+			.tabcontent {
+				display: none;
+				font-weight:bold;
+				animation: fadeEffect .25s;
+				margin:0;
+				padding:0 0 10px 0;
+			} 
+
+			/* Go from zero to full opacity */
+			@keyframes fadeEffect {
+				from {opacity: 0;}
+				to {opacity: 1;}
+			}
+			.tab .tablinks .tool {
+				position:absolute;
+				height:1em;
+				left:16px;
+				vertical-align:middle;
+				margin-top:2px;
+			}
+			
+			.fade-in {
+				opacity: 1;
+				animation-name: fadeEffect;
+				animation-iteration-count: 1;
+				animation-timing-function: ease-in;
+				animation-duration: .25s;
+			}
+			
+			.toolIcon {
+				display:inline-block;
+				width:30px;
+				height:30px;
+				padding:0;
+				border: dashed;
+				border-color: transparent;
+				padding:0px 4px;
+				border-radius:10px;
+			}
+			
+			.position {
+				display:inline-block;
+				width:20px;
+				height:20px;
+				background-color:var(--border-color1);
+				border:1px solid var(--border-color2);
+			}
+			
+			.position.active, .position.active:hover {
+				background-color:var(--cs-green);
+				opacity:1;
+			}
+			.position:hover {
+				background-color:var(--cs-green);
+				opacity:.4;
+			}
+			.header1 {
+				text-align:left;
+				font-size:14pt;
+				font-variant: small-caps;
+				font-weight:300;
+				padding:0;
+				margin:0;
+				position:absolute;
+				top:-.7em;
+				background-color:var(--bg-color2);
+				display:inline-block;
+				padding:4px 16px;
+				border:solid var(--border-color1);
+				border-radius:32px;
+				border-width: 1px 0 0 0;
+			}
+
+			.header2 {
+				text-align:left;
+				font-size:10pt;
+				font-variant: small-caps;
+				font-weight:bold;
+			}
+			#helpTab .header1 {
+				display:block;
+				top:0;
+				padding:0;
+				margin:20px 0 10px 0;
+				border:none;
+				position:relative;
+			}
+			TABLE.searchActions {
+			}			
+			TABLE.searchActions SELECT {
+				font-size:10pt;
+				border:1px solid transparent;
+				padding-right:10px;
+				width:auto;
+				max-width:250px;
+
+			}
+			TABLE.searchActions SELECT:focus {
+				border:1px solid #858585;
+			}
+			TABLE.searchActions TD {
+				margin:0;
+				padding:2px 16px;
+				border-style:dashed;
+				border-color: var(--border-color2);
+				border-width:0px 0px 1px 0px;
+				position:relative;
+			}
+			TABLE.searchActions TD:nth-of-type(3n) {
+				border-left: 1px dashed var(--border-color2);
+			}
+			TABLE.searchActions TD:first-of-type {
+				white-space:nowrap;
+			}
+			TABLE.searchActions[data-menu="contextMenu"] TD:nth-of-type(3n) {
+				display: none;
+			}	
+			P.short {
+				margin:0;
+				padding:2px 0;
+				border-style:dashed;
+				border-color: var(--border-color2);
+				border-width:0px 0px 1px 0px;
+				position:relative;
+				width:auto;
+			}
+
+			P.short SELECT {
+				font-size:10pt;
+				border:1px solid transparent;
+				padding-right:10px;
+				position:absolute;
+				left:150px;
+			}
+			
+			P.short SELECT:focus {
+				border:1px solid #858585;
+			}
+			
+			P {
+				margin-top:12px;
+				margin-bottom:6px;
+			}
+			
+			SPAN.buttonLabel {
+				display:inline-block;
+				width:83px;
+				font-variant:small-caps;
+				text-align:right;
+				padding-right:10px;
+				font-size:8pt;
+			}
+			#searchEnginesContainer {
+				width:100%;
+				background-color:white;
+			}
+			#searchEnginesContainer TD {
+				width:1%;
+				vertical-align:top;
+			}
+			#searchEnginesContainer TD:last-child {
+				width:100%;
+			}
+			#searchEnginesContainer .hide {
+				text-align:center;
+				vertical-align:middle;
+			}
+			#searchEnginesContainer .icon {
+				width:16px;
+				padding:2px;
+				vertical-align:middle;
+				text-align:center;
+				vertical-align:middle;
+			}
+			#searchEnginesContainer .title {
+				display:inline-block;
+				width:100%;
+				border:none;
+				overflow:hidden;
+				user-select:none;
+				cursor:default;	
+				vertical-align:middle;
+				position:relative;
+				white-space: nowrap;
+			}
+			#searchEnginesContainer .title INPUT:disabled {
+				all:inherit;
+			}
+			#searchEnginesContainer TR {
+				width: auto;
+				outline: 1px solid #F3F3F3;
+			}
+			#searchEnginesContainer TR:hover {
+				background-color:#f6f8fa;
+			}
+			#searchEnginesContainer .delete, #searchEnginesContainer .copy, #searchEnginesContainer .hotkey, .hotkey  {
+				height:20px;
+				margin:0 10px;
+				position:absolute;
+				right:0;
+				background-color:white;
+			}
+			#searchEnginesContainer .copy {
+				right:30px;
+			}
+			#searchEnginesContainer .hotkey {
+				background-color: #E4E4E4;
+				right:30px;
+				display:inline-block;
+				min-width:1em;
+				padding:0px 10px;
+				height:calc(100% - 2px);
+				text-align:center;
+				vertical-align:middle;
+				font-weight:bold;
+				transition: background-color .25s;
+			}
+			#searchEnginesContainer .hotkey IMG {				
+				height:1em;
+				width:1em;
+				vertical-align:middle;
+				margin:0;
+				padding:0;
+			}
+			#searchEnginesContainer .add_search	{
+				height:16px;
+				padding:0 10px;
+				position:absolute;
+				right:31px;
+				vertical-align:middle;
+			}
+			#searchEnginesContainer .title BUTTON {
+				font-size:8pt;
+				float:right;
+			}
+			#searchEnginesContainer .hide {
+				display:inline;
+				text-align:center;
+				padding:0 10px 0 20px;
+			}
+			.editForm {
+				display:none;
+				overflow:hidden;
+			}			
+			.editForm INPUT:not([name="iconPicker"]), .editForm SELECT, .editForm TEXTAREA {
+				display:block;
+				width:calc(100% - 20px);
+				border:1px solid var(--border-color1);
+				margin:1px;
+				margin-top:-8px;
+				padding:4px;
+				padding-top:8px;
+				background-color:var(--bg-color1);
+				color:var(--color1);
+				font-family:inherit;
+				margin-bottom:4px;
+			}
+			.editForm TEXTAREA {
+				line-height: 20px;
+				height: 18px;
+				resize:vertical;
+			}
+
+			.editForm SELECT {
+				width:120px;
+			}
+			.editForm INPUT:focus, .editForm TEXTAREA:focus{
+				/*border:1px solid var(--selected, #008afc);*/
+				box-shadow:0px 0px 3px 2px var(--selected, #008afc);
+				outline: none;
+			}
+			.editForm .error {
+				border:1px solid pink;
+				box-shadow:0px 0px 3px 1px pink;
+			}
+			.editForm > LABEL, .editForm > DIV > LABEL, .editForm .formLabel {
+				font-size:10pt;
+				font-variant:small-caps;
+				display:inline-block;
+				background-color:var(--bg-color2);
+				position:relative;
+				z-index:2;
+				left:20px;
+				padding:0px 4px;
+				color:var(--color2);
+				font-weight:normal;	
+			}
+			.fileUpload input[type="file"] {
+				display: none;
+			}
+
+			.fileUpload {
+				display:inline-block;
+				font-size:10pt;
+				cursor:pointer;
+				text-align:center;
+				border:1px solid var(--border-color1);
+				border-radius:4px;
+				padding:2px 6px;
+				background-color:var(--bg-color4);
+			}
+			.fileUpload > IMG {
+				vertical-align:middle;
+				height:20px;
+				padding:4px;
+			}
+			DIV.blurb {
+				font-size:10pt;
+				border-left:10px solid var(--bg-color3);
+				padding-left:10px;
+				margin-top:16px;
+				margin-left:5px;
+
+			}
+			.openingMethodTab {
+				border:1px solid #d4d4d4;
+				padding:4px 10px;
+				background-color:#fefefe;
+				border-radius:4px;
+				display:inline-block;	
+			}
+			.openOnDetails {
+				max-height:0px;
+				overflow:hidden;
+				transition: max-height .5s ease-in-out;
+			}
+			.section H2 {
+				border:4px solid #ddd;
+				border-width:0 0 2px 0;
+				margin:10px 0;
+				font-size:14pt;
+				margin:25px 0 10px 0;
+				padding-bottom:5px;
+
+			}
+			.section H2::before {
+				content:"";
+				color:white;
+				display:inline-block;
+				width:.9em;
+				height:.9em;
+				background-color:var(--cs-green);
+				margin-right:10px;
+				border-radius:50%;
+			}
+			.section {
+				margin:10px 0;
+			}
+			.section CODE {
+				font-weight:bold;
+				background-color:#f0f0f0;
+				padding:0 4px;
+			}
+			.openingTable {
+/*				width:725px;*/
+			}
+			.openingTable TD {
+				border-bottom:1px solid var(--border-color2);
+				padding:10px 0px;
+				min-width: 200px;
+			}
+			.openingTable TR > TD:nth-of-type(2) {
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+			.openingTable TD:first-child {
+				border-right:1px solid var(--border-color2);
+				vertical-align:middle;
+				max-width:275px;
+				padding-right:10px;
+			}
+			.openingTable TD:nth-child(2) {
+				padding:0px 16px;
+/*				max-width: 450px;*/
+			}
+			.openingTable TR:last-child TD {
+				border-bottom: none;
+			}
+			.openingTable .tool {
+				height:24px;
+				width:24px;
+				vertical-align: middle;
+				margin:0 10px;
+			}
+			.openingTable TD:nth-of-type(1) .option .description {
+				font-weight:bold;
+			}
+
+			#d_clearSearchHistory {
+				cursor: pointer;
+				user-select:none;
+				-moz-user-select: none;
+			}
+			.contextMenu {
+				background-color:var(--bg-color2);
+				border:1px solid #aaa;
+				position:absolute;
+				z-index:2;
+				border-radius: 4px;
+				overflow:hidden;
+				opacity:0;
+				cursor:default;
+				border:1px solid var(--border-color3);/*#C2C3C5;*/
+				box-shadow: 0px 2px 8px 1px rgba(0,0,0,.25);
+			}
+			.contextMenu > .menuItem {
+				display: block;
+				width:100%;
+				border:1px solid var(--bg-color3);
+				vertical-align:middle;
+				text-align:left;
+				padding: 2px 5px;
+				white-space: nowrap;
+			}
+			.contextMenu > .menuItem:hover {
+				background-color: var(--hover1);
+			}
+			.contextMenu > .menuItem IMG {
+				height:20px;
+				margin-right:10px;
+				vertical-align:middle;
+				width: 20px;
+			}
+			.treeNode {
+				border-top: var(--tree-row-border);
+				border-bottom: 1px solid transparent;
+				cursor:default;
+				position:relative;
+				transition: padding .1s linear;
+			}
+			.treeNode > IMG {
+				height:16px;
+				width:16px;
+				margin-right:10px;
+				vertical-align:middle;
+			}
+			.hotkey {
+				background-color: var(--bg-color4);
+				border-radius:4px;
+				border:1px solid var(--border-color1);
+				display:inline-block;
+				min-width:.5em;
+				min-height:.5em;
+				height:auto;
+				padding:2px 2px;
+				text-align:center;
+				vertical-align:middle;
+				font-weight:bold;
+				transition: background-color .25s;
+				font-size:8pt;
+				line-height: 8pt;
+				margin:1px 0;
+				color:var(--color2);
+				position: unset;
+				transition: background-color .25s, opacity.15s;
+			}
+			.hotkey:hover {
+				background-color:var(--hover1);
+			}
+			.keyword {
+				float:right;
+				font-weight:normal;
+				right:40px;
+				width:40px;
+			}
+			.treeNode .header {
+				display: flex;
+				align-items: center;
+			}
+			.treeNode .header:not(.selected):hover {
+				background-color:var(--hover2);
+			}
+			.treeNode .header .label {
+				margin-right: 8px;
+			}
+			.treeNode .header .hotkey.hide {
+				opacity:0;
+			}
+			.treeNode .header .hotkey.shift {
+				right:8px;
+				position: absolute;
+			}
+			.treeNode .header:hover .hotkey {
+				opacity:1;
+			}
+			.hidden {
+				opacity: .5;
+			}
+			.selected {
+				background-color:var(--selected);
+				color:white;
+			}
+			.error {
+				background-color: pink;
+				opacity: .5;
+			}
+			#managerContainer {
+				font-weight:normal;
+				width:100%;
+				/*max-height:500px;*/
+				height:500px;
+				display:inline-block;
+				overflow:hidden;
+				font-size:11pt;
+				text-align:left;
+				background-color:var(--bg-color2);
+				resize:both;
+			}
+			#managerContainer > DIV {
+				position:relative;
+				max-height:inherit;
+			}
+			#managerContainer > DIV LI {
+				margin-left:-16px;
+				list-style-type: none;
+			}
+			#managerContainer .header > IMG {
+				height:16px;
+				width:16px;
+				margin-right:10px;
+				vertical-align:middle;
+			}
+			.description {
+				font-weight:normal;
+				font-size:10pt;
+				margin-left:10px;
+				display:inline-block;
+				white-space:normal;
+				max-width:500px;
+				vertical-align:top;
+				margin-top:1px;
+			}
+			.option {
+				white-space:nowrap;
+				display:block;
+				margin: 8px 0;
+			}
+			.option > * {
+				vertical-align:middle;
+				text-align:left;
+			}
+			DIV[data-gif] {
+				height:50px;
+				width:70px;
+				display:inline-block;
+				border:1px solid #ccc;
+				border-radius:6px;
+				background:url("icons/play-button.svg") no-repeat center center;
+				background-size:30px;
+				background-color: #ececec;
+			}
+			#helpTab .header1.help {
+				font-size:11pt;
+				font-weight:bold;
+				margin:0;
+				padding:0 2px 4px 0;
+				color: #444;
+			}
+			.yes, .no, .add {
+				display:inline-block;
+				border-radius:50%;
+				background-color:#41ad49;
+				padding:2px;
+				height:20px;
+				width:20px;
+				margin-left:20px;
+				opacity:1;
+				transition:opacity 2s ease-out 1s;
+			}
+			.yes::before, .no::before, .add::before {
+				content: "";
+				background-image:url("icons/checkmark.svg");
+				background-size:contain;
+				width:100%;
+				height:100%;
+				filter:invert(1);
+				display:inline-block;
+			}
+			.no {
+				background-color: red;
+			}
+			.no::before {
+				background-image:url("icons/crossmark.svg");
+			}
+			.add {
+				background-color: green;
+			}
+			.add::before {
+				background-image: url("icons/add.svg");
+			}
+			SECTION {
+				border:1px solid var(--border-color1);
+				border-radius:10px;
+				padding:28px 16px 16px 16px;
+				margin-top:24px;
+				background-color:var(--bg-color2);
+				position:relative;
+			}
+			#advancedSettingsTable {
+				width: 100%;
+				font-size: 10pt;
+				font-weight: normal;
+			}
+			#advancedSettingsTable TR:nth-child(even) {
+				background-color:var(--bg-color1);
+			}
+			#advancedSettingsTable INPUT {
+				border:none;
+				background-color:transparent;
+				color:var(--color);
+			}
+			#advancedSettingsTable TR > TD:nth-child(1) {
+				width:99%;
+			}
+			#advancedSettingsTable TR:hover {
+				background-color:#ddd;
+			}
+			#advancedSettingsTable TD {
+				white-space: nowrap;
+			}
+			#folderFormTable {
+				width:100%;
+			}
+			#folderFormTable TD {
+				padding:5px 20px;
+				white-space: nowrap;
+			}	
+			#folderFormTable TD:nth-child(2) {
+				width:100%;
+			}
+			#folderFormTable INPUT {
+				display:inline-block !important;
+			}
+			#saveNoticeDiv {
+				position:fixed;
+				/*right: 10px;*/
+				left:50%;
+				top: 10px;
+				z-index:9999;
+				vertical-align: middle;
+			}
+			#pageTilesTable {
+				/*border-collapse: collapse;*/
+				border-spacing:4px;
+				border-collapse: separate;
+			}
+			#pageTilesTable TD {
+				background-color:#888;
+				/*var(--color);*/
+				/*border:1px solid var(--color);*/
+				padding: 8px;
+				border-radius:4px;
+			}
+			#pageTilesTable IMG {
+				width:24px;
+				height:24px;
+				vertical-align: middle;
+			}
+			.folderBrowser {
+				user-select: none;
+				display:inline-block;
+				vertical-align:middle;
+		/*		margin-right:30px;
+				margin-bottom:30px;*/
+				list-style-type:none;
+				font-size:12px;
+				font-weight:initial;
+				height:300px;
+				width:200px;
+				overflow-y:scroll;
+				overflow-x:hidden;
+				resize:both;
+				padding:16px;
+				background-color:var(--bg-color2);
+				border-radius:10px;
+				white-space: nowrap;
+			}
+			.folderBrowser LI, .folderBrowser UI {
+				list-style-type:none;
+				position:relative;
+			}
+			.folderBrowser UL {
+				padding-left:16px;
+			}
+			.folderBrowser LI {
+				padding:1px;
+				border-bottom:2px solid var(--bg-color1);
+			}
+/*			.folderBrowser LI:hover {
+				background-color:var(--selected);
+			}*/
+			.folderBrowser IMG {
+				height:16px;
+				vertical-align:middle;
+			}
+			.folderBrowser SPAN, .collapse {
+				position:absolute;
+				left:-14px;
+				border:1px solid var(--border-color2);
+				border-radius:4px;
+				width:10px;
+				height:10px;
+				text-align:center;
+				display:inline-block;
+				line-height:10px;
+				color:var(--color);
+				background-color:var(--bg-color1);
+				top:2.5px;
+				user-select: none;
+			}
+			.promptForImage {
+				display:inline-block;
+				width:400px;
+				height:200px;
+				padding:50px;
+				background-color:#f7f7f7;
+				position: absolute;
+				top: 50%; left: 50%;
+				transform: translate(-50%,-50%);
+				box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
+				text-align:left;
+			}
+			.promptForImage INPUT {
+				width:200px;
+			}
+			#console {
+				position:fixed;
+				top:0;
+				left:0;
+				right:0;
+				z-index:9999;
+				text-align:center;
+				height:auto;
+			}
+			.faviconPickerBox {
+				height:64px;
+				width:64px;
+				background-color:var(--bg-color1);
+				border:2px solid var(--border-color1);
+				display:inline-block;
+				position:relative;
+				vertical-align: middle;
+				margin:4px;
+				padding-bottom:10px;
+				cursor:pointer;
+				text-align:center;
+				transition:background-color .25s;
+			}
+			.faviconPickerBox:hover {
+				background-color:var(--hover1);
+			}
+			.faviconPickerBox IMG {
+				max-height:48px;
+				max-width:48px;
+				vertical-align:middle;
+				position:relative;
+				top:50%;
+				transform: translateY(-50%);
+				transition: opacity .05s;
+			}
+			#faviconPickerContainer {
+				padding:20px;
+				text-align:center;
+				background-color:var(--bg-color2);
+				max-width:430px;
+				min-width: 200px;
+				min-height: 100px;
+				max-height: 80%;
+				overflow-y: auto;
+			}
+			.faviconPickerBox DIV {
+				position:absolute;
+				bottom:0;
+				font-size:8pt;
+				z-index:2;
+				width:100%;
+				transition: opacity .05s;
+			}
+			.faviconPickerBox.current {
+				border-color:var(--selected);
+			}
+			/*.faviconPickerBox.upload:hover {
+				background:#555 url(icons/upload.svg) no-repeat center;
+				background-size: 50%;
+			}*/
+			.faviconPickerBox.upload:hover {
+/*				filter:blur(1px);*/
+				background: var(--hover1);
+			}
+			/*.faviconPickerBox.upload:hover IMG {
+				opacity:0;
+			}
+			.faviconPickerBox.upload:hover DIV {
+				opacity:0;
+			}*/
+			[name="faviconBox"] LABEL {
+				cursor:pointer;
+				width:100%;
+				height:100%;
+				z-index:3;
+				position:absolute;
+				left:0;
+				top:0;
+			}
+			.textShadow {
+				text-shadow:
+					-.5px -.5px 0 #000,  
+					.5px -.5px 0 #000,
+					-.5px .5px 0 #000,
+					.5px .5px 0 #000;
+			}
+			.formModal {
+				overflow-y: auto;
+				max-height: calc(100% - 90px);
+				resize: both;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);	
+				height: auto;
+				box-shadow:4px 4px 20px #0005;
+				z-index: 2;
+				background-color: var(--bg-color2);
+				border-radius: 10px;
+				margin: 20px;
+				transition: blur .5s;
+				border:2px solid var(--border-color2);
+			}
+			#floatingEditFormContainer {
+				width: 500px;
+			}
+			
+			.blur {
+				filter:blur(1px);
+				pointer-events: none;
+			}
+
+			.changed {
+				background-color:var(--cs-green);
+				color:white;
+			}
+			.overDiv {
+				position:fixed;
+				left:0;
+				right:0;
+				top:0;
+				bottom:0;
+				background-color:#0004;
+				z-index:9999;
+				transition:opacity .5s;
+			}
+			.editForm .saveMessage {
+				position:absolute;
+				bottom:4px;
+				right:40px;
+			}
+			.tool {
+				background:var(--tools-color);
+				display:inline-block;
+				width:20px;
+				height:20px;
+				mask-position:center;
+				mask-size:contain;
+				mask-image:var(--mask-image);
+				mask-repeat:no-repeat;
+				-webkit-mask-position:center;
+				-webkit-mask-size:contain;
+				-webkit-mask-image:var(--mask-image);
+				-webkit-mask-repeat:no-repeat;
+			}
+
+			.tool.menuIcon {
+				vertical-align: middle;
+				margin-right: 8px;
+				height: 1em;
+			}
+
+			#shortcutTable TR:nth-child(even) {
+				background-color:var(--bg-color1);
+			}
+			#shortcutTable TD {
+				white-space:nowrap;
+			}
+			#shortcutTable TD:nth-of-type(1) {
+				width:0;
+			}
+			#shortcutTable TD > SPAN {
+				display:inline-block;
+				padding:2px 6px;
+			}
+			#shortcutTable TD > SPAN:hover {
+				background-color:#0001;
+			}
+			.iconForm IMG, .iconForm .iconCustom {
+				height: 32px;
+				width: 32px;
+				vertical-align: middle;
+				margin: 0 10px;
+				cursor: pointer;
+			}
+			.iconForm > DIV {
+				display: inline-block;
+				background-color: var(--bg-color1);
+				padding: 10px 20px;
+				border-radius: 10px;
+				margin: 10px;
+			}
+			.iconForm .iconCustom {
+				display: inline-block;
+				box-sizing: border-box;
+				border: 2px dashed var(--border-color2);
+				background-repeat: no-repeat;
+				background-position: center;
+				background-size:contain;
+			}
+			.iconForm .iconCustom:hover {
+				background-image: url(icons/upload.svg) !important;
+				background-size: 66%;
+				background-color: #444;
+			}
+
+			.editForm .contexts {
+				display: flex;
+				flex-flow:column;
+				padding:6px 0;
+/*				width:fit-content;*/
+				width: calc(100% - 10px);
+			}
+
+			.editForm .contexts LABEL {
+				display: inline;
+				border-radius: 4px;
+				padding: 2px 8px;
+				background-color: var(--bg-color1);
+				margin: 2px;
+				display: inline-block;
+				font-size: 7pt;
+				white-space: nowrap;
+				flex-grow:1;
+			}
+
+			.editForm .contexts INPUT {
+				display: initial;
+				width: initial;
+				margin: initial;
+				margin-right: 10px;
+				width: 8px;
+				height: 8px;
+			}
+
+			.editForm .contexts INPUT, .editForm .contexts LABEL {
+				/*display: none;*/
+			}
+			.contextIcons {
+				display: inline-block;
+				right: 114px;
+				top:0;
+				position:absolute;
+			}
+			.contextIcon {
+				height: 1em;
+				margin: 0;
+				cursor: pointer;
+				/*--tools-color: var(--selected);*/
+			}
+
+			.contextIcon.disabled {
+				opacity: .2;
+				/*--tools-color: unset;*/
+			}
+
+			#t_manualEdit {
+				overflow: scroll;
+				font-weight: normal;
+				font-size: 9pt;
+				resize: both;
+			}
+			#t_manualEdit .string { color: green; }
+			#t_manualEdit .number { color: darkorange; }
+			#t_manualEdit .boolean { color: blue; }
+			#t_manualEdit .null { color: magenta; }
+			#t_manualEdit .key { color: maroon; }
+
+			.selectCheckbox { 
+				display: none;
+			}
+			.showCheckboxes .selectCheckbox {
+				vertical-align:middle; 
+				margin-right:4px;
+				height:12px;
+				display: initial;
+			}
+			#requestPermissions LABEL {
+				font-family: monospace;
+				margin-left:20px;
+			}
+			#requestPermissions BUTTON {
+				background-color: var(--cs-green);
+				color: white;
+				cursor: pointer;
+				font-weight: bold;
+				padding: 2px 16px;
+				border: 2px outset #888;
+				margin-bottom: 2px;
+			}
+			#requestPermissions DIV[data-permission] {
+				 margin-top:4px;
+			}
+			#menuContexts .option {
+				display: inline-block;
+				border-radius: 10px;
+				vertical-align: middle;
+				text-align: center;
+				margin: 4px;
+				padding: 2px 12px;
+				background-color: var(--bg-color1);
+			}
+			#additionalSearchActionsTable .template {
+				display: none;
+			}
+			#additionalSearchActionsTable TD {
+				padding: 0 2px;
+				font-size: 9pt;
+			}
+			#additionalSearchActionsTable INPUT, #additionalSearchActionsTable SELECT {
+				width: auto;
+			}
+			.contextualLayoutIcons {
+				background-color: var(--bg-color3);
+				border: 1px solid var(--border-color1);
+				border-radius: 10px;
+				display: inline-block;
+				padding: 2px 10px;
+				margin-left: 10px;
+				pointer-events: none;
+				vertical-align: middle;
+			}
+			.contextualLayoutIcons .tool {
+				height: 16px;
+				vertical-align: middle;
+			}
+			#quickMenuLayoutEditor {
+				display: inline-block;
+				width: 150px;
+				border-radius: 10px;
+				background-color: var(--bg-color3);
+			}
+			#quickMenuLayoutEditor > DIV {
+				background-color: var(--bg-color3);
+				border: 1px solid var(--border-color1);
+				/*border-radius: 10px;*/
+				/*display: inline-block;*/
+				padding: 2px 10px;
+				pointer-events: none;
+				vertical-align: middle;
+				height: 16px;
+				text-align: center;
+			}
+			#quickMenuLayoutEditor .tool {
+				height: 12px;
+				width: 12px;
+				margin: 0;
+				vertical-align: middle;
+			}
+
+			.modal {
+				background-color: var(--bg-color1);
+				border-radius: 10px;
+				padding: 20px;
+				position: fixed;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				box-shadow:4px 4px 20px #0005;
+				border: 1px solid var(--border-color1);
+				text-align: center;
+			}
+			.modal.hide {
+				display: none;
+			}
+			.modal BUTTON {
+				width: 100px;
+			}
+
+			.modal [name^="nodes"] {
+				display: inline-block;
+			}
+
+			FIREFOX-ICON::before {
+				content: "FF";
+				background-color:rgb(234, 172, 92);
+				color:white;
+				border-radius:4px;
+				font-size:7pt;
+				font-weight:bold;
+				margin-left:5px;
+				padding:1px 5px;
+				vertical-align:middle;
+			}
+			BETA::before {
+				background-image: url('/icons/alert.svg');
+				background-size: 1em;
+				display: inline-block;
+				width:  1em;
+				height: 1em;
+				content:"";
+			}
+
+			.separator {
+				display:inline-block;
+				width:200px;
+				height:3px;
+				border-radius:2px;
+				background-color:var(--color);
+			}
+
+			#searchEnginesManagerSearch:focus {
+				border-color: unset !important;
+        		box-shadow: unset !important;
+        	}
+
+        	:focus {outline: none;}
+
+        	#b_nightMode {
+        		position:fixed;
+        		top:4px;
+        		right:4px;
+        		height:24px;
+        		z-index:10000;
+        		opacity: .3;
+        		transition: opacity .25s;
+        	}
+
+        	#b_nightMode:hover {
+        		opacity:1;
+        	}
+
+			INPUT::placeholder {
+				font-style:italic;
+			}
+			#filterBarContainer {
+				display:flex;
+				flex-direction:row;
+				/* justify-content:flex-end; */
+				margin-left:22px;
+				overflow:hidden;
+				position:absolute;
+				width:calc(100% - 40px);
+			}
+
+			#searchEnginesManagerSearch {
+				font-size:8pt;
+				/* flex-grow:2; */
+				border:none;
+				padding:2px;
+				/* width:auto */
+				width:100%;
+				transition: width .15s;
+			}
+
+			#filterBarContainer.hide > #searchEnginesManagerSearch {
+				width:0;
+				padding:0;
+			}
+
+			#filterBarContainer.hide > #searchEnginesManagerSearchClearButton {
+				display:none;
+			}
+
+			.editForm .tabcontent {
+				font-weight:normal;
+			}
+
+			.formNavBar {
+				margin-bottom:20px;
+				background-color: var(--bg-color3);
+				font-size:0;
+				display:flex;
+				text-align: right;
+			}
+
+			.formNavBar button {
+				border:none;
+				flex-grow:1;
+				border-radius:0;
+				padding:4px 16px;
+				letter-spacing: .075em;
+				margin:0;
+				/*border-left: 1px solid var(--border-color1);
+				border-right: 1px solid var(--border-color1);*/
+			}
+
+			.formNavBar .active {
+				background-color:var(--cs-green);
+				color:white;
+			}
+
+			.formNavBar .hide {
+				visibility: hidden;
+				pointer-events:none;
+			}
+
+			.formFooter {
+/*				display: flex;*/
+				text-align:right;
+				background-color: var(--bg-color3);
+				font-size:0;
+				margin-top:8px;
+				position:fixed;
+				bottom:0;
+				width:100%;
+			}
+
+			.formFooter button {
+/*				flex-grow:1;*/
+				border-radius:0;
+				border:none;
+				padding:6px 8px;
+				letter-spacing: .125em;
+				font-size:8pt;
+			}
+
+			.editForm {
+				padding-bottom:24px;
+			}
+
+			.editForm .hotkey {
+				font-size:bigger;
+				padding:4px 8px;
+				background-color: var(--bg-color1);
+				user-select: none;
+			}
+
+			#iconURI .big {
+				padding:8px;
+				cursor:pointer;
+				width:100px;
+				height:100px;
+/*				border:2px dashed var(--border-color1);*/
+				background-color: var(--bg-color1);
+				border-radius:4px;
+				transition:background-color .25s;
+			}
+			
+			#iconURI .big tool {
+				width:20px;
+				vertical-align:middle;
+				margin:0 16px;
+				pointer-events: none;
+			}
+
+			#iconURI .big:hover {
+				background-color:var(--hover1);
+			}
+
+			#managerContainer .header > IMG.tool{
+				background-color:#ccc;
+				border-radius:2px;
+				padding: 1px;
+				width:12px;
+				height:12px;
+			}
+
+			.colorPickerTable input {
+				display:none;
+			}
+
+			.colorPickerTable label[for] {
+				height:20px;
+				width:20px;
+				display:inline-block;
+				background-color:red;
+			}
+
+			.defaultEngineMarker {
+				color:gold;
+				padding:0 8px 0 2px;
+			}
+
+		</style>
+		<link id="style_dark" rel="stylesheet" type="text/css" href="options.dark.css" disabled />
+	</head>
+	<body>
+		<div id="console"></div>
+		<div id="main">
+		<div id="left_div">
+			<div>
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" style="color:var(--color1);" target="_blank">
+					<img src="icons/logo_notext.svg" style="border-radius:4px;height:42px;vertical-align:top;margin-right:4px"/>
+					<span style="font-weight:normal;font-variant:small-caps;font-size:14pt">Context</span>
+					<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:16pt;margin-left:-8px;margin-right:4px">Search</span>
+				</a>
+				
+			</div>
+			<div id="version" style="font-size:10pt;text-align:right;margin:-12px 0 8px 0">&nbsp;</div>
+			
+						
+			<div class="tab" data-tabgroup="main_nav">
+				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><tool data-icon="search.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><tool data-icon="context_menu.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><tool data-icon="qm.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><tool data-icon="sidebar.svg" style="transform:rotate(90deg)"></tool>$</button>
+				<button class="tablinks" data-tabid="sideBarTab" data-i18n="Sidebar"><tool data-icon="sidebar.svg" style="transform:scaleX(-1)"></tool>$</button>
+				<button class="tablinks" data-tabid="pageTilesTab" data-i18n="PageTiles"><tool data-icon="page_tiles.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="hotkeysTab" data-i18n="shortcuts"><tool data-icon="keyboard.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="omniboxTab" data-i18n="Omnibox"><tool data-icon="omnibox.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="highLightTab" data-i18n="Highlight"><tool data-icon="highlight.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="highLightFindBarTab" data-i18n="FindBar"><tool data-icon="search.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><tool data-icon="settings.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><tool data-icon="auto.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><tool data-icon="help.svg"></tool>$</button>
+
+				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n=""><tool data-icon="help.svg"></tool>$</button>
+			</div>
+			<div style="font-size:10pt;margin-top:8px;">
+				<label for="importSettings">
+					<button id="b_importSettings" data-i18n="Import">$</button>
+					<input style="display:none" name="importSettings" id="importSettings" type="file" accept="*" class="nosave" />
+				</label>
+				<button id="b_exportSettings" data-i18n="Export">$</button>
+			</div>
+			</p>
+			
+		</div>
+		<div id="right_div">
+			<div class="tabcontent" data-tabgroup="main_nav" id="advancedTab" >
+				<div class="blobContainerHeader" data-i18n="Advanced"><img src="icons/auto.svg" />$</div>
+				<section>
+					<p class="header1" data-i18n="Settings">$</p>
+					
+					<div style="text-align: right">
+						<!-- <button class="saveOptions" data-i18n="save">$</button> -->
+						<button id="b_manualSave" style="display:none" data-i18n="save">$</button>
+						<button id="b_manualCancel" style="display:none" data-i18n="cancel">$</button><button id="b_manualEdit" title="$Manualedit"><tool data-icon="edit.svg" style="height: 1em;vertical-align: middle"></tool></button>
+					</div>
+					<table id="advancedSettingsTable">
+					<tr>
+						<td title="$quickMenuToolsLockPersistTooltip">quickMenuTools.lock.persist</td>
+						<td><input type="checkbox" id="cb_quickMenuToolsLockPersist" /></td>
+					</tr>
+					<tr>
+						<td title="$quickMenuToolsRepeatSearchPersistTooltip">quickMenuTools.repeatsearch.persist</td>
+						<td><input type="checkbox" id="cb_quickMenuToolsRepeatSearchPersist" /></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td>&nbsp;</td>
+					</tr>
+					<tr>
+						<td data-i18n="exportToFirefoxSearch" title="$exportToFirefoxSearchTooltip">$</td>
+						<td>
+							<label for="replaceMozlz4FileButton" class="fileUpload" style="font-size:8pt" data-i18n="ImportSelectFile">
+							<img src="/icons/import.svg" style="height:10px" />
+							_
+							<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
+						</label>
+						</td>
+					</tr>
+					<tr>
+						<td >cache / uncache icons</td>
+						<td>
+							<button id="b_cacheIcons" data-i18n="cache" title="$cacheTooltip">$</button> / 
+							<button id="b_uncacheIcons" data-i18n="uncache" title="$uncacheTooltip">$</button>
+						</td>
+					</tr>
+					<tr>
+						<td >updateNativeApp</td>
+						<td>
+							<button class="updateNativeApp">⟳</button>
+						</td>
+					</tr>
+					<tr class="moveToEnd">
+						<td style="text-align: center;" colspan="2"><button class="saveOptions" data-i18n="save">$</button></td>
+					</tr>
+					</table>
+					<pre id="t_manualEdit" spellcheck="false" contenteditable="true" style="display:none;width:calc(100% - 20px);padding: 0 10px"></pre>
+					<div id="configSize" style="font-weight:normal;font-size:9pt;text-align: right">&nbsp;</div>
+				</section>
+
+				<div style="text-align: center">
+					<button id="b_resetUserOptions" data-i18n="ResetDefaults" title="$resetUserOptionsTooltip">$</button>
+				</div>
+
+			</div>
+		
+			<div class="tabcontent" data-tabgroup="main_nav" id="generalTab">
+			
+				<div class="blobContainerHeader" data-i18n="General"><img src="icons/settings.svg" />$</div>
+			
+				<section>
+				<p class="header1" data-i18n="Links">$</p>
+				<p>	
+					<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="contextMenuSearchLinksAs">
+						<option data-i18n="Text" value="text">$</option>
+						<option data-i18n="Url" value="url">$</option>
+					</select>
+					
+					<span class="description" data-i18n="LinksTooltip">$</span>
+				</p>
+				</section>
+				
+				<section>
+				<p class="header1" data-i18n="EnableAnimations">$</p>
+				<div class="option">
+					<checkbox data-id="enableAnimations" data-i18n="EnableAnimations"></checkbox>
+					<div class="description" data-i18n="EnableAnimationsTooltip">$</div>
+				</div>
+				<div class="option">
+					<checkbox data-id="enableAnimationsTileSlider" data-i18n="EnableAnimationsTileSlider"></checkbox>
+					<div class="description" data-i18n="EnableAnimationsTileSliderTooltip">$</div>
+				</div>				
+				</section>
+				
+				<section>
+				<p class="header1" data-i18n="MenuTheme">$</p>
+				<div class="option">
+					<select class="inputNice themeSelector" style="width:auto;font-size:10pt;padding-right:10px" id="quickMenuTheme">
+					</select>
+					<div class="description" data-i18n="ThemeTooltip">$</div>
+				</div>
+				<p style="margin:20px"> – or – </p>
+				<div class="option">
+					<checkbox data-id="autoTheme"></checkbox>
+					<div class="description" data-i18n="autoThemeTooltip">$</div>
+				</div>
+				<div class="option">
+					<select class="inputNice themeSelector" style="width:auto;font-size:10pt;padding-right:10px" id="autoThemeLite">
+					</select>
+					<div class="description" data-i18n="autoThemeLiteTooltip">$</div>
+				</div>
+
+				<div class="option">
+					<select class="inputNice themeSelector" style="width:auto;font-size:10pt;padding-right:10px" id="autoThemeDark">
+					</select>
+					<div class="description" data-i18n="autoThemeDarkTooltip">$</div>
+				</div>
+				</section>
+				
+				<section>
+				<p class="header1" data-i18n="Suggestions">$</p>
+				<div class="option">
+					<checkbox data-id="searchBarSuggestions" data-i18n="ShowSuggestions"></checkbox>
+					<div class="description" data-i18n="ShowSuggestionsTooltip">$</div>
+				</div>
+				
+				</section><section>
+				<p class="header1" data-i18n="History">$</p>
+				<div class="option">
+					<checkbox data-id="searchBarDisplayLastSearch"></checkbox>
+					<div class="description" data-i18n="EnableDisplayPreviousSearchTooltip">$</div>
+				</div>
+				<div class="option">
+					<checkbox data-id="searchBarEnableHistory" data-i18n="EnableHistory"></checkbox>
+					<div class="description" data-i18n="EnableHistoryTooltip">$</div>
+				</div>
+				
+				<div class="option">
+					<div id="d_clearSearchHistory"><tool data-icon="delete.svg" style="height:20px;width:20px;vertical-align: middle;"></tool><span class="description" data-i18n="ClearSearchHistory">$</span>
+					</div>
+				</div>
+				
+				</section>
+
+				<section>
+				<p class="header1" data-i18n="AutoCopy">$</p>
+				<div class="option">
+					<checkbox data-id="autoCopy" data-i18n=""></checkbox>
+					<div class="description" data-i18n="AutoCopyTooltip">$</div>
+				</div>
+				<div class="option">
+					<checkbox data-id="autoCopyOnInputs" data-i18n=""></checkbox>
+					<div class="description" data-i18n="AutoCopyOnInputsTooltip">$</div>
+				</div>
+
+				</section>
+								
+				<section>
+				<p class="header1" data-i18n="UserStyles">$</p>
+				<div class="option">
+					<checkbox data-id="userStylesEnabled" data-i18n=""></checkbox>				
+					<div class="description" data-i18n="UserStylesTooltip">$</div>
+				</div>
+
+				<textarea id="userStyles" class="inputNice" style="width:calc(100% - 20px);height:400px;resize:vertical;padding:10px;font-size:9pt"></textarea>
+				
+				</section>
+
+				<section>
+					<p class="header1" data-i18n="blocklist" title="$blocklistTooltip">$</p>
+					<textarea id="blockList" style="height:200px;width:calc(100% - 16px);padding:2px 8px;resize:vertical"></textarea>
+				</section>
+				<!-- <section>
+<p class="header1" data-i18n="">Images</p> -->
+				<!-- <div class="option"> -->
+					<!-- <checkbox data-id="" data-i18n=""></checkbox>
+					<!-- <label class="container" data-i18n=""> -->
+						<!-- <input type="checkbox" id="cb_images____" /> -->
+						<!-- <span class="checkmark checkmark2"></span> -->
+					<!-- </label> -->
+					
+					<!-- <div class="description" data-i18n="">Something about images</div> -->
+				<!-- </div> -->
+			</div>
+
+		
+			<div class="tabcontent" data-tabgroup="main_nav" id="contextMenuTab">
+
+				<div class="blobContainerHeader" data-i18n="ContextMenu"><img src="icons/context_menu.svg" />$</div>
+				<section>
+					<p class="header1" data-i18n="General">$</p>
+				<div class="option">
+					<checkbox data-id="contextMenu" data-i18n=""></checkbox>					
+					<div class="description" data-i18n="ContextMenuTooltip">$</div>
+				</div>
+
+				<!-- <div id="menuContexts">
+					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">$</div>
+					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
+						<label class="container">
+						<input type="checkbox" id="contextMenuOnLinks" />
+						<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Link">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnImages" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Image">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnAudios" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Audio">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="" data-i18n=""></checkbox>
+						<label class="container">
+							<input type="checkbox" id="contextMenuOnVideos" />
+							<span class="checkmark checkmark2"></span>
+						</label>
+						<div class="description" data-i18n="Video">$</div>
+					</div>
+				</div> -->
+
+				<div class="option">
+					<checkbox data-id="contextMenuOnLinks" data-i18n=""></checkbox>
+					<div class="description" data-i18n="EnableOnLinks">$</div>
+				</div>
+				
+				<div class="option">
+					<checkbox data-id="contextMenuOnImages" data-i18n=""></checkbox>
+					<div class="description" data-i18n="EnableOnImages">$</div>
+				</div>
+				
+				<div class="option">
+					<checkbox data-id="contextMenuShowAddCustomSearch" data-i18n="AddCustomSearchMenu"></checkbox>					
+					<div class="description" data-i18n="AddCustomSearchMenuTooltip">$</div>
+				</div>
+				
+				<div class="option">
+					<checkbox data-id="contextMenuShowFolderSearch" data-i18n=""></checkbox>
+					<div class="description" data-i18n="ShowFolderSearch">$</div>
+				</div>
+
+				<hr>
+
+				<p>
+					<button id="contextMenuKey" class="keyboardButton" style="min-width:calc(20px + 1em);min-height:calc(6px + 1em);padding: 3px 10px;">&nbsp;</button>
+					<span class="description" style="vertical-align:middle;" data-i18n="ContextMenuHotKeyTooltip">$</span>
+				</p>
+
+				</section>
+				<section>
+					<p class="header1" data-i18n="Advanced">$</p>
+
+				<div class="option">
+					<checkbox data-id="contextMenuUseContextualLayout" data-i18n=""></checkbox>
+					<div class="description" data-i18n="ContextAwareFilter" title="$contextMenuUseContextualLayoutTooltip">$</div>
+				</div>
+
+				<div class="option">
+					<input type="number" id="contextMenuContextualLayoutFlattenLimit" size="2" step="1" low="0" high="99" class="inputNice">
+					<span class="description" data-i18n="contextMenuContextualLayoutFlattenLimitTooltip">$</span>
+				</div>
+				
+				</section>
+				<section>
+				<p class="header1" data-i18n="RecentlyUsed">$</p>
+				
+				<div class="option">
+					<checkbox data-id="contextMenuShowRecentlyUsed" data-i18n="ContexMenuShowRecentlyUsed"></checkbox>					
+					<div class="description" data-i18n="ContexMenuShowRecentlyUsedTooltip">$</div>
+				</div>
+				
+				<div class="option">
+					<checkbox data-id="contextMenuShowRecentlyUsedAsFolder" data-i18n="ContexMenuShowRecentlyUsedAsFolder"></checkbox>			
+					<div class="description" data-i18n="ContexMenuShowRecentlyUsedAsFolderTooltip">$</div>
+				</div>
+				
+				<div class="option">
+					<input type="number" id="recentlyUsedListLength" size="2" step="1" low="1" high="99" class="inputNice">
+					<span class="description" data-i18n="ContexMenuShowRecentlyUsedLengthTooltip">$</span>
+				</div>
+				
+				</section>
+
+				<section>
+				<p class="header1" data-i18n="SearchActionsHeader">$</p>
+
+				<table class="searchActions" data-menu="contextMenu">
+				<tr>
+					<td></td>
+					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">$</span></td>
+					<td style="text-align:center"><span class="header2" data-i18n="Folders">$</span></td>
+				</tr>
+				<tr>
+					<td>
+					<span class="buttonLabel" data-i18n="LeftButton">$</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="contextMenuClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderClick" data-searchaction="openBackgroundTab,openNewWindow,openNewIncognitoWindow,noAction">
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
+					<span class="buttonLabel" data-i18n="MiddleButton">$</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
+					</td>
+					<td>
+					<select class="inputNice" id="contextMenuMiddleClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderMiddleClick" data-searchaction="openBackgroundTab,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
+					<span class="buttonLabel" data-i18n="RightButton">$</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
+					</td>
+					<td>
+					<select class="inputNice" id="contextMenuRightClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderRightClick" data-searchaction="openBackgroundTab,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
+					<span class="keyboardButton" data-i18n="ShiftKey">
+						_
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="contextMenuShift" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderShift" data-searchaction="openBackgroundTab,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr data-browser="firefox" data-minversion="64">
+					<td>
+					<span class="keyboardButton">
+						Ctrl
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="contextMenuCtrl" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="s_contextMenuFolderCtrl" data-searchaction="openBackgroundTab,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+			</table>
+
+				</section>
+			</div>
+			
+			<div class="tabcontent" data-tabgroup="main_nav" id="quickMenuTab">
+				<div class="blobContainerHeader" data-i18n="QuickMenu"><img src="icons/qm.svg" />$</div>
+				
+				<section>
+				<p class="header1" data-i18n="General">$</p>
+				<div class="option">
+					<checkbox data-id="quickMenu" data-i18n=""></checkbox>
+					<div class="description" data-i18n="QuickMenuTooltip">$</div>
+				</div>
+
+
+				<div id="menuContexts">
+					<div data-i18n="EnableOn" style="display:inline-block;font-weight: normal;">$</div>
+					<div class="option">
+						<checkbox data-id="quickMenuAutoOnInputs" data-i18n=""></checkbox>
+						<div class="description" data-i18n="input">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="quickMenuOnLinks" data-i18n=""></checkbox>
+						<div class="description" data-i18n="Link">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="quickMenuOnImages" data-i18n=""></checkbox>
+						<div class="description" data-i18n="Image">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="quickMenuOnAudios" data-i18n=""></checkbox>
+						<div class="description" data-i18n="Audio">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="quickMenuOnVideos" data-i18n=""></checkbox>
+						<div class="description" data-i18n="Video">$</div>
+					</div>
+				</div>
+
+
+				</section>
+
+				<section>
+					<p class="header1" data-i18n="Advanced">$</p>
+
+				<div class="option">
+					<checkbox data-id="quickMenuUseContextualLayout" data-i18n=""></checkbox>
+					<div class="description" data-i18n="ContextAwareFilter">$</div>
+				</div>
+
+				<div class="option">
+					<input type="number" id="quickMenuContextualLayoutFlattenLimit" size="2" step="1" low="0" high="99" class="inputNice">
+					<span class="description" data-i18n="contextMenuContextualLayoutFlattenLimitTooltip">$</span>
+				</div>
+
+				<div class="option">
+					<checkbox data-id="quickMenuContextualLayoutToolbar" data-i18n=""></checkbox>
+					<div class="description" data-i18n="quickMenuContextualLayoutToolbarTooltip" style="vertical-align: middle !important;">$</div>
+					<div class="contextualLayoutIcons">
+						<tool data-icon="audio.svg"></tool>
+						<tool data-icon="frame.svg"></tool>
+						<tool data-icon="image.svg"></tool>
+						<tool data-icon="link.svg"></tool>
+						<tool data-icon="selection.svg"></tool>
+						<tool data-icon="page.svg"></tool>
+						<tool data-icon="video.svg"></tool>
+					</div>
+				</div>
+
+				
+				</section>
+
+				<section>
+				<p class="header1" data-i18n="Layout">$</p>
+				
+				<p class="header2" data-i18n="DefaultView">$</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto" id="quickMenuDefaultView">
+						<option value="grid" data-i18n="grid">$</option>
+						<option value="text" data-i18n="text">$</option>
+					</select>
+					<span class="description" data-i18n="DefaultViewToolTip">$</span>
+				</div>
+				<p class="header2" data-i18n="Folders">$</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto" id="quickMenuUseCascadingFolders">
+						<option value="false" data-i18n="singlewindow">$</option>
+						<option value="true" data-i18n="cascadingwindow">$</option>
+					</select>
+					<span class="description" data-i18n="CascadingFoldersToolTip">$</span>
+				</div>
+				<p class="header2" data-i18n="Columns">$</p>
+				<div class="option">
+					<input type="number" id="quickMenuColumns" size="2"  min="1" max="99" step="1" value="5" class="inputNice">
+					<span class="description" data-i18n="ColumnsTooltip">$</span>
+				</div>
+
+				<div class="option">
+					<input type="number" id="quickMenuColumnsMinimum" size="2"  min="1" max="99" step="1" value="5" class="inputNice">
+					<span class="description" data-i18n="ColumnsMinimumTooltip">$</span>
+				</div>
+
+				<p class="header2" data-i18n="Rows">$</p>
+				<div class="option">
+					<input type="number" id="quickMenuRows" size="2" min="1" max="99" step="1" value="5" class="inputNice">
+					<span class="description" data-i18n="RowsTooltip">$</span>
+				</div>
+				<div class="option">
+					<input type="number" id="quickMenuRowsSingleColumn" size="2" min="1" max="99" step="1" value="10" class="inputNice">
+					<span class="description" data-i18n="RowsSingleColumnTooltip">$</span>
+				</div>
+				<br>
+
+<!-- 				<div style="height:130px">
+					
+					<div style="display: inline-block;height:100%;">
+						<input type="number" size="2" min="1" max="99" step="1" value="10" class="inputNice">
+					</div>
+
+					<div style="display:inline-block;text-align:center;">
+						<input type="number" size="2" min="1" max="99" step="1" value="10" class="inputNice" style="width: 40px"><br>
+						<div style="width:100px;height:100px;background-color: #ccc;"></div>
+					</div>
+
+				</div> -->
+
+				<div id="quickMenuLayoutEditor" style="display:none">
+					<div class=".menuBar" style="text-align: right;">
+						<tool data-icon="minimize.svg"></tool>
+						<tool data-icon="crossmark.svg"></tool>
+					</div>
+					<div class=".searchBar" style="text-align: left;">
+						<div style="border-radius:10px;height: 12px;background-color:var(--bg-color2);border:1px solid var(--border-color3)">
+							<tool data-icon="search.svg" style="height: 10px;margin-left:6px"></tool>
+						</div>
+					</div>
+					<div class=".toolsBar">
+						<tool data-icon="history_one.svg"></tool>
+						<tool data-icon="theme.svg"></tool>
+					</div>
+					<div class=".titleBar">
+						...
+					</div>
+					<div class=".quickMenu" style="height:50px"></div>
+					<div class=".contextsBar">
+						<tool data-icon="audio.svg"></tool>
+						<tool data-icon="frame.svg"></tool>
+						<tool data-icon="image.svg"></tool>
+						<tool data-icon="link.svg"></tool>
+						<tool data-icon="selection.svg"></tool>
+						<tool data-icon="page.svg"></tool>
+						<tool data-icon="video.svg"></tool>
+					</div>
+				</div>
+				</section>
+				
+				<section>
+				<p class="header1" data-i18n="Size">$</p>
+				<table>
+					<tr>
+						<td>
+							<input id="i_quickMenuScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+						</td>
+						<td>
+							<label style="margin-left:10px" data-i18n="MenuSize">$</label>
+							<span class="info" title="$MenuSizeTooltip">&#9432;</span>
+						</td>
+						<td>
+							<input type="range" id="quickMenuScale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="i_quickMenuIconScale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+						</td>
+						<td>
+							<label style="margin-left:10px" data-i18n="IconSize">$</label>
+							<span class="info" title="$IconSizeTooltip">&#9432;</span>
+						</td>
+						<td>
+							<input type="range" id="quickMenuIconScale" class="slider" min="1" max="2" step=".05" value="1" />
+						</td>
+					</tr>
+				</table>
+				</section>
+				
+				<section style="min-width:720px">
+				<p class="header1" data-i18n="Opening">$</p>
+
+				<table class="openingTable">
+				<tr>
+					<td>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuAuto" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Auto">
+								<tool data-icon="auto.svg"></tool>
+							$</div>
+						</div>
+						<span style="font-size:9pt" data-i18n="AutoTooltip">$</span>
+					</td>
+
+					<td>
+						<div class="option" style="display:inline-block;">
+							<checkbox data-id="quickMenuAutoAlt" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Alt">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuAutoCtrl" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Ctrl">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuAutoShift" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Shift">$</span>
+						</div>
+
+						<br>
+						
+						<div class="option" style="display:inline-block;">
+							<checkbox data-id="quickMenuCloseOnEdit" data-i18n=""></checkbox>
+							<span class="description" data-i18n="quickMenuCloseOnEdit">$</span>
+						</div>
+					</td>
+
+				</tr>
+				<tr>
+					<td>
+
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnDrag" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Drag">
+								<tool data-icon="mouse.svg"></tool>
+							$</div>
+						</div>
+						<span style="font-size:9pt" data-i18n="OpenOnDragTooltip">$</span>
+					</td>
+					<td>
+						<div class="option" style="display:inline-block;">
+							<checkbox data-id="quickMenuDragAlt" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Alt">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuDragCtrl" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Ctrl">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuDragShift" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Shift">$</span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuIcon.enabled" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="OpenOnIcon">
+								<tool data-icon="image.svg"></tool>
+							$</div>
+						</div>
+						<span style="font-size:9pt" data-i18n="OpenOnIconTooltip">$</span>
+					</td>
+					<td>
+						<form class="option iconForm" id="quickMenuIconForm" data-option="quickMenuIcon.url" style="transform: scale(.75);transform-origin: top left;" >
+							<div>
+								<input type="radio" name="icon" id="quickMenuIcon_1" value="icons/logo_notext.svg"/>
+								<label for="quickMenuIcon_1">
+									<img src="icons/logo_notext.svg" />
+								</label>
+							</div>
+							<div>
+								<input type="radio" name="icon" id="quickMenuIcon_2" value="icons/icon.svg"/>
+								<label for="quickMenuIcon_2">
+									<img src="icons/icon.svg" />
+								</label>
+							</div>
+							<div>
+								<input type="radio" name="icon" id="quickMenuIcon_3" value="" />
+								<input type="file" accept="image/*" name='iconPicker' id="quickMenuIconPicker" style="display:none">
+								
+								<label for="quickMenuIconPicker">
+									<div class="iconCustom"></div>
+								</label>			
+							</div>
+						</form>
+
+						<!-- <div class="option">
+							<input type="number" id="quickMenuIcon.scale" size="2" min="0" max="10" step=".1" class="inputNice">
+							<span class="description" data-i18n="IconSize">$</span>
+						</div>
+
+						<br /> -->
+
+						<div class="option" style="margin-left:10px">
+							<input type="number" id="quickMenuIcon.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;">
+							<span class="description" data-i18n="HorizontalOffset">$</span>
+							<span class="info" title="$HorizontalOffsetTooltip">&#9432;</span>
+							<br />
+							<input type="number" id="quickMenuIcon.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice">
+							<span data-i18n="VerticalOffset" class="description" >$</span>
+							<span class="info" title="$VerticalOffsetTooltip">&#9432;</span>
+						</div>
+						
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnKey" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Keyboard">
+								<tool data-icon="keyboard.svg"></tool>
+							$</div>
+						</div>
+						<span style="font-size:9pt" data-i18n="KeyboardTooltip">$</span>
+					</td>
+					<td>	
+						<button id="quickMenuKey" class="keyboardButton">$</button>
+						<span class="info" title="$ChooseKeyTooltip">&#9432;</span>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnMouse" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Mouse">
+								<tool data-icon="mouse.svg"></tool>
+							$</div>
+						</div>
+						<span style="font-size:9pt" data-i18n="MouseTooltip">$</span>
+					</td>
+					<td>
+						<select class="inputNice" style="width:auto;margin-right:10px;font-size:10pt;" id="quickMenuOnMouseMethod">
+							<option data-i18n="Click" value="click">$</option>
+							<option data-i18n="Hold" value="hold">$</option>
+						</select>
+						
+						<select class="inputNice" style="width:auto;font-size:10pt" id="quickMenuMouseButton">
+							<option data-i18n="LeftButton" value="1">$</option>
+							<option data-i18n="MiddleButton" value="2">$</option>
+							<option data-i18n="RightButton" value="3">$</option>
+						</select>
+
+						<span style="margin:0 8px">+</span>
+
+						<div class="option" style="display:inline-block">
+							<checkbox data-id="quickMenuOnMouseAlt" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Alt">$</span>
+						</div>
+					
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuOnMouseCtrl" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Ctrl">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuOnMouseShift" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Shift">$</span>
+						</div>
+
+						<span class="info" title="$quickMenuAllowContextMenuNewTooltip">ⓘ</span>
+
+						<br> 
+
+						<checkbox data-id="quickMenuOnMouseOpenWithoutSelection" data-i18n=""></checkbox>
+							<span class="description" data-i18n="quickMenuOnMouseOpenWithoutSelection">$</span>
+							<span class="info" title="$quickMenuOnMouseOpenWithoutSelectionTooltip">ⓘ</span>				
+						
+						<div>
+							<!-- <img style="height:10px;vertical-align:middle" src="icons/alert.svg"> -->
+							<span class="description" style="font-size:8pt;padding-top:8px" data-i18n="HoldForContextMenu">$</span>
+						</div>
+						
+						<div>
+							<hr>
+							<div style="font-weight: normal;margin-bottom:10px;display: inline-block" data-i18n="ShowDefaultMenuModifierMessage">$</div>
+							<span class="info" title="$MouseHelp">&#9432;</span><br />
+							<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px;" id="quickMenuMoveContextMenuMethod">
+								<option data-i18n="default" value="">$</option>
+								<option data-i18n="alt" value="alt">$</option>
+								<option data-i18n="ctrl" value="ctrl">$</option>
+								<option data-i18n="shift" value="shift">$</option>
+								<option data-i18n="doubleclick" value="dblclick">$</option>
+							</select>
+						</div>						
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnSimpleClick.enabled" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="SimpleClick">
+								<tool data-icon="cursor.svg"></tool>
+							$</div>
+						</div>
+						<span style="font-size:9pt" data-i18n="SimpleClickTooltip">$</span>
+					</td>
+					<td>
+						<br />
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px;display:inline-block" id="quickMenuOnSimpleClick.button">
+							<option data-i18n="LeftButton" value="1">$</option>
+							<option data-i18n="MiddleButton" value="2">$</option>
+							<option data-i18n="RightButton" value="3">$</option>
+							<option data-i18n="BackButton" value="4">$</option>
+							<option data-i18n="ForwardButton" value="5">$</option>
+						</select>
+						
+						<span style="margin-left:10px">+</span>
+							
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuOnSimpleClick.alt" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Alt">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuOnSimpleClick.ctrl" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Ctrl">$</span>
+						</div>
+						
+						<div class="option" style="display:inline-block;margin-left:20px">
+							<checkbox data-id="quickMenuOnSimpleClick.shift" data-i18n=""></checkbox>
+							<span class="description" data-i18n="Shift">$</span>
+						</div>
+						
+					</td>
+				</tr>
+				</table>
+
+				<hr>
+
+				<p class="header2" data-i18n="Position">$</p>
+				
+				<div>
+					<div style="font-size:0;line-height:0;display:inline-block;">
+						<div class="position" data-position="top left"></div><div class="position" data-position="top center"></div><div class="position" data-position="top right"></div><br />
+						<div class="position" data-position="middle left"></div><div class="position" data-position="middle center"></div><div class="position" data-position="middle right"></div><br />
+						<div class="position" data-position="bottom left"></div><div class="position" data-position="bottom center"></div><div class="position" data-position="bottom right"></div>
+					</div>
+					<div style="display:inline-block;margin-left:30px;vertical-align:top;">
+						<input type="number" id="quickMenuOffset.x" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-bottom:2px;margin-right:10px"><span data-i18n="HorizontalOffset">$</span>
+						<span class="info" title="$HorizontalOffsetTooltip">&#9432;</span>
+						<br />
+						<input type="number" id="quickMenuOffset.y" size="2" min="-9999" max="9999" step="1" value="0" class="inputNice" style="margin-right:10px"/><span data-i18n="VerticalOffset">$</span>
+						<span class="info" title="$VerticalOffsetTooltip">&#9432;</span>
+					</div>
+				</div>
+				<input id="quickMenuPosition" type="hidden" />
+				<div id="t_position" style="height:10pt;font-size:10pt;margin-left:2px" data-i18n="PositionDescription">$</div>
+				</section>
+				
+				<section>
+				<p class="header1" data-i18n="Closing">$</p>
+				<div class="option">
+					<checkbox data-id="quickMenuCloseOnClick" data-i18n=""></checkbox>
+					<div class="description" data-i18n="CloseAfterSearchTooltip">$</div>
+				</div>
+				
+				<div class="option">
+					<checkbox data-id="quickMenuCloseOnScroll" data-i18n=""></checkbox>
+					<div class="description" data-i18n="CloseOnScrollTooltip">$</div>
+				</div>
+
+				</section>
+				<section style="min-width:720px">
+<p class="header1" data-i18n="SearchActionsHeader">$</p>
+				
+				<table class="searchActions">
+				<tr>
+					<td></td>
+					<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">$</span></td>
+					<td style="text-align:center"><span class="header2" data-i18n="Folders">$</span></td>
+				</tr>
+				<tr>
+					<td>
+					<span class="buttonLabel" data-i18n="LeftButton">$</span><img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuLeftClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuFolderLeftClick" data-searchaction="openFolder,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="buttonLabel" data-i18n="MiddleButton">$</span><img data-i18n="MiddleButton" alt="i18n_text" title="i18n_text" src="icons/middlemouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuMiddleClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuFolderMiddleClick" data-searchaction="openFolder,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="buttonLabel" data-i18n="RightButton">$</span><img data-i18n="RightButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" style="transform:scaleX(-1);" />
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuRightClick" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuFolderRightClick" data-searchaction="openFolder,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="keyboardButton" data-i18n="ShiftKey">
+						_
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuShift" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,keepMenuOpen,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuFolderShift" data-searchaction="openFolder,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="keyboardButton">
+						Ctrl
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuCtrl" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,keepMenuOpen,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuFolderCtrl" data-searchaction="openFolder,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+					<span class="keyboardButton">
+						Alt
+					</span>&nbsp;&nbsp; + &nbsp;&nbsp;<img data-i18n="LeftButton" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuAlt" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,keepMenuOpen,noAction">
+					</select>
+					</td>
+					<td>
+					<select class="inputNice" id="quickMenuFolderAlt" data-searchaction="openFolder,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+					</select>
+					</td>
+				</tr>
+			</table>
+
+			<hr>
+
+			<span class="header2" data-i18n="AdditionalSearchActions" style="margin-left:36px">$</span>
+			<table id="additionalSearchActionsTable">
+				<tr class="header">
+					<td><button id="newSearchAction" title="$add">+</button></td>
+					<td data-i18n="Event">$</td>
+					<td data-i18n="Button">$</td>
+					<td data-i18n="SearchAction">$</td>
+					<td data-i18n="Alt">$</td>
+					<td data-i18n="Ctrl">$</td>
+					<td style="display:none">Meta</td>
+					<td data-i18n="Shift">$</td>
+				</tr>
+				<tr class="template">
+					<td></td>
+					<td>
+						<select name="event" class="inputNice">
+							<option value="mouseup" data-i18n="Click">$</option>
+							<option value="dblclick" data-i18n="DoubleClick">$</option>
+						</select>
+					</td>
+					<td>
+						<select name="button" class="inputNice">
+							<option value="0" data-i18n="left">$</option>
+							<option value="1" data-i18n="middle">$</option>
+							<option value="2" data-i18n="right">$</option>
+							<option value="3" data-i18n="forward">$</option>
+							<option value="4" data-i18n="back">$</option>
+						</select>
+					</td>
+					<td>
+						<select class="inputNice" name="action" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+						</select>
+					</td>
+					<td><input name="altKey" type="checkbox" /></td>
+					<td><input name="ctrlKey" type="checkbox" /></td>
+					<td style="display:none"><input name="metaKey" type="checkbox" /></td>
+					<td><input name="shiftKey" type="checkbox" /></td>
+					<td><button name="delete" title="$delete">x</button></td>
+				</tr>
+			</table>
+
+			</section>
+			<section>
+<p class="header1" data-i18n="Tools">$</p>
+				
+				<div class="option">
+					<checkbox data-id="quickMenuToolsAsToolbar" data-i18n=""></checkbox>
+					<div class="description" data-i18n="ToolsAsToolbar">$</div>
+				</div>
+				<div>	
+					<span data-i18n="Position">$</span><span class="info" title="$ToolsPositionTooltip">&#9432;</span>
+					
+					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuToolsPosition">
+						<option data-i18n="top" value="top">Top</option>
+						<option data-i18n="bottom" value="bottom">$</option>
+						<option data-i18n="hidden" value="hidden">$</option>
+					</select>
+				</div>
+				
+				<br />
+				
+				<div id="toolIcons"></div>
+				<div id="t_toolIcons" style="height:10pt;font-size:10pt;margin-left:10px" data-i18n="ToolsHelp">$</div>
+				
+				</section><section>
+<p class="header1" data-i18n="SearchBar">$</p>
+				
+				<div style="display:none">	
+					<span data-i18n="Position">$</span><span class="info" title="$SearchBarTooltip">&#9432;</span>
+					
+					<select class="inputNice" style="width:auto;margin-left:30px;font-size:10pt;padding-right:10px" id="quickMenuSearchBar">
+						<option data-i18n="top" value="top">Top</option>
+						<option data-i18n="bottom" value="bottom">$</option>
+						<option data-i18n="hidden" value="hidden">$</option>
+					</select>
+				</div>
+				
+				<br />
+				<div class="option">
+					<checkbox data-id="quickMenuSearchBarFocus" data-i18n=""></checkbox>
+					<div class="description" data-i18n="FocusTooltip">$</div>
+				</div>
+				
+				<div class="option">
+					<checkbox data-id="quickMenuSearchBarSelect" data-i18n=""></checkbox>
+					<div class="description" data-i18n="SelectTextTooltip">$</div>
+				</div>	
+
+				</div>
+				<div class="tabcontent" data-tabgroup="main_nav" id="toolBarTab">
+				<div class="blobContainerHeader" data-i18n="Toolbar"><img src="icons/sidebar.svg" style="transform:rotate(90deg);"/>$</div>
+					
+				</section>
+				<section>
+				<p class="header1" data-i18n="Layout">$</p>
+				<p class="header2" data-i18n="DefaultView">$</p>
+				<div class="option">
+					<select class="inputNice" style="width:auto" id="searchBarDefaultView">
+						<option value="grid" data-i18n="grid">$</option>
+						<option value="text" data-i18n="text">$</option>
+					</select>
+					<span class="description" data-i18n="DefaultViewToolTip">$</span>
+				</div>
+				<p class="header2" data-i18n="Columns">$</p>
+				<div class="option">
+					<input type="number" id="searchBarColumns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
+					<span class="description" data-i18n="ColumnsTooltip">$</span>
+				</div>
+				</section>
+				<section>
+				<p class="header1" data-i18n="Closing">$</p>
+				<div class="option">
+					<checkbox data-id="searchBarCloseAfterSearch" data-i18n=""></checkbox>
+					<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">$</div>
+				</div>
+				
+				</section>
+				<section>
+				<p class="header1" data-i18n="Icon">$</p>
+				<form class="option iconForm" id="toolBarIconForm" data-option="toolBarIcon">
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_1" value="icons/logo_notext.svg"/>
+						<label for="toolBarIcon_1">
+							<img src="icons/logo_notext.svg" />
+						</label>
+					</div>
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_2" value="icons/icon.svg"/>
+						<label for="toolBarIcon_2">
+							<img src="icons/icon.svg" />
+						</label>
+					</div>
+					<div>
+						<input type="radio" name="toolBarIcon" id="toolBarIcon_3" value="" />
+						<input type="file" accept="image/*" name='toolBarIconPicker' id="toolBarIconPicker" style="display:none">
+						
+						<label for="toolBarIconPicker">
+							<div class="iconCustom"></div>
+						</label>			
+					</div>
+				</form>
+				
+				</section>
+				</div>
+				<div class="tabcontent" data-tabgroup="main_nav" id="sideBarTab">
+					<div class="blobContainerHeader" data-i18n="SideBar"><img src="icons/sidebar.svg" style="transform:scaleX(-1)" />$</div>
+
+					<section>
+					<p class="header1" data-i18n="Layout">$</p>
+					<p class="header2" data-i18n="DefaultView">$</p>
+					<div class="option">
+						<select class="inputNice" style="width:auto" id="s_sideBarDefaultView">
+							<option value="grid" data-i18n="grid">$</option>
+							<option value="text" data-i18n="text">$</option>
+						</select>
+						<span class="description" data-i18n="DefaultViewToolTip">$</span>
+					</div>
+					<p class="header2" data-i18n="Columns">$</p>
+					<div class="option">
+						<input type="number" id="sideBar.columns" size="2" class="inputNice" min="1" max="100" step="1" value="4">
+						<span class="description" data-i18n="ColumnsTooltip">$</span>
+					</div>
+
+					</section>
+					<section>
+					<p class="header1" data-i18n="Size">$</p>
+					<table>
+						<tr>
+							<td>
+								<input id="i_sideBar.scale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+							</td>
+							<td>
+								<label style="margin-left:10px" data-i18n="MenuSize">$</label>
+								<span class="info" title="$MenuSizeTooltip">&#9432;</span>
+							</td>
+							<td>
+								<input type="range" id="sideBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+							</td>
+						</tr>
+					</table>
+					</section>
+					<section>
+					<p class="header1" data-i18n="Location">$</p>
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="sideBar.widget.position">
+							<option data-i18n="left" value="left">$</option>
+							<option data-i18n="right" value="right">$</option>
+						</select>
+						<div class="description" data-i18n="SideBarPositionTooltip">$</div>
+					</div>
+
+					</section>
+					<section>
+					<p class="header1" data-i18n="Opening">$</p>
+					<div class="option">
+						<checkbox data-id="sideBar.widget.enabled" data-i18n="SidebarWidgetEnable"></checkbox>
+						<div class="description" data-i18n="SidebarWidgetEnableTooltip">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="sideBar.startOpen" data-i18n="SideBarStartOpen"></checkbox>
+						<span class="description" data-i18n="SideBarStartOpenTooltip">$</span>
+					</div>
+					</section>
+					<section>
+					<p class="header1" data-i18n="Closing">$</p>
+					<div class="option">
+						<checkbox data-id="sideBar.closeAfterSearch" data-i18n="CloseAfterSearch"></checkbox>
+						<div class="description" data-i18n="SearchBarCloseAterSearchTooltip">$</div>
+					</div>
+				
+				</section>
+				</div>
+				
+				<div class="tabcontent" data-tabgroup="main_nav" id="pageTilesTab">
+					<div class="blobContainerHeader" data-i18n="PageTiles"><img src="icons/page_tiles.svg" />$</div>
+										
+					<section style="min-width:720px">
+					<p class="header1" data-i18n="General">$</p>
+					
+					<div class="option">
+						<checkbox data-id="pageTiles.enabled" data-i18n=""></checkbox>
+						<div class="description" data-i18n="PageTilesEnabledTooltip">$</div>
+					</div>
+
+					<div class="option">
+						<div class="description" data-i18n="PageTilesSelectPalette" style="display:block;margin-left:0">$</div>
+						<select class="inputNice" style="width:auto;margin-right:20px" id="pageTiles.paletteString"></select>
+						
+						<span id="pageTilesPaletteSample"></span>
+					</div>
+					<p class="header2" data-i18n="Rows">$</p>
+					<div class="option">
+						<input type="number" class="inputNice" id="pageTiles.rows" min="2"/>
+					</div>
+					<p class="header2" data-i18n="Columns">$</p>
+					<div class="option">
+						<input type="number" class="inputNice" id="pageTiles.columns" min="2" />
+					</div>
+
+					<br>
+
+					<div class="option">
+						<checkbox data-id="pageTiles.closeOnShake" data-i18n="ClosePageTilesOnShake"></checkbox>
+						<div class="description" data-i18n="ClosePageTilesOnShake">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="pageTiles.closeOnBorder" data-i18n="ClosePageTilesOnBorder"></checkbox>
+						<div class="description" data-i18n="ClosePageTilesOnBorder">$</div>
+					</div>
+					</section>
+					<section style="min-width:720px">
+					<p class="header1" data-i18n="SearchActionsHeader">$</p>
+					<table class="searchActions">
+						<tr>
+							<td></td>
+							<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">$</span></td>
+							<!-- <td style="text-align:center"><span class="header2" data-i18n="Folders">$</span></td> -->
+						</tr>
+						<tr>
+							<td>
+								<span class="buttonLabel" data-i18n="Drop">$</span><img data-i18n="Drop" alt="i18n_text" title="i18n_text" src="icons/leftmouse.svg" class="smallIcon" />
+							</td>
+							<td>
+								<select class="inputNice" id="pageTiles.openMethod" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+								</select>
+							</td>
+						</tr>
+					</table>
+
+					</section>
+
+					<section>
+						<p class="header1" data-i18n="Layout">$</p>
+					 <div>
+						<ul id="pageTilesFolderBrowser" class="folderBrowser"></ul>
+						<table id="pageTilesTable" style="display:inline-block;position:relative;vertical-align:middle"></table>
+					</div>	
+					</section>				
+					
+				</div>
+				<div class="tabcontent" data-tabgroup="main_nav" id="hotkeysTab">
+					<div class="blobContainerHeader" data-i18n="Hotkeys"><img src="icons/keyboard.svg" />$</div>
+										
+					<section>
+						<p class="header1" data-i18n="Shortcuts">$</p>
+
+					<p class="header2" data-i18n="SearchEngines">$</p>
+					
+					<table class="searchActions">
+					<tr>
+						<td></td>
+						<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">$</span></td>
+						<td style="text-align:center"><span class="header2" data-i18n="Folders">$</span></td>
+					</tr>
+					<tr>
+						<td>
+						<div class="option">
+							<checkbox data-id="allowHotkeysWithoutMenu" data-i18n=""></checkbox>
+							<div class="description" data-i18n="EnableHotkeysLabel">$</div>
+						</div>
+						<div class="option">
+							<checkbox data-id="allowHotkeysOnLinks" data-i18n=""></checkbox>
+							<div class="description" data-i18n="EnableOnLinks">$</div>
+						</div>
+						<div class="option">
+							<checkbox data-id="allowHotkeysOnImages" data-i18n=""></checkbox>
+							<div class="description" data-i18n="EnableOnImages">$</div>
+						</div>
+
+						</td>
+						<td style="vertical-align: top;">
+						<select class="inputNice" id="quickMenuSearchHotkeys" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+						</select>
+						</td>
+						<td style="vertical-align: top;">
+						<select class="inputNice" id="quickMenuSearchHotkeysFolders" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,noAction">
+						</select>
+						</td>
+					</tr>
+					</table>
+					
+					<p class="header2" data-i18n="General">$</p>
+					
+						<table style="width:100%;font-weight:normal" id="shortcutTable"></table>
+					</section>
+				</div>
+				<div class="tabcontent" data-tabgroup="main_nav" id="omniboxTab">
+					<div class="blobContainerHeader" data-i18n="Omnibox"><img src="icons/omnibox.svg" />$</div>
+									
+					<section style="min-width:720px">
+					<p class="header1" data-i18n="SearchActionsHeader">$</p>
+						
+					<table class="searchActions">
+					<tr>
+						<td></td>
+						<td style="text-align:center"><span class="header2" data-i18n="SearchEngines">$</span></td>
+						<td style="text-align:center">
+							<!-- <span class="header2" data-i18n="Folders">$</span> -->
+						</td>
+					</tr>
+					<tr>
+						<td>
+						<span class="buttonLabel" data-i18n="Omnibox">$</span><tool data-icon="omnibox.svg" style="height:30px;width:30px;vertical-align: middle;;margin:0 10px"></tool>
+						</td>
+						<td>
+						<select class="inputNice" id="omniboxSearch" data-searchaction="openCurrentTab,openNewTab,openBackgroundTab,openBackgroundTabKeepOpen,openNewWindow,openNewIncognitoWindow,openSideBarAction,openPopup,noAction">
+						</select>
+						</td>
+						<td>
+						
+						</td>
+					</tr>
+					</table>
+				</div>
+				<div class="tabcontent" data-tabgroup="main_nav" id="highLightTab">
+					<div class="blobContainerHeader" data-i18n="Highlight"><img src="icons/highlight.svg" />$</div>
+
+										
+				<section>
+					<p class="header1" data-i18n="General">$</p>
+					<div class="option">
+						<checkbox data-id="highLight.enabled" data-i18n=""></checkbox>
+						<div class="description" data-i18n="HighlightTooltip">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="highLight.followDomain" data-i18n=""></checkbox>
+						<div class="description" data-i18n="HighlightFollowDomainTooltip">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="highLight.followExternalLinks" data-i18n=""></checkbox>
+						<div class="description" data-i18n="HighlightFollowExternalLinksTooltip">$</div>
+					</div>
+					
+					<div class="option">
+						<checkbox data-id="highLight.navBar.enabled" data-i18n=""></checkbox>
+						<div class="description" data-i18n="HighlightNavTooltip">$</div>
+					</div>
+					<div class="option">
+						<checkbox data-id="highLight.showFindBar" data-i18n=""></checkbox>
+						<div class="description" data-i18n="HighlightShowFindBarTooltip">$</div>
+					</div>
+					
+					</section>
+					<section>
+<p class="header1" data-i18n="MatchOptions">$</p>
+					<table>
+						<tr>
+							<!-- <td>Accuracy</td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.markOptions.accuracy">
+										<option data-i18n="partially" value="partially">$</option>
+										<option data-i18n="exactly" value="exactly">$</option>
+									</select>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighLightAccuracyTooltip">$</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Separate Word Search -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<checkbox data-id="highLight.markOptions.separateWordSearch" data-i18n=""></checkbox>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightSeparateWordsTooltip">$</div>
+							</td>
+							
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Ignore Punctuation -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<checkbox data-id="highLight.markOptions.ignorePunctuation" data-i18n=""></checkbox>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightIgnorePunctuationTooltip">$</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Case Sensitive -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<checkbox data-id="highLight.markOptions.caseSensitive" data-i18n=""></checkbox>									
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightCaseSensitiveTooltip">Case sensitive</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Limit -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<input type="number" min="0" max="9999" step="1" id="highLight.markOptions.limit" class="inputNice" style="width:60px"/>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightLimitTooltip">$</div>
+							</td>
+						</tr>
+					</table>
+				</section>
+				<section>
+				<p class="header1" data-i18n="Style">$</p>
+					
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:0px" id="highLight.highlightStyle">
+							<option data-i18n="background" value="background">$</option>
+							<option data-i18n="underline" value="underline">$</option>
+						</select>
+						<div class="description" data-i18n="HighLightStyleToolTip">$</div>
+					</div>
+					
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:6px" id="s_highLightOpacity">
+							<option value="1">100%</option>
+							<option value="0.95">95%</option>
+							<option value="0.9">90%</option>
+							<option value="0.85">85%</option>
+							<option value="0.8">80%</option>
+							<option value="0.75">75%</option>
+							<option value="0.7">70%</option>
+							<option value="0.65">65%</option>
+							<option value="0.6">60%</option>
+							<option value="0.55">55%</option>
+							<option value="0.5">50%</option>
+							<option value="0.45">45%</option>
+							<option value="0.4">40%</option>
+							<option value="0.35">35%</option>
+							<option value="0.3">30%</option>
+							<option value="0.25">25%</option>
+							<option value="0.2">20%</option>
+							<option value="0.15">15%</option>
+							<option value="0.1">10%</option>
+							<option value="0.05">5%</option>							
+						</select>
+						<div class="description" data-i18n="HighLightOpacityToolTip">$</div>
+					</div>
+
+					<br />
+					<table style="text-align:center" class="colorPickerTable">
+						<tr>
+							<td></td>
+							<td><div class="description">Aa</div></td>
+							<td><div class="description">&#9744;</div></td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>
+								<input type="color" id="c_highLightBackground0" />
+								<label for="c_highLightBackground0"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor0" />
+								<label for="c_highLightColor0"></label>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>
+								<input type="color" id="c_highLightBackground1" />
+								<label for="c_highLightBackground1"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor1" />
+								<label for="c_highLightColor1"></label>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>
+								<input type="color" id="c_highLightBackground2" />
+								<label for="c_highLightBackground2"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor2" />
+								<label for="c_highLightColor2"></label>
+							</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>
+								<input type="color" id="c_highLightBackground3" />
+								<label for="c_highLightBackground3"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColor3" />
+								<label for="c_highLightColor3"></label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3"><hr /></td>
+						</tr>
+						<tr>
+							<td>Active</td>
+							<td>
+								<input type="color" id="c_highLightBackgroundActive" />
+								<label for="c_highLightBackgroundActive"></label>
+							</td>
+							<td>
+								<input type="color" id="c_highLightColorActive" />
+								<label for="c_highLightColorActive"></label>
+							</td>
+							<td style="vertical-align: middle;">
+								<div style="margin-left: 20px">
+									<checkbox data-id="highLight.flashSelected" data-i18n=""></checkbox>
+									<div class="description" data-i18n="HighlightFlashSelectedTooltip">$</div>
+								</div>
+							</td>
+							
+						</tr>
+					</table>
+				</section>	
+				</div>
+
+				<div class="tabcontent" data-tabgroup="main_nav" id="highLightFindBarTab">
+					<div class="blobContainerHeader" data-i18n="FindBar"><img src="icons/highlight.svg" />$</div>
+					
+
+					<section>
+					<p class="header1" data-i18n="opening">$</p>
+					
+					<div class="option">
+						<checkbox data-id="highLight.findBar.startOpen" data-i18n=""></checkbox>
+						<span class="description" data-i18n="FindBarStartOpen">$</span>
+					</div>
+					
+					<div class="option">
+						<checkbox data-id="highLight.findBar.openInAllTabs" data-i18n=""></checkbox>
+						<span class="description" data-i18n="FindBarOpenInAllTabs">$</span>
+					</div>
+					
+					<div class="option">
+						<span style='margin-left:30px;margin-right:10px'>&rdca;</span>
+						<checkbox data-id="highLight.findBar.searchInAllTabs" data-i18n=""></checkbox>
+						<span class="description" data-i18n="FindBarSearchInAllTabs">$</span>
+					</div>
+				
+					</section>
+
+					<section>
+					<p class="header1" data-i18n="Size">$</p>
+					<table>
+						<tr>
+							<td>
+								<input id="i_highLight.findBar.scale" class="inputNice" value="100%" readonly style="user-select:none;-moz-user-select:none" />
+							</td>
+							<td>
+								<label style="margin-left:10px" data-i18n="MenuSize">$</label>
+								<span class="info" title="$MenuSizeTooltip">&#9432;</span>
+							</td>
+							<td>
+								<input type="range" id="highLight.findBar.scale" class="slider" min=".5" max="2.5" step=".05" value="1" />
+							</td>
+						</tr>
+					</table>
+					</section>
+
+					<section>
+					<p class="header1" data-i18n="Location">$</p>
+					<p>	
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.findBar.position">
+							<option data-i18n="Top" value="top">$</option>
+							<option data-i18n="Bottom" value="bottom">$</option>
+						</select>
+						
+						<span class="description" data-i18n="FindBarPositionTooltip">$</span>
+					</p>
+					
+					</section>
+					<section>
+					<p class="header1" data-i18n="Window">$</p>
+					<div class="option">
+						<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.findBar.windowType">
+							<option data-i18n="undocked" value="undocked">$</option>
+							<option data-i18n="docked" value="docked">$</option>
+						</select>
+						<div class="description" data-i18n="FindbarWindowTypeTooltip">$
+						</div>
+					</div>
+					
+					</section>
+
+					<section>
+					<p class="header1" data-i18n="General">$</p>
+					
+					<div class="option">
+						<checkbox data-id="highLight.findBar.showNavBar" data-i18n=""></checkbox>
+						<span class="description" data-i18n="HighlightNavTooltip">$</span>
+					</div>
+					
+					<input type="number" id="highLight.findBar.keyboardTimeout" size="3" class="inputNice" min="0" max="1000" step="10">
+					<span class="description" data-i18n="findbarkeyboardtimeout">$</span>
+				</section>
+				
+					<section>
+					<p class="header1" data-i18n="MatchOptions">$</p>
+					<table>
+						<tr>
+							<!-- <td>Accuracy</td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<select class="inputNice" style="width:auto;font-size:10pt;padding-right:10px" id="highLight.findBar.markOptions.accuracy">
+										<option data-i18n="partially" value="partially">partially</option>
+										<option data-i18n="exactly" value="exactly">exactly</option>
+									</select>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighLightAccuracyTooltip">$</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Separate Word Search -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<checkbox data-id="highLight.findBar.markOptions.separateWordSearch" data-i18n=""></checkbox>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightSeparateWordsTooltip">$</div>
+							</td>
+							
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Ignore Punctuation -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<checkbox data-id="highLight.findBar.markOptions.ignorePunctuation" data-i18n=""></checkbox>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightIgnorePunctuationTooltip">$</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Case Sensitive -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<checkbox data-id="highLight.findBar.markOptions.caseSensitive" data-i18n=""></checkbox>									
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightCaseSensitiveTooltip">$</div>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td> -->
+								<!-- Limit -->
+							<!-- </td> -->
+							<td style='text-align:right'>
+								<div class="option">
+									<input type="number" min="0" max="9999" step="1" id="highLight.findBar.markOptions.limit" class="inputNice" style="width:60px"/>
+								</div>
+							</td>
+							<td>
+								<div class="description" data-i18n="HighlightLimitTooltip">$</div>
+							</td>
+						</tr>
+					</table>
+					
+					</section>
+				</div>
+
+		<div class="tabcontent" data-tabgroup="main_nav" id="requestPermissionsTab">
+					
+			<section id="requestPermissions" style="font-weight:normal;text-align:center">
+				<div style="text-align: center;margin-bottom:20px">
+					<img style="height:30px;vertical-align:middle" src="icons/alert.svg" />
+				</div>
+				<div data-i18n="requestPermissionsMessage">$</div>
+				<div style="text-align: left;display: inline-block;margin-top:20px">
+					<div style="margin-top:4px;" data-permission="clipboardRead"><button id="b_requestClipboardReadPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">clipboardRead</label></div>
+					<div style="margin-top:4px;" data-permission="clipboardWrite"><button id="b_requestClipboardWritePermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">clipboardWrite</label></div>
+					<div style="margin-top:4px;" data-permission="downloads"><button id="b_requestDownloadsPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">downloads</label></div>
+					<div style="margin-top:4px;" data-permission="nativeMessaging"><button id="b_requestNativeMessagingPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">nativeMessaging</label></div>
+				</div>
+			</section>
+		</div>
+
+		<div class="tabcontent" data-tabgroup="main_nav" id="enginesTab">
+			<div style="font-weight:normal;">
+			
+				<div class="blobContainerHeader" data-i18n="SearchEngines"><img src="icons/search.svg" />$</div>
+		
+				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
+					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
+					<div id="filterBarContainer" class="hide" title="$filter">
+						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6;"></div>
+						<input id="searchEnginesManagerSearch" class="inputNice nosave" placeholder="filter" />
+						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:1em;margin:0;cursor:pointer;opacity:.6;position:relative;right:18px;"></div>
+					</div>
+					<div id="managerContainer">
+						<span class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</span>
+					</div>
+					<div></div>
+					<br />
+
+					<button id="b_mycroftproject" title="$FindMycroftTooltip">
+						<div class="tool" style="--mask-image: url(icons/search.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+					<button id="b_addSearchEngine" title="$add">
+						<div class="tool" style="--mask-image: url(icons/add.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+					<button id="b_sort" title="$Sort">
+						<div class="tool" style="--mask-image: url(icons/sort.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+					
+					<button id="b_resetAllSearchEngines" style="float:right;clear:both" title="$ResetDefaults">
+						<div class="tool" style="--mask-image: url(icons/power.svg);height:1.25em;pointer-events: none;"></div>
+					</button>
+
+					<!-- <span class="info" title="$SearchEnginesManagerHelp">ⓘ</span>	 -->
+
+				</section>
+
+				<form id="editSearchEngineForm" class="editForm" action="">
+					<div style="display:flex;">
+						<div style="min-width: 80px; padding:16px 16px 0 16px">
+		
+							<div class="faviconPickerBox" name="faviconBox"></div>
+							<br><br>
+							<div style="text-align: center;">
+								<label data-i18n="Hotkey" class="formLabel" style="left:0">$</label>
+								<div name="hotkey" style="text-align:center;font-size:smaller"></div>
+								<br>
+								<label data-i18n="KeywordShort" class="formLabel" style="left:0;font-size:smaller">$</label><input name="keyword" type="text" class="inputNice" style="text-align:center;width:80px;font-size:9pt"/>
+								<br>
+								<br>
+								<br>
+								
+							</div>
+						</div>
+						<div style="flex-grow:2">
+
+							<div data-tabgroup="formtabs" class="formNavBar">
+								<button class="tablinks active" type="button" data-tabid="formTabMain" data-i18n="main">$</button>
+								<button class="tablinks" type="button" data-tabid="formTabFilter" data-i18n="filter">$</button>
+								<button class="tablinks" type="button" data-tabid="formTabScript" data-i18n="script">$</button>
+								<button type="button" name="close" style="flex-grow:0;margin-left:auto"><tool data-icon="crossmark.svg" style="height:100%"></tool></button>
+								<button type="button" class="tablinks" data-tabid="formTabIcon" style="display:none"></button>
+							</div>
+
+							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabFilter">
+								<div class="contexts">
+									<div>
+										<span data-i18n="Contexts">$</span>
+										<span title="$contextsTooltip" style="font-size:8pt"> ⓘ</span>
+									</div>
+									<label><input type="checkbox" class="inputNice" value="1"/><span data-i18n="audio">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="2"/><span data-i18n="frame">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="4"/><span data-i18n="image">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="8"/><span data-i18n="link">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="16"/><span data-i18n="page">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="32"/><span data-i18n="selection">$</span></label>
+									<label><input type="checkbox" class="inputNice" value="64"/><span data-i18n="video">$</span></label>
+								</div>
+
+								<br>
+
+								<label class="formLabel" data-i18n="MatchSearchTermsRegex" title="$MatchSearchTermsRegexTooltip">$</label><textarea name="matchRegex" type="text" class="inputNice" placeholder='e.g. /\d+/g'></textarea>
+							</div>
+							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabRegex">
+								
+							</div>
+
+							<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabScript">
+								<label data-i18n="SearchCode" title="$SearchCodeTooltip" class="formLabel">$</label><textarea name="searchCode" type="text" class="inputNice" style="height:200px"></textarea>
+							</div>
+
+						<div class="tabcontent" data-tabgroup="formtabs" data-tabid="formTabMain" style="display:block">
+							
+							<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
+							<label data-i18n="Description" class="formLabel">$</label><textarea name="description" type="text" class="inputNice"></textarea>
+							<label data-i18n="Template" title="$templateCheatSheet" class="formLabel">$</label><textarea name="template" type="text" class="inputNice"></textarea>
+							<label data-i18n="Regex" title="$RegexTooltip" class="formLabel">$</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
+							
+							<label data-i18n="FormPath" class="formLabel">$</label><input name="searchform" type="text" class="inputNice" />
+							<label data-i18n="POSTparams" class="formLabel">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
+
+							<div style="display:inline-block">
+							<label data-i18n="Method" class="formLabel">$</label><select name="_method" class="inputNice">
+									<option value="GET">GET</option>
+									<option value="POST">POST</option>
+								</select>
+							</div>
+							
+							<div style="display:inline-block">
+							<label data-i18n="Encoding" class="formLabel">$</label><select name="_encoding" class="inputNice">
+								<option value="UTF-8">utf-8</option>
+								<option value="WINDOWS-1252">windows-1252</option>
+								<option value="SHIFT_JIS">shift_jis</option>
+								<option value="ISO-2022-JP">iso-2022-jp</option>
+								<option value="EUC-JP">euc-jp</option>
+								<option value="WINDOWS-1250">windows-1250</option>
+								<option value="WINDOWS-1251">windows-1251</option>
+								<option value="WINDOWS-850">windows-850</option>
+								<option value="MACINTOSH">macintosh</option>
+								<option value="ISO-8859-5">iso-8859-5</option>
+								<option value="ISO-8859-2">iso-8859-2</option>
+								<option value="GBK">gbk</option>
+								<option value="none">no encoding</option>
+							</select>
+							</div>
+						</div>
+						<div data-tabgroup="formtabs" id="iconURI" class="tabcontent" data-tabid="formTabIcon">
+							
+							<div>
+								<label data-i18n="IconURI" class="formLabel">$</label><div style="display:flex;margin-right:16px">
+									<input name="iconURL" type="text" class="inputNice" style="flex-grow:2" />
+									<button type="button" style="width:auto;height:30px;margin-top:-8px;margin-left:4px"><tool data-icon="back.svg" style="height:16px;vertical-align: middle;"></tool></button>
+								</div>
+							</div>
+
+							<hr style="background-color: var(--border-color1)">
+
+							<div style="display:flex;justify-content: space-evenly;align-items: center;">
+								<button type="button" class="big" name="faviconFinder" title="$faviconFinder" data-i18n="web"><tool data-icon="search.svg"></tool><br><br>$</button>
+								<span style="display:flex; align-items:center">- or -</span>
+								<button type="button" class="big">
+									<label for="iconPicker" data-i18n="local" title="$uploadfromlocal" style="display:inline-block;width:100%;cursor:pointer"><tool data-icon="folder.svg"></tool><br><br>$</label>
+									<input type="file" accept="image/*" name='iconPicker' style="display:none">
+								</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="formFooter">
+					<div style="float:left">
+						<button type="button" name="copy" style="margin-left:4px" data-i18n="Copy" title="i18n_text"><tool data-icon="copy.svg" style="height:1em;vertical-align: middle"></tool></button>
+<span data-browser="firefox">					
+						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
+</span>
+						<button type="button" name="test" style="margin-left:4px" data-i18n="Test" title="i18n_text"><tool data-icon="checkmark.svg" style="height:1em;vertical-align: middle;"></tool></button>
+					</div>
+						<button type="button" name="save" style="margin-left:4px;width:auto;" data-i18n="Save" title="i18n_text">$</button><button type="button" name="saveclose" title="$saveclose" style="border-left:1px solid var(--border-color1);margin-left:0px;width:auto;cursor:default">Save & Close</button>
+					</div>
+
+					<span class="saveMessage"></span>
+
+				</form>
+				<form id="editFolderForm" class="editForm" action="">
+					<table id="folderFormTable">
+						<tr>
+							<td data-i18n="display">$</td>
+							<td>
+								<select name="displayType" class="inputNice" style="display:inline-block;font-size:9pt;">
+									<option value="" data-i18n="default">$</option>
+									<option value="grid" data-i18n="grid">$</option>
+									<option value="text" data-i18n="text">$</option>
+								</select>
+							</td>
+						</tr>
+						
+						<tr>
+							<td data-i18n="layout">$</td>
+							<td>
+								<select name="groupFolder" type="checkbox" class="inputNice" style="width:auto;font-size:9pt;">
+									<option value="" data-i18n="icon">$</option>
+									<option value="inline" data-i18n="inline">$</option>
+									<option value="block" data-i18n="block">$</option>
+								</select>
+								<!-- <span style="font-size:9pt;" data-i18n="grouplayoutmessage">$</span> -->
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="groupcolor">$</td>
+							<td>
+								<input type="hidden" class="inputNice" style="width:150px;font-size:9pt" name="groupColor" />
+								<input name="c_groupColor" type="color" class="inputNice" style="width:30px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="groupcolortext">$</td>
+							<td>
+								<input type="hidden" class="inputNice" style="width:150px;font-size:9pt" name="groupColorText" />
+								<input name="c_groupColorText" type="color" class="inputNice" style="width:30px;"/>
+							</td>
+						</tr>
+						<tr>
+							<td data-i18n="grouplimit">$</td>
+							<td><input name="groupLimit" type="number" min="0" max="99" class="inputNice" style="width:60px;font-size:9pt;"/></td>
+						</tr>
+						<tr>
+							<td data-i18n="grouphidemoretile">$</td>
+							<td><input name="groupHideMoreTile" type="checkbox" class="inputNice" style="width:auto;"/></td>
+						</tr>
+					</table>
+				</form>
+
+				<br />
+				
+				<div data-browser="firefox">
+
+					<section>
+						<p class="header1" style="margin-top:0" data-i18n="FirefoxSearch">
+							_
+						</p>
+						<div class="option">
+							<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
+							<span class="description" data-i18n="SyncWithFirefoxSearch">$</span>
+						</div>
+
+						<div data-hide-on-sync-with-firefox>
+
+							<div class="option">
+								<checkbox data-id="autoImportFirefoxEngines" data-i18n=""></checkbox>
+								<span class="description" data-i18n="autoImportFirefoxEnginesTooltip">Always check for Firefox engines</span>
+							</div>
+							
+							<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportHeader">
+								<img src="/icons/import.svg" style="height:10px" />
+								_
+								<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
+							</label>
+							<!-- <span style="font-size:8pt" data-i18n="ImportDescription">_</span> -->
+							→
+							<div class="option" style="display: inline-block;margin-left:10px">
+								<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
+								<span class="description" data-i18n="ClearSearchList">$</span>
+							</div>
+							
+							<div id="status_div" style="display:none;">
+								<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
+									<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+								</div>
+								<div id="status" style='display:inline-block'>&nbsp;</div>
+							</div>
+						</div>
+					</section>
+					
+					<!-- <section>
+					<p class="header1" style="margin-top:0" data-i18n="">
+						Replace Firefox Search Engines
+					</p>
+					Export your ContextSearch engines to a search.json.mozlz4 file. 
+					<ol>
+						<li>Browse to your profile folder and select your search.json.mozlz4 file</li>
+						<li>You will be prompted with two files: a new search.json.mozlz4 file and a timestamped backup of your original file. Save both files to your profile directory. You will need to restart Firefox to see the changes.
+					</ol>
+					
+					<label for="replaceMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
+						<img src="/icons/import.svg" style="margin-right:10px" />
+						Select file...
+						<input name="replaceMozlz4FileButton" id="replaceMozlz4FileButton" type="file" accept=".json.mozlz4" />
+					</label>
+					</section> -->
+				</div>
+			</div>
+		</div>
+			<div class="tabcontent" data-tabgroup="main_nav" id="helpTab"></div>
+		</div>
+		</div>
+		<div id="importModal" class="modal hide">
+			<div style="font-size:14pt;margin-bottom:20px">Import</div>
+			<button class="replace">Restore</button><br>
+			<button class="merge">Merge</button><br>
+			<button class="cancel">Cancel</button><br>
+		</div>
+		<div id="importModalCustom" class="modal hide">
+			<div style="font-size:14pt">Import</div>
+			<div style="text-align: initial;">
+				<input type="checkbox" name="settings" class="nosave" checked /> Settings <br>
+				<input type="checkbox" name="history" class="nosave" checked /> History <br>
+				<div name="nodes_left"></div>
+				<div style="display:inline-block"> &rarr; </div>
+				<div name="nodes_right"></div>
+			</div>
+			<button class="ok">OK</button>
+			<button class="cancel">Cancel</button>
+		</div>
+
+		<div id="importModalDuplicates" class="modal hide">
+			<div style="font-size:14pt;margin-bottom:20px">Duplicate Found</div>
+			<div name="message"></div><br>
+			<button name="replace">Replace</button>
+			<button name="merge">Keep Both</button>
+			<button name="skip">Skip</button>
+			<button name="cancel">Cancel</button>
+			<!-- <input type="checkbox" name="doall" class="nosave" />Do For All <br> -->
+		</div>
+		<label for="nightMode">
+			<img id="b_nightMode" src="icons/brightness.svg" title="$toggletheme">
+		</label>
+		
+		<div id="saveNoticeDiv"></div>
+		<div id="info_msg"></div>
+
+		<script src="lib/browser-polyfill.min.js"></script>
+		<script src="utils.js"></script>
+		<script src="mozlz4.js"></script>
+		<script src="searchEngineUtils.js"></script>
+		<script src="keyTable.js"></script>
+		<script src="Shortcuts.js"></script>
+		<script src="opensearch.js"></script>
+		<script src="bookmarks.js"></script>
+		<script src="defaultEngines.js"></script>
+		<script src="defaultUserOptions.js"></script>
+		<script src="themes.js"></script>
+		<script src="iconUtils.js"></script>
+		<script src="contexts.js"></script>
+		<script src="nodes.js"></script>
+		<script src="searchActions.js"></script>
+		<script src="options.advanced.js"></script>
+		<script src="options.js"></script>
+		<script src="searchEngineManager.js"></script>
+		<script src="tools.js"></script>
+		<script src="palettes.js"></script>
+		<script src="grid.js"></script>
+		<script src="options.pagetiles.js"></script>
+		<script src="dragshake.js"></script>
+	</body>
+</html>

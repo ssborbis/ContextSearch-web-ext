@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body style='padding:0;margin:0'>	
+	
+	<div style='font-weight:normal'>
+	
+		<div class="blobContainerHeader"><img alt="" src="/icons/help.svg" />Help</div>
+		
+		<div class="header1" >Adding Search Engines</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/add_search.gif"></div>
+		<div class="description">
+			Right-click the search bar on any webpage and select <code>Add Custom Search</code>. New engines can also be added by hand in the Search Engines manager
+		</div>
+		<br /><br />
+		
+		<div class="header1" id='help_contextmenu'>Context Menu</div>
+		
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/cm.gif"></div>
+		<div class="description">
+			<div class="header1 help">Opening</div>
+			Highlight a word and right-click to open the context menu. Expand the ContextSearch menu labeled <code>	Search for "..."</code> and choose which search engine to perform the search with.
+		</div>
+		<br /><br />
+		<div class="header1" id='help_quickmenu'>Quick Menu</div>
+
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/qm.gif"></div>
+		<div class="description">
+			<div class="header1 help">Opening</div>
+			Highlight a word and hold down the right mouse button until the Quick Menu appears. You can choose from several options for how the quick menu opens
+		</div>
+		<br /><br />
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/resize.gif"></div>
+		<div class="description">
+			<div class="header1 help">Resizing and Reordering</div>
+			The Quick Menu can be resized by changing the <code>Columns</code> and <code>Rows</code> setting or by dragging the resize icon in the lower-right corner of the menu.
+		
+			You can rearrange search engines using drag &amp; drop
+		</div>
+		
+		<br /><br />
+		
+		<div class="header1" id='help_quickmenu'>Toolbar</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/toolbar.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Opening</div>
+			Access engines any time using the Toolbar button
+		</div>
+		<br /><br />
+		
+		<div class="header1" id='help_quickmenu'>Search Engines Manager</div>
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/add_folder.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Adding Folders</div>
+			Search engines can be organized in folders and subfolders. 
+			<br />
+			<br />1. Use the right-click menu and choose <code>New Folder</code>
+			<br />2. Give the folder a unique name
+			<br />3. Drag &amp; drop search engines into the folder
+		</div>
+		<br /><br />
+		
+		<div data-gif="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/edit_icon.gif"></div>
+		<div class="description">
+			<div class="header1 help" >Editing Icons</div>
+			You can use custom icons for search engines
+			<br />
+			<br />1. Double-click a search engine or right-click and choose <code>Edit</code> 
+			<br />2. Edit the <code>Icon URI</code> field with the url of the new icon and click <code>Save</code>
+		</div>
+		<br /><br />
+
+		<div class="header1" id='help_importing'>Importing Firefox Search Engines</div>
+		<div class="description">
+		As of Firefox 63, One-Click Search Engines are imported into ContextSearch automatically. However they cannot be modified unless they are imported through the file browser.
+		<br /><br />
+		If you would like modify One-Click Search Engines, you can import them by clicking the button under 'Import One-Click Search Engines' in the Search Engines tab. Browse to your profile folder and select the <code>search.json.mozlz4</code> file.
+		
+		You can find your profile path by opening <code style='-moz-user-select:text'>about:profiles</code> in the address bar. Typical locations:
+
+		<div style='margin-left:0px'>
+			<p><b>&nbsp;&nbsp;Windows</b></p><p class='code'>%APPDATA%/Mozilla/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+			<p><b>&nbsp;&nbsp;Mac OS X</b></p>
+			<p class='code'>Users/<i>&lt;username&gt;</i>/Library/Application Support/Firefox/Profiles/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+			<p><b>&nbsp;&nbsp;Linux</b></p>
+			<p class='code'>/home/<i>&lt;username&gt;</i>/.mozilla/firefox/<i>&lt;profile&gt;</i>/search.json.mozlz4</p>
+		</div>	
+		</div>
+</body>
+</html>

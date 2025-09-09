@@ -1,0 +1,1763 @@
+{
+  "LOCALE_FOLDER": {
+    "message": "ru"
+  },
+  "extensionDescription": {
+    "message": "Добавляйте поисковые системы и ищите из контекстного меню или всплывающего меню"
+  },
+  "Settings": {
+    "message": "Настройки"
+  },
+  "Support": {
+    "message": "Поддержка"
+  },
+   "Source": {
+    "message": "Исходники"
+  },
+   "Menus": {
+    "message": "Меню"
+  },
+   "SearchEngines": {
+    "message": "Поисковые системы"
+  },
+   "Help": {
+    "message": "Справка"
+  },
+   "ContextMenu": {
+    "message": "Контекстное меню"
+  },
+   "AddCustomSearchMenu": {
+    "message": "Показать \"Добавить в ContextSearch\""
+  },
+  "AddCustomSearchMenuTooltip": {
+    "message": "Включить элемент \"Добавить свой поиск\" в полях ввода. Отключите если появится глюк нескольких уровней."
+  },
+   "QuickMenu": {
+    "message": "Быстрое меню"
+  },
+   "QuickMenuNote": {
+    "message": "Отключено на addons.mozilla.org"
+  },
+   "SearchActionsHeader": {
+    "message": "Действия поиска"
+  },
+   "SearchActionsCurrentTab": {
+    "message": "Открыть в текущей вкладке"
+  },
+   "SearchActionsNewTab": {
+    "message": "Открыть в новой вкладке"
+  },
+   "SearchActionsBackgroundTab": {
+    "message": "Открыть в фоновой вкладке"
+  },
+   "SearchActionsBackgroundTabKeepOpen": {
+    "message": "Открыть в фоновой вкладке (не закрывать меню)"
+  },
+   "SearchActionsNewWindow": {
+    "message": "Открыть в новом окне"
+  },
+   "SearchActionsIncognitoWindow": {
+    "message": "Открыть в приватном окне"
+  },
+   "SearchActionsNoAction": {
+    "message": "Нет действия"
+  },
+   "LeftButton": {
+    "message": "ЛКМ"
+  },
+   "MiddleButton": {
+    "message": "СКМ"
+  },
+   "RightButton": {
+    "message": "ПКМ"
+  },
+   "LookLayoutHeader": {
+    "message": "Внешний вид и макет"
+  },
+   "Columns": {
+    "message": "Столбцы"
+  },
+  "ColumnsTooltip": {
+    "message": "Максимум значков поисковых систем в строке (сетка)"
+  },
+  "ColumnsMinimumTooltip": {
+    "message": "Минимум значков поисковых систем в строке (сетка)"
+  },
+  "Items": {
+    "message": "Элементы"
+  },
+  "MenuSize": {
+    "message": "Размер меню"
+  },
+   "MenuSizeTooltip": {
+    "message": "Масштаб всплывающего меню. Значения > 100%, увеличивают все меню (полезно для HD)."
+  },
+  "IconSize": {
+    "message": "Размер значков"
+  },
+  "IconSizeTooltip": {
+    "message": "Масштаб значков поисковых систем. При 200% значки заполняют свой контейнер"
+  },
+  "OpeningClosingHeader": {
+    "message": "Открытие и закрытие"
+  },
+  "OpeningClosingDescription": {
+    "message": "Выбор способа открытия быстрого меню"
+  },
+   "Auto": {
+    "message": "Авто"
+  },
+  "AutoTooltip": {
+    "message": "При выборе текста"
+  },
+   "EnableOnTextBoxes": {
+    "message": "Включить на Text Boxes"
+  },
+  "EnableOnTextBoxesTooltip": {
+    "message": "Включить на полях textarea и input"
+  },
+   "Mouse": {
+    "message": "Мышь"
+  },
+     "MouseTooltip": {
+    "message": "Искать выбранный текст кнопкой мыши"
+  },
+  "MouseDescription": {
+    "message": "Искать выбранным способом при нажатии кнопки"
+  },
+   "Hold": {
+    "message": "Удерживание"
+  },
+    "HoldTooltip": {
+    "message": "Меню откроется после удерживания ~0.25 секунды"
+  },
+   "SearchOnMouseup": {
+    "message": "Поиск при помощи мыши"
+  },
+   "SearchOnMouseupTooltip": {
+    "message": "Выполнять поиск из быстрого меню наведением, т.е. удерживайте для открытия меню, наведите на значок, отпустите для поиска"
+  },
+   "Click": {
+    "message": "Щелчок"
+  },
+  "ClickTooltip": {
+    "message": "Всплывающее меню открывается при щелчке ПКМ. Удерживание ПКМ открывает контекстное меню по умолчанию"
+  },
+   "Keyboard": {
+    "message": "Клавиатура"
+  },
+  "KeyboardTooltip": {
+    "message": "Ищите выбранный текст с помощью клавиатуры"
+  },
+   "ChooseKey": {
+    "message": "Выбранное сочетание"
+  },
+  "ChooseKeyTooltip": {
+    "message": "Выберите текст и нажмите сочетание, чтобы открыть всплывающее меню. Щелкните смежную кнопку и нажмите ваше сочетание"
+  },
+   "CloseAfterSearch": {
+    "message": "Закрыть после поиска"
+  },
+  "CloseAfterSearchTooltip": {
+    "message": "Закрыть меню после выполнения поиска. Отключите, если выполняете поиск с помощью нескольких систем или желаете закрывать меню вручную. Можно заменить на 'Не закрывать меню' в действиях поиска"
+  },
+   "CloseOnScroll": {
+    "message": "Закрыть при прокрутке"
+  },
+   "CloseOnScrollTooltip": {
+    "message": "Закрыть меню при прокрутке клавишами или мышью"
+  },
+  "MouseHelp": {
+    "message": "В Linux и MacOS X, где контекстное меню по умолчанию открывается по нажать/отпустить (mousedown vs mouseup), можно установить 'ui.context_menus.after_mouseup = true' в about:config (Firefox), чтобы действия мыши работали правильно и меню не двоились. Другие могут измененить способ открытия контекстного меню по умолчанию, с atl, ctrl или shift, или двойным щелчком ПКМ. Варианты работают по разному на разных платформах."
+  },
+  "Position": {
+    "message": "Позиция"
+  },
+  "PositionDescription": {
+    "message": "Выберите место появления меню"
+  },
+   "HorizontalOffset": {
+    "message": "Горизонтальное смещение"
+  },
+  "HorizontalOffsetTooltip": {
+    "message": "Количество пикселей для смещения всплывающего меню по горизонтали. Числа больше нуля перемещают меню вправо, меньше нуля - влево"
+  },
+  "VerticalOffset": {
+    "message": "Вертикальное смещение"
+  },
+  "VerticalOffsetTooltip": {
+    "message": "Количество пикселей для смещения всплывающего меню по вертикали. Числа больше нуля перемещают меню вниз, меньше нуля - вверх"
+  },
+  "Tools": {
+    "message": "Инструменты"
+  },
+  "ToolsPositionTooltip": {
+    "message": "Выберите позицию инструментов в быстром меню"
+  },
+  "ToolsHelp": {
+    "message": "Нажмите, чтобы отключить | Перетащите, чтобы изменить порядок"
+  },
+  "tools_Close": {
+    "message": "Закрыть меню"
+  },
+  "tools_Disable": {
+    "message": "Отключить меню"
+  },
+  "tools_Copy": {
+    "message": "Копировать в буфер"
+  },
+  "tools_OpenAsLink": {
+    "message": "Открыть как ссылку"
+  },
+  "tools_Lock": {
+    "message": "Закрепить открытое меню"
+  },
+  "ImportExportSettings": {
+    "message": "Импорт / экспорт настроек"
+  },
+   "Import": {
+    "message": "Импорт"
+  },
+   "Export": {
+    "message": "Экспорт"
+  },
+  "Add": {
+    "message": "Добавить"
+  },
+  "RemoveAll": {
+    "message": "Удалить все"
+  },
+  "ShowHide": {
+    "message": "Показать / скрыть"
+  },
+  "Bookmark": {
+    "message": "Закладка"
+  },
+  "Delete": {
+    "message": "Удалить"
+  },
+  "SearchEnginesManagerHelp": {
+    "message": "Перетащите для изменения порядка, меню ПКМ для др. действий"
+  },
+  "ImportHeader": {
+    "message": "Импорт поисковых систем браузера"
+  },
+  "ImportDescription": {
+    "message": "Перейти в папку профиля и выбрать файл search.json.mozlz4"
+  },
+  "ImportSelectFile": {
+    "message": "Выбрать файл ..."
+  },
+  "AutoImportHeader": {
+    "message": "Автоматический импорт"
+  },
+  "EnableAutoImport": {
+    "message": "Включить автоматический импорт (требуется приложение)"
+  },
+  "EnableAutoImportTooltip": {
+    "message": "Автоматический импорт новых OpenSearch поисковых систем. Полезен только при импорте поисковых систем OpenSearch, установленных через Firefox's One-Click Search Engine API. Требуется отдельное приложение. Более подробную информацию см. в справке"
+  },
+  "ProfilePath": {
+    "message": "Путь профиля"
+  },
+  "Verify": {
+    "message": "Проверить и импортировать"
+  },
+  "Find": {
+    "message": "Найти"
+  },
+  "Create": {
+    "message": "Создать"
+  },
+  "Simple": {
+    "message": "Простой"
+  },
+  "Advanced": {
+    "message": "Дополнительно"
+  },
+  "Yes": {
+    "message": "Да"
+  },
+  "No": {
+    "message": "Нет"
+  },
+  "Cancel": {
+    "message": "Отмена"
+  },
+  "Save": {
+    "message": "Сохранить"
+  },
+  "Name": {
+    "message": "Имя"
+  },
+  "NameTooltip": {
+    "message": "Уникальное имя этой поисковой системы"
+  },
+  "Description": {
+    "message": "Описание"
+  },
+  "DescriptionTooltip": {
+    "message": "Краткое описание поисковой системы, максимум 1024 символа"
+  },
+  "Template": {
+    "message": "Шаблон"
+  },
+  "TemplateTooltip": {
+    "message": "URL-адрес формы ввода. Если это механизм GET, нужен {searchTerms} (например, http://example.com/?q={searchTerms})"
+  },
+  "FormPath": {
+    "message": "Путь формы"
+  },
+  "FormPathTooltip": {
+    "message": "Обычно это домашняя страница сайта или URL-адрес формы ввода"
+  },
+  "POSTparams": {
+    "message": "POST-параметры"
+  },
+  "POSTparamsTooltip": {
+    "message": "Список параметров и значений POST, разделенных амперсандами (например. q={searchTerms}&lang=en&maxresults=100) Применяется только при использовании метода POST"
+  },
+  "IconURI": {
+    "message": "URL значка"
+  },
+  "IconTooltip": {
+    "message": "URL используемого значка. Изображения должны быть менее 64x64 пикселей и иметь размер менее 10 кб"
+  },
+  "Method": {
+    "message": "Метод"
+  },
+  "MethodTooltip": {
+    "message": "Метод формы"
+  },
+  "Encoding": {
+    "message": "Кодировка"
+  },
+  "EncodingTooltip": {
+    "message": "Кодировка символов, требуемая формой поиска. Как правило это UTF-8"
+  },
+  "Test": {
+    "message": "Тест"
+  },
+  "NewEngineAdded": {
+    "message": "Новая поисковая система добавлена в ContextSearch"
+  },
+  "NewEngineAddedTooltip": {
+    "message": "Добавить в поисковые системы Firefox с помощью API OpenSearch"
+  },
+  "AlsoAdd": {
+    "message": "Также добавить в поисковые системы браузера?"
+  },
+  "CannotCreate": {
+    "message": "Невозможно создать поисковую систему на основе этих данных"
+  },
+  "OpenAdvanced": {
+    "message": "Открыть дополнительные параметры?"
+  },
+  "DidEngineInstall": {
+    "message": "Правильно ли была установлена поисковая система?"
+  },
+  "RemovingEngine": {
+    "message": "Удаление поисковой системы"
+  },
+  "CreateCustomSearch": {
+    "message": "Создать свой поиск"
+  },
+  "MustImport": {
+    "message": "Если система OpenSearch была установлена, вы можете импортировать ее движки в ContextSearch."
+  },
+  "MoreInfo": {
+    "message": "Больше информации"
+  },
+  "NewEngineImported": {
+    "message": "В ContextSearch добавлено $1 поисковых систем"
+  },
+  "InstallOfficialTooltip": {
+    "message": "Установить официальную поисковую систему OpenSearch для текущего сайта"
+  },
+  "FindMycroftTooltip": {
+    "message": "Найти поисковые системы OpenSearch в MycroftProject"
+  },
+  "CreateCustomTooltip": {
+    "message": "Создать свою поисковую систему OpenSearch"
+  },
+  "LoadingRemoteContent": {
+    "message": "Загрузка удаленного контента"
+  },
+  "LoadingRemoteContentFail": {
+    "message": "Не удалось загрузить %1 значков. Это может произойти, при включенной защите от отслеживания"
+  },
+  "LoadingRemoteContentTimeout": {
+    "message": "Получение удаленных значков завершено по таймеру. Некоторые значки не были загружены."
+  },
+  "RemoveAllEnginesPrompt": {
+    "message": "Удалить все поисковые системы?"
+  },
+  "EnterUniqueName": {
+    "message": "Введите уникальное имя для этой поисковой системы"
+  },
+  "EngineExists": {
+    "message": "%1 уже существует."
+  },
+  "TemplateMissingeMessage": {
+    "message": "Не удается найти шаблон для этой формы поиска. Вы можете попробовать выполнить поиск и скопировать полученный URL сюда, заменив поисковый запрос на {searchTerms}"
+  },
+  "TemplateIncludeError": {
+    "message": "Шаблон должен включать {searchTerms}"
+  },
+  "TemplateURLError": {
+    "message": "Шаблон должен быть URL"
+  },
+  "DescriptionEmptyError": {
+    "message": "Описание должно быть"
+  },
+  "DescriptionSizeError": {
+    "message": "Описание должно состоять из 1024 или менее символов"
+  },
+  "FormPathURLError": {
+    "message": "Путь к форме должен быть URL"
+  },
+  "POSTIncludeError": {
+    "message": "POST-параметры должны включать {searchTerms}"
+  },
+  "IconURLError": {
+    "message": "Значок должен быть URL"
+  },
+  "IconLoadError": {
+    "message": "Не удалось загрузить значок"
+  },
+  "EnterSearchTerms": {
+    "message": "Введите поисковый запрос"
+  },
+  "BookmarksPermissionMessage": {
+    "message": "После закрытия этого сообщения вы получите запрос на новое разрешение для \"Закладок\".\n\nЭто добавит новую папку \"Меню ContextSearch\", содержащую ваши текущие поисковые системы, в закладках в разделе \"Другие закладки\". Там вы можете добавлять разделители и группировать закладки по вложенным папкам.\n\nНе переименовывайте закладки поисковых систем, так как они перестанут работать. Удаленные закладки можно снова добавить в ContextSearch Настройки -> Поисковые системы. Щелкая значки закладок в списке поисковых систем, можно добавлять или удалять закладки."
+  },
+  "NativeAppImportError": {
+    "message": "Не удалось загрузить файл (%1). Приложение установлено?"
+  },
+  "ImportSettingsNotFoundAlert": {
+    "message": "Настройки ContextSearch не найдены!"
+  },
+  "InvalidJSONAlert": {
+    "message": "Файл не является корректным JSON"
+  },
+  "ImportSuccessful": {
+    "message": "Импорт выполнен успешно"
+  },
+  "WhereAreMyEngines": {
+    "message": "Где находятся мои поисковые системы?"
+  },
+  "ErrorParsing": {
+    "message": "Ошибка синтаксического анализа %1\nЕсли вы продолжаете получать эту ошибку, скорее всего, виноваты ваши настройки политики безопасности контента."
+  },
+  "AddCustomSearch": {
+    "message": "Добавить в ContextSearch"
+  },
+  "SearchFor": {
+    "message": "Искать \"%1\""
+  },
+  "SearchForContext": {
+    "message": "Искать $1"
+  },
+  "SearchForWithVariable": {
+    "message": "Искать \"%s\""
+  },
+  "SearchWith": {
+    "message": "Искать в"
+  },
+  "AddSearchEngines": {
+    "message": "+ Добавить поисковые системы"
+  },
+  "ContextSearchMenu": {
+    "message": "Меню ContextSearch"
+  },
+  "PositionRelativeToCursor": {
+    "message": "%1 %2 от курсора"
+  },
+  "top": {
+    "message": "сверху"
+  },
+  "bottom": {
+    "message": "снизу"
+  },
+  "left": {
+    "message": "слева"
+  },
+  "center": {
+    "message": "по центру"
+  },
+  "right": {
+    "message": "справа"
+  },
+  "NameExists": {
+    "message": "Имя уже существует"
+  },
+  "NameInvalid": {
+    "message": "Неверное имя"
+  },
+  "ImportedEngines": {
+    "message": "Импортировано %1 поисковых систем (%2 новых)"
+  },
+  "ClickToEdit": {
+    "message": "Нажмите для редактирования"
+  },
+  "BackspaceKey": {
+    "message": "Backspace"
+  },
+  "EnterKey": {
+    "message": "Enter"
+  },
+  "ShiftKey": {
+    "message": "Shift"
+  },
+  "PauseBreakKey": {
+    "message": "Pause/Break"
+  },
+  "CapsLockKey": {
+    "message": "Caps Lock"
+  },
+  "EscKey": {
+    "message": "Esc"
+  },
+  "SpaceKey": {
+    "message": "space"
+  },
+  "PgUpKey": {
+    "message": "PgUp"
+  },
+  "PgDnKey": {
+    "message": "PgDn"
+  },
+  "EndKey": {
+    "message": "End"
+  },
+  "HomeKey": {
+    "message": "Home"
+  },
+  "LeftArrowKey": {
+    "message": "←"
+  },
+  "UpArrowKey": {
+    "message": "↑"
+  },
+  "RightArrowKey": {
+    "message": "→"
+  },
+  "DownArrowKey": {
+    "message": "↓"
+  },
+  "InsertKey": {
+    "message": "Insert"
+  },
+  "DelKey": {
+    "message": "Del"
+  },
+  "LeftWindowKey": {
+    "message": "Левый window"
+  },
+  "RightWindowKey": {
+    "message": "Правый window"
+  },
+  "SelectKey": {
+    "message": "Select Key"
+  },
+  "NumLockKey": {
+    "message": "Num Lock"
+  },
+  "ScrollLockKey": {
+    "message": "Scroll Lock"
+  },
+  "Validating": {
+    "message": "Проверка ..."
+  },
+  "SearchBar": {
+    "message": "Поле поиска"
+  },
+  "SearchBarTooltip": {
+    "message": "Выберите позицию поля поиска в быстром меню"
+  },
+  "hidden": {
+    "message": "скрыта"
+  },
+  "KeepMenuOpen": {
+    "message": "Не закрывать меню"
+  },
+  "Search": {
+    "message": "Искать ..."
+  },
+  "Copy": {
+    "message": "Дублировать"
+  },
+  "Hotkey": {
+    "message": "Сочетание клавиш"
+  },
+  "HotkeyTooltip": {
+    "message": "Открывать быстрое меню сочетанием клавиш"
+  },
+  "Focus": {
+    "message": "Фокус при открытии"
+  },
+  "FocusTooltip": {
+    "message": "Установить фокус на поле поиска, при открытии быстрого меню"
+  },
+  "SelectText": {
+    "message": "Выбрать текст при фокусе"
+  },
+  "SelectTextTooltip": {
+    "message": "Выбирать текст в поле поиска, когда оно получает фокус"
+  },
+  "NameChangeWarning": {
+    "message": "Переименование поисковых систем может привести к дублированию записей при импорте поисковых систем из Firefox. Это можно исправить, удалив поисковые системы со старым названием из Firefox: Настройки -> Поиск -> Значки поисковых систем, или просто скрыть нежелательный значок. Вы уверены, что хотите переименовать?"
+  },
+  "PressKey": {
+    "message": "Нажмите сочетание клавиш"
+  },
+  "History": {
+    "message": "История"
+  },
+  "ClearSearchHistory": {
+    "message": "Очистить историю поиска"
+  },
+  "ClearSearchHistoryTooltip": {
+    "message": "Очистить историю поиска в панели поиска"
+  },
+  "ShowSuggestions": {
+    "message": "Показать предложения поиска"
+  },
+  "ShowSuggestionsTooltip": {
+    "message": "Получение поисковых предложений от Google и отображение их вместе с историей поиска в панели поиска"
+  },
+  "SearchBarUseOldStyle": {
+    "message": "Один столбец значков с заголовками"
+  },
+  "SearchBarUseOldStyleTooltip": {
+    "message": "Один столбец значков с заголовками (аля Fx <52). Переопределяет настройки столбцов"
+  },
+  "ToolbarSearch": {
+    "message": "Поле поиска"
+  },
+  "SearchBarCloseAterSearchTooltip": {
+    "message": "Закрыть меню после поиска"
+  },
+  "PerformASearchHeader": {
+    "message": "Шаблон отсутствует"
+  },
+  "PerformASearch": {
+    "message": "Нажмите OK и выполните новый поиск с использованием формы, которую вы пытаетесь добавить"
+  },
+  "PerformASearchTooltip": {
+    "message": "Форма не содержит информации, необходимой для создания поисковой системы. Выполните простой поиск, чтобы ContextSearch нашел правильный шаблон поиска. Лучше всего использовать слова, которые обычно не появляются в поисковой выдаче. Не используйте \"поиск\", \"http\" и другие распространенные слова, url или название сайта"
+  },
+  "OK": {
+    "message": "OK"
+  },
+  "Back": {
+    "message": "Назад"
+  },
+  "Folder": {
+    "message": "Папка"
+  },
+  "Folders": {
+    "message": "Папки"
+  },
+  "SearchActionsOpenFolder": {
+    "message": "Обзор ..."
+  },
+  "DisabledByHotkeys": {
+    "message": "Отключено при включенных сочетаниях клавиш"
+  },
+  "AddOpenSearchEngine": {
+    "message": "Добавить в поисковые системы Firefox"
+  },
+  "Regex": {
+    "message": "Термины Regex"
+  },
+  "MatchSearchTermsRegex": {
+    "message": "Соответствие терминов Regex"
+  },
+  "ShortcutKey": {
+    "message": "Сочетание клавиш"
+  },
+  "ShortcutKey_tooltip": {
+    "message": "Сочетание клавиш для раскрытия меню \"Искать в ...\" в контекстном меню"
+  },
+  "Edit": {
+    "message": "Изменить"
+  },
+  "Hide": {
+    "message": "Скрыть"
+  },
+  "Show": {
+    "message": "Показать"
+  },
+  "NewFolder": {
+    "message": "Новая папка"
+  },
+  "NewEngine": {
+    "message": "Новая поисковая система"
+  },
+  "NewSeparator": {
+    "message": "Новый разделитель"
+  },
+  "AddBookmarklet": {
+    "message": "Добавить букмарклет"
+  },
+  "RemoveNode": {
+    "message": "Удалить узел"
+  },
+  "DeleteEngines": {
+    "message": "Удалить $1 поисковых систем"
+  },
+  "Confirm": {
+    "message": "Подтверждаю"
+  },
+  "AsShortcut": {
+    "message": "Как ярлык"
+  },
+  "AsNewEngine": {
+    "message": "Как новую поисковую систему"
+  },
+  "Rows": {
+    "message": "Строки"
+  },
+  "RowsTooltip": {
+    "message": "Максимум строк при открытии (вид сетки)"
+  },
+  "RowsSingleColumnTooltip": {
+    "message": "Максимум строк при открытии (вид списка)"
+  },
+  "ContextMenuHotKey": {
+    "message": "Сочетание клавиш"
+  },
+  "ContextMenuHotKeyTooltip": {
+    "message": "Клавиша доступа к подменю ContextSearch"
+  },
+  "EnableHistory": {
+    "message": "Помнить историю поиска"
+  },
+  "EnableHistoryTooltip": {
+    "message": "Запоминать поисковые запросы и показывать их в предложениях поиска"
+  },
+  "SideBar": {
+    "message": "Боковая панель"
+  },
+  "SideBarTooltip": {
+    "message": "Боковая панель - это расширение панели инструментов, отображаемое внутри окна браузера, с дополнительными функциями. И меню, и открывающийся виджет понимают перетаскивание текста (кроме Chrome). Большинство настроек берется из настроек панели поиска"
+  },
+  "SideBarPositionTooltip": {
+    "message": "Выберите, где будет открываться боковая панель"
+  },
+  "SideBarWidgetEnable": {
+    "message": "Показать виджет"
+  },
+  "SideBarWidgetEnableTooltip": {
+    "message": "Оверлей - плавающая боковая панель"
+  },
+  "SideBarHotkeyTooltip": {
+    "message": "Открывать боковую панель сочетанием клавиш"
+  },
+  "InitialOpacity": {
+    "message": "Начальная непрозрачность"
+  },
+  "InitialOpacityTooltip": {
+    "message": "Быстрое меню открывается более прозрачным и становится непрозрачным при наведении курсора мыши"
+  },
+  "AutoMaxChars": {
+    "message": "Ограничение символов"
+  },
+  "AutoMaxCharsTooltip": {
+    "message": "Не открывать быстрое меню, если длина выбранного текста превышает X символов. 0 = без ограничений"
+  },
+  "EnableAnimations": {
+    "message": "Анимация"
+  },
+  "EnableAnimationsTooltip": {
+    "message": "Включить анимацию изменения размера, скольжения, непрозрачности для всех меню. Отключите, чтобы получить более быстрый боступ или если не нравится"
+  },
+    "EnableAnimationsTileSlider": {
+    "message": "Анимация появления"
+  },
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Анимация всплытия / скольжения меню"
+  },
+  "Theme": {
+    "message": "Тема"
+  },
+  "ThemeTooltip": {
+    "message": "Тема для быстрого меню, меню панели поиска и меню боковой панели"
+  },
+  "UserStyles": {
+    "message": "User Styles (css)"
+  },
+  "SideBarStartOpen": {
+    "message": "Открыть при загрузке"
+  },
+  "SideBarStartOpenTooltip": {
+    "message": "Автооткрытие боковой панели при загрузке страницы"
+  },
+  "More": {
+    "message": "Больше"
+  },
+  "less": {
+    "message": "Меньше"
+  },
+  "OCSEDeleteWarning": {
+    "message": "Поисковые системы браузера не могут быть удалены. Но могут быть скрыты"
+  },
+  "Highlight": {
+    "message": "Поиск по странице"
+  },
+  "Appearance": {
+    "message": "Внешний вид"
+  },
+  "General": {
+    "message": "Основное"
+  },
+  "Links": {
+    "message": "Ссылки"
+  },
+  "LinksTooltip": {
+    "message": "Ссылки можно искать по заголовкам или по url-адресу. Удерживайте CTRL что бы искать не по умолчанию"
+  },
+  "Text": {
+    "message": "Список"
+  },
+  "List": {
+    "message": "Список"
+  },
+  "Url": {
+    "message": "URL"
+  },
+  "ContextMenuTooltip": {
+    "message": "Включить поиск из контекстного меню"
+  },
+  "QuickMenuTooltip": {
+    "message": "Включить поиск из всплывающего меню"
+  },
+  "Opening": {
+    "message": "Открытие"
+  },
+  "Closing": {
+    "message": "Закрытие"
+  },
+  "Location": {
+    "message": "Расположение"
+  },
+  "Window": {
+    "message": "Панель"
+  },
+  "SidebarTypeTooltip": {
+    "message": "Выберите способ отображения боковой панели. Оверлей создает плавающее окно поверх содержимого страницы. Панель создает боковую панель высотой с окно и выравнивает документ, чтобы не закрывать содержимое страницы"
+  },
+  "HighlightTooltip": {
+    "message": "Подсвечивать вхожения поисковых запросов"
+  },
+  "HighlightSeparateWordsTooltip": {
+    "message": "Подсвечивать раздельно каждое слово поиска, при поиске по нескольким словам. Отключите, чтобы фраза рассматривалась как один поисковый запрос"
+  },
+  "HighlightNavTooltip": {
+    "message": "Показывать панель навигации при подсветке (на скролбаре)"
+  },
+  "Style": {
+    "message": "Стиль"
+  },
+  "TextColor": {
+    "message": "Цвет текста"
+  },
+  "BackgroundColor": {
+    "message": "Цвет фона"
+  },
+  "Animations": {
+    "message": "Анимация"
+  },
+  "AnimationsTooltip": {
+    "message": ""
+  },
+  "MenuTheme": {
+    "message": "Тема меню"
+  },
+  "UserStylesTooltip": {
+    "message": "Применить свои CSS-стили к меню"
+  },
+  "Toolbar": {
+    "message": "Кнопка на панели Fx"
+  },
+  "Shortcut": {
+    "message": "Ярлык"
+  },
+  "Suggestions": {
+    "message": "Предложения"
+  },
+  "Overlay": {
+    "message": "Оверлей"
+  },
+  "Panel": {
+    "message": "Панель"
+  },
+  "ToolbarTooltip": {
+    "message": "Открывать меню поиска кнопкой действия панели инструментов. Совместить действия поиска с быстрым меню"
+  },
+  "Size": {
+    "message": "Размер"
+  },
+  "ConfirmResetAllSearchEngines": {
+    "message": "Это удалит все поисковые системы, папки, букмарклеты, разделители и восстановит список систем по умолчанию.\r\n\r\nВы уверены?"
+  },
+  "ResetDefaults": {
+    "message": "Сброс"
+  },
+  "AddingSearchEnginesInfoMessage": {
+    "message": "Поисковые системы могут быть добавлены вручную здесь или автоматически через контекстное меню. Для получения дополнительной информации см. -"
+  },
+  "AddingSearchEnginesLinkText": {
+    "message": "Добавление поисковых систем"
+  },
+  "EnableOnLinks": {
+    "message": "Включить на ссылках"
+  },
+  "EnableOnImages": {
+    "message": "Включить на изображениях"
+  },
+  "SelectTimeout": {
+    "message": "Таймаут выбора"
+  },
+  "SelectTimeoutTooltip": {
+    "message": "Время (в мс), после последнего выбора, через которое всплывающее меню закрывается. 0 = без ограничения"
+  },
+  "highlightfollowdomaintooltip": {
+    "message": "Продолжать подсвечивать совпадения по мере прокрутки"
+  },
+  "highlightfollowexternallinkstooltip": {
+    "message": "Продолжать подсвечивать внешние ссылки по мере прокрутки"
+  },
+  "findbar": {
+    "message": "Панель поиска"
+  },
+  "findbarpositiontooltip": {
+    "message": "Выберите, где отображать панель поиска по странице"
+  },
+  "ClickToSet": {
+    "message": "Назначить"
+  },
+  "highlightshowfindbartooltip": {
+    "message": "Показывать панель поиска по странице при выборе текста"
+  },
+  "FindBarEnableHotkey": {
+    "message": "Открыть панель поиска по странице сочетанием клавиш. Все вхождения выбранного текста будут подсвечены"
+  },
+  "FindBarNavMessage": {
+    "message": "$1 из $2 совпадений"
+  },
+  "highlightflashselectedtooltip": {
+    "message": "Мигать активным совпадением"
+  },
+  "findbarstartopen": {
+    "message": "Автооткрытие панели поиска по странице при загрузке страницы"
+  },
+  "accuracy": {
+    "message": "Уточнение"
+  },
+  "partially": {
+    "message": "Частично"
+  },
+  "exactly": {
+    "message": "Точно"
+  },
+  "highlightaccuracytooltip": {
+    "message": "Слова можно искать частично, тогда поиск 'lor' будет находить и 'lorem', или точно, тогда будут найдены только полные слова 'lor', но не будет найден 'lorem', хотя он и содержит 'lor'"
+  },
+  "sidebarhidefullscreentooltip": {
+    "message": "Скрыть боковую панель в полноэкранном режиме"
+  },
+  "highlightignorepunctuationtooltip": {
+    "message": "Игнорировать пунктуацию - т.е. искать WORLDS, WORLD'S и WO'RLDS. Несколько апострофов между буквами тоже дадут совпадение (например, W'O''R'L'D'S)"
+  },
+  "highlightcasesensitivetooltip": {
+    "message": "С учетом регистра"
+  },
+  "background": {
+    "message": "Фон"
+  },
+  "underline": {
+    "message": "Подчеркивание"
+  },
+  "highlightstyletooltip": {
+    "message": "Стиль подсветки цветом фона или переднего плана, или подчеркивания. При выборе 'подчеркивание' значения цвета будут игнорироваться"
+  },
+  "casesensitive": {
+    "message": "С учетом регистра"
+  },
+  "ignorepunctuation": {
+    "message": "Игнорировать пунктуацию"
+  },
+  "separateWordSearch": {
+    "message": "Поиск отдельных слов"
+  },
+  "highlightopacitytooltip": {
+    "message": "Непрозрачность фона"
+  },
+  "docked": {
+    "message": "Состыкована"
+  },
+  "undocked": {
+    "message": "Отстыкована"
+  },
+  "findbarwindowtypetooltip": {
+    "message": "Выберите способ отображения панели поиска по странице. Стиль панели поиска можно переключать двойным щелчком по значку стыковки / перемещения или перетаскиванием"
+  },
+  "findbarkeyboardtimeout": {
+    "message": "Выполнять поиск после остановки ввода на X мс. Слишком низкие значения могут вызвать проблемы с производительностью. 0 = отключено"
+  },
+  "close": {
+    "message": "Закрыть"
+  },
+  "movedockundock": {
+    "message": "Стыковка / перемещение"
+  },
+  "navbar": {
+    "message": "Панель навигации"
+  },
+  "browseForImage": {
+    "message": "Обзор !!! "
+  },
+  "enabledisplayprevioussearchtooltip": {
+    "message": "Отображать последние поисковые запросы в строке поиска"
+  },
+  "resize": {
+    "message": "Изменить размер"
+  },
+  "searchresults": {
+    "message": "Результаты поиска"
+  },
+  "FindBarOpenInAllTabs": {
+    "message": "Открывать и закрывать панель поиска по странице для всех вкладок"
+  },
+  "ToolsAsToolbar": {
+    "message": "Отображать инструменты на отдельной панели"
+  },
+  "searchactionssidebaraction": {
+    "message": "Открыть в боковой панели"
+  },
+  "findbarsearchinalltabs": {
+    "message": "Искать во всех вкладках при использовании панели поиска по странице (примечание: таймер будет отключен)"
+  },
+  "NotificationOpenSidebar": {
+    "message": "Открыть боковую панель, чтобы увидеть результаты поиска"
+  },
+  "searchalltabs": {
+    "message": "Искать во всех вкладках"
+  },
+  "simpleclick": {
+    "message": "Простой щелчок"
+  },
+  "simpleclicktooltip": {
+    "message": "Щелкните слово, чтобы открыть меню. Выбор не требуется"
+  },
+  "alt": {
+    "message": "Alt"
+  },
+  "ctrl": {
+    "message": "Ctrl"
+  },
+  "shift": {
+    "message": "Shift"
+  },
+  "HideContextMenu": {
+    "message": "Скрыть контекстное меню браузера при открытии быстрого меню правой кнопкой мыши"
+  },
+  "HoldForContextMenu": {
+    "message": "Удерживайте ПКМ ~ 1 сек. и отпустите, для вызова контекстного меню по умолчанию"
+  },
+  "tools_repeatsearch": {
+    "message": "Мгновенный поиск"
+  },
+   "tools_lastused": {
+    "message": "Последняя использованная поисковая система"
+  },
+  "ClearHighlighting": {
+    "message": "Очистить подсветку"
+  },
+  "display": {
+    "message": "Отображение"
+  },
+  "grouplayout": {
+    "message": "Макет группы"
+  },
+  "groupcolor": {
+    "message": "Цвет группы"
+  },
+   "groupcolortext": {
+    "message": "Цвет текста"
+  },
+  "grouplimit": {
+    "message": "Ограничение группы"
+  },
+  "default": {
+    "message": "по умолчанию"
+  },
+  "grid": {
+    "message": "Сетка"
+  },
+  "grouplayoutmessage": {
+    "message": "Примечание: только папки высшего уровня"
+  },
+  "toggleview": {
+    "message": ""
+  },
+  "DefaultViewToolTip": {
+    "message": "Установить вид по умолчанию для меню. Вид каждой папки можно настроить отдельно 'сетка / список', и при редактировании папки в менеджере поисковых систем"
+  },
+  "grouphidemoretile": {
+    "message": "Скрыть плитку \"Больше\""
+  },
+  "findinpage": {
+    "message": "Поиск по странице"
+  },
+  "SearchCode": {
+    "message": "Пост-поисковый скрипт"
+  },
+  "Layout": {
+    "message": "Макет"
+  },
+  "DefaultView": {
+    "message": "Вид по умолчанию"
+  },
+  "Saved": {
+    "message": "Сохранено"
+  },
+  "invalidregex": {
+    "message": "Неверный Regex"
+  },
+  "AddUsingFirefoxSearchBar": {
+    "message": "Пользователям Firefox 78+ - добавляйте свою поисковую систему, используя поле поиска Firefox"
+  },
+  "SyncWithFirefoxSearchHeader": {
+    "message": "Синхронизация с Firefox Search (Основной режим)"
+  },
+  "SyncWithFirefoxSearch": {
+    "message": "Отключить все поисковые системы ContextSearch, подпапки, букмарклеты и т.д. и отображать только поисковые системы Firefox"
+  },
+  "FFEngineExists": {
+    "message": "$1 уже установлен в поисковых системах Firefox"
+  },
+  "ContexMenuShowLastUsed": {
+    "message": "Показать последнюю поисковую систему"
+  },
+  "ContexMenuShowLastUsedToolTip": {
+    "message": "Показывать последнюю использованную поисковую систему в верхней части меню"
+  },
+  "ToggleTheme": {
+    "message": "Следующая тема"
+  },
+  "ToggleHotkeys": {
+    "message": "Переключить сочетания клавиш"
+  },
+  "ContexMenuShowRecentlyUsed": {
+    "message": "Показать недавние поисковые системы"
+  },
+  "ContexMenuShowRecentlyUsedToolTip": {
+    "message": "Показывать недавно использованные поисковые системы в верхней части меню"
+  },
+  "ContexMenuShowRecentlyUsedAsFolder": {
+    "message": ""
+  },
+  "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+    "message": "Показывать как папку"
+  },
+  "ContexMenuShowRecentlyUsedLengthTooltip": {
+    "message": "Недавние поисковые системы для отображения"
+  },
+  "RecentlyUsed": {
+    "message": "Недавно использованные"
+  },
+  "Recent": {
+    "message": "Недавние"
+  },
+  "ClearSearchList": {
+    "message": "Очистить список поисковых систем и синхронизировать с поисковыми системами Firefox"
+  },
+  "CannotEditOneClickEngines": {
+    "message": "Поисковые системы Firefox должны быть импортированы перед внесением изменений"
+  },
+  "hotkeys": {
+    "message": "Сочетания клавиш"
+  },
+  "pagetiles": {
+    "message": "Страница плиток"
+  },
+  "pagetilesenabledtooltip": {
+    "message": "Включить страницу плиток"
+  },
+  "drop": {
+    "message": "Отпускание"
+  },
+  "hotkeystooltip": {
+    "message": "Выберите текст и нажмите клавишу поиска. Сочетание клавиш можно настроить на вкладке поисковых систем"
+  },
+  "pagetilesdescription": {
+    "message": "Перетаскивать текст в полностраничное меню плиток поисковых систем (эксперимент)"
+  },
+  "EnableHotkeysDescription": {
+    "message": "Сочетания клавиш всегда включены, исключая редактирование (отключите, чтобы разрешить только при фокусе в меню ContextSearch)"
+  },
+  "SearchAll": {
+    "message": "« искать всё »"
+  },
+  "pagetilesselectpalette": {
+    "message": "Палитра цветов"
+  },
+  "nonePalette": {
+    "message": "Нет"
+  },
+  "alphabetPalette": {
+    "message": "Alphabet"
+  },
+  "bouquetPalette": {
+    "message": "Bouquet"
+  },
+  "dayglowPalette": {
+    "message": "Dayglow"
+  },
+  "easterPalette": {
+    "message": "Easter"
+  },
+  "lavenderPalette": {
+    "message": "Lavender"
+  },
+  "metalPalette": {
+    "message": "Metal"
+  },
+  "nurseryPalette": {
+    "message": "Nursery"
+  },
+  "socialPalette": {
+    "message": "Social"
+  },
+  "waterPalette": {
+    "message": "Water"
+  },
+  "keyword": {
+    "message": "Ключевое слово омнибокса"
+  },
+  "FailedToLoad": {
+    "message": "Не удалось загрузить поисковые системы :("
+  },
+  "fetchingRemoteContent": {
+    "message": "Получение удаленного контента"
+  },
+  "searchenginesmanager": {
+    "message": "Менеджер поисковых систем"
+  },
+  "faviconFinder": {
+    "message": "Найти значки, проверив хост-сайт (открывает фоновую вкладку)"
+  },
+  "faviconFinderShort": {
+    "message": "Найти значки"
+  },
+  "uploadfromlocal": {
+    "message": "Использовать изображение с ПК"
+  },
+  "Shortcuts": {
+    "message": "Сочетания клавиш"
+  },
+  "ClosePageTilesOnShake": {
+    "message": "Закрывать страницу плиток, тряхнув мышь"
+  },
+  "ShowFolderSearch": {
+    "message": "Показать поиск по папке в верхней части меню"
+  },
+  "Omnibox": {
+    "message": "Омнибокс"
+  },
+  "OpenOnDragTooltip": {
+    "message": "Перетащите текст / ссылку / изображение, чтобы открыть страницу выбора поисковых систем"
+  },
+  "Drag": {
+    "message": "Перетаскивание"
+  },
+  "HighlightLimitTooltip": {
+    "message": "Максимум подсветок совпадений. Может предотвратить тормоза при подсветке. 0 = без ограничений"
+  },
+  "AddToBlockList": {
+    "message": "Добавить в черный список"
+  },
+  "AddToBlockListConfirm": {
+    "message": "Добавить \"$1\" в черный список?"
+  },
+  "regexmatches": {
+    "message": "Regex Matches"
+  },
+  "audio": {
+    "message": "аудио"
+  },
+  "frame": {
+    "message": "фрейм"
+  },
+  "image": {
+    "message": "изобр."
+  },
+  "link": {
+    "message": "ссылка"
+  },
+  "linkText": {
+    "message": "текст.ссылка"
+  },
+  "page": {
+    "message": "страница"
+  },
+  "selection": {
+    "message": "выбор"
+  },
+  "video": {
+    "message": "видео"
+  },
+  "requestPermissionsMessage": {
+    "message": "Требуется дополнительное разрешение. Нажмите кнопку ниже."
+  },
+  "Request": {
+    "message": "Запросить разрешение"
+  },
+  "deleteNodesMessage": {
+    "message": "Удалить $1 узлов?"
+  },
+  "RegexTooltip": {
+    "message": "Перед отправкой можно изменить поисковый запрос с помощью regex. Несколько замен могут быть соединены в цепочку, по одной на строку"
+  },
+  "MatchSearchTermsRegexTooltip": {
+    "message": "Отображать эту поисковую систему в папке Regex Matches, если поисковый запрос соответствует следующему Regex"
+  },
+  "SearchCodeTooltip": {
+    "message": "Запустить javascript после открытия URL-адреса шаблона. Глобальная переменная 'searchTerms' заменяется текущим поисковым запросом"
+  },
+  "ConfirmDeleteCustomSearchEngines": {
+    "message": "При этом будут удалены все ваши поисковые системы, папки, букмарклеты, разделители и т.д. Вы уверены?"
+  },
+ "customIconTooltip": {
+    "message": "Использовать свой значок"
+  },
+ "EnableHotkeysLabel": {
+    "message": "Клавиши поисковой системы"
+  },
+  "quickMenuOpen": {
+    "message": "quickMenuOpen"
+  },
+  "findBarOpen": {
+    "message": "findBarOpen"
+  },
+  "findBarNext": {
+    "message": "findBarNext"
+  },
+  "findBarPrevious": {
+    "message": "findBarPrevious"
+  },
+  "sideBarOpen": {
+    "message": "sideBarOpen"
+  },
+  "toggleDisplayMode": {
+    "message": "toggleDisplayMode"
+  },
+  "quickMenuLock": {
+    "message": "quickMenuLock"
+  },
+  "quickMenuEdit": {
+    "message": "quickMenuEdit"
+  },
+  "optionsOpen": {
+    "message": "optionsOpen"
+  },
+  "pageTilesOpen": {
+    "message": "pageTilesOpen"
+  },
+  "themeNext": {
+    "message": "themeNext"
+  },
+  "themePrevious": {
+    "message": "themePrevious"
+  },
+  "sideBarMinify": {
+    "message": "sideBarMinify"
+  },
+  "OmniboxTooltip": {
+    "message": "Омнибокс"
+  },
+  "lite": {
+    "message": "lite"
+  },
+  "dark": {
+    "message": "dark"
+  },
+  "modern": {
+    "message": "modern"
+  },
+  "modern_dark": {
+    "message": "modern dark"
+  },
+  "modern_purple": {
+    "message": "modern purple"
+  },
+  "modern_sunset": {
+    "message": "modern sunset"
+  },
+  "modern_glass": {
+    "message": "modern glass"
+  },
+  "exportToFirefoxSearch": {
+    "message": "Экспорт в поисковые системы Firefox"
+  },
+  "exportToFirefoxSearchTooltip": {
+    "message": "Перейдите в папку профиля и выберите файл search.json.mozlz4. Вам будет предложено два файла: новый файл search.json.mozlz4 и резервная копия исходного файла. Сохраните оба файла в папке профиля. Перезапустите Firefox, чтобы увидеть изменения."
+  },
+  "addSearchProviderHideNotificationTooltip": {
+    "message": "Уведомление для пользователей Firefox о добавлении OpenSearch поисковых систем из поисковых полей Firefox"
+  },
+  "alwaysAllowTileRearrangingTooltip": {
+    "message": "Всегда разрешать перестановку плиток в меню"
+  },
+  "autoCopy": {
+    "message": "Автокопирование"
+  },
+  "autoCopyTooltip": {
+    "message": "Выбранный текст копируется в буфер обмена"
+  },
+  "autoPasteFromClipboardTooltip": {
+    "message": "Текст из буфера обмена вставляется в поле поиска при открытии меню поиска"
+  },
+   "autoCopyOnInputsTooltip": {
+    "message": "Включить для полей ввода и текстовых областей (input и textarea)"
+  },
+  "cache": {
+    "message": "✓"
+  },
+  "cacheTooltip": {
+    "message": "Кешировать значки поисковых систем из URL-адресов"
+  },
+  "uncache": {
+    "message": "✘"
+  },
+  "uncacheTooltip": {
+    "message": "Удалить кэш значков, только из поисковых систем, с URL-адресами значков. Предупреждение: URL-адреса не будут проверяться, удалится весь кэш."
+  },
+  "confirmUncache": {
+    "message": "Удалить весь кеш значков?"
+  },
+  "warningCache": {
+    "message": "Некоторые значки кэшировать не удалось"
+  },
+  "cacheIconsMaxSizeTooltip": {
+    "message": "Максимум ширины или высоты значков, для изменения размера перед кэшированием"
+  },
+  "contextMenuContextualLayoutFlattenLimitTooltip": {
+    "message": "Удалять подпапки и сглаживать меню, если по условиям отображается только X поисковых систем. 0 = без ограничений"
+  },
+  "contextMenuHotkeysTooltip": {
+    "message": "Добавлять сочетание клавиш к элементам контекстного меню, в формате (&A), для быстрого доступа"
+  },
+  "contextMenuRegexMatchedEnginesTooltip": {
+    "message": "Показывать поисковые системы Regex Matches в верхней части меню"
+  },
+  "contextMenuTitleTooltip": {
+    "message": "Переопределить заголовок контекстного меню. Используйте %s вместо searchTerms. Пусто = по умолчанию"
+  },
+  "contextMenuUseContextualLayoutTooltip": {
+    "message": "Отображать контекстное меню во вложенных папках в соответствии с текущим контекстом"
+  },
+  "contextMenuUseInnerTextTooltip": {
+    "message": "Использовать внутренний текст элемента в качестве поискового запроса, если текст не выбран"
+  },
+  "disableNewTabSortingTooltip": {
+    "message": "Включите, чтобы браузер решал, как сортировать новые вкладки результатов поиска. Полезно для предотвращения конфликтов с менеджерами вкладок"
+  },
+  "exportWithoutBase64IconsTooltip": {
+    "message": "Экспортируемые конфигурации становятся меньше при исключении URI данных значков. Может привести к потере ваших значков"
+  },
+  "forceOpenResultsTabsAdjacentTooltip": {
+    "message": "Принудительное отображение результатов поиска на следующей вкладке справа"
+  },
+  "groupFolderRowBreaksTooltip": {
+    "message": "Разрешить отображение встроенных папок группы в качестве элементов блока"
+  },
+  "groupLabelMoreTileTooltip": {
+    "message": "Показывать значок 'больше/меньше' для папок группы внутри плитки ярлыка, а не на отдельной плитке"
+  },
+  "omniboxDefaultToLastUsedEngineTooltip": {
+    "message": "По умолчанию используется последняя поисковая система, использованная омнибоксом"
+  },
+  "openFoldersOnHoverTimeoutTooltip": {
+    "message": "Время в миллисекундах наведения курсора перед открытием папки. 500 = по умолчанию, 0 = отключено"
+  },
+  "quickMenuAllowContextMenuNewTooltip": {
+    "message": "В системах, отображающих контекстное меню по нажать/отпустить (mousedown vs mouseup), может потребоваться выбрать альтернативный метод открытия или изменить способ открытия контекстного меню."
+  },
+  "quickMenuAutoMaxCharsTooltip": {
+    "message": "Не открывать быстрое меню, если длина выбранного текста превышает X символов. 0 = без ограничений"
+  },
+  "quickMenuAutoTimeoutTooltip": {
+    "message": "Отменить открытие быстрого меню, если удерживать ПКМ заданный X миллисекунд перед тем, как отпустить. 0 = отключено"
+  },
+  "quickMenuCancelDeadzoneTooltip": {
+    "message": "На сколько пикселей допустимо переместить мышь перед отменой открытия быстрого меню долгим нажатием"
+  },
+  "quickMenuDomLayoutTooltip": {
+    "message": "Переопределить макет быстрого меню, используя список HTMLElement ID, разделенный запятыми, (например: menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar ). Не все ID необходимо использовать. Все перечисленное будут перемещено в конец дерева DOM. Пусто = по умолчанию"
+  },
+  "quickMenuFocusOnOpenTooltip": {
+    "message": "Установить фокус на быстрое меню после открытия"
+  },
+  "quickMenuHideSeparatorsInGridTooltip": {
+    "message": "Скрывать разделители при использовании быстрого меню в режиме сетки"
+  },
+  "quickMenuHoldTimeoutTooltip": {
+    "message": "Время в миллисекундах удержания кнопки мыши перед открытием быстрого меню"
+  },
+  "quickMenuOpeningOpacityTooltip": {
+    "message": "Уровень прозрачности быстрого меню при открытии. Становится непрозрачным при наведении"
+  },
+  "quickMenuPreventPageClicksTooltip": {
+    "message": "Предотвращать события мыши на текущей веб-странице при открытом быстром меню"
+  },
+  "quickMenuRegexMatchedEnginesTooltip": {
+    "message": "Показывать поисковые системы Regex Matches в верхней части меню"
+  },
+  "quickMenuSearchOnMouseUpTooltip": {
+    "message": "Выполнять поиск из быстрого меню наведением, т.е. удерживайте для открытия меню, наведите на значок, отпустите для поиска"
+  },
+  "quickMenuShowHotkeysInTitleTooltip": {
+    "message": "Показывать сочетания клавиш с названиями"
+  },
+  "quickMenuShowRecentlyUsedTooltip": {
+    "message": "Показывать недавно использованные поисковые системы в верхней части меню"
+  },
+  "quickMenuOnSimpleClick_useInnerTextTooltip": {
+    "message": "Использовать внутренний текст элемента в качестве поискового запроса, если текст не выбран"
+  },
+  "quickMenuToolbarRowsTooltip": {
+    "message": "Максимум отображаемых строк. 0 = без ограничений"
+  },
+  "quickMenuToolsLockPersistTooltip": {
+    "message": "Запоминать состояние блокировки между сеансами"
+  },
+  "quickMenuToolsRepeatSearchPersistTooltip": {
+    "message": "Запоминать состояние повторного поиска между сеансами"
+  },
+  "rememberLastOpenedFolderTooltip": {
+    "message": "Открывать меню на последней использованной папке"
+  },
+  "rightClickMenuOnMouseDownFixTooltip": {
+    "message": "При использовании удержания ПКМ для открытия быстрого меню, вызывать контекстное меню по умолчанию двойным щелчком. Полезно для предотвращения вызова двух меню на системах, которые отображают контекстное меню по нажать/отпустить (mousedown vs mouseup)"
+  },
+  "searchBarHistoryLengthTooltip": {
+    "message": "Максимум записей истории для хранения"
+  },
+  "searchBarSuggestionsCountTooltip": {
+    "message": "Максимум отображаемых предложений Google"
+  },
+  "shakeSensitivityTooltip": {
+    "message": "Чувствительность обнаружения тряски. Чем ниже, тем выше чувствительность"
+  },
+  "sideBar_openOnResultsTooltip": {
+    "message": "Открыть боковую панель на вкладках с результатами поиска"
+  },
+  "sideBar_openOnResultsMinimizedTooltip": {
+    "message": "Открыть боковую панель свернутой на вкладках с результатами поиска"
+  },
+  "sideBar_rememberStateTooltip": {
+    "message": "Запоминать открытое состояние боковой панели"
+  },
+  "Blocklist": {
+    "message": "Черный список"
+  },
+  "BlocklistTooltip": {
+    "message": "URL-адреса на которых ContextSearch отключен. Понимает имена хостов www.example.com, подстановочные знаки *.example.com и regex, префикс ! или # отключает запись, #example.com или !example.com"
+  },
+  "NewTool": {
+    "message": "Добавить инструмент"
+  },
+  "BackButton": {
+    "message": "Кнопка назад"
+  },
+  "ForwardButton": {
+    "message": "Кнопка вперед"
+  },
+  "Title": {
+    "message": "Заголовок"
+  },
+  "MenuBar": {
+    "message": "Строка меню"
+  },
+  "EditMenu": {
+    "message": "Редактор макетов"
+  },
+  "requestClipboardWritePermission": {
+    "message": "Для взаимодействия с буфером обмена требуется разрешение clipboardWrite. Нажмите кнопку ниже, чтобы запросить разрешение на запись в буфер обмена."
+  },
+  "manualedit": {
+    "message": "Изменить объект настроек вручную"
+  },
+  "manualeditwarning": {
+    "message": "Изменение объекта настроек вручную может привести к тому, что ContextSearch перестанет работать!"
+  },
+  "ContextAwareFilter": {
+    "message": "Контексты - отображать поисковые системы только в заданных для данной системы контекстах (ссылка, изображение, выбор, ...)"
+  },
+  "NewMultiSearch": {
+    "message": "Новый мульти-поиск"
+  },
+  "ContextsTooltip": {
+    "message": "Отображать эту поисковую систему только при открытии из выбранных контекстов. Работает с контекстным и быстрым меню, если включено [Контекстное меню / Быстрое меню] -> Дополнительно -> Контексты ... , в противном случае игнорируется."
+  },
+  "OpenOnIcon": {
+    "message": "Значок"
+  },
+  "OpenOnIconTooltip": {
+    "message": "Отображать значок рядом с выделенным текстом. Нажатие на значок открывает меню"
+  },
+  "checkContextMenuOrderNotification": {
+    "message": "Открывать контекстное меню по умолчанию двойным щелчком, при открытии быстрого меню? См. Больше информации."
+  },
+  "DoubleClick": {
+    "message": "Двойной щелчок"
+  },
+  "ShowDefaultMenuModifierMessage": {
+    "message": "Отображение контекстного меню по умолчанию"
+  },
+  "NewExternalProgram": {
+    "message": "Новый App Launcher"
+  },
+  "searchIconFinder": {
+    "message": "🔍 Поиск на IconFinder.com"
+  },
+  "RefineSearch": {
+    "message": "Уточнить поиск"
+  },
+  "NativeApp": {
+    "message": "Приложение Messenger"
+  },
+  "NativeAppMissing": {
+    "message": "Приложение Messenger не подключено."
+  },
+  "SearchBookmarklets": {
+    "message": "🔍 Поиск букмарклетов"
+  },
+  "NewScript": {
+    "message": "Новый скрипт"
+  },
+  "Permissions": {
+    "message": "Разрешения"
+  },
+  "Command": {
+    "message": "Команда"
+  },
+  "WorkingDirectory": {
+    "message": "Рабочий каталог"
+  },
+  "Script": {
+    "message": "Скрипт"
+  },
+  "PostAppScript": {
+    "message": "Post-App скрипт"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Javascript для выполнения на текущей вкладке после завершения работы приложения. Stdout записывается в переменную 'result', например, alert(result)."
+  },
+  "MessengerOfflineTooltip": {
+    "message": "Для запуска приложений из ContextSearch требуется дополнительный плагин. Нажмите на ссылку для получения более подробной информации."
+  },
+  "ToggleSearchTerms": {
+    "message": "Следующий поисковый запрос"
+  },
+  "EnableOn": {
+    "message": "Включить"
+  },
+  "Input": {
+    "message": "поле ввода"
+  },
+  "tools_OpenImage": {
+    "message": "Открыть изображение"
+  },
+  "tools_Download": {
+    "message": "Скачать"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Сбросить все настройки до настроек по умолчанию? Поисковые системы не будут затронуты."
+  },
+  "contexts": {
+    "message": "Контексты"
+  },
+  "quickMenuCloseOnEdit": {
+    "message": "Закрыть меню при наборе текста. Панель поиска не должна быть в фокусе - см. 'Панель поиска'."
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Показывать панель контекстов"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Везде"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Открывать меню на любом элементе, включая пустые области в документах и фреймах"
+  },
+  "saveclose": {
+    "message": "Сохранить и закрыть"
+  },
+  "singlewindow": {
+    "message": "Одиночный"
+  },
+  "cascadingwindow": {
+    "message": "Каскадный"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Отображать папки в едином или отдельных каскадных меню"
+  },
+  "DontShowAgain": {
+    "message": "Не показывать это снова"
+  },
+  "Icon": {
+    "message": "Значок"
+  },
+  "Inline": {
+    "message": "Линия"
+  },
+  "Block": {
+    "message": "Блок"
+  },
+  "CheckForUpdates": {
+    "message": "Проверить обновления"
+  },
+  "UpdateToVersion": {
+    "message": "Обновить скрипт приложения до версии $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "Последняя версия уже установлена"
+  },
+  "beta": {
+    "message": "Бета-тестирование"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - поисковые запросы\n%su - поисковые запросы заглавными\n%sl - поисковые запросы строчными\n%d - домен\n%ds - субдомен\n%du - выбранный польз. домен\n%u - URL вкладки"
+  },
+  "AdditionalSearchActions": {
+    "message": "Дополнительные действия"
+  },
+  "Event": {
+    "message": "Событие"
+  },
+  "Button": {
+    "message": "Кнопка"
+  },
+  "SearchAction": {
+    "message": "Поисковые действия"
+  },
+  "middle": {
+    "message": "middle"
+  },
+  "forward": {
+    "message": "forward"
+  },
+  "AutoThemeTooltip": {
+    "message": "Автоматически изменять тему меню при темном режиме"
+  },
+  "AutoThemeLiteTooltip": {
+    "message": "Светлая тема"
+  },
+  "AutoThemeDarkTooltip": {
+    "message": "Темная тема"
+  }
+}

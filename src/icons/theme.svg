@@ -1,0 +1,4 @@
+<svg viewBox="0 0 34 34" width="64" height="64" xmlns="http://www.w3.org/2000/svg">
+	<path d="M26 29H8C6 29 5 28 5 26V8C5 6 6 5 8 5H26C28 5 29 6 29 8V26C29 28 28 29 26 29Z" fill="transparent" stroke="black" stroke-width="3"/>
+	<polygon points="8 8, 26 26, 8 26"/>
+</svg>

@@ -1,0 +1,47 @@
+:root {
+    --hover: #666667;
+	--background: #323234;
+	--border: #444;
+	--tools-color:#bbb;
+    --folder-color: #3293d4;
+    --folder-label-color: #dedede;
+}
+BODY { 
+    background-color:var(--background);
+    color:#f9f9fa; 
+}
+.tile {
+    border-color:var(--border);
+}
+#suggestions, #searchBar { 
+    background-color:#454547;
+   	color:#f9f9fa;
+}
+#suggestions {
+    border-color:#535355;
+}
+.tile[data-type="tool"] {
+	color:#f9f9fa;
+}
+.tile[data-type="tool"][data-nocolorinvert] {
+}
+.tile[data-type="folder"] {
+    background-color:var(--folder-color);
+    color:var(--folder-label-color);
+}
+.tile[data-type="folder"]:not(.singleColumn) {
+	/* background-color:#3293d4; */
+    color:var(--folder-label-color);;
+}
+.tile:hover {
+	background-color:var(--hover);
+}
+.button { /* findbar */
+    background-color:#5b5b5d;
+}
+.tile[data-locked="true"] {
+    background-color:#555;
+}
+.tile.groupFolder {
+    background-color: var(--group-color);
+}

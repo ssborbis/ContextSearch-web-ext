@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>FindBar</title>
+		<link rel="stylesheet" href="/tilemenu.css">
+		<link rel="stylesheet" href="/findbar.css">
+	</head>
+	<body>
+	<div id="findbar">
+		<div id="handle" class="tool" style="--mask-image: url(icons/vertical.svg)"></div>
+		<div id="close" class="tool" style="--mask-image: url(icons/crossmark.svg)"></div>
+		<input id="searchBar" type="text" />
+		<div id="searchIcon" class="tool" style="--mask-image: url(icons/chevron-down.svg)"></div>
+		<div id="clearSearchBarButton" class="tool" style="--mask-image: url(icons/clear.svg)"></div>
+		<div id="previous" class="tool" style="--mask-image: url(icons/chevron-up.svg)"></div>
+		<div id="next" class="tool" style="--mask-image: url(icons/chevron-down.svg)"></div>
+		<div id="mark_counter"></div>
+		<input type="checkbox" class="option" id="separateWordSearch" /><label class="optionLabel" for="separateWordSearch">_ _</label>
+		<input type="checkbox" class="option" id="accuracy" /><label class="optionLabel" for="accuracy">&xoplus;</label>
+		<input type="checkbox" class="option" id="caseSensitive" /><label class="optionLabel" for="caseSensitive">Aa</label>
+		<input type="checkbox" class="option" id="ignorePunctuation" /><label class="optionLabel" for="ignorePunctuation">!</label>
+		<input type="checkbox" class="option" id="toggle_navbar" /><label class="optionLabel" for="toggle_navbar"><div class="tool" style="--mask-image: url(icons/sidebar.svg)"></div></label>
+		<input type="checkbox" class="option" id="toggle_marks" /><label class="optionLabel" for="toggle_marks"><div class="tool" style="--mask-image: url(icons/highlight.svg)"></div></label>
+		<input type="checkbox" class="option" id="toggle_searchalltabs"/><label class="optionLabel" for="toggle_searchalltabs"><div class="tool" style="--mask-image: url(icons/tabs.svg)"></div></label>
+	</div>
+	
+	<script src='/lib/browser-polyfill.min.js'></script>
+	<script src='/utils.js'></script>
+	<script src='/tools.js'></script>
+	<script src="/Shortcuts.js"></script>
+	<script src='/themes.js'></script>
+	<script src='/dock.js'></script>
+	<script src='/findbar.js'></script>
+	</body>
+</html>

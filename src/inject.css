@@ -1,0 +1,47 @@
+@media print {
+	#contextsearch-widgets {
+		display:none !important;
+	}
+}
+
+/*:fullscreen #CS_findBarIframe, :fullscreen  #CS_sbIframe, :fullscreen  #CS_quickMenuIframe, :fullscreen #CS_sbOpeningTab, :fullscreen #CS_icon {
+	display: none;
+}
+*/
+
+@keyframes CS_flash {
+	0% {
+		color: var(--cs-mark-active-color);
+		background-color: var(--cs-mark-active-background);
+	} 
+	50% {
+		color: black;
+		background-color: transparent;
+	} 
+	100% {
+		color: var(--cs-mark-active-color);
+		background-color: var(--cs-mark-active-background);
+	} 
+}
+
+@keyframes CS_flash_underline {
+	0% {
+		border-color: var(--cs-mark-active-background);
+	} 
+	50% {
+		border-color: transparent;
+	} 
+	100% {
+		border-color: var(--cs-mark-active-background);
+	} 
+}
+.CS_mark_selected.CS_mark_flash[data-flashstyle='background'] {
+	animation: CS_flash linear .5s infinite;
+}
+.CS_mark_selected.CS_mark_flash[data-flashstyle='underline'] {
+	animation: CS_flash_underline linear .5s infinite;
+}
+.CS_mark {
+	background: transparent;
+	transition: all .5s ease;
+}

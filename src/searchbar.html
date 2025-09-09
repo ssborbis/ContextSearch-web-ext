@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>SearchBar</title>
+		<link rel="stylesheet" href="/tilemenu.css">
+	</head>
+	<body style='display:none'>
+	<div id='menuBar'>
+		<!-- <div id="editButton" class="tool" style="--mask-image: url(icons/edit.svg)"></div> -->
+		<div id="optionsButton" class="tool" style="--mask-image: url(icons/settings.svg)"></div>
+		<div id="minimizeButton" class="tool" style="--mask-image: url(icons/minimize.svg)"></div>
+		<div id="closeButton" class="tool" style="--mask-image: url(icons/crossmark.svg)"></div>
+	</div>
+	<div id='searchBarContainer'>
+		<div id="searchIcon" class="tool" style="--mask-image: url(icons/chevron-down.svg)"></div>
+		<input id='searchBar' type='text' />
+		<div id="clearSearchBarButton" class="tool" style="--mask-image: url(icons/clear.svg)"></div>
+		<div id='suggestions'></div>
+		<div id='opensearchBar'></div>
+	</div>
+	<div id='titleBar'></div>
+	<div id='toolBar'></div>
+	<div id='contextsBar'></div>
+
+	<script src='/lib/browser-polyfill.min.js'></script>
+	<script src='/utils.js'></script>
+	<script src='/tools.js'></script>
+	<script src='/nodes.js'></script>
+	<script src='/contexts.js'></script>
+	<script src='/tilemenu.js'></script>
+	<script src='/opensearch.js'></script>
+	<script src="/Shortcuts.js"></script>
+	<script src='/themes.js'></script>
+	<script src='/dock.js'></script>
+	<script src='/keyTable.js'></script>
+	<script src='/searchActions.js'></script>
+	<!-- <script src='/bookmarks.js'></script> -->
+	<script src='/searchbar.js'></script>
+	</body>
+</html>

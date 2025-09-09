@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 42 42" fill="none" stroke="#000" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+	<mask id="m">
+		<rect width="64" height="64" fill="#fff" />
+		<path d="M8 11A1 1 0 0020 25 1 1 0 008 11ZM20 25 28 34 29 33Z" stroke="#000" fill="#000" stroke-width="7"/>
+	</mask>
+	<path d="M8 11A1 1 0 0020 25 1 1 0 008 11ZM20 25 28 34 29 33Z" />
+	<path d="M18 11A1 1 0 0030 25 1 1 0 0018 11ZM30 25 38 34 39 33Z" mask="url(#m)" />
+</svg>

@@ -1,0 +1,2600 @@
+{
+  "LOCALE_FOLDER": {
+    "message": "en"
+  },
+    
+  "extensionDescription": {
+    "message": "Add search engines easily and search from the context menu and convenient popup"
+  },
+    
+  "Settings": {
+    "message": "Settings"
+  },
+  
+  "Support": {
+    "message": "Support"
+  },
+  
+   "Source": {
+    "message": "Source"
+  },
+  
+   "Menus": {
+    "message": "Menus",
+    "description": "menus tab label"
+  },
+  
+   "SearchEngines": {
+    "message": "Search Engines",
+    "description": "search engines tab label"
+  },
+  
+   "Help": {
+    "message": "Help",
+    "description": "help tab label"
+  },
+  
+   "ContextMenu": {
+    "message": "Context Menu"
+  },
+  
+   "AddCustomSearchMenu": {
+    "message": "Show \"Add to ContextSearch\""
+  },
+  
+  "AddCustomSearchMenuTooltip": {
+    "message": "Enable the context-menu item \"Add Custom Search\" on INPUT elements. Disable to prevent a tiered menu in some cases"
+  },
+
+   "QuickMenu": {
+    "message": "Quick Menu"
+  },
+  
+   "QuickMenuNote": {
+    "message": "Disabled on addons.mozilla.org"
+  },
+  
+   "SearchActionsHeader": {
+    "message": "Search Actions"
+  },
+  
+   "SearchActionsCurrentTab": {
+    "message": "Open In Current Tab"
+  },
+  
+   "SearchActionsNewTab": {
+    "message": "Open In New Tab"
+  },
+  
+   "SearchActionsBackgroundTab": {
+    "message": "Open In Background Tab"
+  },
+  
+   "SearchActionsBackgroundTabKeepOpen": {
+    "message": "Open In Background Tab (Keep Menu Open)"
+  },
+  
+   "SearchActionsNewWindow": {
+    "message": "Open In New Window"
+  },
+  
+   "SearchActionsIncognitoWindow": {
+    "message": "Open In Incognito Window"
+  },
+  
+   "SearchActionsNoAction": {
+    "message": "No Action"
+  },
+
+  "SearchActionsPopup": {
+    "message": "Open in Popup Window"
+  },
+
+   "LeftButton": {
+    "message": "Left Button"
+  },
+  
+   "MiddleButton": {
+    "message": "Middle Button"
+  },
+  
+   "RightButton": {
+    "message": "Right Button"
+  },
+  
+   "LookLayoutHeader": {
+    "message": "Look & Layout"
+  },
+  
+   "Columns": {
+    "message": "Columns"
+  },
+  
+  "ColumnsTooltip": {
+    "message": "Maximum number of search engine icons per row (grid view)"
+  },
+
+  "ColumnsMinimumTooltip": {
+    "message": "Minimum number of search engine icons per row (grid view)"
+  },
+  
+  "Items": {
+    "message": "Items"
+  },
+
+  "MenuSize": {
+    "message": "Menu Size"
+  },
+  
+   "MenuSizeTooltip": {
+    "message": "Scaled size of the popup menu. Values greater than 100% will enlarge the whole menu (good for high-resolution displays)"
+  },
+  
+  "IconSize": {
+    "message": "Icon Size"
+  },
+  
+  "IconSizeTooltip": {
+    "message": "Scaled size of search engine icons. At 200%, icons fill their container entirely"
+  },
+  
+  "OpeningClosingHeader": {
+    "message": "Opening & Closing"
+  },
+  
+  "OpeningClosingDescription": {
+    "message": "Choose how to open Quick Menu"
+  },
+  
+   "Auto": {
+    "message": "Auto"
+  },
+  
+  "AutoTooltip": {
+    "message": "Select text and open automatically"
+  },
+  
+   "EnableOnTextBoxes": {
+    "message": "Enable on Text Boxes"
+  },
+  
+  "EnableOnTextBoxesTooltip": {
+    "message": "Enable on textarea and input elements"
+  },
+  
+   "Mouse": {
+    "message": "Mouse"
+  },
+  
+     "MouseTooltip": {
+    "message": "Select text and open using a mouse button"
+  },
+  
+  "MouseDescription": {
+    "message": "Select your preferred method and button"
+  },
+  
+   "Hold": {
+    "message": "Hold"
+  },
+  
+    "HoldTooltip": {
+    "message": "Menu will open after holding the selected mouse button for ~0.25 seconds"
+  },
+  
+   "SearchOnMouseup": {
+    "message": "Search On Mouseup"
+  },
+  
+   "SearchOnMouseupTooltip": {
+    "message": "Perform a search from the QuickMenu on mouseup vs click i.e. Hold to open menu, release to search"
+  },
+  
+   "Click": {
+    "message": "Click"
+  },
+  
+  "ClickTooltip": {
+    "message": "Popup menu will open on right-click.  Hold button for default context menu"
+  },
+  
+   "Keyboard": {
+    "message": "Keyboard"
+  },
+  
+  "KeyboardTooltip": {
+    "message": "Select text and open using the keyboard"
+  },
+  
+   "ChooseKey": {
+    "message": "Choose Key"
+  },
+  
+  "ChooseKeyTooltip": {
+    "message": "Select text and press a key to open the popup menu. Click the adjacent button and press your preferred key"
+  },
+  
+   "CloseAfterSearch": {
+    "message": "Close After Search"
+  },
+  
+  "CloseAfterSearchTooltip": {
+    "message": "Close menu after performing a search.  Disable if you frequently search using multiple engines or prefer to close the menu manually. Can be superseded by 'Keep Menu Open' under Search Actions"
+  },
+  
+   "CloseOnScroll": {
+    "message": "Close On Scroll / Mouse Wheel"
+  },
+  
+   "CloseOnScrollTooltip": {
+    "message": "Close menu by scrolling or using the mouse wheel"
+  },
+  
+  "MouseHelp": {
+    "message": "Linux and MacOS X environments where the default context menu is opened on mousedown vs mouseup can set 'ui.context_menus.after_mouseup = true' in about:config ( Firefox ) for mouse actions to work properly and prevent unwanted menus. Other users can select an option to change the way the default context menu is opened, either holding atl, ctrl, or shift, or by double-clicking the right mouse button. Not all options will work with all platforms."
+  },
+
+  "Position": {
+    "message": "Position"
+  },
+  
+  "PositionDescription": {
+    "message": "choose where menu appears"
+  },
+  
+   "HorizontalOffset": {
+    "message": "Horizontal Offset"
+  },
+  
+  "HorizontalOffsetTooltip": {
+    "message": "Number of pixels to offset the popup menu horizontally. Numbers greater than zero move right, less than zero left"
+  },
+
+  "VerticalOffset": {
+    "message": "Vertical Offset"
+  },
+  
+  "VerticalOffsetTooltip": {
+    "message": "Number of pixels to offset the popup menu vertically. Numbers greater than zero move down, less than zero up"
+  },
+
+  "Tools": {
+    "message": "Tools"
+  },
+  
+  "ToolsPositionTooltip": {
+    "message": "Choose where to display the tools in the Quick Menu"
+  },
+  
+  "ToolsHelp": {
+    "message": "click to disable | drag to re-order"
+  },
+
+  "tools_Close": {
+    "message": "Close menu"
+  },
+  
+  "tools_Disable": {
+    "message": "Disable menu"
+  },
+
+  "tools_Copy": {
+    "message": "Copy to clipboard"
+  },
+  
+  "tools_OpenAsLink": {
+    "message": "Open as link"
+  },
+
+  "tools_Lock": {
+    "message": "Lock menu open"
+  },
+  
+  "ImportExportSettings": {
+    "message": "Import / Export Settings"
+  },
+  
+   "Import": {
+    "message": "Import"
+  },
+  
+   "Export": {
+    "message": "Export"
+  },
+  
+  "Add": {
+    "message": "Add"
+  },
+  
+  "RemoveAll": {
+    "message": "Remove All"
+  },
+  
+  "ShowHide": {
+    "message": "Show / Hide"
+  },
+  
+  "Bookmark": {
+    "message": "Bookmark"
+  },
+  
+  "Delete": {
+    "message": "Delete"
+  },
+  
+  "SearchEnginesManagerHelp": {
+    "message": "Drag & drop to re-order, right-click menu to add/delete/modify"
+  },
+  
+  "ImportHeader": {
+    "message": "Import From Firefox"
+  },
+  
+  "ImportDescription": {
+    "message": "Browse to your profile folder and select your search.json.mozlz4 file"
+  },
+  
+  "ImportSelectFile": {
+    "message": "Select file ..."
+  },
+  
+  "AutoImportHeader": {
+    "message": "Automatic Importing"
+  },
+  
+  "EnableAutoImport": {
+    "message": "Enable Automatic Import (requires app)"
+  },
+  
+  "EnableAutoImportTooltip": {
+    "message": "Import new OpenSearch engines to ContextSearch automatically. Only useful when importing OpenSearch engines installed through Firefox's One-Click Search Engine API. Requires a separate app. See 'Help' for more details"
+  },
+  
+  "ProfilePath": {
+    "message": "Profile path"
+  },
+  
+  "Verify": {
+    "message": "Verify and Import"
+  },
+  
+  "Find": {
+    "message": "Find"
+  },
+  
+  "Create": {
+    "message": "Create"
+  },
+  
+  "Simple": {
+    "message": "Simple"
+  },
+  
+  "Advanced": {
+    "message": "Advanced"
+  },
+  
+  "Yes": {
+    "message": "Yes"
+  },
+  
+  "No": {
+    "message": "No"
+  },
+  
+  "Cancel": {
+    "message": "Cancel"
+  },
+  
+  "Save": {
+    "message": "Save"
+  },
+
+  "Name": {
+    "message": "Name"
+  },
+  
+  "NameTooltip": {
+    "message": "Unique name for this search engine"
+  },
+  
+  "Description": {
+    "message": "Description"
+  },
+  
+  "DescriptionTooltip": {
+    "message": "Short description of the search engine. 1024 characters max"
+  },
+  
+  "Template": {
+    "message": "Template"
+  },
+  
+  "TemplateTooltip": {
+    "message": "The URL of the form submit function. If this is a GET engine, {searchTerms} must appear (e.g. http://example.com/?q={searchTerms})"
+  },
+  
+  "FormPath": {
+    "message": "Form Path"
+  },
+  
+  "FormPathTooltip": {
+    "message": "Typically the website homepage or the URL the form appears on"
+  },
+  
+  "POSTparams": {
+    "message": "POST params"
+  },
+  
+  "POSTparamsTooltip": {
+    "message": "List of POST parameters and values separated by ampersands (e.g. q={searchTerms}&lang=en&maxresults=100) Only applicable when using POST method"
+  },
+  
+  "IconURI": {
+    "message": "Icon URI"
+  },
+  
+  "IconTooltip": {
+    "message": "URI of the icon to be used. Images should be less than 64x64 pixels and must be less than 10kb"
+  },
+  
+  "Method": {
+    "message": "Method"
+  },
+  
+  "MethodTooltip": {
+    "message": "Form method"
+  },
+  
+  "Encoding": {
+    "message": "Encoding"
+  },
+  
+  "EncodingTooltip": {
+    "message": "Character encoding required by the search form. Typically UTF-8"
+  },
+  
+  "Test": {
+    "message": "Test"
+  },
+  
+  "NewEngineAdded": {
+    "message": "New search engine added to ContextSearch"
+  },
+  
+  "NewEngineAddedTooltip": {
+    "message": "Install this search engine to the Firefox search toolbar using a custom OpenSearch API"
+  },
+  
+  "AlsoAdd": {
+    "message": "Also add to One-Click Search Engines?"
+  },
+  
+  "CannotCreate": {
+    "message": "Cannot create a search engine from this input"
+  },
+  
+  "OpenAdvanced": {
+    "message": "Open Advanced options?"
+  },
+  
+  "DidEngineInstall": {
+    "message": "Did the engine install correctly?"
+  },
+  
+  "RemovingEngine": {
+    "message": "Removing search engine"
+  },
+  
+  "CreateCustomSearch": {
+    "message": "Create Custom Search"
+  },
+  
+  "MustImport": {
+    "message": "If an OpenSearch engine was installed you must import it into ContextSearch using the Import file browser."
+  },
+  
+  "MoreInfo": {
+    "message": "more info"
+  },
+  
+  "NewEngineImported": {
+    "message": "Added $1 engine(s) to ContextSearch"
+  },
+  
+  "InstallOfficialTooltip": {
+    "message": "Install the official OpenSearch engine for the current website"
+  },
+  
+  "FindMycroftTooltip": {
+    "message": "Find OpenSearch engines at MycroftProject"
+  },
+  
+  "CreateCustomTooltip": {
+    "message": "Create a custom OpenSearch engine"
+  },
+  
+  "LoadingRemoteContent": {
+    "message": "Loading remote content"
+  },
+  
+  "LoadingRemoteContentFail": {
+    "message": "Failed to load %1 icon(s). This can occur when Tracking Protection is enabled"
+  },
+  
+  "LoadingRemoteContentTimeout": {
+    "message": "Fetching remote icons timed out. Some icons were not loaded."
+  },
+  
+  "RemoveAllEnginesPrompt": {
+    "message": "Remove all search engines?"
+  },
+  
+  "EnterUniqueName": {
+    "message": "Enter a unique name for this search engine"
+  },
+  
+  "EngineExists": {
+    "message": "%1 exists."
+  },
+  
+  "TemplateMissingeMessage": {
+    "message": "Unable to find a template for this search form. You can try doing a search and copying the resulting URL here, replacing your search terms with {searchTerms}"
+  },
+  
+  "TemplateIncludeError": {
+    "message": "Template should include {searchTerms}"
+  },
+
+  "TemplateURLError": {
+    "message": "Template must be an URL"
+  },
+
+  "DescriptionEmptyError": {
+    "message": "Must have a description"
+  },
+
+  "DescriptionSizeError": {
+    "message": "Description must be 1024 or fewer characters"
+  },
+  
+  "FormPathURLError": {
+    "message": "Form path must be an URL"
+  },
+  
+  "POSTIncludeError": {
+    "message": "POST params must include {searchTerms}"
+  },
+  
+  "IconURLError": {
+    "message": "Icon must be an URL"
+  },
+  
+  "IconLoadError": {
+    "message": "Icon failed to load"
+  },
+  
+  "EnterSearchTerms": {
+    "message": "Enter search terms"
+  },
+  
+  "BookmarksPermissionMessage": {
+    "message": "After closing this prompt you will receive a prompt to accept a new permission for \"Bookmarks\".\n\nAccepting will add a new folder \"ContextSearch Menu\" containing your current search engines in bookmarks under the \"Other Bookmarks\" folder. There you can add separators and group bookmarks into subfolders.\n\nDo not rename the search engine bookmarks as this will cause them to stop working. Deleted bookmarks can be added again from ContextSearch Options->Search Engines. Clicking the bookmark icons in the search engine list can add or remove bookmarks."
+  },
+  
+  "NativeAppImportError": {
+    "message": "Failed to load file (%1) Is app installed?"
+  },
+  
+  "ImportSettingsNotFoundAlert": {
+    "message": "ContextSearch settings not found!"
+  },
+  
+  "InvalidJSONAlert": {
+    "message": "file is not valid JSON"
+  },
+  
+  "ImportSuccessful": {
+    "message": "Import successful"
+  },
+  
+  "WhereAreMyEngines": {
+    "message": "Where are my search engines?"
+  },
+  
+  "ErrorParsing": {
+    "message": "Error parsing %1\nIf you continue to receive this error, it's likely your Content Security Policy settings"
+  },
+  
+  "AddCustomSearch": {
+    "message": "Add to ContextSearch"
+  },
+  
+  "SearchFor": {
+    "message": "Search for \"%1\""
+  },
+
+  "SearchForContext": {
+    "message": "Search for $1"
+  },
+  
+  "SearchForWithVariable": {
+	"message": "Search for \"%s\""
+  },
+  
+  "SearchWith": {
+    "message": "Search with",
+    "description": "title in context menu when searching"
+  },
+  
+  "AddSearchEngines": {
+    "message": "+ Add search engines",
+    "description": "title in context menu when no search engines installed"
+  },
+  
+  "ContextSearchMenu": {
+    "message": "ContextSearch Menu",
+    "description": "root folder name for bookmarks"
+  },
+  
+  "PositionRelativeToCursor": {
+    "message": "%1 %2 of cursor",
+    "description": "quick menu opening position relative to the mouse cursor. %1 is top|bottom, %2 is left|center|right"
+  },
+  
+  "top": {
+    "message": "top"
+  },
+  
+  "bottom": {
+    "message": "bottom"
+  },
+  
+  "left": {
+    "message": "left"
+  },
+  
+  "center": {
+    "message": "center"
+  },
+  
+  "right": {
+    "message": "right"
+  },
+  
+  "NameExists": {
+    "message": "Name exists",
+    "description": "short message for duplicate engine names"
+  },
+  
+  "NameInvalid": {
+    "message": "Name invalid",
+    "description": "short error for bad engine name"
+  },
+  
+  "ImportedEngines": {
+    "message": "Imported %1 engine(s) (%2 new)"
+  },
+  
+  "ClickToEdit": {
+    "message": "Click to edit"
+  },
+  
+  "BackspaceKey": {
+    "message": "Backspace"
+  },
+  
+  "EnterKey": {
+    "message": "Enter"
+  },
+  
+  "ShiftKey": {
+    "message": "Shift"
+  },
+  
+  "PauseBreakKey": {
+    "message": "Pause/Break"
+  },
+  
+  "CapsLockKey": {
+    "message": "Caps Lock"
+  },
+  
+  "EscKey": {
+    "message": "Esc"
+  },
+  
+  "SpaceKey": {
+    "message": "space"
+  },
+  
+  "PgUpKey": {
+    "message": "PgUp"
+  },
+  
+  "PgDnKey": {
+    "message": "PgDn"
+  },
+  
+  "EndKey": {
+    "message": "End"
+  },
+  
+  "HomeKey": {
+    "message": "Home"
+  },
+  
+  "LeftArrowKey": {
+    "message": "left arrow"
+  },
+  
+  "UpArrowKey": {
+    "message": "up arrow"
+  },
+  
+  "RightArrowKey": {
+    "message": "right arrow"
+  },
+  
+  "DownArrowKey": {
+    "message": "down arrow"
+  },
+  
+  "InsertKey": {
+    "message": "Insert"
+  },
+  
+  "DelKey": {
+    "message": "Del"
+  },
+  
+  "LeftWindowKey": {
+    "message": "left window key"
+  },
+  
+  "RightWindowKey": {
+    "message": "right window key"
+  },
+  
+  "SelectKey": {
+    "message": "Select Key"
+  },
+  
+  "NumLockKey": {
+    "message": "Num Lock"
+  },
+  
+  "ScrollLockKey": {
+    "message": "Scroll Lock"
+  },
+  
+  "Validating": {
+    "message": "Validating ..."
+  },
+  
+  "SearchBar": {
+    "message": "Search Bar"
+  },
+  
+  "SearchBarTooltip": {
+    "message": "Choose where to display the search bar in the Quick Menu"
+  },
+  
+  "hidden": {
+    "message": "hidden"
+  },
+  
+  "KeepMenuOpen": {
+    "message": "Keep Menu Open"
+  },
+  
+  "Search": {
+    "message": "Search",
+    "description": "placeholder in search bar input"
+  },
+  
+  "Copy": {
+    "message": "Copy",
+    "description": "button to duplicate a search engine from the manager"
+  },
+
+  "Hotkey": {
+    "message": "Hotkey",
+    "description": "label for Hotkey option"
+  },
+  
+  "HotkeyTooltip": {
+    "message": "Open the Quick Menu any time using a hotkey",
+    "description": "description for Hotkey option"
+  },
+  
+  "Focus": {
+    "message": "Focus On Open",
+    "description": "label for auto focus on search bar"
+  },
+  
+  "FocusTooltip": {
+    "message": "Set focus to search bar when the Quick Menu is opened",
+    "description": "description for focus"
+  },
+  
+  "SelectText": {
+    "message": "Select Text On Focus"
+  },
+  
+  "SelectTextTooltip": {
+    "message": "Select all text in the search bar when it receives focus",
+    "description": "description for select text in search bar"
+  },
+  
+  "NameChangeWarning": {
+    "message": "Renaming search engines can cause duplicate entries when importing One-Click search engines from Firefox using manual or automatic import. This can be fixed by removing engines with the old name from Firefox Options->Search->One-Click Search Engines or simply hide the unwanted engine. Are you sure you want to rename?",
+    "description": "warn user about potential problems when changing search engine names"
+  },
+  
+  "PressKey": {
+    "message": "Press a key",
+    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
+  },
+  
+  "History": {
+	"message": "History",
+	"description": "label for History icon"
+  },
+
+  "ClearSearchHistory": {
+    "message": "Clear Search History",
+    "description": "Options label / context menu entry for clearing search history"
+  },
+  
+  "ClearSearchHistoryTooltip": {
+    "message": "Clear search history from the search toolbar",
+    "description": "description for clearing search history"
+  },
+
+  "ShowSuggestions": {
+    "message": "Show Suggestions",
+    "description": "Options label / context menu entry for toggling suggestions for the toolbar"
+  },
+  
+  "ShowSuggestionsTooltip": {
+    "message": "Fetch search suggestions from Google and display with search history in the search toolbar",
+    "description": "description for Show Suggestions"
+  },
+  
+  "SearchBarUseOldStyle": {
+    "message": "Single Column With Labels",
+    "description": "Options label for using the old Firefox style of search bar"
+  },
+  
+  "SearchBarUseOldStyleTooltip": {
+    "message": "Display search engines in a single column with labels. Overrides columns setting"
+  },
+  
+  "ToolbarSearch": {
+    "message": "Toolbar Search",
+	"description": "Section label for the browser action search bar"
+  },
+  
+  "SearchBarCloseAterSearchTooltip": {
+    "message": "Close the menu after performing a search"
+  },
+  
+  "PerformASearchHeader": {
+    "message": "Template Missing",
+    "description": "header message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearch": {
+    "message": "Click OK and perform a new search using the form you are attempting to add",
+    "description": "message for the msgbox requesting the user perform a search"
+  },
+  
+  "PerformASearchTooltip": {
+    "message": "The form does not contain the information necessary to build a search engine. Perform a simple search to have ContextSearch look for a valid search template. It is best to use words that would not normally appear in a search url. Do not use \"search\", \"http\", other common url words or the website name"
+  },
+  
+  "OK": {
+    "message": "OK",
+    "description": ""
+  },
+  
+  "Back": {
+    "message": "back",
+    "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc"
+  },
+
+  "Folder": {
+    "message": "Folder"
+  },
+  
+  "Folders": {
+    "message": "Folders"
+  },
+  
+  "SearchActionsOpenFolder": {
+    "message": "Browse Folder",
+	"description": "SELECT option label for opening quick menu folder"
+  },
+  
+  "DisabledByHotkeys": {
+    "message": "disabled when hotkeys enabled",
+    "description": "message for search bar focus option when hotkeys are enabled"
+  },
+  
+  "AddOpenSearchEngine": {
+    "message": "Install to Firefox One-Click Search Engines",
+    "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
+  },
+  
+  "Regex": {
+    "message": "Modify Terms Regex",
+    "description": ""
+  },
+
+  "MatchSearchTermsRegex": {
+    "message": "Match Terms Regex",
+    "description": ""
+  },
+  
+  "ShortcutKey": {
+    "message": "Shortcut Key",
+    "description": "Label for context menu hotkey"
+  },
+  
+  "ShortcutKey_tooltip": {
+    "message": "Key to expand the \"Search With...\" menu in the context menu",
+    "description": "context menu hotkey tooltip"
+  },
+  
+  "Edit": {
+    "message": "Edit",
+    "description": "Manager menu item"
+  },
+  
+  "Hide": {
+    "message": "Hide",
+    "description": "Manager menu item"
+  },
+  
+  "Show": {
+    "message": "Show",
+    "description": "Manager menu item"
+  },
+  
+  "NewFolder": {
+    "message": "New Folder",
+    "description": "Manager menu item"
+  },
+  
+  "NewEngine": {
+    "message": "New Engine",
+    "description": "Manager menu item"
+  },
+  
+  "NewSeparator": {
+    "message": "New Separator",
+    "description": "Manager menu item"
+  },
+  
+  "AddBookmarklet": {
+    "message": "Add Bookmarklet",
+    "description": "Manager menu item"
+  },
+  
+  "RemoveNode": {
+    "message": "Remove Node",
+    "description": "Manager menu item"
+  },
+  
+  "DeleteEngines": {
+    "message": "Delete $1 engine(s)",
+    "description": "Manager menu item"
+  },
+  
+  "Confirm": {
+    "message": "Confirm",
+    "description": "Manager menu item"
+  },
+  
+  "AsShortcut": {
+    "message": "As Shortcut",
+    "description": "Manager menu item"
+    
+  },
+  
+  "AsNewEngine": {
+    "message": "As New Engine",
+    "description": "Manager menu item"
+  },
+  
+  "Rows": {
+    "message": "Rows",
+    "description": "Quick menu rows label"
+  },
+  
+  "RowsTooltip": {
+    "message": "Maximum number of rows to display on opening (grid view)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "RowsSingleColumnTooltip": {
+    "message": "Maximum number of rows to display on opening (text view)",
+    "description": "Quick menu rows tooltip"
+  },
+  
+  "ContextMenuHotKey": {
+    "message": "Shortcut Key",
+    "description": "Label for Context Menu shortcut key"
+  },
+  
+  "ContextMenuHotKeyTooltip": {
+    "message": "Access key for the ContextSearch submenu",
+    "description": "Description for Context Menu shortcut key"
+  },
+  
+  "EnableHistory": {
+    "message": "Remember Search History",
+    "description": ""
+  },
+  
+  "EnableHistoryTooltip": {
+    "message": "Remember search terms and display them with search suggestions"
+  },
+  
+  "SideBar": {
+	"message": "Sidebar Menu"
+  },
+  
+  "SideBarTooltip": {
+	"message": "Sidebar is an extension of the Toolbar with added functions displayed inside the browser window. Both the menu and the opening widget respond to text drag & drop ( except Chrome ). Most settings are shared with the Toolbar"
+  },
+  
+  "SideBarPositionTooltip": {
+	"message": "Choose where to display the side bar"
+  },
+
+  "SideBarWidgetEnable": {
+    "message": "Show Widget",
+    "description": "label for displaying the sidebar icon"
+  },
+  
+  "SideBarWidgetEnableTooltip": {
+    "message": "Overlay an icon for opening the sidebar",
+    "description": "description for displaying the sidebar icon"
+  },
+
+  "SideBarHotkeyTooltip": {
+    "message": "Open the Sidebar any time using a hotkey"
+  },
+  
+  "InitialOpacity": {
+    "message": "Initial Opacity",
+    "description": "label for setting Quick menu opening opacity"
+  },
+  
+  "InitialOpacityTooltip": {
+    "message": "Quick menu opens with a lower opacity and becomes opaque on mouseover"
+  },
+  
+  "AutoMaxChars": {
+    "message": "Character Limit",
+    "description": "label for setting maximum selected characters for auto open"
+  },
+  
+  "AutoMaxCharsTooltip": {
+    "message": "Do not open Quick menu if selection is over (n) characters in length. 0 = no limit"
+  },
+  
+  "EnableAnimations": {
+    "message": "Animations",
+    "description": ""
+  },
+  
+  "EnableAnimationsTooltip": {
+    "message": "Enable resize, slide-in, opacity animations for all menus. Disable for faster interface with no eye candy",
+    "description": ""
+  },
+
+    "EnableAnimationsTileSlider": {
+    "message": "Slide-in Animations",
+    "description": ""
+  },
+  
+  "EnableAnimationsTileSliderTooltip": {
+    "message": "Tile menu slide-in animation",
+    "description": ""
+  },
+  
+  "Theme": {
+    "message": "Theme",
+    "description": ""
+  },
+  
+  "ThemeTooltip": {
+    "message": "Theme to use with Quick, Toolbar, and Sidebar menus",
+    "description": ""
+  },
+      
+  "UserStyles": {
+    "message": "User Styles",
+    "description": "label for custom user styles"
+  },
+  
+  "SideBarStartOpen": {
+    "message": "Open On Load",
+    "description": "label for opening the sidebar when the page loads"
+  },
+  
+  "SideBarStartOpenTooltip": {
+    "message": "Open the sidebar automatically when the page loads",
+    "description": ""
+  },
+  
+  "More": {
+    "message": "more",
+    "description": ""
+  },
+  
+  "less": {
+    "message": "less",
+    "description": ""
+  },
+
+  "OCSEDeleteWarning": {
+    "message": "Firefox One-Click Search Engines cannot be deleted. Hide to disable",
+    "description": "alert message when attempting to delete a ocse from the manager"
+  },
+  
+  "Highlight": {
+    "message": "Highlight",
+    "description": ""
+  },
+  
+  "Appearance": {
+    "message": "Appearance",
+    "description": ""
+  },
+  
+  "General": {
+    "message": "General",
+    "description": ""
+  },
+  
+  "Links": {
+    "message": "Links",
+    "description": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting"
+  },
+  
+  "LinksTooltip": {
+    "message": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting",
+    "description": ""
+  },
+
+  "Text": {
+    "message": "Text",
+    "description": ""
+  },
+  
+  "List": {
+    "message": "List",
+    "description": ""
+  },
+  
+  "Url": {
+    "message": "url",
+    "description": ""
+  },
+  
+  "ContextMenuTooltip": {
+    "message": "Enable searching via the context menu",
+    "description": ""
+  },
+  
+  "QuickMenuTooltip": {
+    "message": "Enable searching via popup menu",
+    "description": ""
+  },
+  
+  "Opening": {
+    "message": "Opening",
+    "description": ""
+  },
+  
+  "Closing": {
+    "message": "Closing",
+    "description": ""
+  },
+  
+  "Location": {
+    "message": "Location",
+    "description": ""
+  },
+  
+  "Window": {
+    "message": "Window",
+    "description": ""
+  },
+  
+  "SidebarTypeTooltip": {
+    "message": "Choose how to display the side bar. Overlay creates a floating window over page content. Panel creates a sidebar the height of the window and pads the document to avoid covering page content",
+    "description": ""
+  },
+  
+  "HighlightTooltip": {
+    "message": "Highlight search terms in search results page",
+    "description": ""
+  },
+  
+  "HighlightSeparateWordsTooltip": {
+    "message": "Highlight each word in multi-word search separately. Disable to treat phrases as a single search term",
+    "description": ""
+  },
+  
+  "HighlightNavTooltip": {
+    "message": "Show navigation bar when highlighting",
+    "description": ""
+  },
+  
+  "Style": {
+    "message": "Style",
+    "description": ""
+  },
+  
+  "TextColor": {
+    "message": "Text Color",
+    "description": ""
+  },
+  
+  "BackgroundColor": {
+    "message": "Background Color",
+    "description": ""
+  },
+  
+  "Animations": {
+    "message": "Animations",
+    "description": ""
+  },
+  
+  "AnimationsTooltip": {
+    "message": "",
+    "description": ""
+  },
+  
+  "MenuTheme": {
+    "message": "Menu Theme",
+    "description": ""
+  },
+  
+  "UserStylesTooltip": {
+    "message": "Apply custom CSS styling to menus",
+    "description": ""
+  },
+  
+  "Toolbar": {
+    "message": "Toolbar Menu",
+    "description": ""
+  },
+  
+  "Shortcut": {
+    "message": "Shortcut",
+    "description": ""
+  },
+  
+  "Suggestions": {
+    "message": "Suggestions",
+    "description": ""
+  },
+  
+  "Overlay": {
+    "message": "overlay",
+    "description": ""
+  },
+  
+  "Panel": {
+    "message": "panel",
+    "description": ""
+  },
+  
+  "ToolbarTooltip": {
+    "message": "Open a search menu from the toolbar action button. Shares search actions with the Quick Menu",
+    "description": ""
+  },
+  
+  "Size": {
+    "message": "Size",
+    "description": ""
+  },
+  
+  "ConfirmResetAllSearchEngines": {
+    "message": "This will remove all custom search engines, folders, bookmarklets, separators and restore the default engine list.\r\n\r\nAre you sure?",
+    "description": ""
+  },
+  
+  "ResetDefaults": {
+    "message": "Restore Defaults",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesInfoMessage": {
+    "message": "Search engines can be added manually here or automatically via the Context Menu. See the following link for more info - ",
+    "description": ""
+  },
+  
+  "AddingSearchEnginesLinkText": {
+    "message": "Adding search engines",
+    "description": ""
+  },
+  
+  "EnableOnLinks": {
+    "message": "Enable on links",
+    "description": ""
+  },
+  
+  "EnableOnImages": {
+    "message": "Enable on images",
+    "description": ""
+  },
+  
+  "SelectTimeout": {
+    "message": "Selection Timeout",
+    "description": ""
+  },
+  
+  "SelectTimeoutTooltip": {
+    "message": "Time (in milliseconds) to allow after the last selection to cancel the popup. 0 = no limit",
+    "description": ""
+  },
+  
+  "highlightfollowdomaintooltip": {
+    "message": "Continue highlighting pages on the search results website",
+    "description": ""
+  },
+  
+  "highlightfollowexternallinkstooltip": {
+    "message": "Continue highlighting on external websites linked from the search results page",
+    "description": ""
+  },
+  
+  "findbar": {
+    "message": "Find Bar",
+    "description": ""
+  },
+  
+  "findbarpositiontooltip": {
+    "message": "Choose where to display the Find bar",
+    "description": ""
+  },
+  
+  "ClickToSet": {
+    "message": "Set",
+    "description": ""
+  },
+  
+  "highlightshowfindbartooltip": {
+    "message": "Show Find bar when highlighting",
+    "description": ""
+  },
+  
+  "FindBarEnableHotkey": {
+    "message": "Open the Find bar using a hotkey. Selected text will be highlighted immediately if found",
+    "description": ""
+  },
+  
+  "FindBarNavMessage": {
+    "message": "$1 of $2 matches",
+    "description": ""
+  },
+  
+  "highlightflashselectedtooltip": {
+    "message": "Flash the currently active search term",
+    "description": ""
+  },
+  
+  "findbarstartopen": {
+    "message": "Open the Find bar automatically when the page loads",
+    "description": ""
+  },
+  
+  "accuracy": {
+    "message": "Accuracy",
+    "description": ""
+  },
+  
+  "partially": {
+    "message": "partially",
+    "description": ""
+  },
+  
+  "exactly": {
+    "message": "exactly",
+    "description": ""
+  },
+  
+  "highlightaccuracytooltip": {
+    "message": "Words can be matched partially where searching 'lor' would match 'lorem', or exactly where only the complete word 'lor' will be highlighted",
+    "description": ""
+  },
+  
+  "sidebarhidefullscreentooltip": {
+    "message": "Hide the Sidebar when in fullscreen",
+    "description": ""
+  },
+  
+  "highlightignorepunctuationtooltip": {
+    "message": "Ignore punctuation - Setting this option would match WORLDS, WORLD'S and WO'RLDS. One or more apostrophes between the letters would still produce a match (e.g. W'O''R'L'D'S)",
+    "description": ""
+  },
+  
+  "highlightcasesensitivetooltip": {
+    "message": "Case sensitive",
+    "description": ""
+  },
+  
+  "background": {
+    "message": "background",
+    "description": ""
+  },
+  
+  "underline": {
+    "message": "underline",
+    "description": ""
+  },
+  
+  "highlightstyletooltip": {
+    "message": "Style the highlighting using background / foreground colors or underlines. Choosing 'underline' will ignore text color values",
+    "description": ""
+  },
+  
+  "casesensitive": {
+    "message": "case sensitive",
+    "description": ""
+  },
+  
+  "ignorepunctuation": {
+    "message": "ignore punctuation",
+    "description": ""
+  },
+  
+  "separateWordSearch": {
+    "message": "separate word search",
+    "description": ""
+  },
+  
+  "highlightopacitytooltip": {
+    "message": "Opacity of the background color",
+    "description": ""
+  },
+  
+  "docked": {
+    "message": "docked",
+    "description": ""
+  },
+  
+  "undocked": {
+    "message": "undocked",
+    "description": ""
+  },
+  
+  "findbarwindowtypetooltip": {
+    "message": "Choose how to display the find bar. Find bar window style can be toggled by double-clicking the dock / undock / move icon or by dragging",
+    "description": ""
+  },
+  
+  "findbarkeyboardtimeout": {
+    "message": "Perform search after typing has stopped for n milliseconds. Values too low can cause performance issues. 0 = disabled",
+    "description": ""
+  },
+  
+  "close": {
+    "message": "Close",
+    "description": ""
+  },
+
+  "movedockundock": {
+    "message": "move / dock / undock",
+    "description": ""
+  },
+
+  "navbar": {
+    "message": "Nav bar",
+    "description": ""
+  },
+
+  "browseForImage": {
+    "message": "Browse for local image",
+    "description": ""
+  },
+  
+  "enabledisplayprevioussearchtooltip": {
+    "message": "Display the last used search terms in the search box",
+    "description": ""
+  },
+  
+  "resize": {
+    "message": "resize",
+    "description": ""
+  },
+  
+  "searchresults": {
+    "message": "Search Results",
+    "description": ""
+  },
+  
+  "FindBarOpenInAllTabs": {
+    "message": "Open and close findbar across all tabs",
+    "description": ""
+  },
+  
+  "ToolsAsToolbar": {
+    "message": "Display tools in a separate toolbar",
+    "description": ""
+  },
+  
+  "searchactionssidebaraction": {
+    "message": "Open In Sidebar",
+    "description": ""
+  },
+  
+  "findbarsearchinalltabs": {
+    "message": "Search all tabs when using the findbar ( note: type timer will be disabled )",
+    "description": ""
+  },
+  
+  "NotificationOpenSidebar": {
+    "message": "open sidebar to see search results",
+    "description": ""
+  },
+  
+  "searchalltabs": {
+    "message": "Search all tabs",
+    "description": ""
+  },
+  
+  "simpleclick": {
+    "message": "Simple Click",
+    "description": ""
+  },
+  
+  "simpleclicktooltip": {
+    "message": "Click a word to open menu. No selection required",
+    "description": ""
+  },
+  
+  "alt": {
+    "message": "Alt",
+    "description": ""
+  },
+  
+  "ctrl": {
+    "message": "Ctrl",
+    "description": ""
+  },
+  
+  "shift": {
+    "message": "Shift",
+    "description": ""
+  },
+
+  "HideContextMenu": {
+	"message": "Hide the default context menu when opening the Quick Menu using right-click"
+  },
+
+  "HoldForContextMenu": {
+	"message": "Hold right button ~1s and release for default context menu"
+  },
+  
+  "tools_repeatsearch": {
+    "message": "Instant Search"
+  },
+  
+   "tools_lastused": {
+    "message": "Last used search engine"
+  },
+  
+  "ClearHighlighting": {
+    "message": "Clear Highlighting",
+    "description": ""
+  },
+  
+  "display": {
+    "message": "Display",
+    "description": ""
+  },
+  
+  "grouplayout": {
+    "message": "Group layout",
+    "description": ""
+  },
+  
+  "groupcolor": {
+    "message": "Group color",
+    "description": ""
+  },
+   "groupcolortext": {
+    "message": "Text color",
+    "description": ""
+  },
+  
+  "grouplimit": {
+    "message": "Group limit",
+    "description": ""
+  },
+
+  "default": {
+    "message": "default",
+    "description": ""
+  },
+
+  "grid": {
+    "message": "Grid",
+    "description": ""
+  },
+
+  "grouplayoutmessage": {
+    "message": "note: top-tier folders only",
+    "description": ""
+  },
+
+  "toggleview": {
+    "message": "",
+    "description": ""
+  },
+
+  "DefaultViewToolTip": {
+    "message": "Set the default display mode for the menu. Each folder view can be set separately using the grid / list tool or by editing the folder in the search engines manager",
+    "description": ""
+  },
+  
+  "grouphidemoretile": {
+    "message": "Hide \"More\" tile",
+    "description": ""
+  },
+  
+  "findinpage": {
+    "message": "Find in page",
+    "description": ""
+  },
+  
+  "SearchCode": {
+    "message": "Post-Search Script",
+    "description": ""
+  },
+  
+  "Layout": {
+    "message": "Layout",
+    "description": ""
+  },
+  
+  "DefaultView": {
+    "message": "Default View",
+    "description": ""
+  },
+  
+  "Saved": {
+    "message": "Saved",
+    "description": ""
+  },
+  
+  "invalidregex": {
+    "message": "Invalid Regex",
+    "description": ""
+  },
+  
+  "AddUsingFirefoxSearchBar": {
+	"message": "Firefox 78+ Users - Add your engine using the Firefox Search bar"
+  },
+  
+  "SyncWithFirefoxSearchHeader": {
+    "message": "Sync With Firefox Search (Basic Mode)"
+  },
+  
+  "SyncWithFirefoxSearch": {
+    "message": "Disable all ContextSearch engines, subfolders, bookmarklets, etc and only display search engines installed to the Firefox Search bar",
+    "description": ""
+  },
+  
+  "FFEngineExists": {
+    "message": "$1 already installed to Firefox Search bar",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsed": {
+    "message": "Show Last Used Engine",
+    "description": ""
+  },
+  
+  "ContexMenuShowLastUsedToolTip": {
+    "message": "Show the last-used search engine at the top of the menu",
+    "description": ""
+  },
+  
+  "ToggleTheme": {
+    "message": "Next Theme",
+    "description": ""
+  },
+  
+  "ToggleHotkeys": {
+    "message": "Hotkeys on / off",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsed": {
+    "message": "Show Recently Used Engines",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedToolTip": {
+    "message": "Show recently used engines at the top of the menu",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolder": {
+    "message": "",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+    "message": "Show as folder",
+    "description": ""
+  },
+  
+  "ContexMenuShowRecentlyUsedLengthTooltip": {
+    "message": "Recent engines to show",
+    "description": ""
+  },
+  
+  "RecentlyUsed": {
+    "message": "Recently Used",
+    "description": ""
+  },
+    
+  "Recent": {
+    "message": "Recent",
+    "description": ""
+  },
+    
+  "ClearSearchList": {
+    "message": "Clear Search Engine List and Sync With Firefox Search Bar",
+    "description": ""
+  },
+  
+  "CannotEditOneClickEngines": {
+    "message": "Firefox engines must be imported before making changes",
+    "description": ""
+  },
+  
+  "hotkeys": {
+    "message": "Hotkeys",
+    "description": ""
+  },
+  
+  "pagetiles": {
+    "message": "Page Tiles",
+    "description": ""
+  },
+  
+  "pagetilesenabledtooltip": {
+    "message": "Enable Page Tiles",
+    "description": ""
+  },
+  
+  "drop": {
+    "message": "Drop",
+    "description": ""
+  },
+  
+  "hotkeystooltip": {
+    "message": "Select text and press a key to search. Hotkeys can be set in the Search Engines tab",
+    "description": ""
+  },
+  
+  "pagetilesdescription": {
+    "message": "Drag and drop text to a full-page tiled menu of search engines ( experimental )",
+    "description": ""
+  },
+  
+  "EnableHotkeysDescription": {
+    "message": "Enable hotkeys anytime except when editing content ( disable to allow hotkeys only when a ContextSearch menu is in focus )",
+    "description": ""
+  },
+
+  "SearchAll": {
+    "message": "« search all »",
+    "description": ""
+  },
+
+  "pagetilesselectpalette": {
+    "message": "Color palette"
+  },
+  
+  "nonePalette": {
+    "message": "None",
+    "description": "none (palettes.js)"
+  },
+  
+  "alphabetPalette": {
+    "message": "Alphabet",
+    "description": "alphabet (palettes.js) - optional"
+  },
+  
+  "bouquetPalette": {
+    "message": "Bouquet",
+    "description": "bouquet (palettes.js) - optional"
+  },
+  
+  "dayglowPalette": {
+    "message": "Dayglow",
+    "description": "dayglow (palettes.js) - optional"
+  },
+  
+  "easterPalette": {
+    "message": "Easter",
+    "description": "easter (palettes.js) - optional"
+  },
+  
+  "lavenderPalette": {
+    "message": "Lavender",
+    "description": "lavender (palettes.js) - optional"
+  },
+  
+  "metalPalette": {
+    "message": "Metal",
+    "description": "metal (palettes.js) - optional"
+  },
+  
+  "nurseryPalette": {
+    "message": "Nursery",
+    "description": "nursery (palettes.js) - optional"
+  },
+  
+  "socialPalette": {
+    "message": "Social",
+    "description": "social (palettes.js) - optional"
+  },
+  
+  "waterPalette": {
+    "message": "Water",
+    "description": "water (palettes.js) - optional"
+  },
+
+  "keyword": {
+    "message": "Omnibox keyword"
+  },
+
+  "FailedToLoad": {
+    "message": "Failed to load search engines :(",
+    "description": "Failed to load search engines (options.js)"
+  },
+  
+  "fetchingRemoteContent": {
+    "message": "Fetching remote content",
+    "description": "Fetching remote content (options.js)"
+  },
+
+  "searchenginesmanager": {
+    "message": "Search Engines Manager",
+    "description": ""
+  },
+
+  "faviconFinder": {
+    "message": "Find favicons by checking the host site ( opens a background tab )",
+    "description": ""
+  },
+
+  "faviconFinderShort": {
+    "message": "Find favicons",
+    "description": ""
+  },
+
+  "uploadfromlocal": {
+    "message": "Use an image from your computer",
+    "description": ""
+  },
+
+  "Shortcuts": {
+    "message": "Shortcuts",
+    "description": "keyboard shortcuts"
+  },
+
+  "ClosePageTilesOnShake": {
+    "message": "Close Page Tiles by shaking the mouse",
+    "description": ""
+  },
+  "ClosePageTilesOnBorder": {
+    "message": "Close Page Tiles when dragging outside the main window",
+    "description": ""
+  },
+
+  "ShowFolderSearch": {
+    "message": "Show an option to search the entire folder at the top of the menu",
+    "description": ""
+  },
+
+  "Omnibox": {
+    "message": "Omnibox",
+    "description": ""
+  },
+
+  "OpenOnDragTooltip": {
+    "message": "Drag text / links / images to open",
+    "description": ""
+  },
+
+  "Drag": {
+    "message": "Drag",
+    "description": ""
+  },
+
+  "HighlightLimitTooltip": {
+    "message": "Limit the number of matches to highlight. A lower limit can prevent slowdowns when marking. 0 = no limit",
+    "description": ""
+  },
+
+  "AddToBlockList": {
+    "message": "Add to blocklist",
+    "description": ""
+  },
+
+  "AddToBlockListConfirm": {
+    "message": "Add \"$1\" to blocklist?",
+    "description": ""
+  },
+
+  "regexmatches": {
+    "message": "Regex Matches",
+    "description": ""
+  },
+
+  "audio": {
+    "message": "audio",
+    "description": ""
+  },
+
+  "frame": {
+    "message": "frame",
+    "description": ""
+  },
+
+  "image": {
+    "message": "image",
+    "description": ""
+  },
+
+  "link": {
+    "message": "link",
+    "description": ""
+  },
+
+  "linkText": {
+    "message": "link text",
+    "description": ""
+  },
+
+  "page": {
+    "message": "page",
+    "description": ""
+  },
+
+  "selection": {
+    "message": "selection",
+    "description": ""
+  },
+
+  "video": {
+    "message": "video",
+    "description": ""
+  },
+
+  "requestPermissionsMessage": {
+    "message": "An optional permission is required. Click the request button below.",
+    "description": "generic permission"
+  },
+  "Request": {
+    "message": "Request Permission",
+    "description": "clipboardWrite permission - request button label"
+  },
+  
+  "deleteNodesMessage": {
+    "message": "Delete $1 node(s)?"
+  },
+  
+  "RegexTooltip": {
+    "message": "Modify the search terms using regex before submitting. Multiple replacements can be chained, one per line",
+    "description": "searchengine edit - search regex tooltip"
+  },
+  "MatchSearchTermsRegexTooltip": {
+    "message": "Display this engine in the Regex Matches folder if the search terms match the following regex",
+    "description": "searchengine edit - match regex tooltip"
+  },
+  "SearchCodeTooltip": {
+    "message": "Run some javascript after opening the template URL. Global variable 'searchTerms' represents the current search",
+    "description": "searchengine edit - searchcode tooltip"
+  },
+  
+  "ConfirmDeleteCustomSearchEngines": {
+    "message": "This will delete all custom search engines, folders, bookmarklets, separators, etc. Are you sure?",
+    "description": "remove searchengines - confirm message"
+  },
+  
+ "customIconTooltip": {
+    "message": "Use a custom icon",
+    "description": "toolbar icon - custom icon tooltip"
+  },
+  
+ "EnableHotkeysLabel": {
+    "message": "Search Engine Hotkeys",
+    "description": "label for Search Engine Hotkeys"
+  },
+  
+  "quickMenuOpen": {
+    "message": "quickMenuOpen",
+    "description": "keyboard shortcut label"
+  },
+  "findBarOpen": {
+    "message": "findBarOpen",
+    "description": "keyboard shortcut label"
+  },
+  "findBarNext": {
+    "message": "findBarNext",
+    "description": "keyboard shortcut label"
+  },
+  "findBarPrevious": {
+    "message": "findBarPrevious",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarOpen": {
+    "message": "sideBarOpen",
+    "description": "keyboard shortcut label"
+  },
+  "toggleDisplayMode": {
+    "message": "toggleDisplayMode",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuLock": {
+    "message": "quickMenuLock",
+    "description": "keyboard shortcut label"
+  },
+  "quickMenuEdit": {
+    "message": "quickMenuEdit",
+    "description": "keyboard shortcut label"
+  },
+  "optionsOpen": {
+    "message": "optionsOpen",
+    "description": "keyboard shortcut label"
+  },
+  "pageTilesOpen": {
+    "message": "pageTilesOpen",
+    "description": "keyboard shortcut label"
+  },
+  "themeNext": {
+    "message": "themeNext",
+    "description": "keyboard shortcut label"
+  },
+  "themePrevious": {
+    "message": "themePrevious",
+    "description": "keyboard shortcut label"
+  },
+  "sideBarMinify": {
+    "message": "sideBarMinify",
+    "description": "keyboard shortcut label"
+  },
+  
+  "OmniboxTooltip": {
+    "message": "Omnibox",
+    "description": "omnibox image title"
+  },
+  
+  "lite": {
+    "message": "lite",
+    "description": "theme name"
+  },
+  "dark": {
+    "message": "dark",
+    "description": "theme name"
+  },
+  "modern": {
+    "message": "modern",
+    "description": "theme name"
+  },
+  "modern_dark": {
+    "message": "modern dark",
+    "description": "theme name"
+  },
+  "modern_purple": {
+    "message": "modern purple",
+    "description": "theme name"
+  },
+  "modern_sunset": {
+    "message": "modern sunset",
+    "description": "theme name"
+  },
+  "modern_glass": {
+    "message": "modern glass",
+    "description": "theme name"
+  },
+  
+  "exportToFirefoxSearch": {
+    "message": "export to Firefox search",
+    "description": "advanced setting label"
+  },
+  "exportToFirefoxSearchTooltip": {
+    "message": "Browse to your profile folder and select your search.json.mozlz4 file. You will be prompted with two files: a new search.json.mozlz4 file and a backup of your original file. Save both files to your profile directory. Restart Firefox to see the changes.",
+    "description": "advanced setting tooltip"
+  },
+  "addSearchProviderHideNotificationTooltip": {
+    "message": "Notice for Firefox users to add opensearch engines using the Firefox search bar",
+    "description": "advanced setting tooltip"
+  },
+  "alwaysAllowTileRearrangingTooltip": {
+    "message": "Always allow tiles to be rearranged in the menus",
+    "description": "advanced setting tooltip"
+  },
+  "autoCopy": {
+    "message": "Auto Copy"
+  },
+  "autoCopyTooltip": {
+    "message": "Selected text is copied to the clipboard",
+    "description": "advanced setting tooltip"
+  },
+  "autoPasteFromClipboardTooltip": {
+    "message": "Text in the clipboard is pasted to searchbars when search menus are opened",
+    "description": "advanced setting tooltip"
+  },
+   "autoCopyOnInputsTooltip": {
+    "message": "Enable for inputs and textareas",
+    "description": "advanced setting tooltip"
+  },
+  "cache": {
+    "message": "+",
+    "description": "button cache label"
+  },
+  "cacheTooltip": {
+    "message": "cache search engine icons from their URLs",
+    "description": "advanced setting tooltip - button cache"
+  },
+  "uncache": {
+    "message": "-",
+    "description": "button uncache label"
+  },
+  "uncacheTooltip": {
+    "message": "Delete search engine icon cache only for search engines containing icon URLs. Warning: URLs will not be checked for bad or invalid before removing cache",
+    "description": "advanced setting tooltip - button uncache"
+  },
+  "confirmUncache": {
+    "message": "remove all icon cache?",
+    "description": "uncache message confirm"
+  },
+  "warningCache": {
+    "message": "some icons could not be cached",
+    "description": "cache message warning"
+  },
+  "cacheIconsMaxSizeTooltip": {
+    "message": "Max width or height to resize icons for caching",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuContextualLayoutFlattenLimitTooltip": {
+    "message": "Remove subfolders and flatten menu if only n number of engines are to be shown. 0 = no limit",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuHotkeysTooltip": {
+    "message": "Append hotkey to context menu items using (&A) format for quick access",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuRegexMatchedEnginesTooltip": {
+    "message": "Show regex matching engines at the top of the menu",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuTitleTooltip": {
+    "message": "Override context menu title. Use %s in place of searchTerms. blank = default",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseContextualLayoutTooltip": {
+    "message": "Display the context menu in subfolders according to the current context",
+    "description": "advanced setting tooltip"
+  },
+  "contextMenuUseInnerTextTooltip": {
+    "message": "Use the inner text of an element as the search term when no text is selected",
+    "description": "advanced setting tooltip"
+  },
+  "disableNewTabSortingTooltip": {
+    "message": "Enable to let the browser decide how to sort new search result tabs. Useful to prevent conflicts with tab managers",
+    "description": "advanced setting tooltip"
+  },
+  "exportWithoutBase64IconsTooltip": {
+    "message": "Exported configs are smaller by excluding icon data URIs. May cause custom icons to be lost",
+    "description": "advanced setting tooltip"
+  },
+  "forceOpenResultsTabsAdjacentTooltip": {
+    "message": "Force search results to appear in next tab to the right",
+    "description": "advanced setting tooltip"
+  },
+  "groupFolderRowBreaksTooltip": {
+    "message": "Enable to show inline group folders as block elements",
+    "description": "advanced setting tooltip"
+  },
+  "groupLabelMoreTileTooltip": {
+    "message": "Show the more / less icon for group folders inside the label tile vs using a separate tile",
+    "description": "advanced setting tooltip"
+  },
+  "omniboxDefaultToLastUsedEngineTooltip": {
+    "message": "Default to the most recent search engine used with the omnibox",
+    "description": "advanced setting tooltip"
+  },
+  "openFoldersOnHoverTimeoutTooltip": {
+    "message": "Number of milliseconds to hover before opening a folder. 500 = default, 0 = disabled",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAllowContextMenuNewTooltip": {
+    "message": "Systems that display the context menu on mousedown vs mouseup may need to select an alternative opening method, or modify the way the context menu is opened.",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoMaxCharsTooltip": {
+    "message": "Maximum number of characters to be selected and still open the quick menu using the Auto method. Selecting more that the number will not open the menu. 0 = no limit",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuAutoTimeoutTooltip": {
+    "message": "Cancels opening the quick menu if pausing for a set number of milliseconds before releasing the mouse button. 0 = disabled",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuCancelDeadzoneTooltip": {
+    "message": "How many pixels you can move the mouse before cancelling opening the quick menu using HOLD",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuDomLayoutTooltip": {
+    "message": "Override the quick menu layout using a comma-separated list of HTMLElement ids, e.g. ( menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar ). Not all ids need be used. Any listed will be moved to the end of the DOM tree. blank = default",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuFocusOnOpenTooltip": {
+    "message": "set focus to the quick menu after opening",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHideSeparatorsInGridTooltip": {
+    "message": "hide separators when using the quick menu in grid view",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuHoldTimeoutTooltip": {
+    "message": "Time in millisections to hold a mouse button before opening the quick menu using HOLD",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOpeningOpacityTooltip": {
+    "message": "Transparency level of the quick menu when opened. Becomes opaque on hover",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuPreventPageClicksTooltip": {
+    "message": "Prevent mouse events on the current webpage while the quick menu is open",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuRegexMatchedEnginesTooltip": {
+    "message": "Show regex matching engines at the top of the menu",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuSearchOnMouseUpTooltip": {
+    "message": "Allows a search to be performed from the quick menu on mouseup without requiring a mousedown. Useful when opening the menu on Hold and releasing the mouse on a search tile to perform a search.",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowHotkeysInTitleTooltip": {
+    "message": "Show hotkeys with titles",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuShowRecentlyUsedTooltip": {
+    "message": "Show recently used engines at the top of the menu",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuOnSimpleClick_useInnerTextTooltip": {
+    "message": "Use the inner text of an element as the search term when no text is selected",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolbarRowsTooltip": {
+    "message": "Maximum number of tool rows to display. 0 = no limit",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsLockPersistTooltip": {
+    "message": "The state of the lock tool will be remembered across sessions",
+    "description": "advanced setting tooltip"
+  },
+  "quickMenuToolsRepeatSearchPersistTooltip": {
+    "message": "The state of the repeat search tool will be remembered across sessions",
+    "description": "advanced setting tooltip"
+  },
+  "rememberLastOpenedFolderTooltip": {
+    "message": "Open menus to the last folder used",
+    "description": "advanced setting tooltip"
+  },
+  "rightClickMenuOnMouseDownFixTooltip": {
+    "message": "Require a double-click to display the default context menu when using HOLD right mouse button to open the quick menu. Useful for preventing errant menus on systems that display the context menu on mouse down vs mouse up",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarHistoryLengthTooltip": {
+    "message": "Maximum number of history entries to store",
+    "description": "advanced setting tooltip"
+  },
+  "searchBarSuggestionsCountTooltip": {
+    "message": "Maximum number of Google suggestions to include",
+    "description": "advanced setting tooltip"
+  },
+  "shakeSensitivityTooltip": {
+    "message": "Sensitivity for detecting a shake. Lower = more sensitive",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_openOnResultsTooltip": {
+    "message": "Open the sidebar on search results tabs",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_openOnResultsMinimizedTooltip": {
+    "message": "Open the sidebar on search results tabs minimized",
+    "description": "advanced setting tooltip"
+  },
+  "sideBar_rememberStateTooltip": {
+    "message": "Remember the opened state of the sidebar",
+    "description": "advanced setting tooltip"
+  },  
+  "Blocklist": {
+    "message": "Blocklist",
+    "description": "blocklist label"
+  },
+  "BlocklistTooltip": {
+    "message": "URLs to disable ContextSearch with. Accepts hostnames www.example.com, wildcards  *.example.com and regex. ! or # prefix will disable an entry #example.com or !example.com",
+    "description": "blocklist tooltip"
+  },
+  "NewTool": {
+    "message": "Add Tool"
+  },
+  "BackButton": {
+    "message": "Back Button"
+  },
+  "ForwardButton": {
+    "message": "Forward Button"
+  },
+  
+  "Title": {
+    "message": "Title"
+  },
+  
+  "MenuBar": {
+    "message": "Menu Bar"
+  },
+  
+  "EditMenu": {
+    "message": "Layout editor"
+  },
+
+  "requestClipboardWritePermission": {
+    "message": "clipboardWrite permission is required to interact with the clipboard. Click the button below to request the clipboardWrite permission. ",
+    "description": "permissions request"
+  },
+  
+  "manualedit": {
+    "message": "Modify preferences object manually"
+  },
+
+  "manualeditwarning": {
+    "message": "Manually editing preferences object may cause ContextSearch to stop working!"
+  },
+
+  "ContextAwareFilter": {
+    "message": "Filter search engines based on the target element ( link, image, selection, ... )"
+  },
+
+  "NewMultiSearch": {
+    "message": "New Multi-Search"
+  },
+
+  "ContextsTooltip": {
+    "message": "Display this engine when opening menus from the selected contexts. Works with Context and Quick menus when [Context Menu / Quick Menu] -> Advanced -> Filter Engines is enabled, otherwise ignored."
+  },
+
+  "OpenOnIcon": {
+    "message": "Icon"
+  },
+
+  "OpenOnIconTooltip": {
+    "message": "Display an icon next to selected text. Click to open menu."
+  },
+
+  "checkContextMenuOrderNotification": {
+    "message": "Move the default context menu to double-click when opening the quick menu? See options for more info."
+  },
+
+  "DoubleClick": {
+    "message": "Double-Click"
+  },
+  
+  "ShowDefaultMenuModifierMessage": {
+    "message": "To show the default context menu"
+  },
+
+  "NewExternalProgram": {
+    "message": "New App Launcher"
+  },
+
+  "searchIconFinder": {
+    "message": "🔍 Search IconFinder.com"
+  },
+
+  "RefineSearch": {
+    "message": "Refine search"
+  },
+
+  "NativeApp": {
+    "message": "Messenger app"
+  },
+
+  "NativeAppMissing": {
+    "message": "Messenger app is not connected."
+  },
+  "SearchBookmarklets": {
+    "message": "🔍 Search Bookmarklets"
+  },
+  "NewScript": {
+    "message": "New Script"
+  },
+  "Permissions": {
+    "message": "Permissions"
+  },
+  "Command": {
+    "message": "Command"
+  },
+  "WorkingDirectory": {
+    "message": "Working Directory"
+  },
+  "Script": {
+    "message": "Script"
+  },
+  "PostAppScript": {
+    "message": "Post-App Script"
+  },
+  "PostAppScriptTooltip": {
+    "message": "Javascript to execute in the current tab after the app completes. Stdout is captured to the variable 'result', e.g. alert(result)."
+  },
+  "MessengerOfflineTooltip": {
+    "message": "An additional plugin is required to launch apps from ContextSearch web-ext. Click the link for more details."
+  },
+  "ToggleSearchTerms": {
+    "message": "Next Search Term"
+  },
+  "EnableOn": {
+    "message": "Enable on"
+  },
+  "Input": {
+    "message": "input"
+  },
+  "tools_OpenImage": {
+    "message": "Open Image"
+  },
+  "tools_Download": {
+    "message": "Download"
+  },
+  "resetUserOptionsConfirm": {
+    "message": "Reset all preferences to default settings? ( Search Engines will not be effected )"
+  },
+  "contexts": {
+    "message":"Contexts"
+  },
+  "quickMenuCloseOnEdit": {
+    "message":"Close menu when typing. ( Requires the search bar *NOT* have focus - see 'Search Bar' )"
+  },
+  "quickMenuContextualLayoutToolbarTooltip": {
+    "message": "Show the Contexts Toolbar"
+  },
+  "quickMenuOnMouseOpenWithoutSelection": {
+    "message": "Anywhere"
+  },
+  "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+    "message": "Open menu on any element including empty areas in documents and frames"
+  },
+  "saveclose": {
+    "message": "Save and Close"
+  },
+  "singlewindow": {
+    "message": "Single"
+  },
+  "cascadingwindow": {
+    "message": "Cascading"
+  },
+  "CascadingFoldersToolTip": {
+    "message": "Browse folders in a single menu or separate cascading menus"
+  },
+  "DontShowAgain": {
+    "message": "Don't show this again"
+  },
+  "Icon": {
+    "message": "icon"
+  },
+  "Inline": {
+    "message": "inline"
+  },
+  "Block": {
+    "message": "block"
+  },
+  "CheckForUpdates": {
+    "message": "check for updates"
+  },
+  "UpdateToVersion": {
+    "message": "Update native app script to version $1?"
+  },
+  "LatestVersionAlreadyInstalled": {
+    "message": "Latest version already installed"
+  },
+  "beta": {
+    "message": "beta testing"
+  },
+  "TemplateCheatSheet": {
+    "message": "%s - search terms\n%su - search terms UPPERCASE\n%sl - search terms lowercase\n%d - domain\n%ds - subdomain\n%du - user-selected domain\n%u - tab URL"
+  },
+  "AdditionalSearchActions": {
+    "message": "Additional Actions"
+  },
+  "Event": {
+    "message": "Event"
+  },
+  "Button": {
+    "message": "Button"
+  },
+  "SearchAction": {
+    "message": "Search Action"
+  },
+  "middle": {
+    "message": "middle"
+  },
+  "forward": {
+    "message": "forward"
+  },
+  "AutoThemeTooltip": {
+    "message": "Automatically change the menu theme when using dark mode"
+  },
+  "AutoThemeLiteTooltip": {
+    "message": "Lite Theme"
+  },
+  "AutoThemeDarkTooltip": {
+    "message": "Dark Theme"
+  },
+  "ConfirmMultiLineSearch": {
+    "message": "This will open $1 search tabs. Continue?"
+  },
+  "MatchOptions": {
+    "message": "Match Options"
+  },
+  "autoImportFirefoxEnginesTooltip": {
+   "message": "Always check for Firefox engines"
+  },
+  "context": {
+   "message": "context"
+  },
+  "sort": {
+    "message": "Sort"
+  },
+  "SortWarning": {
+    "message": "Sort all engines and folders alphabetically?"
+  },
+  "ExpandCollapse": {
+    "message": "Expand All / Collapse All"
+  },
+  "PopupWindow": {
+    "message": "Popup Window"
+  },
+  "PopupWindowReuseTooltip": {
+    "message": "Enable to reuse a single window for all search results\nDisable for a new window for each search"
+  },
+  "KeywordShort": {
+    "message": "Keyword"
+  },
+  "Filter": {
+    "message": "Filter"
+  },
+  "Main": {
+    "message": "Main"
+  },
+  "Web": {
+    "message": "Web"
+  },
+  "Local": {
+    "message": "Local"
+  },
+  "SetAsDefault": {
+    "message": "Set As Default"
+  },
+  "FirefoxSearch": {
+    "message": "Firefox Search"
+  }
+}
