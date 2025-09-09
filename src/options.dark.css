@@ -3,8 +3,8 @@
 	--bg-color2:#353535;
 	--bg-color3:#454545;
 	--bg-color4:#454545;
-	--color:#888;
-	--color2:#888;
+	--color:#aaa;
+	--color2:#aaa;
 	--border-color1:#333;
 	--border-color2:#222;
 	--border-color3:#333;
@@ -14,7 +14,7 @@
 
 	--tree-row-border: 1px solid #444;
 
-	--tools-color: #888;
+	--tools-color: #aaa;
 }
 
 a, a:link, a:visited, a:active {

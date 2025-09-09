@@ -6,8 +6,8 @@
 		<title>ContextSearch Options</title>	
 		<style>
 			:root {
-				--bg-color1:#fafafa;
-				--bg-color2:#e8e8e8;
+				--bg-color2:#fafafa;
+				--bg-color1:#e8e8e8;
 				--bg-color3:#eee;
 				--bg-color4:#E4E4E4;
 
@@ -55,11 +55,11 @@
 			}
 			#left_div {
 				box-sizing:border-box;
-				width:270px;
+				width:250px;
 				font-size:16pt;
 				font-weight:bold;
 				text-align:right;
-				padding:20px 20px 20px 0;
+				padding:16px;
 				margin-right:10px;
 				vertical-align:top;
 				display:inline-block;
@@ -72,15 +72,16 @@
 			#right_div {
 				box-sizing:border-box;
 				display:inline-block;
-				width:calc(100% - 270px);
+				width:calc(100% - 250px);
 				text-align:left;
-				margin-left:270px;
+				margin-left:250px;
 				padding:0 16px;
 				height:100%;
 			}
 			#left_div #info {
-				font-size:12pt;
+				font-size:10pt;
 				margin-top:50px;
+				font-weight:normal;
 			}
 			#left_div #info IMG {
 				height:1rem;
@@ -291,7 +292,7 @@
 			.container {
 				display: inline-block;
 				position: relative;
-				margin-bottom: 8px;
+				/*margin-bottom: 8px;*/
 				cursor: pointer;
 				user-select: none;
 				vertical-align:top;
@@ -454,6 +455,11 @@
 				border:inherit;
 				border-width:1px 0px 0px 1px;
 			}
+
+			#b_importSettings, #b_exportSettings {
+				width:49%;
+				padding:4px 0;
+			}
 			
 			 /* Style the tab */
 			.tab {
@@ -462,14 +468,14 @@
 				margin:0;
 				padding:0;
 				position:relative;
-				left:20px;
+
 			}
 
 			/* Style the buttons that are used to open the tab content */
 			.tab .tablinks {
-				border: 1px solid var(--border-color1); 
-				border-right:none;
-				background-color: var(--bg-color3);
+				/*border: 1px solid var(--border-color1); */
+				border:none;
+				background-color: var(--bg-color2);
 				outline: none;
 				cursor: pointer;
 				padding: 6px 16px;
@@ -477,9 +483,9 @@
 				text-align:left;
 				margin:0;
 				color:var(--color2);
-				border-radius:8px 0 0 8px;
+				/*border-radius:8px 0 0 8px;*/
 				width:100%;
-				padding-left:46px;
+				padding-left:40px;
 				position:relative;
 			}
 			
@@ -804,12 +810,12 @@
 
 			.fileUpload {
 				display:inline-block;
-				font-size:11pt;
+				font-size:10pt;
 				cursor:pointer;
 				text-align:center;
-				border:2px solid var(--border-color1);
-				border-radius:3px;
-				padding:2px 4px;
+				border:1px solid var(--border-color1);
+				border-radius:4px;
+				padding:2px 6px;
 				background-color:var(--bg-color4);
 			}
 			.fileUpload > IMG {
@@ -889,6 +895,16 @@
 			.openingTable TR:last-child TD {
 				border-bottom: none;
 			}
+			.openingTable .tool {
+				height:24px;
+				width:24px;
+				vertical-align: middle;
+				margin:0 10px;
+			}
+			.openingTable TD:nth-of-type(1) .option .description {
+				font-weight:bold;
+			}
+
 			#d_clearSearchHistory {
 				cursor: pointer;
 				user-select:none;
@@ -1039,7 +1055,7 @@
 				margin: 8px 0;
 			}
 			.option > * {
-				vertical-align:top;
+				vertical-align:middle;
 				text-align:left;
 			}
 			DIV[data-gif] {
@@ -1515,7 +1531,7 @@
 				vertical-align: middle;
 				text-align: center;
 				margin: 4px;
-				padding: 4px 12px 0 12px;
+				padding: 2px 12px;
 				background-color: var(--bg-color1);
 			}
 			#additionalSearchActionsTable .template {
@@ -1787,14 +1803,16 @@
 		<div id="console"></div>
 		<div id="main">
 		<div id="left_div">
-			<img src="icons/logo_notext.svg" style="border-radius:5px;height:48px;vertical-align:top;margin-right:4px"/>
-			<div style="display:inline-block;margin-bottom:20px">
-				<span style="border-bottom:1px solid grey">
-					<span style="font-weight:normal;font-variant:small-caps">Context</span>
-					<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:18pt;margin-left:-8px">Search</span>
-				</span>
-				<div id="version" style="font-size:11pt;text-align:left">&nbsp;</div>
+			<div>
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" style="color:var(--color1);" target="_blank">
+					<img src="icons/logo_notext.svg" style="border-radius:4px;height:42px;vertical-align:top;margin-right:4px"/>
+					<span style="font-weight:normal;font-variant:small-caps;font-size:14pt">Context</span>
+					<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:16pt;margin-left:-8px;margin-right:4px">Search</span>
+				</a>
+				
 			</div>
+			<div id="version" style="font-size:10pt;text-align:right;margin:-12px 0 8px 0">&nbsp;</div>
+			
 						
 			<div class="tab" data-tabgroup="main_nav">
 				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><tool data-icon="search.svg"></tool>$</button>
@@ -1813,7 +1831,7 @@
 
 				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n=""><tool data-icon="help.svg"></tool>$</button>
 			</div>
-			<div style="font-size:10pt;cursor:default">
+			<div style="font-size:10pt;margin-top:8px;">
 				<label for="importSettings">
 					<button id="b_importSettings" data-i18n="Import">$</button>
 					<input style="display:none" name="importSettings" id="importSettings" type="file" accept="*" class="nosave" />
@@ -1821,10 +1839,6 @@
 				<button id="b_exportSettings" data-i18n="Export">$</button>
 			</div>
 			</p>
-			<div id="info" style="margin-top:20px">
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" target="_blank" data-i18n="Support">$<tool data-icon="external_link.svg" style="margin-left:4px;height:.8em"></tool></a><br />
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext" target="_blank" data-i18n="Source">$<tool data-icon="external_link.svg" style="margin-left:4px;height:.8em"></tool></a><br />
-			</div>
 			
 		</div>
 		<div id="right_div">
@@ -2284,7 +2298,6 @@
 						<option value="true" data-i18n="cascadingwindow">$</option>
 					</select>
 					<span class="description" data-i18n="CascadingFoldersToolTip">$</span>
-					<beta title="$beta"></beta>
 				</div>
 				<p class="header2" data-i18n="Columns">$</p>
 				<div class="option">
@@ -2387,13 +2400,15 @@
 				<table class="openingTable">
 				<tr>
 					<td>
-						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
-						<label class="container" data-i18n="Auto">
-							<input type="checkbox" id="quickMenuAuto" />
-							<span class="checkmark checkmark2"></span>
-							<tool data-icon="auto.svg" style="height:24px;width:24px;vertical-align: middle;margin:0 10px"></tool>$
-						</label>
-						<br />
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuAuto" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Auto">
+								<tool data-icon="auto.svg"></tool>
+							$</div>
+						</div>
 						<span style="font-size:9pt" data-i18n="AutoTooltip">$</span>
 					</td>
 
@@ -2424,13 +2439,16 @@
 				</tr>
 				<tr>
 					<td>
-						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
-						<label class="container" data-i18n="Drag">
-							<input type="checkbox" id="quickMenuOnDrag" />
-							<span class="checkmark checkmark2"></span> 
-							<tool data-icon="mouse.svg" style="height:24px;width:24px;vertical-align: middle;margin:0 10px"></tool>$
-						</label>
-						<br />
+
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnDrag" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Drag">
+								<tool data-icon="mouse.svg"></tool>
+							$</div>
+						</div>
 						<span style="font-size:9pt" data-i18n="OpenOnDragTooltip">$</span>
 					</td>
 					<td>
@@ -2452,13 +2470,15 @@
 				</tr>
 				<tr>
 					<td>
-						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
-						<label class="container" data-i18n="OpenOnIcon">
-							<input type="checkbox" id="quickMenuIcon.enabled" />
-							<span class="checkmark checkmark2"></span> 
-							<tool data-icon="image.svg" style="height:24px;width:24px;vertical-align: middle;margin:0 10px"></tool>$
-						</label>
-						<br />
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuIcon.enabled" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="OpenOnIcon">
+								<tool data-icon="image.svg"></tool>
+							$</div>
+						</div>
 						<span style="font-size:9pt" data-i18n="OpenOnIconTooltip">$</span>
 					</td>
 					<td>
@@ -2506,13 +2526,15 @@
 				</tr>
 				<tr>
 					<td>
-						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
-						<label class="container" data-i18n="Keyboard">
-							<input type="checkbox" id="quickMenuOnKey" />
-							<span class="checkmark checkmark2"></span>
-							<tool data-icon="keyboard.svg" style="height:24px;width:24px;vertical-align: middle;;margin:0 10px"></tool>$
-						</label>
-						<br />
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnKey" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Keyboard">
+								<tool data-icon="keyboard.svg"></tool>
+							$</div>
+						</div>
 						<span style="font-size:9pt" data-i18n="KeyboardTooltip">$</span>
 					</td>
 					<td>	
@@ -2522,13 +2544,15 @@
 				</tr>
 				<tr>
 					<td>
-						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
-						<label class="container" data-i18n="Mouse"> 
-							<input type="checkbox" id="quickMenuOnMouse" />
-							<span class="checkmark checkmark2"></span>
-							<tool data-icon="mouse.svg" style="height:24px;width:24px;vertical-align: middle;;margin:0 10px"></tool>$
-						</label>
-						<br />
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnMouse" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="Mouse">
+								<tool data-icon="mouse.svg"></tool>
+							$</div>
+						</div>
 						<span style="font-size:9pt" data-i18n="MouseTooltip">$</span>
 					</td>
 					<td>
@@ -2589,13 +2613,15 @@
 				</tr>
 				<tr>
 					<td>
-						<!-- <checkbox data-id="" data-i18n=""></checkbox> -->
-						<label class="container" data-i18n="SimpleClick"> 
-							<input type="checkbox" id="quickMenuOnSimpleClick.enabled" />
-							<span class="checkmark checkmark2"></span>
-							<tool data-icon="cursor.svg" style="height:24px;width:24px;vertical-align: middle;;margin:0 10px"></tool>$
-						</label>
-						<br />
+						<div class="option">
+							<label class="container">
+								<input type="checkbox" id="quickMenuOnSimpleClick.enabled" />
+								<span class="checkmark checkmark2"></span>
+							</label>
+							<div class="description" data-i18n="SimpleClick">
+								<tool data-icon="cursor.svg"></tool>
+							$</div>
+						</div>
 						<span style="font-size:9pt" data-i18n="SimpleClickTooltip">$</span>
 					</td>
 					<td>
@@ -3719,46 +3745,39 @@
 				<div data-browser="firefox">
 
 					<section>
-						<p class="header1" style="margin-top:0" data-i18n="SyncWithFirefoxSearchHeader">
+						<p class="header1" style="margin-top:0" data-i18n="FirefoxSearch">
 							_
 						</p>
 						<div class="option">
 							<checkbox data-id="syncWithFirefoxSearch" data-i18n=""></checkbox>
 							<span class="description" data-i18n="SyncWithFirefoxSearch">$</span>
 						</div>
-					</section>
 
-					<br>
+						<div data-hide-on-sync-with-firefox>
 
-					<section data-hide-on-sync-with-firefox>
-						<p class="header1" style="margin-top:0" data-i18n="Advanced">_</p>
-
-						<div class="option">
-							<checkbox data-id="autoImportFirefoxEngines" data-i18n=""></checkbox>
-							<span class="description" data-i18n="autoImportFirefoxEnginesTooltip">Always check for Firefox engines</span>
-						</div>
-
-						<hr>
-
-						<span data-i18n="ImportHeader">_</span><br>
-						
-						<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportSelectFile">
-							<img src="/icons/import.svg" style="height:10px" />
-							_
-							<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
-						</label>
-						<!-- <span style="font-size:8pt" data-i18n="ImportDescription">_</span> -->
-						
-						<div class="option" style="display: inline-block;margin-left:10px">
-							<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
-							<span class="description" data-i18n="ClearSearchList">$</span>
-						</div>
-						
-						<div id="status_div" style="display:none;">
-							<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
-								<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+							<div class="option">
+								<checkbox data-id="autoImportFirefoxEngines" data-i18n=""></checkbox>
+								<span class="description" data-i18n="autoImportFirefoxEnginesTooltip">Always check for Firefox engines</span>
 							</div>
-							<div id="status" style='display:inline-block'>&nbsp;</div>
+							
+							<label for="selectMozlz4FileButton" class="fileUpload" data-i18n="ImportHeader">
+								<img src="/icons/import.svg" style="height:10px" />
+								_
+								<input name="selectMozlz4FileButton" id="selectMozlz4FileButton" type="file" accept=".json.mozlz4" />
+							</label>
+							<!-- <span style="font-size:8pt" data-i18n="ImportDescription">_</span> -->
+							→
+							<div class="option" style="display: inline-block;margin-left:10px">
+								<checkbox data-id="cb_overwriteOnImport" data-i18n=""></checkbox>
+								<span class="description" data-i18n="ClearSearchList">$</span>
+							</div>
+							
+							<div id="status_div" style="display:none;">
+								<div style='display:inline-block;margin: 0 20px;border-radius:50%;padding:2px'>
+									<img id="status_img" class="smallIcon" style="height:30px" src="/icons/transparent.gif" />
+								</div>
+								<div id="status" style='display:inline-block'>&nbsp;</div>
+							</div>
 						</div>
 					</section>
 					
