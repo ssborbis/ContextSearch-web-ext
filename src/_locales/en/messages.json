@@ -327,7 +327,7 @@
   },
   
   "ImportHeader": {
-    "message": "Import One-Click Search Engines"
+    "message": "Import From Firefox"
   },
   
   "ImportDescription": {
@@ -2593,5 +2593,8 @@
   },
   "SetAsDefault": {
     "message": "Set As Default"
+  },
+  "FirefoxSearch": {
+    "message": "Firefox Search"
   }
 }
