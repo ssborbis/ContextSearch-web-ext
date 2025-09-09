@@ -327,11 +327,11 @@
   },
 
   "ImportHeader": {
-    "message": "Importation des moteurs de recherche accessibles en un clic"
+    "message": "Importer de Firefox"
   },
 
   "ImportDescription": {
-    "message": "Sélectionner le fichier « search.json.mozlz4 » dans le dossier du profil Firefox :"
+    "message": "Sélectionner le fichier « search.json.mozlz4 » dans le dossier du profil Firefox."
   },
 
   "ImportSelectFile": {
@@ -659,7 +659,7 @@
   },
 
   "right": {
-    "message": "Droit"
+    "message": "Droite"
   },
 
   "NameExists": {
@@ -2593,5 +2593,14 @@
   },
   "SetAsDefault": {
     "message": "Définir comme moteur par défaut"
+  },
+  "FirefoxSearch": {
+    "message": "Recherche de Firefox"
+  },
+  "ChooseFilename": {
+    "message": "Choisir un nom de fichier."
+  },
+  "or": {
+    "message": "– ou –"
   }
 }
