@@ -787,7 +787,7 @@ const QMtools = [
 	{
 		name: 'sort', 
 		icon: "icons/sort.svg", 
-		title: i18n('tools_Sort') || "Sort",
+		title: i18n('sort') || "Sort",
 		context: ["quickmenu", "sidebar", "searchbar"],
 		keepOpen:true,
 		init: function() { return toolInit(this); },
