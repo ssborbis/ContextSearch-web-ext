@@ -1323,12 +1323,12 @@ function buildSearchEngineContainer() {
 		
 		let li = nearestParent('LI', e.target);
 
-		if ( !selectedRows.length ) {
+		if ( li && !selectedRows.length ) {
 			selectRow(li);
 		}
 
 		// prevent errant, invisible selections
-		if ( selectedRows.length && !selectedRows.includes(li) ) {
+		if ( li && selectedRows.length && !selectedRows.includes(li) ) {
 			clearSelectedRows();
 			selectRow(li);
 		}
