@@ -71,7 +71,7 @@
   },
 
    "SearchActionsBackgroundTabKeepOpen": {
-    "message": "Ouvrir dans un onglet en arrière-plan (menu maintenu ouvert)"
+    "message": "Ouvrir dans un onglet en arrière-plan (garder le menu ouvert)"
   },
  
   "SearchActionsNewWindow": {
@@ -219,7 +219,7 @@
   },
 
   "CloseAfterSearchTooltip": {
-    "message": "Fermer le menu après avoir cliqué sur une icône (décocher en cas de recherche fréquente avec plusieurs moteurs de recherche ou par choix d’une fermeture manuelle, option pouvant être remplacée par « Garder le panneau ouvert » à la rubrique « Actions de recherche »)"
+    "message": "Fermer le menu après avoir cliqué sur une icône (décocher en cas de recherche fréquente avec plusieurs moteurs de recherche ou par choix d’une fermeture manuelle, option pouvant être supplantée par « Garder le menu ouvert » à la rubrique « Actions de recherche »)"
   },
 
   "CloseOnScroll": {
@@ -785,7 +785,7 @@
   },
 
   "KeepMenuOpen": {
-    "message": "Garder le panneau ouvert"
+    "message": "Garder le menu ouvert"
   },
 
   "Search": {
@@ -799,12 +799,12 @@
   },
 
   "Hotkey": {
-    "message": "Touche de raccourci",
+    "message": "Raccourci",
     "description": "label for Hotkey option"
   },
 
   "HotkeyTooltip": {
-    "message": "Ouvrir le menu rapide à tout moment à l’aide d’une touche de raccourci.",
+    "message": "Ouvrir le menu rapide à tout moment à l’aide d’un raccourci.",
     "description": "description for Hotkey option"
   },
 
@@ -1043,7 +1043,7 @@
   },
 
   "SideBar": {
-	  "message": "Panneau latéral"
+	  "message": "Menu du panneau latéral"
   },
 
   "SideBarTooltip": {
@@ -1272,7 +1272,7 @@
   },
 
   "Toolbar": {
-    "message": "Barre d’outils",
+    "message": "Menu de la barre d’outils",
     "description": ""
   },
 
@@ -1642,7 +1642,7 @@
   },
 
   "DefaultViewToolTip": {
-    "message": "Mode d’affichage par défaut du panneau : en grille ou en liste (possibilité de définir séparément la vue de chaque dossier en utilisant l’outil « Grille / Liste » ou en modifiant le dossier dans le gestionnaire des moteurs de recherche)",
+    "message": "Mode d’affichage par défaut du menu : en grille ou en liste (possibilité de définir séparément la vue de chaque dossier en utilisant l’outil « Grille / Liste » ou en modifiant le dossier dans le gestionnaire des moteurs de recherche)",
     "description": ""
   },
 
@@ -2023,7 +2023,7 @@
   },
   
  "EnableHotkeysLabel": {
-    "message": "Touches de raccourci",
+    "message": "Raccourcis de moteurs",
     "description": "label for Search Engine Hotkeys"
   },
   
@@ -2561,9 +2561,6 @@
   "context": {
     "message": "Contexte"
   },
-  "tools_Sort": {
-    "message": "Trier"
-  },
   "sort": {
     "message": "Trier"
   },
@@ -2593,5 +2590,8 @@
   },
   "Local": {
     "message": "Local"
+  },
+  "SetAsDefault": {
+    "message": "Définir comme moteur par défaut"
   }
 }
