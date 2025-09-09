@@ -2596,5 +2596,11 @@
   },
   "FirefoxSearch": {
     "message": "Firefox Search"
+  },
+  "ChooseFilename": {
+    "message": "Choose a filename"
+  },
+  "or": {
+    "message": "– or –"
   }
 }
