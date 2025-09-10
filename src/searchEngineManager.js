@@ -1894,7 +1894,7 @@ function buildSearchEngineContainer() {
 			var blob = new Blob([json], {type: "application/json"});
 			var url  = URL.createObjectURL(blob);
 
-			let filename = prompt("Choose a filename");
+			let filename = prompt(i18n('ChooseFilename'));
 
 			if ( filename ) {
 
