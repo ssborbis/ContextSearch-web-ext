@@ -534,6 +534,27 @@ function getShadowRoot() {
 	else return createShadowRoot();
 }
 
+function modifySearchTerms() {
+	let modifiedTemplate = prompt("Enter a modified template to use with repeat searches", "%s");
+
+	if ( modifiedTemplate ) {
+		quickMenuObject.modifiedTemplate = modifiedTemplate;
+		sendMessage({
+			action: "updateQuickMenuObject", 
+			quickMenuObject: quickMenuObject
+		});
+	}
+	// let dialog = document.createElement('dialog');
+	// getShadowRoot().appendChild(dialog);
+	// dialog.innerHTML = `show
+	// <input type="text" />
+	// <button>OK</button><button>Cancel</button>`;
+
+	// dialog.showModal();
+}
+
+
+
 // track mouse position
 document.addEventListener("mousemove", e => {
 	quickMenuObject.mouseCoords = {x: e.clientX, y: e.clientY};
@@ -555,6 +576,9 @@ document.addEventListener('keydown', e => {
 				tool.on = false;
 				debug("repeatsearch disabled");
 				sendMessage({action: "saveUserOptions", userOptions: userOptions});
+
+				quickMenuObject.modifiedTemplate = null;
+				sendMessage({action: "updateQuickMenuObject", quickMenuObject: quickMenuObject});
 			}
 		}
 	}

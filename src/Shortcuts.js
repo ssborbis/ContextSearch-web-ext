@@ -356,6 +356,15 @@ class Shortcut {
 			shift:false,
 			meta:false,
 			id: 16
+		}, {
+			name: "Tools -> Repeat Search -> Modify Search Terms",
+			action:() => modifySearchTerms(),
+			key: "=",
+			ctrl: false,
+			alt: true,
+			shift:false,
+			meta:false,
+			id: 17
 		}
 	];
 }

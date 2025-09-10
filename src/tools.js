@@ -270,6 +270,8 @@ const QMtools = [
 			
 			saveUserOptions();
 
+			if ( tool.off ) quickMenuObject.modifiedTemplate = null;
+
 			sendMessage({
 				action: "updateQuickMenuObject", 
 				quickMenuObject: quickMenuObject
