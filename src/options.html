@@ -7,11 +7,11 @@
 		<style>
 			:root {
 				--bg-color2:#fafafa;
-				--bg-color1:#e8e8e8;
+				--bg-color1:#f5f5f5;
 				--bg-color3:#eee;
 				--bg-color4:#E4E4E4;
 
-				--border-color1:#ccc;
+				--border-color1:#ddd;
 				--border-color2:#ddd;
 				--border-color3:#858585;
 
@@ -34,7 +34,7 @@
 			}
 			BODY {
 				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif; 
-				background-color:var(--bg-color1);
+				background-color:var(--bg-color3);
 				color: var(--color);
 				text-align:left;
 				font-size:11pt;
@@ -58,7 +58,7 @@
 				width:250px;
 				font-size:16pt;
 				font-weight:bold;
-				text-align:right;
+				text-align:left;
 				padding:16px;
 				margin-right:10px;
 				vertical-align:top;
@@ -90,6 +90,10 @@
 			#left_div #info A,#left_div #info A:visited, #left_div #info A:link {
 				color:inherit;
 				text-decoration: none;
+			}
+			#banner {
+				background-color: #f4f5f7;
+				padding:8px;
 			}
 			.code {
 				font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
@@ -192,6 +196,12 @@
 				border:1px solid var(--border-color3);
 				padding:1px 4px;
 				background-color:var(--bg-color1);
+				color:var(--color);
+			}
+
+			.inputNice[name="searchCode"] {
+				font-family: "Courier New";
+				font-size:9pt;
 				color:var(--color);
 			}
 
@@ -533,10 +543,9 @@
 			}
 			.tab .tablinks .tool {
 				position:absolute;
-				height:1em;
-				left:16px;
+				height:1.2em;
+				left:8px;
 				vertical-align:middle;
-				margin-top:2px;
 			}
 			
 			.fade-in {
@@ -1804,15 +1813,19 @@
 		<div id="console"></div>
 		<div id="main">
 		<div id="left_div">
-			<div>
-				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" style="color:var(--color1);" target="_blank">
-					<img src="icons/logo_notext.svg" style="border-radius:4px;height:42px;vertical-align:top;margin-right:4px"/>
-					<span style="font-weight:normal;font-variant:small-caps;font-size:14pt">Context</span>
-					<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:16pt;margin-left:-8px;margin-right:4px">Search</span>
+			<div id="banner" style="margin-bottom:16px;">
+				<a href="https://github.com/ssborbis/ContextSearch-web-ext/issues" style="color:var(--color1);text-decoration:none" target="_blank">
+					<img src="icons/logo_notext.svg" style="border-radius:4px;height:36px;vertical-align:top;margin-right:4px"/>
+					<div style="display:inline-block">
+						<span style="font-weight:normal;font-variant:small-caps;font-size:14pt">Context</span>
+						<span style="font-weight:bold;font-variant:small-caps;font-style:italic;font-size:16pt;margin-left:-8px;margin-right:4px">Search</span>
+						<br>
+						<div id="version" style="font-size:10pt;text-align:right;margin:-4px 4px 0 0">&nbsp;</div>
+					</div>
 				</a>
 				
 			</div>
-			<div id="version" style="font-size:10pt;text-align:right;margin:-12px 0 8px 0">&nbsp;</div>
+			
 			
 						
 			<div class="tab" data-tabgroup="main_nav">
