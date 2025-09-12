@@ -467,6 +467,8 @@ GROUP > LABEL {
 	border-radius:2px;
 	text-overflow: ellipsis;
 	/*display:none;*/
+	font-variant:small-caps;
+	font-weight:bold;
 }
 
 .textShadow {
