@@ -2602,5 +2602,23 @@
   },
   "or": {
     "message": "– or –"
+  },
+  "New": {
+    "message": "New"
+  },
+  "Engine": {
+    "message": "Engine"
+  },
+  "Separator": {
+    "message": "Separator"
+  },
+  "ExternalProgram": {
+    "message": "App Launcher"
+  },
+  "Multisearch": {
+    "message": "Multi-Search"
+  },
+  "Tool": {
+    "message": "Tool"
   }
 }
