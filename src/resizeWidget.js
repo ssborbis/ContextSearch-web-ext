@@ -8,6 +8,7 @@ function ResizeWidget(el, options) {
 		onDrop: function() {},
 		columns: 0,
 		rows: 0,
+		snapToGrid: false,
 		isResizing: false,
 		allowHorizontal: true,
 		allowVertical: true,

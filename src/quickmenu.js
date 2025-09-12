@@ -474,7 +474,7 @@ window.addEventListener('message', async e => {
 			break;
 
 		case "editEnd":
-			QMtools.find(t => t.name === "edit").action({forceOff: true});
+			QMtools["edit"].action({forceOff: true});
 			break;
 
 		case "openFolder":

@@ -526,7 +526,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 
 		ts.forEach(t => {
 
-			let tool = QMtools.find( _t => _t.name === t.name);
+			let tool = QMtools[t.name];
 
 			folder.children.push({
 				type: "tool",
@@ -820,9 +820,10 @@ function buildToolsBarIcons() {
 	
 	var toolIcons = [];
 	
-	QMtools.forEach( tool => {
+	for ( let key in QMtools ) {
+		let tool = QMtools[key];
 		toolIcons.push({name: tool.name, src: tool.icon, title: tool.title, index: Number.MAX_VALUE, disabled: true});
-	});
+	}
 
 	toolIcons.forEach( toolIcon => {
 		toolIcon.index = userOptions.quickMenuTools.findIndex( tool => tool.name === toolIcon.name );

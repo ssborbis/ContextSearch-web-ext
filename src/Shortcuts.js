@@ -255,7 +255,7 @@ class Shortcut {
 			id: 6
 		},{
 			name:"Menu → Quick → Lock",
-			action: () => qm && QMtools.find(t => t.name === "lock").action(),
+			action: () => qm && QMtools["lock"].action(),
 			key: "l",
 			ctrl: true,
 			alt: false,
@@ -264,7 +264,7 @@ class Shortcut {
 			id: 7
 		},{
 			name:"Menu → [All] → Edit Layout",
-			action:() => qm && QMtools.find(t => t.name === "edit").action(),
+			action:() => qm && QMtools["edit"].action(),
 			key: "e",
 			ctrl: true,
 			alt: true,
@@ -322,7 +322,7 @@ class Shortcut {
 		// 	id: 13
 		// },
 		{
-			name:"Last Used Search Engine",
+			name:"Tools → Last Used Search Engine",
 			action:(e) => {
 				let searchTerms = getSearchTermsForHotkeys(e);
 
@@ -330,7 +330,7 @@ class Shortcut {
 
 				quickMenuObject.searchTerms = searchTerms;
 
-				QMtools.find(t => t.name === "lastused").action(e);
+				QMtools["lastused"].action(e);
 			},
 			key: "l",
 			ctrl: true,
@@ -357,7 +357,7 @@ class Shortcut {
 			meta:false,
 			id: 16
 		}, {
-			name: "Tools -> Repeat Search -> Modify Search Terms",
+			name: "Tools → Repeat Search → Modify Search Terms",
 			action:() => modifySearchTerms(),
 			key: "=",
 			ctrl: false,
@@ -365,6 +365,15 @@ class Shortcut {
 			shift:false,
 			meta:false,
 			id: 17
+		}, {
+			name: "Tools → Repeat Search → Toggle",
+			action:(e) => QMtools['repeatsearch'].action(e),
+			key: "+",
+			ctrl: false,
+			alt: true,
+			shift:true,
+			meta:false,
+			id: 18
 		}
 	];
 }

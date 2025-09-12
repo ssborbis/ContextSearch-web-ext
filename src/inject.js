@@ -570,7 +570,7 @@ document.addEventListener('keydown', e => {
 
 		// disable repeatsearch
 		if ( userOptions.quickMenuRepeatSearchDisableOnEscape ) {
-			let tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+			let tool = getUserTool("repeatsearch");
 
 			if ( tool && tool.on ) {
 				tool.on = false;
