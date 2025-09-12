@@ -53,8 +53,8 @@ function ResizeWidget(el, options) {
 			getShadowRoot().appendChild(overDiv);
 
 			el.style.transition = 'none';
-			el.style.borderWidth = '2px';
-			el.style.borderStyle = 'dashed';
+			//el.style.borderWidth = '2px';
+			//el.style.borderStyle = 'dashed';
 			
 			resizeWidget.style.transition = 'none';
 
@@ -89,9 +89,9 @@ function ResizeWidget(el, options) {
 				// size less than 1 do nothing
 			//	if ( startSize.columns + colsMod <= 0 || startSize.rows + rowsMod <= 0 ) return;
 
-				// ignore repeat drag events
-			//	if ( mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
-				//	return;
+				// snap
+				if ( o.snapToGrid && mostRecentModSize.columns === colsMod && mostRecentModSize.rows === rowsMod )
+					return;
 
 				o.columns = startSize.columns + colsMod;
 				o.rows = startSize.rows + rowsMod;
@@ -121,8 +121,6 @@ function ResizeWidget(el, options) {
 				
 				// clear resize styling
 				el.style.transition = null;
-				el.style.borderWidth = null;
-				el.style.borderStyle = null;
 				el.style.zIndex = null;
 				
 				resizeWidget.style.transition = null;
