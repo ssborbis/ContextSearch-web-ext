@@ -1048,7 +1048,7 @@ function buildSearchEngineContainer() {
 				id: toolsFolderId
 			};
 			userOptions.quickMenuTools.forEach(t => {
-				let tool = QMtools.find(_t => _t.name === t.name);
+				let tool = QMtools[t.name];
 				if ( tool && t.disabled === false )
 					tools.children.push(
 						{
@@ -1781,7 +1781,8 @@ function buildSearchEngineContainer() {
 			_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
 			_menu.style.top = rect.y + window.scrollY + "px";
 
-			QMtools.sort( (a,b) => a.title > b.title ).forEach( t => {
+			Object.keys(QMtools).sort( (a,b) => a.title > b.title ).forEach( key => {
+				let t = QMtools[key];
 				let m = createMenuItem(t.title, t.icon);
 				m.className = 'menuItem';
 

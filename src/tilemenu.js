@@ -256,7 +256,7 @@ function createToolsArray() {
 		// skip disabled tools
 		if (tool.disabled) return;
 		
-		let _tool = QMtools.find( t => t.name === tool.name );
+		let _tool = QMtools[tool.name];
 		if ( _tool ) {
 			
 			toolsArray.push(_tool.init());

@@ -5,15 +5,15 @@ const toolInit = (tool) => {
 	tile.keepOpen = tool.keepOpen || false;
 
 	// set tile.tool to userOptions.quickMenuTools[tool] if exists
-	let config = userOptions.quickMenuTools.find( t => t.name === tool.name );
+	let config = getUserTool(tool.name);
 	if ( config ) tile.tool = config;
 
 	return tile;
 }
 
-const QMtools = [
-	{
-		name: 'close', 
+const QMtools = {
+	'close': {
+		name: "close",
 		icon: "icons/crossmark.svg",
 		context: ["quickmenu"],
 		title: i18n('tools_Close'),
@@ -22,8 +22,8 @@ const QMtools = [
 			sendMessage({action: "closeQuickMenuRequest", eventType: "click_close_icon"});
 		}
 	},
-	{
-		name: 'copy', 
+	'copy': {
+		name: "copy",
 		icon: "icons/copy.svg", 
 		title: i18n('tools_Copy'),
 		context: ["quickmenu", "sidebar"],
@@ -55,8 +55,8 @@ const QMtools = [
 
 		}
 	},
-	{
-		name: 'link', 
+	'link': {
+		name: "link",
 		icon: "icons/external_link.svg", 
 		title: i18n('tools_OpenAsLink'),
 		context: ["quickmenu", "sidebar"],
@@ -99,8 +99,8 @@ const QMtools = [
 			});
 		}
 	},
-	{
-		name: 'disable', 
+	'disable': {
+		name: "disable",
 		icon: "icons/qm.svg", 
 		title: i18n('quickmenu'),
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -112,7 +112,7 @@ const QMtools = [
 		action: function(e) {
 			quickMenuObject.disabled = !quickMenuObject.disabled;
 
-			tool = userOptions.quickMenuTools.find( _tool => _tool.name === "disable" );
+			tool = getUserTool("disable");
 
 			tool.on = !quickMenuObject.disabled;
 
@@ -128,8 +128,8 @@ const QMtools = [
 
 		}
 	},
-	{
-		name: 'lock', 
+	'lock': {
+		name: "lock",
 		icon: "icons/lock.svg", 
 		title: i18n('tools_Lock'),
 		context: ["quickmenu"],
@@ -152,7 +152,7 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			let tool = userOptions.quickMenuTools.find( tool => tool.name === "lock" );
+			let tool = getUserTool("lock");
 
 			quickMenuObject.locked = !quickMenuObject.locked;
 
@@ -168,8 +168,8 @@ const QMtools = [
 			setToolLockedState(this.tool || this, tool.on);
 		}
 	},
-	{
-		name: 'lastused', 
+	'lastused': {
+		name: "lastused",
 		icon: "icons/history_one.svg", 
 		title: i18n('tools_lastused'),		
 		init: function() {
@@ -227,8 +227,8 @@ const QMtools = [
 			});
 		}
 	},
-	{
-		name: 'repeatsearch',
+	'repeatsearch': {
+		name: "repeatsearch",
 		icon: "icons/repeatsearch.svg",
 		title: i18n('tools_repeatsearch'),
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -262,9 +262,11 @@ const QMtools = [
 			return tile;
 		},
 		action: function(e) {
-			tool = userOptions.quickMenuTools.find( _tool => _tool.name === "repeatsearch" );
+			tool = getUserTool("repeatsearch");
 
 			tool.on = !tool.on;
+
+			alert(tool.on);
 
 			setToolLockedState(this.tool || this, tool.on);
 			
@@ -278,8 +280,8 @@ const QMtools = [
 			});
 		}
 	},
-	{
-		name: 'toggleview', 
+	'toggleview': {
+		name: "toggleview",
 		icon: "icons/list.svg", 
 		title: i18n('grid') + " / " + i18n('list'),
 		keepOpen:true,
@@ -302,8 +304,8 @@ const QMtools = [
 			qm.toggleDisplayMode()
 		}
 	},
-	{
-		name: 'findinpage', 
+	'findinpage': {
+		name: "findinpage",
 		icon: "icons/highlight.svg", 
 		title: i18n('findinpage'),
 		init: function() { return toolInit(this); },
@@ -311,8 +313,8 @@ const QMtools = [
 			sendMessage(Object.assign({action:"mark", searchTerms: sb.value, findBarSearch:true}, userOptions.highLight.findBar.markOptions));
 		}
 	},
-	{
-		name: 'openoptions', 
+	'openoptions': {
+		name: "openoptions",
 		icon: "icons/settings.svg", 
 		title: i18n('settings'),
 		init: function() { return toolInit(this); },
@@ -320,8 +322,8 @@ const QMtools = [
 			sendMessage({action: "openOptions", hashurl: "#quickMenu"});
 		}
 	},
-	{
-		name: 'toggle_theme', 
+	'toggle_theme': {
+		name: "toggle_theme",
 		icon: "icons/theme.svg", 
 		title: i18n('ToggleTheme'),
 		keepOpen:true,
@@ -330,8 +332,8 @@ const QMtools = [
 			nextTheme();
 		}
 	},
-	{
-		name: 'toggle_hotkeys', 
+	'toggle_hotkeys': {
+		name: "toggle_hotkeys",
 		icon: "icons/keyboard.svg", 
 		title: i18n('toggleHotkeys'),
 		keepOpen:true,
@@ -350,8 +352,8 @@ const QMtools = [
 			
 		}
 	},
-	{
-		name: 'edit', 
+	'edit': {
+		name: "edit",
 		icon: "icons/edit.svg", 
 		title: i18n('editmenu'),
 		keepOpen:true,
@@ -391,7 +393,7 @@ const QMtools = [
 				// show all engines for editing
 				if ( qm.contexts.length ) {
 
-					let sh = QMtools.find(t => t.name === 'showhide');
+					let sh = QMtools['showhide'];
 					let sh_tile = sh.init();
 					await sh_tile.action();
 
@@ -496,7 +498,7 @@ const QMtools = [
 							setDraggable();
 
 							// show all regardless of context or hidden
-							let sh = QMtools.find(t => t.name === 'showhide');
+							let sh = QMtools['showhide'];
 							let sh_tile = sh.init();
 							await sh_tile.action();
 
@@ -544,8 +546,8 @@ const QMtools = [
 			// }
 		}
 	},
-	{
-		name: 'block', 
+	'block': {
+		name: "block",
 		icon: "icons/block.svg",
 		title: i18n('addtoblocklist'),
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -562,8 +564,8 @@ const QMtools = [
 			}
 		}
 	},
-	{
-		name: 'recentlyused', 
+	'recentlyused': {
+		name: "recentlyused",
 		icon: "icons/history.svg",
 		title: i18n('recentlyused'),
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -578,8 +580,8 @@ const QMtools = [
 			resizeMenu({openFolder: true});	
 		}
 	},
-	{
-		name: 'showhide', 
+	'showhide': { 
+		name: "showhide",
 		icon: "icons/hide.svg",
 		title: i18n('showhide'),
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -621,8 +623,8 @@ const QMtools = [
 			qm.expandMoreTiles();
 		}
 	},
-	{
-		name: 'context', 
+	'context': {
+		name: "context",
 		icon: "icons/selection.svg",
 		title: i18n('context'),
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -732,8 +734,8 @@ const QMtools = [
 	// 	// 	}, 1000);
 	// 	}
 	// },
-	{
-		name: 'open_image', 
+	'open_image': {
+		name: "open_image",
 		icon: "icons/image_open.svg", 
 		title: i18n('tools_OpenImage'),
 		context: ["quickmenu", "sidebar"],
@@ -772,8 +774,8 @@ const QMtools = [
 			});
 		}
 	},
-	{
-		name: 'download', 
+	'download': {
+		name: "download",
 		icon: "icons/download.svg", 
 		title: i18n('tools_Download'),
 		context: ["quickmenu", "sidebar"],
@@ -786,8 +788,8 @@ const QMtools = [
 			});
 		}
 	},
-	{
-		name: 'sort', 
+	'sort': {
+		name: "sort",
 		icon: "icons/sort.svg", 
 		title: i18n('sort') || "Sort",
 		context: ["quickmenu", "sidebar", "searchbar"],
@@ -823,7 +825,7 @@ const QMtools = [
 			qm.expandMoreTiles();
 		}
 	}
-];
+}
 
 function setToolLockedState(tool, status) {
 
@@ -835,8 +837,10 @@ function setToolLockedState(tool, status) {
 	});
 }
 
+function getUserTool(name) {
+	return userOptions.quickMenuTools.find( tool => tool.name === name );
+}
+
 var toolStatuses = {};
-
-
 
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';

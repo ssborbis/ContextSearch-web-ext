@@ -37,14 +37,14 @@ async function buildContextMenu(searchTerms) {
 
 		let pattern = await browser.runtime.getURL("") + "*";
 
-		for ( let t of QMtools ) {
+		for ( let key in QMtools ) {
 
 			try {
 				browser.contextMenus.create( {
 					documentUrlPatterns: [pattern],
 					title: t.title,	
 					icons: {"16": t.icon},
-					id: "tools_" + t.name
+					id: "tools_" + key
 				});
 			} catch (error) {
 				console.log(error);

@@ -23,7 +23,7 @@ function deselectAllText(e) {
 }
 
 function checkToolStatus(name) {
-	let tool = userOptions.quickMenuTools.find( _tool => _tool.name === name );
+	let tool = getUserTool(name);
 	if ( !tool ) return false;
 	return tool.on ? true : false;
 }
@@ -857,9 +857,14 @@ function unlockQuickMenu() {
 
 // unlock if quickmenu is closed
 document.addEventListener('closequickmenu', () => {
-		
-	if ( !userOptions.quickMenuTools.find( tool => tool.name === "lock" && tool.persist ) )
+
+	let tool = getUserTool("lock");
+
+	if ( !(tool && tool.persist) )
 		quickMenuObject.locked = false;
+		
+	// if ( !userOptions.quickMenuTools.find( tool => tool.name === "lock" && tool.persist ) )
+		// quickMenuObject.locked = false;
 }, {capture: true});
 
 // close quickmenu when clicking anywhere on page
@@ -1580,7 +1585,7 @@ function StatusBar() {
 				el.classList.toggle("on", on);
 			}
 			let div = createStatusButton(browser.runtime.getURL("/icons/qm.svg"), () => {
-				QMtools.find(t => t.name === "disable").action();
+				QMtools['disable'].action();
 				setStatus(div, !quickMenuObject.disabled);
 			});
 
