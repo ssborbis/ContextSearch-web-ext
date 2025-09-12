@@ -1369,6 +1369,31 @@ function buildSearchEngineContainer() {
 			return menuItem;
 		}
 
+		let newMenu = createMenuItem(i18n('New'), browser.runtime.getURL('icons/add.svg'));
+		newMenu.addEventListener('click', e => {
+			closeSubMenus();
+			e.stopImmediatePropagation();
+			e.preventDefault();
+
+			let _menu = document.createElement('div');
+			_menu.className = 'contextMenu subMenu';
+			
+			// position to the right of opening div
+			let rect = newMenu.getBoundingClientRect();
+			_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+			_menu.style.top = rect.y + window.scrollY + "px";
+
+			// attach submenus
+			[newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript].forEach(el => {
+				el.className = 'menuItem';
+				_menu.appendChild(el);
+				el.addEventListener('click', closeContextMenus);
+			});
+
+			document.body.appendChild(_menu);
+			openMenu(_menu);		
+		});
+
 		let _delete = createMenuItem(i18n('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
 		
 		_delete.onclick = function(e) {
@@ -1475,7 +1500,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newFolder = createMenuItem(i18n('NewFolder'), browser.runtime.getURL('icons/folder.svg'));		
+		let newFolder = createMenuItem(i18n('Folder'), browser.runtime.getURL('icons/folder.svg'));		
 		newFolder.addEventListener('click', () => {
 			let newFolder = {
 				type: "folder",
@@ -1585,7 +1610,7 @@ function buildSearchEngineContainer() {
 
 		// });
 
-		let newScript = createMenuItem(i18n('NewScript'), browser.runtime.getURL('icons/code.svg'));		
+		let newScript = createMenuItem(i18n('Script'), browser.runtime.getURL('icons/code.svg'));		
 		newScript.addEventListener('click', e => {
 			closeSubMenus();
 			e.stopImmediatePropagation();
@@ -1683,7 +1708,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newEngine = createMenuItem(i18n('NewEngine'), browser.runtime.getURL('icons/new.svg'));	
+		let newEngine = createMenuItem(i18n('Engine'), browser.runtime.getURL('icons/new.svg'));	
 		newEngine.addEventListener('click', () => {
 			
 			let newNode = addNewEngine(li.node, false);	
@@ -1700,7 +1725,7 @@ function buildSearchEngineContainer() {
 			closeContextMenus();
 		});
 		
-		let newSeparator = createMenuItem(i18n('NewSeparator'), browser.runtime.getURL('icons/separator.svg'));	
+		let newSeparator = createMenuItem(i18n('Separator'), browser.runtime.getURL('icons/separator.svg'));	
 		newSeparator.addEventListener('click', () => {
 			let newNode = {
 				type: "separator",
@@ -1717,7 +1742,7 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newExternalProgram = createMenuItem(i18n('NewExternalProgram'), browser.runtime.getURL('icons/terminal.svg'));	
+		let newExternalProgram = createMenuItem(i18n('ExternalProgram'), browser.runtime.getURL('icons/terminal.svg'));	
 		newExternalProgram.addEventListener('click', () => {
 			let newNode = {
 				type: "externalProgram",
@@ -1741,7 +1766,7 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newTool = createMenuItem(i18n('NewTool'), browser.runtime.getURL('icons/add.svg'));	
+		let newTool = createMenuItem(i18n('Tool'), browser.runtime.getURL('icons/add.svg'));	
 		newTool.onclick = function(e) {
 
 			closeSubMenus();
@@ -1839,7 +1864,7 @@ function buildSearchEngineContainer() {
 			openMenu(_menu);
 		};
 
-		let newMultisearch = createMenuItem(i18n('newMultiSearch'), browser.runtime.getURL('icons/repeatsearch.svg'));	
+		let newMultisearch = createMenuItem(i18n('MultiSearch'), browser.runtime.getURL('icons/repeatsearch.svg'));	
 		newMultisearch.addEventListener('click', e => {
 
 			e.stopImmediatePropagation();
@@ -1930,11 +1955,14 @@ function buildSearchEngineContainer() {
 		if ( cbs.length ) selectedRows = [...cbs].map( cb => cb.closest("LI"));
 
 		// attach options to menu
-		[edit, hide, newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript, copy, _delete, exportNodes, setAsDefault].forEach( el => {
+		[newMenu, edit, hide, copy, _delete, exportNodes, setAsDefault].forEach( el => {
 			el.className = 'menuItem';
 			menu.appendChild(el);
 			el.addEventListener('click', closeContextMenus);
 		});
+
+		// mark as parent menu
+		newMenu.classList.add("parentMenu");
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
