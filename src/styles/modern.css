@@ -57,7 +57,8 @@
 }
 
 .tile.singleColumn[data-type="folder"] {
-	background-color:#fff3;
+	background-color:var(--group-color, #fff3);
+	color: var(--group-color-text, inherit);
 }
 
 .tile.singleColumn[data-type="folder"]:hover {
