@@ -263,9 +263,7 @@ function closeMenuRequest(e) {
 	}
 }
 
-function toolsHandler(o) {
-
-	o = o || {};
+function toolsHandler(o = {}) {
 
 	let hideEmptyGroups = moreTile => {
 		qm.querySelectorAll('GROUP').forEach(g => {
