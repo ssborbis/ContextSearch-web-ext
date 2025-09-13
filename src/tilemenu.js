@@ -2897,7 +2897,6 @@ function addResizeObserver() {
 
 		if (!qm?.rootNode ) return;
 
-
 	  	for (const entry of entries) {
 		    window.parent.postMessage({
 				action: "resizeIframe",

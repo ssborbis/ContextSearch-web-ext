@@ -172,7 +172,7 @@ BODY {
 	user-select: none; 
 	-moz-user-select: none;
 	text-align:right;
-	cursor:grab;
+	cursor:move;
 	overflow: hidden;
 	/*white-space: nowrap;*/
 	padding: 4px;
@@ -359,7 +359,7 @@ BODY {
 	width:24px;
 	height:16px;
 	filter:none;
-	cursor: grab;
+	cursor: move;
 	display:inline-block;
 }
 .groupMove .tile {
@@ -640,11 +640,12 @@ HR.break {
 	height: 16px;
 	display: block;
 	text-align: center;
-	cursor: grab;
+	cursor: move;
 	background-color: #d3d4dc;
 	color: #5e5e67;
 	border-radius: 15px 15px 0 0;
 	margin-top: 4px;
+	user-select: none;
 }
 .edit_handle.hover {
 	background-color: #b3b4bc;
