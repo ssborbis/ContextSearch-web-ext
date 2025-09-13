@@ -1,4 +1,4 @@
-._hover {
+.._hover {
 	width:auto;
 }
 #editSearchEngineForm INPUT, #editSearchEngineForm SELECT, #editSearchEngineForm TEXTAREA {
@@ -9,4 +9,14 @@
 }
 .tablinks {
 	min-width:250px;
+}
+#left_div {
+  width: 330px;
+}
+#right_div {
+  width: calc(100% - 330px);
+  margin-left: 330px;
+}
+#main {
+  max-width: 1300px;
 }
