@@ -658,20 +658,27 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 
 		window.parent.postMessage({action: "handle_dock", target: target_id, e: {x: e.screenX, y: e.screenY}}, "*");
 	});
+
+	document.addEventListener('wheel', e => {
+		if ( e.ctrlKey) {
+			e.preventDefault();
+			window.parent.postMessage({action: "zoomFrame", target: target_id || null, delta: e.deltaY * -0.0025}, "*");
+		}
+	}, { passive: false });
 }
 
 function addParentDockingListeners(id, target_id) {
 
 	parentDockingListener = e => {
 
-		if ( e.data.target !== target_id ) return;
+		if ( e.data.target !== target_id) return;
 
 		let el = getShadowRoot().getElementById(id);
 
 		if ( !el ) return;
 		
-		let x = e.data.e.x;
-		let y = e.data.e.y;
+		let x = e.data.e?.x || 0;
+		let y = e.data.e?.y || 0;
 
 		switch ( e.data.action ) {
 			case "handle_dragstart":
@@ -688,6 +695,24 @@ function addParentDockingListeners(id, target_id) {
 				
 			case "handle_dock":
 				el.docking.toggleDock();
+				break;
+
+			case "zoomFrame":
+				let scale = parseFloat(el.style.getPropertyValue('--cs-custom-scale'));
+				scale+=e.data.delta
+
+				if ( scale < .25 || scale > 5 ) break;
+				el.style.setProperty('--cs-custom-scale', scale);
+
+				// set the correct zoom property
+				if ( id === "CS_sbIframe" )
+					userOptions.sideBar.scale = scale;
+				else if ( id === "CS_quickMenuIframe")
+					userOptions.quickMenuScale = scale;
+				else if ( id === "CS_findBarIframe")
+					userOptions.highLight.findBar.scale = scale;
+
+				sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "dock zoomFrame"});
 				break;
 		}
 	}

@@ -910,9 +910,9 @@ async function notify(message, sender, sendResponse) {
 		case "injectComplete":
 
 			if ( userOptions.quickMenu ) {
-				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
 				await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
-			}
+				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
+				}
 
 			if ( userOptions.pageTiles.enabled ) {
 				await executeScripts(sender.tab.id, {files: ["/inject_pagetiles.js"], frameId: sender.frameId}, true);

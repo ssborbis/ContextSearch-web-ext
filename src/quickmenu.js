@@ -511,7 +511,6 @@ document.body.addEventListener('dblclick', e => {
 	e.stopImmediatePropagation();
 });
 
-// addChildDockingListeners(mb, "quickMenu");
 addChildDockingListeners(mb, "quickMenu", "#searchBarContainer > *");
 
 // drag overdiv listener for chrome
