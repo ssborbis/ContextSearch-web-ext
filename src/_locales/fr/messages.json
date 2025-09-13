@@ -327,7 +327,7 @@
   },
 
   "ImportHeader": {
-    "message": "Importer de Firefox"
+    "message": "Importer de Firefox…"
   },
 
   "ImportDescription": {
@@ -2294,7 +2294,7 @@
     "description": "advanced setting tooltip"
   },
   "quickMenuToolsRepeatSearchPersistTooltip": {
-    "message": "Se souvenir de l’état de l’outil « Recherche instantanée » d’une session à l’autre",
+    "message": "Se souvenir de l’état de l’outil « Recherche répétée » d’une session à l’autre",
     "description": "advanced setting tooltip"
   },
   "rememberLastOpenedFolderTooltip": {
@@ -2602,5 +2602,23 @@
   },
   "or": {
     "message": "– ou –"
-  }
+  },
+  "New": {
+    "message": "Nouveau"
+  },
+  "Engine": {
+    "message": "Moteur"
+  },
+  "Separator": {
+    "message": "Séparateur"
+  },
+  "ExternalProgram": {
+    "message": "Lanceur d’application"
+  },
+  "Multisearch": {
+    "message": "Multimoteur"
+  },
+  "Tool": {
+    "message": "Outil"
+  }  
 }
