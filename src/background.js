@@ -963,7 +963,7 @@ async function notify(message, sender, sendResponse) {
 					} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
-					.then( result => result ? result.shift().result : null );
+					.then( result => result ? result.shift()?.result : null );
 		
 		case "addToHistory": {
 
