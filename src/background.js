@@ -1523,33 +1523,19 @@ function openWithMethod(o) {
 
 function executeBookmarklet(info) {
 
-	function blobCode(c, s) {
+	const blobCode = (c, s) => {
+		return `
+			(() => {
+			  const blob = new Blob([\`CS_searchTerms = searchTerms = "` + s + `";\n\n` + c + `\`], {
+			    type: "text/javascript",
+			  });
+			  let script = document.createElement('script');
+			  script.src = URL.createObjectURL(blob);
+			  script.type = 'text/javascript';
 
-		const str = `CS_searchTerms = searchTerms = "${s}";\n\n${c}`
-		const blob = new Blob([str], {
-			type: "text/javascript",
-		});
-
-		console.log(str, blob, URL.createObjectURL(blob));
-
-		let script = document.createElement('script');
-		script.src = URL.createObjectURL(blob);
-		script.type = 'text/javascript';
-
-		document.getElementsByTagName('head')[0].appendChild(script);
-
-		// return `
-		// 	(() => {
-		// 	  const blob = new Blob([\`CS_searchTerms = searchTerms = "${s}";\n\n${c}\`], {
-		// 	    type: "text/javascript",
-		// 	  });
-		// 	  let script = document.createElement('script');
-		// 	  script.src = URL.createObjectURL(blob);
-		// 	  script.type = 'text/javascript';
-
-		// 	  document.getElementsByTagName('head')[0].appendChild(script);
-		// 	})();
-		// `
+			  document.getElementsByTagName('head')[0].appendChild(script);
+			})();
+		`
 	}
 
 	const vanillaCode = (c, s) => {
@@ -1559,6 +1545,19 @@ function executeBookmarklet(info) {
 
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
+
+	// if ( true ) {
+
+	// 	openWithMethod({
+	// 			openMethod: info.openMethod, 
+	// 			url: "javascript:(() => { alert('hello')})();",
+	// 			openerTabId: userOptions.disableNewTabSorting ? null : info.tab.id
+	// 		});
+
+	// 		return false;
+	// 	return;
+	// }
+
 
 	// run as script
 	if ( info.node.searchCode ) {
