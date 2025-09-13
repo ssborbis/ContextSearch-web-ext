@@ -58,7 +58,7 @@ function ResizeWidget(el, options) {
 			
 			resizeWidget.style.transition = 'none';
 
-			// lower the quick menu in case zIndex = MAX
+			// lower iframe in case zIndex = MAX
 			el.style.zIndex = window.getComputedStyle(overDiv).zIndex - 1;
 
 			// match grid to tile size after scaling

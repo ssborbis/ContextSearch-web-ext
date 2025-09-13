@@ -2895,7 +2895,8 @@ function toolsBarMorify(rows) {
 function addResizeObserver() {
 	const resizeObserver = new ResizeObserver((entries) => {
 
-		if (!qm ) return;
+		if (!qm?.rootNode ) return;
+
 
 	  	for (const entry of entries) {
 		    window.parent.postMessage({
