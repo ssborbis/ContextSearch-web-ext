@@ -2775,7 +2775,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 
 	//let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
 	
-	if ( !isHTML.shift().result ) return false;
+	if ( !isHTML?.shift()?.result ) return false;
 
 	// filter popup windows 
 	if ( window.popupWindows.includes(tab.windowId))
