@@ -1003,7 +1003,7 @@ function buildQuickMenuElement(options) {
 	(() => {
 		for ( ts in toolStatuses ) {
 			if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
-				let _tile = QMtools.find(t => t.name == ts ).init();
+				let _tile = QMtools[ts].init();
 				_tile.action();
 			}
 		}
@@ -2407,7 +2407,7 @@ function nodeToTile( node ) {
 			break;
 
 		case "tool": {
-			let tool = QMtools.find(t => t.name === node.tool )
+			let tool = QMtools[node.tool];
 			tile = tool.init();
 			tile.dataset.type = 'tool';
 			tile.dataset.id = node.id;	
