@@ -10,6 +10,12 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
 
 ### CHROME: These extensions were turned off because they're no longer supported
 
+Code in the `manifest_v3` branch is working now in Chrome as of Sept 14, 2025.
+Please feel free to load the unpacked source in Chrome for testing. Be sure to enable userScripts from the extensions menu.
+
+<img width="1001" height="110" alt="image" src="https://github.com/user-attachments/assets/2a8ca842-f42e-4f85-9cdb-8a51fb3514d0" />
+
+
 You can still use this addon by sideloading the extension (`chrome://extensions/ -> Load unpacked`) from the source code and enabling the following from `chrome://flags`
 ```
 Temporarily unexpire M138 flags
