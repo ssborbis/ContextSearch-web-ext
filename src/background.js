@@ -1,25 +1,29 @@
 //import {Encoding} from "/lib/encoding.min.js";
 
-importScripts(
-	"lib/browser-polyfill.min.js",
-	"utils.js",
-	"update_useroptions.js",
-	"opensearch.js",
-	"lib/encoding-indexes.js",
-	"defaultEngines.js",
-	"bookmarks.js",
-	"defaultUserOptions.js",
-	"contexts.js",
-	"contextMenu.js",
-	"searchActions.js",
-	"nodes.js",
-	"omnibox.js",
-	"searchEngineUtils.js",
-	"keyTable.js",
-	"TabHighlighter.js",
-	"Shortcuts.js",
-	"tools.js"
-)
+
+// chrome
+if ( typeof importScripts === 'function') {
+	importScripts(
+		"lib/browser-polyfill.min.js",
+		"utils.js",
+		"update_useroptions.js",
+		"opensearch.js",
+		"lib/encoding-indexes.js",
+		"defaultEngines.js",
+		"bookmarks.js",
+		"defaultUserOptions.js",
+		"contexts.js",
+		"contextMenu.js",
+		"searchActions.js",
+		"nodes.js",
+		"omnibox.js",
+		"searchEngineUtils.js",
+		"keyTable.js",
+		"TabHighlighter.js",
+		"Shortcuts.js",
+		"tools.js"
+	)
+}
 
 // global variables
 
@@ -1082,7 +1086,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getSelectedText":
-			onFound = (result) => result.shift().result;
+			onFound = (result) => result.shift()?.result;
 			onError = () => {}
 
 			return browser.scripting.executeScript({
@@ -1164,7 +1168,7 @@ async function notify(message, sender, sendResponse) {
 
 		case "sideBarOpenedOnSearchResults":
 
-			onFound = results => results[0].result;
+			onFound = results => results[0]?.result;
 			onError = results => null;
 
 			return await browser.scripting.executeScript({
@@ -1193,7 +1197,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "getRawSelectedText":
-			onFound = results => results[0].result;
+			onFound = results => results[0]?.result;
 			onError = results => null;
 
 			return await browser.scripting.executeScript({
