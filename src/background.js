@@ -600,25 +600,21 @@ async function notify(message, sender, sendResponse) {
 						}
 					}
 	
-				} catch ( error ) {
-					console.error(error);
+				} catch ( error ) { debug(error) }
+
+				for ( let i in contexts ) {
+					try {
+						browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) });
+					} catch ( error ) { debug(error) }
 				}
 
-				try {
-
-					for ( let i in contexts ) {
-						browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) });
-					}
-
-					// if just one context, relabel with searchTerms
-					if ( ccs.length === 1 && self.searchTerms ) {
+				// if just one context, relabel with searchTerms
+				if ( ccs.length === 1 && self.searchTerms ) {
+					try {
 						browser.contextMenus.update(ccs[0], {
 							title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", self.searchTerms) + getMenuHotkey()
 						});
-					}
-
-				} catch ( error ) {
-					console.error(error);
+					} catch ( error ) { debug(error) }
 				}
 
 			} else {
@@ -630,9 +626,7 @@ async function notify(message, sender, sendResponse) {
 						updateMatchRegexFolder(searchTerms);
 					});
 
-				} catch (err) {
-					console.log(err);
-				}
+				} catch (error) { debug(error) }
 			}
 
 			break;

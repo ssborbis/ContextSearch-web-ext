@@ -583,7 +583,11 @@ async function updateSelectDomains() {
 	let domainPaths = getDomainPaths(tab.url);
 
 	// remove old menu children
-	self.contextMenuSelectDomainChildren.forEach(id => browser.contextMenus.remove(id));
+	self.contextMenuSelectDomainChildren.forEach(id => {
+		try {
+			browser.contextMenus.remove(id);
+		} catch (error) { debug(error) }
+	});
 	self.contextMenuSelectDomainChildren = [];
 
 	// const _add(parentId) {
