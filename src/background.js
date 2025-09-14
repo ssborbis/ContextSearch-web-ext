@@ -3116,11 +3116,6 @@ async function isTabScriptable(tabId, frameId = 0) {
 			func: () => (() => {})()
 		});
 
-		// await browser.tabs.executeScript(tabId, {
-		// 	code: `(() => {})();`,
-		// 	frameId: frameId
-		// });
-
 		return true;
 	} catch ( error ) {
 		return false;
@@ -3139,35 +3134,6 @@ async function browserSaveAs(url) {
 	return browser.downloads.download({url: url, saveAs: true});
 }
 
-
-function registerAllUserScripts() {
-
-	let nodes = findNodes(userOptions.nodeTree, n => n.type === "bookmarklet");
-
-	nodes = new Set(nodes);
-
-	nodes.forEach(n => {
-		let code = 'function ' + n.id + '() { ' + n.searchCode + '}';
-		browser.userScripts.register([
-		{
-			world: "USER_SCRIPT",
-			id: n.id,
-			js: [{code: code}],
-			matches: ["*://localhost/*"],
-		},
-		]);
-
-
-		//const str = `CS_searchTerms = searchTerms = "${s}";\n\n${c}`
-		// const blob = new Blob([code], {
-		// 	type: "text/javascript",
-		// });
-
-		// const url = URL.createObjectURL(blob);
-
-	});
-}
-
 async function executeUserScript(tabId, code) {
 
 	let result = await browser.userScripts.execute(
@@ -3177,20 +3143,9 @@ async function executeUserScript(tabId, code) {
 		js: [{ code: code }]
 	});
 
-	//console.log('done, result', result);
-
 	return true;
-	// return browser.scripting.executeScript({
-	//   target: {
-	//     tabId: tabId
-	//   },
-	// 	func: (id) => self[id](),
-	// 	args: [node.id],
-	// 	world: "MAIN"
-	// });
 }
 
-//setTimeout(registerAllUserScripts, 2000);
 
 
 
