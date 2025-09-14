@@ -143,6 +143,7 @@ async function buildContextMenu(searchTerms) {
 		
 		if (node.type === 'separator') {
 			addMenuItem({
+				id: gen(),
 				parentId: parentId,
 				type: "separator",
 				contexts: ["all"]
