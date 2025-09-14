@@ -2226,13 +2226,11 @@ async function openSearch(info) {
 	
 	function executeSearchCode(tabId) {
 		if ( !se.searchCode ) return;
-		
-		// UserScript
 
-		// browser.tabs.executeScript(tabId, {
-		// 	code: `searchTerms = "${escapeDoubleQuotes(searchTerms)}"; ${se.searchCode}`,
-		// 	runAt: 'document_idle'
-		// });
+		executeUserScript(
+			tabId, 
+			`searchTerms = "${escapeDoubleQuotes(searchTerms)}"; ${se.searchCode}`
+		);
 	}
 	
 	function onCreate(_tab) {
