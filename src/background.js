@@ -1590,7 +1590,8 @@ function executeBookmarklet(info) {
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 
-			executeUserScript(tabs[0].id, info.node)
+			return executeUserScript(tabs[0].id, code);
+			//executeUserScript(tabs[0].id, info.node)
 
 			// await browser.userScripts.register([
 			//   {
@@ -3166,18 +3167,30 @@ function registerAllUserScripts() {
 	});
 }
 
-function executeUserScript(tabId, node) {
-	return browser.scripting.executeScript({
-	  target: {
-	    tabId: tabId
-	  },
-		func: (id) => window[id](),
-		args: [node.id],
-		world: "MAIN"
+async function executeUserScript(tabId, code) {
+	//console.log(tabId, code);
+
+	let result = await browser.userScripts.execute(
+	{
+		target: { tabId: tabId },
+		world: "USER_SCRIPT",
+		js: [{ code: code }]
 	});
+
+	//console.log('done, result', result);
+
+	return true;
+	// return browser.scripting.executeScript({
+	//   target: {
+	//     tabId: tabId
+	//   },
+	// 	func: (id) => self[id](),
+	// 	args: [node.id],
+	// 	world: "MAIN"
+	// });
 }
 
-setTimeout(registerAllUserScripts, 2000);
+//setTimeout(registerAllUserScripts, 2000);
 
 
 

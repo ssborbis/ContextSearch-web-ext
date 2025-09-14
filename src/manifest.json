@@ -39,7 +39,8 @@
 		"search",
 		"unlimitedStorage",
 		"webNavigation",
-		"scripting"
+		"scripting",
+		"userScripts"
 	],
 	
 	"optional_permissions": [
@@ -47,8 +48,7 @@
 		"clipboardWrite",
 		"clipboardRead",
 		"nativeMessaging",
-		"downloads",
-		"userScripts"
+		"downloads"
 	],
 
 	"host_permissions": [
