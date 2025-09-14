@@ -14,27 +14,8 @@
 	},
 
 	"background": {
-		"scripts": [
-			"lib/browser-polyfill.min.js",
-			"utils.js",
-			"update_useroptions.js",
-			"opensearch.js",
-			"lib/encoding-indexes.js",
-			"defaultEngines.js",
-			"bookmarks.js",
-			"defaultUserOptions.js",
-			"contexts.js",
-			"contextMenu.js",
-			"searchActions.js",
-			"nodes.js",
-			"omnibox.js",
-			"searchEngineUtils.js",
-			"keyTable.js",
-			"TabHighlighter.js",
-			"Shortcuts.js",
-			"tools.js",
+		"service_worker": 
 			"background.js"
-		]
 	},
 
 	"content_scripts": [

@@ -8,7 +8,7 @@ async function replaceOpenSearchParams(options) {
 	
 	let domains = getDomains(url);
 
-	let sto = window.searchTermsObject || {};
+	let sto = self.searchTermsObject || {};
 
 	// replace searchTermObject elements containing OR
 
@@ -50,8 +50,8 @@ async function replaceOpenSearchParams(options) {
 		.replace(/{startIndex[\?]?}/g, "1")
 		.replace(/{startPage[\?]?}/g, "1")
 		.replace(/{language[\?]?}/g, (navigator) ? navigator.language || navigator.userLanguage : "")
-		.replace(/{inputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
-		.replace(/{outputEncoding[\?]?}/g, (document) ? document.characterSet || "" : "")
+		.replace(/{inputEncoding[\?]?}/g, (typeof document !== 'undefined' ) ? document.characterSet || "" : "")
+		.replace(/{outputEncoding[\?]?}/g, (typeof document !== 'undefined' ) ? document.characterSet || "" : "")
 		.replace(/%ds|{subdomain}/g, domains.subdomain || "")
 		.replace(/%du|{selectdomain}|{userdomain}/g, userdomain || "")
 		.replace(/%d|{domain}/g, domains.domain || "")

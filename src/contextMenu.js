@@ -55,11 +55,11 @@ async function buildContextMenu(searchTerms) {
 	}
 
 	// track selectDomain menus to update later
-	window.contextMenuSelectDomainRoots = [];
-	window.contextMenuSelectDomainChildren = [];
+	self.contextMenuSelectDomainRoots = [];
+	self.contextMenuSelectDomainChildren = [];
 
 	// context menu entries need to be tracked to be updated
-	window.contextMenuMatchRegexMenus = [];
+	self.contextMenuMatchRegexMenus = [];
 		
 	function traverse(node, parentId, context) {
 
@@ -97,7 +97,7 @@ async function buildContextMenu(searchTerms) {
 
 			if ( /{selectdomain}/.test( se.template ) ) {
 
-				window.contextMenuSelectDomainRoots.push(context_prefix + _id);
+				self.contextMenuSelectDomainRoots.push(context_prefix + _id);
 								
 				domainPaths.forEach( path => {
 					
@@ -112,7 +112,7 @@ async function buildContextMenu(searchTerms) {
 						}
 					});
 					
-					window.contextMenuSelectDomainChildren.push(context_prefix + pathId);
+					self.contextMenuSelectDomainChildren.push(context_prefix + pathId);
 				});
 
 			}
@@ -492,14 +492,14 @@ function getMenuHotkey() {
 function updateMatchRegexFolders(s) {
 	debug('updateMatchRegexFolders');
 
-	window.contextMenuMatchRegexMenus.forEach( menu => {
+	self.contextMenuMatchRegexMenus.forEach( menu => {
 		try {
 			browser.contextMenus.remove( menu );
 		} catch (error) {
 			debug(error);
 		}
 	});
-	window.contextMenuMatchRegexMenus = [];
+	self.contextMenuMatchRegexMenus = [];
 	contexts.forEach( context => updateMatchRegexFolder(s, context));
 }
 
@@ -517,7 +517,7 @@ function updateMatchRegexFolder(s, context) {
 	
 	// only remove if non-contextual
 	if ( ! context ) {
-		window.contextMenuMatchRegexMenus.forEach( menu => {
+		self.contextMenuMatchRegexMenus.forEach( menu => {
 
 			// old < Chrome < 123
 			try {
@@ -533,7 +533,7 @@ function updateMatchRegexFolder(s, context) {
 				debug(err);
 			}
 		});
-		window.contextMenuMatchRegexMenus = [];
+		self.contextMenuMatchRegexMenus = [];
 	}
 			
 	// create a new unique iterator
@@ -561,7 +561,7 @@ function updateMatchRegexFolder(s, context) {
 			} catch ( error ) { debug(error)}
 		}
 
-		window.contextMenuMatchRegexMenus.push(id);
+		self.contextMenuMatchRegexMenus.push(id);
 	});
 }
 
@@ -570,7 +570,7 @@ async function updateSelectDomains() {
 	debug('updating selectDomains');
 
 	// no selectDomain
-	if ( !window.contextMenuSelectDomainChildren.length ) return;
+	if ( !self.contextMenuSelectDomainChildren.length ) return;
 
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
@@ -582,15 +582,15 @@ async function updateSelectDomains() {
 	let domainPaths = getDomainPaths(tab.url);
 
 	// remove old menu children
-	window.contextMenuSelectDomainChildren.forEach(id => browser.contextMenus.remove(id));
-	window.contextMenuSelectDomainChildren = [];
+	self.contextMenuSelectDomainChildren.forEach(id => browser.contextMenus.remove(id));
+	self.contextMenuSelectDomainChildren = [];
 
 	// const _add(parentId) {
 
 	// increment ids
 	let count = 0;
 
-	window.contextMenuSelectDomainRoots.forEach(id => {
+	self.contextMenuSelectDomainRoots.forEach(id => {
 
 		debug('updating selectDomain', id);
 
@@ -617,7 +617,7 @@ async function updateSelectDomains() {
 
 			debug('adding selectDomain', context_prefix + pathId);
 			
-			window.contextMenuSelectDomainChildren.push(context_prefix + pathId);
+			self.contextMenuSelectDomainChildren.push(context_prefix + pathId);
 		});
 	});
 }
@@ -735,7 +735,7 @@ async function contextMenuSearch(info, tab) {
 	
 	if ( result[0].result ) {
 		debug('content scripts have run', tab);
-		searchTerms = (context ? window.searchTermsObject[context] : window.searchTerms) || window.searchTerms;;
+		searchTerms = (context ? self.searchTermsObject[context] : self.searchTerms) || self.searchTerms;;
 	} else {
 
 		console.error('content scripts have not run in this tab');
@@ -745,12 +745,12 @@ async function contextMenuSearch(info, tab) {
 		else if ( info.srcUrl )
 			searchTerms = info.srcUrl;
 		else if ( info.linkUrl ) {
-			if ( [info.linkUrl, info.linkText].includes(window.searchTerms) ) // if content_script updated the window.searchTerms var properly, use that
-				searchTerms = window.searchTerms;
+			if ( [info.linkUrl, info.linkText].includes(self.searchTerms) ) // if content_script updated the self.searchTerms var properly, use that
+				searchTerms = self.searchTerms;
 			else
-				searchTerms = ( userOptions.contextMenuSearchLinksAs === 'url' && !window.ctrlKey ) ? info.linkUrl : info.linkText || window.searchTerms;		
-		} else if ( userOptions.contextMenuUseInnerText && window.searchTerms.trim() )
-			searchTerms = window.searchTerms.trim();
+				searchTerms = ( userOptions.contextMenuSearchLinksAs === 'url' && !self.ctrlKey ) ? info.linkUrl : info.linkText || self.searchTerms;		
+		} else if ( userOptions.contextMenuUseInnerText && self.searchTerms.trim() )
+			searchTerms = self.searchTerms.trim();
 	
 
 		// if using contextual layout, set the search terms according to context

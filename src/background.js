@@ -1,11 +1,35 @@
+//import {Encoding} from "/lib/encoding.min.js";
+
+importScripts(
+	"lib/browser-polyfill.min.js",
+	"utils.js",
+	"update_useroptions.js",
+	"opensearch.js",
+	"lib/encoding-indexes.js",
+	"defaultEngines.js",
+	"bookmarks.js",
+	"defaultUserOptions.js",
+	"contexts.js",
+	"contextMenu.js",
+	"searchActions.js",
+	"nodes.js",
+	"omnibox.js",
+	"searchEngineUtils.js",
+	"keyTable.js",
+	"TabHighlighter.js",
+	"Shortcuts.js",
+	"tools.js"
+)
+
+// global variables
 
 // context menu entries need to be tracked to be updated
-window.contextMenuMatchRegexMenus = [];
-window.tabTerms = [];
-window.searchTerms = "";
-window.searchTermsObject = {};
-window.ctrlKey = false; // track on updateContextMenu for text/url
-window.popupWindows = [];
+self.contextMenuMatchRegexMenus = [];
+self.tabTerms = [];
+self.searchTerms = "";
+self.searchTermsObject = {};
+self.ctrlKey = false; // track on updateContextMenu for text/url
+self.popupWindows = [];
 
 var userOptions = {};
 var highlightTabs = [];
@@ -14,9 +38,9 @@ var Encoding = null;
 
 var isLoadingUserOptions = false;
 
-(async () => {
-	Encoding = await import("/lib/encoding.min.js");
-})();
+// (async () => {
+// 	Encoding = await import("/lib/encoding.min.js");
+// })();
 
 // tracks tabs by index that have findbar search results when searching all tabs
 // var markedTabs = [];
@@ -39,7 +63,7 @@ var tabHighlighter = new TabHighlighter();
 	await buildContextMenu();
 	resetPersist();
 	setIcon();
-	document.dispatchEvent(new CustomEvent("loadUserOptions"));
+	//self.document.dispatchEvent(new CustomEvent("loadUserOptions"));
 	isLoadingUserOptions = false;
 })();
 
@@ -86,7 +110,7 @@ browser.tabs.onActivated.addListener(info => {
 {	// popup window listeners
 	let handler = async (id) => {
 		// not a CS popup window
-		if ( !window.popupWindows.includes(id) ) return;
+		if ( !self.popupWindows.includes(id) ) return;
 
 		let w = await browser.windows.get(id);
 		userOptions.popupWindow.height = w.height + "px";
@@ -99,7 +123,7 @@ browser.tabs.onActivated.addListener(info => {
 	browser.windows.onFocusChanged.addListener(async id => handler(id));
 
 	browser.windows.onRemoved.addListener(id => {
-		window.popupWindows = window.popupWindows.filter(_id => _id !== id );
+		self.popupWindows = self.popupWindows.filter(_id => _id !== id );
 		//handler(id);
 	});
 }
@@ -111,8 +135,8 @@ browser.runtime.onInstalled.addListener( details => {
 	// details.reason = 'install';
 	// Show new features page
 	
-	document.addEventListener('loadUserOptions', () => {
-
+	self.addEventListener('loadUserOptions', () => {
+	
 	/*
 		if (
 			details.reason === 'update' 
@@ -513,10 +537,10 @@ async function notify(message, sender, sendResponse) {
 
 		case "updateSearchTerms":
 
-			debug(window.searchTermsObject);
+			debug(self.searchTermsObject);
 
-			window.searchTerms = message.searchTerms;
-			window.searchTermsObject = message.searchTermsObject;
+			self.searchTerms = message.searchTerms;
+			self.searchTermsObject = message.searchTermsObject;
 			
 			if ( userOptions.autoCopy && message.searchTerms && ( userOptions.autoCopyOnInputs || !message.input))
 				notify({action: "copyRaw", autoCopy:true});
@@ -529,7 +553,7 @@ async function notify(message, sender, sendResponse) {
 			var searchTerms = message.searchTerms;
 
 			if ( searchTerms && message.hasOwnProperty("ctrlKey"))
-				window.ctrlKey = message.ctrlKey;
+				self.ctrlKey = message.ctrlKey;
 		
 			if ( userOptions.contextMenuUseContextualLayout ) {
 
@@ -583,9 +607,9 @@ async function notify(message, sender, sendResponse) {
 					}
 
 					// if just one context, relabel with searchTerms
-					if ( ccs.length === 1 && window.searchTerms ) {
+					if ( ccs.length === 1 && self.searchTerms ) {
 						browser.contextMenus.update(ccs[0], {
-							title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", window.searchTerms) + getMenuHotkey()
+							title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", self.searchTerms) + getMenuHotkey()
 						});
 					}
 
@@ -741,7 +765,7 @@ async function notify(message, sender, sendResponse) {
 					
 			}
 			
-			window.external.AddSearchProvider(url);
+			self.external.AddSearchProvider(url);
 			break;
 		}
 		
@@ -842,11 +866,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "setLastSearch":
-			sessionStorage.setItem("lastSearch", message.lastSearch);
+			browser.storage.session.set({"lastSearch": message.lastSearch});
 			break;
 			
 		case "getLastSearch":
-			return {lastSearch: sessionStorage.getItem("lastSearch")};
+			return {lastSearch: browser.storage.session.get("lastSearch")};
 			
 		case "getCurrentTheme":
 			browser.theme.getCurrent().then( theme => {
@@ -1000,11 +1024,11 @@ async function notify(message, sender, sendResponse) {
 		}
 			
 		case "setLastOpenedFolder":
-			window.lastOpenedFolder = message.folderId;
+			self.lastOpenedFolder = message.folderId;
 			return true;
 			
 		case "getLastOpenedFolder":
-			return window.lastOpenedFolder || null;
+			return self.lastOpenedFolder || null;
 
 		case "executeScript": //UserScript
 			return browser.scripting.executeScript({
@@ -1239,7 +1263,7 @@ async function notify(message, sender, sendResponse) {
 			return await CSBookmarks.treeToFolders(message.id || "root________");
 
 		case "getTabTerms":
-			return window.tabTerms.find(t => t.tabId === sender.tab.id);
+			return self.tabTerms.find(t => t.tabId === sender.tab.id);
 
 		case "isSidebar":
 			return sender.hasOwnProperty("frameId");
@@ -1294,7 +1318,7 @@ async function notify(message, sender, sendResponse) {
 
 		// bypasses Firefox resistFingerprinting
 		case "getDevicePixelRatio":
-			return window.devicePixelRatio;
+			return self.devicePixelRatio;
 	}
 }
 
@@ -1496,7 +1520,7 @@ function openWithMethod(o) {
 
 		// reuse the first tab in the current window
 		if ( userOptions.popupWindow.reuse && window.popupWindows.length ) {
-			let _tabs = await browser.tabs.query({windowId: window.popupWindows[0]});
+			let _tabs = await browser.tabs.query({windowId: self.popupWindows[0]});
 			return browser.tabs.update(_tabs[0].id, {url: o.url});
 		}
 
@@ -1516,7 +1540,7 @@ function openWithMethod(o) {
 			type: "panel"
 		});
 		
-		window.popupWindows.push(w.id);
+		self.popupWindows.push(w.id);
 		return w;
 	}
 }
@@ -1544,7 +1568,7 @@ function executeBookmarklet(info) {
 	}
 
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
-	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || window.searchTerms);
+	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || self.searchTerms);
 
 	// if ( true ) {
 
@@ -1952,7 +1976,7 @@ async function openSearch(info) {
 	var node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	info.node = info.node || node; // in case it wasn't sent
 	
-	if (!info.folder) delete window.folderWindowId;
+	if (!info.folder) delete self.folderWindowId;
 	
 	if ( !info.temporarySearchEngine && !info.folder && !info.openUrl) 
 		lastSearchHandler(info.menuItemId, info.openMethod);
@@ -1973,8 +1997,8 @@ async function openSearch(info) {
 				searchTerms = info.quickMenuObject.lastSelectText;
 				debug('multiline search', 'DOM menu');
 			}
-			else if ( info.selectionText && isSameStringMinusLineBreaks(info.selectionText, window.searchTerms)){
-				searchTerms = window.searchTerms;
+			else if ( info.selectionText && isSameStringMinusLineBreaks(info.selectionText, self.searchTerms)){
+				searchTerms = self.searchTerms;
 				debug('multiline search', 'context menu');
 			}
 
@@ -2136,7 +2160,7 @@ async function openSearch(info) {
 		//	console.log(error);
 		}
 	}
-	
+
 	if (!tab) tab = {url:"", id:0}
 	
 	var openerTabId = userOptions.disableNewTabSorting ? null : tab.id;
@@ -2164,7 +2188,7 @@ async function openSearch(info) {
 		}
 
 		var encodedSearchTerms = encodeCharset(searchTerms, se.queryCharset);
-		
+
 		var q = await replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
 
 		// set landing page for POST engines
@@ -2187,7 +2211,7 @@ async function openSearch(info) {
 		if (searchTerms.match(/^.*:\/\//) === null)
 			q = "http://" + searchTerms;
 	}
-	
+
 	openWithMethod({
 		openMethod: openMethod, 
 		url: q, 
@@ -2211,7 +2235,7 @@ async function openSearch(info) {
 
 		// if new window
 		if (_tab.tabs) {
-			window.folderWindowId = _tab.id;
+			self.folderWindowId = _tab.id;
 			_tab = _tab.tabs[0];
 			
 			console.log('window created');
@@ -2297,16 +2321,16 @@ async function openSearch(info) {
 
 function addTabTerms(node, tabId, s) {
 	console.log('tabTerms add', node.title);
-	window.tabTerms.unshift({id: node.id, folderId: node.parentId, tabId: tabId, searchTerms: s});
+	self.tabTerms.unshift({id: node.id, folderId: node.parentId, tabId: tabId, searchTerms: s});
 }
 
 function removeTabTerms(tabId) {
-	window.tabTerms = window.tabTerms.filter(t => t.tabId !== tabId);
+	self.tabTerms = self.tabTerms.filter(t => t.tabId !== tabId);
 }
 
 function deactivateTabTerms(tabId) {
 	
-	for ( tt in window.tabTerms) {
+	for ( tt in self.tabTerms) {
 		if ( tt.tabId === tabId ) {
 			tt.deactivated = true;
 		}
@@ -2314,7 +2338,7 @@ function deactivateTabTerms(tabId) {
 }
 
 function getTabTermsTab(id, s) {
-	let t = window.tabTerms.find(_t => _t.id === id && _t.searchTerms === s && !_t.deactivated );
+	let t = self.tabTerms.find(_t => _t.id === id && _t.searchTerms === s && !_t.deactivated );
 	return browser.tabs.get(t.tabId);
 }
 
@@ -2777,7 +2801,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	if ( !isHTML?.shift()?.result ) return false;
 
 	// filter popup windows 
-	if ( window.popupWindows.includes(tab.windowId))
+	if ( self.popupWindows.includes(tab.windowId))
 		blacklist = ['/inject_sidebar.js'];
 
 	onFound = () => {}

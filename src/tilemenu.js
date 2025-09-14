@@ -1740,6 +1740,8 @@ document.addEventListener('mouseup', e => {
 
 function search(o) {
 	delete o.node.parent; // caused cyclic error
+
+	console.log(o);
 	return sendMessage({
 		action: "search", 
 		info: {

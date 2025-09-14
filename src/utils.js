@@ -1,6 +1,6 @@
 const debounce = (callback, time, id) => {
-  window.clearTimeout(window[id]);
-  window[id] = window.setTimeout(callback, time);
+  self.clearTimeout(self[id]);
+  self[id] = self.setTimeout(callback, time);
 }
 
 function runAtTransitionEnd(el, prop, callback, ms) {
@@ -69,7 +69,7 @@ function matchingEnginesToFolder(s) {
 		id: "___matching___",
 		title: i18n('regexmatches'),
 		children: [],
-		parent: (window.qm) ? qm.rootNode : null,
+		parent: (self.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/regex.svg'),
 		groupFolder: '',
 		groupColor: '#88bbdd'
