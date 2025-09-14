@@ -67,7 +67,8 @@
 		"clipboardWrite",
 		"clipboardRead",
 		"nativeMessaging",
-		"downloads"
+		"downloads",
+		"userScripts"
 	],
 
 	"host_permissions": [
