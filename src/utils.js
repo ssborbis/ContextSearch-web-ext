@@ -42,7 +42,7 @@ function recentlyUsedListToFolder(context) {
 		id: "___recent___",
 		title: i18n('Recent'),
 		children: [],
-		parent: (window.qm) ? qm.rootNode : null,
+		parent: (self.qm) ? qm.rootNode : null,
 		icon: browser.runtime.getURL('icons/history.svg')
 	}
 

@@ -1550,7 +1550,7 @@ function executeBookmarklet(info) {
 	const blobCode = (c, s) => {
 		return `
 			(() => {
-			  const blob = new Blob([\`CS_searchTerms = searchTerms = "` + s + `";\n\n` + c + `\`], {
+			  const blob = new Blob([\`CS_searchTerms = searchTerms = "` + s + `";` + c + `\`], {
 			    type: "text/javascript",
 			  });
 			  let script = document.createElement('script');
@@ -1563,8 +1563,7 @@ function executeBookmarklet(info) {
 	}
 
 	const vanillaCode = (c, s) => {
-		return `CS_searchTerms = searchTerms = "${s}";
-		${c}`;
+		return `CS_searchTerms = searchTerms = "${s}";${c}`;
 	}
 
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
@@ -1586,7 +1585,9 @@ function executeBookmarklet(info) {
 	// run as script
 	if ( info.node.searchCode ) {
 
-		const code = info.node.searchCode;
+		const code = userOptions.scriptsUseBlobs 
+			? blobCode(info.node.searchCode, searchTerms) 
+			: vanillaCode(info.node.searchCode, searchTerms);
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 
@@ -3168,7 +3169,6 @@ function registerAllUserScripts() {
 }
 
 async function executeUserScript(tabId, code) {
-	//console.log(tabId, code);
 
 	let result = await browser.userScripts.execute(
 	{

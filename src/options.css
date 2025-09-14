@@ -85,7 +85,7 @@ TEXTAREA {
 	text-decoration: none;
 }
 #banner {
-	padding:8px;
+	/*padding:8px;*/
 }
 .code {
 	font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
