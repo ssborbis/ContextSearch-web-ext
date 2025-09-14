@@ -132,7 +132,8 @@
 	width: calc(100% / var(--cs-scale));
 }
 #CS_findBarIframe[data-windowtype="undocked"] {
-	width:870px !important;	
+	width:870px !important;
+	border-radius:16px;
 }
 #CS_highLightNavBar > DIV {
 	background: transparent;
@@ -298,8 +299,8 @@
 	border-radius:6px;
 	background-color: #3a3a3a;
 	color:#aaa;
-	font-family: Garamond, serif;
-	font-size:9pt;
+	font-family: Calibri, Verdana;
+	font-size:11pt;
 	padding:24px;
 }
 
