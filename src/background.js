@@ -1555,19 +1555,6 @@ function executeBookmarklet(info) {
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || self.searchTerms);
 
-	// if ( true ) {
-
-	// 	openWithMethod({
-	// 			openMethod: info.openMethod, 
-	// 			url: "javascript:(() => { alert('hello')})();",
-	// 			openerTabId: userOptions.disableNewTabSorting ? null : info.tab.id
-	// 		});
-
-	// 		return false;
-	// 	return;
-	// }
-
-
 	// run as script
 	if ( info.node.searchCode ) {
 
@@ -1576,44 +1563,7 @@ function executeBookmarklet(info) {
 			: vanillaCode(info.node.searchCode, searchTerms);
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-
 			return executeUserScript(tabs[0].id, code);
-			//executeUserScript(tabs[0].id, info.node)
-
-			// await browser.userScripts.register([
-			//   {
-			//     js: [{ code: vanillaCode(code, searchTerms) }],
-			//     matches: [tabs[0].url],
-			//   }
-			// ]);
-
-			// const str = `CS_searchTerms = searchTerms = "${code}";\n\n${searchTerms}`
-			// const blob = new Blob([str], {
-			// 	type: "text/javascript",
-			// });
-
-			// browser.scripting.executeScript({
-			// 	target: {
-			// 		tabId: tabs[0].id,
-			// 	},
-			// 	files: [URL.createObjectURL(blob)]
-			// });
-
-			// browser.scripting.executeScript({
-			// 	target: {
-			// 		tabId: tabs[0].id,
-			// 	},
-			// 	func: blobCode,
-			// 	args: [code, searchTerms]
-			// });
-
-			// UserScript
-
-			// browser.tabs.executeScript(tabs[0].id, {
-			// 	code: userOptions.scriptsUseBlobs 
-			// 		? blobCode(code, searchTerms) 
-			// 		: vanillaCode(code, searchTerms)
-			// });
 		});
 	}
 
@@ -1640,15 +1590,18 @@ function executeBookmarklet(info) {
 		browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			let code = decodeURI(bookmark.url);
 
-			browser.scripting.executeScript({
-				target: {
-					tabId: tabs[0].id,
-				},
-				func: blobCode,
-				args: [code, searchTerms]
-			});
-
 			// UserScript
+			return executeUserScript(tabs[0].id, code);
+
+			// browser.scripting.executeScript({
+			// 	target: {
+			// 		tabId: tabs[0].id,
+			// 	},
+			// 	func: blobCode,
+			// 	args: [code, searchTerms]
+			// });
+
+
 			
 			// browser.tabs.executeScript(tabs[0].id, {
 			// 	code: userOptions.scriptsUseBlobs 
@@ -1850,6 +1803,11 @@ async function executeExternalProgram(info) {
 
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
 		if ( node.postScript.trim() ) {
+
+			// UserScript
+			await executeUserScript(info.tab.id, 
+				'result = `' + escapeBackticks(result) + '`;' + node.postScript
+
 			// UserScript
 			// await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
 			// await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
@@ -3131,14 +3089,6 @@ async function executeUserScript(tabId, code) {
 
 	return true;
 }
-
-browser.userScripts.register([
-  {
-  	id: gen(),
-    js: [{ code: "const testing = 'hello';" }],
-    matches: ["<all_urls>"]
-  },
-]);
 
 
 
