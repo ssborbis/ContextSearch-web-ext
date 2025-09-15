@@ -18,6 +18,7 @@
 			"update_useroptions.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
+			"lib/encoding.min.js",
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",
@@ -57,7 +58,6 @@
 		"storage",
 		"tabs",
 		"unlimitedStorage",
-		"webNavigation",
 		"scripting",
 		"userScripts"
 	],
@@ -66,7 +66,8 @@
 		"clipboardWrite",
 		"clipboardRead",
 		"nativeMessaging",
-		"downloads"
+		"downloads",
+		"userScripts"
 	],
 	"host_permissions": [
 		"<all_urls>"

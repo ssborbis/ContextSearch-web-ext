@@ -2475,6 +2475,8 @@ function getAllOpenTabs() {
 
 function encodeCharset(string, encoding) {
 
+	// encodeCharset("ハードディスク", "SHIFT_JIS"); 
+
 	try {
 		
 		if ( encoding.toLowerCase() === "none" )
