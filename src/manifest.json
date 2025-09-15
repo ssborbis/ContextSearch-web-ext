@@ -20,6 +20,7 @@
 		"update_useroptions.js",
 		"opensearch.js",
 		"lib/encoding-indexes.js",
+		"lib/encoding.min.js",
 		"defaultEngines.js",
 		"bookmarks.js",
 		"defaultUserOptions.js",

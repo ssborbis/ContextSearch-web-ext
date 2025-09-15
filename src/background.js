@@ -1,6 +1,3 @@
-//import {Encoding} from "/lib/encoding.min.js";
-
-
 // chrome
 if ( typeof importScripts === 'function') {
 	importScripts(
@@ -9,6 +6,7 @@ if ( typeof importScripts === 'function') {
 		"update_useroptions.js",
 		"opensearch.js",
 		"lib/encoding-indexes.js",
+		"lib/encoding.min.js",
 		"defaultEngines.js",
 		"bookmarks.js",
 		"defaultUserOptions.js",
@@ -38,13 +36,7 @@ self.popupWindows = [];
 var userOptions = {};
 var highlightTabs = [];
 var platformInfo = null;
-var Encoding = null;
-
 var isLoadingUserOptions = false;
-
-// (async () => {
-// 	Encoding = await import("/lib/encoding.min.js");
-// })();
 
 // tracks tabs by index that have findbar search results when searching all tabs
 // var markedTabs = [];
@@ -3141,6 +3133,14 @@ async function executeUserScript(tabId, code) {
 
 	return true;
 }
+
+browser.userScripts.register([
+  {
+  	id: gen(),
+    js: [{ code: "const testing = 'hello';" }],
+    matches: ["<all_urls>"]
+  },
+]);
 
 
 
