@@ -1217,21 +1217,17 @@ async function notify(message, sender, sendResponse) {
 
 		case "getIconsFromIconFinder":
 			return browser.tabs.create({
-				url: "https://www.iconfinder.com/search?q=" + message.searchTerms,
+				url: "https://www.iconfinder.com/search?q=" + message.searchTerms.toLowerCase(),
 				active:false
 			}).then(async tab => {
 				await new Promise(r => setTimeout(r, 1000));
 
 				urls = await browser.scripting.executeScript({
 					target: {
-						tabId: sender.tab.id
+						tabId: tab.id
 					},
 					func: () => [...document.querySelectorAll(".icon-grid IMG")].map(img => img.src)
 				});
-
-				// urls = await browser.tabs.executeScript(tab.id, {
-				// 	code: `[...document.querySelectorAll(".icon-grid IMG")].map(img => img.src);`
-				// });
 
 				browser.tabs.remove(tab.id);
 				return urls.shift().result;
