@@ -1806,7 +1806,7 @@ async function executeExternalProgram(info) {
 
 			// UserScript
 			await executeUserScript(info.tab.id, 
-				'result = `' + escapeBackticks(result) + '`;' + node.postScript
+				'result = `' + escapeBackticks(result) + '`;' + node.postScript);
 
 			// UserScript
 			// await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
