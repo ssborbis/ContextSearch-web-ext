@@ -36,7 +36,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				
 				if (getShadowRoot().getElementById(iframe.id)) return;
 				
-				iframe.src = browser.runtime.getURL('/customSearch.html');
+				iframe.src = browser.runtime.getURL('/addContextSearchEngine.html');
 				
 				getShadowRoot().appendChild(iframe);
 
@@ -57,7 +57,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					if (e.data.status !== 'complete') return;
 
 					if ( message.se ) {
-						iframe.contentWindow.postMessage({searchEngine: message.se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/customSearch.html'));
+						iframe.contentWindow.postMessage({searchEngine: message.se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/addContextSearchEngine.html'));
 						return true;
 					}
 					
@@ -71,7 +71,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 							}
 						
 							let se = details.searchEngines[0];
-							iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/customSearch.html'));
+							iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href, useOpenSearch: true}, browser.runtime.getURL('/addContextSearchEngine.html'));
 
 						});
 					} else { // openCustomSearch called by context menu on FORM
@@ -106,10 +106,10 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 								// input change likely means search performed
 								input.addEventListener('change', inputHandler);
 
-								iframe.contentWindow.postMessage({action: "promptToSearch"}, browser.runtime.getURL('/customSearch.html'));
+								iframe.contentWindow.postMessage({action: "promptToSearch"}, browser.runtime.getURL('/addContextSearchEngine.html'));
 								
 							} else {
-								iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href}, browser.runtime.getURL('/customSearch.html'));
+								iframe.contentWindow.postMessage({searchEngine: se, openSearchUrl: os_href, location: window.location.href}, browser.runtime.getURL('/addContextSearchEngine.html'));
 							}
 						});
 					}

@@ -79,7 +79,7 @@
 		{
 			"resources": [
 				"/quickmenu.html",
-				"/customSearch.html",
+				"/addContextSearchEngine.html",
 				"/searchbar.html",
 				"/findbar.html",
 				"icons/search.svg",

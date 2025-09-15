@@ -210,6 +210,8 @@ function addSearchEnginePopup(data) {
 
 	let folders = findNodes(userOptions.nodeTree, n => n.type === "folder");
 
+	folders = folders.reverse();
+
 	s_folders.forEach( s_folder => {
 		folders.forEach(f => {
 			let o = document.createElement('option');

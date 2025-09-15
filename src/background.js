@@ -2893,7 +2893,7 @@ async function injectContentScripts(tab, frameId) {
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
 			files: [
-				"/inject_customSearch.js",
+				"/inject_addContextSearchEngine.js",
 				"/iconUtils.js"
 			], runAt: "document_end"
 		}, true);
