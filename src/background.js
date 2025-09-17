@@ -230,7 +230,7 @@ async function notify(message, sender, sendResponse) {
 			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 				notify({action: "updateUserOptions", source: sender});
 			});
-			
+
 		case "updateUserOptions":
 
 			debounce(async () => {
@@ -241,6 +241,13 @@ async function notify(message, sender, sendResponse) {
 				}
 				buildContextMenu();
 			}, 1000, "updateUserOptionsTimer");
+
+			if ( typeof browser.userScripts?.execute !== 'function' ) {
+				debounce(async () => {
+					console.log('updateUserScripts');
+					updateUserScripts();
+				}, 2000, "updateUserScriptsTimer");
+			}
 			break;
 			
 		case "openOptions": {
@@ -3125,7 +3132,7 @@ function registerAllUserScripts() {
 		}
 	});
 
-	browser.userScripts.register([{
+	return browser.userScripts.register([{
 		id: 'userScripts',
 		world: 'MAIN',
 		matches: ["<all_urls>"],
@@ -3135,4 +3142,9 @@ function registerAllUserScripts() {
 
 function unregisterAllUserScripts() {
 	return browser.userScripts.unregister({ids: ["userScripts"]});
+}
+
+function updateUserScripts() {
+	return unregisterAllUserScripts()
+		.then(() => registerAllUserScripts());
 }
