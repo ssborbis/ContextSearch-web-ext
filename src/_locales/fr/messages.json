@@ -115,7 +115,7 @@
   },
 
   "ColumnsMinimumTooltip": {
-    "message": "Nombre minimum d’icônes par ligne (vue grille))"
+    "message": "Nombre minimum d’icônes par ligne (vue grille)"
   },
   
   "Items": {
@@ -607,7 +607,7 @@
   },
 
   "AddCustomSearch": {
-    "message": "Ajouter dans ContextSearch"
+    "message": "Ajouter ce moteur de recherche"
   },
 
   "SearchFor": {

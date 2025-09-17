@@ -558,7 +558,7 @@ function buildSearchEngineContainer() {
 
 					text.innerText = node.title;
 
-					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					showSaveMessage(i18n("Saved"), null, _form.querySelector(".saveMessage"));
 					updateNodeList();
 				}
 			}
@@ -697,7 +697,7 @@ function buildSearchEngineContainer() {
 
 					text.innerText = node.title;
 
-					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					showSaveMessage(i18n("Saved"), null, _form.querySelector(".saveMessage"));
 					updateNodeList();
 				}
 
@@ -770,7 +770,7 @@ function buildSearchEngineContainer() {
 
 					text.innerText = node.title;
 
-					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					showSaveMessage(i18n("Saved"), null, _form.querySelector(".saveMessage"));
 					updateNodeList();
 				}
 			}
@@ -836,7 +836,7 @@ function buildSearchEngineContainer() {
 				c.parentNode.removeChild(c);
 				
 				_form.save.onclick = function() {
-					showSaveMessage("saved", null, _form.querySelector(".saveMessage"));
+					showSaveMessage(i18n("Saved"), null, _form.querySelector(".saveMessage"));
 
 					node.title = _form.shortName.value.trim();
 					node.keyword = _form.keyword.value.trim();
