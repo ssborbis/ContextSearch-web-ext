@@ -11,3 +11,6 @@
 SPAN.buttonLabel {
   width: 93px;
 }
+.modal BUTTON {
+	width: fit-content;
+}
