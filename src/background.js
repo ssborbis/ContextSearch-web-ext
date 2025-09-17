@@ -61,6 +61,9 @@ var tabHighlighter = new TabHighlighter();
 	setIcon();
 	//self.document.dispatchEvent(new CustomEvent("loadUserOptions"));
 	isLoadingUserOptions = false;
+
+	if ( typeof browser.userScripts?.execute !== 'function' )
+		registerAllUserScripts();
 })();
 
 // listeners
@@ -1563,7 +1566,11 @@ function executeBookmarklet(info) {
 			: vanillaCode(info.node.searchCode, searchTerms);
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-			return executeUserScript(tabs[0].id, code);
+
+			if ( typeof browser.userScripts?.execute === 'function' )
+				return executeUserScript(tabs[0].id, code);
+			else
+				return executeUserScriptFallback(tabs[0].id, info.node.id);
 		});
 	}
 
@@ -3090,9 +3097,42 @@ async function executeUserScript(tabId, code) {
 	return true;
 }
 
+async function executeUserScriptFallback(tabId, nodeId) {
 
+	await browser.scripting.executeScript({
+		target: { tabId: tabId },
+	  	func: (_id, str) => { 
+	  		window.searchTerms = str; 
+			userScripts[_id](); 
+		},
+		args: [nodeId, self.searchTerms],
+	  	world: "MAIN"
+	});
+}
 
+function registerAllUserScripts() {
+	const js = [{code: "const userScripts = {};"}];
 
+	traverseNodes(userOptions.nodeTree, n => {
+		if ( n.searchCode ) {
 
+			let code = "try { userScripts['" + n.id + "'] = function() {\n" 
+				+ n.searchCode 
+				+ "\n};} catch(error) { console.log(error) };";
 
+			js.push({code: code});
+			console.log('registering script for ' + n.title);
+		}
+	});
 
+	browser.userScripts.register([{
+		id: 'userScripts',
+		world: 'MAIN',
+		matches: ["<all_urls>"],
+		js: js
+	}]);
+}
+
+function unregisterAllUserScripts() {
+	return browser.userScripts.unregister({ids: ["userScripts"]});
+}
