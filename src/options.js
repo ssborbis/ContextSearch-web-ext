@@ -1019,7 +1019,7 @@ function buildImportExportButtons() {
 					type:"folder",
 					children: json.exportedNodes,
 					id:gen(),
-					title: "Imported"
+					title: i18n("Imported")
 				}
 
 				// flatten
@@ -1261,7 +1261,7 @@ function buildImportExportButtons() {
 							newUserOptions.searchEngines = userOptions.searchEngines.concat(ses);
 							
 							// append tree to newUserOptions
-							tree.title = "Imported";
+							tree.title = i18n("Imported");
 							newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 							if ( tree.children.length )
