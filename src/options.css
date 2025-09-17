@@ -942,7 +942,7 @@ DIV.blurb {
 	vertical-align:middle;
 	width: 20px;
 }
-.contextMenu > .menuItem.parentMenu::after {
+.contextMenu .menuItem.parentMenu::after {
     content: "▶";
     position:absolute;
     right:8px;

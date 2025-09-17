@@ -1371,7 +1371,7 @@ function buildSearchEngineContainer() {
 
 		let newMenu = createMenuItem(i18n('New'), browser.runtime.getURL('icons/add.svg'));
 		newMenu.addEventListener('click', e => {
-			closeSubMenus();
+			closeSubMenus(newMenu);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
@@ -1385,7 +1385,7 @@ function buildSearchEngineContainer() {
 
 			// attach submenus
 			[newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript].forEach(el => {
-				el.className = 'menuItem';
+				el.classList.add('menuItem');
 				_menu.appendChild(el);
 				el.addEventListener('click', closeContextMenus);
 			});
@@ -1397,7 +1397,7 @@ function buildSearchEngineContainer() {
 		let _delete = createMenuItem(i18n('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
 		
 		_delete.onclick = function(e) {
-			closeSubMenus();
+			closeSubMenus(_delete);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
@@ -1612,7 +1612,7 @@ function buildSearchEngineContainer() {
 
 		let newScript = createMenuItem(i18n('Script'), browser.runtime.getURL('icons/code.svg'));		
 		newScript.addEventListener('click', e => {
-			closeSubMenus();
+			closeSubMenus(newScript);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
@@ -1644,7 +1644,7 @@ function buildSearchEngineContainer() {
 			let newNode;
 			if (li.node.type === 'searchEngine') {
 
-				closeSubMenus();
+				closeSubMenus(copy);
 				e.stopImmediatePropagation();
 				e.preventDefault();
 				
@@ -1769,7 +1769,7 @@ function buildSearchEngineContainer() {
 		let newTool = createMenuItem(i18n('Tool'), browser.runtime.getURL('icons/add.svg'));	
 		newTool.onclick = function(e) {
 
-			closeSubMenus();
+			closeSubMenus(newTool);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 			
@@ -1964,6 +1964,7 @@ function buildSearchEngineContainer() {
 
 		// mark as parent menu
 		newMenu.classList.add("parentMenu");
+		newTool.classList.add("parentMenu");
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
@@ -2233,8 +2234,8 @@ function closeContextMenus() {
 	closeSubMenus();
 }
 
-function closeSubMenus() {
-	for (let m of document.querySelectorAll('.subMenu')) {
+function closeSubMenus(parent=document) {
+	for (let m of parent.querySelectorAll('.subMenu')) {
 		if (m && m.parentNode) m.parentNode.removeChild(m);
 	}
 }
