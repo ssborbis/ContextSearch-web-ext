@@ -1,5 +1,6 @@
 function hasUserScriptsExecute() {
-	return typeof browser.userScripts?.execute === 'function';
+	let browser = chrome || browser;
+	return typeof browser?.userScripts?.execute === 'function';
 }
 
 // chrome
