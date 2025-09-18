@@ -1,5 +1,9 @@
+function hasUserScriptsExecute() {
+	return typeof browser.userScripts?.execute === 'function';
+}
+
 // chrome
-if ( typeof importScripts === 'function') {
+if ( hasUserScriptsExecute()) {
 	importScripts(
 		"lib/browser-polyfill.min.js",
 		"utils.js",
@@ -62,7 +66,7 @@ var tabHighlighter = new TabHighlighter();
 	//self.document.dispatchEvent(new CustomEvent("loadUserOptions"));
 	isLoadingUserOptions = false;
 
-	if ( typeof browser.userScripts?.execute !== 'function' )
+	if ( !hasUserScriptsExecute() )
 		registerAllUserScripts();
 })();
 
@@ -1574,7 +1578,7 @@ function executeBookmarklet(info) {
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 
-			if ( typeof browser.userScripts?.execute === 'function' )
+			if ( hasUserScriptsExecute() )
 				return executeUserScript(tabs[0].id, code);
 			else
 				return executeUserScriptFallback(tabs[0].id, info.node.id);
