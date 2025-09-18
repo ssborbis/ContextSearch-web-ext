@@ -32,8 +32,6 @@ function buildSearchEngineContainer() {
 		})
 	})();
 
-
-
 	function traverse(node, parent) {	
 
 		if ( !node ) {
@@ -2123,7 +2121,7 @@ function buildSearchEngineContainer() {
 			e.stopPropagation();
 			rootElement.node = sortNode(rootElement.node, {sortSubfolders: true, sortFoldersTop:true});
 			updateNodeList();
-			buildSearchEngineContainer();
+			window.location.reload();
 		}
 	});
 
