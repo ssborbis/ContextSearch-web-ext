@@ -1429,7 +1429,7 @@ function buildSearchEngineContainer() {
 				bookmarklet: "code.svg",
 				folder: "folder.svg",
 				separator: "separator.svg",
-				tool: "add.svg",
+				tool: "tool.svg",
 				siteSearchFolder: "search.svg",
 				externalProgram: "terminal.svg"
 			}
@@ -1764,7 +1764,7 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newTool = createMenuItem(i18n('Tool'), browser.runtime.getURL('icons/add.svg'));	
+		let newTool = createMenuItem(i18n('Tool'), browser.runtime.getURL('icons/tool.svg'));	
 		newTool.onclick = function(e) {
 
 			closeSubMenus(newTool);
