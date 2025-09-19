@@ -1619,7 +1619,7 @@ function buildSearchEngineContainer() {
 			let newBm = {
 				type: "bookmarklet",
 				id: gen(),
-				title: "new script",
+				title: i18n('NewScript'),
 				parent: li.node.parent,
 				contexts:32,
 				toJSON: li.node.toJSON
