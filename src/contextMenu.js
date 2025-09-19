@@ -1,4 +1,6 @@
 const ROOT_MENU = "root_menu";
+self.ctrlKey = false; // track on updateContextMenu for text/url
+
 var currentContextMenuContexts = [];
 
 function addMenuItem( createOptions ) {

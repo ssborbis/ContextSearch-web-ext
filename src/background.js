@@ -35,7 +35,6 @@ self.contextMenuMatchRegexMenus = [];
 self.tabTerms = [];
 self.searchTerms = "";
 self.searchTermsObject = {};
-self.ctrlKey = false; // track on updateContextMenu for text/url
 self.popupWindows = [];
 
 var userOptions = {};
@@ -67,8 +66,13 @@ var tabHighlighter = new TabHighlighter();
 	//self.document.dispatchEvent(new CustomEvent("loadUserOptions"));
 	isLoadingUserOptions = false;
 
-	if ( !hasUserScriptsExecute() )
+	if ( !hasUserScriptsExecute() ) {
 		registerAllUserScripts();
+		browser.permissions.onAdded.addListener( async permissions => {	
+			if ( permissions.userScripts )
+				updateUserScripts();
+		});
+	}
 })();
 
 // listeners
@@ -1578,11 +1582,7 @@ function executeBookmarklet(info) {
 			: vanillaCode(info.node.searchCode, searchTerms);
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-
-			if ( hasUserScriptsExecute() )
-				return executeUserScript(tabs[0].id, code);
-			else
-				return executeUserScriptFallback(tabs[0].id, info.node.id);
+			return executeUserScript(tabs[0].id, code, info.node.id);
 		});
 	}
 
@@ -1610,7 +1610,7 @@ function executeBookmarklet(info) {
 			let code = decodeURI(bookmark.url);
 
 			// UserScript
-			return executeUserScript(tabs[0].id, code);
+			return executeUserScript(tabs[0].id, code, info.node.id);
 
 			// browser.scripting.executeScript({
 			// 	target: {
@@ -1824,8 +1824,11 @@ async function executeExternalProgram(info) {
 		if ( node.postScript.trim() ) {
 
 			// UserScript
-			await executeUserScript(info.tab.id, 
-				'result = `' + escapeBackticks(result) + '`;' + node.postScript)
+			await executeUserScript(
+				info.tab.id, 
+				'result = `' + escapeBackticks(result) + '`;' + node.postScript,
+				node.id
+			);
 
 			// UserScript
 			// await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
@@ -3097,29 +3100,29 @@ async function browserSaveAs(url) {
 	return browser.downloads.download({url: url, saveAs: true});
 }
 
-async function executeUserScript(tabId, code) {
+async function executeUserScript(tabId, code, nodeId) {
 
-	let result = await browser.userScripts.execute(
-	{
-		target: { tabId: tabId },
-		world: "USER_SCRIPT",
-		js: [{ code: code }]
-	});
+	// chrome
+	if ( hasUserScriptsExecute()) {
 
-	return true;
-}
+		return browser.userScripts.execute({
+			target: { tabId: tabId },
+			world: "USER_SCRIPT",
+			js: [{ code: code }]
+		});
 
-async function executeUserScriptFallback(tabId, nodeId) {
+	} else { // firefox
 
-	await browser.scripting.executeScript({
-		target: { tabId: tabId },
-	  	func: (_id, str) => { 
-	  		window.searchTerms = str; 
-			userScripts[_id](); 
-		},
-		args: [nodeId, self.searchTerms],
-	  	world: "MAIN"
-	});
+		return browser.scripting.executeScript({
+			target: { tabId: tabId },
+			func: (_id, str) => { 
+				window.searchTerms = str; 
+				userScripts[_id](); 
+			},
+			args: [nodeId, self.searchTerms],
+			world: "MAIN"
+		});
+	}
 }
 
 function registerAllUserScripts() {
