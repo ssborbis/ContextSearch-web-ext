@@ -2121,7 +2121,7 @@ function buildSearchEngineContainer() {
 			e.stopPropagation();
 			rootElement.node = sortNode(rootElement.node, {sortSubfolders: true, sortFoldersTop:true});
 			updateNodeList();
-			window.location.reload();
+			setTimeout(() => location.reload(), 1000);
 		}
 	});
 
