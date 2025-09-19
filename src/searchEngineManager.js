@@ -5,14 +5,17 @@ isMenuOpen = () => $('.contextMenu') ? true : false;
 isModalOpen = () => $('.overDiv') ? true : false; 
 
 function buildSearchEngineContainer() {
-	
-	let table = document.createElement('div');
+
+	let table = $('#searchEngineTable') || document.createElement('div');
+	if ( table ) table.innerHTML = null;
+
 	table.style.textAlign = 'left';
 	table.style.width = '100%';
 	table.style.height = 'inherit';
 	table.style.display = 'inline-block';
 	table.style.verticalAlign = 'top';
 	table.style.overflowY = 'scroll';
+	table.id = 'searchEngineTable';
 
 	// checkboxes
 	(() => {
@@ -2121,7 +2124,7 @@ function buildSearchEngineContainer() {
 			e.stopPropagation();
 			rootElement.node = sortNode(rootElement.node, {sortSubfolders: true, sortFoldersTop:true});
 			updateNodeList();
-			setTimeout(() => location.reload(), 1000);
+			buildSearchEngineContainer();
 		}
 	});
 
