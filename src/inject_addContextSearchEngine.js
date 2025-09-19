@@ -2,7 +2,7 @@
 document.addEventListener('mousedown', ev => {
 
 	if (
-		ev.which !== 3
+		ev.button !== 2
 		|| getSelectedText(ev.target)
 		|| ev.target.ownerDocument.defaultView != top
 		|| !isTextBox(ev.target)

@@ -621,7 +621,7 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 	});
 
 	window.addEventListener('mouseup', e => {
-		if ( e.which !== 1 ) return;
+		if ( e.button !== 0 ) return;
 
 		if ( !moving ) return;
 
@@ -652,7 +652,7 @@ function addChildDockingListeners(handle, target_id, ignoreSelector) {
 	});
 
 	handle.addEventListener('dblclick', e => {
-		if ( e.which !== 1 ) return;
+		if ( e.button !== 0 ) return;
 
 		if ( ignoreTarget(e) ) return false;
 

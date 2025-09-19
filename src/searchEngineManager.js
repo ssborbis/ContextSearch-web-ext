@@ -2002,7 +2002,7 @@ function buildSearchEngineContainer() {
 		// menu close listener
 		document.addEventListener('click', function contextMenuClose(e) {
 			
-			if ( e.which !== 1 ) return;
+			if ( e.button !== 0 ) return;
 			
 			let menus = document.querySelectorAll('.contextMenu');
 

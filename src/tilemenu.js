@@ -196,11 +196,11 @@ function getOpenMethod(e, isFolder) {
 	let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
 	
 	let openMethod = "";
-	if (e.which === 3)
+	if (e.button === 2)
 		openMethod = right;
-	else if (e.which === 2)
+	else if (e.button === 1)
 		openMethod = middle;
-	else if (e.which === 1) {
+	else if (e.button === 0) {
 		openMethod = left;
 		
 		// ignore methods that aren't opening methods
@@ -1619,7 +1619,7 @@ getAllOtherHeights = (_new) => {
 }
 
 isMoving = e => {
-	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
+	return e.button === 0 && e.type === 'mouseup' && document.body.classList.contains('moving');
 }
 
 // causing window drag to fail in chrome
@@ -2278,7 +2278,7 @@ function nodeToTile( node ) {
 					tile.parentNode.lastMouseDownTile = tile;
 					
 					// skip for dnd events
-					if ( e.which === 1 ) return;
+					if ( e.button === 0 ) return;
 					e.preventDefault();
 					e.stopPropagation();
 				});

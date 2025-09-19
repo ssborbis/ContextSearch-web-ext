@@ -378,10 +378,10 @@ function toolsHandler(o = {}) {
 }
 
 // prevent context menu when using right-hold
-function preventContextMenu(e) { if ( e.which === 3 ) e.preventDefault(); }		
+function preventContextMenu(e) { if ( e.button === 2 ) e.preventDefault(); }		
 document.addEventListener('contextmenu', preventContextMenu);
 document.addEventListener('mousedown', function rightMouseDownHandler(e) {
-	if ( e.which !== 3 ) return;
+	if ( e.button !== 2 ) return;
 	document.removeEventListener('contextmenu', preventContextMenu);
 	document.removeEventListener('mousedown', rightMouseDownHandler);
 });

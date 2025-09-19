@@ -642,8 +642,8 @@ function keyButtonListener(e) {
 			e.target.innerText = i18n('ClickToSet');
 			e.target.value = 0;
 		} else {
-			e.target.innerText = Shortcut.keyCodeToString(evv.which);
-			e.target.value = evv.which;
+			e.target.innerText = Shortcut.keyCodeToString(evv.keyCode);
+			e.target.value = evv.keyCode;
 		}
 		
 		saveOptions(e);
