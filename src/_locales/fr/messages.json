@@ -833,7 +833,7 @@
   },
 
   "PressKey": {
-    "message": "Taper une combinaison de touches",
+    "message": "Presser une touche",
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu"
   },
 
@@ -1112,7 +1112,7 @@
   },
 
   "ThemeTooltip": {
-    "message": "Thème à utiliser dans les panneaux",
+    "message": "Thème à utiliser dans les menus rapide, de la barre d’outils et du panneau latéral",
     "description": ""
   },
 
@@ -1262,7 +1262,7 @@
   },
 
   "MenuTheme": {
-    "message": "Thème",
+    "message": "Thème des menus",
     "description": ""
   },
 
@@ -1715,7 +1715,7 @@
   },
 
   "ToggleHotkeys": {
-    "message": "Touches de raccourci actives/inactives",
+    "message": "Raccourcis activés/désactivés",
     "description": ""
   },
 
@@ -2023,7 +2023,7 @@
   },
   
  "EnableHotkeysLabel": {
-    "message": "Raccourcis de moteurs",
+    "message": "Raccourcis des moteurs",
     "description": "label for Search Engine Hotkeys"
   },
   
@@ -2541,7 +2541,7 @@
     "message": "Suivant"
   },
   "AutoThemeTooltip": {
-    "message": "Changer automatiquement le thème du menu en mode sombre"
+    "message": "Changer automatiquement de thème en mode sombre"
   },
   "AutoThemeLiteTooltip": {
     "message": "Thème clair"
@@ -2580,7 +2580,7 @@
     "message": "Mot-clé"
   },
   "Filter": {
-    "message": "Filtre"
+    "message": "Filtrer"
   },
   "Main": {
     "message": "Principal"
