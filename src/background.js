@@ -1823,16 +1823,14 @@ async function executeExternalProgram(info) {
 	return browser.runtime.sendNativeMessage("contextsearch_webext", msg).then( async result => {
 		if ( node.postScript.trim() ) {
 
+			let code = 'let result = `' + escapeBackticks(result) + '`;\n' + node.postScript;
+
 			// UserScript
 			await executeUserScript(
 				info.tab.id, 
-				'result = `' + escapeBackticks(result) + '`;' + node.postScript,
+				code,
 				node.id
 			);
-
-			// UserScript
-			// await browser.tabs.executeScript(info.tab.id, { code: 'result = `' + escapeBackticks(result) + '`;'});
-			// await browser.tabs.executeScript(info.tab.id, { code: node.postScript });
 		}
 	});
 }
