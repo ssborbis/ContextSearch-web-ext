@@ -786,8 +786,8 @@ SPAN.buttonLabel {
 	width:120px;
 }
 .editForm INPUT:focus, .editForm TEXTAREA:focus{
-	/*border:1px solid var(--selected, #008afc);*/
-	box-shadow:0px 0px 3px 2px var(--selected, #008afc);
+	border:1px solid var(--selected, #008afc);
+	/*box-shadow:0px 0px 2px 1px var(--selected, #008afc);*/
 	outline: none;
 }
 .editForm .error {
@@ -1720,6 +1720,7 @@ INPUT::placeholder {
 
 .formNavBar .active {
 	background-color:var(--cs-green);
+	border-radius:4px 4px 0 0;
 	color:white;
 }
 
