@@ -879,7 +879,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getLastSearch":
-			return {lastSearch: browser.storage.session.get("lastSearch")};
+			return await browser.storage.session.get("lastSearch");
 			
 		case "getCurrentTheme":
 			browser.theme.getCurrent().then( theme => {

@@ -1269,13 +1269,12 @@ function makeSearchBar() {
 				return;
 			}
 		}
-
-		let message = await sendMessage({action: "getLastSearch"});	
 		
 		// skip empty 
-		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-		
-		sb.set(message.lastSearch);
+		if (userOptions.searchBarDisplayLastSearch) {
+			let message = await sendMessage({action: "getLastSearch"});	
+			if ( message.lastSearch) sb.set(message.lastSearch);
+		}
 
 		if ( userOptions.quickMenuSearchBarSelect )
 			window.addEventListener('focus', e => sb.select(), {once: true});
