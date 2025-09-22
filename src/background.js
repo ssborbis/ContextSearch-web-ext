@@ -978,8 +978,10 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getTabQuickMenuObject":
 				return Promise.race([
-					new Promise(r => {
+					new Promise(async r => {
 						try {
+							if ( !isAllowedURL(sender.tab.url) ) return r(null);
+							if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
 
 							browser.scripting.executeScript({
 								target: {
@@ -1275,47 +1277,33 @@ async function notify(message, sender, sendResponse) {
 
 		case "disablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
-			try {
-				browser.scripting.insertCSS({
+			if ( !isAllowedURL(sender.tab.url) ) return;
+			if ( await isTabScriptable(sender.tab.id) === false ) return;
+
+			return browser.scripting.insertCSS({
+				target: {
+					tabId: sender.tab.id,
+					allFrames: true
+				},
+				css: "HTML{pointer-events:none;}",
+				origin: "USER"
+			}).catch( error => debug(error) );
+
+		case "enablePageClicks":
+			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
+			if ( !isAllowedURL(sender.tab.url) ) return;
+			if ( await isTabScriptable(sender.tab.id) === false ) return;
+
+			function logTabs(tabs) {
+			  for (const tab of tabs) {
+				browser.scripting.removeCSS({
 					target: {
 						tabId: sender.tab.id,
 						allFrames: true
 					},
 					css: "HTML{pointer-events:none;}",
 					origin: "USER"
-				});
-
-				// browser.tabs.insertCSS( sender.tab.id, {
-				// 	code:"HTML{pointer-events:none;}",
-				// 	cssOrigin: "user",
-				// 	allFrames:true
-				// });
-			} catch (error) {
-				debug(error);
-			}
-
-		case "enablePageClicks":
-			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
-
-			function logTabs(tabs) {
-			  for (const tab of tabs) {
-			  	try {
-			  		browser.scripting.removeCSS({
-						target: {
-							tabId: sender.tab.id,
-							allFrames: true
-						},
-						css: "HTML{pointer-events:none;}",
-						origin: "USER"
-					});
-				    // browser.tabs.removeCSS( tab.id, {
-					// 	code:"HTML{pointer-events:none;}",
-					// 	cssOrigin: "user",
-					// 	allFrames:true
-					// });
-				} catch(error) {
-					debug(error);
-				}
+				}).catch(error => debug(error));
 			  }
 			}
 
@@ -2729,8 +2717,6 @@ function isAllowedURL(_url) {
 
 async function executeScripts(tabId, options = {}, checkHasRun) {
 
-	let blacklist = options.blacklist || [];
-
 	if ( options.allFrames ) {
 
 		delete options.allFrames;
@@ -2746,9 +2732,13 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 		});
 	}
 
-	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
+	let blacklist = options.blacklist || [];
 
 	let tab = await browser.tabs.get(tabId);
+
+	if ( !isAllowedURL(tab.url) ) return false;
+
+	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
 
 	// do not run on extension pages
 	if ( tab.url.startsWith(await browser.runtime.getURL("")) ) return false;
