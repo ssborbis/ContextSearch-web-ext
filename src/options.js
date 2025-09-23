@@ -1419,7 +1419,10 @@ function buildShortcutTable() {
 	let table = $('#shortcutTable');
 
 	setButtons = (el, key) => {
-		el.innerText = Shortcut.getShortcutStringFromKey(key);
+		let text = Shortcut.getShortcutStringFromKey(key);
+		if ( text.length === 0 ) text = i18n('ClickToSet');
+
+		el.innerText = text;
 	//	el.appendChild();//keyArrayToButtons(key));
 	}
 
