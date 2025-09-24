@@ -980,13 +980,8 @@ async function notify(message, sender, sendResponse) {
 								target: {
 									tabId: sender.tab.id
 								},
-								func: () => quickMenuObject
+								func: () => ( typeof quickMenuObject !== 'undefined' ) ? quickMenuObject : null
 							}).then(result => r(result));
-
-							// browser.tabs.executeScript(sender.tab.id, {
-							// 	code: `quickMenuObject;`,
-							// 	runAt: "document_end"
-							// }).then(result => r(result));
 
 					} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
@@ -1093,7 +1088,7 @@ async function notify(message, sender, sendResponse) {
 				target: {
 					tabId: sender.tab.id
 				},
-				func: () => getSelectedText(document.activeElement)
+				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : ""
 			}).then(onFound, onError);
 
 			// return browser.tabs.executeScript(sender.tab.id, {
