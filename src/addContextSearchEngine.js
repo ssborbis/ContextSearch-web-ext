@@ -110,7 +110,7 @@ function addSearchEnginePopup(data) {
 	} else {
 		if (openSearchUrl) {
 
-			sendMessage({action: "openSearchUrlToSearchEngine", url: openSearchUrl}).then( details => {
+			openSearchUrlToSearchEngine(openSearchUrl).then( details => {
 
 				if (!details) {
 					console.log('Cannot build search engine from xml. Missing values');

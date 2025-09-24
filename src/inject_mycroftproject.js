@@ -7,7 +7,7 @@ if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 			// skip default mycroftproject engine
 			if ( ose.href.endsWith('/opensearch.xml')) continue;
 
-			let xml_se = await sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
+			let xml_se = await openSearchUrlToSearchEngine(ose.href).then( details => {
 				return (!details) ? null : details.searchEngines[0];
 			});
 

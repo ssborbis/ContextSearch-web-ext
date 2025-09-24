@@ -341,3 +341,11 @@ function openSearchXMLToSearchEngine(xml) {
 	});
 
 }
+
+function openSearchUrlToSearchEngine(url) {
+	return readOpenSearchUrl(url).then( xml => {
+		if ( !xml ) return false;
+		
+		return openSearchXMLToSearchEngine(xml);
+	});
+}

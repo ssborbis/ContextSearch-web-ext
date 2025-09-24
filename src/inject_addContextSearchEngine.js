@@ -63,7 +63,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					
 					if (message.useOpenSearch) { // openCustomSearch called by page_action
 
-						sendMessage({action: "openSearchUrlToSearchEngine", url: os_href}).then( details => {
+						openSearchUrlToSearchEngine(os_href).then( details => {
 
 							if (!details) {
 								console.log('Cannot build search engine from xml. Missing values');

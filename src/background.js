@@ -965,13 +965,6 @@ async function notify(message, sender, sendResponse) {
 			
 		case "dataToSearchEngine":
 			return dataToSearchEngine(message.formdata);
-			
-		case "openSearchUrlToSearchEngine":
-			return readOpenSearchUrl(message.url).then( xml => {
-				if ( !xml ) return false;
-				
-				return openSearchXMLToSearchEngine(xml);
-			});
 		
 		case "showNotification":
 			return sendMessageToTopFrame();
@@ -1080,7 +1073,7 @@ async function notify(message, sender, sendResponse) {
 			}
 			
 			if ( /\/\/mycroftproject.com/.test(sender.tab.url) && userOptions.modify_mycroftproject ) 
-				await executeScripts(sender.tab.id, {files: ["/inject_mycroftproject.js"], frameId: sender.frameId});
+				await executeScripts(sender.tab.id, {files: ["/searchEngineUtils.js", "/inject_mycroftproject.js"], frameId: sender.frameId});
 			
 			break;
 			
@@ -2782,7 +2775,8 @@ async function injectContentScripts(tab, frameId) {
 		await executeScripts(tab.id, {
 			files: [
 				"/inject_addContextSearchEngine.js",
-				"/iconUtils.js"
+				"/iconUtils.js",
+				"/searchEngineUtils.js"
 			], runAt: "document_end"
 		}, true);
 	}
