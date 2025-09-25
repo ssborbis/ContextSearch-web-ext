@@ -16,7 +16,6 @@ if ( hasUserScriptsExecute()) {
 		"bookmarks.js",
 		"defaultUserOptions.js",
 		"contexts.js",
-		"contextMenu.js",
 		"searchActions.js",
 		"nodes.js",
 		"omnibox.js",
@@ -24,7 +23,8 @@ if ( hasUserScriptsExecute()) {
 		"keyTable.js",
 		"TabHighlighter.js",
 		"Shortcuts.js",
-		"tools.js"
+		"tools.js",
+		"contextMenu.js"
 	)
 }
 
@@ -257,7 +257,7 @@ async function notify(message, sender, sendResponse) {
 					updateUserScripts();
 				}, 2000, "updateUserScriptsTimer");
 			}
-			break;
+			return;
 			
 		case "openOptions": {
 			let optionsPageURL = browser.runtime.getURL("/options.html");
@@ -442,7 +442,7 @@ async function notify(message, sender, sendResponse) {
 				notify({action: "openFindBar", searchTerms: s});
 			else
 				notify({action: "closeFindBar"});
-			break;
+			return;
 			
 		case "findBarNext":
 			return sendMessageToTopFrame();
@@ -540,15 +540,6 @@ async function notify(message, sender, sendResponse) {
 					if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }});
 				}
 			}).then(onFound, onError);
-		
-			// return await browser.tabs.executeScript( sender.tab.id, {
-			// 	code: `
-			// 		(() => {
-			// 			let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
-			// 			if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }})
-			// 		})()`,
-			// 	frameId: message.frame ? sender.frameId : 0
-			// }).then(onFound, onError);
 
 		case "updateSearchTerms":
 
@@ -565,82 +556,7 @@ async function notify(message, sender, sendResponse) {
 			
 		case "updateContextMenu":
 		
-			var searchTerms = message.searchTerms;
-
-			if ( searchTerms && message.hasOwnProperty("ctrlKey"))
-				self.ctrlKey = message.ctrlKey;
-		
-			if ( userOptions.contextMenuUseContextualLayout ) {
-
-				let ccs = [...message.currentContexts];
-
-				if ( ccs.includes("image") && ccs.includes("link") ) {
-					ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
-				} else if ( message.linkMethod && message.linkMethod === "text") {
-					ccs = ccs.filter(c => c != "link");
-					if ( !ccs.includes("selection") )
-						ccs.push("selection");
-				}
-
-				updateMatchRegexFolders(searchTerms);
-
-				// relabel selection based on linkMethod
-				test: try {
-
-					// reset selection label
-					browser.contextMenus.update("selection", {
-						title: i18n("SearchForContext", i18n("selection").toUpperCase()) + getMenuHotkey(),
-						contexts:["selection"]
-					});
-
-					if ( message.currentContexts.includes("image")) break test;
-
-					// replace LINK menu label with linkText
-					if ( ccs.includes("linkText") ) {
-						if ( message.linkMethod && message.linkMethod === "text" ) {
-							ccs = ccs.filter(c => c != "linkText" && c != "link" );
-							browser.contextMenus.update("selection", {
-								title: i18n("SearchForContext", i18n("LINKTEXT").toUpperCase()) + getMenuHotkey(),
-								contexts:["link"]
-							});
-
-							if ( ccs.length === 0 ) ccs.push("selection");
-
-						} else {
-							ccs = ccs.filter(c => c != "linkText" );
-						}
-					}
-	
-				} catch ( error ) { debug(error) }
-
-				for ( let i in contexts ) {
-					try {
-						browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) });
-					} catch ( error ) { debug(error) }
-				}
-
-				// if just one context, relabel with searchTerms
-				if ( ccs.length === 1 && self.searchTerms ) {
-					try {
-						browser.contextMenus.update(ccs[0], {
-							title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", self.searchTerms) + getMenuHotkey()
-						});
-					} catch ( error ) { debug(error) }
-				}
-
-			} else {
-				// legacy menus
-				let title = contextMenuTitle(searchTerms);
-
-				try {
-					browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
-						updateMatchRegexFolder(searchTerms);
-					});
-
-				} catch (error) { debug(error) }
-			}
-
-			break;
+			return updateContextMenu(message);
 			
 		case "getFirefoxSearchEngineByName": {
 			if ( !browser.search || !browser.search.get ) return [];

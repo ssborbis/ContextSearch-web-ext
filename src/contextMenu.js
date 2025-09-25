@@ -22,7 +22,7 @@ function addMenuItem( createOptions ) {
 function onCreated() {
 
 	if (browser.runtime.lastError) {
-		if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) debug(browser.runtime.lastError);
+		debug(browser.runtime.lastError);
 	}
 }
 
@@ -31,26 +31,20 @@ async function buildContextMenu(searchTerms) {
 	debug("buildContextMenu");
 
 	if ( false ) { // testing add tools to context menu
-		try {
-			await browser.contextMenus.removeAll();
-		} catch (error) {
-			console.log(error);
-		}
+
+		await browser.contextMenus.removeAll()
+			.catch ( error => debug(error) );
 
 		let pattern = await browser.runtime.getURL("") + "*";
 
 		for ( let key in QMtools ) {
 
-			try {
-				browser.contextMenus.create( {
-					documentUrlPatterns: [pattern],
-					title: t.title,	
-					icons: {"16": t.icon},
-					id: "tools_" + key
-				});
-			} catch (error) {
-				console.log(error);
-			}
+			browser.contextMenus.create( {
+				documentUrlPatterns: [pattern],
+				title: t.title,	
+				icons: {"16": t.icon},
+				id: "tools_" + key
+			}).catch ( error => debug(error) );
 		}
 
 		return;
@@ -69,7 +63,7 @@ async function buildContextMenu(searchTerms) {
 		
 		if (node.hidden) return;
 		
-		let getTitleWithHotkey = (n) => {
+		function getTitleWithHotkey(n) {
 			if ( userOptions.contextMenuHotkeys ) {
 				let hk = Shortcut.getHotkeyCharFromNode(n);
 				return n.title + (hk ? ` (&${hk.toUpperCase()})` : "");
@@ -156,15 +150,15 @@ async function buildContextMenu(searchTerms) {
 			
 			let _id = "folder" + ++id
 
-			// special case for regex matching
-			if ( node.id === '___matching___') {
+			// // special case for regex matching
+			// if ( node.id === '___matching___') {
 
-				// prepend context if using contextual menus
-				if ( contexts.includes(parentId) )
-					_id = parentId + node.id;
-				else
-					_id = node.id;
-			}
+			// 	// prepend context if using contextual menus
+			// 	if ( contexts.includes(parentId) )
+			// 		_id = parentId + node.id;
+			// 	else
+			// 		_id = node.id;
+			// }
 			
 			addMenuItem({
 				parentId: parentId,
@@ -207,8 +201,7 @@ async function buildContextMenu(searchTerms) {
 					"16": getIconFromNode(node)
 				}
 			});
-		}
-		
+		}		
 	}
 
 	function addOptions(context, root) {
@@ -247,11 +240,8 @@ async function buildContextMenu(searchTerms) {
 	// catch android
 	if ( !browser.contextMenus ) return;
 	
-	try {
-		await browser.contextMenus.removeAll();
-	} catch (error) {
-		console.log(error);
-	}
+	await browser.contextMenus.removeAll()
+		.catch ( error => debug(error) );
 	
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
@@ -334,16 +324,12 @@ async function buildContextMenu(searchTerms) {
 				filteredNodeTree.children = seNodes;
 			}
 
-			try {
+			browser.contextMenus.create({
+				id: context,
+				title: i18n("SearchForContext", i18n(context).toUpperCase()) + getMenuHotkey(),
+				contexts: [context]
+			}, onCreated);
 
-				browser.contextMenus.create({
-					id: context,
-					title: i18n("SearchForContext", i18n(context).toUpperCase()) + getMenuHotkey(),
-					contexts: [context]
-				}, onCreated);
-			} catch (error) {
-				console.log(error);
-			}
 
 			// recently used engines
 			if ( userOptions.contextMenuShowRecentlyUsed && userOptions.recentlyUsedList.length ) {
@@ -366,8 +352,19 @@ async function buildContextMenu(searchTerms) {
 
 			// matching regex engines
 			 if ( userOptions.contextMenuRegexMatchedEngines ) {
-			 	let folder = matchingEnginesToFolder(searchTerms || "");
-			 	traverse(folder, context, context);
+			 	let folder = matchingEnginesToFolder();
+			 	// special case for regex matching
+			
+				addMenuItem({
+					parentId: context,
+					id: context + folder.id,
+					title: folder.title,
+					icons: {
+						"16": folder.icon || "/icons/folder-icon.svg"
+					}
+				});
+
+			 //	traverse(folder, context, context);
 			}
 
 			filteredNodeTree.children.forEach( child => traverse(child, context, context) );
@@ -406,15 +403,11 @@ async function buildContextMenu(searchTerms) {
 		 	root.children.unshift(folder);
 		}
 
-		try {
-			browser.contextMenus.create({
-				id: ROOT_MENU,
-				title: contextMenuTitle(""),
-				contexts: contexts
-			}, onCreated);
-		} catch (error) {
-			console.log(error);
-		}
+		browser.contextMenus.create({
+			id: ROOT_MENU,
+			title: contextMenuTitle(""),
+			contexts: contexts
+		}, onCreated);
 
 		if ( userOptions.syncWithFirefoxSearch ) {
 			let ses = await browser.search.get();
@@ -492,59 +485,105 @@ function getMenuHotkey() {
 	return userOptions.contextMenuKey ? ` (&${keyTable[userOptions.contextMenuKey].toUpperCase()})` : "";
 }
 
+function updateContextMenu(message) {
+	var searchTerms = message.searchTerms;
+
+	if ( searchTerms && message.hasOwnProperty("ctrlKey"))
+		self.ctrlKey = message.ctrlKey;
+
+	if ( userOptions.contextMenuUseContextualLayout ) {
+
+		let ccs = [...message.currentContexts];
+
+		if ( ccs.includes("image") && ccs.includes("link") ) {
+			ccs = ccs.filter(c => c != (message.ctrlKey ? "image" : "link"));
+		} else if ( message.linkMethod && message.linkMethod === "text") {
+			ccs = ccs.filter(c => c != "link");
+			if ( !ccs.includes("selection") )
+				ccs.push("selection");
+		}
+
+		// relabel selection based on linkMethod
+		relabel: {
+
+			// reset selection label
+			browser.contextMenus.update("selection", {
+				title: i18n("SearchForContext", i18n("selection").toUpperCase()) + getMenuHotkey(),
+				contexts:["selection"]
+			}).catch ( error => debug(error) );;
+
+			if ( message.currentContexts.includes("image")) break relabel;
+
+			// replace LINK menu label with linkText
+			if ( ccs.includes("linkText") ) {
+				if ( message.linkMethod && message.linkMethod === "text" ) {
+					ccs = ccs.filter(c => c != "linkText" && c != "link" );
+					browser.contextMenus.update("selection", {
+						title: i18n("SearchForContext", i18n("LINKTEXT").toUpperCase()) + getMenuHotkey(),
+						contexts:["link"]
+					}).catch ( error => debug(error) );
+
+					if ( ccs.length === 0 ) ccs.push("selection");
+
+				} else {
+					ccs = ccs.filter(c => c != "linkText" );
+				}
+			}
+
+		}
+
+		// hide menus outside the current context
+		for ( let i in contexts ) {
+			browser.contextMenus.update(contexts[i], {visible: ccs.includes(contexts[i]) })
+				.catch ( error => debug(error) );
+		}
+
+		// if just one context, relabel with searchTerms
+		if ( ccs.length === 1 && self.searchTerms ) {
+			console.log('single submenu');
+			browser.contextMenus.update(ccs[0], {
+				title: (userOptions.contextMenuTitle || i18n("SearchFor")).replace("%1", "%s").replace("%s", self.searchTerms) + getMenuHotkey()
+			}).catch ( error => debug(error) );
+		}
+
+		throttle(() => updateMatchRegexFolders( searchTerms), 500, "updateRegexFoldersDebouncer");
+
+	} else {
+		// legacy menus
+		let title = contextMenuTitle(searchTerms);
+
+		browser.contextMenus.update(ROOT_MENU, {visible: true, title: title}).then(() => {
+			updateMatchRegexFolder(searchTerms);
+		}).catch ( error => debug(error) );
+	}
+}
+
 function updateMatchRegexFolders(s) {
 	debug('updateMatchRegexFolders');
 
-	self.contextMenuMatchRegexMenus.forEach( menu => {
-		try {
-			browser.contextMenus.remove( menu );
-		} catch (error) {
-			debug(error);
-		}
+	return removeMatchRegexEngines().then(() => {
+		contexts.forEach( context => updateMatchRegexFolder(s, context));
 	});
-	self.contextMenuMatchRegexMenus = [];
-	contexts.forEach( context => updateMatchRegexFolder(s, context));
 }
 
-function updateMatchRegexFolder(s, context) {
-
-	onCreated = () => {
-		if (browser.runtime.lastError) {
-			if ( browser.runtime.lastError.message.indexOf("ID already exists") === -1 ) debug(browser.runtime.lastError);
-		}
+async function removeMatchRegexEngines() {
+	for (let i in self.contextMenuMatchRegexMenus) {
+		const m = self.contextMenuMatchRegexMenus[i];
+		await browser.contextMenus.remove( m )
+			.catch(error => console.log(error));
 	}
+}
 
-	context = context || "";
+function updateMatchRegexFolder(s, context = "") {
 
 	let folder = matchingEnginesToFolder(s);
-	
-	// only remove if non-contextual
-	if ( ! context ) {
-		self.contextMenuMatchRegexMenus.forEach( menu => {
-
-			// old < Chrome < 123
-			try {
-				browser.contextMenus.remove( menu, onCreated );
-			} catch(err) {
-				debug(err);
-			}
-
-			// new
-			try {
-				browser.contextMenus.remove( menu );
-			} catch(err) {
-				debug(err);
-			}
-		});
-		self.contextMenuMatchRegexMenus = [];
-	}
 			
 	// create a new unique iterator
-	let count = Date.now();
+	let count = 1000;
 				
-	folder.children.forEach( node => {
+	folder.children.forEach( async node => {
 		
-		let id = node.id + '_' + count++;
+		let id = node.id + "_" + context + "_" + count++;
 
 		let createOptions = {
 			parentId: context + folder.id,
@@ -552,19 +591,12 @@ function updateMatchRegexFolder(s, context) {
 			id: id,
 			icons: {
 				"16": getIconFromNode(node)
-			}
+			},
+			contexts:contexts
 		};
 
-		try {
-			browser.contextMenus.create(createOptions, onCreated);
-		} catch (error) { // non-Firefox
-			delete createOptions.icons;
-			try {
-				browser.contextMenus.create(createOptions, onCreated);
-			} catch ( error ) { debug(error)}
-		}
-
-		self.contextMenuMatchRegexMenus.push(id);
+		addMenuItem(createOptions);
+		self.contextMenuMatchRegexMenus.push(createOptions.id);
 	});
 }
 
@@ -591,8 +623,6 @@ async function updateSelectDomains() {
 		} catch (error) { debug(error) }
 	});
 	self.contextMenuSelectDomainChildren = [];
-
-	// const _add(parentId) {
 
 	// increment ids
 	let count = 0;
@@ -826,7 +856,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 		let tab = tabs[0];
 		
 		if ( tab && tab.id && tabId === tab.id && tabInfo.url && tabInfo.url !== "about:blank" && tab.active) {
-			debounce(buildContextMenu, 250, "buildContextMenuDebouncer");
+			throttle(buildContextMenu, 250, "buildContextMenuThrottler");
 		}
 	}
 	

@@ -3,6 +3,17 @@ const debounce = (callback, time, id) => {
   self[id] = self.setTimeout(callback, time);
 }
 
+const throttle = (callback, time, id) => {
+	if (self[id]) return;
+
+  self[id] = self.setTimeout(() => {
+  	self.clearTimeout(self[id]);
+  	delete self[id];
+  }, time);
+  
+  callback();
+}
+
 function runAtTransitionEnd(el, prop, callback, ms) {
 
 	ms = ms || 25;
@@ -74,6 +85,8 @@ function matchingEnginesToFolder(s) {
 		groupFolder: '',
 		groupColor: '#88bbdd'
 	}
+
+	if ( !s ) return folder;
 
 	let matchingEngines = userOptions.searchEngines.filter( se => {
 
