@@ -1195,14 +1195,14 @@ async function notify(message, sender, sendResponse) {
 
 		case "enablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
-			if ( !isAllowedURL(sender.tab.url) ) return;
-			if ( await isTabScriptable(sender.tab.id) === false ) return;
 
-			function logTabs(tabs) {
+			async function logTabs(tabs) {
 			  for (const tab of tabs) {
+			  	if ( !isAllowedURL(tab.url) ) return;
+				if ( await isTabScriptable(tab.id) === false ) return;
 				browser.scripting.removeCSS({
 					target: {
-						tabId: sender.tab.id,
+						tabId: tab.id,
 						allFrames: true
 					},
 					css: "HTML{pointer-events:none;}",
