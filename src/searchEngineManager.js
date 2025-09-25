@@ -1804,7 +1804,7 @@ function buildSearchEngineContainer() {
 					newLi.scrollIntoView({block: "start", behavior:"smooth"});
 					
 					updateNodeList();
-				//	closeContextMenus();
+					closeContextMenus();
 				})
 
 				_menu.appendChild(m);
