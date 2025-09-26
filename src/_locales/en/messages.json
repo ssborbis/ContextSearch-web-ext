@@ -1537,7 +1537,7 @@
   },
   
   "findbarsearchinalltabs": {
-    "message": "Search all tabs when using the Find bar ( note: search results will not be updated when typing. You will need to press Enter )",
+    "message": "Search all tabs (note: search results will not be updated when typing. You will need to press Enter.)",
     "description": ""
   },
   
