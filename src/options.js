@@ -490,6 +490,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSearchActions();
 	buildCheckboxes();
 	buildToolMasks();
+	buildPermissions();
 	//buildLayoutEditors();
 	hideBrowserSpecificElements();
 
@@ -582,25 +583,25 @@ function addDOMListeners() {
 		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = e.target.checked ? "none" : null);
 	});
 
-	$('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['clipboardWrite']});
-		window.close();
-	})
+	// $('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
+	// 	await browser.permissions.request({permissions: ['clipboardWrite']});
+	// 	window.close();
+	// })
 
-	$('#b_requestClipboardReadPermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['clipboardRead']});
-		window.close();
-	})
+	// $('#b_requestClipboardReadPermissions').addEventListener('click', async () => {
+	// 	await browser.permissions.request({permissions: ['clipboardRead']});
+	// 	window.close();
+	// })
 
-	$('#b_requestDownloadsPermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['downloads']});
-		window.close();
-	})
+	// $('#b_requestDownloadsPermissions').addEventListener('click', async () => {
+	// 	await browser.permissions.request({permissions: ['downloads']});
+	// 	window.close();
+	// })
 
-	$('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['nativeMessaging']});
-		window.close();
-	})
+	// $('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
+	// 	await browser.permissions.request({permissions: ['nativeMessaging']});
+	// 	window.close();
+	// })
 
 	$('#filterBarContainer > .tool').addEventListener('click', e => {
 		$('#filterBarContainer').classList.toggle('hide');
@@ -609,15 +610,15 @@ function addDOMListeners() {
 	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
 
 	// hide other request buttons
-	$('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
-		const urlParams = new URLSearchParams(window.location.search);
-		if ( urlParams.get("permission")) {
-			document.querySelectorAll('[data-permission]').forEach( div => {
-				if ( div.dataset.permission !== urlParams.get("permission"))
-					div.style.display = 'none';
-			})
-		}
-	})
+	// $('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
+	// 	const urlParams = new URLSearchParams(window.location.search);
+	// 	if ( urlParams.get("permission")) {
+	// 		document.querySelectorAll('[data-permission]').forEach( div => {
+	// 			if ( div.dataset.permission !== urlParams.get("permission"))
+	// 				div.style.display = 'none';
+	// 		})
+	// 	}
+	// })
 
 	// color pickers for results
 	document.querySelectorAll('.colorPickerTable input[type="color"]').forEach(el => {
@@ -1068,67 +1069,70 @@ function buildHelpTab() {
 	link.rel = "stylesheet";
 	document.getElementsByTagName( "head" )[0].appendChild( link );
 	
-	// set up localized help pages
-	let help = $('#helpTab');
+	$('.tablinks[data-tabid="helpTab"]').addEventListener('click', e => {
+		window.open("https://github.com/ssborbis/ContextSearch-web-ext/blob/master/README.md#features", "_blank");
+	});
+	// // set up localized help pages
+	// let help = $('#helpTab');
 	
-	let loaded = false;
-	let iframe = document.createElement('iframe');
+	// let loaded = false;
+	// let iframe = document.createElement('iframe');
 	
-	iframe.style = 'display:none';
-	iframe.onerror = function() {
-		console.log('error');
-	}
+	// iframe.style = 'display:none';
+	// iframe.onerror = function() {
+	// 	console.log('error');
+	// }
 	
-	iframe.onload = function() {
-		console.log('loaded @ ' + iframe.src);
-		var iframeDocument = iframe.contentDocument;
+	// iframe.onload = function() {
+	// 	console.log('loaded @ ' + iframe.src);
+	// 	var iframeDocument = iframe.contentDocument;
 		
-		if (!iframeDocument) return;
+	// 	if (!iframeDocument) return;
 		
-		var iframeBody = iframeDocument.body;
+	// 	var iframeBody = iframeDocument.body;
 		
-		const parser = new DOMParser();
-		const parsed = parser.parseFromString(iframeBody.innerHTML, `text/html`);
+	// 	const parser = new DOMParser();
+	// 	const parsed = parser.parseFromString(iframeBody.innerHTML, `text/html`);
 		
-		for (let child of parsed.getElementsByTagName('body')[0].childNodes) {
-			help.appendChild(child);
-		}
+	// 	for (let child of parsed.getElementsByTagName('body')[0].childNodes) {
+	// 		help.appendChild(child);
+	// 	}
 
-		help.removeChild(iframe);
+	// 	help.removeChild(iframe);
 		
-		help.querySelectorAll("[data-gif]").forEach( el => {
-			el.addEventListener('click', _e => {
-				let div = document.createElement('div');
-				div.style = 'position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.8);z-index:2;text-align:center';
+	// 	help.querySelectorAll("[data-gif]").forEach( el => {
+	// 		el.addEventListener('click', _e => {
+	// 			let div = document.createElement('div');
+	// 			div.style = 'position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.8);z-index:2;text-align:center';
 				
-				div.onclick = function() {
-					div.parentNode.removeChild(div);
-				}
+	// 			div.onclick = function() {
+	// 				div.parentNode.removeChild(div);
+	// 			}
 				
-				let img = document.createElement('img');
-				img.src = el.dataset.gif;
-				img.style.maxHeight = '75vh';
-				img.style.marginTop = '12.5vh';
-				img.style.maxWidth = '75vw';
+	// 			let img = document.createElement('img');
+	// 			img.src = el.dataset.gif;
+	// 			img.style.maxHeight = '75vh';
+	// 			img.style.marginTop = '12.5vh';
+	// 			img.style.maxWidth = '75vw';
 					
-				img.onload = function() {
-					div.appendChild(img);
-					el.style.backgroundImage = 'url("' + img.src + '")';
-					el.style.backgroundSize = '100% 100%';
-				}
+	// 			img.onload = function() {
+	// 				div.appendChild(img);
+	// 				el.style.backgroundImage = 'url("' + img.src + '")';
+	// 				el.style.backgroundSize = '100% 100%';
+	// 			}
 				
-				help.appendChild(div);
-			});
-		});
-	}
+	// 			help.appendChild(div);
+	// 		});
+	// 	});
+	// }
 	
-	setTimeout(() => {
-		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
-	}, 250);
+	// setTimeout(() => {
+	// 	if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
+	// }, 250);
 	
-	iframe.src = '/_locales/' + i18n("LOCALE_FOLDER") + '/help.html';
+	// iframe.src = '/_locales/' + i18n("LOCALE_FOLDER") + '/help.html';
 	
-	help.appendChild(iframe);
+	// help.appendChild(iframe);
 
 }
 	
@@ -1264,6 +1268,40 @@ function buildToolMasks() {
 		el.parentNode.insertBefore(t,el);
 		el.parentNode.removeChild(el);
 	})
+}
+
+function buildPermissions() {
+	const _default = $('.permission');
+
+	function setCheckbox(cb, permission) {
+		hasPermission(permission)
+				.then( result => cb.checked = result);
+	}
+
+	['clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']
+		.forEach( permission => {
+			const el = _default.cloneNode(true);
+			const cb = el.querySelector('input');
+			const label = el.querySelector('.label');
+
+			el.dataset.permssion = permission;
+			label.innerText = permission;
+
+			cb.addEventListener('change', async e => {
+				if ( cb.checked )
+					await browser.permissions.request({permissions: [permission]})
+				else
+					await browser.permissions.remove({permissions: [permission]});
+
+				setCheckbox(cb, permission);
+			})
+
+			setCheckbox(cb, permission);
+
+			_default.parentNode.appendChild(el);
+		});
+
+		_default.parentNode.removeChild(_default);
 }
 
 function buildLayoutEditors() {

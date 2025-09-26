@@ -39,7 +39,7 @@
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><tool data-icon="auto.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><tool data-icon="help.svg"></tool>$</button>
 
-				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n=""><tool data-icon="help.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="requestPermissionsTab" data-i18n="permissions"><tool data-icon="checkmark.svg"></tool>$</button>
 			</div>
 			<div style="font-size:10pt;margin-top:8px;">
 				<label for="importSettings">
@@ -1724,16 +1724,18 @@
 
 		<div class="tabcontent" data-tabgroup="main_nav" id="requestPermissionsTab">
 					
-			<section id="requestPermissions" style="font-weight:normal;text-align:center">
-				<div style="text-align: center;margin-bottom:20px">
+			<section id="requestPermissions" style="font-weight:normal">
+				<p class="header1" style="margin-top:0" data-i18n="Permissions">Permissions</p>
+				<!-- <div style="text-align: center;margin-bottom:20px">
 					<img style="height:30px;vertical-align:middle" src="icons/alert.svg" />
 				</div>
-				<div data-i18n="requestPermissionsMessage">$</div>
+				<div data-i18n="requestPermissionsMessage">$</div> -->
 				<div style="text-align: left;display: inline-block;margin-top:20px">
-					<div style="margin-top:4px;" data-permission="clipboardRead"><button id="b_requestClipboardReadPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">clipboardRead</label></div>
-					<div style="margin-top:4px;" data-permission="clipboardWrite"><button id="b_requestClipboardWritePermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">clipboardWrite</label></div>
-					<div style="margin-top:4px;" data-permission="downloads"><button id="b_requestDownloadsPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">downloads</label></div>
-					<div style="margin-top:4px;" data-permission="nativeMessaging"><button id="b_requestNativeMessagingPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">nativeMessaging</label></div>
+					<div class="permission">
+					<label class="switch">
+						<input type="checkbox" /><span class="toggleSlider round"></span>
+					</label><label class="label"></label>
+					</div>
 				</div>
 			</section>
 		</div>

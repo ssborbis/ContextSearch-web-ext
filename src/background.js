@@ -1132,7 +1132,7 @@ async function notify(message, sender, sendResponse) {
 			return browser.permissions.request({permissions: [message.permission]});
 
 		case "hasPermission":
-			return browser.permissions.contains({permissions: [message.permission]});
+			return hasPermission(message.permission);
 
 		case "openTab":
 			return openWithMethod(message);
@@ -1163,7 +1163,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "download":
-			if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+			if ( !await hasPermission("downloads") ) {
 				let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
 				return;
 			}
@@ -1684,7 +1684,7 @@ async function executeExternalProgram(info) {
 
 	/* end download using browser UI */
 
-	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) {
+	if ( !await hasPermission("nativeMessaging")) {
 		let tabs = await browser.tabs.query({active:true});
 		let tab = tabs[0];
 		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=nativeMessaging#requestPermissions"});
@@ -1694,7 +1694,7 @@ async function executeExternalProgram(info) {
 		});
 	}
 
-	if ( ! await browser.permissions.contains({permissions: ["nativeMessaging"]}) ) return;
+	if ( ! await hasPermission("nativeMessaging") ) return;
 
 	try {
 		await browser.runtime.sendNativeMessage("contextsearch_webext", {verify: true});
@@ -2909,7 +2909,7 @@ promptCurrentTab = (str) => userInputCurrentTab("prompt", str);
 confirmCurrentTab = (str) => userInputCurrentTab("confirm", str);
 
 async function browserSaveAs(url) {
-	if ( !await browser.permissions.contains({permissions: ["downloads"]}) ) {
+	if ( !await hasPermission("downloads") ) {
 		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
 		return;
 	}
