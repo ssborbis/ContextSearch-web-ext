@@ -133,7 +133,8 @@ function repairNodeTree(tree, hide) {
 				id: se.id,
 				type: "searchEngine",
 				hidden: hide,
-				title: se.title
+				title: se.title,
+				contexts:32
 			});
 		}
 	}
