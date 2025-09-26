@@ -1,5 +1,6 @@
 const ROOT_MENU = "root_menu";
 self.ctrlKey = false; // track on updateContextMenu for text/url
+const showOnlyRegexMatches = false;
 
 var currentContextMenuContexts = [];
 
@@ -413,7 +414,24 @@ async function buildContextMenu(searchTerms) {
 
 	}
 
-	if ( userOptions.contextMenuUseContextualLayout )
+	buildRegex = async() => {
+		let folder = matchingEnginesToFolder(searchTerms);
+
+		// at regex tag to titles (.*)
+		folder.children.forEach(n => n.title = '(.*) ' + n.title);
+
+		await browser.contextMenus.create({
+			id: folder.id,
+			title: contextMenuTitle(""),
+			contexts: contexts
+		}, onCreated);
+
+		addOptions("", folder.id);
+	}
+
+	if ( showOnlyRegexMatches )
+		buildRegex();
+	else if ( userOptions.contextMenuUseContextualLayout )
 		buildContextually();
 	else
 		buildLegacy();
@@ -468,7 +486,11 @@ function updateContextMenu(message) {
 	if ( searchTerms && message.hasOwnProperty("ctrlKey"))
 		self.ctrlKey = message.ctrlKey;
 
-	if ( userOptions.contextMenuUseContextualLayout ) {
+	if ( showOnlyRegexMatches ) {
+		updateMatchRegexFolder(searchTerms);
+		return;
+
+	} else if ( userOptions.contextMenuUseContextualLayout ) {
 
 		let ccs = [...message.currentContexts];
 
@@ -549,9 +571,17 @@ async function removeMatchRegexEngines() {
 	}
 }
 
-function updateMatchRegexFolder(s, context = "") {
+async function updateMatchRegexFolder(s, context = "") {
 
 	let folder = matchingEnginesToFolder(s);
+
+	// for legacy and regex only
+	if ( !context ) {
+		await removeMatchRegexEngines();
+
+		// at regex tag to titles (.*)
+		folder.children.forEach(n => n.title = '.* | ' + n.title);
+	}
 			
 	// create a new unique iterator
 	let count = 1000;
