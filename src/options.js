@@ -1070,6 +1070,8 @@ function buildHelpTab() {
 	document.getElementsByTagName( "head" )[0].appendChild( link );
 	
 	$('.tablinks[data-tabid="helpTab"]').addEventListener('click', e => {
+		e.preventDefault();
+		e.stopPropagation();
 		window.open("https://github.com/ssborbis/ContextSearch-web-ext/blob/master/README.md#features", "_blank");
 	});
 	// // set up localized help pages
