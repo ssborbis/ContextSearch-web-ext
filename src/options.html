@@ -1221,23 +1221,6 @@
 					</div>
 
 					<div class="option">
-						<div class="description" data-i18n="PageTilesSelectPalette" style="display:block;margin-left:0">$</div>
-						<select class="inputNice" style="width:auto;margin-right:20px" id="pageTiles.paletteString"></select>
-						
-						<span id="pageTilesPaletteSample"></span>
-					</div>
-					<p class="header2" data-i18n="Rows">$</p>
-					<div class="option">
-						<input type="number" class="inputNice" id="pageTiles.rows" min="2"/>
-					</div>
-					<p class="header2" data-i18n="Columns">$</p>
-					<div class="option">
-						<input type="number" class="inputNice" id="pageTiles.columns" min="2" />
-					</div>
-
-					<br>
-
-					<div class="option">
 						<checkbox data-id="pageTiles.closeOnShake" data-i18n="ClosePageTilesOnShake"></checkbox>
 						<div class="description" data-i18n="ClosePageTilesOnShake">$</div>
 					</div>
@@ -1269,10 +1252,31 @@
 
 					<section>
 						<p class="header1" data-i18n="Layout">$</p>
-					 <div>
+					
+					<div style="display:flex;gap:20px">
+						<div>
+							<p class="header2" data-i18n="Rows">$</p>
+							<div class="option">
+								<input type="number" class="inputNice" id="pageTiles.rows" min="2"/>
+							</div>
+						</div>
+						<div>
+							<p class="header2" data-i18n="Columns">$</p>
+							<div class="option">
+								<input type="number" class="inputNice" id="pageTiles.columns" min="2" />
+							</div>
+						</div>
+						 <div>
+						 	<p class="header2" data-i18n="PageTilesSelectPalette">$</p>
+						 	<div class="option">
+								<select class="inputNice" style="width:auto;margin-right:20px" id="pageTiles.paletteString"></select>
+								<span id="pageTilesPaletteSample"></span>
+							</div>
+						</div>
+					</div>
+
 						<ul id="pageTilesFolderBrowser" class="folderBrowser"></ul>
 						<table id="pageTilesTable" style="display:inline-block;position:relative;vertical-align:middle"></table>
-					</div>	
 					</section>				
 					
 				</div>
