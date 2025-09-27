@@ -63,7 +63,6 @@ var tabHighlighter = new TabHighlighter();
 	await buildContextMenu();
 	resetPersist();
 	setIcon();
-	//self.document.dispatchEvent(new CustomEvent("loadUserOptions"));
 	isLoadingUserOptions = false;
 
 	if ( !hasUserScriptsExecute() ) {
@@ -2953,7 +2952,7 @@ function registerAllUserScripts() {
 				+ "\n};} catch(error) { console.log(error) };";
 
 			js.push({code: code});
-			console.log('registering script for ' + n.title);
+			debug('registering script for ' + n.title);
 		}
 	});
 

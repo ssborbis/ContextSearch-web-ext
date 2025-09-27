@@ -205,11 +205,11 @@ function createMaskIcon(src) {
 
 const i18n_layout_titles = {
 	"quickMenuElement": 	'quickmenu',
-	"toolBar": 				'tools',
-	"menuBar": 				'menubar',
-	"titleBar": 			'title',
-	"searchBarContainer": 	'search',
-	"contextsBar": 			'contexts'
+	"toolBar": 						'tools',
+	"menuBar": 						'menubar',
+	"titleBar": 					'title',
+	"searchBarContainer": 'search',
+	"contextsBar": 				'contexts'
 };
 
 function isDarkMode() {

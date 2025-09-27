@@ -3,9 +3,7 @@ const defaultUserOptions = {
 	nodeTree: {
 		title: "/",
 		type: "folder",
-		children: [
-			
-		],
+		children: [],
 		hidden: false,
 		id: "___root___"
 	},
