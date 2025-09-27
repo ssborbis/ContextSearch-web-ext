@@ -583,42 +583,21 @@ function addDOMListeners() {
 		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = e.target.checked ? "none" : null);
 	});
 
-	// $('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
-	// 	await browser.permissions.request({permissions: ['clipboardWrite']});
-	// 	window.close();
-	// })
-
-	// $('#b_requestClipboardReadPermissions').addEventListener('click', async () => {
-	// 	await browser.permissions.request({permissions: ['clipboardRead']});
-	// 	window.close();
-	// })
-
-	// $('#b_requestDownloadsPermissions').addEventListener('click', async () => {
-	// 	await browser.permissions.request({permissions: ['downloads']});
-	// 	window.close();
-	// })
-
-	// $('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
-	// 	await browser.permissions.request({permissions: ['nativeMessaging']});
-	// 	window.close();
-	// })
-
 	$('#filterBarContainer > .tool').addEventListener('click', e => {
 		$('#filterBarContainer').classList.toggle('hide');
 	});
 
 	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
 
-	// hide other request buttons
-	// $('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
-	// 	const urlParams = new URLSearchParams(window.location.search);
-	// 	if ( urlParams.get("permission")) {
-	// 		document.querySelectorAll('[data-permission]').forEach( div => {
-	// 			if ( div.dataset.permission !== urlParams.get("permission"))
-	// 				div.style.display = 'none';
-	// 		})
-	// 	}
-	// })
+	// show permissions message
+	$('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const permission = urlParams.get("permission");
+		if ( permission ) {
+			$('requestPermissionsMessage').innerHTML = i18n("requestPermissionsMessage", "<strong>" + permission + "</strong>");
+			$('requestPermissionsMessage').style.display = null;
+		}
+	})
 
 	// color pickers for results
 	document.querySelectorAll('.colorPickerTable input[type="color"]').forEach(el => {

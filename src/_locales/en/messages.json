@@ -1987,7 +1987,7 @@
   },
 
   "requestPermissionsMessage": {
-    "message": "An optional permission is required. Click the request button below.",
+    "message": "An optional permission [$1] is required to perform this action",
     "description": "generic permission"
   },
   "Request": {
