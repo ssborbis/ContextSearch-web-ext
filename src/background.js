@@ -2929,6 +2929,11 @@ async function executeUserScript(tabId, code, nodeId) {
 
 	} else { // firefox
 
+		if ( !await hasPermission("userScripts")) {
+			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=userScripts#requestPermissions"});
+			return;
+		}
+		
 		return browser.scripting.executeScript({
 			target: { tabId: tabId },
 			func: (_id, str) => { 
