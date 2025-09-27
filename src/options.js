@@ -1272,7 +1272,8 @@ function buildPermissions() {
 				if ( cb.checked )
 					await browser.permissions.request({permissions: [permission]})
 				else
-					await browser.permissions.remove({permissions: [permission]});
+					await browser.permissions.remove({permissions: [permission]})
+						.catch(error => debug(error));
 
 				setCheckbox(cb, permission);
 			})

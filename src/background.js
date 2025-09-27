@@ -2950,10 +2950,10 @@ async function executeUserScript(tabId, code, nodeId) {
 function registerAllUserScripts() {
 
 	// no permission
-	if ( typeof browser.userScripts === 'undefined' ) return;
+	if ( typeof browser.userScripts === 'undefined' ) return Promise.resolve(false);
 
 	// better method (chrome)
-	if ( hasUserScriptsExecute() ) return;
+	if ( hasUserScriptsExecute() ) return Promise.resolve(false);
 
 	const js = [{code: "const userScripts = {};"}];
 
@@ -2980,10 +2980,10 @@ function registerAllUserScripts() {
 function unregisterAllUserScripts() {
 
 	// no permission
-	if ( typeof browser.userScripts === 'undefined' ) return;
+	if ( typeof browser.userScripts === 'undefined' ) return Promise.resolve(false);;
 
 	// better method (chrome)
-	if ( hasUserScriptsExecute() ) return;
+	if ( hasUserScriptsExecute() ) return Promise.resolve(false);;
 
 	return browser.userScripts.unregister({ids: ["userScripts"]});
 }
