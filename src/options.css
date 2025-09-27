@@ -20,6 +20,22 @@
 	--tree-row-border: 1px solid #fff;
 	--tools-color:#000;
 }
+
+
+/* CHROME */
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-color1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color);
+  border-radius: 30px;
+}
+
 HTML, BODY {
 	height:100%;
 	padding:0;
