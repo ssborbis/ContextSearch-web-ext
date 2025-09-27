@@ -3,8 +3,8 @@ function hasUserScriptsExecute() {
 	return typeof browser?.userScripts?.execute === 'function';
 }
 
-// chrome
-if ( hasUserScriptsExecute()) {
+// chrome - run a quick check for loaded objects
+if ( typeof importScripts === 'function' && typeof findNode === 'undefined' ) {
 	importScripts(
 		"lib/browser-polyfill.min.js",
 		"utils.js",
@@ -65,14 +65,15 @@ var tabHighlighter = new TabHighlighter();
 	setIcon();
 	isLoadingUserOptions = false;
 
-	if ( !hasUserScriptsExecute() ) {
-		registerAllUserScripts();
-		browser.permissions.onAdded.addListener( async permissions => {	
-			if ( permissions.userScripts )
-				updateUserScripts();
-		});
-	}
+	// permission and userScripts.execute checks run in function
+	registerAllUserScripts();
 })();
+
+// catch permissions added for Firefox
+browser.permissions.onAdded.addListener( async permissions => {	
+	if ( permissions.userScripts)
+		updateUserScripts();
+});
 
 // listeners
 if ( browser.contextMenus ) // catch android
@@ -2918,6 +2919,11 @@ async function browserSaveAs(url) {
 
 async function executeUserScript(tabId, code, nodeId) {
 
+	if ( !await hasPermission("userScripts")) {
+		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=userScripts#requestPermissions"});
+		return;
+	}
+
 	// chrome
 	if ( hasUserScriptsExecute()) {
 
@@ -2928,11 +2934,6 @@ async function executeUserScript(tabId, code, nodeId) {
 		});
 
 	} else { // firefox
-
-		if ( !await hasPermission("userScripts")) {
-			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=userScripts#requestPermissions"});
-			return;
-		}
 		
 		return browser.scripting.executeScript({
 			target: { tabId: tabId },
@@ -2947,6 +2948,13 @@ async function executeUserScript(tabId, code, nodeId) {
 }
 
 function registerAllUserScripts() {
+
+	// no permission
+	if ( typeof browser.userScripts === 'undefined' ) return;
+
+	// better method (chrome)
+	if ( hasUserScriptsExecute() ) return;
+
 	const js = [{code: "const userScripts = {};"}];
 
 	traverseNodes(userOptions.nodeTree, n => {
@@ -2970,6 +2978,13 @@ function registerAllUserScripts() {
 }
 
 function unregisterAllUserScripts() {
+
+	// no permission
+	if ( typeof browser.userScripts === 'undefined' ) return;
+
+	// better method (chrome)
+	if ( hasUserScriptsExecute() ) return;
+
 	return browser.userScripts.unregister({ids: ["userScripts"]});
 }
 
