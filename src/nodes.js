@@ -276,4 +276,68 @@ const specialFolderIds = ["___recent___", "___matching___", "___tools___"];
 const isSpecialFolderChild = el => {
 	return el.node && el.node.parent && specialFolderIds.includes(el.node.parent.id);
 }
+
+function createNode(type) {
+	if ( type === "separator");
+}
+
+const nodeDefaults = {
+	"folder": {
+		"type": "folder",
+		"children": [],
+		"displayType": "",
+		"groupColor": "#CED7FF",
+		"groupColorText": "#444444",
+		"groupFolder": "block",
+		"groupHideMoreTile": false,
+		"groupLimit": 2,
+		"hotkey": null,
+		"icon": "",
+		"iconCache": "",
+		"id": "",
+		"parentId": "",
+		"shortcut": null,
+		"title": ""
+	},
+	"searchEngine": {
+		"type": "searchEngine",
+		"contexts": 32,
+		"hidden": false,
+		"id": "",
+		"keyword": "",
+		"parentId": "",
+		"title": ""
+	},
+	"separator": {
+		"type": "separator",
+		"parentId": ""
+	},
+	"bookmarklet": {
+		"type": "bookmarklet",
+		"contexts": 32,
+		"description": "",
+		"icon": "",
+		"iconCache": "",
+		"id": "",
+		"keyword": "",
+		"parentId": "",
+		"searchCode": "",
+		"title": ""
+	},
+	"externalProgram": {
+		"type": "externalProgram",
+		"contexts": 32,
+		"cwd": "",
+		"description": "",
+		"icon": "",
+		"iconCache": "",
+		"id": "",
+		"parentId": "",
+		"path": "",
+		"postScript": "",
+		"searchRegex": "",
+		"title": ""
+	}
+
+}
 	
