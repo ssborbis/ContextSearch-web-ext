@@ -505,7 +505,7 @@ async function notify(message, sender, sendResponse) {
 						if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }});
 					},
 				tabId: sender.tab.id,
-				frameId: [message.frame ? sender.frameId : 0]
+				frameId: message.frame ? sender.frameId : 0
 			});
 
 		case "updateSearchTerms":
@@ -2617,7 +2617,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 				let check = await _executeScript({
 					func: (file) => (typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file]),
 					args: [file],
-					tabId: tabId
+					tabId: tabId,
+					frameId: options.frameId || 0
 				})
 				// let check = null;
 				// if ( browser?.scripting?.executeScript ) { // v3
@@ -2691,7 +2692,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	}
 }
 
-async function injectContentScripts(tab, frameId) {
+async function injectContentScripts(tab, frameId = 0) {
 
 	// skip frames without host permissions
 	// checked again in executeScripts() but also skips CSS injection
@@ -2711,7 +2712,7 @@ async function injectContentScripts(tab, frameId) {
 		], frameId: frameId, runAt: "document_end"
 	}, true);
 
-	_insertCSS({tabId: tab.id, frameId: frameId || 0, file: "/inject.css"})
+	_insertCSS({tabId: tab.id, frameId: frameId, file: "/inject.css"})
 
 	// if ( browser?.scripting?.insertCSS ) {
 	// 	browser.scripting.insertCSS({
