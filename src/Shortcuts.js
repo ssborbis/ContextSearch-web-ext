@@ -116,7 +116,7 @@ class Shortcut {
 			+ 	(key.alt ? i18n("alt") + " + " : "")
 			+ 	(key.shift ? i18n("shift") + " + " : "")
 			+	(key.meta ? "meta" + " + " : "")
-			+	key.key;
+			+	((key.key === " ") ? i18n('SpaceKey').toUpperCase() : key.key);
 	}
 
 	static buttonListener = async(hk, options = {}) => {
@@ -201,8 +201,8 @@ class Shortcut {
 			},
 			key: "x",
 			ctrl: true,
-			alt: true,
-			shift:false,
+			alt: false,
+			shift:true,
 			meta:false,
 			id: 0
 		},
@@ -213,8 +213,8 @@ class Shortcut {
 			},
 			key: "f",
 			ctrl: true,
-			alt: true,
-			shift:false,
+			alt: false,
+			shift:true,
 			meta:false,
 			id: 1
 		},{
@@ -240,8 +240,8 @@ class Shortcut {
 			action: "openSideBar",
 			key: "z",
 			ctrl: true,
-			alt: true,
-			shift:false,
+			alt: false,
+			shift:true,
 			meta:false,
 			id: 4
 		},{
@@ -274,9 +274,9 @@ class Shortcut {
 		},{
 			name:"Options → Open",
 			action:"openOptions",
-			key: "O",
-			ctrl: true,
-			alt: true,
+			key: "",
+			ctrl: false,
+			alt: false,
 			shift:false,
 			meta:false,
 			id: 9

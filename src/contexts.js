@@ -1,8 +1,16 @@
 const contexts = ["audio", "frame", "image", "link", "page", "selection", "video"];
-const contextCodes = [1,2,4,8,16,32,64];
-
+const contextCodes = { //[1,2,4,8,16,32,64];
+	audio: 1,
+	frame: 2,
+	image: 4,
+	link: 8,
+	page: 16,
+	selection: 32,
+	video: 64
+}
+	
 function getContextCode(t) {
-	return contextCodes[contexts.indexOf(t)]
+	return contextCodes[t];
 }
 
 function hasContext(contextText, contextCode) {

@@ -129,21 +129,19 @@ async function findFavicons(url) {
 		// chrome requires a delay
 		await new Promise(r => setTimeout(r, 500));
 
-		let promise3 = browser.tabs.executeScript(tab.id, {
-			code: getHeaderFavicons.toString() + "; getHeaderFavicons();"
-		});
+		const promise3 = _executeScript({
+			func: getHeaderFavicons,
+			tabId: tab.id
+		})
 
 		let promise4 = new Promise(resolve => setTimeout(resolve,5000));
 
 		hrefs = await Promise.race([promise3, promise4]);
 
-		hrefs = hrefs.shift();
-
 		try {
 			let _url = new URL(url);
 			hrefs.unshift(_url.origin + "/favicon.ico");
-		} catch(error) {
-		};
+		} catch(error) {}
 
 	} catch (error) {
 		console.log(error);

@@ -1537,7 +1537,7 @@
   },
   
   "findbarsearchinalltabs": {
-    "message": "Search all tabs when using the findbar ( note: type timer will be disabled )",
+    "message": "Search all tabs (note: When enabled, search results will not be updated after typing. You will need to press Enter or use the search button.)",
     "description": ""
   },
   
@@ -1987,7 +1987,7 @@
   },
 
   "requestPermissionsMessage": {
-    "message": "An optional permission is required. Click the request button below.",
+    "message": "An optional permission [$1] is required to perform this action",
     "description": "generic permission"
   },
   "Request": {

@@ -196,11 +196,11 @@ function getOpenMethod(e, isFolder) {
 	let alt = isFolder ? userOptions.quickMenuFolderAlt : userOptions.quickMenuAlt;
 	
 	let openMethod = "";
-	if (e.which === 3)
+	if (e.button === 2)
 		openMethod = right;
-	else if (e.which === 2)
+	else if (e.button === 1)
 		openMethod = middle;
-	else if (e.which === 1) {
+	else if (e.button === 0) {
 		openMethod = left;
 		
 		// ignore methods that aren't opening methods
@@ -1269,13 +1269,12 @@ function makeSearchBar() {
 				return;
 			}
 		}
-
-		let message = await sendMessage({action: "getLastSearch"});	
 		
 		// skip empty 
-		if (!message.lastSearch || !userOptions.searchBarDisplayLastSearch) return;
-		
-		sb.set(message.lastSearch);
+		if (userOptions.searchBarDisplayLastSearch) {
+			let message = await sendMessage({action: "getLastSearch"});	
+			if ( message.lastSearch) sb.set(message.lastSearch);
+		}
 
 		if ( userOptions.quickMenuSearchBarSelect )
 			window.addEventListener('focus', e => sb.select(), {once: true});
@@ -1619,7 +1618,7 @@ getAllOtherHeights = (_new) => {
 }
 
 isMoving = e => {
-	return e.which === 1 && e.type === 'mouseup' && document.body.classList.contains('moving');
+	return e.button === 0 && e.type === 'mouseup' && document.body.classList.contains('moving');
 }
 
 // causing window drag to fail in chrome
@@ -1740,6 +1739,8 @@ document.addEventListener('mouseup', e => {
 
 function search(o) {
 	delete o.node.parent; // caused cyclic error
+
+	console.log(o);
 	return sendMessage({
 		action: "search", 
 		info: {
@@ -2276,7 +2277,7 @@ function nodeToTile( node ) {
 					tile.parentNode.lastMouseDownTile = tile;
 					
 					// skip for dnd events
-					if ( e.which === 1 ) return;
+					if ( e.button === 0 ) return;
 					e.preventDefault();
 					e.stopPropagation();
 				});

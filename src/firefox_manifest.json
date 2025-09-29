@@ -1,11 +1,11 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.48.1",
+	"version": "1.48.3",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
-	"applications": {
+	"browser_specific_settings": {
 		"gecko": {
 			"id": "{5dd73bb9-e728-4d1e-990b-c77d8e03670f}",
 			"strict_min_version": "58.0"
@@ -18,6 +18,7 @@
 			"update_useroptions.js",
 			"opensearch.js",
 			"lib/encoding-indexes.js",
+			"lib/encoding.min.js",
 			"defaultEngines.js",
 			"bookmarks.js",
 			"defaultUserOptions.js",
@@ -32,7 +33,8 @@
 			"Shortcuts.js",
 			"tools.js",
 			"background.js"
-		]
+		],
+		"service_worker": "background.js"
 	},
 	"content_scripts": [
 		{
@@ -51,27 +53,31 @@
 		"open_in_tab": true
 	},
 	"permissions": [
-		"<all_urls>",
 		"activeTab",
 		"contextMenus",
 		"storage",
 		"tabs",
 		"search",
 		"unlimitedStorage",
-		"webNavigation"
+		"webNavigation",
+		"scripting"
 	],
 	"optional_permissions": [
 		"bookmarks",
 		"clipboardWrite",
 		"clipboardRead",
 		"nativeMessaging",
-		"downloads"
+		"downloads",
+		"userScripts"
+	],
+	"host_permissions": [
+		"<all_urls>"
 	],
 	"icons": {
 		"48": "/icons/logo_notext.png"
 	},
 	"web_accessible_resources": [],
-	"browser_action": {
+	"action": {
 		"default_title": "ContextSearch",
 		"default_icon": {
 			"48": "/icons/logo_notext.png"

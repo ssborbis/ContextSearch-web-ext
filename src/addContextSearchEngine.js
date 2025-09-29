@@ -110,7 +110,7 @@ function addSearchEnginePopup(data) {
 	} else {
 		if (openSearchUrl) {
 
-			sendMessage({action: "openSearchUrlToSearchEngine", url: openSearchUrl}).then( details => {
+			openSearchUrlToSearchEngine(openSearchUrl).then( details => {
 
 				if (!details) {
 					console.log('Cannot build search engine from xml. Missing values');
@@ -209,6 +209,8 @@ function addSearchEnginePopup(data) {
 	let s_folders = document.querySelectorAll('[name="folder"]');
 
 	let folders = findNodes(userOptions.nodeTree, n => n.type === "folder");
+
+	folders = folders.reverse();
 
 	s_folders.forEach( s_folder => {
 		folders.forEach(f => {

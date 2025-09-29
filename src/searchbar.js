@@ -71,7 +71,7 @@ document.addEventListener('quickMenuIframeLoaded', () => {
 	// replace text with selection
 	(async () => {
 		let results = await sendMessage({action: "getSelectedText"});
-		let text = results ? results.shift() : null;
+		let text = results || null;
 	
 		if ( text ) sb.set(text);
 
@@ -346,9 +346,9 @@ async function makeAddEngineBar() {
 		div.title = i18n("AddCustomSearch");
 		aeb.appendChild(div);
 
-		let xml_se = await sendMessage({action: "openSearchUrlToSearchEngine", url: ose.href}).then( details => {
-			return (!details) ? null : details.searchEngines[0];
-		});
+		let xml_se = await openSearchUrlToSearchEngine(ose.href).then( details => {
+		 	return (!details) ? null : details.searchEngines[0];
+		 });
 
 		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
 			return div.parentNode.removeChild(div);

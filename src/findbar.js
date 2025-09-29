@@ -8,7 +8,7 @@ sendMessage({action: "getUserOptions"}).then( uo => {
 
 	setTheme().then(() => {
 		// unhide the findbar after theme is set to prevent flashing
-		sendMessage({action: "executeScript", code: "showFindBar();"});
+		sendMessage({action: "showFindBar"});
 	});
 	
 	document.querySelector('#toggle_searchalltabs').checked = userOptions.highLight.findBar.searchInAllTabs;

@@ -8,7 +8,7 @@
   },
 
   "Settings": {
-    "message": "Paramètres"
+    "message": "Options"
   },
 
   "Support": {
@@ -95,7 +95,7 @@
   },
 
   "MiddleButton": {
-    "message": "Bouton central"
+    "message": "Bouton du milieu"
   },
 
   "RightButton": {
@@ -467,7 +467,7 @@
   },
 
   "AlsoAdd": {
-    "message": "L’ajouter également aux moteurs de recherche de Firefox ?"
+    "message": "L’ajouter également aux moteurs de recherche accessibles en un clic ?"
   },
 
   "CannotCreate": {
@@ -587,11 +587,11 @@
   },
 
   "ImportSettingsNotFoundAlert": {
-    "message": "Configuration de ContextSearch non trouvée !"
+    "message": "Options introuvables !"
   },
 
   "InvalidJSONAlert": {
-    "message": "Le fichier n’est pas un JSON valide."
+    "message": "Fichier JSON non valide"
   },
 
   "ImportSuccessful": {
@@ -603,7 +603,7 @@
   },
 
   "ErrorParsing": {
-    "message": "Erreur à l’analyse de %1.\nSi cette erreur persiste, vos paramètres de blocage de contenu sont probablement en cause."
+    "message": "Erreur d’analyse de %1\nSi cette erreur persiste, votre stratégie de blocage du contenu est probablement en cause."
   },
 
   "AddCustomSearch": {
@@ -828,13 +828,13 @@
   },
 
   "NameChangeWarning": {
-    "message": "Renommer un moteur de recherche peut le faire apparaître en double lors de l’importation des moteurs accessibles en un clic. Dans ce cas, deux possibilités : masquer le moteur renommé ou le supprimer (Paramètres de Firefox -> Recherche -> Raccourcis de recherche).\n\nVoulez-vous vraiment renommer ce moteur ?",
+    "message": "Renommer un moteur de recherche peut le faire apparaître en double lors de l’importation des moteurs accessibles en un clic. Dans ce cas, deux possibilités : masquer le moteur renommé ou le supprimer (Options de Firefox -> Recherche -> Moteurs de recherche accessibles en un clic). Voulez-vous vraiment renommer ce moteur ?",
     "description": "warn user about potential problems when changing search engine names"
   },
 
   "PressKey": {
     "message": "Taper une combinaison de touches",
-    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu"
+    "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
 
   "History": {
@@ -923,7 +923,7 @@
   },
 
   "AddOpenSearchEngine": {
-    "message": "Installer dans les moteurs de recherche de Firefox",
+    "message": "Installer dans les moteurs de recherche accessibles en un clic de Firefox",
     "description": "label for edit form button to install the current search engine as a One-Click Search Engine"
   },
 
@@ -1307,7 +1307,7 @@
   },
 
   "ConfirmResetAllSearchEngines": {
-    "message": "Votre personnalisation (moteurs de recherche, dossiers, marque-pages scriptés, séparateurs) va être supprimée et la liste des moteurs par défaut restaurée.\n\nÊtes-vous certain de vouloir faire cela ?",
+    "message": "Votre personnalisation (moteurs de recherche, dossiers, marque-pages scriptés, séparateurs) va être supprimée et la liste des moteurs par défaut restaurée.\r\n\r\nÊtes-vous certain de vouloir faire cela ?",
     "description": ""
   },
 
@@ -1682,7 +1682,7 @@
   },
 
   "AddUsingFirefoxSearchBar": {
-    "message": "Depuis Firefox 78, l’ajout d’un moteur se fait en passant par la barre de recherche du navigateur."
+    "message": "À partir de Firefox 78, l’ajout d’un moteur se fait en passant par la barre de recherche du navigateur."
   },
 
   "SyncWithFirefoxSearchHeader": {
@@ -2466,7 +2466,7 @@
     "message": "Télécharger"
   },
   "resetUserOptionsConfirm": {
-    "message": "Remettre tous les paramètres à leurs valeurs par défaut ?\n(Les moteurs de recherche ne seront pas impactés.)"
+    "message": "Remettre toutes les options à leurs valeurs par défaut ? (Les moteurs de recherche ne sont pas concernés.)"
   },
   "contexts": {
     "message": "Contextes"
@@ -2620,5 +2620,5 @@
   },
   "Tool": {
     "message": "Outil"
-  }
+  }  
 }

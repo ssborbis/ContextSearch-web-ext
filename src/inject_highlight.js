@@ -424,6 +424,8 @@ function openFindBar(options) {
 
 		fb.allowTransparency = true;
 		fb.style.transformOrigin = userOptions.highLight.findBar.position + " left";
+		fb.style.backgroundColor = "transparent";
+		fb.frameBorder = "0";
 		
 		fb.style.opacity = 0;
 		fb.style.maxHeight = '0px';

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="black">
+	<mask id="piston">
+		<rect width="54" height="54" fill="white" />
+		<circle cx="26.5" cy="32.5" r="2.25" fill="black" />
+		<circle cx="38.5" cy="20.5" r="1.25" fill="black" />
+		<path d="M 36 11 L 47 22" stroke="black" stroke-width=".75" />
+	</mask>
+	<mask id="lens">
+		<circle cx="13" cy="17" r="8" fill="white" />
+		<circle cx="13" cy="17" r="5.5" fill="black" />
+	</mask>
+
+    <path d="M 39 10 C 44 13 46 15 49 20 L 41 28 L 39 26 C 39 25 40 25 39 24 L 35 20 C 34 19 34 20 33 20 L 33 20 L 31 18 Z M 35 21 L 38 24 C 34 28 32 31 32 32 C 33 33 33 34 33 34 C 33 35 29 39 28 39 C 28 39 27 39 26 38 C 23 38 21 36 21 33 L 21 33 C 20 32 20 31 20 31 C 20 30 24 26 25 26 C 25 26 26 26 27 27 C 28 27 31 25 35 21" mask="url(#piston)" />
+	
+	<circle cx="13" cy="17" r="8" mask="url(#lens)" />
+	<path d="M24 26C22 27 21 28 20 30 19 27 17 24 16 23L18 21C19 22 21 25 24 26" />
+</svg>

@@ -316,7 +316,11 @@ function saveOptions(e) {
 function _saveOptions(e) {
 	
 	function onSet() {
-		browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		if ( browser.action ) // v3
+			browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		else if ( browser.browser_action ) // v2
+			browser.browser_action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		
 		showSaveMessage(i18n("saved"), null, document.getElementById('saveNoticeDiv'));
 		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);
@@ -490,6 +494,7 @@ document.addEventListener("DOMContentLoaded", async e => {
 	buildSearchActions();
 	buildCheckboxes();
 	buildToolMasks();
+	buildPermissions();
 	//buildLayoutEditors();
 	hideBrowserSpecificElements();
 
@@ -582,40 +587,19 @@ function addDOMListeners() {
 		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = e.target.checked ? "none" : null);
 	});
 
-	$('#b_requestClipboardWritePermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['clipboardWrite']});
-		window.close();
-	})
-
-	$('#b_requestClipboardReadPermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['clipboardRead']});
-		window.close();
-	})
-
-	$('#b_requestDownloadsPermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['downloads']});
-		window.close();
-	})
-
-	$('#b_requestNativeMessagingPermissions').addEventListener('click', async () => {
-		await browser.permissions.request({permissions: ['nativeMessaging']});
-		window.close();
-	})
-
 	$('#filterBarContainer > .tool').addEventListener('click', e => {
 		$('#filterBarContainer').classList.toggle('hide');
 	});
 
 	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
 
-	// hide other request buttons
+	// show permissions message
 	$('[data-tabid="requestPermissionsTab"]').addEventListener('click', async () => {
 		const urlParams = new URLSearchParams(window.location.search);
-		if ( urlParams.get("permission")) {
-			document.querySelectorAll('[data-permission]').forEach( div => {
-				if ( div.dataset.permission !== urlParams.get("permission"))
-					div.style.display = 'none';
-			})
+		const permission = urlParams.get("permission");
+		if ( permission ) {
+			$('requestPermissionsMessage').innerHTML = i18n("requestPermissionsMessage", "<strong>" + permission + "</strong>");
+			$('requestPermissionsMessage').style.display = null;
 		}
 	})
 
@@ -642,8 +626,8 @@ function keyButtonListener(e) {
 			e.target.innerText = i18n('ClickToSet');
 			e.target.value = 0;
 		} else {
-			e.target.innerText = Shortcut.keyCodeToString(evv.which);
-			e.target.value = evv.which;
+			e.target.innerText = Shortcut.keyCodeToString(evv.keyCode);
+			e.target.value = evv.keyCode;
 		}
 		
 		saveOptions(e);
@@ -962,378 +946,16 @@ function showInfoMsg(el, msg) {
 
 // import/export buttons
 function buildImportExportButtons() {
-	
-	function download(filename, json) {
-
-		var blob = new Blob([json], {type: "application/json"});
-		var url  = URL.createObjectURL(blob);
-
-		var a = document.createElement('a');
-		a.href        = url;
-		a.download    = filename;
-
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-	}
-	
-	let b_export = $('#b_exportSettings');
-	b_export.onclick = function() {
-
-		let pretty = userOptions.exportJsonPretty ? "\t" : null;
-
-		let date = new Date().toISOString().replace(/:|\..*/g,"").replace("T", "_");
 		
-		if ( userOptions.exportWithoutBase64Icons ) {
-			let uoCopy = JSON.parse(JSON.stringify(userOptions));
-			uoCopy.searchEngines.forEach( se => se.icon_base64String = "");
-			findNodes(uoCopy.nodeTree, node => {
-				if ( node.type === "oneClickSearchEngine" )
-					node.icon = "";
-			});
-			download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy, null, pretty));
-		} else {
-			download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions, null, pretty));
-		}
-	}
+	let b_export = $('#b_exportSettings');
+	b_export.onclick = exportSettingsHandler;
 	
 	let b_import = $('#b_importSettings');
 	b_import.onclick = function() {
 		$('#importSettings').click();
 	}
 	
-	$('#importSettings').addEventListener('change', e => {
-		var reader = new FileReader();
-
-		// Closure to capture the file information.
-		reader.onload = async () => {
-
-			// check for exported nodes
-			importNodes: try {
-				let json = JSON.parse(reader.result);
-				if ( !json.exportedNodes ) break importNodes;
-
-				let uo = JSON.parse(JSON.stringify(userOptions));
-
-				let folder = {
-					type:"folder",
-					children: json.exportedNodes,
-					id:gen(),
-					title: "Imported"
-				}
-
-				// flatten
-				folder.children = findNodes(folder, n => n.type !== 'folder' ); // findNodesDeep
-
-				// get nodes with duplicate ids in userOptions.nodeTree
-				let dupes = findNodes(folder, n => findNode(uo.nodeTree, _n => _n.id === n.id)); //findNodesDeep
-
-				for ( let dupe of dupes ) {
-					let result = await new Promise( res => {
-						$('#importModalDuplicates').classList.remove('hide');
-						$('#importModalDuplicates [name="message"]').innerText = dupe.title || dupe.type;
-
-						$('#importModalDuplicates').querySelectorAll('BUTTON[name]').forEach( el => {
-							el.addEventListener('click', e => res(el.name));
-						})
-					});
-
-					if ( result === "skip" )
-						removeNodesById(folder, dupe.id);
-
-					if ( result === "cancel" ) {
-						$('#importModalDuplicates').classList.add('hide');
-						return;
-					}
-
-					if ( result === "replace" ) {
-						let oldNode = findNode(uo.nodeTree, n => n.id === dupe.id );
-						oldNode = JSON.parse(JSON.stringify(dupe));
-
-						if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
-							let i = uo.searchEngines.findIndex( _se => _se.id === dupe.id );
-							if ( i > -1 ) uo.searchEngines[i] = JSON.parse(JSON.stringify(dupe.searchEngine));
-
-							delete dupe.searchEngine;
-						}
-
-						removeNodesById(folder, dupe.id);
-					}
-
-					if ( result === "merge" ) {
-
-						// replace id 
-						dupe.id = gen();
-
-						// push to searchEngines array
-						if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
-							dupe.searchEngine.id = dupe.id;
-
-							uo.searchEngines.push(dupe.searchEngine);
-							delete dupe.searchEngine;
-						}
-					}
-						
-					$('#importModalDuplicates').classList.add('hide');
-
-				}
-
-				findNodes(folder, n => n.type === "searchEngine").forEach( n => {
-					if ( n.searchEngine ) uo.searchEngines.push(n.searchEngine);
-				})
-
-				if ( folder.children.length ) uo.nodeTree.children.push(folder);
-
-				await sendMessage({action: "saveUserOptions", userOptions: uo});
-				location.reload();
-
-				return;
-
-			} catch (error) { console.error(error)}
-			try {
-				let newUserOptions = JSON.parse(reader.result);
-				
-				// run a few test to check if it's valid
-				if ( 
-					typeof newUserOptions !== 'object'
-					|| newUserOptions.quickMenu === undefined
-					|| !newUserOptions.searchEngines
-					
-				) {
-					alert(i18n("ImportSettingsNotFoundAlert"));
-					return;
-				}
-
-				if ( false && userOptions.advancedImport ) {
-
-					$('#main').classList.add('blur');
-
-					// let choice1 = await new Promise( res => {
-					// 	$('#importModal').classList.remove('hide');
-
-					// 	$('#importModal .replace').addEventListener('click', e => res("replace"));
-					// 	$('#importModal .merge').addEventListener('click', e => res("merge"));
-					// 	$('#importModal .cancel').addEventListener('click', e => res("cancel"));
-					// });
-
-					// $('#importModal').classList.add('hide');
-
-					// if ( choice1 === "cancel" ) return;
-					// if ( choice1 === "merge" ) {
-					{
-						await new Promise( res => {
-							$('#importModalCustom').classList.remove('hide');
-							$('#importModalCustom .ok').addEventListener('click', e => res("replace"));
-							$('#importModalCustom .cancel').addEventListener('click', e => res("cancel"));
-
-							let left_browser = $('#importModalCustom [name="nodes_left"]');
-							let right_browser = $('#importModalCustom [name="nodes_right"]');
-
-							left_browser.innerHTML = null;
-							right_browser.innerHTML = null;
-
-							let copy = Object.assign({}, newUserOptions);
-							traverseNodes(copy.nodeTree, (n,p) => {
-
-								// remove OCSE from non-FF browsers
-								if ( n.type === "oneClickSearchEngine" && !browser.search )
-									removeNode(n,p);
-								// remove duplicate nodes
-								else if ( findNode(userOptions.nodeTree, _n => _n.id === n.id && JSON.stringify(_n) === JSON.stringify(n)) )
-									removeNode(n,p);
-								// remove missing engines
-								else if ( n.type === "searchEngine" && !copy.searchEngines.find(se => se.id === n.id ) )
-									removeNode(n,p);
-								// remove empty folders
-								else if ( n.type === "folder" && !n.children.length && p)
-									removeNode(n,p);
-
-							})
-
-							//left_browser.appendChild(makeFolderBrowser(copy.nodeTree));
-							left_browser.appendChild(makeFolderBrowser(userOptions.nodeTree));
-							right_browser.appendChild(makeFolderBrowser({type: "folder", title:"/", id: gen(), children: []}));
-
-							left_browser.querySelectorAll('li').forEach( li => {
-								li.classList.add('new');
-
-								// checkboxes
-								{
-									let cb = document.createElement('input');
-									cb.type = 'checkbox';
-									cb.classList.add('selectCheckbox', 'showCheckboxes');
-
-									cb.addEventListener('change', e => e.stopPropagation())
-
-									li.insertBefore(cb, li.firstChild);
-
-									// header.addEventListener('mousedown', e => {
-									// 	window.mouseDownTimer = setTimeout(() => {
-									// 		// class bound to container to affect all boxes
-									// 		$('managerContainer').classList.add('showCheckboxes');
-									// 	}, 1000);
-									// });
-
-									// header.addEventListener('click', e => {
-
-									// 	// prevents double action / no change
-									// 	if ( e.target === cb ) return;
-
-									// 	// check box if displayed
-									// 	if ( $('managerContainer').classList.contains('showCheckboxes'))
-									// 		cb.checked = !cb.checked;
-									// })
-
-								}
-
-								li.addEventListener('click', e => {
-
-									return;
-									if ( e.target !== li ) return;
-
-									let parent = li.closest('.folderBrowser');
-									let notParent = [left_browser, right_browser].find( b => !b.contains(parent));
-
-									if ( left_browser.contains(parent) ) {
-										let div = document.createElement('div');
-										div.dataset.id = li.node.id;
-										li.parentNode.insertBefore(div, li);
-										notParent.querySelector('li[title="/"] > UL').appendChild(li);
-									} else {
-										let placeholder = left_browser.querySelector(`div[data-id="${li.node.id}"]`);
-
-										if ( placeholder)  {
-											placeholder.parentNode.insertBefore(li, placeholder);
-											placeholder.parentNode.removeChild(placeholder);
-										}
-									}
-								})
-							});
-						}).then( async result => {
-
-							if ( result === "cancel" ) {
-								newUserOptions = null;
-								return;
-							}
-
-							let _settings = $('#importModalCustom [name="settings"]').checked;
-							let _history = $('#importModalCustom [name="history"]').checked;
-
-							if ( !_history )
-								newUserOptions.searchBarHistory = JSON.parse(JSON.stringify(userOptions.searchBarHistory));
-
-							if ( !_settings ) {
-								for ( key in userOptions ) {
-									if ( !["nodeTree", "searchEngines", "searchBarHistory"].includes(key) )
-										newUserOptions[key] = JSON.parse(JSON.stringify(userOptions[key]));
-								}
-							}
-
-							let tree = listToNodeTree($('#importModalCustom [name="nodes_right"] .folderBrowser li[title="/"] > UL'));
-							let ids = findNodes(tree, n => n.type === "searchEngine").map(n => n.id);
-
-							let duplicates = [];
-							ids.forEach( id => {
-								let node = findNode(userOptions.nodeTree, n => n.id === id );
-								if ( node ) duplicates.push(n);
-							});
-
-							// loop over duplicates to replace, skip, cancel
-							for ( let dupe of duplicates ) {
-								await new Promise( res => {
-									$('#importModalDuplicates').classList.remove('hide');
-									$('#importModalDuplicates [name="message"]').innerText = dupe.title;
-									$('#importModalDuplicates [name="replace"]').addEventListener('click', e => res("replace"));
-									$('#importModalDuplicates [name="skip"]').addEventListener('click', e => res("skip"));
-									$('#importModalDuplicates [name="cancel"]').addEventListener('click', e => res("cancel"));
-								}).then(result => {
-									if ( result === "skip" )
-										removeNodesById(tree, dupe.id);
-
-									$('#importModalDuplicates').classList.add('hide');
-								});
-							}
-
-							if ( duplicates.length ) console.error(duplicates);
-
-							// append searchEngines
-							let ses = userOptions.searchEngines.filter(se => ids.includes(se.id));
-							newUserOptions.searchEngines = userOptions.searchEngines.concat(ses);
-							
-							// append tree to newUserOptions
-							tree.title = "Imported";
-							newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
-
-							if ( tree.children.length )
-								newUserOptions.nodeTree.children.push(JSON.parse(JSON.stringify(tree)));
-
-						});
-
-						$('#importModalCustom').classList.add('hide');
-					}
-
-					$('#main').classList.remove('blur');
-				}
-
-				// check for cancel
-				if ( !newUserOptions ) return;
-				
-				// update imported options
-				let _uo = await sendMessage({action: "updateUserOptionsObject", userOptions: newUserOptions})
-				
-				try {
-					_uo = await sendMessage({action: "updateUserOptionsVersion", userOptions: _uo})		
-				} catch ( error ) {
-					console.log(error);
-					if ( !confirm("Failed to update config. This may cause some features to not work. Install anyway?"))
-						return;
-				}
-
-				// load icons to base64 if missing
-				let overDiv = document.createElement('div');
-				overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
-				let msgDiv = document.createElement('div');
-				msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
-				msgDiv.innerText = i18n("Fetchingremotecontent");
-				overDiv.appendChild(msgDiv);
-				document.body.appendChild(overDiv);
-				let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
-				let details = await loadRemoteIcon({searchEngines: sesToBase64, timeout:10000});
-				_uo.searchEngines.forEach( (se,index) => {
-					let updatedSe = details.searchEngines.find( _se => _se.id === se.id );
-					
-					if ( updatedSe ) _uo.searchEngines[index].icon_base64String = updatedSe.icon_base64String;
-				});
-				
-				// load OCSE favicons
-				if ( browser.search && browser.search.get ) {
-					let ocses = await browser.search.get();
-					findNodes(_uo.nodeTree, node => {
-						if ( node.type === "oneClickSearchEngine" ) {
-							let ocse = ocses.find(_ocse => _ocse.name === node.title);	
-							if ( ocse ) node.icon = ocse.favIconUrl;
-						}
-					});
-				} else {
-					findNodes(_uo.nodeTree, node => {
-						if ( node.type === "oneClickSearchEngine" ) node.hidden = true;
-					});
-				}
-
-				userOptions = _uo;
-				await sendMessage({action: "saveUserOptions", userOptions: _uo});
-				location.reload();
-				
-
-			} catch(err) {
-				console.log(err);
-				alert(i18n("InvalidJSONAlert"));
-			}
-		}
-
-      // Read in the image file as a data URL.
-      reader.readAsText(e.target.files[0]);
-	});
+	$('#importSettings').addEventListener('change', importSettingsHandler);
 }
 
 // click element listed in the hash for upload buttons
@@ -1430,67 +1052,72 @@ function buildHelpTab() {
 	link.rel = "stylesheet";
 	document.getElementsByTagName( "head" )[0].appendChild( link );
 	
-	// set up localized help pages
-	let help = $('#helpTab');
+	$('.tablinks[data-tabid="helpTab"]').addEventListener('click', e => {
+		e.preventDefault();
+		e.stopPropagation();
+		window.open("https://github.com/ssborbis/ContextSearch-web-ext/blob/master/README.md#features", "_blank");
+	});
+	// // set up localized help pages
+	// let help = $('#helpTab');
 	
-	let loaded = false;
-	let iframe = document.createElement('iframe');
+	// let loaded = false;
+	// let iframe = document.createElement('iframe');
 	
-	iframe.style = 'display:none';
-	iframe.onerror = function() {
-		console.log('error');
-	}
+	// iframe.style = 'display:none';
+	// iframe.onerror = function() {
+	// 	console.log('error');
+	// }
 	
-	iframe.onload = function() {
-		console.log('loaded @ ' + iframe.src);
-		var iframeDocument = iframe.contentDocument;
+	// iframe.onload = function() {
+	// 	console.log('loaded @ ' + iframe.src);
+	// 	var iframeDocument = iframe.contentDocument;
 		
-		if (!iframeDocument) return;
+	// 	if (!iframeDocument) return;
 		
-		var iframeBody = iframeDocument.body;
+	// 	var iframeBody = iframeDocument.body;
 		
-		const parser = new DOMParser();
-		const parsed = parser.parseFromString(iframeBody.innerHTML, `text/html`);
+	// 	const parser = new DOMParser();
+	// 	const parsed = parser.parseFromString(iframeBody.innerHTML, `text/html`);
 		
-		for (let child of parsed.getElementsByTagName('body')[0].childNodes) {
-			help.appendChild(child);
-		}
+	// 	for (let child of parsed.getElementsByTagName('body')[0].childNodes) {
+	// 		help.appendChild(child);
+	// 	}
 
-		help.removeChild(iframe);
+	// 	help.removeChild(iframe);
 		
-		help.querySelectorAll("[data-gif]").forEach( el => {
-			el.addEventListener('click', _e => {
-				let div = document.createElement('div');
-				div.style = 'position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.8);z-index:2;text-align:center';
+	// 	help.querySelectorAll("[data-gif]").forEach( el => {
+	// 		el.addEventListener('click', _e => {
+	// 			let div = document.createElement('div');
+	// 			div.style = 'position:fixed;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,.8);z-index:2;text-align:center';
 				
-				div.onclick = function() {
-					div.parentNode.removeChild(div);
-				}
+	// 			div.onclick = function() {
+	// 				div.parentNode.removeChild(div);
+	// 			}
 				
-				let img = document.createElement('img');
-				img.src = el.dataset.gif;
-				img.style.maxHeight = '75vh';
-				img.style.marginTop = '12.5vh';
-				img.style.maxWidth = '75vw';
+	// 			let img = document.createElement('img');
+	// 			img.src = el.dataset.gif;
+	// 			img.style.maxHeight = '75vh';
+	// 			img.style.marginTop = '12.5vh';
+	// 			img.style.maxWidth = '75vw';
 					
-				img.onload = function() {
-					div.appendChild(img);
-					el.style.backgroundImage = 'url("' + img.src + '")';
-					el.style.backgroundSize = '100% 100%';
-				}
+	// 			img.onload = function() {
+	// 				div.appendChild(img);
+	// 				el.style.backgroundImage = 'url("' + img.src + '")';
+	// 				el.style.backgroundSize = '100% 100%';
+	// 			}
 				
-				help.appendChild(div);
-			});
-		});
-	}
+	// 			help.appendChild(div);
+	// 		});
+	// 	});
+	// }
 	
-	setTimeout(() => {
-		if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
-	}, 250);
+	// setTimeout(() => {
+	// 	if (!loaded) iframe.src = '/_locales/' + browser.runtime.getManifest().default_locale + '/help.html';
+	// }, 250);
 	
-	iframe.src = '/_locales/' + i18n("LOCALE_FOLDER") + '/help.html';
+	// iframe.src = '/_locales/' + i18n("LOCALE_FOLDER") + '/help.html';
 	
-	help.appendChild(iframe);
+	// help.appendChild(iframe);
 
 }
 	
@@ -1626,6 +1253,41 @@ function buildToolMasks() {
 		el.parentNode.insertBefore(t,el);
 		el.parentNode.removeChild(el);
 	})
+}
+
+function buildPermissions() {
+	const _default = $('.permission');
+
+	function setCheckbox(cb, permission) {
+		hasPermission(permission)
+				.then( result => cb.checked = result);
+	}
+
+	['clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']
+		.forEach( permission => {
+			const el = _default.cloneNode(true);
+			const cb = el.querySelector('input');
+			const label = el.querySelector('.label');
+
+			el.dataset.permssion = permission;
+			label.innerText = permission;
+
+			cb.addEventListener('change', async e => {
+				if ( cb.checked )
+					await browser.permissions.request({permissions: [permission]})
+				else
+					await browser.permissions.remove({permissions: [permission]})
+						.catch(error => debug(error));
+
+				setCheckbox(cb, permission);
+			})
+
+			setCheckbox(cb, permission);
+
+			_default.parentNode.appendChild(el);
+		});
+
+		_default.parentNode.removeChild(_default);
 }
 
 function buildLayoutEditors() {
@@ -1781,7 +1443,10 @@ function buildShortcutTable() {
 	let table = $('#shortcutTable');
 
 	setButtons = (el, key) => {
-		el.innerText = Shortcut.getShortcutStringFromKey(key);
+		let text = Shortcut.getShortcutStringFromKey(key);
+		if ( text.length === 0 ) text = i18n('ClickToSet');
+
+		el.innerText = text;
 	//	el.appendChild();//keyArrayToButtons(key));
 	}
 

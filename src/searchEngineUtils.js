@@ -249,3 +249,103 @@ function loadRemoteIcon(options) {
 	});
 
 }
+
+function readOpenSearchUrl(url) {
+	return new Promise( async (resolve, reject) => {
+		
+		let t = setTimeout(() => {
+			console.error('Error fetching ' + url + " This may be due to Content Security Policy https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP");
+			
+			reject(false);
+		}, 2000);
+		
+		let resp = await fetch(url);
+		let text = await resp.text();
+
+		if ( typeof DOMParser === 'undefined' ) {
+			clearTimeout(t);
+			console.error('DOMParser not supported');
+
+
+			// if ( typeof browser.offscreen !== 'undefined' ) {
+			// 	let offscreen = await browser.offscreen.createDocument({
+			// 		url: 'blank.html',
+			// 		reasons: ['DOM_PARSER'],
+			// 		justOnce: true
+			// 	});
+			// }
+
+			return reject('DOMParser not supported');
+		}
+		
+		let parsed = new DOMParser().parseFromString(text, 'application/xml');
+
+		if (parsed.documentElement.nodeName=="parsererror") {
+			console.log('xml parse error');
+			clearTimeout(t);
+			resolve(false);
+		}
+		
+		clearTimeout(t);
+		resolve(parsed);
+	});
+}
+
+function openSearchXMLToSearchEngine(xml) {
+		
+	let se = {};
+
+	let shortname = xml.documentElement.querySelector("ShortName");
+	if (shortname) se.title = shortname.textContent;
+	else return Promise.reject();
+	
+	let description = xml.documentElement.querySelector("Description");
+	if (description) se.description = description.textContent;
+	else return Promise.reject();
+	
+	let inputencoding = xml.documentElement.querySelector("InputEncoding");
+	if (inputencoding) se.queryCharset = inputencoding.textContent.toUpperCase();
+	
+	let url = xml.documentElement.querySelector("Url[template]");
+	if (!url) return Promise.reject();
+	
+	let template = url.getAttribute('template');
+	if (template) se.template = template;
+	
+	let searchform = xml.documentElement.querySelector("moz\\:SearchForm");
+	if (searchform) se.searchForm = searchform.textContent;
+	else if (template) se.searchForm = new URL(template).origin;
+	
+	let image = xml.documentElement.querySelector("Image");
+	if (image) se.icon_url = image.textContent;
+	else se.icon_url = new URL(template).origin + '/favicon.ico';
+	
+	let method = url.getAttribute('method');
+	if (method) se.method = method.toUpperCase() || "GET";
+
+	let params = [];
+	for (let param of url.getElementsByTagName('Param')) {
+		params.push({name: param.getAttribute('name'), value: param.getAttribute('value')})
+	}
+	se.params = params;
+	
+	if (se.params.length > 0 && se.method === "GET") {
+		se.template = se.template + ( (se.template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(se.params);
+	}
+	
+	se.id = gen();
+
+	return loadRemoteIcon({
+		searchEngines: [se],
+		timeout:5000
+	});
+
+}
+
+function openSearchUrlToSearchEngine(url) {
+	return readOpenSearchUrl(url).then( xml => {
+		if ( !xml ) return false;
+		
+		return openSearchXMLToSearchEngine(xml);
+	});
+}

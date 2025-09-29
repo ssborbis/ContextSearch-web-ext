@@ -406,7 +406,19 @@ function updateUserOptionsVersion(uo) {
 		}
 		return _uo;
 	}).then( _uo => {
+		if ( _uo.version < "1.48.4" ) {
+
+		}
+		return _uo;
+	}).then( _uo => {
 		console.log('Done ->', _uo.version, Date.now() - start);
 		return _uo;
 	});
+
+	function unifyNodeTree(uo) {
+		const ses = uo.searchEngines;
+		const nodeTree = uo.nodeTree;
+
+		
+	}
 }

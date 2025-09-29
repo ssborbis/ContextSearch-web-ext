@@ -5,14 +5,17 @@ isMenuOpen = () => $('.contextMenu') ? true : false;
 isModalOpen = () => $('.overDiv') ? true : false; 
 
 function buildSearchEngineContainer() {
-	
-	let table = document.createElement('div');
+
+	let table = $('#searchEngineTable') || document.createElement('div');
+	if ( table ) table.innerHTML = null;
+
 	table.style.textAlign = 'left';
 	table.style.width = '100%';
 	table.style.height = 'inherit';
 	table.style.display = 'inline-block';
 	table.style.verticalAlign = 'top';
 	table.style.overflowY = 'scroll';
+	table.id = 'searchEngineTable';
 
 	// checkboxes
 	(() => {
@@ -31,8 +34,6 @@ function buildSearchEngineContainer() {
 			else $('managerContainer').classList.remove('showCheckboxes');	
 		})
 	})();
-
-
 
 	function traverse(node, parent) {	
 
@@ -1371,7 +1372,7 @@ function buildSearchEngineContainer() {
 
 		let newMenu = createMenuItem(i18n('New'), browser.runtime.getURL('icons/add.svg'));
 		newMenu.addEventListener('click', e => {
-			closeSubMenus();
+			closeSubMenus(newMenu);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
@@ -1385,7 +1386,7 @@ function buildSearchEngineContainer() {
 
 			// attach submenus
 			[newFolder, newEngine, newMultisearch, newTool, newExternalProgram, newSeparator, newScript].forEach(el => {
-				el.className = 'menuItem';
+				el.classList.add('menuItem');
 				_menu.appendChild(el);
 				el.addEventListener('click', closeContextMenus);
 			});
@@ -1397,7 +1398,7 @@ function buildSearchEngineContainer() {
 		let _delete = createMenuItem(i18n('Delete'), browser.runtime.getURL('icons/crossmark.svg'));
 		
 		_delete.onclick = function(e) {
-			closeSubMenus();
+			closeSubMenus(_delete);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
@@ -1431,7 +1432,7 @@ function buildSearchEngineContainer() {
 				bookmarklet: "code.svg",
 				folder: "folder.svg",
 				separator: "separator.svg",
-				tool: "add.svg",
+				tool: "tool.svg",
 				siteSearchFolder: "search.svg",
 				externalProgram: "terminal.svg"
 			}
@@ -1612,7 +1613,7 @@ function buildSearchEngineContainer() {
 
 		let newScript = createMenuItem(i18n('Script'), browser.runtime.getURL('icons/code.svg'));		
 		newScript.addEventListener('click', e => {
-			closeSubMenus();
+			closeSubMenus(newScript);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 
@@ -1644,7 +1645,7 @@ function buildSearchEngineContainer() {
 			let newNode;
 			if (li.node.type === 'searchEngine') {
 
-				closeSubMenus();
+				closeSubMenus(copy);
 				e.stopImmediatePropagation();
 				e.preventDefault();
 				
@@ -1766,10 +1767,10 @@ function buildSearchEngineContainer() {
 			updateNodeList();
 		});
 
-		let newTool = createMenuItem(i18n('Tool'), browser.runtime.getURL('icons/add.svg'));	
+		let newTool = createMenuItem(i18n('Tool'), browser.runtime.getURL('icons/tool.svg'));	
 		newTool.onclick = function(e) {
 
-			closeSubMenus();
+			closeSubMenus(newTool);
 			e.stopImmediatePropagation();
 			e.preventDefault();
 			
@@ -1803,7 +1804,7 @@ function buildSearchEngineContainer() {
 					newLi.scrollIntoView({block: "start", behavior:"smooth"});
 					
 					updateNodeList();
-				//	closeContextMenus();
+					closeContextMenus();
 				})
 
 				_menu.appendChild(m);
@@ -1964,6 +1965,7 @@ function buildSearchEngineContainer() {
 
 		// mark as parent menu
 		newMenu.classList.add("parentMenu");
+		newTool.classList.add("parentMenu");
 		
 		// disable some menu items when multiple rows are selected
 		if ( selectedRows.length > 1 ) {
@@ -2003,7 +2005,7 @@ function buildSearchEngineContainer() {
 		// menu close listener
 		document.addEventListener('click', function contextMenuClose(e) {
 			
-			if ( e.which !== 1 ) return;
+			if ( e.button !== 0 ) return;
 			
 			let menus = document.querySelectorAll('.contextMenu');
 
@@ -2233,8 +2235,8 @@ function closeContextMenus() {
 	closeSubMenus();
 }
 
-function closeSubMenus() {
-	for (let m of document.querySelectorAll('.subMenu')) {
+function closeSubMenus(parent=document) {
+	for (let m of parent.querySelectorAll('.subMenu')) {
 		if (m && m.parentNode) m.parentNode.removeChild(m);
 	}
 }

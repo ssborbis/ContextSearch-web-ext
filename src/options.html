@@ -25,7 +25,7 @@
 			</div>
 						
 			<div class="tab" data-tabgroup="main_nav">
-				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><tool data-icon="search.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="enginesTab" data-i18n="SearchEngines"><tool data-icon="searchengine.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="contextMenuTab" data-i18n="ContextMenu"><tool data-icon="context_menu.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="quickMenuTab" data-i18n="QuickMenu"><tool data-icon="qm.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="toolBarTab" data-i18n="Toolbar"><tool data-icon="sidebar.svg" style="transform:rotate(90deg)"></tool>$</button>
@@ -38,8 +38,7 @@
 				<button class="tablinks" data-tabid="generalTab" data-i18n="General"><tool data-icon="settings.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="advancedTab" data-i18n="Advanced"><tool data-icon="auto.svg"></tool>$</button>
 				<button class="tablinks" data-tabid="helpTab" data-i18n="Help"><tool data-icon="help.svg"></tool>$</button>
-
-				<button class="tablinks" style="display:none" data-tabid="requestPermissionsTab" data-i18n=""><tool data-icon="help.svg"></tool>$</button>
+				<button class="tablinks" data-tabid="requestPermissionsTab" data-i18n="permissions"><tool data-icon="checkmark.svg"></tool>$</button>
 			</div>
 			<div style="font-size:10pt;margin-top:8px;">
 				<label for="importSettings">
@@ -1222,23 +1221,6 @@
 					</div>
 
 					<div class="option">
-						<div class="description" data-i18n="PageTilesSelectPalette" style="display:block;margin-left:0">$</div>
-						<select class="inputNice" style="width:auto;margin-right:20px" id="pageTiles.paletteString"></select>
-						
-						<span id="pageTilesPaletteSample"></span>
-					</div>
-					<p class="header2" data-i18n="Rows">$</p>
-					<div class="option">
-						<input type="number" class="inputNice" id="pageTiles.rows" min="2"/>
-					</div>
-					<p class="header2" data-i18n="Columns">$</p>
-					<div class="option">
-						<input type="number" class="inputNice" id="pageTiles.columns" min="2" />
-					</div>
-
-					<br>
-
-					<div class="option">
 						<checkbox data-id="pageTiles.closeOnShake" data-i18n="ClosePageTilesOnShake"></checkbox>
 						<div class="description" data-i18n="ClosePageTilesOnShake">$</div>
 					</div>
@@ -1270,10 +1252,31 @@
 
 					<section>
 						<p class="header1" data-i18n="Layout">$</p>
-					 <div>
+					
+					<div style="display:flex;gap:20px">
+						<div>
+							<p class="header2" data-i18n="Rows">$</p>
+							<div class="option">
+								<input type="number" class="inputNice" id="pageTiles.rows" min="2"/>
+							</div>
+						</div>
+						<div>
+							<p class="header2" data-i18n="Columns">$</p>
+							<div class="option">
+								<input type="number" class="inputNice" id="pageTiles.columns" min="2" />
+							</div>
+						</div>
+						 <div>
+						 	<p class="header2" data-i18n="PageTilesSelectPalette">$</p>
+						 	<div class="option">
+								<select class="inputNice" style="width:auto;margin-right:20px" id="pageTiles.paletteString"></select>
+								<span id="pageTilesPaletteSample"></span>
+							</div>
+						</div>
+					</div>
+
 						<ul id="pageTilesFolderBrowser" class="folderBrowser"></ul>
 						<table id="pageTilesTable" style="display:inline-block;position:relative;vertical-align:middle"></table>
-					</div>	
 					</section>				
 					
 				</div>
@@ -1724,16 +1727,15 @@
 
 		<div class="tabcontent" data-tabgroup="main_nav" id="requestPermissionsTab">
 					
-			<section id="requestPermissions" style="font-weight:normal;text-align:center">
-				<div style="text-align: center;margin-bottom:20px">
-					<img style="height:30px;vertical-align:middle" src="icons/alert.svg" />
-				</div>
-				<div data-i18n="requestPermissionsMessage">$</div>
+			<section id="requestPermissions" style="font-weight:normal">
+				<p class="header1" style="margin-top:0" data-i18n="Permissions">Permissions</p>
+				<div id="requestPermissionsMessage" style="display:none"></div>
 				<div style="text-align: left;display: inline-block;margin-top:20px">
-					<div style="margin-top:4px;" data-permission="clipboardRead"><button id="b_requestClipboardReadPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">clipboardRead</label></div>
-					<div style="margin-top:4px;" data-permission="clipboardWrite"><button id="b_requestClipboardWritePermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">clipboardWrite</label></div>
-					<div style="margin-top:4px;" data-permission="downloads"><button id="b_requestDownloadsPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">downloads</label></div>
-					<div style="margin-top:4px;" data-permission="nativeMessaging"><button id="b_requestNativeMessagingPermissions" class="changed" data-i18n="request" >$</button><label style="margin-left:20px;width:200px;">nativeMessaging</label></div>
+					<div class="permission">
+					<label class="switch">
+						<input type="checkbox" /><span class="toggleSlider round"></span>
+					</label><label class="label"></label>
+					</div>
 				</div>
 			</section>
 		</div>
@@ -1745,14 +1747,14 @@
 		
 				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
+
 					<div id="filterBarContainer" class="hide" title="$filter">
 						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6;"></div>
 						<input id="searchEnginesManagerSearch" class="inputNice nosave" placeholder="filter" />
 						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/crossmark.svg);height:1em;margin:0;cursor:pointer;opacity:.6;position:relative;right:18px;"></div>
 					</div>
-					<div id="managerContainer">
-						<span class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</span>
-					</div>
+					<div class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</div>
+					<div id="managerContainer"></div>
 					<div></div>
 					<br />
 
@@ -2061,6 +2063,7 @@
 		<script src="contexts.js"></script>
 		<script src="nodes.js"></script>
 		<script src="searchActions.js"></script>
+		<script src="import_export.js"></script>
 		<script src="options.advanced.js"></script>
 		<script src="options.js"></script>
 		<script src="searchEngineManager.js"></script>
