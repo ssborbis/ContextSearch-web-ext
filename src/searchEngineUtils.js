@@ -266,15 +266,6 @@ function readOpenSearchUrl(url) {
 			clearTimeout(t);
 			console.error('DOMParser not supported');
 
-
-			// if ( typeof browser.offscreen !== 'undefined' ) {
-			// 	let offscreen = await browser.offscreen.createDocument({
-			// 		url: 'blank.html',
-			// 		reasons: ['DOM_PARSER'],
-			// 		justOnce: true
-			// 	});
-			// }
-
 			return reject('DOMParser not supported');
 		}
 		
@@ -285,7 +276,7 @@ function readOpenSearchUrl(url) {
 			clearTimeout(t);
 			resolve(false);
 		}
-		
+
 		clearTimeout(t);
 		resolve(parsed);
 	});
