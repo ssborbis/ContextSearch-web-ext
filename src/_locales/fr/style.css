@@ -1,15 +1,3 @@
-.._hover {
-	width:auto;
-}
-#editSearchEngineForm INPUT, #editSearchEngineForm SELECT, #editSearchEngineForm TEXTAREA {
-	margin-bottom:5px;
-}
-#info_msg {
-	max-width:320px;
-}
-.tablinks {
-	min-width:250px;
-}
 #left_div {
   width: 330px;
 }
@@ -19,4 +7,10 @@
 }
 #main {
   max-width: 1300px;
+}
+SPAN.buttonLabel {
+  width: 93px;
+}
+.modal BUTTON {
+	width: fit-content;
 }

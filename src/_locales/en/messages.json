@@ -2620,5 +2620,20 @@
   },
   "Tool": {
     "message": "Tool"
+  },
+  "DuplicateFound": {
+    "message": "Duplicate Found"
+  },
+  "Replace": {
+    "message": "Replace"
+  },
+  "KeepBoth": {
+    "message": "Keep Both"
+  },
+  "Skip": {
+    "message": "Skip"
+  },
+  "Imported": {
+    "message": "Imported"
   }
 }
