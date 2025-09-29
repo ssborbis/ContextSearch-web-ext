@@ -17,6 +17,8 @@ if ( window != top && window.location.hash === '#addtocontextsearch' ) {
 }
 function showButtons() {
 
+	if ( window != top ) return;
+
 	let links = document.querySelectorAll('a[href*="/install.html"]');
 
 	links.forEach( link => {
