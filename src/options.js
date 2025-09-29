@@ -316,7 +316,11 @@ function saveOptions(e) {
 function _saveOptions(e) {
 	
 	function onSet() {
-		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		if ( browser.action ) // v3
+			browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		else if ( browser.browser_action ) // v2
+			browser.browser_action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		
 		showSaveMessage(i18n("saved"), null, document.getElementById('saveNoticeDiv'));
 		$('configSize').innerText = JSON.stringify(userOptions).length + " bytes";
 		return Promise.resolve(true);

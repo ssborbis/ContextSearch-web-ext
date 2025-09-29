@@ -442,7 +442,7 @@ async function buildContextMenu(searchTerms) {
 		icons: {
 			"16": "icons/settings.svg"
 		},
-		contexts: ["action"],
+		contexts: [(browser.action ? "action" : "browser_action")],
 		id: "ba_openOptions"
 	});
 }
@@ -687,14 +687,11 @@ async function contextMenuSearch(info, tab) {
 
 	// if chrome && get raw text if available
     try {
-    	let result = await browser.scripting.executeScript({
-			target: {
-				tabId: tab.id,
-			},
-			func: () => window.getSelection().toString(),
-		});
+    	const selection = await _executeScript({
+    		func: () => window.getSelection().toString(),
+    		tabId: tab.id
+    	});
 
-    	let selection = result[0].result;
     	if ( selection ) info.selectionText = selection;
     } catch (error) {}
 
@@ -756,20 +753,12 @@ async function contextMenuSearch(info, tab) {
 	// if content scripts have run, use window.searchTerms
 	// else use fallback code ( not accurate with modifiers )
 
-	let result = [];
-	try {
-		result = await browser.scripting.executeScript({
-			target: {
-				tabId: tab.id,
-			},
-			func: () => window.CS_HASRUN && window.CS_HASRUN['/inject.js'],
-		});
-		//result = await browser.tabs.executeScript(tab.id, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']" });
-	} catch (error) {
-		console.log(error);
-	}
+	const result = await _executeScript({
+		func: () => window.CS_HASRUN && window.CS_HASRUN['/inject.js'],
+		tabId: tab.id
+	})
 	
-	if ( result[0].result ) {
+	if ( result ) {
 		debug('content scripts have run', tab);
 		searchTerms = (context ? self.searchTermsObject[context] : self.searchTerms) || self.searchTerms;;
 	} else {

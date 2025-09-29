@@ -166,15 +166,10 @@ browser.runtime.onInstalled.addListener( details => {
 			browser.tabs.create({
 				url: "/options.html#engines"
 			}).then(_tab => {
-				browser.scripting.executeScript({
-					target: {
-						tabId: tab.id,
-					},
+				_executeScript({
 					func: () => cacheAllIcons(),
+					tabId: _tab.id
 				});
-				// browser.tabs.executeScript(_tab.id, {
-				// 	code: `cacheAllIcons()`
-				// });
 			});
 		}
 	});
@@ -187,16 +182,10 @@ browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 
 	if ( !isValidHttpUrl(tab.url) ) return;
 
-	browser.scripting.executeScript({
-		target: {
-			tabId: zoomChangeInfo.tabId,
-		},
+	_executeScript({
 		func: () => document.dispatchEvent(new CustomEvent("zoom")),
-	}).then(() => {}, err => console.log(err));
-
-	// browser.tabs.executeScript( zoomChangeInfo.tabId, {
-	// 	code: 'document.dispatchEvent(new CustomEvent("zoom"));'
-	// }).then(() => {}, err => console.log(err));
+		tabId: zoomChangeInfo.tabId
+	})
 });
 
 async function notify(message, sender, sendResponse) {
@@ -313,19 +302,29 @@ async function notify(message, sender, sendResponse) {
 			return {"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)};
 			
 		case "dispatchEvent":
-			return browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id,
-					allFrames: true
-				},
+
+			return _executeScript({
 				func: (evt) => document.dispatchEvent(new CustomEvent(evt)),
-				args: [message.e]
+				args: [message.e],
+				tabId: sender.tab.id,
+				allFrames:true
 			});
 
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
-			// 	allFrames: true
-			// });
+			// if ( browser?.scripting?.executeScript ) { // v3
+			// 	return browser.scripting.executeScript({
+			// 		target: {
+			// 			tabId: sender.tab.id,
+			// 			allFrames: true
+			// 		},
+			// 		func: (evt) => document.dispatchEvent(new CustomEvent(evt)),
+			// 		args: [message.e]
+			// 	});
+			// } else { // v2
+			// 	return browser.tabs.executeScript(sender.tab.id, {
+			// 		code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
+			// 		allFrames: true
+			// 	});
+			// }
 
 		case "openQuickMenu":
 			return sendMessageToTopFrame();
@@ -349,23 +348,16 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToAllFrames();
 
 		case "toggleLockQuickMenu":
-			onFound = () => {}
-			onError = () => {}
 
-			return browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id,
-					allFrames: true
-				},
+			return _executeScript({
+				tabId: sender.tab.id,
 				func: () => {
 					if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();
-				}
-			}).then(onFound, onError);
+				},
+				tabId: sender.tab.id,
+				allFrames: true
 
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: 'if ( quickMenuObject && quickMenuObject.locked ) unlockQuickMenu(); else lockQuickMenu();',
-			// 	allFrames:false
-			// }).then(onFound, onError);
+			})
 			
 		case "rebuildQuickMenu":
 			return sendMessageToTopFrame();
@@ -409,10 +401,8 @@ async function notify(message, sender, sendResponse) {
 				return sendMessageToTopFrame();
 			
 		case "showFindBar": 
-			return browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id
-				},
+			return _executeScript({
+				tabId: sender.tab.id,
 				func: () => showFindBar()
 			});
 
@@ -421,22 +411,12 @@ async function notify(message, sender, sendResponse) {
 
 		case "toggleFindBar":
 			let isOpen = await notify({action: "getFindBarOpenStatus"});
-			isOpen = isOpen.shift().result;
 
 			//let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
-
-			let s = await browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id
-				},
-				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : ""
+			let s = await _executeScript({
+				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "",
+				tabId: sender.tab.id
 			});
-
-			// let s = await browser.tabs.executeScript(sender.tab.id, {
-			// 	code: `( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "";`
-			// });
-
-			s = s.shift().result;
 
 			if (!isOpen || ( isOpen && s) )
 				notify({action: "openFindBar", searchTerms: s});
@@ -451,19 +431,11 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 		
 		case "getFindBarOpenStatus":
-			onFound = result => result;
-			onError = () => {}
 
-			return browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id
-				},
-				func: () => (typeof getFindBar !== 'undefined' && getFindBar()) ? true : false
-			}).then(onFound, onError);
-
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: "(typeof getFindBar !== 'undefined' && getFindBar()) ? true : false;"
-			// }).then(onFound, onError);
+			return _executeScript({
+				func: () => (typeof getFindBar !== 'undefined' && getFindBar()) ? true : false,
+				tabId: sender.tab.id
+			});
 
 		case "mark":
 
@@ -527,19 +499,14 @@ async function notify(message, sender, sendResponse) {
 			
 		case "getOpenSearchLinks":
 
-			onFound = results => results.shift().result;
-			onError = results => null;
-
-			return await browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id,
-					frameIds: [message.frame ? sender.frameId : 0]
-				},
+			return _executeScript({
 				func: () => {
-					let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
-					if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }});
-				}
-			}).then(onFound, onError);
+						let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
+						if ( oses ) return [...oses].map( ose => {return {title: ose.title || document.title, href: ose.href }});
+					},
+				tabId: sender.tab.id,
+				frameId: [message.frame ? sender.frameId : 0]
+			});
 
 		case "updateSearchTerms":
 
@@ -583,45 +550,69 @@ async function notify(message, sender, sendResponse) {
 				
 				if ( engines.find(e => e.name === title) ) {
 
-					return await browser.scripting.executeScript({
-						target: {
-							tabId: sender.tab.id
-						},
+					return await _executeScript({
 						func: (title) => alert(browser.i18n.getMessage("FFEngineExists", title)),
-						args: [title]
+						args: [title],
+						tabId: sender.tab.id
 					});
 
-					// await browser.tabs.executeScript(sender.tab.id, {
-					// 	code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
-					// });
-					// return;
+					// if ( browser?.scripting?.executeScript ) { // v3
+					// 	return await browser.scripting.executeScript({
+					// 		target: {
+					// 			tabId: sender.tab.id
+					// 		},
+					// 		func: (title) => alert(browser.i18n.getMessage("FFEngineExists", title)),
+					// 		args: [title]
+					// 	});
+					// } else { // v2
+					// 	return await browser.tabs.executeScript(sender.tab.id, {
+					// 		code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
+					// 	});
+					// }
 				}
 
-				await browser.scripting.executeScript({
-					target: {
-						tabId: sender.tab.id
-					},
-					files: ["/addSearchProvider.js"]
+				await _executeScript({
+					file: "/addSearchProvider.js",
+					tabId: sender.tab.id
 				});
 
-				// await browser.tabs.executeScript(sender.tab.id, {
-				// 	file: "/addSearchProvider.js"
-				// });
+				// if ( browser?.scripting?.executeScript ) { // v3
+				// 	await browser.scripting.executeScript({
+				// 		target: {
+				// 			tabId: sender.tab.id
+				// 		},
+				// 		files: ["/addSearchProvider.js"]
+				// 	});
+				// } else { // v2 
+				// 	await browser.tabs.executeScript(sender.tab.id, {
+				// 		file: "/addSearchProvider.js"
+				// 	});
+				// }
 				
-				// check for existing opensearch engine of the same name
-				let exists = await browser.scripting.executeScript({
-					target: {
-						tabId: sender.tab.id
-					},
+				const exists = await _executeScript({
 					func: (title) => getSearchProviderUrlByTitle(title),
-					args: [title]
+					args: [title],
+					tabId: sender.tab.id
 				});
 
-				// let exists = await browser.tabs.executeScript(sender.tab.id, {
-				// 	code: `getSearchProviderUrlByTitle("${title}")`
-				// });
+				// let exists = null;
 
-				exists = exists.shift().result;
+				// if ( browser?.scripting?.executeScript ) { // v3
+				// 	// check for existing opensearch engine of the same name
+				// 	exists = await browser.scripting.executeScript({
+				// 		target: {
+				// 			tabId: sender.tab.id
+				// 		},
+				// 		func: (title) => getSearchProviderUrlByTitle(title),
+				// 		args: [title]
+				// 	});
+				// } else { // v2
+				// 	exists = await browser.tabs.executeScript(sender.tab.id, {
+				// 		code: `getSearchProviderUrlByTitle("${title}")`
+				// 	});
+				// }
+
+				//exists = exists.shift().result;
 
 				if ( exists ) {
 					console.log('OpenSearch engine with name ' + title + ' already exists on page');
@@ -641,10 +632,7 @@ async function notify(message, sender, sendResponse) {
 							url: browser.runtime.getURL('addSearchProvider.html')
 						});
 
-						await browser.scripting.executeScript({
-							target: {
-								tabId: tab.id
-							},
+						await _executeScript({
 							func: (favicon) => {
 								var userOptions = {};
 
@@ -654,19 +642,38 @@ async function notify(message, sender, sendResponse) {
 								
 								setFavIconUrl(favicon);
 							},
-							args: [favicon]
+							args: [favicon],
+							tabId: tab.id
 						});
 
-						// await browser.tabs.executeScript(tab.id, {
-						// 	code: `
-						// 		var userOptions = {};
+						// if ( browser?.scripting?.executeScript ) { // v3
+						// 	await browser.scripting.executeScript({
+						// 		target: {
+						// 			tabId: tab.id
+						// 		},
+						// 		func: (favicon) => {
+						// 			var userOptions = {};
 
-						// 		browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-						// 			userOptions = uo;
-						// 		});
-								
-						// 		setFavIconUrl("${favicon}");`
-						// });
+						// 			browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+						// 				userOptions = uo;
+						// 			});
+									
+						// 			setFavIconUrl(favicon);
+						// 		},
+						// 		args: [favicon]
+						// 	});
+						// } else { // v2
+						// 	await browser.tabs.executeScript(tab.id, {
+						// 		code: `
+						// 			var userOptions = {};
+
+						// 			browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
+						// 				userOptions = uo;
+						// 			});
+									
+						// 			setFavIconUrl("${favicon}");`
+						// 	});
+						// }
 						
 						// some delay needed
 						await new Promise(r => setTimeout(r, 500));
@@ -676,17 +683,25 @@ async function notify(message, sender, sendResponse) {
 					}
 				}
 
-				await browser.scripting.executeScript({
-					target: {
-						tabId: sender.tab.id
-					},
+				await _executeScript({
 					func: (url) => addSearchProvider(url),
-					args: [url]
+					args: [url],
+					tabId: sender.tab.id
 				});
-				
-				// await browser.tabs.executeScript(sender.tab.id, {
-				// 	code: `addSearchProvider("${url}");`
-				// });
+
+				// if ( browser?.scripting?.executeScript ) { // v3
+				// 	await browser.scripting.executeScript({
+				// 		target: {
+				// 			tabId: sender.tab.id
+				// 		},
+				// 		func: (url) => addSearchProvider(url),
+				// 		args: [url]
+				// 	});
+				// } else { // v2
+				// 	await browser.tabs.executeScript(sender.tab.id, {
+				// 		code: `addSearchProvider("${url}");`
+				// 	});
+				// }
 					
 			}
 			
@@ -891,18 +906,16 @@ async function notify(message, sender, sendResponse) {
 						try {
 							if ( !isAllowedURL(sender.tab.url) ) return r(null);
 							if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
+							
+							return _executeScript({
+								func: () => ( typeof quickMenuObject !== 'undefined' ) ? quickMenuObject : null,
+								tabId: sender.tab.id
+							});
 
-							browser.scripting.executeScript({
-								target: {
-									tabId: sender.tab.id
-								},
-								func: () => ( typeof quickMenuObject !== 'undefined' ) ? quickMenuObject : null
-							}).then(result => r(result));
-
-					} catch (error) { r(null); }}),
+						} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
-					.then( result => result ? result.shift()?.result : null );
+					//.then( result => result ? result : null );
 		
 		case "addToHistory": {
 
@@ -946,24 +959,31 @@ async function notify(message, sender, sendResponse) {
 			return self.lastOpenedFolder || null;
 
 		case "executeScript": //UserScript
-			return browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id,
-					frameIds: [0]
-				},
-				func: () => message.code
+
+			return _executeScript({
+				func: () => message.code,
+				tabId: sender.tab.id
 			});
 
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: message.code,
-			// 	frameId: 0
-			// });
+			// if ( browser?.scripting?.executeScript ) { // v3
+			// 	return browser.scripting.executeScript({
+			// 		target: {
+			// 			tabId: sender.tab.id,
+			// 			frameIds: [0]
+			// 		},
+			// 		func: () => message.code
+			// 	});
+			// } else { // v2
+			// 	return browser.tabs.executeScript(sender.tab.id, {
+			// 		code: message.code,
+			// 		frameId: 0
+			// 	});
+			// }
 
 		case "injectContentScripts":
 
 			while ( isLoadingUserOptions )
 				await new Promise(r => setTimeout(r, 50));
-
 			if ( isAllowedURL(sender.tab.url)) {
 				injectContentScripts(sender.tab, sender.frameId);
 			} else {
@@ -997,19 +1017,11 @@ async function notify(message, sender, sendResponse) {
 			break;
 			
 		case "getSelectedText":
-			onFound = (result) => result.shift()?.result;
-			onError = () => {}
 
-			return browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id
-				},
-				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : ""
-			}).then(onFound, onError);
-
-			// return browser.tabs.executeScript(sender.tab.id, {
-			// 	code: "getSelectedText(document.activeElement);"
-			// }).then(onFound, onError);	
+			return _executeScript({
+				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "",
+				tabId: sender.tab.id
+			});
 
 		case "addUserStyles": {
 			if ( !userOptions.userStylesEnabled ) return false;
@@ -1022,14 +1034,16 @@ async function notify(message, sender, sendResponse) {
 
 			// console.log(message.global, style);
 
-			return browser.scripting.insertCSS({
-				target: {
-					tabId: sender.tab.id,
-					frameIds: [message.global ? 0 : sender.frameId]
-				},
-				css: style,
-				origin: "USER"
-			});
+			return _insertCSS({tabId: sender.tab.id, frameId: message.global ? 0 : (sender.frameId || 0), css: style})
+
+			// return browser.scripting.insertCSS({
+			// 	target: {
+			// 		tabId: sender.tab.id,
+			// 		frameIds: [message.global ? 0 : sender.frameId]
+			// 	},
+			// 	css: style,
+			// 	origin: "USER"
+			// });
 
 
 			// return browser.tabs.insertCSS( sender.tab.id, {
@@ -1044,14 +1058,17 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "addStyles":
-			return browser.scripting.insertCSS({
-				target: {
-					tabId: sender.tab.id,
-					frameIds: [sender.frameId]
-				},
-				files: [message.file],
-				origin: "USER"
-			});
+
+			return _insertCSS({tabId: sender.tab.id, frameId: sender.frameId || 0, file: message.file});
+
+			// return browser.scripting.insertCSS({
+			// 	target: {
+			// 		tabId: sender.tab.id,
+			// 		frameIds: [sender.frameId]
+			// 	},
+			// 	files: [message.file],
+			// 	origin: "USER"
+			// });
 
 			// return browser.tabs.insertCSS( sender.tab.id, {
 			// 	file: message.file,
@@ -1063,8 +1080,11 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 
 		case "openBrowserAction":
-			console.log('openBrowserAction')
-			browser.action.openPopup();
+			console.log('openBrowserAction');
+			if ( browser.action ) // v3
+				browser.action.openPopup();
+			else if ( browser.browser_action ) // v2
+				browser.browser_action.openPopup();
 			return;
 
 		case "openPageTiles":
@@ -1079,48 +1099,27 @@ async function notify(message, sender, sendResponse) {
 
 		case "sideBarOpenedOnSearchResults":
 
-			onFound = results => results[0]?.result;
-			onError = results => null;
-
-			return await browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id
-				},
+			return await _executeScript({
 				func: () => {
 					(() => {
 						let result = window.openedOnSearchResults;
 						delete window.openedOnSearchResults;
 						return result;
 					})();
-				}
-			}).then( onFound, onError);
-			
-			// return await browser.tabs.executeScript(sender.tab.id, {
-			// 	code: `(() => {
-			// 		let result = window.openedOnSearchResults;
-			// 		delete window.openedOnSearchResults;
-			// 		return result;
-			// 	})();`
-			// }).then( onFound, onError);
+				},
+				tabId: sender.tab.id
+			})
 
 		case "openCustomSearch":
 			sendMessageToTopFrame();
 			break;
 
 		case "getRawSelectedText":
-			onFound = results => results[0]?.result;
-			onError = results => null;
 
-			return await browser.scripting.executeScript({
-				target: {
-					tabId: sender.tab.id
-				},
-				func: () => getRawSelectedText(document.activeElement)
-			}).then( onFound, onError);
-			
-			// return await browser.tabs.executeScript(sender.tab.id, {
-			// 	code: `getRawSelectedText(document.activeElement)`
-			// }).then( onFound, onError);
+			return await _executeScript({
+				func: () => getRawSelectedText(document.activeElement),
+				tabId: sender.tab.id
+			})
 
 		case "updateUserOptionsObject":
 			return updateUserOptionsObject(message.userOptions);
@@ -1147,15 +1146,13 @@ async function notify(message, sender, sendResponse) {
 			}).then(async tab => {
 				await new Promise(r => setTimeout(r, 1000));
 
-				urls = await browser.scripting.executeScript({
-					target: {
-						tabId: tab.id
-					},
-					func: () => [...document.querySelectorAll(".icon-grid IMG")].map(img => img.src)
+				let urls = await _executeScript({
+					func: () => [...document.querySelectorAll(".icon-grid IMG")].map(img => img.src),
+					tabId: tab.id
 				});
 
 				browser.tabs.remove(tab.id);
-				return urls.shift().result;
+				return urls;
 			});
 
 		case "cancelQuickMenuRequest":
@@ -1184,14 +1181,20 @@ async function notify(message, sender, sendResponse) {
 			if ( !isAllowedURL(sender.tab.url) ) return;
 			if ( await isTabScriptable(sender.tab.id) === false ) return;
 
-			return browser.scripting.insertCSS({
-				target: {
-					tabId: sender.tab.id,
-					allFrames: true
-				},
+			return _insertCSS({
+				tabId: sender.tab.id, 
 				css: "HTML{pointer-events:none;}",
-				origin: "USER"
-			}).catch( error => debug(error) );
+				allFrames: true
+			}).catch( error => debug(error) );;
+
+			// return browser.scripting.insertCSS({
+			// 	target: {
+			// 		tabId: sender.tab.id,
+			// 		allFrames: true
+			// 	},
+			// 	css: "HTML{pointer-events:none;}",
+			// 	origin: "USER"
+			// }).catch( error => debug(error) );
 
 		case "enablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
@@ -1200,14 +1203,21 @@ async function notify(message, sender, sendResponse) {
 			  for (const tab of tabs) {
 			  	if ( !isAllowedURL(tab.url) ) return;
 				if ( await isTabScriptable(tab.id) === false ) return;
-				browser.scripting.removeCSS({
-					target: {
-						tabId: tab.id,
-						allFrames: true
-					},
+				
+				_removeCSS({
+					tabId: sender.tab.id, 
 					css: "HTML{pointer-events:none;}",
-					origin: "USER"
-				}).catch(error => debug(error));
+					allFrames: true
+				}).catch( error => debug(error) );
+
+				// browser.scripting.removeCSS({
+				// 	target: {
+				// 		tabId: tab.id,
+				// 		allFrames: true
+				// 	},
+				// 	css: "HTML{pointer-events:none;}",
+				// 	origin: "USER"
+				// }).catch(error => debug(error));
 			  }
 			}
 
@@ -1503,22 +1513,6 @@ function executeBookmarklet(info) {
 
 			// UserScript
 			return executeUserScript(tabs[0].id, code, info.node.id);
-
-			// browser.scripting.executeScript({
-			// 	target: {
-			// 		tabId: tabs[0].id,
-			// 	},
-			// 	func: blobCode,
-			// 	args: [code, searchTerms]
-			// });
-
-
-			
-			// browser.tabs.executeScript(tabs[0].id, {
-			// 	code: userOptions.scriptsUseBlobs 
-			// 		? blobCode(code, searchTerms) 
-			// 		: vanillaCode(code, searchTerms)
-			// });
 		});
 
 	}, error => {
@@ -1875,30 +1869,35 @@ async function openSearch(info) {
 
 				// try to inject confirm dialog
 				try {
-
-					let valid = await browser.scripting.executeScript({
-						target: {
-							tabId: info.tab.id
-						},
-						func: () => hasRun
+					let valid = await _executeScript({
+						func: () => hasRun,
+						tabId: info.tab.id
 					});
 
-					//let valid = await browser.tabs.executeScript(info.tab.id, {	code:"hasRun;" });
-					
-					if ( valid[0].result ) {
+					if ( valid ) {
 						let _confirm_str = i18n("ConfirmMultiLineSearch", terms.length.toString());
 						
-						let _confirm = await browser.scripting.executeScript({
-							target: {
-								tabId: info.tab.id
-							},
+						const _confirm = await _executeScript({
 							func: (_confirm_str) => confirm(_confirm_str),
-							args: [ _confirm_str]
+							args: [ _confirm_str],
+							tabId: info.tab.id
 						});
 
-						//let _confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` });
-						
-						if ( !_confirm[0].result ) return;
+						// let _confirm = null;
+						// if ( browser?.scripting?.executeScript ) { // v3
+						// 	confirm = await browser.scripting.executeScript({
+						// 		target: {
+						// 			tabId: info.tab.id
+						// 		},
+						// 		func: (_confirm_str) => confirm(_confirm_str),
+						// 		args: [ _confirm_str]
+						// 	}).then(result => result.shift().result);
+						// } else { // v2
+						// 	_confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` })
+						// 		.then(result => result.shift())
+						// }
+
+						if ( !_confirm ) return;
 					}
 				} catch ( err ) { // can't inject a confirm dialog
 					console.log(err);
@@ -2133,25 +2132,36 @@ async function openSearch(info) {
 
 			await executeScripts(_tab.id, {files: ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js']}, true);
 
-			browser.scripting.executeScript({
-				target: {
-					tabId: _tab.id
-				},
+			_executeScript({
 				func: (se, s) => {
 					let _SEARCHTERMS = s;
 					post(se.template, se.params);
 				},
-				args: [JSON.stringify(se), escapeDoubleQuotes(searchTerms)]
+				args: [JSON.stringify(se), escapeDoubleQuotes(searchTerms)],
+				tabId: _tab.id
 			});
 
-			// browser.tabs.executeScript(_tab.id, {
-			// 	code: `
-			// 		let se = ${JSON.stringify(se)};
-			// 		let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
-			// 		post(se.template, se.params);
-			// 		`,
-			// 	runAt: 'document_start'
-			// });
+			// if ( browser?.scripting?.executeScript ) { // v3
+			// 	browser.scripting.executeScript({
+			// 		target: {
+			// 			tabId: _tab.id
+			// 		},
+			// 		func: (se, s) => {
+			// 			let _SEARCHTERMS = s;
+			// 			post(se.template, se.params);
+			// 		},
+			// 		args: [JSON.stringify(se), escapeDoubleQuotes(searchTerms)]
+			// 	});
+			// } else { // v2
+			// 	browser.tabs.executeScript(_tab.id, {
+			// 		code: `
+			// 			let se = ${JSON.stringify(se)};
+			// 			let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
+			// 			post(se.template, se.params);
+			// 			`,
+			// 		runAt: 'document_start'
+			// 	});
+			// }
 	
 			// listen for the results to complete
 			browser.tabs.onUpdated.addListener(async function _listener(_tabId, _changeInfo, _tabInfo) {
@@ -2279,17 +2289,10 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	executeScripts(tab.id, {files: ["inject_resultsEngineNavigator.js"]}, true);
 
 	if ( userOptions.sideBar.openOnResults ) {
-		browser.scripting.executeScript({
-			target: {
-				tabId: tab.id
-			},
-			func: () => openSideBar({noSave: true, minimized: userOptions.sideBar.openOnResultsMinimized, openedOnSearchResults: true})
-		});
-
-		// browser.tabs.executeScript(tab.id, {
-		// 	code: `openSideBar({noSave: true, minimized: ${userOptions.sideBar.openOnResultsMinimized}, openedOnSearchResults: true})`,
-		// 	runAt: 'document_idle'
-		// });
+		_executeScript({
+			func: () => openSideBar({noSave: true, minimized: userOptions.sideBar.openOnResultsMinimized, openedOnSearchResults: true}),
+			tabId: tab.id
+		})
 	}
 
 	if ( !userOptions.highLight.enabled ) return;
@@ -2304,20 +2307,29 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	// 	});
 	// }
 
-	await browser.scripting.executeScript({
-		target: {
-			tabId: tab.id,
-			allFrames: true
-		},
+	await _executeScript({
 		func: (s) => document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: s}})),
-		args: [escapeDoubleQuotes(searchTerms)]
-	});
+		args: [escapeDoubleQuotes(searchTerms)],
+		tabId: tab.id,
+		allFrames: true
+	})
 
-	// await browser.tabs.executeScript(tab.id, {
-	// 	code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
-	// 	runAt: 'document_idle',
-	// 	allFrames: true
-	// });
+	// if ( browser?.scripting?.executeScript ) { // v3
+	// 	await browser.scripting.executeScript({
+	// 		target: {
+	// 			tabId: tab.id,
+	// 			allFrames: true
+	// 		},
+	// 		func: (s) => document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: s}})),
+	// 		args: [escapeDoubleQuotes(searchTerms)]
+	// 	});
+	// } else { // v2
+	// 	await browser.tabs.executeScript(tab.id, {
+	// 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
+	// 		runAt: 'document_idle',
+	// 		allFrames: true
+	// 	});
+	// }
 
 	if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
 		
@@ -2402,7 +2414,10 @@ function resetPersist() {
 }
 
 function setIcon() {
-	browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+	if ( browser.action ) // v3
+		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+	else if ( browser.browser_action ) // v2
+		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 }
 
 async function checkForOneClickEngines() {
@@ -2564,6 +2579,7 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 
 	let tab = await browser.tabs.get(tabId);
 
+
 	if ( !isAllowedURL(tab.url) ) return false;
 
 	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
@@ -2572,17 +2588,13 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	if ( tab.url.startsWith(await browser.runtime.getURL("")) ) return false;
 
 	// filter documents that can't attach menus
-	let isHTML = await browser.scripting.executeScript({
-		target: {
-			tabId: tabId,
-			frameIds: [options.frameId || 0 ]
-		},
-		func: () => document && document.querySelector('html') ? true : false
-	});
+	let isHTML = await _executeScript({
+		func: () => document && document.querySelector('html') ? true : false,
+		tabId: tabId,
+		frameId: options.frameId || 0
+	})
 
-	//let isHTML = await browser.tabs.executeScript(tabId, { code: "document && document.querySelector('html') ? true : false", frameId: options.frameId || 0 });
-	
-	if ( !isHTML?.shift()?.result ) return false;
+	if ( !isHTML ) return false;
 
 	// filter popup windows 
 	if ( self.popupWindows.includes(tab.windowId))
@@ -2602,48 +2614,76 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 
 			if ( checkHasRun ) {
 
-				let check = await browser.scripting.executeScript({
-					target: {
-						tabId: tabId,
-						frameIds: [options.frameId || 0 ]
-					},
-					func: (file) => {
-						return typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file];
-					},
-					args: [file]
-				});
+				let check = await _executeScript({
+					func: (file) => (typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file]),
+					args: [file],
+					tabId: tabId
+				})
+				// let check = null;
+				// if ( browser?.scripting?.executeScript ) { // v3
+				// 	check = await browser.scripting.executeScript({
+				// 		target: {
+				// 			tabId: tabId,
+				// 			frameIds: [options.frameId || 0 ]
+				// 		},
+				// 		func: (file) => {
+				// 			return typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file];
+				// 		},
+				// 		args: [file]
+				// 	}).then(result => result.shift().result);
+				// } else { // v2
+				// 	check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 })
+				// 		.then(result => result.shift());
+				// }
 
-				//let check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 });
-				
-				if ( check[0].result ) {
+				if ( check ) {
 					debug('already injected', file, tabId, options.frameId || 0);
 					continue;
 				}
 			}
 
-			await browser.scripting.executeScript({
-				target: {
-					tabId: tabId,
-					frameIds: [options.frameId || 0 ]
-				},
-				files: [file]
+			await _executeScript({
+				file: file,
+				tabId: tabId,
+				frameId: options.frameId || 0
 			});
 
-			// await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
+			// if ( browser?.scripting?.executeScript ) { // v3
+			// 	await browser.scripting.executeScript({
+			// 		target: {
+			// 			tabId: tabId,
+			// 			frameIds: [options.frameId || 0 ]
+			// 		},
+			// 		files: [file]
+			// 	});
+			// } else { // v2
+			// 	await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
+			// }
+
 			debug('injected', file, tabId, options.frameId || 0);
 			if ( checkHasRun ) {
-				await browser.scripting.executeScript({
-					target: {
-						tabId: tabId,
-						frameIds: [options.frameId || 0 ]
-					},
-					func: (file) => {
-						window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN[file] = true;
-					},
-					args: [file]
-				});
 
-				//await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+				await _executeScript({
+					func: (file) => { window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN[file] = true;},
+					args: [file],
+					tabId: tabId,
+					frameId: options.frameId || 0		
+				})
+
+				// if ( browser?.scripting?.executeScript ) { // v3
+				// 	await browser.scripting.executeScript({
+				// 		target: {
+				// 			tabId: tabId,
+				// 			frameIds: [options.frameId || 0 ]
+				// 		},
+				// 		func: (file) => {
+				// 			window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN[file] = true;
+				// 		},
+				// 		args: [file]
+				// 	});
+				// } else { // v2
+				// 	await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
+				// }
 			}
 		} catch (error) {
 			debug(tabId, error);
@@ -2671,16 +2711,20 @@ async function injectContentScripts(tab, frameId) {
 		], frameId: frameId, runAt: "document_end"
 	}, true);
 
-	browser.scripting.insertCSS({
-		target: {
-			tabId: tab.id,
-			frameIds: [frameId]
-		},
-		files: ["/inject.css"],
-		origin: "USER"
-	});
-	
-	//browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
+	_insertCSS({tabId: tab.id, frameId: frameId || 0, file: "/inject.css"})
+
+	// if ( browser?.scripting?.insertCSS ) {
+	// 	browser.scripting.insertCSS({
+	// 		target: {
+	// 			tabId: tab.id,
+	// 			frameIds: [frameId]
+	// 		},
+	// 		files: ["/inject.css"],
+	// 		origin: "USER"
+	// 	});
+	// } else {
+	// 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
+	// }
 
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
@@ -2698,7 +2742,7 @@ async function injectContentScripts(tab, frameId) {
 		if ( frameId === 0 && userOptions.highLight.findBar.startOpen) {
 			await highlightInjectScripts(tab);
 			let isOpen = await notify({action: "getFindBarOpenStatus"});
-			if ( isOpen.shift() ) return;
+			if ( isOpen ) return;
 
 			notify({action: "updateFindBar", options: userOptions.highLight.findBar.markOptions}, tab);
 		}
@@ -2746,16 +2790,12 @@ function waitOnInjection(tabId) {
 			interval = setInterval(async () => {
 				try {
 
-					let result = await browser.scripting.executeScript({
-						target: {
-							tabId: tabId
-						},
-						func: () => window.CS_HASRUN && window.CS_HASRUN['/inject.js']
+					let result = await _executeScript({
+						func: () => window.CS_HASRUN && window.CS_HASRUN['/inject.js'],
+						tabId: tabId
 					});
 
-					//let result = await browser.tabs.executeScript(tabId, { code: "window.CS_HASRUN && window.CS_HASRUN['/inject.js']"} );
-
-					if ( result[0].result ) {
+					if ( result ) {
 						cleanup();
 						console.log(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
 						r(true);
@@ -2840,34 +2880,36 @@ function userInputCurrentTab(func, str) {
 			});
 		}
 
-		browser.scripting.executeScript({
-			target: {
-				tabId: tab.id
-			},
-			func: (func, message, id, tabId) => {
-				setTimeout(() => {
-					let str = "";
+		if ( browser?.scripting?.executeScript ) { // v3
+			browser.scripting.executeScript({
+				target: {
+					tabId: tab.id
+				},
+				func: (func, message, id, tabId) => {
+					setTimeout(() => {
+						let str = "";
 
-					if ( func === "prompt")
-						str = prompt(message);
-					if ( func === "confirm")
-						str = confirm(message);
+						if ( func === "prompt")
+							str = prompt(message);
+						if ( func === "confirm")
+							str = confirm(message);
 
-					browser.runtime.sendMessage({output:str, id: id, tabId: tabId});
-				}, 100);
-			},
-			args: [func, str, id, tabs[0] !== tab ? tab.id : -1 ]
-		});
-
-		// browser.tabs.executeScript(tab.id, {
-		// 	code: `(() => {
-		// 		setTimeout(() => {
-		// 			let str = ${func}(${str});
-		// 			browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
-		// 		}, 100);
-		// 	})();`,
-		// 	runAt: "document_idle"
-		// });
+						browser.runtime.sendMessage({output:str, id: id, tabId: tabId});
+					}, 100);
+				},
+				args: [func, str, id, tabs[0] !== tab ? tab.id : -1 ]
+			});
+		} else { // v2
+			browser.tabs.executeScript(tab.id, {
+				code: `(() => {
+					setTimeout(() => {
+						let str = ${func}(${str});
+						browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
+					}, 100);
+				})();`,
+				runAt: "document_idle"
+			});
+		}
 	});
 
 	return new Promise(resolve => {
@@ -2890,15 +2932,7 @@ function userInputCurrentTab(func, str) {
 
 async function isTabScriptable(tabId, frameId = 0) {
 	try {
-
-		await browser.scripting.executeScript({
-			target: {
-				tabId: tabId,
-				frameIds: [frameId]
-			},
-			func: () => (() => {})()
-		});
-
+		await _executeScript({func: () => true, tabId: tabId, frameId: frameId});
 		return true;
 	} catch ( error ) {
 		return false;
@@ -2919,30 +2953,36 @@ async function browserSaveAs(url) {
 
 async function executeUserScript(tabId, code, nodeId) {
 
-	if ( !await hasPermission("userScripts")) {
-		let optionsTab = await notify({action: "openOptions", hashurl:"?permission=userScripts#requestPermissions"});
-		return;
-	}
+	if ( browser?.scripting?.executeScript ) { // v3
+		if ( !await hasPermission("userScripts")) {
+			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=userScripts#requestPermissions"});
+			return;
+		}
 
-	// chrome
-	if ( hasUserScriptsExecute()) {
+		// chrome
+		if ( hasUserScriptsExecute()) {
 
-		return browser.userScripts.execute({
-			target: { tabId: tabId },
-			world: "USER_SCRIPT",
-			js: [{ code: code }]
-		});
+			return browser.userScripts.execute({
+				target: { tabId: tabId },
+				world: "USER_SCRIPT",
+				js: [{ code: code }]
+			});
 
-	} else { // firefox
-		
-		return browser.scripting.executeScript({
-			target: { tabId: tabId },
-			func: (_id, str) => { 
-				window.searchTerms = str; 
-				userScripts[_id](); 
-			},
-			args: [nodeId, self.searchTerms],
-			world: "MAIN"
+		} else { // firefox
+			
+			return browser.scripting.executeScript({
+				target: { tabId: tabId },
+				func: (_id, str) => { 
+					window.searchTerms = str; 
+					userScripts[_id](); 
+				},
+				args: [nodeId, self.searchTerms],
+				world: "MAIN"
+			});
+		}
+	} else { // v2
+		return browser.tabs.executeScript(tabId, {
+			code: code
 		});
 	}
 }
@@ -2991,4 +3031,50 @@ function unregisterAllUserScripts() {
 function updateUserScripts() {
 	return unregisterAllUserScripts()
 		.then(() => registerAllUserScripts());
+}
+
+async function _insertCSS(o) {
+	if ( browser?.scripting?.insertCSS ) {
+		const insertOptions = {
+			target: {
+				tabId: o.tabId,
+				frameIds: [o.frameId],
+				allFrames: o.allFrames
+			},
+			files: [o.file],
+			css: o.css,
+			origin: "USER"
+		}
+
+		if ( !o.file ) delete insertOptions.files;
+		if ( !o.css ) delete insertOptions.css;
+		if ( !o.hasOwnProperty("allFrames") ) delete insertOptions.target.allFrames;
+		if ( !o.hasOwnProperty("frameId") ) delete insertOptions.target.frameIds;
+
+		return o.removeCSS 
+			? browser.scripting.removeCSS(insertOptions)
+			: browser.scripting.insertCSS(insertOptions);
+	} else {
+		const insertOptions = {
+			file: o.file , 
+			frameId: o.frameId, 
+			code: o.css, 
+			allFrames: o.allFrames,
+			cssOrigin: "user"
+		}
+
+		if ( !o.file ) delete insertOptions.file;
+		if ( !o.css ) delete insertOptions.code;
+		if ( !o.hasOwnProperty("allFrames") ) delete insertOptions.allFrames;
+		if ( !o.hasOwnProperty("frameId") ) delete insertOptions.frameId;
+
+		return o.removeCSS
+			? browser.tabs.removeCSS(o.tabId, insertOptions)
+			: browser.tabs.insertCSS(o.tabId, insertOptions);
+	}
+}
+
+async function _removeCSS(o) {
+	o.removeCSS = true;
+	return _insertCSS(o);
 }

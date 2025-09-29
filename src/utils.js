@@ -248,3 +248,53 @@ function appendSanitizedHTML(html_str, el) {
 function hasPermission(permission) {
 	return browser.permissions.contains({permissions: [permission]});
 }
+
+async function _executeScript(o) {
+	if ( browser?.scripting?.executeScript ) { // v3
+		
+		const executeOptions = {
+			target: {
+				tabId: o.tabId,
+				frameIds: [o.frameId],
+				allFrames: o.allFrames
+			},
+			func: o.func,
+			args: o.args,
+			files: [o.file]
+		}
+
+		if ( !("func" in o )) delete executeOptions.function;
+		if ( !("args" in o )) delete executeOptions.args;
+		if ( !("frameId" in o )) delete executeOptions.target.frameIds;
+		if ( !("allFrames" in o )) delete executeOptions.target.allFrames;
+		if ( !("file" in o )) delete executeOptions.files;
+
+		return browser.scripting.executeScript(executeOptions)
+			.then(result => result.shift().result )
+			.catch(error => {throw new Error(error)});
+	} else { // v2
+
+		const _args = o.args ? o.args.map(a => {
+			if ( typeof a === 'string' ) return '"' + a + '"';
+			else return a.toString();
+		}) : "";
+
+		let code = "";
+		if ( "func" in o ) code = "(" + o.func.toString() + ")(" + _args.toString() + ")";
+		
+		const executeOptions = {
+			frameId: o.frameId,
+			allFrames: o.allFrames,
+			code: code,
+			file: o.file
+		}
+
+		if ( !("frameId" in o )) delete executeOptions.frameId;
+		if ( !("allFrames" in o )) delete executeOptions.allFrames;
+		if ( !("file" in o )) delete executeOptions.file;
+		if ( !("func" in o )) delete executeOptions.code;
+
+		return browser.tabs.executeScript(o.tabId, executeOptions).then(result => result.shift())
+			.catch(error => {throw new Error(error)});
+	}
+}
