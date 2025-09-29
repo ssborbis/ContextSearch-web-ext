@@ -8,14 +8,6 @@ Add any search engine to your [Web Extensions](https://developer.chrome.com/docs
 
 ###### *AMO and Chromestore will not be as up-to-date as the git
 
-### CHROME: These extensions were turned off because they're no longer supported
-
-You can still use this addon by sideloading the extension (`chrome://extensions/ -> Load unpacked`) from the source code and enabling the following from `chrome://flags`
-```
-Temporarily unexpire M138 flags
-Temporarily unexpire M139 flags
-Allow legacy extension manifest versions
-```
 <img src="https://raw.githubusercontent.com/ssborbis/ContextSearch-web-ext/master/media/review.png" width="600px" />
 
 <a name="toc"/>
