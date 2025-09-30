@@ -554,7 +554,9 @@ function modifySearchTerms() {
 	// dialog.showModal();
 }
 
-
+function messageFrame(frame, msg) {
+	frame.contentWindow.postMessage(msg, browser.runtime.getURL(frame.src));
+}
 
 // track mouse position
 document.addEventListener("mousemove", e => {

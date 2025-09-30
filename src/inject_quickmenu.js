@@ -224,7 +224,8 @@ function makeQuickMenuContainer(o) {
 		coords: o.coords,
 		id: "CS_quickMenuIframe",
 		onload: function() {
-			this.contentWindow.postMessage(Object.assign({action: "openMenu", frameBorder: {width: this.offsetWidth, height: this.offsetHeight}, windowSize: {width: window.innerWidth, height:window.innerHeight}, menuScale: this.getBoundingClientRect().width / this.offsetWidth, maxHeight: getMaxIframeHeight()}, o), this.src);
+			messageFrame(this, Object.assign({action: "openMenu", frameBorder: {width: this.offsetWidth, height: this.offsetHeight}, windowSize: {width: window.innerWidth, height:window.innerHeight}, menuScale: this.getBoundingClientRect().width / this.offsetWidth, maxHeight: getMaxIframeHeight()}, o))
+			//this.contentWindow.postMessage(Object.assign({action: "openMenu", frameBorder: {width: this.offsetWidth, height: this.offsetHeight}, windowSize: {width: window.innerWidth, height:window.innerHeight}, menuScale: this.getBoundingClientRect().width / this.offsetWidth, maxHeight: getMaxIframeHeight()}, o), this.src);
 		},
 		src: browser.runtime.getURL('quickmenu.html')
 	})
@@ -248,7 +249,8 @@ function makeQuickMenuElementContainer(o) {
 		coords: o.coords,
 		id: o.folder.id,
 		onload: function() {
-			this.contentWindow.postMessage({action: "openFolderNew", folder:o.folder, contexts: quickMenuObject.contexts, windowSize: {width: window.innerWidth, height:window.innerHeight}}, this.src);
+			messageFrame(this, {action: "openFolderNew", folder:o.folder, contexts: quickMenuObject.contexts, windowSize: {width: window.innerWidth, height:window.innerHeight}})
+			//this.contentWindow.postMessage({action: "openFolderNew", folder:o.folder, contexts: quickMenuObject.contexts, windowSize: {width: window.innerWidth, height:window.innerHeight}}, this.src);
 		},
 		src: browser.runtime.getURL('quickmenu.html#' + o.folder.id)
 	})
@@ -1599,3 +1601,15 @@ setTimeout(() => new StatusBar().init(), 1000);
 
 if ( window == top && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
+
+window.addEventListener('message', e => {
+	if ( e?.data?.action === 'getComputedStyle') {
+		let sss = getShadowRoot().styleSheets;
+
+		for (const styleSheet of sss ) {
+		  if ( styleSheet?.href?.endsWith("inject_widgets.css")) {
+		  	styleSheet.insertRule(".CS_quickMenuIframe { border-radius: " + e.data.value + ";}");
+		  }
+		}
+	}
+});

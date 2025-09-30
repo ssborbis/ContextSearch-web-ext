@@ -62,6 +62,12 @@ function setUserStyles() {
 			document.head.appendChild(styleEl);
 			document.body.getBoundingClientRect();
 		} else resolve();
+	}).then(() => {
+		// set corrections for iframe windows here
+		messageParent({
+			action: "getComputedStyle",
+			value: window.getComputedStyle(document.body).getPropertyValue("border-radius")
+		});
 	});
 }
 

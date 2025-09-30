@@ -1,15 +1,10 @@
 .CS_quickMenuIframe {
-	/*all:unset*/;
 	position:fixed !important;
 	cursor: pointer;
 	opacity: 0;
 	padding: 0;
 	margin: 0;
-/*	border:1px solid #9abad2;*/
-/*	border-radius:10px;*/
-
 	border:none;
-
 	font-weight:bold;
 	text-align:left;
 	box-shadow: 0px 4px 16px 2px rgba(0,0,0,.25);
