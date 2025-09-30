@@ -397,6 +397,7 @@ function checkContextMenuEventOrderNotification() {
 	let keepBoth = dialog.querySelector('#keepBoth');
 	let doubleClick = dialog.querySelector('#doubleClick');
 	let openSettings = dialog.querySelector('#openSettings');
+	let disableQuickMenu = dialog.querySelector('#disableQuickMenu');
 	dialog.querySelector('#img_logo').src = browser.runtime.getURL("icons/logo_notext.svg");
 
 	userOptions.contextMenuOnMouseDown = true;
