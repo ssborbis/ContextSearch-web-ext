@@ -1484,7 +1484,11 @@ function executeBookmarklet(info) {
 			: vanillaCode(info.node.searchCode, searchTerms);
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
-			return executeUserScript(tabs[0].id, code, info.node.id);
+			return executeUserScript({
+				tabId: tabs[0].id, 
+				code: code, 
+				nodeId: info.node.id
+			});
 		});
 	}
 
@@ -1512,7 +1516,11 @@ function executeBookmarklet(info) {
 			let code = decodeURI(bookmark.url);
 
 			// UserScript
-			return executeUserScript(tabs[0].id, code, info.node.id);
+			return executeUserScript({
+				tabId: tabs[0].id, 
+				code: code,
+				nodeId: info.node.id
+			});
 		});
 
 	}, error => {
@@ -1712,11 +1720,12 @@ async function executeExternalProgram(info) {
 			let code = 'let result = `' + escapeBackticks(result) + '`;\n' + node.postScript;
 
 			// UserScript
-			await executeUserScript(
-				info.tab.id, 
-				code,
-				node.id
-			);
+			await executeUserScript({
+				tabId: info.tab.id, 
+				code: code,
+				nodeId: node.id,
+				nativeAppResult: result // for Firefox w/o userScripts.execute()
+			});
 		}
 	});
 }
@@ -2952,7 +2961,7 @@ async function browserSaveAs(url) {
 	return browser.downloads.download({url: url, saveAs: true});
 }
 
-async function executeUserScript(tabId, code, nodeId) {
+async function executeUserScript(o) {
 
 	if ( browser?.scripting?.executeScript ) { // v3
 		if ( !await hasPermission("userScripts")) {
@@ -2964,20 +2973,23 @@ async function executeUserScript(tabId, code, nodeId) {
 		if ( hasUserScriptsExecute()) {
 
 			return browser.userScripts.execute({
-				target: { tabId: tabId },
+				target: { tabId: o.tabId },
 				world: "USER_SCRIPT",
-				js: [{ code: code }]
+				js: [{ code: o.code }]
 			});
 
 		} else { // firefox
+
+			let id = o.nodeId + ( ("nativeAppResult" in o ) ? "_postscript" : "");
 			
 			return browser.scripting.executeScript({
-				target: { tabId: tabId },
-				func: (_id, str) => { 
-					window.searchTerms = str; 
+				target: { tabId: o.tabId },
+				func: (_id, _str, _result) => { 
+					searchTerms = _str;
+					result = _result;
 					userScripts[_id](); 
 				},
-				args: [nodeId, self.searchTerms],
+				args: [id, self.searchTerms, o.nativeAppResult || ""],
 				world: "MAIN"
 			});
 		}
@@ -3003,6 +3015,15 @@ function registerAllUserScripts() {
 
 			let code = "try { userScripts['" + n.id + "'] = function() {\n" 
 				+ n.searchCode 
+				+ "\n};} catch(error) { console.log(error) };";
+
+			js.push({code: code});
+			debug('registering script for ' + n.title);
+		}
+
+		if ( n.postScript ) {
+				let code = "try { userScripts['" + n.id + "_postscript'] = function() {\n" 
+				+ n.postScript 
 				+ "\n};} catch(error) { console.log(error) };";
 
 			js.push({code: code});
