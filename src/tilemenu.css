@@ -233,14 +233,14 @@ BODY {
 	outline:none;
 	color:inherit;
 }
-[data-menu="quickmenu"] #searchBar[data-position="bottom"] {
+/*[data-menu="quickmenu"] #searchBar[data-position="bottom"] {
 	border-radius:0 0 10px 10px;
 }
 [data-menu="quickmenu"] #searchBar[data-position="top"] {
 	border-radius:10px 10px 0 0;
-}
+}*/
 #searchBar:focus {
-	border:1px solid #0a84ff;
+	/*border:1px solid #0a84ff;*/
 }
 #searchBar::placeholder {
 	color: inherit;
@@ -257,18 +257,17 @@ BODY {
 	border-width: 1px 0;
 	transition:max-height .15s ease-in-out;
 	max-height:0;
-	/*width:100%;*/
-	width:calc(var(--iframe-body-width) - 20px);
+	width:100%;
+	/*width:calc(var(--iframe-body-width) - 20px);*/
 	text-align: left;
 }
 #suggestions > DIV {
-	padding-left: 5px;
+	/*padding-left: 5px;*/
 	font-weight:200;
 	font-family: Arial;
 	font-size:11pt;
 	cursor:default;
 	user-select:none;
-	-moz-user-select: none;
 	overflow-x:hidden;
 	width:100%;
 	text-overflow:ellipsis;
