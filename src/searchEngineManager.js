@@ -2454,6 +2454,9 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 
 		for ( let label of labels ) {
 			let li = label.closest('li');
+
+			if ( !li ) continue;
+
 			li.style.display = null;
 			label.parentNode.style.display = null;
 			if ( !e.target.value ) continue;
