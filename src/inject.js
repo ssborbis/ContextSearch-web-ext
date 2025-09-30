@@ -22,8 +22,6 @@ var killswitch = false; // global switch for disabling injected functions on the
 
 window.suspendSelectionChange = false;
 
-sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
-
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if ( message.userOptions ) userOptions = message.userOptions;
@@ -76,9 +74,11 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			return copyRaw();
 
 		case "getQuickMenuObject":
-			return quickMenuObject;
+			sendResponse(quickMenuObject);
 	}
 });
+
+sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
 
 function getRawSelectedText(el) {
 	if (el && typeof el.selectionStart !== 'undefined') {

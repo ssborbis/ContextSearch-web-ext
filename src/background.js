@@ -908,15 +908,11 @@ async function notify(message, sender, sendResponse) {
 							if ( !isAllowedURL(sender.tab.url) ) return r(null);
 							if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
 
-							return await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"});
-
+							r(await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"}));
 						} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
-					.then( result => {
-						console.log(result);
-						return result ? result : null;
-					});
+					
 		
 		case "addToHistory": {
 
