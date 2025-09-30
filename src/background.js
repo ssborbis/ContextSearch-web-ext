@@ -908,7 +908,11 @@ async function notify(message, sender, sendResponse) {
 							if ( !isAllowedURL(sender.tab.url) ) return r(null);
 							if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
 
-							r(await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"}));
+							const qmo = await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"});
+
+							// console.log(sender.tab);
+							// console.log(qmo);
+							r(qmo);
 						} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
@@ -1423,7 +1427,7 @@ function openWithMethod(o) {
 		let zoom = await browser.tabs.getZoom(tab.id);
 
 		// reuse the first tab in the current window
-		if ( userOptions.popupWindow.reuse && window.popupWindows.length ) {
+		if ( userOptions.popupWindow.reuse && self.popupWindows.length ) {
 			let _tabs = await browser.tabs.query({windowId: self.popupWindows[0]});
 			return browser.tabs.update(_tabs[0].id, {url: o.url});
 		}
