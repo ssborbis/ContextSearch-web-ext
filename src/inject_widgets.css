@@ -297,21 +297,42 @@
 	max-width:600px;
 	border:none;
 	border-radius:6px;
-	background-color: #3a3a3a;
-	color:#aaa;
+	background-color: #fff;
+	color:#444;
 	font-family: Calibri, Verdana;
 	font-size:11pt;
 	padding:24px;
+	box-shadow: 8px 8px 16px #0005;
 }
 
+.CS_dialog header {
+	font-weight:bolder;
+	font-size:14pt;
+	margin-bottom:16px;
+}
+
+.CS_dialog footer {
+	margin-top:16px;
+}
 .CS_dialog #img_logo {
 	height:32px;
 	margin-right:16px;
 	vertical-align: middle;
 }
 
-.CS_dialog button {
-	margin-right:16px;
+.CS_dialog .o {
+	padding:8px;
+	cursor: default;
+	border-radius:4px;
+}
+.CS_dialog .o:hover {
+	background-color:#6ec179;
+	color:white;
+	font-weight:bold;
+}
+
+.CS_dialog input {
+	margin:0 16px;
 }
 
 #CS_resultsEngineIconDialog {

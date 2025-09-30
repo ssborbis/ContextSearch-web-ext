@@ -362,31 +362,25 @@ function showNotification(message) {
 function checkContextMenuEventOrderNotification() {
 
 	let html = `
-		<h3><img id="img_logo" />ContextSearch web-ext</h3>
-		<hr>
+		<header><img id="img_logo" />ContextSearch web-ext</header>
 		<div>
 			You opened the Quick menu by using the right mouse button and it appears your browser wants to open the default context menu<br><br>
-			Choose from the following options:
 		</div>
-		<br>
-		<div>
-			<button id="keepBoth">Option 1</button>
-			Keep the default settings (both menus may open)
+		<div class="o" id="keepBoth">
+			<input type="radio" /> Keep the default settings (both menus may open)
 		</div>
-		<br>
-		<div>
-			<button id="doubleClick">Option 2</button>
-			Move the browser context menu to open on double-click
+		<div class="o" id="doubleClick">
+			<input type="radio" /> Move the browser context menu to open on double-click
 		</div>
-		<br>
-		<div>
-			<button id="openSettings">Option 3</button>
-			Open settings for more menu options
+		<div class="o" id="disableQuickMenu">
+			<input type="radio" /> Disable the Quick Menu and keep the default context menu
 		</div>
-		<br>
-		<hr>
-		<br>
-		You can change this setting any time or see more options by going to the Quick Menu options
+		<div class="o" id="openSettings">
+			<input type="radio" /> See more options for opening the Quick Menu
+		</div>
+		<footer>
+			You can change this setting any time in options
+		</footer>
 	`;
 
 	let dialog = document.createElement('dialog');
@@ -422,6 +416,12 @@ function checkContextMenuEventOrderNotification() {
 	doubleClick.onclick = function() {
 		userOptions.checkContextMenuEventOrder = false;
 		userOptions.quickMenuMoveContextMenuMethod = "dblclick";
+		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
+		close();
+	}
+
+	disableQuickMenu.onclick = function() {
+		userOptions.quickMenu = false;
 		sendMessage({action: "saveUserOptions", userOptions: userOptions, source: "checkContextMenuEventOrderYes"});
 		close();
 	}
