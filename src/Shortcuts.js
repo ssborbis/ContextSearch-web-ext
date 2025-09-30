@@ -211,7 +211,7 @@ class Shortcut {
 			action: async (e) => {
 				sendMessage({action: "toggleFindBar"});
 			},
-			key: "f",
+			key: "F",
 			ctrl: true,
 			alt: false,
 			shift:true,
@@ -238,7 +238,7 @@ class Shortcut {
 		},{
 			name:"Menu → Sidebar → Open",
 			action: "openSideBar",
-			key: "z",
+			key: "Z",
 			ctrl: true,
 			alt: false,
 			shift:true,
