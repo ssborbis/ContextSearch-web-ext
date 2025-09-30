@@ -74,7 +74,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		case "copyRaw":
 			return copyRaw();
-			break;
+
+		case "getQuickMenuObject":
+			return quickMenuObject;
 	}
 });
 

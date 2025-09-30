@@ -901,21 +901,22 @@ async function notify(message, sender, sendResponse) {
 			return sendMessageToTopFrame();
 			
 		case "getTabQuickMenuObject":
+
 				return Promise.race([
 					new Promise(async r => {
 						try {
 							if ( !isAllowedURL(sender.tab.url) ) return r(null);
 							if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
-							
-							return _executeScript({
-								func: () => ( typeof quickMenuObject !== 'undefined' ) ? quickMenuObject : null,
-								tabId: sender.tab.id
-							});
+
+							return await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"});
 
 						} catch (error) { r(null); }}),
 					new Promise(r => setTimeout(r, 250))
 				])
-					//.then( result => result ? result : null );
+					.then( result => {
+						console.log(result);
+						return result ? result : null;
+					});
 		
 		case "addToHistory": {
 
