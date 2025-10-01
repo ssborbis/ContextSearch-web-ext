@@ -1206,7 +1206,7 @@ async function notify(message, sender, sendResponse) {
 				if ( await isTabScriptable(tab.id) === false ) return;
 				
 				_removeCSS({
-					tabId: sender.tab.id, 
+					tabId: tab.id, 
 					css: "HTML{pointer-events:none;}",
 					allFrames: true
 				}).catch( error => debug(error) );
