@@ -1202,8 +1202,8 @@ async function notify(message, sender, sendResponse) {
 
 			async function logTabs(tabs) {
 			  for (const tab of tabs) {
-			  	if ( !isAllowedURL(tab.url) ) return;
-				if ( await isTabScriptable(tab.id) === false ) return;
+			  	if ( !isAllowedURL(tab.url) ) continue;
+				if ( await isTabScriptable(tab.id) === false ) continue;
 				
 				_removeCSS({
 					tabId: tab.id, 
@@ -1222,7 +1222,7 @@ async function notify(message, sender, sendResponse) {
 			  }
 			}
 
-			return browser.tabs.query({ currentWindow: true }).then(logTabs);
+			return browser.tabs.query({}).then(logTabs);
 
 		// bypasses Firefox resistFingerprinting
 		case "getDevicePixelRatio":
