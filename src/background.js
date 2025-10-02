@@ -2982,6 +2982,8 @@ async function executeUserScript(o) {
 		} else { // firefox
 
 			let id = o.nodeId + ( ("nativeAppResult" in o ) ? "_postscript" : "");
+
+			debug('executeUserScript():firefox', id, self.searchTerms);
 			
 			return browser.scripting.executeScript({
 				target: { tabId: o.tabId },
@@ -3009,35 +3011,54 @@ function registerAllUserScripts() {
 	// better method (chrome)
 	if ( hasUserScriptsExecute() ) return Promise.resolve(false);
 
-	const js = [{code: "const userScripts = {};"}];
+	const js = [];
 
 	traverseNodes(userOptions.nodeTree, n => {
-		if ( n.searchCode ) {
 
-			let code = "try { userScripts['" + n.id + "'] = function() {\n" 
-				+ n.searchCode 
-				+ "\n};} catch(error) { console.log(error) };";
+		let searchCode = n.searchCode;
+
+		if ( n.type === 'searchEngine') {
+			let se = getSearchEngineByNode(n);
+			searchCode = se.searchCode;
+		}
+
+		if ( searchCode ) {
+			let code = "userScripts['" + n.id + "'] = function() {\n" 
+				+ searchCode 
+				+ "\n};"
 
 			js.push({code: code});
 			debug('registering script for ' + n.title);
 		}
 
 		if ( n.postScript ) {
-				let code = "try { userScripts['" + n.id + "_postscript'] = function() {\n" 
+				let code = "userScripts['" + n.id + "_postscript'] = function() {\n" 
 				+ n.postScript 
-				+ "\n};} catch(error) { console.log(error) };";
+				+ "\n};";
 
 			js.push({code: code});
 			debug('registering script for ' + n.title);
 		}
 	});
 
+	// register the script array, then check each script individually to catch errors
 	return browser.userScripts.register([{
 		id: 'userScripts',
 		world: 'MAIN',
 		matches: ["<all_urls>"],
-		js: js
-	}]);
+		js: [{code: "const userScripts = {};"}]
+	}]).then(() => {
+		for ( j of js ) {
+			browser.userScripts.register([{
+				id: gen(),
+				world: 'MAIN',
+				matches: ["<all_urls>"],
+				js: [j]
+			}]).catch(error => {
+				console.log("error registering a user script", error);
+			});
+		}
+	});
 }
 
 function unregisterAllUserScripts() {
@@ -3048,7 +3069,7 @@ function unregisterAllUserScripts() {
 	// better method (chrome)
 	if ( hasUserScriptsExecute() ) return Promise.resolve(false);;
 
-	return browser.userScripts.unregister({ids: ["userScripts"]});
+	return browser.userScripts.unregister({});
 }
 
 function updateUserScripts() {
