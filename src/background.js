@@ -2088,10 +2088,11 @@ async function openSearch(info) {
 	function executeSearchCode(tabId) {
 		if ( !se.searchCode ) return;
 
-		executeUserScript(
-			tabId, 
-			`searchTerms = "${escapeDoubleQuotes(searchTerms)}"; ${se.searchCode}`
-		);
+		executeUserScript({
+			tabId: tabId, 
+			code: 'searchTerms = "' + escapeDoubleQuotes(searchTerms) + '"; ' + se.searchCode,
+			nodeId: node.id
+		});
 	}
 	
 	function onCreate(_tab) {
