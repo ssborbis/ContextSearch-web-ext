@@ -309,7 +309,7 @@ function openSearchXMLToSearchEngine(xml) {
 	
 	let image = xml.documentElement.querySelector("Image");
 	if (image) se.icon_url = image.textContent;
-	else se.icon_url = new URL(template).origin + '/favicon.ico';
+	else se.icon = new URL(template).origin + '/favicon.ico';
 	
 	let method = url.getAttribute('method');
 	if (method) se.method = method.toUpperCase() || "GET";

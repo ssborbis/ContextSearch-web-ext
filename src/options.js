@@ -1347,7 +1347,7 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 			_loadPath: "[other]addEngineWithDetails",
 			description: se.title,
 			__searchForm: se.searchForm,
-			_iconURL: se.icon_base64String,
+			_iconURL: se.icon,
 			_metaData: {
 				alias: null,
 				order: null

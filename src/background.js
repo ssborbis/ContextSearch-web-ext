@@ -2418,10 +2418,9 @@ function dataToSearchEngine(data) {
 	// build search engine from form data
 	let se = {
 		"searchForm": data.origin, 
-		"icon_url": data.favicon_href || data.origin + "/favicon.ico",
+		"icon": data.favicon_href || data.origin + "/favicon.ico",
 		"title": data.name || data.title,
 		"order":findNodes(userOptions.nodeTree, n => n.type === "searchEngine").length, 
-		"icon_base64String": "", 
 		"method": data.method, 
 		"params": params, 
 		"template": template, 

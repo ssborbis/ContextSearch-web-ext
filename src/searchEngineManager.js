@@ -272,7 +272,7 @@ function buildSearchEngineContainer() {
 				edit_form.description.value = se.description || "";
 				edit_form.template.value = se.template;
 				edit_form.keyword.value = node.keyword || "";
-				edit_form.iconURL.value = se.icon_url || se.icon_base64String;
+				edit_form.iconURL.value = se.icon;
 				edit_form._method.value = se.method || "GET";
 				edit_form.post_params.value = (se.method === 'GET') ? "" : nameValueArrayToParamString(se.params);
 				edit_form._encoding.value = se.queryCharset || "UTF-8";
@@ -400,7 +400,7 @@ function buildSearchEngineContainer() {
 
 						icon.src = edit_form.iconURL.value || iconBase64 || "icons/search.svg";
 
-						se.icon_base64String = iconBase64;  //icon.src;
+						se.iconCache = iconBase64;  //icon.src;
 						se.description = edit_form.description.value;
 						node.keyword = edit_form.keyword.value.trim();
 						se.template = edit_form.template.value;
@@ -2047,10 +2047,8 @@ function buildSearchEngineContainer() {
 		} else {
 			se = {
 				"searchForm": "", 
-				"icon_url":"",
 				"title":shortName,
 				"order":findNodes(userOptions.nodeTree, n => n).length, 
-				"icon_base64String": "", 
 				"method": "GET", 
 				"params": "", 
 				"template": "", 

@@ -75,7 +75,7 @@ async function buildContextMenu(searchTerms) {
 				title: getTitleWithHotkey(node),
 				id: context_prefix + _id,	
 				icons: {
-					"16": se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
+					"16": se.iconCache || se.icon || "/icons/logo_notext.svg"
 				}
 			});
 
@@ -92,7 +92,7 @@ async function buildContextMenu(searchTerms) {
 						title: path,
 						id: context_prefix + pathId,
 						icons: {
-							"16": tab.favIconUrl || se.icon_base64String || se.icon_url || "/icons/logo_notext.svg"
+							"16": tab.favIconUrl || se.iconCache || se.icon || "/icons/logo_notext.svg"
 						}
 					});
 					

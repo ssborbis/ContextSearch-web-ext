@@ -8,10 +8,10 @@ function formToSearchEngine() {
 	return {
 		"searchForm": form.searchform.value, 
 		"description": form.description.value,
-		"icon_url":form.iconURL.value,
+		"icon":form.iconURL.value,
 		"title":form.shortname.value,
 		"order":findNodes(userOptions.nodeTree, n =>n.type === 'searchEngine').length, 
-		"icon_base64String": imageToBase64(form.icon, userOptions.cacheIconsMaxSize), 
+		"iconCache": userOptions.cacheIcons ? imageToBase64(form.icon, userOptions.cacheIconsMaxSize) : "",
 		"method": form._method.value, 
 		"params": paramStringToNameValueArray(form.post_params.value), 
 		"template": form.template.value, 
