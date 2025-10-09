@@ -2143,49 +2143,25 @@ async function openSearch(info) {
 
 			await executeScripts(_tab.id, {files: ['/lib/browser-polyfill.min.js', '/opensearch.js', '/post.js']}, true);
 
-			_executeScript({
-				func: (se, s) => {
-					let _SEARCHTERMS = s;
-					post(se.template, se.params);
-				},
-				args: [JSON.stringify(se), escapeDoubleQuotes(searchTerms)],
-				tabId: _tab.id
-			});
-
-			// if ( browser?.scripting?.executeScript ) { // v3
-			// 	browser.scripting.executeScript({
-			// 		target: {
-			// 			tabId: _tab.id
-			// 		},
-			// 		func: (se, s) => {
-			// 			let _SEARCHTERMS = s;
-			// 			post(se.template, se.params);
-			// 		},
-			// 		args: [JSON.stringify(se), escapeDoubleQuotes(searchTerms)]
-			// 	});
-			// } else { // v2
-			// 	browser.tabs.executeScript(_tab.id, {
-			// 		code: `
-			// 			let se = ${JSON.stringify(se)};
-			// 			let _SEARCHTERMS = "${escapeDoubleQuotes(searchTerms)}";
-			// 			post(se.template, se.params);
-			// 			`,
-			// 		runAt: 'document_start'
-			// 	});
-			// }
-	
-			// listen for the results to complete
-			browser.tabs.onUpdated.addListener(async function _listener(_tabId, _changeInfo, _tabInfo) {
+			await browser.tabs.onUpdated.addListener(async function _listener(_tabId, _changeInfo, _tabInfo) {
 					
 				if ( _tabId !== _tab.id ) return;
 
 				if ( _tabInfo.status !== 'complete' ) return;
+
 				browser.tabs.onUpdated.removeListener(_listener);
 				
-			//	waitOnInjection(tabId).then(value => {
-					highlightSearchTermsInTab(_tabInfo, searchTerms);
-					executeSearchCode(_tabId);
-			//	});
+				highlightSearchTermsInTab(_tabInfo, searchTerms);
+				executeSearchCode(_tabId);
+			});
+
+			_executeScript({
+				func: (se, s) => {
+					window._SEARCHTERMS = s;
+					post(se.template, se.params);
+				},
+				args: [JSON.parse(JSON.stringify(se)), escapeDoubleQuotes(searchTerms)],
+				tabId: _tab.id
 			});
 		});
 	}
