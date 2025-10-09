@@ -226,7 +226,7 @@ function loadRemoteIcon(options) {
 			var counter = 0;
 			for (let i=0;i<icons.length;i++) {
 				if (typeof icons[i].base64String !== 'undefined') {
-					searchEngines[i].icon_base64String = icons[i].base64String;
+					searchEngines[i].iconCache = icons[i].base64String;
 					counter++;
 				}
 			}
@@ -236,7 +236,7 @@ function loadRemoteIcon(options) {
 				
 				for (let i=0;i<icons.length;i++) {
 					if (typeof icons[i].base64String === 'undefined')
-						searchEngines[i].icon_base64String = createCustomIcon({text: icons[i].favicon_monogram});
+						searchEngines[i].iconCache = createCustomIcon({text: icons[i].favicon_monogram});
 				}
 				onComplete();
 			}

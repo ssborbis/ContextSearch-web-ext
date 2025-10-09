@@ -116,41 +116,12 @@ function repairNodeTree(tree, hide) {
 	
 	let repaired = false;
 	
-	// append orphans
-	for (let se of userOptions.searchEngines) {
-
-		if (!se.id || findNodes(tree, node => node.id === se.id).length === 0) {
-			
-			repaired = true;
-			
-			if (!se.id) {
-				console.log(se.title + ' has no id. Generating...');
-				se.id = gen();
-			}
-			
-			console.log(se.id + " is not in node tree. Appending ...");
-			tree.children.push({
-				id: se.id,
-				type: "searchEngine",
-				hidden: hide,
-				title: se.title,
-				contexts:32
-			});
-		}
-	}
-
 	let nodesToRemove = findNodes(tree, (node, parent) => {
 		
 		if ( !node ) {
 			node.parent = parent;
 			console.log('removing null node');
 			return true;
-		}
-
-		if ( node.type === 'searchEngine' && !userOptions.searchEngines.find( se => se.id === node.id ) ) {
-			node.parent = parent;
-			console.log('removing dead search engine node ' + node.title);
-			return true;	
 		}
 
 		if ( node.type === 'siteSearchFolder') {
@@ -194,24 +165,22 @@ function repairNodeTree(tree, hide) {
 function getIconFromNode(node) {
 
 	let iconUrl = (() => {
-	
-		if ( node.type === "searchEngine" || node.type === "siteSearch" || node.type === "siteSearchFolder") {
-			let se = userOptions.searchEngines.find( se => se.id === node.id );
-			if ( !se ) return browser.runtime.getURL('icons/search.svg');
-			if ( userOptions.cacheIcons ) return se.icon_base64String || se.icon_url || browser.runtime.getURL('icons/search.svg');
-			else return se.icon_url || browser.runtime.getURL('icons/search.svg');
-		} else if ( node.type === "bookmarklet" ) {
+
+		if ( userOptions.cacheIcons && node.iconCache ) return node.iconCache;
+
+		if ( node.type === "searchEngine" || node.type === "siteSearch" || node.type === "siteSearchFolder")
+			return node.icon || browser.runtime.getURL('icons/search.svg');
+		 else if ( node.type === "bookmarklet" ) 
 			return node.icon || browser.runtime.getURL('icons/code_color.svg');
-		} else if ( node.type === "folder" ) {
+		 else if ( node.type === "folder" ) 
 			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');	
-		} else if ( node.type === "externalProgram" ) {
+		 else if ( node.type === "externalProgram" ) 
 			return node.icon || browser.runtime.getURL('icons/terminal_color.svg');
-		} else {
+		 else 
 			return node.icon || "";
-		}
 	})();
 
-	return iconUrl.replace(/http:\/\//, "https://");
+	return iconUrl.replace(/^http:\/\//, "https://");
 }
 
 function nodeCut(node, parent) {
@@ -246,9 +215,7 @@ function removeConsecutiveSeparators(tree) {
 
 	return tree;
 }
-
-const getSearchEngineById = id => userOptions.searchEngines.find(se => se.id === id);
-const getSearchEngineByNode = n => getSearchEngineById(n.id);
+const getNodeById = id => findNode(userOptions.nodeTree, n => n.id === id);
 const isFolder = n => n.type === 'folder';
 const isSearchEngine = n => n.type === 'searchEngine';
 const isOneClickSearchEngine = n => n.type === 'oneClickSearchEngine';
@@ -259,7 +226,7 @@ const isMultiSearchEngine = n => {
 	try {
 
 		if ( !n.template ) {
-			let se = userOptions.searchEngines.find( _se => _se.id == n.id );
+			let se = getNodeById(n.id);
 			let ts = JSON.parse(se.template);
 			return Array.isArray(ts);
 		} else {
@@ -275,6 +242,10 @@ const specialFolderIds = ["___recent___", "___matching___", "___tools___"];
 
 const isSpecialFolderChild = el => {
 	return el.node && el.node.parent && specialFolderIds.includes(el.node.parent.id);
+}
+
+const nameExists = (name, uo = userOptions) => {
+	return findNode(uo.nodeTree, n => n.title === name && n.type === 'searchEngine');
 }
 
 function createNode(type) {

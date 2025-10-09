@@ -176,6 +176,8 @@ function updateUserOptionsVersion(uo) {
 		
 		return _uo;
 	}).then( _uo => {
+
+		if ( !_uo.searchEngines ) return _uo;
 		
 		if (!_uo.searchEngines.find(se => se.hotkey) ) return _uo;
 		
@@ -208,6 +210,8 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 		
 	}).then( _uo => {
+
+		if ( !_uo.searchEngines ) return _uo;
 		
 		// remove campaign ID from ebay template ( mozilla request )
 		
@@ -234,6 +238,8 @@ function updateUserOptionsVersion(uo) {
 
 		return _uo;	
 	}).then( _uo => {
+
+		if ( !_uo.searchEngines ) return _uo;
 		
 		// delete se.query_string in a future release
 		// if ( !_uo.searchEngines.find( se => se.query_string ) ) return _uo;
@@ -386,13 +392,7 @@ function updateUserOptionsVersion(uo) {
 			// test for unified node tree
 			if ( _uo.searchEngines.length === 0 && findNode(_uo.nodeTree, n => n.type === 'searchEngine') ) {
 				console.log('repairing searchEngines array');
-
-				findNodes(_uo.nodeTree, n => n.type === 'searchEngine').forEach(n => {
-					let se = JSON.parse(JSON.stringify(n));
-					se.icon_url = n.icon;
-					se.icon_base64String = n.iconCache;
-					_uo.searchEngines.push(se);
-				})
+				_uo = deunifyTree(_uo);
 			}
 
 			if ( browser.search && browser.search.get ) {
@@ -407,7 +407,10 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 	}).then( _uo => {
 		if ( _uo.version < "1.48.4" ) {
+			_uo = unifyNodeTree(_uo);
 
+			// rebuild searchEngines array after unifying for a few versions
+			_uo = deunifyNodeTree(_uo);
 		}
 		return _uo;
 	}).then( _uo => {
@@ -415,10 +418,79 @@ function updateUserOptionsVersion(uo) {
 		return _uo;
 	});
 
-	function unifyNodeTree(uo) {
-		const ses = uo.searchEngines;
-		const nodeTree = uo.nodeTree;
-
-		
-	}
 }
+
+function deunifyNodeTree(_uo) {
+
+	if ( _uo.searchEngines && _uo.searchEngines.length ) {
+		console.log('searchEngines array exists. Aborting.');
+		return _uo;
+	}
+
+	_uo.searchEngines = [];
+
+	findNodes(_uo.nodeTree, n => n.type === 'searchEngine').forEach(n => {
+		let se = JSON.parse(JSON.stringify(n));
+		se.icon_url = n.icon;
+		se.icon_base64String = n.iconCache;
+
+		delete se.icon;
+		delete se.iconCache;
+		delete se.parentNode;
+
+		_uo.searchEngines.push(se);
+	});
+
+	return _uo;
+}
+
+function mergeSearchEngineWithNode(se, n) {
+
+	console.log("Merging: " + se.title);
+	for ( const key in se ) {
+		if ( key in n && se[key] !== n[key] ) {
+			debug(`Key values diverged for '${key}': (${se[key]}) -> (${n[key]})`);
+		}
+	}
+
+	n.icon = n.icon || n.icon_url || n.icon_base64String;
+	n.iconCache = n.icon_base64String || "";
+
+	return Object.assign(n, se);
+}
+
+function unifyNodeTree(_uo) {
+
+	const uo = JSON.parse(JSON.stringify(_uo));
+
+	let ses = uo.searchEngines;
+
+	if ( !ses ) {
+		console.log("No search engines array. Node tree may already be unified")
+		return uo;
+	}
+
+	for ( const se of ses ) {
+		let associatedNodes = findNodes(uo.nodeTree, n => n.id === se.id );
+
+		associatedNodes.forEach((an, index) => {
+
+			// build a single node based on the original search engine
+			if ( index === 0 )
+				an = mergeSearchEngineWithNode(se, an);
+			// make every other node referencing the engine a copy (shortcut)
+			else {
+				an = {
+					id: gen(),
+					referenceId: an.id,
+					type: "shortcut",
+					hidden: an.hidden
+				}
+			}
+		});
+	}
+
+	delete uo.searchEngines;
+	return uo;
+}
+

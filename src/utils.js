@@ -88,7 +88,7 @@ function matchingEnginesToFolder(s) {
 
 	if ( !s ) return folder;
 
-	let matchingEngines = userOptions.searchEngines.filter( se => {
+	let matchingEngines = findNodes(userOptions.nodeTree, se => {
 
 		if ( !se.matchRegex ) return false;
 
@@ -97,8 +97,7 @@ function matchingEnginesToFolder(s) {
 	});
 
 	matchingEngines.forEach( se => {
-		let node = findNode(userOptions.nodeTree, n => n.id === se.id )
-		if ( node ) folder.children.push(Object.assign({}, node));
+		folder.children.push(Object.assign({}, se));
 	});
 
 	return folder;
@@ -234,7 +233,10 @@ const debug = (...args) => {
 	}
 }
 const i18n = browser.i18n.getMessage;
-const sendMessage = browser.runtime.sendMessage;
+const sendMessage = (o) => {
+	if ( typeof notify === "function" ) return notify(o);
+	else return browser.runtime.sendMessage(o);
+}
 
 function appendSanitizedHTML(html_str, el) {
 	const parser = new DOMParser();
@@ -249,7 +251,12 @@ function hasPermission(permission) {
 	return browser.permissions.contains({permissions: [permission]});
 }
 
+function requestPermission(permission) {
+	sendMessage({action: "openOptions", hashurl:"?permission=" + permission + "#requestPermissions"});
+}
+
 async function _executeScript(o) {
+
 	if ( browser?.scripting?.executeScript ) { // v3
 		
 		const executeOptions = {

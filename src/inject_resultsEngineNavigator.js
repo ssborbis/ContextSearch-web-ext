@@ -44,7 +44,7 @@ const resetCarousel = (folder, node) => {
 		
 		// filter multisearch
 		try {
-			se = userOptions.searchEngines.find(_se => _se.id === c.id);
+			se = getNodeById(c.id);
 			JSON.parse(se.template);
 			return false;
 		} catch (err) {}

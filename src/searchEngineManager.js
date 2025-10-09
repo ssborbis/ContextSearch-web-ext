@@ -102,19 +102,10 @@ function buildSearchEngineContainer() {
 
 		if (node.type === 'searchEngine' || node.type === 'siteSearchFolder' ) {
 			
-			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
+			let se = node;
 			
-			if (se === undefined) {
-				console.log('engine not found for ' + node.title + '(' + (node.id) + ')');
-				li.parentNode.removeChild(li);
-				return;
-			}
-
 			// se stores descriptions vs node ( sometimes / needs work )
-			header.title = node.description || se.description || node.title;
-
-			// force typecast as search engine
-			se.type = 'searchEngine';
+			header.title = node.description || node.title;
 
 			let icon = document.createElement('img');
 			icon.src = getIconFromNode(node);
@@ -127,7 +118,7 @@ function buildSearchEngineContainer() {
 
 			addMultisearchIcons(se, header);
 
-			node.contexts = node.contexts || se.contexts;
+			node.contexts = node.contexts;
 
 			li.addEventListener('dblclick', _edit);
 
@@ -148,7 +139,7 @@ function buildSearchEngineContainer() {
 					});
 				});
 				
-				let se = userOptions.searchEngines.find( se => se.id === node.id );
+				let se = node;
 			
 				function clearError( element ) {
 					if ( 
@@ -202,7 +193,7 @@ function buildSearchEngineContainer() {
 						}
 						if (edit_form.shortName.value != li.node.title) {
 							
-							if (userOptions.searchEngines.find( _se => _se.title == edit_form.shortName.value) ) {
+							if (nameExists(edit_form.shortName.value) ) {
 								showError(edit_form.shortName,i18n('NameExists'));
 								resolve(false);
 							}
@@ -429,9 +420,6 @@ function buildSearchEngineContainer() {
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);
-
-						// reference not updating on first save fix
-						Object.assign(userOptions.searchEngines.find(_se => se.id === _se.id), se);
 						
 						if ( edit_form.querySelector('.error') )
 							showSaveMessage('saved with errors', 'red', edit_form.querySelector('.saveMessage'));
@@ -1228,7 +1216,7 @@ function buildSearchEngineContainer() {
 		// drop to multisearch
 		if ( position === 'middle' && isMultiSearchEngine(targetNode)) {
 			try {
-				let se = getSearchEngineByNode(targetNode);
+				let se = getNodeById(targetNode.id);
 				let templates = JSON.parse(se.template);
 				let descriptions = JSON.parse(se.description);
 
@@ -1881,7 +1869,7 @@ function buildSearchEngineContainer() {
 			if ( newNode ) {
 				let newLi = addNode(newNode, li);
 
-				let se = userOptions.searchEngines.find(se => se.id === newNode.id);
+				let se = newNode;
 
 				se.template = JSON.stringify(templates);
 				se.description = JSON.stringify(names);
@@ -1908,14 +1896,6 @@ function buildSearchEngineContainer() {
 			selectedRows = selectedRows.filter( r => !selectedRows.find(_r => _r !== r && _r.contains(r)));
 
 			let nodes = selectedRows.map( r => JSON.parse(JSON.stringify(r.node)));
-
-			nodes.forEach( node => {
-				findNodes(node, n => {
-					if ( n.type === 'searchEngine' ) {
-						n.searchEngine = userOptions.searchEngines.find(se => se.id === n.id);
-					}
-				})
-			});
 
 			let json = JSON.stringify({exportedNodes: nodes});
 			var blob = new Blob([json], {type: "application/json"});
@@ -2041,7 +2021,7 @@ function buildSearchEngineContainer() {
 		copy = copy || false;
 		
 		// if node is defined, make copy
-		let se = (copy) ? Object.assign({},userOptions.searchEngines.find( _se => _se.id === node.id )) : false;
+		let se = (copy) ? Object.assign({},node) : false;
 		let default_value = (copy) ? se.title + " copy" : "";
 		
 		let msg = i18n("EnterUniqueName");
@@ -2052,13 +2032,10 @@ function buildSearchEngineContainer() {
 
 			let found = false;
 			
-			for (let engine of userOptions.searchEngines) {
-				if (engine.title == shortName) {
-					console.log(engine.title + "\t" + shortName);
-					msg = i18n("EngineExists").replace("%1",engine.title) + " " + i18n("EnterUniqueName");
-					found = true;
-					break;
-				}
+			if (nameExists(shortName)) {
+				msg = i18n("EngineExists").replace("%1",shortName) + " " + i18n("EnterUniqueName");
+				found = true;
+				break;
 			}
 			
 			if ( !found ) break;
@@ -2067,26 +2044,23 @@ function buildSearchEngineContainer() {
 		if (se) {
 			se.title = shortName;
 			se.id = gen();
-			userOptions.searchEngines.push(se);
 		} else {
 			se = {
 				"searchForm": "", 
 				"icon_url":"",
 				"title":shortName,
-				"order":userOptions.searchEngines.length, 
+				"order":findNodes(userOptions.nodeTree, n => n).length, 
 				"icon_base64String": "", 
 				"method": "GET", 
 				"params": "", 
 				"template": "", 
 				"queryCharset": "UTF-8", 
 				"hidden": false,
-				"id": gen()
+				"id": gen(),
 			}
-			
-			userOptions.searchEngines.push(se);
 		}
 		
-		return {
+		return Object.assign({
 			title: se.title,
 			type: "searchEngine",
 			parent: node.parent,
@@ -2094,7 +2068,7 @@ function buildSearchEngineContainer() {
 			id: se.id,
 			contexts:32,
 			toJSON: node.toJSON
-		}
+		}, se);
 	}
 
 	// navigate to the next selected row
@@ -2138,10 +2112,7 @@ function buildSearchEngineContainer() {
 		if ( !confirm(i18n("ConfirmResetAllSearchEngines")) ) return;
 		
 		let w = await browser.runtime.getBackgroundPage();
-		userOptions.nodeTree.children = [];	
-		
-		// reset searchEngines to defaults
-		userOptions.searchEngines = w.defaultEngines;
+		userOptions.nodeTree.children = defaultEngines;	
 		
 		// build nodes with default engines
 		repairNodeTree(userOptions.nodeTree, true);
@@ -2203,18 +2174,6 @@ async function removeNodesAndRows() {
 		if ( row.node.parent ) removeNode(row.node, row.node.parent);
 		if ( row.parentNode ) row.parentNode.removeChild(row);
 	});
-	
-	// remove nodeless searchEngines
-	let indexesToRemove = [];
-	userOptions.searchEngines.forEach( (se,index) => {
-		if ( !findNode(rootElement.node, node => node.id === se.id) ) {
-			indexesToRemove.push(index);
-		}
-	});
-
-	for ( let i=indexesToRemove.length -1; i>-1; i-- ) {
-		userOptions.searchEngines.splice(indexesToRemove[i], 1);
-	}
 
 	// append hidden OCSEs
 	// ffses.forEach( n => {

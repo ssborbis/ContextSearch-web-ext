@@ -93,9 +93,10 @@ class CSBookmarks {
 						return;
 					}
 					
-					let index = userOptions.searchEngines.findIndex( se => se.title === node.title);
+
+					let n = findNode(userOptions.nodeTree, se => se.title === node.title);
 					
-					if ( index === -1 && !node.url.startsWith("javascript") ) return;
+					if ( n && !node.url.startsWith("javascript") ) return;
 					
 					if ( node.url.startsWith("javascript") ) {
 						target.children.push({
@@ -111,7 +112,7 @@ class CSBookmarks {
 					target.children.push({
 						type: "searchEngine",
 						title: node.title,
-						id: userOptions.searchEngines[index].id
+						id: n.id
 					});
 				}
 				

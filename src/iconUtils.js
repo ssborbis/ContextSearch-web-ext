@@ -1,6 +1,6 @@
 function uncacheIcons() {
 
-	for ( let se of userOptions.searchEngines ) {
+	for ( let se of findNodes(userOptions.nodeTree, n => n.type === 'searchEngine') ) {
 
 		let hasDataURI = se.icon_base64String.startsWith('data:');
 		let isDataURI = se.icon_url.startsWith("data:");
@@ -30,7 +30,7 @@ function cacheIcons() {
 		count:0,
 		last_message:"",
 		bad: [],
-		total: userOptions.searchEngines.length,
+		total: findNodes(userOptions.nodeTree, n => n.icon).length,
 		oncomplete: function() {},
 		cache: cache
 	};
@@ -42,20 +42,12 @@ function cacheIcons() {
 
 	function cache() {
 
-		for (let se of userOptions.searchEngines) {
-			let hasDataURI = se.icon_base64String.startsWith('data:');
-			let isDataURI = se.icon_url.startsWith("data:");
-			let hasURL = se.icon_url.startsWith("http");
+		for (let se of findNodes(userOptions.nodeTree, n => n.icon)) {
 
-			// if ( isDataURI ) {
-			// 	onError(se, "DATA_URI");
-			// 	continue;
-			// }
 
-			if ( !se.icon_url ) {
-				onError(se, "NO_URL");
-				continue;
-			}
+			let isDataURI = se.icon.startsWith("data:");
+			let hasURL = se.icon.startsWith("http");
+
 			let img = new Image();
 
 			let timeout = setTimeout(() => {
@@ -75,8 +67,8 @@ function cacheIcons() {
 				let data = await imageToBase64(img, userOptions.cacheIconsMaxSize); 
 
 				if ( data != "" ) {
-					se.icon_base64String = data;
-					result.last_message = se.title;
+					se.iconCache = data;
+					result.last_message = se.title; 
 					result.count++;
 				}
 				else onError(se, "BAD_ENCODE");
@@ -96,7 +88,7 @@ function cacheIcons() {
 					result.oncomplete();
 			}
 
-			img.src = se.icon_url;
+			img.src = se.icon;
 		}
 	}
 

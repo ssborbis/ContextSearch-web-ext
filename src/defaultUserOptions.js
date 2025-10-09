@@ -1,9 +1,8 @@
 const defaultUserOptions = {
-	searchEngines: defaultEngines,
 	nodeTree: {
 		title: "/",
 		type: "folder",
-		children: [],
+		children: defaultEngines,
 		hidden: false,
 		id: "___root___"
 	},

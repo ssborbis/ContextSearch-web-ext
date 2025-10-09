@@ -66,12 +66,7 @@ async function buildContextMenu(searchTerms) {
 
 		if ( node.type === 'searchEngine' || node.type === "siteSearchFolder" ) {
 
-			let se = userOptions.searchEngines.find(se => se.id === node.id);
-			
-			if (!se) {
-				console.log('no search engine found for ' + node.id);
-				return;
-			}
+			let se = node;
 			
 			let _id = se.id + '_' + count++;
 
@@ -730,7 +725,7 @@ async function contextMenuSearch(info, tab) {
 	}
 	
 	// if searchEngines is empty, open Options
-	if (userOptions.searchEngines.length === 0 && userOptions.nodeTree.children.length === 0 ) {	
+	if (userOptions.nodeTree.children.length === 0 ) {	
 		return browser.runtime.openOptionsPage();	
 	}
 	

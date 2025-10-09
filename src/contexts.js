@@ -29,9 +29,8 @@ function filterContexts(root, context) {
 	traverseNodes(filteredNodeTree, ( node, parent ) => {
 
 		if ( node.type === 'searchEngine' ) {
-			let se = userOptions.searchEngines.find( _se => _se.id === node.id );
-			let _contexts = node.contexts || se.contexts;
-			if ( se && (!_contexts || !hasContext(context, _contexts)) )
+			let _contexts = node.contexts;
+			if ( node && (!_contexts || !hasContext(context, _contexts)) )
 				return removeNode( node, parent );
 		}
 

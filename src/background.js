@@ -296,11 +296,6 @@ async function notify(message, sender, sendResponse) {
 		case "getDefaultUserOptions":
 			return defaultUserOptions;
 
-		case "getSearchEngineById":
-			if ( !message.id) return;
-
-			return {"searchEngine": userOptions.searchEngines.find(se => se.id === message.id)};
-			
 		case "dispatchEvent":
 
 			return _executeScript({
@@ -715,9 +710,7 @@ async function notify(message, sender, sendResponse) {
 			
 			console.log('addContextSearchEngine', se)
 			
-			let index = userOptions.searchEngines.findIndex( se2 => se.title === se2.title );
-			
-			if (index !== -1) {
+			if (nameExists(se.title)) {
 				sendResponse({errorMessage: 'Name must be unique. Search engine already exists'});
 				return;
 			}
@@ -726,8 +719,6 @@ async function notify(message, sender, sendResponse) {
 
 			let parentNode = message.folderId ? findNode(userOptions.nodeTree, n => n.id === message.folderId) : userOptions.nodeTree;
 						
-			userOptions.searchEngines.push(se);
-
 			let node = {
 				type: "searchEngine",
 				title: se.title,
@@ -735,7 +726,7 @@ async function notify(message, sender, sendResponse) {
 				hidden: false,
 				contexts:32
 			}
-			parentNode.children.push(node);
+			parentNode.children.push(Object.assign(node, se));
 
 			notify({action: "saveUserOptions", userOptions:userOptions});
 			return node;
@@ -746,14 +737,7 @@ async function notify(message, sender, sendResponse) {
 
 			if ( !message.id ) return;
 
-			index = userOptions.searchEngines.findIndex( se => se.id === message.id );
-			
-			if (index === -1) {
-				console.log('index not found');
-				return;
-			}
-			
-			userOptions.searchEngines.splice(index, 1);
+			removeNodesById(userOptions.nodeTree, message.id);
 	
 			notify({action: "saveUserOptions", userOptions:userOptions});
 			
@@ -1763,62 +1747,6 @@ function isValidHttpUrl(str) {
 	return url.protocol === "http:" || url.protocol === "https:";
 }
 
-// function getMultiSearchArray( NODE ) {
-
-// 	let recursionCheck = 0;
-// 	let nodes = [];
-
-// 	getArrayFromTemplate = ( template ) => {
-// 		try {
-// 			let parsed = JSON.parse(template);
-
-// 			if ( Array.isArray(parsed) ) return parsed;
-// 			else return [];
-// 		} catch(error) {
-// 			return [];
-// 		}
-// 	}
-
-// 	traverse = ( node ) => {
-
-// 			if ( node.type !== 'searchEngine' ) return;
-
-// 			let se = userOptions.searchEngines.find(_se => _se.id === node.id );
-
-// 			if ( !se ) return;
-
-// 			let templates = getArrayFromTemplate(se.template);
-
-// 			for ( let url of templates ) {
-
-// 				// if url and not ID
-// 				if ( isValidHttpUrl(url) ) {
-					
-// 					let _se = Object.assign({}, se);
-// 					_se.template = url;
-
-// 					// parse encoding for multi-URLs
-// 					let matches = /{encoding=(.*?)}/.exec(url);
-		
-// 					if ( matches && matches[1] )
-// 						_se.queryCharset = matches[1];
-
-// 					nodes.push(_se);
-
-// 				} else if ( findNode(userOptions.nodeTree, n => n.id === url )) {
-// 					let n = findNode(userOptions.nodeTree, n => n.id === url );
-// 					traverse(n);
-// 					nodes.push(n);
-// 				} else {
-// 					return;
-// 				}
-
-// 				recursionCheck++;
-// 			}
-
-// 		return nodes;
-// }
-
 async function openSearch(info) {
 
 	if ( info.openMethod === "openSideBarAction" ) {
@@ -1955,8 +1883,8 @@ async function openSearch(info) {
 		temporarySearchEngine = node;
 	}
 
-	var se = (node && node.id ) ? temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
-
+	//var se = temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
+	var se = temporarySearchEngine || getNodeById(node.id) || null;
 	if ( !se && !openUrl) return false;
 	
 	// check for multiple engines (v1.27+)
@@ -2487,7 +2415,7 @@ function dataToSearchEngine(data) {
 		"searchForm": data.origin, 
 		"icon_url": data.favicon_href || data.origin + "/favicon.ico",
 		"title": data.name || data.title,
-		"order":userOptions.searchEngines.length, 
+		"order":findNodes(userOptions.nodeTree, n => n.type === "searchEngine").length, 
 		"icon_base64String": "", 
 		"method": data.method, 
 		"params": params, 
@@ -2995,7 +2923,7 @@ function registerAllUserScripts() {
 		let searchCode = n.searchCode;
 
 		if ( n.type === 'searchEngine') {
-			let se = getSearchEngineByNode(n);
+			let se = getNodeById(n.id);
 			searchCode = se.searchCode;
 		}
 

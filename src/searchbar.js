@@ -350,7 +350,7 @@ async function makeAddEngineBar() {
 		 	return (!details) ? null : details.searchEngines[0];
 		 });
 
-		if ( !xml_se || userOptions.searchEngines.find( _se => _se.title === xml_se.title) ) {
+		if ( !xml_se || findNode( userOptions.nodeTree, _se => _se.title === xml_se.title) ) {
 			return div.parentNode.removeChild(div);
 		}
 

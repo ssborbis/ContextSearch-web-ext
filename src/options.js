@@ -33,8 +33,7 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 	let file = ev.target.files[0];
 	
 	if ( $('#cb_overwriteOnImport').checked && confirm(i18n("ConfirmDeleteCustomSearchEngines")) ) {
-		userOptions.nodeTree.children = [];
-		userOptions.searchEngines = [];
+		userOptions.nodeTree.children = defaultEngines;
 	}
 	
 	readMozlz4File(file, text => { // on success
@@ -55,22 +54,22 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 		
 		for (let se of searchEngines) {
 			
-			if (!userOptions.searchEngines.find( _se => _se.title === se.title)) {
-				console.log(se.title + " not included in userOptions.searchEngines");
+			if (!nameExists(se.title)) {
+				console.log(se.title + " not found");
 				
-				// add to searchEngines
-				newEngines.push(se);
-				
-				let node = {
+				let node = Object.assign({
 					type: "searchEngine",
 					title: se.title,
 					id: se.id,
 					hidden: se.hidden || false
-				}
+				}, se);
+
+				// add to searchEngines
+				newEngines.push(node);
 
 				// replace one-click nodes with same name
 				let ocn = findNodes(userOptions.nodeTree, (_node, parent) => {
-					if ( _node.type === 'oneClickSearchEngine' && _node.title === se.title ) {
+					if ( _node.type === 'oneClickSearchEngine' && _node.title === node.title ) {
 						parent.children.splice(parent.children.indexOf(_node), 1, node);
 						return true;
 					}
@@ -93,8 +92,6 @@ $("#selectMozlz4FileButton").addEventListener('change', ev => {
 			searchEngines: newEngines, // 1.3.2+
 		}).then( (details) => {
 			
-			// append the new engines
-			userOptions.searchEngines = userOptions.searchEngines.concat(details.searchEngines);
 			saveOptions();
 			
 			if (details.hasFailedCount) {
@@ -1323,7 +1320,7 @@ $("#replaceMozlz4FileButton").addEventListener('change', ev => {
 
 		nodes.forEach( n => {
 			if ( n.type === "searchEngine" ) {
-				let se = userOptions.searchEngines.find( _se => _se.id === n.id );
+				let se = getNodeById( n.id );
 				if ( se ) ses.push(CS2FF(se));
 			}
 			
@@ -1418,9 +1415,11 @@ function cacheAllIcons(e) {
 	msg.innerText = "cache progress";
 	e.target.parentNode.insertBefore(msg, e.target.nextSibling);
 
-	let interval = setInterval(() => {
-		msg.innerText = `caching ${result.count - 1} / ${userOptions.searchEngines.length}`;
-	}, 100);
+	const total = findNodes(userOptions.nodeTree, n => n).length
+
+	let interval = setInterval((total) => {
+		msg.innerText = `caching ${result.count - 1} / ${total}`;
+	}, 100, total);
 
 	result.oncomplete = function() {
 		clearInterval(interval);
@@ -1741,7 +1740,6 @@ $('b_manualEdit').addEventListener('click', e => {
 		[$('t_manualEdit'), $('b_manualSave')].forEach( el => el.style.display=null );
 
 		let o = JSON.parse(JSON.stringify(userOptions));
-		delete o.searchEngines;
 		delete o.searchBarHistory;
 		delete o.nodeTree;
 
@@ -1786,7 +1784,6 @@ $('b_manualSave').addEventListener('click', e => {
 $("#b_resetUserOptions").addEventListener('click', e => {
 	if ( confirm(i18n("resetUserOptionsConfirm")) ) {
 		newUserOptions = JSON.parse(JSON.stringify(defaultUserOptions));
-		newUserOptions.searchEngines = JSON.parse(JSON.stringify(userOptions.searchEngines));
 		newUserOptions.nodeTree = JSON.parse(JSON.stringify(userOptions.nodeTree));
 
 		sendMessage({action: "saveUserOptions", userOptions: newUserOptions})

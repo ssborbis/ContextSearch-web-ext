@@ -882,17 +882,14 @@ function buildQuickMenuElement(options) {
 	qm.setDisplay = () => {
 
 		qm.classList.toggle("singleColumn", qm.singleColumn);
-	//	document.documentElement.style.setProperty('--single-column-width', "300px");
 		qm.querySelectorAll('.tile').forEach( _tile => {
-			// let _sc = (qm.singleColumn || qm.rootNode.displayType === "text" )
-			// _tile.classList.toggle("singleColumn", _sc);
 			_tile.classList.toggle("singleColumn", qm.singleColumn);
 
 		});
 	}
 
 	// check if any search engines exist and link to Options if none
-	if (userOptions.nodeTree.children.length === 0 && userOptions.searchEngines.length === 0 ) {
+	if (userOptions.nodeTree.children.length === 0 ) {
 		var div = document.createElement('div');
 		div.style='width:auto;font-size:8pt;text-align:center;line-height:1;padding:10px;height:auto';
 		div.innerText = i18n("WhereAreMyEngines");
@@ -1158,15 +1155,6 @@ async function _quickMenuElementFromNodeTree( o ) {
 
 	});
 
-	// try { // fails on restricted pages
-	// 	await sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
-
-	// 		if ( qmo ) quickMenuObject.searchTerms = qmo.searchTerms
-	// 	});
-	// } catch (error) {
-
-	// }
-
 	qm.makeMoreLessFromTiles = makeMoreLessFromTiles;
 
 	makeContextsBar();
@@ -1239,16 +1227,12 @@ function makeSearchBar() {
 		displaySuggestions(history);
 	}
 	
-	//sendMessage({action: "getTabQuickMenuObject"}).then( qmo => {
+	let qmo = quickMenuObject;
 
-		let qmo = quickMenuObject;
+	if ( qmo && (qmo.searchTerms || ( qmo.searchTermsObject && qmo.searchTermsObject.selection ) ))
+		setTimeout(() => sb.set(qmo.searchTerms || qmo.searchTermsObject.selection), 10);
+	else displayLastSearchTerms();
 
-		if ( qmo && (qmo.searchTerms || ( qmo.searchTermsObject && qmo.searchTermsObject.selection ) ))
-			setTimeout(() => sb.set(qmo.searchTerms || qmo.searchTermsObject.selection), 10);
-		else displayLastSearchTerms();
-//	}, () => {
-//		displayLastSearchTerms();
-	//});
 
 	async function displayLastSearchTerms() {
 
@@ -1278,16 +1262,7 @@ function makeSearchBar() {
 
 		if ( userOptions.quickMenuSearchBarSelect )
 			window.addEventListener('focus', e => sb.select(), {once: true});
-		//sb.select();
 
-		// workaround for linux 
-		// var selectInterval = setInterval( () => {
-
-		// 	if (getSelectedText(sb) == sb.value)
-		// 		clearInterval(selectInterval);
-		// 	else
-		// 		sb.select();
-		// }, 50);
 	}
 	
 	function displaySuggestions(suggestions) {
@@ -2233,14 +2208,7 @@ function nodeToTile( node ) {
 
 		case "searchEngine": {
 
-			let se = userOptions.searchEngines.find(se => se.id === node.id);
-
-			if ( se.description && !node.description ) node.description = se.description;
-			
-			if (!se) {
-				console.log('no search engine found for ' + node.id);
-				return;
-			}
+			let se = node;
 
 			// site search picker
 			if ( se.template.includes('{selectdomain}') )

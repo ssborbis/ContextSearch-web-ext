@@ -17,21 +17,31 @@ function exportSettingsHandler(e) {
 		document.body.removeChild(a);
 	}
 
-	let pretty = userOptions.exportJsonPretty ? "\t" : null;
+	let uo = JSON.parse(JSON.stringify(userOptions));
+
+	let pretty = uo.exportJsonPretty ? "\t" : null;
 
 	let date = new Date().toISOString().replace(/:|\..*/g,"").replace("T", "_");
 	
-	if ( userOptions.exportWithoutBase64Icons ) {
-		let uoCopy = JSON.parse(JSON.stringify(userOptions));
-		uoCopy.searchEngines.forEach( se => se.icon_base64String = "");
-		findNodes(uoCopy.nodeTree, node => {
+	if ( uo.exportWithoutBase64Icons ) {
+		
+		findNodes(uo.nodeTree, node => {
+			if ( node.iconCache )
+				node.iconCache = "";
 			if ( node.type === "oneClickSearchEngine" )
 				node.icon = "";
+			if ( node.type === "searchEngine" )
+				node.icon_base64String = "";
 		});
-		download(`ContextSearchOptions_${date}.json`, JSON.stringify(uoCopy, null, pretty));
-	} else {
-		download(`ContextSearchOptions_${date}.json`, JSON.stringify(userOptions, null, pretty));
 	}
+
+	// clear the old searchEngines array
+	delete uo.searchEngines;
+
+	// rebuild the searchEngines array for export
+	uo = deunifyNodeTree(uo);
+
+	download(`ContextSearchOptions_${date}.json`, JSON.stringify(uo, null, pretty));
 }
 
 function importSettingsHandler(e) {
@@ -42,9 +52,17 @@ function importSettingsHandler(e) {
 
 async function importSettings(fileContents) {
 
+	let json = {};
+
+	try {
+		json = JSON.parse(fileContents);
+	} catch(error) {
+		console.log(error);
+		return false;
+	}
+
 	// check for exported nodes
 	importNodes: try {
-		let json = JSON.parse(fileContents);
 		if ( !json.exportedNodes ) break importNodes;
 
 		let uo = JSON.parse(JSON.stringify(userOptions));
@@ -54,6 +72,14 @@ async function importSettings(fileContents) {
 			children: json.exportedNodes,
 			id:gen(),
 			title: "Imported"
+		}
+
+		// convert to unified node tree
+		for ( const n of folder.children ) {
+			if ( n.searchEngine ) {
+				n = Object.assign(n, n.searchEngine);
+				delete n.searchEngine;
+			}
 		}
 
 		// flatten
@@ -84,37 +110,17 @@ async function importSettings(fileContents) {
 				let oldNode = findNode(uo.nodeTree, n => n.id === dupe.id );
 				oldNode = JSON.parse(JSON.stringify(dupe));
 
-				if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
-					let i = uo.searchEngines.findIndex( _se => _se.id === dupe.id );
-					if ( i > -1 ) uo.searchEngines[i] = JSON.parse(JSON.stringify(dupe.searchEngine));
-
-					delete dupe.searchEngine;
-				}
-
 				removeNodesById(folder, dupe.id);
 			}
 
 			if ( result === "merge" ) {
-
 				// replace id 
 				dupe.id = gen();
-
-				// push to searchEngines array
-				if ( dupe.type === 'searchEngine' && dupe.searchEngine ) {
-					dupe.searchEngine.id = dupe.id;
-
-					uo.searchEngines.push(dupe.searchEngine);
-					delete dupe.searchEngine;
-				}
 			}
 				
 			$('#importModalDuplicates').classList.add('hide');
 
 		}
-
-		findNodes(folder, n => n.type === "searchEngine").forEach( n => {
-			if ( n.searchEngine ) uo.searchEngines.push(n.searchEngine);
-		})
 
 		if ( folder.children.length ) uo.nodeTree.children.push(folder);
 
@@ -132,7 +138,6 @@ async function importSettings(fileContents) {
 		if ( 
 			typeof newUserOptions !== 'object'
 			|| newUserOptions.quickMenu === undefined
-			|| !newUserOptions.searchEngines
 			
 		) {
 			alert(i18n("ImportSettingsNotFoundAlert"));
@@ -324,21 +329,25 @@ async function importSettings(fileContents) {
 				return;
 		}
 
-		// load icons to base64 if missing
-		let overDiv = document.createElement('div');
-		overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
-		let msgDiv = document.createElement('div');
-		msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
-		msgDiv.innerText = i18n("Fetchingremotecontent");
-		overDiv.appendChild(msgDiv);
-		document.body.appendChild(overDiv);
-		let sesToBase64 = _uo.searchEngines.filter(se => !se.icon_base64String);
-		let details = await loadRemoteIcon({searchEngines: sesToBase64, timeout:10000});
-		_uo.searchEngines.forEach( (se,index) => {
-			let updatedSe = details.searchEngines.find( _se => _se.id === se.id );
-			
-			if ( updatedSe ) _uo.searchEngines[index].icon_base64String = updatedSe.icon_base64String;
-		});
+		if ( userOptions.cacheIcons) {
+
+			// load icons to base64 if missing
+			let overDiv = document.createElement('div');
+			overDiv.style = "position:fixed;left:0;top:0;height:100%;width:100%;z-index:9999;background-color:rgba(255,255,255,.85);background-image:url(icons/spinner.svg);background-repeat:no-repeat;background-position:center center;background-size:64px 64px;line-height:100%";
+			let msgDiv = document.createElement('div');
+			msgDiv.style = "text-align:center;font-size:12px;color:black;top:calc(50% + 44px);position:relative;background-color:white";
+			msgDiv.innerText = i18n("Fetchingremotecontent");
+			overDiv.appendChild(msgDiv);
+			document.body.appendChild(overDiv);
+
+		
+			let sesToBase64 = findNodes(_uo.nodeTree, n => n.icon);
+			let details = await loadRemoteIcon({searchEngines: sesToBase64, timeout:10000});
+			details.searchEngines.forEach( se => {
+				let n = findNode(_uo.nodeTree, n => n.id === se.id);
+				if ( n ) n.iconCache = se.iconCache;
+			})
+		}
 		
 		// load OCSE favicons
 		if ( browser.search && browser.search.get ) {
