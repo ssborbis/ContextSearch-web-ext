@@ -185,7 +185,7 @@ browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 	_executeScript({
 		func: () => document.dispatchEvent(new CustomEvent("zoom")),
 		tabId: zoomChangeInfo.tabId
-	})
+	}).catch(error => console.log(error))
 });
 
 async function notify(message, sender, sendResponse) {
