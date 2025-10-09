@@ -1,22 +1,20 @@
 function uncacheIcons() {
 
-	for ( let se of findNodes(userOptions.nodeTree, n => n.type === 'searchEngine') ) {
+	for ( let se of findNodes(userOptions.nodeTree, n => n.iconCache) ) {
 
-		let hasDataURI = se.icon_base64String.startsWith('data:');
-		let isDataURI = se.icon_url.startsWith("data:");
-		let hasURL = se.icon_url.startsWith("http");
-
-		if ( !se.icon_base64String) continue;
+		let hasDataURI = se.iconCache.startsWith('data:');
+		let isDataURI = se.icon.startsWith("data:");
+		let hasURL = se.icon.startsWith("http");
 
 		if ( hasURL && hasDataURI) {
 			console.log(se.title + " cache will be cleared");
-			se.icon_base64String = "";
+			se.iconCache = "";
 			continue;
 		}
 
 		if ( hasDataURI && isDataURI && hasDataURI == isDataURI ) {
 			console.log(se.title + " duplicate data URIs. Removing cache");
-			se.icon_base64String = "";
+			se.iconCache = "";
 			continue;
 		}
 

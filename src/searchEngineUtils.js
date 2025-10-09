@@ -37,10 +37,9 @@ function searchJsonObjectToArray(engines) {
 		// push object to array for storage.local
 		searchEngines.push({
 			"searchForm": engine.__searchForm || "", 
-			"icon_url": engine._iconURL,
+			"icon": engine._iconURL,
 			"title": engine._name,
 			"order": engine._metaData.order, 
-			"icon_base64String": "", 
 			"method": method || "GET", 
 			"params": params, 
 			"template": template, 

@@ -30,8 +30,6 @@ function exportSettingsHandler(e) {
 				node.iconCache = "";
 			if ( node.type === "oneClickSearchEngine" )
 				node.icon = "";
-			if ( node.type === "searchEngine" )
-				node.icon_base64String = "";
 		});
 	}
 
