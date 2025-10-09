@@ -511,7 +511,7 @@ async function notify(message, sender, sendResponse) {
 			self.searchTermsObject = message.searchTermsObject;
 			
 			if ( userOptions.autoCopy && message.searchTerms && ( userOptions.autoCopyOnInputs || !message.input))
-				notify({action: "copyRaw", autoCopy:true});
+				notify({action: "copy", autoCopy:true});
 			//	notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
@@ -841,19 +841,16 @@ async function notify(message, sender, sendResponse) {
 			return true;
 			
 		}
-			
-		case "copy":
-			try {
-				await navigator.clipboard.writeText(message.msg);
-				
-				return true;
-			} catch (error) {
-				console.log(error);
-				return false;
-			}
 
-		case "copyRaw":
-			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0 /*sender.frameId*/});
+		case "copy":
+			await CopyPaste.copy(message.msg || self.searchTerms)
+				.catch(error => {
+					debug(error);
+					return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
+				}).catch(error => {
+					console.log(error);
+					return false;
+				});
 			
 		case "hasBrowserSearch":
 			return typeof browser.search !== 'undefined' && typeof browser.search.get !== 'undefined';
@@ -1211,6 +1208,14 @@ async function notify(message, sender, sendResponse) {
 		// bypasses Firefox resistFingerprinting
 		case "getDevicePixelRatio":
 			return self.devicePixelRatio;
+
+		case "setSessionClipboard":
+			console.log('set', message.clipboardObject);
+			return browser.storage.session.set({"clipboard": message.clipboardObject});
+
+		case "getSessionClipboard":
+			return browser.storage.session.get("clipboard")
+				.then(r => r.clipboard?.message || "");
 	}
 }
 
@@ -2621,7 +2626,6 @@ async function injectContentScripts(tab, frameId = 0) {
 			"/nodes.js", // for shortcuts
 			"/Shortcuts.js",
 			"/inject.js",
-			"/clipboard.js",
 			"/contexts.js",
 			"/tools.js" // for shortcuts
 		], frameId: frameId, runAt: "document_end"

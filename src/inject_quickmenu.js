@@ -179,6 +179,7 @@ function makeMenuWindow(o) {
 	qmc.style.height = 0;
 
 	qmc.allowTransparency = true;
+	qmc.setAttribute('allow', "clipboard-read; clipboard-write");
 	
 	qmc.openingCoords = o.coords;
 	

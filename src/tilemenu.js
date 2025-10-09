@@ -1712,10 +1712,16 @@ document.addEventListener('mouseup', e => {
 	}
 });
 
-function search(o) {
+async function search(o) {
 	delete o.node.parent; // caused cyclic error
 
 	console.log(o);
+
+	if ( CopyPaste.templateUsesClipboard(o.node.template) ) {
+		await CopyPaste.read()
+			.then(r => CopyPaste.setSessionClipboard(r))
+	}
+
 	return sendMessage({
 		action: "search", 
 		info: {

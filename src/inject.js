@@ -70,8 +70,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			showNotification(message);
 			break;
 
-		case "copyRaw":
-			return copyRaw();
+		case "copy":
+			return CopyPaste.copy();
 
 		case "getQuickMenuObject":
 			sendResponse(quickMenuObject);

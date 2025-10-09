@@ -718,6 +718,20 @@ async function contextMenuSearch(info, tab) {
 	info.menuItemId = info.menuItemId.replace(/_\d+$/, "");
 	
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
+
+	// store the clipboard if necessary
+	if ( CopyPaste.templateUsesClipboard(node.template) ) {
+		await browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
+		 	let tab = tabs[0];
+		 	return _executeScript({
+	    		func: () => CopyPaste.read(),
+	    		tabId: tab.id
+	    	}).then(clipboard => {
+	    		debug(clipboard);
+	    		CopyPaste.setSessionClipboard(clipboard);
+	    	});
+	    });
+	}
 		
 	// clicked Add Custom Search
 	if (info.menuItemId === 'add_engine') {

@@ -30,24 +30,11 @@ const QMtools = {
 		init: function() { return toolInit(this); },
 		action: async function(e) {
 
-			let hasPermission = await sendMessage({action: "hasPermission", permission: "clipboardWrite"});
-
-			if ( !hasPermission ) {
-				try {
-					await browser.permissions.request({permissions: ['clipboardWrite']});
-				} catch (err) {
-					sendMessage({action: "openOptions", hashurl:"?permission=clipboardWrite#requestPermissions"});
-					return;
-				}
-			}
-
 			this.dataset.locked = true;
 			this.querySelector('.tool').style.opacity = 0;
 			this.style.backgroundImage = 'url(icons/spinner.svg)';
 
-			let copy = await sendMessage({action: "copyRaw"});
-
-		//	this.style.backgroundImage = 'url(icons/checkmark.svg)';
+			let copy = await sendMessage({action: "copy"});
 			
 			this.dataset.locked = false;
 			this.style.backgroundImage = null;
