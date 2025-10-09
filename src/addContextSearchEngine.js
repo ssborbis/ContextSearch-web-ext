@@ -10,7 +10,7 @@ function formToSearchEngine() {
 		"description": form.description.value,
 		"icon_url":form.iconURL.value,
 		"title":form.shortname.value,
-		"order":userOptions.searchEngines.length, 
+		"order":findNodes(userOptions.nodeTree, n =>n.type === 'searchEngine').length, 
 		"icon_base64String": imageToBase64(form.icon, userOptions.cacheIconsMaxSize), 
 		"method": form._method.value, 
 		"params": paramStringToNameValueArray(form.post_params.value), 
@@ -23,7 +23,7 @@ function formToSearchEngine() {
 }
 
 function hasDuplicateName(name) {
-	return ( userOptions.searchEngines.find( se => se.title == name ) ) ? true : false;
+	return ( findNode( userOptions.nodeTree, n => n.title === name && n.type === 'searchEngine') ? true : false);
 }
 
 function expandElement(el) {
@@ -247,7 +247,7 @@ function addSearchEnginePopup(data) {
 				simple_confirm.querySelector('[name="no"]').onclick = function() {
 					
 					// remove the new engine
-					sendMessage({action: "removeContextSearchEngine", id: userOptions.searchEngines[userOptions.searchEngines.length - 1].id});
+					sendMessage({action: "removeContextSearchEngine", id: ose.id});
 					
 					showMenu('simple_remove');
 					setTimeout(() => showMenu('customForm'), 1000);
@@ -387,7 +387,7 @@ function addSearchEnginePopup(data) {
 			}
 
 			sendMessage({action: "addContextSearchEngine", searchEngine: ose}).then( response => {
-				console.log(response);
+				debug(response);
 			});
 			
 			if ( isFirefox /* firefox */ ) {
@@ -440,11 +440,9 @@ function addSearchEnginePopup(data) {
 			alert(i18n("NameInvalid"));
 			return;
 		}
-		for (let se of userOptions.searchEngines) {
-			if (se.title == form.shortname.value) {
-				alert(i18n("EngineExists").replace("%1",se.title) + " " + i18n("EnterUniqueName"));
-				return;
-			}
+		if (nameExists(form.shortname.value)) {
+			alert(i18n("EngineExists").replace("%1",se.title) + " " + i18n("EnterUniqueName"));
+			return;
 		}
 		if (form.description.value.trim() == "") {
 			console.log('no description ... using title');
@@ -483,10 +481,10 @@ function addSearchEnginePopup(data) {
 				return;
 		}
 
-		let se = formToSearchEngine();
+		let _se = formToSearchEngine();
 
-		sendMessage({action: "addContextSearchEngine", searchEngine: se, folderId: form.folder.value}).then( response => {
-	//		console.log(response);
+		sendMessage({action: "addContextSearchEngine", searchEngine: _se, folderId: form.folder.value}).then( response => {
+			debug(response);
 		});
 		
 		if ( isFirefox /* firefox */ ) {
@@ -665,7 +663,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 		document.dispatchEvent(new CustomEvent('getUserOptionsEvent', {
 				
 			// if search engines length has changed, true else false
-			detail: ( userOptions.searchEngines.length !== message.userOptions.searchEngines.length )
+			detail: ( findNodes(userOptions.nodeTree, n => n).length !== findNodes(message.userOptions.nodeTree, n => n).length)
 		}));
 		
 		userOptions = message.userOptions || {};
