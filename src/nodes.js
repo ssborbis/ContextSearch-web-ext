@@ -249,7 +249,17 @@ const nameExists = (name, uo = userOptions) => {
 }
 
 function createNode(type) {
-	if ( type === "separator");
+	if ( type in nodeDefaults ) {
+		const node = Object.assign({}, nodeDefaults[type]);
+
+		if ( "id" in node )	node.id = gen();
+
+		return node;
+	}
+	else {
+		console.error("invalid node type");
+		return null;
+	}
 }
 
 const nodeDefaults = {
@@ -257,11 +267,12 @@ const nodeDefaults = {
 		"type": "folder",
 		"children": [],
 		"displayType": "",
-		"groupColor": "#CED7FF",
-		"groupColorText": "#444444",
+		"groupColor": "#6ec179",
+		"groupColorText": "#ffffff",
 		"groupFolder": "block",
 		"groupHideMoreTile": false,
 		"groupLimit": 2,
+		"hidden": false,
 		"hotkey": null,
 		"icon": "",
 		"iconCache": "",
@@ -271,12 +282,22 @@ const nodeDefaults = {
 		"title": ""
 	},
 	"searchEngine": {
-		"type": "searchEngine",
+	  	"type": "searchEngine",
 		"contexts": 32,
+		"description": "",
 		"hidden": false,
+		"hotkey": null,
+		"icon": "",
+		"iconCache": "",
 		"id": "",
-		"keyword": "",
+		"method": "GET",
+		"order": 0,
+		"params": [],
 		"parentId": "",
+		"queryCharset": "UTF-8",
+		"searchForm": "",
+		"shortcut": null,
+		"template": "",
 		"title": ""
 	},
 	"separator": {
@@ -287,12 +308,15 @@ const nodeDefaults = {
 		"type": "bookmarklet",
 		"contexts": 32,
 		"description": "",
+		"hidden": false,
+		"hotkey": null,
 		"icon": "",
 		"iconCache": "",
 		"id": "",
 		"keyword": "",
 		"parentId": "",
 		"searchCode": "",
+		"shortcut": null,
 		"title": ""
 	},
 	"externalProgram": {
@@ -300,6 +324,8 @@ const nodeDefaults = {
 		"contexts": 32,
 		"cwd": "",
 		"description": "",
+		"hidden": false,
+		"hotkey": null,
 		"icon": "",
 		"iconCache": "",
 		"id": "",
@@ -307,8 +333,7 @@ const nodeDefaults = {
 		"path": "",
 		"postScript": "",
 		"searchRegex": "",
+		"shortcut": null,
 		"title": ""
 	}
-
 }
-	
