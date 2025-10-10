@@ -687,6 +687,15 @@ SPAN.buttonLabel {
 	padding-right:10px;
 	font-size:8pt;
 }
+
+#searchEngineTable {
+		text-align:left;
+		width:100%;
+		height:inherit;
+		display:inline-block;
+		vertical-align:top;
+		overflow-y:scroll;
+}
 #searchEnginesContainer {
 	width:100%;
 	background-color:white;
