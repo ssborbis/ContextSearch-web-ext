@@ -480,12 +480,9 @@ function unifyNodeTree(_uo) {
 				an = mergeSearchEngineWithNode(se, an);
 			// make every other node referencing the engine a copy (shortcut)
 			else {
-				an = {
-					id: gen(),
-					referenceId: an.id,
-					type: "shortcut",
-					hidden: an.hidden
-				}
+				an = Object.assign(se, {
+					id: gen()
+				});
 			}
 		});
 	}
