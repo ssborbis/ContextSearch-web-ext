@@ -2109,7 +2109,6 @@ function buildSearchEngineContainer() {
 		
 		if ( !confirm(i18n("ConfirmResetAllSearchEngines")) ) return;
 		
-		let w = await browser.runtime.getBackgroundPage();
 		userOptions.nodeTree.children = defaultEngines;	
 		
 		// build nodes with default engines
@@ -2119,14 +2118,13 @@ function buildSearchEngineContainer() {
 		findNodes( userOptions.nodeTree, node => node.hidden = false );
 
 		// updated the background page UO
-		w.userOptions = userOptions;
-		
+		await saveOptions();
+
 		// add OCSE to the nodeTree
-		await w.checkForOneClickEngines();
+		await sendMessage({action: "checkForOneClickEngines"});
 			
 		// updated the local UO
-		userOptions = w.userOptions;
-		await saveOptions();
+		userOptions = await sendMessage({action: "getUserOptions"});
 
 		// delay to prevent dead objects
 		setTimeout(() => location.reload(), 500);
