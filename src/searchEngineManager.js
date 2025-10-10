@@ -402,10 +402,10 @@ function buildSearchEngineContainer() {
 
 						se.iconCache = iconBase64;  //icon.src;
 						se.description = edit_form.description.value;
-						node.keyword = edit_form.keyword.value.trim();
+						se.keyword = edit_form.keyword.value.trim();
 						se.template = edit_form.template.value;
 						se.searchForm = edit_form.searchform.value;
-						se.icon_url = edit_form.iconURL.value;
+						se.icon = edit_form.iconURL.value;
 						se.method = edit_form._method.value;
 						se.queryCharset = edit_form._encoding.value;
 						se.params = paramStringToNameValueArray(edit_form.post_params.value);

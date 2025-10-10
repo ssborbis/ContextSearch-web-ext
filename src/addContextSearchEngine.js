@@ -316,7 +316,7 @@ function addSearchEnginePopup(data) {
 	}
 
 	// data-type images are invalid, replace with generic favicon.ico
-	let favicon_url = (se.icon_url && !se.icon_url.startsWith("data")) ? se.icon_url : new URL(se.template).origin + "/favicon.ico";
+	let favicon_url = (se.icon && !se.icon.startsWith("data")) ? se.icon : new URL(se.template).origin + "/favicon.ico";
 
 	// Listen for updates to iconURL, replace img.src and disable sending OpenSearch.xml request until loaded
 	form.iconURL.addEventListener('change', ev => {

@@ -176,10 +176,10 @@ function loadRemoteIcon(options) {
 				"https://plus.google.com/_/favicon?domain=" + url.hostname,				
 			];
 
-			if (se.icon_url && se.icon_url.startsWith("resource") || se.icon_url == "") 
+			if (se.icon && se.icon.startsWith("resource") || se.icon == "") 
 				img.src = img.favicon_urls.shift();
 			else 
-				img.src = se.icon_url;
+				img.src = se.icon;
 
 			img.onload = function() {
 				this.base64String = imageToBase64(this, userOptions.cacheIconsMaxSize);
@@ -307,7 +307,7 @@ function openSearchXMLToSearchEngine(xml) {
 	else if (template) se.searchForm = new URL(template).origin;
 	
 	let image = xml.documentElement.querySelector("Image");
-	if (image) se.icon_url = image.textContent;
+	if (image) se.icon = image.textContent;
 	else se.icon = new URL(template).origin + '/favicon.ico';
 	
 	let method = url.getAttribute('method');

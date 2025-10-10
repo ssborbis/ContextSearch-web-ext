@@ -354,7 +354,7 @@ async function makeAddEngineBar() {
 			return div.parentNode.removeChild(div);
 		}
 
-		img.src = xml_se.icon_url || browser.runtime.getURL('icons/transparent.gif');
+		img.src = xml_se.icon || browser.runtime.getURL('icons/transparent.gif');
 
 		div.innerText = xml_se.title;
 
