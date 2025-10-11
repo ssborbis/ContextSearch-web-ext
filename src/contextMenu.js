@@ -720,7 +720,7 @@ async function contextMenuSearch(info, tab) {
 	let node = findNode(userOptions.nodeTree, n => n.id === info.menuItemId);
 
 	// store the clipboard if necessary
-	if ( CopyPaste.templateUsesClipboard(node.template) ) {
+	if ( node && node.template && CopyPaste.templateUsesClipboard(node.template) ) {
 		await browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 		 	let tab = tabs[0];
 		 	return _executeScript({
