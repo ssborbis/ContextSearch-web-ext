@@ -9,7 +9,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -21,7 +22,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -33,7 +35,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -45,7 +48,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -57,7 +61,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -69,7 +74,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -81,7 +87,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -93,7 +100,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -105,7 +113,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -117,7 +126,8 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	},
 	{
 		"type": "searchEngine",
@@ -129,6 +139,7 @@ var defaultEngines = [
 		"params": [],
 		"queryCharset": "UTF-8",
 		"hidden": false,
-		"contexts": 32
+		"contexts": 32,
+		"id": gen()
 	}
 ];
