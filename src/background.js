@@ -2873,8 +2873,28 @@ async function browserSaveAs(url) {
 async function executeUserScript(o) {
 
 	if ( browser?.scripting?.executeScript ) { // v3
-		if ( !await hasPermission("userScripts")) {
+		let hasUserScriptsPermission = await hasPermission("userScripts");
+		if ( !hasUserScriptsPermission ) {
 			let optionsTab = await notify({action: "openOptions", hashurl:"?permission=userScripts#requestPermissions"});
+			return;
+		}
+
+		// chrome
+		if ( hasUserScriptsPermission && !browser.userScripts ) {
+
+			// alert the user
+			let result = await _executeScript({
+				tabId: o.tabId,
+				func: () => confirm("You must enable 'Allow User Scripts' to run user scripts with this extension.\n\nPress OK to open My Extensions → ContextSearch web-ext")
+			})
+
+			// open the extension settings
+			if ( result ) {
+				browser.tabs.create({
+					url: "chrome://extensions/?id=" + browser.runtime.id
+				});
+			}
+
 			return;
 		}
 
