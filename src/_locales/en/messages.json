@@ -2635,5 +2635,8 @@
   },
   "Imported": {
     "message": "Imported"
+  },
+  "UserScriptsMessageChrome": {
+    "message": "You must enable 'Allow User Scripts' to run user scripts with this extension.\n\nPress OK to open My Extensions → ContextSearch web-ext"
   }
 }

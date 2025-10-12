@@ -2879,13 +2879,14 @@ async function executeUserScript(o) {
 			return;
 		}
 
-		// chrome
+		// chrome catch missing userScripts permisison
 		if ( hasUserScriptsPermission && !browser.userScripts ) {
 
 			// alert the user
 			let result = await _executeScript({
 				tabId: o.tabId,
-				func: () => confirm("You must enable 'Allow User Scripts' to run user scripts with this extension.\n\nPress OK to open My Extensions → ContextSearch web-ext")
+				func: (msg) => confirm(msg),
+				args: [i18n("UserScriptsMessageChrome")]
 			})
 
 			// open the extension settings
