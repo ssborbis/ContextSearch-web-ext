@@ -325,7 +325,13 @@
 	color:white;
 	font-weight:bold;
 }
-
+.CS_dialog .o:hover span {
+	visibility: visible;
+}
+.CS_dialog .o span {
+	visibility: hidden;
+	margin-right:8px;
+}
 .CS_dialog input {
 	margin:0 16px;
 }

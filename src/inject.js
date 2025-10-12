@@ -369,16 +369,16 @@ function checkContextMenuEventOrderNotification() {
 			You opened the Quick menu by using the right mouse button and it appears your browser wants to open the default context menu<br><br>
 		</div>
 		<div class="o" id="keepBoth">
-			<input type="radio" /> Keep the default settings (both menus may open)
+			<span>&check;</span> Keep the default settings (both menus may open)
 		</div>
 		<div class="o" id="doubleClick">
-			<input type="radio" /> Move the browser context menu to open on double-click
+			<span>&check;</span> Move the browser context menu to open on double-click
 		</div>
 		<div class="o" id="disableQuickMenu">
-			<input type="radio" /> Disable the Quick Menu and keep the default context menu
+			<span>&check;</span> Disable the Quick Menu and keep the default context menu
 		</div>
 		<div class="o" id="openSettings">
-			<input type="radio" /> See more options for opening the Quick Menu
+			<span>&check;</span> See more options for opening the Quick Menu
 		</div>
 		<footer>
 			You can change this setting any time in options
