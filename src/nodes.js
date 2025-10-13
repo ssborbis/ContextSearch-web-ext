@@ -215,7 +215,7 @@ function removeConsecutiveSeparators(tree) {
 
 	return tree;
 }
-const getNodeById = id => findNode(userOptions.nodeTree, n => n.id === id);
+const getNodeById = id => id ? findNode(userOptions.nodeTree, n => n.id === id) : null;
 const isFolder = n => n.type === 'folder';
 const isSearchEngine = n => n.type === 'searchEngine';
 const isOneClickSearchEngine = n => n.type === 'oneClickSearchEngine';

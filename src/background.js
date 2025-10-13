@@ -1764,12 +1764,21 @@ async function openSearch(info) {
 	var searchTerms = (info.searchTerms || info.selectionText || "").trim();
 
 	var openMethod = info.openMethod || "openNewTab";
-	var tab = info.tab || null;
-	var openUrl = info.openUrl || false;
+	var tab = info.tab || {url:"", id:0};
 	var temporarySearchEngine = info.temporarySearchEngine || null; // unused now | intended to remove temp engine
 	var domain = info.domain || null;
 	var node = info.node || findNode(userOptions.nodeTree, n => n.id === info.menuItemId) || null;
 	info.node = info.node || node; // in case it wasn't sent
+	var openerTabId = userOptions.disableNewTabSorting ? null : tab.id;
+
+	// openAsLink
+	if ( info.openUrl ) {
+		return openWithMethod({
+			openMethod: openMethod, 
+			url: searchTerms, 
+			openerTabId: openerTabId == -1 ? null : openerTabId // chrome pdf reader gives tab.id of -1
+		}).then(onCreate, onError);
+	}
 	
 	if (!info.folder) delete self.folderWindowId;
 	
@@ -1889,8 +1898,8 @@ async function openSearch(info) {
 	}
 
 	//var se = temporarySearchEngine || userOptions.searchEngines.find(_se => _se.id === node.id ) : temporarySearchEngine || null;
-	var se = temporarySearchEngine || getNodeById(node.id) || null;
-	if ( !se && !openUrl) return false;
+	var se = temporarySearchEngine || getNodeById(node?.id) || null;
+	if ( !se ) return false;
 	
 	// check for multiple engines (v1.27+)
 	if ( se && !info.multiURL ) {
@@ -1961,14 +1970,10 @@ async function openSearch(info) {
 		}
 	}
 
-	if (!tab) tab = {url:"", id:0}
-	
-	var openerTabId = userOptions.disableNewTabSorting ? null : tab.id;
-	
-	if ( !openUrl && !temporarySearchEngine && !info.multiURL ) 
+	if ( !temporarySearchEngine && !info.multiURL ) 
 		notify({action: "addToHistory", searchTerms: searchTerms});
 
-	if (!openUrl) {
+	{
 
 		// must be invalid
 		if ( !se.template) return false;
