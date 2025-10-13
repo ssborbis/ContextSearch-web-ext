@@ -392,7 +392,7 @@ function updateUserOptionsVersion(uo) {
 			// test for unified node tree
 			if ( _uo.searchEngines.length === 0 && findNode(_uo.nodeTree, n => n.type === 'searchEngine') ) {
 				console.log('repairing searchEngines array');
-				_uo = deunifyTree(_uo);
+				_uo = deunifyNodeTree(_uo);
 			}
 
 			if ( browser.search && browser.search.get ) {
@@ -406,11 +406,21 @@ function updateUserOptionsVersion(uo) {
 		}
 		return _uo;
 	}).then( _uo => {
-		if ( _uo.version < "1.48.4" ) {
+		if ( true ) {
 			_uo = unifyNodeTree(_uo);
 
 			// rebuild searchEngines array after unifying for a few versions
 			_uo = deunifyNodeTree(_uo);
+
+			// check for bad node icons
+			findNodes(_uo.nodeTree, n => {
+				if ( !n.icon && (n.icon_url || n.icon_base64String) ) {
+					n.icon = n.icon || n.icon_url || n.icon_base64String;
+					n.iconCache = n.icon_base64String || "";
+					delete n.icon_url;
+					delete n.icon_base64String;
+				}
+			});
 		}
 		return _uo;
 	}).then( _uo => {
@@ -453,10 +463,12 @@ function mergeSearchEngineWithNode(se, n) {
 		}
 	}
 
-	n.icon = n.icon || n.icon_url || n.icon_base64String;
-	n.iconCache = n.icon_base64String || "";
+	n.icon = n.icon || se.icon_url || se.icon_base64String;
+	n.iconCache = se.icon_base64String || "";
 
-	return Object.assign(n, se);
+	let node = Object.assign(n, se);
+	console.log(node);
+	return node;
 }
 
 function unifyNodeTree(_uo) {
@@ -466,7 +478,7 @@ function unifyNodeTree(_uo) {
 	let ses = uo.searchEngines;
 
 	if ( !ses ) {
-		console.log("No search engines array. Node tree may already be unified")
+		console.log("No search engines array. Node tree may already be unified");
 		return uo;
 	}
 
@@ -480,9 +492,8 @@ function unifyNodeTree(_uo) {
 				an = mergeSearchEngineWithNode(se, an);
 			// make every other node referencing the engine a copy (shortcut)
 			else {
-				an = Object.assign(se, {
-					id: gen()
-				});
+				mergeSearchEngineWithNode(se, an);
+				an.id =  gen();
 			}
 		});
 	}
