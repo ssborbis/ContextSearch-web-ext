@@ -1773,9 +1773,14 @@ async function openSearch(info) {
 
 	// openAsLink
 	if ( info.openUrl ) {
+
+		let q = searchTerms;
+		if (searchTerms.match(/^.*:\/\//) === null)
+			q = "http://" + searchTerms;
+
 		return openWithMethod({
 			openMethod: openMethod, 
-			url: searchTerms, 
+			url: q, 
 			openerTabId: openerTabId == -1 ? null : openerTabId // chrome pdf reader gives tab.id of -1
 		}).then(onCreate, onError);
 	}
@@ -2010,11 +2015,6 @@ async function openSearch(info) {
 			}
 			
 		}
-	} else {	
-		// if using Open As Link from quick menu
-		q = searchTerms;
-		if (searchTerms.match(/^.*:\/\//) === null)
-			q = "http://" + searchTerms;
 	}
 
 	openWithMethod({
