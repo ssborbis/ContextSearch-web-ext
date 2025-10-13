@@ -124,7 +124,7 @@
 	},
 	
 	"commands": {
-		"_execute_browser_action": {}
+		"_execute_action": {}
 	},
 	
 	"omnibox": {

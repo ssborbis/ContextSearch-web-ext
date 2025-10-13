@@ -277,7 +277,7 @@ async function _executeScript(o) {
 		if ( !("file" in o )) delete executeOptions.files;
 
 		return browser.scripting.executeScript(executeOptions)
-			.then(result => result.shift().result )
+			.then(result => result.shift()?.result )
 			.catch(error => {throw new Error(error)});
 	} else { // v2
 
