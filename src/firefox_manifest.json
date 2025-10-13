@@ -2,7 +2,7 @@
 	"manifest_version": 3,
 	"name": "ContextSearch web-ext",
 	"description": "__MSG_extensionDescription__",
-	"version": "1.48.4.1",
+	"version": "1.48.4.2",
 	"homepage_url": "https://github.com/ssborbis/ContextSearch-web-ext",
 	"default_locale": "en",
 	"browser_specific_settings": {
