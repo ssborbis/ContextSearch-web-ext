@@ -466,8 +466,10 @@ function mergeSearchEngineWithNode(se, n) {
 	n.icon = n.icon || se.icon_url || se.icon_base64String || "";
 	n.iconCache = se.icon_base64String || "";
 
-	let node = Object.assign(n, se);
-	return node;
+	se.hidden = ("hidden" in n ) ? n.hidden : se.hidden || false;
+	Object.assign(n, se);
+
+	return n;
 }
 
 function unifyNodeTree(_uo) {
