@@ -1978,43 +1978,40 @@ async function openSearch(info) {
 	if ( !temporarySearchEngine && !info.multiURL ) 
 		notify({action: "addToHistory", searchTerms: searchTerms});
 
-	{
+	// must be invalid
+	if ( !se.template) return false;
 
-		// must be invalid
-		if ( !se.template) return false;
+	// legacy fix
+	se.queryCharset = se.queryCharset || "UTF-8";
+	
+	if ( se.searchRegex ) {
+		try {
+			runReplaceRegex(se.searchRegex, (r, s) => {
+				searchTerms = searchTerms.replace(r, s);
+			});
 
-		// legacy fix
-		se.queryCharset = se.queryCharset || "UTF-8";
+		} catch (error) {
+			console.error("regex replace failed");
+		}
+	}
+
+	var encodedSearchTerms = encodeCharset(searchTerms, se.queryCharset);
+
+	var q = await replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
+
+	// set landing page for POST engines
+	if ( 
+		!searchTerms || // empty searches should go to the landing page also
+		(typeof se.method !== 'undefined' && se.method === "POST") // post searches should go to the lander page
+	) {
 		
-		if ( se.searchRegex ) {
-			try {
-				runReplaceRegex(se.searchRegex, (r, s) => {
-					searchTerms = searchTerms.replace(r, s);
-				});
-
-			} catch (error) {
-				console.error("regex replace failed");
-			}
+		if ( se.searchForm )
+			q = se.searchForm;
+		else {
+			let url = new URL(se.template);
+			q = url.origin + url.pathname;
 		}
-
-		var encodedSearchTerms = encodeCharset(searchTerms, se.queryCharset);
-
-		var q = await replaceOpenSearchParams({template: se.template, searchterms: encodedSearchTerms.uri, url: tab.url, domain: domain});
-
-		// set landing page for POST engines
-		if ( 
-			!searchTerms || // empty searches should go to the landing page also
-			(typeof se.method !== 'undefined' && se.method === "POST") // post searches should go to the lander page
-		) {
-			
-			if ( se.searchForm )
-				q = se.searchForm;
-			else {
-				let url = new URL(se.template);
-				q = url.origin + url.pathname;
-			}
-			
-		}
+		
 	}
 
 	openWithMethod({
