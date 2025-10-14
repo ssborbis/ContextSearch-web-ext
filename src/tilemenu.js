@@ -2217,7 +2217,7 @@ function nodeToTile( node ) {
 			let se = node;
 
 			// site search picker
-			if ( se.template.includes('{selectdomain}') )
+			if ( se?.template?.includes('{selectdomain}') )
 				return nodeToTile(Object.assign(node, {type: "siteSearchFolder"}));
 
 			tile = buildSearchIcon(getIconFromNode(node), getTitleWithHotkey(node));
