@@ -2229,12 +2229,12 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 	// 	});
 	// }
 
-	await _executeScript({
+	_executeScript({
 		func: (s) => document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: s}})),
 		args: [escapeDoubleQuotes(searchTerms)],
 		tabId: tab.id,
 		allFrames: true
-	})
+	});
 
 	// if ( browser?.scripting?.executeScript ) { // v3
 	// 	await browser.scripting.executeScript({

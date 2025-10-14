@@ -1257,7 +1257,8 @@ function buildPermissions() {
 
 	function setCheckbox(cb, permission) {
 		hasPermission(permission)
-				.then( result => cb.checked = result);
+			.then( result => cb.checked = result)
+			.catch(error => debug(error));
 	}
 
 	['clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']

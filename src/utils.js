@@ -1,9 +1,9 @@
-const debounce = (callback, time, id) => {
+function debounce(callback, time, id) {
   self.clearTimeout(self[id]);
   self[id] = self.setTimeout(callback, time);
 }
 
-const throttle = (callback, time, id) => {
+function throttle(callback, time, id) {
 	if (self[id]) return;
 
   self[id] = self.setTimeout(() => {
@@ -247,8 +247,12 @@ function appendSanitizedHTML(html_str, el) {
 	}
 }
 
-function hasPermission(permission) {
-	return browser.permissions.contains({permissions: [permission]});
+async function hasPermission(permission) {
+	try {
+		return await browser.permissions.contains({permissions: [permission]})
+	} catch (error) {
+		return false;
+	}
 }
 
 function requestPermission(permission) {
