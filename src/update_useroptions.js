@@ -441,8 +441,8 @@ function deunifyNodeTree(_uo) {
 
 	findNodes(_uo.nodeTree, n => n.type === 'searchEngine').forEach(n => {
 		let se = JSON.parse(JSON.stringify(n));
-		se.icon_url = n.icon;
-		se.icon_base64String = n.iconCache;
+		se.icon_url = n.icon || n.iconCache || "";
+		se.icon_base64String = n.iconCache || "";
 
 		delete se.icon;
 		delete se.iconCache;
@@ -463,7 +463,7 @@ function mergeSearchEngineWithNode(se, n) {
 		}
 	}
 
-	n.icon = n.icon || se.icon_url || se.icon_base64String;
+	n.icon = n.icon || se.icon_url || se.icon_base64String || "";
 	n.iconCache = se.icon_base64String || "";
 
 	let node = Object.assign(n, se);
