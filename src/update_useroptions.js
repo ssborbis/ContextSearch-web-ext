@@ -456,7 +456,7 @@ function deunifyNodeTree(_uo) {
 
 function mergeSearchEngineWithNode(se, n) {
 
-	console.log("Merging: " + se.title);
+	debug("Merging: " + se.title);
 	for ( const key in se ) {
 		if ( key in n && se[key] !== n[key] ) {
 			debug(`Key values diverged for '${key}': (${se[key]}) -> (${n[key]})`);
@@ -467,7 +467,6 @@ function mergeSearchEngineWithNode(se, n) {
 	n.iconCache = se.icon_base64String || "";
 
 	let node = Object.assign(n, se);
-	console.log(node);
 	return node;
 }
 
