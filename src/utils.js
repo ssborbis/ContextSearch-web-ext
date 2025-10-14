@@ -278,7 +278,7 @@ async function _executeScript(o) {
 
 		return browser.scripting.executeScript(executeOptions)
 			.then(result => result.shift()?.result )
-			.catch(error => {throw new Error(error)});
+			.catch(error => debug(error));
 	} else { // v2
 
 		const _args = o.args ? o.args.map(a => {
@@ -302,7 +302,7 @@ async function _executeScript(o) {
 		if ( !("func" in o )) delete executeOptions.code;
 
 		return browser.tabs.executeScript(o.tabId, executeOptions).then(result => result.shift())
-			.catch(error => {throw new Error(error)});
+			.catch(error => debug(error));
 	}
 }
 

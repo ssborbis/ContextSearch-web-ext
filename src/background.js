@@ -2853,8 +2853,8 @@ function userInputCurrentTab(func, str) {
 
 async function isTabScriptable(tabId, frameId = 0) {
 	try {
-		await _executeScript({func: () => true, tabId: tabId, frameId: frameId});
-		return true;
+		let result = await _executeScript({func: () => true, tabId: tabId, frameId: frameId});
+		return result ? true : false;
 	} catch ( error ) {
 		return false;
 	}
