@@ -95,7 +95,7 @@
   },
 
   "MiddleButton": {
-    "message": "Bouton du milieu"
+    "message": "Bouton central"
   },
 
   "RightButton": {
@@ -115,7 +115,7 @@
   },
 
   "ColumnsMinimumTooltip": {
-    "message": "Nombre minimum d’icônes par ligne (vue grille))"
+    "message": "Nombre minimum d’icônes par ligne (vue grille)"
   },
   
   "Items": {
@@ -179,7 +179,7 @@
   },
 
   "HoldTooltip": {
-    "message": "Le panneau s’ouvre en maintenant appuyé le bouton de la souris sélectionné pendant environ un quart de seconde."
+    "message": "Le menu s’ouvre en maintenant appuyé le bouton de la souris sélectionné pendant environ un quart de seconde."
   },
 
   "SearchOnMouseup": {
@@ -195,7 +195,7 @@
   },
 
   "ClickTooltip": {
-    "message": "Le panneau s’ouvre sur clic droit. Maintenir le bouton appuyé pour ouvrir le menu contextuel normal."
+    "message": "Le menu s’ouvre sur clic droit. Maintenir le bouton appuyé pour ouvrir le menu contextuel normal."
   },
 
   "Keyboard": {
@@ -291,7 +291,7 @@
   },
 
   "ImportExportSettings": {
-    "message": "Import et export de la configuration"
+    "message": "Import et export des réglages"
   },
 
   "Import": {
@@ -587,11 +587,11 @@
   },
 
   "ImportSettingsNotFoundAlert": {
-    "message": "Options introuvables !"
+    "message": "Options de ContextSearch non trouvées !"
   },
 
   "InvalidJSONAlert": {
-    "message": "Fichier JSON non valide"
+    "message": "Le fichier n’est pas un JSON valide."
   },
 
   "ImportSuccessful": {
@@ -607,7 +607,7 @@
   },
 
   "AddCustomSearch": {
-    "message": "Ajouter dans ContextSearch"
+    "message": "Ajouter ce moteur de recherche"
   },
 
   "SearchFor": {
@@ -828,12 +828,12 @@
   },
 
   "NameChangeWarning": {
-    "message": "Renommer un moteur de recherche peut le faire apparaître en double lors de l’importation des moteurs accessibles en un clic. Dans ce cas, deux possibilités : masquer le moteur renommé ou le supprimer (Options de Firefox -> Recherche -> Moteurs de recherche accessibles en un clic). Voulez-vous vraiment renommer ce moteur ?",
+    "message": "Renommer un moteur de recherche peut le faire apparaître en double lors de l’importation des moteurs accessibles en un clic. Dans ce cas, deux possibilités : masquer le moteur renommé ou le supprimer (Paramètres de Firefox -> Recherche -> Raccourcis de recherche). Voulez-vous vraiment renommer ce moteur ?",
     "description": "warn user about potential problems when changing search engine names"
   },
 
   "PressKey": {
-    "message": "Taper une combinaison de touches",
+    "message": "Presser une touche",
     "description": "short message to display when waiting for user to set a hotkey for opening the quick menu "
   },
 
@@ -1247,7 +1247,7 @@
   },
 
   "BackgroundColor": {
-    "message": "Couleur du trait",
+    "message": "Couleur de fond",
     "description": ""
   },
 
@@ -1442,7 +1442,7 @@
   },
 
   "highlightstyletooltip": {
-    "message": "Type de marquage : surlignagne (choix de la couleur du trait et du texte) ou soulignage (choix de la couleur du texte ignoré)",
+    "message": "Type de marquage : surlignagne (choix de la couleur de fond et celle du texte) ou soulignage (choix de la couleur du texte ignoré)",
     "description": ""
   },
 
@@ -1462,7 +1462,7 @@
   },
 
   "highlightopacitytooltip": {
-    "message": "Opacité de la couleur du trait",
+    "message": "Opacité de la couleur de fond",
     "description": ""
   },
 
@@ -1682,7 +1682,7 @@
   },
 
   "AddUsingFirefoxSearchBar": {
-    "message": "À partir de Firefox 78, l’ajout d’un moteur se fait en passant par la barre de recherche du navigateur."
+    "message": "Depuis Firefox 78, l’ajout d’un moteur se fait en passant par la barre de recherche du navigateur."
   },
 
   "SyncWithFirefoxSearchHeader": {
@@ -2023,7 +2023,7 @@
   },
   
  "EnableHotkeysLabel": {
-    "message": "Raccourcis de moteurs",
+    "message": "Raccourcis des moteurs",
     "description": "label for Search Engine Hotkeys"
   },
   
@@ -2580,7 +2580,7 @@
     "message": "Mot-clé"
   },
   "Filter": {
-    "message": "Filtre"
+    "message": "Filtrer"
   },
   "Main": {
     "message": "Principal"
@@ -2620,5 +2620,23 @@
   },
   "Tool": {
     "message": "Outil"
-  }  
+  },
+  "DuplicateFound": {
+    "message": "Doublon trouvé"
+  },
+  "Replace": {
+    "message": "Remplacer"
+  },
+  "KeepBoth": {
+    "message": "Conserver les deux"
+  },
+  "Skip": {
+    "message": "Ignorer"
+  },
+  "Imported": {
+    "message": "Importé"
+  },
+  "UserScriptsMessageChrome": {
+    "message": "Vous devez activer « Autoriser les scripts utilisateur » pour pouvoir exécuter des scripts utilisateur avec cette extension. Appuyez sur OK pour ouvrir Mes extensions → ContextSearch web-ext."
+  }
 }
