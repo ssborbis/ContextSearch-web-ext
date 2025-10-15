@@ -1261,7 +1261,7 @@ function buildPermissions() {
 			.catch(error => debug(error));
 	}
 
-	['clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']
+	['<all_urls>', 'clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']
 		.forEach( permission => {
 			const el = _default.cloneNode(true);
 			const cb = el.querySelector('input');
@@ -1271,11 +1271,18 @@ function buildPermissions() {
 			label.innerText = permission;
 
 			cb.addEventListener('change', async e => {
-				if ( cb.checked )
-					await browser.permissions.request({permissions: [permission]})
-				else
-					await browser.permissions.remove({permissions: [permission]})
-						.catch(error => debug(error));
+				if ( cb.checked ) {
+					if ( permission === '<all_urls>')
+						await browser.permissions.request({origins: [permission]});
+					else
+						await browser.permissions.request({permissions: [permission]});
+				}
+				else {
+					if ( permission === '<all_urls>')
+						await browser.permissions.remove({origins: [permission]});
+					else
+						await browser.permissions.remove({permissions: [permission]});
+				}
 
 				setCheckbox(cb, permission);
 			})

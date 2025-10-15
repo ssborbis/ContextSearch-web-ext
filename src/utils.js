@@ -249,7 +249,10 @@ function appendSanitizedHTML(html_str, el) {
 
 async function hasPermission(permission) {
 	try {
-		return await browser.permissions.contains({permissions: [permission]})
+		if ( permission === '<all_urls>')
+			return await browser.permissions.contains({origins: [permission]});
+		else
+			return await browser.permissions.contains({permissions: [permission]});
 	} catch (error) {
 		return false;
 	}
