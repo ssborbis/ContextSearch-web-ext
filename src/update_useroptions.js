@@ -454,7 +454,7 @@ function deunifyNodeTree(_uo) {
 	return _uo;
 }
 
-function mergeSearchEngineWithNode(se, n) {
+function unifySearchEngineNode(se, n) {
 
 	debug("Merging: " + se.title);
 	for ( const key in se ) {
@@ -466,7 +466,7 @@ function mergeSearchEngineWithNode(se, n) {
 	n.icon = n.icon || se.icon_url || se.icon_base64String || "";
 	n.iconCache = se.icon_base64String || "";
 
-	se.hidden = ("hidden" in n ) ? n.hidden : se.hidden || false;
+	se.hidden = ("hidden" in n ) ? n.hidden : (se.hidden || false);
 	Object.assign(n, se);
 
 	return n;
@@ -488,14 +488,11 @@ function unifyNodeTree(_uo) {
 
 		associatedNodes.forEach((an, index) => {
 
-			// build a single node based on the original search engine
-			if ( index === 0 )
-				an = mergeSearchEngineWithNode(se, an);
-			// make every other node referencing the engine a copy (shortcut)
-			else {
-				mergeSearchEngineWithNode(se, an);
+			an = unifySearchEngineNode(se, an);
+
+			// subsequent nodes are copies with a new id
+			if ( index !== 0 )
 				an.id =  gen();
-			}
 		});
 	}
 
