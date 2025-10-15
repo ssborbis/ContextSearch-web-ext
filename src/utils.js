@@ -274,7 +274,8 @@ async function _executeScript(o) {
 			},
 			func: o.func,
 			args: o.args,
-			files: [o.file]
+			files: [o.file],
+			injectImmediately: o.injectImmediately || false
 		}
 
 		if ( !("func" in o )) delete executeOptions.function;

@@ -2444,7 +2444,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 	let isHTML = await _executeScript({
 		func: () => document && document.querySelector('html') ? true : false,
 		tabId: tabId,
-		frameId: options.frameId || 0
+		frameId: options.frameId || 0,
+		injectImmediately: true
 	})
 
 	if ( !isHTML ) return false;
@@ -2471,7 +2472,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 					func: (file) => (typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file]),
 					args: [file],
 					tabId: tabId,
-					frameId: options.frameId || 0
+					frameId: options.frameId || 0,
+					injectImmediately: true
 				})
 
 				if ( check ) {
@@ -2483,7 +2485,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 			await _executeScript({
 				file: file,
 				tabId: tabId,
-				frameId: options.frameId || 0
+				frameId: options.frameId || 0,
+				injectImmediately: true
 			});
 
 			debug('injected', file, tabId, options.frameId || 0);
@@ -2493,7 +2496,8 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 					func: (file) => { window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN[file] = true;},
 					args: [file],
 					tabId: tabId,
-					frameId: options.frameId || 0		
+					frameId: options.frameId || 0,
+					injectImmediately: true	
 				})
 
 			}
@@ -2519,7 +2523,7 @@ async function injectContentScripts(tab, frameId = 0) {
 			"/inject.js",
 			"/contexts.js",
 			"/tools.js" // for shortcuts
-		], frameId: frameId, runAt: "document_end"
+		], frameId: frameId, runAt: "document_start"
 	}, true);
 
 	_insertCSS({tabId: tab.id, frameId: frameId, file: "/inject.css"})
@@ -2530,7 +2534,7 @@ async function injectContentScripts(tab, frameId = 0) {
 				"/inject_addContextSearchEngine.js",
 				"/iconUtils.js",
 				"/searchEngineUtils.js"
-			], runAt: "document_end"
+			], runAt: "document_start"
 		}, true);
 	}
 
@@ -2713,7 +2717,7 @@ function userInputCurrentTab(func, str) {
 
 async function isTabScriptable(tabId, frameId = 0) {
 	try {
-		let result = await _executeScript({func: () => true, tabId: tabId, frameId: frameId});
+		let result = await _executeScript({func: () => true, tabId: tabId, frameId: frameId, injectImmediately: true});
 		return result ? true : false;
 	} catch ( error ) {
 		return false;
