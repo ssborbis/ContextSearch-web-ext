@@ -978,7 +978,7 @@ async function notify(message, sender, sendResponse) {
 			if ( userOptions.quickMenu ) {
 				await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
 				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
-				}
+			}
 
 			if ( userOptions.pageTiles.enabled ) {
 				await executeScripts(sender.tab.id, {files: ["/inject_pagetiles.js"], frameId: sender.frameId}, true);
@@ -1017,22 +1017,6 @@ async function notify(message, sender, sendResponse) {
 			// console.log(message.global, style);
 
 			return _insertCSS({tabId: sender.tab.id, frameId: message.global ? 0 : (sender.frameId || 0), css: style})
-
-			// return browser.scripting.insertCSS({
-			// 	target: {
-			// 		tabId: sender.tab.id,
-			// 		frameIds: [message.global ? 0 : sender.frameId]
-			// 	},
-			// 	css: style,
-			// 	origin: "USER"
-			// });
-
-
-			// return browser.tabs.insertCSS( sender.tab.id, {
-			// 	code: style,
-			// 	frameId: message.global ? 0 : sender.frameId,
-			// 	cssOrigin: "user"
-			// });
 		}
 
 		case "editQuickMenu":
@@ -1040,23 +1024,7 @@ async function notify(message, sender, sendResponse) {
 			break;
 
 		case "addStyles":
-
 			return _insertCSS({tabId: sender.tab.id, frameId: sender.frameId || 0, file: message.file});
-
-			// return browser.scripting.insertCSS({
-			// 	target: {
-			// 		tabId: sender.tab.id,
-			// 		frameIds: [sender.frameId]
-			// 	},
-			// 	files: [message.file],
-			// 	origin: "USER"
-			// });
-
-			// return browser.tabs.insertCSS( sender.tab.id, {
-			// 	file: message.file,
-			// 	frameId: sender.frameId,
-			// 	cssOrigin: "user"
-			// });
 
 		case "closePageTiles":
 			return sendMessageToTopFrame();
@@ -1169,15 +1137,6 @@ async function notify(message, sender, sendResponse) {
 				allFrames: true
 			}).catch( error => debug(error) );;
 
-			// return browser.scripting.insertCSS({
-			// 	target: {
-			// 		tabId: sender.tab.id,
-			// 		allFrames: true
-			// 	},
-			// 	css: "HTML{pointer-events:none;}",
-			// 	origin: "USER"
-			// }).catch( error => debug(error) );
-
 		case "enablePageClicks":
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 
@@ -1191,15 +1150,6 @@ async function notify(message, sender, sendResponse) {
 					css: "HTML{pointer-events:none;}",
 					allFrames: true
 				}).catch( error => debug(error) );
-
-				// browser.scripting.removeCSS({
-				// 	target: {
-				// 		tabId: tab.id,
-				// 		allFrames: true
-				// 	},
-				// 	css: "HTML{pointer-events:none;}",
-				// 	origin: "USER"
-				// }).catch(error => debug(error));
 			  }
 			}
 
@@ -2236,23 +2186,6 @@ async function highlightSearchTermsInTab(tab, searchTerms) {
 		allFrames: true
 	});
 
-	// if ( browser?.scripting?.executeScript ) { // v3
-	// 	await browser.scripting.executeScript({
-	// 		target: {
-	// 			tabId: tab.id,
-	// 			allFrames: true
-	// 		},
-	// 		func: (s) => document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: s}})),
-	// 		args: [escapeDoubleQuotes(searchTerms)]
-	// 	});
-	// } else { // v2
-	// 	await browser.tabs.executeScript(tab.id, {
-	// 		code: `document.dispatchEvent(new CustomEvent("CS_markEvent", {detail: {type: "searchEngine", searchTerms: "`+ escapeDoubleQuotes(searchTerms) + `"}}));`,
-	// 		runAt: 'document_idle',
-	// 		allFrames: true
-	// 	});
-	// }
-
 	if ( userOptions.highLight.followDomain || userOptions.highLight.followExternalLinks ) {
 		
 		let url = new URL(tab.url);
@@ -2500,7 +2433,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 
 	let tab = await browser.tabs.get(tabId);
 
-
 	if ( !isAllowedURL(tab.url) ) return false;
 
 	if ( !await isTabScriptable(tabId, options.frameId || 0) ) return false;
@@ -2541,22 +2473,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 					tabId: tabId,
 					frameId: options.frameId || 0
 				})
-				// let check = null;
-				// if ( browser?.scripting?.executeScript ) { // v3
-				// 	check = await browser.scripting.executeScript({
-				// 		target: {
-				// 			tabId: tabId,
-				// 			frameIds: [options.frameId || 0 ]
-				// 		},
-				// 		func: (file) => {
-				// 			return typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN[file];
-				// 		},
-				// 		args: [file]
-				// 	}).then(result => result.shift().result);
-				// } else { // v2
-				// 	check = await browser.tabs.executeScript(tabId, { code: `typeof window.CS_HASRUN !== 'undefined' && window.CS_HASRUN['${file}']`, frameId: options.frameId || 0 })
-				// 		.then(result => result.shift());
-				// }
 
 				if ( check ) {
 					debug('already injected', file, tabId, options.frameId || 0);
@@ -2570,18 +2486,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 				frameId: options.frameId || 0
 			});
 
-			// if ( browser?.scripting?.executeScript ) { // v3
-			// 	await browser.scripting.executeScript({
-			// 		target: {
-			// 			tabId: tabId,
-			// 			frameIds: [options.frameId || 0 ]
-			// 		},
-			// 		files: [file]
-			// 	});
-			// } else { // v2
-			// 	await browser.tabs.executeScript(tabId, Object.assign({}, options, { file: file }));
-			// }
-
 			debug('injected', file, tabId, options.frameId || 0);
 			if ( checkHasRun ) {
 
@@ -2592,20 +2496,6 @@ async function executeScripts(tabId, options = {}, checkHasRun) {
 					frameId: options.frameId || 0		
 				})
 
-				// if ( browser?.scripting?.executeScript ) { // v3
-				// 	await browser.scripting.executeScript({
-				// 		target: {
-				// 			tabId: tabId,
-				// 			frameIds: [options.frameId || 0 ]
-				// 		},
-				// 		func: (file) => {
-				// 			window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN[file] = true;
-				// 		},
-				// 		args: [file]
-				// 	});
-				// } else { // v2
-				// 	await browser.tabs.executeScript(tabId, {code: `window.CS_HASRUN = window.CS_HASRUN || []; window.CS_HASRUN['${file}'] = true;`, frameId: options.frameId});
-				// }
 			}
 		} catch (error) {
 			debug(tabId, error);
@@ -2633,19 +2523,6 @@ async function injectContentScripts(tab, frameId = 0) {
 	}, true);
 
 	_insertCSS({tabId: tab.id, frameId: frameId, file: "/inject.css"})
-
-	// if ( browser?.scripting?.insertCSS ) {
-	// 	browser.scripting.insertCSS({
-	// 		target: {
-	// 			tabId: tab.id,
-	// 			frameIds: [frameId]
-	// 		},
-	// 		files: ["/inject.css"],
-	// 		origin: "USER"
-	// 	});
-	// } else {
-	// 	browser.tabs.insertCSS(tab.id, {file: "/inject.css", frameId: frameId, cssOrigin: "user"});
-	// }
 
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
@@ -2679,9 +2556,7 @@ async function injectContentScripts(tab, frameId = 0) {
 				notify({action: "openSideBar"}, tab);
 
 		}
-
 	})();
-	
 }
 
 function waitOnInjection(tabId) {
@@ -2770,21 +2645,6 @@ async function scrapeBookmarkIcons() {
 			}
 		} catch ( error ) {}
 	} 
-
-
-    // var response = await fetch('https://google.com ');
-    // switch (response.status) {
-    //     // status "OK"
-    //     case 200:
-    //         var template = await response.text();
-
-    //         console.log(template);
-    //         break;
-    //     // status "Not Found"
-    //     case 404:
-    //         console.log('Not Found');
-    //         break;
-    // }
 }
 
 function userInputCurrentTab(func, str) {
