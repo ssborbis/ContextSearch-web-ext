@@ -550,7 +550,7 @@ External apps can be launched from ContextSearch web-ext.
 
 You must install the [Native Messaging](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_messaging) script found [here](https://github.com/ssborbis/ContextSearch-Native-App) to use.
 
-Add a new launcher from the Search Engines manager and enter the full command line in the `Path` field. The string `{searchTerms}` will be replaced with the current active selection or selected link URL. The string `{url}` will be replaced with the current tab's URL
+Add a new launcher from the Search Engines manager and enter the full command line in the `Path` field. The string `{searchTerms}` will be replaced with the current active selection or selected link URL. The string `{url}` will be replaced with the current tab's URL. The string `{prompt}` will open a native javascript prompt with a text field.
 
 Some examples:
 
@@ -619,11 +619,18 @@ This would run the command `ls ~` and alert the stdout of the command
 
 Sometimes it's useful to download a link target before launching an external app, because not all applications can handle URLs directly. In these cases, you can replace the parameter `{searchTerms}` with `{download_url}`. This will direct the python app to download the file located at the URL searched for within this addon, and place the file in the default TEMP folder for your particular OS, and finally replace `{download_url}` in the command line with the absolute path of the newly downloaded file. For example:
 
+This command would download the file at the URL searched for ( lets say, https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg ) to the local file `C:\Users\AppData\Local\Temp\Example.jpg`, and finally run the command `"C:/Windows/SysWOW64/mspaint.exe" "C:\Users\AppData\Local\Temp\Example.jpg"`
+
 ```sh
 "C:/Windows/SysWOW64/mspaint.exe" "{download_url}"
 ```
 
-This command would download the file at the URL searched for ( lets say, https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg ) to the local file `C:\Users\AppData\Local\Temp\Example.jpg`, and finally run the command `"C:/Windows/SysWOW64/mspaint.exe" "C:\Users\AppData\Local\Temp\Example.jpg"`
+The following command prompts the user with a text field, asking for "Folder Name". Let's say the user enters the text `NewSongs` in the prompt. Then the script runs the app `yt-dlp` on the url `{searchTerms}`. The downloaded files are saved to `~/Desktop/NewSongs/` Mutiple prompts can be used in each command path.
+
+```sh
+yt-dlp -P "~/Desktop/{prompt="Folder Name"}" -x --split-chapters --audio-format mp3 --no-playlist "{searchTerms}"
+```
+
 ___
 
 <a name="styling"/>
