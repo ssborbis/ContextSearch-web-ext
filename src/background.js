@@ -95,10 +95,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	
 	if ( highlightInfo ) {
 		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
-
-	//	waitOnInjection(tabId).then(value => {
-			highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
-	//	});
+		highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
 	}
 });
 
@@ -304,22 +301,6 @@ async function notify(message, sender, sendResponse) {
 				tabId: sender.tab.id,
 				allFrames:true
 			});
-
-			// if ( browser?.scripting?.executeScript ) { // v3
-			// 	return browser.scripting.executeScript({
-			// 		target: {
-			// 			tabId: sender.tab.id,
-			// 			allFrames: true
-			// 		},
-			// 		func: (evt) => document.dispatchEvent(new CustomEvent(evt)),
-			// 		args: [message.e]
-			// 	});
-			// } else { // v2
-			// 	return browser.tabs.executeScript(sender.tab.id, {
-			// 		code: `document.dispatchEvent(new CustomEvent("${message.e}"));`,
-			// 		allFrames: true
-			// 	});
-			// }
 
 		case "openQuickMenu":
 			return sendMessageToTopFrame();
@@ -550,64 +531,18 @@ async function notify(message, sender, sendResponse) {
 						args: [title],
 						tabId: sender.tab.id
 					});
-
-					// if ( browser?.scripting?.executeScript ) { // v3
-					// 	return await browser.scripting.executeScript({
-					// 		target: {
-					// 			tabId: sender.tab.id
-					// 		},
-					// 		func: (title) => alert(browser.i18n.getMessage("FFEngineExists", title)),
-					// 		args: [title]
-					// 	});
-					// } else { // v2
-					// 	return await browser.tabs.executeScript(sender.tab.id, {
-					// 		code: `alert(browser.i18n.getMessage("FFEngineExists", "${title}"));`
-					// 	});
-					// }
 				}
 
 				await _executeScript({
 					file: "/addSearchProvider.js",
 					tabId: sender.tab.id
 				});
-
-				// if ( browser?.scripting?.executeScript ) { // v3
-				// 	await browser.scripting.executeScript({
-				// 		target: {
-				// 			tabId: sender.tab.id
-				// 		},
-				// 		files: ["/addSearchProvider.js"]
-				// 	});
-				// } else { // v2 
-				// 	await browser.tabs.executeScript(sender.tab.id, {
-				// 		file: "/addSearchProvider.js"
-				// 	});
-				// }
 				
 				const exists = await _executeScript({
 					func: (title) => getSearchProviderUrlByTitle(title),
 					args: [title],
 					tabId: sender.tab.id
 				});
-
-				// let exists = null;
-
-				// if ( browser?.scripting?.executeScript ) { // v3
-				// 	// check for existing opensearch engine of the same name
-				// 	exists = await browser.scripting.executeScript({
-				// 		target: {
-				// 			tabId: sender.tab.id
-				// 		},
-				// 		func: (title) => getSearchProviderUrlByTitle(title),
-				// 		args: [title]
-				// 	});
-				// } else { // v2
-				// 	exists = await browser.tabs.executeScript(sender.tab.id, {
-				// 		code: `getSearchProviderUrlByTitle("${title}")`
-				// 	});
-				// }
-
-				//exists = exists.shift().result;
 
 				if ( exists ) {
 					console.log('OpenSearch engine with name ' + title + ' already exists on page');
@@ -641,35 +576,6 @@ async function notify(message, sender, sendResponse) {
 							tabId: tab.id
 						});
 
-						// if ( browser?.scripting?.executeScript ) { // v3
-						// 	await browser.scripting.executeScript({
-						// 		target: {
-						// 			tabId: tab.id
-						// 		},
-						// 		func: (favicon) => {
-						// 			var userOptions = {};
-
-						// 			browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-						// 				userOptions = uo;
-						// 			});
-									
-						// 			setFavIconUrl(favicon);
-						// 		},
-						// 		args: [favicon]
-						// 	});
-						// } else { // v2
-						// 	await browser.tabs.executeScript(tab.id, {
-						// 		code: `
-						// 			var userOptions = {};
-
-						// 			browser.runtime.sendMessage({action: "getUserOptions"}).then( uo => {
-						// 				userOptions = uo;
-						// 			});
-									
-						// 			setFavIconUrl("${favicon}");`
-						// 	});
-						// }
-						
 						// some delay needed
 						await new Promise(r => setTimeout(r, 500));
 
@@ -683,20 +589,6 @@ async function notify(message, sender, sendResponse) {
 					args: [url],
 					tabId: sender.tab.id
 				});
-
-				// if ( browser?.scripting?.executeScript ) { // v3
-				// 	await browser.scripting.executeScript({
-				// 		target: {
-				// 			tabId: sender.tab.id
-				// 		},
-				// 		func: (url) => addSearchProvider(url),
-				// 		args: [url]
-				// 	});
-				// } else { // v2
-				// 	await browser.tabs.executeScript(sender.tab.id, {
-				// 		code: `addSearchProvider("${url}");`
-				// 	});
-				// }
 					
 			}
 			
@@ -946,21 +838,6 @@ async function notify(message, sender, sendResponse) {
 				func: () => message.code,
 				tabId: sender.tab.id
 			});
-
-			// if ( browser?.scripting?.executeScript ) { // v3
-			// 	return browser.scripting.executeScript({
-			// 		target: {
-			// 			tabId: sender.tab.id,
-			// 			frameIds: [0]
-			// 		},
-			// 		func: () => message.code
-			// 	});
-			// } else { // v2
-			// 	return browser.tabs.executeScript(sender.tab.id, {
-			// 		code: message.code,
-			// 		frameId: 0
-			// 	});
-			// }
 
 		case "injectContentScripts":
 
@@ -1493,9 +1370,8 @@ function executeOneClickSearch(info) {
 
 			browser.tabs.onUpdated.removeListener(listener);
 
-		//	waitOnInjection(tabId).then(value => {
-				highlightSearchTermsInTab(__tab, searchTerms);
-		//	});
+			highlightSearchTermsInTab(__tab, searchTerms);
+
 		});
 	}
 	
@@ -2017,10 +1893,9 @@ async function openSearch(info) {
 
 				browser.tabs.onUpdated.removeListener(listener);
 				
-			//	waitOnInjection(tabId).then(value => {
-					highlightSearchTermsInTab(__tab, searchTerms);
-					executeSearchCode(_tab.id);
-			//	});
+				highlightSearchTermsInTab(__tab, searchTerms);
+				executeSearchCode(_tab.id);
+
 				return;
 			}
 			
@@ -2143,7 +2018,7 @@ function escapeBackticks(str) {
 	return str.replace(/\\([\s\S])|(`)/g,"\\$1$2");
 }
 
-async function highlightInjectScripts(tab) {
+function highlightInjectScripts(tab) {
 	return executeScripts(tab.id, {files: ["/lib/mark.es6.min.js", "/inject_highlight.js"], allFrames: true}, true);
 }
 
@@ -2664,13 +2539,10 @@ function userInputCurrentTab(func, str) {
 				url: browser.runtime.getURL("blank.html")
 			});
 		}
-
-		if ( browser?.scripting?.executeScript ) { // v3
-			browser.scripting.executeScript({
-				target: {
-					tabId: tab.id
-				},
-				func: (func, message, id, tabId) => {
+		
+		_executeScript({
+			tabId: tab.id,
+			func: (func, message, id, tabId) => {
 					setTimeout(() => {
 						let str = "";
 
@@ -2682,19 +2554,8 @@ function userInputCurrentTab(func, str) {
 						browser.runtime.sendMessage({output:str, id: id, tabId: tabId});
 					}, 100);
 				},
-				args: [func, str, id, tabs[0] !== tab ? tab.id : -1 ]
-			});
-		} else { // v2
-			browser.tabs.executeScript(tab.id, {
-				code: `(() => {
-					setTimeout(() => {
-						let str = ${func}(${str});
-						browser.runtime.sendMessage({output:str, id: "${id}", tabId: ${tabs[0] !== tab ? tab.id : -1}});
-					}, 100);
-				})();`,
-				runAt: "document_idle"
-			});
-		}
+			args: [func, str, id, tabs[0] !== tab ? tab.id : -1 ]
+		})
 	});
 
 	return new Promise(resolve => {
