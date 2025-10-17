@@ -511,10 +511,12 @@ function createShadowRoot() {
 			el.appendChild(link);
 		});
 
-		let style = document.createElement('style');
-		style.textContent = userOptions.userStylesGlobal || "";
-		el.appendChild(style);
-
+		if ( userOptions.userStylesEnabled ) {
+			let style = document.createElement('style');
+			style.textContent = userOptions.userStylesGlobal || "";
+			style.id = "CS_userStylesGlobal";
+			el.appendChild(style);
+		}
 	}
 
 	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {

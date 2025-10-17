@@ -4,9 +4,9 @@ function init(message) {
 	sendMessage({action: "getUserOptions"}).then( uo => {
 		userOptions = uo;
 
-		setTheme();
-		setUserStyles();
-		makePageTiles(message);
+		setTheme()
+			.then(setUserStyles)
+			.then(() => makePageTiles(message));
 		
 		if ( userOptions.pageTiles.closeOnShake ) {
 			let ds = new DragShake();
