@@ -2438,7 +2438,7 @@ function waitOnInjection(tabId) {
 		new Promise(r => {
 			timeout = setTimeout(() => {
 				cleanup();
-				console.error('waitOnInjection timeout', tabId);
+				debug('waitOnInjection timeout', tabId);
 				r(false);
 			}, userOptions.waitOnInjectionTimeout);
 		}),
@@ -2455,13 +2455,13 @@ function waitOnInjection(tabId) {
 
 					if ( result ) {
 						cleanup();
-						console.log(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
+						debug(`waitOnInjection (tab ${tabId}) took ${Date.now() - start}ms`);
 						r(true);
 					}
 
 				} catch ( error ) {
 					cleanup();
-					console.error('waitOnInjection failed', tabId);
+					debug('waitOnInjection failed', tabId);
 					r(false);
 				}
 			}, 250);
