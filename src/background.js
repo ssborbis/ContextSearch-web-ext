@@ -41,15 +41,12 @@ var userOptions = {};
 var highlightTabs = [];
 var platformInfo = null;
 var isLoadingUserOptions = false;
+var tabHighlighter = new TabHighlighter();
 
 // tracks tabs by index that have findbar search results when searching all tabs
 // var markedTabs = [];
 
-var tabHighlighter = new TabHighlighter();
-
-(async() => {
-	platformInfo = await browser.runtime.getPlatformInfo();
-})();
+browser.runtime.getPlatformInfo().then( info => platformInfo = info );
 
 // init
 (async () => {
@@ -2401,7 +2398,7 @@ async function injectContentScripts(tab, frameId = 0) {
 		], frameId: frameId, runAt: "document_start"
 	}, true);
 
-	_insertCSS({tabId: tab.id, frameId: frameId, file: "/inject.css"})
+	_insertCSS({tabId: tab.id, frameId: frameId, file: "/inject.css"});
 
 	if ( frameId === 0 ) { /* top frames only */
 		await executeScripts(tab.id, {
