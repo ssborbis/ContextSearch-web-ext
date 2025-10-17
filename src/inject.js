@@ -78,7 +78,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	}
 });
 
-sendMessage({action: "getUserOptions"}).then( uo => userOptions = uo);
+// init
+sendMessage({action: "getUserOptions"}).then( uo => {
+	userOptions = uo;
+
+	createShadowRoot();
+	setZoomProperty();
+	Shortcut.addShortcutListener();
+	sendMessage({action: "injectComplete"});
+});
 
 function getRawSelectedText(el) {
 	if (el && typeof el.selectionStart !== 'undefined') {
@@ -87,7 +95,6 @@ function getRawSelectedText(el) {
 		return el.value.substring(start, finish);
 	} else
 		return window.getSelection().toString().trim();
-
 }
 
 function getSelectedText(el) {
@@ -449,9 +456,6 @@ function setZoomProperty() {
 
 document.addEventListener('zoom', setZoomProperty);
 
-// apply global user styles for /^[\.|#]CS_/ matches in userStyles
-sendMessage({action: "addUserStyles", global: true });
-
 // menuless hotkey
 function checkForNodeHotkeys(e) {
 
@@ -506,6 +510,11 @@ function createShadowRoot() {
 			link.href = browser.runtime.getURL(css);
 			el.appendChild(link);
 		});
+
+		let style = document.createElement('style');
+		style.textContent = userOptions.userStylesGlobal || "";
+		el.appendChild(style);
+
 	}
 
 	if ( typeof document.documentElement.shadowRoot === 'undefined' ) {
@@ -520,9 +529,11 @@ function createShadowRoot() {
 		document.documentElement.appendChild(div);
 		div.attachShadow({mode: 'open'});
 		div.shadowRoot.innerHTML = `
-	      <style>
+	    <head>
+		  <style>
 	        :host { all: initial !important; }
-	      </style>`;
+	      </style>
+		</head>`;
 
 		addStyling(div.shadowRoot);
 		return div.shadowRoot;
@@ -627,8 +638,3 @@ document.addEventListener("fullscreenchange", e => {
 
 	}
 });
-
-createShadowRoot();
-setZoomProperty();
-Shortcut.addShortcutListener();
-sendMessage({action: "injectComplete"});

@@ -879,20 +879,6 @@ async function notify(message, sender, sendResponse) {
 				tabId: sender.tab.id
 			});
 
-		case "addUserStyles": {
-			if ( !userOptions.userStylesEnabled ) return false;
-
-			console.log('adding user styles');
-
-			let style = message.global ? userOptions.userStylesGlobal : userOptions.userStyles;
-
-			if ( !style.trim() ) return false;
-
-			// console.log(message.global, style);
-
-			return _insertCSS({tabId: sender.tab.id, frameId: message.global ? 0 : (sender.frameId || 0), css: style})
-		}
-
 		case "editQuickMenu":
 			sendMessageToTopFrame();
 			break;
