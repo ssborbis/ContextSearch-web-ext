@@ -1,5 +1,19 @@
 let folder, current, previous, next, terms;
 
+let modalTimer = null;
+const dialogId = "CS_resultsEngineIconDialog";
+
+const startModalTimer = () => {
+	clearTimeout(modalTimer);
+	modalTimer = setTimeout(() => {
+		let dialog = getShadowRoot().getElementById(dialogId);
+		if ( dialog ) {
+			dialog.close();
+			dialog.parentNode.removeChild(dialog);
+		}
+	}, 2000);
+}
+
 const resultsSearch = node => {
 	sendMessage({
 		action: "search", 
@@ -20,7 +34,8 @@ const nextResultsEngine = async () => {
 		return resultsSearch(next);
 
 	resetCarousel(folder, next);
-	showNextEngine(current); 
+	showNextEngine(current);
+	startModalTimer();
 	return;
 }
 
@@ -34,6 +49,7 @@ const previousResultsEngine = async () => {
 
 	resetCarousel(folder, previous);
 	showNextEngine(current); 
+	startModalTimer();
 	return;
 }
 
@@ -72,12 +88,11 @@ const showNextEngine = async node => {
 	let img = new Image();
 	img.src = icon;
 
-	let id = "CS_resultsEngineIconDialog";
-	let dialog = getShadowRoot().getElementById(id);
+	let dialog = getShadowRoot().getElementById(dialogId);
 	
 	if ( !dialog ) {
 		dialog = document.createElement('dialog');
-		dialog.id = id;
+		dialog.id = dialogId;
 		getShadowRoot().appendChild(dialog);
 		dialog.showModal();
 	}
