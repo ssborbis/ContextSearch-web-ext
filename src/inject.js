@@ -352,7 +352,6 @@ function showNotification(message) {
 	close = () => {
 		runAtTransitionEnd(n, ['opacity'], () => {
 			document.body.removeChild(n);
-			delete n;
 		});
 		
 		n.style.opacity = 0;
@@ -362,7 +361,6 @@ function showNotification(message) {
 	
 	n.onclick = function() {
 		document.body.removeChild(n);
-		delete n;
 	}
 
 	return n;

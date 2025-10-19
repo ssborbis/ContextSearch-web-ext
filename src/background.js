@@ -883,9 +883,6 @@ async function notify(message, sender, sendResponse) {
 			sendMessageToTopFrame();
 			break;
 
-		case "addStyles":
-			return _insertCSS({tabId: sender.tab.id, frameId: sender.frameId || 0, file: message.file});
-
 		case "closePageTiles":
 			return sendMessageToTopFrame();
 

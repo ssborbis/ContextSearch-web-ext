@@ -4,11 +4,6 @@
 	}
 }
 
-/*:fullscreen #CS_findBarIframe, :fullscreen  #CS_sbIframe, :fullscreen  #CS_quickMenuIframe, :fullscreen #CS_sbOpeningTab, :fullscreen #CS_icon {
-	display: none;
-}
-*/
-
 @keyframes CS_flash {
 	0% {
 		color: var(--cs-mark-active-color);
