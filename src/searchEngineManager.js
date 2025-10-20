@@ -2105,22 +2105,14 @@ function buildSearchEngineContainer() {
 		
 		if ( !confirm(i18n("ConfirmResetAllSearchEngines")) ) return;
 		
-		userOptions.nodeTree.children = defaultEngines;	
-		
-		// build nodes with default engines
-		repairNodeTree(userOptions.nodeTree, true);
-		
-		// unhide all default engines
-		findNodes( userOptions.nodeTree, node => node.hidden = false );
-
-		// updated the background page UO
+		userOptions.nodeTree.children = [...defaultEngines];
 		await saveOptions();
 
 		// add OCSE to the nodeTree
-		await sendMessage({action: "checkForOneClickEngines"});
+		//await sendMessage({action: "checkForOneClickEngines"});
 			
 		// updated the local UO
-		userOptions = await sendMessage({action: "getUserOptions"});
+		//userOptions = await sendMessage({action: "getUserOptions"});
 
 		// delay to prevent dead objects
 		setTimeout(() => location.reload(), 500);
