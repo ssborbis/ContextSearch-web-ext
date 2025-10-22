@@ -1646,20 +1646,6 @@ async function openSearch(info) {
 							tabId: info.tab.id
 						});
 
-						// let _confirm = null;
-						// if ( browser?.scripting?.executeScript ) { // v3
-						// 	confirm = await browser.scripting.executeScript({
-						// 		target: {
-						// 			tabId: info.tab.id
-						// 		},
-						// 		func: (_confirm_str) => confirm(_confirm_str),
-						// 		args: [ _confirm_str]
-						// 	}).then(result => result.shift().result);
-						// } else { // v2
-						// 	_confirm = await browser.tabs.executeScript(info.tab.id, { code:`confirm('${_confirm_str}');` })
-						// 		.then(result => result.shift())
-						// }
-
 						if ( !_confirm ) return;
 					}
 				} catch ( err ) { // can't inject a confirm dialog
@@ -1808,7 +1794,7 @@ async function openSearch(info) {
 	// set landing page for POST engines
 	if ( 
 		!searchTerms || // empty searches should go to the landing page also
-		(typeof se.method !== 'undefined' && se.method === "POST") // post searches should go to the lander page
+		(se?.method === "POST") // post searches should go to the lander page
 	) {
 		
 		if ( se.searchForm )
@@ -1845,7 +1831,7 @@ async function openSearch(info) {
 			self.folderWindowId = _tab.id;
 			_tab = _tab.tabs[0];
 			
-			console.log('window created');
+			debug('window created');
 		}
 
 		try {
@@ -1859,7 +1845,7 @@ async function openSearch(info) {
 			
 			if ( tabId !== _tab.id ) return;
 
-			// prevent redirects - needs testing
+			// ignore redirects - needs testing
 			
 			let landing_url = new URL(q);
 			let current_url = new URL(__tab.url);
@@ -1867,7 +1853,7 @@ async function openSearch(info) {
 			if ( userOptions.ignoreSearchRedirects && current_url.hostname.replace("www.", "") !== landing_url.hostname.replace("www.", "")) return;
 
 			// non-POST should wait to complete
-			if (typeof se.method === 'undefined' || se.method !== "POST" || !searchTerms) {
+			if (se?.method !== "POST" || !searchTerms) {
 
 				if ( changeInfo.status !== 'complete' ) return;
 
@@ -1895,6 +1881,7 @@ async function openSearch(info) {
 				executeSearchCode(_tabId);
 			});
 
+			// POST
 			_executeScript({
 				func: (se, s) => {
 					window._SEARCHTERMS = s;
