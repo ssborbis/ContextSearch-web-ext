@@ -1741,6 +1741,18 @@ async function mouseupHandler(e) {
 	e.stopImmediatePropagation();
 	e.preventDefault();
 
+	const openMethod = getOpenMethod(e);
+
+	if ( openMethod === 'openSideBarAction' ) {
+		//openBrowserSidebar();
+
+		if ( browser.sidePanel ) {
+			browser.sidePanel.open({
+				windowId: (await browser.windows.getCurrent()).id
+			});
+		}
+	}
+
 	let tile = e.target.closest('.tile');
 
 	// give sb changes time to update
