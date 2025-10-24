@@ -1456,6 +1456,7 @@ function createToolsBar(qm) {
 	// clear the old tools bar
 	toolBar.innerHTML = null;
 	
+	// skip if no tools 
 	if ( qm.toolsArray.length === 0 ) return;
 	
 	qm.toolsArray.forEach( tool => {
@@ -1773,16 +1774,16 @@ async function mouseupHandler(e) {
 			case 'bookmarklet':
 			case 'oneClickSearchEngine':
 			case 'bookmark':
-				return search({node:node, openMethod: getOpenMethod(e)});
+				return search({node:node, openMethod: openMethod});
 
 			case 'siteSearch':
-				return search({node:node, openMethod: getOpenMethod(e), domain: node.title});
+				return search({node:node, openMethod: openMethod, domain: node.title});
 
 			case "siteSearchFolder":
 				return;
 
 			case 'externalProgram':
-				search({node:node, openMethod: getOpenMethod(e)});
+				search({node:node, openMethod: openMethod});
 				return Promise.resolve(true); // app launcher can resolve immediately
 
 			default:
@@ -1792,7 +1793,7 @@ async function mouseupHandler(e) {
 
 	})();
 
-	e.openMethod = getOpenMethod(e);
+	e.openMethod = openMethod;
 
 	searchPromise.then(() => {
 

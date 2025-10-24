@@ -273,12 +273,13 @@ function toolsHandler(o = {}) {
 		})
 	}
 
+	// remove the button for maximizing the qm
 	let moreTileID = userOptions.nodeTree.id;
 	let moreTile = qm.querySelector(`[data-parentid="${moreTileID}"]`);
-	
 	if ( moreTile ) moreTile.parentNode.removeChild( moreTile );
 	
-	if ( ! userOptions.quickMenuToolsAsToolbar && qm.rootNode.parent ) return; // has parent = subfolder
+	// has parent = subfolder. Don't show tools
+	if ( ! userOptions.quickMenuToolsAsToolbar && qm.rootNode.parent ) return; 
 	
 	let position = userOptions.quickMenuToolsPosition;
 	
