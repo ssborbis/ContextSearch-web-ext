@@ -1195,14 +1195,19 @@ function openWithMethod(o) {
 
 	async function openSideBarAction(url) {
 
-		if ( !browser.sidebarAction ) return;
+		// Mozilla
+		if ( browser.sidebarAction ) {
 		
-		await browser.sidebarAction.setPanel( {panel: null} ); // firefox appears to ignore subsequent calls to setPanel if old url = new url, even in cases of differing #hash
-		
-		await browser.sidebarAction.setPanel( {panel: url} );
+			await browser.sidebarAction.setPanel( {panel: null} ); // firefox appears to ignore subsequent calls to setPanel if old url = new url, even in cases of differing #hash
 			
-		if ( !await browser.sidebarAction.isOpen({}) )
-			notify({action: "showNotification", msg: i18n('NotificationOpenSidebar')}, {});
+			await browser.sidebarAction.setPanel( {panel: url} );
+				
+			if ( !await browser.sidebarAction.isOpen({}) )
+				notify({action: "showNotification", msg: i18n('NotificationOpenSidebar')}, {});
+		} else if ( browser.sidePanel ) {
+			await browser.sidePanel.setOptions({ path: "blank.html" });
+			await browser.sidePanel.setOptions({ path: url });
+		}
 
 		return {};
 	}
@@ -1560,10 +1565,13 @@ function isValidHttpUrl(str) {
 
 async function openSearch(info) {
 
-	if ( info.openMethod === "openSideBarAction" ) {
-		console.log('open Firefox sidebar');
-		browser.sidebarAction.open();
-	}
+	// if ( info.openMethod === "openSideBarAction" ) {
+
+	// 	if ( browser.sideBarAction ) {
+	// 		console.log('open Firefox sidebar');
+	// 		browser.sidebarAction.open();
+	// 	}
+	// }
 	
 	if ( info.node && info.node.type === "folder" ) return folderSearch(info);
 

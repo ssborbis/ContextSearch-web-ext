@@ -1190,7 +1190,8 @@ function buildSearchActions() {
 			"openBackgroundTabKeepOpen": {i18n: "SearchActionsBackgroundTabKeepOpen"},
 			"openNewWindow": {i18n: "SearchActionsNewWindow"},
 			"openNewIncognitoWindow": {i18n: "SearchActionsIncognitoWindow"},
-			"openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
+			// "openSideBarAction": {i18n: "SearchActionsSidebarAction", browser: "firefox", minversion: "62"},
+			"openSideBarAction": {i18n: "SearchActionsSidebarAction"},
 			"openPopup": {i18n: "SearchActionsPopup"},
 			"keepMenuOpen": {i18n: "KeepMenuOpen"},
 			"noAction": {i18n: "SearchActionsNoAction"}

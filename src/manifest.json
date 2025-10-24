@@ -62,7 +62,8 @@
 		"unlimitedStorage",
 		"webNavigation",
 		"scripting",
-		"userScripts"
+		"userScripts",
+		"sidePanel"
 	],
 	
 	"optional_permissions": [
@@ -123,6 +124,10 @@
 		"default_panel": "blank.html",
 		"open_at_install": false,
 		"browser_style": false
+	},
+
+	"side_panel": {
+		"default_path": "blank.html"
 	},
 	
 	"commands": {
