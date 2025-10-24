@@ -1101,12 +1101,12 @@ async function _quickMenuElementFromNodeTree( o ) {
 		let tile = buildSearchIcon(null, i18n('back'));
 		let backIcon = createMaskIcon('icons/back.svg');
 		backIcon.style.position = "absolute";
-
 		tile.appendChild(backIcon);
 
 		tile.dataset.type = "folder";
 		tile.node = rootNode.parent;
 		tile.dataset.undraggable = true;
+		tile.dataset.title = tile.node.title;
 
 		tile.addEventListener('mouseup', _back);
 		tile.addEventListener('openFolder', _back);
