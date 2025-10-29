@@ -1415,9 +1415,14 @@ async function executeExternalProgram(info) {
 		}
 	}
 
-	let path = node.path.replace(/{searchTerms}/g, searchTerms)
-		.replace(/{url}/g, info.tab.url);
+	// let path = node.path.replace(/{searchTerms}/g, searchTerms)
+	// 	.replace(/{url}/g, info.tab.url);
 
+	let path = await replaceOpenSearchParams({
+		template: node.path, 
+		searchterms: searchTerms, 
+		url: info.tab.url
+	});
 
 	/* check for prompts */
 	const rx = /(?:\{prompt(?:=(.+?))\})/g;

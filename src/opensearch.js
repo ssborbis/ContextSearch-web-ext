@@ -43,30 +43,30 @@ async function replaceOpenSearchParams(options) {
 // })();
 	
 	template = template
-		.replace(/%sl|{searchterms}/g, s => searchterms.toLowerCase())
-		.replace(/%su|{SEARCHTERMS}/g, s => searchterms.toUpperCase())
-		.replace(/%s|{searchTerms}/g, searchterms)
-		.replace(/{count[\?]?}/g, "50")
-		.replace(/{startIndex[\?]?}/g, "1")
-		.replace(/{startPage[\?]?}/g, "1")
-		.replace(/{language[\?]?}/g, (navigator) ? navigator.language || navigator.userLanguage : "")
-		.replace(/{inputEncoding[\?]?}/g, (typeof document !== 'undefined' ) ? document.characterSet || "" : "")
-		.replace(/{outputEncoding[\?]?}/g, (typeof document !== 'undefined' ) ? document.characterSet || "" : "")
-		.replace(/%ds|{subdomain}/g, domains.subdomain || "")
-		.replace(/%du|{selectdomain}|{userdomain}/g, userdomain || "")
-		.replace(/%d|{domain}/g, domains.domain || "")
-		.replace(/{.+?\?}/g,"") // optionals
-		.replace(/{moz:.+?}/g, "") // moz specific
-		.replace(/%u|{url}/g, url)
-		.replace(/{page}/g, sto.page || "")
-		.replace(/{frame}/g, sto.frame || "")
-		.replace(/{audio}/g, sto.audio || "")
-		.replace(/{selection}/g, sto.selection || "")
-		.replace(/{image}/g, sto.image || "")
-		.replace(/{link}/g, sto.link || "")
-		.replace(/{linkText}/g, sto.linkText || "")
-		.replace(/{video}/g, sto.video || "")
-//		.replace(/{.+?}/g, ""); // all others
+		.replace(/(?<!\^)(%sl|{searchterms})/g, s => searchterms.toLowerCase())
+		.replace(/(?<!\^)(%su|{SEARCHTERMS})/g, s => searchterms.toUpperCase())
+		.replace(/(?<!\^)(%s|{searchTerms})/g, searchterms)
+		.replace(/(?<!\^)(%ds|{subdomain})/g, domains.subdomain || "")
+		.replace(/(?<!\^)(%du|{selectdomain}|{userdomain})/g, userdomain || "")
+		.replace(/(?<!\^)(%d|{domain})/g, domains.domain || "")
+		.replace(/(?<!\^)(%u|{url})/g, url)
+		.replace(/(?<!\^)({page})/g, sto.page || "")
+		.replace(/(?<!\^)({frame})/g, sto.frame || "")
+		.replace(/(?<!\^)({audio})/g, sto.audio || "")
+		.replace(/(?<!\^)({selection})/g, sto.selection || "")
+		.replace(/(?<!\^)({image})/g, sto.image || "")
+		.replace(/(?<!\^)({link})/g, sto.link || "")
+		.replace(/(?<!\^)({linkText})/g, sto.linkText || "")
+		.replace(/(?<!\^)({video})/g, sto.video || "")
+		.replace(/(?<!\^)({count[\?]?})/g, "50")
+		.replace(/(?<!\^)({startIndex[\?]?})/g, "1")
+		.replace(/(?<!\^)({startPage[\?]?})/g, "1")
+		.replace(/(?<!\^)({language[\?]?})/g, (navigator) ? navigator.language || navigator.userLanguage : "")
+		.replace(/(?<!\^)({inputEncoding[\?]?})/g, (typeof document !== 'undefined' ) ? document.characterSet || "" : "")
+		.replace(/(?<!\^)({outputEncoding[\?]?})/g, (typeof document !== 'undefined' ) ? document.characterSet || "" : "")
+	//	.replace(/{.+?\?}/g,"") 	// optionals
+	//	.replace(/{moz:.+?}/g, "") 	// moz specific
+	//  .replace(/{.+?}/g, ""); 	// all others
 	;
 
 
