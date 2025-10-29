@@ -470,6 +470,10 @@ GROUP > LABEL {
 	font-weight:bold;
 }
 
+/*GROUP.inline .tile[data-type="folder"] {
+	color:var(--group-color-text) !important;
+}*/
+
 .textShadow {
 	color:white;
 	text-shadow:
@@ -581,8 +585,13 @@ GROUP.block > LABEL {
 GROUP.inline .tile:not(HR) {
 	background-color: var(--group-color);
 }
+
 GROUP.inline.break {
 	display: block;
+}
+/* override inline folder parent */
+GROUP.inline > .tile[data-type="folder"] {
+	color:var(--group-color-text);
 }
 
 .dummy {
