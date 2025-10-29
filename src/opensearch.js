@@ -69,14 +69,46 @@ async function replaceOpenSearchParams(options) {
 	//  .replace(/{.+?}/g, ""); 	// all others
 	;
 
+	const csParams = [	
+		"%sl",
+		"{searchterms}",
+		"%su",
+		"{SEARCHTERMS}",
+		"%s",
+		"{searchTerms}",
+		"%ds",
+		"{subdomain}",
+		"%du",
+		"{selectdomain}",
+		"{userdomain}",
+		"%d",
+		"{domain}",
+		"%u",
+		"{url}",
+		"{page}",
+		"{frame}",
+		"{audio}",
+		"{selection}",
+		"(image}",
+		"{link}",
+		"{linkText}",
+		"{video}",
+		"%c",
+		"{clipboard}"
+	];
 
-	if ( /{clipboard}|%c/.test(template)) {
+	if ( /(?<!\^)({clipboard}|%c)/.test(template)) {
 
 		// clipboard needs to be retreived from session storage from a previous user action
 		let clipboard = await CopyPaste.getSessionClipboard();
 		debug('clipboard', clipboard);
 		template = template.replace(/{clipboard}|%c/g, clipboard);
 	}
+
+	// remove prepended ^ from params
+	csParams.forEach(p => {
+		template = template.replace("^" + p, p);
+	});
 
 	return template;
 }
