@@ -339,3 +339,83 @@ function openSearchUrlToSearchEngine(url) {
 		return openSearchXMLToSearchEngine(xml);
 	});
 }
+
+function findIcons(o) {
+
+	o.service = o.service || "iconfinder";
+
+	const finder = _o => {
+		if ( !_o.url ) return console.error("findIcons: no url");
+		if ( !_o.selector ) return console.error("findIcons: no selector");
+
+		return browser.tabs.create({
+				url: _o.url,
+				active:false
+			}).then(async tab => {
+				await new Promise(r => setTimeout(r, 2000));
+
+				let urls = await _executeScript({
+					func: (selector) => [...document.querySelectorAll(selector)].map(img => img.src),
+					tabId: tab.id,
+					args: [_o.selector]
+				});
+
+				browser.tabs.remove(tab.id);
+				return urls;
+			});
+	}
+
+	const flaticon = s => {
+		return finder({
+			url: "https://www.flaticon.com/search?word=" + s.toLowerCase(),
+			selector: ".link-icon-detail > IMG"
+		});
+	}
+
+	const iconfinder = s => {
+		return finder({
+			url: "https://www.iconfinder.com/search?q=" + s.toLowerCase(),
+			selector: ".icon-grid IMG"
+		});
+	}
+
+	const icons8 = s => {
+		return finder({
+			url: "https://icons8.com/icons/set/" + s.toLowerCase(),
+			selector: "img[data-image-id]"
+		});
+	}
+
+	switch (o.service) {
+		case "iconfinder": 
+			return iconfinder(o.query);
+		case "flaticon":
+			return flaticon(o.query);
+		case "icons8":
+			return icons8(o.query);
+	}
+}
+
+function getMonogramIcons(str, count=10) {
+
+	let fonts = "Arial,Verdana,Helvetica,Tahoma,Trebuchet MS,Times New Roman,Georgia,Garamond,Courier New,Brush Script MT".split(",");
+
+	let _urls = [];
+	let palette = palettes.map(p => p.color).join("-");
+	let colors = palette.split('-');
+
+	let randomColors = [];
+	for ( let i=0;i<count;i++) {
+		randomColors.push(colors.splice([Math.floor(Math.random()*colors.length)],1));
+	}
+
+	randomColors.forEach( c => {
+		_urls.push(createCustomIcon({
+			text: str.charAt(0).toUpperCase(), 
+			backgroundColor: '#' + c,
+			fontFamily: fonts[Math.floor(Math.random()*fonts.length)]
+		}));
+	});
+
+	return _urls;
+}

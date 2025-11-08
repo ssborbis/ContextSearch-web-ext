@@ -1176,7 +1176,7 @@ SECTION {
 	width:100%;
 }
 #folderFormTable TD {
-	padding:5px 20px;
+	padding:1px 20px;
 	white-space: nowrap;
 }	
 #folderFormTable TD:nth-child(2) {
@@ -1482,15 +1482,11 @@ SECTION {
 }
 
 .editForm .contexts LABEL {
-	display: inline;
 	border-radius: 4px;
 	padding: 2px 8px;
 	background-color: var(--bg-color1);
 	margin: 2px;
-	display: inline-block;
 	font-size: 7pt;
-	white-space: nowrap;
-	flex-grow:1;
 }
 
 .editForm .contexts INPUT {
@@ -1839,4 +1835,13 @@ INPUT::placeholder {
 .defaultEngineMarker {
 	color:gold;
 	padding:0 8px 0 2px;
+}
+
+.hide {
+	display:none !important;
+}
+
+fieldset {
+	border:none;
+	padding:0;
 }

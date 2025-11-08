@@ -611,7 +611,7 @@ function buildSearchEngineContainer() {
 				pas.title = i18n("PostAppScriptTooltip");
 
 				_form.template.parentNode.insertBefore(cwd, _form.template.nextSibling);
-				_form.searchform.parentNode.insertBefore(_form.searchform, cwd.nextSibling);
+				cwd.parentNode.insertBefore(_form.searchform, cwd.nextSibling);
 
 				(() => {
 					let div = document.createElement('div');
@@ -2622,58 +2622,8 @@ function createEditForm(o) {
 			overdiv.className = 'overDiv';
 			document.body.appendChild(overdiv);
 
-			let spinner = new Image();
-			spinner.src = 'icons/spinner.svg';
-			spinner.style = 'height:64px;width:64px;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10000';
-			overdiv.appendChild(spinner);
-
 			let form = finder.closest("form");
 			form.parentNode.classList.add('blur');
-
-			let url;
-			let urls = [];
-			try {
-				url = new URL(form.searchform.value || form.template.value);
-				urls = await findFavicons(url.origin);
-
-				// include the current icon URI in the picker
-				if ( form.iconURL.value && !urls.includes(form.iconURL.value))
-					urls.push(form.iconURL.value);
-
-			} catch( error ) {
-				console.log("error fetching favicons");
-			}
-
-			if ( form.node && form.node.type === 'oneClickSearchEngine' ) {
-				let defaultIcon = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: form.node.title}).then( en => en.favIconUrl);
-				if ( defaultIcon ) urls.push( defaultIcon );
-			}
-
-			function getCustomIconUrls() {
-
-				let fonts = "Arial,Verdana,Helvetica,Tahoma,Trebuchet MS,Times New Roman,Georgia,Garamond,Courier New,Brush Script MT".split(",");
-
-				let _urls = [];
-				let palette = palettes.map(p => p.color).join("-");
-				let colors = palette.split('-');
-
-				let randomColors = [];
-				for ( let i=0;i<10;i++) {
-					randomColors.push(colors.splice([Math.floor(Math.random()*colors.length)],1));
-				}
-
-				randomColors.forEach( c => {
-					_urls.push(createCustomIcon({
-						text: form.node.title.charAt(0).toUpperCase(), 
-						backgroundColor: '#' + c,
-						fontFamily: fonts[Math.floor(Math.random()*fonts.length)]
-					}));
-				});
-
-				return _urls;
-			}
-
-			spinner.parentNode.removeChild(spinner);
 
 			let div = document.createElement('div');
 			div.id = "faviconPickerContainer";
@@ -2683,6 +2633,34 @@ function createEditForm(o) {
 
 			overdiv.offsetWidth;
 			overdiv.style.opacity = 1;
+
+			async function getFavicons() {
+				let url;
+				let urls = [];
+
+				try {
+					url = new URL(form.searchform.value || form.template.value);
+					urls = await findFavicons(url.origin);
+
+				} catch( error ) {
+					console.log("error fetching favicons");
+				}
+
+				// include the current icon URI in the picker
+				if ( form.iconURL.value ) urls.push(form.iconURL.value);
+
+				if ( form.node && form.node.type === 'oneClickSearchEngine' ) {
+					let defaultIcon = await browser.runtime.sendMessage({action: "getFirefoxSearchEngineByName", name: form.node.title}).then( en => en.favIconUrl);
+					if ( defaultIcon ) urls.unshift( defaultIcon );
+				}
+
+				urls = [...new Set(urls)];
+
+				// pad with monograms
+				urls = urls.concat(getMonogramIcons(form.node.title, 10 - urls.length) );
+
+				return urls;
+			}
 
 			function makeFaviconPickerBoxes(urls) {
 
@@ -2711,9 +2689,10 @@ function createEditForm(o) {
 					}
 
 					img.onerror = function() {
-						box.parentNode.removeChild(box);
-						if ( !div.querySelector('.faviconPickerBox') )
-							makeFaviconPickerBoxes(getCustomIconUrls());
+						img.src = getMonogramIcons(form.node.title, 1);
+						// box.parentNode.removeChild(box);
+						// if ( !div.querySelector('.faviconPickerBox') )
+						// 	makeFaviconPickerBoxes(getMonogramIcons(form.node.title));
 					}
 
 					img.src = _url;
@@ -2745,18 +2724,36 @@ function createEditForm(o) {
 
 			overdiv.onclick = close;
 
-			if ( !urls.length ) urls = getCustomIconUrls();
-
 			function showMoreButton() {
-				let more = document.createElement('div');
-				more.innerText = i18n('searchIconFinder');
-				more.style = "position:absolute;bottom:0;right:10px;cursor:pointer;user-select:none"
-				div.appendChild(more);
 
-				more.addEventListener('click', async e => {
-					more.style.display = 'none';
+				let selectIconProvider = document.createElement('select');
+				selectIconProvider.className = "inputNice";
+				selectIconProvider.style = "width:auto;display:block;cursor:pointer;user-select:none;margin:auto";
+				selectIconProvider.innerHTML = `
+					<option value="default">Default</option>
+					<option value="iconfinder">iconfinder.com</option>
+					<option value="icons8">icons8.com</option>
+					<option value="flaticon">flaticon.com</option>
+				`;
+
+				div.insertBefore(selectIconProvider, div.firstChild);
+
+				selectIconProvider.addEventListener('click', e => {
 					e.stopPropagation();
-					makeFaviconPickerBoxes([browser.runtime.getURL('icons/spinner.svg')]);
+				});
+
+				selectIconProvider.addEventListener('change', async e => {
+					//selectIconProvider.style.display = 'none';
+					e.stopPropagation();
+					e.preventDefault();
+					e.stopImmediatePropagation();
+
+					// default case, grab favicons or canvas favicons
+					if ( selectIconProvider.value == "default" ) {
+						return makeFaviconPickerBoxes(await getFavicons());
+					}
+
+					makeFaviconPickerBoxes([browser.runtime.getURL('icons/spinner2.svg')]);
 
 					let searchTerms = ( form.shortName ) ? form.shortName.value.trim() : form.node.title;
 
@@ -2766,18 +2763,18 @@ function createEditForm(o) {
 						searchTerms = window.prompt(i18n("RefineSearch"), searchTerms);
 
 						if ( !searchTerms ) { // prompt is cancelled, use generated
-							makeFaviconPickerBoxes(getCustomIconUrls());
-							break;
+							return makeFaviconPickerBoxes(await getFavicons());
 						}
 
-						iconUrls = await browser.runtime.sendMessage({action:"getIconsFromIconFinder", searchTerms:searchTerms});
+						iconUrls = await findIcons({service: selectIconProvider.value, query: searchTerms});
 					}	
 
 					makeFaviconPickerBoxes(iconUrls);			
 				});
 			}
 
-			makeFaviconPickerBoxes(urls);
+			makeFaviconPickerBoxes([browser.runtime.getURL('icons/spinner2.svg')]);
+			makeFaviconPickerBoxes(await getFavicons());
 			showMoreButton();
 		}
 	}
@@ -2847,6 +2844,11 @@ function createEditForm(o) {
 	addIconPickerListener(_form.iconPicker);
 	addFavIconFinderListener(_form.querySelector("[name='faviconFinder']"));
 	_form.addFaviconBox(getIconFromNode(o.node));
+
+	// preload favicons when tab is activated
+	_form.querySelector('[name="faviconBox"]').addEventListener('click', e => {
+		//_form.querySelector("[name='faviconFinder']").click();
+	})
 
 	let hkb = createHotkeyButton(o.node, rootElement);
 	_form.querySelector("[name='hotkey']").appendChild(hkb);

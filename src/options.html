@@ -1835,10 +1835,11 @@
 							<label data-i18n="Name" class="formLabel">$</label><input name="shortName" type="text" class="inputNice" />
 							<label data-i18n="Description" class="formLabel">$</label><textarea name="description" type="text" class="inputNice"></textarea>
 							<label data-i18n="Template" title="$templateCheatSheet" class="formLabel">$</label><textarea name="template" type="text" class="inputNice"></textarea>
-							<label data-i18n="Regex" title="$RegexTooltip" class="formLabel">$</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
 							
-							<label data-i18n="FormPath" class="formLabel">$</label><input name="searchform" type="text" class="inputNice" />
-							<label data-i18n="POSTparams" class="formLabel">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
+							<fieldset id="post_fields">
+								<label data-i18n="FormPath" class="formLabel">$</label><input name="searchform" type="text" class="inputNice" />
+								<label data-i18n="POSTparams" class="formLabel">$</label><textarea name="post_params" type="text" class="inputNice" ></textarea>
+							</fieldset>
 
 							<div style="display:inline-block">
 							<label data-i18n="Method" class="formLabel">$</label><select name="_method" class="inputNice">
@@ -1846,7 +1847,7 @@
 									<option value="POST">POST</option>
 								</select>
 							</div>
-							
+
 							<div style="display:inline-block">
 							<label data-i18n="Encoding" class="formLabel">$</label><select name="_encoding" class="inputNice">
 								<option value="UTF-8">utf-8</option>
@@ -1864,13 +1865,16 @@
 								<option value="none">no encoding</option>
 							</select>
 							</div>
+
+							<label data-i18n="Regex" title="$RegexTooltip" class="formLabel">$</label><textarea name="searchRegex" type="text" class="inputNice" placeholder='e.g. /\s/_/g or "\\s","_"'></textarea>
+							
 						</div>
 						<div data-tabgroup="formtabs" id="iconURI" class="tabcontent" data-tabid="formTabIcon">
 							
 							<div>
-								<label data-i18n="IconURI" class="formLabel">$</label><div style="display:flex;margin-right:16px">
+								<label data-i18n="Icon" class="formLabel">$</label><div style="display:flex;margin-right:16px">
 									<input name="iconURL" type="text" class="inputNice" style="flex-grow:2" />
-									<button type="button" style="width:auto;height:30px;margin-top:-8px;margin-left:4px"><tool data-icon="back.svg" style="height:16px;vertical-align: middle;"></tool></button>
+									<button type="button" style="width:auto;height:30px;margin-top:-8px;margin-left:4px"><tool data-icon="reload.svg" style="height:16px;vertical-align: middle;"></tool></button>
 								</div>
 							</div>
 

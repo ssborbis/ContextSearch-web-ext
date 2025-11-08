@@ -962,6 +962,9 @@ async function notify(message, sender, sendResponse) {
 				return urls;
 			});
 
+		case "findIcons":
+			return findIcons(message.args);
+
 		case "cancelQuickMenuRequest":
 			sendMessageToTopFrame();
 			break;
@@ -1414,9 +1417,6 @@ async function executeExternalProgram(info) {
 			console.error("regex replace failed");
 		}
 	}
-
-	// let path = node.path.replace(/{searchTerms}/g, searchTerms)
-	// 	.replace(/{url}/g, info.tab.url);
 
 	let path = await replaceOpenSearchParams({
 		template: node.path, 
