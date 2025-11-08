@@ -170,6 +170,13 @@ function buildSearchEngineContainer() {
 					
 					return URLs;	
 				}
+
+				function setPostFieldsVisiblity() {
+					const isPost = edit_form._method.value == "POST";
+					edit_form.querySelector("#post_fields").classList.toggle("hide", !isPost);
+				}
+
+				edit_form._method.addEventListener("change", setPostFieldsVisiblity);
 				
 				// Check bad form values
 				function checkFormValues() {
@@ -280,6 +287,8 @@ function buildSearchEngineContainer() {
 				edit_form.searchRegex.value = se.searchRegex || "";
 				edit_form.matchRegex.value = se.matchRegex || "";
 				edit_form.searchCode.value = se.searchCode || "";
+
+				setPostFieldsVisiblity();
 
 				// setContexts(edit_form, node.contexts);
 								
