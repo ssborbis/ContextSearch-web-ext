@@ -69,6 +69,14 @@ async function replaceOpenSearchParams(options) {
 	//  .replace(/{.+?}/g, ""); 	// all others
 	;
 
+	if ( /(?<!\^)({clipboard}|%c)/.test(template)) {
+
+		// clipboard needs to be retreived from session storage from a previous user action
+		let clipboard = await CopyPaste.getSessionClipboard();
+		debug('clipboard', clipboard);
+		template = template.replace(/{clipboard}|%c/g, clipboard);
+	}
+
 	const csParams = [	
 		"%sl",
 		"{searchterms}",
@@ -96,14 +104,6 @@ async function replaceOpenSearchParams(options) {
 		"%c",
 		"{clipboard}"
 	];
-
-	if ( /(?<!\^)({clipboard}|%c)/.test(template)) {
-
-		// clipboard needs to be retreived from session storage from a previous user action
-		let clipboard = await CopyPaste.getSessionClipboard();
-		debug('clipboard', clipboard);
-		template = template.replace(/{clipboard}|%c/g, clipboard);
-	}
 
 	// remove prepended ^ from params
 	csParams.forEach(p => {
