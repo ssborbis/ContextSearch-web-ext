@@ -2602,8 +2602,8 @@ function createEditForm(o) {
 			img.src = url || form.iconURL.value || defaultIcon;
 		}
 
-		// update the favicon when the user changes the url
-		form.iconURL.addEventListener('change', () => {
+		// update the favicon when the reload button is clicked
+		form.querySelector('[name="reloadIcon"]').addEventListener('click', async() => {
 			form.setIcon();
 			form.save.classList.add('changed');
 			form.saveclose.classList.add('changed');
