@@ -1281,6 +1281,8 @@ function executeBookmarklet(info) {
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || self.searchTerms);
 
+	self.searchTerms = searchTerms;
+	
 	// run as script
 	if ( info.node.searchCode ) {
 
