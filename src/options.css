@@ -1837,11 +1837,11 @@ INPUT::placeholder {
 	padding:0 8px 0 2px;
 }
 
-.hide {
-	display:none !important;
-}
-
 fieldset {
 	border:none;
 	padding:0;
+}
+
+fieldset.hide {
+	display:none !important;
 }
