@@ -15,7 +15,7 @@ var defaultEngines = [
 	{
 		"type": "searchEngine",
 		"searchForm": "https://www.amazon.com/",
-		"template": "https://www.amazon.com/exec/obidos/external-search/?field-keywords={searchTerms}&ie={inputEncoding}&mode=blended",
+		"template": "https://www.amazon.com/s?k=%s",
 		"icon": "/defaultEnginesIcons/amazon.svg",
 		"title": "Amazon.com",
 		"method": "GET",
