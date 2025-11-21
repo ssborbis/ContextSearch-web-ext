@@ -1832,10 +1832,12 @@ async function openSearch(info) {
 	
 	function executeSearchCode(tabId) {
 		if ( !se.searchCode ) return;
+		self.searchTerms = searchTerms;
 
 		executeUserScript({
 			tabId: tabId, 
-			code: 'searchTerms = "' + escapeDoubleQuotes(searchTerms) + '"; ' + se.searchCode,
+			//code: '{ const searchTerms = "' + escapeDoubleQuotes(searchTerms) + '"; ' + se.searchCode + '}',
+			code: se.searchCode,
 			nodeId: node.id
 		});
 	}
@@ -1878,7 +1880,7 @@ async function openSearch(info) {
 				browser.tabs.onUpdated.removeListener(listener);
 				
 				highlightSearchTermsInTab(__tab, searchTerms);
-				executeSearchCode(_tab.id);
+				executeSearchCode(__tab.id);
 
 				return;
 			}
