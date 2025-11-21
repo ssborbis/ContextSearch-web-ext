@@ -420,6 +420,16 @@ function buildSearchEngineContainer() {
 						se.contexts = getContexts(edit_form);
 						node.contexts = se.contexts;
 						setRowContexts(li);
+
+						// while searchEngines still exists, update the object
+						if ( userOptions.searchEngines ) {
+							let index = userOptions.searchEngines.findIndex( o => o.id === se.id );
+
+							if ( index != -1 ) {
+								userOptions.searchEngines[index] = se;
+								console.log('updated userOptions.searchEngines @ index=' + index);
+							}
+						}
 						
 						// force a save even if the nodeTree is unchanged
 						updateNodeList(true);

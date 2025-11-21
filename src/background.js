@@ -166,7 +166,7 @@ browser.runtime.onInstalled.addListener( details => {
 				});
 			});
 		}
-	});
+	}, {once: true});
 });
 
 // trigger zoom event
@@ -215,13 +215,16 @@ async function notify(message, sender, sendResponse) {
 	switch(message.action) {
 
 		case "saveUserOptions":
-			userOptions = message.userOptions;
+			debounce(async () => {
+				userOptions = message.userOptions;
 
-			console.log("saveUserOptions", message.source || "", sender.tab.url);
+				console.log("saveUserOptions", message.source || "", sender.tab.url);
 
-			return browser.storage.local.set({"userOptions": userOptions}).then(() => {
-				notify({action: "updateUserOptions", source: sender});
-			});
+				return browser.storage.local.set({"userOptions": userOptions}).then(() => {
+					notify({action: "updateUserOptions", source: sender});
+				});
+			}, 250, "saveUserOptions");
+			return;
 
 		case "updateUserOptions":
 
@@ -1282,7 +1285,7 @@ function executeBookmarklet(info) {
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || self.searchTerms);
 
 	self.searchTerms = searchTerms;
-	
+
 	// run as script
 	if ( info.node.searchCode ) {
 
