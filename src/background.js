@@ -215,7 +215,7 @@ async function notify(message, sender, sendResponse) {
 	switch(message.action) {
 
 		case "saveUserOptions":
-			debounce(async () => {
+		//	debounce(async () => {
 				userOptions = message.userOptions;
 
 				console.log("saveUserOptions", message.source || "", sender.tab.url);
@@ -223,8 +223,8 @@ async function notify(message, sender, sendResponse) {
 				return browser.storage.local.set({"userOptions": userOptions}).then(() => {
 					notify({action: "updateUserOptions", source: sender});
 				});
-			}, 250, "saveUserOptions");
-			return;
+		//	}, 250, "saveUserOptions");
+		//	return;
 
 		case "updateUserOptions":
 

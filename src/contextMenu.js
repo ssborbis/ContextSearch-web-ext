@@ -221,7 +221,7 @@ async function buildContextMenu(searchTerms) {
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
 
-	if ( !tab.url ) {
+	if ( !tab?.url ) {
 		console.log("Error reading active tab", tab);
 	}
 
@@ -610,7 +610,7 @@ async function updateSelectDomains() {
 	let tabs = await browser.tabs.query({currentWindow: true, active: true});
 	let tab = tabs[0];
 
-	if ( !tab.url ) {
+	if ( !tab?.url ) {
 		return debug("Error reading active tab", tab);
 	}
 
