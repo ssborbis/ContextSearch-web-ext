@@ -146,6 +146,7 @@ async function promptForImage() {
 }
 
 function loadRemoteIcon(options) {
+
 	
 	return new Promise( (resolve,reject) => {
 	
@@ -162,47 +163,53 @@ function loadRemoteIcon(options) {
 		// when favicons fail, construct a simple image using canvas
 	
 		var icons = [];
-		for (let se of searchEngines) {		
-			var img = new Image();
-			img.favicon_urls = [];		
-			img.favicon_monogram = se.title.charAt(0).toUpperCase();
-			var url = "";
+		for (let se of searchEngines) {
+
+			// chrome no longer supports Image() constructor in workers
 			try {
-				url = new URL(se.template || se.searchForm || window.location.href);
-			} catch ( err ) {}
-			// security policy may mean only the favicon may be converted by canvas
-			img.favicon_urls = [
-				url.origin + "/favicon.ico",
-				"https://plus.google.com/_/favicon?domain=" + url.hostname,				
-			];
+				var img = new Image();
+				img.favicon_urls = [];		
+				img.favicon_monogram = se.title.charAt(0).toUpperCase();
+				var url = "";
+				try {
+					url = new URL(se.template || se.searchForm || window.location.href);
+				} catch ( err ) {}
+				// security policy may mean only the favicon may be converted by canvas
+				img.favicon_urls = [
+					url.origin + "/favicon.ico",
+					"https://plus.google.com/_/favicon?domain=" + url.hostname,				
+				];
 
-			if (se.icon && se.icon.startsWith("resource") || se.icon == "") 
-				img.src = img.favicon_urls.shift();
-			else 
-				img.src = se.icon;
+				if (se.icon && se.icon.startsWith("resource") || se.icon == "") 
+					img.src = img.favicon_urls.shift();
+				else 
+					img.src = se.icon;
 
-			img.onload = function() {
-				this.base64String = imageToBase64(this, userOptions.cacheIconsMaxSize);
+				img.onload = function() {
+					this.base64String = imageToBase64(this, userOptions.cacheIconsMaxSize);
+					
+					// image was loaded but canvas was tainted
+					if (!this.base64String) {
+						img.src = browser.runtime.getURL("icons/search.svg");
+						this.onerror();
+					}
+				};
 				
-				// image was loaded but canvas was tainted
-				if (!this.base64String) {
-					img.src = browser.runtime.getURL("icons/search.svg");
-					this.onerror();
-				}
-			};
-			
-			img.onerror = function() {			
-				if (this.favicon_urls.length !== 0) {
-					console.log("Failed getting favicon at " + this.src);
-					this.src = this.favicon_urls.shift();
-					console.log("Trying favicon at " + this.src);
-				}
-				else {
-					this.base64String = createCustomIcon({text: this.favicon_monogram});
-					this.failed = true;
-				}
-			};
-			icons.push(img);
+				img.onerror = function() {			
+					if (this.favicon_urls.length !== 0) {
+						console.log("Failed getting favicon at " + this.src);
+						this.src = this.favicon_urls.shift();
+						console.log("Trying favicon at " + this.src);
+					}
+					else {
+						this.base64String = createCustomIcon({text: this.favicon_monogram});
+						this.failed = true;
+					}
+				};
+				icons.push(img);
+			} catch (error) {
+				console.log(error);
+			}
 		}
 		
 		var remoteIconsInterval = setInterval(function() {
