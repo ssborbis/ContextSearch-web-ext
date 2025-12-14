@@ -805,18 +805,17 @@ async function notify(message, sender, sendResponse) {
 			// return if history is disabled
 			if ( ! userOptions.searchBarEnableHistory ) return;
 
-			// remove first entry if over limit
-			if (userOptions.searchBarHistory.length >= userOptions.searchBarHistoryLength)
-				userOptions.searchBarHistory.shift();
-
-			(() => { // ignore duplicates
+			{ // ignore duplicates
 				let index = userOptions.searchBarHistory.indexOf(terms);
 				if ( index !== -1 )
 					userOptions.searchBarHistory.splice(index, 1);
-			})();
+			}
 			
 			// add new term
 			userOptions.searchBarHistory.push(terms);
+
+			// slice the array
+			userOptions.searchBarHistory = userOptions.searchBarHistory.slice(-userOptions.searchBarHistoryLength);
 
 			// update prefs
 			notify({action: "saveUserOptions", "userOptions": userOptions, source: "addToHistory" });
