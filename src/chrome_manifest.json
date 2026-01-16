@@ -38,6 +38,7 @@
 		"storage",
 		"tabs",
 		"unlimitedStorage",
+		"webNavigation",
 		"scripting",
 		"userScripts",
 		"sidePanel"
@@ -47,8 +48,7 @@
 		"clipboardWrite",
 		"clipboardRead",
 		"nativeMessaging",
-		"downloads",
-		"userScripts"
+		"downloads"
 	],
 	"host_permissions": [
 		"<all_urls>"

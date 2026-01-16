@@ -1,8 +1,9 @@
 // ContextSearch web-ext - Enhanced iframe compatibility
 (function() {
     'use strict';
-    
-    if (window !== window.top) {
+    if ( !['http:', 'https:', 'about:'].includes(location.protocol)) {
+        return;
+    } else if (window !== window.top) {
         // For all iframes: inject on click (original behavior)
         window.addEventListener('mousedown', e => {
             console.log('iframe received focus');

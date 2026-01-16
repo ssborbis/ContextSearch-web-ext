@@ -182,11 +182,11 @@ function makeMenuWindow(o) {
 	qmc.setAttribute('allow', "clipboard-read; clipboard-write");
 	
 	qmc.openingCoords = o.coords;
-	
-	getShadowRoot().appendChild(qmc);
 
 	qmc.onload = o.onload;
 	qmc.src = o.src;
+
+	getShadowRoot().appendChild(qmc);
 
 	return qmc;
 }
