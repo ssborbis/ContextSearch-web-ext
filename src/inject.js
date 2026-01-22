@@ -654,7 +654,9 @@ document.addEventListener("fullscreenchange", e => {
 
 			let clipboard = await CopyPaste.read();
 
-	    	if (editBox.selectionStart || editBox.selectionStart == '0') {
+			if ( !clipboard ) return;
+
+	    	if (editBox.selectionStart || editBox.selectionStart == 0) {
 		        var startPos = editBox.selectionStart;
 		        var endPos = editBox.selectionEnd;
 		        editBox.value = editBox.value.substring(0, startPos)
