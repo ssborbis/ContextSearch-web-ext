@@ -638,3 +638,31 @@ document.addEventListener("fullscreenchange", e => {
 
 	}
 });
+
+// mouse click paste for input boxes
+{
+	if ( userOptions.pasteOnMouseButton != -1 ) {
+		document.addEventListener('mousedown', async e => {
+
+			if ( e.button != userOptions.pasteOnMouseButton) return;
+
+			let editBox = e.target.closest('INPUT, TEXTAREA, [contenteditable]');
+
+			if ( !editBox ) return;
+
+			e.preventDefault();
+
+			let clipboard = await CopyPaste.read();
+
+	    	if (editBox.selectionStart || editBox.selectionStart == '0') {
+		        var startPos = editBox.selectionStart;
+		        var endPos = editBox.selectionEnd;
+		        editBox.value = editBox.value.substring(0, startPos)
+		            + clipboard
+		            + editBox.value.substring(endPos, editBox.value.length);
+		    } else {
+		        editBox.value += clipboard;
+		    }
+		});
+	}
+}

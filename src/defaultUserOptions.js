@@ -344,5 +344,6 @@ const defaultUserOptions = {
 	contextMenuOnMouseDown: false,
 	resultsNavigatorSkipMenu: false,
 	multisearchIncludeHidden: false,
-	defaultEngine: ""
+	defaultEngine: "",
+	pasteOnMouseButton: -1
 };
