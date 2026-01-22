@@ -1,7 +1,7 @@
 // ContextSearch web-ext - Enhanced iframe compatibility
 (function() {
     'use strict';
-    if ( !['http:', 'https:', 'about:'].includes(location.protocol)) {
+    if ( !['http:', 'https:', 'about:', 'file:'].includes(location.protocol)) {
         return;
     } else if (window !== window.top) {
         // For all iframes: inject on click (original behavior)
@@ -24,14 +24,3 @@
         }
     }
 })();
-
-// if ( window && window !== window.top ) {
-// 	window.addEventListener('mousedown', e => {
-// 		console.log('iframe received focus');
-// 		browser.runtime.sendMessage({action:"injectContentScripts"});
-// 	}, {once: true});
-// } else {
-// 	// Skip about:blank on tpo frames for now. Allow on iframes (see Zimba webmail)
-// 	if (window?.location?.href !== 'about:blank');
-// 		browser.runtime.sendMessage({action:"injectContentScripts"});
-// }
