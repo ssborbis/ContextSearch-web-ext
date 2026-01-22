@@ -419,6 +419,8 @@ function openFindBar(options) {
 		}
 		
 		fb = document.createElement('iframe');
+
+		fb.src = browser.runtime.getURL("/findbar.html");
 		fb.id = 'CS_findBarIframe';
 		fb.style.setProperty('--cs-custom-scale', userOptions.highLight.findBar.scale);
 
@@ -440,8 +442,6 @@ function openFindBar(options) {
 			resolve(fb);
 		}
 
-		fb.src = browser.runtime.getURL("/findbar.html");
-		
 		function saveFindBarOptions(o) {
 			userOptions.highLight.findBar.offsets = o.lastOffsets;
 			userOptions.highLight.findBar.position = o.dockedPosition;

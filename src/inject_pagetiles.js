@@ -7,9 +7,10 @@ function openPageTiles(message) {
 	setTimeout(() => {
 
 		let iframe = document.createElement('iframe');
+
+		iframe.src = browser.runtime.getURL('/pagetiles.html');
 		iframe.id = "CS_pageTilesIframe";
 		iframe.setAttribute("allowtransparency", "true");
-		getShadowRoot().appendChild(iframe);
 
 		// add listener after iframe is loaded to avoid closing on chrome
 		// chrome fires dragend when over iframe
@@ -19,7 +20,7 @@ function openPageTiles(message) {
 			document.body.classList.add('CS_blur');
 		}
 
-		iframe.src = browser.runtime.getURL('/pagetiles.html');
+		getShadowRoot().appendChild(iframe);
 
 		if ( window.chrome && !message.hotkey ) {
 			let od = dragOverIframeDiv(iframe);

@@ -103,17 +103,14 @@ function openSideBar(options) {
 	if ( openingTab && !userOptions.sideBar.widget.enabled ) openingTab.parentNode.removeChild(openingTab);
 
 	let iframe = document.createElement('iframe');
+
+	iframe.src = browser.runtime.getURL('/searchbar.html');
 	iframe.id = 'CS_sbIframe';
 	iframe.style.opacity = 0;
 	iframe.style.width = "0px";
-
 	iframe.setAttribute('allow', "clipboard-read; clipboard-write");
-
 	iframe.style.setProperty('--cs-custom-scale', userOptions.sideBar.scale);
-
 	iframe.allowTransparency = true;
-
-	getShadowRoot().appendChild(iframe);
 	
 	function saveSideBarOptions(o) {
 		userOptions.sideBar.offsets = o.lastOffsets;
@@ -236,8 +233,8 @@ function openSideBar(options) {
 		});
 	
 	}
-	
-	iframe.src = browser.runtime.getURL('/searchbar.html');
+
+	getShadowRoot().appendChild(iframe);
 	
 	if ( !options.noSave ) saveState(true);
 

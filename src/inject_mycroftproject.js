@@ -31,15 +31,16 @@ function showButtons() {
 
 		img.onclick = function(e) {
 			let iframe = document.createElement('iframe');
+
+			iframe.src = link + "#addtocontextsearch";
 			iframe.style.display = 'none';
-			document.body.appendChild(iframe);
 
 			// injection into iframes needs triggering
 			iframe.onload = function() {
 				iframe.contentDocument.body.dispatchEvent(new MouseEvent('mousedown', {bubbles: true}));
 			}
 
-			iframe.src = link + "#addtocontextsearch";
+			document.body.appendChild(iframe);
 		}
 
 		link.parentNode.insertBefore(img, link);
