@@ -132,6 +132,8 @@ function closeQuickMenu(eventType) {
 		quickMenuObject.locked
 	) return false;
 
+	if ( isQuickMenuLocked() ) return false;
+
 	// remove qm child windows
 	closeAllFolders();
 	
@@ -829,6 +831,9 @@ document.addEventListener('dragstart', e => {
 }, {capture: true});
 
 function lockQuickMenu() {
+
+	quickMenuObject.locked = true;
+
 	var qmc = getQM();
 	
 	if ( !qmc ) return;
@@ -836,9 +841,7 @@ function lockQuickMenu() {
 	lock();
 		
 	function lock() {
-		qmc.contentWindow.postMessage({action: "lock" }, browser.runtime.getURL('/quickmenu.html'));
-		quickMenuObject.locked = true;
-		
+		qmc.contentWindow.postMessage({action: "lock" }, browser.runtime.getURL('/quickmenu.html'));		
 		removeUnderDiv();
 	}
 }
@@ -856,6 +859,11 @@ function unlockQuickMenu() {
 	delete window.quickMenuLastOffsets;
 	
 	addUnderDiv();
+}
+
+function isQuickMenuLocked() {
+	let tool = getUserTool("lock");
+	return (tool && tool.persist && tool.on);
 }
 
 // unlock if quickmenu is closed

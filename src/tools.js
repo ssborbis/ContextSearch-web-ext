@@ -128,7 +128,7 @@ const QMtools = {
 			
 			if ( on ) {
 				// wait for first resize event to lock menu
-				document.addEventListener('resizeDone', () => {
+				document.addEventListener('resizeDone', () => {	
 					tile.dataset.locked = quickMenuObject.locked = true;
 					sendMessage({action: "lockQuickMenu"});
 				}, {once: true});
