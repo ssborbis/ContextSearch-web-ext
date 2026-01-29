@@ -225,7 +225,7 @@ async function buildContextMenu(searchTerms) {
 		console.log("Error reading active tab", tab);
 	}
 
-	//let domainPaths = getDomainPaths(tab.url);
+	let domainPaths = getDomainPaths(tab?.url);
 
 	if (userOptions.contextMenuShowAddCustomSearch) {
 		let createProperties = {
@@ -614,7 +614,7 @@ async function updateSelectDomains() {
 		return debug("Error reading active tab", tab);
 	}
 
-	let domainPaths = getDomainPaths(tab.url);
+	let domainPaths = getDomainPaths(tab?.url);
 
 	// remove old menu children
 	self.contextMenuSelectDomainChildren.forEach(id => {
