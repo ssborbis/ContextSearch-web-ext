@@ -176,6 +176,8 @@ function getDomains(url) {
 
 function getDomainPaths(_url) {
 
+	if ( !_url ) return [];
+
 	let url;
 	
 	if ( typeof _url === 'string' ) {
