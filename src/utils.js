@@ -345,7 +345,7 @@ class CopyPaste {
 	  ]);
 	}
 
-	static async copyRich() {
+	static async copyRich(autoCopy) {
 
 		const selection = document.getSelection();
 
@@ -368,12 +368,29 @@ class CopyPaste {
 	    const tempDiv = document.createElement('div');
 	    tempDiv.appendChild(selectedHtml);  // Append the selected content to the div
 
+	    if ( autoCopy && userOptions.autoCopyTrim ) {
+	    	tempDiv.innerHTML = tempDiv.innerHTML.trim();
+			debug('Trimmed autocopy contents');
+		}
+
+	    // build clipboard blobs
+	    let plainBlob = new Blob([tempDiv.innerText], { type: "text/plain" });
+	    let htmlBlob = new Blob([tempDiv.innerHTML], { type: "text/html" });
+
+	    let clipboardItemObject = {
+        	"text/plain": plainBlob,
+          	"text/html": htmlBlob
+        }
+
+        // optionally remove rich text from clipboard object
+	    if ( autoCopy && userOptions.autoCopyPlainTextOnly ) {
+	    	delete clipboardItemObject["text/html"];
+	    	debug("Plaintext only");
+	    }
+
 	    // Copy the content to the clipboard using the Clipboard API
 	    await navigator.clipboard.write([
-	        new ClipboardItem({
-	        	"text/plain": new Blob([tempDiv.innerText], { type: "text/plain" }),
-	            "text/html": new Blob([tempDiv.innerHTML], { type: "text/html" })
-	        })
+	        new ClipboardItem(clipboardItemObject)
 	    ])
 	    .then(() => {
 	        console.log('Copied to clipboard successfully!');
@@ -385,7 +402,7 @@ class CopyPaste {
 	    });
 	} 
 
-	static copyFallback() {
+	static copyFallback(autoCopy) {
 		let active = document.activeElement;
 		const text = getRawSelectedText(document.activeElement) || quickMenuObject.searchTerms;
 
@@ -437,6 +454,11 @@ class CopyPaste {
 
 		t.value = text;
 
+		if ( autoCopy && userOptions.autoCopyTrim ) {
+    	t.value = text.trim();
+			console.log('trimmed autocopy contents');
+		}
+
 		document.body.appendChild(t);
 		t.focus();
 		t.select();
@@ -463,7 +485,8 @@ class CopyPaste {
 		navigator.clipboard.write([item]);
 	}
 
-	static async copy(msg) {
+	static async copy(msg, autoCopy) {
+
 		if ( navigator?.clipboard ) {
 			if ( ! await sendMessage({action: "hasPermission", permission: "clipboardWrite"}) ) {
 				return requestPermission("clipboardWrite");
@@ -477,9 +500,9 @@ class CopyPaste {
 			if ( msg ) 
 				return CopyPaste.write(msg);
 			else
-				return CopyPaste.copyRich();
+				return CopyPaste.copyRich(autoCopy);
 		}	else 
-			return CopyPaste.copyFallback();
+			return CopyPaste.copyFallback(autoCopy);
 	}
 
 	static setSessionClipboard(msg) {

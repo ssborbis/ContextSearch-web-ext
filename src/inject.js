@@ -71,7 +71,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 
 		case "copy":
-			return CopyPaste.copy();
+			return CopyPaste.copy(null, (message.autoCopy || false));
 
 		case "getQuickMenuObject":
 			sendResponse(quickMenuObject);

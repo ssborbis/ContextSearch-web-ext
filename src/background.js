@@ -735,7 +735,7 @@ async function notify(message, sender, sendResponse) {
 		}
 
 		case "copy":
-			await CopyPaste.copy(message.msg || self.searchTerms)
+			await CopyPaste.copy((message.msg || self.searchTerms), message.autoCopy)
 				.catch(error => {
 					debug(error);
 					return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});

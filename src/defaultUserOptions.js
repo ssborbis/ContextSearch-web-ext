@@ -345,5 +345,7 @@ const defaultUserOptions = {
 	resultsNavigatorSkipMenu: false,
 	multisearchIncludeHidden: false,
 	defaultEngine: "",
-	pasteOnMouseButton: -1
+	pasteOnMouseButton: -1,
+	autoCopyTrim: false,
+	autoCopyPlainTextOnly: false
 };
