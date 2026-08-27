@@ -497,7 +497,7 @@ class CopyPaste {
 				return CopyPaste.copyImage(quickMenuObject.searchTermsObject.image);
 			}
 
-			if ( msg ) 
+			if ( msg && !autoCopy ) // mozilla always returns a message, chrome does not. Check autoCopy
 				return CopyPaste.write(msg);
 			else
 				return CopyPaste.copyRich(autoCopy);
