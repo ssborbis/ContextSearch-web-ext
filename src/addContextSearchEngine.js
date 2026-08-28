@@ -194,7 +194,9 @@ function addSearchEnginePopup(data) {
 
 					simpleImportHandler(url, true);
 				}
-				if ( userOptions.askToAddNewEngineToFirefox )
+
+				// failing on newer versions of Firefox, so disabling for now
+				if ( false && userOptions.askToAddNewEngineToFirefox )
 					showMenu('simple_import');
 				else
 					closeCustomSearchIframe();

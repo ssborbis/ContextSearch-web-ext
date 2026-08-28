@@ -337,7 +337,16 @@ function buildSearchEngineContainer() {
 						+ "&SEARCHFORM=" + encodeURIComponent(encodeURI(edit_form.searchform.value))
 						+ "&VERSION=" + encodeURIComponent(browser.runtime.getManifest().version);
 					
-					sendMessage({action: "addSearchEngine", url:url});	
+					let link = document.createElement('link');
+					link.rel = "search";
+					link.type = "application/opensearchdescription+xml";
+					link.href = url;
+					link.title = edit_form.shortName.value;
+					document.head.appendChild(link);
+
+					alert(i18n("AddUsingFirefoxSearchBar"));
+
+					//sendMessage({action: "addSearchEngine", url:url});	
 				}
 				
 				edit_form.save.onclick = function() {
