@@ -2422,9 +2422,22 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 			li.style.display = null;
 			label.parentNode.style.display = null;
 			if ( !e.target.value ) continue;
-			if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase())) {
+
+			const parentLi = li.closest("UL").closest("LI");
+			const parentLabel = parentLi ? parentLi.querySelector(".label") : null;
+
+			if ( parentLi) console.log(label.innerText, parentLabel.innerText);
+
+			if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase()) ) {
 				if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
-				else li.style.display = 'none';
+				
+				// hide children if option is set and parent doesn't match
+				if  ( userOptions.searchEnginesManagerSearchShowFolderMatchChildren ) {
+					if (!parentLabel || ( parentLabel && !parentLabel.innerText.toLowerCase().includes(e.target.value.toLowerCase()) ) ) 
+						li.style.display = 'none';
+				} else { // hide children
+					li.style.display = 'none';
+				}
 			} else {
 				// show folder hierarchy
 				li.closest("UL").parentNode.querySelector('.header').style.display = null;

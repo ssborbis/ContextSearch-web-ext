@@ -347,5 +347,6 @@ const defaultUserOptions = {
 	defaultEngine: "",
 	pasteOnMouseButton: -1,
 	autoCopyTrim: false,
-	autoCopyPlainTextOnly: false
+	autoCopyPlainTextOnly: false,
+	searchEnginesManagerSearchShowFolderMatchChildren: false
 };
