@@ -348,5 +348,6 @@ const defaultUserOptions = {
 	pasteOnMouseButton: -1,
 	autoCopyTrim: false,
 	autoCopyPlainTextOnly: false,
-	searchEnginesManagerSearchShowFolderMatchChildren: false
+	searchEnginesManagerSearchShowFolderMatchChildren: false,
+	searchEnginesManagerStartCollapsed: false
 };

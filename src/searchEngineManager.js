@@ -2154,6 +2154,14 @@ function buildSearchEngineContainer() {
 		if ( document.getElementById('managerContainer').contains(e.target) ) return;			
 		clearSelectedRows();
 	});
+
+
+	if ( userOptions.searchEnginesManagerStartCollapsed ) {
+		setTimeout(() => {
+			let main_ec = $('#collapseAll');
+			main_ec.click();
+		}, 20);
+	}
 }
 
 async function removeNodesAndRows() {
