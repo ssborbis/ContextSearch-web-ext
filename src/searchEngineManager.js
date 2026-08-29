@@ -1662,8 +1662,17 @@ function buildSearchEngineContainer() {
 				li.parentNode.insertBefore(newLi, li);
 				
 			} else {
-				newNode = Object.assign({}, li.node);
+				newNode = JSON.parse(JSON.stringify(li.node));
 				newNode.id = gen();
+
+				if (newNode.type === 'folder') {
+					// set identifiers for any search engines in the new node tree
+					
+					traverseNodes(newNode, n => {
+						if ( n.type === 'searchEngine') n.id = gen();
+					});
+					setParents(newNode);
+				}
 			}
 			
 			if (!newNode) return;
