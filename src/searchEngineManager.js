@@ -1655,54 +1655,12 @@ function buildSearchEngineContainer() {
 			let newNode;
 			if (li.node.type === 'searchEngine') {
 
-				closeSubMenus(copy);
-				e.stopImmediatePropagation();
-				e.preventDefault();
-				
-				let _menu = document.createElement('div');
-				_menu.className = 'contextMenu subMenu';
+				let _newNode = Object.assign({}, li.node);
+				nodeInsertBefore(_newNode, li.node);
 		
-				let rect = copy.getBoundingClientRect();
+				let newLi = traverse(_newNode, li.parentNode);
+				li.parentNode.insertBefore(newLi, li);
 				
-				_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
-				_menu.style.top = rect.y + window.scrollY + "px";
-				
-				// add menu items
-				let item1 = document.createElement('div');
-				item1.className = 'menuItem';
-				item1.innerText = i18n('AsShortcut');
-				
-				item1.addEventListener('click', _e => {
-					let _newNode = Object.assign({}, li.node);
-					nodeInsertBefore(_newNode, li.node);
-			
-					let newLi = traverse(_newNode, li.parentNode);
-					li.parentNode.insertBefore(newLi, li);
-					
-					updateNodeList(true);
-					closeContextMenus();
-				});
-				
-				let item2 = document.createElement('div');
-				item2.className = 'menuItem';
-				item2.innerText = i18n('AsNewEngine');
-				
-				item2.addEventListener('click', _e => {
-					let _newNode = addNewEngine(li.node, true);
-					addNode(_newNode, li);
-					
-					updateNodeList(true);
-					closeContextMenus();
-				});
-				
-				[item1, item2].forEach( item => {
-					_menu.appendChild(item);
-				});
-				
-				document.body.appendChild(_menu);
-				openMenu(_menu);
-				return;
-
 			} else {
 				newNode = Object.assign({}, li.node);
 				newNode.id = gen();
@@ -1717,6 +1675,71 @@ function buildSearchEngineContainer() {
 			
 			updateNodeList();
 			closeContextMenus();
+
+			// old code for shortcuts and new engines. Keeping for reference
+
+			// 	closeSubMenus(copy);
+			// 	e.stopImmediatePropagation();
+			// 	e.preventDefault();
+				
+			// 	let _menu = document.createElement('div');
+			// 	_menu.className = 'contextMenu subMenu';
+		
+			// 	let rect = copy.getBoundingClientRect();
+				
+			// 	_menu.style.left = rect.x + window.scrollX + rect.width - 20 + "px";
+			// 	_menu.style.top = rect.y + window.scrollY + "px";
+				
+			// 	// add menu items
+			// 	let item1 = document.createElement('div');
+			// 	item1.className = 'menuItem';
+			// 	item1.innerText = i18n('AsShortcut');
+				
+			// 	item1.addEventListener('click', _e => {
+			// 		let _newNode = Object.assign({}, li.node);
+			// 		nodeInsertBefore(_newNode, li.node);
+			
+			// 		let newLi = traverse(_newNode, li.parentNode);
+			// 		li.parentNode.insertBefore(newLi, li);
+					
+			// 		updateNodeList(true);
+			// 		closeContextMenus();
+			// 	});
+				
+			// 	let item2 = document.createElement('div');
+			// 	item2.className = 'menuItem';
+			// 	item2.innerText = i18n('AsNewEngine');
+				
+			// 	item2.addEventListener('click', _e => {
+			// 		let _newNode = addNewEngine(li.node, true);
+			// 		addNode(_newNode, li);
+					
+			// 		updateNodeList(true);
+			// 		closeContextMenus();
+			// 	});
+				
+			// 	[item1, item2].forEach( item => {
+			// 		_menu.appendChild(item);
+			// 	});
+				
+			// 	document.body.appendChild(_menu);
+			// 	openMenu(_menu);
+			// 	return;
+
+			// } else {
+			// 	newNode = Object.assign({}, li.node);
+			// 	newNode.id = gen();
+			// }
+			
+			// if (!newNode) return;
+			
+			// nodeInsertAfter(newNode, li.node);
+			
+			// let newLi = traverse(newNode, li.parentNode);
+			// li.parentNode.insertBefore(newLi, li.nextSibling);
+			
+			// updateNodeList();
+			// closeContextMenus();
 		});
 		
 		let newEngine = createMenuItem(i18n('Engine'), browser.runtime.getURL('icons/new.svg'));	
