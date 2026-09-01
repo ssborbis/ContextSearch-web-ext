@@ -349,5 +349,6 @@ const defaultUserOptions = {
 	autoCopyTrim: false,
 	autoCopyPlainTextOnly: false,
 	searchEnginesManagerSearchShowFolderMatchChildren: false,
-	searchEnginesManagerStartCollapsed: false
+	searchEnginesManagerStartCollapsed: false,
+	blockListAsWhitelist: false
 };

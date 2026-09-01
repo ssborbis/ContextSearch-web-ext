@@ -2234,43 +2234,52 @@ function dataToSearchEngine(data) {
 
 function isAllowedURL(_url) {
 
+	// checks url against blockList and blockListAsWhitelist options
+
+	function matchPatternToRegExp(pattern) {
+
+		// test for pure regex
+		try {
+			let regex = new RegExp(pattern);
+			return regex;
+		} catch( err ) {}
+	
+		// test for <all_urls>
+		if (pattern === '<all_urls>') return /.*/;
+
+		// test for blank
+		if ( !pattern.trim() ) return /\b\B/;
+
+		// test for disabled
+		if ( /^!|^#/.test(pattern) ) return /\b\B/;
+
+		const escaped = pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+		return new RegExp(`^${escaped}$`);
+	}
+
+	function urlMatchesAnyExtensionPattern(url, patternStrings) {
+		const regexes = patternStrings.map(matchPatternToRegExp);
+		return regexes.some(regex => regex.test(url));
+	}
+
+	let match = false;
+
 	try {
 		let url = new URL(_url);
-
-		// test for pure hostname
-		if ( userOptions.blockList.includes(url.hostname)) return false;
-
-		for ( let pattern of userOptions.blockList) {
-
-			// skip blank
-			if ( !pattern.trim() ) continue;
-
-			// skip disabled
-			if ( /^!|^#/.test(pattern) ) continue
-
-			// test for pure regex
-			try {
-				let regex = new RegExp(pattern);
-				if ( regex.test(url.href)) {
-					console.log(url.href + " matches " + pattern);
-					return false;
-				}
-				continue;
-			} catch( err ) {}
-			
-			// test for wildcards
-			try {
-				let regex = new RegExp(pattern.replace(/\*/g, "[^ ]*").replace(/\./g, "\\."));
-				if ( regex.test(url.hostname) || regex.test(url.href)) {
-					console.log(url.href + " matches " + pattern);
-					return false;
-				}
-				continue;
-			} catch (err) {}
+		if ( urlMatchesAnyExtensionPattern(url.href, userOptions.blockList) ) {
+			match = true;
 		}
 	} catch (err) { console.log('bad url for tab', _url, err)}
 
-	return true;
+	debug('isAllowedURL', _url, match, userOptions.blockListAsWhitelist);
+
+	if ( match ) {
+		if ( userOptions.blockListAsWhitelist ) return true;
+		if ( !userOptions.blockListAsWhitelist ) return false;
+	} else {
+		if ( userOptions.blockListAsWhitelist ) return false;
+		if ( !userOptions.blockListAsWhitelist ) return true;
+	}
 }
 
 async function executeScripts(tabId, options = {}, checkHasRun) {
