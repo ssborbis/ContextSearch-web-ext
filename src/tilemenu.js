@@ -452,7 +452,12 @@ async function makeQuickMenu(options) {
 			
 			if (div) {
 				div.parentNode.lastMouseDownTile = div;
-				div.dispatchEvent(new MouseEvent('mouseup', {bubbles: true}));
+				div.dispatchEvent(new MouseEvent('mouseup', {
+					bubbles: true,
+					ctrlKey: e.ctrlKey,
+					shiftKey: e.shiftKey,
+					altKey: e.altKey
+				}));
 			} else {
 				let node = qm.getDefaultNode();
 
