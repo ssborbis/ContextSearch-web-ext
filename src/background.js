@@ -169,6 +169,23 @@ browser.runtime.onInstalled.addListener( details => {
 	}, {once: true});
 });
 
+// init content scripts from background page vs manifest. Currently, this is a redundant injection for all frames, but it is needed for iframes that are dynamically created after page load. The content script will only be injected once per frame.
+browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
+
+	if ( changeInfo.status !== 'complete' ) return;
+
+	_executeScript(tabId, {
+		file: "lib/browser-polyfill.min.js", 
+		allFrames: true, 
+		runAt: "document_start"
+	}, true).then(() => { 
+		_executeScript(tabId, {
+		file: "init_content.js", 
+		allFrames: true, 
+		runAt: "document_start"
+	}, true)});
+});
+
 // trigger zoom event
 browser.tabs.onZoomChange.addListener( async zoomChangeInfo => {
 
