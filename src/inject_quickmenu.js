@@ -603,9 +603,15 @@ document.addEventListener('mousedown', e => {
 	// check for modifier keys
 	if ( 
 		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
-		(userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
-		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)*/ // leave ctrlKey for link / linkText
+		(userOptions.quickMenuOnMouseAlt !== e.altKey) ||
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey && !e.target.closest('a')) // leave ctrlKey exception for link / linkText
 	) return false;
+
+	// if ( 
+	// 	(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
+	// 	(userOptions.quickMenuOnMouseAlt !== e.altKey) /* ||
+	// 	(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey)*/ // leave ctrlKey for link / linkText
+	// ) return false;
 
 		// check for pointer over selection
 	if ( getSelectedText(e.target) && userOptions.quickMenuOnlyOpenIfOverSelection && !isEventOnSelectedText(e) ) return false;
