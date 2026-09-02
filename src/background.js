@@ -174,12 +174,14 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
 
 	if ( changeInfo.status !== 'complete' ) return;
 
-	_executeScript(tabId, {
+	_executeScript({
+		tabId: tabId,
 		file: "lib/browser-polyfill.min.js", 
 		allFrames: true, 
 		runAt: "document_start"
 	}, true).then(() => { 
-		_executeScript(tabId, {
+		_executeScript({
+		tabId: tabId,
 		file: "init_content.js", 
 		allFrames: true, 
 		runAt: "document_start"
