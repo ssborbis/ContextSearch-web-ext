@@ -604,7 +604,7 @@ document.addEventListener('mousedown', e => {
 	if ( 
 		(userOptions.quickMenuOnMouseShift !== e.shiftKey)  ||
 		(userOptions.quickMenuOnMouseAlt !== e.altKey) ||
-		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey && !e.target.closest('a')) // leave ctrlKey exception for link / linkText
+		(userOptions.quickMenuOnMouseCtrl !== e.ctrlKey && (userOptions.quickMenuOnMouseCtrl && !e.target.closest('a'))) // leave ctrlKey exception for link / linkText
 	) return false;
 
 	// if ( 
