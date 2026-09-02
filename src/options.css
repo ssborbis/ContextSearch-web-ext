@@ -696,6 +696,10 @@ SPAN.buttonLabel {
 		vertical-align:top;
 		overflow-y:scroll;
 }
+#searchEngineTable > UL:nth-of-type(1) {
+	padding-inline-start: 10px;
+	/*border-right:1px solid var(--border-color2);*/
+}
 #searchEnginesContainer {
 	width:100%;
 	background-color:white;
@@ -1248,19 +1252,21 @@ SECTION {
 	vertical-align:middle;
 }
 .folderBrowser SPAN, .collapse {
-	position:absolute;
-	left:-14px;
-	border:1px solid var(--border-color2);
-	border-radius:4px;
+	/* position:absolute;
+	left:0; */
+	margin-right:-13px;
+	/* border:1px solid var(--border-color2); */
+	/* border-radius:4px; */
 	width:10px;
 	height:10px;
 	text-align:center;
 	display:inline-block;
 	line-height:10px;
 	color:var(--color);
-	background-color:var(--bg-color1);
+	/* background-color:var(--bg-color1); */
 	top:2.5px;
 	user-select: none;
+	z-index:2;
 }
 .promptForImage {
 	display:inline-block;
@@ -1844,4 +1850,10 @@ fieldset {
 
 fieldset.hide {
 	display:none !important;
+}
+
+.hotkeyContainer {
+	width:auto;
+	text-align:right;
+	margin-right:8px;
 }

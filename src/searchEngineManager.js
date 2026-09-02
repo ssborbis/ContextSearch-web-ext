@@ -802,7 +802,7 @@ function buildSearchEngineContainer() {
 			ec.innerText = "-";
 			ec.className = "collapse";
 
-			header.insertBefore(ec, header.firstChild);
+			header.insertBefore(ec, img);
 
 			let ul = document.createElement('ul');
 			li.appendChild(ul);
@@ -969,7 +969,12 @@ function buildSearchEngineContainer() {
 		
 		// add hotkeys for some node types
 		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {		
-			header.appendChild(createHotkeyButton(node, rootElement));
+			let hotkeyContainer = document.createElement('div');
+			hotkeyContainer.className = 'hotkeyContainer';
+			hotkeyContainer.appendChild(createHotkeyButton(node, rootElement));
+			header.insertBefore(hotkeyContainer, header.firstChild);
+
+			// header.appendChild(createHotkeyButton(node, rootElement));
 		}
 
 		// add match icons for some node types
@@ -2196,13 +2201,14 @@ function buildSearchEngineContainer() {
 		clearSelectedRows();
 	});
 
-
 	if ( userOptions.searchEnginesManagerStartCollapsed ) {
 		setTimeout(() => {
 			let main_ec = $('#collapseAll');
 			main_ec.click();
 		}, 20);
 	}
+
+	setHotkeyContainerWidth();
 }
 
 async function removeNodesAndRows() {
@@ -2266,6 +2272,15 @@ function updateNodeList(forceSave) {
 		// console.log('node trees are the same - skipping save');
 	//}
 }
+
+function setHotkeyContainerWidth() {
+	setTimeout(() => {
+		document.querySelectorAll(".hotkeyContainer").forEach(el => el.style.width = null);
+		const width = Math.max(...[...document.querySelectorAll(".hotkeyContainer")].map(el => el.offsetWidth));
+		document.querySelectorAll(".hotkeyContainer").forEach(el => el.style.width = (width + 2) + 'px');
+	}, 50);
+}
+	
 
 function setContexts(f, c) {
 	let contexts = f.querySelectorAll('.contexts INPUT');
@@ -2510,8 +2525,10 @@ function createHotkeyButton(node, rootElement) {
 		button.title = button.innerText || i18n("hotkey");
 
 		// hide buttons that aren't set. They are shown on hover
-		button.classList.toggle("hide", button.innerText ? false : true);
-		button.classList.toggle("shift", button.innerText ? false : true);
+		// ?button.classList.toggle("hide", button.innerText ? false : true);
+		// button.classList.toggle("shift", button.innerText ? false : true);
+
+		setHotkeyContainerWidth();
 	}
 
 	let showError = async (msg) => {
