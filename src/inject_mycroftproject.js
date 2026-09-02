@@ -19,7 +19,7 @@ function showButtons() {
 
 	if ( window != top ) return;
 
-	let links = document.querySelectorAll('a[href*="/install.html"]');
+	let links = document.querySelectorAll('a[href*="/install-splash.php?"]');
 
 	links.forEach( link => {
 		let img = new Image();

@@ -2158,7 +2158,7 @@ function buildSearchEngineContainer() {
 
 	document.getElementById('b_mycroftproject').addEventListener('click', e => {
 		e.stopPropagation();
-		window.open('https://mycroftproject.com/search-engines.html','_blank');
+		window.open('https://mycroftproject.com/','_blank');
 	});
 	
 	document.getElementById('b_resetAllSearchEngines').addEventListener('click', async() => {

@@ -414,7 +414,7 @@ function addSearchEnginePopup(data) {
 		// Find Plugin listener
 		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').onclick = function() {
 			listenForFocusAndPromptToImport();
-			window.open("http://mycroftproject.com/search-engines.html?name=" + _location.hostname, "_blank");
+			window.open("http://mycroftproject.com/search-engines.php?name=" + _location.hostname, "_blank");
 		}
 		document.getElementById('CS_customSearchDialog_d_mycroftSearchEngine').style.display = 'inline-block';
 		
