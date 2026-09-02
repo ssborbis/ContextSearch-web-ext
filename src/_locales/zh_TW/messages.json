@@ -1,0 +1,2176 @@
+{
+    "Add": {
+        "message": "新增"
+    },
+    "AddBookmarklet": {
+        "description": "Manager menu item",
+        "message": "新增書籤"
+    },
+    "AddCustomSearch": {
+        "message": "新增至 ContextSearch"
+    },
+    "AddCustomSearchMenu": {
+        "message": "顯示「新增至 ContextSearch」"
+    },
+    "AddCustomSearchMenuTooltip": {
+        "message": "在輸入框 (INPUT) 元素上啟用「新增自訂搜尋」的右鍵選單項目。在某些情況下可停用以避免產生多層選單"
+    },
+    "AddOpenSearchEngine": {
+        "description": "label for edit form button to install the current search engine as a One-Click Search Engine",
+        "message": "安裝至 Firefox 一鍵搜尋引擎"
+    },
+    "AddSearchEngines": {
+        "description": "title in context menu when no search engines installed",
+        "message": "+ 新增搜尋引擎"
+    },
+    "AddToBlockList": {
+        "description": "",
+        "message": "新增至封鎖清單"
+    },
+    "AddToBlockListConfirm": {
+        "description": "",
+        "message": "確定要將「$1」新增至封鎖清單？"
+    },
+    "AddUsingFirefoxSearchBar": {
+        "message": "Firefox 78+ 使用者 - 請透過 Firefox 搜尋列新增您的引擎"
+    },
+    "AddingSearchEnginesInfoMessage": {
+        "description": "",
+        "message": "可以在此處手動新增搜尋引擎，或透過右鍵選單自動新增。如需更多資訊請參考以下連結 - "
+    },
+    "AddingSearchEnginesLinkText": {
+        "description": "",
+        "message": "新增搜尋引擎"
+    },
+    "AdditionalSearchActions": {
+        "message": "其他動作"
+    },
+    "Advanced": {
+        "message": "進階"
+    },
+    "AlsoAdd": {
+        "message": "同時新增至一鍵搜尋引擎？"
+    },
+    "Animations": {
+        "description": "",
+        "message": "動畫效果"
+    },
+    "AnimationsTooltip": {
+        "description": "",
+        "message": ""
+    },
+    "Appearance": {
+        "description": "",
+        "message": "外觀"
+    },
+    "AsNewEngine": {
+        "description": "Manager menu item",
+        "message": "建立新引擎"
+    },
+    "AsShortcut": {
+        "description": "Manager menu item",
+        "message": "建立捷徑"
+    },
+    "Auto": {
+        "message": "自動"
+    },
+    "AutoImportHeader": {
+        "message": "自動匯入"
+    },
+    "AutoMaxChars": {
+        "description": "label for setting maximum selected characters for auto open",
+        "message": "字數限制"
+    },
+    "AutoMaxCharsTooltip": {
+        "message": "如果選取的文字超過 (n) 個字元，則不要開啟快捷選單。0 = 無限制"
+    },
+    "AutoThemeDarkTooltip": {
+        "message": "深色主題"
+    },
+    "AutoThemeLiteTooltip": {
+        "message": "淺色主題"
+    },
+    "AutoThemeTooltip": {
+        "message": "使用深色模式時自動變更選單主題"
+    },
+    "AutoTooltip": {
+        "message": "選取文字並自動開啟"
+    },
+    "Back": {
+        "description": "title attribute for the back button displayed inside a subfolder in the quick menu; aka return, previous folder, etc",
+        "message": "返回"
+    },
+    "BackButton": {
+        "message": "返回按鈕"
+    },
+    "BackgroundColor": {
+        "description": "",
+        "message": "背景顏色"
+    },
+    "BackspaceKey": {
+        "message": "Backspace"
+    },
+    "Block": {
+        "message": "封鎖"
+    },
+    "Blocklist": {
+        "description": "blocklist label",
+        "message": "封鎖清單"
+    },
+    "BlocklistTooltip": {
+        "description": "blocklist tooltip",
+        "message": "停用 ContextSearch 的網址清單。支援主機名稱 (如 www.example.com)、萬用字元 (*.example.com) 與正則表達式。加上 ! 或 # 前綴可停用該項目 (例如 #example.com 或 !example.com)"
+    },
+    "Bookmark": {
+        "message": "書籤"
+    },
+    "BookmarksPermissionMessage": {
+        "message": "關閉此提示後，您將收到一項接受「書籤」新權限的請求。\n\n同意後，將在「其他書籤」資料夾中建立一個名為「ContextSearch Menu」的新資料夾，其中包含您目前的搜尋引擎。您可以在該處新增分隔線，或將書籤分類至子資料夾。\n\n請勿重新命名搜尋引擎書籤，否則會導致其無法運作。刪除的書籤可以從 ContextSearch 選項 -> 搜尋引擎中再次新增。點擊搜尋引擎清單中的書籤圖示即可新增或移除書籤。"
+    },
+    "Button": {
+        "message": "按鈕"
+    },
+    "Cancel": {
+        "message": "取消"
+    },
+    "CannotCreate": {
+        "message": "無法從此輸入建立搜尋引擎"
+    },
+    "CannotEditOneClickEngines": {
+        "description": "",
+        "message": "必須先匯入 Firefox 引擎才能進行變更"
+    },
+    "CapsLockKey": {
+        "message": "Caps Lock"
+    },
+    "CascadingFoldersToolTip": {
+        "message": "在單一選單中瀏覽資料夾，或使用分離的層疊選單"
+    },
+    "CheckForUpdates": {
+        "message": "檢查更新"
+    },
+    "ChooseFilename": {
+        "message": "選擇檔案名稱"
+    },
+    "ChooseKey": {
+        "message": "選擇按鍵"
+    },
+    "ChooseKeyTooltip": {
+        "message": "選取文字後按下按鍵即可開啟浮動選單。點擊旁邊的按鈕，然後按下您偏好的按鍵"
+    },
+    "ClearHighlighting": {
+        "description": "",
+        "message": "清除螢光筆標示"
+    },
+    "ClearSearchHistory": {
+        "description": "Options label / context menu entry for clearing search history",
+        "message": "清除搜尋紀錄"
+    },
+    "ClearSearchHistoryTooltip": {
+        "description": "description for clearing search history",
+        "message": "從搜尋工具列中清除搜尋紀錄"
+    },
+    "ClearSearchList": {
+        "description": "",
+        "message": "清除搜尋引擎清單並與 Firefox 搜尋列同步"
+    },
+    "Click": {
+        "message": "點擊"
+    },
+    "ClickToEdit": {
+        "message": "點擊以編輯"
+    },
+    "ClickToSet": {
+        "description": "",
+        "message": "點擊以設定"
+    },
+    "ClickTooltip": {
+        "message": "按右鍵將開啟浮動選單。長按按鈕則開啟預設右鍵選單"
+    },
+    "CloseAfterSearch": {
+        "message": "搜尋後關閉"
+    },
+    "CloseAfterSearchTooltip": {
+        "message": "執行搜尋後關閉選單。如果您經常使用多個引擎搜尋或偏好手動關閉選單，請停用此選項。此設定可被搜尋動作中的「保持選單開啟」覆寫"
+    },
+    "CloseOnScroll": {
+        "message": "滾動 / 使用滑鼠滾輪時關閉"
+    },
+    "CloseOnScrollTooltip": {
+        "message": "透過滾動畫面或使用滑鼠滾輪來關閉選單"
+    },
+    "ClosePageTilesOnBorder": {
+        "description": "",
+        "message": "拖曳至主視窗外時關閉搜尋網格"
+    },
+    "ClosePageTilesOnShake": {
+        "description": "",
+        "message": "搖動滑鼠以關閉搜尋網格"
+    },
+    "Closing": {
+        "description": "",
+        "message": "關閉方式"
+    },
+    "Columns": {
+        "message": "欄數"
+    },
+    "ColumnsMinimumTooltip": {
+        "message": "每列的最少搜尋引擎圖示數量 (網格檢視)"
+    },
+    "ColumnsTooltip": {
+        "message": "每列的最多搜尋引擎圖示數量 (網格檢視)"
+    },
+    "Command": {
+        "message": "指令"
+    },
+    "Confirm": {
+        "description": "Manager menu item",
+        "message": "確認"
+    },
+    "ConfirmDeleteCustomSearchEngines": {
+        "description": "remove searchengines - confirm message",
+        "message": "這將會刪除所有自訂搜尋引擎、資料夾、小書籤與分隔線等。您確定嗎？"
+    },
+    "ConfirmMultiLineSearch": {
+        "message": "這將開啟 $1 個搜尋分頁。確定要繼續嗎？"
+    },
+    "ConfirmResetAllSearchEngines": {
+        "description": "",
+        "message": "這將會移除所有自訂搜尋引擎、資料夾、小書籤與分隔線，並還原預設的引擎清單。\r\n\r\n您確定嗎？"
+    },
+    "ContexMenuShowLastUsed": {
+        "description": "",
+        "message": "顯示上次使用的引擎"
+    },
+    "ContexMenuShowLastUsedToolTip": {
+        "description": "",
+        "message": "在選單頂部顯示上次使用的搜尋引擎"
+    },
+    "ContexMenuShowRecentlyUsed": {
+        "description": "",
+        "message": "顯示最近使用的引擎"
+    },
+    "ContexMenuShowRecentlyUsedAsFolder": {
+        "description": "",
+        "message": "顯示為資料夾"
+    },
+    "ContexMenuShowRecentlyUsedAsFolderTooltip": {
+        "description": "",
+        "message": "顯示為資料夾"
+    },
+    "ContexMenuShowRecentlyUsedLengthTooltip": {
+        "description": "",
+        "message": "顯示最近使用的引擎數量"
+    },
+    "ContexMenuShowRecentlyUsedToolTip": {
+        "description": "",
+        "message": "在選單頂部顯示最近使用的引擎"
+    },
+    "ContextAwareFilter": {
+        "message": "根據目標元素 (連結、圖片、選取文字等) 過濾搜尋引擎"
+    },
+    "ContextMenu": {
+        "message": "右鍵選單"
+    },
+    "ContextMenuHotKey": {
+        "description": "Label for Context Menu shortcut key",
+        "message": "快捷鍵"
+    },
+    "ContextMenuHotKeyTooltip": {
+        "description": "Description for Context Menu shortcut key",
+        "message": "ContextSearch 子選單的快捷鍵"
+    },
+    "ContextMenuTooltip": {
+        "description": "",
+        "message": "啟用右鍵選單搜尋功能"
+    },
+    "ContextSearchMenu": {
+        "description": "root folder name for bookmarks",
+        "message": "ContextSearch 選單"
+    },
+    "ContextsTooltip": {
+        "message": "從選取的上下文環境開啟選單時顯示此引擎。必須啟用 [右鍵選單 / 快捷選單] -> 進階 -> 過濾引擎，否則將被忽略。"
+    },
+    "Copy": {
+        "description": "button to duplicate a search engine from the manager",
+        "message": "複製"
+    },
+    "Create": {
+        "message": "建立"
+    },
+    "CreateCustomSearch": {
+        "message": "建立自訂搜尋"
+    },
+    "CreateCustomTooltip": {
+        "message": "建立自訂 OpenSearch 引擎"
+    },
+    "DefaultView": {
+        "description": "",
+        "message": "預設檢視"
+    },
+    "DefaultViewToolTip": {
+        "description": "",
+        "message": "設定選單的預設顯示模式。每個資料夾的檢視模式可透過網格 / 清單工具個別設定，也可在搜尋引擎管理員中編輯資料夾來設定"
+    },
+    "DelKey": {
+        "message": "Del"
+    },
+    "Delete": {
+        "message": "刪除"
+    },
+    "DeleteEngines": {
+        "description": "Manager menu item",
+        "message": "刪除 $1 個引擎"
+    },
+    "Description": {
+        "message": "描述"
+    },
+    "DescriptionEmptyError": {
+        "message": "必須輸入描述"
+    },
+    "DescriptionSizeError": {
+        "message": "描述必須在 1024 個字元以內"
+    },
+    "DescriptionTooltip": {
+        "message": "搜尋引擎的簡短描述。最多 1024 個字元"
+    },
+    "DidEngineInstall": {
+        "message": "引擎是否安裝正確？"
+    },
+    "DisabledByHotkeys": {
+        "description": "message for search bar focus option when hotkeys are enabled",
+        "message": "啟用快捷鍵時停用"
+    },
+    "DontShowAgain": {
+        "message": "不再顯示"
+    },
+    "DoubleClick": {
+        "message": "雙擊"
+    },
+    "DownArrowKey": {
+        "message": "向下鍵"
+    },
+    "Drag": {
+        "description": "",
+        "message": "拖曳"
+    },
+    "DuplicateFound": {
+        "message": "發現重複"
+    },
+    "Edit": {
+        "description": "Manager menu item",
+        "message": "編輯"
+    },
+    "EditMenu": {
+        "message": "版面配置編輯器"
+    },
+    "EnableAnimations": {
+        "description": "",
+        "message": "動畫效果"
+    },
+    "EnableAnimationsTileSlider": {
+        "description": "",
+        "message": "滑入動畫"
+    },
+    "EnableAnimationsTileSliderTooltip": {
+        "description": "",
+        "message": "網格選單滑入動畫"
+    },
+    "EnableAnimationsTooltip": {
+        "description": "",
+        "message": "為所有選單啟用縮放、滑入、透明度漸變等動畫效果。若需更快的無特效介面請停用"
+    },
+    "EnableAutoImport": {
+        "message": "啟用自動匯入 (需要應用程式)"
+    },
+    "EnableAutoImportTooltip": {
+        "message": "自動將新的 OpenSearch 引擎匯入至 ContextSearch。僅在匯入透過 Firefox 一鍵搜尋引擎 API 安裝的 OpenSearch 引擎時有用。需要獨立的應用程式。詳細資訊請參閱「說明」"
+    },
+    "EnableHistory": {
+        "description": "",
+        "message": "記住搜尋紀錄"
+    },
+    "EnableHistoryTooltip": {
+        "message": "記住搜尋字詞並顯示在搜尋建議中"
+    },
+    "EnableHotkeysDescription": {
+        "description": "",
+        "message": "隨時啟用快捷鍵，編輯內容時除外 (停用此選項將只在 ContextSearch 選單取得焦點時才允許使用快捷鍵)"
+    },
+    "EnableHotkeysLabel": {
+        "description": "label for Search Engine Hotkeys",
+        "message": "搜尋引擎快捷鍵"
+    },
+    "EnableOn": {
+        "message": "啟用於"
+    },
+    "EnableOnImages": {
+        "description": "",
+        "message": "在圖片上啟用"
+    },
+    "EnableOnLinks": {
+        "description": "",
+        "message": "在連結上啟用"
+    },
+    "EnableOnTextBoxes": {
+        "message": "在文字方塊上啟用"
+    },
+    "EnableOnTextBoxesTooltip": {
+        "message": "在 textarea 與 input 元素上啟用"
+    },
+    "Encoding": {
+        "message": "編碼"
+    },
+    "EncodingTooltip": {
+        "message": "搜尋表單所需的字元編碼。通常為 UTF-8"
+    },
+    "EndKey": {
+        "message": "End"
+    },
+    "Engine": {
+        "message": "引擎"
+    },
+    "EngineExists": {
+        "message": "%1 已存在。"
+    },
+    "EnterKey": {
+        "message": "Enter"
+    },
+    "EnterSearchTerms": {
+        "message": "輸入搜尋字詞"
+    },
+    "EnterUniqueName": {
+        "message": "為此搜尋引擎輸入唯一的名稱"
+    },
+    "ErrorParsing": {
+        "message": "解析 %1 時發生錯誤\n如果您持續收到此錯誤，可能是您的內容安全政策 (CSP) 設定所致"
+    },
+    "EscKey": {
+        "message": "Esc"
+    },
+    "Event": {
+        "message": "事件"
+    },
+    "ExpandCollapse": {
+        "message": "全部展開 / 全部折疊"
+    },
+    "Export": {
+        "message": "匯出"
+    },
+    "ExternalProgram": {
+        "message": "應用程式啟動器"
+    },
+    "FFEngineExists": {
+        "description": "",
+        "message": "$1 已安裝至 Firefox 搜尋列"
+    },
+    "FailedToLoad": {
+        "description": "Failed to load search engines (options.js)",
+        "message": "載入搜尋引擎失敗 :("
+    },
+    "Filter": {
+        "message": "過濾"
+    },
+    "Find": {
+        "message": "尋找"
+    },
+    "FindBarEnableHotkey": {
+        "description": "",
+        "message": "使用快捷鍵開啟尋找列。若找到相符的選取文字將立即標示"
+    },
+    "FindBarNavMessage": {
+        "description": "",
+        "message": "第 $1 個，共 $2 個相符項目"
+    },
+    "FindBarOpenInAllTabs": {
+        "description": "",
+        "message": "在所有分頁中開啟與關閉尋找列"
+    },
+    "FindMycroftTooltip": {
+        "message": "在 MycroftProject 尋找 OpenSearch 引擎"
+    },
+    "FirefoxSearch": {
+        "message": "Firefox 搜尋"
+    },
+    "Focus": {
+        "description": "label for auto focus on search bar",
+        "message": "開啟時聚焦"
+    },
+    "FocusTooltip": {
+        "description": "description for focus",
+        "message": "開啟快捷選單時，將焦點設定至搜尋列"
+    },
+    "Folder": {
+        "message": "資料夾"
+    },
+    "Folders": {
+        "message": "資料夾"
+    },
+    "FormPath": {
+        "message": "表單路徑"
+    },
+    "FormPathTooltip": {
+        "message": "通常是網站首頁或表單所在的網址"
+    },
+    "FormPathURLError": {
+        "message": "表單路徑必須是一個網址"
+    },
+    "ForwardButton": {
+        "message": "下一頁按鈕"
+    },
+    "General": {
+        "description": "",
+        "message": "一般"
+    },
+    "Help": {
+        "description": "help tab label",
+        "message": "說明"
+    },
+    "Hide": {
+        "description": "Manager menu item",
+        "message": "隱藏"
+    },
+    "HideContextMenu": {
+        "message": "使用右鍵開啟快捷選單時，隱藏預設的右鍵選單"
+    },
+    "Highlight": {
+        "description": "",
+        "message": "螢光筆標示"
+    },
+    "HighlightLimitTooltip": {
+        "description": "",
+        "message": "限制標示的相符項目數量。較低的限制可防止標示時造成瀏覽器卡頓。0 = 無限制"
+    },
+    "HighlightNavTooltip": {
+        "description": "",
+        "message": "標示時顯示導覽列"
+    },
+    "HighlightSeparateWordsTooltip": {
+        "description": "",
+        "message": "將多詞搜尋中的每個單字分別標示。停用則將片語視為單一搜尋字詞"
+    },
+    "HighlightTooltip": {
+        "description": "",
+        "message": "在搜尋結果頁面中標示搜尋字詞"
+    },
+    "History": {
+        "description": "label for History icon",
+        "message": "紀錄"
+    },
+    "Hold": {
+        "message": "長按"
+    },
+    "HoldForContextMenu": {
+        "message": "長按右鍵約 1 秒後放開以顯示預設的右鍵選單"
+    },
+    "HoldTooltip": {
+        "message": "長按選定的滑鼠按鈕約 0.25 秒後開啟選單"
+    },
+    "HomeKey": {
+        "message": "Home"
+    },
+    "HorizontalOffset": {
+        "message": "水平偏移"
+    },
+    "HorizontalOffsetTooltip": {
+        "message": "浮動選單水平偏移的像素值。大於零向右移，小於零向左移"
+    },
+    "Hotkey": {
+        "description": "label for Hotkey option",
+        "message": "快捷鍵"
+    },
+    "HotkeyTooltip": {
+        "description": "description for Hotkey option",
+        "message": "隨時使用快捷鍵開啟快捷選單"
+    },
+    "Icon": {
+        "message": "圖示"
+    },
+    "IconLoadError": {
+        "message": "圖示載入失敗"
+    },
+    "IconSize": {
+        "message": "圖示大小"
+    },
+    "IconSizeTooltip": {
+        "message": "搜尋引擎圖示的縮放大小。設定為 200% 時，圖示將完全填滿其容器"
+    },
+    "IconTooltip": {
+        "message": "要使用的圖示網址。圖片大小應小於 64x64 像素，且容量須小於 10kb"
+    },
+    "IconURI": {
+        "message": "圖示網址"
+    },
+    "IconURLError": {
+        "message": "圖示必須是一個網址"
+    },
+    "Import": {
+        "message": "匯入"
+    },
+    "ImportDescription": {
+        "message": "瀏覽至您的設定檔資料夾，並選擇 search.json.mozlz4 檔案"
+    },
+    "ImportExportSettings": {
+        "message": "匯入 / 匯出設定"
+    },
+    "ImportHeader": {
+        "message": "從 Firefox 匯入"
+    },
+    "ImportSelectFile": {
+        "message": "選擇檔案 ..."
+    },
+    "ImportSettingsNotFoundAlert": {
+        "message": "找不到 ContextSearch 設定！"
+    },
+    "ImportSuccessful": {
+        "message": "匯入成功"
+    },
+    "Imported": {
+        "message": "已匯入"
+    },
+    "ImportedEngines": {
+        "message": "已匯入 %1 個引擎 (%2 個為全新)"
+    },
+    "InitialOpacity": {
+        "description": "label for setting Quick menu opening opacity",
+        "message": "初始透明度"
+    },
+    "InitialOpacityTooltip": {
+        "message": "快捷選單開啟時具有較高的透明度，滑鼠游標懸停時將變為不透明"
+    },
+    "Inline": {
+        "message": "內聯"
+    },
+    "Input": {
+        "message": "輸入"
+    },
+    "InsertKey": {
+        "message": "Insert"
+    },
+    "InstallOfficialTooltip": {
+        "message": "為目前網站安裝官方的 OpenSearch 引擎"
+    },
+    "InvalidJSONAlert": {
+        "message": "該檔案不是有效的 JSON"
+    },
+    "Items": {
+        "message": "項目"
+    },
+    "KeepBoth": {
+        "message": "保留兩者"
+    },
+    "KeepMenuOpen": {
+        "message": "保持選單開啟"
+    },
+    "Keyboard": {
+        "message": "鍵盤"
+    },
+    "KeyboardTooltip": {
+        "message": "選取文字後使用鍵盤開啟"
+    },
+    "KeywordShort": {
+        "message": "關鍵字"
+    },
+    "LOCALE_FOLDER": {
+        "message": "zh_TW"
+    },
+    "LatestVersionAlreadyInstalled": {
+        "message": "已安裝最新版本"
+    },
+    "Layout": {
+        "description": "",
+        "message": "版面配置"
+    },
+    "LeftArrowKey": {
+        "message": "向左鍵"
+    },
+    "LeftButton": {
+        "message": "左鍵"
+    },
+    "LeftWindowKey": {
+        "message": "左 Window 鍵"
+    },
+    "Links": {
+        "description": "Links can be searched as the text displayed or the url they refer to. Hold CTRL to toggle from the default setting",
+        "message": "連結"
+    },
+    "LinksTooltip": {
+        "description": "",
+        "message": "連結可以使用其顯示的文字或其指向的網址進行搜尋。按住 CTRL 鍵可在預設設定之間切換"
+    },
+    "List": {
+        "description": "",
+        "message": "清單"
+    },
+    "LoadingRemoteContent": {
+        "message": "載入遠端內容"
+    },
+    "LoadingRemoteContentFail": {
+        "message": "載入 %1 個圖示失敗。啟用追蹤保護時可能會發生此情況"
+    },
+    "LoadingRemoteContentTimeout": {
+        "message": "擷取遠端圖示逾時。部分圖示未載入。"
+    },
+    "Local": {
+        "message": "本機"
+    },
+    "Location": {
+        "description": "",
+        "message": "位置"
+    },
+    "LookLayoutHeader": {
+        "message": "外觀與版面配置"
+    },
+    "Main": {
+        "message": "主要"
+    },
+    "MatchOptions": {
+        "message": "比對選項"
+    },
+    "MatchSearchTermsRegex": {
+        "description": "",
+        "message": "比對字詞的正則表達式"
+    },
+    "MatchSearchTermsRegexTooltip": {
+        "description": "searchengine edit - match regex tooltip",
+        "message": "如果搜尋字詞符合下列正則表達式，則在「正則表達式相符項目」資料夾中顯示此引擎"
+    },
+    "MenuBar": {
+        "message": "選單列"
+    },
+    "MenuSize": {
+        "message": "選單大小"
+    },
+    "MenuSizeTooltip": {
+        "message": "浮動選單的縮放大小。大於 100% 的值將放大整個選單 (適合高解析度螢幕)"
+    },
+    "MenuTheme": {
+        "description": "",
+        "message": "選單主題"
+    },
+    "Menus": {
+        "description": "menus tab label",
+        "message": "選單"
+    },
+    "MessengerOfflineTooltip": {
+        "message": "需要額外的外掛程式才能透過 ContextSearch web-ext 啟動應用程式。點擊連結以了解更多細節。"
+    },
+    "Method": {
+        "message": "方法"
+    },
+    "MethodTooltip": {
+        "message": "表單提交方法"
+    },
+    "MiddleButton": {
+        "message": "中鍵"
+    },
+    "More": {
+        "description": "",
+        "message": "更多"
+    },
+    "MoreInfo": {
+        "message": "更多資訊"
+    },
+    "Mouse": {
+        "message": "滑鼠"
+    },
+    "MouseDescription": {
+        "message": "選擇您偏好的操作方式與滑鼠按鍵"
+    },
+    "MouseHelp": {
+        "message": "在 Linux 與 macOS 環境中，預設右鍵選單會在按下 (mousedown) 時開啟，而非放開 (mouseup) 時。您可以在 about:config (Firefox) 中設定 'ui.context_menus.after_mouseup = true'，讓滑鼠動作能正常運作並防止出現不需要的選單。其他使用者可以選擇其他選項來改變預設右鍵選單的開啟方式，例如按住 Alt、Ctrl 或 Shift，或雙擊滑鼠右鍵。並非所有選項皆適用於所有平台。"
+    },
+    "MouseTooltip": {
+        "message": "選取文字後使用滑鼠按鍵開啟"
+    },
+    "Multisearch": {
+        "message": "多重搜尋"
+    },
+    "MustImport": {
+        "message": "如果已安裝 OpenSearch 引擎，您必須使用匯入檔案瀏覽器將其匯入至 ContextSearch。"
+    },
+    "Name": {
+        "message": "名稱"
+    },
+    "NameChangeWarning": {
+        "description": "warn user about potential problems when changing search engine names",
+        "message": "重新命名搜尋引擎可能會在透過手動或自動匯入 Firefox 一鍵搜尋引擎時產生重複項目。您可以透過到 Firefox 的「選項」->「搜尋」->「一鍵搜尋引擎」中移除舊名稱的引擎，或直接隱藏不需要的引擎來解決此問題。確定要重新命名嗎？"
+    },
+    "NameExists": {
+        "description": "short message for duplicate engine names",
+        "message": "名稱已存在"
+    },
+    "NameInvalid": {
+        "description": "short error for bad engine name",
+        "message": "名稱無效"
+    },
+    "NameTooltip": {
+        "message": "此搜尋引擎的唯一名稱"
+    },
+    "NativeApp": {
+        "message": "通訊應用程式"
+    },
+    "NativeAppImportError": {
+        "message": "載入檔案失敗 (%1)。應用程式是否已安裝？"
+    },
+    "NativeAppMissing": {
+        "message": "通訊應用程式未連線。"
+    },
+    "New": {
+        "message": "新增"
+    },
+    "NewEngine": {
+        "description": "Manager menu item",
+        "message": "新增引擎"
+    },
+    "NewEngineAdded": {
+        "message": "已將新的搜尋引擎新增至 ContextSearch"
+    },
+    "NewEngineAddedTooltip": {
+        "message": "使用自訂 OpenSearch API 將此搜尋引擎安裝至 Firefox 搜尋工具列"
+    },
+    "NewEngineImported": {
+        "message": "已將 $1 個引擎新增至 ContextSearch"
+    },
+    "NewExternalProgram": {
+        "message": "新增應用程式啟動器"
+    },
+    "NewFolder": {
+        "description": "Manager menu item",
+        "message": "新增資料夾"
+    },
+    "NewMultiSearch": {
+        "message": "新增多重搜尋"
+    },
+    "NewScript": {
+        "message": "新增腳本"
+    },
+    "NewSeparator": {
+        "description": "Manager menu item",
+        "message": "新增分隔線"
+    },
+    "NewTool": {
+        "message": "新增工具"
+    },
+    "No": {
+        "message": "否"
+    },
+    "NotificationOpenSidebar": {
+        "description": "",
+        "message": "開啟側邊欄以檢視搜尋結果"
+    },
+    "NumLockKey": {
+        "message": "Num Lock"
+    },
+    "OCSEDeleteWarning": {
+        "description": "alert message when attempting to delete a ocse from the manager",
+        "message": "無法刪除 Firefox 一鍵搜尋引擎。請透過隱藏來停用"
+    },
+    "OK": {
+        "description": "",
+        "message": "確定"
+    },
+    "Omnibox": {
+        "description": "",
+        "message": "網址列"
+    },
+    "OmniboxTooltip": {
+        "description": "omnibox image title",
+        "message": "網址列"
+    },
+    "OpenAdvanced": {
+        "message": "開啟進階選項？"
+    },
+    "OpenOnDragTooltip": {
+        "description": "",
+        "message": "拖曳文字 / 連結 / 圖片以開啟"
+    },
+    "OpenOnIcon": {
+        "message": "圖示"
+    },
+    "OpenOnIconTooltip": {
+        "message": "在選取文字旁邊顯示圖示。點擊以開啟選單。"
+    },
+    "Opening": {
+        "description": "",
+        "message": "開啟方式"
+    },
+    "OpeningClosingDescription": {
+        "message": "選擇如何開啟快捷選單"
+    },
+    "OpeningClosingHeader": {
+        "message": "開啟與關閉"
+    },
+    "Overlay": {
+        "description": "",
+        "message": "覆蓋層"
+    },
+    "POSTIncludeError": {
+        "message": "POST 參數必須包含 {searchTerms}"
+    },
+    "POSTparams": {
+        "message": "POST 參數"
+    },
+    "POSTparamsTooltip": {
+        "message": "由「&」符號分隔的 POST 參數與數值清單 (例如 q={searchTerms}&lang=zh-TW&maxresults=100)。僅在使用 POST 方法時適用"
+    },
+    "Panel": {
+        "description": "",
+        "message": "面板"
+    },
+    "PauseBreakKey": {
+        "message": "Pause/Break"
+    },
+    "PerformASearch": {
+        "description": "message for the msgbox requesting the user perform a search",
+        "message": "點擊「確定」並使用您嘗試新增的表單執行一次新的搜尋"
+    },
+    "PerformASearchHeader": {
+        "description": "header message for the msgbox requesting the user perform a search",
+        "message": "缺少範本"
+    },
+    "PerformASearchTooltip": {
+        "message": "該表單不包含建構搜尋引擎所需的資訊。請執行一次簡單的搜尋，讓 ContextSearch 尋找有效的搜尋範本。最好使用通常不會出現在搜尋網址中的單字。請勿使用「search」、「http」、其他常見的網址用詞或網站名稱"
+    },
+    "Permissions": {
+        "message": "權限"
+    },
+    "PgDnKey": {
+        "message": "Page Down"
+    },
+    "PgUpKey": {
+        "message": "Page Up"
+    },
+    "PopupWindow": {
+        "message": "彈出視窗"
+    },
+    "PopupWindowReuseTooltip": {
+        "message": "啟用以重複使用單一視窗來顯示所有搜尋結果\n停用則為每次搜尋開啟新視窗"
+    },
+    "Position": {
+        "message": "位置"
+    },
+    "PositionDescription": {
+        "message": "選擇選單出現的位置"
+    },
+    "PositionRelativeToCursor": {
+        "description": "quick menu opening position relative to the mouse cursor. %1 is top|bottom, %2 is left|center|right",
+        "message": "游標的 %1 %2"
+    },
+    "PostAppScript": {
+        "message": "執行後腳本 (Post-App Script)"
+    },
+    "PostAppScriptTooltip": {
+        "message": "在應用程式完成後於目前分頁中執行的 Javascript。標準輸出將被擷取至變數 'result'，例如 alert(result)。"
+    },
+    "PressKey": {
+        "description": "short message to display when waiting for user to set a hotkey for opening the quick menu ",
+        "message": "請按下按鍵"
+    },
+    "ProfilePath": {
+        "message": "設定檔路徑"
+    },
+    "QuickMenu": {
+        "message": "快捷選單"
+    },
+    "QuickMenuNote": {
+        "message": "在 addons.mozilla.org 上停用"
+    },
+    "QuickMenuTooltip": {
+        "description": "",
+        "message": "啟用透過浮動選單搜尋"
+    },
+    "Recent": {
+        "description": "",
+        "message": "最近"
+    },
+    "RecentlyUsed": {
+        "description": "",
+        "message": "最近使用"
+    },
+    "RefineSearch": {
+        "message": "縮小搜尋範圍"
+    },
+    "Regex": {
+        "description": "",
+        "message": "修改字詞正則"
+    },
+    "RegexTooltip": {
+        "description": "searchengine edit - search regex tooltip",
+        "message": "在送出搜尋前使用正則表達式修改搜尋字詞。可以串聯多個取代規則，每行一個"
+    },
+    "RemoveAll": {
+        "message": "全部移除"
+    },
+    "RemoveAllEnginesPrompt": {
+        "message": "移除所有搜尋引擎？"
+    },
+    "RemoveNode": {
+        "description": "Manager menu item",
+        "message": "移除節點"
+    },
+    "RemovingEngine": {
+        "message": "正在移除搜尋引擎"
+    },
+    "Replace": {
+        "message": "取代"
+    },
+    "Request": {
+        "description": "clipboardWrite permission - request button label",
+        "message": "請求權限"
+    },
+    "ResetDefaults": {
+        "description": "",
+        "message": "還原預設值"
+    },
+    "RightArrowKey": {
+        "message": "向右鍵"
+    },
+    "RightButton": {
+        "message": "右鍵"
+    },
+    "RightWindowKey": {
+        "message": "右 Window 鍵"
+    },
+    "Rows": {
+        "description": "Quick menu rows label",
+        "message": "列數"
+    },
+    "RowsSingleColumnTooltip": {
+        "description": "Quick menu rows tooltip",
+        "message": "開啟時顯示的最多列數 (文字檢視)"
+    },
+    "RowsTooltip": {
+        "description": "Quick menu rows tooltip",
+        "message": "開啟時顯示的最多列數 (網格檢視)"
+    },
+    "Save": {
+        "message": "儲存"
+    },
+    "Saved": {
+        "description": "",
+        "message": "已儲存"
+    },
+    "Script": {
+        "message": "腳本"
+    },
+    "ScrollLockKey": {
+        "message": "Scroll Lock"
+    },
+    "Search": {
+        "description": "placeholder in search bar input",
+        "message": "搜尋"
+    },
+    "SearchAction": {
+        "message": "搜尋動作"
+    },
+    "SearchActionsBackgroundTab": {
+        "message": "在背景分頁中開啟"
+    },
+    "SearchActionsBackgroundTabKeepOpen": {
+        "message": "在背景分頁中開啟 (保持選單開啟)"
+    },
+    "SearchActionsCurrentTab": {
+        "message": "在目前分頁中開啟"
+    },
+    "SearchActionsHeader": {
+        "message": "搜尋動作"
+    },
+    "SearchActionsIncognitoWindow": {
+        "message": "在無痕/隱私視窗中開啟"
+    },
+    "SearchActionsNewTab": {
+        "message": "在新分頁中開啟"
+    },
+    "SearchActionsNewWindow": {
+        "message": "在新視窗中開啟"
+    },
+    "SearchActionsNoAction": {
+        "message": "無動作"
+    },
+    "SearchActionsOpenFolder": {
+        "description": "SELECT option label for opening quick menu folder",
+        "message": "瀏覽資料夾"
+    },
+    "SearchActionsPopup": {
+        "message": "在彈出面板視窗中開啟"
+    },
+    "SearchAll": {
+        "description": "",
+        "message": "« 搜尋全部 »"
+    },
+    "SearchBar": {
+        "message": "搜尋列"
+    },
+    "SearchBarCloseAterSearchTooltip": {
+        "message": "執行搜尋後關閉選單"
+    },
+    "SearchBarTooltip": {
+        "message": "選擇在快捷選單中顯示搜尋列的位置"
+    },
+    "SearchBarUseOldStyle": {
+        "description": "Options label for using the old Firefox style of search bar",
+        "message": "單欄並附帶標籤"
+    },
+    "SearchBarUseOldStyleTooltip": {
+        "message": "以帶有標籤的單欄顯示搜尋引擎。此選項會覆寫欄數設定"
+    },
+    "SearchBookmarklets": {
+        "message": "🔍 搜尋書籤"
+    },
+    "SearchCode": {
+        "description": "",
+        "message": "搜尋後腳本 (Post-Search Script)"
+    },
+    "SearchCodeTooltip": {
+        "description": "searchengine edit - searchcode tooltip",
+        "message": "在開啟範本網址後執行一些 javascript。全域變數 'searchTerms' 代表目前的搜尋內容"
+    },
+    "SearchEngines": {
+        "description": "search engines tab label",
+        "message": "搜尋引擎"
+    },
+    "SearchEnginesManagerHelp": {
+        "message": "拖曳以重新排序，右鍵選單以新增/刪除/修改"
+    },
+    "SearchFor": {
+        "message": "搜尋「%1」"
+    },
+    "SearchForContext": {
+        "message": "搜尋 $1"
+    },
+    "SearchForWithVariable": {
+        "message": "搜尋「%s」"
+    },
+    "SearchOnMouseup": {
+        "message": "放開滑鼠時搜尋"
+    },
+    "SearchOnMouseupTooltip": {
+        "message": "在滑鼠放開 (mouseup) 時從快捷選單執行搜尋，而不是點擊 (click) 時。例如：長按以開啟選單，放開以搜尋"
+    },
+    "SearchWith": {
+        "description": "title in context menu when searching",
+        "message": "搜尋使用"
+    },
+    "SelectKey": {
+        "message": "選擇按鍵"
+    },
+    "SelectText": {
+        "message": "取得焦點時選取文字"
+    },
+    "SelectTextTooltip": {
+        "description": "description for select text in search bar",
+        "message": "當搜尋列取得焦點時，全選裡面的文字"
+    },
+    "SelectTimeout": {
+        "description": "",
+        "message": "選取逾時"
+    },
+    "SelectTimeoutTooltip": {
+        "description": "",
+        "message": "最後一次選取後，允許取消浮動選單的等待時間 (毫秒)。0 = 無限制"
+    },
+    "Separator": {
+        "message": "分隔線"
+    },
+    "SetAsDefault": {
+        "message": "設為預設"
+    },
+    "Settings": {
+        "message": "設定"
+    },
+    "ShiftKey": {
+        "message": "Shift"
+    },
+    "Shortcut": {
+        "description": "",
+        "message": "捷徑"
+    },
+    "ShortcutKey": {
+        "description": "Label for context menu hotkey",
+        "message": "快捷鍵"
+    },
+    "ShortcutKey_tooltip": {
+        "description": "context menu hotkey tooltip",
+        "message": "在右鍵選單中展開「搜尋使用...」選單的按鍵"
+    },
+    "Shortcuts": {
+        "description": "keyboard shortcuts",
+        "message": "快捷鍵"
+    },
+    "Show": {
+        "description": "Manager menu item",
+        "message": "顯示"
+    },
+    "ShowDefaultMenuModifierMessage": {
+        "message": "顯示預設右鍵選單"
+    },
+    "ShowFolderSearch": {
+        "description": "",
+        "message": "在選單頂部顯示搜尋整個資料夾的選項"
+    },
+    "ShowHide": {
+        "message": "顯示 / 隱藏"
+    },
+    "ShowSuggestions": {
+        "description": "Options label / context menu entry for toggling suggestions for the toolbar",
+        "message": "顯示建議"
+    },
+    "ShowSuggestionsTooltip": {
+        "description": "description for Show Suggestions",
+        "message": "從 Google 擷取搜尋建議並與搜尋紀錄一同顯示在搜尋工具列中"
+    },
+    "SideBar": {
+        "message": "側邊欄選單"
+    },
+    "SideBarHotkeyTooltip": {
+        "message": "隨時使用快捷鍵開啟側邊欄"
+    },
+    "SideBarPositionTooltip": {
+        "message": "選擇側邊欄的顯示位置"
+    },
+    "SideBarStartOpen": {
+        "description": "label for opening the sidebar when the page loads",
+        "message": "載入時開啟"
+    },
+    "SideBarStartOpenTooltip": {
+        "description": "",
+        "message": "網頁載入時自動開啟側邊欄"
+    },
+    "SideBarTooltip": {
+        "message": "側邊欄是工具列的延伸功能，會在瀏覽器視窗中顯示並提供更多功能。選單與開啟小工具皆支援文字拖放 (Chrome 除外)。大多數設定與工具列共用"
+    },
+    "SideBarWidgetEnable": {
+        "description": "label for displaying the sidebar icon",
+        "message": "顯示小工具"
+    },
+    "SideBarWidgetEnableTooltip": {
+        "description": "description for displaying the sidebar icon",
+        "message": "覆蓋一個開啟側邊欄的圖示"
+    },
+    "SidebarTypeTooltip": {
+        "description": "",
+        "message": "選擇側邊欄的顯示方式。「覆蓋層」會在網頁內容上方建立一個浮動視窗。「面板」會建立與視窗等高的側邊欄，並擠壓網頁版面以避免遮擋內容"
+    },
+    "Simple": {
+        "message": "簡單"
+    },
+    "Size": {
+        "description": "",
+        "message": "大小"
+    },
+    "Skip": {
+        "message": "略過"
+    },
+    "SortWarning": {
+        "message": "將所有引擎與資料夾依照字母順序排序？"
+    },
+    "Source": {
+        "message": "原始碼"
+    },
+    "SpaceKey": {
+        "message": "空白鍵"
+    },
+    "Style": {
+        "description": "",
+        "message": "樣式"
+    },
+    "Suggestions": {
+        "description": "",
+        "message": "建議"
+    },
+    "Support": {
+        "message": "支援"
+    },
+    "SyncWithFirefoxSearch": {
+        "description": "",
+        "message": "停用所有 ContextSearch 引擎、子資料夾、小書籤等，僅顯示已安裝至 Firefox 搜尋列的搜尋引擎"
+    },
+    "SyncWithFirefoxSearchHeader": {
+        "message": "與 Firefox 搜尋同步 (基本模式)"
+    },
+    "Template": {
+        "message": "範本"
+    },
+    "TemplateCheatSheet": {
+        "message": "%s - 搜尋字詞\n%su - 搜尋字詞 (大寫)\n%sl - 搜尋字詞 (小寫)\n%d - 網域\n%ds - 子網域\n%du - 使用者選取的網域\n%u - 分頁網址"
+    },
+    "TemplateIncludeError": {
+        "message": "範本必須包含 {searchTerms}"
+    },
+    "TemplateMissingeMessage": {
+        "message": "找不到此搜尋表單的範本。您可以嘗試進行一次搜尋，並將產生的網址複製到此處，然後將您的搜尋字詞替換為 {searchTerms}"
+    },
+    "TemplateTooltip": {
+        "message": "表單提交功能的網址。若為 GET 引擎，則必須包含 {searchTerms} (例如 http://example.com/?q={searchTerms})"
+    },
+    "TemplateURLError": {
+        "message": "範本必須是一個網址"
+    },
+    "Test": {
+        "message": "測試"
+    },
+    "Text": {
+        "description": "",
+        "message": "文字"
+    },
+    "TextColor": {
+        "description": "",
+        "message": "文字顏色"
+    },
+    "Theme": {
+        "description": "",
+        "message": "主題"
+    },
+    "ThemeTooltip": {
+        "description": "",
+        "message": "用於快捷選單、工具列與側邊欄的主題"
+    },
+    "Title": {
+        "message": "標題"
+    },
+    "ToggleHotkeys": {
+        "description": "",
+        "message": "切換快捷鍵 開 / 關"
+    },
+    "ToggleSearchTerms": {
+        "message": "下一個搜尋字詞"
+    },
+    "ToggleTheme": {
+        "description": "",
+        "message": "下一個主題"
+    },
+    "Tool": {
+        "message": "工具"
+    },
+    "Toolbar": {
+        "description": "",
+        "message": "工具列選單"
+    },
+    "ToolbarSearch": {
+        "description": "Section label for the browser action search bar",
+        "message": "工具列搜尋"
+    },
+    "ToolbarTooltip": {
+        "description": "",
+        "message": "從工具列的擴充功能按鈕開啟搜尋選單。與快捷選單共用搜尋動作"
+    },
+    "Tools": {
+        "message": "工具"
+    },
+    "ToolsAsToolbar": {
+        "description": "",
+        "message": "在獨立的工具列中顯示工具"
+    },
+    "ToolsHelp": {
+        "message": "點擊以停用 | 拖曳以重新排序"
+    },
+    "ToolsPositionTooltip": {
+        "message": "選擇在快捷選單中顯示工具的位置"
+    },
+    "UpArrowKey": {
+        "message": "向上鍵"
+    },
+    "UpdateToVersion": {
+        "message": "將應用程式啟動器腳本更新至版本 $1？"
+    },
+    "Url": {
+        "description": "",
+        "message": "網址"
+    },
+    "UserScriptsMessageChrome": {
+        "message": "您必須啟用「允許使用者腳本」才能在此擴充功能中執行使用者腳本。\n\n點擊「確定」開啟我的擴充功能 → ContextSearch web-ext"
+    },
+    "UserStyles": {
+        "description": "label for custom user styles",
+        "message": "使用者樣式 (User Styles)"
+    },
+    "UserStylesTooltip": {
+        "description": "",
+        "message": "將自訂 CSS 樣式套用至選單"
+    },
+    "Validating": {
+        "message": "驗證中..."
+    },
+    "Verify": {
+        "message": "驗證並匯入"
+    },
+    "VerticalOffset": {
+        "message": "垂直偏移"
+    },
+    "VerticalOffsetTooltip": {
+        "message": "浮動選單垂直偏移的像素值。大於零向下移，小於零向上移"
+    },
+    "Web": {
+        "message": "網頁"
+    },
+    "WhereAreMyEngines": {
+        "message": "我的搜尋引擎在哪裡？"
+    },
+    "Window": {
+        "description": "",
+        "message": "視窗"
+    },
+    "WorkingDirectory": {
+        "message": "工作目錄"
+    },
+    "Yes": {
+        "message": "是"
+    },
+    "accuracy": {
+        "description": "",
+        "message": "精準度"
+    },
+    "addSearchProviderHideNotificationTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "對於 Firefox 使用者，提示使用 Firefox 搜尋列新增 OpenSearch 引擎的通知"
+    },
+    "alphabetPalette": {
+        "description": "alphabet (palettes.js) - optional",
+        "message": "字母 (Alphabet)"
+    },
+    "alt": {
+        "description": "",
+        "message": "Alt"
+    },
+    "alwaysAllowTileRearrangingTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "始終允許在選單中重新排列搜尋網格"
+    },
+    "audio": {
+        "description": "",
+        "message": "音訊"
+    },
+    "autoCopy": {
+        "message": "自動複製"
+    },
+    "autoCopyOnInputsTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在輸入框 (input) 與文字區域 (textarea) 中啟用"
+    },
+    "autoCopyTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "將選取的文字複製到剪貼簿"
+    },
+    "autoImportFirefoxEnginesTooltip": {
+        "message": "永遠檢查 Firefox 引擎"
+    },
+    "autoPasteFromClipboardTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "開啟搜尋選單時，將剪貼簿中的文字貼上至搜尋列"
+    },
+    "background": {
+        "description": "",
+        "message": "背景"
+    },
+    "beta": {
+        "message": "Beta 測試"
+    },
+    "bottom": {
+        "message": "底部"
+    },
+    "bouquetPalette": {
+        "description": "bouquet (palettes.js) - optional",
+        "message": "花束 (Bouquet)"
+    },
+    "browseForImage": {
+        "description": "",
+        "message": "瀏覽本機圖片"
+    },
+    "cache": {
+        "description": "button cache label",
+        "message": "+"
+    },
+    "cacheIconsMaxSizeTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "快取圖示調整大小時的最大寬度或高度"
+    },
+    "cacheTooltip": {
+        "description": "advanced setting tooltip - button cache",
+        "message": "根據網址快取搜尋引擎的圖示"
+    },
+    "cascadingwindow": {
+        "message": "層疊"
+    },
+    "casesensitive": {
+        "description": "",
+        "message": "區分大小寫"
+    },
+    "center": {
+        "message": "置中"
+    },
+    "checkContextMenuOrderNotification": {
+        "message": "開啟快捷選單時，將預設右鍵選單的觸發方式改為雙擊？詳情請參閱選項。"
+    },
+    "close": {
+        "description": "",
+        "message": "關閉"
+    },
+    "confirmUncache": {
+        "description": "uncache message confirm",
+        "message": "移除所有圖示快取？"
+    },
+    "context": {
+        "message": "上下文環境"
+    },
+    "contextMenuContextualLayoutFlattenLimitTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "如果只要顯示 n 個引擎，則移除子資料夾並扁平化選單。0 = 無限制"
+    },
+    "contextMenuHotkeysTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在右鍵選單項目中加入快捷鍵 (例如 &A) 以便快速存取"
+    },
+    "contextMenuRegexMatchedEnginesTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在選單頂部顯示符合正則表達式的引擎"
+    },
+    "contextMenuTitleTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "覆寫右鍵選單的標題。使用 %s 代替搜尋字詞 (searchTerms)。留空 = 預設"
+    },
+    "contextMenuUseContextualLayoutTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "根據目前的上下文環境以子資料夾顯示右鍵選單"
+    },
+    "contextMenuUseInnerTextTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "未選取文字時，使用元素的內部文字 (inner text) 作為搜尋字詞"
+    },
+    "contexts": {
+        "message": "上下文環境"
+    },
+    "ctrl": {
+        "description": "",
+        "message": "Ctrl"
+    },
+    "customIconTooltip": {
+        "description": "toolbar icon - custom icon tooltip",
+        "message": "使用自訂圖示"
+    },
+    "dark": {
+        "description": "theme name",
+        "message": "深色"
+    },
+    "dayglowPalette": {
+        "description": "dayglow (palettes.js) - optional",
+        "message": "日光 (Dayglow)"
+    },
+    "default": {
+        "description": "",
+        "message": "預設"
+    },
+    "deleteNodesMessage": {
+        "message": "刪除 $1 個節點？"
+    },
+    "disableNewTabSortingTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "啟用以讓瀏覽器決定如何排序新的搜尋結果分頁。有助於防止與分頁管理工具發生衝突"
+    },
+    "display": {
+        "description": "",
+        "message": "顯示"
+    },
+    "docked": {
+        "description": "",
+        "message": "已停靠"
+    },
+    "drop": {
+        "description": "",
+        "message": "放下"
+    },
+    "easterPalette": {
+        "description": "easter (palettes.js) - optional",
+        "message": "復活節 (Easter)"
+    },
+    "enabledisplayprevioussearchtooltip": {
+        "description": "",
+        "message": "在搜尋框中顯示上次使用的搜尋字詞"
+    },
+    "exactly": {
+        "description": "",
+        "message": "完全符合"
+    },
+    "exportToFirefoxSearch": {
+        "description": "advanced setting label",
+        "message": "匯出至 Firefox 搜尋"
+    },
+    "exportToFirefoxSearchTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "瀏覽至您的設定檔資料夾並選擇您的 search.json.mozlz4 檔案。系統會提示兩個檔案：一個新的 search.json.mozlz4 檔案與一個原始檔案的備份。將兩個檔案皆儲存至您的設定檔目錄中。重新啟動 Firefox 以套用變更。"
+    },
+    "exportWithoutBase64IconsTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "排除圖示的資料 URI (Data URIs) 以減小匯出設定檔的體積。可能會導致自訂圖示遺失"
+    },
+    "extensionDescription": {
+        "message": "輕鬆新增搜尋引擎，並透過右鍵選單與便利的浮動選單進行搜尋"
+    },
+    "faviconFinder": {
+        "description": "",
+        "message": "透過檢查主機網站尋找網站圖示 (Favicon) (會在背景分頁中開啟)"
+    },
+    "faviconFinderShort": {
+        "description": "",
+        "message": "尋找網站圖示"
+    },
+    "fetchingRemoteContent": {
+        "description": "Fetching remote content (options.js)",
+        "message": "正在擷取遠端內容"
+    },
+    "findBarNext": {
+        "description": "keyboard shortcut label",
+        "message": "尋找下一個"
+    },
+    "findBarOpen": {
+        "description": "keyboard shortcut label",
+        "message": "開啟尋找列"
+    },
+    "findBarPrevious": {
+        "description": "keyboard shortcut label",
+        "message": "尋找上一個"
+    },
+    "findbar": {
+        "description": "",
+        "message": "尋找列"
+    },
+    "findbarkeyboardtimeout": {
+        "description": "",
+        "message": "在停止輸入 n 毫秒後執行搜尋。數值太低會導致效能問題。0 = 停用"
+    },
+    "findbarpositiontooltip": {
+        "description": "",
+        "message": "選擇尋找列的顯示位置"
+    },
+    "findbarsearchinalltabs": {
+        "description": "",
+        "message": "搜尋所有分頁 (注意：啟用此選項時，搜尋結果不會在輸入時即時更新。您需要按下 Enter 或點擊搜尋按鈕。)"
+    },
+    "findbarstartopen": {
+        "description": "",
+        "message": "網頁載入時自動開啟尋找列"
+    },
+    "findbarwindowtypetooltip": {
+        "description": "",
+        "message": "選擇尋找列的顯示方式。可以透過雙擊「停靠 / 浮動 / 移動」圖示或拖曳來切換尋找列的視窗樣式"
+    },
+    "findinpage": {
+        "description": "",
+        "message": "在網頁中尋找"
+    },
+    "forceOpenResultsTabsAdjacentTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "強制在目前分頁右側開啟搜尋結果分頁"
+    },
+    "forward": {
+        "message": "前進"
+    },
+    "frame": {
+        "description": "",
+        "message": "框架 (Frame)"
+    },
+    "grid": {
+        "description": "",
+        "message": "網格"
+    },
+    "groupFolderRowBreaksTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "啟用以將內聯群組資料夾顯示為區塊 (block) 元素"
+    },
+    "groupLabelMoreTileTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "將群組資料夾的「更多 / 較少」圖示顯示於標籤網格內，而非使用獨立的網格"
+    },
+    "groupcolor": {
+        "description": "",
+        "message": "群組顏色"
+    },
+    "groupcolortext": {
+        "description": "",
+        "message": "文字顏色"
+    },
+    "grouphidemoretile": {
+        "description": "",
+        "message": "隱藏「更多」網格"
+    },
+    "grouplayout": {
+        "description": "",
+        "message": "群組版面配置"
+    },
+    "grouplayoutmessage": {
+        "description": "",
+        "message": "注意：僅限最上層資料夾"
+    },
+    "grouplimit": {
+        "description": "",
+        "message": "群組限制"
+    },
+    "hidden": {
+        "message": "隱藏"
+    },
+    "highlightaccuracytooltip": {
+        "description": "",
+        "message": "字詞比對可設定為「部分符合」(搜尋 'lor' 時會比對到 'lorem')，或「完全符合」(僅有完整單字 'lor' 會被標示)"
+    },
+    "highlightcasesensitivetooltip": {
+        "description": "",
+        "message": "區分大小寫"
+    },
+    "highlightflashselectedtooltip": {
+        "description": "",
+        "message": "讓目前作用中的搜尋字詞閃爍"
+    },
+    "highlightfollowdomaintooltip": {
+        "description": "",
+        "message": "繼續在搜尋結果網站的頁面上進行標示"
+    },
+    "highlightfollowexternallinkstooltip": {
+        "description": "",
+        "message": "繼續在從搜尋結果頁面連結出去的外部網站上進行標示"
+    },
+    "highlightignorepunctuationtooltip": {
+        "description": "",
+        "message": "忽略標點符號 - 啟用此選項時，將符合 WORLDS、WORLD'S 與 WO'RLDS。字母之間若有單一或多個撇號仍會產生相符結果 (例如 W'O''R'L'D'S)"
+    },
+    "highlightopacitytooltip": {
+        "description": "",
+        "message": "背景顏色的透明度"
+    },
+    "highlightshowfindbartooltip": {
+        "description": "",
+        "message": "標示時顯示尋找列"
+    },
+    "highlightstyletooltip": {
+        "description": "",
+        "message": "使用背景/前景顏色或底線設定標示的樣式。選擇「底線」將忽略文字顏色設定"
+    },
+    "hotkeys": {
+        "description": "",
+        "message": "快捷鍵"
+    },
+    "hotkeystooltip": {
+        "description": "",
+        "message": "選取文字並按下按鍵進行搜尋。可於「搜尋引擎」分頁中設定快捷鍵"
+    },
+    "ignorepunctuation": {
+        "description": "",
+        "message": "忽略標點符號"
+    },
+    "image": {
+        "description": "",
+        "message": "圖片"
+    },
+    "invalidregex": {
+        "description": "",
+        "message": "無效的正則表達式"
+    },
+    "keyword": {
+        "message": "網址列關鍵字"
+    },
+    "lavenderPalette": {
+        "description": "lavender (palettes.js) - optional",
+        "message": "薰衣草 (Lavender)"
+    },
+    "left": {
+        "message": "左"
+    },
+    "less": {
+        "description": "",
+        "message": "較少"
+    },
+    "link": {
+        "description": "",
+        "message": "連結"
+    },
+    "linkText": {
+        "description": "",
+        "message": "連結文字"
+    },
+    "lite": {
+        "description": "theme name",
+        "message": "淺色"
+    },
+    "manualedit": {
+        "message": "手動修改偏好設定物件"
+    },
+    "manualeditwarning": {
+        "message": "手動編輯偏好設定物件可能會導致 ContextSearch 無法運作！"
+    },
+    "metalPalette": {
+        "description": "metal (palettes.js) - optional",
+        "message": "金屬 (Metal)"
+    },
+    "middle": {
+        "message": "中間"
+    },
+    "modern": {
+        "description": "theme name",
+        "message": "現代"
+    },
+    "modern_dark": {
+        "description": "theme name",
+        "message": "現代深色"
+    },
+    "modern_glass": {
+        "description": "theme name",
+        "message": "現代玻璃"
+    },
+    "modern_purple": {
+        "description": "theme name",
+        "message": "現代紫色"
+    },
+    "modern_sunset": {
+        "description": "theme name",
+        "message": "現代日落"
+    },
+    "movedockundock": {
+        "description": "",
+        "message": "移動 / 停靠 / 取消停靠"
+    },
+    "navbar": {
+        "description": "",
+        "message": "導覽列"
+    },
+    "nonePalette": {
+        "description": "none (palettes.js)",
+        "message": "無"
+    },
+    "nurseryPalette": {
+        "description": "nursery (palettes.js) - optional",
+        "message": "育嬰室 (Nursery)"
+    },
+    "omniboxDefaultToLastUsedEngineTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "網址列預設使用最近一次使用的搜尋引擎"
+    },
+    "openFoldersOnHoverTimeoutTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "開啟資料夾前游標懸停的等待毫秒數。500 = 預設，0 = 停用"
+    },
+    "optionsOpen": {
+        "description": "keyboard shortcut label",
+        "message": "開啟選項"
+    },
+    "or": {
+        "message": "– 或 –"
+    },
+    "page": {
+        "description": "",
+        "message": "頁面"
+    },
+    "pageTilesOpen": {
+        "description": "keyboard shortcut label",
+        "message": "開啟搜尋網格"
+    },
+    "pagetiles": {
+        "description": "",
+        "message": "搜尋網格"
+    },
+    "pagetilesdescription": {
+        "description": "",
+        "message": "將文字拖放至全螢幕滿版的搜尋引擎網格選單 (實驗性功能)"
+    },
+    "pagetilesenabledtooltip": {
+        "description": "",
+        "message": "啟用搜尋網格"
+    },
+    "pagetilesselectpalette": {
+        "message": "調色盤"
+    },
+    "partially": {
+        "description": "",
+        "message": "部分符合"
+    },
+    "quickMenuAllowContextMenuNewTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "對於在按下 (mousedown) 時而非放開 (mouseup) 時顯示右鍵選單的系統，可能需要選擇另一種開啟方式，或修改預設右鍵選單的開啟方式。"
+    },
+    "quickMenuAutoMaxCharsTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "使用自動模式時，選取文字後仍會開啟快捷選單的最多字元數。若選取超過此數量的字元將不會開啟選單。0 = 無限制"
+    },
+    "quickMenuAutoTimeoutTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "如果在放開滑鼠前停頓指定的毫秒數，則取消開啟快捷選單。0 = 停用"
+    },
+    "quickMenuCancelDeadzoneTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在使用「長按」開啟快捷選單時，游標移動多少像素內不會取消開啟操作"
+    },
+    "quickMenuCloseOnEdit": {
+        "message": "打字時關閉選單。(需要搜尋列 *未* 取得焦點 - 詳見「搜尋列」)"
+    },
+    "quickMenuContextualLayoutToolbarTooltip": {
+        "message": "顯示上下文環境工具列"
+    },
+    "quickMenuDomLayoutTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "使用以逗號分隔的 HTMLElement ID 清單覆寫快捷選單的版面配置，例如 ( menuBar, searchBarContainer, optionsBar, quickMenuElement, titleBar, toolBar )。不需使用所有 ID。列出的任何項目將被移至 DOM 樹狀結構的末端。留空 = 預設"
+    },
+    "quickMenuEdit": {
+        "description": "keyboard shortcut label",
+        "message": "編輯快捷選單"
+    },
+    "quickMenuFocusOnOpenTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "開啟後將焦點設定至快捷選單"
+    },
+    "quickMenuHideSeparatorsInGridTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在網格檢視的快捷選單中隱藏分隔線"
+    },
+    "quickMenuHoldTimeoutTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "使用「長按」開啟快捷選單前需按住滑鼠的等待時間 (毫秒)"
+    },
+    "quickMenuLock": {
+        "description": "keyboard shortcut label",
+        "message": "鎖定快捷選單"
+    },
+    "quickMenuOnMouseOpenWithoutSelection": {
+        "message": "任何地方"
+    },
+    "quickMenuOnMouseOpenWithoutSelectionTooltip": {
+        "message": "在任何元素上開啟選單，包含文件與框架中的空白區域"
+    },
+    "quickMenuOnSimpleClick_useInnerTextTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "未選取文字時，使用元素的內部文字 (inner text) 作為搜尋字詞"
+    },
+    "quickMenuOpen": {
+        "description": "keyboard shortcut label",
+        "message": "開啟快捷選單"
+    },
+    "quickMenuOpeningOpacityTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "快捷選單開啟時的透明度。游標懸停時將變為不透明"
+    },
+    "quickMenuPreventPageClicksTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "快捷選單開啟時，阻止目前網頁上的滑鼠事件"
+    },
+    "quickMenuRegexMatchedEnginesTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在選單頂部顯示符合正則表達式的引擎"
+    },
+    "quickMenuSearchOnMouseUpTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "允許從快捷選單在放開滑鼠 (mouseup) 時執行搜尋，而不需要點擊 (mousedown)。適合用於長按開啟選單後，將滑鼠游標移至搜尋網格上並放開以直接執行搜尋。"
+    },
+    "quickMenuShowHotkeysInTitleTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在標題顯示快捷鍵"
+    },
+    "quickMenuShowRecentlyUsedTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在選單頂部顯示最近使用的引擎"
+    },
+    "quickMenuToolbarRowsTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "顯示的最多工具列數。0 = 無限制"
+    },
+    "quickMenuToolsLockPersistTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "鎖定工具的狀態將跨越瀏覽工作階段 (跨視窗/分頁) 被記住"
+    },
+    "quickMenuToolsRepeatSearchPersistTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "重複搜尋工具的狀態將跨越瀏覽工作階段被記住"
+    },
+    "regexmatches": {
+        "description": "",
+        "message": "正則表達式相符項目"
+    },
+    "rememberLastOpenedFolderTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "將選單開啟至上次使用的資料夾"
+    },
+    "requestClipboardWritePermission": {
+        "description": "permissions request",
+        "message": "與剪貼簿互動需要 clipboardWrite 權限。請點擊下方按鈕以請求剪貼簿寫入權限。"
+    },
+    "requestPermissionsMessage": {
+        "description": "generic permission",
+        "message": "執行此動作需要一項選用權限 [$1]"
+    },
+    "resetUserOptionsConfirm": {
+        "message": "將所有偏好設定重設為預設值？ (搜尋引擎將不受影響)"
+    },
+    "resize": {
+        "description": "",
+        "message": "調整大小"
+    },
+    "right": {
+        "message": "右"
+    },
+    "rightClickMenuOnMouseDownFixTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "使用滑鼠右鍵「長按」開啟快捷選單時，需雙擊才會顯示預設右鍵選單。有助於防止在按下時觸發右鍵選單的系統上出現多餘選單"
+    },
+    "saveclose": {
+        "message": "儲存並關閉"
+    },
+    "searchBarHistoryLengthTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "儲存的最多搜尋紀錄筆數"
+    },
+    "searchBarSuggestionsCountTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "包含的最多 Google 搜尋建議數量"
+    },
+    "searchIconFinder": {
+        "message": "🔍 搜尋 IconFinder.com"
+    },
+    "searchactionssidebaraction": {
+        "description": "",
+        "message": "在側邊欄中開啟"
+    },
+    "searchalltabs": {
+        "description": "",
+        "message": "搜尋所有分頁"
+    },
+    "searchenginesmanager": {
+        "description": "",
+        "message": "搜尋引擎管理員"
+    },
+    "searchresults": {
+        "description": "",
+        "message": "搜尋結果"
+    },
+    "selection": {
+        "description": "",
+        "message": "選取文字"
+    },
+    "separateWordSearch": {
+        "description": "",
+        "message": "分詞搜尋"
+    },
+    "shakeSensitivityTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "偵測搖動滑鼠的靈敏度。數值越低 = 越靈敏"
+    },
+    "shift": {
+        "description": "",
+        "message": "Shift"
+    },
+    "sideBarMinify": {
+        "description": "keyboard shortcut label",
+        "message": "縮小側邊欄"
+    },
+    "sideBarOpen": {
+        "description": "keyboard shortcut label",
+        "message": "開啟側邊欄"
+    },
+    "sideBar_openOnResultsMinimizedTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在搜尋結果分頁上以最小化狀態開啟側邊欄"
+    },
+    "sideBar_openOnResultsTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "在搜尋結果分頁上開啟側邊欄"
+    },
+    "sideBar_rememberStateTooltip": {
+        "description": "advanced setting tooltip",
+        "message": "記住側邊欄的開啟狀態"
+    },
+    "sidebarhidefullscreentooltip": {
+        "description": "",
+        "message": "全螢幕時隱藏側邊欄"
+    },
+    "simpleclick": {
+        "description": "",
+        "message": "單擊"
+    },
+    "simpleclicktooltip": {
+        "description": "",
+        "message": "點擊一個單字即可開啟選單。無需選取"
+    },
+    "singlewindow": {
+        "message": "單一"
+    },
+    "socialPalette": {
+        "description": "social (palettes.js) - optional",
+        "message": "社群 (Social)"
+    },
+    "sort": {
+        "message": "排序"
+    },
+    "themeNext": {
+        "description": "keyboard shortcut label",
+        "message": "下一個主題"
+    },
+    "themePrevious": {
+        "description": "keyboard shortcut label",
+        "message": "上一個主題"
+    },
+    "toggleDisplayMode": {
+        "description": "keyboard shortcut label",
+        "message": "切換顯示模式"
+    },
+    "toggleview": {
+        "description": "",
+        "message": ""
+    },
+    "tools_Close": {
+        "message": "關閉選單"
+    },
+    "tools_Copy": {
+        "message": "複製到剪貼簿"
+    },
+    "tools_Disable": {
+        "message": "停用選單"
+    },
+    "tools_Download": {
+        "message": "下載"
+    },
+    "tools_Lock": {
+        "message": "鎖定選單保持開啟"
+    },
+    "tools_OpenAsLink": {
+        "message": "以連結開啟"
+    },
+    "tools_OpenImage": {
+        "message": "開啟圖片"
+    },
+    "tools_lastused": {
+        "message": "上次使用的搜尋引擎"
+    },
+    "tools_repeatsearch": {
+        "message": "重複搜尋"
+    },
+    "top": {
+        "message": "頂部"
+    },
+    "uncache": {
+        "description": "button uncache label",
+        "message": "-"
+    },
+    "uncacheTooltip": {
+        "description": "advanced setting tooltip - button uncache",
+        "message": "僅刪除包含圖示網址之搜尋引擎的圖示快取。警告：在刪除快取前，系統不會檢查網址是否損壞或無效"
+    },
+    "underline": {
+        "description": "",
+        "message": "底線"
+    },
+    "undocked": {
+        "description": "",
+        "message": "取消停靠"
+    },
+    "uploadfromlocal": {
+        "description": "",
+        "message": "使用電腦中的圖片"
+    },
+    "video": {
+        "description": "",
+        "message": "影片"
+    },
+    "warningCache": {
+        "description": "cache message warning",
+        "message": "部分圖示無法快取"
+    },
+    "waterPalette": {
+        "description": "water (palettes.js) - optional",
+        "message": "水 (Water)"
+    }
+}
