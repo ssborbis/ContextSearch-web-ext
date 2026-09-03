@@ -7,8 +7,11 @@ function getDefaultNodes() {
 	if ( userOptions.omniboxDefaultToLastUsedEngine && userOptions.omniboxLastUsedIds.length ) {
 		let nodes = findNodes(userOptions.nodeTree, n => userOptions.omniboxLastUsedIds.includes(n.id));
 		return [...new Set(nodes)];
-	} else
-		return [findNode(userOptions.nodeTree, n => n.hotkey || n.keyword)];
+	} else {
+		// return the default engine or first node with a hotkey or keyword
+		let node = findNode(userOptions.nodeTree, n => n.id === userOptions.defaultEngine);
+		return [node] || [findNode(userOptions.nodeTree, n => n.hotkey || n.keyword)];
+	}
 }
 
 function getNodesFromHotkeys(hotkeys) {
