@@ -176,6 +176,8 @@ function getIconFromNode(node) {
 			return node.icon || browser.runtime.getURL('icons/folder-icon.svg');	
 		 else if ( node.type === "externalProgram" ) 
 			return node.icon || browser.runtime.getURL('icons/terminal_color.svg');
+		 else if ( node.type === "separator" ) 
+			return browser.runtime.getURL('icons/transparent.gif');
 		 else 
 			return node.icon || "";
 	})();

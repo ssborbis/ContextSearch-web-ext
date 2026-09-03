@@ -577,9 +577,16 @@ function buildSearchEngineContainer() {
 		
 		if (node.type === 'separator') {
 
+			let img = document.createElement('img');
+			img.src = getIconFromNode(node);
+			header.appendChild(img);
+
+		//	li.addEventListener('dblclick', _edit);
+
 			let text = document.createElement('span');
 			let div = document.createElement('div');
 			div.className = 'separator';
+			header.title = i18n("Separator");
 			text.appendChild(div);
 			text.className = "label";
 			header.appendChild(text);
@@ -968,13 +975,12 @@ function buildSearchEngineContainer() {
 		markAsDefault(li);
 		
 		// add hotkeys for some node types
-		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {		
-			let hotkeyContainer = document.createElement('div');
-			hotkeyContainer.className = 'hotkeyContainer';
-			hotkeyContainer.appendChild(createHotkeyButton(node, rootElement));
-			header.insertBefore(hotkeyContainer, header.firstChild);
+		let hotkeyContainer = document.createElement('div');
+		hotkeyContainer.className = 'hotkeyContainer';
+		header.insertBefore(hotkeyContainer, header.firstChild);
 
-			// header.appendChild(createHotkeyButton(node, rootElement));
+		if ( ['searchEngine', 'oneClickSearchEngine', 'bookmarklet', 'folder', 'externalProgram'].includes(node.type) ) {		
+			hotkeyContainer.appendChild(createHotkeyButton(node, rootElement));
 		}
 
 		// add match icons for some node types
@@ -2277,7 +2283,7 @@ function setHotkeyContainerWidth() {
 	setTimeout(() => {
 		document.querySelectorAll(".hotkeyContainer").forEach(el => el.style.width = null);
 		const width = Math.max(...[...document.querySelectorAll(".hotkeyContainer")].map(el => el.offsetWidth));
-		document.querySelectorAll(".hotkeyContainer").forEach(el => el.style.width = (width + 2) + 'px');
+		document.querySelectorAll(".hotkeyContainer").forEach(el => el.style.width = (width + 6) + 'px');
 	}, 50);
 }
 	
