@@ -52,12 +52,13 @@ const QMtools = {
 
 			// enable/disable link button on very basic 'is it a link' rules
 			function setDisabled() {
-				if (quickMenuObject && quickMenuObject.searchTerms && (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1)) {
+				// if (quickMenuObject && quickMenuObject.searchTerms && (quickMenuObject.searchTerms.trim().indexOf(" ") !== -1 || quickMenuObject.searchTerms.indexOf(".") === -1)) {
+				if (quickMenuObject && quickMenuObject.searchTermsObject && quickMenuObject.searchTermsObject.link) {
+					delete tile.disabled;
+					tile.dataset.disabled = false;	
+				} else {
 					tile.disabled = true;
 					tile.dataset.disabled = true;
-				} else {
-					delete tile.disabled;
-					tile.dataset.disabled = false;
 				}
 			}
 			
@@ -75,15 +76,25 @@ const QMtools = {
 
 			if (this.dataset.disabled === "true") return;
 
-			sendMessage({
-				action: "search", 
-				info: {
-					menuItemId: "openAsLink",
-					selectionText: sb.value,
-					openMethod: getOpenMethod(e),
-					openUrl: true
-				}
-			});
+			let url = null;
+
+			try {
+				url = new URL(sb.value);
+			} catch(e) {
+				url = new URL(quickMenuObject?.searchTermsObject?.link);
+			}
+
+			if ( url && url.href ) {
+				sendMessage({
+					action: "search", 
+					info: {
+						menuItemId: "openAsLink",
+						selectionText: url.href,
+						openMethod: getOpenMethod(e),
+						openUrl: true
+					}
+				});
+			}
 		}
 	},
 	'disable': {
