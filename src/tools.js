@@ -1,4 +1,8 @@
 const toolInit = (tool) => {
+
+	window.tools = window.tools || {};
+	window.tools[tool.name] = {};
+
 	let tile = buildSearchIcon(null, tool.title);
 	tile.appendChild(createMaskIcon(tool.icon));		
 	tile.action = tool.action;
@@ -588,6 +592,11 @@ const QMtools = {
 			let tile = toolInit(this);
 			tile.dataset.locked = false;
 			tile.tool = this;
+
+			if ( window.tools[this.name].status ) {
+				this.action();
+			}
+				
 			return tile;
 		}, 
 		action: async function() {
@@ -607,6 +616,8 @@ const QMtools = {
 				let node = findNode(window.root, n => n.id === qm.rootNode.id);
 				qm = await quickMenuElementFromNodeTree(node);
 			}
+
+			window.tools[this.tool.name].status = on;
 
 			qm.querySelectorAll('.tile').forEach( t => {
 				if ( !t.node ) return;
