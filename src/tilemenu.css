@@ -319,7 +319,8 @@ BODY {
 	content: attr(data-title);
 	margin-left:24px;
 }
-.tile[data-type="separator"] {
+
+.tile[data-type="separator"][data-subtype="horizontal"] {
 	height:2px;
 	background:var(--separator);
 	border:none;
@@ -327,6 +328,16 @@ BODY {
 	border-radius:1px;
 	width: calc(100% - 12px);
 	margin:8px;
+}
+.tile[data-type="separator"][data-subtype="vertical"] {
+	border:none;
+	text-align: center;
+}
+.tile[data-type="separator"][data-subtype="vertical"] > div {
+    display: inline-block;
+    height: 100%;
+    width: 4px;
+    background: var(--separator);
 }
 .tile.singleColumn[data-type="separator"] {
 	height:4px;

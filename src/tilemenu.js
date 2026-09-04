@@ -742,7 +742,13 @@ async function makeQuickMenu(options) {
 				return;
 			}
 
-			if ( t.nodeName === 'HR' ) {
+			if ( t.dataset.type === 'separator' ) {
+
+				t.dataset.subtype = userOptions.quickMenuSeparatorsDefaultVertical ? "vertical" : "horizontal";
+				if ( !t.classList.contains("singleColumn") && t.dataset.subtype === 'vertical' ) {
+					count++;
+					return;
+				}
 				t.parentNode.insertBefore(br(), t.nextSibling);
 				t.parentNode.insertBefore(br(), t);
 				count = 1;
@@ -2268,8 +2274,11 @@ function nodeToTile( node ) {
 
 		case "separator":
 
-			tile = document.createElement('hr');
+			tile = document.createElement('div');
 			tile.dataset.type = 'separator';
+
+			let subdiv = document.createElement('div');
+			tile.appendChild(subdiv);
 
 			break;
 	

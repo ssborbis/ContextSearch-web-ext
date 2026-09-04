@@ -350,5 +350,6 @@ const defaultUserOptions = {
 	autoCopyPlainTextOnly: false,
 	searchEnginesManagerSearchShowFolderMatchChildren: false,
 	searchEnginesManagerStartCollapsed: false,
-	blockListAsWhitelist: false
+	blockListAsWhitelist: false,
+	quickMenuSeparatorsDefaultVertical: false
 };
