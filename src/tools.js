@@ -1,8 +1,5 @@
 const toolInit = (tool) => {
 
-	window.tools = window.tools || {};
-	window.tools[tool.name] = {};
-
 	let tile = buildSearchIcon(null, tool.title);
 	tile.appendChild(createMaskIcon(tool.icon));		
 	tile.action = tool.action;
@@ -11,6 +8,13 @@ const toolInit = (tool) => {
 	// set tile.tool to userOptions.quickMenuTools[tool] if exists
 	let config = getUserTool(tool.name);
 	if ( config ) tile.tool = config;
+
+	if (quickMenuObject.toolLockStates && quickMenuObject.toolLockStates[tool.name] ) {
+		setTimeout(() => {
+			tile.dataset.locked = quickMenuObject.toolLockStates[tool.name];
+			//tile.action();
+		}, 50);
+	}
 
 	return tile;
 }
@@ -108,7 +112,7 @@ const QMtools = {
 		context: ["quickmenu", "sidebar", "searchbar"],
 		init: function() {
 			let tile = toolInit(this)			
-			tile.dataset.locked = quickMenuObject.disabled ? "false" : "true";
+			setToolLockedState(this, !quickMenuObject.disabled);	
 			return tile;
 		},
 		action: function(e) {
@@ -592,10 +596,6 @@ const QMtools = {
 			let tile = toolInit(this);
 			tile.dataset.locked = false;
 			tile.tool = this;
-
-			if ( window.tools[this.name].status ) {
-				this.action();
-			}
 				
 			return tile;
 		}, 
@@ -605,19 +605,17 @@ const QMtools = {
 
 			setToolLockedState(this.tool || this, on);
 
+			let node = findNode(window.root, n => n.id === qm.rootNode.id);
+
 			// show / hide based on context
 			if ( on && qm.contexts.length ) {
 				this.tool.contexts = qm.contexts;
 				quickMenuObject.contexts = [];
-				let node = findNode(window.root, n => n.id === qm.rootNode.id);
 				qm = await quickMenuElementFromNodeTree(node);
-			} else if ( !on && this.tool.contexts.length ) {
+			} else if ( !on && this.tool.contexts?.length ) {
 				quickMenuObject.contexts = this.tool.contexts;
-				let node = findNode(window.root, n => n.id === qm.rootNode.id);
 				qm = await quickMenuElementFromNodeTree(node);
 			}
-
-			window.tools[this.tool.name].status = on;
 
 			qm.querySelectorAll('.tile').forEach( t => {
 				if ( !t.node ) return;
@@ -836,20 +834,30 @@ const QMtools = {
 	}
 }
 
+// updates a tool's locked state in the DOM and in quickMenuObject.toolLockStates
 function setToolLockedState(tool, status) {
 
-	toolStatuses[tool.name] = status;
 	document.querySelectorAll(`[data-type="tool"]`).forEach( t => {
 		if ( t.tool && t.tool.name === tool.name ) {
 			t.dataset.locked = status;
+			quickMenuObject.toolLockStates = quickMenuObject.toolLockStates || {};
+			quickMenuObject.toolLockStates[tool.name] = status;
 		}
 	});
+
+	// allow a short delay for the DOM to update before sending the updated quickMenuObject to the background script
+	// this is to avoid a quickMenuElementFromNodeTree(window.root); from quickmenu.js
+	setTimeout(() => {
+		sendMessage({
+			action: "updateQuickMenuObject", 
+			quickMenuObject: quickMenuObject
+		});
+	}, 100);
 }
 
 function getUserTool(name) {
 	return userOptions.quickMenuTools.find( tool => tool.name === name );
 }
 
-var toolStatuses = {};
-
 const toolSelector = '[data-type="tool"]:not([data-nocolorinvert]), .tile[data-type="more"], .tile[data-type="less"]';
+

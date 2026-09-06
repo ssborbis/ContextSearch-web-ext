@@ -1007,15 +1007,6 @@ function buildQuickMenuElement(options) {
 
 	qm.expandMoreTiles();
 
-	// enable tools on folder change
-	(() => {
-		for ( ts in toolStatuses ) {
-			if ( toolStatuses[ts] && ['showhide'].includes(ts) ) {
-				let _tile = QMtools[ts].init();
-				_tile.action();
-			}
-		}
-	})();
 
 	// set drag & drop init state
 	if ( userOptions.alwaysAllowTileRearranging )
@@ -2452,7 +2443,7 @@ function nodeToTile( node ) {
 		tile.title += ' - ' + node.description;
 
 	// build menu with hidden engines for show/hide tool
-	if ( node.hidden ) tile.style.display = 'none';
+	if ( node.hidden && !quickMenuObject.toolLockStates?.showhide) tile.style.display = 'none';
 
 	// flag the default engine for sb focus
 	if ( node.id == userOptions.defaultEngine )

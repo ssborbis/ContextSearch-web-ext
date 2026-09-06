@@ -14,7 +14,8 @@ var quickMenuObject = {
 	disabled: false,
 	mouseDownTargetIsTextBox: false,
 	mouseLastContextMenuTime:0,
-	contexts: []
+	contexts: [],
+	toolLockStates: {}
 };
 
 var userOptions = {};
@@ -61,7 +62,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				disabled: message.quickMenuObject.disabled,
 				mouseDownTargetIsTextBox: message.quickMenuObject.mouseDownTargetIsTextBox,
 				mouseLastContextMenuTime:Math.max(message.quickMenuObject.mouseLastContextMenuTime, quickMenuObject.mouseLastContextMenuTime),
-				contexts:message.quickMenuObject.contexts
+				contexts:message.quickMenuObject.contexts,
+				toolLockStates: message.quickMenuObject.toolLockStates
 			});
 
 			break;
