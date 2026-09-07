@@ -23,6 +23,21 @@ var killswitch = false; // global switch for disabling injected functions on the
 
 window.suspendSelectionChange = false;
 
+// window.addEventListener('click', () => {
+//   // Get the performance metrics for the current page document
+//   const [navigationEntry] = performance.getEntriesByType('navigation');
+
+//   if (navigationEntry) {
+//     if (navigationEntry.workerStart > 0) {
+//       console.log("✅ The page was loaded from a Service Worker cache!");
+//     } else {
+//       console.log("❌ The page was loaded directly from the network or HTTP cache.");
+//     }
+//   } else {
+//     console.log("Performance navigation timing not supported.");
+//   }
+// });
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 	if ( message.userOptions ) userOptions = message.userOptions;
@@ -79,16 +94,16 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			sendResponse(quickMenuObject);
 	}
 });
+	
+	// init
+	sendMessage({action: "getUserOptions"}).then( uo => {
+		userOptions = uo;
 
-// init
-sendMessage({action: "getUserOptions"}).then( uo => {
-	userOptions = uo;
-
-	createShadowRoot();
-	setZoomProperty();
-	Shortcut.addShortcutListener();
-	sendMessage({action: "injectComplete"});
-});
+		createShadowRoot();
+		setZoomProperty();
+		Shortcut.addShortcutListener();
+		sendMessage({action: "injectComplete"});
+	});
 
 function getRawSelectedText(el) {
 	if (el && typeof el.selectionStart !== 'undefined') {

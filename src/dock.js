@@ -186,13 +186,6 @@ function findFixedElements(side, dist) {
 	
 }
 
-function getScrollBarWidth() {
-	return window.innerWidth - (document.documentElement.clientWidth || document.body.clientWidth);
-}
-
-function getScrollBarHeight() {
-	return window.innerHeight - (document.documentElement.clientHeight || document.body.clientHeight);
-}
 
 function makeDockable(el, options) {
 	

@@ -518,3 +518,11 @@ class CopyPaste {
 		return template.match(/{clipboard}|%c/) ? true: false;
 	}
 }
+
+function getScrollBarWidth() {
+	return window.innerWidth - (document.documentElement.clientWidth || document.body.clientWidth);
+}
+
+function getScrollBarHeight() {
+	return window.innerHeight - (document.documentElement.clientHeight || document.body.clientHeight);
+}
