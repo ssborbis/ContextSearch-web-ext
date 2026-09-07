@@ -2622,6 +2622,14 @@ function createHotkeyButton(node, rootElement) {
 			}
 		});
 
+		if ( node.type === 'searchEngine') {
+			let se = userOptions.searchEngines.find(se => se.id === node.id);
+			if ( se ) {
+				se.hotkey = key.keyCode;
+				se.shortcut = key;
+			}
+		}
+
 		updateNodeList();
 		// new code end
 	}
