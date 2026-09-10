@@ -883,6 +883,7 @@ function buildSearchEngineContainer() {
 				_form.displayType.value = node.displayType || "";
 				_form.groupHideMoreTile.checked = node.groupHideMoreTile || false;
 				_form.iconURL.value = node.icon || "";
+				_form.keyword.value = node.keyword || "";
 
 				_form.c_groupColor.value = _form.groupColor.value;
 				_form.c_groupColor.onchange = (e) => {
