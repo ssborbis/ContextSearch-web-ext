@@ -43,7 +43,7 @@ function parseOmniboxInput(input) {
 		return { hotkeys: full_match[1].split(''), searchTerms: full_match[2] };
 	
 	if ( partial_match ) 
-		return { searchTerms: partial_match[1]}
+		return { searchTerms: partial_match[1], hotkeys: "" };
 	
 	return null;	
 }
