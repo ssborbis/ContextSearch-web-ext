@@ -40,7 +40,7 @@ function parseOmniboxInput(input) {
 	let full_match = /(\w+)\s+(.*)/.exec(input);
 	
 	if ( full_match ) 
-		return { hotkeys: full_match[1].split(''), searchTerms: full_match[2] };
+		return { hotkeys: [... new Set(full_match[1].split(''))], searchTerms: full_match[2] };
 	
 	if ( partial_match ) 
 		return { searchTerms: partial_match[1], hotkeys: "" };
