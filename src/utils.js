@@ -73,6 +73,30 @@ function recentlyUsedListToFolder(context) {
 	return folder;
 }
 
+function nodeIdsToFolder(ids) {
+
+	ids = ids.filter(id => id && id.trim() !== "");
+	ids = [...new Set(ids)]; // remove duplicates
+
+	let folder = {
+		type: "folder",
+		id: "___nodeIds___",
+		title: i18n('Node IDs'),
+		children: [],
+		parent: (self.qm) ? qm.rootNode : null,
+		icon: browser.runtime.getURL('icons/folder.svg')
+	};
+
+	ids.forEach(id => {
+		let node = findNode(userOptions.nodeTree, n => n.id === id);
+		if (node) {
+			folder.children.push(Object.assign({}, node));
+		}
+	});
+
+	return folder;
+}
+
 function matchingEnginesToFolder(s) {
 
 	let folder = {
