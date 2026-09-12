@@ -375,14 +375,14 @@ function findIcons(o) {
 	const flaticon = s => {
 		return finder({
 			url: "https://www.flaticon.com/search?word=" + s.toLowerCase(),
-			selector: ".link-icon-detail > IMG"
+			selector: ".icon--holder IMG"
 		});
 	}
 
 	const iconfinder = s => {
 		return finder({
-			url: "https://www.iconfinder.com/search?q=" + s.toLowerCase(),
-			selector: ".icon-grid IMG"
+			url: "https://www.magnific.com/search?format=search&iconType=standard&last_filter=query&last_value=house&type=icon&query=" + s.toLowerCase(),
+			selector: "FIGURE IMG"
 		});
 	}
 
