@@ -191,5 +191,29 @@ class CSBookmarks {
 			return results;
 		});
 	}
+
+	static getAllSearchBookmarks() {
+		if (browser.bookmarks === undefined) return Promise.resolve("");
+		
+		return browser.bookmarks.getTree().then( tree => {
+			
+			tree = tree.shift();
+			
+			let results = [];
+			
+			function traverse(node) {
+
+				if ( CSBookmarks.getType(node) === 'folder' ) 
+					node.children.forEach( child => traverse(child) );
+				
+				if ( CSBookmarks.getType(node) === 'bookmark' && node.url.includes("%s") )
+					results.push(node);
+			}
+			
+			traverse(tree);
+			
+			return results;
+		});
+	}
 		
 }
