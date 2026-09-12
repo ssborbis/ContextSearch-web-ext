@@ -1262,7 +1262,7 @@ function buildPermissions() {
 			.catch(error => debug(error));
 	}
 
-	['<all_urls>', 'clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']
+	['<all_urls>', 'bookmarks', 'clipboardRead','clipboardWrite','downloads','nativeMessaging','userScripts']
 		.forEach( permission => {
 			const el = _default.cloneNode(true);
 			const cb = el.querySelector('input');

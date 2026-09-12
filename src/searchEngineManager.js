@@ -511,10 +511,9 @@ function buildSearchEngineContainer() {
 				s_bookmarklets.style.width = 'auto';
 				s_bookmarklets.style.margin = 0;
 				s_bookmarklets.style.padding = 0;
-				s_bookmarklets.style.display = 'inline-block';
-				s_bookmarklets.style.float = 'left';
+				s_bookmarklets.title = i18n("SearchBookmarklets");
 
-				// b_bookmarklets.innerText = "Find Bookmarlets";
+				// b_bookmarklets.innerText = "Find Bookmarklets";
 				let default_o = document.createElement('option');
 				default_o.innerText = i18n("SearchBookmarklets");
 				default_o.value = "";
@@ -553,6 +552,8 @@ function buildSearchEngineContainer() {
 
 					s_bookmarklets.clicked = true;
 				}
+
+				_form.searchCode.parentNode.insertBefore(s_bookmarklets, _form.searchCode.nextSibling);
 
 				_form.save.onclick = async function() {
 
