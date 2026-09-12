@@ -1276,14 +1276,14 @@ function openWithMethod(o) {
 function executeBookmarklet(info) {
 
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
-	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || self.searchTerms);
+	let searchTerms = info.searchTerms || info.selectionText || self.searchTerms;
 
 	self.searchTerms = searchTerms;
 
 	// run as script
 	if ( info.node.searchCode ) {
 
-		const code = scriptToInjectableCode(info.node.searchCode, searchTerms);
+		const code = scriptToInjectableCode({code: info.node.searchCode, searchTerms: searchTerms});
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			return executeUserScript({
