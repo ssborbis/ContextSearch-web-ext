@@ -54,7 +54,7 @@ function addSearchProvider(url) {
 	document.body.appendChild(div);
 	div.onclick = () => {
 		div.style.opacity = 0;
-		setTimeout(() => div.parentNode.removeChild(div), 500);
+		setTimeout(() => { if ( div && div.parentNode ) div.parentNode.removeChild(div); }, 500);
 	}
 	document.addEventListener('click', () => div.click(), {once: true});
 	div.getBoundingClientRect();
