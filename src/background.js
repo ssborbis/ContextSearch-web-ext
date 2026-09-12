@@ -1275,25 +1275,6 @@ function openWithMethod(o) {
 
 function executeBookmarklet(info) {
 
-	const blobCode = (c, s) => {
-		return `
-			(() => {
-			  const blob = new Blob([\`CS_searchTerms = searchTerms = "` + s + `";` + c + `\`], {
-			    type: "text/javascript",
-			  });
-			  let script = document.createElement('script');
-			  script.src = URL.createObjectURL(blob);
-			  script.type = 'text/javascript';
-
-			  document.getElementsByTagName('head')[0].appendChild(script);
-			})();
-		`
-	}
-
-	const vanillaCode = (c, s) => {
-		return `CS_searchTerms = searchTerms = "${s}";${c}`;
-	}
-
 	//let searchTerms = info.searchTerms || window.searchTerms || escapeDoubleQuotes(info.selectionText);
 	let searchTerms = escapeDoubleQuotes(info.searchTerms || info.selectionText || self.searchTerms);
 
@@ -1302,9 +1283,7 @@ function executeBookmarklet(info) {
 	// run as script
 	if ( info.node.searchCode ) {
 
-		const code = userOptions.scriptsUseBlobs 
-			? blobCode(info.node.searchCode, searchTerms) 
-			: vanillaCode(info.node.searchCode, searchTerms);
+		const code = scriptToInjectableCode(info.node.searchCode, searchTerms);
 
 		return browser.tabs.query({currentWindow: true, active: true}).then( async tabs => {
 			return executeUserScript({
@@ -1552,6 +1531,36 @@ async function executeExternalProgram(info) {
 			});
 		}
 	});
+}
+
+function scriptToInjectableCode(o) {
+
+	const blobCode = (c, s) => {
+		return `
+			(() => {
+			  const blob = new Blob([\`CS_searchTerms = searchTerms = "` + s + `";` + c + `\`], {
+			    type: "text/javascript",
+			  });
+			  let script = document.createElement('script');
+			  script.src = URL.createObjectURL(blob);
+			  script.type = 'text/javascript';
+
+			  document.getElementsByTagName('head')[0].appendChild(script);
+			})();
+		`
+	}
+
+	const vanillaCode = (c, s) => {
+		return `CS_searchTerms = searchTerms = "${s}";${c}`;
+	}
+
+	let searchTerms = escapeDoubleQuotes(o.searchTerms);
+
+	const code = userOptions.scriptsUseBlobs 
+		? blobCode(o.code, searchTerms) 
+		: vanillaCode(o.code, searchTerms);
+
+	return code;
 }
 
 function lastSearchHandler(id, method) {
@@ -1847,10 +1856,11 @@ async function openSearch(info) {
 		if ( !se.searchCode ) return;
 		self.searchTerms = searchTerms;
 
+		const injectableCode = scriptToInjectableCode({code: se.searchCode, searchTerms: searchTerms});
+
 		executeUserScript({
 			tabId: tabId, 
-			//code: '{ const searchTerms = "' + escapeDoubleQuotes(searchTerms) + '"; ' + se.searchCode + '}',
-			code: se.searchCode,
+			code: injectableCode,
 			nodeId: node.id
 		});
 	}
