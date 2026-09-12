@@ -372,35 +372,34 @@ function findIcons(o) {
 			});
 	}
 
-	const flaticon = s => {
-		return finder({
-			url: "https://www.flaticon.com/search?word=" + s.toLowerCase(),
-			selector: ".icon--holder IMG"
-		});
+	const services = {
+		"flaticon": s => {
+			return finder({
+				url: "https://www.flaticon.com/search?word=" + s.toLowerCase(),
+				selector: ".icon--holder IMG"
+			});
+		},
+
+		"iconfinder": s => {
+			return finder({
+				url: "https://www.magnific.com/search?format=search&iconType=standard&last_filter=query&last_value=house&type=icon&query=" + s.toLowerCase(),
+				selector: "FIGURE IMG"
+			});
+		},
+
+		"icons8": s => {
+			return finder({
+				url: "https://icons8.com/icons/set/" + s.toLowerCase(),
+				selector: "img[data-image-id]"
+			});
+		}
 	}
 
-	const iconfinder = s => {
-		return finder({
-			url: "https://www.magnific.com/search?format=search&iconType=standard&last_filter=query&last_value=house&type=icon&query=" + s.toLowerCase(),
-			selector: "FIGURE IMG"
-		});
-	}
+	if ( services[o.service] === undefined ) 
+		return Promise.reject("Invalid service: " + o.service);
+	else 
+		return services[o.service](o.query);
 
-	const icons8 = s => {
-		return finder({
-			url: "https://icons8.com/icons/set/" + s.toLowerCase(),
-			selector: "img[data-image-id]"
-		});
-	}
-
-	switch (o.service) {
-		case "iconfinder": 
-			return iconfinder(o.query);
-		case "flaticon":
-			return flaticon(o.query);
-		case "icons8":
-			return icons8(o.query);
-	}
 }
 
 function getMonogramIcons(str, count=10) {
