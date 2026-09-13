@@ -1852,16 +1852,16 @@ async function openSearch(info) {
 		openerTabId: openerTabId == -1 ? null : openerTabId // chrome pdf reader gives tab.id of -1
 	}).then(onCreate, onError);
 	
-	function executeSearchCode(tabId) {
-		if ( !se.searchCode ) return;
-		self.searchTerms = searchTerms;
+	function executeSearchCode(tabId, o) {
+		if ( !o.code ) return;
+		//self.searchTerms = searchTerms;
 
-		const injectableCode = scriptToInjectableCode({code: se.searchCode, searchTerms: searchTerms});
+		const injectableCode = scriptToInjectableCode({code: o.code, searchTerms: o.searchTerms});
 
 		executeUserScript({
 			tabId: tabId, 
 			code: injectableCode,
-			nodeId: node.id
+			nodeId: o.nodeId
 		});
 	}
 	
@@ -1903,7 +1903,7 @@ async function openSearch(info) {
 				browser.tabs.onUpdated.removeListener(listener);
 				
 				highlightSearchTermsInTab(__tab, searchTerms);
-				executeSearchCode(__tab.id);
+				executeSearchCode(__tab.id, {code: se.searchCode, searchTerms: searchTerms, nodeId: node.id});
 
 				return;
 			}
@@ -1921,7 +1921,7 @@ async function openSearch(info) {
 				browser.tabs.onUpdated.removeListener(_listener);
 				
 				highlightSearchTermsInTab(_tabInfo, searchTerms);
-				executeSearchCode(_tabId);
+				executeSearchCode(_tabId, {code: se.searchCode, searchTerms: searchTerms, nodeId: node.id});
 			});
 
 			// POST
