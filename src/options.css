@@ -1268,6 +1268,21 @@ SECTION {
 	user-select: none;
 	z-index:2;
 }
+.folderBrowser SPAN, .collapseOld {
+	position:absolute;
+	left:-16px;
+	border:1px solid var(--border-color2);
+	border-radius:4px;
+	width:10px;
+	height:10px;
+	text-align:center;
+	display:inline-block;
+	line-height:10px;
+	color:var(--color);
+	background-color:var(--bg-color1);
+	top:2.5px;
+	user-select: none;
+}
 .promptForImage {
 	display:inline-block;
 	width:400px;

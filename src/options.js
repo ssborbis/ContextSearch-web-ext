@@ -1973,6 +1973,7 @@ function makeFolderBrowser(tree) {
 
 			let collapse = document.createElement('span');
 			collapse.innerText = '+';
+			collapse.className = "collapseOld";
 			_li.insertBefore(collapse,_li.firstChild);
 			_ul.style.display = 'none';
 
