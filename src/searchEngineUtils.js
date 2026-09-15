@@ -359,7 +359,7 @@ function findIcons(o) {
 				url: _o.url,
 				active:false
 			}).then(async tab => {
-				await new Promise(r => setTimeout(r, 2000));
+				await new Promise(r => setTimeout(r, 3000));
 
 				let urls = await _executeScript({
 					func: (selector) => [...document.querySelectorAll(selector)].map(img => img.src),

@@ -2722,11 +2722,24 @@ function createEditForm(o) {
 
 	function addIconPickerListener(el) {
 		imageUploadHandler(el, img => {
-			let form = el.closest('form');;
+			let form = el.closest('form');
 			form.iconURL.value = imageToBase64(img, userOptions.cacheIconsMaxSize);
 
 			form.querySelector('[name="faviconBox"] img').src = form.iconURL.value;
 		})
+
+		// show check icon when url changes
+		{
+			let form = el.closest('form');
+			let button = form.querySelector('[name="reloadIcon"]');
+			
+			button.addEventListener('click', () => button.style.visibility = 'hidden');
+			button.style.visibility = 'hidden';
+			form.iconURL.addEventListener('input', e => {
+				let img = form.querySelector('[name="faviconBox"] img');
+				button.style.visibility = (form.iconURL.value !== img.src ) ? 'visible' : 'hidden';
+			});
+		}
 	}
 
 	function addFavIconFinderListener(finder) {
@@ -2823,6 +2836,9 @@ function createEditForm(o) {
 						// update the favicon when the user picks an icon
 						form.iconURL.dispatchEvent(new Event('change'));
 						//form.save.click();
+						form.setIcon();
+						form.save.classList.add('changed');
+						form.saveclose.classList.add('changed');
 					}
 				});
 			}

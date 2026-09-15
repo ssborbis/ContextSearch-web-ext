@@ -1815,7 +1815,8 @@ INPUT::placeholder {
 #iconURI .big {
 	padding:8px;
 	cursor:pointer;
-	width:100px;
+	width:50%;
+	margin:8px;
 	height:100px;
 /*				border:2px dashed var(--border-color1);*/
 	background-color: var(--bg-color1);
@@ -1823,8 +1824,9 @@ INPUT::placeholder {
 	transition:background-color .25s;
 }
 
-#iconURI .big tool {
-	width:20px;
+.big .tool {
+	height:30px;
+	width:30px;
 	vertical-align:middle;
 	margin:0 16px;
 	pointer-events: none;

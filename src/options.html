@@ -1871,9 +1871,9 @@
 						<div data-tabgroup="formtabs" id="iconURI" class="tabcontent" data-tabid="formTabIcon">
 							
 							<div>
-								<label data-i18n="Icon" class="formLabel">$</label><div style="display:flex;margin-right:16px">
+								<label data-i18n="Icon" class="formLabel">$</label><div style="display:flex;margin-right:8px">
 									<input name="iconURL" type="text" class="inputNice" style="flex-grow:2" />
-									<button type="button" name="reloadIcon" style="width:auto;height:30px;margin-top:-8px;margin-left:4px"><tool data-icon="reload.svg" style="height:16px;vertical-align: middle;"></tool></button>
+									<button type="button" name="reloadIcon" style="width:auto;height:30px;margin-top:-8px;position:absolute;right:8px;background-color:var(--cs-green);color:white">✔</button>
 								</div>
 							</div>
 
@@ -1881,7 +1881,6 @@
 
 							<div style="display:flex;justify-content: space-evenly;align-items: center;">
 								<button type="button" class="big" name="faviconFinder" title="$faviconFinder" data-i18n="web"><tool data-icon="search.svg"></tool><br><br>$</button>
-								<span style="display:flex; align-items:center">- or -</span>
 								<button type="button" class="big">
 									<label for="iconPicker" data-i18n="local" title="$uploadfromlocal" style="display:inline-block;width:100%;cursor:pointer"><tool data-icon="folder.svg"></tool><br><br>$</label>
 									<input type="file" accept="image/*" name='iconPicker' style="display:none">
@@ -1898,7 +1897,7 @@
 <span data-browser="firefox">					
 						<button type="button" name="addOpenSearchEngine" style="margin-left:4px" data-i18n="AddOpenSearchEngine" title="i18n_text"><tool data-icon="add.svg" style="height:1em;vertical-align: middle"></tool></button>
 </span>
-						<button type="button" name="test" style="margin-left:4px" data-i18n="Test" title="i18n_text"><tool data-icon="checkmark.svg" style="height:1em;vertical-align: middle;"></tool></button>
+						<button type="button" name="test" style="margin-left:4px" data-i18n="Test" title="i18n_text"><tool data-icon="terminal.svg" style="height:1em;vertical-align: middle;"></tool></button>
 					</div>
 						<button type="button" name="save" style="margin-left:4px;width:auto;" data-i18n="Save" title="i18n_text">$</button><button type="button" name="saveclose" data-i18n="saveclose" title="$saveclose" style="border-left:1px solid var(--border-color1);margin-left:0px;width:auto;cursor:default">$</button>
 					</div>
