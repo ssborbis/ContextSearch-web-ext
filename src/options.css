@@ -1268,7 +1268,7 @@ SECTION {
 	user-select: none;
 	z-index:2;
 }
-.folderBrowser SPAN, .collapseOld {
+.collapseOld {
 	position:absolute;
 	left:-16px;
 	border:1px solid var(--border-color2);
