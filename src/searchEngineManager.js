@@ -2518,7 +2518,8 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 	}, 500, "searchEnginesManagerSearchTimer");
 });
 
-$('#searchEnginesManagerSearchClearButton').addEventListener('click', e => {
+$('#searchEnginesManagerSearchClearButton').addEventListener('mousedown', e => {
+	e.preventDefault(); // prevent input losing
 	$('#searchEnginesManagerSearch').value = "";
 	$('#searchEnginesManagerSearch').dispatchEvent(new KeyboardEvent('keyup'))
 });

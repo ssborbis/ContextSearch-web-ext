@@ -584,10 +584,6 @@ function addDOMListeners() {
 		document.querySelectorAll('[data-hide-on-sync-with-firefox]').forEach( el => el.style.display = e.target.checked ? "none" : null);
 	});
 
-	$('#filterBarContainer > .tool').addEventListener('click', e => {
-		$('#filterBarContainer').classList.toggle('hide');
-	});
-
 	document.querySelectorAll('.updateNativeApp').forEach(el => el.addEventListener('click', checkAndUpdateNativeApp));
 
 	// show permissions message

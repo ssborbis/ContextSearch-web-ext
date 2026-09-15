@@ -1722,12 +1722,16 @@ INPUT::placeholder {
 	display:flex;
 	flex-direction:row;
 	/* justify-content:flex-end; */
-	margin-left:22px;
 	overflow:hidden;
-	position:absolute;
-	width:calc(100% - 40px);
+	width:200px;
 }
 
+#filterBarContainer INPUT + .tool {
+	visibility:hidden;
+}
+#filterBarContainer INPUT:focus + .tool {
+	visibility:visible;
+}
 #searchEnginesManagerSearch {
 	font-size:8pt;
 	/* flex-grow:2; */

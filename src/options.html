@@ -1746,13 +1746,14 @@
 		
 				<section id="searchEnginesParentContainer" data-hide-on-sync-with-firefox>
 					<p class="header1" style="margin-top:0" data-i18n="SearchEnginesManager">Search Engines Manager</p>
-
-					<div id="filterBarContainer" class="hide" title="$filter">
+					<div id="filterBarContainer" title="$filter">
+						<div class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</div>
+						<span class="hotkeyContainer">&nbsp;</span>
 						<div class="tool" style="--mask-image: url(icons/filter.svg);height:1em;margin:0;opacity:.6;"></div>
 						<input id="searchEnginesManagerSearch" class="inputNice nosave" placeholder="filter" />
-						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/clear.svg);height:1em;margin:0;opacity:.6;position:relative;right:18px;" title="$delete"></div>
+						<div id="searchEnginesManagerSearchClearButton" class="tool" style="--mask-image: url(icons/clear.svg);height:.8em;margin:0;opacity:.6;position:relative;right:18px;" title="$delete"></div>
 					</div>
-					<div class="collapse" id="collapseAll" title="$expandcollapse" style="position: relative;left:0;top:0">-</div>
+					
 					<div id="managerContainer"></div>
 					<div></div>
 					<br />
