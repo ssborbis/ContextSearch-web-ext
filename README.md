@@ -249,6 +249,8 @@ Show tools on the top or bottom of the quick menu, or hide them altogether
 #### Search Bar
 You can optionally show a search bar in the quick menu. Search bars include a suggestions drop-down box that displays search history and Google suggestions ( optionally, see [General](#general) for more info)
 
+Pressing the `Enter` key will search using the engine currently selected via keyboard navigation, the default search engine as set in the Search Engines Manager, or the first search engine found if no default is set. Additionally, modifier keys and actions listed in the Quick Menu's `Search Actions` options will effect how searches are displayed. For example, pressing `Ctrl + Enter` will search results in a new window if the `Search Action` for `Ctrl + Enter` is set accordingly to `Open in New Window`.
+
 #### `Set focus to search bar when the Quick Menu is opened`
 Like to edit your search terms after opening the menu?
 
@@ -418,8 +420,6 @@ Tools and separators can also be added from the custom context menu.
 ### Engine Types
 * Search Engines
   * Generally conforming to the [OpenSearch](https://developer.mozilla.org/en-US/docs/Web/OpenSearch) standard. These are your basic search engines. Each must have a unique name so as to not conflict with built-in browser search engines.
-* Search Engine Shortcuts
-  * References to Search Engines that can be placed throughout separate folders in the Search Engines Manager. Useful if the same engine is used for different folder searches. Editing a shortcut will change the original engine, and all shortcuts referencing that engine will be updated.
 * Multi-search Engines
   * Search engines where the template is an array of either template URLs or engine IDs. Behaves like a folder search, but in a single search engine tile.
 * One-Click Search Engines
