@@ -249,7 +249,9 @@ Show tools on the top or bottom of the quick menu, or hide them altogether
 #### Search Bar
 You can optionally show a search bar in the quick menu. Search bars include a suggestions drop-down box that displays search history and Google suggestions ( optionally, see [General](#general) for more info)
 
-Pressing the `Enter` key will search using the engine currently selected via keyboard navigation, the default search engine as set in the Search Engines Manager, or the first search engine found if no default is set. Additionally, modifier keys and actions listed in the Quick Menu's `Search Actions` options will effect how searches are displayed. For example, pressing `Ctrl + Enter` will search results in a new window if the `Search Action` for `Ctrl + Enter` is set accordingly to `Open in New Window`.
+Pressing the `Enter` key will search using the engine currently selected via keyboard navigation, the default search engine as set in the Search Engines Manager, or the first search engine found if no default is set. 
+
+Additionally, modifier keys and actions listed in the Quick Menu's `Search Actions` options will effect how searches are displayed. For example, pressing `Ctrl + Enter` will display search results in a new window if the `Search Action` for `Ctrl + Enter` is set accordingly to `Open in New Window`.
 
 #### `Set focus to search bar when the Quick Menu is opened`
 Like to edit your search terms after opening the menu?
