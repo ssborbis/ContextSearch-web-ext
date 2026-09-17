@@ -621,8 +621,8 @@ const QMtools = {
 				if ( !t.node ) return;
 
 				if ( t.node.hidden ) {
-					t.style.display = on ? null : 'none';
-					// t.classList.toggle("hidden", on);
+					//t.style.display = on ? null : 'none';
+					t.classList.toggle("hidden", on);
 				}
 			});
 			

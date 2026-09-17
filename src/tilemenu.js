@@ -459,12 +459,13 @@ async function makeQuickMenu(options) {
 					altKey: e.altKey
 				}));
 			} else {
+				//  default node not found in the menu
 				let node = qm.getDefaultNode();
 
 				if ( node ) {
 					search({
 						node: node,
-						openMethod: userOptions.quickMenuLeftClick
+						openMethod: node.type === "folder" ? "openBackgroundTab" : userOptions.quickMenuLeftClick
 					});
 				} else {
 					console.log("no default engine found");
@@ -630,7 +631,7 @@ async function makeQuickMenu(options) {
 			direction = -1;
 
 		// get all tiles
-		let divs = qm.querySelectorAll('.tile');
+		let divs = qm.querySelectorAll('.tile:not(.hidden)');
 
 		// clear current selection
 		if (sb.selectedIndex !== undefined)
@@ -2443,7 +2444,7 @@ function nodeToTile( node ) {
 		tile.title += ' - ' + node.description;
 
 	// build menu with hidden engines for show/hide tool
-	if ( node.hidden && !quickMenuObject.toolLockStates?.showhide) tile.style.display = 'none';
+	if ( node.hidden && !quickMenuObject.toolLockStates?.showhide) tile.classList.add("hidden");//tile.style.display = 'none';
 
 	// flag the default engine for sb focus
 	if ( node.id == userOptions.defaultEngine )
