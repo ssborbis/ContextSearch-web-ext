@@ -1700,18 +1700,18 @@ document.addEventListener('mouseup', e => {
 
 		if ( getSearchActions(e, false, true).find(_sa => _sa.event === 'dblclick')) {
 			window.mouseupHandlerTimeout = setTimeout(() => {
-				console.log('has double-click event also');
+				debug('has double-click event also');
 				mouseupHandler(e);		
 			}, 500);
 		} else {
-			console.log('no double-click event, trigger immediately');
+			debug('no double-click event, trigger immediately');
 			mouseupHandler(e);
 		}
 
 	//double-clicks are handle immediately
 	} else {
 		clearTimeout(window.mouseupHandlerTimeout);
-		console.log('double-click, trigger immediately')
+		debug('double-click, trigger immediately')
 		mouseupHandler(e);
 	}
 });
@@ -1719,7 +1719,7 @@ document.addEventListener('mouseup', e => {
 async function search(o) {
 	delete o.node.parent; // caused cyclic error
 
-	console.log(o);
+	debug(o);
 
 	if ( CopyPaste.templateUsesClipboard(o.node.template) ) {
 		await CopyPaste.read()
