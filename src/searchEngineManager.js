@@ -2861,11 +2861,17 @@ function createEditForm(o) {
 				selectIconProvider.className = "inputNice";
 				selectIconProvider.style = "width:auto;display:block;cursor:pointer;user-select:none;margin:auto";
 				selectIconProvider.innerHTML = `
-					<option value="default">Default</option>
-					<option value="iconfinder">iconfinder.com</option>
-					<option value="icons8">icons8.com</option>
-					<option value="flaticon">flaticon.com</option>
-				`;
+					<option value="default">Default</option>`;
+
+				for (key in faviconServices) {
+
+					let service = faviconServices[key]();
+
+					let o = document.createElement('option');
+					o.value = key.toString();
+					o.innerText = service.name;
+					selectIconProvider.appendChild(o);
+				}
 
 				div.insertBefore(selectIconProvider, div.firstChild);
 

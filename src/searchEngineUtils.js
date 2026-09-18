@@ -372,33 +372,10 @@ function findIcons(o) {
 			});
 	}
 
-	const services = {
-		"flaticon": s => {
-			return finder({
-				url: "https://www.flaticon.com/search?word=" + s.toLowerCase(),
-				selector: ".icon--holder IMG"
-			});
-		},
-
-		"iconfinder": s => {
-			return finder({
-				url: "https://www.magnific.com/search?format=search&iconType=standard&last_filter=query&last_value=house&type=icon&query=" + s.toLowerCase(),
-				selector: "FIGURE IMG"
-			});
-		},
-
-		"icons8": s => {
-			return finder({
-				url: "https://icons8.com/icons/set/" + s.toLowerCase(),
-				selector: "img[data-image-id]"
-			});
-		}
-	}
-
-	if ( services[o.service] === undefined ) 
+	if ( faviconServices[o.service] === undefined ) 
 		return Promise.reject("Invalid service: " + o.service);
 	else 
-		return services[o.service](o.query);
+		return finder(faviconServices[o.service](o.query));
 
 }
 
@@ -425,3 +402,29 @@ function getMonogramIcons(str, count=10) {
 
 	return _urls;
 }
+
+const faviconServices = {
+		"flaticon": s => {
+			return {
+				name: "FlatIcon",
+				url: "https://www.flaticon.com/search?word=" + s?.toLowerCase(),
+				selector: ".icon--holder IMG"
+			}
+		},
+
+		"magnific": s => {
+			return {
+				name: "Magnific",
+				url: "https://www.magnific.com/search?format=search&iconType=standard&last_filter=query&last_value=house&type=icon&query=" + s?.toLowerCase(),
+				selector: "FIGURE IMG"
+			}
+		},
+
+		"icons8": s => {
+			return {
+				name: "icons8",
+				url: "https://icons8.com/icons/set/" + s?.toLowerCase(),
+				selector: "img[data-image-id]"
+			}
+		}
+	}
