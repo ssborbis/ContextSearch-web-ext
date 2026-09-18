@@ -2623,11 +2623,11 @@ function makeGroupFolderFromTile(gf) {
 	// show group colors if enabled or property not yet set
 	if (!gf.node.hasOwnProperty("groupColorEnabled") || gf.node.groupColorEnabled ) {
 
-	if ( gf.node.groupColor ) 
-		g.style.setProperty("--group-color", gf.node.groupColor);
+		if ( gf.node.groupColor ) 
+			g.style.setProperty("--group-color", gf.node.groupColor);
 
-	if ( gf.node.groupColorText ) 
-		g.style.setProperty("--group-color-text", gf.node.groupColorText);
+		if ( gf.node.groupColorText ) 
+			g.style.setProperty("--group-color-text", gf.node.groupColorText);
 	}
 
 	g.node = gf.node;
