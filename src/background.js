@@ -2152,10 +2152,11 @@ function resetPersist() {
 
 function setIcon() {
 	try {
-	if ( browser.action ) // v3
-		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
-	else if ( browser.browser_action ) // v2
-		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		if ( browser.action ) // v3
+			browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+		else if ( browser.browser_action ) // v2
+			browser.browserAction.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
+	} catch (error) {}
 }
 
 async function checkForOneClickEngines() {
