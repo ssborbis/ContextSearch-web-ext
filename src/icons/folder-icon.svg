@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="400" height="400" viewBox="0 2 12 7" fill="none" stroke="#000" stroke-width=".35" stroke-linecap="round" stroke-linejoin="round">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 2 12 7" fill="none" stroke="#000" stroke-width=".35" stroke-linecap="round" stroke-linejoin="round">
 	<defs>
 		<linearGradient id="main" gradientTransform="rotate(90)">
 			<stop offset="5%"  stop-color="#fff000" />
