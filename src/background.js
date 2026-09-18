@@ -1943,7 +1943,7 @@ async function openSearch(info) {
 }
 
 function addTabTerms(node, tabId, s) {
-	console.log('tabTerms add', node.title);
+	debug('tabTerms add', node.title);
 	self.tabTerms.unshift({id: node.id, folderId: node.parentId, tabId: tabId, searchTerms: s});
 }
 
@@ -1952,11 +1952,8 @@ function removeTabTerms(tabId) {
 }
 
 function deactivateTabTerms(tabId) {
-	
 	for ( tt in self.tabTerms) {
-		if ( tt.tabId === tabId ) {
-			tt.deactivated = true;
-		}
+		if ( tt.tabId === tabId ) tt.deactivated = true;
 	}
 }
 
@@ -2154,6 +2151,7 @@ function resetPersist() {
 }
 
 function setIcon() {
+	try {
 	if ( browser.action ) // v3
 		browser.action.setIcon({path: userOptions.searchBarIcon || 'icons/logo_notext.svg'});
 	else if ( browser.browser_action ) // v2
