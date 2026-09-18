@@ -1307,7 +1307,7 @@ function makeSearchBar() {
 			div.searchTerms = s.searchTerms;
 		}
 		
-		sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
+		// sg.style.width = sb.parentNode.getBoundingClientRect().width + "px";
 		
 		let sg_height = suggestions.length ? sg.firstChild.getBoundingClientRect().height : 0;
 		
