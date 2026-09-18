@@ -622,7 +622,7 @@ const QMtools = {
 
 				if ( t.node.hidden ) {
 					//t.style.display = on ? null : 'none';
-					t.classList.toggle("hidden", on);
+					t.classList.toggle("nodisplay", !on);
 				}
 			});
 			

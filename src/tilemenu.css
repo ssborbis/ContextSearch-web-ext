@@ -76,6 +76,9 @@ BODY {
 	filter: saturate(50%);
 	opacity: .5;
 }
+.tile.nodisplay {
+	display:none;
+}
 #quickMenuElement, .tile {
 	display:inline-block;
 	font-size:0;

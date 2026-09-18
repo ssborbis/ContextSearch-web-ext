@@ -631,7 +631,7 @@ async function makeQuickMenu(options) {
 			direction = -1;
 
 		// get all tiles
-		let divs = qm.querySelectorAll('.tile:not(.hidden)');
+		let divs = qm.querySelectorAll('.tile:not(.nodisplay)');
 
 		// clear current selection
 		if (sb.selectedIndex !== undefined)
@@ -721,7 +721,7 @@ async function makeQuickMenu(options) {
 		
 		_columns = _columns || qm.columns;
 
-		let tiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"])')].filter( t => t.style.display !== 'none' );
+		let tiles = [...qm.querySelectorAll('.tile:not([data-hidden="true"]):not(.nodisplay)')].filter( t => t.style.display !== 'none' );
 
 		let br = () => document.createElement('br');
 
@@ -2445,7 +2445,7 @@ function nodeToTile( node ) {
 		tile.title += ' - ' + node.description;
 
 	// build menu with hidden engines for show/hide tool
-	if ( node.hidden && !quickMenuObject.toolLockStates?.showhide) tile.classList.add("hidden");//tile.style.display = 'none';
+	if ( node.hidden && !quickMenuObject.toolLockStates?.showhide) tile.classList.add("nodisplay");//tile.style.display = 'none';
 
 	// flag the default engine for sb focus
 	if ( node.id == userOptions.defaultEngine )
