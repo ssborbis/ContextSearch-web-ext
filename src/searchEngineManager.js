@@ -861,6 +861,7 @@ function buildSearchEngineContainer() {
 					node.keyword = _form.keyword.value.trim();
 					node.groupColor = _form.groupColor.value;
 					node.groupColorText = _form.groupColorText.value;
+					node.groupColorEnabled = _form.groupColorEnabled.checked;
 					node.groupFolder = _form.groupFolder.value || false;
 					node.groupLimit = parseInt(_form.groupLimit.value);
 					node.displayType = _form.displayType.value;
@@ -901,6 +902,9 @@ function buildSearchEngineContainer() {
 				_form.groupColorText.onchange = (e) => {
 					_form.c_groupColorText.value = e.target.value;
 				}
+
+				// initial state is checked if no property exists (defaults to true)
+				_form.groupColorEnabled.checked = node.hasOwnProperty("groupColorEnabled") ? node.groupColorEnabled : true;
 
 				function showHideGroupSettings() {
 		

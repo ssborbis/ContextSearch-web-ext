@@ -1848,6 +1848,20 @@ INPUT::placeholder {
 	height:12px;
 }
 
+#folderFormTable input[type="checkbox"]:not(:checked) ~ * {
+	opacity:.25;
+	pointer-events:none;
+}
+
+#folderFormTable input[type="color"] {
+	padding:0;
+	margin: 0;
+}
+
+#folderFormTable .tool:has(+input[type="color"]) {
+	margin-left:20px;
+}
+
 .colorPickerTable input {
 	display:none;
 }
