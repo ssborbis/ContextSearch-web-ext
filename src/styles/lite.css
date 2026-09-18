@@ -1,0 +1,7 @@
+#CS_quickMenuIframe, .CS_quickMenuIframe {
+	border-radius:10px;
+}
+
+body[data-menu="quickmenu"] {
+    border-radius:10px;
+}

@@ -1,0 +1,70 @@
+:root { 
+	--tron: #7DFDFEe5;
+	/* --tron: #f4af2de5; */
+	--trondark: #1d1e2be5;
+	/* --trondark: #8d631ae5; */
+	--background: linear-gradient(to bottom, var(--tron) 0px, var(--trondark) 100px);
+	--tools-color: #ddd; 
+	color: rgb(212, 212, 212);
+	--border: var(--tron);
+	--hover: #7DFDFE35;
+	--separator: #fff4;
+	--folder-color:transparent;/*#fff3;*/
+	--folder-label-color: white;
+	--folder-label-color-singlecolumn: white;
+	--group-label-color: #fff;
+}
+
+#CS_quickMenuIframe, .CS_quickMenuIframe, #CS_sbIframe {
+	box-shadow: 0 0 16px #7DFDFE80;
+}
+
+#toolBar, #menuBar {
+	background: var(--trondark);
+}
+
+#searchBar {
+    background: var(--trondark);
+	text-align:center;
+}
+
+#suggestions {
+	background:transparent;
+}
+
+.tile {
+	/* Create space for the border */
+	border: 3px solid transparent; 
+	background-size:16px;
+	margin:4px;
+	border-radius:4px;
+
+	background-color:transparent;
+	/* Outer soft glow matching the gradient colors */
+	box-shadow: none;
+	transition: background-color .15s linear;
+}
+
+.tile[data-type="folder"] {
+	background-color:transparent;
+}
+
+.tile:hover {
+	box-shadow: 0 0 4px var(--tron);
+	background-color: var(--tron);
+}
+
+.tile.singleColumn {
+	/* background-color:#fff1; */
+}
+
+.tile.singleColumn[data-type="folder"] {
+	background-color:transparent;
+}
+.selectedNoFocus {
+	background-color:transparent;
+}
+
+.tile[data-type="folder"]:not(.singleColumn) {
+	background-color:none;
+}

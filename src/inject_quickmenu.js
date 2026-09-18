@@ -1619,13 +1619,21 @@ if ( window == top && typeof addParentDockingListeners === 'function')
 	addParentDockingListeners('CS_quickMenuIframe', 'quickMenu');
 
 window.addEventListener('message', e => {
-	if ( e?.data?.action === 'getComputedStyle') {
-		let sss = getShadowRoot().styleSheets;
+	// if ( e?.data?.action === 'getComputedStyle') {
+	// 	let sss = getShadowRoot().styleSheets;
 
-		for (const styleSheet of sss ) {
-		  if ( styleSheet?.href?.endsWith("inject_widgets.css")) {
-		  	styleSheet.insertRule(".CS_quickMenuIframe { border-radius: " + e.data.value + ";}");
-		  }
-		}
+	// 	for (const styleSheet of sss ) {
+	// 	  if ( styleSheet?.href?.endsWith("inject_widgets.css")) {
+	// 	  	styleSheet.insertRule(`.CS_quickMenuIframe, #CS_sbIframe { ${e.data.property}: ${e.data.value};}`);
+	// 	  }
+	// 	}
+	// }
+
+	if ( e?.data?.action === 'setThemeStyles') {
+		const styleElement = getShadowRoot().querySelector('#themeStyles') || document.createElement('style');
+		styleElement.id = "themeStyles";
+
+		styleElement.textContent = e.data.value;
+		getShadowRoot().appendChild(styleElement);
 	}
 });

@@ -2090,19 +2090,20 @@ document.addEventListener('dragend', async e => {
 	clearTimeout(qm.textDragOverFolderTimer);
 });
 
-window.addEventListener('message', e => {
-	switch ( e?.data?.action) {
-		case "getComputedStyle": {
-			let el = document.querySelector(e.data.selector);
-			if ( !el ) return;
+// window.addEventListener('message', e => {
+// 	switch ( e?.data?.action) {
+// 		case "getComputedStyle": {
+// 			let el = document.querySelector(e.data.selector);
+// 			if ( !el ) return;
 
-			messageParent({
-				action: "getComputedStyle",
-				value: window.getComputedStyle(el).getPropertyValue(e.data.property)
-			});
-		}
-	}
-});
+// 			messageParent({
+// 				action: "getComputedStyle",
+// 				property: e.data.property,
+// 				value: window.getComputedStyle(el).getPropertyValue(e.data.property)
+// 			});
+// 		}
+// 	}
+// });
 
 function messageParent(msg) {
 	window.parent.postMessage(msg, "*");

@@ -1,13 +1,14 @@
 const themes = [
 	{ name: "lite", path: "/styles/lite.css"},
-	{ name: "dark", path: "/styles/dark.css"},
+	{ name: "dark", path: "/styles/dark.css", requires: ["/styles/lite.css"]},
 	// { name: "sunset", path: "/styles/sunset.css"},
 	// { name: "blue", path: "/styles/blue.css"},
 	{ name: "modern", path: "/styles/modern.css"},
 	{ name: "modern dark", path: "/styles/modern-dark.css", requires: ["/styles/modern.css"]},
 	{ name: "modern purple", path: "/styles/modern-purple.css", requires: ["/styles/modern.css"]},
 	{ name: "modern sunset", path: "/styles/modern-sunset.css", requires: ["/styles/modern.css"]},
-	{ name: "modern glass", path: "/styles/modern-glass.css", requires: ["/styles/modern.css"]}
+	{ name: "modern glass", path: "/styles/modern-glass.css", requires: ["/styles/modern.css"]},
+	{ name: "tron (blue)", path: "/styles/tron-blue.css", requires: ["/styles/modern.css"]}
 ];
 
 function addStylesheet(href) {
@@ -46,6 +47,21 @@ async function setTheme(theme) {
 	let link = await addStylesheet(theme.path);
 	link.className = "theme";
 
+	// update the shadow DOM styles
+	let styles = "";
+	for (const styleSheet of document.styleSheets) {
+		for (const rule of styleSheet.cssRules) {
+			if (rule.selectorText.match(/[#|\.]CS_/g) ) {
+				styles+=rule.cssText + "\n";
+			}
+		}
+	}
+
+	messageParent({
+		action: "setThemeStyles",
+		value: styles
+	});
+
 	return link;
 }
 
@@ -64,10 +80,11 @@ function setUserStyles() {
 		} else resolve();
 	}).then(() => {
 		// set corrections for iframe windows here
-		messageParent({
-			action: "getComputedStyle",
-			value: window.getComputedStyle(document.body).getPropertyValue("border-radius")
-		});
+		// messageParent({
+		// 	action: "getComputedStyle",
+		// 	property: "border-radius",
+		// 	value: window.getComputedStyle(document.body).getPropertyValue("border-radius")
+		// });
 	});
 }
 

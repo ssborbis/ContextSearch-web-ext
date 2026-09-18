@@ -19,7 +19,6 @@
 	background-color:transparent;
 	box-sizing: border-box;
 	--cs-scale: calc( 1 / var(--cs-zoom,1) * var(--cs-custom-scale,1));
-
 }
 .CS_quickMenuIframe {
 }
