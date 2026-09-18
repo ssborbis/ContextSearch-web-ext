@@ -1273,7 +1273,7 @@ SECTION {
 	left:-16px;
 	border:1px solid var(--border-color2);
 	border-radius:4px;
-	width:10px;
+	width:1em;
 	height:10px;
 	text-align:center;
 	display:inline-block;
@@ -1876,6 +1876,7 @@ INPUT::placeholder {
 .defaultEngineMarker {
 	color:gold;
 	padding:0 8px 0 2px;
+	line-height:1em;
 }
 
 fieldset {
