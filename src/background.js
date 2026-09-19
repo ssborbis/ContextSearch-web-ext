@@ -1145,6 +1145,8 @@ function openWithMethod(o) {
 	function filterOptions(_o) {
 		if ( platformInfo && platformInfo.os === "android") delete _o.openerTabId;
 
+		if (typeof browser.tabs.toggleReaderMode === 'undefined') delete _o.openInReaderMode;
+
 		return _o;
 	}
 	
@@ -1155,6 +1157,9 @@ function openWithMethod(o) {
 
 		case "openNewTab":
 			return openNewTab(false);
+
+		case "openSplitTab":
+			return openSplitTab();
 
 		case "openNewWindow":
 			return openNewWindow(false);
@@ -1173,13 +1178,15 @@ function openWithMethod(o) {
 			return openPopup();
 	}
 	
-	function openCurrentTab() {
+	function openCurrentTab(tabId=null) {
 		
-		return browser.tabs.update(filterOptions({
+		return browser.tabs.update(tabId, filterOptions({
 			url: o.url,
-			openerTabId: o.openerTabId
+			openerTabId: tabId ? null : o.openerTabId,
+			openInReaderMode: o.openInReaderMode
 		}));
-	} 
+	}
+
 	function openNewWindow(incognito) {	// open in new window
 
 		return browser.windows.create({
@@ -1206,7 +1213,8 @@ function openWithMethod(o) {
 			url: o.url,
 			active: !inBackground,
 			openerTabId: o.openerTabId,
-			index: o.index
+			index: o.index,
+			openInReaderMode: o.openInReaderMode || false
 			//openerTabId: (info.folder ? null : openerTabId)
 		}));
 
@@ -1270,6 +1278,34 @@ function openWithMethod(o) {
 		
 		self.popupWindows.push(w.id);
 		return w;
+	}
+
+	async function openSplitTab() {
+		let [currentTab] = await browser.tabs.query({ active: true, currentWindow: true });
+
+		// tab already split. Use adjacent tab
+		if ( currentTab.splitViewId > -1 ) {
+			debug('has split view');
+			const tabs = await browser.tabs.query({splitViewId: currentTab.splitViewId});
+			const adjacentTab = tabs.find(t => t.id !== currentTab.id );
+
+			return await openCurrentTab(adjacentTab.id);
+		}
+
+		// users must manually create a split view tab
+		if ( typeof browser.tabs.createSplit !== 'function') {
+			_executeScript({
+				func: (msg) => alert(msg),
+				tabId: currentTab.id,
+				args: [i18n("OpenSplitViewAlert")]
+			});
+
+			return null;
+		}
+
+		let newTab = await openNewTab(false);
+		let splitTabId = await browser.tabs.createSplit([currentTab.id, newTab.id]);
+		return await browser.tabs.get({tabId: splitTabId});
 	}
 }
 
@@ -1627,8 +1663,10 @@ async function openSearch(info) {
 		return openWithMethod({
 			openMethod: openMethod, 
 			url: q, 
-			openerTabId: openerTabId == -1 ? null : openerTabId // chrome pdf reader gives tab.id of -1
+			openerTabId: openerTabId == -1 ? null : openerTabId, // chrome pdf reader gives tab.id of -1,
+			openInReaderMode: false
 		}).then(onCreate, onError);
+		
 	}
 	
 	if (!info.folder) delete self.folderWindowId;
@@ -1888,6 +1926,9 @@ async function openSearch(info) {
 			
 			if ( tabId !== _tab.id ) return;
 
+			// no url -- likely openAsLink
+			if (!q) return;
+
 			// ignore redirects - needs testing
 			
 			let landing_url = new URL(q);
@@ -1934,6 +1975,8 @@ async function openSearch(info) {
 				tabId: _tab.id
 			});
 		});
+
+		return _tab;
 	}
 	
 	function onError(error) {

@@ -1190,6 +1190,7 @@ function buildSearchActions() {
 			"openSideBarAction": {i18n: "SearchActionsSidebarAction"},
 			"openPopup": {i18n: "SearchActionsPopup"},
 			"keepMenuOpen": {i18n: "KeepMenuOpen"},
+			"openSplitTab": {i18n: "SearchActionsSplitView"},
 			"noAction": {i18n: "SearchActionsNoAction"}
 		};
 

@@ -2638,5 +2638,11 @@
   },
   "UserScriptsMessageChrome": {
     "message": "You must enable 'Allow User Scripts' to run user scripts with this extension.\n\nPress OK to open My Extensions → ContextSearch web-ext"
+  },
+  "SearchActionsSplitView": {
+    "message": "Open In Split View"
+  },
+  "OpenSplitViewAlert": {
+    "message": "Please open a split view and try again"
   }
 }
