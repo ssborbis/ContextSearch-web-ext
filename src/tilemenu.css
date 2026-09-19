@@ -579,7 +579,7 @@ GROUP > LABEL {
 }
 
 GROUP {
-	color: var(--group-color-text);
+	color:var(--group-color-text, var(--folder-label-color));
 }
 
 GROUP.inline {
@@ -596,7 +596,7 @@ GROUP.block > LABEL {
 }
 
 GROUP.inline .tile:not(HR) {
-	background-color: var(--group-color);
+	background-color: var(--group-color, var(--folder-color));
 }
 
 GROUP.inline.break {
@@ -604,7 +604,7 @@ GROUP.inline.break {
 }
 /* override inline folder parent */
 GROUP.inline > .tile[data-type="folder"] {
-	color:var(--group-color-text);
+	color:var(--group-color-text, var(--folder-label-color));
 }
 
 .dummy {

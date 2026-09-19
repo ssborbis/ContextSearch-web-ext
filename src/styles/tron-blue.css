@@ -33,20 +33,13 @@
 }
 
 .tile {
-	/* Create space for the border */
 	border: 3px solid transparent; 
 	background-size:16px;
 	margin:4px;
 	border-radius:4px;
-
 	background-color:transparent;
-	/* Outer soft glow matching the gradient colors */
 	box-shadow: none;
 	transition: background-color .15s linear;
-}
-
-.tile[data-type="folder"] {
-	background-color:transparent;
 }
 
 .tile:hover {
@@ -54,17 +47,6 @@
 	background-color: var(--tron);
 }
 
-.tile.singleColumn {
-	/* background-color:#fff1; */
-}
-
-.tile.singleColumn[data-type="folder"] {
-	background-color:transparent;
-}
 .selectedNoFocus {
 	background-color:transparent;
-}
-
-.tile[data-type="folder"]:not(.singleColumn) {
-	background-color:none;
 }

@@ -65,7 +65,7 @@ body[data-menu="quickmenu"] {
 }
 
 .tile.singleColumn[data-type="folder"] {
-	background-color:var(--group-color, #fff3);
+	background-color:var(--group-color, var(--folder-color));
 	color: var(--group-color-text, inherit);
 }
 
