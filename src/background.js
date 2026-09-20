@@ -91,7 +91,7 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
 	
 	if ( highlightInfo ) {
-		console.log('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
+		debug('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
 		highlightSearchTermsInTab(tab, highlightInfo.searchTerms);
 	}
 });
