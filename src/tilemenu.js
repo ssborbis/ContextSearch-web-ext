@@ -502,7 +502,7 @@ async function makeQuickMenu(options) {
 	});
 
 	qm.selectFirstTile = () => {
-		let firstTile = qm.querySelector('.tile:not([data-hidden]):not([data-undraggable]):not(.nodisplay)');
+		let firstTile = qm.querySelector('.tile:not([data-hidden="true"]):not([data-undraggable]):not(.nodisplay)');
 		firstTile.classList.add('selectedFocus');
 		sb.selectedIndex = [].indexOf.call(qm.querySelectorAll(".tile"), firstTile);
 	}
@@ -545,7 +545,7 @@ async function makeQuickMenu(options) {
 			e.preventDefault();
 			qm.focus();
 			
-			let divs = qm.querySelectorAll('.tile:not([data-type="tool"]):not([data-hidden]):not(.nodisplay)');
+			let divs = qm.querySelectorAll('.tile:not([data-hidden="true"]):not(.nodisplay)');
 			
 			let selectedDiv = ( direction === 1 ) ? divs[0] : divs[divs.length - 1];
 
