@@ -3,11 +3,12 @@
 	/* --tron: #f4af2de5; */
 	--trondark: #1d1e2be5;
 	/* --trondark: #8d631ae5; */
-	--background: linear-gradient(to bottom, var(--tron) 0px, var(--trondark) 100px);
+	--background: #000d;
 	--tools-color: #ddd; 
 	color: rgb(212, 212, 212);
 	--border: var(--tron);
 	--hover: #7DFDFE35;
+	--selected: #7DFDFE85;
 	--separator: #fff4;
 	--folder-color:transparent;/*#fff3;*/
 	--folder-label-color: white;
@@ -17,6 +18,12 @@
 
 #CS_quickMenuIframe, .CS_quickMenuIframe, #CS_sbIframe {
 	box-shadow: 0 0 16px #7DFDFE80;
+}
+
+#quickMenuElement {
+	background: linear-gradient(in oklch to bottom, var(--tron) 0%, var(--trondark) 35%);
+	background:var(--trondark);
+	box-shadow: inset 0 0 32px #7DFDFE80;
 }
 
 #toolBar, #menuBar {
@@ -48,5 +55,10 @@
 }
 
 .selectedNoFocus {
-	background-color:transparent;
+	background-color:transparent !important;
+	box-shadow: 0 0 4px var(--trondark);
 }
+
+.selectedFocus {
+	box-shadow: 0 0 4px var(--tron);
+	background-color: transparent !important;
