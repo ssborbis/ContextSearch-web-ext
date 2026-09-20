@@ -632,11 +632,11 @@ async function makeQuickMenu(options) {
 			direction = -1;
 
 		// get all tiles
-		let divs = qm.querySelectorAll('.tile:not(.nodisplay)');
+		let divs = qm.querySelectorAll('.tile:not([data-hidden="true"]):not(.nodisplay)');
 
 		// clear current selection
-		if (sb.selectedIndex !== undefined)
-			divs[sb.selectedIndex].classList.remove('selectedFocus');
+		let selectedDiv = qm.querySelector(".selectedFocus");
+		selectedDiv?.classList.remove('selectedFocus');
 
 		if (
 			(e.key === "Tab" && e.shiftKey && sb.selectedIndex === undefined) ||
