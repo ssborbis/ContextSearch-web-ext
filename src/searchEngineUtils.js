@@ -34,10 +34,17 @@ function searchJsonObjectToArray(engines) {
 		if (params.length > 0 && method.toUpperCase() === "GET")
 			template += ( (template.match(/[=&\?]$/)) ? "" : "?" ) + nameValueArrayToParamString(url.params);
 
+
+		let icon = null;
+		// updated mozlz4 object
+		if ( engine._iconMapObj ) {
+			icon = engine._iconMapObj["32"] || engine._iconMapObj["16"] || null;
+		}
+
 		// push object to array for storage.local
 		searchEngines.push({
 			"searchForm": engine.__searchForm || "", 
-			"icon": engine._iconURL,
+			"icon": icon || engine._iconURL || null,
 			"title": engine._name,
 			"order": engine._metaData.order, 
 			"method": method || "GET", 
