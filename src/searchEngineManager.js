@@ -196,7 +196,7 @@ function buildSearchEngineContainer() {
 							
 							if (nameExists(edit_form.shortName.value) ) {
 								showError(edit_form.shortName,i18n('NameExists'));
-								resolve(false);
+							//	resolve(false); // allow here and catch with confirm message in save()
 							}
 						}
 						
@@ -240,7 +240,6 @@ function buildSearchEngineContainer() {
 						// if (edit_form.post_params.value.indexOf('{searchTerms}') === -1 && edit_form._method.value === 'POST' ) {
 							// showError(edit_form.post_params, i18n("POSTIncludeError"));
 						// }
-
 						
 						[edit_form.searchRegex, edit_form.matchRegex].forEach( el => {
 
@@ -379,8 +378,10 @@ function buildSearchEngineContainer() {
 							
 							// change name on all labels
 							table.querySelectorAll('li').forEach(_li => {
-								if ( _li.node && _li.node.id === node.id )
+								if ( _li.node && _li.node.id === node.id ) {
+									console.log("duplicate found: altering settings to reflect changes")
 									_li.querySelector('.label').innerText = _li.node.title = se.title;
+								}
 
 							});
 
