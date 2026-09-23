@@ -1893,3 +1893,18 @@ fieldset.hide {
 	text-align:right;
 	margin-right:8px;
 }
+
+.option:has([id="omniboxPseudoDisabled"]) {
+	& [data-checked], [data-unchecked] {
+		font-family: monospace;
+	}
+	&:has(input:checked) {
+		[data-checked] { display: initial;}
+		[data-unchecked] {display: none;}
+	}
+
+	&:not(:has(input:checked)) {
+		[data-checked] {display: none;}
+		[data-unchecked] {display: initial;}
+	}
+}

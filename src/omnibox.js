@@ -85,8 +85,9 @@ browser.omnibox.onInputEntered.addListener( async(text, disposition) => {
 
 	let input = parseOmniboxInput(text);
 
-	if ( userOptions.omniboxPseudoDisabled )
-		input.searchTerms = 'cs ' + input.searchTerms;
+	// was prepending 'cs' to chrome searches
+	// if ( userOptions.omniboxPseudoDisabled )
+	// 	input.searchTerms = 'cs ' + input.searchTerms;
 
 	if ( !input ) return;
 	
