@@ -1310,31 +1310,43 @@ $("#replaceMozlz4FileButton").addEventListener('change', async ev => {
 	let searchEngines = [];
 	let file = ev.target.files[0];
 
-	// await new Promise(r => {
-	// 		let result = cacheIcons();
-	// 		result.oncomplete = r;
-	// 		result.cache();
-	// });
-
 	// create backup with timestamp
 	exportFile(file, "search.json.mozlz4_" + Date.now() );
 	
-	readMozlz4File(file, text => { // on success
+	readMozlz4File(file, async text => { // on success
 
 		// parse the mozlz4 JSON into an object
 		var json = JSON.parse(text);
 
 		let version = json.version || 0;
 
+		// if using newer search.json, get the default engines
+		let configEngines = json.engines.filter(eng => eng._isConfigEngine);
+
 		let nodes = findNodes(userOptions.nodeTree, n => ["searchEngine", "oneClickSearchEngine"].includes(n.type) );
 		
-		// console.log(json.engines);
+		// copy the nodes to cache
+		
+		let nodeTreeCopy = {
+			children: JSON.parse(JSON.stringify(nodes))
+		}
+
+		const iconCacher = new IconCacher(nodeTreeCopy, {
+			iconSize: 32
+		});
+
+		let dialog = document.createElement('dialog');
+		dialog.innerHTML = "<div style='text-align:center'>Building search.json.mozlz4 file ...</div><div style='text-align:center'><img src='icons/spinner2.svg' /></div>";
+		document.body.appendChild(dialog);
+		dialog.show(); 
+		await iconCacher.cache();
+		dialog.close();
 		
 		let ses = [];
 
-		nodes.forEach( (n, i) => {
+		nodeTreeCopy.children.forEach( (n, i) => {
 			if ( n.type === "searchEngine" ) {
-				let se = getNodeById( n.id );
+				let se = findNode(userOptions.nodeTree, _n => _n.id === n.id);
 				if ( se ) ses.push(CS2FF(se, version));
 			}
 			
@@ -1344,13 +1356,28 @@ $("#replaceMozlz4FileButton").addEventListener('change', async ev => {
 			}
 		});
 
+		// console.log(configEngines.map(ce => ce._name));
+
+		ses.forEach((se,index) => {
+
+			// console.log('looking for ' + se._name);
+			let i = configEngines.findIndex(ce => ce._name == se._name);
+			if ( i > -1 ) {
+				console.log(se._name + " found. Replacing")
+				ses[index] = Object.assign({}, configEngines[i]);
+				configEngines.splice(i,1);
+			}
+		});
+
 		ses = ses.reverse();
 
-		for ( let i in ses) ses[i]._metaData.order = i + 10;
-		
-		json.engines = ses;
+		ses.forEach((s,i) => ses[i]._metaData.order = i);
 
-		// console.log(json);
+		json.metaData.visibleDefaultEngines = "";
+		
+		configEngines.forEach(eng => eng._metaData = {"hideOneOffButton": true});
+		
+		json.engines = configEngines.concat(ses);
 
 		exportSearchJsonMozLz4(JSON.stringify(json));
 		
@@ -1367,11 +1394,10 @@ $("#replaceMozlz4FileButton").addEventListener('change', async ev => {
 	      "_name": se.title,
 	      "_loadPath": "[other]addEngineWithDetails",
 	      "_iconMapObj": {
-	        "32": se.iconCache
+	        "32": se.iconCache || se.icon
 	      },
 	      "_metaData": {
 	        "alias": null,
-	        "order": null,
 	        "hideOneOffButton": se.hidden || false
 	      },
 	      "_urls": [
@@ -1462,7 +1488,10 @@ $('#b_uncacheIcons').addEventListener('click', e => {
 });
 
 function cacheAllIcons(e) {
-	let result = cacheIcons();
+	let iconCacher = new IconCacher(userOptions.nodeTree, {
+		iconSize: userOptions.cacheIconsMaxSize
+	});
+
 	let msg = document.createElement('div');
 	msg.style = "margin:2px";
 	msg.innerText = "cache progress";
@@ -1471,12 +1500,12 @@ function cacheAllIcons(e) {
 	const total = findNodes(userOptions.nodeTree, n => n).length
 
 	let interval = setInterval((total) => {
-		msg.innerText = `caching ${result.count - 1} / ${total}`;
+		msg.innerText = `caching ${iconCacher.count - 1} / ${total}`;
 	}, 100, total);
 
-	result.oncomplete = function() {
+	iconCacher.oncomplete = function() {
 		clearInterval(interval);
-		if ( result.bad.length )
+		if ( iconCacher.bad.length )
 			msg.innerText = i18n("warningCache");
 		else
 			msg.innerText = "done";
@@ -1488,7 +1517,7 @@ function cacheAllIcons(e) {
 		saveOptions();
 	}
 
-	result.cache();
+	iconCacher.cache();
 }
 
 function buildShortcutTable() {

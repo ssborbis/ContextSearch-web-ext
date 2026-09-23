@@ -23,75 +23,161 @@ function uncacheIcons() {
 	}
 }
 
-function cacheIcons() {
-	var result = {
-		count:0,
-		last_message:"",
-		bad: [],
-		total: findNodes(userOptions.nodeTree, n => n.icon).length,
-		oncomplete: function() {},
-		cache: cache
-	};
+class IconCacher {
+    constructor(tree, options = {}) {
+        this.tree = tree;
 
-	function onError(se, reason) {
-		result.bad.push({ engine: se, error: reason });
-		result.count++;
-	}
+        this.maxTimeout = options.maxTimeout ?? 10000;
+        this.iconSize = options.iconSize ?? 32;
 
-	function cache() {
+        this.nodes = findNodes(tree, node => node.icon);
 
-		for (let se of findNodes(userOptions.nodeTree, n => n.icon)) {
+        this.total = this.nodes.length;
+        this.count = 0;
+        this.success = 0;
+        this.failed = 0;
 
+        this.lastMessage = "";
+        this.bad = [];
 
-			let isDataURI = se.icon.startsWith("data:");
-			let hasURL = se.icon.startsWith("http");
+        this.oncomplete = options.oncomplete ?? (() => {});
 
-			let img = new Image();
+        this._completed = false;
+    }
 
-			let timeout = setTimeout(() => {
-				img.src = null;
-				onError(se, "TIMEOUT");
-			},10000);
+    /**
+     * Start caching all icons.
+     *
+     * @returns {Promise<IconCacher>}
+     */
+    async cache() {
+        if (this.total === 0) {
+            this._complete();
+            return this;
+        }
 
-			img.onload = async function() {
+        await Promise.all(
+            this.nodes.map(node => this._cacheIcon(node))
+        );
 
-				if ( isDataURI && ( img.naturalHeight <= userOptions.cacheIconsMaxSize && img.naturalWidth <= userOptions.cacheIconsMaxSize)) {
-					clearTimeout(timeout);
-					result.last_message = se.title;
-					result.count++;
-					onloadend();
-					return;
-				}
-				let data = await imageToBase64(img, userOptions.cacheIconsMaxSize); 
+        this._complete();
 
-				if ( data != "" ) {
-					se.iconCache = data;
-					result.last_message = se.title; 
-					result.count++;
-				}
-				else onError(se, "BAD_ENCODE");
+        return this;
+    }
 
-				clearTimeout(timeout);
-				onloadend();
-			}
+    /**
+     * Cache a single icon.
+     */
+    _cacheIcon(node) {
+        return new Promise(resolve => {
+            const img = new Image();
 
-			img.onerror = function() {
-				onError(se, "LOAD_ERROR");
-				clearTimeout(timeout);
-				onloadend();
-			}
+            let finished = false;
 
-			let onloadend = function() {
-				if ( result.count >= result.total )
-					result.oncomplete();
-			}
+            const finish = (success, error = null) => {
+                // Prevent timeout/load/error from completing the same
+                // node more than once.
+                if (finished) {
+                    return;
+                }
 
-			img.src = se.icon;
-		}
-	}
+                finished = true;
 
-	return result;
+                clearTimeout(timeout);
+
+                if (success) {
+                    this.success++;
+                    this.lastMessage = node.title ?? "";
+                } else {
+                    this.failed++;
+
+                    this.bad.push({
+                        engine: node,
+                        error
+                    });
+                }
+
+                this.count++;
+
+                resolve();
+            };
+
+            const timeout = setTimeout(() => {
+                // Cancel the request.
+                img.onload = null;
+                img.onerror = null;
+                img.src = "";
+
+                finish(false, "TIMEOUT");
+            }, this.maxTimeout);
+
+            img.onload = async () => {
+                try {
+                    const isDataURI = node.icon.startsWith("data:");
+
+                    // Small data URIs can be used directly.
+                    if (
+                        isDataURI &&
+                        img.naturalWidth <= this.iconSize &&
+                        img.naturalHeight <= this.iconSize
+                    ) {
+                        finish(true);
+                        return;
+                    }
+
+                    const data = await imageToBase64(
+                        img,
+                        this.iconSize
+                    );
+
+                    if (data) {
+                        node.iconCache = data;
+                        finish(true);
+                    } else {
+                        finish(false, "BAD_ENCODE");
+                    }
+                } catch (error) {
+                    finish(false, error?.message ?? "ENCODE_ERROR");
+                }
+            };
+
+            img.onerror = () => {
+                finish(false, "LOAD_ERROR");
+            };
+
+            img.src = node.icon;
+        });
+    }
+
+    /**
+     * Called once after every icon has finished.
+     */
+    _complete() {
+        if (this._completed) {
+            return;
+        }
+
+        this._completed = true;
+        this.oncomplete(this);
+    }
+
+    /**
+     * Reset state so the cache can be run again.
+     */
+    reset() {
+        this.count = 0;
+        this.success = 0;
+        this.failed = 0;
+
+        this.lastMessage = "";
+        this.bad = [];
+
+        this._completed = false;
+
+        return this;
+    }
 }
+
 
 function getHeaderFavicons() {
 	var hrefs = [];
