@@ -80,16 +80,18 @@
 	],
 		
 	"icons": {
-		"48": "/icons/logo_notext.png"
+		"48": "icons/logo_notext.png"
 	},
 	
 	"web_accessible_resources": [
 		{
 			"resources": [
-				"/quickmenu.html",
-				"/addContextSearchEngine.html",
-				"/searchbar.html",
-				"/findbar.html",
+				"quickmenu.html",
+				"addContextSearchEngine.html",
+				"searchbar.html",
+				"findbar.html",
+				"pagetiles.html",
+				"blank.html",
 				"icons/search.svg",
 				"icons/crossmark.svg",
 				"icons/alert.svg",
@@ -99,10 +101,8 @@
 				"icons/icon.svg",
 				"icons/repeatsearch.svg",
 				"icons/qm.svg",
-				"/pagetiles.html",
-				"/blank.html",
-				"/inject_widgets.css",
-				"/inject_sidebar.css"
+				"inject_widgets.css",
+				"inject_sidebar.css"
 			],
 			"matches": ["<all_urls>"]
 		}
@@ -111,14 +111,14 @@
 	"action": {
 		"default_title": "ContextSearch",
 		"default_icon": {
-			"48": "/icons/logo_notext.png"
+			"48": "icons/logo_notext.png"
 		},
-		"default_popup": "/searchbar.html"
+		"default_popup": "searchbar.html"
 	},
 
 	"sidebar_action": {
 		"default_icon": {
-			"48": "/icons/logo_notext.svg"
+			"48": "icons/logo_notext.svg"
 		},
 		"default_title": "ContextSearch web-ext",
 		"default_panel": "blank.html",
