@@ -410,7 +410,7 @@ function updateUserOptionsVersion(uo) {
 			_uo = unifyNodeTree(_uo);
 
 			// rebuild searchEngines array after unifying for a few versions
-			_uo = deunifyNodeTree(_uo);
+		//	_uo = deunifyNodeTree(_uo);
 
 			// check for bad node icons
 			findNodes(_uo.nodeTree, n => {
