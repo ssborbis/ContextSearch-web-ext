@@ -1122,7 +1122,6 @@ async function notify(message, sender, sendResponse) {
 
 }
 
-
 function checkUserOptionsValueTypes(repair) {
 	const traverse  = (obj, obj2) => {
 		Object.keys(obj).forEach(key => {
@@ -2624,7 +2623,6 @@ function waitOnInjection(tabId) {
 		})
 	]);
 }
-
 
 // test code
 async function scrapeBookmarkIcons() {
