@@ -1110,6 +1110,9 @@ async function notify(message, sender, sendResponse) {
 		"getSessionClipboard": async() => {
 			return browser.storage.session.get("clipboard")
 				.then(r => r.clipboard?.message || "");
+		},
+		"setThemeStyles": async() => {
+			return sendMessageToTopFrame();
 		}
 	}
 

@@ -57,9 +57,9 @@ async function setTheme(theme) {
 		}
 	}
 
-	messageParent({
+	sendMessage({
 		action: "setThemeStyles",
-		value: styles
+		css: styles
 	});
 
 	return link;
@@ -78,13 +78,6 @@ function setUserStyles() {
 			document.head.appendChild(styleEl);
 			document.body.getBoundingClientRect();
 		} else resolve();
-	}).then(() => {
-		// set corrections for iframe windows here
-		// messageParent({
-		// 	action: "getComputedStyle",
-		// 	property: "border-radius",
-		// 	value: window.getComputedStyle(document.body).getPropertyValue("border-radius")
-		// });
 	});
 }
 

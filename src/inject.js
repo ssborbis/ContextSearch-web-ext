@@ -92,6 +92,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 		case "getQuickMenuObject":
 			sendResponse(quickMenuObject);
+			break;
+
+		case "setThemeStyles":
+			const styleElement = getShadowRoot().querySelector('#themeStyles') || document.createElement('style');
+			styleElement.id = "themeStyles";
+			styleElement.textContent = message.css;
+			getShadowRoot().appendChild(styleElement);
+			break;
 	}
 });
 	
