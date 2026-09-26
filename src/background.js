@@ -464,16 +464,19 @@ async function notify(message, sender, sendResponse) {
 				for ( let frame of frames ) {
 					if ( frame.frameId == 0 ) continue;
 					await injectContentScripts(tab, frame.frameId);
-					await highlightInjectScripts(tab);
 				}
 			}
 
 			await injectAllFrames(sender.tab);
+			await highlightInjectScripts(sender.tab);
 
 			if ( message.findBarSearch && userOptions.highLight.findBar.searchInAllTabs ) {
 				let tabs = await getAllOpenTabs();
 
 				for ( let tab of tabs )	{
+					// skip the current tab
+					if (tab.id === sender.tab.id) continue;
+
 					await injectAllFrames(tab);
 					await highlightInjectScripts(tab);
 				}
@@ -2527,7 +2530,7 @@ async function injectContentScripts(tab, frameId = 0) {
 
 	// skip frames without host permissions
 	// checked again in executeScripts() but also skips CSS injection
-	if ( !await isTabScriptable(tab.id, frameId || 0) ) return false;
+	if ( !await isTabScriptable(tab.id, frameId) ) return false;
 
 	// inject into any frame
 	// used with init_content.js to only inject when window receives focus

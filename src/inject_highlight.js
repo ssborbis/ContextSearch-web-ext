@@ -420,7 +420,6 @@ function openFindBar(options) {
 		
 		fb = document.createElement('iframe');
 
-		fb.src = browser.runtime.getURL("/findbar.html");
 		fb.id = 'CS_findBarIframe';
 		fb.style.setProperty('--cs-custom-scale', userOptions.highLight.findBar.scale);
 
@@ -433,11 +432,11 @@ function openFindBar(options) {
 		fb.style.maxHeight = '0px';
 		if ( !userOptions.enableAnimations ) fb.style.setProperty('--user-transition', 'none');
 
-
 		getShadowRoot().appendChild(fb);
 		
 		fb.onload = function() {
-	//		fb.style.maxHeight = null;		
+			fb.style.opacity = null;
+			fb.style.maxHeight = null;
 			fb.docking.init();
 			resolve(fb);
 		}
@@ -461,6 +460,8 @@ function openFindBar(options) {
 
 		if ( window == top && typeof addParentDockingListeners === 'function')
 			addParentDockingListeners('CS_findBarIframe', 'findBar');
+
+		fb.src = browser.runtime.getURL("/findbar.html");
 	});
 }
 
