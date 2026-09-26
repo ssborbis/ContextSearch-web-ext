@@ -227,7 +227,7 @@ async function notify(message, sender, sendResponse) {
 	}
 
 	const messageHandlers = {
-		"saveUserOptions": async() => {
+		saveUserOptions: async() => {
 		//	debounce(async () => {
 				userOptions = message.userOptions;
 
@@ -238,10 +238,8 @@ async function notify(message, sender, sendResponse) {
 				});
 		//	}, 250, "saveUserOptions");
 		//	return;
-
 		}, 
-		"updateUserOptions": async() => {
-
+		updateUserOptions: async() => {
 			debounce(async () => {
 				console.log('updateUserOptions');
 				let tabs = await getAllOpenTabs();
@@ -258,9 +256,8 @@ async function notify(message, sender, sendResponse) {
 				}, 2000, "updateUserScriptsTimer");
 			}
 			return;
-			
 		}, 
-		"openOptions": async() => { 
+		openOptions: async() => { 
 			let optionsPageURL = browser.runtime.getURL("/options.html");
 			let optionsPage = await browser.tabs.query({url: optionsPageURL + "*"});
 
@@ -277,18 +274,16 @@ async function notify(message, sender, sendResponse) {
 				url: browser.runtime.getURL("/options.html" + (message.hashurl || "")) 
 			});			
 		}, 
-		"search": async() => {
+		search: async() => {
 			console.log("message, sender", message, sender);
 			message.info.tab = sender.tab;
 			return openSearch(message.info);
-			
 		},
-		"enableContextMenu": async() => {
+		enableContextMenu: async() => {
 			userOptions.contextMenu = true;
 			return buildContextMenu();
-
 		}, 
-		"fetchURI": async() => {
+		fetchURI: async() => {
 			return new Promise((resolve, reject) => {
 				fetch(message.url)
 					.then(response => response.blob())
@@ -302,56 +297,25 @@ async function notify(message, sender, sendResponse) {
 					})
 					.catch(reject);
 			});
-			
 		}, 
-		"getUserOptions": async() => {
-			return userOptions;
-			
-		}, 
-		"getDefaultUserOptions": async() => {
-			return defaultUserOptions;
-
-		}, 
-		"dispatchEvent": async() => {
-
+		getUserOptions: async() => userOptions,
+		getDefaultUserOptions: async() => defaultUserOptions, 
+		dispatchEvent: async() => {
 			return _executeScript({
 				func: (evt) => document.dispatchEvent(new CustomEvent(evt)),
 				args: [message.e],
 				tabId: sender.tab.id,
 				allFrames:true
 			});
-
 		}, 
-		"openQuickMenu": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"closeQuickMenuRequest": async() => {
-			return sendMessageToAllFrames();
-		
-		}, 
-		"quickMenuIframeLoaded": async() => {
-			return sendMessageToTopFrame();
-		
-		}, 
-		"updateQuickMenuObject": async() => {
-			return sendMessageToAllFrames();
-			
-		}, 
-		"lockQuickMenu": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"unlockQuickMenu": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"deselectAllText": async() => {
-			return sendMessageToAllFrames();
-
-		}, 
-		"toggleLockQuickMenu": async() => {
-
+		openQuickMenu: async() => sendMessageToTopFrame(), 
+		closeQuickMenuRequest: async() => sendMessageToAllFrames(), 
+		quickMenuIframeLoaded: async() => sendMessageToTopFrame(), 
+		updateQuickMenuObject: async() => sendMessageToAllFrames(), 
+		lockQuickMenu: async() => sendMessageToTopFrame(), 
+		unlockQuickMenu: async() => sendMessageToTopFrame(), 
+		deselectAllText: async() => sendMessageToAllFrames(), 
+		toggleLockQuickMenu: async() => {
 			return _executeScript({
 				tabId: sender.tab.id,
 				func: () => {
@@ -359,23 +323,12 @@ async function notify(message, sender, sendResponse) {
 				},
 				tabId: sender.tab.id,
 				allFrames: true
-
 			})
-			
 		}, 
-		"rebuildQuickMenu": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"closeWindowRequest": async() => {
-			return browser.windows.remove(sender.tab.windowId);
-		
-		}, 
-		"closeCustomSearch": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"openFindBar": async() => {
+		rebuildQuickMenu: async() =>sendMessageToTopFrame(), 
+		closeWindowRequest: async() => browser.windows.remove(sender.tab.windowId), 
+		closeCustomSearch: async() => sendMessageToTopFrame(), 
+		openFindBar: async() => {
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
 				let _message = Object.assign({}, message);
 				
@@ -395,9 +348,8 @@ async function notify(message, sender, sendResponse) {
 				await highlightInjectScripts(sender.tab);
 				return sendMessageToTopFrame();
 			}
-			
 		}, 
-		"closeFindBar": async() => {
+		closeFindBar: async() => {
 			if ( userOptions.highLight.findBar.openInAllTabs ) {
 				
 				let tabs = await getAllOpenTabs();
@@ -407,20 +359,15 @@ async function notify(message, sender, sendResponse) {
 				
 			} else
 				return sendMessageToTopFrame();
-			
 		}, 
-		"showFindBar": async() => { 
+		showFindBar: async() => { 
 			return _executeScript({
 				tabId: sender.tab.id,
 				func: () => showFindBar()
 			});
-
 		}, 
-		"updateFindBar": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"toggleFindBar": async() => {
+		updateFindBar: async() => sendMessageToTopFrame(), 
+		toggleFindBar: async() => {
 			let isOpen = await notify({action: "getFindBarOpenStatus"});
 
 			//let searchTerms = ( typeof getSelectedText === 'function' ) ? getSelectedText(e.target) : "";
@@ -434,26 +381,16 @@ async function notify(message, sender, sendResponse) {
 			else
 				notify({action: "closeFindBar"});
 			return;
-			
 		}, 
-		"findBarNext": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"findBarPrevious": async() => {
-			return sendMessageToTopFrame();
-		
-		}, 
-		"getFindBarOpenStatus": async() => {
-
+		findBarNext: async() => sendMessageToTopFrame(), 
+		findBarPrevious: async() => sendMessageToTopFrame(), 
+		getFindBarOpenStatus: async() => {
 			return _executeScript({
 				func: () => (typeof getFindBar !== 'undefined' && getFindBar()) ? true : false,
 				tabId: sender.tab.id
 			});
-
 		}, 
-		"mark": async() => {
-
+		mark: async() => {
 			// clear highlighted tabs on new markings
 			if ( userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.clear();
@@ -482,45 +419,26 @@ async function notify(message, sender, sendResponse) {
 			} else {
 				return sendMessageToAllFrames();
 			}
-
-			
 		}, 
-		"unmark": async() => {
+		unmark: async() => {
 			if ( userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.clear();
 			return sendMessageToAllFrames();
-		
 		}, 
-		"findBarUpdateOptions": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"markDone": async() => {
+		findBarUpdateOptions: async() => sendMessageToTopFrame(), 
+		markDone: async() => {
 			if ( message.count && userOptions.highLight.findBar.highlightAllTabs )
 				tabHighlighter.add(sender.tab.index);
-			
 			return sendMessageToTopFrame();
-			
 		}, 
-		"toggleNavBar": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"closeSideBar": async() => {
-			return sendMessageToTopFrame();
-		
-		}, 
-		"openSideBar": async() => {
+		toggleNavBar: async() => sendMessageToTopFrame(), 
+		closeSideBar: async() => sendMessageToTopFrame(), 
+		openSideBar: async() => {
 			await executeScripts(sender.tab.id, {files: ["/dock.js", "resizeWidget.js", "/inject_sidebar.js"]}, true);
 			return sendMessageToTopFrame();
-
 		}, 
-		"makeOpeningTab": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"getOpenSearchLinks": async() => {
-
+		makeOpeningTab: async() => sendMessageToTopFrame(), 
+		getOpenSearchLinks: async() => {
 			return _executeScript({
 				func: () => {
 						let oses = document.querySelectorAll('link[type="application/opensearchdescription+xml"]');
@@ -529,9 +447,8 @@ async function notify(message, sender, sendResponse) {
 				tabId: sender.tab.id,
 				frameId: message.frame ? sender.frameId : 0
 			});
-
 		}, 
-		"updateSearchTerms": async() => {
+		updateSearchTerms: async() => {
 
 			debug(self.searchTermsObject);
 
@@ -543,19 +460,14 @@ async function notify(message, sender, sendResponse) {
 			//	notify({action: "copy", msg: message.searchTerms});
 			
 			return browser.tabs.sendMessage(sender.tab.id, message, {frameId: 0});
-			
 		}, 
-		"updateContextMenu": async() => {
-		
-			return updateContextMenu(message);
-			
-		}, 
-		"getFirefoxSearchEngineByName": async() => {
+		updateContextMenu: async() => updateContextMenu(message), 
+		getFirefoxSearchEngineByName: async() => {
 			if ( !browser.search || !browser.search.get ) return [];
 			let engines = await browser.search.get();
 			return engines.find(e => e.name === message.name);			
 		}, 
-		"addSearchEngine": async() => {
+		addSearchEngine: async() => {
 			let url = message.url;
 
 			if ( browser.runtime.getBrowserInfo && browser.search && browser.search.get ) {
@@ -637,15 +549,12 @@ async function notify(message, sender, sendResponse) {
 					args: [url],
 					tabId: sender.tab.id
 				});
-					
 			}
 			
 			self.external.AddSearchProvider(url);
 			return;
-		
 		}, 
-		"addContextSearchEngine": async() => {
-		
+		addContextSearchEngine: async() => {
 			let se = message.searchEngine;
 			
 			console.log('addContextSearchEngine', se)
@@ -671,28 +580,22 @@ async function notify(message, sender, sendResponse) {
 			notify({action: "saveUserOptions", userOptions:userOptions});
 			return node;			
 		}, 
-		"removeContextSearchEngine": async() => {
-
+		removeContextSearchEngine: async() => {
 			if ( !message.id ) return;
 
 			removeNodesById(userOptions.nodeTree, message.id);
 	
 			return notify({action: "saveUserOptions", userOptions:userOptions});
-			
 		}, 
-		"testSearchEngine": async() => {
-			
+		testSearchEngine: async() => {
 			return openSearch({
 				searchTerms: message.searchTerms,
 				tab: sender.tab,
 				temporarySearchEngine: message.tempSearchEngine,
 				openMethod: message.openMethod || "openBackgroundTab"
 			});
-
-			
-			
 		}, 
-		"enableAddCustomSearchMenu": async() => {
+		enableAddCustomSearchMenu: async() => {
 
 			if (!userOptions.contextMenuShowAddCustomSearch) return;
 
@@ -706,10 +609,8 @@ async function notify(message, sender, sendResponse) {
 			}
 
 			return;
-		
 		}, 
-		"disableAddCustomSearchMenu": async() => {
-			
+		disableAddCustomSearchMenu: async() => {
 			try {
 				browser.contextMenus.update("add_engine", { visible: false }).then(() => {
 					if (browser.runtime.lastError)
@@ -719,31 +620,17 @@ async function notify(message, sender, sendResponse) {
 				console.log(err);
 			}
 			return;
-
 		}, 
-		"log": async() => {
-			return console.log(message, sender);
-			
-		}, 
-		"focusSearchBar": async() => {
-			return browser.tabs.sendMessage(sender.tab.id, message);
-			
-		}, 
-		"setLastSearch": async() => {
-			return browser.storage.session.set({"lastSearch": message.lastSearch});
-			
-		}, 
-		"getLastSearch": async() => {
-			return await browser.storage.session.get("lastSearch");
-			
-		}, 
-		"getCurrentTheme": async() => {
+		log: async() => console.log(message, sender), 
+		focusSearchBar: async() => browser.tabs.sendMessage(sender.tab.id, message), 
+		setLastSearch: async() => browser.storage.session.set({"lastSearch": message.lastSearch}), 
+		getLastSearch: async() => await browser.storage.session.get("lastSearch"), 
+		getCurrentTheme: async() => {
 			return browser.theme.getCurrent().then( theme => {
 				console.log(theme);
 			});			
 		}, 
-		"executeTestSearch": async() => {
-
+		executeTestSearch: async() => {
 			let searchTerms = encodeURIComponent(message.searchTerms);
 			let searchRegex = new RegExp(searchTerms + "|" + searchTerms.replace(/%20/g,"\\+") + "|" + searchTerms.replace(/%20/g,"_"), 'g');
 			
@@ -779,9 +666,8 @@ async function notify(message, sender, sendResponse) {
 			}, 1000);
 			
 			return true;
-
 		}, 
-		"copy": async() => {
+		copy: async() => {
 			await CopyPaste.copy((message.msg || self.searchTerms), message.autoCopy)
 				.catch(error => {
 					debug(error);
@@ -790,22 +676,13 @@ async function notify(message, sender, sendResponse) {
 					console.log(error);
 					return false;
 				});
-			
 		}, 
-		"hasBrowserSearch": async() => {
+		hasBrowserSearch: async() => {
 			return typeof browser.search !== 'undefined' && typeof browser.search.get !== 'undefined';
-			
 		}, 
-		"checkForOneClickEngines": async() => {	
-			return checkForOneClickEngines();
-			
-		}, 
-		"getCurrentTabInfo": async() => { 
-			return Promise.resolve(sender.tab);
-		
-		}, 
-		"removeTabHighlighting": async() => {
-		
+		checkForOneClickEngines: async() => checkForOneClickEngines(), 
+		getCurrentTabInfo: async() => Promise.resolve(sender.tab), 
+		removeTabHighlighting: async() => {
 			let tabId = message.tabId || sender.tab.id;
 			return highlightTabs.findIndex( (hl, i) => {
 				if (hl.tabId === tabId) {
@@ -815,34 +692,25 @@ async function notify(message, sender, sendResponse) {
 				}
 			});			
 		}, 
-		"dataToSearchEngine": async() => {
-			return dataToSearchEngine(message.formdata);
-		
-		}, 
-		"showNotification": async() => {
-			return sendMessageToTopFrame();
-			
-		}, 
-		"getTabQuickMenuObject": async() => {
+		dataToSearchEngine: async() => dataToSearchEngine(message.formdata), 
+		showNotification: async() => sendMessageToTopFrame(), 
+		getTabQuickMenuObject: async() => {
+			return Promise.race([
+				new Promise(async r => {
+					try {
+						if ( !isAllowedURL(sender.tab.url) ) return r(null);
+						if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
 
-				return Promise.race([
-					new Promise(async r => {
-						try {
-							if ( !isAllowedURL(sender.tab.url) ) return r(null);
-							if ( await isTabScriptable(sender.tab.id) === false ) return r(null);
+						const qmo = await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"});
 
-							const qmo = await browser.tabs.sendMessage(sender.tab.id, {action: "getQuickMenuObject"});
-
-							// console.log(sender.tab);
-							// console.log(qmo);
-							r(qmo);
-						} catch (error) { r(null); }}),
-					new Promise(r => setTimeout(r, 250))
-				])
-					
-		
+						// console.log(sender.tab);
+						// console.log(qmo);
+						r(qmo);
+					} catch (error) { r(null); }}),
+				new Promise(r => setTimeout(r, 250))
+			]);
 		}, 
-		"addToHistory": async() => {
+		addToHistory: async() => {
 
 			if ( sender.tab.incognito && userOptions.incognitoTabsForgetHistory ) return console.log('incognito - do not add to history')
 	
@@ -874,25 +742,18 @@ async function notify(message, sender, sendResponse) {
 			console.info('adding to history', terms);
 			return Promise.resolve(userOptions);			
 		}, 
-		"setLastOpenedFolder": async() => {
+		setLastOpenedFolder: async() => {
 			self.lastOpenedFolder = message.folderId;
 			return true;
-			
 		}, 
-		"getLastOpenedFolder": async() => {
-			return self.lastOpenedFolder || null;
-
-		}, 
-		"executeScript": async() => { //UserScript
-
+		getLastOpenedFolder: async() => self.lastOpenedFolder || null, 
+		executeScript: async() => { //UserScript
 			return _executeScript({
 				func: () => message.code,
 				tabId: sender.tab.id
 			});
-
 		}, 
-		"injectContentScripts": async() => {
-
+		injectContentScripts: async() => {
 			while ( isLoadingUserOptions )
 				await new Promise(r => setTimeout(r, 50));
 
@@ -903,10 +764,8 @@ async function notify(message, sender, sendResponse) {
 				console.log("blacklisted", sender.tab.url);
 			}
 			return;
-			
 		}, 
-		"injectComplete": async() => {
-
+		injectComplete: async() => {
 			if ( userOptions.quickMenu ) {
 				await executeScripts(sender.tab.id, {files: ["/dock.js", "/resizeWidget.js","/dragshake.js"], frameId: 0}, true);
 				await executeScripts(sender.tab.id, {files: ["/inject_quickmenu.js"], frameId: sender.frameId}, true);
@@ -921,57 +780,32 @@ async function notify(message, sender, sendResponse) {
 				await executeScripts(sender.tab.id, {files: ["/searchEngineUtils.js", "/inject_mycroftproject.js"], frameId: sender.frameId});
 			
 			return;
-			
 		}, 
-		"getFirefoxSearchEngines": async() => {
+		getFirefoxSearchEngines: async() => {
 			if ( browser.search && browser.search.get ) return browser.search.get();
 			return;
-			
 		}, 
-		"setLastUsed": async() => {
-			return lastSearchHandler(message.id, message.method || null);
-			
-		}, 
-		"getSelectedText": async() => {
-
+		setLastUsed: async() => lastSearchHandler(message.id, message.method || null), 
+		getSelectedText: async() => {
 			return _executeScript({
 				func: () => ( typeof getSelectedText === 'function' ) ? getSelectedText(document.activeElement) : "",
 				tabId: sender.tab.id
 			});
-
 		}, 
-		"editQuickMenu": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"closePageTiles": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"openBrowserAction": async() => {
+		editQuickMenu: async() => sendMessageToTopFrame(), 
+		closePageTiles: async() => sendMessageToTopFrame(), 
+		openBrowserAction: async() => {
 			console.log('openBrowserAction');
 			if ( browser.action ) // v3
 				browser.action.openPopup();
 			else if ( browser.browser_action ) // v2
 				browser.browser_action.openPopup();
 			return;
-
 		}, 
-		"openPageTiles": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"minifySideBar": async() => {
-			console.log('bg');
-			return sendMessageToTopFrame();
-
-		}, 
-		"getZoom": async() => {
-			return browser.tabs.getZoom(sender.tab.id);
-
-		}, 
-		"sideBarOpenedOnSearchResults": async() => {
-
+		openPageTiles: async() => sendMessageToTopFrame(), 
+		minifySideBar: async() => sendMessageToTopFrame(), 
+		getZoom: async() => browser.tabs.getZoom(sender.tab.id), 
+		sideBarOpenedOnSearchResults: async() => {
 			return await _executeScript({
 				func: () => {
 					(() => {
@@ -982,45 +816,21 @@ async function notify(message, sender, sendResponse) {
 				},
 				tabId: sender.tab.id
 			})
-
 		}, 
-		"openCustomSearch": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"getRawSelectedText": async() => {
-
+		openCustomSearch: async() => sendMessageToTopFrame(), 
+		getRawSelectedText: async() => {
 			return await _executeScript({
 				func: () => getRawSelectedText(document.activeElement),
 				tabId: sender.tab.id
-			})
-
+			});
 		}, 
-		"updateUserOptionsObject": async() => {
-			return updateUserOptionsObject(message.userOptions);
-
-		}, 
-		"updateUserOptionsVersion": async() => {
-			return updateUserOptionsVersion(message.userOptions);
-
-		}, 
-		"requestPermission": async() => {
-			return browser.permissions.request({permissions: [message.permission]});
-
-		}, 
-		"hasPermission": async() => {
-			return hasPermission(message.permission);
-
-		}, 
-		"openTab": async() => {
-			return openWithMethod(message);
-
-		}, 
-		"closeTab": async() => {
-			return browser.tabs.remove(message.tabId || sender.tab.id )
-
-		}, 
-		"getIconsFromIconFinder": async() => {
+		updateUserOptionsObject: async() => updateUserOptionsObject(message.userOptions), 
+		updateUserOptionsVersion: async() => updateUserOptionsVersion(message.userOptions), 
+		requestPermission: async() => browser.permissions.request({permissions: [message.permission]}), 
+		hasPermission: async() => hasPermission(message.permission), 
+		openTab: async() => openWithMethod(message), 
+		closeTab: async() => browser.tabs.remove(message.tabId || sender.tab.id ), 
+		getIconsFromIconFinder: async() => {
 			return browser.tabs.create({
 				url: "https://www.iconfinder.com/search?q=" + message.searchTerms.toLowerCase(),
 				active:false
@@ -1035,38 +845,23 @@ async function notify(message, sender, sendResponse) {
 				browser.tabs.remove(tab.id);
 				return urls;
 			});
-
 		}, 
-		"findIcons": async() => {
-			return findIcons(message.args);
-
-		}, 
-		"cancelQuickMenuRequest": async() => {
-			return sendMessageToTopFrame();
-
-		}, 
-		"download": async() => {
+		findIcons: async() => findIcons(message.args), 
+		cancelQuickMenuRequest: async() => sendMessageToTopFrame(), 
+		download: async() => {
 			if ( !await hasPermission("downloads") ) {
 				let optionsTab = await notify({action: "openOptions", hashurl:"?permission=downloads#requestPermissions"});
 				return;
 			}
 
 			return browser.downloads.download({url: message.url, saveAs: true});
-
 		}, 
-		"getBookmarksAsNodeTree": async() => {
+		getBookmarksAsNodeTree: async() => {
 			return await CSBookmarks.treeToFolders(message.id || "root________");
-
 		}, 
-		"getTabTerms": async() => {
-			return self.tabTerms.find(t => t.tabId === sender.tab.id);
-
-		}, 
-		"isSidebar": async() => {
-			return sender.hasOwnProperty("frameId");
-
-		}, 
-		"disablePageClicks": async() => {
+		getTabTerms: async() => self.tabTerms.find(t => t.tabId === sender.tab.id), 
+		isSidebar: async() => sender.hasOwnProperty("frameId"), 
+		disablePageClicks: async() => {
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 			if ( !isAllowedURL(sender.tab.url) ) return;
 			if ( await isTabScriptable(sender.tab.id) === false ) return;
@@ -1076,9 +871,8 @@ async function notify(message, sender, sendResponse) {
 				css: "HTML{pointer-events:none;}",
 				allFrames: true
 			}).catch( error => debug(error) );;
-
 		}, 
-		"enablePageClicks": async() => {
+		enablePageClicks: async() => {
 			if ( !userOptions.toolBarMenuDisablePageClicks ) return;
 
 			async function logTabs(tabs) {
@@ -1093,27 +887,21 @@ async function notify(message, sender, sendResponse) {
 				}).catch( error => debug(error) );
 			  }
 			}
-
 			return browser.tabs.query({}).then(logTabs);
 
 		// bypasses Firefox resistFingerprinting
 		}, 
-		"getDevicePixelRatio": async() => {
-			return self.devicePixelRatio;
-
-		}, 
-		"setSessionClipboard": async() => {
+		getDevicePixelRatio: async() => self.devicePixelRatio, 
+		setSessionClipboard: async() => {
 			console.log('set', message.clipboardObject);
 			return browser.storage.session.set({"clipboard": message.clipboardObject});
 
 		}, 
-		"getSessionClipboard": async() => {
+		getSessionClipboard: async() => {
 			return browser.storage.session.get("clipboard")
 				.then(r => r.clipboard?.message || "");
 		},
-		"setThemeStyles": async() => {
-			return sendMessageToTopFrame();
-		}
+		setThemeStyles: async() => sendMessageToTopFrame()
 	}
 
 	// set up aliases
