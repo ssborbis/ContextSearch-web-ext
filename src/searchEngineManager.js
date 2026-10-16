@@ -2503,8 +2503,6 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 			const parentLi = li.closest("UL").closest("LI");
 			const parentLabel = parentLi ? parentLi.querySelector(".label") : null;
 
-			if ( parentLi) console.log(label.innerText, parentLabel.innerText);
-
 			if ( !label.innerText.toLowerCase().includes(e.target.value.toLowerCase()) ) {
 				if ( li.node.type === "folder" ) label.parentNode.style.display = 'none';
 				
@@ -2518,6 +2516,8 @@ $('#searchEnginesManagerSearch').addEventListener('keyup', e => {
 			} else {
 				// show folder hierarchy
 				li.closest("UL").parentNode.querySelector('.header').style.display = null;
+				li.closest("UL").parentNode.style.display = null;
+				document.getElementById('searchEngineTable').querySelectorAll(`LI:has([data-nodeid="${li.node.id}"])`).forEach(el => el.style.display = null);
 			}
 		}
 	}, 500, "searchEnginesManagerSearchTimer");
