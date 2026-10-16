@@ -1674,6 +1674,10 @@ function buildSearchEngineContainer() {
 			if (li.node.type === 'searchEngine') {
 
 				let _newNode = Object.assign({}, li.node);
+
+				// unified nodetree has unique ids
+				_newNode.id = gen();
+				
 				nodeInsertBefore(_newNode, li.node);
 		
 				let newLi = traverse(_newNode, li.parentNode);
