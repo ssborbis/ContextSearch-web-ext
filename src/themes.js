@@ -32,7 +32,7 @@ async function setTheme(theme) {
 	let themeName = userOptions.quickMenuTheme;
 
 	if ( userOptions.autoTheme ) {
-		themeName = isDarkMode() ? userOptions.autoThemeDark : userOptions.autoThemeLite;
+		themeName = await isDarkMode() ? userOptions.autoThemeDark : userOptions.autoThemeLite;
 	}
 
 	theme = theme || themes.find( t => t.name === themeName ) || themes[0];
@@ -103,7 +103,7 @@ async function changeTheme(i) {
 	resizeMenu({openFolder:true});
 
 	if ( userOptions.autoTheme ) {
-		if ( isDarkMode() )	userOptions.autoThemeDark = theme.name;
+		if ( await isDarkMode() ) userOptions.autoThemeDark = theme.name;
 		else userOptions.autoThemeLite = theme.name;
 	} else {
 		userOptions.quickMenuTheme = theme.name;

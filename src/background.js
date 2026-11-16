@@ -904,7 +904,16 @@ async function notify(message, sender, sendResponse) {
 			return browser.storage.session.get("clipboard")
 				.then(r => r.clipboard?.message || "");
 		},
-		setThemeStyles: async() => sendMessageToTopFrame()
+		setThemeStyles: async() => sendMessageToTopFrame(),
+		getDarkMode: async() => {
+			let isDarkMode = await _executeScript({
+				func: () => isDarkMode(),
+				tabId: sender.tab.id
+			});
+
+			debug('isDarkmode', isDarkMode);
+			return isDarkMode;
+		}
 	}
 
 	// set up aliases

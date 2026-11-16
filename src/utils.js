@@ -236,7 +236,10 @@ const i18n_layout_titles = {
 };
 
 function isDarkMode() {
-	return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+	if (window.top == window)
+		return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+	else
+		return sendMessage({action: 'getDarkMode'});
 }
 
 function isSameStringMinusLineBreaks(str1, str2) {
