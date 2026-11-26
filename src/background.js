@@ -37,10 +37,9 @@ self.searchTerms = "";
 self.searchTermsObject = {};
 self.popupWindows = [];
 
-var userOptions = {};
+var userOptions = JSON.parse(JSON.stringify(defaultUserOptions));
 var highlightTabs = [];
 var platformInfo = null;
-var isLoadingUserOptions = false;
 var tabHighlighter = new TabHighlighter();
 
 // tracks tabs by index that have findbar search results when searching all tabs
@@ -49,8 +48,7 @@ var tabHighlighter = new TabHighlighter();
 browser.runtime.getPlatformInfo().then( info => platformInfo = info );
 
 // init
-(async () => {
-	isLoadingUserOptions = true;
+const userOptionsReady = (async () => {
 	await loadUserOptions();
 	debug("userOptions loaded. Updating objects");
 	userOptions = await updateUserOptionsVersion(userOptions);
@@ -60,11 +58,10 @@ browser.runtime.getPlatformInfo().then( info => platformInfo = info );
 	await buildContextMenu();
 	resetPersist();
 	setIcon();
-	isLoadingUserOptions = false;
 
 	// permission and userScripts.execute checks run in function
-	registerAllUserScripts();
-})();
+	return registerAllUserScripts();
+})().catch(error => console.error("ContextSearch: initialization failed", error));
 
 // catch permissions added for Firefox
 browser.permissions.onAdded.addListener( async permissions => {	
@@ -79,16 +76,18 @@ if ( browser.contextMenus ) // catch android
 // domain follower highlighting
 browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 
-	// skip data URIs
-	if ( tab.url.startsWith("data:")) return;
+	if ( changeInfo.status !== "complete" || !tab.url || tab.url === "about:blank" || tab.url.startsWith("data:") ) return;
+	if ( !highlightTabs.length ) return;
 
-	if ( !userOptions.highLight.followDomain && !userOptions.highLight.followExternalLinks ) return;
+	await userOptionsReady;
+	const { followDomain, followExternalLinks } = userOptions.highLight;
+	if ( !followDomain && !followExternalLinks ) return;
 
-	if ( changeInfo.status !== 'complete' || tab.url === 'about:blank') return;
-		
-	let url = new URL(tab.url);
-
-	let highlightInfo = highlightTabs.find( ht => ( ht.tabId === tabId || ht.tabId === tab.openerTabId ) && ( ( userOptions.highLight.followExternalLinks && ht.domain !== url.hostname ) || ( userOptions.highLight.followDomain && ht.domain === url.hostname ) ) );
+	const url = new URL(tab.url);
+	const highlightInfo = highlightTabs.find( ht =>
+		(ht.tabId === tabId || ht.tabId === tab.openerTabId) &&
+		(ht.domain === url.hostname ? followDomain : followExternalLinks)
+	);
 	
 	if ( highlightInfo ) {
 		debug('found openerTabId ' + tab.openerTabId + ' in hightlightTabs');
@@ -228,22 +227,23 @@ async function notify(message, sender, sendResponse) {
 
 	const messageHandlers = {
 		saveUserOptions: async() => {
-		//	debounce(async () => {
-				userOptions = message.userOptions;
+			await userOptionsReady;
+			const options = message.userOptions;
+			if ( !options || typeof options !== "object" || Array.isArray(options) ) {
+				throw new TypeError("Invalid ContextSearch settings");
+			}
+			userOptions = updateUserOptionsObject(options);
+			console.log("saveUserOptions", message.source || "", sender.tab?.url);
 
-				console.log("saveUserOptions", message.source || "", sender.tab.url);
-
-				return browser.storage.local.set({"userOptions": userOptions}).then(() => {
-					notify({action: "updateUserOptions", source: sender});
-				});
-		//	}, 250, "saveUserOptions");
-		//	return;
+			await browser.storage.local.set({"userOptions": userOptions});
+			return notify({action: "updateUserOptions", source: sender});
 		}, 
 		updateUserOptions: async() => {
 			debounce(async () => {
 				console.log('updateUserOptions');
 				let tabs = await getAllOpenTabs();
 				for (let tab of tabs) {
+					if ( tab.discarded ) continue;
 					browser.tabs.sendMessage(tab.id, {"userOptions": userOptions, source: message.source}).catch( error => {/*console.log(error)*/});	
 				}
 				buildContextMenu();
@@ -298,7 +298,10 @@ async function notify(message, sender, sendResponse) {
 					.catch(reject);
 			});
 		}, 
-		getUserOptions: async() => userOptions,
+		getUserOptions: async() => {
+			await userOptionsReady;
+			return userOptions;
+		},
 		getDefaultUserOptions: async() => defaultUserOptions, 
 		dispatchEvent: async() => {
 			return _executeScript({
@@ -757,8 +760,7 @@ async function notify(message, sender, sendResponse) {
 			});
 		}, 
 		injectContentScripts: async() => {
-			while ( isLoadingUserOptions )
-				await new Promise(r => setTimeout(r, 50));
+			await userOptionsReady;
 
 			console.log("message, sender", message, sender);
 			if ( isAllowedURL(sender.tab.url)) {
@@ -951,11 +953,13 @@ function updateUserOptionsObject(uo) {
 	// Update default values instead of replacing with object of potentially undefined values
 	function traverse(defaultobj, userobj) {
 		for (let key in defaultobj) {
-			userobj[key] = (userobj[key] !== undefined && userobj[key] == userobj[key] ) ? userobj[key] : JSON.parse(JSON.stringify(defaultobj[key]));
-
-			if (typeof userobj[key] !== typeof defaultobj[key] ) {
+			const defaultValue = defaultobj[key];
+			const value = userobj[key];
+			if ( value == null || Number.isNaN(value) ) {
+				userobj[key] = JSON.parse(JSON.stringify(defaultValue));
+			} else if ( typeof value !== typeof defaultValue || Array.isArray(value) !== Array.isArray(defaultValue) ) {
 				console.error(key, "mismatched types");
-				userobj[key] = defaultobj[key];
+				userobj[key] = JSON.parse(JSON.stringify(defaultValue));
 			}
 
 			if ( defaultobj[key] instanceof Object && Object.getPrototypeOf(defaultobj[key]) == Object.prototype && key !== 'nodeTree' )
@@ -993,27 +997,11 @@ function updateUserOptionsObject(uo) {
 	return uo;
 }
 
-function loadUserOptions() {
-	
-	function onGot(result) {
-		
-		// no results found, use defaults
-		if ( !result.userOptions ) {
-			userOptions = Object.assign({}, defaultUserOptions);
-			return false;
-		}
-
-		userOptions = updateUserOptionsObject( result.userOptions );
-
-		return true;
+async function loadUserOptions() {
+	const { userOptions: savedOptions } = await browser.storage.local.get("userOptions");
+	if ( savedOptions && typeof savedOptions === "object" && !Array.isArray(savedOptions) ) {
+		userOptions = updateUserOptionsObject(savedOptions);
 	}
-  
-	function onError(error) {
-		console.log(`Error: ${error}`);
-	}
-
-	var getting = browser.storage.local.get("userOptions");
-	return getting.then(onGot, onError);
 }
 
 function openWithMethod(o) {
