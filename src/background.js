@@ -1025,7 +1025,9 @@ function openWithMethod(o) {
 	function filterOptions(_o) {
 		if ( platformInfo && platformInfo.os === "android") delete _o.openerTabId;
 
-		if (typeof browser.tabs.toggleReaderMode === 'undefined') delete _o.openInReaderMode;
+		// no longer a part of firefox
+		//if (typeof browser.tabs.toggleReaderMode === 'undefined') 
+		delete _o.openInReaderMode;
 
 		return _o;
 	}
@@ -1058,7 +1060,14 @@ function openWithMethod(o) {
 			return openPopup();
 	}
 	
-	function openCurrentTab(tabId=null) {
+	async function openCurrentTab(tabId=null) {
+
+		// console.log(tabId);
+		// if ( !tabId) {
+		// 	const [t] = await browser.tabs.query({ active: true, lastFocusedWindow: true });
+		// 	console.log(t);
+		// 	tabId = t.id;
+		// }
 		
 		return browser.tabs.update(tabId, filterOptions({
 			url: o.url,
